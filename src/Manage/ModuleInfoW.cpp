@@ -18,7 +18,7 @@ Manage::ModuleInfo::~ModuleInfo()
 {
 }
 
-UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
+UnsafeArray<UTF8Char> Manage::ModuleInfo::GetModuleFileName(UnsafeArray<UTF8Char> buff)
 {
 	WChar wbuff[512];
 	*wbuff = 0;

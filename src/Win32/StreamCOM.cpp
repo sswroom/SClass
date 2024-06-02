@@ -38,10 +38,10 @@ UOSInt Win32::StreamCOM::Read(const Data::ByteArray &buff)
 	return cbSize;
 }
 
-UOSInt Win32::StreamCOM::Write(const UInt8 *buff, UOSInt size)
+UOSInt Win32::StreamCOM::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UInt32 cbSize = 0;
-	this->stm->Write(buff, (ULONG)size, (ULONG*)&cbSize);
+	this->stm->Write(buff.Ptr(), (ULONG)size, (ULONG*)&cbSize);
 	return cbSize;
 }
 

@@ -29,9 +29,9 @@ namespace Media
 		static Data::Duration GetDurFromTime(void *mmTime, NN<const AudioFormat> fmt);
 	public:
 		static UOSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
 
-		WaveOutRenderer(const UTF8Char *devName);
+		WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName);
 		WaveOutRenderer(Int32 devId);
 		virtual ~WaveOutRenderer();
 

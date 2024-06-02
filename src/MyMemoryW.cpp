@@ -420,7 +420,7 @@ Int32 MemCheckError()
 {
 	Bool found = false;
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::Writer *console = 0;
 
 
@@ -506,7 +506,7 @@ Int32 MemCheckError()
 						{
 							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 							cptr = line.FileName;
-							i = Text::StrLastIndexOfChar(cptr, '\\');
+							i = Text::StrLastIndexOfCharCh(cptr, '\\');
 							cptr = &cptr[i + 1];
 							while ((*sptr++ = (UTF8Char)*cptr++) != 0);
 							sptr = Text::StrConcatC(sptr - 1, UTF8STRC("("));

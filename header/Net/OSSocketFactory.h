@@ -90,8 +90,8 @@ namespace Net
 		virtual UOSInt QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId);
 		virtual void FreePortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList);
 
-		virtual Bool AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr);
-		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
+		virtual Bool AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr);
+		virtual Bool AdapterEnable(Text::CStringNN adapterName, Bool enable);
 
 		UOSInt GetBroadcastAddrs(NN<Data::ArrayList<UInt32>> addrs);
 

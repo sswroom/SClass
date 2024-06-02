@@ -27,7 +27,7 @@ UOSInt Manage::ThreadContextX86_64::GetRegisterCnt() const
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextX86_64::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	CONTEXT_TYPE *ctx = (CONTEXT_TYPE*)this->context;
 	switch (index)
@@ -224,7 +224,7 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
 	UOSInt i = 0;
@@ -233,7 +233,7 @@ void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 	while (i < j)
 	{
-		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
+		if (this->GetRegister(i, sbuff, regBuff, &bitCnt).SetTo(sptr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;

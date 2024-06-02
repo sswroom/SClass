@@ -41,10 +41,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, N
 		if (log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
-			if (logPrefix.leng > 0)
-			{
-				sb.Append(logPrefix);
-			}
+			sb.AppendOpt(logPrefix);
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
@@ -61,10 +58,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, N
 		if (log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
-			if (logPrefix.leng > 0)
-			{
-				sb.Append(logPrefix);
-			}
+			sb.AppendOpt(logPrefix);
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
 			conn->GetLastErrorMsg(sb);
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
@@ -84,10 +78,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, T
 		if (log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
-			if (logPrefix.leng > 0)
-			{
-				sb.Append(logPrefix);
-			}
+			sb.AppendOpt(logPrefix);
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
@@ -104,10 +95,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, T
 		if (log->HasHandler())
 		{
 			Text::StringBuilderUTF8 sb;
-			if (logPrefix.leng > 0)
-			{
-				sb.Append(logPrefix);
-			}
+			sb.AppendOpt(logPrefix);
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
 			conn->GetLastErrorMsg(sb);
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);

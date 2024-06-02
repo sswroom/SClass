@@ -20,7 +20,7 @@ namespace IO
 //		static Bool DeleteFile(const WChar *file, Bool deleteRdonlyFile);
 		static Bool RenameFile(UnsafeArray<const UTF8Char> srcFile, UnsafeArray<const UTF8Char> destFile);
 //		static Bool RenameFile(const WChar *srcFile, const WChar *destFile);
-		static UnsafeArray<UTF8Char> GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName);
+		static UnsafeArrayOpt<UTF8Char> GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName);
 //		static WChar *GetMountPoint(WChar *buff, const WChar *fileName);
 		static Bool IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2);
 //		static Bool IsSamePartition(const WChar *file1, const WChar *file2);

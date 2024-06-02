@@ -75,12 +75,8 @@ Media::WIAManager::~WIAManager()
 	{
 		((DEVMGRTYPE*)this->pWiaDevMgr)->Release();
 	}
-	UOSInt i = this->devNames->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->devNames->GetItem(i));
-		Text::StrDelNew(this->devIds->GetItem(i));
-	}
+	this->devNames->DeleteAll();
+	this->devIds->DeleteAll();
 	DEL_CLASS(this->devNames);
 	DEL_CLASS(this->devIds);
 	CoUninitialize();
@@ -92,15 +88,15 @@ UOSInt Media::WIAManager::GetDeviceCount()
 	return this->devNames->GetCount();
 }
 
-const UTF8Char *Media::WIAManager::GetDeviceName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UOSInt index)
 {
 	return this->devNames->GetItem(index);
 }
 
 Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
 {
-	const UTF8Char *devId = this->devIds->GetItem(index);
-	if (devId == 0)
+	UnsafeArray<const UTF8Char> devId;
+	if (!this->devIds->GetItem(index).SetTo(devId))
 		return 0;
 	DEVITEMTYPE *devItem;
 	const WChar *wptr = Text::StrToWCharNew(devId);

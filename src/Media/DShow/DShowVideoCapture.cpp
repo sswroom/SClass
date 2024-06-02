@@ -91,11 +91,11 @@ Media::DShow::DShowVideoCapture::~DShowVideoCapture()
 	{
 		this->pPropBag->Release();
 	}
-	SDEL_TEXT(this->devName);
-	SDEL_TEXT(this->displayName);
+	if (this->devName) Text::StrDelNew(this->devName);
+	if (this->displayName) Text::StrDelNew(this->displayName);
 }
 
-UTF8Char *Media::DShow::DShowVideoCapture::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCapture::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 /*	FILTER_INFO finfo;
 	if (this->baseFilter->QueryFilterInfo(&finfo) != S_OK)
@@ -606,13 +606,13 @@ UOSInt Media::DShow::DShowVideoCaptureMgr::GetDeviceCount()
 	return cnt;
 }
 
-UTF8Char *Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
 	UInt32 cnt;
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 
 	if (pEnum == 0)
 	{

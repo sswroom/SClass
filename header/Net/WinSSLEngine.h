@@ -15,7 +15,7 @@ namespace Net
 		void DeinitClient();
 		Bool InitClient(Method method, void *cred);
 		Bool InitServer(Method method, void *cred, void *hRootStore);
-		Optional<Net::SSLClient> CreateClientConn(void *sslObj, NN<Socket> s, Text::CString hostName, OptOut<ErrorType> err);
+		Optional<Net::SSLClient> CreateClientConn(void *sslObj, NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err);
 		virtual Optional<Net::SSLClient> CreateServerConn(NN<Socket> s);
 	public:
 		WinSSLEngine(NN<Net::SocketFactory> sockf, Method method);

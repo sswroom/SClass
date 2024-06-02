@@ -1595,7 +1595,7 @@ void Net::OSSocketFactory::FreePortInfos2(NN<Data::ArrayListNN<Net::SocketFactor
 	portInfoList->MemFreeAll();
 }
 
-Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
+Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr)
 {
 #if !defined(__APPLE__) && !defined(__FreeBSD__)
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
@@ -1652,7 +1652,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UIn
 #endif
 }
 
-Bool Net::OSSocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
+Bool Net::OSSocketFactory::AdapterEnable(Text::CStringNN adapterName, Bool enable)
 {
 #if !defined(__APPLE__) && !defined(__FreeBSD__)
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);

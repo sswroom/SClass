@@ -323,10 +323,10 @@ WChar *Win32::WMIReader::GetStr(UOSInt colIndex, WChar *buff)
 				ret = Text::StrUInt64(buff, V_UI8(&v));
 				break;
 			case CIM_REAL32:
-				ret = Text::StrDouble(buff, V_R4(&v));
+				ret = Text::StrDoubleW(buff, V_R4(&v));
 				break;
 			case CIM_REAL64:
-				ret = Text::StrDouble(buff, V_R8(&v));
+				ret = Text::StrDoubleW(buff, V_R8(&v));
 				break;
 			case CIM_BOOLEAN:
 				ret = Text::StrConcat(buff, (V_BOOL(&v))?L"True":L"False");
@@ -459,7 +459,7 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 		return 0;
 
 	UTF8Char sbuff[64];
-	UTF8Char* sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Optional<Text::String> ret = 0;
 	HRESULT hr;
 	VARIANT v;
@@ -724,7 +724,7 @@ Double Win32::WMIReader::GetDbl(UOSInt colIndex)
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					ret = Text::StrToDouble(bs);
+					ret = Text::StrToDoubleW(bs);
 				}
 				break;
 			case CIM_DATETIME:

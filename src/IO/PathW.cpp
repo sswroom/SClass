@@ -272,7 +272,7 @@ Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 
 UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, UnsafeArray<const UTF8Char> ext, UOSInt extLen)
 {
-	UnsafeArray<UTF8Char> oldExt = 0;
+	UnsafeArrayOpt<UTF8Char> oldExt = 0;
 	UTF8Char c;
 	while ((c = *fileName++) != 0)
 	{
@@ -285,12 +285,13 @@ UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, Unsaf
 			oldExt = fileName;
 		}
 	}
-	if (oldExt == 0)
+	UnsafeArray<UTF8Char> nnoldExt;
+	if (!oldExt.SetTo(nnoldExt) == 0)
 	{
-		oldExt = fileName;
-		oldExt[-1] = '.';
+		nnoldExt = fileName;
+		nnoldExt[-1] = '.';
 	}
-	return Text::StrConcatC(oldExt, ext, extLen);
+	return Text::StrConcatC(nnoldExt, ext, extLen);
 }
 
 WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
@@ -785,7 +786,7 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8
 	}
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(Text::CString path)
+IO::Path::FindFileSession *IO::Path::FindFile(Text::CStringNN path)
 {
 	WChar wbuff[MAX_PATH];
 	FindFileSession *sess;
@@ -831,7 +832,7 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	}
 }
 
-UnsafeArray<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	IO::Path::PathType tmp;
 	if (pt == 0)
@@ -979,7 +980,8 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 	UnsafeArray<const UTF8Char> fileNameEnd = &fileName[fileNameLen];
 	UOSInt i;
 	Bool isWC = false;
-	UnsafeArray<const UTF8Char> patternStart = 0;
+	UnsafeArrayOpt<const UTF8Char> patternStart = 0;
+	UnsafeArray<const UTF8Char> nnpatternStart;
 	UnsafeArray<const UTF8Char> currPattern = searchPattern;
 	UTF8Char c;
 	while (true)
@@ -990,13 +992,13 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 		case 0:
 			if (isWC)
 			{
-				if (patternStart == 0)
+				if (!patternStart.SetTo(nnpatternStart))
 					return true;
-				return Text::StrEndsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart));
+				return Text::StrEndsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart));
 			}
-			else if (patternStart)
+			else if (patternStart.SetTo(nnpatternStart))
 			{
-				return Text::StrEqualsICaseC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart));
+				return Text::StrEqualsICaseC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart));
 			}
 			else
 			{
@@ -1006,19 +1008,19 @@ Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNa
 		case '*':
 			if (isWC)
 			{
-				if (patternStart == 0)
+				if (!patternStart.SetTo(nnpatternStart))
 					return false;
-				if ((i = Text::StrIndexOfC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart))) == INVALID_INDEX)
+				if ((i = Text::StrIndexOfC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart))) == INVALID_INDEX)
 					return false;
-				fileName += i + currPattern - patternStart;
+				fileName += i + (currPattern - nnpatternStart);
 				patternStart = 0;
 				isWC = false;
 			}
-			else if (patternStart)
+			else if (patternStart.SetTo(nnpatternStart))
 			{
-				if (!Text::StrStartsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart)))
+				if (!Text::StrStartsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), nnpatternStart, (UOSInt)(currPattern - nnpatternStart)))
 					return false;
-				fileName += currPattern - patternStart;
+				fileName += currPattern - nnpatternStart;
 				patternStart = 0;
 				isWC = false;
 			}
@@ -1170,7 +1172,7 @@ WChar *IO::Path::GetSystemProgramPathW(WChar *buff)
 #endif
 }
 
-UnsafeArray<UTF8Char> IO::Path::GetLocAppDataPath(UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetLocAppDataPath(UnsafeArray<UTF8Char> buff)
 {
 #ifdef _WIN32_WCE
 	return 0;
@@ -1197,7 +1199,7 @@ WChar *IO::Path::GetLocAppDataPathW(WChar *buff)
 #endif
 }
 
-UnsafeArray<UTF8Char> IO::Path::GetOSPath(UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetOSPath(UnsafeArray<UTF8Char> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcatC(buff, UTF8STRC("\\Windows\\"));
@@ -1217,11 +1219,10 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 #endif
 }
 
-UnsafeArray<UTF8Char> IO::Path::GetUserHome(UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetUserHome(UnsafeArray<UTF8Char> buff)
 {
-	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEDRIVE"));
-	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEPATH"));
-	return buff;
+	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEDRIVE")).Or(buff);
+	return Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEPATH"));
 }
 
 Bool IO::Path::GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime)
@@ -1275,7 +1276,7 @@ Data::Timestamp IO::Path::GetModifyTime(UnsafeArray<const UTF8Char> path)
 	return Data::Timestamp::FromFILETIME(&fd.ftLastWriteTime, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-UnsafeArray<UTF8Char> IO::Path::GetCurrDirectory(UnsafeArray<UTF8Char> buff)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetCurrDirectory(UnsafeArray<UTF8Char> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, (const UTF8Char*)"\\");
@@ -1332,7 +1333,7 @@ UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeA
 	UnsafeArray<UTF8Char> sptr;
 	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen - 1);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff).Or(sbuff), path + 1, pathLen - 1);
 	}
 	else
 	{

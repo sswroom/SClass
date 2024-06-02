@@ -217,7 +217,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 	return succ;
 }
 
-Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
+Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
 {
 	switch (portType)
 	{
@@ -237,7 +237,7 @@ Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
-UOSInt IO::SerialPort::GetPortWithType(Text::CString portName)
+UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 {
 	UOSInt port = 0;
 	IO::Registry *reg;
@@ -295,7 +295,7 @@ UOSInt IO::SerialPort::GetBTPort()
 	return port;
 }
 
-UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
+UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum)
 {
 	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("COM")), portNum);
 }
@@ -401,7 +401,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 
 }
 
-UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::SerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UOSInt writeCnt = 0;
 	void *h = this->handle;
@@ -423,7 +423,7 @@ UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
 	ol.InternalHigh = 0;
 	ol.Offset = 0;
 	ol.OffsetHigh = 0;
-	WriteFile(h, buff, (DWORD)size, (LPDWORD)&writeCnt, &ol);
+	WriteFile(h, buff.Ptr(), (DWORD)size, (LPDWORD)&writeCnt, &ol);
 	if (GetOverlappedResult(h, &ol, (LPDWORD)&writeCnt, TRUE))
 	{
 		CloseHandle(ol.hEvent);
@@ -505,7 +505,7 @@ void IO::SerialPort::CancelRead(void *reqData)
 #endif
 }
 
-void *IO::SerialPort::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	evt->Set();
 	if (handle == 0)

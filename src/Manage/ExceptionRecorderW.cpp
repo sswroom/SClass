@@ -69,7 +69,7 @@ DWORD WINAPI GetThreadStartAddress(HANDLE hThread)
 }
 #endif
 
-Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
+Text::CStringNN Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 {
 	switch (exCode)
 	{
@@ -123,7 +123,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 {
 	NN<Manage::ThreadContext> tCont;
 	EXCEPTION_POINTERS *info = (EXCEPTION_POINTERS*)exInfo;
-	printf("exception occured: %s\r\n", GetExceptionCodeName(info->ExceptionRecord->ExceptionCode).v);
+	printf("exception occured: %s\r\n", GetExceptionCodeName(info->ExceptionRecord->ExceptionCode).v.Ptr());
 #if defined(CPU_X86_64) || defined(_M_ARM64EC)
 	NEW_CLASSNN(tCont, Manage::ThreadContextX86_64(GetCurrentProcessId(), 0, info->ContextRecord));
 #elif defined(CPU_X86_32)

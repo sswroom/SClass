@@ -213,7 +213,7 @@ void Sync::ThreadUtil::SetPriority(ThreadPriority priority)
 	SetThreadPriority(GetCurrentThread(), threadPriority);*/
 }
 
-Bool Sync::ThreadUtil::SetName(Text::CString name)
+Bool Sync::ThreadUtil::SetName(Text::CStringNN name)
 {
 #if defined(__APPLE__)
 	return pthread_setname_np((const char*)name.v) == 0;

@@ -325,12 +325,12 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::FileStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
 	UInt32 readSize;
-	if (WriteFile(handle, buff, (UInt32)size, (DWORD*)&readSize, 0))
+	if (WriteFile(handle, buff.Ptr(), (UInt32)size, (DWORD*)&readSize, 0))
 	{
 		this->currPos += readSize;
 		return readSize;
@@ -594,7 +594,7 @@ Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(const UTF8Char *server, c
 	return 0;
 #else
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("\\\\"));
 	if (server == 0)
 	{

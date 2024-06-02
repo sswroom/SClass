@@ -28,8 +28,8 @@ namespace Media
 		static UInt32 __stdcall PlayThread(AnyType obj);
 	public:
 		static UOSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);
-		static OSInt GetDeviceId(const UTF8Char *devName);
+		static UnsafeArray<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devIndex);
+		static OSInt GetDeviceId(UnsafeArray<const UTF8Char> devName);
 
 		KSRenderer(OSInt devId);
 		virtual ~KSRenderer();

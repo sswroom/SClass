@@ -100,11 +100,12 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString user
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
-	if (userAgent.v == 0)
+	Text::CStringNN nnuserAgent;
+	if (!userAgent.SetTo(nnuserAgent))
 	{
-		userAgent = CSTR("sswr/1.0");
+		nnuserAgent = CSTR("sswr/1.0");
 	}
-	const WChar *wptr = Text::StrToWCharNew(userAgent.v);
+	const WChar *wptr = Text::StrToWCharNew(nnuserAgent.v);
 #if defined(WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY)
 	data->hSession = WinHttpOpen(wptr, WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 #endif
@@ -212,7 +213,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::HTTPOSClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->canWrite && !this->hasForm)
 	{
@@ -247,13 +248,13 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
-	UTF8Char *svrnameEnd;
+	UnsafeArray<UTF8Char> svrnameEnd;
 	Bool https = false;
 
 	UOSInt i;
 	const UTF8Char *ptr1;
 	const UTF8Char *ptr2;
-	UTF8Char *ptrs[2];
+	UnsafeArray<UTF8Char> ptrs[2];
 	UInt16 port;
 	UInt16 defPort;
 	Double t1;
@@ -354,9 +355,11 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 
 	this->clk.Start();
-	if (this->cliHost == 0)
+	UnsafeArray<const UTF8Char> cliHost;
+	if (!this->cliHost.SetTo(cliHost))
 	{
-		this->cliHost = Text::StrCopyNew(urltmp).Ptr();
+		cliHost = Text::StrCopyNew(urltmp);
+		this->cliHost = cliHost.Ptr();
 		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd - svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
@@ -370,7 +373,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		}
 		timeDNS.Set(this->clk.GetTimeDiff());
 
-		const WChar *wptr = Text::StrToWCharNew(this->cliHost);
+		const WChar *wptr = Text::StrToWCharNew(cliHost);
 		data->hConnect = WinHttpConnect(data->hSession, wptr, port, 0);
 		Text::StrDelNew(wptr);
 		if (data->hConnect == 0)
@@ -385,7 +388,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 //		this->sockf->SetLinger(cli->GetSocket(), 0);
 //		this->sockf->SetNoDelay(cli->GetSocket(), true);
 	}
-	else if (Text::StrEquals(this->cliHost, urltmp))
+	else if (Text::StrEquals(cliHost, urltmp))
 	{
 		if (this->buffSize > 0)
 		{
@@ -481,8 +484,8 @@ void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 			Text::StringBuilderUTF16 sb;
 			sb.AppendC(name.v, name.leng);
 			sb.AppendC(UTF8STRC(": "));
-			sb.AppendC(value.v, value.leng);
-			WinHttpAddRequestHeaders(data->hRequest, sb.ToString(), (DWORD)sb.GetLength(), WINHTTP_ADDREQ_FLAG_ADD);
+			sb.AppendC(value.OrEmpty().v, value.leng);
+			WinHttpAddRequestHeaders(data->hRequest, sb.ToPtr(), (DWORD)sb.GetLength(), WINHTTP_ADDREQ_FLAG_ADD);
 		}
 	}
 }
@@ -504,7 +507,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 			UOSInt len = this->formSb->GetLength();
 			this->AddContentLength(len);
 			this->hasForm = false;
-			this->Write((UInt8*)this->formSb->ToString(), len);
+			this->Write(this->formSb->ToString(), len);
 			DEL_CLASS(this->formSb);
 			this->formSb = 0;
 		}

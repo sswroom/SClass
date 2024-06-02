@@ -36,12 +36,12 @@ Net::SocketFactory::~SocketFactory()
 	OPTSTR_DEL(this->forceDNS);
 }
 
-Bool Net::SocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
+Bool Net::SocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr)
 {
 	return false;
 }
 
-Bool Net::SocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
+Bool Net::SocketFactory::AdapterEnable(Text::CStringNN adapterName, Bool enable)
 {
 	return false;
 }

@@ -4,7 +4,7 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-UTF8Char *Manage::ComputerUser::GetProcessUser(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::ComputerUser::GetProcessUser(UnsafeArray<UTF8Char> sbuff)
 {
 	WChar tmpBuff[1024];
 	DWORD size = 1024;

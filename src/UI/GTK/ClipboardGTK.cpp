@@ -266,7 +266,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	return false;
 }
 
-Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
+Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)

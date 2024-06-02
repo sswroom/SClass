@@ -18,7 +18,7 @@ UOSInt Media::AudioDevice::GetDeviceCount()
 	return asioCnt + woCnt + ksCnt;
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	UOSInt asioCnt = Media::ASIOOutRenderer::GetDeviceCount();
 	UOSInt woCnt = Media::WaveOutRenderer::GetDeviceCount();
@@ -44,7 +44,7 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	return 0;
 }
 
-Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CString devName)
+Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
 Media::IAudioRenderer *renderer = 0;
 #ifndef _WIN32_WCE
@@ -74,7 +74,7 @@ Media::AudioDevice::~AudioDevice()
 	this->ClearDevices();
 }
 
-Bool Media::AudioDevice::AddDevice(Text::CString devName)
+Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
 	Media::IAudioRenderer *renderer;
 	Bool ret = false;

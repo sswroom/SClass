@@ -33,13 +33,13 @@ NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
 NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::LoadJavaCA()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Cert::CertStore> store;
 	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
 
 	Manage::EnvironmentVar env;
-	const UTF8Char *csptr = env.GetValue(CSTR("JAVA_HOME"));
-	if (csptr)
+	UnsafeArray<const UTF8Char> csptr;
+	if (env.GetValue(CSTR("JAVA_HOME")).SetTo(csptr))
 	{
 		sptr = Text::StrConcat(sbuff, csptr);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)

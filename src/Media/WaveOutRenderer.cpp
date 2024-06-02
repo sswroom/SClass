@@ -288,19 +288,20 @@ UOSInt Media::WaveOutRenderer::GetDeviceCount()
 	return waveOutGetNumDevs();
 }
 
-UTF8Char *Media::WaveOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::WaveOutRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	WAVEOUTCAPSW caps;
 	waveOutGetDevCapsW(devNo, &caps, sizeof(caps));
 	return Text::StrWChar_UTF8(buff, caps.szPname);
 }
 
-Media::WaveOutRenderer::WaveOutRenderer(const UTF8Char *devName)
+Media::WaveOutRenderer::WaveOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 {
 	UOSInt i = GetDeviceCount();
 	UTF8Char buff[256];
 	this->devId = -1;
-	if (devName == 0)
+	UnsafeArray<const UTF8Char> nndevName;
+	if (!devName.SetTo(nndevName))
 	{
 		this->devId = 0;
 	}
@@ -308,9 +309,9 @@ Media::WaveOutRenderer::WaveOutRenderer(const UTF8Char *devName)
 	{
 		while (i-- > 0)
 		{
-			if (GetDeviceName(buff, i))
+			if (GetDeviceName(buff, i).NotNull())
 			{
-				if (Text::StrEquals(buff, devName))
+				if (Text::StrEquals(buff, nndevName))
 				{
 					this->devId = (OSInt)i;
 					break;

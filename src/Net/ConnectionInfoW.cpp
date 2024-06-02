@@ -19,7 +19,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	this->ent.dhcpSvr = 0;
 	if (addr->AdapterName)
 	{
-		this->ent.internalName = Text::StrCopyNew(addr->AdapterName);
+		this->ent.internalName = Text::StrCopyNewCh(addr->AdapterName);
 	}
 	if (addr->FriendlyName)
 	{
@@ -92,7 +92,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 Bool Net::ConnectionInfo::SetInfo(void *info)
 {
 	IP_ADAPTER_INFO *inf = (IP_ADAPTER_INFO*)info;
-	if (!Text::StrEquals(inf->AdapterName, this->ent.internalName))
+	if (!Text::StrEqualsCh(inf->AdapterName, this->ent.internalName.Ptr()))
 	{
 		return false;
 	}

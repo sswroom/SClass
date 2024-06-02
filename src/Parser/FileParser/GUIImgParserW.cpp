@@ -285,12 +285,12 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 				srid = 4326;
 			}
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid), 0, 0, 0, 0, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), Math::CoordinateSystemManager::SRCreateCSysOrDef(srid), 0));
 			img->To32bpp();
 			
 			Media::SharedImage simg(nnimgList, true);
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, min, max, false, fd->GetFullName().Ptr(), 0, 0));
-			lyr->AddVector(vimg, (const UTF8Char**)0);
+			lyr->AddVector(vimg, (Text::String**)0);
 			return lyr;
 		}
 
@@ -351,11 +351,11 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 					
 					
 					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
-					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
+					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
 					img->To32bpp();
 					Media::SharedImage simg(nnimgList, true);
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(lyr->GetCoordinateSystem()->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
-					lyr->AddVector(vimg, (const UTF8Char**)0);
+					lyr->AddVector(vimg, (Text::String**)0);
 					return lyr;
 				}
 			}

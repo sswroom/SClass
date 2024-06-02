@@ -43,7 +43,7 @@ void Manage::EnvironmentVar::SetValue(Text::CStringNN name, Text::CStringNN val)
 	setenv((const Char*)name.v.Ptr(), (const Char*)val.v.Ptr(), 1);
 }
 
-UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Char> buff, Text::CString name)
+UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Char> buff, Text::CStringNN name)
 {
 	char *v = getenv((const Char*)name.v.Ptr());
 	if (v)

@@ -9,7 +9,7 @@
 #undef MK_CONTROL
 #undef MK_SHIFT
 
-UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UnsafeArray<UTF8Char> UI::GUIMenu::ToKeyDisplay(UnsafeArray<UTF8Char> sbuff, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 	if (keyModifier & KM_CONTROL)
 	{
@@ -440,7 +440,7 @@ UI::GUIMenu::~GUIMenu()
 	DestroyMenu((HMENU)this->hMenu);
 }
 
-UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 	UOSInt id = this->itemCnt++;
 	if (shortcutKey)
@@ -474,7 +474,7 @@ void UI::GUIMenu::AddSeperator()
 	AppendMenuW((HMENU)this->hMenu, MF_SEPARATOR, id, 0);
 }
 
-NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
+NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CStringNN name)
 {
 	NN<UI::GUIMenu> subMenu;
 	NEW_CLASSNN(subMenu, UI::GUIMenu(true));

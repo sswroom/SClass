@@ -29,7 +29,7 @@ namespace UI
 			virtual UOSInt GetSelectedIndex();
 			virtual Optional<GUITabPage> GetSelectedPage();
 			virtual void SetTabPageName(UOSInt index, Text::CStringNN name);
-			virtual UTF8Char *GetTabPageName(UOSInt index, UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff);
 			virtual Math::RectArea<OSInt> GetTabPageRect();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

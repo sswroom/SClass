@@ -198,7 +198,7 @@ void UI::Win::WinTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 	Text::StrDelNew((const WChar*)item.pszText);
 }
 
-UTF8Char *UI::Win::WinTabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Win::WinTabControl::GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	WChar wbuff[512];
 	TCITEMW item;

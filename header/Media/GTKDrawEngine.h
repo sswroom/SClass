@@ -33,7 +33,7 @@ namespace Media
 		OSInt fontSlant;
 		OSInt fontWeight;
 	public:
-		GTKDrawFont(Text::CString fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
+		GTKDrawFont(Text::CStringNN fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
 		GTKDrawFont(Text::String *fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
 		GTKDrawFont(NN<Text::String> fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
 		~GTKDrawFont();
@@ -134,8 +134,8 @@ namespace Media
 
 		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
-		virtual NN<DrawFont> NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual NN<DrawFont> NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual NN<DrawFont> NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual NN<DrawFont> NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual NN<DrawFont> CloneFont(NN<DrawFont> f);
 		virtual void DelPen(NN<DrawPen> p);
 		virtual void DelBrush(NN<DrawBrush> b);

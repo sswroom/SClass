@@ -126,7 +126,7 @@ Manage::Process::Process()
 	this->needRelease = false;
 }
 
-Manage::Process::Process(const UTF8Char *cmdLine)
+Manage::Process::Process(UnsafeArray<const UTF8Char> cmdLine)
 {
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
@@ -736,7 +736,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType,
 	}
 	UInt8 buff[4096];
 	UTF8Char sbuff[512];
-	UTF8Char* sptr;
+	UnsafeArray<UTF8Char> sptr;
 	PMyPUBLIC_OBJECT_TYPE_INFORMATION objectTypeInfo = (PMyPUBLIC_OBJECT_TYPE_INFORMATION)buff;
 	if ((status = qryObj(dupHandle, ObjectTypeInformation, objectTypeInfo, sizeof(buff), 0)) < 0)
 	{
@@ -1237,13 +1237,14 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 		return 0;
 	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
-	if (processName.leng == 0)
+	Text::CStringNN nnprocessName;
+	if (!processName.SetTo(nnprocessName) || nnprocessName.leng == 0)
 	{
 		sess->fileName = 0;
 	}
 	else
 	{
-		sess->fileName = Text::StrToWCharNew(processName.v);
+		sess->fileName = Text::StrToWCharNew(nnprocessName.v);
 	}
 	sess->isFirst = true;
 	return sess;
@@ -1270,7 +1271,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 	return sess;
 }
 
-UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
 {
 #ifdef _WIN32_WCE
 	PROCESSENTRY32 pe32;
@@ -1434,7 +1435,7 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 	MemFree(pfsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilderUTF8> result)
 {
 	if (cmd.leng > 32767)
 	{
@@ -1453,7 +1454,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderU
 	UTF8Char tmpFile[MAX_PATH];
 	UOSInt cmdLen = Text::StrCharCnt(cmd);
 	WChar *cmdLine = MemAlloc(WChar, cmdLen + 512);
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StrConcat(cmdLine, cmd);
 
 	WChar *cptr = cmdLine;
@@ -1519,7 +1520,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderU
 
 		NN<IO::FileStream> fs;
 		UTF8Char lineBuff[128];
-		UTF8Char *linePtr;
+		UnsafeArray<UTF8Char> linePtr;
 		UOSInt retryCnt = 20;
 		while (true)
 		{
@@ -1533,7 +1534,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderU
 		}
 		{
 			IO::StreamReader reader(fs);
-			while ((linePtr = reader.ReadLine(lineBuff, 124)) != 0)
+			while (reader.ReadLine(lineBuff, 124).SetTo(linePtr))
 			{
 				linePtr = reader.GetLastLineBreak(linePtr);
 				result->AppendP(lineBuff, linePtr);
@@ -1589,7 +1590,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	return found;
 }
 
-Bool Manage::Process::OpenPath(Text::CString path)
+Bool Manage::Process::OpenPath(Text::CStringNN path)
 {
 #ifdef _WIN32_WCE
 	return false;

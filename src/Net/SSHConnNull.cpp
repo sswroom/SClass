@@ -70,7 +70,7 @@ Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> 
 	return false;
 }
 
-UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, const UInt8 *buff, UOSInt size)
+UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	return 0;
 }

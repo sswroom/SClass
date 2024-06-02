@@ -128,8 +128,8 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	UInt8 *memptr;
 	WChar wbuff[512];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *tmpBuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> tmpBuff;
 	UOSInt leng;
 	UOSInt leng2;
 	if (hand == 0)
@@ -141,12 +141,12 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 		{
 			Text::Encoding enc;
 			memptr = (UInt8*)GlobalLock(hand);
-			leng = Text::StrCharCnt((Char*)memptr);
+			leng = Text::StrCharCnt(memptr);
 			leng2 = enc.CountUTF8Chars((UInt8 *)memptr, leng);
-			tmpBuff = MemAlloc(UTF8Char, leng2 + 1);
+			tmpBuff = MemAllocArr(UTF8Char, leng2 + 1);
 			enc.UTF8FromBytes(tmpBuff, (UInt8*)memptr, leng, 0);
 			sb->AppendC(tmpBuff, leng2);
-			MemFree(tmpBuff);
+			MemFreeArr(tmpBuff);
 			GlobalUnlock(hand);
 		}
 		return true;
@@ -185,10 +185,10 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	case CF_LOCALE: //16
 		{
 			memptr = (UInt8*)GlobalLock(hand);
-			Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry(*(UInt32*)memptr);
-			GlobalUnlock(hand);
-			if (locale)
+			NN<Text::Locale::LocaleEntry> locale;
+			if (Text::Locale::GetLocaleEntry(*(UInt32*)memptr).SetTo(locale))
 			{
+				GlobalUnlock(hand);
 				sb->AppendU32(locale->lcid);
 				sb->AppendC(UTF8STRC(", "));
 				sb->AppendSlow(locale->shortName);
@@ -198,6 +198,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 				sb->AppendU32(locale->defCodePage);
 				return true;
 			}
+			GlobalUnlock(hand);
 		}
 		break;
 	case CF_ENHMETAFILE: //14
@@ -340,12 +341,12 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	{
 		Text::Encoding enc;
 		memptr = (UInt8*)GlobalLock(hand);
-		leng = Text::StrCharCnt((Char*)memptr);
+		leng = Text::StrCharCnt(memptr);
 		leng2 = enc.CountUTF8Chars((UInt8 *)memptr, leng);
-		tmpBuff = MemAlloc(UTF8Char, leng2 + 1);
+		tmpBuff = MemAllocArr(UTF8Char, leng2 + 1);
 		enc.UTF8FromBytes(tmpBuff, (UInt8*)memptr, leng, 0);
 		sb->AppendC(tmpBuff, leng2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 		GlobalUnlock(hand);
 		return true;
 	}
@@ -470,12 +471,12 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	{
 		Text::Encoding enc;
 		memptr = (UInt8*)GlobalLock(hand);
-		leng = Text::StrCharCnt((Char*)memptr);
+		leng = Text::StrCharCnt(memptr);
 		leng2 = enc.CountUTF8Chars((UInt8 *)memptr, leng);
-		tmpBuff = MemAlloc(UTF8Char, leng2 + 1);
+		tmpBuff = MemAllocArr(UTF8Char, leng2 + 1);
 		enc.UTF8FromBytes(tmpBuff, (UInt8*)memptr, leng, 0);
 		sb->AppendC(tmpBuff, leng2);
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 		GlobalUnlock(hand);
 		return true;
 	}
@@ -511,7 +512,7 @@ Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilde
 	return false;
 }
 
-Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
+Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
@@ -558,7 +559,7 @@ Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUT
 	return succ;
 }
 
-UTF8Char *UI::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
+UnsafeArray<UTF8Char> UI::Clipboard::GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UOSInt buffSize)
 {
 	switch (fmtId)
 	{
@@ -623,7 +624,7 @@ UTF8Char *UI::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buf
 			WChar wbuff[256];
 			Int32 ret = GetClipboardFormatNameW(fmtId, wbuff, (int)255);
 			if (ret == 0)
-				return 0;
+				return Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Format ")), fmtId);
 			return Text::StrWChar_UTF8(sbuff, wbuff);
 		}
 	}

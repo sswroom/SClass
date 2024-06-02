@@ -174,16 +174,15 @@ Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
 	return true;
 }
 
-Media::GTKDrawFont::GTKDrawFont(Text::CString fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
+Media::GTKDrawFont::GTKDrawFont(Text::CStringNN fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
 {
-	Text::CStringNN cstr;
-	if (!fontName.SetTo(cstr) || fontName.leng == 0)
+	if (fontName.leng == 0)
 	{
 		this->fontName = Text::String::New(UTF8STRC("sans-serif"));
 	}
 	else
 	{
-		this->fontName = Text::String::New(cstr.v, cstr.leng);
+		this->fontName = Text::String::New(fontName.v, fontName.leng);
 	}
 	this->fontHeight = fontHeight;
 	if (drawFontStyle & Media::DrawEngine::DFS_BOLD)
@@ -1096,14 +1095,14 @@ NN<Media::DrawBrush> Media::GTKDrawImage::NewBrushARGB(UInt32 color)
 	return b;
 }
 
-NN<Media::DrawFont> Media::GTKDrawImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GTKDrawImage::NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<Media::GTKDrawFont> f;
 	NEW_CLASSNN(f, Media::GTKDrawFont(name, ptSize * this->info.hdpi / 72.0, fontStyle));
 	return f;
 }
 
-NN<Media::DrawFont> Media::GTKDrawImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GTKDrawImage::NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<Media::GTKDrawFont> f;
 	NEW_CLASSNN(f, Media::GTKDrawFont(name, pxSize, fontStyle));

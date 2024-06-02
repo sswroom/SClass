@@ -24,7 +24,7 @@ Media::AVIUtl::AUIAudio::~AUIAudio()
 	this->format.Delete();
 }
 
-UTF8Char *Media::AVIUtl::AUIAudio::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::AVIUtl::AUIAudio::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return 0;//this->plugin->GetName(buff);
 }

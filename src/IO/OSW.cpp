@@ -14,12 +14,12 @@ static UInt32 OS_BuildNumber = 0;
 void OS_LoadVersion()
 {
 	UTF8Char sbuff[512];
-	UTF8Char* sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!OS_VersionLoaded)
 	{
 		OS_VersionLoaded = true;
 
-		sptr = Manage::EnvironmentVar::GetEnvValue(sbuff, CSTR("SystemRoot"));
+		sptr = Manage::EnvironmentVar::GetEnvValue(sbuff, CSTR("SystemRoot")).Or(sbuff);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\kernel32.dll"));
 		DWORD dwDummy;
 		DWORD dwFVISize = GetFileVersionInfoSizeA((LPCSTR)sbuff, &dwDummy);
@@ -46,7 +46,7 @@ void OS_LoadVersion()
 	}
 }
 
-UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 {
 	
 	if (IsWindowsServer())
@@ -59,7 +59,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	}
 }
 
-UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 {
 	OS_LoadVersion();
 	sbuff = Text::StrUInt32(sbuff, OS_MajorVersion);

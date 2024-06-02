@@ -50,7 +50,7 @@ Media::VFAudioStream::~VFAudioStream()
 	}
 }
 
-UTF8Char *Media::VFAudioStream::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::VFAudioStream::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrWChar_UTF8(buff, this->mfile->fileName);
 }

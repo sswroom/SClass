@@ -87,8 +87,8 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	if (this->fileName.SetTo(s))
 	{
 		Text::StrUTF8_WChar(fname2, s->v, 0);
-		Text::StrReplace(fname2, '/', '_');
-		Text::StrReplace(&fname2[2], ':', '_');
+		Text::StrReplaceW(fname2, '/', '_');
+		Text::StrReplaceW(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
 		i = Text::StrLastIndexOfChar(fname2, '\\');
@@ -161,7 +161,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	}
 
 
-	ofn.lpstrFilter = sb.ToString();
+	ofn.lpstrFilter = sb.ToPtr();
 	ofn.lpstrCustomFilter = 0; 
 	ofn.nMaxCustFilter = 0;
 	if (this->filterIndex == (UOSInt)-1)

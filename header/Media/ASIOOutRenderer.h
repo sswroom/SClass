@@ -31,17 +31,17 @@ namespace Media
 
 		UInt32 buffTime;
 
-		static Int32 GetDeviceIndex(const UTF8Char *buff);
+		static Int32 GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff);
 		static UInt32 __stdcall PlayThread(AnyType obj);
 		void InitDevice(UInt32 devId);
 
 	public:
 		static UOSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
 
 		Int64 SwitchBuffer(Int32 index);
 
-		ASIOOutRenderer(const UTF8Char *devName);
+		ASIOOutRenderer(UnsafeArrayOpt<const UTF8Char> devName);
 		ASIOOutRenderer(UInt32 devId);
 		virtual ~ASIOOutRenderer();
 

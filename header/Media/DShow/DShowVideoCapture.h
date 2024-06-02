@@ -40,7 +40,7 @@ namespace Media
 			DShowVideoCapture(IBaseFilter *baseFilter, IPropertyBag *pPropBag, const WChar *devName, const WChar *displayName);
 			virtual ~DShowVideoCapture();
 
-			virtual UTF8Char *GetSourceName(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 			virtual Text::CStringNN GetFilterName();
 
 			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
@@ -69,7 +69,7 @@ namespace Media
 			DShowVideoCaptureMgr();
 			~DShowVideoCaptureMgr();
 			UOSInt GetDeviceCount();
-			UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
+			UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
 			WChar *GetDeviceId(WChar *buff, UOSInt devNo);
 			DShowVideoCapture *GetDevice(UOSInt devNo);
 		};

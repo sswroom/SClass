@@ -208,7 +208,7 @@ AnyType UI::Win::WinListBox::GetSelectedItem()
 	return GetItem(currSel);
 }
 
-UTF8Char *UI::Win::WinListBox::GetSelectedItemText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Win::WinListBox::GetSelectedItemText(UnsafeArray<UTF8Char> buff)
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -232,7 +232,7 @@ Optional<Text::String> UI::Win::WinListBox::GetSelectedItemTextNew()
 	return GetItemTextNew(currSel);
 }
 
-UTF8Char *UI::Win::WinListBox::GetItemText(UTF8Char *buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::Win::WinListBox::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
 {
 	NN<Text::String> s;
 	if (!this->GetItemTextNew(index).SetTo(s))

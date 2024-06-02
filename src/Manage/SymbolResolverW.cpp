@@ -14,7 +14,7 @@ Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->proc = proc;
 	SymInitialize((HANDLE)this->proc->GetHandle(), 0, TRUE);
 
@@ -41,7 +41,7 @@ Manage::SymbolResolver::~SymbolResolver()
 	SymCleanup((HANDLE)this->proc->GetHandle());
 }
 
-UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
+UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address)
 {
 	UOSInt i;
 	UOSInt j;
@@ -110,7 +110,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	line.SizeOfStruct = sizeof(line);
 	if (SymGetLineFromAddr64(this->proc->GetHandle(), address, (DWORD*)&displacement, &line))
 	{
-		UOSInt i = Text::StrLastIndexOfChar(line.FileName, '\\');
+		UOSInt i = Text::StrLastIndexOfCharCh(line.FileName, '\\');
 		buff = Text::StrConcatC(buff, UTF8STRC(" "));
 		buff = Text::StrConcat(buff, (const UTF8Char*)&line.FileName[i + 1]);
 		buff = Text::StrConcatC(buff, UTF8STRC("("));

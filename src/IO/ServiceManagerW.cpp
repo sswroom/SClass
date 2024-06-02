@@ -50,7 +50,7 @@ IO::ServiceManager::~ServiceManager()
 	}
 }
 
-Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcDesc, Text::CString cmdLine, IO::ServiceInfo::ServiceState stype)
+Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString svcDesc, Text::CStringNN cmdLine, IO::ServiceInfo::ServiceState stype)
 {
 	if (this->clsData == 0)
 		return false;
@@ -80,9 +80,10 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcD
     {
 		return false;
     }
-	if (svcDesc.v)
+	Text::CStringNN nns;
+	if (svcDesc.SetTo(nns))
 	{
-		Text::StrUTF8_WChar(wname, svcDesc.v, 0);
+		Text::StrUTF8_WChar(wname, nns.v, 0);
 		SERVICE_DESCRIPTIONW desc;
 		desc.lpDescription = (LPWSTR)wname;
 		ChangeServiceConfig2W(schService, SERVICE_CONFIG_DESCRIPTION, &desc);
@@ -91,7 +92,7 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcD
 	return true;
 }
 
-Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
+Bool IO::ServiceManager::ServiceDelete(Text::CStringNN svcName)
 {
 	if (this->clsData == 0)
 		return false;
@@ -109,7 +110,7 @@ Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 	return succ;
 }
 
-Bool IO::ServiceManager::ServiceSetDesc(Text::CString svcName, Text::CString svcDesc)
+Bool IO::ServiceManager::ServiceSetDesc(Text::CStringNN svcName, Text::CStringNN svcDesc)
 {
 	if (this->clsData == 0)
 		return false;
@@ -129,7 +130,7 @@ Bool IO::ServiceManager::ServiceSetDesc(Text::CString svcName, Text::CString svc
 	return succ;
 }
 
-Bool IO::ServiceManager::ServiceStart(Text::CString svcName)
+Bool IO::ServiceManager::ServiceStart(Text::CStringNN svcName)
 {
 	if (this->clsData == 0)
 		return false;
@@ -146,7 +147,7 @@ Bool IO::ServiceManager::ServiceStart(Text::CString svcName)
 	return succ;
 }
 
-Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
+Bool IO::ServiceManager::ServiceStop(Text::CStringNN svcName)
 {
 	if (this->clsData == 0)
 		return false;
@@ -164,17 +165,17 @@ Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
 	return succ;
 }
 
-Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
+Bool IO::ServiceManager::ServiceEnable(Text::CStringNN svcName)
 {
 	return false;
 }
 
-Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
+Bool IO::ServiceManager::ServiceDisable(Text::CStringNN svcName)
 {
 	return false;
 }
 
-Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* svcDetail)
+Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, ServiceDetail* svcDetail)
 {
 	if (this->clsData == 0)
 		return false;

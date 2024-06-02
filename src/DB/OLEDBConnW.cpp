@@ -86,7 +86,7 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 void DB::OLEDBConn::Init(const WChar *connStr)
 {
 	ClassData *data = this->clsData;
-	SDEL_TEXT(data->connStr);
+	if (data->connStr) Text::StrDelNew(data->connStr);
 	data->connStr = Text::StrCopyNew(connStr);
 	HRESULT hr;
 	hr = CoCreateInstance(CLSID_MSDAINITIALIZE, NULL, CLSCTX_INPROC_SERVER, IID_IDataInitialize, (LPVOID *) &data->pIDataInitialize);
@@ -202,7 +202,7 @@ DB::OLEDBConn::~OLEDBConn()
 	{
 		CoUninitialize();
 	}
-	SDEL_TEXT(data->connStr);
+	if (data->connStr) Text::StrDelNew(data->connStr);
 	MemFree(data);
 }
 
@@ -472,7 +472,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	UOSInt initCnt = names->GetCount();
 	HRESULT hr;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IDBSchemaRowset *pIDBSchemaRowset;
 	IRowset *pIRowset;
 
@@ -497,7 +497,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 			i = rdr->ColCount();
 			while (i-- > 0)
 			{
-				if (rdr->GetName(i, sbuff))
+				if (rdr->GetName(i, sbuff).NotNull())
 				{
 					if (Text::StrEquals(sbuff, (const UTF8Char*)"TABLE_NAME"))
 					{
@@ -508,7 +508,7 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 			}
 			while (rdr->ReadNext())
 			{
-				if ((sptr = rdr->GetStr(tableNameCol, sbuff, sizeof(sbuff))) != 0)
+				if (rdr->GetStr(tableNameCol, sbuff, sizeof(sbuff)).SetTo(sptr))
 				{
 					names->Add(Text::String::NewP(sbuff, sptr));
 				}
@@ -520,10 +520,10 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
-	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
+	UnsafeArray<UTF8Char> sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
 	return ExecuteReader(CSTRP(tmpBuff, sptr));
 }
 
@@ -1097,13 +1097,13 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Text::StrDouble(buff, ReadFloat(val));
+			return Text::StrDoubleW(buff, ReadFloat(val));
 		}
 		return 0;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Text::StrDouble(buff, ReadDouble(val));
+			return Text::StrDoubleW(buff, ReadDouble(val));
 		}
 		return 0;
 	case DBTYPE_UI1:
@@ -1334,7 +1334,7 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 	return 0;
 }
 
-UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1618,7 +1618,7 @@ Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-UTF8Char *DB::OLEDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::OLEDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)

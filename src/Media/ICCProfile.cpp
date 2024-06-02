@@ -1700,7 +1700,7 @@ UnsafeArray<UTF8Char> Media::ICCProfile::GetProfilePath(UnsafeArray<UTF8Char> sb
 {
 	UnsafeArray<UTF8Char> sptr = sbuff;
 #if defined(WIN32)
-	sptr = IO::Path::GetOSPath(sptr);
+	sptr = IO::Path::GetOSPath(sptr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\spool\\drivers\\color"));
 #endif
 	return sptr;

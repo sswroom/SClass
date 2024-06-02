@@ -214,7 +214,7 @@ UOSInt Media::Printer::GetPrinterCount()
 	return cReturned;
 }
 
-UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index)
 {
 	UInt8 buff[4096];
 	UInt32 cbNeeded;
@@ -325,7 +325,7 @@ Media::Printer::Printer(NN<Text::String> printerName)
 	}
 }
 
-Media::Printer::Printer(Text::CString printerName)
+Media::Printer::Printer(Text::CStringNN printerName)
 {
 	this->devMode = 0;
 	this->hPrinter = 0;

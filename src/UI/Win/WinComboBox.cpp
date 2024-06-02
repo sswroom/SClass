@@ -50,14 +50,13 @@ void UI::Win::WinComboBox::SetText(Text::CStringNN text)
 	else
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i = 0;
 		UOSInt j = this->GetCount();
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			sptr = this->GetItemText(sbuff, i);
-			if (sptr && text.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (this->GetItemText(sbuff, i).SetTo(sptr) && text.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				this->SetSelectedIndex(i);
 				break;

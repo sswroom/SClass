@@ -19,10 +19,11 @@ IO::SystemInfo::~SystemInfo()
 {
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
 	WChar wbuff[256];
-	UTF8Char *ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = 0;
+	UnsafeArray<UTF8Char> nnret;
 
 	IO::Registry *reg = IO::Registry::OpenLocalHardware();
 	IO::Registry *reg2;
@@ -33,10 +34,10 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 		{
 			if (reg2->GetValueStr(L"SystemManufacturer", wbuff))
 			{
-				ret = Text::StrWChar_UTF8(sbuff, wbuff);
-				*ret++ = ' ';
+				nnret = Text::StrWChar_UTF8(sbuff, wbuff);
+				*nnret++ = ' ';
 				reg2->GetValueStr(L"BaseBoardProduct", wbuff);
-				ret = Text::StrWChar_UTF8(ret, wbuff);
+				ret = Text::StrWChar_UTF8(nnret, wbuff);
 			}
 			IO::Registry::CloseRegistry(reg2);
 		}
@@ -50,22 +51,22 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 		{
 			ret = smbios->GetPlatformName(sbuff);
 			DEL_CLASS(smbios);
-			if (ret)
-				return ret;
+			if (ret.SetTo(nnret))
+				return nnret;
 		}
 	}
 	return ret;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
-	UTF8Char *ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = 0;
 	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
 		ret = smbios->GetPlatformSN(sbuff);
 		DEL_CLASS(smbios);
-		if (ret)
+		if (ret.NotNull())
 			return ret;
 	}
 	return 0;
@@ -191,7 +192,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 	Win32::WMIQuery *db;
 	NN<RAMInfo> ram;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::DBReader> r;
 	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
@@ -283,7 +284,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 		i = r->ColCount();
 		while (i-- > 0)
 		{
-			if ((sptr = r->GetName(i, sbuff)) != 0)
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceLocator")))
 				{

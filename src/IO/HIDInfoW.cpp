@@ -138,9 +138,9 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 	{
 		UTF8Char sbuff[512];
 		UTF8Char sbuff2[512];
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
-		UTF8Char *sptr3;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
+		UnsafeArray<UTF8Char> sptr3;
 		IO::Path::FindFileSession *sess;
 		IO::Path::FindFileSession *sess2;
 		IO::Path::PathType pt;
@@ -150,7 +150,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 			{
 				if ((sptr2 - sptr) == 19 && sptr[4] == ':' && sptr[9] == ':' && sptr[14] == '.' && sptr[19] == 0)
 				{
@@ -181,7 +181,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 					sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 					if (sess2)
 					{
-						if (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0))
+						if (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).NotNull())
 						{
 							sptr3 = Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
 							clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));

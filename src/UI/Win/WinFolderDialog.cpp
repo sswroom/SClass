@@ -17,7 +17,7 @@ Int32 __stdcall UI::Win::WinFolderDialog::BrowseCB(void *hwnd, UInt32 uMsg, OSIn
 	case BFFM_INITIALIZED:
 		if (me->dirName.SetTo(s))
 		{
-			SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)s->v);
+			SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, (LPARAM)s->v.Ptr());
 		}
 		break;
 	case BFFM_VALIDATEFAILED:
@@ -68,7 +68,7 @@ Bool UI::Win::WinFolderDialog::ShowDialog(ControlHandle *ownerHandle)
 	info.iImage = 0;
 
 	PIDLIST_ABSOLUTE idList = SHBrowseForFolderW(&info);
-	SDEL_TEXT(wptr);
+	if (wptr) Text::StrDelNew(wptr);
 	if (info.pidlRoot)
 	{
 		CoTaskMemFree((LPVOID)info.pidlRoot);

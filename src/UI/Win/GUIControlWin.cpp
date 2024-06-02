@@ -27,7 +27,7 @@
 #define SetWindowLongPtr(a, b, c) SetWindowLongW(a, b, c)
 #endif
 
-void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, UnsafeArray<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	HDC hdc = GetDC((HWND)parentHWnd);
 	this->hdpi = GetDeviceCaps(hdc, LOGPIXELSY);
@@ -46,22 +46,23 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const 
 	UpdateFont();
 }
 
-void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
+void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, UnsafeArrayOpt<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	this->fontHeightPt = 0.0;
 	NN<GUIClientControl> nnparent;
+		UnsafeArray<const UTF8Char> nntxt;
 	if (parent.SetTo(nnparent))
 	{
 		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
 		this->hdpi = nnparent->GetHDPI();
 		this->ddpi = nnparent->GetDDPI();
-		if (txt == 0)
+		if (!txt.SetTo(nntxt))
 		{
 			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 		}
 		else
 		{
-			const WChar *wptr = Text::StrToWCharNew(txt);
+			const WChar *wptr = Text::StrToWCharNew(nntxt);
 			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
@@ -73,13 +74,13 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientCo
 	else
 	{
 		HDC hdc = GetDC((HWND)this->hwnd);
-		if (txt == 0)
+		if (!txt.SetTo(nntxt))
 		{
 			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, 0, style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst, 0);
 		}
 		else
 		{
-			const WChar *wptr = Text::StrToWCharNew(txt);
+			const WChar *wptr = Text::StrToWCharNew(nntxt);
 			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
@@ -135,7 +136,7 @@ UI::GUIControl::~GUIControl()
 		DeleteObject(hFont);
 		hFont = 0;
 	}
-	SDEL_STRING(this->fontName);
+	OPTSTR_DEL(this->fontName);
 	if (this->hbrBackground)
 	{
 		DeleteObject((HBRUSH)this->hbrBackground);
@@ -293,12 +294,13 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize, Bool isBold)
+void UI::GUIControl::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double ptSize, Bool isBold)
 {
-	SDEL_STRING(this->fontName);
-	if (name)
+	OPTSTR_DEL(this->fontName);
+	UnsafeArray<const UTF8Char> nnname;
+	if (name.SetTo(nnname))
 	{
-		this->fontName = Text::String::New(name, nameLen).Ptr();
+		this->fontName = Text::String::New(nnname, nameLen).Ptr();
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
@@ -312,9 +314,10 @@ void UI::GUIControl::InitFont()
 
 	LOGFONTW lf;
 	MemClear(&lf, sizeof(LOGFONTW));
-	if (this->fontName)
+	NN<Text::String> fontName;
+	if (this->fontName.SetTo(fontName))
 	{
-		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName->v, 0);
+		Text::StrUTF8_WChar(lf.lfFaceName, fontName->v, 0);
 	}
 	lf.lfHeight = Double2Int32(this->fontHeightPt * this->hdpi / this->ddpi / -0.75);
 	if (this->fontIsBold)
@@ -699,7 +702,7 @@ Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
-	Text::CString objCls;
+	Text::CStringNN objCls;
 	while (ctrl)
 	{
 		objCls = ctrl->GetObjectClass();
@@ -769,7 +772,8 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	if (f == 0)
 		return 0;
 	Media::GDIFont *fnt;
-	if (this->fontName == 0)
+	NN<Text::String> fontName;
+	if (!this->fontName.SetTo(fontName))
 	{
 		WChar wbuff[256];
 		HDC hdc = GetDC((HWND)this->hwnd);
@@ -780,7 +784,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	}
 	else
 	{
-		const WChar *wptr = Text::StrToWCharNew(this->fontName->v);
+		const WChar *wptr = Text::StrToWCharNew(fontName->v);
 		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wptr, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 		Text::StrDelNew(wptr);
 	}

@@ -15,7 +15,7 @@ namespace IO
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+		virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();

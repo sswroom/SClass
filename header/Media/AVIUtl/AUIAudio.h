@@ -21,7 +21,7 @@ namespace Media
 			AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UOSInt nSamples);
 			~AUIAudio();
 
-			virtual UTF8Char *GetSourceName(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 			virtual Bool CanSeek();
 			virtual Data::Duration GetStreamTime();
 			virtual Data::Duration SeekToTime(Data::Duration time);

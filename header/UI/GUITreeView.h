@@ -60,7 +60,7 @@ namespace UI
 		void EventDoubleClick();
 		void EventRightClicked();
 		virtual OSInt EventBeginLabelEdit(NN<TreeItem> item);
-		virtual OSInt EventEndLabelEdit(NN<TreeItem> item, const UTF8Char *newLabel);
+		virtual OSInt EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
 		virtual void EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem);
 
 		Optional<TreeItem> InsertItem(Optional<TreeItem> parent, Optional<TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj);

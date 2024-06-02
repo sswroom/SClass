@@ -28,7 +28,7 @@ Media::AVIUtl::AUIManager::~AUIManager()
 	this->plugins.DeleteAll();
 }
 
-UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
+UOSInt Media::AVIUtl::AUIManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
 {
 	Char sbuff[512];
 	Text::Encoding enc;

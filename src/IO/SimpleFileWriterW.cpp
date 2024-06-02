@@ -5,12 +5,12 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-UOSInt IO::SimpleFileWriter::WriteBuff(const UInt8 *buff, UOSInt size)
+UOSInt IO::SimpleFileWriter::WriteBuff(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UInt32 writeSize;
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
-	if (WriteFile(handle, buff, (UInt32)size, (DWORD*)&writeSize, 0))
+	if (WriteFile(handle, buff.Ptr(), (UInt32)size, (DWORD*)&writeSize, 0))
 	{
 		return writeSize;
 	}

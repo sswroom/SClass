@@ -337,7 +337,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					sb.ClearStr();
 					sb.AppendHex32(eip);
 					sb.AppendC(UTF8STRC(" "));
-					sptr = symbol->ResolveName(sbuff, eip);
+					sptr = symbol->ResolveName(sbuff, eip).Or(sbuff);
 					i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 					sb.AppendP(&sbuff[i + 1], sptr);
 					i = this->lbMyStack->AddItem(sb.ToCString(), 0);

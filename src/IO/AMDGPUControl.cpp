@@ -34,7 +34,7 @@ IO::AMDGPUControl::AMDGPUControl(IO::AMDGPUManager *gpuMgr, void *adapter)
 
 IO::AMDGPUControl::~AMDGPUControl()
 {
-	SDEL_TEXT(this->name);
+	if (this->name) Text::StrDelNew(this->name);
 }
 
 const UTF8Char *IO::AMDGPUControl::GetName()

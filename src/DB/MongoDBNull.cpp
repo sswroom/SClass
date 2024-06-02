@@ -17,12 +17,12 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 0;
 }
 
-Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
 
-Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	return 0;
 }
@@ -49,7 +49,7 @@ void DB::MongoDB::FreeDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 }
 
-void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
+void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CStringNN host, UInt16 port)
 {
 }
 

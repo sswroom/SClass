@@ -44,7 +44,7 @@ UI::Win::WinButton::WinButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, T
 	{
 		style |= WS_VISIBLE;
 	}
-	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"BUTTON", txt.v.Ptr(), style, 0, 0, 0, 200, 24);
 #ifndef _WIN32_WCE
 	SetWindowLongPtr((HWND)this->hwnd, GWLP_ID, (Int32)(this->btnId = nextId++));
 #else
@@ -74,12 +74,13 @@ void UI::Win::WinButton::SetText(Text::CStringNN text)
 	Text::StrDelNew(wptr);
 }
 
-void UI::Win::WinButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
+void UI::Win::WinButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
 {
-	SDEL_STRING(this->fontName);
-	if (name)
+	OPTSTR_DEL(this->fontName);
+	UnsafeArray<const UTF8Char> nnname;
+	if (name.SetTo(nnname))
 	{
-		this->fontName = Text::String::New(name, nameLen).Ptr();
+		this->fontName = Text::String::New(nnname, nameLen).Ptr();
 	}
 	this->fontHeightPt = fontHeightPt;
 	this->fontIsBold = isBold;

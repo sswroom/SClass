@@ -143,7 +143,7 @@ Media::VFVideoStream::~VFVideoStream()
 	}
 }
 
-UTF8Char *Media::VFVideoStream::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::VFVideoStream::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrWChar_UTF8(buff, this->mfile->fileName);
 }

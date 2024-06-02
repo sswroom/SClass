@@ -1062,7 +1062,7 @@ UnsafeArray<UTF8Char> Data::DateTime::ToLocalStr(UnsafeArray<UTF8Char> buff)
 	t.tm_hour = tval->hour;
 	t.tm_min = tval->minute;
 	t.tm_sec = tval->second;
-	return &buff[strftime((char*)buff, 100, "%c", &t)];
+	return &buff[strftime((char*)buff.Ptr(), 100, "%c", &t)];
 #else
 	return this->ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 #endif

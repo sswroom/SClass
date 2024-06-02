@@ -550,22 +550,22 @@ NN<Media::DrawBrush> Media::VectorGraph::NewBrushARGB(UInt32 color)
 	return brush;
 }
 
-NN<Media::DrawFont> Media::VectorGraph::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::VectorGraph::NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<Media::VectorGraph::VectorFontStyle> font;
 	Data::ArrayIterator<NN<VectorFontStyle>> it = this->fontStyles.Iterator();
 	while (it.HasNext())
 	{
 		font = it.Next();
-		if (font->IsSame(name.OrEmpty(), ptSize, fontStyle, 0))
+		if (font->IsSame(name, ptSize, fontStyle, 0))
 			return font;
 	}
-	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name.OrEmpty(), ptSize, fontStyle, 0));
+	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name, ptSize, fontStyle, 0));
 	this->fontStyles.Add(font);
 	return font;
 }
 
-NN<Media::DrawFont> Media::VectorGraph::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::VectorGraph::NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<Media::VectorGraph::VectorFontStyle> font;
 	Double ptSize = pxSize * 96.0 / 72.0;
@@ -573,10 +573,10 @@ NN<Media::DrawFont> Media::VectorGraph::NewFontPx(Text::CString name, Double pxS
 	while (it.HasNext())
 	{
 		font = it.Next();
-		if (font->IsSame(name.OrEmpty(), ptSize, fontStyle, codePage))
+		if (font->IsSame(name, ptSize, fontStyle, codePage))
 			return font;
 	}
-	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name.OrEmpty(), ptSize, fontStyle, codePage));
+	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name, ptSize, fontStyle, codePage));
 	this->fontStyles.Add(font);
 	return font;
 }

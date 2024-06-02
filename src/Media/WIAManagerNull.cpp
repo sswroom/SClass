@@ -18,7 +18,7 @@ UOSInt Media::WIAManager::GetDeviceCount()
 	return 0;
 }
 
-const UTF8Char *Media::WIAManager::GetDeviceName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> Media::WIAManager::GetDeviceName(UOSInt index)
 {
 	return 0;
 }

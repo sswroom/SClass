@@ -179,11 +179,11 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -228,10 +228,11 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
 		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
 	}
-	if (ordering.leng > 0)
+	Text::CStringNN nnordering;
+	if (ordering.SetTo(nnordering) && nnordering.leng > 0)
 	{
 		sb.AppendC(UTF8STRC(" order by "));
-		sb.Append(ordering);
+		sb.Append(nnordering);
 	}
 	if (maxCnt > 0)
 	{

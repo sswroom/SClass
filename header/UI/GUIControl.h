@@ -241,8 +241,8 @@ namespace UI
 		void *dropHdlr;
 
 	public:
-		void InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
-		void InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControl(InstanceHandle *hInst, void *parentHWnd, const WChar *className, UnsafeArray<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
+		void InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, UnsafeArrayOpt<const UTF8Char> txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 
 	protected:
 		GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);

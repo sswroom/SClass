@@ -124,7 +124,7 @@ Media::DDCReader::DDCReader(void *hMon)
     }
 }
 
-Media::DDCReader::DDCReader(const UTF8Char *monitorId)
+Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 {
 	this->edid = 0;
 	this->edidSize = 0;
@@ -133,7 +133,7 @@ Media::DDCReader::DDCReader(const UTF8Char *monitorId)
 	const GUID GUID_CLASS_MONITOR = {0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18};
 
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char monVID[4];
 	UInt32 monPID;
 	UOSInt k;

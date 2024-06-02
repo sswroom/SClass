@@ -245,7 +245,7 @@ UOSInt Manage::ThreadInfo::GetThreadId()
 
 typedef HRESULT (*GetThreadDescriptionFunc)(HANDLE hThread, PWSTR  *ppszThreadDescription);
 
-UTF8Char *Manage::ThreadInfo::GetName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 {
 	GetThreadDescriptionFunc GetThreadDescription = (GetThreadDescriptionFunc)GetProcAddress(GetModuleHandleA("Kernel32.dll"), "GetThreadDescription");
 	WChar *sbuff;

@@ -571,7 +571,7 @@ Bool Net::MSGraphClient::HasUnknownTypes(NN<Text::JSONObject> obj, IsKnownTypeFu
 		if (!isKnownType(name->ToCString()))
 		{
 #if defined(VERBOSE)
-			printf("%s: type unknown: %s\r\n", typeName.v, name->v);
+			printf("%s: type unknown: %s\r\n", typeName.v.Ptr(), name->v.Ptr());
 #endif
 			ret = true;
 		}

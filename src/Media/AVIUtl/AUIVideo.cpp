@@ -103,7 +103,7 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 	this->plugin.Delete();
 }
 
-UTF8Char *Media::AVIUtl::AUIVideo::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::AVIUtl::AUIVideo::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }

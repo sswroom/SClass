@@ -64,7 +64,7 @@ namespace IO
 		static WChar *GetSystemProgramPathW(WChar *buff);
 		static UnsafeArrayOpt<UTF8Char> GetLocAppDataPath(UnsafeArray<UTF8Char> buff);
 		static WChar *GetLocAppDataPathW(WChar *buff);
-		static UnsafeArray<UTF8Char> GetOSPath(UnsafeArray<UTF8Char> buff);
+		static UnsafeArrayOpt<UTF8Char> GetOSPath(UnsafeArray<UTF8Char> buff);
 		static WChar *GetOSPathW(WChar *buff);
 		static UnsafeArrayOpt<UTF8Char> GetUserHome(UnsafeArray<UTF8Char> buff);
 		static Bool GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime);

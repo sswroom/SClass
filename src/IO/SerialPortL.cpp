@@ -243,7 +243,7 @@ Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
-UOSInt IO::SerialPort::GetPortWithType(Text::CString portName)
+UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 {
 	return 0;
 }

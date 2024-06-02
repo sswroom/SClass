@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/ProgramLinkManager.h"
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
+UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
 {
 	return 0;
 }
@@ -19,17 +19,17 @@ UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, B
 	return 0;
 }
 
-Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLink *link)
+Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, IO::ProgramLink *link)
 {
 	return false;
 }
 
-Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
+Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName, Text::CStringNN linkName, Text::CString comment, Text::CString categories, Text::CStringNN cmdLine)
 {
 	return false;
 }
 
-Bool IO::ProgramLinkManager::DeleteLink(Text::CString linkName)
+Bool IO::ProgramLinkManager::DeleteLink(Text::CStringNN linkName)
 {
 	return false;
 }

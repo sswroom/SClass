@@ -838,7 +838,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *hRootStore)
 	return status == 0;
 }
 
-Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<Socket> s, Text::CString hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	CtxtHandle ctxt;
 	const WChar* wptr = Text::StrToWCharNew(hostName.v);
@@ -1513,25 +1513,39 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	}
 
 	Text::StringBuilderW sb;
-	sb.AppendC(UTF8STRC("C="));
-	sb.Append(country.v);
-	sb.AppendC(UTF8STRC(", O="));
-	sb.Append(company.v);
-	sb.AppendC(UTF8STRC(", CN="));
+	Bool found = false;
+	Text::CStringNN nns;
+	if (country.SetTo(nns))
+	{
+		if (found) sb.AppendC(UTF8STRC(", "));
+		found = true;
+		sb.AppendC(UTF8STRC("C="));
+		sb.Append(nns.v);
+	}
+	if (company.SetTo(nns))
+	{
+		if (found) sb.AppendC(UTF8STRC(", "));
+		found = true;
+		sb.AppendC(UTF8STRC("O="));
+		sb.Append(nns.v);
+	}
+	if (found) sb.AppendC(UTF8STRC(", "));
+	found = true;
+	sb.AppendC(UTF8STRC("CN="));
 	sb.Append(commonName.v);
 
 	PCCERT_CONTEXT pCertContext = NULL;
 	BYTE *pbEncoded = NULL;
 	DWORD cbEncoded = 0;
 
-	if (!CertStrToNameW(X509_ASN_ENCODING, sb.ToString(), CERT_X500_NAME_STR, NULL, pbEncoded, &cbEncoded, NULL))
+	if (!CertStrToNameW(X509_ASN_ENCODING, sb.ToPtr(), CERT_X500_NAME_STR, NULL, pbEncoded, &cbEncoded, NULL))
 	{
 		CryptDestroyKey(hKey);
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
 	pbEncoded = MemAlloc(BYTE, cbEncoded);
-	if (!CertStrToNameW(X509_ASN_ENCODING, sb.ToString(), CERT_X500_NAME_STR, NULL, pbEncoded, &cbEncoded, NULL))
+	if (!CertStrToNameW(X509_ASN_ENCODING, sb.ToPtr(), CERT_X500_NAME_STR, NULL, pbEncoded, &cbEncoded, NULL))
 	{
 		MemFree(pbEncoded);
 		CryptDestroyKey(hKey);

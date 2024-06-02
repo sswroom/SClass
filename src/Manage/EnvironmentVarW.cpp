@@ -17,7 +17,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 	if (envs)
 	{
 		NN<Text::String> name;
-		const UTF8Char *val;
+		UnsafeArray<const UTF8Char> val;
 
 		currPtr = envs;
 		while (*currPtr)
@@ -48,11 +48,13 @@ Manage::EnvironmentVar::EnvironmentVar()
 Manage::EnvironmentVar::~EnvironmentVar()
 {
 	UOSInt i;
-	NN<const Data::ArrayList<const UTF8Char*>> nameList = this->names.GetValues();
+	NN<const Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList = this->names.GetValues();
+	UnsafeArray<const UTF8Char> name;
 	i = nameList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(nameList->GetItem(i));
+		if (nameList->GetItem(i).SetTo(name))
+			Text::StrDelNew(name);
 	}
 #ifndef _WIN32_WCE
 	if (envs)
@@ -63,12 +65,12 @@ Manage::EnvironmentVar::~EnvironmentVar()
 #endif
 }
 
-const UTF8Char *Manage::EnvironmentVar::GetValue(Text::CString name)
+UnsafeArrayOpt<const UTF8Char> Manage::EnvironmentVar::GetValue(Text::CStringNN name)
 {
 	return this->names.Get(name);
 }
 
-void Manage::EnvironmentVar::SetValue(Text::CString name, Text::CString val)
+void Manage::EnvironmentVar::SetValue(Text::CStringNN name, Text::CStringNN val)
 {
 	const WChar *wname = Text::StrToWCharNew(name.v);
 	const WChar *wval = Text::StrToWCharNew(val.v);
@@ -77,7 +79,7 @@ void Manage::EnvironmentVar::SetValue(Text::CString name, Text::CString val)
 	Text::StrDelNew(wval);
 }
 
-UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, Text::CString name)
+UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Char> buff, Text::CStringNN name)
 {
 #ifndef _WIN32_WCE
 	WChar wbuff[512];

@@ -2288,7 +2288,7 @@ NN<Media::DrawBrush> Media::GDIImage::NewBrushARGB(UInt32 color)
 	return brush;
 }
 
-NN<Media::DrawFont> Media::GDIImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<GDIFont> f;
 	const WChar *wptr = Text::StrToWCharNew(name.v);
@@ -2304,7 +2304,7 @@ NN<Media::DrawFont> Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize
 	return f;
 }
 
-NN<Media::DrawFont> Media::GDIImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<GDIFont> f;
 	const WChar *wptr = Text::StrToWCharNew(name.v);

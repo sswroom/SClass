@@ -166,7 +166,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	Net::TCPClientMgr *me = stat->me;
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	stat->state = WorkerState::Idle;

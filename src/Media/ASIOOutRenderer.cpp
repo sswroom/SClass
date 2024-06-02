@@ -327,13 +327,14 @@ void ASIOHdlrSRChg(ASIOSampleRate sRate)
 	i += 0;
 }
 
-Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
+Int32 Media::ASIOOutRenderer::GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff)
 {
 	HKEY hkEnum;
 	const WChar *wbuff = 0;
-	if (buff)
+	UnsafeArray<const UTF8Char> nnbuff;
+	if (buff.SetTo(nnbuff))
 	{
-		wbuff = Text::StrToWCharNew(buff);
+		wbuff = Text::StrToWCharNew(nnbuff);
 	}
 	WChar keyname[MAXDRVNAMELEN];
 	DWORD nameSize = MAXDRVNAMELEN;
@@ -364,7 +365,7 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
 	}
 	if (hkEnum)
 		RegCloseKey(hkEnum);
-	SDEL_TEXT(wbuff);
+	if (wbuff) Text::StrDelNew(wbuff);
 	return ret;
 }
 
@@ -712,11 +713,11 @@ UOSInt Media::ASIOOutRenderer::GetDeviceCount()
 	return index;
 }
 
-UTF8Char *Media::ASIOOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::ASIOOutRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	WChar wbuff[MAXDRVNAMELEN];
 	HKEY hkEnum;
-	UTF8Char *ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = 0;
 	DWORD nameLen = MAXDRVNAMELEN;
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	if (cr == ERROR_SUCCESS)
@@ -750,7 +751,7 @@ Int64 Media::ASIOOutRenderer::SwitchBuffer(Int32 index)
 	return this->bufferOfst;
 }
 
-Media::ASIOOutRenderer::ASIOOutRenderer(const UTF8Char *devName)
+Media::ASIOOutRenderer::ASIOOutRenderer(UnsafeArrayOpt<const UTF8Char> devName)
 {
 	asiodrv = 0;
 	drvName = 0;

@@ -35,7 +35,7 @@ namespace Media
 		Int32 useCnt;
 	public:
 		VFPManager();
-		UOSInt LoadFile(const UTF8Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
+		UOSInt LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
 		void Release();
 		void PrepareSelector(NN<IO::FileSelector> selector);
 

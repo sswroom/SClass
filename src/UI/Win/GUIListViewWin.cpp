@@ -242,7 +242,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String>
 	item.pszText = (LPWSTR)ws;
 	item.cchTextMax = (int)Text::StrCharCnt(ws);
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
-	SDEL_TEXT(ws);
+	if (ws) Text::StrDelNew(ws);
 	return ret;
 }
 
@@ -265,7 +265,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN 
 		item.cchTextMax = 0;
 	}
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
-	SDEL_TEXT(ws);
+	if (ws) Text::StrDelNew(ws);
 	return ret;
 }
 
@@ -393,7 +393,7 @@ AnyType UI::GUIListView::GetSelectedItem()
 	return 0;
 }
 
-UTF8Char *UI::GUIListView::GetSelectedItemText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetSelectedItemText(UnsafeArray<UTF8Char> buff)
 {
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
@@ -409,7 +409,7 @@ Text::String *UI::GUIListView::GetSelectedItemTextNew()
 	return 0;
 }
 
-UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
 {
 	WChar wbuff[256];
 	wbuff[0] = 0;
@@ -426,11 +426,11 @@ Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	UTF8Char sbuff[768];
 	NN<Text::String> sout;
-	UTF8Char *sptr = GetItemText(sbuff, index);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!GetItemText(sbuff, index).SetTo(sptr))
 		return 0;
 	sout = Text::String::New((UOSInt)(sptr - sbuff));
-	MemCopyNO(sout->v, sbuff, sizeof(UTF8Char) * (UOSInt)(sptr - sbuff + 1));
+	MemCopyNO(sout->v.Ptr(), sbuff, sizeof(UTF8Char) * (UOSInt)(sptr - sbuff + 1));
 	return sout.Ptr();
 }
 
@@ -444,7 +444,7 @@ void UI::GUIListView::SetShowGrid(Bool showGrid)
 	SendMessage((HWND)this->hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, LVS_EX_GRIDLINES, showGrid?LVS_EX_GRIDLINES:0);
 }
 
-UOSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
+UOSInt UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCnt(s);
 	WChar *ws = MemAlloc(WChar, strLen + 1);

@@ -6,8 +6,8 @@
 void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	IO::EXEFile::GetFileTime(CSTRP(sbuff, sptr), dt);
 	dt->ToLocalTime();
 }
@@ -15,8 +15,8 @@ void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
 Data::Timestamp IO::BuildTime::GetBuildTime()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	return IO::EXEFile::GetFileTime(CSTRP(sbuff, sptr)).ToLocalTime();
 
 }

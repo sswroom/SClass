@@ -35,7 +35,7 @@ namespace Sync
 		static UOSInt GetThreadCnt();
 		static void SetPriority(ThreadPriority priority);
 		//Max length = 15
-		static Bool SetName(Text::CString name);
+		static Bool SetName(Text::CStringNN name);
 	};
 }
 #endif

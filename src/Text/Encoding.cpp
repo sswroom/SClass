@@ -629,7 +629,7 @@ UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, const WChar *wstr)
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		size = 1024;
-		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, -1, (LPSTR)bytes, (Int32)size, 0, 0);
+		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, -1, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
 		return (UOSInt)iRet;
 #else
 		return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
@@ -672,7 +672,7 @@ UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, const WChar *wstr, UO
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		size = (UOSInt)(strLen * 3);
-		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, (Int32)strLen, (LPSTR)bytes, (Int32)size, 0, 0);
+		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
 		return (UOSInt)iRet;
 #else
 		return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
@@ -928,7 +928,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const U
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		const WChar *wptr = Text::StrToWCharNew(str);
 		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
-		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes, (Int32)(strLen * 3), 0, 0);
+		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)(strLen * 3), 0, 0);
 		Text::StrDelNew(wptr);
 		return ret;
 #else
@@ -1061,7 +1061,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const 
 		UOSInt ret = Text::StrUTF8_WCharCntC(str, strLen);
 		WChar *wptr = MemAlloc(WChar, ret + 1);
 		Text::StrUTF8_WCharC(wptr, str, strLen, 0);
-		ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes, (Int32)(ret * 3), 0, 0) + 1;
+		ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)ret, (LPSTR)bytes.Ptr(), (Int32)(ret * 3), 0, 0) + 1;
 		MemFree(wptr);
 		return ret;
 #else

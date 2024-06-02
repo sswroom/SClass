@@ -21,7 +21,7 @@ namespace Media
 		Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize);
 	public:
 		Printer(NN<Text::String> printerName);
-		Printer(Text::CString printerName);
+		Printer(Text::CStringNN printerName);
 		~Printer();
 		
 		Bool IsError();

@@ -27,7 +27,7 @@ Bool IO::FileUtil::DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile)
 	if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = file.ConcatTo(sbuff);
 		return DeleteDir(sbuff, sptr, deleteRdonlyFile);
 	}
@@ -97,7 +97,7 @@ Bool IO::FileUtil::RenameFile(UnsafeArray<const UTF8Char> srcFile, UnsafeArray<c
 }
 
 #ifdef _WIN32_WCE
-UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, UnsafeArray<const UTF8Char> fileName)
+UnsafeArrayOpt<UTF8Char> IO::FileUtil::GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName)
 {
 	return 0;
 }
@@ -128,7 +128,7 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 }
 
 #elif (_WIN32_WINNT >= 0x0500)
-UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, UnsafeArray<const UTF8Char> fileName)
+UnsafeArrayOpt<UTF8Char> IO::FileUtil::GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName)
 {
 	WChar wbuff[512];
 	const WChar *wptr = Text::StrToWCharNew(fileName);
@@ -165,7 +165,7 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 	return Text::StrCompareICase(buff1, buff2) == 0;
 }
 #else
-UTF8Char *IO::Path::GetMountPoint(UTF8Char *buff, UTF8Char *fileName)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName)
 {
 	return 0;
 }
@@ -331,10 +331,10 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *dptr;
-	UTF8Char *dptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> dptr;
+	UnsafeArray<UTF8Char> dptr2;
 	IO::Path::FindFileSession *sess;
 	const WChar *wptr;
 	wptr = Text::StrToWCharNew(srcDir.v);
@@ -363,7 +363,7 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	{
 		IO::Path::PathType pt;
 		Bool succ = true;
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -443,10 +443,10 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 {
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *dptr;
-	UTF8Char *dptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> dptr;
+	UnsafeArray<UTF8Char> dptr2;
 	IO::Path::FindFileSession *sess;
 	Bool succ;
 
@@ -480,7 +480,7 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] == '.' && sptr[1] == 0)
 			{
@@ -536,9 +536,9 @@ void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, AnyTyp
 	}
 }
 
-Bool IO::FileUtil::DeleteDir(UTF8Char *dir, UTF8Char *dirEnd, Bool deleteRdonlyFile)
+Bool IO::FileUtil::DeleteDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, Bool deleteRdonlyFile)
 {
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	if (dirEnd[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*dirEnd++ = IO::Path::PATH_SEPERATOR;
@@ -549,7 +549,7 @@ Bool IO::FileUtil::DeleteDir(UTF8Char *dir, UTF8Char *dirEnd, Bool deleteRdonlyF
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(dir, sptr2));
 	if (sess == 0)
 		return false;
-	while (succ && (sptr2 = IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0)) != 0)
+	while (succ && IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::File)
 		{

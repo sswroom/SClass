@@ -570,12 +570,12 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 	MemFree(overlapped);
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
+UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	Int32 recvSize;
 	UInt8 addrBuff[28];
 	Int32 addrSize = 28;
-	recvSize = recvfrom(SocketGetFD(socket), (Char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, &addrSize);
+	recvSize = recvfrom(SocketGetFD(socket), (Char*)buff.Ptr(), (int)buffSize, 0, (sockaddr*)addrBuff, &addrSize);
 	if (recvSize <= 0)
 	{
 		if (et.IsNotNull())
@@ -610,7 +610,7 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> 
 		*(Int16*)&addrBuff[0] = AF_INET;
 		WriteMInt16(&addrBuff[2], port);
 		*(Int32*)&addrBuff[4] = *(Int32*)addr->addr;
-		int ret = sendto(SocketGetFD(socket), (const char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, sizeof(sockaddr_in));
+		int ret = sendto(SocketGetFD(socket), (const char*)buff.Ptr(), (int)buffSize, 0, (sockaddr*)addrBuff, sizeof(sockaddr_in));
 		if (ret == SOCKET_ERROR)
 		{
 			return 0;
@@ -626,7 +626,7 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> 
 		WriteMInt16(&addrBuff[2], port);
 		WriteMInt32(&addrBuff[4], 0);
 		MemCopyNO(&addrBuff[8], addr->addr, 20);
-		int ret = sendto(SocketGetFD(socket), (const char*)buff, (int)buffSize, 0, (sockaddr*)addrBuff, 28);
+		int ret = sendto(SocketGetFD(socket), (const char*)buff.Ptr(), (int)buffSize, 0, (sockaddr*)addrBuff, 28);
 		if (ret == SOCKET_ERROR)
 		{
 			return 0;
@@ -639,7 +639,7 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> 
 	return 0;
 }
 
-UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
+UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	return 0;
 }
@@ -878,7 +878,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = IO::Path::GetOSPath(sbuff);
+	UnsafeArray<UTF8Char> sptr = IO::Path::GetOSPath(sbuff).Or(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\drivers\\etc\\hosts"));
 	Net::SocketUtil::AddressInfo addr;
 	UOSInt i;
@@ -906,7 +906,7 @@ Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 					while (true)
 					{
 						i = Text::StrSplitWSP(sarr, 2, sarr[1]);
-						dnsHdlr->AddHost(addr, sarr[0].v, sarr[0].leng);
+						dnsHdlr->AddHost(addr, sarr[0].ToCString());
 						if (i != 2)
 							break;
 					}
@@ -1312,12 +1312,12 @@ UInt32 Net::SocketFactory::GetLocalIPByDest(UInt32 ip)
 	}
 }*/
 
-Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
+Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr)
 {
 	return false;
 }
 
-Bool Net::OSSocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
+Bool Net::OSSocketFactory::AdapterEnable(Text::CStringNN adapterName, Bool enable)
 {
 	Text::StringBuilderUTF8 sbCmd;
 	Text::StringBuilderUTF8 sb;

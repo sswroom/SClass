@@ -243,12 +243,12 @@ UOSInt Media::KSRenderer::GetDeviceCount()
 	return cnt;
 }
 
-UTF8Char *Media::KSRenderer::GetDeviceName(UTF8Char *buff, UOSInt devIndex)
+UnsafeArray<UTF8Char> Media::KSRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devIndex)
 {
 	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("Device ")), devIndex);
 }
 
-OSInt Media::KSRenderer::GetDeviceId(const UTF8Char *devName)
+OSInt Media::KSRenderer::GetDeviceId(UnsafeArray<const UTF8Char> devName)
 {
 	if (Text::StrStartsWith(devName, (const UTF8Char*)"Device "))
 	{

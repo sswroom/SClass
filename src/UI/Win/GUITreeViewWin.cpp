@@ -216,7 +216,7 @@ OSInt UI::GUITreeView::EventBeginLabelEdit(NN<TreeItem> item)
 	return 0;
 }
 
-OSInt UI::GUITreeView::EventEndLabelEdit(NN<TreeItem> item, const UTF8Char *newLabel)
+OSInt UI::GUITreeView::EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
 {
 	return 1;
 }

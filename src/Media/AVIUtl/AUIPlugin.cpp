@@ -297,7 +297,7 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(NN<IO::FileSelector> selector)
 	Char *filter = pluginTab->filefilter;
 	UOSInt i;
 	UOSInt j;
-	i = Text::StrCharCnt(filter);
+	i = Text::StrCharCntCh(filter);
 	j = enc.CountWChars((UInt8*)filter, i);
 	wptr = MemAlloc(WChar, j + 1);
 	enc.WFromBytes(wptr, (UInt8*)filter, i, 0);

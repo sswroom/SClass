@@ -65,7 +65,7 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(NN<Core::IProgControl> progC
 		i = argc;
 		while (i-- > 0)
 		{
-			ctrl->argv[i] = (UTF8Char*)Text::StrToUTF8New(argv[i]);
+			ctrl->argv[i] = (UTF8Char*)Text::StrToUTF8New(argv[i]).Ptr();
 		}
 		LocalFree(argv);
 	}

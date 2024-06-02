@@ -69,7 +69,7 @@ Media::VFPManager::VFPManager()
 
 }
 
-UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
+UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
 {
 	Char *cFile;
 	Text::Encoding enc;
@@ -183,7 +183,7 @@ void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 		info.dwSize = sizeof(info);
 		if (GetInfo(&info) == VF_OK)
 		{
-			k = Text::StrCharCnt(info.cFileType);
+			k = Text::StrCharCntCh(info.cFileType);
 			j = enc.CountWChars((UInt8*)info.cFileType, k);
 			wptr = MemAlloc(WChar, j + 1);
 			enc.WFromBytes(wptr, (UInt8*)info.cFileType, k, 0);
@@ -245,7 +245,7 @@ void Media::VFPManager::LoadPlugin(const WChar *fileName)
 	MemCopyNO(funcPtr, &func, sizeof(func));
 
 	Text::Encoding enc;
-	enc.WFromBytes(wbuff, (UInt8*)info.cFileType, Text::StrCharCnt(info.cFileType), 0);
+	enc.WFromBytes(wbuff, (UInt8*)info.cFileType, Text::StrCharCntCh(info.cFileType), 0);
 	
 	NN<VFPluginFile> plugin = MemAllocNN(VFPluginFile);
 	plugin->hMod = hMod;

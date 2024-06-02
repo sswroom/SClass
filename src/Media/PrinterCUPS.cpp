@@ -237,7 +237,7 @@ Media::Printer::Printer(NN<Text::String> printerName)
 	this->printerName = printerName->Clone();
 }
 
-Media::Printer::Printer(Text::CString printerName)
+Media::Printer::Printer(Text::CStringNN printerName)
 {
 	this->printerName = Text::String::New(printerName);
 }

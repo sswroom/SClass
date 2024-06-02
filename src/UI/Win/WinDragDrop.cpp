@@ -20,10 +20,7 @@ void UI::Win::WinDropData::LoadData()
 		{
 			newFmt = MemAlloc(FORMATETC, 1);
 			MemCopyNO(newFmt, &fmt, sizeof(fmt));
-			if (UI::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512) == 0)
-			{
-				Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Format ")), fmt.cfFormat);
-			}
+			UI::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512);
 			this->dataMap->Put(sbuff, newFmt);
 		}
 		enumFmt->Release();
@@ -61,7 +58,7 @@ UOSInt UI::Win::WinDropData::GetCount()
 	return this->dataMap->GetCount();
 }
 
-const UTF8Char *UI::Win::WinDropData::GetName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> UI::Win::WinDropData::GetName(UOSInt index)
 {
 	if (this->dataMap == 0)
 	{
@@ -70,7 +67,7 @@ const UTF8Char *UI::Win::WinDropData::GetName(UOSInt index)
 	return this->dataMap->GetKey(index);
 }
 
-Bool UI::Win::WinDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb)
+Bool UI::Win::WinDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->dataMap == 0)
 	{
@@ -100,7 +97,7 @@ Bool UI::Win::WinDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuil
 	}
 }
 
-IO::Stream *UI::Win::WinDropData::GetDataStream(const UTF8Char *name)
+IO::Stream *UI::Win::WinDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
 {
 	if (this->dataMap == 0)
 	{
