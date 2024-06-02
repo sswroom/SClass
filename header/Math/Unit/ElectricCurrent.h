@@ -19,8 +19,8 @@ namespace Math
 			} ElectricCurrentUnit;
 		public:
 			static Double GetUnitRatio(ElectricCurrentUnit unit);
-			static Text::CString GetUnitShortName(ElectricCurrentUnit unit);
-			static Text::CString GetUnitName(ElectricCurrentUnit unit);
+			static Text::CStringNN GetUnitShortName(ElectricCurrentUnit unit);
+			static Text::CStringNN GetUnitName(ElectricCurrentUnit unit);
 			static Double GetConvertRatio(ElectricCurrentUnit fromUnit, ElectricCurrentUnit toUnit);
 			static Double Convert(ElectricCurrentUnit fromUnit, ElectricCurrentUnit toUnit, Double fromValue);
 		};

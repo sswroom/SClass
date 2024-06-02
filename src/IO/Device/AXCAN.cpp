@@ -61,7 +61,7 @@ Bool IO::Device::AXCAN::SendOpenCANPort(UInt8 port, Bool silentMode, Bool loopba
 	sbuff[2] = '1';
 	sbuff[3] = silentMode?'1':'0';
 	sbuff[4] = loopback?'1':'0';
-	return SendCommand(Text::CString(sbuff, 5), CMDTIMEOUT);
+	return SendCommand(Text::CStringNN(sbuff, 5), CMDTIMEOUT);
 }
 
 Bool IO::Device::AXCAN::SendCloseCANPort(UInt8 port)
@@ -81,7 +81,7 @@ Bool IO::Device::AXCAN::SendSetReportMode(Bool autoMode, Bool formattedData, Boo
 	sbuff[0] = '@';
 	sbuff[1] = 'S';
 	sbuff[2] = (UInt8)(v + '0');
-	return SendCommand(Text::CString(sbuff, 3), (v == 0)?CMDTIMEOUT:0);
+	return SendCommand(Text::CStringNN(sbuff, 3), (v == 0)?CMDTIMEOUT:0);
 }
 
 Bool IO::Device::AXCAN::SendCommandMode()
@@ -89,7 +89,7 @@ Bool IO::Device::AXCAN::SendCommandMode()
 	return SendCommand(CSTR("+++"), CMDTIMEOUT);
 }
 
-Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
+Bool IO::Device::AXCAN::SendCommand(Text::CStringNN cmd, UOSInt timeout)
 {
 	UInt8 buff[64];
 	if (cmd.leng > 63)

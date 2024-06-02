@@ -25,7 +25,7 @@ void Test()
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	Math::BigIntLSB val1(512);

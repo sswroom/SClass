@@ -115,7 +115,7 @@ void Map::MapScheduler::DrawVector(NN<Math::Geometry::Vector2D> vec)
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
 	case Math::Geometry::Vector2D::VectorType::PieArea:
 	case Math::Geometry::Vector2D::VectorType::Unknown:
-		printf("MapScheduler: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+		printf("MapScheduler: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 		break;
 	}
 }
@@ -312,7 +312,7 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 		}
 		else
 		{
-			printf("MapScheduler: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+			printf("MapScheduler: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 		}
 	}
 	if (ptList.GetCount() > 0)

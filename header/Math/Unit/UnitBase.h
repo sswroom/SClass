@@ -26,7 +26,7 @@ namespace Math
 				Temperature
 			};
 		public:
-			static Text::CString GetUnitShortName(ValueType vt, Int32 unit);
+			static Text::CStringNN GetUnitShortName(ValueType vt, Int32 unit);
 		};
 	}
 }

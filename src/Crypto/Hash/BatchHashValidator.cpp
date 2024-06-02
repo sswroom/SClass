@@ -28,7 +28,7 @@ void Crypto::Hash::BatchHashValidator::DeleteSess(NN<HashValidatorSess> sess)
 	hash.Delete();
 }
 
-Bool Crypto::Hash::BatchHashValidator::SetHash(const UTF8Char *hash, UOSInt hashLen)
+Bool Crypto::Hash::BatchHashValidator::SetHash(UnsafeArray<const UTF8Char> hash, UOSInt hashLen)
 {
 	if (hashLen > 128)
 	{
@@ -38,7 +38,7 @@ Bool Crypto::Hash::BatchHashValidator::SetHash(const UTF8Char *hash, UOSInt hash
 	return this->hashSize == this->hash->GetResultSize();
 }
 
-Bool Crypto::Hash::BatchHashValidator::IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::BatchHashValidator::IsMatch(NN<HashValidatorSess> sess, UnsafeArray<const UTF8Char> password, UOSInt pwdLen)
 {
 	UInt8 hashBuff[64];
 	NN<Crypto::Hash::IHash> hash = NN<Crypto::Hash::IHash>::ConvertFrom(sess);

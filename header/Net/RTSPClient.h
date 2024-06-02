@@ -56,7 +56,7 @@ namespace Net
 		static IO::ParsedObject *ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
 
 	private:
-		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel);
+		UnsafeArrayOpt<UTF8Char> SetupRTP(UnsafeArray<UTF8Char> sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel);
 
 		Bool Play(Text::CStringNN url, Text::CStringNN sessId);
 		Bool Close(Text::CStringNN url, Text::CStringNN sessId);

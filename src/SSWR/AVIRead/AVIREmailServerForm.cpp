@@ -238,14 +238,14 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType use
 	}
 }
 
-UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const Net::Email::SMTPServer::MailStatus> mail)
+UnsafeArrayOpt<UTF8Char> __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UnsafeArray<UTF8Char> queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const Net::Email::SMTPServer::MailStatus> mail)
 {
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received email from "));
-	sptr = cli->GetRemoteName(sbuff);
+	sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	Int64 id = me->store->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
@@ -264,11 +264,10 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType us
 {
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received email from "));
-	sptr = cli->GetRemoteName(sbuff);
-	if (sptr)
+	if (cli->GetRemoteName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
@@ -290,7 +289,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType us
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(AnyType userObj, Text::CString userName, Text::CString pwd)
+Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(AnyType userObj, Text::CStringNN userName, Text::CStringNN pwd)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
@@ -310,7 +309,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	dt.ToLocalTime();
@@ -333,7 +332,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 			sptr = dt.ToString(sbuff);
 			me->lvEmail->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			me->lvEmail->SetSubItem(k, 2, email->fromAddr);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, email->remoteAddr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, email->remoteAddr).Or(sbuff);
 			me->lvEmail->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			rcptList.Clear();
 			me->store->GetRcptList(email->id, rcptList);

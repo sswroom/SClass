@@ -14,7 +14,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("ARP Reply: HW Addr = "));
 	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
@@ -36,7 +36,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

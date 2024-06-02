@@ -18,8 +18,8 @@ namespace Math
 			} ApparentPowerUnit;
 		public:
 			static Double GetUnitRatio(ApparentPowerUnit unit);
-			static Text::CString GetUnitShortName(ApparentPowerUnit unit);
-			static Text::CString GetUnitName(ApparentPowerUnit unit);
+			static Text::CStringNN GetUnitShortName(ApparentPowerUnit unit);
+			static Text::CStringNN GetUnitName(ApparentPowerUnit unit);
 			static Double GetConvertRatio(ApparentPowerUnit fromUnit, ApparentPowerUnit toUnit);
 			static Double Convert(ApparentPowerUnit fromUnit, ApparentPowerUnit toUnit, Double fromValue);
 		};

@@ -53,7 +53,7 @@ Bool Crypto::HOTP::IsValid(UInt32 code)
 	return false;
 }
 
-UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, UInt32 nDigits)
+UInt32 Crypto::HOTP::CalcCode(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter, UInt32 nDigits)
 {
 	UInt8 buff[20];
 	NN<Crypto::Hash::SHA1> hash;
@@ -80,10 +80,10 @@ UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, 
 	}
 }
 
-void Crypto::HOTP::GenURI(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name)
+void Crypto::HOTP::GenURI(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> name)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb->AppendC(UTF8STRC("otpauth://hotp/"));
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
 	sb->AppendP(sbuff, sptr);

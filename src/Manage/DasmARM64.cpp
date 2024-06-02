@@ -29,7 +29,7 @@ Int32 DasmARM64_ExtractSigned(UInt32 val, UOSInt startBit, UOSInt bitCnt)
 	}
 }
 
-Bool __stdcall DasmARM64_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
+Bool __stdcall DasmARM64_IsEndFunc(UnsafeArray<const UTF8Char> funcName, UOSInt nameLen)
 {
 	if (Text::StrEndsWithC(funcName, nameLen, UTF8STRC("ExitThread")))
 	{
@@ -50,7 +50,7 @@ Bool __stdcall DasmARM64_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
 	return false;
 }
 
-UTF8Char *DasmARM64_ParseReg64(Manage::DasmARM64::DasmARM64_Sess* sess, UTF8Char *regName, UInt32 regNo, UInt64 **regPtr)
+UnsafeArray<UTF8Char> DasmARM64_ParseReg64(Manage::DasmARM64::DasmARM64_Sess* sess, UnsafeArray<UTF8Char> regName, UInt32 regNo, UInt64 **regPtr)
 {
 	switch (regNo)
 	{
@@ -156,7 +156,7 @@ UTF8Char *DasmARM64_ParseReg64(Manage::DasmARM64::DasmARM64_Sess* sess, UTF8Char
 	}
 }
 
-UTF8Char* DasmARM64_ParseReg32(Manage::DasmARM64::DasmARM64_Sess* sess, UTF8Char* regName, UInt32 regNo, UInt32** regPtr)
+UnsafeArray<UTF8Char> DasmARM64_ParseReg32(Manage::DasmARM64::DasmARM64_Sess* sess, UnsafeArray<UTF8Char> regName, UInt32 regNo, UInt32** regPtr)
 {
 	switch (regNo)
 	{
@@ -451,13 +451,8 @@ Bool __stdcall DasmARM64_14(Manage::DasmARM64::DasmARM64_Sess *sess)
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 	if (sess->addrResol)
 	{
-		UTF8Char* sptr;
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, addr);
-		if (sess->sbuff == 0)
-		{
-			sess->sbuff = sptr;
-		}
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.PC = addr;
@@ -978,13 +973,9 @@ Bool __stdcall DasmARM64_54(Manage::DasmARM64::DasmARM64_Sess *sess)
 		sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 		if (sess->addrResol)
 		{
-			UTF8Char* sptr;
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-			sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, addr);
-			if (sess->sbuff == 0)
-			{
-				sess->sbuff = sptr;
-			}
+			UnsafeArray<UTF8Char> sptr = sess->sbuff;
+			sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 			if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 			{
 				sess->endType = Manage::DasmARM64::ET_EXIT;
@@ -1366,13 +1357,8 @@ Bool __stdcall DasmARM64_90(Manage::DasmARM64::DasmARM64_Sess* sess)
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 	if (sess->addrResol)
 	{
-		UTF8Char* sptr;
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, addr);
-		if (sess->sbuff == 0)
-		{
-			sess->sbuff = sptr;
-		}
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 	}
 	*xd = addr;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
@@ -1443,13 +1429,10 @@ Bool __stdcall DasmARM64_94(Manage::DasmARM64::DasmARM64_Sess *sess)
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 	if (sess->addrResol)
 	{
-		UTF8Char* sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, addr);
-		if (sess->sbuff == 0)
-		{
-			sess->sbuff = sptr;
-		}
+		sptr = sess->sbuff;
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 		if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM64::ET_EXIT;
@@ -1730,13 +1713,8 @@ Bool __stdcall DasmARM64_B5(Manage::DasmARM64::DasmARM64_Sess *sess)
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
 	if (sess->addrResol)
 	{
-		UTF8Char* sptr;
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, addr);
-		if (sess->sbuff == 0)
-		{
-			sess->sbuff = sptr;
-		}
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.PC += 4;
@@ -2756,7 +2734,7 @@ void Manage::DasmARM64::DeleteSess(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 	MemFreeNN(sess);
 }
 
-Bool Manage::DasmARM64::DasmNext(NN<Manage::DasmARM64::DasmARM64_Sess> sess, UTF8Char *buff, OSInt *outBuffSize)
+Bool Manage::DasmARM64::DasmNext(NN<Manage::DasmARM64::DasmARM64_Sess> sess, UnsafeArray<UTF8Char> buff, OSInt *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

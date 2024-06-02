@@ -125,10 +125,10 @@ namespace Text
 		Bool GetRelatedChars(UInt32 charCode, Data::ArrayList<UInt32> *relatedChars);
 		Bool AddRelation(UInt32 charCode, UInt32 relatedCharCode);
 
-		//UTF8Char *AppendCharCode(UTF8Char *buff, UInt32 charCode);
-		//UInt32 GetCharCode(const UTF8Char *s);
-		UInt16 Cantonese2Int(const UTF8Char *s);
-		UTF8Char *Int2Cantonese(UTF8Char *buff, UInt16 iVal);
+		//UnsafeArray<UTF8Char> AppendCharCode(UnsafeArray<UTF8Char> buff, UInt32 charCode);
+		//UInt32 GetCharCode(UnsafeArray<const UTF8Char> s);
+		UInt16 Cantonese2Int(UnsafeArray<const UTF8Char> s);
+		UnsafeArray<UTF8Char> Int2Cantonese(UnsafeArray<UTF8Char> buff, UInt16 iVal);
 	};
 }
 #endif

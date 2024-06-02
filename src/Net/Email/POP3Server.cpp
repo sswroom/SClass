@@ -145,14 +145,15 @@ UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 	{
 		sb.AppendC(UTF8STRC("-ERR"));
 	}
-	if (msg.v)
+	Text::CStringNN nnmsg;
+	if (msg.SetTo(nnmsg))
 	{
 		sb.AppendC(UTF8STRC(" "));
-		sb.Append(msg);
+		sb.Append(nnmsg);
 	}
 	sb.AppendC(UTF8STRC("\r\n"));
 #if defined(VERBOSE)
-	printf("%s", sb.ToString());
+	printf("%s", sb.ToPtr());
 #endif
 
 	UOSInt buffSize;
@@ -164,7 +165,7 @@ UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 	return buffSize;
 }
 
-UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen)
+UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<const UTF8Char> msg, UOSInt msgLen)
 {
 	UOSInt buffSize;
 	buffSize = cli->Write(msg, msgLen);
@@ -175,10 +176,10 @@ UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, const UTF8Char *
 	return buffSize;
 }
 
-void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
+void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 #if defined(VERBOSE)
-	printf("%s\r\n", cmd);
+	printf("%s\r\n", cmd.Ptr());
 #endif
 	if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("CAPA")))
 	{
@@ -191,7 +192,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		}
 		sb.AppendC(UTF8STRC(".\r\n"));
 #if defined(VERBOSE)
-		printf("%s", sb.v);
+		printf("%s", sb.ToPtr());
 #endif
 		WriteRAW(cli, sb.v, sb.leng);
 	}

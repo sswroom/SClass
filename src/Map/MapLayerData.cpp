@@ -15,8 +15,8 @@
 Map::MapLayerData::MapLayerData(Text::CStringNN filePath)
 {
 	UTF8Char fileName[256];
-	UTF8Char *str;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> str;
+	UnsafeArray<UTF8Char> sptrEnd;
 
 	str = filePath.ConcatTo(fileName);
 	this->cipFile = 0;

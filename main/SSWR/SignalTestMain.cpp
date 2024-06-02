@@ -7,9 +7,9 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SignalTestS.txt"));
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	console.WriteLine(CSTR("SignalTest Started"));
 	progCtrl->WaitForExit(progCtrl);
 
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SignalTestE.txt"));
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

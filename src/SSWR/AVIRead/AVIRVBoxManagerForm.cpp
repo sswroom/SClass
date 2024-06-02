@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRVBoxManagerForm::OnVMSSelChg(AnyType userObj)
 void SSWR::AVIRead::AVIRVBoxManagerForm::UpdateVMInfo()
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = this->lbVMS->GetSelectedIndex();
 	NN<IO::VBoxManager::VMId> vm;
 	NN<IO::VBoxVMInfo> info;

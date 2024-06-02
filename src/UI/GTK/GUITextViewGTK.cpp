@@ -362,8 +362,8 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 		Double pxLeft = UOSInt2Double(pxWidth);
 		UTF8Char sbuff[7];
 		UTF32Char u32c;
-		const UTF8Char *currPtr;
-		const UTF8Char *nextPtr;
+		UnsafeArray<const UTF8Char> currPtr;
+		UnsafeArray<const UTF8Char> nextPtr;
 
 		GdkWindow* window = gtk_widget_get_window((GtkWidget*)this->hwnd);  
 		cairo_region_t *region = cairo_region_create();
@@ -376,7 +376,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 		{
 			c = str[strLen];
 			str[strLen] = 0;
-			const UTF8Char *csptr = Text::StrToUTF8New(str);
+			UnsafeArray<const UTF8Char> csptr = Text::StrToUTF8New(str);
 			str[strLen] = c;
 			NN<Media::GTKDrawFont>::ConvertFrom(fnt)->Init(cr);
 			cairo_text_extents_t extents;
@@ -457,7 +457,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		c = str[strLen];
 		str[strLen] = 0;
-		const UTF8Char *csptr = Text::StrToUTF8New(str);
+		UnsafeArray<const UTF8Char> csptr = Text::StrToUTF8New(str);
 		str[strLen] = c;
 		((Media::GTKDrawFont*)fnt)->Init(cr);
 		cairo_text_extents_t extents;

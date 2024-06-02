@@ -13,7 +13,7 @@ Net::RTPASource::~RTPASource()
 	this->ch.Delete();
 }
 
-UTF8Char *Net::RTPASource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::RTPASource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->hdlr->GetSourceName(buff);
 }

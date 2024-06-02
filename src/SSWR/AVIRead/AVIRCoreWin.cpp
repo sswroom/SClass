@@ -278,7 +278,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedO
 		UTF8Char sbuff1[256];
 		UTF8Char sbuff2[256];
 		UTF8Char sbuff3[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::ArrayListNN<IO::FileExporter> exp2;
 		Text::StringBuilderUTF8 sb;
 
@@ -297,15 +297,13 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedO
 			}
 			i++;
 		}
-		if ((sptr = pobj->GetSourceName(sbuff3)) != 0)
+		sptr = pobj->GetSourceName(sbuff3);
+		if ((i = Text::StrLastIndexOfCharC(sbuff3, (UOSInt)(sptr - sbuff3), '.')) != INVALID_INDEX)
 		{
-			if ((i = Text::StrLastIndexOfCharC(sbuff3, (UOSInt)(sptr - sbuff3), '.')) != INVALID_INDEX)
-			{
-				sbuff3[i] = 0;
-				sptr = &sbuff3[i];
-			}
-			sfd->SetFileName(CSTRP(sbuff3, sptr));
+			sbuff3[i] = 0;
+			sptr = &sbuff3[i];
 		}
+		sfd->SetFileName(CSTRP(sbuff3, sptr));
 		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{
 			IO::FileExporter::SupportType suppType;

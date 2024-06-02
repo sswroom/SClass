@@ -159,7 +159,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Mat
 		me->currVec->CalBoundarySqrDistance(mapPos, nearPos);
 		Double d = csys->CalSurfaceDistance(mapPos, nearPos, Math::Unit::Distance::DU_METER);
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, d);
 		me->txtDist->SetText(CSTRP(sbuff, sptr));
 		if (me->currVec->InsideOrTouch(mapPos))
@@ -202,17 +202,13 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 {
 	this->lvInfo->ClearItems();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 0;
 	UOSInt j = this->lyr->GetColumnCnt();
 	while (i < j)
 	{
 		sbuff[0] = 0;
-		sptr = this->lyr->GetColumnName(sbuff, i);
-		if (sptr == 0)
-		{
-			sptr = sbuff;
-		}
+		sptr = this->lyr->GetColumnName(sbuff, i).Or(sbuff);
 		this->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
@@ -246,7 +242,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 
 	this->queryVecOriList.GetItem(index).SetTo(vec);
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

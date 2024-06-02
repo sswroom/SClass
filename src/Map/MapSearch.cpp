@@ -14,9 +14,9 @@
 Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manager)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[256];
-	UTF8Char *tmp;
+	UnsafeArray<UTF8Char> tmp;
 	Text::PString strs[5];
 	UOSInt i;
 	Int32 layerId;
@@ -35,8 +35,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	IO::StreamReader reader(fs);
-	sptr = reader.ReadLine(sbuff, 256);
-	while (sptr)
+	while (reader.ReadLine(sbuff, 256).SetTo(sptr))
 	{
 		i = Text::StrSplitP(strs, 5, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 		/*
@@ -127,7 +126,6 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			}
 
 		}
-		sptr = reader.ReadLine(sbuff, 256);
 	}
 }
 
@@ -159,22 +157,22 @@ Map::MapSearch::~MapSearch()
 	MemFree(this->layersArr);
 }
 
-UTF8Char *Map::MapSearch::SearchName(UTF8Char *buff, Math::Coord2DDbl pos)
+UnsafeArrayOpt<UTF8Char> Map::MapSearch::SearchName(UnsafeArray<UTF8Char> buff, Math::Coord2DDbl pos)
 {
 	UTF8Char sbuff[1024];
 	Text::PString outArrs[MAPSEARCH_LAYER_TYPES];
 	Math::Coord2DDbl outPos[MAPSEARCH_LAYER_TYPES];
 	Int32 resTypes[MAPSEARCH_LAYER_TYPES];
 	SearchNames(sbuff, outArrs, outPos, resTypes, pos);
-	UTF8Char *ptr = ConcatNames(buff, outArrs, 0);
-	return ptr;
+	return ConcatNames(buff, outArrs, 0);
 }
 
-Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos)
+Int32 Map::MapSearch::SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos)
 {
 	Text::StringBuilderUTF8 sbTmp;
-	UTF8Char *sptr;
-	UTF8Char *outptr;
+	UnsafeArrayOpt<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> nnsptr;
+	UnsafeArray<UTF8Char> outptr;
 	Int32 resType;
 	OSInt i;
 	UOSInt j;
@@ -265,27 +263,29 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 
 		outPos[i] = posNear;
 		resTypes[i] = resType;
-		if (sptr && *outptr)
+		if (sptr.SetTo(nnsptr) && *outptr)
 		{
 			outArrs[i].v = outptr;
-			outArrs[i].leng = (UOSInt)(sptr - outptr);
-			outptr = sptr + 1;
+			outArrs[i].leng = (UOSInt)(nnsptr - outptr);
+			outptr = nnsptr + 1;
 			l++;
 		}
 		else
 		{
-			outArrs[i] = {0, 0};
+			outArrs[i].v = outptr;
+			outArrs[i].leng = 0;
 		}
 	}
 	return l;
 }
 
-UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, Int32 concatType)
+UnsafeArrayOpt<UTF8Char> Map::MapSearch::ConcatNames(UnsafeArray<UTF8Char> buff, Text::PString *strArrs, Int32 concatType)
 {
-	UTF8Char *outptr = 0;
+	UnsafeArrayOpt<UTF8Char> outptr = 0;
+	UnsafeArray<UTF8Char> nnoutptr;
 	UOSInt i = 0;
 	UTF8Char sbufftmp[128];
-	UTF8Char *sptrtmp;
+	UnsafeArray<UTF8Char> sptrtmp;
 	Text::PString stmp[2];
 	while (i < MAPSEARCH_LAYER_TYPES)
 	{
@@ -296,22 +296,22 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 		}
 		i++;
 	}
-	if (outptr == 0)
+	if (!outptr.SetTo(nnoutptr))
 	{
 		*buff = 0;
 		return 0;
 	}
 	Int32 langType = 0;
-	while (*outptr)
+	while (*nnoutptr)
 	{
-		if (*outptr++ >= 128)
+		if (*nnoutptr++ >= 128)
 		{
 			langType = 1;
 			break;
 		}
 	}
 
-	outptr = buff;
+	nnoutptr = buff;
 	buff[0] = 0;
 	if (concatType == 1 || (concatType == 0 && langType == 0))
 	{
@@ -325,44 +325,44 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 					{
 						if (strArrs[6].leng == 0)
 						{
-							*outptr = 0;
+							*nnoutptr = 0;
 						}
 						else
 						{
-							outptr = strArrs[6].ConcatTo(outptr);
+							nnoutptr = strArrs[6].ConcatTo(nnoutptr);
 						}
 					}
 					else
 					{
-						outptr = strArrs[2].ConcatTo(outptr);
+						nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 					}
 				}
 				else
 				{
 					if (strArrs[2].leng != 0)
 					{
-						outptr = strArrs[2].ConcatTo(outptr);
-						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+						nnoutptr = strArrs[2].ConcatTo(nnoutptr);
+						nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 					}
-					outptr = strArrs[0].ConcatTo(outptr);
+					nnoutptr = strArrs[0].ConcatTo(nnoutptr);
 				}
 			}
 			else
 			{
                 if (strArrs[2].leng != 0)
 				{
-					outptr = strArrs[2].ConcatTo(outptr);
-					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+					nnoutptr = strArrs[2].ConcatTo(nnoutptr);
+					nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 				}
-				outptr = strArrs[1].ConcatTo(outptr);
+				nnoutptr = strArrs[1].ConcatTo(nnoutptr);
 			}
 		}
 		else
 		{
 			if (strArrs[2].leng == 0)
 			{
-				outptr = Text::StrConcatC(outptr, UTF8STRC("Near "));
-				outptr = strArrs[3].ConcatTo(outptr);
+				nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC("Near "));
+				nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 			}
 			else
 			{
@@ -375,7 +375,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 				i = strArrs[3].IndexOf(sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 				if (i != INVALID_INDEX)
 				{
-					outptr = strArrs[3].ConcatTo(outptr);
+					nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 				}
 				else
 				{
@@ -383,42 +383,42 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 					{
 						if (strArrs[0].leng == 0)
 						{
-							outptr = strArrs[2].ConcatTo(outptr);
+							nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 						}
 						else
 						{
 							if (strArrs[2].leng != 0)
 							{
-								outptr = strArrs[2].ConcatTo(outptr);
-								outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+								nnoutptr = strArrs[2].ConcatTo(nnoutptr);
+								nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 							}
-							outptr = strArrs[0].ConcatTo(outptr);
+							nnoutptr = strArrs[0].ConcatTo(nnoutptr);
 						}
 					}
 					else
 					{
 						if (strArrs[2].leng != 0)
 						{
-							outptr = strArrs[2].ConcatTo(outptr);
-							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+							nnoutptr = strArrs[2].ConcatTo(nnoutptr);
+							nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 						}
-						outptr = strArrs[1].ConcatTo(outptr);
+						nnoutptr = strArrs[1].ConcatTo(nnoutptr);
 						if (strArrs[0].leng != 0)
 						{
-							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-							outptr = strArrs[0].ConcatTo(outptr);
+							nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+							nnoutptr = strArrs[0].ConcatTo(nnoutptr);
 						}
 					}
 
 					if (buff[0] == 0)
 					{
-						outptr = Text::StrConcatC(outptr, UTF8STRC("Near "));
-						outptr = strArrs[3].ConcatTo(outptr);
+						nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC("Near "));
+						nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 					}
 					else
 					{
-						outptr = Text::StrConcatC(outptr, UTF8STRC(", Near "));
-						outptr = strArrs[3].ConcatTo(outptr);
+						nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", Near "));
+						nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 					}
 				}
 			}
@@ -436,39 +436,39 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 					{
 						if (strArrs[5].leng != 0)
 						{
-							outptr = strArrs[5].ConcatTo(outptr);
+							nnoutptr = strArrs[5].ConcatTo(nnoutptr);
 						}
 						else if (strArrs[6].leng != 0)
 						{
-							outptr = strArrs[6].ConcatTo(outptr);
+							nnoutptr = strArrs[6].ConcatTo(nnoutptr);
 						}
 						else
 						{
-							*outptr = 0;
+							*nnoutptr = 0;
 						}
 					}
 					else
 					{
 						if (strArrs[5].leng != 0)
 						{
-							outptr = strArrs[5].ConcatTo(outptr);
-							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+							nnoutptr = strArrs[5].ConcatTo(nnoutptr);
+							nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 						}
-						outptr = strArrs[2].ConcatTo(outptr);
+						nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 					}
 				}
 				else
 				{
-					outptr = strArrs[0].ConcatTo(outptr);
+					nnoutptr = strArrs[0].ConcatTo(nnoutptr);
 					if (strArrs[5].leng != 0)
 					{
-						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-						outptr = strArrs[5].ConcatTo(outptr);
+						nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+						nnoutptr = strArrs[5].ConcatTo(nnoutptr);
 					}
 					if (strArrs[2].leng != 0)
 					{
-						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-						outptr = strArrs[2].ConcatTo(outptr);
+						nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+						nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 					}
 				}
 			}
@@ -476,19 +476,19 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 			{
 				if (strArrs[0].leng != 0)
 				{
-					outptr = strArrs[0].ConcatTo(outptr);
-					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+					nnoutptr = strArrs[0].ConcatTo(nnoutptr);
+					nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 				}
-				outptr = strArrs[1].ConcatTo(outptr);
+				nnoutptr = strArrs[1].ConcatTo(nnoutptr);
 				if (strArrs[5].leng != 0)
 				{
-					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-					outptr = strArrs[5].ConcatTo(outptr);
+					nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+					nnoutptr = strArrs[5].ConcatTo(nnoutptr);
 				}
 				if (strArrs[2].leng != 0)
 				{
-					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-					outptr = strArrs[2].ConcatTo(outptr);
+					nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+					nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 				}
 			}
 		}
@@ -496,8 +496,8 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 		{
 			if (strArrs[2].leng == 0)
 			{
-				outptr = Text::StrWriteChar(outptr, 0x8FD1);
-				outptr = strArrs[3].ConcatTo(outptr);
+				nnoutptr = Text::StrWriteChar(nnoutptr, 0x8FD1);
+				nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 			}
 			else
 			{
@@ -512,7 +512,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 				i = strArrs[3].IndexOf(sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 				if (i != INVALID_INDEX)
 				{
-					outptr = strArrs[3].ConcatTo(outptr);
+					nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 				}
 				else
 				{
@@ -520,15 +520,15 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 					{
 						if (strArrs[0].leng == 0)
 						{
-							outptr = strArrs[2].ConcatTo(outptr);
+							nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 						}
 						else
 						{
-							outptr = strArrs[0].ConcatTo(outptr);
+							nnoutptr = strArrs[0].ConcatTo(nnoutptr);
 							if (strArrs[2].leng != 0)
 							{
-								outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-								outptr = strArrs[2].ConcatTo(outptr);
+								nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+								nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 							}
 						}
 					}
@@ -536,27 +536,27 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 					{
 						if (strArrs[0].leng != 0)
 						{
-							outptr = strArrs[0].ConcatTo(outptr);
-							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+							nnoutptr = strArrs[0].ConcatTo(nnoutptr);
+							nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 						}
-						outptr = strArrs[1].ConcatTo(outptr);
+						nnoutptr = strArrs[1].ConcatTo(nnoutptr);
 						if (strArrs[2].leng != 0)
 						{
-							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-							outptr = strArrs[2].ConcatTo(outptr);
+							nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+							nnoutptr = strArrs[2].ConcatTo(nnoutptr);
 						}
 					}
 
 					if (buff[0] == 0)
 					{
-						outptr = Text::StrWriteChar(outptr, 0x8FD1);
-						outptr = strArrs[3].ConcatTo(outptr);
+						nnoutptr = Text::StrWriteChar(nnoutptr, 0x8FD1);
+						nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 					}
 					else
 					{
-						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-						outptr = Text::StrWriteChar(outptr, 0x8FD1);
-						outptr = strArrs[3].ConcatTo(outptr);
+						nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
+						nnoutptr = Text::StrWriteChar(nnoutptr, 0x8FD1);
+						nnoutptr = strArrs[3].ConcatTo(nnoutptr);
 					}
 				}
 			}
@@ -564,22 +564,22 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, In
 	}
 	else// if (concatType == 3)
 	{
-		*outptr = 0;
+		*nnoutptr = 0;
 		i = 0;
 		while (i < MAPSEARCH_LAYER_TYPES)
 		{
 			if (strArrs[i].leng != 0)
 			{
-				if (outptr != buff)
+				if (nnoutptr != buff)
 				{
-					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
+					nnoutptr = Text::StrConcatC(nnoutptr, UTF8STRC(", "));
 				}
-				outptr = strArrs[i].ConcatTo(outptr);
+				nnoutptr = strArrs[i].ConcatTo(nnoutptr);
 			}
 			i++;
 		}
 	}
-	return outptr;
+	return nnoutptr;
 }
 
 Bool Map::MapSearch::IsError()

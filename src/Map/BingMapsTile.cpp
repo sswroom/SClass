@@ -36,7 +36,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	sb.AppendC(UTF8STRC("http://dev.virtualearth.net/REST/V1/Imagery/Metadata/"));
 	sb.Append(ImagerySetGetName(is));
 	sb.AppendC(UTF8STRC("?output=json&include=ImageryProviders&key="));
-	sb.Append(key);
+	sb.AppendOpt(key);
 	if (!Net::HTTPClient::LoadContent(sockf, ssl, sb.ToCString(), sb2, 1048576))
 	{
 		return;
@@ -125,12 +125,12 @@ void Map::BingMapsTile::SetDispSize(Math::Size2DDbl size, Double dpi)
 	this->dispDPI = dpi;
 }
 
-UTF8Char *Map::BingMapsTile::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	NN<Text::String> subdomain;
-	UTF8Char *sptr = Text::String::OrEmpty(this->url)->ConcatTo(sbuff);
+	UnsafeArray<UTF8Char> sptr = Text::String::OrEmpty(this->url)->ConcatTo(sbuff);
 	UTF8Char sbuff2[32];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	if (this->GetNextSubdomain().SetTo(subdomain))
 	{
 		sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
@@ -145,7 +145,7 @@ Bool Map::BingMapsTile::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt l
 	NN<Text::String> subdomain;
 	sb->AppendOpt(this->url);
 	UTF8Char sbuff2[32];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	if (this->GetNextSubdomain().SetTo(subdomain))
 		sb->ReplaceStr(UTF8STRC("{subdomain}"), subdomain->v, subdomain->leng);
 	sptr2 = GenQuadkey(sbuff2, level, imgId.x, imgId.y);
@@ -177,7 +177,7 @@ Optional<Math::Geometry::Vector2D> Map::BingMapsTile::CreateScreenObjVector(UOSI
 	return 0;
 }
 
-UTF8Char *Map::BingMapsTile::GetScreenObjURL(UTF8Char *sbuff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> Map::BingMapsTile::GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index)
 {
 	if (index == 0 && this->brandLogoImg && !this->hideLogo)
 	{
@@ -242,7 +242,7 @@ Text::CStringNN Map::BingMapsTile::ImagerySetGetName(ImagerySet is)
 	}
 }
 
-UTF8Char *Map::BingMapsTile::GenQuadkey(UTF8Char *sbuff, UOSInt level, Int32 imgX, Int32 imgY)
+UnsafeArray<UTF8Char> Map::BingMapsTile::GenQuadkey(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 imgX, Int32 imgY)
 {
 	while (level-- > 0)
 	{

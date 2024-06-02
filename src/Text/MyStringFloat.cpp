@@ -697,7 +697,7 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 	return buff;
 }
 
-UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, const Char *format)
+UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, UnsafeArray<const Char> format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -1121,11 +1121,11 @@ UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double va
 		{
 			*oriStr++ = '%';
 		}
-		return Text::StrConcat(oriStr, (const UTF8Char*)format - 1);
+		return Text::StrConcat(oriStr, UnsafeArray<const UTF8Char>::ConvertFrom(format) - 1);
 	}
 }
 
-UTF16Char *Text::StrDoubleFmtW(UTF16Char *oriStr, Double val, const Char *format)
+UTF16Char *Text::StrDoubleFmtW(UTF16Char *oriStr, Double val, UnsafeArray<const Char> format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -1553,7 +1553,7 @@ UTF16Char *Text::StrDoubleFmtW(UTF16Char *oriStr, Double val, const Char *format
 	}
 }
 
-UTF32Char *Text::StrDoubleFmtW(UTF32Char *oriStr, Double val, const Char *format)
+UTF32Char *Text::StrDoubleFmtW(UTF32Char *oriStr, Double val, UnsafeArray<const Char> format)
 {
 	Char fmtBuff[30];
 	Char *buff;

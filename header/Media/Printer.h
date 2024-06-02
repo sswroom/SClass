@@ -14,7 +14,7 @@ namespace Media
 		
 	public:
 		static UOSInt GetPrinterCount();
-		static UTF8Char *GetPrinterName(UTF8Char *sbuff, UOSInt index);
+		static UnsafeArrayOpt<UTF8Char> GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index);
 		static Printer *SelectPrinter(void *hWnd);
 
 	private:

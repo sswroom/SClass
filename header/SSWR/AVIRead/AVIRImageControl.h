@@ -38,7 +38,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				Text::CString fileName;
+				Text::CStringNN fileName;
 				NN<Text::String> filePath;
 				NN<Text::String> cacheFile;
 				ImageSetting setting;
@@ -125,8 +125,8 @@ namespace SSWR
 			Bool SaveSetting();
 			void SetDispImageHandler(DispImageChanged hdlr, AnyType userObj);
 			void SetProgressHandler(ProgressUpdated hdlr, AnyType userObj);
-			Optional<Media::StaticImage> LoadImage(const UTF8Char *fileName);
-			Optional<Media::StaticImage> LoadOriImage(const UTF8Char *fileName);
+			Optional<Media::StaticImage> LoadImage(UnsafeArray<const UTF8Char> fileName);
+			Optional<Media::StaticImage> LoadOriImage(UnsafeArray<const UTF8Char> fileName);
 			void ApplySetting(NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<ImageSetting> setting);
 			void UpdateImgPreview(ImageStatus *img);
 			void UpdateImgSetting(ImageSetting *setting);

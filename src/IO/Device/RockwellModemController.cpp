@@ -11,17 +11,17 @@ IO::Device::RockwellModemController::~RockwellModemController()
 {
 }
 
-UTF8Char *IO::Device::RockwellModemController::VoiceGetManufacturer(UTF8Char *manu)
+UnsafeArrayOpt<UTF8Char> IO::Device::RockwellModemController::VoiceGetManufacturer(UnsafeArray<UTF8Char> manu)
 {
 	return this->SendStringCommand(manu, UTF8STRC("AT#MFR?"), 3000);
 }
 
-UTF8Char *IO::Device::RockwellModemController::VoiceGetModel(UTF8Char *model)
+UnsafeArrayOpt<UTF8Char> IO::Device::RockwellModemController::VoiceGetModel(UnsafeArray<UTF8Char> model)
 {
 	return this->SendStringCommand(model, UTF8STRC("AT#MDL?"), 3000);
 }
 
-UTF8Char *IO::Device::RockwellModemController::VoiceGetRevision(UTF8Char *ver)
+UnsafeArrayOpt<UTF8Char> IO::Device::RockwellModemController::VoiceGetRevision(UnsafeArray<UTF8Char> ver)
 {
 	return this->SendStringCommand(ver, UTF8STRC("AT#REV?"), 3000);
 }
@@ -41,7 +41,7 @@ Bool IO::Device::RockwellModemController::VoiceGetBaudRate(OutParam<Int32> baudR
 Bool IO::Device::RockwellModemController::VoiceSetBaudRate(Int32 baudRate)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#BDR=")), baudRate / 2400);
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
@@ -121,7 +121,7 @@ Bool IO::Device::RockwellModemController::VoiceGetBitsPerSample(OutParam<Int32> 
 Bool IO::Device::RockwellModemController::VoiceSetBitsPerSample(Int32 bps)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#VBS=")), bps);
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
@@ -141,12 +141,12 @@ Bool IO::Device::RockwellModemController::VoiceGetToneDur(OutParam<Int32> durMS)
 Bool IO::Device::RockwellModemController::VoiceSetToneDur(Int32 durMS)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#VBT=")), durMS / 100);
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-UTF8Char *IO::Device::RockwellModemController::VoiceGetCompression(UTF8Char *comp)
+UnsafeArrayOpt<UTF8Char> IO::Device::RockwellModemController::VoiceGetCompression(UnsafeArray<UTF8Char> comp)
 {
 	return this->SendStringCommand(comp, UTF8STRC("AT#VCI?"), 3000);
 }
@@ -166,28 +166,28 @@ Bool IO::Device::RockwellModemController::VoiceGetVoiceLineType(OutParam<VoiceLi
 Bool IO::Device::RockwellModemController::VoiceSetVoiceLineType(VoiceLineType voiceLineType)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#VLS=")), (Int32)voiceLineType);
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-IO::ModemController::DialResult IO::Device::RockwellModemController::VoiceToneDial(const UTF8Char *phoneNum)
+IO::ModemController::DialResult IO::Device::RockwellModemController::VoiceToneDial(UnsafeArray<const UTF8Char> phoneNum)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("ATDT")), phoneNum);
 	return this->SendDialCommand(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-IO::ModemController::DialResult IO::Device::RockwellModemController::VoicePulseDial(const UTF8Char *phoneNum)
+IO::ModemController::DialResult IO::Device::RockwellModemController::VoicePulseDial(UnsafeArray<const UTF8Char> phoneNum)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("ATDP")), phoneNum);
 	return this->SendDialCommand(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-UTF8Char *IO::Device::RockwellModemController::GetVoiceTypeString(UTF8Char *buff, VoiceType voiceType)
+UnsafeArray<UTF8Char> IO::Device::RockwellModemController::GetVoiceTypeString(UnsafeArray<UTF8Char> buff, VoiceType voiceType)
 {
 	switch (voiceType)
 	{
@@ -204,7 +204,7 @@ UTF8Char *IO::Device::RockwellModemController::GetVoiceTypeString(UTF8Char *buff
 	}
 }
 
-UTF8Char *IO::Device::RockwellModemController::GetCallerIDTypeString(UTF8Char *buff, CallerIDType callerIDType)
+UnsafeArray<UTF8Char> IO::Device::RockwellModemController::GetCallerIDTypeString(UnsafeArray<UTF8Char> buff, CallerIDType callerIDType)
 {
 	switch (callerIDType)
 	{
@@ -219,7 +219,7 @@ UTF8Char *IO::Device::RockwellModemController::GetCallerIDTypeString(UTF8Char *b
 	}
 }
 
-UTF8Char *IO::Device::RockwellModemController::GetVoiceLineTypeString(UTF8Char *buff, VoiceLineType voiceLineType)
+UnsafeArray<UTF8Char> IO::Device::RockwellModemController::GetVoiceLineTypeString(UnsafeArray<UTF8Char> buff, VoiceLineType voiceLineType)
 {
 	switch (voiceLineType)
 	{

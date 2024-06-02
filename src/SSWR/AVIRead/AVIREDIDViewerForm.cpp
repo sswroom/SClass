@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 		return;
 	}
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Media::EDID::EDIDInfo info;
 
 	if (Media::EDID::Parse(me->edid, info))

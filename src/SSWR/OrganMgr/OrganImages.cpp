@@ -30,12 +30,12 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganImages::GetItemTyp
 	return OrganGroupItem::IT_IMAGE;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganImages::GetItemName(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganImages::GetItemName(UnsafeArray<UTF8Char> buff) const
 {
 	return this->imgItem->GetDispName()->ConcatTo(buff);
 }
 
-UTF8Char *SSWR::OrganMgr::OrganImages::GetEngName(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganImages::GetEngName(UnsafeArray<UTF8Char> buff) const
 {
 	return this->imgItem->GetDispName()->ConcatTo(buff);
 }

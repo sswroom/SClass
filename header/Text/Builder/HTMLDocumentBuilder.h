@@ -31,7 +31,7 @@ namespace Text
 
 			Text::CStringNN Build();
 
-			static Text::CString DocTypeGetText(DocType docType);
+			static Text::CStringNN DocTypeGetText(DocType docType);
 		};
 	}
 }

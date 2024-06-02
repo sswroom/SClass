@@ -20,8 +20,8 @@ namespace Crypto
 
 			virtual NN<HashValidatorSess> CreateSess();
 			virtual void DeleteSess(NN<HashValidatorSess> sess);
-			virtual Bool SetHash(const UTF8Char *hash, UOSInt hashLen);
-			virtual Bool IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen);
+			virtual Bool SetHash(UnsafeArray<const UTF8Char> hash, UOSInt hashLen);
+			virtual Bool IsMatch(NN<HashValidatorSess> sess, UnsafeArray<const UTF8Char> password, UOSInt pwdLen);
 		};
 	}
 }

@@ -9,7 +9,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::OSSocketFactory sockf(true);
 	Net::WebServer::WebStandardHandler baseHdlr;
 	NN<Net::WebServer::HTTPDirectoryHandler> hdlr;

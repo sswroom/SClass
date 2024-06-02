@@ -34,7 +34,7 @@ Bool IO::NullIOPin::SetPullType(PullType pt)
 	return false;
 }
 
-UTF8Char *IO::NullIOPin::GetName(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::NullIOPin::GetName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrConcatC(buff, UTF8STRC("NullIOPin"));
 }

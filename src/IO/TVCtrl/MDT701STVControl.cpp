@@ -198,7 +198,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendInstruction(CommandType ct)
 	}
 }
 
-Bool IO::TVCtrl::MDT701STVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Char *sbuff)
+Bool IO::TVCtrl::MDT701STVControl::SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff)
 {
 	return false;
 }
@@ -229,7 +229,7 @@ void IO::TVCtrl::MDT701STVControl::GetSupportedCmd(Data::ArrayList<CommandType> 
 
 Bool IO::TVCtrl::MDT701STVControl::GetInfo(IO::TVControl::TVInfo *info)
 {
-	Text::CString cstr = CSTR("Mitsubishi MDT701S");
+	Text::CStringNN cstr = CSTR("Mitsubishi MDT701S");
 	info->name = cstr.v;
 	info->nameLen = cstr.leng;
 	info->tvType = IO::TVControl::TVT_MDT701S;

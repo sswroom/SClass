@@ -33,8 +33,8 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(AnyType userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char phoneBuff[21];
-		UTF8Char *cptr;
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> cptr;
+		UnsafeArray<UTF8Char> sptr;
 		UTF8Char c;
 		me->txtDialNum->GetText(sb);
 		if (sb.GetLength() <= 0)
@@ -224,8 +224,8 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientCont
 	this->txtDialTones->SetRect(104, 76, 200, 23, false);
 
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
-	if ((sptr = this->modem->VoiceGetManufacturer(sbuff)) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->modem->VoiceGetManufacturer(sbuff).SetTo(sptr))
 	{
 		this->txtModemManu->SetText(CSTRP(sbuff, sptr));
 	}
@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientCont
 	{
 		this->txtModemManu->SetText(CSTR("Unknown"));
 	}
-	if ((sptr = this->modem->VoiceGetModel(sbuff)) != 0)
+	if (this->modem->VoiceGetModel(sbuff).SetTo(sptr))
 	{
 		this->txtModemModel->SetText(CSTRP(sbuff, sptr));
 	}
@@ -241,7 +241,7 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientCont
 	{
 		this->txtModemModel->SetText(CSTR("Unknown"));
 	}
-	if ((sptr = this->modem->VoiceGetRevision(sbuff)) != 0)
+	if (this->modem->VoiceGetRevision(sbuff).SetTo(sptr))
 	{
 		this->txtModemRev->SetText(CSTRP(sbuff, sptr));
 	}

@@ -56,7 +56,7 @@ void IO::Console::PutChar(UTF32Char c)
 	}
 }
 
-UTF8Char *IO::Console::GetLine(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::Console::GetLine(UnsafeArray<UTF8Char> buff)
 {
 #if defined(__CYGWIN__)
 	Char sbuff[512];

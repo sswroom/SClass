@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, N
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

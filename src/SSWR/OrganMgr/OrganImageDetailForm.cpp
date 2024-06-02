@@ -30,7 +30,7 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(Optional<UI::GUIClien
 	this->SetText(this->env->GetLang(CSTR("ImageDetailTitle")));
 
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(sbuff, userFile->id);
 	this->lblId = ui->NewLabel(*this, this->env->GetLang(CSTR("ImageDetailId")));
 	this->lblId->SetRect(0, 0, 100, 23, false);
@@ -92,7 +92,7 @@ void SSWR::OrganMgr::OrganImageDetailForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageDetailForm::GetDescript()
+UnsafeArrayOpt<const UTF8Char> SSWR::OrganMgr::OrganImageDetailForm::GetDescript()
 {
 	return this->descript;
 }

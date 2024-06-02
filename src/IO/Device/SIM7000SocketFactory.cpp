@@ -87,9 +87,10 @@ IO::Device::SIM7000SocketFactory::~SIM7000SocketFactory()
 void IO::Device::SIM7000SocketFactory::SetAPN(Text::CString apn)
 {
 	SDEL_STRING(this->apn);
-	if (apn.v)
+	Text::CStringNN nnapn;
+	if (apn.SetTo(nnapn))
 	{
-		this->apn = Text::String::New(apn).Ptr();
+		this->apn = Text::String::New(nnapn).Ptr();
 	}
 }
 
@@ -109,7 +110,7 @@ void IO::Device::SIM7000SocketFactory::Init()
 Bool IO::Device::SIM7000SocketFactory::NetworkStart()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool bVal;
 	modem->GPRSEPSReg();
 	modem->GPRSNetworkReg();
@@ -138,7 +139,7 @@ Bool IO::Device::SIM7000SocketFactory::NetworkStart()
 	}
 	else
 	{
-		if ((sptr = modem->SIMCOMGetNetworkAPN(sbuff)) == 0)
+		if (!modem->SIMCOMGetNetworkAPN(sbuff).SetTo(sptr))
 		{
 			return false;
 		}
@@ -390,7 +391,7 @@ void IO::Device::SIM7000SocketFactory::CancelReceiveData(void *reqData)
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
+UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	OSInt i = -1 + (OSInt)socket.Ptr();
 	if (i < 0 || i >= 8)
@@ -411,12 +412,12 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UInt8 *bu
 				port.Set(packet->remotePort);
 				if (buffSize >= packet->dataSize)
 				{
-					MemCopyNO(buff, packet->data, packet->dataSize);
+					MemCopyNO(buff.Ptr(), packet->data, packet->dataSize);
 					buffSize = packet->dataSize;
 				}
 				else
 				{
-					MemCopyNO(buff, packet->data, buffSize);
+					MemCopyNO(buff.Ptr(), packet->data, buffSize);
 				}
 				MemFree(packet);
 				return buffSize;
@@ -428,7 +429,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UInt8 *bu
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
+UOSInt IO::Device::SIM7000SocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	UOSInt i = (UOSInt)socket.Ptr() - 1;
 	if (i >= 8)
@@ -476,7 +477,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendTo(NN<Socket> socket, const UInt8 *
 	}
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
+UOSInt IO::Device::SIM7000SocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	return 0;
 }
@@ -523,7 +524,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(NN<Socket> socket, UInt
 
 Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr)
 {
-	return this->modem->NetDNSResolveIP(Text::CString::FromPtr((const UTF8Char*)host), addr);
+	return this->modem->NetDNSResolveIP(Text::CStringNN::FromPtr((const UTF8Char*)host), addr);
 }
 
 Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
@@ -561,8 +562,8 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Ne
 {
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = this->modem->NetGetIFAddr(sbuff)) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->modem->NetGetIFAddr(sbuff).SetTo(sptr))
 	{
 		Net::ConnectionInfo::ConnectionEntry ent;
 		ent.index = 0;

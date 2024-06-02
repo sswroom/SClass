@@ -280,7 +280,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(AnyType userO
 	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (me->client)
 	{

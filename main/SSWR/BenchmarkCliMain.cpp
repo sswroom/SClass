@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
+UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
@@ -39,7 +39,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
 
-	MemSetLogFile(UTF8STRC("Memory.log"));
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBenchmarkCli.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 
@@ -50,13 +50,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt i;
 	UOSInt j;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Benchmark_"));
-	sptr2 = sysInfo.GetPlatformName(sptr);
-	if (sptr2)
+	if (sysInfo.GetPlatformName(sptr).SetTo(sptr2))
 	{
 		sptr = sptr2;
 	}
@@ -79,7 +78,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform: "));
-	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
+	if (sysInfo.GetPlatformName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
@@ -92,7 +91,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("CPU: "));
-	if ((sptr = cpuInfo.GetCPUName(sbuff)) != 0)
+	if (cpuInfo.GetCPUName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}

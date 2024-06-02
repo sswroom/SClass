@@ -31,7 +31,7 @@ IO::FileExporter::SupportType Exporter::DBPListExporter::IsObjectSupported(NN<IO
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::DBPListExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DBPListExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -106,7 +106,7 @@ Bool Exporter::DBPListExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::
 	}
 }
 
-Bool Exporter::DBPListExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
+Bool Exporter::DBPListExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }
@@ -128,7 +128,7 @@ Bool Exporter::DBPListExporter::SetParamSel(Optional<ParamData> param, UOSInt in
 	return false;
 }
 
-UTF8Char *Exporter::DBPListExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Exporter::DBPListExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
@@ -149,7 +149,7 @@ Int32 Exporter::DBPListExporter::GetParamSel(Optional<ParamData> param, UOSInt i
 	return 0;
 }
 
-UTF8Char *Exporter::DBPListExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Exporter::DBPListExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

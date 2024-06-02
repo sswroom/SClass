@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(AnyType userObj
 SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::FontRenderer> font) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->font = font;
 	this->core = core;

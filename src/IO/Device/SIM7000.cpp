@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen)
+Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	UTF8Char sbuff[256];
 	Text::PString sarr[4];
@@ -46,10 +46,11 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Ch
 				sarr[2].leng = i;
 			}
 			Sync::MutexUsage mutUsage(me->dnsMut);
+			Text::CStringNN dnsReq;
 			NN<Net::SocketUtil::AddressInfo> dnsResp;
-			if (me->dnsReq.v && dnsResp.Set(me->dnsResp))
+			if (me->dnsReq.SetTo(dnsReq) && dnsResp.Set(me->dnsResp))
 			{
-				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::SetAddrInfo(dnsResp, sarr[2].ToCString()))
+				if (sarr[1].Equals(dnsReq.v, dnsReq.leng) && Net::SocketUtil::SetAddrInfo(dnsResp, sarr[2].ToCString()))
 				{
 					me->dnsResult = true;
 					me->respEvt.Set();
@@ -180,8 +181,8 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 Bool IO::Device::SIM7000::SIMCOMReadADC(OutParam<Int32> adc)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CADC?"), 3000);
-	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CADC: ")))
+	UnsafeArray<UTF8Char> sptr;
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CADC?"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CADC: ")))
 	{
 		if (sbuff[7] == '1')
 		{
@@ -191,7 +192,7 @@ Bool IO::Device::SIM7000::SIMCOMReadADC(OutParam<Int32> adc)
 	return false;
 }
 
-UTF8Char *IO::Device::SIM7000::SIMCOMGetICCID(UTF8Char *ccid)
+UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::SIMCOMGetICCID(UnsafeArray<UTF8Char> ccid)
 {
 	return this->SendStringCommand(ccid, UTF8STRC("AT+CCID"), 3000);
 }
@@ -206,16 +207,16 @@ Bool IO::Device::SIM7000::SIMCOMGetDeviceProductID(NN<Text::StringBuilderUTF8> s
 	return this->SendStringListCommand(sb, UTF8STRC("AT+GSV"));
 }
 
-UTF8Char *IO::Device::SIM7000::SIMCOMGetUESysInfo(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::SIMCOMGetUESysInfo(UnsafeArray<UTF8Char> buff)
 {
 	return this->SendStringCommand(buff, UTF8STRC("AT+CPSI?"), 3000);
 }
 
-UTF8Char *IO::Device::SIM7000::SIMCOMGetNetworkAPN(UTF8Char *apn)
+UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::SIMCOMGetNetworkAPN(UnsafeArray<UTF8Char> apn)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CGNAPN"), 3000);
-	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CGNAPN: ")))
+	UnsafeArray<UTF8Char> sptr;
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT+CGNAPN"), 3000).SetTo(sptr) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CGNAPN: ")))
 	{
 		if (sbuff[9] == '1')
 		{
@@ -253,7 +254,7 @@ Bool IO::Device::SIM7000::NetSetMultiIP(Bool multiIP)
 Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
 	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"TCP\",\""));
 	sptr = Net::SocketUtil::GetIPv4Name(sptr, ip);
@@ -280,7 +281,7 @@ Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
 	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"UDP\",\""));
 	sptr = Net::SocketUtil::GetIPv4Name(sptr, ip);
@@ -304,7 +305,7 @@ Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 	}	
 }
 
-Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buffSize)
+Bool IO::Device::SIM7000::NetIPSend(UOSInt index, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
@@ -339,9 +340,9 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 Bool IO::Device::SIM7000::NetCloseSocket(UOSInt index)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPCLOSE="));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPCLOSE="));
 	sptr = Text::StrUOSInt(sptr, index);
-	if ((sptr = this->SendStringCommandDirect(sbuff, sbuff, (UOSInt)(sptr - sbuff), 1000)) == 0)
+	if (!this->SendStringCommandDirect(sbuff, sbuff, (UOSInt)(sptr - sbuff), 1000).SetTo(sptr))
 	{
 		return false;
 	}
@@ -351,7 +352,7 @@ Bool IO::Device::SIM7000::NetCloseSocket(UOSInt index)
 Bool IO::Device::SIM7000::NetSetLocalPortTCP(UOSInt index, UInt16 port)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
 	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"TCP\","));
 	sptr = Text::StrUInt16(sptr, port);
@@ -361,17 +362,17 @@ Bool IO::Device::SIM7000::NetSetLocalPortTCP(UOSInt index, UInt16 port)
 Bool IO::Device::SIM7000::NetSetLocalPortUDP(UOSInt index, UInt16 port)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
 	sptr = Text::StrUOSInt(sptr, index);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"UDP\","));
 	sptr = Text::StrUInt16(sptr, port);
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::Device::SIM7000::NetSetAPN(Text::CString apn)
+Bool IO::Device::SIM7000::NetSetAPN(Text::CStringNN apn)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CSTT=\""));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CSTT=\""));
 	sptr = apn.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
@@ -383,7 +384,7 @@ Bool IO::Device::SIM7000::NetDataStart()
 	return this->SendBoolCommandC(UTF8STRC("AT+CIICR"));
 }
 
-UTF8Char *IO::Device::SIM7000::NetGetIFAddr(UTF8Char *addr)
+UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::NetGetIFAddr(UnsafeArray<UTF8Char> addr)
 {
 	return this->SendStringCommandDirect(addr, UTF8STRC("AT+CIFSR"), 1000);
 }
@@ -415,15 +416,16 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 	return false;
 }
 
-Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, NN<Net::SocketUtil::AddressInfo> addr)
+Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CStringNN domain, NN<Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CDNSGIP=\""));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CDNSGIP=\""));
 	sptr = domain.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
 	Sync::MutexUsage mutUsage(this->dnsMut);
-	while (this->dnsReq.v)
+	Text::CStringNN dnsReq;
+	while (this->dnsReq.SetTo(dnsReq))
 	{
 		mutUsage.EndUse();
 		Sync::SimpleThread::Sleep(100);
@@ -496,14 +498,14 @@ Bool IO::Device::SIM7000::NetSetDisableNagle(Bool disable)
 	}
 }
 
-Bool IO::Device::SIM7000::NetPing(const UTF8Char *addr, UInt32 *respTime, UInt32 *ttl)
+Bool IO::Device::SIM7000::NetPing(UnsafeArray<const UTF8Char> addr, UInt32 *respTime, UInt32 *ttl)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("AT+CIPPING=\""));
 	sptr = Text::StrConcat(sptr, addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\",1"));
-	if ((sptr = this->SendStringCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff), 10000)) == 0)
+	if (!this->SendStringCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff), 10000).SetTo(sptr))
 	{
 		return false;
 	}
@@ -511,7 +513,7 @@ Bool IO::Device::SIM7000::NetPing(const UTF8Char *addr, UInt32 *respTime, UInt32
 	{
 		return false;
 	}
-	UTF8Char *sarr[5];
+	UnsafeArray<UTF8Char> sarr[5];
 	if (Text::StrSplit(sarr, 5, &sbuff[10], ',') != 4)
 	{
 		return false;

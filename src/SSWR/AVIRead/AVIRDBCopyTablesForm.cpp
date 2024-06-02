@@ -23,12 +23,12 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 		if (db->IsDBTool())
 		{
 			UTF8Char sbuff[128];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<DB::ReadingDBTool> dbt = NN<DB::ReadingDBTool>::ConvertFrom(db);
 			DB::Collation collation;
 			NN<Text::String> dbName = Text::String::OrEmpty(dbt->GetCurrDBName());
 			me->txtSourceDB->SetText(dbName->ToCString());
-			if (dbt->GetDBCollation(dbName->ToCString(), &collation))
+			if (dbt->GetDBCollation(dbName->ToCString(), collation))
 			{
 				sptr = DB::DBUtil::SDBCollation(sbuff, &collation, dbt->GetSQLType());
 				me->txtSourceCollation->SetText(CSTRP(sbuff, sptr));
@@ -74,9 +74,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyTyp
 	if (!me->cboSourceConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl) || !ctrl->GetDB().SetTo(db))
 		return;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = me->cboSourceSchema->GetSelectedItemText(sbuff);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!me->cboSourceSchema->GetSelectedItemText(sbuff).SetTo(sptr))
 		return;
 	Data::ArrayListStringNN tableNames;
 	db->QueryTableNames(CSTRP(sbuff, sptr), tableNames);
@@ -176,8 +175,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	}
 	destDBTool = NN<DB::DBTool>::ConvertFrom(destConn);
 	UTF8Char destSchema[512];
-	UTF8Char *destSchemaEnd = me->cboDestSchema->GetSelectedItemText(destSchema);
-	if (destSchemaEnd == 0)
+	UnsafeArray<UTF8Char> destSchemaEnd;
+	if (!me->cboDestSchema->GetSelectedItemText(destSchema).SetTo(destSchemaEnd))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a destination Schema first"), CSTR("Copy Tables"), me);
 		return;
@@ -203,7 +202,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 			DB::Collation collation;
 			Text::String *dbName = dbt->GetCurrDBName();
 			me->txtSourceDB->SetText(dbName->ToCString());
-			if (dbt->GetDBCollation(dbName->ToCString(), &collation))
+			if (dbt->GetDBCollation(dbName->ToCString(), collation))
 			{
 				if (!destDBTool->CreateDatabase(dbName->ToCString(), &collation))
 				{
@@ -317,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 						if (destDBTool->ExecuteNonQuery(sql.ToCString()) != 1)
 						{
 #if defined(VERBOSE)
-							printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString());
+							printf("DBCopyTables: Error SQL: %s\r\n", sql.ToString().Ptr());
 #endif
 							sb.ClearStr();
 							destDBTool->GetLastErrorMsg(sb);

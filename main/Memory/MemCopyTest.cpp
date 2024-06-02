@@ -69,7 +69,7 @@ void MemTest2(UOSInt cnt)
 {
 	UTF8Char sbuff1[64];
 	UTF8Char sbuff2[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (cnt < 64)
 	{
 		sptr = sbuff1;

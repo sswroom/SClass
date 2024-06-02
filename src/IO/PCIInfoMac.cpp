@@ -15,16 +15,15 @@ struct IO::PCIInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
-	Text::CString dispName;
+	Text::CStringNN dispName;
 };
 
-IO::PCIInfo::PCIInfo(ClassData *info)
+IO::PCIInfo::PCIInfo(NN<ClassData> srcData)
 {
-	ClassData *srcData = info;
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
-	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng).Ptr();
+	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng);
 	clsData->dispName.leng = srcData->dispName.leng;
 	this->clsData = clsData;
 }
@@ -50,10 +49,10 @@ Text::CString IO::PCIInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UOSInt PCIInfo_AppendDevices(NN<Data::ArrayList<IO::PCIInfo*>> pciList, const Char *clsName)
+UOSInt PCIInfo_AppendDevices(NN<Data::ArrayListNN<IO::PCIInfo>> pciList, const Char *clsName)
 {
 	IO::PCIInfo::ClassData clsData;
-	IO::PCIInfo *pci;
+	NN<IO::PCIInfo> pci;
 //	Text::StringBuilderUTF8 sb;
 	UOSInt ret = 0;
 
@@ -97,7 +96,7 @@ UOSInt PCIInfo_AppendDevices(NN<Data::ArrayList<IO::PCIInfo*>> pciList, const Ch
 				{
 					clsData.vendorId = ReadUInt16(Data::MacData((CFDataRef)vendorId).Ptr());
 					clsData.productId = ReadUInt16(Data::MacData((CFDataRef)deviceId).Ptr());
-					NEW_CLASS(pci, IO::PCIInfo(&clsData));
+					NEW_CLASSNN(pci, IO::PCIInfo(clsData));
 					pciList->Add(pci);
 					ret++;
 				}
@@ -111,7 +110,7 @@ UOSInt PCIInfo_AppendDevices(NN<Data::ArrayList<IO::PCIInfo*>> pciList, const Ch
 	return ret;
 }
 
-UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayList<PCIInfo*>> pciList)
+UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 {
 	UOSInt ret = 0;
 	ret += PCIInfo_AppendDevices(pciList, "IOPCIDevice");

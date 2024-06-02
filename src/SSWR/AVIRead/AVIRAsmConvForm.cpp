@@ -44,8 +44,8 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	UOSInt j2;
 	UOSInt thisTabCnt = 0;
 	UOSInt allTabCnt = 0;
-	UTF8Char *lineStart;
-	UTF8Char *lineEnd;
+	UnsafeArray<UTF8Char> lineStart;
+	UnsafeArray<UTF8Char> lineEnd;
 	UTF8Char c;
 	UTF8Char c2;
 	UTF8Char endC;
@@ -225,7 +225,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 				destSb.AppendChar('\t', allTabCnt);
 				destSb.AppendC(UTF8STRC("\"\t"));
 				destSb.AppendC(lineStart, j);
-				sarrCnt = Text::StrSplitTrimP(sarr, 5, {&lineStart[j + 1], (UOSInt)(lineEnd - lineStart[j + 1])}, ',');
+				sarrCnt = Text::StrSplitTrimP(sarr, 5, {&lineStart[j + 1], (UOSInt)(lineEnd - &lineStart[j + 1])}, ',');
 				if (sarrCnt == 1 && sarr[0].v[0] == 0)
 				{
 				}
@@ -272,7 +272,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 						{
 							destSb.Append(sarr[j]);
 						}
-						else if (regKey.SortedIndexOf(sarr[j].v) >= 0)
+						else if (regKey.SortedIndexOf(UnsafeArray<const UTF8Char>(sarr[j].v)) >= 0)
 						{
 							destSb.AppendC(UTF8STRC("%"));
 							destSb.Append(sarr[j]);
@@ -315,7 +315,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										l = k;
 										while (l-- > 0)
 										{
-											if (sarr2[l].v && sarr2[l].v[0] >= 0x30 && sarr2[l].v[0] <= 0x39)
+											if (sarr2[l].leng > 0 && sarr2[l].v[0] >= 0x30 && sarr2[l].v[0] <= 0x39)
 											{
 												if (found)
 												{
@@ -323,7 +323,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 												}
 												destSb.Append(sarr2[l]);
 												found = true;
-												sarr2[l].v = 0;
+												sarr2[l].leng = 0;
 											}
 										}
 									}
@@ -337,10 +337,10 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										l = k;
 										while (l-- > 0)
 										{
-											if (sarr2[l].v && sarr2[l].v[0] >= 0x30 && sarr2[l].v[0] <= 0x39)
+											if (sarr2[l].leng > 0 && sarr2[l].v[0] >= 0x30 && sarr2[l].v[0] <= 0x39)
 											{
 												destSb.Append(sarr2[l]);
-												sarr2[l].v = 0;
+												sarr2[l].leng = 0;
 											}
 										}
 										destSb.AppendC(UTF8STRC("("));
@@ -350,7 +350,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 									l = 0;
 									while (l < k)
 									{
-										if (sarr2[l].v && sarr2[l].IndexOf('*') == INVALID_INDEX)
+										if (sarr2[l].leng > 0 && sarr2[l].IndexOf('*') == INVALID_INDEX)
 										{
 											if (found)
 											{
@@ -359,14 +359,14 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 											destSb.AppendC(UTF8STRC("%"));
 											destSb.Append(sarr2[l]);
 											found = true;
-											sarr2[l].v = 0;
+											sarr2[l].leng = 0;
 										}
 										l++;
 									}
 									l = k;
 									while (l-- > 0)
 									{
-										if (sarr2[l].v)
+										if (sarr2[l].leng > 0)
 										{
 											destSb.AppendC(UTF8STRC(","));
 											i2 = sarr2[l].IndexOf('*');
@@ -379,7 +379,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 											destSb.AppendC(UTF8STRC(","));
 											destSb.AppendC(&sarr2[l].v[k + 1], sarr2[l].leng - k - 1);
 											found = true;
-											sarr2[l].v = 0;
+											sarr2[l].leng = 0;
 										}
 									}
 									destSb.AppendC(UTF8STRC(")"));

@@ -40,7 +40,7 @@ namespace Net
 		static UInt32 __stdcall CheckThread(AnyType userObj);
 		void ReleaseSess(NN<SessionInfo> sess);
 	public:
-		TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString path);
+		TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CStringNN path);
 		~TFTPServer();
 
 		Bool IsError();

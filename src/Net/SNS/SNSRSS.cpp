@@ -6,7 +6,7 @@
 #include "Text/HTMLUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
+void Net::SNS::SNSRSS::CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal)
 {
 	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();
@@ -14,7 +14,7 @@ void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 	this->crc.GetValue(hashVal);
 }
 
-Net::SNS::SNSRSS::SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId, NN<IO::LogTool> log)
+Net::SNS::SNSRSS::SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -119,7 +119,7 @@ NN<Text::String> Net::SNS::SNSRSS::GetName() const
 	return this->chName;
 }
 
-UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
+UnsafeArray<UTF8Char> Net::SNS::SNSRSS::GetDirName(UnsafeArray<UTF8Char> dirName)
 {
 	UInt8 crcVal[4];
 	dirName = Text::StrConcatC(dirName, UTF8STRC("RSS_"));
@@ -135,7 +135,7 @@ UOSInt Net::SNS::SNSRSS::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 	return itemList->GetCount() - initCnt;
 }
 
-UTF8Char *Net::SNS::SNSRSS::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
+UnsafeArray<UTF8Char> Net::SNS::SNSRSS::GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item)
 {
 	UInt8 crcVal[4];
 	this->CalcCRC(item->id->v, item->id->leng, crcVal);

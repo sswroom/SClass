@@ -40,7 +40,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NN<Net::WebServ
 			me->ResponsePhotoWId(req, resp, env.user, env.isMobile, spId, cateId, width, height, id);
 			return true;
 		}
-		else if (req->GetQueryValueStr(CSTR("file"), sbuff, 512))
+		else if (req->GetQueryValueStr(CSTR("file"), sbuff, 512).NotNull())
 		{
 			me->ResponsePhoto(req, resp, env.user, env.isMobile, spId, cateId, width, height, sbuff);
 			return true;
@@ -64,11 +64,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 		req->GetQueryValueI32(CSTR("fileId"), fileId))
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<UserFileInfo> userFile;
 		Sync::RWMutexUsage mutUsage;
 		sptr = sbuff;
-		if (me->env->UserfileGetCheck(mutUsage, fileId, spId, cateId, env.user, &sptr).SetTo(userFile))
+		if (me->env->UserfileGetCheck(mutUsage, fileId, spId, cateId, env.user, sptr).SetTo(userFile))
 		{
 			UOSInt buffSize;
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
@@ -77,7 +77,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 			Data::ByteBuffer buff(buffSize);
 			fd.GetRealData(0, buffSize, buff);
 			resp->AddDefHeaders(req);
-			resp->AddContentDisposition(false, userFile->oriFileName->v, req->GetBrowser());
+			resp->AddContentDisposition(false, UnsafeArray<const UTF8Char>(userFile->oriFileName->v), req->GetBrowser());
 			resp->AddContentLength(buffSize);
 			if (userFile->fileType == FileType::Audio)
 			{
@@ -121,10 +121,10 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Int32 rotateType = 0;
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd = sbuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd = sbuff;
 	Sync::RWMutexUsage mutUsage;
 	NN<WebUserInfo> nnuser;
 	Bool notAdmin = (!user.SetTo(nnuser) || nnuser->userType != UserType::Admin);
@@ -194,7 +194,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 					sb.AppendC(UTF8STRC("."));
 
 					Text::UTF8Reader reader(fs);
-					while ((sptr2 = reader.ReadLine(sbuff2, 511)) != 0)
+					while (reader.ReadLine(sbuff2, 511).SetTo(sptr2))
 					{
 						if (Text::StrSplitP(sarr, 3, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, '\t') == 2)
 						{
@@ -439,8 +439,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<UserFileInfo> userFile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
@@ -628,7 +628,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 						NN<Media::DrawImage> gimg;
 						if (this->env->GetDrawEngine()->ConvImage(simg).SetTo(gimg))
 						{
-							if ((cacheDir->v && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
+							if ((imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 							{
 								Int32 xRand;
 								Int32 yRand;
@@ -763,8 +763,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<WebFileInfo> wfile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;

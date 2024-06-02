@@ -133,7 +133,7 @@ namespace SSWR
 			static void __stdcall OnMTKFactoryResetClicked(AnyType userObj);
 			static void __stdcall OnDispOffClicked(AnyType userObj);
 			static void __stdcall OnTopMostChg(AnyType userObj, Bool newState);
-			static void __stdcall OnNMEALine(AnyType userObj, const UTF8Char *line, UOSInt lineLen);
+			static void __stdcall OnNMEALine(AnyType userObj, UnsafeArray<const UTF8Char> line, UOSInt lineLen);
 			static void __stdcall SignalFocusLost(AnyType userObj);
 			NN<UI::GUIButton> NewDisplayOffButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt);
 		public:

@@ -128,7 +128,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 														match = Text::StrEqualsC(digestInfo.hashVal, digestInfo.hashLen, hashBuff, buffSize);
 													}
 												}
-												printf("%s\r\n", sb.ToString());
+												printf("%s\r\n", sb.ToPtr());
 												if (match)
 												{
 													this->txtSignState->SetText(CSTR("Signature valid"));

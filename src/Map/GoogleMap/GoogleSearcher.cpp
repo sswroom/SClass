@@ -79,17 +79,17 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 	OPTSTR_DEL(this->gooKey);
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang)
 {
 	UTF8Char url[1024];
-	UTF8Char *sptr;
-	UTF8Char *urlStart;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> urlStart;
 	UInt8 databuff[2048];
 	UOSInt databuffSize;
 	Data::DateTime currDt;
 	OSInt si;
 	UOSInt i;
-	Char *ptrs[3];
+	UnsafeArray<UTF8Char> ptrs[3];
 
 	Sync::MutexUsage mutUsage(this->mut);
 	this->srchCnt++;
@@ -149,7 +149,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 			databuffSize += readSize;
 		}
 		databuff[databuffSize] = 0;
-		readSize = Text::StrSplit(ptrs, 3, (Char*)databuff, ',');
+		readSize = Text::StrSplit(ptrs, 3, databuff, ',');
 		status = Text::StrToInt32(ptrs[0]);
 		if (status == 200)
 		{
@@ -161,25 +161,25 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 				{
 					if (i < buffSize)
 					{
-						buff = Text::StrConcatC(buff, (const UTF8Char*)&ptrs[2][1], i);
+						buff = Text::StrConcatC(buff, &ptrs[2][1], i);
 					}
 					else
 					{
-						buff = Text::StrConcatS(buff, (const UTF8Char*)ptrs[2], buffSize);
+						buff = Text::StrConcatS(buff, ptrs[2], buffSize);
 					}
 				}
 				else
 				{
-					buff = Text::StrConcatS(buff, (const UTF8Char*)ptrs[2], buffSize);
+					buff = Text::StrConcatS(buff, ptrs[2], buffSize);
 				}
 			}
 			else
 			{
-				buff = Text::StrConcatS(buff, (const UTF8Char*)ptrs[2], buffSize);
+				buff = Text::StrConcatS(buff, ptrs[2], buffSize);
 			}
 			if (*sptr == 0)
 			{
-				buff = Text::StrConcatS(buff, (const UTF8Char*)"-", buffSize);
+				buff = Text::StrConcatS(buff, U8STR("-"), buffSize);
 			}
 		}
 		else if (status == 602)
@@ -213,7 +213,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -222,13 +222,13 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
 			return 0;
 	}
-	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
-	if (ent == 0)
+	NN<Text::Locale::LocaleEntry> ent;
+	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
 		return 0;
 	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{
@@ -237,8 +237,8 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffS
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
 			return 0;
 	}
-	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
-	if (ent == 0)
+	NN<Text::Locale::LocaleEntry> ent;
+	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
 		return 0;
 	return SearchName(buff, buffSize, pos, {ent->shortName, ent->shortNameLen});
 }

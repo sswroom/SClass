@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 	NN<DB::DBReader> r;
 	NN<UI::GUILabel> lbl;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->colsCbo = MemAlloc(NN<UI::GUIComboBox>, j);
 	while (i < j)
 	{
@@ -111,12 +111,14 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 		l = r->ColCount();
 		while (k < l)
 		{
-			sptr = r->GetName(k, sbuff);
-			i = 0;
-			while (i < j)
+			if (r->GetName(k, sbuff).SetTo(sptr))
 			{
-				this->colsCbo[i]->AddItem(CSTRP(sbuff, sptr), (void*)k);
-				i++;
+				i = 0;
+				while (i < j)
+				{
+					this->colsCbo[i]->AddItem(CSTRP(sbuff, sptr), (void*)k);
+					i++;
+				}
 			}
 			k++;
 		}

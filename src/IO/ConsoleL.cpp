@@ -51,9 +51,9 @@ void IO::Console::PutChar(UTF32Char c)
 #endif
 }
 
-UTF8Char *IO::Console::GetLine(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::Console::GetLine(UnsafeArray<UTF8Char> buff)
 {
-	UTF8Char *ptr = buff;
+	UnsafeArray<UTF8Char> ptr = buff;
 	UTF32Char c;
 	while (true)
 	{

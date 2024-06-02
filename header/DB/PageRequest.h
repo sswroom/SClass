@@ -18,7 +18,7 @@ namespace DB
 		UOSInt GetPageNum();
 		UOSInt GetPageSize();
 
-		void Sort(const UTF8Char *colName, Bool descending);
+		void Sort(UnsafeArray<const UTF8Char> colName, Bool descending);
 		UOSInt GetSortingCount();
 		const UTF8Char *GetSortColumn(UOSInt index);
 		Bool IsSortDesc(UOSInt index);

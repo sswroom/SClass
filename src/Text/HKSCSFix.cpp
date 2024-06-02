@@ -11,7 +11,7 @@ Text::HKSCSFix::HKSCSFix()
 {
 	UTF8Char fileName[512];
 	UTF8Char dir[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->tab = 0;
 	IO::Path::GetProcessFileName(fileName);
 	sptr = IO::Path::GetFileDirectory(dir, fileName);

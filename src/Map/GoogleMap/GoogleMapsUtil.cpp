@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Map/GoogleMap/GoogleMapsUtil.h"
 
-Math::Geometry::LineString *Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(const UTF8Char *polylineText)
+Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(UnsafeArray<const UTF8Char> polylineText)
 {
 	Data::ArrayList<Int32> pointList;
 	Int32 lastX;

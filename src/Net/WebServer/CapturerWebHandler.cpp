@@ -340,7 +340,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::IWebRequest> req, NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 sort = 0;
 	UOSInt i;
 	UOSInt j;
@@ -349,12 +349,12 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
-	s = Text::XML::ToNewAttrText(sbuff);
+	s = Text::XML::ToNewAttrText(UARR(sbuff));
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC(">MAC</a></td><td>Vendor</td><td>SSID</td><td><a href="));
 	Text::StrConcatC(sptr, UTF8STRC("?sort=1"));
-	s = Text::XML::ToNewAttrText(sbuff);
+	s = Text::XML::ToNewAttrText(UARR(sbuff));
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC(">RSSI</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n"));
@@ -404,7 +404,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::IWebRequest> req, NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 sort = 0;
 	NN<Text::String> s;
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -414,12 +414,12 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
-	s = Text::XML::ToNewAttrText(sbuff);
+	s = Text::XML::ToNewAttrText(UARR(sbuff));
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC(">MAC</a></td><td>Type</td><td>AddrType</td><td>Vendor</td><td>Name</td><td><a href="));
 	Text::StrConcatC(sptr, UTF8STRC("?sort=1"));
-	s = Text::XML::ToNewAttrText(sbuff);
+	s = Text::XML::ToNewAttrText(UARR(sbuff));
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC(">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n"));
@@ -494,8 +494,8 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 			}
 			else
 			{
-				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(entry->company);
-				if (cstr.v)
+				Text::CStringNN cstr;
+				if (Net::PacketAnalyzerBluetooth::CompanyGetName(entry->company).SetTo(cstr))
 				{
 					sb->Append(cstr);
 				}

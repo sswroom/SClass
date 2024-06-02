@@ -14,10 +14,10 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	UOSInt logNameSize;
 	UOSInt nameSize;
 	Int32 logTime;
-	UTF8Char *filePath;
-	UTF8Char *filePathEnd;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> filePath;
+	UnsafeArray<UTF8Char> filePathEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::FindFileSession *sess;
 	Data::DateTime currTime;
 	Data::StringUTF8Map<LogGroup*> logGrps;
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	Bool succ;
 	IO::Path::PathType pt;
 
-	filePath = me->txtLogDir->GetText(sbuff);
+	filePath = me->txtLogDir->GetText(sbuff).Or(sbuff);
 	if (filePath == sbuff)
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter Log Dir"), CSTR("Log Backup"), me);
@@ -44,13 +44,13 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	{
 		*filePath++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = me->txtLogName->GetText(filePath);
+	sptr = me->txtLogName->GetText(filePath).Or(filePath);
 	logNameSize = (UOSInt)(sptr - filePath);
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((filePathEnd = IO::Path::FindNextFile(filePath, sess, 0, 0, 0)) != 0)
+		while (IO::Path::FindNextFile(filePath, sess, 0, 0, 0).SetTo(filePathEnd))
 		{
 			nameSize = (UOSInt)(Text::StrConcatS(sbuff2, filePath, 63) - sbuff2);
 			if (nameSize >= logNameSize + 6)

@@ -12,7 +12,7 @@ struct IO::USBInfo::ClassData
 	UInt16 idVendor;
 	UInt16 idProduct;
 	UInt16 bcdDevice;
-	Text::CString dispName;
+	Text::CStringNN dispName;
 };
 
 IO::USBInfo::USBInfo(NN<ClassData> info)
@@ -21,7 +21,7 @@ IO::USBInfo::USBInfo(NN<ClassData> info)
 	clsData->idVendor = info->idVendor;
 	clsData->idProduct = info->idProduct;
 	clsData->bcdDevice = info->bcdDevice;
-	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng).Ptr();
+	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng);
 	clsData->dispName.leng = info->dispName.leng;
 	this->clsData = clsData;
 }
@@ -47,7 +47,7 @@ UInt16 IO::USBInfo::GetRevision()
 	return this->clsData->bcdDevice;
 }
 
-Text::CString IO::USBInfo::GetDispName()
+Text::CStringNN IO::USBInfo::GetDispName()
 {
 	return this->clsData->dispName;
 }
@@ -83,9 +83,9 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 	UTF8Char sbuff[512];
 	UInt8 cbuff[256];
 	UOSInt readSize;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/usb/devices/"));
@@ -93,7 +93,7 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] != '.')
 			{

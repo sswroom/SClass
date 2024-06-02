@@ -45,7 +45,7 @@ namespace Text
 			virtual IO::ParserType GetParserType() const;
 
 			void SetDocumentName(Text::CString docName);
-			UTF8Char *GetDocumentName(UTF8Char *docName) const;
+			UnsafeArrayOpt<UTF8Char> GetDocumentName(UnsafeArray<UTF8Char> docName) const;
 			void SetTextColor(UInt32 textColor);
 			Bool GetTextColor(UInt32 *textColor) const;
 			void SetBGColor(UInt32 bgColor);

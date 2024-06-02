@@ -365,7 +365,7 @@ Int64 IO::SDCardInfo::GetCardCapacity()
 	}
 }
 
-Text::CString IO::SDCardInfo::GetManufacturerName(UInt8 mid)
+Text::CStringNN IO::SDCardInfo::GetManufacturerName(UInt8 mid)
 {
 	switch (mid)
 	{

@@ -13,23 +13,21 @@ Exporter::GUIExporter::~GUIExporter()
 {
 }
 
-IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
-	Media::ImageList *imgList;
-	if (pobj == 0)
-		return IO::FileExporter::SupportType::NotSupported;
+	NN<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	imgList = (Media::ImageList*)pobj;
+	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::Image *img = imgList->GetImage(0, 0);
-	if (img->info.fourcc != 0)
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
+void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 {
 	return 0;
 }

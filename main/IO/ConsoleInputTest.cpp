@@ -8,10 +8,11 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
-	while ((sptr = IO::Console::GetLine(sbuff)) != 0)
+	while (true)
 	{
+		sptr = IO::Console::GetLine(sbuff);
 		if (Text::StrEquals(sbuff, (const UTF8Char*)"q"))
 		{
 			break;

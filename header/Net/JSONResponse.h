@@ -137,7 +137,7 @@ namespace Net
 		if (!optional) \
 		{ \
 			this->valid = false; \
-			printf("JSONResponse: %s.%s is not array\r\n", clsName.v, name); \
+			printf("JSONResponse: %s.%s is not array\r\n", clsName.v.Ptr(), name); \
 		} \
 		return; \
 	} \
@@ -152,7 +152,7 @@ namespace Net
 			{ \
 				hasError = true; \
 				this->valid = false; \
-				printf("JSONResponse: %s.%s[%d] is not object, type = %s\r\n", clsName.v, name, (UInt32)i, Text::JSONTypeGetName(arr->GetArrayValue(i)?arr->GetArrayValue(i)->GetType():Text::JSONType::Null).v); \
+				printf("JSONResponse: %s.%s[%d] is not object, type = %s\r\n", clsName.v.Ptr(), name, (UInt32)i, Text::JSONTypeGetName(arr->GetArrayValue(i)?arr->GetArrayValue(i)->GetType():Text::JSONType::Null).v.Ptr()); \
 			} \
 		} \
 		else \
@@ -163,7 +163,7 @@ namespace Net
 			{ \
 				hasError = true; \
 				this->valid = false; \
-				printf("JSONResponse: %s.%s[%d] is not valid %s type\r\n", clsName.v, name, (UInt32)i, #className); \
+				printf("JSONResponse: %s.%s[%d] is not valid %s type\r\n", clsName.v.Ptr(), name, (UInt32)i, #className); \
 			} \
 			field->AddValue(v); \
 		} \
@@ -188,7 +188,7 @@ namespace Net
 		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, 0)); \
 		if (this->fieldMap.PutC(CSTR(name), ofield).SetTo(field)) { field.Delete(); } \
 		if (jobj.Set(this->json->GetValue(CSTR(name)))) { \
-			if (jobj->GetType() != Text::JSONType::Null) printf("JSONResponse: %s.%s is not object type, type is %s\r\n", this->clsName.v.Ptr(), name, Text::JSONTypeGetName(jobj->GetType()).v); \
+			if (jobj->GetType() != Text::JSONType::Null) printf("JSONResponse: %s.%s is not object type, type is %s\r\n", this->clsName.v.Ptr(), name, Text::JSONTypeGetName(jobj->GetType()).v.Ptr()); \
 			else if (!allowNull) printf("JSONResponse: %s.%s is null which is not allowed\r\n", this->clsName.v.Ptr(), name); \
 		} else if (!optional) printf("JSONResponse: %s.%s is not found which is not optional\r\n", this->clsName.v.Ptr(), name); \
 	} }

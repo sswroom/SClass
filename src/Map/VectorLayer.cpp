@@ -269,6 +269,21 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->mixedData = MixedData::AllData;
 }
 
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
+{
+	this->layerType = layerType;
+	this->strCnt = 0;
+	this->min = Math::Coord2DDbl(0, 0);
+	this->max = Math::Coord2DDbl(0, 0);
+	this->maxStrLen = MemAlloc(UOSInt, 0);
+	this->thisStrLen = 0;
+	this->colNames = MemAlloc(NN<Text::String>, 0);
+	this->cols = 0;
+	this->tableName = 0;
+	this->mapRate = 10000000.0;
+	this->mixedData = MixedData::AllData;
+}
+
 Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;

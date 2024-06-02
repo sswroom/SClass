@@ -547,7 +547,7 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 	return ret;
 }
 
-UTF8Char *Win32::WMIReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -850,7 +850,7 @@ Bool Win32::WMIReader::IsNull(UOSInt colIndex)
 	return ret;
 }
 
-UTF8Char *Win32::WMIReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)

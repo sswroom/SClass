@@ -13,7 +13,7 @@ Crypto::Encrypt::AES192::~AES192()
 
 }
 
-UOSInt Crypto::Encrypt::AES192::EncryptBlock(UnsafeArray<const UInt8> inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::AES192::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -89,32 +89,32 @@ UOSInt Crypto::Encrypt::AES192::EncryptBlock(UnsafeArray<const UInt8> inBlock, U
 		(AESBase_Te4[(t2 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t3      ) & 0xff] & 0x000000ff) ^
 		this->encRK[48];
-	WriteMUInt32(outBlock     , s0);
+	WriteMUInt32(&outBlock[ 0], s0);
 	s1 =
 		(AESBase_Te4[(t1 >> 24)       ] & 0xff000000) ^
 		(AESBase_Te4[(t2 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Te4[(t3 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t0      ) & 0xff] & 0x000000ff) ^
 		this->encRK[49];
-	WriteMUInt32(outBlock +  4, s1);
+	WriteMUInt32(&outBlock[ 4], s1);
 	s2 =
 		(AESBase_Te4[(t2 >> 24)       ] & 0xff000000) ^
 		(AESBase_Te4[(t3 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Te4[(t0 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t1      ) & 0xff] & 0x000000ff) ^
 		this->encRK[50];
-	WriteMUInt32(outBlock +  8, s2);
+	WriteMUInt32(&outBlock[ 8], s2);
 	s3 =
 		(AESBase_Te4[(t3 >> 24)       ] & 0xff000000) ^
 		(AESBase_Te4[(t0 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Te4[(t1 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t2      ) & 0xff] & 0x000000ff) ^
 		this->encRK[51];
-	WriteMUInt32(outBlock + 12, s3);
+	WriteMUInt32(&outBlock[12], s3);
 	return 16;
 }
 
-UOSInt Crypto::Encrypt::AES192::DecryptBlock(UnsafeArray<const UInt8> inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::AES192::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -191,28 +191,28 @@ UOSInt Crypto::Encrypt::AES192::DecryptBlock(UnsafeArray<const UInt8> inBlock, U
 		(AESBase_Td4[(t2 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t1      ) & 0xff] & 0x000000ff) ^
 		this->decRK[48];
-	WriteMUInt32(outBlock     , s0);
+	WriteMUInt32(&outBlock[ 0], s0);
 	s1 =
 		(AESBase_Td4[(t1 >> 24)       ] & 0xff000000) ^
 		(AESBase_Td4[(t0 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Td4[(t3 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t2      ) & 0xff] & 0x000000ff) ^
 		this->decRK[49];
-	WriteMUInt32(outBlock +  4, s1);
+	WriteMUInt32(&outBlock[ 4], s1);
 	s2 =
 		(AESBase_Td4[(t2 >> 24)       ] & 0xff000000) ^
 		(AESBase_Td4[(t1 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Td4[(t0 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t3      ) & 0xff] & 0x000000ff) ^
 		this->decRK[50];
-	WriteMUInt32(outBlock +  8, s2);
+	WriteMUInt32(&outBlock[ 8], s2);
 	s3 =
 		(AESBase_Td4[(t3 >> 24)       ] & 0xff000000) ^
 		(AESBase_Td4[(t2 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Td4[(t1 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t0      ) & 0xff] & 0x000000ff) ^
 		this->decRK[51];
-	WriteMUInt32(outBlock + 12, s3);
+	WriteMUInt32(&outBlock[12], s3);
 	return 16;
 }
 

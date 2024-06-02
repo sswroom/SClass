@@ -124,7 +124,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 					buff1 = MemAlloc(UInt8, 8 + msgLen);
 					buff2 = MemAlloc(UInt8, 18 + msgLen);
 					WriteInt64(buff1, msgTime);
-					MemCopyNO(&buff1[8], msg->v, msgLen);
+					MemCopyNO(&buff1[8], msg->v.Ptr(), msgLen);
 					buffSize = me->protoHdlr.BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
 					me->cli->Write(buff2, buffSize);
 					MemFree(buff1);

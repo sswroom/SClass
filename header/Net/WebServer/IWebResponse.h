@@ -46,7 +46,7 @@ namespace Net
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj) = 0;
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
 			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr) = 0;
-			virtual Text::CString GetRespHeaders() = 0;
+			virtual Text::CStringNN GetRespHeaders() = 0;
 
 			Bool ResponseError(NN<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(NN<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);

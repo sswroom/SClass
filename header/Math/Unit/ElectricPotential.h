@@ -19,8 +19,8 @@ namespace Math
 			} ElectricPotentialUnit;
 		public:
 			static Double GetUnitRatio(ElectricPotentialUnit unit);
-			static Text::CString GetUnitShortName(ElectricPotentialUnit unit);
-			static Text::CString GetUnitName(ElectricPotentialUnit unit);
+			static Text::CStringNN GetUnitShortName(ElectricPotentialUnit unit);
+			static Text::CStringNN GetUnitName(ElectricPotentialUnit unit);
 			static Double GetConvertRatio(ElectricPotentialUnit fromUnit, ElectricPotentialUnit toUnit);
 			static Double Convert(ElectricPotentialUnit fromUnit, ElectricPotentialUnit toUnit, Double fromValue);
 		};

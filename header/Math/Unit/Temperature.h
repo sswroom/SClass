@@ -18,8 +18,8 @@ namespace Math
 		public:
 			static Double GetUnitRatio(TemperatureUnit unit);
 			static Double GetUnitScale(TemperatureUnit unit);
-			static Text::CString GetUnitShortName(TemperatureUnit unit);
-			static Text::CString GetUnitName(TemperatureUnit unit);
+			static Text::CStringNN GetUnitShortName(TemperatureUnit unit);
+			static Text::CStringNN GetUnitName(TemperatureUnit unit);
 			static Double Convert(TemperatureUnit fromUnit, TemperatureUnit toUnit, Double fromValue);
 		};
 	}

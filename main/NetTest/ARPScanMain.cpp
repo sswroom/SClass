@@ -22,7 +22,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData)
 	{
 		const Net::MACInfo::MACEntry *macEntry;
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("IP = "));
@@ -53,7 +53,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	const Net::MACInfo::MACEntry *macEntry;
@@ -122,7 +122,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC(", IP = "));
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.AppendP(sbuff, sptr);
-					sptr = connInfo->GetName(sbuff);
+					sptr = connInfo->GetName(sbuff).Or(sbuff);
 					sb.AppendC(UTF8STRC(", Name = "));
 					sb.AppendP(sbuff, sptr);
 					console->WriteLine(sb.ToCString());

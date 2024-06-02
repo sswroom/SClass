@@ -80,7 +80,7 @@ Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 	sb.AppendC(UTF8STRC(" showvminfo "));
 	vm->uuid.ToString(sb);
 	Text::StringBuilderUTF8 sbResult;
-	printf("Cmd: %s\r\n", sb.v);
+	printf("Cmd: %s\r\n", sb.v.Ptr());
 	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
 	UOSInt lineCnt;
 	Text::PString sarr[2];
@@ -118,7 +118,7 @@ Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 					}
 					else
 					{
-						printf("Unknown state: %s\r\n", value.v);
+						printf("Unknown state: %s\r\n", value.v.Ptr());
 					}
 				}
 			}

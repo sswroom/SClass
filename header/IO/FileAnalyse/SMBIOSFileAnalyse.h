@@ -35,7 +35,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			static Text::CString SMBIOSTypeGetName(UInt8 type);
+			static Text::CStringNN SMBIOSTypeGetName(UInt8 type);
 			static Text::CString MemoryLocationGetName(UInt8 location);
 			static Text::CString PointingDeviceInterfaceGetName(UInt8 v);
 			static Text::CString SlotTypeGetName(UInt8 v);

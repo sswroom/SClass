@@ -17,7 +17,7 @@
 #include "Text/UTF8Writer.h"
 #include <stdio.h>
 
-Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
+Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, Text::CStringNN channelId)
 {
 	Net::SNS::SNSControl *ctrl = 0;
 	if (type == Net::SNS::SNSControl::ST_TWITTER)
@@ -52,7 +52,7 @@ NN<Net::SNS::SNSManager::ChannelData> Net::SNS::SNSManager::ChannelInit(NN<Net::
 	channel->lastLoadTime = Data::DateTimeUtil::GetCurrTimeMillis();
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -81,8 +81,8 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 	Data::DateTime dt;
 	dt.SetTicks(item->msgTime);
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -211,13 +211,13 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 					}
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
 					{
-						printf("Image download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0].v);
+						printf("Image download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0].v.Ptr());
 						IO::Path::DeleteFile(sbuff);
 						retryCnt++;
 					}
 					else if (cli->GetContentLength() == 0 && leng == 0)
 					{
-						printf("Image download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0].v);
+						printf("Image download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0].v.Ptr());
 						IO::Path::DeleteFile(sbuff);
 						retryCnt = 5;
 					}
@@ -229,7 +229,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 				}
 				else
 				{
-					printf("Image download failed: Cannot connect to server, url: %s\r\n", sarr[0].v);
+					printf("Image download failed: Cannot connect to server, url: %s\r\n", sarr[0].v.Ptr());
 					retryCnt++;
 				}
 				cli.Delete();
@@ -268,12 +268,12 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 					}
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
 					{
-						printf("Video download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0].v);
+						printf("Video download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0].v.Ptr());
 						IO::Path::DeleteFile(sbuff);
 					}
 					else if (cli->GetContentLength() == 0 && leng == 0)
 					{
-						printf("Video download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0].v);
+						printf("Video download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0].v.Ptr());
 						IO::Path::DeleteFile(sbuff);
 					}
 					else
@@ -295,7 +295,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 void Net::SNS::SNSManager::ChannelStoreCurr(NN<Net::SNS::SNSManager::ChannelData> channel)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -364,7 +364,7 @@ void Net::SNS::SNSManager::ChannelUpdate(NN<Net::SNS::SNSManager::ChannelData> c
 
 void Net::SNS::SNSManager::ChannelReload(NN<Net::SNS::SNSManager::ChannelData> channel)
 {
-	printf("Reload %s\r\n", channel->ctrl->GetChannelId()->v);
+	printf("Reload %s\r\n", channel->ctrl->GetChannelId()->v.Ptr());
 	if (channel->ctrl->Reload())
 	{
 		this->ChannelUpdate(channel);
@@ -412,8 +412,8 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
@@ -430,7 +430,7 @@ Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	}
 	else
 	{
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNS"));
 		this->dataPath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
@@ -445,7 +445,7 @@ Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 		Text::StringBuilderUTF8 sb;
 		IO::Path::PathType pt;
 		Net::SNS::SNSControl::SNSType type = Net::SNS::SNSControl::ST_UNKNOWN;
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{
@@ -512,10 +512,10 @@ Net::SNS::SNSManager::~SNSManager()
 	}
 }
 
-Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
+Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, Text::CStringNN channelId)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::SNS::SNSControl> ctrl;
 	UOSInt i = 0;
 	UOSInt j = this->channelList.GetCount();

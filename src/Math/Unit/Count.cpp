@@ -29,7 +29,7 @@ Double Math::Unit::Count::GetUnitRatio(CountUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Count::GetUnitShortName(CountUnit unit)
+Text::CStringNN Math::Unit::Count::GetUnitShortName(CountUnit unit)
 {
 	switch (unit)
 	{
@@ -55,7 +55,7 @@ Text::CString Math::Unit::Count::GetUnitShortName(CountUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Count::GetUnitName(CountUnit unit)
+Text::CStringNN Math::Unit::Count::GetUnitName(CountUnit unit)
 {
 	switch (unit)
 	{
@@ -91,7 +91,7 @@ Double Math::Unit::Count::Convert(CountUnit fromUnit, CountUnit toUnit, Double f
 	return fromValue * GetConvertRatio(fromUnit, toUnit);
 }
 
-UTF8Char *Math::Unit::Count::WellFormat(UTF8Char *sbuff, Double val)
+UnsafeArray<UTF8Char> Math::Unit::Count::WellFormat(UnsafeArray<UTF8Char> sbuff, Double val)
 {
 	if (val == 0)
 	{
@@ -178,7 +178,7 @@ UTF8Char *Math::Unit::Count::WellFormat(UTF8Char *sbuff, Double val)
 	}
 }
 
-UTF8Char *Math::Unit::Count::WellFormatBin(UTF8Char *sbuff, Double val)
+UnsafeArray<UTF8Char> Math::Unit::Count::WellFormatBin(UnsafeArray<UTF8Char> sbuff, Double val)
 {
 	if (val < 1024)
 	{

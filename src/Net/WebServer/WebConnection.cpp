@@ -866,7 +866,7 @@ Bool Net::WebServer::WebConnection::SwitchProtocol(ProtocolHandler *protoHdlr)
 	return true;
 }
 
-Text::CString Net::WebServer::WebConnection::GetRespHeaders()
+Text::CStringNN Net::WebServer::WebConnection::GetRespHeaders()
 {
 	return this->respHeaders.ToCString();
 }

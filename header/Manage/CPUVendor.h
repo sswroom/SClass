@@ -35,7 +35,7 @@ namespace Manage
 			CB_APPLE
 		} CPU_BRAND;
 
-		static Text::CString GetBrandName(CPU_BRAND brand);
+		static Text::CStringNN GetBrandName(CPU_BRAND brand);
 	};
 }
 

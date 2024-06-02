@@ -237,9 +237,10 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
-	sptr = audSrc->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("Audio Viewer - ")));
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Audio Viewer - "));
+	sptr = audSrc->GetSourceName(sptr).Or(sptr);
 	this->SetText(CSTRP(sbuff, sptr));
 
 	this->core = core;

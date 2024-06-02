@@ -14,7 +14,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj,
 	if (!me->chkAddPoints->IsChecked())
 		return false;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 	Math::Coord2DDbl pos;
 	if (me->navi->GetCoordinateSystem()->Equals(me->wgs84))
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->stm)
 	{
 		if (me->points.GetCount() > 0)
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(AnyType userObj)
 void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double dir, Double speed, Bool isValid)
 {
 	Char buff[256];
-	Char *cptr;
+	UnsafeArray<Char> cptr;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	if (dir < 0)
@@ -177,9 +177,9 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double 
 		cptr = Text::StrConcat(cptr, ",");
 		cptr = GenLon(cptr, pt.GetLon());
 		cptr = Text::StrConcat(cptr, ",");
-		cptr = Text::StrDoubleFmt(cptr, speed, "0.00");
+		cptr = Text::StrDoubleFmtCh(cptr, speed, "0.00");
 		cptr = Text::StrConcat(cptr, ",");
-		cptr = Text::StrDoubleFmt(cptr, dir, "0.00");
+		cptr = Text::StrDoubleFmtCh(cptr, dir, "0.00");
 		cptr = Text::StrConcat(cptr, ",");
 	}
 	else
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double 
 	this->stm->Write((UInt8*)buff, (UOSInt)(cptr - buff));
 }
 
-Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(Char *ptr, Double lat)
+UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(UnsafeArray<Char> ptr, Double lat)
 {
 	Bool neg = false;
 	Int32 ival;
@@ -210,7 +210,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(Char *ptr, Double lat)
 	}
 	ptr = Text::StrInt32(ptr, ival);
 	lat = (lat - ival) * 60.0;
-	ptr = Text::StrDoubleFmt(ptr, lat, "00.0000");
+	ptr = Text::StrDoubleFmtCh(ptr, lat, "00.0000");
 	if (neg)
 	{
 		ptr = Text::StrConcat(ptr, ",S");
@@ -222,7 +222,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(Char *ptr, Double lat)
 	return ptr;
 }
 
-Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLon(Char *ptr, Double lon)
+UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenLon(UnsafeArray<Char> ptr, Double lon)
 {
 	Bool neg = false;
 	Int32 ival;
@@ -242,7 +242,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLon(Char *ptr, Double lon)
 	}
 	ptr = Text::StrInt32(ptr, ival);
 	lon = (lon - ival) * 60.0;
-	ptr = Text::StrDoubleFmt(ptr, lon, "00.0000");
+	ptr = Text::StrDoubleFmtCh(ptr, lon, "00.0000");
 	if (neg)
 	{
 		ptr = Text::StrConcat(ptr, ",W");
@@ -254,7 +254,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenLon(Char *ptr, Double lon)
 	return ptr;
 }
 
-Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(Char *ptr, Char *start)
+UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(UnsafeArray<Char> ptr, UnsafeArray<Char> start)
 {
 	Char c = 0;
 	start++; //skip $
@@ -263,7 +263,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(Char *ptr, Char *start)
 		c = c ^ *start++;
 	}
 	*ptr++ = '*';
-	return Text::StrHexByte(ptr, (UInt8)c);
+	return Text::StrHexByteCh(ptr, (UInt8)c);
 }
 
 SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)

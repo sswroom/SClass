@@ -7,7 +7,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-Bool Exporter::ANIExporter::ImageSupported(Media::Image *img)
+Bool Exporter::ANIExporter::ImageSupported(NN<Media::RasterImage> img)
 {
 	if (img->info.dispSize.x <= 0 || img->info.dispSize.x > 256 || img->info.dispSize.y <= 0 || img->info.dispSize.y > 256)
 	{
@@ -40,20 +40,21 @@ Bool Exporter::ANIExporter::ImageSupported(Media::Image *img)
 	return false;
 }
 
-OSInt Exporter::ANIExporter::CalcBuffSize(Media::ImageList *imgList)
+OSInt Exporter::ANIExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 {
 	OSInt i;
 	OSInt j;
 	UInt32 imgDelay;
 	OSInt imgSize;
 	OSInt maskSize;
-	Media::Image *img;
+	NN<Media::RasterImage> img;
 	OSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
 	{
-		img = imgList->GetImage(i, imgDelay);
+		if (!imgList->GetImage(i, imgDelay).SetTo(img))
+			return 0;
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -132,7 +133,7 @@ OSInt Exporter::ANIExporter::CalcBuffSize(Media::ImageList *imgList)
 	return retSize;
 }
 
-OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot)
+OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
@@ -151,7 +152,7 @@ OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, B
 	OSInt maskSize;
 	OSInt imgAdd;
 	OSInt maskAdd;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	OSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
@@ -172,7 +173,8 @@ OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, B
 	while (i < j)
 	{
 		imgList->ToStaticImage(i);
-		img = (Media::StaticImage*)imgList->GetImage(i, imgDelay);
+		if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgDelay)).SetTo(img))
+			return 0;
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -629,14 +631,14 @@ Int32 Exporter::ANIExporter::GetName()
 	return *(Int32*)"ANIE";
 }
 
-IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UInt32 imgTime;
-	Media::Image *img;
-	OSInt i = imgList->GetCount();
+	NN<Media::RasterImage> img;
+	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -644,8 +646,7 @@ IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(IO::Parse
 	
 	while (i-- > 0)
 	{
-		img = imgList->GetImage(0, imgTime);
-		if (!img->HasHotSpot() || !ImageSupported(img))
+		if (!imgList->GetImage(0, imgTime).SetTo(img) || !img->HasHotSpot() || !ImageSupported(img))
 		{
 			return IO::FileExporter::SupportType::NotSupported;
 		}
@@ -653,7 +654,7 @@ IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::ANIExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::ANIExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -668,11 +669,11 @@ void Exporter::ANIExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::ANIExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::ANIExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
-	Media::ImageList *imgList = (Media::ImageList*)pobj;
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	OSInt buffSize = CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;

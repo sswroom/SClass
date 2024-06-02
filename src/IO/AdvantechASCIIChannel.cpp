@@ -13,6 +13,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(AnyType userObj)
 	UOSInt buffSize = 0;
 	UOSInt i;
 	UOSInt cmdStart;
+	UnsafeArray<UTF8Char> nncmdResBuff;
 	me->threadRunning = true;
 	me->cmdEvt.Set();
 	while (!me->threadToStop)
@@ -39,9 +40,9 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(AnyType userObj)
 					{
 						{
 							Sync::MutexUsage mutUsage(me->cmdResMut);
-							if (me->cmdResBuff)
+							if (me->cmdResBuff.SetTo(nncmdResBuff))
 							{
-								me->cmdResEnd = Text::StrConcatC(me->cmdResBuff, &readBuff[cmdStart], i - cmdStart);
+								me->cmdResEnd = Text::StrConcatC(nncmdResBuff, &readBuff[cmdStart], i - cmdStart);
 								me->cmdResBuff = 0;
 								me->cmdEvt.Set();
 							}
@@ -94,7 +95,7 @@ NN<IO::Stream> IO::AdvantechASCIIChannel::GetStream() const
 	return this->stm;
 }
 
-UTF8Char *IO::AdvantechASCIIChannel::SendCommand(UTF8Char *replyBuff, const UTF8Char *cmd, UOSInt cmdLen)
+UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::SendCommand(UnsafeArray<UTF8Char> replyBuff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	if (!this->threadRunning)
 		return 0;
@@ -107,10 +108,10 @@ UTF8Char *IO::AdvantechASCIIChannel::SendCommand(UTF8Char *replyBuff, const UTF8
 	mutUsage.EndUse();
 	this->cmdEvt.Wait(CMDTIMEOUT);
 	mutUsage.BeginUse();
-	replyBuff = this->cmdResEnd;
+	UnsafeArrayOpt<UTF8Char> ret = this->cmdResEnd;
 	this->cmdResBuff = 0;
 	this->cmdResEnd = 0;
-	return replyBuff;
+	return ret;
 }
 
 void IO::AdvantechASCIIChannel::Close()
@@ -126,30 +127,28 @@ void IO::AdvantechASCIIChannel::Close()
 	}
 }
 
-UTF8Char *IO::AdvantechASCIIChannel::GetFirmwareVer(UTF8Char *firmwareBuff, UInt8 addr)
+UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::GetFirmwareVer(UnsafeArray<UTF8Char> firmwareBuff, UInt8 addr)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = 'F';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!')
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!')
 	{
 		return Text::StrConcatC(firmwareBuff, sbuff + 3, (UOSInt)(sptr - sbuff - 3));
 	}
 	return 0;
 }
 
-UTF8Char *IO::AdvantechASCIIChannel::GetModuleName(UTF8Char *moduleBuff, UInt8 addr)
+UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::GetModuleName(UnsafeArray<UTF8Char> moduleBuff, UInt8 addr)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = 'M';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!')
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!')
 	{
 		return Text::StrConcatC(moduleBuff, sbuff + 3, (UOSInt)(sptr - sbuff - 3));
 	}
@@ -159,12 +158,11 @@ UTF8Char *IO::AdvantechASCIIChannel::GetModuleName(UTF8Char *moduleBuff, UInt8 a
 Bool IO::AdvantechASCIIChannel::GetConfigStatus(UInt8 addr, ADAMConfig *config)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '2';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 9)
 	{
 		UInt8 flags = Text::StrHex2UInt8C(&sbuff[7]);
 		config->addr = Text::StrHex2UInt8C(&sbuff[1]);
@@ -219,7 +217,7 @@ Bool IO::AdvantechASCIIChannel::AnalogOGetResetStatus(UInt8 addr, Bool *hasReset
 Bool IO::AdvantechASCIIChannel::DigitalSetConfig(UInt8 addr, UInt8 newAddr, BaudRate baudRate, Bool checksum, Bool modbus)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	UInt8 flags;
 	*sptr++ = '%';
 	sptr = Text::StrHexByte(sptr, addr);
@@ -228,8 +226,7 @@ Bool IO::AdvantechASCIIChannel::DigitalSetConfig(UInt8 addr, UInt8 newAddr, Baud
 	sptr = Text::StrHexByte(sptr, (UInt8)baudRate);
 	flags = (UInt8)((checksum?0x40:0) | (modbus?4:0));
 	sptr = Text::StrHexByte(sptr, flags);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -239,13 +236,12 @@ Bool IO::AdvantechASCIIChannel::DigitalSetConfig(UInt8 addr, UInt8 newAddr, Baud
 Bool IO::AdvantechASCIIChannel::DigitalSetAllOutput8Ch(UInt8 addr, UInt8 outputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '#';
 	sptr = Text::StrHexByte(sptr, addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("00"));
 	sptr = Text::StrHexByte(sptr, outputs);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '>' && (sptr - sbuff) == 1)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '>' && (sptr - sbuff) == 1)
 	{
 		return true;
 	}
@@ -255,13 +251,12 @@ Bool IO::AdvantechASCIIChannel::DigitalSetAllOutput8Ch(UInt8 addr, UInt8 outputs
 Bool IO::AdvantechASCIIChannel::DigitalSetAllOutput16Ch(UInt8 addr, UInt16 outputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '#';
 	sptr = Text::StrHexByte(sptr, addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("00"));
 	sptr = Text::StrHexVal16(sptr, outputs);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '>' && (sptr - sbuff) == 1)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '>' && (sptr - sbuff) == 1)
 	{
 		return true;
 	}
@@ -271,12 +266,11 @@ Bool IO::AdvantechASCIIChannel::DigitalSetAllOutput16Ch(UInt8 addr, UInt16 outpu
 Bool IO::AdvantechASCIIChannel::DigitalGetResetStatus(UInt8 addr, Bool *hasReset)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '5';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 4)
 	{
 		*hasReset = (sbuff[3] == '1');
 		return true;
@@ -287,12 +281,11 @@ Bool IO::AdvantechASCIIChannel::DigitalGetResetStatus(UInt8 addr, Bool *hasReset
 Bool IO::AdvantechASCIIChannel::ADAM4050GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 7)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 7)
 	{
 		*outputs = Text::StrHex2UInt8C(&sbuff[1]);
 		*inputs = Text::StrHex2UInt8C(&sbuff[3]);
@@ -304,12 +297,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4050GetIOStatus(UInt8 addr, UInt16 *outputs,
 Bool IO::AdvantechASCIIChannel::ADAM4051GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 7)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 7)
 	{
 		*outputs = 0;
 		*inputs = Text::StrHex2UInt16C(&sbuff[1]);
@@ -321,12 +313,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4051GetIOStatus(UInt8 addr, UInt16 *outputs,
 Bool IO::AdvantechASCIIChannel::ADAM4052GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 7)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 7)
 	{
 		*outputs = 0;
 		*inputs = Text::StrHex2UInt8C(&sbuff[1]);
@@ -338,12 +329,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4052GetIOStatus(UInt8 addr, UInt16 *outputs,
 Bool IO::AdvantechASCIIChannel::ADAM4053GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 7)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 7)
 	{
 		*outputs = 0;
 		*inputs = Text::StrHex2UInt16C(&sbuff[1]);
@@ -360,12 +350,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4055GetIOStatus(UInt8 addr, UInt16 *outputs,
 Bool IO::AdvantechASCIIChannel::ADAM4056GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 5)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 5)
 	{
 		*outputs = Text::StrHex2UInt8C(&sbuff[1]);
 		*inputs = 0;
@@ -377,12 +366,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4056GetIOStatus(UInt8 addr, UInt16 *outputs,
 Bool IO::AdvantechASCIIChannel::ADAM4060GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 7)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 7)
 	{
 		*outputs = Text::StrHex2UInt8C(&sbuff[1]);
 		*inputs = 0;
@@ -399,12 +387,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4068GetIOStatus(UInt8 addr, UInt16 *outputs,
 Bool IO::AdvantechASCIIChannel::ADAM4050GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '4';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 9)
 	{
 		*firstRead = Text::StrHex2UInt8C(&sbuff[1]) != 0;
 		*outputs = Text::StrHex2UInt8C(&sbuff[3]);
@@ -417,12 +404,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4050GetStoredIO(UInt8 addr, Bool *firstRead,
 Bool IO::AdvantechASCIIChannel::ADAM4051GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '4';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 7)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 7)
 	{
 		*firstRead = Text::StrHex2UInt8C(&sbuff[1]) != 0;
 		*outputs = 0;
@@ -435,12 +421,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4051GetStoredIO(UInt8 addr, Bool *firstRead,
 Bool IO::AdvantechASCIIChannel::ADAM4052GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '4';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 9)
 	{
 		*firstRead = Text::StrHex2UInt8C(&sbuff[1]) != 0;
 		*outputs = 0;
@@ -453,12 +438,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4052GetStoredIO(UInt8 addr, Bool *firstRead,
 Bool IO::AdvantechASCIIChannel::ADAM4053GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '4';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 9)
 	{
 		*firstRead = Text::StrHex2UInt8C(&sbuff[1]) != 0;
 		*outputs = 0;
@@ -471,12 +455,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4053GetStoredIO(UInt8 addr, Bool *firstRead,
 Bool IO::AdvantechASCIIChannel::ADAM4060GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '4';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 9)
 	{
 		*firstRead = Text::StrHex2UInt8C(&sbuff[1]) != 0;
 		*outputs = Text::StrHex2UInt8C(&sbuff[3]);
@@ -494,7 +477,7 @@ Bool IO::AdvantechASCIIChannel::ADAM4068GetStoredIO(UInt8 addr, Bool *firstRead,
 Bool IO::AdvantechASCIIChannel::ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Bool frequency, BaudRate baudRate, Bool checksum, FreqGateTime freqGateTime)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	UInt8 flags;
 	*sptr++ = '%';
 	sptr = Text::StrHexByte(sptr, addr);
@@ -510,8 +493,7 @@ Bool IO::AdvantechASCIIChannel::ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Boo
 	sptr = Text::StrHexByte(sptr, (UInt8)baudRate);
 	flags = (UInt8)((checksum?0x40:0) | ((freqGateTime == FGT_1S)?4:0));
 	sptr = Text::StrHexByte(sptr, flags);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -521,12 +503,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Boo
 Bool IO::AdvantechASCIIChannel::ADAM4080GetInputMode(UInt8 addr, UInt8 *inputMode)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = 'B';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 4)
 	{
 		*inputMode = (UInt8)(sbuff[3] - '0');
 		return true;
@@ -537,13 +518,12 @@ Bool IO::AdvantechASCIIChannel::ADAM4080GetInputMode(UInt8 addr, UInt8 *inputMod
 Bool IO::AdvantechASCIIChannel::ADAM4080SetInputMode(UInt8 addr, UInt8 inputMode)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = 'B';
 	*sptr++ = (UInt8)('0' + inputMode);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -553,12 +533,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4080SetInputMode(UInt8 addr, UInt8 inputMode
 Bool IO::AdvantechASCIIChannel::ADAM4080GetValue(UInt8 addr, UInt8 channel, UInt32 *value)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '#';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = (UInt8)('0' + channel);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 9)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 9)
 	{
 		*value = Text::StrHex2UInt32C(&sbuff[1]);
 		return true;
@@ -569,13 +548,12 @@ Bool IO::AdvantechASCIIChannel::ADAM4080GetValue(UInt8 addr, UInt8 channel, UInt
 Bool IO::AdvantechASCIIChannel::ADAM4080SetGateMode(UInt8 addr, GateMode gateMode)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '#';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = 'A';
 	*sptr++ = (UInt8)('0' + (UInt8)gateMode);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -585,12 +563,11 @@ Bool IO::AdvantechASCIIChannel::ADAM4080SetGateMode(UInt8 addr, GateMode gateMod
 Bool IO::AdvantechASCIIChannel::ADAM4080GetGateMode(UInt8 addr, GateMode *gateMode)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '#';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = 'A';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 4)
 	{
 		*gateMode = (GateMode)(sbuff[3] - '0');
 		return true;
@@ -601,14 +578,13 @@ Bool IO::AdvantechASCIIChannel::ADAM4080GetGateMode(UInt8 addr, GateMode *gateMo
 Bool IO::AdvantechASCIIChannel::ADAM4080SetMaxCounter(UInt8 addr, UInt8 channel, UInt32 maxCounter)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '3';
 	*sptr++ = (UInt8)('0' + channel);
 	sptr = Text::StrHexVal32(sptr, maxCounter);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -618,13 +594,12 @@ Bool IO::AdvantechASCIIChannel::ADAM4080SetMaxCounter(UInt8 addr, UInt8 channel,
 Bool IO::AdvantechASCIIChannel::ADAM4080GetMaxCounter(UInt8 addr, UInt8 channel, UInt32 *maxCounter)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '3';
 	*sptr++ = (UInt8)('0' + channel);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 11)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 11)
 	{
 		*maxCounter = Text::StrHex2UInt32C(&sbuff[3]);
 		return true;
@@ -635,14 +610,13 @@ Bool IO::AdvantechASCIIChannel::ADAM4080GetMaxCounter(UInt8 addr, UInt8 channel,
 Bool IO::AdvantechASCIIChannel::ADAM4080StartCounter(UInt8 addr, UInt8 channel)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '5';
 	*sptr++ = (UInt8)('0' + channel);
 	*sptr++ = '1';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -652,14 +626,13 @@ Bool IO::AdvantechASCIIChannel::ADAM4080StartCounter(UInt8 addr, UInt8 channel)
 Bool IO::AdvantechASCIIChannel::ADAM4080StopCounter(UInt8 addr, UInt8 channel)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '5';
 	*sptr++ = (UInt8)('0' + channel);
 	*sptr++ = '0';
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -669,13 +642,12 @@ Bool IO::AdvantechASCIIChannel::ADAM4080StopCounter(UInt8 addr, UInt8 channel)
 Bool IO::AdvantechASCIIChannel::ADAM4080CounterIsStarted(UInt8 addr, UInt8 channel, Bool *started)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '5';
 	*sptr++ = (UInt8)('0' + channel);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 4)
 	{
 		*started = (sbuff[3] == '1');
 		return true;
@@ -686,13 +658,12 @@ Bool IO::AdvantechASCIIChannel::ADAM4080CounterIsStarted(UInt8 addr, UInt8 chann
 Bool IO::AdvantechASCIIChannel::ADAM4080ClearCounter(UInt8 addr, UInt8 channel)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '6';
 	*sptr++ = (UInt8)('0' + channel);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 3)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 3)
 	{
 		return true;
 	}
@@ -702,13 +673,12 @@ Bool IO::AdvantechASCIIChannel::ADAM4080ClearCounter(UInt8 addr, UInt8 channel)
 Bool IO::AdvantechASCIIChannel::ADAM4080CounterHasOverflow(UInt8 addr, UInt8 channel, Bool *overflow)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	*sptr++ = '$';
 	sptr = Text::StrHexByte(sptr, addr);
 	*sptr++ = '7';
 	*sptr++ = (UInt8)('0' + channel);
-	sptr = this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-	if (sptr && sbuff[0] == '!' && (sptr - sbuff) == 4)
+	if (this->SendCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff)).SetTo(sptr) && sbuff[0] == '!' && (sptr - sbuff) == 4)
 	{
 		*overflow = (sbuff[3] == '1');
 		return true;

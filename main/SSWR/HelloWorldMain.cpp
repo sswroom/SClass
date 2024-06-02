@@ -17,7 +17,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #endif
 	console.WriteLine(CSTR("Hello World"));
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = IO::Path::GetProcessFileName(sbuff);
+	sbuff[0] = 0;
+	UnsafeArray<UTF8Char> sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	console.WriteLine(CSTRP(sbuff, sptr));
 	return 0;
 }

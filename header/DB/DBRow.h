@@ -26,7 +26,7 @@ namespace DB
 		{
 			Int64 iVal;
 			Data::Timestamp ts;
-			const UTF8Char *str;
+			UnsafeArrayOpt<const UTF8Char> str;
 			Double dVal;
 			Math::Geometry::Vector2D *vec;
 			UInt8 *bin;
@@ -49,7 +49,7 @@ namespace DB
 		static DataType GetDataType(NN<Field> field);
 
 		Bool SetFieldNull(NN<Field> field);
-		Bool SetFieldStr(NN<Field> field, const UTF8Char *strValue);
+		Bool SetFieldStr(NN<Field> field, UnsafeArrayOpt<const UTF8Char> strValue);
 		Bool SetFieldInt64(NN<Field> field, Int64 intValue);
 		Bool SetFieldDouble(NN<Field> field, Double dblValue);
 		Bool SetFieldDate(NN<Field> field, const Data::Timestamp &ts);
@@ -57,7 +57,7 @@ namespace DB
 		Bool SetFieldBinary(NN<Field> field, const UInt8 *buff, UOSInt buffSize);
 
 		Bool IsFieldNull(NN<Field> field) const;
-		const UTF8Char *GetFieldStr(NN<Field> field) const;
+		UnsafeArrayOpt<const UTF8Char> GetFieldStr(NN<Field> field) const;
 		Int64 GetFieldInt64(NN<Field> field) const;
 		Double GetFieldDouble(NN<Field> field) const;
 		Data::Timestamp GetFieldDate(NN<Field> field) const;
@@ -73,7 +73,7 @@ namespace DB
 		DB::ColDef *GetFieldType(Text::CStringNN fieldName) const;
 		DataType GetFieldDataType(Text::CStringNN fieldName) const;
 		Bool SetValueNull(Text::CStringNN fieldName);
-		Bool SetValueStr(Text::CStringNN fieldName, const UTF8Char *strValue);
+		Bool SetValueStr(Text::CStringNN fieldName, UnsafeArrayOpt<const UTF8Char> strValue);
 		Bool SetValueInt64(Text::CStringNN fieldName, Int64 intValue);
 		Bool SetValueDouble(Text::CStringNN fieldName, Double dblValue);
 		Bool SetValueDate(Text::CStringNN fieldName, const Data::Timestamp &ts);
@@ -81,7 +81,7 @@ namespace DB
 		Bool SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UOSInt buffSize);
 
 		Bool IsNull(Text::CStringNN fieldName) const;
-		const UTF8Char *GetValueStr(Text::CStringNN fieldName) const;
+		UnsafeArrayOpt<const UTF8Char> GetValueStr(Text::CStringNN fieldName) const;
 		Int64 GetValueInt64(Text::CStringNN fieldName) const;
 		Double GetValueDouble(Text::CStringNN fieldName) const;
 		Data::Timestamp GetValueDate(Text::CStringNN fieldName) const;
@@ -94,7 +94,7 @@ namespace DB
 		Bool GetSinglePKI64(OutParam<Int64> key) const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		void AppendTableName(NN<Text::StringBuilderUTF8> sb) const;
-		void AppendVarNameForm(NN<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const;
+		void AppendVarNameForm(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> colName) const;
 
 		NN<TableDef> GetTableDef();
 	};

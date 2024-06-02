@@ -14,7 +14,7 @@ Double Math::Unit::Frequency::GetUnitRatio(FrequencyUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Frequency::GetUnitShortName(FrequencyUnit unit)
+Text::CStringNN Math::Unit::Frequency::GetUnitShortName(FrequencyUnit unit)
 {
 	switch (unit)
 	{
@@ -26,7 +26,7 @@ Text::CString Math::Unit::Frequency::GetUnitShortName(FrequencyUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Frequency::GetUnitName(FrequencyUnit unit)
+Text::CStringNN Math::Unit::Frequency::GetUnitName(FrequencyUnit unit)
 {
 	switch (unit)
 	{

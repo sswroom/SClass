@@ -11,7 +11,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 {
 	Text::StringBuilderUTF8 sbOut;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	AppendHeader(sbOut);
 	AppendMenu(sbOut);
 
@@ -73,7 +73,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 
 	Data::ArrayListNN<Text::String> nameList;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> name;
 	UOSInt i;
 	UOSInt j;
@@ -100,7 +100,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 
 	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-	if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
+	if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).SetTo(sptr))
 	{
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 		NN<Net::DNSClient::RequestAnswer> ans;
@@ -175,7 +175,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 
 	Data::ArrayListNN<Text::String> nameList;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> name;
 	UOSInt i;
 	UOSInt j;
@@ -201,7 +201,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 
 	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-	if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
+	if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).SetTo(sptr))
 	{
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 		NN<Net::DNSClient::RequestAnswer> ans;
@@ -276,7 +276,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 
 	Data::ArrayListNN<Text::String> nameList;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> name;
 	UOSInt i;
 	UOSInt j;
@@ -302,7 +302,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 
 	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-	if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
+	if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).SetTo(sptr))
 	{
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 		NN<Net::DNSClient::RequestAnswer> ans;
@@ -377,7 +377,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 
 	Data::ArrayListNN<Net::DNSProxy::TargetInfo> targetList;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::DNSProxy::TargetInfo> target;
 	UOSInt i;
 	UOSInt j;
@@ -508,7 +508,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 selCliId = 0;
 	NN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo> cli;
 	Optional<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo> selCli = 0;
@@ -521,7 +521,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	while (i < j)
 	{
 		cli = cliList.GetItemNoCheck(i);
-		sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr).Or(sbuff);
 		if (i > 0)
 		{
 			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
@@ -543,7 +543,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 
 	if (selCli.SetTo(cli))
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr).Or(sbuff);
 		sbOut.AppendC(UTF8STRC("<h3>"));
 		sbOut.AppendP(sbuff, sptr);
 		sbOut.AppendC(UTF8STRC("</h3>"));
@@ -587,7 +587,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr = Text::StrUOSInt(sbuff, me->core->GetRequestPerMin());
+	UnsafeArray<UTF8Char> sptr = Text::StrUOSInt(sbuff, me->core->GetRequestPerMin());
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/plain"));

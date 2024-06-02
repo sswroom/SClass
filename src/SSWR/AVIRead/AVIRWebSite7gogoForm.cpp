@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 	NN<SSWR::AVIRead::AVIRWebSite7gogoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite7gogoForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->txtChannelId->GetText(sb);
 	me->lvItems->ClearItems();
 	if (sb.GetLength() > 0)

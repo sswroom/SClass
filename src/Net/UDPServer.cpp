@@ -420,7 +420,7 @@ Bool Net::UDPServer::SupportV6()
 	return this->socV6.NotNull();
 }
 
-Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
+Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UnsafeArray<const UInt8> buff, UOSInt dataSize)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

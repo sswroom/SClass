@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnSNClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->ds18b20->ReadSensorID(buff))
 	{
 		sptr = Text::StrHexBytes(sbuff, buff, 7, ' ');
@@ -36,7 +36,7 @@ void SSWR::AVIRead::AVIRDS18B20Form::ReadData()
 {
 	Double temp;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->ds18b20->ConvTemp() && this->ds18b20->ReadTemp(&temp))
 	{
 		sptr = Text::StrDouble(sbuff, temp);
@@ -52,7 +52,7 @@ void SSWR::AVIRead::AVIRDS18B20Form::ReadData()
 SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;

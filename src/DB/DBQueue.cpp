@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
 
-DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, AnyType userData, AnyType userData2)
+DB::DBQueue::SQLCmd::SQLCmd(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	this->str = Text::String::New(sql, sqlLen);
 	this->hdlr = hdlr;
@@ -290,12 +290,12 @@ void DB::DBQueue::ToStop()
 	}
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen)
+void DB::DBQueue::AddSQL(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen)
 {
 	this->AddSQL(sql, sqlLen, Priority::Lowest, 0, 0, 0, 0);
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
+void DB::DBQueue::AddSQL(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2)
 {
 	if (priority > DB::DBQueue::Priority::Highest)
 		priority = DB::DBQueue::Priority::Highest;
@@ -429,7 +429,7 @@ UOSInt DB::DBQueue::GetConnCnt() const
 	return this->dbList.GetCount();
 }
 
-UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
+UnsafeArray<UTF8Char> DB::DBQueue::ToString(UnsafeArray<UTF8Char> buff)
 {
 	return this->name->ConcatTo(buff);
 }
@@ -496,7 +496,7 @@ UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 	return cnt;
 }
 
-UTF8Char *DB::DBQueue::DBDateTime(UTF8Char *buff, Data::DateTime *dat)
+UnsafeArray<UTF8Char> DB::DBQueue::DBDateTime(UnsafeArray<UTF8Char> buff, Data::DateTime *dat)
 {
 	NN<DB::DBTool> db;
 	if (this->db1.SetTo(db))
@@ -504,27 +504,27 @@ UTF8Char *DB::DBQueue::DBDateTime(UTF8Char *buff, Data::DateTime *dat)
 	return DB::DBUtil::SDBDateTime(buff, dat, DB::SQLType::Unknown, 0);
 }
 
-UTF8Char *DB::DBQueue::DBInt32(UTF8Char *buff, Int32 val)
+UnsafeArray<UTF8Char> DB::DBQueue::DBInt32(UnsafeArray<UTF8Char> buff, Int32 val)
 {
 	return DB::DBUtil::SDBInt32(buff, val, this->GetSQLType());
 }
 
-UTF8Char *DB::DBQueue::DBInt64(UTF8Char *buff, Int64 val)
+UnsafeArray<UTF8Char> DB::DBQueue::DBInt64(UnsafeArray<UTF8Char> buff, Int64 val)
 {
 	return DB::DBUtil::SDBInt64(buff, val, this->GetSQLType());
 }
 
-UTF8Char *DB::DBQueue::DBStrW(UTF8Char *buff, const WChar *val)
+UnsafeArray<UTF8Char> DB::DBQueue::DBStrW(UnsafeArray<UTF8Char> buff, const WChar *val)
 {
 	return DB::DBUtil::SDBStrW(buff, val, this->GetSQLType());
 }
 
-UTF8Char *DB::DBQueue::DBDbl(UTF8Char *buff, Double val)
+UnsafeArray<UTF8Char> DB::DBQueue::DBDbl(UnsafeArray<UTF8Char> buff, Double val)
 {
 	return DB::DBUtil::SDBDbl(buff, val, this->GetSQLType());
 }
 
-UTF8Char *DB::DBQueue::DBBool(UTF8Char *buff, Bool val)
+UnsafeArray<UTF8Char> DB::DBQueue::DBBool(UnsafeArray<UTF8Char> buff, Bool val)
 {
 	return DB::DBUtil::SDBBool(buff, val, this->GetSQLType());
 }
@@ -570,7 +570,7 @@ UInt32 DB::DBHandler::GetDataCnt()
 	return db->GetDataCnt();
 }
 
-void DB::DBHandler::WriteError(const UTF8Char *errMsg, NN<Text::String> sqlCmd)
+void DB::DBHandler::WriteError(UnsafeArray<const UTF8Char> errMsg, NN<Text::String> sqlCmd)
 {
 	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::LogHandler::LogLevel::Error);
 

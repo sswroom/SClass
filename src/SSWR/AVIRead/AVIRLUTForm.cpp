@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRLUTForm::OnChannelChg(AnyType userObj)
 void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt currCh = this->cboChannels->GetSelectedItem().GetUOSInt();
@@ -165,7 +165,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	this->lut = lut;

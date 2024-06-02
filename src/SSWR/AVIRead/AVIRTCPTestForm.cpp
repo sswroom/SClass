@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);
 	me->txtConnLeftCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt32(sbuff, me->threadCurrCnt);

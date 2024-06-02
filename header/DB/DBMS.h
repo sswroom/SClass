@@ -89,7 +89,7 @@ namespace DB
 		typedef struct
 		{
 			NN<Text::String> name;
-			const UTF8Char *sqlPtr;
+			UnsafeArray<const UTF8Char> sqlPtr;
 			Text::String *asName;
 		} SQLColumn;
 		
@@ -111,19 +111,19 @@ namespace DB
 		Sync::Mutex sessMut;
 		Data::FastMapNN<Int32, SessionInfo> sessMap;
 
-		static const UTF8Char *SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql);
-		static Bool StrLike(const UTF8Char *val, const UTF8Char *likeStr);
+		static UnsafeArrayOpt<const UTF8Char> SQLParseName(UnsafeArray<UTF8Char> nameBuff, UnsafeArray<const UTF8Char> sql);
+		static Bool StrLike(UnsafeArray<const UTF8Char> val, UnsafeArray<const UTF8Char> likeStr);
 
 		Bool SysVarExist(NN<SessionInfo> sess, Text::CStringNN varName, AccessType atype);
 		Bool SysVarGet(NN<Text::StringBuilderUTF8> sb, NN<SessionInfo> sess, Text::CStringNN varName);
-		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
+		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName);
 		Bool SysVarSet(NN<SessionInfo> sess, Bool isGlobal, Text::CStringNN varName, Text::String *val);
 
 		Bool UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<SessionInfo> sess, Text::CStringNN varName);
-		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
+		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, UnsafeArray<const UTF8Char> varName, Text::CString colName);
 		Bool UserVarSet(NN<SessionInfo> sess, Text::CStringNN varName, Optional<Text::String> val);
 
-		Text::String *Evals(const UTF8Char **valPtr, NN<SessionInfo> sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
+		Text::String *Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<SessionInfo> sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
 	public:
 		DBMS(Text::CString versionStr, NN<IO::LogTool> log);
 		virtual ~DBMS();
@@ -131,12 +131,12 @@ namespace DB
 		NN<Text::String> GetVersion() const;
 		NN<IO::LogTool> GetLogTool();
 
-		Bool UserAdd(Int32 userId, Text::CStringNN userName, Text::CString password, Text::CString host);
-		Int32 UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NN<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, const UTF8Char *database);
+		Bool UserAdd(Int32 userId, Text::CStringNN userName, Text::CStringNN password, Text::CStringNN host);
+		Int32 UserLoginMySQL(Int32 sessId, Text::CStringNN userName, UnsafeArray<const UInt8> randomData, UnsafeArray<const UInt8> passHash, NN<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, UnsafeArrayOpt<const UTF8Char> database);
 
-		DB::DBReader *ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt sqlLen);
+		DB::DBReader *ExecuteReader(Int32 sessId, UnsafeArray<const UTF8Char> sql, UOSInt sqlLen);
 		void CloseReader(DB::DBReader *r);
-		UTF8Char *GetErrMessage(Int32 sessId, UTF8Char *msgBuff);
+		UnsafeArray<UTF8Char> GetErrMessage(Int32 sessId, UnsafeArray<UTF8Char> msgBuff);
 
 		Optional<SessionInfo> SessGet(Int32 sessId);
 		void SessEnd(Int32 sessId);

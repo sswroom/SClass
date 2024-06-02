@@ -6,7 +6,7 @@ void UI::GUIComboBoxUtil::AddYearItems(NN<UI::GUIComboBox> cbo, UOSInt nYears)
 {
 	UOSInt k;
 	UTF8Char sbuff[6];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	OSInt j = dt.GetYear();
@@ -44,7 +44,7 @@ void UI::GUIComboBoxUtil::AddDayItems(NN<UI::GUIComboBox> cbo)
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	UTF8Char sbuff[6];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt k;
 	UOSInt i = 0;
 	UOSInt j = dt.GetDay();

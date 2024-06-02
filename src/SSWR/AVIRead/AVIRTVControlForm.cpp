@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Int32 cmdValue;
 		NN<CommandInfo> cmdInfo;
 		if (!me->cboCommand->GetSelectedItem().GetOpt<CommandInfo>().SetTo(cmdInfo))
@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(AnyType userObj)
 SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayList<IO::TVControl::TVType> tvTypes;

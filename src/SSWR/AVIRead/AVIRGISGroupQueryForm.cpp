@@ -30,7 +30,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::ArrayListNN<Map::MapDrawLayer> layers;
 		NN<Map::MapDrawLayer> lyr;
 		NN<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
@@ -143,7 +143,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 			while (i < j)
 			{
 				sbuff[0] = 0;
-				sptr = lyr->GetColumnName(sbuff, i);
+				sptr = lyr->GetColumnName(sbuff, i).Or(sbuff);
 				me->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
 				sb.ClearStr();
 				lyr->GetString(sb, nameArr, id, i);

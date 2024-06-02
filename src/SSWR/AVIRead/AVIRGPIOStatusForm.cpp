@@ -50,8 +50,8 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientCont
 	if (!this->ctrl->IsError())
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
 		UOSInt i = 0;
 		UOSInt j = this->ctrl->GetPinCount();
 		this->states = MemAlloc(SSWR::AVIRead::AVIRGPIOStatusForm::PinState, j);

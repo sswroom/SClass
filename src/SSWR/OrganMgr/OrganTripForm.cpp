@@ -10,7 +10,7 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	NN<Trip> trip;
 	NN<Data::ArrayListNN<Trip>> tripList = this->env->TripGetList();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	this->updating = true;
@@ -58,7 +58,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(AnyType userObj)
 	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime frDate;
 	Data::DateTime toDate;
 	Data::Timestamp ifrDate;

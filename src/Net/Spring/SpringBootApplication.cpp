@@ -6,7 +6,7 @@
 #include "Manage/Process.h"
 #include "Net/Spring/SpringBootApplication.h"
 
-Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName) : consoleLog(console)
+Net::Spring::SpringBootApplication::SpringBootApplication(Text::CStringNN appName) : consoleLog(console)
 {
 	this->log.AddLogHandler(this->consoleLog, IO::LogHandler::LogLevel::Raw);
 	this->cfg = IO::JavaProperties::ParseAppProp();
@@ -23,12 +23,12 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	}
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Text::PString sarr[2];
 	UOSInt i;
 	sb.Append(this->activeProfile);
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("application-"));
 	i = 2;
 	sarr[1] = sb;
@@ -49,8 +49,7 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	sb.AppendC(UTF8STRC("Starting "));
 	sb.Append(appName);
 	sb.AppendC(UTF8STRC(" on "));
-	sptr = Manage::Computer::GetHostName(sbuff);
-	if (sptr)
+	if (Manage::Computer::GetHostName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
@@ -59,13 +58,12 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	sb.AppendC(UTF8STRC(" ("));
 	IO::Path::GetProcessFileName(sb);
 	sb.AppendC(UTF8STRC(" started by "));
-	sptr = Manage::ComputerUser::GetProcessUser(sbuff);
-	if (sptr)
+	if (Manage::ComputerUser::GetProcessUser(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
 	sb.AppendC(UTF8STRC(" in "));
-	sptr = IO::Path::GetCurrDirectory(sbuff);
+	sptr = IO::Path::GetCurrDirectory(sbuff).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendUTF8Char(')');
 	this->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);

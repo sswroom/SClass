@@ -13,7 +13,7 @@ namespace Media
 			UOSInt count;
 			UInt32 state;
 
-			UTF8Char *sbuff;
+			UnsafeArrayOpt<UTF8Char> sbuff;
 			UOSInt devNo;
 		};
 	private:
@@ -39,7 +39,7 @@ namespace Media
 		static Bool GetDeviceInfo(NN<DeviceInfo> devInfo);
 	public:
 		static UOSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
 		
 		void OnEvent();
 

@@ -14,7 +14,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 	if (sess)
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Map::NameArray *nameArr;
 		Data::ArrayListInt64 idArr;
 		UOSInt colCnt;
@@ -29,7 +29,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 		i = 0;
 		while (i < colCnt)
 		{
-			if ((sptr = routeLyr->GetColumnName(sbuff, i)) != 0)
+			if (routeLyr->GetColumnName(sbuff, i).SetTo(sptr))
 			{
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
 				{
@@ -99,7 +99,7 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 {
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
-	const UTF8Char *colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};
+	UnsafeArrayOpt<const UTF8Char> colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};
 	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
 	UOSInt colSize[] = {11, 32, 255};
 	UOSInt colDP[] = {0, 10, 0};
@@ -110,7 +110,7 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 	if (this->db->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UTF8Char sbuff2[64];
 		OSInt roadRouteIdCol = -1;
 		OSInt locationCol = -1;
@@ -119,12 +119,12 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 		OSInt remarksCol = -1;
 		UOSInt i;
 		UOSInt j;
-		UTF8Char *strs[3];
+		UnsafeArray<UTF8Char> strs[3];
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
 		{
-			if ((sptr = r->GetName(i, sbuff)) != 0)
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
 				{
@@ -183,7 +183,7 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 					}
 					strs[2] = sbuff;
 					NEW_CLASSNN(pt, Math::Geometry::Point(this->csys->GetSRID(), coord));
-					lyr->AddVector(pt, (const UTF8Char**)strs);
+					lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(strs)));
 				}
 			}
 		}

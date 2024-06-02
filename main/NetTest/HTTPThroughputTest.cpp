@@ -54,7 +54,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 	Double timeReq;
 	Double timeResp;
 	UInt8 buff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
@@ -68,6 +68,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 		Manage::HiResClock respClk;
 		if (kaConn)
 		{
+			url = CSTR(URL);
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, false);
 			while (!status->threadToStop)
 			{
@@ -311,7 +312,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		printf("Connection Type: close\r\n");
 	}
-	printf("URL: %s\r\n", paramUrl.v);
+	printf("URL: %s\r\n", paramUrl.v.Ptr());
 	printf("Thread Cnt = %d\r\n", (UInt32)threadCnt);
 	printf("Total Request = %d\r\n", (UInt32)paramConnCnt);
 	printf("Succ Count = %lld\r\n", connCnt);

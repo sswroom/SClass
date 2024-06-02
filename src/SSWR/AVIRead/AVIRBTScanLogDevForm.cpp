@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		{
 			IO::BufferedOutputStream stm(fs, 8192);
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const IO::BTScanLog::DevEntry> entry) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 mac[8];
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Bluetooth Scan Log Entry"));

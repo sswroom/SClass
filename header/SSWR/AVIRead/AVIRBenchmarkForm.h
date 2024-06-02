@@ -61,7 +61,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCPU;
 			NN<UI::GUIListView> lvRAM;
 
-			static UTF8Char *ByteDisp(UTF8Char *sbuff, UOSInt byteSize);
+			static UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UOSInt byteSize);
 			void StartTest(UOSInt startSize, UOSInt buffSize);
 			void ClearResult();
 			static void __stdcall OnStartClicked(AnyType userObj);

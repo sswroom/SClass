@@ -13,7 +13,7 @@ namespace Media
 		{
 			Int32 devType;
 			UOSInt devId;
-			const UTF8Char *devName;
+			UnsafeArray<const UTF8Char> devName;
 		} DeviceInfo;
 	private:
 		struct ClassData;
@@ -26,7 +26,7 @@ namespace Media
 		void FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList);
 		Optional<Media::IVideoCapture> CreateDevice(Int32 devType, UOSInt devId);
 
-		Text::CString GetDevTypeName(Int32 devType);
+		Text::CStringNN GetDevTypeName(Int32 devType);
 	};
 }
 #endif

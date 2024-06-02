@@ -239,7 +239,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = me->cboYAxis->GetSelectedIndex();
 	UOSInt col;
 	if (i == INVALID_INDEX)
@@ -248,7 +248,8 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 		return;
 	}
 	col = me->cboYAxis->GetItem(i).GetUOSInt();
-	sptr = me->cboYAxis->GetItemText(sbuff, i);
+	sbuff[0] = 0;
+	sptr = me->cboYAxis->GetItemText(sbuff, i).Or(sbuff);
 	me->lbYAxis->AddItem(CSTRP(sbuff, sptr), (void*)col);
 	me->yCols->Add((UInt32)col);
 }
@@ -285,7 +286,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType u
 	}
 }
 
-SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CStringNN tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Line Chart"));
 	this->SetFont(0, 0, 8.25, false);

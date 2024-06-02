@@ -136,7 +136,7 @@ UI::ListBoxLogger::~ListBoxLogger()
 	}
 	MemFree(this->logArr);
 	MemFree(this->tmpLogArr);
-	SDEL_TEXT(this->timeFormat);
+	SDEL_TEXTC(this->timeFormat);
 	
 }
 
@@ -148,11 +148,12 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CStringNN
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->timeFormat)
+	UnsafeArray<const Char> timeFormat;
+	if (this->timeFormat.SetTo(timeFormat))
 	{
-		sptr = logTime.ToString(sbuff, this->timeFormat);
+		sptr = logTime.ToString(sbuff, timeFormat);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
@@ -176,8 +177,8 @@ void UI::ListBoxLogger::LogAdded(const Data::Timestamp &logTime, Text::CStringNN
 void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	SDEL_TEXT(this->timeFormat);
-	this->timeFormat = Text::StrCopyNew(timeFormat);
+	SDEL_TEXTC(this->timeFormat);
+	this->timeFormat = Text::StrCopyNewCh(timeFormat);
 	mutUsage.EndUse();
 }
 

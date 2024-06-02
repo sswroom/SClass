@@ -2,7 +2,7 @@
 #include "Net/WebServer/WebSocketServerStream.h"
 #include "Sync/MutexUsage.h"
 
-Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize)
+Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UInt8 packetBuff[130];
 	Sync::MutexUsage mutUsage(this->sendMut);
@@ -10,7 +10,7 @@ Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, const UInt8
 	{
 		packetBuff[0] = (UInt8)(0x80 | (opcode));
 		packetBuff[1] = (UInt8)buffSize;
-		MemCopyNO(&packetBuff[2], buff, buffSize);
+		MemCopyNO(&packetBuff[2], buff.Ptr(), buffSize);
 		return this->resp->Write(packetBuff, buffSize + 2) == (buffSize + 2);
 	}
 	else if (buffSize < 65536)
@@ -19,7 +19,7 @@ Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, const UInt8
 		packBuff[0] = (UInt8)(0x80 | (opcode));
 		packBuff[1] = 0x7E;
 		WriteMUInt16(&packBuff[2], (UInt16)buffSize);
-		MemCopyNO(&packBuff[4], buff, buffSize);
+		MemCopyNO(&packBuff[4], buff.Ptr(), buffSize);
 		Bool succ = this->resp->Write(packetBuff, buffSize + 4) == (buffSize + 4);
 		MemFree(packBuff);
 		return succ;
@@ -30,14 +30,14 @@ Bool Net::WebServer::WebSocketServerStream::SendPacket(UInt8 opcode, const UInt8
 		packBuff[0] = (UInt8)(0x80 | (opcode));
 		packBuff[1] = 0x7F;
 		WriteMUInt64(&packBuff[2], buffSize);
-		MemCopyNO(&packBuff[10], buff, buffSize);
+		MemCopyNO(&packBuff[10], buff.Ptr(), buffSize);
 		Bool succ = this->resp->Write(packetBuff, buffSize + 10) == (buffSize + 10);
 		MemFree(packBuff);
 		return succ;
 	}
 }
 
-void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize)
+void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	switch (opcode & 15)
 	{
@@ -84,7 +84,7 @@ UOSInt Net::WebServer::WebSocketServerStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::WebServer::WebSocketServerStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::WebServer::WebSocketServerStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->SendPacket(2, buff, size))
 		return size;
@@ -98,7 +98,7 @@ Int32 Net::WebServer::WebSocketServerStream::Flush()
 
 void Net::WebServer::WebSocketServerStream::Close()
 {
-	this->SendPacket(8, 0, 0);
+	this->SendPacket(8, U8STR(""), 0);
 }
 
 Bool Net::WebServer::WebSocketServerStream::Recover()

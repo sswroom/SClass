@@ -32,7 +32,7 @@ namespace IO
 			virtual ~MDT701STVControl();
 
 			virtual Bool SendInstruction(CommandType ct);
-			virtual Bool SendGetCommand(CommandType ct, Int32 *val, UTF8Char *sbuff);
+			virtual Bool SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff);
 			virtual Bool SendSetCommand(CommandType ct, Int32 val);
 			virtual void GetSupportedCmd(Data::ArrayList<CommandType> *cmdList, Data::ArrayList<CommandFormat> *cmdFormats);
 			static Bool GetInfo(IO::TVControl::TVInfo *info);

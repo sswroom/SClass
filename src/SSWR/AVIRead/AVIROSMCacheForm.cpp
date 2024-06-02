@@ -5,7 +5,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIROSMCacheForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::OSM::OSMCacheHandler::CacheStatus status;
 	me->hdlr->GetStatus(&status);
 	sptr = Text::StrInt32(sbuff, status.reqCnt);

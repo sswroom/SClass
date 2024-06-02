@@ -21,7 +21,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	if (j > 0)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::Timestamp ts = 0;
 		Text::StringBuilderUTF8 sb;
 		while (i < j)
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(AnyType userObj, UOS
 SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->logFile = logFile;
 	this->logLevel = IO::LogHandler::LogLevel::Raw;
 	this->core = core;
@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRLogFileForm::~AVIRLogFileForm()
 void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	switch (cmdId)
 	{
 	case MNU_LOG_SAVE:

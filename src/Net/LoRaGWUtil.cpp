@@ -168,7 +168,7 @@ UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAd
 void Net::LoRaGWUtil::GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, const UInt8 *data, UOSInt dataSize)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	sb->AppendC(UTF8STRC("{\"rxpk\":[{\"tmst\":"));
 	sb->AppendU32((UInt32)(ts.inst.sec * 1000000) + ts.inst.nanosec / 1000);
@@ -204,7 +204,7 @@ void Net::LoRaGWUtil::GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, U
 void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb)
 {
 	UTF8Char sbuff[40];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb->AppendC(UTF8STRC("{\"stat\":{\"time\":\""));
 	sptr = ts.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 	sb->AppendP(sbuff, sptr);
@@ -226,7 +226,7 @@ void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Ti
 void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb, Double lat, Double lon, Int32 altitude)
 {
 	UTF8Char sbuff[40];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb->AppendC(UTF8STRC("{\"stat\":{\"time\":\""));
 	sptr = ts.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 	sb->AppendP(sbuff, sptr);

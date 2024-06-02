@@ -43,9 +43,9 @@ namespace IO
 			virtual ~RockwellModemController();
 
 			// Voice Commands
-			UTF8Char *VoiceGetManufacturer(UTF8Char *manu);
-			UTF8Char *VoiceGetModel(UTF8Char *model);
-			UTF8Char *VoiceGetRevision(UTF8Char *ver);
+			UnsafeArrayOpt<UTF8Char> VoiceGetManufacturer(UnsafeArray<UTF8Char> manu);
+			UnsafeArrayOpt<UTF8Char> VoiceGetModel(UnsafeArray<UTF8Char> model);
+			UnsafeArrayOpt<UTF8Char> VoiceGetRevision(UnsafeArray<UTF8Char> ver);
 			Bool VoiceGetBaudRate(OutParam<Int32> baudRate);
 			Bool VoiceSetBaudRate(Int32 baudRate);
 			Bool VoiceGetCallerIDType(OutParam<CallerIDType> callerIDType);
@@ -57,16 +57,16 @@ namespace IO
 			Bool VoiceSetBitsPerSample(Int32 bps);
 			Bool VoiceGetToneDur(OutParam<Int32> durMS);
 			Bool VoiceSetToneDur(Int32 durMS);
-			UTF8Char *VoiceGetCompression(UTF8Char *comp);
+			UnsafeArrayOpt<UTF8Char> VoiceGetCompression(UnsafeArray<UTF8Char> comp);
 			Bool VoiceGetVoiceLineType(OutParam<VoiceLineType> voiceLineType);
 			Bool VoiceSetVoiceLineType(VoiceLineType voiceLineType);
-			DialResult VoiceToneDial(const UTF8Char *phoneNum);
-			DialResult VoicePulseDial(const UTF8Char *phoneNum);
+			DialResult VoiceToneDial(UnsafeArray<const UTF8Char> phoneNum);
+			DialResult VoicePulseDial(UnsafeArray<const UTF8Char> phoneNum);
 
 		public:
-			static UTF8Char *GetVoiceTypeString(UTF8Char *buff, VoiceType voiceType);
-			static UTF8Char *GetCallerIDTypeString(UTF8Char *buff, CallerIDType callerIDType);
-			static UTF8Char *GetVoiceLineTypeString(UTF8Char *buff, VoiceLineType voiceLineType);
+			static UnsafeArray<UTF8Char> GetVoiceTypeString(UnsafeArray<UTF8Char> buff, VoiceType voiceType);
+			static UnsafeArray<UTF8Char> GetCallerIDTypeString(UnsafeArray<UTF8Char> buff, CallerIDType callerIDType);
+			static UnsafeArray<UTF8Char> GetVoiceLineTypeString(UnsafeArray<UTF8Char> buff, VoiceLineType voiceLineType);
 		};
 	}
 }

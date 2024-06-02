@@ -19,8 +19,8 @@ namespace Math
 			} FrequencyUnit;
 		public:
 			static Double GetUnitRatio(FrequencyUnit unit);
-			static Text::CString GetUnitShortName(FrequencyUnit unit);
-			static Text::CString GetUnitName(FrequencyUnit unit);
+			static Text::CStringNN GetUnitShortName(FrequencyUnit unit);
+			static Text::CStringNN GetUnitName(FrequencyUnit unit);
 			static Double GetConvertRatio(FrequencyUnit fromUnit, FrequencyUnit toUnit);
 			static Double Convert(FrequencyUnit fromUnit, FrequencyUnit toUnit, Double fromValue);
 		};

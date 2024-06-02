@@ -51,7 +51,7 @@ NN<Data::DateTime> tmpDt;
 void __stdcall PlayThread(NN<Sync::Thread> thread)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Parser::FileParser::WAVParser parser;
 	Media::RefClock *clk;
 	Data::DateTime currDt;
@@ -236,7 +236,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::String **sel;
 	UOSInt i;
 	UOSInt devCnt;
@@ -253,7 +253,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sel = MemAlloc(Text::String*, devCnt);
 	while (i-- > 0)
 	{
-		sptr = Media::AudioDevice::GetDeviceName(buff, i);
+		sptr = Media::AudioDevice::GetDeviceName(buff, i).Or(buff);
 		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff)).Ptr();
 	}
 	if (timeCli->GetServerTime(NTPHOST, 123, tmpDt))

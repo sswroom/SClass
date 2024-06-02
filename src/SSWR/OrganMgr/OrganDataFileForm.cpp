@@ -59,7 +59,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(AnyType use
 {
 	NN<OrganDataFileForm> me = userObj.GetNN<OrganDataFileForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DataFileInfo> dataFile;
 	if (!me->lvFiles->GetSelectedItem().GetOpt<DataFileInfo>().SetTo(dataFile))
 		return;
@@ -78,7 +78,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	i = 0;
 	j = dataFiles->GetCount();
 	while (i < j)

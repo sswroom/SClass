@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	UInt16 webPort = 8080;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	
 	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, argc);
@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		Text::StrToUInt16(argv[1], webPort);
 	}
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Error.txt"));
 	Manage::ExceptionRecorder exHdlr(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART);
 	{

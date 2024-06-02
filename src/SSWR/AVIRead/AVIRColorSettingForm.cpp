@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(AnyType user
 	if (me->inited)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Media::ColorProfile::CommonProfileType cpt = (Media::ColorProfile::CommonProfileType)me->cboMonProfile->GetSelectedItem().GetOSInt();
 		if (cpt == Media::ColorProfile::CPT_FILE)
 		{
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(AnyType 
 	if (me->inited)
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ColorMonProfile", false);
 		dlg->AddFilter(CSTR("*.icc"), CSTR("ICC File"));
 		dlg->AddFilter(CSTR("*.icm"), CSTR("ICM File"));
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonCustomClicked(AnyType u
 	if (me->inited)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		{
 			SSWR::AVIRead::AVIRColorCustomForm frm(0, me->ui, me->core, me->monColor);
 			frm.ShowDialog(me);
@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCancelClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedBChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalRedBV->SetText(CSTRP(sbuff, sptr));
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedBChg(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedCChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalRedCV->SetText(CSTRP(sbuff, sptr));
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedCChg(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedGChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedGChg(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenBChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalGreenBV->SetText(CSTRP(sbuff, sptr));
@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenBChg(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenCChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalGreenCV->SetText(CSTRP(sbuff, sptr));
@@ -218,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenCChg(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenGChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenGChg(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueBChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalBlueBV->SetText(CSTRP(sbuff, sptr));
@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueBChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueCChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalBlueCV->SetText(CSTRP(sbuff, sptr));
@@ -258,7 +258,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueCChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueGChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -272,7 +272,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueGChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonVBrigChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonVBrigV->SetText(CSTRP(sbuff, sptr));
@@ -285,7 +285,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonVBrigChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonPBrigChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonPBrigV->SetText(CSTRP(sbuff, sptr));
@@ -298,7 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonPBrigChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonRBrigChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonRBrigV->SetText(CSTRP(sbuff, sptr));
@@ -311,7 +311,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonRBrigChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonGBrigChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonGBrigV->SetText(CSTRP(sbuff, sptr));
@@ -324,7 +324,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonGBrigChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonBBrigChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonBBrigV->SetText(CSTRP(sbuff, sptr));
@@ -337,7 +337,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonBBrigChg(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVBrigChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -351,7 +351,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVBrigChg(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVContChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -365,7 +365,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVContChg(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVSatChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -379,7 +379,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVSatChg(AnyType userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVYGammaChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -393,7 +393,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVYGammaChg(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVCGammaChg(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRColorSettingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorSettingForm>();
 	Double v = UOSInt2Double(newPos) * 0.001;
 	sptr = Text::StrDouble(sbuff, v);
@@ -471,7 +471,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	Media::MonitorInfo monInfo(this->hMon);
 	Text::String *monName = monInfo.GetDesc();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	this->normalClose = false;
 	this->inited = false;

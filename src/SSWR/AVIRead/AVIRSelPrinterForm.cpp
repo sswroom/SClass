@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
-	if ((sptr = me->cboPrinter->GetSelectedItemText(sbuff)) != 0)
+	if (me->cboPrinter->GetSelectedItemText(sbuff).SetTo(sptr))
 	{
 		SDEL_CLASS(me->currPrinter);
 		NEW_CLASS(me->currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(AnyType userObj)
 SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 512, 104, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = 0;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 
@@ -73,12 +73,15 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientCont
 	j = Media::Printer::GetPrinterCount();
 	while (i < j)
 	{
-		sptr = Media::Printer::GetPrinterName(sbuff, i);
+		sbuff[0] = 0;
+		sptr = Media::Printer::GetPrinterName(sbuff, i).Or(sbuff);
 		this->cboPrinter->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 	if (j > 0)
 	{
+		sbuff[0] = 0;
+		sptr = Media::Printer::GetPrinterName(sbuff, i).Or(sbuff);
 		this->cboPrinter->SetSelectedIndex(0);
 		NEW_CLASS(this->currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
 		if (this->currPrinter->IsError())

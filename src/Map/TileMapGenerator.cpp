@@ -20,9 +20,9 @@ void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UI
 	view->SetCenterXY(Math::Coord2DDbl((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464));
 }
 
-UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, Text::CString ext)
+UnsafeArray<UTF8Char> Map::TileMapGenerator::GenFileName(UnsafeArray<UTF8Char> sbuff, Int32 x, Int32 y, UInt32 scale, Text::CStringNN ext)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcat(sbuff, this->tileDir);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -45,7 +45,7 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst)
 {
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
@@ -70,7 +70,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 		sptr = Text::StrInt32(sptr, yOfst);
 		writer->WriteLine(CSTRP(sbuff2, sptr));
 
-		while ((sptr = reader.ReadLine(sbuff2, 509)) != 0)
+		while (reader.ReadLine(sbuff2, 509).SetTo(sptr))
 		{
 			sptr = reader.GetLastLineBreak(sptr);
 			writer->Write(CSTRP(sbuff2, sptr));
@@ -81,7 +81,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::MapConfig2TGen::DrawParam params;
 	NN<Media::DrawImage> dimg2;
 	Bool isLayerEmpty;
@@ -157,7 +157,7 @@ Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, UInt32 scale, UIn
 Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Int32 x = (Int32)(tileId >> 32);
 	Int32 y = (Int32)(tileId & 0xffffffffLL);

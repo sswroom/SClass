@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->UpdateUI();
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
@@ -81,7 +81,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 	Optional<FileStatus> status = 0;
 	NN<FileStatus> nnstatus;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	IO::FileExporter *exporter;
@@ -203,7 +203,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 {
 	UInt8 hashBuff[64];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->fileListChg)
 	{
 		UOSInt i;

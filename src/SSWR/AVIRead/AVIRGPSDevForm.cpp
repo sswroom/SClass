@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -680,7 +680,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 		if (cmdSize > 100)
 		{
 			UTF8Char sbuff[32];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UInt32 startSize = ReadUInt32(&cmd[0]);
 			UOSInt i;
 			UOSInt j;
@@ -828,7 +828,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 		if (cmdSize >= 96)
 		{
 			UTF8Char sbuff[32];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UInt32 startSize = ReadUInt32(&cmd[0]);
 			UOSInt i;
 			UOSInt j;
@@ -948,7 +948,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 		if (cmdSize >= 24)
 		{
 			UTF8Char sbuff[32];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UInt32 startSize = ReadUInt32(&cmd[0]);
 			UOSInt i;
 			UOSInt j;

@@ -90,11 +90,11 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
-	UTF8Char *sptr3;
-	UTF8Char *sarr[11];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sarr[11];
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
@@ -138,7 +138,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					imgSett->cropTop = 0;
 					imgSett->cropWidth = 0;
 					imgSett->cropHeight = 0;
-					imgSett = imgSettMap.Put(sarr[0], imgSett);
+					imgSett = imgSettMap.Put(UnsafeArray<const UTF8Char>(sarr[0]), imgSett);
 					if (imgSett)
 						MemFree(imgSett);
 				}
@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					imgSett->cropTop = Text::StrToInt32(sarr[7]);
 					imgSett->cropWidth = Text::StrToInt32(sarr[8]);
 					imgSett->cropHeight = Text::StrToInt32(sarr[9]);
-					imgSett = imgSettMap.Put(sarr[0], imgSett);
+					imgSett = imgSettMap.Put(UnsafeArray<const UTF8Char>(sarr[0]), imgSett);
 					if (imgSett)
 						MemFree(imgSett);
 				}
@@ -175,7 +175,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
 		UOSInt currCnt = 0;
-		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && (sptr3 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr3))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -213,7 +213,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						status->filePath = Text::String::NewP(sbuff, sptr3);
 						status->cacheFile = Text::String::NewP(sbuff2, sptr2End);
 						status->fileName = status->filePath->ToCString().Substring((UOSInt)(sptr - sbuff));
-						imgSett = imgSettMap.Get(sptr);
+						imgSett = imgSettMap.Get(UnsafeArray<const UTF8Char>(sptr));
 						if (imgSett)
 						{
 							MemCopyNO(&status->setting, imgSett, sizeof(ImageSetting));
@@ -264,8 +264,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	if (this->folderPath == 0)
 		return;
 
@@ -346,8 +346,8 @@ void SSWR::AVIRead::AVIRImageControl::ThreadCancelTasks()
 void SSWR::AVIRead::AVIRImageControl::EndFolder()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	NN<Media::DrawImage> img;
@@ -365,7 +365,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -412,26 +412,28 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NN<Text::StringBuilderUTF8> 
 {
 	Text::CString make = exif->GetPhotoMake();
 	Text::CString model = exif->GetPhotoModel();
-	if (make.v && model.v)
+	Text::CStringNN nnmake;
+	Text::CStringNN nnmodel;
+	if (make.SetTo(nnmake) && model.SetTo(nnmodel))
 	{
-		if (model.StartsWith(make.v, make.leng))
+		if (nnmodel.StartsWith(nnmake.v, nnmake.leng))
 		{
-			sb->Append(model);
+			sb->Append(nnmodel);
 		}
 		else
 		{
-			sb->Append(make);
+			sb->Append(nnmake);
 			sb->AppendC(UTF8STRC(" "));
-			sb->Append(model);
+			sb->Append(nnmodel);
 		}
 	}
-	else if (make.v)
+	else if (make.SetTo(nnmake))
 	{
-		sb->Append(make);
+		sb->Append(nnmake);
 	}
-	else if (model.v)
+	else if (model.SetTo(nnmodel))
 	{
-		sb->Append(model);
+		sb->Append(nnmodel);
 	}
 	else
 	{
@@ -443,7 +445,7 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NN<Text::StringBuilderUTF8> 
 Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRImageControl::CameraCorr> camera;
 	Sync::MutexUsage mutUsage(this->cameraMut);
 	if (this->cameraMap.Get(cameraName).SetTo(camera))
@@ -457,7 +459,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraNa
 	camera->gammaParam = 0;
 	this->cameraMap.Put(cameraName, camera);
 
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, cameraName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".gamma"));
 	Text::StringBuilderUTF8 sb;
@@ -892,7 +894,7 @@ Text::String *SSWR::AVIRead::AVIRImageControl::GetFolder()
 Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	UOSInt i;
 	UOSInt j;
@@ -951,7 +953,7 @@ void SSWR::AVIRead::AVIRImageControl::SetProgressHandler(ProgressUpdated hdlr, A
 	this->progHdlrObj = userObj;
 }
 
-Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *fileName)
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(UnsafeArray<const UTF8Char> fileName)
 {
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Optional<Media::StaticImage> outImg = 0;
@@ -986,7 +988,7 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(const UT
 	return outImg;
 }
 
-Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char *fileName)
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(UnsafeArray<const UTF8Char> fileName)
 {
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Optional<Media::StaticImage> outImg = 0;
@@ -1144,7 +1146,7 @@ UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 		if (status->setting.flags & 1)
 		{
 			status2 = MemAlloc(ImageStatus, 1);
-			MemCopyNO(status2, status, sizeof(ImageStatus));
+			*status2 = *status;
 			Sync::MutexUsage exportMutUsage(this->exportMut);
 			this->exportList.Put(status2);
 			exportMutUsage.EndUse();
@@ -1166,7 +1168,7 @@ UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 
 void SSWR::AVIRead::AVIRImageControl::MoveUp()
 {
-	NN<Data::SortableArrayList<const UTF8Char *>> nameList;
+	NN<Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList;
 	NN<const Data::ArrayList<ImageStatus *>> imgList;
 	ImageStatus *status;
 	OSInt i;
@@ -1232,7 +1234,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 
 void SSWR::AVIRead::AVIRImageControl::MoveDown()
 {
-	NN<Data::SortableArrayList<const UTF8Char *>> nameList;
+	NN<Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList;
 	NN<const Data::ArrayList<ImageStatus *>> imgList;
 	ImageStatus *status;
 	OSInt i;

@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(AnyType use
 {
 	NN<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 mac[8];
 	NN<BTDevice> dev;
 	if (me->lvDevices->GetItem(index).GetOpt<BTDevice>().SetTo(dev))
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 	UOSInt j;
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<BTDevice> dev;
 	NN<Text::String> s;
 

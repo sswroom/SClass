@@ -2373,12 +2373,12 @@ UInt8 Text::StrHex2UInt8C(UnsafeArray<const UTF8Char> str)
 	return outVal;
 }
 
-UOSInt Text::StrHex2Bytes(UnsafeArray<const UTF8Char> str, UInt8 *buff)
+UOSInt Text::StrHex2Bytes(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff)
 {
 	return StrHex2BytesS(str, buff, ' ');
 }
 
-UOSInt Text::StrHex2BytesS(UnsafeArray<const UTF8Char> str, UInt8 *buff, UTF8Char seperator)
+UOSInt Text::StrHex2BytesS(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff, UTF8Char seperator)
 {
 	UOSInt outVal = 0;
 	UInt8 tmpVal;

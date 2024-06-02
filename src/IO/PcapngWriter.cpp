@@ -9,16 +9,15 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 	UInt8 buff[256];
 	IO::SystemInfo sysInfo;
 	OSInt i;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	WriteUInt32(&buff[0], 0x0a0d0d0a); //block type = SHB
 	WriteInt32(&buff[4], 2); //block length
 	WriteInt32(&buff[8], 0x1A2B3C4D); //byte order magic
 	WriteInt16(&buff[12], 1); //major version
 	WriteInt16(&buff[14], 0); //minor version
 	WriteInt64(&buff[16], -1); //section length
-	sptr = sysInfo.GetPlatformName(&buff[28]);
-	if (sptr == 0)
+	if (!sysInfo.GetPlatformName(&buff[28]).SetTo(sptr))
 	{
 		sptr = &buff[24];
 	}
@@ -37,11 +36,11 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 			}
 		}
 	}
-	sptr2 = IO::OS::GetDistro(sptr + 4);
+	sptr2 = IO::OS::GetDistro(sptr + 4).Or(sptr + 4);
 	*sptr2++ = ' ';
-	sptr2 = IO::OS::GetVersion(sptr2);
+	sptr2 = IO::OS::GetVersion(sptr2).Or(sptr2);
 	i = sptr2 - sptr - 4;
-	WriteInt16(sptr, 3);
+	WriteInt16(&sptr[0], 3);
 	WriteInt16(&sptr[2], i);
 	sptr = sptr2;
 	if (i & 3)
@@ -56,7 +55,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 
 	sptr2 = appName.ConcatTo(sptr + 4);
 	i = sptr2 - sptr - 4;
-	WriteInt16(sptr, 3);
+	WriteInt16(&sptr[0], 3);
 	WriteInt16(&sptr[2], i);
 	sptr = sptr2;
 	if (i & 3)
@@ -68,10 +67,10 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 			sptr[-i] = 0;
 		}
 	}
-	WriteInt32(sptr, 0);
+	WriteInt32(&sptr[0], 0);
 	sptr += 4;
 	i = sptr - buff + 4;
-	WriteInt32(sptr, (Int32)i);
+	WriteInt32(&sptr[0], (Int32)i);
 	WriteInt32(&buff[4], (Int32)i);
 
 	this->fs.Write(buff, (UOSInt)i);
@@ -87,11 +86,11 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 	WriteInt16(&buff[26], 1);
 	WriteInt32(&buff[28], 9);
 	sptr = &buff[32];
-	sptr2 = IO::OS::GetDistro(sptr + 4);
+	sptr2 = IO::OS::GetDistro(sptr + 4).Or(sptr + 4);
 	*sptr2++ = ' ';
-	sptr2 = IO::OS::GetVersion(sptr2);
+	sptr2 = IO::OS::GetVersion(sptr2).Or(sptr2);
 	i = sptr2 - sptr - 4;
-	WriteInt16(sptr, 3);
+	WriteInt16(&sptr[0], 3);
 	WriteInt16(&sptr[2], i);
 	sptr = sptr2;
 	if (i & 3)
@@ -103,10 +102,10 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 			sptr[-i] = 0;
 		}
 	}
-	WriteInt32(sptr, 0);
+	WriteInt32(&sptr[0], 0);
 	sptr += 4;
 	i = sptr - buff + 4;
-	WriteInt32(sptr, (Int32)i);
+	WriteInt32(&sptr[0], (Int32)i);
 	WriteInt32(&buff[4], (Int32)i);
 
 	this->fs.Write(buff, (UOSInt)i);

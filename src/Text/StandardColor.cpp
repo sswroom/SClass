@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Text/StandardColor.h"
 
-Text::CString Text::StandardColorGetName(StandardColor c)
+Text::CStringNN Text::StandardColorGetName(StandardColor c)
 {
 	switch (c)
 	{
@@ -292,7 +292,7 @@ Text::CString Text::StandardColorGetName(StandardColor c)
 	case StandardColor::DarkSlateGray:
 		return CSTR("DarkSlateGray");
 	default:
-		return CSTR("Unknwon");
+		return CSTR("Unknown");
 	}
 }
 

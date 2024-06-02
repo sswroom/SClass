@@ -6,7 +6,7 @@ namespace Manage
 	class ComputerUser
 	{
 	public:
-		static UTF8Char *GetProcessUser(UTF8Char *sbuff);
+		static UnsafeArrayOpt<UTF8Char> GetProcessUser(UnsafeArray<UTF8Char> sbuff);
 	};
 }
 

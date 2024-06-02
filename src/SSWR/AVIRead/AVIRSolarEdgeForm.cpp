@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->seAPI)
 	{
 		me->seAPI->FreeSiteList(me->siteList);
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userOb
 	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	NN<Net::SolarEdgeAPI::Site> site;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->lvSiteList->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site))
 	{
 		me->txtSiteCountry->SetText(Text::String::OrEmpty(site->country)->ToCString());

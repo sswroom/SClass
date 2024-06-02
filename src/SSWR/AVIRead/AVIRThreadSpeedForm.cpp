@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRThreadSpeedForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadSpeedForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Double t;
 	UOSInt i;
 	me->lvResult->ClearItems();

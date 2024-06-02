@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType use
 	}
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		const UTF8Char *name = frm->GetNameNew();
+		UnsafeArray<const UTF8Char> name = frm->GetNameNew();
 		UOSInt i = me->macList->SetEntry(log->macInt, name);
 		Text::StrDelNew(name);
 		entry = me->macList->GetItem(i);
@@ -99,8 +99,9 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentSelChg(AnyType userObj
 Bool SSWR::AVIRead::AVIRBTScanLogForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sbuff[0] = 0;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	IO::Path::AppendPath(sbuff, sptr, CSTR("BTDevLog.txt"));
 	return false; //this->btLog->StoreFile(sbuff);
 }
@@ -114,8 +115,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	logList.AddAll(this->btLog->GetPublicList());
 	logList.AddAll(this->btLog->GetRandomList());
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	Text::CString cstr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN cstr;
 	UInt8 mac[8];
 	NN<Text::String> s;
 	UOSInt i;
@@ -138,10 +139,9 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		else
 		{
-			cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
-			if (cstr.v)
+			if (Net::PacketAnalyzerBluetooth::CompanyGetName(log->company).SetTo(cstr))
 			{
-				this->lvContent->SetSubItem(l, 3, cstr.OrEmpty());
+				this->lvContent->SetSubItem(l, 3, cstr);
 			}
 			else
 			{

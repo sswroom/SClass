@@ -463,8 +463,8 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(NN<Data::ArrayListNN<OrganGroup
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganGroup> grp)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<DB::DBReader> r;
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -618,11 +618,12 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Text::PString cols[4];
 	Int32 newFlags = 0;
 	Text::CString coverName = OPTSTR_CSTR(sp->GetPhoto());
+	Text::CStringNN nncoverName;
 	Int32 coverId = sp->GetPhotoId();
 	Int32 coverWId = sp->GetPhotoWId();
 	IO::Path::FindFileSession *sess;
@@ -638,11 +639,11 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 	}
 	else
 	{
-		if (coverName.v && coverName.v[0] == '*')
+		if (coverName.SetTo(nncoverName) && nncoverName.v[0] == '*')
 		{
-			coverName = coverName.Substring(1);
+			coverName = nncoverName.Substring(1);
 		}
-		if (coverName.v && coverName.leng == 0)
+		if (coverName.SetTo(nncoverName) && nncoverName.leng == 0)
 		{
 			coverName = CSTR_NULL;
 		}
@@ -748,11 +749,11 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 			ImageSetting *imgSet;
 		*/
 
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (coverName.v && Text::StrStartsWithICase(sptr, coverName.v))
+				if (coverName.SetTo(nncoverName) && Text::StrStartsWithICase(sptr, nncoverName.v))
 				{
 					isCoverPhoto = true;
 				}
@@ -873,7 +874,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 			IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 			Text::UTF8Reader reader(fs);
 
-			while ((sptr2 = reader.ReadLine(sbuff2, 511)) != 0)
+			while (reader.ReadLine(sbuff2, 511).SetTo(sptr2))
 			{
 				if (Text::StrSplitP(cols, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, '\t') == 3)
 				{
@@ -881,9 +882,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 					sptr2 = cols[0].ConcatTo(Text::StrConcatC(sptr, UTF8STRC("web\\")));
 					imgItem->SetDispName(CSTRP(sptr, sptr2));
 					imgItem->SetIsCoverPhoto(false);
-					if (coverName.v)
+					if (coverName.SetTo(nncoverName))
 					{
-						if (Text::StrStartsWith(sptr, coverName.v))
+						if (Text::StrStartsWith(sptr, nncoverName.v))
 						{
 							imgItem->SetIsCoverPhoto(true);
 						}
@@ -1297,9 +1298,9 @@ Optional<SSWR::OrganMgr::OrganSpecies> SSWR::OrganMgr::OrganEnvDB::GetSpecies(In
 	return sp;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(NN<OrganSpecies> sp, UTF8Char *sbuff)
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(NN<OrganSpecies> sp, UnsafeArray<UTF8Char> sbuff)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (Text::String::OrEmpty(this->currCate->srcDir)->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX)
 	{
 		sptr = Text::String::OrEmpty(this->currCate->srcDir)->ConcatTo(sbuff);
@@ -1320,14 +1321,14 @@ UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(NN<OrganSpecies> sp, UTF8Cha
 Bool SSWR::OrganMgr::OrganEnvDB::CreateSpeciesDir(NN<OrganSpecies> sp)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = GetSpeciesDir(sp, sbuff);
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Directory)
 		return true;
 	return IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
+Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(UnsafeArray<const UTF8Char> sName)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -1345,7 +1346,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
 	return found;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, NN<Text::StringBuilderUTF8> sb)
+Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(UnsafeArray<const UTF8Char> sName, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -1571,30 +1572,32 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							}
 							Text::CString cstr;
 							Text::CString cstr2;
+							Text::CStringNN nncstr;
+							Text::CStringNN nncstr2;
 							cstr = exif->GetPhotoMake();
 							cstr2 = exif->GetPhotoModel();
-							if (cstr.v && cstr2.v)
+							if (cstr.SetTo(nncstr) && cstr2.SetTo(nncstr2))
 							{
-								if (cstr2.StartsWithICase(cstr.v, cstr.leng))
+								if (nncstr2.StartsWithICase(nncstr.v, nncstr.leng))
 								{
-									camera = Text::String::New(cstr2).Ptr();
+									camera = Text::String::New(nncstr2).Ptr();
 								}
 								else
 								{
 									Text::StringBuilderUTF8 sb;
-									sb.Append(cstr);
+									sb.Append(nncstr);
 									sb.AppendC(UTF8STRC(" "));
-									sb.Append(cstr2);
+									sb.Append(nncstr2);
 									camera = Text::String::New(sb.ToCString()).Ptr();
 								}
 							}
-							else if (cstr.v)
+							else if (cstr.SetTo(nncstr))
 							{
-								camera = Text::String::New(cstr).Ptr();
+								camera = Text::String::New(nncstr).Ptr();
 							}
-							else if (cstr2.v)
+							else if (cstr2.SetTo(nncstr2))
 							{
-								camera = Text::String::New(cstr2).Ptr();
+								camera = Text::String::New(nncstr2).Ptr();
 							}
 							if (exif->GetPhotoLocation(pos.y, pos.x, 0, 0))
 							{
@@ -1653,8 +1656,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			if (valid)
 			{
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
-				UTF8Char *dataFileName;
+				UnsafeArray<UTF8Char> sptr;
+				UnsafeArray<UTF8Char> dataFileName;
 				sptr = this->cfgDataPath->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
@@ -1705,11 +1708,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendTS(fileTime);
 						sql.AppendCmdC(CSTR(", "));
-						sql.AppendStrUTF8(dataFileName);
+						sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(dataFileName));
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendInt32((Int32)crcVal);
 						sql.AppendCmdC(CSTR(", "));
-						sql.AppendStrUTF8(camera->v);
+						sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(camera->v));
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendDbl(0);
 						sql.AppendCmdC(CSTR(", "));
@@ -1881,8 +1884,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			if (valid)
 			{
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
-				UTF8Char *dataFileName;
+				UnsafeArray<UTF8Char> sptr;
+				UnsafeArray<UTF8Char> dataFileName;
 				sptr = this->cfgDataPath->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
@@ -1933,7 +1936,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendTS(fileTime);
 						sql.AppendCmdC(CSTR(", "));
-						sql.AppendStrUTF8(dataFileName);
+						sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(dataFileName));
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendInt32((Int32)crcVal);
 						sql.AppendCmdC(CSTR(", "));
@@ -2031,7 +2034,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	else
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = this->GetSpeciesDir(sp, sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = fileName.Substring(i + 1).ConcatTo(sptr);
@@ -2054,13 +2057,13 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	}
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	UTF8Char sbuff2[2048];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Int32 id;
 	Bool firstPhoto = false;
 	Bool found = false;
@@ -2179,9 +2182,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		spInfo = this->GetSpeciesInfoCreate(sp->GetSpeciesId());
 		spInfo->wfileMap.Put(wfile->id, wfile);
 
-		if (webFileName)
+		UnsafeArray<UTF8Char> nnwebFileName;
+		if (webFileName.SetTo(nnwebFileName))
 		{
-			Text::StrConcatC(Text::StrInt32(Text::StrConcatC(webFileName, UTF8STRC("web\\")), id), UTF8STRC(".jpg"));
+			Text::StrConcatC(Text::StrInt32(Text::StrConcatC(nnwebFileName, UTF8STRC("web\\")), id), UTF8STRC(".jpg"));
 		}
 	}
 	else
@@ -2191,13 +2195,13 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	return SSWR::OrganMgr::OrganEnvDB::FS_SUCCESS;
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFileOld(NN<OrganSpecies> sp, Text::String *srcURL, Text::String *imgURL, NN<IO::Stream> stm, UTF8Char *webFileName)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFileOld(NN<OrganSpecies> sp, Text::String *srcURL, Text::String *imgURL, NN<IO::Stream> stm, UnsafeArrayOpt<UTF8Char> webFileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char fileName[32];
-	UTF8Char *fileNameEnd;
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> fileNameEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	sptr = this->GetSpeciesDir(sp, sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("web"));
@@ -2295,9 +2299,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		sp->SetPhoto(CSTRP(sbuff, sptr));
 		this->SaveSpecies(sp);
 	}
-	if (webFileName)
+	UnsafeArray<UTF8Char> nnwebFileName;
+	if (webFileName.SetTo(nnwebFileName))
 	{
-		UTF8Char *sptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
+		UnsafeArray<UTF8Char> sptr = Text::StrConcatC(nnwebFileName, UTF8STRC("web"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcatC(sptr, fileName, (UOSInt)(fileNameEnd - fileName));
 	}
@@ -2330,10 +2335,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<We
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, const UTF8Char *webFileName, const UTF8Char *srcURL)
+Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, UnsafeArray<const UTF8Char> webFileName, UnsafeArray<const UTF8Char> srcURL)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->GetSpeciesDir(sp, sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("web"));
@@ -2671,9 +2676,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 	if (!this->db.SetTo(db))
 		return false;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
+	UnsafeArray<UTF8Char> sptr2;
 	sptr = this->GetSpeciesDir(destSp, sbuff);
 	Bool moveWeb = false;
 	UOSInt i;
@@ -2790,8 +2795,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 	if (moveWeb)
 	{
 		Text::StringBuilderUTF8 sb;
-		Text::CString name;
-		const UTF8Char *srcDir = 0;
+		Text::CStringNN name;
+		UnsafeArrayOpt<const UTF8Char> srcDir = 0;
 		sptr[0] = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr + 1, UTF8STRC("web.txt"));
 		{
@@ -2819,10 +2824,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 			}
 		}
 
-		if (srcDir)
+		UnsafeArray<const UTF8Char> nnsrcDir;
+		if (srcDir.SetTo(nnsrcDir))
 		{
 			Text::StringBuilderUTF8 sb2;
-			sptr = Text::StrConcat(sbuff, srcDir);
+			sptr = Text::StrConcat(sbuff, nnsrcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			Data::ArrayListStringNN webLines;
@@ -2861,7 +2867,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 				}
 			}
 
-			sptr = Text::StrConcat(sbuff, srcDir);
+			sptr = Text::StrConcat(sbuff, nnsrcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			if (webLines.GetCount() > 0)
@@ -2944,7 +2950,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(NN<Data::ArrayListNN<OrganWebUser
 	return userList->GetCount() - initCnt;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType)
+Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> pwd, UnsafeArray<const UTF8Char> watermark, UserType userType)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -2983,7 +2989,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8
 	return db->ExecuteNonQuery(sql.ToCString()) >= 1;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark)
+Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, UnsafeArray<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, UnsafeArray<const UTF8Char> watermark)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -3006,13 +3012,14 @@ Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, const UTF8Char *userNam
 	sql.Clear();
 	sql.AppendCmdC(CSTR("update webuser set userName = "));
 	sql.AppendStrUTF8(userName);
-	if (pwd != 0)
+	UnsafeArray<const UTF8Char> nnpwd;
+	if (pwd.SetTo(nnpwd))
 	{
-		UOSInt len = Text::StrCharCnt(pwd);
+		UOSInt len = Text::StrCharCnt(nnpwd);
 		UInt8 md5Value[16];
 		UTF8Char sbuff[33];
 		Crypto::Hash::MD5 md5;
-		md5.Calc(pwd, len);
+		md5.Calc(nnpwd, len);
 		md5.GetValue(md5Value);
 		Text::StrHexBytes(sbuff, md5Value, 16, 0);
 		sql.AppendCmdC(CSTR(", pwd = "));
@@ -3063,7 +3070,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesBookExist(Int32 speciesId, Int32 bookI
 	return found;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName)
+Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, UnsafeArray<const UTF8Char> dispName)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -3187,10 +3194,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 	}
 	Data::Timestamp startTime;
 	Data::Timestamp endTime;
-	const UTF8Char *oriFileName;
-	const UTF8Char *oriFileNameEnd;
+	UnsafeArray<const UTF8Char> oriFileName;
+	UnsafeArray<const UTF8Char> oriFileNameEnd;
 	UTF8Char sbuff[512];
-	const UTF8Char *dataFileName;
+	UnsafeArray<const UTF8Char> dataFileName;
 	Int32 fileType = 0;
 	NN<DataFileInfo> dataFile;
 	Bool chg = false;
@@ -3288,7 +3295,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 
 	if (fileType != 0)
 	{
-		UTF8Char *sptr = this->cfgDataPath->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->cfgDataPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3397,7 +3404,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(NN<DataFileInfo> dataFile)
 	if (!found)
 		return false;
 
-	UTF8Char *sptr = this->cfgDataPath->ConcatTo(sbuff);
+	UnsafeArray<UTF8Char> sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3434,7 +3441,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 	NN<WebUserInfo> webUser;
 	NN<DataFileInfo> dataFile;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->gpsTrk.IsNull() || this->gpsUserId != userId || this->gpsStartTime > ts || this->gpsEndTime < ts)
 	{
 		this->gpsTrk.Delete();
@@ -3490,7 +3497,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 Optional<Map::GPSTrack> SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo> dataFile)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -3600,7 +3607,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(NN<UserFileInfo> userFile, NN<T
 	sb->AppendI32(userFile->webuserId);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	UTF8Char sbuff[10];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = ts.ToString(sbuff, "yyyyMM");
 	sb->AppendP(sbuff, sptr);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -3608,7 +3615,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(NN<UserFileInfo> userFile, NN<T
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(NN<UserFileInfo> userFile, const UTF8Char *descript)
+Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(NN<UserFileInfo> userFile, UnsafeArray<const UTF8Char> descript)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -3628,7 +3635,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(NN<UserFileInfo> userFile, c
 	return succ;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(NN<UserFileInfo> userFile, const UTF8Char *location)
+Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(NN<UserFileInfo> userFile, UnsafeArray<const UTF8Char> location)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -3682,9 +3689,9 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	NN<DB::DBReader> r;
 	DB::SQLBuilder sql(db);
 	UTF8Char sbuff[256];
-	UTF8Char *sbuffEnd;
+	UnsafeArray<UTF8Char> sbuffEnd;
 	UTF8Char sbuff2[256];
-	UTF8Char *sbuff2End;
+	UnsafeArray<UTF8Char> sbuff2End;
 	this->TripRelease();
 
 	NN<LocationType> locT;
@@ -3699,8 +3706,8 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	{
 		while (r->ReadNext())
 		{
-			sbuffEnd = r->GetStr(1, sbuff, sizeof(sbuff));
-			sbuff2End = r->GetStr(2, sbuff2, sizeof(sbuff2));
+			sbuffEnd = r->GetStr(1, sbuff, sizeof(sbuff)).Or(sbuff);
+			sbuff2End = r->GetStr(2, sbuff2, sizeof(sbuff2)).Or(sbuff2);
 			NEW_CLASSNN(locT, LocationType(r->GetInt32(0), CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End)))
 			this->locType.Add(locT);
 		}
@@ -3715,8 +3722,8 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	{
 		while (r->ReadNext())
 		{
-			sbuffEnd = r->GetStr(2, sbuff, sizeof(sbuff));
-			sbuff2End = r->GetStr(3, sbuff2, sizeof(sbuff2));
+			sbuffEnd = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);
+			sbuff2End = r->GetStr(3, sbuff2, sizeof(sbuff2)).Or(sbuff2);
 			NEW_CLASSNN(loc, Location(r->GetInt32(0), r->GetInt32(1), CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End), r->GetInt32(4)));
 			this->locs.Add(loc);
 		}
@@ -3928,7 +3935,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 		if (userFile.SetTo(nnuserFile))
 		{
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			Data::Timestamp ts = nnuserFile->fileTime.ToUTCTime();
 			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -4003,7 +4010,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageI
 		if (wfile.SetTo(nnwfile))
 		{
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
@@ -4087,9 +4094,9 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *cols[4];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> cols[4];
 	Text::CString coverName = OPTSTR_CSTR(sp->GetPhoto());
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
@@ -4121,9 +4128,10 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 		return 0;
 	}
 
-	if (coverName.v && coverName.v[0] == '*')
+	Text::CStringNN nncoverName;
+	if (coverName.SetTo(nncoverName) && nncoverName.v[0] == '*')
 	{
-		coverName = coverName.Substring(1);
+		coverName = nncoverName.Substring(1);
 	}
 
 	sptr = sbuff;
@@ -4136,11 +4144,11 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr2 = Text::StrConcatC(coverName.ConcatTo(sptr), UTF8STRC(".*"));
+	sptr2 = Text::StrConcatC(coverName.OrEmpty().ConcatTo(sptr), UTF8STRC(".*"));
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		if ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		if (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -4177,14 +4185,14 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 				Text::UTF8Reader reader(fs);
 				
-				while (reader.ReadLine(sbuff2, 511))
+				while (reader.ReadLine(sbuff2, 511).NotNull())
 				{
 					if (Text::StrSplit(cols, 4, sbuff2, '\t') == 3)
 					{
 						sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
 						sptr2 = Text::StrConcat(sptr2, cols[0]);
-						if (Text::StrStartsWith(sptr, coverName.v))
+						if (Text::StrStartsWith(sptr, coverName.OrEmpty().v))
 						{
 							IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
 							pobj = this->parsers.ParseFile(fd);
@@ -4214,7 +4222,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFileInfo> userFile)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::ParsedObject> pobj;
 	Data::Timestamp ts = userFile->fileTime.ToUTCTime();
 	sptr = this->cfgDataPath->ConcatTo(sbuff);
@@ -4272,7 +4280,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFil
 Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileInfo> wfile)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::ParsedObject> pobj;
 	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -4323,15 +4331,15 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileI
 	return 0;
 }
 
-SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId)
+SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UOSInt resultStrBuffSize, Int32 *parentId)
 {
 	OrganGroup *foundGroup = 0;
 	UOSInt searchStrLen = Text::StrCharCnt(searchStr);
 	Bool found = false;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[256];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Int32 photoGroup;
 	Int32 photoSpecies;
 	NN<DB::DBTool> db;
@@ -4407,8 +4415,8 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 			if (!r->IsNull(7))
 				photoSpecies = r->GetInt32(7);
 
-			sptr = r->GetStr(2, sbuff, sizeof(sbuff));//engName
-			sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2));//chiName
+			sptr = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);//engName
+			sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2)).Or(sbuff2);//chiName
 			NEW_CLASS(foundGroup, OrganGroup());
 			foundGroup->SetGroupId(r->GetInt32(0));
 			foundGroup->SetCName(CSTRP(sbuff2, sptr2));
@@ -4434,8 +4442,8 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 			{
 				while (r->ReadNext())
 				{
-					sptr = r->GetStr(2, sbuff, sizeof(sbuff));//engName
-					sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2));//chiName
+					sptr = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);//engName
+					sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2)).Or(sbuff2);//chiName
 					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), searchStr, searchStrLen) || Text::StrEqualsC(sbuff2, (UOSInt)(sptr2 - sbuff2), searchStr, searchStrLen))
 					{
 						photoGroup = -1;
@@ -4485,9 +4493,9 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	NN<DB::DBReader> r;
 	Int32 seq;
 	UTF8Char cname[64];
-	UTF8Char *cnameEnd;
+	UnsafeArray<UTF8Char> cnameEnd;
 	UTF8Char ename[64];
-	UTF8Char *enameEnd;
+	UnsafeArray<UTF8Char> enameEnd;
 	this->grpTypes.DeleteAll();
 
 	DB::SQLBuilder sql(db);
@@ -4499,8 +4507,8 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 		while (r->ReadNext())
 		{
 			seq = r->GetInt32(0);
-			cnameEnd = r->GetStr(1, cname, sizeof(cname));
-			enameEnd = r->GetStr(2, ename, sizeof(ename));
+			cnameEnd = r->GetStr(1, cname, sizeof(cname)).Or(cname);
+			enameEnd = r->GetStr(2, ename, sizeof(ename)).Or(ename);
 			NEW_CLASSNN(grpType, OrganGroupType(seq, {cname, (UOSInt)(cnameEnd - cname)}, {ename, (UOSInt)(enameEnd - ename)}));
 			this->grpTypes.Add(grpType);
 		}
@@ -4784,9 +4792,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
+	UnsafeArray<UTF8Char> sptr2;
 	Text::PString cols[4];
 	UInt32 crcVal;
 	UOSInt i;
@@ -4849,7 +4857,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 				Text::UTF8Reader reader(fs);
 
-				while ((sptr2 = reader.ReadLine(sbuff2, 511)) != 0)
+				while (reader.ReadLine(sbuff2, 511).SetTo(sptr2))
 				{
 					if (Text::StrSplitP(cols, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, '\t') == 3)
 					{
@@ -4870,9 +4878,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							sql.AppendCmdC(CSTR(", "));
 							sql.AppendInt32((Int32)crcVal);
 							sql.AppendCmdC(CSTR(", "));
-							sql.AppendStrUTF8(cols[1].v);
+							sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(cols[1].v));
 							sql.AppendCmdC(CSTR(", "));
-							sql.AppendStrUTF8(cols[2].v);
+							sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(cols[2].v));
 							sql.AppendCmdC(CSTR(", "));
 							sql.AppendInt32(0);
 							sql.AppendCmdC(CSTR(", "));
@@ -4998,18 +5006,19 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(NN<OrganSpecies> sp)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	const UTF8Char *coverName = OPTSTR_CSTR(sp->GetPhoto()).v;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArrayOpt<const UTF8Char> coverName = OPTSTR_CSTR(sp->GetPhoto()).v;
+	UnsafeArray<const UTF8Char> nncoverName;
 	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
 	UOSInt i;
-	if (coverName && coverName[0] == '*')
+	if (coverName.SetTo(nncoverName) && nncoverName[0] == '*')
 	{
-		coverName = &coverName[1];
+		coverName = &nncoverName[1];
 	}
-	if (coverName && coverName[0] == 0)
+	if (coverName.SetTo(nncoverName) && nncoverName[0] == 0)
 	{
 		coverName = 0;
 	}
@@ -5028,11 +5037,12 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(NN<OrganSpecies> sp)
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+	
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (coverName && Text::StrStartsWithICase(sptr, coverName))
+				if (coverName.SetTo(nncoverName) && Text::StrStartsWithICase(sptr, nncoverName))
 				{
 					isCoverPhoto = true;
 				}
@@ -5059,15 +5069,15 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(NN<OrganSpecies> sp)
 	return;
 }
 
-void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
+void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
-	UTF8Char *sptr3;
-	UTF8Char *sptr3End;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sptr3End;
 	Text::StringBuilderUTF8 sb;
 	Bool valid = true;
 	sptr = Text::StrConcat(sbuff, folder);

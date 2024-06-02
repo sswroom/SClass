@@ -20,7 +20,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtPolylineText;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
-			Math::Geometry::LineString *polyline;
+			Optional<Math::Geometry::LineString> polyline;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -30,7 +30,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Math::Geometry::LineString *GetPolyline();
+			Optional<Math::Geometry::LineString> GetPolyline();
 		};
 	}
 }

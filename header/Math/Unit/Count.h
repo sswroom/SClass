@@ -26,12 +26,12 @@ namespace Math
 			} CountUnit;
 		public:
 			static Double GetUnitRatio(CountUnit unit);
-			static Text::CString GetUnitShortName(CountUnit unit);
-			static Text::CString GetUnitName(CountUnit unit);
+			static Text::CStringNN GetUnitShortName(CountUnit unit);
+			static Text::CStringNN GetUnitName(CountUnit unit);
 			static Double GetConvertRatio(CountUnit fromUnit, CountUnit toUnit);
 			static Double Convert(CountUnit fromUnit, CountUnit toUnit, Double fromValue);
-			static UTF8Char *WellFormat(UTF8Char *sbuff, Double val);
-			static UTF8Char *WellFormatBin(UTF8Char *sbuff, Double val);
+			static UnsafeArray<UTF8Char> WellFormat(UnsafeArray<UTF8Char> sbuff, Double val);
+			static UnsafeArray<UTF8Char> WellFormatBin(UnsafeArray<UTF8Char> sbuff, Double val);
 		};
 	}
 }

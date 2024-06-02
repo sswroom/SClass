@@ -87,11 +87,12 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::CString gooAPIK
 	this->gooAPIKey = Text::String::NewOrNull(gooAPIKey);
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, const UTF8Char *lang)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UnsafeArrayOpt<const UTF8Char> lang)
 {
 	UTF8Char url[1024];
-	UTF8Char *urlStart;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> urlStart;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> nnlang;
 	Data::DateTime currDt;
 	Int32 i;
 	UInt8 databuff[2048];
@@ -117,10 +118,10 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrDouble(sptr, pos.GetLon());
 //	sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
-	if (lang)
+	if (lang.SetTo(nnlang))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&language="));
-		sptr = Text::StrConcat(sptr, lang);
+		sptr = Text::StrConcat(sptr, nnlang);
 	}
 	if (this->gooCliId)
 	{
@@ -145,9 +146,9 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
-		if (lang)
+		if (lang.SetTo(nnlang))
 		{
-			cli->AddHeaderC(CSTR("Accept-Language"), {lang, Text::StrCharCnt(lang)});
+			cli->AddHeaderC(CSTR("Accept-Language"), {nnlang, Text::StrCharCnt(nnlang)});
 		}
 		Int32 status = cli->GetRespStatus();
 
@@ -267,7 +268,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	return buff;
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError == 2)
 	{
@@ -276,13 +277,13 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
 			return 0;
 	}
-	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
-	if (ent == 0)
+	NN<Text::Locale::LocaleEntry> ent;
+	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
 		return 0;
 	return SearchName(buff, buffSize, pos, ent->shortName);
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	if (this->lastIsError != 0)
 	{
@@ -291,8 +292,8 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::CacheName(UTF8Char *buff, UOSInt
 		if (dt.DiffMS(this->lastSrchDate) < 60000)
 			return 0;
 	}
-	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
-	if (ent == 0)
+	NN<Text::Locale::LocaleEntry> ent;
+	if (!Text::Locale::GetLocaleEntry(lcid).SetTo(ent))
 		return 0;
 	return SearchName(buff, buffSize, pos, ent->shortName);
 }

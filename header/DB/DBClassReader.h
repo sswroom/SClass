@@ -31,7 +31,7 @@ namespace DB
 
 		UTF8Char sbuff[256];
 		UTF8Char sbuff2[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::StringMap<UOSInt> colMap2;
 		Bool clsValid = true;
 		UOSInt i = 0;

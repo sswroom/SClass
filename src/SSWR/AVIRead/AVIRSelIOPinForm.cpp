@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(AnyType userObj)
 SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayListInt32 *ports;

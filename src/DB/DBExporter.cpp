@@ -60,9 +60,9 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 	{
 		return false;
 	}
-	UTF8Char *lineBuff1;
-	UTF8Char *lineBuff2;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> lineBuff1;
+	UnsafeArray<UTF8Char> lineBuff2;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt colCnt;
 	UOSInt i;
 	Bool firstCol;
@@ -71,8 +71,8 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 	IO::StreamWriter writer(cstm, codePage);
 	writer.WriteSignature();
 
-	lineBuff1 = MemAlloc(UTF8Char, 65536);
-	lineBuff2 = MemAlloc(UTF8Char, 65536);
+	lineBuff1 = MemAllocArr(UTF8Char, 65536);
+	lineBuff2 = MemAllocArr(UTF8Char, 65536);
 
 	sptr = lineBuff2;
 	colCnt = r->ColCount();
@@ -89,7 +89,7 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		}
 
-		if (r->GetName(i, lineBuff1))
+		if (r->GetName(i, lineBuff1).NotNull())
 		{
 			sptr = Text::StrToCSVRec(sptr, lineBuff1);
 		}
@@ -101,8 +101,8 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 	}
 	if (!writer.WriteLine(CSTRP(lineBuff2, sptr)))
 	{
-		MemFree(lineBuff2);
-		MemFree(lineBuff1);
+		MemFreeArr(lineBuff2);
+		MemFreeArr(lineBuff1);
 
 		db->CloseReader(r);
 		return false;
@@ -125,7 +125,7 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			}
 
-			if (r->GetStr(i, lineBuff1, 65536))
+			if (r->GetStr(i, lineBuff1, 65536).NotNull())
 			{
 				sptr = Text::StrToCSVRec(sptr, lineBuff1);
 			}
@@ -137,16 +137,16 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 		}
 		if (!writer.WriteLine(CSTRP(lineBuff2, sptr)))
 		{
-			MemFree(lineBuff2);
-			MemFree(lineBuff1);
+			MemFreeArr(lineBuff2);
+			MemFreeArr(lineBuff1);
 
 			db->CloseReader(r);
 			return false;
 		}
 	}
 	
-	MemFree(lineBuff2);
-	MemFree(lineBuff1);
+	MemFreeArr(lineBuff2);
+	MemFreeArr(lineBuff1);
 
 	db->CloseReader(r);
 	return true;
@@ -223,17 +223,17 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	{
 		return false;
 	}
-	UTF8Char *lineBuff1;
-	UTF8Char *lineBuff2;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> lineBuff1;
+	UnsafeArray<UTF8Char> lineBuff2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt colCnt;
 	UOSInt i;
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
 
-	lineBuff1 = MemAlloc(UTF8Char, 65536);
-	lineBuff2 = MemAlloc(UTF8Char, 65536);
+	lineBuff1 = MemAllocArr(UTF8Char, 65536);
+	lineBuff2 = MemAllocArr(UTF8Char, 65536);
 
 	writer.WriteLine(CSTR("<html>"));
 	writer.WriteLine(CSTR("<head>"));
@@ -263,7 +263,7 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	while (i < colCnt)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("<th>"));
-		if (r->GetName(i, lineBuff1))
+		if (r->GetName(i, lineBuff1).NotNull())
 		{
 			sptr = Text::XML::ToXMLText(sptr, lineBuff1);
 		}
@@ -282,7 +282,7 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 		while (i < colCnt)
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC("<td>"));
-			if (r->GetStr(i, lineBuff1, 65536))
+			if (r->GetStr(i, lineBuff1, 65536).NotNull())
 			{
 				sptr = Text::XML::ToXMLText(sptr, lineBuff1);
 			}
@@ -292,8 +292,8 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 		writer.WriteLine(CSTRP(lineBuff2, sptr));
 	}
 	
-	MemFree(lineBuff2);
-	MemFree(lineBuff1);
+	MemFreeArr(lineBuff2);
+	MemFreeArr(lineBuff1);
 
 	writer.WriteLine(CSTR("</table>"));
 	writer.WriteLine(CSTR("</body></html>"));
@@ -309,18 +309,18 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 	{
 		return false;
 	}
-	UTF8Char *lineBuff1;
-	UTF8Char *lineBuff2;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> lineBuff1;
+	UnsafeArray<UTF8Char> lineBuff2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt colCnt;
 	UOSInt i;
 	UOSInt colSize;
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
 
-	lineBuff1 = MemAlloc(UTF8Char, 65536);
-	lineBuff2 = MemAlloc(UTF8Char, 65536);
+	lineBuff1 = MemAllocArr(UTF8Char, 65536);
+	lineBuff2 = MemAllocArr(UTF8Char, 65536);
 
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), codePage), UTF8STRC("\"?>"));
 	writer.WriteLine(CSTRP(lineBuff1, sptr));
@@ -386,7 +386,7 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 			case DB::DBUtil::CT_Unknown:
 			case DB::DBUtil::CT_UUID:
 			default:
-				if (r->GetStr(i, lineBuff2, 65536))
+				if (r->GetStr(i, lineBuff2, 65536).NotNull())
 				{
 					sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), lineBuff2), UTF8STRC("</string>"));
 				}
@@ -403,8 +403,8 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 		writer.WriteLine(CSTR("    </dict>"));
 	}
 	
-	MemFree(lineBuff2);
-	MemFree(lineBuff1);
+	MemFreeArr(lineBuff2);
+	MemFreeArr(lineBuff1);
 
 	writer.WriteLine(CSTR("</array>"));
 	writer.WriteLine(CSTR("</plist>"));
@@ -416,7 +416,7 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError)
 {
 	UTF8Char sbuff[4096];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::StringBuilderUTF8> sb;
 	Optional<DB::TableDef> table = db->GetTableDef(schema, tableName);
 	NN<DB::DBReader> r;
@@ -438,8 +438,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 	UOSInt row;
 	while (i < j)
 	{
-		sptr = r->GetName(i, sbuff);
-		if (sptr)
+		if (r->GetName(i, sbuff).SetTo(sptr))
 			ws->SetCellString(0, i, CSTRP(sbuff, sptr));
 		i++;
 	}
@@ -499,8 +498,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 				case DB::DBUtil::CT_UUID:
 				case DB::DBUtil::CT_Unknown:
 				default:
-					sptr = r->GetStr(i, sbuff, sizeof(sbuff));
-					if (sptr)
+					if (r->GetStr(i, sbuff, sizeof(sbuff)).SetTo(sptr))
 					{
 						ws->SetCellString(row, i, CSTRP(sbuff, sptr));
 					}
@@ -540,17 +538,17 @@ Bool DB::DBExporter::GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema
 
 Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CString schema, NN<IO::Stream> outStm, UInt32 codePage)
 {
-	UTF8Char *lineBuff1;
-	UTF8Char *lineBuff2;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> lineBuff1;
+	UnsafeArray<UTF8Char> lineBuff2;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt colCnt;
 	UOSInt i;
 
 	IO::BufferedOutputStream cstm(outStm, 65536);
 	IO::StreamWriter writer(cstm, codePage);
 
-	lineBuff1 = MemAlloc(UTF8Char, 65536);
-	lineBuff2 = MemAlloc(UTF8Char, 65536);
+	lineBuff1 = MemAllocArr(UTF8Char, 65536);
+	lineBuff2 = MemAllocArr(UTF8Char, 65536);
 
 	NN<DB::DBReader> r;
 
@@ -582,7 +580,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 			i = 0;
 			while (i < colCnt)
 			{
-				if (r->GetName(i, lineBuff1))
+				if (r->GetName(i, lineBuff1).NotNull())
 				{
 					sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff2, UTF8STRC("    <Cell><Data ss:Type=\"String\">")), lineBuff1), UTF8STRC("</Data></Cell>"));
 					writer.WriteLine(CSTRP(lineBuff2, sptr));
@@ -666,7 +664,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 	writer.WriteLine(CSTR("</Workbook>"));
 	names.FreeAll();
 
-	MemFree(lineBuff2);
-	MemFree(lineBuff1);
+	MemFreeArr(lineBuff2);
+	MemFreeArr(lineBuff1);
 	return true;
 }

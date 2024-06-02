@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	WChar wbuff[256];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Manage::HiResClock *clk;
 
 	NEW_CLASS(clk, Manage::HiResClock());

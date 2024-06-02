@@ -90,7 +90,7 @@ void IO::BTCapturer::StoreStatus()
 	if (this->bt.SetTo(bt))
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		IO::BTDevLog btLog;
 		Sync::MutexUsage mutUsage;
 		btLog.AppendList(bt->GetPublicMap(mutUsage));
@@ -98,7 +98,7 @@ void IO::BTCapturer::StoreStatus()
 		UOSInt i;
 		Data::DateTime dt;
 		dt.SetCurrTime();
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		sptr = &sbuff[i + 1];
 		sptr = Text::StrConcatC(sptr, UTF8STRC("bt"));
@@ -106,12 +106,13 @@ void IO::BTCapturer::StoreStatus()
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 		if (btLog.StoreFile(CSTRP(sbuff, sptr)))
 		{
-			if (this->lastFileName)
+			UnsafeArray<const UTF8Char> lastFileName;
+			if (this->lastFileName.SetTo(lastFileName))
 			{
-				IO::Path::DeleteFile(this->lastFileName);
-				Text::StrDelNew(this->lastFileName);
+				IO::Path::DeleteFile(lastFileName);
+				Text::StrDelNew(lastFileName);
 			}
-			this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 	}
 }

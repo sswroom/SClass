@@ -17,7 +17,7 @@ Media::Batch::BatchSaveTIFF::~BatchSaveTIFF()
 void Media::Batch::BatchSaveTIFF::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = fileId.ConcatTo(sbuff);
 	Optional<IO::FileExporter::ParamData> param;
 	sptr = Text::StrConcatC(targetId.ConcatTo(sptr), UTF8STRC(".tif"));

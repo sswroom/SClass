@@ -21,7 +21,7 @@ namespace IO
 		static AndroidInfo androids[];
 
 	public:
-		static const AndroidInfo *GetAndroidInfo(Text::CString androidId);
+		static const AndroidInfo *GetAndroidInfo(Text::CStringNN androidId);
 	};
 }
 #endif

@@ -766,12 +766,17 @@ NN<Text::String> Text::XML::ToNewHTMLElementText(UnsafeArray<const UTF8Char> tex
 	return s;
 }
 
-const WChar *Text::XML::ToNewHTMLBodyText(const WChar *text)
+const WChar *Text::XML::ToNewHTMLBodyTextW(const WChar *text)
 {
 	UOSInt cnt = GetHTMLBodyTextLen(text) + 1;
 	WChar *dptr = MemAlloc(WChar, cnt);
 	ToHTMLBodyText(dptr, text);
 	return dptr;
+}
+
+NN<Text::String> Text::XML::ToNewAttrText(UnsafeArrayOpt<UTF8Char> text)
+{
+	return ToNewAttrText(UnsafeArrayOpt<const UTF8Char>(text));
 }
 
 NN<Text::String> Text::XML::ToNewAttrText(UnsafeArrayOpt<const UTF8Char> text)
@@ -796,7 +801,7 @@ NN<Text::String> Text::XML::ToNewAttrText(UnsafeArrayOpt<const UTF8Char> text)
 	}
 }
 
-const WChar *Text::XML::ToNewAttrText(const WChar *text)
+const WChar *Text::XML::ToNewAttrTextW(const WChar *text)
 {
 	WChar *dptr;
 	WChar *buff;

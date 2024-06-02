@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 	this->txtHashValue->SetReadOnly(true);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Hash::IHash> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	UOSInt i;

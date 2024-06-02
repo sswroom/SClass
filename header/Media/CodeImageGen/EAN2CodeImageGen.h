@@ -15,7 +15,7 @@ namespace Media
 			virtual CodeType GetCodeType();
 			virtual UOSInt GetMinLength();
 			virtual UOSInt GetMaxLength();
-			virtual Optional<Media::DrawImage> GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng);
+			virtual Optional<Media::DrawImage> GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng);
 		};
 	}
 }

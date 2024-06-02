@@ -23,8 +23,8 @@ NN<Net::PushManager::UserInfo> Net::PushManager::GetUser(Text::CStringNN userNam
 void Net::PushManager::LoadData()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, FILENAME);
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -88,8 +88,8 @@ void Net::PushManager::LoadData()
 void Net::PushManager::SaveData()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, FILENAME);
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
@@ -168,22 +168,23 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 	Sync::MutexUsage mutUsage(this->dataMut);
 	NN<DeviceInfo2> dev;
 	NN<UserInfo> user;
+	Text::CStringNN nndevModel;
 	if (this->devMap.GetC(token).SetTo(dev))
 	{
 		if (dev->userName->Equals(userName.v, userName.leng))
 		{
 			dev->lastSubscribeTime = Data::Timestamp::Now();
 			dev->subscribeAddr = remoteAddr.Ptr()[0];
-			if (devModel.leng > 0)
+			if (devModel.SetTo(nndevModel) && nndevModel.leng > 0)
 			{
 				if (dev->devModel == 0)
 				{
-					dev->devModel = Text::String::New(devModel).Ptr();
+					dev->devModel = Text::String::New(nndevModel).Ptr();
 				}
-				else if (!dev->devModel->Equals(devModel.v, devModel.leng))
+				else if (!dev->devModel->Equals(nndevModel.v, nndevModel.leng))
 				{
 					SDEL_STRING(dev->devModel);
-					dev->devModel = Text::String::New(devModel).Ptr();
+					dev->devModel = Text::String::New(nndevModel).Ptr();
 				}
 			}
 			return true;
@@ -209,16 +210,16 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 	dev->userName = user->userName->Clone().Ptr();
 	dev->lastSubscribeTime = Data::Timestamp::Now();
 	dev->subscribeAddr = remoteAddr.Ptr()[0];
-	if (devModel.leng > 0)
+	if (devModel.SetTo(nndevModel) && nndevModel.leng > 0)
 	{
 		if (dev->devModel == 0)
 		{
-			dev->devModel = Text::String::New(devModel).Ptr();
+			dev->devModel = Text::String::New(nndevModel).Ptr();
 		}
-		else if (!dev->devModel->Equals(devModel.v, devModel.leng))
+		else if (!dev->devModel->Equals(nndevModel.v, nndevModel.leng))
 		{
 			SDEL_STRING(dev->devModel);
-			dev->devModel = Text::String::New(devModel).Ptr();
+			dev->devModel = Text::String::New(nndevModel).Ptr();
 		}
 	}
 	user->devMap.PutNN(dev->token, dev);

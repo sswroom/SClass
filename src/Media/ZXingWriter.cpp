@@ -14,7 +14,7 @@ Media::StaticImage *Media::ZXingWriter::GenQRCode(Text::CString content, Math::S
 	ZXing::MultiFormatWriter writer(ZXing::BarcodeFormat::QR_CODE);
 #endif
 #if (ZXING_VERSION_MAJOR * 10000 + ZXING_VERSION_MINOR * 100 + ZXING_VERSION_PATCH) >= 10400
-	std::string s((const char*)content.v, (size_t)content.leng);
+	std::string s((const char*)content.v.Ptr(), (size_t)content.leng);
 #else
 	const WChar *wptr = Text::StrToWCharNew(content.v);
 	std::wstring s(wptr);

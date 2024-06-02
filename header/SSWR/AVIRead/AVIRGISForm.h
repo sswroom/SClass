@@ -94,8 +94,8 @@ namespace SSWR
 			void SetCtrlForm(UI::GUIForm *frm, Optional<UI::GUITreeView::TreeItem> item);
 			Bool ParseObject(NN<IO::ParsedObject> pobj);
 			void OpenURL(Text::CStringNN url, Text::CString customName);
-			void HKOPortal(Text::CString listFile, Text::CString filePath);
-			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
+			void HKOPortal(Text::CStringNN listFile, Text::CStringNN filePath);
+			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol);
 		public:
 			AVIRGISForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Map::MapView> view);
 			virtual ~AVIRGISForm();
@@ -130,7 +130,7 @@ namespace SSWR
 
 			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid);
 			virtual Bool HasKMap();
-			virtual UTF8Char *ResolveAddress(UTF8Char *sbuff, Math::Coord2DDbl pos);
+			virtual UnsafeArrayOpt<UTF8Char> ResolveAddress(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl pos);
 
 			virtual void PauseUpdate();
 			virtual void ResumeUpdate();

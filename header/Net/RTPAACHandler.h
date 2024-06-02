@@ -42,10 +42,10 @@ namespace Net
 		virtual ~RTPAACHandler();
 
 		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts);
-		virtual void SetFormat(const UTF8Char *fmtStr);
+		virtual void SetFormat(UnsafeArray<const UTF8Char> fmtStr);
 		virtual Int32 GetPayloadType();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual Data::Duration SeekToTime(Data::Duration time);

@@ -28,7 +28,7 @@ UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
 	return ret;
 }
 
-UOSInt IO::DataCaptureStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::DataCaptureStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UOSInt ret = this->stm->Write(buff, size);
 	if (ret > 0)

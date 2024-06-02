@@ -4,7 +4,7 @@
 
 Text::Builder::HTMLDocumentBuilder::HTMLDocumentBuilder(DocType docType, Text::CString title)
 {
-	Text::CString s = DocTypeGetText(docType);
+	Text::CStringNN s = DocTypeGetText(docType);
 	if (s.leng > 0)
 	{
 		sb.Append(s);
@@ -59,7 +59,7 @@ Text::CStringNN Text::Builder::HTMLDocumentBuilder::Build()
 	return this->sb.ToCString();
 }
 
-Text::CString Text::Builder::HTMLDocumentBuilder::DocTypeGetText(DocType docType)
+Text::CStringNN Text::Builder::HTMLDocumentBuilder::DocTypeGetText(DocType docType)
 {
 	switch (docType)
 	{

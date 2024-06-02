@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->packetsChg)
 	{
 		Data::DateTime dt;
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 	else
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		i = (UOSInt)me->lbData->GetItem(i).p;
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC("\r\nUDP From: "));
-		sptr = Net::SocketUtil::GetAddrName(sbuff, me->packets[i].addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, me->packets[i].addr).Or(sbuff);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(":"));
 		sb.AppendU32(me->packets[i].port);
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj,
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt16 port = (UInt16)me->lvPorts->GetItem(index).GetUOSInt();
 	if (port != 0)
 	{

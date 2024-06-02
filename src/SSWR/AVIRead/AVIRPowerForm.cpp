@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	IO::PowerInfo::PowerStatus power;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (IO::PowerInfo::GetPowerStatus(&power))
 	{
 		if (power.hasBattery)

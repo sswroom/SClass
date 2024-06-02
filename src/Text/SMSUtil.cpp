@@ -452,7 +452,7 @@ Bool Text::SMSUtil::IsPhone(const UTF16Char *txt)
 	return true;
 }
 
-Bool Text::SMSUtil::IsIntlPhone(const UTF8Char *txt)
+Bool Text::SMSUtil::IsIntlPhone(UnsafeArray<const UTF8Char> txt)
 {
 	if (txt[0] != '+')
 	{

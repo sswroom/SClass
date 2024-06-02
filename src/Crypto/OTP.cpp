@@ -11,7 +11,7 @@ Crypto::OTP::~OTP()
 {
 }
 
-UTF8Char *Crypto::OTP::CodeString(UTF8Char *sbuff, UInt32 code)
+UnsafeArray<UTF8Char> Crypto::OTP::CodeString(UnsafeArray<UTF8Char> sbuff, UInt32 code)
 {
 	if (this->nDigits == 6)
 	{

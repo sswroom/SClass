@@ -211,7 +211,7 @@ void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHd
 	this->hdlrList.Add({hdlr, hdlrObj});
 }
 
-Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)
+Bool Net::MQTTStaticClient::Subscribe(Text::CStringNN topic)
 {
 	Sync::MutexUsage mutUsage(this->topicMut);
 	this->topicList.Add(Text::String::New(topic).Ptr());
@@ -228,7 +228,7 @@ Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)
 	return false;
 }
 
-Bool Net::MQTTStaticClient::Publish(Text::CString topic, Text::CString message)
+Bool Net::MQTTStaticClient::Publish(Text::CStringNN topic, Text::CStringNN message)
 {
 	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->conn == 0) return false;

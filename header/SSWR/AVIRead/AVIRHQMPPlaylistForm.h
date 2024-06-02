@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnClearClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
-			Bool AddFolder(UTF8Char *folderBuff, UTF8Char *folderBuffEnd);
+			Bool AddFolder(UnsafeArray<UTF8Char> folderBuff, UnsafeArray<UTF8Char> folderBuffEnd);
 			void UpdatePlaylist();
 		public:
 			AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);

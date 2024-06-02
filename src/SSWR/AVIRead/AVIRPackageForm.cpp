@@ -48,7 +48,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> fname;
 	Text::CStringNN fileName;
 	ActionType atype = AT_COPY;
@@ -99,7 +99,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 		
 			if (fname->StartsWith(UTF8STRC("file:///")))
 			{
-				sptr = Text::URLString::GetURLFilePath(sbuff, fname->v, fname->leng);
+				sbuff[0] = 0;
+				sptr = Text::URLString::GetURLFilePath(sbuff, fname->v, fname->leng).Or(sbuff);
 				fileName = CSTRP(sbuff, sptr);
 			}
 			else
@@ -218,7 +219,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->statusChg)
 	{
 		UOSInt k;
@@ -233,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 		{
 			fname = it.Next();
 			k = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			k = me->lvStatus->AddItem(fname->ToCString().Substring(k + 1), (void*)fname->v);
+			k = me->lvStatus->AddItem(fname->ToCString().Substring(k + 1), fname->v.Ptr());
 			switch (me->fileAction.GetItem(i))
 			{
 			case AT_COPY:
@@ -482,7 +483,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> reader, NN<ReadSession> sess, NN<IO::PackageFile> pack)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::PackageFile> innerPack;
 	NN<IO::StreamData> stmData;
 	UInt64 fileSize;
@@ -511,8 +512,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 				sess->errorCnt++;
 				sess->sbError->Append(pack->GetSourceNameObj());
 				sess->sbError->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-				sptr = pack->GetItemName(sbuff, i);
-				if (sptr)
+				if (pack->GetItemName(sbuff, i).SetTo(sptr))
 				{
 					sess->sbError->AppendP(sbuff, sptr);
 				}
@@ -558,8 +558,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 						sess->errorCnt++;
 						sess->sbError->Append(pack->GetSourceNameObj());
 						sess->sbError->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-						sptr = pack->GetItemName(sbuff, i);
-						if (sptr)
+						if (pack->GetItemName(sbuff, i).SetTo(sptr))
 						{
 							sess->sbError->AppendP(sbuff, sptr);
 						}
@@ -594,8 +593,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 						sess->errorCnt++;
 						sess->sbError->Append(pack->GetSourceNameObj());
 						sess->sbError->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-						sptr = pack->GetItemName(sbuff, i);
-						if (sptr)
+						if (pack->GetItemName(sbuff, i).SetTo(sptr))
 						{
 							sess->sbError->AppendP(sbuff, sptr);
 						}
@@ -616,8 +614,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 				sess->errorCnt++;
 				sess->sbError->Append(pack->GetSourceNameObj());
 				sess->sbError->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-				sptr = pack->GetItemName(sbuff, i);
-				if (sptr)
+				if (pack->GetItemName(sbuff, i).SetTo(sptr))
 				{
 					sess->sbError->AppendP(sbuff, sptr);
 				}
@@ -635,8 +632,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 			sess->errorCnt++;
 			sess->sbError->Append(pack->GetSourceNameObj());
 			sess->sbError->AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-			sptr = pack->GetItemName(sbuff, i);
-			if (sptr)
+			if (pack->GetItemName(sbuff, i).SetTo(sptr))
 			{
 				sess->sbError->AppendP(sbuff, sptr);
 			}
@@ -656,7 +652,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFile)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp ts;
 	UOSInt maxWidth = 0;
 	UOSInt w;
@@ -675,7 +671,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFil
 	j = packFile->GetCount();
 	while (i < j)
 	{
-		sptr = packFile->GetItemName(sbuff, i);
+		sptr = packFile->GetItemName(sbuff, i).Or(sbuff);
 		pot = packFile->GetItemType(i);
 		k = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		if (this->initSel && this->initSel->Equals(CSTRP(sbuff, sptr)))
@@ -747,7 +743,7 @@ UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
 void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NN<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Package Form - "));
 	if (this->rootPackFile && packFile.Ptr() != this->rootPackFile)
 	{
@@ -840,7 +836,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = packFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Package Form - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 
@@ -1168,11 +1164,10 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_DELETE_ITEM:
 		{
 			UOSInt i = this->PackFileIndex(this->lvFiles->GetSelectedIndex());
-			if (i != INVALID_INDEX)
+			UTF8Char sbuff[512];
+			UnsafeArray<UTF8Char> sptr;
+			if (i != INVALID_INDEX && this->packFile->GetItemName(sbuff, i).SetTo(sptr))
 			{
-				UTF8Char sbuff[512];
-				UTF8Char *sptr;
-				sptr = this->packFile->GetItemName(sbuff, i);
 				Text::StringBuilderUTF8 sb;
 				sb.Append(CSTR("Are you sure to delete \""));
 				sb.AppendP(sbuff, sptr);

@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool Net::MQTTUtil::TopicValid(const UTF8Char *topic)
+Bool Net::MQTTUtil::TopicValid(UnsafeArray<const UTF8Char> topic)
 {
 	UOSInt i;
 	UOSInt j;
@@ -38,7 +38,7 @@ Bool Net::MQTTUtil::TopicValid(const UTF8Char *topic)
 	return true;
 }
 
-Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF8Char *subscribeTopic, UOSInt subscribeTopicLen)
+Bool Net::MQTTUtil::TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLen, UnsafeArray<const UTF8Char> subscribeTopic, UOSInt subscribeTopicLen)
 {
 	if (subscribeTopic[0] == '#' && subscribeTopic[1] == 0)
 	{

@@ -20,7 +20,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	this->clsData = clsData;
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
-	const UTF8Char *cptr = cmdLine.v;
+	UnsafeArray<const UTF8Char> cptr = cmdLine.v;
 	Data::ArrayList<UTF8Char *> args;
 	Bool argStart = false;
 
@@ -118,11 +118,11 @@ UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Manage::ProcessExecution::Write(const UInt8 *buff, UOSInt size)
+UOSInt Manage::ProcessExecution::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = write(this->clsData->in[1], buff, size);
+	OSInt readSize = write(this->clsData->in[1], buff.Ptr(), size);
 	if (readSize >= 0)
 	{
 		return (UOSInt)readSize;

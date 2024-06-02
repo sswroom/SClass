@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::MD5Exporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::MD5Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::MD5Exporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -62,8 +62,8 @@ Bool Exporter::MD5Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UInt8 buff[16];
 	IO::StreamWriter writer(stm, this->codePage);
 	NN<Text::String> s;

@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(AnyType userOb
 	Text::StringBuilderUTF8 sb;
 	me->txtPolylineText->GetText(sb);
 	me->polyline = Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(sb.ToString());
-	if (me->polyline)
+	if (me->polyline.NotNull())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -52,7 +52,7 @@ void SSWR::AVIRead::AVIRGooglePolylineForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Math::Geometry::LineString *SSWR::AVIRead::AVIRGooglePolylineForm::GetPolyline()
+Optional<Math::Geometry::LineString> SSWR::AVIRead::AVIRGooglePolylineForm::GetPolyline()
 {
 	return this->polyline;
 }

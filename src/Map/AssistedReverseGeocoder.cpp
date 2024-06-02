@@ -18,10 +18,10 @@ Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 	this->conn.Delete();
 }
 
-UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::AssistedReverseGeocoder::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	NN<DB::DBReader> r;
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 	if (keyx == 0 && keyy == 0)
@@ -61,7 +61,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 			break;
 		}
 	}
-	if (sptr && buff[0])
+	if (sptr.NotNull() && buff[0])
 	{
 		Data::Timestamp ts = Data::Timestamp::UtcNow();
 		sql.Clear();
@@ -72,7 +72,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendInt32(keyy);
 		sql.AppendCmdC(CSTR(", "));
-		sql.AppendStrUTF8(buff);
+		sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(buff));
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendTS(ts);
 		sql.AppendCmdC(CSTR(")"));
@@ -85,10 +85,10 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::AssistedReverseGeocoder::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	NN<DB::DBReader> r;
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 
@@ -126,7 +126,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 			break;
 		}
 	}
-	if (sptr && buff[0])
+	if (sptr.NotNull() && buff[0])
 	{
 		Data::Timestamp ts = Data::Timestamp::UtcNow();
 		sql.Clear();
@@ -137,7 +137,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendInt32(keyy);
 		sql.AppendCmdC(CSTR(", "));
-		sql.AppendStrUTF8(buff);
+		sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(buff));
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendTS(ts);
 		sql.AppendCmdC(CSTR(")"));

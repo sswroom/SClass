@@ -46,7 +46,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	IO::MemoryStream mstm;
 
@@ -113,7 +113,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(reqOutput);
-				UTF8Char *sarr[3];
+				UnsafeArray<UTF8Char> sarr[3];
 				UOSInt i;
 				i = Text::StrSplit(sarr, 3, sb.v, ',');
 				if (i == 2)
@@ -203,13 +203,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				}
 			}
 			writer->Write(CSTR("</td><td>"));
+			UnsafeArray<const UTF8Char> nns;
 			k = 0;
 			l = dev->ndigital;
 			while (k < l)
 			{
-				if (dev->digitalNames[k])
+				if (dev->digitalNames[k].SetTo(nns))
 				{
-					WriteHTMLText(writer, dev->digitalNames[k]);
+					WriteHTMLText(writer, nns);
 				}
 				else
 				{
@@ -286,7 +287,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	UInt8 *buff;
 	UOSInt buffSize;
 	NN<Net::WebServer::IWebSession> sess;
-	const UTF8Char *msg = 0;
+	UnsafeArrayOpt<const UTF8Char> msg = 0;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		sess->EndUse();
@@ -336,10 +337,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	writer->WriteLine(CSTR("<tr><td>User name</td><td><input type=\"text\" name=\"user\" id=\"user\" /></td></tr>"));
 	writer->WriteLine(CSTR("<tr><td>Password</td><td><input type=\"password\" name=\"pwd\" id=\"pwd\"/></td></tr>"));
 	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
-	if (msg)
+	UnsafeArray<const UTF8Char> nnmsg;
+	if (msg.SetTo(nnmsg))
 	{
 		writer->WriteLine(CSTR("<tr><td></td><td>"));
-		WriteHTMLText(writer, msg);
+		WriteHTMLText(writer, nnmsg);
 		writer->WriteLine(CSTR("</td></tr>"));
 	}
 	writer->WriteLine(CSTR("</table>"));
@@ -373,7 +375,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> nns;
 	NN<Text::String> s;
 	Int64 devId;
 	NN<Net::WebServer::IWebSession> sess;
@@ -456,9 +459,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		l = dev->nReading;
 		while (k < l)
 		{
-			if (dev->readingNames[k])
+			if (dev->readingNames[k].SetTo(nns))
 			{
-				WriteHTMLText(writer, dev->readingNames[k]);
+				WriteHTMLText(writer, nns);
 			}
 			else
 			{
@@ -483,9 +486,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		l = dev->ndigital;
 		while (k < l)
 		{
-			if (dev->digitalNames[k])
+			if (dev->digitalNames[k].SetTo(nns))
 			{
-				WriteHTMLText(writer, dev->digitalNames[k]);
+				WriteHTMLText(writer, nns);
 			}
 			else
 			{
@@ -541,7 +544,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	NN<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -660,7 +663,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> nns;
 	UOSInt i;
 	UOSInt j;
 	NN<ISMonitorCore::DeviceInfo> dev;
@@ -751,10 +755,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 		writer->Write(CSTRP(sbuff, sptr));
 		writer->Write(CSTR("\" "));
 
-		if (dev->readingNames[i])
+		if (dev->readingNames[i].SetTo(nns))
 		{
 			writer->Write(CSTR(" value="));
-			WriteAttrText(writer, dev->readingNames[i]);
+			WriteAttrText(writer, nns);
 		}
 		writer->Write(CSTR("/></td><td>Sensor "));
 		sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[i].status[0]));
@@ -800,7 +804,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> nns;
 	UOSInt i;
 	UOSInt j;
 	NN<ISMonitorCore::DeviceInfo> dev;
@@ -891,10 +896,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 		writer->Write(CSTRP(sbuff, sptr));
 		writer->Write(CSTR("\" "));
 
-		if (dev->digitalNames[i])
+		if (dev->digitalNames[i].SetTo(nns))
 		{
 			writer->Write(CSTR(" value="));
-			WriteAttrText(writer, dev->digitalNames[i]);
+			WriteAttrText(writer, nns);
 		}
 		writer->Write(CSTR("/></td></tr>"));
 		i++;
@@ -1174,9 +1179,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			}
 
 			Text::StringBuilderUTF8 sb;
-			if (dev->readingNames[readingIndex])
+			UnsafeArray<const UTF8Char> nns;
+			if (dev->readingNames[readingIndex].SetTo(nns))
 			{
-				sb.AppendSlow(dev->readingNames[readingIndex]);
+				sb.AppendSlow(nns);
 			}
 			else
 			{
@@ -1463,7 +1469,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
 	if (sess)
@@ -1508,15 +1514,16 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 		}
 		writer->WriteLine(CSTR(";"));
 		writer->WriteLine(CSTR("cli.readings = new Array();"));
+		UnsafeArray<const UTF8Char> nns;
 		k = 0;
 		l = dev->nReading;
 		while (k < l)
 		{
 			writer->WriteLine(CSTR("reading = new Object();"));
 			writer->Write(CSTR("reading.name = "));
-			if (dev->readingNames[k])
+			if (dev->readingNames[k].SetTo(nns))
 			{
-				WriteJSText(writer, dev->readingNames[k]);
+				WriteJSText(writer, nns);
 			}
 			else
 			{
@@ -1680,7 +1687,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		else
 		{
 			UTF8Char sbuff[64];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			Data::ArrayListInt64 dateList;
 			Data::ArrayListDbl valList;
 			NN<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec;
@@ -1720,9 +1727,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 			Text::StringBuilderUTF8 sb;
 			Sync::RWMutexUsage mutUsage(dev->mut, false);
-			if (dev->readingNames[readingIndex])
+			UnsafeArray<const UTF8Char> nns;
+			if (dev->readingNames[readingIndex].SetTo(nns))
 			{
-				sb.AppendSlow(dev->readingNames[readingIndex]);
+				sb.AppendSlow(nns);
 			}
 			else
 			{
@@ -1864,9 +1872,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	writer->WriteLine(CSTR("<tr><td>Retype</td><td><input type=\"password\" name=\"retype\" id=\"retype\"/></td></tr>"));
 	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
 	writer->WriteLine(CSTR("</table>"));
-	if (msg.v)
+	Text::CStringNN nnmsg;
+	if (msg.SetTo(nnmsg))
 	{
-		WriteHTMLText(writer, msg);
+		WriteHTMLText(writer, nnmsg);
 	}
 	writer->WriteLine(CSTR("</form></center>"));
 	writer->WriteLine(CSTR("</td></tr></table></body>"));
@@ -1889,7 +1898,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -2020,7 +2029,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	UInt8 *buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::IWebSession> sess;
 	NN<SSWR::SMonitor::ISMonitorCore::WebUser> user;
 	Int32 userId;
@@ -2054,7 +2063,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && req->GetHTTPFormStr(CSTR("device")).SetTo(devicestr) && action->Equals(UTF8STRC("userassign")))
 		{
 			Data::ArrayListInt64 devIds;
-			UTF8Char *sarr[2];
+			UnsafeArray<UTF8Char> sarr[2];
 			Text::StringBuilderUTF8 sb;
 			Int64 cliId;
 			Bool valid = true;
@@ -2197,7 +2206,7 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, const UTF8Char *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt);
 	writer->Write(xmlTxt->ToCString());
@@ -2213,12 +2222,12 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *wri
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::CString txt)
 {
-	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt.v);
+	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt.OrEmpty().v);
 	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, const UTF8Char *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt);
 	writer->Write(xmlTxt->ToCString());
@@ -2239,9 +2248,9 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *wri
 	xmlTxt->Release();
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, const UTF8Char *txt)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt)
 {
-	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
+	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(UnsafeArrayOpt<const UTF8Char>(txt));
 	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }

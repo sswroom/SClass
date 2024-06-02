@@ -119,10 +119,10 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	case DB::DBConn::CT_MYSQLTCP:
 		{
 			UTF8Char sbuff[128];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<Net::MySQLTCPClient> mysql = NN<Net::MySQLTCPClient>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysqltcp:Server="));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr());
+			sptr = Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr()).Or(sbuff);
 			connStr->AppendP(sbuff, sptr);
 			connStr->AppendC(UTF8STRC(";Port="));
 			connStr->AppendU16(mysql->GetConnPort());
@@ -142,7 +142,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	case DB::DBConn::CT_POSTGRESQL:
 		{
 			UTF8Char sbuff[128];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<DB::PostgreSQLConn> psql = NN<DB::PostgreSQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("postgresql:Server="));
 			sptr = psql->GetConnServer()->ConcatTo(sbuff);
@@ -164,7 +164,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	case DB::DBConn::CT_TDSCONN:
 		{
 			UTF8Char sbuff[128];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<DB::TDSConn> tds = NN<DB::TDSConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("tds:Host="));
 			sptr = tds->GetConnHost()->ConcatTo(sbuff);
@@ -592,7 +592,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	return 0;
 }
 
-void DB::DBManager::GetConnName(Text::CString connStr, NN<Text::StringBuilderUTF8> sbOut)
+void DB::DBManager::GetConnName(Text::CStringNN connStr, NN<Text::StringBuilderUTF8> sbOut)
 {
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
 	{

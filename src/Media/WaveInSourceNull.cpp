@@ -19,12 +19,12 @@ UInt32 Media::WaveInSource::GetDeviceCount()
 	return 0;
 }
 
-UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *sbuff, UInt32 devNo)
+UnsafeArrayOpt<UTF8Char> Media::WaveInSource::GetDeviceName(UnsafeArray<UTF8Char> sbuff, UInt32 devNo)
 {
 	return 0;
 }
 
-Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
+Media::WaveInSource::WaveInSource(UnsafeArray<const UTF8Char> devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
 	this->devId = (UInt32)-1;
 	this->freq = freq;
@@ -58,7 +58,7 @@ Bool Media::WaveInSource::IsError()
 	return hWaveIn == 0;
 }
 
-UTF8Char *Media::WaveInSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::WaveInSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }

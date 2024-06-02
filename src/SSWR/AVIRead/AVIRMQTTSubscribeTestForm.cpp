@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(AnyType use
 	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (me->client)
 	{

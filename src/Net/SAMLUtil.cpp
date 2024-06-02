@@ -296,7 +296,7 @@ Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X50
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Crypto::Cert::X509Key> key, Text::CString responseXML, NN<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Crypto::Cert::X509Key> key, Text::CStringNN responseXML, NN<Text::StringBuilderUTF8> sbResult)
 {
 	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
 	Text::XMLReader reader(encFact, mstm, Text::XMLReader::PM_XML);

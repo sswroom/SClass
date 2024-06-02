@@ -19,7 +19,7 @@ Double Math::Unit::MagneticField::GetUnitRatio(MagneticFieldUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::MagneticField::GetUnitShortName(MagneticFieldUnit unit)
+Text::CStringNN Math::Unit::MagneticField::GetUnitShortName(MagneticFieldUnit unit)
 {
 	switch (unit)
 	{
@@ -35,7 +35,7 @@ Text::CString Math::Unit::MagneticField::GetUnitShortName(MagneticFieldUnit unit
 	return CSTR("");
 }
 
-Text::CString Math::Unit::MagneticField::GetUnitName(MagneticFieldUnit unit)
+Text::CStringNN Math::Unit::MagneticField::GetUnitName(MagneticFieldUnit unit)
 {
 	switch (unit)
 	{

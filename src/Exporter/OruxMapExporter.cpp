@@ -59,7 +59,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NN<IO
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -75,7 +75,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 	UTF8Char fileName2[512];
 	UTF8Char u8fileName[512];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
@@ -92,7 +92,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 	UOSInt j;
 	UOSInt level;
 	NN<Text::String> s;
-//	const UTF8Char *csptr;
+//	UnsafeArray<const UTF8Char> csptr;
 	Int32 minX;
 	Int32 minY;
 	Int32 maxX;
@@ -136,8 +136,8 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 			db->ExecuteNonQuery(CSTR("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
 			db->ExecuteNonQuery(CSTR("delete from android_metadata"));
 			db->ExecuteNonQuery(CSTR("delete from tiles"));
-			Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntry(Text::EncodingFactory::GetSystemLCID());
-			if (loc)
+			NN<Text::Locale::LocaleEntry> loc;
+			if (Text::Locale::GetLocaleEntry(Text::EncodingFactory::GetSystemLCID()).SetTo(loc))
 			{
 				sql.Clear();
 				sql.AppendCmdC(CSTR("insert into android_metadata (locale) values ("));

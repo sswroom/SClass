@@ -7,7 +7,7 @@ void Demangling(Text::CStringNN name)
 {
 	UTF8Char sbuff[512];
 	Text::Cpp::CppDemangler::ToFuncName(sbuff, name.v);
-	printf("%s\r\n%s\r\n\r\n", name.v, sbuff);
+	printf("%s\r\n%s\r\n\r\n", name.v.Ptr(), sbuff);
 }
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)

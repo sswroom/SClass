@@ -35,8 +35,8 @@ namespace IO
 			void ToIdleMode();
 			Bool WaitForReply(UInt32 timeToWait);
 			Bool WaitForReplyVal(UInt32 timeToWait, OutParam<Int32> retVal);
-			Int32 ReadCommand(const Char *cmdStr, UOSInt cmdLen);
-			Bool WriteCommand(const Char *cmdStr, UOSInt cmdLen);
+			Int32 ReadCommand(UnsafeArray<const UTF8Char> cmdStr, UOSInt cmdLen);
+			Bool WriteCommand(UnsafeArray<const UTF8Char> cmdStr, UOSInt cmdLen);
 		public:
 			DensoWaveQB30(NN<IO::Stream> stm);
 			virtual ~DensoWaveQB30();

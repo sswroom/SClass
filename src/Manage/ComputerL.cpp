@@ -2,8 +2,8 @@
 #include "Manage/Computer.h"
 #include <unistd.h>
 
-UTF8Char *Manage::Computer::GetHostName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::Computer::GetHostName(UnsafeArray<UTF8Char> sbuff)
 {
-	int len = gethostname((Char*)sbuff, 256);
+	int len = gethostname((Char*)sbuff.Ptr(), 256);
 	return &sbuff[len];
 }

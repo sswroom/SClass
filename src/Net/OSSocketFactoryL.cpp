@@ -543,14 +543,14 @@ void Net::OSSocketFactory::CancelReceiveData(void *reqData)
 {
 }
 
-UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
+UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
 	OSInt recvSize;
 	sockaddr_storage addrBuff;
 	sockaddr *saddr = (sockaddr*)&addrBuff;
 	socklen_t size = sizeof(addrBuff);
 	saddr->sa_family = 0;
-	recvSize = recvfrom((Int32)this->SocketGetFD(socket), (Char*)buff, (size_t)buffSize, 0, saddr, (socklen_t*)&size);
+	recvSize = recvfrom((Int32)this->SocketGetFD(socket), (Char*)buff.Ptr(), (size_t)buffSize, 0, saddr, (socklen_t*)&size);
 	if (recvSize <= 0)
 	{
 //		printf("UDP recv error: %d\r\n", errno);
@@ -604,7 +604,7 @@ UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UInt8 *buff, UOSInt b
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
+UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	sockaddr_storage addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
@@ -636,7 +636,7 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt
 	{
 		return 0;
 	}
-	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
+	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, 0, addrBuff, addrSize);
 	if (ret == -1)
 	{
 		return 0;
@@ -647,7 +647,7 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
+UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	sockaddr addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
@@ -657,7 +657,7 @@ UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSI
 	Text::StrConcat(addrBuff->sa_data, (const Char*)ifName.Ptr());
 	addrSize = sizeof(sockaddr);
 
-	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
+	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, 0, addrBuff, addrSize);
 	if (ret == -1)
 	{
 		return 0;

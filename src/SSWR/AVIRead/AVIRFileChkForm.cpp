@@ -10,7 +10,7 @@ typedef enum
 SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::FileCheck> fileChk) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *hash;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -68,7 +68,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_VALIDATE:
 		{
 			UTF8Char sbuff[128];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UOSInt hashSize;
 			UInt8 *hash;
 			UInt8 *hash2;

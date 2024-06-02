@@ -544,7 +544,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 							if (this->debugLog)
 							{
 								UTF8Char sbuff[256];
-								UTF8Char *sptr;
+								UnsafeArray<UTF8Char> sptr;
 								sptr = Text::StrConcatC(sbuff, UTF8STRC("ScnChg\t"));
 								sptr = Text::StrInt32(sptr, frameNum);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
@@ -1115,7 +1115,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 				if (this->debugLog)
 				{
 					UTF8Char sbuff[256];
-					UTF8Char *sptr;
+					UnsafeArray<UTF8Char> sptr;
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("IVTC\t"));
 					sptr = Text::StrInt32(sptr, frameNum);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
@@ -1281,7 +1281,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(AnyType userObj)
 {
 	NN<ThreadStat> tStat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("IVTCFilterC")), tStat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);

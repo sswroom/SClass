@@ -17,7 +17,9 @@ namespace Text
 		static NN<Text::String> ToNewJSText(Optional<Text::String> s);
 		static NN<Text::String> ToNewJSText(NN<Text::String> s);
 		static NN<Text::String> ToNewJSText(UnsafeArrayOpt<const UTF8Char> s);
+		static NN<Text::String> ToNewJSText(UnsafeArray<const UTF8Char> s);
 		static NN<Text::String> ToNewJSTextDQuote(UnsafeArrayOpt<const UTF8Char> s);
+		static NN<Text::String> ToNewJSTextDQuote(UnsafeArray<const UTF8Char> s);
 		static const WChar *ToNewJSTextW(const WChar *s);
 		static const WChar *ToNewJSTextDQuoteW(const WChar *s);
 		static Text::String *FromNewJSText(UnsafeArray<const UTF8Char> s);

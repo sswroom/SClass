@@ -14,7 +14,7 @@ Double Math::Unit::Ratio::GetUnitRatio(RatioUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Ratio::GetUnitShortName(RatioUnit unit)
+Text::CStringNN Math::Unit::Ratio::GetUnitShortName(RatioUnit unit)
 {
 	switch (unit)
 	{
@@ -26,7 +26,7 @@ Text::CString Math::Unit::Ratio::GetUnitShortName(RatioUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Ratio::GetUnitName(RatioUnit unit)
+Text::CStringNN Math::Unit::Ratio::GetUnitName(RatioUnit unit)
 {
 	switch (unit)
 	{

@@ -17,7 +17,7 @@ Net::ICMPScanner *scanner;
 void PingScan(UInt32 ip)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Scanning with interface ip "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);

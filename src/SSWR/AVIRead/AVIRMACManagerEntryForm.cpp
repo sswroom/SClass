@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUI
 	this->cboName->EndUpdate();
 	MemFree(macListSort);
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexBytes(sbuff, mac, 6, ':');
 	this->txtMAC->SetText(CSTRP(sbuff, sptr));
 	if (name.leng > 0)

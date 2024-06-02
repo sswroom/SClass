@@ -142,6 +142,7 @@ void Net::Email::GCISClient::ParseEmailAddresses(NN<Text::JSONBuilder> builder, 
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[10];
 	sb.Append(toList);
+	Text::CStringNN nns;
 	UOSInt strCnt = Text::StrSplitTrimP(sarr, 10, sb, ',');
 	UOSInt i = 0;
 	while (i < strCnt)
@@ -156,10 +157,10 @@ void Net::Email::GCISClient::ParseEmailAddresses(NN<Text::JSONBuilder> builder, 
 		i++;
 	}
 
-	if (ccList.leng > 0)
+	if (ccList.SetTo(nns) && nns.leng > 0)
 	{
 		sb.ClearStr();
-		sb.Append(ccList);
+		sb.Append(nns);
 		strCnt = Text::StrSplitTrimP(sarr, 10, sb, ',');
 		i = 0;
 		while (i < strCnt)
@@ -175,10 +176,10 @@ void Net::Email::GCISClient::ParseEmailAddresses(NN<Text::JSONBuilder> builder, 
 		}
 	}
 
-	if (bccList.leng > 0)
+	if (bccList.SetTo(nns) && nns.leng > 0)
 	{
 		sb.ClearStr();
-		sb.Append(bccList);
+		sb.Append(nns);
 		strCnt = Text::StrSplitTrimP(sarr, 10, sb, ',');
 		i = 0;
 		while (i < strCnt)

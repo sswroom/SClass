@@ -41,7 +41,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i < j)
 	{
 		cptr = cfgList[i];
-		UOSInt len = Text::StrCharCnt(cptr);
+		UOSInt len = Text::StrCharCntCh(cptr);
 		if (cfg->GetValue({(const UTF8Char*)cptr, len}).IsNull())
 		{
 			sb.ClearStr();
@@ -73,7 +73,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt16 port;
 	UInt16 smtpIPort;
 	Net::Email::SMTPConn::ConnType connType;
-	UTF8Char *sarr[2];
+	UnsafeArray<UTF8Char> sarr[2];
 	if (!cfg->GetValue(CSTR("SMTPType")).SetTo(smtpType))
 	{
 		DEL_CLASS(cfg);

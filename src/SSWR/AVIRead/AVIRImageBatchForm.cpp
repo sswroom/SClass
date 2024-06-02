@@ -35,7 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
 {
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
-	if (fileName.leng == 0)
+	Text::CStringNN nnfileName;
+	if (!fileName.SetTo(nnfileName) || nnfileName.leng == 0)
 	{
 		me->dispImage.Delete();
 		SDEL_CLASS(me->previewImage);
@@ -44,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 	}
 	else
 	{
-		Optional<Media::StaticImage> img = me->icMain->LoadImage(fileName.v);
+		Optional<Media::StaticImage> img = me->icMain->LoadImage(nnfileName.v);
 		me->pbMain->SetImage(0, false);
 		me->dispImage.Delete();
 		SDEL_CLASS(me->previewImage);
@@ -74,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UO
 {
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
 	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
@@ -188,8 +189,8 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(AnyType userObj, D
 void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	sptr = folder->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -201,7 +202,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
 		{
 			if (pt == IO::Path::PathType::File)
 			{

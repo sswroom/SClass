@@ -10,7 +10,7 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	MemSetLogFile(UTF8STRC("Memory.log"));
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART);
 	if (Manage::Process::IsAlreadyStarted())

@@ -23,7 +23,7 @@ Media::Batch::BatchSaveJPEGSize::~BatchSaveJPEGSize()
 void Media::Batch::BatchSaveJPEGSize::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Optional<IO::FileExporter::ParamData> param;
 	Int32 minIndex;
 	UInt64 minSize;

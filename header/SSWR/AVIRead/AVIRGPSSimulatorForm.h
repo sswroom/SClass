@@ -48,9 +48,9 @@ namespace SSWR
 			static void __stdcall OnSpeedClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void GenRecord(Math::Coord2DDbl pt, Double dir, Double speed, Bool isValid);
-			Char *GenLat(Char *ptr, Double lat);
-			Char *GenLon(Char *ptr, Double lon);
-			Char *GenCheck(Char *ptr, Char *start);
+			UnsafeArray<Char> GenLat(UnsafeArray<Char> ptr, Double lat);
+			UnsafeArray<Char> GenLon(UnsafeArray<Char> ptr, Double lon);
+			UnsafeArray<Char> GenCheck(UnsafeArray<Char> ptr, UnsafeArray<Char> start);
 		public:
 			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGPSSimulatorForm();

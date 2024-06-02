@@ -155,7 +155,7 @@ void __stdcall Net::Email::SMTPServer::ClientTimeout(NN<Net::TCPClient> cli, Any
 {
 }
 
-UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CString msg)
+UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
@@ -223,7 +223,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 	return strLen;
 }*/
 
-void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMTPServer::MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMTPServer::MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{
@@ -231,17 +231,17 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		{
 			Bool succ = false;
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
-			Text::CString userName;
-			Text::CString pwd;
+			Text::CStringNN userName;
+			Text::CStringNN pwd;
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff);
 			decBuff[cmdLen] = 0;
 			userName.v = (const UTF8Char*)&decBuff[1];
 			userName.leng = Text::StrCharCnt(userName.v);
 			pwd.v = userName.v + userName.leng + 1;
-			if (pwd.v < (const UTF8Char*)(decBuff + cmdLen))
+			if (pwd.v < UnsafeArray<const UTF8Char>(decBuff + cmdLen))
 			{
-				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v);
+				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v.Ptr());
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
 			MemFree(decBuff);
@@ -300,9 +300,9 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC(".")))
 		{
 			UTF8Char sbuff[256];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			cliStatus->dataMode = false;
-			if ((sptr = this->mailHdlr(sbuff, this->mailObj, cli, cliStatus)) != 0)
+			if (this->mailHdlr(sbuff, this->mailObj, cli, cliStatus).SetTo(sptr))
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Ok: queued as "));
@@ -427,17 +427,17 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 		{
 			Bool succ = false;
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
-			Text::CString userName;
-			Text::CString pwd;
+			Text::CStringNN userName;
+			Text::CStringNN pwd;
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff);
 			decBuff[cmdLen] = 0;
 			userName.v = &decBuff[1];
 			userName.leng = Text::StrCharCnt(userName.v);
 			pwd.v = userName.v + userName.leng + 1;
-			if (pwd.v < (const UTF8Char*)(decBuff + cmdLen))
+			if (pwd.v < UnsafeArray<const UTF8Char>(decBuff + cmdLen))
 			{
-				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v);
+				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v.Ptr());
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
 			MemFree(decBuff);

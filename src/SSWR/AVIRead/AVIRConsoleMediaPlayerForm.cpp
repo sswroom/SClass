@@ -19,9 +19,10 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(An
 	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Media::MediaFile> mf;
-		sptr = capture->GetSourceName(sbuff);
+		sbuff[0] = 0;
+		sptr = capture->GetSourceName(sbuff).Or(sbuff);
 		NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 		mf->AddSource(capture, 0);
 		if (me->player->OpenVideo(mf))
@@ -295,7 +296,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 	this->player->SetSurfaceBugMode(true);
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt16 port = 8080;
 	NEW_CLASSNN(this->webIface, Media::MediaPlayerWebInterface(this->player, false));
 	while (port < 8090)

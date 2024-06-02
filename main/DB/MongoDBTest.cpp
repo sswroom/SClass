@@ -9,7 +9,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CString username = CSTR("abc");
 	Text::CString password = CSTR("abc");
-	Text::CString serverhost = CSTR("abc.com");
+	Text::CStringNN serverhost = CSTR("abc.com");
 	UInt16 serverport = 3717;
 	Text::CString database = CSTR("abc");
 

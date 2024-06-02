@@ -18,8 +18,8 @@ namespace Math
 			} MagneticFieldUnit;
 		public:
 			static Double GetUnitRatio(MagneticFieldUnit unit);
-			static Text::CString GetUnitShortName(MagneticFieldUnit unit);
-			static Text::CString GetUnitName(MagneticFieldUnit unit);
+			static Text::CStringNN GetUnitShortName(MagneticFieldUnit unit);
+			static Text::CStringNN GetUnitName(MagneticFieldUnit unit);
 			static Double GetConvertRatio(MagneticFieldUnit fromUnit, MagneticFieldUnit toUnit);
 			static Double Convert(MagneticFieldUnit fromUnit, MagneticFieldUnit toUnit, Double fromValue);
 		};

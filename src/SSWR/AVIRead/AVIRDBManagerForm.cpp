@@ -220,7 +220,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 			UOSInt i;
 			UOSInt j;
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
 			NN<Math::CoordinateSystem> csys = me->mapEnv->GetCoordinateSystem();
 			NN<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
@@ -244,7 +244,8 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 				j = me->dbLayer->GetColumnCnt();
 				while (i < j)
 				{
-					sptr = me->dbLayer->GetColumnName(sbuff, i);
+					sbuff[0] = 0;
+					sptr = me->dbLayer->GetColumnName(sbuff, i).Or(sbuff);
 					me->lvMapRecord->AddItem(CSTRP(sbuff, sptr), 0);
 					sb.ClearStr();
 					me->dbLayer->GetString(sb, nameArr, id, i);
@@ -616,7 +617,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	}
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	Optional<DB::TableDef> tabDef = 0;
 	NN<DB::TableDef> nntabDef;
@@ -796,7 +797,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->lvSvrConn->ClearItems();
 	NN<DB::ReadingDB> currDB;
 	if (this->currDB.SetTo(currDB) && currDB->IsDBTool())
@@ -929,7 +930,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::SQLType sqlType, Bool
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool axisAware)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -973,7 +974,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableData(DB::SQLType sqlType, Bool
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -1015,7 +1016,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableCSV()
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -1058,7 +1059,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableSQLite()
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableHTML()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -1100,7 +1101,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableHTML()
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTablePList()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -1142,7 +1143,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTablePList()
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableXLSX()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -1185,7 +1186,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ExportTableXLSX()
 void SSWR::AVIRead::AVIRDBManagerForm::ExportTableExcelXML()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> db;
 	if (!this->currDB.SetTo(db))
 	{
@@ -1452,8 +1453,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->mnuTable->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
 	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), this->dbList, this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
 	{
@@ -1489,8 +1490,8 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	this->mapEnv.Delete();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
 	DB::DBManager::StoreConn(CSTRP(sbuff, sptr), this->dbList);
 	UOSInt i = this->dbList.GetCount();
@@ -1508,7 +1509,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::DBConn> conn;
 	NN<DB::ReadingDB> db;
 	switch (cmdId)
@@ -1699,7 +1700,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CPP_HEADER:
-		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
+		if (this->lbTable->GetSelectedItemText(sbuff).SetTo(sptr))
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 			NN<Data::Class> cls;
@@ -1718,7 +1719,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CPP_SOURCE:
-		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
+		if (this->lbTable->GetSelectedItemText(sbuff).SetTo(sptr))
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 			NN<Data::Class> cls;

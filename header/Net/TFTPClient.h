@@ -26,8 +26,8 @@ namespace Net
 		~TFTPClient();
 
 		Bool IsError();
-		Bool SendFile(const UTF8Char *fileName, IO::Stream *stm);
-		Bool RecvFile(const UTF8Char *fileName, IO::Stream *stm);
+		Bool SendFile(UnsafeArray<const UTF8Char> fileName, IO::Stream *stm);
+		Bool RecvFile(UnsafeArray<const UTF8Char> fileName, IO::Stream *stm);
 	};
 }
 #endif

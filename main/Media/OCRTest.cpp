@@ -69,7 +69,7 @@ void PossibleArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, UOSIn
 void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngine *ocr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(sbuff, imgPath.v, imgPath.leng);
 	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(&fd, IO::ParserType::ImageList);
@@ -94,13 +94,13 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 
 void __stdcall OnNumberPlate(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
 {
-	printf("Parsed Number Plate: %s\r\n", result->v);
+	printf("Parsed Number Plate: %s\r\n", result->v.Ptr());
 }
 
-void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *apnr)
+void TestFile2(Text::CStringNN imgPath, Parser::ParserList *parsers, Media::ANPR *apnr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(sbuff, imgPath.v, imgPath.leng);
 	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 	NN<Media::ImageList> imgList;

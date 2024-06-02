@@ -8,7 +8,7 @@ namespace Media
 		class OCVUtil
 		{
 		public:
-			static UTF8Char *GetDataPath(UTF8Char *sbuff, const UTF8Char *dataFile);
+			static UnsafeArrayOpt<UTF8Char> GetDataPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFile);
 		};
 	}
 };

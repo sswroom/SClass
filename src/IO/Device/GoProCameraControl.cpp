@@ -14,12 +14,12 @@ void IO::Device::GoProCameraControl::GetMediaList()
 	{
 		NEW_CLASS(this->fileList, Data::ArrayListNN<IO::CameraControl::FileInfo>());
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		
 		Text::StringBuilderUTF8 sb;
 		NN<IO::CameraControl::FileInfo> file;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
+		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
 		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		{
@@ -123,10 +123,10 @@ void IO::Device::GoProCameraControl::GetMediaList()
 Bool IO::Device::GoProCameraControl::GetInfo(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
+	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	{
@@ -245,9 +245,9 @@ Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> fil
 	UOSInt readSize;
 	UInt64 totalSize = 0;
 	UInt64 totalWriteSize = 0;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
+	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/videos/DCIM/"));
 	sptr = Text::StrConcatC(sptr, file->filePath2, file->filePathLen);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
@@ -267,13 +267,13 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::File
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
 	UInt64 totalSize = 0;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!Text::StrStartsWithC(file->fileName2, file->fileNameLen, UTF8STRC("GOPR")))
 	{
 		return false;
 	}
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
-	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
+	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaMetadata?p="));
 	sptr = Text::StrConcatC(sptr, file->filePath2, file->filePathLen);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));

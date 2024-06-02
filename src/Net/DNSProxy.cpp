@@ -320,13 +320,13 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 	hdlrMutUsage.EndUse();
 }
 
-void Net::DNSProxy::RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 reqClass, NN<RequestResult> req)
+void Net::DNSProxy::RequestDNS(UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, NN<RequestResult> req)
 {
 	UInt8 buff[512];
 	UInt8 *ptr1;
 	UInt8 *ptr2;
-	const UTF8Char *cptr1;
-	const UTF8Char *cptr2;
+	UnsafeArray<const UTF8Char> cptr1;
+	UnsafeArray<const UTF8Char> cptr2;
 	UTF8Char c;
 	UInt32 currId = this->NextId();
 
@@ -433,7 +433,7 @@ void Net::DNSProxy::DelCliReq(UInt32 id)
 	req.Delete();
 }
 
-UOSInt Net::DNSProxy::BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool disableV6)
+UOSInt Net::DNSProxy::BuildEmptyReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, Bool disableV6)
 {
 	Bool localhostResp;
 	if (reqType == 28 && disableV6)
@@ -530,7 +530,7 @@ UOSInt Net::DNSProxy::BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *re
 	return i;
 }
 
-UOSInt Net::DNSProxy::BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr)
+UOSInt Net::DNSProxy::BuildAddressReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr)
 {
 	Int16 reqType;
 	if (addr->addrType == Net::AddrType::IPv4)

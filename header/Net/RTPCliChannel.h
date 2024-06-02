@@ -1,6 +1,7 @@
 #ifndef _SM_NET_RTPCLICHANNEL
 #define _SM_NET_RTPCLICHANNEL
 #include "AnyType.h"
+#include "Data/ArrayListStrUTF8.h"
 #include "Data/FastMap.h"
 #include "Media/IAudioSource.h"
 #include "Media/IMediaSource.h"
@@ -72,7 +73,7 @@ namespace Net
 		~RTPCliChannel();
 
 		UInt16 GetPort();
-		UTF8Char *GetTransportDesc(UTF8Char *sbuff);
+		UnsafeArray<UTF8Char> GetTransportDesc(UnsafeArray<UTF8Char> sbuff);
 		Text::String *GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
@@ -88,10 +89,10 @@ namespace Net
 		Bool StopPlay();
 		Bool IsRunning();
 
-		Bool MapPayloadType(Int32 payloadType, Text::CString typ, UInt32 freq, UInt32 nChannel);
-		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
+		Bool MapPayloadType(Int32 payloadType, Text::CStringNN typ, UInt32 freq, UInt32 nChannel);
+		Bool SetPayloadFormat(Int32 paylodType, UnsafeArray<const UTF8Char> format);
 
-		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log);
+		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log);
 	};
 }
 #endif

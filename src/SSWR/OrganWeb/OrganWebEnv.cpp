@@ -18,22 +18,22 @@
 void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::FindFileSession *sess;
 	UInt32 langId;
 	IO::Path::PathType pt;
 	UOSInt i;
 	NN<IO::ConfigFile> lang;
 
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Langs"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -73,7 +73,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 	Int32 cateId;
 	UOSInt i;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::DBReader> r;
 	if (db->ExecuteReader(CSTR("select cate_id, chi_name, dirName, srcDir, flags from category")).SetTo(r))
 	{
@@ -804,14 +804,14 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<
 	this->selectedBook = 0;
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->colorSess = this->colorMgr.CreateSess(0);
 	this->eng = eng;
 
 	NEW_CLASSNN(this->osmHdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), osmCachePath, 18, this->sockf, this->ssl));
 	this->osmHdlr->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
 	this->osmHdlr->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("node_modules"));
 	NEW_CLASSNN(this->nodeHdlr, Net::WebServer::NodeModuleHandler(CSTRP(sbuff, sptr), 0));
 
@@ -832,7 +832,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<
 	else
 	{
 		NN<SSWR::OrganWeb::OrganWebHandler> webHdlr;
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
 		NEW_CLASSNN(webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize, CSTRP(sbuff, sptr)));
 		webHdlr->HandlePath(CSTR("/js"), this->nodeHdlr, false);
@@ -1060,7 +1060,7 @@ void SSWR::OrganWeb::OrganWebEnv::GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsag
 void SSWR::OrganWeb::OrganWebEnv::SearchInGroup(
 	NN<Sync::RWMutexUsage> mutUsage,
 	NN<GroupInfo> group,
-	const UTF8Char *searchStr, UOSInt searchStrLen,
+	UnsafeArray<const UTF8Char> searchStr, UOSInt searchStrLen,
 	NN<Data::ArrayListDbl> speciesIndice,
 	NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs,
 	NN<Data::ArrayListDbl> groupIndice,
@@ -1169,7 +1169,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupIsAdmin(NN<GroupInfo> group)
 	}
 }
 
-UTF8Char *SSWR::OrganWeb::OrganWebEnv::PasswordEnc(UTF8Char *buff, Text::CString pwd)
+UnsafeArray<UTF8Char> SSWR::OrganWeb::OrganWebEnv::PasswordEnc(UnsafeArray<UTF8Char> buff, Text::CStringNN pwd)
 {
 	UInt8 md5Val[16];
 	Crypto::Hash::MD5 md5;
@@ -1195,7 +1195,7 @@ void SSWR::OrganWeb::OrganWebEnv::BookSelect(Optional<BookInfo> book)
 	this->selectedBook = book;
 }
 
-UTF8Char *SSWR::OrganWeb::OrganWebEnv::BookGetPath(UTF8Char *sbuff, Int32 bookId)
+UnsafeArray<UTF8Char> SSWR::OrganWeb::OrganWebEnv::BookGetPath(UnsafeArray<UTF8Char> sbuff, Int32 bookId)
 {
 	sbuff = this->dataDir->ConcatTo(sbuff);
 	if (sbuff[-1] != IO::Path::PATH_SEPERATOR)
@@ -1218,7 +1218,7 @@ void SSWR::OrganWeb::OrganWebEnv::BookGetList(NN<Sync::RWMutexUsage> mutUsage, N
 Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(NN<BookInfo> book)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->dataDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -1364,7 +1364,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage,
 	WebUserInfo *webUser;
 	DataFileInfo *dataFile;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::StmData::FileData *fd;
 	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime->CompareTo(t) > 0 || this->gpsEndTime->CompareTo(t) < 0)
 	{
@@ -2033,7 +2033,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 		wfile->cropBottom = 0;
 
 		UTF8Char sbuff2[512];
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr2;
 		sptr2 = this->dataDir->ConcatTo(sbuff2);
 		if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -2075,7 +2075,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 	}
 }
 
-Optional<SSWR::OrganWeb::UserFileInfo> SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, UTF8Char **filePathOut)
+Optional<SSWR::OrganWeb::UserFileInfo> SSWR::OrganWeb::OrganWebEnv::UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, InOutParam<UnsafeArray<UTF8Char>> filePathOut)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	NN<SpeciesInfo> sp;
@@ -2087,7 +2087,7 @@ Optional<SSWR::OrganWeb::UserFileInfo> SSWR::OrganWeb::OrganWebEnv::UserfileGetC
 		dt.SetTicks(userFile->fileTimeTicks);
 		dt.ToUTCTime();
 
-		UTF8Char *sptr = *filePathOut;
+		UnsafeArray<UTF8Char> sptr = filePathOut.Get();
 		sptr = this->dataDir->ConcatTo(sptr);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
@@ -2110,7 +2110,7 @@ Optional<SSWR::OrganWeb::UserFileInfo> SSWR::OrganWeb::OrganWebEnv::UserfileGetC
 		{
 			sptr = userFile->dataFileName->ConcatTo(sptr);
 		}
-		*filePathOut = sptr;
+		filePathOut.Set(sptr);
 		return userFile;
 	}
 	else
@@ -2125,7 +2125,7 @@ Optional<SSWR::OrganWeb::UserFileInfo> SSWR::OrganWeb::OrganWebEnv::UserfileGet(
 	return this->userFileMap.Get(id);
 }
 
-UTF8Char *SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, NN<const UserFileInfo> userFile)
+UnsafeArray<UTF8Char> SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UnsafeArray<UTF8Char> sbuff, NN<const UserFileInfo> userFile)
 {
 	Data::DateTime dt;
 	sbuff = this->dataDir->ConcatTo(sbuff);
@@ -2243,30 +2243,32 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 							}
 							Text::CString cstr;
 							Text::CString cstr2;
+							Text::CStringNN nncstr;
+							Text::CStringNN nncstr2;
 							cstr = exif->GetPhotoMake();
 							cstr2 = exif->GetPhotoModel();
-							if (cstr.v && cstr2.v)
+							if (cstr.SetTo(nncstr) && cstr2.SetTo(nncstr2))
 							{
-								if (cstr2.StartsWithICase(cstr.v, cstr.leng))
+								if (nncstr2.StartsWithICase(nncstr.v, nncstr.leng))
 								{
-									camera = Text::String::New(cstr2).Ptr();
+									camera = Text::String::New(nncstr2).Ptr();
 								}
 								else
 								{
 									Text::StringBuilderUTF8 sb;
-									sb.Append(cstr);
+									sb.Append(nncstr);
 									sb.AppendC(UTF8STRC(" "));
-									sb.Append(cstr2);
+									sb.Append(nncstr2);
 									camera = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								}
 							}
-							else if (cstr.v)
+							else if (cstr.SetTo(nncstr))
 							{
-								camera = Text::String::New(cstr).Ptr();
+								camera = Text::String::New(nncstr).Ptr();
 							}
-							else if (cstr2.v)
+							else if (cstr2.SetTo(nncstr2))
 							{
-								camera = Text::String::New(cstr2).Ptr();
+								camera = Text::String::New(nncstr2).Ptr();
 							}
 							else if (mustHaveCamera)
 							{
@@ -2330,8 +2332,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 			if (valid)
 			{
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
-				UTF8Char *dataFileName;
+				UnsafeArray<UTF8Char> sptr;
+				UnsafeArray<UTF8Char> dataFileName;
 				sptr = this->dataDir->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
@@ -2379,7 +2381,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendStrUTF8(dataFileName);
+					sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(dataFileName));
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmdC(CSTR(", "));
@@ -2550,8 +2552,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 			if (valid)
 			{
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
-				UTF8Char *dataFileName;
+				UnsafeArray<UTF8Char> sptr;
+				UnsafeArray<UTF8Char> dataFileName;
 				sptr = this->dataDir->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
@@ -2598,7 +2600,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendTS(fileTime);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendStrUTF8(dataFileName);
+					sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(dataFileName));
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmdC(CSTR(", "));
@@ -2704,7 +2706,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 	else
 	{
 /*		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = this->GetSpeciesDir(sp, sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcat(sptr, &fileName[i + 1]);
@@ -2804,7 +2806,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutU
 	{
 		return false;
 	}
-	if (descr.v && descr.leng == 0)
+	if (descr.leng == 0)
 	{
 		descr.v = 0;
 	}
@@ -2897,7 +2899,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdatePos(NN<Sync::RWMutexUsage> mutUs
 	return false;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesBookIsExist(NN<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NN<Text::StringBuilderUTF8> bookNameOut)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesBookIsExist(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN speciesName, NN<Text::StringBuilderUTF8> bookNameOut)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
 	NN<BookInfo> book;
@@ -3040,8 +3042,8 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, I
 		return false;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *dataFileName;
-	UTF8Char *sptr = this->dataDir->ConcatTo(sbuff);
+	UnsafeArray<UTF8Char> dataFileName;
+	UnsafeArray<UTF8Char> sptr = this->dataDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3068,7 +3070,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, I
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrC(fileName);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendStrUTF8(dataFileName);
+	sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(dataFileName));
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(webuserId);
 	sql.AppendCmdC(CSTR(")"));
@@ -3136,7 +3138,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, I
 Optional<IO::ParsedObject> SSWR::OrganWeb::OrganWebEnv::DataFileParse(NN<DataFileInfo> dataFile)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = this->dataDir->ConcatTo(sbuff);
+	UnsafeArray<UTF8Char> sptr = this->dataDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;

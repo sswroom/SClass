@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 		}
 	}
 	UTF8Char sbuff[24];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt cnt = me->recvCnt;
 	if (me->dispRecv != cnt)
 	{

@@ -76,7 +76,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLogin(NN<Net::WebServer
 	else
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		req->ParseHTTPForm();
 		NN<Text::String> userName;
 		NN<Text::String> pwd;
@@ -726,8 +726,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcSpecies(NN<Net::WebServ
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
 		Text::StringBuilderUTF8 sb;
 		NN<SpeciesInfo> species;
 		NN<GroupInfo> group;
@@ -882,7 +882,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NN<Net::Web
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -1033,7 +1033,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 	UOSInt i = 0;
 	UOSInt fileSize;
 	UTF8Char fileName[512];
-	UTF8Char *fileNameEnd;
+	UnsafeArray<UTF8Char> fileNameEnd;
 	const UInt8 *fileCont;
 	NN<Text::String> location;
 	Text::CString msg = CSTR_NULL;
@@ -1082,9 +1082,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 	else
 	{
 		json.ObjectAddStr(CSTR("status"), CSTR("fail"));
-		if (msg.v)
+		Text::CStringNN nnmsg;
+		if (msg.SetTo(nnmsg))
 		{
-			json.ObjectAddStr(CSTR("msg"), msg);
+			json.ObjectAddStr(CSTR("msg"), nnmsg);
 		}
 		json.ObjectAddUInt64(CSTR("fileSize"), fileSize);
 	}

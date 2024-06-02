@@ -106,7 +106,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 						}
 						else
 						{
-							printf("Unknown Line: %s\r\n", sarr[0].v);
+							printf("Unknown Line: %s\r\n", sarr[0].v.Ptr());
 						}
 					}
 					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Device ")))
@@ -252,7 +252,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 							else
 							{
 								sarr[0].v[30] = ' ';
-								printf("Unknown Line: %s\r\n", sarr[0].v);
+								printf("Unknown Line: %s\r\n", sarr[0].v.Ptr());
 							}
 						}
 						else
@@ -284,7 +284,7 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 					}
 					else
 					{
-						printf("Unknown Line: %s\r\n", sarr[0].v);
+						printf("Unknown Line: %s\r\n", sarr[0].v.Ptr());
 					}
 				}
 			}
@@ -297,12 +297,12 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 				}
 				me->cmdReady = true;
 			}
-			sbBuff.SetSubstr((UOSInt)(sarr[0].v - sb.ToString()));
+			sbBuff.SetSubstr((UOSInt)(sarr[0].v - sb.v));
 		}
 	}
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmdLen)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	if (!this->thread.IsRunning())
 	{
@@ -321,7 +321,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmd
 	}
 	if (cmdLen < 255)
 	{
-		UTF8Char *sptr = Text::StrConcatC(sbuff, cmd, cmdLen);
+		UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, cmd, cmdLen);
 		sptr[0] = '\r';
 //		sptr[1] = '\n';
 		this->prog->Write(sbuff, cmdLen + 1);
@@ -332,14 +332,14 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmd
 		sb.AppendC(cmd, cmdLen);
 		sb.AppendUTF8Char('\r');
 //		sb.AppendUTF8Char('\n');
-		this->prog->Write((UInt8*)sb.ToString(), sb.GetLength());
+		this->prog->Write(sb.ToString(), sb.GetLength());
 	}
 }
 
 Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(Text::CStringNN s)
 {
 	UTF8Char sbuff[18];
-	UTF8Char *sarr[7];
+	UnsafeArray<UTF8Char> sarr[7];
 	UInt8 macBuff[16];
 	if (s.leng != 17)
 	{

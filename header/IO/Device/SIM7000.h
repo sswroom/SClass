@@ -29,7 +29,7 @@ namespace IO
 			ReceiveHandler recvHdlr;
 			AnyType recvHdlrObj;
 
-			static Bool __stdcall CheckATCommand(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
+			static Bool __stdcall CheckATCommand(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 		public:
 			SIM7000(NN<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~SIM7000();
@@ -44,7 +44,7 @@ namespace IO
 			//AT+CNBP
 			//AT+CNSMOD
 			//AT+CSCLK
-			UTF8Char *SIMCOMGetICCID(UTF8Char *ccid); //AT+CCID
+			UnsafeArrayOpt<UTF8Char> SIMCOMGetICCID(UnsafeArray<UTF8Char> ccid); //AT+CCID
 			Bool SIMCOMGetFlashDeviceType(NN<Text::StringBuilderUTF8> sb); //AT+CDEVICE
 			Bool SIMCOMGetDeviceProductID(NN<Text::StringBuilderUTF8> sb); //AT+GSV
 			//AT+SGPIO
@@ -57,8 +57,8 @@ namespace IO
 			//AT+CMNB
 			//AT+CPSMS
 			//AT+CEDRXS
-			UTF8Char *SIMCOMGetUESysInfo(UTF8Char *buff); //AT+CPSI
-			UTF8Char *SIMCOMGetNetworkAPN(UTF8Char *apn); //AT+CGNAPN
+			UnsafeArrayOpt<UTF8Char> SIMCOMGetUESysInfo(UnsafeArray<UTF8Char> buff); //AT+CPSI
+			UnsafeArrayOpt<UTF8Char> SIMCOMGetNetworkAPN(UnsafeArray<UTF8Char> apn); //AT+CGNAPN
 			//AT+CSDP
 			//AT+MCELLLOCK
 			//AT+NCELLLOCK
@@ -75,20 +75,20 @@ namespace IO
 			Bool NetSetMultiIP(Bool multiIP); //AT+CIPMUX
 			Bool NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
 			Bool NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port); //AT+CIPSTART
-			Bool NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buffSize); //AT+CIPSEND
+			Bool NetIPSend(UOSInt index, UnsafeArray<const UInt8> buff, UOSInt buffSize); //AT+CIPSEND
 			//AT+CIPQSEND
 			//AT+CIPACK
 			Bool NetCloseSocket(UOSInt index); //AT+CIPCLOSE
 			//AT+CIPSHUT
 			Bool NetSetLocalPortTCP(UOSInt index, UInt16 port); //AT+CLPORT
 			Bool NetSetLocalPortUDP(UOSInt index, UInt16 port); //AT+CLPORT
-			Bool NetSetAPN(Text::CString apn); //AT+CSTT
+			Bool NetSetAPN(Text::CStringNN apn); //AT+CSTT
 			Bool NetDataStart(); //AT+CIICR
-			UTF8Char *NetGetIFAddr(UTF8Char *addr); //AT+CIFSR
+			UnsafeArrayOpt<UTF8Char> NetGetIFAddr(UnsafeArray<UTF8Char> addr); //AT+CIFSR
 			//AT+CIFSREX
 			//AT+CIPSTATUS
 			Bool NetGetDNSList(Data::ArrayList<UInt32> *dnsList); //AT+CDNSCFG
-			Bool NetDNSResolveIP(Text::CString domain, NN<Net::SocketUtil::AddressInfo> addr); //AT+CDNSGIP //////////////////////////////
+			Bool NetDNSResolveIP(Text::CStringNN domain, NN<Net::SocketUtil::AddressInfo> addr); //AT+CDNSGIP //////////////////////////////
 			//AT+CIPHEAD
 			//AT+CIPATS
 			//AT+CIPSPRT
@@ -108,7 +108,7 @@ namespace IO
 			//AT+CIPTKA
 			Bool NetSetDisableNagle(Bool disable); //AT+CIPOPTION
 
-			Bool NetPing(const UTF8Char *addr, UInt32 *respTime, UInt32 *ttl);//AT+CIPPING
+			Bool NetPing(UnsafeArray<const UTF8Char> addr, UInt32 *respTime, UInt32 *ttl);//AT+CIPPING
 			//AT+CIPCTL
 			//AT+CIPFLT
 		};		

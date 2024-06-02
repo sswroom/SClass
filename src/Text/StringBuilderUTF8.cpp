@@ -291,16 +291,16 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOS
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sarr, UOSInt nStr)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr, UOSInt nStr)
 {
 	NN<Text::String> s;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)
 	{
-		s = Text::String::NewCSVRec(sarr[i]);
 		if (i > 0)
 			this->AppendUTF8Char(',');
+		s = Text::String::NewCSVRec(sarr[i].Or(U8STR("")));
 		this->AppendC(s->v, s->leng);
 		s->Release();
 		i++;

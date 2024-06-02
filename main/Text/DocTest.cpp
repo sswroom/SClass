@@ -15,10 +15,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Text::Doc::DocValidator> validator;
 	Text::CStringNN fileName;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	fileName = CSTR("test.html");
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, fileName);
 
 	Exporter::DocHTMLExporter exporter;

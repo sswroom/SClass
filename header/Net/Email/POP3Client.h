@@ -19,7 +19,7 @@ namespace Net
 			UOSInt msgSize;
 
 		public:
-			POP3Client(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CString username, Text::CString password, Data::Duration timeout);
+			POP3Client(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CStringNN username, Text::CStringNN password, Data::Duration timeout);
 			~POP3Client();
 
 			Bool IsError();

@@ -28,10 +28,10 @@ namespace Text
 	UTF16Char *StrDoubleDPW(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP);
 	UTF32Char *StrDoubleDPW(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP);
 
-	UnsafeArray<UTF8Char> StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, const Char *format);
-	FORCEINLINE UnsafeArray<Char> StrDoubleFmtCh(UnsafeArray<Char> oriStr, Double val, const Char *format) { return UnsafeArray<Char>::ConvertFrom(StrDoubleFmt(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, format)); }
-	UTF16Char *StrDoubleFmtW(UTF16Char *oriStr, Double val, const Char *format);
-	UTF32Char *StrDoubleFmtW(UTF32Char *oriStr, Double val, const Char *format);
+	UnsafeArray<UTF8Char> StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, UnsafeArray<const Char> format);
+	FORCEINLINE UnsafeArray<Char> StrDoubleFmtCh(UnsafeArray<Char> oriStr, Double val, UnsafeArray<const Char> format) { return UnsafeArray<Char>::ConvertFrom(StrDoubleFmt(UnsafeArray<UTF8Char>::ConvertFrom(oriStr), val, format)); }
+	UTF16Char *StrDoubleFmtW(UTF16Char *oriStr, Double val, UnsafeArray<const Char> format);
+	UTF32Char *StrDoubleFmtW(UTF32Char *oriStr, Double val, UnsafeArray<const Char> format);
 
 	Bool StrToDouble(UnsafeArray<const UTF8Char> str, OutParam<Double> outVal);
 	FORCEINLINE Bool StrToDoubleCh(UnsafeArray<const Char> str, OutParam<Double> outVal) { return StrToDouble(UnsafeArray<const UTF8Char>::ConvertFrom(str), outVal); }

@@ -23,7 +23,7 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Cert::X509Cert> cert;
 	NN<Crypto::Cert::X509PrivKey> privKey;
 	if (this->initErr == SAMLError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey))
@@ -174,20 +174,21 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 		this->initErr = SAMLError::ServerHost;
 		return;
 	}
+	Text::CStringNN nns;
 	this->serverHost = Text::String::New(cfg->serverHost).Ptr();
-	if (cfg->metadataPath.leng == 0 || cfg->metadataPath.v[0] != '/')
+	if (!cfg->metadataPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::MetadataPath;
 		return;
 	}
 	this->metadataPath = Text::String::New(cfg->metadataPath).Ptr();
-	if (cfg->logoutPath.leng == 0 || cfg->logoutPath.v[0] != '/')
+	if (!cfg->logoutPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::LogoutPath;
 		return;
 	}
 	this->logoutPath = Text::String::New(cfg->logoutPath).Ptr();
-	if (cfg->ssoPath.leng == 0 || cfg->ssoPath.v[0] != '/')
+	if (!cfg->ssoPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::SSOPath;
 		return;
@@ -279,7 +280,7 @@ Optional<Crypto::Cert::X509PrivKey> Net::WebServer::SAMLHandler::GetKey()
 	return this->signKey;
 }
 
-Text::CString Net::WebServer::SAMLErrorGetName(SAMLError err)
+Text::CStringNN Net::WebServer::SAMLErrorGetName(SAMLError err)
 {
 	switch (err)
 	{

@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <pwd.h>
 
-UTF8Char *Manage::ComputerUser::GetProcessUser(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::ComputerUser::GetProcessUser(UnsafeArray<UTF8Char> sbuff)
 {
 	uid_t uid = geteuid();
 	passwd *pw = getpwuid(uid);

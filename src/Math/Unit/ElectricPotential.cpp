@@ -14,7 +14,7 @@ Double Math::Unit::ElectricPotential::GetUnitRatio(ElectricPotentialUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::ElectricPotential::GetUnitShortName(ElectricPotentialUnit unit)
+Text::CStringNN Math::Unit::ElectricPotential::GetUnitShortName(ElectricPotentialUnit unit)
 {
 	switch (unit)
 	{
@@ -26,7 +26,7 @@ Text::CString Math::Unit::ElectricPotential::GetUnitShortName(ElectricPotentialU
 	return CSTR("");
 }
 
-Text::CString Math::Unit::ElectricPotential::GetUnitName(ElectricPotentialUnit unit)
+Text::CStringNN Math::Unit::ElectricPotential::GetUnitName(ElectricPotentialUnit unit)
 {
 	switch (unit)
 	{

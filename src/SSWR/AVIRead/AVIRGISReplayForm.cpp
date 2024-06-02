@@ -25,7 +25,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 	UOSInt i;
 	Map::GPSTrack::GPSRecord3 *recs;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	me->threadRunning = true;
 	recs = me->track->GetTrack(me->currTrackId, recCnt);
@@ -39,7 +39,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 	i = 0;
 	while (!me->threadToStop && i < recCnt)
 	{
-		if ((sptr = me->navi->ResolveAddress(sbuff, latLon[i])) != 0)
+		if (me->navi->ResolveAddress(sbuff, latLon[i]).SetTo(sptr))
 		{
 			me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		}
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 	if (i != INVALID_INDEX)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt recCnt = 0;
 		Map::GPSTrack::GPSRecord3 *recs = me->track->GetTrack(me->currTrackId, recCnt);
 		Data::DateTime dt;
@@ -171,7 +171,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->core = core;
 	this->track = track;
 	this->navi = navi;
@@ -329,20 +329,22 @@ SSWR::AVIRead::AVIRGISReplayForm::~AVIRGISReplayForm()
 void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	switch (cmdId)
 	{
 	case MNU_MARK_START:
 		{
 			this->startMark = (UOSInt)this->lbRecord->GetSelectedIndex();
-			sptr = this->lbRecord->GetItemText(sbuff, this->startMark);
+			sbuff[0] = 0;
+			sptr = this->lbRecord->GetItemText(sbuff, this->startMark).Or(sbuff);
 			this->txtStartMark->SetText(CSTRP(sbuff, sptr));
 		}
 		break;
 	case MNU_MARK_END:
 		{
 			this->endMark = (UOSInt)this->lbRecord->GetSelectedIndex();
-			sptr = this->lbRecord->GetItemText(sbuff, this->endMark);
+			sbuff[0] = 0;
+			sptr = this->lbRecord->GetItemText(sbuff, this->endMark).Or(sbuff);
 			this->txtEndMark->SetText(CSTRP(sbuff, sptr));
 		}
 		break;
@@ -397,7 +399,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UOSInt i;
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
 	Map::GPSTrack::GPSRecord3 *recs = this->track->GetTrack(this->currTrackId, recCnt);
@@ -431,9 +433,11 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		{
 			this->lbRecord->SetSelectedIndex(0);
 
-			sptr = this->lbRecord->GetItemText(sbuff, this->startMark);
+			sbuff[0] = 0;
+			sptr = this->lbRecord->GetItemText(sbuff, this->startMark).Or(sbuff);
 			this->txtStartMark->SetText(CSTRP(sbuff, sptr));
-			sptr = this->lbRecord->GetItemText(sbuff, this->endMark);
+			sbuff[0] = 0;
+			sptr = this->lbRecord->GetItemText(sbuff, this->endMark).Or(sbuff);
 			this->txtEndMark->SetText(CSTRP(sbuff, sptr));
 
 			if (this->navi->HasKMap())

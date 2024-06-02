@@ -14,14 +14,14 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(NN<Socket> s, AnyType userOb
 	if (me->writeBuffSize > 0)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
 		UOSInt size = me->writeBuffSize;
 		me->writeBuffSize = 0;
 		if (me->log->HasHandler())
 		{
 			sb.AppendC(UTF8STRC("Sending to "));
-			sptr = me->sockf->GetRemoteName(sbuff, s);
+			sptr = me->sockf->GetRemoteName(sbuff, s).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
@@ -51,11 +51,11 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NN<Net::TCPClient> cli, AnyTy
 	NN<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->log->HasHandler())
 	{
 		sb.AppendC(UTF8STRC("Recv from "));
-		sptr = cli->GetRemoteName(sbuff);
+		sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(" with "));
 		sb.AppendUOSInt(buff.GetSize());
@@ -108,9 +108,9 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(NN<Net::TCPClient> cli, An
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sb.AppendC(UTF8STRC("Timeout processing "));
-		sptr = cli->GetRemoteName(sbuff);
+		sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 		sb.AppendP(sbuff, sptr);
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
@@ -215,13 +215,13 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 	return myBuff.GetSize();
 }
 
-UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::TCPBoardcastStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	Bool cliFound = false;
 	UOSInt i;
 	NN<Net::TCPClient> cli;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	AnyType cliData;
 	Sync::MutexUsage mutUsage;
@@ -237,7 +237,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sending to "));
-				sptr = cli->GetRemoteName(sbuff);
+				sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC(" with "));
 				sb.AppendUOSInt(size);
@@ -253,14 +253,14 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 		UOSInt buffSizeLeft = 2048 - this->writeBuffSize;
 		if (buffSizeLeft >= size)
 		{
-			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff, size);
+			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), size);
 			this->writeBuffSize += size;
 		}
 		else
 		{
 			MemCopyO(this->writeBuff, &this->writeBuff[size - buffSizeLeft], this->writeBuffSize - size + buffSizeLeft);
 			this->writeBuffSize -= size - buffSizeLeft;
-			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff, size);
+			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), size);
 			this->writeBuffSize += size;
 		}
 	}

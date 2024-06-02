@@ -50,19 +50,19 @@ namespace Map
 		virtual ImageType GetImageType() const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
-		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> imgId);
+		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> imgId);
 		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId);
 
 		virtual UOSInt GetScreenObjCnt();
 		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UOSInt index);
-		virtual UTF8Char *GetScreenObjURL(UTF8Char *sbuff, UOSInt index);
+		virtual UnsafeArrayOpt<UTF8Char> GetScreenObjURL(UnsafeArray<UTF8Char> sbuff, UOSInt index);
 		virtual Bool GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UOSInt index);
 
 		void SetHideLogo(Bool hideLogo);
 		
 		static void GetDefaultCacheDir(ImagerySet is, NN<Text::StringBuilderUTF8> sb);
 		static Text::CStringNN ImagerySetGetName(ImagerySet is);
-		static UTF8Char *GenQuadkey(UTF8Char *sbuff, UOSInt level, Int32 imgX, Int32 imgY);
+		static UnsafeArray<UTF8Char> GenQuadkey(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 imgX, Int32 imgY);
 	};
 }
 #endif

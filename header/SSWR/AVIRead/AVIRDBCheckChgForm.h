@@ -105,7 +105,7 @@ namespace SSWR
 			Bool NextSQL(Text::CStringNN sql, NN<SQLSession> sess);
 			void UpdateStatus(NN<SQLSession> sess);
 			static void __stdcall AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr);
-			Text::CString GetNullText();
+			Text::CStringNN GetNullText();
 			DB::SQLType GetDBSQLType();
 		public:
 			AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table);

@@ -23,13 +23,13 @@ const WChar *Text::StringUtil::ToString(Data::DateTime *dt, const Char *pattern)
 
 const WChar *Text::StringUtil::ToString(Double val)
 {
-	Text::StrDouble(wbuff, val);
+	Text::StrDoubleW(wbuff, val);
 	return wbuff;
 }
 
 const WChar *Text::StringUtil::ToString(Double val, const Char *pattern)
 {
-	Text::StrDoubleFmt(wbuff, val, pattern);
+	Text::StrDoubleFmtW(wbuff, val, pattern);
 	return wbuff;
 }
 

@@ -18,9 +18,9 @@ namespace Text
 		Data::ArrayListNN<Text::IMIMEObj> attachObj;
 		Data::ArrayListStringNN attachName;
 
-		void AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CString s);
+		void AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CStringNN s);
 		void AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *s);
-		static Optional<Text::IMIMEObj> ParseContentHTML(const UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath);
+		static Optional<Text::IMIMEObj> ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath);
 	public:
 		MailCreator();
 		~MailCreator();
@@ -37,8 +37,8 @@ namespace Text
 		void SetSubject(const WChar *subj);
 		void SetSubject(NN<Text::String> subj);
 
-		void SetContentHTML(const WChar *content, Text::CString htmlPath);
-		void SetContentHTML(NN<Text::String> content, Text::CString htmlPath);
+		void SetContentHTML(const WChar *content, Text::CStringNN htmlPath);
+		void SetContentHTML(NN<Text::String> content, Text::CStringNN htmlPath);
 		void SetContentText(const WChar *content, UInt32 codePage);
 		void SetContentText(NN<Text::String> content);
 		Bool SetContentFile(Text::CStringNN filePath);

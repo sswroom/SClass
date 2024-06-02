@@ -186,8 +186,8 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 	{
 		if (i == 0)
 		{
-			UTF8Char *sbuff = MemAlloc(UTF8Char, buffSize * 3 + 1 + (buffSize >> 4));
-			UTF8Char *sptr = sbuff;
+			UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, buffSize * 3 + 1 + (buffSize >> 4));
+			UnsafeArray<UTF8Char> sptr = sbuff;
 			j = 0;
 			while ((buffSize - j) > 16)
 			{
@@ -198,15 +198,15 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 			}
 			sptr = Text::StrHexBytes(sptr, &buff[j], buffSize - j, ' ');
 			this->txtRecvDisp->SetText(CSTRP(sbuff, sptr));
-			MemFree(sbuff);
+			MemFreeArr(sbuff);
 		}
 		else
 		{
-			UTF8Char *sbuff = MemAlloc(UTF8Char, buffSize + 1);
-			MemCopyNO(sbuff, buff, buffSize);
+			UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, buffSize + 1);
+			MemCopyNO(sbuff.Ptr(), buff, buffSize);
 			sbuff[buffSize] = 0;
 			this->txtRecvDisp->SetText({sbuff, buffSize});
-			MemFree(sbuff);
+			MemFreeArr(sbuff);
 		}
 	}
 	else
@@ -227,8 +227,8 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 	{
 		if (i == 0)
 		{
-			UTF8Char *sbuff = MemAlloc(UTF8Char, buffSize * 3 + 1 + (buffSize >> 4));
-			UTF8Char *sptr = sbuff;
+			UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, buffSize * 3 + 1 + (buffSize >> 4));
+			UnsafeArray<UTF8Char> sptr = sbuff;
 			j = 0;
 			while ((buffSize - j) > 16)
 			{
@@ -239,15 +239,15 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 			}
 			sptr = Text::StrHexBytes(sptr, &buff[j], buffSize - j, ' ');
 			this->txtSendDisp->SetText(CSTRP(sbuff, sptr));
-			MemFree(sbuff);
+			MemFreeArr(sbuff);
 		}
 		else
 		{
-			UTF8Char *sbuff = MemAlloc(UTF8Char, buffSize + 1);
-			MemCopyNO(sbuff, buff, buffSize);
+			UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, buffSize + 1);
+			MemCopyNO(sbuff.Ptr(), buff, buffSize);
 			sbuff[buffSize] = 0;
 			this->txtSendDisp->SetText({sbuff, buffSize});
-			MemFree(sbuff);
+			MemFreeArr(sbuff);
 		}
 	}
 	else

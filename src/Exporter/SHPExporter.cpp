@@ -43,7 +43,7 @@ IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::SHPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::SHPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -63,7 +63,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
@@ -429,7 +429,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	UTF8Char projArr[1024];
 	Math::SRESRIWKTWriter wkt;
-	UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
+	UnsafeArray<UTF8Char> cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
 	IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 	return true;

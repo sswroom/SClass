@@ -48,7 +48,7 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::SPKExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::SPKExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -98,7 +98,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						break;
 
 					bSize = url->leng;
-					MemCopyNO(&customBuff[buffSize + 1], url->v, bSize);
+					MemCopyNO(&customBuff[buffSize + 1], url->v.Ptr(), bSize);
 					customBuff[buffSize] = (UInt8)bSize;
 					buffSize += bSize + 1;
 					i++;
@@ -124,7 +124,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			Int32 tileX;
 			Int32 tileY;
 			UTF8Char sbuff[256];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			const UInt8 *fileBuff;
 			UOSInt fileSize;
 			Int64 modTimeTicks;
@@ -176,11 +176,11 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 }
 
-void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NN<IO::PackageFile> pkgFile, UTF8Char *buff, UTF8Char *buffEnd)
+void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NN<IO::PackageFile> pkgFile, UnsafeArray<UTF8Char> buff, UnsafeArray<UTF8Char> buffEnd)
 {
 	UOSInt i;
 	UOSInt j;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::StreamData> fd;
 	IO::PackageFile::PackObjectType pot;
 	NN<IO::PackageFile> subPkg;
@@ -191,7 +191,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NN<IO::Pac
 		pot = pkgFile->GetItemType(i);
 		if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 		{
-			sptr = pkgFile->GetItemName(buffEnd, i);
+			sptr = pkgFile->GetItemName(buffEnd, i).Or(buffEnd);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			
 			Bool subNeedDelete;
@@ -204,8 +204,7 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NN<IO::Pac
 		}
 		else if (pot == IO::PackageFile::PackObjectType::StreamData)
 		{
-			sptr = pkgFile->GetItemName(buffEnd, i);
-			if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
+			if (pkgFile->GetItemName(buffEnd, i).SetTo(sptr) && pkgFile->GetItemStmDataNew(i).SetTo(fd))
 			{
 				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTime(i));
 				fd.Delete();

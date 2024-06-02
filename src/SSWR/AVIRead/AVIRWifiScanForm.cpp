@@ -52,7 +52,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 	if (this->wlanInterf.SetTo(wlanInterf))
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UInt8 id[8];
 		UInt64 imac;
 		Manage::HiResClock clk;

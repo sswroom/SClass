@@ -17,6 +17,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 			Text::CString server = CSTR_NULL;
 			Text::CString st = CSTR_NULL;
 			Text::CString usn = CSTR_NULL;
+			Text::CStringNN nnusn;
 			Text::CString userAgent = CSTR_NULL;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(buff, dataSize);
@@ -57,7 +58,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 				}
 			}
 			
-			if (usn.leng > 0)
+			if (usn.SetTo(nnusn) && nnusn.leng > 0)
 			{
 				Sync::MutexUsage mutUsage(me->mut);
 				UInt32 ip = ReadNUInt32(addr->addr);
@@ -74,7 +75,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 				while (i-- > 0)
 				{
 					svc = dev->services.GetItemNoCheck(i);
-					if (usn.Equals(svc->usn))
+					if (nnusn.Equals(svc->usn))
 					{
 						found = true;
 					}

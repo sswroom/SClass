@@ -101,7 +101,7 @@ namespace Map
 		static void ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set);
 		static void ReleaseResourceURL(NN<ResourceURL> resourceURL);
 	public:
-		WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmtsURL);
+		WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL);
 		virtual ~WebMapTileServiceSource();
 
 		virtual Text::CStringNN GetName() const;
@@ -122,7 +122,7 @@ namespace Map
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
 		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
-		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
+		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
@@ -130,13 +130,13 @@ namespace Map
 		Bool SetMatrixSet(UOSInt index);
 		Bool SetResourceTileType(UOSInt index);
 		Bool SetResourceInfoType(UOSInt index);
-		Bool SetResourceInfoType(Text::CString name);
+		Bool SetResourceInfoType(Text::CStringNN name);
 		UOSInt GetResourceInfoType();
 		UOSInt GetLayerNames(NN<Data::ArrayListNN<Text::String>> layerNames);
 		UOSInt GetMatrixSetNames(NN<Data::ArrayListStringNN> matrixSetNames);
 		UOSInt GetResourceTileTypeNames(NN<Data::ArrayListStringNN> resourceTypeNames);
 		UOSInt GetResourceInfoTypeNames(NN<Data::ArrayListStringNN> resourceTypeNames);
-		static Text::CString GetExt(Map::TileMap::ImageType imgType);
+		static Text::CStringNN GetExt(Map::TileMap::ImageType imgType);
 	};
 }
 #endif

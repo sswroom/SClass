@@ -61,7 +61,7 @@ Bool Net::WLANLinuxInterface::Scan()
 	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
 	if (ret < 0)
 	{
-		printf("WLANLinuxInterface Scan failed, name = %s, ret = %d, errno = %d\r\n", this->name->v, ret, errno);
+		printf("WLANLinuxInterface Scan failed, name = %s, ret = %d, errno = %d\r\n", this->name->v.Ptr(), ret, errno);
 		if (errno == 14)
 		{
 			this->Reopen();
@@ -246,7 +246,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	UInt8 *buffEnd = buff + wrq.u.data.length;
 	ret = 1;
 	UTF8Char essid[IW_ESSID_MAX_SIZE + 1];
-	UTF8Char *essidEnd;
+	UnsafeArray<UTF8Char> essidEnd;
 	OSInt i;
 	UInt16 cmd;
 	UInt16 len;
@@ -387,7 +387,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				}
 				else
 				{
-					printf("SIOCGIWNAME: %s\r\n", sbTmp.ToString());
+					printf("SIOCGIWNAME: %s\r\n", sbTmp.ToPtr());
 				}
 			}
 			break;

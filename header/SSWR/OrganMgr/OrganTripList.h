@@ -21,7 +21,7 @@ namespace SSWR
 		public:
 			Trip(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId);
 			~Trip();
-			UTF8Char *ToString(UTF8Char *sbuff);
+			UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff);
 		};
 
 		class Location
@@ -37,7 +37,7 @@ namespace SSWR
 
 			Location(Int32 id, Int32 parId, Text::CString ename, Text::CString cname, Int32 locType);
 			~Location();
-			UTF8Char *ToString(UTF8Char *sbuff);
+			UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff);
 		};
 
 		class LocationType

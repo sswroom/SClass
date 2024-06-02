@@ -12,6 +12,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::PhotoInfo photoInfo(fd);
 	Text::StringBuilderUTF8 sb;
 	photoInfo.ToString(sb);
-	printf("%s\r\n", sb.ToString());
+	printf("%s\r\n", sb.ToPtr());
 	return 0;
 }

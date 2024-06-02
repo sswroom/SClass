@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::DBHTMLExporter::IsObjectSupported(NN<IO:
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::DBHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DBHTMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -105,7 +105,7 @@ Bool Exporter::DBHTMLExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::P
 	}
 }
 
-Bool Exporter::DBHTMLExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
+Bool Exporter::DBHTMLExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }
@@ -127,7 +127,7 @@ Bool Exporter::DBHTMLExporter::SetParamSel(Optional<ParamData> param, UOSInt ind
 	return false;
 }
 
-UTF8Char *Exporter::DBHTMLExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Exporter::DBHTMLExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
@@ -148,7 +148,7 @@ Int32 Exporter::DBHTMLExporter::GetParamSel(Optional<ParamData> param, UOSInt in
 	return 0;
 }
 
-UTF8Char *Exporter::DBHTMLExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Exporter::DBHTMLExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))

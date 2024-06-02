@@ -27,7 +27,7 @@ Map::TileMapFolderWriter::TileMapFolderWriter(Text::CStringNN folderName, Map::T
 Map::TileMapFolderWriter::~TileMapFolderWriter()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectAddStr(CSTR("name"), this->name);
 	json.ObjectAddStr(CSTR("version"), CSTR("1.0"));
@@ -83,7 +83,7 @@ void Map::TileMapFolderWriter::AddX(Int32 x)
 void Map::TileMapFolderWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->folderName->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{

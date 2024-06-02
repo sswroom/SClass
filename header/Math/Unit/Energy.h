@@ -22,8 +22,8 @@ namespace Math
 			} EnergyUnit;
 		public:
 			static Double GetUnitRatio(EnergyUnit unit);
-			static Text::CString GetUnitShortName(EnergyUnit unit);
-			static Text::CString GetUnitName(EnergyUnit unit);
+			static Text::CStringNN GetUnitShortName(EnergyUnit unit);
+			static Text::CStringNN GetUnitName(EnergyUnit unit);
 			static Double GetConvertRatio(EnergyUnit fromUnit, EnergyUnit toUnit);
 			static Double Convert(EnergyUnit fromUnit, EnergyUnit toUnit, Double fromValue);
 		};

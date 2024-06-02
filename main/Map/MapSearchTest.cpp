@@ -8,11 +8,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN mapSrchFile = CSTR("/home/sswroom/Progs/Temp/20220208 MapSearch/MapSearch.txt");
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::MapSearchManager srchMgr;
 	Map::MapSearch mapSrch(mapSrchFile, &srchMgr);
-	sptr = mapSrch.SearchName(sbuff, Math::Coord2DDbl(114.232824925755, 22.4716833405741));
-	if (sptr)
+	if (mapSrch.SearchName(sbuff, Math::Coord2DDbl(114.232824925755, 22.4716833405741)).SetTo(sptr))
 	{
 		printf("Result: %s\r\n", sbuff);
 	}

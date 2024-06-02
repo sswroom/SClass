@@ -86,7 +86,7 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;

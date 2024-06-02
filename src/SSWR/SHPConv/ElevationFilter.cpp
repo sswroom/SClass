@@ -18,7 +18,7 @@ Bool SSWR::SHPConv::ElevationFilter::IsValid(Double left, Double top, Double rig
 	return v != 0 && (v % this->value) == 0;
 }
 
-UTF8Char *SSWR::SHPConv::ElevationFilter::ToString(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::SHPConv::ElevationFilter::ToString(UnsafeArray<UTF8Char> buff) const
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
 	buff = Text::StrUOSInt(buff, this->colIndex);

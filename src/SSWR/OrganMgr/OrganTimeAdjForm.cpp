@@ -97,7 +97,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnCameraChg(AnyType userObj)
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap.Get(sb.ToCString());
@@ -110,7 +110,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(AnyType userObj)
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (UI::Clipboard::GetString(me->GetHandle(), sb))
 	{
 		sb.Trim();
@@ -136,7 +136,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(AnyType userOb
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap.Get(sb.ToCString());
@@ -155,7 +155,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(AnyType userOb
 	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap.Get(sb.ToCString());
@@ -213,7 +213,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType user
 	me->ui->ShowMsgOK(sb.ToCString(), CSTR("Time Adjust"), me);
 }
 
-void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj)
+void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(UnsafeArray<const UTF8Char> camera, UOSInt cameraLen, Int32 timeAdj)
 {
 	if (this->selImgCamera && this->selImgCamera->Equals(camera, cameraLen))
 	{
@@ -330,7 +330,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 
 	NN<UserFileInfo> userFile;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::GPSTrack::GPSRecord3 *records;
 	Data::DateTime dt;
 	records = this->gpsTrk->GetTrack(0, j);
@@ -376,7 +376,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	if (cameraList->GetCount() > 0)
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		this->cboCamera->SetSelectedIndex(0);
 		sptr = Text::StrInt32(sbuff, this->cameraMap.Get(cameraList->GetItem(0)));
 		this->txtTimeAdj->SetText(CSTRP(sbuff, sptr));

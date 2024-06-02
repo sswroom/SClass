@@ -324,22 +324,23 @@ Text::CharUtil::UnicodeBlock Text::CharUtil::ublk[] = {
 	{0x100000, 0x10FFFF, false, "Supplementary Private Use Area-B"}
 };
 
-Bool Text::CharUtil::PtrIsWS(const UTF8Char **sptr)
+Bool Text::CharUtil::PtrIsWS(InOutParam<UnsafeArray<const UTF8Char>> sptr)
 {
-	UTF8Char c = **sptr;
+	UnsafeArray<const UTF8Char> s = sptr.Get();
+	UTF8Char c = s[0];
 	switch (c)
 	{
 	case ' ':
 	case '\t':
 	case '\r':
 	case '\n':
-		++*sptr;
+		sptr.Set(s + 1);
 		return true;
 	}
 	return false;
 }
 
-Bool Text::CharUtil::IsWS(const UTF8Char *sptr)
+Bool Text::CharUtil::IsWS(UnsafeArray<const UTF8Char> sptr)
 {
 	UTF8Char c = *sptr;
 	switch (c)
@@ -385,7 +386,7 @@ Bool Text::CharUtil::IsAlphabet(UTF8Char c)
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
-Bool Text::CharUtil::UTF8CharValid(const UTF8Char *sptr)
+Bool Text::CharUtil::UTF8CharValid(UnsafeArray<const UTF8Char> sptr)
 {
 	UTF8Char c = *sptr;
 	UInt32 code;

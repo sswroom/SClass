@@ -137,7 +137,7 @@ namespace Data
 
 		virtual void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const;
 		virtual UOSInt GetLegendCount() const;
-		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, UInt32 *color, UOSInt index) const;
 
 	};
 }

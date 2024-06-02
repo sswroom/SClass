@@ -42,12 +42,12 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
 	UTF8Char host[256];
-	UTF8Char *hostEnd;
+	UnsafeArray<UTF8Char> hostEnd;
 
 	UOSInt i;
 	const UTF8Char *ptr1;
 	Text::PString ptrs[2];
-	UTF8Char *cptr;
+	UnsafeArray<UTF8Char> cptr;
 	NN<Net::TCPClient> cli;
 
 	if (url.StartsWith(UTF8STRC("http://")))
@@ -142,8 +142,8 @@ Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdTy
 	{
 		UTF8Char userPwd[128];
 		UTF8Char buff[512];
-		UTF8Char *sptr2 = userPwd;
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr2 = userPwd;
+		UnsafeArray<UTF8Char> sptr;
 		Text::Encoding enc(65001);
 		sptr2 = Text::StrConcat(sptr2, userName);
 		*sptr2++ = ':';

@@ -102,20 +102,20 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnCancelClicked(AnyType user
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Char *folderBuffEnd)
+Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UnsafeArray<UTF8Char> folderBuff, UnsafeArray<UTF8Char> folderBuffEnd)
 {
 	if (folderBuffEnd[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*folderBuffEnd++ = IO::Path::PATH_SEPERATOR;
 	}
 	Bool changed = false;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(folderBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(folderBuff, sptr));
 	if (sess)
 	{
-		while ((sptr = IO::Path::FindNextFile(folderBuffEnd, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(folderBuffEnd, sess, 0, &pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

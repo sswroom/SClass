@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NN<Text:
 {
 	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (boundary.GetArea() >= 1000)
 	{
 		NN<ResultInfo> res = MemAllocNN(ResultInfo);

@@ -536,11 +536,12 @@ UOSInt Media::ALSARenderer::GetDeviceCount()
 	return count;
 }
 
-UTF8Char *Media::ALSARenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::ALSARenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	snd_ctl_t *handle;
 	snd_ctl_card_info_t *info;
 	Int32 card = -1;
+	UnsafeArrayOpt<UTF8Char> ret;
 	char name[32];
 	const char *cardName;
 	card = -1;
@@ -562,15 +563,15 @@ UTF8Char *Media::ALSARenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 			cardName = snd_ctl_card_info_get_name(info);
 			if (cardName)
 			{
-				buff = Text::StrConcat(buff, (const UTF8Char*)cardName);
+				ret = Text::StrConcat(buff, (const UTF8Char*)cardName);
 			}
 			else
 			{
-				buff = 0;
+				ret = 0;
 			}
 			
 			snd_ctl_close(handle);
-			return buff;
+			return ret;
 		}
 		else
 		{
@@ -585,9 +586,10 @@ void Media::ALSARenderer::OnEvent()
 	this->thread.Notify();
 }
 
-Media::ALSARenderer::ALSARenderer(const UTF8Char *devName) : thread(PlayThread, this, CSTR("ALSARenderer"))
+Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thread(PlayThread, this, CSTR("ALSARenderer"))
 {
-	if (devName == 0)
+	UnsafeArray<const UTF8Char> nndevName;
+	if (!devName.SetTo(nndevName))
 	{
 		this->devName = 0;
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
@@ -597,20 +599,20 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName) : thread(PlayThread, 
 			if (cfg->GetValue(CSTR("defaults.pcm.card")).SetTo(s))
 			{
 				UTF8Char sbuff[32];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				sptr = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("hw:")));
-				this->devName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				this->devName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			DEL_CLASS(cfg);
 		}
 		if (this->devName == 0)
 		{
-			this->devName = Text::StrCopyNewC(UTF8STRC("hw:0")).Ptr();
+			this->devName = Text::StrCopyNewC(UTF8STRC("hw:0"));
 		}
 	}
 	else
 	{
-		this->devName = Text::StrCopyNew(devName).Ptr();
+		this->devName = Text::StrCopyNew(nndevName);
 	}
 	this->audsrc = 0;
 	this->resampler = 0;
@@ -672,12 +674,12 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 //	Char *cdevName;
 	Char cbuff[256];
 
-
-	if (this->devName)
+	UnsafeArray<const UTF8Char> nndevName;
+	if (this->devName.SetTo(nndevName))
 	{
-		if (Text::StrStartsWith(this->devName, (const UTF8Char*)"hw:"))
+		if (Text::StrStartsWith(nndevName, (const UTF8Char*)"hw:"))
 		{
-			Text::StrConcat((UTF8Char*)cbuff, this->devName);
+			Text::StrConcat((UTF8Char*)cbuff, nndevName);
 		}
 		else
 		{
@@ -704,7 +706,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 					cardName = snd_ctl_card_info_get_name(info);
 					if (cardName)
 					{
-						if (Text::StrEquals((const UTF8Char*)cardName, this->devName))
+						if (Text::StrEquals((const UTF8Char*)cardName, nndevName))
 						{
 							found = true;
 						}

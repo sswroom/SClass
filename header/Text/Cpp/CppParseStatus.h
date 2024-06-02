@@ -73,7 +73,7 @@ namespace Text
 			~CppParseStatus();
 
 			Optional<FileParseStatus> GetFileStatus();
-			Bool BeginParseFile(Text::CString fileName);
+			Bool BeginParseFile(Text::CStringNN fileName);
 			Bool EndParseFile(Text::CStringNN fileName);
 
 			Bool IsDefined(Text::CStringNN defName);

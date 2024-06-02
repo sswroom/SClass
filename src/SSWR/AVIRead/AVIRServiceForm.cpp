@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(AnyType userObj)
 		if (me->svcMgr.ServiceGetDetail(s->ToCString(), &svc))
 		{
 			UTF8Char sbuff[64];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			me->txtStatus->SetText(IO::ServiceInfo::RunStatusGetName(svc.status));
 			me->txtEnabled->SetText(IO::ServiceInfo::ServiceStateGetName(svc.enabled));
 			sptr = svc.startTime.ToStringNoZone(sbuff);

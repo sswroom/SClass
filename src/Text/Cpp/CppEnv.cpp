@@ -12,14 +12,15 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	IO::ConfigFile *cfg;
 	UOSInt i;
 	if (!IsCompilerExist(vsv))
 		return false;
-	sptr = IO::Path::GetLocAppDataPath(sbuff);
+	if (!IO::Path::GetLocAppDataPath(sbuff).SetTo(sptr))
+		return false;
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
@@ -65,7 +66,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	case Text::VSProject::VSV_VS6:
 	case Text::VSProject::VSV_UNKNOWN:
 	default:
-		return 0;
+		return false;
 	}
 	 
 	if (cfg == 0)
@@ -185,15 +186,15 @@ Text::Cpp::CppEnv::~CppEnv()
 	SDEL_STRING(this->baseFile);
 }
 
-void Text::Cpp::CppEnv::AddIncludePath(Text::CString includePath)
+void Text::Cpp::CppEnv::AddIncludePath(Text::CStringNN includePath)
 {
 	this->includePaths.Add(Text::String::New(includePath));
 }
 
-UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString includeFile, Text::String *sourceFile)
+UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetIncludeFilePath(UnsafeArray<UTF8Char> buff, Text::CStringNN includeFile, Text::String *sourceFile)
 {
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt i;
 /*	if (includeFile.IndexOf(UTF8STRC("opengl.hpp")) != INVALID_INDEX)
 	{
@@ -292,14 +293,15 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	IO::ConfigFile *cfg;
 	UOSInt i;
 	if (!IsCompilerExist(vsv))
 		return 0;
-	sptr = IO::Path::GetLocAppDataPath(sbuff);
+	if (!IO::Path::GetLocAppDataPath(sbuff).SetTo(sptr))
+		return 0;
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
@@ -435,10 +437,11 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv()
 	return 0;
 }
 
-UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::VisualStudioVersion vsv)
+UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char> sbuff, Text::VSProject::VisualStudioVersion vsv)
 {
 	WChar wbuff[512];
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArray<UTF8Char> nnsptr;
 	IO::Registry *reg;
 	IO::Registry *reg2;
 #if defined(_WIN64)
@@ -478,14 +481,14 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 		{
 			if (reg2->GetValueStr(L"InstallDir", wbuff))
 			{
-				sptr = Text::StrWChar_UTF8(sbuff, wbuff);
+				nnsptr = Text::StrWChar_UTF8(sbuff, wbuff);
 				if (vsv == Text::VSProject::VSV_VS71)
 				{
-					sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("..\\..\\Vc7\\"));
+					sptr = IO::Path::AppendPath(sbuff, nnsptr, CSTR("..\\..\\Vc7\\"));
 				}
 				else
 				{
-					sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("..\\..\\Vc\\"));
+					sptr = IO::Path::AppendPath(sbuff, nnsptr, CSTR("..\\..\\Vc\\"));
 				}
 			}
 			IO::Registry::CloseRegistry(reg2);
@@ -514,7 +517,7 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 	}*/
 }
 
-UTF8Char *Text::Cpp::CppEnv::GetWindowsSdkDir(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetWindowsSdkDir(UnsafeArray<UTF8Char> sbuff)
 {
 	IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"Microsoft\\Microsoft SDKs\\Windows");
 	if (reg == 0)
@@ -535,9 +538,8 @@ UTF8Char *Text::Cpp::CppEnv::GetWindowsSdkDir(UTF8Char *sbuff)
 Bool Text::Cpp::CppEnv::IsCompilerExist(Text::VSProject::VisualStudioVersion vsv)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = GetVCInstallDir(sbuff, vsv);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!GetVCInstallDir(sbuff, vsv).SetTo(sptr))
 		return false;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("bin\\ml.exe"));
 	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File;

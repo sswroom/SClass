@@ -754,9 +754,9 @@ NN<Data::NamedClass<LamppostData>> LamppostData::CreateClass()
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	Text::CString key = CSTR("WEBnAPI");
+	Text::CStringNN key = CSTR("WEBnAPI");
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);

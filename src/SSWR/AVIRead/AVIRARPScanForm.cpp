@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	const Net::MACInfo::MACEntry *macEntry;
 	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
@@ -181,7 +181,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt k;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(connInfoList);

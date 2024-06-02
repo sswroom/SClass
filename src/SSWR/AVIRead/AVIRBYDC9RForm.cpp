@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnTimerTick(AnyType userObj)
 	IO::Device::BYDC9R::DeviceStatus currStatus;
 	me->c9r.GetStatus(&currStatus);
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (currStatus.speedkmHr != me->dispStatus.speedkmHr)
 	{
@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> par
 	this->btnCANBus->HandleButtonClick(OnCANBusClicked, this);
 
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->c9r.GetStatus(&this->dispStatus);
 	this->lblSpeedKmHr = ui->NewLabel(*this, CSTR("Speed (km/Hr)"));
 	this->lblSpeedKmHr->SetRect(4, 64, 100, 23, false);

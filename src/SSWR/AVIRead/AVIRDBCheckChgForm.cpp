@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->dataFile.IsNull())
 	{
 		me->ui->ShowMsgOK(CSTR("Please input Data file first"), CSTR("Check Table Changes"), me);
@@ -78,9 +78,10 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 	dlg->SetAllowMultiSel(false);
 	dlg->AddFilter(CSTR("*.sql"), CSTR("SQL File"));
 	sptr = sbuff;
-	if (me->schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
+	Text::CStringNN schema;
+	if (me->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
 	{
-		sptr = me->schema.ConcatTo(sptr);
+		sptr = schema.ConcatTo(sptr);
 		*sptr++ = '_';
 	}
 	sptr = me->table.ConcatTo(sptr);
@@ -263,7 +264,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		NEW_CLASSNN(csv, DB::CSVFile(fileName, 65001))
 		if (noHeader) csv->SetNoHeader(true);
 		NN<DB::DBReader> r;
-		if (!csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (!csv->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			csv.Delete();
 			this->ui->ShowMsgOK(CSTR("Error in reading CSV file"), CSTR("Check Table Changes"), this);
@@ -341,7 +342,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 	UOSInt k;
 	UOSInt srcCnt;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ColDef> col;
 	NN<DB::DBReader> r;
 	while (i < destCnt)
@@ -361,8 +362,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> 
 		k = 0;
 		while (k < srcCnt)
 		{
-			sptr = r->GetName(k, sbuff);
-			if (sptr)
+			if (r->GetName(k, sbuff).SetTo(sptr))
 			{
 				i = 0;
 				while (i < destCnt)
@@ -436,9 +436,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayList<UOSIn
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 {
-	Text::CString nullStr = this->GetNullText();
+	Text::CStringNN nullStr = this->GetNullText();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> dataFile;
 	if (!this->dataFile.SetTo(dataFile))
 	{
@@ -942,7 +942,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool axisAware, NN<SQLSession> sess)
 {
-	Text::CString nullStr = this->GetNullText();\
+	Text::CStringNN nullStr = this->GetNullText();
 	NN<DB::ReadingDB> dataFile;
 	if (!this->dataFile.SetTo(dataFile))
 	{
@@ -1199,9 +1199,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			{
 				sql.Clear();
 				sql.AppendCmdC(CSTR("insert into "));
-				if (this->schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
+				Text::CStringNN schema;
+				if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
 				{
-					sql.AppendCol(this->schema.v);
+					sql.AppendCol(schema.v);
 					sql.AppendCmdC(CSTR("."));
 				}
 				sql.AppendCol(this->table.v);
@@ -1281,9 +1282,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					Bool diff = false;
 					sql.Clear();
 					sql.AppendCmdC(CSTR("update "));
-					if (this->schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
+					Text::CStringNN schema;
+					if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
 					{
-						sql.AppendCol(this->schema.v);
+						sql.AppendCol(schema.v);
 						sql.AppendCmdC(CSTR("."));
 					}
 					sql.AppendCol(this->table.v);
@@ -1727,9 +1729,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				{
 					sql.Clear();
 					sql.AppendCmdC(CSTR("delete from "));
-					if (this->schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
+					Text::CStringNN schema;
+					if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
 					{
-						sql.AppendCol(this->schema.v);
+						sql.AppendCol(schema.v);
 						sql.AppendCmdC(CSTR("."));
 					}
 					sql.AppendCol(this->table.v);
@@ -1778,9 +1781,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						rowData = csvData.GetItem(k);
 						sql.Clear();
 						sql.AppendCmdC(CSTR("insert into "));
-						if (this->schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
+						Text::CStringNN schema;
+						if (this->schema.SetTo(schema) && schema.leng > 0 && DB::DBUtil::HasSchema(sqlType))
 						{
-							sql.AppendCol(this->schema.v);
+							sql.AppendCol(schema.v);
 							sql.AppendCmdC(CSTR("."));
 						}
 						sql.AppendCol(this->table.v);
@@ -2034,7 +2038,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> s
 
 }
 
-Text::CString SSWR::AVIRead::AVIRDBCheckChgForm::GetNullText()
+Text::CStringNN SSWR::AVIRead::AVIRDBCheckChgForm::GetNullText()
 {
 	switch (this->cboNullCol->GetSelectedIndex())
 	{
@@ -2088,7 +2092,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->txtSchema->SetReadOnly(true);
 	this->lblTable = ui->NewLabel(*this, CSTR("Table"));
 	this->lblTable->SetRect(0, 24, 100, 23, false);
-	this->txtTable = ui->NewTextBox(*this, table.OrEmpty());
+	this->txtTable = ui->NewTextBox(*this, table);
 	this->txtTable->SetRect(100, 24, 200, 23, false);
 	this->txtTable->SetReadOnly(true);
 	this->lblSrcFilter = ui->NewLabel(*this, CSTR("Source Filter"));

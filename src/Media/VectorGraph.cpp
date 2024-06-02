@@ -69,7 +69,7 @@ NN<Media::DrawPen> Media::VectorGraph::VectorPenStyle::CreateDrawPen(Double oriD
 	return dimg->NewPenARGB(this->color, thick, this->pattern, this->nPattern);
 }
 
-Media::VectorGraph::VectorFontStyle::VectorFontStyle(UOSInt index, Text::CString name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::VectorGraph::VectorFontStyle::VectorFontStyle(UOSInt index, Text::CStringNN name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	this->index = index;
 	this->name = Text::String::New(name);
@@ -83,7 +83,7 @@ Media::VectorGraph::VectorFontStyle::~VectorFontStyle()
 	this->name->Release();
 }
 
-Bool Media::VectorGraph::VectorFontStyle::IsSame(Text::CString name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Bool Media::VectorGraph::VectorFontStyle::IsSame(Text::CStringNN name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	if (!this->name->Equals(name.v, name.leng))
 		return false;
@@ -557,10 +557,10 @@ NN<Media::DrawFont> Media::VectorGraph::NewFontPt(Text::CString name, Double ptS
 	while (it.HasNext())
 	{
 		font = it.Next();
-		if (font->IsSame(name, ptSize, fontStyle, 0))
+		if (font->IsSame(name.OrEmpty(), ptSize, fontStyle, 0))
 			return font;
 	}
-	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name, ptSize, fontStyle, 0));
+	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name.OrEmpty(), ptSize, fontStyle, 0));
 	this->fontStyles.Add(font);
 	return font;
 }
@@ -573,10 +573,10 @@ NN<Media::DrawFont> Media::VectorGraph::NewFontPx(Text::CString name, Double pxS
 	while (it.HasNext())
 	{
 		font = it.Next();
-		if (font->IsSame(name, ptSize, fontStyle, codePage))
+		if (font->IsSame(name.OrEmpty(), ptSize, fontStyle, codePage))
 			return font;
 	}
-	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name, ptSize, fontStyle, codePage));
+	NEW_CLASSNN(font, Media::VectorGraph::VectorFontStyle(this->fontStyles.GetCount(), name.OrEmpty(), ptSize, fontStyle, codePage));
 	this->fontStyles.Add(font);
 	return font;
 }

@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(Optional<UI::GUIClientControl> parent, N
 
 	Data::ArrayList<const WChar *> nsList;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Win32::WMIQuery::GetNSList(&nsList);
 	UOSInt i;
 	UOSInt j;

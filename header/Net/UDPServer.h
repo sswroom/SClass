@@ -59,7 +59,7 @@ namespace Net
 		UInt16 GetPort();
 		Bool IsError();
 		Bool SupportV6();
-		virtual Bool SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
+		virtual Bool SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UnsafeArray<const UInt8> buff, UOSInt dataSize);
 		Int32 GetRecvCnt();
 		void AddMulticastIP(UInt32 ip);
 		void SetBuffSize(Int32 buffSize);

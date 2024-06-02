@@ -37,7 +37,7 @@ UInt64 lastSendSize;
 UInt32 __stdcall DispThread(AnyType userObj)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	dispRunning = true;
 	while (!toStop)
 	{

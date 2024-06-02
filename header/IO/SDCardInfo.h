@@ -62,7 +62,7 @@ namespace IO
 
 		Int64 GetCardCapacity();
 
-		static Text::CString GetManufacturerName(UInt8 mid);
+		static Text::CStringNN GetManufacturerName(UInt8 mid);
 	};
 }
 #endif

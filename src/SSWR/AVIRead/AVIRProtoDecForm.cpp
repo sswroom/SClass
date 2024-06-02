@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj,
 	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	NN<ProtocolItem> item;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	item = MemAllocNN(ProtocolItem);
 	item->fileOfst = fileOfst;

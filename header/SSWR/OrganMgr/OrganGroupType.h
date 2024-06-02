@@ -15,13 +15,13 @@ namespace SSWR
 			NN<Text::String> eName;
 
 		public:
-			OrganGroupType(Int32 seq, Text::CString cName, Text::CString eName);
+			OrganGroupType(Int32 seq, Text::CStringNN cName, Text::CStringNN eName);
 			~OrganGroupType();
 
 			Int32 GetSeq();
 			NN<Text::String> GetCName() const;
 			NN<Text::String> GetEName() const;
-			UTF8Char *ToString(UTF8Char *sbuff);
+			UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff);
 		};
 	}
 }

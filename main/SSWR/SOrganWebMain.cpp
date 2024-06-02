@@ -28,7 +28,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NN<Text::String> s;
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		IO::WriterLogHandler printLog(&console, false);
 		log.AddLogHandler(printLog, IO::LogHandler::LogLevel::ErrorDetail);
 
@@ -109,7 +109,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}
 			else
 			{
-				sptr = IO::Path::GetProcessFileName(sbuff);
+				sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}

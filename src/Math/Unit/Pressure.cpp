@@ -25,7 +25,7 @@ Double Math::Unit::Pressure::GetUnitRatio(PressureUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Pressure::GetUnitShortName(PressureUnit unit)
+Text::CStringNN Math::Unit::Pressure::GetUnitShortName(PressureUnit unit)
 {
 	switch (unit)
 	{
@@ -47,7 +47,7 @@ Text::CString Math::Unit::Pressure::GetUnitShortName(PressureUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Pressure::GetUnitName(PressureUnit unit)
+Text::CStringNN Math::Unit::Pressure::GetUnitName(PressureUnit unit)
 {
 	switch (unit)
 	{

@@ -32,8 +32,8 @@ namespace Net
 				Text::String *userName;
 			} MailStatus;
 
-			typedef UTF8Char *(__stdcall *MailHandler)(UTF8Char *queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const MailStatus> mail);
-			typedef Bool (__stdcall *LoginHandler)(AnyType userObj, Text::CString userName, Text::CString pwd);
+			typedef UnsafeArrayOpt<UTF8Char> (__stdcall *MailHandler)(UnsafeArray<UTF8Char> queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const MailStatus> mail);
+			typedef Bool (__stdcall *LoginHandler)(AnyType userObj, Text::CStringNN userName, Text::CStringNN pwd);
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
@@ -55,9 +55,9 @@ namespace Net
 			static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
-			UOSInt WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CString msg);
+			UOSInt WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CStringNN msg);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
+			void ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Text::LineBreakType lbt);
 		public:
 			SMTPServer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NN<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, AnyType userObj, Bool autoStart);
 			~SMTPServer();

@@ -20,7 +20,7 @@ namespace UI
 			virtual ~GTKButton();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
+			virtual void SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 		};

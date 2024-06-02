@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->txtAgentAddr->GetText(sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 		while (i < j)
 		{
 			agent = agentList.GetItemNoCheck(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr).Or(sbuff);
 			k = me->lbAgent->AddItem(CSTRP(sbuff, sptr), agent);
 			if (i == 0)
 			{
@@ -113,12 +113,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr).Or(sbuff);
 		me->txtAgentDAddr->SetText(CSTRP(sbuff, sptr));
 		me->txtAgentDescr->SetText(agent->descr->ToCString());
 		if (agent->objIdLen > 0)
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	if (dt.ToTicks() - me->lastUpdateTime >= 30000)
@@ -387,7 +387,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;

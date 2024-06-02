@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientCo
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 	this->txtOutW->Focus();

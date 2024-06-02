@@ -4,7 +4,7 @@
 Map::ESRI::ESRIFeatureServer::ESRIFeatureServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	this->url = Text::String::New(url);
 	this->sockf = sockf;

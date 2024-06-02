@@ -247,6 +247,6 @@ namespace Text
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 	};
 
-	Text::CString JSONTypeGetName(JSONType t);
+	Text::CStringNN JSONTypeGetName(JSONType t);
 }
 #endif

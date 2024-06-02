@@ -11,7 +11,7 @@ namespace Media
 		Media::IAudioSource *audsrc;
 		Media::IAudioSource *resampler;
 		UInt32 resampleFreq;
-		const UTF8Char *devName;
+		UnsafeArrayOpt<const UTF8Char> devName;
 		void *hand;
 		Media::RefClock *clk;
 		EndNotifier endHdlr;
@@ -31,11 +31,11 @@ namespace Media
 		Bool SetHWParams(Media::IAudioSource *audsrc, void *h);
 	public:
 		static UOSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
 		
 		void OnEvent();
 
-		ALSARenderer(const UTF8Char *devName);
+		ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName);
 		virtual ~ALSARenderer();
 
 		virtual Bool IsError();

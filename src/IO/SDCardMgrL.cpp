@@ -26,12 +26,12 @@ Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList)
 {
 	UTF8Char nameBuff[16];
-	UTF8Char *namePtr;
+	UnsafeArray<UTF8Char> namePtr;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
-	UTF8Char *sptr4;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sptr4;
 	UInt8 cid[16];
 	UInt8 csd[16];
 	IO::Path::PathType pt;
@@ -43,7 +43,7 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] != '.' && pt != IO::Path::PathType::File)
 			{
@@ -52,7 +52,7 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList
 				IO::Path::FindFileSession *sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess2)
 				{
-					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
 					{
 						if (sptr2[0] != '.' && pt != IO::Path::PathType::File && (sptr3 - sptr2) <= 15 && Text::StrIndexOfChar(sptr2, ':') != INVALID_INDEX)
 						{

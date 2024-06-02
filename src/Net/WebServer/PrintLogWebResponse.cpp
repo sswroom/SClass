@@ -83,7 +83,7 @@ Bool Net::WebServer::PrintLogWebResponse::SwitchProtocol(ProtocolHandler *protoH
 	return this->resp->SwitchProtocol(protoHdlr);
 }
 
-Text::CString Net::WebServer::PrintLogWebResponse::GetRespHeaders()
+Text::CStringNN Net::WebServer::PrintLogWebResponse::GetRespHeaders()
 {
 	return this->resp->GetRespHeaders();
 }
@@ -98,7 +98,7 @@ UOSInt Net::WebServer::PrintLogWebResponse::Read(const Data::ByteArray &buff)
 	return this->resp->Read(buff);
 }
 
-UOSInt Net::WebServer::PrintLogWebResponse::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::WebServer::PrintLogWebResponse::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	return this->resp->Write(buff, size);
 }

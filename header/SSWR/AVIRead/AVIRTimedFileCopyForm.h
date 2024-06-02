@@ -26,7 +26,7 @@ namespace SSWR
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 
-			Bool CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir);
+			Bool CopyToZip(IO::ZIPMTBuilder *zip, UnsafeArray<const UTF8Char> buffStart, UnsafeArray<const UTF8Char> pathBase, UnsafeArray<UTF8Char> pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir);
 		public:
 			AVIRTimedFileCopyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimedFileCopyForm();

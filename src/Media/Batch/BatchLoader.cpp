@@ -9,7 +9,7 @@
 UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::String *fileName = 0;
 	DataInfo *info = 0;
 	Bool found;

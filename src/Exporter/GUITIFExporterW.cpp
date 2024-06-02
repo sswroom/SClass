@@ -25,7 +25,7 @@ Int32 Exporter::GUITIFExporter::GetName()
 	return *(Int32*)"GPTI";
 }
 
-Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{

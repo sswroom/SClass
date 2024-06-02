@@ -150,7 +150,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(AnyType userObj
 		UOSInt i = 1;
 		UOSInt j;
 		UOSInt k;
-		const UTF8Char *chars = sb.ToString();
+		UnsafeArray<const UTF8Char> chars = sb.ToString();
 		Bool found = false;
 		j = sb.GetLength();
 		while (i < j)
@@ -261,7 +261,7 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 {
 	NN<OrganBook> book;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 0;
 	UOSInt j = this->bookList.GetCount();
 	UOSInt k;

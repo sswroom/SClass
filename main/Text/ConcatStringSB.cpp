@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
 	OSInt j;
 	Manage::HiResClock clk;

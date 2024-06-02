@@ -33,7 +33,7 @@ private:
 		UInt8 buff[256];
 		Text::CStringNN host = CSTR("sswroom.no-ip.org");
 		Net::SocketUtil::AddressInfo addr;
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 
 		Data::Timestamp currTime = Data::Timestamp::UtcNow();
 		if (currTime.DiffSec(prog->lastSent) >= 60 && this->sockf.DNSResolveIP(host, addr))
@@ -50,7 +50,7 @@ private:
 			crc.Clear();
 			crc.Calc(host.v, 7);
 			crc.Calc(buff, (UOSInt)(sptr - buff));
-			WriteMUInt32(sptr, crc.GetValueU32());
+			WriteMUInt32(&sptr[0], crc.GetValueU32());
 			this->udp.SendTo(addr, 5080, buff, (UOSInt)(sptr - buff + 4));
 		}
 		prog->lastSent = currTime;
@@ -71,7 +71,7 @@ private:
 		if (sess)
 		{
 			Text::StringBuilderUTF8 sb;
-			while (Manage::Process::FindProcessNext(sbuff, sess, &info))
+			while (Manage::Process::FindProcessNext(sbuff, sess, &info).NotNull())
 			{
 				Manage::Process proc(info.processId, false);
 				sb.ClearStr();
@@ -97,19 +97,20 @@ private:
 		return ret;
 	}
 
-	void AddProg(const UTF8Char *progName, UOSInt progNameLen, const UTF8Char *progPath, UOSInt progPathLen)
+	void AddProg(UnsafeArray<const UTF8Char> progName, UOSInt progNameLen, UnsafeArrayOpt<const UTF8Char> progPath, UOSInt progPathLen)
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		ProgInfo *prog;
 		prog = MemAlloc(ProgInfo, 1);
 		prog->progName = Text::String::New(progName, progNameLen);
 		prog->procId = 0;
 		prog->lastSent = 0;
-		if (progPath)
+		UnsafeArray<const UTF8Char> nns;
+		if (progPath.SetTo(nns))
 		{
-			sptr = IO::Path::GetProcessFileName(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(progPath, progPathLen));
+			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+			sptr = IO::Path::AppendPath(sbuff, sptr, Text::CStringNN(nns, progPathLen));
 			prog->progPath = Text::String::NewP(sbuff, sptr).Ptr();
 		}
 		else
@@ -118,7 +119,7 @@ private:
 		}
 		this->progList.Add(prog);
 
-		if (progPath)
+		if (progPath.SetTo(nns))
 		{
 			this->SearchProcId(prog);
 		}
@@ -127,7 +128,7 @@ private:
 	void LoadProgList()
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Text::PString sarr[2];
 		Text::StringBuilderUTF8 sb;
 
@@ -146,11 +147,11 @@ private:
 				{
 					if (sarr[1].leng > 0)
 					{
-						AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+						AddProg(sarr[0].v, sarr[0].leng, UnsafeArray<const UTF8Char>(sarr[1].v), sarr[1].leng);
 					}
 					else
 					{
-						AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+						AddProg(sarr[0].v, sarr[0].leng, UnsafeArray<const UTF8Char>(sarr[1].v), sarr[1].leng);
 					}
 				}
 			}

@@ -19,14 +19,14 @@ IO::LogFileManager::~LogFileManager()
 void IO::LogFileManager::QueryLogMonths(Data::ArrayList<UInt32> *months)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->logPath->ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("??????"));
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{
@@ -48,7 +48,7 @@ void IO::LogFileManager::QueryLogByMonth(Data::ArrayList<UInt32> *dates, UInt32 
 		return;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->logPath->ConcatTo(sbuff);
 	sptr = Text::StrUInt32(sptr, month);
 	UOSInt i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
@@ -58,7 +58,7 @@ void IO::LogFileManager::QueryLogByMonth(Data::ArrayList<UInt32> *dates, UInt32 
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -81,7 +81,7 @@ IO::Stream *IO::LogFileManager::OpenLogFile(UInt32 date)
 		return 0;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->logPath->ConcatTo(sbuff);
 	sptr = Text::StrUInt32(sptr, date / 100);
 	UOSInt i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);

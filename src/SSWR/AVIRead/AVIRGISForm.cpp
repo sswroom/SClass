@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Media::RasterImage> stimg;
 				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage(0, 0).SetTo(stimg))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, 0, 0, 0, CSTR_NULL));
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), Math::CoordinateSystemManager::CreateWGS84Csys(), CSTR_NULL));
 					Double calcImgW;
 					Double calcImgH;
 					if (stimg->HasHotSpot())
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 					NEW_CLASSNN(simg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(nnpobj), true));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
 					simg.Delete();
-					lyr->AddVector(vimg, (const UTF8Char**)0);
+					lyr->AddVector(vimg, (Text::String**)0);
 					layers->Add(lyr);
 				}
 				else
@@ -264,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Coord2DDbl latLon;
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	Math::Coord2DDbl mapPos = me->mapCtrl->ScnXY2MapXY(scnPos);
@@ -324,7 +324,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(AnyType userObj, Do
 {
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->scaleChanging)
 	{
 		sptr = Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
@@ -484,7 +484,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(AnyType userObj)
 	{
 		me->mapUpdTChanged = false;
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, me->mapUpdT);
 		me->txtTimeUsed->SetText(CSTRP(sbuff, sptr));
 	}
@@ -498,7 +498,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(AnyType userObj)
 void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->env->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("GISForm - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 }
@@ -572,15 +572,15 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString cust
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString filePath)
+void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CStringNN listFile, Text::CStringNN filePath)
 {
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
-	UTF8Char *sarr[3];
-	UTF8Char *dateStr;
-	UTF8Char *dateStrEnd;
-	UTF8Char *timeStr;
-	UTF8Char *timeStrEnd;
+	UnsafeArray<UTF8Char> sarr[3];
+	UnsafeArrayOpt<UTF8Char> dateStr;
+	UnsafeArrayOpt<UTF8Char> dateStrEnd;
+	UnsafeArrayOpt<UTF8Char> timeStr;
+	UnsafeArrayOpt<UTF8Char> timeStrEnd;
 	Text::StringBuilderUTF8 sb;
 	NN<Net::HTTPClient> cli;
 	dt.SetCurrTimeUTC();
@@ -603,27 +603,27 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 			if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.v, ',') == 2)
 			{
 				dateStr = sbuff;
-				dateStrEnd = Text::StrConcat(dateStr, sarr[0]);
-				timeStr = dateStrEnd + 1;
-				timeStrEnd = Text::StrConcat(timeStr, sarr[1]);
+				dateStrEnd = Text::StrConcat(dateStr.Ptr(), sarr[0]);
+				timeStr = dateStrEnd.Ptr() + 1;
+				timeStrEnd = Text::StrConcat(timeStr.Ptr(), sarr[1]);
 			}
 		}
 	}
 	cli.Delete();
-	if (dateStr && timeStr)
+	if (dateStr.NotNull() && timeStr.NotNull())
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/"));
-		sb.AppendP(dateStr, dateStrEnd);
+		sb.AppendP(dateStr.Ptr(), dateStrEnd.Ptr());
 		sb.Append(filePath);
-		sb.AppendP(timeStr, timeStrEnd);
+		sb.AppendP(timeStr.Ptr(), timeStrEnd.Ptr());
 		sb.AppendC(UTF8STRC("/index.kml?t="));
 		sb.AppendI64(dt.ToTicks());
 		this->OpenURL(sb.ToCString(), CSTR("https://maps.weather.gov.hk/gis-portal/web/index.kml"));
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
+void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol)
 {
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
@@ -844,9 +844,9 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[32];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<UI::GUIForm> frm;
 	NN<Math::CoordinateSystem> csys;
 	NN<UI::GUITreeView::TreeItem> item;
@@ -856,7 +856,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		this->core->SaveData(this, this->env, L"SaveMapEnv");
 		break;
 	case MNU_COPY_LATLON:
-		sptr = this->txtUTMGrid->GetText(sbuff);
+		sbuff[0] = 0;
+		sptr = this->txtUTMGrid->GetText(sbuff).Or(sbuff);
 		UI::Clipboard::SetString(this->hwnd, CSTRP(sbuff, sptr));
 		break;
 	case MNU_PRINT:
@@ -901,7 +902,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
+			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
 			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
@@ -913,7 +914,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
+			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
 			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
@@ -925,7 +926,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
+			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
 			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
@@ -937,7 +938,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<Map::VectorLayer> layer;
-			const UTF8Char *cols = (const UTF8Char*)"Name";
+			UnsafeArrayOpt<const UTF8Char> cols = (const UTF8Char*)"Name";
 			NEW_CLASSNN(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer(Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item), layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
@@ -1356,7 +1357,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				IO::Device::MTKGPSNMEA *mtk;
 				NN<Map::GPSTrack> trk;
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, true));
 				if (mtk->IsMTKDevice())
 				{
@@ -1475,11 +1476,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRGooglePolylineForm frm(0, this->ui, this->core);
 			NN<Math::Geometry::LineString> pl;
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && pl.Set(frm.GetPolyline()))
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetPolyline().SetTo(pl))
 			{
 				NN<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, 0, 0, 0, CSTR_NULL));
-				lyr->AddVector(pl, (const UTF8Char**)0);
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), Math::CoordinateSystemManager::CreateWGS84Csys(), CSTR_NULL));
+				lyr->AddVector(pl, (Text::String**)0);
 				this->AddLayer(lyr);
 			}
 		}
@@ -1524,7 +1525,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<Net::HTTPClient> cli;
 			Text::UTF8Reader *reader;
 			Text::StringBuilderUTF8 sb;
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UTF8Char sbuff[10];
 			UOSInt i;
 			Data::DateTime dt;
@@ -1711,9 +1712,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				{
 					NN<Map::ESRI::ESRITileMap> map;
 					NN<Text::String> url = esriMap->GetURL();
-					crc.Calc((UInt8*)url->v, url->leng);
+					crc.Calc(url->v, url->leng);
 					crc.GetValue(crcVal);
-					sptr = IO::Path::GetProcessFileName(sbuff);
+					sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 					sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
 					sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
 					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
@@ -2024,7 +2025,7 @@ Bool SSWR::AVIRead::AVIRGISForm::HasKMap()
 	return false; //return this->kmap != 0;
 }
 
-UTF8Char *SSWR::AVIRead::AVIRGISForm::ResolveAddress(UTF8Char *sbuff, Math::Coord2DDbl pos)
+UnsafeArrayOpt<UTF8Char> SSWR::AVIRead::AVIRGISForm::ResolveAddress(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl pos)
 {
 /*	if (this->kmap == 0)
 	{
@@ -2071,7 +2072,7 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 	else
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
 		if (timeEnd == 0)
 		{

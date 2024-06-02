@@ -9,7 +9,7 @@ namespace Net
 		virtual ~IRTPPLHandler(){};
 
 		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts) = 0;
-		virtual void SetFormat(const UTF8Char *fmtStr) = 0;
+		virtual void SetFormat(UnsafeArray<const UTF8Char> fmtStr) = 0;
 		virtual Int32 GetPayloadType() = 0;
 	};
 }

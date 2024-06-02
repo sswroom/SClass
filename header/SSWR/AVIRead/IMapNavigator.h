@@ -36,7 +36,7 @@ namespace SSWR
 
 			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid) = 0;
 			virtual Bool HasKMap() = 0;
-			virtual UTF8Char *ResolveAddress(UTF8Char *sbuff, Math::Coord2DDbl pos) = 0;
+			virtual UnsafeArrayOpt<UTF8Char> ResolveAddress(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl pos) = 0;
 
 			virtual void PauseUpdate() = 0;
 			virtual void ResumeUpdate() = 0;

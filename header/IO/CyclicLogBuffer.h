@@ -11,7 +11,7 @@ namespace IO
 	{
 	private:
 		Sync::Mutex logMut;
-		UTF8Char **logBuff;
+		UnsafeArray<UnsafeArrayOpt<UTF8Char>> logBuff;
 		UOSInt *logLeng;
 		UOSInt logInd;
 		UOSInt buffSize;
@@ -23,7 +23,7 @@ namespace IO
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);
 		virtual void LogClosed();
 
-		void GetLogs(NN<Text::StringBuilderUTF8> sb, Text::CString seperator);
+		void GetLogs(NN<Text::StringBuilderUTF8> sb, Text::CStringNN seperator);
 	};
 }
 #endif

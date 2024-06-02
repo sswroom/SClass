@@ -31,12 +31,12 @@ namespace Text
 		private:
 			Text::Cpp::CppEnv *env;
 			
-			static UTF8Char *RemoveSpace(UTF8Char *sptr);
+			static UnsafeArray<UTF8Char> RemoveSpace(UnsafeArray<UTF8Char> sptr);
 			void LogError(NN<Text::Cpp::CppParseStatus> status, Text::CStringNN errMsg, NN<Data::ArrayListStringNN> errMsgs);
-			Bool ParseSharpIfParam(Text::CString cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UOSInt cpIndex);
+			Bool ParseSharpIfParam(Text::CStringNN cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UOSInt cpIndex);
 			Bool EvalSharpIfVal(NN<Data::ArrayListStringNN> codePhases, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, UOSInt cpIndex, OutParam<Int32> outVal, OSInt priority);
-			Bool EvalSharpIf(Text::CString cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result);
-			Bool ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs);
+			Bool EvalSharpIf(Text::CStringNN cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result);
+			Bool ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeArray<UTF8Char> lineBuffEnd, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs);
 		public:
 			CppCodeParser(Text::Cpp::CppEnv *env);
 			~CppCodeParser();

@@ -26,7 +26,7 @@ namespace Manage
 			Data::ArrayListUInt32 *callAddrs;
 			Data::ArrayListUInt32 *jmpAddrs;
 			//Text::StringBuilderW *outStr;
-			UTF8Char *sbuff;
+			UnsafeArray<UTF8Char> sbuff;
 //			Bool isEnded;
 			EndType endType;
 			UInt32 espOfst;
@@ -67,7 +67,7 @@ namespace Manage
 
 		NN<DasmX86_32_Sess> StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader);
 		void EndDasm(NN<DasmX86_32_Sess> sess);
-		UTF8Char *DasmNext(NN<DasmX86_32_Sess> sess, UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_32_Sess> sess, UnsafeArray<UTF8Char> buff);
 		OSInt SessGetCodeOffset(NN<DasmX86_32_Sess> sess);
 		EndType SessGetEndType(NN<DasmX86_32_Sess> sess);
 		Bool SessContJmp(NN<DasmX86_32_Sess> sess);

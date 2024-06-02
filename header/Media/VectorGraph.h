@@ -40,10 +40,10 @@ namespace Media
 			UInt32 codePage;
 
 		public:
-			VectorFontStyle(UOSInt index, Text::CString name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+			VectorFontStyle(UOSInt index, Text::CStringNN name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			virtual ~VectorFontStyle();
 			
-			Bool IsSame(Text::CString name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+			Bool IsSame(Text::CStringNN name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			UOSInt GetIndex();
 			Double GetHeightPt();
 			NN<Text::String> GetName() const;

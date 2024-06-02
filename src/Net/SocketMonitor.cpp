@@ -35,7 +35,7 @@ void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->threadCnt = threadCnt;
 	this->threads = 0;
 	UOSInt i;

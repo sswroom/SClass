@@ -12,7 +12,7 @@ Optional<Net::Email::FileEmailStore::FileInfo> Net::Email::FileEmailStore::GetFi
 	return this->fileMap.Get(id);
 }
 
-void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> mail, UTF8Char *filePath, UTF8Char *fileNameStart, UTF8Char *filePathEnd, UInt64 fileSize)
+void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> mail, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> fileNameStart, UnsafeArray<UTF8Char> filePathEnd, UInt64 fileSize)
 {
 	Data::ArrayListStringNN rcptList;
 	Text::StringBuilderUTF8 sb;
@@ -114,9 +114,9 @@ void Net::Email::FileEmailStore::AddMail(NN<const Text::MIMEObj::MailMessage> ma
 Net::Email::FileEmailStore::FileEmailStore()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMTP"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	this->currId = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -129,7 +129,7 @@ Net::Email::FileEmailStore::FileEmailStore()
 	{
 		IO::Path::PathType pt;
 		UInt64 fileSize;
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
 		{
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
 			NN<Text::MIMEObj::MailMessage> mail;
@@ -191,7 +191,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	email->fileSize = (UOSInt)mail->dataStm->GetLength();
 
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<FileInfo> file;
 	NEW_CLASSNN(file, FileInfo());
 	file->id = id;
@@ -201,7 +201,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, remoteAddr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, remoteAddr).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n by "));
 	sb.Append(serverName);
@@ -220,7 +220,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 		file->rcptList.Add(mail->rcptTo.GetItem(i)->Clone());
 
 		sb.AppendC(UTF8STRC("X-Apparently-To: "));
-		Text::CString rcptTo = mail->rcptTo.GetItem(i)->ToCString();
+		Text::CStringNN rcptTo = mail->rcptTo.GetItem(i)->ToCString();
 		if (rcptTo.StartsWith(UTF8STRC("RCPT TO:")))
 		{
 			rcptTo = rcptTo.Substring(8).LTrim();
@@ -261,7 +261,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(sb);
 	IO::Path::AppendPath(sb, UTF8STRC("SMTP"));
@@ -279,7 +279,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Received: from "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, remoteAddr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, remoteAddr).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n by "));
 	sb.Append(serverName);
@@ -330,7 +330,8 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	email = MemAllocNN(EmailInfo);
 	email->id = id;
 	email->remoteAddr = remoteAddr.Ptr()[0];
-	sptr = mail->GetFromAddr(sbuff);
+	sbuff[0] = 0;
+	sptr = mail->GetFromAddr(sbuff).Or(sbuff);
 	email->fromAddr = Text::String::NewP(sbuff, sptr);
 	email->recvTime = currTime.ToTicks();
 	email->isDeleted = false;
@@ -350,7 +351,7 @@ Optional<IO::StreamData> Net::Email::FileEmailStore::OpenEmailData(Int64 id)
 	return NEW_CLASS_D(IO::StmData::FileData(fileInfo->fileName, false));
 }
 
-const UTF8Char *Net::Email::FileEmailStore::GetEmailUid(Int64 id)
+UnsafeArrayOpt<const UTF8Char> Net::Email::FileEmailStore::GetEmailUid(Int64 id)
 {
 	NN<FileInfo> fileInfo;
 	if (!this->GetFileInfo(id).SetTo(fileInfo))

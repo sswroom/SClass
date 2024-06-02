@@ -16,9 +16,9 @@ const Char *OCVUtil_WinPaths[] = {
 	0
 };
 
-UTF8Char *OCVUtil_TestDataPath(UTF8Char *sbuff, const UTF8Char *basePath, const UTF8Char *dataFile)
+UnsafeArrayOpt<UTF8Char> OCVUtil_TestDataPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> basePath, UnsafeArray<const UTF8Char> dataFile)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcat(sbuff, basePath);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, dataFile);
@@ -29,10 +29,10 @@ UTF8Char *OCVUtil_TestDataPath(UTF8Char *sbuff, const UTF8Char *basePath, const 
 	return 0;
 }
 
-UTF8Char *Media::OpenCV::OCVUtil::GetDataPath(UTF8Char *sbuff, const UTF8Char *dataFile)
+UnsafeArrayOpt<UTF8Char> Media::OpenCV::OCVUtil::GetDataPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFile)
 {
 	const UTF8Char **paths;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	const UTF8Char *path;
 	OSInt i;
 	if (IO::Path::PATH_SEPERATOR == '/')
@@ -49,8 +49,7 @@ UTF8Char *Media::OpenCV::OCVUtil::GetDataPath(UTF8Char *sbuff, const UTF8Char *d
 		path = paths[i++];
 		if (path == 0)
 			break;
-		sptr = OCVUtil_TestDataPath(sbuff, path, dataFile);
-		if (sptr)
+		if (OCVUtil_TestDataPath(sbuff, path, dataFile).SetTo(sptr))
 			return sptr;
 	}
 	return 0;

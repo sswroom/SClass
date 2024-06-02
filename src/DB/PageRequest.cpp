@@ -31,7 +31,7 @@ UOSInt DB::PageRequest::GetPageSize()
 	return this->pageSize;
 }
 
-void DB::PageRequest::Sort(const UTF8Char *colName, Bool descending)
+void DB::PageRequest::Sort(UnsafeArray<const UTF8Char> colName, Bool descending)
 {
 	if (this->sortList == 0)
 	{

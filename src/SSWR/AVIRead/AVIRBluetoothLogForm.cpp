@@ -96,8 +96,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnUnkOnlyChkChg(AnyType user
 Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("BTDevLog.txt"));
 	return this->btLog.StoreFile(CSTRP(sbuff, sptr));
 }
@@ -112,7 +112,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	logList.AddAll(this->btLog.GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
@@ -239,8 +239,8 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(Optional<UI::GUIClient
 	this->UpdateStatus();
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("BTDevLog.txt"));
 	this->btLog.LoadFile(CSTRP(sbuff, sptr));
 	this->LogUIUpdate();

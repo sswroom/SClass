@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	Optional<Text::String> type;
 	NN<Text::String> s;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 0;
 	UOSInt j = this->doc->GetCount();
 	while (i < j)
@@ -121,7 +121,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 		if (dlg->ShowDialog(this->GetHandle()))
 		{
 			NN<Text::String> folder = dlg->GetFolder();
-			Text::CString fileName = this->doc->GetSourceNameObj()->ToCString();
+			Text::CStringNN fileName = this->doc->GetSourceNameObj()->ToCString();
 			UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 				fileName = fileName.Substring(i + 1);

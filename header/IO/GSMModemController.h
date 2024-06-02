@@ -214,16 +214,16 @@ namespace IO
 		virtual ~GSMModemController();
 
 		// GSM Commands 3GPP TS 27.007
-		UTF8Char *GSMGetManufacturer(UTF8Char *manu); //AT+CGMI
-		UTF8Char *GSMGetModelIdent(UTF8Char *model); //AT+CGMM
-		UTF8Char *GSMGetModemVer(UTF8Char *ver); //AT+CGMR
-		UTF8Char *GSMGetIMEI(UTF8Char *imei); //AT+CGSN
-		UTF8Char *GSMGetTECharset(UTF8Char *cs); //AT+CSCS
-		Bool GSMSetTECharset(const UTF8Char *cs); //AT+CSCS
+		UnsafeArrayOpt<UTF8Char> GSMGetManufacturer(UnsafeArray<UTF8Char> manu); //AT+CGMI
+		UnsafeArrayOpt<UTF8Char> GSMGetModelIdent(UnsafeArray<UTF8Char> model); //AT+CGMM
+		UnsafeArrayOpt<UTF8Char> GSMGetModemVer(UnsafeArray<UTF8Char> ver); //AT+CGMR
+		UnsafeArrayOpt<UTF8Char> GSMGetIMEI(UnsafeArray<UTF8Char> imei); //AT+CGSN
+		UnsafeArrayOpt<UTF8Char> GSMGetTECharset(UnsafeArray<UTF8Char> cs); //AT+CSCS
+		Bool GSMSetTECharset(const UnsafeArray<UTF8Char> cs); //AT+CSCS
 		Bool GSMGetTECharsetsSupported(NN<Data::ArrayListStringNN> csList); //AT+CSCS
-		UTF8Char *GSMGetIMSI(UTF8Char *imsi); //AT+CIMI
-		UTF8Char *GSMGetCurrOperator(UTF8Char *oper); //AT+COPS
-		UTF8Char *GSMGetCurrPLMN(UTF8Char *plmn); //AT+COPS
+		UnsafeArrayOpt<UTF8Char> GSMGetIMSI(UnsafeArray<UTF8Char> imsi); //AT+CIMI
+		UnsafeArrayOpt<UTF8Char> GSMGetCurrOperator(UnsafeArray<UTF8Char> oper); //AT+COPS
+		UnsafeArrayOpt<UTF8Char> GSMGetCurrPLMN(UnsafeArray<UTF8Char> plmn); //AT+COPS
 		Bool GSMConnectPLMN(Int32 plmn); //AT+COPS
 		Bool GSMGetAllowedOperators(NN<Data::ArrayListNN<Operator>> operList); //AT+COPS
 		void GSMFreeOperators(NN<Data::ArrayListNN<Operator>> operList);
@@ -243,8 +243,8 @@ namespace IO
 		Bool GPRSNetworkReg(); //AT+CEREG
 		Bool GPRSServiceIsAttached(OutParam<Bool> attached); //AT+CGATT
 		Bool GPRSServiceSetAttached(Bool attached); //AT+CGATT
-		Bool GPRSSetAPN(Text::CString apn); //AT+CGDCONT
-		Bool GPRSSetPDPContext(UInt32 cid, Text::CString type, Text::CString apn); //AT+CGDCONT
+		Bool GPRSSetAPN(Text::CStringNN apn); //AT+CGDCONT
+		Bool GPRSSetPDPContext(UInt32 cid, Text::CStringNN type, Text::CStringNN apn); //AT+CGDCONT
 		Bool GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList); //AT+CGDCONT
 		void GPRSFreePDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList);
 		Bool GPRSSetPDPActive(Bool active); //AT+CGACT
@@ -259,11 +259,11 @@ namespace IO
 		Bool SMSSendMessage(NN<Text::SMSMessage> msg);
 		Bool SMSSetStorage(SMSStorage reading, SMSStorage writing, SMSStorage store);
 		Bool SMSGetStorageInfo(Optional<SMSStorageInfo> reading, Optional<SMSStorageInfo> writing, Optional<SMSStorageInfo> store);
-		UTF8Char *SMSGetSMSC(UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> SMSGetSMSC(UnsafeArray<UTF8Char> buff);
 
 		// Phonebook Commands
-		UTF8Char *PBGetCharset(UTF8Char *cs);
-		Bool PBSetCharset(const UTF8Char *cs, UOSInt csLen);
+		UnsafeArrayOpt<UTF8Char> PBGetCharset(UnsafeArray<UTF8Char> cs);
+		Bool PBSetCharset(UnsafeArray<const UTF8Char> cs, UOSInt csLen);
 		Bool PBSetStorage(PBStorage storage);
 		Bool PBGetStorage(OptOut<PBStorage> storage, OptOut<Int32> usedEntry, OptOut<Int32> freeEntry);
 		Bool PBGetStorageStatus(OptOut<Int32> startEntry, OptOut<Int32> endEntry, OptOut<Int32> maxNumberLen, OptOut<Int32> maxTextLen);
@@ -274,8 +274,8 @@ namespace IO
 
 	public:
 		static Int32 RSSIGetdBm(RSSI rssi);
-		static UTF8Char *RSSIGetName(UTF8Char *buff, RSSI rssi);
-		static UTF8Char *BERGetName(UTF8Char *buff, BER ber);
+		static UnsafeArray<UTF8Char> RSSIGetName(UnsafeArray<UTF8Char> buff, RSSI rssi);
+		static UnsafeArray<UTF8Char> BERGetName(UnsafeArray<UTF8Char> buff, BER ber);
 		static Text::CStringNN OperStatusGetName(OperStatus operStatus);
 		static Text::CStringNN SIMStatusGetName(SIMStatus simStatus);
 		static Text::CStringNN NetworkResultGetName(NetworkResult n);

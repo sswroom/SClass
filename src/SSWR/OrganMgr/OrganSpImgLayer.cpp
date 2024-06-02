@@ -91,7 +91,7 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetColumnCnt() const
 	return 1;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{

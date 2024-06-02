@@ -305,7 +305,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 	if (me->stm)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<MODBUSEntry> entry;
 		UOSInt i = 0;
 		UOSInt j = me->entryList.GetCount();
@@ -481,7 +481,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, const UInt8 *data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
@@ -495,7 +495,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, 
 	me->recvUpdated = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(AnyType userObj, const UInt8 *data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
@@ -513,7 +513,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<MODBUSEntry> entry = MemAllocNN(MODBUSEntry);
 	entry->name = Text::String::New(name);
 	entry->devAddr = devAddr;

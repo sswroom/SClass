@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRHKOForecastForm::OnReloadClicked(AnyType userO
 void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::HKOWeather::WeatherForecast weather;
 	NN<Net::HKOWeather::DayForecast> forecast;
 	Data::Timestamp reqTime = Data::Timestamp::Now();

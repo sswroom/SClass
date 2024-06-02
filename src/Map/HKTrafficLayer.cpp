@@ -798,8 +798,8 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	{
 		IO::FileStream *fs;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = Text::URLString::GetURLFilePath(sbuff, this->url->v, this->url->leng);
+		UnsafeArray<UTF8Char> sptr;
+		sptr = Text::URLString::GetURLFilePath(sbuff, this->url->v, this->url->leng).Or(sbuff);
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
@@ -895,7 +895,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 {
 	Data::ArrayListInt64 idArr;
 	UTF8Char sbuff[512];
-	UTF8Char *sarr[3];
+	UnsafeArray<UTF8Char> sarr[3];
 	UOSInt colCnt;
 	UOSInt i;
 	UOSInt j;
@@ -917,7 +917,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 	i = 0;
 	while (i < colCnt)
 	{
-		if (roadLayer->GetColumnName(sbuff, i))
+		if (roadLayer->GetColumnName(sbuff, i).NotNull())
 		{
 			if (Text::StrEquals(sbuff, (const UTF8Char*)"LINK"))
 			{
@@ -1036,7 +1036,7 @@ void Map::HKTrafficLayer::ReloadData()
 			UOSInt j = doc.GetChildCnt();
 			UOSInt k;
 			Text::StringBuilderUTF8 sb;
-			UTF8Char *sarr[2];
+			UnsafeArray<UTF8Char> sarr[2];
 			while (i < j)
 			{
 				node1 = doc.GetChildNoCheck(i);
@@ -1194,7 +1194,7 @@ UOSInt Map::HKTrafficLayer::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *Map::HKTrafficLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	////////////////////////////
 	return 0;
@@ -1265,8 +1265,8 @@ Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 {
 	Map::VectorLayer *layer;
 	UTF8Char sbuff[32];
-	const UTF8Char *sptr = sbuff;
-	const UTF8Char *col = (const UTF8Char*)"id";
+	UnsafeArrayOpt<const UTF8Char> sptr = sbuff;
+	UnsafeArrayOpt<const UTF8Char> col = (const UTF8Char*)"id";
 	NN<Math::Geometry::Point> pt;
 	NN<Math::CoordinateSystem> csys;
 	if (!Optional<Math::CoordinateSystem>(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)).SetTo(csys))

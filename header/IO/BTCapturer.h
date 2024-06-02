@@ -11,7 +11,7 @@ namespace IO
 	{
 	private:
 		Optional<IO::BTScanner> bt;
-		const UTF8Char *lastFileName;
+		UnsafeArrayOpt<const UTF8Char> lastFileName;
 		Sync::Thread thread;
 		Bool autoStore;
 

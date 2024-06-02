@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(AnyType user
 	UInt32 ip;
 	NN<Net::WhoisRecord> rec;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->txtIP->GetText(sb);
 	ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 	if (ip == 0)

@@ -17,13 +17,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	NEW_CLASS(sysInfo, IO::SystemInfo());
 	NEW_CLASS(cpuInfo, Manage::CPUInfoDetail());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("CPU Name = "));
-	if ((sptr = cpuInfo->GetCPUName(sbuff)) != 0)
+	if (cpuInfo->GetCPUName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform Name = "));
-	if ((sptr = sysInfo->GetPlatformName(sbuff)) != 0)
+	if (sysInfo->GetPlatformName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}

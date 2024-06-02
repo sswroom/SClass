@@ -65,7 +65,7 @@ void UtilUI::TextGotoDialog::OnMonitorChanged()
 void UtilUI::TextGotoDialog::SetLineNumber(UOSInt currLine)
 {
 	UTF8Char sbuff[22];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->currLine = currLine;
 	sptr = Text::StrUOSInt(sbuff, currLine);
 	this->txtLine->SetText(CSTRP(sbuff, sptr));

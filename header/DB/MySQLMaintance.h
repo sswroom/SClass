@@ -15,7 +15,7 @@ namespace DB
 		MySQLMaintance(Net::MySQLTCPClient *cli, Bool needRelease);
 		~MySQLMaintance();
 
-		void RepairSchema(const UTF8Char *schema, NN<Text::StringBuilderUTF8> sb);
+		void RepairSchema(UnsafeArray<const UTF8Char> schema, NN<Text::StringBuilderUTF8> sb);
 		void RepairTable(NN<Text::String> tableName, NN<Text::StringBuilderUTF8> sb);
 	};
 }

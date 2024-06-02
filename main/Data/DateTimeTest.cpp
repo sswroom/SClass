@@ -19,7 +19,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

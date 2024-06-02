@@ -131,7 +131,7 @@ UOSInt Data::Compress::LZWEncStream2::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Data::Compress::LZWEncStream2::Write(const UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::LZWEncStream2::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UInt8 *relBuff = 0;
 	UOSInt sizeLeft;
@@ -147,7 +147,7 @@ UOSInt Data::Compress::LZWEncStream2::Write(const UInt8 *buff, UOSInt size)
 	{
 		relBuff = MemAlloc(UInt8, size + this->buffSize);
 		MemCopyNO(relBuff, this->encBuff, this->buffSize);
-		MemCopyNO(&relBuff[this->buffSize], buff, size);
+		MemCopyNO(&relBuff[this->buffSize], buff.Ptr(), size);
 		sizeLeft = size + this->buffSize;
 		buff = relBuff;
 	}
@@ -211,7 +211,7 @@ UOSInt Data::Compress::LZWEncStream2::Write(const UInt8 *buff, UOSInt size)
 			}
 		}
 	}
-	MemCopyNO(this->encBuff, buff, sizeLeft);
+	MemCopyNO(this->encBuff, buff.Ptr(), sizeLeft);
 	this->buffSize = sizeLeft;
 	if (relBuff)
 	{

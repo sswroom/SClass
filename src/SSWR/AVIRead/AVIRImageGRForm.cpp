@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(AnyType userObj, U
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
 		me->grFilter->SetParameter(me->currLayer, (OSInt)newPos - 100, vOfst, level, status);
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(AnyType userObj, U
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
 		me->grFilter->SetParameter(me->currLayer, hOfst, (OSInt)newPos - 100, level, status);
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(AnyType userObj, U
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 	{
 		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, (OSInt)newPos - 100, status);
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(AnyType userObj)
 		OSInt level;
 		Int32 status;
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		if (me->grFilter->GetParameter(me->currLayer, hOfst, vOfst, level, status))
 		{
 			me->modifying = true;
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->lbLayers->ClearItems();
 	this->currLayer = INVALID_INDEX;
 	i = 0;

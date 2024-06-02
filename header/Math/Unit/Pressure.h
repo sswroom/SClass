@@ -22,8 +22,8 @@ namespace Math
 			} PressureUnit;
 		public:
 			static Double GetUnitRatio(PressureUnit unit);
-			static Text::CString GetUnitShortName(PressureUnit unit);
-			static Text::CString GetUnitName(PressureUnit unit);
+			static Text::CStringNN GetUnitShortName(PressureUnit unit);
+			static Text::CStringNN GetUnitName(PressureUnit unit);
 			static Double GetConvertRatio(PressureUnit fromUnit, PressureUnit toUnit);
 			static Double Convert(PressureUnit fromUnit, PressureUnit toUnit, Double fromValue);
 

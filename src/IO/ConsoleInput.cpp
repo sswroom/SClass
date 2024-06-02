@@ -440,7 +440,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWriter *console, Data::DateTime *output)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter::ConsoleState state;
 	if (output == 0)
 		return IRT_UNKNOWN;
@@ -663,7 +663,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	}
 	console->SetCursorPos(state.currX, state.currY);
 
-	UTF8Char *cbuff = MemAlloc(UTF8Char, (buffSize << 1) + 1);
+	UnsafeArray<UTF8Char> cbuff = MemAllocArr(UTF8Char, (buffSize << 1) + 1);
 	UInt32 currPos = 0;
 	UInt32 currSize = 0;
 	while (true)
@@ -791,12 +791,12 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	console->WriteLine();
 	if (i == 0x1b)
 	{
-		MemFree(cbuff);
+		MemFreeArr(cbuff);
 		return IRT_ESCAPE;
 	}
 	if (currSize == 0)
 	{
-		MemFree(cbuff);
+		MemFreeArr(cbuff);
 		*inputSize = 0;
 		if (i == 0xd)
 			return IRT_ENTEREMPTY;
@@ -804,7 +804,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 			return IRT_TABEMPTY;
 	}
 	*inputSize = Text::StrHex2Bytes(cbuff, buff);
-	MemFree(cbuff);
+	MemFreeArr(cbuff);
 	if (i == 0xd)
 		return IRT_ENTER;
 	else
@@ -812,7 +812,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 }
 
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWriter *console, UTF8Char *output, UOSInt maxCharCnt, UOSInt *inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWriter *console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, UOSInt *inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	UOSInt i;
@@ -842,7 +842,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	}
 	console->SetCursorPos(state.currX, state.currY);
 
-	UTF8Char *cbuff = output;
+	UnsafeArray<UTF8Char> cbuff = output;
 	UInt32 currPos = 0;
 	UInt32 currSize = 0;
 	while (true)

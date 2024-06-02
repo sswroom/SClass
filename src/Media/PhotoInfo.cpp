@@ -40,7 +40,7 @@ void Media::PhotoInfo::ParseXMF(NN<Text::XMLDocument> xmf)
 Double Media::PhotoInfo::ParseFraction(Text::String *s)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sarr[3];
+	UnsafeArray<UTF8Char> sarr[3];
 	UOSInt cnt;
 	s->ConcatTo(sbuff);
 	cnt = Text::StrSplit(sarr, 3, sbuff, '/');
@@ -81,19 +81,17 @@ Media::PhotoInfo::PhotoInfo(NN<IO::StreamData> fd)
 
 	if (Media::JPEGFile::ParseJPEGHeaders(fd, exif, xmf, icc, width, height) || Parser::FileParser::HEIFParser::ParseHeaders(fd, exif, xmf, icc, width, height))
 	{	
-		Text::CString ctxt;
+		Text::CStringNN ctxt;
 		Data::DateTime dt;
 		this->succ = true;
 
 		if (exif.SetTo(nnexif))
 		{
-			ctxt = nnexif->GetPhotoMake();
-			if (ctxt.v)
+			if (nnexif->GetPhotoMake().SetTo(ctxt))
 			{
 				this->make = Text::String::New(ctxt).Ptr();
 			}
-			ctxt = nnexif->GetPhotoModel();
-			if (ctxt.v)
+			if (nnexif->GetPhotoModel().SetTo(ctxt))
 			{
 				this->model = Text::String::New(ctxt).Ptr();
 			}
@@ -131,8 +129,7 @@ Media::PhotoInfo::PhotoInfo(NN<IO::StreamData> fd)
 								this->expTime = innerExif->GetPhotoExpTime();
 							if (innerExif->GetPhotoFNumber())
 								this->fNumber = innerExif->GetPhotoFNumber();
-							ctxt = innerExif->GetPhotoLens();
-							if (ctxt.v)
+							if (innerExif->GetPhotoLens().SetTo(ctxt))
 							{
 								this->lens = Text::String::New(ctxt).Ptr();
 							}
@@ -205,7 +202,7 @@ UInt32 Media::PhotoInfo::GetHeight() const
 void Media::PhotoInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> make;
 	NN<Text::String> model;
 	if (!this->make.SetTo(make))

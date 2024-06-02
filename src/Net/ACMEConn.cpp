@@ -506,7 +506,7 @@ Bool Net::ACMEConn::AccountRetr()
 	return succ;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSInt namesLen)
+Net::ACMEConn::Order *Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen)
 {
 	NN<Text::String> url;
 	if (!url.Set(this->urlNewOrder))
@@ -624,12 +624,12 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NN<Text::String> authori
 	return 0;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderGetStatus(const UTF8Char *orderURL)
+Net::ACMEConn::Order *Net::ACMEConn::OrderGetStatus(UnsafeArray<const UTF8Char> orderURL)
 {
 	return 0;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr)
+Net::ACMEConn::Order *Net::ACMEConn::OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, Crypto::Cert::X509CertReq *csr)
 {
 	return 0;
 }

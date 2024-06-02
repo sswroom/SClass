@@ -151,8 +151,8 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 {
 	NN<Net::HTTPClient> cli;
 	UTF8Char url[512];
-	UTF8Char *sptr;
-	UTF8Char *urlStart;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> urlStart;
 	UOSInt retSize = 0;
 	UOSInt thisSize;
 	NN<Text::String> s;

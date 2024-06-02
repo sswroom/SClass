@@ -79,7 +79,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 						}
 						else
 						{
-							printf("WFS: Unknown element in FeatureTypeList: %s\r\n", nodeName->v);
+							printf("WFS: Unknown element in FeatureTypeList: %s\r\n", nodeName->v.Ptr());
 							reader.SkipElement();
 						}
 					}
@@ -106,7 +106,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 				}
 				else
 				{
-					printf("WFS: Unknown element in WFS_Capabilities: %s\r\n", nodeName->v);
+					printf("WFS: Unknown element in WFS_Capabilities: %s\r\n", nodeName->v.Ptr());
 					reader.SkipElement();
 				}
 			}
@@ -210,7 +210,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 				}
 				else
 				{
-					printf("WFS: Unknown node in WGS84BoundingBox: %s\r\n", nodeName->v);
+					printf("WFS: Unknown node in WGS84BoundingBox: %s\r\n", nodeName->v.Ptr());
 					reader->SkipElement();
 				}
 			}
@@ -243,7 +243,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 		}
 		else
 		{
-			printf("WFS: Unknown node in FeatureType: %s\r\n", nodeName->v);
+			printf("WFS: Unknown node in FeatureType: %s\r\n", nodeName->v.Ptr());
 			reader->SkipElement();
 		}
 	}

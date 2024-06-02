@@ -28,7 +28,7 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(Optional<UI::GUIClientControl> paren
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<UI::GUILabel> lbl;
 	Data::DateTime t;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
@@ -51,7 +51,8 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(Optional<UI::GUIClientControl> paren
 	lbl = ui->NewLabel(*this, CSTRP(sbuff, sptr));
 	lbl->SetRect(8, 8, 400, 23, false);
 
-	sptr = IO::Path::GetProcessFileName(Text::StrConcatC(sbuff, UTF8STRC("Path: ")));
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Path: "));
+	sptr = IO::Path::GetProcessFileName(sptr).Or(sptr);
 	lbl = ui->NewLabel(*this, CSTRP(sbuff, sptr));
 	lbl->SetRect(8, 32, 400, 23, false);
 

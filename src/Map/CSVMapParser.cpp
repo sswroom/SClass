@@ -5,17 +5,17 @@
 #include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
-Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, NN<Math::CoordinateSystem> csys)
+Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol, NN<Math::CoordinateSystem> csys)
 {
 	Text::PString tmpArr[2];
-	const UTF8Char **tmpcArr2;
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> tmpcArr2;
 	UOSInt colCnt;
 	UOSInt totalCnt;
 	UOSInt latIndex = INVALID_INDEX;
 	UOSInt lonIndex = INVALID_INDEX;
 	UOSInt nameIndex = INVALID_INDEX;
 	UTF8Char sbuff[2048];
-	Data::ArrayList<const UTF8Char *> colNames;
+	Data::ArrayList<UnsafeArrayOpt<const UTF8Char>> colNames;
 	NN<IO::Reader> reader;
 	if (codePage == 65001)
 	{
@@ -30,13 +30,13 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 	totalCnt = 0;
 	while (true)
 	{
-		colNames.Add(tmpArr[0].v);
+		colNames.Add(UnsafeArrayOpt<const UTF8Char>(tmpArr[0].v));
 		
-		if (tmpArr[0].Equals(latCol.v, latCol.leng))
+		if (tmpArr[0].Equals(latCol))
 		{
 			latIndex = totalCnt;
 		}
-		else if (tmpArr[0].Equals(lonCol.v, lonCol.leng))
+		else if (tmpArr[0].Equals(lonCol))
 		{
 			lonIndex = totalCnt;
 		}
@@ -56,7 +56,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 		NN<Math::Geometry::Point> pt;
 		UOSInt i;
 
-		tmpcArr2 = MemAlloc(const UTF8Char*, totalCnt + 1);
+		tmpcArr2 = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, totalCnt + 1);
 		i = totalCnt;
 		while (i-- > 0)
 		{
@@ -64,17 +64,17 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 		}
 		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, layerName, totalCnt, tmpcArr2, csys, nameIndex, layerName));
 		
-		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;
-		while (reader->ReadLine(sbuff, 2048))
+		UnsafeArray<UnsafeArray<UTF8Char>> tmpUArr2 = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(tmpcArr2);
+		while (reader->ReadLine(sbuff, 2048).NotNull())
 		{
 			if (totalCnt == Text::StrCSVSplit(tmpUArr2, totalCnt + 1, sbuff))
 			{
 				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonIndex]), Text::StrToDouble(tmpUArr2[latIndex])));
-				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
+				lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpUArr2));
 			}
 		}		
 
-		MemFree(tmpcArr2);
+		MemFreeArr(tmpcArr2);
 		reader.Delete();
 		return lyr;
 	}

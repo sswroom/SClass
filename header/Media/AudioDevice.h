@@ -22,13 +22,13 @@ namespace Media
 
 	public:
 		static UOSInt GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);
-		static Optional<Media::IAudioRenderer> CreateRenderer(Text::CString devName);
+		static UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devIndex);
+		static Optional<Media::IAudioRenderer> CreateRenderer(Text::CStringNN devName);
 
 		AudioDevice();
 		~AudioDevice();
 
-		Bool AddDevice(Text::CString devName);
+		Bool AddDevice(Text::CStringNN devName);
 		void ClearDevices();
 
 		Media::IAudioRenderer *BindAudio(Media::IAudioSource *audsrc);

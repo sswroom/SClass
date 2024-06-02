@@ -207,10 +207,10 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NN<Net::WebServer
 	const UInt8 *data = req->GetReqData(size);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(data, size);
-	printf("%s\r\n", sb.v);
+	printf("%s\r\n", sb.v.Ptr());
 
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::JSONBuilder builder(Text::JSONBuilder::OT_OBJECT);
 	sptr = Text::StrInt64(sbuff, Data::DateTimeUtil::GetCurrTimeMillis());
 	builder.ObjectAddStr(CSTR("UploadRefNum"), CSTRP(sbuff, sptr));

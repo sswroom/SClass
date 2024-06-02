@@ -178,7 +178,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 	{
 		UTF8Char sbuff[17];
 		UTF8Char sbuff2[2];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UInt64 currOfst = ((UInt64)(UOSInt)vPos) * 16;
 		Optional<Media::DrawFont> f = this->CreateDrawFont(dimg);
 		NN<Media::DrawFont> fnt;
@@ -198,8 +198,8 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 		Data::ByteArray currPtr;
 		UOSInt k;
 		UOSInt readBuffSize = (this->pageLineCnt + 1) * 16;
-		const UTF8Char *textPtr;
-		const UTF8Char *textPtr2;
+		UnsafeArray<const UTF8Char> textPtr;
+		UnsafeArray<const UTF8Char> textPtr2;
 		UOSInt textSkip;
 		UInt64 drawOfst;
 		Optional<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldInfo = 0;

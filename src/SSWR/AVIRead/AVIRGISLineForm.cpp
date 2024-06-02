@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->lineThick = UOSInt2Double(newPos) * 0.1;
 	sptr = Text::StrDouble(sbuff, me->lineThick);
@@ -68,7 +68,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->core = core;
 	this->eng = eng;
 	this->lineThick = lineThick;

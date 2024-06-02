@@ -25,9 +25,9 @@ namespace Crypto
 		virtual UInt64 GetCounter() = 0;
 		virtual UInt32 NextCode() = 0;
 		virtual Bool IsValid(UInt32 code) = 0;
-		virtual void GenURI(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name) = 0;
+		virtual void GenURI(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> name) = 0;
 
-		UTF8Char *CodeString(UTF8Char *sbuff, UInt32 code);
+		UnsafeArray<UTF8Char> CodeString(UnsafeArray<UTF8Char> sbuff, UInt32 code);
 		static Text::CString OTPTypeGetName(OTPType type);
 	};
 }

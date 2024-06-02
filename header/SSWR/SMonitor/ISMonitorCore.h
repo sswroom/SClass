@@ -78,8 +78,8 @@ namespace SSWR
 				UOSInt nReading;
 				UOSInt nOutput;
 				ReadingInfo readings[SMONITORCORE_DEVREADINGCNT];
-				const UTF8Char *readingNames[SMONITORCORE_DEVREADINGCNT];
-				const UTF8Char *digitalNames[SMONITORCORE_DIGITALCNT];
+				UnsafeArrayOpt<const UTF8Char> readingNames[SMONITORCORE_DEVREADINGCNT];
+				UnsafeArrayOpt<const UTF8Char> digitalNames[SMONITORCORE_DIGITALCNT];
 
 				Data::ArrayListNN<DevRecord2> recToStore;
 				Data::FastMapNN<Int64, DevRecord2> todayRecs;
@@ -103,15 +103,15 @@ namespace SSWR
 
 			virtual Optional<DeviceInfo> DeviceGet(Int64 cliId) = 0;
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags) = 0;
-			virtual Bool DeviceSetReadings(NN<DeviceInfo> dev, const UTF8Char *readings) = 0;
-			virtual Bool DeviceSetDigitals(NN<DeviceInfo> dev, const UTF8Char *digitals) = 0;
+			virtual Bool DeviceSetReadings(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> readings) = 0;
+			virtual Bool DeviceSetDigitals(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> digitals) = 0;
 			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList) = 0;
 			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh) = 0;
 
 			virtual Bool UserExist() = 0;
-			virtual Bool UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType) = 0;
-			virtual Bool UserSetPassword(Int32 userId, const UTF8Char *password) = 0;
-			virtual Optional<LoginInfo> UserLogin(const UTF8Char *userName, const UTF8Char *password) = 0;
+			virtual Bool UserAdd(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password, Int32 userType) = 0;
+			virtual Bool UserSetPassword(Int32 userId, UnsafeArray<const UTF8Char> password) = 0;
+			virtual Optional<LoginInfo> UserLogin(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password) = 0;
 			virtual void UserFreeLogin(NN<LoginInfo> login) = 0;
 			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList) = 0;
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId) = 0;

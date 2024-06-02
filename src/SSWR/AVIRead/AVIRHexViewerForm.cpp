@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(AnyType userObj, UI
 	NN<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UInt8 buff[8];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt readSize = me->hexView->GetFileData(ofst, 8, BYTEARR(buff));
 	Bool bigEndian = me->radEndianBig->IsSelected();
 	if (readSize >= 1)
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(AnyType userObj)
 	NN<Text::String> fontName;
 	if (dlg->ShowDialog(me->GetHandle()) && dlg->GetFontName().SetTo(fontName))
 	{
-		me->SetFont(fontName->v, fontName->leng, dlg->GetFontSizePt(), dlg->IsBold());
+		me->SetFont(UnsafeArray<const UTF8Char>(fontName->v), fontName->leng, dlg->GetFontSizePt(), dlg->IsBold());
 		me->hexView->UpdateFont();
 	}
 	dlg.Delete();
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractBeginClicked(AnyType u
 {
 	NN<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UTF8Char sbuff[17];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal64V(sbuff, me->hexView->GetCurrOfst());
 	me->txtExtractBegin->SetText(CSTRP(sbuff, sptr));
 }
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractEndClicked(AnyType use
 {
 	NN<SSWR::AVIRead::AVIRHexViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerForm>();
 	UTF8Char sbuff[17];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal64V(sbuff, me->hexView->GetCurrOfst());
 	me->txtExtractEnd->SetText(CSTRP(sbuff, sptr));
 }
@@ -333,10 +333,10 @@ Bool SSWR::AVIRead::AVIRHexViewerForm::LoadFile(Text::CStringNN fileName, Bool d
 	Bool succ = this->hexView->LoadFile(fileName, dynamicSize);
 	if (succ)
 	{
-		Text::CString name = this->hexView->GetAnalyzerName();
-		if (name.v)
+		Text::CStringNN name;
+		if (this->hexView->GetAnalyzerName().SetTo(name))
 		{
-			this->txtFileFormat->SetText(name.OrEmpty());
+			this->txtFileFormat->SetText(name);
 		}
 		else if (dynamicSize)
 		{
@@ -521,10 +521,10 @@ void SSWR::AVIRead::AVIRHexViewerForm::SetData(NN<IO::StreamData> fd, Optional<I
 {
 	if (this->hexView->LoadData(fd->GetPartialData(0, fd->GetDataSize()), fileAnalyse))
 	{
-		Text::CString name = this->hexView->GetAnalyzerName();
-		if (name.v)
+		Text::CStringNN name;
+		if (this->hexView->GetAnalyzerName().SetTo(name))
 		{
-			this->txtFileFormat->SetText(name.OrEmpty());
+			this->txtFileFormat->SetText(name);
 		}
 		else
 		{

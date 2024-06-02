@@ -4,11 +4,11 @@
 #include "IO/Path.h"
 #include "Map/RevGeoDir.h"
 
-Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, NN<IO::Writer> errWriter)
+Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer> errWriter)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Data::Timestamp modTime;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
@@ -26,7 +26,7 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, NN<IO::Writer> e
 	{
 		return;
 	}
-	while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &modTime, &pt, 0)) != 0)
+	while (IO::Path::FindNextFile(sptr, sess, &modTime, &pt, 0).SetTo(sptr2))
 	{
 		if (Text::StrStartsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("REVGEO_")))
 		{
@@ -71,7 +71,7 @@ Map::RevGeoDir::~RevGeoDir()
 	}
 }
 
-UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UOSInt i;
 	Optional<RevGeoFile> file;
@@ -96,7 +96,7 @@ UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coor
 	return tmpFile->cfg->GetStreetName(buff, buffSize, pos);
 }
 
-UTF8Char *Map::RevGeoDir::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::RevGeoDir::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	return SearchName(buff, buffSize, pos, lcid);
 }

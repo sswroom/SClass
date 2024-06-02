@@ -48,7 +48,7 @@ void Net::MQTTFailoverClient::HandlePublishMessage(Net::MQTTConn::PublishMessage
 	this->hdlrList.Add({hdlr, hdlrObj});
 }
 
-Bool Net::MQTTFailoverClient::Subscribe(Text::CString topic)
+Bool Net::MQTTFailoverClient::Subscribe(Text::CStringNN topic)
 {
 	Data::ArrayListNN<Net::MQTTStaticClient> cliList;
 	this->foHdlr.GetAllChannels(cliList);
@@ -60,7 +60,7 @@ Bool Net::MQTTFailoverClient::Subscribe(Text::CString topic)
 	return true;
 }
 
-Bool Net::MQTTFailoverClient::Publish(Text::CString topic, Text::CString message)
+Bool Net::MQTTFailoverClient::Publish(Text::CStringNN topic, Text::CStringNN message)
 {
 	NN<Net::MQTTStaticClient> cli;
 	if (!this->foHdlr.GetCurrChannel().SetTo(cli))

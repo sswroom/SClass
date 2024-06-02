@@ -33,9 +33,10 @@ namespace Text
 		static const WChar *ToNewXMLTextLite(const WChar *text);
 		static NN<Text::String> ToNewHTMLBodyText(UnsafeArray<const UTF8Char> text);
 		static NN<Text::String> ToNewHTMLElementText(UnsafeArray<const UTF8Char> text);
-		static const WChar *ToNewHTMLBodyText(const WChar *text);
+		static const WChar *ToNewHTMLBodyTextW(const WChar *text);
+		static NN<Text::String> ToNewAttrText(UnsafeArrayOpt<UTF8Char> text);
 		static NN<Text::String> ToNewAttrText(UnsafeArrayOpt<const UTF8Char> text);
-		static const WChar *ToNewAttrText(const WChar *text);
+		static const WChar *ToNewAttrTextW(const WChar *text);
 		static NN<Text::String> ToNewHTMLTextXMLColor(UnsafeArray<const UTF8Char> text);
 		static void FreeNewText(const WChar *text);
 		static void ParseStr(Text::String *out, UnsafeArray<const UTF8Char> xmlStart, UnsafeArray<const UTF8Char> xmlEnd);

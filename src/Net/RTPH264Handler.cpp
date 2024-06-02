@@ -251,11 +251,11 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 	mutUsage.EndUse();
 }
 
-void Net::RTPH264Handler::SetFormat(const UTF8Char *fmtStr)
+void Net::RTPH264Handler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sarr[2];
-	UTF8Char *sarr2[2];
+	UnsafeArray<UTF8Char> sarr[2];
+	UnsafeArray<UTF8Char> sarr2[2];
 	UInt8 buff[256];
 	UOSInt splitCnt;
 	Text::StrConcat(sbuff, fmtStr);
@@ -316,7 +316,7 @@ Int32 Net::RTPH264Handler::GetPayloadType()
 	return this->payloadType;
 }
 
-UTF8Char *Net::RTPH264Handler::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::RTPH264Handler::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrConcatC(buff, UTF8STRC("H.264 over RTP"));
 }

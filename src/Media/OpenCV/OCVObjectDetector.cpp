@@ -12,13 +12,12 @@
 Media::OpenCV::OCVObjectDetector::OCVObjectDetector(const UTF8Char *path, const UTF8Char *dataFile)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	this->cascade = 0;
 	this->detectResultHdlr = 0;
 	this->detectResultObj = 0;
-	sptr = Media::OpenCV::OCVUtil::GetDataPath(sbuff, path);
-	if (sptr)
+	if (Media::OpenCV::OCVUtil::GetDataPath(sbuff, path).SetTo(sptr))
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcat(sptr, dataFile);

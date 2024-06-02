@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUI
 	NEW_CLASS(this->clipboard, UI::Clipboard(this->hwnd));
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 fmt;
@@ -44,14 +44,8 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUI
 	while (i < j)
 	{
 		fmt = formats.GetItem(i);
-		if ((sptr = UI::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
-		{
-			this->lbType->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)fmt);
-		}
-		else
-		{
-			this->lbType->AddItem(CSTR("Unknown"), (void*)(OSInt)fmt);
-		}
+		sptr = UI::Clipboard::GetFormatName(fmt, sbuff, 256);
+		this->lbType->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)fmt);
 		i++;
 	}
 

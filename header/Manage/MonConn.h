@@ -60,7 +60,7 @@ namespace Manage
 		void EndProcess();
 		void StartTCPPort(UInt16 portNum);
 		void StartUDPPort(UInt16 portNum);
-		void AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CString msg);
+		void AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CStringNN msg);
 	};
 }
 #endif

@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 	if (me->scanner)
 	{
 		UTF8Char sbuff[12];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
 		{
 			Int32 val = me->scanner->GetCommand(me->cmdCurr);

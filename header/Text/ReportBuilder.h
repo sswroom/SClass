@@ -19,8 +19,8 @@ namespace Text
 			CT_INT32
 		} ColType;
 
-		static Text::CString ColumnMergeLeft;
-		static Text::CString ColumnMergeUp;
+		static Text::CStringNN ColumnMergeLeft;
+		static Text::CStringNN ColumnMergeUp;
 	private:
 		typedef enum
 		{
@@ -84,7 +84,7 @@ namespace Text
 
 		static Text::SpreadSheet::AxisType FromChartDataType(Data::Chart::DataType dataType);
 	public:
-		ReportBuilder(Text::CString name, UOSInt colCount, const UTF8Char **columns);
+		ReportBuilder(Text::CString name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns);
 		~ReportBuilder();
 
 		void SetNameHAlign(Text::HAlignment hAlign);
@@ -97,9 +97,9 @@ namespace Text
 		void AddPreHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right);
 		void AddHeader(Text::CString name, Text::CString val);
 		void AddHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right);
-		void AddTableHeader(const UTF8Char **content);
-		void AddTableContent(const UTF8Char **content);
-		void AddTableSummary(const UTF8Char **content);
+		void AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
+		void AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
+		void AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
 		void AddIcon(UOSInt index, Text::CString fileName, Text::CString name);
 		void SetColumnWidthPts(UOSInt index, Double width);
 		void SetColumnType(UOSInt index, ColType colType);

@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(AnyType userObj
 	else
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrHexVal16(sbuff, hid->GetVendorId());
 		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal16(sbuff, hid->GetProductId());
@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(Optional<UI::GUIClientContro
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	IO::HIDInfo::GetHIDList(this->hidList);
 	Data::Sort::ArtificialQuickSortFunc<NN<IO::HIDInfo>>::Sort(this->hidList, ItemCompare);

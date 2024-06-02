@@ -21,19 +21,19 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(AnyType userObj
 	else
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrHexVal16(sbuff, pci->GetVendorId());
 		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal16(sbuff, pci->GetProductId());
 		me->txtProductId->SetText(CSTRP(sbuff, sptr));
-		me->txtDispName->SetText(pci->GetDispName().OrEmpty());
+		me->txtDispName->SetText(pci->GetDispName());
 
 		const IO::DeviceDB::DeviceInfo *dev;
 		dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 		if (dev)
 		{
-			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCnt(dev->productName)});
-			me->txtVendorName->SetText(IO::DeviceDB::GetPCIVendorName(dev->vendorId).OrEmpty());
+			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCntCh(dev->productName)});
+			me->txtVendorName->SetText(IO::DeviceDB::GetPCIVendorName(dev->vendorId));
 		}
 		else
 		{
@@ -112,7 +112,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(Optional<UI::GUIClientContro
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	IO::PCIInfo::GetPCIList(this->pciList);
 	Data::Sort::ArtificialQuickSortFunc<NN<IO::PCIInfo>>::Sort(this->pciList, ItemCompare);

@@ -24,7 +24,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	i = cnt;
 	while (i-- > 0)
 	{
-		res = Text::StrCharCnt(srcStr);
+		res = Text::StrCharCntCh(srcStr);
 	}
 	t1 = clk.GetTimeDiff();
 	clk.Start();

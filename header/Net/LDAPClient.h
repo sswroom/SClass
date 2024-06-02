@@ -66,7 +66,7 @@ namespace Net
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 		void ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt msgLen);
-		const UTF8Char *ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF8Char *filter, Bool complex);
+		UnsafeArrayOpt<const UTF8Char> ParseFilter(Net::ASN1PDUBuilder *pdu, UnsafeArray<const UTF8Char> filter, Bool complex);
 	public:
 		LDAPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
 		~LDAPClient();
@@ -76,11 +76,11 @@ namespace Net
 		Bool Bind(Text::CString userDN, Text::CString password);
 		Bool Unbind();
 
-		Bool Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, NN<Data::ArrayListNN<SearchResObject>> results);
+		Bool Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, UnsafeArrayOpt<const UTF8Char> filter, NN<Data::ArrayListNN<SearchResObject>> results);
 
 		static void SearchResultsFree(NN<Data::ArrayListNN<SearchResObject>> results);
 		static void SearchResObjectFree(NN<SearchResObject> obj);
-		static void SearchResDisplay(Text::CString type, Text::CString value, NN<Text::StringBuilderUTF8> sb);
+		static void SearchResDisplay(Text::CStringNN type, Text::CStringNN value, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

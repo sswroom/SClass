@@ -25,7 +25,7 @@ namespace Net
 			UOSInt recvIndex;
 
 			Optional<FileInfo> GetFileInfo(Int64 id);
-			void AddMail(NN<const Text::MIMEObj::MailMessage> mail, UTF8Char *filePath, UTF8Char *fileNameStart, UTF8Char *filePathEnd, UInt64 fileSize);
+			void AddMail(NN<const Text::MIMEObj::MailMessage> mail, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> fileNameStart, UnsafeArray<UTF8Char> filePathEnd, UInt64 fileSize);
 		public:
 			FileEmailStore();
 			virtual ~FileEmailStore();
@@ -34,7 +34,7 @@ namespace Net
 			virtual Bool NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Net::Email::SMTPServer::MailStatus> mail);
 			virtual Bool NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Text::MIMEObj::MailMessage> mail);
 			virtual Optional<IO::StreamData> OpenEmailData(Int64 id);
-			virtual const UTF8Char *GetEmailUid(Int64 id);
+			virtual UnsafeArrayOpt<const UTF8Char> GetEmailUid(Int64 id);
 			virtual UOSInt GetRcptList(Int64 id, NN<Data::ArrayListStringNN> rcptList);
 			virtual Net::Email::MailController::RemoveStatus RemoveMessage(Text::CString userName, UOSInt msgIndex);
 			virtual Optional<Net::Email::EmailStore::EmailInfo> GetEmailByIndex(Text::CString userName, UOSInt msgIndex);

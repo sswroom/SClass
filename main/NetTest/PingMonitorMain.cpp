@@ -35,7 +35,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 	UInt16 port;
 	UInt16 etherType;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::SocketFactory::ErrorType et;
 	Sync::Interlocked::IncrementI32(threadCnt);
 	{
@@ -121,7 +121,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	OSInt i;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	threadCnt = 0;
 	threadToStop = false;
 
@@ -135,7 +135,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (sockf->CreateRAWSocket().SetTo(rawSock))
 	{
 		NEW_CLASS(logTool, IO::LogTool());
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("PingLog"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));

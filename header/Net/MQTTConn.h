@@ -70,11 +70,11 @@ namespace Net
 		void HandlePublishMessage(PublishMessageHdlr hdlr, AnyType userObj);
 		Bool IsError();
 
-		Bool SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString clientId, Text::CString userName, Text::CString password);
-		Bool SendPublish(Text::CString topic, Text::CString message);
+		Bool SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CStringNN clientId, Text::CString userName, Text::CString password);
+		Bool SendPublish(Text::CStringNN topic, Text::CStringNN message);
 		Bool SendPubAck(UInt16 packetId);
 		Bool SendPubRec(UInt16 packetId);
-		Bool SendSubscribe(UInt16 packetId, Text::CString topic);
+		Bool SendSubscribe(UInt16 packetId, Text::CStringNN topic);
 		Bool SendPing();
 		Bool SendDisconnect();
 
@@ -85,7 +85,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout);
+		static Bool PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout);
 	};
 }
 #endif

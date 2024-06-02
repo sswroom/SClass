@@ -59,13 +59,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 	UInt8 buff[4096];
 	Text::PString sarr[2];
 	Text::PString sarr2[2];
-	UTF8Char *sbuff;
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sbuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
-	sbuff = MemAlloc(UTF8Char, 65536);
+	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!me->threadToStop)
 	{
 		if (me->reqURL && !me->respChanged)
@@ -137,7 +137,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 			j = cli->GetRespHeaderCnt();
 			while (i < j)
 			{
-				sptr = cli->GetRespHeader(i, buff);
+				sptr = cli->GetRespHeader(i, buff).Or(buff);
 				me->respHeaders.Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
 				i++;
 			}
@@ -159,7 +159,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 			SDEL_STRING(currHeader);
 		}
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	SDEL_STRING(me->reqURL);
 	me->threadToStop = false;
 	me->threadRunning = false;
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	if (me->respHdrChanged)
 	{
@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(AnyType userOb
 
 	if (me->respChanged)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr).Or(sbuff);
 		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{
@@ -353,9 +353,10 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUICl
 	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 	
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sbuff[0] = 0;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{

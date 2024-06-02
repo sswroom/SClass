@@ -16,7 +16,7 @@ Double Math::Unit::ElectricCurrent::GetUnitRatio(ElectricCurrentUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::ElectricCurrent::GetUnitShortName(ElectricCurrentUnit unit)
+Text::CStringNN Math::Unit::ElectricCurrent::GetUnitShortName(ElectricCurrentUnit unit)
 {
 	switch (unit)
 	{
@@ -30,7 +30,7 @@ Text::CString Math::Unit::ElectricCurrent::GetUnitShortName(ElectricCurrentUnit 
 	return CSTR("");
 }
 
-Text::CString Math::Unit::ElectricCurrent::GetUnitName(ElectricCurrentUnit unit)
+Text::CStringNN Math::Unit::ElectricCurrent::GetUnitName(ElectricCurrentUnit unit)
 {
 	switch (unit)
 	{

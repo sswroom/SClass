@@ -52,8 +52,9 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	{
 		IO::FileStream *fs;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = Text::URLString::GetURLFilePath(sbuff, this->url->v, this->url->leng);
+		UnsafeArray<UTF8Char> sptr;
+		sbuff[0] = 0;
+		sptr = Text::URLString::GetURLFilePath(sbuff, this->url->v, this->url->leng).Or(sbuff);
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
@@ -110,7 +111,7 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::SocketFactory> sockf, Optional<Net
 	this->url = Text::String::New(UTF8STRC("https://resource.data.one.gov.hk/td/traffic-detectors/irnAvgSpeed-all.xml"));
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Math::Geometry::Vector2D> vec;
 	NN<DB::ReadingDB> db;
 	if(rn2->GetDB().SetTo(db))
@@ -123,14 +124,16 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::SocketFactory> sockf, Optional<Net
 			UOSInt i = r->ColCount();
 			while (i-- > 0)
 			{
-				sptr = r->GetName(i, sbuff);
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+				if (r->GetName(i, sbuff).SetTo(sptr))
 				{
-					idCol = i;
-				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
-				{
-					shapeCol = i;
+					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+					{
+						idCol = i;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
+					{
+						shapeCol = i;
+					}
 				}
 			}
 			if (shapeCol != INVALID_INDEX && idCol != INVALID_INDEX)
@@ -348,7 +351,7 @@ UOSInt Map::HKTrafficLayer2::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *Map::HKTrafficLayer2::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::HKTrafficLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	////////////////////////////
 	return 0;

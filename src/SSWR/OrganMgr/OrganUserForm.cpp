@@ -34,7 +34,7 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[12];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<OrganWebUser> user;
 	i = 0;
 	j = this->userList.GetCount();

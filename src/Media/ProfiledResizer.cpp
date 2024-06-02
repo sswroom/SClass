@@ -224,8 +224,8 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[256];
-	UTF8Char *sptr;
-	const UTF8Char *cols[8];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArrayOpt<const UTF8Char> cols[8];
 	UOSInt i;
 	UOSInt j;
 	NN<ResizeProfile> profile;
@@ -247,25 +247,25 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 	while (i < j)
 	{
 		profile = this->profiles.GetItemNoCheck(i);
-		cols[0] = profile->profileName->v;
-		cols[1] = profile->suffix->v;
+		cols[0] = UnsafeArray<const UTF8Char>(profile->profileName->v);
+		cols[1] = UnsafeArray<const UTF8Char>(profile->suffix->v);
 		cols[2] = sbuff2;
 		sptr = Text::StrUInt32(sbuff2, profile->targetSizeX) + 1;
-		cols[3] = sptr;
+		cols[3] = UnsafeArray<const UTF8Char>(sptr);
 		sptr = Text::StrUInt32(sptr, profile->targetSizeY) + 1;
-		cols[4] = sptr;
+		cols[4] = UnsafeArray<const UTF8Char>(sptr);
 		sptr = Text::StrInt32(sptr, (Int32)profile->outType) + 1;
-		cols[5] = sptr;
+		cols[5] = UnsafeArray<const UTF8Char>(sptr);
 		sptr = Text::StrUInt32(sptr, profile->outParam) + 1;
 		if (profile->watermark)
 		{
-			cols[6] = profile->watermark->v;
+			cols[6] = UnsafeArray<const UTF8Char>(profile->watermark->v);
 		}
 		else
 		{
 			cols[6] = (const UTF8Char*)"";
 		}
-		cols[7] = sptr;
+		cols[7] = UnsafeArray<const UTF8Char>(sptr);
 		sptr = Text::StrInt32(sptr, (Int32)profile->sizeType) + 1;
 
 		sptr = Text::StrCSVJoin(sbuff, cols, 8);
@@ -280,8 +280,8 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[32];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UInt32 targetSizeX;
 	UInt32 targetSizeY;
 	Int32 outType;
@@ -301,7 +301,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 	}
 	csv->SetNoHeader(true);
 	NN<DB::DBReader> r;
-	if (csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (csv->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		while (loader->IsProcessing())
 		{
@@ -320,8 +320,8 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
-				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
-				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
+				sptr = r->GetStr(0, sbuff, sizeof(sbuff)).Or(sbuff);
+				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2)).Or(sbuff2);
 				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, CSTR_NULL, ST_MAXSIZE);
 			}
 			else if (r->ColCount() == 7)
@@ -330,8 +330,8 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
-				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
-				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
+				sptr = r->GetStr(0, sbuff, sizeof(sbuff)).Or(sbuff);
+				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2)).Or(sbuff2);
 				sb.ClearStr();
 				r->GetStr(6, sb);
 				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToCString(), ST_MAXSIZE);
@@ -342,8 +342,8 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
-				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
-				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
+				sptr = r->GetStr(0, sbuff, sizeof(sbuff)).Or(sbuff);
+				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2)).Or(sbuff2);
 				sb.ClearStr();
 				r->GetStr(6, sb);
 				sizeType = r->GetInt32(7);

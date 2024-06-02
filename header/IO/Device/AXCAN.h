@@ -46,7 +46,7 @@ namespace IO
 			Bool SendCloseCANPort(UInt8 port);
 			Bool SendSetReportMode(Bool autoMode, Bool formattedData, Bool overwriteOnFull);
 			Bool SendCommandMode();
-			Bool SendCommand(Text::CString cmd, UOSInt timeout);
+			Bool SendCommand(Text::CStringNN cmd, UOSInt timeout);
 			
 			static void __stdcall SerialThread(NN<Sync::Thread> userObj);
 		public:

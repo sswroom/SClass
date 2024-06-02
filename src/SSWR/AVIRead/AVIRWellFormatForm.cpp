@@ -40,8 +40,8 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), ssl, fileName, Net::WebUtil::RequestMethod::HTTP_GET, true);
 		if (!cli->IsError() && cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			Text::CString contType = cli->GetContentType();
-			if (contType.leng == 0)
+			Text::CStringNN contType;
+			if (!cli->GetContentType().SetTo(contType) || contType.leng == 0)
 			{
 
 			}
@@ -52,7 +52,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 //				else if (contType.Equals(UTF8STRC("text/")))
 			else
 			{
-				printf("AVIRWellFormat: Unknown content-type: %s\r\n", contType.v);
+				printf("AVIRWellFormat: Unknown content-type: %s\r\n", contType.v.Ptr());
 			}
 		}
 		cli.Delete();

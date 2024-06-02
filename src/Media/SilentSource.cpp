@@ -29,7 +29,7 @@ Media::SilentSource::~SilentSource()
 	OPTSTR_DEL(this->name);
 }
 
-UTF8Char *Media::SilentSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::SilentSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	NN<Text::String> s;
 	if (!this->name.SetTo(s))

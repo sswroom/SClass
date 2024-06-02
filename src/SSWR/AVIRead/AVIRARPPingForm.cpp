@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	NN<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
@@ -180,7 +180,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 				adapter = MemAllocNN(SSWR::AVIRead::AVIRARPPingForm::AdapterInfo);
 				ip = connInfo->GetIPAddress(0);
 				sbuff[0] = 0;
-				sptr = connInfo->GetName(sbuff);
+				sptr = connInfo->GetName(sbuff).Or(sbuff);
 				adapter->ifName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				adapter->ipAddr = ip;
 				MemCopyNO(adapter->hwAddr, hwAddr, 6);

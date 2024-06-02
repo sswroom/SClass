@@ -101,7 +101,7 @@ Double HashTestSpeed(NN<Crypto::Hash::IHash> hash)
 	return t;
 }
 
-UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
+UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
@@ -144,13 +144,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UTF8Char u8buff[256];
 	UTF16Char u16buff[32];
 	UTF32Char u32buff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN nns;
 	UOSInt i;
 	UOSInt j;
 	Double t;
 	UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
-	MemSetLogFile(UTF8STRC("Memory.log"));
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBench.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(clk, Manage::HiResClock());
@@ -169,7 +170,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	writer->WriteLine(CSTR("Computer Info:"));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform: "));
-	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
+	if (sysInfo.GetPlatformName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
@@ -184,7 +185,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Manage::CPUInfoDetail cpuInfo;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU: "));
-		if ((sptr = cpuInfo.GetCPUName(u8buff)) != 0)
+		if (cpuInfo.GetCPUName(u8buff).SetTo(sptr))
 		{
 			sb.AppendP(u8buff, sptr);
 		}
@@ -195,13 +196,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		console->WriteLine(sb.ToCString());
 		writer->WriteLine(sb.ToCString());
 
-		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
+		Optional<const Manage::CPUDB::CPUSpec> cpuSpec = 0;
+		NN<const Manage::CPUDB::CPUSpec> nncpuSpec;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Model: "));
-		if (cpuInfo.GetCPUModel().v)
+		if (cpuInfo.GetCPUModel().SetTo(nns))
 		{
-			sb.Append(cpuInfo.GetCPUModel());
-			cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
+			sb.Append(nns);
+			cpuSpec = Manage::CPUDB::GetCPUSpec(nns);
 		}
 		else
 		{
@@ -212,11 +214,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Brand Name: "));
-		if (cpuSpec)
+		if (cpuSpec.SetTo(nncpuSpec))
 		{
-			sb.Append(Manage::CPUVendor::GetBrandName(cpuSpec->brand));
+			sb.Append(Manage::CPUVendor::GetBrandName(nncpuSpec->brand));
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendSlow((const UTF8Char*)cpuSpec->name);
+			sb.AppendSlow((const UTF8Char*)nncpuSpec->name);
 		}
 		else
 		{
@@ -245,7 +247,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	writer->WriteLine(sb.ToCString());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("OS: "));
-	if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
+	if (IO::OS::GetDistro(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 	}
@@ -253,7 +255,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		sb.AppendC(UTF8STRC("Unknown"));
 	}
-	if ((sptr = IO::OS::GetVersion(sbuff)) != 0)
+	if (IO::OS::GetVersion(sbuff).SetTo(sptr))
 	{
 		sb.AppendC(UTF8STRC(" "));
 		sb.AppendP(sbuff, sptr);
@@ -704,7 +706,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	i32V = 10000;
 	while (i32V-- > 0)
 	{
-		Text::StrDouble(u16buff, Math::PI);
+		Text::StrDoubleW(u16buff, Math::PI);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -717,7 +719,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	i32V = 10000;
 	while (i32V-- > 0)
 	{
-		Text::StrDouble(u32buff, Math::PI);
+		Text::StrDoubleW(u32buff, Math::PI);
 	}
 	t = clk->GetTimeDiff();
 	sb.ClearStr();

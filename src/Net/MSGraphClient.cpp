@@ -139,7 +139,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 			log->LogMessage(CSTR("Error in getting access token"), IO::LogHandler::LogLevel::Error);
 		}
 #if defined(VERBOSE)
-		printf("MSGraphClient: Error in getting access token: status = %d, content = %s\r\n", (Int32)status, content.v);
+		printf("MSGraphClient: Error in getting access token: status = %d, content = %s\r\n", (Int32)status, content.v.Ptr());
 #endif
 		return 0;
 	}
@@ -151,7 +151,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 			log->LogMessage(CSTR("Error in parsing access token (Not JSON)"), IO::LogHandler::LogLevel::Error);
 		}
 #if defined(VERBOSE)
-		printf("MSGraphClient: Error in parsing access token (Not JSON): content = %s\r\n", content.v);
+		printf("MSGraphClient: Error in parsing access token (Not JSON): content = %s\r\n", content.v.Ptr());
 #endif
 		return 0;
 	}
@@ -189,7 +189,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 			log->LogMessage(CSTR("Error in parsing access token (Fields not found)"), IO::LogHandler::LogLevel::Error);
 		}
 #if defined(VERBOSE)
-		printf("MSGraphClient: Error in parsing access token (Fields not found): content = %s\r\n", content.v);
+		printf("MSGraphClient: Error in parsing access token (Fields not found): content = %s\r\n", content.v.Ptr());
 #endif
 		result->EndUse();
 		return 0;
@@ -209,8 +209,8 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		if (json == 0)
 		{
 #if defined(VERBOSE)
-			printf("MSGraphClient: %s cannot parse result: %d, %s\r\n", funcName.v, (Int32)status, sb.ToString());
-			printf("MSGraphClient: %s url: %s\r\n", funcName.v, url.v);
+			printf("MSGraphClient: %s cannot parse result: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
+			printf("MSGraphClient: %s url: %s\r\n", funcName.v.Ptr(), url.v.Ptr());
 #endif
 			return false;
 		}
@@ -218,7 +218,7 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		{
 			json->EndUse();
 #if defined(VERBOSE)
-			printf("MSGraphClient: %s not json object: %d, %s\r\n", funcName.v, (Int32)status, sb.ToString());
+			printf("MSGraphClient: %s not json object: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
 #endif
 			return false;
 		}
@@ -228,7 +228,7 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		{
 			json->EndUse();
 #if defined(VERBOSE)
-			printf("MSGraphClient: %s value array not found: %d, %s\r\n", funcName.v, (Int32)status, sb.ToString());
+			printf("MSGraphClient: %s value array not found: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
 #endif
 			return false;
 		}
@@ -261,7 +261,7 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 	{
 		cli.Delete();
 #if defined(VERBOSE)
-		printf("MSGraphClient: %s request error: status = %d\r\n", funcName.v, (Int32)status);
+		printf("MSGraphClient: %s request error: status = %d\r\n", funcName.v.Ptr(), (Int32)status);
 #endif
 	}
 	return false;
@@ -286,7 +286,7 @@ void Net::MSGraphClient::SetLog(NN<IO::LogTool> log)
 Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	NN<IO::LogTool> log;
 	if (tenantId.leng > 40 || clientId.leng > 40 || clientSecret.leng > 64)
@@ -309,8 +309,9 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	cli->FormAdd(CSTR("client_id"), clientId);
 	cli->FormAdd(CSTR("client_secret"), clientSecret);
 	cli->FormAdd(CSTR("grant_type"), CSTR("client_credentials"));
-	if (scope.v)
-		cli->FormAdd(CSTR("scope"), scope);
+	Text::CStringNN nns;
+	if (scope.SetTo(nns))
+		cli->FormAdd(CSTR("scope"), nns);
 	else
 		cli->FormAdd(CSTR("scope"), CSTR("https://graph.microsoft.com/.default"));
 
@@ -345,13 +346,14 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken> token, Text::CString userName)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
-	if (userName.v)
+	Text::CStringNN nns;
+	if (userName.SetTo(nns))
 	{
 		sb.Append(CSTR("users/"));
-		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName.v);
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
@@ -366,7 +368,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 	{
 		cli.Delete();
 #if defined(VERBOSE)
-		printf("MSGraphClient: EntityGetMe %d, %s\r\n", (Int32)status, sb.ToString());
+		printf("MSGraphClient: EntityGetMe %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
 		NN<Text::JSONBase> json;
 		if (json.Set(Text::JSONBase::ParseJSONStr(sb.ToCString())))
@@ -397,16 +399,17 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (userName.leng > 200)
 		return false;
 	NN<IO::LogTool> log;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
-	if (userName.v)
+	Text::CStringNN nns;
+	if (userName.SetTo(nns))
 	{
 		sb.Append(CSTR("users/"));
-		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName.v);
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
@@ -457,7 +460,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 				log->LogMessage(CSTR("MailMessagesGet cannot parse result"), IO::LogHandler::LogLevel::Error);
 			}
 #if defined(VERBOSE)
-			printf("MSGraphClient: MailMessagesGet cannot parse result: %d, %s\r\n", (Int32)status, sb.ToString());
+			printf("MSGraphClient: MailMessagesGet cannot parse result: %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
 			return false;
 		}
@@ -469,7 +472,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 				log->LogMessage(CSTR("MailMessagesGet not json object"), IO::LogHandler::LogLevel::Error);
 			}
 #if defined(VERBOSE)
-			printf("MSGraphClient: MailMessagesGet not json object: %d, %s\r\n", (Int32)status, sb.ToString());
+			printf("MSGraphClient: MailMessagesGet not json object: %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
 			return false;
 		}
@@ -484,7 +487,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 				log->LogMessage(CSTR("MailMessagesGet value array not found"), IO::LogHandler::LogLevel::Error);
 			}
 #if defined(VERBOSE)
-			printf("MSGraphClient: MailMessagesGet value array not found: %d, %s\r\n", (Int32)status, sb.ToString());
+			printf("MSGraphClient: MailMessagesGet value array not found: %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
 			return false;
 		}
@@ -533,15 +536,16 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 Bool Net::MSGraphClient::MailFoldersGet(NN<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NN<Data::ArrayListNN<MSGraphMailFolder>> folderList)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (userName.leng > 200)
 		return false;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
-	if (userName.v)
+	Text::CStringNN nns;
+	if (userName.SetTo(nns))
 	{
 		sb.Append(CSTR("users/"));
-		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName.v);
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		sb.AppendP(sbuff, sptr);
 	}
 	else

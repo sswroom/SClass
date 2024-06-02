@@ -61,7 +61,7 @@ NN<Text::String> Data::Chart::GetTimeFormat() const
 	return this->timeFormat;
 }
 
-void Data::Chart::SetDblFormat(Text::CString format)
+void Data::Chart::SetDblFormat(Text::CStringNN format)
 {
 	this->dblFormat->Release();
 	this->dblFormat = Text::String::New(format);
@@ -108,11 +108,11 @@ Optional<Text::String> Data::Chart::GetYAxisName() const
 	return this->yAxisName;
 }
 
-UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, Optional<Text::String> unit)
+UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Double scale;
 	Double lScale;
 	Double dScale;
@@ -169,7 +169,7 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Double scale;
 	Double lScale;
 	Double dScale;
@@ -221,11 +221,11 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
+UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int64 timeDif;
 	Double scale;
 	Double lScale;
@@ -234,16 +234,17 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 	Data::DateTime currDate;
 	Single pos;
 	Bool hasSecond = true;
-	if (timeFormat)
+	UnsafeArray<const Char> nntimeFormat;
+	if (timeFormat.SetTo(nntimeFormat))
 	{
-		if (Text::StrIndexOfChar(timeFormat, 's') == INVALID_INDEX)
+		if (Text::StrIndexOfCharCh(nntimeFormat, 's') == INVALID_INDEX)
 		{
 			hasSecond = false;
 		}
 	}
     
 	timeDif = max->DiffMS(min);
-	if (timeFormat == 0 || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
+	if (!timeFormat.SetTo(nntimeFormat) || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
 	{
 		sptr = min->ToString(sbuff, dateFormat);
 		locations->Add(0);
@@ -293,7 +294,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		}
 		else
 		{
-			sptr = min->ToString(sbuff, timeFormat);
+			sptr = min->ToString(sbuff, nntimeFormat);
 			locations->Add(0);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
@@ -326,7 +327,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 				}
 				else
 				{
-					sptr = currDate.ToString(sbuff, timeFormat);
+					sptr = currDate.ToString(sbuff, nntimeFormat);
 					locations->Add(pos);
 					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
@@ -343,7 +344,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		}
 		else
 		{
-			sptr = max->ToString(sbuff, timeFormat);
+			sptr = max->ToString(sbuff, nntimeFormat);
 			locations->Add(leng);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
@@ -358,7 +359,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		}
 		else
 		{
-			sptr = min->ToString(sbuff, timeFormat);
+			sptr = min->ToString(sbuff, nntimeFormat);
 			locations->Add(0);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
@@ -395,7 +396,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 				}
 				else
 				{
-					sptr = currDate.ToString(sbuff, timeFormat);
+					sptr = currDate.ToString(sbuff, nntimeFormat);
 					locations->Add(pos);
 					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
@@ -412,7 +413,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		}
 		else
 		{
-			sptr = max->ToString(sbuff, timeFormat);
+			sptr = max->ToString(sbuff, nntimeFormat);
 			locations->Add(leng);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
@@ -427,7 +428,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		}
 		else
 		{
-			sptr = min->ToString(sbuff, timeFormat);
+			sptr = min->ToString(sbuff, nntimeFormat);
 			locations->Add(0);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
@@ -464,7 +465,7 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 				}
 				else
 				{
-					sptr = currDate.ToString(sbuff, timeFormat);
+					sptr = currDate.ToString(sbuff, nntimeFormat);
 					locations->Add(pos);
 					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
@@ -481,18 +482,18 @@ UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayL
 		}
 		else
 		{
-			sptr = max->ToString(sbuff, timeFormat);
+			sptr = max->ToString(sbuff, nntimeFormat);
 			locations->Add(leng);
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 	}
 	else
 	{
-		sptr = min->ToString(sbuff, timeFormat);
+		sptr = min->ToString(sbuff, nntimeFormat);
 		locations->Add(0);
 		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
-		sptr = max->ToString(sbuff, timeFormat);
+		sptr = max->ToString(sbuff, nntimeFormat);
 		locations->Add(leng);
 		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	}

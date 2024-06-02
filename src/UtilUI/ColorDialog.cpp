@@ -1167,7 +1167,7 @@ void UtilUI::ColorDialog::LoadColor()
 void UtilUI::ColorDialog::UpdateColor()
 {
 	UTF8Char sbuff[10];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Vector3 rgbv;
 	Math::Vector3 rgbv2;
 	Math::Vector3 rgbv3;
@@ -1682,7 +1682,7 @@ void UtilUI::ColorDialog::ShowAlpha()
 	{
 		this->alphaShown = true;
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		this->lblAlpha = ui->NewLabel(*this, CSTR("Alpha"));
 		this->lblAlpha->SetRect(504, 548, 100, 23, false);
 		sptr = Text::StrDouble(sbuff, this->aVal * 255.0);

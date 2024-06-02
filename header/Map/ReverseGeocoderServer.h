@@ -25,7 +25,7 @@ namespace Map
 
 		Sync::Mutex reqMut;
 		Sync::Event reqEvt;
-		UTF8Char *reqBuff;
+		UnsafeArrayOpt<UTF8Char> reqBuff;
 		UOSInt reqBuffSize;
 		Int32 reqLat;
 		Int32 reqLon;
@@ -37,8 +37,8 @@ namespace Map
 		ReverseGeocoderServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port);
 		virtual ~ReverseGeocoderServer();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
+		virtual UnsafeArrayOpt<UTF8Char> CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 
 		virtual AnyType NewConn(NN<Net::TCPClient> cli);
 		virtual void EndConn(NN<Net::TCPClient> cli, AnyType cliObj);

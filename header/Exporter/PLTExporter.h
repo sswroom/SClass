@@ -12,10 +12,10 @@ namespace Exporter
 
 		virtual Int32 GetName();
 		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
-		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
+		virtual Bool GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff);
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
-		static UTF8Char *FixDouble(UTF8Char *sbuff, Double val, const Char *format, Int32 colSize);
+		static UnsafeArray<UTF8Char> FixDouble(UnsafeArray<UTF8Char> sbuff, Double val, const Char *format, Int32 colSize);
 	};
 }
 #endif

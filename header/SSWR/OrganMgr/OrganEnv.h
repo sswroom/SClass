@@ -238,14 +238,14 @@ namespace SSWR
 			virtual Optional<OrganGroup> GetGroup(Int32 groupId, OutParam<Int32> parentId) = 0;
 			virtual Optional<OrganSpecies> GetSpecies(Int32 speciesId) = 0;
 //			OrganTripList *GetTripList();
-			virtual UTF8Char *GetSpeciesDir(NN<OrganSpecies> sp, UTF8Char *sbuff) = 0; /////////////////
+			virtual UnsafeArray<UTF8Char> GetSpeciesDir(NN<OrganSpecies> sp, UnsafeArray<UTF8Char> sbuff) = 0; /////////////////
 //			virtual Bool CreateSpeciesDir(OrganSpecies *sp) = 0; ////////////////////////
-			virtual Bool IsSpeciesExist(const UTF8Char *sName) = 0;
-			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool IsSpeciesExist(UnsafeArray<const UTF8Char> sName) = 0;
+			virtual Bool IsBookSpeciesExist(UnsafeArray<const UTF8Char> sName, NN<Text::StringBuilderUTF8> sb) = 0;
 			virtual Bool AddSpecies(NN<OrganSpecies> sp) = 0;
 			virtual Bool DelSpecies(NN<OrganSpecies> sp) = 0;
 			virtual FileStatus AddSpeciesFile(NN<OrganSpecies> sp, Text::CStringNN fileName, Bool firstPhoto, Bool moveFile, OptOut<Int32> fileId) = 0;
-			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName) = 0;
+			virtual FileStatus AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UnsafeArrayOpt<UTF8Char> webFileName) = 0;
 			virtual Bool UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, Text::String *srcURL, Text::String *location) = 0;
 			Bool SetSpeciesImg(NN<OrganSpecies> sp, NN<OrganImageItem> img);
 			Bool SetSpeciesMapColor(NN<OrganSpecies> sp, UInt32 mapColor);
@@ -263,14 +263,14 @@ namespace SSWR
 			virtual Bool CombineSpecies(NN<OrganSpecies> destSp, NN<OrganSpecies> srcSp) = 0;
 
 			virtual UOSInt GetWebUsers(NN<Data::ArrayListNN<OrganWebUser>> userList) = 0;
-			virtual Bool AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType) = 0;
-			virtual Bool ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark) = 0;
+			virtual Bool AddWebUser(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> pwd, UnsafeArray<const UTF8Char> watermark, UserType userType) = 0;
+			virtual Bool ModifyWebUser(Int32 id, UnsafeArray<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, UnsafeArray<const UTF8Char> watermark) = 0;
 			virtual void ReleaseWebUsers(NN<Data::ArrayListNN<OrganWebUser>> userList) = 0;
 
 			UOSInt GetBooksAll(NN<Data::ArrayListNN<OrganBook>> items);
 			UOSInt GetBooksOfYear(NN<Data::ArrayListNN<OrganBook>> items, Int32 year);
 			virtual Bool IsSpeciesBookExist(Int32 speciesId, Int32 bookId) = 0;
-			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName) = 0;
+			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, UnsafeArray<const UTF8Char> dispName) = 0;
 			virtual UOSInt GetSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items, Int32 speciesId) = 0;
 			virtual void ReleaseSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items) = 0;
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url) = 0;
@@ -290,8 +290,8 @@ namespace SSWR
 			virtual Bool UpdateUserFilePos(NN<UserFileInfo> userFile, const Data::Timestamp &captureTime, Double lat, Double lon) = 0;
 			UOSInt GetUserFiles(NN<Data::ArrayListNN<UserFileInfo>> userFiles, const Data::Timestamp &fromTime, const Data::Timestamp &toTime);
 			virtual Bool GetUserFilePath(NN<UserFileInfo> userFile, NN<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool UpdateUserFileDesc(NN<UserFileInfo> userFile, const UTF8Char *descript) = 0;
-			virtual Bool UpdateUserFileLoc(NN<UserFileInfo> userFile, const UTF8Char *location) = 0;
+			virtual Bool UpdateUserFileDesc(NN<UserFileInfo> userFile, UnsafeArray<const UTF8Char> descript) = 0;
+			virtual Bool UpdateUserFileLoc(NN<UserFileInfo> userFile, UnsafeArray<const UTF8Char> location) = 0;
 			virtual void UpdateWebFileCrop(NN<WebFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
 
 		protected:
@@ -323,7 +323,7 @@ namespace SSWR
 			virtual Optional<Media::ImageList> ParseFileImage(NN<UserFileInfo> userFile) = 0;
 			virtual Optional<Media::ImageList> ParseWebImage(NN<WebFileInfo> webFile) = 0;
 			Optional<Text::String> GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NN<UI::GUICore> ui);
-			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
+			virtual OrganGroup *SearchObject(UnsafeArray<const UTF8Char> searchStr, UnsafeArray<UTF8Char> resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
 
 			void SetCurrCategory(NN<Category> currCate);
 		protected:
@@ -333,17 +333,17 @@ namespace SSWR
 			Optional<Media::EXIFData> ParseTIFExif(Text::CStringNN fileName);
 
 		public:
-			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);
+			void ExportWeb(UnsafeArray<const UTF8Char> exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);
 		private:
 			virtual NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> GetGroupTree() = 0;
 			void FreeGroupTree(NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree);
 			virtual NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> GetSpeciesTree() = 0;
 			void FreeSpeciesTree(NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree);
 
-			void ExportBeginPage(NN<IO::Writer> writer, const UTF8Char *title);
+			void ExportBeginPage(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> title);
 			void ExportEndPage(NN<IO::Writer> writer);
-			void ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
-			Bool ExportSpecies(NN<OrganSpecies> sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OutParam<UOSInt> photoCnt, OutParam<Bool> hasMyPhoto);////////////////////
+			void ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree, UnsafeArray<const UTF8Char> backURL, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt);
+			Bool ExportSpecies(NN<OrganSpecies> sp, UnsafeArray<const UTF8Char> backURL, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OutParam<UOSInt> photoCnt, OutParam<Bool> hasMyPhoto);////////////////////
 		public:
 			virtual void Test() = 0;
 
@@ -351,7 +351,7 @@ namespace SSWR
 			Double GetMonitorDDPI(MonitorHandle *hMonitor);
 			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
 
-			virtual void ExportLite(const UTF8Char *folder) = 0;
+			virtual void ExportLite(UnsafeArray<const UTF8Char> folder) = 0;
 		};
 	}
 }

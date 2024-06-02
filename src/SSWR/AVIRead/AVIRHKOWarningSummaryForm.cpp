@@ -5,7 +5,7 @@
 void SSWR::AVIRead::AVIRHKOWarningSummaryForm::Reload()
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp reqTime = Data::Timestamp::Now();
 	sptr = reqTime.ToStringNoZone(sbuff);
 	this->txtReqTime->SetText(CSTRP(sbuff, sptr));

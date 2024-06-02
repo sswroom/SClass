@@ -90,7 +90,7 @@ namespace Text
 			Bool Equals(NN<const CellStyle> style) const;
 
 			CellStyle *SetIndex(UOSInt index);
-			CellStyle *SetID(const UTF8Char *id);
+			CellStyle *SetID(UnsafeArrayOpt<const UTF8Char> id);
 			CellStyle *SetHAlign(HAlignment halign);
 			CellStyle *SetVAlign(VAlignment valign);
 			CellStyle *SetWordWrap(Bool wordWrap);

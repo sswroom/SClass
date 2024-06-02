@@ -76,7 +76,7 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	return 0;
 }
@@ -150,5 +150,5 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::String *camera, Int32 t
 
 void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::CString camera, Int32 timeAdj)
 {
-	this->cameraMap.Put(camera, timeAdj);
+	this->cameraMap.Put(camera.OrEmpty(), timeAdj);
 }

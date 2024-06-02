@@ -20,7 +20,7 @@ namespace IO
 
 		Bool IsModified();
 		void ReadLogs(IO::Reader *reader);
-		void LogStr(const UTF8Char *s, UOSInt len);
+		void LogStr(UnsafeArray<const UTF8Char> s, UOSInt len);
 		void WriteLogs(IO::Writer *writer);
 	};
 }

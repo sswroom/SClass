@@ -27,16 +27,13 @@ UOSInt Media::CodeImageGen::EAN13CodeImageGen::GetMaxLength()
 	return 13;
 }
 
-Optional<Media::DrawImage> Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
-	if (code.v == 0)
-		return 0;
-
 	UOSInt i = 13;
 	UOSInt j = 0;
 	UOSInt k;
-	const UTF8Char *tmpStr = code.v;
+	UnsafeArray<const UTF8Char> tmpStr = code.v;
 	WChar c;
 	while (i-- > 0)
 	{
@@ -57,7 +54,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN13CodeImageGen::GenCode(Text:
 	if ((j % 10) != 0)
 		return 0;
 
-	const UTF8Char *codePtr = code.v;
+	UnsafeArray<const UTF8Char> codePtr = code.v;
 	UInt8 bitCode[95];
 	bitCode[0] = 1;
 	bitCode[1] = 0;

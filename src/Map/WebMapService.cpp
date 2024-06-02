@@ -88,14 +88,14 @@ void Map::WebMapService::LoadXML(Version version)
 						}
 						else
 						{
-							printf("WMS: Unknown element in Capability: %s\r\n", nodeName->v);
+							printf("WMS: Unknown element in Capability: %s\r\n", nodeName->v.Ptr());
 							reader.SkipElement();
 						}
 					}
 				}
 				else
 				{
-					printf("WMS: Unknown element in WMS_Capabilities: %s\r\n", nodeName->v);
+					printf("WMS: Unknown element in WMS_Capabilities: %s\r\n", nodeName->v.Ptr());
 					reader.SkipElement();
 				}
 			}
@@ -177,7 +177,7 @@ void Map::WebMapService::LoadXMLRequest(NN<Text::XMLReader> reader)
 		}
 		else
 		{
-			printf("WMS: Unknown element in Request: %s\r\n", nodeName->v);
+			printf("WMS: Unknown element in Request: %s\r\n", nodeName->v.Ptr());
 			reader->SkipElement();
 		}
 	}
@@ -534,8 +534,8 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		}
 		else
 		{
-			printf("WebMapService: Query URL: %s\r\n", sb.ToString());
-			printf("%s\r\n", sbData.ToString());
+			printf("WebMapService: Query URL: %s\r\n", sb.ToPtr());
+			printf("%s\r\n", sbData.ToPtr());
 		}
 		return false;
 	}
@@ -652,12 +652,12 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		}
 		else
 		{
-			printf("WMS: Unsupported image format: %s\r\n", imgFormat->v);
+			printf("WMS: Unsupported image format: %s\r\n", imgFormat->v.Ptr());
 		}
 	}
 	else
 	{
-		printf("WMS: Failed in getting Image, URL: %s\r\n", sb.v);
+		printf("WMS: Failed in getting Image, URL: %s\r\n", sb.v.Ptr());
 	}
 	cli.Delete();
 	return ret;

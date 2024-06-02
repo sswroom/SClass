@@ -22,29 +22,22 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj
 	else
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrHexVal16(sbuff, usb->GetVendorId());
 		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal16(sbuff, usb->GetProductId());
 		me->txtProductId->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrHexVal16(sbuff, usb->GetRevision());
 		me->txtDevice->SetText(CSTRP(sbuff, sptr));
-		me->txtDispName->SetText(usb->GetDispName().OrEmpty());
+		me->txtDispName->SetText(usb->GetDispName());
 
 		const IO::DeviceDB::USBDeviceInfo *dev;
 		dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
 		if (dev)
 		{
-			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCnt(dev->productName)});
-			Text::CString vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);
-			if (vendorName.v)
-			{
-				me->txtVendorName->SetText(vendorName.OrEmpty());
-			}
-			else
-			{
-				me->txtVendorName->SetText(CSTR(""));
-			}
+			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCntCh(dev->productName)});
+			Text::CStringNN vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);
+			me->txtVendorName->SetText(vendorName);
 		}
 		else
 		{
@@ -137,7 +130,7 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(Optional<UI::GUIClientContro
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	IO::USBInfo::GetUSBList(this->usbList);
 	Data::Sort::ArtificialQuickSortFunc<NN<IO::USBInfo>>::Sort(this->usbList, ItemCompare);

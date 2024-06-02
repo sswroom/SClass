@@ -32,11 +32,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 
-	if ((sptr = modem->GSMGetManufacturer(sbuff)) != 0)
+	if (modem->GSMGetManufacturer(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Manufacturer: "));
@@ -48,7 +48,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("Manufacturer: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetModelIdent(sbuff)) != 0)
+	if (modem->GSMGetModelIdent(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Model: "));
@@ -60,7 +60,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("Model: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetModemVer(sbuff)) != 0)
+	if (modem->GSMGetModemVer(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Modem Ver: "));
@@ -72,7 +72,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("Modem Ver: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetIMEI(sbuff)) != 0)
+	if (modem->GSMGetIMEI(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("IMEI: "));
@@ -84,7 +84,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("IMEI: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetTECharset(sbuff)) != 0)
+	if (modem->GSMGetTECharset(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("TE Charset: "));
@@ -96,7 +96,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("TE Charset: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetIMSI(sbuff)) != 0)
+	if (modem->GSMGetIMSI(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("IMSI: "));
@@ -108,7 +108,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("IMSI: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetCurrOperator(sbuff)) != 0)
+	if (modem->GSMGetCurrOperator(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Operator: "));
@@ -120,7 +120,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("Operator: Error in getting the value"));
 	}
 
-	if ((sptr = modem->GSMGetCurrPLMN(sbuff)) != 0)
+	if (modem->GSMGetCurrPLMN(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("PLMN: "));
@@ -203,7 +203,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		writer->WriteLine(CSTR("Clock: Error in getting the value"));
 	}
 
-	if ((sptr = modem->SMSGetSMSC(sbuff)) != 0)
+	if (modem->SMSGetSMSC(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("SMSC: "));

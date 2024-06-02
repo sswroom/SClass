@@ -7,11 +7,11 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyTy
 {
 	NN<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
 	Text::StringBuilderUTF8 sb;
 	me->txtDirectory->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyTy
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
 		{
 			UOSInt i;
 			if (pt == IO::Path::PathType::File)
@@ -52,11 +52,11 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyTy
 {
 	NN<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
 	Text::StringBuilderUTF8 sb;
 	me->txtDirectory->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyTy
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
 		{
 			UOSInt i;
 			if (pt == IO::Path::PathType::File)

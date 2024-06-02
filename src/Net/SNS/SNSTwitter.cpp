@@ -11,7 +11,7 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	this->chError = false;
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SNSItem> snsItem;
 	NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 	Net::WebSite::WebSiteTwitterControl::ChannelInfo chInfo;
@@ -81,7 +81,7 @@ NN<Text::String> Net::SNS::SNSTwitter::GetName() const
 	return this->chName;
 }
 
-UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
+UnsafeArray<UTF8Char> Net::SNS::SNSTwitter::GetDirName(UnsafeArray<UTF8Char> dirName)
 {
 	dirName = Text::StrConcatC(dirName, UTF8STRC("Twitter_"));
 	dirName = this->channelId->ConcatTo(dirName);
@@ -93,7 +93,7 @@ UOSInt Net::SNS::SNSTwitter::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemLis
 	return itemList->AddAll(this->itemMap);
 }
 
-UTF8Char *Net::SNS::SNSTwitter::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
+UnsafeArray<UTF8Char> Net::SNS::SNSTwitter::GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item)
 {
 	return item->id->ConcatTo(buff);
 }
@@ -106,7 +106,7 @@ Int32 Net::SNS::SNSTwitter::GetMinIntevalMS()
 Bool Net::SNS::SNSTwitter::Reload()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SNSItem> snsItem;
 	OSInt si;
 	NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;

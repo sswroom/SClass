@@ -42,7 +42,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 	i = 0;
 	while (i < layerCnt)
 	{
-		if (layers->GetItem(i).SetTo(lyr) && lyr->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (layers->GetItem(i).SetTo(lyr) && lyr->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			k = r->ColCount();
 			j = 0;
@@ -76,14 +76,14 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 	}
 
 	Map::VectorLayer *newLyr;
-	const UTF8Char **namesArr;
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> namesArr;
 	UOSInt *ofsts;
 	DB::DBUtil::ColType *colTypes;
 	UOSInt *colSizes;
 	UOSInt *colDPs;
 	UOSInt nameCol = lyr->GetNameCol();
 	i = names.GetCount();
-	namesArr = MemAlloc(const UTF8Char *, i);
+	namesArr = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, i);
 	ofsts = MemAlloc(UOSInt, i);
 	colTypes = MemAlloc(DB::DBUtil::ColType, i);
 	colSizes = MemAlloc(UOSInt, i);
@@ -114,7 +114,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 			l = names.GetCount();
 			while (l-- > 0)
 			{
-				if (Text::StrCompareICase(names.GetItem(l), sbuff) == 0)
+				if (Text::StrCompareICase(names.GetItem(l).Or(U8STR("")), sbuff) == 0)
 				{
 					colDPs[j] = l;
 					break;
@@ -176,12 +176,8 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 	}
 	MemFree(colDPs);
 	MemFree(ofsts);
-	MemFree(namesArr);
+	MemFreeArr(namesArr);
 
-	i = names.GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(names.GetItem(i));
-	}
+	names.DeleteAll();
 	return newLyr;
 }

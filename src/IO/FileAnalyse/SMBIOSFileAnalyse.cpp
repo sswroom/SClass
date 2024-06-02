@@ -114,7 +114,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt k;
 	UOSInt l;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -141,7 +141,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		{
 			if (packBuff[l] == 0)
 			{
-				carr[k - 1].leng = (UOSInt)(&packBuff[l] - carr[k - 1].v);
+				carr[k - 1].leng = (UOSInt)(&packBuff[l] - carr[k - 1].v.Ptr());
 				if (packBuff[l + 1] == 0)
 					break;
 				carr[k].v = &packBuff[l + 1];
@@ -1328,10 +1328,10 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 		break;
 	}
 	k = 1;
-	while (carr[k].v)
+	while (carr[k].v.Ptr())
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("String ")), k);
-		frame->AddField((UOSInt)(carr[k].v - packBuff.Arr().Ptr()), carr[k].leng + 1, CSTRP(sbuff, sptr), carr[k]);
+		frame->AddField((UOSInt)(carr[k].v.Ptr() - packBuff.Arr().Ptr()), carr[k].leng + 1, CSTRP(sbuff, sptr), carr[k]);
 		k++;
 	}
 	if (k == 1)
@@ -1340,7 +1340,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	}
 	else
 	{
-		frame->AddUInt((UOSInt)(carr[k - 1].v - packBuff.Arr().Ptr()) + carr[k - 1].leng + 1, 1, CSTR("End of String Table"), 0);
+		frame->AddUInt((UOSInt)(carr[k - 1].v.Ptr() - packBuff.Arr().Ptr()) + carr[k - 1].leng + 1, 1, CSTR("End of String Table"), 0);
 	}
 	return frame;
 }
@@ -1360,7 +1360,7 @@ Bool IO::FileAnalyse::SMBIOSFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSTypeGetName(UInt8 type)
+Text::CStringNN IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSTypeGetName(UInt8 type)
 {
 	switch (type)
 	{
@@ -1734,7 +1734,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(NN<FrameDetail> frame, UOSInt
 	{
 		val = carr[ind];
 	}
-	if (val.v)
+	if (val.v.NotNull())
 	{
 		frame->AddUIntName(ofst, 1, name, ind, val);
 	}
@@ -1805,7 +1805,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddUUID(NN<FrameDetail> frame, UOSInt o
 	if (ofst + 15 >= packBuff[1])
 		return;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::UUID uuid(&packBuff[ofst]);
 	sptr = uuid.ToString(sbuff);
 	frame->AddField(ofst, 16, name, CSTRP(sbuff, sptr));
@@ -1817,7 +1817,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddDate(NN<FrameDetail> frame, UOSInt o
 		return;
 	UInt16 val = ReadUInt16(&packBuff[ofst]);
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (val == 0)
 	{
 		frame->AddField(ofst, 2, name, CSTR("-"));

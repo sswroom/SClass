@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::SFVExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::SFVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::SFVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -57,7 +57,7 @@ Bool Exporter::SFVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[16];
 	Text::UTF8Writer writer(stm);
 	UOSInt i = 0;

@@ -1262,7 +1262,7 @@ Int32 Net::RSS::GetTTL() const
 	return this->ttl;
 }
 
-void Net::RSS::GetYoutubeURL(Text::CString channelId, NN<Text::StringBuilderUTF8> outURL)
+void Net::RSS::GetYoutubeURL(Text::CStringNN channelId, NN<Text::StringBuilderUTF8> outURL)
 {
 	outURL->AppendC(UTF8STRC("https://www.youtube.com/feeds/videos.xml?channel_id="));
 	outURL->Append(channelId);

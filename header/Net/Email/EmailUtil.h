@@ -8,7 +8,7 @@ namespace Net
 		class EmailUtil
 		{
 		public:
-			static Bool AddressValid(const UTF8Char *addr);
+			static Bool AddressValid(UnsafeArray<const UTF8Char> addr);
 		};
 	}
 }

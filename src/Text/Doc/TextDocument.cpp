@@ -34,7 +34,7 @@ void Text::Doc::TextDocument::SetDocumentName(Text::CString docName)
 	this->docName = Text::String::New(docName).Ptr();
 }
 
-UTF8Char *Text::Doc::TextDocument::GetDocumentName(UTF8Char *docName) const
+UnsafeArrayOpt<UTF8Char> Text::Doc::TextDocument::GetDocumentName(UnsafeArray<UTF8Char> docName) const
 {
 	if (this->docName == 0)
 		return 0;

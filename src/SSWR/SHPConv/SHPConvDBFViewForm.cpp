@@ -2,7 +2,7 @@
 #include "SSWR/SHPConv/SHPConvDBFViewForm.h"
 #include "Text/HKSCSFix.h"
 
-SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl) : UI::GUIForm(parent, 424, 300, ui)
+SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CStringNN lbl) : UI::GUIForm(parent, 424, 300, ui)
 {
 	this->SetText(CSTR("DBFView"));
 	this->SetFont(0, 0, 8.25, false);
@@ -13,7 +13,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	this->lvDBF->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	WChar wbuff[256];
 	UOSInt i;
 	UOSInt j;
@@ -29,7 +29,8 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 	j = dbf->GetColCount();
 	while (i < j)
 	{
-		sptr = dbf->GetColumnName(i, sbuff);
+		sbuff[0] = 0;
+		sptr = dbf->GetColumnName(i, sbuff).Or(sbuff);
 		this->lvDBF->AddColumn(CSTRP(sbuff, sptr), 60);
 		i += 1;
 	}

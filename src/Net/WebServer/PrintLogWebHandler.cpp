@@ -17,11 +17,11 @@ Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
 void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
-	sptr = Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()), UTF8STRC(": "));
+	UnsafeArray<UTF8Char> sptr;
+	sptr = Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).Or(sbuff), UTF8STRC(": "));
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	Text::CString reqMeth = req->GetReqMethodStr();
+	Text::CStringNN reqMeth = req->GetReqMethodStr();
 	sb.AppendC(reqMeth.v, reqMeth.leng);
 	sb.AppendUTF8Char(' ');
 	sb.Append(req->GetRequestURI());

@@ -43,12 +43,12 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	WChar wbuff[512];
 	WChar wbuff2[32];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->ui = ui;
 	this->forwardedUI = this->ui->IsForwarded();
 	this->currCodePage = 0;
 	this->eng = ui->CreateDrawEngine();
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CacheDir"));
 	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
@@ -472,7 +472,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> b;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Coord2DDbl refPos;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
@@ -489,7 +489,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<M
 	if (env->GetFontStyle(fontStyle, fontName, fontSizePt, bold, fontColor, buffSize, buffColor))
 	{
 		buffSize = (UOSInt)Double2Int32(UOSInt2Double(buffSize) * dpi / 96.0);
-		if ((sptr = env->GetFontStyleName(fontStyle, sbuff)) == 0)
+		if (!env->GetFontStyleName(fontStyle, sbuff).SetTo(sptr))
 		{
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Style ")), fontStyle);
 		}

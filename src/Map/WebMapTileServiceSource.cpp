@@ -606,7 +606,7 @@ void Map::WebMapTileServiceSource::ReleaseResourceURL(NN<ResourceURL> resourceUR
 	MemFreeNN(resourceURL);
 }
 
-Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmtsURL)
+Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -620,8 +620,8 @@ Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::SocketFactory> soc
 	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->LoadXML();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("wmts"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	Crypto::Hash::CRC32RC crc;
@@ -789,7 +789,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 		return false;
 	}
 	UTF8Char tmpBuff[1024];
-	UTF8Char *tmpPtr;
+	UnsafeArray<UTF8Char> tmpPtr;
 
 	Int32 pxX = (Int32)((coord.x - tileMatrixDef->origin.x) / tileMatrixDef->unitPerPixel);
 	Int32 pxY = (Int32)((tileMatrixDef->origin.y - coord.y) / tileMatrixDef->unitPerPixel);
@@ -904,11 +904,11 @@ Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math
 	return 0;
 }
 
-UTF8Char *Map::WebMapTileServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::WebMapTileServiceSource::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char tmpBuff[32];
-	UTF8Char *tmpPtr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> tmpPtr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	NN<TileMatrix> tileMatrix;
 	NN<ResourceURL> currResource;
 	NN<TileMatrixSet> currSet;
@@ -930,7 +930,7 @@ UTF8Char *Map::WebMapTileServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt 
 Bool Map::WebMapTileServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char tmpBuff[32];
-	UTF8Char *tmpPtr;
+	UnsafeArray<UTF8Char> tmpPtr;
 	NN<TileMatrix> tileMatrix;
 	NN<ResourceURL> currResource;
 	NN<TileMatrixSet> currSet;
@@ -953,9 +953,9 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 urlSb;
-	UTF8Char *sptru = filePathU;
+	UnsafeArray<UTF8Char> sptru = filePathU;
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
@@ -1020,7 +1020,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 		return 0;
 
 	UTF8Char tmpBuff[32];
-	UTF8Char *tmpPtr;
+	UnsafeArray<UTF8Char> tmpPtr;
 
 	urlSb.ClearStr();
 	urlSb.Append(currResource->templateURL);
@@ -1160,7 +1160,7 @@ Bool Map::WebMapTileServiceSource::SetResourceInfoType(UOSInt index)
 	return false;
 }
 
-Bool Map::WebMapTileServiceSource::SetResourceInfoType(Text::CString name)
+Bool Map::WebMapTileServiceSource::SetResourceInfoType(Text::CStringNN name)
 {
 	NN<TileLayer> currLayer;
 	if (!this->currLayer.SetTo(currLayer))
@@ -1285,7 +1285,7 @@ UOSInt Map::WebMapTileServiceSource::GetResourceInfoTypeNames(NN<Data::ArrayList
 	return resourceTypeNames->GetCount() - initCnt;
 }
 
-Text::CString Map::WebMapTileServiceSource::GetExt(Map::TileMap::ImageType imgType)
+Text::CStringNN Map::WebMapTileServiceSource::GetExt(Map::TileMap::ImageType imgType)
 {
 	switch (imgType)
 	{

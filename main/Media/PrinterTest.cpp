@@ -45,7 +45,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Media::DrawEngine> eng;
 	Media::Printer *printer;
 	NN<Media::IPrintDocument> doc;
@@ -57,8 +57,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	j = Media::Printer::GetPrinterCount();
 	while (i < j)
 	{
-		sptr = Media::Printer::GetPrinterName(sbuff, i);
-		console->WriteLine(CSTRP(sbuff, sptr));
+		if (Media::Printer::GetPrinterName(sbuff, i).SetTo(sptr))
+		{
+			console->WriteLine(CSTRP(sbuff, sptr));
+		}
 		i++;
 	}
 	eng = Media::DrawEngineFactory::CreateDrawEngine();

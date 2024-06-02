@@ -27,7 +27,7 @@ IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::HEIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::HEIFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{

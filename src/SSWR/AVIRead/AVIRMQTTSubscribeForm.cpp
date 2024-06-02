@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj
 	NN<const Data::ArrayListNN<TopicStatus>> topicList;
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<TopicStatus> topicSt;
 	UOSInt i;
 	UOSInt j;

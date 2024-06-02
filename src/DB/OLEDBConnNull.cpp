@@ -23,7 +23,7 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 
 void DB::OLEDBConn::Init(const WChar *connStr)
 {
-	SDEL_TEXT(this->clsData->connStr);
+	if (this->clsData->connStr) Text::StrDelNew(this->clsData->connStr);
 	this->clsData->connStr = Text::StrCopyNew(connStr);
 	this->connErr = CE_COCREATE;
 }
@@ -39,7 +39,7 @@ DB::OLEDBConn::OLEDBConn(const WChar *connStr, NN<IO::LogTool> log) : DB::DBConn
 
 DB::OLEDBConn::~OLEDBConn()
 {
-	SDEL_TEXT(this->clsData->connStr);
+	if (this->clsData->connStr) Text::StrDelNew(this->clsData->connStr);
 	MemFree(this->clsData);
 }
 
@@ -178,10 +178,10 @@ UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return 0;
 }
 
-Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::OLEDBConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
-	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
+	UnsafeArray<UTF8Char> sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
 	return ExecuteReader(CSTRP(tmpBuff, sptr));
 }
 

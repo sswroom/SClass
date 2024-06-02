@@ -27,9 +27,9 @@ void __stdcall Net::MQTTBroker::OnClientEvent(NN<Net::TCPClient> cli, AnyType us
 		if (listener->me->log->HasHandler())
 		{
 			UTF8Char sbuff[256];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
-			sptr = cli->GetRemoteName(sptr);
+			sptr = cli->GetRemoteName(sptr).Or(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
 			listener->me->log->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 		}

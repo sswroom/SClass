@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType user
 	Data::DateTime dt2;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->dtpStartTime->GetSelectedTime(dt1);
 	me->dtpEndTime->GetSelectedTime(dt2);
 	me->txtFileDir->GetText(sb);
@@ -85,9 +85,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType user
 	dlg.Delete();
 }
 
-Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir)
+Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, UnsafeArray<const UTF8Char> buffStart, UnsafeArray<const UTF8Char> pathBase, UnsafeArray<UTF8Char> pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	Int32 iVal;
@@ -99,10 +99,10 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 	Data::Timestamp createTime;
 	UInt32 unixAttr;
 	sptr = Text::StrConcatC(pathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(buffStart, sptr));
+	sess = IO::Path::FindFile(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr)));
 	if (sess)
 	{
-		while ((sptr = IO::Path::FindNextFile(pathEnd, sess, &modTime, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(pathEnd, sess, &modTime, &pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -127,7 +127,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 					if (startTime->CompareTo(dt) <= 0 && endTime->CompareTo(dt) >= 0)
 					{
 						{
-							IO::FileStream fs({buffStart, (UOSInt)(sptr - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							IO::FileStream fs({buffStart, (UOSInt)(UnsafeArray<const UTF8Char>(sptr) - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							if (fs.IsError())
 							{
 								succ = false;
@@ -137,8 +137,8 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 								createTime = 0;
 								accTime = 0;
 								fs.GetFileTimes(createTime, accTime, modTime);
-								unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, sptr));
-								succ = zip->AddFile(CSTRP(pathBase, sptr), fs, modTime, accTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
+								unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr)));
+								succ = zip->AddFile(CSTRP(pathBase, UnsafeArray<const UTF8Char>(sptr)), fs, modTime, accTime, createTime, Data::Compress::Inflate::CompressionLevel::BestCompression, unixAttr);
 
 /*								UInt8 *fileBuff;
 								UInt64 fileLeng = fs.GetLength();
@@ -202,11 +202,11 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 					{
 						createTime = 0;
 						accTime = 0;
-						IO::Path::GetFileTime(CSTRP(buffStart, sptr), modTime, createTime, accTime);
-						unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, sptr));
+						IO::Path::GetFileTime(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr)), modTime, createTime, accTime);
+						unixAttr = IO::Path::GetFileUnixAttr(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr)));
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						*sptr = 0;
-						zip->AddDir(CSTRP(pathBase, sptr), modTime, createTime, accTime, unixAttr);
+						zip->AddDir(CSTRP(pathBase, UnsafeArray<const UTF8Char>(sptr)), modTime, createTime, accTime, unixAttr);
 						if (!this->CopyToZip(zip, buffStart, pathBase, sptr, startTime, endTime, false))
 						{
 							return false;

@@ -99,7 +99,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 	mbuff = mstm.GetBuff(i);
 	Text::XMLDocument doc;
 	doc.ParseBuff(encFact, mbuff, i);
-	NN<Text::XMLNode> *nodes = doc.SearchNode(CSTR("/rss/channel/item/description"), i);
+	UnsafeArray<NN<Text::XMLNode>> nodes = doc.SearchNode(CSTR("/rss/channel/item/description"), i);
 	NN<Text::XMLNode> n;
 	NN<Text::XMLNode> n2;
 
@@ -430,7 +430,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetCurrentSignal()
 	return this->currSignal;
 }
 
-Net::HKOWeather::PSR Net::HKOWeather::PSRParse(Text::CString psr)
+Net::HKOWeather::PSR Net::HKOWeather::PSRParse(Text::CStringNN psr)
 {
 	if (psr.Equals(UTF8STRC("Low")))
 	{
@@ -566,7 +566,7 @@ Text::CStringNN Net::HKOWeather::PSRGetName(PSR psr)
 	}
 }
 
-Net::HKOWeather::WeatherWarning Net::HKOWeather::WeatherWarningParse(Text::CString warning)
+Net::HKOWeather::WeatherWarning Net::HKOWeather::WeatherWarningParse(Text::CStringNN warning)
 {
 	if (warning.Equals(UTF8STRC("WFIREY"))) return WeatherWarning::WFIREY;
 	if (warning.Equals(UTF8STRC("WFIRER"))) return WeatherWarning::WFIRER;
@@ -698,7 +698,7 @@ Text::CStringNN Net::HKOWeather::WeatherWarningGetName(WeatherWarning warning)
 	}
 }
 
-Net::HKOWeather::SignalAction Net::HKOWeather::SignalActionParse(Text::CString action)
+Net::HKOWeather::SignalAction Net::HKOWeather::SignalActionParse(Text::CStringNN action)
 {
 	if (action.Equals(UTF8STRC("ISSUE"))) return SignalAction::ISSUE;
 	if (action.Equals(UTF8STRC("REISSUE"))) return SignalAction::REISSUE;

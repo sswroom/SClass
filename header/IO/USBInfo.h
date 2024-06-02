@@ -19,7 +19,7 @@ namespace IO
 		UInt16 GetVendorId();
 		UInt16 GetProductId();
 		UInt16 GetRevision();
-		Text::CString GetDispName();
+		Text::CStringNN GetDispName();
 
 		static UOSInt GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList);
 	};

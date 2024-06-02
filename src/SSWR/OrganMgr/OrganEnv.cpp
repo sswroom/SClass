@@ -150,8 +150,8 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	this->errType = ERR_NONE;
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Lang"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("zh-hk.txt"));
@@ -241,7 +241,7 @@ NN<Data::ArrayListNN<SSWR::OrganMgr::OrganGroupType>> SSWR::OrganMgr::OrganEnv::
 Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(NN<OrganSpecies> sp, NN<OrganImageItem> img)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	NN<UserFileInfo> userFile;
 	NN<WebFileInfo> webFile;
@@ -604,11 +604,11 @@ Optional<Media::EXIFData> SSWR::OrganMgr::OrganEnv::ParseTIFExif(Text::CStringNN
 	//////////////////////////////////
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt)
+void SSWR::OrganMgr::OrganEnv::ExportWeb(UnsafeArray<const UTF8Char> exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = Text::StrConcat(sbuff, exportDir);
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr = Text::StrConcat(sbuff, exportDir);
+	UnsafeArray<UTF8Char> sptrEnd;
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -721,7 +721,7 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(NN<Data::FastMapNN<Int32, Data::A
 	spTree.Delete();
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportBeginPage(NN<IO::Writer> writer, const UTF8Char *title)
+void SSWR::OrganMgr::OrganEnv::ExportBeginPage(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> title)
 {
 	NN<Text::String> s;
 	writer->WriteLine(CSTR("<HTML>"));
@@ -746,7 +746,7 @@ void SSWR::OrganMgr::OrganEnv::ExportEndPage(NN<IO::Writer> writer)
 	writer->WriteLine(CSTR("</HTML>"));
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt)
+void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree, UnsafeArray<const UTF8Char> backURL, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt)
 {
 	UOSInt totalPhoto = 0;
 	UOSInt totalSpecies = 0;
@@ -763,7 +763,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 	Text::UTF8Writer *writer = 0;
 	NN<Text::UTF8Writer> nnwriter;
 	Text::StringBuilderUTF8 sb;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	UTF8Char backBuff[64];
 	Text::StrConcatC(Text::StrInt32(Text::StrConcatC(backBuff, UTF8STRC("../../indexhd/grp")), grp->GetGroupId()), UTF8STRC("/index.html"));
@@ -924,7 +924,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 	*phSpeciesCnt = totalPhSpecies;
 }
 
-Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(NN<OrganSpecies> sp, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OutParam<UOSInt> photoCnt, OutParam<Bool> hasMyPhoto)
+Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(NN<OrganSpecies> sp, UnsafeArray<const UTF8Char> backURL, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, OutParam<UOSInt> photoCnt, OutParam<Bool> hasMyPhoto)
 {
 	UOSInt i;
 	UOSInt j;
@@ -933,7 +933,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(NN<OrganSpecies> sp, const UTF8Char
 	Data::ArrayListNN<OrganImageItem> items;
 	Bool myPhotoExist = false;
 	NN<Text::String> s;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	GetSpeciesImages(items, sp);
 
 	i = items.GetCount();

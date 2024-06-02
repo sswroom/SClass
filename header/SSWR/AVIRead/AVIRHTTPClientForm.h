@@ -122,7 +122,7 @@ namespace SSWR
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Text::String *reqURL;
-			const UTF8Char *reqBody;
+			UnsafeArrayOpt<const UTF8Char> reqBody;
 			UOSInt reqBodyLen;
 			Text::String *reqBodyType;
 			Text::String *reqUserName;
@@ -177,7 +177,7 @@ namespace SSWR
 			void ClearCookie();
 			void ClearFiles();
 			Optional<HTTPCookie> SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL);
-			UTF8Char *AppendCookie(UTF8Char *sbuff, Text::CStringNN reqURL);
+			UnsafeArrayOpt<UTF8Char> AppendCookie(UnsafeArray<UTF8Char> sbuff, Text::CStringNN reqURL);
 		public:
 			AVIRHTTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPClientForm();

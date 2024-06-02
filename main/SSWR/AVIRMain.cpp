@@ -37,13 +37,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	SSWR::AVIRead::AVIRBaseForm *frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt argc;
 	UOSInt i;
 	UTF8Char **argv;
 
 //	MemSetBreakPoint(0x014746E8);
-	MemSetLogFile(UTF8STRC("Memory.log"));
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 #ifdef USE_FFMPEG
 	Media::Decoder::FFMPEGDecoder::Enable();
 #endif

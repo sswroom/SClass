@@ -152,7 +152,7 @@ namespace Text
 		DarkSlateGray
 	};
 
-	Text::CString StandardColorGetName(StandardColor c);
+	Text::CStringNN StandardColorGetName(StandardColor c);
 	UInt32 StandardColorGetARGB32(StandardColor c);
 }
 #endif

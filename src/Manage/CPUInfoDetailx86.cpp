@@ -37,9 +37,9 @@ typedef struct
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->cpuModel = CSTR_NULL;
-	if ((sptr = this->GetCPUName(sbuff)) != 0)
+	if (this->GetCPUName(sbuff).SetTo(sptr))
 	{
 		this->cpuModel = Manage::CPUDB::X86CPUNameToModel(CSTRP(sbuff, sptr));
 	}

@@ -12,7 +12,7 @@ Double Math::Unit::ReactivePower::GetUnitRatio(ReactivePowerUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::ReactivePower::GetUnitShortName(ReactivePowerUnit unit)
+Text::CStringNN Math::Unit::ReactivePower::GetUnitShortName(ReactivePowerUnit unit)
 {
 	switch (unit)
 	{
@@ -22,7 +22,7 @@ Text::CString Math::Unit::ReactivePower::GetUnitShortName(ReactivePowerUnit unit
 	return CSTR("");
 }
 
-Text::CString Math::Unit::ReactivePower::GetUnitName(ReactivePowerUnit unit)
+Text::CStringNN Math::Unit::ReactivePower::GetUnitName(ReactivePowerUnit unit)
 {
 	switch (unit)
 	{

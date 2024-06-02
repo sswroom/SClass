@@ -431,7 +431,7 @@ class FilesComparator : public Data::Comparator<CesiumDownloader::FileEntry*>
 	}
 };
 
-void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString url)
+void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN url)
 {
 	Manage::HiResClock clk;
 	downloader->AddURL(url);

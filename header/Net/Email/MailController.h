@@ -21,7 +21,7 @@ namespace Net
 			typedef struct
 			{
 				UOSInt size;
-				const UTF8Char *uid;
+				UnsafeArrayOpt<const UTF8Char> uid;
 			} MessageInfo;
 		public:
 			virtual ~MailController() {};

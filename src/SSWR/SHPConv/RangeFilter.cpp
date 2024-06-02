@@ -26,7 +26,7 @@ Bool SSWR::SHPConv::RangeFilter::IsValid(Double left, Double top, Double right, 
 	}
 }
 
-UTF8Char *SSWR::SHPConv::RangeFilter::ToString(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::SHPConv::RangeFilter::ToString(UnsafeArray<UTF8Char> buff) const
 {
 	if (this->compareType == 1)
 	{

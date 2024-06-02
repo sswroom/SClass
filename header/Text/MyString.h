@@ -173,8 +173,8 @@ namespace Text
 	FORCEINLINE Bool StrHex2UInt32V(UnsafeArray<const UTF8Char> str, OutParam<UInt32> outVal) { return StrHex2Int32V(str, OutParam<Int32>::ConvertFrom(outVal)); }
 	FORCEINLINE UInt16 StrHex2UInt16C(UnsafeArray<const UTF8Char> str) { return (UInt16)StrHex2Int16C(str); }
 	FORCEINLINE Bool StrHex2UInt16V(UnsafeArray<const UTF8Char> str, OutParam<UInt16> outVal) { return StrHex2Int16V(str, OutParam<Int16>::ConvertFrom(outVal)); }
-	UOSInt StrHex2Bytes(UnsafeArray<const UTF8Char> str, UInt8 *buff);
-	UOSInt StrHex2BytesS(UnsafeArray<const UTF8Char> str, UInt8 *buff, UTF8Char seperator);
+	UOSInt StrHex2Bytes(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff);
+	UOSInt StrHex2BytesS(UnsafeArray<const UTF8Char> str, UnsafeArray<UInt8> buff, UTF8Char seperator);
 #ifdef HAS_INT64
 	Int64 StrOct2Int64(UnsafeArray<const UTF8Char> str);
 #endif
@@ -369,7 +369,7 @@ namespace Text
 	FORCEINLINE UOSInt StrIndexOfCh(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrIndexOf(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE UOSInt StrIndexOfCharCh(UnsafeArray<const Char> str1, Char c) { return StrIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
 	FORCEINLINE UOSInt StrIndexOfICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrIndexOfICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); };
-	FORCEINLINE UOSInt StrLastIndexOfChar(UnsafeArray<const Char> str1, Char c) { return StrLastIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
+	FORCEINLINE UOSInt StrLastIndexOfCharCh(UnsafeArray<const Char> str1, Char c) { return StrLastIndexOfChar(UnsafeArray<const UTF8Char>::ConvertFrom(str1), (UTF8Char)c); }
 	FORCEINLINE UOSInt StrLastIndexOf(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrLastIndexOf(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrContainChars(UnsafeArray<const Char> str, UnsafeArray<const Char> chars) { return StrContainChars(UnsafeArray<const UTF8Char>::ConvertFrom(str), UnsafeArray<const UTF8Char>::ConvertFrom(chars)); }
 	FORCEINLINE UnsafeArray<Char> StrRTrim(UnsafeArray<Char> str1) { return UnsafeArray<Char>::ConvertFrom(StrRTrim(UnsafeArray<UTF8Char>::ConvertFrom(str1))); };
@@ -385,7 +385,7 @@ namespace Text
 	FORCEINLINE Bool StrStartsWithICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrStartsWithICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrEndsWith(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrEndsWith(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
 	FORCEINLINE Bool StrEndsWithICase(UnsafeArray<const Char> str1, UnsafeArray<const Char> str2) { return StrEndsWithICase(UnsafeArray<const UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(str2)); }
-	FORCEINLINE Bool StrIsInt32(UnsafeArray<const Char> str1) { return StrIsInt32(UnsafeArray<const UTF8Char>::ConvertFrom(str1)); };
+	FORCEINLINE Bool StrIsInt32Ch(UnsafeArray<const Char> str1) { return StrIsInt32(UnsafeArray<const UTF8Char>::ConvertFrom(str1)); };
 	FORCEINLINE UOSInt StrReplaceCh(UnsafeArray<Char> str1, Char oriC, Char destC) { return StrReplace(UnsafeArray<UTF8Char>::ConvertFrom(str1), (UTF8Char)oriC, (UTF8Char)destC); };
 	FORCEINLINE UOSInt StrReplaceCh(UnsafeArray<Char> str1, UnsafeArray<const Char> replaceFrom, UnsafeArray<const Char> replaceTo) { return StrReplace(UnsafeArray<UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(replaceFrom), UnsafeArray<const UTF8Char>::ConvertFrom(replaceTo)); };
 	FORCEINLINE UOSInt StrReplaceICaseCh(UnsafeArray<Char> str1, UnsafeArray<const Char> replaceFrom, UnsafeArray<const Char> replaceTo) { return StrReplaceICase(UnsafeArray<UTF8Char>::ConvertFrom(str1), UnsafeArray<const UTF8Char>::ConvertFrom(replaceFrom), UnsafeArray<const UTF8Char>::ConvertFrom(replaceTo)); };

@@ -38,7 +38,7 @@ namespace Net
 			Sync::Event threadEvt;
 			NN<IO::LogTool> log;
 
-			Optional<Net::SNS::SNSControl> CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
+			Optional<Net::SNS::SNSControl> CreateControl(Net::SNS::SNSControl::SNSType type, Text::CStringNN channelId);
 			NN<ChannelData> ChannelInit(NN<Net::SNS::SNSControl> ctrl);
 			void ChannelAddMessage(NN<ChannelData> channel, NN<Net::SNS::SNSControl::SNSItem> item);
 			void ChannelStoreCurr(NN<ChannelData> channel);
@@ -50,7 +50,7 @@ namespace Net
 			SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NN<IO::LogTool> log);
 			virtual ~SNSManager();
 
-			Optional<Net::SNS::SNSControl> AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
+			Optional<Net::SNS::SNSControl> AddChannel(Net::SNS::SNSControl::SNSType type, Text::CStringNN channelId);
 
 			void Use(NN<Sync::MutexUsage> mutUsage);
 			virtual UOSInt GetCount() const;

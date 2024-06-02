@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(AnyType userObj)
 	Sync::MutexUsage mutUsage;
 	NN<const Data::ReadingListNN<Net::SSDPClient::SSDPDevice>> devList = me->ssdp->GetDevices(mutUsage);
 	UInt8 sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (devList->GetCount() != me->lbDevice->GetCount())
 	{
 		UOSInt i = 0;
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(AnyType userObj)
 		while (i < j)
 		{
 			dev = devList->GetItemNoCheck(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->addr).Or(sbuff);
 			me->lbDevice->AddItem(CSTRP(sbuff, sptr), dev);
 			i++;
 		}
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userOb
 	if (svc)
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->txtLocation->SetText(Text::String::OrEmpty(svc->location)->ToCString());
 		if (svc->time)
 		{

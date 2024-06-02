@@ -453,7 +453,7 @@ void Net::WebServer::IWebRequest::GetRequestAddr(NN<Net::SocketUtil::AddressInfo
 	addr.SetVal(this->GetClientAddr().Ptr()[0]);
 }
 
-Text::CString Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)
+Text::CStringNN Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)
 {
 	switch (reqProto)
 	{

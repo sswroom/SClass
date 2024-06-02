@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 		Int32 *counts;
 		Int64 *dates;
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		{
 			sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
 			Data::LineChart chart(CSTRP(sbuff, sptr));
@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt colIsoCode = (UOSInt)-1;
 	UOSInt colLocation = (UOSInt)-1;
 	UOSInt colDate = (UOSInt)-1;
@@ -143,14 +143,14 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 	{
 		DB::CSVFile csv(stm, 65001);
 		NN<DB::DBReader> r;
-		if (!csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (!csv.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			return false;
 		}
 		i = r->ColCount();
 		while (i-- > 0)
 		{
-			if ((sptr = r->GetName(i, sbuff)) != 0)
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("iso_code")))
 				{
@@ -188,12 +188,12 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 		Int64 t;
 		while (r->ReadNext())
 		{
-			sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff));
+			sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff)).Or(sbuff);
 			if (!this->countries.Get(CSTRP(sbuff, sptr)).SetTo(country))
 			{
 				NEW_CLASSNN(country, SSWR::AVIRead::AVIRCOVID19Form::CountryInfo());
 				country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-				sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff));
+				sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff)).Or(sbuff);
 				country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				r->GetStr(colPopulation, sbuff, sizeof(sbuff));
 				country->population = Text::StrToDouble(sbuff);

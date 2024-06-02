@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt64 thisRecvCnt = me->recvCnt;
 	UInt64 thisRecvSize = me->recvSize;
 	UInt64 sendSuccCnt;

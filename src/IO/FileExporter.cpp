@@ -40,7 +40,7 @@ Bool IO::FileExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 	return false;
 }
 
-Bool IO::FileExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
+Bool IO::FileExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }

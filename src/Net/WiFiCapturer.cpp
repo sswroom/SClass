@@ -243,10 +243,10 @@ void Net::WiFiCapturer::Stop()
 void Net::WiFiCapturer::StoreStatus()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	UOSInt i;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcatC(sptr, UTF8STRC("wifi"));
@@ -257,12 +257,13 @@ void Net::WiFiCapturer::StoreStatus()
 	Sync::MutexUsage mutUsage(this->logMut);
 	if (this->wifiLog.StoreFile(CSTRP(sbuff, sptr)))
 	{
-		if (this->lastFileName)
+		UnsafeArray<const UTF8Char> lastFileName;
+		if (this->lastFileName.SetTo(lastFileName))
 		{
-			IO::Path::DeleteFile(this->lastFileName);
-			Text::StrDelNew(this->lastFileName);
+			IO::Path::DeleteFile(lastFileName);
+			Text::StrDelNew(lastFileName);
 		}
-		this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+		this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 }
 

@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 	{
 		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		NN<IO::ParsedObject> pobj;
@@ -57,8 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 		{
 			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(CSTRP(sbuff, sptr)))
+				if (pkgFile->GetItemName(sbuff, i).SetTo(sptr) && IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
@@ -88,8 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 		{
 			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(CSTRP(sbuff, sptr)))
+				if (pkgFile->GetItemName(sbuff, i).SetTo(sptr) && IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
@@ -121,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 	{
 		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		NN<IO::ParsedObject> pobj;
 		Bool found = false;
@@ -130,8 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 		{
 			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(CSTRP(sbuff, sptr)))
+				if (pkgFile->GetItemName(sbuff, i).SetTo(sptr) && IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
@@ -160,8 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 		{
 			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = pkgFile->GetItemName(sbuff, i);
-				if (IsImageFileName(CSTRP(sbuff, sptr)))
+				if (pkgFile->GetItemName(sbuff, i).SetTo(sptr) && IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
@@ -231,7 +227,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, 
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(Text::CString fileName)
+Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(Text::CStringNN fileName)
 {
 	if (fileName.EndsWithICase(UTF8STRC(".jpg"))) return true;
 	if (fileName.EndsWithICase(UTF8STRC(".png"))) return true;
@@ -325,7 +321,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 			{
 				imgList->SetSourceName(frm.GetFileName());
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
 				this->SetText(CSTRP(sbuff, sptr));
 			}
@@ -389,9 +385,9 @@ void SSWR::AVIRead::AVIRImageViewerForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> imgList, Bool sameDir)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt i;
 	UOSInt j;
 	this->pbImage->SetImage(0, false);
@@ -434,8 +430,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> img
 				j = pkgFile->GetCount();
 				while (j-- > 0)
 				{
-					sptr2 = pkgFile->GetItemName(sbuff2, j);
-					if (Text::StrEqualsC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), sbuff2, (UOSInt)(sptr2 - sbuff2)))
+					if (pkgFile->GetItemName(sbuff2, j).SetTo(sptr2) && Text::StrEqualsC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), sbuff2, (UOSInt)(sptr2 - sbuff2)))
 					{
 						this->fileIndex = j;
 						break;
@@ -455,7 +450,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 	NN<IO::ParsedObject> pobj;
 	NN<IO::StreamData> fd2;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 	{
@@ -478,8 +473,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 		{
 			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = pf->GetItemName(sbuff, i);
-				if (IsImageFileName(CSTRP(sbuff, sptr)))
+				if (pf->GetItemName(sbuff, i).SetTo(sptr) && IsImageFileName(CSTRP(sbuff, sptr)))
 				{
 					if (pf->GetItemStmDataNew(i).SetTo(fd2))
 					{

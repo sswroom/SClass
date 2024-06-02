@@ -3,7 +3,7 @@
 #include "SSWR/OrganMgr/OrganGroupType.h"
 #include "Text/MyString.h"
 
-SSWR::OrganMgr::OrganGroupType::OrganGroupType(Int32 seq, Text::CString cName, Text::CString eName)
+SSWR::OrganMgr::OrganGroupType::OrganGroupType(Int32 seq, Text::CStringNN cName, Text::CStringNN eName)
 {
 	this->seq = seq;
 	this->cName = Text::String::New(cName.v, cName.leng);
@@ -31,7 +31,7 @@ NN<Text::String> SSWR::OrganMgr::OrganGroupType::GetEName() const
 	return this->eName;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganGroupType::ToString(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganGroupType::ToString(UnsafeArray<UTF8Char> sbuff)
 {
 	return this->cName->ConcatTo(Text::StrConcatC(Text::StrInt32(sbuff, this->seq), UTF8STRC(" ")));
 }

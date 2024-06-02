@@ -210,14 +210,14 @@ Int32 InPolygonTest()
 
 Int32 RenameFileTest()
 {
-	Text::CString path = CSTR("/media/sswroom/Extreme SSD/PBG/3D_Mesh/");
+	Text::CStringNN path = CSTR("/media/sswroom/Extreme SSD/PBG/3D_Mesh/");
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char *sptrEnd2;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
+	UnsafeArray<UTF8Char> sptrEnd2;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
 	sptr = path.ConcatTo(sbuff);
 	sptrEnd = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptrEnd));
@@ -225,7 +225,7 @@ Int32 RenameFileTest()
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
 		{
 			if (sptr[0] != '.' && pt == IO::Path::PathType::Directory)
 			{
@@ -246,7 +246,7 @@ Int32 RenameFileTest()
 						IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
 						*sptrEnd++ = IO::Path::PATH_SEPERATOR;
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
-						while ((sptrEnd2 = IO::Path::FindNextFile(sptrEnd, sess2, 0, &pt, 0)) != 0)
+						while (IO::Path::FindNextFile(sptrEnd, sess2, 0, &pt, 0).SetTo(sptrEnd2))
 						{
 							if (sptrEnd[0] != '.' && pt == IO::Path::PathType::Directory)
 							{
@@ -316,12 +316,12 @@ public:
 
 	virtual void PowerMode(PowerStatus status)
 	{
-		printf("Power Mode: %s\r\n", PowerStatusGetName(status).v);
+		printf("Power Mode: %s\r\n", PowerStatusGetName(status).v.Ptr());
 	}
 
 	virtual void BatteryCharging(ChargingStatus status)
 	{
-		printf("Battery Charging: %s\r\n", ChargingStatusGetName(status).v);
+		printf("Battery Charging: %s\r\n", ChargingStatusGetName(status).v.Ptr());
 	}
 
 	virtual void OKLED(Bool ledOn)
@@ -349,7 +349,7 @@ Int32 ProcessExecTest()
 	{
 		sb.RemoveChars(1);
 	}
-	printf("Return %s\r\n", sb.ToString());
+	printf("Return %s\r\n", sb.ToPtr());
 	return 0;
 }
 
@@ -392,7 +392,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Local Weather Forecast:\r\n%s\r\n", sb.v);
+			printf("Local Weather Forecast:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -404,7 +404,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("9-Day Weather Forecast:\r\n%s\r\n", sb.v);
+			printf("9-Day Weather Forecast:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -416,7 +416,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Current Weather Report:\r\n%s\r\n", sb.v);
+			printf("Current Weather Report:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -428,7 +428,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Weather Warning Summary:\r\n%s\r\n", sb.v);
+			printf("Weather Warning Summary:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -441,7 +441,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Weather Warning Information:\r\n%s\r\n", sb.v);
+			printf("Weather Warning Information:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -453,7 +453,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Special Weather Tips:\r\n%s\r\n", sb.v);
+			printf("Special Weather Tips:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -465,7 +465,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Quick Earthquake Messages:\r\n%s\r\n", sb.v);
+			printf("Quick Earthquake Messages:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -478,7 +478,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Locally Felt Earth Tremor Report:\r\n%s\r\n", sb.v);
+			printf("Locally Felt Earth Tremor Report:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -490,7 +490,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Lunar Date:\r\n%s\r\n", sb.v);
+			printf("Lunar Date:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}
@@ -501,7 +501,7 @@ Int32 HKOTest()
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
-			printf("Rainfall in The Past Hour from Automatic Weather Station API:\r\n%s\r\n", sb.v);
+			printf("Rainfall in The Past Hour from Automatic Weather Station API:\r\n%s\r\n", sb.v.Ptr());
 			resp.Delete();
 		}
 	}

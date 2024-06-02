@@ -91,7 +91,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coo
 	if (me->selectMode == ActionType::Corners)
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->points.Add(me->pbImg->Scn2ImagePos(scnPos));
 		if (me->points.GetCount() >= 4)
 		{
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Med
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	NN<ResultInfo> res;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	res = MemAllocNN(ResultInfo);
 	res->area = area;

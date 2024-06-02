@@ -106,7 +106,7 @@ NN<Text::String> Net::SNS::SNSInstagram::GetName() const
 	return this->chName;
 }
 
-UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
+UnsafeArray<UTF8Char> Net::SNS::SNSInstagram::GetDirName(UnsafeArray<UTF8Char> dirName)
 {
 	dirName = Text::StrConcatC(dirName, UTF8STRC("Instagram_"));
 	dirName = this->channelId->ConcatTo(dirName);
@@ -120,7 +120,7 @@ UOSInt Net::SNS::SNSInstagram::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemL
 	return itemList->GetCount() - initCnt;
 }
 
-UTF8Char *Net::SNS::SNSInstagram::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
+UnsafeArray<UTF8Char> Net::SNS::SNSInstagram::GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item)
 {
 	return item->id->ConcatTo(buff);
 }

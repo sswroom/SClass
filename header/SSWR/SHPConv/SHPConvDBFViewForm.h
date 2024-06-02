@@ -18,7 +18,7 @@ namespace SSWR
 			Media::MonitorMgr *monMgr;
 
 		public:
-			SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl);
+			SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CStringNN lbl);
 			virtual ~SHPConvDBFViewForm();
 
 			virtual void OnMonitorChanged();

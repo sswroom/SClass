@@ -11,8 +11,8 @@
 
 #include <stdio.h>
 
-Text::CString Text::ReportBuilder::ColumnMergeLeft = CSTR("|-L");
-Text::CString Text::ReportBuilder::ColumnMergeUp = CSTR("|-U");
+Text::CStringNN Text::ReportBuilder::ColumnMergeLeft = CSTR("|-L");
+Text::CStringNN Text::ReportBuilder::ColumnMergeUp = CSTR("|-U");
 
 Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::DataType dataType)
 {
@@ -29,7 +29,7 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::
 	}
 }
 
-Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UTF8Char **columns)
+Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns)
 {
 	TableCell *cols;
 	UOSInt i;
@@ -42,14 +42,15 @@ Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UT
 	this->paperHori = false;
 	this->tableBorders = false;
 	this->colTypes = MemAlloc(ColType, this->colCount);
+	UnsafeArray<const UTF8Char> nns;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		colWidthPts[i] = 0;
-		if (columns[i])
+		if (columns[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(columns[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
 		}
 		else
 		{
@@ -201,17 +202,18 @@ void Text::ReportBuilder::AddHeader(Text::CString name, UOSInt nameCellCnt, Text
 	this->headers.Add(header);
 }
 
-void Text::ReportBuilder::AddTableHeader(const UTF8Char **content)
+void Text::ReportBuilder::AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
 	UnsafeArray<TableCell> cols;
+	UnsafeArray<const UTF8Char> nns;
 	UOSInt i;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
-		if (content[i])
+		if (content[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(content[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
 		}
 		else
 		{
@@ -224,17 +226,18 @@ void Text::ReportBuilder::AddTableHeader(const UTF8Char **content)
 	this->tableRowType.Add(RT_HEADER);
 }
 
-void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
+void Text::ReportBuilder::AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
 	TableCell *cols;
 	UOSInt i;
+	UnsafeArray<const UTF8Char> nns;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
-		if (content[i])
+		if (content[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(content[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
 		}
 		else
 		{
@@ -247,17 +250,18 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 	this->tableRowType.Add(RT_CONTENT);
 }
 
-void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
+void Text::ReportBuilder::AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content)
 {
 	TableCell *cols;
 	UOSInt i;
+	UnsafeArray<const UTF8Char> nns;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
-		if (content[i])
+		if (content[i].SetTo(nns))
 		{
-			cols[i].val = Text::String::NewNotNullSlow(content[i]).Ptr();
+			cols[i].val = Text::String::NewNotNullSlow(nns).Ptr();
 		}
 		else
 		{
@@ -286,9 +290,10 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	}
 	icon = MemAllocNN(Text::ReportBuilder::ColIcon);
 	icon->col = index;
-	if (fileName.v)
+	Text::CStringNN nns;
+	if (fileName.SetTo(nns))
 	{
-		icon->fileName = Text::String::New(fileName.v, fileName.leng).Ptr();
+		icon->fileName = Text::String::New(nns).Ptr();
 		if (IO::Path::PATH_SEPERATOR != '/')
 		{
 			icon->fileName->Replace('/', IO::Path::PATH_SEPERATOR);
@@ -298,9 +303,9 @@ void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CS
 	{
 		icon->fileName = 0;
 	}
-	if (name.v)
+	if (name.SetTo(nns))
 	{
-		icon->name = Text::String::New(name.v, name.leng).Ptr();
+		icon->name = Text::String::New(nns).Ptr();
 	}
 	else
 	{
@@ -941,7 +946,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	NN<Media::VectorDocument> doc;
 	NN<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
 	Double border = 10.0;
 	Double fontHeightMM = 3.0;

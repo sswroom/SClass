@@ -30,7 +30,7 @@ void IO::StringLogger::ReadLogs(IO::Reader *reader)
 	this->modified = false;
 }
 
-void IO::StringLogger::LogStr(const UTF8Char *s, UOSInt len)
+void IO::StringLogger::LogStr(UnsafeArray<const UTF8Char> s, UOSInt len)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	OSInt i = this->strList.SortedIndexOfPtr(s, len);

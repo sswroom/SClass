@@ -26,10 +26,10 @@ Media::VideoCaptureMgr::~VideoCaptureMgr()
 	MemFree(data);
 }
 
-UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+UOSInt Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
 	ClassData *data = (ClassData*)this->clsData;
-	DeviceInfo *devInfo;
+	NN<DeviceInfo> devInfo;
 	UTF8Char sbuff[512];
 	Data::ArrayList<UInt32> devIdList;
 	UOSInt ret = 0;
@@ -37,7 +37,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 	UOSInt j = data->v4lMgr->GetDeviceList(&devIdList);
 	while (i < j)
 	{
-		devInfo = MemAlloc(DeviceInfo, 1);
+		devInfo = MemAllocNN(DeviceInfo);
 		devInfo->devType = 0;
 		devInfo->devId = devIdList.GetItem(i);
 		data->v4lMgr->GetDeviceName(sbuff, devInfo->devId);
@@ -52,7 +52,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 	j = data->androidMgr->GetDeviceList(&devIdList);
 	while (i < j)
 	{
-		devInfo = MemAlloc(DeviceInfo, 1);
+		devInfo = MemAllocNN(DeviceInfo);
 		devInfo->devType = 1;
 		devInfo->devId = devIdList.GetItem(i);
 		data->androidMgr->GetDeviceName(sbuff, devInfo->devId);
@@ -64,19 +64,19 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devL
 	return ret;
 }
 
-void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList)
 {
-	DeviceInfo *devInfo;
+	NN<DeviceInfo> devInfo;
 	UOSInt i = devList->GetCount();
 	while (i-- > 0)
 	{
-		devInfo = devList->GetItem(i);
-		SDEL_TEXT(devInfo->devName);
-		MemFree(devInfo);
+		devInfo = devList->GetItemNoCheck(i);
+		if (devInfo->devName) Text::StrDelNew(devInfo->devName);
+		MemFreeNN(devInfo);
 	}
 }
 
-Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
+Optional<Media::IVideoCapture> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (devType == 0)
@@ -93,7 +93,7 @@ Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt
 	}
 }
 
-Text::CString Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
+Text::CStringNN Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
 {
 	switch (devType)
 	{

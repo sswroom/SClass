@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(AnyType userObj)
 	{
 		UInt8 buff[32];
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->txtName->SetText(sdCard->GetName()->ToCString());
 		sdCard->GetCID(buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 
 	IO::SDCardMgr::GetCardList(this->sdCardList);

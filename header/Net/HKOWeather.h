@@ -199,13 +199,13 @@ namespace Net
 		virtual void ItemRemoved(NN<Net::RSSItem> item);
 		WeatherSignal GetCurrentSignal();
 
-		static PSR PSRParse(Text::CString psr);
+		static PSR PSRParse(Text::CStringNN psr);
 		static Text::CStringNN ForecastIconGetName(ForecastIcon icon);
 		static Text::CStringNN PSRGetName(PSR psr);
-		static WeatherWarning WeatherWarningParse(Text::CString warning);
+		static WeatherWarning WeatherWarningParse(Text::CStringNN warning);
 		static Text::CStringNN WeatherWarningGetCode(WeatherWarning warning);
 		static Text::CStringNN WeatherWarningGetName(WeatherWarning warning);
-		static SignalAction SignalActionParse(Text::CString action);
+		static SignalAction SignalActionParse(Text::CStringNN action);
 		static Text::CStringNN SignalActionGetName(SignalAction action);
 	};
 }

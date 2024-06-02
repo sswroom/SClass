@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 	if (port > 0 && port < 65535)
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();

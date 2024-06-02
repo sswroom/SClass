@@ -6,12 +6,13 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, NN<Text::StringBuilderUTF8> outSb)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CStringNN userAgent, NN<Text::StringBuilderUTF8> outSb)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry ent;
+	UnsafeArray<const UTF8Char> nns;
 	UOSInt j;
-	Net::UserAgentDB::ParseUserAgent(&ent, userAgent);
+	Net::UserAgentDB::ParseUserAgent(ent, userAgent);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("\t{Net::BrowserInfo::"));
 	sb.Append(Net::BrowserInfo::GetDefName(ent.browser));
@@ -19,10 +20,10 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	j = sb.GetLength();
 	if (j < 35) sb.AppendChar(' ', 35 - j);
 
-	if (ent.browserVer)
+	if (ent.browserVer.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC("UTF8STRC(\""));
-		sb.AppendC(ent.browserVer, ent.browserVerLen);
+		sb.AppendC(nns, ent.browserVerLen);
 		sb.AppendC(UTF8STRC("\")"));
 	}
 	else
@@ -39,10 +40,10 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	j = sb.GetLength();
 	if (j < 95) sb.AppendChar(' ', 95 - j);
 
-	if (ent.osVer)
+	if (ent.osVer.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC("UTF8STRC(\""));
-		sb.AppendC(ent.osVer, ent.osVerLen);
+		sb.AppendC(nns, ent.osVerLen);
 		sb.AppendC(UTF8STRC("\")"));
 	}
 	else
@@ -53,10 +54,10 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	j = sb.GetLength();
 	if (j < 118) sb.AppendChar(' ', 118 - j);
 
-	if (ent.devName)
+	if (ent.devName.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC("UTF8STRC(\""));
-		sb.AppendC(ent.devName, ent.devNameLen);
+		sb.AppendC(nns, ent.devNameLen);
 		sb.AppendC(UTF8STRC("\")"));
 	}
 	else
@@ -66,7 +67,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 140) sb.AppendChar(' ', 140 - j);
-	NN<Text::String> s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
+	NN<Text::String> s = Text::JSText::ToNewJSTextDQuote(ent.userAgent);
 	sb.AppendC(UTF8STRC("UTF8STRC("));
 	sb.Append(s);
 	s->Release();
@@ -146,10 +147,10 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	while (i < j)
 	{
 		UOSInt uaLen = Text::StrCharCnt(entList[i].userAgent);
-		k = uaList.SortedIndexOfC(Text::CStringNN((const UTF8Char*)entList[i].userAgent, uaLen));
+		k = uaList.SortedIndexOfC(Text::CStringNN(entList[i].userAgent, uaLen));
 		if (k < 0)
 		{
-			uaList.Insert((UOSInt)~k, Text::String::New((const UTF8Char*)entList[i].userAgent, uaLen));
+			uaList.Insert((UOSInt)~k, Text::String::New(entList[i].userAgent, uaLen));
 		}
 		i++;
 	}

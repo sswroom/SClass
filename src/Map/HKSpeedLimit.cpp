@@ -110,7 +110,7 @@ void Map::HKSpeedLimit::AppendRouteIds(NN<Data::ArrayList<Int32>> routeList, Int
 Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<RouteInfo> route;
 	UOSInt i;
 	this->dataCsys = roadNetwork->CreateCoordinateSystem();
@@ -127,18 +127,20 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 			i = r->ColCount();
 			while (i-- > 0)
 			{
-				sptr = r->GetName(i, sbuff);
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID")))
+				if (r->GetName(i, sbuff).SetTo(sptr))
 				{
-					objIdCol = i;
-				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
-				{
-					shapeCol = i;
-				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
-				{
-					routeIdCol = i;
+					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID")))
+					{
+						objIdCol = i;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
+					{
+						shapeCol = i;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+					{
+						routeIdCol = i;
+					}
 				}
 			}
 			if (objIdCol != INVALID_INDEX && shapeCol != INVALID_INDEX && routeIdCol != INVALID_INDEX)
@@ -172,14 +174,16 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 				i = r->ColCount();
 				while (i-- > 0)
 				{
-					sptr = r->GetName(i, sbuff);
-					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
+					if (r->GetName(i, sbuff).SetTo(sptr))
 					{
-						routeIdCol = i;
-					}
-					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SPEED_LIMIT")))
-					{
-						spdLimitCol = i;
+						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
+						{
+							routeIdCol = i;
+						}
+						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SPEED_LIMIT")))
+						{
+							spdLimitCol = i;
+						}
 					}
 				}
 				if (routeIdCol != INVALID_INDEX && spdLimitCol != INVALID_INDEX)
@@ -188,8 +192,7 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 					{
 						if (this->routeMap.Get(r->GetInt32(routeIdCol)).SetTo(route))
 						{
-							sptr = r->GetStr(spdLimitCol, sbuff, sizeof(sbuff));
-							if (sptr && (sptr - sbuff) > 5)
+							if (r->GetStr(spdLimitCol, sbuff, sizeof(sbuff)).SetTo(sptr) && (sptr - sbuff) > 5)
 							{
 								sptr[-5] = 0;
 								Text::StrToInt32(sbuff, route->speedLimit);

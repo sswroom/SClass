@@ -35,7 +35,7 @@ IO::FileExporter::SupportType Exporter::ExcelXMLExporter::IsObjectSupported(NN<I
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::ExcelXMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::ExcelXMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -55,7 +55,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 pal[56];
 	UInt32 defPal[56];
 	Bool found;
@@ -71,7 +71,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	UOSInt m;
 	UOSInt n;
 	UInt32 v;
-	const UTF8Char *text;
+	UnsafeArray<const UTF8Char> text;
 	NN<Text::String> s;
 	Data::DateTime *dt;
 	Double ver;
@@ -99,8 +99,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	if (wb->HasInfo())
 	{
 		writer.WriteLine(CSTR(" <DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">"));
-		text = wb->GetAuthor();
-		if (text)
+		if (wb->GetAuthor().SetTo(text))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <Author>"));
@@ -110,8 +109,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			s->Release();
 			writer.WriteLine(sb.ToCString());
 		}
-		text = wb->GetLastAuthor();
-		if (text)
+		if (wb->GetLastAuthor().SetTo(text))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <LastAuthor>"));
@@ -141,8 +139,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("</LastSaved>"));
 			writer.WriteLine(sb.ToCString());
 		}
-		text = wb->GetCompany();
-		if (text)
+		if (wb->GetCompany().SetTo(text))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <Company>"));
@@ -593,8 +590,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 								NN<Text::SpreadSheet::CellStyle> tmpStyle;
 								if (cell->style.SetTo(tmpStyle))
 								{
-									text = tmpStyle->GetID();
-									if (text)
+									if (tmpStyle->GetID().SetTo(text))
 									{
 										sb.AppendC(UTF8STRC(" ss:StyleID="));
 										s = Text::XML::ToNewAttrText(text);
@@ -806,10 +802,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	return true;
 }
 
-void Exporter::ExcelXMLExporter::WriteBorderStyle(NN<IO::Writer> writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle border)
+void Exporter::ExcelXMLExporter::WriteBorderStyle(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> position, Text::SpreadSheet::CellStyle::BorderStyle border)
 {
 	UTF8Char sbuff[10];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	sb.AppendC(UTF8STRC("    <Border ss:Position="));

@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	NN<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Manage::CPUInfo cpu;
-	if ((sptr = cpu.GetCPUName(sbuff)) == 0)
+	if (!cpu.GetCPUName(sbuff).SetTo(sptr))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
@@ -65,9 +65,9 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(AnyType userObj)
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	NN<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Manage::CPUInfo cpu;
-	if ((sptr = cpu.GetCPUName(sbuff)) == 0)
+	if (!cpu.GetCPUName(sbuff).SetTo(sptr))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
@@ -144,13 +144,13 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 		i++;
 	}
-	Data::ArrayList<const UTF8Char *> infoList;
-	cpu.GetCacheInfoList(&infoList);
+	Data::ArrayListArr<const UTF8Char> infoList;
+	cpu.GetCacheInfoList(infoList);
 	i = 0;
 	j = infoList.GetCount();
 	while (i < j)
 	{
-		const UTF8Char *info = infoList.GetItem(i);
+		UnsafeArray<const UTF8Char> info = infoList.GetItem(i).Or(U8STR(""));
 		this->lbCache->AddItem({info, Text::StrCharCnt(info)}, 0);
 		i++;
 	}
@@ -194,9 +194,9 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 	Double t;
 	Int32 r;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb.ClearStr();
-	if ((sptr = cpu.GetCPUName(sbuff)) != 0)
+	if (cpu.GetCPUName(sbuff).SetTo(sptr))
 	{
 		sb.AppendP(sbuff, sptr);
 		k = this->lvMain->AddItem(CSTR("CPU Name"), 0);

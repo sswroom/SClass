@@ -418,7 +418,7 @@ void TestBinaryRead(NN<DB::DBTool> db)
 /*
 		UOSInt rowCnt = 0;
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		while (r->ReadNext())
 		{
 			rowCnt++;
@@ -451,7 +451,7 @@ void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
 		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
 		{
 			UTF8Char sbuff[64];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			while (r->ReadNext())
 			{
 				sptr = r->GetTimestamp(1).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");

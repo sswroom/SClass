@@ -44,8 +44,8 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(AnyTy
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[16];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Media::ProfiledResizer::SizeType sizeType;
 	UInt32 targetSizeX;
 	UInt32 targetSizeY;
@@ -53,8 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(AnyTy
 	Text::StringBuilderUTF8 sb;
 	Media::ProfiledResizer::OutputType outType;
 	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
-	sptr = me->txtProfileName->GetText(sbuff);
-	if (sbuff[0] == 0)
+	if (!me->txtProfileName->GetText(sbuff).SetTo(sptr) || sbuff[0] == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter profile name"), CSTR("Error"), me);
 		return;
@@ -156,8 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(AnyTy
 		me->ui->ShowMsgOK(CSTR("Please select output type"), CSTR("Error"), me);
 		return;
 	}
-	sptr2 = me->txtSuffix->GetText(sbuff2);
-	if (sbuff2[0] == 0)
+	if (!me->txtSuffix->GetText(sbuff2).SetTo(sptr2) || sbuff2[0] == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter suffix"), CSTR("Error"), me);
 		return;
@@ -188,7 +186,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::ChangeProfile()
 void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<const Media::ProfiledResizer::ResizeProfile> profile;
 	if (!this->resizer->GetCurrProfile().SetTo(profile))
 	{

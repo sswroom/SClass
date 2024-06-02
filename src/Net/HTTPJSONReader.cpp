@@ -13,7 +13,7 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional
 	if (cli->IsError())
 	{
 #if defined(VERBOSE)
-		printf("HTTPJSONReader: Error in connecting to server: %s\r\n", url.v);
+		printf("HTTPJSONReader: Error in connecting to server: %s\r\n", url.v.Ptr());
 #endif
 		cli.Delete();
 		return 0;
@@ -24,7 +24,7 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional
 		if (newUrl.leng > 0)
 		{
 #if defined(VERBOSE)
-			printf("HTTPJSONReader: Redirect location found: %s\r\n", newUrl.v);
+			printf("HTTPJSONReader: Redirect location found: %s\r\n", newUrl.v.Ptr());
 #endif
 			NN<Net::HTTPClient> cli2 = Net::HTTPClient::CreateConnect(sockf, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, false);
 			if (cli2->IsError())
@@ -54,7 +54,7 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional
 	if (json == 0)
 	{
 		printf("HTTPJSONReader: Error in Parsing JSON data\r\n");
-		printf("%s\r\n-------------- End of data -----------------\r\n", sb.ToString());
+		printf("%s\r\n-------------- End of data -----------------\r\n", sb.ToPtr());
 	}
 #endif
 	return json;

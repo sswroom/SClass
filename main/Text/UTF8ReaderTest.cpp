@@ -18,11 +18,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		if (!Text::UTF8Util::ValidStr(sb.ToString()))
 		{
-			printf("Invalid char found before split, id = %s\r\n", sb.ToString());
+			printf("Invalid char found before split, id = %s\r\n", sb.ToPtr());
 		}
 		else
 		{
-			printf("Invalid char found, %s\r\n", sb.ToString());
+			printf("Invalid char found, %s\r\n", sb.ToPtr());
 		}
 
 		sb.ClearStr();

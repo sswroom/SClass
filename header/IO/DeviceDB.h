@@ -10,7 +10,7 @@ namespace IO
 		typedef struct
 		{
 			UInt16 vendorId;
-			Text::CString vendorName;
+			Text::CStringNN vendorName;
 		} VendorInfo;
 
 		typedef struct
@@ -50,8 +50,8 @@ namespace IO
 		static const USBDeviceInfo *GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice);
 		static const DeviceInfo *GetPCIInfo(UInt16 vendorId, UInt16 productId);
 		static const DeviceInfo *GetBTInfo(UInt16 vendorId, UInt16 productId);
-		static Text::CString GetUSBVendorName(UInt16 vendorId);
-		static Text::CString GetPCIVendorName(UInt16 vendorId);
+		static Text::CStringNN GetUSBVendorName(UInt16 vendorId);
+		static Text::CStringNN GetPCIVendorName(UInt16 vendorId);
 	};
 }
 

@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::IImgResizer *resizer;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Double t0;
 	Double t1;
 	Double t2;
@@ -61,7 +61,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			NN<Media::ImageList> imgList;
 			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Test.tif")));
 			imgList->AddImage(simg, 0);
-			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
 			{
 				IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

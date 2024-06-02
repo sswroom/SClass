@@ -54,7 +54,7 @@ void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filtere
 				
 /*				printf("OCR result: %s\r\n", s->v);
 				UTF8Char sbuff[32];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 
 				Exporter::PNGExporter exporter;
 				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("OCRRes")), status->me->parsedCnt), UTF8STRC(".png"));
@@ -179,9 +179,9 @@ Bool Media::ANPR::ParseImageQuad(NN<Media::StaticImage> simg, Math::Quadrilatera
 			{
 				s1->Replace('I', '1');
 				s2->Replace('I', '1');
-				printf("s1 = \"%s\", s2 = \"%s\"\r\n", s1->v, s2->v);
+				printf("s1 = \"%s\", s2 = \"%s\"\r\n", s1->v.Ptr(), s2->v.Ptr());
 				UTF8Char sbuff[11];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				sptr = s2->ConcatTo(s1->ConcatTo(sbuff));
 				s1->Release();
 				s1 = Text::String::NewP(sbuff, sptr);

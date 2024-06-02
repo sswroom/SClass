@@ -2,7 +2,7 @@
 #include "DB/SDFFile.h"
 #include "Text/StringBuilderW.h"
 
-DB::SDFFile::SDFFile(const UTF8Char *fileName, Version ver, NN<IO::LogTool> log, const UTF8Char *password) : DB::OLEDBConn(log)
+DB::SDFFile::SDFFile(UnsafeArray<const UTF8Char> fileName, Version ver, NN<IO::LogTool> log, UnsafeArrayOpt<const UTF8Char> password) : DB::OLEDBConn(log)
 {
 	Text::StringBuilderW sb;
 	switch (ver)
@@ -18,10 +18,11 @@ DB::SDFFile::SDFFile(const UTF8Char *fileName, Version ver, NN<IO::LogTool> log,
 		break;
 	}
 	sb.Append(fileName);
-	if (password)
+	UnsafeArray<const UTF8Char> nnpassword;
+	if (password.SetTo(nnpassword))
 	{
 		sb.AppendC(UTF8STRC(";Password="));
-		sb.Append(password);
+		sb.Append(nnpassword);
 	}
-	this->Init(sb.ToString());
+	this->Init(sb.ToPtr());
 }

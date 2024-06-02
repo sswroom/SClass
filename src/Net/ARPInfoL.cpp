@@ -95,7 +95,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoL
 
 	UOSInt ret = 0;
 	Text::PString sarr[7];
-	UTF8Char *sarr2[7];
+	UnsafeArray<UTF8Char> sarr2[7];
 	Text::StringBuilderUTF8 sb;
 	ARPData data;
 	Int32 flags;
@@ -121,7 +121,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoL
 
 				if (Text::StrSplitWSP(sarr, 7, sb) >= 6)
 				{
-					data.ifIndex = indexMap.Get(sarr[5].v);
+					data.ifIndex = indexMap.Get(UnsafeArray<const UTF8Char>(sarr[5].v));
 					data.ipAddr = Net::SocketUtil::GetIPAddr(sarr[0].ToCString());
 					flags = Text::StrToInt32(sarr[2].v);
 					data.arpType = (flags & 4)?ARPT_STATIC:ARPT_DYNAMIC;

@@ -86,7 +86,7 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 	return ret;
 }
 
-UOSInt Net::UDPServerStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::UDPServerStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->lastAddr.addrType == Net::AddrType::Unknown)

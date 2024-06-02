@@ -660,7 +660,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 	}
 	else
 	{
-		printf("ESRIMapServer: Unknown geometryType: %s\r\n", geometryType->v);
+		printf("ESRIMapServer: Unknown geometryType: %s\r\n", geometryType->v.Ptr());
 	}
 	///////////////////////////////////	
 	return 0;

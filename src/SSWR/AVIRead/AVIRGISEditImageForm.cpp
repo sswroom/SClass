@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(AnyType userObj)
 void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::RectAreaDbl bounds;
 	Map::GetObjectSess *sess = this->lyr->BeginGetObject();
 	Math::Geometry::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
@@ -814,7 +814,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClient
 	Data::ArrayListInt64 objIds;
 	Map::NameArray *nameArr;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt cnt = lyr->GetColumnCnt();
 	UOSInt i;
 	UOSInt j;

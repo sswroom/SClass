@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userOb
 	me->ClearFiles();
 	me->lvFiles->ClearItems();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = sbDir.ConcatTo(sbuff);
+	UnsafeArray<UTF8Char> sptr = sbDir.ConcatTo(sbuff);
 	me->FindDir(sbuff, sptr, dataBuff, dataSize);
 }
 
@@ -98,9 +98,9 @@ void SSWR::AVIRead::AVIRFileSearchForm::ClearFiles()
 	this->fileList.Clear();
 }
 
-void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UTF8Char *dir, UTF8Char *dirEnd, const UInt8 *searchBuff, UOSInt searchLen)
+void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, const UInt8 *searchBuff, UOSInt searchLen)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (dirEnd[-1] != IO::Path::PATH_SEPERATOR)
 		*dirEnd++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(dirEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UTF8Char *dir, UTF8Char *dirEnd,
 	UOSInt matchCount;
 
 	IO::Path::PathType pt;
-	while ((sptr = IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0)) != 0)
+	while (IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0).SetTo(sptr))
 	{
 		if (pt == IO::Path::PathType::Directory)
 		{

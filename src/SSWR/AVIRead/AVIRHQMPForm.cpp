@@ -263,12 +263,12 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		sb.AppendDouble(dbg.par);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Rotate: "));
-		sb.Append(Media::RotateTypeGetName(dbg.rotateType));
+		sb.AppendOpt(Media::RotateTypeGetName(dbg.rotateType));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Decoder: "));
-		if (dbg.decoderName.v)
+		if (dbg.decoderName.v.NotNull())
 		{
-			sb.Append(dbg.decoderName);
+			sb.AppendOpt(dbg.decoderName);
 		}
 		else
 		{
@@ -332,8 +332,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		UTF8Char sbuff[512];
 		UOSInt i;
 		UOSInt j;
-		UTF8Char *sptr;
-		UTF8Char *sptrEnd;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptrEnd;
 		Int32 partNum;
 		NN<Media::MediaFile> openedFile;
 		if (me->GetOpenedFile().SetTo(openedFile))
@@ -412,7 +412,7 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 	if (!this->GetOpenedFile().SetTo(openedFile))
 		return;
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 #if defined(_WIN64)
@@ -850,9 +850,10 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				UTF8Char sbuff[256];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				NN<Media::MediaFile> mf;
-				sptr = capture->GetSourceName(sbuff);
+				sbuff[0] = 0;
+				sptr = capture->GetSourceName(sbuff).Or(sbuff);
 				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(capture, 0);
 				this->OpenVideo(mf);

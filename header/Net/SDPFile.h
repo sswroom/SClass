@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SDPFILE
 #define _SM_NET_SDPFILE
 #include "Data/ArrayList.h"
+#include "Data/ArrayListStrUTF8.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/Stream.h"
 #include "Net/ISDPMedia.h"
@@ -34,7 +35,7 @@ namespace Net
 		Data::ArrayList<Int32> sessDescType;
 		Data::ArrayList<Net::ISDPMedia *> sessMedia;
 
-		Data::ArrayList<Data::ArrayList<const UTF8Char *>*> mediaList;
+		Data::ArrayListNN<Data::ArrayListStrUTF8> mediaList;
 
 		void InitSDP();
 	public:
@@ -65,7 +66,7 @@ namespace Net
 		UOSInt GetLength();
 
 		UOSInt GetMediaCount();
-		Data::ArrayList<const UTF8Char *> *GetMediaDesc(UOSInt index);
+		Optional<Data::ArrayListStrUTF8> GetMediaDesc(UOSInt index);
 	};
 }
 #endif

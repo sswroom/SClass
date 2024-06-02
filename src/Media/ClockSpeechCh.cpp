@@ -45,7 +45,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(NN<Data::DateTime> time)
 	Int32 hour = time->GetHour();
 	Int32 minute = time->GetMinute();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Parser::FileParser::WAVParser parser;
 	NN<Media::AudioConcatSource> source;

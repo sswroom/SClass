@@ -90,9 +90,9 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayList<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
-	Data::ArrayList<const UTF8Char *> pcsysList;
+	Data::ArrayListArr<const UTF8Char> pcsysList;
 	Math::CoordinateSystemManager::GetGeogCoordinateSystems(&gcsysList);
-	Math::CoordinateSystemManager::GetProjCoordinateSystemNames(&pcsysList);
+	Math::CoordinateSystemManager::GetProjCoordinateSystemNames(pcsysList);
 
 	Text::StringBuilderUTF8 sb;
 	i = 0;
@@ -110,8 +110,8 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	j = pcsysList.GetCount();
 	while (i < j)
 	{
-		const UTF8Char *name = pcsysList.GetItem(i);
-		this->cboProj->AddItem({name, Text::StrCharCnt(name)}, (void*)pcsysList.GetItem(i));
+		UnsafeArray<const UTF8Char> name = pcsysList.GetItemNoCheck(i);
+		this->cboProj->AddItem({name, Text::StrCharCnt(name)}, (void*)pcsysList.GetItem(i).Ptr());
 		i++;
 	}
 	if (j > 0)

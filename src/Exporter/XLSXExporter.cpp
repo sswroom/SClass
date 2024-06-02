@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListArr.h"
 #include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "Exporter/XLSXExporter.h"
@@ -39,7 +40,7 @@ IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -62,13 +63,14 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbContTypes;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp ts;
 	Data::DateTime dt2;
 	Data::DateTime *t;
 	NN<Text::String> s;
 	NN<Text::String> s2;
-	const UTF8Char *csptr;
+	UnsafeArrayOpt<const UTF8Char> csptr;
+	UnsafeArray<const UTF8Char> nncsptr;
 	IO::ZIPBuilder *zip;
 	UOSInt i;
 	UOSInt k;
@@ -343,7 +345,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("\" r:id=\"rId"));
 					sb.AppendUOSInt(idBase + m);
 					sb.AppendC(UTF8STRC("\" display="));
-					s = Text::XML::ToNewAttrText(link->cell->cellValue->v);
+					s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(link->cell->cellValue->v));
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("/>"));
@@ -425,7 +427,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
 				sb.AppendUOSInt(l + m + 1);
 				sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target="));
-				s = Text::XML::ToNewAttrText(link->cell->cellURL->v);
+				s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(link->cell->cellURL->v));
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(" TargetMode=\"External\"/>"));
@@ -779,7 +781,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">"));
 	{
 		Data::StringUTF8Map<UOSInt> numFmtMap;
-		Data::ArrayList<const UTF8Char*> numFmts;
+		Data::ArrayListArr<const UTF8Char> numFmts;
 		Data::ArrayList<BorderInfo*> borders;
 		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
 		borderNone.borderType = BorderType::None;
@@ -791,9 +793,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		border->bottom = borderNone;
 		borders.Add(border);
 
-		csptr = (const UTF8Char*)"general";
-		numFmtMap.Put(csptr, numFmts.GetCount());
-		numFmts.Add(csptr);
+		nncsptr = (const UTF8Char*)"general";
+		numFmtMap.Put(nncsptr, numFmts.GetCount());
+		numFmts.Add(nncsptr);
 
 		Data::ArrayIterator<NN<Text::SpreadSheet::CellStyle>> itStyle = workbook->StyleIterator();
 		i = 0;
@@ -803,16 +805,16 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			NN<Text::String> optS;
 			if (!style->GetDataFormat().SetTo(optS))
 			{
-				csptr = (const UTF8Char*)"general";
+				nncsptr = U8STR("general");
 			}
 			else
 			{
-				csptr = optS->v;
+				nncsptr = UnsafeArray<const UTF8Char>(optS->v);
 			}
-			if (!numFmtMap.ContainsKey(csptr))
+			if (!numFmtMap.ContainsKey(nncsptr))
 			{
-				numFmtMap.Put(csptr, numFmts.GetCount());
-				numFmts.Add(csptr);
+				numFmtMap.Put(nncsptr, numFmts.GetCount());
+				numFmts.Add(nncsptr);
 			}
 			Bool borderFound = false;
 			k = borders.GetCount();
@@ -850,8 +852,8 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.AppendC(UTF8STRC("<numFmt numFmtId=\""));
 				sb.AppendUOSInt(i + 164);
 				sb.AppendC(UTF8STRC("\" formatCode="));
-				ToFormatCode(sbuff, numFmts.GetItem(i));
-				s = Text::XML::ToNewAttrText(sbuff);
+				ToFormatCode(sbuff, numFmts.GetItemNoCheck(i));
+				s = Text::XML::ToNewAttrText(UARR(sbuff));
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC("/>"));
@@ -1095,27 +1097,26 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	sb.AppendC(UTF8STRC("</dcterms:created>"));
 	sb.AppendC(UTF8STRC("<dc:creator>"));
-	csptr = workbook->GetAuthor();
-	if (csptr)
+	if (workbook->GetAuthor().SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(csptr);
+		s = Text::XML::ToNewXMLText(nncsptr);
 		sb.Append(s);
 		s->Release();
 	}
 	sb.AppendC(UTF8STRC("</dc:creator>"));
 	sb.AppendC(UTF8STRC("<dc:description>"));
 	csptr = 0;
-	if (csptr)
+	if (csptr.SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(csptr);
+		s = Text::XML::ToNewXMLText(nncsptr);
 		sb.Append(s);
 		s->Release();
 	}
 	sb.AppendC(UTF8STRC("</dc:description>"));
 	sb.AppendC(UTF8STRC("<dc:language>"));
 	UInt32 lcid = Text::EncodingFactory::GetSystemLCID();
-	Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntry(lcid);
-	if (loc)
+	NN<Text::Locale::LocaleEntry> loc;
+	if (Text::Locale::GetLocaleEntry(lcid).SetTo(loc))
 	{
 		s = Text::XML::ToNewXMLText(loc->shortName);
 		sb.Append(s);
@@ -1123,10 +1124,9 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	sb.AppendC(UTF8STRC("</dc:language>"));
 	sb.AppendC(UTF8STRC("<cp:lastModifiedBy>"));
-	csptr = workbook->GetLastAuthor();
-	if (csptr)
+	if (workbook->GetLastAuthor().SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(csptr);
+		s = Text::XML::ToNewXMLText(nncsptr);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1148,18 +1148,18 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("</cp:revision>"));
 	sb.AppendC(UTF8STRC("<dc:subject>"));
 	csptr = 0;
-	if (csptr)
+	if (csptr.SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(csptr);
+		s = Text::XML::ToNewXMLText(nncsptr);
 		sb.Append(s);
 		s->Release();
 	}
 	sb.AppendC(UTF8STRC("</dc:subject>"));
 	sb.AppendC(UTF8STRC("<dc:title>"));
 	csptr = 0;
-	if (csptr)
+	if (csptr.SetTo(nncsptr))
 	{
-		s = Text::XML::ToNewXMLText(csptr);
+		s = Text::XML::ToNewXMLText(nncsptr);
 		sb.Append(s);
 		s->Release();
 	}
@@ -1209,7 +1209,7 @@ void Exporter::XLSXExporter::AppendFill(NN<Text::StringBuilderUTF8> sb, OfficeFi
 			if (color->GetColorType() == ColorType::Preset)
 			{
 				sb->AppendC(UTF8STRC("<a:prstClr val=\""));
-				Text::CString col = PresetColorCode(color->GetPresetColor());
+				Text::CStringNN col = PresetColorCode(color->GetPresetColor());
 				sb->AppendC(col.v, col.leng);
 				sb->AppendC(UTF8STRC("\"/>"));
 			}
@@ -1228,7 +1228,7 @@ void Exporter::XLSXExporter::AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Tex
 	sb->AppendC(UTF8STRC("</a:ln>"));
 }
 
-void Exporter::XLSXExporter::AppendTitle(NN<Text::StringBuilderUTF8> sb, const UTF8Char *title)
+void Exporter::XLSXExporter::AppendTitle(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> title)
 {
 	sb->AppendC(UTF8STRC("<c:title>"));
 	sb->AppendC(UTF8STRC("<c:tx>"));
@@ -1524,7 +1524,7 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name)
+void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CStringNN name)
 {
 	sb->AppendUTF8Char('<');
 	sb->Append(name);
@@ -1590,7 +1590,7 @@ void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::
 void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayList<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap)
 {
 	UOSInt k;
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	BorderInfo *border;
 	Optional<Text::SpreadSheet::WorkbookFont> font = style->GetFont();
 	NN<Text::SpreadSheet::WorkbookFont> nnfont;
@@ -1695,7 +1695,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	sb->AppendC(UTF8STRC("</xf>"));
 }
 
-Text::CString Exporter::XLSXExporter::PresetColorCode(PresetColor color)
+Text::CStringNN Exporter::XLSXExporter::PresetColorCode(PresetColor color)
 {
 	switch (color)
 	{
@@ -1984,7 +1984,7 @@ Text::CString Exporter::XLSXExporter::PresetColorCode(PresetColor color)
 	}
 }
 
-UTF8Char *Exporter::XLSXExporter::ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat)
+UnsafeArray<UTF8Char> Exporter::XLSXExporter::ToFormatCode(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFormat)
 {
 	UTF8Char c;
 	while (true)

@@ -10,7 +10,7 @@ UOSInt Media::AudioDevice::GetDeviceCount()
 	return Media::PulseAudioRenderer::GetDeviceCount() + Media::ALSARenderer::GetDeviceCount();
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	UOSInt paCount = Media::PulseAudioRenderer::GetDeviceCount();
 	if (devNo >= paCount)
@@ -23,7 +23,7 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	}
 }
 
-Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CString devName)
+Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
 	Media::IAudioRenderer *renderer = 0;
 	if (devName.StartsWith(UTF8STRC("ALSA: ")))
@@ -47,7 +47,7 @@ Media::AudioDevice::~AudioDevice()
 	this->ClearDevices();
 }
 
-Bool Media::AudioDevice::AddDevice(Text::CString devName)
+Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
 	Media::IAudioRenderer *renderer;
 	Bool ret = false;

@@ -7,7 +7,7 @@
 #include "Text/Cpp/CppEnv.h"
 #include "Text/Cpp/CppCodeParser.h"
 
-UTF8Char *Text::Cpp::CppCodeParser::RemoveSpace(UTF8Char *sptr)
+UnsafeArray<UTF8Char> Text::Cpp::CppCodeParser::RemoveSpace(UnsafeArray<UTF8Char> sptr)
 {
 	UTF8Char c;
 	while ((c = *sptr++) != 0)
@@ -42,12 +42,12 @@ void Text::Cpp::CppCodeParser::LogError(NN<Text::Cpp::CppParseStatus> status, Te
 	}
 }
 
-Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UOSInt cpIndex)
+Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CStringNN condStr, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UOSInt cpIndex)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
-	const UTF8Char *cond = condStr.v;
+	UnsafeArray<const UTF8Char> cond = condStr.v;
 	Bool succ = true;
 	if (condStr.Equals(UTF8STRC("defined(_WIN32_WCE)")))
 	{
@@ -762,7 +762,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(NN<Data::ArrayListStringNN> codePh
 	return true;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result)
+Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CStringNN cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result)
 {
 	Bool succ = true;
 	UOSInt j;
@@ -808,15 +808,16 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, NN<Text::Cpp::Cpp
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs)
+Bool Text::Cpp::CppCodeParser::ParseLine(UnsafeArray<UTF8Char> lineBuff, UnsafeArray<UTF8Char> lineBuffEnd, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs)
 {
 	Bool lineStart;
 	Bool nextLine = false;
 	Bool parseStatus = true;
 	UTF8Char c;
-	UTF8Char *wordStart = 0;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArrayOpt<UTF8Char> wordStart = 0;
+	UnsafeArray<UTF8Char> nnwordStart;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	Bool valid;
@@ -839,7 +840,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 	{
 		if (fileStatus->lineBuffWS)
 		{
-			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB.ToString());
+			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB.ToPtr());
 			fileStatus->lineBuffSB.AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
 			wordStart = fileStatus->lineBuffSB.v + j;
 		}
@@ -907,7 +908,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 			while (true)
 			{
 				c = *sptr++;
-				if (wordStart)
+				if (wordStart.SetTo(nnwordStart))
 				{
 					if (c >= 'A' && c <= 'Z')
 						continue;
@@ -915,7 +916,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 						continue;
 
 					sptr[-1] = 0;
-					if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("include")))
+					if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("include")))
 					{
 						if (valid)
 						{
@@ -966,7 +967,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("pragma")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("pragma")))
 					{
 						if (valid)
 						{
@@ -1002,7 +1003,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("ifndef")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("ifndef")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1034,7 +1035,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("ifdef")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("ifdef")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1066,7 +1067,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("if")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("if")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1098,7 +1099,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("elif")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("elif")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1128,7 +1129,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("define")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("define")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1157,7 +1158,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("undef")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("undef")))
 					{
 						if (valid)
 						{
@@ -1194,7 +1195,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							break;
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("else")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("else")))
 					{
 						i = fileStatus->ifValid.GetCount();
 						if (i == 0)
@@ -1250,7 +1251,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							}
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("endif")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("endif")))
 					{
 						i = fileStatus->ifValid.GetCount();
 						if (i == 0)
@@ -1293,7 +1294,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							}
 						}
 					}
-					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("error")))
+					else if (Text::StrEqualsC(nnwordStart, (UOSInt)(sptr - nnwordStart - 1), UTF8STRC("error")))
 					{
 						if (valid)
 						{
@@ -1411,18 +1412,18 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 		case Text::Cpp::CppParseStatus::PM_INCLUDEQUOTE:
 			while ((c = *sptr++) != 0)
 			{
-				if (c == '\"')
+				if (c == '\"' && wordStart.SetTo(nnwordStart))
 				{
 					sptr[-1] = 0;
 					sbuff2[0] = 0;
-					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(wordStart, sptr - 1), status->GetCurrCodeFile().Ptr());
+					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(nnwordStart, sptr - 1), status->GetCurrCodeFile().Ptr()).Or(sbuff2);
 					sptr[-1] = c;
 
 					if (sbuff2[0] == 0)
 					{
 						parseStatus = false;
 						sptr[-1] = 0;
-						sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
+						sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), nnwordStart), UTF8STRC(" not found"));
 						sptr[-1] = c;
 						this->LogError(status, CSTRP(sbuff, sptr2), errMsgs);
 						nextLine = true;
@@ -1455,16 +1456,17 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 		case Text::Cpp::CppParseStatus::PM_INCLUDEARROW:
 			while ((c = *sptr++) != 0)
 			{
-				if (c == '>')
+				if (c == '>' && wordStart.SetTo(nnwordStart))
 				{
 					sptr[-1] = 0;
-					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(wordStart, sptr - 1), 0);
+					sbuff2[0] = 0;
+					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(nnwordStart, sptr - 1), 0).Or(sbuff2);
 					sptr[-1] = c;
 
 					if (sbuff2[0] == 0)
 					{
 						parseStatus = false;
-						sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart, (UOSInt)(sptr - wordStart - 1)), UTF8STRC(" not found"));
+						sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), nnwordStart, (UOSInt)(sptr - nnwordStart - 1)), UTF8STRC(" not found"));
 						this->LogError(status, CSTRP(sbuff, sptr2), errMsgs);
 					}
 					else
@@ -1525,10 +1527,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 			{
 				if (c == ' ' || c == '\t')
 				{
-					if (wordStart)
+					if (wordStart.SetTo(nnwordStart))
 					{
 						sptr[-1] = 0;
-						fileStatus->ifValid.Add((!status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
+						fileStatus->ifValid.Add((!status->IsDefined(CSTRP(nnwordStart, sptr - 1)))?1:0);
 						fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 						break;
 					}
@@ -1556,10 +1558,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 			}
 			if (c == 0)
 			{
-				if (wordStart)
+				if (wordStart.SetTo(nnwordStart))
 				{
 					sptr[-1] = 0;
-					fileStatus->ifValid.Add((!status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
+					fileStatus->ifValid.Add((!status->IsDefined(CSTRP(nnwordStart, sptr - 1)))?1:0);
 					fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 					nextLine = true;
 					break;
@@ -1579,10 +1581,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 			{
 				if (c == ' ' || c == '\t')
 				{
-					if (wordStart)
+					if (wordStart.SetTo(nnwordStart))
 					{
 						sptr[-1] = 0;
-						fileStatus->ifValid.Add((status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
+						fileStatus->ifValid.Add((status->IsDefined(CSTRP(nnwordStart, sptr - 1)))?1:0);
 						fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 						break;
 					}
@@ -1610,10 +1612,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 			}
 			if (c == 0)
 			{
-				if (wordStart)
+				if (wordStart.SetTo(nnwordStart))
 				{
 					sptr[-1] = 0;
-					fileStatus->ifValid.Add((status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
+					fileStatus->ifValid.Add((status->IsDefined(CSTRP(nnwordStart, sptr - 1)))?1:0);
 					fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 					nextLine = true;
 					break;
@@ -1639,7 +1641,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 					}
 					else if (c == '/' && *sptr == '/')
 					{
-						if (wordStart)
+						if (wordStart.SetTo(nnwordStart))
 						{
 							nextLine = true;
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
@@ -1678,7 +1680,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				}
 				if (c == 0 && !lastNextLine)
 				{
-					if (wordStart)
+					if (wordStart.SetTo(nnwordStart))
 					{
 						sptr[-1] = 0;
 						i = fileStatus->ifValid.GetCount();
@@ -1693,7 +1695,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 								if (lastV == 0)
 								{
 									Bool ifRes;
-									if (!EvalSharpIf(CSTRP(wordStart, sptr - 1), status, errMsgs, ifRes))
+									if (!EvalSharpIf(CSTRP(nnwordStart, sptr - 1), status, errMsgs, ifRes))
 									{
 										parseStatus = false;
 										nextLine = true;
@@ -1719,7 +1721,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							else
 							{
 								Bool ifRes;
-								if (!EvalSharpIf(CSTRP(wordStart, sptr - 1), status, errMsgs, ifRes))
+								if (!EvalSharpIf(CSTRP(nnwordStart, sptr - 1), status, errMsgs, ifRes))
 								{
 									parseStatus = false;
 									nextLine = true;
@@ -1796,7 +1798,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 							else if (c == '(')
 							{
 								Bool found = false;
-								UTF8Char *tmpPtr = wordStart;
+								UnsafeArray<UTF8Char> tmpPtr = wordStart;
 								sptr[-1] = 0;
 								while (true)
 								{
@@ -1845,7 +1847,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 					{
 						fileStatus->currMode = Text::Cpp::CppParseStatus::PM_DEFINE;
 					}
-					else if (fileStatus->modeStatus == 0 && wordStart)
+					else if (fileStatus->modeStatus == 0 && wordStart.SetTo(nnwordStart))
 					{
 						fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 						if (!valid)
@@ -1854,10 +1856,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 						}
 						else
 						{
-							UTF8Char *paramPtr = 0;
-							UTF8Char *paramPtrEnd = 0;
-							UTF8Char *tmpPtr = wordStart;
-							UTF8Char *wordEnd = 0;
+							UnsafeArrayOpt<UTF8Char> paramPtr = 0;
+							UnsafeArrayOpt<UTF8Char> paramPtrEnd = 0;
+							UnsafeArray<UTF8Char> tmpPtr = nnwordStart;
+							UnsafeArrayOpt<UTF8Char> wordEnd = 0;
 							Int32 mode = 0;
 							/*
 							  Name( Param ) Cont
@@ -1870,7 +1872,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 								{
 									if (paramPtr == 0)
 									{
-										if (status->AddDef(CSTRP(wordStart, tmpPtr - 1), CSTR_NULL, CSTR_NULL, fileStatus->lineNum))
+										if (status->AddDef(CSTRP(nnwordStart, tmpPtr - 1), CSTR_NULL, CSTR_NULL, fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}
@@ -1884,7 +1886,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 									}
 									else
 									{
-										if (status->AddDef(CSTRP(wordStart, wordEnd), CSTRP(paramPtr, tmpPtr - 1), CSTR_NULL, fileStatus->lineNum))
+										if (status->AddDef(CSTRP(nnwordStart, wordEnd.Ptr()), CSTRP(paramPtr.Ptr(), tmpPtr - 1), CSTR_NULL, fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}
@@ -1959,7 +1961,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 									}
 									else if (mode == 2 || mode == 7)
 									{
-										if (status->AddDef(CSTRP(wordStart, wordEnd), CSTRP(paramPtr, paramPtrEnd), Text::CString::FromPtr(&tmpPtr[-1]), fileStatus->lineNum))
+										if (status->AddDef(CSTRP(nnwordStart, wordEnd.Ptr()), CSTRP(paramPtr.Ptr(), paramPtrEnd.Ptr()), Text::CString::FromPtr(&tmpPtr[-1]), fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}
@@ -2002,10 +2004,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				{
 					if (c == ' ' || c == '\t')
 					{
-						if (wordStart)
+						if (wordStart.SetTo(nnwordStart))
 						{
 							sptr[-1] = 0;
-							if (status->Undefine(CSTRP(wordStart, sptr - 1)))
+							if (status->Undefine(CSTRP(nnwordStart, sptr - 1)))
 							{
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 								break;
@@ -2025,7 +2027,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 					{
 						sptr[-1] = 0;
 
-						if (status->Undefine(CSTRP(wordStart, sptr - 1)))
+						if (wordStart.SetTo(nnwordStart) && status->Undefine(CSTRP(nnwordStart, sptr - 1)))
 						{
 							nextLine = true;
 							break;
@@ -2042,11 +2044,11 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 					}
 					else if (c == '/' && *sptr == '*')
 					{
-						if (wordStart)
+						if (wordStart.SetTo(nnwordStart))
 						{
 							sptr[-1] = 0;
 
-							if (status->Undefine(CSTRP(wordStart, sptr - 1)))
+							if (status->Undefine(CSTRP(nnwordStart, sptr - 1)))
 							{
 								fileStatus->pastModes.Add(Text::Cpp::CppParseStatus::PM_SHARPEND);
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_COMMENTPARA;
@@ -2081,9 +2083,9 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				}
 				if (c == 0)
 				{
-					if (wordStart)
+					if (wordStart.SetTo(nnwordStart))
 					{
-						if (status->Undefine(CSTRP(wordStart, sptr - 1)))
+						if (status->Undefine(CSTRP(nnwordStart, sptr - 1)))
 						{
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 							nextLine = true;
@@ -2178,7 +2180,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 			{
 				if (c == ' ' || c == '\t')
 				{
-					if (wordStart)
+					if (wordStart.NotNull())
 					{
 						wordStart = 0;
 					}
@@ -2288,7 +2290,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 	}
 	else
 	{
-		fileStatus->lineBuffWS = wordStart;
+		fileStatus->lineBuffWS = wordStart.Ptr();
 	}
 	if (!parseStatus)
 	{
@@ -2308,12 +2310,12 @@ Text::Cpp::CppCodeParser::~CppCodeParser()
 
 Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::ArrayListStringNN> errMsgs, NN<Text::Cpp::CppParseStatus> status)
 {
-	UTF8Char *lineBuff;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> lineBuff;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Bool succ;
 
-	lineBuff = MemAlloc(UTF8Char, 65536);
+	lineBuff = MemAllocArr(UTF8Char, 65536);
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		if (fs.IsError())
@@ -2335,7 +2337,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 			sptr = fileName.ConcatTo(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 			errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
-			MemFree(lineBuff);
+			MemFreeArr(lineBuff);
 			return false;
 		}
 
@@ -2343,7 +2345,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 		succ = true;
 
 		IO::StreamReader reader(fs, 0);
-		while ((sptr = reader.ReadLine(lineBuff, 65535)) != 0)
+		while (reader.ReadLine(lineBuff, 65535).SetTo(sptr))
 		{
 			if (!ParseLine(lineBuff, sptr, status, errMsgs))
 			{
@@ -2359,7 +2361,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(Text::CStringNN fileName, NN<Data::Arra
 		errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
 	}
 
-	MemFree(lineBuff);
+	MemFreeArr(lineBuff);
 	return succ;
 }
 

@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnEpochSecClicked(AnyType userO
 	UOSInt i = sb.IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
-		Text::CString decimals = sb.ToCString().Substring(i + 1);
+		Text::CStringNN decimals = sb.ToCString().Substring(i + 1);
 		ns = decimals.ToUInt32();
 		sb.TrimToLength(i);
 		i = decimals.leng;
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRTimestampForm::OnStrConvClicked(AnyType userOb
 void SSWR::AVIRead::AVIRTimestampForm::DisplayTime(const Data::Timestamp &ts)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = ts.ToUTCTime().ToString(sbuff);
 	this->txtUTCTime->SetText(CSTRP(sbuff, sptr));
 	sptr = ts.ToLocalTime().ToString(sbuff);

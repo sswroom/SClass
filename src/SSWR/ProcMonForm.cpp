@@ -47,7 +47,7 @@ Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;
-		while (Manage::Process::FindProcessNext(sbuff, sess, &info))
+		while (Manage::Process::FindProcessNext(sbuff, sess, &info).NotNull())
 		{
 			Manage::Process proc(info.processId, false);
 			sb.ClearStr();
@@ -92,7 +92,7 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 void SSWR::ProcMonForm::LoadProgList()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
 	Text::StringBuilderUTF8 sb;
 
@@ -126,7 +126,7 @@ void SSWR::ProcMonForm::LoadProgList()
 void SSWR::ProcMonForm::SaveProgList()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -157,7 +157,7 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(AnyType userObj)
 {
 	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem().p;
 	if (prog && prog->progPath)
 	{

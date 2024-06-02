@@ -26,7 +26,7 @@ Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
 
 Win32::WMIQuery::~WMIQuery()
 {
-	SDEL_TEXT(this->ns);
+	if (this->ns) Text::StrDelNew(this->ns);
 }
 
 Bool Win32::WMIQuery::IsError()
@@ -114,7 +114,7 @@ UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return 0;
 }
 
-Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
 	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);

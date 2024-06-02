@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 		return;
 	}
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::DateTime dt;
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 	sb.ClearStr();
 	Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(packet->trap.entOID, packet->trap.entOIDLen), sb);
 	me->txtEnterpriseName->SetText(sb.ToCString());
-	sptr = Net::SocketUtil::GetAddrName(sbuff, packet->addr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, packet->addr).Or(sbuff);
 	me->txtRemoteIP->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt16(sbuff, packet->port);
 	me->txtRemotePort->SetText(CSTRP(sbuff, sptr));
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userO
 	{
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Sync::MutexUsage mutUsage(me->packetMut);
 		while (i < j)
 		{

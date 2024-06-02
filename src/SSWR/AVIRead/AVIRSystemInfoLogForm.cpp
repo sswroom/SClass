@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 	this->lvDrivers->AddColumn(CSTR("Altitude"), 100);
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	if (this->sysInfo->GetOSName().SetTo(s))
 	{

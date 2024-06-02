@@ -44,7 +44,7 @@ void Net::EthernetWebHandler::AppendFooter(NN<Text::StringBuilderUTF8> sbOut)
 Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -135,7 +135,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
 					sb.AppendC(UTF8STRC("<br/>"));
-					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr).Or(sbuff);
 					sb.AppendP(sbuff, sptr);
 				}
 			}
@@ -143,7 +143,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr).Or(sbuff);
 					sb.AppendP(sbuff, sptr);
 				}
 			}
@@ -170,7 +170,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net
 Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -233,7 +233,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NN
 Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -274,7 +274,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<N
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).SetTo(sptr))
 		{
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 			NN<Net::DNSClient::RequestAnswer> ans;
@@ -346,7 +346,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<N
 Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -387,7 +387,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<N
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).SetTo(sptr))
 		{
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 			NN<Net::DNSClient::RequestAnswer> ans;
@@ -459,7 +459,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<N
 Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -500,7 +500,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).SetTo(sptr))
 		{
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
 			NN<Net::DNSClient::RequestAnswer> ans;
@@ -572,7 +572,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<
 Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -589,7 +589,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<
 		sb.AppendC(UTF8STRC("<table border=\"0\"><tr><td>DNS Target</td><td>Info</td></tr>\r\n"));
 		sb.AppendC(UTF8STRC("<tr><td>\r\n"));
 
-		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128))
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).NotNull())
 		{
 			targetIP = Text::StrToUInt32(sbuff);
 		}
@@ -662,7 +662,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<
 Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -680,7 +680,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<
 		sb.AppendC(UTF8STRC("<td>Info</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		sb.AppendC(UTF8STRC("</tr><td>\r\n"));
-		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128))
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).NotNull())
 		{
 			qryVal = Text::StrToUInt32(sbuff);
 		}
@@ -699,7 +699,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<
 			sb.AppendC(UTF8STRC("<a href=\"dnsclient?qry="));
 			sb.AppendU32(dnsCli->cliId);
 			sb.AppendC(UTF8STRC("\">"));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("</a>"));
 			if ((UInt32)dnsCli->cliId == qryVal)
@@ -713,7 +713,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<
 		{
 			NN<Net::EthernetAnalyzer::DNSCliHourInfo> hourInfo;
 			dnsCli = dnsCliList->GetItemNoCheck((UOSInt)dnsCliInd);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("<br/><table border=\"1\"><tr><td>Time</td><td>Count</td></tr>"));
 			Sync::MutexUsage mutUsage(dnsCli->mut);
@@ -759,7 +759,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<
 Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -871,7 +871,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NN<Net::
 Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -889,7 +889,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NN<Net:
 		sb.AppendC(UTF8STRC("<td>Info</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		sb.AppendC(UTF8STRC("</tr><td valign=\"top\">\r\n"));
-		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128))
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128).NotNull())
 		{
 			qryVal = Text::StrToUInt32(sbuff);
 		}

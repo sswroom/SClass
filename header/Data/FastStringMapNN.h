@@ -77,7 +77,7 @@ namespace Data
 		virtual void Clear();
 		FastStringNNKeyIterator<T> KeyIterator() const;
 		
-		UInt32 CalcHash(const UTF8Char *s, UOSInt len) const;
+		UInt32 CalcHash(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 	};
 
 	template <class T> void FastStringMapNN<T>::Insert(UOSInt index, UInt32 hash, NN<Text::String> s, NN<T> val)
@@ -409,7 +409,7 @@ namespace Data
 		return FastStringNNKeyIterator<T>(this->items, this->cnt);
 	}
 
-	template <class T> UInt32 FastStringMapNN<T>::CalcHash(const UTF8Char *s, UOSInt len) const
+	template <class T> UInt32 FastStringMapNN<T>::CalcHash(UnsafeArray<const UTF8Char> s, UOSInt len) const
 	{
 		return this->crc.CalcDirect(s, len);
 	}

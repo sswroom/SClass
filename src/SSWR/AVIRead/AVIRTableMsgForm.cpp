@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRTableMsgForm.h"
 
-SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, const UTF8Char **colNames) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(title);
 	this->SetFont(0, 0, 8.25, false);
@@ -31,7 +31,7 @@ void SSWR::AVIRead::AVIRTableMsgForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRTableMsgForm::AddRow(const UTF8Char **row)
+void SSWR::AVIRead::AVIRTableMsgForm::AddRow(UnsafeArray<UnsafeArray<const UTF8Char>> row)
 {
 	UOSInt k;
 	UOSInt i = 1;

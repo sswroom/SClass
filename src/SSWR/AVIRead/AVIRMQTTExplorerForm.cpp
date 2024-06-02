@@ -306,7 +306,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>> topicList;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
 	UOSInt i;
 	UOSInt j;

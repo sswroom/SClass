@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 			cacheSize = 4096;
 		}
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
@@ -317,7 +317,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->svr)
 	{
 		Net::WebServer::WebListener::SERVER_STATUS status;
@@ -383,7 +383,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 			sb.ClearStr();
 			sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb.AppendC(UTF8STRC(" "));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 
 			me->lbAccess->AddItem(sb.ToCString(), (void*)(OSInt)logIndex.GetItem(i));
@@ -398,7 +398,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->reqLog->Use(mutUsage);
 	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem().p;
 	UOSInt j;
@@ -406,7 +406,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 	log = me->reqLog->GetEntry(i);
 	sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	sb.AppendC(UTF8STRC(" "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.Append(log->reqURI);
@@ -454,7 +454,7 @@ void SSWR::AVIRead::AVIRHTTPSvrForm::ClearCACerts()
 SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	this->core = core;
 	this->SetText(CSTR("HTTP Server"));
@@ -491,7 +491,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->lblDocDir = ui->NewLabel(this->grpParam, CSTR("Doc Path"));
 	this->lblDocDir->SetRect(8, 32, 100, 23, false);
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
@@ -648,7 +648,7 @@ void SSWR::AVIRead::AVIRHTTPSvrForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRHTTPSvrForm::SetPort(Int32 port)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(sbuff, port);
 	this->txtPort->SetText(CSTRP(sbuff, sptr));
 }

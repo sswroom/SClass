@@ -11,7 +11,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressI
 {
 	NN<Net::SyslogServer> me = userData.GetNN<Net::SyslogServer>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (buff[0] == '<')
 	{
 		Net::SyslogServer::IPStatus *status = me->GetIPStatus(addr);
@@ -19,7 +19,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressI
 
 		if (me->log->HasHandler())
 		{
-			sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("> "));
 			sb.AppendC(buff, dataSize);
@@ -43,7 +43,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressI
 Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
@@ -62,7 +62,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NN<const Net::Socket
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr = Net::SocketUtil::GetAddrName(sptr, addr);
+		sptr = Net::SocketUtil::GetAddrName(sptr, addr).Or(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());

@@ -21,7 +21,7 @@ namespace Net
 
 	private:
 		NN<Net::SocketFactory> sockf;
-		const UTF8Char *ifName;
+		UnsafeArray<const UTF8Char> ifName;
 		UInt8 hwAddr[6];
 		UInt32 ipAddr;
 		Optional<Socket> soc;
@@ -37,7 +37,7 @@ namespace Net
 		static UInt32 __stdcall DataThread(AnyType obj);
 
 	public:
-		ARPHandler(NN<Net::SocketFactory> sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt workerCnt);
+		ARPHandler(NN<Net::SocketFactory> sockf, UnsafeArray<const UTF8Char> ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt workerCnt);
 		~ARPHandler();
 
 		Bool IsError();

@@ -84,16 +84,15 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
 	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbAnswer->GetSelectedItem().p;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	Text::CString cstr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN cstr;
 	if (ans)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(ans->name);
 		me->txtAnsName->SetText(sb.ToCString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
-		cstr = Net::DNSClient::TypeGetID(ans->recType);
-		if (cstr.v)
+		if (Net::DNSClient::TypeGetID(ans->recType).SetTo(cstr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 			sptr = cstr.ConcatTo(sptr);
@@ -204,8 +203,8 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(Optional<UI::GUIClientContro
 	Net::SocketUtil::AddressInfo addr;
 	this->sockf->GetDefDNS(addr);
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 	this->txtServer->SetText(CSTRP(sbuff, sptr));
 }
 

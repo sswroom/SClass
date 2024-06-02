@@ -43,12 +43,13 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 	MemCopyNO(this->buff, buff, buffSize);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[7];
-	Data::ArrayListStrUTF8 *currMedia = 0;
+	Optional<Data::ArrayListStrUTF8> optcurrMedia = 0;
+	NN<Data::ArrayListStrUTF8> currMedia;
 	IO::MemoryReadingStream mstm(this->buff, this->buffSize);
 	Text::UTF8Reader reader(mstm);
-	while ((sptr = reader.ReadLine(sbuff, 255)) != 0)
+	while (reader.ReadLine(sbuff, 255).SetTo(sptr))
 	{
 		if (sbuff[1] == '=')
 		{
@@ -95,7 +96,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'c': //connection information - not required if included in all media
 				break;
 			case 'b': //bandwidth information
-				if (currMedia)
+				if (optcurrMedia.SetTo(currMedia))
 				{
 					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
 				}
@@ -105,7 +106,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'k': //encryption key
 				break;
 			case 'a': //zero or more session attribute lines
-				if (currMedia)
+				if (optcurrMedia.SetTo(currMedia))
 				{
 					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
 				}
@@ -134,7 +135,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=type:")))
 					{
 						SDEL_STRING(this->sessType);
-						this->sessType = Text::String::NewP(&sbuff[7], sptr).Ptr();
+						this->sessType = Text::String::NewP(UARR(sbuff) + 7, sptr).Ptr();
 					}
 					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=charset:")))
 					{
@@ -158,9 +159,10 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'r': //zero or more repeat times
 				break;
 			case 'm': //media name and transport address
-				NEW_CLASS(currMedia, Data::ArrayListStrUTF8());
+				NEW_CLASSNN(currMedia, Data::ArrayListStrUTF8());
 				currMedia->Add(Text::StrCopyNew(sbuff).Ptr());
 				this->mediaList.Add(currMedia);
+				optcurrMedia = currMedia;
 				break;
 			}
 		}
@@ -175,8 +177,7 @@ Net::SDPFile::SDPFile()
 Net::SDPFile::~SDPFile()
 {
 	UOSInt i;
-	UOSInt j;
-	Data::ArrayList<const UTF8Char *> *currMedia;
+	NN<Data::ArrayListStrUTF8> currMedia;
 	MemFree(this->buff);
 	SDEL_STRING(this->sessName);
 	SDEL_STRING(this->userName);
@@ -198,20 +199,18 @@ Net::SDPFile::~SDPFile()
 	i = this->mediaList.GetCount();
 	while (i-- > 0)
 	{
-		currMedia = this->mediaList.RemoveAt(i);
-		j = currMedia->GetCount();
-		while (j-- > 0)
+		if (this->mediaList.RemoveAt(i).SetTo(currMedia))
 		{
-			Text::StrDelNew(currMedia->RemoveAt(j));
+			currMedia->DeleteAll();
+			currMedia.Delete();
 		}
-		DEL_CLASS(currMedia);
 	}
 }
 
 void Net::SDPFile::SetDefaults()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sbuff, dt.ToDotNetTicks());
@@ -461,8 +460,8 @@ Bool Net::SDPFile::BuildBuff()
 			k++;
 		}
 
-		Text::CString ctrlURL = media->GetSDPControlURL(this->reqUserAgent->ToCString());
-		if (ctrlURL.leng > 0)
+		Text::CStringNN ctrlURL;
+		if (media->GetSDPControlURL(this->reqUserAgent->ToCString()).SetTo(ctrlURL) && ctrlURL.leng > 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=control:"));
@@ -500,7 +499,7 @@ UOSInt Net::SDPFile::GetMediaCount()
 	return this->mediaList.GetCount();
 }
 
-Data::ArrayList<const UTF8Char *> *Net::SDPFile::GetMediaDesc(UOSInt index)
+Optional<Data::ArrayListStrUTF8> Net::SDPFile::GetMediaDesc(UOSInt index)
 {
 	return this->mediaList.GetItem(index);
 }

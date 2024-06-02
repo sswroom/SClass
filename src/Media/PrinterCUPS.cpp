@@ -57,7 +57,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	Bool hasMorePage;
 
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int64 t;
 	UOSInt i;
 	Double paperWidth;
@@ -66,7 +66,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	NN<Text::String> s;
 	dt.SetCurrTimeUTC();
 	t = dt.ToTicks();
-	sptr = IO::Path::GetProcessFileName(fileName);
+	sptr = IO::Path::GetProcessFileName(fileName).Or(fileName);
 	i = Text::StrLastIndexOfCharC(fileName, (UOSInt)(sptr - fileName), IO::Path::PATH_SEPERATOR);
 	sptr = &fileName[i + 1];
 	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sptr, UTF8STRC("CUPS_")), t), UTF8STRC(".tmp"));
@@ -128,7 +128,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 		sb2.AppendC(UTF8STRC("Untitled"));
 	}
 	sptr = fileName;
-	cupsPrintFiles((Char*)sb1.ToString(), 1, (const Char**)&sptr, (Char*)sb2.ToString(), 0, 0);
+	cupsPrintFiles((Char*)sb1.ToPtr(), 1, (const Char**)&sptr, (Char*)sb2.ToPtr(), 0, 0);
 
 	IO::Path::DeleteFile(fileName);
 	me->hdlr->EndPrint(me);
@@ -212,11 +212,11 @@ UOSInt Media::Printer::GetPrinterCount()
 	return (UOSInt)cnt;
 }
 
-UTF8Char *Media::Printer::GetPrinterName(UTF8Char *sbuff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> Media::Printer::GetPrinterName(UnsafeArray<UTF8Char> sbuff, UOSInt index)
 {
 	if (index < 0)
 		return 0;
-	UTF8Char *ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = 0;
 	cups_dest_t *dests;
 	int cnt = cupsGetDests(&dests);
 	if (index < (UOSInt)cnt)

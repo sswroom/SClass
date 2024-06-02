@@ -44,7 +44,7 @@ public:
 
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		
@@ -52,7 +52,7 @@ public:
 		sb.AppendC(UTF8STRC("<body>"));
 
 		Manage::CPUInfo cpu;
-		if ((sptr = cpu.GetCPUName(sbuff)) != 0)
+		if (cpu.GetCPUName(sbuff).SetTo(sptr))
 		{
 			sb.AppendC(UTF8STRC("<h2>CPU: "));
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));

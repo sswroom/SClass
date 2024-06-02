@@ -17,7 +17,7 @@ namespace Text
 
 			void BuildContentType();
 		public:
-			HTMLMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage);
+			HTMLMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage);
 			virtual ~HTMLMIMEObj();
 
 			virtual Text::CStringNN GetClassName() const;

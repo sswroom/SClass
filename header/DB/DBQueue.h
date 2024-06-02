@@ -59,7 +59,7 @@ namespace DB
 			AnyType userData;
 			AnyType userData2;
 
-			SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+			SQLCmd(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 			virtual ~SQLCmd();			
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
@@ -140,8 +140,8 @@ namespace DB
 		void AddDB(NN<DB::DBTool> db);
 
 		void ToStop();
-		void AddSQL(const UTF8Char *sql, UOSInt sqlLen);
-		void AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
+		void AddSQL(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen);
+		void AddSQL(UnsafeArray<const UTF8Char> sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, AnyType userData, AnyType userData2);
 		void AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 		void GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, AnyType userData, AnyType userData2);
 		void RemoveSQLs(Int32 progId);
@@ -151,14 +151,14 @@ namespace DB
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
 		Int8 GetTzQhr() const;
-		UTF8Char *ToString(UTF8Char *buff);
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
 		UOSInt GetNextCmds(IDBCmd **cmds); //max 200 cmds
-		UTF8Char *DBDateTime(UTF8Char *buff, Data::DateTime *dat);
-		UTF8Char *DBInt32(UTF8Char *buff, Int32 val);
-		UTF8Char *DBInt64(UTF8Char *buff, Int64 val);
-		UTF8Char *DBStrW(UTF8Char *buff, const WChar *val);
-		UTF8Char *DBDbl(UTF8Char *buff, Double val);
-		UTF8Char *DBBool(UTF8Char *buff, Bool val);
+		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> buff, Data::DateTime *dat);
+		UnsafeArray<UTF8Char> DBInt32(UnsafeArray<UTF8Char> buff, Int32 val);
+		UnsafeArray<UTF8Char> DBInt64(UnsafeArray<UTF8Char> buff, Int64 val);
+		UnsafeArray<UTF8Char> DBStrW(UnsafeArray<UTF8Char> buff, const WChar *val);
+		UnsafeArray<UTF8Char> DBDbl(UnsafeArray<UTF8Char> buff, Double val);
+		UnsafeArray<UTF8Char> DBBool(UnsafeArray<UTF8Char> buff, Bool val);
 		Bool IsExecTimeout();
 	};
 
@@ -181,7 +181,7 @@ namespace DB
 		UInt32 GetDataCnt();
 
 	private:
-		void WriteError(const UTF8Char *errMsg, NN<Text::String> sqlCmd);
+		void WriteError(UnsafeArray<const UTF8Char> errMsg, NN<Text::String> sqlCmd);
 		static UInt32 __stdcall ProcessSQL(AnyType userObj);
 
 	public:

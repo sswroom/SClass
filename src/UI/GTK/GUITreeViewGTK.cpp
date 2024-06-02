@@ -218,7 +218,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<TreeIte
 	{
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
-	gtk_tree_store_set(data->treeStore, iter, 0, itemText->v, -1);
+	gtk_tree_store_set(data->treeStore, iter, 0, itemText->v.Ptr(), -1);
 	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 
@@ -253,7 +253,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	{
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
-	gtk_tree_store_set(data->treeStore, iter, 0, itemText.v, -1);
+	gtk_tree_store_set(data->treeStore, iter, 0, itemText.v.Ptr(), -1);
 	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 

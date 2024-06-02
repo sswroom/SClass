@@ -39,7 +39,7 @@ namespace Net
 		Data::FastStringMapNN<ModuleInfo> moduleMap;
 		ModuleInfo globalModule;
 
-		static UOSInt CalcLineSpace(const UTF8Char *txt);
+		static UOSInt CalcLineSpace(UnsafeArray<const UTF8Char> txt);
 		static void ModuleAppendOID(NN<ModuleInfo> module, NN<ObjectInfo> obj);
 		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *s, NN<Text::StringBuilderUTF8> errMessage);
 		Bool ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage);
@@ -51,13 +51,13 @@ namespace Net
 		Bool ApplyImports(NN<Text::StringBuilderUTF8> errMessage);
 		Bool LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> errMessage, Bool postApply);
 
-		static void RemoveSpace(Text::PString *s);
-		static Bool IsType(const UTF8Char *s);
-		static Bool IsKnownType(Text::CString s);
-		static Bool IsUnknownType(Text::CString s);
-		static OSInt BranketEnd(const UTF8Char *s, UTF8Char *brkType);
-		static const UTF8Char *SkipWS(const UTF8Char *s);
-		static UTF8Char NextChar(const UTF8Char *s);
+		static void RemoveSpace(NN<Text::PString> s);
+		static Bool IsType(UnsafeArray<const UTF8Char> s);
+		static Bool IsKnownType(Text::CStringNN s);
+		static Bool IsUnknownType(Text::CStringNN s);
+		static OSInt BranketEnd(UnsafeArray<const UTF8Char> s, OptOut<UTF8Char> brkType);
+		static UnsafeArray<const UTF8Char> SkipWS(UnsafeArray<const UTF8Char> s);
+		static UTF8Char NextChar(UnsafeArray<const UTF8Char> s);
 	public:
 		ASN1MIB();
 		~ASN1MIB();

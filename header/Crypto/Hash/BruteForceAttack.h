@@ -43,7 +43,7 @@ namespace Crypto
 			UInt64 testCnt;
 
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
-			UOSInt GetNextKey(UInt8 *keyBuff, UTF8Char *resultBuff);
+			UOSInt GetNextKey(UInt8 *keyBuff, UnsafeArray<UTF8Char> resultBuff);
 		public:
 			BruteForceAttack(Crypto::Hash::HashValidator *validator, CharEncoding ce);
 			~BruteForceAttack();
@@ -54,7 +54,7 @@ namespace Crypto
 			UnsafeArrayOpt<UTF8Char> GetCurrKey(UnsafeArray<UTF8Char> key);
 			UInt64 GetTestCnt();
 			UnsafeArrayOpt<UTF8Char> GetResult(UnsafeArray<UTF8Char> resultBuff);
-			Bool Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
+			Bool Start(UnsafeArray<const UTF8Char> hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
 
 			static Text::CStringNN CharLimitGetName(CharLimit charLimit);
 		};

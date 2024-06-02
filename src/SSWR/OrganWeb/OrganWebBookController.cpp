@@ -15,7 +15,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebSe
 	if (req->GetQueryValueI32(CSTR("id"), id))
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<BookInfo> book;
 		Sync::RWMutexUsage mutUsage;
 		if (!env.user.SetTo(user) || user->userType != UserType::Admin)
@@ -80,7 +80,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<BookInfo> book;
 		NN<CategoryInfo> cate;
 		Sync::RWMutexUsage mutUsage;
@@ -309,7 +309,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 	if (req->GetQueryValueI32(CSTR("id"), cateId))
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<CategoryInfo> cate;
 		NN<WebUserInfo> user;
 		Sync::RWMutexUsage mutUsage;

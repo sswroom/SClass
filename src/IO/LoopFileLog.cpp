@@ -27,7 +27,7 @@ void IO::LoopFileLog::SwapFiles()
 	IO::FileUtil::RenameFile(buff1, buff2);
 }
 
-IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style)
+IO::LoopFileLog::LoopFileLog(Text::CStringNN fileName, Int32 nFiles, LogType style)
 {
 	this->logStyle = style;
 	this->nFiles = nFiles;
@@ -35,7 +35,7 @@ IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style
 	this->extName = 0;
 
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	this->fileName = Text::String::New(fileName);
 	SwapFiles();
@@ -95,7 +95,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logM
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Sync::MutexUsage mutUsage(this->mut);
 	Data::DateTimeUtil::TimeValue tval;

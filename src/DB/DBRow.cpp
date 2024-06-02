@@ -88,7 +88,7 @@ Bool DB::DBRow::SetFieldNull(NN<DB::DBRow::Field> field)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldStr(NN<DB::DBRow::Field> field, const UTF8Char *strValue)
+Bool DB::DBRow::SetFieldStr(NN<DB::DBRow::Field> field, UnsafeArrayOpt<const UTF8Char> strValue)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_STRING)
@@ -96,7 +96,7 @@ Bool DB::DBRow::SetFieldStr(NN<DB::DBRow::Field> field, const UTF8Char *strValue
 		return false;
 	}
 	SDEL_TEXT(field->currentData.str);
-	field->currentData.str = SCOPY_TEXT(strValue);
+	field->currentData.str = Text::StrSCopyNew(strValue);
 	field->currentChanged = true;
 	field->currentNull = (field->currentData.str == 0);
 	return true;
@@ -205,7 +205,7 @@ Bool DB::DBRow::IsFieldNull(NN<DB::DBRow::Field> field) const
 	}
 }
 
-const UTF8Char *DB::DBRow::GetFieldStr(NN<DB::DBRow::Field> field) const
+UnsafeArrayOpt<const UTF8Char> DB::DBRow::GetFieldStr(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_STRING)
@@ -388,7 +388,7 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 			case DT_STRING:
 				{
 					NN<Text::String> s = r->GetNewStrNN(i);
-					this->SetFieldStr(field, s->v);
+					this->SetFieldStr(field, UnsafeArray<const UTF8Char>(s->v));
 					s->Release();
 				}
 				break;
@@ -444,7 +444,7 @@ Bool DB::DBRow::SetValueNull(Text::CStringNN fieldName)
 	return this->SetFieldNull(field);
 }
 
-Bool DB::DBRow::SetValueStr(Text::CStringNN fieldName, const UTF8Char *strValue)
+Bool DB::DBRow::SetValueStr(Text::CStringNN fieldName, UnsafeArrayOpt<const UTF8Char> strValue)
 {
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.Get(fieldName).SetTo(field))
@@ -514,7 +514,7 @@ Bool DB::DBRow::IsNull(Text::CStringNN fieldName) const
 	return this->IsFieldNull(field);
 }
 
-const UTF8Char *DB::DBRow::GetValueStr(Text::CStringNN fieldName) const
+UnsafeArrayOpt<const UTF8Char> DB::DBRow::GetValueStr(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
 	if (!this->dataMap.Get(fieldName).SetTo(field))
@@ -699,10 +699,10 @@ Bool DB::DBRow::GetSinglePKI64(OutParam<Int64> key) const
 void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ColDef> col;
 	NN<DB::DBRow::Field> field;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	Math::WKTWriter wkt;
 	NN<Math::Geometry::Vector2D> vec;
 	DataType dtype;
@@ -747,10 +747,10 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 					}
 					else
 					{
-						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
+						UnsafeArray<UTF8Char> tmpBuff = MemAllocArr(UTF8Char, strLen + 1);
 						sptr = DB::DBUtil::SDBBin(tmpBuff, buff, k, table->GetSQLType());
 						sb->AppendP(tmpBuff, sptr);
-						MemFree(tmpBuff);
+						MemFreeArr(tmpBuff);
 					}
 					break;
 				case DT_DOUBLE:
@@ -762,7 +762,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 					sb->AppendP(sbuff, sptr);
 					break;
 				case DT_STRING:
-					buff = this->GetFieldStr(field);
+					buff = this->GetFieldStr(field).Or(U8STR(""));
 					strLen = DB::DBUtil::SDBStrUTF8Leng(buff, table->GetSQLType());
 					if (strLen < sizeof(sbuff) - 1)
 					{
@@ -771,10 +771,10 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 					}
 					else
 					{
-						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
+						UnsafeArray<UTF8Char> tmpBuff = MemAllocArr(UTF8Char, strLen + 1);
 						sptr = DB::DBUtil::SDBStrUTF8(tmpBuff, buff, table->GetSQLType());
 						sb->AppendP(tmpBuff, sptr);
-						MemFree(tmpBuff);
+						MemFreeArr(tmpBuff);
 					}
 					break;
 				case DT_VECTOR:
@@ -796,7 +796,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 void DB::DBRow::AppendTableName(NN<Text::StringBuilderUTF8> sb) const
 {
-	Text::CString tableName = this->table->GetTableName()->ToCString();
+	Text::CStringNN tableName = this->table->GetTableName()->ToCString();
 	UOSInt i = tableName.IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
@@ -841,7 +841,7 @@ void DB::DBRow::AppendTableName(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-void DB::DBRow::AppendVarNameForm(NN<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const
+void DB::DBRow::AppendVarNameForm(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> colName) const
 {
 	Bool nextCap = false;
 	UTF8Char c;

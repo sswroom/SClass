@@ -24,7 +24,7 @@ namespace Text
 		static Bool TrimGSMText(UTF16Char *msg);
 		static UTF16Char *TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg, UInt32 dataLen);
 		static Bool IsPhone(const UTF16Char *txt);
-		static Bool IsIntlPhone(const UTF8Char *txt);
+		static Bool IsIntlPhone(UnsafeArray<const UTF8Char> txt);
 		static Bool IsIntlPhone(const UTF16Char *txt);
 	};
 }

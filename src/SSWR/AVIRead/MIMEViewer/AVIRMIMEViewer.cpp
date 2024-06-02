@@ -23,7 +23,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::~AVIRMIMEViewer()
 Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj)
 {
 	NN<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
-	Text::CString clsName = obj->GetClassName();
+	Text::CStringNN clsName = obj->GetClassName();
 	if (clsName.Equals(UTF8STRC("MailMessage")))
 	{
 		NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMailViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::MailMessage>::ConvertFrom(obj)));
@@ -41,7 +41,7 @@ Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> SSWR::AVIRead::MIMEViewer::A
 	}
 	else
 	{
-		Text::CString contType = obj->GetContentType();
+		Text::CStringNN contType = obj->GetContentType();
 		if (contType.StartsWith(UTF8STRC("image/jpeg")) || contType.StartsWith(UTF8STRC("image/png")) || contType.StartsWith(UTF8STRC("image/jpg")))
 		{
 			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));

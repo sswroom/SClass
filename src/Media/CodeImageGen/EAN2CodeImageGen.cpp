@@ -27,16 +27,13 @@ UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
 	return 2;
 }
 
-Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CStringNN code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
-	if (code.v == 0)
-		return 0;
-
 	UOSInt i = 2;
 	UOSInt j;
 	UOSInt k;
-	const UTF8Char *tmpStr = code.v;
+	UnsafeArray<const UTF8Char> tmpStr = code.v;
 	UTF8Char c;
 	while (i-- > 0)
 	{
@@ -48,7 +45,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::
 		return 0;
 	j = Text::StrToUInt32(code.v);
 
-	const UTF8Char *codePtr = code.v;
+	UnsafeArray<const UTF8Char> codePtr = code.v;
 	UInt8 bitCode[21];
 	bitCode[0] = 0;
 	bitCode[1] = 1;

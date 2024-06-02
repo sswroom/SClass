@@ -97,7 +97,7 @@ void BitonicSort_MergeStrC(Char **arr, OSInt n, Bool dir, OSInt m)
 	{
 		v1 = arr[i];
 		v2 = arr[i + m];
-		if (dir == (Text::StrCompare(v1, v2) > 0))
+		if (dir == (Text::StrCompareCh(v1, v2) > 0))
 		{
 			arr[i] = v2;
 			arr[i + m] = v1;
@@ -123,7 +123,7 @@ void BitonicSort_MergeStrC(Char **arr, OSInt n, Bool dir, OSInt m)
 	{
 		v1 = arr[1];
 		v2 = arr[2];
-		if (dir == (Text::StrCompare(v1, v2) > 0))
+		if (dir == (Text::StrCompareCh(v1, v2) > 0))
 		{
 			arr[1] = v2;
 			arr[2] = v1;
@@ -185,7 +185,7 @@ void BitonicSort_SortInnerStrC(Char **arr, OSInt n, Bool dir, OSInt pw2)
 	{
 		Char *v1 = arr[1];
 		Char *v2 = arr[2];
-		if (dir == (Text::StrCompare(v1, v2) > 0))
+		if (dir == (Text::StrCompareCh(v1, v2) > 0))
 		{
 			arr[1] = v2;
 			arr[2] = v1;

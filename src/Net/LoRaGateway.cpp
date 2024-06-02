@@ -12,7 +12,7 @@ void __stdcall Net::LoRaGateway::OnUDPPacket(NN<const Net::SocketUtil::AddressIn
 {
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseUDPMessage(sb, false, buff, dataSize);
-	printf("%s\r\n", sb.ToString());
+	printf("%s\r\n", sb.ToPtr());
 }
 
 UInt32 __stdcall Net::LoRaGateway::PullThread(AnyType userObj)

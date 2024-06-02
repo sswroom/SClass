@@ -87,7 +87,7 @@ UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::TCPServerStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::TCPServerStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	Bool toClose = false;
 	Net::TCPClient *cli = 0;

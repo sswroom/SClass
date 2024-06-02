@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType use
 					}
 					else
 					{
-						printf("Error in file2: %s\r\n", sarr[0].v);
+						printf("Error in file2: %s\r\n", sarr[0].v.Ptr());
 					}
 
 					if (succ)
@@ -282,7 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType use
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{

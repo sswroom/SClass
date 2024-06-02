@@ -64,7 +64,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	Bool isRunning;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 widthLimit = 3840;
 	UInt8 tmpBuff[4];
 	UInt32 prefFmt = 0;
@@ -149,7 +149,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				console->WriteLine();
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Capture using "));
-				sptr = capture->GetSourceName(sbuff);
+				sptr = capture->GetSourceName(sbuff).Or(sbuff);
 				sb.AppendP(sbuff, sptr);
 				console->WriteLine(sb.ToCString());
 

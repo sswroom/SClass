@@ -14,9 +14,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 buff[4096];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
 	UOSInt buffSize = IO::FileStream::LoadFile(CSTRP(sbuff, sptr), buff, 4096);
 	if (buffSize == 0)
@@ -64,7 +64,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl) && csr.Set(Crypto::Cert::CertUtil::CertReqCreate(nnssl, names, key, &ext)))
 	{
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CSRTestOut.pem"));
 		Exporter::PEMExporter::ExportFile(CSTRP(sbuff, sptr), csr);
 		csr.Delete();

@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 	UOSInt j;
 	Data::ArrayListNN<IO::BTController> btList;
 	NN<BTStatus> btStatus;
-	Text::CString cstr;
+	Text::CStringNN cstr;
 	Text::StringBuilderUTF8 sb;
 	this->currDev = 0;
 
@@ -271,12 +271,9 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(Optional<UI::GUIClientContro
 		sb.ClearStr();
 		sb.Append(btStatus->bt->GetName());
 		cstr = IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer());
-		if (cstr.v)
-		{
-			sb.AppendC(UTF8STRC(" ("));
-			sb.Append(cstr);
-			sb.AppendC(UTF8STRC(")"));
-		}
+		sb.AppendC(UTF8STRC(" ("));
+		sb.Append(cstr);
+		sb.AppendC(UTF8STRC(")"));
 		this->lbCtrl->AddItem(sb.ToCString(), btStatus);
 		i++;
 	}

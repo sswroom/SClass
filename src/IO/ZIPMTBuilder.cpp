@@ -62,7 +62,7 @@ void IO::ZIPMTBuilder::AddTask(FileTask *task)
 IO::ZIPMTBuilder::ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os) : zip(stm, os)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->toStop = false;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
@@ -133,7 +133,7 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, 
 	if ((readSize = fd->GetRealData(0, (UOSInt)task->fileSize, Data::ByteArray(task->fileBuff, task->fileSize))) != task->fileSize)
 	{
 #if defined(VERBOSE)
-		printf("Error in reading file from file data: file size = %lld, total read = %lld, fileName = %s\r\n", (UInt64)task->fileSize, (UInt64)readSize, fileName.v);
+		printf("Error in reading file from file data: file size = %lld, total read = %lld, fileName = %s\r\n", (UInt64)task->fileSize, (UInt64)readSize, fileName.v.Ptr());
 #endif
 		MemFree(task->fileBuff);
 		MemFree(task);

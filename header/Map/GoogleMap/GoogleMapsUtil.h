@@ -9,7 +9,7 @@ namespace Map
 		class GoogleMapsUtil
 		{
 		public:
-			static Math::Geometry::LineString *ParsePolylineText(const UTF8Char *polylineText);
+			static Optional<Math::Geometry::LineString> ParsePolylineText(UnsafeArray<const UTF8Char> polylineText);
 		};
 	}
 }

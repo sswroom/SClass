@@ -149,7 +149,7 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 		}
 		else
 		{
-			printf("MapDrawUtil: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+			printf("MapDrawUtil: DrawCurvePolygon unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 		}
 	}
 	if (ptList.GetCount() > 0)
@@ -359,7 +359,7 @@ Bool Map::MapDrawUtil::DrawVector(NN<Math::Geometry::Vector2D> vec, NN<Media::Dr
 	case Math::Geometry::Vector2D::VectorType::PieArea:
 	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:
-		printf("MapDrawUtil: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+		printf("MapDrawUtil: unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 		return false;
 	}
 }

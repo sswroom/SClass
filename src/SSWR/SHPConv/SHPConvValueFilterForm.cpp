@@ -63,14 +63,16 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUICl
 	this->SetCancelButton(this->btnCancel);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 0;
 	UOSInt j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{
-		sptr = this->dbf->GetColumnName(i, sbuff);
-		this->cboCol->AddItem(CSTRP(sbuff, sptr), 0);
+		if (this->dbf->GetColumnName(i, sbuff).SetTo(sptr))
+		{
+			this->cboCol->AddItem(CSTRP(sbuff, sptr), 0);
+		}
 		i++;
 	}
 	this->cboCol->SetSelectedIndex(0);

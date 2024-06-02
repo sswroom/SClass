@@ -221,7 +221,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Double val)
 	if (this->columns[index].colType != DB::DBUtil::CT_Double)
 		return false;
 	UTF8Char sbuff[60];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 outBuff[60];
 	UOSInt i;
 	UOSInt j;
@@ -255,8 +255,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Double val)
 
 Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
 {
-	Char sbuff[12];
-	Char *sptr;
+	UTF8Char sbuff[12];
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if (index >= this->colCnt)
@@ -266,7 +266,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
 	sptr = Text::StrInt32(sbuff, val);
 	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
 	{
-		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr - this->columns[index].colSize, this->columns[index].colSize);
+		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
@@ -283,8 +283,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
 
 Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
 {
-	Char sbuff[12];
-	Char *sptr;
+	UTF8Char sbuff[12];
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if (index >= this->colCnt)
@@ -294,7 +294,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
 	sptr = Text::StrInt32(sbuff, val);
 	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
 	{
-		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr - this->columns[index].colSize, this->columns[index].colSize);
+		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
@@ -311,8 +311,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
 
 Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
 {
-	Char sbuff[24];
-	Char *sptr;
+	UTF8Char sbuff[24];
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if (index >= this->colCnt)
@@ -322,7 +322,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
 	sptr = Text::StrInt64(sbuff, val);
 	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
 	{
-		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr - this->columns[index].colSize, this->columns[index].colSize);
+		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{
@@ -339,8 +339,8 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
 
 Bool DB::DBFFixWriter::SetColumn(UOSInt index, UInt32 val)
 {
-	Char sbuff[24];
-	Char *sptr;
+	UTF8Char sbuff[24];
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if (index >= this->colCnt)
@@ -350,7 +350,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, UInt32 val)
 	sptr = Text::StrInt64(sbuff, val);
 	if ((UOSInt)(sptr - sbuff) >= this->columns[index].colSize)
 	{
-		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr - this->columns[index].colSize, this->columns[index].colSize);
+		MemCopyNO(&this->rec[this->columns[index].colOfst], sptr.Ptr() - this->columns[index].colSize, this->columns[index].colSize);
 	}
 	else
 	{

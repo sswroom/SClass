@@ -359,11 +359,11 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 							j = 0;
 							while (j < wrq.u.data.length)
 							{
-								if (Text::StrEquals(args[j].name, "get_site_survey"))
+								if (Text::StrEqualsCh(args[j].name, "get_site_survey"))
 								{
 									siteSurveyCmd = args[j].cmd;
 								}
-								else if (Text::StrEquals(args[j].name, "set"))
+								else if (Text::StrEqualsCh(args[j].name, "set"))
 								{
 									setCmd = args[j].cmd;								
 								}

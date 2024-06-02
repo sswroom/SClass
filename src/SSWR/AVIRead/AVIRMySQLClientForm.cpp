@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[48];
 	UOSInt i;
 	NN<Text::String> s;

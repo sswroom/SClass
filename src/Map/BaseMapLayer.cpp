@@ -59,13 +59,13 @@ Text::CStringNN Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::MapDrawLayer *lyr;
 	NN<Map::TileMap> tileMap;
 	switch (blt)
 	{
 	case BLT_OSM_TILE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
@@ -73,7 +73,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_CYCLE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOpenCycleMap"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/cycle/"));
@@ -81,7 +81,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_TRANSP:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransport"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport/"));
@@ -89,7 +89,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_LANDSCAPE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMLandscape"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/landscape/"));
@@ -97,7 +97,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_OUTDOORS:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOutdoors"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/outdoors/"));
@@ -105,7 +105,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_TRANSP_DARK:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransportDark"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport-dark/"));
@@ -113,7 +113,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_SPINAL:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMSpinalMap"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/spinal-map/"));
@@ -121,7 +121,7 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_OSM_MAPQUEST:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMMapQuest"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 0, 18, sockf, ssl));
 		((Map::OSM::OSMTileMap*)tileMap.Ptr())->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
@@ -130,25 +130,25 @@ Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_GMAP_MAP:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMap"));
 		NEW_CLASSNN(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_MAP, sockf, ssl));
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_GMAP_TRAIN:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMapTrain"));
 		NEW_CLASSNN(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_TRAIN, sockf, ssl));
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_GMAP_HYBRID:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMapHybrid"));
 		NEW_CLASSNN(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_HYBRID, sockf, ssl));
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));
 		return lyr;
 	case BLT_GMAP_SATELITE:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("GMapSatelite"));
 		NEW_CLASSNN(tileMap, Map::GoogleMap::GoogleTileMap(CSTRP(sbuff, sptr), Map::GoogleMap::GoogleTileMap::MT_SATELITE, sockf, ssl));
 		NEW_CLASS(lyr, Map::TileMapLayer(tileMap, parsers));

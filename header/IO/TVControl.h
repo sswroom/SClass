@@ -84,7 +84,7 @@ namespace IO
 		typedef struct
 		{
 			TVType tvType;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UOSInt nameLen;
 			UInt32 defBaudRate;
 		} TVInfo;
@@ -94,7 +94,7 @@ namespace IO
 		virtual ~TVControl();
 
 		virtual Bool SendInstruction(CommandType ct) = 0;
-		virtual Bool SendGetCommand(CommandType ct, Int32 *val, UTF8Char *sbuff) = 0;
+		virtual Bool SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff) = 0;
 		virtual Bool SendSetCommand(CommandType ct, Int32 val) = 0;
 		virtual void GetSupportedCmd(Data::ArrayList<CommandType> *cmdList, Data::ArrayList<CommandFormat> *cmdFormats) = 0;
 

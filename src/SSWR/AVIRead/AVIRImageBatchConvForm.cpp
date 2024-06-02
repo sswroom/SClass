@@ -34,10 +34,10 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	NN<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
 	Text::StringBuilderUTF8 sb;
 	ConvertSess csess;
 	csess.quality = 0;
@@ -48,8 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 		me->ui->ShowMsgOK(CSTR("Invalid Quality"), CSTR("Error"), me);
 		return;
 	}
-	sptr = me->txtDir->GetText(sbuff);
-	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory)
+	if (!me->txtDir->GetText(sbuff).SetTo(sptr) || IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory)
 	{
 		me->ui->ShowMsgOK(CSTR("Not a directory"), CSTR("Error"), me);
 		return;
@@ -63,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	IO::Path::FindFileSession *sess;
 	csess.succ = true;
 	csess.errMsg = 0;
-	Text::CString ext;
+	Text::CStringNN ext;
 	if (me->radFormatWebP->IsSelected())
 	{
 		NEW_CLASS(csess.exporter, Exporter::WebPExporter());
@@ -91,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 			}
 		}
-		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
 		{
 			if (pt == IO::Path::PathType::File && !Text::StrEndsWithICaseC(sptr, (UOSInt)(sptrEnd - sptr), ext.v, ext.leng))
 			{

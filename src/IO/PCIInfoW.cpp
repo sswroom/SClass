@@ -10,7 +10,7 @@ struct IO::PCIInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
-	Text::CString dispName;
+	Text::CStringNN dispName;
 };
 
 IO::PCIInfo::PCIInfo(NN<ClassData> info)
@@ -19,7 +19,7 @@ IO::PCIInfo::PCIInfo(NN<ClassData> info)
 	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
-	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng).Ptr();
+	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng);
 	clsData->dispName.leng = srcData->dispName.leng;
 	this->clsData = clsData;
 }
@@ -40,7 +40,7 @@ UInt16 IO::PCIInfo::GetProductId()
 	return this->clsData->productId;
 }
 
-Text::CString IO::PCIInfo::GetDispName()
+Text::CStringNN IO::PCIInfo::GetDispName()
 {
 	return this->clsData->dispName;
 }
@@ -75,7 +75,7 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 	ClassData clsData;
 	UInt32 id;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
@@ -88,14 +88,16 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			sptr = r->GetName(i, sbuff);
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Description")))
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				descCol = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
-			{
-				devIdCol = i;
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Description")))
+				{
+					descCol = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
+				{
+					devIdCol = i;
+				}
 			}
 			i++;
 		}
@@ -129,9 +131,9 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 	}
 	else //wine
 	{
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
-		UTF8Char *sptr2End;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
+		UnsafeArray<UTF8Char> sptr2End;
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		clsData.dispName = CSTR("PCI Device");
@@ -140,7 +142,7 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 			{
 				if (sptr[0] != '.')
 				{

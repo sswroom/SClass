@@ -11,7 +11,7 @@
 #include "Text/UTF8Writer.h"
 #include "UI/GUIFileDialog.h"
 
-UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, UOSInt byteSize)
+UnsafeArray<UTF8Char> SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UnsafeArray<UTF8Char> sbuff, UOSInt byteSize)
 {
 	if (byteSize >= 1048576)
 	{
@@ -31,7 +31,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 {
 	UOSInt i;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Double oriT;
 	Double t;
 	Manage::HiResClock clk;
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	NN<SSWR::AVIRead::AVIRBenchmarkForm::TestResult> result;
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 		Text::UTF8Writer writer(fs);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform: "));
-		if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
+		if (sysInfo.GetPlatformName(sbuff).SetTo(sptr))
 		{
 			sb.AppendP(sbuff, sptr);
 		}
@@ -256,7 +256,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 		Manage::CPUInfo cpu;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU: "));
-		if (cpu.GetCPUName(sbuff))
+		if (cpu.GetCPUName(sbuff).SetTo(sptr))
 		{
 			sb.AppendP(sbuff, sptr);
 		}
@@ -411,9 +411,9 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 	this->lvRAM->AddColumn(CSTR("Memory Size"), 80);
 
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::SystemInfo sysInfo;
-	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
+	if (sysInfo.GetPlatformName(sbuff).SetTo(sptr))
 	{
 		this->txtPlatform->SetText(CSTRP(sbuff, sptr));
 	}
@@ -422,7 +422,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 		this->txtPlatform->SetText(CSTR("-"));
 	}
 	Manage::CPUInfo cpu;
-	if ((sptr = cpu.GetCPUName(sbuff)) != 0)
+	if (cpu.GetCPUName(sbuff).SetTo(sptr))
 	{
 		this->txtCPU->SetText(CSTRP(sbuff, sptr));
 	}

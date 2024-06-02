@@ -17,7 +17,7 @@ namespace Data
 		~CircularByteBuff();
 
 		void Clear();
-		void AppendBytes(const UInt8 *buff, UOSInt buffSize);
+		void AppendBytes(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		UOSInt GetBytes(UInt8 *buff);
 		void ToString(NN<Text::StringBuilderUTF8> sb);
 	};

@@ -85,14 +85,14 @@ void UI::GTK::GTKButton::SetText(Text::CStringNN text)
 	Text::StrDelNew(lbl);
 }
 
-void UI::GTK::GTKButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
+void UI::GTK::GTKButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
 {
 	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd);
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("label"), CSTR_NULL);
 	UnsafeArray<const UTF8Char> nnname;
-	if (nnname.Set(name)) builder.AddFontFamily(nnname);
+	if (name.SetTo(nnname)) builder.AddFontFamily(nnname);
 	if (fontHeightPt != 0) builder.AddFontSize(fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (isBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
 

@@ -40,11 +40,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return 4;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::OSSocketFactory sockf(true);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 	IO::LogTool log;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));

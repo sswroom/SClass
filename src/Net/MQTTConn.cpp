@@ -33,13 +33,15 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 		UInt8 qosLev = (cmdType & 6) >> 1;
 		UOSInt i;
 		UOSInt packetId = ReadMUInt16(&cmd[0]);
-		UTF8Char *topic = 0;
+		UnsafeArrayOpt<UTF8Char> topic = 0;
+		UnsafeArray<UTF8Char> nntopic;
 		UOSInt topicLen = 0;
 		if ((UOSInt)(packetId + 2) <= cmdSize)
 		{
-			topic = MemAlloc(UTF8Char, packetId + 1);
-			MemCopyNO(topic, &cmd[2], packetId);
-			topic[packetId] = 0;
+			nntopic = MemAlloc(UTF8Char, packetId + 1);
+			MemCopyNO(nntopic.Ptr(), &cmd[2], packetId);
+			nntopic[packetId] = 0;
+			topic = nntopic;
 			topicLen = packetId;
 		}
 		i = packetId + 2;
@@ -55,12 +57,12 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 			}
 			i += 2;
 		}
-		if (topic && i <= cmdSize)
+		if (topic.SetTo(nntopic) && i <= cmdSize)
 		{
 #if defined(DEBUG_PRINT)
-			printf("MQTT data: topic = %s, size = %d\r\n", topic, (UInt32)(cmdSize - i));
+			printf("MQTT data: topic = %s, size = %d\r\n", nntopic.Ptr(), (UInt32)(cmdSize - i));
 #endif
-			this->OnPublishMessage({topic, topicLen}, &cmd[i], cmdSize - i);
+			this->OnPublishMessage({nntopic, topicLen}, &cmd[i], cmdSize - i);
 		}
 		if (qosLev == 1)
 		{
@@ -70,9 +72,9 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 		{
 			this->SendPubRec((UInt16)packetId);
 		}
-		if (topic)
+		if (topic.SetTo(nntopic))
 		{
-			MemFree(topic);
+			MemFreeArr(nntopic);
 			topic = 0;
 		}
 	}
@@ -288,7 +290,7 @@ Bool Net::MQTTConn::IsError()
 	return this->stm == 0 || !this->recvRunning;
 }
 
-Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString clientId, Text::CString userName, Text::CString password)
+Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CStringNN clientId, Text::CString userName, Text::CString password)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -307,14 +309,14 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 	i = 10;
 	j = clientId.leng;
 	WriteMInt16(&packet1[i], j);
-	MemCopyNO(&packet1[i + 2], clientId.v, j);
+	MemCopyNO(&packet1[i + 2], clientId.v.Ptr(), j);
 	i += j + 2;
 	if (userName.leng > 0)
 	{
 		packet1[7] |= 0x80;
 		j = userName.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], userName.v, j);
+		MemCopyNO(&packet1[i + 2], userName.v.Ptr(), j);
 		i += j + 2;
 	}
 	if (password.leng > 0)
@@ -322,14 +324,14 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 		packet1[7] |= 0x40;
 		j = password.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], password.v, j);
+		MemCopyNO(&packet1[i + 2], password.v.Ptr(), j);
 		i += j + 2;
 	}
 	j = this->protoHdlr.BuildPacket(packet2, 0x10, 0, packet1, i, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTConn::SendPublish(Text::CString topic, Text::CString message)
+Bool Net::MQTTConn::SendPublish(Text::CStringNN topic, Text::CStringNN message)
 {
 	UOSInt i;
 	UOSInt j;
@@ -341,10 +343,10 @@ Bool Net::MQTTConn::SendPublish(Text::CString topic, Text::CString message)
 		UInt8 *pack2 = MemAlloc(UInt8, topic.leng + message.leng + 7);
 		j = topic.leng;
 		WriteMInt16(&pack1[i], j);
-		MemCopyNO(&pack1[i + 2], topic.v, j);
+		MemCopyNO(&pack1[i + 2], topic.v.Ptr(), j);
 		i += j + 2;
 		j = message.leng;
-		MemCopyNO(&pack1[i], message.v, j);
+		MemCopyNO(&pack1[i], message.v.Ptr(), j);
 		i += j;
 
 		j = this->protoHdlr.BuildPacket(pack2, 0x30, 0, pack1, i, this->cliData);
@@ -360,10 +362,10 @@ Bool Net::MQTTConn::SendPublish(Text::CString topic, Text::CString message)
 
 		j = topic.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], topic.v, j);
+		MemCopyNO(&packet1[i + 2], topic.v.Ptr(), j);
 		i += j + 2;
 		j = message.leng;
-		MemCopyNO(&packet1[i], message.v, j);
+		MemCopyNO(&packet1[i], message.v.Ptr(), j);
 		i += j;
 
 		j = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
@@ -393,7 +395,7 @@ Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
+Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 {
 
 	UOSInt i;
@@ -407,7 +409,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
 		i = 2;
 		j = topic.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], topic.v, j);
+		MemCopyNO(&packet1[i + 2], topic.v.Ptr(), j);
 		i += j + 2;
 		packet1[i] = 0;
 		i++;
@@ -428,7 +430,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
 		i = 2;
 		j = topic.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], topic.v, j);
+		MemCopyNO(&packet1[i + 2], topic.v.Ptr(), j);
 		i += j + 2;
 		packet1[i] = 0;
 		i++;
@@ -502,11 +504,11 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout)
+Bool Net::MQTTConn::PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NEW_CLASS(cli, Net::MQTTConn(sockf, ssl, host, port, 0, 0, timeout));
 	if (cli->IsError())
 	{

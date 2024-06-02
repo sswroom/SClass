@@ -1389,7 +1389,7 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 		s->Release();
 		return;
 	case ItemType::CStr:
-		s = Text::JSText::ToNewJSTextDQuote(this->val.cstr.v);
+		s = Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char>(this->val.cstr.v));
 		sb->Append(s);
 		s->Release();
 		return;

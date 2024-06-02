@@ -50,7 +50,7 @@ Bool Media::MediaPlayerInterface::OpenFile(Text::CStringNN fileName, IO::ParserT
 Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -89,7 +89,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 				sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
 				if (sess)
 				{
-					while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize)) != 0)
+					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize).SetTo(sptr))
 					{
 						j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
 						if (j != INVALID_INDEX)

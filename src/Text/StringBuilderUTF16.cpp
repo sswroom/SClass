@@ -18,7 +18,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(Text::PString *s)
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd, s->v, s->leng, 0);
+		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd.Ptr(), s->v, s->leng, 0);
 	}
 	return *this;
 
@@ -30,7 +30,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(UnsafeArray<const UT
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF16(this->buffEnd, s, 0);
+		this->buffEnd = Text::StrUTF8_UTF16(this->buffEnd.Ptr(), s, 0);
 	}
 	return *this;
 }
@@ -41,7 +41,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendC(UnsafeArray<const U
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd, s, charCnt, 0);
+		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd.Ptr(), s, charCnt, 0);
 	}
 	return *this;
 }
@@ -53,7 +53,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendS(UnsafeArray<const U
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd, s, len, 0);
+		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd.Ptr(), s, len, 0);
 	}
 	return *this;
 }
@@ -106,7 +106,7 @@ NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char
 		if (slen > 0)
 		{
 			this->AllocLeng(slen);
-			this->buffEnd = Text::StrConcat(this->buffEnd, csptr);
+			this->buffEnd = Text::StrConcat(this->buffEnd.Ptr(), csptr);
 		}
 		Text::StrDelNew(csptr);
 		i++;
@@ -118,7 +118,7 @@ NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToUpper(const UTF16
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
-	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
+	this->buffEnd = Text::StrToUpper(this->buffEnd.Ptr(), s);
 	return *this;
 }
 
@@ -126,7 +126,7 @@ NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToLower(const UTF16
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
-	this->buffEnd = Text::StrToLower(this->buffEnd, s);
+	this->buffEnd = Text::StrToLower(this->buffEnd.Ptr(), s);
 	return *this;
 }
 

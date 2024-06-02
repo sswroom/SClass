@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	cli->AddClient(CSTR("127.0.0.1"), 1884, CSTR_NULL, CSTR_NULL, false);
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 30;
 	while (i-- > 0)
 	{

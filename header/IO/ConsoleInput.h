@@ -24,7 +24,7 @@ namespace IO
 		static InputReturnType InputSelect(IO::ConsoleWriter *console, Text::String **names, UOSInt nNames, UOSInt *selection);
 		static InputReturnType InputDateTime(IO::ConsoleWriter *console, Data::DateTime *output);
 		static InputReturnType InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, UOSInt buffSize, UOSInt *inputSize);
-		static InputReturnType InputString(IO::ConsoleWriter *console, UTF8Char *output, UOSInt maxCharCnt, UOSInt *inputSize);
+		static InputReturnType InputString(IO::ConsoleWriter *console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, UOSInt *inputSize);
 	};
 }
 #endif

@@ -152,7 +152,7 @@ Bool IO::Device::DensoWaveQK30U::WaitForReply(UInt32 timeToWait)
 				if (this->recvBuff[i] == 13)
 				{
 					this->recvBuff[i] = 0;
-					if (Text::StrEquals((Char*)&this->recvBuff[startIndex], "OK"))
+					if (Text::StrEqualsCh((Char*)&this->recvBuff[startIndex], "OK"))
 						return true;
 					else 
 						return false;
@@ -191,7 +191,7 @@ Bool IO::Device::DensoWaveQK30U::WaitForReplyVal(UInt32 timeToWait, OutParam<Int
 				if (this->recvBuff[i] == 13 || this->recvBuff[i] == 0)
 				{
 					this->recvBuff[i] = 0;
-					return Text::StrToInt32((Char*)&this->recvBuff[startIndex], retVal);
+					return Text::StrToInt32Ch((Char*)&this->recvBuff[startIndex], retVal);
 				}
 				i++;
 			}

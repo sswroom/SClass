@@ -91,7 +91,7 @@ public:
 	}
 };
 
-UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
+UnsafeArray<UTF8Char> ByteDisp(UnsafeArray<UTF8Char> sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
@@ -120,14 +120,15 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::UTF8Writer *writer;
 	UInt64 memSize;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN nns;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
 	UOSInt threadCnt = Sync::ThreadUtil::GetThreadCnt();
 
-	MemSetLogFile(UTF8STRC("Memory.log"));
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SHWInfo.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 
@@ -143,7 +144,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		writer->WriteLine(CSTR("Computer Info:"));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("OS: "));
-		if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
+		if (IO::OS::GetDistro(sbuff).SetTo(sptr))
 		{
 			sb.AppendP(sbuff, sptr);
 		}
@@ -151,7 +152,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			sb.AppendC(UTF8STRC("Unknown"));
 		}
-		if ((sptr = IO::OS::GetVersion(sbuff)) != 0)
+		if (IO::OS::GetVersion(sbuff).SetTo(sptr))
 		{
 			sb.AppendC(UTF8STRC(" "));
 			sb.AppendP(sbuff, sptr);
@@ -169,7 +170,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform: "));
-		if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
+		if (sysInfo.GetPlatformName(sbuff).SetTo(sptr))
 		{
 			sb.AppendP(sbuff, sptr);
 		}
@@ -182,7 +183,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform SN: "));
-		if ((sptr = sysInfo.GetPlatformSN(sbuff)) != 0)
+		if (sysInfo.GetPlatformSN(sbuff).SetTo(sptr))
 		{
 			sb.AppendP(sbuff, sptr);
 		}
@@ -197,7 +198,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Manage::CPUInfoDetail cpuInfo;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CPU Name: "));
-			if ((sptr = cpuInfo.GetCPUName(sbuff)) != 0)
+			if (cpuInfo.GetCPUName(sbuff).SetTo(sptr))
 			{
 				sb.AppendP(sbuff, sptr);
 			}
@@ -208,13 +209,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
 
-			const Manage::CPUDB::CPUSpec *cpuSpec = 0;
+			Optional<const Manage::CPUDB::CPUSpec> cpuSpec = 0;
+			NN<const Manage::CPUDB::CPUSpec> nncpuSpec;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CPU Model: "));
-			if (cpuInfo.GetCPUModel().v)
+			if (cpuInfo.GetCPUModel().SetTo(nns))
 			{
-				sb.Append(cpuInfo.GetCPUModel());
-				cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
+				sb.Append(nns);
+				cpuSpec = Manage::CPUDB::GetCPUSpec(nns);
 			}
 			else
 			{
@@ -225,11 +227,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CPU Brand Name: "));
-			if (cpuSpec)
+			if (cpuSpec.SetTo(nncpuSpec))
 			{
-				sb.Append(Manage::CPUVendor::GetBrandName(cpuSpec->brand));
+				sb.Append(Manage::CPUVendor::GetBrandName(nncpuSpec->brand));
 				sb.AppendC(UTF8STRC(" "));
-				sb.AppendSlow((const UTF8Char*)cpuSpec->name);
+				sb.AppendSlow((const UTF8Char*)nncpuSpec->name);
 			}
 			else
 			{
@@ -537,7 +539,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		j = Media::Printer::GetPrinterCount();
 		while (i < j)
 		{
-			if ((sptr = Media::Printer::GetPrinterName(sbuff, i)) != 0)
+			if (Media::Printer::GetPrinterName(sbuff, i).SetTo(sptr))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Printer "));
@@ -706,7 +708,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
 
-			if ((sptr = connInfo->GetName(sbuff)) != 0)
+			if (connInfo->GetName(sbuff).SetTo(sptr))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Name: "));
@@ -714,7 +716,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				console->WriteLine(sb.ToCString());
 				writer->WriteLine(sb.ToCString());
 			}
-			if ((sptr = connInfo->GetDescription(sbuff)) != 0)
+			if (connInfo->GetDescription(sbuff).SetTo(sptr))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Description: "));
@@ -722,7 +724,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				console->WriteLine(sb.ToCString());
 				writer->WriteLine(sb.ToCString());
 			}
-			if ((sptr = connInfo->GetDNSSuffix(sbuff)) != 0)
+			if (connInfo->GetDNSSuffix(sbuff).SetTo(sptr))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("DNS Suffix: "));
@@ -1081,7 +1083,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 //-------------------------------------------------------------------------------
 	{
 		IO::SensorManager sensorMgr;
-		Text::CString cstr;
+		Text::CStringNN cstr;
 		NN<IO::Sensor> sensor;
 		console->WriteLine();
 		writer->WriteLine();
@@ -1101,14 +1103,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("Sensor "));
 				sb.AppendUOSInt(i);
 				sb.AppendC(UTF8STRC(", Name = "));
-				cstr = sensor->GetName();
-				if (cstr.leng)
+				if (sensor->GetName().SetTo(cstr) && cstr.leng)
 				{
 					sb.Append(cstr);
 				}
 				sb.AppendC(UTF8STRC(", Vendor = "));
-				cstr = sensor->GetVendor();
-				if (cstr.leng)
+				if (sensor->GetVendor().SetTo(cstr) && cstr.leng)
 				{
 					sb.Append(cstr);
 				}

@@ -791,8 +791,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		UOSInt j;
 		UTF8Char sbuff[512];
 		UTF8Char sbuff2[512];
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
@@ -1149,7 +1149,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 			{
 				if (pt == IO::Path::PathType::File)
 				{
@@ -1613,7 +1613,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 		NN<Text::String> ename = cname;
 		NN<Text::String> descr = cname;
 		Bool canDelete = false;
-		const UTF8Char *bookIgn = 0;
+		UnsafeArrayOpt<const UTF8Char> bookIgn = 0;
+		UnsafeArray<const UTF8Char> nnbookIgn;
 		Optional<SpeciesInfo> species = 0;
 		NN<SpeciesInfo> nnspecies;
 		if (req->GetQueryValueI32(CSTR("spId"), spId))
@@ -1632,7 +1633,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 		{
 			req->ParseHTTPForm();
 			NN<Text::String> task;
-			bookIgn = STR_PTR(req->GetQueryValue(CSTR("bookIgn")).OrNull());
+			NN<Text::String> sbookIgn;
+			if (req->GetQueryValue(CSTR("bookIgn")).SetTo(sbookIgn))
+				bookIgn = UnsafeArray<const UTF8Char>(sbookIgn->v);
 			if (req->GetHTTPFormStr(CSTR("task")).SetTo(task) &&
 				req->GetHTTPFormStr(CSTR("cname")).SetTo(cname) &&
 				req->GetHTTPFormStr(CSTR("sname")).SetTo(sname) &&
@@ -1646,12 +1649,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), sb))
+					else if ((!bookIgn.SetTo(nnbookIgn) || nnbookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
 						msg.AppendC(UTF8STRC(", continue?"));
-						bookIgn = (const UTF8Char*)"1";
+						bookIgn = U8STR("1");
 					}
 					else
 					{
@@ -1687,7 +1690,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), sb))
+					else if (nameChg && (!bookIgn.SetTo(nnbookIgn) || nnbookIgn[0] != '1') && me->env->SpeciesBookIsExist(mutUsage, sname->ToCString(), sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
@@ -1791,7 +1794,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 			sb.AppendC(UTF8STRC("&amp;spId="));
 			sb.AppendI32(spId);
 		}
-		if (bookIgn && bookIgn[0] == '1')
+		if (bookIgn.SetTo(nnbookIgn) && nnbookIgn[0] == '1')
 		{
 			sb.AppendC(UTF8STRC("&amp;bookIgn=1"));
 		}
@@ -2081,16 +2084,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		UTF8Char fileName[512];
-		UTF8Char *fileNameEnd;
+		UnsafeArray<UTF8Char> fileNameEnd;
 		Int32 fileId;
 		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
 		UTF8Char sbuff2[512];
-		UTF8Char *sptr;
-		UTF8Char *sptrEnd;
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptrEnd;
+		UnsafeArray<UTF8Char> sptr2;
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
@@ -2225,7 +2228,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					if (sess)
 					{
 
-						while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+						while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 						{
 							if (pt == IO::Path::PathType::File)
 							{
@@ -2547,7 +2550,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					if (sess)
 					{
 
-						while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+						while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 						{
 							if (pt == IO::Path::PathType::File)
 							{
@@ -2714,7 +2717,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				return true;
 			}
 		}
-		else if ((fileNameEnd = req->GetQueryValueStr(CSTR("file"), fileName, 512)) != 0)
+		else if (req->GetQueryValueStr(CSTR("file"), fileName, 512).SetTo(fileNameEnd))
 		{
 			if (Text::StrStartsWithC(fileName, (UOSInt)(fileNameEnd - fileName), UTF8STRC("web")) && fileName[3] == IO::Path::PATH_SEPERATOR)
 			{
@@ -2890,7 +2893,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 				if (sess)
 				{
-					while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+					while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 					{
 						if (pt == IO::Path::PathType::File)
 						{
@@ -3109,7 +3112,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 		NN<CategoryInfo> cate;
 		NN<WebUserInfo> user;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
 		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
@@ -3309,7 +3312,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<WebUserInfo> user;
 		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
@@ -3486,7 +3489,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 		NN<CategoryInfo> cate;
 		NN<WebUserInfo> user;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
 		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);

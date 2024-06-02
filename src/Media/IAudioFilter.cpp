@@ -14,7 +14,7 @@ Media::IAudioFilter::~IAudioFilter()
 {
 }
 
-UTF8Char *Media::IAudioFilter::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::IAudioFilter::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->sourceAudio->GetSourceName(buff);
 }

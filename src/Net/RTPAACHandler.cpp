@@ -130,10 +130,10 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 	}
 }
 
-void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
+void Net::RTPAACHandler::SetFormat(UnsafeArray<const UTF8Char> fmtStr)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
 	UOSInt i;
 	sptr = Text::StrConcat(sbuff, fmtStr);
@@ -179,7 +179,7 @@ void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
 		}
 		else
 		{
-			sarr[0].v = 0;
+			sarr[0].v = UnsafeArray<UTF8Char>::ConvertFrom(U8STR(""));
 			sarr[0].leng = 0;
 		}
 		
@@ -196,7 +196,7 @@ Int32 Net::RTPAACHandler::GetPayloadType()
 	return this->payloadType;
 }
 
-UTF8Char *Net::RTPAACHandler::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::RTPAACHandler::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return Text::StrConcatC(buff, UTF8STRC("mpeg4-generic"));
 }

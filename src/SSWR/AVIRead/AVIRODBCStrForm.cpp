@@ -30,9 +30,9 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userO
 		if (DB::ODBCConn::GetDriverInfo(sb.ToCString()).SetTo(driver))
 		{
 			Data::ArrayListStringNN keys;
-			const UTF8Char *sarr[2];
-			sarr[0] = (const UTF8Char*)"Name";
-			sarr[1] = (const UTF8Char*)"Value";
+			UnsafeArray<const UTF8Char> sarr[2];
+			sarr[0] = U8STR("Name");
+			sarr[1] = U8STR("Value");
 			SSWR::AVIRead::AVIRTableMsgForm frm(0, me->ui, me->core, sb.ToCString(), 2, sarr);
 			driver->GetKeys(CSTR(""), keys);
 			Data::ArrayIterator<NN<Text::String>> it = keys.Iterator();

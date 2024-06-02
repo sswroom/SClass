@@ -2,7 +2,7 @@
 #include "Net/Email/EmailUtil.h"
 #include "Text/MyString.h"
 
-Bool Net::Email::EmailUtil::AddressValid(const UTF8Char *addr)
+Bool Net::Email::EmailUtil::AddressValid(UnsafeArray<const UTF8Char> addr)
 {
 	UOSInt i = Text::StrIndexOfChar(addr, '@');
 	if (i == INVALID_INDEX || i == 0)

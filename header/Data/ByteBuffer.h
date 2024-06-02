@@ -27,7 +27,7 @@ namespace Data
 
 		virtual ~ByteBuffer()
 		{
-			if (this->deleted)
+			if (!this->deleted)
 			{
 				MemFreeArr(this->buff);
 			}
@@ -41,6 +41,7 @@ namespace Data
 					MemFreeArr(this->buff);
 				this->buff = buff.buff;
 				this->buffSize = buff.buffSize;
+				this->deleted = false;
 #if defined(CHECK_RANGE)
 				this->prevSize = buff.prevSize;
 #endif
@@ -51,10 +52,11 @@ namespace Data
 
 		void ChangeSize(UOSInt buffSize)
 		{
-			if (this->buff.Ptr())
+			if (!this->deleted)
 				MemFreeArr(this->buff);
 			this->buff = MemAllocArr(UInt8, buffSize);
 			this->buffSize = buffSize;
+			this->deleted = false;
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
 #endif

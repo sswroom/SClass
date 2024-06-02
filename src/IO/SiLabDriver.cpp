@@ -181,7 +181,7 @@ Bool IO::SiLabDriver::GetDeviceVID(UInt32 devId, UInt32 *vid)
 	Char buff[32];
 	if (this->SI_GetProductString(devId, buff, IO::SiLabDriver::SI_RETURN_VID) == SI_SUCCESS)
 	{
-		*vid = Text::StrHex2UInt32C(buff);
+		*vid = Text::StrHex2UInt32ChC(buff);
 		return true;
 	}
 	return false;
@@ -192,13 +192,13 @@ Bool IO::SiLabDriver::GetDevicePID(UInt32 devId, UInt32 *pid)
 	Char buff[32];
 	if (this->SI_GetProductString(devId, buff, IO::SiLabDriver::SI_RETURN_PID) == SI_SUCCESS)
 	{
-		*pid = Text::StrHex2UInt32C(buff);
+		*pid = Text::StrHex2UInt32ChC(buff);
 		return true;
 	}
 	return false;
 }
 
-UTF8Char *IO::SiLabDriver::GetDeviceSN(UInt32 devId, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceSN(UInt32 devId, UnsafeArray<UTF8Char> buff)
 {
 	Char cbuff[256];
 	if (this->SI_GetProductString(devId, cbuff, IO::SiLabDriver::SI_RETURN_SERIAL_NUMBER) == SI_SUCCESS)
@@ -208,7 +208,7 @@ UTF8Char *IO::SiLabDriver::GetDeviceSN(UInt32 devId, UTF8Char *buff)
 	return 0;
 }
 
-UTF8Char *IO::SiLabDriver::GetDeviceDesc(UInt32 devId, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceDesc(UInt32 devId, UnsafeArray<UTF8Char> buff)
 {
 	Char cbuff[256];
 	if (this->SI_GetProductString(devId, cbuff, IO::SiLabDriver::SI_RETURN_DESCRIPTION) == SI_SUCCESS)
@@ -218,7 +218,7 @@ UTF8Char *IO::SiLabDriver::GetDeviceDesc(UInt32 devId, UTF8Char *buff)
 	return 0;
 }
 
-UTF8Char *IO::SiLabDriver::GetDeviceLink(UInt32 devId, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::SiLabDriver::GetDeviceLink(UInt32 devId, UnsafeArray<UTF8Char> buff)
 {
 	Char cbuff[256];
 	if (this->SI_GetProductString(devId, cbuff, IO::SiLabDriver::SI_RETURN_LINK_NAME) == SI_SUCCESS)

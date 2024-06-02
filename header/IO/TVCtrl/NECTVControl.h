@@ -27,7 +27,7 @@ namespace IO
 			Sync::Event recvEvt;
 
 			static UInt32 __stdcall RecvThread(AnyType userObj);
-			Bool SendCommand(Text::CString cmd, UTF8Char *cmdReply, Int32 cmdTimeout);
+			Bool SendCommand(Text::CStringNN cmd, UnsafeArray<UTF8Char> cmdReply, Int32 cmdTimeout);
 			Bool GetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 *maxVal, UInt16 *currVal, Int32 cmdTimeout);
 			Bool SetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 val, Int32 cmdTimeout);
 		public:
@@ -35,7 +35,7 @@ namespace IO
 			virtual ~NECTVControl();
 
 			virtual Bool SendInstruction(CommandType ct);
-			virtual Bool SendGetCommand(CommandType ct, Int32 *val, UTF8Char *sbuff);
+			virtual Bool SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff);
 			virtual Bool SendSetCommand(CommandType ct, Int32 val);
 			virtual void GetSupportedCmd(Data::ArrayList<CommandType> *cmdList, Data::ArrayList<CommandFormat> *cmdFormats);
 			static Bool GetInfo(IO::TVControl::TVInfo *info);

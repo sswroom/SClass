@@ -12,11 +12,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	NN<UI::GUICore> ui;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 //	MemSetBreakPoint(0x014746E8);
-	MemSetLogFile(UTF8STRC("Memory.log"));
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 #ifdef _WIN64
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBControl64.log"));
 #else

@@ -96,7 +96,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(NN<Net::TCPClient> cl
 
 }
 
-SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, AnyType dataObj, Bool autoStart, Data::Duration cliTimeout) : protoHdlr(*this)
+SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Int32 serverId, Text::CStringNN serverName, Text::CString syncClients, DataHandler dataHdlr, AnyType dataObj, Bool autoStart, Data::Duration cliTimeout) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->dataHdlr = dataHdlr;
@@ -109,7 +109,8 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 	svrInfo->cli = 0;
 	this->svrMap.Put(svrInfo->serverId, svrInfo);
 
-	if (syncClients.leng > 0)
+	Text::CStringNN nnsyncClients;
+	if (syncClients.SetTo(nnsyncClients) && nnsyncClients.leng > 0)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -118,7 +119,7 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 		NN<SyncClient> syncCli;
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
-		sb.Append(syncClients);
+		sb.Append(nnsyncClients);
 		sarr[1] = sb;
 		while (true)
 		{

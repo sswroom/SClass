@@ -189,7 +189,7 @@ UOSInt IO::RS232GPIO::Read(const Data::ByteArray &buff)
 	return buffSize;
 }
 
-UOSInt IO::RS232GPIO::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::RS232GPIO::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UInt32 fullClk = 1000000 / this->baudRate;
 	UOSInt ret = size;
@@ -253,7 +253,7 @@ void IO::RS232GPIO::CancelRead(void *reqData)
 {
 }
 
-void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::RS232GPIO::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	void *ret = (void*)Write(buff, size);
 	if (ret)

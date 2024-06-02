@@ -15,7 +15,7 @@ Double Math::Unit::Acceleration::GetUnitRatio(AccelerationUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Acceleration::GetUnitShortName(AccelerationUnit unit)
+Text::CStringNN Math::Unit::Acceleration::GetUnitShortName(AccelerationUnit unit)
 {
 	switch (unit)
 	{
@@ -27,7 +27,7 @@ Text::CString Math::Unit::Acceleration::GetUnitShortName(AccelerationUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Acceleration::GetUnitName(AccelerationUnit unit)
+Text::CStringNN Math::Unit::Acceleration::GetUnitName(AccelerationUnit unit)
 {
 	switch (unit)
 	{

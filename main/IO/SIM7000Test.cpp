@@ -18,9 +18,9 @@ IO::ConsoleWriter *console;
 void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("UDP: "));
-	sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
+	sptr = Net::SocketUtil::GetAddrName(sptr, addr, port).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", Size = "));
 	sptr = Text::StrUOSInt(sptr, dataSize);
 	console->WriteLine(CSTRP(sbuff, sptr));
@@ -29,7 +29,7 @@ void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 por
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UOSInt portNum = Test::TestModem::ListPorts(console);
@@ -101,7 +101,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				console->WriteLine(CSTR("Failed"));
 			}
 
-			if ((sptr = modem->SIMCOMGetUESysInfo(sbuff)) != 0)
+			if (modem->SIMCOMGetUESysInfo(sbuff).SetTo(sptr))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("UE Sys Info: "));
@@ -121,7 +121,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				Bool valid = true;
 				console->WriteLine(CSTR("Network started"));
 
-				if ((sptr = modem->NetGetIFAddr(sbuff)) != 0)
+				if (modem->NetGetIFAddr(sbuff).SetTo(sptr))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("IF Addr: "));
@@ -139,7 +139,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					console->Write(CSTR("Resolving (def) www.google.com: "));
 					if (sockf->DNSResolveIPDef("www.google.com", addr))
 					{
-						sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 						console->WriteLine(CSTRP(sbuff, sptr));
 					}
 					else
@@ -211,7 +211,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					console->Write(CSTR("Resolving www.google.com: "));
 					if (sockf->DNSResolveIP(CSTR("www.google.com"), addr))
 					{
-						sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 						console->WriteLine(CSTRP(sbuff, sptr));
 					}
 					else
@@ -236,7 +236,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						console->Write(CSTR("Resolving (def) my server: "));
 						if (sockf->DNSResolveIPDef("sswroom.no-ip.org", addr))
 						{
-							sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+							sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 							console->WriteLine(CSTRP(sbuff, sptr));
 						}
 						else

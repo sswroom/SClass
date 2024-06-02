@@ -22,8 +22,8 @@ namespace SSWR
 			const UTF8Char *GetSrcImgDir() const;
 
 			virtual ItemType GetItemType() const;
-			virtual UTF8Char *GetItemName(UTF8Char *buff) const;
-			virtual UTF8Char *GetEngName(UTF8Char *buff) const;
+			virtual UnsafeArray<UTF8Char> GetItemName(UnsafeArray<UTF8Char> buff) const;
+			virtual UnsafeArray<UTF8Char> GetEngName(UnsafeArray<UTF8Char> buff) const;
 			virtual NN<OrganGroupItem> Clone() const;
 		};
 	}

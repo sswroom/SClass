@@ -8,16 +8,16 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	Text::CString domain = CSTR("sswroom.no-ip.org");
+	Text::CStringNN domain = CSTR("sswroom.no-ip.org");
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter *console;
 	Net::ACMEClient *acme;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(true);
 
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
 	NEW_CLASS(acme, Net::ACMEClient(sockf, CSTR("acme-staging-v02.api.letsencrypt.org"), 0, CSTRP(sbuff, sptr)));
 	Net::ACMEConn *conn = acme->GetConn();

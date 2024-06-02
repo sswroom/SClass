@@ -9,7 +9,7 @@
 #include "Text/StringBuilderUTF8.h"
 #define DEBUGOBJ "id-dsa"
 
-UOSInt Net::ASN1MIB::CalcLineSpace(const UTF8Char *txt)
+UOSInt Net::ASN1MIB::CalcLineSpace(UnsafeArray<const UTF8Char> txt)
 {
 	UOSInt ret = 0;
 	UTF8Char c;
@@ -65,12 +65,12 @@ void Net::ASN1MIB::ModuleAppendOID(NN<Net::ASN1MIB::ModuleInfo> module, NN<Objec
 
 Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *oriS, NN<Text::StringBuilderUTF8> errMessage)
 {
-	const UTF8Char *csptr = oriS->v;
-	const UTF8Char *csptrEnd = oriS->GetEndPtr();
+	UnsafeArray<const UTF8Char> csptr = oriS->v;
+	UnsafeArray<const UTF8Char> csptrEnd = oriS->GetEndPtr();
 	UTF8Char c;
-	const UTF8Char *oidName;
+	UnsafeArray<const UTF8Char> oidName;
 	UOSInt oidNameLen;
-	const UTF8Char *oidNextLev;
+	UnsafeArray<const UTF8Char> oidNextLev;
 	UOSInt oidNextLen;
 	Bool isFirst = false;
 	OSInt i;
@@ -473,7 +473,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 				{
 					if (objBrkType)
 					{
-						Char brkEndChar;
+						UTF8Char brkEndChar;
 						if (objBrkType == '{')
 						{
 							brkEndChar = '}';
@@ -494,9 +494,10 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							sbTmp.AppendUTF8Char(' ');
 							sbTmp.AppendC(sb.ToString(), sb.GetLength());
 							obj->typeVal->Release();
-							obj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+							NN<Text::String> typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+							obj->typeVal = typeVal.Ptr();
 
-							OSInt brkEndIndex = BranketEnd(obj->typeVal->v, (UTF8Char*)&brkEndChar);
+							OSInt brkEndIndex = BranketEnd(typeVal->v, brkEndChar);
 							if (brkEndIndex >= 0)
 							{
 								objBrkType = 0;
@@ -515,14 +516,14 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 
 								if (obj->typeName == 0 || obj->typeName->v[0] == '{')
 								{
-									const UTF8Char *sptr = SkipWS(&obj->typeVal->v[brkEndIndex]);
+									UnsafeArray<const UTF8Char> sptr = SkipWS(&typeVal->v[brkEndIndex]);
 									if (sptr[0] == '(')
 									{
-										OSInt nextEndIndex = BranketEnd(&obj->typeVal->v[brkEndIndex], 0);
+										OSInt nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
 										while (nextEndIndex < 0)
 										{
 											sb.ClearStr();
-											sb.Append(obj->typeVal);
+											sb.Append(typeVal);
 											sb.AppendUTF8Char(' ');
 											if (!reader->ReadLine(sb))
 											{
@@ -530,21 +531,22 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 												errMessage->AppendC(sb.ToString(), sb.GetLength());
 												return false;
 											}
-											obj->typeVal->Release();
-											obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-											nextEndIndex = BranketEnd(&obj->typeVal->v[brkEndIndex], 0);
+											typeVal->Release();
+											typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+											obj->typeVal = typeVal.Ptr();
+											nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
 										}
-										RemoveSpace(obj->typeVal);
+										RemoveSpace(typeVal);
 									}
 									else if (Text::StrStartsWith(sptr, (const UTF8Char*)"WITH SYNTAX") || Text::StrStartsWith(sptr, (const UTF8Char*)"WITH COMPONENTS"))
 									{
 										if (Text::StrIndexOfChar(sptr, '{') != INVALID_INDEX)
 										{
-											OSInt nextEndIndex = BranketEnd(&obj->typeVal->v[brkEndIndex], 0);
+											OSInt nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
 											while (nextEndIndex < 0)
 											{
 												sb.ClearStr();
-												sb.Append(obj->typeVal);
+												sb.Append(typeVal);
 												sb.AppendUTF8Char(' ');
 												if (!reader->ReadLine(sb))
 												{
@@ -552,16 +554,17 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 													errMessage->AppendC(sb.ToString(), sb.GetLength());
 													return false;
 												}
-												obj->typeVal->Release();
-												obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-												nextEndIndex = BranketEnd(&obj->typeVal->v[brkEndIndex], 0);
+												typeVal->Release();
+												typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+												obj->typeVal = typeVal.Ptr();
+												nextEndIndex = BranketEnd(&typeVal->v[brkEndIndex], 0);
 											}
-											RemoveSpace(obj->typeVal);
+											RemoveSpace(typeVal);
 										}
 										else
 										{
 											sb.ClearStr();
-											sb.Append(obj->typeVal);
+											sb.Append(typeVal);
 											sb.AppendUTF8Char(' ');
 											if (!reader->ReadLine(sb))
 											{
@@ -569,18 +572,19 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 												errMessage->AppendC(sb.ToString(), sb.GetLength());
 												return false;
 											}
-											obj->typeVal->Release();
-											obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+											typeVal->Release();
+											typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+											obj->typeVal = typeVal.Ptr();
 										}
 									}
 									else
 									{
 										
-										RemoveSpace(obj->typeVal);
+										RemoveSpace(typeVal);
 										sb.ClearStr();
 										if (reader->PeekWord(sb))
 										{
-											RemoveSpace(&sb);
+											RemoveSpace(sb);
 											if (sb.Equals(UTF8STRC("WITH")))
 											{
 												sb.ClearStr();
@@ -597,12 +601,13 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 														return false;
 													}
 													Text::StringBuilderUTF8 sbTmp;
-													sbTmp.Append(obj->typeVal);
+													sbTmp.Append(typeVal);
 													sbTmp.AppendUTF8Char(' ');
 													sbTmp.AppendC(sb.ToString(), sb.GetLength());
-													obj->typeVal->Release();
-													obj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
-													RemoveSpace(obj->typeVal);
+													typeVal->Release();
+													typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
+													obj->typeVal = typeVal.Ptr();
+													RemoveSpace(typeVal);
 												}
 												else
 												{
@@ -620,15 +625,16 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 													sb.StartsWith(UTF8STRC("( ALL")))
 												{
 													sb.ClearStr();
-													sb.Append(obj->typeVal);
+													sb.Append(typeVal);
 													sb.AppendUTF8Char(' ');
 													reader->NextWord(sb);
-													obj->typeVal->Release();
-													obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-													RemoveSpace(obj->typeVal);
+													typeVal->Release();
+													typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+													obj->typeVal = typeVal.Ptr();
+													RemoveSpace(typeVal);
 													sb.ClearStr();
 													reader->PeekWord(sb);
-													RemoveSpace(&sb);
+													RemoveSpace(sb);
 												}
 											}
 										}
@@ -970,7 +976,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							else
 							{
 								UTF8Char sbuff[512];
-								UTF8Char *sptr;
+								UnsafeArray<UTF8Char> sptr;
 								sptr = module->moduleFileName->ConcatTo(sbuff);
 								j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 								sptr = Text::StrConcatC(&sbuff[j + 1], sb.ToString(), sb.GetLength());
@@ -1869,33 +1875,30 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilde
 	return succ;
 }
 
-void Net::ASN1MIB::RemoveSpace(Text::PString *s)
+void Net::ASN1MIB::RemoveSpace(NN<Text::PString> s)
 {
-	if (s && s->v)
+	UnsafeArray<UTF8Char> str = s->v;
+	UOSInt strLen = s->leng;
+	UOSInt wsCnt = 0;
+	while (strLen-- > 0)
 	{
-		UTF8Char *str = s->v;
-		UOSInt strLen = s->leng;
-		UOSInt wsCnt = 0;
-		while (strLen-- > 0)
+		if (str[strLen] == '\r' || str[strLen] == '\n' || str[strLen] == '\t' || str[strLen] == ' ')
 		{
-			if (str[strLen] == '\r' || str[strLen] == '\n' || str[strLen] == '\t' || str[strLen] == ' ')
+			str[strLen] = ' ';
+			wsCnt++;
+		}
+		else if (wsCnt > 0)
+		{
+			if (wsCnt > 1)
 			{
-				str[strLen] = ' ';
-				wsCnt++;
+				s->leng = (UOSInt)(Text::StrLTrim(&str[strLen + 2]) - str);
 			}
-			else if (wsCnt > 0)
-			{
-				if (wsCnt > 1)
-				{
-					s->leng = (UOSInt)(Text::StrLTrim(&str[strLen + 2]) - str);
-				}
-				wsCnt = 0;
-			}
+			wsCnt = 0;
 		}
 	}
 }
 
-Bool Net::ASN1MIB::IsType(const UTF8Char *s)
+Bool Net::ASN1MIB::IsType(UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	if (s[0] == 0)
@@ -1912,7 +1915,7 @@ Bool Net::ASN1MIB::IsType(const UTF8Char *s)
 	return true;
 }
 
-Bool Net::ASN1MIB::IsKnownType(Text::CString s)
+Bool Net::ASN1MIB::IsKnownType(Text::CStringNN s)
 {
 	if (s.Equals(UTF8STRC("OCTET STRING")) ||
 		s.Equals(UTF8STRC("END")) ||
@@ -1924,12 +1927,12 @@ Bool Net::ASN1MIB::IsKnownType(Text::CString s)
 	return false;
 }
 
-Bool Net::ASN1MIB::IsUnknownType(Text::CString s)
+Bool Net::ASN1MIB::IsUnknownType(Text::CStringNN s)
 {
 	return IsType(s.v) && !IsKnownType(s);
 }
 
-OSInt Net::ASN1MIB::BranketEnd(const UTF8Char *s, UTF8Char *brkType)
+OSInt Net::ASN1MIB::BranketEnd(UnsafeArray<const UTF8Char> s, OptOut<UTF8Char> brkType)
 {
 	OSInt i = 0;
 	UTF8Char c;
@@ -1968,10 +1971,7 @@ OSInt Net::ASN1MIB::BranketEnd(const UTF8Char *s, UTF8Char *brkType)
 			level--;
 			if (level == 0)
 			{
-				if (brkType)
-				{
-					*brkType = brkStart;
-				}
+				brkType.Set(brkStart);
 				return i;
 			}
 		}
@@ -1979,7 +1979,7 @@ OSInt Net::ASN1MIB::BranketEnd(const UTF8Char *s, UTF8Char *brkType)
 	return -1;
 }
 
-const UTF8Char *Net::ASN1MIB::SkipWS(const UTF8Char *s)
+UnsafeArray<const UTF8Char> Net::ASN1MIB::SkipWS(UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	while (true)
@@ -1997,7 +1997,7 @@ const UTF8Char *Net::ASN1MIB::SkipWS(const UTF8Char *s)
 	}
 }
 
-UTF8Char Net::ASN1MIB::NextChar(const UTF8Char *s)
+UTF8Char Net::ASN1MIB::NextChar(UnsafeArray<const UTF8Char> s)
 {
 	return SkipWS(s)[0];
 }

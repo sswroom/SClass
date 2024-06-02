@@ -11,8 +11,8 @@ namespace Text
 	template <class T> class StringBuilder
 	{
 	protected:
-		T *buff;
-		T *buffEnd;
+		UnsafeArray<T> buff;
+		UnsafeArray<T> buffEnd;
 		UOSInt buffSize;
 	public:
 		StringBuilder();
@@ -66,8 +66,9 @@ namespace Text
 		Bool ToOSInt(OutParam<OSInt> outVal);
 		UOSInt Hex2Bytes(OutParam<UInt8> buff);
 
-		T *ToString();
-		T *GetEndPtr();
+		UnsafeArray<T> ToString();
+		T *ToPtr();
+		UnsafeArray<T> GetEndPtr();
 		void SetEndPtr(T *ptr);
 		UOSInt IndexOf(const T *s);
 		UOSInt IndexOf(const T *s, UOSInt index);
@@ -85,65 +86,65 @@ namespace Text
 
 	template <class T> Text::StringBuilder<T>::StringBuilder()
 	{
-		this->buff = MemAlloc(T, this->buffSize = 1024);
+		this->buff = MemAllocArr(T, this->buffSize = 1024);
 		this->buffEnd = this->buff;
 		*buff = 0;
 	}
 	
 	template<class T> Text::StringBuilder<T>::~StringBuilder()
 	{
-		MemFree(this->buff);
+		MemFreeArr(this->buff);
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI16(Int16 iVal)
 	{
 		this->AllocLeng(6);
-		this->buffEnd = Text::StrInt16(this->buffEnd, iVal);
+		this->buffEnd = Text::StrInt16(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU16(UInt16 iVal)
 	{
 		this->AllocLeng(5);
-		this->buffEnd = Text::StrUInt16(this->buffEnd, iVal);
+		this->buffEnd = Text::StrUInt16(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI32(Int32 iVal)
 	{
 		this->AllocLeng(11);
-		this->buffEnd = Text::StrInt32(this->buffEnd, iVal);
+		this->buffEnd = Text::StrInt32(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU32(UInt32 iVal)
 	{
 		this->AllocLeng(10);
-		this->buffEnd = Text::StrUInt32(this->buffEnd, iVal);
+		this->buffEnd = Text::StrUInt32(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI64(Int64 iVal)
 	{
 		this->AllocLeng(22);
-		this->buffEnd = Text::StrInt64(this->buffEnd, iVal);
+		this->buffEnd = Text::StrInt64(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU64(UInt64 iVal)
 	{
 		this->AllocLeng(20);
-		this->buffEnd = Text::StrUInt64(this->buffEnd, iVal);
+		this->buffEnd = Text::StrUInt64(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendDate(NN<Data::DateTime> dt)
 	{
 		UTF8Char sbuff[30];
-		UTF8Char *sptr;
-		sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		UnsafeArray<UTF8Char> sptr;
+		sptr = dt->ToString(sbuff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 		this->AllocLeng(19);
-		this->buffEnd = Text::StrConcatC(this->buffEnd, (const T*)sbuff, (UOSInt)(sptr - sbuff));
+		this->buffEnd = Text::StrConcatC(this->buffEnd.Ptr(), (const T*)sbuff, (UOSInt)(sptr - sbuff));
 		return *this;
 	}
 
@@ -151,10 +152,10 @@ namespace Text
 	{
 #if _OSINT_SIZE == 64
 		this->AllocLeng(22);
-		this->buffEnd = Text::StrInt64(this->buffEnd, iVal);
+		this->buffEnd = Text::StrInt64(this->buffEnd.Ptr(), iVal);
 #else
 		this->AllocLeng(11);
-		this->buffEnd = Text::StrInt32(this->buffEnd, (Int32)iVal);
+		this->buffEnd = Text::StrInt32(this->buffEnd.Ptr(), (Int32)iVal);
 #endif
 		return *this;
 	}
@@ -163,10 +164,10 @@ namespace Text
 	{
 #if _OSINT_SIZE == 64
 		this->AllocLeng(22);
-		this->buffEnd = Text::StrUInt64(this->buffEnd, iVal);
+		this->buffEnd = Text::StrUInt64(this->buffEnd.Ptr(), iVal);
 #else
 		this->AllocLeng(11);
-		this->buffEnd = Text::StrUInt32(this->buffEnd, (UInt32)iVal);
+		this->buffEnd = Text::StrUInt32(this->buffEnd.Ptr(), (UInt32)iVal);
 #endif
 		return *this;
 	}
@@ -175,7 +176,7 @@ namespace Text
 	{
 		UOSInt slen = (UOSInt)(sb->buffEnd - sb->buff);
 		this->AllocLeng(slen);
-		MemCopyNO(this->buffEnd, sb->buff, (slen + 1) * sizeof(T));
+		MemCopyNO(this->buffEnd.Ptr(), sb->buff, (slen + 1) * sizeof(T));
 		this->buffEnd = &this->buffEnd[slen];
 		return *this;
 	}
@@ -183,49 +184,49 @@ namespace Text
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex8(UInt8 iVal)
 	{
 		this->AllocLeng(2);
-		this->buffEnd = Text::StrHexByte(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexByte(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex16(UInt16 iVal)
 	{
 		this->AllocLeng(4);
-		this->buffEnd = Text::StrHexVal16(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexVal16(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex24(UInt32 iVal)
 	{
 		this->AllocLeng(6);
-		this->buffEnd = Text::StrHexVal24(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexVal24(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32(UInt32 iVal)
 	{
 		this->AllocLeng(8);
-		this->buffEnd = Text::StrHexVal32(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexVal32(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32V(UInt32 iVal)
 	{
 		this->AllocLeng(8);
-		this->buffEnd = Text::StrHexVal32V(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexVal32V(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64(UInt64 iVal)
 	{
 		this->AllocLeng(16);
-		this->buffEnd = Text::StrHexVal64(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexVal64(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
 	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64V(UInt64 iVal)
 	{
 		this->AllocLeng(16);
-		this->buffEnd = Text::StrHexVal64V(this->buffEnd, iVal);
+		this->buffEnd = Text::StrHexVal64V(this->buffEnd.Ptr(), iVal);
 		return *this;
 	}
 
@@ -333,10 +334,10 @@ namespace Text
 		while (slen + currSize > this->buffSize)
 		{
 			this->buffSize <<= 1;
-			T *newStr = MemAlloc(T, this->buffSize);
-			MemCopyNO(newStr, this->buff, currSize);
+			UnsafeArray<T> newStr = MemAllocArr(T, this->buffSize);
+			MemCopyNO(newStr.Ptr(), this->buff.Ptr(), currSize);
 			this->buffEnd = &newStr[(currSize / sizeof(T)) - 1];
-			MemFree(this->buff);
+			MemFreeArr(this->buff);
 			this->buff = newStr;
 		}
 	}
@@ -374,7 +375,7 @@ namespace Text
 
 	template<class T> void Text::StringBuilder<T>::Trim()
 	{
-		this->buffEnd = Text::StrTrim(this->buff);
+		this->buffEnd = Text::StrTrim(this->buff.Ptr());
 	}
 
 	template<class T> void Text::StringBuilder<T>::TrimWSCRLF()
@@ -486,12 +487,17 @@ namespace Text
 		return Text::StrHex2Bytes(this->buff, buff);
 	}
 
-	template<class T> T *Text::StringBuilder<T>::ToString()
+	template<class T> UnsafeArray<T> Text::StringBuilder<T>::ToString()
 	{
 		return this->buff;
 	}
 
-	template<class T> T *Text::StringBuilder<T>::GetEndPtr()
+	template<class T> T *Text::StringBuilder<T>::ToPtr()
+	{
+		return this->buff.Ptr();
+	}
+
+	template<class T> UnsafeArray<T> Text::StringBuilder<T>::GetEndPtr()
 	{
 		return this->buffEnd;
 	}

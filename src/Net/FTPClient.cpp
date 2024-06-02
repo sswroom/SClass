@@ -10,8 +10,9 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Boo
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArrayOpt<UTF8Char> userName = 0;
 	UnsafeArrayOpt<UTF8Char> password = 0;
-	UnsafeArrayOpt<UTF8Char> host = 0;
+	UnsafeArray<UTF8Char> host;
 	UnsafeArrayOpt<UTF8Char> port = 0;
+	UnsafeArray<UTF8Char> nns;
 	UTF8Char c;
 	sptr = url.ConcatTo(sbuff);
 	this->userName = 0;
@@ -32,23 +33,23 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Boo
 		{
 			this->path = Text::StrCopyNew(&sptr[-1]).Ptr();
 			sptr[-1] = 0;
-			if (userName == 0)
+			if (!userName.SetTo(nns))
 			{
 				this->userName = Text::StrCopyNewC(UTF8STRC("Annonymous")).Ptr();
 				this->password = 0;
 			}
 			else
 			{
-				this->userName = Text::StrCopyNew(userName).Ptr();
-				if (password)
+				this->userName = Text::StrCopyNew(nns).Ptr();
+				if (password.SetTo(nns))
 				{
-					this->password = Text::StrCopyNew(password).Ptr();
+					this->password = Text::StrCopyNew(nns).Ptr();
 				}
 			}
 			this->host = Text::String::New(host, (UOSInt)(sptr - host - 1)).Ptr();
-			if (port)
+			if (port.SetTo(nns))
 			{
-				if (!Text::StrToUInt16(port, this->port))
+				if (!Text::StrToUInt16(nns, this->port))
 				{
 					this->port = 21;
 				}
@@ -99,7 +100,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Boo
 		}
 		else if (c == ':')
 		{
-			if (port)
+			if (port.NotNull())
 			{
 				return;
 			}
@@ -108,7 +109,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Boo
 		}
 		else if (c == '@')
 		{
-			if (userName)
+			if (userName.NotNull())
 			{
 				return;
 			}

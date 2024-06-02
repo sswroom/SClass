@@ -34,7 +34,7 @@ UOSInt Media::VideoCaptureMgr::GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> d
 		devInfo->devType = 0;
 		devInfo->devId = devIdList.GetItem(i);
 		this->clsData->v4lMgr->GetDeviceName(sbuff, devInfo->devId);
-		devInfo->devName = Text::StrCopyNew(sbuff).Ptr();
+		devInfo->devName = Text::StrCopyNew(sbuff);
 		devList->Add(devInfo);
 		ret++;
 		i++;
@@ -49,7 +49,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> de
 	while (i-- > 0)
 	{
 		devInfo = devList->GetItemNoCheck(i);
-		SDEL_TEXT(devInfo->devName);
+		Text::StrDelNew(devInfo->devName);
 		MemFreeNN(devInfo);
 	}
 }
@@ -66,7 +66,7 @@ Optional<Media::IVideoCapture> Media::VideoCaptureMgr::CreateDevice(Int32 devTyp
 	}
 }
 
-Text::CString Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
+Text::CStringNN Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
 {
 	switch (devType)
 	{

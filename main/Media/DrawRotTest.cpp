@@ -8,7 +8,7 @@
 void GenerateAngle(NN<Media::DrawEngine> deng, UOSInt angleDegree)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(sbuff, angleDegree);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	NN<Media::DrawImage> dimg;

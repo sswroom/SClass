@@ -89,10 +89,10 @@ namespace Net
 		Bool AccountNew();
 		Bool AccountRetr();
 
-		Order *OrderNew(const UTF8Char *domainNames, UOSInt namesLen); //comma seperated
+		Order *OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen); //comma seperated
 		Challenge *OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
-		Order *OrderGetStatus(const UTF8Char *orderURL);
-		Order *OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr);
+		Order *OrderGetStatus(UnsafeArray<const UTF8Char> orderURL);
+		Order *OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, Crypto::Cert::X509CertReq *csr);
 		void OrderFree(Order *order);
 
 		Challenge *ChallengeBegin(NN<Text::String> challURL);

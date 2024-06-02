@@ -76,7 +76,7 @@ void Net::JSONResponse::FindMissingFields()
 			{
 				Text::JSONBase *val = obj->GetObjectValue(name->ToCString());
 				Text::JSONArray *arr;
-				printf("JSONResponse: %s.%s is not supported, type is %s\r\n", this->clsName.v, name->v, Text::JSONTypeGetName(val?val->GetType():Text::JSONType::Null).v);
+				printf("JSONResponse: %s.%s is not supported, type is %s\r\n", this->clsName.v.Ptr(), name->v.Ptr(), Text::JSONTypeGetName(val?val->GetType():Text::JSONType::Null).v.Ptr());
 				if (val)
 				{
 					switch (val->GetType())
@@ -85,7 +85,7 @@ void Net::JSONResponse::FindMissingFields()
 						arr = (Text::JSONArray *)val;
 						if (arr->GetArrayLength() == 0)
 						{
-							printf("JSONResponse: %s.%s Array is empty\r\n", this->clsName.v, name->v);
+							printf("JSONResponse: %s.%s Array is empty\r\n", this->clsName.v.Ptr(), name->v.Ptr());
 						}
 						else
 						{
@@ -97,7 +97,7 @@ void Net::JSONResponse::FindMissingFields()
 								if (type != arr->GetArrayValue(i)->GetType())
 								{
 									allSameType = false;
-									printf("JSONResponse: %s.%s Array type is mixed of %s and %s\r\n", this->clsName.v, name->v, Text::JSONTypeGetName(type).v, Text::JSONTypeGetName(arr->GetArrayValue(i)->GetType()).v);
+									printf("JSONResponse: %s.%s Array type is mixed of %s and %s\r\n", this->clsName.v.Ptr(), name->v.Ptr(), Text::JSONTypeGetName(type).v.Ptr(), Text::JSONTypeGetName(arr->GetArrayValue(i)->GetType()).v.Ptr());
 									break;
 								}
 							}
@@ -108,7 +108,7 @@ void Net::JSONResponse::FindMissingFields()
 								{
 									sb.ClearStr();
 									arr->GetArrayValue(0)->ToJSONString(sb);
-									printf("JSONResponse: %s.%s Array type is Object: %s\r\n", this->clsName.v, name->v, sb.v);
+									printf("JSONResponse: %s.%s Array type is Object: %s\r\n", this->clsName.v.Ptr(), name->v.Ptr(), sb.ToPtr());
 									hasObj = true;
 
 									sbSuggest.Append(CSTR("JSONRESP_ARRAY_OBJ("));
@@ -124,7 +124,7 @@ void Net::JSONResponse::FindMissingFields()
 								}
 								else
 								{
-									printf("JSONResponse: %s.%s Array type is %s\r\n", this->clsName.v, name->v, Text::JSONTypeGetName(type).v);
+									printf("JSONResponse: %s.%s Array type is %s\r\n", this->clsName.v.Ptr(), name->v.Ptr(), Text::JSONTypeGetName(type).v.Ptr());
 
 									if (type == Text::JSONType::String)
 									{
@@ -219,7 +219,7 @@ void Net::JSONResponse::FindMissingFields()
 					case Text::JSONType::Object:
 						sb.ClearStr();
 						val->ToJSONString(sb);
-						printf("JSONResponse: Object Content: %s\r\n", sb.v);
+						printf("JSONResponse: Object Content: %s\r\n", sb.v.Ptr());
 						hasObj = true;
 
 						sbSuggest.Append(CSTR("JSONRESP_OBJ("));
@@ -234,7 +234,7 @@ void Net::JSONResponse::FindMissingFields()
 						sbGet.Append(CSTR(",ClassName)\r\n"));
 						break;
 					case Text::JSONType::String:
-						printf("JSONResponse: %s.%s = %s\r\n", this->clsName.v, name->v, ((Text::JSONString*)val)->GetValue()->v);
+						printf("JSONResponse: %s.%s = %s\r\n", this->clsName.v.Ptr(), name->v.Ptr(), ((Text::JSONString*)val)->GetValue()->v.Ptr());
 						sbSuggest.Append(CSTR("JSONRESP_STR("));
 						s = Text::JSText::ToNewJSTextDQuote(name->v);
 						sbSuggest.Append(s);
@@ -261,18 +261,18 @@ void Net::JSONResponse::FindMissingFields()
 			}
 			else
 			{
-				printf("JSONResponse: %s.%s not found\r\n", this->clsName.v, field->GetName().v);
+				printf("JSONResponse: %s.%s not found\r\n", this->clsName.v.Ptr(), field->GetName().v.Ptr());
 				this->valid = false;
 			}
 			i++;
 		}
 		if (sbSuggest.leng > 0)
 		{
-			printf("Suggested content for %s:\r\n%s", this->clsName.v, sbSuggest.v);
+			printf("Suggested content for %s:\r\n%s", this->clsName.v.Ptr(), sbSuggest.v.Ptr());
 		}
 		if (sbGet.leng > 0)
 		{
-			printf("Suggested get section for %s:\r\n%s\r\n", this->clsName.v, sbGet.v);
+			printf("Suggested get section for %s:\r\n%s\r\n", this->clsName.v.Ptr(), sbGet.v.Ptr());
 		}
 		if (hasObj)
 		{
@@ -286,7 +286,7 @@ void Net::JSONResponse::FindMissingFields()
 	{
 		Text::StringBuilderUTF8 sb;
 		this->json->ToJSONString(sb);
-		printf("JSONResponse: data is not an object: %s\r\n", sb.ToString());
+		printf("JSONResponse: data is not an object: %s\r\n", sb.ToPtr());
 	}
 }
 
@@ -335,7 +335,7 @@ void Net::JSONResponse::AppendFuncName(NN<Text::StringBuilderUTF8> sb, Bool bool
 				sb->Append(fieldName->ToCString().Substring(i + 1));
 				break;
 			}
-			sb->Append(Text::CString(&fieldName->v[i + 1], j - i - 1));
+			sb->Append(Text::CStringNN(&fieldName->v[i + 1], j - i - 1));
 			i = j + 1;
 			while (i < fieldName->leng && fieldName->v[i] == '_')
 			{
@@ -372,7 +372,7 @@ void Net::JSONResponse::AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool
 		if (!optional)
 		{
 			this->valid = false;
-			printf("JSONResponse: %s.%s is not array\r\n", clsName.v, name.v);
+			printf("JSONResponse: %s.%s is not array\r\n", clsName.v.Ptr(), name.v.Ptr());
 		}
 		return;
 	}
@@ -388,7 +388,7 @@ void Net::JSONResponse::AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool
 			{
 				hasError = true;
 				this->valid = false;
-				printf("JSONResponse: %s.%s[%d] is not number, type = %s\r\n", clsName.v, name.v, (UInt32)i, Text::JSONTypeGetName(val?val->GetType():Text::JSONType::Null).v);
+				printf("JSONResponse: %s.%s[%d] is not number, type = %s\r\n", clsName.v.Ptr(), name.v.Ptr(), (UInt32)i, Text::JSONTypeGetName(val?val->GetType():Text::JSONType::Null).v.Ptr());
 			}
 		}
 		else
@@ -415,7 +415,7 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 		if (!optional)
 		{
 			this->valid = false;
-			printf("JSONResponse: %s.%s is not array\r\n", clsName.v, name.v);
+			printf("JSONResponse: %s.%s is not array\r\n", clsName.v.Ptr(), name.v.Ptr());
 		}
 		return;
 	}
@@ -431,7 +431,7 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 			{
 				hasError = true;
 				this->valid = false;
-				printf("JSONResponse: %s.%s[%d] is not string, type = %s\r\n", clsName.v, name.v, (UInt32)i, Text::JSONTypeGetName(val?val->GetType():Text::JSONType::Null).v);
+				printf("JSONResponse: %s.%s[%d] is not string, type = %s\r\n", clsName.v.Ptr(), name.v.Ptr(), (UInt32)i, Text::JSONTypeGetName(val?val->GetType():Text::JSONType::Null).v.Ptr());
 			}
 		}
 		else
@@ -455,7 +455,7 @@ Net::JSONResponse::JSONResponse(NN<Text::JSONBase> json, Text::CStringNN clsName
 	this->valid = this->json->GetType() == Text::JSONType::Object;
 	if (!this->valid)
 	{
-		printf("JSONResponse: %s is not object\r\n", clsName.v);
+		printf("JSONResponse: %s is not object\r\n", clsName.v.Ptr());
 	}
 	this->json->BeginUse();
 }

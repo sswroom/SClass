@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 ip = me->proxy->GetServerIP();
 	if (ip != me->currServer)
 	{
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(AnyType userObj)
 	if (me->cliChg)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<ClientInfo> cli;
 		UOSInt i;
 		UOSInt j;
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(AnyType userObj)
 		while (i < j)
 		{
 			cli = me->cliInfos.GetItemNoCheck(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr).Or(sbuff);
 			me->lbClientIP->AddItem(CSTRP(sbuff, sptr), cli);
 			i++;
 		}
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(AnyType userObj)
 	if (me->lbV4Request->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Net::DNSClient::RequestAnswer> ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(AnyType userObj)
 	if (me->lbV4Answer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime t;
 		me->txtV4AnsName->SetText(ans->name->ToCString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(AnyType userObj)
 	if (me->lbV6Request->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Net::DNSClient::RequestAnswer> ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -253,7 +253,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(AnyType userObj)
 	if (me->lbV6Answer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime t;
 		me->txtV6AnsName->SetText(ans->name->ToCString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
@@ -293,7 +293,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(AnyType userObj)
 	if (me->lbOthRequest->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Net::DNSClient::RequestAnswer> ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -336,7 +336,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(AnyType userObj)
 	if (me->lbOthAnswer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime t;
 		me->txtOthAnsName->SetText(ans->name->ToCString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
@@ -373,10 +373,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(AnyType userObj)
 	{
 		NN<Net::WhoisRecord> rec = me->whois.RequestIP(target->ip);
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
-		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
+		if (rec->GetNetworkName(sbuff).SetTo(sptr))
 		{
 			me->txtTargetName->SetText(CSTRP(sbuff, sptr));
 		}
@@ -384,7 +384,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(AnyType userObj)
 		{
 			me->txtTargetName->SetText(CSTR("Unknown"));
 		}
-		if ((sptr = rec->GetCountryCode(sbuff)) != 0)
+		if (rec->GetCountryCode(sbuff).SetTo(sptr))
 		{
 			me->txtTargetCountry->SetText(CSTRP(sbuff, sptr));
 		}
@@ -519,7 +519,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(AnyType userObj)
 	if (me->lbSearch->GetSelectedItemTextNew().SetTo(req))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Net::DNSClient::RequestAnswer> ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -562,7 +562,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(AnyType userObj)
 	if (me->lbSAnswer->GetSelectedItem().GetOpt<Net::DNSClient::RequestAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime t;
 		me->txtSAnsName->SetText(ans->name->ToCString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
@@ -598,7 +598,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(AnyType userObj)
 	if (me->lbClientIP->GetSelectedItem().GetOpt<ClientInfo>().SetTo(cli))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		NN<HourInfo> hInfo;
@@ -666,11 +666,11 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(AnyType userObj, Te
 {
 	NN<SSWR::AVIRead::AVIRDNSProxyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSProxyForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(reqName);
 	sb.AppendC(UTF8STRC(" from "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(", T="));
 	sb.AppendI32(reqType);
@@ -721,7 +721,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(AnyType userObj, Te
 void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayList<UInt32> ipList;
 	UOSInt i;
 	UOSInt j;
@@ -755,7 +755,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("DNS Proxy"));
 

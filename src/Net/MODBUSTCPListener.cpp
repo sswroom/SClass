@@ -277,7 +277,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 					sb.AppendU16(packetSize);
 					sb.AppendC(UTF8STRC(", "));
 					sb.AppendHexBuff(&buff[6], packetSize, ' ', Text::LineBreakType::CRLF);
-					printf("%s\r\n", sb.ToString());
+					printf("%s\r\n", sb.ToPtr());
 				}
 				break;
 			}
@@ -288,7 +288,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Received: "));
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-		printf("%s\r\n", sb.ToString());
+		printf("%s\r\n", sb.ToPtr());
 	}
 }
 

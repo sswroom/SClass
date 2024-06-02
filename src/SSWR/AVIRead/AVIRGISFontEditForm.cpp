@@ -86,11 +86,11 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> currFontName;
 	if (me->fontStyle < 0 || !currFontName.Set(me->currFontName))
 		return;
-	if ((sptr = me->txtStyleName->GetText(sbuff)) != 0 && sbuff[0] != 0)
+	if (me->txtStyleName->GetText(sbuff).SetTo(sptr) && sbuff[0] != 0)
 	{
 		me->env->SetFontStyleName(me->fontStyle, CSTRP(sbuff, sptr));
 	}
@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::CancelClicked(AnyType userObj
 void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Size2DDbl sz;
 	Math::Size2D<UOSInt> usz;
 	NN<Media::DrawImage> dimg;
@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 
-		if ((sptr = this->env->GetFontStyleName(this->fontStyle, sbuff)) == 0 || sbuff[0] == 0)
+		if (!this->env->GetFontStyleName(this->fontStyle, sbuff).SetTo(sptr) || sbuff[0] == 0)
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Style ")), (Int32)this->fontStyle);
 		}
@@ -159,9 +159,9 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> fontName;
-	if ((sptr = env->GetFontStyleName(this->fontStyle, sbuff)) != 0)
+	if (env->GetFontStyleName(this->fontStyle, sbuff).SetTo(sptr))
 	{
 		this->txtStyleName->SetText(CSTRP(sbuff, sptr));
 	}

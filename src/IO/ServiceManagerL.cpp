@@ -21,7 +21,7 @@ IO::ServiceManager::~ServiceManager()
 
 }
 
-Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcDesc, Text::CString cmdLine, IO::ServiceInfo::ServiceState stype)
+Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString svcDesc, Text::CStringNN cmdLine, IO::ServiceInfo::ServiceState stype)
 {
 	if (svcName.leng == 0 || svcName.IndexOf('.') != INVALID_INDEX || cmdLine.leng == 0)
 	{
@@ -45,13 +45,14 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcD
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("[Unit]\n"));
 		sb.AppendC(UTF8STRC("Description="));
-		if (svcDesc.leng == 0)
+		Text::CStringNN nnsvcDesc;
+		if (!svcDesc.SetTo(nnsvcDesc) || nnsvcDesc.leng == 0)
 		{
 			sb.Append(svcName);
 		}
 		else
 		{
-			sb.Append(svcDesc);
+			sb.Append(nnsvcDesc);
 		}
 		sb.AppendC(UTF8STRC("\n\n[Service]\n"));
 		sb.AppendC(UTF8STRC("ExecStart="));
@@ -69,7 +70,7 @@ Bool IO::ServiceManager::ServiceCreate(Text::CString svcName, Text::CString svcD
 	return true;
 }
 
-Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
+Bool IO::ServiceManager::ServiceDelete(Text::CStringNN svcName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;
@@ -82,6 +83,7 @@ Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 		return false;
 	}
 	Text::CString svcFile = CSTR_NULL;
+	Text::CStringNN nnsvcFile;
 	Text::PString lines[2];
 	UOSInt lineCnt;
 	UOSInt valIndex;
@@ -131,9 +133,9 @@ Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 				}
 			}
 		}
-		if (svcFile.leng > 8 && svcFile.EndsWith(UTF8STRC(".service")))
+		if (svcFile.SetTo(nnsvcFile) && nnsvcFile.leng > 8 && nnsvcFile.EndsWith(UTF8STRC(".service")))
 		{
-			if (IO::Path::DeleteFile(svcFile.v))
+			if (IO::Path::DeleteFile(nnsvcFile.v))
 			{
 				sb.ClearStr();
 				Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), sb);
@@ -144,12 +146,12 @@ Bool IO::ServiceManager::ServiceDelete(Text::CString svcName)
 	return false;
 }
 
-Bool IO::ServiceManager::ServiceSetDesc(Text::CString svcName, Text::CString svcDesc)
+Bool IO::ServiceManager::ServiceSetDesc(Text::CStringNN svcName, Text::CStringNN svcDesc)
 {
 	return false;
 }
 
-Bool IO::ServiceManager::ServiceStart(Text::CString svcName)
+Bool IO::ServiceManager::ServiceStart(Text::CStringNN svcName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;
@@ -158,7 +160,7 @@ Bool IO::ServiceManager::ServiceStart(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
 	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Start ret = %d\r\n", ret);
-	printf("Start msg = %s\r\n", sb.ToString());
+	printf("Start msg = %s\r\n", sb.ToPtr());
 	if (ret != 0)
 	{
 		return false;
@@ -167,7 +169,7 @@ Bool IO::ServiceManager::ServiceStart(Text::CString svcName)
 
 }
 
-Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
+Bool IO::ServiceManager::ServiceStop(Text::CStringNN svcName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;
@@ -176,7 +178,7 @@ Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
 	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Stop ret = %d\r\n", ret);
-	printf("Stop msg = %s\r\n", sb.ToString());
+	printf("Stop msg = %s\r\n", sb.ToPtr());
 	if (ret != 0)
 	{
 		return false;
@@ -184,7 +186,7 @@ Bool IO::ServiceManager::ServiceStop(Text::CString svcName)
 	return true;
 }
 
-Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
+Bool IO::ServiceManager::ServiceEnable(Text::CStringNN svcName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;
@@ -193,7 +195,7 @@ Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
 	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Enable ret = %d\r\n", ret);
-	printf("Enable msg = %s\r\n", sb.ToString());
+	printf("Enable msg = %s\r\n", sb.ToPtr());
 	if (ret != 0)
 	{
 		return false;
@@ -201,7 +203,7 @@ Bool IO::ServiceManager::ServiceEnable(Text::CString svcName)
 	return true;
 }
 
-Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
+Bool IO::ServiceManager::ServiceDisable(Text::CStringNN svcName)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;
@@ -210,7 +212,7 @@ Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
 	sbCmd.AppendC(UTF8STRC(" --no-pager"));
 	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 	printf("Disable ret = %d\r\n", ret);
-	printf("Disable msg = %s\r\n", sb.ToString());
+	printf("Disable msg = %s\r\n", sb.ToPtr());
 	if (ret != 0)
 	{
 		return false;
@@ -218,7 +220,7 @@ Bool IO::ServiceManager::ServiceDisable(Text::CString svcName)
 	return true;
 }
 
-Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *svcDetail)
+Bool IO::ServiceManager::ServiceGetDetail(Text::CStringNN svcName, ServiceDetail *svcDetail)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbCmd;
@@ -267,7 +269,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 						i = val.IndexOf(UTF8STRC(" since "));
 						if (i == INVALID_INDEX)
 						{
-							printf("Start Time = %s\r\n", val.v);
+							printf("Start Time = %s\r\n", val.v.Ptr());
 						}
 						else
 						{
@@ -285,7 +287,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 							svcDetail->startTime = Data::Timestamp::FromStr(val.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 							if (svcDetail->startTime.IsNull())
 							{
-								printf("Start Time = %s\r\n", val.v);
+								printf("Start Time = %s\r\n", val.v.Ptr());
 							}
 						}
 					}
@@ -295,7 +297,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 					}
 					else
 					{
-						printf("Active = %s\r\n", val.v);
+						printf("Active = %s\r\n", val.v.Ptr());
 					}
 				}
 				else if (name.Equals(UTF8STRC("Main PID")))
@@ -308,7 +310,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 					}
 					if (!val.ToUInt32(svcDetail->procId))
 					{
-						printf("Main PID = %s\r\n", val.v);
+						printf("Main PID = %s\r\n", val.v.Ptr());
 					}
 				}
 				else if (name.Equals(UTF8STRC("Memory")))
@@ -342,7 +344,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 					}
 					else
 					{
-						printf("Memory = %s\r\n", val.v);
+						printf("Memory = %s\r\n", val.v.Ptr());
 					}
 				}
 				else if (name.Equals(UTF8STRC("Loaded")))

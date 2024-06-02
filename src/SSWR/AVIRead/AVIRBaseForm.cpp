@@ -1007,7 +1007,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				NN<Media::MediaFile> mf;
-				sptr = capture->GetSourceName(sbuff).Or(sptr);
+				sptr = capture->GetSourceName(sbuff).Or(sbuff);
 				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(capture, 0);
 				this->core->OpenObject(mf);

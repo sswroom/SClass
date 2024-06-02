@@ -77,9 +77,9 @@ namespace IO
 		UInt32 GetNumDevices();
 		Bool GetDeviceVID(UInt32 devId, UInt32 *vid);
 		Bool GetDevicePID(UInt32 devId, UInt32 *pid);
-		UTF8Char *GetDeviceSN(UInt32 devId, UTF8Char *buff);
-		UTF8Char *GetDeviceDesc(UInt32 devId, UTF8Char *buff);
-		UTF8Char *GetDeviceLink(UInt32 devId, UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> GetDeviceSN(UInt32 devId, UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetDeviceDesc(UInt32 devId, UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetDeviceLink(UInt32 devId, UnsafeArray<UTF8Char> buff);
 		IO::Stream *OpenPort(UInt32 devId, UInt32 baudRate);
 	};
 }

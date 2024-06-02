@@ -25,7 +25,7 @@ void SSWR::AVIRead::AVIRDHT22Form::ReadData()
 	Double rh;
 	Double humidity;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->dht22->ReadData(temp, rh))
 	{
 		humidity = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_KPASCAL, Math::Unit::Temperature::TU_CELSIUS, temp, rh);
@@ -46,7 +46,7 @@ void SSWR::AVIRead::AVIRDHT22Form::ReadData()
 SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;

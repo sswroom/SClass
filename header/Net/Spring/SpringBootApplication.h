@@ -18,7 +18,7 @@ namespace Net
 			IO::LogTool log;
 			NN<Text::String> activeProfile;
 		public:
-			SpringBootApplication(Text::CString appName);
+			SpringBootApplication(Text::CStringNN appName);
 			virtual ~SpringBootApplication();
 		};
 	}

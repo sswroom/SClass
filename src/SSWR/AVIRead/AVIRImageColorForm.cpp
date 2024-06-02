@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UO
 	}
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
 	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());

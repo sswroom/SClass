@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sbSchema;
 	Text::StringBuilderUTF8 sbTable;
 	me->txtSchema->GetText(sbSchema);
@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 	this->txtSchema->SetRect(100, 24, 200, 23, false);
 	this->lblTable = ui->NewLabel(this->pnlMain, CSTR("Table"));
 	this->lblTable->SetRect(0, 48, 100, 23, false);
-	this->txtTable = ui->NewTextBox(this->pnlMain, table.OrEmpty());
+	this->txtTable = ui->NewTextBox(this->pnlMain, table);
 	this->txtTable->SetRect(100, 48, 200, 23, false);
 	this->btnExport = ui->NewButton(this->pnlMain, CSTR("Export"));
 	this->btnExport->SetRect(100, 72, 75, 23, false);
@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 	if (this->db->GetTableDef(schema, table).SetTo(tab))
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<DB::ColDef> col;
 		Data::ArrayIterator<NN<DB::ColDef>> it = tab->ColIterator();
 		UOSInt i;

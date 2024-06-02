@@ -68,7 +68,7 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(AnyType userObj)
 	return 0;
 }
 
-UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UTF8Char *resultBuff)
+UOSInt Crypto::Hash::BruteForceAttack::GetNextKey(UInt8 *keyBuff, UnsafeArray<UTF8Char> resultBuff)
 {
 	UOSInt ret;
 	UOSInt len;
@@ -221,7 +221,7 @@ UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetResult(UnsafeArray<U
 	return 0;
 }
 
-Bool Crypto::Hash::BruteForceAttack::Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng)
+Bool Crypto::Hash::BruteForceAttack::Start(UnsafeArray<const UTF8Char> hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng)
 {
 	if (this->threadCnt > 0)
 	{

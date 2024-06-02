@@ -113,9 +113,10 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::AssistedReverseGeocoderPL::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
+	UnsafeArray<UTF8Char> nnsptr;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
 	if (keyx == 0 && keyy == 0)
@@ -154,7 +155,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 			break;
 		}
 	}
-	if (sptr && buff[0])
+	if (sptr.SetTo(nnsptr) && buff[0])
 	{
 		Data::Timestamp ts = Data::Timestamp::UtcNow();
 		DB::SQLBuilder sql(this->conn);
@@ -165,7 +166,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendInt32(keyy);
 		sql.AppendCmdC(CSTR(", "));
-		sql.AppendStrUTF8(buff);
+		sql.AppendStrUTF8(UnsafeArray<const UTF8Char>(buff));
 		sql.AppendCmdC(CSTR(", "));
 		sql.AppendTS(ts);
 		sql.AppendCmdC(CSTR(")"));
@@ -174,10 +175,10 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 			this->conn->ExecuteNonQuery(sql.ToCString());
 		}
 
-		addr = this->strMap.Get(CSTRP(buff, sptr));
+		addr = this->strMap.Get(CSTRP(buff, nnsptr));
 		if (addr == 0)
 		{
-			NN<Text::String> s = Text::String::New(buff, (UOSInt)(sptr - buff));
+			NN<Text::String> s = Text::String::New(buff, (UOSInt)(nnsptr - buff));
 			addr = s.Ptr();
 			this->strMap.Put(s, addr);
 		}
@@ -194,7 +195,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	}
 }
 
-UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::AssistedReverseGeocoderPL::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	return this->SearchName(buff, buffSize, pos, lcid);
 }

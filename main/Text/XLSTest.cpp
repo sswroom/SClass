@@ -13,7 +13,7 @@ using namespace Text::SpreadSheet;
 void TestEmpty()
 {
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/EmptyMe.xlsx"));
 	Workbook wb;
 	wb.AddWorksheet(CSTR("Sheet1"));
@@ -30,9 +30,9 @@ void TestChart()
 {
 	UOSInt testRowCnt = 2;
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[32];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
 
 	Workbook wb;
@@ -99,7 +99,7 @@ void TestChart()
 void TestCols()
 {
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook wb;
 	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
@@ -125,7 +125,7 @@ void TestCols()
 void TestColWidth()
 {
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
 	Workbook wb;
 	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
@@ -150,7 +150,7 @@ void TestColWidth()
 void TestBorder()
 {
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
 	Workbook wb;
 	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));

@@ -9,12 +9,12 @@ void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringN
 	UOSInt i;
 	UOSInt k;
 	Math::Size2DDbl sz;
-	const UTF8Char *currTxt = txt.v;
-	const UTF8Char *currTxtEnd = txt.v + txt.leng;
-	UTF8Char *tmpBuff;
-	UTF8Char *sptr;
+	UnsafeArray<const UTF8Char> currTxt = txt.v;
+	UnsafeArray<const UTF8Char> currTxtEnd = txt.v + txt.leng;
+	UnsafeArray<UTF8Char> tmpBuff;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt txtLen = txt.leng;
-	tmpBuff = MemAlloc(UTF8Char, txtLen + 1);
+	tmpBuff = MemAllocArr(UTF8Char, txtLen + 1);
 	UTF8Char c;
 	UTF8Char c2;
 	while (true)
@@ -158,5 +158,5 @@ void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringN
 			i++;
 		}
 	}
-	MemFree(tmpBuff);
+	MemFreeArr(tmpBuff);
 }

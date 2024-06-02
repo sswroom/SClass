@@ -11,19 +11,19 @@ const UTF8Char *Func1()
 	return (const UTF8Char*)"Func1";
 }
 
-Text::CString Func2()
+Text::CStringNN Func2()
 {
 	return CSTR("Func2");
 }
 
-Text::CString Func2b()
+Text::CStringNN Func2b()
 {
-	return Text::CString(UTF8STRC("Func3"));
+	return Text::CStringNN(UTF8STRC("Func3"));
 }
 
-UTF8Char *Func3(UTF8Char *sbuff);
-UTF8Char *Func4(UTF8Char *sbuff);
-UTF8Char *Func4b(UTF8Char *sbuff);
+UnsafeArray<UTF8Char> Func3(UnsafeArray<UTF8Char> sbuff);
+UnsafeArray<UTF8Char> Func4(UnsafeArray<UTF8Char> sbuff);
+UnsafeArray<UTF8Char> Func4b(UnsafeArray<UTF8Char> sbuff);
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {

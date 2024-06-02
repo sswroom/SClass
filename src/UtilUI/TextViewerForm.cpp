@@ -19,7 +19,7 @@ void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(AnyType userObj, UInt32 text
 {
 	NN<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUOSInt(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
 	me->txtStatus->SetText(CSTRP(sbuff, sptr));
 }
@@ -71,7 +71,7 @@ UtilUI::TextViewerForm::~TextViewerForm()
 void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[530];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> fileName;
 	switch (cmdId)
 	{
@@ -129,7 +129,7 @@ Bool UtilUI::TextViewerForm::SearchText(Text::CString txt)
 Bool UtilUI::TextViewerForm::LoadFile(NN<Text::String> filePath)
 {
 	UTF8Char sbuff[530];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->txtView->LoadFile(filePath))
 	{
 		sptr = filePath->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
@@ -142,10 +142,10 @@ Bool UtilUI::TextViewerForm::LoadFile(NN<Text::String> filePath)
 Bool UtilUI::TextViewerForm::LoadStreamData(NN<IO::StreamData> data)
 {
 	UTF8Char sbuff[530];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->txtView->LoadStreamData(data))
 	{
-		sptr = data->GetShortName().ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
+		sptr = data->GetShortName().OrEmpty().ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
 		this->SetText(CSTRP(sbuff, sptr));
 		return true;
 	}

@@ -16,7 +16,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 	}
 }
 
-void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, NN<Text::StringBuilderUTF8> sb)
+void DB::MySQLMaintance::RepairSchema(UnsafeArray<const UTF8Char> schema, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayListStringNN tableNames;
 	if (!this->cli->ChangeSchema(schema))

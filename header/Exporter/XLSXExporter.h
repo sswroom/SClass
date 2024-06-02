@@ -36,20 +36,20 @@ namespace Exporter
 
 		virtual Int32 GetName();
 		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
-		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
+		virtual Bool GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff);
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 		static void AppendFill(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeFill *fill);
 		static void AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle);
-		static void AppendTitle(NN<Text::StringBuilderUTF8> sb, const UTF8Char *title);
+		static void AppendTitle(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> title);
 		static void AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
 		static void AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index);
 		static void AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UOSInt index);
-		static void AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name);
+		static void AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CStringNN name);
 		static void AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayList<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap);
 
-		static Text::CString PresetColorCode(Text::SpreadSheet::PresetColor color);
-		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);
+		static Text::CStringNN PresetColorCode(Text::SpreadSheet::PresetColor color);
+		static UnsafeArray<UTF8Char> ToFormatCode(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> dataFormat);
 	};
 }
 #endif

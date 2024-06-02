@@ -16,8 +16,8 @@ namespace Math
 			};
 		public:
 			static Double GetUnitRatio(AccelerationUnit unit);
-			static Text::CString GetUnitShortName(AccelerationUnit unit);
-			static Text::CString GetUnitName(AccelerationUnit unit);
+			static Text::CStringNN GetUnitShortName(AccelerationUnit unit);
+			static Text::CStringNN GetUnitName(AccelerationUnit unit);
 			static Double GetConvertRatio(AccelerationUnit fromUnit, AccelerationUnit toUnit);
 			static Double Convert(AccelerationUnit fromUnit, AccelerationUnit toUnit, Double fromValue);
 		};

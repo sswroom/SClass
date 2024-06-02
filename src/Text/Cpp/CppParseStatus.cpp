@@ -43,7 +43,7 @@ Optional<Text::Cpp::CppParseStatus::FileParseStatus> Text::Cpp::CppParseStatus::
 	return this->statuses.GetItem(this->statuses.GetCount() - 1);
 }
 
-Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CString fileName)
+Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CStringNN fileName)
 {
 	NN<Text::String> fname;
 	OSInt i = this->fileNames.SortedIndexOfPtr(fileName.v, fileName.leng);
@@ -195,7 +195,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 				return false;
 			}
 			Text::StringBuilderUTF8 sb;
-			sb.Append(defVal);
+			sb.AppendOpt(defVal);
 			sb.Trim();
 			return defInfo->defineVal->Equals(sb);
 		}
@@ -270,7 +270,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 					}
 					else
 					{
-						sb3.Append(defParam);
+						sb3.Append(defParamNN);
 					}
 				}
 

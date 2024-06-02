@@ -238,6 +238,10 @@ NN<Text::String> Text::JSText::ToNewJSText(UnsafeArrayOpt<const UTF8Char> s)
 	{
 		return Text::String::New(UTF8STRC("null"));
 	}
+	return ToNewJSText(srcPtr);
+}
+NN<Text::String> Text::JSText::ToNewJSText(UnsafeArray<const UTF8Char> srcPtr)
+{
 	UnsafeArray<const UTF8Char> nns = srcPtr;
 	UTF8Char c;
 	UOSInt chCnt;
@@ -277,11 +281,15 @@ NN<Text::String> Text::JSText::ToNewJSTextDQuote(UnsafeArrayOpt<const UTF8Char> 
 	{
 		return Text::String::New(UTF8STRC("null"));
 	}
+	return ToNewJSTextDQuote(nns);
+}
+
+NN<Text::String> Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char> s)
+{
 	UnsafeArray<const UTF8Char> srcPtr;
 	UTF8Char c;
 	UOSInt chCnt;
-
-	srcPtr = nns;
+	srcPtr = s;
 	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -307,7 +315,7 @@ NN<Text::String> Text::JSText::ToNewJSTextDQuote(UnsafeArrayOpt<const UTF8Char> 
 		}
 	}
 	NN<Text::String> retS = Text::String::New(chCnt);
-	ToJSTextDQuote(retS->v, nns);
+	ToJSTextDQuote(retS->v, s);
 	return retS;
 }
 

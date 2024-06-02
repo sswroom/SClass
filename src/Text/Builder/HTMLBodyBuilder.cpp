@@ -12,7 +12,7 @@ Text::Builder::HTMLBodyBuilder::~HTMLBodyBuilder()
 	while (i-- > 0)
 	{
 		this->sb->AppendC(UTF8STRC("</"));
-		this->sb->Append(this->elements.RemoveAt(i));
+		this->sb->AppendOpt(this->elements.RemoveAt(i));
 		this->sb->AppendUTF8Char('>');
 	}	
 }
@@ -89,7 +89,7 @@ void Text::Builder::HTMLBodyBuilder::EndElement()
 	if (i-- > 0)
 	{
 		this->sb->AppendC(UTF8STRC("</"));
-		this->sb->Append(this->elements.RemoveAt(i));
+		this->sb->AppendOpt(this->elements.RemoveAt(i));
 		this->sb->AppendUTF8Char('>');
 	}	
 }

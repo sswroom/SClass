@@ -14,7 +14,7 @@ Text::StringBuilderC::~StringBuilderC()
 
 Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s)
 {
-	UOSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	if (slen < 8)
 	{
@@ -26,8 +26,8 @@ Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s)
 	}
 	else
 	{
-		MemCopyNO(buffEnd, s, (slen + 1) * sizeof(Char));
-		buffEnd = &buffEnd[slen];
+		MemCopyNO(buffEnd.Ptr(), s, (slen + 1) * sizeof(Char));
+		buffEnd = buffEnd + slen;
 	}
 	return this;
 }
@@ -44,7 +44,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendC(const Char *s, UOSInt charCn
 	}
 	else
 	{
-		MemCopyNO(buffEnd, s, charCnt * sizeof(Char));
+		MemCopyNO(buffEnd.Ptr(), s, charCnt * sizeof(Char));
 		buffEnd = &buffEnd[charCnt];
 	}
 	*buffEnd = 0;
@@ -74,7 +74,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt 
 		s = Text::String::NewCSVRec((const UTF8Char*)sarr[i]);
 		if (i > 0)
 			this->AppendC(",", 1);
-		this->AppendC((const Char*)s->v, s->leng);
+		this->AppendC((const Char*)s->v.Ptr(), s->leng);
 		s->Release();
 		i++;
 	}
@@ -83,7 +83,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt 
 
 Text::StringBuilderC *Text::StringBuilderC::AppendToUpper(const Char *s)
 {
-	UOSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToUpper(buffEnd, s);
 	return this;
@@ -91,7 +91,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendToUpper(const Char *s)
 
 Text::StringBuilderC *Text::StringBuilderC::AppendToLower(const Char *s)
 {
-	UOSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	buffEnd = Text::StrToLower(buffEnd, s);
 	return this;
@@ -99,7 +99,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendToLower(const Char *s)
 
 Text::StringBuilderC *Text::StringBuilderC::AppendASCII(const Char *s)
 {
-	UOSInt slen = Text::StrCharCnt(s);
+	UOSInt slen = Text::StrCharCntCh(s);
 	AllocLeng(slen);
 	while ((*buffEnd++ = *s++) != 0);
 	buffEnd--;

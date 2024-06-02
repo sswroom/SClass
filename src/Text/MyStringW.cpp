@@ -65,13 +65,13 @@ UTF32Char *Text::StrConcatC(UTF32Char *oriStr, const UTF32Char *strToJoin, UOSIn
 	return &oriStr[charCnt];
 }
 
-UTF16Char *Text::StrConcatASCII(UTF16Char *oriStr, const Char *strToJoin)
+UTF16Char *Text::StrConcatASCII(UTF16Char *oriStr, UnsafeArray<const Char> strToJoin)
 {
 	while ((*oriStr++ = (UTF16Char)*strToJoin++) != 0);
 	return oriStr - 1;
 }
 
-UTF32Char *Text::StrConcatASCII(UTF32Char *oriStr, const Char *strToJoin)
+UTF32Char *Text::StrConcatASCII(UTF32Char *oriStr, UnsafeArray<const Char> strToJoin)
 {
 	while ((*oriStr++ = (UTF32Char)*strToJoin++) != 0);
 	return oriStr - 1;

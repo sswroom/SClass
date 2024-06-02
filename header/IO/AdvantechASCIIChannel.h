@@ -145,8 +145,8 @@ namespace IO
 		Bool stmRelease;
 		Sync::Event cmdEvt;
 		Sync::Mutex cmdResMut;
-		UTF8Char *cmdResBuff;
-		UTF8Char *cmdResEnd;
+		UnsafeArrayOpt<UTF8Char> cmdResBuff;
+		UnsafeArrayOpt<UTF8Char> cmdResEnd;
 
 		Bool threadRunning;
 		Bool threadToStop;
@@ -158,12 +158,12 @@ namespace IO
 
 		NN<IO::Stream> GetStream() const;
 		
-		UTF8Char *SendCommand(UTF8Char *replyBuff, const UTF8Char *cmd, UOSInt cmdLen);
+		UnsafeArrayOpt<UTF8Char> SendCommand(UnsafeArray<UTF8Char> replyBuff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 
 		void Close();
 
-		UTF8Char *GetFirmwareVer(UTF8Char *firmwareBuff, UInt8 addr);
-		UTF8Char *GetModuleName(UTF8Char *moduleBuff, UInt8 addr);
+		UnsafeArrayOpt<UTF8Char> GetFirmwareVer(UnsafeArray<UTF8Char> firmwareBuff, UInt8 addr);
+		UnsafeArrayOpt<UTF8Char> GetModuleName(UnsafeArray<UTF8Char> moduleBuff, UInt8 addr);
 		Bool GetConfigStatus(UInt8 addr, ADAMConfig *config);
 		Bool StoreCurrInputs();
 

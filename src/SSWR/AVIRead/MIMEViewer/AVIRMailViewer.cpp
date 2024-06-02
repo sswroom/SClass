@@ -63,13 +63,13 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 	}
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
-	if ((sptr = this->mail->GetFromAddr(sbuff)) != 0)
+	if (this->mail->GetFromAddr(sbuff).SetTo(sptr))
 	{
 		this->txtFrom->SetText(CSTRP(sbuff, sptr));
 	}
-	if ((sptr = this->mail->GetSubject(sbuff)) != 0)
+	if (this->mail->GetSubject(sbuff).SetTo(sptr))
 	{
 		this->txtSubject->SetText(CSTRP(sbuff, sptr));
 	}

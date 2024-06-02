@@ -82,7 +82,7 @@ void __stdcall Net::LogServer::ClientTimeout(NN<Net::TCPClient> cli, AnyType use
 Optional<Net::LogServer::IPStatus> Net::LogServer::GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
@@ -100,7 +100,7 @@ Optional<Net::LogServer::IPStatus> Net::LogServer::GetIPStatus(NN<const Net::Soc
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr = Net::SocketUtil::GetAddrName(sptr, addr);
+		sptr = Net::SocketUtil::GetAddrName(sptr, addr).Or(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
@@ -161,7 +161,7 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	UInt8 reply[18];
 	UOSInt replySize;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IPStatus> status;
 	NN<ClientStatus> cliStatus = stmObj.GetNN<ClientStatus>();
 	switch (cmdType)
@@ -178,7 +178,8 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 			Text::StringBuilderUTF8 sb;
 			if (this->log->HasHandler())
 			{
-				sptr = ((Net::TCPClient *)stm.Ptr())->GetRemoteName(sbuff);
+				sbuff[0] = 0;
+				sptr = ((Net::TCPClient *)stm.Ptr())->GetRemoteName(sbuff).Or(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("> "));
 				sb.AppendC(&cmd[8], cmdSize - 8);

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Manage/CPUVendor.h"
 
-Text::CString Manage::CPUVendor::GetBrandName(CPU_BRAND brand)
+Text::CStringNN Manage::CPUVendor::GetBrandName(CPU_BRAND brand)
 {
 	switch (brand)
 	{

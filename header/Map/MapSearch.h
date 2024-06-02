@@ -31,9 +31,9 @@ namespace Map
 		MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manager);
 		~MapSearch();
 
-		UTF8Char *SearchName(UTF8Char *buff, Math::Coord2DDbl pos);
-		Int32 SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos);
-		static UTF8Char *ConcatNames(UTF8Char *buff, Text::PString *strArrs, Int32 concatType);
+		UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, Math::Coord2DDbl pos);
+		Int32 SearchNames(UnsafeArray<UTF8Char> buff, Text::PString *outArrs, Math::Coord2DDbl *outPos, Int32 *resTypes, Math::Coord2DDbl pos);
+		static UnsafeArrayOpt<UTF8Char> ConcatNames(UnsafeArray<UTF8Char> buff, Text::PString *strArrs, Int32 concatType);
 		Bool IsError();
 		Int32 GetConcatType();
 	};

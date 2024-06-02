@@ -70,7 +70,7 @@ Bool Net::TFTPClient::IsError()
 	return this->svr == 0;
 }
 
-Bool Net::TFTPClient::SendFile(const UTF8Char *fileName, IO::Stream *stm)
+Bool Net::TFTPClient::SendFile(UnsafeArray<const UTF8Char> fileName, IO::Stream *stm)
 {
 	if (this->svr == 0)
 		return false;
@@ -115,7 +115,7 @@ Bool Net::TFTPClient::SendFile(const UTF8Char *fileName, IO::Stream *stm)
 	return succ;
 }
 
-Bool Net::TFTPClient::RecvFile(const UTF8Char *fileName, IO::Stream *stm)
+Bool Net::TFTPClient::RecvFile(UnsafeArray<const UTF8Char> fileName, IO::Stream *stm)
 {
 	if (this->svr == 0)
 		return false;

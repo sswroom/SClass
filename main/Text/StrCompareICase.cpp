@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	clk->Start();
 	while (i-- > 0)
 	{
-		val = Text::StrCompareICase("aBcDe1FgHiJk", "AbCdE1fGhIjK");
+		val = Text::StrCompareICaseCh("aBcDe1FgHiJk", "AbCdE1fGhIjK");
 	}
 	spd1 = clk->GetTimeDiff();
 	sb.ClearStr();
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	clk->Start();
 	while (i-- > 0)
 	{
-		val2 = Text::StrCompare("aBcDe1FgHiJk", "AbCdE1fGhIjK");
+		val2 = Text::StrCompareCh("aBcDe1FgHiJk", "AbCdE1fGhIjK");
 	}
 	spd2 = clk->GetTimeDiff();
 	sb.ClearStr();

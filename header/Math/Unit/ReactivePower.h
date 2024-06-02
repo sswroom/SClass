@@ -18,8 +18,8 @@ namespace Math
 			} ReactivePowerUnit;
 		public:
 			static Double GetUnitRatio(ReactivePowerUnit unit);
-			static Text::CString GetUnitShortName(ReactivePowerUnit unit);
-			static Text::CString GetUnitName(ReactivePowerUnit unit);
+			static Text::CStringNN GetUnitShortName(ReactivePowerUnit unit);
+			static Text::CStringNN GetUnitName(ReactivePowerUnit unit);
 			static Double GetConvertRatio(ReactivePowerUnit fromUnit, ReactivePowerUnit toUnit);
 			static Double Convert(ReactivePowerUnit fromUnit, ReactivePowerUnit toUnit, Double fromValue);
 		};

@@ -14,7 +14,8 @@ DB::DBModel::~DBModel()
 
 Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CString schemaName)
 {
-	if (dbName.v && !db->ChangeDatabase(dbName))
+	Text::CStringNN nndbName;
+	if (dbName.SetTo(nndbName) && !db->ChangeDatabase(nndbName))
 	{
 		return false;
 	}
@@ -32,9 +33,9 @@ Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CS
 			table->SetDatabaseName(dbName);
 			this->tables.Add(table);
 			sb.ClearStr();
-			if (dbName.v)
+			if (dbName.SetTo(nndbName))
 			{
-				sb.Append(dbName);
+				sb.Append(nndbName);
 				sb.AppendUTF8Char('.');
 			}
 			tableName = table->GetTableName();

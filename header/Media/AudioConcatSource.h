@@ -26,7 +26,7 @@ namespace Media
 		Bool AppendAudio(NN<Media::IAudioSource> audio);
 		Bool AppendSilent(UInt32 time);
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual void GetFormat(NN<AudioFormat> format);

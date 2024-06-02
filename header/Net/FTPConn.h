@@ -20,7 +20,7 @@ namespace Net
 		Bool logged;
 		Bool statusChg;
 		Int32 lastStatus;
-		UTF8Char *msgRet;
+		UnsafeArrayOpt<UTF8Char> msgRet;
 		Sync::Event *evt;
 
 		static UInt32 __stdcall FTPThread(AnyType userObj);
@@ -31,21 +31,21 @@ namespace Net
 
 		Bool IsLogged();
 
-		Bool SendUser(const UTF8Char *userName);
-		Bool SendPassword(const UTF8Char *password);
-		Bool ChangeDirectory(const UTF8Char *dir);
-		Bool MakeDirectory(const UTF8Char *dir);
-		Bool RemoveDirectory(const UTF8Char *dir);
-		Bool GetFileSize(const UTF8Char *fileName, UInt64 *fileSize);
-		Bool GetFileModTime(const UTF8Char *fileName, Data::DateTime *modTime);
+		Bool SendUser(UnsafeArray<const UTF8Char> userName);
+		Bool SendPassword(UnsafeArray<const UTF8Char> password);
+		Bool ChangeDirectory(UnsafeArray<const UTF8Char> dir);
+		Bool MakeDirectory(UnsafeArray<const UTF8Char> dir);
+		Bool RemoveDirectory(UnsafeArray<const UTF8Char> dir);
+		Bool GetFileSize(UnsafeArray<const UTF8Char> fileName, UInt64 *fileSize);
+		Bool GetFileModTime(UnsafeArray<const UTF8Char> fileName, Data::DateTime *modTime);
 		Bool ToBinaryType();
 		Bool ToASCIIType();
 		Bool ToEBCDICType();
 		Bool ChangePassiveMode(UInt32 *ip, UInt16 *port);
 		Bool ChangeActiveMode(UInt32 ip, UInt16 port);
 		Bool ResumeTransferPos(UInt64 pos);
-		Bool GetFile(const UTF8Char *fileName);
-		Bool RenameFile(const UTF8Char *fromFile, const UTF8Char *toFile);
+		Bool GetFile(UnsafeArray<const UTF8Char> fileName);
+		Bool RenameFile(UnsafeArray<const UTF8Char> fromFile, UnsafeArray<const UTF8Char> toFile);
 	};
 }
 #endif

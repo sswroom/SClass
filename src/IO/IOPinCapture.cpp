@@ -172,7 +172,7 @@ Bool IO::IOPinCapture::SetPullType(PullType pt)
 {
 	return this->pin->SetPullType(pt);
 }
-UTF8Char *IO::IOPinCapture::GetName(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::IOPinCapture::GetName(UnsafeArray<UTF8Char> buff)
 {
 	return this->pin->GetName(Text::StrConcatC(buff, UTF8STRC("IOPinCapture - ")));
 }

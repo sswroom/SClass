@@ -33,10 +33,10 @@ namespace SSWR
 			Bool IsError();
 
 			Bool SendDevReading(Int64 cliId, NN<const SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, Int32 reportInterval, Int32 kaInterval);
-			Bool SendDevName(Int64 cliId, const UTF8Char *name, UOSInt nameLen);
-			Bool SendDevPlatform(Int64 cliId, const UTF8Char *platform, UOSInt nameLen);
-			Bool SendDevCPUName(Int64 cliId, const UTF8Char *cpuName, UOSInt nameLen);
-			Bool SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName, UOSInt nameLen);
+			Bool SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UOSInt nameLen);
+			Bool SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UOSInt nameLen);
+			Bool SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UOSInt nameLen);
+			Bool SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName, UOSInt nameLen);
 			Bool SendDevVersion(Int64 cliId, Int64 progVersion);
 
 			void HandleRecReply(RecordReplyHandler hdlr, AnyType userObj);

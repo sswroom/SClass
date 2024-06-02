@@ -77,7 +77,7 @@ Bool Media::AudioConcatSource::AppendSilent(UInt32 time)
 	return true;
 }
 
-UTF8Char *Media::AudioConcatSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::AudioConcatSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	NN<Media::IAudioSource> audSrc;
 	if (this->stmList.GetItem(0).SetTo(audSrc))

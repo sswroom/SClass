@@ -340,7 +340,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	case MapType::ESRIMap:
 	{
 		Map::ESRI::ESRIMapServer *esriMap;
-		NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CString(map->url, map->urlLen), sockf, ssl, map->mapTypeParam != 0));
+		NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(map->url, map->urlLen), sockf, ssl, map->mapTypeParam != 0));
 		if (map->mapTypeParam != 0)
 		{
 			esriMap->SetSRID((UInt32)map->mapTypeParam);

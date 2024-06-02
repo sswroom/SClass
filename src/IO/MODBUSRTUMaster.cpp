@@ -212,7 +212,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }
@@ -241,7 +241,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }
@@ -270,7 +270,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }
@@ -299,7 +299,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }
@@ -335,7 +335,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }
@@ -368,7 +368,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }
@@ -403,7 +403,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, (UOSInt)cnt * 2 + 9, ' ', Text::LineBreakType::None);
-		printf("Calculate:%s\r\n", sb.ToString());
+		printf("Calculate:%s\r\n", sb.ToPtr());
 	}
 	return true;
 }

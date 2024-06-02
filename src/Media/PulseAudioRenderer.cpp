@@ -354,9 +354,10 @@ void PulseAudioRenderer_SinkCb(pa_context *c, const pa_sink_info *i, int eol, vo
 	if (eol > 0)
 		return;
 	Media::PulseAudioRenderer::DeviceInfo *devInfo = (Media::PulseAudioRenderer::DeviceInfo*)userdata;
-	if (devInfo->sbuff && devInfo->devNo == devInfo->count)
+	UnsafeArray<UTF8Char> nnsbuff;
+	if (devInfo->sbuff.SetTo(nnsbuff) && devInfo->devNo == devInfo->count)
 	{
-		devInfo->sbuff = Text::StrConcat(devInfo->sbuff, (const UTF8Char*)i->name);
+		devInfo->sbuff = Text::StrConcat(nnsbuff, (const UTF8Char*)i->name);
 	}
 	devInfo->count++;
 }
@@ -417,7 +418,7 @@ UOSInt Media::PulseAudioRenderer::GetDeviceCount()
 	return 0;
 }
 
-UTF8Char *Media::PulseAudioRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
+UnsafeArrayOpt<UTF8Char> Media::PulseAudioRenderer::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo)
 {
 	DeviceInfo devInfo;
 	devInfo.sbuff = buff;

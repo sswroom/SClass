@@ -68,7 +68,7 @@ void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::IWebReq
 }
 
 
-void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile)
+void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, UnsafeArray<const UTF8Char> title, Bool isMobile)
 {
 	NN<Text::String> s;
 	writer->WriteLine(CSTR("<HTML>"));
@@ -85,16 +85,17 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, co
 	writer->WriteLine(CSTR("</title>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, Optional<WebUserInfo> user, const UTF8Char *onLoadFunc)
+void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, Optional<WebUserInfo> user, UnsafeArrayOpt<const UTF8Char> onLoadFunc)
 {
 	NN<Text::String> s;
 	writer->WriteLine(CSTR("</HEAD>"));
 	writer->WriteLine();
 	writer->Write(CSTR("<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\""));
-	if (onLoadFunc)
+	UnsafeArray<const UTF8Char> nnonLoadFunc;
+	if (onLoadFunc.SetTo(nnonLoadFunc))
 	{
 		writer->Write(CSTR(" onLoad="));
-		s = Text::XML::ToNewAttrText(onLoadFunc);
+		s = Text::XML::ToNewAttrText(nnonLoadFunc);
 		writer->Write(s->ToCString());
 		s->Release();
 	}
@@ -110,7 +111,7 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, Op
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteHeader(IO::Writer *writer, const UTF8Char *title, Optional<WebUserInfo> user, Bool isMobile)
+void SSWR::OrganWeb::OrganWebController::WriteHeader(IO::Writer *writer, UnsafeArray<const UTF8Char> title, Optional<WebUserInfo> user, Bool isMobile)
 {
 	this->WriteHeaderPart1(writer, title, isMobile);
 	this->WriteHeaderPart2(writer, user, 0);
@@ -128,7 +129,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mut
 	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[12];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListNN<GroupInfo> groupList;
 	UOSInt i;
 	while (true)
@@ -252,7 +253,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 	NN<Text::String> s;
 	NN<SpeciesInfo> photoSpObj;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	UInt32 colCount = scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
@@ -448,7 +449,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 	NN<SpeciesInfo> sp;
 	NN<Text::String> s;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	UInt32 colCount = scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
@@ -667,7 +668,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge)
+void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, UnsafeArray<const UTF8Char> url, Bool allowMerge)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -681,7 +682,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 	NN<SpeciesInfo> species;
 	Data::DateTime dt;
 	UTF8Char sbuff2[64];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	if (env->pickObjType == POT_USERFILE && env->pickObjs->GetCount() > 0 && env->user.SetTo(user))
 	{
 		currColumn = 0;

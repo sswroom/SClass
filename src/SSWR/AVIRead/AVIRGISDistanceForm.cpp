@@ -115,7 +115,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userOb
 void SSWR::AVIRead::AVIRGISDistanceForm::UpdateDistDisp()
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrDouble(sbuff, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, (Math::Unit::Distance::DistanceUnit)this->cboDistanceUnit->GetSelectedItem().GetOSInt(), this->dispDist));
 	this->txtDistance->SetText(CSTRP(sbuff, sptr));
 }

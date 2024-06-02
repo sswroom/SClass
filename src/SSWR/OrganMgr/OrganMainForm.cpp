@@ -196,7 +196,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(AnyType userObj)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = me->lbObj->GetSelectedIndex();
 	//System::Int32 i = lbObj->IndexFromPoint(lbObj->PointToClient(this->MousePosition));
 	if (i == INVALID_INDEX)
@@ -237,7 +237,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(AnyType userObj)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	if (me->restoreObj)
 		return;
@@ -640,7 +640,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(AnyType userObj)
 				OrganImageDetailForm frm(0, me->GetUI(), me->env, userFile);
 				if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 				{
-					me->env->UpdateUserFileDesc(userFile, frm.GetDescript());
+					me->env->UpdateUserFileDesc(userFile, frm.GetDescript().Or(U8STR("")));
 				}
 			}
 			else if (imgItem->GetSrcURL() && imgItem->GetWebFile().SetTo(wfile))
@@ -668,7 +668,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(AnyType userObj)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (me->inputMode == IM_SPECIES)
 	{
@@ -803,7 +803,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 			{
 				UI::Clipboard clipboard(me->hwnd);
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				UOSInt i;
 				UOSInt j;
 				UInt32 fmt;
@@ -816,20 +816,18 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 				while (i < j)
 				{
 					fmt = formats.GetItem(i);
-					if ((sptr = UI::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
+					sptr = UI::Clipboard::GetFormatName(fmt, sbuff, 256);
+					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("application/x-moz-file-promise-url")))
 					{
-						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("application/x-moz-file-promise-url")))
-						{
-							urlFmt = fmt;
-						}
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HDROP")))
-						{
-							filePathFmt = fmt;
-						}
-						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("URIs")))
-						{
-							filePathFmt = fmt;
-						}
+						urlFmt = fmt;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HDROP")))
+					{
+						filePathFmt = fmt;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("URIs")))
+					{
+						filePathFmt = fmt;
 					}
 					i++;
 				}
@@ -870,7 +868,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 						SDEL_STRING(me->initSelImg);
 						Text::PString sarr[2];
 						sarr[1] = sb;
-						printf("HDROP: %s\r\n", sb.ToString());
+						printf("HDROP: %s\r\n", sb.ToPtr());
 						j = 2;
 						while (j == 2)
 						{
@@ -878,7 +876,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(AnyType us
 							OrganEnv::FileStatus fs;
 							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 							{
-								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].leng);
+								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].leng).Or(sbuff);
 								sarr[0].v = sbuff;
 								sarr[0].leng = (UOSInt)(sptr - sbuff);
 							}
@@ -1044,9 +1042,11 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(AnyType user
 		Text::StringBuilderUTF8 sb;
 		if (UI::Clipboard::GetString(me->GetHandle(), sb))
 		{
-			UTF8Char *sciPtr = 0;
-			UTF8Char *chiPtr = 0;
-			UTF8Char *sptr;
+			UnsafeArrayOpt<UTF8Char> sciPtr = 0;
+			UnsafeArrayOpt<UTF8Char> chiPtr = 0;
+			UnsafeArray<UTF8Char> nnsciPtr;
+			UnsafeArray<UTF8Char> nnchiPtr;
+			UnsafeArray<UTF8Char> sptr;
 			UTF8Char c;
 			Bool found = false;
 			sb.Trim();
@@ -1078,17 +1078,17 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpPasteSNameClicked(AnyType user
 					}
 					else if (c == '(' || (c >= 'A' && c <= 'Z'))
 					{
-						if (!found || sciPtr == 0)
+						if (!found || !sciPtr.SetTo(nnsciPtr))
 							return;
-						me->txtSpeciesDesc->SetText(CSTRP(sciPtr, sb.GetEndPtr()));
+						me->txtSpeciesDesc->SetText(CSTRP(nnsciPtr, sb.GetEndPtr()));
 						sptr[-1] = 0;
-						sptr = Text::StrRTrim(sciPtr);
-						me->txtSpeciesSName->SetText(CSTRP(sciPtr, sptr));
-						if (chiPtr)
+						sptr = Text::StrRTrim(nnsciPtr);
+						me->txtSpeciesSName->SetText(CSTRP(nnsciPtr, sptr));
+						if (chiPtr.SetTo(nnchiPtr))
 						{
-							sciPtr[-1] = 0;
-							sptr = Text::StrRTrim(chiPtr);
-							me->txtSpeciesCName->SetText(CSTRP(chiPtr, sptr));
+							nnsciPtr[-1] = 0;
+							sptr = Text::StrRTrim(nnchiPtr);
+							me->txtSpeciesCName->SetText(CSTRP(nnchiPtr, sptr));
 						}
 						return;
 					}
@@ -1433,7 +1433,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(AnyType userObj)
 		if (j > 0)
 		{
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sbuff[0] = 0;
 			sptr = NN<OrganImages>::ConvertFrom(me->pickObjs.GetItemNoCheck(0))->GetItemName(sbuff);
 			me->initSelImg = Text::String::NewP(sbuff, sptr).Ptr();
@@ -1753,7 +1753,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 	NN<OrganGroup> grp;
 	NN<OrganGroupItem> item;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (ToSaveGroup())
 	{
         this->lbDir->SetSelectedIndex(this->lastDirIndex);
@@ -1867,8 +1867,9 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	const UTF8Char *csptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArrayOpt<const UTF8Char> csptr;
+	UnsafeArray<const UTF8Char> nncsptr;
 	Data::Timestamp ts;
 	NN<Text::String> s;
 	this->pbImg->SetImage(0, false);
@@ -1997,10 +1998,10 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 						csptr = OPTSTR_CSTR(userFile->location).v;
 						optuserFile = userFile;
 					}
-					if (csptr)
+					if (csptr.SetTo(nncsptr))
 					{
 						sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-						sptr = Text::StrConcat(sptr, csptr);
+						sptr = Text::StrConcat(sptr, nncsptr);
 					}
 					else
 					{
@@ -2206,8 +2207,8 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt i;
 	NN<OrganSpecies> lastSpeciesObj;
 	if (!lastSpeciesObj.Set(this->lastSpeciesObj))
@@ -2219,13 +2220,13 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 		{
 //			Int32 id = this->lastSpeciesObj->GetSpeciesId();
 			
-			sptr = this->txtSpeciesDName->GetText(sbuff);
+			sptr = this->txtSpeciesDName->GetText(sbuff).Or(sbuff);
 			if (!Text::String::OrEmpty(this->lastSpeciesObj->GetDirName())->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				sptr2 = this->env->GetSpeciesDir(lastSpeciesObj, sbuff2);
 				sptr = Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
 				i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), IO::Path::PATH_SEPERATOR);
-				sptr2 = this->txtSpeciesDName->GetText(&sbuff2[i + 1]);
+				sptr2 = this->txtSpeciesDName->GetText(&sbuff2[i + 1]).Or(sptr2);
 				
 				if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Directory)
 				{
@@ -2356,7 +2357,7 @@ void SSWR::OrganMgr::OrganMainForm::ClearGroupForm()
 void SSWR::OrganMgr::OrganMainForm::FillGroupCboBox()
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Data::ArrayListNN<OrganGroupType>> grpTypes = this->env->GetGroupTypes();
 	NN<OrganGroupType> grpType;
 	UOSInt i = 0;
@@ -2396,7 +2397,7 @@ void SSWR::OrganMgr::OrganMainForm::SelectGroup(NN<UI::GUIComboBox> cbo, Int32 g
 void SSWR::OrganMgr::OrganMainForm::GoToDir(NN<OrganGroup> grp, Int32 parentId)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<OrganGroup> group;
 	UOSInt j;
 	UOSInt i = this->groupList.GetCount();
@@ -2447,7 +2448,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 	NN<Media::ImageList> imgList;
 	Map::MapEnv::LayerItem sett;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt imgInd;
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
@@ -2473,7 +2474,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NN<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(UTF8STRC("Arial"), 10.5, false);
 	this->colorMgr = env->GetColorMgr();
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
@@ -2856,7 +2857,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i;
 			UOSInt j;
 			UTF8Char sbuff[256];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			if (selObj->GetGroupId() <= 0)
 				return;
 
@@ -3187,7 +3188,7 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(NN<UI::G
 			OrganGroupItem *gi = (OrganGroupItem*)this->lbObj->GetItem((UOSInt)i).p;
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
-				const UTF8Char *name;
+				UnsafeArray<const UTF8Char> name;
 				UOSInt j = data->GetCount();
 				UOSInt fmtSURL = INVALID_INDEX;
 				UOSInt fmtIURL = INVALID_INDEX;
@@ -3195,9 +3196,9 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(NN<UI::G
 				UOSInt fmtHDROP = INVALID_INDEX;
 				while (j-- > 0)
 				{
-					name = data->GetName(j);
+					name = data->GetName(j).Or(U8STR(""));
 					UOSInt nameLen = Text::StrCharCnt(name);
-					printf("Drag Enter: %s\r\n", name);
+					printf("Drag Enter: %s\r\n", name.Ptr());
 					if (Text::StrEqualsC(name, nameLen, UTF8STRC("HTML Format")))
 					{
 						fmtSURL = j;
@@ -3257,7 +3258,7 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(NN<UI::G
 void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->inputMode == IM_SPECIES)
 	{
 		UOSInt i = this->lbObj->GetSelectedIndex();
@@ -3266,16 +3267,17 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, 
 			NN<OrganGroupItem> gi = this->lbObj->GetItem(i).GetNN<OrganGroupItem>();
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
-				const UTF8Char *fmtSURL = 0;
-				const UTF8Char *fmtIURL = 0;
-				const UTF8Char *fmtFile = 0;
-				const UTF8Char *fmtHDrop = 0;
-				const UTF8Char *name;
+				UnsafeArrayOpt<const UTF8Char> fmtSURL = 0;
+				UnsafeArrayOpt<const UTF8Char> fmtIURL = 0;
+				UnsafeArrayOpt<const UTF8Char> fmtFile = 0;
+				UnsafeArrayOpt<const UTF8Char> fmtHDrop = 0;
+				UnsafeArray<const UTF8Char> name;
+				UnsafeArray<const UTF8Char> nns;
 				UOSInt j = data->GetCount();
 				while (j-- > 0)
 				{
-					name = data->GetName(j);
-					printf("Drag Drop: %s\r\n", name);
+					name = data->GetName(j).Or(U8STR(""));
+					printf("Drag Drop: %s\r\n", name.Ptr());
 					UOSInt nameLen = Text::StrCharCnt(name);
 					if (Text::StrEqualsC(name, nameLen, UTF8STRC("HTML Format")))
 					{
@@ -3325,13 +3327,13 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, 
 				Bool hasSURL = false;
 				Bool hasIURL = false;
 
-				if (fmtSURL)
+				if (fmtSURL.SetTo(nns))
 				{
-					if (data->GetDataText(fmtSURL, sb))
+					if (data->GetDataText(nns, sb))
 					{
 						IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 						Text::UTF8Reader reader(mstm);
-						while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
+						while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 						{
 							if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SourceURL:")))
 							{
@@ -3348,16 +3350,16 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, 
 					}
 				}
 
-				if (fmtIURL)
+				if (fmtIURL.SetTo(nns))
 				{
-					hasIURL = data->GetDataText(fmtIURL, iURL);
+					hasIURL = data->GetDataText(nns, iURL);
 				}
 
 				if (hasSURL && hasIURL)
 				{
-					if (fmtFile)
+					if (fmtFile.SetTo(nns))
 					{
-						IO::Stream *stm = data->GetDataStream(fmtFile);
+						IO::Stream *stm = data->GetDataStream(nns);
 						if (stm)
 						{
 							NN<Text::String> ssurl = Text::String::New(sURL.ToString(), sURL.GetLength());
@@ -3381,18 +3383,18 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, 
 						
 					}
 				}
-				if (fmtHDrop)
+				if (fmtHDrop.SetTo(nns))
 				{
 					Bool firstPhoto = this->lbImage->GetCount() == 0;
 					Bool chg = false;
 					SDEL_STRING(this->initSelImg);
 
 					sb.ClearStr();
-					if (data->GetDataText(fmtHDrop, sb))
+					if (data->GetDataText(nns, sb))
 					{
 						Text::PString sarr[2];
 						sarr[1] = sb;
-						printf("HDROP: %s\r\n", sb.ToString());
+						printf("HDROP: %s\r\n", sb.ToPtr());
 						j = 2;
 						while (j == 2)
 						{
@@ -3400,7 +3402,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, 
 							OrganEnv::FileStatus fs;
 							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 							{
-								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].leng);
+								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].leng).Or(sbuff);
 								sarr[0].v = sbuff;
 								sarr[0].leng = (UOSInt)(sptr - sbuff);
 							}

@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UO
 {
 	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<EntryInfo> entry;
 	if (me->entryList.GetItem(index).SetTo(entry) && entry->otp->GetType() == Crypto::OTP::OTPType::HOTP)
 	{
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<EntryInfo> entry;
 	UOSInt i = me->entryList.GetCount();
 	while (i-- > 0)

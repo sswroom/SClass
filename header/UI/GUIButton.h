@@ -19,7 +19,7 @@ namespace UI
 		virtual ~GUIButton();
 
 		virtual void SetText(Text::CStringNN text) = 0;
-		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold) = 0;
+		virtual void SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double fontHeightPt, Bool isBold) = 0;
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
 
 		virtual Text::CStringNN GetObjectClass() const;

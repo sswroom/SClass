@@ -31,14 +31,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(NN<Net::TCPClient>
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DeviceInfo> dev;
 	NN<ClientStatus> status = cliData.GetNN<ClientStatus>();
 	switch (evtType)
 	{
 	case Net::TCPClientMgr::TCP_EVENT_DISCONNECT:
 		{
-			sptr = cli->GetRemoteName(sbuff);
+			sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("CLI: Client disconnected: "));
 			sb.AppendP(sbuff, sptr);
@@ -92,8 +92,8 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NN<Net::TCPClien
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	sptr = cli->GetRemoteName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("CLI: Client process timeout: "));
 	sb.AppendP(sbuff, sptr);
@@ -369,7 +369,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 					UInt32 index = ReadUInt32(&buff[12]);
 					UInt16 sensorId = ReadUInt16(&buff[16]);
 					UInt16 readingId = ReadUInt16(&buff[18]);
-					const UTF8Char *name = Text::StrCopyNewC(&buff[20], dataSize - 22).Ptr();
+					UnsafeArray<const UTF8Char> name = Text::StrCopyNewC(&buff[20], dataSize - 22).Ptr();
 					me->DeviceSetReading(cliId, index, sensorId, readingId, name);
 					Text::StrDelNew(name);
 				}
@@ -422,7 +422,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::
 				Int64 t = currTime.DiffSec(ts);
 				if (t >= -180 && t <= 180)
 				{
-					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CString(&buff[21], dataSize - 25));
+					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CStringNN(&buff[21], dataSize - 25));
 				}
 				else
 				{
@@ -490,8 +490,8 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 		{
 			UTF8Char sbuff[256];
 			UTF8Char sbuff2[256];
-			UTF8Char *sbuffEnd;
-			UTF8Char *sbuff2End;
+			UnsafeArray<UTF8Char> sbuffEnd;
+			UnsafeArray<UTF8Char> sbuff2End;
 			Int64 cliId = ReadInt64(&cmd[0]);
 			sbuffEnd = Text::StrConcatC(sbuff, (const UTF8Char*)&cmd[10], cmd[8]);
 			sbuff2End = Text::StrConcatC(sbuff2, (const UTF8Char*)&cmd[10 + cmd[8]], cmd[9]);
@@ -604,13 +604,13 @@ void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NN<IO::Stream> stm, AnyType st
 {
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName)
+void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CStringNN progName)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::Email::EmailMessage msg;
 	Text::StringBuilderUTF8 sb;
-	sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 	sb.AppendC(UTF8STRC("Server IP: "));
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\nSource Port: "));
@@ -779,7 +779,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 	Int32 currMonth;
 	Int32 currDay;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 fsBuff[32];
 
 	Sync::RWMutexUsage mutUsage(this->devMut, false);
@@ -872,7 +872,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UOSInt photoSize)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	dt.ToUTCTime();
 	dt.SetTicks(photoTime);
@@ -904,7 +904,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 		return;
 	NN<DB::DBReader> r;
 	NN<WebUser> user;
-	UTF8Char *sarr[2];
+	UnsafeArray<UTF8Char> sarr[2];
 	UOSInt i;
 	UOSInt j;
 	if (db->ExecuteReader(CSTR("select id, userName, pwd, userType from webuser order by id")).SetTo(r))
@@ -1139,7 +1139,7 @@ Optional<DB::DBTool> SSWR::SMonitor::SMonitorSvrCore::UseDB(NN<Sync::MutexUsage>
 	return 0;
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff)
+void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> pwd, UInt8 *buff)
 {
 	Crypto::Hash::MD5 md5;
 	Text::StringBuilderUTF8 sb;
@@ -1180,8 +1180,8 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	Text::StringBuilderUTF8 sb;
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		UnsafeArray<UTF8Char> sptr;
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -1189,7 +1189,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			this->uaLog.ReadLogs(&reader);
 		}
 
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		{
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -1601,7 +1601,7 @@ Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSv
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(NN<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Bool succ = false;
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
@@ -1842,12 +1842,13 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NN<Text::Str
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName)
 {
 	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
 	if (!this->DeviceGet(cliId).SetTo(dev))
 		return false;
-	if (readingName == 0 || readingName[0] == 0)
+	UnsafeArray<const UTF8Char> nns;
+	if (readingName[0] == 0)
 		return false;
 	Sync::RWMutexUsage devMutUsage(dev->mut, false);
 	if (index >= dev->nReading)
@@ -1858,7 +1859,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	{
 		return false;
 	}
-	if (dev->readingNames[index] && Text::StrEquals(dev->readingNames[index], readingName))
+	if (dev->readingNames[index].SetTo(nns) && Text::StrEquals(nns, readingName))
 	{
 		return true;
 	}
@@ -1874,9 +1875,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 		{
 			sb.AppendSlow(readingName);
 		}
-		else if (dev->readingNames[i])
+		else if (dev->readingNames[i].SetTo(nns))
 		{
-			sb.AppendSlow(dev->readingNames[i]);
+			sb.AppendSlow(nns);
 		}
 		
 		i++;
@@ -1944,7 +1945,8 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 	NN<DeviceInfo> dev;
 	if (!DeviceGet(cliId).SetTo(dev))
 		return false;
-	if (devName.v && devName.leng == 0)
+	Text::CStringNN nndevName;
+	if (devName.SetTo(nndevName) && nndevName.leng == 0)
 	{
 		devName.v = 0;
 	}
@@ -1965,9 +1967,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 		{
 			Sync::RWMutexUsage mutUsage(dev->mut, true);
 			OPTSTR_DEL(dev->devName);
-			if (devName.v)
+			if (devName.SetTo(nndevName))
 			{
-				dev->devName = Text::String::New(devName).Ptr();
+				dev->devName = Text::String::New(nndevName).Ptr();
 			}
 			dev->flags = flags;
 			succ = true;
@@ -1976,9 +1978,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, Text::CString de
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(NN<DeviceInfo> dev, const UTF8Char *readings)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> readings)
 {
-	if (readings && readings[0] == 0)
+	UnsafeArray<const UTF8Char> nnreadings;
+	if (readings.SetTo(nnreadings) && nnreadings[0] == 0)
 	{
 		readings = 0;
 	}
@@ -2003,11 +2006,11 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(NN<DeviceInfo> dev, cons
 			{
 				SDEL_TEXT(dev->readingNames[i]);
 			}
-			if (readings)
+			if (readings.SetTo(nnreadings))
 			{
 				Text::StringBuilderUTF8 sb;
-				UTF8Char *sarr[2];
-				sb.AppendSlow(readings);
+				UnsafeArray<UTF8Char> sarr[2];
+				sb.AppendSlow(nnreadings);
 				sarr[1] = sb.v;
 				i = 0;
 				while (true)
@@ -2029,9 +2032,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(NN<DeviceInfo> dev, cons
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(NN<DeviceInfo> dev, const UTF8Char *digitals)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> digitals)
 {
-	if (digitals && digitals[0] == 0)
+	UnsafeArray<const UTF8Char> nndigitals;
+	if (digitals.SetTo(nndigitals) && nndigitals[0] == 0)
 	{
 		digitals = 0;
 	}
@@ -2056,11 +2060,11 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(NN<DeviceInfo> dev, cons
 			{
 				SDEL_TEXT(dev->digitalNames[i]);
 			}
-			if (digitals)
+			if (digitals.SetTo(nndigitals))
 			{
 				Text::StringBuilderUTF8 sb;
-				UTF8Char *sarr[2];
-				sb.AppendSlow(digitals);
+				UnsafeArray<UTF8Char> sarr[2];
+				sb.AppendSlow(nndigitals);
 				sarr[1] = sb.v;
 				i = 0;
 				while (true)
@@ -2087,7 +2091,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 	Int64 t;
 	Int64 currTime;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *fileBuff;
 	UOSInt fileBuffSize;
 	UOSInt i;
@@ -2212,7 +2216,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserExist()
 	return this->userMap.GetCount() > 0;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType)
+Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password, Int32 userType)
 {
 	NN<WebUser> user;
 	Bool succ = false;
@@ -2254,7 +2258,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Char *password)
+Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, UnsafeArray<const UTF8Char> password)
 {
 	NN<WebUser> user;
 	Bool succ = false;
@@ -2291,7 +2295,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 	return succ;
 }
 
-Optional<SSWR::SMonitor::ISMonitorCore::LoginInfo> SSWR::SMonitor::SMonitorSvrCore::UserLogin(const UTF8Char *userName, const UTF8Char *password)
+Optional<SSWR::SMonitor::ISMonitorCore::LoginInfo> SSWR::SMonitor::SMonitorSvrCore::UserLogin(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password)
 {
 	WebUser *user;
 	NN<SSWR::SMonitor::ISMonitorCore::LoginInfo> login;
@@ -2558,7 +2562,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LogRequest(NN<Net::WebServer::IWebRequest>
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(const UTF8Char *userAgent, UOSInt len)
+void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(UnsafeArray<const UTF8Char> userAgent, UOSInt len)
 {
 	this->uaLog.LogStr(userAgent, len);
 }
@@ -2568,8 +2572,8 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 	if (this->uaLog.IsModified())
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		UnsafeArray<UTF8Char> sptr;
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);
@@ -2577,7 +2581,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer, UOSInt len)
+void SSWR::SMonitor::SMonitorSvrCore::RefererLog(UnsafeArray<const UTF8Char> referer, UOSInt len)
 {
 	if (Text::StrStartsWithC(referer, len, UTF8STRC("http://sswroom.no-ip.org")))
 	{
@@ -2595,8 +2599,8 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 	if (this->refererLog.IsModified())
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		UnsafeArray<UTF8Char> sptr;
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);

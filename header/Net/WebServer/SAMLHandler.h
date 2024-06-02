@@ -70,7 +70,7 @@ namespace Net
 			void HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj);
 			Optional<Crypto::Cert::X509PrivKey> GetKey();
 		};
-		Text::CString SAMLErrorGetName(SAMLError err);
+		Text::CStringNN SAMLErrorGetName(SAMLError err);
 	}
 }
 #endif

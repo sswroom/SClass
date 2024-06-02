@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRHKOLocalForecastForm::OnReloadClicked(AnyType 
 void SSWR::AVIRead::AVIRHKOLocalForecastForm::Reload(Net::HKOWeather::Language lang)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::HKOWeather::LocalForecast forecast;
 	Data::Timestamp reqTime = Data::Timestamp::Now();
 	sptr = reqTime.ToStringNoZone(sbuff);

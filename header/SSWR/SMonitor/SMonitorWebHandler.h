@@ -41,13 +41,13 @@ namespace SSWR
 			static void __stdcall WriteHeaderBegin(IO::Writer *writer);
 			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
 			static void __stdcall WriteMenu(IO::Writer *writer, Optional<Net::WebServer::IWebSession> sess);
-			static void __stdcall WriteHTMLText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteHTMLText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, NN<Text::String> txt);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, Text::CString txt);
-			static void __stdcall WriteAttrText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteAttrText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt);
 			static void __stdcall WriteAttrText(IO::Writer *writer, Text::String *txt);
 			static void __stdcall WriteAttrText(IO::Writer *writer, NN<Text::String> txt);
-			static void __stdcall WriteJSText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteJSText(IO::Writer *writer, UnsafeArray<const UTF8Char> txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, Text::String *txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, NN<Text::String> txt);
 

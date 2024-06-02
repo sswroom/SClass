@@ -67,9 +67,9 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(NN<Net::TCPCli
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
-		sptr = cli->GetRemoteName(sptr);
+		sptr = cli->GetRemoteName(sptr).Or(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
 		me->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NN<Net::TCPClie
 	NN<ClientData> data = cliData.GetNN<ClientData>();
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Received "));
 	sptr = Text::StrUOSInt(sptr, buff.GetSize());
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 	UInt8 packet[256];
 	UInt8 tmpPacket[64];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Packet: seq = "));
 	sptr = Text::StrInt32(sptr, seqId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", type = 0x"));
@@ -412,7 +412,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Data skipped "));
 	sptr = Text::StrUOSInt(sptr, buffSize);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));

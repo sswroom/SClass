@@ -82,14 +82,15 @@ void UI::DObj::LabelDObj::OnMouseClick()
 void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSizePx)
 {
 	Sync::MutexUsage mutUsage(this->txtMut);
-	if (fontName.leng == 0)
+	Text::CStringNN nnfontName;
+	if (!fontName.SetTo(nnfontName) || nnfontName.leng == 0)
 	{
-		fontName = CSTR("Arial");
+		nnfontName = CSTR("Arial");
 	}
-	if (!this->fontName->Equals(fontName.v, fontName.leng))
+	if (!this->fontName->Equals(nnfontName.v, nnfontName.leng))
 	{
 		this->fontName->Release();
-		this->fontName = Text::String::New(fontName);
+		this->fontName = Text::String::New(nnfontName);
 		this->txtChg = true;
 	}
 	if (this->fontSizePx != fontSizePx)
@@ -102,22 +103,23 @@ void UI::DObj::LabelDObj::SetFont(Text::CString fontName, Double fontSizePx)
 void UI::DObj::LabelDObj::SetText(Text::CString txt)
 {
 	Sync::MutexUsage mutUsage(this->txtMut);
+	Text::CStringNN nntxt;
 	if (this->txt == 0 && txt.leng == 0)
 		return;
-	if (txt.leng == 0)
+	if (!txt.SetTo(nntxt) || nntxt.leng == 0)
 	{
 		this->txt->Release();
 		this->txt = 0;
 		this->txtChg = true;
 	}
-	else if (this->txt != 0 && this->txt->Equals(txt.v, txt.leng))
+	else if (this->txt != 0 && this->txt->Equals(nntxt.v, nntxt.leng))
 	{
 		return;
 	}
 	else
 	{
 		SDEL_STRING(this->txt);
-		this->txt = Text::String::New(txt).Ptr();
+		this->txt = Text::String::New(nntxt).Ptr();
 		this->txtChg = true;
 	}
 }

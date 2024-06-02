@@ -92,12 +92,12 @@ namespace Net
 
 		static void __stdcall ClientPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
-		void RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 reqClass, NN<RequestResult> req);
+		void RequestDNS(UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, NN<RequestResult> req);
 		UInt32 NextId();
 		NN<CliRequestStatus> NewCliReq(UInt32 id);
 		void DelCliReq(UInt32 id);
-		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
-		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
+		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
+		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, UnsafeArray<const UTF8Char> reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
 	public:
 		DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO::LogTool> log);
 		~DNSProxy();

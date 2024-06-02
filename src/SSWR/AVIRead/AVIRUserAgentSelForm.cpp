@@ -49,7 +49,9 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Text::StringBuilderUTF8 sb;	
+	Text::StringBuilderUTF8 sb;
+	Text::CStringNN nnosVer;
+	UnsafeArray<const UTF8Char> nns;
 	this->lvUserAgent->ClearItems();
 	i = 0;
 	Net::UserAgentDB::UAEntry *uaList = Net::UserAgentDB::GetUAEntryList(&j);
@@ -57,7 +59,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 	{
 		if (os == Manage::OSInfo::OT_UNKNOWN || os == uaList[i].os)
 		{
-			if (osVer.leng == 0 || (uaList[i].osVerLen != 0 && osVer.Equals(uaList[i].osVer, uaList[i].osVerLen)))
+			if (!osVer.SetTo(nnosVer) || nnosVer.leng == 0 || (uaList[i].osVerLen != 0 && nnosVer.Equals(uaList[i].osVer.Or(U8STR("")), uaList[i].osVerLen)))
 			{
 				if (browser == Net::BrowserInfo::BT_UNKNOWN || browser == uaList[i].browser)
 				{
@@ -65,13 +67,13 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 					Manage::OSInfo::GetCommonName(sb, uaList[i].os, {uaList[i].osVer, uaList[i].osVerLen});
 					k = this->lvUserAgent->AddItem(sb.ToCString(), &uaList[i]);
 					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser));
-					if (uaList[i].browserVer)
+					if (uaList[i].browserVer.SetTo(nns))
 					{
-						this->lvUserAgent->SetSubItem(k, 2, {uaList[i].browserVer, uaList[i].browserVerLen});
+						this->lvUserAgent->SetSubItem(k, 2, {nns, uaList[i].browserVerLen});
 					}
-					if (uaList[i].devName)
+					if (uaList[i].devName.SetTo(nns))
 					{
-						const IO::AndroidDB::AndroidInfo *android = IO::AndroidDB::GetAndroidInfo({uaList[i].devName, uaList[i].devNameLen});
+						const IO::AndroidDB::AndroidInfo *android = IO::AndroidDB::GetAndroidInfo({nns, uaList[i].devNameLen});
 						if (android)
 						{
 							sb.ClearStr();
@@ -80,8 +82,8 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 							sb.AppendSlow((const UTF8Char*)android->modelName);
 							this->lvUserAgent->SetSubItem(k, 3, sb.ToCString());
 							this->lvUserAgent->SetSubItem(k, 4, {android->cpuName, android->cpuNameLen});
-							const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec({android->cpuName, android->cpuNameLen});
-							if (cpu)
+							NN<const Manage::CPUDB::CPUSpec> cpu;
+							if (Manage::CPUDB::GetCPUSpec({android->cpuName, android->cpuNameLen}).SetTo(cpu))
 							{
 								sb.ClearStr();
 								sb.AppendI32(cpu->nm);
@@ -90,7 +92,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 						}
 						else
 						{
-							this->lvUserAgent->SetSubItem(k, 3, {uaList[i].devName, uaList[i].devNameLen});
+							this->lvUserAgent->SetSubItem(k, 3, {nns, uaList[i].devNameLen});
 						}						
 					}
 					this->lvUserAgent->SetSubItem(k, 6, {uaList[i].userAgent, uaList[i].userAgentLen});
@@ -105,7 +107,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 	}
 }
 
-SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("User Agent Select"));
@@ -155,6 +157,8 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 	Bool found;
 	NN<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
 	Text::StringBuilderUTF8 sb;
+	UnsafeArray<const UTF8Char> nns;
+	UnsafeArray<const UTF8Char> nns2;
 	Net::UserAgentDB::UAEntry *uaList = Net::UserAgentDB::GetUAEntryList(&j);
 	osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 	osItem->os = Manage::OSInfo::OT_UNKNOWN;
@@ -191,14 +195,14 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 			this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 		}
 
-		if (uaList[i].osVer)
+		if (uaList[i].osVer.SetTo(nns))
 		{
 			found = false;
 			k = this->osList.GetCount();
 			while (k-- > 0)
 			{
 				osItem = this->osList.GetItemNoCheck(k);
-				if (osItem->os == uaList[i].os && osItem->osVer != 0 && Text::StrEquals(osItem->osVer, uaList[i].osVer))
+				if (osItem->os == uaList[i].os && osItem->osVer.SetTo(nns2) && Text::StrEquals(nns2, nns))
 				{
 					found = true;
 					break;
@@ -208,7 +212,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 			{
 				osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 				osItem->os = uaList[i].os;
-				osItem->osVer = uaList[i].osVer;
+				osItem->osVer = nns;
 				osItem->osVerLen = uaList[i].osVerLen;
 				this->osList.Add(osItem);
 				sb.ClearStr();

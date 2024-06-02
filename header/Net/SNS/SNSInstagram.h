@@ -29,9 +29,9 @@ namespace Net
 			virtual SNSType GetSNSType();
 			virtual NN<Text::String> GetChannelId() const;
 			virtual NN<Text::String> GetName() const;
-			virtual UTF8Char *GetDirName(UTF8Char *dirName);
+			virtual UnsafeArray<UTF8Char> GetDirName(UnsafeArray<UTF8Char> dirName);
 			virtual UOSInt GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList);
-			virtual UTF8Char *GetItemShortId(UTF8Char *buff, NN<SNSItem> item);
+			virtual UnsafeArray<UTF8Char> GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item);
 			virtual Int32 GetMinIntevalMS();
 			virtual Bool Reload();
 		};

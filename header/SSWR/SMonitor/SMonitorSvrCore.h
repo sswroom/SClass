@@ -82,7 +82,7 @@ namespace SSWR
 			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 
-			void NewNotify(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName);
+			void NewNotify(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CStringNN progName);
 
 			void TCPSendLoginReply(NN<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status);
 			void TCPSendKAReply(NN<IO::Stream> stm, Int64 cliTime, Int64 svrTime);
@@ -101,7 +101,7 @@ namespace SSWR
 
 			void LoadData();
 			Optional<DB::DBTool> UseDB(NN<Sync::MutexUsage> mut);
-			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
+			void UserPwdCalc(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> pwd, UInt8 *buff);
 		public:
 			SMonitorSvrCore(NN<IO::Writer> writer, NN<Media::DrawEngine> deng);
 			virtual ~SMonitorSvrCore();
@@ -117,19 +117,19 @@ namespace SSWR
 			Bool DeviceSetName(Int64 cliId, NN<Text::String> devName);
 			Bool DeviceSetPlatform(Int64 cliId, NN<Text::String> platformName);
 			Bool DeviceSetCPUName(Int64 cliId, NN<Text::String> cpuName);
-			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
+			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName);
 			Bool DeviceSetVersion(Int64 cliId, Int64 version);
 			virtual Optional<DeviceInfo> DeviceGet(Int64 cliId);
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags);
-			virtual Bool DeviceSetReadings(NN<DeviceInfo> dev, const UTF8Char *readings);
-			virtual Bool DeviceSetDigitals(NN<DeviceInfo> dev, const UTF8Char *digitals);
+			virtual Bool DeviceSetReadings(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> readings);
+			virtual Bool DeviceSetDigitals(NN<DeviceInfo> dev, UnsafeArrayOpt<const UTF8Char> digitals);
 			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList);
 			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh);
 
 			virtual Bool UserExist();
-			virtual Bool UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType);
-			virtual Bool UserSetPassword(Int32 userId, const UTF8Char *password);
-			virtual Optional<LoginInfo> UserLogin(const UTF8Char *userName, const UTF8Char *password);
+			virtual Bool UserAdd(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password, Int32 userType);
+			virtual Bool UserSetPassword(Int32 userId, UnsafeArray<const UTF8Char> password);
+			virtual Optional<LoginInfo> UserLogin(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password);
 			virtual void UserFreeLogin(NN<LoginInfo> login);
 			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList);
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId);
@@ -141,10 +141,10 @@ namespace SSWR
 
 			virtual void LogRequest(NN<Net::WebServer::IWebRequest> req);
 
-			void UserAgentLog(const UTF8Char *userAgent, UOSInt len);
+			void UserAgentLog(UnsafeArray<const UTF8Char> userAgent, UOSInt len);
 			void UserAgentStore();
 			
-			void RefererLog(const UTF8Char *referer, UOSInt len);
+			void RefererLog(UnsafeArray<const UTF8Char> referer, UOSInt len);
 			void RefererStore();
 		};
 	}

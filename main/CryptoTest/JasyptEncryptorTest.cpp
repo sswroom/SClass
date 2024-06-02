@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 /*	Text::CString encPwd = CSTR("test");
 	const UTF8Char *userName = (const UTF8Char*)"testing";
 	const UTF8Char *password = (const UTF8Char*)"testing";*/
-	Text::CString encPwd = CSTR("eRFLDev");
+	Text::CStringNN encPwd = CSTR("eRFLDev");
 	Text::CStringNN userName = CSTR("Ukq08EI1PQF47DbDfkhYfjF5fCtehqFQwC/rYU+/T57yvkLhuVf49BwHjLK2AzYr");
 	Text::CStringNN password = CSTR("VN1iRYekV9DqHzJ/yIcXWslczjhI98SYkXpw58FmBsMWour1vYSWf++Sx7AD26Br");
 	UInt8 decBuff[256];

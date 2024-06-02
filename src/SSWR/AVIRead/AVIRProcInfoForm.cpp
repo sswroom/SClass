@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[12];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<ProcessInfo> procInfo;
 	Manage::Process::ProcessInfo proc;
 	UOSInt i;
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 			procInfo->found = false;
 		}
 
-		while ((sptr = Manage::Process::FindProcessNext(sbuff, sess, &proc)) != 0)
+		while (Manage::Process::FindProcessNext(sbuff, sess, &proc).SetTo(sptr))
 		{
 			si = me->procIds.SortedIndexOf(proc.processId);
 			if (si >= 0)
@@ -316,7 +316,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		Data::ArrayListNN<Manage::ModuleInfo> modList;
 		NN<Manage::ModuleInfo> module;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt k;
 		UOSInt addr;
 		UOSInt size;
@@ -354,7 +354,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		Data::ArrayListNN<Manage::ThreadInfo> threadList;
 		NN<Manage::ThreadInfo> t;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -370,8 +370,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 			t = threadList.GetItemNoCheck(i);
 			sptr = Text::StrUOSInt(sbuff, t->GetThreadId());
 			k = this->lvDetThread->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)t->GetThreadId(), 0);
-			sptr = t->GetName(sbuff);
-			if (sptr)
+			if (t->GetName(sbuff).SetTo(sptr))
 			{
 				this->lvDetThread->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			}
@@ -381,8 +380,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 
 			if (this->currProcRes)
 			{
-				sptr = this->currProcRes->ResolveName(sbuff, addr);
-				if (sptr)
+				if (this->currProcRes->ResolveName(sbuff, addr).SetTo(sptr))
 				{
 					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 					this->lvDetThread->SetSubItem(k, 3, CSTRP(&sbuff[l + 1], sptr));
@@ -406,7 +404,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListUInt32 heapList;
 		UTF8Char sbuff[20];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 
@@ -441,7 +439,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		Data::ArrayListNN<Manage::Process::HeapInfo> heapList;
 		NN<Manage::Process::HeapInfo> heap;
 		UTF8Char sbuff[20];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -497,7 +495,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 		Data::ArrayList<Manage::Process::HandleInfo> handleList;
 		Manage::Process::HandleInfo hinfo;
 		UTF8Char sbuff[20];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Manage::HandleType handleType;
 		Text::StringBuilderUTF8 sb;
 		UOSInt i;

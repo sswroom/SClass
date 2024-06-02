@@ -6,8 +6,8 @@ namespace Net
 	class MQTTUtil
 	{
 	public:
-		static Bool TopicValid(const UTF8Char *topic);
-		static Bool TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF8Char *subscribeTopic, UOSInt suibscribeTopicLen);
+		static Bool TopicValid(UnsafeArray<const UTF8Char> topic);
+		static Bool TopicMatch(UnsafeArray<const UTF8Char> topic, UOSInt topicLen, UnsafeArray<const UTF8Char> subscribeTopic, UOSInt suibscribeTopicLen);
 		static Text::CString PacketTypeGetName(UInt8 packetType);
 	};
 }

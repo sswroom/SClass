@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj
 		return;
 	}
 	me->ClearResult(true);
-	UTF8Char *sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 	me->CalcDir(sbuff, sptr);
 	UOSInt i;
 	UOSInt j;
@@ -135,10 +135,10 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType u
 	dlg.Delete();
 }
 
-void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *pathBuffEnd)
+void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff, UnsafeArray<UTF8Char> pathBuffEnd)
 {
 	IO::Path::PathType pt;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::Path::FindFileSession *sess;
 	Text::StringBuilderUTF8 sb;
 	UOSInt lineCnt;
@@ -153,7 +153,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	sess = IO::Path::FindFile(CSTRP(pathBuff, sptr));
 	if (sess)
 	{
-		while ((sptr = IO::Path::FindNextFile(pathBuffEnd, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(pathBuffEnd, sess, 0, &pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{

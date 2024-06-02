@@ -19,7 +19,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 	Data::Timestamp currTime;
 	Data::Timestamp nextSignalTime;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool init = false;
 	IO::GSMModemController::BER ber;
 	NN<IO::ATCommandChannel> channel;
@@ -37,7 +37,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 			SDEL_STRING(me->initModemVer);
 			SDEL_STRING(me->initIMEI);
 			SDEL_STRING(me->huaweiICCID);
-			if ((sptr = me->modem->GSMGetManufacturer(sbuff)) != 0)
+			if (me->modem->GSMGetManufacturer(sbuff).SetTo(sptr))
 			{
 				me->initModemManu = Text::String::NewP(sbuff, sptr).Ptr();
 				if (me->initModemManu->StartsWith(UTF8STRC("Huawei")) && channel.Set(me->channel))
@@ -52,17 +52,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 					me->huawei->HuaweiGetCardMode(&me->huaweiSIMType);
 				}
 			}
-			if ((sptr = me->modem->GSMGetModelIdent(sbuff)) != 0)
+			if (me->modem->GSMGetModelIdent(sbuff).SetTo(sptr))
 				me->initModemModel = Text::String::NewP(sbuff, sptr).Ptr();
-			if ((sptr = me->modem->GSMGetModemVer(sbuff)) != 0)
+			if (me->modem->GSMGetModemVer(sbuff).SetTo(sptr))
 				me->initModemVer = Text::String::NewP(sbuff, sptr).Ptr();
-			if ((sptr = me->modem->GSMGetIMEI(sbuff)) != 0)
+			if (me->modem->GSMGetIMEI(sbuff).SetTo(sptr))
 				me->initIMEI = Text::String::NewP(sbuff, sptr).Ptr();
-			if (me->huawei && (sptr = me->huawei->HuaweiGetICCID(sbuff)) != 0)
+			if (me->huawei && me->huawei->HuaweiGetICCID(sbuff).SetTo(sptr))
 				me->huaweiICCID = Text::String::NewP(sbuff, sptr).Ptr();
 			me->initStrs = true;
 
-			if ((sptr = me->modem->GSMGetTECharset(sbuff)) != 0)
+			if (me->modem->GSMGetTECharset(sbuff).SetTo(sptr))
 			{
 				SDEL_STRING(me->cfgTECharset);
 				me->cfgTECharset = Text::String::NewP(sbuff, sptr).Ptr();
@@ -72,7 +72,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 		if (me->simChanged)
 		{
 			me->simChanged = false;
-			if ((sptr = me->modem->GSMGetIMSI(sbuff)) != 0)
+			if (me->modem->GSMGetIMSI(sbuff).SetTo(sptr))
 			{
 				SDEL_STRING(me->simIMSI);
 				me->simIMSI = Text::String::NewP(sbuff, sptr).Ptr();
@@ -84,7 +84,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 		if (currTime >= me->operNextTime)
 		{
 			me->operNextTime = me->operNextTime.AddSecond(30);
-			if ((sptr = me->modem->GSMGetCurrPLMN(sbuff)) != 0)
+			if (me->modem->GSMGetCurrPLMN(sbuff).SetTo(sptr))
 			{
 				SDEL_STRING(me->operName);
 				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 {
 	Double values[5];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 
 	if (me->initStrs)
@@ -331,7 +331,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NN<IO::GSMModemController::SMSMessage> sms;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::SMSMessage> smsMsg;
 	if (me->lvSMS->GetSelectedItem().GetOpt<IO::GSMModemController::SMSMessage>().SetTo(sms) && Text::SMSMessage::CreateFromPDU(sms->pduMessage).SetTo(smsMsg))
 	{
@@ -398,7 +398,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NN<IO::GSMModemController::SMSMessage> sms;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::SMSMessage> smsMsg;
 	if (me->lvSMS->GetCount() > 0)
 	{
@@ -708,7 +708,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnHuaweiDHCPClicked(AnyType user
 	if (me->huawei)
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UInt32 clientIP;
 		UInt32 netmask;
 		UInt32 gateway;
@@ -788,7 +788,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	NN<Text::SMSMessage> smsMsg;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 #if _WCHAR_SIZE == 4
 	WChar wbuff[256];
 #endif
@@ -802,8 +802,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex()).GetOSInt();
 
 	this->modem->SMSSetStorage(store, IO::GSMModemController::SMSSTORE_SIM, IO::GSMModemController::SMSSTORE_SIM);
-	sptr = this->modem->SMSGetSMSC(sbuff);
-	if (sptr)
+	if (this->modem->SMSGetSMSC(sbuff).SetTo(sptr))
 	{
 		this->txtSMSC->SetText(CSTRP(sbuff, sptr));
 	}
@@ -864,7 +863,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 	}
 	this->lvPDPContext->ClearItems();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::GSMModemController::PDPContext> ctx;
 	Data::UInt32FastMap<UOSInt> dataMap;
 	UOSInt i = 0;
@@ -1403,12 +1402,13 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	if (IO::SerialPort::GetAvailablePorts(ports, &portTypes))
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i = 0;
 		UOSInt j = ports.GetCount();
 		while (i < j)
 		{
-			sptr = IO::SerialPort::GetPortName(sbuff, ports.GetItem(i));
+			sbuff[0] = 0;
+			sptr = IO::SerialPort::GetPortName(sbuff, ports.GetItem(i)).Or(sbuff);
 			this->cboDeviceSerial->AddItem(CSTRP(sbuff, sptr), (void*)ports.GetItem(i));
 			i++;
 		}

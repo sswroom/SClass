@@ -20,15 +20,15 @@ namespace Net
 			UOSInt recvCapacity;
 			UOSInt recvSize;
 
-			Bool SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize);
-			void NextPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize);
+			Bool SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			void NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
 			WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::IWebResponse> resp);
 			virtual ~WebSocketServerStream();
 
 			virtual Bool IsDown() const;
 			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+			virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
 
 			virtual Int32 Flush();
 			virtual void Close();

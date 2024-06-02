@@ -184,10 +184,10 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganSpecies::GetItemTy
 	return OrganGroupItem::IT_SPECIES;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganSpecies::GetItemName(UnsafeArray<UTF8Char> buff) const
 {
 	NN<Text::String> s;
-	UTF8Char *sptr = buff;
+	UnsafeArray<UTF8Char> sptr = buff;
 	if (this->isDefault)
 	{
 		*sptr++ = '*';
@@ -208,7 +208,7 @@ UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff) const
 	return sptr;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganSpecies::GetEngName(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganSpecies::GetEngName(UnsafeArray<UTF8Char> buff) const
 {
 	return Text::String::OrEmpty(this->sName)->ConcatTo(buff);
 }

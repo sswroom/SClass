@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(AnyType u
 	if (me->bt.SetTo(bt))
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
 		IO::BTDevLog btLog;
 		dt.SetCurrTimeUTC();
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType us
 {
 	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::BTScanLog::ScanRecord3> dev;
 	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord3>().SetTo(dev))
 	{
@@ -109,7 +109,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	NN<Text::String> s;
 	Sync::MutexUsage mutUsage;
@@ -175,10 +175,10 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 			}
 			else
 			{
-				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
-				if (cstr.v)
+				Text::CStringNN cstr;
+				if (Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company).SetTo(cstr))
 				{
-					this->lvDevices->SetSubItem(i, 10, cstr.OrEmpty());
+					this->lvDevices->SetSubItem(i, 10, cstr);
 				}
 				else
 				{

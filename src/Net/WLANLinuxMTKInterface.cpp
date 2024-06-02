@@ -130,7 +130,7 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(NN<Data::ArrayListNN<Net::Wireless
 		UOSInt colCnt;
 		Text::PString lines[2];
 		Text::PString cols[11];
-		UTF8Char *macs[6];
+		UnsafeArray<UTF8Char> macs[6];
 		UOSInt ui;
 		UOSInt channelInd = INVALID_INDEX;
 		UOSInt ssidInd = INVALID_INDEX;

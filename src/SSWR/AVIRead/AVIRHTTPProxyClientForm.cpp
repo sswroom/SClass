@@ -55,12 +55,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 	Text::String *currURL;
 	NN<Net::HTTPClient> cli;
 	UInt8 buff[4096];
-	UTF8Char *sbuff;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sbuff;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
-	sbuff = MemAlloc(UTF8Char, 65536);
+	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!me->threadToStop)
 	{
 		if (me->reqURL && !me->respChanged)
@@ -81,7 +81,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 			j = cli->GetRespHeaderCnt();
 			while (i < j)
 			{
-				sptr = cli->GetRespHeader(i, sbuff);
+				sptr = cli->GetRespHeader(i, sbuff).Or(sbuff);
 				me->respHeaders.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				i++;
 			}
@@ -94,7 +94,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 		}
 		me->threadEvt->Wait(1000);
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	SDEL_STRING(me->reqURL);
 	me->threadToStop = false;
 	me->threadRunning = false;
@@ -105,12 +105,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if (me->respChanged)
 	{
-		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr).Or(sbuff);
 		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{

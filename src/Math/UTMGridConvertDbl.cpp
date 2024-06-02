@@ -15,7 +15,7 @@ Math::UTMGridConvertDbl::~UTMGridConvertDbl()
 {
 }
 
-UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt, Int32 *lonZone, Char *latZone, Double *northing, Double *easting, Double lat, Double lon)
+UnsafeArray<UTF8Char> Math::UTMGridConvertDbl::WGS84_Grid(UnsafeArray<UTF8Char> gridStr, Int32 digitCnt, Int32 *lonZone, Char *latZone, Double *northing, Double *easting, Double lat, Double lon)
 {
 	Double k0 = 0.9996;
 	Double deg2rad = Math::PI / 180.0;
@@ -114,52 +114,45 @@ UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt,
 	if (northing)
 		*northing = utmNorthing;
 
-	if (gridStr)
-	{
-		UTF8Char *sptr = Text::StrInt32(gridStr, zoneNumber);
-		*sptr++ = (UTF8Char)letters[(((Int32)lat) >> 3) + 12];
-		*sptr++ = (UTF8Char)eastZone;
-		*sptr++ = (UTF8Char)northZone;
+	UnsafeArray<UTF8Char> sptr = Text::StrInt32(gridStr, zoneNumber);
+	*sptr++ = (UTF8Char)letters[(((Int32)lat) >> 3) + 12];
+	*sptr++ = (UTF8Char)eastZone;
+	*sptr++ = (UTF8Char)northZone;
 
-		if (digitCnt <= 3)
-		{
-			digitCnt = 3;
-			inorth /= 100;
-			ieast /= 100;
-		}
-		else if (digitCnt == 4)
-		{
-			digitCnt = 4;
-			inorth /= 10;
-			ieast /= 10;
-		}
-		else
-		{
-			digitCnt = 5;
-		}
-		
-		Int32 i;
-		sptr += digitCnt << 1;
-		i = digitCnt;
-		while (i-- > 0)
-		{
-			*--sptr = (UTF8Char)((inorth % 10) + 0x30);
-			inorth /= 10;
-		}
-		i = digitCnt;
-		while (i-- > 0)
-		{
-			*--sptr = (UTF8Char)((ieast % 10) + 0x30);
-			ieast /= 10;
-		}
-		sptr += digitCnt << 1;
-		*sptr = 0;
-		return sptr;
+	if (digitCnt <= 3)
+	{
+		digitCnt = 3;
+		inorth /= 100;
+		ieast /= 100;
+	}
+	else if (digitCnt == 4)
+	{
+		digitCnt = 4;
+		inorth /= 10;
+		ieast /= 10;
 	}
 	else
 	{
-		return 0;
+		digitCnt = 5;
 	}
+	
+	Int32 i;
+	sptr += digitCnt << 1;
+	i = digitCnt;
+	while (i-- > 0)
+	{
+		*--sptr = (UTF8Char)((inorth % 10) + 0x30);
+		inorth /= 10;
+	}
+	i = digitCnt;
+	while (i-- > 0)
+	{
+		*--sptr = (UTF8Char)((ieast % 10) + 0x30);
+		ieast /= 10;
+	}
+	sptr += digitCnt << 1;
+	*sptr = 0;
+	return sptr;
 }
 
 Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const UTF8Char *grid)

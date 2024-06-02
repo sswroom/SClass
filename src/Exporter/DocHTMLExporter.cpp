@@ -32,7 +32,7 @@ IO::FileExporter::SupportType Exporter::DocHTMLExporter::IsObjectSupported(NN<IO
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::DocHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::DocHTMLExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -57,15 +57,15 @@ Bool Exporter::DocHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 
 	NN<Text::Doc::TextDocument> doc = NN<Text::Doc::TextDocument>::ConvertFrom(pobj);
 	IO::StreamWriter *writer;
-	UTF8Char *lineBuff1;
-	UTF8Char *lineBuff2;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> lineBuff1;
+	UnsafeArray<UTF8Char> lineBuff2;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 color;
 
 	NEW_CLASS(writer, IO::StreamWriter(stm, this->codePage));
 
-	lineBuff1 = MemAlloc(UTF8Char, 65536);
-	lineBuff2 = MemAlloc(UTF8Char, 65536);
+	lineBuff1 = MemAllocArr(UTF8Char, 65536);
+	lineBuff2 = MemAllocArr(UTF8Char, 65536);
 
 	//writer->WriteLine(CSTR("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">"));
 	//writer->WriteLine(CSTR("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">"));
@@ -134,8 +134,8 @@ a:hover {color:#FF00FF;}
 
 	writer->WriteLine(CSTR("</body></html>"));
 
-	MemFree(lineBuff1);
-	MemFree(lineBuff2);
+	MemFreeArr(lineBuff1);
+	MemFreeArr(lineBuff2);
 	DEL_CLASS(writer);
 	return true;
 }
@@ -143,7 +143,7 @@ a:hover {color:#FF00FF;}
 void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 {
 	UTF8Char sbuff[8];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sbuff[0] = '#';
 	sptr = Text::StrHexByte(Text::StrHexByte(Text::StrHexByte(&sbuff[1], (color >> 16) & 0xff), (color >> 8) & 0xff), color & 0xff);
 	writer->Write(CSTRP(sbuff, sptr)); 

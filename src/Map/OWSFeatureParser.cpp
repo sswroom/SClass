@@ -159,7 +159,7 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swapXY, Optional<Text::EncodingFactory> encFact, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	UTF8Char tmpBuff[1024];
-	UTF8Char *tmpPtr;
+	UnsafeArray<UTF8Char> tmpPtr;
 
 	IO::MemoryReadingStream mstm(txt.v, txt.leng);
 	NN<IO::ParsedObject> pobj;
@@ -191,7 +191,7 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 						UOSInt l = layer->GetColumnCnt();
 						while (k < l)
 						{
-							tmpPtr = layer->GetColumnName(tmpBuff, k);
+							tmpPtr = layer->GetColumnName(tmpBuff, k).Or(tmpBuff);
 							nameList->Add(Text::String::NewP(tmpBuff, tmpPtr));
 							sb.ClearStr();
 							layer->GetString(sb, nameArr, idArr.GetItem(i), k);
@@ -227,7 +227,7 @@ Bool Map::OWSFeatureParser::ParseESRI_WMS_XML(Text::CStringNN xml, UInt32 srid, 
 		}
 		else
 		{
-			printf("OWSFeatureParser: Unknown element in esri wms xml: %s\r\n", nodeText->v);
+			printf("OWSFeatureParser: Unknown element in esri wms xml: %s\r\n", nodeText->v.Ptr());
 			reader.SkipElement();
 		}
 	}
@@ -248,7 +248,7 @@ Bool Map::OWSFeatureParser::ParseESRIFeatureInfoResponse(NN<Text::XMLReader> rea
 		}
 		else
 		{
-			printf("OWSFeatureParser: Unknown element in esri FeatureInfoResponse: %s\r\n", nodeText->v);
+			printf("OWSFeatureParser: Unknown element in esri FeatureInfoResponse: %s\r\n", nodeText->v.Ptr());
 			reader->SkipElement();
 		}
 	}
@@ -267,7 +267,7 @@ Bool Map::OWSFeatureParser::ParseESRIFeatureInfoCollection(NN<Text::XMLReader> r
 		}
 		else
 		{
-			printf("OWSFeatureParser: Unknown element in esri FeatureInfoCollection: %s\r\n", nodeText->v);
+			printf("OWSFeatureParser: Unknown element in esri FeatureInfoCollection: %s\r\n", nodeText->v.Ptr());
 			reader->SkipElement();
 		}
 	}
@@ -324,7 +324,7 @@ Bool Map::OWSFeatureParser::ParseESRIFeatureInfo(NN<Text::XMLReader> reader, UIn
 				}
 				else
 				{
-					printf("OWSFeatureParser: Unknown element in esri Field: %s\r\n", nodeText->v);
+					printf("OWSFeatureParser: Unknown element in esri Field: %s\r\n", nodeText->v.Ptr());
 					reader->SkipElement();
 				}
 			}
@@ -360,7 +360,7 @@ Bool Map::OWSFeatureParser::ParseESRIFeatureInfo(NN<Text::XMLReader> reader, UIn
 		}
 		else
 		{
-			printf("OWSFeatureParser: Unknown element in esri FeatureInfo: %s\r\n", nodeText->v);
+			printf("OWSFeatureParser: Unknown element in esri FeatureInfo: %s\r\n", nodeText->v.Ptr());
 			reader->SkipElement();
 		}
 	}
@@ -406,7 +406,7 @@ Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry
 		}
 		else
 		{
-			printf("OWSFeatureParser: Unknown element in esri FieldGeometry: %s\r\n", nodeText->v);
+			printf("OWSFeatureParser: Unknown element in esri FieldGeometry: %s\r\n", nodeText->v.Ptr());
 			reader->SkipElement();
 		}
 	}
@@ -447,14 +447,14 @@ Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, M
 				}
 				else
 				{
-					printf("OWSFeatureParser: Unknown element in FeatureInfoResponse: %s\r\n", nodeText->v);
+					printf("OWSFeatureParser: Unknown element in FeatureInfoResponse: %s\r\n", nodeText->v.Ptr());
 					reader.SkipElement();
 				}
 			}
 		}
 		else
 		{
-			printf("OWSFeatureParser: Unknown element in ogc wms xml: %s\r\n", nodeText->v);
+			printf("OWSFeatureParser: Unknown element in ogc wms xml: %s\r\n", nodeText->v.Ptr());
 			reader.SkipElement();
 		}
 	}

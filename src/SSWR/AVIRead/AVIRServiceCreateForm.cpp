@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCancelClicked(AnyType use
 SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 200, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Create Service"));
 
@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(Optional<UI::GUIClie
 	this->cboState->AddItem(CSTR("Manual Start"), (void*)IO::ServiceInfo::ServiceState::ManualStart);
 	this->lblCmdLine = ui->NewLabel(*this, CSTR("Command Line"));
 	this->lblCmdLine->SetRect(4, 76, 100, 23, false);
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	this->txtCmdLine = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
 	this->txtCmdLine->SetRect(104, 76, 500, 23, false);
 	this->btnCreate = ui->NewButton(*this, CSTR("Create"));

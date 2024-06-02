@@ -10,7 +10,7 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userOb
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK && frm.GetFilter().SetTo(filter))
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->filters->Add(filter);
 		sptr = filter->ToString(sbuff);
 		me->lbFilters->AddItem(CSTRP(sbuff, sptr), filter);
@@ -59,7 +59,7 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClie
 	this->btnOK->HandleButtonClick(OnOkClicked, this);
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	NN<MapFilter> filter;

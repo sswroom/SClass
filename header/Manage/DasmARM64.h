@@ -67,7 +67,7 @@ namespace Manage
 			UInt16 codeSegm;
 			Data::ArrayListUInt64 *callAddrs;
 			Data::ArrayListUInt64 *jmpAddrs;
-			UTF8Char *sbuff;
+			UnsafeArray<UTF8Char> sbuff;
 			UInt64 retAddr;
 			Int32 thisStatus;
 			Int32 endStatus; //0 = not end, 1 = jmp out, 2 = exit program, 3 = func return
@@ -98,7 +98,7 @@ namespace Manage
 		NN<DasmARM64_Sess> CreateSess(NN<DasmARM64_Regs> regs, UInt8 *code, UInt16 codeSegm);
 		void DeleteSess(NN<DasmARM64_Sess> sess);
 
-		Bool DasmNext(NN<DasmARM64_Sess> sess, UTF8Char *buff, OSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmARM64_Sess> sess, UnsafeArray<UTF8Char> buff, OSInt *outBuffSize); //True = succ
 	};
 }
 

@@ -44,7 +44,7 @@
 
 #define PI 3.14159265358979323846
 
-Bool Map::MapConfig2::IsDoorNum(const UTF8Char *txt)
+Bool Map::MapConfig2::IsDoorNum(UnsafeArray<const UTF8Char> txt)
 {
 	UTF8Char c;
 	while ((c = *txt++) != 0)
@@ -336,7 +336,7 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 					currPt.y = 0;
 
 					UOSInt cnt;
-					UTF8Char *lbl = sbuff;
+					UnsafeArray<UTF8Char> lbl = sbuff;
 					cnt = lblSize;
 
 					while (cnt--)
@@ -729,8 +729,8 @@ void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1
 		font = (Map::MapFontStyle *)fontStyle->GetItem(i);
 		if (nnb.Set((Media::DrawBrush*)font->other))
 		{
-			UTF8Char *lbl = sbuff;
-			UTF8Char *nextPos = lbl;
+			UnsafeArray<UTF8Char> lbl = sbuff;
+			UnsafeArray<UTF8Char> nextPos = lbl;
 			UTF8Char nextChar = *lbl;
 			Double angle;
 			Double angleDegree;
@@ -1284,7 +1284,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 		font = (Map::MapFontStyle *)fontStyle->GetItem(i);
 		if (b.Set((Media::DrawBrush*)font->other))
 		{
-			UTF8Char *lbl = sbuff;
+			UnsafeArray<UTF8Char> lbl = sbuff;
 			UTF8Char l[2];
 			UOSInt currInd;
 			UOSInt lastInd;
@@ -1777,8 +1777,8 @@ void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1,
 		if (b.Set((Media::DrawBrush*)font->other))
 		{
 			////////////////////////////////
-			UTF8Char *lbl = sbuff;
-			UTF8Char *nextPos = lbl;
+			UnsafeArray<UTF8Char> lbl = sbuff;
+			UnsafeArray<UTF8Char> nextPos = lbl;
 			UTF32Char nextChar;
 			Double angle;
 			Double cosAngle;
@@ -1810,7 +1810,7 @@ void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1,
 
 				while (true)
 				{
-					nextPos = (UTF8Char*)Text::StrReadChar(nextPos, nextChar);
+					nextPos = UnsafeArray<UTF8Char>::ConvertFrom(Text::StrReadChar(nextPos, nextChar));
 					if (nextChar == 0)
 					{
 						nextPos--;
@@ -2248,7 +2248,7 @@ void Map::MapConfig2::GetCharsSize(NN<Media::DrawImage> img, OutParam<Math::Coor
 	size.Set(Math::Coord2DDbl(maxX - minX, maxY - minY));
 }
 
-UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
+UInt32 Map::MapConfig2::ToColor(UnsafeArray<const UTF8Char> str)
 {
 	UInt32 v = Text::StrHex2UInt32C(str);
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
@@ -2660,7 +2660,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString labelt, UOSInt nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NN<Map::MapView> view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CStringNN labelt, UOSInt nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NN<Map::MapView> view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
@@ -3885,10 +3885,10 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
-	UTF8Char *layerNameEnd;
-	UTF8Char *baseDir = layerName;
+	UnsafeArray<UTF8Char> layerNameEnd;
+	UnsafeArray<UTF8Char> baseDir = layerName;
 	Text::PString strs[10];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	MapLineStyle *currLine;
@@ -3917,11 +3917,12 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 	else
 	{
 		IO::StreamReader rdr(fstm);
-		if (forceBase.leng > 0)
+		Text::CStringNN nnforceBase;
+		if (forceBase.SetTo(nnforceBase) && nnforceBase.leng > 0)
 		{
-			baseDir = forceBase.ConcatTo(layerName);
+			baseDir = nnforceBase.ConcatTo(layerName);
 		}
-		while ((sptr = rdr.ReadLine(lineBuff, 1023)) != 0)
+		while (rdr.ReadLine(lineBuff, 1023).SetTo(sptr))
 		{
 			UOSInt strCnt;
 			Int32 lyrType;
@@ -4340,7 +4341,7 @@ Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UI
 	{
 		UInt8 *pattern = MemAlloc(UInt8, Text::StrCharCnt(thisLine->styles));
 		UInt32 currVal;
-		UTF8Char *currCh;
+		UnsafeArray<UTF8Char> currCh;
 		UInt32 i;
 
 		currCh = thisLine->styles;
@@ -4377,11 +4378,11 @@ Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UI
 	return 0;
 }
 
-UTF8Char *Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UTF8Char *slowLayer, Double *slowTime)
+UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UnsafeArrayOpt<UTF8Char> slowLayer, Double *slowTime)
 {
 	//Manage::HiResClock clk;
-	UTF8Char *retPtr = 0;
-	const UTF8Char *maxName = 0;
+	UnsafeArrayOpt<UTF8Char> retPtr = 0;
+	UnsafeArrayOpt<const UTF8Char> maxName = 0;
 	Double thisSpd = 0;
 	Double maxSpd = 0;
 	UInt32 index;
@@ -4694,7 +4695,7 @@ UTF8Char *Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 			if (thisSpd > maxSpd)
 			{
 				maxSpd = thisSpd;
-				maxName = lyrs->lyr->GetName()->v;
+				maxName = UnsafeArray<const UTF8Char>(lyrs->lyr->GetName()->v);
 			}
 		}
 	}
@@ -4749,10 +4750,12 @@ UTF8Char *Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 
 	//Double t = clk.GetTimeDiff();
 	//printf("Time used: %d\n", (Int32)(t * 1000));
-	if (maxName && maxSpd && slowLayer && slowTime)
+	UnsafeArray<const UTF8Char> nnmaxName;
+	UnsafeArray<UTF8Char> nnslowLayer;
+	if (maxName.SetTo(nnmaxName) && maxSpd && slowLayer.SetTo(nnslowLayer) && slowTime)
 	{
 		*slowTime = maxSpd;
-		retPtr = Text::StrConcat(slowLayer, maxName);
+		retPtr = Text::StrConcat(nnslowLayer, nnmaxName);
 	}
 
 	return retPtr;

@@ -17,7 +17,7 @@ namespace Net
 		Sync::Thread thread;
 		Net::WiFiLogFile wifiLog;
 		Sync::Mutex logMut;
-		const UTF8Char *lastFileName;
+		UnsafeArrayOpt<const UTF8Char> lastFileName;
 		Optional<Net::WirelessLAN::Interface> interf;
 		Data::Timestamp lastScanTime;
 		UpdateHandler hdlr;

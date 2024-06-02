@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnTimerTick(AnyType userObj)
 SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;

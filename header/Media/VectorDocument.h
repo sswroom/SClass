@@ -18,11 +18,11 @@ namespace Media
 		UInt32 srid;
 
 		Text::String *docName;
-		const UTF8Char *author;
-		const UTF8Char *subject;
-		const UTF8Char *keywords;
-		const UTF8Char *creator;
-		const UTF8Char *producer;
+		UnsafeArrayOpt<const UTF8Char> author;
+		UnsafeArrayOpt<const UTF8Char> subject;
+		UnsafeArrayOpt<const UTF8Char> keywords;
+		UnsafeArrayOpt<const UTF8Char> creator;
+		UnsafeArrayOpt<const UTF8Char> producer;
 		Int64 createTimeTicks;
 		Int64 modTimeTicks;
 
@@ -38,16 +38,16 @@ namespace Media
 		Int64 GetCreateTime() const;
 		void SetModifyTime(Int64 modTimeTicks);
 		Int64 GetModifyTime() const;
-		void SetAuthor(const UTF8Char *author);
-		const UTF8Char *GetAuthor() const;
-		void SetSubject(const UTF8Char *subject);
-		const UTF8Char *GetSubject() const;
-		void SetKeywords(const UTF8Char *keywords);
-		const UTF8Char *GetKeywords() const;
-		void SetCreator(const UTF8Char *creator);
-		const UTF8Char *GetCreator() const;
-		void SetProducer(const UTF8Char *producer);
-		const UTF8Char *GetProducer() const;
+		void SetAuthor(UnsafeArrayOpt<const UTF8Char> author);
+		UnsafeArrayOpt<const UTF8Char> GetAuthor() const;
+		void SetSubject(UnsafeArrayOpt<const UTF8Char> subject);
+		UnsafeArrayOpt<const UTF8Char> GetSubject() const;
+		void SetKeywords(UnsafeArrayOpt<const UTF8Char> keywords);
+		UnsafeArrayOpt<const UTF8Char> GetKeywords() const;
+		void SetCreator(UnsafeArrayOpt<const UTF8Char> creator);
+		UnsafeArrayOpt<const UTF8Char> GetCreator() const;
+		void SetProducer(UnsafeArrayOpt<const UTF8Char> producer);
+		UnsafeArrayOpt<const UTF8Char> GetProducer() const;
 
 		virtual UOSInt GetCount() const;
 		virtual Media::VectorGraph *GetItem(UOSInt Index) const;

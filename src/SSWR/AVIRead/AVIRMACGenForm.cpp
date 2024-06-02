@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
 	NN<Data::ArrayList<Net::MACInfo::MACEntry*>> macArr;
 	UTF8Char sbuff[20];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt64 iMAC;
 	UInt32 irand;
 	UInt8 macBuff[8];
@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt j;
 	sockf->GetConnInfoList(connInfoList);
 	i = 0;
@@ -147,7 +147,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 		connInfo = connInfoList.GetItemNoCheck(i);
 		if (connInfo->GetConnectionType() != Net::ConnectionInfo::ConnectionType::Loopback)
 		{
-			sptr = connInfo->GetName(sbuff);
+			sptr = connInfo->GetName(sbuff).Or(sbuff);
 			this->cboAdapter->AddItem(CSTRP(sbuff, sptr), 0);
 		}
 		connInfo.Delete();

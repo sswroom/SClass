@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(AnyType userObj, UOSI
 {
 	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrDouble(sbuff, UOSInt2Double(newVal) * 0.1);
 	me->lblDPIV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
@@ -65,8 +65,9 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::On1xClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	sptr = me->lblDPIV->GetText(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sbuff[0] = 0;
+	sptr = me->lblDPIV->GetText(sbuff).Or(sbuff);
 	me->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
 }
 
@@ -85,7 +86,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	Double currX;
 	Double lastX;
 	UTF8Char sbuff[10];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Size2DDbl sz;
 	NN<Media::DrawEngine> eng;
 	NN<Media::DrawImage> gimg;
@@ -144,7 +145,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 174, ui)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Set Monitor DPI"));
 
@@ -216,7 +217,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::OnMonitorChanged()
 	Double ddpi = this->core->GetMonitorDDPI(this->GetHMonitor());
 	Double r = this->ui->GetMagnifyRatio(this->GetHMonitor());
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrDouble(sbuff, ddpi);
 	this->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrDouble(sbuff, r);

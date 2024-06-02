@@ -1704,7 +1704,7 @@ void Text::JSONNull::ToString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendC(UTF8STRC("null"));
 }
 
-Text::CString Text::JSONTypeGetName(JSONType t)
+Text::CStringNN Text::JSONTypeGetName(JSONType t)
 {
 	switch (t)
 	{

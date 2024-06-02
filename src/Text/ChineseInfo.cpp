@@ -8,8 +8,8 @@
 Text::ChineseInfo::ChineseInfo()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Chinese.dat"));
 	NEW_CLASS(this->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->currCharBuff = MemAlloc(UInt8, 256);
@@ -298,7 +298,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	return false;
 }
 
-UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *s)
+UInt16 Text::ChineseInfo::Cantonese2Int(UnsafeArray<const UTF8Char> s)
 {
 	if (*s == 0)
 		return 0;
@@ -307,7 +307,7 @@ UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *s)
 	if (len > 7)
 		return 0;
 	UTF8Char c;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool allowEmpty = false;
 	CantonesePronunFront cpf = CPF_NONE;
 	CantonesePronunTail cpt = CPT_NONE;
@@ -697,7 +697,7 @@ UInt16 Text::ChineseInfo::Cantonese2Int(const UTF8Char *s)
 	return (UInt16)((UInt32)(cpf << 11) | (UInt32)(cpt << 4) | cpn);
 }
 
-UTF8Char *Text::ChineseInfo::Int2Cantonese(UTF8Char *buff, UInt16 iVal)
+UnsafeArray<UTF8Char> Text::ChineseInfo::Int2Cantonese(UnsafeArray<UTF8Char> buff, UInt16 iVal)
 {
 	switch (iVal >> 11)
 	{

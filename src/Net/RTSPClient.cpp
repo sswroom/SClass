@@ -17,8 +17,8 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 {
 	NN<ClientData> cliData = userObj.GetNN<ClientData>();
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
-	UTF8Char *sarr[3];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sarr[3];
 	UInt8 dataBuff[2048];
 	UOSInt buffSize;
 	UOSInt thisSize;
@@ -93,7 +93,8 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 					mstm.SeekFromBeginning(0);
 					{
 						Text::UTF8Reader reader(mstm);
-						sptr = reader.ReadLine(sbuff, 1021);
+						sbuff[0] = 0;
+						sptr = reader.ReadLine(sbuff, 1021).Or(sbuff);
 						if (Text::StrSplit(sarr, 3, sbuff, ' ') != 3)
 						{
 							cliData->reqReplyStatus = 0;
@@ -112,8 +113,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 							cliData->reqReplySize = 0;
 							while (true)
 							{
-								sptr = reader.ReadLine(sbuff, 1021);
-								if (sptr == 0 || sptr == sbuff)
+								if (!reader.ReadLine(sbuff, 1021).SetTo(sptr) || sptr == sbuff)
 									break;
 								if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Content-Length: ")))
 								{
@@ -284,7 +284,7 @@ Net::RTSPClient::~RTSPClient()
 Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8Char *> *options)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *buff;
 	Text::PString sarr[10];
 	UOSInt i;
@@ -335,7 +335,7 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8
 Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
 
@@ -370,10 +370,10 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 	return sdp;
 }
 
-UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel)
+UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
 
@@ -401,7 +401,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CStringNN url, NN
 
 	Bool succ = this->WaitForReply();
 
-	UTF8Char *ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = 0;
 	if (succ && this->cliData->reqReplyStatus == 200)
 	{
 		ret = this->cliData->reqStrs->ConcatTo(sessIdOut);
@@ -413,7 +413,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CStringNN url, NN
 IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::RTSPClient *cli;
 	UOSInt i;
 	UOSInt j;
@@ -440,8 +440,8 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 		j = sdp->GetMediaCount();
 		while (i < j)
 		{
-			Data::ArrayList<const UTF8Char *> *mediaDesc = sdp->GetMediaDesc(i);
-			if (mediaDesc)
+			NN<Data::ArrayListStrUTF8> mediaDesc;
+			if (sdp->GetMediaDesc(i).SetTo(mediaDesc))
 			{
 				NN<Net::RTPCliChannel> rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli, log);
 				chList.Add(rtp);
@@ -490,7 +490,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 Bool Net::RTSPClient::Play(Text::CStringNN url, Text::CStringNN sessId)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
 
@@ -529,7 +529,7 @@ Bool Net::RTSPClient::Play(Text::CStringNN url, Text::CStringNN sessId)
 Bool Net::RTSPClient::Close(Text::CStringNN url, Text::CStringNN sessId)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *buff;
 	UOSInt buffSize;
 
@@ -568,8 +568,8 @@ Bool Net::RTSPClient::Close(Text::CStringNN url, Text::CStringNN sessId)
 Bool Net::RTSPClient::Init(NN<Net::RTPCliChannel> rtpChannel)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = this->SetupRTP(sbuff, rtpChannel->GetControlURL()->ToCString(), rtpChannel)) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->SetupRTP(sbuff, rtpChannel->GetControlURL()->ToCString(), rtpChannel).SetTo(sptr))
 	{
 		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
 		return true;

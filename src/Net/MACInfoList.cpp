@@ -43,7 +43,7 @@ Net::MACInfoList::~MACInfoList()
 	while (i-- > 0)
 	{
 		entry = this->dataList.GetItemNoCheck(i);
-		SDEL_TEXT(entry->name);
+		if (entry->name) Text::StrDelNew(entry->name);
 		MemFreeNN(entry);
 	}
 }
@@ -120,13 +120,13 @@ Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8
 	return 0;
 }
 
-UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CString name)
+UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CStringNN name)
 {
 	UInt64 mask = 0xffffff;
 	return SetEntry(macInt & ~mask, macInt | mask, name);
 }
 
-UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CString name)
+UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStringNN name)
 {
 	NN<Net::MACInfo::MACEntry> entry;
 	this->modified = true;
@@ -134,7 +134,7 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 	if (si >= 0)
 	{
 		entry = this->dataList.GetItemNoCheck((UOSInt)si);
-		SDEL_TEXT(entry->name);
+		if (entry->name) Text::StrDelNew(entry->name);
 		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
 		return (UOSInt)si;
@@ -154,9 +154,9 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 void Net::MACInfoList::Load()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->modified = false;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("MACList.txt"));
 	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
@@ -216,8 +216,8 @@ void Net::MACInfoList::Load()
 Bool Net::MACInfoList::Store()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("MACList.txt"));
 	UOSInt i;
 	UOSInt j;

@@ -49,7 +49,7 @@ UOSInt IO::StreamLogger::Read(const Data::ByteArray &buff)
 	return readCnt;
 }
 
-UOSInt IO::StreamLogger::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::StreamLogger::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UOSInt writeCnt = this->stm->Write(buff, size);
 	if (writeCnt > 0 && this->writeLog)
@@ -100,7 +100,7 @@ void IO::StreamLogger::CancelRead(void *reqData)
 	MemFree(myReqData);
 }
 
-void *IO::StreamLogger::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::StreamLogger::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	void *reqData = this->stm->BeginWrite(buff, size, evt);
 	MyReqData *myReqData;

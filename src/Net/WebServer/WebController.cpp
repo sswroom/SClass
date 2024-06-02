@@ -53,7 +53,7 @@ Bool Net::WebServer::WebController::ProcessRequest(NN<Net::WebServer::IWebReques
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
+				Text::CStringNN name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}
@@ -65,7 +65,7 @@ Bool Net::WebServer::WebController::ProcessRequest(NN<Net::WebServer::IWebReques
 	return false;
 }
 
-void Net::WebServer::WebController::AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
+void Net::WebServer::WebController::AddService(Text::CStringNN svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
 {
 	NN<ServiceInfo> service;
 	Text::StringBuilderUTF8 sb;

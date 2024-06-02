@@ -142,12 +142,13 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetIndex(UOSInt inde
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetID(const UTF8Char *id)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetID(UnsafeArrayOpt<const UTF8Char> id)
 {
-	if (id == 0)
+	UnsafeArray<const UTF8Char> nnid;
+	if (!id.SetTo(nnid))
 		return this;
 	SDEL_TEXT(this->id)
-	this->id = Text::StrCopyNew(id).Ptr();
+	this->id = Text::StrCopyNew(nnid).Ptr();
 	return this;
 }
 

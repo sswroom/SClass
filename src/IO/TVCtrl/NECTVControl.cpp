@@ -47,7 +47,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(AnyType userObj)
 	return 0;
 }
 
-Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply, Int32 cmdTimeout)
+Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CStringNN cmd, UnsafeArray<UTF8Char> cmdReply, Int32 cmdTimeout)
 {
 	Data::DateTime dt;
 	UInt8 buff[64];
@@ -166,10 +166,10 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	}
 	buff[3] = '0';
 	buff[4] = 'C'; //Command
-	Text::StrHexByte((Char*)&buff[5], 6);
+	Text::StrHexByte(&buff[5], 6);
 	buff[7] = 2; //STX
-	Text::StrHexByte((Char*)&buff[8], opCodePage);
-	Text::StrHexByte((Char*)&buff[10], opCode);
+	Text::StrHexByte(&buff[8], opCodePage);
+	Text::StrHexByte(&buff[10], opCode);
 	buff[12] = 3; //ETX
 
 	bcc = 0;
@@ -219,13 +219,13 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2Int32C((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2Int32C(&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3)
 			{
 				this->recvBuff[6 + cmdLen] = 0;
 				if (this->recvBuff[8] != '0' || this->recvBuff[9] != '0')
 					return false;
-				Text::StrHex2Bytes((Char*)&this->recvBuff[16], buff);
+				Text::StrHex2Bytes(&this->recvBuff[16], buff);
 				*maxVal = ReadMUInt16(buff);
 				*currVal = ReadMUInt16(&buff[2]);
 				return true;
@@ -261,12 +261,12 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	}
 	buff[3] = '0';
 	buff[4] = 'E'; //Command
-	Text::StrHexByte((Char*)&buff[5], 10);
+	Text::StrHexByte(&buff[5], 10);
 	buff[7] = 2; //STX
-	Text::StrHexByte((Char*)&buff[8], opCodePage);
-	Text::StrHexByte((Char*)&buff[10], opCode);
-	Text::StrHexByte((Char*)&buff[12], (UInt8)(val >> 8));
-	Text::StrHexByte((Char*)&buff[14], (UInt8)(val & 255));
+	Text::StrHexByte(&buff[8], opCodePage);
+	Text::StrHexByte(&buff[10], opCode);
+	Text::StrHexByte(&buff[12], (UInt8)(val >> 8));
+	Text::StrHexByte(&buff[14], (UInt8)(val & 255));
 	buff[16] = 3; //ETX
 
 	bcc = 0;
@@ -316,7 +316,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2Int32C((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2Int32C(&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3 && cmdLen == 18)
 			{
 				return true;
@@ -351,7 +351,7 @@ IO::TVCtrl::NECTVControl::~NECTVControl()
 Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)
 {
 	UTF8Char buff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	switch (ct)
 	{
 	case CT_POWERON:
@@ -452,7 +452,7 @@ Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)
 	}
 }
 
-Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Char *sbuff)
+Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UnsafeArray<UTF8Char> sbuff)
 {
 	UTF8Char buff[64];
 	UInt16 maxVal;
@@ -1024,7 +1024,7 @@ void IO::TVCtrl::NECTVControl::GetSupportedCmd(Data::ArrayList<CommandType> *cmd
 
 Bool IO::TVCtrl::NECTVControl::GetInfo(IO::TVControl::TVInfo *info)
 {
-	Text::CString cstr = CSTR("NEC LCD Monitor");
+	Text::CStringNN cstr = CSTR("NEC LCD Monitor");
 	info->name = cstr.v;
 	info->nameLen = cstr.leng;
 	info->tvType = IO::TVControl::TVT_NEC;

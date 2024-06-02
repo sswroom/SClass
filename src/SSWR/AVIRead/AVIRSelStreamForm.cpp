@@ -408,7 +408,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	this->SetText(CSTR("Select Stream"));
 	this->SetFont(0, 0, 8.25, false);
@@ -585,11 +585,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			}
-			if ((sptr = this->siLabDriver->GetDeviceSN((UInt32)i, sbuff)) != 0)
+			if (this->siLabDriver->GetDeviceSN((UInt32)i, sbuff).SetTo(sptr))
 			{
 				this->lvSLPort->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			}
-			if ((sptr = this->siLabDriver->GetDeviceDesc((UInt32)i, sbuff)) != 0)
+			if (this->siLabDriver->GetDeviceDesc((UInt32)i, sbuff).SetTo(sptr))
 			{
 				this->lvSLPort->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			}
@@ -732,7 +732,7 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UOSInt port)
 void SSWR::AVIRead::AVIRSelStreamForm::SetInitBaudRate(Int32 baudRate)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt32(sbuff, baudRate);
 	this->txtBaudRate->SetText(CSTRP(sbuff, sptr));
 }

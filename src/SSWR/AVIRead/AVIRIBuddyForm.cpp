@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 	this->btnWingDown->HandleButtonUpDown(OnWingDownDown, this);
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k = 0;

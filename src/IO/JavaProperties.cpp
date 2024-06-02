@@ -9,8 +9,8 @@
 Optional<IO::ConfigFile> IO::JavaProperties::ParseAppProp()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("application.properties"));
 	return Parse(CSTRP(sbuff, sptr));
 }
@@ -34,14 +34,14 @@ Optional<IO::ConfigFile> IO::JavaProperties::Parse(Text::CStringNN fileName)
 Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
-	UTF8Char *name;
-	UTF8Char *nameEnd;
-	UTF8Char *value;
-	UTF8Char *valueEnd;
+	UnsafeArray<UTF8Char> name;
+	UnsafeArray<UTF8Char> nameEnd;
+	UnsafeArray<UTF8Char> value;
+	UnsafeArray<UTF8Char> valueEnd;
 	IO::ConfigFile *cfg;
 	UOSInt i;
 	NEW_CLASS(cfg, IO::ConfigFile());
-	while ((valueEnd = reader->ReadLine(buff, 1023)) != 0)
+	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		i = 0;
 		while (buff[i] == ' ' || buff[i] == '\t')
@@ -74,9 +74,9 @@ Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> re
 	return cfg;
 }
 
-UTF8Char *IO::JavaProperties::EscapeStr(UTF8Char *str, UTF8Char *strEnd)
+UnsafeArray<UTF8Char> IO::JavaProperties::EscapeStr(UnsafeArray<UTF8Char> str, UnsafeArray<UTF8Char> strEnd)
 {
-	UTF8Char *dest = str;
+	UnsafeArray<UTF8Char> dest = str;
 	UTF8Char c;
 	while (str < strEnd)
 	{

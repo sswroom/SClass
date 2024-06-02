@@ -17,13 +17,13 @@ namespace Text
 	private:
 		static UnicodeBlock ublk[];
 	public:
-		static Bool PtrIsWS(const UTF8Char **sptr); //Point to next char if true
-		static Bool IsWS(const UTF8Char *sptr);
+		static Bool PtrIsWS(InOutParam<UnsafeArray<const UTF8Char>> sptr); //Point to next char if true
+		static Bool IsWS(UnsafeArray<const UTF8Char> sptr);
 		static Bool IsPunctuation(UTF8Char c);
 		static Bool IsAlphaNumeric(UTF8Char c);
 		static Bool IsDigit(UTF8Char c);
 		static Bool IsAlphabet(UTF8Char c);
-		static Bool UTF8CharValid(const UTF8Char *sptr);
+		static Bool UTF8CharValid(UnsafeArray<const UTF8Char> sptr);
 		static const UnicodeBlock *GetUnicodeBlock(UTF32Char c);
 		static Bool IsDoubleSize(UTF32Char c);
 		static UTF8Char ToUpper(UTF8Char c);

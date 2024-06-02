@@ -40,7 +40,8 @@ void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::String *dispName)
 void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::CString dispName)
 {
 	SDEL_STRING(this->dispName);
-	if (dispName.v) this->dispName = Text::String::New(dispName).Ptr();
+	Text::CStringNN nndispName;
+	if (dispName.SetTo(nndispName)) this->dispName = Text::String::New(nndispName).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName() const
@@ -87,7 +88,8 @@ void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::String *fullName)
 void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::CString fullName)
 {
 	SDEL_STRING(this->fullName);
-	if (fullName.v) this->fullName = Text::String::New(fullName).Ptr();
+	Text::CStringNN nnfullName;
+	if (fullName.SetTo(nnfullName)) this->fullName = Text::String::New(nnfullName).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName() const
@@ -114,7 +116,8 @@ void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::String *srcURL)
 void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::CString srcURL)
 {
 	SDEL_STRING(this->srcURL);
-	if (srcURL.v) this->srcURL = Text::String::New(srcURL).Ptr();
+	Text::CStringNN nnsrcURL;
+	if (srcURL.SetTo(nnsrcURL)) this->srcURL = Text::String::New(nnsrcURL).Ptr();
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL() const
@@ -131,7 +134,8 @@ void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::String *imgURL)
 void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::CString imgURL)
 {
 	SDEL_STRING(this->imgURL);
-	if (imgURL.v) this->imgURL = Text::String::New(imgURL).Ptr();
+	Text::CStringNN nnimgURL;
+	if (imgURL.SetTo(nnimgURL)) this->imgURL = Text::String::New(nnimgURL).Ptr();
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetUserFile(Optional<UserFileInfo> userFile)

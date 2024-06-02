@@ -1269,7 +1269,7 @@ UInt64 IO::BTUtil::GetAddrMAC(UInt8 *addr)
 	return ReadUInt64(buff);
 }
 
-Text::CString IO::BTUtil::GetUUIDName(UInt16 uuid)
+Text::CStringNN IO::BTUtil::GetUUIDName(UInt16 uuid)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(uuids) / sizeof(uuids[0])) - 1;

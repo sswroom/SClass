@@ -6,7 +6,7 @@
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[16];
 	UInt32 ipAddr;
 	UOSInt i;
@@ -15,12 +15,12 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 	Net::ConnectionInfo::ConnectionType connType;
 	if (connInfo)
 	{
-		sptr = connInfo->GetName(sbuff);
+		sbuff[0] = 0;
+		sptr = connInfo->GetName(sbuff).Or(sbuff);
 		me->txtAdaptorName->SetText(CSTRP(sbuff, sptr));
-		sptr = connInfo->GetDescription(sbuff);
+		sptr = connInfo->GetDescription(sbuff).Or(sbuff);
 		me->txtAdaptorDesc->SetText(CSTRP(sbuff, sptr));
-		sptr = connInfo->GetDNSSuffix(sbuff);
-		me->txtAdaptorDNSSuffix->SetText(CSTRPZ(sbuff, sptr));
+		me->txtAdaptorDNSSuffix->SetText((connInfo->GetDNSSuffix(sbuff).SetTo(sptr))?CSTRP(sbuff, sptr):CSTR(""));
 		connType = connInfo->GetConnectionType();
 		me->txtAdaptorConnType->SetText(Net::ConnectionInfo::ConnectionTypeGetName(connType));
 		sptr = Text::StrInt32(sbuff, (Int32)connInfo->GetMTU());
@@ -164,10 +164,10 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(AnyType us
 	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (connInfo)
 	{
-		sptr = connInfo->GetName(sbuff);
+		sptr = connInfo->GetName(sbuff).Or(sbuff);
 		if (me->core->GetSocketFactory()->AdapterEnable(CSTRP(sbuff, sptr), true))
 		{
 			UOSInt i = me->lbAdaptors->GetSelectedIndex();
@@ -186,10 +186,11 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(AnyType u
 	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (connInfo)
 	{
-		sptr = connInfo->GetName(sbuff);
+		sbuff[0] = 0;
+		sptr = connInfo->GetName(sbuff).Or(sbuff);
 		if (me->core->GetSocketFactory()->AdapterEnable(CSTRP(sbuff, sptr), false))
 		{
 			UOSInt i = me->lbAdaptors->GetSelectedIndex();
@@ -206,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(AnyType u
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateIPStats()
 {
 	UTF8Char sbuff[12];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::SocketFactory::IPInfo info;
 	if (this->core->GetSocketFactory()->GetIPInfo(info))
 	{
@@ -288,7 +289,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateIPStats()
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateTCPStats()
 {
 	UTF8Char sbuff[12];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::SocketFactory::TCPInfo info;
 	if (this->core->GetSocketFactory()->GetTCPInfo(info))
 	{
@@ -360,7 +361,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateTCPStats()
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateUDPStats()
 {
 	UTF8Char sbuff[12];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::SocketFactory::UDPInfo info;
 	if (this->core->GetSocketFactory()->GetUDPInfo(info))
 	{
@@ -391,7 +392,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 ipAddr;
 	UInt8 buff[32];
 	UOSInt v;
@@ -458,7 +459,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::ReleaseConns()
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->ReleaseConns();
 	this->core->GetSocketFactory()->GetConnInfoList(this->conns);
 	UOSInt i;
@@ -470,7 +471,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	while (i < j)
 	{
 		connInfo = this->conns.GetItemNoCheck(i);
-		sptr = connInfo->GetName(sbuff);
+		sbuff[0] = 0;
+		sptr = connInfo->GetName(sbuff).Or(sbuff);
 		this->lbAdaptors->AddItem(CSTRP(sbuff, sptr), connInfo);
 		i++;
 	}
@@ -512,7 +514,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 	else
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -582,7 +584,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 {
 	Data::ArrayListNN<Net::SocketFactory::PortInfo3> portInfoList;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::SocketFactory::PortInfo3> portInfo;
 	UOSInt i;
 	UOSInt j;
@@ -604,9 +606,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			{
 				k = this->lvPortInfo->AddItem(CSTR("TCP6"), 0);
 			}			
-			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->localAddr, (UInt16)portInfo->localPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->localAddr, (UInt16)portInfo->localPort).Or(sbuff);
 			this->lvPortInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->foreignAddr, (UInt16)portInfo->foreignPort).Or(sbuff);
 			this->lvPortInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			switch (portInfo->portState)
 			{
@@ -678,9 +680,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			{
 				k = this->lvPortInfo->AddItem(CSTR("?"), 0);
 			}
-			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->localAddr, (UInt16)portInfo->localPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->localAddr, (UInt16)portInfo->localPort).Or(sbuff);
 			this->lvPortInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, portInfo->foreignAddr, (UInt16)portInfo->foreignPort).Or(sbuff);
 			this->lvPortInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			this->lvPortInfo->SetSubItem(k, 3, CSTR(""));
 			sptr = Text::StrInt32(sbuff, portInfo->processId);

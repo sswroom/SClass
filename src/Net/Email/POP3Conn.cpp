@@ -18,7 +18,7 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 {
 	NN<Net::Email::POP3Conn> me = userObj.GetNN<Net::Email::POP3Conn>();
 	UTF8Char sbuff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Bool dataMode = false;
 
@@ -28,8 +28,7 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 		Text::UTF8Reader reader(me->cli);
 		while (!me->threadToStop)
 		{
-			sptr = reader.ReadLine(sbuff, 2048);
-			if (sptr == 0)
+			if (!reader.ReadLine(sbuff, 2048).SetTo(sptr))
 			{
 				if (me->logWriter)
 				{
@@ -78,10 +77,11 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 				i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), ' ');
 				if (i != INVALID_INDEX)
 				{
-					if (me->msgRet)
+					UnsafeArray<UTF8Char> nnmsgRet;
+					if (me->msgRet.SetTo(nnmsgRet))
 					{
-						me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
-						me->msgRet[0] = 0;
+						me->msgRet = nnmsgRet = Text::StrConcatC(nnmsgRet, &sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
+						nnmsgRet[0] = 0;
 					}
 				}
 				if (me->msgToDataMode)
@@ -112,17 +112,14 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 	return 0;
 }
 
-Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(UTF8Char **msgRetEnd)
+Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(OptOut<UnsafeArrayOpt<UTF8Char>> msgRetEnd)
 {
 	Manage::HiResClock clk;
 	while (this->threadRunning && !this->statusChg && clk.GetTimeDiff() < 30.0)
 	{
 		this->evt.Wait(1000);
 	}
-	if (msgRetEnd)
-	{
-		*msgRetEnd = this->msgRet;
-	}
+	msgRetEnd.Set(this->msgRet);
 	this->msgRet = 0;
 	if (this->statusChg)
 	{
@@ -223,11 +220,11 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sb.AppendC(UTF8STRC("Connect to "));
 		sb.Append(host);
 		sb.AppendC(UTF8STRC("("));
-		sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("):"));
 		sb.AppendU16(port);
@@ -266,10 +263,10 @@ Bool Net::Email::POP3Conn::IsError()
 	return this->welcomeMsg != ResultStatus::Success || this->cli->IsConnectError();
 }
 
-Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendUser(Text::CString username)
+Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendUser(Text::CStringNN username)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = username.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("USER ")));
 	this->statusChg = false;
 	if (this->logWriter)
@@ -280,10 +277,10 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendUser(Text::CString 
 	return WaitForResult(0);
 }
 
-Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendPass(Text::CString password)
+Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendPass(Text::CStringNN password)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = password.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("PASS ")));
 	this->statusChg = false;
 	if (this->logWriter)
@@ -308,7 +305,8 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendNoop()
 Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCount, UOSInt *msgSize)
 {
 	UTF8Char returnMsg[2048];
-	UTF8Char *returnMsgEnd;
+	UnsafeArrayOpt<UTF8Char> returnMsgEnd;
+	UnsafeArray<UTF8Char> nnreturnMsgEnd;
 	this->statusChg = false;
 	returnMsg[0] = 0;
 	this->msgRet = returnMsg;
@@ -317,11 +315,11 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCou
 		this->logWriter->WriteLine(CSTR("STAT"));
 	}
 	writer->WriteLine(CSTR("STAT"));
-	ResultStatus status = WaitForResult(&returnMsgEnd);
+	ResultStatus status = WaitForResult(returnMsgEnd);
 	if (status == ResultStatus::Success)
 	{
-		UOSInt i = Text::StrIndexOfCharC(returnMsg, (UOSInt)(returnMsgEnd - returnMsg), ' ');
-		if (i != INVALID_INDEX)
+		UOSInt i;
+		if (returnMsgEnd.SetTo(nnreturnMsgEnd) && (i = Text::StrIndexOfCharC(returnMsg, (UOSInt)(nnreturnMsgEnd - returnMsg), ' ')) != INVALID_INDEX)
 		{
 			returnMsg[i] = 0;
 			*msgCount = Text::StrToUOSInt(returnMsg);
@@ -339,7 +337,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCou
 Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgIndex, NN<Text::StringBuilderUTF8> msgBuff)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("RETR ")), msgIndex + 1);
 	this->statusChg = false;
 	this->msgToDataMode = true;
@@ -355,7 +353,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgInde
 Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendDele(UOSInt msgIndex)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DELE ")), msgIndex + 1);
 	this->statusChg = false;
 	if (this->logWriter)

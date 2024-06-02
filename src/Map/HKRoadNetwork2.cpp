@@ -63,7 +63,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	}
 	
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
-	const UTF8Char *colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};
+	UnsafeArrayOpt<const UTF8Char> colNames[] = {U8STR("Id"), U8STR("MaxWeight"), U8STR("Remarks")};
 	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
 	UOSInt colSize[] = {11, 32, 255};
 	UOSInt colDP[] = {0, 10, 0};
@@ -74,7 +74,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	if (fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UTF8Char sbuff2[64];
 		OSInt shapeCol = -1;
 		OSInt vrIdCol = -1;
@@ -82,12 +82,12 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 		OSInt remarksCol = -1;
 		UOSInt i;
 		UOSInt j;
-		UTF8Char *strs[3];
+		UnsafeArray<UTF8Char> strs[3];
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
 		{
-			if ((sptr = r->GetName(i, sbuff)) != 0)
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Shape")))
 				{
@@ -138,7 +138,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 							Text::StrDouble(strs[1], maxWeight);
 						}
 						strs[2] = sbuff;
-						lyr->AddVector(vec, (const UTF8Char**)strs);
+						lyr->AddVector(vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(strs)));
 					}
 				}
 			}

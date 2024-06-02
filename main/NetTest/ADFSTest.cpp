@@ -40,25 +40,25 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UTF8Char sbuff3[512];
 	UTF8Char sbuff4[512];
 	UTF8Char sbuff5[512];
-	UTF8Char *sptr1;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
-	UTF8Char *sptr4;
-	UTF8Char *sptr5 = 0;
+	UnsafeArray<UTF8Char> sptr1;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sptr4;
+	UnsafeArray<UTF8Char> sptr5 = sbuff5;
 	IO::ConsoleWriter console;
 	Net::OSSocketFactory sockf(true);
 	initSucc = false;
 	ssl = Net::SSLEngineFactory::Create(sockf, false);
-	sptr3 = IO::Path::GetProcessFileName(sbuff3);
+	sptr3 = IO::Path::GetProcessFileName(sbuff3).Or(sbuff3);
 	sptr3 = IO::Path::AppendPath(sbuff3, sptr3, CSTR("SAMLCert.crt"));
-	sptr4 = IO::Path::GetProcessFileName(sbuff4);
+	sptr4 = IO::Path::GetProcessFileName(sbuff4).Or(sbuff4);
 	sptr4 = IO::Path::AppendPath(sbuff4, sptr4, CSTR("SAMLCert.key"));
 	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))
 	{
-		sptr1 = IO::Path::GetProcessFileName(sbuff1);
+		sptr1 = IO::Path::GetProcessFileName(sbuff1).Or(sbuff1);
 		sptr1 = IO::Path::AppendPath(sbuff1, sptr1, CSTR("ADFSCert.crt"));
-		sptr2 = IO::Path::GetProcessFileName(sbuff2);
+		sptr2 = IO::Path::GetProcessFileName(sbuff2).Or(sbuff1);
 		sptr2 = IO::Path::AppendPath(sbuff2, sptr2, CSTR("ADFSCert.key"));
 		if (nnssl->ServerSetCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
 		{
@@ -72,8 +72,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509 && NN<Crypto::Cert::X509File>::ConvertFrom(asn1)->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 					{
 						NN<Crypto::Cert::X509Cert> cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(asn1);
-						sptr5 = cert->GetSubjectCN(sbuff5);
-						if (sptr5 == 0)
+						if (!cert->GetSubjectCN(sbuff5).SetTo(sptr5))
 						{
 							console.WriteLine(CSTR("Error in getting CN from ADFSCert.crt"));
 						}

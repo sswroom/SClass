@@ -939,7 +939,7 @@ NN<Data::NamedClass<Lamppost>> Lamppost::CreateClass()
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
 	NN<IO::DirectoryPackage> dir;

@@ -223,7 +223,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 	return true;
 }
 
-Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
+Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
 {
 	switch (portType)
 	{

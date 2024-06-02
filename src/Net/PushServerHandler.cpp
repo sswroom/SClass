@@ -17,7 +17,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::IWebReques
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(0, 0);
+	resp->Write(U8STR(""), 0);
 	return true;
 }
 
@@ -46,7 +46,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::IWebR
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(0, 0);
+	resp->Write(U8STR(""), 0);
 	return true;
 }
 
@@ -108,7 +108,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::IWebR
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(0, 0);
+	resp->Write(U8STR(""), 0);
 	return true;
 }
 
@@ -131,7 +131,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NN<Net::WebServer::IWe
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(0, 0);
+	resp->Write(U8STR(""), 0);
 	return true;
 }
 
@@ -168,7 +168,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWe
 	body->EndElement();
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Sync::MutexUsage mutUsage;
 		NN<const Data::ReadingListNN<Net::PushManager::DeviceInfo2>> devList = me->mgr->GetDevices(mutUsage);
 		NN<Net::PushManager::DeviceInfo2> dev;
@@ -180,7 +180,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWe
 			body->BeginTableRow();
 			body->AddTableData(dev->userName->ToCString());
 			body->AddTableData(STR_CSTR(dev->devModel).OrEmpty());
-			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->subscribeAddr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->subscribeAddr).Or(sbuff);
 			body->AddTableData(CSTRP(sbuff, sptr));
 			sptr = dev->lastSubscribeTime.ToString(sbuff);
 			body->AddTableData(CSTRP(sbuff, sptr));
@@ -193,7 +193,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWe
 		}
 	}
 	body->EndElement();
-	Text::CString content = builder.Build();
+	Text::CStringNN content = builder.Build();
 
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(0);

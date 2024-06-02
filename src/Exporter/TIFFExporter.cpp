@@ -231,7 +231,7 @@ IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::TIFFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::TIFFExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{

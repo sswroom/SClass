@@ -12,7 +12,7 @@ Double Math::Unit::ReactiveEnergy::GetUnitRatio(ReactiveEnergyUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::ReactiveEnergy::GetUnitShortName(ReactiveEnergyUnit unit)
+Text::CStringNN Math::Unit::ReactiveEnergy::GetUnitShortName(ReactiveEnergyUnit unit)
 {
 	switch (unit)
 	{
@@ -22,7 +22,7 @@ Text::CString Math::Unit::ReactiveEnergy::GetUnitShortName(ReactiveEnergyUnit un
 	return CSTR("");
 }
 
-Text::CString Math::Unit::ReactiveEnergy::GetUnitName(ReactiveEnergyUnit unit)
+Text::CStringNN Math::Unit::ReactiveEnergy::GetUnitName(ReactiveEnergyUnit unit)
 {
 	switch (unit)
 	{

@@ -8,7 +8,7 @@
 void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	this->lbLayer->ClearItems();
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(AnyType userO
 	lyr->pattern = 0;
 	lyr->nPattern = 0;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = me->lineLayers.Add(lyr);
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
 	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem(CSTRP(sbuff, sptr), lyr));
@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(AnyType userO
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<LineLayer> currLayer;
 		me->currLayer = currLayer = me->lineLayers.GetItemNoCheck(i);
 		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(srcProfile, destProfile, me->colorSess.Ptr(), currLayer->color | 0xff000000));
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userO
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	NN<LineLayer> currLayer;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->currLayer.SetTo(currLayer) && !me->thickChging)
 	{
 		me->thickChging = true;
@@ -201,7 +201,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userOb
 	UOSInt npattern;
 	NN<LineLayer> currLayer;
 	UTF8Char sbuff[256];
-	UTF8Char *sarr[32];
+	UnsafeArray<UTF8Char> sarr[32];
 	if (!me->currLayer.SetTo(currLayer))
 		return;
 	sbuff[0] = 0;
@@ -406,8 +406,8 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 		i++;
 	}
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	if ((sptr = this->env->GetLineStyleName(this->lineStyle, sbuff)) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->env->GetLineStyleName(this->lineStyle, sbuff).SetTo(sptr))
 	{
 		this->txtName->SetText(CSTRP(sbuff, sptr));
 	}

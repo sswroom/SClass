@@ -15,7 +15,7 @@ namespace Net
 		RTPASource(NN<Net::RTPCliChannel> ch, NN<Net::RTPAPLHandler> hdlr);
 		virtual ~RTPASource();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual Data::Duration SeekToTime(Data::Duration time);

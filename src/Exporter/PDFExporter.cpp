@@ -21,7 +21,7 @@ Int32 Exporter::PDFExporter::GetName()
 	return *(Int32*)"PDFE";
 }
 
-IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
 	{
@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(IO::Parse
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::PDFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::PDFExporter::GetOutputName(OSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -41,16 +41,16 @@ Bool Exporter::PDFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8C
 	return false;
 }
 
-Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
 	{
 		return false;
 	}
-	Media::VectorDocument *vdoc = (Media::VectorDocument*)pobj;
+	NN<Media::VectorDocument> vdoc = NN<Media::VectorDocument>::ConvertFrom(pobj);
 	Media::VectorGraph *g;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
 	OSInt j;
 	OSInt pageContentId;
@@ -70,7 +70,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Cha
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("1 0 obj\r"));
 	sb.AppendC(UTF8STRC("<< /Type /Catalog /Pages 2 0 R\r>>\rendobj\r"));
-	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 	objPos.Add(0);
 
@@ -97,7 +97,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Cha
 		sb2.AppendC(UTF8STRC("endobj\r"));
 
 		objPos.SetItem(pageContentId, currPos);
-		stm->Write((UInt8*)sb2.ToString(), sb2.GetLength());
+		stm->Write(sb2.ToString(), sb2.GetLength());
 		currPos += sb2.GetLength();
 
 		pageList.Add((Int32)objPos.GetCount());
@@ -117,7 +117,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Cha
 		sb.AppendC(UTF8STRC("endobj\r"));
 
 		objPos.Add(currPos);
-		stm->Write((UInt8*)sb.ToString(), sb.GetLength());
+		stm->Write(sb.ToString(), sb.GetLength());
 		currPos += sb.GetLength();
 
 		i++;
@@ -140,7 +140,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Cha
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("endobj\r"));
-	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 
 	infoId = objPos.GetCount();
@@ -203,7 +203,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Cha
 	}
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("endobj\r"));
-	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 
 	refPos = currPos;
@@ -242,7 +242,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, const UTF8Cha
 	sb.AppendI64(refPos);
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("%%EOF\r"));
-	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 
 	return true;

@@ -17,12 +17,12 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganParentItem::GetIte
 	return OrganGroupItem::IT_PARENT;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganParentItem::GetItemName(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganParentItem::GetItemName(UnsafeArray<UTF8Char> buff) const
 {
 	return Text::StrWChar_UTF8(buff, L"上移");
 }
 
-UTF8Char *SSWR::OrganMgr::OrganParentItem::GetEngName(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::OrganMgr::OrganParentItem::GetEngName(UnsafeArray<UTF8Char> buff) const
 {
 	return Text::StrConcatC(buff, UTF8STRC("Parent"));
 }

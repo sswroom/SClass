@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	NN<IPInfo> ipInfo;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage(me->ipMut);
 	if (!me->ipMap.Get(sortableIP).SetTo(ipInfo))
 	{
@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 		ipInfo->ip = srcIP;
 		ipInfo->count = 0;
 		rec = me->whois.RequestIP(srcIP);
-		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
+		if (rec->GetNetworkName(sbuff).SetTo(sptr))
 		{
 			ipInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 		{
 			ipInfo->name = Text::String::New(UTF8STRC("Unknown"));
 		}
-		if ((sptr = rec->GetCountryCode(sbuff)) != 0)
+		if (rec->GetCountryCode(sbuff).SetTo(sptr))
 		{
 			ipInfo->country = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
@@ -149,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(AnyType userObj)
 	if (me->currIP)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrInt64(sbuff, me->currIP->count);
 		me->txtIPCount->SetText(CSTRP(sbuff, sptr));
 		me->txtIPName->SetText(me->currIP->name->ToCString());
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->ipContUpdated)
 	{
 		me->ipContUpdated = false;
@@ -284,7 +284,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

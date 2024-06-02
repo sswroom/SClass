@@ -50,7 +50,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 	NN<Media::IMediaSource> medSource;
 	Int32 syncTime;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	this->lbFiles->ClearItems();
 	i = 0;
@@ -83,7 +83,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 					*sptr++ = '*';
 				Text::StrConcatC(sptr, UTF8STRC("(A)"));
 			}
-			sptr = medSource->GetSourceName(sptr);
+			sptr = medSource->GetSourceName(sptr).Or(sptr);
 			this->lbFiles->AddItem(CSTRP(sbuff, sptr), medSource.Ptr());
 		}
 		i++;
@@ -93,7 +93,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	this->mnuChapters->ClearItems();
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Dat
 Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::Writer> writer = userData.GetNN<IO::Writer>();
 	sptr = Text::StrInt64(sbuff, frameTime.GetTotalMS());
 	writer->WriteLine(CSTRP(sbuff, sptr));
@@ -311,7 +311,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Media Form - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 
@@ -580,7 +580,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Media::IVideoSource *video;
 				UTF8Char sbuff[40];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				UOSInt j;
 				video = (Media::IVideoSource*)this->popMedia;
 				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -623,13 +623,14 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				this->ui->ShowMsgOK(sb.ToCString(), CSTR("Test"), this);
 
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				NN<Media::ImageList> imgList;
 				NN<Media::StaticImage> simg;
 				if (simg.Set(img->ToStaticImage()))
 				{
 					this->core->GetDrawEngine()->DeleteImage(img);
-					sptr = audio->GetSourceName(sbuff);
+					sbuff[0] = 0;
+					sptr = audio->GetSourceName(sbuff).Or(sbuff);
 					NEW_CLASSNN(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
 					imgList->AddImage(simg, 0);
 					this->core->OpenObject(imgList);

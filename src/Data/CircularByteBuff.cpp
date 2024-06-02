@@ -20,7 +20,7 @@ void Data::CircularByteBuff::Clear()
 	this->indexEnd = 0;
 }
 
-void Data::CircularByteBuff::AppendBytes(const UInt8 *buff, UOSInt buffSize)
+void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (buffSize >= this->buffSize - 1)
 	{
@@ -32,18 +32,18 @@ void Data::CircularByteBuff::AppendBytes(const UInt8 *buff, UOSInt buffSize)
 	{
 		if (this->indexEnd + buffSize < this->buffSize)
 		{
-			MemCopyNO(&this->buff[this->indexEnd], buff, buffSize);
+			MemCopyNO(&this->buff[this->indexEnd], buff.Ptr(), buffSize);
 			this->indexEnd += buffSize;
 		}
 		else
 		{
-			MemCopyNO(&this->buff[this->indexEnd], buff, this->buffSize - this->indexEnd);
+			MemCopyNO(&this->buff[this->indexEnd], buff.Ptr(), this->buffSize - this->indexEnd);
 			buff += (this->buffSize - this->indexEnd);
 			buffSize -= (this->buffSize - this->indexEnd);
 			this->indexEnd = 0;
 			if (buffSize > 0)
 			{
-				MemCopyNO(this->buff, buff, buffSize);
+				MemCopyNO(this->buff, buff.Ptr(), buffSize);
 				this->indexEnd = buffSize;
 			}
 			if (this->indexEnd >= this->indexBegin)
@@ -60,18 +60,18 @@ void Data::CircularByteBuff::AppendBytes(const UInt8 *buff, UOSInt buffSize)
 	{
 		if (this->indexEnd + buffSize < this->buffSize)
 		{
-			MemCopyNO(&this->buff[this->indexEnd], buff, buffSize);
+			MemCopyNO(&this->buff[this->indexEnd], buff.Ptr(), buffSize);
 			this->indexEnd += buffSize;
 		}
 		else
 		{
-			MemCopyNO(&this->buff[this->indexEnd], buff, this->buffSize - this->indexEnd);
+			MemCopyNO(&this->buff[this->indexEnd], buff.Ptr(), this->buffSize - this->indexEnd);
 			buff += (this->buffSize - this->indexEnd);
 			buffSize -= (this->buffSize - this->indexEnd);
 			this->indexEnd = 0;
 			if (buffSize > 0)
 			{
-				MemCopyNO(this->buff, buff, buffSize);
+				MemCopyNO(this->buff, buff.Ptr(), buffSize);
 				this->indexEnd = buffSize;
 			}
 		}

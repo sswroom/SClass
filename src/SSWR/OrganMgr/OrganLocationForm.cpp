@@ -58,18 +58,18 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sbuffEnd;
+	UnsafeArray<UTF8Char> sbuffEnd;
 	UTF8Char sbuff2[256];
-	UTF8Char *sbuff2End;
+	UnsafeArray<UTF8Char> sbuff2End;
 	if (this->currLoc == 0)
 		return false;
 
-	if ((sbuffEnd = this->txtEName->GetText(sbuff)) == sbuff)
+	if (!this->txtEName->GetText(sbuff).SetTo(sbuffEnd) || sbuffEnd == sbuff)
 	{
 		Bool ret = this->ui->ShowMsgYesNo(this->env->GetLang(CSTR("LocationQuestionEName")), this->env->GetLang(CSTR("LocationQuestion")), this);
 		return !ret;
 	}
-	if ((sbuff2End = this->txtCName->GetText(sbuff2)) == sbuff2)
+	if (!this->txtCName->GetText(sbuff2).SetTo(sbuff2End) || sbuff2End == sbuff2)
 	{
 		Bool ret = this->ui->ShowMsgYesNo(this->env->GetLang(CSTR("LocationQuestionCName")), this->env->GetLang(CSTR("LocationQuestion")), this);
 		return !ret;
@@ -141,7 +141,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(AnyType userObj
 	else
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrInt32(sbuff, me->currLoc->id);
 		me->txtCName->SetText(me->currLoc->cname->ToCString());
 		me->txtEName->SetText(me->currLoc->ename->ToCString());
@@ -167,15 +167,15 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(AnyType userObj)
 {
 	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sbuffEnd;
+	UnsafeArray<UTF8Char> sbuffEnd;
 	UTF8Char sbuff2[256];
-	UTF8Char *sbuff2End;
-	if ((sbuffEnd = me->txtEName->GetText(sbuff)) == sbuff)
+	UnsafeArray<UTF8Char> sbuff2End;
+	if (!me->txtEName->GetText(sbuff).SetTo(sbuffEnd) || sbuffEnd == sbuff)
 	{
 		me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationInputEName")), me->env->GetLang(CSTR("LocationTitle")), me);
 		return;
 	}
-	if ((sbuff2End = me->txtCName->GetText(sbuff2)) == sbuff2)
+	if (!me->txtCName->GetText(sbuff2).SetTo(sbuff2End) || sbuff2End == sbuff2)
 	{
 		me->ui->ShowMsgOK(me->env->GetLang(CSTR("LocationInputCName")), me->env->GetLang(CSTR("LocationTitle")), me);
 		return;

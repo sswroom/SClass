@@ -9,7 +9,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo>
 	if (me->fs)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
 		Sync::MutexUsage mutUsage(me->fsMut);
 		Text::StringBuilderUTF8 sb;
@@ -33,7 +33,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> 
 	if (updateType == IO::BTScanner::UT_RSSI)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
 		Sync::MutexUsage mutUsage(me->fsMut);
 		Text::StringBuilderUTF8 sb;
@@ -80,11 +80,11 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	this->btCnt = 0;
 
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcatC(sptr, UTF8STRC("radio"));

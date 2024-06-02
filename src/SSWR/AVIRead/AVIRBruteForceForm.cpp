@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->bforce)
 	{
 		if (me->bforce->IsProcessing())
@@ -90,14 +90,15 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 			UInt64 thisCnt = me->bforce->GetTestCnt();
 			Int64 thisTime = Data::DateTimeUtil::GetCurrTimeMillis();
 			
-			sptr = me->bforce->GetCurrKey(Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), (Int64)(thisCnt - me->lastCnt) * 1000 / (thisTime - me->lastTime)), UTF8STRC(", key=")));
+			sptr = Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), (Int64)(thisCnt - me->lastCnt) * 1000 / (thisTime - me->lastTime)), UTF8STRC(", key="));
+			sptr = me->bforce->GetCurrKey(sptr).Or(sptr);
 			me->lastCnt = thisCnt;
 			me->lastTime = thisTime;
 			me->txtStatus->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			if ((sptr = me->bforce->GetResult(Text::StrConcatC(sbuff, UTF8STRC("Pwd=")))) != 0)
+			if (me->bforce->GetResult(Text::StrConcatC(sbuff, UTF8STRC("Pwd="))).SetTo(sptr))
 			{
 				me->txtStatus->SetText(CSTRP(sbuff, sptr));
 			}
@@ -125,7 +126,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 
 	Crypto::Hash::HashType currHash;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->lblHashType = ui->NewLabel(*this, CSTR("Hash Type"));
 	this->lblHashType->SetRect(4, 4, 100, 23, false);
 	this->cboHashType = ui->NewComboBox(*this, false);

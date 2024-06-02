@@ -68,10 +68,11 @@ private:
 				}
 				sb.AppendC(UTF8STRC("Bytes/s"));
 				Sync::MutexUsage mutUsage(me->mut);
-				if (me->fileName.leng > 0)
+				Text::CStringNN nns;
+				if (me->fileName.SetTo(nns) && nns.leng > 0)
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.Append(me->fileName);
+					sb.Append(nns);
 					sb.AppendC(UTF8STRC(")"));
 				}
 				mutUsage.EndUse();
@@ -194,7 +195,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt cmdCnt;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;
@@ -242,7 +243,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
 					if (sess)
 					{
-						while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)
+						while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0).SetTo(sptr))
 						{
 							if (sbuff[i + 1] == '.' && (sbuff[i + 2] == 0 || (sbuff[i + 2] == '.' && sbuff[i + 3] == 0)))
 							{

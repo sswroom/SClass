@@ -55,7 +55,7 @@ namespace SSWR
 			static void __stdcall OnCalcClicked(AnyType userObj);
 			static void __stdcall OnResultSaveClicked(AnyType userObj);
 
-			void CalcDir(UTF8Char *pathBuff, UTF8Char *pathBuffEnd);
+			void CalcDir(UnsafeArray<UTF8Char> pathBuff, UnsafeArray<UTF8Char> pathBuffEnd);
 			void ClearExts(Bool inclDisp);
 			void ClearResult(Bool inclDisp);
 		public:

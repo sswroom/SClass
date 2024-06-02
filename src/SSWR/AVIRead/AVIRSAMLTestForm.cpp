@@ -347,7 +347,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 	if (me->CreateSAMLKey().SetTo(key))
 	{
 		NN<Net::SSLEngine> ssl;
-		if (me->ssl.SetTo(ssl) && Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, msg->rawMessage, sb))
+		if (me->ssl.SetTo(ssl) && Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, msg->rawMessage.OrEmpty(), sb))
 		{
 			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 			Text::StringBuilderUTF8 sb2;
@@ -357,7 +357,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 		key.Delete();
 	}
 	{
-		IO::MemoryReadingStream mstm(msg->rawMessage.v, msg->rawMessage.leng);
+		IO::MemoryReadingStream mstm(msg->rawMessage.OrEmpty().v, msg->rawMessage.leng);
 		sb.ClearStr();
 		Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb);
 	}

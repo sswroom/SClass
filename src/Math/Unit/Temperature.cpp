@@ -30,23 +30,23 @@ Double Math::Unit::Temperature::GetUnitScale(TemperatureUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Temperature::GetUnitShortName(TemperatureUnit unit)
+Text::CStringNN Math::Unit::Temperature::GetUnitShortName(TemperatureUnit unit)
 {
 	static const UTF8Char c[] = {0xE2, 0x84, 0x83, 0};
 	static const UTF8Char f[] = {0xE2, 0x84, 0x89, 0};
 	switch (unit)
 	{
 	case TU_CELSIUS:
-		return Text::CString(c, 3);
+		return Text::CStringNN(c, 3);
 	case TU_KELVIN:
 		return CSTR("K");
 	case TU_FAHRENHEIT:
-		return Text::CString(f, 3);
+		return Text::CStringNN(f, 3);
 	}
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Temperature::GetUnitName(TemperatureUnit unit)
+Text::CStringNN Math::Unit::Temperature::GetUnitName(TemperatureUnit unit)
 {
 	switch (unit)
 	{

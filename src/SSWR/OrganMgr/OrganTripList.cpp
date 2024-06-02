@@ -13,7 +13,7 @@ SSWR::OrganMgr::Trip::~Trip()
 {
 }
 
-UTF8Char *SSWR::OrganMgr::Trip::ToString(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> SSWR::OrganMgr::Trip::ToString(UnsafeArray<UTF8Char> sbuff)
 {
 	return this->toDate.ToLocalTime().ToString(Text::StrConcatC(this->fromDate.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm"), UTF8STRC(" - ")), "yyyy-MM-dd HH:mm");
 }
@@ -33,7 +33,7 @@ SSWR::OrganMgr::Location::~Location()
 	this->cname->Release();
 }
 
-UTF8Char *SSWR::OrganMgr::Location::ToString(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> SSWR::OrganMgr::Location::ToString(UnsafeArray<UTF8Char> sbuff)
 {
 	return this->cname->ConcatTo(sbuff);
 }

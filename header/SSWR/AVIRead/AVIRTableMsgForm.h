@@ -16,12 +16,12 @@ namespace SSWR
 			UOSInt colCnt;
 
 		public:
-			AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, const UTF8Char **colName);
+			AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colName);
 			virtual ~AVIRTableMsgForm();
 
 			virtual void OnMonitorChanged();
 
-			void AddRow(const UTF8Char **row);
+			void AddRow(UnsafeArray<UnsafeArray<const UTF8Char>> row);
 		};
 	}
 }

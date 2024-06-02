@@ -288,7 +288,7 @@ void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFactory> sockf, NN<IO::Writer> msgWriter, Data::Duration timeout)
 {
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->lastKATime.SetCurrTimeUTC();
 	this->msgWriter = msgWriter;
 	this->userObj = userObj;
@@ -405,7 +405,7 @@ void Manage::MonConn::StartUDPPort(UInt16 portNum)
 	AddCommand(buff, 6, 3);
 }
 
-void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CString msg)
+void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CStringNN msg)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
 	UInt8 *buff = MemAlloc(UInt8, 14 + msg.leng + 1);

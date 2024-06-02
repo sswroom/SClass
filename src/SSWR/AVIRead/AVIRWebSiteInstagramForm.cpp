@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 	NN<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->txtChannelId->GetText(sb);
 	me->lvItems->ClearItems();
 	if (sb.GetLength() > 0)

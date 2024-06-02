@@ -40,7 +40,7 @@ namespace Data
 		NN<Text::String> GetDateFormat() const;
 		void SetTimeFormat(Text::CString format);
 		NN<Text::String> GetTimeFormat() const;
-		void SetDblFormat(Text::CString format);
+		void SetDblFormat(Text::CStringNN format);
 		NN<Text::String> GetDblFormat() const;
 
 		void SetXAxisName(Text::CString xAxisName);
@@ -62,11 +62,11 @@ namespace Data
 
 		virtual void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const = 0;
 		virtual UOSInt GetLegendCount() const = 0;
-		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index) const = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, UInt32 *color, UOSInt index) const = 0;
 
-		static UOSInt CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, Optional<Text::String> unit);
+		static UOSInt CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
 		static UOSInt CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
-		static UOSInt CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat);
+		static UOSInt CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
 	};
 }
 #endif

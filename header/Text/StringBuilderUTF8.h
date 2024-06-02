@@ -707,7 +707,7 @@ namespace Text
 			return *this;
 		}
 
-		NN<StringBuilderUTF8> AppendCSV(const UTF8Char **sarr, UOSInt nStr);
+		NN<StringBuilderUTF8> AppendCSV(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr, UOSInt nStr);
 		NN<StringBuilderUTF8> AppendToUpper(UnsafeArray<const UTF8Char> s, UOSInt len);
 		NN<StringBuilderUTF8> AppendToLower(UnsafeArray<const UTF8Char> s, UOSInt len);
 		NN<StringBuilderUTF8> RemoveANSIEscapes();

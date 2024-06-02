@@ -16,7 +16,7 @@ void __stdcall OnDisconnect(AnyType userObj)
 
 void __stdcall OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
-	printf("Data from topic: %s\r\n", topic.v);
+	printf("Data from topic: %s\r\n", topic.v.Ptr());
 }
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)

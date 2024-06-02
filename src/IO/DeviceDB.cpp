@@ -2402,7 +2402,7 @@ const IO::DeviceDB::DeviceInfo *IO::DeviceDB::GetPCIInfo(UInt16 vendorId, UInt16
 	return 0;
 }
 
-Text::CString IO::DeviceDB::GetUSBVendorName(UInt16 vendorId)
+Text::CStringNN IO::DeviceDB::GetUSBVendorName(UInt16 vendorId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(usbVendors) / sizeof(usbVendors[0])) - 1;
@@ -2429,7 +2429,7 @@ Text::CString IO::DeviceDB::GetUSBVendorName(UInt16 vendorId)
 	return CSTR("Unknown");
 }
 
-Text::CString IO::DeviceDB::GetPCIVendorName(UInt16 vendorId)
+Text::CStringNN IO::DeviceDB::GetPCIVendorName(UInt16 vendorId)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(pciVendors) / sizeof(pciVendors[0])) - 1;

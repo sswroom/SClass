@@ -17,7 +17,7 @@ namespace SSWR
 			virtual ~ElevationFilter();
 
 			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const;
-			virtual UTF8Char *ToString(UTF8Char *buff) const;
+			virtual UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;
 			virtual MapFilter *Clone() const;
 		};
 	}

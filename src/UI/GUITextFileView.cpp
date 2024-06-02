@@ -609,7 +609,7 @@ void UI::GUITextFileView::EnsureCaretVisible()
 			}
 			line = MemAlloc(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
-			Text::StrReplace(line, '\t', ' ');
+			Text::StrReplaceW(line, '\t', ' ');
 			this->GetDrawSize(line, this->caretX, &drawW, &drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
 			MemFree(line);
@@ -711,7 +711,7 @@ void UI::GUITextFileView::CopySelected()
 	}
 
 	Text::Encoding *enc;
-	UTF8Char *line;
+	UnsafeArray<UTF8Char> line;
 	UInt64 startOfst;
 	UInt64 endOfst;
 	UOSInt j;
@@ -734,11 +734,11 @@ void UI::GUITextFileView::CopySelected()
 		mutUsage.EndUse();
 
 		j = enc->CountUTF8Chars(rbuff.Arr(), (UOSInt)(endOfst - startOfst));
-		line = MemAlloc(UTF8Char, j + 1);
+		line = MemAllocArr(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff.Arr(), (UOSInt)(endOfst - startOfst), 0);
 		line[selBottomX] = 0;
 		UI::Clipboard::SetString(this->hwnd, {&line[selTopX], selBottomX - selTopX});
-		MemFree(line);
+		MemFreeArr(line);
 	}
 	else
 	{
@@ -765,10 +765,10 @@ void UI::GUITextFileView::CopySelected()
 		this->fs->Read(rbuff);
 
 		j = enc->CountUTF8Chars(rbuff.Arr(), (UOSInt)(endOfst - startOfst));
-		line = MemAlloc(UTF8Char, j + 1);
+		line = MemAllocArr(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff.Arr(), (UOSInt)(endOfst - startOfst), 0);
 		sb.AppendSlow(&line[selTopX]);
-		MemFree(line);
+		MemFreeArr(line);
 
 		startOfst = this->lineOfsts.GetItem(selBottomY);
 		endOfst = this->lineOfsts.GetItem(selBottomY + 1);
@@ -783,11 +783,11 @@ void UI::GUITextFileView::CopySelected()
 		this->fs->Read(rbuff);
 		mutUsage.EndUse();
 		j = enc->CountUTF8Chars(rbuff.Arr(), (UOSInt)(endOfst - startOfst));
-		line = MemAlloc(UTF8Char, j + 1);
+		line = MemAllocArr(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff.Arr(), (UOSInt)(endOfst - startOfst), 0);
 		line[selBottomX] = 0;
 		sb.AppendC(line, selBottomX);
-		MemFree(line);
+		MemFreeArr(line);
 
 		UI::Clipboard::SetString(this->hwnd, sb.ToCString());
 	}
@@ -1175,7 +1175,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 {
 //	WChar wbuff[21];
 	UTF8Char sbuff[21];
-	UTF8Char *sbuffEnd;
+	UnsafeArray<UTF8Char> sbuffEnd;
 	NN<Text::String> s;
 	NN<Text::String> s2;
 	UOSInt xPos;
@@ -1274,7 +1274,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 			j = enc.CountWChars(&rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst));
 			line = MemAlloc(WChar, j + 1);
 			wptr = enc.WFromBytes(line, &rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst), 0);
-			Text::StrReplace(line, '\t', ' ');
+			Text::StrReplaceW(line, '\t', ' ');
 			if (wptr)
 			{
 				if (wptr[-1] == 13)
@@ -1497,7 +1497,7 @@ void UI::GUITextFileView::UpdateCaretPos()
 			}
 			line = MemAlloc(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
-			Text::StrReplace(line, '\t', ' ');
+			Text::StrReplaceW(line, '\t', ' ');
 			this->GetDrawSize(line, this->caretX, &drawW, &drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
 			MemFree(line);
@@ -1617,7 +1617,7 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, OutParam<UInt
 			UOSInt charCnt = enc.CountWChars(rbuff.Arr().Ptr(), (UOSInt)(nextOfst - lineOfst));
 			line = MemAlloc(WChar, charCnt + 1);
 			enc.WFromBytes(line, rbuff.Arr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
-			Text::StrReplace(line, '\t', ' ');
+			Text::StrReplaceW(line, '\t', ' ');
 			charCnt -= 1;
 			if (charCnt > 0 && (line[charCnt] == 0xd || line[charCnt] == 0xa))
 			{

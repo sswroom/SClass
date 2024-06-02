@@ -44,8 +44,8 @@ Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NN<Net::WebServer::IWeb
 Net::WebServer::WellKnownHandler::WellKnownHandler()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR(".well-known"));
 	this->SetRootDir(CSTRP(sbuff, sptr));
 	this->AddService(CSTR("/add"), Net::WebUtil::RequestMethod::HTTP_GET, AddFunc);

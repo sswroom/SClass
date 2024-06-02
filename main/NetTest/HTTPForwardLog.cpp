@@ -14,14 +14,14 @@ IO::LogTool *logger;
 void __stdcall OnForwardRequest(void *userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
-	sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
+	UnsafeArray<UTF8Char> sptr;
+	sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).Or(sbuff);
 	Text::StringBuilderUTF8 sb;
 
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Req "));
-	Text::CString reqMeth = req->GetReqMethodStr();
+	Text::CStringNN reqMeth = req->GetReqMethodStr();
 	sb.AppendC(reqMeth.v, reqMeth.leng);
 	sb.AppendUTF8Char(' ');
 	sb.Append(req->GetRequestURI());
@@ -63,7 +63,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt16 forwardPort = 0;
 	NN<Text::String> s;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(logger, IO::LogTool());
@@ -95,7 +95,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			NN<Net::WebServer::HTTPForwardHandler> hdlr;
 			Net::WebServer::WebListener *svr;
 			NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
-			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("FwdLog"));
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("fwdLog"));
 			logger->AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);

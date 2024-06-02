@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -52,11 +52,11 @@ Bool Exporter::ZIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	return this->ExportPackage(zip, sbuff, sbuff, NN<IO::PackageFile>::ConvertFrom(pobj));
 }
 
-Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UTF8Char *buffStart, UTF8Char *buffEnd, NN<IO::PackageFile> pkg)
+Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UnsafeArray<UTF8Char> buffStart, UnsafeArray<UTF8Char> buffEnd, NN<IO::PackageFile> pkg)
 {
 	UOSInt i;
 	UOSInt j;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::PackageFile::PackObjectType itemType;
 	NN<IO::StreamData> fd;
 	i = 0;
@@ -64,8 +64,11 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UTF8Char *bu
 	while (i < j)
 	{
 		itemType = pkg->GetItemType(i);
-		sptr = pkg->GetItemName(buffEnd, i);
-		if (itemType == IO::PackageFile::PackObjectType::StreamData)
+		if (!pkg->GetItemName(buffEnd, i).SetTo(sptr))
+		{
+
+		}
+		else if (itemType == IO::PackageFile::PackObjectType::StreamData)
 		{
 			if (pkg->GetFileType() == IO::PackageFileType::Virtual)
 			{
@@ -78,7 +81,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UTF8Char *bu
 					if ((readSize = pitem->fullFd->GetRealData(NN<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff)) != dataSize)
 					{
 #if defined(VERBOSE)
-						printf("ZIPExp: Error in reading compressed data: dataSize = %lld, readSize = %lld, fileName = %s\r\n", dataSize, (UInt64)readSize, pitem->name->v);
+						printf("ZIPExp: Error in reading compressed data: dataSize = %lld, readSize = %lld, fileName = %s\r\n", dataSize, (UInt64)readSize, pitem->name->v.Ptr());
 #endif
 						return false;
 					}
@@ -99,7 +102,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UTF8Char *bu
 				else
 				{
 #if defined(VERBOSE)
-					printf("ZIPExp: Error in reading file %s\r\n", buffStart);
+					printf("ZIPExp: Error in reading file %s\r\n", buffStart.Ptr());
 #endif
 					return false;
 				}
@@ -116,7 +119,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UTF8Char *bu
 			else
 			{
 #if defined(VERBOSE)
-				printf("ZIPExp: Error in reading file %s\r\n", buffStart);
+				printf("ZIPExp: Error in reading file %s\r\n", buffStart.Ptr());
 #endif
 				return false;
 			}

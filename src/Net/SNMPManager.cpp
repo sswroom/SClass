@@ -105,7 +105,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 	Optional<Net::SNMPManager::AgentInfo> optagent = 0;
 	NN<Net::SNMPUtil::BindingItem> item;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	if (addr->addrType == Net::AddrType::IPv4)
 	{

@@ -65,10 +65,11 @@ NN<Media::VectorGraph> Media::VectorDocument::AddGraph(Double width, Double heig
 
 void Media::VectorDocument::SetDocName(Text::CString docName)
 {
-	if (docName.v)
+	Text::CStringNN nndocName;
+	if (docName.SetTo(nndocName))
 	{
 		SDEL_STRING(this->docName);
-		this->docName = Text::String::New(docName).Ptr();
+		this->docName = Text::String::New(nndocName).Ptr();
 	}
 }
 
@@ -97,72 +98,77 @@ Int64 Media::VectorDocument::GetModifyTime() const
 	return this->modTimeTicks;
 }
 
-void Media::VectorDocument::SetAuthor(const UTF8Char *author)
+void Media::VectorDocument::SetAuthor(UnsafeArrayOpt<const UTF8Char> author)
 {
 	SDEL_TEXT(this->author);
-	if (author)
+	UnsafeArray<const UTF8Char> nns;
+	if (author.SetTo(nns))
 	{
-		this->author = Text::StrCopyNew(author).Ptr();
+		this->author = Text::StrCopyNew(nns);
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetAuthor() const
+UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetAuthor() const
 {
 	return this->author;
 }
 
-void Media::VectorDocument::SetSubject(const UTF8Char *subject)
+void Media::VectorDocument::SetSubject(UnsafeArrayOpt<const UTF8Char> subject)
 {
 	SDEL_TEXT(this->subject);
-	if (subject)
+	UnsafeArray<const UTF8Char> nns;
+	if (subject.SetTo(nns))
 	{
-		this->subject = Text::StrCopyNew(subject).Ptr();
+		this->subject = Text::StrCopyNew(nns);
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetSubject() const
+UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetSubject() const
 {
 	return this->subject;
 }
 
-void Media::VectorDocument::SetKeywords(const UTF8Char *keywords)
+void Media::VectorDocument::SetKeywords(UnsafeArrayOpt<const UTF8Char> keywords)
 {
 	SDEL_TEXT(this->keywords);
-	if (keywords)
+	UnsafeArray<const UTF8Char> nns;
+	if (keywords.SetTo(nns))
 	{
-		this->keywords = Text::StrCopyNew(keywords).Ptr();
+		this->keywords = Text::StrCopyNew(nns);
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetKeywords() const
+UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetKeywords() const
 {
 	return this->keywords;
 }
 
-void Media::VectorDocument::SetCreator(const UTF8Char *creator)
+void Media::VectorDocument::SetCreator(UnsafeArrayOpt<const UTF8Char> creator)
 {
 	SDEL_TEXT(this->creator);
-	if (creator)
+	UnsafeArray<const UTF8Char> nns;
+	if (creator.SetTo(nns))
 	{
-		this->creator = Text::StrCopyNew(creator).Ptr();
+		this->creator = Text::StrCopyNew(nns);
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetCreator() const
+UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetCreator() const
 {
 	return this->creator;
 }
 
-void Media::VectorDocument::SetProducer(const UTF8Char *producer)
+void Media::VectorDocument::SetProducer(UnsafeArrayOpt<const UTF8Char> producer)
 {
 	SDEL_TEXT(this->producer);
-	if (producer)
+	UnsafeArray<const UTF8Char> nns;
+	if (producer.SetTo(nns))
 	{
-		this->producer = Text::StrCopyNew(producer).Ptr();
+		this->producer = Text::StrCopyNew(nns);
 	}
 }
 
-const UTF8Char *Media::VectorDocument::GetProducer() const
+UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetProducer() const
 {
 	return this->producer;
 }

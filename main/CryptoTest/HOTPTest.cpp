@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt8 key[20];
 	UInt8 decKey[20];
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::RandomBytesGenerator random;
 	random.NextBytes(key, 10);
 	IO::ConsoleWriter console;

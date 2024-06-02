@@ -8,9 +8,9 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 adc;
-	if ((sptr = modem->SIMCOMGetICCID(sbuff)) != 0)
+	if (modem->SIMCOMGetICCID(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CCID: "));
@@ -56,7 +56,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		writer->WriteLine(CSTR("Device Product ID: Error in getting the value"));
 	}
 
-	if ((sptr = modem->SIMCOMGetUESysInfo(sbuff)) != 0)
+	if (modem->SIMCOMGetUESysInfo(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("UE Sys Info: "));
@@ -68,7 +68,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		writer->WriteLine(CSTR("UE Sys Info: Error in getting the value"));
 	}
 
-	if ((sptr = modem->SIMCOMGetNetworkAPN(sbuff)) != 0)
+	if (modem->SIMCOMGetNetworkAPN(sbuff).SetTo(sptr))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Network APN: "));

@@ -55,11 +55,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) && fileBuff && fileSize > 0)
 		{
 			Text::CString mime = CSTR_NULL;
+			Text::CStringNN nnmime;
 			UOSInt fileLen = Text::StrCharCnt(file);
 			i = Text::StrLastIndexOfCharC(file, fileLen, '.');
 			if (i != INVALID_INDEX)
 			{
-				mime = Net::MIME::GetMIMEFromExt(Text::CString(&file[i + 1], fileLen - i - 1));
+				mime = Net::MIME::GetMIMEFromExt(Text::CStringNN(&file[i + 1], fileLen - i - 1));
 			}
 			Text::StringBuilderUTF8 sb;
 			Int32 httpStatus;
@@ -70,9 +71,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Net::OSSocketFactory sockf(true);
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
-			if (mime.v)
+			if (mime.SetTo(nnmime))
 			{
-				cli->AddContentType(mime.OrEmpty());
+				cli->AddContentType(nnmime);
 			}
 			cli->AddContentLength(fileSize); 
 

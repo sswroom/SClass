@@ -20,7 +20,7 @@ Double Math::Unit::Energy::GetUnitRatio(EnergyUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Energy::GetUnitShortName(EnergyUnit unit)
+Text::CStringNN Math::Unit::Energy::GetUnitShortName(EnergyUnit unit)
 {
 	switch (unit)
 	{
@@ -38,7 +38,7 @@ Text::CString Math::Unit::Energy::GetUnitShortName(EnergyUnit unit)
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Energy::GetUnitName(EnergyUnit unit)
+Text::CStringNN Math::Unit::Energy::GetUnitName(EnergyUnit unit)
 {
 	switch (unit)
 	{

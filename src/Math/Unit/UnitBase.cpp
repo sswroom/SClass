@@ -14,7 +14,7 @@
 #include "Math/Unit/Temperature.h"
 #include "Math/Unit/UnitBase.h"
 
-Text::CString Math::Unit::UnitBase::GetUnitShortName(ValueType vt, Int32 unit)
+Text::CStringNN Math::Unit::UnitBase::GetUnitShortName(ValueType vt, Int32 unit)
 {
 	switch (vt)
 	{

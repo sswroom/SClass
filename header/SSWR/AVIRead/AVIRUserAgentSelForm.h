@@ -21,13 +21,13 @@ namespace SSWR
 			typedef struct
 			{
 				Manage::OSInfo::OSType os;
-				const UTF8Char *osVer;
+				UnsafeArrayOpt<const UTF8Char> osVer;
 				UOSInt osVerLen;
 			} OSItem;
 			
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			const UTF8Char *currUserAgent;
+			UnsafeArray<const UTF8Char> currUserAgent;
 			UOSInt currUserAgentLen;
 			Data::ArrayListNN<OSItem> osList;
 
@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex);
 			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
-			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent);
+			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN currUserAgent);
 			virtual ~AVIRUserAgentSelForm();
 
 			virtual void OnMonitorChanged();

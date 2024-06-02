@@ -92,7 +92,7 @@ namespace Net
 			Text::CString GetOSVer() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqOSVer; }
 			Text::CString GetDevModel() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqDevModel; }
 
-			static Text::CString RequestProtocolGetName(RequestProtocol reqProto);
+			static Text::CStringNN RequestProtocolGetName(RequestProtocol reqProto);
 		};
 	}
 }

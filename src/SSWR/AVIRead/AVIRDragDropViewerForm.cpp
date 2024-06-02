@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(AnyType userO
 	NN<Text::String> s;
 	if (me->lbType->GetSelectedItemTextNew().SetTo(s))
 	{
-		const UTF8Char *msg = me->dropMap->Get(s->v);
+		const UTF8Char *msg = me->dropMap->Get(s->v.Ptr());
 		s->Release();
 		if (msg)
 		{
@@ -99,12 +99,12 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(NN<UI::GUIDropData> data, O
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	i = 0;
 	j = data->GetCount();
 	while (i < j)
 	{
-		csptr = data->GetName(i);
+		csptr = data->GetName(i).Or(U8STR(""));
 		sb.ClearStr();
 		if (data->GetDataText(csptr, sb))
 		{

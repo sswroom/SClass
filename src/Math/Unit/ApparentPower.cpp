@@ -12,7 +12,7 @@ Double Math::Unit::ApparentPower::GetUnitRatio(ApparentPowerUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::ApparentPower::GetUnitShortName(ApparentPowerUnit unit)
+Text::CStringNN Math::Unit::ApparentPower::GetUnitShortName(ApparentPowerUnit unit)
 {
 	switch (unit)
 	{
@@ -22,7 +22,7 @@ Text::CString Math::Unit::ApparentPower::GetUnitShortName(ApparentPowerUnit unit
 	return CSTR("");
 }
 
-Text::CString Math::Unit::ApparentPower::GetUnitName(ApparentPowerUnit unit)
+Text::CStringNN Math::Unit::ApparentPower::GetUnitName(ApparentPowerUnit unit)
 {
 	switch (unit)
 	{

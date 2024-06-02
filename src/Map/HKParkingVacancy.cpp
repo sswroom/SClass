@@ -15,7 +15,7 @@
 void Map::HKParkingVacancy::LoadParkingInfo()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage(this->parkingMut);
 	IO::MemoryStream mstm;
 	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://ogciopsi.blob.core.windows.net/dataset/parking-vacancy/parking-vacancy-info.csv"), mstm, 10485760))
@@ -25,7 +25,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 	mstm.SeekFromBeginning(0);
 	DB::CSVFile csv(mstm, 65001);
 	NN<DB::DBReader> r;
-	if (csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (csv.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt colInd[15];
 		UOSInt i = 15;
@@ -36,66 +36,68 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 		i = r->ColCount();
 		while (i-- > 0)
 		{
-			sptr = r->GetName(i, sbuff);
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("park_id")))
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				colInd[0] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_name_en")))
-			{
-				colInd[1] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_address_en")))
-			{
-				colInd[2] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_district_en")))
-			{
-				colInd[3] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_name_sc")))
-			{
-				colInd[4] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_address_sc")))
-			{
-				colInd[5] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_district_sc")))
-			{
-				colInd[6] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_name_tc")))
-			{
-				colInd[7] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_address_tc")))
-			{
-				colInd[8] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_district_tc")))
-			{
-				colInd[9] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_starttime")))
-			{
-				colInd[10] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_endtime")))
-			{
-				colInd[11] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_contactNo")))
-			{
-				colInd[12] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_latitude")))
-			{
-				colInd[13] = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_longitude")))
-			{
-				colInd[14] = i;
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("park_id")))
+				{
+					colInd[0] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_name_en")))
+				{
+					colInd[1] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_address_en")))
+				{
+					colInd[2] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_district_en")))
+				{
+					colInd[3] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_name_sc")))
+				{
+					colInd[4] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_address_sc")))
+				{
+					colInd[5] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_district_sc")))
+				{
+					colInd[6] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_name_tc")))
+				{
+					colInd[7] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_address_tc")))
+				{
+					colInd[8] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_district_tc")))
+				{
+					colInd[9] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_starttime")))
+				{
+					colInd[10] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_endtime")))
+				{
+					colInd[11] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_contactNo")))
+				{
+					colInd[12] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_latitude")))
+				{
+					colInd[13] = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("parking_longitude")))
+				{
+					colInd[14] = i;
+				}
 			}
 		}
 		Bool found = false;
@@ -155,7 +157,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 void Map::HKParkingVacancy::LoadVacancy()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->parkingMap.GetCount() > 0)
 	{
 		Sync::MutexUsage mutUsage(this->parkingMut);
@@ -167,7 +169,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 		mstm.SeekFromBeginning(0);
 		DB::CSVFile csv(mstm, 65001);
 		NN<DB::DBReader> r;
-		if (csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+		if (csv.QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt colInd[3];
 			UOSInt i = 3;
@@ -178,18 +180,20 @@ void Map::HKParkingVacancy::LoadVacancy()
 			i = r->ColCount();
 			while (i-- > 0)
 			{
-				sptr = r->GetName(i, sbuff);
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("park_id")))
+				if (r->GetName(i, sbuff).SetTo(sptr))
 				{
-					colInd[0] = i;
-				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("vacancy")))
-				{
-					colInd[1] = i;
-				}
-				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("lastupdate")))
-				{
-					colInd[2] = i;
+					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("park_id")))
+					{
+						colInd[0] = i;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("vacancy")))
+					{
+						colInd[1] = i;
+					}
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("lastupdate")))
+					{
+						colInd[2] = i;
+					}
 				}
 			}
 			Bool found = false;
@@ -207,8 +211,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 				NN<ParkingInfo> parking;
 				while (r->ReadNext())
 				{
-					sptr = r->GetStr(colInd[0], sbuff, 512);
-					if (sptr)
+					if (r->GetStr(colInd[0], sbuff, 512).SetTo(sptr))
 					{
 						if (this->parkingMap.GetC(CSTRP(sbuff, sptr)).SetTo(parking))
 						{
@@ -412,7 +415,7 @@ UOSInt Map::HKParkingVacancy::GetColumnCnt() const
 	return 18;
 }
 
-UTF8Char *Map::HKParkingVacancy::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::HKParkingVacancy::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	switch (colIndex)
 	{
@@ -485,7 +488,7 @@ DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, OptOut
 Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (colIndex >= 18)
 	{
 		return false;
@@ -526,7 +529,8 @@ Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 			break;
 		}
 	}
-	sptr = this->GetColumnName(sbuff, colIndex);
+	sbuff[0] = 0;
+	sptr = this->GetColumnName(sbuff, colIndex).Or(sbuff);
 	colDef->SetColName(CSTRP(sbuff, sptr));
 	return true;
 }

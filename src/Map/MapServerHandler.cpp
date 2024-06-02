@@ -48,7 +48,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 	NN<Text::String> name;
 	NN<Text::String> fmt;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::MapDrawLayer *layer;
 	if (!req->GetQueryValue(CSTR("name")).SetTo(name))
 	{
@@ -103,10 +103,12 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 						while (k < l)
 						{
 							if (k > 0) sb.AppendC(UTF8STRC("<br/>"));
-							sptr = layer->GetColumnName(sbuff, k);
-							s = Text::XML::ToNewHTMLBodyText(sbuff);
-							sb.Append(s);
-							s->Release();
+							if (layer->GetColumnName(sbuff, k).SetTo(sptr))
+							{
+								s = Text::XML::ToNewHTMLBodyText(sbuff);
+								sb.Append(s);
+								s->Release();
+							}
 							sb.AppendC(UTF8STRC(": "));
 							sbTmp.ClearStr();
 							if (layer->GetString(sbTmp, nameArr, objId, k))
@@ -196,15 +198,17 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 					l = layer->GetColumnCnt();
 					while (k < l)
 					{
-						sptr = layer->GetColumnName(sbuff, k);
-						sbTmp.ClearStr();
-						if (layer->GetString(sbTmp, nameArr, objId, k))
+						if (layer->GetColumnName(sbuff, k).SetTo(sptr))
 						{
-							json.ObjectAddStr(CSTRP(sbuff, sptr), sbTmp.ToCString());
-						}
-						else
-						{
-							json.ObjectAddNull(CSTRP(sbuff, sptr));
+							sbTmp.ClearStr();
+							if (layer->GetString(sbTmp, nameArr, objId, k))
+							{
+								json.ObjectAddStr(CSTRP(sbuff, sptr), sbTmp.ToCString());
+							}
+							else
+							{
+								json.ObjectAddNull(CSTRP(sbuff, sptr));
+							}
 						}
 						k++;
 					}

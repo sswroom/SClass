@@ -139,9 +139,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *strBuff;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> strBuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	Optional<Math::CoordinateSystem> srcCoord;
 	Optional<Math::CoordinateSystem> destCoord;
@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		}
 	}
 	NN<DB::DBReader> reader;
-	if (!nndb->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+	if (!nndb->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 		me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
 		nndb.Delete();
@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	colCnt = i;
 	while (i-- > 0)
 	{
-		if ((sptr = reader->GetName(i, sbuff)) != 0)
+		if (reader->GetName(i, sbuff).SetTo(sptr))
 		{
 			if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPX")))
 			{
@@ -243,12 +243,12 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	}
 	dlg.Delete();
 	Text::StringBuilderUTF8 sb;
-	const UTF8Char **sarr;
-	sarr = MemAlloc(const UTF8Char *, colCnt + 2);
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sarr;
+	sarr = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, colCnt + 2);
 	i = 0;
-	if (!nndb->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+	if (!nndb->QueryTableData(CSTR_NULL, CSTR(""), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
-		MemFree(sarr);
+		MemFreeArr(sarr);
 		nndb.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in reading source file"), CSTR("Error"), me);
 		return;
@@ -282,9 +282,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	i = 0;
 	while (i < colCnt)
 	{
-		sarr[i] = sptr;
-		sptr2 = reader->GetName(i, sptr);
-		if (sptr2)
+		sarr[i] = UnsafeArray<const UTF8Char>(sptr);
+		if (reader->GetName(i, sptr).SetTo(sptr2))
 		{
 			sptr = sptr2 + 1;
 		}
@@ -309,9 +308,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		i = 0;
 		while (i < colCnt)
 		{
-			sarr[i] = sptr;
-			sptr2 = reader->GetStr(i, sptr, 16384 - (UOSInt)(sptr - strBuff));
-			if (sptr2)
+			sarr[i] = UnsafeArray<const UTF8Char>(sptr);
+			if (reader->GetStr(i, sptr, 16384 - (UOSInt)(sptr - strBuff)).SetTo(sptr2))
 			{
 				sptr = sptr2 + 1;
 			}
@@ -322,12 +320,12 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 			i++;
 		}
 
-		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys) && Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
+		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys) && Text::StrToDouble(sarr[xCol].Ptr(), inX) && Text::StrToDouble(sarr[yCol].Ptr(), inY))
 		{
 			outPos = Math::CoordinateSystem::Convert(srcCsys, destCsys, Math::Coord2DDbl(inX, inY));
-			sarr[colCnt] = sptr;
+			sarr[colCnt] = UnsafeArray<const UTF8Char>(sptr);
 			sptr = Text::StrDouble(sptr, outPos.x) + 1;
-			sarr[colCnt + 1] = sptr;
+			sarr[colCnt + 1] = UnsafeArray<const UTF8Char>(sptr);
 			sptr = Text::StrDouble(sptr, outPos.y) + 1;
 		}
 		else
@@ -341,8 +339,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	}
 	nndb->CloseReader(reader);
 
-	MemFree(strBuff);
-	MemFree(sarr);
+	MemFreeArr(strBuff);
+	MemFreeArr(sarr);
 	srcCoord.Delete();
 	destCoord.Delete();
 	nndb.Delete();
@@ -435,7 +433,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::ClearItems(Bool updateList)
 void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

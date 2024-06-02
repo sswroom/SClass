@@ -23,15 +23,15 @@ namespace Text
 			CppEnv(NN<Text::CodeProject> proj, Optional<IO::ConfigFile> cfg);
 			~CppEnv();
 
-			void AddIncludePath(Text::CString includePath);
-			UTF8Char *GetIncludeFilePath(UTF8Char *buff, Text::CString includeFile, Text::String *sourceFile);
+			void AddIncludePath(Text::CStringNN includePath);
+			UnsafeArrayOpt<UTF8Char> GetIncludeFilePath(UnsafeArray<UTF8Char> buff, Text::CStringNN includeFile, Text::String *sourceFile);
 
 			void InitEnvStatus(NN<Text::Cpp::CppParseStatus> status);
 
 			static CppEnv *LoadVSEnv(Text::VSProject::VisualStudioVersion vsv);
 			static CppEnv *LoadVSEnv();
-			static UTF8Char *GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::VisualStudioVersion vsv);
-			static UTF8Char *GetWindowsSdkDir(UTF8Char *sbuff);
+			static UnsafeArrayOpt<UTF8Char> GetVCInstallDir(UnsafeArray<UTF8Char> sbuff, Text::VSProject::VisualStudioVersion vsv);
+			static UnsafeArrayOpt<UTF8Char> GetWindowsSdkDir(UnsafeArray<UTF8Char> sbuff);
 			static Bool IsCompilerExist(Text::VSProject::VisualStudioVersion vsv);
 //			static CompilerType GetSystemCompiler(WChar *includePath);
 		};

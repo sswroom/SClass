@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 		Data::DateTime dt;
 		NN<Text::String> s;
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Sync::MutexUsage mutUsage;
 		me->mgr->Use(mutUsage);
 		ctrl->GetCurrItems(itemList);

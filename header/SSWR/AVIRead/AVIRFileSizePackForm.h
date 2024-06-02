@@ -35,7 +35,7 @@ namespace SSWR
 		private:
 			Data::ArrayListNN<MyFile> fileList;
 			Data::ArrayListNN<MyFile> packList;
-			const UTF8Char *filePath;
+			UnsafeArrayOpt<const UTF8Char> filePath;
 			NN<SSWR::AVIRead::AVIRCore> core;
 
 			NN<UI::GUIPanel> pnlFile;

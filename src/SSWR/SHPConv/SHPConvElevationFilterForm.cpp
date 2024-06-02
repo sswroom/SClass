@@ -55,13 +55,14 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<U
 	this->SetCancelButton(this->btnCancel);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 0;
 	UOSInt j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{
-		sptr = this->dbf->GetColumnName(i, sbuff);
+		sbuff[0] = 0;
+		sptr = this->dbf->GetColumnName(i, sbuff).Or(sbuff);
 		this->cboCol->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}

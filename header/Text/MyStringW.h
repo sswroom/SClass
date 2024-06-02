@@ -9,8 +9,8 @@ namespace Text
 	UTF32Char *StrConcat(UTF32Char *oriStr, const UTF32Char *strToJoin);
 	UTF32Char *StrConcatS(UTF32Char *oriStr, const UTF32Char *strToJoin, UOSInt buffSize);
 	UTF32Char *StrConcatC(UTF32Char *oriStr, const UTF32Char *strToJoin, UOSInt charCnt);
-	UTF16Char *StrConcatASCII(UTF16Char *oriStr, const Char *strToJoin);
-	UTF32Char *StrConcatASCII(UTF32Char *oriStr, const Char *strToJoin);
+	UTF16Char *StrConcatASCII(UTF16Char *oriStr, UnsafeArray<const Char> strToJoin);
+	UTF32Char *StrConcatASCII(UTF32Char *oriStr, UnsafeArray<const Char> strToJoin);
 
 	UTF16Char *StrInt16(UTF16Char *oriStr, Int16 val);
 	UTF16Char *StrUInt16(UTF16Char *oriStr, UInt16 val);

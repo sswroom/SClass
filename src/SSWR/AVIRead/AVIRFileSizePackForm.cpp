@@ -55,14 +55,15 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 	NN<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
-	if (me->filePath)
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
+	UnsafeArray<const UTF8Char> filePath;
+	if (me->filePath.SetTo(filePath))
 	{
-		sptr = Text::StrConcat(sbuff, me->filePath);
-		sptr2 = me->txtDirName->GetText(sptr);
+		sptr = Text::StrConcat(sbuff, filePath);
+		sptr2 = me->txtDirName->GetText(sptr).Or(sptr);
 		if (sptr2 == sptr)
 			return;
 		if (sptr2 != sptr)
@@ -76,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
 
-			sptr2 = Text::StrConcat(sbuff2, me->filePath);
+			sptr2 = Text::StrConcat(sbuff2, filePath);
 			i = me->packList.GetCount();
 			while (i-- > 0)
 			{
@@ -86,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 
-			sptrEnd = sptr = me->txtDirName->GetText(sbuff);
+			sptrEnd = sptr = me->txtDirName->GetText(sbuff).Or(sbuff);
 			while (sptr > sbuff)
 			{
 				if (++*--sptr == 0x3A)
@@ -116,8 +117,8 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UInt64 minSize;
 	UInt64 fileSize;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile> file;
 	IO::Path::FindFileSession *sess;
 	UOSInt i;
@@ -165,7 +166,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

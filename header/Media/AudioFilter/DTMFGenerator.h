@@ -36,7 +36,7 @@ namespace Media
 			void SetTone(UTF8Char tone); // 0-9, *#, ABCD
 			void SetVolume(Double vol);
 
-			Bool GenTones(UInt32 signalTime, UInt32 breakTime, Double vol, const UTF8Char *tones);
+			Bool GenTones(UInt32 signalTime, UInt32 breakTime, Double vol, UnsafeArray<const UTF8Char> tones);
 		};
 	}
 }

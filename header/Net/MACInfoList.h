@@ -20,8 +20,8 @@ namespace Net
 		OSInt GetIndex(UInt64 macInt);
 		Optional<const Net::MACInfo::MACEntry> GetEntry(UInt64 macInt);
 		Optional<const Net::MACInfo::MACEntry> GetEntryOUI(const UInt8 *oui);
-		UOSInt SetEntry(UInt64 macInt, Text::CString name);
-		UOSInt SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CString name);
+		UOSInt SetEntry(UInt64 macInt, Text::CStringNN name);
+		UOSInt SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStringNN name);
 		void Load();
 		Bool Store();
 	};

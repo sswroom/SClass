@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnStrColsDblClicked(AnyType userObj);
 			static void __stdcall OnStrColsInt32Clicked(AnyType userObj);
 		public:
-			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
+			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CStringNN tableName);
 			virtual ~AVIRLineChartForm();
 
 			virtual void OnMonitorChanged();

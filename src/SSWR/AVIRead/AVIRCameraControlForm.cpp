@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 	Data::ArrayListNN<IO::CameraControl::FileInfo> fileList;
 	NN<IO::CameraControl::FileInfo> file;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	i = 0;
 	j = this->camera->GetFileList(fileList);

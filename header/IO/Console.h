@@ -13,7 +13,7 @@ namespace IO
 	public:
 		static UTF32Char GetChar();
 		static void PutChar(UTF32Char c);
-		static UTF8Char *GetLine(UTF8Char *buff); //Without newline
+		static UnsafeArray<UTF8Char> GetLine(UnsafeArray<UTF8Char> buff); //Without newline
 		static void PrintStrO(const UTF8Char *str1);
 		static UOSInt WriteStdOut(UInt8 *buff, UOSInt size);
 		static void PreventCtrlC();

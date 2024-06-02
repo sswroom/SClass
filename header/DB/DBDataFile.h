@@ -244,7 +244,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 			{
 				Text::String *s = item.GetItemValue().str;
 				m = WriteInt(this->recordBuff, m, s->leng);
-				MemCopyNO(&this->recordBuff[m], s->v, s->leng);
+				MemCopyNO(&this->recordBuff[m], s->v.Ptr(), s->leng);
 				m += s->leng;
 			}
 			break;

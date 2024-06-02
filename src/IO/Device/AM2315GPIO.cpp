@@ -124,7 +124,7 @@ OSInt IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, OSInt readSize)
 	{
 		sb.AppendHexBuff(buff, (UOSInt)i, ' ', Text::LineBreakType::None);
 	}
-	printf("%s\r\n", sb.ToString());
+	printf("%s\r\n", sb.ToPtr());
 	return i;
 }
 

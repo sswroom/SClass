@@ -11,12 +11,12 @@ struct IO::USBInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
-	Text::CString dispName;
+	Text::CStringNN dispName;
 };
 
-IO::USBInfo::USBInfo(ClassData *info)
+IO::USBInfo::USBInfo(NN<ClassData> info)
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->vendorId = info->vendorId;
 	clsData->productId = info->productId;
 	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng);
@@ -28,7 +28,7 @@ IO::USBInfo::USBInfo(ClassData *info)
 IO::USBInfo::~USBInfo()
 {
 	Text::StrDelNew(this->clsData->dispName.v);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UInt16 IO::USBInfo::GetVendorId()
@@ -41,12 +41,12 @@ UInt16 IO::USBInfo::GetProductId()
 	return this->clsData->productId;
 }
 
-Text::CString IO::USBInfo::GetDispName()
+Text::CStringNN IO::USBInfo::GetDispName()
 {
 	return this->clsData->dispName;
 }
 
-UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
+UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 {
 	return 0;
 }

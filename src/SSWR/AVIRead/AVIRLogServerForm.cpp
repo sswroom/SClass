@@ -19,11 +19,11 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->txtPort->GetText(sb);
 		if (sb.ToUInt16(port))
 		{
-			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("LogSvr"));
 			NEW_CLASS(me->svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), me->log, false, false));
 			if (me->svr->IsError())
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
 	UTF8Char sbuff[20];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if (me->ipListUpd)

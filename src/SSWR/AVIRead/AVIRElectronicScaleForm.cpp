@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 	{
 		me->currWeightUpd = false;
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt strSize;
 		sptr = Text::StrDouble(sbuff, Math::Unit::Mass::Convert(me->currWeightUnit, Math::Unit::Mass::MU_GRAM, me->currWeight));
 		me->txtWeight->SetText(CSTRP(sbuff, sptr));
@@ -149,7 +149,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType user
 					}
 					buff[recvSize + 14] = 0;
 					Text::StrTrim((Char*)&buff[recvSize + 7]);
-					Double weight = Text::StrToDouble((Char*)&buff[recvSize + 7]);
+					Double weight = Text::StrToDouble(&buff[recvSize + 7]);
 					if (isNeg)
 					{
 						weight = -weight;

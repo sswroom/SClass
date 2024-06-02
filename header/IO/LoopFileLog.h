@@ -23,7 +23,7 @@ namespace IO
 
 		void SwapFiles();
 	public:
-		LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style);
+		LoopFileLog(Text::CStringNN fileName, Int32 nFiles, LogType style);
 		virtual ~LoopFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

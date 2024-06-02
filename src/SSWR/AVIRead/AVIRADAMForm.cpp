@@ -24,14 +24,14 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 		{
 			me->stm = stm.Ptr();
 			UTF8Char sbuff[64];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NEW_CLASS(me->channel, IO::AdvantechASCIIChannel(stm, true));
 			me->channelModule = 0;
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 			me->txtAddress->SetReadOnly(true);
 
-			if ((sptr = me->channel->GetModuleName(sbuff, me->channelAddr)) != 0)
+			if (me->channel->GetModuleName(sbuff, me->channelAddr).SetTo(sptr))
 			{
 				me->txtModuleName->SetText(CSTRP(sbuff, sptr));
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("4050")))
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 				me->txtModuleName->SetText(CSTR("-"));
 			}
 
-			if ((sptr = me->channel->GetFirmwareVer(sbuff, me->channelAddr)) != 0)
+			if (me->channel->GetFirmwareVer(sbuff, me->channelAddr).SetTo(sptr))
 			{
 				me->txtFirmware->SetText(CSTRP(sbuff, sptr));
 			}
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;		
+	UnsafeArray<UTF8Char> sptr;		
 	UOSInt i;
 	me->lvData->ClearItems();
 	if (me->channelModule == 4050)

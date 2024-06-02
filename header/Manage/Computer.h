@@ -6,7 +6,7 @@ namespace Manage
 	class Computer
 	{
 	public:
-		static UTF8Char *GetHostName(UTF8Char *sbuff);
+		static UnsafeArrayOpt<UTF8Char> GetHostName(UnsafeArray<UTF8Char> sbuff);
 	};
 }
 

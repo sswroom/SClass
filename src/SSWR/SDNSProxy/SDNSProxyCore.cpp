@@ -9,11 +9,11 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Tex
 {
 	NN<SSWR::SDNSProxy::SDNSProxyCore> me = userObj.GetNN<SSWR::SDNSProxy::SDNSProxyCore>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(reqName);
 	sb.AppendC(UTF8STRC(" from "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(", T="));
 	sb.AppendI32(reqType);

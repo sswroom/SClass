@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NN<OrganEnv> env;
-			const UTF8Char *descript;
+			UnsafeArrayOpt<const UTF8Char> descript;
 
 			NN<UI::GUILabel> lblId;
 			NN<UI::GUITextBox> txtId;
@@ -42,7 +42,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			const UTF8Char *GetDescript();
+			UnsafeArrayOpt<const UTF8Char> GetDescript();
 		};
 	}
 }

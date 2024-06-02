@@ -33,7 +33,7 @@ IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(NN<IO::P
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::SHA1Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::SHA1Exporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -62,7 +62,7 @@ Bool Exporter::SHA1Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[20];
 	IO::StreamWriter writer(stm, this->codePage);
 	NN<Text::String> name;

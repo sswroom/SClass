@@ -7,9 +7,8 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	sptr = me->lbDevice->GetSelectedItemText(sbuff);
-	if (sptr == 0 || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Default")))
+	UnsafeArray<UTF8Char> sptr;
+	if (!me->lbDevice->GetSelectedItemText(sbuff).SetTo(sptr) || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Default")))
 	{
 		me->core->SetAudioDeviceList(0);
 	}
@@ -61,14 +60,14 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(Optional<UI::GUIClientControl>
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	this->lbDevice->AddItem(CSTR("Default"), 0);
 	i = 0;
 	j = Media::AudioDevice::GetDeviceCount();
 	while (i < j)
 	{
-		if ((sptr = Media::AudioDevice::GetDeviceName(sbuff, i)) != 0)
+		if (Media::AudioDevice::GetDeviceName(sbuff, i).SetTo(sptr))
 		{
 			k = this->lbDevice->AddItem(CSTRP(sbuff, sptr), 0);
 			if (devName.SetTo(s) && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), s->v, s->leng))

@@ -31,16 +31,9 @@ DB::MongoDB::MongoDB(Text::CStringNN url, Text::CString database, IO::LogTool *l
 	{
 		mongoc_init();
 	}
-	client = mongoc_client_new((const Char*)url.v);
+	client = mongoc_client_new((const Char*)url.v.Ptr());
 	this->client = client;
-	if (database.v)
-	{
-		this->database = Text::String::New(database).Ptr();
-	}
-	else
-	{
-		this->database = 0;
-	}
+	this->database = Text::String::NewOrNull(database).OrNull();
 }
 
 DB::MongoDB::~MongoDB()
@@ -63,7 +56,7 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 	UOSInt initCnt = names->GetCount();
 	bson_error_t error;
-	mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v);
+	mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v.Ptr());
 	char **strv;
 	strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
 	SDEL_STRING(this->errorMsg);
@@ -85,11 +78,11 @@ UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->database && this->client)
 	{
-		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v, (const Char*)tableName.v);
+		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v.Ptr(), (const Char*)tableName.v.Ptr());
 		if (coll)
 		{
 			NN<DB::MongoDBReader> reader;
@@ -100,7 +93,7 @@ Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Tex
 	return 0;
 }
 
-Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::ColDef> colDef;
 	DB::TableDef *tab;
@@ -172,19 +165,20 @@ void DB::MongoDB::FreeDatabaseNames(NN<Data::ArrayListStringNN> names)
 	names->Clear();
 }
 
-void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
+void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CStringNN host, UInt16 port)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	out->AppendC(UTF8STRC("mongodb://"));
-	if (userName.v)
+	Text::CStringNN nns;
+	if (userName.SetTo(nns))
 	{
-		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName.v);
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		if (password.v)
+		if (password.SetTo(nns))
 		{
 			out->AppendUTF8Char(':');
-			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password.v);
+			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 			out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		out->AppendUTF8Char('@');
@@ -293,7 +287,7 @@ Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	}
 }
 
-UTF8Char *DB::MongoDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex != 0)
 		return 0;
@@ -355,7 +349,7 @@ OSInt DB::MongoDBReader::GetRowChanged()
 	return 0;
 }
 
-UTF8Char *DB::MongoDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::MongoDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex != 0)
 		return 0;

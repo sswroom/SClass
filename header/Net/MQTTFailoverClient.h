@@ -35,8 +35,8 @@ namespace Net
 		void AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket);
 
 		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj);
-		virtual Bool Subscribe(Text::CString topic);
-		virtual Bool Publish(Text::CString topic, Text::CString message);
+		virtual Bool Subscribe(Text::CStringNN topic);
+		virtual Bool Publish(Text::CStringNN topic, Text::CStringNN message);
 	};
 }
 #endif

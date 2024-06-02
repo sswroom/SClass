@@ -8,11 +8,11 @@
 Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSrchMgr)
 {
 	UTF8Char filePath[256];
-	UTF8Char *filePathName;
-	UTF8Char *filePathNameEnd;
+	UnsafeArray<UTF8Char> filePathName;
+	UnsafeArray<UTF8Char> filePathNameEnd;
 	UTF8Char sbuff[512];
 	Text::PString sptrs[2];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 srchType;
 	Int32 srchLyr;
 	NN<Map::RevGeoCfg::SearchLayer> layer;
@@ -24,7 +24,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSr
 	if (!fs.IsError())
 	{
 		IO::StreamReader reader(fs);
-		while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
+		while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 		{
 			if (Text::StrSplitP(sptrs, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ',') == 2)
 			{
@@ -80,7 +80,7 @@ Map::RevGeoCfg::~RevGeoCfg()
 	}
 }
 
-UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos)
+UnsafeArrayOpt<UTF8Char> Map::RevGeoCfg::GetStreetName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos)
 {
 	Text::StringBuilderUTF8 sb;
 	if (GetStreetName(sb, pos))

@@ -35,10 +35,10 @@ namespace Net
 		virtual ~RTPH264Handler();
 
 		virtual void MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts);
-		virtual void SetFormat(const UTF8Char *fmtStr);
+		virtual void SetFormat(UnsafeArray<const UTF8Char> fmtStr);
 		virtual Int32 GetPayloadType();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);

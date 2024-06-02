@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/SHPConv/ValueFilter.h"
 
-SSWR::SHPConv::ValueFilter::ValueFilter(UOSInt colIndex, Text::CString val, Int32 compareType)
+SSWR::SHPConv::ValueFilter::ValueFilter(UOSInt colIndex, Text::CStringNN val, Int32 compareType)
 {
 	this->colIndex = colIndex;
 	this->value = Text::String::New(val);
@@ -16,8 +16,9 @@ SSWR::SHPConv::ValueFilter::~ValueFilter()
 Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	sptr = dbf->GetStr(this->colIndex, sbuff, sizeof(sbuff));
+	UnsafeArray<UTF8Char> sptr;
+	if (!dbf->GetStr(this->colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
+		return false;
 	switch (this->compareType)
 	{
 	case 3:
@@ -32,7 +33,7 @@ Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, 
 	}
 }
 
-UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff) const
+UnsafeArray<UTF8Char> SSWR::SHPConv::ValueFilter::ToString(UnsafeArray<UTF8Char> buff) const
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
 	buff = Text::StrUOSInt(buff, this->colIndex);

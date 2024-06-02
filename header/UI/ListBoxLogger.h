@@ -19,7 +19,7 @@ namespace UI
 		Bool reverse;
 		Text::String **logArr;
 		Text::String **tmpLogArr;
-		const Char *timeFormat;
+		UnsafeArrayOpt<const Char> timeFormat;
 		UOSInt logIndex;
 		UInt32 logCnt;
 		Optional<UI::GUITextBox> txt;

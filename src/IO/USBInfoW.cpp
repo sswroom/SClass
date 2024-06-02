@@ -11,7 +11,7 @@ struct IO::USBInfo::ClassData
 	UInt16 idVendor;
 	UInt16 idProduct;
 	UInt16 bcdDevice;
-	Text::CString dispName;
+	Text::CStringNN dispName;
 };
 
 IO::USBInfo::USBInfo(NN<ClassData> info)
@@ -20,7 +20,7 @@ IO::USBInfo::USBInfo(NN<ClassData> info)
 	clsData->idVendor = info->idVendor;
 	clsData->idProduct = info->idProduct;
 	clsData->bcdDevice = info->bcdDevice;
-	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng).Ptr();
+	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng);
 	clsData->dispName.leng = info->dispName.leng;
 	this->clsData = clsData;
 }
@@ -46,7 +46,7 @@ UInt16 IO::USBInfo::GetRevision()
 	return this->clsData->bcdDevice;
 }
 
-Text::CString IO::USBInfo::GetDispName()
+Text::CStringNN IO::USBInfo::GetDispName()
 {
 	return this->clsData->dispName;
 }
@@ -81,9 +81,9 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 	ClassData clsData;
 	UInt32 id;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr2End;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr2End;
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
@@ -96,14 +96,16 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			sptr = r->GetName(i, sbuff);
-			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Description")))
+			if (r->GetName(i, sbuff).SetTo(sptr))
 			{
-				descCol = i;
-			}
-			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
-			{
-				devIdCol = i;
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Description")))
+				{
+					descCol = i;
+				}
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
+				{
+					devIdCol = i;
+				}
 			}
 			i++;
 		}
@@ -147,7 +149,7 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 			{
 				if (sptr[0] != '.')
 				{

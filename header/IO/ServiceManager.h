@@ -39,14 +39,14 @@ namespace IO
 		ServiceManager();
 		~ServiceManager();
 
-		Bool ServiceCreate(Text::CString svcName, Text::CString svcDesc, Text::CString cmdLine, IO::ServiceInfo::ServiceState stype);
-		Bool ServiceDelete(Text::CString svcName);
-		Bool ServiceSetDesc(Text::CString svcName, Text::CString svcDesc);
-		Bool ServiceStart(Text::CString svcName);
-		Bool ServiceStop(Text::CString svcName);
-		Bool ServiceEnable(Text::CString svcName);
-		Bool ServiceDisable(Text::CString svcName);
-		Bool ServiceGetDetail(Text::CString svcName, ServiceDetail *svcDetail);
+		Bool ServiceCreate(Text::CStringNN svcName, Text::CString svcDesc, Text::CStringNN cmdLine, IO::ServiceInfo::ServiceState stype);
+		Bool ServiceDelete(Text::CStringNN svcName);
+		Bool ServiceSetDesc(Text::CStringNN svcName, Text::CStringNN svcDesc);
+		Bool ServiceStart(Text::CStringNN svcName);
+		Bool ServiceStop(Text::CStringNN svcName);
+		Bool ServiceEnable(Text::CStringNN svcName);
+		Bool ServiceDisable(Text::CStringNN svcName);
+		Bool ServiceGetDetail(Text::CStringNN svcName, ServiceDetail *svcDetail);
 
 		UOSInt QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
 		void FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);

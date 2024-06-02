@@ -128,7 +128,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, NN<const SSWR::S
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *name, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UOSInt nameLen)
 {
 	UInt8 buff[1024];
 	UOSInt size;
@@ -150,7 +150,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *nam
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char *platform, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UOSInt nameLen)
 {
 	UInt8 buff[1024];
 	UOSInt size;
@@ -176,7 +176,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *cpuName, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UOSInt nameLen)
 {
 	UInt8 buff[1024];
 	UOSInt size;
@@ -198,7 +198,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *
 	return true;
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName, UOSInt nameLen)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName, UOSInt nameLen)
 {
 	UInt8 buff[1024];
 	UOSInt size;

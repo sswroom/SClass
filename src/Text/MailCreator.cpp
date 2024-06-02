@@ -12,9 +12,9 @@
 #include "Text/MIMEObj/TextMIMEObj.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CString s)
+void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CStringNN s)
 {
-	const UTF8Char *sptr;
+	UnsafeArray<const UTF8Char> sptr;
 	UTF8Char c;
 	Bool found = false;
 	sptr = s.v;
@@ -84,7 +84,7 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *
 	}
 }
 
-Optional<Text::IMIMEObj> Text::MailCreator::ParseContentHTML(const UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath)
+Optional<Text::IMIMEObj> Text::MailCreator::ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath)
 {
 	UOSInt j;
 	UOSInt endOfst = buffSize - 6;
@@ -95,7 +95,7 @@ Optional<Text::IMIMEObj> Text::MailCreator::ParseContentHTML(const UInt8 *buff, 
 	NN<Text::IMIMEObj> obj;
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
 	Bool found;
 	i = 0;
@@ -262,23 +262,25 @@ void Text::MailCreator::SetFrom(const WChar *name, const WChar *address)
 
 void Text::MailCreator::SetFrom(Text::CString name, Text::CString address)
 {
-	if (address.leng == 0)
+	Text::CStringNN nnname;
+	Text::CStringNN nnaddress;
+	if (!address.SetTo(nnaddress) || nnaddress.leng == 0)
 	{
 		SDEL_STRING(this->from);
 	}
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		if (name.leng != 0)
+		if (name.SetTo(nnname) && nnname.leng != 0)
 		{
-			this->AppendStr(sb, name);
+			this->AppendStr(sb, nnname);
 			sb.AppendC(UTF8STRC(" <"));
-			this->AppendStr(sb, address);
+			this->AppendStr(sb, nnaddress);
 			sb.AppendC(UTF8STRC(">"));
 		}
 		else
 		{
-			this->AppendStr(sb, address);
+			this->AppendStr(sb, nnaddress);
 		}
 		SDEL_STRING(this->from);
 		this->from = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -412,7 +414,7 @@ void Text::MailCreator::SetSubject(NN<Text::String> subj)
 	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 }
 
-void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlPath)
+void Text::MailCreator::SetContentHTML(const WChar *content, Text::CStringNN htmlPath)
 {
 	NN<Text::IMIMEObj> obj;
 	UOSInt strLen = Text::StrCharCnt(content);
@@ -427,7 +429,7 @@ void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlP
 	MemFree(buff);
 }
 
-void Text::MailCreator::SetContentHTML(NN<Text::String> content, Text::CString htmlPath)
+void Text::MailCreator::SetContentHTML(NN<Text::String> content, Text::CStringNN htmlPath)
 {
 	NN<Text::IMIMEObj> obj;
 	if (ParseContentHTML(content->v, content->leng, 65001, htmlPath).SetTo(obj))

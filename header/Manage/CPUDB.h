@@ -78,8 +78,8 @@ namespace Manage
 
 	public:
 		static CPUSpecX86 *GetCPUSpecX86(Manage::CPUVendor::CPU_BRAND brand, Int32 familyId, Int32 modelId, Int32 steppingId);
-		static const CPUSpec *GetCPUSpec(Text::CString model);
-		static Text::CString X86CPUNameToModel(Text::CString x86CPUName);
+		static Optional<const CPUSpec> GetCPUSpec(Text::CStringNN model);
+		static Text::CString X86CPUNameToModel(Text::CStringNN x86CPUName);
 		static Text::CString ParseCPUInfo(NN<IO::Stream> stm); // return model
 	};
 }

@@ -40,9 +40,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
 
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		devInfo.AppendC(UTF8STRC("Name: "));
-		sptr = currCapture->GetSourceName(sbuff);
+		sptr = currCapture->GetSourceName(sbuff).Or(sbuff);
 		devInfo.AppendP(sbuff, sptr);
 		devInfo.AppendC(UTF8STRC("\r\n"));
 		devInfo.AppendC(UTF8STRC("Supported Formats:\r\n"));
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt32(sbuff, me->frameCnt);
 	me->txtFrameCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt32(sbuff, me->saveCnt);

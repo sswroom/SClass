@@ -62,13 +62,13 @@ Map::ReverseGeocoderServer::~ReverseGeocoderServer()
 	DEL_CLASS(this->ctrl);
 }
 
-UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
 	Bool sent;
 	UOSInt retryCnt = 0;
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
@@ -115,13 +115,13 @@ UTF8Char *Map::ReverseGeocoderServer::SearchName(UTF8Char *buff, UOSInt buffSize
 	return sptr;
 }
 
-UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
+UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UInt8 dataBuff[16];
 	UInt8 dataBuff2[256];
 	Bool sent;
 	UOSInt retryCnt = 0;
-	UTF8Char *sptr = 0;
+	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqBuff = buff;
 	this->reqBuffSize = buffSize;
@@ -190,9 +190,10 @@ UOSInt Map::ReverseGeocoderServer::ReceivedData(NN<Net::TCPClient> cli, AnyType 
 
 void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
+	UnsafeArray<UTF8Char> reqBuff;
 	if (cmdType == 1)
 	{
-		if (this->reqBuff && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
+		if (this->reqBuff.SetTo(reqBuff) && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
 		{
 			UOSInt strSize;
 			if ((cmd[12] & 0x80) != 0)
@@ -209,11 +210,11 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 			{
 				if (this->reqBuffSize > strSize)
 				{
-					Text::StrConcatC(this->reqBuff, cmd, strSize);
+					Text::StrConcatC(reqBuff, cmd, strSize);
 				}
 				else
 				{
-					Text::StrConcatC(this->reqBuff, cmd, this->reqBuffSize - 1);
+					Text::StrConcatC(reqBuff, cmd, this->reqBuffSize - 1);
 				}
 			}
 			this->reqResult = true;
@@ -222,7 +223,7 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	}
 	else if (cmdType == 3)
 	{
-		if (this->reqBuff && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
+		if (this->reqBuff.SetTo(reqBuff) && ReadInt32(&cmd[0]) == this->reqLat && ReadInt32(&cmd[4]) == this->reqLon && ReadUInt32(&cmd[8]) == this->reqLCID)
 		{
 			UOSInt strSize;
 			if ((cmd[12] & 0x80) != 0)
@@ -239,11 +240,11 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 			{
 				if (this->reqBuffSize > strSize)
 				{
-					Text::StrConcatC(this->reqBuff, cmd, strSize);
+					Text::StrConcatC(reqBuff, cmd, strSize);
 				}
 				else
 				{
-					Text::StrConcatC(this->reqBuff, cmd, this->reqBuffSize - 1);
+					Text::StrConcatC(reqBuff, cmd, this->reqBuffSize - 1);
 				}
 			}
 			this->reqResult = true;

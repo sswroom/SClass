@@ -47,7 +47,7 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(AnyType userObj)
 			#if defined(VERBOSE)
 			sb.ClearStr();
 			sb.AppendHexBuff(&recvBuff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
-			printf("%s\r\n", sb.ToString());
+			printf("%s\r\n", sb.ToPtr());
 			#endif
 
 			if (t > 2)
@@ -183,7 +183,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
-			printf("LDAPMessage: BindResponse, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
+			printf("LDAPMessage: BindResponse, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToPtr(), sb2.ToPtr());
 			#endif
 			Sync::MutexUsage mutUsage(this->reqMut);
 			if (this->reqMap.Get(msgId).SetTo(req))
@@ -208,7 +208,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 				return;
 			#if defined(VERBOSE)
 			Text::StringBuilderUTF8 sb3;
-			printf("LDAPMessage: searchResEntry, objectName = %s\r\n", sb.ToString());
+			printf("LDAPMessage: searchResEntry, objectName = %s\r\n", sb.ToPtr());
 			#endif
 			obj = MemAllocNN(Net::LDAPClient::SearchResObject);
 			obj->name = Text::String::New(sb.ToString(), sb.GetLength());
@@ -253,7 +253,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 						#if defined(VERBOSE)
 						sb3.ClearStr();
 						SearchResDisplay(sb.ToCString(), sb2.ToCString(), sb3);
-						printf("LDAPMessage: searchResEntry: -%s = %s\r\n", sb.ToString(), sb3.ToString());
+						printf("LDAPMessage: searchResEntry: -%s = %s\r\n", sb.ToPtr(), sb3.ToPtr());
 						#endif
 						NN<Net::LDAPClient::SearchResItem> item;
 						item = MemAllocNN(Net::LDAPClient::SearchResItem);
@@ -293,7 +293,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
-			printf("LDAPMessage: searchResDone, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
+			printf("LDAPMessage: searchResDone, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToPtr(), sb2.ToPtr());
 			#endif
 			Sync::MutexUsage mutUsage(this->reqMut);
 			if (this->reqMap.Get(msgId).SetTo(req))
@@ -310,7 +310,7 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 			if (Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb).SetTo(msgBuff))
 			{
 				#if defined(VERBOSE)
-				printf("LDAPMessage: searchResRef, LDAPURL = %s\r\n", sb.ToString());
+				printf("LDAPMessage: searchResRef, LDAPURL = %s\r\n", sb.ToPtr());
 				#endif
 				Sync::MutexUsage mutUsage(this->reqMut);
 				if (this->reqMap.Get(msgId).SetTo(req) && req->searchObjs.SetTo(searchObjs))
@@ -337,23 +337,23 @@ void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt 
 			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
-			printf("LDAPMessage: extendedResp, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
+			printf("LDAPMessage: extendedResp, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToPtr(), sb2.ToPtr());
 			#endif
 		}
 		break;
 	}
 }
 
-const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF8Char *filter, Bool complex)
+UnsafeArrayOpt<const UTF8Char> Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, UnsafeArray<const UTF8Char> filter, Bool complex)
 {
-	const UTF8Char *filterStart;
-	while (Text::CharUtil::PtrIsWS(&filter));
+	UnsafeArray<const UTF8Char> filterStart;
+	while (Text::CharUtil::PtrIsWS(filter));
 	if (filter[0] != '(')
 	{
 		return 0;
 	}
 	filter++;
-	while (Text::CharUtil::PtrIsWS(&filter));
+	while (Text::CharUtil::PtrIsWS(filter));
 	if (filter[0] == '&')
 	{
 		pdu->BeginOther(0xA0);
@@ -361,11 +361,10 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 
 		while (true)
 		{
-			while (Text::CharUtil::PtrIsWS(&filter));
+			while (Text::CharUtil::PtrIsWS(filter));
 			if (filter[0] == '(')
 			{
-				filter = ParseFilter(pdu, filter, true);
-				if (filter == 0)
+				if (!ParseFilter(pdu, filter, true).SetTo(filter))
 				{
 					return 0;
 				}
@@ -386,11 +385,10 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 		pdu->BeginOther(0xA1);
 		while (true)
 		{
-			while (Text::CharUtil::PtrIsWS(&filter));
+			while (Text::CharUtil::PtrIsWS(filter));
 			if (filter[0] == '(')
 			{
-				filter = ParseFilter(pdu, filter, true);
-				if (filter == 0)
+				if (!ParseFilter(pdu, filter, true).SetTo(filter))
 				{
 					pdu->EndLevel();
 					return 0;
@@ -410,7 +408,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	}
 	else if (filter[0] == '!')
 	{
-		while (Text::CharUtil::PtrIsWS(&filter));
+		while (Text::CharUtil::PtrIsWS(filter));
 		if (filter[0] == ')' || filter[0] == '=' || filter[0] == 0)
 		{
 			return 0;
@@ -455,7 +453,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	}
 	else
 	{
-		while (Text::CharUtil::PtrIsWS(&filter));
+		while (Text::CharUtil::PtrIsWS(filter));
 		if (filter[0] == ')' || filter[0] == '=' || filter[0] == 0)
 		{
 			return 0;
@@ -581,15 +579,17 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	
 	pdu->BeginOther(0x60); //BindRequest
 	pdu->AppendUInt32(3); //version
-	if (userDN.v == 0 || password.v == 0)
+	Text::CStringNN nnuserDN;
+	Text::CStringNN nnpassword;
+	if (!userDN.SetTo(nnuserDN) || !password.SetTo(nnpassword))
 	{
 		pdu->AppendOctetString(U8STR(""), 0); //name
 		pdu->AppendOther(0x80, U8STR(""), 0); //authentication
 	}
 	else
 	{
-		pdu->AppendOctetStringC(userDN.OrEmpty()); //name
-		pdu->AppendOther(0x80, password.v, password.leng); //authentication
+		pdu->AppendOctetStringC(nnuserDN); //name
+		pdu->AppendOther(0x80, nnpassword.v, nnpassword.leng); //authentication
 	}
 	pdu->EndLevel();
 
@@ -651,7 +651,7 @@ Bool Net::LDAPClient::Unbind()
 	return valid;
 }
 
-Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
+Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, UnsafeArrayOpt<const UTF8Char> filter, NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
 {
 	Net::ASN1PDUBuilder *pdu;
 	UOSInt buffSize;
@@ -674,12 +674,12 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	pdu->AppendUInt32(sizeLimit);
 	pdu->AppendUInt32(timeLimit);
 	pdu->AppendBool(typesOnly);
-	if (filter == 0 || filter[0] == 0)
+	UnsafeArray<const UTF8Char> nnfilter;
+	if (!filter.SetTo(nnfilter) || nnfilter[0] == 0)
 	{
-		filter = (const UTF8Char*)"(objectClass=*)";
+		nnfilter = U8STR("(objectClass=*)");
 	}
-	filter = ParseFilter(pdu, filter, false);
-	if (filter == 0 || filter[0] != 0)
+	if (!ParseFilter(pdu, nnfilter, false).SetTo(nnfilter) || nnfilter[0] != 0)
 	{
 		DEL_CLASS(pdu);
 		return false;
@@ -760,7 +760,7 @@ void Net::LDAPClient::SearchResObjectFree(NN<Net::LDAPClient::SearchResObject> o
 	MemFreeNN(obj);
 }
 
-void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, NN<Text::StringBuilderUTF8> sb)
+void Net::LDAPClient::SearchResDisplay(Text::CStringNN type, Text::CStringNN value, NN<Text::StringBuilderUTF8> sb)
 {
 	if (type.Equals(UTF8STRC("objectGUID")) || type.EndsWith(UTF8STRC("Guid")))
 	{

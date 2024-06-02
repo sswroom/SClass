@@ -66,7 +66,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj
 		me->navi->SetSelectedVector(lr);
 
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Map::TileMap> tileMap = me->lyr->GetTileMap();
 		UOSInt maxLevel = tileMap->GetMaxLevel();
 		UOSInt currLyr = tileMap->GetMinLevel();
@@ -226,7 +226,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 {
 	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt currLyr;
 	Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
 	UOSInt i;

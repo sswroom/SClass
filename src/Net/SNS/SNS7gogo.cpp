@@ -11,7 +11,7 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngi
 	this->chError = false;
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SNSItem> snsItem;
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 	Net::WebSite::WebSite7gogoControl::ChannelInfo chInfo;
@@ -86,7 +86,7 @@ NN<Text::String> Net::SNS::SNS7gogo::GetName() const
 	return this->chName;
 }
 
-UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
+UnsafeArray<UTF8Char> Net::SNS::SNS7gogo::GetDirName(UnsafeArray<UTF8Char> dirName)
 {
 	dirName = Text::StrConcatC(dirName, UTF8STRC("7gogo_"));
 	dirName = this->channelId->ConcatTo(dirName);
@@ -100,7 +100,7 @@ UOSInt Net::SNS::SNS7gogo::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 	return itemList->GetCount() - initCnt;
 }
 
-UTF8Char *Net::SNS::SNS7gogo::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
+UnsafeArray<UTF8Char> Net::SNS::SNS7gogo::GetItemShortId(UnsafeArray<UTF8Char> buff, NN<SNSItem> item)
 {
 	return item->id->ConcatTo(buff);
 }
@@ -113,7 +113,7 @@ Int32 Net::SNS::SNS7gogo::GetMinIntevalMS()
 Bool Net::SNS::SNS7gogo::Reload()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<SNSItem> snsItem;
 	OSInt si;
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;

@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[7];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF32Char v;
 	me->txtRadical->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF32Char v;
 	UOSInt i;
 	UOSInt j;
@@ -244,7 +244,7 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 {
 	UTF8Char sbuff[9];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->SaveChar())
 	{
 		sptr = Text::StrHexVal32(sbuff, charCode);
@@ -358,7 +358,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = sbuff;
 	if (this->currChar == 0)
 	{
