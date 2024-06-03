@@ -1572,11 +1572,11 @@ Bool IO::SMake::TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8>
 	return true;
 }
 
-void IO::SMake::SetErrorMsg(Text::CString msg)
+void IO::SMake::SetErrorMsg(Text::CStringNN msg)
 {
 	Sync::MutexUsage mutUsage(this->errorMsgMut);
-	SDEL_STRING(this->errorMsg);
-	this->errorMsg = Text::String::New(msg).Ptr();
+	OPTSTR_DEL(this->errorMsg);
+	this->errorMsg = Text::String::New(msg);
 }
 
 IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
@@ -1647,7 +1647,7 @@ IO::SMake::~SMake()
 		prog.Delete();
 	}
 	DEL_CLASS(this->tasks);
-	SDEL_STRING(this->errorMsg);
+	OPTSTR_DEL(this->errorMsg);
 	this->basePath->Release();
 	SDEL_STRING(this->debugObj);
 }
@@ -1687,9 +1687,10 @@ Bool IO::SMake::GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb) const
 {
 	Bool ret;
 	Sync::MutexUsage mutUsage(this->errorMsgMut);
-	if (this->errorMsg)
+	NN<Text::String> errorMsg;
+	if (this->errorMsg.SetTo(errorMsg))
 	{
-		sb->Append(this->errorMsg);
+		sb->Append(errorMsg);
 		ret = true;
 	}
 	else

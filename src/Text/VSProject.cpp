@@ -39,7 +39,7 @@ Text::VSContainer::~VSContainer()
 	this->childList.DeleteAll();
 }
 
-void Text::VSContainer::SetContainerName(Text::CString contName)
+void Text::VSContainer::SetContainerName(Text::CStringNN contName)
 {
 	if (contName.leng > 0)
 	{
@@ -110,7 +110,7 @@ void Text::VSProject::SetProjectName(Text::String *projName)
 	}
 }
 
-void Text::VSProject::SetProjectName(Text::CString projName)
+void Text::VSProject::SetProjectName(Text::CStringNN projName)
 {
 	if (projName.leng > 0)
 	{

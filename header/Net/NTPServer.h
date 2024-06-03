@@ -14,7 +14,7 @@ namespace Net
 		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		NN<IO::LogTool> log;
-		NN<Text::String> timeServer;
+		NN<Text::String> timeServerHost;
 		Int64 refTime;
 		Int64 timeDiff;
 		Sync::Thread thread;
@@ -24,7 +24,7 @@ namespace Net
 		static void __stdcall CheckThread(NN<Sync::Thread> thread);
 		void InitServer(NN<Net::SocketFactory> sockf, UInt16 port);
 	public:
-		NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString timeServer);
+		NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CStringNN timeServerHost);
 		~NTPServer();
 
 		Bool IsError();

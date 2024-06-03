@@ -418,7 +418,7 @@ UOSInt Map::MapEnv::GetLineStyleLayerCnt(UOSInt index) const
 	return 0;
 }
 
-UOSInt Map::MapEnv::AddFontStyle(Text::CStringNN styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
+UOSInt Map::MapEnv::AddFontStyle(Text::CStringNN styleName, Text::CStringNN fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
 	NN<Map::MapEnv::FontStyle> style;
 	if (fontName.leng == 0)
@@ -688,7 +688,7 @@ NN<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem
 	return newG;
 }
 
-NN<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem> group, Text::CString subgroupName)
+NN<Map::MapEnv::GroupItem> Map::MapEnv::AddGroup(Optional<Map::MapEnv::GroupItem> group, Text::CStringNN subgroupName)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Map::MapEnv::GroupItem> newG;
@@ -859,7 +859,7 @@ NN<Text::String> Map::MapEnv::GetGroupName(NN<Map::MapEnv::GroupItem> group) con
 	return group->groupName;
 }
 
-void Map::MapEnv::SetGroupName(NN<Map::MapEnv::GroupItem> group, Text::CString name)
+void Map::MapEnv::SetGroupName(NN<Map::MapEnv::GroupItem> group, Text::CStringNN name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	group->groupName->Release();

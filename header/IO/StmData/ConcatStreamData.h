@@ -32,7 +32,7 @@ namespace IO
 			ConcatStreamData(CONCATDATABASE *cdb, UInt64 dataOffset, UInt64 dataLength);
 		public:
 			ConcatStreamData(NN<Text::String> fileName);
-			ConcatStreamData(Text::CString fileName);
+			ConcatStreamData(Text::CStringNN fileName);
 			virtual ~ConcatStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);

@@ -1523,11 +1523,11 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 	MemFreeArr(sbuff);
 }
 
-Text::CString Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser)
+Text::CStringNN Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser)
 {
 	UnsafeArrayOpt<const UTF8Char> minOS = 0;
 	UnsafeArrayOpt<const UTF8Char> minBrowser = 0;
-	Text::CString ua = CSTR("sswr/1.0");
+	Text::CStringNN ua = CSTR("sswr/1.0");
 	UnsafeArray<const UTF8Char> nns;
 	UnsafeArray<const UTF8Char> nns2;
 	OSInt comp;

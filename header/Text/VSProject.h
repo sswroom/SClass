@@ -33,7 +33,7 @@ namespace Text
 		VSContainer(Text::CStringNN contName);
 		virtual ~VSContainer();
 
-		virtual void SetContainerName(Text::CString contName);
+		virtual void SetContainerName(Text::CStringNN contName);
 		virtual NN<Text::String> GetContainerName() const;
 
 		virtual UOSInt GetChildCount() const;
@@ -67,7 +67,7 @@ namespace Text
 
 		virtual ProjectType GetProjectType() const;
 		virtual void SetProjectName(Text::String *projName);
-		virtual void SetProjectName(Text::CString projName);
+		virtual void SetProjectName(Text::CStringNN projName);
 		virtual NN<Text::String> GetContainerName() const;
 
 		virtual UOSInt GetChildCount() const;

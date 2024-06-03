@@ -379,7 +379,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileUpdateVideo(NN<BurntFile> file)
 	}
 }
 
-NN<SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile> SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(Text::CStringNN fileName, Text::CString relPath, UInt64 fileSize)
+NN<SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile> SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(Text::CStringNN fileName, Text::CStringNN relPath, UInt64 fileSize)
 {
 	NN<BurntFile> file;
 	file = MemAllocNN(BurntFile);

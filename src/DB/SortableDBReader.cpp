@@ -22,7 +22,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	this->currIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;
-	DB::ColDef colDef(CSTR_NULL);
+	DB::ColDef colDef(CSTR(""));
 	NN<Data::VariObject> obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{

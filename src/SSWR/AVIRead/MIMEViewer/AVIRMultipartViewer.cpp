@@ -174,12 +174,12 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 	this->tcParts = ui->NewTabControl(ctrl);
 	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	Text::String *defMsg = obj->GetDefMsg();
-	if (defMsg && defMsg->v[0])
+	NN<Text::String> defMsg;
+	if (obj->GetDefMsg().SetTo(defMsg) && defMsg->v[0])
 	{
 		NN<UI::GUITextBox> txt;
 		tp = this->tcParts->AddTabPage(CSTR("Default"));
-		txt = ui->NewTextBox(tp, obj->GetDefMsg()->ToCString(), true);
+		txt = ui->NewTextBox(tp, defMsg->ToCString(), true);
 		txt->SetDockType(UI::GUIControl::DOCK_FILL);
 		txt->SetReadOnly(true);
 	}

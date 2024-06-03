@@ -294,10 +294,11 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 	me->rlcStatus->AddSample(&spd);
 
 	Sync::MutexUsage progMutUsage(me->progMut);
-	if (me->progStarted)
+	NN<Text::String> progName;
+	if (me->progStarted && me->progName.SetTo(progName))
 	{
 		me->progStarted = false;
-		me->prgStatus->ProgressStart(me->progName->ToCString(), me->progStartCnt);
+		me->prgStatus->ProgressStart(progName->ToCString(), me->progStartCnt);
 	}
 	UInt64 progUpdateCurr = me->progUpdateCurr;
 	UInt64 progUpdateNew = me->progUpdateNew;
@@ -319,17 +320,19 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 	UInt64 fileSize = 0;
 	if (me->statusFileChg)
 	{
+		NN<Text::String> statusFile;
 		Sync::MutexUsage mutUsage(me->statusFileMut);
-		hasFile = (me->statusFile != 0);
-		if (hasFile)
+		if (me->statusFile.SetTo(statusFile))
 		{
-			me->txtStatusFile->SetText(me->statusFile->ToCString());
+			hasFile = true;
+			me->txtStatusFile->SetText(statusFile->ToCString());
 			sptr = Text::StrUInt64(sbuff, me->statusFileSize);
 			me->txtStatusFileSize->SetText(CSTRP(sbuff, sptr));
 			fileSize = me->statusFileSize;
 		}
 		else
 		{
+			hasFile = false;
 			me->txtStatusFile->SetText(CSTR(""));
 			me->txtStatusFileSize->SetText(CSTR(""));
 		}
@@ -338,7 +341,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 	else
 	{
 		Sync::MutexUsage mutUsage(me->statusFileMut);
-		hasFile = (me->statusFile != 0);
+		hasFile = me->statusFile.NotNull();
 		fileSize = me->statusFileSize;
 		mutUsage.EndUse();
 	}
@@ -667,6 +670,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFil
 		k = this->lvFiles->AddItem(CSTR(".."), (void*)INVALID_INDEX);
 		this->lvFiles->SetSubItem(k, 1, CSTR("Folder"));
 	}
+	NN<Text::String> initSel;
 	i = 0;
 	j = packFile->GetCount();
 	while (i < j)
@@ -674,7 +678,8 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFil
 		sptr = packFile->GetItemName(sbuff, i).Or(sbuff);
 		pot = packFile->GetItemType(i);
 		k = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)i);
-		if (this->initSel && this->initSel->Equals(CSTRP(sbuff, sptr)))
+
+		if (this->initSel.SetTo(initSel) && initSel->Equals(CSTRP(sbuff, sptr)))
 		{
 			selIndex = k;
 		}
@@ -752,10 +757,11 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NN<IO::PackageFile> packFile
 	}
 	sptr = packFile->GetSourceNameObj()->ConcatTo(sptr);
 	this->SetText(CSTRP(sbuff, sptr));
-	SDEL_STRING(this->initSel);
-	if (!initSel.IsNull())
+	OPTSTR_DEL(this->initSel);
+	Text::CStringNN nninitSel;
+	if (initSel.SetTo(nninitSel))
 	{
-		this->initSel = Text::String::New(initSel).Ptr();
+		this->initSel = Text::String::New(nninitSel);
 	}
 	if (this->packNeedDelete)
 	{
@@ -1003,10 +1009,10 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	}
 	SDEL_CLASS(this->rootPackFile);
 	this->fileNames.FreeAll();
-	SDEL_STRING(this->statusFile);
+	OPTSTR_DEL(this->statusFile);
 	this->mnuPopup.Delete();
-	SDEL_STRING(this->progName);
-	SDEL_STRING(this->initSel);
+	OPTSTR_DEL(this->progName);
+	OPTSTR_DEL(this->initSel);
 }
 
 void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
@@ -1309,8 +1315,8 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 
 	{
 		Sync::MutexUsage mutUsage(this->statusFileMut);
-		SDEL_STRING(this->statusFile);
-		this->statusFile = Text::String::New(name).Ptr();
+		OPTSTR_DEL(this->statusFile);
+		this->statusFile = Text::String::NewOrNull(name);
 		this->statusFileSize = count;
 		this->statusFileChg = true;
 	}
@@ -1318,8 +1324,8 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 	{
 		Sync::MutexUsage mutUsage(this->progMut);
 		this->progStarted = true;
-		SDEL_STRING(this->progName);
-		this->progName = Text::String::New(name).Ptr();
+		OPTSTR_DEL(this->progName);
+		this->progName = Text::String::New(name.OrEmpty());
 		this->progStartCnt = count;
 		this->progEnd = false;
 	}
@@ -1357,7 +1363,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressEnd()
 
 	{
 		Sync::MutexUsage mutUsage(this->statusFileMut);
-		SDEL_STRING(this->statusFile);
+		OPTSTR_DEL(this->statusFile);
 		this->statusFileChg = true;
 	}
 }

@@ -14,11 +14,11 @@ namespace Text
 		private:
 			NN<Text::String> contentType;
 			NN<Text::String> boundary;
-			Text::String *defMsg;
+			Optional<Text::String> defMsg;
 			Data::ArrayListNN<MIMEMessage> parts;
 
 			void ParsePart(UInt8 *buff, UOSInt buffSize);
-			MultipartMIMEObj(NN<Text::String> contentType, Text::String *defMsg, NN<Text::String> boundary);
+			MultipartMIMEObj(NN<Text::String> contentType, Optional<Text::String> defMsg, NN<Text::String> boundary);
 			MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary);
 		public:
 			MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg);
@@ -29,7 +29,7 @@ namespace Text
 			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
 			virtual NN<IMIMEObj> Clone() const;
 
-			Text::String *GetDefMsg() const;
+			Optional<Text::String> GetDefMsg() const;
 			UOSInt AddPart(NN<Text::IMIMEObj> obj);
 			void SetPartTransferData(UOSInt partIndex, const UInt8 *data, UOSInt dataSize);
 			Bool AddPartHeader(UOSInt partIndex, Text::CStringNN name, Text::CStringNN value);

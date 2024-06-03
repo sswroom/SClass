@@ -8,10 +8,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void Math::GeoJSONWriter::SetLastError(Text::CString lastError)
+void Math::GeoJSONWriter::SetLastError(Text::CStringNN lastError)
 {
-	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(lastError).Ptr();
+	OPTSTR_DEL(this->lastError);
+	this->lastError = Text::String::New(lastError);
 }
 
 Math::GeoJSONWriter::GeoJSONWriter()
@@ -21,7 +21,7 @@ Math::GeoJSONWriter::GeoJSONWriter()
 
 Math::GeoJSONWriter::~GeoJSONWriter()
 {
-	SDEL_STRING(this->lastError);
+	OPTSTR_DEL(this->lastError);
 }
 
 Text::CStringNN Math::GeoJSONWriter::GetWriterName() const
@@ -298,7 +298,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 	return true;
 }
 
-Text::String *Math::GeoJSONWriter::GetLastError()
+Optional<Text::String> Math::GeoJSONWriter::GetLastError()
 {
 	return this->lastError;
 }

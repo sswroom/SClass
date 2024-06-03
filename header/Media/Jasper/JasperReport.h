@@ -22,7 +22,7 @@ namespace Media
 			{
 				NN<Text::String> name;
 				NN<Text::String> className;
-				Text::String *defValueExp;
+				Optional<Text::String> defValueExp;
 			};
 
 			struct JasperDetail

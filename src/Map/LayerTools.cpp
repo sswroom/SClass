@@ -36,7 +36,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 	Data::ArrayList<DB::DBUtil::ColType> colTypeArr;
 	Data::ArrayList<UOSInt> nameSizes;
 	Data::ArrayList<UOSInt> nameDPs;
-	DB::ColDef colDef(CSTR_NULL);
+	DB::ColDef colDef(CSTR(""));
 	NN<DB::DBReader> r;
 
 	i = 0;

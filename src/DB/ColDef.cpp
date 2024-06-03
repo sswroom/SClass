@@ -65,7 +65,7 @@ void DB::ColDef::AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UO
 	}
 }
 
-DB::ColDef::ColDef(Text::CString colName)
+DB::ColDef::ColDef(Text::CStringNN colName)
 {
 	this->colName = Text::String::New(colName);
 	this->colType = DB::DBUtil::CT_Unknown;
@@ -207,7 +207,7 @@ void DB::ColDef::SetColName(UnsafeArray<const UTF8Char> colName)
 	this->colName = Text::String::NewNotNullSlow(colName);
 }
 
-void DB::ColDef::SetColName(Text::CString colName)
+void DB::ColDef::SetColName(Text::CStringNN colName)
 {
 	this->colName->Release();
 	this->colName = Text::String::New(colName);

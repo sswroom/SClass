@@ -43,13 +43,13 @@ namespace Net
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
 		HTTPData(const HTTPData *fd, UInt64 offset, UInt64 length);
-		HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload);
+		HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload);
 		virtual ~HTTPData();
 
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 		virtual NN<Text::String> GetFullName();
 		virtual Text::CString GetShortName();
-		virtual void SetFullName(Text::CString fullName);
+		virtual void SetFullName(Text::CStringNN fullName);
 		virtual UInt64 GetDataSize();
 		virtual const UInt8 *GetPointer();
 

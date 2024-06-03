@@ -128,15 +128,13 @@ OSInt UI::GUIMapTreeView::EventBeginLabelEdit(NN<TreeItem> item)
 		return 1;
 }
 
-OSInt UI::GUIMapTreeView::EventEndLabelEdit(NN<TreeItem> item, const UTF8Char *newLabel)
+OSInt UI::GUIMapTreeView::EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel)
 {
 	NN<ItemIndex> ind = item->GetItemObj().GetNN<ItemIndex>();
-	if (newLabel == 0)
-		return 0;
 	NN<Map::MapEnv::MapItem> mitem;
 	if (ind->item.SetTo(mitem) && ind->itemType == Map::MapEnv::IT_GROUP)
 	{
-		this->env->SetGroupName(NN<Map::MapEnv::GroupItem>::ConvertFrom(mitem), Text::CString::FromPtr(newLabel));
+		this->env->SetGroupName(NN<Map::MapEnv::GroupItem>::ConvertFrom(mitem), Text::CStringNN::FromPtr(newLabel));
 		return 1;
 	}
 	else

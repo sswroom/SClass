@@ -26,7 +26,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Optional<Net::SSLEngine> ssl = 0;
 		IO::LogTool log;
 		NN<Text::String> s;
-		Text::CString osmCacheDir;
+		Text::CStringNN osmCacheDir;
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		IO::WriterLogHandler printLog(&console, false);

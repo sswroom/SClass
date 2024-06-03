@@ -11,7 +11,7 @@ namespace DB
 		NN<Text::String> layerName;
 		Text::JSONArray *data;
 	public:
-		JSONDB(NN<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data);
+		JSONDB(NN<Text::String> sourceName, Text::CStringNN layerName, Text::JSONArray *data);
 		virtual ~JSONDB();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);

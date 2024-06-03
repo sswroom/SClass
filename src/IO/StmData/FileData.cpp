@@ -110,7 +110,7 @@ IO::StmData::FileData::FileData(Text::CStringNN fname, Bool deleteOnClose)
 IO::StmData::FileData::~FileData()
 {
 	this->Close();
-	this->SetFullName(CSTR_NULL);
+	this->SetFullName(CSTR(""));
 }
 
 UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
@@ -171,7 +171,7 @@ NN<Text::String> IO::StmData::FileData::GetFullName()
 	return Text::String::NewEmpty();
 }
 
-void IO::StmData::FileData::SetFullName(Text::CString fullName)
+void IO::StmData::FileData::SetFullName(Text::CStringNN fullName)
 {
 	if (this->fdn)
 	{

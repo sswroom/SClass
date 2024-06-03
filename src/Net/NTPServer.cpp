@@ -65,7 +65,7 @@ void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 	Text::StringBuilderUTF8 sb;
 	while (!thread->IsStopping())
 	{
-		if (me->sockf->DNSResolveIP(me->timeServer->ToCString(), addr))
+		if (me->sockf->DNSResolveIP(me->timeServerHost->ToCString(), addr))
 		{
 			if (me->cli->GetServerTime(addr, Net::NTPClient::GetDefaultPort(), dt))
 			{
@@ -121,12 +121,12 @@ void Net::NTPServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port)
 	}
 }
 
-Net::NTPServer::NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString timeServer) : thread(CheckThread, this, CSTR("NTPServer"))
+Net::NTPServer::NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CStringNN timeServerHost) : thread(CheckThread, this, CSTR("NTPServer"))
 {
 	this->sockf = sockf;
 	this->svr = 0;
 	this->log = log;
-	this->timeServer = Text::String::New(timeServer);
+	this->timeServerHost = Text::String::New(timeServerHost);
 	this->refTime = 0;
 	this->cli = 0;
 	InitServer(sockf, port);
@@ -142,7 +142,7 @@ Net::NTPServer::~NTPServer()
 	SDEL_CLASS(this->svr);
 	this->thread.Stop();
 	SDEL_CLASS(this->cli);
-	this->timeServer->Release();
+	this->timeServerHost->Release();
 }
 
 Bool Net::NTPServer::IsError()

@@ -53,10 +53,10 @@ namespace Map
 
 			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage);
 		public:
-			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+			OSMCacheHandler(Text::CString url, Text::CStringNN cacheDir, Int32 maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			virtual ~OSMCacheHandler();
 
-			void AddAlternateURL(Text::CString url);
+			void AddAlternateURL(Text::CStringNN url);
 			void GetStatus(CacheStatus *status);
 			void SetIOMut(Sync::Mutex *ioMut);
 

@@ -77,7 +77,7 @@ IO::ParserType IO::EXEFile::GetParserType() const
 	return IO::ParserType::EXEFile;
 }
 
-void IO::EXEFile::AddProp(Text::CString name, Text::CString value)
+void IO::EXEFile::AddProp(Text::CStringNN name, Text::CStringNN value)
 {
 	if (name.leng != 0 && value.leng != 0)
 	{
@@ -101,7 +101,7 @@ Optional<Text::String> IO::EXEFile::GetPropValue(UOSInt index) const
 	return this->propValues.GetItem(index);
 }
 
-UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
+UOSInt IO::EXEFile::AddImportModule(Text::CStringNN moduleName)
 {
 	NN<ImportInfo> imp;
 	imp = MemAllocNN(ImportInfo);
@@ -110,7 +110,7 @@ UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 	return this->importList.Add(imp);
 }
 
-void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CString funcName)
+void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CStringNN funcName)
 {
 	NN<ImportInfo> imp;
 	if (this->importList.GetItem(modIndex).SetTo(imp))
@@ -225,12 +225,12 @@ UInt16 IO::EXEFile::GetDOSCodeSegm() const
 	return this->envDOS->b16CodeSegm;
 }
 
-void IO::EXEFile::AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
+void IO::EXEFile::AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
 {
 	NN<ResourceInfo> res = MemAllocNN(ResourceInfo);
 	res->name = Text::String::New(name);
 	res->data = MemAlloc(UInt8, dataSize);
-	MemCopyNO((UInt8*)res->data, data, dataSize);
+	MemCopyNO((UInt8*)res->data, data.Ptr(), dataSize);
 	res->dataSize = dataSize;
 	res->codePage = codePage;
 	res->rt = rt;

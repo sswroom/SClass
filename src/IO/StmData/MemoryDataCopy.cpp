@@ -85,7 +85,7 @@ Text::CString IO::StmData::MemoryDataCopy::GetShortName()
 	return CSTR("MemoryCopy");
 }
 
-void IO::StmData::MemoryDataCopy::SetFullName(Text::CString fullName)
+void IO::StmData::MemoryDataCopy::SetFullName(Text::CStringNN fullName)
 {
 	SDEL_STRING(this->stat->fullName);
 	this->stat->fullName = Text::String::New(fullName).Ptr();

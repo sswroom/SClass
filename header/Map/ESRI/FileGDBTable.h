@@ -20,7 +20,7 @@ namespace Map
 			Optional<FileGDBTableInfo> tableInfo;
 			NN<Math::ArcGISPRJParser> prjParser;
 		public:
-			FileGDBTable(Text::CString tableName, NN<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser);
+			FileGDBTable(Text::CStringNN tableName, NN<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser);
 			~FileGDBTable();
 
 			Bool IsError();

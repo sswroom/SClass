@@ -13,7 +13,7 @@ namespace Media
 		typedef struct
 		{
 			NN<Text::String> title;
-			Text::String *artist;
+			Optional<Text::String> artist;
 			NN<Text::String> fileName;
 			Data::Duration timeStart;
 			Data::Duration timeEnd;
@@ -39,7 +39,7 @@ namespace Media
 
 		UOSInt GetCount() const;
 		Optional<Text::String> GetTitle(UOSInt index) const;
-		Text::String *GetArtist(UOSInt index) const;
+		Optional<Text::String> GetArtist(UOSInt index) const;
 		Optional<Text::String> GetFileName(UOSInt index) const;
 		Data::Duration GetTimeStart(UOSInt index) const;
 		Data::Duration GetTimeEnd(UOSInt index) const;

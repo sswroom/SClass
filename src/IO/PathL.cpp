@@ -437,7 +437,7 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess = 0;
 	NN<Text::String> utfPath = Text::String::NewNotNull(path);
-	Text::CString searchPattern;
+	Text::CStringNN searchPattern;
 	Text::CStringNN searchDir;
 	UOSInt i = Text::StrLastIndexOfCharC(utfPath->v, utfPath->leng, '/');
 	DIR *dirObj;

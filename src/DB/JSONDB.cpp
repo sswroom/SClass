@@ -238,7 +238,7 @@ public:
 	}
 };
 
-DB::JSONDB::JSONDB(NN<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
+DB::JSONDB::JSONDB(NN<Text::String> sourceName, Text::CStringNN layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
 {
 	this->layerName = Text::String::New(layerName);
 	this->data = data;

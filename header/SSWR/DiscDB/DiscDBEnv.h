@@ -96,7 +96,7 @@ namespace SSWR
 			Double GetMonitorHDPI(MonitorHandle *hMon);
 			Double GetMonitorDDPI(MonitorHandle *hMon);
 
-			Optional<const BurntDiscInfo> NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts);
+			Optional<const BurntDiscInfo> NewBurntDisc(Text::CStringNN discId, Text::CStringNN discTypeId, const Data::Timestamp &ts);
 			UOSInt GetBurntDiscs(NN<Data::ArrayListNN<BurntDiscInfo>> discList);
 			Optional<const BurntDiscInfo> GetBurntDisc(Text::CStringNN discId);
 			OSInt GetBurntDiscIndex(Text::CStringNN discId);
@@ -107,7 +107,7 @@ namespace SSWR
 			Optional<const DVDTypeInfo> GetDVDType(UOSInt index);
 			OSInt GetDVDTypeIndex(Text::CStringNN discTypeID);
 			Bool ModifyDVDType(Text::CStringNN discTypeID, Text::CStringNN name, Text::CStringNN desc);
-			Optional<const DVDTypeInfo> NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc);
+			Optional<const DVDTypeInfo> NewDVDType(Text::CStringNN discTypeID, Text::CStringNN name, Text::CStringNN desc);
 			UOSInt GetCategories(NN<Data::ArrayListNN<CategoryInfo>> cateList);
 			Optional<const DiscTypeInfo> GetDiscType(Text::CStringNN discTypeId);
 			UOSInt GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>> discTypeList);

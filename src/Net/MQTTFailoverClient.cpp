@@ -33,7 +33,7 @@ Net::MQTTFailoverClient::~MQTTFailoverClient()
 	this->cliList.FreeAll(FreeClient);
 }
 
-void Net::MQTTFailoverClient::AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket)
+void Net::MQTTFailoverClient::AddClient(Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket)
 {
 	NN<ClientInfo> cliInfo = MemAllocNN(ClientInfo);
 	cliInfo->me = this;

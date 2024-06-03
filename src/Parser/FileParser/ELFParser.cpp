@@ -404,7 +404,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 					sptr = Text::StrUOSInt(sptr, i);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
 					sptr2 = &progHdr[readInt32(&secHdr[j + 0])];
-					exef->AddProp(CSTRP(sbuff, sptr), Text::CString(UnsafeArray<const UTF8Char>(sptr2), Text::StrCharCnt(sptr2)));
+					exef->AddProp(CSTRP(sbuff, sptr), Text::CStringNN(UnsafeArray<const UTF8Char>(sptr2), Text::StrCharCnt(sptr2)));
 				}
 
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
@@ -775,7 +775,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 					sptr = Text::StrUOSInt(sptr, i);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
 					sptr2 = &progHdr[readInt32(&secHdr[j + 0])];
-					exef->AddProp(CSTRP(sbuff, sptr), Text::CString(UnsafeArray<const UTF8Char>(sptr2), Text::StrCharCnt(sptr2)));
+					exef->AddProp(CSTRP(sbuff, sptr), Text::CStringNN(UnsafeArray<const UTF8Char>(sptr2), Text::StrCharCnt(sptr2)));
 				}
 
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));

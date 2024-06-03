@@ -23,7 +23,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(NN<Text::String> fileName)
 	this->dataLength = (UOSInt)-1;
 }
 
-IO::StmData::ConcatStreamData::ConcatStreamData(Text::CString fileName)
+IO::StmData::ConcatStreamData::ConcatStreamData(Text::CStringNN fileName)
 {
 	NEW_CLASS(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = Text::String::New(fileName);

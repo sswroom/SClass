@@ -11,10 +11,10 @@
 
 #define DOUBLESIGFIG 17
 
-void Math::WKTWriter::SetLastError(Text::CString lastError)
+void Math::WKTWriter::SetLastError(Text::CStringNN lastError)
 {
-	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(lastError).Ptr();
+	OPTSTR_DEL(this->lastError);
+	this->lastError = Text::String::New(lastError);
 }
 
 void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis)
@@ -278,7 +278,7 @@ Math::WKTWriter::WKTWriter()
 
 Math::WKTWriter::~WKTWriter()
 {
-	SDEL_STRING(this->lastError);
+	OPTSTR_DEL(this->lastError);
 }
 
 Text::CStringNN Math::WKTWriter::GetWriterName() const
@@ -397,7 +397,7 @@ Bool Math::WKTWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geom
 
 }
 
-Text::String *Math::WKTWriter::GetLastError()
+Optional<Text::String> Math::WKTWriter::GetLastError()
 {
 	return this->lastError;
 }

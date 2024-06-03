@@ -9,14 +9,7 @@ Net::WhoisClient::WhoisClient(NN<Net::SocketFactory> sockf, UInt32 whoisIP, Text
 {
 	this->sockf = sockf;
 	this->whoisIP = whoisIP;
-	if (prefix.leng > 0)
-	{
-		this->prefix = Text::String::New(prefix);
-	}
-	else
-	{
-		this->prefix = 0;
-	}
+	this->prefix = Text::String::NewOrNull(prefix);
 }
 
 Net::WhoisClient::~WhoisClient()

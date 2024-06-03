@@ -15,7 +15,7 @@ IO::StmData::MemoryDataRef::MemoryDataRef(const Data::ByteArrayR &data) : data(d
 
 IO::StmData::MemoryDataRef::~MemoryDataRef()
 {
-	SDEL_STRING(this->name);
+	OPTSTR_DEL(this->name);
 }
 
 UOSInt IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer)
@@ -42,18 +42,19 @@ NN<Text::String> IO::StmData::MemoryDataRef::GetFullName()
 
 Text::CString IO::StmData::MemoryDataRef::GetShortName()
 {
-	if (this->name)
+	NN<Text::String> name;
+	if (this->name.SetTo(name))
 	{
-		UOSInt i = this->name->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		return this->name->ToCString().Substring(i + 1);
+		UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		return name->ToCString().Substring(i + 1);
 	}
 	return CSTR("Memory");
 }
 
-void IO::StmData::MemoryDataRef::SetFullName(Text::CString fullName)
+void IO::StmData::MemoryDataRef::SetFullName(Text::CStringNN fullName)
 {
-	SDEL_STRING(this->name);
-	this->name = Text::String::New(fullName).Ptr();
+	OPTSTR_DEL(this->name);
+	this->name = Text::String::New(fullName);
 }
 
 UInt64 IO::StmData::MemoryDataRef::GetDataSize()
@@ -73,7 +74,7 @@ NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UIn
 	if (offset >= this->data.GetSize())
 	{
 		NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.Arr(), 0));
-		if (s.Set(this->name))
+		if (this->name.SetTo(s))
 			data->SetName(s);
 		return data;
 	}
@@ -82,7 +83,7 @@ NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UIn
 		length = this->data.GetSize() - offset;
 	}
 	NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.SubArray(offset, (UOSInt)length)));
-	if (s.Set(this->name))
+	if (this->name.SetTo(s))
 		data->SetName(s);
 	return data;
 }
@@ -104,12 +105,12 @@ UOSInt IO::StmData::MemoryDataRef::GetSeekCount()
 
 void IO::StmData::MemoryDataRef::SetName(Text::CStringNN name)
 {
-	SDEL_STRING(this->name);
-	this->name = Text::String::New(name).Ptr();
+	OPTSTR_DEL(this->name);
+	this->name = Text::String::New(name);
 }
 
 void IO::StmData::MemoryDataRef::SetName(NN<Text::String> name)
 {
-	SDEL_STRING(this->name);
-	this->name = name->Clone().Ptr();
+	OPTSTR_DEL(this->name);
+	this->name = name->Clone();
 }

@@ -32,7 +32,7 @@ namespace Net
 		MQTTFailoverClient(Net::FailoverType foType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds);
 		virtual ~MQTTFailoverClient();
 
-		void AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket);
+		void AddClient(Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket);
 
 		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj);
 		virtual Bool Subscribe(Text::CStringNN topic);

@@ -17,7 +17,7 @@ Media::LPCMSource::LPCMSource(NN<Text::String> name)
 	this->readOfst = 0;
 }
 
-Media::LPCMSource::LPCMSource(Text::CString name)
+Media::LPCMSource::LPCMSource(Text::CStringNN name)
 {
 	this->format.Clear();
 	this->data = 0;

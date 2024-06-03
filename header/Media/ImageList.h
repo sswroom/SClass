@@ -87,7 +87,7 @@ namespace Media
 
 		void SetValueInt32(ValueType valType, Int32 val);
 		void SetValueInt64(ValueType valType, Int64 val);
-		void SetValueStr(ValueType valType, Text::CString val);
+		void SetValueStr(ValueType valType, Text::CStringNN val);
 		Bool ToValueString(NN<Text::StringBuilderUTF8> sb) const;
 
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;

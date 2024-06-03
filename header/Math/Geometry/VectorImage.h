@@ -11,7 +11,7 @@ namespace Math
 		{
 		private:
 			NN<Media::SharedImage> img;
-			Text::String *srcAddr;
+			Optional<Text::String> srcAddr;
 			Math::Coord2DDbl tl;
 			Math::Coord2DDbl br;
 			Math::Coord2DDbl size;
@@ -25,9 +25,9 @@ namespace Math
 			Int32 zIndex;
 			
 		public:
-			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd);
 			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd);
 			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 			virtual ~VectorImage();
 
@@ -50,7 +50,7 @@ namespace Math
 			virtual void MultiplyCoordinatesXY(Double v);
 			virtual UOSInt GetPointCount() const;
 
-			Text::String *GetSourceAddr() const;
+			Optional<Text::String> GetSourceAddr() const;
 			void SetHeight(Double height);
 			Double GetHeight() const;
 			Int64 GetTimeStart() const;
@@ -62,7 +62,7 @@ namespace Math
 			Bool HasZIndex() const;
 			Int32 GetZIndex() const;
 			void GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2) const;
-			void GetVectorSize(Double *sizeX, Double *sizeY) const;
+			Math::Size2DDbl GetVectorSize() const;
 			Bool IsScnCoord() const;
 			void SetBounds(Double minX, Double minY, Double maxX, Double maxY);
 			Optional<Media::StaticImage> GetImage(OptOut<UInt32> imgTimeMS) const;

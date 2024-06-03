@@ -10,28 +10,21 @@ Media::ChapterInfo::ChapterInfo()
 Media::ChapterInfo::~ChapterInfo()
 {
 	UOSInt i;
-	Text::String *s;
+	Optional<Text::String> s;
 	i = this->chapterNames.GetCount();
 	while (i-- > 0)
 	{
-		OPTSTR_DEL(this->chapterNames.GetItem(i));
+		this->chapterNames.GetItemNoCheck(i)->Release();
 		s = this->chapterArtists.GetItem(i);
-		SDEL_STRING(s);
+		OPTSTR_DEL(s);
 	}
 }
 
-void Media::ChapterInfo::AddChapter(UInt32 chapterTime, Text::CString chapterName, Text::CString chapterArtist)
+void Media::ChapterInfo::AddChapter(UInt32 chapterTime, Text::CStringNN chapterName, Text::CString chapterArtist)
 {
 	UOSInt i = this->chapterTimes.SortedInsert(chapterTime);
 	this->chapterNames.Insert(i, Text::String::New(chapterName));
-	if (chapterArtist.leng > 0)
-	{
-		this->chapterArtists.Insert(i, Text::String::New(chapterArtist).Ptr());
-	}
-	else
-	{
-		this->chapterArtists.Insert(i, 0);
-	}
+	this->chapterArtists.Insert(i, Text::String::NewOrNull(chapterArtist));
 }
 
 UOSInt Media::ChapterInfo::GetChapterIndex(Data::Duration currTime)
@@ -58,7 +51,7 @@ Optional<Text::String> Media::ChapterInfo::GetChapterName(UOSInt index)
 	return this->chapterNames.GetItem(index);
 }
 
-Text::String *Media::ChapterInfo::GetChapterArtist(UOSInt index)
+Optional<Text::String> Media::ChapterInfo::GetChapterArtist(UOSInt index)
 {
 	return this->chapterArtists.GetItem(index);
 }

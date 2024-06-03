@@ -576,19 +576,19 @@ Bool Math::TSPReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, UOSInt 
 	switch (colIndex)
 	{
 	case 0:
-		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetColName(GetName(colIndex, rowSize).OrEmpty());
 		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Int32);
 		colDef->SetColSize(11);
 		return true;
 	case 1:
-		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetColName(GetName(colIndex, rowSize).OrEmpty());
 		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Vector);
 		colDef->SetColSize(0x7fffffff);
 		return true;
 	case 2:
-		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetColName(GetName(colIndex, rowSize).OrEmpty());
 		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
 		colDef->SetColSize(3);
@@ -602,7 +602,7 @@ Bool Math::TSPReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, UOSInt 
 	case 9:
 	case 10:
 	case 11:
-		colDef->SetColName(GetName(colIndex, rowSize));
+		colDef->SetColName(GetName(colIndex, rowSize).OrEmpty());
 		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Double);
 		colDef->SetColSize(33);
@@ -804,7 +804,7 @@ Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef)
 	case 5:
 	case 6:
 	case 7:
-		colDef->SetColName(GetName(colIndex));
+		colDef->SetColName(GetName(colIndex).OrEmpty());
 		colDef->SetNotNull(true);
 		colDef->SetColType(DB::DBUtil::CT_Double);
 		colDef->SetColSize(33);

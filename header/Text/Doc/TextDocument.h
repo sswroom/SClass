@@ -27,7 +27,7 @@ namespace Text
 			} PrintStatus;
 
 		private:
-			Text::String *docName;
+			NN<Text::String> docName;
 			PropertiesFlags pflags;
 			UInt32 textColor;
 			UInt32 bgColor;
@@ -44,8 +44,8 @@ namespace Text
 
 			virtual IO::ParserType GetParserType() const;
 
-			void SetDocumentName(Text::CString docName);
-			UnsafeArrayOpt<UTF8Char> GetDocumentName(UnsafeArray<UTF8Char> docName) const;
+			void SetDocumentName(Text::CStringNN docName);
+			UnsafeArray<UTF8Char> GetDocumentName(UnsafeArray<UTF8Char> docName) const;
 			void SetTextColor(UInt32 textColor);
 			Bool GetTextColor(UInt32 *textColor) const;
 			void SetBGColor(UInt32 bgColor);

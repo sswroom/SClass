@@ -163,7 +163,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("5,")))
 			{
 				NN<Text::String> fontName;
-				Text::CString pfontName;
+				Text::CStringNN pfontName = CSTR("");
 				Double fontSize;
 				Bool bold;
 				UInt32 fontColor;

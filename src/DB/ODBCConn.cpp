@@ -352,7 +352,7 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 	return true;
 }
 
-Bool DB::ODBCConn::Connect(Text::CString connStr)
+Bool DB::ODBCConn::Connect(Text::CStringNN connStr)
 {
 	NN<Text::String> s = Text::String::New(connStr);
 	Bool ret = this->Connect(s);
@@ -381,7 +381,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DB
 	this->axisAware = false;
 }
 
-DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;

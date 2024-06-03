@@ -50,12 +50,12 @@ namespace DB
 
 	protected:		
 		Bool Connect(NN<Text::String> connStr);
-		Bool Connect(Text::CString connStr);
+		Bool Connect(Text::CStringNN connStr);
 		ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log);
 	public:
 		ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log);
 		ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log);
-		ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NN<IO::LogTool> log);
+		ODBCConn(Text::CStringNN connStr, Text::CStringNN sourceName, NN<IO::LogTool> log);
 		virtual ~ODBCConn();
 
 		virtual DB::SQLType GetSQLType() const;

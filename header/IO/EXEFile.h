@@ -127,14 +127,14 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		void AddProp(Text::CString name, Text::CString value);
+		void AddProp(Text::CStringNN name, Text::CStringNN value);
 		UOSInt GetPropCount() const;
 		Optional<Text::String> GetPropName(UOSInt index) const;
 		Optional<Text::String> GetPropValue(UOSInt index) const;
 		
 
-		UOSInt AddImportModule(Text::CString moduleName);
-		void AddImportFunc(UOSInt modIndex, Text::CString funcName);
+		UOSInt AddImportModule(Text::CStringNN moduleName);
+		void AddImportFunc(UOSInt modIndex, Text::CStringNN funcName);
 		UOSInt GetImportCount() const;
 		Optional<Text::String> GetImportName(UOSInt modIndex) const;
 		UOSInt GetImportFuncCount(UOSInt modIndex) const;
@@ -151,7 +151,7 @@ namespace IO
 		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs) const;
 		UInt16 GetDOSCodeSegm() const;
 
-		void AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
+		void AddResource(Text::CStringNN name, UnsafeArray<const UInt8> data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
 		UOSInt GetResourceCount() const;
 		Optional<const ResourceInfo> GetResource(UOSInt index) const;
 	public:

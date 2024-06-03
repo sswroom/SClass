@@ -151,11 +151,12 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	return fs;
 }
 
-Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CStringNN cacheDir, Int32 maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
-	if (url.leng > 0)
+	Text::CStringNN nnurl;
+	if (url.SetTo(nnurl) && nnurl.leng > 0)
 	{
-		this->urls.Add(Text::String::New(url));
+		this->urls.Add(Text::String::New(nnurl));
 	}
 	this->urlNext = 0;
 	this->ioMut = 0;
@@ -172,7 +173,7 @@ Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 	this->cacheDir->Release();
 }
 
-void Map::OSM::OSMCacheHandler::AddAlternateURL(Text::CString url)
+void Map::OSM::OSMCacheHandler::AddAlternateURL(Text::CStringNN url)
 {
 	this->urls.Add(Text::String::New(url));
 }

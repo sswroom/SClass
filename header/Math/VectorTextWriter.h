@@ -14,7 +14,7 @@ namespace Math
 
 		virtual Text::CStringNN GetWriterName() const = 0;
 		virtual Bool ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geometry::Vector2D> vec) = 0;
-		virtual Text::String *GetLastError() = 0;
+		virtual Optional<Text::String> GetLastError() = 0;
 	};
 }
 #endif

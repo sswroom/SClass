@@ -526,9 +526,10 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::CStr
 	if (cell == 0)
 		return false;
 	SDEL_STRING(cell->cellURL);
-	if (url.leng > 0)
+	Text::CStringNN nnurl;
+	if (url.SetTo(nnurl) && nnurl.leng > 0)
 	{
-		cell->cellURL = Text::String::New(url).Ptr();
+		cell->cellURL = Text::String::New(nnurl).Ptr();
 	}
 	return true;
 }

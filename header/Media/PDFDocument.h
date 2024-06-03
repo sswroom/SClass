@@ -16,7 +16,7 @@ namespace Media
 
 		Optional<IO::ParsedObject> SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CStringNN ext);
 	public:
-		PDFDocument(NN<Text::String> sourceName, Text::CString version);
+		PDFDocument(NN<Text::String> sourceName, Text::CStringNN version);
 		virtual ~PDFDocument();
 
 		virtual IO::ParserType GetParserType() const;

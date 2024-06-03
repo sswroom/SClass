@@ -344,7 +344,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 					Data::LineChart *chart;
 					NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 					chart->AddXDataDate(currTopic->dateList, recvCnt);
-					chart->AddYData(currTopic->topic.Ptr(), currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
+					chart->AddYData(currTopic->topic, currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);
 				}
@@ -369,7 +369,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 					Data::LineChart *chart;
 					NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 					chart->AddXDataDate(currTopic->dateList, 256);
-					chart->AddYData(currTopic->topic.Ptr(), currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
+					chart->AddYData(currTopic->topic, currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
 					chart->Plot(gimg, 0, 0, UOSInt2Double(sz.x), UOSInt2Double(sz.y));
 					DEL_CLASS(chart);
 					MemFree(dateList);

@@ -91,7 +91,7 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 	while (i < j)
 	{
 		k = this->lvPlaylist->AddItem(Text::String::OrEmpty(this->playlist->GetTitle(i)), (void*)i);
-		if (s.Set(this->playlist->GetArtist(i)))
+		if (this->playlist->GetArtist(i).SetTo(s))
 		{
 			this->lvPlaylist->SetSubItem(k, 1, s);
 		}

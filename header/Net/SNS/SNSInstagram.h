@@ -22,7 +22,7 @@ namespace Net
 			Data::FastStringMapNN<SNSItem> itemMap;
 
 		public:
-			SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId);
+			SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId);
 			virtual ~SNSInstagram();
 
 			virtual Bool IsError();

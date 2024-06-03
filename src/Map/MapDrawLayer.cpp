@@ -43,10 +43,10 @@ OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectI
 	}
 }
 
-Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
-	this->layerName = SCOPY_STRING(layerName);
+	this->layerName = Text::String::CopyOrNull(layerName);
 	this->csys = csys;
 
 	this->pgColor = 0;
@@ -61,7 +61,7 @@ Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Tex
 Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
-	this->layerName = Text::String::New(layerName).Ptr();
+	this->layerName = Text::String::NewOrNull(layerName);
 	this->csys = csys;
 
 	this->pgColor = 0;
@@ -77,7 +77,7 @@ Map::MapDrawLayer::~MapDrawLayer()
 {
 	this->csys.Delete();
 	this->iconImg.Delete();
-	SDEL_STRING(this->layerName);
+	OPTSTR_DEL(this->layerName);
 }
 
 void Map::MapDrawLayer::SetCurrScale(Double scale)
@@ -183,7 +183,7 @@ void Map::MapDrawLayer::SetNameCol(UOSInt nameCol)
 NN<Text::String> Map::MapDrawLayer::GetName() const
 {
 	NN<Text::String> layerName;
-	if (layerName.Set(this->layerName) && this->layerName->leng > 0)
+	if (this->layerName.SetTo(layerName) && layerName->leng > 0)
 	{
 		return layerName;
 	}
@@ -266,8 +266,8 @@ Int32 Map::MapDrawLayer::CalBlockSize()
 
 void Map::MapDrawLayer::SetLayerName(Text::CString name)
 {
-	SDEL_STRING(this->layerName);
-	this->layerName = Text::String::New(name).Ptr();
+	OPTSTR_DEL(this->layerName);
+	this->layerName = Text::String::NewOrNull(name);
 }
 
 Bool Map::MapDrawLayer::IsError() const

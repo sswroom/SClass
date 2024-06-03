@@ -255,7 +255,7 @@ Double SSWR::DiscDB::DiscDBEnv::GetMonitorDDPI(MonitorHandle *hMon)
 	return this->monMgr->GetMonitorDDPI(hMon);
 }
 
-Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::NewBurntDisc(Text::CString discId, Text::CString discTypeId, const Data::Timestamp &ts)
+Optional<const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo> SSWR::DiscDB::DiscDBEnv::NewBurntDisc(Text::CStringNN discId, Text::CStringNN discTypeId, const Data::Timestamp &ts)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -418,7 +418,7 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CS
 	return false;
 }
 
-Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::NewDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
+Optional<const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo> SSWR::DiscDB::DiscDBEnv::NewDVDType(Text::CStringNN discTypeID, Text::CStringNN name, Text::CStringNN desc)
 {
 	NN<DVDTypeInfo> dvdType;
 	if (this->dvdTypeMap.GetC(discTypeID).SetTo(dvdType))

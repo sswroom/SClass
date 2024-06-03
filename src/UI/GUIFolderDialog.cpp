@@ -16,7 +16,7 @@ UI::GUIFolderDialog::~GUIFolderDialog()
 void UI::GUIFolderDialog::SetFolder(Text::CString dirName)
 {
 	OPTSTR_DEL(this->dirName);
-	this->dirName = Text::String::New(dirName);
+	this->dirName = Text::String::NewOrNull(dirName);
 }
 
 NN<Text::String> UI::GUIFolderDialog::GetFolder() const

@@ -56,7 +56,7 @@ Media::Jasper::JasperReport::~JasperReport()
 		NN<JasperParameter> param = this->params.GetItemNoCheck(i);
 		param->name->Release();
 		param->className->Release();
-		SDEL_STRING(param->defValueExp);
+		OPTSTR_DEL(param->defValueExp);
 		MemFreeNN(param);
 	}
 	this->detailList.DeleteAll();
@@ -173,14 +173,7 @@ void Media::Jasper::JasperReport::AddParameter(Text::String *name, Text::String 
 	NN<JasperParameter> param = MemAllocNN(JasperParameter);
 	param->name = name->Clone();
 	param->className = className->Clone();
-	if (defValueExp.v == 0)
-	{
-		param->defValueExp = 0;
-	}
-	else
-	{
-		param->defValueExp = Text::String::New(defValueExp).Ptr();
-	}
+	param->defValueExp = Text::String::NewOrNull(defValueExp);
 	this->params.Add(param);
 }
 

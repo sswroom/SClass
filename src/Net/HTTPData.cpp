@@ -183,7 +183,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	fdh->objectCnt++;
 }
 
-Net::HTTPData::HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload)
+Net::HTTPData::HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;
@@ -344,7 +344,7 @@ Text::CString Net::HTTPData::GetShortName()
 	return fdh->fileName;
 }
 
-void Net::HTTPData::SetFullName(Text::CString fullName)
+void Net::HTTPData::SetFullName(Text::CStringNN fullName)
 {
 	if (fdh == 0 || fullName.leng == 0)
 		return;

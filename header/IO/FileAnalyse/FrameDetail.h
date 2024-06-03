@@ -39,7 +39,7 @@ namespace IO
 			Data::ArrayListNN<FieldInfo> fields;
 			
 			static void FreeFieldInfo(NN<FieldInfo> field);
-			void AddFieldInfo(UInt64 ofst, UInt64 size, Text::CString name, Text::CString value, FieldType fieldType);
+			void AddFieldInfo(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value, FieldType fieldType);
 		public:
 			FrameDetail(UInt64 ofst, UInt64 size);
 			virtual ~FrameDetail();

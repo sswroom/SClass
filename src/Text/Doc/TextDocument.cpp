@@ -5,22 +5,20 @@
 
 Text::Doc::TextDocument::TextDocument() : IO::ParsedObject(CSTR("Untitled"))
 {
-	this->docName = 0;
+	this->docName = Text::String::New(CSTR("Untitled"));
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;
-	SetDocumentName(CSTR("Untitled"));
 }
 
 Text::Doc::TextDocument::TextDocument(Text::CStringNN name) : IO::ParsedObject(name)
 {
-	this->docName = 0;
+	this->docName = Text::String::New(name);
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;
-	SetDocumentName(name);
 }
 
 Text::Doc::TextDocument::~TextDocument()
 {
 	this->items.DeleteAll();
-	SDEL_STRING(this->docName);
+	this->docName->Release();
 }
 
 IO::ParserType Text::Doc::TextDocument::GetParserType() const
@@ -28,16 +26,14 @@ IO::ParserType Text::Doc::TextDocument::GetParserType() const
 	return IO::ParserType::TextDocument;
 }
 
-void Text::Doc::TextDocument::SetDocumentName(Text::CString docName)
+void Text::Doc::TextDocument::SetDocumentName(Text::CStringNN docName)
 {
-	SDEL_STRING(this->docName);
-	this->docName = Text::String::New(docName).Ptr();
+	this->docName->Release();
+	this->docName = Text::String::New(docName);
 }
 
-UnsafeArrayOpt<UTF8Char> Text::Doc::TextDocument::GetDocumentName(UnsafeArray<UTF8Char> docName) const
+UnsafeArray<UTF8Char> Text::Doc::TextDocument::GetDocumentName(UnsafeArray<UTF8Char> docName) const
 {
-	if (this->docName == 0)
-		return 0;
 	return this->docName->ConcatTo(docName);
 }
 

@@ -19,7 +19,7 @@ Optional<IO::ParsedObject> Media::PDFDocument::SetPObjName(Optional<IO::ParsedOb
 	return pobj;
 }
 
-Media::PDFDocument::PDFDocument(NN<Text::String> sourceName, Text::CString version) : IO::ParsedObject(sourceName)
+Media::PDFDocument::PDFDocument(NN<Text::String> sourceName, Text::CStringNN version) : IO::ParsedObject(sourceName)
 {
 	this->version = Text::String::New(version);
 }

@@ -6,12 +6,12 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName, NN<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName, NN<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 }
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, NN<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName, NN<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 }

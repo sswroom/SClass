@@ -7,16 +7,16 @@ namespace Math
 	class CesiumEntityWriter : public VectorTextWriter
 	{
 	private:
-		Text::String *lastError;
+		Optional<Text::String> lastError;
 
-		void SetLastError(Text::CString lastError);
+		void SetLastError(Text::CStringNN lastError);
 	public:
 		CesiumEntityWriter();
 		virtual ~CesiumEntityWriter();
 
 		virtual Text::CStringNN GetWriterName() const;
 		virtual Bool ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geometry::Vector2D> vec);
-		virtual Text::String *GetLastError();
+		virtual Optional<Text::String> GetLastError();
 	};
 }
 #endif

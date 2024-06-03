@@ -13,13 +13,13 @@
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 
-Math::CoordinateSystem::CoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
+Math::CoordinateSystem::CoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName) : IO::ParsedObject(sourceName)
 {
 	this->csysName = Text::String::New(csysName);
 	this->srid = srid;
 }
 
-Math::CoordinateSystem::CoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
+Math::CoordinateSystem::CoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName) : IO::ParsedObject(sourceName)
 {
 	this->csysName = Text::String::New(csysName);
 	this->srid = srid;

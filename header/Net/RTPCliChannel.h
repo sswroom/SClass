@@ -64,7 +64,7 @@ namespace Net
 		static UInt32 __stdcall PlayThread(AnyType userObj);
 
 	private:
-		void SetControlURL(Text::CString url);
+		void SetControlURL(Text::CStringNN url);
 		void SetPlayControl(Net::IRTPController *playCtrl);
 
 		RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);

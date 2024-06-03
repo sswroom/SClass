@@ -19,7 +19,7 @@ namespace IO
 		Data::Timestamp stateSince;
 
 	public:
-		VBoxVMInfo(Text::CString name);
+		VBoxVMInfo(Text::CStringNN name);
 		~VBoxVMInfo();
 
 		NN<Text::String> GetName() const;

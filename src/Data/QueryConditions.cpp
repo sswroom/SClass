@@ -876,7 +876,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(NN<Data::VariItem
 	}
 }
 
-Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(Text::CStringNN fieldName, Text::CString val) : FieldCondition(fieldName)
+Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::New(val);
 }
@@ -1394,7 +1394,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrContains(Text::CStringNN fie
 	return *this;
 }
 
-NN<Data::QueryConditions> Data::QueryConditions::StrEquals(Text::CStringNN fieldName, Text::CString val)
+NN<Data::QueryConditions> Data::QueryConditions::StrEquals(Text::CStringNN fieldName, Text::CStringNN val)
 {
 	NN<StringEqualsCondition> cond;
 	NEW_CLASSNN(cond, StringEqualsCondition(fieldName, val));

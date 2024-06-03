@@ -23,7 +23,7 @@ namespace SSWR
 				NN<Text::String> fileName;
 				UInt64 fileSize;
 			public:
-				MyFile(Text::CString fileName, UInt64 fileSize);
+				MyFile(Text::CStringNN fileName, UInt64 fileSize);
 				virtual ~MyFile();
 
 				Bool ToString(NN<Text::StringBuilderUTF8> sb) const;

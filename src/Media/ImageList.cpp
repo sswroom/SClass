@@ -216,7 +216,7 @@ void Media::ImageList::SetValueInt64(Media::ImageList::ValueType valType, Int64 
 	this->valTypeI64.Add(valType);
 }
 
-void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CString val)
+void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CStringNN val)
 {
 	this->valStr.Add(Text::String::New(val));
 	this->valTypeStr.Add(valType);

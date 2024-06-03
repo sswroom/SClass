@@ -423,9 +423,10 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 
 Net::HTTPMyClient::HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
 {
-	if (userAgent.IsNull())
+	Text::CStringNN nnuserAgent;
+	if (!userAgent.SetTo(nnuserAgent))
 	{
-		userAgent = CSTR("sswr/1.0");
+		nnuserAgent = CSTR("sswr/1.0");
 	}
 #if defined(LOGREPLY)
 	UTF8Char sbuff[512];
@@ -448,7 +449,7 @@ Net::HTTPMyClient::HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLE
 	this->buffOfst = 0;
 	this->contEnc = 0;
 	this->timeout = 120000;
-	this->userAgent = Text::String::New(userAgent);
+	this->userAgent = Text::String::New(nnuserAgent);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 }
 

@@ -189,7 +189,7 @@ namespace Data
 			NN<Text::String> val;
 
 		public:
-			StringEqualsCondition(Text::CStringNN fieldName, Text::CString val);
+			StringEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val);
 			virtual ~StringEqualsCondition();
 
 			virtual ConditionType GetType();
@@ -278,7 +278,7 @@ namespace Data
 		NN<QueryConditions> StrIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
 		NN<QueryConditions> StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
 		NN<QueryConditions> StrContains(Text::CStringNN fieldName, UnsafeArray<const UTF8Char> val);
-		NN<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CString val);
+		NN<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CStringNN val);
 		NN<QueryConditions> BoolEquals(Text::CStringNN fieldName, Bool val);
 		NN<QueryConditions> NotNull(Text::CStringNN fieldName);
 

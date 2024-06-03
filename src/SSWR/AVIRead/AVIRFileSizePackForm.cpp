@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
 
-SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(Text::CString fileName, UInt64 fileSize)
+SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(Text::CStringNN fileName, UInt64 fileSize)
 {
 	this->fileName = Text::String::New(fileName);
 	this->fileSize = fileSize;

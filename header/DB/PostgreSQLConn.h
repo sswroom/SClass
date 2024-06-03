@@ -33,7 +33,7 @@ namespace DB
 
 	public:
 		PostgreSQLConn(NN<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NN<Text::String> database, NN<IO::LogTool> log);
-		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log);
+		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CStringNN database, NN<IO::LogTool> log);
 		virtual ~PostgreSQLConn();
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
@@ -63,7 +63,7 @@ namespace DB
 		NN<Text::String> GetConnDB() const;
 		Optional<Text::String> GetConnUID() const;
 		Optional<Text::String> GetConnPWD() const;
-		Bool ChangeDatabase(Text::CString databaseName);
+		Bool ChangeDatabase(Text::CStringNN databaseName);
 
 		UInt32 GetGeometryOid() const;
 		UInt32 GetSTGeometryOid() const;
@@ -72,7 +72,7 @@ namespace DB
 
 		static Text::CString ExecStatusTypeGetName(OSInt status);
 		static Optional<DBTool> CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

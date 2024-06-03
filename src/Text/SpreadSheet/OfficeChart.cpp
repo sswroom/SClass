@@ -38,7 +38,7 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 
 Text::SpreadSheet::OfficeChart::~OfficeChart()
 {
-	SDEL_STRING(this->titleText);
+	OPTSTR_DEL(this->titleText);
 	SDEL_CLASS(this->shapeProp);
 	this->axes.DeleteAll();
 	this->series.DeleteAll();
@@ -66,11 +66,11 @@ Double Text::SpreadSheet::OfficeChart::GetHInch()
 
 void Text::SpreadSheet::OfficeChart::SetTitleText(Text::CString titleText)
 {
-	SDEL_STRING(this->titleText);
-	this->titleText = Text::String::New(titleText).Ptr();
+	OPTSTR_DEL(this->titleText);
+	this->titleText = Text::String::NewOrNull(titleText);
 }
 
-Text::String *Text::SpreadSheet::OfficeChart::GetTitleText()
+Optional<Text::String> Text::SpreadSheet::OfficeChart::GetTitleText()
 {
 	return this->titleText;
 }

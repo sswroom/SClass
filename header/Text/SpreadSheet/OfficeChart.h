@@ -39,7 +39,7 @@ namespace Text
 			Double yInch;
 			Double wInch;
 			Double hInch;
-			Text::String *titleText;
+			Optional<Text::String> titleText;
 			OfficeShapeProp *shapeProp;
 			Bool hasLegend;
 			LegendPos legendPos;
@@ -61,7 +61,7 @@ namespace Text
 			Double GetHInch();
 
 			void SetTitleText(Text::CString titleText);
-			Text::String *GetTitleText();
+			Optional<Text::String> GetTitleText();
 
 			OfficeShapeProp *GetShapeProp();
 			void SetShapeProp(OfficeShapeProp *shapeProp);

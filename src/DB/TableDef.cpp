@@ -141,7 +141,7 @@ DB::TableDef *DB::TableDef::SetSchemaName(Text::CString schemaName)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetTableName(Text::CString tableName)
+DB::TableDef *DB::TableDef::SetTableName(Text::CStringNN tableName)
 {
 	this->tableName->Release();
 	this->tableName = Text::String::New(tableName);

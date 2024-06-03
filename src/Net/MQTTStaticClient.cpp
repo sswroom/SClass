@@ -47,11 +47,16 @@ void __stdcall Net::MQTTStaticClient::OnDisconnect(AnyType userObj)
 
 void Net::MQTTStaticClient::Connect()
 {
+	NN<Text::String> host;
+	if (!this->host.SetTo(host))
+	{
+		return;
+	}
 	Net::MQTTConn *conn;
 	if (this->webSocket)
 	{
 		NN<Net::WebSocketClient> ws;
-		NEW_CLASSNN(ws, Net::WebSocketClient(this->sockf, this->ssl, this->host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
+		NEW_CLASSNN(ws, Net::WebSocketClient(this->sockf, this->ssl, host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
 		if (ws->IsDown())
 		{
 			ws.Delete();
@@ -62,7 +67,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	else
 	{
-		NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
+		NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
 	}
 	if (conn->IsError())
 	{
@@ -82,7 +87,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	mutUsage.EndUse();
 
-	Bool succ = conn->SendConnect(4, this->kaSeconds, this->clientId->ToCString(), this->username->ToCString(), this->password->ToCString());
+	Bool succ = conn->SendConnect(4, this->kaSeconds, this->clientId->ToCString(), OPTSTR_CSTR(this->username), OPTSTR_CSTR(this->password));
 	if (succ)
 	{
 		Net::MQTTConn::ConnectStatus status = conn->WaitConnAck(30000);
@@ -167,14 +172,14 @@ Net::MQTTStaticClient::MQTTStaticClient(NN<Net::SocketFactory> sockf, Net::MQTTC
 	this->Init(sockf, hdlr, userObj, errLog);
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(sockf, hdlr, userObj, errLog);
 	this->ssl = ssl;
-	this->host = Text::String::New(host).Ptr();
+	this->host = Text::String::New(host);
 	this->port = port;
-	this->username = Text::String::New(username).Ptr();
-	this->password = Text::String::New(password).Ptr();
+	this->username = Text::String::NewOrNull(username);
+	this->password = Text::String::NewOrNull(password);
 	this->kaSeconds = kaSeconds;
 	this->webSocket = webSocket;
 
@@ -189,9 +194,9 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 	SDEL_CLASS(this->conn);
 	mutUsage.EndUse();
 	LIST_FREE_STRING(&this->topicList);
-	SDEL_STRING(this->username);
-	SDEL_STRING(this->password);
-	this->host->Release();
+	OPTSTR_DEL(this->username);
+	OPTSTR_DEL(this->password);
+	OPTSTR_DEL(this->host);
 	this->clientId->Release();
 }
 

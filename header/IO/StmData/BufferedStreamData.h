@@ -23,7 +23,7 @@ namespace IO
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
 			virtual NN<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
-			virtual void SetFullName(Text::CString fullName);
+			virtual void SetFullName(Text::CStringNN fullName);
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 

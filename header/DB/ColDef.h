@@ -69,7 +69,7 @@ namespace DB
 
 		static void AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize);
 	public:
-		ColDef(Text::CString colName);
+		ColDef(Text::CStringNN colName);
 		ColDef(NN<Text::String> colName);
 		~ColDef();
 
@@ -91,7 +91,7 @@ namespace DB
 		UInt32 GetGeometrySRID() const;
 
 		void SetColName(UnsafeArray<const UTF8Char> colName);
-		void SetColName(Text::CString colName);
+		void SetColName(Text::CStringNN colName);
 		void SetColName(NN<Text::String> colName);
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetNativeType(Optional<Text::String> nativeType);

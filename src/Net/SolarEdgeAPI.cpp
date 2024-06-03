@@ -37,7 +37,7 @@ Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 	return Text::JSONBase::ParseJSONStr(sb.ToCString());
 }
 
-Net::SolarEdgeAPI::SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey)
+Net::SolarEdgeAPI::SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN apikey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

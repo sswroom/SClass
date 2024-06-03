@@ -225,7 +225,7 @@ namespace SSWR
 			ErrorType GetErrorType();
 			Text::CStringNN GetLang(Text::CStringNN name);
 			virtual Text::String *GetCacheDir() = 0;
-			virtual Text::CString GetMapFont() = 0;
+			virtual Text::CStringNN GetMapFont() = 0;
 
 			UOSInt GetCategories(NN<Data::ArrayListNN<Category>> categories);
 			virtual UOSInt GetGroupItems(NN<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp) = 0;

@@ -15,7 +15,7 @@ namespace Crypto
 			Data::FastStringMapNN<Crypto::Cert::X509Cert> certMap;
 			NN<Text::String> storeName;
 		public:
-			CertStore(Text::CString name);
+			CertStore(Text::CStringNN name);
 			CertStore(NN<Text::String> name);
 			virtual ~CertStore();
 

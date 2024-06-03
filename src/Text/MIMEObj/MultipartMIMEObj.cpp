@@ -157,31 +157,17 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NN<Text::String> contentType, Text::String *defMsg, NN<Text::String> boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NN<Text::String> contentType, Optional<Text::String> defMsg, NN<Text::String> boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	this->contentType = contentType->Clone();
-	if (defMsg)
-	{
-		this->defMsg = defMsg->Clone().Ptr();
-	}
-	else
-	{
-		this->defMsg = 0;
-	}
+	this->defMsg = Text::String::CopyOrNull(defMsg);
 	this->boundary = boundary->Clone();
 }
 
 Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	this->contentType = Text::String::New(contentType);
-	if (defMsg.leng > 0)
-	{
-		this->defMsg = Text::String::New(defMsg).Ptr();
-	}
-	else
-	{
-		this->defMsg = 0;
-	}
+	this->defMsg = Text::String::NewOrNull(defMsg);
 	this->boundary = Text::String::New(boundary);
 }
 
@@ -200,20 +186,13 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, T
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("\""));
 	this->contentType = Text::String::New(sbc.ToCString());
-	if (defMsg.leng > 0)
-	{
-		this->defMsg = Text::String::New(defMsg).Ptr();
-	}
-	else
-	{
-		this->defMsg = 0;
-	}
+	this->defMsg = Text::String::NewOrNull(defMsg);
 }
 
 Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 {
 	this->contentType->Release();
-	SDEL_STRING(this->defMsg);
+	OPTSTR_DEL(this->defMsg);
 	this->boundary->Release();
 	this->parts.DeleteAll();
 }
@@ -236,10 +215,11 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	UOSInt j;
 	NN<MIMEMessage> part;
 	Text::StringBuilderUTF8 sbc;
-	if (this->defMsg)
+	NN<Text::String> defMsg;
+	if (this->defMsg.SetTo(defMsg))
 	{
-		len = this->defMsg->leng;
-		stm->Write(this->defMsg->v, len);
+		len = defMsg->leng;
+		stm->Write(defMsg->v, len);
 		ret += len;
 	}
 	i = 0;
@@ -284,7 +264,7 @@ NN<Text::IMIMEObj> Text::MIMEObj::MultipartMIMEObj::Clone() const
 	return obj;
 }
 
-Text::String *Text::MIMEObj::MultipartMIMEObj::GetDefMsg() const
+Optional<Text::String> Text::MIMEObj::MultipartMIMEObj::GetDefMsg() const
 {
 	return this->defMsg;
 }

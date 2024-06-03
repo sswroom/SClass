@@ -28,7 +28,7 @@ namespace Net
 		static Optional<const UAEntry> GetUserAgentInfo(UnsafeArray<const UTF8Char> userAgent);
 		static UAEntry *GetUAEntryList(UOSInt *cnt);
 		static void ParseUserAgent(NN<UAEntry> ent, Text::CStringNN userAgent);
-		static Text::CString FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser);
+		static Text::CStringNN FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser);
 	};
 }
 #endif

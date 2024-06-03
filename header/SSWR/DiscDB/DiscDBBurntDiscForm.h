@@ -94,7 +94,7 @@ namespace SSWR
 			UInt64 SearchSubDir(UnsafeArray<const UTF8Char> absPath, UnsafeArray<const UTF8Char> relPath, UInt64 maxSize);
 
 			void BurntFileUpdateVideo(NN<BurntFile> file);
-			NN<BurntFile> BurntFileNew(Text::CStringNN fileName, Text::CString relPath, UInt64 fileSize);
+			NN<BurntFile> BurntFileNew(Text::CStringNN fileName, Text::CStringNN relPath, UInt64 fileSize);
 			static void BurntFileFree(NN<BurntFile> file);
 
 			MovieCols *MovieColsNew(Text::CStringNN fileName); //

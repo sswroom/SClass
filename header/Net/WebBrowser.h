@@ -21,7 +21,7 @@ namespace Net
 
 		UnsafeArrayOpt<UTF8Char> GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
 	public:
-		WebBrowser(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString cacheDir);
+		WebBrowser(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN cacheDir);
 		~WebBrowser();
 
 		IO::StreamData *GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType);

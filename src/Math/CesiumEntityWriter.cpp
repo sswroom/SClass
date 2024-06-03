@@ -7,10 +7,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void Math::CesiumEntityWriter::SetLastError(Text::CString lastError)
+void Math::CesiumEntityWriter::SetLastError(Text::CStringNN lastError)
 {
-	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(lastError).Ptr();
+	OPTSTR_DEL(this->lastError);
+	this->lastError = Text::String::New(lastError);
 }
 
 Math::CesiumEntityWriter::CesiumEntityWriter()
@@ -20,7 +20,7 @@ Math::CesiumEntityWriter::CesiumEntityWriter()
 
 Math::CesiumEntityWriter::~CesiumEntityWriter()
 {
-	SDEL_STRING(this->lastError);
+	OPTSTR_DEL(this->lastError);
 }
 
 Text::CStringNN Math::CesiumEntityWriter::GetWriterName() const
@@ -167,7 +167,7 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 
 }
 
-Text::String *Math::CesiumEntityWriter::GetLastError()
+Optional<Text::String> Math::CesiumEntityWriter::GetLastError()
 {
 	return this->lastError;
 }

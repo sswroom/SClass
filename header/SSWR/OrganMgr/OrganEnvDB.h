@@ -33,7 +33,7 @@ namespace SSWR
 
 			Text::String *GetDataDir();
 			virtual Text::String *GetCacheDir();
-			virtual Text::CString GetMapFont();
+			virtual Text::CStringNN GetMapFont();
 
 			virtual UOSInt GetGroupItems(NN<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp);
 			virtual UOSInt GetGroupImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganGroup> grp);

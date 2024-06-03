@@ -56,7 +56,7 @@ UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char>
 	}
 }
 
-Net::WebBrowser::WebBrowser(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString cacheDir) : queue(sockf, ssl)
+Net::WebBrowser::WebBrowser(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN cacheDir) : queue(sockf, ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

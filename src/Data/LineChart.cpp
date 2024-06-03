@@ -232,7 +232,7 @@ void Data::LineChart::SetFontHeightPt(Double ptSize)
 		fntSizePt = ptSize;
 }
 
-void Data::LineChart::SetFontName(Text::CString name)
+void Data::LineChart::SetFontName(Text::CStringNN name)
 {
 	this->fntName->Release();
 	this->fntName = Text::String::New(name);
@@ -307,7 +307,7 @@ UInt32 Data::LineChart::GetRndColor()
 	return 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
-void Data::LineChart::AddYDataDate(Text::String *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYDataDate(NN<Text::String> name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int64 *newVals;
 	newVals = MemAlloc(Int64, valCnt);
@@ -315,7 +315,7 @@ void Data::LineChart::AddYDataDate(Text::String *name, Int64 *value, UOSInt valC
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DateTicks, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYDataDate(Text::CString name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYDataDate(Text::CStringNN name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int64 *newVals;
 	newVals = MemAlloc(Int64, valCnt);
@@ -323,7 +323,7 @@ void Data::LineChart::AddYDataDate(Text::CString name, Int64 *value, UOSInt valC
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DateTicks, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYData(Text::String *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYData(NN<Text::String> name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int32 *newVals;
 	newVals = MemAlloc(Int32, valCnt);
@@ -331,7 +331,7 @@ void Data::LineChart::AddYData(Text::String *name, Int32 *value, UOSInt valCnt, 
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::Integer, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYData(Text::CString name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYData(Text::CStringNN name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int32 *newVals;
 	newVals = MemAlloc(Int32, valCnt);
@@ -339,7 +339,7 @@ void Data::LineChart::AddYData(Text::CString name, Int32 *value, UOSInt valCnt, 
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::Integer, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYData(Text::String *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYData(NN<Text::String> name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Double *newVals;
 	newVals = MemAlloc(Double, valCnt);
@@ -347,7 +347,7 @@ void Data::LineChart::AddYData(Text::String *name, Double *value, UOSInt valCnt,
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::Chart::DataType::DOUBLE, lineColor, lineStyle));
 }
 
-void Data::LineChart::AddYData(Text::CString name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+void Data::LineChart::AddYData(Text::CStringNN name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Double *newVals;
 	newVals = MemAlloc(Double, valCnt);
@@ -1676,7 +1676,7 @@ UnsafeArrayOpt<UTF8Char> Data::LineChart::GetLegend(UnsafeArray<UTF8Char> sbuff,
 	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
 }
 
-Data::LineChart::ChartData::ChartData(Text::String *name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+Data::LineChart::ChartData::ChartData(NN<Text::String> name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	this->name = name->Clone();
 	this->data = data;
@@ -1686,7 +1686,7 @@ Data::LineChart::ChartData::ChartData(Text::String *name, void *data, UOSInt dat
 	this->lineStyle = lineStyle;
 }
 
-Data::LineChart::ChartData::ChartData(Text::CString name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+Data::LineChart::ChartData::ChartData(Text::CStringNN name, void *data, UOSInt dataCnt, Data::Chart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	this->name = Text::String::New(name);
 	this->data = data;

@@ -15,7 +15,7 @@ namespace Media
 			Data::RandomOS rnd;
 			NN<Media::DrawEngine> deng;
 			Media::ABlend::AlphaBlend8_8 ablend;
-			Text::String *watermark;
+			Optional<Text::String> watermark;
 			Media::Batch::BatchHandler *hdlr;
 
 		public:

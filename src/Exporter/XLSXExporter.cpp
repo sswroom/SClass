@@ -613,9 +613,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
 					sb.AppendC(UTF8STRC("<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"));
 					sb.AppendC(UTF8STRC("<c:chart>"));
-					if (chart->GetTitleText())
+					if (chart->GetTitleText().SetTo(s))
 					{
-						AppendTitle(sb, chart->GetTitleText()->v);
+						
+						AppendTitle(sb, s->v);
 					}
 					sb.AppendC(UTF8STRC("<c:plotArea>"));
 					sb.AppendC(UTF8STRC("<c:layout/>"));

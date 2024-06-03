@@ -98,7 +98,7 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 	NN<IO::StreamData> fd;
 	if (!fd.Set(stat->data))
 	{
-		SDEL_STRING(stat->name);
+		OPTSTR_DEL(stat->name);
 		stat->url->Release();
 		stat.Delete();
 	}
@@ -117,7 +117,7 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 		}
 		if (!pobj.SetTo(nnpobj) || nnpobj->GetParserType() != IO::ParserType::ImageList)
 		{
-			SDEL_STRING(stat->name);
+			OPTSTR_DEL(stat->name);
 			stat->url->Release();
 			stat.Delete();
 			pobj.Delete();
@@ -175,7 +175,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 				fd.Delete();
 				if (!pobj.SetTo(nnpobj) || nnpobj->GetParserType() != IO::ParserType::ImageList)
 				{
-					SDEL_STRING(stat->name);
+					OPTSTR_DEL(stat->name);
 					stat->url->Release();
 					stat.Delete();
 					pobj.Delete();
@@ -259,7 +259,7 @@ Map::WebImageLayer::~WebImageLayer()
 	while (i-- > 0)
 	{
 		stat = this->pendingList.GetItemNoCheck(i);
-		SDEL_STRING(stat->name);
+		OPTSTR_DEL(stat->name);
 		stat->url->Release();
 		stat.Delete();
 	}
@@ -269,7 +269,7 @@ Map::WebImageLayer::~WebImageLayer()
 	while (i-- > 0)
 	{
 		stat = this->loadingList.GetItemNoCheck(i);
-		SDEL_STRING(stat->name);
+		OPTSTR_DEL(stat->name);
 		stat->url->Release();
 		if (stat->data)
 		{
@@ -283,7 +283,7 @@ Map::WebImageLayer::~WebImageLayer()
 	while (i-- > 0)
 	{
 		stat = this->loadedList.GetItemNoCheck(i);
-		SDEL_STRING(stat->name);
+		OPTSTR_DEL(stat->name);
 		stat->url->Release();
 		if (stat->simg)
 		{
@@ -491,7 +491,7 @@ Bool Map::WebImageLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *na
 	NN<Map::WebImageLayer::ImageStat> stat;
 	if (GetImageStat((Int32)id).SetTo(stat))
 	{
-		sb->Append(stat->name);
+		sb->AppendOpt(stat->name);
 		return true;
 	}
 	else
@@ -607,7 +607,7 @@ void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 	}
 }
 
-void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
+void Map::WebImageLayer::AddImage(Text::CString name, Text::CStringNN url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
 {
 	NN<ImageStat> stat;
 	NEW_CLASSNN(stat, ImageStat());
@@ -615,14 +615,7 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 z
 	stat->url = Text::String::New(url);
 	stat->simg = 0;
 	stat->data = 0;
-	if (name.leng > 0)
-	{
-		stat->name = Text::String::New(name).Ptr();
-	}
-	else
-	{
-		stat->name = 0;
-	}
+	stat->name = Text::String::NewOrNull(name);
 	stat->timeStart = timeStart;
 	stat->timeEnd = timeEnd;
 	if (timeStart != 0)

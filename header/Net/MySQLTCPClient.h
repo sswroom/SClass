@@ -55,7 +55,7 @@ namespace Net
 		UInt32 svrCap;
 		UInt16 svrCS;
 		UInt16 connStatus;
-		Text::String *lastError;
+		Optional<Text::String> lastError;
 
 		Sync::Mutex cmdMut;
 		Sync::Event cmdEvt;
@@ -65,13 +65,13 @@ namespace Net
 		CmdResultType cmdResultType;
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
-		void SetLastError(Text::CString errMsg);
+		void SetLastError(Text::CStringNN errMsg);
 
 		void SendExecuteStmt(UInt32 stmtId);
 		void SendStmtClose(UInt32 stmtId);
 	public:
 		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database);
-		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
+		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CStringNN userName, Text::CStringNN password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -116,7 +116,7 @@ namespace Net
 
 		static UInt16 GetDefaultPort();
 		static Optional<DB::DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DB::DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DB::DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

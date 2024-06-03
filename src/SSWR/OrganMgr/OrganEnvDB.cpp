@@ -316,7 +316,7 @@ Text::String *SSWR::OrganMgr::OrganEnvDB::GetCacheDir()
 	return this->cfgCacheDir;
 }
 
-Text::CString SSWR::OrganMgr::OrganEnvDB::GetMapFont()
+Text::CStringNN SSWR::OrganMgr::OrganEnvDB::GetMapFont()
 {
 	if (this->cfgMapFont)
 	{

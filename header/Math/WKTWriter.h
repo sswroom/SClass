@@ -14,10 +14,10 @@ namespace Math
 	class WKTWriter : public VectorTextWriter
 	{
 	private:
-		Text::String *lastError;
+		Optional<Text::String> lastError;
 		Bool reverseAxis;
 
-		void SetLastError(Text::CString lastError);
+		void SetLastError(Text::CStringNN lastError);
 		static void AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis);
 		static void AppendPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polygon> pg, Bool reverseAxis);
 		static void AppendPolyline(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polyline> pl, Bool reverseAxis);
@@ -32,7 +32,7 @@ namespace Math
 
 		virtual Text::CStringNN GetWriterName() const;
 		virtual Bool ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geometry::Vector2D> vec);
-		virtual Text::String *GetLastError();
+		virtual Optional<Text::String> GetLastError();
 
 		void SetReverseAxis(Bool reverseAxis);
 	};

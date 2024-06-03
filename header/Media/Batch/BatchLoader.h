@@ -45,7 +45,7 @@ namespace Media
 			BatchLoader(NN<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr);
 			~BatchLoader();
 			
-			void AddFileName(Text::CString fileName);
+			void AddFileName(Text::CStringNN fileName);
 			void AddImageData(NN<IO::StreamData> data, Text::CStringNN fileId);
 			Bool IsProcessing();
 		};

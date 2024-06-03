@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/VBoxVMInfo.h"
 
-IO::VBoxVMInfo::VBoxVMInfo(Text::CString name)
+IO::VBoxVMInfo::VBoxVMInfo(Text::CStringNN name)
 {
 	this->name = Text::String::New(name);
 	this->state = State::Unknown;

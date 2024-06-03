@@ -56,7 +56,7 @@ UOSInt UI::GUIFileDialog::GetFilterIndex()
 void UI::GUIFileDialog::SetFileName(Text::CString fileName)
 {
 	OPTSTR_DEL(this->fileName);
-	this->fileName = Text::String::New(fileName);
+	this->fileName = Text::String::NewOrNull(fileName);
 }
 
 NN<Text::String> UI::GUIFileDialog::GetFileName() const

@@ -526,13 +526,13 @@ Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> c
 		switch (colIndex)
 		{
 		case 0:
-			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColName(GetName(colIndex, setting).OrEmpty());
 			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 			colDef->SetColSize(32);
 			colDef->SetColDP(0);
 			return true;
 		case 1:
-			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColName(GetName(colIndex, setting).OrEmpty());
 			colDef->SetColType(DB::DBUtil::CT_VarUTF8Char);
 			colDef->SetColSize(32);
 			colDef->SetColDP(0);
@@ -544,26 +544,26 @@ Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> c
 		switch (colIndex)
 		{
 		case 0:
-			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColName(GetName(colIndex, setting).OrEmpty());
 			colDef->SetColType(DB::DBUtil::CT_Int32);
 			colDef->SetColSize(11);
 			colDef->SetColDP(0);
 			colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
 			return true;
 		case 1:
-			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColName(GetName(colIndex, setting).OrEmpty());
 			colDef->SetColType(DB::DBUtil::CT_DateTime);
 			colDef->SetColSize(0);
 			colDef->SetColDP(0);
 			return true;
 		case 2:
-			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColName(GetName(colIndex, setting).OrEmpty());
 			colDef->SetColType(DB::DBUtil::CT_Double);
 			colDef->SetColSize(32);
 			colDef->SetColDP(1);
 			return true;
 		case 3:
-			colDef->SetColName(GetName(colIndex, setting));
+			colDef->SetColName(GetName(colIndex, setting).OrEmpty());
 			colDef->SetColType(DB::DBUtil::CT_Double);
 			colDef->SetColSize(32);
 			colDef->SetColDP(1);

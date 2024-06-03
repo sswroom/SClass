@@ -8,13 +8,13 @@ void IO::FileAnalyse::FrameDetail::FreeFieldInfo(NN<FieldInfo> field)
 	MemFreeNN(field);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value, FieldType fieldType)
+void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value, FieldType fieldType)
 {
 	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->ofst = ofst;
 	field->size = size;
 	field->name = Text::String::New(name);
-	field->value = Text::String::New(value);
+	field->value = Text::String::New(value.OrEmpty());
 	field->fieldType = fieldType;
 	this->fields.Add(field);
 }

@@ -4,7 +4,7 @@
 #include "Parser/FileParser/JKSParser.h"
 #include "Parser/FileParser/X509Parser.h"
 
-Crypto::Cert::CertStore::CertStore(Text::CString name)
+Crypto::Cert::CertStore::CertStore(Text::CStringNN name)
 {
 	this->storeName = Text::String::New(name);
 }

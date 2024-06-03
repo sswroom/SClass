@@ -86,11 +86,12 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString user
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024));
-	if (userAgent.v == 0)
+	Text::CStringNN nnuserAgent;
+	if (!userAgent.SetTo(nnuserAgent))
 	{
-		userAgent = CSTR("sswr/1.0");
+		nnuserAgent = CSTR("sswr/1.0");
 	}
-	this->clsData->userAgent = Text::String::New(userAgent);
+	this->clsData->userAgent = Text::String::New(nnuserAgent);
 }
 
 Net::HTTPOSClient::~HTTPOSClient()

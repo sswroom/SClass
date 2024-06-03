@@ -74,7 +74,7 @@ Text::CString IO::StmData::BufferedStreamData::GetShortName()
 	return this->stmData->GetShortName();
 }
 
-void IO::StmData::BufferedStreamData::SetFullName(Text::CString fullName)
+void IO::StmData::BufferedStreamData::SetFullName(Text::CStringNN fullName)
 {
 	this->stmData->SetFullName(fullName);
 }

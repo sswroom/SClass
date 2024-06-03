@@ -569,7 +569,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						}
 						sb.AppendC(UTF8STRC("<Icon><href>"));
 						//////////////////////////////////////////////////////
-						sb.Append(img->GetSourceAddr());
+						sb.AppendOpt(img->GetSourceAddr());
 						sb.AppendC(UTF8STRC("</href></Icon>"));
 
 						bounds = img->GetBounds();
@@ -585,7 +585,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						sb.AppendDouble(bounds.min.y);
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
-						img->GetVectorSize(&bounds.min.x, &bounds.min.x);
+						bounds.min = img->GetVectorSize();
 						sb.AppendC(UTF8STRC("<size x=\""));
 						sb.AppendDouble(bounds.min.x);
 						sb.AppendC(UTF8STRC("\" y=\""));
@@ -647,7 +647,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						}
 						sb.AppendC(UTF8STRC("<Icon><href>"));
 						///////////////////////////////////////////////////////
-						sb.Append(img->GetSourceAddr());
+						sb.AppendOpt(img->GetSourceAddr());
 						sb.AppendC(UTF8STRC("</href></Icon>"));
 						sb.AppendC(UTF8STRC("<LatLonBox>"));
 

@@ -44,7 +44,7 @@ namespace DB
 		TableDef *AddCol(NN<DB::ColDef> col);
 		TableDef *SetDatabaseName(Text::CString databaseName);
 		TableDef *SetSchemaName(Text::CString schemaName);
-		TableDef *SetTableName(Text::CString tableName);
+		TableDef *SetTableName(Text::CStringNN tableName);
 		TableDef *SetEngine(Text::CString engine);
 		TableDef *SetCharset(Text::CString charset);
 		TableDef *SetAttr(UnsafeArrayOpt<const UTF8Char> attr);

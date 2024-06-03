@@ -34,7 +34,7 @@ namespace UI
 		virtual ~GUIMapTreeView();
 
 		virtual OSInt EventBeginLabelEdit(NN<TreeItem> item);
-		virtual OSInt EventEndLabelEdit(NN<TreeItem> item, const UTF8Char *newLabel);
+		virtual OSInt EventEndLabelEdit(NN<TreeItem> item, UnsafeArray<const UTF8Char> newLabel);
 		virtual void EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem);
 		virtual Text::CStringNN GetObjectClass() const;
 

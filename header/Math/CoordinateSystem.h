@@ -72,8 +72,8 @@ namespace Math
 		NN<Text::String> csysName;
 		UInt32 srid;
 
-		CoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName);
-		CoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName);
+		CoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CStringNN csysName);
+		CoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CStringNN csysName);
 	public:
 		virtual ~CoordinateSystem();
 

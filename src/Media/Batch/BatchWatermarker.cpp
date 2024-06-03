@@ -14,15 +14,16 @@ Media::Batch::BatchWatermarker::BatchWatermarker(NN<Media::DrawEngine> deng, Med
 
 Media::Batch::BatchWatermarker::~BatchWatermarker()
 {
-	SDEL_STRING(this->watermark);
+	OPTSTR_DEL(this->watermark);
 }
 			
 void Media::Batch::BatchWatermarker::SetWatermark(Text::CString watermark)
 {
-	SDEL_STRING(this->watermark);
-	if (watermark.leng > 0)
+	OPTSTR_DEL(this->watermark);
+	Text::CStringNN nnwatermark;
+	if (watermark.SetTo(nnwatermark) && nnwatermark.leng > 0)
 	{
-		this->watermark = Text::String::New(watermark).Ptr();
+		this->watermark = Text::String::New(nnwatermark);
 	}
 }
 
@@ -35,14 +36,13 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 {
 	if (this->hdlr == 0)
 		return;
-	if (this->watermark == 0 || this->watermark->leng == 0)
+
+	NN<Text::String> watermark;
+	if (!this->watermark.SetTo(watermark) || watermark->leng == 0)
 	{
 		this->hdlr->ImageOutput(imgList, fileId, subId);
 		return;
 	}
-	NN<Text::String> watermark;
-	if (!watermark.Set(this->watermark))
-		return;
 	UOSInt i;
 	UOSInt j;
 	NN<Media::StaticImage> simg;
@@ -70,7 +70,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 				while (true)
 				{
 					f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-					sz = tmpImg->GetTextSize(f, this->watermark->ToCString());
+					sz = tmpImg->GetTextSize(f, watermark->ToCString());
 					if (sz.x == 0 || sz.y == 0)
 					{
 						tmpImg->DelFont(f);

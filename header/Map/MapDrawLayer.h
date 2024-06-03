@@ -47,7 +47,7 @@ namespace Map
 	protected:
 		UOSInt nameCol;
 		NN<Math::CoordinateSystem> csys;
-		Text::String *layerName;
+		Optional<Text::String> layerName;
 
 		UInt32 pgColor;
 		UInt32 lineColor;
@@ -89,7 +89,7 @@ namespace Map
 
 		typedef void (__stdcall *UpdatedHandler)(AnyType userObj);
 
-		MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NN<Math::CoordinateSystem> csys);
+		MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Optional<Text::String> layerName, NN<Math::CoordinateSystem> csys);
 		MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys);
 		virtual ~MapDrawLayer();
 

@@ -48,7 +48,7 @@ namespace IO
 		Data::FastStringMapNN<ProgramItem> progMap;
 		Data::FastStringMap<Int64> fileTimeMap;
 		Sync::Mutex errorMsgMut;
-		Text::String *errorMsg;
+		Optional<Text::String> errorMsg;
 		NN<Text::String> basePath;
 		IO::Writer *messageWriter;
 		IO::Writer *cmdWriter;
@@ -78,7 +78,7 @@ namespace IO
 		Bool CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest);
 		Bool TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> sb);
 
-		void SetErrorMsg(Text::CString msg);
+		void SetErrorMsg(Text::CStringNN msg);
 	public:
 		SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();

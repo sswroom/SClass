@@ -12,18 +12,18 @@ namespace Media
 	private:
 		Data::ArrayListUInt32 chapterTimes;
 		Data::ArrayListStringNN chapterNames;
-		Data::ArrayList<Text::String *> chapterArtists;
+		Data::ArrayList<Optional<Text::String>> chapterArtists;
 
 	public:
 		ChapterInfo();
 		~ChapterInfo();
 
-		void AddChapter(UInt32 chapterTime, Text::CString chapterName, Text::CString chapterArtist);
+		void AddChapter(UInt32 chapterTime, Text::CStringNN chapterName, Text::CString chapterArtist);
 		UOSInt GetChapterIndex(Data::Duration currTime);
 		UInt32 GetChapterTime(UOSInt index);
 		UOSInt GetChapterCnt();
 		Optional<Text::String> GetChapterName(UOSInt index);
-		Text::String *GetChapterArtist(UOSInt index);
+		Optional<Text::String> GetChapterArtist(UOSInt index);
 	};
 }
 #endif

@@ -5,7 +5,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/StaticImage.h"
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
+Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -23,7 +23,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = SCOPY_STRING(srcAddr);
+	this->srcAddr = Text::String::CopyOrNull(srcAddr);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -49,7 +49,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::String::New(srcAddr).Ptr();
+	this->srcAddr = Text::String::NewOrNull(srcAddr);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -57,7 +57,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 	this->zIndex = 0;
 }
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
+Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Optional<Text::String> srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -75,7 +75,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = SCOPY_STRING(srcAddr);
+	this->srcAddr = Text::String::CopyOrNull(srcAddr);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -101,7 +101,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::String::New(srcAddr).Ptr();
+	this->srcAddr = Text::String::NewOrNull(srcAddr);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -112,7 +112,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img
 Math::Geometry::VectorImage::~VectorImage()
 {
 	this->img.Delete();
-	SDEL_STRING(this->srcAddr);
+	OPTSTR_DEL(this->srcAddr);
 }
 
 Math::Geometry::Vector2D::VectorType Math::Geometry::VectorImage::GetVectorType() const
@@ -360,7 +360,7 @@ UOSInt Math::Geometry::VectorImage::GetPointCount() const
 	return 4;
 }
 
-Text::String *Math::Geometry::VectorImage::GetSourceAddr() const
+Optional<Text::String> Math::Geometry::VectorImage::GetSourceAddr() const
 {
 	return this->srcAddr;
 }
@@ -462,10 +462,9 @@ void Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHei
 	*y2 = scnY + sizeY;
 }
 
-void Math::Geometry::VectorImage::GetVectorSize(Double *sizeX, Double *sizeY) const
+Math::Size2DDbl Math::Geometry::VectorImage::GetVectorSize() const
 {
-	*sizeX = this->size.x;
-	*sizeY = this->size.y;
+	return this->size;
 }
 
 Bool Math::Geometry::VectorImage::IsScnCoord() const

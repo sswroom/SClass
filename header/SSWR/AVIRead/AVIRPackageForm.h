@@ -92,11 +92,11 @@ namespace SSWR
 			NN<IO::PackageFile> packFile;
 			IO::PackageFile *rootPackFile;
 			Bool packNeedDelete;
-			Text::String *initSel;
+			Optional<Text::String> initSel;
 
 			Sync::Mutex statusFileMut;
 			Bool statusFileChg;
-			Text::String *statusFile;
+			Optional<Text::String> statusFile;
 			UInt64 statusFileSize;
 			UInt64 statusDispSize;
 			Double statusDispSpd;
@@ -121,7 +121,7 @@ namespace SSWR
 			Data::DateTime readReadTime;
 
 			Sync::Mutex progMut;
-			Text::String *progName;
+			Optional<Text::String> progName;
 			UInt64 progStartCnt;
 			Bool progStarted;
 			UInt64 progUpdateCurr;

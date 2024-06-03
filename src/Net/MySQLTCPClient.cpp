@@ -2001,10 +2001,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MySQLTCPClient::SetLastError(Text::CString errMsg)
+void Net::MySQLTCPClient::SetLastError(Text::CStringNN errMsg)
 {
-	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(errMsg).Ptr();
+	OPTSTR_DEL(this->lastError);
+	this->lastError = Text::String::New(errMsg);
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
 	this->GetLastErrorMsg(sb);
@@ -2069,7 +2069,7 @@ Net::MySQLTCPClient::MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::
 	this->Reconnect();
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CStringNN userName, Text::CStringNN password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -2113,7 +2113,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 	this->password->Release();
 	OPTSTR_DEL(this->database);
 	SDEL_STRING(this->svrVer);
-	SDEL_STRING(this->lastError);
+	OPTSTR_DEL(this->lastError);
 }
 
 DB::SQLType Net::MySQLTCPClient::GetSQLType() const
@@ -2333,19 +2333,20 @@ void Net::MySQLTCPClient::CloseReader(NN<DB::DBReader> r)
 
 void Net::MySQLTCPClient::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	if (this->lastError)
+	NN<Text::String> lastError;
+	if (this->lastError.SetTo(lastError))
 	{
-		if (this->lastError->v[0] == '#')
+		if (lastError->v[0] == '#')
 		{
 			str->AppendUTF8Char('[');
-			str->AppendC(&this->lastError->v[1], 5);
+			str->AppendC(&lastError->v[1], 5);
 			str->AppendUTF8Char(']');
 			str->AppendUTF8Char(' ');
-			str->AppendC(&this->lastError->v[6], this->lastError->leng - 6);
+			str->AppendC(&lastError->v[6], lastError->leng - 6);
 		}
 		else
 		{
-			str->Append(this->lastError);
+			str->Append(lastError);
 		}
 	}
 }
@@ -2603,7 +2604,7 @@ Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> so
 	}
 }
 
-Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;

@@ -17,7 +17,7 @@ namespace Media
 
 	protected:
 		LPCMSource(NN<Text::String> name);
-		LPCMSource(Text::CString name);
+		LPCMSource(Text::CStringNN name);
 		void SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format);
 	public:
 		LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format, NN<Text::String> name);

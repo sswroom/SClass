@@ -17,7 +17,7 @@ void __stdcall Media::Playlist::OnPBEnd(AnyType userObj)
 void Media::Playlist::FreeEntry(NN<PlaylistEntry> ent)
 {
 	ent->title->Release();
-	SDEL_STRING(ent->artist);
+	OPTSTR_DEL(ent->artist);
 	ent->fileName->Release();
 	MemFreeNN(ent);
 }
@@ -60,7 +60,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 
 
 	Media::ChapterInfo *chap = file->GetChapterInfo();
-	Text::String *artist;
+	NN<Text::String> artist;
 	UOSInt i;
 	UOSInt j;
 	Data::Duration nextTime;
@@ -83,10 +83,9 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 			ent = MemAllocNN(PlaylistEntry);
 			ent->fileName = Text::String::New(fileName.v, fileName.leng);
 			ent->title = Text::String::OrEmpty(chap->GetChapterName(i))->Clone();
-			artist = chap->GetChapterArtist(i);
-			if (artist)
+			if (chap->GetChapterArtist(i).SetTo(artist))
 			{
-				ent->artist = artist->Clone().Ptr();
+				ent->artist = artist->Clone();
 			}
 			else
 			{
@@ -129,6 +128,7 @@ Bool Media::Playlist::AppendPlaylist(NN<Media::Playlist> playlist)
 	UOSInt j;
 	NN<PlaylistEntry> ent;
 	NN<PlaylistEntry> plent;
+	NN<Text::String> s;
 	i = 0;
 	j = playlist->entries.GetCount();
 	while (i < j)
@@ -137,9 +137,9 @@ Bool Media::Playlist::AppendPlaylist(NN<Media::Playlist> playlist)
 		ent = MemAllocNN(PlaylistEntry);
 		ent->fileName = plent->fileName->Clone();
 		ent->title = plent->title->Clone();
-		if (plent->artist)
+		if (plent->artist.SetTo(s))
 		{
-			ent->artist = plent->artist->Clone().Ptr();
+			ent->artist = s->Clone().Ptr();
 		}
 		else
 		{
@@ -171,7 +171,7 @@ Optional<Text::String> Media::Playlist::GetTitle(UOSInt index) const
 	return ent->title;
 }
 
-Text::String *Media::Playlist::GetArtist(UOSInt index) const
+Optional<Text::String> Media::Playlist::GetArtist(UOSInt index) const
 {
 	NN<PlaylistEntry> ent;
 	if (!this->entries.GetItem(index).SetTo(ent))

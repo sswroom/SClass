@@ -24,7 +24,7 @@ namespace Map
 			NN<Text::String> url;
 			Media::SharedImage *simg;
 			IO::StreamData *data;
-			Text::String *name;
+			Optional<Text::String> name;
 			Int64 timeStart;
 			Int64 timeEnd;
 			Int32 zIndex;
@@ -101,7 +101,7 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
-		void AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude);
+		void AddImage(Text::CString name, Text::CStringNN url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude);
 	};
 }
 #endif

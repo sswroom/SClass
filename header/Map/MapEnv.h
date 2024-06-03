@@ -163,7 +163,7 @@ namespace Map
 		UOSInt GetLineStyleLayerCnt(UOSInt index) const;
 
 		//-1 = error
-		UOSInt AddFontStyle(Text::CStringNN styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
+		UOSInt AddFontStyle(Text::CStringNN styleName, Text::CStringNN fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, Text::CString name);
 		UnsafeArrayOpt<UTF8Char> GetFontStyleName(UOSInt index, UnsafeArray<UTF8Char> buff) const;
 		Bool RemoveFontStyle(UOSInt index);
@@ -174,14 +174,14 @@ namespace Map
 		UOSInt AddLayer(Optional<GroupItem> group, NN<Map::MapDrawLayer> layer, Bool needRelease);
 		Bool ReplaceLayer(Optional<GroupItem> group, UOSInt index, NN<Map::MapDrawLayer> layer, Bool needRelease);
 		NN<GroupItem> AddGroup(Optional<GroupItem> group, NN<Text::String> subgroupName);
-		NN<GroupItem> AddGroup(Optional<GroupItem> group, Text::CString subgroupName);
+		NN<GroupItem> AddGroup(Optional<GroupItem> group, Text::CStringNN subgroupName);
 		void RemoveItem(Optional<GroupItem> group, UOSInt index);
 		void MoveItem(Optional<GroupItem> group, UOSInt fromIndex, UOSInt toIndex);
 		void MoveItem(Optional<GroupItem> fromGroup, UOSInt fromIndex, Optional<GroupItem> toGroup, UOSInt toIndex);
 		UOSInt GetItemCount(Optional<GroupItem> group) const;
 		Optional<MapItem> GetItem(Optional<GroupItem> group, UOSInt index) const;
 		NN<Text::String> GetGroupName(NN<GroupItem> group) const;
-		void SetGroupName(NN<GroupItem> group, Text::CString name);
+		void SetGroupName(NN<GroupItem> group, Text::CStringNN name);
 		void SetGroupHide(NN<GroupItem> group, Bool isHide);
 		Bool GetGroupHide(NN<GroupItem> group) const;
 		Bool GetLayerProp(NN<LayerItem> setting, Optional<GroupItem> group, UOSInt index) const;

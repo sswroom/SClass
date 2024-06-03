@@ -218,7 +218,7 @@ Media::Batch::BatchLoader::~BatchLoader()
 	}
 }
 
-void Media::Batch::BatchLoader::AddFileName(Text::CString fileName)
+void Media::Batch::BatchLoader::AddFileName(Text::CStringNN fileName)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->fileNames.Put(Text::String::New(fileName).Ptr());
