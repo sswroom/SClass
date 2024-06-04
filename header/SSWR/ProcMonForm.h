@@ -22,7 +22,7 @@ namespace SSWR
 		typedef struct
 		{
 			NN<Text::String> progName;
-			Text::String *progPath;
+			Optional<Text::String> progPath;
 			UOSInt procId;
 		} ProgInfo;
 	private:
@@ -51,7 +51,7 @@ namespace SSWR
 		NN<UI::ListBoxLogger> logger;
 		Text::String *notifyCmd;
 
-		void AddProg(Text::CString progName, Text::CString progPath);
+		void AddProg(Text::CStringNN progName, Text::CString progPath);
 		Bool SearchProcId(NN<ProgInfo> prog);
 		void SetByProcId(ProgInfo *prog, UOSInt procId);
 		void LoadProgList();

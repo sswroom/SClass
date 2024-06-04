@@ -9,20 +9,13 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
+void SSWR::ProcMonForm::AddProg(Text::CStringNN progName, Text::CString progPath)
 {
 	NN<SSWR::ProcMonForm::ProgInfo> prog;
 	prog = MemAllocNN(ProgInfo);
 	prog->progName = Text::String::New(progName);
 	prog->procId = 0;
-	if (progPath.leng > 0)
-	{
-		prog->progPath = Text::String::New(progPath).Ptr();
-	}
-	else
-	{
-		prog->progPath = 0;
-	}
+	prog->progPath = Text::String::NewOrNull(progPath);
 	this->progList.Add(prog);
 	this->lbProg->AddItem(prog->progName, prog);
 
@@ -35,7 +28,7 @@ void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 {
 	NN<Text::String> progPath;
-	if (!progPath.Set(prog->progPath))
+	if (!prog->progPath.SetTo(progPath))
 		return false;
 
 	UTF8Char sbuff[512];
@@ -80,7 +73,7 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 		Text::StringBuilderUTF8 sb;
 		if (proc.GetFilename(sb))
 		{
-			SDEL_STRING(prog->progPath);
+			OPTSTR_DEL(prog->progPath);
 			prog->progPath = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 			prog->procId = procId;
 			this->txtProgPath->SetText(sb.ToCString());
@@ -131,6 +124,7 @@ void SSWR::ProcMonForm::SaveProgList()
 	UOSInt i;
 	UOSInt j;
 	NN<ProgInfo> prog;
+	NN<Text::String> progPath;
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
@@ -144,9 +138,9 @@ void SSWR::ProcMonForm::SaveProgList()
 		sb.ClearStr();
 		sb.Append(prog->progName);
 		sb.AppendC(UTF8STRC(","));
-		if (prog->progPath)
+		if (prog->progPath.SetTo(progPath))
 		{
-			sb.Append(prog->progPath);
+			sb.Append(progPath);
 		}
 		writer.WriteLine(sb.ToCString());
 		i++;
@@ -158,10 +152,11 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(AnyType userObj)
 	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> progPath;
 	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem().p;
-	if (prog && prog->progPath)
+	if (prog && prog->progPath.SetTo(progPath))
 	{
-		me->txtProgPath->SetText(prog->progPath->ToCString());
+		me->txtProgPath->SetText(progPath->ToCString());
 	}
 	else
 	{
@@ -234,11 +229,12 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UOSInt i;
 	NN<ProgInfo> prog;
+	NN<Text::String> progPath;
 	i = me->progList.GetCount();
 	while (i-- > 0)
 	{
 		prog = me->progList.GetItemNoCheck(i);
-		if (prog->progPath != 0)
+		if (prog->progPath.SetTo(progPath))
 		{
 			if (prog->procId != 0)
 			{
@@ -257,7 +253,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 			{
 				if (!me->SearchProcId(prog))
 				{
-					Manage::Process proc(prog->progPath->v);
+					Manage::Process proc(progPath->v);
 					if (proc.IsRunning())
 					{
 						prog->procId = proc.GetProcId();
@@ -364,7 +360,7 @@ SSWR::ProcMonForm::~ProcMonForm()
 	while (i-- > 0)
 	{
 		prog = this->progList.GetItemNoCheck(i);
-		SDEL_STRING(prog->progPath);
+		OPTSTR_DEL(prog->progPath);
 		prog->progName->Release();
 		MemFreeNN(prog);
 	}

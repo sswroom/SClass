@@ -1443,7 +1443,7 @@ Optional<SSWR::OrganWeb::SpeciesInfo> SSWR::OrganWeb::OrganWebEnv::SpeciesGetByN
 	return this->spNameMap.GetNN(sname);
 }
 
-Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId)
+Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN sciName, Int32 groupId, Text::CStringNN description, Text::CStringNN dirName, Text::CStringNN idKey, Int32 cateId)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -1753,7 +1753,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMove(NN<Sync::RWMutexUsage> mutUsage, I
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CStringNN sciName, Text::CString description, Text::CString dirName)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN sciName, Text::CStringNN description, Text::CStringNN dirName)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<SpeciesInfo> species;
@@ -1952,7 +1952,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NN<Sync::RWMutexUsage> mutUsage, 
 	return this->SpeciesDelete(mutUsage, srcSpeciesId);
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location)
+Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CStringNN location)
 {
 	if (!imgURL.StartsWith(UTF8STRC("http://")) && !imgURL.StartsWith(UTF8STRC("https://")))
 		return false;
@@ -3172,7 +3172,7 @@ Optional<SSWR::OrganWeb::GroupInfo> SSWR::OrganWeb::OrganWebEnv::GroupGet(NN<Syn
 	return this->groupMap.Get(id);
 }
 
-Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags)
+Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN engName, Text::CStringNN chiName, Int32 parentId, Text::CStringNN descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<GroupInfo> group;
@@ -3229,7 +3229,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Tex
 	return 0;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::GroupModify(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags)
+Bool SSWR::OrganWeb::OrganWebEnv::GroupModify(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN descr, Int32 groupTypeId, GroupFlags flags)
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<GroupInfo> group;

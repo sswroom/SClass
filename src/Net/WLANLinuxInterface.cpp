@@ -35,7 +35,7 @@ void Net::WLANLinuxInterface::Reopen()
 	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 }
 
-Net::WLANLinuxInterface::WLANLinuxInterface(Text::CString name, void *id, Net::WirelessLAN::INTERFACE_STATE state)
+Net::WLANLinuxInterface::WLANLinuxInterface(Text::CStringNN name, void *id, Net::WirelessLAN::INTERFACE_STATE state)
 {
 	this->name = Text::String::New(name);
 	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);

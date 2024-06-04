@@ -7,7 +7,7 @@
 #include "Map/ESRI/ESRITileMap.h"
 #include "Text/MyString.h"
 
-Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CString cacheDir)
+Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CStringNN cacheDir)
 {
 	this->esriMap = esriMap;
 	this->toRelease = toRelease;

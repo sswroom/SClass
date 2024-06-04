@@ -61,21 +61,21 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'o': //owner/creator and session identifier
 				if (Text::StrSplitP(sarr, 7, {&sbuff[2], (UOSInt)(sptr - &sbuff[2])}, ' ') == 6)
 				{
-					SDEL_STRING(this->userName);
-					SDEL_STRING(this->sessId);
-					SDEL_STRING(this->sessVer);
-					SDEL_STRING(this->userAddrType);
-					SDEL_STRING(this->userAddrHost);
-					this->userName = Text::String::New(sarr[0].ToCString()).Ptr();
-					this->sessId = Text::String::New(sarr[1].ToCString()).Ptr();
-					this->sessVer = Text::String::New(sarr[2].ToCString()).Ptr();
-					this->userAddrType = Text::String::New(sarr[4].ToCString()).Ptr();
-					this->userAddrHost = Text::String::New(sarr[5].ToCString()).Ptr();
+					OPTSTR_DEL(this->userName);
+					OPTSTR_DEL(this->sessId);
+					OPTSTR_DEL(this->sessVer);
+					OPTSTR_DEL(this->userAddrType);
+					OPTSTR_DEL(this->userAddrHost);
+					this->userName = Text::String::New(sarr[0].ToCString());
+					this->sessId = Text::String::New(sarr[1].ToCString());
+					this->sessVer = Text::String::New(sarr[2].ToCString());
+					this->userAddrType = Text::String::New(sarr[4].ToCString());
+					this->userAddrHost = Text::String::New(sarr[5].ToCString());
 				}
 				break;
 			case 's': //session name
-				SDEL_STRING(this->sessName);
-				this->sessName = Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2])).Ptr();
+				OPTSTR_DEL(this->sessName);
+				this->sessName = Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 				break;
 			case 'i': //session information
 				this->sessDesc.Add(Text::String::New(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
@@ -108,14 +108,14 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'a': //zero or more session attribute lines
 				if (optcurrMedia.SetTo(currMedia))
 				{
-					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)).Ptr());
+					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				else
 				{
 					if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=tool:")))
 					{
-						SDEL_STRING(this->sessTool);
-						this->sessTool = Text::String::NewP(&sbuff[7], sptr).Ptr();
+						OPTSTR_DEL(this->sessTool);
+						this->sessTool = Text::String::NewP(&sbuff[7], sptr);
 					}
 					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=recvonly")))
 					{
@@ -134,18 +134,18 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 					}
 					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=type:")))
 					{
-						SDEL_STRING(this->sessType);
-						this->sessType = Text::String::NewP(UARR(sbuff) + 7, sptr).Ptr();
+						OPTSTR_DEL(this->sessType);
+						this->sessType = Text::String::NewP(UARR(sbuff) + 7, sptr);
 					}
 					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=charset:")))
 					{
-						SDEL_STRING(this->sessCharset);
-						this->sessCharset = Text::String::NewP(&sbuff[10], sptr).Ptr();
+						OPTSTR_DEL(this->sessCharset);
+						this->sessCharset = Text::String::NewP(&sbuff[10], sptr);
 					}
 					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=control:")))
 					{
-						SDEL_STRING(this->sessControl);
-						this->sessControl = Text::String::NewP(&sbuff[10], sptr).Ptr();
+						OPTSTR_DEL(this->sessControl);
+						this->sessControl = Text::String::NewP(&sbuff[10], sptr);
 					}
 				}
 				break;
@@ -179,17 +179,17 @@ Net::SDPFile::~SDPFile()
 	UOSInt i;
 	NN<Data::ArrayListStrUTF8> currMedia;
 	MemFree(this->buff);
-	SDEL_STRING(this->sessName);
-	SDEL_STRING(this->userName);
-	SDEL_STRING(this->sessId);
-	SDEL_STRING(this->sessVer);
-	SDEL_STRING(this->userAddrType);
-	SDEL_STRING(this->userAddrHost);
-	SDEL_STRING(this->sessTool);
-	SDEL_STRING(this->sessType);
-	SDEL_STRING(this->sessCharset);
-	SDEL_STRING(this->sessControl);
-	SDEL_STRING(this->reqUserAgent);
+	OPTSTR_DEL(this->sessName);
+	OPTSTR_DEL(this->userName);
+	OPTSTR_DEL(this->sessId);
+	OPTSTR_DEL(this->sessVer);
+	OPTSTR_DEL(this->userAddrType);
+	OPTSTR_DEL(this->userAddrHost);
+	OPTSTR_DEL(this->sessTool);
+	OPTSTR_DEL(this->sessType);
+	OPTSTR_DEL(this->sessCharset);
+	OPTSTR_DEL(this->sessControl);
+	OPTSTR_DEL(this->reqUserAgent);
 
 	i = this->sessDesc.GetCount();
 	while (i-- > 0)
@@ -234,38 +234,38 @@ void Net::SDPFile::SetVersion(Int32 version)
 
 void Net::SDPFile::SetUserName(Text::CString userName)
 {
-	SDEL_STRING(this->userName);
-	this->userName = Text::String::New(userName).Ptr();
+	OPTSTR_DEL(this->userName);
+	this->userName = Text::String::NewOrNull(userName);
 }
 
 void Net::SDPFile::SetSessName(Text::CString sessName)
 {
-	SDEL_STRING(this->sessName);
-	this->sessName = Text::String::New(sessName).Ptr();
+	OPTSTR_DEL(this->sessName);
+	this->sessName = Text::String::NewOrNull(sessName);
 }
 
 void Net::SDPFile::SetSessId(Text::CString sessId)
 {
-	SDEL_STRING(this->sessId);
-	this->sessId = Text::String::New(sessId).Ptr();
+	OPTSTR_DEL(this->sessId);
+	this->sessId = Text::String::NewOrNull(sessId);
 }
 
 void Net::SDPFile::SetSessVer(Text::CString sessVer)
 {
-	SDEL_STRING(this->sessVer);
-	this->sessVer = Text::String::New(sessVer).Ptr();
+	OPTSTR_DEL(this->sessVer);
+	this->sessVer = Text::String::NewOrNull(sessVer);
 }
 
 void Net::SDPFile::SetUserAddrType(Text::CString userAddrType)
 {
-	SDEL_STRING(this->userAddrType);
-	this->userAddrType = Text::String::New(userAddrType).Ptr();
+	OPTSTR_DEL(this->userAddrType);
+	this->userAddrType = Text::String::NewOrNull(userAddrType);
 }
 
 void Net::SDPFile::SetUserAddrHost(Text::CString userAddrHost)
 {
-	SDEL_STRING(this->userAddrHost);
-	this->userAddrHost = Text::String::New(userAddrHost).Ptr();
+	OPTSTR_DEL(this->userAddrHost);
+	this->userAddrHost = Text::String::NewOrNull(userAddrHost);
 }
 
 void Net::SDPFile::SetStartTime(Int64 startTime)
@@ -280,32 +280,32 @@ void Net::SDPFile::SetEndTime(Int64 endTime)
 
 void Net::SDPFile::SetSessTool(Text::CString sessTool)
 {
-	SDEL_STRING(this->sessTool);
-	this->sessTool = Text::String::New(sessTool).Ptr();
+	OPTSTR_DEL(this->sessTool);
+	this->sessTool = Text::String::NewOrNull(sessTool);
 }
 
 void Net::SDPFile::SetSessType(Text::CString sessType)
 {
-	SDEL_STRING(this->sessType);
-	this->sessType = Text::String::New(sessType).Ptr();
+	OPTSTR_DEL(this->sessType);
+	this->sessType = Text::String::NewOrNull(sessType);
 }
 
 void Net::SDPFile::SetSessCharset(Text::CString sessCharset)
 {
-	SDEL_STRING(this->sessCharset);
-	this->sessCharset = Text::String::New(sessCharset).Ptr();
+	OPTSTR_DEL(this->sessCharset);
+	this->sessCharset = Text::String::NewOrNull(sessCharset);
 }
 
 void Net::SDPFile::SetSessControl(Text::CString sessControl)
 {
-	SDEL_STRING(this->sessControl);
-	this->sessControl = Text::String::New(sessControl).Ptr();
+	OPTSTR_DEL(this->sessControl);
+	this->sessControl = Text::String::NewOrNull(sessControl);
 }
 
 void Net::SDPFile::SetReqUserAgent(Text::CString userAgent)
 {
-	SDEL_STRING(this->reqUserAgent);
-	this->reqUserAgent = Text::String::New(userAgent).Ptr();
+	OPTSTR_DEL(this->reqUserAgent);
+	this->reqUserAgent = Text::String::NewOrNull(userAgent);
 }
 
 void Net::SDPFile::AddBuildMedia(Net::ISDPMedia *media)
@@ -323,6 +323,7 @@ Bool Net::SDPFile::BuildBuff()
 	Text::StringBuilderUTF8 sb;
 	IO::MemoryStream mstm;
 	Text::UTF8Writer writer(mstm);
+	NN<Text::String> nns;
 	sb.ClearStr();
 
 	sb.AppendC(UTF8STRC("v="));
@@ -331,20 +332,20 @@ Bool Net::SDPFile::BuildBuff()
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("o="));
-	sb.Append(this->userName);
+	sb.AppendOpt(this->userName);
 	sb.AppendC(UTF8STRC(" "));
-	sb.Append(this->sessId);
+	sb.AppendOpt(this->sessId);
 	sb.AppendC(UTF8STRC(" "));
-	sb.Append(this->sessVer);
+	sb.AppendOpt(this->sessVer);
 	sb.AppendC(UTF8STRC(" IN "));
-	sb.Append(this->userAddrType);
+	sb.AppendOpt(this->userAddrType);
 	sb.AppendC(UTF8STRC(" "));
-	sb.Append(this->userAddrHost);
+	sb.AppendOpt(this->userAddrHost);
 	writer.WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("s="));
-	sb.Append(this->sessName);
+	sb.AppendOpt(this->sessName);
 	writer.WriteLine(sb.ToCString());
 
 	Data::ArrayIterator<NN<Text::String>> it = this->sessDesc.Iterator();
@@ -371,11 +372,11 @@ Bool Net::SDPFile::BuildBuff()
 	sb.AppendI64(this->endTime);
 	writer.WriteLine(sb.ToCString());
 
-	if (this->sessTool)
+	if (this->sessTool.SetTo(nns))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=tool:"));
-		sb.Append(this->sessTool);
+		sb.Append(nns);
 		writer.WriteLine(sb.ToCString());
 	}
 	if (this->sessSend && !this->sessRecv)
@@ -390,18 +391,18 @@ Bool Net::SDPFile::BuildBuff()
 	{
 		writer.WriteLine(CSTR("a=recvonly"));
 	}
-	if (this->sessCharset)
+	if (this->sessCharset.SetTo(nns))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=charset:"));
-		sb.Append(this->sessCharset);
+		sb.Append(nns);
 		writer.WriteLine(sb.ToCString());
 	}
-	if (this->sessControl)
+	if (this->sessControl.SetTo(nns))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=control:"));
-		sb.Append(this->sessControl);
+		sb.Append(nns);
 		writer.WriteLine(sb.ToCString());
 	}
 
@@ -461,7 +462,7 @@ Bool Net::SDPFile::BuildBuff()
 		}
 
 		Text::CStringNN ctrlURL;
-		if (media->GetSDPControlURL(this->reqUserAgent->ToCString()).SetTo(ctrlURL) && ctrlURL.leng > 0)
+		if (media->GetSDPControlURL(OPTSTR_CSTR(this->reqUserAgent)).SetTo(ctrlURL) && ctrlURL.leng > 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=control:"));

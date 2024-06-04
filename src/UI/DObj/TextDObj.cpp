@@ -7,17 +7,11 @@
 UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size) : DirectObject(tl)
 {
 	this->deng = deng;
-	if (txt.leng > 0)
+	this->txt = Text::String::NewOrNull(txt);
+	Text::CStringNN nnfontName;
+	if (fontName.SetTo(nnfontName) && nnfontName.leng > 0)
 	{
-		this->txt = Text::String::New(txt).Ptr();
-	}
-	else
-	{
-		this->txt = 0;
-	}
-	if (fontName.leng > 0)
-	{
-		this->fontName = Text::String::New(fontName);
+		this->fontName = Text::String::New(nnfontName);
 	}
 	else
 	{
@@ -33,13 +27,14 @@ UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text
 	this->talign = TA_LEFT;
 	this->lineHeight = fontSize * 1.5;
 
-	if (this->txt)
+	NN<Text::String> nntxt;
+	if (this->txt.SetTo(nntxt))
 	{
 		NN<Media::DrawImage> dimg;
 		if (this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			NN<Media::DrawFont> f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), this->lines, f, OSInt2Double(this->size.x));
+			Media::DrawImageTool::SplitString(dimg, nntxt->ToCString(), this->lines, f, OSInt2Double(this->size.x));
 			dimg->DelFont(f);
 			this->deng->DeleteImage(dimg);
 		}
@@ -48,7 +43,7 @@ UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text
 
 UI::DObj::TextDObj::~TextDObj()
 {
-	SDEL_STRING(this->txt);
+	OPTSTR_DEL(this->txt);
 	this->fontName->Release();
 	this->lines.FreeAll();
 }

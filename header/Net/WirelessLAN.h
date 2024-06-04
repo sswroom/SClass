@@ -40,7 +40,7 @@ namespace Net
 			Double rssi;
 		public:
 			Network(NN<Text::String> ssid, Double rssi);
-			Network(Text::CString ssid, Double rssi);
+			Network(Text::CStringNN ssid, Double rssi);
 			~Network();
 			Double GetRSSI() const;
 			NN<Text::String> GetSSID() const;
@@ -64,7 +64,7 @@ namespace Net
 			UInt8 chipsetOUIs[WLAN_OUI_CNT][3];
 			Data::ArrayListNN<Net::WirelessLANIE> ieList;
 		public:
-			BSSInfo(Text::CString ssid, const void *bssEntry);
+			BSSInfo(Text::CStringNN ssid, const void *bssEntry);
 			~BSSInfo();
 			NN<Text::String> GetSSID() const;
 			UInt32 GetPHYId();

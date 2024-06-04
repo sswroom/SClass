@@ -1528,7 +1528,7 @@ Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSv
 	return this->DevAdd(cliId, CSTR("UDP Unknown"), CSTR("UDP Unknown"));
 }
 
-Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSvrCore::DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName)
+Optional<SSWR::SMonitor::SMonitorSvrCore::DeviceInfo> SSWR::SMonitor::SMonitorSvrCore::DevAdd(Int64 cliId, Text::CStringNN cpuName, Text::CStringNN platformName)
 {
 	NN<DeviceInfo> dev;
 	Sync::RWMutexUsage devMutUsage(this->devMut, true);

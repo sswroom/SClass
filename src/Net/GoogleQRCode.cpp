@@ -5,7 +5,7 @@
 #include "Text/String.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, Text::CString dataStr)
+Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, Text::CStringNN dataStr)
 {
 	this->width = width;
 	this->height = height;

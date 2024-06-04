@@ -39,15 +39,15 @@ namespace Net
 		class SAMLHandler : public Net::WebServer::WebStandardHandler
 		{
 		public:
-			typedef void (__stdcall *SAMLStrFunc)(AnyType userObj, Text::CString msg);
+			typedef void (__stdcall *SAMLStrFunc)(AnyType userObj, Text::CStringNN msg);
 			typedef Bool (__stdcall *SAMLLoginFunc)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, const SAMLMessage *msg);
 		private:
 			WebStandardHandler *defHdlr;
 			Optional<Net::SSLEngine> ssl;
-			Text::String *serverHost;
-			Text::String *metadataPath;
-			Text::String *logoutPath;
-			Text::String *ssoPath;
+			Optional<Text::String> serverHost;
+			Optional<Text::String> metadataPath;
+			Optional<Text::String> logoutPath;
+			Optional<Text::String> ssoPath;
 			Optional<Crypto::Cert::X509Cert> signCert;
 			Optional<Crypto::Cert::X509PrivKey> signKey;
 			SAMLError initErr;

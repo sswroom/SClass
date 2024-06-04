@@ -3,7 +3,7 @@
 #include "Net/WebServer/WebController.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::WebController::WebController(Text::CString svcPath)
+Net::WebServer::WebController::WebController(Text::CStringNN svcPath)
 {
 	this->svcPath = Text::String::New(svcPath);
 }

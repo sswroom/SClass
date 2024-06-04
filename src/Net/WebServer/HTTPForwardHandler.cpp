@@ -321,7 +321,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 	return true;
 }
 
-void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CString url)
+void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CStringNN url)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->forwardAddrs.Add(Text::String::New(url));
@@ -332,7 +332,7 @@ void Net::WebServer::HTTPForwardHandler::AddInjectHeader(NN<Text::String> header
 	this->injHeaders.Add(header->Clone());
 }
 
-void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::CString header)
+void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::CStringNN header)
 {
 	this->injHeaders.Add(Text::String::New(header));
 }
@@ -343,7 +343,7 @@ void Net::WebServer::HTTPForwardHandler::SetLog(IO::LogTool *log, Bool logConten
 	this->log = log;
 }
 
-void Net::WebServer::HTTPForwardHandler::SetForceHost(Text::CString forceHost)
+void Net::WebServer::HTTPForwardHandler::SetForceHost(Text::CStringNN forceHost)
 {
 	OPTSTR_DEL(this->forceHost);
 	if (forceHost.leng > 0)

@@ -100,10 +100,11 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWeb
 Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CStringNN path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
 {
 	this->path = Text::String::New(path);
-	if (cookieName.leng == 0)
+	Text::CStringNN nncookieName;
+	if (!cookieName.SetTo(nncookieName) || nncookieName.leng == 0)
 		this->cookieName = Text::String::New(UTF8STRC("WebSessId"));
 	else
-		this->cookieName = Text::String::New(cookieName);
+		this->cookieName = Text::String::New(nncookieName);
 	this->chkInterval = chkInterval;
 	this->chkHdlr = chkHdlr;
 	this->chkHdlrObj = chkHdlrObj;

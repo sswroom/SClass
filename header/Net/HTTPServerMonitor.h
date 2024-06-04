@@ -22,7 +22,7 @@ namespace Net
 		Bool CheckOnline();
 	public:
 		HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::String> url);
-		HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url);
+		HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url);
 		~HTTPServerMonitor();
 
 		Bool IsOnline();

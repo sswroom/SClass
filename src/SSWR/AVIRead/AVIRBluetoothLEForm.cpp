@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 			WriteMUInt64(buff, dev->mac);
 			sptr = Text::StrHexBytes(sbuff, &buff[2], 6, ':');
 			me->lvDevices->InsertItem(i, CSTRP(sbuff, sptr), dev);
-			if (s.Set(dev->name))
+			if (dev->name.SetTo(s))
 			{
 				me->lvDevices->SetSubItem(i, 1, s);
 			}
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(AnyType userObj)
 		else if (dev->updated)
 		{
 			dev->updated = false;
-			if (s.Set(dev->name))
+			if (dev->name.SetTo(s))
 			{
 				me->lvDevices->SetSubItem(i, 1, s);
 			}
@@ -112,19 +112,21 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj,
 	NN<SSWR::AVIRead::AVIRBluetoothLEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLEForm>();
 	NN<BTDevice> dev;
 	Sync::MutexUsage mutUsage(me->devMut);
+	NN<Text::String> devName;
+	Text::CStringNN scanName;
 	if (me->devMap.Get(mac).SetTo(dev))
 	{
 		dev->rssi = rssi;
-		if (name.leng > 0)
+		if (name.SetTo(scanName) && scanName.leng > 0)
 		{
-			if (dev->name == 0)
+			if (!dev->name.SetTo(devName))
 			{
-				dev->name = Text::String::New(name).Ptr();
+				dev->name = Text::String::New(scanName);
 			}
-			else if (name.leng > dev->name->leng)
+			else if (scanName.leng > devName->leng)
 			{
-				dev->name->Release();
-				dev->name = Text::String::New(name).Ptr();
+				devName->Release();
+				dev->name = Text::String::New(scanName);
 			}
 		}
 		dev->updated = true;
@@ -134,14 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(AnyType userObj,
 		dev = MemAllocNN(BTDevice);
 		dev->mac = mac;
 		dev->rssi = rssi;
-		if (name.leng)
-		{
-			dev->name = Text::String::New(name).Ptr();
-		}
-		else
-		{
-			dev->name = 0;
-		}
+		dev->name = Text::String::NewOrNull(name);
 		dev->shown = false;
 		dev->updated = true;	
 		me->devMap.Put(mac, dev);
@@ -156,7 +151,7 @@ void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 	while (i-- > 0)
 	{
 		dev = this->devMap.GetItemNoCheck(i);
-		SDEL_STRING(dev->name);
+		OPTSTR_DEL(dev->name);
 		MemFreeNN(dev);
 	}
 	this->devMap.Clear();

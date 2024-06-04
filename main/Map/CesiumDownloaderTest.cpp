@@ -299,7 +299,7 @@ public:
 		this->ClearFiles();
 	}
 
-	void AddURL(Text::CString url)
+	void AddURL(Text::CStringNN url)
 	{
 		UOSInt i = this->threadCount;
 		while (i-- > 0)

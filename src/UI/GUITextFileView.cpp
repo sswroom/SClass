@@ -29,7 +29,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 		{
 			if (me->isSearching)
 			{
-				SDEL_STRING(me->srchText);
+				OPTSTR_DEL(me->srchText);
 				me->isSearching = false;
 			}
 			Sync::MutexUsage mutUsage(me->mut);
@@ -402,7 +402,8 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 			}
 		}
 
-		if (me->isSearching)
+		NN<Text::String> srchText;
+		if (me->isSearching && me->srchText.SetTo(srchText))
 		{
 			UInt8 *srchTxt;
 			UOSInt srchTxtLen;
@@ -421,10 +422,10 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 			if (me->fs)
 			{
 				Text::Encoding enc(me->fileCodePage);
-				strLen = me->srchText->leng;
-				srchTxtLen = enc.UTF8CountBytesC(me->srchText->v, strLen);
+				strLen = srchText->leng;
+				srchTxtLen = enc.UTF8CountBytesC(srchText->v, strLen);
 				srchTxt = MemAlloc(UInt8, srchTxtLen + 1);
-				enc.UTF8ToBytesC(srchTxt, me->srchText->v, strLen);
+				enc.UTF8ToBytesC(srchTxt, srchText->v, strLen);
 				srchTxt[srchTxtLen] = 0;
 
 				Data::ByteBuffer srchBuff(READBUFFSIZE + 1);
@@ -546,7 +547,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 				}
 				MemFree(srchTxt);
 			}
-			SDEL_STRING(me->srchText);
+			OPTSTR_DEL(me->srchText);
 			me->isSearching = false;
 		}
 		me->evtThread.Wait(1000);
@@ -919,7 +920,7 @@ UI::GUITextFileView::~GUITextFileView()
 		DEL_CLASS(this->fs);
 	}
 	this->fileName->Release();
-	SDEL_STRING(this->srchText);
+	OPTSTR_DEL(this->srchText);
 }
 
 void UI::GUITextFileView::EventLineUp()
@@ -1667,12 +1668,12 @@ void UI::GUITextFileView::GoToText(UOSInt newPosY, UInt32 newPosX)
 	this->EventTextPosUpdated();
 }
 
-void UI::GUITextFileView::SearchText(Text::CString txt)
+void UI::GUITextFileView::SearchText(Text::CStringNN txt)
 {
 	if (this->fs && !this->isSearching)
 	{
-		SDEL_STRING(this->srchText);
-		this->srchText = Text::String::New(txt).Ptr();
+		OPTSTR_DEL(this->srchText);
+		this->srchText = Text::String::New(txt);
 		this->isSearching = true;
 		this->evtThread.Set();
 	}

@@ -24,7 +24,7 @@ namespace Net
 			NN<Text::String> svcPath;
 
 		public:
-			WebController(Text::CString svcPath);
+			WebController(Text::CStringNN svcPath);
 			virtual ~WebController();
 
 			Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);

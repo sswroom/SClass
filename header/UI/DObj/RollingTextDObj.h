@@ -11,7 +11,7 @@ namespace UI
 		{
 		private:
 			NN<Media::DrawEngine> deng;
-			Text::String *txt;
+			Optional<Text::String> txt;
 			NN<Text::String> fontName;
 			Double fontSize;
 			UInt32 fontColor;

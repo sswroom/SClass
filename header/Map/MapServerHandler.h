@@ -16,7 +16,7 @@ namespace Map
 		NN<Parser::ParserList> parsers;
 		Data::ArrayListNN<IO::ParsedObject> assets;
 		Data::FastStringMap<Map::MapDrawLayer*> layerMap;
-		Text::String *cesiumScenePath;
+		Optional<Text::String> cesiumScenePath;
 		Double cesiumMinError;
 		NN<Math::GeographicCoordinateSystem> wgs84;
 

@@ -51,10 +51,11 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::SocketFactory> sockf, Opt
 	this->errWriter = errWriter;
 	this->lastIsError = 0;
 	this->srchCnt = 0;
-	if (gooCliId.leng > 0)
+	Text::CStringNN nngooCliId;
+	if (gooCliId.SetTo(nngooCliId) && nngooCliId.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-		this->gooCliId = Text::String::New(gooCliId).Ptr();
+		this->gooCliId = Text::String::New(nngooCliId).Ptr();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
 		this->gooKey = 0;

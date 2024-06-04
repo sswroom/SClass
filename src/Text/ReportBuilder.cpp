@@ -29,7 +29,7 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::Chart::
 	}
 }
 
-Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns)
+Text::ReportBuilder::ReportBuilder(Text::CStringNN name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns)
 {
 	TableCell *cols;
 	UOSInt i;
@@ -139,16 +139,13 @@ void Text::ReportBuilder::SetTableBorders(Bool borders)
 	this->tableBorders = borders;
 }
 
-void Text::ReportBuilder::SetFontName(Text::String *fontName)
+void Text::ReportBuilder::SetFontName(NN<Text::String> fontName)
 {
-	if (fontName)
-	{
-		this->fontName->Release();
-		this->fontName = fontName->Clone();
-	}
+	this->fontName->Release();
+	this->fontName = fontName->Clone();
 }
 
-void Text::ReportBuilder::SetFontName(Text::CString fontName)
+void Text::ReportBuilder::SetFontName(Text::CStringNN fontName)
 {
 	if (fontName.leng > 0)
 	{
@@ -168,12 +165,12 @@ void Text::ReportBuilder::AddChart(Data::Chart *chart)
 	this->chart = chart;
 }
 
-void Text::ReportBuilder::AddPreHeader(Text::CString name, Text::CString val)
+void Text::ReportBuilder::AddPreHeader(Text::CStringNN name, Text::CStringNN val)
 {
 	AddPreHeader(name, 1, val, 1, false, false);
 }
 
-void Text::ReportBuilder::AddPreHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right)
+void Text::ReportBuilder::AddPreHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right)
 {
 	NN<HeaderInfo> header = MemAllocNN(HeaderInfo);
 	header->name = Text::String::New(name);
@@ -185,12 +182,12 @@ void Text::ReportBuilder::AddPreHeader(Text::CString name, UOSInt nameCellCnt, T
 	this->preheaders.Add(header);
 }
 
-void Text::ReportBuilder::AddHeader(Text::CString name, Text::CString val)
+void Text::ReportBuilder::AddHeader(Text::CStringNN name, Text::CStringNN val)
 {
 	AddHeader(name, 1, val, 1, false, false);
 }
 
-void Text::ReportBuilder::AddHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right)
+void Text::ReportBuilder::AddHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right)
 {
 	NN<HeaderInfo> header = MemAllocNN(HeaderInfo);
 	header->name = Text::String::New(name);

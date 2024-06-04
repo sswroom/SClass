@@ -7,7 +7,7 @@ namespace IO
 	class ProgressHandler
 	{
 	public:
-		virtual void ProgressStart(Text::CString name, UInt64 count) = 0;
+		virtual void ProgressStart(Text::CStringNN name, UInt64 count) = 0;
 		virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount) = 0;
 		virtual void ProgressEnd() = 0;
 	};

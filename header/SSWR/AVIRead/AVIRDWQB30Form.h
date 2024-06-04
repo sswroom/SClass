@@ -68,7 +68,7 @@ namespace SSWR
 			static void __stdcall OnDefaultClicked(AnyType userObj);
 			static void __stdcall OnSetCmdSelChg(AnyType userObj);
 			static void __stdcall OnSetCmdClicked(AnyType userObj);
-			static void __stdcall OnCodeScanned(AnyType userObj, Text::CString code);
+			static void __stdcall OnCodeScanned(AnyType userObj, Text::CStringNN code);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRDWQB30Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

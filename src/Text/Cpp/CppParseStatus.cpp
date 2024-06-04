@@ -5,8 +5,8 @@
 void Text::Cpp::CppParseStatus::FreeDefineInfo(NN<Text::Cpp::CppParseStatus::DefineInfo> defInfo)
 {
 	defInfo->defineName->Release();
-	SDEL_STRING(defInfo->defineVal);
-	SDEL_STRING(defInfo->defineParam);
+	OPTSTR_DEL(defInfo->defineVal);
+	OPTSTR_DEL(defInfo->defineParam);
 	MemFreeNN(defInfo);
 }
 
@@ -20,7 +20,7 @@ Text::Cpp::CppParseStatus::CppParseStatus(NN<Text::String> rootFile)
 	this->fileName = rootFile->Clone();
 }
 
-Text::Cpp::CppParseStatus::CppParseStatus(Text::CString rootFile)
+Text::Cpp::CppParseStatus::CppParseStatus(Text::CStringNN rootFile)
 {
 	this->fileName = Text::String::New(rootFile);
 }
@@ -111,16 +111,9 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 		{
 			defInfo->fileName = 0;
 			defInfo->lineNum = 0;
-			SDEL_STRING(defInfo->defineVal);
-			SDEL_STRING(defInfo->defineParam);
-			if (defVal.leng > 0)
-			{
-				defInfo->defineVal = Text::String::New(defVal).Ptr();
-			}
-			else
-			{
-				defInfo->defineVal = 0;
-			}
+			OPTSTR_DEL(defInfo->defineVal);
+			OPTSTR_DEL(defInfo->defineParam);
+			defInfo->defineVal = Text::String::NewOrNull(defVal);
 			defInfo->undefined = false;
 			return true;
 		}
@@ -135,14 +128,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = 0;
 		defInfo->lineNum = 0;
-		if (defVal.leng > 0)
-		{
-			defInfo->defineVal = Text::String::New(defVal).Ptr();
-		}
-		else
-		{
-			defInfo->defineVal = 0;
-		}
+		defInfo->defineVal = Text::String::NewOrNull(defVal);
 		defInfo->defineParam = 0;
 		defInfo->undefined = false;
 		this->defines.PutC(defName, defInfo);
@@ -154,6 +140,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 {
 	NN<FileParseStatus> fStatus;
 	NN<DefineInfo> defInfo;
+	NN<Text::String> nns;
 	if (!GetFileStatus().SetTo(fStatus))
 		return false;
 	if (this->defines.GetC(defName).SetTo(defInfo))
@@ -162,42 +149,31 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 		{
 			defInfo->fileName = fStatus->fileName.Ptr();
 			defInfo->lineNum = fStatus->lineNum;
-			SDEL_STRING(defInfo->defineVal);
-			SDEL_STRING(defInfo->defineParam);
-			if (defVal.leng > 0)
+			OPTSTR_DEL(defInfo->defineVal);
+			OPTSTR_DEL(defInfo->defineParam);
+			defInfo->defineVal = Text::String::NewOrNull(defVal);
+			if (defInfo->defineVal.SetTo(nns))
 			{
-				defInfo->defineVal = Text::String::New(defVal).Ptr();
-				defInfo->defineVal->Trim();
+				nns->Trim();
 			}
-			else
-			{
-				defInfo->defineVal = 0;
-			}
-			if (defParam.leng > 0)
-			{
-				defInfo->defineParam = Text::String::New(defParam).Ptr();
-			}
-			else
-			{
-				defInfo->defineParam = 0;
-			}
+			defInfo->defineParam = Text::String::NewOrNull(defParam);
 			defInfo->undefined = false;
 			return true;
 		}
 		else
 		{
-			if (defVal.leng == 0 && defInfo->defineVal == 0)
+			if (defVal.leng == 0 && defInfo->defineVal.IsNull())
 			{
 				return true;
 			}
-			else if (defVal.leng == 0 || defInfo->defineVal == 0)
+			else if (defVal.leng == 0 || !defInfo->defineVal.SetTo(nns))
 			{
 				return false;
 			}
 			Text::StringBuilderUTF8 sb;
 			sb.AppendOpt(defVal);
 			sb.Trim();
-			return defInfo->defineVal->Equals(sb);
+			return nns->Equals(sb);
 		}
 	}
 	else
@@ -206,23 +182,12 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = fStatus->fileName.Ptr();
 		defInfo->lineNum = fStatus->lineNum;
-		if (defVal.leng > 0)
+		defInfo->defineVal = Text::String::NewOrNull(defVal);
+		if (defInfo->defineVal.SetTo(nns))
 		{
-			defInfo->defineVal = Text::String::New(defVal).Ptr();
-			defInfo->defineVal->Trim();
+			nns->Trim();
 		}
-		else
-		{
-			defInfo->defineVal = 0;
-		}
-		if (defParam.leng > 0)
-		{
-			defInfo->defineParam = Text::String::New(defParam).Ptr();
-		}
-		else
-		{
-			defInfo->defineParam = 0;
-		}
+		defInfo->defineParam = Text::String::NewOrNull(defParam);
 		defInfo->undefined = false;
 		this->defines.PutC(defName, defInfo);
 		return true;
@@ -252,10 +217,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 		if (!defInfo->undefined)
 		{
 			Text::StringBuilderUTF8 sb;
-			if (defInfo->defineVal)
-			{
-				sb.Append(defInfo->defineVal);
-			}
+			sb.AppendOpt(defInfo->defineVal);
 			if (defInfo->defineParam != 0)
 			{
 				Text::StringBuilderUTF8 sb1;
@@ -276,14 +238,14 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 
 				sb1.ClearStr();
 				sb1.AppendC(UTF8STRC("##"));
-				sb1.Append(defInfo->defineParam);
+				sb1.AppendOpt(defInfo->defineParam);
 				sb2.ClearStr();
 				sb2.AppendC(sb3.ToString(), sb3.GetLength());
 				sb2.AppendC(UTF8STRC(" "));
 				sb.ReplaceStr(sb1.ToString(), sb1.GetLength(), sb2.ToString(), sb2.GetLength());
 
 				sb1.ClearStr();
-				sb1.Append(defInfo->defineParam);
+				sb1.AppendOpt(defInfo->defineParam);
 				sb1.AppendC(UTF8STRC("##"));
 				sb2.ClearStr();
 				sb2.AppendC(UTF8STRC(" "));
@@ -291,7 +253,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CStr
 				sb.ReplaceStr(sb1.ToString(), sb1.GetLength(), sb2.ToString(), sb2.GetLength());
 
 				sb1.ClearStr();
-				sb1.Append(defInfo->defineParam);
+				sb1.AppendOpt(defInfo->defineParam);
 				sb2.ClearStr();
 				sb2.AppendC(UTF8STRC(" "));
 				sb2.AppendC(sb3.ToString(), sb3.GetLength());

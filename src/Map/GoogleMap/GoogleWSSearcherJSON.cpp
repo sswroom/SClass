@@ -66,10 +66,11 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCl
 		this->gooPrivKey = 0;
 	}
 	this->gooPrivKeyLeng = 0;
-	if (gooCliId.leng > 0)
+	Text::CStringNN nngooCliId;
+	if (gooCliId.SetTo(nngooCliId) && nngooCliId.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		this->gooCliId = Text::String::New(gooCliId).Ptr();
+		this->gooCliId = Text::String::New(nngooCliId).Ptr();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
 		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
 	}

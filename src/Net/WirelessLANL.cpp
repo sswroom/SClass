@@ -89,7 +89,7 @@ Net::WirelessLAN::Network::Network(NN<Text::String> ssid, Double rssi)
 	this->rssi = rssi;
 }
 
-Net::WirelessLAN::Network::Network(Text::CString ssid, Double rssi)
+Net::WirelessLAN::Network::Network(Text::CStringNN ssid, Double rssi)
 {
 	this->ssid = Text::String::New(ssid);
 	this->rssi = rssi;
@@ -110,7 +110,7 @@ NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 	return this->ssid;
 }
 
-Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
+Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
 {
 	BSSEntry *bss = (BSSEntry*)bssEntry;
 	this->ssid = Text::String::New(ssid);

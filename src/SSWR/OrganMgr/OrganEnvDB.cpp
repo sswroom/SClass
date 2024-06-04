@@ -3790,7 +3790,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(const Data::Timestamp &fromDate, const 
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName)
+Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, Text::CStringNN engName, Text::CStringNN chiName)
 {
 	NN<Location> loc;
 	if (!this->LocationGet(locId).SetTo(loc))
@@ -3818,7 +3818,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, Text::CString engNa
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName)
+Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CStringNN engName, Text::CStringNN chiName)
 {
 	Int32 lType;
 	if (locId == 0)

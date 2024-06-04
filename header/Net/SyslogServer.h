@@ -19,7 +19,7 @@ namespace Net
 			IO::LogTool *log;
 		} IPStatus;
 		
-		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CString logMessage);
+		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CStringNN logMessage);
 	private:
 		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
@@ -35,7 +35,7 @@ namespace Net
 
 		IPStatus *GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
 	public:
-		SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog);
+		SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStringNN logPath, NN<IO::LogTool> svrLog, Bool redirLog);
 		~SyslogServer();
 
 		Bool IsError();

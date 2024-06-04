@@ -55,7 +55,7 @@ namespace UI
 		UOSInt selLastY;
 		Bool mouseDown;
 		Bool isSearching;
-		Text::String *srchText;
+		Optional<Text::String> srchText;
 
 		UInt32 caretX;
 		UOSInt caretY;
@@ -104,7 +104,7 @@ namespace UI
 		UOSInt GetTextPosY();
 		UInt32 GetTextPosX();
 		void GoToText(UOSInt newPosY, UInt32 newPosX);
-		void SearchText(Text::CString txt);
+		void SearchText(Text::CStringNN txt);
 
 		void HandleTextPosUpdate(TextPosEvent hdlr, AnyType obj);
 	};

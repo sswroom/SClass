@@ -84,19 +84,19 @@ namespace Text
 
 		static Text::SpreadSheet::AxisType FromChartDataType(Data::Chart::DataType dataType);
 	public:
-		ReportBuilder(Text::CString name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns);
+		ReportBuilder(Text::CStringNN name, UOSInt colCount, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> columns);
 		~ReportBuilder();
 
 		void SetNameHAlign(Text::HAlignment hAlign);
 		void SetTableBorders(Bool borders);
-		void SetFontName(Text::String *fontName);
-		void SetFontName(Text::CString fontName);
+		void SetFontName(NN<Text::String> fontName);
+		void SetFontName(Text::CStringNN fontName);
 		void SetPaperHori(Bool paperHori);
 		void AddChart(Data::Chart *chart);
-		void AddPreHeader(Text::CString name, Text::CString val);
-		void AddPreHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right);
-		void AddHeader(Text::CString name, Text::CString val);
-		void AddHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right);
+		void AddPreHeader(Text::CStringNN name, Text::CStringNN val);
+		void AddPreHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right);
+		void AddHeader(Text::CStringNN name, Text::CStringNN val);
+		void AddHeader(Text::CStringNN name, UOSInt nameCellCnt, Text::CStringNN val, UOSInt valCellCnt, Bool valUnderline, Bool right);
 		void AddTableHeader(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
 		void AddTableContent(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);
 		void AddTableSummary(UnsafeArray<UnsafeArrayOpt<const UTF8Char>> content);

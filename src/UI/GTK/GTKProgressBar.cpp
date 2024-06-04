@@ -60,7 +60,7 @@ OSInt UI::GTK::GTKProgressBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GTK::GTKProgressBar::ProgressStart(Text::CString name, UInt64 count)
+void UI::GTK::GTKProgressBar::ProgressStart(Text::CStringNN name, UInt64 count)
 {
 	this->currCnt = 0;
 	this->totalCnt = count;

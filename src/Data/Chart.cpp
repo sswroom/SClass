@@ -39,7 +39,7 @@ Optional<Text::String> Data::Chart::GetTitle() const
 	return this->title;
 }
 
-void Data::Chart::SetDateFormat(Text::CString format)
+void Data::Chart::SetDateFormat(Text::CStringNN format)
 {
 	this->dateFormat->Release();
 	this->dateFormat = Text::String::New(format);
@@ -50,7 +50,7 @@ NN<Text::String> Data::Chart::GetDateFormat() const
 	return this->dateFormat;
 }
 
-void Data::Chart::SetTimeFormat(Text::CString format)
+void Data::Chart::SetTimeFormat(Text::CStringNN format)
 {
 	this->timeFormat->Release();
 	this->timeFormat = Text::String::New(format);

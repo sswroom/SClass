@@ -318,7 +318,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 	}
 }
 
-Map::WebMapService::WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmsURL, Version version, NN<Math::CoordinateSystem> envCsys)
+Map::WebMapService::WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CoordinateSystem> envCsys)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

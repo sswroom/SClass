@@ -1304,7 +1304,7 @@ void SSWR::AVIRead::AVIRPackageForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 count)
+void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CStringNN name, UInt64 count)
 {
 	{
 		Sync::MutexUsage mutUsage(this->readMut);
@@ -1316,7 +1316,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 	{
 		Sync::MutexUsage mutUsage(this->statusFileMut);
 		OPTSTR_DEL(this->statusFile);
-		this->statusFile = Text::String::NewOrNull(name);
+		this->statusFile = Text::String::New(name);
 		this->statusFileSize = count;
 		this->statusFileChg = true;
 	}
@@ -1325,7 +1325,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 co
 		Sync::MutexUsage mutUsage(this->progMut);
 		this->progStarted = true;
 		OPTSTR_DEL(this->progName);
-		this->progName = Text::String::New(name.OrEmpty());
+		this->progName = Text::String::New(name);
 		this->progStartCnt = count;
 		this->progEnd = false;
 	}

@@ -6,17 +6,11 @@ UI::DObj::LabelDObj::LabelDObj(NN<Media::DrawEngine> deng, Text::CString txt, Te
 {
 	this->deng = deng;
 	this->txtChg = true;
-	if (txt.leng > 0)
+	this->txt = Text::String::NewOrNull(txt);
+	Text::CStringNN nnfontName;
+	if (fontName.SetTo(nnfontName) && nnfontName.leng > 0)
 	{
-		this->txt = Text::String::New(txt).Ptr();
-	}
-	else
-	{
-		this->txt = 0;
-	}
-	if (fontName.leng > 0)
-	{
-		this->fontName = Text::String::New(fontName);
+		this->fontName = Text::String::New(nnfontName);
 	}
 	else
 	{
@@ -30,7 +24,7 @@ UI::DObj::LabelDObj::LabelDObj(NN<Media::DrawEngine> deng, Text::CString txt, Te
 
 UI::DObj::LabelDObj::~LabelDObj()
 {
-	SDEL_STRING(this->txt);
+	OPTSTR_DEL(this->txt);
 	this->fontName->Release();
 }
 
@@ -49,7 +43,7 @@ void UI::DObj::LabelDObj::DrawObject(NN<Media::DrawImage> dimg)
 	this->txtChg = false;
 	Sync::MutexUsage mutUsage(this->txtMut);
 	NN<Text::String> s;
-	if (s.Set(this->txt))
+	if (this->txt.SetTo(s))
 	{
 		NN<Media::DrawFont> f;
 		NN<Media::DrawBrush> b;
@@ -104,21 +98,22 @@ void UI::DObj::LabelDObj::SetText(Text::CString txt)
 {
 	Sync::MutexUsage mutUsage(this->txtMut);
 	Text::CStringNN nntxt;
-	if (this->txt == 0 && txt.leng == 0)
+	NN<Text::String> nnthisTxt;
+	if (!this->txt.SetTo(nnthisTxt) && txt.leng == 0)
 		return;
-	if (!txt.SetTo(nntxt) || nntxt.leng == 0)
+	if (this->txt.SetTo(nnthisTxt) && (!txt.SetTo(nntxt) || nntxt.leng == 0))
 	{
-		this->txt->Release();
+		nnthisTxt->Release();
 		this->txt = 0;
 		this->txtChg = true;
 	}
-	else if (this->txt != 0 && this->txt->Equals(nntxt.v, nntxt.leng))
+	else if (this->txt.SetTo(nnthisTxt) && nnthisTxt->Equals(nntxt.v, nntxt.leng))
 	{
 		return;
 	}
-	else
+	else if (txt.SetTo(nntxt))
 	{
-		SDEL_STRING(this->txt);
+		OPTSTR_DEL(this->txt);
 		this->txt = Text::String::New(nntxt).Ptr();
 		this->txtChg = true;
 	}

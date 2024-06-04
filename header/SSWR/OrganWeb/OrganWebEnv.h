@@ -119,16 +119,16 @@ namespace SSWR
 
 			Optional<SpeciesInfo> SpeciesGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Optional<SpeciesInfo> SpeciesGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> sname);
-			Int32 SpeciesAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
+			Int32 SpeciesAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN sciName, Int32 groupId, Text::CStringNN description, Text::CStringNN dirName, Text::CStringNN idKey, Int32 cateId);
 			Bool SpeciesUpdateDefPhoto(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesSetPhotoId(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId);
 			Bool SpeciesSetPhotoWId(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId);
 			Bool SpeciesSetFlags(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId);
-			Bool SpeciesModify(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CStringNN sciName, Text::CString description, Text::CString dirName);
+			Bool SpeciesModify(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN sciName, Text::CStringNN description, Text::CStringNN dirName);
 			Bool SpeciesDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesMerge(NN<Sync::RWMutexUsage> mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
-			Bool SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location);
+			Bool SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CStringNN location);
 			Optional<UserFileInfo> UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, InOutParam<UnsafeArray<UTF8Char>> filePathOut);
 			Optional<UserFileInfo> UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			UnsafeArray<UTF8Char> UserfileGetPath(UnsafeArray<UTF8Char> sbuff, NN<const UserFileInfo> userfile);
@@ -147,8 +147,8 @@ namespace SSWR
 			Optional<DataFileInfo> DataFileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
 			Optional<GroupInfo> GroupGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
-			Int32 GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
-			Bool GroupModify(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags);
+			Int32 GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CStringNN engName, Text::CStringNN chiName, Int32 parentId, Text::CStringNN descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
+			Bool GroupModify(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CStringNN engName, Text::CStringNN chiName, Text::CStringNN descr, Int32 groupTypeId, GroupFlags flags);
 			Bool GroupDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Bool GroupMove(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 destGroupId, Int32 cateId);
 			Bool GroupAddCounts(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);

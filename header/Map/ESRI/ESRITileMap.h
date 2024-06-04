@@ -22,7 +22,7 @@ namespace Map
 			Double dispDPI;
 
 		public:
-			ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CString cacheDir);
+			ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CStringNN cacheDir);
 			virtual ~ESRITileMap();
 
 			virtual Text::CStringNN GetName() const;

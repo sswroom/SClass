@@ -38,7 +38,7 @@ namespace Media
 			SizeType sizeType;
 			OutputType outType;
 			UInt32 outParam;
-			Text::String *watermark;
+			Optional<Text::String> watermark;
 		} ResizeProfile;
 
 	private:
@@ -64,7 +64,7 @@ namespace Media
 		void SetCurrentProfile(UOSInt index);
 		Optional<const ResizeProfile> GetProfile(UOSInt index) const;
 		NN<const ResizeProfile> GetProfileNoCheck(UOSInt index) const;
-		Bool AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType);
+		Bool AddProfile(Text::CStringNN profileName, Text::CStringNN suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType);
 		Bool RemoveProfile(UOSInt index);
 
 		void ProcessFile(Text::CStringNN fileName);

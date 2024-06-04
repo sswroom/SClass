@@ -41,7 +41,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional
 	}
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

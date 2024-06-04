@@ -3,7 +3,7 @@
 #include "IO/CodeScanner.h"
 #include "Text/MyString.h"
 
-IO::CodeScanner::CodeScanner(Text::CString devName)
+IO::CodeScanner::CodeScanner(Text::CStringNN devName)
 {
 	this->devName = Text::String::New(devName);
 }

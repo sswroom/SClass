@@ -110,7 +110,7 @@ public:
 		this->fileName = 0;
 	}
 
-	virtual void ProgressStart(Text::CString name, UInt64 count)
+	virtual void ProgressStart(Text::CStringNN name, UInt64 count)
 	{
 		UOSInt i;
 		Sync::MutexUsage mutUsage(this->mut);

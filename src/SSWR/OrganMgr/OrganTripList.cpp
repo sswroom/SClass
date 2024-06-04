@@ -18,7 +18,7 @@ UnsafeArray<UTF8Char> SSWR::OrganMgr::Trip::ToString(UnsafeArray<UTF8Char> sbuff
 	return this->toDate.ToLocalTime().ToString(Text::StrConcatC(this->fromDate.ToLocalTime().ToString(sbuff, "yyyy-MM-dd HH:mm"), UTF8STRC(" - ")), "yyyy-MM-dd HH:mm");
 }
 
-SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, Text::CString ename, Text::CString cname, Int32 locType)
+SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, Text::CStringNN ename, Text::CStringNN cname, Int32 locType)
 {
 	this->id = id;
 	this->parId = parId;
@@ -38,7 +38,7 @@ UnsafeArray<UTF8Char> SSWR::OrganMgr::Location::ToString(UnsafeArray<UTF8Char> s
 	return this->cname->ConcatTo(sbuff);
 }
 
-SSWR::OrganMgr::LocationType::LocationType(Int32 id, Text::CString engName, Text::CString chiName)
+SSWR::OrganMgr::LocationType::LocationType(Int32 id, Text::CStringNN engName, Text::CStringNN chiName)
 {
 	this->id = id;
 	this->engName = Text::String::New(engName);

@@ -36,9 +36,9 @@ namespace Data
 
 		virtual void SetTitle(Text::CString title);
 		Optional<Text::String> GetTitle() const;
-		void SetDateFormat(Text::CString format);
+		void SetDateFormat(Text::CStringNN format);
 		NN<Text::String> GetDateFormat() const;
-		void SetTimeFormat(Text::CString format);
+		void SetTimeFormat(Text::CStringNN format);
 		NN<Text::String> GetTimeFormat() const;
 		void SetDblFormat(Text::CStringNN format);
 		NN<Text::String> GetDblFormat() const;

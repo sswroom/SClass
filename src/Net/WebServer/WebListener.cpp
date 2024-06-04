@@ -142,9 +142,10 @@ Net::WebServer::WebListener::WebListener(NN<Net::SocketFactory> sockf, Optional<
 	this->timeoutHdlr = 0;
 	this->timeoutObj = 0;
 	this->proxyCliMgr = 0;
-	if (svrName.leng > 0)
+	Text::CStringNN nnsvrName;
+	if (svrName.SetTo(nnsvrName) && nnsvrName.leng > 0)
 	{
-		this->svrName = Text::String::New(svrName);
+		this->svrName = Text::String::New(nnsvrName);
 	}
 	else
 	{

@@ -73,7 +73,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NN<const Net::Socket
 	return 0;
 }
 
-Net::SyslogServer::SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog)
+Net::SyslogServer::SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStringNN logPath, NN<IO::LogTool> svrLog, Bool redirLog)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);

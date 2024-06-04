@@ -423,9 +423,10 @@ Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	this->threadRunning = false;
 	this->threadToStop = false;
 
-	if (dataPath.leng > 0)
+	Text::CStringNN nndataPath;
+	if (dataPath.SetTo(nndataPath) && nndataPath.leng > 0)
 	{
-		this->dataPath = Text::String::New(dataPath);
+		this->dataPath = Text::String::New(nndataPath);
 		sptr = this->dataPath->ConcatTo(sbuff);
 	}
 	else

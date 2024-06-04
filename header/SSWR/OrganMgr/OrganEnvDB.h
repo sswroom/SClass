@@ -95,8 +95,8 @@ namespace SSWR
 			virtual void TripReload(Int32 cateId);
 		public:
 			virtual Bool TripAdd(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId);
-			virtual Bool LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName);
-			virtual Bool LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName);
+			virtual Bool LocationUpdate(Int32 locId, Text::CStringNN engName, Text::CStringNN chiName);
+			virtual Bool LocationAdd(Int32 locId, Text::CStringNN engName, Text::CStringNN chiName);
 
 		private:
 			virtual void BooksInit();

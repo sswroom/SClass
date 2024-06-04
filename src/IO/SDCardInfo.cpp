@@ -5,7 +5,7 @@
 #include "IO/SDCardInfo.h"
 #include "Text/MyString.h"
 
-IO::SDCardInfo::SDCardInfo(Text::CString name, const UInt8 *cid, const UInt8 *csd)
+IO::SDCardInfo::SDCardInfo(Text::CStringNN name, const UInt8 *cid, const UInt8 *csd)
 {
 	UInt8 csdType = (UInt8)(csd[0] >> 6);
 	this->isEMMC = (csdType >= 2);

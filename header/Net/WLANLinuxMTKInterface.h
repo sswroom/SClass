@@ -13,7 +13,7 @@ namespace Net
 
 		void Reopen();
 	public:
-		WLANLinuxMTKInterface(Text::CString name, void *id, Net::WirelessLAN::INTERFACE_STATE state, UInt32 setCmd, UInt32 siteSurveyCmd);
+		WLANLinuxMTKInterface(Text::CStringNN name, void *id, Net::WirelessLAN::INTERFACE_STATE state, UInt32 setCmd, UInt32 siteSurveyCmd);
 		virtual ~WLANLinuxMTKInterface();
 
 		virtual Bool Scan();

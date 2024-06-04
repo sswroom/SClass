@@ -41,7 +41,7 @@ namespace SSWR
 			Bool SendKA();
 			Bool SendUserData(const UInt8 *data, UOSInt dataSize);
 		public:
-			SyncClient(NN<Net::SocketFactory> sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout);
+			SyncClient(NN<Net::SocketFactory> sockf, Int32 serverId, Text::CStringNN serverName, Text::CStringNN clientHost, UInt16 cliPort, Data::Duration timeout);
 			virtual ~SyncClient();
 
 			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);

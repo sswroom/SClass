@@ -372,28 +372,28 @@ Bool Text::StringTool::Equals(Optional<Text::String> s1, Optional<Text::String> 
 	return str1->Equals(str2);
 }
 
-OSInt Text::StringTool::Compare(Text::String *s1, Text::String *s2)
+OSInt Text::StringTool::Compare(Optional<Text::String> s1, Optional<Text::String> s2)
 {
 	if (s1 == s2)
 		return 0;
 	NN<Text::String> str1;
 	NN<Text::String> str2;
-	if (!str1.Set(s1))
+	if (!s1.SetTo(str1))
 		return -1;
-	if (!str2.Set(s2))
+	if (!s2.SetTo(str2))
 		return 1;
 	return str1->CompareTo(str2);
 }
 
-OSInt Text::StringTool::CompareICase(Text::String *s1, Text::String *s2)
+OSInt Text::StringTool::CompareICase(Optional<Text::String> s1, Optional<Text::String> s2)
 {
 	if (s1 == s2)
 		return 0;
 	NN<Text::String> str1;
 	NN<Text::String> str2;
-	if (!str1.Set(s1))
+	if (!s1.SetTo(str1))
 		return -1;
-	if (!str2.Set(s2))
+	if (!s2.SetTo(str2))
 		return 1;
 	return str1->CompareToICase(str2);
 }

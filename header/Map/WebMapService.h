@@ -57,7 +57,7 @@ namespace Map
 		void LoadXMLLayers(NN<Text::XMLReader> reader);
 
 	public:
-		WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmsURL, Version version, NN<Math::CoordinateSystem> envCsys);
+		WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CoordinateSystem> envCsys);
 		virtual ~WebMapService();
 
 		virtual NN<Text::String> GetName() const;

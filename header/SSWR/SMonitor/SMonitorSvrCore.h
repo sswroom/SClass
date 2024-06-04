@@ -111,7 +111,7 @@ namespace SSWR
 
 			Optional<DeviceInfo> DevGet(Int64 cliId);
 			Optional<DeviceInfo> DevGetOrAdd(Int64 cliId);
-			Optional<DeviceInfo> DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
+			Optional<DeviceInfo> DevAdd(Int64 cliId, Text::CStringNN cpuName, Text::CStringNN platformName);
 			Bool DeviceRecvReading(NN<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
 			Bool DeviceKARecv(NN<DeviceInfo> dev, Int64 kaTime);
 			Bool DeviceSetName(Int64 cliId, NN<Text::String> devName);

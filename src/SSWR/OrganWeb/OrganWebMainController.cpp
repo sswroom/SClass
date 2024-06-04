@@ -972,7 +972,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					Optional<Text::String> location = req->GetHTTPFormStr(CSTR("location"));
 					if (req->GetHTTPFormStr(CSTR("srcURL")).SetTo(srcURL) && req->GetHTTPFormStr(CSTR("imgURL")).SetTo(imgURL) && srcURL->leng > 0 && imgURL->leng > 0)
 					{
-						me->env->SpeciesAddWebfile(mutUsage, species->speciesId, imgURL->ToCString(), srcURL->ToCString(), OPTSTR_CSTR(location));
+						me->env->SpeciesAddWebfile(mutUsage, species->speciesId, imgURL->ToCString(), srcURL->ToCString(), Text::String::OrEmpty(location)->ToCString());
 					}
 				}
 			}

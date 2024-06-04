@@ -41,13 +41,15 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, O
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	if (gooCliId.leng > 0 && gooPrivKey.leng > 0)
+	Text::CStringNN nngooCliId;
+	Text::CStringNN nngooPrivKey;
+	if (gooCliId.SetTo(nngooCliId) && nngooCliId.leng > 0 && gooPrivKey.SetTo(nngooPrivKey) && nngooPrivKey.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 
-		this->gooCliId = Text::String::New(gooCliId);
-		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
+		this->gooCliId = Text::String::New(nngooCliId);
+		this->gooPrivKey = MemAlloc(UInt8, nngooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(nngooPrivKey, this->gooPrivKey);
 		this->gooKey = 0;
 	}
 	else

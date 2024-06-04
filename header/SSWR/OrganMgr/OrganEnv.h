@@ -306,8 +306,8 @@ namespace SSWR
 			OSInt LocationGetIndex(Int32 locId);
 			Optional<Location> LocationGet(Int32 locId);
 			NN<Data::ArrayListNN<Location>> LocationGetSub(Int32 locId);
-			virtual Bool LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName) = 0;
-			virtual Bool LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName) = 0;
+			virtual Bool LocationUpdate(Int32 locId, Text::CStringNN engName, Text::CStringNN chiName) = 0;
+			virtual Bool LocationAdd(Int32 locId, Text::CStringNN engName, Text::CStringNN chiName) = 0;
 			OSInt LocationGetTypeIndex(Int32 lType);
 
 			Optional<SpeciesInfo> GetSpeciesInfo(Int32 speciesId);

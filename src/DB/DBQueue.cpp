@@ -112,7 +112,7 @@ Int32 DB::DBQueue::SQLGetDB::GetProgId() const
 	return this->progId;
 };
 
-DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UOSInt dbSize)
 {
 	this->db1 = db.Ptr();
 	this->dbSize = dbSize / 200;
@@ -162,7 +162,7 @@ DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Tex
 	}
 }
 
-DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CStringNN name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;

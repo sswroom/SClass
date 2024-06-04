@@ -17,7 +17,7 @@ namespace UI
 			} TextAlign;
 		private:
 			NN<Media::DrawEngine> deng;
-			Text::String *txt;
+			Optional<Text::String> txt;
 			NN<Text::String> fontName;
 			Double fontSize;
 			Media::DrawEngine::DrawFontStyle fontStyle;

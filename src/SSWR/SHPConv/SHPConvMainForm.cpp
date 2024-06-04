@@ -1552,7 +1552,7 @@ void SSWR::SHPConv::SHPConvMainForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ProgressStart(Text::CString name, UInt64 count)
+void SSWR::SHPConv::SHPConvMainForm::ProgressStart(Text::CStringNN name, UInt64 count)
 {
 	this->progressName = name;
 	this->totalVal = count;

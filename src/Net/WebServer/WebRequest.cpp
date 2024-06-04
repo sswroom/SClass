@@ -255,6 +255,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	}
 
 	Text::CStringNN formNameNN;
+	Text::CStringNN fileNameNN;
 	if (contType == 1)
 	{
 		NN<Text::String> s;
@@ -273,13 +274,13 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	}
 	else if (contType == 2)
 	{
-		if (formName.SetTo(formNameNN))
+		if (formName.SetTo(formNameNN) && fileName.SetTo(fileNameNN))
 		{
 			NN<FormFileInfo> info = MemAllocNN(FormFileInfo);
 			info->ofst = startOfst + i;
 			info->leng = dataSize - i;
 			info->formName = Text::String::New(formNameNN);
-			info->fileName = Text::String::New(fileName);
+			info->fileName = Text::String::New(fileNameNN);
 			this->formFileList->Add(info);
 		}
 	}

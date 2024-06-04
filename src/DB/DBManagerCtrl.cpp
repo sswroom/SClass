@@ -94,7 +94,7 @@ void DB::DBManagerCtrl::GetConnName(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::String *connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	NN<DB::DBManagerCtrl> ctrl;
 	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
@@ -102,7 +102,7 @@ NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::String *connStr, NN<IO::Lo
 	return ctrl;
 }
 
-NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::CString connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	NN<DB::DBManagerCtrl> ctrl;
 	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, sockf, parsers));

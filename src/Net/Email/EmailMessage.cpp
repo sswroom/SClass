@@ -272,10 +272,7 @@ NN<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::EmailAddres
 {
 	NN<EmailAddress> ret = MemAllocNN(EmailAddress);
 	ret->type = type;
-	if (name.leng > 0)
-		ret->name = Text::String::New(name);
-	else
-		ret->name = 0;
+	ret->name = Text::String::NewOrNull(name);
 	ret->addr = Text::String::New(addr);
 	return ret;
 }

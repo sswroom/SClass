@@ -41,11 +41,11 @@ namespace Net
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
-			void AddForwardURL(Text::CString url);
+			void AddForwardURL(Text::CStringNN url);
 			void AddInjectHeader(NN<Text::String> header);
-			void AddInjectHeader(Text::CString header);
+			void AddInjectHeader(Text::CStringNN header);
 			void SetLog(IO::LogTool *log, Bool logContent);
-			void SetForceHost(Text::CString forceHost);
+			void SetForceHost(Text::CStringNN forceHost);
 
 			void HandleForwardRequest(ReqHandler reqHdlr, void *userObj);
 		};

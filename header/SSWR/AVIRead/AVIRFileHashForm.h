@@ -63,7 +63,7 @@ namespace SSWR
 			Bool fileListChg;
 			Data::DateTime lastTimerTime;
 			Sync::Mutex readMut;
-			Text::String *progName;
+			Optional<Text::String> progName;
 			Bool progNameChg;
 			UInt64 readSize;
 			UInt64 totalRead;
@@ -76,7 +76,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnCheckTypeChg(AnyType userObj);
 			static UInt32 __stdcall HashThread(AnyType userObj);
-			void AddFile(Text::CString fileName);
+			void AddFile(Text::CStringNN fileName);
 			void UpdateUI();
 		public:
 			AVIRFileHashForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
@@ -84,7 +84,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(Text::CString name, UInt64 count);
+			virtual void ProgressStart(Text::CStringNN name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};

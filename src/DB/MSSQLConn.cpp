@@ -6,11 +6,12 @@
 
 Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
 {
-	Text::CStringNN nns;
-	if (IsNative())
+	Text::CStringNN nnuserName;
+	Text::CStringNN nnpassword;
+	if (IsNative() && userName.SetTo(nnuserName) && password.SetTo(nnpassword))
 	{
 		DB::TDSConn *conn;
-		NEW_CLASS(conn, DB::TDSConn(serverHost, port, encrypt, database, userName, password, log, errMsg));
+		NEW_CLASS(conn, DB::TDSConn(serverHost, port, encrypt, database, nnuserName, nnpassword, log, errMsg));
 		if (conn->IsConnected())
 			return conn;
 		DEL_CLASS(conn);
@@ -58,29 +59,29 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 		connStr.AppendOpt(database);
 		if (driverName->StartsWith(UTF8STRC("ODBC Driver ")) && driverName->EndsWith(UTF8STRC(" for SQL Server")))
 		{
-			if (userName.SetTo(nns))
+			if (userName.SetTo(nnuserName))
 			{
 				connStr.AppendC(UTF8STRC(";UID="));
-				connStr.Append(nns);
+				connStr.Append(nnuserName);
 			}
-			if (password.SetTo(nns))
+			if (password.SetTo(nnpassword))
 			{
 				connStr.AppendC(UTF8STRC(";PWD="));
-				connStr.Append(nns);
+				connStr.Append(nnpassword);
 			}
 			connStr.AppendC(UTF8STRC(";TrustServerCertificate=YES"));	
 		}
 		else
 		{
-			if (userName.SetTo(nns))
+			if (userName.SetTo(nnuserName))
 			{
 				connStr.AppendC(UTF8STRC(";UID="));
-				connStr.Append(nns);
+				connStr.Append(nnuserName);
 			}
-			if (password.SetTo(nns))
+			if (password.SetTo(nnpassword))
 			{
 				connStr.AppendC(UTF8STRC(";PWD="));
-				connStr.Append(nns);
+				connStr.Append(nnpassword);
 			}
 	//		connStr.AppendC(UTF8STRC(";Timeout=60"));
 	//		connStr.AppendC(UTF8STRC(";connect timeout=30"));

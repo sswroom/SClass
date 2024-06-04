@@ -150,7 +150,7 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(Text::CString name, UInt64 count);
+			virtual void ProgressStart(Text::CStringNN name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};

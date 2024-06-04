@@ -1782,7 +1782,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 	}
 }
 
-DB::DBMS::DBMS(Text::CString versionStr, NN<IO::LogTool> log)
+DB::DBMS::DBMS(Text::CStringNN versionStr, NN<IO::LogTool> log)
 {
 	this->versionStr = Text::String::New(versionStr);
 	this->log = log;

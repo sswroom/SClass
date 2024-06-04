@@ -49,7 +49,7 @@ namespace UI
 			virtual void OnMouseUp();
 			virtual void OnMouseClick();
 
-			UInt32 AddMessage(Text::CString message);
+			UInt32 AddMessage(Text::CStringNN message);
 			UInt32 AddMessage(NN<Text::String> message);
 			void RemoveMessage(UInt32 msgId);
 

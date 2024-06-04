@@ -16,7 +16,7 @@ void Media::ProfiledResizer::ReleaseProfile(NN<Media::ProfiledResizer::ResizePro
 {
 	profile->profileName->Release();
 	profile->suffix->Release();
-	SDEL_STRING(profile->watermark);
+	OPTSTR_DEL(profile->watermark);
 	MemFreeNN(profile);
 }
 
@@ -88,7 +88,7 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 	{
 		bresizer->AddTargetDPI(profile->targetSizeX, profile->targetSizeY, profile->suffix);
 	}
-	this->watermarker->SetWatermark(STR_CSTR(profile->watermark));
+	this->watermarker->SetWatermark(OPTSTR_CSTR(profile->watermark));
 	if (this->saver)
 	{
 		DEL_CLASS(this->saver);
@@ -127,7 +127,7 @@ NN<const Media::ProfiledResizer::ResizeProfile> Media::ProfiledResizer::GetProfi
 	return this->profiles.GetItemNoCheck(index);
 }
 
-Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType)
+Bool Media::ProfiledResizer::AddProfile(Text::CStringNN profileName, Text::CStringNN suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType)
 {
 	NN<ResizeProfile> profile;
 	if (outType == OT_TIFF)
@@ -166,14 +166,7 @@ Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString
 	profile->sizeType = sizeType;
 	profile->outType = outType;
 	profile->outParam = outParam;
-	if (watermark.leng > 0)
-	{
-		profile->watermark = Text::String::New(watermark).Ptr();
-	}
-	else
-	{
-		profile->watermark = 0;
-	}
+	profile->watermark = Text::String::NewOrNull(watermark);
 	this->profiles.Add(profile);
 	return true;
 }
@@ -257,9 +250,10 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 		sptr = Text::StrInt32(sptr, (Int32)profile->outType) + 1;
 		cols[5] = UnsafeArray<const UTF8Char>(sptr);
 		sptr = Text::StrUInt32(sptr, profile->outParam) + 1;
-		if (profile->watermark)
+		NN<Text::String> watermark;
+		if (profile->watermark.SetTo(watermark))
 		{
-			cols[6] = UnsafeArray<const UTF8Char>(profile->watermark->v);
+			cols[6] = UnsafeArray<const UTF8Char>(watermark->v);
 		}
 		else
 		{

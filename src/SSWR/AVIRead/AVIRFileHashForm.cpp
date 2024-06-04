@@ -35,12 +35,12 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 	Sync::MutexUsage mutUsage(me->readMut);
 	if (me->progNameChg)
 	{
-		me->txtFileName->SetText(me->progName->ToCString());
+		me->txtFileName->SetText(OPTSTR_CSTR(me->progName).OrEmpty());
 		me->progNameChg = false;
 	}
 	if (me->progLastCount != me->progCount)
 	{
-		me->prgFile->ProgressStart(me->progName->ToCString(), me->progCount);
+		me->prgFile->ProgressStart(OPTSTR_CSTR(me->progName).OrEmpty(), me->progCount);
 		me->progLastCount = me->progCount;
 	}
 
@@ -186,7 +186,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 	return 0;
 }
 
-void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CString fileName)
+void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CStringNN fileName)
 {
 	NN<FileStatus> status;
 	Sync::MutexUsage mutUsage(this->fileMut);
@@ -375,7 +375,7 @@ SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 		SDEL_CLASS(status->fchk);
 		MemFreeNN(status);
 	}
-	SDEL_STRING(this->progName);
+	OPTSTR_DEL(this->progName);
 }
 
 void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
@@ -383,14 +383,11 @@ void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 count)
+void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CStringNN name, UInt64 count)
 {
 	Sync::MutexUsage mutUsage(this->readMut);
-	if (this->progName)
-	{
-		this->progName->Release();
-	}
-	this->progName = Text::String::New(name).Ptr();
+	OPTSTR_DEL(this->progName);
+	this->progName = Text::String::New(name);
 	this->progNameChg = true;
 	this->readSize += this->progCount - this->progCurr;
 	this->totalRead += this->progCount - this->progCurr;

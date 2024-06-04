@@ -28,7 +28,7 @@ namespace Net
 			Optional<IPStatus> status;
 		} ClientStatus;
 
-		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CString logMessage);
+		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CStringNN logMessage);
 	private:
 		NN<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
@@ -49,7 +49,7 @@ namespace Net
 
 		Optional<IPStatus> GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
 	public:
-		LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog, Bool autoStart);
+		LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CStringNN logPath, NN<IO::LogTool> svrLog, Bool redirLog, Bool autoStart);
 		virtual ~LogServer();
 
 		Bool Start();

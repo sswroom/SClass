@@ -125,7 +125,7 @@ namespace DB
 
 		Text::String *Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN<SessionInfo> sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
 	public:
-		DBMS(Text::CString versionStr, NN<IO::LogTool> log);
+		DBMS(Text::CStringNN versionStr, NN<IO::LogTool> log);
 		virtual ~DBMS();
 
 		NN<Text::String> GetVersion() const;

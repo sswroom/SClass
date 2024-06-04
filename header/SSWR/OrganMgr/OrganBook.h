@@ -13,12 +13,12 @@ namespace SSWR
 		{
 		private:
 			Int32 id;
-			Text::String *title;
-			Text::String *dispAuthor;
-			Text::String *press;
+			Optional<Text::String> title;
+			Optional<Text::String> dispAuthor;
+			Optional<Text::String> press;
 			Data::Timestamp publishDate;
 			Int32 groupId;
-			Text::String *url;
+			Optional<Text::String> url;
 
 		public:
 			OrganBook();
@@ -26,20 +26,20 @@ namespace SSWR
 
 			Int32 GetBookId();
 			void SetBookId(Int32 bookId);
-			Text::String *GetTitle();
+			Optional<Text::String> GetTitle();
 			void SetTitle(Text::CString title);
 			void SetTitle(Text::StringBase<UTF8Char> *title);
-			Text::String *GetDispAuthor();
+			Optional<Text::String> GetDispAuthor();
 			void SetDispAuthor(Text::CString dispAuthor);
 			void SetDispAuthor(Text::StringBase<UTF8Char> *dispAuthor);
-			Text::String *GetPress();
+			Optional<Text::String> GetPress();
 			void SetPress(Text::CString press);
 			void SetPress(Text::StringBase<UTF8Char> *press);
 			Data::Timestamp GetPublishDate();
 			void SetPublishDate(const Data::Timestamp &publishDate);
 			Int32 GetGroupId();
 			void SetGroupId(Int32 groupId);
-			Text::String *GetURL();
+			Optional<Text::String> GetURL();
 			void SetURL(Text::CString url);
 			void SetURL(Text::StringBase<UTF8Char> *url);
 

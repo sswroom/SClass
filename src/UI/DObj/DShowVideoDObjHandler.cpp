@@ -76,7 +76,7 @@ void UI::DObj::DShowVideoDObjHandler::DrawVideo(NN<Media::DrawImage> dimg)
 	}
 }
 
-UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName)
+UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName)
 {
 	this->videoTL = videoPos;
 	this->videoSize = videoSize;

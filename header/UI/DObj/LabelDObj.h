@@ -11,7 +11,7 @@ namespace UI
 		{
 		private:
 			NN<Media::DrawEngine> deng;
-			Text::String *txt;
+			Optional<Text::String> txt;
 			Sync::Mutex txtMut;
 			Bool txtChg;
 			NN<Text::String> fontName;

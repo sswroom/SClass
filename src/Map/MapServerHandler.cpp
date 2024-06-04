@@ -252,6 +252,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequ
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	NN<Text::String> file;
 	Optional<Text::String> range = req->GetQueryValue(CSTR("range"));
+	NN<Text::String> cesiumScenePath;
 	Double minErr;
 	if (!req->GetQueryValueF64(CSTR("minErr"), minErr))
 	{
@@ -292,13 +293,13 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequ
 			return true;
 		}
 	}
-	if (me->cesiumScenePath == 0)
+	if (!me->cesiumScenePath.SetTo(cesiumScenePath))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
 	sb.ClearStr();
-	sb.Append(me->cesiumScenePath);
+	sb.Append(cesiumScenePath);
 	if (sb.ToString()[sb.GetLength() - 1] != IO::Path::PATH_SEPERATOR)
 	{
 		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
@@ -363,18 +364,19 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NN<Net::WebServer::IWebRequ
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	NN<Text::String> file;
 	Text::StringBuilderUTF8 sb;
+	NN<Text::String> cesiumScenePath;
 	if (!req->GetQueryValue(CSTR("file")).SetTo(file))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 		return true;
 	}
-	if (me->cesiumScenePath == 0)
+	if (!me->cesiumScenePath.SetTo(cesiumScenePath))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
 	sb.ClearStr();
-	sb.Append(me->cesiumScenePath);
+	sb.Append(cesiumScenePath);
 	if (sb.ToString()[sb.GetLength() - 1] != IO::Path::PATH_SEPERATOR)
 	{
 		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
@@ -577,7 +579,7 @@ Map::MapServerHandler::MapServerHandler(NN<Parser::ParserList> parsers)
 Map::MapServerHandler::~MapServerHandler()
 {
 	this->assets.DeleteAll();
-	SDEL_STRING(this->cesiumScenePath);
+	OPTSTR_DEL(this->cesiumScenePath);
 	this->wgs84.Delete();
 }
 
@@ -621,8 +623,8 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 
 void Map::MapServerHandler::SetCesiumScenePath(Text::CString cesiumScenePath)
 {
-	SDEL_STRING(this->cesiumScenePath);
-	this->cesiumScenePath = Text::String::New(cesiumScenePath).Ptr();
+	OPTSTR_DEL(this->cesiumScenePath);
+	this->cesiumScenePath = Text::String::NewOrNull(cesiumScenePath);
 }
 
 void Map::MapServerHandler::SetCesiumMinError(Double minError)

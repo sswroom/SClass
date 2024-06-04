@@ -19,8 +19,8 @@ namespace Text
 			typedef struct
 			{
 				NN<Text::String> defineName;
-				Text::String *defineVal;
-				Text::String *defineParam;
+				Optional<Text::String> defineVal;
+				Optional<Text::String> defineParam;
 				Text::String *fileName;
 				Int32 lineNum;
 				Bool undefined;
@@ -69,7 +69,7 @@ namespace Text
 			static void FreeFileStatus(NN<FileParseStatus> fileStatus);
 		public:
 			CppParseStatus(NN<Text::String> rootFile);
-			CppParseStatus(Text::CString rootFile);
+			CppParseStatus(Text::CStringNN rootFile);
 			~CppParseStatus();
 
 			Optional<FileParseStatus> GetFileStatus();

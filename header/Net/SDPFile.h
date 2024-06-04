@@ -15,21 +15,21 @@ namespace Net
 		UOSInt buffSize;
 
 		Int32 version;
-		Text::String *sessName;
-		Text::String *userName;
-		Text::String *sessId;
-		Text::String *sessVer;
-		Text::String *userAddrType;
-		Text::String *userAddrHost;
+		Optional<Text::String> sessName;
+		Optional<Text::String> userName;
+		Optional<Text::String> sessId;
+		Optional<Text::String> sessVer;
+		Optional<Text::String> userAddrType;
+		Optional<Text::String> userAddrHost;
 		Int64 startTime;
 		Int64 endTime;
-		Text::String *sessTool;
-		Text::String *sessType;
-		Text::String *sessCharset;
-		Text::String *sessControl;
+		Optional<Text::String> sessTool;
+		Optional<Text::String> sessType;
+		Optional<Text::String> sessCharset;
+		Optional<Text::String> sessControl;
 		Bool sessRecv;
 		Bool sessSend;
-		Text::String *reqUserAgent;
+		Optional<Text::String> reqUserAgent;
 
 		Data::ArrayListStringNN sessDesc;
 		Data::ArrayList<Int32> sessDescType;

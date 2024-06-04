@@ -250,7 +250,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(AnyType userObj, Text::CString code)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(AnyType userObj, Text::CStringNN code)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	Sync::MutexUsage mutUsage(me->codeMut);

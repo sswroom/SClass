@@ -51,7 +51,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Text::CString GetUserAgent();
+			Text::CStringNN GetUserAgent();
 		};
 	}
 }

@@ -17,7 +17,7 @@ namespace Text
 		static Optional<String> NewOrNullSlow(UnsafeArrayOpt<const UTF8Char> str);
 		static NN<String> NewNotNullSlow(UnsafeArray<const UTF8Char> str);
 		static Optional<String> NewOrNull(Text::CString str);
-		static NN<String> New(const Text::CString &str)
+		static NN<String> New(const Text::CStringNN &str)
 		{
 			if (str.leng == 0) return NewEmpty();
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));

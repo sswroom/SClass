@@ -31,7 +31,7 @@ namespace UtilUI
 		virtual void EventMenuClicked(UInt16 cmdId);
 		virtual void OnMonitorChanged();
 
-		Bool SearchText(Text::CString txt);
+		Bool SearchText(Text::CStringNN txt);
 		Bool LoadFile(NN<Text::String> filePath);
 		Bool LoadStreamData(NN<IO::StreamData> data);
 		Bool OpenSearch(Text::CString txt);

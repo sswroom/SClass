@@ -11,7 +11,7 @@ namespace Net
 
 		void Reopen();
 	public:
-		WLANLinuxInterface(Text::CString name, void *id, Net::WirelessLAN::INTERFACE_STATE state);
+		WLANLinuxInterface(Text::CStringNN name, void *id, Net::WirelessLAN::INTERFACE_STATE state);
 		virtual ~WLANLinuxInterface();
 
 		virtual Bool Scan();

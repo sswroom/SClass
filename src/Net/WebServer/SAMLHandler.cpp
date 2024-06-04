@@ -12,10 +12,10 @@
 
 Net::WebServer::SAMLHandler::~SAMLHandler()
 {
-	SDEL_STRING(this->serverHost);
-	SDEL_STRING(this->metadataPath);
-	SDEL_STRING(this->logoutPath);
-	SDEL_STRING(this->ssoPath);
+	OPTSTR_DEL(this->serverHost);
+	OPTSTR_DEL(this->metadataPath);
+	OPTSTR_DEL(this->logoutPath);
+	OPTSTR_DEL(this->ssoPath);
 	this->signCert.Delete();
 	this->signKey.Delete();
 }
@@ -26,24 +26,28 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Cert::X509Cert> cert;
 	NN<Crypto::Cert::X509PrivKey> privKey;
-	if (this->initErr == SAMLError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey))
+	NN<Text::String> metadataPath;
+	NN<Text::String> logoutPath;
+	NN<Text::String> ssoPath;
+	NN<Text::String> serverHost;
+	if (this->initErr == SAMLError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey) && this->serverHost.SetTo(serverHost))
 	{
-		if (this->metadataPath->Equals(subReq.v, subReq.leng))
+		if (this->metadataPath.SetTo(metadataPath) && metadataPath->Equals(subReq.v, subReq.leng) && this->logoutPath.SetTo(logoutPath) && this->ssoPath.SetTo(ssoPath))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
 			sb.AppendC(UTF8STRC("<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" ID=\""));
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
-			sptr = this->serverHost->ConcatTo(sptr);
-			sptr = this->metadataPath->ConcatTo(sptr);
+			sptr = serverHost->ConcatTo(sptr);
+			sptr = metadataPath->ConcatTo(sptr);
 			Text::StrReplace(sbuff, ':', '_');
 			Text::StrReplace(sbuff, '/', '_');
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("\" entityID=\""));
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
-			sptr = this->serverHost->ConcatTo(sptr);
-			sptr = this->metadataPath->ConcatTo(sptr);
+			sptr = serverHost->ConcatTo(sptr);
+			sptr = metadataPath->ConcatTo(sptr);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("\">"));
 			sb.AppendC(UTF8STRC("<md:SPSSODescriptor AuthnRequestsSigned=\"true\" WantAssertionsSigned=\"true\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">"));
@@ -66,12 +70,12 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 			sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
 			sb.AppendC(UTF8STRC("</md:KeyDescriptor>"));
 			sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
-			sb.Append(this->serverHost);
-			sb.Append(this->logoutPath);
+			sb.Append(serverHost);
+			sb.Append(logoutPath);
 			sb.AppendC(UTF8STRC("\"/>"));
 			sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://"));
-			sb.Append(this->serverHost);
-			sb.Append(this->logoutPath);
+			sb.Append(serverHost);
+			sb.Append(logoutPath);
 			sb.AppendC(UTF8STRC("\"/>"));
 			sb.AppendC(UTF8STRC("<md:NameIDFormat>"));
 			sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"));
@@ -89,12 +93,12 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 			sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"));
 			sb.AppendC(UTF8STRC("</md:NameIDFormat>"));
 			sb.AppendC(UTF8STRC("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
-			sb.Append(this->serverHost);
-			sb.Append(this->ssoPath);
+			sb.Append(serverHost);
+			sb.Append(ssoPath);
 			sb.AppendC(UTF8STRC("\" index=\"0\" isDefault=\"true\"/>"));
 			sb.AppendC(UTF8STRC("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact\" Location=\"https://"));
-			sb.Append(this->serverHost);
-			sb.Append(this->ssoPath);
+			sb.Append(serverHost);
+			sb.Append(ssoPath);
 			sb.AppendC(UTF8STRC("\" index=\"1\"/>"));
 			sb.AppendC(UTF8STRC("</md:SPSSODescriptor>"));
 			sb.AppendC(UTF8STRC("</md:EntityDescriptor>"));
@@ -103,7 +107,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 			resp->AddContentType(CSTR("application/samlmetadata+xml"));
 			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());
 		}
-		else if (this->ssoPath->Equals(subReq.v, subReq.leng))
+		else if (this->ssoPath.SetTo(ssoPath) && ssoPath->Equals(subReq.v, subReq.leng))
 		{
 			Bool succ = false;
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -119,7 +123,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 					buff[buffSize] = 0;
 					if (this->rawRespHdlr)
 					{
-						this->rawRespHdlr(this->rawRespObj, Text::CString(buff, buffSize));
+						this->rawRespHdlr(this->rawRespObj, Text::CStringNN(buff, buffSize));
 					}
 					if (this->loginHdlr)
 					{
@@ -136,7 +140,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 			}
 			return true;
 		}
-		else if (this->logoutPath->Equals(subReq.v, subReq.leng))
+		else if (this->logoutPath.SetTo(logoutPath) && logoutPath->Equals(subReq.v, subReq.leng))
 		{
 			resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 			return true;
@@ -157,6 +161,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 
 Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
 {
+	Text::CStringNN nns;
 	this->defHdlr = defHdlr;
 	this->ssl = ssl;
 	this->serverHost = 0;
@@ -169,31 +174,30 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->rawRespObj = 0;
 	this->loginHdlr = 0;
 	this->loginObj = 0;
-	if (cfg->serverHost.leng == 0)
+	if (!cfg->serverHost.SetTo(nns) || nns.leng == 0)
 	{
 		this->initErr = SAMLError::ServerHost;
 		return;
 	}
-	Text::CStringNN nns;
-	this->serverHost = Text::String::New(cfg->serverHost).Ptr();
+	this->serverHost = Text::String::New(nns);
 	if (!cfg->metadataPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::MetadataPath;
 		return;
 	}
-	this->metadataPath = Text::String::New(cfg->metadataPath).Ptr();
+	this->metadataPath = Text::String::New(nns);
 	if (!cfg->logoutPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::LogoutPath;
 		return;
 	}
-	this->logoutPath = Text::String::New(cfg->logoutPath).Ptr();
+	this->logoutPath = Text::String::New(nns);
 	if (!cfg->ssoPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::SSOPath;
 		return;
 	}
-	this->ssoPath = Text::String::New(cfg->ssoPath).Ptr();
+	this->ssoPath = Text::String::New(nns);
 	Parser::FileParser::X509Parser parser;
 	if (cfg->signCertPath.leng == 0)
 	{
@@ -241,25 +245,43 @@ Net::WebServer::SAMLError Net::WebServer::SAMLHandler::GetInitError()
 
 Bool Net::WebServer::SAMLHandler::GetLogoutURL(NN<Text::StringBuilderUTF8> sb)
 {
+	NN<Text::String> serverHost;
+	NN<Text::String> logoutPath;
+	if (!this->serverHost.SetTo(serverHost) || !this->logoutPath.SetTo(logoutPath))
+	{
+		return false;
+	}
 	sb->AppendC(UTF8STRC("https://"));
-	sb->Append(this->serverHost);
-	sb->Append(this->logoutPath);
+	sb->Append(serverHost);
+	sb->Append(logoutPath);
 	return true;
 }
 
 Bool Net::WebServer::SAMLHandler::GetMetadataURL(NN<Text::StringBuilderUTF8> sb)
 {
+	NN<Text::String> serverHost;
+	NN<Text::String> metadataPath;
+	if (!this->serverHost.SetTo(serverHost) || !this->metadataPath.SetTo(metadataPath))
+	{
+		return false;
+	}
 	sb->AppendC(UTF8STRC("https://"));
-	sb->Append(this->serverHost);
-	sb->Append(this->metadataPath);
+	sb->Append(serverHost);
+	sb->Append(metadataPath);
 	return true;
 }
 
 Bool Net::WebServer::SAMLHandler::GetSSOURL(NN<Text::StringBuilderUTF8> sb)
 {
+	NN<Text::String> serverHost;
+	NN<Text::String> ssoPath;
+	if (!this->serverHost.SetTo(serverHost) || !this->ssoPath.SetTo(ssoPath))
+	{
+		return false;
+	}
 	sb->AppendC(UTF8STRC("https://"));
-	sb->Append(this->serverHost);
-	sb->Append(this->ssoPath);
+	sb->Append(serverHost);
+	sb->Append(ssoPath);
 	return true;
 }
 

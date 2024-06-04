@@ -243,7 +243,7 @@ void UI::DObj::RollingMessageDObj::OnMouseClick()
 {
 }
 
-UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::CString message)
+UInt32 UI::DObj::RollingMessageDObj::AddMessage(Text::CStringNN message)
 {
 	NN<MessageInfo> msg;
 	msg = MemAllocNN(MessageInfo);

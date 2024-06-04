@@ -243,7 +243,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Text::CString SSWR::AVIRead::AVIRUserAgentSelForm::GetUserAgent()
+Text::CStringNN SSWR::AVIRead::AVIRUserAgentSelForm::GetUserAgent()
 {
 	return {this->currUserAgent, this->currUserAgentLen};
 }

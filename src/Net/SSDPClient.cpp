@@ -97,7 +97,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 					svc->opt = Text::String::NewOrNull(opt);
 					svc->server = Text::String::NewOrNull(server);
 					svc->st = Text::String::NewOrNull(st);
-					svc->usn = Text::String::New(usn);
+					svc->usn = Text::String::New(nnusn);
 					svc->userAgent = Text::String::NewOrNull(userAgent);
 					dev->services.Add(svc);
 				}

@@ -132,9 +132,9 @@ namespace DB
 		UOSInt nextDB;
 
 	public:
-		DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
+		DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CStringNN name, UOSInt dbSize);
 		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UOSInt dbSize);
-		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CStringNN name, UOSInt dbSize);
 		~DBQueue();
 
 		void AddDB(NN<DB::DBTool> db);

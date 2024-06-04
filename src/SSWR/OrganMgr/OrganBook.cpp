@@ -15,10 +15,10 @@ SSWR::OrganMgr::OrganBook::OrganBook()
 
 SSWR::OrganMgr::OrganBook::~OrganBook()
 {
-	SDEL_STRING(this->title);
-	SDEL_STRING(this->dispAuthor);
-	SDEL_STRING(this->press);
-	SDEL_STRING(this->url);
+	OPTSTR_DEL(this->title);
+	OPTSTR_DEL(this->dispAuthor);
+	OPTSTR_DEL(this->press);
+	OPTSTR_DEL(this->url);
 }
 
 Int32 SSWR::OrganMgr::OrganBook::GetBookId()
@@ -31,54 +31,54 @@ void SSWR::OrganMgr::OrganBook::SetBookId(Int32 bookId)
 	this->id = bookId;
 }
 
-Text::String *SSWR::OrganMgr::OrganBook::GetTitle()
+Optional<Text::String> SSWR::OrganMgr::OrganBook::GetTitle()
 {
 	return this->title;
 }
 
 void SSWR::OrganMgr::OrganBook::SetTitle(Text::CString title)
 {
-	SDEL_STRING(this->title);
-	this->title = Text::String::New(title).Ptr();
+	OPTSTR_DEL(this->title);
+	this->title = Text::String::NewOrNull(title);
 }
 
 void SSWR::OrganMgr::OrganBook::SetTitle(Text::StringBase<UTF8Char> *title)
 {
-	SDEL_STRING(this->title);
-	this->title = Text::String::New(title->v, title->leng).Ptr();
+	OPTSTR_DEL(this->title);
+	this->title = Text::String::New(title->v, title->leng);
 }
 
-Text::String *SSWR::OrganMgr::OrganBook::GetDispAuthor()
+Optional<Text::String> SSWR::OrganMgr::OrganBook::GetDispAuthor()
 {
 	return this->dispAuthor;
 }
 
 void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::CString dispAuthor)
 {
-	SDEL_STRING(this->dispAuthor);
-	this->dispAuthor = Text::String::New(dispAuthor).Ptr();
+	OPTSTR_DEL(this->dispAuthor);
+	this->dispAuthor = Text::String::NewOrNull(dispAuthor);
 }
 
 void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::StringBase<UTF8Char> *dispAuthor)
 {
-	SDEL_STRING(this->dispAuthor);
+	OPTSTR_DEL(this->dispAuthor);
 	this->dispAuthor = Text::String::New(dispAuthor->v, dispAuthor->leng).Ptr();
 }
 
-Text::String *SSWR::OrganMgr::OrganBook::GetPress()
+Optional<Text::String> SSWR::OrganMgr::OrganBook::GetPress()
 {
 	return this->press;
 }
 
 void SSWR::OrganMgr::OrganBook::SetPress(Text::CString press)
 {
-	SDEL_STRING(this->press);
-	this->press = Text::String::New(press).Ptr();
+	OPTSTR_DEL(this->press);
+	this->press = Text::String::NewOrNull(press);
 }
 
 void SSWR::OrganMgr::OrganBook::SetPress(Text::StringBase<UTF8Char> *press)
 {
-	SDEL_STRING(this->press);
+	OPTSTR_DEL(this->press);
 	this->press = Text::String::New(press->v, press->leng).Ptr();
 }
 
@@ -102,33 +102,33 @@ void SSWR::OrganMgr::OrganBook::SetGroupId(Int32 groupId)
 	this->groupId = groupId;
 }
 
-Text::String *SSWR::OrganMgr::OrganBook::GetURL()
+Optional<Text::String> SSWR::OrganMgr::OrganBook::GetURL()
 {
 	return this->url;
 }
 
 void SSWR::OrganMgr::OrganBook::SetURL(Text::CString url)
 {
-	SDEL_STRING(this->url);
-	this->url = Text::String::New(url).Ptr();
+	OPTSTR_DEL(this->url);
+	this->url = Text::String::NewOrNull(url);
 }
 
 void SSWR::OrganMgr::OrganBook::SetURL(Text::StringBase<UTF8Char> *url)
 {
-	SDEL_STRING(this->url);
-	this->url = Text::String::New(url->v, url->leng).Ptr();
+	OPTSTR_DEL(this->url);
+	this->url = Text::String::New(url->v, url->leng);
 }
 
 void SSWR::OrganMgr::OrganBook::GetString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendI32(this->id);;
 	sb->AppendC(UTF8STRC(": "));
-	sb->Append(this->dispAuthor);
+	sb->AppendOpt(this->dispAuthor);
 	sb->AppendC(UTF8STRC(" "));
 	sb->AppendI32(Data::DateTimeUtil::DispYearI32(this->publishDate.GetTimeValue().year));
 	sb->AppendC(UTF8STRC(". "));
-	sb->Append(this->title);
+	sb->AppendOpt(this->title);
 	sb->AppendC(UTF8STRC(". "));
-	sb->Append(this->press);
+	sb->AppendOpt(this->press);
 	sb->AppendC(UTF8STRC("."));
 }

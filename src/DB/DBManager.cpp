@@ -564,7 +564,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		DB::TDSConn *cli = 0;
 		NN<DB::TDSConn> nncli;
 		UInt16 port = 1433;
-		if (server)
+		if (server && uid && pwd)
 		{
 			UOSInt i = server->IndexOf(':');
 			if (i >= 0)
@@ -572,7 +572,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				Text::StrToUInt16(&server->v[i + 1], port);
 				server->TrimToLength(i);
 			}
-			NEW_CLASS(cli, DB::TDSConn(server->ToCString(), port, false, STR_CSTR(schema), STR_CSTR(uid), STR_CSTR(pwd), log, 0));
+			NEW_CLASS(cli, DB::TDSConn(server->ToCString(), port, false, STR_CSTR(schema), uid->ToCString(), pwd->ToCString(), log, 0));
 			if (!cli->IsConnected())
 			{
 				DEL_CLASS(cli);

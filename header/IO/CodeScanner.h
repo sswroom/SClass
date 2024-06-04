@@ -156,13 +156,13 @@ namespace IO
 			DC_SET_BUZZER_OFF
 		} DeviceCommand;
 
-		typedef void (__stdcall *ScanHandler)(AnyType userObj, Text::CString code);
+		typedef void (__stdcall *ScanHandler)(AnyType userObj, Text::CStringNN code);
 
 	private:
 		NN<Text::String> devName;
 
 	public:
-		CodeScanner(Text::CString devName);
+		CodeScanner(Text::CStringNN devName);
 		virtual ~CodeScanner();
 
 		NN<Text::String> GetDevName() const;

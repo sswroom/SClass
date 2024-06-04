@@ -14,7 +14,8 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		this->dimg = 0;
 	}
 
-	if (this->txt)
+	NN<Text::String> txt;
+	if (this->txt.SetTo(txt))
 	{
 		NN<Media::DrawImage> dimg;
 		NN<Media::DrawFont> f;
@@ -26,7 +27,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		{
 			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 
-			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), lines, f, OSInt2Double(this->size.x));
+			Media::DrawImageTool::SplitString(dimg, txt->ToCString(), lines, f, OSInt2Double(this->size.x));
 			dimg->DelFont(f);
 			this->deng->DeleteImage(dimg);
 		}
@@ -200,17 +201,11 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 UI::DObj::RollingTextDObj::RollingTextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed) : DirectObject(tl)
 {
 	this->deng = deng;
-	if (txt.leng > 0)
+	this->txt = Text::String::NewOrNull(txt);
+	Text::CStringNN nnfontName;
+	if (fontName.SetTo(nnfontName) && nnfontName.leng > 0)
 	{
-		this->txt = Text::String::New(txt).Ptr();
-	}
-	else
-	{
-		this->txt = 0;
-	}
-	if (fontName.leng > 0)
-	{
-		this->fontName = Text::String::New(fontName);
+		this->fontName = Text::String::New(nnfontName);
 	}
 	else
 	{
@@ -231,7 +226,7 @@ UI::DObj::RollingTextDObj::RollingTextDObj(NN<Media::DrawEngine> deng, Text::CSt
 
 UI::DObj::RollingTextDObj::~RollingTextDObj()
 {
-	SDEL_STRING(this->txt);
+	OPTSTR_DEL(this->txt);
 	this->fontName->Release();
 
 	NN<Media::DrawImage> img;

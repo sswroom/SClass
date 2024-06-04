@@ -35,7 +35,7 @@ namespace SSWR
 			Double lon;
 			Int32 locType;
 
-			Location(Int32 id, Int32 parId, Text::CString ename, Text::CString cname, Int32 locType);
+			Location(Int32 id, Int32 parId, Text::CStringNN ename, Text::CStringNN cname, Int32 locType);
 			~Location();
 			UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff);
 		};
@@ -47,7 +47,7 @@ namespace SSWR
 			NN<Text::String> engName;
 			NN<Text::String> chiName;
 
-			LocationType(Int32 id, Text::CString engName, Text::CString chiName);
+			LocationType(Int32 id, Text::CStringNN engName, Text::CStringNN chiName);
 			~LocationType();
 		};
 
