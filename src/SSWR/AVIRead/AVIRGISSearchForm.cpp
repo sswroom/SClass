@@ -24,13 +24,9 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 	if (i != INVALID_INDEX && me->lbResults->GetItemTextNew(i).SetTo(s))
 	{
 		Math::Coord2DDbl center;
-		Map::GetObjectSess *sess;
-
-		sess = me->layer->BeginGetObject();
-		Math::Geometry::Vector2D *vec = me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s->ToCString(), me->strIndex);
-		me->layer->EndGetObject(sess);
-
-		if (vec)
+		NN<Map::GetObjectSess> sess = me->layer->BeginGetObject();
+		NN<Math::Geometry::Vector2D> vec;
+		if (me->layer->GetVectorByStr(me->searching, me->nameArr, sess, s->ToCString(), me->strIndex).SetTo(vec))
 		{
 			NN<Math::CoordinateSystem> csys1 = me->navi->GetCoordinateSystem();
 			NN<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
@@ -44,6 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 			me->navi->SetSelectedVector(vec);
 			me->navi->PanToMap(center);
 		}
+		me->layer->EndGetObject(sess);
 		s->Release();
 	}
 }

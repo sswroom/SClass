@@ -60,9 +60,9 @@ namespace Map
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names); // no need to release
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);

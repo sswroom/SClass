@@ -10,73 +10,69 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 {
 	this->db = db;
 	this->csys = routeLyr->GetCoordinateSystem()->Clone();
-	Map::GetObjectSess *sess = routeLyr->BeginGetObject();
-	if (sess)
-	{
-		UTF8Char sbuff[512];
-		UnsafeArray<UTF8Char> sptr;
-		Map::NameArray *nameArr;
-		Data::ArrayListInt64 idArr;
-		UOSInt colCnt;
-		UOSInt i;
-		UOSInt j;
-		OSInt idCol = -1;
-		NN<RouteInfo> route;
-		Math::Geometry::Vector2D *vec;
+	NN<Map::GetObjectSess> sess = routeLyr->BeginGetObject();
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	Map::NameArray *nameArr;
+	Data::ArrayListInt64 idArr;
+	UOSInt colCnt;
+	UOSInt i;
+	UOSInt j;
+	OSInt idCol = -1;
+	NN<RouteInfo> route;
+	NN<Math::Geometry::Vector2D> vec;
 
-		routeLyr->GetAllObjectIds(idArr, &nameArr);
-		colCnt = routeLyr->GetColumnCnt();
-		i = 0;
-		while (i < colCnt)
+	routeLyr->GetAllObjectIds(idArr, &nameArr);
+	colCnt = routeLyr->GetColumnCnt();
+	i = 0;
+	while (i < colCnt)
+	{
+		if (routeLyr->GetColumnName(sbuff, i).SetTo(sptr))
 		{
-			if (routeLyr->GetColumnName(sbuff, i).SetTo(sptr))
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
 			{
-				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
+				idCol = (OSInt)i;
+				break;
+			}
+		}
+		i++;
+	}
+
+	if (idCol != -1)
+	{
+		Text::StringBuilderUTF8 sb;
+		i = 0;
+		j = idArr.GetCount();
+		while (i < j)
+		{
+			sb.ClearStr();
+			if (routeLyr->GetString(sb, nameArr, idArr.GetItem(i), (UOSInt)idCol))
+			{
+				if (routeLyr->GetNewVectorById(sess, idArr.GetItem(i)).SetTo(vec))
 				{
-					idCol = (OSInt)i;
-					break;
+					if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
+					{
+						route = MemAllocNN(RouteInfo);
+						route->routeId = sb.ToInt32();
+						route->pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
+						if (this->routeMap.Put(route->routeId, route).SetTo(route))
+						{
+							route->pl.Delete();
+							MemFreeNN(route);
+						}
+					}
+					else
+					{
+						vec.Delete();
+					}
 				}
 			}
 			i++;
 		}
-
-		if (idCol != -1)
-		{
-			Text::StringBuilderUTF8 sb;
-			i = 0;
-			j = idArr.GetCount();
-			while (i < j)
-			{
-				sb.ClearStr();
-				if (routeLyr->GetString(sb, nameArr, idArr.GetItem(i), (UOSInt)idCol))
-				{
-					vec = routeLyr->GetNewVectorById(sess, idArr.GetItem(i));
-					if (vec)
-					{
-						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
-						{
-							route = MemAllocNN(RouteInfo);
-							route->routeId = sb.ToInt32();
-							route->pl = (Math::Geometry::Polyline*)vec;
-							if (this->routeMap.Put(route->routeId, route).SetTo(route))
-							{
-								DEL_CLASS(route->pl);
-								MemFreeNN(route);
-							}
-						}
-						else
-						{
-							DEL_CLASS(vec);
-						}
-					}
-				}
-				i++;
-			}
-		}
-
-		routeLyr->ReleaseNameArr(nameArr);
-		routeLyr->EndGetObject(sess);
 	}
+
+	routeLyr->ReleaseNameArr(nameArr);
+	routeLyr->EndGetObject(sess);
 	routeLyr.Delete();
 }
 
@@ -91,7 +87,7 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 	while (i-- > 0)
 	{
 		route = this->routeMap.GetItemNoCheck(i);
-		DEL_CLASS(route->pl);
+		route->pl.Delete();
 		MemFreeNN(route);
 	}
 }

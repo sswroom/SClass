@@ -547,16 +547,16 @@ Bool Map::WebImageLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::GetObjectSess *Map::WebImageLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::WebImageLayer::BeginGetObject()
 {
-	return 0;
+	return NN<GetObjectSess>::ConvertFrom(NN<WebImageLayer>(*this));
 }
 
-void Map::WebImageLayer::EndGetObject(GetObjectSess *session)
+void Map::WebImageLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<ImageStat> stat;
 	NN<Media::SharedImage> shimg;

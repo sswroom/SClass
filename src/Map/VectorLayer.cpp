@@ -662,21 +662,21 @@ Bool Map::VectorLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::GetObjectSess *Map::VectorLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::VectorLayer::BeginGetObject()
 {
-	return (Map::GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<VectorLayer>(*this));
 }
 
-void Map::VectorLayer::EndGetObject(Map::GetObjectSess *session)
+void Map::VectorLayer::EndGetObject(NN<Map::GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::VectorLayer::GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id)
 {
 	NN<Math::Geometry::Vector2D> vec;
 	if (this->vectorList.GetItem((UOSInt)id).SetTo(vec))
 	{
-		return vec->Clone().Ptr();
+		return vec->Clone();
 	}
 	else
 	{
@@ -947,7 +947,9 @@ Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 	Int64 objId;
 	if (this->layerType != Map::DRAW_LAYER_POLYLINE)
 		return false;
-	objId = this->GetNearestObjectId(0, pt, nearPt);
+	NN<GetObjectSess> sess = this->BeginGetObject();
+	objId = this->GetNearestObjectId(sess, pt, nearPt);
+	this->EndGetObject(sess);
 	if (objId < 0)
 		return false;
 
@@ -983,6 +985,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	Int64 objId;
 
 	Int32 loopCnt = 3;
+	NN<GetObjectSess> sess = this->BeginGetObject();
 	Bool found = true;
 	while (found)
 	{
@@ -1001,7 +1004,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 			{
 				points = tmpLS->GetPointList(nPoints);
 				pt = *points;
-				objId = this->GetNearestObjectId(0, pt, nearPt);
+				objId = this->GetNearestObjectId(sess, pt, nearPt);
 				if (objId >= 0)
 				{
 					ix = (Int32)(pt.x * 200000.0);
@@ -1022,7 +1025,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 				}
 
 				pt = points[nPoints - 1];
-				objId = this->GetNearestObjectId(0, pt, nearPt);
+				objId = this->GetNearestObjectId(sess, pt, nearPt);
 				if (objId >= 0)
 				{
 					ix = (Int32)(pt.x * 200000.0);
@@ -1058,6 +1061,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 			Math::Polyline *pl = lyr->RemoveVector(objIds->GetItem(i));
 		}
 	}*/
+	this->EndGetObject(sess);
 }
 
 void Map::VectorLayer::ReplaceVector(Int64 id, NN<Math::Geometry::Vector2D> vec)

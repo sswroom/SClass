@@ -344,21 +344,21 @@ Bool Map::DBMapLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 	return true;
 }
 
-Map::GetObjectSess *Map::DBMapLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::DBMapLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<DBMapLayer>(*this));
 }
 
-void Map::DBMapLayer::EndGetObject(GetObjectSess *session)
+void Map::DBMapLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::DBMapLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
-	Math::Geometry::Vector2D *vec = this->vecMap.Get(id);
-	if (vec)
+	NN<Math::Geometry::Vector2D> vec;
+	if (vec.Set(this->vecMap.Get(id)))
 	{
-		return vec->Clone().Ptr();
+		return vec->Clone();
 	}
 	return 0;
 }

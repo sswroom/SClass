@@ -359,21 +359,21 @@ Bool Map::MapLayerCollection::GetBounds(OutParam<Math::RectAreaDbl> bounds) cons
 	}
 }
 
-Map::GetObjectSess *Map::MapLayerCollection::BeginGetObject()
+NN<Map::GetObjectSess> Map::MapLayerCollection::BeginGetObject()
 {
-	return (GetObjectSess*)this;
+	return NN<GetObjectSess>::ConvertFrom(NN<MapLayerCollection>(*this));
 }
 
-void Map::MapLayerCollection::EndGetObject(GetObjectSess *session)
+void Map::MapLayerCollection::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::MapLayerCollection::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	Int64 currId = 0;
 	Int64 maxId;
 	NN<Map::MapDrawLayer> lyr;
-	Math::Geometry::Vector2D *vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = 0;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())

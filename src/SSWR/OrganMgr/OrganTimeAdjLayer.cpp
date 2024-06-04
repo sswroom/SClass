@@ -101,17 +101,17 @@ Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetBounds(OutParam<Math::RectAreaDbl> bo
 	return this->gpsTrk->GetBounds(bounds);
 }
 
-Map::GetObjectSess *SSWR::OrganMgr::OrganTimeAdjLayer::BeginGetObject()
+NN<Map::GetObjectSess> SSWR::OrganMgr::OrganTimeAdjLayer::BeginGetObject()
 {
-	return (Map::GetObjectSess*)1;
+	return NN<Map::GetObjectSess>::ConvertFrom(NN<OrganTimeAdjLayer>(*this));
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(Map::GetObjectSess *session)
+void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(NN<Map::GetObjectSess> session)
 {
 
 }
 
-Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id)
 {
 	NN<UserFileInfo> ufile;
 	if (!this->userFileList->GetItem((UOSInt)id).SetTo(ufile))

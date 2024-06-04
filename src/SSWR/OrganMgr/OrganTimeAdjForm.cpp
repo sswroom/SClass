@@ -331,17 +331,19 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	NN<UserFileInfo> userFile;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	Map::GPSTrack::GPSRecord3 *records;
+	UnsafeArray<Map::GPSTrack::GPSRecord3> records;
 	Data::DateTime dt;
-	records = this->gpsTrk->GetTrack(0, j);
-	i = 0;
-	while (i < j)
+	if (this->gpsTrk->GetTrack(0, j).SetTo(records))
 	{
-		dt.SetInstant(records[i].recTime);
-		dt.ToLocalTime();
-		sptr = dt.ToStringNoZone(sbuff);
-		this->lbTrack->AddItem(CSTRP(sbuff, sptr), &records[i]);
-		i++;
+		i = 0;
+		while (i < j)
+		{
+			dt.SetInstant(records[i].recTime);
+			dt.ToLocalTime();
+			sptr = dt.ToStringNoZone(sbuff);
+			this->lbTrack->AddItem(CSTRP(sbuff, sptr), &records[i]);
+			i++;
+		}
 	}
 
 	Data::ArrayListInt32 spList;

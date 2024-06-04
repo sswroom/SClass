@@ -74,7 +74,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 	{
 		NN<Map::GPSTrack> track = NN<Map::GPSTrack>::ConvertFrom(layer);
-		Map::GPSTrack::GPSRecord3 *rec;
+		UnsafeArray<Map::GPSTrack::GPSRecord3> rec;
 		UOSInt recCnt;
 		Double v;
 		Int32 currInd = 1;
@@ -87,61 +87,63 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 		while (i < j)
 		{
-			rec = track->GetTrack(i, recCnt);
-			k = 0;
-			while (k < recCnt)
+			if (track->GetTrack(i, recCnt).SetTo(rec))
 			{
-				sptr = Text::StrInt32(sbuff, currInd);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-				d.SetInstant(rec[k].recTime);
-				sptr = d.ToString(sptr, "yyyy/MM/dd, HH:mm:ss.fff");
-				if (rec[k].valid == 1)
+				k = 0;
+				while (k < recCnt)
 				{
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", DGPS, "));
-				}
-				else if (rec[k].valid)
-				{
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", SPS, "));
-				}
-				else
-				{
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", Estimated (dead reckoning), "));
-				}
-				v = rec[k].pos.GetLat();
-				if (v < 0)
-				{
-					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", S, "));
-				}
-				else
-				{
-					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", N, "));
-				}
-				v = rec[k].pos.GetLon();
-				if (v < 0)
-				{
-					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", W, "));
-				}
-				else
-				{
-					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(", E, "));
-				}
-				sptr = Text::StrDoubleFmt(sptr, rec[k].altitude, "0.000");
-				sptr = Text::StrConcatC(sptr, UTF8STRC(" M, "));
-				sptr = Text::StrDoubleFmt(sptr, rec[k].speed * 1.852, "0.000");
-				sptr = Text::StrConcatC(sptr, UTF8STRC(" km/h, "));
-				sptr = Text::StrDoubleFmt(sptr, rec[k].heading, "0.000000");
-				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-				sptr = Text::StrInt32(sptr, rec[k].nSateUsedGPS);
-				sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-				sptr = Text::StrInt32(sptr, rec[k].nSateViewGPS);
-				writer.WriteLine(CSTRP(sbuff, sptr));
+					sptr = Text::StrInt32(sbuff, currInd);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
+					d.SetInstant(rec[k].recTime);
+					sptr = d.ToString(sptr, "yyyy/MM/dd, HH:mm:ss.fff");
+					if (rec[k].valid == 1)
+					{
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", DGPS, "));
+					}
+					else if (rec[k].valid)
+					{
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", SPS, "));
+					}
+					else
+					{
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", Estimated (dead reckoning), "));
+					}
+					v = rec[k].pos.GetLat();
+					if (v < 0)
+					{
+						sptr = Text::StrDouble(sptr, -v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", S, "));
+					}
+					else
+					{
+						sptr = Text::StrDouble(sptr, v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", N, "));
+					}
+					v = rec[k].pos.GetLon();
+					if (v < 0)
+					{
+						sptr = Text::StrDouble(sptr, -v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", W, "));
+					}
+					else
+					{
+						sptr = Text::StrDouble(sptr, v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", E, "));
+					}
+					sptr = Text::StrDoubleFmt(sptr, rec[k].altitude, "0.000");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" M, "));
+					sptr = Text::StrDoubleFmt(sptr, rec[k].speed * 1.852, "0.000");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" km/h, "));
+					sptr = Text::StrDoubleFmt(sptr, rec[k].heading, "0.000000");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
+					sptr = Text::StrInt32(sptr, rec[k].nSateUsedGPS);
+					sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
+					sptr = Text::StrInt32(sptr, rec[k].nSateViewGPS);
+					writer.WriteLine(CSTRP(sbuff, sptr));
 
-				currInd++;
-				k++;
+					currInd++;
+					k++;
+				}
 			}
 			i++;
 		}
@@ -161,48 +163,51 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		writer.WriteLine(CSTR("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 
 		Data::ArrayListInt64 objIds;
-		Map::GetObjectSess *sess = layer->BeginGetObject();
+		NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 		layer->GetBounds(minMax);
 		layer->GetObjectIdsMapXY(objIds, &nameArr, minMax, true);
 		i = 0;
 		j = objIds.GetCount();
 		while (i < j)
 		{
-			Math::Geometry::LineString *pl = (Math::Geometry::LineString*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-			points = pl->GetPointList(l);
-			k = 0;
-			while (k < l)
+			NN<Math::Geometry::LineString> pl;
+			if (Optional<Math::Geometry::LineString>::ConvertFrom(layer->GetNewVectorById(sess, objIds.GetItem(i))).SetTo(pl))
 			{
-				sptr = Text::StrInt32(sbuff, currInd);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-				v = points[k].y;
-				if (v < 0)
+				points = pl->GetPointList(l);
+				k = 0;
+				while (k < l)
 				{
-					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(",S,"));
+					sptr = Text::StrInt32(sbuff, currInd);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+					v = points[k].y;
+					if (v < 0)
+					{
+						sptr = Text::StrDouble(sptr, -v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(",S,"));
+					}
+					else
+					{
+						sptr = Text::StrDouble(sptr, v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(",N,"));
+					}
+					v = points[k].x;
+					if (v < 0)
+					{
+						sptr = Text::StrDouble(sptr, -v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(",W"));
+					}
+					else
+					{
+						sptr = Text::StrDouble(sptr, v);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(",E"));
+					}
+					writer.WriteLine(CSTRP(sbuff, sptr));
+					currInd++;
+					k++;
 				}
-				else
-				{
-					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(",N,"));
-				}
-				v = points[k].x;
-				if (v < 0)
-				{
-					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(",W"));
-				}
-				else
-				{
-					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(",E"));
-				}
-				writer.WriteLine(CSTRP(sbuff, sptr));
-				currInd++;
-				k++;
-			}
 
-			DEL_CLASS(pl);
+				pl.Delete();
+			}
 			i++;
 		}
 		layer->EndGetObject(sess);

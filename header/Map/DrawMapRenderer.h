@@ -86,7 +86,7 @@ namespace Map
 		static Bool LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPoints, Math::RectAreaDbl rect);
 		static Bool AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fntStyle, Int32 flag, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType);
 		static void DrawLabels(NN<DrawEnv> denv);
-		static OSInt __stdcall VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2);
+		static OSInt __stdcall VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN<Math::Geometry::VectorImage> obj2);
 	private:
 		void DrawLayers(NN<DrawEnv> denv, Optional<Map::MapEnv::GroupItem> group);
 		void DrawShapes(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor);

@@ -23,29 +23,31 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 	Math::Coord2DDbl *latLon;
 	UOSInt recCnt;
 	UOSInt i;
-	Map::GPSTrack::GPSRecord3 *recs;
+	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 
 	me->threadRunning = true;
-	recs = me->track->GetTrack(me->currTrackId, recCnt);
-	latLon = MemAllocA(Math::Coord2DDbl, recCnt);
-	i = 0;
-	while (i < recCnt)
+	if (me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
 	{
-		latLon[i] = recs[i].pos;
-		i++;
-	}
-	i = 0;
-	while (!me->threadToStop && i < recCnt)
-	{
-		if (me->navi->ResolveAddress(sbuff, latLon[i]).SetTo(sptr))
+		latLon = MemAllocA(Math::Coord2DDbl, recCnt);
+		i = 0;
+		while (i < recCnt)
 		{
-			me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			latLon[i] = recs[i].pos;
+			i++;
 		}
-		i++;
+		i = 0;
+		while (!me->threadToStop && i < recCnt)
+		{
+			if (me->navi->ResolveAddress(sbuff, latLon[i]).SetTo(sptr))
+			{
+				me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+			}
+			i++;
+		}
+		MemFreeA(latLon);
 	}
-	MemFreeA(latLon);
 	me->threadRunning = false;
 	return 0;
 }
@@ -62,12 +64,12 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	UOSInt i = me->lbRecord->GetSelectedIndex();
-	if (i != INVALID_INDEX)
+	UOSInt recCnt = 0;
+	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	if (i != INVALID_INDEX && me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
-		UOSInt recCnt = 0;
-		Map::GPSTrack::GPSRecord3 *recs = me->track->GetTrack(me->currTrackId, recCnt);
 		Data::DateTime dt;
 		dt.SetInstant(recs[i].recTime);
 		sptr = dt.ToStringNoZone(sbuff);
@@ -293,15 +295,14 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	this->mnuRecord->AddItem(CSTR("&Copy Marked"), MNU_MARK_COPY, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_C);
 	this->mnuRecord->AddItem(CSTR("&Delete Marked"), MNU_MARK_DELETE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DELETE);
 
-	Data::ArrayListString *nameArr;
-	NEW_CLASS(nameArr, Data::ArrayListString());
+	Data::ArrayListString nameArr;
 	this->track->GetTrackNames(nameArr);
 	NN<Text::String> s;
 	UOSInt i = 0;
-	UOSInt j = nameArr->GetCount();
+	UOSInt j = nameArr.GetCount();
 	while (i < j)
 	{
-		if (!s.Set(nameArr->GetItem(i)))
+		if (!s.Set(nameArr.GetItem(i)))
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
 			this->cboName->AddItem(CSTRP(sbuff, sptr), 0);
@@ -316,7 +317,6 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	{
 		this->cboName->SetSelectedIndex(0);
 	}
-	DEL_CLASS(nameArr);
 }
 
 SSWR::AVIRead::AVIRGISReplayForm::~AVIRGISReplayForm()
@@ -350,18 +350,18 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_MARK_COPY:
 		{
-			if (this->startMark > this->endMark)
+			UOSInt recCnt;
+			UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+			if (this->startMark > this->endMark || !track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 			{
 				return;
 			}
-			UOSInt recCnt;
 			UOSInt i;
 			NN<Map::GPSTrack> newTrack;
 			NEW_CLASSNN(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
 			NN<Text::String> trackName;
 			if (track->GetTrackName(this->currTrackId).SetTo(trackName))
 				newTrack->SetTrackName(trackName->ToCString());
-			Map::GPSTrack::GPSRecord3 *recs = track->GetTrack(this->currTrackId, recCnt);
 			i = this->startMark;
 			while (i <= this->endMark)
 			{
@@ -402,19 +402,21 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
-	Map::GPSTrack::GPSRecord3 *recs = this->track->GetTrack(this->currTrackId, recCnt);
-	if (recs)
+	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	if (this->track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 	{
 		Double dist = 0;
 		NN<Math::CoordinateSystem> coord = this->track->GetCoordinateSystem();
 		NN<Math::Geometry::LineString> pl;
-		if (pl.Set((Math::Geometry::LineString*)this->track->GetNewVectorById(0, (Int64)this->currTrackId)))
+		NN<Map::GetObjectSess> sess = this->track->BeginGetObject();
+		if (Optional<Math::Geometry::LineString>::ConvertFrom(this->track->GetNewVectorById(sess, (Int64)this->currTrackId)).SetTo(pl))
 		{
 			NN<Math::Geometry::Polyline> pl2 = pl->CreatePolyline();
 			dist = coord->CalDistance(pl2, pl->HasZ(), Math::Unit::Distance::DU_METER);
 			pl2.Delete();
 			pl.Delete();
 		}
+		this->track->EndGetObject(sess);
 		sptr = Text::StrConcatC(Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("Distance: ")), dist, "0.0"), UTF8STRC(" m"));
 		this->lblDist->SetText(CSTRP(sbuff, sptr));
 

@@ -31,14 +31,14 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType use
 	{
 		Int64 objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		Math::Geometry::Vector2D *vec = me->lyr->GetNewVectorById(sess, objId);
-		me->lyr->EndGetObject(sess);
-		if (vec)
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
+		NN<Math::Geometry::Vector2D> vec;
+		if (me->lyr->GetNewVectorById(sess, objId).SetTo(vec))
 		{
 			me->navi->PanToMap(vec->GetCenter());
-			DEL_CLASS(vec);
+			vec.Delete();
 		}
+		me->lyr->EndGetObject(sess);
 	}
 }
 

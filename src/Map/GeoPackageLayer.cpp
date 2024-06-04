@@ -296,20 +296,20 @@ Bool Map::GeoPackageLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 	return true;
 }
 
-Map::GetObjectSess *Map::GeoPackageLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::GeoPackageLayer::BeginGetObject()
 {
-	return (Map::GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<GeoPackageLayer>(*this));
 }
 
-void Map::GeoPackageLayer::EndGetObject(GetObjectSess *session)
+void Map::GeoPackageLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::GeoPackageLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<Math::Geometry::Vector2D> vec;
 	if (this->vecList.GetItem((UOSInt)id).SetTo(vec))
-		return vec->Clone().Ptr();
+		return vec->Clone();
 	return 0;
 }
 

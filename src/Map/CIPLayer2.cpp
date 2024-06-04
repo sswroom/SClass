@@ -608,9 +608,9 @@ Bool Map::CIPLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	}
 }
 
-Optional<Map::CIPLayer2::CIPFileObject> Map::CIPLayer2::GetFileObject(void *session, Int32 id)
+Optional<Map::CIPLayer2::CIPFileObject> Map::CIPLayer2::GetFileObject(NN<GetObjectSess> session, Int32 id)
 {
-	IO::FileStream *cip = (IO::FileStream*)session;
+	NN<IO::FileStream> cip = NN<IO::FileStream>::ConvertFrom(session);
 	NN<Map::CIPLayer2::CIPFileObject> obj;
 	Int32 buff[2];
 	NN<Data::FastMapNN<Int32, CIPFileObject>> objs;
@@ -677,11 +677,11 @@ void Map::CIPLayer2::ReleaseFileObjs(NN<Data::FastMapNN<Int32, Map::CIPLayer2::C
 	objs->Clear();
 }
 
-Map::GetObjectSess *Map::CIPLayer2::BeginGetObject()
+NN<Map::GetObjectSess> Map::CIPLayer2::BeginGetObject()
 {
 	UTF8Char fileName[256];
 	UnsafeArray<UTF8Char> sptr;
-	IO::FileStream *cip;
+	NN<IO::FileStream> cip;
 	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
 	this->mut.Lock();
@@ -691,14 +691,14 @@ Map::GetObjectSess *Map::CIPLayer2::BeginGetObject()
 		NEW_CLASSNN(objs, Data::Int32FastMapNN<Map::CIPLayer2::CIPFileObject>());
 		this->currObjs = objs;
 	}
-	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	return (GetObjectSess*)cip;
+	NEW_CLASSNN(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	return NN<GetObjectSess>::ConvertFrom(cip);
 }
 
-void Map::CIPLayer2::EndGetObject(GetObjectSess *session)
+void Map::CIPLayer2::EndGetObject(NN<GetObjectSess> session)
 {
-	IO::FileStream *cip = (IO::FileStream*)session;
-	DEL_CLASS(cip);
+	NN<IO::FileStream> cip = NN<IO::FileStream>::ConvertFrom(session);
+	cip.Delete();
 	Optional<Data::FastMapNN<Int32, Map::CIPLayer2::CIPFileObject>> tmpObjs;
 	NN<Data::FastMapNN<Int32, Map::CIPLayer2::CIPFileObject>> objs;
 	if (this->lastObjs.SetTo(objs))
@@ -711,7 +711,7 @@ void Map::CIPLayer2::EndGetObject(GetObjectSess *session)
 	this->mut.Unlock();
 }
 
-Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<Map::CIPLayer2::CIPFileObject> fobj;
 	if (!this->GetFileObject(session, (Int32)id).SetTo(fobj))

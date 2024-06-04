@@ -70,9 +70,9 @@ namespace Map
 		void ReleaseFileObjs(Data::Int32FastMap<CIPFileObject*> *objs);
 
 	public:
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(void *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		virtual ObjectClass GetObjectClass();
 	};

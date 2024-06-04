@@ -134,17 +134,17 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetBounds(OutParam<Math::RectAreaDbl> boun
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::GetObjectSess *SSWR::OrganMgr::OrganSpImgLayer::BeginGetObject()
+NN<Map::GetObjectSess> SSWR::OrganMgr::OrganSpImgLayer::BeginGetObject()
 {
-	return (Map::GetObjectSess*)1;
+	return NN<Map::GetObjectSess>::ConvertFrom(NN<OrganSpImgLayer>(*this));
 }
 
-void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(Map::GetObjectSess *session)
+void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(NN<Map::GetObjectSess> session)
 {
 
 }
 
-Math::Geometry::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id)
 {
 	NN<UserFileInfo> ufile;
 	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))

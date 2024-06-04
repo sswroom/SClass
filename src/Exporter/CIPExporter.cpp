@@ -102,7 +102,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Data::ArrayListNN<CIPStrRecord> strs;
 	NN<CIPStrRecord> strRec;
 	NN<CIPBlock> theBlk;
-	Map::GetObjectSess *sess;
+	NN<Map::GetObjectSess> sess;
 	Map::NameArray *nameArr;
 	UOSInt stmPos = 8;
 	UOSInt i;
@@ -130,205 +130,230 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	recCnt = objIds.GetCount();
 	while (i < recCnt)
 	{
-		Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objIds.GetItem(i));
-
-		WriteUInt32(&buff[0], (UInt32)i);
-		WriteUInt32(&buff[4], (UInt32)stmPos);
-		cix.Write(buff, 8);
-
-		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
+		NN<Math::Geometry::Vector2D> vec;
+		if (layer->GetNewVectorById(sess, objIds.GetItem(i)).SetTo(vec))
 		{
-			WriteUInt32(&buff[4], 1);
-			WriteUInt32(&buff[8], 0);
-			stm->Write(buff, 12);
-			stmPos += 12;
+			WriteUInt32(&buff[0], (UInt32)i);
+			WriteUInt32(&buff[4], (UInt32)stmPos);
+			cix.Write(buff, 8);
 
-			Math::Coord2DDbl center = vec->GetCenter();
-			WriteUInt32(&buff[0], 1);
-			WriteInt32(&buff[4], Double2Int32(center.x * 200000.0));
-			WriteInt32(&buff[8], Double2Int32(center.y * 200000.0));
-			stm->Write(buff, 4);
-			stm->Write(&buff[4], 8);
-			stmPos += 8 + 4;
-
-			maxX = minX = ReadInt32(&buff[4]);
-			maxY = minY = ReadInt32(&buff[8]);
-
-			left = minX / p->scale;
-			right = maxX / p->scale;
-			top = minY / p->scale;
-			bottom = maxY / p->scale;
-		}
-		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
-		{
-			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
-			UOSInt nPtOfst = pl->GetCount();
-			UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst + 1);
-			WriteUInt32(&buff[4], (UInt32)nPtOfst);
-			ptOfstArr[0] = 0;
-			UOSInt i = 0;
-			NN<Math::Geometry::LineString> ls;
-			while (i < nPtOfst)
+			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 			{
-				i++;
-				if (pl->GetItem(i).SetTo(ls))
-					ptOfstArr[i] = ptOfstArr[i - 1] + (UInt32)ls->GetPointCount();
-				else
-					ptOfstArr[i] = ptOfstArr[i - 1];
+				WriteUInt32(&buff[4], 1);
+				WriteUInt32(&buff[8], 0);
+				stm->Write(buff, 12);
+				stmPos += 12;
+
+				Math::Coord2DDbl center = vec->GetCenter();
+				WriteUInt32(&buff[0], 1);
+				WriteInt32(&buff[4], Double2Int32(center.x * 200000.0));
+				WriteInt32(&buff[8], Double2Int32(center.y * 200000.0));
+				stm->Write(buff, 4);
+				stm->Write(&buff[4], 8);
+				stmPos += 8 + 4;
+
+				maxX = minX = ReadInt32(&buff[4]);
+				maxY = minY = ReadInt32(&buff[8]);
+
+				left = minX / p->scale;
+				right = maxX / p->scale;
+				top = minY / p->scale;
+				bottom = maxY / p->scale;
 			}
-			stm->Write(buff, 8);
-			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
-			stmPos += 8 + nPtOfst * 4;
-
-			UOSInt nPoint = ptOfstArr[nPtOfst];
-			MemFree(ptOfstArr);
-			Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
-			UOSInt j = 0;
-			UOSInt k;
-			UOSInt l;
-			NN<Math::Geometry::LineString> lineString;
-			i = 0;
-			while (i < nPtOfst)
+			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 			{
-				if (pl->GetItem(i).SetTo(lineString))
+				NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
+				UOSInt nPtOfst = pl->GetCount();
+				UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst + 1);
+				WriteUInt32(&buff[4], (UInt32)nPtOfst);
+				ptOfstArr[0] = 0;
+				UOSInt i = 0;
+				NN<Math::Geometry::LineString> ls;
+				while (i < nPtOfst)
 				{
-					k = 0;
-					Math::Coord2DDbl *pointArr = lineString->GetPointList(l);
-					while (k < l)
-					{
-						ptArr[j] = Double2Int32(pointArr[k].x * 200000.0);
-						ptArr[j + 1] = Double2Int32(pointArr[k].y * 200000.0);
-						j += 2;
-						k++;
-					}
+					i++;
+					if (pl->GetItem(i).SetTo(ls))
+						ptOfstArr[i] = ptOfstArr[i - 1] + (UInt32)ls->GetPointCount();
+					else
+						ptOfstArr[i] = ptOfstArr[i - 1];
 				}
-				i++;
-			}
-			stm->Write((UInt8*)&nPoint, 4);
-			stm->Write((UInt8*)ptArr, 8 * nPoint);
-			stmPos += 8 * nPoint + 4;
+				stm->Write(buff, 8);
+				stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
+				stmPos += 8 + nPtOfst * 4;
 
-			maxX = minX = ptArr[0];
-			maxY = minY = ptArr[1];
-			j = nPoint;
-			while (j-- > 0)
-			{
-				if (minX > ptArr[j << 1])
-					minX = ptArr[j << 1];
-				if (maxX < ptArr[j << 1])
-					maxX = ptArr[j << 1];
-				if (minY > ptArr[(j << 1) + 1])
-					minY = ptArr[(j << 1) + 1];
-				if (maxY < ptArr[(j << 1) + 1])
-					maxY = ptArr[(j << 1) + 1];
-			}
-
-			left = minX / p->scale;
-			right = maxX / p->scale;
-			top = minY / p->scale;
-			bottom = maxY / p->scale;
-			MemFree(ptArr);
-		}
-		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
-		{
-			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
-			UOSInt nPtOfst = pg->GetCount();
-			UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
-			Data::ArrayListA<Math::Coord2DDbl> pointArr;
-			NN<Math::Geometry::LinearRing> lr;
-			j = 0;
-			while (j < nPtOfst)
-			{
-				ptOfstArr[j] = (UInt32)pointArr.GetCount();
-				if (pg->GetItem(j).SetTo(lr))
-					lr->GetCoordinates(pointArr);
-				j++;
-			}
-			WriteUInt32(&buff[4], (UInt32)nPtOfst);
-			stm->Write(buff, 8);
-			stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
-			stmPos += 8 + nPtOfst * 4;
-
-			Int32 *ptArr = MemAlloc(Int32, pointArr.GetCount() << 1);
-			j = pointArr.GetCount();
-			while (j-- > 0)
-			{
-				Math::Coord2DDbl pt = pointArr.GetItem(j);
-				ptArr[j << 1] = Double2Int32(pt.x * 200000.0);
-				ptArr[(j << 1) + 1] = Double2Int32(pt.y * 200000.0);
-			}
-			UInt32 nPoint = (UInt32)pointArr.GetCount();
-			stm->Write((UInt8*)&nPoint, 4);
-			stm->Write((UInt8*)ptArr, 8 * nPoint);
-			stmPos += 8 * nPoint + 4;
-
-			maxX = minX = ptArr[0];
-			maxY = minY = ptArr[1];
-			j = nPoint;
-			while (j-- > 0)
-			{
-				if (minX > ptArr[j << 1])
-					minX = ptArr[j << 1];
-				if (maxX < ptArr[j << 1])
-					maxX = ptArr[j << 1];
-				if (minY > ptArr[(j << 1) + 1])
-					minY = ptArr[(j << 1) + 1];
-				if (maxY < ptArr[(j << 1) + 1])
-					maxY = ptArr[(j << 1) + 1];
-			}
-
-			left = minX / p->scale;
-			right = maxX / p->scale;
-			top = minY / p->scale;
-			bottom = maxY / p->scale;
-			MemFree(ptArr);
-		}
-		else
-		{
-			printf("CIPExporter: Unsupported vector type\r\n");
-			left = 0;
-			right = 0;
-			top = 0;
-			bottom = 0;
-		}
-
-		{
-			OSInt j;
-			OSInt k;
-			OSInt l;
-			OSInt m;
-			OSInt n;
-			Text::StringBuilderUTF8 sb;
-			j = top;
-			while (j <= bottom)
-			{
-				k = left;
-				while (k <= right)
+				UOSInt nPoint = ptOfstArr[nPtOfst];
+				MemFree(ptOfstArr);
+				Int32 *ptArr = MemAlloc(Int32, nPoint << 1);
+				UOSInt j = 0;
+				UOSInt k;
+				UOSInt l;
+				NN<Math::Geometry::LineString> lineString;
+				i = 0;
+				while (i < nPtOfst)
 				{
-					l = 0;
-					m = (OSInt)blks.GetCount() - 1;
-					while (l <= m)
+					if (pl->GetItem(i).SetTo(lineString))
 					{
-						n = (l + m) >> 1;
-						theBlk = blks.GetItemNoCheck((UOSInt)n);
-						if (theBlk->blockX > k)
+						k = 0;
+						Math::Coord2DDbl *pointArr = lineString->GetPointList(l);
+						while (k < l)
 						{
-							l = n + 1;
+							ptArr[j] = Double2Int32(pointArr[k].x * 200000.0);
+							ptArr[j + 1] = Double2Int32(pointArr[k].y * 200000.0);
+							j += 2;
+							k++;
 						}
-						else if (theBlk->blockX < k)
+					}
+					i++;
+				}
+				stm->Write((UInt8*)&nPoint, 4);
+				stm->Write((UInt8*)ptArr, 8 * nPoint);
+				stmPos += 8 * nPoint + 4;
+
+				maxX = minX = ptArr[0];
+				maxY = minY = ptArr[1];
+				j = nPoint;
+				while (j-- > 0)
+				{
+					if (minX > ptArr[j << 1])
+						minX = ptArr[j << 1];
+					if (maxX < ptArr[j << 1])
+						maxX = ptArr[j << 1];
+					if (minY > ptArr[(j << 1) + 1])
+						minY = ptArr[(j << 1) + 1];
+					if (maxY < ptArr[(j << 1) + 1])
+						maxY = ptArr[(j << 1) + 1];
+				}
+
+				left = minX / p->scale;
+				right = maxX / p->scale;
+				top = minY / p->scale;
+				bottom = maxY / p->scale;
+				MemFree(ptArr);
+			}
+			else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
+			{
+				NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
+				UOSInt nPtOfst = pg->GetCount();
+				UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
+				Data::ArrayListA<Math::Coord2DDbl> pointArr;
+				NN<Math::Geometry::LinearRing> lr;
+				j = 0;
+				while (j < nPtOfst)
+				{
+					ptOfstArr[j] = (UInt32)pointArr.GetCount();
+					if (pg->GetItem(j).SetTo(lr))
+						lr->GetCoordinates(pointArr);
+					j++;
+				}
+				WriteUInt32(&buff[4], (UInt32)nPtOfst);
+				stm->Write(buff, 8);
+				stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
+				stmPos += 8 + nPtOfst * 4;
+
+				Int32 *ptArr = MemAlloc(Int32, pointArr.GetCount() << 1);
+				j = pointArr.GetCount();
+				while (j-- > 0)
+				{
+					Math::Coord2DDbl pt = pointArr.GetItem(j);
+					ptArr[j << 1] = Double2Int32(pt.x * 200000.0);
+					ptArr[(j << 1) + 1] = Double2Int32(pt.y * 200000.0);
+				}
+				UInt32 nPoint = (UInt32)pointArr.GetCount();
+				stm->Write((UInt8*)&nPoint, 4);
+				stm->Write((UInt8*)ptArr, 8 * nPoint);
+				stmPos += 8 * nPoint + 4;
+
+				maxX = minX = ptArr[0];
+				maxY = minY = ptArr[1];
+				j = nPoint;
+				while (j-- > 0)
+				{
+					if (minX > ptArr[j << 1])
+						minX = ptArr[j << 1];
+					if (maxX < ptArr[j << 1])
+						maxX = ptArr[j << 1];
+					if (minY > ptArr[(j << 1) + 1])
+						minY = ptArr[(j << 1) + 1];
+					if (maxY < ptArr[(j << 1) + 1])
+						maxY = ptArr[(j << 1) + 1];
+				}
+
+				left = minX / p->scale;
+				right = maxX / p->scale;
+				top = minY / p->scale;
+				bottom = maxY / p->scale;
+				MemFree(ptArr);
+			}
+			else
+			{
+				printf("CIPExporter: Unsupported vector type\r\n");
+				left = 0;
+				right = 0;
+				top = 0;
+				bottom = 0;
+			}
+
+			{
+				OSInt j;
+				OSInt k;
+				OSInt l;
+				OSInt m;
+				OSInt n;
+				Text::StringBuilderUTF8 sb;
+				j = top;
+				while (j <= bottom)
+				{
+					k = left;
+					while (k <= right)
+					{
+						l = 0;
+						m = (OSInt)blks.GetCount() - 1;
+						while (l <= m)
 						{
-							m = n - 1;
+							n = (l + m) >> 1;
+							theBlk = blks.GetItemNoCheck((UOSInt)n);
+							if (theBlk->blockX > k)
+							{
+								l = n + 1;
+							}
+							else if (theBlk->blockX < k)
+							{
+								m = n - 1;
+							}
+							else if (theBlk->blockY > j)
+							{
+								l = n + 1;
+							}
+							else if (theBlk->blockY < j)
+							{
+								m = n - 1;
+							}
+							else
+							{
+								strRec = MemAllocNN(CIPStrRecord);
+								strRec->recId = (Int32)i;
+								sb.ClearStr();
+								if (layer->GetString(sb, nameArr, objIds.GetItem(i), p->dispCol))
+								{
+									strRec->str = Text::StrCopyNewC(sb.v, sb.leng).Ptr();
+								}
+								else
+								{
+									strRec->str = 0;
+								}
+								theBlk->records.Add(strRec);
+								strs.Add(strRec);
+								l = -1;
+
+								break;
+							}
 						}
-						else if (theBlk->blockY > j)
+						if (l >= 0)
 						{
-							l = n + 1;
-						}
-						else if (theBlk->blockY < j)
-						{
-							m = n - 1;
-						}
-						else
-						{
+							NEW_CLASSNN(theBlk, CIPBlock());
+							theBlk->blockX = (Int32)k;
+							theBlk->blockY = (Int32)j;
+
 							strRec = MemAllocNN(CIPStrRecord);
 							strRec->recId = (Int32)i;
 							sb.ClearStr();
@@ -342,41 +367,17 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 							}
 							theBlk->records.Add(strRec);
 							strs.Add(strRec);
-							l = -1;
 
-							break;
+							blks.Insert((UOSInt)l, theBlk);
 						}
+
+						k++;
 					}
-					if (l >= 0)
-					{
-						NEW_CLASSNN(theBlk, CIPBlock());
-						theBlk->blockX = (Int32)k;
-						theBlk->blockY = (Int32)j;
-
-						strRec = MemAllocNN(CIPStrRecord);
-						strRec->recId = (Int32)i;
-						sb.ClearStr();
-						if (layer->GetString(sb, nameArr, objIds.GetItem(i), p->dispCol))
-						{
-							strRec->str = Text::StrCopyNewC(sb.v, sb.leng).Ptr();
-						}
-						else
-						{
-							strRec->str = 0;
-						}
-						theBlk->records.Add(strRec);
-						strs.Add(strRec);
-
-						blks.Insert((UOSInt)l, theBlk);
-					}
-
-					k++;
+					j++;
 				}
-				j++;
 			}
+			vec.Delete();
 		}
-		DEL_CLASS(vec);
-
 		i++;
 	}
 

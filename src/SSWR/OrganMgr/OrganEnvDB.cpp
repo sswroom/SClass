@@ -3221,34 +3221,36 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 			{
 				Bool found = false;
 				NN<Map::GPSTrack> gpsTrk = NN<Map::GPSTrack>::ConvertFrom(lyr);
-				Map::GPSTrack::GPSRecord3 *recArr;
+				UnsafeArray<Map::GPSTrack::GPSRecord3> recArr;
 				i = 0;
 				j = gpsTrk->GetTrackCnt();
 				while (i < j)
 				{
-					recArr = gpsTrk->GetTrack(i, l);
-					k = 0;
-					while (k < l)
+					if (gpsTrk->GetTrack(i, l).SetTo(recArr))
 					{
-						ts = Data::Timestamp(recArr[k].recTime, 0);
-						if (found)
+						k = 0;
+						while (k < l)
 						{
-							if (startTime.CompareTo(ts) > 0)
+							ts = Data::Timestamp(recArr[k].recTime, 0);
+							if (found)
 							{
-								startTime = ts;
+								if (startTime.CompareTo(ts) > 0)
+								{
+									startTime = ts;
+								}
+								if (endTime.CompareTo(ts) < 0)
+								{
+									endTime = ts;
+								}
 							}
-							if (endTime.CompareTo(ts) < 0)
+							else
 							{
+								found = true;
+								startTime = ts;
 								endTime = ts;
 							}
+							k++;
 						}
-						else
-						{
-							found = true;
-							startTime = ts;
-							endTime = ts;
-						}
-						k++;
 					}
 					i++;
 				}

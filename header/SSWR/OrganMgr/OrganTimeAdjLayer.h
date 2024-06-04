@@ -34,9 +34,9 @@ namespace SSWR
 			virtual UInt32 GetCodePage() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
-			virtual Map::GetObjectSess *BeginGetObject();
-			virtual void EndGetObject(Map::GetObjectSess *session);
-			virtual Math::Geometry::Vector2D *GetNewVectorById(Map::GetObjectSess *session, Int64 id);
+			virtual NN<Map::GetObjectSess> BeginGetObject();
+			virtual void EndGetObject(NN<Map::GetObjectSess> session);
+			virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id);
 
 			virtual ObjectClass GetObjectClass() const;
 

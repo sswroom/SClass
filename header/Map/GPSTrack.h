@@ -41,9 +41,10 @@ namespace Map
 			Double minLon;
 			Optional<Text::String> name;
 			UOSInt nRecords;
-			GPSRecord3 *records;
+			UnsafeArray<GPSRecord3> records;
 			const UInt8 **extraData;
 			UOSInt *extraDataSize;
+			Bool trackUnsorted;
 		} TrackRecord;
 
 		class GPSExtraParser
@@ -69,10 +70,11 @@ namespace Map
 		Optional<Text::String> currTrackName;
 		Sync::Mutex recMut;
 		Data::ArrayListInt64 currTimes;
-		Data::ArrayList<GPSRecord3*> currRecs;
+		Data::ArrayListNN<GPSRecord3> currRecs;
 		Data::ArrayList<const UInt8 *> currExtraData;
 		Data::ArrayList<UOSInt> currExtraSize;
 		Data::ArrayList<TrackRecord*> currTracks;
+		Bool currUnsorted;
 		Map::GPSTrack::GPSRecord3 *tmpRecord;
 		GPSExtraParser *extraParser;
 
@@ -98,9 +100,9 @@ namespace Map
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
@@ -114,22 +116,22 @@ namespace Map
 		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);
 		Bool GetHasAltitude();
 		void SetTrackName(Text::CString name);
-		void GetTrackNames(Data::ArrayListString *nameArr);
+		void GetTrackNames(NN<Data::ArrayListString> nameArr);
 		Optional<Text::String> GetTrackName(UOSInt index);
-		Bool GetTrackStartTime(UOSInt index, Data::DateTime *dt);
+		Bool GetTrackStartTime(UOSInt index, NN<Data::DateTime> dt);
 		Data::Timestamp GetTrackStartTime(UOSInt index);
-		Bool GetTrackEndTime(UOSInt index, Data::DateTime *dt);
+		Bool GetTrackEndTime(UOSInt index, NN<Data::DateTime> dt);
 		Data::Timestamp GetTrackEndTime(UOSInt index);
 
 		UOSInt GetTrackCnt();
-		GPSRecord3 *GetTrack(UOSInt index, OutParam<UOSInt> recordCnt);
+		UnsafeArrayOpt<GPSRecord3> GetTrack(UOSInt index, OutParam<UOSInt> recordCnt);
 		Math::Coord2DDbl GetPosByTime(const Data::Timestamp &ts);
-		Math::Coord2DDbl GetPosByTime(Data::DateTime *dt);
+		Math::Coord2DDbl GetPosByTime(NN<Data::DateTime> dt);
 		Math::Coord2DDbl GetPosByTicks(Int64 tiemTicks);
 
 		void SetExtraParser(GPSExtraParser *parser);
 		void SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize);
-		const UInt8 *GetExtraData(UOSInt trackIndex, UOSInt recIndex, UOSInt *dataSize);
+		const UInt8 *GetExtraData(UOSInt trackIndex, UOSInt recIndex, OutParam<UOSInt> dataSize);
 		UOSInt GetExtraCount(UOSInt trackIndex, UOSInt recIndex);
 		Bool GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb);
 		Bool GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb);

@@ -18,7 +18,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->downPos == scnPos)
 	{
-		Map::GetObjectSess *sess;
+		NN<Map::GetObjectSess> sess;
 		UOSInt i;
 		UOSInt i2;
 		UOSInt j;
@@ -104,7 +104,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 			{
 				obj = objList.GetItemNoCheck(j);
 
-				if (vec.Set(me->lyr->GetNewVectorById(sess, obj->objId)))
+				if (me->lyr->GetNewVectorById(sess, obj->objId).SetTo(vec))
 				{
 					if (!csys->Equals(lyrCSys))
 					{

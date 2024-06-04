@@ -174,13 +174,13 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 			if (idArr.GetCount() > 0)
 			{
 				Text::StringBuilderUTF8 sb;
-				Map::GetObjectSess *sess = layer->BeginGetObject();
+				NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 				UOSInt i = 0;
 				UOSInt j = idArr.GetCount();
 				while (i < j)
 				{
 					NN<Math::Geometry::Vector2D> vec;
-					if (vec.Set(layer->GetNewVectorById(sess, idArr.GetItem(i))))
+					if (layer->GetNewVectorById(sess, idArr.GetItem(i)).SetTo(vec))
 					{
 						if (swapXY)
 						{

@@ -65,13 +65,13 @@ namespace Map
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 	private:
-		Optional<CIPFileObject> GetFileObject(void *session, Int32 id);
+		Optional<CIPFileObject> GetFileObject(NN<GetObjectSess> session, Int32 id);
 		void ReleaseFileObjs(NN<Data::FastMapNN<Int32, CIPFileObject>> objs);
 
 	public:
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		virtual ObjectClass GetObjectClass() const;
 

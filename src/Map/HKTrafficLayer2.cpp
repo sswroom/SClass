@@ -380,16 +380,16 @@ Bool Map::HKTrafficLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return true;
 }
 
-Map::GetObjectSess *Map::HKTrafficLayer2::BeginGetObject()
+NN<Map::GetObjectSess> Map::HKTrafficLayer2::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<HKTrafficLayer2>(*this));
 }
 
-void Map::HKTrafficLayer2::EndGetObject(GetObjectSess *session)
+void Map::HKTrafficLayer2::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::HKTrafficLayer2::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer2::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	RoadInfo *road;
 	Math::Geometry::Vector2D *vec = 0;

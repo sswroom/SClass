@@ -80,7 +80,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Double zMax = 0;
 	IO::FileStream *shx;
 	Map::NameArray *nameArr;
-	Map::GetObjectSess *sess;
+	NN<Map::GetObjectSess> sess;
 	if (layerType != Map::DRAW_LAYER_POINT && layerType != Map::DRAW_LAYER_POINT3D && layerType != Map::DRAW_LAYER_POLYLINE && layerType != Map::DRAW_LAYER_POLYLINE3D && layerType != Map::DRAW_LAYER_POLYGON)
 	{
 		return false;
@@ -103,86 +103,89 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
-		Math::Geometry::Point *pt;
+		NN<Math::Geometry::Point> pt;
 		Math::Coord2DDbl coord;
 		ilayerType = 1;
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Geometry::Point*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-			coord = pt->GetCenter();
-			if (i == 0)
+			if (Optional<Math::Geometry::Point>::ConvertFrom(layer->GetNewVectorById(sess, objIds.GetItem(i))).SetTo(pt))
 			{
-				min = max = coord;
+				coord = pt->GetCenter();
+				if (i == 0)
+				{
+					min = max = coord;
+				}
+				else
+				{
+					min = min.Min(coord);
+					max = max.Max(coord);
+				}
+
+				WriteMInt32(buff, (Int32)(fileSize >> 1));
+				WriteMInt32(&buff[4], 10);
+				shx->Write(buff, 8);
+
+				WriteMInt32(buff, (Int32)i);
+				*(Int32*)&buff[8] = 1;
+				*(Double*)&buff[12] = coord.x;
+				*(Double*)&buff[20] = coord.y;
+				stm->Write(buff, 28);
+				fileSize += 28;
+
+
+				pt.Delete();
 			}
-			else
-			{
-				min = min.Min(coord);
-				max = max.Max(coord);
-			}
-
-			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], 10);
-			shx->Write(buff, 8);
-
-			WriteMInt32(buff, (Int32)i);
-			*(Int32*)&buff[8] = 1;
-			*(Double*)&buff[12] = coord.x;
-			*(Double*)&buff[20] = coord.y;
-			stm->Write(buff, 28);
-			fileSize += 28;
-
-
-			DEL_CLASS(pt);
 			i++;
 		}
 	}
 	else if (layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		Math::Geometry::PointZ *pt;
+		NN<Math::Geometry::PointZ> pt;
 		Math::Coord2DDbl coord;
 		Math::Vector3 pos;
 		ilayerType = 11;
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Geometry::PointZ*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-			pos = pt->GetPos3D();
-			coord = pos.GetXY();
-			if (i == 0)
+			if (Optional<Math::Geometry::PointZ>::ConvertFrom(layer->GetNewVectorById(sess, objIds.GetItem(i))).SetTo(pt))
 			{
-				min = max = coord;
-				zMin = zMax = pos.GetZ();
-			}
-			else
-			{
-				min = min.Min(coord);
-				max = max.Max(coord);
-				if (pos.GetZ() > zMax)
+				pos = pt->GetPos3D();
+				coord = pos.GetXY();
+				if (i == 0)
 				{
-					zMax = pos.GetZ();
+					min = max = coord;
+					zMin = zMax = pos.GetZ();
 				}
-				else if (pos.GetZ() < zMin)
+				else
 				{
-					zMin = pos.GetZ();
+					min = min.Min(coord);
+					max = max.Max(coord);
+					if (pos.GetZ() > zMax)
+					{
+						zMax = pos.GetZ();
+					}
+					else if (pos.GetZ() < zMin)
+					{
+						zMin = pos.GetZ();
+					}
 				}
+
+				WriteMInt32(buff, (Int32)(i + 1));
+				WriteMInt32(&buff[4], 18);
+				shx->Write(buff, 8);
+
+				WriteMInt32(buff, (Int32)i);
+				*(Int32*)&buff[8] = 11;
+				*(Double*)&buff[12] = coord.x;
+				*(Double*)&buff[20] = coord.y;
+				*(Double*)&buff[28] = pos.GetZ();
+				*(Double*)&buff[36] = 0;
+				stm->Write(buff, 44);
+				fileSize += 44;
+
+				pt.Delete();
 			}
-
-			WriteMInt32(buff, (Int32)(i + 1));
-			WriteMInt32(&buff[4], 18);
-			shx->Write(buff, 8);
-
-			WriteMInt32(buff, (Int32)i);
-			*(Int32*)&buff[8] = 11;
-			*(Double*)&buff[12] = coord.x;
-			*(Double*)&buff[20] = coord.y;
-			*(Double*)&buff[28] = pos.GetZ();
-			*(Double*)&buff[36] = 0;
-			stm->Write(buff, 44);
-			fileSize += 44;
-
-
-			DEL_CLASS(pt);
 			i++;
 		}
 	}
@@ -190,7 +193,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		ilayerType = 3;
 
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -202,8 +205,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		while (i < recCnt)
 		{
 			Int64 objId = objIds.GetItem(i);
-			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objId);
-			if (pl)
+			if (Optional<Math::Geometry::Polyline>::ConvertFrom(layer->GetNewVectorById(sess, objId)).SetTo(pl))
 			{
 				box = pl->GetBounds();
 				nPtOfst = pl->GetCount();
@@ -241,7 +243,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				MemFreeA(points);
 				MemFree(ptOfsts);
-				DEL_CLASS(pl);
+				pl.Delete();
 			}
 			else
 			{
@@ -255,7 +257,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		ilayerType = 13;
 
 		UOSInt j;
-		Math::Geometry::Polyline *pl;
+		NN<Math::Geometry::Polyline> pl;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -268,69 +270,71 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-			box = pl->GetBounds();
-			nPtOfst = pl->GetCount();
-			ptOfsts = MemAlloc(UInt32, nPtOfst);
-			nPoint = pl->GetPointCount();
-			points = MemAllocA(Math::Coord2DDbl, nPoint);
-			alts = MemAlloc(Double, nPoint);
-			pl->FillPointOfstList(points, ptOfsts, alts, 0);
-			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
-			WriteUInt32(&nvals[4], (UInt32)nPoint);
+			if (Optional<Math::Geometry::Polyline>::ConvertFrom(layer->GetNewVectorById(sess, objIds.GetItem(i))).SetTo(pl))
+			{
+				box = pl->GetBounds();
+				nPtOfst = pl->GetCount();
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				nPoint = pl->GetPointCount();
+				points = MemAllocA(Math::Coord2DDbl, nPoint);
+				alts = MemAlloc(Double, nPoint);
+				pl->FillPointOfstList(points, ptOfsts, alts, 0);
+				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
+				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
-			ranges[1] = ranges[0] = alts[0];
-			j = nPoint;
-			while (j-- > 1)
-			{
-				if (ranges[1] < alts[j])
-					ranges[1] = alts[j];
-				if (ranges[0] > alts[j])
-					ranges[0] = alts[j];
-			}
-
-			if (i == 0)
-			{
-				min = box.min;
-				max = box.max;
-				zMin = ranges[0];
-				zMax = ranges[1];
-			}
-			else
-			{
-				min = min.Min(box.min);
-				max = max.Max(box.max);
-				if (ranges[1] > zMax)
+				ranges[1] = ranges[0] = alts[0];
+				j = nPoint;
+				while (j-- > 1)
 				{
+					if (ranges[1] < alts[j])
+						ranges[1] = alts[j];
+					if (ranges[0] > alts[j])
+						ranges[0] = alts[j];
+				}
+
+				if (i == 0)
+				{
+					min = box.min;
+					max = box.max;
+					zMin = ranges[0];
 					zMax = ranges[1];
 				}
-				else if (ranges[0] < zMin)
+				else
 				{
-					zMin = ranges[1];
+					min = min.Min(box.min);
+					max = max.Max(box.max);
+					if (ranges[1] > zMax)
+					{
+						zMax = ranges[1];
+					}
+					else if (ranges[0] < zMin)
+					{
+						zMin = ranges[1];
+					}
 				}
+
+				WriteMInt32(buff, (Int32)(fileSize >> 1));
+				WriteMInt32(&buff[4], (Int32)(30 + 2 * nPtOfst + 12 * nPoint));
+				shx->Write(buff, 8);
+
+				WriteMInt32(buff, (Int32)(i + 1));
+				WriteUInt32(&buff[8], 3);
+				stm->Write(buff, 12);
+				stm->Write((UInt8*)&box, 32);
+				stm->Write((UInt8*)nvals, 8);
+				fileSize += 52;
+				stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
+				stm->Write((UInt8*)points, nPoint * 16);
+				fileSize += nPtOfst * 4 + nPoint * 16;
+				stm->Write((UInt8*)ranges, 16);
+				stm->Write((UInt8*)alts, nPoint * 8);
+				fileSize += 16 + nPoint * 8;
+
+				MemFree(alts);
+				MemFreeA(points);
+				MemFree(ptOfsts);
+				pl.Delete();
 			}
-
-			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], (Int32)(30 + 2 * nPtOfst + 12 * nPoint));
-			shx->Write(buff, 8);
-
-			WriteMInt32(buff, (Int32)(i + 1));
-			WriteUInt32(&buff[8], 3);
-			stm->Write(buff, 12);
-			stm->Write((UInt8*)&box, 32);
-			stm->Write((UInt8*)nvals, 8);
-			fileSize += 52;
-			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
-			stm->Write((UInt8*)points, nPoint * 16);
-			fileSize += nPtOfst * 4 + nPoint * 16;
-			stm->Write((UInt8*)ranges, 16);
-			stm->Write((UInt8*)alts, nPoint * 8);
-			fileSize += 16 + nPoint * 8;
-
-			MemFree(alts);
-			MemFreeA(points);
-			MemFree(ptOfsts);
-			DEL_CLASS(pl);
 			i++;
 		}
 	}
@@ -338,7 +342,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		ilayerType = 5;
 
-		Math::Geometry::Polygon *pg;
+		NN<Math::Geometry::Polygon> pg;
 		Math::RectAreaDbl box;
 		UOSInt nPtOfst;
 		UOSInt nPoint;
@@ -349,43 +353,45 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		i = 0;
 		while (i < recCnt)
 		{
-			pg = (Math::Geometry::Polygon*)layer->GetNewVectorById(sess, objIds.GetItem(i));
-			box = pg->GetBounds();
-			nPtOfst = pg->GetCount();
-			nPoint = pg->GetPointCount();
-			ptOfsts = MemAlloc(UInt32, nPtOfst);
-			points = MemAllocA(Math::Coord2DDbl, nPoint);
-			pg->FillPointOfstList(points, ptOfsts, 0, 0);
-			WriteUInt32(&nvals[0], (UInt32)nPtOfst);
-			WriteUInt32(&nvals[4], (UInt32)nPoint);
-
-			if (i == 0)
+			if (Optional<Math::Geometry::Polygon>::ConvertFrom(layer->GetNewVectorById(sess, objIds.GetItem(i))).SetTo(pg))
 			{
-				min = box.min;
-				max = box.max;
-			}
-			else
-			{
-				min = min.Min(box.min);
-				max = max.Max(box.max);
-			}
+				box = pg->GetBounds();
+				nPtOfst = pg->GetCount();
+				nPoint = pg->GetPointCount();
+				ptOfsts = MemAlloc(UInt32, nPtOfst);
+				points = MemAllocA(Math::Coord2DDbl, nPoint);
+				pg->FillPointOfstList(points, ptOfsts, 0, 0);
+				WriteUInt32(&nvals[0], (UInt32)nPtOfst);
+				WriteUInt32(&nvals[4], (UInt32)nPoint);
 
-			WriteMInt32(buff, (Int32)(fileSize >> 1));
-			WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
-			shx->Write(buff, 8);
+				if (i == 0)
+				{
+					min = box.min;
+					max = box.max;
+				}
+				else
+				{
+					min = min.Min(box.min);
+					max = max.Max(box.max);
+				}
 
-			WriteMInt32(buff, (Int32)(i + 1));
-			WriteUInt32(&buff[8], 5);
-			stm->Write(buff, 12);
-			stm->Write((UInt8*)&box, 32);
-			stm->Write((UInt8*)nvals, 8);
-			fileSize += 52;
-			stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
-			stm->Write((UInt8*)points, nPoint * 16);
-			fileSize += nPtOfst * 4 + nPoint * 16;
-			MemFreeA(points);
-			MemFree(ptOfsts);
-			DEL_CLASS(pg);
+				WriteMInt32(buff, (Int32)(fileSize >> 1));
+				WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
+				shx->Write(buff, 8);
+
+				WriteMInt32(buff, (Int32)(i + 1));
+				WriteUInt32(&buff[8], 5);
+				stm->Write(buff, 12);
+				stm->Write((UInt8*)&box, 32);
+				stm->Write((UInt8*)nvals, 8);
+				fileSize += 52;
+				stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
+				stm->Write((UInt8*)points, nPoint * 16);
+				fileSize += nPtOfst * 4 + nPoint * 16;
+				MemFreeA(points);
+				MemFree(ptOfsts);
+				pg.Delete();
+			}
 			i++;
 		}
 	}

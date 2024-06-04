@@ -108,8 +108,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Int64 currId;
 	Int64 lastId;
 	Map::NameArray *nameArr;
-	Map::GetObjectSess *sess;
-	Math::Geometry::Vector2D *vec;
+	NN<Map::GetObjectSess> sess;
+	NN<Math::Geometry::Vector2D> vec;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
@@ -165,8 +165,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		if (currId != lastId)
 		{
 			lastId = currId;
-			vec = layer->GetNewVectorById(sess, currId);
-			if (vec == 0)
+			if (!layer->GetNewVectorById(sess, currId).SetTo(vec))
 			{
 
 			}
@@ -175,12 +174,12 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 				if (vecType == Math::Geometry::Vector2D::VectorType::Point)
 				{
-					Math::Geometry::Point *pt = (Math::Geometry::Point*)vec;
+					NN<Math::Geometry::Point> pt = NN<Math::Geometry::Point>::ConvertFrom(vec);
 					Math::Coord2DDbl coord = pt->GetCenter();
 					Double z;
 					if (pt->HasZ())
 					{
-						z = ((Math::Geometry::PointZ*)pt)->GetZ();
+						z = NN<Math::Geometry::PointZ>::ConvertFrom(pt)->GetZ();
 					}
 					else
 					{
@@ -215,7 +214,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				else if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 				{
 					UOSInt nPoints;
-					Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec;
+					NN<Math::Geometry::LineString> pl = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
@@ -320,7 +319,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 				{
 					UOSInt nPoints;
-					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+					NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
@@ -431,7 +430,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
 					UOSInt nPoints;
-					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
@@ -506,7 +505,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Image)
 				{
-					Math::Geometry::VectorImage *img = (Math::Geometry::VectorImage*)vec;
+					NN<Math::Geometry::VectorImage> img = NN<Math::Geometry::VectorImage>::ConvertFrom(vec);
 					sb.ClearStr();
 					if (!layer->GetString(sb, nameArr, currId, nameCol))
 					{
@@ -680,8 +679,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						writer.WriteLine(sb.ToCString());
 					}
 				}
+				vec.Delete();
 			}
-			SDEL_CLASS(vec);
 		}
 
 		i++;

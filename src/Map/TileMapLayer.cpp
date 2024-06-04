@@ -491,16 +491,16 @@ Bool Map::TileMapLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return this->tileMap->GetBounds(bounds);
 }
 
-Map::GetObjectSess *Map::TileMapLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::TileMapLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<TileMapLayer>(*this));
 }
 
-void Map::TileMapLayer::EndGetObject(GetObjectSess *session)
+void Map::TileMapLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<CachedImage> cimg;
 	Math::Geometry::VectorImage *vimg;

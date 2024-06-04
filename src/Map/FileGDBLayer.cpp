@@ -313,16 +313,16 @@ Bool Map::FileGDBLayer::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 	return !this->minPos.IsZero() || !this->maxPos.IsZero();
 }
 
-Map::GetObjectSess *Map::FileGDBLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::FileGDBLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<FileGDBLayer>(*this));
 }
 
-void Map::FileGDBLayer::EndGetObject(GetObjectSess *session)
+void Map::FileGDBLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::FileGDBLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::FileGDBLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)

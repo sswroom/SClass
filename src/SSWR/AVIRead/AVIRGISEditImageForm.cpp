@@ -24,9 +24,9 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Math::RectAreaDbl bounds;
-	Map::GetObjectSess *sess = this->lyr->BeginGetObject();
-	Math::Geometry::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
-	if (vec)
+	NN<Map::GetObjectSess> sess = this->lyr->BeginGetObject();
+	NN<Math::Geometry::Vector2D> vec;
+	if (this->lyr->GetNewVectorById(sess, this->currImage).SetTo(vec))
 	{
 		bounds = vec->GetBounds();
 		sptr = Text::StrDouble(sbuff,  bounds.min.x);
@@ -39,7 +39,7 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 		this->txtTop->SetText(CSTRP(sbuff, sptr));
 		this->imgMin = bounds.min;
 		this->imgMax = bounds.max;
-		DEL_CLASS(vec);
+		vec.Delete();
 	}
 	else
 	{
@@ -101,9 +101,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			if (pt1.y > me->imgMin.y)
 			{
@@ -134,9 +134,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			if (pt1.y > me->imgMin.y)
 			{
@@ -174,9 +174,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			pt1.y = me->imgMin.y;
 			y2 = me->imgMax.y;
@@ -207,9 +207,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			if (pt1.y < me->imgMax.y)
 			{
@@ -247,9 +247,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			if (pt1.y < me->imgMax.y)
 			{
@@ -280,9 +280,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			if (pt1.y < me->imgMax.y)
 			{
@@ -320,9 +320,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			pt1.y = me->imgMin.y;
 			y2 = me->imgMax.y;
@@ -353,9 +353,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Double y2;
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			if (pt1.y > me->imgMin.y)
 			{
@@ -392,9 +392,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(Math::Coord2D<OSInt>(0, 0));
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
-		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
+		NN<Map::GetObjectSess> sess = me->lyr->BeginGetObject();
 		NN<Math::Geometry::VectorImage> img;
-		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
+		if (Optional<Math::Geometry::VectorImage>::ConvertFrom(me->lyr->GetNewVectorById(sess, me->currImage)).SetTo(img))
 		{
 			img->SetBounds(me->imgMin.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y, me->imgMax.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y);
 			me->lyr->ReplaceVector(me->currImage, img);

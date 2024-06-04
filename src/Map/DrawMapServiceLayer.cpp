@@ -286,16 +286,16 @@ void Map::DrawMapServiceLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 	}	
 }
 
-Map::GetObjectSess *Map::DrawMapServiceLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::DrawMapServiceLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<DrawMapServiceLayer>(*this));
 }
 
-void Map::DrawMapServiceLayer::EndGetObject(GetObjectSess *session)
+void Map::DrawMapServiceLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	NN<Media::SharedImage> shimg;

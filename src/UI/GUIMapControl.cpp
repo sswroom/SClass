@@ -842,11 +842,11 @@ void UI::GUIMapControl::HideMarker()
 	}
 }
 
-void UI::GUIMapControl::SetSelectedVector(Math::Geometry::Vector2D *vec)
+void UI::GUIMapControl::SetSelectedVector(Optional<Math::Geometry::Vector2D> vec)
 {
 	this->ReleaseSelVecList();
 	NN<Math::Geometry::Vector2D> nnvec;
-	if (nnvec.Set(vec))
+	if (vec.SetTo(nnvec))
 	{
 		this->selVecList.Add(nnvec);
 	}

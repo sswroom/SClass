@@ -546,16 +546,16 @@ Bool Map::HKParkingVacancy::GetBounds(OutParam<Math::RectAreaDbl> rect) const
 	return true;
 }
 
-Map::GetObjectSess *Map::HKParkingVacancy::BeginGetObject()
+NN<Map::GetObjectSess> Map::HKParkingVacancy::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<HKParkingVacancy>(*this));
 }
 
-void Map::HKParkingVacancy::EndGetObject(GetObjectSess *session)
+void Map::HKParkingVacancy::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::HKParkingVacancy::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::HKParkingVacancy::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(this->parkingMut);
 	NN<ParkingInfo> parking;

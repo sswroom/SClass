@@ -506,30 +506,29 @@ Bool Map::SPDLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	}
 }
 
-Map::GetObjectSess *Map::SPDLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::SPDLayer::BeginGetObject()
 {
 	UTF8Char fileName[256];
 	UnsafeArray<UTF8Char> sptr;
-	IO::FileStream *cip;
+	NN<IO::FileStream> cip;
 //	this->mut->Lock();
 	sptr = Text::StrConcat(fileName, this->layerName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".spd"));
-	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	return (Map::GetObjectSess*)cip;
+	NEW_CLASSNN(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	return NN<Map::GetObjectSess>::ConvertFrom(cip);
 }
 
-void Map::SPDLayer::EndGetObject(Map::GetObjectSess *session)
+void Map::SPDLayer::EndGetObject(NN<Map::GetObjectSess> session)
 {
-	IO::FileStream *cip = (IO::FileStream*)session;
-	DEL_CLASS(cip);
+	NN<IO::FileStream> cip = NN<IO::FileStream>::ConvertFrom(session);
+	cip.Delete();
 //	this->mut->Unlock();
 }
 
-Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id)
 {
 	Int32 buff[3];
-
-	IO::FileStream *cip = (IO::FileStream*)session;
+	NN<IO::FileStream> cip = NN<IO::FileStream>::ConvertFrom(session);
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
 	UInt32 *ptOfsts;
 	Int32 *points;

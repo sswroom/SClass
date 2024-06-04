@@ -131,7 +131,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 		}
 
 		Map::NameArray *lyrNameArr;
-		Map::GetObjectSess *sess;
+		NN<Map::GetObjectSess> sess;
 		Int64 id;
 		Text::StringBuilderUTF8 sb;
 
@@ -159,7 +159,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 				j++;
 			}
 			NN<Math::Geometry::Vector2D> vec;
-			if (vec.Set(lyr->GetNewVectorById(sess, id)))
+			if (lyr->GetNewVectorById(sess, id).SetTo(vec))
 			{
 				j = names.GetCount();
 				while (j-- > 0)

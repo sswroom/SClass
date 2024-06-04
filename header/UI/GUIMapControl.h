@@ -108,7 +108,7 @@ namespace UI
 		void ShowMarkerMapXY(Math::Coord2DDbl mapPos);
 		void ShowMarkerMapXYDir(Math::Coord2DDbl mapPos, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();
-		void SetSelectedVector(Math::Geometry::Vector2D *vec);
+		void SetSelectedVector(Optional<Math::Geometry::Vector2D> vec);
 		void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 		void SetVAngle(Double angleRad);
 

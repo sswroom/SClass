@@ -266,16 +266,16 @@ Bool Map::OruxDBLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	}
 }
 
-Map::GetObjectSess *Map::OruxDBLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::OruxDBLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<OruxDBLayer>(*this));
 }
 
-void Map::OruxDBLayer::EndGetObject(GetObjectSess *session)
+void Map::OruxDBLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	if (this->db == 0)
 		return 0;

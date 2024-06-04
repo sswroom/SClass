@@ -84,9 +84,9 @@ namespace Map
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		void SetTableName(Text::String *tableName);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);

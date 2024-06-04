@@ -879,7 +879,7 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 	while (i-- > 0)
 	{
 		lineInfo = this->vecMap.GetItemNoCheck(i);
-		DEL_CLASS(lineInfo->pl);
+		lineInfo->pl.Delete();
 		MemFreeNN(lineInfo);
 	}
 	this->url->Release();
@@ -911,7 +911,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 	{
 		isFirst = true;
 	}
-	Map::GetObjectSess *sess = roadLayer->BeginGetObject();
+	NN<Map::GetObjectSess> sess = roadLayer->BeginGetObject();
 	roadLayer->GetAllObjectIds(idArr, &nameArr);
 	colCnt = roadLayer->GetColumnCnt();
 	i = 0;
@@ -949,8 +949,8 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 				if (fromId != 0 && toId != 0)
 				{
 					id = (((Int64)fromId) << 32) | (UInt32)toId;
-					Math::Geometry::Vector2D *vec = roadLayer->GetNewVectorById(sess, idArr.GetItem(i));
-					if (vec)
+					NN<Math::Geometry::Vector2D> vec;
+					if (roadLayer->GetNewVectorById(sess, idArr.GetItem(i)).SetTo(vec))
 					{
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 						{
@@ -978,16 +978,16 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 							lineInfo = MemAllocNN(CenterlineInfo);
 							lineInfo->fromId = fromId;
 							lineInfo->toId = toId;
-							lineInfo->pl = (Math::Geometry::Polyline*)vec;
+							lineInfo->pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 							if (this->vecMap.Put(id, lineInfo).SetTo(lineInfo))
 							{
-								DEL_CLASS(lineInfo->pl);
+								lineInfo->pl.Delete();
 								MemFreeNN(lineInfo);
 							}
 						}
 						else
 						{
-							DEL_CLASS(vec);
+							vec.Delete();
 						}
 					}
 				}
@@ -1223,16 +1223,16 @@ Bool Map::HKTrafficLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return this->minX != 0 || this->minY != 0 || this->maxX != 0 || this->maxY != 0;
 }
 
-Map::GetObjectSess *Map::HKTrafficLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::HKTrafficLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<HKTrafficLayer>(*this));
 }
 
-void Map::HKTrafficLayer::EndGetObject(GetObjectSess *session)
+void Map::HKTrafficLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::HKTrafficLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<RoadInfo> road;
 	Math::Geometry::Vector2D *vec = 0;

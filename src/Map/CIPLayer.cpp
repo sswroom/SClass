@@ -721,7 +721,7 @@ void Map::CIPLayer::ReleaseFileObjs(Data::Int32FastMap<Map::CIPLayer::CIPFileObj
 Map::GetObjectSess *Map::CIPLayer::BeginGetObject()
 {
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::SeekableStream *cip;
 	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
@@ -731,10 +731,10 @@ Map::GetObjectSess *Map::CIPLayer::BeginGetObject()
 	return (Map::GetObjectSess*)cip;
 }
 
-void Map::CIPLayer::EndGetObject(GetObjectSess *session)
+void Map::CIPLayer::EndGetObject(NN<GetObjectSess> session)
 {
-	IO::SeekableStream *cip = (IO::SeekableStream*)session;
-	DEL_CLASS(cip);
+	NN<IO::SeekableStream> cip = NN<IO::SeekableStream>::ConvertFrom(session);
+	cip.Delete();
 	Data::Int32FastMap<CIPFileObject*> *tmpObjs;
 	this->ReleaseFileObjs(this->lastObjs);
 	tmpObjs = this->lastObjs;
@@ -743,7 +743,7 @@ void Map::CIPLayer::EndGetObject(GetObjectSess *session)
 	this->mut.Unlock();
 }
 
-Math::Geometry::Vector2D *Map::CIPLayer::GetNewVectorById(void *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::CIPLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	Map::CIPLayer::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
 	if (fobj == 0)

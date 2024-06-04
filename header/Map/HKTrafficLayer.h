@@ -44,7 +44,7 @@ namespace Map
 		{
 			Int32 fromId;
 			Int32 toId;
-			Math::Geometry::Polyline *pl;
+			NN<Math::Geometry::Polyline> pl;
 		} CenterlineInfo;
 	private:
 		static const NodeInfo nodeTable[];
@@ -87,9 +87,9 @@ namespace Map
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		virtual ObjectClass GetObjectClass() const;
 

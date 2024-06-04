@@ -962,113 +962,120 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 								coordList.Clear();
 							}
 							UOSInt recCnt;
-							Map::GPSTrack::GPSRecord3 *recs = lyr->GetTrack(0, recCnt);
-							while (reader->NextElementName().SetTo(nodeName))
+							UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+							if (lyr->GetTrack(0, recCnt).SetTo(recs))
 							{
-								if (nodeName->EqualsICase(UTF8STRC("SCHEMADATA")))
+								while (reader->NextElementName().SetTo(nodeName))
 								{
-									while (reader->NextElementName().SetTo(nodeName))
+									if (nodeName->EqualsICase(UTF8STRC("SCHEMADATA")))
 									{
-										if (nodeName->EqualsICase(UTF8STRC("GX:SIMPLEARRAYDATA")))
+										while (reader->NextElementName().SetTo(nodeName))
 										{
-											NN<Text::XMLAttrib> attr;
-											Text::StringBuilderUTF8 sb;
-											Bool found = false;
-											UOSInt i;
-											UOSInt j;
-											i = reader->GetAttribCount();
-											while (i-- > 0)
+											if (nodeName->EqualsICase(UTF8STRC("GX:SIMPLEARRAYDATA")))
 											{
-												attr = reader->GetAttribNoCheck(i);
-												if (attr->name->EqualsICase(UTF8STRC("NAME")))
+												NN<Text::XMLAttrib> attr;
+												Text::StringBuilderUTF8 sb;
+												Bool found = false;
+												UOSInt i;
+												UOSInt j;
+												i = reader->GetAttribCount();
+												while (i-- > 0)
 												{
-													if (attr->value->EqualsICase(UTF8STRC("SPEED")))
+													attr = reader->GetAttribNoCheck(i);
+													if (attr->name->EqualsICase(UTF8STRC("NAME")))
 													{
-														j = 0;
-														while (reader->NextElementName().SetTo(nodeName))
+														if (attr->value->EqualsICase(UTF8STRC("SPEED")))
 														{
-															if (nodeName->EqualsICase(UTF8STRC("GX:VALUE")))
+															j = 0;
+															while (reader->NextElementName().SetTo(nodeName))
 															{
-																sb.ClearStr();
-																reader->ReadNodeText(sb);
-																if (j < recCnt)
+																if (nodeName->EqualsICase(UTF8STRC("GX:VALUE")))
 																{
-																	recs[j].speed = Text::StrToDouble(sb.ToString());
+																	sb.ClearStr();
+																	reader->ReadNodeText(sb);
+																	if (j < recCnt)
+																	{
+																		recs[j].speed = Text::StrToDouble(sb.ToString());
+																	}
+																	j++;
 																}
-																j++;
-															}
-															else
-															{
-																reader->SkipElement();
+																else
+																{
+																	reader->SkipElement();
+																}
 															}
 														}
-													}
-													else if (attr->value->EqualsICase(UTF8STRC("BEARING")))
-													{
-														j = 0;
-														while (reader->NextElementName().SetTo(nodeName))
+														else if (attr->value->EqualsICase(UTF8STRC("BEARING")))
 														{
-															if (nodeName->EqualsICase(UTF8STRC("GX:VALUE")))
+															j = 0;
+															while (reader->NextElementName().SetTo(nodeName))
 															{
-																sb.ClearStr();
-																reader->ReadNodeText(sb);
-																if (j < recCnt)
+																if (nodeName->EqualsICase(UTF8STRC("GX:VALUE")))
 																{
-																	recs[j].heading = Text::StrToDouble(sb.ToString());
+																	sb.ClearStr();
+																	reader->ReadNodeText(sb);
+																	if (j < recCnt)
+																	{
+																		recs[j].heading = Text::StrToDouble(sb.ToString());
+																	}
+																	j++;
 																}
-																j++;
-															}
-															else
-															{
-																reader->SkipElement();
+																else
+																{
+																	reader->SkipElement();
+																}
 															}
 														}
-													}
-													else if (attr->value->EqualsICase(UTF8STRC("ACCURACY")))
-													{
-														j = 0;
-														while (reader->NextElementName().SetTo(nodeName))
+														else if (attr->value->EqualsICase(UTF8STRC("ACCURACY")))
 														{
-															if (nodeName->EqualsICase(UTF8STRC("GX:VALUE")))
+															j = 0;
+															while (reader->NextElementName().SetTo(nodeName))
 															{
-																sb.ClearStr();
-																reader->ReadNodeText(sb);
-																if (j < recCnt)
+																if (nodeName->EqualsICase(UTF8STRC("GX:VALUE")))
 																{
-																	recs[j].nSateUsed = (UInt8)Double2Int32(Text::StrToDouble(sb.ToString()));
-																	recs[j].nSateUsedGPS = recs[j].nSateUsed;
+																	sb.ClearStr();
+																	reader->ReadNodeText(sb);
+																	if (j < recCnt)
+																	{
+																		recs[j].nSateUsed = (UInt8)Double2Int32(Text::StrToDouble(sb.ToString()));
+																		recs[j].nSateUsedGPS = recs[j].nSateUsed;
+																	}
+																	j++;
 																}
-																j++;
-															}
-															else
-															{
-																reader->SkipElement();
+																else
+																{
+																	reader->SkipElement();
+																}
 															}
 														}
+														else
+														{
+															reader->SkipElement();
+														}
+														found = true;
+														break;
 													}
-													else
-													{
-														reader->SkipElement();
-													}
-													found = true;
-													break;
+												}
+												if (!found)
+												{
+													reader->SkipElement();
 												}
 											}
-											if (!found)
+											else
 											{
 												reader->SkipElement();
 											}
 										}
-										else
-										{
-											reader->SkipElement();
-										}
+									}
+									else
+									{
+										reader->SkipElement();
 									}
 								}
-								else
-								{
-									reader->SkipElement();
-								}
+							}
+							else
+							{
+								reader->SkipElement();
 							}
 						}
 						else

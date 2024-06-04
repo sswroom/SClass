@@ -603,7 +603,7 @@ void Map::NetworkLinkLayer::SetDispSize(Math::Size2DDbl size, Double dpi)
 #endif
 }
 
-Map::GetObjectSess *Map::NetworkLinkLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::NetworkLinkLayer::BeginGetObject()
 {
 	UOSInt i;
 	this->linkMut.LockRead();
@@ -617,9 +617,9 @@ Map::GetObjectSess *Map::NetworkLinkLayer::BeginGetObject()
 			link->sess = innerLayer->BeginGetObject();
 		}
 	}
-	return (Map::GetObjectSess*)this;
+	return NN<Map::GetObjectSess>::ConvertFrom(NN<NetworkLinkLayer>(*this));
 }
-void Map::NetworkLinkLayer::EndGetObject(GetObjectSess *session)
+void Map::NetworkLinkLayer::EndGetObject(NN<GetObjectSess> session)
 {
 	UOSInt i;
 	i = this->links.GetCount();
@@ -635,13 +635,13 @@ void Map::NetworkLinkLayer::EndGetObject(GetObjectSess *session)
 	this->linkMut.UnlockRead();
 }
 
-Math::Geometry::Vector2D *Map::NetworkLinkLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::NetworkLinkLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;
 	Int64 currId = 0;
 	Int64 maxId;
-	Math::Geometry::Vector2D *vec = 0;
+	Optional<Math::Geometry::Vector2D> vec = 0;
 	i = 0;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
 	j = this->links.GetCount();

@@ -283,7 +283,7 @@ Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	if (layerType != DRAW_LAYER_POLYGON && layerType != DRAW_LAYER_MIXED)
 		return retVal;
 
-	Map::GetObjectSess *sess = BeginGetObject();
+	NN<Map::GetObjectSess> sess = BeginGetObject();
 	Map::NameArray *names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
@@ -298,24 +298,24 @@ Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 		if (thisId != lastId)
 		{
 			lastId = thisId;
-			Math::Geometry::Vector2D *vec = this->GetNewVectorById(sess, thisId);
-			if (vec)
+			NN<Math::Geometry::Vector2D> vec;
+			if (this->GetNewVectorById(sess, thisId).SetTo(vec))
 			{
 				if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
-					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 					if (pg->InsideOrTouch(coord))
 					{
 						retVal = this->GetString(sb, names, lastId, strIndex);
 						if (retVal)
 						{
 							outCoord.Set(coord);
-							DEL_CLASS(vec);
+							vec.Delete();
 							break;
 						}
 					}
 				}
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 	}
@@ -331,14 +331,14 @@ Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	if (layerType != DRAW_LAYER_POLYLINE && layerType != DRAW_LAYER_POINT && layerType != DRAW_LAYER_MIXED && layerType != DRAW_LAYER_POINT3D && layerType != DRAW_LAYER_POLYLINE3D)
 		return retVal;
 
-	Map::GetObjectSess *sess = BeginGetObject();
+	NN<Map::GetObjectSess> sess = BeginGetObject();
 	Text::StringBuilderUTF8 tmpSb;
 	Map::NameArray *names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	Int64 thisId;
 	UOSInt i;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	Math::Coord2DDbl nearPt;
 	Double thisDist;
 	Double dist = 1000.0;
@@ -355,21 +355,23 @@ Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 		if (thisId != lastId)
 		{
 			lastId = thisId;
-			vec = this->GetNewVectorById(sess, thisId);
-			Bool succ = this->GetString(tmpSb, names, thisId, strIndex);
-			if (succ && tmpSb.GetLength() > 0)
+			if (this->GetNewVectorById(sess, thisId).SetTo(vec))
 			{
-				thisDist = vec->CalSqrDistance(coord, nearPt);
-				if (thisDist < dist)
+				Bool succ = this->GetString(tmpSb, names, thisId, strIndex);
+				if (succ && tmpSb.GetLength() > 0)
 				{
-					dist = thisDist;
-					sb->ClearStr();
-					sb->Append(tmpSb);
-					retVal = true;
-					outCoord.Set(nearPt);
+					thisDist = vec->CalSqrDistance(coord, nearPt);
+					if (thisDist < dist)
+					{
+						dist = thisDist;
+						sb->ClearStr();
+						sb->Append(tmpSb);
+						retVal = true;
+						outCoord.Set(nearPt);
+					}
 				}
+				vec.Delete();
 			}
-			DEL_CLASS(vec);
 		}
 	}
 
@@ -388,7 +390,7 @@ Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<
 	return false;
 }
 
-Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt)
+Int64 Map::MapDrawLayer::GetNearestObjectId(NN<GetObjectSess> session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -410,8 +412,8 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 
 	while (i-- > 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds.GetItem(i));
-		if (vec)
+		NN<Math::Geometry::Vector2D> vec;
+		if (this->GetNewVectorById(session, objIds.GetItem(i)).SetTo(vec))
 		{
 			dist = vec->CalSqrDistance(pt, currPt);
 			if (dist < minDist)
@@ -420,14 +422,14 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 				near = currPt;
 				minDist = dist;
 			}
-			DEL_CLASS(vec);
+			vec.Delete();
 		}
 	}
 	nearPt.Set(near);
 	return nearObjId;
 }
 
-OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
+OSInt Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -452,24 +454,27 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NN<Data::ArrayLi
 
 	while (i-- > 0)
 	{
-		Math::Geometry::Vector2D *vec = this->GetNewVectorById(session, objIds.GetItem(i));
-		dist = vec->CalSqrDistance(pt, currPt);
-		if (dist <= sqrMaxDist)
+		NN<Math::Geometry::Vector2D> vec;
+		if (this->GetNewVectorById(session, objIds.GetItem(i)).SetTo(vec))
 		{
-			objInfo = MemAllocANN(ObjectInfo);
-			objInfo->objId = objIds.GetItem(i);
-			objInfo->objPos = currPt;
-			objInfo->objDist = Math_Sqrt(dist);
-			objList->Add(objInfo);
-			ret++;
+			dist = vec->CalSqrDistance(pt, currPt);
+			if (dist <= sqrMaxDist)
+			{
+				objInfo = MemAllocANN(ObjectInfo);
+				objInfo->objId = objIds.GetItem(i);
+				objInfo->objPos = currPt;
+				objInfo->objDist = Math_Sqrt(dist);
+				objList->Add(objInfo);
+				ret++;
+			}
+			if (dist < minDist)
+			{
+				nearObjId = objIds.GetItem(i);
+				nearPt = currPt;
+				minDist = dist;
+			}
+			vec.Delete();
 		}
-		if (dist < minDist)
-		{
-			nearObjId = objIds.GetItem(i);
-			nearPt = currPt;
-			minDist = dist;
-		}
-		DEL_CLASS(vec);
 	}
 
 	if (ret > 0)
@@ -510,10 +515,10 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sptrs;
 	NN<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
-	Math::Geometry::Vector2D *vec;
+	Optional<Math::Geometry::Vector2D> vec;
 	NN<Math::Geometry::Vector2D> nnvec;
 	NameArray *nameArr;
-	GetObjectSess *sess;
+	NN<GetObjectSess> sess;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -547,11 +552,11 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	while (i < j)
 	{
 		vec = this->GetNewVectorById(sess, objIds.GetItem(i));
-		if (vec == 0)
+		if (vec.IsNull())
 		{
 			vec = this->GetNewVectorById(sess, objIds.GetItem(i));
 		}
-		if (nnvec.Set(vec))
+		if (vec.SetTo(nnvec))
 		{
 			sb.ClearStr();
 			l = k;
@@ -581,7 +586,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 			}
 			if (!lyr->AddVector(nnvec, sptrs))
 			{
-				DEL_CLASS(vec);
+				nnvec.Delete();
 			}
 		}
 
@@ -663,10 +668,10 @@ void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 	LIST_FREE_STRING(strArr);
 }
 
-Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex)
+Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Map::NameArray *nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex)
 {
-	Math::Geometry::Vector2D *vec = 0;
-
+	Optional<Math::Geometry::Vector2D> vec = 0;
+	NN<Math::Geometry::Vector2D> nnvec;
 	Data::ArrayListInt64 objIds;
 	srchInd->SearchString(objIds, srchStr.v, 10000);
 
@@ -680,16 +685,16 @@ Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndex
 		sb.Trim();
 		if (srchStr.EqualsICase(sb))
 		{
-			if (vec == 0)
+			if (!vec.SetTo(nnvec))
 			{
 				vec = this->GetNewVectorById(session, objIds.GetItem(i));
 			}
 			else
 			{
 				NN<Math::Geometry::Vector2D> tmpVec;
-				if (tmpVec.Set(this->GetNewVectorById(session, objIds.GetItem(i))))
+				if (this->GetNewVectorById(session, objIds.GetItem(i)).SetTo(tmpVec))
 				{
-					vec->JoinVector(tmpVec);
+					nnvec->JoinVector(tmpVec);
 					tmpVec.Delete();
 				}
 			}
@@ -1002,8 +1007,8 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colInde
 		return 0;
 	if ((UOSInt)this->currIndex >= this->objIds.GetCount() || this->currIndex < 0)
 		return 0;
-	GetObjectSess *sess = this->layer->BeginGetObject();
-	Math::Geometry::Vector2D *vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
+	NN<GetObjectSess> sess = this->layer->BeginGetObject();
+	Optional<Math::Geometry::Vector2D> vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);
 	return vec;
 

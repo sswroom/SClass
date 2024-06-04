@@ -342,20 +342,20 @@ Bool Map::ESRI::ESRIMDBLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) cons
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::GetObjectSess *Map::ESRI::ESRIMDBLayer::BeginGetObject()
+NN<Map::GetObjectSess> Map::ESRI::ESRIMDBLayer::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<ESRIMDBLayer>(*this));
 }
 
-void Map::ESRI::ESRIMDBLayer::EndGetObject(GetObjectSess *session)
+void Map::ESRI::ESRIMDBLayer::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::ESRI::ESRIMDBLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMDBLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
 	if (vec)
-		return vec->Clone().Ptr();
+		return vec->Clone();
 	return 0;
 }
 

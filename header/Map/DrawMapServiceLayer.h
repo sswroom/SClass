@@ -60,9 +60,9 @@ namespace Map
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
-		virtual GetObjectSess *BeginGetObject();
-		virtual void EndGetObject(GetObjectSess *session);
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
+		virtual NN<GetObjectSess> BeginGetObject();
+		virtual void EndGetObject(NN<GetObjectSess> session);
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 
 		virtual ObjectClass GetObjectClass() const;
 

@@ -69,7 +69,7 @@ Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Map::GPSTrack::GPSRecord3 *recs;
+	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
 	Data::DateTime dt;
 
 	Text::Encoding enc(this->codePage);
@@ -87,55 +87,56 @@ Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	j = track->GetTrackCnt();
 	while (i < j)
 	{
-		writer.WriteLine(CSTR("<trkseg>"));
-		k = 0;
-		recs = track->GetTrack(i, l);
-		while (k < l)
+		if (track->GetTrack(i, l).SetTo(recs))
 		{
-			writer.Write(CSTR("<trkpt lat=\""));
-			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLat());
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.Write(CSTR("\" lon=\""));
-			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLon());
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.WriteLine(CSTR("\">"));
-			
-			writer.Write(CSTR("<ele>"));
-			sptr = Text::StrDouble(sbuff, recs[k].altitude);
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.WriteLine(CSTR("</ele>"));
+			writer.WriteLine(CSTR("<trkseg>"));
+			k = 0;
+			while (k < l)
+			{
+				writer.Write(CSTR("<trkpt lat=\""));
+				sptr = Text::StrDouble(sbuff, recs[k].pos.GetLat());
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.Write(CSTR("\" lon=\""));
+				sptr = Text::StrDouble(sbuff, recs[k].pos.GetLon());
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTR("\">"));
+				
+				writer.Write(CSTR("<ele>"));
+				sptr = Text::StrDouble(sbuff, recs[k].altitude);
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTR("</ele>"));
 
-			writer.Write(CSTR("<time>"));
-			dt.SetInstant(recs[k].recTime);
-			sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.WriteLine(CSTR("</time>"));
+				writer.Write(CSTR("<time>"));
+				dt.SetInstant(recs[k].recTime);
+				sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTR("</time>"));
 
-			writer.Write(CSTR("<desc>lat.="));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLat(), "0.000000");
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.Write(CSTR(", lon.="));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLon(), "0.000000");
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.Write(CSTR(", Alt.="));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.Write(CSTR("m, Speed="));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.WriteLine(CSTR("m/h.</desc>"));
+				writer.Write(CSTR("<desc>lat.="));
+				sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLat(), "0.000000");
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.Write(CSTR(", lon.="));
+				sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLon(), "0.000000");
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.Write(CSTR(", Alt.="));
+				sptr = Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.Write(CSTR("m, Speed="));
+				sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTR("m/h.</desc>"));
 
-			writer.Write(CSTR("<speed>"));
-			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
-			writer.Write(CSTRP(sbuff, sptr));
-			writer.WriteLine(CSTR("</speed>"));
+				writer.Write(CSTR("<speed>"));
+				sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
+				writer.Write(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTR("</speed>"));
 
-			writer.WriteLine(CSTR("</trkpt>"));
+				writer.WriteLine(CSTR("</trkpt>"));
 
-			k++;
+				k++;
+			}
+			writer.WriteLine(CSTR("</trkseg>"));
 		}
-
-		writer.WriteLine(CSTR("</trkseg>"));
 		i++;
 	}
 

@@ -115,9 +115,9 @@ namespace Map
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const = 0;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 
-		virtual GetObjectSess *BeginGetObject() = 0;
-		virtual void EndGetObject(GetObjectSess *session) = 0;
-		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id) = 0;
+		virtual NN<GetObjectSess> BeginGetObject() = 0;
+		virtual void EndGetObject(NN<GetObjectSess> session) = 0;
+		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id) = 0;
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
@@ -146,15 +146,15 @@ namespace Map
 		virtual Bool CanQuery();
 		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 
-		Int64 GetNearestObjectId(GetObjectSess *session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt);
-		OSInt GetNearObjects(GetObjectSess *session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
+		Int64 GetNearestObjectId(NN<GetObjectSess> session, Math::Coord2DDbl pt, OptOut<Math::Coord2DDbl> nearPt);
+		OSInt GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist); //return nearest object if no object within distance
 		void FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList);
 		NN<Map::VectorLayer> CreateEditableLayer();
 
 		Optional<Text::SearchIndexer> CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
 		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(NN<Data::ArrayListString> strArr);
-		Math::Geometry::Vector2D *GetVectorByStr(NN<Text::SearchIndexer> srchInd, NameArray *nameArr, GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex);
+		Optional<Math::Geometry::Vector2D> GetVectorByStr(NN<Text::SearchIndexer> srchInd, NameArray *nameArr, NN<GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();

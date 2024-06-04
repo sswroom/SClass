@@ -25,7 +25,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		UOSInt pgNearInd = 0;
 		Int64 pgNearId = -1;
 		Math::Coord2DDbl nearPos;
-		Map::GetObjectSess *sess;
+		NN<Map::GetObjectSess> sess;
 		Int64 id;
 		UOSInt i;
 		UOSInt j;
@@ -150,13 +150,20 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 				me->lvInfo->SetSubItem(i, 1, sb.ToCString());
 				i++;
 			}
-			Math::Geometry::Vector2D *vec = lyr->GetNewVectorById(sess, id);
-			if (!csysEnv->Equals(csysLyr))
+			NN<Math::Geometry::Vector2D> vec;
+			if (lyr->GetNewVectorById(sess, id).SetTo(vec))
 			{
-				Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
-				vec->Convert(converter);
+				if (!csysEnv->Equals(csysLyr))
+				{
+					Math::CoordinateSystemConverter converter(csysLyr, csysEnv);
+					vec->Convert(converter);
+				}
+				me->navi->SetSelectedVector(vec);
 			}
-			me->navi->SetSelectedVector(vec);
+			else
+			{
+				me->navi->SetSelectedVector(0);
+			}
 			lyr->ReleaseNameArr(nameArr);
 			lyr->EndGetObject(sess);
 		}

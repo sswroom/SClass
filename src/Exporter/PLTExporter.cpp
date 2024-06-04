@@ -64,7 +64,7 @@ Bool Exporter::PLTExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Map::GPSTrack::GPSRecord3 *recs;
+	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
 	Data::DateTime dt;
 	Data::DateTime refTime;
 	
@@ -83,33 +83,35 @@ Bool Exporter::PLTExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	while (i < j)
 	{
 		k = 0;
-		recs = track->GetTrack(i, l);
-		while (k < l)
+		if (track->GetTrack(i, l).SetTo(recs))
 		{
-			sptr = FixDouble(sbuff, recs[k].pos.GetLat(), "0.000000", 11);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			sptr = FixDouble(sptr, recs[k].pos.GetLon(), "0.000000", 11);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			if (k == 0)
+			while (k < l)
 			{
-				sptr = Text::StrConcatC(sptr, UTF8STRC("1,"));
-			}
-			else
-			{
-				sptr = Text::StrConcatC(sptr, UTF8STRC("0,"));
-			}
-			sptr = FixDouble(sptr, recs[k].altitude * 3.2808333333333333333333333333333, "0", 7);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
-			dt.SetInstant(recs[k].recTime);
-			sptr = Text::StrDoubleFmt(sptr, (Double)dt.DiffMS(refTime) / 86400000.0, "0.0000000");
-			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-			sptr = dt.ToString(sptr, "dd-MMM-yy");
-			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-			sptr = dt.ToString(sptr, "hh:mm:ss tt");
+				sptr = FixDouble(sbuff, recs[k].pos.GetLat(), "0.000000", 11);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+				sptr = FixDouble(sptr, recs[k].pos.GetLon(), "0.000000", 11);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+				if (k == 0)
+				{
+					sptr = Text::StrConcatC(sptr, UTF8STRC("1,"));
+				}
+				else
+				{
+					sptr = Text::StrConcatC(sptr, UTF8STRC("0,"));
+				}
+				sptr = FixDouble(sptr, recs[k].altitude * 3.2808333333333333333333333333333, "0", 7);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
+				dt.SetInstant(recs[k].recTime);
+				sptr = Text::StrDoubleFmt(sptr, (Double)dt.DiffMS(refTime) / 86400000.0, "0.0000000");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
+				sptr = dt.ToString(sptr, "dd-MMM-yy");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
+				sptr = dt.ToString(sptr, "hh:mm:ss tt");
 
-			writer.WriteLine(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTRP(sbuff, sptr));
 
-			k++;
+				k++;
+			}
 		}
 
 		i++;

@@ -537,16 +537,16 @@ Bool Map::SHPData::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-Map::GetObjectSess *Map::SHPData::BeginGetObject()
+NN<Map::GetObjectSess> Map::SHPData::BeginGetObject()
 {
-	return (GetObjectSess*)-1;
+	return NN<GetObjectSess>::ConvertFrom(NN<SHPData>(*this));
 }
 
-void Map::SHPData::EndGetObject(GetObjectSess *session)
+void Map::SHPData::EndGetObject(NN<GetObjectSess> session)
 {
 }
 
-Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session, Int64 id)
+Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<Map::SHPData::RecHdr> rec;
 	NN<Sync::Mutex> mut;

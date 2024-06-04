@@ -1366,7 +1366,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					if (mtk->ParseLog(trk))
 					{
 						Data::DateTime dt;
-						trk->GetTrackStartTime(0, &dt);
+						trk->GetTrackStartTime(0, dt);
 						dt.ToLocalTime();
 						if (mtk->QueryFirmware())
 						{
@@ -1920,7 +1920,7 @@ void SSWR::AVIRead::AVIRGISForm::HideMarker()
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Math::Geometry::Vector2D *vec)
+void SSWR::AVIRead::AVIRGISForm::SetSelectedVector(Optional<Math::Geometry::Vector2D> vec)
 {
 	this->mapCtrl->SetSelectedVector(vec);
 }

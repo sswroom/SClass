@@ -2293,7 +2293,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	Math::Coord2D<Int32> pts;
 	Math::RectAreaDbl *objPtr = &objBounds[*objCnt];
 #endif
-	Map::GetObjectSess *session;
+	NN<Map::GetObjectSess> session;
 	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
@@ -2346,7 +2346,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if (vec.Set(lyrs->lyr->GetNewVectorById(session, arri.GetItem(i))))
+		if (lyrs->lyr->GetNewVectorById(session, arri.GetItem(i)).SetTo(vec))
 		{
 #ifdef NOSCH
 			j = dobj->nPoint;
@@ -2380,11 +2380,11 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 {
 	Map::NameArray *arr;
 	UOSInt i;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
-	Map::GetObjectSess *session;
+	NN<Map::GetObjectSess> session;
 	UOSInt imgWidth;
 	UOSInt imgHeight;
 	NN<Media::DrawImage> lyrImg;
@@ -2408,7 +2408,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((vec = lyrs->lyr->GetNewVectorById(session, arri.GetItem(i))) != 0)
+		if (lyrs->lyr->GetNewVectorById(session, arri.GetItem(i)).SetTo(vec))
 		{
 			if (lyrs->bkColor & SFLG_SMART)
 			{
@@ -2424,7 +2424,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 				}
 				case Math::Geometry::Vector2D::VectorType::Polyline:
 				{
-					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+					NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 					UOSInt k;
 					UOSInt maxSize;
 					UOSInt maxPos;
@@ -2457,7 +2457,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 				}
 				case Math::Geometry::Vector2D::VectorType::Polygon:	
 				{
-					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 					UOSInt k;
 					UOSInt maxSize;
 					UOSInt maxPos;
@@ -2511,7 +2511,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 				default:
 					break;
 				}
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 			else
 			{
@@ -2521,7 +2521,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 				{
 				case Math::Geometry::Vector2D::VectorType::Polyline:
 				{
-					Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+					NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 					NN<Math::Geometry::LineString> ls;
 					UOSInt nPoint;
 					if (pl->GetItem(pl->GetCount() >> 1).SetTo(ls))
@@ -2558,7 +2558,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 				}
 				case Math::Geometry::Vector2D::VectorType::Polygon:
 				{
-					Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+					NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 					pts = pg->GetCenter();
 					if (view->InViewXY(pts))
 					{
@@ -2600,7 +2600,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 				default:
 					break;
 				}
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 	}
@@ -4500,7 +4500,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 	index = 0;
 	while (index < layerCnt)
 	{
-		Map::GetObjectSess *session;
+		NN<Map::GetObjectSess> session;
 		lyrs = this->drawList->GetItem(index++);
 		if (thisScale > lyrs->minScale && thisScale <= lyrs->maxScale)
 		{
@@ -4528,7 +4528,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 						if (thisId != lastId)
 						{
 							lastId = thisId;
-							if (vec.Set(lyr->GetNewVectorById(session, thisId)))
+							if (lyr->GetNewVectorById(session, thisId).SetTo(vec))
 							{
 #ifndef NOSCH
 								mapSch->Draw(vec);
@@ -4628,7 +4628,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<M
 						if (thisId != lastId)
 						{
 							lastId = thisId;
-							if (vec.Set(lyr->GetNewVectorById(session, thisId)))
+							if (lyr->GetNewVectorById(session, thisId).SetTo(vec))
 							{
 #ifndef NOSCH
 								mapSch->Draw(vec);

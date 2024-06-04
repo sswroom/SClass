@@ -81,14 +81,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
-				Map::GetObjectSess *sess = layer->BeginGetObject();
+				NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
 				while (i < j)
 				{
 					objId = objIds.GetItem(i);
-					Math::Geometry::Vector2D *vec = layer->GetNewVectorById(sess, objId);
-					if (vec)
+					NN<Math::Geometry::Vector2D> vec;
+					if (layer->GetNewVectorById(sess, objId).SetTo(vec))
 					{
 						json.ArrayBeginObject();
 						sptr = name->ConcatTo(sbuff);
@@ -122,7 +122,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 						json.ObjectAddStr(CSTR("description"), sb.ToCString());
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
-							Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+							NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 							json.ObjectBeginObject(CSTR("polygon"));
 							json.ObjectBeginArray(CSTR("carr"));
 							Data::ArrayListA<Math::Coord2DDbl> pointList;
@@ -140,7 +140,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 						{
 
 						}
-						DEL_CLASS(vec);
+						vec.Delete();
 						json.ObjectEnd();
 					}
 
@@ -180,7 +180,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 				Bool needConv = !wgs84->Equals(csys);
 				Math::CoordinateSystemConverter converter(csys, wgs84);
 				Text::StringBuilderUTF8 sbTmp;
-				Map::GetObjectSess *sess = layer->BeginGetObject();
+				NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
 				while (i < j)
@@ -214,7 +214,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 					}
 					json.ObjectEnd();
 					NN<Math::Geometry::Vector2D> vec;
-					if (vec.Set(layer->GetNewVectorById(sess, objId)))
+					if (layer->GetNewVectorById(sess, objId).SetTo(vec))
 					{
 						json.ObjectBeginObject(CSTR("geometry"));
 						if (needConv)

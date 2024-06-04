@@ -1258,7 +1258,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 		lastLbl->Release();
 }
 
-OSInt Map::DrawMapRenderer::VImgCompare(Math::Geometry::VectorImage *obj1, Math::Geometry::VectorImage *obj2)
+OSInt Map::DrawMapRenderer::VImgCompare(NN<Math::Geometry::VectorImage> obj1, NN<Math::Geometry::VectorImage> obj2)
 {
 	Bool type1 = obj1->IsScnCoord();
 	Bool type2 = obj2->IsScnCoord();
@@ -1529,7 +1529,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN<Map::MapDrawLayer> layer, UOSInt lineStyle, UInt32 fillStyle, Double lineThick, UInt32 lineColor)
 {
 	UOSInt i;
-	Map::GetObjectSess *session;
+	NN<Map::GetObjectSess> session;
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
 	Int64 lastId;
@@ -1577,7 +1577,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if (vec.Set(layer->GetNewVectorById(session, thisId)))
+					if (layer->GetNewVectorById(session, thisId).SetTo(vec))
 					{
 						vec->Convert(converter);
 						this->mapSch.Draw(vec);
@@ -1632,7 +1632,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if (vec.Set(layer->GetNewVectorById(session, thisId)))
+					if (layer->GetNewVectorById(session, thisId).SetTo(vec))
 					{
 						this->mapSch.Draw(vec);
 					}
@@ -1658,7 +1658,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 	Data::ArrayListInt64 arri;
 	NN<Math::Geometry::Vector2D> vec;
 	UOSInt i;
-	Map::GetObjectSess *session;
+	NN<Map::GetObjectSess> session;
 	Math::Coord2DDbl tl;
 	Math::Coord2DDbl br;
 	Math::RectAreaDbl rect = denv->view->GetVerticalRect();
@@ -1755,7 +1755,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 			i = arri.GetCount();
 			while (i-- > 0)
 			{
-				if (vec.Set(layer->GetNewVectorById(session, arri.GetItem(i))))
+				if (layer->GetNewVectorById(session, arri.GetItem(i)).SetTo(vec))
 				{
 					vec->Convert(converter);
 					this->mapSch.Draw(vec);
@@ -1817,7 +1817,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 			i = arri.GetCount();
 			while (i-- > 0)
 			{
-				if (vec.Set(layer->GetNewVectorById(session, arri.GetItem(i))))
+				if (layer->GetNewVectorById(session, arri.GetItem(i)).SetTo(vec))
 				{
 					this->mapSch.Draw(vec);
 				}
@@ -1835,12 +1835,12 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 	Map::NameArray *arr;
 	Data::ArrayListInt64 arri;
 	UOSInt i;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	Double scaleW;
 	Double scaleH;
 	Math::Coord2DDbl pts;
 	Text::StringBuilderUTF8 sbLbl;
-	Map::GetObjectSess *session;
+	NN<Map::GetObjectSess> session;
 	UOSInt maxLabel = denv->env->GetNString();
 	Bool csysConv = false;;
 	Math::Coord2DDbl tl;
@@ -1863,7 +1863,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 	i = arri.GetCount();
 	while (i-- > 0)
 	{
-		if ((vec = layer->GetNewVectorById(session, arri.GetItem(i))) != 0)
+		if (layer->GetNewVectorById(session, arri.GetItem(i)).SetTo(vec))
 		{
 			sbLbl.ClearStr();
 			if (layer->GetString(sbLbl, arr, arri.GetItem(i), labelCol))
@@ -1893,7 +1893,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 					}
 					case Math::Geometry::Vector2D::VectorType::Polyline:
 					{
-						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+						NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 						UOSInt k;
 						UOSInt maxSize;
 						UOSInt maxPos;
@@ -1933,7 +1933,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 					}
 					case Math::Geometry::Vector2D::VectorType::Polygon:	
 					{
-						Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+						NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 						UOSInt k;
 						UOSInt maxSize;
 						UOSInt maxPos;
@@ -1987,7 +1987,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 						printf("DrawMapRenderer.DrawLabelSmart: Unknown vector type\r\n");
 						break;
 					}
-					DEL_CLASS(vec);
+					vec.Delete();
 				}
 				else
 				{
@@ -1995,7 +1995,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 					{
 					case Math::Geometry::Vector2D::VectorType::Polyline:
 					{
-						Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec;
+						NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 						NN<Math::Geometry::LineString> lineString;
 						if (pl->GetItem(pl->GetCount() >> 1).SetTo(lineString))
 						{
@@ -2032,7 +2032,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 					}
 					case Math::Geometry::Vector2D::VectorType::Polygon:
 					{
-						Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec;
+						NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 						pts = pg->GetCenter();
 						if (denv->view->InViewXY(pts))
 						{
@@ -2075,12 +2075,12 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 						printf("DrawMapRenderer.DrawLabel: Unknown vector type\r\n");
 						break;
 					}
-					DEL_CLASS(vec);
+					vec.Delete();
 				}
 			}
 			else
 			{
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 	}
@@ -2090,13 +2090,13 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 
 void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer)
 {
-	Math::Geometry::Vector2D *vec;
-	Math::Geometry::VectorImage *vimg;
+	NN<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::VectorImage> vimg;
 	UOSInt i;
 	UOSInt j;
 	NN<Math::CoordinateSystem> coord = layer->GetCoordinateSystem();
 	Bool geoConv;
-	Map::GetObjectSess *sess;
+	NN<Map::GetObjectSess> sess;
 	geoConv = !denv->env->GetCoordinateSystem()->Equals(coord);
 
 	Data::ArrayListInt64 arri;
@@ -2119,35 +2119,34 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 	{
 		layer->GetObjectIdsMapXY(arri, 0, Math::RectAreaDbl(tl, br), false);
 	}
-	Data::ArrayList<Math::Geometry::VectorImage *> imgList;
+	Data::ArrayListNN<Math::Geometry::VectorImage> imgList;
 	sess = layer->BeginGetObject();
 	i = 0;
 	j = arri.GetCount();
 	while (i < j)
 	{
-		vec = layer->GetNewVectorById(sess, arri.GetItem(i));
-		if (vec)
+		if (layer->GetNewVectorById(sess, arri.GetItem(i)).SetTo(vec))
 		{
 			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Image)
 			{
-				imgList.Add((Math::Geometry::VectorImage*)vec);
+				imgList.Add(NN<Math::Geometry::VectorImage>::ConvertFrom(vec));
 			}
 			else
 			{
-				DEL_CLASS(vec);
+				vec.Delete();
 			}
 		}
 		i++;
 	}
 	layer->EndGetObject(sess);
 	
-	Data::Sort::ArtificialQuickSortFunc<Math::Geometry::VectorImage*>::Sort(imgList, VImgCompare);
+	Data::Sort::ArtificialQuickSortFunc<NN<Math::Geometry::VectorImage>>::Sort(imgList, VImgCompare);
 	i = 0;
 	j = imgList.GetCount();
 	while (i < j)
 	{
 		Math::Coord2DDbl scnCoords[2];
-		vimg = imgList.GetItem(i);
+		vimg = imgList.GetItemNoCheck(i);
 		if (vimg->IsScnCoord())
 		{
 			vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0].x, &scnCoords[0].y, &scnCoords[1].x, &scnCoords[1].y);
@@ -2184,7 +2183,7 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 			}
 		}
 
-		DEL_CLASS(vimg);
+		vimg.Delete();
 		i++;
 	}
 }

@@ -215,7 +215,7 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 	{
 		if (me->mapDownPos == scnPos)
 		{
-			Map::GetObjectSess *sess;
+			NN<Map::GetObjectSess> sess;
 			Int64 id;
 			UOSInt i;
 			UOSInt j;
