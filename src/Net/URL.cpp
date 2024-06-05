@@ -6,10 +6,12 @@
 #include "Net/URL.h"
 #include "Text/MyString.h"
 #include "Text/URLString.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
-IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
+Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
 {
-	IO::ParsedObject *pobj;
+	Optional<IO::ParsedObject> pobj;
+	NN<IO::ParsedObject> nnpobj;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	if (url.StartsWithICase(UTF8STRC("http://")))
@@ -50,18 +52,43 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 	{
 		sbuff[0] = 0;
 		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).Or(sbuff);
-		NEW_CLASS(pobj, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		return pobj;
+		NEW_CLASSNN(nnpobj, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		return nnpobj;
 	}
 	else if (url.StartsWithICase(UTF8STRC("ftp://")))
 	{
-		NEW_CLASS(pobj, Net::FTPClient(url, sockf, true, 0, timeout));
-		return pobj;
+		NEW_CLASSNN(nnpobj, Net::FTPClient(url, sockf, true, 0, timeout));
+		return nnpobj;
 	}
 	else if (url.StartsWithICase(UTF8STRC("rtsp://")))
 	{
 		pobj = Net::RTSPClient::ParseURL(sockf, url, timeout, log);
 		return pobj;
+	}
+	else if (url.StartsWithICase(UTF8STRC("data:")))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(url.Substring(5));
+		Text::PString sarr[2];
+		Text::PString sarr2[2];
+		if (Text::StrSplitP(sarr, 2, sb, ';') != 2)
+			return 0;
+		if (Text::StrSplitP(sarr2, 2, sarr[1], ',') != 2)
+			return 0;
+		IO::MemoryStream *mstm;
+		if (sarr2[0].Equals(UTF8STRC("base64")))
+		{
+			Text::TextBinEnc::Base64Enc b64;
+			UnsafeArray<UInt8> tmpData = MemAllocArr(UInt8, sarr2[1].leng);
+			UOSInt dataLen = b64.DecodeBin(sarr2[1].ToCString(), tmpData);
+			NEW_CLASS(mstm, IO::MemoryStream(dataLen));
+			mstm->Write(tmpData, dataLen);
+			MemFreeArr(tmpData);
+			mstm->SeekFromBeginning(0);
+			return mstm;
+		}
+		return 0;
+
 	}
 	return 0;
 }

@@ -10,7 +10,7 @@ namespace Net
 	class URL
 	{
 	public:
-		static IO::ParsedObject *OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
+		static Optional<IO::ParsedObject> OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
 	};
 }
 #endif

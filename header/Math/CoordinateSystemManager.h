@@ -179,8 +179,8 @@ namespace Math
 		static Optional<Math::CoordinateSystem> CreateFromName(Text::CStringNN name);
 		static NN<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
 
-		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(UnsafeArray<const UTF8Char> name);
-		static void FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, const DatumInfo *datum, Text::CString name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
+		static Optional<const Math::CoordinateSystemManager::DatumInfo> GetDatumInfoByName(UnsafeArray<const UTF8Char> name);
+		static void FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
 
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static NN<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);

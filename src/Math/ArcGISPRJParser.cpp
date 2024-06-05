@@ -251,7 +251,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 		if (eet != Math::EarthEllipsoid::EET_OTHER)
 		{
 			Math::EarthEllipsoid ellipsoid(eet);
-			const Math::CoordinateSystemManager::DatumInfo *datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
+			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
 			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
@@ -261,7 +261,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 		else
 		{
 			Math::EarthEllipsoid ellipsoid(a, f_1, eet);
-			const Math::CoordinateSystemManager::DatumInfo *datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
+			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
 			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));

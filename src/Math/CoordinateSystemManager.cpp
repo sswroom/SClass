@@ -535,7 +535,7 @@ NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Te
 		return CreateWGS84Csys();
 }
 
-const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::GetDatumInfoByName(UnsafeArray<const UTF8Char> name)
+Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemManager::GetDatumInfoByName(UnsafeArray<const UTF8Char> name)
 {
 	if (name[0] == 'D' && name[1] == '_')
 	{
@@ -556,20 +556,23 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 		else if (l < 0)
 		{
 			i = k + 1;
-			return &datumList[k];
+		}
+		else
+		{
+			return datumList[k];
 		}
 	}
 	return 0;
 }
 
-void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
+void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const Math::CoordinateSystemManager::DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
 {
-	Text::CStringNN nnname = name.OrEmpty();
-	if (datum)
+	NN<const Math::CoordinateSystemManager::DatumInfo> nndatum;
+	if (datum.SetTo(nndatum))
 	{
-		data->srid = datum->srid;
+		data->srid = nndatum->srid;
 		data->spheroid.ellipsoid = ee;
-		data->spheroid.srid = datum->spheroid;
+		data->spheroid.srid = nndatum->spheroid;
 		if (spheroid)
 		{
 			data->spheroid.name = spheroid->name;
@@ -577,32 +580,32 @@ void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateS
 		}
 		else
 		{
-			data->spheroid.name = datum->datumName;
-			data->spheroid.nameLen = datum->datumNameLen;
+			data->spheroid.name = nndatum->datumName;
+			data->spheroid.nameLen = nndatum->datumNameLen;
 		}
-		data->name = datum->datumName;
-		data->nameLen = datum->datumNameLen;
-		data->x0 = datum->x0;
-		data->y0 = datum->y0;
-		data->z0 = datum->z0;
-		data->cX = datum->cX;
-		data->cY = datum->cY;
-		data->cZ = datum->cZ;
-		data->xAngle = datum->xAngle;
-		data->yAngle = datum->yAngle;
-		data->zAngle = datum->zAngle;
-		data->scale = datum->scale;
-		data->aunit = datum->aunit;
+		data->name = nndatum->datumName;
+		data->nameLen = nndatum->datumNameLen;
+		data->x0 = nndatum->x0;
+		data->y0 = nndatum->y0;
+		data->z0 = nndatum->z0;
+		data->cX = nndatum->cX;
+		data->cY = nndatum->cY;
+		data->cZ = nndatum->cZ;
+		data->xAngle = nndatum->xAngle;
+		data->yAngle = nndatum->yAngle;
+		data->zAngle = nndatum->zAngle;
+		data->scale = nndatum->scale;
+		data->aunit = nndatum->aunit;
 	}
 	else
 	{
 		data->srid = 0;
 		data->spheroid.ellipsoid = ee;
 		data->spheroid.srid = 0;
-		data->spheroid.name = nnname.v;
-		data->spheroid.nameLen = nnname.leng;
-		data->name = nnname.v;
-		data->nameLen = nnname.leng;
+		data->spheroid.name = name.v;
+		data->spheroid.nameLen = name.leng;
+		data->name = name.v;
+		data->nameLen = name.leng;
 		data->x0 = 0;
 		data->y0 = 0;
 		data->z0 = 0;
@@ -722,14 +725,14 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::Create
 	{
 		return 0;
 	}
-	const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)coord->datumName);
-	if (datum == 0)
+	NN<const Math::CoordinateSystemManager::DatumInfo> datum;
+	if (!GetDatumInfoByName((const UTF8Char*)coord->datumName).SetTo(datum))
 	{
 		return 0;
 	}
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(data, datum, CSTR_NULL, ellipsoid, SRGetSpheroid(datum->spheroid));
+	FillDatumData(data, datum, Text::CStringNN::FromPtr((const UTF8Char*)coord->datumName), ellipsoid, SRGetSpheroid(datum->spheroid));
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->geoName, coord->geoNameLen), &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 }
@@ -770,10 +773,10 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 NN<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateWGS84Csys()
 {
 	NN<Math::GeographicCoordinateSystem> csys;
-	const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)"WGS_1984");
+	NN<const Math::CoordinateSystemManager::DatumInfo> datum = NN<const Math::CoordinateSystemManager::DatumInfo>::FromPtr(GetDatumInfoByName((const UTF8Char*)"WGS_1984").OrNull());
 	Math::EarthEllipsoid ellipsoid(Math::EarthEllipsoid::EET_WGS84);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(data, datum, CSTR_NULL, ellipsoid, SRGetSpheroid(datum->spheroid));
+	FillDatumData(data, datum, CSTR("WGS_1984"), ellipsoid, SRGetSpheroid(datum->spheroid));
 	NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(CSTR("WGS_1984"), 4326, CSTR("WGS_1984"), &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 

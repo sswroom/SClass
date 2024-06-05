@@ -23,6 +23,7 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(NN<IO::FileSelector> selector
 	selector->AddFilter(CSTR("*.xml"), CSTR("XML File"));
 	selector->AddFilter(CSTR("*.gml"), CSTR("GML File"));
 	selector->AddFilter(CSTR("*.kml"), CSTR("KML File"));
+	selector->AddFilter(CSTR("*.svg"), CSTR("SVG File"));
 }
 
 Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> output)
@@ -80,11 +81,11 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
 		}
 	}
-	else if (fileName.EndsWithICase(UTF8STRC(".xml")) || fileName.EndsWithICase(UTF8STRC(".gml")) || fileName.EndsWithICase(UTF8STRC(".kml")))
+	else if (fileName.EndsWithICase(UTF8STRC(".xml")) || fileName.EndsWithICase(UTF8STRC(".gml")) || fileName.EndsWithICase(UTF8STRC(".kml")) || fileName.EndsWithICase(UTF8STRC(".svg")))
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
-		if (fileLen > 0 && fileLen < 10485760)
+		if (fileLen > 0 && fileLen < 104857600)
 		{
 			succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
 		}

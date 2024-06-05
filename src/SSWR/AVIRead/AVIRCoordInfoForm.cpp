@@ -91,7 +91,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 				Text::StringBuilderUTF8 sb;
 				Math::CoordinateSystem::DatumData1 datum;
 				Math::EarthEllipsoid ee(spheroid->eet);
-				Math::CoordinateSystemManager::FillDatumData(datum, datumInfo, Text::CString::FromPtr((const UTF8Char*)srinfo->name), ee, spheroid);
+				Math::CoordinateSystemManager::FillDatumData(datum, datumInfo, Text::CStringNN::FromPtr((const UTF8Char*)srinfo->name), ee, spheroid);
 				Math::SROGCWKTWriter wkt;
 				sptr = wkt.WriteDatum(datum, sbuff, 0, Text::LineBreakType::CRLF);
 				this->txtWKT->SetText(CSTRP(sbuff, sptr));

@@ -443,20 +443,18 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 	this->docs = 0;
 	this->ttl = 0;
 
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	NN<IO::Stream> stm;
-	pobj = Net::URL::OpenObject(url, OPTSTR_CSTR(userAgent), sockf, ssl, timeout, log);
-	if (pobj == 0)
+	if (!Net::URL::OpenObject(url, OPTSTR_CSTR(userAgent), sockf, ssl, timeout, log).SetTo(pobj))
 	{
 		return;
 	}
 	if (pobj->GetParserType() != IO::ParserType::Stream)
 	{
-		DEL_CLASS(pobj);
+		pobj.Delete();
 		return;
 	}
-	if (!stm.Set((IO::Stream*)pobj))
-		return;
+	stm = NN<IO::Stream>::ConvertFrom(pobj);
 
 /*	Text::XMLDocument doc;
 	{

@@ -7,3 +7,6 @@
 [submodule "js/leaflet-drawText"]
 	path = js/leaflet-drawText
 	url = https://github.com/sswroom/leaflet-drawText.git
+[submodule "js/dom-to-image"]
+	path = js/dom-to-image
+	url = https://github.com/sswroom/dom-to-image
