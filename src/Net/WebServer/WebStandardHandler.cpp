@@ -76,9 +76,11 @@ void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::I
 
 Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
 {
+	Text::CStringNN mime = CSTR("application/json");
 	this->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(cacheAge);
-	return resp->ResponseText(json, CSTR("application/json"));
+	resp->AddContentType(mime);
+	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, json);
 }
 
 Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options)
