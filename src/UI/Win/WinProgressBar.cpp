@@ -35,7 +35,7 @@ OSInt UI::Win::WinProgressBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Win::WinProgressBar::ProgressStart(Text::CString name, UInt64 count)
+void UI::Win::WinProgressBar::ProgressStart(Text::CStringNN name, UInt64 count)
 {
 	this->totalCnt = count;
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);

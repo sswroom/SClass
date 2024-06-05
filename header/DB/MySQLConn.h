@@ -20,15 +20,15 @@ namespace DB
 		Bool isTran;
 		NN<Text::String> server;
 		Optional<Text::String> database;
-		Optional<Text::String> uid;
-		Optional<Text::String> pwd;
+		NN<Text::String> uid;
+		NN<Text::String> pwd;
 		NN<IO::LogTool> log;
 
 		void Connect();
 
 	public:
-		MySQLConn(NN<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, NN<IO::LogTool> log);
-		MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log);
+		MySQLConn(NN<Text::String> server, NN<Text::String> uid, NN<Text::String> pwd, Optional<Text::String> database, NN<IO::LogTool> log);
+		MySQLConn(Text::CStringNN server, Text::CStringNN uid, Text::CStringNN pwd, Text::CString database, NN<IO::LogTool> log);
 		MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, NN<IO::LogTool> log);
 		virtual ~MySQLConn();
 		virtual DB::SQLType GetSQLType() const;
@@ -60,8 +60,8 @@ namespace DB
 		Optional<Text::String> GetConnPWD();
 
 //		static Optional<DBTool> CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log);
-		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 //		static Optional<DBTool> CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 

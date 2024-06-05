@@ -270,8 +270,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		Text::StringBuilderUTF8 sb;
 		NN<Text::String> nnserver;
 		Text::String *server = 0;
-		Text::String *uid = 0;
-		Text::String *pwd = 0;
+		Optional<Text::String> uid = 0;
+		NN<Text::String> nnuid;
+		Optional<Text::String> pwd = 0;
+		NN<Text::String> nnpwd;
 		Text::String *schema = 0;
 		UOSInt cnt;
 		sb.Append(connStr.Substring(6));
@@ -287,13 +289,13 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
-				SDEL_STRING(uid);
-				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 			{
-				SDEL_STRING(pwd);
-				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4).Ptr();
+				OPTSTR_DEL(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
@@ -305,9 +307,9 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 				break;
 			}
 		}
-		if (nnserver.Set(server))
+		if (nnserver.Set(server) && uid.SetTo(nnuid) && pwd.SetTo(nnpwd))
 		{
-			db = DB::MySQLConn::CreateDBTool(sockf, nnserver, schema, uid, pwd, log, DBPREFIX);
+			db = DB::MySQLConn::CreateDBTool(sockf, nnserver, schema, nnuid, nnpwd, log, DBPREFIX);
 		}
 		else
 		{
@@ -315,8 +317,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		
 		SDEL_STRING(server);
-		SDEL_STRING(uid);
-		SDEL_STRING(pwd);
+		OPTSTR_DEL(uid);
+		OPTSTR_DEL(pwd);
 		SDEL_STRING(schema);
 		if (db.NotNull())
 		{

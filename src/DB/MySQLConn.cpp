@@ -23,7 +23,7 @@ void DB::MySQLConn::Connect()
 	MYSQL *mysql = mysql_init(0);
 	this->mysql = mysql;
 
-	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v.Ptr(), (const Char*)OPTSTR_CSTR(this->uid).v.Ptr(), (const Char*)OPTSTR_CSTR(this->pwd).v.Ptr(), (const Char*)OPTSTR_CSTR(this->database).v.Ptr(), 0, 0, 0) == 0)
+	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v.Ptr(), (const Char*)this->uid->v.Ptr(), (const Char*)this->pwd->v.Ptr(), (const Char*)OPTSTR_CSTR(this->database).v.Ptr(), 0, 0, 0) == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
@@ -52,7 +52,7 @@ void DB::MySQLConn::Connect()
 	}
 }
 
-DB::MySQLConn::MySQLConn(NN<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(NN<Text::String> server, NN<Text::String> uid, NN<Text::String> pwd, Optional<Text::String> database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -60,15 +60,15 @@ DB::MySQLConn::MySQLConn(NN<Text::String> server, Text::String *uid, Text::Strin
 
 	this->mysql = 0;
 	this->server = server->Clone();
-	this->uid = SCOPY_STRING(uid);
-	this->pwd = SCOPY_STRING(pwd);
-	this->database = SCOPY_STRING(database);
+	this->uid = uid->Clone();
+	this->pwd = pwd->Clone();
+	this->database = Text::String::CopyOrNull(database);
 	this->log = log;
 	this->axisAware = false;
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CStringNN uid, Text::CStringNN pwd, Text::CString database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -76,8 +76,8 @@ DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CStrin
 
 	this->mysql = 0;
 	this->server = Text::String::New(server);
-	this->uid = Text::String::NewOrNull(uid);
-	this->pwd = Text::String::NewOrNull(pwd);
+	this->uid = Text::String::New(uid);
+	this->pwd = Text::String::New(pwd);
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
 	this->axisAware = false;
@@ -92,8 +92,8 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 
 	this->mysql = 0;
 	this->server = Text::String::NewNotNull(server);
-	this->uid = Text::String::NewOrNull(uid);
-	this->pwd = Text::String::NewOrNull(pwd);
+	this->uid = Text::String::NewNotNull(uid);
+	this->pwd = Text::String::NewNotNull(pwd);
 	this->database = Text::String::NewOrNull(database);
 	this->log = log;
 	this->axisAware = false;
@@ -105,8 +105,8 @@ DB::MySQLConn::~MySQLConn()
 	Close();
 	this->server->Release();
 	OPTSTR_DEL(this->database);
-	OPTSTR_DEL(this->uid);
-	OPTSTR_DEL(this->pwd);
+	this->uid->Release();
+	this->pwd->Release();
 	if (Sync::Interlocked::DecrementI32(useCnt) == 0)
 	{
 		mysql_library_end();
@@ -407,7 +407,7 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	}
 }*/
 
-Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;
@@ -424,7 +424,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, N
 	}
 }
 
-Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;

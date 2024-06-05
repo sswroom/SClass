@@ -24,7 +24,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Text::S
 	this->Connect();
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CStringNN database, NN<IO::LogTool> log) : DBConn(server)
 {
 	this->clsData = 0;
 	this->tzQhr = 0;
@@ -277,7 +277,7 @@ Optional<Text::String> DB::PostgreSQLConn::GetConnPWD() const
 	return this->pwd;
 }
 
-Bool DB::PostgreSQLConn::ChangeDatabase(Text::CString databaseName)
+Bool DB::PostgreSQLConn::ChangeDatabase(Text::CStringNN databaseName)
 {
 	return false;
 }
@@ -410,7 +410,7 @@ Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverNam
 	return db;
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CStringNN dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));

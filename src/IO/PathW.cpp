@@ -286,7 +286,7 @@ UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, Unsaf
 		}
 	}
 	UnsafeArray<UTF8Char> nnoldExt;
-	if (!oldExt.SetTo(nnoldExt) == 0)
+	if (!oldExt.SetTo(nnoldExt))
 	{
 		nnoldExt = fileName;
 		nnoldExt[-1] = '.';
