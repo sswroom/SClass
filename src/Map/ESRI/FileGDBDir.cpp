@@ -40,7 +40,7 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data:
 	return j;
 }
 
-Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
@@ -53,7 +53,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schem
 	}
 	else
 	{
-		return NEW_CLASS_D(DB::SortableDBReader(this, schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition));
+		return NEW_CLASS_D(DB::SortableDBReader(*this, schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition));
 	}
 }
 

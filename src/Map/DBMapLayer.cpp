@@ -37,6 +37,7 @@ void Map::DBMapLayer::ClearDB()
 		DEL_CLASS(vec);
 	}
 	this->vecMap.Clear();
+	this->objCondition.Delete();
 }
 
 void *Map::DBMapLayer::InitNameArr()
@@ -71,6 +72,7 @@ Map::DBMapLayer::DBMapLayer(NN<Text::String> layerName) : Map::MapDrawLayer(laye
 	this->zCol = INVALID_INDEX;
 	this->tabDef = 0;
 	this->mixedData = MixedData::AllData;
+	this->objCondition = 0;
 }
 
 Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
@@ -86,6 +88,7 @@ Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layer
 	this->zCol = INVALID_INDEX;
 	this->tabDef = 0;
 	this->mixedData = MixedData::AllData;
+	this->objCondition = 0;
 }
 
 Map::DBMapLayer::~DBMapLayer()
@@ -598,4 +601,10 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 		this->releaseDB = false;
 		return false;
 	}
+}
+
+void Map::DBMapLayer::SetObjCondition(Optional<Data::QueryConditions> condition)
+{
+	this->objCondition.Delete();
+	this->objCondition = condition;
 }

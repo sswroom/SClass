@@ -40,7 +40,7 @@ Bool DB::ReadingDB::ChangeDatabase(Text::CStringNN databaseName)
 	return false;
 }
 
-Text::String *DB::ReadingDB::GetCurrDBName()
+Optional<Text::String> DB::ReadingDB::GetCurrDBName()
 {
 	return 0;
 }

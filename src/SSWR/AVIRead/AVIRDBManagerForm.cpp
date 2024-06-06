@@ -192,6 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapTableSelChg(AnyType userOb
 				me->mapMain->PanToMapXY(center);
 			}
 		}
+		me->txtMapFilter->SetText(CSTR(""));
 		OnLayerUpdated(me);
 	}
 	OPTSTR_DEL(schemaName);
@@ -216,42 +217,41 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 		if (me->mapDownPos == scnPos)
 		{
 			NN<Map::GetObjectSess> sess;
-			Int64 id;
-			UOSInt i;
-			UOSInt j;
-			UTF8Char sbuff[512];
-			UnsafeArray<UTF8Char> sptr;
+			UOSInt k;
+			UOSInt l;
 			Math::Coord2DDbl mapPt = me->mapMain->ScnXY2MapXY(scnPos);
 			NN<Math::CoordinateSystem> csys = me->mapEnv->GetCoordinateSystem();
 			NN<Math::CoordinateSystem> lyrCSys = me->dbLayer->GetCoordinateSystem();
+			Data::ArrayList<Int64> ids;
 			if (!csys->Equals(lyrCSys))
 			{
 				mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
 			}
 			sess = me->dbLayer->BeginGetObject();
-			id = me->dbLayer->GetNearestObjectId(sess, mapPt, mapPt);
+			me->dbLayer->GetNearestObjectIds(sess, mapPt, ids, mapPt);
 			me->lvMapRecord->ClearItems();
-			if (id == -1)
+			me->cboMapItem->ClearItems();
+			me->mapItemPt = mapPt;
+			if (ids.GetCount() == 0)
 			{
 			}
 			else
 			{
 				Data::ArrayListInt64 arr;
 				Map::NameArray *nameArr;
+				UOSInt nameCol = me->dbLayer->GetNameCol();
 				Text::StringBuilderUTF8 sb;
 				me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
-				i = 0;
-				j = me->dbLayer->GetColumnCnt();
-				while (i < j)
+				k = 0;
+				l = ids.GetCount();
+				while (k < l)
 				{
-					sbuff[0] = 0;
-					sptr = me->dbLayer->GetColumnName(sbuff, i).Or(sbuff);
-					me->lvMapRecord->AddItem(CSTRP(sbuff, sptr), 0);
 					sb.ClearStr();
-					me->dbLayer->GetString(sb, nameArr, id, i);
-					me->lvMapRecord->SetSubItem(i, 1, sb.ToCString());
-					i++;
+					me->dbLayer->GetString(sb, nameArr, ids.GetItem(k), nameCol);
+					me->cboMapItem->AddItem(sb.ToCString(), (void*)ids.GetItem(k));
+					k++;
 				}
+				me->cboMapItem->SetSelectedIndex(0);
 				me->dbLayer->ReleaseNameArr(nameArr);
 			}
 			me->dbLayer->EndGetObject(sess);
@@ -379,7 +379,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnSQLExecClicked(AnyType userOb
 						me->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
 						sb.ClearStr();
 						sb.AppendOSInt(r->GetRowChanged());
-						me->lvSQLResult->AddItem(sb.ToCString(), 0);
+						me->lvSQLResult->AddItem(sb.ToCString(), nullptr);
 					}
 					else
 					{
@@ -503,6 +503,34 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapItemSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	OSInt id = me->cboMapItem->GetSelectedItem().GetOSInt();
+	Data::ArrayListInt64 arr;
+	Map::NameArray *nameArr;
+	Text::StringBuilderUTF8 sb;
+	UOSInt i;
+	UOSInt j;
+	me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(me->mapItemPt, me->mapItemPt), true);
+	me->lvMapRecord->ClearItems();
+	i = 0;
+	j = me->dbLayer->GetColumnCnt();
+	while (i < j)
+	{
+		sbuff[0] = 0;
+		sptr = me->dbLayer->GetColumnName(sbuff, i).Or(sbuff);
+		me->lvMapRecord->AddItem(CSTRP(sbuff, sptr), nullptr);
+		sb.ClearStr();
+		me->dbLayer->GetString(sb, nameArr, id, i);
+		me->lvMapRecord->SetSubItem(i, 1, sb.ToCString());
+		i++;
+	}
+	me->dbLayer->ReleaseNameArr(nameArr);	
+}
+
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 {
 	this->lbDatabase->ClearItems();
@@ -519,7 +547,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	while (it.HasNext())
 	{
 		dbName = it.Next();
-		this->lbDatabase->AddItem(dbName, 0);
+		this->lbDatabase->AddItem(dbName, nullptr);
 	}
 	currDB->ReleaseDatabaseNames(dbNames);
 }
@@ -540,16 +568,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSchemaList()
 	currDB->QuerySchemaNames(schemaNames);
 	if (schemaNames.GetCount() == 0)
 	{
-		this->lbSchema->AddItem(CSTR(""), 0);
-		this->lbMapSchema->AddItem(CSTR(""), 0);
+		this->lbSchema->AddItem(CSTR(""), nullptr);
+		this->lbMapSchema->AddItem(CSTR(""), nullptr);
 	}
 	i = 0;
 	j = schemaNames.GetCount();
 	while (i < j)
 	{
 		NN<Text::String> schemaName = Text::String::OrEmpty(schemaNames.GetItem(i));
-		this->lbSchema->AddItem(schemaName, 0);
-		this->lbMapSchema->AddItem(schemaName, 0);
+		this->lbSchema->AddItem(schemaName, nullptr);
+		this->lbMapSchema->AddItem(schemaName, nullptr);
 		i++;
 	}
 
@@ -576,7 +604,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	while (i < j)
 	{
 		tableName = Text::String::OrEmpty(tableNames.GetItem(i));
-		this->lbTable->AddItem(tableName, 0);
+		this->lbTable->AddItem(tableName, nullptr);
 		i++;
 	}
 	tableNames.FreeAll();
@@ -600,7 +628,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateMapTableList()
 	while (it.HasNext())
 	{
 		tableName = it.Next();
-		this->lbMapTable->AddItem(tableName, 0);
+		this->lbMapTable->AddItem(tableName, nullptr);
 	}
 	tableNames.FreeAll();
 }
@@ -636,7 +664,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 			while (it.HasNext())
 			{
 				col = it.Next();
-				k = this->lvTable->AddItem(col->GetColName(), 0);
+				k = this->lvTable->AddItem(col->GetColName(), nullptr);
 				sptr = col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				if (col->GetNativeType().SetTo(s))
@@ -670,7 +698,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 			while (i < j)
 			{
 				r->GetColDef(i, col);
-				k = this->lvTable->AddItem(col.GetColName(), 0);
+				k = this->lvTable->AddItem(col.GetColName(), nullptr);
 				sptr = col.ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				if (col.GetNativeType().SetTo(s))
@@ -734,7 +762,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(NN<DB::DBReader> r, NN<UI::G
 		r->GetStr(0, sb);
 		if (sb.GetLength() > colSize[0])
 			colSize[0] = sb.GetLength();
-		k = lv->AddItem(sb.ToCString(), 0);
+		k = lv->AddItem(sb.ToCString(), nullptr);
 		while (i < j)
 		{
 			sb.ClearStr();
@@ -786,7 +814,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateVariableList()
 		while (i < j)
 		{
 			item = vars.GetItem(i);
-			this->lvVariable->AddItem(Text::String::OrEmpty(item.key), 0);
+			this->lvVariable->AddItem(Text::String::OrEmpty(item.key), nullptr);
 			if (item.value.SetTo(s)) this->lvVariable->SetSubItem(i, 1, s);
 			i++;
 		}
@@ -838,7 +866,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<T
 		this->lvSQLResult->AddColumn(CSTR("Row Changed"), 100);
 		this->sqlFileMode = true;
 	}
-	rowInd = this->lvSQLResult->AddItem(fileName->ToCString().Substring(i + 1), 0);
+	rowInd = this->lvSQLResult->AddItem(fileName->ToCString().Substring(i + 1), nullptr);
 	this->lvSQLResult->SetSubItem(rowInd, 1, CSTR("0"));
 	this->ui->ProcessMessages();
 	Text::StringBuilderUTF8 sb;
@@ -1235,6 +1263,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->currDB = 0;
 	this->currCond = 0;
 	this->sqlFileMode = false;
+	this->mapItemPt = Math::Coord2DDbl(0, 0);
 	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateWGS84Csys()));
 	NN<Map::MapDrawLayer> layer;
 	if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(layer))
@@ -1335,13 +1364,33 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->pnlMap->SetRect(0, 0, 250, 23, false);
 	this->pnlMap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspMap = ui->NewHSplitter(this->tpMap, 3, false);
-	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, this->tpMap, this->core->GetDrawEngine(), this->mapEnv, this->colorSess));
+	NEW_CLASSNN(this->mapMain, UI::GUIMapControl(ui, this->tpMap, this->core->GetDrawEngine(), this->mapEnv, this->colorSess));
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mapMain->HandleMouseDown(OnMapMouseDown, this);
 	this->mapMain->HandleMouseUp(OnMapMouseUp, this);
 	this->pnlMapTable = ui->NewPanel(this->pnlMap);
 	this->pnlMapTable->SetRect(0, 0, 100, 100, false);
 	this->pnlMapTable->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMapFilter = ui->NewPanel(this->pnlMap);
+	this->pnlMapFilter->SetRect(0, 0, 100, 24, false);
+	this->pnlMapFilter->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->pnlMapItem = ui->NewPanel(this->pnlMap);
+	this->pnlMapItem->SetRect(0, 0, 100, 24, false);
+	this->pnlMapItem->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblMapFilter = ui->NewLabel(this->pnlMapFilter, CSTR("Filter"));
+	this->lblMapFilter->SetRect(0, 0, 50, 23, false);
+	this->lblMapFilter->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->btnMapFilter = ui->NewButton(this->pnlMapFilter, CSTR("Filter"));
+	this->btnMapFilter->SetRect(0, 0, 75, 23, false);
+	this->btnMapFilter->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->txtMapFilter = ui->NewTextBox(this->pnlMapFilter, CSTR(""));
+	this->txtMapFilter->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lblMapItem = ui->NewLabel(this->pnlMapItem, CSTR("Item"));
+	this->lblMapItem->SetRect(0, 0, 50, 23, false);
+	this->lblMapItem->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->cboMapItem = ui->NewComboBox(this->pnlMapItem, false);
+	this->cboMapItem->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->cboMapItem->HandleSelectionChange(OnMapItemSelChg, this);
 	this->vspMapRecord = ui->NewVSplitter(this->pnlMap, 3, false);
 	this->lvMapRecord = ui->NewListView(this->pnlMap, UI::ListViewStyle::Table, 2);
 	this->lvMapRecord->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1678,7 +1727,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 			Optional<Text::String> tableName = this->lbTable->GetSelectedItemTextNew();
-			Text::String *databaseName = 0;
+			Optional<Text::String> databaseName = 0;
 			NN<Text::String> nntableName;
 			if (!tableName.SetTo(nntableName))
 			{

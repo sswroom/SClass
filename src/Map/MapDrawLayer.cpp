@@ -132,7 +132,7 @@ UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 	return 1;
 }
 
-Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::DBReader> r;
 	NEW_CLASSNN(r, Map::MapLayerReader(*this));
@@ -427,6 +427,52 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(NN<GetObjectSess> session, Math::Coo
 	}
 	nearPt.Set(near);
 	return nearObjId;
+}
+
+void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coord2DDbl pt, NN<Data::ArrayList<Int64>> ids, OptOut<Math::Coord2DDbl> nearPt)
+{
+	Data::ArrayListInt64 objIds;
+	Int32 blkSize = this->CalBlockSize();
+	if (pt.x > 180 || pt.x < -180)
+	{
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt - blkSize, pt + blkSize), true);
+	}
+	else
+	{
+		this->GetObjectIdsMapXY(objIds, 0, Math::RectAreaDbl(pt.x - (blkSize / 200000.0), pt.y - (blkSize / 200000.0), (blkSize / 200000.0 * 2), (blkSize / 200000.0 * 2)), true);
+	}
+
+	UOSInt i = objIds.GetCount();
+	Int64 nearObjId = -1;
+	Double minDist = 0x7fffffff;
+	Double dist;
+	Int64 id;
+	Math::Coord2DDbl currPt;
+	Math::Coord2DDbl near = Math::Coord2DDbl(0, 0);
+
+	while (i-- > 0)
+	{
+		NN<Math::Geometry::Vector2D> vec;
+		id = objIds.GetItem(i);
+		if (this->GetNewVectorById(session, id).SetTo(vec))
+		{
+			dist = vec->CalSqrDistance(pt, currPt);
+			if (dist < minDist)
+			{
+				ids->Clear();
+				ids->Add(id);
+				nearObjId = id;
+				near = currPt;
+				minDist = dist;
+			}
+			else if (dist == minDist)
+			{
+				ids->Add(objIds.GetItem(i));
+			}
+			vec.Delete();
+		}
+	}
+	nearPt.Set(near);
 }
 
 OSInt Map::MapDrawLayer::GetNearObjects(NN<GetObjectSess> session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)

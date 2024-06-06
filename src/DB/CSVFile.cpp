@@ -71,7 +71,7 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 1;
 }
 
-Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<IO::Stream> stm;
 	if (stm.Set(this->stm))
@@ -160,7 +160,7 @@ void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
 	this->nullIfEmpty = nullIfEmpty;
 }
 
-DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition)
+DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Optional<Data::QueryConditions> condition)
 {
 	this->stm = stm;
 	this->rdr = rdr;
@@ -375,7 +375,8 @@ Bool DB::CSVReader::ReadNext()
 				currPtr++;
 			}
 		}
-		if (this->condition == 0 || this->condition->IsValid(*this))
+		NN<Data::QueryConditions> nncondition;
+		if (!this->condition.SetTo(nncondition) || nncondition->IsValid(*this))
 		{
 			this->nCol = nCol;
 			return true;

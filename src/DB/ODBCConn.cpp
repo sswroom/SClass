@@ -1010,7 +1010,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1025,13 +1025,14 @@ Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Te
 			sb.AppendUTF8Char(' ');
 		}
 	}
-	if (columnNames == 0 || columnNames->GetCount() == 0)
+	NN<Data::ArrayListStringNN> nncolumnName;
+	if (!columnNames.SetTo(nncolumnName) || nncolumnName->GetCount() == 0)
 	{
 		sb.AppendC(UTF8STRC("*"));
 	}
 	else
 	{
-		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nncolumnName->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{

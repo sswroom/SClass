@@ -51,7 +51,7 @@ namespace DB
 		virtual void Reconnect();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 //		virtual DBReader *ExecuteReader(const WChar *sql);
 		virtual void CloseReader(NN<DBReader> r);

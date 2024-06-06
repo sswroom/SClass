@@ -314,14 +314,16 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayIterator<NN<Text::String>> it;
+	NN<Data::ArrayListStringNN> nncolumnName;
+	NN<Data::QueryConditions> nncondition;
 	sb.AppendC(UTF8STRC("select "));
-	if (columnNames != 0 && (it = columnNames->Iterator()).HasNext())
+	if (columnNames.SetTo(nncolumnName) && (it = nncolumnName->Iterator()).HasNext())
 	{
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, it.Next()->v, DB::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
@@ -346,11 +348,11 @@ Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, T
 	}
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::MySQL);
 	sb.AppendP(sbuff, sptr);
-	if (condition)
+	if (condition.SetTo(nncondition))
 	{
 		sb.AppendC(UTF8STRC(" where "));
 		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
-		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
+		nncondition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
 	}
 	if (ordering.SetTo(nns) && nns.leng > 0)
 	{

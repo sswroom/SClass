@@ -79,7 +79,7 @@ UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	}
 }
 
-Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::DBReader> reader;
 	if (tableName.Equals(UTF8STRC("StationSetup")))

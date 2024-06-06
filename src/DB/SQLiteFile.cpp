@@ -246,20 +246,21 @@ UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayL
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sb.AppendC(UTF8STRC("select "));
-	if (columnNames == 0 || columnNames->GetCount() == 0)
+	NN<Data::ArrayListStringNN> nncolumnNames;
+	if (!columnNames.SetTo(nncolumnNames) || nncolumnNames->GetCount() == 0)
 	{
 		sb.AppendC(UTF8STRC("*"));
 	}
 	else
 	{
 		Bool found = false;
-		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nncolumnNames->Iterator();
 		while (it.HasNext())
 		{
 			if (found) sb.AppendC(UTF8STRC(","));

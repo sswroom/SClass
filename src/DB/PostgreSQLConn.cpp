@@ -1004,19 +1004,20 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
-	if (columnNames == 0 || columnNames->GetCount() == 0)
+	NN<Data::ArrayListStringNN> nncolumnNames;
+	if (!columnNames.SetTo(nncolumnNames) || nncolumnNames->GetCount() == 0)
 	{
 		sb.AppendC(UTF8STRC("*"));
 	}
 	else
 	{
-		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nncolumnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{
@@ -1037,11 +1038,12 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 	}
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::PostgreSQL);
 	sb.AppendP(sbuff, sptr);
-	if (condition)
+	NN<Data::QueryConditions> nncondition;
+	if (condition.SetTo(nncondition))
 	{
 		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
+		nncondition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
 	}
 	Text::CStringNN nnordering;
 	if (ordering.SetTo(nnordering) && nnordering.leng > 0)

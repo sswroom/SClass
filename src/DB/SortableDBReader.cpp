@@ -17,14 +17,16 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(col->GetColName()->v);
 }
 
-DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	this->currIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;
 	DB::ColDef colDef(CSTR(""));
 	NN<Data::VariObject> obj;
-	if (colNames == 0 || colNames->GetCount() == 0)
+	NN<Data::ArrayListStringNN> nncolNames;
+	NN<Data::QueryConditions> nncondition;
+	if (!colNames.SetTo(nncolNames) || nncolNames->GetCount() == 0)
 	{
 		NN<DB::DBReader> r;
 		if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
@@ -45,7 +47,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		while (r->ReadNext())
 		{
 			obj = r->CreateVariObject();
-			if (condition == 0 || condition->IsValid(obj))
+			if (!condition.SetTo(nncondition) || nncondition->IsValid(obj))
 			{
 				this->objList.Add(obj);
 			}
@@ -60,20 +62,20 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	{
 		Data::ArrayListStringNN dbColNames;
 		i = 0;
-		j = colNames->GetCount();
+		j = nncolNames->GetCount();
 		while (i < j)
 		{
 			NN<Text::String> colName;
-			if (colNames->GetItem(i).SetTo(colName) && dbColNames.SortedIndexOf(colName) < 0)
+			if (nncolNames->GetItem(i).SetTo(colName) && dbColNames.SortedIndexOf(colName) < 0)
 			{
 				dbColNames.SortedInsert(colName);
 			}
 			i++;
 		}
-		if (condition)
+		if (condition.SetTo(nncondition))
 		{
 			Data::ArrayListStringNN condColNames;
-			condition->GetFieldList(condColNames);
+			nncondition->GetFieldList(condColNames);
 			i = 0;
 			j = condColNames.GetCount();
 			while (i < j)
@@ -106,7 +108,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		while (r->ReadNext())
 		{
 			obj = r->CreateVariObject();
-			if (condition == 0 || condition->IsValid(obj))
+			if (!condition.SetTo(nncondition) || nncondition->IsValid(obj))
 			{
 				this->objList.Add(obj);
 			}
@@ -118,7 +120,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		db->CloseReader(r);
 
 		DB::ColDef *col;
-		Data::ArrayIterator<NN<Text::String>> it = colNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nncolNames->Iterator();
 		while (it.HasNext())
 		{
 			col = tmpCols.GetNN(it.Next());

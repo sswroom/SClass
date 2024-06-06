@@ -23,7 +23,8 @@ namespace Map
 		Optional<DB::TableDef> tabDef;
 		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
 		MixedData mixedData;
-
+		Optional<Data::QueryConditions> objCondition;
+		
 		void ClearDB();
 		void *InitNameArr();
 	public:
@@ -60,6 +61,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const;
 
 		Bool SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Bool releaseDB);
+		void SetObjCondition(Optional<Data::QueryConditions> condition);
 	};
 }
 #endif

@@ -200,16 +200,17 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		{
 			DB::ReadingDBTool *dbt = (DB::ReadingDBTool*)me->dataConn;
 			DB::Collation collation;
-			Text::String *dbName = dbt->GetCurrDBName();
-			me->txtSourceDB->SetText(dbName->ToCString());
-			if (dbt->GetDBCollation(dbName->ToCString(), collation))
+			Optional<Text::String> dbName = dbt->GetCurrDBName();
+			Text::CStringNN sdbName = OPTSTR_CSTR(dbName).OrEmpty();
+			me->txtSourceDB->SetText(sdbName);
+			if (dbt->GetDBCollation(sdbName, collation))
 			{
-				if (!destDBTool->CreateDatabase(dbName->ToCString(), &collation))
+				if (!destDBTool->CreateDatabase(sdbName, &collation))
 				{
 					me->ui->ShowMsgOK(CSTR("Error in creating database"), CSTR("Copy Tables"), me);
 					return;
 				}
-				if (!destDBTool->ChangeDatabase(dbName->ToCString()))
+				if (!destDBTool->ChangeDatabase(sdbName))
 				{
 					me->ui->ShowMsgOK(CSTR("Error in changing to new database"), CSTR("Copy Tables"), me);
 					return;

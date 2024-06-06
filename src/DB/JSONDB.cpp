@@ -257,7 +257,7 @@ UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 	return 1;
 }
 
-Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::TableDef> tabDef;
 	if (tableName.Equals(this->layerName->ToCString()) && this->GetTableDef(schemaName, tableName).SetTo(tabDef))

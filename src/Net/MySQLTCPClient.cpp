@@ -2432,20 +2432,22 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NN<Data::A
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	Text::CStringNN nns;
+	NN<Data::ArrayListStringNN> nncolumnNames;
+	NN<Data::QueryConditions> nncondition;
 	sb.AppendC(UTF8STRC("select "));
-	if (columnNames == 0 || columnNames->GetCount() == 0)
+	if (!columnNames.SetTo(nncolumnNames) || nncolumnNames->GetCount() == 0)
 	{
 		sb.AppendC(UTF8STRC("*"));
 	}
 	else
 	{
-		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nncolumnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{
@@ -2465,11 +2467,11 @@ Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaN
 	}
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::MySQL);
 	sb.AppendP(sbuff, sptr);
-	if (condition)
+	if (condition.SetTo(nncondition))
 	{
 		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
 		sb.AppendC(UTF8STRC(" where "));
-		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
+		nncondition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
 	}
 	if (ordering.SetTo(nns) && nns.leng > 0)
 	{

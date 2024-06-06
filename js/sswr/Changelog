@@ -6,6 +6,7 @@
 -Added data.Weekday enum
 -Added data.DateTimeUtil.ticks2Weekday()
 -Added data.LocalDate.getWeekday()
+-Added data.StringMap and data.NumberMap interface type
 
 1.6.3
 -Added hash.MD5

@@ -1044,11 +1044,12 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 0;
 }
 
-Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
+	NN<Data::ArrayListStringNN> nncolumnNames;
 	sb.AppendC(UTF8STRC("select "));
 	if (this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access)
 	{
@@ -1059,13 +1060,13 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 			sb.AppendUTF8Char(' ');
 		}
 	}
-	if (columnNames == 0 || columnNames->GetCount() == 0)
+	if (!columnNames.SetTo(nncolumnNames) || nncolumnNames->GetCount() == 0)
 	{
 		sb.AppendC(UTF8STRC("*"));
 	}
 	else
 	{
-		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nncolumnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{

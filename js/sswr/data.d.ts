@@ -9,6 +9,14 @@ export enum Weekday
 	Saturday
 }
 
+interface StringMap<Type> {
+	[key: string]: Type;
+}
+
+interface NumberMap<Type> {
+	[key: number]: Type;
+}
+
 export function isArray(o: any): boolean;
 export function isObject(o: any): boolean;
 export function toObjectString(o: any, lev: number): string;

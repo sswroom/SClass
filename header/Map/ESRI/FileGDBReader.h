@@ -25,7 +25,7 @@ namespace Map
 			UOSInt dataOfst;
 			UOSInt maxCnt;
 			UInt32 maxRowSize;
-			Data::QueryConditions *conditions;
+			Optional<Data::QueryConditions> conditions;
 
 			UOSInt indexCnt;
 			UOSInt indexNext;
@@ -33,7 +33,7 @@ namespace Map
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize);
+			FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UOSInt dataOfst, UOSInt maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();

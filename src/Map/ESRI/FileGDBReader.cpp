@@ -33,7 +33,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize)
+Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Optional<Data::ArrayListStringNN> columnNames, UOSInt dataOfst, UOSInt maxCnt, Optional<Data::QueryConditions> conditions, UInt32 maxRowSize)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -56,17 +56,18 @@ Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<F
 	}
 	this->columnIndices = 0;
 	this->conditions = conditions;
-	if (columnNames)
+	NN<Data::ArrayListStringNN> nncolumnNames;
+	if (columnNames.SetTo(nncolumnNames))
 	{
 		NEW_CLASS(this->columnIndices, Data::ArrayList<UOSInt>());
 		UOSInt i = 0;
-		UOSInt j = columnNames->GetCount();
+		UOSInt j = nncolumnNames->GetCount();
 		UOSInt k = 0;
 		while (i < j)
 		{
 			Bool found = false;
 			NN<Text::String> name;
-			if (columnNames->GetItem(i).SetTo(name))
+			if (nncolumnNames->GetItem(i).SetTo(name))
 			{
 				k = this->tableInfo->fields->GetCount();
 				while (k-- > 0)
@@ -100,6 +101,7 @@ Map::ESRI::FileGDBReader::~FileGDBReader()
 
 Bool Map::ESRI::FileGDBReader::ReadNext()
 {
+	NN<Data::QueryConditions> nncondition;
 	UInt8 sizeBuff[4];
 	this->rowData.Delete();
 	if (this->indexBuff.GetSize() > 0)
@@ -134,7 +136,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				{
 					return false;
 				}
-				if (conditions && !conditions->IsValid(*this))
+				if (conditions.SetTo(nncondition) && !nncondition->IsValid(*this))
 				{
 				}
 				else
@@ -186,7 +188,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				return false;
 			}
 			this->objectId++;
-			if (conditions && !conditions->IsValid(*this))
+			if (conditions.SetTo(nncondition) && !nncondition->IsValid(*this))
 			{
 			}
 			else

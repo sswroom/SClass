@@ -98,7 +98,7 @@ namespace DB
 
 		UInt32 GetDataCnt();
 
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr);
 		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> arr);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
@@ -106,7 +106,7 @@ namespace DB
 		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual Bool ChangeDatabase(Text::CStringNN databaseName);
-		virtual Text::String *GetCurrDBName();
+		virtual Optional<Text::String> GetCurrDBName();
 		Bool GetDBCollation(Text::CStringNN databaseName, NN<Collation> collation);
 
 		UOSInt GetVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);

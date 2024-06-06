@@ -14,6 +14,21 @@ struct AnyType
 		this->p = p;
 	}
 
+/*	AnyType(std::nullptr_t)
+	{
+		this->p = 0;
+	}
+
+	AnyType(OSInt p)
+	{
+		this->p = (void*)p;
+	}
+
+	AnyType(UOSInt p)
+	{
+		this->p = (void*)p;
+	}*/
+
 	template<typename T> AnyType(NN<T> p)
 	{
 		this->p = p.Ptr();

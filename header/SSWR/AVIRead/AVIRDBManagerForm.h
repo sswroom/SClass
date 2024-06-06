@@ -62,8 +62,15 @@ namespace SSWR
 			NN<UI::GUITabPage> tpMap;
 			NN<UI::GUIPanel> pnlMap;
 			NN<UI::GUIHSplitter> hspMap;
-			UI::GUIMapControl *mapMain;
+			NN<UI::GUIMapControl> mapMain;
 			NN<UI::GUIPanel> pnlMapTable;
+			NN<UI::GUIPanel> pnlMapFilter;
+			NN<UI::GUIPanel> pnlMapItem;
+			NN<UI::GUILabel> lblMapFilter;
+			NN<UI::GUIButton> btnMapFilter;
+			NN<UI::GUITextBox> txtMapFilter;
+			NN<UI::GUILabel> lblMapItem;
+			NN<UI::GUIComboBox> cboMapItem;
 			NN<UI::GUIVSplitter> vspMapRecord;
 			NN<UI::GUIListView> lvMapRecord;
 			NN<UI::GUIListBox> lbMapSchema;
@@ -96,6 +103,7 @@ namespace SSWR
 			NN<Map::MapEnv> mapEnv;
 			NN<Map::DBMapLayer> dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;
+			Math::Coord2DDbl mapItemPt;
 			Bool sqlFileMode;
 
 			static void __stdcall OnConnSelChg(AnyType userObj);
@@ -119,6 +127,7 @@ namespace SSWR
 			static void __stdcall OnSvrConnClicked(AnyType userObj);
 			static void __stdcall OnSvrConnKillClicked(AnyType userObj);
 			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
+			static void __stdcall OnMapItemSelChg(AnyType userObj);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();

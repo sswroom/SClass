@@ -246,7 +246,7 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayL
 	return this->wb->GetCount();
 }
 
-Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	NN<DB::TableDef> tabDef;
