@@ -98,12 +98,13 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
 			Optional<DB::ReadingDB> currDB;
-			Data::QueryConditions *currCond;
+			Optional<Data::QueryConditions> currCond;
 			NN<Media::ColorManagerSess> colorSess;
 			NN<Map::MapEnv> mapEnv;
 			NN<Map::DBMapLayer> dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;
 			Math::Coord2DDbl mapItemPt;
+			Optional<Data::QueryConditions> mapCond;
 			Bool sqlFileMode;
 
 			static void __stdcall OnConnSelChg(AnyType userObj);
@@ -128,6 +129,7 @@ namespace SSWR
 			static void __stdcall OnSvrConnKillClicked(AnyType userObj);
 			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnMapItemSelChg(AnyType userObj);
+			static void __stdcall OnMapFilterClicked(AnyType userObj);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();

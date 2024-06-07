@@ -306,6 +306,9 @@ public:
 		case 16: //bool
 			item->SetBool(PQgetvalue(this->res, this->currrow, (int)colIndex)[0] == 't');
 			return true;
+		case 1560: //bit
+			item->SetBool(Text::StrToInt32Ch(PQgetvalue(this->res, this->currrow, (int)colIndex)) != 0);
+			return true;
 		case 19: //name
 		case 24: //regproc
 		case 25: //text

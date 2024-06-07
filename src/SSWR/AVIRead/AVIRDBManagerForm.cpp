@@ -531,6 +531,39 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapItemSelChg(AnyType userObj
 	me->dbLayer->ReleaseNameArr(nameArr);	
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapFilterClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	NN<DB::ReadingDB> currDB;
+	if (!me->currDB.SetTo(currDB) || !currDB->IsDBTool())
+	{
+		return;
+	}
+	NN<DB::ReadingDBTool> db = NN<DB::ReadingDBTool>::ConvertFrom(currDB);
+	Text::StringBuilderUTF8 sb;
+	if (!me->txtMapFilter->GetText(sb))
+	{
+		me->ui->ShowMsgOK(CSTR("Error in getting MapFilter"), CSTR("DB Manager"), me);
+		return;
+	}
+	if (sb.leng == 0)
+	{
+		me->dbLayer->SetObjCondition(0);
+		OnLayerUpdated(me);
+		return;
+	}
+	NN<Data::QueryConditions> cond;
+	if (Data::QueryConditions::ParseStr(sb.ToCString(), db->GetSQLType()).SetTo(cond))
+	{
+		me->dbLayer->SetObjCondition(cond);
+		OnLayerUpdated(me);
+	}
+	else
+	{
+		me->ui->ShowMsgOK(CSTR("Error in parsing MapFilter"), CSTR("DB Manager"), me);
+	}
+}
+
 void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 {
 	this->lbDatabase->ClearItems();
@@ -1383,6 +1416,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->btnMapFilter = ui->NewButton(this->pnlMapFilter, CSTR("Filter"));
 	this->btnMapFilter->SetRect(0, 0, 75, 23, false);
 	this->btnMapFilter->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->btnMapFilter->HandleButtonClick(OnMapFilterClicked, this);
 	this->txtMapFilter = ui->NewTextBox(this->pnlMapFilter, CSTR(""));
 	this->txtMapFilter->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblMapItem = ui->NewLabel(this->pnlMapItem, CSTR("Item"));
@@ -1550,7 +1584,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 		ctrl = this->dbList.GetItemNoCheck(i);
 		ctrl.Delete();
 	}
-	SDEL_CLASS(this->currCond);
+	this->currCond.Delete();
 	this->ssl.Delete();
 }
 

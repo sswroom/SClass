@@ -434,6 +434,10 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				{
 					col->SetColType(DB::DBUtil::CT_Bool);
 				}
+				else if (s->Equals(UTF8STRC("bit")))
+				{
+					col->SetColType(DB::DBUtil::CT_Bool);
+				}
 				else if (s->Equals(UTF8STRC("int2")))
 				{
 					col->SetColType(DB::DBUtil::CT_Int16);

@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_DBMAPLAYER
 #define _SM_MAP_DBMAPLAYER
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "DB/DBTool.h"
 #include "Map/MapDrawLayer.h"
 
@@ -10,7 +10,7 @@ namespace Map
 	{
 	private:
 		Bool releaseDB;
-		DB::ReadingDB *db;
+		Optional<DB::ReadingDB> db;
 		Optional<Text::String> schema;
 		NN<Text::String> table;
 		Math::Coord2DDbl min;
@@ -21,12 +21,12 @@ namespace Map
 		UOSInt yCol;
 		UOSInt zCol;
 		Optional<DB::TableDef> tabDef;
-		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
+		Data::FastMapNN<Int64, Math::Geometry::Vector2D> vecMap;
 		MixedData mixedData;
 		Optional<Data::QueryConditions> objCondition;
 		
 		void ClearDB();
-		void *InitNameArr();
+		NameArray *InitNameArr();
 	public:
 		DBMapLayer(NN<Text::String> layerName);
 		DBMapLayer(Text::CStringNN layerName);
@@ -52,7 +52,7 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 		
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);

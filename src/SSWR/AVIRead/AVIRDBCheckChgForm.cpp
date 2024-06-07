@@ -451,14 +451,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Data::QueryConditions *srcDBCond = 0;
-	Data::QueryConditions *dataDBCond = 0;
+	Optional<Data::QueryConditions> srcDBCond = 0;
+	Optional<Data::QueryConditions> dataDBCond = 0;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
 		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
-		if (srcDBCond == 0)
+		if (srcDBCond.IsNull())
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
 			return false;
@@ -469,9 +469,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	if (sbFilter.GetLength() > 0)
 	{
 		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
-		if (dataDBCond == 0)
+		if (dataDBCond.IsNull())
 		{
-			SDEL_CLASS(srcDBCond);
+			srcDBCond.Delete();
 			this->ui->ShowMsgOK(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
 			return false;
 		}
@@ -481,8 +481,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	NN<DB::TableDef> table;;
 	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
-		SDEL_CLASS(srcDBCond);
-		SDEL_CLASS(dataDBCond);
+		srcDBCond.Delete();
+		dataDBCond.Delete();
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
@@ -500,15 +500,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
 	{
-		SDEL_CLASS(srcDBCond);
-		SDEL_CLASS(dataDBCond);
+		srcDBCond.Delete();
+		dataDBCond.Delete();
 		table.Delete();
 		return false;
 	}
 	if (!dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, dataDBCond).SetTo(r))
 	{
-		SDEL_CLASS(srcDBCond);
-		SDEL_CLASS(dataDBCond);
+		srcDBCond.Delete();
+		dataDBCond.Delete();
 		table.Delete();
 		this->ui->ShowMsgOK(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
 		return false;
@@ -532,8 +532,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			dataFile->CloseReader(r);
 			table.Delete();
-			SDEL_CLASS(srcDBCond);
-			SDEL_CLASS(dataDBCond);
+			srcDBCond.Delete();
+			dataDBCond.Delete();
 			return false;
 		}
 	}
@@ -544,8 +544,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			dataFile->CloseReader(r);
 			table.Delete();
-			SDEL_CLASS(srcDBCond);
-			SDEL_CLASS(dataDBCond);
+			srcDBCond.Delete();
+			dataDBCond.Delete();
 			return false;
 		}
 	}
@@ -918,8 +918,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		MemFree(rowData);
 	}
 	table.Delete();
-	SDEL_CLASS(srcDBCond);
-	SDEL_CLASS(dataDBCond);
+	srcDBCond.Delete();
+	dataDBCond.Delete();
 	if (succ)
 	{
 		sptr = Text::StrUOSInt(sbuff, dataFileRowCnt);
@@ -955,14 +955,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		this->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	Data::QueryConditions *srcDBCond = 0;
-	Data::QueryConditions *dataDBCond = 0;
+	Optional<Data::QueryConditions> srcDBCond = 0;
+	Optional<Data::QueryConditions> dataDBCond = 0;
 	Text::StringBuilderUTF8 sbFilter;
 	this->txtSrcFilter->GetText(sbFilter);
 	if (sbFilter.GetLength() > 0)
 	{
 		srcDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
-		if (srcDBCond == 0)
+		if (srcDBCond.IsNull())
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing source filter"), CSTR("Check Table Changes"), this);
 			return false;
@@ -973,10 +973,10 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	if (sbFilter.GetLength() > 0)
 	{
 		dataDBCond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), this->GetDBSQLType());
-		if (dataDBCond == 0)
+		if (dataDBCond.IsNull())
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing data filter"), CSTR("Check Table Changes"), this);
-			SDEL_CLASS(srcDBCond);
+			srcDBCond.Delete();
 			return false;
 		}
 	}
@@ -984,8 +984,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
-		SDEL_CLASS(srcDBCond);
-		SDEL_CLASS(dataDBCond);
+		srcDBCond.Delete();
+		dataDBCond.Delete();
 		return false;
 	}
 	Bool succ = true;
@@ -1043,16 +1043,16 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
 	{
-		SDEL_CLASS(srcDBCond);
-		SDEL_CLASS(dataDBCond);
+		srcDBCond.Delete();
+		dataDBCond.Delete();
 		table.Delete();
 		return false;
 	}
 	if (!dataFile->QueryTableData(CSTR_NULL, sbTable.ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		table.Delete();
-		SDEL_CLASS(srcDBCond);
-		SDEL_CLASS(dataDBCond);
+		srcDBCond.Delete();
+		dataDBCond.Delete();
 		this->ui->ShowMsgOK(CSTR("Error in reading data file"), CSTR("Check Table Changes"), this);
 		return false;
 	}
@@ -1074,8 +1074,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			this->ui->ShowMsgOK(CSTR("Column Count does not match"), CSTR("Check Table Changes"), this);
 			dataFile->CloseReader(r);
 			table.Delete();
-			SDEL_CLASS(srcDBCond);
-			SDEL_CLASS(dataDBCond);
+			srcDBCond.Delete();
+			dataDBCond.Delete();
 			return false;
 		}
 	}
@@ -1086,8 +1086,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			this->ui->ShowMsgOK(CSTR("Key Column not found in data file"), CSTR("Check Table Changes"), this);
 			dataFile->CloseReader(r);
 			table.Delete();
-			SDEL_CLASS(srcDBCond);
-			SDEL_CLASS(dataDBCond);
+			srcDBCond.Delete();
+			dataDBCond.Delete();
 			return false;
 		}
 	}
@@ -1839,8 +1839,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		}
 		MemFree(rowData);
 	}
-	SDEL_CLASS(srcDBCond);
-	SDEL_CLASS(dataDBCond);
+	srcDBCond.Delete();
+	dataDBCond.Delete();
 	table.Delete();
 	return succ;
 }

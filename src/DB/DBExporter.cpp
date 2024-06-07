@@ -30,7 +30,7 @@ Optional<Data::Class> DB::DBExporter::CreateTableClass(NN<DB::ReadingDB> db, Tex
 	return 0;
 }
 
-Bool DB::DBExporter::GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm)
+Bool DB::DBExporter::GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::Stream> outStm)
 {
 	DB::SQLBuilder sql(sqlType, axisAware, 0);
 	NN<DB::DBReader> r;
@@ -53,7 +53,7 @@ Bool DB::DBExporter::GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlTyp
 	return true;
 }
 
-Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::CStringNN nullText, NN<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, Text::CStringNN nullText, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
@@ -152,21 +152,21 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 	return true;
 }
 
-Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<DB::SQLiteFile> file, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<DB::SQLiteFile> file, Optional<Text::StringBuilderUTF8> sbError)
 {
 	NN<Text::StringBuilderUTF8> sb;
 	NN<DB::TableDef> table;
 	if (!db->GetTableDef(schema, tableName).SetTo(table))
 	{
-		if (sbError)
-			sbError->Append(CSTR("Error in getting table definition"));
+		if (sbError.SetTo(sb))
+			sb->Append(CSTR("Error in getting table definition"));
 		return false;
 	}
 	DB::SQLBuilder sql(file->GetSQLType(), false, file->GetTzQhr());
 	DB::SQLGenerator::GenCreateTableCmd(sql, CSTR_NULL, tableName, table, false);
 	if (file->ExecuteNonQuery(sql.ToCString()) <= -2)
 	{
-		if (sb.Set(sbError))
+		if (sbError.SetTo(sb))
 		{
 			sb->AppendC(UTF8STRC("Error in creating table: "));
 			file->GetLastErrorMsg(sb);
@@ -179,7 +179,7 @@ Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, 
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
-		if (sb.Set(sbError))
+		if (sbError.SetTo(sb))
 		{
 			sb->Append(CSTR("Error in reading table data\r\n"));
 			db->GetLastErrorMsg(sb);
@@ -196,7 +196,7 @@ Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, 
 		DB::SQLGenerator::GenInsertCmd(sql, CSTR_NULL, tableName, table.Ptr(), r);
 		if (file->ExecuteNonQuery(sql.ToCString()) != 1)
 		{
-			if (sb.Set(sbError))
+			if (sbError.SetTo(sb))
 			{
 				sb->AppendC(UTF8STRC("Error in executing cmd: "));
 				file->GetLastErrorMsg(sb);
@@ -216,7 +216,7 @@ Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, 
 	return succ;
 }
 
-Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
@@ -302,7 +302,7 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	return true;
 }
 
-Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
@@ -413,7 +413,7 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 	return true;
 }
 
-Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, Optional<Text::StringBuilderUTF8> sbError)
 {
 	UTF8Char sbuff[4096];
 	UnsafeArray<UTF8Char> sptr;
@@ -422,7 +422,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
-		if (sb.Set(sbError))
+		if (sbError.SetTo(sb))
 		{
 			sb->Append(CSTR("Error in reading table data\r\n"));
 			db->GetLastErrorMsg(sb);
@@ -514,7 +514,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 	return true;
 }
 
-Bool DB::DBExporter::GenerateXLSX(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::GenerateXLSX(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::SeekableStream> outStm, Optional<Text::StringBuilderUTF8> sbError)
 {
 	Text::SpreadSheet::Workbook wb;
 	wb.AddDefaultStyles();
@@ -525,7 +525,7 @@ Bool DB::DBExporter::GenerateXLSX(NN<DB::ReadingDB> db, Text::CString schema, Te
 	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
 }
 
-Bool DB::DBExporter::GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Optional<Data::QueryConditions> cond, NN<IO::SeekableStream> outStm, Optional<Text::StringBuilderUTF8> sbError)
 {
 	Text::SpreadSheet::Workbook wb;
 	wb.AddDefaultStyles();

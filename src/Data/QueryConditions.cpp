@@ -204,9 +204,9 @@ Bool Data::QueryConditions::Int32Condition::TestValid(NN<Data::VariItem> item)
 	return false;
 }
 
-Text::String *Data::QueryConditions::Int32Condition::GetFieldName()
+NN<Text::String> Data::QueryConditions::Int32Condition::GetFieldName()
 {
-	return this->fieldName.Ptr();
+	return this->fieldName;
 }
 
 Int32 Data::QueryConditions::Int32Condition::GetVal()
@@ -407,9 +407,9 @@ Bool Data::QueryConditions::Int64Condition::TestValid(NN<Data::VariItem> item)
 	return false;
 }
 
-Text::String *Data::QueryConditions::Int64Condition::GetFieldName()
+NN<Text::String> Data::QueryConditions::Int64Condition::GetFieldName()
 {
-	return this->fieldName.Ptr();
+	return this->fieldName;
 }
 
 Int64 Data::QueryConditions::Int64Condition::GetVal()
@@ -1484,7 +1484,7 @@ Bool Data::QueryConditions::ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::
 	return ret;
 }
 
-Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQLType sqlType)
+Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQLType sqlType)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbField;

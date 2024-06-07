@@ -14,7 +14,7 @@ void Map::DBMapLayer::ClearDB()
 {
 	if (this->releaseDB)
 	{
-		SDEL_CLASS(this->db);
+		this->db.Delete();
 	}
 	else
 	{
@@ -29,18 +29,11 @@ void Map::DBMapLayer::ClearDB()
 	this->zCol = INVALID_INDEX;
 	this->tabDef.Delete();
 
-	Math::Geometry::Vector2D *vec;
-	UOSInt i = this->vecMap.GetCount();
-	while (i-- > 0)
-	{
-		vec = this->vecMap.GetItem(i);
-		DEL_CLASS(vec);
-	}
-	this->vecMap.Clear();
+	this->vecMap.DeleteAll();
 	this->objCondition.Delete();
 }
 
-void *Map::DBMapLayer::InitNameArr()
+Map::NameArray *Map::DBMapLayer::InitNameArr()
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -54,7 +47,7 @@ void *Map::DBMapLayer::InitNameArr()
 		{
 			nameArr->names[i] = 0;
 		}
-		return nameArr;
+		return (Map::NameArray*)nameArr;
 	}
 	return 0;
 }
@@ -129,28 +122,63 @@ void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 
 UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
+	NN<Data::QueryConditions> cond;
+	NN<DB::ReadingDB> db;
+	NN<DB::DBReader> r;
 	UOSInt initCnt = outArr->GetCount();
 	if (this->mixedData != MixedData::AllData)
 	{
-		Math::Geometry::Vector2D *vec;
-		UOSInt i = 0;
-		UOSInt j = this->vecMap.GetCount();
-		while (i < j)
+		NN<Math::Geometry::Vector2D> vec;
+		if (this->db.SetTo(db) && this->objCondition.SetTo(cond))
 		{
-			vec = this->vecMap.GetItem(i);
-			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 			{
-				outArr->Add(this->vecMap.GetKey(i));
+				while (r->ReadNext())
+				{
+					Int64 id = r->GetInt64(this->idCol);
+					if (this->vecMap.Get(id).SetTo(vec) && (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly)))
+					{
+						outArr->Add(id);
+					}
+				}
+				db->CloseReader(r);
 			}
-			i++;
+		}
+		else
+		{
+			UOSInt i = 0;
+			UOSInt j = this->vecMap.GetCount();
+			while (i < j)
+			{
+				vec = this->vecMap.GetItemNoCheck(i);
+				if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
+				{
+					outArr->Add(this->vecMap.GetKey(i));
+				}
+				i++;
+			}
 		}
 	}
 	else
 	{
-		this->vecMap.AddKeysTo(outArr);
+		if (this->db.SetTo(db) && this->objCondition.SetTo(cond))
+		{
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
+			{
+				while (r->ReadNext())
+				{
+					outArr->Add(r->GetInt64(this->idCol));
+				}
+				db->CloseReader(r);
+			}
+		}
+		else
+		{
+			this->vecMap.AddKeysTo(outArr);
+		}
 	}
 	if (nameArr)
-		*nameArr = (NameArray*)InitNameArr();
+		*nameArr = InitNameArr();
 	return outArr->GetCount() - initCnt;
 }
 
@@ -161,42 +189,90 @@ UOSInt Map::DBMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray 
 
 UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
+	NN<Data::QueryConditions> cond;
+	NN<DB::ReadingDB> db;
+	NN<DB::DBReader> r;
 	UOSInt initCnt = outArr->GetCount();
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	Math::RectAreaDbl bounds;
-	UOSInt i = 0;
-	UOSInt j = this->vecMap.GetCount();
-	if (this->mixedData != MixedData::AllData)
+	if (this->db.SetTo(db) && this->objCondition.SetTo(cond))
 	{
-		while (i < j)
+		Int64 id;
+		if (this->mixedData != MixedData::AllData)
 		{
-			vec = this->vecMap.GetItem(i);
-			if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 			{
+				while (r->ReadNext())
+				{
+					id = r->GetInt64(this->idCol);
+					if (this->vecMap.Get(id).SetTo(vec) && (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly)))
+					{
+						bounds = vec->GetBounds();
+						if (bounds.OverlapOrTouch(rect))
+						{
+							outArr->Add(id);
+						}
+					}
+				}
+				db->CloseReader(r);
+			}
+		}
+		else
+		{
+			if (db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, CSTR_NULL, cond).SetTo(r))
+			{
+				while (r->ReadNext())
+				{
+					id = r->GetInt64(this->idCol);
+					if (this->vecMap.Get(id).SetTo(vec))
+					{
+						bounds = vec->GetBounds();
+						if (bounds.OverlapOrTouch(rect))
+						{
+							outArr->Add(id);
+						}
+					}
+				}
+				db->CloseReader(r);
+			}
+		}
+	}
+	else
+	{
+		UOSInt i = 0;
+		UOSInt j = this->vecMap.GetCount();
+		if (this->mixedData != MixedData::AllData)
+		{
+			while (i < j)
+			{
+				vec = this->vecMap.GetItemNoCheck(i);
+				if (Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) == (this->mixedData == MixedData::PointOnly))
+				{
+					bounds = vec->GetBounds();
+					if (bounds.OverlapOrTouch(rect))
+					{
+						outArr->Add(this->vecMap.GetKey(i));
+					}
+				}
+				i++;
+			}
+		}
+		else
+		{
+			while (i < j)
+			{
+				vec = this->vecMap.GetItemNoCheck(i);
 				bounds = vec->GetBounds();
 				if (bounds.OverlapOrTouch(rect))
 				{
 					outArr->Add(this->vecMap.GetKey(i));
 				}
+				i++;
 			}
-			i++;
-		}
-	}
-	else
-	{
-		while (i < j)
-		{
-			vec = this->vecMap.GetItem(i);
-			bounds = vec->GetBounds();
-			if (bounds.OverlapOrTouch(rect))
-			{
-				outArr->Add(this->vecMap.GetKey(i));
-			}
-			i++;
 		}
 	}
 	if (nameArr)
-		*nameArr = (NameArray*)InitNameArr();
+		*nameArr = InitNameArr();
 	return outArr->GetCount() - initCnt;
 }
 
@@ -224,7 +300,8 @@ void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
 Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	NN<DB::TableDef> tabDef;
-	if (nameArr && this->tabDef.SetTo(tabDef))
+	NN<DB::ReadingDB> db;
+	if (nameArr && this->tabDef.SetTo(tabDef) && this->db.SetTo(db))
 	{
 		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
 		UOSInt colCnt = tabDef->GetColCnt();
@@ -243,7 +320,7 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameA
 				if (tabDef->GetCol(this->idCol).SetTo(idCol))
 				{
 					cond.Int64Equals(idCol->GetColName()->ToCString(), id);
-					r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
+					r = db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
 				}
 				else
 				{
@@ -252,7 +329,7 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameA
 			}
 			else
 			{
-				r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, (UOSInt)(id - 1), 1, 0, 0);
+				r = db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, (UOSInt)(id - 1), 1, 0, 0);
 			}
 			if (r.SetTo(nnr))
 			{
@@ -359,7 +436,7 @@ void Map::DBMapLayer::EndGetObject(NN<GetObjectSess> session)
 Optional<Math::Geometry::Vector2D> Map::DBMapLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
 	NN<Math::Geometry::Vector2D> vec;
-	if (vec.Set(this->vecMap.Get(id)))
+	if (this->vecMap.Get(id).SetTo(vec))
 	{
 		return vec->Clone();
 	}
@@ -368,44 +445,49 @@ Optional<Math::Geometry::Vector2D> Map::DBMapLayer::GetNewVectorById(NN<GetObjec
 
 UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	if (this->db == 0)
+	NN<DB::ReadingDB> db;
+	if (!this->db.SetTo(db))
 	{
 		return 0;
 	}
-	return this->db->QueryTableNames(schemaName, names);
+	return db->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	if (this->db)
+	NN<DB::ReadingDB> db;
+	if (this->db.SetTo(db))
 	{
-		return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
+		return db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 	}
 	return 0;
 }
 
 Optional<DB::TableDef> Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	if (this->db)
+	NN<DB::ReadingDB> db;
+	if (this->db.SetTo(db))
 	{
-		return this->db->GetTableDef(schemaName, tableName);
+		return db->GetTableDef(schemaName, tableName);
 	}
 	return 0;
 }
 
 void Map::DBMapLayer::CloseReader(NN<DB::DBReader> r)
 {
-	if (this->db)
+	NN<DB::ReadingDB> db;
+	if (this->db.SetTo(db))
 	{
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 }
 
 void Map::DBMapLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	if (this->db)
+	NN<DB::ReadingDB> db;
+	if (this->db.SetTo(db))
 	{
-		this->db->GetLastErrorMsg(str);
+		db->GetLastErrorMsg(str);
 	}
 }
 
@@ -423,11 +505,11 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 {
 	this->ClearDB();
 	this->releaseDB = false;
-	this->db = db.Ptr();
+	this->db = db;
 	this->schema = Text::String::NewOrNull(schemaName);
 	this->table = Text::String::New(tableName);
 
-	this->tabDef = this->db->GetTableDef(schemaName, tableName);
+	this->tabDef = db->GetTableDef(schemaName, tableName);
 	UOSInt xCol = INVALID_INDEX;
 	UOSInt yCol = INVALID_INDEX;
 	UOSInt zCol = INVALID_INDEX;
@@ -504,7 +586,7 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 	}
 
 	NN<DB::DBReader> r;
-	if (!this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		return false;
 	}
@@ -544,7 +626,7 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 				{
 					layerSrid = vecSrid;
 				}
-				if (vec.Set(this->vecMap.Put(id, vec.Ptr())))
+				if (this->vecMap.Put(id, vec).SetTo(vec))
 				{
 					vec.Delete();
 				}
@@ -571,13 +653,13 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 			{
 				NEW_CLASSNN(vec, Math::Geometry::PointZ(layerSrid, pos.x, pos.y, r->GetDbl(zCol)));
 			}
-			if (vec.Set(this->vecMap.Put(id, vec.Ptr())))
+			if (this->vecMap.Put(id, vec).SetTo(vec))
 			{
 				vec.Delete();
 			}
 		}
 	}
-	this->db->CloseReader(r);
+	db->CloseReader(r);
 
 	if (layerSrid != 0)
 	{

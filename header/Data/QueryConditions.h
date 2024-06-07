@@ -88,7 +88,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(NN<Data::VariItem> item);
 
-			Text::String *GetFieldName();
+			NN<Text::String> GetFieldName();
 			Int32 GetVal();
 			CompareCondition GetCompareCond();
 		};
@@ -121,7 +121,7 @@ namespace Data
 			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(NN<Data::VariItem> item);
 
-			Text::String *GetFieldName();
+			NN<Text::String> GetFieldName();
 			Int64 GetVal();
 			CompareCondition GetCompareCond();
 		};
@@ -285,7 +285,7 @@ namespace Data
 		static Text::CStringNN CompareConditionGetStr(CompareCondition cond);
 		static Bool ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<Condition>> conditionList);
 		static Bool ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<Condition>> conditionList);
-		static QueryConditions *ParseStr(Text::CStringNN s, DB::SQLType sqlType);
+		static Optional<QueryConditions> ParseStr(Text::CStringNN s, DB::SQLType sqlType);
 	};
 }
 #endif

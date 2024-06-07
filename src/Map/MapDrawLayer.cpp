@@ -443,12 +443,11 @@ void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coo
 	}
 
 	UOSInt i = objIds.GetCount();
-	Int64 nearObjId = -1;
 	Double minDist = 0x7fffffff;
 	Double dist;
 	Int64 id;
 	Math::Coord2DDbl currPt;
-	Math::Coord2DDbl near = Math::Coord2DDbl(0, 0);
+	Math::Coord2DDbl near = pt;
 
 	while (i-- > 0)
 	{
@@ -461,7 +460,6 @@ void Map::MapDrawLayer::GetNearestObjectIds(NN<GetObjectSess> session, Math::Coo
 			{
 				ids->Clear();
 				ids->Add(id);
-				nearObjId = id;
 				near = currPt;
 				minDist = dist;
 			}
