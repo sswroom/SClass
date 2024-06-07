@@ -34,19 +34,38 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	NN<Text::String> name;
 	NN<Text::String> pattern;
 	NN<Text::String> s;
+	const Char *title;
 
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
 	if (isSave)
 	{
-		dialog = gtk_file_chooser_dialog_new("Save File", 0, GTK_FILE_CHOOSER_ACTION_SAVE,  "Cancel", GTK_RESPONSE_CANCEL, "Save", GTK_RESPONSE_ACCEPT, (void*)0);
+		title = "Save File";
+		if (this->fileName.SetTo(s))
+		{
+			sb.ClearStr();
+			sb.Append(CSTR("Save File for ("));
+			sb.Append(s);
+			sb.AppendUTF8Char(')');
+			title = (const Char*)sb.ToPtr();
+		}
+		dialog = gtk_file_chooser_dialog_new(title, 0, GTK_FILE_CHOOSER_ACTION_SAVE,  "Cancel", GTK_RESPONSE_CANCEL, "Save", GTK_RESPONSE_ACCEPT, (void*)0);
 		chooser = GTK_FILE_CHOOSER(dialog);
 		gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
 		gtk_file_chooser_set_create_folders(chooser, TRUE);
 	}
 	else
 	{
-		dialog = gtk_file_chooser_dialog_new("Open File", 0, GTK_FILE_CHOOSER_ACTION_OPEN,  "Cancel", GTK_RESPONSE_CANCEL, "Open", GTK_RESPONSE_ACCEPT, (void*)0);
+		title = "Open File";
+		if (this->fileName.SetTo(s))
+		{
+			sb.ClearStr();
+			sb.Append(CSTR("Open File for ("));
+			sb.Append(s);
+			sb.AppendUTF8Char(')');
+			title = (const Char*)sb.ToPtr();
+		}
+		dialog = gtk_file_chooser_dialog_new(title, 0, GTK_FILE_CHOOSER_ACTION_OPEN,  "Cancel", GTK_RESPONSE_CANCEL, "Open", GTK_RESPONSE_ACCEPT, (void*)0);
 		chooser = GTK_FILE_CHOOSER(dialog);
 	}
 

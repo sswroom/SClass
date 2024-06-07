@@ -14,8 +14,8 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		console.WriteLine(CSTR("Config file not found"));
 		return 1;
@@ -27,25 +27,25 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (!cfg->GetValue(CSTR("MODBUSPort")).SetTo(s) || !s->ToUInt16(modbusPort))
 	{
 		console.WriteLine(CSTR("Config MODBUSPort not valid"));
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return 1;
 	}
 	if (!cfg->GetValue(CSTR("CtrlPort")).SetTo(s) || !s->ToUInt16(ctrlPort))
 	{
 		console.WriteLine(CSTR("Config CtrlPort not valid"));
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return 1;
 	}
 	if (!cfg->GetValue(CSTR("DevAddr")).SetTo(s) || !s->ToUInt8(devAddr))
 	{
 		console.WriteLine(CSTR("Config DevAddr not valid"));
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return 1;
 	}
 	if (!cfg->GetValue(CSTR("DevType")).SetTo(s))
 	{
 		console.WriteLine(CSTR("Config DevType not found"));
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return 1;
 	}
 	NN<IO::MODBUSDevSim> dev;
@@ -68,10 +68,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	else
 	{
 		console.WriteLine(CSTR("Unknown DevType in config file"));
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return 1;
 	}
-	DEL_CLASS(cfg);
+	cfg.Delete();
 
 	Int32 ret = 0;
 	Net::OSSocketFactory sockf(false);

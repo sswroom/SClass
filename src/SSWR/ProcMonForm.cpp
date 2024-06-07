@@ -340,15 +340,15 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->LoadProgList();
 
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg)
+	NN<IO::ConfigFile> cfg;
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("NotifyCmd")).SetTo(s))
 		{
 			this->notifyCmd = s->Clone().Ptr();
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 	}
 	this->AddTimer(30000, OnTimerTick, this);
 }

@@ -74,7 +74,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(AnyType userObj, Tex
 	mutUsage.EndUse();
 }
 
-SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console)
+SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, IO::Writer *console)
 {
 	this->console = console;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
@@ -94,97 +94,90 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	this->listener = 0;
 	this->hdlr = 0;
 
-	if (cfg)
+	NN<Text::String> s;
+	UOSInt i;
+	UOSInt j;
+	UInt32 ip;
+	Int32 v;
+	Text::PString sarr[2];
+	if (cfg->GetValue(CSTR("DNS")).SetTo(s))
 	{
-		NN<Text::String> s;
-		UOSInt i;
-		UOSInt j;
-		UInt32 ip;
-		Int32 v;
-		Text::PString sarr[2];
-		if (cfg->GetValue(CSTR("DNS")).SetTo(s))
+		Data::ArrayList<UInt32> dnsList;
+		Text::StringBuilderUTF8 sb;
+		sb.Append(s);
+		sarr[1] = sb;
+		while (true)
 		{
-			Data::ArrayList<UInt32> dnsList;
-			Text::StringBuilderUTF8 sb;
-			sb.Append(s);
-			sarr[1] = sb;
-			while (true)
+			i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
+			ip = Net::SocketUtil::GetIPAddr(sarr[0].ToCString());
+			if (ip)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
-				ip = Net::SocketUtil::GetIPAddr(sarr[0].ToCString());
-				if (ip)
-				{
-					dnsList.Add(ip);
-				}
-				if (i <= 1)
-					break;
+				dnsList.Add(ip);
 			}
-			if (dnsList.GetCount() > 0)
+			if (i <= 1)
+				break;
+		}
+		if (dnsList.GetCount() > 0)
+		{
+			this->proxy->SetServerIP(dnsList.GetItem(0));
+			i = 1;
+			j = dnsList.GetCount();
+			while (i < j)
 			{
-				this->proxy->SetServerIP(dnsList.GetItem(0));
-				i = 1;
-				j = dnsList.GetCount();
-				while (i < j)
-				{
-					this->proxy->AddDNSIP(dnsList.GetItem(i));
-					i++;
-				}
+				this->proxy->AddDNSIP(dnsList.GetItem(i));
+				i++;
 			}
 		}
+	}
 
-		if (cfg->GetValue(CSTR("LogPath")).SetTo(s))
-		{
-			this->log.AddFileLog(Text::String::OrEmpty(s), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-		}
+	if (cfg->GetValue(CSTR("LogPath")).SetTo(s))
+	{
+		this->log.AddFileLog(Text::String::OrEmpty(s), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+	}
 
-		if (cfg->GetValue(CSTR("DisableV6")).SetTo(s) && s->ToInt32(v))
-		{
-			this->proxy->SetDisableV6(v != 0);
-		}
+	if (cfg->GetValue(CSTR("DisableV6")).SetTo(s) && s->ToInt32(v))
+	{
+		this->proxy->SetDisableV6(v != 0);
+	}
 
-		if (cfg->GetValue(CSTR("Blacklist")).SetTo(s) && s->v[0] != 0)
+	if (cfg->GetValue(CSTR("Blacklist")).SetTo(s) && s->v[0] != 0)
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(s);
+		sarr[1] = sb;
+		while (true)
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.Append(s);
-			sarr[1] = sb;
-			while (true)
+			i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
+			if (sarr[0].v[0])
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
-				if (sarr[0].v[0])
-				{
-					this->proxy->AddBlackList(sarr[0].ToCString());
-				}
-				if (i <= 1)
-					break;
+				this->proxy->AddBlackList(sarr[0].ToCString());
 			}
+			if (i <= 1)
+				break;
 		}
+	}
 
-		UInt16 managePort;
-		if (cfg->GetValue(CSTR("ManagePort")).SetTo(s) && s->v[0] != 0 && s->ToUInt16(managePort))
+	UInt16 managePort;
+	if (cfg->GetValue(CSTR("ManagePort")).SetTo(s) && s->v[0] != 0 && s->ToUInt16(managePort))
+	{
+		NN<SSWR::SDNSProxy::SDNSProxyWebHandler> hdlr;
+		NEW_CLASSNN(hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		if (this->listener->IsError())
 		{
-			NN<SSWR::SDNSProxy::SDNSProxyWebHandler> hdlr;
-			NEW_CLASSNN(hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-			if (this->listener->IsError())
-			{
-				console->WriteLine(CSTR("Error in listening to ManagePort"));
-				DEL_CLASS(this->listener);
-				this->listener = 0;
-				hdlr.Delete();
-			}
-			else
-			{
-				this->hdlr = hdlr.Ptr();
-			}
+			console->WriteLine(CSTR("Error in listening to ManagePort"));
+			DEL_CLASS(this->listener);
+			this->listener = 0;
+			hdlr.Delete();
 		}
 		else
 		{
-			console->WriteLine(CSTR("Config ManagePort not found"));
+			this->hdlr = hdlr.Ptr();
 		}
 	}
 	else
 	{
-		console->WriteLine(CSTR("Config file not found"));
+		console->WriteLine(CSTR("Config ManagePort not found"));
 	}
 }
 

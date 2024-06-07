@@ -191,8 +191,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	csConv = 0;
 	exporter = 0;
 
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg)
+	NN<IO::ConfigFile> cfg;
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("FrameSkip")).SetTo(s))
@@ -228,7 +228,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			preferedHeight = s->ToUOSInt();
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 	}
 
 	console->WriteLine(CSTR("Starting OpenCVPeopleCounting"));

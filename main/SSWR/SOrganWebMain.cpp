@@ -32,8 +32,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::WriterLogHandler printLog(&console, false);
 		log.AddLogHandler(printLog, IO::LogHandler::LogLevel::ErrorDetail);
 
-		IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-		if (cfg == 0)
+		NN<IO::ConfigFile> cfg;
+		if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 		{
 			console.WriteLine(CSTR("Error in loading config file"));
 		}
@@ -137,7 +137,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					progCtrl->WaitForExit(progCtrl);
 				}
 			}
-			DEL_CLASS(cfg);
+			cfg.Delete();
 		}
 
 		ssl.Delete();

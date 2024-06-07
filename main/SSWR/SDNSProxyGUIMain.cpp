@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	SSWR::AVIRead::AVIRDNSProxyForm *frm;
 	NN<SSWR::AVIRead::AVIRCore> core;
 	Manage::ExceptionRecorder *exHdlr;
-	IO::ConfigFile *cfg;
+	NN<IO::ConfigFile> cfg;
 
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
@@ -26,8 +26,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, ui, core));
 		frm->SetExitOnClose(true);
 		frm->Show();
-		cfg = IO::IniFile::ParseProgConfig(0);
-		if (cfg)
+		if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 		{
 			NN<Text::String> s;
 			UOSInt i;
@@ -73,7 +72,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 			}
 
-			DEL_CLASS(cfg);
+			cfg.Delete();
 		}
 		ui->Run();
 

@@ -12,8 +12,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("PushServer.err"), Manage::ExceptionRecorder::EA_RESTART);
 	IO::ConsoleWriter console;
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		console.WriteLine(CSTR("Config file not found"));
 		return 1;
@@ -22,20 +22,20 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Text::String> fcmKey;
 	if (!cfg->GetValue(CSTR("Port")).SetTo(sPort))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("Config Port missing"));
 		return 2;
 	}
 	UInt16 port;
 	if (!sPort->ToUInt16(port))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("Error in parsing port number"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("FCMKey")).SetTo(fcmKey))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("Config FCMKey missing"));
 		return 4;
 	}
@@ -62,6 +62,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 	}
 	ssl.Delete();
-	DEL_CLASS(cfg);
+	cfg.Delete();
 	return 0;
 }

@@ -478,8 +478,8 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 	this->ffmpegPath = 0;
 	this->firefoxPath = 0;
 	this->listFile = 0;
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg)
+	NN<IO::ConfigFile> cfg;
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("DownPath")).SetTo(s))
@@ -496,6 +496,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 			this->firefoxPath = s->Clone().Ptr();
 		if (cfg->GetValue(CSTR("ListFile")).SetTo(s))
 			this->listFile = s->Clone().Ptr();
+		cfg.Delete();
 	}
 	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp")).Ptr();
 	if (this->succPath == 0) this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck")).Ptr();

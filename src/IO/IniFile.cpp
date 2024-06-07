@@ -9,24 +9,20 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-IO::ConfigFile *IO::IniFile::Parse(NN<IO::Stream> stm, UInt32 codePage)
+Optional<IO::ConfigFile> IO::IniFile::Parse(NN<IO::Stream> stm, UInt32 codePage)
 {
-	IO::ConfigFile *cfg;
 	IO::StreamReader reader(stm, codePage);
-	cfg = ParseReader(&reader);
-	return cfg;
+	return ParseReader(reader);
 }
 
-IO::ConfigFile *IO::IniFile::Parse(Text::CStringNN fileName, UInt32 codePage)
+Optional<IO::ConfigFile> IO::IniFile::Parse(Text::CStringNN fileName, UInt32 codePage)
 {
-	IO::ConfigFile *cfg;
 	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	IO::StreamReader reader(fstm, codePage);
-	cfg = ParseReader(&reader);
-	return cfg;
+	return ParseReader(reader);
 }
 
-IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
+Optional<IO::ConfigFile> IO::IniFile::ParseProgConfig(UInt32 codePage)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -35,7 +31,7 @@ IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 	return Parse(CSTRP(sbuff, sptr), codePage);
 }
 
-IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
+Optional<IO::ConfigFile> IO::IniFile::ParseReader(NN<IO::StreamReader> reader)
 {
 	UTF8Char cate[128];
 	UnsafeArray<UTF8Char> cateEnd;
@@ -46,8 +42,8 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 	UnsafeArray<UTF8Char> valueEnd;
 	UnsafeArray<UTF8Char> src;
 	UTF8Char lbrk[3];
-	IO::ConfigFile *cfg;
-	NEW_CLASS(cfg, IO::ConfigFile());
+	NN<IO::ConfigFile> cfg;
+	NEW_CLASSNN(cfg, IO::ConfigFile());
 	cate[0] = 0;
 	cateEnd = cate;
 	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
@@ -98,21 +94,19 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 	}
 	if (cfg->GetCateCount() == 0)
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return 0;
 	}
 	return cfg;
 }
 
-Bool IO::IniFile::SaveConfig(NN<IO::Stream> stm, UInt32 codePage, IO::ConfigFile *cfg)
+Bool IO::IniFile::SaveConfig(NN<IO::Stream> stm, UInt32 codePage, NN<IO::ConfigFile> cfg)
 {
-	Bool ret;
 	IO::StreamWriter writer(stm, codePage);
-	ret = SaveConfig(&writer, cfg);
-	return ret;
+	return SaveConfig(writer, cfg);
 }
 
-Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
+Bool IO::IniFile::SaveConfig(NN<IO::Writer> writer, NN<IO::ConfigFile> cfg)
 {
 	Data::ArrayListStringNN cateList;
 	Data::ArrayListStringNN keyList;

@@ -1173,7 +1173,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	this->currDate = dt.ToTicks();
 	this->initErr = false;
 
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
+	NN<IO::ConfigFile> cfg;
 	NN<Text::String> s;
 	NN<Text::String> s2;
 	UInt16 port;
@@ -1197,7 +1197,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			this->refererLog.ReadLogs(&reader);
 		}
 	}
-	if (cfg == 0)
+	if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		writer->WriteLine(CSTR("Config file not found"));
 	}
@@ -1402,7 +1402,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			writer->WriteLine(CSTR("Config DataUDPPort not found"));
 		}
 
-		DEL_CLASS(cfg);
+		cfg.Delete();
 
 		if (!this->IsError() && this->cliSvr->Start() && this->listener->Start())
 		{

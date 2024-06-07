@@ -1140,8 +1140,8 @@ UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 	}
 	return i;
 #else
-	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
-	if (cfg)
+	NN<IO::ConfigFile> cfg;
+	if (IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001).SetTo(cfg))
 	{
 		Data::ArrayListStringNN cateList;
 		cfg->GetCateList(cateList, false);
@@ -1150,7 +1150,7 @@ UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 		{
 			driverList->Add(it.Next()->Clone());
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return cateList.GetCount();
 	}
 	return 0;
@@ -1162,11 +1162,11 @@ Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	return 0;
 #else
-	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
-	if (cfg)
+	NN<IO::ConfigFile> cfg;
+	if (IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001).SetTo(cfg))
 	{
 		Optional<IO::ConfigFile> cfgRet = cfg->CloneCate(driverName);
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		return cfgRet;
 	}
 	return 0;

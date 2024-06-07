@@ -124,13 +124,12 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 
 SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 {
-	IO::ConfigFile *cfg;
+	NN<IO::ConfigFile> cfg;
 	this->db = 0;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 
-	cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg)
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		NN<Text::String> str;
 		if (cfg->GetValue(CSTR("DSN")).SetTo(str))
@@ -154,7 +153,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		{
 			this->db = DB::MDBFileConn::CreateDBTool(str->ToCString(), this->log, CSTR("DB: "));
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 
 		if (this->db.NotNull())
 		{

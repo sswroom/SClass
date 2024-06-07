@@ -34,10 +34,10 @@ UInt32 __stdcall ThreadFunc(AnyType userObj)
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
+	NN<IO::ConfigFile> cfg;
 	NN<Text::String> s;
 	UInt16 pinNum;
-	if (cfg)
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		pinNum = 0;
 		if (cfg->GetValue(CSTR("GPIOPin")).SetTo(s) && s->ToUInt16(pinNum))
@@ -81,7 +81,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			console.WriteLine(CSTR("Config GPIOPin not found"));
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 	}
 	else
 	{

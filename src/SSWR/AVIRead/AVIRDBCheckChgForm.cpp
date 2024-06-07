@@ -1793,7 +1793,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						i = 0;
 						while (i < dbCnt)
 						{
-							if (table->GetCol(i).SetTo(col))
+							if (this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
 							{
 								if (colFound) sql.AppendCmdC(CSTR(", "));
 								colFound = true;
@@ -1806,7 +1806,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						i = 0;
 						while (i < dbCnt)
 						{
-							if (table->GetCol(i).SetTo(col))
+							if (this->colInd.GetItem(i) != INVALID_INDEX && table->GetCol(i).SetTo(col))
 							{
 								if (colFound) sql.AppendCmdC(CSTR(", "));
 								colFound = true;

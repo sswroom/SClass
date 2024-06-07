@@ -190,7 +190,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Media::MonitorMgr monMgr;
 			ErrorType errType;
-			IO::ConfigFile *langFile;
+			Optional<IO::ConfigFile> langFile;
 			Data::ArrayListNN<Category> categories;
 			Data::ArrayListNN<OrganGroupType> grpTypes;
 			Category *currCate;

@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			Optional<DB::DBTool> db;
 			IO::LogTool log;
-			IO::ConfigFile *cfg;
+			Optional<IO::ConfigFile> cfg;
 			Text::String *cfgImgDirBase;
 			Text::String *cfgDataPath;
 			Text::String *cfgCacheDir;

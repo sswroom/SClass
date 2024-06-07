@@ -11,7 +11,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
-	IO::ConfigFile *cfg;
+	NN<IO::ConfigFile> cfg;
 	IO::ConsoleWriter *console;
 	SSWR::SDNSProxy::SDNSProxyCore *core;
 
@@ -19,8 +19,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(console, IO::ConsoleWriter());
-	cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg)
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		NEW_CLASS(core, SSWR::SDNSProxy::SDNSProxyCore(cfg, console));
 		if (!core->IsError())
@@ -28,7 +27,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			core->Run(progCtrl);
 		}
 		DEL_CLASS(core);
-		DEL_CLASS(cfg);
+		cfg.Delete();
 	}
 	else
 	{

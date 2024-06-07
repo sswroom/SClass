@@ -47,7 +47,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	this->cfg = IO::IniFile::ParseProgConfig(0);
 	this->db = 0;
 
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!this->cfg.SetTo(cfg))
 	{
 		this->errType = ERR_CONFIG;
 		return;
@@ -303,7 +304,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 SSWR::OrganMgr::OrganEnvDB::~OrganEnvDB()
 {
 	this->db.Delete();
-	DEL_CLASS(this->cfg);
+	this->cfg.Delete();
 }
 
 Text::String *SSWR::OrganMgr::OrganEnvDB::GetDataDir()

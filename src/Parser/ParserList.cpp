@@ -261,8 +261,8 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFileType(NN<IO::StreamData> 
 	Optional<IO::ParsedObject> pobj2 = this->ParseFile(fd, 0, t);
 	while (pobj2.SetTo(pobj))
 	{
-		if (pobj->GetParserType() == t)
-			return pobj.Ptr();
+		if (pobj->GetParserType() == t || (t == IO::ParserType::ReadingDB && pobj->GetParserType() == IO::ParserType::MapLayer))
+			return pobj;
 		pobj2 = this->ParseObjectType(pobj, t);
 		pobj.Delete();
 	}

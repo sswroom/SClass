@@ -9,15 +9,16 @@ IO::LangFile::LangFile(Text::CStringNN fileName, UInt32 codePage)
 
 IO::LangFile::~LangFile()
 {
-	SDEL_CLASS(this->cfg);
+	this->cfg.Delete();
 }
 
 Text::CStringNN IO::LangFile::GetValue(Text::CStringNN name)
 {
-	if (this->cfg)
+	NN<IO::ConfigFile> cfg;
+	if (this->cfg.SetTo(cfg))
 	{
 		NN<Text::String> ret;
-		if (this->cfg->GetValue(name).SetTo(ret))
+		if (cfg->GetValue(name).SetTo(ret))
 			return ret->ToCString();
 	}
 	return name;
@@ -25,10 +26,11 @@ Text::CStringNN IO::LangFile::GetValue(Text::CStringNN name)
 
 Text::CStringNN IO::LangFile::GetValue(Text::CStringNN category, Text::CStringNN name)
 {
-	if (this->cfg)
+	NN<IO::ConfigFile> cfg;
+	if (this->cfg.SetTo(cfg))
 	{
 		NN<Text::String> ret;
-		if (this->cfg->GetCateValue(category, name).SetTo(ret))
+		if (cfg->GetCateValue(category, name).SetTo(ret))
 			return ret->ToCString();
 	}
 	return name;

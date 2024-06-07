@@ -47,7 +47,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
 //					printf("LangId = %d\r\n", langId);
 					if (langId)
 					{
-						if (lang.Set(IO::IniFile::Parse(CSTRP(sbuff, sptr), 65001)))
+						if (IO::IniFile::Parse(CSTRP(sbuff, sptr), 65001).SetTo(lang))
 						{
 							if (this->langMap.Put(langId, lang).SetTo(lang))
 							{

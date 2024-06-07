@@ -176,7 +176,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	this->userMap.DeleteAll();
 	this->TripRelease();
 	this->gpsTrk.Delete();
-	SDEL_CLASS(this->langFile);
+	this->langFile.Delete();
 	this->drawEng.Delete();
 	this->ssl.Delete();
 	this->sockf.Delete();
@@ -219,10 +219,11 @@ SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()
 
 Text::CStringNN SSWR::OrganMgr::OrganEnv::GetLang(Text::CStringNN name)
 {
-	if (this->langFile == 0)
+	NN<IO::ConfigFile> langFile;
+	if (!this->langFile.SetTo(langFile))
 		return name;
 	NN<Text::String> ret;
-	if (!this->langFile->GetValue(name).SetTo(ret))
+	if (!langFile->GetValue(name).SetTo(ret))
 		return name;
 	return ret->ToCString();
 }

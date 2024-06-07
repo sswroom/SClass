@@ -68,8 +68,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(logger, IO::LogTool());
 
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg)
+	NN<IO::ConfigFile> cfg;
+	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		Bool succ = true;
 		Net::OSSocketFactory sockf(false);
@@ -113,7 +113,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			DEL_CLASS(svr);
 			hdlr.Delete();
 		}
-		DEL_CLASS(cfg);
+		cfg.Delete();
 	}
 	DEL_CLASS(logger);
 	DEL_CLASS(console);

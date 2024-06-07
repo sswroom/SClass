@@ -20,7 +20,7 @@ struct Registry_File
 {
 	NN<Text::String> fileName;
 	Sync::Mutex mut;
-	IO::ConfigFile *cfg;
+	Optional<IO::ConfigFile> cfg;
 	UInt32 useCnt;
 	Bool modified;
 	IO::Registry::RegistryUser usr;
@@ -96,15 +96,19 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 void IO::Registry::CloseInternal(void *data)
 {
 	Registry_File *reg = (Registry_File*)data;
+	NN<IO::ConfigFile> cfg;
 	if (Sync::Interlocked::DecrementU32(reg->useCnt) == 0)
 	{
 		if (reg->modified)
 		{
-			IO::FileStream fs(reg->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			IO::IniFile::SaveConfig(fs, 65001, reg->cfg);
+			if (reg->cfg.SetTo(cfg))
+			{
+				IO::FileStream fs(reg->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::IniFile::SaveConfig(fs, 65001, cfg);
+			}
 			reg->modified = false;
 		}
-		SDEL_CLASS(reg->cfg);
+		reg->cfg.Delete();
 		reg->fileName->Release();
 		if (reg->usr == REG_USER_ALL)
 		{
@@ -231,12 +235,13 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	Data::ArrayListStrUTF8 names;
 	Data::ArrayListStringNN cateList;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
 		return 0;
 	}
 	NN<Text::String> cate;
-	this->clsData->reg->cfg->GetCateList(cateList, false);
+	cfg->GetCateList(cateList, false);
 	WChar *ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
 	UOSInt thisCateLen = this->clsData->cate->leng;
@@ -282,12 +287,14 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 	sb.AppendHex32((UInt32)value);
 
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
+		NEW_CLASSNN(cfg, IO::ConfigFile());
+		this->clsData->reg->cfg = cfg;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
+	cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
 	this->clsData->reg->modified = true;
 	s->Release();
 }
@@ -301,38 +308,42 @@ void IO::Registry::SetValue(const WChar *name, const WChar *value)
 	s->Release();
 
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
-		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
+		NEW_CLASSNN(cfg, IO::ConfigFile());
+		this->clsData->reg->cfg = cfg;
 	}
 	s = Text::String::NewNotNull(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
+	cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
 	this->clsData->reg->modified = true;
 	s->Release();
 }
 
 void IO::Registry::DelValue(const WChar *name)
 {
+	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
 		return;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
-	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->ToCString(), s->ToCString());
+	cfg->RemoveValue(this->clsData->cate->ToCString(), s->ToCString());
 	s->Release();
 }
 
 Int32 IO::Registry::GetValueI32(const WChar *name)
 {
+	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
 		return 0;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
 	NN<Text::String> csval;
-	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
+	if (cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		s->Release();
 		return Text::StrHex2Int32C(csval->v + 6);
@@ -343,14 +354,15 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 
 WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 {
+	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
 		return 0;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
 	NN<Text::String> csval;
-	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("sz:")))
+	if (cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("sz:")))
 	{
 		s->Release();
 		return Text::StrUTF8_WChar(buff, csval->v + 3, 0);
@@ -361,14 +373,15 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 
 Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
 {
+	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
 		return false;
 	}
 	NN<Text::String> s = Text::String::NewNotNull(name);
 	NN<Text::String> csval;
-	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
+	if (cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		s->Release();
 		value.Set(Text::StrHex2Int32C(csval->v + 6));
@@ -380,13 +393,14 @@ Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
 
 WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 {
+	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
-	if (this->clsData->reg->cfg == 0)
+	if (!this->clsData->reg->cfg.SetTo(cfg))
 	{
 		return 0;
 	}
 	Data::ArrayListStringNN keys;
-	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), keys);
+	cfg->GetKeys(this->clsData->cate->ToCString(), keys);
 	NN<Text::String> key;
 	if (keys.GetItem(index).SetTo(key))
 	{

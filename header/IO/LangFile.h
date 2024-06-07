@@ -7,7 +7,7 @@ namespace IO
 	class LangFile
 	{
 	private:
-		IO::ConfigFile *cfg;
+		Optional<IO::ConfigFile> cfg;
 
 	public:
 		LangFile(Text::CStringNN fileName, UInt32 codePage);

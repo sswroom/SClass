@@ -13,8 +13,8 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		console.WriteLine(CSTR("Config file not found\r\n"));
 		return 1;
@@ -49,7 +49,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendC((const UTF8Char*)cptr, len);
 			sb.AppendC(UTF8STRC(" not found"));
 			console.WriteLine(sb.ToCString());
-			DEL_CLASS(cfg);
+			cfg.Delete();
 			return 2;
 		}
 		i++;
@@ -76,49 +76,49 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sarr[2];
 	if (!cfg->GetValue(CSTR("SMTPType")).SetTo(smtpType))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("SMTPType cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("MySQLServer")).SetTo(mysqlServer))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("MySQLServer cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("MySQLPort")).SetTo(mysqlPort))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("MySQLPort cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("MySQLSchemas")).SetTo(mysqlSchemas))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("MySQLSchemas cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPHost")).SetTo(smtpHost))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("SMTPHost cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPPort")).SetTo(smtpPort))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("SMTPPort cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPFrom")).SetTo(smtpFrom))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("SMTPFrom cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPTo")).SetTo(smtpTo))
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("SMTPTo cannot be empty"));
 		return 3;
 	}
@@ -136,7 +136,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		DEL_CLASS(cfg);
+		cfg.Delete();
 		console.WriteLine(CSTR("SMTPType must be PLAIN/SSL/STARTTLS"));
 		return 3;
 	}
@@ -224,6 +224,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			DEL_CLASS(writer);
 		}
 	}
-	DEL_CLASS(cfg);
+	cfg.Delete();
 	return retNum;
 }
