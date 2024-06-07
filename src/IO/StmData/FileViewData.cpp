@@ -26,7 +26,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 		dataOffset = 0;
 		const UTF8Char* name2;
 		const UTF8Char *name;
-		UTF8Char *dname;
+		UnsafeArray<UTF8Char> dname;
 		name = name2 = fname;
 		while (*name++)
 			if (*name == IO::Path::PATH_SEPERATOR)
@@ -36,7 +36,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 		while ((*dname++ = *name2++) != 0)
 			if (dname[-1] == IO::Path::PATH_SEPERATOR)
 				fdh->fileName.v = dname;
-		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v);
+		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
 	}
 }
 
@@ -81,7 +81,7 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, Data
 	{
 		endOfst = dataOffset + dataLength;
 	}
-	MemCopyNO(buffer.Ptr(), &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
+	MemCopyNO(buffer.Arr().Ptr(), &fdh->fptr[startOfst], (UOSInt)(endOfst - startOfst));
 	
 	return (UOSInt)(endOfst - startOfst);
 }

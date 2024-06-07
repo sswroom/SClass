@@ -282,7 +282,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::WinSSLClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->clsData->step == 0)
 	{
@@ -299,7 +299,7 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 		while (size > this->clsData->stmSizes.cbMaximumMessage)
 		{
 			writeSize += Write(buff, this->clsData->stmSizes.cbMaximumMessage);
-			buff += this->clsData->stmSizes.cbMaximumMessage;
+			buff += (UOSInt)this->clsData->stmSizes.cbMaximumMessage;
 			size -= this->clsData->stmSizes.cbMaximumMessage;
 		}
 #if defined(DEBUG_PRINT)
@@ -308,7 +308,7 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 		printf("%s Writing %d bytes, enc size = %d\r\n", debugBuff, (UInt32)size, (UInt32)(this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer));
 #endif
 		UInt8 *encBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer);
-		MemCopyNO(&encBuff[this->clsData->stmSizes.cbHeader], buff, size);
+		MemCopyNO(&encBuff[this->clsData->stmSizes.cbHeader], buff.Ptr(), size);
 		SecBuffer outputBuff[4];
 		SecBufferDesc outputDesc;
 		SecBuffer_Set(&outputBuff[0], SECBUFFER_STREAM_HEADER, &encBuff[0], this->clsData->stmSizes.cbHeader);
@@ -670,7 +670,7 @@ void Net::WinSSLClient::CancelRead(void *reqData)
 
 }
 
-void *Net::WinSSLClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *Net::WinSSLClient::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	UOSInt ret = this->Write(buff, size);
 	if (ret)

@@ -145,10 +145,10 @@ NN<IO::BTScanLog::ScanRecord3> Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO
 	return rec;
 }
 
-void Win32::WindowsBTScanner::DeviceFree(IO::BTScanLog::ScanRecord3 *rec)
+void Win32::WindowsBTScanner::DeviceFree(NN<IO::BTScanLog::ScanRecord3> rec)
 {
 	SDEL_STRING(rec->name);
-	MemFree(rec);
+	MemFreeNN(rec);
 }
 
 #if true

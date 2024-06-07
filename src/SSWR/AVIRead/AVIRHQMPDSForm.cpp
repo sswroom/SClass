@@ -207,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 		sb.AppendDouble(dbg.par);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Rotate: "));
-		sb.Append(Media::RotateTypeGetName(dbg.rotateType));
+		sb.AppendOpt(Media::RotateTypeGetName(dbg.rotateType));
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Format: "));
 		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));
@@ -267,30 +267,29 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(AnyType userObj, NN<
 Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
 {
 	NN<Parser::ParserList> parsers = this->core->GetParserList();
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = parsers->ParseFileType(fd, targetType);
-	}
-	if (pobj)
-	{
-		return OpenVideo((Media::MediaFile*)pobj);
+		if (parsers->ParseFileType(fd, targetType).SetTo(pobj))
+		{
+			return OpenVideo(NN<Media::MediaFile>::ConvertFrom(pobj));
+		}
 	}
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
+Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
 	OSInt j;
 
 	this->player->LoadMedia(0);
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 	SDEL_CLASS(this->playlist);
 	this->currFile = mf;
-	sptr = this->currFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3DS - ")));
+	sptr = mf->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3DS - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	this->player->LoadMedia(mf);
 	this->currPBC = this->player;
@@ -300,7 +299,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 	this->storeTime = -1;
 	this->vbox->SetUVOfst(this->uOfst, this->vOfst);
 
-	this->currChapInfo = this->currFile->GetChapterInfo();
+	this->currChapInfo = mf->GetChapterInfo();
 	this->mnuChapters->ClearItems();
 	if (this->currChapInfo)
 	{
@@ -343,7 +342,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 	this->player->StopPlayback();
 	this->player->LoadMedia(0);
 	this->storeTime = -1;
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 	SDEL_CLASS(this->playlist);
 	this->currPBC = this->player;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
@@ -590,8 +589,8 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl, 15000, this->core->GetLog());
-					if (pobj == 0)
+					NN<IO::ParsedObject> pobj;
+					if (!Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl, 15000, this->core->GetLog()).SetTo(pobj))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
@@ -599,11 +598,11 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 					{
 						if (pobj->GetParserType() == IO::ParserType::MediaFile)
 						{
-							this->OpenVideo((Media::MediaFile*)pobj);
+							this->OpenVideo(NN<Media::MediaFile>::ConvertFrom(pobj));
 						}
 						else
 						{
-							DEL_CLASS(pobj);
+							pobj.Delete();
 						}
 					}
 				}
@@ -613,14 +612,15 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<Media::IVideoCapture> capture;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				UTF8Char sbuff[256];
-				UTF8Char* sptr;
-				Media::MediaFile *mf;
-				sptr = dlg.capture->GetSourceName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-				mf->AddSource(dlg.capture, 0);
+				UnsafeArray<UTF8Char> sptr;
+				NN<Media::MediaFile> mf;
+				sptr = capture->GetSourceName(sbuff).Or(sbuff);
+				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
+				mf->AddSource(capture, 0);
 				this->OpenVideo(mf);
 			}
 		}

@@ -17,7 +17,7 @@ Win32::WindowsEvent::~WindowsEvent()
 	{
         DeregisterEventSource((HANDLE)this->hand);
 	}
-	SDEL_TEXT(this->progName);
+	if (this->progName) Text::StrDelNew(this->progName);
 }
 
 Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize)

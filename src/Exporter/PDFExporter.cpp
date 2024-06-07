@@ -155,31 +155,31 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sb.Append(vdoc->GetDocName());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetAuthor())
+	if (vdoc->GetAuthor().NotNull())
 	{
 		sb.AppendC(UTF8STRC("/Author ("));
 		sb.AppendSlow(vdoc->GetAuthor());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetSubject())
+	if (vdoc->GetSubject().NotNull())
 	{
 		sb.AppendC(UTF8STRC("/Subject ("));
 		sb.AppendSlow(vdoc->GetSubject());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetKeywords())
+	if (vdoc->GetKeywords().NotNull())
 	{
 		sb.AppendC(UTF8STRC("/Keywords ("));
 		sb.AppendSlow(vdoc->GetKeywords());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetCreator())
+	if (vdoc->GetCreator().NotNull())
 	{
 		sb.AppendC(UTF8STRC("/Creator ("));
 		sb.AppendSlow(vdoc->GetCreator());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
-	if (vdoc->GetProducer())
+	if (vdoc->GetProducer().NotNull())
 	{
 		sb.AppendC(UTF8STRC("/Producer ("));
 		sb.AppendSlow(vdoc->GetProducer());

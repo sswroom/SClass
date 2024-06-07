@@ -113,7 +113,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 		country = countryList->GetItemNoCheck(i);
 		country->isoCode->Release();
 		country->name->Release();
-		country->records.GetCount();
+		j = country->records.GetCount();
 		while (j-- > 0)
 		{
 			MemFreeNN(country->records.GetItemNoCheck(j));

@@ -10,10 +10,10 @@
 #undef FindNextFile
 #undef DeleteFile
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
+UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
 {
-	UTF8Char *sptr;
-	UTF8Char* sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt ret = 0;
 	IO::Path::FindFileSession *sess;
 	*linkPathEnd++ = IO::Path::PATH_SEPERATOR;
@@ -22,7 +22,7 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptr = IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0).SetTo(sptr))
 		{
 			if (linkPathEnd[0] != '.')
 			{
@@ -55,12 +55,12 @@ IO::ProgramLinkManager::~ProgramLinkManager()
 {
 }
 
-UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
+UnsafeArray<UTF8Char> IO::ProgramLinkManager::GetLinkPath(UnsafeArray<UTF8Char> buff, Bool thisUser)
 {
-	UTF8Char *sptr;	
+	UnsafeArray<UTF8Char> sptr;	
 	if (thisUser)
 	{
-		sptr = IO::Path::GetUserHome(buff);
+		sptr = IO::Path::GetUserHome(buff).Or(buff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -69,7 +69,7 @@ UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
 	}
 	else
 	{
-		sptr = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("ProgramData"));
+		sptr = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("ProgramData")).Or(buff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -82,7 +82,7 @@ UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
 UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
-	UTF8Char *linkPathEnd;
+	UnsafeArray<UTF8Char> linkPathEnd;
 	UTF8Char filePath[512];
 	UOSInt ret = 0;
 	if (allUser)
@@ -99,11 +99,11 @@ UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, B
 	return ret;
 }
 
-Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLink *link)
+Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, IO::ProgramLink *link)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	if (linkName.v[0] == '*')
 	{
 		sptr = this->GetLinkPath(sbuff, this);
@@ -139,14 +139,13 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 		sptr = &sbuff[i];
 	}
 	link->SetName(CSTRP(sbuff, sptr));
-	if ((sptr = lnk.GetNameString(sbuff)) != 0)
+	if (lnk.GetNameString(sbuff).SetTo(sptr))
 		link->SetComment(CSTRP(sbuff, sptr));
-	if ((sptr = lnk.GetTarget(sbuff)) != 0 || (sptr = lnk.GetLocalBasePath(sbuff)) != 0 || (sptr = lnk.GetRelativePath(sbuff)) != 0)
+	if (lnk.GetTarget(sbuff).SetTo(sptr) || lnk.GetLocalBasePath(sbuff).SetTo(sptr) || lnk.GetRelativePath(sbuff).SetTo(sptr))
 	{
 		sptr2 = sptr;
 		*sptr2++ = ' ';
-		sptr2 = lnk.GetCommandLineArguments(sptr2);
-		if (sptr2)
+		if (lnk.GetCommandLineArguments(sptr2).SetTo(sptr2))
 		{
 			link->SetCmdLine(CSTRP(sbuff, sptr2));
 		}
@@ -156,15 +155,15 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 			link->SetCmdLine(CSTRP(sbuff, sptr));
 		}
 	}
-	if ((sptr = lnk.GetIconLocation(sbuff)) != 0)
+	if (lnk.GetIconLocation(sbuff).SetTo(sptr))
 		link->SetIcon(CSTRP(sbuff, sptr));
 	return true;
 }
 
-Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
+Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName, Text::CStringNN linkName, Text::CString comment, Text::CString categories, Text::CStringNN cmdLine)
 {
 	UTF8Char sbuff[512];
-	UTF8Char* sptr;
+	UnsafeArray<UTF8Char> sptr;
 	HRESULT hres;
 	IShellLink* psl;
 	const WChar* wptr;
@@ -220,9 +219,10 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, 
 				Text::StrDelNew(wptr);
 			}
 		}
-		if (comment.leng > 0)
+		Text::CStringNN nncomment;
+		if (comment.SetTo(nncomment) && nncomment.leng > 0)
 		{
-			wptr = Text::StrToWCharNew(comment.v);
+			wptr = Text::StrToWCharNew(nncomment.v);
 			psl->SetDescription(wptr);
 			Text::StrDelNew(wptr);
 		}
@@ -250,10 +250,10 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, 
 	return false;
 }
 
-Bool IO::ProgramLinkManager::DeleteLink(Text::CString linkName)
+Bool IO::ProgramLinkManager::DeleteLink(Text::CStringNN linkName)
 {
 	UTF8Char sbuff[512];
-	UTF8Char* sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (linkName.v[0] == '*')
 	{
 		sptr = this->GetLinkPath(sbuff, this);

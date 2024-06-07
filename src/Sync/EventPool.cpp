@@ -8,7 +8,7 @@ Sync::EventPool::EventPool()
 {
 	this->state = 0;
 	this->handList.Add(this->mainEvt.GetHandle());
-	this->evtList.Add(&this->mainEvt);
+	this->evtList.Add(this->mainEvt);
 	this->objList.Add(0);
 }
 
@@ -73,7 +73,7 @@ void *Sync::EventPool::Wait(Int32 timeout)
 		this->mut.Lock();
 		if (this->state == 0)
 		{
-			handArr = this->handList.GetPtr(cnt);
+			handArr = this->handList.GetArr(cnt).Ptr();
 			if (cnt > MAXIMUM_WAIT_OBJECTS)
 			{
 				cnt = MAXIMUM_WAIT_OBJECTS;
@@ -91,7 +91,7 @@ void *Sync::EventPool::Wait(Int32 timeout)
 			}
 			else if (ret > WAIT_OBJECT_0 && ret < WAIT_OBJECT_0 + cnt)
 			{
-				void *obj = this->objList.GetItem(ret - WAIT_OBJECT_0);
+				void *obj = this->objList.GetItem(ret - WAIT_OBJECT_0).p;
 				this->mut.Unlock();
 				return obj;
 			}

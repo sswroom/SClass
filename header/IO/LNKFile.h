@@ -21,13 +21,13 @@ namespace IO
 		Data::Timestamp GetCreateTime();
 		Data::Timestamp GetAccessTime();
 		Data::Timestamp GetWriteTime();
-		UTF8Char *GetLocalBasePath(UTF8Char *sbuff);
-		UTF8Char *GetNameString(UTF8Char *sbuff);
-		UTF8Char *GetRelativePath(UTF8Char *sbuff);
-		UTF8Char *GetWorkingDirectory(UTF8Char *sbuff);
-		UTF8Char *GetCommandLineArguments(UTF8Char *sbuff);
-		UTF8Char *GetIconLocation(UTF8Char *sbuff);
-		UTF8Char *GetTarget(UTF8Char* sbuff);
+		UnsafeArrayOpt<UTF8Char> GetLocalBasePath(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetNameString(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetRelativePath(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetWorkingDirectory(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetCommandLineArguments(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetIconLocation(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetTarget(UnsafeArray<UTF8Char> sbuff);
 	};
 }
 #endif

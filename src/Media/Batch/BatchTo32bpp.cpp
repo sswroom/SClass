@@ -20,15 +20,17 @@ void Media::Batch::BatchTo32bpp::SetHandler(Media::Batch::BatchHandler *hdlr)
 
 void Media::Batch::BatchTo32bpp::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
-	OSInt j;
-	OSInt k;
-	Media::StaticImage *newImg;
+	UOSInt j;
+	UOSInt k;
+	NN<Media::StaticImage> newImg;
 	j = 0;
 	k = imgList->GetCount();
 	while (j < k)
 	{
-		newImg = (Media::StaticImage*)imgList->GetImage(j, 0);
-		newImg->To32bpp();
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(newImg))
+		{
+			newImg->To32bpp();
+		}
 		j++;
 	}
 

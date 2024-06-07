@@ -97,8 +97,8 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd
 		tmpBuff[2] = tmpBuff[readSize - 1];
 	}
 	vSource->AddNewFrame(gopStart, (Int32)(fleng - gopStart), true, MulDiv((Int32)gopFrameCnt, frameRateDenorm * 1000, frameRateNorm));
-	Media::Decoder::MP2GDecoder *mp2g;
-	NEW_CLASS(mp2g, Media::Decoder::MP2GDecoder(vSource, true));
+	NN<Media::Decoder::MP2GDecoder> mp2g;
+	NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(vSource, true));
 	Media::MediaFile *file;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
 	file->AddSource(mp2g, 0);

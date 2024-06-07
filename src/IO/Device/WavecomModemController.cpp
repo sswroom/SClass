@@ -3,7 +3,7 @@
 #include "IO/Device/WavecomModemController.h"
 #include "Text/MyString.h"
 
-IO::Device::WavecomModemController::WavecomModemController(IO::ATCommandChannel *channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::Device::WavecomModemController::WavecomModemController(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 }
 
@@ -11,11 +11,11 @@ IO::Device::WavecomModemController::~WavecomModemController()
 {
 }
 
-UTF8Char *IO::Device::WavecomModemController::GetSIMCardID(UTF8Char *cardID)
+UnsafeArrayOpt<UTF8Char> IO::Device::WavecomModemController::GetSIMCardID(UnsafeArray<UTF8Char> cardID)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CCID"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+CCID"), 3000).SetTo(sptr))
 		return 0;
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CCID: \"")))
 	{
@@ -33,11 +33,11 @@ UTF8Char *IO::Device::WavecomModemController::GetSIMCardID(UTF8Char *cardID)
 	}
 }
 
-UTF8Char *IO::Device::WavecomModemController::GetCapabilityList(UTF8Char *capList)
+UnsafeArrayOpt<UTF8Char> IO::Device::WavecomModemController::GetCapabilityList(UnsafeArray<UTF8Char> capList)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+GCAP"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT+GCAP"), 3000).SetTo(sptr))
 		return 0;
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+GCAP: ")))
 	{

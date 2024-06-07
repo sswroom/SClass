@@ -33,7 +33,7 @@ Int32 IO::FileVersion::GetFirstLang()
 	return 0;
 }
 
-UTF8Char *IO::FileVersion::GetInternalName(Int32 lang, UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetInternalName(Int32 lang, UnsafeArray<UTF8Char> sbuff)
 {
 	WChar wbuff2[256];
 	WChar *wptr;
@@ -49,7 +49,7 @@ UTF8Char *IO::FileVersion::GetInternalName(Int32 lang, UTF8Char *sbuff)
 	return 0;
 }
 
-UTF8Char *IO::FileVersion::GetFileDescription(Int32 lang, UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetFileDescription(Int32 lang, UnsafeArray<UTF8Char> sbuff)
 {
 	WChar wbuff2[256];
 	WChar *wptr;

@@ -17,8 +17,8 @@ namespace IO
 		~FileVersion();
 
 		Int32 GetFirstLang();
-		UTF8Char *GetInternalName(Int32 lang, UTF8Char *sbuff);
-		UTF8Char *GetFileDescription(Int32 lang, UTF8Char *sbuff);
+		UnsafeArrayOpt<UTF8Char> GetInternalName(Int32 lang, UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetFileDescription(Int32 lang, UnsafeArray<UTF8Char> sbuff);
 
 		static FileVersion *Open(const UTF8Char *file);
 	};

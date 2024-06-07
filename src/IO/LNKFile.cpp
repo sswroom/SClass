@@ -78,7 +78,7 @@ Data::Timestamp IO::LNKFile::GetWriteTime()
 	return Data::Timestamp::FromFILETIME(&this->buff[44], Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-UTF8Char *IO::LNKFile::GetLocalBasePath(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetLocalBasePath(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;
@@ -102,7 +102,7 @@ UTF8Char *IO::LNKFile::GetLocalBasePath(UTF8Char *sbuff)
 	}
 }
 
-UTF8Char *IO::LNKFile::GetNameString(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetNameString(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;
@@ -124,7 +124,7 @@ UTF8Char *IO::LNKFile::GetNameString(UTF8Char *sbuff)
 	return sbuff;
 }
 
-UTF8Char *IO::LNKFile::GetRelativePath(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetRelativePath(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;
@@ -150,7 +150,7 @@ UTF8Char *IO::LNKFile::GetRelativePath(UTF8Char *sbuff)
 	return sbuff;
 }
 
-UTF8Char *IO::LNKFile::GetWorkingDirectory(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetWorkingDirectory(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;
@@ -180,7 +180,7 @@ UTF8Char *IO::LNKFile::GetWorkingDirectory(UTF8Char *sbuff)
 	return sbuff;
 }
 
-UTF8Char *IO::LNKFile::GetCommandLineArguments(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetCommandLineArguments(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;
@@ -214,7 +214,7 @@ UTF8Char *IO::LNKFile::GetCommandLineArguments(UTF8Char *sbuff)
 	return sbuff;
 }
 
-UTF8Char *IO::LNKFile::GetIconLocation(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetIconLocation(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;
@@ -252,7 +252,7 @@ UTF8Char *IO::LNKFile::GetIconLocation(UTF8Char *sbuff)
 	return sbuff;
 }
 
-UTF8Char* IO::LNKFile::GetTarget(UTF8Char* sbuff)
+UnsafeArrayOpt<UTF8Char> IO::LNKFile::GetTarget(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->buff == 0)
 		return 0;

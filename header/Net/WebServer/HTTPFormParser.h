@@ -16,9 +16,9 @@ namespace Net
 			HTTPFormParser(Net::WebServer::IWebRequest *req, Int32 codePage);
 			~HTTPFormParser();
 
-			OSInt GetStrCount();
-			const UTF8Char *GetStrName(OSInt index);
-			const UTF8Char *GetStrValue(const UTF8Char *strName);
+			UOSInt GetStrCount() const;
+			UnsafeArrayOpt<const UTF8Char> GetStrName(UOSInt index);
+			UnsafeArrayOpt<const UTF8Char> GetStrValue(const UTF8Char *strName);
 		};
 	}
 }

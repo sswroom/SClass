@@ -16,7 +16,7 @@ namespace IO
 				IO::ViewFileBuffer *file;
 				UInt64 fileLength;
 				UInt64 currentOffset;
-				Text::CString fileName;
+				Text::CStringNN fileName;
 				NN<Text::String> fullName;
 				UInt8 *fptr;
 

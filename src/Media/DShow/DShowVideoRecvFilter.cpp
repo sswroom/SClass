@@ -17,7 +17,7 @@ class VideoRecvFilter : public CBaseVideoRenderer
 private:
 	Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr;
 	void *userObj;
-	Media::CS::CSConverter *csConv;
+	Optional<Media::CS::CSConverter> csConv;
 	UInt8 *frameBuff;
 	Int32 frameW;
 	Int32 frameH;
@@ -36,7 +36,7 @@ public:
 
 	virtual ~VideoRecvFilter()
 	{
-		SDEL_CLASS(this->csConv);
+		this->csConv.Delete();
 		if (this->frameBuff)
 		{
 			MemFree(this->frameBuff);
@@ -62,9 +62,9 @@ public:
 				{
 					if (format->bmiHeader.biCompression == csList.GetItem(i))
 					{
-						SDEL_CLASS(this->csConv);
+						this->csConv.Delete();
 						this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, 0);
-						if (this->csConv)
+						if (this->csConv.NotNull())
 						{
 							this->frameW = format->bmiHeader.biWidth;
 							this->frameH = format->bmiHeader.biHeight;
@@ -98,10 +98,10 @@ public:
 						}
 						else
 						{
-							SDEL_CLASS(this->csConv);
+							this->csConv.Delete();
 							this->csConv = Media::CS::CSConverter::NewConverter(format->bmiHeader.biCompression, format->bmiHeader.biBitCount, Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount), color, 0, 32, Media::PF_B8G8R8A8, color, Media::ColorProfile::YUVT_BT709, 0);
 						}
-						if (this->csConv)
+						if (this->csConv.NotNull())
 						{
 							this->frameW = format->bmiHeader.biWidth;
 							this->frameH = format->bmiHeader.biHeight;
@@ -122,13 +122,14 @@ public:
 
 	virtual HRESULT DoRenderSample(IMediaSample *pMediaSample)
 	{
-		if (this->csConv)
+		NN<Media::CS::CSConverter> csConv;
+		if (this->csConv.SetTo(csConv))
 		{
 			BYTE *pSample = 0;
 			pMediaSample->GetPointer(&pSample);
 			if (pSample)
 			{
-				this->csConv->ConvertV2(&pSample, this->frameBuff, this->frameW, this->frameH, this->frameW, this->frameH, this->frameW << 2, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				csConv->ConvertV2(&pSample, this->frameBuff, this->frameW, this->frameH, this->frameW, this->frameH, this->frameW << 2, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				LONGLONG startTime;
 				LONGLONG endTime;
 				pMediaSample->GetMediaTime(&startTime, &endTime);

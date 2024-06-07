@@ -64,7 +64,7 @@ void UI::GUICalendar::GetSelectedTime(NN<Data::DateTime> dt)
 	dt->SetValueSYSTEMTIME(&t);
 }
 
-void UI::GUICalendar::HandleDateChange(DateChangedHandler hdlr, void *obj)
+void UI::GUICalendar::HandleDateChange(DateChangedHandler hdlr, AnyType obj)
 {
 	this->dateChangedHdlrs.Add(hdlr);
 	this->dateChangedObjs.Add(obj);

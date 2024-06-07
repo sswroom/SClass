@@ -28,7 +28,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			NN<Media::ColorManagerSess> colorSess;
 			Media::MediaPlayer *player;
-			Media::MediaFile *currFile;
+			Optional<Media::MediaFile> currFile;
 			Media::Playlist *playlist;
 			Media::IPBControl *currPBC;
 			Media::ChapterInfo *currChapInfo;
@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm);
 		public:
 			Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
-			Bool OpenVideo(Media::MediaFile *mf);
+			Bool OpenVideo(NN<Media::MediaFile> mf);
 		private:
 			void SwitchAudio(UOSInt audIndex);
 			void CloseFile();
