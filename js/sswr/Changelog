@@ -1,5 +1,7 @@
 1.6.4
 -Support geometry.Polyline
+-Fixed geometry.Polygon.insideOrTouch
+-Fixed geometry.MultiGeometry.insideOrTouch
 -leaflet.createFromKML support group in group
 -parser.parseKMLContainer hide Schema message
 -Added data.Timestamp.toDate()
@@ -7,6 +9,7 @@
 -Added data.DateTimeUtil.ticks2Weekday()
 -Added data.LocalDate.getWeekday()
 -Added data.StringMap and data.NumberMap interface type
+-Fixed math.GeoJSON.parseGeometry
 
 1.6.3
 -Added hash.MD5

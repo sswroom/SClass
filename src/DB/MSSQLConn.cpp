@@ -23,6 +23,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 		NN<Text::String> driverName;
 		if (!GetDriverNameNew().SetTo(driverName))
 		{
+			log->LogMessage(CSTR("No suitable MSSQL driver found"), IO::LogHandler::LogLevel::Raw);
 			return 0;
 		}
 		if (port == 0)
@@ -85,6 +86,12 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 			}
 	//		connStr.AppendC(UTF8STRC(";Timeout=60"));
 	//		connStr.AppendC(UTF8STRC(";connect timeout=30"));
+		}
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append(CSTR("Using Driver "));
+			sb.Append(driverName);
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
 		driverName->Release();
 		NEW_CLASS(conn, DB::ODBCConn(connStr.ToCString(), CSTR("MSSQLConn"), log));
