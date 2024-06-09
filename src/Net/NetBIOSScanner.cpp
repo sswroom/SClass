@@ -4,20 +4,20 @@
 #include "Net/NetBIOSUtil.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::NetBIOSScanner> me = userData.GetNN<Net::NetBIOSScanner>();
 	UInt32 sortableIP = ReadMUInt32(addr->addr);
-	if (dataSize < 56)
+	if (data.GetSize() < 56)
 	{
 		return;
 	}
-	UInt16 nQuestions = ReadMUInt16(&buff[4]);
-	UInt16 nAnswer = ReadMUInt16(&buff[6]);
-	UInt16 dataLen = ReadMUInt16(&buff[54]);
-	if (nQuestions == 0 && nAnswer == 1 && dataSize >= 56 + (UOSInt)dataLen)
+	UInt16 nQuestions = ReadMUInt16(&data[4]);
+	UInt16 nAnswer = ReadMUInt16(&data[6]);
+	UInt16 dataLen = ReadMUInt16(&data[54]);
+	if (nQuestions == 0 && nAnswer == 1 && data.GetSize() >= 56 + (UOSInt)dataLen)
 	{
-		UInt8 nName = buff[56];
+		UInt8 nName = data[56];
 		if (dataLen >= 7 + nName * 18)
 		{
 			NN<NameAnswer> ans;
@@ -28,11 +28,11 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::Addres
 				ans->sortableIP = sortableIP;
 				ans->names = 0;
 				ans->namesCnt = 0;
-				ans->ttl = ReadMUInt32(&buff[50]);
-				MemCopyNO(ans->unitId, &buff[57 + nName * 18], 6);
+				ans->ttl = ReadMUInt32(&data[50]);
+				MemCopyNO(ans->unitId, &data[57 + nName * 18], 6);
 				me->answers.Put(sortableIP, ans);
 			}
-			const UInt8 *namePtr = &buff[57];
+			const UInt8 *namePtr = &data[57];
 			NameEntry *ent;
 			if (ans->names)
 			{

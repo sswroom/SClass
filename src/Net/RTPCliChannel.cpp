@@ -18,29 +18,29 @@
 
 #include <stdio.h>
 
-void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<ChannelData> chData = userData.GetNN<ChannelData>();
 //	WChar wbuff[32];
 
-	if (dataSize < 12)
+	if (data.GetSize() < 12)
 		return;
-	Int32 v = buff[0] >> 6;
+	Int32 v = data[0] >> 6;
 	if (v != 2)
 		return;
-	if (buff[0] & 0x20) //padding
+	if (data[0] & 0x20) //padding
 	{
-		dataSize -= buff[dataSize - 1];
-		if (dataSize < 12)
+		data = data.WithSize(data.GetSize() - data[data.GetSize() - 1]);
+		if (data.GetSize() < 12)
 			return;
 	}
 //	Bool extension = (buff[0] & 0x10) != 0;
 //	Int32 csrcCnt = buff[0] & 15;
-	Bool marker = (buff[1] & 0x80) != 0;
-	Int32 payloadType = buff[1] & 0x7f;
-	UInt32 seqNum = ReadMUInt16(&buff[2]);
-	UInt32 timestamp = ReadMUInt32(&buff[4]);
-	chData->lastSSRC = ReadMUInt32(&buff[8]);
+	Bool marker = (data[1] & 0x80) != 0;
+	Int32 payloadType = data[1] & 0x7f;
+	UInt32 seqNum = ReadMUInt16(&data[2]);
+	UInt32 timestamp = ReadMUInt32(&data[4]);
+	chData->lastSSRC = ReadMUInt32(&data[8]);
 
 	if (marker)
 	{
@@ -97,24 +97,24 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 		}
 		chData->packBuff[minIndex].payloadType = payloadType;
 		chData->packBuff[minIndex].seqNum = seqNum;
-		chData->packBuff[minIndex].dataSize  = dataSize - 12;
+		chData->packBuff[minIndex].dataSize  = data.GetSize() - 12;
 		chData->packBuff[minIndex].ts = timestamp;
-		MemCopyNO(chData->packBuff[minIndex].buff, &buff[12], dataSize - 12);
+		MemCopyNO(chData->packBuff[minIndex].buff, &data[12], data.GetSize() - 12);
 	}
 	else
 	{
 		chData->packBuff[chData->packCnt].payloadType = payloadType;
 		chData->packBuff[chData->packCnt].seqNum = seqNum;
-		chData->packBuff[chData->packCnt].dataSize  = dataSize - 12;
+		chData->packBuff[chData->packCnt].dataSize  = data.GetSize() - 12;
 		chData->packBuff[chData->packCnt].ts = timestamp;
-		MemCopyNO(chData->packBuff[chData->packCnt].buff, &buff[12], dataSize - 12);
+		MemCopyNO(chData->packBuff[chData->packCnt].buff, &data[12], data.GetSize() - 12);
 		chData->packCnt++;
 	}
 
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<ChannelData> chData = userData.GetNN<ChannelData>();
 	UInt8 tmpBuff[100];
@@ -123,16 +123,16 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 	UOSInt size = 0;
 	UOSInt ofst = 0;
 	UOSInt i;
-	while (ofst < dataSize)
+	while (ofst < data.GetSize())
 	{
-		size = (UOSInt)(ReadMUInt16(&buff[ofst + 2]) + 1) << 2;
-		if (size + ofst > dataSize)
+		size = (UOSInt)(ReadMUInt16(&data[ofst + 2]) + 1) << 2;
+		if (size + ofst > data.GetSize())
 		{
 			break;
 		}
-		else if ((buff[ofst + 0] & 0xc0) == 0x80)
+		else if ((data[ofst + 0] & 0xc0) == 0x80)
 		{
-			switch (buff[ofst + 1])
+			switch (data[ofst + 1])
 			{
 			case 200: //SR - Sender Report
 				{
@@ -140,19 +140,19 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 					sb.AppendC(UTF8STRC("SR: Len="));
 					sb.AppendUOSInt(size);
 					sb.AppendC(UTF8STRC(",RC="));
-					sb.AppendU32(buff[ofst +0] & 0x1f);
+					sb.AppendU32(data[ofst +0] & 0x1f);
 					sb.AppendC(UTF8STRC(",SSRC="));
-					sb.AppendI32(ReadMInt32(&buff[ofst + 4]));
+					sb.AppendI32(ReadMInt32(&data[ofst + 4]));
 					if (size >= 28)
 					{
 						sb.AppendC(UTF8STRC(",NTP ts="));
-						sb.AppendTSNoZone(Data::Timestamp::FromNTPTime(ReadMUInt32(&buff[ofst + 8]), ReadMUInt32(&buff[ofst + 12]), 0));
+						sb.AppendTSNoZone(Data::Timestamp::FromNTPTime(ReadMUInt32(&data[ofst + 8]), ReadMUInt32(&data[ofst + 12]), 0));
 						sb.AppendC(UTF8STRC(",RTP ts="));
-						sb.AppendI32(ReadMInt32(&buff[ofst + 16]));
+						sb.AppendI32(ReadMInt32(&data[ofst + 16]));
 						sb.AppendC(UTF8STRC(",nPacket="));
-						sb.AppendI32(ReadMInt32(&buff[ofst + 20]));
+						sb.AppendI32(ReadMInt32(&data[ofst + 20]));
 						sb.AppendC(UTF8STRC(",nOctet="));
-						sb.AppendI32(ReadMInt32(&buff[ofst + 24]));
+						sb.AppendI32(ReadMInt32(&data[ofst + 24]));
 					}
 					sb.AppendC(UTF8STRC("\r\n"));
 					printf("%s", sb.ToPtr());
@@ -162,20 +162,20 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 				tmpBuff[1] = 201;
 				tmpBuff[2] = 0;
 				tmpBuff[3] = 7;
-				WriteMInt32(&tmpBuff[4], ReadMInt32(&buff[ofst + 4]));
-				WriteMInt32(&tmpBuff[8], ReadMInt32(&buff[ofst + 4]));
+				WriteMInt32(&tmpBuff[4], ReadMInt32(&data[ofst + 4]));
+				WriteMInt32(&tmpBuff[8], ReadMInt32(&data[ofst + 4]));
 				tmpBuff[12] = 0;
 				tmpBuff[13] = 0xff;
 				tmpBuff[14] = 0xff;
 				tmpBuff[15] = 0xff;
 				WriteMUInt32(&tmpBuff[16], (chData->lastSeqNumHi << 16) | chData->lastSeqNumLo);
 				WriteMInt32(&tmpBuff[20], 0);
-				WriteMInt32(&tmpBuff[24], ReadMInt32(&buff[ofst + 10]));
+				WriteMInt32(&tmpBuff[24], ReadMInt32(&data[ofst + 10]));
 				WriteMInt32(&tmpBuff[28], 0);
 
 				tmpBuff[32] = 0x81;
 				tmpBuff[33] = 202;
-				WriteMInt32(&tmpBuff[36], ReadMInt32(&buff[ofst + 4]));
+				WriteMInt32(&tmpBuff[36], ReadMInt32(&data[ofst + 4]));
 				{
 					i = 40;
 					tmpBuff[i] = 1;
@@ -202,14 +202,14 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 					sb.AppendC(UTF8STRC("SDES: Len="));
 					sb.AppendUOSInt(size);
 					sb.AppendC(UTF8STRC(",RC="));
-					sb.AppendU32(buff[ofst + 0] & 0x1f);
+					sb.AppendU32(data[ofst + 0] & 0x1f);
 					sb.AppendC(UTF8STRC(",SSRC="));
-					sb.AppendI32(ReadMInt32(&buff[ofst + 4]));
+					sb.AppendI32(ReadMInt32(&data[ofst + 4]));
 					{
 						i = 8;
 						while (i < size)
 						{
-							switch (buff[ofst + i])
+							switch (data[ofst + i])
 							{
 							case 0:
 							default:
@@ -217,38 +217,38 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 								break;
 							case 1:
 								sb.AppendC(UTF8STRC(", CNAME="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 2:
 								sb.AppendC(UTF8STRC(", NAME="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 3:
 								sb.AppendC(UTF8STRC(", EMAIL="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 4:
 								sb.AppendC(UTF8STRC(", PHONE="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 5:
 								sb.AppendC(UTF8STRC(", LOC="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 6:
 								sb.AppendC(UTF8STRC(", TOOL="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 7:
 								sb.AppendC(UTF8STRC(", NOTE="));
-								sb.AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
-								i += (UOSInt)(buff[ofst + i + 1] + 2);
+								sb.AppendC((const UTF8Char*)&data[ofst + i + 2], data[ofst + i + 1]);
+								i += (UOSInt)(data[ofst + i + 1] + 2);
 								break;
 							case 8:
 								sb.AppendC(UTF8STRC(", PRIV="));

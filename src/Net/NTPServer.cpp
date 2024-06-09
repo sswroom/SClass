@@ -9,14 +9,14 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::NTPServer> me = userData.GetNN<Net::NTPServer>();
 	UInt8 repBuff[48];
-	if (dataSize >= 48)
+	if (data.GetSize() >= 48)
 	{
-		UInt8 vn = (buff[0] >> 3) & 7;
-		UInt8 mode = buff[0] & 7;
+		UInt8 vn = (data[0] >> 3) & 7;
+		UInt8 mode = data[0] & 7;
 		if (mode == 3)
 		{
 			Data::DateTime dt;
@@ -25,13 +25,13 @@ void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 			currTime = dt.ToTicks();
 			repBuff[0] = (UInt8)((vn << 3) | 4);
 			repBuff[1] = 2; //Secondary Server
-			repBuff[2] = buff[2]; //Poll
+			repBuff[2] = data[2]; //Poll
 			repBuff[3] = 3;
 			WriteMInt32(&repBuff[4], 0); //Root Delay
 			WriteMInt32(&repBuff[8], 0); //Root Dispersion
 			WriteMInt32(&repBuff[12], (Int32)(currTime & 0xffffffff)); //Reference ID
 			WriteTime(&repBuff[16], me->refTime); //Reference Timestamp
-			WriteNInt64(&repBuff[24], ReadNInt64(&buff[40])); //Origin Timestamp
+			WriteNInt64(&repBuff[24], ReadNInt64(&data[40])); //Origin Timestamp
 			WriteTime(&repBuff[32], currTime + me->timeDiff);
 			WriteTime(&repBuff[40], currTime + me->timeDiff);
 			me->svr->SendTo(addr, port, repBuff, 48);

@@ -4,7 +4,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/SNMPUtil.h"
 
-Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, OutParam<Int32> reqId, NN<Data::ArrayListNN<BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(Data::ByteArrayR pdu, OutParam<Int32> reqId, NN<Data::ArrayListNN<BindingItem>> itemList)
 {
 	UOSInt i;
 	if (pdu[0] != 0x30)
@@ -17,13 +17,13 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 	UOSInt bindingEnd;
 	UInt32 pduLen;
 	UInt32 err;
-	i = Net::ASN1Util::PDUParseLen(pdu, 1, pduSize, pduLen);
-	if (i > pduSize)
+	i = Net::ASN1Util::PDUParseLen(pdu.Arr(), 1, pdu.GetSize(), pduLen);
+	if (i > pdu.GetSize())
 	{
 		reqId.Set(0);
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
-	if (i + pduLen != pduSize)
+	if (i + pduLen != pdu.GetSize())
 	{
 		reqId.Set(0);
 		return Net::SNMPUtil::ES_UNKRESP;
@@ -41,13 +41,13 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			reqId.Set(0);
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			reqId.Set(0);
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		if (i + pduLen >= pduSize)
+		if (i + pduLen >= pdu.GetSize())
 		{
 			reqId.Set(0);
 			return Net::SNMPUtil::ES_UNKRESP;
@@ -58,13 +58,13 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			reqId.Set(0);
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			reqId.Set(0);
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		if (i + pduLen != pduSize)
+		if (i + pduLen != pdu.GetSize())
 		{
 			reqId.Set(0);
 			return Net::SNMPUtil::ES_UNKRESP;
@@ -118,8 +118,8 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -128,23 +128,23 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		if (i + pduLen != pduSize)
+		if (i + pduLen != pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		while (i < pduSize)
+		while (i < pdu.GetSize())
 		{
 			if (pdu[i] != 0x30)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
-			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, bindingLen);
-			if (i > pduSize)
+			i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), bindingLen);
+			if (i > pdu.GetSize())
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -153,8 +153,8 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
-			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-			if (i > pduSize || pduLen > 64)
+			i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+			if (i > pdu.GetSize() || pduLen > 64)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -172,7 +172,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
 			item->valType = pdu[i];
-			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
+			i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
 			if (i + pduLen != bindingEnd)
 			{
 				MemFreeNN(item);
@@ -200,7 +200,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseMessage(const UInt8 *pdu, UOSI
 	}
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(Data::ByteArrayR pdu, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList)
 {
 	UOSInt i;
 	if (pdu[0] != 0x30)
@@ -211,12 +211,12 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 	UInt32 bindingLen;
 	UOSInt bindingEnd;
 	UInt32 pduLen;
-	i = Net::ASN1Util::PDUParseLen(pdu, 1, pduSize, pduLen);
-	if (i > pduSize)
+	i = Net::ASN1Util::PDUParseLen(pdu.Arr(), 1, pdu.GetSize(), pduLen);
+	if (i > pdu.GetSize())
 	{
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
-	if (i + pduLen != pduSize)
+	if (i + pduLen != pdu.GetSize())
 	{
 		return Net::SNMPUtil::ES_UNKRESP;
 	}
@@ -231,12 +231,12 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		if (i + pduLen >= pduSize)
+		if (i + pduLen >= pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -253,12 +253,12 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		if (i + pduLen != pduSize)
+		if (i + pduLen != pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -266,8 +266,8 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize || pduLen > 64)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize() || pduLen > 64)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
@@ -278,7 +278,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
 		if (pduLen != 4)
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
@@ -374,23 +374,23 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-		if (i > pduSize)
+		i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+		if (i > pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		if (i + pduLen != pduSize)
+		if (i + pduLen != pdu.GetSize())
 		{
 			return Net::SNMPUtil::ES_UNKRESP;
 		}
-		while (i < pduSize)
+		while (i < pdu.GetSize())
 		{
 			if (pdu[i] != 0x30)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
-			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, bindingLen);
-			if (i > pduSize)
+			i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), bindingLen);
+			if (i > pdu.GetSize())
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -399,8 +399,8 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
-			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
-			if (i > pduSize || pduLen > 64)
+			i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
+			if (i > pdu.GetSize() || pduLen > 64)
 			{
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
@@ -418,7 +418,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 				return Net::SNMPUtil::ES_UNKRESP;
 			}
 			item->valType = pdu[i];
-			i = Net::ASN1Util::PDUParseLen(pdu, i + 1, pduSize, pduLen);
+			i = Net::ASN1Util::PDUParseLen(pdu.Arr(), i + 1, pdu.GetSize(), pduLen);
 			if (i + pduLen != bindingEnd)
 			{
 				MemFreeNN(item);

@@ -18,9 +18,9 @@ namespace Net
 		Bool replyError;
 		UOSInt recvSize;
 		IO::Stream *recvStm;
-		Sync::Event *evt;
+		Sync::Event evt;
 
-		static void __stdcall OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 	public:
 		TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<IO::LogTool> log);
 		~TFTPClient();

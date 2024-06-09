@@ -15,14 +15,14 @@
 
 IO::ConsoleWriter *console;
 
-void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("UDP: "));
 	sptr = Net::SocketUtil::GetAddrName(sptr, addr, port).Or(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", Size = "));
-	sptr = Text::StrUOSInt(sptr, dataSize);
+	sptr = Text::StrUOSInt(sptr, data.GetSize());
 	console->WriteLine(CSTRP(sbuff, sptr));
 }
 

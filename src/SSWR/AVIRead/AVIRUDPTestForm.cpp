@@ -9,16 +9,16 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	if (me->autoReply)
 	{
-		me->udp->SendTo(addr, port, buff, dataSize);
+		me->udp->SendTo(addr, port, data.Arr(), data.GetSize());
 	}
 	Sync::MutexUsage mutUsage(me->mut);
 	me->recvCnt++;
-	me->recvSize += dataSize;
+	me->recvSize += data.GetSize();
 	mutUsage.EndUse();
 }
 

@@ -184,31 +184,31 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NN<Sync::Thread> thr
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devInfo;
-	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
+	if (data.GetSize() >= 6 && data[0] == 'S' && data[1] == 'm')
 	{
 		UInt8 calcVal[2];
-		me->dataCRC->Calc(buff, dataSize - 2, calcVal);
-		if (calcVal[0] == (buff[dataSize - 2] ^ 0x12) && calcVal[1] == (buff[dataSize - 1] ^ 0x34))
+		me->dataCRC->Calc(data.Arr(), data.GetSize() - 2, calcVal);
+		if (calcVal[0] == (data[data.GetSize() - 2] ^ 0x12) && calcVal[1] == (data[data.GetSize() - 1] ^ 0x34))
 		{
-			switch (ReadUInt16(&buff[2]))
+			switch (ReadUInt16(&data[2]))
 			{
 			case 0: //Readings
-				if (dataSize >= 42)
+				if (data.GetSize() >= 42)
 				{
-					Int32 profileId = ReadInt32(&buff[4]);
-					Int64 clientId = ReadInt64(&buff[8]);
-					Int64 recTime = ReadInt64(&buff[16]);
-					UInt32 digitalVals = ReadUInt32(&buff[24]);
-//					Int32 reportInterval = ReadInt32(&buff[28]);
-//					Int32 kaInterval = ReadInt32(&buff[32]);
-					UInt32 nReading = buff[36];
-					UInt32 nDigital = buff[37];
-					UInt32 nOutput = buff[38];
-					if (dataSize >= 42 + 16 * nReading)
+					Int32 profileId = ReadInt32(&data[4]);
+					Int64 clientId = ReadInt64(&data[8]);
+					Int64 recTime = ReadInt64(&data[16]);
+					UInt32 digitalVals = ReadUInt32(&data[24]);
+//					Int32 reportInterval = ReadInt32(&data[28]);
+//					Int32 kaInterval = ReadInt32(&data[32]);
+					UInt32 nReading = data[36];
+					UInt32 nDigital = data[37];
+					UInt32 nOutput = data[38];
+					if (data.GetSize() >= 42 + 16 * nReading)
 					{
 						me->UDPSendReadingRecv(addr, port, recTime);
 						if (me->DevGetOrAdd(clientId).SetTo(devInfo))
@@ -216,15 +216,15 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 							devInfo->udpAddr = addr.Ptr()[0];
 							devInfo->udpPort = port;
 
-							me->DeviceRecvReading(devInfo, recTime, nDigital, nReading, nOutput, digitalVals, (ReadingInfo*)&buff[40], profileId, *(UInt32*)addr->addr, port);
+							me->DeviceRecvReading(devInfo, recTime, nDigital, nReading, nOutput, digitalVals, (ReadingInfo*)&data[40], profileId, *(UInt32*)addr->addr, port);
 						}
 					}
 				}
 				break;
 			case 10:
-				if (dataSize >= 34)
+				if (data.GetSize() >= 34)
 				{
-					Int64 clientId = ReadInt64(&buff[4]);
+					Int64 clientId = ReadInt64(&data[4]);
 					NN<DeviceInfo> dev;
 					if (me->DevGetOrAdd(clientId).SetTo(dev))
 					{
@@ -237,10 +237,10 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 						{
 							MemFree(dev->photoBuffRecv);
 						}
-						dev->photoTime = ReadInt64(&buff[12]);
-						dev->photoSize = ReadUInt32(&buff[20]);
-						dev->photoFmt = ReadInt32(&buff[24]);
-						dev->photoPacketSize = ReadUInt32(&buff[28]);
+						dev->photoTime = ReadInt64(&data[12]);
+						dev->photoSize = ReadUInt32(&data[20]);
+						dev->photoFmt = ReadInt32(&data[24]);
+						dev->photoPacketSize = ReadUInt32(&data[28]);
 						dev->photoBuff = MemAlloc(UInt8, dev->photoSize);
 						dev->photoBuffRecv = MemAlloc(UInt8, (dev->photoSize / dev->photoPacketSize) + 1);
 						MemClear(dev->photoBuffRecv, (dev->photoSize / dev->photoPacketSize) + 1);
@@ -252,14 +252,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 				}
 				break;
 			case 12:
-				if (dataSize >= 26)
+				if (data.GetSize() >= 26)
 				{
-					Int64 clientId = ReadInt64(&buff[4]);
+					Int64 clientId = ReadInt64(&data[4]);
 					NN<DeviceInfo> dev;
 					if (me->DevGet(clientId).SetTo(dev))
 					{
-						Int64 photoTime = ReadInt64(&buff[12]);
-						UInt32 seq = ReadUInt32(&buff[20]);
+						Int64 photoTime = ReadInt64(&data[12]);
+						UInt32 seq = ReadUInt32(&data[20]);
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
 						if (dev->photoBuff && dev->photoTime == photoTime)
 						{
@@ -269,9 +269,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 							{
 								currSize = dev->photoSize - currOfst;
 							}
-							if (currOfst < dev->photoSize && currSize == dataSize - 26)
+							if (currOfst < dev->photoSize && currSize == data.GetSize() - 26)
 							{
-								MemCopyNO(&dev->photoBuff[currOfst], &buff[24], dataSize - 26);
+								MemCopyNO(&dev->photoBuff[currOfst], &data[24], data.GetSize() - 26);
 								dev->photoBuffRecv[seq] = 1;
 								me->log.LogMessage(CSTR("Received photo packet, success"), IO::LogHandler::LogLevel::Raw);
 							}
@@ -292,14 +292,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 				}
 				break;
 			case 14:
-				if (dataSize >= 26)
+				if (data.GetSize() >= 26)
 				{
-					Int64 clientId = ReadInt64(&buff[4]);
+					Int64 clientId = ReadInt64(&data[4]);
 					NN<DeviceInfo> dev;
 					if (me->DevGet(clientId).SetTo(dev))
 					{
 						Bool succ = false;
-						Int64 photoTime = ReadInt64(&buff[12]);
+						Int64 photoTime = ReadInt64(&data[12]);
 						Sync::RWMutexUsage mutUsage(dev->mut, true);
 						if (dev->photoBuff && dev->photoTime == photoTime)
 						{
@@ -336,49 +336,49 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 				}
 				break;
 			case 16:
-				if (dataSize > 14)
+				if (data.GetSize() > 14)
 				{
-					Int64 cliId = ReadInt64(&buff[4]);
-					NN<Text::String> name = Text::String::New(&buff[12], dataSize - 14);
+					Int64 cliId = ReadInt64(&data[4]);
+					NN<Text::String> name = Text::String::New(&data[12], data.GetSize() - 14);
 					me->DeviceSetName(cliId, name);
 					name->Release();
 				}
 				break;
 			case 18:
-				if (dataSize > 14)
+				if (data.GetSize() > 14)
 				{
-					Int64 cliId = ReadInt64(&buff[4]);
-					NN<Text::String> name = Text::String::New(&buff[12], dataSize - 14);
+					Int64 cliId = ReadInt64(&data[4]);
+					NN<Text::String> name = Text::String::New(&data[12], data.GetSize() - 14);
 					me->DeviceSetPlatform(cliId, name);
 					name->Release();
 				}
 				break;
 			case 20:
-				if (dataSize > 14)
+				if (data.GetSize() > 14)
 				{
-					Int64 cliId = ReadInt64(&buff[4]);
-					NN<Text::String> name = Text::String::New(&buff[12], dataSize - 14);
+					Int64 cliId = ReadInt64(&data[4]);
+					NN<Text::String> name = Text::String::New(&data[12], data.GetSize() - 14);
 					me->DeviceSetCPUName(cliId, name);
 					name->Release();
 				}
 				break;
 			case 22:
-				if (dataSize > 22)
+				if (data.GetSize() > 22)
 				{
-					Int64 cliId = ReadInt64(&buff[4]);
-					UInt32 index = ReadUInt32(&buff[12]);
-					UInt16 sensorId = ReadUInt16(&buff[16]);
-					UInt16 readingId = ReadUInt16(&buff[18]);
-					UnsafeArray<const UTF8Char> name = Text::StrCopyNewC(&buff[20], dataSize - 22).Ptr();
+					Int64 cliId = ReadInt64(&data[4]);
+					UInt32 index = ReadUInt32(&data[12]);
+					UInt16 sensorId = ReadUInt16(&data[16]);
+					UInt16 readingId = ReadUInt16(&data[18]);
+					UnsafeArray<const UTF8Char> name = Text::StrCopyNewC(&data[20], data.GetSize() - 22).Ptr();
 					me->DeviceSetReading(cliId, index, sensorId, readingId, name);
 					Text::StrDelNew(name);
 				}
 				break;
 			case 24:
-				if (dataSize >= 22)
+				if (data.GetSize() >= 22)
 				{
-					Int64 cliId = ReadInt64(&buff[4]);
-					Int64 version = ReadInt64(&buff[12]);
+					Int64 cliId = ReadInt64(&data[4]);
+					Int64 version = ReadInt64(&data[12]);
 					me->DeviceSetVersion(cliId, version);
 				}
 				break;
@@ -386,9 +386,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("Received unknown packet func "));
-					sb.AppendU16(ReadUInt16(&buff[2]));
+					sb.AppendU16(ReadUInt16(&data[2]));
 					sb.AppendC(UTF8STRC(", size = "));
-					sb.AppendUOSInt(dataSize);
+					sb.AppendUOSInt(data.GetSize());
 					me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
 				}
 				break;
@@ -397,14 +397,14 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::So
 	}
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
-	if (dataSize < 4)
+	if (data.GetSize() < 4)
 		return;
-	if (buff[0] == 'S' && buff[1] == 'm' && buff[2] == 'P' && buff[3] == 'M')
+	if (data[0] == 'S' && data[1] == 'm' && data[2] == 'P' && data[3] == 'M')
 	{
-		if (dataSize >= 25)
+		if (data.GetSize() >= 25)
 		{
 			Text::CStringNN pwd = me->notifyPwd->ToCString();
 			UInt32 crcVal;
@@ -412,17 +412,17 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::
 				Sync::MutexUsage mutUsage(me->notifyCRCMut);
 				me->notifyCRC.Clear();
 				me->notifyCRC.Calc(pwd.v, pwd.leng);
-				me->notifyCRC.Calc(buff, dataSize - 4);
+				me->notifyCRC.Calc(data.Arr(), data.GetSize() - 4);
 				crcVal = me->notifyCRC.GetValueU32();
 			}
-			if (crcVal == ReadMUInt32(&buff[dataSize - 4]))
+			if (crcVal == ReadMUInt32(&data[data.GetSize() - 4]))
 			{
-				Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&buff[4]), ReadUInt32(&buff[12])), 0);
+				Data::Timestamp ts = Data::Timestamp(Data::TimeInstant(ReadInt64(&data[4]), ReadUInt32(&data[12])), 0);
 				Data::Timestamp currTime = Data::Timestamp::UtcNow();
 				Int64 t = currTime.DiffSec(ts);
 				if (t >= -180 && t <= 180)
 				{
-					me->NewNotify(addr, port, ts, buff[16], ReadUInt32(&buff[17]), Text::CStringNN(&buff[21], dataSize - 25));
+					me->NewNotify(addr, port, ts, data[16], ReadUInt32(&data[17]), Text::CStringNN(&data[21], data.GetSize() - 25));
 				}
 				else
 				{

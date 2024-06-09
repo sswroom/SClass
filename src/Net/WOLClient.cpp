@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Net/WOLClient.h"
 
-void __stdcall Net::WOLClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::WOLClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 }
 

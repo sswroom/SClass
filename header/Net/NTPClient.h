@@ -16,7 +16,7 @@ namespace Net
 		Data::Timestamp resultTime;
 		Bool hasResult;
 
-		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 	public:
 		NTPClient(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);
 		~NTPClient();

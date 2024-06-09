@@ -7,30 +7,30 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-void __stdcall Net::RTPSvrChannel::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPSvrChannel::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
 
-	if (dataSize < 12)
+	if (data.GetSize() < 12)
 	{
 		return;
 	}
-	Int32 v = buff[0] >> 6;
+	Int32 v = data[0] >> 6;
 	if (v != 2)
 		return;
-	if (buff[0] & 0x20) //padding
+	if (data[0] & 0x20) //padding
 	{
-		dataSize -= buff[dataSize - 1];
-		if (dataSize < 12)
+		data = data.WithSize(data.GetSize() - data[data.GetSize() - 1]);
+		if (data.GetSize() < 12)
 			return;
 	}
-/*	Bool extension = (buff[0] & 0x10) != 0;
-	Int32 csrcCnt = buff[0] & 15;
-	Bool marker = (buff[1] & 0x80) != 0;
-	Int32 payloadType = buff[1] & 0x7f;
-	Int32 seqNum = ReadMUInt16(&buff[2]);
-	UInt32 timestamp = ReadMUInt32(&buff[4]);*/
-	me->lastSSRC = ReadMInt32(&buff[8]);
+/*	Bool extension = (data[0] & 0x10) != 0;
+	Int32 csrcCnt = data[0] & 15;
+	Bool marker = (data[1] & 0x80) != 0;
+	Int32 payloadType = data[1] & 0x7f;
+	Int32 seqNum = ReadMUInt16(&data[2]);
+	UInt32 timestamp = ReadMUInt32(&data[4]);*/
+	me->lastSSRC = ReadMInt32(&data[8]);
 
 /*	me->packMut->Lock();
 	if (me->packCnt >= me->threadCnt)
@@ -91,21 +91,21 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 	me->packMut->Unlock();*/
 }
 
-void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
 	UInt32 size = 0;
 	UInt32 ofst = 0;
-	while (ofst < dataSize)
+	while (ofst < data.GetSize())
 	{
-		size = (UInt32)(ReadMUInt16(&buff[ofst + 2]) + 1) << 2;
-		if (size + ofst > dataSize)
+		size = (UInt32)(ReadMUInt16(&data[ofst + 2]) + 1) << 2;
+		if (size + ofst > data.GetSize())
 		{
 			break;
 		}
-		else if ((buff[ofst + 0] & 0xc0) == 0x80)
+		else if ((data[ofst + 0] & 0xc0) == 0x80)
 		{
-			switch (buff[ofst + 1])
+			switch (data[ofst + 1])
 			{
 			case 200: //SR - Sender Report
 /*				
@@ -114,21 +114,21 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 					sb.Append(L"SR: Len=");
 					sb.Append(size);
 					sb.Append(L",RC=");
-					sb.Append(buff[ofst + 0] & 0x1f);
+					sb.Append(data[ofst + 0] & 0x1f);
 					sb.Append(L",SSRC=");
-					sb.Append(ReadMInt32(&buff[ofst + 4]));
+					sb.Append(ReadMInt32(&data[ofst + 4]));
 					if (size >= 28)
 					{
 						NEW_CLASS(dt, Data::DateTime());
 						sb.Append(L",NTP ts=");
-						dt->SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
+						dt->SetNTPTime(ReadMInt32(&data[ofst + 8]), ReadMInt32(&data[ofst + 12]));
 						sb.Append(dt);
 						sb.Append(L",RTP ts=");
-						sb.Append(ReadMInt32(&buff[ofst + 16]));
+						sb.Append(ReadMInt32(&data[ofst + 16]));
 						sb.Append(L",nPacket=");
-						sb.Append(ReadMInt32(&buff[ofst + 20]));
+						sb.Append(ReadMInt32(&data[ofst + 20]));
 						sb.Append(L",nOctet=");
-						sb.Append(ReadMInt32(&buff[ofst + 24]));
+						sb.Append(ReadMInt32(&data[ofst + 24]));
 						DEL_CLASS(dt);
 					}
 					sb->Append(L"\r\n");
@@ -142,9 +142,9 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::Addr
 					sb.Append(L"RR: Len=");
 					sb.Append(size);
 					sb.Append(L",RC=");
-					sb.Append(buff[ofst + 0] & 0x1f);
+					sb.Append(data[ofst + 0] & 0x1f);
 					sb.Append(L",SSRC=");
-					sb.Append(ReadMInt32(&buff[ofst + 4]));
+					sb.Append(ReadMInt32(&data[ofst + 4]));
 					sb.Append(L"\r\n");
 					IO::Console::PrintStrO(sb.ToString());
 				}*/

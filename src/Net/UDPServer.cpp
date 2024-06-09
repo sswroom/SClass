@@ -75,7 +75,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 					}
 					mutUsage.EndUse();
 				}
-				stat->me->hdlr.func(recvAddr, recvPort, buff, recvSize, stat->me->hdlr.userObj);
+				stat->me->hdlr.func(recvAddr, recvPort, Data::ByteArrayR(buff, recvSize), stat->me->hdlr.userObj);
 			}
 		}
 		MemFree(buff);
@@ -153,7 +153,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 					}
 					mutUsage.EndUse();
 				}
-				stat->me->hdlr.func(recvAddr, recvPort, buff, recvSize, stat->me->hdlr.userObj);
+				stat->me->hdlr.func(recvAddr, recvPort, Data::ByteArrayR(buff, recvSize), stat->me->hdlr.userObj);
 			}
 		}
 		MemFree(buff);

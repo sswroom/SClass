@@ -14,7 +14,7 @@ namespace Net
 		SNMPTrapHandler hdlr;
 		AnyType hdlrObj;
 
-		static void __stdcall OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 	public:
 		SNMPTrapMonitor(NN<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, AnyType userObj, NN<IO::LogTool> log);
 		~SNMPTrapMonitor();

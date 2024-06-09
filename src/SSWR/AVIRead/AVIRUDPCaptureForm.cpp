@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	Data::DateTime dt;
@@ -149,9 +149,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NN<const Net::Sock
 	{
 		MemFree(me->packets[me->packetCurr].buff);
 	}
-	me->packets[me->packetCurr].buff = MemAlloc(UInt8, dataSize);
-	me->packets[me->packetCurr].buffSize = (UInt32)dataSize;
-	MemCopyNO(me->packets[me->packetCurr].buff, buff, dataSize);
+	me->packets[me->packetCurr].buff = MemAlloc(UInt8, data.GetSize());
+	me->packets[me->packetCurr].buffSize = (UInt32)data.GetSize();
+	MemCopyNO(me->packets[me->packetCurr].buff, data.Arr().Ptr(), data.GetSize());
 	me->packets[me->packetCurr].addr = addr.Ptr()[0];
 	me->packets[me->packetCurr].port = port;
 	me->packets[me->packetCurr].recvTime = dt.ToTicks();

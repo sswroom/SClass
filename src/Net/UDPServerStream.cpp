@@ -7,27 +7,27 @@
 
 #define BUFFSIZE 2048
 
-void __stdcall Net::UDPServerStream::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::UDPServerStream::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::UDPServerStream> me = userData.GetNN<Net::UDPServerStream>();
 	Sync::MutexUsage mutUsage(me->dataMut);
 	me->lastAddr = addr.Ptr()[0];
 	me->lastPort = port;
-	if (dataSize >= BUFFSIZE)
+	if (data.GetSize() >= BUFFSIZE)
 	{
-		MemCopyNO(me->buff, &buff[dataSize - BUFFSIZE], BUFFSIZE);
+		MemCopyNO(me->buff, &data[data.GetSize() - BUFFSIZE], BUFFSIZE);
 		me->buffSize = BUFFSIZE;
 	}
-	else if (me->buffSize + dataSize > BUFFSIZE)
+	else if (me->buffSize + data.GetSize() > BUFFSIZE)
 	{
-		MemCopyO(me->buff, &me->buff[me->buffSize - (BUFFSIZE - dataSize)], BUFFSIZE - dataSize);
-		MemCopyNO(&me->buff[BUFFSIZE - dataSize], buff, dataSize);
+		MemCopyO(me->buff, &me->buff[me->buffSize - (BUFFSIZE - data.GetSize())], BUFFSIZE - data.GetSize());
+		MemCopyNO(&me->buff[BUFFSIZE - data.GetSize()], &data[0], data.GetSize());
 		me->buffSize = BUFFSIZE;
 	}
 	else
 	{
-		MemCopyNO(&me->buff[me->buffSize], buff, dataSize);
-		me->buffSize += dataSize;
+		MemCopyNO(&me->buff[me->buffSize], &data[0], data.GetSize());
+		me->buffSize += data.GetSize();
 	}
 	me->readEvt.Set();
 }

@@ -8,10 +8,10 @@
 
 #include <stdio.h>
 
-void __stdcall Net::LoRaGateway::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::LoRaGateway::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	Text::StringBuilderUTF8 sb;
-	Net::LoRaGWUtil::ParseUDPMessage(sb, false, buff, dataSize);
+	Net::LoRaGWUtil::ParseUDPMessage(sb, false, data);
 	printf("%s\r\n", sb.ToPtr());
 }
 

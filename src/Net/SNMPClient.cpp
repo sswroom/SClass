@@ -8,7 +8,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SNMPClient::OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SNMPClient::OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::SNMPClient> me = userData.GetNN<Net::SNMPClient>();
 	Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
@@ -29,7 +29,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(NN<const Net::SocketUtil::AddressIn
 		return;
 	}
 	mutUsage.EndUse();
-	err = Net::SNMPUtil::PDUParseMessage(buff, dataSize, reqId, itemList);
+	err = Net::SNMPUtil::PDUParseMessage(data, reqId, itemList);
 	if (!me->hasResp && (err != Net::SNMPUtil::ES_NOERROR || reqId == me->reqId))
 	{
 		if (me->respList.SetTo(respList))

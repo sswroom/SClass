@@ -90,7 +90,7 @@ namespace Net
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayListNN<const UTF8Char> *whiteList;
 
-		static void __stdcall ClientPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall ClientPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 		static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
 		void RequestDNS(UnsafeArray<const UTF8Char> reqName, Int32 reqType, Int32 reqClass, NN<RequestResult> req);
 		UInt32 NextId();

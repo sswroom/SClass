@@ -5,7 +5,7 @@
 #include "Net/LoRaGWUtil.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
+void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, Data::ByteArrayR msg)
 {
 	if (toServer)
 	{
@@ -20,21 +20,21 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSe
 	sb->AppendC(UTF8STRC(", token="));
 	sb->AppendU16(token);
 	sb->AppendC(UTF8STRC(", leng="));
-	sb->AppendUOSInt(msgSize);
+	sb->AppendUOSInt(msg.GetSize());
 	sb->AppendC(UTF8STRC(", type="));
 	switch (msgType)
 	{
 	case 0:
 		sb->AppendC(UTF8STRC("PUSH_DATA"));
 		sb->AppendC(UTF8STRC(", GWEUI="));
-		if (msgSize >= 8)
+		if (msg.GetSize() >= 8)
 		{
-			sb->AppendHexBuff(msg, 8, 0, Text::LineBreakType::None);
+			sb->AppendHexBuff(msg.Arr(), 8, 0, Text::LineBreakType::None);
 		}
 		sb->AppendC(UTF8STRC(", Payload="));
-		if (msgSize > 8)
+		if (msg.GetSize() > 8)
 		{
-			sb->AppendC(msg + 8, msgSize - 8);
+			sb->AppendC(msg.Arr() + 8, msg.GetSize() - 8);
 		}
 		break;
 	case 1:
@@ -43,34 +43,34 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSe
 	case 2:
 		sb->AppendC(UTF8STRC("PULL_DATA"));
 		sb->AppendC(UTF8STRC(", GWEUI="));
-		if (msgSize >= 8)
+		if (msg.GetSize() >= 8)
 		{
-			sb->AppendHexBuff(msg, 8, 0, Text::LineBreakType::None);
+			sb->AppendHexBuff(msg.Arr(), 8, 0, Text::LineBreakType::None);
 		}
 		break;
 	case 3:
 		sb->AppendC(UTF8STRC("PULL_RESP"));
 		sb->AppendC(UTF8STRC(", Payload="));
-		sb->AppendC(msg, msgSize);
+		sb->AppendC(msg.Arr(), msg.GetSize());
 		break;
 	case 4:
 		sb->AppendC(UTF8STRC("PULL_ACK"));
-		if (msgSize >= 8)
+		if (msg.GetSize() >= 8)
 		{
 			sb->AppendC(UTF8STRC(", GWEUI="));
-			sb->AppendHexBuff(msg, 8, 0, Text::LineBreakType::None);
+			sb->AppendHexBuff(msg.Arr(), 8, 0, Text::LineBreakType::None);
 		}
 		break;
 	case 5:
 		sb->AppendC(UTF8STRC("TX_ACK"));
 		sb->AppendC(UTF8STRC(", res="));
-		if (msgSize == 1 && msg[0] == 0)
+		if (msg.GetSize() == 1 && msg[0] == 0)
 		{
 			sb->AppendC(UTF8STRC("ok"));
 		}
 		else
 		{
-			sb->AppendHexBuff(msg, msgSize, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(msg.Arr(), msg.GetSize(), ' ', Text::LineBreakType::None);
 		}
 		break;
 	default:
@@ -81,9 +81,9 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toSe
 	}
 }
 
-void Net::LoRaGWUtil::ParseUDPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, const UInt8 *msg, UOSInt msgSize)
+void Net::LoRaGWUtil::ParseUDPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, Data::ByteArrayR msg)
 {
-	ParseGWMPMessage(sb, toServer, msg[0], ReadMUInt16(&msg[1]), msg[3], msg + 4, msgSize - 4);
+	ParseGWMPMessage(sb, toServer, msg[0], ReadMUInt16(&msg[1]), msg[3], msg.SubArray(4));
 }
 
 UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAddr, UInt32 fCnt, UInt8 fPort, const UInt8 *nwkSKey, const UInt8 *appSKey, const UInt8 *payload, UOSInt payloadLen)

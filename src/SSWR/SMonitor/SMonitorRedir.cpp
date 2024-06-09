@@ -3,26 +3,26 @@
 #include "SSWR/SMonitor/SMonitorRedir.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorRedir> me = userData.GetNN<SSWR::SMonitor::SMonitorRedir>();
-	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
+	if (data.GetSize() >= 6 && data[0] == 'S' && data[1] == 'm')
 	{
 		UInt8 calcVal[2];
-		me->CalcCRC(buff, dataSize - 2, calcVal);
-		if (calcVal[0] == (buff[dataSize - 2] ^ 0x12) && calcVal[1] == (buff[dataSize - 1] ^ 0x34))
+		me->CalcCRC(data.Arr(), data.GetSize() - 2, calcVal);
+		if (calcVal[0] == (data[data.GetSize() - 2] ^ 0x12) && calcVal[1] == (data[data.GetSize() - 1] ^ 0x34))
 		{
-			UInt16 cmdType = ReadUInt16(&buff[2]);
+			UInt16 cmdType = ReadUInt16(&data[2]);
 			switch (cmdType)
 			{
 			case 1:
-				if (dataSize >= 14)
+				if (data.GetSize() >= 14)
 				{
-					Int64 recTime = ReadInt64(&buff[4]);
+					Int64 recTime = ReadInt64(&data[4]);
 					Int64 svrTime;
-					if (dataSize >= 22)
+					if (data.GetSize() >= 22)
 					{
-						svrTime = ReadInt64(&buff[12]);
+						svrTime = ReadInt64(&data[12]);
 					}
 					else
 					{
@@ -41,7 +41,7 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::Sock
 			case 15: //Photo End
 				break;
 			case 21: //Output Change
-				if (dataSize >= 8)
+				if (data.GetSize() >= 8)
 				{
 //					UInt8 outputId = buff[4];
 //					UInt8 outputState = buff[5];
@@ -52,7 +52,7 @@ void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::Sock
 	}
 }
 
-void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal)
+void SSWR::SMonitor::SMonitorRedir::CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> crcVal)
 {
 	Sync::MutexUsage mutUsage(this->dataCRCMut);
 	this->dataCRC.Clear();

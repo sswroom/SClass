@@ -41,8 +41,8 @@ namespace Net
 		} ErrorStatus;
 
 	public:
-		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, OutParam<Int32> reqId, NN<Data::ArrayListNN<BindingItem>> itemList);
-		static ErrorStatus PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList);
+		static ErrorStatus PDUParseMessage(Data::ByteArrayR pdu, OutParam<Int32> reqId, NN<Data::ArrayListNN<BindingItem>> itemList);
+		static ErrorStatus PDUParseTrapMessage(Data::ByteArrayR pdu, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList);
 
 		static Text::CStringNN TypeGetName(UInt8 type);
 		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, OutParam<Int32> outVal);
