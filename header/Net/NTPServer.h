@@ -20,7 +20,7 @@ namespace Net
 		Sync::Thread thread;
 		Net::NTPClient *cli;
 
-		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 		static void __stdcall CheckThread(NN<Sync::Thread> thread);
 		void InitServer(NN<Net::SocketFactory> sockf, UInt16 port);
 	public:

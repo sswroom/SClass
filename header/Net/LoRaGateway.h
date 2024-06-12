@@ -30,7 +30,7 @@ namespace Net
 		Double lon;
 		Int32 altitude;
 
-		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 		static UInt32 __stdcall PullThread(AnyType userObj);
 
 		Bool SendPullData();

@@ -4,45 +4,45 @@
 #include "Net/TFTPClient.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::TFTPClient::OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::TFTPClient::OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::TFTPClient> me = userData.GetNN<Net::TFTPClient>();
-	UInt16 opcode = ReadMUInt16(buff);
+	UInt16 opcode = ReadMUInt16(&data[0]);
 	if (opcode == 4)
 	{
-		if (ReadMUInt16(&buff[2]) == me->nextId)
+		if (ReadMUInt16(&data[2]) == me->nextId)
 		{
 			if (me->nextId == 0)
 			{
 				me->recvPort = port;
 			}
 			me->replyRecv = true;
-			me->evt->Set();
+			me->evt.Set();
 		}
 	}
 	else if (opcode == 3)
 	{
-		if (ReadMUInt16(&buff[2]) == me->nextId && !me->replyRecv && me->recvStm)
+		if (ReadMUInt16(&data[2]) == me->nextId && !me->replyRecv && me->recvStm)
 		{
 			if (me->nextId == 1)
 			{
 				me->recvPort = port;
 			}
-			me->recvSize = dataSize - 4;
-			me->recvStm->Write(&buff[4], dataSize - 4);
+			me->recvSize = data.GetSize() - 4;
+			me->recvStm->Write(&data[4], data.GetSize() - 4);
 			me->replyRecv = true;
-			me->evt->Set();
+			me->evt.Set();
 		}
 	}
 	else if (opcode == 5)
 	{
 		me->replyError = true;
 		me->replyRecv = true;
-		me->evt->Set();
+		me->evt.Set();
 	}
 }
 
-Net::TFTPClient::TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<IO::LogTool> log)
+Net::TFTPClient::TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<IO::LogTool> log) : evt(true)
 {
 	this->addr = addr.Ptr()[0];
 	this->port = port;
@@ -51,7 +51,6 @@ Net::TFTPClient::TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUt
 	this->recvSize = 0;
 	this->replyRecv = false;
 	this->nextId = 0;
-	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnDataPacket, this, log, CSTR_NULL, 2, false));
 	if (this->svr->IsError())
 	{
@@ -62,7 +61,6 @@ Net::TFTPClient::TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUt
 Net::TFTPClient::~TFTPClient()
 {
 	SDEL_CLASS(this->svr);
-	DEL_CLASS(this->evt);
 }
 
 Bool Net::TFTPClient::IsError()
@@ -85,9 +83,9 @@ Bool Net::TFTPClient::SendFile(UnsafeArray<const UTF8Char> fileName, IO::Stream 
 	this->replyRecv = false;
 	this->replyError = false;
 	this->nextId = 0;
-	this->evt->Clear();
+	this->evt.Clear();
 	this->svr->SendTo(this->addr, this->port, packet, readSize);
-	this->evt->Wait(10000);
+	this->evt.Wait(10000);
 	if (this->replyRecv && !this->replyError)
 	{
 		while (true)
@@ -97,9 +95,9 @@ Bool Net::TFTPClient::SendFile(UnsafeArray<const UTF8Char> fileName, IO::Stream 
 			WriteMInt16(&packet[0], 3);
 			WriteMInt16(&packet[2], this->nextId);
 			readSize = stm->Read(Data::ByteArray(&packet[4], blockSize));
-			this->evt->Clear();
+			this->evt.Clear();
 			this->svr->SendTo(this->addr, this->recvPort, packet, readSize + 4);
-			this->evt->Wait(10000);
+			this->evt.Wait(10000);
 			if (!this->replyRecv || this->replyError)
 			{
 				break;
@@ -131,9 +129,9 @@ Bool Net::TFTPClient::RecvFile(UnsafeArray<const UTF8Char> fileName, IO::Stream 
 	this->recvSize = 0;
 	this->recvStm = stm;
 	this->nextId = 1;
-	this->evt->Clear();
+	this->evt.Clear();
 	this->svr->SendTo(this->addr, this->port, packet, readSize);
-	this->evt->Wait(10000);
+	this->evt.Wait(10000);
 	if (this->replyRecv && !this->replyError)
 	{
 		while (true)
@@ -142,14 +140,14 @@ Bool Net::TFTPClient::RecvFile(UnsafeArray<const UTF8Char> fileName, IO::Stream 
 			WriteMInt16(&packet[0], 4);
 			WriteMInt16(&packet[2], this->nextId);
 			this->nextId++;
-			this->evt->Clear();
+			this->evt.Clear();
 			this->svr->SendTo(this->addr, this->recvPort, packet, 4);
 			if (this->recvSize != blockSize)
 			{
 				succ = true;
 				break;
 			}
-			this->evt->Wait(10000);
+			this->evt.Wait(10000);
 			if (!this->replyRecv || this->replyError)
 			{
 				break;

@@ -9,15 +9,15 @@
 //RFC 1034, RFC 1035, RFC 3596
 extern Char MyString_STRhexarr[];
 
-void __stdcall Net::DNSClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::DNSClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::DNSClient> me = userData.GetNN<Net::DNSClient>();
 	NN<RequestStatus> req;
 	Sync::MutexUsage mutUsage(me->reqMut);
-	if (me->reqMap.Get(ReadMUInt16(buff)).SetTo(req))
+	if (me->reqMap.Get(ReadMUInt16(&data[0])).SetTo(req))
 	{
-		MemCopyNO(req->respBuff, buff, dataSize);
-		req->respSize = dataSize;
+		MemCopyNO(req->respBuff, &data[0], data.GetSize());
+		req->respSize = data.GetSize();
 		req->finEvt.Set();
 	}
 	mutUsage.EndUse();

@@ -1495,7 +1495,7 @@ Double Text::JSONObject::GetObjectDouble(Text::CStringNN name)
 	Text::JSONBase *baseObj = this->objVals.GetC(name);
 	if (baseObj == 0)
 	{
-		return 0;
+		return NAN;
 	}
 	return baseObj->GetAsDouble();
 }
@@ -1642,7 +1642,7 @@ Double Text::JSONArray::GetArrayDouble(UOSInt index)
 	Text::JSONBase *baseObj = this->arrVals.GetItem(index);
 	if (baseObj == 0)
 	{
-		return 0;
+		return NAN;
 	}
 	return baseObj->GetAsDouble();
 }

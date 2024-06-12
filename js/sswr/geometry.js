@@ -370,10 +370,10 @@ export class MultiGeometry extends Vector2D
 
 	insideOrTouch(coord)
 	{
-		let i = this.coordinates.length;
+		let i = this.geometries.length;
 		while (i-- > 0)
 		{
-			if (this.coordinates[i].insideOrTouch(coord))
+			if (this.geometries[i].insideOrTouch(coord))
 			{
 				return true;
 			}
@@ -420,11 +420,11 @@ export class Polygon extends MultiGeometry
 
 	insideOrTouch(coord)
 	{
-		let i = this.coordinates.length;
+		let i = this.geometries.length;
 		let inside = false;
 		while (i-- > 0)
 		{
-			if (this.coordinates[i].insideOrTouch(coord))
+			if (this.geometries[i].insideOrTouch(coord))
 			{
 				inside = !inside;
 			}

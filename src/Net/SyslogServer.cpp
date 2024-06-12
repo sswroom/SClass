@@ -7,12 +7,12 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::SyslogServer> me = userData.GetNN<Net::SyslogServer>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (buff[0] == '<')
+	if (data[0] == '<')
 	{
 		Net::SyslogServer::IPStatus *status = me->GetIPStatus(addr);
 		Text::StringBuilderUTF8 sb;
@@ -22,14 +22,14 @@ void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressI
 			sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("> "));
-			sb.AppendC(buff, dataSize);
+			sb.AppendC(&data[0], data.GetSize());
 			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 		}
 
 		if (status)
 		{
 			sb.ClearStr();
-			sb.AppendC(buff, dataSize);
+			sb.AppendC(&data[0], data.GetSize());
 			status->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 			if (me->logHdlr)

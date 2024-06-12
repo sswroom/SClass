@@ -9,7 +9,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	const UTF8Char *fileName;
@@ -24,16 +24,16 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	UOSInt len;
 	UInt8 repBuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	if (dataSize < 4)
+	if (data.GetSize() < 4)
 		return;
-	opcode = ReadMUInt16(buff);
+	opcode = ReadMUInt16(&data[0]);
 	if (opcode != 1 && opcode != 2)
 		return;
-	if (buff[dataSize - 1])
+	if (data[data.GetSize() - 1])
 		return;
 	blkSize = 512;
-	fileName = &buff[2];
-	endPtr = &buff[dataSize];
+	fileName = &data[2];
+	endPtr = &data[data.GetSize()];
 	fileNameLen = Text::StrCharCnt(fileName);
 	mode = &fileName[fileNameLen + 1];
 	if (mode >= endPtr)
@@ -206,7 +206,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 	
 }
 
-void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
@@ -217,10 +217,10 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 	if (!me->sessMap.Get(sessId).SetTo(sess))
 	{
 		mutUsage.EndUse();
-		if (ReadMUInt16(buff) == 3)
+		if (ReadMUInt16(&data[0]) == 3)
 		{
 			WriteMInt16(&repBuff[0], 4);
-			WriteMInt16(&repBuff[2], ReadMUInt16(&buff[2]));
+			WriteMInt16(&repBuff[2], ReadMUInt16(&data[2]));
 			me->dataSvr->SendTo(addr, port, repBuff, 4);
 		}
 		return;
@@ -229,9 +229,9 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 	dt.SetCurrTimeUTC();
 	if (sess->isWrite)
 	{
-		if (ReadMUInt16(buff) == 3)
+		if (ReadMUInt16(&data[0]) == 3)
 		{
-			UInt16 blkNum = ReadMUInt16(&buff[2]);
+			UInt16 blkNum = ReadMUInt16(&data[2]);
 			if (blkNum == sess->currBlock)
 			{
 				WriteMInt16(&repBuff[0], 4);
@@ -242,8 +242,8 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 			else if (blkNum == sess->currBlock + 1)
 			{
 				sess->currBlock = blkNum;
-				sess->stm->Write(&buff[4], dataSize - 4);
-				if (dataSize - 4 != sess->blockSize)
+				sess->stm->Write(&data[4], data.GetSize() - 4);
+				if (data.GetSize() - 4 != sess->blockSize)
 				{
 					if (me->log->HasHandler())
 					{
@@ -269,9 +269,9 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 	}
 	else
 	{
-		if (ReadMUInt16(buff) == 4)
+		if (ReadMUInt16(&data[0]) == 4)
 		{
-			UInt16 blkNum = ReadMUInt16(&buff[2]);
+			UInt16 blkNum = ReadMUInt16(&data[2]);
 			if (blkNum == sess->currBlock)
 			{
 				if (sess->isLast)

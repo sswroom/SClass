@@ -19,7 +19,7 @@ namespace Net
 		Sync::Mutex scanMut;
 		Optional<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> scanList;
 
-		static void __stdcall OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 	public:
 		SNMPClient(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 		~SNMPClient();

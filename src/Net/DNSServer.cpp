@@ -3,7 +3,7 @@
 #include "Net/DNSServer.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::DNSServer> me = userData.GetNN<Net::DNSServer>();
 	UTF8Char sbuff[256];
@@ -15,9 +15,9 @@ void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 	sptr = sbuff;
 	found = false;
 	i = 12;
-	while (i < dataSize)
+	while (i < data.GetSize())
 	{
-		j = buff[i];
+		j = data[i];
 		if (j == 0)
 			break;
 		i++;
@@ -27,7 +27,7 @@ void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 		}
 		while (j-- > 0)
 		{
-			*sptr++ = buff[i++];
+			*sptr++ = data[i++];
 		}
 		found = true;
 	}
@@ -35,7 +35,7 @@ void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 	i++;
 	if (me->reqHdlr)
 	{
-		me->reqHdlr(me->reqObj, CSTRP(sbuff, sptr), ReadMUInt16(&buff[i]), ReadMUInt16(&buff[i + 2]), addr, port, ReadMUInt16(buff));
+		me->reqHdlr(me->reqObj, CSTRP(sbuff, sptr), ReadMUInt16(&data[i]), ReadMUInt16(&data[i + 2]), addr, port, ReadMUInt16(&data[0]));
 	}
 }
 

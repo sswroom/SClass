@@ -5,7 +5,7 @@ export function roundToFloat(n: number, decimalPoints: number): number;
 export function roundToStr(n: number, decimalPoints: number): string;
 export class GeoJSON
 {
-	static parseGeometry(srid: null, geom: object): geometry.Vector2D | null;
+	static parseGeometry(srid: number, geom: object): geometry.Vector2D | null;
 }
 
 export class Coord2D

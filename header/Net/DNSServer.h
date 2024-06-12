@@ -16,7 +16,7 @@ namespace Net
 		DNSRequest reqHdlr;
 		AnyType reqObj;
 
-		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 		void InitServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);
 	public:
 		DNSServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);

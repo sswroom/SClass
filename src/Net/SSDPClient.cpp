@@ -4,10 +4,10 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLReader.h"
 
-void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::SSDPClient> me = userData.GetNN<Net::SSDPClient>();
-	if (Text::StrStartsWith(buff, (const UTF8Char*)"HTTP/1.1 200 OK"))
+	if (Text::StrStartsWith(&data[0], (const UTF8Char*)"HTTP/1.1 200 OK"))
 	{
 		if (addr->addrType == Net::AddrType::IPv4)
 		{
@@ -20,7 +20,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 			Text::CStringNN nnusn;
 			Text::CString userAgent = CSTR_NULL;
 			Text::StringBuilderUTF8 sb;
-			sb.AppendC(buff, dataSize);
+			sb.AppendC(&data[0], data.GetSize());
 			Text::PString sarr[2];
 			UOSInt lineCnt;
 			sarr[1] = sb;

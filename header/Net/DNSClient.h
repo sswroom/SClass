@@ -38,7 +38,7 @@ namespace Net
 		Sync::Mutex reqMut;
 		Data::FastMapNN<UInt32, RequestStatus> reqMap;
 
-		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR buff, AnyType userData);
 		NN<RequestStatus> NewReq(UInt32 id);
 		void DelReq(UInt32 id);
 		UInt32 NextId();

@@ -23,8 +23,8 @@ namespace SSWR
 			RecordReplyHandler recReplyHdlr;
 			AnyType recReplyObj;
 
-			static void __stdcall OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal);
+			static void __stdcall OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
+			void CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> crcVal);
 		public:
 			SMonitorRedir(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 			SMonitorRedir(NN<Net::SocketFactory> sockf, NN<Text::String> hostName, UInt16 port, NN<IO::LogTool> log);

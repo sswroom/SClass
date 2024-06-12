@@ -8,15 +8,15 @@
 
 #define REQTIMEOUT 10000
 
-void __stdcall Net::DNSProxy::ClientPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::DNSProxy::ClientPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::DNSProxy> me = userData.GetNN<Net::DNSProxy>();
 	NN<CliRequestStatus> req;
 	Sync::MutexUsage mutUsage(me->cliReqMut);
-	if (me->cliReqMap.Get(ReadMUInt16(buff)).SetTo(req))
+	if (me->cliReqMap.Get(ReadMUInt16(&data[0])).SetTo(req))
 	{
-		MemCopyNO(req->respBuff, buff, dataSize);
-		req->respSize = dataSize;
+		MemCopyNO(req->respBuff, data.Arr().Ptr(), data.GetSize());
+		req->respSize = data.GetSize();
 		req->finEvt.Set();
 	}
 }

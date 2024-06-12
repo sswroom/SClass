@@ -51,6 +51,7 @@ namespace Text
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStr(Text::CString val);
 		Bool ArrayAddStr(NN<Text::String> val);
+		Bool ArrayAddStrOpt(Optional<Text::String> val);
 		Bool ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);

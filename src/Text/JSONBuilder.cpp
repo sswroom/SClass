@@ -453,6 +453,29 @@ Bool Text::JSONBuilder::ArrayAddStr(NN<Text::String> val)
 	return true;
 }
 
+Bool Text::JSONBuilder::ArrayAddStrOpt(Optional<Text::String> val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	NN<Text::String> nnval;
+	if (!val.SetTo(nnval))
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		this->AppendStrUTF8(nnval->v);
+	}
+	return true;
+
+}
+
 Bool Text::JSONBuilder::ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val)
 {
 	if (this->currType != OT_ARRAY)

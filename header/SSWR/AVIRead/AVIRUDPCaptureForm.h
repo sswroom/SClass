@@ -79,7 +79,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnDataSelChg(AnyType userObj);
 			static void __stdcall OnPortsDblClk(AnyType userObj, UOSInt index);
-			static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 			static void __stdcall OnMulticastClicked(AnyType userObj);
 			static void __stdcall OnMulticastDoubleClk(AnyType userObj);
 		public:

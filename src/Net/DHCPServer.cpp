@@ -9,17 +9,17 @@
 
 #include <stdio.h>
 
-void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::DHCPServer> me = userData.GetNN<Net::DHCPServer>();
 	UInt8 repBuff[512];
 	Net::SocketUtil::AddressInfo destAddr;
-	if (dataSize >= 240 && buff[0] == 1 && buff[1] == 1 && buff[2] == 6 && ReadMUInt32(&buff[236]) == 0x63825363)
+	if (data.GetSize() >= 240 && data[0] == 1 && data[1] == 1 && data[2] == 6 && ReadMUInt32(&data[236]) == 0x63825363)
 	{
 		UInt8 dhcpType = 0;
-		UInt64 hwAddr = ReadMUInt64(&buff[26]) & 0xffffffffffffLL;
+		UInt64 hwAddr = ReadMUInt64(&data[26]) & 0xffffffffffffLL;
 		UInt32 reqIP = 0;
-		UInt32 transactionId = ReadMUInt32(&buff[4]);
+		UInt32 transactionId = ReadMUInt32(&data[4]);
 		UOSInt i;
 		UInt32 j;
 		UInt8 t;
@@ -28,39 +28,39 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 		Text::StringBuilderUTF8 sbHostName;
 		Text::StringBuilderUTF8 sbVendorClass;
 		i = 240;
-		while (i < dataSize)
+		while (i < data.GetSize())
 		{
-			t = buff[i];
+			t = data[i];
 			if (t == 255)
 				break;
 			i++;
-			if (i >= dataSize)
+			if (i >= data.GetSize())
 			{
 				break;
 			}
-			len = buff[i];
+			len = data[i];
 			i++;
-			if (i + len > dataSize)
+			if (i + len > data.GetSize())
 			{
 				break;
 			}
 			if (t == 12 && len >= 1)
 			{
 				sbHostName.ClearStr();
-				sbHostName.AppendC(&buff[i], len);
+				sbHostName.AppendC(&data[i], len);
 			}
 			else if (t == 53 && len == 1)
 			{
-				dhcpType = buff[i];
+				dhcpType = data[i];
 			}
 			else if (t == 50 && len == 4)
 			{
-				reqIP = ReadNUInt32(&buff[i]);
+				reqIP = ReadNUInt32(&data[i]);
 			}
 			else if (t == 60 && len >= 1)
 			{
 				sbVendorClass.ClearStr();
-				sbVendorClass.AppendC(&buff[i], len);
+				sbVendorClass.AppendC(&data[i], len);
 			}
 			
 			i += len;

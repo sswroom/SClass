@@ -8,12 +8,12 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::NTPClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::NTPClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::NTPClient> me = userData.GetNN<Net::NTPClient>();
 //	UInt8 li = buff[0] >> 6;
 //	UInt8 vn = (buff[0] >> 3) & 7;
-	UInt8 mode = buff[0] & 7;
+	UInt8 mode = data[0] & 7;
 //	UInt8 stratum = buff[1];
 //	UInt8 poll = buff[2];
 //	UInt8 precision = buff[3];
@@ -21,9 +21,9 @@ void __stdcall Net::NTPClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 //	UInt32 rootDispersion = *(UInt32*)&buff[8];
 //	UInt32 ri = *(UInt32*)&buff[12];
 
-	if (mode == 4)
+	if (mode == 4 && data.GetSize() >= 40)
 	{
-		me->resultTime = Net::NTPServer::ReadTime(&buff[32]);
+		me->resultTime = Net::NTPServer::ReadTime(&data[32]);
 		me->hasResult = true;
 		me->evt.Set();
 	}
