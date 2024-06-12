@@ -88,7 +88,7 @@ export class ASN1Util
 	static pduDSizeEnd(reader: data.ByteReader, startOfst: number, endOfst: number): number | null;
 	static pduGetItem(reader: data.ByteReader, startOfst: number, endOfst: number, path: string): PDUInfo;
 	static pduGetItemType(reader: data.ByteReader, startOfst: number, endOfst: number, path: string): ASN1ItemType;
-	static pduCountItem(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): number;
+	static pduCountItem(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string | null): number;
 	static pduIsValid(reader: data.ByteReader, startOfst: number, endOfst: number): boolean;
 //	static void PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Net::ASN1Names *names);
 

@@ -406,6 +406,8 @@ export class X509CRL extends X509File
 export function algTypeGetHash(algType: AlgType): hash.HashType;
 export function fileTypeGetName(fileType: X509FileType): string;
 export function keyTypeGetName(keyType: KeyType): string;
+export function keyTypeGetOID(keyType: KeyType): string;
 export function ecNameGetName(ecName: ECName): string;
 export function ecNameGetOID(ecName: ECName): string;
 export function ecNameFromOID(buff: ArrayBuffer): ECName;
+export function hashTypeFromOID(oid: Uint8Array): hash.HashType;

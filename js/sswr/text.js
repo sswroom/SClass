@@ -916,7 +916,7 @@ export class Base64Enc extends TextBinEnc
 		let i = 0;
 		let j = str.length;
 		let b = 0;
-		let b2;
+		let b2 = 0;
 		let c;
 		let code;
 		while (i < j)
@@ -1182,7 +1182,7 @@ export class CPPTextBinEnc extends TextBinEnc
 			}
 			else if ((b & 0xfe) == 0xfc)
 			{
-				code = (UInt32)(((b & 0x1) << 30) | ((arr[i + 1] & 0x3f) << 24) | ((arr[i + 2] & 0x3f) << 18) | ((arr[i + 3] & 0x3f) << 12) | ((arr[i + 4] & 0x3f) << 6) | (arr[i + 5] & 0x3f));
+				code = (((b & 0x1) << 30) | ((arr[i + 1] & 0x3f) << 24) | ((arr[i + 2] & 0x3f) << 18) | ((arr[i + 3] & 0x3f) << 12) | ((arr[i + 4] & 0x3f) << 6) | (arr[i + 5] & 0x3f));
 				if (code >= 0x10000)
 				{
 					ret.push(String.fromCharCode(((code - 0x10000) >> 10) + 0xd800, (code & 0x3ff) + 0xdc00));

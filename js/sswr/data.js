@@ -549,7 +549,7 @@ export class DateTimeUtil
 
 	static timeValue2Ticks(t)
 	{
-		return DateTimeUtil.timeValue2Secs(t) * 1000n + Math.floor(t.nanosec / 1000000);
+		return DateTimeUtil.timeValue2Secs(t) * 1000n + BigInt(Math.floor(t.nanosec / 1000000));
 	}
 
 	static ticks2TimeValue(ticks, tzQhr)
@@ -813,7 +813,7 @@ export class DateTimeUtil
 			secs -= totalDays * 86400n;
 			while (secs < 0)
 			{
-				totalDays -= 1;
+				totalDays -= 1n;
 				secs += 86400n;
 			}
 			minutes = Number(secs % 86400n);
@@ -1088,12 +1088,12 @@ export class DateTimeUtil
 				}
 				else if (pattern[3] != 'M')
 				{
-					output.push(data.DateTimeUtil.monString[tval.month - 1]);
+					output.push(DateTimeUtil.monString[tval.month - 1]);
 					i += 3;
 				}
 				else
 				{
-					output.push(data.DateTimeUtil.monthString[tval.month - 1]);
+					output.push(DateTimeUtil.monthString[tval.month - 1]);
 					i += 4;
 					while (i < pattern.length && pattern.charAt(i) == 'M')
 						i++;
@@ -1278,7 +1278,7 @@ export class DateTimeUtil
 						tval.tzQhr = min / 15;
 					}
 				}
-				else if (tzlen == 2)
+				else if (tz.length == 2)
 				{
 					if (c == '-')
 					{
@@ -1499,6 +1499,40 @@ export class DateTimeUtil
 		return tval;
 	}
 
+	static timeValueFromYMDHMS(prmymdhms)
+	{
+		let ymdhms = BigInt(prmymdhms);
+		if (ymdhms < 0n)
+			return null;
+		let tval = new TimeValue();
+		tval.second = Number(ymdhms % 100n);
+		ymdhms = ymdhms / 100n;
+		if (tval.second >= 60)
+			return null;
+		tval.minute = Number(ymdhms % 100n);
+		ymdhms = ymdhms / 100n;
+		if (tval.minute >= 60)
+			return null;
+		tval.hour = Number(ymdhms % 100n);
+		ymdhms = ymdhms / 100n;
+		if (tval.hour >= 24)
+			return null;
+		tval.day = Number(ymdhms % 100n);
+		ymdhms = ymdhms / 100n;
+		if (tval.day == 0 || tval.day > 31)
+			return null;
+		tval.month = Number(ymdhms % 100n);
+		ymdhms = ymdhms / 100n;
+		if (tval.month == 0 || tval.month > 12)
+			return null;
+		if (ymdhms <= 0n || ymdhms > 65535n)
+			return null;
+		tval.year = Number(ymdhms);
+		if (tval.day > DateTimeUtil.dayInMonth(tval.year, tval.month))
+			return null;
+		return tval;
+	}
+
 	static isYearLeap(year)
 	{
 		return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
@@ -1568,6 +1602,52 @@ export class DateTimeUtil
 		return 0;
 	}
 
+	static dayInMonth(year, month)
+	{
+		while (month < 1)
+		{
+			month = (month + 12);
+			year--;
+		}
+		while (month > 12)
+		{
+			month = (month - 12);
+			year++;
+		}
+		switch (month)
+		{
+		case 12:
+			return 31;
+		case 11:
+			return 30;
+		case 10:
+			return 31;
+		case 9:
+			return 30;
+		case 8:
+			return 31;
+		case 7:
+			return 31;
+		case 6:
+			return 30;
+		case 5:
+			return 31;
+		case 4:
+			return 30;
+		case 3:
+			return 31;
+		case 2:
+			if (((year % 4) == 0 && (year % 100) != 0) || (year % 400) == 0)
+				return 29;
+			else
+				return 28;
+		case 1:
+			return 31;
+		default:
+			return 0;
+		}		
+	}
+
 	static getLocalTzQhr()
 	{
 		return new Date().getTimezoneOffset() / -15;
@@ -1625,27 +1705,27 @@ export class Duration
 
 	getNS()
 	{
-		return this.ns;
+		return this.nanosec;
 	}
 
 	getTotalMS()
 	{
-		return Number(this.seconds) * 1000 + this.ns / 1000000n;
+		return Number(this.seconds) * 1000 + this.nanosec / 1000000;
 	}
 
 	getTotalSec()
 	{
-		return Number(this.seconds) + (this.ns * 0.000000001);
+		return Number(this.seconds) + (this.nanosec * 0.000000001);
 	}
 
 	notZero()
 	{
-		return this.seconds != 0 || this.ns != 0;
+		return this.seconds != 0n || this.nanosec != 0;
 	}
 
 	isZero()
 	{
-		return this.seconds == 0 && this.ns == 0;
+		return this.seconds == 0n && this.nanosec == 0;
 	}
 
 	toString()
@@ -1728,7 +1808,7 @@ export class LocalDate
 					this.dateVal = year;
 				}
 			}
-			else if (t == "DateValue" || t == "TimeValue")
+			else if (year instanceof DateValue)
 			{
 				this.dateVal = DateTimeUtil.dateValue2TotalDays(year);
 			}
@@ -1874,7 +1954,7 @@ export class TimeInstant
 		let days = Math.floor(variTime);
 		let ds = (variTime - days);
 		let s = Math.floor(ds * 86400);
-		return new TimeInstant((days - 25569n) * 86400000n + Math.floor(ds * 86400000n), ((ds * 86400n - s) * 1000000000n));
+		return new TimeInstant(BigInt(days - 25569) * 86400000n + BigInt(Math.floor(ds * 86400000)), ((ds * 86400 - s) * 1000000000));
 	}
 
 	static fromTicks(ticks)
@@ -1912,7 +1992,7 @@ export class TimeInstant
 
 	addMS(val)
 	{
-		let newSec = this.sec + Math.floor(val / 1000);
+		let newSec = this.sec + BigInt(Math.floor(val / 1000));
 		val = (val % 1000) * 1000000 + this.nanosec;
 		while (val > 1000000000)
 		{
@@ -1924,7 +2004,7 @@ export class TimeInstant
 
 	addNS(val)
 	{
-		let newSec = this.sec + Math.floor(val / 1000000000);
+		let newSec = this.sec + BigInt(Math.floor(val / 1000000000));
 		val = val % 1000000000 + this.nanosec;
 		while (val > 1000000000)
 		{
@@ -1941,14 +2021,14 @@ export class TimeInstant
 
 	clearTime()
 	{
-		return new TimeInstant(this.sec - this.sec % 86400, 0);
+		return new TimeInstant(this.sec - this.sec % 86400n, 0);
 	}
 
 	roundToS()
 	{
 		if (this.nanosec >= 500000000)
 		{
-			return new TimeInstant(this.sec + 1, 0);
+			return new TimeInstant(this.sec + 1n, 0);
 		}
 		else
 		{
@@ -1958,7 +2038,7 @@ export class TimeInstant
 
 	getMSPassedDate()
 	{
-		return Number(this.sec % 86400) * 1000 + Math.floor(this.nanosec / 1000000);
+		return Number(this.sec % 86400n) * 1000 + Math.floor(this.nanosec / 1000000);
 	}
 
 	diffMS(ts)
@@ -2009,12 +2089,27 @@ export class TimeInstant
 
 	toEpochMS()
 	{
-		return this.sec * 1000 + BigInt(Math.floor(this.nanosec / 1000000));
+		return this.sec * 1000n + BigInt(Math.floor(this.nanosec / 1000000));
 	}
 
 	toEpochNS()
 	{
-		return this.sec * 1000000000 + BigInt(this.nanosec);
+		return this.sec * 1000000000n + BigInt(this.nanosec);
+	}
+
+	static fromDotNetTicks(ticks)
+	{
+		ticks = BigInt(ticks) - 621355968000000000n;
+		let ns = Number(ticks % 10000000n);
+		if (ns < 0)
+		{
+			return new TimeInstant(ticks / 10000000n - 1n, (ns + 10000000) * 100);
+		}
+		else
+		{
+			return new TimeInstant(ticks / 10000000n, ns * 100);
+		}
+
 	}
 }
 
@@ -2085,11 +2180,11 @@ export class Timestamp
 	{
 		if (epochUS < 0)
 		{
-			return new Timestamp(new TimeInstant(epochUS / 1000000n - 1, Number(epochUS % 1000000 + 1000000) * 1000), tzQhr);
+			return new Timestamp(new TimeInstant(epochUS / 1000000n - 1n, Number(epochUS % 1000000n + 1000000n) * 1000), tzQhr);
 		}
 		else
 		{
-			return new Timestamp(new TimeInstant(epochUS / 1000000n, Number(epochUS % 1000000) * 1000), tzQhr);
+			return new Timestamp(new TimeInstant(epochUS / 1000000n, Number(epochUS % 1000000n) * 1000), tzQhr);
 		}
 	}
 
@@ -2097,11 +2192,11 @@ export class Timestamp
 	{
 		if (epochNS < 0)
 		{
-			return new Timestamp(new TimeInstant(epochNS / 1000000000n - 1, Number(epochNS % 1000000000 + 1000000000)), tzQhr);
+			return new Timestamp(new TimeInstant(epochNS / 1000000000n - 1n, Number(epochNS % 1000000000n + 1000000000n)), tzQhr);
 		}
 		else
 		{
-			return new Timestamp(new TimeInstant(epochNS / 1000000000n, Number(epochNS % 1000000000)), tzQhr);
+			return new Timestamp(new TimeInstant(epochNS / 1000000000n, Number(epochNS % 1000000000n)), tzQhr);
 		}
 	}
 
@@ -2332,7 +2427,7 @@ export class Timestamp
 	{
 		if (this.inst.nanosec == 0)
 		{
-			if (((this.inst.sec + BigInt(this.tzQhr * 900)) % 86400n) == 0)
+			if (((this.inst.sec + BigInt(this.tzQhr * 900)) % 86400n) == 0n)
 			{
 				return this.toString("yyyy-MM-dd");
 			}

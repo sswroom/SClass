@@ -489,7 +489,7 @@ export class ASN1Util
 			case 0x1E:
 				sb = ["\t".repeat(level)];
 				if (name) sb.push(name+" ")
-				if (len & 1)
+				if (len.pduLen & 1)
 				{
 					sb.push("BMPString (");
 					sb.push(text.u8Arr2Hex(new Uint8Array(reader.getArrayBuffer(len.nextOfst, len.pduLen)), ' ', null));
@@ -2101,11 +2101,6 @@ class PKIX1Explicit88
 	static addName(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.rdnSequenceCont);
-	}
-
-	static name(names)
-	{
-		names.typeIs(ASN1ItemType.SEQUENCE).container("Name", PKIX1Explicit88.rdnSequenceCont);
 	}
 
 	static rdnSequenceCont(names)

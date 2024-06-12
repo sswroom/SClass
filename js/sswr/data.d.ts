@@ -75,9 +75,11 @@ export class DateTimeUtil
 	static ticks2Weekday(ticks: number, tzQhr: number): Weekday;
 	static toString(tval: TimeValue, pattern: string): string;
 	static string2TimeValue(dateStr: string, tzQhr?: number): TimeValue;
+	static timeValueFromYMDHMS(ymdhms: number | bigint): TimeValue | null;
 	static isYearLeap(year: number): boolean;
 	static parseYearStr(year: string): number;
 	static parseMonthStr(month: string): number;
+	static dayInMonth(year: number, month: number): number;
 	static getLocalTzQhr(): number;
 }
 
@@ -152,6 +154,7 @@ export class TimeInstant
 	toEpochSec(): bigint;
 	toEpochMS(): bigint;
 	toEpochNS(): bigint;
+	static fromDotNetTicks(ticks: bigint | number): TimeInstant;
 }
 
 export class Timestamp {

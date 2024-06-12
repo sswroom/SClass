@@ -152,7 +152,7 @@ export class X509File extends ASN1Data
 	{
 		let data = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1");
 		let signature = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3");
-		if (data == 0 || signature == 0 || signature.itemType != ASN1ItemType.BIT_STRING)
+		if (data == null || signature == null || signature.itemType != ASN1ItemType.BIT_STRING)
 		{
 			return false;
 		}
@@ -588,35 +588,33 @@ export class X509File extends ASN1Data
 		X509File.appendSigned(reader, startOfst, endOfst, path, sb, varName);
 	}
 
-/*	static isPrivateKeyInfo(reader, startOfst, endOfst, path)
+	static isPrivateKeyInfo(reader, startOfst, endOfst, path)
 	{
-		UOSInt cnt = ASN1Util.pduCountItem(pdu, pduEnd, path);
+		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
 		if (cnt != 3 && cnt != 4)
 		{
 			return false;
 		}
-		Char sbuff[256];
-		Char *sptr;
-		sptr = Text.StrConcat(sbuff, path);
-		Text.StrConcat(sptr, ".1");
-		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.INTEGER)
+		let sbuff;
+		sbuff = path + ".1";
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, sbuff) != ASN1ItemType.INTEGER)
 		{
 			return false;
 		}
-		Text.StrConcat(sptr, ".2");
-		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SEQUENCE)
+		sbuff = path + ".2";
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, sbuff) != ASN1ItemType.SEQUENCE)
 		{
 			return false;
 		}
-		Text.StrConcat(sptr, ".3");
-		if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.OCTET_STRING)
+		sbuff = path + ".3";
+		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, sbuff) != ASN1ItemType.OCTET_STRING)
 		{
 			return false;
 		}
 		if (cnt == 4)
 		{
-			Text.StrConcat(sptr, ".4");
-			if (ASN1Util.pduGetItemType(pdu, pduEnd, sbuff) != ASN1ItemType.SET)
+			sbuff = path + ".4";
+			if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, sbuff) != ASN1ItemType.SET)
 			{
 				return false;
 			}
@@ -626,46 +624,42 @@ export class X509File extends ASN1Data
 
 	static appendPrivateKeyInfo(reader, startOfst, endOfst, path, sb)
 	{
-		Char sbuff[256];
-		Char *sptr;
-		const UInt8 *itemPDU;
-		UOSInt len;
-		Net.ASN1Util.ItemType itemType;
-		KeyType keyType = KeyType.Unknown;
-		sptr = Text.StrConcat(sbuff, path);
-		Text.StrConcat(sptr, ".1");
-		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, len, itemType)) != 0)
+		let sbuff;
+		let itemPDU;
+		let keyType = KeyType.Unknown;
+		sbuff = path + ".1";
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, sbuff)) != null)
 		{
-			if (itemType == ASN1ItemType.INTEGER)
+			if (itemPDU.itemType == ASN1ItemType.INTEGER)
 			{
-				sb.push("version = "));
-				AppendVersion(pdu, pduEnd, sbuff, sb);
-				sb.push("\r\n"));
+				sb.push("version = ");
+				X509File.appendVersion(reader, startOfst, endOfst, sbuff, sb);
+				sb.push("\r\n");
 			}
 		}
-		Text.StrConcat(sptr, ".2");
-		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, len, itemType)) != 0)
+		sbuff = path + ".2";
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, sbuff)) != null)
 		{
-			if (itemType == ASN1ItemType.SEQUENCE)
+			if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
 			{
-				AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, CSTR("privateKeyAlgorithm"), false, &keyType);
+				keyType = X509File.appendAlgorithmIdentifier(reader, itemPDU.dataOfst, itemPDU.endOfst, sb, "privateKeyAlgorithm", false);
 			}
 		}
-		Text.StrConcat(sptr, ".3");
-		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, sbuff, len, itemType)) != 0)
+		sbuff = path + ".3";
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, sbuff)) != null)
 		{
-			if (itemType == ASN1ItemType.OCTET_STRING)
+			if (itemPDU.itemType == ASN1ItemType.OCTET_STRING)
 			{
-				sb.push("privateKey = "));
-				sb.push("\r\n"));
+				sb.push("privateKey = ");
+				sb.push("\r\n");
 				if (keyType != KeyType.Unknown)
 				{
-					Crypto.Cert.X509Key privkey(CSTR("PrivKey"), Data.ByteArrayR(itemPDU, len), keyType);
-					privkey.ToString(sb);
+					let privkey = new X509PrivKey("PrivKey", reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen));
+					sb.push(privkey.toString());
 				}
 			}
 		}
-	}*/
+	}
 
 	static isCertificateRequestInfo(reader, startOfst, endOfst, path)
 	{
@@ -1298,13 +1292,13 @@ export class X509File extends ASN1Data
 				let extOID = reader.getU8Arr(extension.dataOfst, extension.contLen);
 				if (ASN1Util.oidEqualsText(extOID, "1.3.6.1.5.5.7.1.1")) //id-pe-authorityInfoAccess
 				{
-					if ((itemPDU = ASN1Util.pduGetItem(itemPDU.dataOfst, itemPDU.endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
+					if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
 					{
 						let i = 1;
-						while ((subItemPDU = ASN1Util.pduGetItem(itemPDU.dataOfst, itemPDU.endOfst, i.toString())) != null && subItemPDU.itemType == ASN1ItemType.SEQUENCE)
+						while ((subItemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, i.toString())) != null && subItemPDU.itemType == ASN1ItemType.SEQUENCE)
 						{
 							let descPDU;
-							if ((descPDU = ASN1Util.pduGetItem(subItemPDU.dataOfst, subItemPDU.endOfst, "1")) != null && descPDU.itemType == ASN1ItemType.OID)
+							if ((descPDU = ASN1Util.pduGetItem(reader, subItemPDU.dataOfst, subItemPDU.endOfst, "1")) != null && descPDU.itemType == ASN1ItemType.OID)
 							{
 								sb.push(varName);
 								sb.push(".authorityInfoAccess[");
@@ -1338,13 +1332,13 @@ export class X509File extends ASN1Data
 				}
 				else if (ASN1Util.oidEqualsText(extOID, "2.5.29.15")) //id-ce-keyUsage
 				{
-					if ((subItemPDU = ASN1Util.pduGetItem(itemPDU.dataOfst, itemPDU.endOfst, "1")) != null && subItemPDU.itemType == ASN1ItemType.BIT_STRING)
+					if ((subItemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "1")) != null && subItemPDU.itemType == ASN1ItemType.BIT_STRING)
 					{
 						sb.push(varName);
 						sb.push(".keyUsage =");
 						if (subItemPDU.contLen >= 2)
 						{
-							let v = reader.readUInt8(subitemPDU.dataOfst + 1);
+							let v = reader.readUInt8(subItemPDU.dataOfst + 1);
 							if (v & 0x80) sb.push(" digitalSignature");
 							if (v & 0x40) sb.push(" nonRepudiation");
 							if (v & 0x20) sb.push(" keyEncipherment");
@@ -1356,7 +1350,7 @@ export class X509File extends ASN1Data
 						}
 						if (subItemPDU.contLen >= 3)
 						{
-							let v = reader.readUInt8(subitemPDU.dataOfst + 2);
+							let v = reader.readUInt8(subItemPDU.dataOfst + 2);
 							if (v & 0x80) sb.push(" decipherOnly");
 						}
 						sb.push("\r\n");
@@ -1541,85 +1535,78 @@ export class X509File extends ASN1Data
 		}
 	}
 
-/*	static appendMSOSVersion(reader, startOfst, endOfst, sb, varName)
+	static appendMSOSVersion(reader, startOfst, endOfst, sb, varName)
 	{
-		Net.ASN1Util.ItemType itemType;
-		UOSInt itemLen;
-		const UInt8 *itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType);
-		if (itemType == Net.ASN1Util.ItemType.IT_IA5STRING)
+		let itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
+		if (itemPDU && itemPDU.itemType == ASN1ItemType.IA5STRING)
 		{
 			sb.push(varName);
-			sb.push(".version = "));
-			sb->AppendC(itemPDU, itemLen);
-			sb.push("\r\n"));
+			sb.push(".version = ");
+			sb.push(new TextDecoder().decode(reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen)));
+			sb.push("\r\n");
 		}
 	}
 
 	static appendMSRequestClientInfo(reader, startOfst, endOfst, sb, varName)
 	{
-		Net.ASN1Util.ItemType itemType;
-		UOSInt itemLen;
-		const UInt8 *itemPDU;
-		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_SEQUENCE)
+		let itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
 		{
-			UOSInt subitemLen;
-			const UInt8 *subitemPDU;
-			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_INTEGER)
+			let subitemPDU;
+			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "1")) != null && subitemPDU.itemType == ASN1ItemType.INTEGER)
 			{
 				sb.push(varName);
-				sb.push(".unknown = "));
-				Net.ASN1Util.IntegerToString(subitemPDU, subitemLen, sb);
-				sb.push("\r\n"));
+				sb.push(".unknown = ");
+				sb.push(ASN1Util.integerToString(reader, subitemPDU.dataOfst, subitemPDU.contLen));
+				sb.push("\r\n");
 			}
-			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_UTF8STRING)
+			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "2")) != null && subitemPDU.itemType == ASN1ItemType.UTF8STRING)
 			{
 				sb.push(varName);
-				sb.push(".machine = "));
-				sb->AppendC(subitemPDU, subitemLen);
-				sb.push("\r\n"));
+				sb.push(".machine = ");
+				sb.push(new TextDecoder().decode(reader.getU8Arr(subitemPDU.dataOfst, subitemPDU.contLen)));
+				sb.push("\r\n");
 			}
-			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "3", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_UTF8STRING)
+			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "3")) != null && subitemPDU.itemType == ASN1ItemType.UTF8STRING)
 			{
 				sb.push(varName);
-				sb.push(".user = "));
-				sb->AppendC(subitemPDU, subitemLen);
-				sb.push("\r\n"));
+				sb.push(".user = ");
+				sb.push(new TextDecoder().decode(reader.getU8Arr(subitemPDU.dataOfst, subitemPDU.contLen)));
+				sb.push("\r\n");
 			}
-			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "4", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_UTF8STRING)
+			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "4")) != null && subitemPDU.itemType == ASN1ItemType.UTF8STRING)
 			{
 				sb.push(varName);
-				sb.push(".software = "));
-				sb->AppendC(subitemPDU, subitemLen);
-				sb.push("\r\n"));
+				sb.push(".software = ");
+				sb.push(new TextDecoder().decode(reader.getU8Arr(subitemPDU.dataOfst, subitemPDU.contLen)));
+				sb.push("\r\n");
 			}
 		}
 	}
 
 	static appendMSEnrollmentCSPProvider(reader, startOfst, endOfst, sb, varName)
 	{
-		Net.ASN1Util.ItemType itemType;
-		UOSInt itemLen;
-		const UInt8 *itemPDU;
-		if ((itemPDU = ASN1Util.pduGetItem(pdu, pduEnd, "1", itemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_SEQUENCE)
+		let itemPDU;
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
 		{
-			UOSInt subitemLen;
-			const UInt8 *subitemPDU;
-			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "1", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_INTEGER)
+			let subitemPDU;
+			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "1")) != null && subitemPDU.itemType == ASN1ItemType.INTEGER)
 			{
 				sb.push(varName);
-				sb.push(".unknown = "));
-				Net.ASN1Util.IntegerToString(subitemPDU, subitemLen, sb);
-				sb.push("\r\n"));
+				sb.push(".unknown = ");
+				sb.push(ASN1Util.integerToString(reader, subitemPDU.dataOfst, subitemPDU.contLen));
+				sb.push("\r\n");
 			}
-			if ((subitemPDU = ASN1Util.pduGetItem(itemPDU, itemPDU + itemLen, "2", subitemLen, itemType)) != 0 && itemType == Net.ASN1Util.ItemType.IT_BMPSTRING)
+			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "2")) != null && subitemPDU.itemType == ASN1ItemType.BMPSTRING)
 			{
+				let enc = new text.UTF16BETextBinEnc();
 				sb.push(varName);
-				sb.push(".provider = "));
-				sb->AppendUTF16BE(subitemPDU, subitemLen >> 1);
-				sb.push("\r\n"));
+				sb.push(".provider = ");
+				sb.push(enc.encodeBin(reader.getU8Arr(subitemPDU.dataOfst, subitemPDU.contLen)));
+				sb.push("\r\n");
 			}
 		}
-	}*/
+	}
 
 	static appendGeneralNames(reader, startOfst, endOfst, sb, varName)
 	{
@@ -1694,7 +1681,7 @@ export class X509File extends ASN1Data
 				{
 					sb.push(net.getIPv4Name(reader.readInt32(subItemPDU.dataOfst, false)));
 				}
-				else if (subItemLen == 16)
+				else if (subItemPDU.contLen == 16)
 				{
 /*					Net.SocketUtil.AddressInfo addr;
 					Net.SocketUtil.SetAddrInfoV6(addr, subItemPDU, 0);
@@ -1754,7 +1741,7 @@ export class X509File extends ASN1Data
 								if (v & 0x2) sb.push("certificateHold");
 								if (v & 0x1) sb.push("privilegeWithdrawn");
 							}
-							if (subItemLen >= 3)
+							if (subItemPDU.contLen >= 3)
 							{
 								let v = reader.readUInt8(subItemPDU.dataOfst + 2);
 								if (v & 0x80) sb.push("aACompromise");
@@ -1838,7 +1825,7 @@ export class X509File extends ASN1Data
 							sb.push(reader.readUTF8(itemPDU.dataOfst, itemPDU.contLen));
 							sb.push("\r\n");
 						}
-						else if (itemType == ASN1ItemType.SEQUENCE)
+						else if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
 						{
 							/////////////////////////////////// UserNotice
 						}
@@ -1872,17 +1859,17 @@ export class X509File extends ASN1Data
 			}
 			let i = 4;
 			subItemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "4");
-			if (subItemPDU != 0 && subItemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			if (subItemPDU != null && subItemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 			{
 				X509File.appendCertificate(reader, subItemPDU.dataOfst, subItemPDU.endOfst, "1", sb, "signedData.certificates");
 				subItemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, (++i).toString());
 			}
-			if (subItemPDU != 0 && subItemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
+			if (subItemPDU != null && subItemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
 			{
 				//AppendCertificate(subItemPDU, subItemPDU + subItemLen, "1", sb, CSTR("signedData.crls"));
 				subItemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, (++i).toString());
 			}
-			if (subItemPDU != 0 && subItemPDU.itemType == ASN1ItemType.SET)
+			if (subItemPDU != null && subItemPDU.itemType == ASN1ItemType.SET)
 			{
 				X509File.appendPKCS7SignerInfos(reader, subItemPDU.dataOfst, subItemPDU.endOfst, sb, "signedData.signerInfos");
 			}
@@ -2190,7 +2177,7 @@ export class X509File extends ASN1Data
 	static appendEncryptedContentInfo(reader, startOfst, endOfst, sb, varName, dataType)
 	{
 		let itemPDU;
-		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != 0 && itemPDU.itemType == ASN1ItemType.OID)
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.OID)
 		{
 			sb.push(varName);
 			sb.push(".contentType = ");
@@ -2202,7 +2189,7 @@ export class X509File extends ASN1Data
 			}
 			sb.push("\r\n");
 		}
-		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2")) != 0 && itemPDU.itemType == ASN1ItemType.SEQUENCE)
+		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2")) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
 		{
 			let name = "contentEncryptionAlgorithm";
 			if (varName)
@@ -2281,7 +2268,7 @@ export class X509File extends ASN1Data
 	
 			if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, i.toString()+".1")) != null)
 			{
-				if (itemType == ASN1ItemType.SEQUENCE)
+				if (itemPDU.itemType == ASN1ItemType.SEQUENCE)
 				{
 					oidPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1");
 					if (oidPDU != null && oidPDU.itemType == ASN1ItemType.OID)
@@ -2466,9 +2453,9 @@ export class X509File extends ASN1Data
 		let itemPDU;
 		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 		{
-			if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst, itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			if ((itemPDU = ASN1Util.pduGetItem(reader.getU8Arr(itemPDU.rawOfst), itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 			{
-				if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst, itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CHOICE_6)
+				if ((itemPDU = ASN1Util.pduGetItem(reader.getU8Arr(itemPDU.rawOfst), itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CHOICE_6)
 				{
 					distPoints.push(reader.readUTF8(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
 					return true;
@@ -2903,7 +2890,7 @@ export class X509Cert extends X509File
 		{
 			return null;
 		}
-		if (pdu.itemType == ASN1Util.CONTEXT_SPECIFIC_0)
+		if (pdu.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 		{
 			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.7");
 			if (pdu)
@@ -3049,7 +3036,7 @@ export class X509Cert extends X509File
 			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.8.1");
 			if (pdu)
 			{
-				return X509File.extensionsGetCRLDistributionPoints(reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+				return X509File.extensionsGetCRLDistributionPoints(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
 			}
 		}
 		else
@@ -3057,7 +3044,7 @@ export class X509Cert extends X509File
 			pdu = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.7.1");
 			if (pdu)
 			{
-				return X509File.extensionsGetCRLDistributionPoints(reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
+				return X509File.extensionsGetCRLDistributionPoints(this.reader, pdu.rawOfst + pdu.hdrLen, pdu.rawOfst + pdu.hdrLen + pdu.contLen);
 			}
 		}
 		return [];
@@ -3487,7 +3474,7 @@ export class X509Key extends X509File
 
 	getRSAPrivateExponent()
 	{
-		if (this.keyType != KeyType.RSA) return 0;
+		if (this.keyType != KeyType.RSA) return null;
 		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.4");
 		if (len)
 		{
@@ -3498,7 +3485,7 @@ export class X509Key extends X509File
 
 	getRSAPrime1()
 	{
-		if (this.keyType != KeyType.RSA) return 0;
+		if (this.keyType != KeyType.RSA) return null;
 		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.5");
 		if (len)
 		{
@@ -3509,7 +3496,7 @@ export class X509Key extends X509File
 
 	getRSAPrime2()
 	{
-		if (this.keyType != KeyType.RSA) return 0;
+		if (this.keyType != KeyType.RSA) return null;
 		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.6");
 		if (len)
 		{
@@ -3520,7 +3507,7 @@ export class X509Key extends X509File
 
 	getRSAExponent1()
 	{
-		if (this.keyType != KeyType.RSA) return 0;
+		if (this.keyType != KeyType.RSA) return null;
 		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.7");
 		if (len)
 		{
@@ -3531,7 +3518,7 @@ export class X509Key extends X509File
 
 	getRSAExponent2()
 	{
-		if (this.keyType != KeyType.RSA) return 0;
+		if (this.keyType != KeyType.RSA) return null;
 		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.8");
 		if (len)
 		{
@@ -3542,7 +3529,7 @@ export class X509Key extends X509File
 
 	getRSACoefficient()
 	{
-		if (this.keyType != KeyType.RSA) return 0;
+		if (this.keyType != KeyType.RSA) return null;
 		let len = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.9");
 		if (len)
 		{
@@ -3578,7 +3565,7 @@ export class X509Key extends X509File
 			{
 				return this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1);
 			}
-			return 0;
+			return null;
 		}
 		else if (this.keyType == KeyType.ECDSA)
 		{
@@ -3590,7 +3577,7 @@ export class X509Key extends X509File
 				{
 					return this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1);
 				}
-				return 0;
+				return null;
 			}
 			itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.4");
 			if (itemPDU != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_1)
@@ -3600,13 +3587,13 @@ export class X509Key extends X509File
 				{
 					return this.reader.getArrayBuffer(itemPDU.rawOfst + itemPDU.hdrLen + 1, itemPDU.contLen - 1);
 				}
-				return 0;
+				return null;
 			}
-			return 0;
+			return null;
 		}
 		else
 		{
-			return 0;
+			return null;
 		}
 	}
 
@@ -3668,14 +3655,14 @@ export class X509PrivKey extends X509File
 		{
 			return "";
 		}
-		let keyType = X509File.keyTypeFromOID(reader.getArrayBuffer(oidPDU.dataOfst, oidPDU.contLen), false);
+		let keyType = X509File.keyTypeFromOID(this.reader.getArrayBuffer(oidPDU.dataOfst, oidPDU.contLen), false);
 		let keyPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.3");
 		if (keyPDU && keyPDU.itemType == ASN1ItemType.OCTET_STRING)
 		{
 			let sb = [];
 			sb.push(keyTypeGetName(keyType));
 			sb.push(' ');
-			sb.push(X509File.keyGetLeng(reader, keyPDU.dataOfst, keyPDU.endOfst, keyType));
+			sb.push(X509File.keyGetLeng(this.reader, keyPDU.dataOfst, keyPDU.endOfst, keyType));
 			sb.push(" bits");
 			return sb.join("");
 		}
@@ -3776,7 +3763,14 @@ export class X509PrivKey extends X509File
 			keyPDU.beginSequence();
 			keyPDU.appendInt32(1);
 			keyBuff = key.getECPrivate();
-			keyPDU.appendOctetString(keyBuff);
+			if (keyBuff)
+			{
+				keyPDU.appendOctetString(keyBuff);
+			}
+			else
+			{
+				keyPDU.appendOctetString(new Uint8Array().buffer);
+			}
 			keyBuff = key.getECPublic();
 			if (keyBuff)
 			{
@@ -3819,13 +3813,13 @@ export class X509PubKey extends X509File
 		{
 			return null;
 		}
-		let keyType = X509File.keyTypeFromOID(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen), true);
+		let keyType = X509File.keyTypeFromOID(this.reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen), true);
 		let keyPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2");
 		if (keyPDU && keyPDU.itemType == ASN1ItemType.OCTET_STRING)
 		{
 			let sb = [];
 			sb.push(keyTypeGetName(keyType)+" ");
-			sb.push(keyGetLeng(reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, keyType));
+			sb.push(X509File.keyGetLeng(this.reader, keyPDU.rawOfst + keyPDU.hdrLen, keyPDU.rawOfst + keyPDU.hdrLen + keyPDU.contLen, keyType));
 			sb.push(" bits");
 			return sb.join("");
 		}
@@ -3896,7 +3890,7 @@ export class X509PubKey extends X509File
 
 	static createFromKey(key)
 	{
-		return createFromKeyBuff(key.getKeyType(), key.getASN1Buff().getArrayBuffer(), key.sourceName);
+		return X509PubKey.createFromKeyBuff(key.getKeyType(), key.getASN1Buff().getArrayBuffer(), key.sourceName);
 	}
 }
 
@@ -3997,7 +3991,7 @@ export class X509PKCS7 extends X509File
 		{
 			return false;
 		}
-		return ASN1Util.oidEqualsText(reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen), "1.2.840.113549.1.7.2");	
+		return ASN1Util.oidEqualsText(this.reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen), "1.2.840.113549.1.7.2");	
 	}
 
 	getDigestType()
@@ -4193,7 +4187,7 @@ export class X509FileList extends X509File
 		}
 		else
 		{
-			return this.fileList[0],isValid();
+			return this.fileList[0].isValid();
 		}		
 	}
 
@@ -4249,7 +4243,7 @@ export class X509FileList extends X509File
 	setDefaultSourceName()
 	{
 		let file;
-		let j = INVALID_INDEX;
+		let j = -1;
 		let i = this.fileList.length;
 		while (i-- > 0)
 		{
@@ -4259,7 +4253,7 @@ export class X509FileList extends X509File
 				j = i;
 			}
 		}
-		if (j != INVALID_INDEX)
+		if (j != -1)
 		{
 			this.setSourceName(this.fileList[j].sourceName);
 		}
@@ -4283,14 +4277,14 @@ export class X509CRL extends X509File
 		let tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.3");
 		if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
 		{
-			return X509File.nameGetCN(reader, tmpBuff.dataOfst, tmpBuff.endOfst);
+			return X509File.nameGetCN(this.reader, tmpBuff.dataOfst, tmpBuff.endOfst);
 		}
 		else
 		{
 			tmpBuff = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.2");
 			if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
 			{
-				return X509File.nameGetCN(reader, tmpBuff.dataOfst, tmpBuff.endOfst);
+				return X509File.nameGetCN(this.reader, tmpBuff.dataOfst, tmpBuff.endOfst);
 			}
 		}
 		return "";
@@ -4372,7 +4366,7 @@ export class X509CRL extends X509File
 	hasVersion()
 	{
 		let itemPDU;
-		if ((itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1") != null) && itemPDU.itemType == ASN1ItemType.INTEGER)
+		if ((itemPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1.1")) != null && itemPDU.itemType == ASN1ItemType.INTEGER)
 		{
 			return true;
 		}
@@ -4392,7 +4386,7 @@ export class X509CRL extends X509File
 		}
 		if (tmpBuff != null && tmpBuff.itemType == ASN1ItemType.SEQUENCE)
 		{
-			return X509File.nameGetCN(reader, tmpBuff.dataOfst, tmpBuff.endOfst);
+			return X509File.nameGetCN(this.reader, tmpBuff.dataOfst, tmpBuff.endOfst);
 		}
 		else
 		{
@@ -4413,7 +4407,7 @@ export class X509CRL extends X509File
 		}
 		if (itemPDU != null && (itemPDU.itemType == ASN1ItemType.UTCTIME || itemPDU.itemType == ASN1ItemType.GENERALIZEDTIME))
 		{
-			return ASN1Util.pduParseUTCTimeCont(reader, itemPDU.dataOfst, itemPDU.endOfst);
+			return ASN1Util.pduParseUTCTimeCont(this.reader, itemPDU.dataOfst, itemPDU.endOfst);
 		}
 		else
 		{
@@ -4434,7 +4428,7 @@ export class X509CRL extends X509File
 		}
 		if (itemPDU != null && (itemPDU.itemType == ASN1ItemType.UTCTIME || itemPDU.itemType == ASN1ItemType.GENERALIZEDTIME))
 		{
-			return ASN1Util.pduParseUTCTimeCont(reader, itemPDU.dataOfst, itemPDU.endOfst);
+			return ASN1Util.pduParseUTCTimeCont(this.reader, itemPDU.dataOfst, itemPDU.endOfst);
 		}
 		else
 		{
@@ -4476,10 +4470,10 @@ export class X509CRL extends X509File
 		while (true)
 		{
 			let subitemPDU;
-			subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, (++i)+".1");
+			subitemPDU = ASN1Util.pduGetItem(this.reader, itemPDU.dataOfst, itemPDU.endOfst, (++i)+".1");
 			if (subitemPDU == null)
 				break;
-			if (subitemPDU.itemType == ASN1ItemType.INTEGER && data.arrayBufferEquals(reader.getArrayBuffer(subitemPDU.dataOfst, subitemPDU.contLen), sn))
+			if (subitemPDU.itemType == ASN1ItemType.INTEGER && data.arrayBufferEquals(this.reader.getArrayBuffer(subitemPDU.dataOfst, subitemPDU.contLen), sn))
 			{
 				return true;
 			}
@@ -4565,6 +4559,27 @@ export function keyTypeGetName(keyType)
 	}
 }
 
+export function keyTypeGetOID(keyType)
+{
+	switch (keyType)
+	{
+	case KeyType.RSA:
+		return "1.2.840.113549.1.1.1";
+	case KeyType.DSA:
+		return "1.2.840.10040.4.1";
+	case KeyType.ECDSA:
+		return "1.2.840.10045.2.1";
+	case KeyType.ED25519:
+		return "1.3.101.112";
+	case KeyType.ECPublic:
+		return "1.2.840.10045.2.1";
+	case KeyType.RSAPublic:
+	case KeyType.Unknown:
+	default:
+		return "1.2.840.113549.1.1.1";
+	}
+}
+
 export function ecNameGetName(ecName)
 {
 	switch (ecName)
@@ -4613,4 +4628,29 @@ export function ecNameFromOID(buff)
 		return ECName.secp521r1;
 	}
 	return ECName.Unknown;
+}
+
+export function hashTypeFromOID(oid)
+{
+	if (ASN1Util.oidEqualsText(oid, "2.16.840.1.101.3.4.2.1"))
+	{
+		return hash.HashType.SHA256;
+	}
+	else if (ASN1Util.oidEqualsText(oid, "2.16.840.1.101.3.4.2.2"))
+	{
+		return hash.HashType.SHA384;
+	}
+	else if (ASN1Util.oidEqualsText(oid, "2.16.840.1.101.3.4.2.3"))
+	{
+		return hash.HashType.SHA512;
+	}
+	else if (ASN1Util.oidEqualsText(oid, "2.16.840.1.101.3.4.2.4"))
+	{
+		return hash.HashType.SHA224;
+	}
+	else if (ASN1Util.oidEqualsText(oid, "1.3.14.3.2.26"))
+	{
+		return hash.HashType.SHA1;
+	}
+	return hash.HashType.Unknown;
 }

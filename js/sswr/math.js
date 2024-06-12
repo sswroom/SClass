@@ -531,7 +531,7 @@ export class CoordinateSystem
 		{
 			return this.getEllipsoid().equals(csys.getEllipsoid());
 		}
-		else if (cst == CoordinateSystemType.PointMapping)
+		else if (csysType == CoordinateSystemType.PointMapping)
 		{
 			return false;
 		}
@@ -639,8 +639,7 @@ export class CoordinateSystem
 			}
 			else
 			{
-				i = nPoints;
-				while (i-- > 0)
+				for (i in srcArr)
 				{
 					tmpPos = srcCoord.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
 					destArr[i] = destCoord.fromCartesianCoordDeg(tmpPos);
