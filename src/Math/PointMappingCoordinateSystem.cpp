@@ -40,7 +40,7 @@ void Math::PointMappingCoordinateSystem::AddMappingPoint(Double mapX, Double map
 	this->mappingList.Add(ptItem);
 }
 
-Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl mapPt) const
+Math::Coord2DDbl Math::PointMappingCoordinateSystem::ToBaseXY(Math::Coord2DDbl mapPt) const
 {
 	if (this->mappingList.GetCount() < 3)
 	{
@@ -101,11 +101,21 @@ Math::Coord2DDbl Math::PointMappingCoordinateSystem::CalcBaseXY(Math::Coord2DDbl
 	return mapPt;
 }
 
+Math::Coord2DDbl Math::PointMappingCoordinateSystem::ToMapXY(Math::Coord2DDbl basePt) const
+{
+	return basePt;
+}
+
+NN<Math::CoordinateSystem> Math::PointMappingCoordinateSystem::GetBaseCSys() const
+{
+	return this->baseCSys;
+}
+
 Double Math::PointMappingCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::Coord2DDbl ptList[2];
-	ptList[0] = CalcBaseXY(pos1);
-	ptList[1] = CalcBaseXY(pos2);
+	ptList[0] = ToBaseXY(pos1);
+	ptList[1] = ToBaseXY(pos2);
 	return this->baseCSys->CalSurfaceDistance(ptList[0], ptList[1], unit);
 }
 
@@ -117,7 +127,7 @@ Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NN<Math::Geomet
 	Math::Coord2DDbl *ptList = tmpLS->GetPointList(i);
 	while (i-- > 0)
 	{
-		ptList[i] = CalcBaseXY(ptList[i]);
+		ptList[i] = ToBaseXY(ptList[i]);
 	}
 	ret = this->baseCSys->CalLineStringDistance(tmpLS, include3D, unit);
 	tmpLS.Delete();

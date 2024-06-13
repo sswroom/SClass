@@ -17,7 +17,9 @@ namespace Math
 		virtual ~PointMappingCoordinateSystem();
 
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);
-		Math::Coord2DDbl CalcBaseXY(Math::Coord2DDbl mapPt) const;
+		Math::Coord2DDbl ToBaseXY(Math::Coord2DDbl mapPt) const;
+		Math::Coord2DDbl ToMapXY(Math::Coord2DDbl basePt) const;
+		NN<Math::CoordinateSystem> GetBaseCSys() const;
 
 		virtual Double CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
 		virtual Double CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
