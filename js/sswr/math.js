@@ -1,6 +1,10 @@
 import * as geometry from "./geometry.js";
 import * as unit from "./unit.js";
 
+/**
+ * @param {number} n
+ * @param {number | undefined} decimalPoints
+ */
 export function roundToFloat(n, decimalPoints)
 {
 	if (decimalPoints === undefined) {
@@ -12,6 +16,10 @@ export function roundToFloat(n, decimalPoints)
 	return Math.round(n) / multiplicator;
 }
 
+/**
+ * @param {number} n
+ * @param {number | undefined} decimalPoints
+ */
 export function roundToStr(n, decimalPoints)
 {
 	if (decimalPoints === undefined) {
@@ -36,14 +44,20 @@ export function roundToStr(n, decimalPoints)
 }
 
 export class GeoJSON {
+	/**
+	 * @param {number} srid
+	 * @param {{ type: string; coordinates: number[][][] | number[][][][] | undefined; }} geom
+	 */
 	static parseGeometry(srid, geom)
 	{
 		if (geom.type == "Polygon")
 		{
+			// @ts-ignore
 			return new geometry.Polygon(srid, geom.coordinates);
 		}
 		else if (geom.type == "MultiPolygon")
 		{
+			// @ts-ignore
 			return new geometry.MultiPolygon(srid, geom.coordinates);
 		}
 		else
@@ -56,6 +70,10 @@ export class GeoJSON {
 
 export class Coord2D
 {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 */
 	constructor(x, y)
 	{
 		this.x = x;
@@ -72,6 +90,9 @@ export class Coord2D
 		return this.x;
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	mul(val)
 	{
 		return new Coord2D(this.x * val, this.y * val);
@@ -80,6 +101,12 @@ export class Coord2D
 
 export class RectArea
 {
+	/**
+	 * @param {number} x1
+	 * @param {number} y1
+	 * @param {number} x2
+	 * @param {number} y2
+	 */
 	constructor(x1, y1, x2, y2)
 	{
 		let minX;
@@ -126,6 +153,10 @@ export class RectArea
 		return this.max.y;
 	}
 
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 */
 	containPt(x, y)
 	{
 		return (x >= this.min.x && x <= this.max.x && y >= this.min.y && y <= this.max.y);
@@ -151,6 +182,9 @@ export class RectArea
 		return this.getWidth() * this.getHeight();
 	}
 
+	/**
+	 * @param {RectArea} rect
+	 */
 	unionInPlace(rect)
 	{
 		if (this.min.x > rect.min.x)
@@ -164,6 +198,10 @@ export class RectArea
 		return this;
 	}
 
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 */
 	unionPointInPlace(x, y)
 	{
 		if (this.min.x > x)
@@ -180,6 +218,11 @@ export class RectArea
 
 export class Vector3 extends Coord2D
 {
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
 	constructor(x, y, z)
 	{
 		super(x, y);
@@ -191,16 +234,26 @@ export class Vector3 extends Coord2D
 		return this.z;
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	mulXY(val)
 	{
 		return new Vector3(this.x * val, this.y * val, this.z);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	mul(val)
 	{
 		return new Vector3(this.x * val, this.y * val, this.z * val);
 	}
 
+	/**
+	 * @param {{ x: any; y: any; }} coord
+	 * @param {number} z
+	 */
 	static fromCoord2D(coord, z)
 	{
 		return new Vector3(coord.x, coord.y, z);
@@ -238,11 +291,18 @@ export const EarthEllipsoidType = {
 
 export class EarthEllipsoid
 {
+	/**
+	 * @param {number | null} semiMajorAxis
+	 * @param {number | null} inverseFlattening
+	 * @param {number} eet
+	 */
 	constructor(semiMajorAxis, inverseFlattening, eet)
 	{
 		this.eet = eet;
 		if (semiMajorAxis == null || inverseFlattening == null)
 		{
+			this.semiMajorAxis = 0;
+			this.inverseFlattening = 99999999.0;
 			this.initEarthInfo(eet);
 		}
 		else
@@ -255,6 +315,13 @@ export class EarthEllipsoid
 		this.eccentricity = Math.sqrt(2 * f - f * f);
 	};
 
+	/**
+	 * @param {number} dLat1
+	 * @param {number} dLon1
+	 * @param {number} dLat2
+	 * @param {number} dLon2
+	 * @param {unit.Distance.Unit | null} distUnit
+	 */
 	calSurfaceDistance(dLat1, dLon1, dLat2, dLon2, distUnit)
 	{
 		let r;
@@ -308,11 +375,17 @@ export class EarthEllipsoid
 		return this.eccentricity;
 	}
 
+	/**
+	 * @param {{ semiMajorAxis: any; inverseFlattening: any; }} ellipsoid
+	 */
 	equals(ellipsoid)
 	{
 		return ellipsoid.semiMajorAxis == this.semiMajorAxis && ellipsoid.inverseFlattening == this.inverseFlattening;
 	}
 
+	/**
+	 * @param {number} eet
+	 */
 	initEarthInfo(eet)
 	{
 		switch (eet)
@@ -424,6 +497,9 @@ export class EarthEllipsoid
 			return;
 		}
 	}
+	/**
+	 * @param {{ lat: number; lon: number; z: number; }} lonLatH
+	 */
 	toCartesianCoordRad(lonLatH)
 	{
 		let cLat = Math.cos(lonLatH.lat);
@@ -438,6 +514,9 @@ export class EarthEllipsoid
 			((1 - e2) * v + lonLatH.z) * sLat);
 	}
 
+	/**
+	 * @param {{ y: number; x: number; z: number; }} coord
+	 */
 	fromCartesianCoordRad(coord)
 	{
 		let e2 = this.eccentricity * this.eccentricity;
@@ -460,11 +539,17 @@ export class EarthEllipsoid
 		return new Vector3(rLon, rLat, p / Math.cos(rLat) - v);
 	}
 
+	/**
+	 * @param {{ mulXY: (arg0: number) => any; }} lonLatH
+	 */
 	toCartesianCoordDeg(lonLatH)
 	{
 		return this.toCartesianCoordRad(lonLatH.mulXY(Math.PI / 180.0));
 	}
 
+	/**
+	 * @param {any} coord
+	 */
 	fromCartesianCoordDeg(coord)
 	{
 		return this.fromCartesianCoordRad(coord).mulXY(180.0 / Math.PI);
@@ -473,6 +558,11 @@ export class EarthEllipsoid
 
 export class Spheroid
 {
+	/**
+	 * @param {number} srid
+	 * @param {EarthEllipsoid} ellipsoid
+	 * @param {string} name
+	 */
 	constructor(srid, ellipsoid, name)
 	{
 		this.srid = srid;
@@ -483,6 +573,22 @@ export class Spheroid
 
 export class DatumData
 {
+	/**
+	 * @param {number} srid
+	 * @param {Spheroid} spheroid
+	 * @param {string} name
+	 * @param {number} x0
+	 * @param {number} y0
+	 * @param {number} z0
+	 * @param {number} cX
+	 * @param {number} cY
+	 * @param {number} cZ
+	 * @param {number} xAngle
+	 * @param {number} yAngle
+	 * @param {number} zAngle
+	 * @param {number} scale
+	 * @param {unit.Angle.Unit} aunit
+	 */
 	constructor(srid, spheroid, name, x0, y0, z0, cX, cY, cZ, xAngle, yAngle, zAngle, scale, aunit)
 	{
 		this.srid = srid;
@@ -513,12 +619,34 @@ export const CoordinateSystemType = {
 
 export class CoordinateSystem
 {
+	/**
+	 * @param {number} srid
+	 * @param {string} csysName
+	 */
 	constructor(srid, csysName)
 	{
+		if(this.constructor == CoordinateSystem) {
+			throw new Error("Class is of abstract type and can't be instantiated");
+		};
+
+		if(this.getCoordSysType == undefined) {
+			throw new Error("getCoordSysType method must be implemented");
+		};
 		this.srid = srid;
 		this.csysName = csysName;
 	}
 
+	/**
+	 * @returns {number}
+	 */
+	getCoordSysType()
+	{
+		throw new Error("Calling abstract method CoordinateSystem.getCoordSysType");
+	}
+
+	/**
+	 * @param {CoordinateSystem} csys
+	 */
 	equals(csys)
 	{
 		if (this == csys)
@@ -527,7 +655,7 @@ export class CoordinateSystem
 		let csysType = csys.getCoordSysType();
 		if (thisType != csysType)
 			return false;
-		if (csysType == CoordinateSystemType.Geographic)
+		if (csysType == CoordinateSystemType.Geographic && (this instanceof GeographicCoordinateSystem) && (csys instanceof GeographicCoordinateSystem))
 		{
 			return this.getEllipsoid().equals(csys.getEllipsoid());
 		}
@@ -535,20 +663,34 @@ export class CoordinateSystem
 		{
 			return false;
 		}
-		else
+		else if ((this instanceof ProjectedCoordinateSystem) && (csys instanceof ProjectedCoordinateSystem))
 		{
 			return this.sameProjection(csys);
 		}
+		else
+		{
+			return false;
+		}
 	}
 
+	/**
+	 * @param {GeographicCoordinateSystem} srcCoord
+	 * @param {GeographicCoordinateSystem} destCoord
+	 * @param {Coord2D} coord
+	 */
 	static convert(srcCoord, destCoord, coord)
 	{
 		return CoordinateSystem.convert3D(srcCoord, destCoord, Vector3.fromCoord2D(coord, 0));
 	}
 
+	/**
+	 * @param {GeographicCoordinateSystem} srcCoord
+	 * @param {GeographicCoordinateSystem} destCoord
+	 * @param {Vector3} srcPos
+	 */
 	static convert3D(srcCoord, destCoord, srcPos)
 	{
-		if (srcCoord.isProjected())
+		if (srcCoord.isProjected() && (srcCoord instanceof ProjectedCoordinateSystem))
 		{
 			srcPos = Vector3.fromCoord2D(srcCoord.toGeographicCoordinateDeg(srcPos), srcPos.z);
 			srcCoord = srcCoord.getGeographicCoordinateSystem();
@@ -559,7 +701,7 @@ export class CoordinateSystem
 		}
 		srcPos = srcCoord.toCartesianCoordDeg(srcPos);
 	
-		if (destCoord.isProjected())
+		if (destCoord.isProjected() && (destCoord instanceof ProjectedCoordinateSystem))
 		{
 			let gcs = destCoord.getGeographicCoordinateSystem();
 			srcPos = gcs.fromCartesianCoordRad(srcPos);
@@ -571,12 +713,17 @@ export class CoordinateSystem
 		}
 	}
 
+	/**
+	 * @param {GeographicCoordinateSystem} srcCoord
+	 * @param {GeographicCoordinateSystem} destCoord
+	 * @param {Coord2D[]} srcArr
+	 */
 	static convertArray(srcCoord, destCoord, srcArr)
 	{
 		let i;
 		let srcRad = false;
 		let destArr = [];
-		if (srcCoord.isProjected())
+		if (srcCoord instanceof ProjectedCoordinateSystem)
 		{
 			for (i in srcArr)
 			{
@@ -605,7 +752,7 @@ export class CoordinateSystem
 			return destArr;
 		}
 		let tmpPos;
-		if (destCoord.isProjected())
+		if (destCoord instanceof ProjectedCoordinateSystem)
 		{
 			let gcs = destCoord.getGeographicCoordinateSystem();
 			if (srcRad)
@@ -623,7 +770,7 @@ export class CoordinateSystem
 				{
 					tmpPos = srcCoord.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
 					tmpPos = gcs.fromCartesianCoordRad(tmpPos);
-					destArr[i] = destCoord.FromGeographicCoordinateRad(tmpPos);
+					destArr[i] = destCoord.fromGeographicCoordinateRad(tmpPos);
 				}
 			}
 		}
@@ -649,6 +796,10 @@ export class CoordinateSystem
 		return destArr;
 	}
 
+	/**
+	 * @param {{ isProjected: () => any; toGeographicCoordinateDeg: (arg0: any) => any; getGeographicCoordinateSystem: () => any; toCartesianCoordDeg: (arg0: any) => any; }} srcCoord
+	 * @param {Vector3} srcPos
+	 */
 	static convertToCartesianCoord(srcCoord, srcPos)
 	{
 		if (srcCoord.isProjected())
@@ -662,12 +813,24 @@ export class CoordinateSystem
 
 export class GeographicCoordinateSystem extends CoordinateSystem
 {
+	/**
+	 * @param {number} srid
+	 * @param {string} csysName
+	 * @param {DatumData} datumData
+	 */
 	constructor(srid, csysName, datumData)
 	{
 		super(srid, csysName);
 		this.datum = datumData;
 	}
 
+	/**
+	 * @param {number} x1
+	 * @param {number} y1
+	 * @param {number} x2
+	 * @param {number} y2
+	 * @param {unit.Distance.Unit} unit
+	 */
 	calcSurfaceDistance(x1, y1, x2, y2, unit)
 	{
 		return this.datum.spheroid.ellipsoid.calSurfaceDistance(y1, x1, y2, x2, unit);
@@ -688,6 +851,9 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 		return this.datum.spheroid.ellipsoid;
 	}
 
+	/**
+	 * @param {Vector3} lonLatH
+	 */
 	toCartesianCoordRad(lonLatH)
 	{
 		let tmpPos = this.datum.spheroid.ellipsoid.toCartesianCoordRad(lonLatH);
@@ -711,6 +877,9 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 		}
 	}
 
+	/**
+	 * @param {{ x: number; y: number; z: number; }} coord
+	 */
 	fromCartesianCoordRad(coord)
 	{
 		let tmpPos;
@@ -735,11 +904,17 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 		return this.datum.spheroid.ellipsoid.fromCartesianCoordRad(tmpPos);
 	}
 
+	/**
+	 * @param {{ mulXY: (arg0: number) => any; }} lonLatH
+	 */
 	toCartesianCoordDeg(lonLatH)
 	{
 		return this.toCartesianCoordRad(lonLatH.mulXY(Math.PI / 180.0));
 	}
 
+	/**
+	 * @param {any} coord
+	 */
 	fromCartesianCoordDeg(coord)
 	{
 		return this.fromCartesianCoordRad(coord).mulXY(180.0 / Math.PI);
@@ -748,6 +923,16 @@ export class GeographicCoordinateSystem extends CoordinateSystem
 
 export class ProjectedCoordinateSystem extends CoordinateSystem
 {
+	/**
+	 * @param {number} srid
+	 * @param {string} csysName
+	 * @param {number} falseEasting
+	 * @param {number} falseNorthing
+	 * @param {number} dcentralMeridian
+	 * @param {number} dlatitudeOfOrigin
+	 * @param {number} scaleFactor
+	 * @param {any} gcs
+	 */
 	constructor(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 	{
 		super(srid, csysName);
@@ -759,6 +944,31 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 		this.gcs = gcs;
 	}
 
+	/**
+	 * @param {Coord2D} projPos
+	 * @returns {Coord2D}
+	 */
+	toGeographicCoordinateRad(projPos)
+	{
+		throw new Error("abstract function ProjectedCoordinateSystem.toGeographicCoordinateRad is called");
+	}
+
+	/**
+	 * @param {Coord2D} geogPos
+	 * @returns {Coord2D}
+	 */
+	fromGeographicCoordinateRad(geogPos)
+	{
+		throw new Error("abstract function ProjectedCoordinateSystem.fromGeographicCoordinateRad is called");
+	}
+
+	/**
+	 * @param {number} x1
+	 * @param {number} y1
+	 * @param {number} x2
+	 * @param {number} y2
+	 * @param {unit.Distance.Unit} distUnit
+	 */
 	calcSurfaceDistance(x1, y1, x2, y2, distUnit)
 	{
 		let diffX = x2 - x1;
@@ -783,16 +993,25 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 		return this.gcs;
 	}
 
+	/**
+	 * @param {Coord2D} projPos
+	 */
 	toGeographicCoordinateDeg(projPos)
 	{
 		return this.toGeographicCoordinateRad(projPos).mul(180 / Math.PI);
 	}
 
+	/**
+	 * @param {Coord2D} geoPos
+	 */
 	fromGeographicCoordinateDeg(geoPos)
 	{
 		return this.fromGeographicCoordinateRad(geoPos.mul(Math.PI / 180.0));
 	}
 
+	/**
+	 * @param {ProjectedCoordinateSystem} csys
+	 */
 	sameProjection(csys)
 	{
 		if (this.falseEasting != csys.falseEasting)
@@ -811,6 +1030,16 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 
 export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 {
+	/**
+	 * @param {number} srid
+	 * @param {string} csysName
+	 * @param {number} falseEasting
+	 * @param {number} falseNorthing
+	 * @param {number} dcentralMeridian
+	 * @param {number} dlatitudeOfOrigin
+	 * @param {number} scaleFactor
+	 * @param {GeographicCoordinateSystem} gcs
+	 */
 	constructor(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 	{
 		super(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs);
@@ -821,6 +1050,9 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 		return CoordinateSystemType.MercatorProjected;
 	}
 
+	/**
+	 * @param {Coord2D} projPos
+	 */
 	toGeographicCoordinateRad(projPos)
 	{
 		let ellipsoid = this.gcs.getEllipsoid();
@@ -870,6 +1102,9 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 			rLatL - ser7 * eDiff2 + ser8 * eDiff4 - ser9 * eDiff6);
 	}
 	
+	/**
+	 * @param {Coord2D} geoPos
+	 */
 	fromGeographicCoordinateRad(geoPos)
 	{
 		let ellipsoid = this.gcs.getEllipsoid();
@@ -907,6 +1142,9 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 			ser1 + ser2 * dlon2 + ser3 * dlon4 + ser3a * dlon4 * dlon2);
 	}
 	
+	/**
+	 * @param {number} rLat
+	 */
 	calcM(rLat)
 	{
 		let ellipsoid = this.gcs.getEllipsoid();
@@ -928,6 +1166,16 @@ export class MercatorProjectedCoordinateSystem extends ProjectedCoordinateSystem
 
 export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSystem
 {
+	/**
+	 * @param {number} srid
+	 * @param {string} csysName
+	 * @param {number} falseEasting
+	 * @param {number} falseNorthing
+	 * @param {number} dcentralMeridian
+	 * @param {number} dlatitudeOfOrigin
+	 * @param {number} scaleFactor
+	 * @param {GeographicCoordinateSystem} gcs
+	 */
 	constructor(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 	{
 		super(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs);
@@ -938,6 +1186,9 @@ export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSys
 		return CoordinateSystemType.Mercator1SPProjected;
 	}
 
+	/**
+	 * @param {Coord2D} projPos
+	 */
 	toGeographicCoordinateRad(projPos)
 	{
 		let ellipsoid = this.gcs.getEllipsoid();
@@ -947,6 +1198,9 @@ export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSys
 			(Math.atan(Math.exp((projPos.y - this.falseNorthing) / a)) - Math.PI * 0.25) * 2);
 	}
 	
+	/**
+	 * @param {Coord2D} geoPos
+	 */
 	fromGeographicCoordinateRad(geoPos)
 	{
 		let ellipsoid = this.gcs.getEllipsoid();
@@ -962,6 +1216,11 @@ export class Mercator1SPProjectedCoordinateSystem extends ProjectedCoordinateSys
 
 export class CoordinateSystemManager
 {
+	/**
+	 * @param {number} srid
+	 * @param {number} datumSrid
+	 * @param {string} name
+	 */
 	static srCreateGeogCSysData(srid, datumSrid, name)
 	{
 		let data = this.srGetDatumData(datumSrid);
@@ -972,9 +1231,20 @@ export class CoordinateSystemManager
 		return new GeographicCoordinateSystem(srid, name, data);
 	}
 	
+	/**
+	 * @param {number} srid
+	 * @param {number} geogcsSrid
+	 * @param {number} csysType
+	 * @param {string} projName
+	 * @param {number} falseEasting
+	 * @param {number} falseNorthing
+	 * @param {number} centralMeridian
+	 * @param {number} latitudeOfOrigin
+	 * @param {number} scaleFactor
+	 */
 	static srCreateProjCSysData(srid, geogcsSrid, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor)
 	{
-		let gcsys = this.srCreateGeogCSys(geogcsSrid);
+		let gcsys = CoordinateSystemManager.srCreateGeogCSys(geogcsSrid);
 		if (gcsys == null)
 			return null;
 		if (csysType == CoordinateSystemType.MercatorProjected || csysType == CoordinateSystemType.GausskrugerProjected)
@@ -988,6 +1258,9 @@ export class CoordinateSystemManager
 		return null;
 	}
 	
+	/**
+	 * @param {number} srid
+	 */
 	static srCreateGeogCSys(srid)
 	{
 		switch (srid)
@@ -1002,6 +1275,9 @@ export class CoordinateSystemManager
 		}
 	}
 
+	/**
+	 * @param {number} srid
+	 */
 	static srCreateProjCSys(srid)
 	{
 		switch (srid)
@@ -1017,6 +1293,9 @@ export class CoordinateSystemManager
 			return null;
 		}
 	}
+	/**
+	 * @param {number} srid
+	 */
 	static srCreateCsys(srid)
 	{
 		switch (srid)
@@ -1035,26 +1314,32 @@ export class CoordinateSystemManager
 		}
 	}
 	
+	/**
+	 * @param {number} srid
+	 */
 	static srGetDatumData(srid)
 	{
 		switch (srid)
 		{
 		case 6326:
-			return new DatumData(6326, this.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
+			return new DatumData(6326, CoordinateSystemManager.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6600:
-			return new DatumData(6600, this.srGetSpheroid(7012), "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
+			return new DatumData(6600, CoordinateSystemManager.srGetSpheroid(7012), "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6601:
-			return new DatumData(6601, this.srGetSpheroid(7012), "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
+			return new DatumData(6601, CoordinateSystemManager.srGetSpheroid(7012), "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6602:
-			return new DatumData(6602, this.srGetSpheroid(7012), "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, unit.Angle.Unit.ARCSECOND);
+			return new DatumData(6602, CoordinateSystemManager.srGetSpheroid(7012), "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, unit.Angle.Unit.ARCSECOND);
 		case 6603:
-			return new DatumData(6603, this.srGetSpheroid(7012), "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, unit.Angle.Unit.ARCSECOND);
+			return new DatumData(6603, CoordinateSystemManager.srGetSpheroid(7012), "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, unit.Angle.Unit.ARCSECOND);
 		case 6611:
-			return new DatumData(6611, this.srGetSpheroid(7022), "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, unit.Angle.Unit.ARCSECOND);
+			return new DatumData(6611, CoordinateSystemManager.srGetSpheroid(7022), "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, unit.Angle.Unit.ARCSECOND);
 		}
 		return null;
 	}
 	
+	/**
+	 * @param {number} srid
+	 */
 	static srGetSpheroid(srid)
 	{
 		switch (srid)
@@ -1066,6 +1351,6 @@ export class CoordinateSystemManager
 		case 7030:
 			return new Spheroid(7030, new EarthEllipsoid(null, null, EarthEllipsoidType.WGS84),      "WGS 84");
 		}
-		return null;
+		throw new Error("Unsupported srid: "+srid);
 	}	
 };

@@ -98,7 +98,7 @@ export class EXIFData
 	parseMakerNote(buff: ArrayBuffer): EXIFData | null;
 
 	static getEXIFName(exifMaker: EXIFMaker, id: number, subId: number): string;
-	static parseIFD(reader: data.ByteReader, ofst: number, lsb: boolean, nextOfst: object, readBase: number, maker?: EXIFMaker): EXIFData | null;
+	static parseIFD(reader: data.ByteReader, ofst: number, lsb: boolean, nextOfst: object | null, readBase: number | null, maker?: EXIFMaker): EXIFData | null;
 }
 
 export class StaticImage extends data.ParsedObject

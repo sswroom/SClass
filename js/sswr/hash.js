@@ -39,7 +39,10 @@ export class SHA1 extends Hash
 	constructor()
 	{
 		super();
-		this.clear();
+		this.messageLength        = 0n;
+		this.messageBlockIndex    = 0;
+		this.intermediateHash = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0];
+		this.messageBlock = new Array(64);
 	}
 
 	getName()
@@ -274,7 +277,9 @@ export class MD5 extends Hash
 	{
 		super();
 		this.buff = new Array(64);
-		this.clear();
+		this.msgLeng = 0n;
+		this.h = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476];
+		this.buffSize = 0;
 	}
 
 	getName()

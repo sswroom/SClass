@@ -16,6 +16,9 @@ export function getRequestURLBase()
 	}
 }
 	
+/**
+ * @param {string} name
+ */
 export function getParameterByName(name)
 {
 	let url = window.location.href;
@@ -27,6 +30,10 @@ export function getParameterByName(name)
 	return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 	
+/**
+ * @param {string | URL} url
+ * @param {(arg0: object) => void} onResultFunc
+ */
 export function loadJSON(url, onResultFunc)
 {
 	let xmlhttp = new XMLHttpRequest();
@@ -40,6 +47,9 @@ export function loadJSON(url, onResultFunc)
 	xmlhttp.send();
 }
 
+/**
+ * @param {object | any[]} o
+ */
 export function buildTable(o)
 {
 	let name;
@@ -85,6 +95,11 @@ export function buildTable(o)
 	return ret.join("");
 }
 
+/**
+ * @param {string | Blob} data
+ * @param {string} contentType
+ * @param {string} fileName
+ */
 export function openData(data, contentType, fileName)
 {
 	if (typeof data == "string")
@@ -113,6 +128,9 @@ export function openData(data, contentType, fileName)
 	}
 }
 
+/**
+ * @param {number} c
+ */
 function hexColor(c)
 {
 	let b = c % 256;
@@ -120,13 +138,20 @@ function hexColor(c)
 	let r = (c >> 16) % 256;
 	return {a: 1.0, r: r / 255, g: g / 255, b: b / 255};
 }
+/**
+ * @param {string} s
+ * @param {number} maxVal
+ */
 function toRatio(s, maxVal)
 {
 	if (s.endsWith("%"))
-		return s.substring(0, s.length - 1) / 100;
+		return Number(s.substring(0, s.length - 1)) / 100;
 	else
-		return s / maxVal;
+		return Number(s) / maxVal;
 }
+/**
+ * @param {string} c
+ */
 export function parseCSSColor(c)
 {
 	let i;
@@ -473,14 +498,18 @@ export function parseCSSColor(c)
 	return {a: 0.0, r: 0.0, g: 0.0, b: 0.0};
 }
 
+/**
+ * @param {{ addEventListener: (arg0: string, arg1: { (ev: any): void; (ev: any): void; }) => void; }} ele
+ * @param {(arg0: any) => void} hdlr
+ */
 export function handleFileDrop(ele, hdlr)
 {
-	ele.addEventListener("dragover",(ev)=>{
+	ele.addEventListener("dragover",(/** @type {{ preventDefault: () => void; dataTransfer: { dropEffect: string; }; }} */ ev)=>{
 		ev.preventDefault();
 		ev.dataTransfer.dropEffect = "copy";
 	});
 
-	ele.addEventListener("drop", (ev)=>{
+	ele.addEventListener("drop", (/** @type {{ preventDefault: () => void; dataTransfer: { items: { [x: string]: any; }; files: { [x: string]: any; }; }; }} */ ev)=>{
 		ev.preventDefault();
 		if (ev.dataTransfer.items)
 		{
@@ -505,6 +534,10 @@ export function handleFileDrop(ele, hdlr)
 	});
 }
 
+/**
+ * @param {string} targetUrl
+ * @param {string} docUrl
+ */
 export function appendUrl(targetUrl, docUrl)
 {
 	if (targetUrl.indexOf(":") >= 0)
@@ -547,6 +580,9 @@ export function appendUrl(targetUrl, docUrl)
 	}
 }
 
+/**
+ * @param {string} fileName
+ */
 export function mimeFromFileName(fileName)
 {
 	let i;
@@ -559,6 +595,9 @@ export function mimeFromFileName(fileName)
 	return "application/octet-stream";
 }
 
+/**
+ * @param {any} ext
+ */
 export function mimeFromExt(ext)
 {
 	switch (ext)
@@ -702,15 +741,27 @@ export function mimeFromExt(ext)
 	}
 }
 
+/**
+ * @param {string} url
+ */
 export function getImageInfo(url)
 {
 	return new Promise(function (resolve, reject) {
         const image = document.createElement('img');
         image.addEventListener('load', function (e) {
-            resolve({
-                width: e.target.width,
-                height: e.target.height,
-            });
+			if (e.target)
+			{
+				resolve({
+					// @ts-ignore
+					width: e.target.width,
+					// @ts-ignore
+					height: e.target.height,
+				});
+			}
+			else
+			{
+				reject();
+			}
         });
 
         image.addEventListener('error', function () {
@@ -721,6 +772,11 @@ export function getImageInfo(url)
     });
 }
 
+/**
+ * @param {{ [x: string]: any; }} prop
+ * @param {{ [x: string]: string; } | null} nameMap
+ * @param {any} timeFormat
+ */
 export function propertiesToHTML(prop, nameMap, timeFormat)
 {
 	let ret = ["<ul>"];
@@ -772,6 +828,9 @@ export function propertiesToHTML(prop, nameMap, timeFormat)
 	return ret.join("");
 }
 
+/**
+ * @param {string} name
+ */
 export async function getCacheSize(name)
 {
 	const cache = await caches.open(name);
@@ -791,6 +850,10 @@ export async function getCacheSize(name)
 
 export class Dialog
 {
+	/**
+	 * @param {string | HTMLElement} content
+	 * @param {{width?:number,height?:number,zIndex?:number,buttonClass?:string,contentClass?:string,buttons?:{name:string,onclick:()=>void}[],margin?:number} | null} options
+	 */
 	constructor(content, options)
 	{
 		this.content = content;
@@ -808,8 +871,12 @@ export class Dialog
 
 	getDocBody()
 	{
-		if (top.document.body.nodeName.toLowerCase() == "frameset")
+		let d = (top)?top.document:window.document;
+		if (d.body.nodeName.toLowerCase() == "frameset")
 		{
+			/**
+			 * @type {Window}
+			 */
 			let w = window;
 			while (w.parent && w.parent.document.body.nodeName.toLowerCase() != "frameset")
 			{
@@ -819,7 +886,7 @@ export class Dialog
 		}
 		else
 		{
-			return top.document.body;
+			return d.body;
 		}
 	}
 
@@ -832,7 +899,7 @@ export class Dialog
 		darkColor.style.width = "100%";
 		darkColor.style.height = "100%";
 		darkColor.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-		darkColor.style.zIndex = this.options.zIndex;
+		darkColor.style.zIndex = ""+this.options.zIndex;
 		darkColor.style.display = "flex";
 		darkColor.style.alignItems = "center";
 		darkColor.style.justifyContent = "center";
@@ -864,7 +931,7 @@ export class Dialog
 		content.style.height = height;
 		let row = document.createElement("tr");
 		let contentCell = document.createElement("td");
-		contentCell.setAttribute("colspan", this.options.buttons.length);
+		contentCell.setAttribute("colspan", ""+this.options.buttons.length);
 		contentCell.className = this.options.contentClass;
 		contentCell.style.overflowY = "auto";
 		if (this.options.margin)
@@ -883,7 +950,8 @@ export class Dialog
 		row.setAttribute("height", "20");
 		let i;
 		let col;
-		for (i in this.options.buttons)
+		i = 0;
+		while (i < this.options.buttons.length)
 		{
 			col = document.createElement("td");
 			col.style.textAlign = "center";
@@ -893,9 +961,10 @@ export class Dialog
 				col.style.marginLeft = this.options.margin+"px";
 			}
 			col.className = this.options.buttonClass;
-			col.addEventListener("click", this.options.buttons[i].onclick, this);
+			col.addEventListener("click", this.options.buttons[i].onclick);
 			col.innerText = this.options.buttons[i].name;
 			row.append(col);
+			i++;
 		}
 		content.appendChild(row);
 		dialog.appendChild(content);
@@ -903,7 +972,7 @@ export class Dialog
 		if (this.options.margin)
 		{
 			let minHeight = row.offsetHeight;
-			row.setAttribute("height", this.options.margin + minHeight);
+			row.setAttribute("height", ""+(this.options.margin + minHeight));
 			contentCell.style.height = (dialog.offsetHeight - minHeight - this.options.margin - this.options.margin)+"px";
 		}
 		else
@@ -921,16 +990,26 @@ export class Dialog
 		}
 	}
 
+	/**
+	 * @param {string} content
+	 */
 	setContent(content)
 	{
 		this.content = content;
 	}
 
+	/**
+	 * @param {string} name
+	 * @param {any} value
+	 */
 	updateOption(name, value)
 	{
 		this.options[name] = value;
 	}
 
+	/**
+	 * @param {string | null | undefined} [name]
+	 */
 	closeButton(name)
 	{
 		if (name == null) name = "Close";

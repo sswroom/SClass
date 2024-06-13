@@ -270,7 +270,7 @@ export class Container extends Feature
 	addFeature(feature: Feature): void;
 	addStyle(style: Style): void;
 	addStyleMap(styleMap: StyleMap): void;
-	getOrNewStyle(iconStyle: IconStyle, labelStyle: LabelStyle, lineStyle: LineStyle, polyStyle: PolyStyle, balloonStyle: BalloonStyle, listStyle: ListStyle): Style;
+	getOrNewStyle(iconStyle: IconStyle | null, labelStyle: LabelStyle | null, lineStyle: LineStyle | null, polyStyle: PolyStyle | null, balloonStyle: BalloonStyle | null, listStyle: ListStyle | null): Style;
 	getStyleById(id: string): Style | StyleMap | null;
 	getBounds(): math.RectArea | null;
 	getUsedNS(ns: object): void;

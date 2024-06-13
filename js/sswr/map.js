@@ -31,10 +31,18 @@ export const GeometryType = {
 	GeometryCollection: "GeometryCollection"
 };
 
+/**
+ * @param {number} srid
+ * @param {geometry.Vector2D} geom
+ * @param {number} x
+ * @param {number} y
+ */
 export function calcDistance(srid, geom, x, y)
 {
 	let pt = geom.calBoundaryPoint(new math.Coord2D(x, y));
 	let csys = math.CoordinateSystemManager.srCreateCsys(srid);
+	if (csys == null)
+		throw new Error("srid "+srid+" is not supported");
 	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, unit.Distance.Unit.METER);
 }
 
@@ -116,6 +124,8 @@ export class GeolocationFilter
 	constructor(minSecs, minDistMeter)
 	{
 		this.csys = math.CoordinateSystemManager.srCreateCsys(4326);
+		if (this.csys == null)
+			throw new Error();
 		this.minSecs = minSecs;
 		this.minDistMeter = minDistMeter;
 	}
@@ -166,6 +176,7 @@ export class WMS
 			let resp = await fetch(this.url + "?SERVICE=WMS&REQUEST=GetCapabilities");
 			let parser = new DOMParser();
 			let contentType = resp.headers.get("Content-Type") || "text/xml";
+			// @ts-ignore
 			let doc = parser.parseFromString(await resp.text(), contentType);
 			let node = doc.childNodes[0];
 			if (node.nodeName == "WMS_Capabilities" || node.nodeName == "WMT_MS_Capabilities")

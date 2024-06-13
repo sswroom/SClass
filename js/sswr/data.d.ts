@@ -24,7 +24,7 @@ export function arrayBuffer2Base64(buff: ArrayBuffer): string;
 export function arrayBufferEquals(buff1: ArrayBuffer, buff2: ArrayBuffer): boolean;
 export function compare(a: any, b: any): number;
 export function sort(arr: object[], compareFunc?: (val1: object, val2: object) => number, firstIndex?: number, lastIndex?: number): void;
-export function mergeOptions(options: object | null, defOptions: object): object;
+export function mergeOptions<OptionType>(options: object | null, defOptions: OptionType): OptionType;
 export function readUInt16(arr: Uint8Array, index: number): number;
 export function readMUInt16(arr: Uint8Array, index: number): number;
 export function readUInt24(arr: Uint8Array, index: number): number;

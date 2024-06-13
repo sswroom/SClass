@@ -107,6 +107,8 @@ export class ColorStyle extends Element
 	constructor()
 	{
 		super();
+		this.color = null;
+		this.randomColor = null;
 	}
 
 	setRandomColor(randomColor)
@@ -352,7 +354,7 @@ export class PolyStyle extends ColorStyle
 		strs.push("\t".repeat(level)+"<PolyStyle>");
 		this.appendInnerXML(strs, level + 1);
 		if (this.outline != null)
-			strs.push("\t".repeat(level + 1)+"<outline>"+(this.labelVisibility?"1":"0")+"</outline>");
+			strs.push("\t".repeat(level + 1)+"<outline>"+(this.outline?"1":"0")+"</outline>");
 		strs.push("\t".repeat(level)+"</PolyStyle>");
 	}
 
@@ -373,6 +375,22 @@ export class BalloonStyle extends Element
 	constructor()
 	{
 		super();
+		/**
+		 * @type {string | null}
+		 */
+		this.bgColor = null;
+		/**
+		 * @type {string | null}
+		 */
+		this.textColor = null;
+		/**
+		 * @type {string | null}
+		 */
+		this.text = null;
+		/**
+		 * @type {string | null}
+		 */
+		this.displayMode = null;
 	}
 
 	getUsedNS(ns)
@@ -382,7 +400,7 @@ export class BalloonStyle extends Element
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<BalloonStyle>");
-		this.appendInnerXML(strs, level + 1);
+		//this.appendInnerXML(strs, level + 1);
 		if (this.bgColor)
 			strs.push("\t".repeat(level + 1)+"<bgColor>"+this.bgColor+"</bgColor>");
 		if (this.textColor)
@@ -415,6 +433,14 @@ export class ListStyle extends Element
 	constructor()
 	{
 		super();
+		/**
+		 * @type {string | null}
+		 */
+		this.listItemType = null;
+		/**
+		 * @type {string | null}
+		 */
+		this.bgColor = null;
 	}
 
 	getUsedNS(ns)
@@ -424,7 +450,7 @@ export class ListStyle extends Element
 	appendOuterXML(strs, level)
 	{
 		strs.push("\t".repeat(level)+"<ListStyle>");
-		this.appendInnerXML(strs, level + 1);
+		//this.appendInnerXML(strs, level + 1);
 		if (this.listItemType)
 			strs.push("\t".repeat(level + 1)+"<listItemType>"+text.toXMLText(this.listItemType)+"</listItemType>");
 		if (this.bgColor)
@@ -446,6 +472,9 @@ export class ListStyle extends Element
 
 export class StyleSelector extends Element
 {
+	/**
+	 * @param {string} id
+	 */
 	constructor(id)
 	{
 		super();
@@ -455,6 +484,9 @@ export class StyleSelector extends Element
 
 export class Style extends StyleSelector
 {
+	/**
+	 * @param {string} id
+	 */
 	constructor(id)
 	{
 		super(id);
@@ -508,6 +540,14 @@ export class Style extends StyleSelector
 		}
 	}
 
+	/**
+	 * @param {IconStyle | null} iconStyle
+	 * @param {LabelStyle | null} labelStyle
+	 * @param {LineStyle | null} lineStyle
+	 * @param {PolyStyle | null} polyStyle
+	 * @param {BalloonStyle | null} balloonStyle
+	 * @param {ListStyle | null} listStyle
+	 */
 	isStyle(iconStyle, labelStyle, lineStyle, polyStyle, balloonStyle, listStyle)
 	{
 		if (iconStyle == null)
@@ -1058,7 +1098,8 @@ export class Placemark extends Feature
 				if (subGeom != true)
 					strs.push("\t".repeat(level + 1)+"<tessellate>1</tessellate>");
 			}
-			for (i in vec.geometries)
+			i = 0;
+			while (i < vec.geometries.length)
 			{
 				if (i == 0)
 				{
@@ -1072,6 +1113,7 @@ export class Placemark extends Feature
 					this.appendGeometry(strs, level + 2, vec.geometries[i], true);
 					strs.push("\t".repeat(level + 1)+"</innerBoundaryIs>");
 				}
+				i++;
 			}
 			strs.push("\t".repeat(level)+"</Polygon>");
 		}

@@ -28,6 +28,9 @@ export const VectorType = {
 }
 
 export class Vector2D {
+	/**
+	 * @param {number} srid
+	 */
 	constructor(srid)
 	{
 		this.srid = srid;
@@ -36,18 +39,25 @@ export class Vector2D {
 
 export class Point extends Vector2D
 {
+	/**
+	 * @param {number} srid
+	 * @param {math.Vector3 | math.Coord2D} coordinates
+	 */
 	constructor(srid, coordinates)
 	{
 		super(srid);
 		this.type = VectorType.Point;
-		if (coordinates instanceof math.Coord2D)
-			this.coordinates = [coordinates.x, coordinates.y];
-		else if (coordinates instanceof math.Vector3)
+		if (coordinates instanceof math.Vector3)
 			this.coordinates = [coordinates.x, coordinates.y, coordinates.z];
+		else if (coordinates instanceof math.Coord2D)
+			this.coordinates = [coordinates.x, coordinates.y];
 		else
 			this.coordinates = coordinates;
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	insideOrTouch(coord)
 	{
 		return this.coordinates[0] == coord.x && this.coordinates[1] == coord.y;
@@ -61,6 +71,10 @@ export class Point extends Vector2D
 
 export class LineString extends Vector2D
 {
+	/**
+	 * @param {number} srid
+	 * @param {number[][]} coordinates
+	 */
 	constructor(srid, coordinates)
 	{
 		super(srid);
@@ -68,6 +82,9 @@ export class LineString extends Vector2D
 		this.coordinates = coordinates;
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	calBoundaryPoint(coord)
 	{
 		let l;
@@ -176,13 +193,16 @@ export class LineString extends Vector2D
 				calPtOutY = points[l][1];
 			}
 		}
-		let ret = new Object();
-		ret.x = calPtOutX;
-		ret.y = calPtOutY;
-		ret.dist = Math.sqrt(dist);
-		return ret;
+		return {
+			x: calPtOutX,
+			y: calPtOutY,
+			dist: Math.sqrt(dist)
+		};
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	insideOrTouch(coord)
 	{
 		let thisX;
@@ -246,12 +266,19 @@ export class LineString extends Vector2D
 
 export class LinearRing extends LineString
 {
+	/**
+	 * @param {number} srid
+	 * @param {number[][]} coordinates
+	 */
 	constructor(srid, coordinates)
 	{
 		super(srid, coordinates);
 		this.type = VectorType.LinearRing;
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	insideOrTouch(coord)
 	{
 		let thisX;
@@ -327,6 +354,13 @@ export class LinearRing extends LineString
 		return new Polygon(this.srid, [this.coordinates]);
 	}
 
+	/**
+	 * @param {number} srid
+	 * @param {math.Coord2D} center
+	 * @param {number} radiusX
+	 * @param {number} radiusY
+	 * @param {number} nPoints
+	 */
 	static createFromCircle(srid, center, radiusX, radiusY, nPoints)
 	{
 		let pos = [];
@@ -346,20 +380,26 @@ export class LinearRing extends LineString
 
 export class MultiGeometry extends Vector2D
 {
+	/**
+	 * @param {number} srid
+	 */
 	constructor(srid)
 	{
 		super(srid);
 		this.geometries = new Array();
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	calBoundaryPoint(coord)
 	{
 		let minObj = null;
 		let thisObj;
-		let i = this.coordinates.length;
+		let i = this.geometries.length;
 		while (i-- > 0)
 		{
-			thisObj = this.coordinates[i].calBoundaryPoint(coord);
+			thisObj = this.geometries[i].calBoundaryPoint(coord);
 			if (minObj == null || minObj.dist > thisObj.dist)
 			{
 				minObj = thisObj;
@@ -368,6 +408,9 @@ export class MultiGeometry extends Vector2D
 		return minObj;
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	insideOrTouch(coord)
 	{
 		let i = this.geometries.length;
@@ -407,17 +450,27 @@ export class MultiGeometry extends Vector2D
 
 export class Polygon extends MultiGeometry
 {
+	/**
+	 * @param {number} srid
+	 * @param {number[][][] | undefined} coordinates
+	 */
 	constructor(srid, coordinates)
 	{
 		super(srid);
 		this.type = VectorType.Polygon;
-		let i;
-		for (i in coordinates)
+		if (coordinates)
 		{
-			this.geometries.push(new LinearRing(srid, coordinates[i]));
+			let i;
+			for (i in coordinates)
+			{
+				this.geometries.push(new LinearRing(srid, coordinates[i]));
+			}
 		}
 	}
 
+	/**
+	 * @param {math.Coord2D} coord
+	 */
 	insideOrTouch(coord)
 	{
 		let i = this.geometries.length;
@@ -435,6 +488,10 @@ export class Polygon extends MultiGeometry
 
 export class MultiPolygon extends MultiGeometry
 {
+	/**
+	 * @param {number} srid
+	 * @param {number[][][][]} coordinates
+	 */
 	constructor(srid, coordinates)
 	{
 		super(srid);
@@ -452,6 +509,10 @@ export class MultiPolygon extends MultiGeometry
 
 export class Polyline extends MultiGeometry
 {
+	/**
+	 * @param {number} srid
+	 * @param {number[][][]} coordinates
+	 */
 	constructor(srid, coordinates)
 	{
 		super(srid);
@@ -469,6 +530,9 @@ export class Polyline extends MultiGeometry
 
 export class GeometryCollection extends MultiGeometry
 {
+	/**
+	 * @param {number} srid
+	 */
 	constructor(srid)
 	{
 		super(srid);

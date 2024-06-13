@@ -1359,7 +1359,7 @@ export class EXIFData
 	getPhotoDate()
 	{
 		let item;
-		if (this.exifMaker == EM_STANDARD)
+		if (this.exifMaker == EXIFMaker.Standard)
 		{
 			if ((item = this.exifMap[36867]))
 			{
@@ -1386,7 +1386,7 @@ export class EXIFData
 			}
 			if ((item = this.exifMap[306]))
 			{
-				if (item.type == ET_STRING)
+				if (item.type == EXIFType.STRING)
 				{
 					return data.Timestamp.fromStr(item.data, data.DateTimeUtil.getLocalTzQhr());
 				}
@@ -1605,7 +1605,7 @@ export class EXIFData
 			{
 				return null;
 			}
-			ret.lat = va;
+			ret.lat = val;
 		}
 		else
 		{
@@ -1715,7 +1715,7 @@ export class EXIFData
 				{
 					hh = item1.data[0];
 					mm = item1.data[2];
-					val = item1.data[4] / item.data[5];
+					val = item1.data[4] / item1.data[5];
 					ss = Math.floor(val);
 					ms = (val - ss);
 				}
@@ -1933,6 +1933,14 @@ export class EXIFData
 		return name || ("Tag "+subId);
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {boolean} lsb
+	 * @param {object | null} nextOfst
+	 * @param {number | null} readBase
+	 * @param {string | null | undefined} [maker]
+	 */
 	static parseIFD(reader, ofst, lsb, nextOfst, readBase, maker)
 	{
 		if (!(reader instanceof data.ByteReader))
@@ -2165,7 +2173,7 @@ export class EXIFData
 			case 8:
 				if (fcnt <= 2)
 				{
-					exif.addInt16(tag, reader.readInt16Arr(ifdOfst + 8, fcnt));
+					exif.addInt16(tag, reader.readInt16Arr(ifdOfst + 8, lsb, fcnt));
 				}
 				else
 				{
@@ -2175,7 +2183,7 @@ export class EXIFData
 			case 9:
 				if (fcnt == 1)
 				{
-					exif.addInt32(tag, reader.readInt32Arr(ifdOfst + 8, fcnt));
+					exif.addInt32(tag, reader.readInt32Arr(ifdOfst + 8, lsb, fcnt));
 				}
 				else
 				{
@@ -2190,7 +2198,6 @@ export class EXIFData
 				break;
 			default:
 				console.log("EXIFData.parseIFD: Unsupported field type: "+ftype+", tag = "+tag);
-				j = 0;
 				break;
 			}
 	
@@ -2243,8 +2250,12 @@ export class StaticImage extends data.ParsedObject
 		canvas.width = this.img.naturalWidth;
 		canvas.height = this.img.naturalHeight;
 		let ctx = canvas.getContext("2d");
-		ctx.drawImage(this.img, 0, 0, this.img.naturalWidth, this.img.naturalHeight);
-		return canvas;
+		if (ctx)
+		{
+			ctx.drawImage(this.img, 0, 0, this.img.naturalWidth, this.img.naturalHeight);
+			return canvas;
+		}
+		throw new Error("Error in creating canvas");
 	}
 
 	exportJPG(quality)

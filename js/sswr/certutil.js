@@ -1032,6 +1032,10 @@ export class ASN1Util
 		return sb.join(".");
 	}
 
+	/**
+	 * @param {string} oidText
+	 * @returns {number[] | null}
+	 */
 	static oidText2PDU(oidText)
 	{
 		let sarr = oidText.split(".");
@@ -1226,6 +1230,10 @@ class RuleContainer
 	constructor()
 	{
 		this.rules = [];
+		/**
+		 * @type {RuleContainer | null}
+		 */
+		this.parent = null;
 	}
 }
 
@@ -2557,6 +2565,8 @@ export class ASN1PDUBuilder
 	appendOIDString(oidStr)
 	{
 		let buff = ASN1Util.oidText2PDU(oidStr);
+		if (buff == null)
+			throw new Error("\""+oidStr+"\" is not valid oid string");
 		this.appendOID(new Uint8Array(buff).buffer);
 	}
 

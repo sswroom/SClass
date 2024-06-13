@@ -149,7 +149,7 @@ function parseKMLStyle(node)
 					break;
 				}
 			}
-			style.setLineStyle(innerStyle);
+			style.setLabelStyle(innerStyle);
 			break;
 		case "PolyStyle":
 			innerStyle = new kml.PolyStyle();
@@ -551,7 +551,7 @@ function parseKMLGeometry(kmlNode)
 						break;
 					case "LinearRing":
 						geom = parseKMLGeometry(subNode2);
-						if (geom)
+						if (geom && (geom instanceof geometry.LinearRing))
 							geomList.push(geom);
 						break;
 					default:
@@ -603,7 +603,11 @@ function parseKMLGeometry(kmlNode)
 				geom = new geometry.MultiPolygon(4326);
 				for (i in geomList)
 				{
-					geom.geometries.push(geomList[i]);
+					let g = geomList[i];
+					if (g instanceof geometry.Polygon)
+					{
+						geom.geometries.push(g);
+					}
 				}
 				return geom; 
 			}
@@ -612,7 +616,9 @@ function parseKMLGeometry(kmlNode)
 				geom = new geometry.Polyline(4326);
 				for (i in geomList)
 				{
-					geom.geometries.push(geomList[i]);
+					let g = geomList[i];
+					if (g instanceof geometry.LineString)
+						geom.geometries.push(g);
 				}
 				return geom; 
 			}
@@ -1151,14 +1157,18 @@ function parseX509(reader, fileName, mime)
 		}
 		else if (files.length > 1)
 		{
-			let fileList = new cert.X509FileList(fileName, files[0]);
-			let i = 1;
-			while (i < files.length)
+			let f = files[0];
+			if (f instanceof cert.X509Cert)
 			{
-				fileList.addFile(files[i]);
-				i++;
+				let fileList = new cert.X509FileList(fileName, f);
+				let i = 1;
+				while (i < files.length)
+				{
+					fileList.addFile(files[i]);
+					i++;
+				}
+				return fileList;
 			}
-			return fileList;
 		}
 		console.log("Unsupported file", fileName, mime);
 	}

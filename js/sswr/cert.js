@@ -68,6 +68,11 @@ export const ContentDataType = {
 
 export class ASN1Data extends data.ParsedObject
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {string} objType
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, objType, buff)
 	{
 		super(sourceName, objType);
@@ -87,6 +92,12 @@ export class ASN1Data extends data.ParsedObject
 		return this.reader;
 	}
 
+	/**
+	 * @param {string[]} arr
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} len
+	 */
 	static appendInteger(arr, reader, ofst, len)
 	{
 		if (len == 1)
@@ -118,6 +129,11 @@ export class ASN1Data extends data.ParsedObject
 
 export class X509File extends ASN1Data
 {
+	/**
+	 * @param {any} sourceName
+	 * @param {any} objType
+	 * @param {any} buff
+	 */
 	constructor(sourceName, objType, buff)
 	{
 		super(sourceName, objType, buff);
@@ -133,11 +149,17 @@ export class X509File extends ASN1Data
 		return 0;
 	}
 
+	/**
+	 * @param {any} index
+	 */
 	getCertName(index)
 	{
 		return null;
 	}
 
+	/**
+	 * @param {any} index
+	 */
 	getNewCert(index)
 	{
 		return null;
@@ -148,6 +170,9 @@ export class X509File extends ASN1Data
 		return fileTypeGetName(this.getFileType())+": "+this.toShortName();
 	}
 
+	/**
+	 * @param {X509Key} key
+	 */
 	isSignatureKey(key)
 	{
 		let data = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.1");
@@ -191,6 +216,12 @@ export class X509File extends ASN1Data
 			algType: algType};
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isSigned(reader, startOfst, endOfst, path)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
@@ -209,6 +240,14 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 * @param {string | null} varName
+	 */
 	static appendSigned(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let name;
@@ -240,6 +279,12 @@ export class X509File extends ASN1Data
 		}		
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isTBSCertificate(reader, startOfst, endOfst, path)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
@@ -279,6 +324,14 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendTBSCertificate(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let name;
@@ -392,17 +445,37 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 */
 	static isCertificate(reader, startOfst, endOfst, path)
 	{
 		return X509File.isSigned(reader, startOfst, endOfst, path) && X509File.isTBSCertificate(reader, startOfst, endOfst, path+".1");
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 * @param {string | null} varName
+	 */
 	static appendCertificate(reader, startOfst, endOfst, path, sb, varName)
 	{
 		X509File.appendTBSCertificate(reader, startOfst, endOfst, path+".1", sb, varName);
 		X509File.appendSigned(reader, startOfst, endOfst, path, sb, varName);
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isTBSCertList(reader, startOfst, endOfst, path)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
@@ -443,6 +516,14 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {(string | number)[]} sb
+	 * @param {string} varName
+	 */
 	static appendTBSCertList(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let dt;
@@ -577,17 +658,37 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 */
 	static isCertificateList(reader, startOfst, endOfst, path)
 	{
 		return X509File.isSigned(reader, startOfst, endOfst, path) && X509File.isTBSCertList(reader, startOfst, endOfst, path+".1");
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 * @param {string} varName
+	 */
 	static appendCertificateList(reader, startOfst, endOfst, path, sb, varName)
 	{
 		X509File.appendTBSCertList(reader, startOfst, endOfst, path+".1", sb, varName);
 		X509File.appendSigned(reader, startOfst, endOfst, path, sb, varName);
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isPrivateKeyInfo(reader, startOfst, endOfst, path)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
@@ -622,6 +723,13 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 */
 	static appendPrivateKeyInfo(reader, startOfst, endOfst, path, sb)
 	{
 		let sbuff;
@@ -661,6 +769,12 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isCertificateRequestInfo(reader, startOfst, endOfst, path)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
@@ -688,6 +802,13 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 */
 	static appendCertificateRequestInfo(reader, startOfst, endOfst, path, sb)
 	{
 		let i = 1;
@@ -756,17 +877,36 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 */
 	static isCertificateRequest(reader, startOfst, endOfst, path)
 	{
 		return X509File.isSigned(reader, startOfst, endOfst, path) && X509File.isCertificateRequestInfo(reader, startOfst, endOfst, path+".1");
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 */
 	static appendCertificateRequest(reader, startOfst, endOfst, path, sb)
 	{
 		X509File.appendCertificateRequestInfo(reader, startOfst, endOfst, path+".1", sb);
 		X509File.appendSigned(reader, startOfst, endOfst, path, sb, null);
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isPublicKeyInfo(reader, startOfst, endOfst, path)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, path);
@@ -785,6 +925,13 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 */
 	static appendPublicKeyInfo(reader, startOfst, endOfst, path, sb)
 	{
 		let buff = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
@@ -800,6 +947,12 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isContentInfo(reader, startOfst, endOfst, path)
 	{
 		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path) != ASN1ItemType.SEQUENCE)
@@ -820,6 +973,15 @@ export class X509File extends ASN1Data
 		return true;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 * @param {string | null} varName
+	 * @param {number} dataType
+	 */
 	static appendContentInfo(reader, startOfst, endOfst, path, sb, varName, dataType)
 	{
 		let buff = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
@@ -878,6 +1040,12 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null | undefined} path
+	 */
 	static isPFX(reader, startOfst, endOfst, path)
 	{
 		if (ASN1Util.pduGetItemType(reader, startOfst, endOfst, path) != ASN1ItemType.SEQUENCE)
@@ -905,6 +1073,14 @@ export class X509File extends ASN1Data
 		return true;		
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {any[]} sb
+	 * @param {string | null} varName
+	 */
 	static appendPFX(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let buff = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
@@ -940,6 +1116,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 */
 	static appendVersion(reader, startOfst, endOfst, path, sb)
 	{
 		let itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
@@ -963,6 +1146,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 * @param {boolean} pubKey
+	 */
 	static appendAlgorithmIdentifier(reader, startOfst, endOfst, sb, varName, pubKey)
 	{
 		let itemPDU;
@@ -1065,6 +1256,13 @@ export class X509File extends ASN1Data
 		return keyType;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendValidity(reader, startOfst, endOfst, sb, varName)
 	{
 		let dt;
@@ -1089,6 +1287,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendSubjectPublicKeyInfo(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1118,6 +1323,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendName(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1136,6 +1348,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendRelativeDistinguishedName(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1155,6 +1374,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendAttributeTypeAndDistinguishedValue(reader, startOfst, endOfst, sb, varName)
 	{
 		let typePDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
@@ -1232,6 +1458,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendCRLExtensions(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1250,6 +1483,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendCRLExtension(reader, startOfst, endOfst, sb, varName)
 	{
 		let extension;
@@ -1535,6 +1775,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendMSOSVersion(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
@@ -1547,6 +1794,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendMSRequestClientInfo(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1584,6 +1838,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendMSEnrollmentCSPProvider(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1608,6 +1869,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendGeneralNames(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1624,6 +1892,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendGeneralName(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let subItemPDU;
@@ -1708,6 +1984,14 @@ export class X509File extends ASN1Data
 		return false;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendDistributionPoint(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let itemPDU;
@@ -1761,6 +2045,13 @@ export class X509File extends ASN1Data
 		return false;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendDistributionPointName(reader, startOfst, endOfst, sb, varName)
 	{
 		let i;
@@ -1782,6 +2073,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 * @param {any} varName
+	 */
 	static appendPolicyInformation(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let itemPDU;
@@ -1837,6 +2136,13 @@ export class X509File extends ASN1Data
 		return false;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendPKCS7SignedData(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1");
@@ -1876,6 +2182,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendPKCS7DigestAlgorithmIdentifiers(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1893,6 +2206,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendPKCS7SignerInfos(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1911,6 +2231,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendPKCS7SignerInfo(reader, startOfst, endOfst, sb, varName)
 	{
 		let i;
@@ -1958,6 +2285,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendIssuerAndSerialNumber(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -1974,6 +2308,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendPKCS7Attributes(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -2064,6 +2405,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} path
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendMacData(reader, startOfst, endOfst, path, sb, varName)
 	{
 		let itemPDU;
@@ -2093,6 +2442,13 @@ export class X509File extends ASN1Data
 		return false;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 */
 	static appendDigestInfo(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -2109,6 +2465,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {any} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 * @param {any} dataType
+	 */
 	static appendData(reader, startOfst, endOfst, sb, varName, dataType)
 	{
 		switch (dataType)
@@ -2122,6 +2486,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 * @param {any} dataType
+	 */
 	static appendEncryptedData(reader, startOfst, endOfst, sb, varName, dataType)
 	{
 		let itemPDU;
@@ -2157,6 +2529,13 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any} sb
+	 * @param {string} varName
+	 */
 	static appendAuthenticatedSafe(reader, startOfst, endOfst, sb, varName)
 	{
 		let itemPDU;
@@ -2174,6 +2553,14 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} sb
+	 * @param {string} varName
+	 * @param {any} dataType
+	 */
 	static appendEncryptedContentInfo(reader, startOfst, endOfst, sb, varName, dataType)
 	{
 		let itemPDU;
@@ -2207,6 +2594,12 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string} oidText
+	 */
 	static nameGetByOID(reader, startOfst, endOfst, oidText)
 	{
 		if (!(reader instanceof data.ByteReader))
@@ -2247,11 +2640,21 @@ export class X509File extends ASN1Data
 		return null;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static nameGetCN(reader, startOfst, endOfst)
 	{
 		return X509File.nameGetByOID(reader, startOfst, endOfst, "2.5.4.3");
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static namesGet(reader, startOfst, endOfst)
 	{
 		let names = {};
@@ -2313,6 +2716,11 @@ export class X509File extends ASN1Data
 		return names;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static extensionsGet(reader, startOfst, endOfst)
 	{
 		let ext = {};
@@ -2345,6 +2753,9 @@ export class X509File extends ASN1Data
 							let oid = new Uint8Array(reader.getArrayBuffer(oidPDU.rawOfst + oidPDU.hdrLen, oidPDU.contLen));
 							if (ASN1Util.oidEqualsText(oid, "2.5.29.17")) //id-ce-subjectAltName
 							{
+								/**
+								 * @type {any[]}
+								 */
 								ext.subjectAltName = [];
 								let j = 0;
 								let k = ASN1Util.pduCountItem(reader, strPDU.rawOfst + strPDU.hdrLen, strPDU.rawOfst + strPDU.hdrLen + strPDU.contLen, "1");
@@ -2399,6 +2810,11 @@ export class X509File extends ASN1Data
 		return ext;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static extensionsGetCRLDistributionPoints(reader, startOfst, endOfst)
 	{
 		let ret = [];
@@ -2448,6 +2864,12 @@ export class X509File extends ASN1Data
 		return ret;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {any[]} distPoints
+	 */
 	static distributionPointAdd(reader, startOfst, endOfst, distPoints)
 	{
 		let itemPDU;
@@ -2465,6 +2887,11 @@ export class X509File extends ASN1Data
 		return false;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static publicKeyGetNew(reader, startOfst, endOfst)
 	{
 		let oidPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1.1");
@@ -2488,6 +2915,12 @@ export class X509File extends ASN1Data
 		return null;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {number} keyType
+	 */
 	static keyGetLeng(reader, startOfst, endOfst, keyType)
 	{
 		let keyPDU;
@@ -2535,6 +2968,10 @@ export class X509File extends ASN1Data
 		}
 	}
 
+	/**
+	 * @param {ArrayBuffer | Iterable<number>} oid
+	 * @param {boolean} pubKey
+	 */
 	static keyTypeFromOID(oid, pubKey)
 	{
 		let arr = new Uint8Array(oid);
@@ -2556,6 +2993,11 @@ export class X509File extends ASN1Data
 		return KeyType.Unknown;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static algorithmIdentifierGet(reader, startOfst, endOfst)
 	{
 		let cnt = ASN1Util.pduCountItem(reader, startOfst, endOfst, null);
@@ -2614,6 +3056,10 @@ export class X509File extends ASN1Data
 
 export class X509Cert extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -2685,6 +3131,9 @@ export class X509Cert extends X509File
 		return 1;
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	getCertName(index)
 	{
 		if (index != 0)
@@ -2692,6 +3141,9 @@ export class X509Cert extends X509File
 		return this.getSubjectCN();
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	getNewCert(index)
 	{
 		if (index != 0)
@@ -2959,6 +3411,9 @@ export class X509Cert extends X509File
 		return null;
 	}
 
+	/**
+	 * @param {string} domain
+	 */
 	domainValid(domain)
 	{
 		let valid = false;
@@ -3105,6 +3560,10 @@ export class X509Cert extends X509File
 
 export class X509CertReq extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -3224,6 +3683,11 @@ export class X509CertReq extends X509File
 
 export class X509Key extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 * @param {number} keyType
+	 */
 	constructor(sourceName, buff, keyType)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -3622,6 +4086,10 @@ export class X509Key extends X509File
 		return ECName.Unknown;		
 	}
 
+	/**
+	 * @param {ArrayBuffer} buff
+	 * @param {ArrayBuffer} paramOID
+	 */
 	static fromECPublicKey(buff, paramOID)
 	{
 		let pdu = new ASN1PDUBuilder();
@@ -3638,6 +4106,10 @@ export class X509Key extends X509File
 
 export class X509PrivKey extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -3722,6 +4194,11 @@ export class X509PrivKey extends X509File
 		return null;
 	}
 
+	/**
+	 * @param {any} keyType
+	 * @param {string | ArrayBuffer} buff
+	 * @param {string | null} sourceName
+	 */
 	static createFromKeyBuff(keyType, buff, sourceName)
 	{
 		if (sourceName == null)
@@ -3741,6 +4218,9 @@ export class X509PrivKey extends X509File
 		return new X509PrivKey(sourceName, keyPDU.getArrayBuffer());
 	}
 
+	/**
+	 * @param {{ getKeyType: () => any; getECName: () => any; getECPrivate: () => any; getECPublic: () => any; sourceName: any; getASN1Buff: () => { (): any; new (): any; getArrayBuffer: { (): any; new (): any; }; }; }} key
+	 */
 	static createFromKey(key)
 	{
 		if (!(key instanceof X509Key))
@@ -3796,6 +4276,10 @@ export class X509PrivKey extends X509File
 
 export class X509PubKey extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -3867,6 +4351,11 @@ export class X509PubKey extends X509File
 		return null;
 	}
 
+	/**
+	 * @param {number} keyType
+	 * @param {ArrayBuffer} buff
+	 * @param {any} sourceName
+	 */
 	static createFromKeyBuff(keyType, buff, sourceName)
 	{
 		let keyPDU = new ASN1PDUBuilder();
@@ -3888,6 +4377,9 @@ export class X509PubKey extends X509File
 		return new X509PubKey(sourceName, keyPDU.getArrayBuffer());
 	}
 
+	/**
+	 * @param {{ getKeyType: () => any; getASN1Buff: () => { (): any; new (): any; getArrayBuffer: { (): any; new (): any; }; }; sourceName: any; }} key
+	 */
 	static createFromKey(key)
 	{
 		return X509PubKey.createFromKeyBuff(key.getKeyType(), key.getASN1Buff().getArrayBuffer(), key.sourceName);
@@ -3896,6 +4388,10 @@ export class X509PubKey extends X509File
 
 export class X509PKCS7 extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -3920,6 +4416,9 @@ export class X509PKCS7 extends X509File
 		return ASN1Util.pduCountItem(this.reader, certListPDU.dataOfst, certListPDU.endOfst, null);
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	getCertName(index)
 	{
 		let certListPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2.1.4");
@@ -3944,6 +4443,9 @@ export class X509PKCS7 extends X509File
 		return null;
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	getNewCert(index)
 	{
 		let certListPDU = ASN1Util.pduGetItem(this.reader, 0, this.reader.getLength(), "1.2.1.4");
@@ -4047,6 +4549,10 @@ export class X509PKCS7 extends X509File
 
 export class X509PKCS12 extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -4066,11 +4572,17 @@ export class X509PKCS12 extends X509File
 		return 0;
 	}
 
+	/**
+	 * @param {any} index
+	 */
 	getCertName(index)
 	{
 		return null;
 	}
 
+	/**
+	 * @param {any} index
+	 */
 	getNewCert(index)
 	{
 		return null;
@@ -4104,6 +4616,10 @@ export class X509PKCS12 extends X509File
 
 export class X509FileList extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {{ reader: { getArrayBuffer: () => any; }; }} cert
+	 */
 	constructor(sourceName, cert)
 	{
 		super(sourceName, "application/x-pem-file", cert.reader.getArrayBuffer());
@@ -4131,6 +4647,9 @@ export class X509FileList extends X509File
 		return ret;
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	getCertName(index)
 	{
 		let i;
@@ -4149,6 +4668,9 @@ export class X509FileList extends X509File
 		return null;
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	getNewCert(index)
 	{
 		let i;
@@ -4225,6 +4747,9 @@ export class X509FileList extends X509File
 		return this.fileList[0].createNames();
 	}
 
+	/**
+	 * @param {any} file
+	 */
 	addFile(file)
 	{
 		this.fileList.push(file);
@@ -4235,6 +4760,9 @@ export class X509FileList extends X509File
 		return this.fileList.length;
 	}
 
+	/**
+	 * @param {string | number} index
+	 */
 	getFile(index)
 	{
 		return this.fileList[index];
@@ -4262,6 +4790,10 @@ export class X509FileList extends X509File
 
 export class X509CRL extends X509File
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {ArrayBuffer} buff
+	 */
 	constructor(sourceName, buff)
 	{
 		super(sourceName, "application/x-pem-file", buff);
@@ -4436,6 +4968,9 @@ export class X509CRL extends X509File
 		}
 	}
 
+	/**
+	 * @param {{ getSerialNumber: () => any; }} cert
+	 */
 	isRevoked(cert)
 	{
 		let sn = cert.getSerialNumber();
@@ -4482,6 +5017,9 @@ export class X509CRL extends X509File
 	}
 }
 
+/**
+ * @param {string} algType
+ */
 export function algTypeGetHash(algType)
 {
 	switch (algType)
@@ -4510,6 +5048,9 @@ export function algTypeGetHash(algType)
 	}
 }
 
+/**
+ * @param {any} fileType
+ */
 export function fileTypeGetName(fileType)
 {
 	switch (fileType)
@@ -4537,6 +5078,9 @@ export function fileTypeGetName(fileType)
 	}
 }
 
+/**
+ * @param {number} keyType
+ */
 export function keyTypeGetName(keyType)
 {
 	switch (keyType)
@@ -4559,6 +5103,9 @@ export function keyTypeGetName(keyType)
 	}
 }
 
+/**
+ * @param {any} keyType
+ */
 export function keyTypeGetOID(keyType)
 {
 	switch (keyType)
@@ -4580,6 +5127,9 @@ export function keyTypeGetOID(keyType)
 	}
 }
 
+/**
+ * @param {number} ecName
+ */
 export function ecNameGetName(ecName)
 {
 	switch (ecName)
@@ -4596,6 +5146,9 @@ export function ecNameGetName(ecName)
 	}
 }
 
+/**
+ * @param {number} ecName
+ */
 export function ecNameGetOID(ecName)
 {
 	switch (ecName)
@@ -4612,6 +5165,9 @@ export function ecNameGetOID(ecName)
 	}
 }
 
+/**
+ * @param {ArrayBuffer | Iterable<number>} buff
+ */
 export function ecNameFromOID(buff)
 {
 	let arr = new Uint8Array(buff);
@@ -4630,6 +5186,9 @@ export function ecNameFromOID(buff)
 	return ECName.Unknown;
 }
 
+/**
+ * @param {Uint8Array | number[]} oid
+ */
 export function hashTypeFromOID(oid)
 {
 	if (ASN1Util.oidEqualsText(oid, "2.16.840.1.101.3.4.2.1"))

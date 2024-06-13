@@ -142,7 +142,7 @@ export abstract class X509File extends ASN1Data
 	static isTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC3280
 	static appendTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // RFC3280
 	static isCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC3280
-	static appendCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // RFC3280
+	static appendCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName: string): void; // RFC3280
 	static isPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-8
 	static appendPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-8
 	static isCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-10

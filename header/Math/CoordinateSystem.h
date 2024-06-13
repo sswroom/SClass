@@ -18,6 +18,7 @@ namespace Math
 		class Vector2D;
 	}
 
+	class GeographicCoordinateSystem;
 	class CoordinateSystem : public IO::ParsedObject
 	{
 	public:
@@ -91,9 +92,9 @@ namespace Math
 		NN<Text::String> GetCSysName() const { return this->csysName; }
 		UInt32 GetSRID() const { return this->srid; }
  
-		static Math::Coord2DDbl Convert(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord);
-		static Math::Vector3 Convert3D(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos);
-		static void ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
+		static Math::Coord2DDbl Convert(NN<const Math::GeographicCoordinateSystem> srcCoord, NN<const Math::GeographicCoordinateSystem> destCoord, Math::Coord2DDbl coord);
+		static Math::Vector3 Convert3D(NN<const Math::GeographicCoordinateSystem> srcCoord, NN<const Math::GeographicCoordinateSystem> destCoord, Math::Vector3 srcPos);
+		static void ConvertArray(NN<const Math::GeographicCoordinateSystem> srcCoord, NN<const Math::GeographicCoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
 		static Math::Vector3 ConvertToCartesianCoord(NN<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos);
 		static void DatumData1ToString(NN<const DatumData1> datum, NN<Text::StringBuilderUTF8> sb);
 		static Text::CStringNN CoordinateSystemTypeGetName(CoordinateSystemType csysType);

@@ -39,6 +39,7 @@ export class Vector2D {
 	srid: number;
 	type: VectorType;
 	constructor(srid: number);
+	abstract calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
 }
@@ -84,7 +85,7 @@ export class MultiGeometry<VecType> extends Vector2D
 
 export class Polygon extends MultiGeometry<LinearRing>
 {
-	constructor(srid: number, coordinates: number[][][]);
+	constructor(srid: number, coordinates?: number[][][]);
 	insideOrTouch(coord: math.Coord2D): boolean;
 }
 
