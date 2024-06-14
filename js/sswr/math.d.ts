@@ -149,9 +149,9 @@ export abstract class CoordinateSystem
 
 	equals(csys: CoordinateSystem): boolean;
 
-	static convert(srcCoord: GeographicCoordinateSystem, destCoord: GeographicCoordinateSystem, coord: Coord2D) : Coord2D;
-	static convert3D(srcCoord: GeographicCoordinateSystem, destCoord: GeographicCoordinateSystem, srcPos: Vector3) : Vector3;
-	static convertArray(srcCoord: GeographicCoordinateSystem, destCoord: GeographicCoordinateSystem, srcArr: Coord2D[]): Coord2D[];
+	static convert(srcCoord: CoordinateSystem, destCoord: CoordinateSystem, coord: Coord2D) : Coord2D;
+	static convert3D(srcCoord: CoordinateSystem, destCoord: CoordinateSystem, srcPos: Vector3) : Vector3;
+	static convertArray(srcCoord: CoordinateSystem, destCoord: CoordinateSystem, srcArr: Coord2D[]): Coord2D[];
 	static convertToCartesianCoord(srcCoord: CoordinateSystem, srcPos: Vector3): Vector3;
 }
 

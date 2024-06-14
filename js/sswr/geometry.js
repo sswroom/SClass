@@ -41,7 +41,7 @@ export class Point extends Vector2D
 {
 	/**
 	 * @param {number} srid
-	 * @param {math.Vector3 | math.Coord2D} coordinates
+	 * @param {math.Vector3 | math.Coord2D | number[]} coordinates
 	 */
 	constructor(srid, coordinates)
 	{
@@ -53,6 +53,18 @@ export class Point extends Vector2D
 			this.coordinates = [coordinates.x, coordinates.y];
 		else
 			this.coordinates = coordinates;
+	}
+
+
+	/**
+	 * @param {math.Coord2D} coord
+	 */
+	calBoundaryPoint(coord)
+	{
+		let xdiff = coord.x - this.coordinates[0];
+		let ydiff = coord.y - this.coordinates[1];
+		let dist = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+		return {x:this.coordinates[0], y:this.coordinates[1], dist:dist};
 	}
 
 	/**

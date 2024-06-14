@@ -48,7 +48,7 @@ export enum RuleCond
 	RepeatIfTypeIs,
 	LastOIDAndTypeIs,
 	AllNotMatch
-};
+}
 
 declare class PDULenInfo
 {
@@ -160,19 +160,19 @@ export class ASN1Names
 	setPFX(): ASN1Names; //PKCS-12
 }
 
-class General
+declare class General
 {
 	static pbeParam(names: ASN1Names): void;
 	static extendedValidationCertificates(names: ASN1Names): void;
 	static attributeOutlookExpress(names: ASN1Names): void;
 }
 
-class InformationFramework
+declare class InformationFramework
 {
 	static attributeCont(names: ASN1Names): void;
 }
 
-class PKCS1
+declare class PKCS1
 {
 	static rsaPublicKey(names: ASN1Names): void;
 	static rsaPublicKeyCont(names: ASN1Names): void;
@@ -183,7 +183,7 @@ class PKCS1
 	static digestInfoCont(names: ASN1Names): void;
 }
 
-class PKCS7
+declare class PKCS7
 {
 	static addContentInfo(names: ASN1Names, name: string): void;
 	static contentInfo(names: ASN1Names): void;
@@ -214,7 +214,7 @@ class PKCS7
 	static authenticatedData(names: ASN1Names): void;
 }
 
-class PKCS8
+declare class PKCS8
 {
 	static privateKeyInfo(names: ASN1Names): void;
 	static privateKeyInfoCont(names: ASN1Names): void;
@@ -222,7 +222,7 @@ class PKCS8
 	static encryptedPrivateKeyInfoCont(names: ASN1Names): void;
 }
 
-class PKCS9
+declare class PKCS9
 {
 	static attributeContentType(names: ASN1Names): void;
 	static attributeMessageDigest(names: ASN1Names): void;
@@ -234,7 +234,7 @@ class PKCS9
 	static smimeCapabilityCont(names: ASN1Names): void;
 }
 
-class PKCS10
+declare class PKCS10
 {
 	static addCertificationRequestInfo(names: ASN1Names, name: string): void;
 	static certificationRequestInfoCont(names: ASN1Names): void;
@@ -243,7 +243,7 @@ class PKCS10
 	static certificationRequestCont(names: ASN1Names): void;
 }
 
-class PKCS12
+declare class PKCS12
 {
 	static pfx(names: ASN1Names): void;
 	static pfxCont(names: ASN1Names): void;
@@ -272,7 +272,7 @@ class PKCS12
 	static pkcs12Attributes(names: ASN1Names): void;
 }
 
-class PKIX1Explicit88
+declare class PKIX1Explicit88
 {
 	static addAttributeTypeAndValue(names: ASN1Names, name: string): void;
 	static attributeTypeAndValueCont(names: ASN1Names): void;

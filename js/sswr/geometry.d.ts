@@ -35,7 +35,7 @@ export enum VectorType
 	PieArea
 }
 
-export class Vector2D {
+export abstract class Vector2D {
 	srid: number;
 	type: VectorType;
 	constructor(srid: number);
@@ -48,6 +48,7 @@ export class Point extends Vector2D
 {
 	coordinates: number[];
 	constructor(srid: number, coordinates: number[] | math.Coord2D | math.Vector3);
+	calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
 }

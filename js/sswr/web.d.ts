@@ -25,6 +25,9 @@ export function mimeFromExt(ext: string): string;
 export function getImageInfo(url: string): Promise<ImageInfo|null>;
 export function propertiesToHTML(prop: object, nameMap?: object, timeFormat?: string): string;
 export function getCacheSize(name: string): Promise<number>;
+export function getInputOrSelectElement(id: string): HTMLInputElement|HTMLSelectElement;
+export function getInputElement(id: string): HTMLInputElement;
+export function getSelectElement(id: string): HTMLSelectElement;
 
 declare class DialogButton
 {

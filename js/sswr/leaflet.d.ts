@@ -20,8 +20,8 @@ export function fromLatLng(latLng: L.LatLng): math.Coord2D;
 export function fromLatLngBounds(b: L.LatLngBounds): math.RectArea;
 export function toLatLngBounds(rect: math.RectArea): L.LatLngBounds;
 
-export function createLayer(layer: map.LayerInfo, options: object): L.Layer;
-export function createFromKML(feature: kml.Feature | kml.KMLFile, options: KMLFeatureOptions): L.Layer;
+export function createLayer(layer: map.LayerInfo, options?: object): L.Layer;
+export function createFromKML(feature: kml.Feature | kml.KMLFile, options?: KMLFeatureOptions): L.Layer;
 export function createFromGeometry(geom: geometry.Vector2D, options: GeometryOptions): L.Layer;
 export function createKMLLookAt(map: L.Map): kml.LookAt;
 export function toKMLFeature(layer: L.Layer, doc?: kml.Document): kml.Feature | null;

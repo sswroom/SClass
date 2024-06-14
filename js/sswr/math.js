@@ -637,11 +637,32 @@ export class CoordinateSystem
 	}
 
 	/**
+	 * @param {number} x1
+	 * @param {number} y1
+	 * @param {number} x2
+	 * @param {number} y2
+	 * @param {unit.Distance.Unit} distUnit
+	 * @returns {number}
+	 */
+	calcSurfaceDistance(x1, y1, x2, y2, distUnit)
+	{
+		throw new Error("Calling abstract method CoordinateSystem.calcSurfaceDistance");
+	}
+	
+	/**
 	 * @returns {number}
 	 */
 	getCoordSysType()
 	{
 		throw new Error("Calling abstract method CoordinateSystem.getCoordSysType");
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isProjected()
+	{
+		throw new Error("Calling abstract method CoordinateSystem.isProjected");
 	}
 
 	/**
@@ -674,8 +695,8 @@ export class CoordinateSystem
 	}
 
 	/**
-	 * @param {GeographicCoordinateSystem} srcCoord
-	 * @param {GeographicCoordinateSystem} destCoord
+	 * @param {CoordinateSystem} srcCoord
+	 * @param {CoordinateSystem} destCoord
 	 * @param {Coord2D} coord
 	 */
 	static convert(srcCoord, destCoord, coord)
@@ -684,38 +705,51 @@ export class CoordinateSystem
 	}
 
 	/**
-	 * @param {GeographicCoordinateSystem} srcCoord
-	 * @param {GeographicCoordinateSystem} destCoord
+	 * @param {CoordinateSystem} srcCoord
+	 * @param {CoordinateSystem} destCoord
 	 * @param {Vector3} srcPos
 	 */
 	static convert3D(srcCoord, destCoord, srcPos)
 	{
-		if (srcCoord.isProjected() && (srcCoord instanceof ProjectedCoordinateSystem))
+		let srcGCsys;
+		if (srcCoord instanceof ProjectedCoordinateSystem)
 		{
 			srcPos = Vector3.fromCoord2D(srcCoord.toGeographicCoordinateDeg(srcPos), srcPos.z);
-			srcCoord = srcCoord.getGeographicCoordinateSystem();
+			srcGCsys = srcCoord.getGeographicCoordinateSystem();
 		}
-		if (srcCoord.equals(destCoord))
+		else if (srcCoord instanceof GeographicCoordinateSystem)
+		{
+			srcGCsys = srcCoord;
+		}
+		else
+		{
+			throw new Error("Unsupported coordinate system in srcCoord");
+		}
+		if (srcGCsys.equals(destCoord))
 		{
 			return srcPos;
 		}
-		srcPos = srcCoord.toCartesianCoordDeg(srcPos);
+		srcPos = srcGCsys.toCartesianCoordDeg(srcPos);
 	
-		if (destCoord.isProjected() && (destCoord instanceof ProjectedCoordinateSystem))
+		if (destCoord instanceof ProjectedCoordinateSystem)
 		{
 			let gcs = destCoord.getGeographicCoordinateSystem();
 			srcPos = gcs.fromCartesianCoordRad(srcPos);
 			return Vector3.fromCoord2D(destCoord.fromGeographicCoordinateRad(srcPos), srcPos.z);
 		}
-		else
+		else if (destCoord instanceof GeographicCoordinateSystem)
 		{
 			return destCoord.fromCartesianCoordDeg(srcPos);
+		}
+		else
+		{
+			throw new Error("Unsupported coordinate system in destCoord");
 		}
 	}
 
 	/**
-	 * @param {GeographicCoordinateSystem} srcCoord
-	 * @param {GeographicCoordinateSystem} destCoord
+	 * @param {CoordinateSystem} srcCoord
+	 * @param {CoordinateSystem} destCoord
 	 * @param {Coord2D[]} srcArr
 	 */
 	static convertArray(srcCoord, destCoord, srcArr)
@@ -723,17 +757,26 @@ export class CoordinateSystem
 		let i;
 		let srcRad = false;
 		let destArr = [];
+		let srcGCsys;
 		if (srcCoord instanceof ProjectedCoordinateSystem)
 		{
 			for (i in srcArr)
 			{
 				destArr[i] = srcCoord.toGeographicCoordinateRad(srcArr[i]);
 			}
-			srcCoord = srcCoord.getGeographicCoordinateSystem();
+			srcGCsys = srcCoord.getGeographicCoordinateSystem();
 			srcArr = destArr;
 			srcRad = true;
 		}
-		if (srcCoord.equals(destCoord))
+		else if (srcCoord instanceof GeographicCoordinateSystem)
+		{
+			srcGCsys = srcCoord;
+		}
+		else
+		{
+			throw new Error("Unsupported coordinate system in srcCoord");
+		}
+		if (srcGCsys.equals(destCoord))
 		{
 			if (srcRad)
 			{
@@ -759,7 +802,7 @@ export class CoordinateSystem
 			{
 				for (i in srcArr)
 				{
-					tmpPos = srcCoord.toCartesianCoordRad(Vector3.fromCoord2D(srcArr[i], 0));
+					tmpPos = srcGCsys.toCartesianCoordRad(Vector3.fromCoord2D(srcArr[i], 0));
 					tmpPos = gcs.fromCartesianCoordRad(tmpPos);
 					destArr[i] = destCoord.fromGeographicCoordinateRad(tmpPos);
 				}
@@ -768,19 +811,19 @@ export class CoordinateSystem
 			{
 				for (i in srcArr)
 				{
-					tmpPos = srcCoord.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
+					tmpPos = srcGCsys.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
 					tmpPos = gcs.fromCartesianCoordRad(tmpPos);
 					destArr[i] = destCoord.fromGeographicCoordinateRad(tmpPos);
 				}
 			}
 		}
-		else
+		else if (destCoord instanceof GeographicCoordinateSystem)
 		{
 			if (srcRad)
 			{
 				for (i in srcArr)
 				{
-					tmpPos = srcCoord.toCartesianCoordRad(Vector3.fromCoord2D(srcArr[i], 0));
+					tmpPos = srcGCsys.toCartesianCoordRad(Vector3.fromCoord2D(srcArr[i], 0));
 					destArr[i] = destCoord.fromCartesianCoordDeg(tmpPos);
 				}
 			}
@@ -788,10 +831,14 @@ export class CoordinateSystem
 			{
 				for (i in srcArr)
 				{
-					tmpPos = srcCoord.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
+					tmpPos = srcGCsys.toCartesianCoordDeg(Vector3.fromCoord2D(srcArr[i], 0));
 					destArr[i] = destCoord.fromCartesianCoordDeg(tmpPos);
 				}
 			}
+		}
+		else
+		{
+			throw new Error("Unsupported coordinate system in destCoord");
 		}
 		return destArr;
 	}
@@ -931,7 +978,7 @@ export class ProjectedCoordinateSystem extends CoordinateSystem
 	 * @param {number} dcentralMeridian
 	 * @param {number} dlatitudeOfOrigin
 	 * @param {number} scaleFactor
-	 * @param {any} gcs
+	 * @param {GeographicCoordinateSystem} gcs
 	 */
 	constructor(srid, csysName, falseEasting, falseNorthing, dcentralMeridian, dlatitudeOfOrigin, scaleFactor, gcs)
 	{

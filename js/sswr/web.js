@@ -848,6 +848,50 @@ export async function getCacheSize(name)
 	return size;
 }
 
+/**
+ * @param {string} id
+ * @returns {HTMLInputElement|HTMLSelectElement}
+ */
+export function getInputOrSelectElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLInputElement)
+		return ele;
+	if (ele instanceof HTMLSelectElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not an input");
+}
+
+/**
+ * @param {string} id
+ * @returns {HTMLInputElement}
+ */
+export function getInputElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLInputElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not an input");
+}
+
+/**
+ * @param {string} id
+ * @returns {HTMLSelectElement}
+ */
+export function getSelectElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLSelectElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not a select");
+}
+
 export class Dialog
 {
 	/**

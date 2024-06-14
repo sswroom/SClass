@@ -133,58 +133,58 @@ export abstract class X509File extends ASN1Data
 	isSignatureKey(key: X509Key): boolean;
 	getSignedInfo(): SignedInfo | null;
 
-	static isSigned(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
-	static appendSigned(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // AuthenticationFramework
-	static isTBSCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
-	static appendTBSCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // AuthenticationFramework
-	static isCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
-	static appendCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // AuthenticationFramework
-	static isTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC3280
-	static appendTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // RFC3280
-	static isCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC3280
-	static appendCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName: string): void; // RFC3280
-	static isPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-8
-	static appendPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-8
-	static isCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-10
-	static appendCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-10
-	static isCertificateRequest(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS-10
-	static appendCertificateRequest(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // PKCS-8
-	static isPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // AuthenticationFramework
-	static appendPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // AuthenticationFramework
-	static isContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // RFC2315 / PKCS7
-	static appendContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string, dataType: ContentDataType): void; // RFC2315 / PKCS7
-	static isPFX(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string): boolean; // PKCS12
-	static appendPFX(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): void; // PKCS12
+	static isSigned(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // AuthenticationFramework
+	static appendSigned(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): void; // AuthenticationFramework
+	static isTBSCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // AuthenticationFramework
+	static appendTBSCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): void; // AuthenticationFramework
+	static isCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // AuthenticationFramework
+	static appendCertificate(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): void; // AuthenticationFramework
+	static isTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // RFC3280
+	static appendTBSCertList(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): void; // RFC3280
+	static isCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // RFC3280
+	static appendCertificateList(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string): void; // RFC3280
+	static isPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // PKCS-8
+	static appendPrivateKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[]): void; // PKCS-8
+	static isCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // PKCS-10
+	static appendCertificateRequestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[]): void; // PKCS-10
+	static isCertificateRequest(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // PKCS-10
+	static appendCertificateRequest(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[]): void; // PKCS-8
+	static isPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // AuthenticationFramework
+	static appendPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[]): void; // AuthenticationFramework
+	static isContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // RFC2315 / PKCS7
+	static appendContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null, dataType: ContentDataType): void; // RFC2315 / PKCS7
+	static isPFX(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null): boolean; // PKCS12
+	static appendPFX(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): void; // PKCS12
 
-	static appendVersion(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[]): void; // AuthenticationFramework
-	static appendAlgorithmIdentifier(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, pubKey: boolean): KeyType; // PKCS-5
-	static appendValidity(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // AuthenticationFramework
-	static appendSubjectPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // AuthenticationFramework
-	static appendName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // InformationFramework
-	static appendRelativeDistinguishedName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // InformationFramework
-	static appendAttributeTypeAndDistinguishedValue(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // InformationFramework
-	static appendCRLExtensions(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendCRLExtension(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendMSOSVersion(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendMSRequestClientInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendMSEnrollmentCSPProvider(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendGeneralNames(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendGeneralName(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
-	static appendDistributionPoint(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
-	static appendDistributionPointName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void;
-	static appendPolicyInformation(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean;
-	static appendPKCS7SignedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
-	static appendPKCS7DigestAlgorithmIdentifiers(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
-	static appendPKCS7SignerInfos(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
-	static appendPKCS7SignerInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
-	static appendIssuerAndSerialNumber(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
-	static appendPKCS7Attributes(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315
-	static appendMacData(reader: data.ByteReader, startOfst: number, endOfst: number, path?: string, sb: string[], varName?: string): boolean; // PKCS12
-	static appendDigestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; // RFC2315 / PKCS7
-	static appendData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, dataType: ContentDataType): void;
-	static appendEncryptedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, dataType: ContentDataType): void;
-	static appendAuthenticatedSafe(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string): void; //PKCS12
-	static appendEncryptedContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName?: string, dataType: ContentDataType): void;
+	static appendVersion(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[]): void; // AuthenticationFramework
+	static appendAlgorithmIdentifier(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null, pubKey: boolean): KeyType; // PKCS-5
+	static appendValidity(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // AuthenticationFramework
+	static appendSubjectPublicKeyInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // AuthenticationFramework
+	static appendName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // InformationFramework
+	static appendRelativeDistinguishedName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // InformationFramework
+	static appendAttributeTypeAndDistinguishedValue(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // InformationFramework
+	static appendCRLExtensions(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendCRLExtension(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendMSOSVersion(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendMSRequestClientInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendMSEnrollmentCSPProvider(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendGeneralNames(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendGeneralName(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): boolean;
+	static appendDistributionPoint(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): boolean;
+	static appendDistributionPointName(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void;
+	static appendPolicyInformation(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): boolean;
+	static appendPKCS7SignedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315
+	static appendPKCS7DigestAlgorithmIdentifiers(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315
+	static appendPKCS7SignerInfos(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315
+	static appendPKCS7SignerInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315
+	static appendIssuerAndSerialNumber(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315
+	static appendPKCS7Attributes(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315
+	static appendMacData(reader: data.ByteReader, startOfst: number, endOfst: number, path: string | null, sb: string[], varName: string | null): boolean; // PKCS12
+	static appendDigestInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; // RFC2315 / PKCS7
+	static appendData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null, dataType: ContentDataType): void;
+	static appendEncryptedData(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null, dataType: ContentDataType): void;
+	static appendAuthenticatedSafe(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null): void; //PKCS12
+	static appendEncryptedContentInfo(reader: data.ByteReader, startOfst: number, endOfst: number, sb: string[], varName: string | null, dataType: ContentDataType): void;
 
 	static nameGetByOID(reader: data.ByteReader, startOfst: number, endOfst: number, oidText: string): string | null;
 	static nameGetCN(reader: data.ByteReader, startOfst: number, endOfst: number): string | null;
@@ -272,7 +272,7 @@ export class X509Key extends X509File
 	getRSAModulus(): ArrayBuffer | null;
 	getRSAPublicExponent(): ArrayBuffer | null;
 	getRSAPrivateExponent(): ArrayBuffer | null;
-	getRSAPrime1(): ArrayByffer | null;
+	getRSAPrime1(): ArrayBuffer | null;
 	getRSAPrime2(): ArrayBuffer | null;
 	getRSAExponent1(): ArrayBuffer | null;
 	getRSAExponent2(): ArrayBuffer | null;

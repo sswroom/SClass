@@ -2,6 +2,8 @@
 -Fixed some bugs
 -Support cert.keyTypeGetOID
 -Support hashTypeFromOID
+-Added geometry.Point.calBoundaryPoint
+-Added web.getInputOrSelectElement, getInputElement and getSelectElement
 
 1.6.4
 -Support geometry.Polyline
