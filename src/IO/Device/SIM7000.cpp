@@ -498,7 +498,7 @@ Bool IO::Device::SIM7000::NetSetDisableNagle(Bool disable)
 	}
 }
 
-Bool IO::Device::SIM7000::NetPing(UnsafeArray<const UTF8Char> addr, UInt32 *respTime, UInt32 *ttl)
+Bool IO::Device::SIM7000::NetPing(UnsafeArray<const UTF8Char> addr, OutParam<UInt32> respTime, OutParam<UInt32> ttl)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr = sbuff;
@@ -519,13 +519,7 @@ Bool IO::Device::SIM7000::NetPing(UnsafeArray<const UTF8Char> addr, UInt32 *resp
 		return false;
 	}
 
-	if (respTime)
-	{
-		*respTime = Text::StrToUInt32(sarr[2]);
-	}
-	if (ttl)
-	{
-		*ttl = Text::StrToUInt32(sarr[3]);
-	}
+	respTime.Set(Text::StrToUInt32(sarr[2]));
+	ttl.Set(Text::StrToUInt32(sarr[3]));
 	return true;
 }

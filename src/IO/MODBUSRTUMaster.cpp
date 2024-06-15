@@ -204,7 +204,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 8);
+		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -233,7 +233,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 8);
+		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -262,7 +262,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 8);
+		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -291,7 +291,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 8);
+		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -327,7 +327,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 8);
+		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -360,7 +360,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 //		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 //		printf("Send: %s\r\n", sb.ToString());
 
-		this->stm->Write(buff, 8);
+		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -395,7 +395,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 //		sb.AppendHexBuff(buff, cnt * 2 + 9, ' ', Text::LineBreakType::None);
 //		printf("Send: %s\r\n", sb.ToString());
 
-		this->stm->Write(buff, (UOSInt)cnt * 2 + 9);
+		this->stm->Write(Data::ByteArrayR(buff, (UOSInt)cnt * 2 + 9));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}

@@ -75,7 +75,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NN<Net::WebServer::IWebRequ
 		sptr = Text::StrInt32(sptr, logDate);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".log"));
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write(reqData, dataSize);
+		fs.Write(Data::ByteArrayR(reqData, dataSize));
 		return me->ResponseJSONStr(req, resp, 0, CSTR("{\"status\":\"ok\"}"));
 	}
 	else

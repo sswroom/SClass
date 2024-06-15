@@ -29,11 +29,11 @@ UOSInt Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UO
 	if (this->logWriter) this->logWriter->TCPSend(this->cli, buff, buffSize);
 	if (this->cstm)
 	{
-		buffSize = this->cstm->Write(buff, buffSize);
+		buffSize = this->cstm->Write(Data::ByteArrayR(buff, buffSize));
 	}
 	else
 	{
-		buffSize = this->cli->Write(buff, buffSize);
+		buffSize = this->cli->Write(Data::ByteArrayR(buff, buffSize));
 	}
 	if (this->logger)
 	{
@@ -110,7 +110,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 	}
 	else if (this->proxyMode)
 	{
-		if (this->proxyCli->Write(buff.Arr().Ptr(), buff.GetSize()) != buff.GetSize())
+		if (this->proxyCli->Write(buff) != buff.GetSize())
 		{
 			this->proxyCli->Close();
 			this->cli->Close();
@@ -549,7 +549,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						reqBuff = currReq->GetReqData(reqSize);
 						if (reqBuff && reqSize > 0)
 						{
-							httpCli->Write(reqBuff, reqSize);
+							httpCli->Write(Data::ByteArrayR(reqBuff, reqSize));
 						}
 					}
 
@@ -596,7 +596,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 							k = httpCli->Read(BYTEARR(buff));
 							if (k <= 0)
 								break;
-							if (this->Write(buff, k) == 0)
+							if (this->Write(Data::ByteArray(buff, k)) == 0)
 								break;
 						}
 					}
@@ -607,7 +607,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 							k = httpCli->Read(BYTEARR(buff));
 							if (k <= 0)
 								break;
-							if (this->Write(buff, k) == 0)
+							if (this->Write(Data::ByteArray(buff, k)) == 0)
 							{
 								break;
 							}
@@ -670,11 +670,11 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	#endif
 				if (this->cstm)
 				{
-					this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
+					this->respLeng += this->cstm->Write(CSTR("0\r\n\r\n").ToByteArray());
 				}
 				else
 				{
-					this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+					this->respLeng += this->cli->Write(CSTR("0\r\n\r\n").ToByteArray());
 				}
 				this->respDataEnd = true;
 			}
@@ -795,12 +795,12 @@ void Net::WebServer::WebConnection::ShutdownSend()
 #endif
 		if (this->cstm)
 		{
-			this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
+			this->respLeng += this->cstm->Write(CSTR("0\r\n\r\n").ToByteArray());
 			this->cstm->Flush();
 		}
 		else
 		{
-			this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+			this->respLeng += this->cli->Write(CSTR("0\r\n\r\n").ToByteArray());
 		}
 		this->respDataEnd = true;
 	}
@@ -844,7 +844,7 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 		sb.AppendLB(Text::LineBreakType::LF);
 	}
 	sb.AppendLB(Text::LineBreakType::LF);
-	return this->cli->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	return this->cli->Write(sb.ToByteArray()) == sb.GetLength();
 }
 
 Bool Net::WebServer::WebConnection::SwitchProtocol(ProtocolHandler *protoHdlr)
@@ -881,16 +881,16 @@ UOSInt Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::WebServer::WebConnection::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 {
 	if (this->protoHdlr)
 	{
 		if (this->logger)
 		{
-			this->logger(this->loggerObj, size);
+			this->logger(this->loggerObj, buff.GetSize());
 		}
 		this->svr->ExtendTimeout(cli);
-		return this->cli->Write(buff, size);
+		return this->cli->Write(buff);
 	}
 	if (!this->respHeaderSent)
 	{
@@ -913,9 +913,9 @@ UOSInt Net::WebServer::WebConnection::Write(UnsafeArray<const UInt8> buff, UOSIn
 		UOSInt writeSize;
 		UInt8 sbuff[MAX_CHUNK_SIZE + 10];
 		UnsafeArray<UTF8Char> sptr;
-		while (size > 0)
+		while (buff.GetSize() > 0)
 		{
-			writeSize = size;
+			writeSize = buff.GetSize();
 			if (writeSize > MAX_CHUNK_SIZE)
 			{
 				writeSize = MAX_CHUNK_SIZE;		
@@ -928,7 +928,6 @@ UOSInt Net::WebServer::WebConnection::Write(UnsafeArray<const UInt8> buff, UOSIn
 			MemCopyNO(sptr.Ptr(), buff.Ptr(), writeSize);
 			buff += writeSize;
 			sptr += writeSize;
-			size -= writeSize;
 			sptr[0] = 13;
 			sptr[1] = 10;
 			sptr += 2;
@@ -947,8 +946,8 @@ UOSInt Net::WebServer::WebConnection::Write(UnsafeArray<const UInt8> buff, UOSIn
 	}
 	else
 	{
-		this->respLeng += size;
-		return this->SendData(buff, size);
+		this->respLeng += buff.GetSize();
+		return this->SendData(buff.Arr(), buff.GetSize());
 	}
 }
 

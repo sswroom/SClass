@@ -185,7 +185,7 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 		return false;
 	}
 	Sync::MutexUsage mutUsage(this->cliMut);
-	UOSInt sendSize = this->stm->Write(packet, packetSize);
+	UOSInt sendSize = this->stm->Write(Data::ByteArrayR(packet, packetSize));
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
 }

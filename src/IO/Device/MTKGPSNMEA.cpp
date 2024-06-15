@@ -60,28 +60,28 @@ void IO::Device::MTKGPSNMEA::HotStart()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK101"), buff);
-	this->stm->Write(buff, cmdSize);
+	this->stm->Write(Data::ByteArrayR(buff, cmdSize));
 }
 
 void IO::Device::MTKGPSNMEA::WarmStart()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK102"), buff);
-	this->stm->Write(buff, cmdSize);
+	this->stm->Write(Data::ByteArrayR(buff, cmdSize));
 }
 
 void IO::Device::MTKGPSNMEA::ColdStart()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK103"), buff);
-	this->stm->Write(buff, cmdSize);
+	this->stm->Write(Data::ByteArrayR(buff, cmdSize));
 }
 
 void IO::Device::MTKGPSNMEA::FactoryReset()
 {
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK104"), buff);
-	this->stm->Write(buff, cmdSize);
+	this->stm->Write(Data::ByteArrayR(buff, cmdSize));
 }
 
 Bool IO::Device::MTKGPSNMEA::IsMTKDevice()
@@ -207,7 +207,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 	Text::String *cmdRes;
 	i = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), cbuff);
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->stm->Write(cbuff, i);
+	this->stm->Write(Data::ByteArrayR(cbuff, i));
 	
 	dt.SetCurrTimeUTC();
 	while (true)
@@ -526,7 +526,7 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 	Text::String *cmdRes;
 
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->stm->Write(cmdBuff, cmdSize);
+	this->stm->Write(Data::ByteArrayR(cmdBuff, cmdSize));
 	Text::String *resultStr = 0;
 	
 	dt.SetCurrTimeUTC();

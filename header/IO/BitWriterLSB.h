@@ -8,13 +8,13 @@ namespace IO
 	class BitWriterLSB : public IO::BitWriter
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UOSInt currBytePos;
 		UOSInt currBitPos;
-		IO::Stream *stm;
+		NN<IO::Stream> stm;
 
 	public:
-		BitWriterLSB(IO::Stream *stm);
+		BitWriterLSB(NN<IO::Stream> stm);
 		virtual ~BitWriterLSB();
 
 		virtual Bool WriteBits(UInt32 code, UOSInt bitCount);

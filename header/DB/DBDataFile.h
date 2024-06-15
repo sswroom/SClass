@@ -143,7 +143,7 @@ template <class T> DB::DBDataFile<T>::DBDataFile(Text::CStringNN fileName, NN<Da
 			k++;
 		}
 		this->recordBuff[l + 4] = 0xff;
-		this->fs->Write(this->recordBuff, l + 5);
+		this->fs->Write(Data::ByteArrayR(this->recordBuff, l + 5));
 	}
 	else
 	{
@@ -330,20 +330,20 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 	if (m < 0x80) // 00 - 7f
 	{
 		this->recordBuff[5] = (UInt8)m;
-		this->cstm->Write(&this->recordBuff[5], m + 1);
+		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[5], m + 1));
 	}
 	else if (m <= 0x3F7F)
 	{
 		this->recordBuff[4] = (UInt8)(0x80 | (m >> 7));
 		this->recordBuff[5] = (UInt8)(m & 0x7F);
-		this->cstm->Write(&this->recordBuff[4], m + 2);
+		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[4], m + 2));
 	}
 	else if (m <= 0x1FBFFF)
 	{
 		this->recordBuff[3] = (UInt8)(0x80 | (m >> 14));
 		this->recordBuff[4] = (UInt8)(0x80 | ((m >> 7) & 0x7F));
 		this->recordBuff[5] = (UInt8)(m & 0x7F);
-		this->cstm->Write(&this->recordBuff[3], m + 3);
+		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[3], m + 3));
 	}
 	else
 	{
@@ -351,7 +351,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 		this->recordBuff[3] = (UInt8)(0x80 | ((m >> 14) & 0x7F));
 		this->recordBuff[4] = (UInt8)(0x80 | ((m >> 7) & 0x7F));
 		this->recordBuff[5] = (UInt8)(m & 0x7F);
-		this->cstm->Write(&this->recordBuff[2], m + 4);
+		this->cstm->Write(Data::ByteArrayR(&this->recordBuff[2], m + 4));
 	}
 }
 

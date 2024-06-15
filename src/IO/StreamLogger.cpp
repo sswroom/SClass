@@ -44,17 +44,17 @@ UOSInt IO::StreamLogger::Read(const Data::ByteArray &buff)
 	UOSInt readCnt = this->stm->Read(buff);
 	if (readCnt > 0 && this->readLog)
 	{
-		this->readLog->Write(buff.Arr().Ptr(), readCnt);
+		this->readLog->Write(buff.WithSize(readCnt));
 	}
 	return readCnt;
 }
 
-UOSInt IO::StreamLogger::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::StreamLogger::Write(Data::ByteArrayR buff)
 {
-	UOSInt writeCnt = this->stm->Write(buff, size);
+	UOSInt writeCnt = this->stm->Write(buff);
 	if (writeCnt > 0 && this->writeLog)
 	{
-		this->writeLog->Write(buff, writeCnt);
+		this->writeLog->Write(buff.WithSize(writeCnt));
 	}
 	return writeCnt;
 }
@@ -66,7 +66,7 @@ void *IO::StreamLogger::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	if (reqData)
 	{
 		myReqData = MemAlloc(MyReqData, 1);
-		myReqData->buff = buff.Arr().Ptr();
+		myReqData->buff = buff.Arr();
 		myReqData->reqData = reqData;
 		return myReqData;
 	}
@@ -86,7 +86,7 @@ UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait, OutParam<Bool> inco
 	{
 		if (readCnt > 0 && this->readLog)
 		{
-			this->readLog->Write(myReqData->buff, readCnt);
+			this->readLog->Write(Data::ByteArrayR(myReqData->buff, readCnt));
 		}
 		MemFree(myReqData);
 	}
@@ -100,14 +100,14 @@ void IO::StreamLogger::CancelRead(void *reqData)
 	MemFree(myReqData);
 }
 
-void *IO::StreamLogger::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::StreamLogger::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
-	void *reqData = this->stm->BeginWrite(buff, size, evt);
+	void *reqData = this->stm->BeginWrite(buff, evt);
 	MyReqData *myReqData;
 	if (reqData)
 	{
 		myReqData = MemAlloc(MyReqData, 1);
-		myReqData->buff = buff;
+		myReqData->buff = buff.Arr();
 		myReqData->reqData = reqData;
 		return myReqData;
 	}
@@ -125,7 +125,7 @@ UOSInt IO::StreamLogger::EndWrite(void *reqData, Bool toWait)
 	{
 		if (writeCnt > 0 && this->writeLog)
 		{
-			this->writeLog->Write(myReqData->buff, writeCnt);
+			this->writeLog->Write(Data::ByteArrayR(myReqData->buff, writeCnt));
 		}
 		MemFree(myReqData);
 	}

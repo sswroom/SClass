@@ -169,7 +169,7 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 			{
 				this->logWriter->WriteLine(CSTR("STARTTLS"));
 			}
-			this->cli->Write((const UInt8*)"STARTTLS\r\n", 10);
+			this->cli->Write(CSTR("STARTTLS\r\n").ToByteArray());
 			buffSize = this->cli->Read(BYTEARR(buff));
 			if (this->logWriter)
 			{

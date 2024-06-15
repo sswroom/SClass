@@ -23,17 +23,17 @@ UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
 	UOSInt ret = this->stm->Read(buff);
 	if (ret > 0)
 	{
-		this->recvHdlr(this->hdlrObj, buff.Arr().Ptr(), ret);
+		this->recvHdlr(this->hdlrObj, buff.WithSize(ret));
 	}
 	return ret;
 }
 
-UOSInt IO::DataCaptureStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::DataCaptureStream::Write(Data::ByteArrayR buff)
 {
-	UOSInt ret = this->stm->Write(buff, size);
+	UOSInt ret = this->stm->Write(buff);
 	if (ret > 0)
 	{
-		this->sendHdlr(this->hdlrObj, buff, ret);
+		this->sendHdlr(this->hdlrObj, buff.WithSize(ret));
 	}
 	return ret;
 }

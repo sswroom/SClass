@@ -88,7 +88,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 				resp->AddContentType(Net::MIME::GetMIMEFromFileName(userFile->oriFileName->v, userFile->oriFileName->leng));
 			}
 			mutUsage.EndUse();
-			resp->Write(buff.Arr(), buffSize);
+			resp->Write(buff);
 			return true;
 		}
 		else
@@ -169,7 +169,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 						resp->AddDefHeaders(req);
 						resp->AddContentLength(buffSize);
 						resp->AddContentType(CSTR("image/jpeg"));
-						resp->Write(buff.Arr(), buffSize);
+						resp->Write(buff);
 						mutUsage.EndUse();
 						return;
 					}
@@ -296,8 +296,6 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 					}
 					if (dimg.SetTo(simg))
 					{
-						UInt8 *buff;
-						UOSInt buffSize;
 						simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 						if (rotateType == 1)
 						{
@@ -395,8 +393,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
 							{
 								IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-								buff = mstm.GetBuff(buffSize);
-								fs.Write(buff, buffSize);
+								fs.Write(mstm.GetArray());
 							}
 						}
 					}
@@ -498,7 +495,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				resp->AddContentLength(buffSize);
 				resp->AddContentType(CSTR("image/jpeg"));
 				resp->AddLastModified(dt2);
-				resp->Write(buff.Arr(), buffSize);
+				resp->Write(buff);
 				mutUsage.EndUse();
 				return;
 			}
@@ -691,7 +688,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 							{
 								IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 								buff = mstm.GetBuff(buffSize);
-								fs.Write(buff, buffSize);
+								fs.Write(Data::ByteArrayR(buff, buffSize));
 								if (userFile->prevUpdated)
 								{
 									this->env->UserFilePrevUpdated(mutUsage, userFile);
@@ -723,7 +720,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 						{
 							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
-							fs.Write(buff, buffSize);
+							fs.Write(Data::ByteArrayR(buff, buffSize));
 							if (userFile->prevUpdated)
 							{
 								this->env->UserFilePrevUpdated(mutUsage, userFile);
@@ -797,7 +794,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					resp->AddDefHeaders(req);
 					resp->AddContentLength(buffSize);
 					resp->AddContentType(CSTR("image/jpeg"));
-					resp->Write(buff.Arr(), buffSize);
+					resp->Write(buff);
 					mutUsage.EndUse();
 					return;
 				}
@@ -942,7 +939,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						{
 							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 							buff = mstm.GetBuff(buffSize);
-							fs.Write(buff, buffSize);
+							fs.Write(Data::ByteArrayR(buff, buffSize));
 							if (wfile->prevUpdated)
 							{
 								this->env->WebFilePrevUpdated(mutUsage, wfile);

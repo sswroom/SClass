@@ -65,8 +65,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 			}
 			if (sb.GetLength() > 0)
 			{
-				me->stm->Write(sb.ToString(), sb.GetLength());
-				me->sendBuff.Write(sb.ToString(), sb.GetLength());
+				me->stm->Write(sb.ToByteArray());
+				me->sendBuff.Write(sb.ToByteArray());
 				me->UpdateSendDisp();
 			}
 		}
@@ -92,8 +92,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 			case 3:
 				break;
 			}
-			me->stm->Write(buff, size);
-			me->sendBuff.Write(buff, size);
+			me->stm->Write(Data::ByteArrayR(buff, size));
+			me->sendBuff.Write(Data::ByteArrayR(buff, size));
 			MemFree(buff);
 			me->UpdateSendDisp();
 		}
@@ -143,7 +143,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(AnyType userObj)
 		else
 		{
 			Sync::MutexUsage mutUsage(me->recvMut);
-			me->recvBuff.Write(buff, recvSize);
+			me->recvBuff.Write(Data::ByteArrayR(buff, recvSize));
 			mutUsage.EndUse();
 			me->recvUpdated = true;
 		}

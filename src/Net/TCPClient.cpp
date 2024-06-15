@@ -253,7 +253,7 @@ UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::TCPClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::TCPClient::Write(Data::ByteArrayR buff)
 {
 	NN<Socket> s;
 	if (this->s.SetTo(s) && (this->flags & 5) == 0)
@@ -264,12 +264,12 @@ UOSInt Net::TCPClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Client sending "));
-			sb.AppendUOSInt(size);
+			sb.AppendUOSInt(buff.GetSize());
 			sb.AppendC(UTF8STRC(" bytes out\r\n"));
 			IO::Console::PrintStrO(sb.ToString());
 		}
 #endif
-		sendSize = this->sockf->SendData(s, buff.Ptr(), size, et);
+		sendSize = this->sockf->SendData(s, buff.Arr(), buff.GetSize(), et);
 		if (sendSize > 0)
 		{
 			this->currCnt += sendSize;
@@ -339,12 +339,12 @@ void Net::TCPClient::CancelRead(void *reqData)
 	EndRead(reqData, true, incomplete);
 }
 
-void *Net::TCPClient::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *Net::TCPClient::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 5) != 0)
 		return 0;
-	void *data = (void*)Write(buff, size);
+	void *data = (void*)Write(buff);
 	if (data != 0 && evt != 0)
 		evt->Set();
 	return data;
@@ -421,7 +421,7 @@ UOSInt Net::TCPClient::GetRecvBuffSize()
 {
 	UInt32 argp;
 	NN<Socket> s;
-	if (this->s.SetTo(s) && this->sockf->SocketGetReadBuff(s, &argp))
+	if (this->s.SetTo(s) && this->sockf->SocketGetReadBuff(s, argp))
 	{
 		return argp;
 	}

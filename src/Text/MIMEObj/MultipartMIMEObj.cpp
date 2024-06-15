@@ -219,7 +219,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	if (this->defMsg.SetTo(defMsg))
 	{
 		len = defMsg->leng;
-		stm->Write(defMsg->v, len);
+		stm->Write(defMsg->ToByteArray());
 		ret += len;
 	}
 	i = 0;
@@ -231,7 +231,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(NN<IO::Stream> stm) const
 		sbc.AppendC(UTF8STRC("\r\n--"));
 		sbc.Append(this->boundary);
 		sbc.AppendC(UTF8STRC("\r\n"));
-		stm->Write(sbc.ToString(), sbc.GetLength());
+		stm->Write(sbc.ToByteArray());
 		ret += sbc.GetLength();
 		ret += part->WriteStream(stm);
 
@@ -241,7 +241,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	sbc.AppendC(UTF8STRC("\r\n--"));
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("--"));
-	stm->Write(sbc.ToString(), sbc.GetLength());
+	stm->Write(sbc.ToByteArray());
 	ret += sbc.GetLength();
 	return ret;
 }

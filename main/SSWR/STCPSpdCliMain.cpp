@@ -78,7 +78,7 @@ UInt32 __stdcall ProcThread(AnyType userObj)
 		Sync::MutexUsage mutUsage(cliMut);
 		if (cli)
 		{
-			sendSize = cli->Write(sendBuff, sendBuffSize);
+			sendSize = cli->Write(Data::ByteArrayR(sendBuff, sendBuffSize));
 			mutUsage.EndUse();
 			if (sendSize > 0)
 			{

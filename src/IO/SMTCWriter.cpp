@@ -4,7 +4,7 @@
 
 IO::SMTCWriter::SMTCWriter(Text::CStringNN fileName) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal)
 {
-	this->fs.Write(UTF8STRC("SmTC"));
+	this->fs.Write(CSTR("SmTC").ToByteArray());
 }
 
 IO::SMTCWriter::~SMTCWriter()
@@ -25,7 +25,7 @@ void IO::SMTCWriter::TCPConnect(NN<Net::TCPClient> cli)
 	WriteUInt64(&buff[12], cli->GetCliId());
 	buff[20] = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	this->fs.Write(buff, 21);
+	this->fs.Write(Data::ByteArrayR(buff, 21));
 }
 
 void IO::SMTCWriter::TCPDisconnect(NN<Net::TCPClient> cli)
@@ -37,7 +37,7 @@ void IO::SMTCWriter::TCPDisconnect(NN<Net::TCPClient> cli)
 	WriteUInt64(&buff[12], cli->GetCliId());
 	buff[20] = 1;
 	Sync::MutexUsage mutUsage(this->mut);
-	this->fs.Write(buff, 21);
+	this->fs.Write(Data::ByteArrayR(buff, 21));
 }
 
 void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> data, UOSInt size)
@@ -50,8 +50,8 @@ void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> da
 	buff[20] = 3;
 	WriteUInt16(&buff[21], (UInt16)size);
 	Sync::MutexUsage mutUsage(this->mut);
-	this->fs.Write(buff, 23);
-	this->fs.Write(data, size);
+	this->fs.Write(Data::ByteArrayR(buff, 23));
+	this->fs.Write(Data::ByteArrayR(data, size));
 }
 
 void IO::SMTCWriter::TCPRecv(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> data, UOSInt size)
@@ -64,6 +64,6 @@ void IO::SMTCWriter::TCPRecv(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> da
 	buff[20] = 2;
 	WriteUInt16(&buff[21], (UInt16)size);
 	Sync::MutexUsage mutUsage(this->mut);
-	this->fs.Write(buff, 23);
-	this->fs.Write(data, size);
+	this->fs.Write(Data::ByteArrayR(buff, 23));
+	this->fs.Write(Data::ByteArrayR(data, size));
 }

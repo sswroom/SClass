@@ -56,6 +56,7 @@ namespace DB
 		UOSInt GetLength() const;
 		Text::CStringNN ToCString() const;
 		NN<Text::String> ToNewString() const;
+		Data::ByteArrayR ToByteArray() const;
 		DB::SQLType GetSQLType() const;
 		Bool SupportSchema() const;
 	};

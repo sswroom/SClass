@@ -398,7 +398,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			}
 
 			i = this->protoHdlr.BuildPacket(packet2, 0x20, 0, packet, 2, data->cliData);
-			sent = stm->Write(packet2, i);
+			sent = stm->Write(Data::ByteArrayR(packet2, i));
 			SDEL_STRING(clientId);
 			SDEL_STRING(userName);
 			SDEL_STRING(password);
@@ -506,7 +506,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 					packet[2] = 0;
 					packet[3] = 0;
 					i = this->protoHdlr.BuildPacket(packet2, 0x40, 0, packet, 4, data->cliData);
-					sent = stm->Write(packet2, i);
+					sent = stm->Write(Data::ByteArrayR(packet2, i));
 				}
 				else if ((cmdType & 6) == 4)
 				{
@@ -514,7 +514,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 					packet[2] = 0;
 					packet[3] = 0;
 					i = this->protoHdlr.BuildPacket(packet2, 0x50, 0, packet, 4, data->cliData);
-					sent = stm->Write(packet2, i);
+					sent = stm->Write(Data::ByteArrayR(packet2, i));
 				}
 			}
 			else
@@ -525,7 +525,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 					packet[2] = 0x87;
 					packet[3] = 0;
 					i = this->protoHdlr.BuildPacket(packet2, 0x40, 0, packet, 4, data->cliData);
-					sent = stm->Write(packet2, i);
+					sent = stm->Write(Data::ByteArrayR(packet2, i));
 				}
 				else if ((cmdType & 6) == 4)
 				{
@@ -533,7 +533,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 					packet[2] = 0x87;
 					packet[3] = 0;
 					i = this->protoHdlr.BuildPacket(packet2, 0x50, 0, packet, 4, data->cliData);
-					sent = stm->Write(packet2, i);
+					sent = stm->Write(Data::ByteArrayR(packet2, i));
 				}
 			}
 		}
@@ -650,7 +650,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				packet[2] = 0x80;
 			}
 			i = this->protoHdlr.BuildPacket(packet2, 0x90, 0, packet, 3, data->cliData);
-			sent = stm->Write(packet2, i);
+			sent = stm->Write(Data::ByteArrayR(packet2, i));
 			Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 
 			if (cs == CS_ACCEPTED)
@@ -723,7 +723,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 		}
 		i = this->protoHdlr.BuildPacket(packet2, 0xD0, 0, packet, 0, data->cliData);
-		sent = stm->Write(packet2, i);
+		sent = stm->Write(Data::ByteArrayR(packet2, i));
 		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		break;
 	case 13: //PINGRESP
@@ -855,7 +855,7 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 		topic->topic->ConcatTo(&packet1[2]);
 		MemCopyNO(&packet1[2 + topicLen], topic->message, topic->msgSize);
 		i = this->protoHdlr.BuildPacket(packet2, 0x30, 0, packet1, 2 + topicLen + topic->msgSize, stmData);
-		sent = stm->Write(packet2, i);
+		sent = stm->Write(Data::ByteArrayR(packet2, i));
 		Sync::Interlocked::AddU64(this->infoTotalSent, sent);
 		return sent == i;
 	}
@@ -867,7 +867,7 @@ Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const To
 		topic->topic->ConcatTo(&packetBuff1[2]);
 		MemCopyNO(&packetBuff1[2 + topicLen], topic->message, topic->msgSize);
 		i = this->protoHdlr.BuildPacket(packetBuff2, 0x30, 0, packetBuff1, 2 + topicLen + topic->msgSize, stmData);
-		sent = stm->Write(packetBuff2, i);
+		sent = stm->Write(Data::ByteArrayR(packetBuff2, i));
 		MemFree(packetBuff1);
 		MemFree(packetBuff2);
 		Sync::Interlocked::AddU64(this->infoTotalSent, sent);

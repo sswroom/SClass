@@ -291,7 +291,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 		{
 			Data::ByteBuffer buff((UOSInt)endOfst);
 			buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
-			fs.Write(buff.Arr().Ptr(), buffSize);
+			fs.Write(buff.WithSize(buffSize));
 		}
 		else
 		{
@@ -300,7 +300,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 			while (endOfst >= 1048576)
 			{
 				buffSize = me->hexView->GetFileData(beginOfst, 1048576, buff);
-				fs.Write(buff.Arr().Ptr(), buffSize);
+				fs.Write(buff.WithSize(buffSize));
 				beginOfst += 1048576;
 				endOfst -= 1048576;
 				if (buffSize != 1048576)
@@ -312,7 +312,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnExtractClicked(AnyType userOb
 			if (!hasError && endOfst > 0)
 			{
 				buffSize = me->hexView->GetFileData(beginOfst, (UOSInt)endOfst, buff);
-				fs.Write(buff.Arr().Ptr(), buffSize);
+				fs.Write(buff.WithSize(buffSize));
 				beginOfst += endOfst;
 				if (buffSize != endOfst)
 				{

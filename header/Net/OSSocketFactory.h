@@ -55,9 +55,9 @@ namespace Net
 		virtual void SetBroadcast(NN<Socket> socket, Bool val);
 		virtual void AddIPMembership(NN<Socket> socket, UInt32 ip);
 
-		virtual UOSInt SendData(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et);
-		virtual UOSInt ReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et);
-		virtual void *BeginReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et);
+		virtual UOSInt SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et);
+		virtual UOSInt ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et);
+		virtual void *BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et);
 		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelReceiveData(void *reqData);
 
@@ -65,14 +65,14 @@ namespace Net
 		virtual UOSInt SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
 		virtual UOSInt SendToIF(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName);
 
-		virtual Bool IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl);
+		virtual Bool IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, OutParam<UInt32> respTime_us, OutParam<UInt32> ttl);
 
 		virtual Bool Connect(NN<Socket> socket, UInt32 ip, UInt16 port, Data::Duration timeout);
 		virtual Bool Connect(NN<Socket> socket, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
 		virtual void ShutdownSend(NN<Socket> socket);
 		virtual void ShutdownSocket(NN<Socket> socket);
 
-		virtual Bool SocketGetReadBuff(NN<Socket> socket, UInt32 *size);
+		virtual Bool SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32> size);
 
 		virtual Bool DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr);
 		virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr);

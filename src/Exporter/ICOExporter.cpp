@@ -73,7 +73,7 @@ Bool Exporter::ICOExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(buff);
 		return false;
 	}
-	stm->Write(buff, buffSize);
+	stm->Write(Data::ByteArrayR(buff, buffSize));
 	MemFree(buff);
 	return true;
 }

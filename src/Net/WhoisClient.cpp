@@ -46,7 +46,7 @@ NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text
 
 	NEW_CLASSNN(rec, Net::WhoisRecord(ip));
 	Net::TCPClient cli(sockf, whoisIP, 43, timeout);
-	cli.Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
+	cli.Write(Data::ByteArrayR((UInt8*)sbuff, (UOSInt)(sptr - sbuff)));
 	Text::UTF8Reader reader(cli);
 	while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 	{

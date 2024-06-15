@@ -328,7 +328,7 @@ Bool IO::ATCommandChannel::UseCmd(NN<Sync::MutexUsage> mutUsage)
 
 UOSInt IO::ATCommandChannel::CmdSend(UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
-	return this->stm->Write(data, dataSize);
+	return this->stm->Write(Data::ByteArrayR(data, dataSize));
 }
 
 Optional<Text::String> IO::ATCommandChannel::CmdGetNextResult(Data::Duration timeout)

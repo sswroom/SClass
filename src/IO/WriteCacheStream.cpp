@@ -30,99 +30,99 @@ UOSInt IO::WriteCacheStream::Read(const Data::ByteArray &buff)
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::WriteCacheStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::WriteCacheStream::Write(Data::ByteArrayR buff)
 {
 	UOSInt ret;
 	UInt8 *newBuff;
 	if (this->cacheBuff == 0)
 	{
-		ret = this->outStm->Write(buff, size);
-		if (ret == size)
+		ret = this->outStm->Write(buff);
+		if (ret == buff.GetSize())
 			return ret;
 
 		this->cacheBuffSize = 1024;
-		while ((size - ret) > this->cacheBuffSize)
+		while ((buff.GetSize() - ret) > this->cacheBuffSize)
 		{
 			this->cacheBuffSize = this->cacheBuffSize << 1;
 		}
 		this->cacheBuff = MemAlloc(UInt8, this->cacheBuffSize);
-		MemCopyNO(this->cacheBuff, &buff[ret], size - ret);
-		this->cacheSize = size - ret;
-		return size;
+		MemCopyNO(this->cacheBuff, &buff[ret], buff.GetSize() - ret);
+		this->cacheSize = buff.GetSize() - ret;
+		return buff.GetSize();
 	}
 	else if (this->cacheSize == 0)
 	{
-		ret = this->outStm->Write(buff, size);
-		if (ret == size)
+		ret = this->outStm->Write(buff);
+		if (ret == buff.GetSize())
 			return ret;
 
-		if ((size - ret) > this->cacheBuffSize)
+		if ((buff.GetSize() - ret) > this->cacheBuffSize)
 		{
-			while ((size - ret) > this->cacheBuffSize)
+			while ((buff.GetSize() - ret) > this->cacheBuffSize)
 			{
 				this->cacheBuffSize = this->cacheBuffSize << 1;
 			}
 			MemFree(this->cacheBuff);
 			this->cacheBuff = MemAlloc(UInt8, this->cacheBuffSize);
-			MemCopyNO(this->cacheBuff, &buff[ret], size - ret);
-			this->cacheSize = size - ret;
-			return size;
+			MemCopyNO(this->cacheBuff, &buff[ret], buff.GetSize() - ret);
+			this->cacheSize = buff.GetSize() - ret;
+			return buff.GetSize();
 		}
 		else
 		{
-			MemCopyNO(this->cacheBuff, &buff[ret], size - ret);
-			this->cacheSize = size - ret;
-			return size;
+			MemCopyNO(this->cacheBuff, &buff[ret], buff.GetSize() - ret);
+			this->cacheSize = buff.GetSize() - ret;
+			return buff.GetSize();
 		}
 	}
 
-	if ((size + this->cacheSize) <= this->cacheBuffSize)
+	if ((buff.GetSize() + this->cacheSize) <= this->cacheBuffSize)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
-		this->cacheSize += size;
-		ret = this->outStm->Write(this->cacheBuff, this->cacheSize);
+		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), buff.GetSize());
+		this->cacheSize += buff.GetSize();
+		ret = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 		if (ret == this->cacheSize)
 		{
 			this->cacheSize = 0;
-			return size;
+			return buff.GetSize();
 		}
 		else if (ret == 0)
 		{
-			return size;
+			return buff.GetSize();
 		}
 		else
 		{
 			MemCopyO(this->cacheBuff, &this->cacheBuff[ret], this->cacheSize - ret);
 			this->cacheSize -= ret;
-			return size;
+			return buff.GetSize();
 		}
 	}
 
-	while ((size + this->cacheSize) > this->cacheBuffSize)
+	while ((buff.GetSize() + this->cacheSize) > this->cacheBuffSize)
 	{
 		this->cacheBuffSize = this->cacheBuffSize << 1;
 	}
 	newBuff = MemAlloc(UInt8, this->cacheBuffSize);
 	MemCopyNO(newBuff, this->cacheBuff, this->cacheSize);
-	MemCopyNO(&newBuff[this->cacheSize], buff.Ptr(), size);
-	this->cacheSize += size;
+	MemCopyNO(&newBuff[this->cacheSize], buff.Ptr(), buff.GetSize());
+	this->cacheSize += buff.GetSize();
 	MemFree(this->cacheBuff);
 	this->cacheBuff = newBuff;
-	ret = this->outStm->Write(this->cacheBuff, this->cacheSize);
+	ret = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 	if (ret == this->cacheSize)
 	{
 		this->cacheSize = 0;
-		return size;
+		return buff.GetSize();
 	}
 	else if (ret == 0)
 	{
-		return size;
+		return buff.GetSize();
 	}
 	else
 	{
 		MemCopyO(this->cacheBuff, &this->cacheBuff[ret], this->cacheSize - ret);
 		this->cacheSize -= ret;
-		return size;
+		return buff.GetSize();
 	}
 }
 
@@ -131,7 +131,7 @@ Int32 IO::WriteCacheStream::Flush()
 	UOSInt writeSize;
 	while (this->cacheSize > 0)
 	{
-		writeSize = this->outStm->Write(this->cacheBuff, this->cacheSize);
+		writeSize = this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 		if (writeSize == this->cacheSize)
 		{
 			this->cacheSize = 0;

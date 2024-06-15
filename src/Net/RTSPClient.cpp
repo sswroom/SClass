@@ -89,7 +89,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 				if (*(Int32*)&dataBuff[i] == val)
 				{
 					mstm.Clear();
-					mstm.Write(dataBuff, i + 4);
+					mstm.Write(Data::ByteArrayR(dataBuff, i + 4));
 					mstm.SeekFromBeginning(0);
 					{
 						Text::UTF8Reader reader(mstm);
@@ -226,7 +226,7 @@ Bool Net::RTSPClient::SendData(UInt8 *buff, UOSInt buffSize)
 	Sync::MutexUsage mutUsage(this->cliData->cliMut);
 	if (this->cliData->cli)
 	{
-		succ = this->cliData->cli->Write(buff, buffSize) == buffSize;
+		succ = this->cliData->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize;
 	}
 	return succ;
 }

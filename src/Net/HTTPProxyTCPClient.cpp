@@ -71,7 +71,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
-	this->Write((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff));
+	this->Write(Data::ByteArrayR((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff)));
 	this->SetTimeout(4000);
 	respSize = this->Read(BYTEARR(reqBuff));
 	this->SetTimeout(-1);

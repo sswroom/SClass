@@ -8,15 +8,15 @@ namespace IO
 	class BitReaderMSB : public IO::BitReader
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UOSInt buffSize;
 		UOSInt currBytePos;
 		UOSInt currBitPos;
-		IO::Stream *stm;
+		Optional<IO::Stream> stm;
 
 	public:
-		BitReaderMSB(IO::Stream *stm);
-		BitReaderMSB(const UInt8 *buff, UOSInt buffSize);
+		BitReaderMSB(NN<IO::Stream> stm);
+		BitReaderMSB(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		virtual ~BitReaderMSB();
 
 		virtual Bool ReadBits(OutParam<UInt32> code, UOSInt bitCount);

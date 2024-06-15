@@ -298,7 +298,7 @@ Bool SerialPort_WriteInt32(Text::CStringNN path, Int32 num)
 	if (!fs.IsError())
 	{
 		sptr = Text::StrInt32(sbuff, num);
-		if (fs.Write(sbuff, (UOSInt)(sptr - sbuff)) == (UOSInt)(sptr - sbuff))
+		if (fs.Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff))) == (UOSInt)(sptr - sbuff))
 		{
 			ret = true;
 		}
@@ -437,11 +437,11 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	return (UOSInt)readCnt;
 }
 
-UOSInt IO::SerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
 {
 	OSInt writeCnt;
 	OSInt h = (OSInt)this->handle;
-	writeCnt = write((int)h, buff.Ptr(), size);
+	writeCnt = write((int)h, buff.Ptr(), buff.GetSize());
 	fsync((int)h);
 	return (UOSInt)writeCnt;
 }
@@ -461,12 +461,12 @@ void IO::SerialPort::CancelRead(void *reqData)
 {
 }
 
-void *IO::SerialPort::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
 	evt->Set();
 	if (this->handle == 0)
 		return 0;
-	return (void*)Write(buff, size);
+	return (void*)Write(buff);
 }
 
 UOSInt IO::SerialPort::EndWrite(void *reqData, Bool toWait)

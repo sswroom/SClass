@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Net::SocketUtil::SetAddrInfo(addr, CSTR("127.0.0.1"));
 	while (true)
 	{
-		if (sockf.IcmpSendEcho2(addr, &respTime, &ttl))
+		if (sockf.IcmpSendEcho2(addr, respTime, ttl))
 		{
 //			printf("Received reply: %d, %d\r\n", respTime, ttl);
 		}

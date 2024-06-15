@@ -8,15 +8,15 @@ namespace IO
 	class BitReaderLSB : public IO::BitReader
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UOSInt buffSize;
 		UOSInt currBytePos;
 		UOSInt currBitPos;
-		IO::Stream *stm;
+		Optional<IO::Stream> stm;
 
 	public:
-		BitReaderLSB(IO::Stream *stm);
-		BitReaderLSB(const UInt8 *buff, UOSInt buffSize);
+		BitReaderLSB(NN<IO::Stream> stm);
+		BitReaderLSB(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		virtual ~BitReaderLSB();
 
 		virtual Bool ReadBits(OutParam<UInt32> code, UOSInt bitCount);

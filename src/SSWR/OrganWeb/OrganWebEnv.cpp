@@ -2051,7 +2051,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 		UInt8 *buff = mstm.GetBuff(i);
 		{
 			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			fs.Write(buff, i);
+			fs.Write(Data::ByteArrayR(buff, i));
 		}
 
 		species->wfiles.Put(wfile->id, wfile);
@@ -2359,7 +2359,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 				Bool succ;
 				{
 					IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					succ = (fs.Write(fileCont, fileSize) == fileSize);
+					succ = (fs.Write(Data::ByteArrayR(fileCont, fileSize)) == fileSize);
 				}
 				if (succ)
 				{
@@ -2578,7 +2578,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 				Bool succ;
 				{
 					IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					succ = (fs.Write(fileCont, fileSize) == fileSize);
+					succ = (fs.Write(Data::ByteArrayR(fileCont, fileSize)) == fileSize);
 				}
 				if (succ)
 				{

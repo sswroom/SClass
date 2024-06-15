@@ -98,7 +98,7 @@ UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 
 }
 
-UOSInt IO::SiLabSerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::SiLabSerialPort::Write(Data::ByteArrayR buff)
 {
 	UInt32 writeCnt;
 	void *h = this->handle;
@@ -111,7 +111,7 @@ UOSInt IO::SiLabSerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 	ol.InternalHigh = 0;
 	ol.Offset = 0;
 	ol.OffsetHigh = 0;
-	this->driver->SI_Write(h, (void*)buff.Ptr(), (UInt32)size, &writeCnt, &ol);
+	this->driver->SI_Write(h, (void*)buff.Ptr(), (UInt32)buff.GetSize(), &writeCnt, &ol);
 	if (GetOverlappedResult(h, &ol, (LPDWORD)&writeCnt, TRUE))
 	{
 		CloseHandle(ol.hEvent);
@@ -123,7 +123,7 @@ UOSInt IO::SiLabSerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 		return 0;
 	}
 #else
-	if (this->driver->SI_Write(h, (void*)buff.Ptr(), (UInt32)size, &writeCnt, 0) == IO::SiLabDriver::SI_SUCCESS)
+	if (this->driver->SI_Write(h, (void*)buff.Ptr(), (UInt32)buff.GetSize(), &writeCnt, 0) == IO::SiLabDriver::SI_SUCCESS)
 	{
 		return writeCnt;
 	}
@@ -188,12 +188,12 @@ void IO::SiLabSerialPort::CancelRead(void *reqData)
 //	PurgeComm(this->handle, PURGE_RXABORT);
 }
 
-void *IO::SiLabSerialPort::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::SiLabSerialPort::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
 	evt->Set();
 	if (handle == 0)
 		return 0;
-	return (void*)Write(buff, size);
+	return (void*)Write(buff);
 }
 
 UOSInt IO::SiLabSerialPort::EndWrite(void *reqData, Bool toWait)

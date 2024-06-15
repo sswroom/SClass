@@ -724,7 +724,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 		Data::ByteBuffer buff((UOSInt)fileLength);
 		if (fd->GetRealData(0, (UOSInt)fileLength, buff) == fileLength)
 		{
-			stm->Write(buff.Arr(), (UOSInt)fileLength);
+			stm->Write(buff.WithSize((UOSInt)fileLength));
 			succ = true;
 		}
 	}
@@ -749,7 +749,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 				succ = false;
 				break;
 			}
-			else if (stm->Write(buff.Arr(), readSize) != readSize)
+			else if (stm->Write(buff.WithSize(readSize)) != readSize)
 			{
 				succ = false;
 				break;

@@ -96,7 +96,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 						readSize = fs.Read(Data::ByteArray(buffTmp, 1024));
 						if (readSize > 0)
 						{
-							mstm.Write(buffTmp, readSize);
+							mstm.Write(Data::ByteArrayR(buffTmp, readSize));
 						}
 					}
 				}

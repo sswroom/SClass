@@ -2196,7 +2196,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					cli = Net::HTTPClient::CreateConnect(sockf, 0, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
 					cli->AddContentType(CSTR("text/plain"));
 					cli->AddContentLength(fileSize);
-					cli->Write(txtBuff.Arr(), (UOSInt)fileSize);
+					cli->Write(txtBuff.WithSize((UOSInt)fileSize));
 					if (cli->GetRespStatus() == 200)
 					{
 						console->WriteLine(CSTR("Upload successfully"));

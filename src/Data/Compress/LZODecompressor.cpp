@@ -26,7 +26,7 @@ Bool Data::Compress::LZODecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::
 	{
 		UInt8 *destBuff = MemAlloc(UInt8, destSize);
 		LZODecompressor_Decompress(srcBuff.Arr().Ptr(), (UOSInt)srcSize, destBuff, &destSize);
-		destStm->Write(destBuff, destSize);
+		destStm->Write(Data::ByteArrayR(destBuff, destSize));
 		MemFree(destBuff);
 		return true;
 	}

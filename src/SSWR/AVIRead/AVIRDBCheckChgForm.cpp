@@ -1850,11 +1850,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSessi
 		NN<DB::DBConn> db;
 	if (sess->mode == 0)
 	{
-		if (sess->stm->Write(sql.v, sql.leng) != sql.leng)
+		if (sess->stm->Write(sql.ToByteArray()) != sql.leng)
 		{
 			return false;
 		}
-		if (sess->stm->Write(UTF8STRC(";\r\n")) != 3)
+		if (sess->stm->Write(CSTR(";\r\n").ToByteArray()) != 3)
 		{
 			return false;
 		}

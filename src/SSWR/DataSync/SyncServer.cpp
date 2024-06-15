@@ -230,13 +230,13 @@ void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 				data->serverId = serverId;
 			}
 			replySize = this->protoHdlr.BuildPacket(replyBuff, 1, seqId, 0, 0, 0);
-			stm->Write(replyBuff, replySize);
+			stm->Write(Data::ByteArrayR(replyBuff, replySize));
 		}
 		break;
 	case 2: //ka
 		{
 			replySize = this->protoHdlr.BuildPacket(replyBuff, 3, seqId, 0, 0, 0);
-			stm->Write(replyBuff, replySize);
+			stm->Write(Data::ByteArrayR(replyBuff, replySize));
 		}
 		break;
 	case 4: //User Data

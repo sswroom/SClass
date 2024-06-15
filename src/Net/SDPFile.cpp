@@ -487,7 +487,7 @@ Bool Net::SDPFile::BuildBuff()
 
 Bool Net::SDPFile::WriteToStream(NN<IO::Stream> stm)
 {
-	return stm->Write(this->buff, this->buffSize) == this->buffSize;
+	return stm->Write(Data::ByteArrayR(this->buff, this->buffSize)) == this->buffSize;
 }
 
 UOSInt Net::SDPFile::GetLength()

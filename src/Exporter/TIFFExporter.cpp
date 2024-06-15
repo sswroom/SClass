@@ -21,7 +21,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 	j = ids.GetCount();
 	ifd = MemAlloc(UInt8, 12 * j + 6);
 	WriteInt16(ifd, (Int16)j);
-	stm->Write(ifd, 12 * j + 6);
+	stm->Write(Data::ByteArrayR(ifd, 12 * j + 6));
 	currOfst += 12 * j + 6;
 	while (i < j)
 	{
@@ -41,14 +41,14 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 				else
 				{
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt));
 					currOfst += exifItem->cnt;
 				}
 				break;
 			case Media::EXIFData::ET_STRING:
 				WriteInt16(&ifd[4 + i * 12], 2);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt));
 				currOfst += exifItem->cnt;
 				break;
 			case Media::EXIFData::ET_UINT16:
@@ -60,7 +60,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 				else
 				{
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 2);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 2));
 					currOfst += exifItem->cnt * 2;
 				}
 				break;
@@ -73,20 +73,20 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 				else
 				{
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 4);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 4));
 					currOfst += exifItem->cnt * 4;
 				}
 				break;
 			case Media::EXIFData::ET_RATIONAL:
 				WriteInt16(&ifd[4 + i * 12], 5);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8));
 				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_OTHER:
 				WriteInt16(&ifd[4 + i * 12], 7);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt));
 				currOfst += exifItem->cnt;
 				break;
 			case Media::EXIFData::ET_INT16:
@@ -98,7 +98,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 				else
 				{
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 2);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 2));
 					currOfst += exifItem->cnt * 2;
 				}
 				break;
@@ -111,7 +111,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 				else
 				{
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 4);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 4));
 					currOfst += exifItem->cnt * 4;
 				}
 				break;
@@ -126,32 +126,32 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 					GenSubExifBuff(mstm, currOfst, exifItem->dataBuff.GetNN<Media::EXIFData>());
 					mbuff = mstm.GetBuff(buffSize);
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-					stm->Write(mbuff, buffSize);
+					stm->Write(Data::ByteArrayR(mbuff, buffSize));
 					currOfst += buffSize;
 				}
 				break;
 			case Media::EXIFData::ET_SRATIONAL:
 				WriteInt16(&ifd[4 + i * 12], 10);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8));
 				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_DOUBLE:
 				WriteInt16(&ifd[4 + i * 12], 12);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8));
 				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_UINT64:
 				WriteInt16(&ifd[4 + i * 12], 16);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8));
 				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_INT64:
 				WriteInt16(&ifd[4 + i * 12], 17);
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8);
+				stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), exifItem->cnt * 8));
 				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_UNKNOWN:
@@ -162,7 +162,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 	}
 	WriteInt32(&ifd[2 + j * 12], 0);
 	stm->SeekFromBeginning(0);
-	stm->Write(ifd, 6 + j * 12);
+	stm->Write(Data::ByteArrayR(ifd, 6 + j * 12));
 	MemFree(ifd);
 }
 
@@ -257,7 +257,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	buff[1] = 'I';
 	WriteInt16(&buff[2], 42);
 	WriteInt32(&buff[4], 8);
-	stm->Write(buff, 8);
+	stm->Write(Data::ByteArrayR(buff, 8));
 
 	UInt64 currOfst = 8;
 	UInt64 lastOfst = 4;
@@ -710,7 +710,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		l = ids.GetCount();
 		ifd = MemAlloc(UInt8, 12 * l + 6);
 		WriteInt16(ifd, (Int16)l);
-		stm->Write(ifd, 12 * l + 6);
+		stm->Write(Data::ByteArrayR(ifd, 12 * l + 6));
 		currOfst += 12 * l + 6;
 		while (k < l)
 		{
@@ -756,14 +756,14 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					else
 					{
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-						stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt);
+						stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt));
 						currOfst += exifItem->cnt;
 					}
 					break;
 				case Media::EXIFData::ET_STRING:
 					WriteInt16(&ifd[4 + k * 12], 2);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt));
 					currOfst += exifItem->cnt;
 					break;
 				case Media::EXIFData::ET_UINT16:
@@ -780,7 +780,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					else
 					{
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-						stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 2);
+						stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 2));
 						currOfst += exifItem->cnt * 2;
 					}
 					break;
@@ -793,20 +793,20 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					else
 					{
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-						stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 4);
+						stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 4));
 						currOfst += exifItem->cnt * 4;
 					}
 					break;
 				case Media::EXIFData::ET_RATIONAL:
 					WriteInt16(&ifd[4 + k * 12], 5);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8));
 					currOfst += exifItem->cnt * 8;
 					break;
 				case Media::EXIFData::ET_OTHER:
 					WriteInt16(&ifd[4 + k * 12], 7);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt));
 					currOfst += exifItem->cnt;
 					break;
 				case Media::EXIFData::ET_INT16:
@@ -818,7 +818,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					else
 					{
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-						stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 2);
+						stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 2));
 						currOfst += exifItem->cnt * 2;
 					}
 					break;
@@ -831,7 +831,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					else
 					{
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-						stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 4);
+						stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 4));
 						currOfst += exifItem->cnt * 4;
 					}
 					break;
@@ -846,32 +846,32 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						GenSubExifBuff(mstm, currOfst, exifItem->dataBuff.GetNN<Media::EXIFData>());
 						mbuff = mstm.GetBuff(buffSize);
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-						stm->Write(mbuff, buffSize);
+						stm->Write(Data::ByteArrayR(mbuff, buffSize));
 						currOfst += buffSize;
 					}
 					break;
 				case Media::EXIFData::ET_SRATIONAL:
 					WriteInt16(&ifd[4 + k * 12], 10);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8));
 					currOfst += exifItem->cnt * 8;
 					break;
 				case Media::EXIFData::ET_DOUBLE:
 					WriteInt16(&ifd[4 + k * 12], 12);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8));
 					currOfst += exifItem->cnt * 8;
 					break;
 				case Media::EXIFData::ET_UINT64:
 					WriteInt16(&ifd[4 + k * 12], 16);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8));
 					currOfst += exifItem->cnt * 8;
 					break;
 				case Media::EXIFData::ET_INT64:
 					WriteInt16(&ifd[4 + k * 12], 17);
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8);
+					stm->Write(Data::ByteArrayR(exifItem->dataBuff.GetArray<const UInt8>(), (UOSInt)exifItem->cnt * 8));
 					currOfst += exifItem->cnt * 8;
 					break;
 				case Media::EXIFData::ET_UNKNOWN:
@@ -880,7 +880,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				if (currOfst & 1)
 				{
 					buff[0] = 0;
-					stm->Write(buff, 1);
+					stm->Write(Data::ByteArrayR(buff, 1));
 					currOfst += 1;
 				}
 			}
@@ -920,9 +920,9 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					k++;
 				}
 				stm->SeekFromBeginning(stripOfst);
-				stm->Write((UInt8*)stripBuff, stripCnt * 4);
+				stm->Write(Data::ByteArrayR((UInt8*)stripBuff, stripCnt * 4));
 				stm->SeekFromBeginning(stripCntOfst);
-				stm->Write((UInt8*)stripCntBuff, stripCnt * 4);
+				stm->Write(Data::ByteArrayR((UInt8*)stripCntBuff, stripCnt * 4));
 				MemFree(stripBuff);
 				MemFree(stripCntBuff);
 			}
@@ -998,13 +998,13 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		default:
 			break;
 		}
-		stm->Write(imgData, imgSize);
+		stm->Write(Data::ByteArrayR(imgData, imgSize));
 		currOfst += imgSize;
 		MemFree(imgData);
 
 		WriteUInt32(&ifd[2 + l * 12], (UInt32)currOfst);
 		stm->SeekFromBeginning(ifdOfst);
-		stm->Write(ifd, l * 12 + 6);
+		stm->Write(Data::ByteArrayR(ifd, l * 12 + 6));
 		lastOfst = ifdOfst + l * 12 + 2;
 
 		newExif.Delete();
@@ -1012,6 +1012,6 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	stm->SeekFromBeginning(lastOfst);
 	WriteInt32(buff, 0);
-	stm->Write(buff, 4);
+	stm->Write(Data::ByteArrayR(buff, 4));
 	return true;
 }

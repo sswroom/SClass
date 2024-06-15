@@ -2720,7 +2720,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				{
 					IO::MemoryStream mstm;
 					Data::Compress::InflateStream cstm(mstm, false);
-					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
+					if (cstm.Write(Data::ByteArrayR(&chunkData[i + 3], size - i - 7)) == (size - i - 7))
 					{
 						Data::ByteArray iccBuff = mstm.GetArray();
 						NN<Media::ICCProfile> icc;
@@ -2840,11 +2840,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(chunkData.Arr().Ptr(), size);
+						wcstm->Write(chunkData.WithSize(size));
 					}
 					else
 					{
-						wcstm->Write(chunkData.Arr().Ptr(), size);
+						wcstm->Write(chunkData.WithSize(size));
 					}
 				}
 			}
@@ -2896,11 +2896,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(&chunkData[4], size - 4);
+						wcstm->Write(Data::ByteArrayR(&chunkData[4], size - 4));
 					}
 					else
 					{
-						wcstm->Write(&chunkData[4], size - 4);
+						wcstm->Write(Data::ByteArrayR(&chunkData[4], size - 4));
 					}
 				}
 			}

@@ -1533,7 +1533,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				readSize = fs.Read(readBuff);
 				if (readSize == 0)
 					break;
-				mstm->Write(readBuff.Arr().Ptr(), readSize);
+				mstm->Write(readBuff.WithSize(readSize));
 			}
 		}
 
@@ -2110,7 +2110,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	IO::MemoryStream mstm;
 	while ((i = stm->Read(BYTEARR(sbuff2))) > 0)
 	{
-		mstm.Write(sbuff2, i);
+		mstm.Write(Data::ByteArrayR(sbuff2, i));
 	}
 	if (mstm.GetLength() <= 0)
 	{
@@ -2172,7 +2172,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		UInt8 *buff = mstm.GetBuff(i);
 		{
 			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			fs.Write(buff, i);
+			fs.Write(Data::ByteArrayR(buff, i));
 		}
 
 		if (firstPhoto)
@@ -2391,7 +2391,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, Un
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		UOSInt size;
 		UInt8 *buff = mstm.GetBuff(size);
-		fs.Write(buff, size);
+		fs.Write(Data::ByteArrayR(buff, size));
 	}
 	return true;
 }

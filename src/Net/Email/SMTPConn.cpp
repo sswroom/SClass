@@ -140,7 +140,7 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 		if (buffSize > 2 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 		{
 			if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("STARTTLS"));
-			this->cli->Write((const UInt8*)"STARTTLS\r\n", 10);
+			this->cli->Write(Data::ByteArrayR((const UInt8*)"STARTTLS\r\n", 10));
 			buffSize = this->cli->Read(BYTEARR(buff));
 			if (this->logWriter.SetTo(lwriter)) lwriter->Write(Text::CStringNN(buff, buffSize));
 			if (buffSize > 0 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
@@ -435,7 +435,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 	UOSInt writeSize;
 	while (buffSize > 0)
 	{
-		writeSize = this->cli->Write(buff, buffSize);
+		writeSize = this->cli->Write(Data::ByteArrayR(buff, buffSize));
 		if (writeSize == 0)
 		{
 			if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("Error in writing to SMTP Server"));
@@ -454,7 +454,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTRP(sbuff, sptr));
 	}
-	this->cli->Write((const UInt8*)"\r\n.\r\n", 5);
+	this->cli->Write(Data::ByteArrayR((const UInt8*)"\r\n.\r\n", 5));
 	code = WaitForResult(0);
 	return code == 250;
 }

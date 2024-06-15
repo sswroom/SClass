@@ -28,9 +28,9 @@ void IO::Stream::CancelRead(void *reqData)
 {
 }
 
-void *IO::Stream::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::Stream::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
-	UOSInt retVal = Write(buff, size);
+	UOSInt retVal = Write(buff);
 	evt->Set();
 	return (void*)retVal;
 }
@@ -67,7 +67,7 @@ UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize)
 		{
 			break;
 		}
-		writeSize = stm->Write(buff.Arr(), readSize);
+		writeSize = stm->Write(buff.WithSize(readSize));
 		totalSize += writeSize;
 		if (readSize != writeSize)
 		{
@@ -92,7 +92,7 @@ Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)
 			break;
 		}
 		currOfst += readSize;
-		writeSize = this->Write(buff.Arr(), readSize);
+		writeSize = this->Write(buff.WithSize(readSize));
 		totalSize += writeSize;
 		if (readSize != writeSize)
 		{
@@ -108,7 +108,7 @@ UOSInt IO::Stream::WriteCont(UnsafeArray<const UInt8> buff, UOSInt size)
 	UOSInt writeSize;
 	while (totalWrite < size)
 	{
-		writeSize = this->Write(&buff[totalWrite], size - totalWrite);
+		writeSize = this->Write(Data::ByteArrayR(&buff[totalWrite], size - totalWrite));
 		if (writeSize == 0)
 			return totalWrite;
 		totalWrite += writeSize;

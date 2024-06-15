@@ -147,8 +147,8 @@ namespace SSWR
 			static void __stdcall OnDeviceAddClicked(AnyType userObj);
 			static void __stdcall OnTimeoutClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnDataRecv(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
-			static void __stdcall OnDataSend(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
+			static void __stdcall OnDataRecv(AnyType userObj, Data::ByteArrayR data);
+			static void __stdcall OnDataSend(AnyType userObj, Data::ByteArrayR data);
 
 			static void __stdcall OnMODBUSEntry(AnyType userObj, Text::CStringNN name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 			void StopStream(Bool clearUI);

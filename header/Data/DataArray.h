@@ -91,6 +91,11 @@ namespace Data
 			return this->buff + this->buffSize;
 		}
 
+		T *Ptr() const
+		{
+			return this->buff.Ptr();
+		}
+
 		UOSInt GetSize() const
 		{
 			return this->buffSize;

@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
 					IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (fs.Write(decBuff, buffSize) != buffSize)
+					if (fs.Write(Data::ByteArrayR(decBuff, buffSize)) != buffSize)
 					{
 						me->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("Encrypt"), me);
 					}

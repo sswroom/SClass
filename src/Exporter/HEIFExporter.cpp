@@ -42,7 +42,7 @@ heif_error HEIFExporter_Write(struct heif_context* ctx, const void* data, size_t
 {
 	IO::SeekableStream *stm = (IO::SeekableStream*)userdata;
 	heif_error heif_error;
-	if (stm->Write((const UInt8*)data, (UOSInt)size) == (UOSInt)size)
+	if (stm->Write(Data::ByteArrayR((const UInt8*)data, (UOSInt)size)) == (UOSInt)size)
 	{
 		heif_error.code = heif_error_Ok;
 		heif_error.subcode = heif_suberror_Unspecified;

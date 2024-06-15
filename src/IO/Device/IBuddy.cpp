@@ -89,7 +89,7 @@ void IO::Device::IBuddy::PlayEffect(IBuddyBodyEffect be, IBuddyHeadEffect hde, I
 		retryCnt = 1;
 		while (retryCnt-- > 0)
 		{
-			UOSInt writeSize = this->stm->Write(buff, 9);
+			UOSInt writeSize = this->stm->Write(Data::ByteArrayR(buff, 9));
 			if (writeSize == 9)
 				break;
 		}

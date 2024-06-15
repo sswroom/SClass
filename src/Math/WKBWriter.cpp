@@ -56,13 +56,13 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 				WriteNUInt32(&buff[1], geomType);
 				WriteNUInt32(&buff[5], vec->GetSRID());
 				WriteNUInt32(&buff[9], (UInt32)j);
-				stm->Write(buff, 13);
+				stm->Write(Data::ByteArrayR(buff, 13));
 			}
 			else
 			{
 				WriteNUInt32(&buff[1], geomType);
 				WriteNUInt32(&buff[5], (UInt32)j);
-				stm->Write(buff, 9);
+				stm->Write(Data::ByteArrayR(buff, 9));
 			}
 			i = 0;
 			while (i < j)
@@ -73,13 +73,13 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 					if (!pg->HasZ())
 					{
 						WriteNUInt32(buff, (UInt32)nPoint);
-						stm->Write(buff, 4);
-						stm->Write((const UInt8*)points, nPoint * 16);
+						stm->Write(Data::ByteArrayR(buff, 4));
+						stm->Write(Data::ByteArrayR((const UInt8*)points, nPoint * 16));
 					}
 					else
 					{
 						WriteNUInt32(buff, (UInt32)nPoint);
-						stm->Write(buff, 4);
+						stm->Write(Data::ByteArrayR(buff, 4));
 						Double *zList = lr->GetZList(nPoint);
 						k = 0;
  						if (!pg->HasM())
@@ -91,7 +91,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 									WriteNDouble(&buff[0], points[k].x);
 									WriteNDouble(&buff[8], points[k].y);
 									WriteNDouble(&buff[16], zList[k]);
-									stm->Write(buff, 24);
+									stm->Write(Data::ByteArrayR(buff, 24));
 									k++;
 								}
 							}
@@ -102,7 +102,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 									WriteNDouble(&buff[0], points[k].x);
 									WriteNDouble(&buff[8], points[k].y);
 									WriteNDouble(&buff[16], NAN);
-									stm->Write(buff, 24);
+									stm->Write(Data::ByteArrayR(buff, 24));
 									k++;
 								}
 							}
@@ -120,7 +120,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 										WriteNDouble(&buff[8], points[k].y);
 										WriteNDouble(&buff[16], zList[k]);
 										WriteNDouble(&buff[24], mList[k]);
-										stm->Write(buff, 32);
+										stm->Write(Data::ByteArrayR(buff, 32));
 										k++;
 									}
 								}
@@ -132,7 +132,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 										WriteNDouble(&buff[8], points[k].y);
 										WriteNDouble(&buff[16], zList[k]);
 										WriteNDouble(&buff[24], NAN);
-										stm->Write(buff, 32);
+										stm->Write(Data::ByteArrayR(buff, 32));
 										k++;
 									}
 								}
@@ -147,7 +147,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 										WriteNDouble(&buff[8], points[k].y);
 										WriteNDouble(&buff[16], NAN);
 										WriteNDouble(&buff[24], mList[k]);
-										stm->Write(buff, 32);
+										stm->Write(Data::ByteArrayR(buff, 32));
 										k++;
 									}
 								}
@@ -159,7 +159,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 										WriteNDouble(&buff[8], points[k].y);
 										WriteNDouble(&buff[16], NAN);
 										WriteNDouble(&buff[24], NAN);
-										stm->Write(buff, 32);
+										stm->Write(Data::ByteArrayR(buff, 32));
 										k++;
 									}
 								}
@@ -171,7 +171,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 				else
 				{
 					WriteNUInt32(buff, 0);
-					stm->Write(buff, 4);
+					stm->Write(Data::ByteArrayR(buff, 4));
 				}
 				i++;
 			}

@@ -154,13 +154,13 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							currOfst += 1;
 							break;
 						}
-						mstm.Write(&readBlock[1], readBlock[0]);
+						mstm.Write(Data::ByteArrayR(&readBlock[1], readBlock[0]));
 						currOfst += 1 + (UOSInt)readBlock[0];
 					}
 					mstm.SeekFromBeginning(0);
 					Data::Compress::LZWDecStream *lzw;
 					NN<Media::StaticImage> simg;
-					NEW_CLASS(lzw, Data::Compress::LZWDecStream(&mstm, true, blockType, 12, 0));
+					NEW_CLASS(lzw, Data::Compress::LZWDecStream(mstm, true, blockType, 12, 0));
 					
 					Data::ByteArray tmpPtr;
 					Data::ByteArray tmpPtr2;

@@ -144,7 +144,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 	buff = mstm.GetBuff(size);
 	resp->AddContentLength(size);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
-	resp->Write(buff, size);
+	resp->Write(Data::ByteArrayR(buff, size));
 }
 
 void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
@@ -384,7 +384,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 	buff = mstm.GetBuff(size);
 	resp->AddContentLength(size);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
-	resp->Write(buff, size);
+	resp->Write(Data::ByteArrayR(buff, size));
 }
 
 void Media::MediaPlayerWebInterface::Release()

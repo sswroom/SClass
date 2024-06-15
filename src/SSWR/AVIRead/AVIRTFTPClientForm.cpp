@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(AnyType userObj)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in creating file"), CSTR("TFTP Client"), me);
 			}
-			else if (fs.Write(buff, buffSize) == buffSize)
+			else if (fs.Write(Data::ByteArrayR(buff, buffSize)) == buffSize)
 			{
 				me->ui->ShowMsgOK(CSTR("File received successfully"), CSTR("TFTP Client"), me);
 			}

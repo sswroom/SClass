@@ -69,21 +69,21 @@ UOSInt IO::MemoryStream::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt IO::MemoryStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::MemoryStream::Write(Data::ByteArrayR buff)
 {
-	UOSInt endPos = this->currPtr + size;
+	UOSInt endPos = this->currPtr + buff.GetSize();
 
 	if (endPos <= this->buff.GetSize())
 	{
-		this->buff.CopyFrom(this->currPtr, Data::ByteArrayR(buff, size));
+		this->buff.CopyFrom(this->currPtr, buff);
 		if (endPos > this->currSize)
 			this->currSize = endPos;
 		this->currPtr = endPos;
-		return size;
+		return buff.GetSize();
 	}
 	if (endPos > MAX_CAPACITY)
 	{
-		size = MAX_CAPACITY - this->currPtr;
+		buff = buff.WithSize(MAX_CAPACITY - this->currPtr);
 		endPos = MAX_CAPACITY;
 	}
 	while (endPos > this->buff.GetSize())
@@ -98,11 +98,11 @@ UOSInt IO::MemoryStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 		this->buff.ReplaceBy(newBuff);
 	}
 
-	this->buff.CopyFrom(this->currPtr, Data::ByteArrayR(buff, size));
+	this->buff.CopyFrom(this->currPtr, buff);
 	if (endPos > this->currSize)
 		this->currSize = endPos;
 	this->currPtr = endPos;
-	return size;
+	return buff.GetSize();
 }
 
 Int32 IO::MemoryStream::Flush()

@@ -70,8 +70,8 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 						hbuff[1] = 0xbb;
 						WriteInt16(&hbuff[2], (Int16)recvSize);
 						WriteInt32(&hbuff[4], v);
-						stat->me->logFileR->Write(hbuff, 8);
-						stat->me->logFileR->Write(buff, recvSize);
+						stat->me->logFileR->Write(Data::ByteArrayR(hbuff, 8));
+						stat->me->logFileR->Write(Data::ByteArrayR(buff, recvSize));
 					}
 					mutUsage.EndUse();
 				}
@@ -148,8 +148,8 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 						hbuff[1] = 0xbb;
 						WriteInt16(&hbuff[2], (Int16)recvSize);
 						WriteInt32(&hbuff[4], v);
-						stat->me->logFileR->Write(hbuff, 8);
-						stat->me->logFileR->Write(buff, recvSize);
+						stat->me->logFileR->Write(Data::ByteArrayR(hbuff, 8));
+						stat->me->logFileR->Write(Data::ByteArrayR(buff, recvSize));
 					}
 					mutUsage.EndUse();
 				}
@@ -453,8 +453,8 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 			hbuff[1] = 0xbb;
 			WriteInt16(&hbuff[2], (Int16)dataSize);
 			WriteInt32(&hbuff[4], v);
-			this->logFileS->Write(hbuff, 8);
-			this->logFileS->Write(buff, dataSize);
+			this->logFileS->Write(Data::ByteArrayR(hbuff, 8));
+			this->logFileS->Write(Data::ByteArrayR(buff, dataSize));
 		}
 		mutUsage.EndUse();
 	}

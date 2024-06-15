@@ -58,7 +58,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -160,7 +160,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -261,7 +261,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -362,7 +362,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -441,7 +441,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -473,7 +473,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -491,7 +491,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(SSWR::SDNSProxy::SDN
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -580,7 +580,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 
@@ -592,7 +592,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(SSWR::SDNSProx
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/plain"));
 	resp->AddContentLength((UOSInt)(sptr - sbuff));
-	resp->Write(sbuff, (UOSInt)(sptr - sbuff));
+	resp->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 	return true;
 }
 

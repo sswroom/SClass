@@ -53,7 +53,7 @@ UOSInt IO::BufferedInputStream::Read(const Data::ByteArray &buff)
 	return copySize;
 }
 
-UOSInt IO::BufferedInputStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::BufferedInputStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
@@ -75,7 +75,7 @@ void IO::BufferedInputStream::CancelRead(void *reqData)
 {
 }
 
-void *IO::BufferedInputStream::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::BufferedInputStream::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
 	evt->Set();
 	return (void*)-1;

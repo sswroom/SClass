@@ -245,7 +245,7 @@ void SSWR::AVIRead::AVIRHTTPClientCertTestForm::WebRequest(NN<Net::WebServer::IW
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/plain"));
 	resp->AddContentLength(sb.leng);
-	resp->Write(sb.v, sb.leng);
+	resp->Write(sb.ToByteArray());
 }
 
 void SSWR::AVIRead::AVIRHTTPClientCertTestForm::Release()

@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 				sb.AppendUTF8Char(',');
 				sb.AppendI16(log->txPower);
 				sb.AppendC(UTF8STRC("\r\n"));
-				stm.Write(sb.ToString(), sb.GetLength());
+				stm.Write(sb.ToByteArray());
 				i++;
 			}
 		}

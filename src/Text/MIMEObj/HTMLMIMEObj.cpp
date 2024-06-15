@@ -45,7 +45,7 @@ Text::CStringNN Text::MIMEObj::HTMLMIMEObj::GetContentType() const
 
 UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(NN<IO::Stream> stm) const
 {
-	return stm->Write(this->textBuff, this->buffSize);
+	return stm->Write(Data::ByteArrayR(this->textBuff, this->buffSize));
 }
 
 NN<Text::IMIMEObj> Text::MIMEObj::HTMLMIMEObj::Clone() const

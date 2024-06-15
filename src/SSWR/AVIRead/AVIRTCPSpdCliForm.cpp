@@ -124,7 +124,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 		Sync::MutexUsage mutUsage(me->cliMut);
 		if (me->cli)
 		{
-			sendSize = me->cli->Write(sendBuff, sendBuffSize);
+			sendSize = me->cli->Write(Data::ByteArrayR(sendBuff, sendBuffSize));
 			mutUsage.EndUse();
 			if (sendSize > 0)
 			{

@@ -30,7 +30,7 @@ Bool Net::GoogleFCM::SendMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	json.ObjectEnd();
 	Text::CStringNN j = json.Build();
 	cli->AddContentLength(j.leng);
-	cli->Write(j.v, j.leng);
+	cli->Write(j.ToByteArray());
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Bool succ = false;
 	if (status == Net::WebStatus::SC_OK)
@@ -111,7 +111,7 @@ Bool Net::GoogleFCM::SendMessages(NN<Net::SocketFactory> sockf, Optional<Net::SS
 	json.ObjectEnd();
 	Text::CStringNN js = json.Build();
 	cli->AddContentLength(js.leng);
-	cli->Write(js.v, js.leng);
+	cli->Write(js.ToByteArray());
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Bool succ = false;
 	if (status == Net::WebStatus::SC_OK)

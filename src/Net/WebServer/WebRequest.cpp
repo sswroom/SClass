@@ -771,7 +771,7 @@ UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 
 						if (leng > 0)
 						{
-							this->chunkMStm->Write(&this->reqData[j + 2], leng);
+							this->chunkMStm->Write(Data::ByteArrayR(&this->reqData[j + 2], leng));
 							i = j + 4 + leng;
 						}
 						else

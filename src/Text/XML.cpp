@@ -248,20 +248,20 @@ Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UTF32Char c)
 	if (c < 0x80)
 	{
 		buff[0] = (UInt8)c;
-		return stm->Write(buff, 1) == 1;
+		return stm->Write(Data::ByteArrayR(buff, 1)) == 1;
 	}
 	else if (c < 0x800)
 	{
 		buff[0] = (UInt8)(0xc0 | (c >> 6));
 		buff[1] = (UInt8)(0x80 | (c & 0x3f));
-		return stm->Write(buff, 2) == 2;
+		return stm->Write(Data::ByteArrayR(buff, 2)) == 2;
 	}
 	else if (c < 0x10000)
 	{
 		buff[0] = (UInt8)(0xe0 | (c >> 12));
 		buff[1] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
 		buff[2] = (UInt8)(0x80 | (c & 0x3f));
-		return stm->Write(buff, 3) == 3;
+		return stm->Write(Data::ByteArrayR(buff, 3)) == 3;
 	}
 	else if (c < 0x200000)
 	{
@@ -269,7 +269,7 @@ Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UTF32Char c)
 		buff[1] = (UInt8)(0x80 | ((c >> 12) & 0x3f));
 		buff[2] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
 		buff[3] = (UInt8)(0x80 | (c & 0x3f));
-		return stm->Write(buff, 4) == 4;
+		return stm->Write(Data::ByteArrayR(buff, 4)) == 4;
 	}
 	else if (c < 0x4000000)
 	{
@@ -278,7 +278,7 @@ Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UTF32Char c)
 		buff[2] = (UInt8)(0x80 | ((c >> 12) & 0x3f));
 		buff[3] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
 		buff[4] = (UInt8)(0x80 | (c & 0x3f));
-		return stm->Write(buff, 5) == 5;
+		return stm->Write(Data::ByteArrayR(buff, 5)) == 5;
 	}
 	else
 	{
@@ -288,7 +288,7 @@ Bool Text::XML::WriteUTF8Char(IO::Stream *stm, UTF32Char c)
 		buff[3] = (UInt8)(0x80 | ((c >> 12) & 0x3f));
 		buff[4] = (UInt8)(0x80 | ((c >> 6) & 0x3f));
 		buff[5] = (UInt8)(0x80 | (c & 0x3f));
-		return stm->Write(buff, 6) == 6;
+		return stm->Write(Data::ByteArrayR(buff, 6)) == 6;
 	}
 }
 
@@ -1352,17 +1352,17 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 			sbuff[0] = chrRef[2];
 			sbuff[1] = 0;
 			sbuff[0] = (UInt8)Text::StrToUInt32(sbuff);
-			stm->Write(sbuff, 1);
+			stm->Write(Data::ByteArrayR(sbuff, 1));
 			return true;
 		}
 		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&lt;")))
 		{
-			stm->Write((const UInt8*)"<", 1);
+			stm->Write(Data::ByteArrayR((const UInt8*)"<", 1));
 			return true;
 		}
 		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&gt;")))
 		{
-			stm->Write((const UInt8*)">", 1);
+			stm->Write(Data::ByteArrayR((const UInt8*)">", 1));
 			return true;
 		}
 	}
@@ -1373,7 +1373,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 			if (chrRef[2] == 'x')
 			{
 				sbuff[0] = Text::StrHex2UInt8C(&chrRef[3]);
-				stm->Write(sbuff, 1);
+				stm->Write(Data::ByteArrayR(sbuff, 1));
 				return true;
 			}
 			else
@@ -1387,7 +1387,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 		}
 		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&amp;")))
 		{
-			stm->Write((const UInt8*)"&", 1);
+			stm->Write(Data::ByteArrayR((const UInt8*)"&", 1));
 			return true;
 		}
 	}
@@ -1411,7 +1411,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 		}
 		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&apos;")))
 		{
-			stm->Write((const UInt8*)"\'", 1);
+			stm->Write(Data::ByteArrayR((const UInt8*)"\'", 1));
 			return true;
 		}
 		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&bull;")))
@@ -1420,7 +1420,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 		}
 		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&quot;")))
 		{
-			stm->Write((const UInt8*)"\"", 1);
+			stm->Write(Data::ByteArrayR((const UInt8*)"\"", 1));
 			return true;
 		}
 	}

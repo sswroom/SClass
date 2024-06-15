@@ -90,7 +90,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -121,7 +121,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NN<Net::WebServ
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 
 }
@@ -154,7 +154,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServe
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -186,7 +186,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebSe
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -220,7 +220,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NN<Net::WebSe
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -252,7 +252,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebSer
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -333,7 +333,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 	resp->AddContentType(CSTR("text/plain"));
 	resp->AddContentLength(sb.GetLength());
 	resp->AddContentDisposition(true, sbuff, req->GetBrowser());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 

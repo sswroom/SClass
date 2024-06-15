@@ -107,7 +107,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 			}
 			else
 			{
-				if ((UOSInt)destStm->Write(writeBuff, 1048576 - strm.avail_out) != (1048576 - strm.avail_out))
+				if ((UOSInt)destStm->Write(Data::ByteArrayR(writeBuff, 1048576 - strm.avail_out)) != (1048576 - strm.avail_out))
 				{
 					error = true;
 					break;
@@ -135,7 +135,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 			}
 			else
 			{
-				if ((UOSInt)destStm->Write(writeBuff, 1048576 - strm.avail_out) != (1048576 - strm.avail_out))
+				if ((UOSInt)destStm->Write(Data::ByteArrayR(writeBuff, 1048576 - strm.avail_out)) != (1048576 - strm.avail_out))
 				{
 					error = true;
 					break;

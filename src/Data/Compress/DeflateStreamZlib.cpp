@@ -102,7 +102,7 @@ UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 	return initSize - this->clsData->stm.avail_out;
 }
 
-UOSInt Data::Compress::DeflateStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Data::Compress::DeflateStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

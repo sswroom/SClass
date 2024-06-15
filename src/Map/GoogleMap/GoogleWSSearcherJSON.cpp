@@ -239,7 +239,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 			{
 				errWriter->WriteLine(CSTR("Google non-json Error"));
 				IO::FileStream fs(CSTR("nonjsonerr.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				fs.Write(sb.ToString(), sb.GetLength());
+				fs.Write(sb.ToByteArray());
 				this->lastIsError = 1;
 			}
 		}

@@ -244,8 +244,8 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 		UInt8 *buff;
 		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		buff = mail->dataStm->GetBuff(buffSize);
-		fs.Write(sb.ToString(), sb.GetLength());
-		fs.Write(buff, buffSize);
+		fs.Write(sb.ToByteArray());
+		fs.Write(Data::ByteArrayR(buff, buffSize));
 	}
 
 	Sync::MutexUsage mutUsage(this->mailMut);
@@ -322,7 +322,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::Ad
 	UInt64 fileSize = sb.GetLength();
 	{
 		IO::FileStream fs(file->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write(sb.ToString(), sb.GetLength());
+		fs.Write(sb.ToByteArray());
 		fileSize += mail->WriteStream(fs);
 	}
 

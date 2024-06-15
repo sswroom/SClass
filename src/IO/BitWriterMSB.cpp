@@ -5,9 +5,9 @@
 
 #define BUFFSIZE 1024
 
-IO::BitWriterMSB::BitWriterMSB(IO::Stream *stm)
+IO::BitWriterMSB::BitWriterMSB(NN<IO::Stream> stm)
 {
-	this->buff = MemAlloc(UInt8, BUFFSIZE);
+	this->buff = MemAllocArr(UInt8, BUFFSIZE);
 	this->currBytePos = 0;
 	this->currBitPos = 0;
 	this->stm = stm;
@@ -18,9 +18,9 @@ IO::BitWriterMSB::~BitWriterMSB()
 	this->ByteAlign();
 	if (this->currBytePos > 0)
 	{
-		this->stm->Write(this->buff, this->currBytePos);
+		this->stm->Write(Data::ByteArrayR(this->buff, this->currBytePos));
 	}
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 Bool IO::BitWriterMSB::WriteBits(UInt32 code, UOSInt bitCount)
@@ -59,7 +59,7 @@ Bool IO::BitWriterMSB::WriteBits(UInt32 code, UOSInt bitCount)
 	}
 	if (this->currBytePos >= BUFFSIZE - 5)
 	{
-		this->stm->Write(this->buff, this->currBytePos);
+		this->stm->Write(Data::ByteArrayR(this->buff, this->currBytePos));
 		this->currBytePos = 0;
 	}
 	if (bitCount > 0)

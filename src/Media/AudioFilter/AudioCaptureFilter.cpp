@@ -28,7 +28,7 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(AnyType u
 
 			if (me->waveStm)
 			{
-				me->waveStm->Write(me->writeBuff, buffSize);
+				me->waveStm->Write(Data::ByteArrayR(me->writeBuff, buffSize));
 				me->dataSize += buffSize;
 				me->fileSize += buffSize;
 			}
@@ -119,11 +119,11 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CStringNN fileNa
 	WriteUInt16(&buff[72], (UInt16)format.extraSize);
 	Sync::MutexUsage mutUsage(this->writeMut);
 	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->waveStm->Write(buff, 74);
+	this->waveStm->Write(Data::ByteArrayR(buff, 74));
 	if (format.extraSize > 0)
 	{
 		this->dataOfst = 78 + format.extraSize;
-		this->waveStm->Write(format.extra, format.extraSize);
+		this->waveStm->Write(Data::ByteArrayR(format.extra, format.extraSize));
 	}
 	else
 	{
@@ -131,7 +131,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CStringNN fileNa
 	}
 	*(Int32*)&buff[0] = *(Int32*)"data";
 	*(Int32*)&buff[4] = 0;
-	this->waveStm->Write(buff, 8);
+	this->waveStm->Write(Data::ByteArrayR(buff, 8));
 	this->dataSize = 0;
 	this->fileSize = this->dataOfst - 4;
 	this->writing = true;
@@ -155,17 +155,17 @@ void Media::AudioFilter::AudioCaptureFilter::StopCapture()
 			*(Int64*)&buff[36] = 0;
 			*(Int32*)&buff[44] = 0;
 			this->waveStm->SeekFromBeginning(0);
-			this->waveStm->Write(buff, 48);
+			this->waveStm->Write(Data::ByteArrayR(buff, 48));
 
 			this->waveStm->SeekFromBeginning(dataOfst);
-			this->waveStm->Write(&buff[4], 4);
+			this->waveStm->Write(Data::ByteArrayR(&buff[4], 4));
 		}
 		else
 		{
 			this->waveStm->SeekFromBeginning(4);
-			this->waveStm->Write((const UInt8*)&this->fileSize, 4);
+			this->waveStm->Write(Data::ByteArrayR((const UInt8*)&this->fileSize, 4));
 			this->waveStm->SeekFromBeginning(dataOfst);
-			this->waveStm->Write((const UInt8*)&this->dataSize, 4);
+			this->waveStm->Write(Data::ByteArrayR((const UInt8*)&this->dataSize, 4));
 		}
 		DEL_CLASS(this->waveStm);
 		this->waveStm = 0;

@@ -160,7 +160,7 @@ UOSInt Net::FTPClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::FTPClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::FTPClient::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

@@ -86,15 +86,15 @@ UOSInt Net::UDPServerStream::Read(const Data::ByteArray &buff)
 	return ret;
 }
 
-UOSInt Net::UDPServerStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::UDPServerStream::Write(Data::ByteArrayR buff)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	if (this->lastAddr.addrType == Net::AddrType::Unknown)
 	{
 		return 0;
 	}
-	this->svr->SendTo(this->lastAddr, this->lastPort, buff, size);
-	return size;
+	this->svr->SendTo(this->lastAddr, this->lastPort, buff.Arr(), buff.GetSize());
+	return buff.GetSize();
 }
 
 Int32 Net::UDPServerStream::Flush()

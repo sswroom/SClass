@@ -105,7 +105,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	*(Int32*)&buff[48] = (Int32)env->GetDefLineStyle();
 	*(Int32*)&buff[52] = (Int32)env->GetDefFontStyle();
 
-	stm->Write(buff, 56);
+	stm->Write(Data::ByteArrayR(buff, 56));
 	stmPos = 56;
 	i = 0;
 	j = dirArr.GetCount();
@@ -115,7 +115,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		*(Int32*)&buff[0] = 0;
 		*(UInt32*)&buff[4] = AddString(strArr, tmpStr, stmPos);
 
-		stm->Write(buff, 8);
+		stm->Write(Data::ByteArrayR(buff, 8));
 		stmPos += 8;
 
 		i++;
@@ -135,7 +135,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		*(Int32*)&buff[8] = (Int32)dirArr.SortedIndexOfPtr(sbuff, k);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
 
-		stm->Write(buff, 16);
+		stm->Write(Data::ByteArrayR(buff, 16));
 		stmPos += 16;
 
 		i++;
@@ -175,7 +175,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteUInt32(&buff[28], (UInt32)buffSize);
 		WriteUInt32(&buff[32], buffColor);
 
-		stm->Write(buff, 36);
+		stm->Write(Data::ByteArrayR(buff, 36));
 		stmPos += 36;
 
 		i++;
@@ -197,7 +197,7 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		}
 		*(Int32*)&buff[8] = (Int32)(l = env->GetLineStyleLayerCnt(i));
 
-		stm->Write(buff, 12);
+		stm->Write(Data::ByteArrayR(buff, 12));
 		stmPos += 12;
 
 		k = 0;
@@ -213,12 +213,12 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			*(Int32*)&buff[4] = Double2Int32(thick);
 			WriteUInt32(&buff[8], (UInt32)npattern);
 
-			stm->Write(buff, 12);
+			stm->Write(Data::ByteArrayR(buff, 12));
 			stmPos += 12;
 
 			if (npattern > 0)
 			{
-				stm->Write(pattern, npattern);
+				stm->Write(Data::ByteArrayR(pattern, npattern));
 				stmPos = (UInt32)(stmPos + npattern);
 			}
 
@@ -236,12 +236,12 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		strRec = tmpArr->GetItemNoCheck(i);
 
-		stm->Write(strRec->strBytes, strRec->byteSize);
+		stm->Write(Data::ByteArrayR(strRec->strBytes, strRec->byteSize));
 		k = strRec->ofstList.GetCount();
 		while (k-- > 0)
 		{
 			stm->SeekFromBeginning(strRec->ofstList.GetItem(k));
-			stm->Write((UInt8*)&stmPos, 4);
+			stm->Write(Data::ByteArrayR((UInt8*)&stmPos, 4));
 		}
 		stmPos += strRec->byteSize;
 		stm->SeekFromBeginning(stmPos);
@@ -353,7 +353,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 				*(Int32*)&buff[4] = 0;
 				*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
 				*(Int32*)&buff[12] = (Int32)env->GetItemCount(NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
-				stm->Write(buff, 16);
+				stm->Write(Data::ByteArrayR(buff, 16));
 				*stmPos = 16 + *stmPos;
 
 				WriteGroupItems(env, NN<Map::MapEnv::GroupItem>::ConvertFrom(item), stmPos, stm, strArr, dirArr);
@@ -395,7 +395,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 					*(UInt32*)&buff[48] = i;
 					*(Int32*)&buff[52] = (Int32)(setting.imgIndex - imgInfo.index);
 
-					stm->Write(buff, 56);
+					stm->Write(Data::ByteArrayR(buff, 56));
 					*stmPos = 56 + *stmPos;
 				}
 				else if (ltype == Map::DRAW_LAYER_POLYLINE || ltype == Map::DRAW_LAYER_POLYLINE3D)
@@ -403,7 +403,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 					*(Int32*)&buff[20] = 3;
 					*(Int32*)&buff[48] = (Int32)setting.lineStyle;
 
-					stm->Write(buff, 52);
+					stm->Write(Data::ByteArrayR(buff, 52));
 					*stmPos = 52 + *stmPos;
 				}
 				else if (ltype == Map::DRAW_LAYER_POLYGON)
@@ -412,20 +412,20 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 					*(Int32*)&buff[48] = (Int32)setting.lineStyle;
 					*(Int32*)&buff[52] = (Int32)setting.fillStyle;
 
-					stm->Write(buff, 56);
+					stm->Write(Data::ByteArrayR(buff, 56));
 					*stmPos = 56 + *stmPos;
 				}
 				else
 				{
 					*(Int32*)&buff[20] = 0;
-					stm->Write(buff, 48);
+					stm->Write(Data::ByteArrayR(buff, 48));
 					*stmPos = 48 + *stmPos;
 				}
 			}
 			else
 			{
 				*(Int32*)&buff[0] = item->itemType;
-				stm->Write(buff, 4);
+				stm->Write(Data::ByteArrayR(buff, 4));
 				*stmPos = 4 + *stmPos;
 			}
 		}

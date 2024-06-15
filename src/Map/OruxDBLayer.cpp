@@ -396,7 +396,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 		UOSInt size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
-		stm->Write(buff, size);
+		stm->Write(Data::ByteArrayR(buff, size));
 		MemFree(buff);
 		if (tileX)
 			*tileX = x;

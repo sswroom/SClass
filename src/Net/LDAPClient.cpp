@@ -603,7 +603,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	this->reqMap.Put(status.msgId, status);
 	mutUsage.EndUse();
 
-	valid = (this->cli->Write(buff, buffSize) == buffSize);
+	valid = (this->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize);
 	DEL_CLASS(pdu);
 	if (valid)
 	{
@@ -646,7 +646,7 @@ Bool Net::LDAPClient::Unbind()
 	pdu->EndLevel();
 
 	buff = pdu->GetBuff(buffSize);
-	valid = (this->cli->Write(buff, buffSize) == buffSize);
+	valid = (this->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize);
 	DEL_CLASS(pdu);
 	return valid;
 }
@@ -705,7 +705,7 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	this->reqMap.Put(status.msgId, status);
 	mutUsage.EndUse();
 
-	valid = (this->cli->Write(buff, buffSize) == buffSize);
+	valid = (this->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize);
 	DEL_CLASS(pdu);
 	if (valid)
 	{

@@ -232,7 +232,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		Data::Timestamp ts3;
 		buff = MemAlloc(UInt8, 1048576);
 		writeSize = fs1.Read(Data::ByteArray(buff, (UOSInt)1048576));
-		writeSize = fs2->Write(buff, (UOSInt)writeSize);
+		writeSize = fs2->Write(Data::ByteArrayR(buff, (UOSInt)writeSize));
 		MemFree(buff);
 		fs1.GetFileTimes(ts1, ts2, ts3);
 		fs2->SetFileTimes(ts1, ts2, ts3);
@@ -262,7 +262,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			{
 				break;
 			}
-			writenSize = fs2->Write(buff, thisSize);
+			writenSize = fs2->Write(Data::ByteArrayR(buff, thisSize));
 			writeSize += writenSize;
 			if (progHdlr.SetTo(nnprogHdlr))
 			{
@@ -558,11 +558,11 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	return succ;
 }*/
 
-void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData)
+void __stdcall IO::FileUtil::CopyHdlr(Data::ByteArrayR buff, AnyType userData)
 {
 	NN<CopySess> csess = userData.GetNN<CopySess>();
 	UOSInt writenSize;
-	writenSize = csess->destStm->Write(buff, buffSize);
+	writenSize = csess->destStm->Write(buff);
 	csess->writeSize += writenSize;
 	NN<IO::ProgressHandler> progHdlr;
 	if (csess->progHdlr.SetTo(progHdlr))

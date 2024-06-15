@@ -154,7 +154,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayLi
 		i++;
 	}
 	sb.AppendC(UTF8STRC("\r\n"));
-	if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt()) succ = false;
+	if (stm->Write(sb.ToByteArray()) != sb.GetCharCnt()) succ = false;
 
 	Data::VariItem itm;
 	k = 0;
@@ -194,7 +194,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayLi
 			i++;
 		}
 		sb.AppendC(UTF8STRC("\r\n"));
-		if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt())
+		if (stm->Write(sb.ToByteArray()) != sb.GetCharCnt())
 		{
 			succ = false;
 			break;

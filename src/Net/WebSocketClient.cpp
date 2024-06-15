@@ -49,7 +49,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 			i += 3;
 			break;
 		}
-		return cli->Write(packetBuff, i + 6) == (i + 6);
+		return cli->Write(Data::ByteArrayR(packetBuff, i + 6)) == (i + 6);
 	}
 	else if (buffSize < 65536)
 	{
@@ -84,7 +84,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 			i += 3;
 			break;
 		}
-		Bool succ = cli->Write(packBuff, i + 8) == (i + 8);
+		Bool succ = cli->Write(Data::ByteArrayR(packBuff, i + 8)) == (i + 8);
 		MemFree(packBuff);
 		return succ;
 	}
@@ -121,7 +121,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buf
 			i += 3;
 			break;
 		}
-		Bool succ = cli->Write(packBuff, i + 14) == (i + 14);
+		Bool succ = cli->Write(Data::ByteArrayR(packBuff, i + 14)) == (i + 14);
 		MemFree(packBuff);
 		return succ;
 	}
@@ -370,7 +370,7 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 #if defined(VERBOSE)
 		printf("Data to send: %s\r\n", sb.v);
 #endif
-		if (cli->Write(sb.v, sb.leng) != sb.leng)
+		if (cli->Write(sb.ToByteArray()) != sb.leng)
 		{
 #if defined(VERBOSE)
 			printf("Error in writing to conn\r\n");
@@ -522,10 +522,10 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 	return buff.GetSize();
 }
 
-UOSInt Net::WebSocketClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::WebSocketClient::Write(Data::ByteArrayR buff)
 {
-	if (SendPacket(2, buff, size))
-		return size;
+	if (SendPacket(2, buff.Arr(), buff.GetSize()))
+		return buff.GetSize();
 	return 0;
 }
 

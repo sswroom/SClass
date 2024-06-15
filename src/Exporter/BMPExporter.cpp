@@ -253,19 +253,19 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteInt32(&buff[66], 0);
 	}
 
-	stm->Write(buff, hdrSize + 14);
+	stm->Write(Data::ByteArrayR(buff, hdrSize + 14));
 	if (img->info.storeBPP <= 8)
 	{
-		stm->Write(img->pal, palSize);
+		stm->Write(Data::ByteArrayR(img->pal, palSize));
 	}
 
 	UInt8 *imgData = MemAlloc(UInt8, lineSize * img->info.dispSize.y);
 	img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, lineSize, true, Media::RotateType::None);
-	stm->Write(imgData, lineSize * img->info.dispSize.y);
+	stm->Write(Data::ByteArrayR(imgData, lineSize * img->info.dispSize.y));
 
 	if (iccSize > 0)
 	{
-		stm->Write(rawICC, iccSize);
+		stm->Write(Data::ByteArrayR(rawICC, iccSize));
 	}
 	MemFree(imgData);
 	return true;

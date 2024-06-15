@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-			fs.Write(me->edid, me->edidSize);
+			fs.Write(Data::ByteArrayR(me->edid, me->edidSize));
 		}
 		dlg.Delete();
 	}

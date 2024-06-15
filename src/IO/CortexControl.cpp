@@ -225,7 +225,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -261,7 +261,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -299,7 +299,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -333,7 +333,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -368,7 +368,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -403,7 +403,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -438,7 +438,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -472,7 +472,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -507,7 +507,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -542,7 +542,7 @@ Bool IO::CortexControl::PowerOff()
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -578,7 +578,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();
@@ -612,7 +612,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLine(sb.ToCString());
 	}
-	this->stm->Write(buff, packetSize);
+	this->stm->Write(Data::ByteArrayR(buff, packetSize));
 	while (!this->sendHasResult)
 	{
 		t = clk.GetTimeDiff();

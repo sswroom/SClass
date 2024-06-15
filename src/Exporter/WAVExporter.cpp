@@ -103,7 +103,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteNInt32(&buff[74], *(Int32*)"data");
 		WriteUInt32(&buff[78], 0);
 	}
-	stm->Write(buff, (UOSInt)headerSize);
+	stm->Write(Data::ByteArrayR(buff, (UOSInt)headerSize));
 	fileSize = headerSize;
 	UOSInt blockSize;
 	Sync::Event *evt;
@@ -112,7 +112,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		while ((blockSize = audio->ReadBlock(Data::ByteArray(&buff[(UOSInt)headerSize], (UOSInt)(1048576 - headerSize)))) > 0)
 		{
-			stm->Write(&buff[(UOSInt)headerSize], blockSize);
+			stm->Write(Data::ByteArrayR(&buff[(UOSInt)headerSize], blockSize));
 			fileSize += blockSize;
 		}
 		audio->Stop();
@@ -137,7 +137,7 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteUInt32(&buff[(UOSInt)(headerSize - 4)], (UInt32)(fileSize - headerSize));
 	}
 	stm->SeekFromBeginning(initPos);
-	stm->Write(buff, (UOSInt)headerSize);
+	stm->Write(Data::ByteArrayR(buff, (UOSInt)headerSize));
 	MemFree(buff);
 
 	return true;

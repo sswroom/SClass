@@ -481,31 +481,31 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataRecv(AnyType userObj, Data::ByteArrayR data)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Data Received: "));
-	sb.AppendUOSInt(dataSize);
+	sb.AppendUOSInt(data.GetSize());
 	sb.AppendC(UTF8STRC(" bytes"));
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
 	Sync::MutexUsage mutUsage(me->recvMut);
-	me->recvBuff.AppendBytes(data, dataSize);
+	me->recvBuff.AppendBytes(data.Arr(), data.GetSize());
 	me->recvUpdated = true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDataSend(AnyType userObj, Data::ByteArrayR data)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Data Sent: "));
-	sb.AppendUOSInt(dataSize);
+	sb.AppendUOSInt(data.GetSize());
 	sb.AppendC(UTF8STRC(" bytes"));
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 
 	Sync::MutexUsage mutUsage(me->sendMut);
-	me->sendBuff.AppendBytes(data, dataSize);
+	me->sendBuff.AppendBytes(data.Arr(), data.GetSize());
 	me->sendUpdated = true;
 }
 

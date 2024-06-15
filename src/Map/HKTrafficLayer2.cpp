@@ -196,7 +196,7 @@ void Map::HKTrafficLayer2::ReloadData()
 			readSize = stm->Read(BYTEARR(buff));
 			if (readSize <= 0)
 				break;
-			mstm.Write(buff, readSize);
+			mstm.Write(Data::ByteArrayR(buff, readSize));
 		}
 		mstm.SeekFromBeginning(0);
 		NN<Text::String> nodeName;

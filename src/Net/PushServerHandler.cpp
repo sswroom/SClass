@@ -17,7 +17,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::IWebReques
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(U8STR(""), 0);
+	resp->Write(Data::ByteArrayR(U8STR(""), 0));
 	return true;
 }
 
@@ -46,7 +46,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::IWebR
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(U8STR(""), 0);
+	resp->Write(Data::ByteArrayR(U8STR(""), 0));
 	return true;
 }
 
@@ -108,7 +108,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::IWebR
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(U8STR(""), 0);
+	resp->Write(Data::ByteArrayR(U8STR(""), 0));
 	return true;
 }
 
@@ -131,7 +131,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NN<Net::WebServer::IWe
 	me->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(0);
 	resp->AddContentLength(0);
-	resp->Write(U8STR(""), 0);
+	resp->Write(Data::ByteArrayR(U8STR(""), 0));
 	return true;
 }
 
@@ -199,7 +199,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWe
 	resp->AddCacheControl(0);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(content.leng);
-	resp->Write(content.v, content.leng);
+	resp->Write(content.ToByteArray());
 	return true;
 }
 

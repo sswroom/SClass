@@ -11,7 +11,7 @@ namespace IO
 		IO::FileStream destStm;
 		UInt64 recordedLength;
 
-		static void __stdcall DataHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData);
+		static void __stdcall DataHdlr(Data::ByteArrayR buff, AnyType userData);
 	public:
 		StreamRecorder(Text::CStringNN destFile);
 		~StreamRecorder();

@@ -98,9 +98,9 @@ UOSInt Net::WebServer::PrintLogWebResponse::Read(const Data::ByteArray &buff)
 	return this->resp->Read(buff);
 }
 
-UOSInt Net::WebServer::PrintLogWebResponse::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::WebServer::PrintLogWebResponse::Write(Data::ByteArrayR buff)
 {
-	return this->resp->Write(buff, size);
+	return this->resp->Write(buff);
 }
 
 Int32 Net::WebServer::PrintLogWebResponse::Flush()

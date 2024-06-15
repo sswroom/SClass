@@ -119,7 +119,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		buff[10] = 0xf7;
 		buff[11] = 0;
 		buff[12] = (UInt8)(Double2Int32(img->info.par2 * 64.0) - 15);
-		stm->Write(buff, 13);
+		stm->Write(Data::ByteArrayR(buff, 13));
 
 		UInt8 *palBuff = MemAlloc(UInt8, 768);
 		i = 0;
@@ -133,7 +133,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			j += 4;
 		}
 
-		stm->Write(palBuff, 768);
+		stm->Write(Data::ByteArrayR(palBuff, 768));
 		MemFree(palBuff);
 
 		if (transparentIndex != INVALID_INDEX)
@@ -145,7 +145,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			WriteInt16(&buff[4], 0);
 			buff[6] = (UInt8)transparentIndex;
 			buff[7] = 0;
-			stm->Write(buff, 8);
+			stm->Write(Data::ByteArrayR(buff, 8));
 		}
 
 		buff[0] = 0x2c;
@@ -155,7 +155,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		WriteInt16(&buff[7], (Int16)img->info.dispSize.y);
 		buff[9] = 0;
 		buff[10] = 8;
-		stm->Write(buff, 11);
+		stm->Write(Data::ByteArrayR(buff, 11));
 
 		UInt8 *imgData = MemAlloc(UInt8, img->info.dispSize.CalcArea());
 		UOSInt imgSize;
@@ -164,9 +164,9 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		if (imgSize < 4096)
 			imgSize = 4096;
 		IO::MemoryStream mstm(imgSize);
-		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(&mstm, true, 8, 12, 0));
+		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(mstm, true, 8, 12, 0));
 		img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, img->info.dispSize.x, false, Media::RotateType::None);
-		lzw->Write(imgData, img->info.dispSize.CalcArea());
+		lzw->Write(Data::ByteArrayR(imgData, img->info.dispSize.CalcArea()));
 		MemFree(imgData);
 		DEL_CLASS(lzw);
 		imgData = mstm.GetBuff(imgSize);
@@ -177,20 +177,20 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			{
 				buff[0] = 255;
 				MemCopyNO(&buff[1], &imgData[i], 255);
-				stm->Write(buff, 256);
+				stm->Write(Data::ByteArrayR(buff, 256));
 				i += 255;
 			}
 			else
 			{
 				buff[0] = (UInt8)(imgSize - i);
 				MemCopyNO(&buff[1], &imgData[i], buff[0]);
-				stm->Write(buff, (UOSInt)buff[0] + 1);
+				stm->Write(Data::ByteArrayR(buff, (UOSInt)buff[0] + 1));
 				i += buff[0];
 			}
 		}
 		buff[0] = 0;
 		buff[1] = 0x3b;
-		stm->Write(buff, 2);
+		stm->Write(Data::ByteArrayR(buff, 2));
 		return true;
 	}
 	else

@@ -111,12 +111,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(AnyType userOb
 		{
 			if (me->stmLog1)
 			{
-				me->stmLog1->Write(buff, recvSize);
+				me->stmLog1->Write(Data::ByteArrayR(buff, recvSize));
 			}
 			Sync::MutexUsage mutUsage(me->mut2);
 			if (me->stm2)
 			{
-				me->stm2->Write(buff, recvSize);
+				me->stm2->Write(Data::ByteArrayR(buff, recvSize));
 			}
 			mutUsage.EndUse();
 			me->stm1DataSize += recvSize;
@@ -143,12 +143,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(AnyType userOb
 		{
 			if (me->stmLog2)
 			{
-				me->stmLog2->Write(buff, recvSize);
+				me->stmLog2->Write(Data::ByteArrayR(buff, recvSize));
 			}
 			Sync::MutexUsage mutUsage(me->mut1);
 			if (me->stm1)
 			{
-				me->stm1->Write(buff, recvSize);
+				me->stm1->Write(Data::ByteArrayR(buff, recvSize));
 			}
 			mutUsage.EndUse();
 			me->stm2DataSize += recvSize;

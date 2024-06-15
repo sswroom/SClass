@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 		readSize = srcFS->Read(buff.WithSize(thisSize));
 		if (readSize == 0)
 			break;
-		destFS->Write(buff.Arr().Ptr(), readSize);
+		destFS->Write(buff.WithSize(readSize));
 		sizeLeft -= readSize;
 	}
 

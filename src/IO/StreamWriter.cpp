@@ -26,7 +26,7 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 {
 	if (this->enc.GetEncCodePage() == 65001)
 	{
-		return this->stm->Write(str.v, str.leng) == str.leng;
+		return this->stm->Write(str.ToByteArray()) == str.leng;
 	}
 	else
 	{
@@ -46,7 +46,7 @@ Bool IO::StreamWriter::Write(Text::CStringNN str)
 		}
 		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar);
 		MemFree(ws);
-		return this->stm->Write(this->buff, nChar) == nChar;
+		return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 	}
 }
 
@@ -55,10 +55,10 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 	if (this->enc.GetEncCodePage() == 65001)
 	{
 		const UTF8Char crlf[2] = {13, 10};
-		UOSInt ret = this->stm->Write(str.v, str.leng);
+		UOSInt ret = this->stm->Write(str.ToByteArray());
 		if (ret == str.leng)
 		{
-			ret += this->stm->Write(crlf, 2);
+			ret += this->stm->Write(Data::ByteArrayR(crlf, 2));
 			return true;
 		}
 		return false;
@@ -83,7 +83,7 @@ Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 		}
 		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
 		MemFree(ws);
-		return this->stm->Write(this->buff, nChar) == nChar;
+		return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 	}
 }
 
@@ -100,7 +100,7 @@ Bool IO::StreamWriter::WriteW(const WChar *str, UOSInt nChar)
 		this->buff = MemAlloc(UInt8, this->buffSize);
 	}
 	nChar = enc.WToBytesC(this->buff, str, nChar);
-	return this->stm->Write(this->buff, nChar) == nChar;
+	return this->stm->Write(Data::ByteArrayR(this->buff, nChar)) == nChar;
 }
 
 Bool IO::StreamWriter::WriteW(const WChar *str)
@@ -123,7 +123,7 @@ Bool IO::StreamWriter::WriteLineW(const WChar *str, UOSInt nChar)
 	nChar = enc.WToBytesC(this->buff, str, nChar);
 	this->buff[nChar] = 0xd;
 	this->buff[nChar + 1] = 0xa;
-	return this->stm->Write(this->buff, nChar + 2) == nChar + 2;
+	return this->stm->Write(Data::ByteArrayR(this->buff, nChar + 2)) == nChar + 2;
 }
 
 Bool IO::StreamWriter::WriteLineW(const WChar *str)
@@ -135,7 +135,7 @@ Bool IO::StreamWriter::WriteLineW(const WChar *str)
 Bool IO::StreamWriter::WriteLine()
 {
 	UTF8Char buff[2] = {13, 10};
-	return this->stm->Write(buff, 2) == 2;
+	return this->stm->Write(Data::ByteArrayR(buff, 2)) == 2;
 }
 
 void IO::StreamWriter::WriteSignature()
@@ -150,19 +150,19 @@ void IO::StreamWriter::WriteSignature()
 				buff[0] = 0xef;
 				buff[1] = 0xbb;
 				buff[2] = 0xbf;
-				this->stm->Write(buff, 3);
+				this->stm->Write(Data::ByteArrayR(buff, 3));
 			}
 			else if (cp == 1200)
 			{
 				buff[0] = 0xff;
 				buff[1] = 0xfe;
-				this->stm->Write(buff, 2);
+				this->stm->Write(Data::ByteArrayR(buff, 2));
 			}
 			else if (cp == 1201)
 			{
 				buff[0] = 0xfe;
 				buff[1] = 0xff;
-				this->stm->Write(buff, 2);
+				this->stm->Write(Data::ByteArrayR(buff, 2));
 			}
 		}
 	}

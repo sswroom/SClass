@@ -57,7 +57,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 	this->recvSize = 0;
 	mutUsage.EndUse();
 
-	this->stm->Write((const UInt8*)buff, buffSize);
+	this->stm->Write(Data::ByteArrayR((const UInt8*)buff, buffSize));
 	this->nextTime.SetCurrTimeUTC();
 	while (true)
 	{

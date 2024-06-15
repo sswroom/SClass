@@ -91,7 +91,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(retBuff, (UOSInt)byteSize + 9);
+							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
 						}
 					}
 				}
@@ -140,7 +140,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(retBuff, (UOSInt)byteSize + 9);
+							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
 						}
 					}
 				}
@@ -177,7 +177,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(retBuff, (UOSInt)byteSize + 9);
+							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
 						}
 					}
 				}
@@ -214,7 +214,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(retBuff, (UOSInt)byteSize + 9);
+							cli->Write(Data::ByteArrayR(retBuff, (UOSInt)byteSize + 9));
 						}
 					}
 				}
@@ -239,7 +239,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 							{
 								Sync::SimpleThread::Sleep(me->delay);
 							}
-							cli->Write(retBuff, 12);
+							cli->Write(Data::ByteArrayR(retBuff, 12));
 						}
 					}
 				}
@@ -262,7 +262,7 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 						{
 							Sync::SimpleThread::Sleep(me->delay);
 						}
-						cli->Write(retBuff, 12);
+						cli->Write(Data::ByteArrayR(retBuff, 12));
 					}
 				}
 				break;

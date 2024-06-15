@@ -506,18 +506,18 @@ UOSInt Net::HTTPMyClient::Read(const Data::ByteArray &buff)
 	return this->ReadRAWInternal(buff);
 }
 
-UOSInt Net::HTTPMyClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::HTTPMyClient::Write(Data::ByteArrayR buff)
 {
 	if (this->canWrite && !this->hasForm)
 	{
 		if (!writing)
 		{
 			//cli->Write((UInt8*)"\r\n", 2);
-			this->reqMstm.Write(U8STR("\r\n"), 2);
+			this->reqMstm.Write(Data::ByteArrayR(U8STR("\r\n"), 2));
 		}
 		writing = true;
 		//return cli->Write(buff, size);
-		return this->reqMstm.Write(buff, size);
+		return this->reqMstm.Write(buff);
 	}
 	return 0;
 }
@@ -888,8 +888,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" RTSP/1.0\r\n"));
 		break;
 	}
-	this->reqMstm.Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
-	this->reqMstm.Write((UInt8*)host, hostLen);
+	this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff)));
+	this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, hostLen));
 #ifdef SHOWDEBUG
 	printf("Resquest Data: %s", dataBuff);
 	printf("Add Header: %s", host);
@@ -930,10 +930,10 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 	{
 		if (name.leng + value.leng + 5 > 512)
 		{
-			this->reqMstm.Write(name.v, name.leng);
-			this->reqMstm.Write(UTF8STRC(": "));
-			this->reqMstm.Write(value.OrEmpty().v, value.leng);
-			this->reqMstm.Write(UTF8STRC("\r\n"));
+			this->reqMstm.Write(name.ToByteArray());
+			this->reqMstm.Write(CSTR(": ").ToByteArray());
+			this->reqMstm.Write(value.OrEmpty().ToByteArray());
+			this->reqMstm.Write(CSTR("\r\n").ToByteArray());
 #ifdef SHOWDEBUG
 			printf("Add Header: %s: %s\r\n", name.v, value.v);
 #endif
@@ -953,7 +953,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 			*sptr = 0;
 			printf("Add Header: %s", buff);
 #endif
-			this->reqMstm.Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
+			this->reqMstm.Write(Data::ByteArrayR(buff, (UOSInt)(sptr - (UTF8Char*)buff)));
 		}
 		this->reqHeaders.SortedInsert(Text::String::New(name).Ptr());
 	}
@@ -986,21 +986,21 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 			UOSInt len = this->formSb->GetLength();
 			this->AddContentLength(len);
 			this->hasForm = false;
-			this->Write(this->formSb->ToString(), len);
+			this->Write(this->formSb->ToByteArray());
 			DEL_CLASS(this->formSb);
 			this->formSb = 0;
 		}
 		this->canWrite = false;
 		this->writing = true;
 
-		this->reqMstm.Write((UInt8*)"\r\n", 2);
+		this->reqMstm.Write(Data::ByteArrayR((UInt8*)"\r\n", 2));
 		UOSInt reqSize;
 		UOSInt writeSize = 0;
 		UOSInt currSize = 0;
 		UInt8 *reqBuff = this->reqMstm.GetBuff(reqSize);
 		while (writeSize < reqSize)
 		{
-			currSize = cli->Write(&reqBuff[writeSize], reqSize - writeSize);
+			currSize = cli->Write(Data::ByteArrayR(&reqBuff[writeSize], reqSize - writeSize));
 #ifdef SHOWDEBUG
 			printf("Writing %d bytes, sent %d bytes\r\n", (UInt32)(reqSize - writeSize), (UInt32)currSize);
 #endif

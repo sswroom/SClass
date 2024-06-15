@@ -17,7 +17,7 @@ Data::Compress::LZWDecompressor::~LZWDecompressor()
 Bool Data::Compress::LZWDecompressor::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
 	IO::MemoryReadingStream mstm(srcBuff);
-	Data::Compress::LZWDecStream lzw(&mstm, false, 8, 15, 1);
+	Data::Compress::LZWDecStream lzw(mstm, false, 8, 15, 1);
 	UOSInt writeSize = 0;
 	UOSInt thisSize;
 	while ((thisSize = lzw.Read(destBuff)) != 0)
@@ -37,7 +37,7 @@ Bool Data::Compress::LZWDecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::
 	NEW_CLASS(srcStm, IO::StreamDataStream(srcData));
 	while ((thisSize = srcStm->Read(tmpBuff)) != 0)
 	{
-		destStm->Write(tmpBuff.Arr(), thisSize);
+		destStm->Write(tmpBuff.WithSize(thisSize));
 	}
 	DEL_CLASS(srcStm);
 	return true;

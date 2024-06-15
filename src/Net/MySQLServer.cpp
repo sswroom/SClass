@@ -502,7 +502,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 					WriteInt16(&sbuff[7], 2);
 					sbuff[9] = 0;
 					sbuff[10] = 0;
-					cli->Write(sbuff, 11);
+					cli->Write(Data::ByteArrayR(sbuff, 11));
 					data->mode = 1;
 					data->buffSize = 0;
 					#if defined(VERBOSE)
@@ -521,7 +521,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 					sbuff[3] = 2;
 					sbuff[4] = 0xff;
 					WriteInt16(&sbuff[5], 0x6A2);
-					cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+					cli->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 					data->mode = -1;
 					#if defined(VERBOSE)
 					printf("Sent login failure\r\n");
@@ -570,7 +570,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 								WriteInt16(&sptr[2], 0);
 								sptr += 4;
 								WriteInt24(&sbuff[0], sptr - sbuff - 4);
-								cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+								cli->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 								#if defined(VERBOSE)
 								printf("COM_QUERY OK, row changed = %d\r\n", (int)r->GetRowChanged());
 								#endif
@@ -590,7 +590,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 								sbuff[3] = seqId++;
 								sptr = Net::MySQLUtil::AppendLenencInt(&sbuff[4], r->ColCount());
 								WriteInt24(&sbuff[0], sptr - sbuff - 4);
-								cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+								cli->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 								#if defined(VERBOSE)
 								printf("COM_QUERY OK, column_count = %d\r\n", (int)r->ColCount());
 								#endif
@@ -656,7 +656,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 									sptr += 12;
 
 									WriteInt24(&sbuff[0], sptr - sbuff - 4);
-									cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+									cli->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 									#if defined(VERBOSE)
 									printf("COM_QUERY column: %s\r\n", col.GetColName()->v.Ptr());
 									#endif
@@ -672,7 +672,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 								sbuff[4] = 0xfe;
 								WriteInt16(&sbuff[5], 0);
 								WriteInt16(&sbuff[7], 2);
-								cli->Write(sbuff, 9);
+								cli->Write(Data::ByteArrayR(sbuff, 9));
 								#if defined(VERBOSE)
 								printf("COM_QUERY EOF (Columns)\r\n");
 								#endif
@@ -704,7 +704,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 									}
 
 									WriteInt24(&sbuff[0], sptr - sbuff - 4);
-									cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+									cli->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 									#if defined(VERBOSE)
 									printf("COM_QUERY return row\r\n");
 									#endif
@@ -718,7 +718,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 								sbuff[4] = 0xfe;
 								WriteInt16(&sbuff[5], 0);
 								WriteInt16(&sbuff[7], 2);
-								cli->Write(sbuff, 9);
+								cli->Write(Data::ByteArrayR(sbuff, 9));
 								#if defined(VERBOSE)
 								printf("COM_QUERY EOF (Rows)\r\n");
 								#endif
@@ -734,7 +734,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 							sbuff[3] = 1;
 							sbuff[4] = 0xff;
 							WriteInt16(&sbuff[5], 0x416);
-							cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+							cli->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 							#if defined(VERBOSE)
 							printf("COM_QUERY failure\r\n");
 							#endif
@@ -820,7 +820,7 @@ void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 	bptr += 13;
 	bptr = Text::StrConcatC(bptr, UTF8STRC("mysql_native_password")) + 1;
 	WriteInt32(buff, (Int32)(bptr - buff - 4));
-	cli->Write(buff, (UOSInt)(bptr - buff));
+	cli->Write(Data::ByteArrayR(buff, (UOSInt)(bptr - buff)));
 }
 
 

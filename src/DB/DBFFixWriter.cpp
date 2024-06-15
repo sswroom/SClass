@@ -59,7 +59,7 @@ DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::St
 	buff[28] = 0;
 	buff[29] = DB::DBFFile::GetLangDriver(codePage);
 	*(Int16*)&buff[30] = 0;
-	stm->Write(buff, 32);
+	stm->Write(Data::ByteArrayR(buff, 32));
 	rec = MemAlloc(UInt8, k);
 	rec[0] = ' ';
 	this->recSize = k;
@@ -118,11 +118,11 @@ DB::DBFFixWriter::DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::St
 		*(Int32*)&buff[20] = 0;
 		*(Int32*)&buff[24] = 0;
 		*(Int32*)&buff[28] = 0;
-		stm->Write(buff, 32);
+		stm->Write(Data::ByteArrayR(buff, 32));
 		i++;
 	}
 	buff[0] = 13;
-	stm->Write(buff,  1);
+	stm->Write(Data::ByteArrayR(buff,  1));
 
 }
 
@@ -131,10 +131,10 @@ DB::DBFFixWriter::~DBFFixWriter()
 	if (this->columns)
 	{
 		UInt8 buff = 26;
-		stm->Write(&buff, 1);
+		stm->Write(Data::ByteArrayR(&buff, 1));
 
 		stm->SeekFromBeginning(refPos + 4);
-		stm->Write((UInt8*)&this->rowCnt, 4);
+		stm->Write(Data::ByteArrayR((UInt8*)&this->rowCnt, 4));
 		MemFree(this->columns);
 		this->columns = 0;
 	}
@@ -153,7 +153,7 @@ void DB::DBFFixWriter::AddRecord(const UTF8Char **rowValues)
 	UInt8 buff[512];
 
 	buff[0] = 32; 
-	stm->Write(buff, 1);
+	stm->Write(Data::ByteArrayR(buff, 1));
 	j = 0;
 	while (j < this->colCnt)
 	{
@@ -162,7 +162,7 @@ void DB::DBFFixWriter::AddRecord(const UTF8Char **rowValues)
 		{
 			if (this->columns[j].colSize <= k)
 			{
-				stm->Write(buff, this->columns[j].colSize);
+				stm->Write(Data::ByteArrayR(buff, this->columns[j].colSize));
 			}
 			else
 			{
@@ -171,15 +171,15 @@ void DB::DBFFixWriter::AddRecord(const UTF8Char **rowValues)
 				{
 					buff[l + k] = 32;
 				}
-				stm->Write(&buff[k], this->columns[j].colSize - k);
-				stm->Write(buff, k);
+				stm->Write(Data::ByteArrayR(&buff[k], this->columns[j].colSize - k));
+				stm->Write(Data::ByteArrayR(buff, k));
 			}
 		}
 		else
 		{
 			while (k < this->columns[j].colSize)
 				buff[k++] = 32;
-			stm->Write(buff, this->columns[j].colSize);
+			stm->Write(Data::ByteArrayR(buff, this->columns[j].colSize));
 		}
 		j += 1;
 	}
@@ -400,6 +400,6 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, const UTF8Char *val)
 
 void DB::DBFFixWriter::WriteRecord()
 {
-	stm->Write(this->rec, this->recSize);
+	stm->Write(Data::ByteArrayR(this->rec, this->recSize));
 	this->rowCnt++;
 }

@@ -58,9 +58,9 @@ void __stdcall IO::Device::DensoWaveQB30::RecvThread(NN<Sync::Thread> thread)
 							{
 								me->scanHdlr(me->scanHdlrObj, Text::CStringNN(sbuff, i));
 							}
-							me->stm->Write((UInt8*)"READOFF\r", 8);
+							me->stm->Write(CSTR("READOFF\r").ToByteArray());
 							Sync::SimpleThread::Sleep(me->scanDelay);
-							me->stm->Write((UInt8*)"READON\r", 7);
+							me->stm->Write(CSTR("READON\r").ToByteArray());
 
 							found = true;
 							if (i + 1 >= me->recvSize)
@@ -89,7 +89,7 @@ Bool IO::Device::DensoWaveQB30::ScanModeStart()
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	succ = this->stm->Write((UInt8*)"READON\r", 7) == 7;
+	succ = this->stm->Write(CSTR("READON\r").ToByteArray()) == 7;
 	return succ;
 }
 
@@ -97,7 +97,7 @@ Bool IO::Device::DensoWaveQB30::ScanModeEnd()
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	succ = this->stm->Write((UInt8*)"READOFF\r", 8) == 8;
+	succ = this->stm->Write(CSTR("READOFF\r").ToByteArray()) == 8;
 	return succ;
 }
 
@@ -105,7 +105,7 @@ Bool IO::Device::DensoWaveQB30::SettingModeStart()
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	succ = this->stm->Write((UInt8*)"START\r", 6) == 6;
+	succ = this->stm->Write(CSTR("START\r").ToByteArray()) == 6;
 	return succ;
 }
 
@@ -113,7 +113,7 @@ Bool IO::Device::DensoWaveQB30::SettingModeEnd()
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	succ = this->stm->Write((UInt8*)"END\r", 4) == 4;
+	succ = this->stm->Write(CSTR("END\r").ToByteArray()) == 4;
 	return succ;
 }
 
@@ -213,7 +213,7 @@ Int32 IO::Device::DensoWaveQB30::ReadCommand(UnsafeArray<const UTF8Char> cmdStr,
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	if (this->stm->Write(cmdStr, cmdLen) == cmdLen)
+	if (this->stm->Write(Data::ByteArrayR(cmdStr, cmdLen)) == cmdLen)
 	{
 		if (!this->WaitForReplyVal(1000, result))
 		{
@@ -235,7 +235,7 @@ Bool IO::Device::DensoWaveQB30::WriteCommand(UnsafeArray<const UTF8Char> cmdStr,
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	if (this->stm->Write(cmdStr, cmdLen) == cmdLen)
+	if (this->stm->Write(Data::ByteArrayR(cmdStr, cmdLen)) == cmdLen)
 	{
 		if (this->WaitForReply(1000))
 		{
@@ -299,7 +299,7 @@ Bool IO::Device::DensoWaveQB30::SoftReset()
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	succ = this->stm->Write((UInt8*)"RESET\r", 6) == 6;
+	succ = this->stm->Write(CSTR("RESET\r").ToByteArray()) == 6;
 	mutUsage.EndUse();
 	if (succ)
 	{
@@ -315,7 +315,7 @@ Bool IO::Device::DensoWaveQB30::ResetDefault()
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	succ = this->stm->Write((UInt8*)"DEFAULT\r", 8) == 8;
+	succ = this->stm->Write(CSTR("DEFAULT\r").ToByteArray()) == 8;
 	mutUsage.EndUse();
 	if (succ)
 	{

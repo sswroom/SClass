@@ -56,7 +56,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebSe
 				break;
 			}
 
-			resp->Write(sbuff, readSize);
+			resp->Write(Data::ByteArrayR(sbuff, readSize));
 			sizeLeft -= readSize;
 		}
 		return true;

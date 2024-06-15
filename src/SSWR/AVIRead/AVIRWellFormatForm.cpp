@@ -150,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(AnyType u
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			fs.Write(sbOutput.ToString(), sbOutput.GetLength());
+			fs.Write(sbOutput.ToByteArray());
 		}
 		dlg.Delete();
 	}

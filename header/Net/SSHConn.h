@@ -48,9 +48,9 @@ namespace Net
 		Bool GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth);
 		Bool AuthPassword(Text::CStringNN userName, Text::CStringNN password);
 		Optional<SSHTCPChannel> RemoteConnect(Optional<Socket> sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort);
-		Bool ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size);
-		UOSInt ChannelWrite(SSHChannelHandle *channel, UnsafeArray<const UInt8> buff, UOSInt size);
-		void ChannelClose(SSHChannelHandle *channel);
+		Bool ChannelTryRead(NN<SSHChannelHandle> channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size);
+		UOSInt ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UOSInt size);
+		void ChannelClose(NN<SSHChannelHandle> channel);
 		void Close();
 	};
 }

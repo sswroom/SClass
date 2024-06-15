@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(AnyType userObj)
 			Double t2;
 			sb.ClearStr();
 			Manage::HiResClock clk;
-			if (me->sockf->IcmpSendEcho2(addr, &t1, &ttl))
+			if (me->sockf->IcmpSendEcho2(addr, t1, ttl))
 			{
 				t2 = clk.GetTimeDiff();
 				sb.ClearStr();
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(AnyType userObj)
 		Double t2;
 		Double t[2];
 		Manage::HiResClock clk;
-		if (me->sockf->IcmpSendEcho2(me->targetAddr, &t1, &ttl))
+		if (me->sockf->IcmpSendEcho2(me->targetAddr, t1, ttl))
 		{
 			t2 = clk.GetTimeDiff();
 			Text::StringBuilderUTF8 sb;

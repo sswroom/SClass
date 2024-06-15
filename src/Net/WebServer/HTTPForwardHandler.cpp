@@ -207,7 +207,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 			Text::CPPText::ToCPPString(sbHeader, reqData, i);
 			this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
-		cli->Write(reqData, i);
+		cli->Write(Data::ByteArrayR(reqData, i));
 	}
 	Net::WebStatus::StatusCode scode = cli->GetRespStatus();
 	if (scode == Net::WebStatus::SC_UNKNOWN)
@@ -286,7 +286,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 		i = cli->Read(BYTEARR(buff));
 		if (i > 0)
 		{
-			j = resp->Write(buff, i);
+			j = resp->Write(Data::ByteArrayR(buff, i));
 			if (j != i)
 			{
 				break;

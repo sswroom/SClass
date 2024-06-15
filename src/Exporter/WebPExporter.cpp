@@ -178,7 +178,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		}
 		WebPMuxAssemble(mux, &data);
 		WebPMuxDelete(mux);
-		stm->Write(data.bytes, (UOSInt)data.size);
+		stm->Write(Data::ByteArrayR(data.bytes, (UOSInt)data.size));
 		WebPDataClear(&data);
 		WebPFree(vp8);
 		return true;

@@ -82,7 +82,7 @@ void __stdcall Net::Email::POP3Server::ClientData(NN<Net::TCPClient> cli, AnyTyp
 	NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 	if (me->rawLog)
 	{
-		me->rawLog->Write(buff.Arr().Ptr(), buff.GetSize());
+		me->rawLog->Write(buff);
 	}
 	if (buff.GetSize() > 2048)
 	{
@@ -157,10 +157,10 @@ UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 #endif
 
 	UOSInt buffSize;
-	buffSize = cli->Write(sb.ToString(), sb.GetLength());
+	buffSize = cli->Write(sb.ToByteArray());
 	if (this->rawLog)
 	{
-		this->rawLog->Write(sb.ToString(), buffSize);
+		this->rawLog->Write(sb.ToByteArray().WithSize(buffSize));
 	}
 	return buffSize;
 }
@@ -168,10 +168,10 @@ UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success
 UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, UnsafeArray<const UTF8Char> msg, UOSInt msgLen)
 {
 	UOSInt buffSize;
-	buffSize = cli->Write(msg, msgLen);
+	buffSize = cli->Write(Data::ByteArrayR(msg, msgLen));
 	if (this->rawLog)
 	{
-		this->rawLog->Write(msg, buffSize);
+		this->rawLog->Write(Data::ByteArrayR(msg, buffSize));
 	}
 	return buffSize;
 }
@@ -342,10 +342,10 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 					UOSInt buffSize;
 					UInt8 *buff;
 					buff = mstm.GetBuff(buffSize);
-					cli->Write(buff, buffSize);
+					cli->Write(Data::ByteArrayR(buff, buffSize));
 					if (this->rawLog)
 					{
-						this->rawLog->Write(buff, buffSize);
+						this->rawLog->Write(Data::ByteArrayR(buff, buffSize));
 					}
 					WriteRAW(cli, UTF8STRC("\r\n.\r\n"));
 				}
@@ -392,25 +392,25 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 					while (reader.ReadLine(sb, 1024))
 					{
 						sb.AppendC(UTF8STRC("\r\n"));
-						cli->Write(sb.v, sb.leng);
+						cli->Write(sb.ToByteArray());
 						if (this->rawLog)
 						{
-							this->rawLog->Write(sb.v, sb.leng);
+							this->rawLog->Write(sb.ToByteArray());
 						}
 						sb.ClearStr();
 					}
-					cli->Write(UTF8STRC("\r\n"));
+					cli->Write(CSTR("\r\n").ToByteArray());
 					if (this->rawLog)
 					{
-						this->rawLog->Write(UTF8STRC("\r\n"));
+						this->rawLog->Write(CSTR("\r\n").ToByteArray());
 					}
 					while (lineNum > 0 && reader.ReadLine(sb, 1024))
 					{
 						sb.AppendC(UTF8STRC("\r\n"));
-						cli->Write(sb.v, sb.leng);
+						cli->Write(sb.ToByteArray());
 						if (this->rawLog)
 						{
-							this->rawLog->Write(sb.v, sb.leng);
+							this->rawLog->Write(sb.ToByteArray());
 						}
 						sb.ClearStr();
 						lineNum--;

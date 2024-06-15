@@ -19,9 +19,9 @@ UOSInt IO::NullStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt IO::NullStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::NullStream::Write(Data::ByteArrayR buff)
 {
-	return size;
+	return buff.GetSize();
 }
 
 Int32 IO::NullStream::Flush()

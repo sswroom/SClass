@@ -127,11 +127,11 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 	return fchk;
 }
 
-void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, AnyType userData)
+void __stdcall IO::FileCheck::CheckData(Data::ByteArrayR buff, AnyType userData)
 {
 	NN<ReadSess> sess = userData.GetNN<ReadSess>();
-	sess->hash->Calc(buff, buffSize);
-	sess->readSize += buffSize;
+	sess->hash->Calc(buff.Arr(), buff.GetSize());
+	sess->readSize += buff.GetSize();
 	NN<IO::ProgressHandler> progress;
 	if (sess->progress.SetTo(progress))
 	{

@@ -29,7 +29,7 @@ namespace IO
 		static Bool MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		static Bool MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, FileExistAction fea, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 	private:
-		static void __stdcall CopyHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData);
+		static void __stdcall CopyHdlr(Data::ByteArrayR buff, AnyType userData);
 		static Bool DeleteDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, Bool deleteRdonlyFile);
 	};
 }

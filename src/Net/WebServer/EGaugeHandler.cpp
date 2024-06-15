@@ -34,7 +34,7 @@ Bool Net::WebServer::EGaugeHandler::ProcessRequest(NN<Net::WebServer::IWebReques
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddContentLength(2);
 	resp->AddContentType(CSTR("text/plain"));
-	resp->Write((const UInt8*)"ok", 2);
+	resp->Write(CSTR("ok").ToByteArray());
 	
 	if (this->dataHdlr)
 	{

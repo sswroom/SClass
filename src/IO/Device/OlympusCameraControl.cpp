@@ -336,7 +336,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(NN<IO::Device::OlympusCameraContr
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
-		totalWriteSize += outStm->Write(sbuff, readSize);
+		totalWriteSize += outStm->Write(Data::ByteArrayR(sbuff, readSize));
 	}
 	cli.Delete();
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
@@ -365,7 +365,7 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(NN<IO::Device::OlympusCa
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
-		outStm->Write(sbuff, readSize);
+		outStm->Write(Data::ByteArrayR(sbuff, readSize));
 	}
 	cli.Delete();
 	return totalSize > 512;

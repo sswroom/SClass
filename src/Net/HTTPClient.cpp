@@ -119,7 +119,7 @@ Bool Net::HTTPClient::WriteContent(Text::CStringNN contType, Text::CStringNN con
 {
 	this->AddContentType(contType);
 	this->AddContentLength(content.leng);
-	return this->Write(content.v, content.leng) == content.leng;
+	return this->Write(content.ToByteArray()) == content.leng;
 }
 
 void Net::HTTPClient::ForceHostName(Text::CStringNN hostName)
@@ -316,7 +316,7 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UIn
 		UInt8 *readBuff = MemAlloc(UInt8, buffSize);
 		while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 		{
-			outStm->Write(readBuff, readSize);
+			outStm->Write(Data::ByteArrayR(readBuff, readSize));
 			currPos += readSize;
 			if (currPos >= contLeng)
 			{
@@ -334,7 +334,7 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UIn
 			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
 			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
 			{
-				outStm->Write(readBuff, readSize);
+				outStm->Write(Data::ByteArrayR(readBuff, readSize));
 				currPos += readSize;
 				if (currPos > maxSize)
 				{
@@ -575,7 +575,7 @@ Bool Net::HTTPClient::LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SS
 			cli.Delete();
 			return false;
 		}
-		stm->Write(buff, readSize);
+		stm->Write(Data::ByteArray(buff, readSize));
 		maxSize -= readSize;
 	}
 	cli.Delete();

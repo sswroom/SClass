@@ -262,7 +262,7 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName
 	sb.AppendC(UTF8STRC("\r\nExec="));
 	sb.Append(cmdLine);
 	sb.AppendC(UTF8STRC("\r\n"));
-	fs.Write(sb.ToString(), sb.GetLength());
+	fs.Write(sb.ToByteArray());
 	return true;
 }
 

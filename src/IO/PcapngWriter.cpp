@@ -73,7 +73,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 	WriteInt32(&sptr[0], (Int32)i);
 	WriteInt32(&buff[4], (Int32)i);
 
-	this->fs.Write(buff, (UOSInt)i);
+	this->fs.Write(Data::ByteArrayR(buff, (UOSInt)i));
 
 	WriteInt32(&buff[0], 1); //Block Type = IDB
 	WriteInt32(&buff[4], 0); //Block Size
@@ -108,7 +108,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 	WriteInt32(&sptr[0], (Int32)i);
 	WriteInt32(&buff[4], (Int32)i);
 
-	this->fs.Write(buff, (UOSInt)i);
+	this->fs.Write(Data::ByteArrayR(buff, (UOSInt)i));
 }
 
 IO::PcapngWriter::~PcapngWriter()
@@ -138,29 +138,29 @@ Bool IO::PcapngWriter::WritePacket(Data::ByteArrayR packet)
 	WriteInt32(&buff[20], (Int32)packet.GetSize());
 	WriteInt32(&buff[24], (Int32)packet.GetSize());
 	Sync::MutexUsage mutUsage(this->mut);
-	Bool succ = (this->fs.Write(buff, 28) == 28);
-	succ = succ && (this->fs.Write(packet.Arr().Ptr(), packet.GetSize()) == packet.GetSize());
+	Bool succ = (this->fs.Write(Data::ByteArrayR(buff, 28)) == 28);
+	succ = succ && (this->fs.Write(packet) == packet.GetSize());
 	if ((packet.GetSize() & 3) == 0)
 	{
-		succ = succ && (this->fs.Write(&buff[4], 4) == 4);
+		succ = succ && (this->fs.Write(Data::ByteArrayR(&buff[4], 4)) == 4);
 	}
 	else if ((packet.GetSize() & 3) == 1)
 	{
 		buff[1] = 0;
 		buff[2] = 0;
 		buff[3] = 0;
-		succ = succ && (this->fs.Write(&buff[1], 7) == 7);
+		succ = succ && (this->fs.Write(Data::ByteArrayR(&buff[1], 7)) == 7);
 	}
 	else if ((packet.GetSize() & 3) == 2)
 	{
 		buff[2] = 0;
 		buff[3] = 0;
-		succ = succ && (this->fs.Write(&buff[2], 6) == 6);
+		succ = succ && (this->fs.Write(Data::ByteArrayR(&buff[2], 6)) == 6);
 	}
 	else if ((packet.GetSize() & 3) == 3)
 	{
 		buff[3] = 0;
-		succ = succ && (this->fs.Write(&buff[3], 5) == 5);
+		succ = succ && (this->fs.Write(Data::ByteArrayR(&buff[3], 5)) == 5);
 	}
 	return succ;
 }

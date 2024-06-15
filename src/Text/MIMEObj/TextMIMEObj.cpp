@@ -59,7 +59,7 @@ Text::CStringNN Text::MIMEObj::TextMIMEObj::GetContentType() const
 
 UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(NN<IO::Stream> stm) const
 {
-	return stm->Write(this->textBuff, this->buffSize);
+	return stm->Write(Data::ByteArrayR(this->textBuff, this->buffSize));
 }
 
 NN<Text::IMIMEObj> Text::MIMEObj::TextMIMEObj::Clone() const

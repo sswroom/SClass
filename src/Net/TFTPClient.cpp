@@ -29,7 +29,7 @@ void __stdcall Net::TFTPClient::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 				me->recvPort = port;
 			}
 			me->recvSize = data.GetSize() - 4;
-			me->recvStm->Write(&data[4], data.GetSize() - 4);
+			me->recvStm->Write(Data::ByteArrayR(&data[4], data.GetSize() - 4));
 			me->replyRecv = true;
 			me->evt.Set();
 		}

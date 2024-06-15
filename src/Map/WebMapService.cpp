@@ -622,7 +622,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
-			mstm.Write(dataBuff, readSize);
+			mstm.Write(Data::ByteArrayR(dataBuff, readSize));
 		}
 		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 		if (imgFormat->StartsWith(UTF8STRC("image/png")))

@@ -1384,7 +1384,7 @@ Bool Text::XMLDocument::ParseStream(NN<Text::EncodingFactory> encFact, IO::Strea
 	IO::MemoryStream mstm;
 	while ((buffSize = stm->Read(BYTEARR(buff))) > 0)
 	{
-		mstm.Write(buff, buffSize);
+		mstm.Write(Data::ByteArrayR(buff, buffSize));
 	}
 
 	mbuff = mstm.GetBuff(buffSize);

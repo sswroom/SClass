@@ -66,7 +66,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFacto
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 		{
-			mstm.Write(buff, readSize);
+			mstm.Write(Data::ByteArrayR(buff, readSize));
 		}
 		codePage = cli->GetContentCodePage();
 		cli.Delete();
@@ -325,7 +325,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 	{
-		if (readSize != stm->Write(dataBuff, readSize))
+		if (readSize != stm->Write(Data::ByteArrayR(dataBuff, readSize)))
 		{
 			succ = false;
 		}
@@ -349,7 +349,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UOSInt l
 		IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
-			if (readSize != fs.Write(dataBuff, readSize))
+			if (readSize != fs.Write(Data::ByteArrayR(dataBuff, readSize)))
 			{
 				succ = false;
 			}
@@ -423,10 +423,10 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
-			mstm.Write(dataBuff, readSize);
+			mstm.Write(Data::ByteArrayR(dataBuff, readSize));
 		}
 
-		mstm.Write((const UInt8*)"", 1);
+		mstm.Write(Data::ByteArrayR(U8STR(""), 1));
 		UInt8 *buff = mstm.GetBuff(readSize);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, readSize - 1));
 		if (json)
@@ -533,7 +533,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 		{
-			mstm.Write(dataBuff, readSize);
+			mstm.Write(Data::ByteArrayR(dataBuff, readSize));
 		}
 		Parser::FileParser::PNGParser parser;
 		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());

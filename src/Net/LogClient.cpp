@@ -108,7 +108,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 			if (t >= nextKATime)
 			{
 				buffSize = me->protoHdlr.BuildPacket(kaBuff, 0, 0, 0, 0, 0);
-				me->cli->Write(kaBuff, buffSize);
+				me->cli->Write(Data::ByteArrayR(kaBuff, buffSize));
 				nextKATime = t + 60000;
 			}
 
@@ -126,7 +126,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 					WriteInt64(buff1, msgTime);
 					MemCopyNO(&buff1[8], msg->v.Ptr(), msgLen);
 					buffSize = me->protoHdlr.BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
-					me->cli->Write(buff2, buffSize);
+					me->cli->Write(Data::ByteArrayR(buff2, buffSize));
 					MemFree(buff1);
 					MemFree(buff2);
 					

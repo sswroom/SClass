@@ -4,29 +4,18 @@
 #include "IO/BitReaderLSB.h"
 #include "Data/ByteTool.h"
 
-IO::BitReaderLSB::BitReaderLSB(IO::Stream *stm)
+IO::BitReaderLSB::BitReaderLSB(NN<IO::Stream> stm)
 {
-	if (stm)
-	{
-		this->buff = MemAlloc(UInt8, 1024);
-		this->buffSize = 0;
-		this->currBytePos = 0;
-		this->currBitPos = 0;
-		this->stm = stm;
-	}
-	else
-	{
-		this->buff = 0;
-		this->buffSize = 0;
-		this->currBytePos = 0;
-		this->currBitPos = 0;
-		this->stm = 0;
-	}
+	this->buff = MemAllocArr(UInt8, 1024);
+	this->buffSize = 0;
+	this->currBytePos = 0;
+	this->currBitPos = 0;
+	this->stm = stm;
 }
 
-IO::BitReaderLSB::BitReaderLSB(const UInt8 *buff, UOSInt buffSize)
+IO::BitReaderLSB::BitReaderLSB(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->buff = (UInt8*)buff;
+	this->buff = UnsafeArray<UInt8>::ConvertFrom(buff);
 	this->buffSize = buffSize;
 	this->currBytePos = 0;
 	this->currBitPos = 0;
@@ -35,26 +24,27 @@ IO::BitReaderLSB::BitReaderLSB(const UInt8 *buff, UOSInt buffSize)
 
 IO::BitReaderLSB::~BitReaderLSB()
 {
-	if (this->stm)
+	if (this->stm.NotNull())
 	{
-		MemFree(this->buff);
+		MemFreeArr(this->buff);
 	}
 }
 
 Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UOSInt bitCount)
 {
+	NN<IO::Stream> stm;
 #ifdef _DEBUG
 	if (bitCount > 32 || bitCount <= 0)
 		return false;
 #endif
 	if (((this->buffSize - this->currBytePos) << 3) - this->currBitPos < bitCount)
 	{
-		if (this->stm)
+		if (this->stm.SetTo(stm))
 		{
 			if (this->buffSize != this->currBytePos)
 			{
 				this->buffSize -= this->currBytePos;
-				MemCopyO(this->buff, &this->buff[this->currBytePos], this->buffSize);
+				MemCopyO(this->buff.Ptr(), &this->buff[this->currBytePos], this->buffSize);
 				this->currBytePos = 0;
 			}
 			else
@@ -62,7 +52,7 @@ Bool IO::BitReaderLSB::ReadBits(OutParam<UInt32> code, UOSInt bitCount)
 				this->buffSize = 0;
 				this->currBytePos = 0;
 			}
-			UOSInt readSize = this->stm->Read(Data::ByteArray(&this->buff[this->buffSize], 1024 - this->buffSize));
+			UOSInt readSize = stm->Read(Data::ByteArray(&this->buff[this->buffSize], 1024 - this->buffSize));
 			if (readSize <= 0)
 				return false;
 			this->buffSize += readSize;
@@ -129,9 +119,10 @@ UOSInt IO::BitReaderLSB::ReadBytes(UInt8 *buff, UOSInt cnt)
 		cnt -= ret;
 		this->currBytePos = this->buffSize;
 	}
-	if (cnt > 0)
+	NN<IO::Stream> stm;
+	if (cnt > 0 && this->stm.SetTo(stm))
 	{
-		UOSInt readSize = this->stm->Read(Data::ByteArray(&buff[ret], cnt));
+		UOSInt readSize = stm->Read(Data::ByteArray(&buff[ret], cnt));
 		if (readSize > 0)
 		{
 			ret += cnt;

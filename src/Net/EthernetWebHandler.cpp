@@ -158,7 +158,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -221,7 +221,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NN
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -334,7 +334,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<N
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -447,7 +447,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<N
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -560,7 +560,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -650,7 +650,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -747,7 +747,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -859,7 +859,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NN<Net::
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{
@@ -940,7 +940,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NN<Net:
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 	}
 	else
 	{

@@ -38,7 +38,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 	IO::MemoryStream mstm;
 	while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 	{
-		mstm.Write(buff, readSize);
+		mstm.Write(Data::ByteArrayR(buff, readSize));
 	}
 	cli.Delete();
 	mstm.SeekFromBeginning(0);

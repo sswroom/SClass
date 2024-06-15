@@ -812,7 +812,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 		Crypto::Encrypt::AES256 aes(keyBuff);
 		UInt8 *outBuff = MemAlloc(UInt8, sb.GetCharCnt() + aes.GetEncBlockSize());
 		outSize = aes.Encrypt(sb.ToString(), sb.GetCharCnt(), outBuff);
-		fs->Write(outBuff, outSize);
+		fs->Write(Data::ByteArrayR(outBuff, outSize));
 		MemFree(outBuff);
 	}
 

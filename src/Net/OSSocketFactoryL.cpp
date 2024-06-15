@@ -448,13 +448,13 @@ void Net::OSSocketFactory::AddIPMembership(NN<Socket> socket, UInt32 ip)
 	setsockopt((Int32)this->SocketGetFD(socket), IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	int flags = 0;
 #if defined(MSG_NOSIGNAL)
 	flags = MSG_NOSIGNAL;
 #endif
-	OSInt ret = send((Int32)this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, flags);
+	OSInt ret = send((Int32)this->SocketGetFD(socket), (const char*)buff.Ptr(), (size_t)buffSize, flags);
 	if (ret == -1)
 	{
 		if (et.IsNotNull())
@@ -487,9 +487,9 @@ UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, const UInt8 *buff, UOSI
 	}
 }
 
-UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
-	OSInt ret = recv((Int32)this->SocketGetFD(socket), (char*)buff, (size_t)buffSize, 0);
+	OSInt ret = recv((Int32)this->SocketGetFD(socket), (char*)buff.Ptr(), (size_t)buffSize, 0);
 //	OSInt ret = read(this->SocketGetFD(socket), (char*)buff, (int)buffSize);
 	if (ret == -1)
 	{
@@ -523,7 +523,7 @@ UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt 
 	}
 }
 
-void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	UOSInt ret = ReceiveData(socket, buff, buffSize, et);
 	if (ret)
@@ -687,7 +687,7 @@ UInt16 ICMPChecksum(UInt8 *buff, OSInt buffSize)
     return (UInt16)~sum;
 }
 
-Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl)
+Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, OutParam<UInt32> respTime_us, OutParam<UInt32> ttl)
 {
 	int rs;
 	if (addr->addrType == Net::AddrType::IPv4)
@@ -763,8 +763,8 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 		{
 		case 8:
 		case 0:
-			*ttl = iphdrptr->ttl;
-			*respTime_us = (UInt32)(UInt64)timeStart;
+			ttl.Set(iphdrptr->ttl);
+			respTime_us.Set((UInt32)(UInt64)timeStart);
 			succ = true;
 			break;
 		case 3:
@@ -809,8 +809,8 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 				{
 					if (Text::StrSplitWSP(sarr, 4, {linePtr, lineLen}) == 4)
 					{
-						*ttl = Text::StrToUInt32(&sarr[1].v[4]);
-						*respTime_us = (UInt32)Double2Int32(Text::StrToDouble(&sarr[2].v[5]) * 1000.0);
+						ttl.Set(Text::StrToUInt32(&sarr[1].v[4]));
+						respTime_us.Set((UInt32)Double2Int32(Text::StrToDouble(&sarr[2].v[5]) * 1000.0));
 						return true;
 					}
 					else
@@ -912,7 +912,7 @@ void Net::OSSocketFactory::ShutdownSocket(NN<Socket> socket)
 	shutdown((Int32)this->SocketGetFD(socket), SHUT_RDWR);
 }
 
-Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, UInt32 *size)
+Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32> size)
 {
 /*	struct timeval tv;
 	fd_set readset;
@@ -932,7 +932,7 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, UInt32 *size)
 		*size = 1;
 	}*/
 
-	return ioctl((Int32)this->SocketGetFD(socket), FIONREAD, (int*)size) == 0;
+	return ioctl((Int32)this->SocketGetFD(socket), FIONREAD, (int*)size.Ptr()) == 0;
 }
 
 Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr)

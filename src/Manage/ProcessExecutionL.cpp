@@ -118,11 +118,11 @@ UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Manage::ProcessExecution::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Manage::ProcessExecution::Write(Data::ByteArrayR buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = write(this->clsData->in[1], buff.Ptr(), size);
+	OSInt readSize = write(this->clsData->in[1], buff.Ptr(), buff.GetSize());
 	if (readSize >= 0)
 	{
 		return (UOSInt)readSize;

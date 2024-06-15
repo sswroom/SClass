@@ -116,14 +116,14 @@ UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::OpenSSLClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::OpenSSLClient::Write(Data::ByteArrayR buff)
 {
 	if (this->s.NotNull() && (this->flags & 5) == 0)
 	{
 		UOSInt totalWrite = 0;
-		while (size > 0)
+		while (buff.GetSize() > 0)
 		{
-			int ret = SSL_write(this->clsData->ssl, buff.Ptr(), (int)size);
+			int ret = SSL_write(this->clsData->ssl, buff.Arr().Ptr(), (int)buff.GetSize());
 			if (ret > 0)
 			{
 	#if defined(VERBOSE)
@@ -132,7 +132,6 @@ UOSInt Net::OpenSSLClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 				this->currCnt += (UInt32)ret;
 				totalWrite += (UInt32)ret;
 				buff += ret;
-				size -= (UInt32)ret;
 			}
 			else
 			{
@@ -169,9 +168,9 @@ void Net::OpenSSLClient::CancelRead(void *reqData)
 
 }
 
-void *Net::OpenSSLClient::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *Net::OpenSSLClient::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
-	UOSInt ret = this->Write(buff, size);
+	UOSInt ret = this->Write(buff);
 	if (ret)
 	{
 		evt->Set();

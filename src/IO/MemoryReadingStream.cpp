@@ -33,7 +33,7 @@ UOSInt IO::MemoryReadingStream::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt IO::MemoryReadingStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::MemoryReadingStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

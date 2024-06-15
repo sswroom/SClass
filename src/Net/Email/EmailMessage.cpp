@@ -66,11 +66,11 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, 
 
 void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN boundary)
 {
-	stm->Write(UTF8STRC("--"));
-	stm->Write(boundary.v, boundary.leng);
-	stm->Write(UTF8STRC("\r\nContent-Type: "));
-	stm->Write(this->contentType->v, this->contentType->leng);
-	stm->Write(UTF8STRC("\r\nContent-Transfer-Encoding: base64\r\n\r\n"));
+	stm->Write(CSTR("--").ToByteArray());
+	stm->Write(boundary.ToByteArray());
+	stm->Write(CSTR("\r\nContent-Type: ").ToByteArray());
+	stm->Write(this->contentType->ToByteArray());
+	stm->Write(CSTR("\r\nContent-Transfer-Encoding: base64\r\n\r\n").ToByteArray());
 	WriteB64Data(stm, this->content, this->contentLen);
 
 	UTF8Char sbuff[32];
@@ -82,94 +82,94 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN 
 	while (it.HasNext())
 	{
 		att = it.Next();
-		stm->Write(UTF8STRC("--"));
-		stm->Write(boundary.v, boundary.leng);
-		stm->Write(UTF8STRC("\r\nContent-Type: "));
+		stm->Write(CSTR("--").ToByteArray());
+		stm->Write(boundary.ToByteArray());
+		stm->Write(CSTR("\r\nContent-Type: ").ToByteArray());
 		mime = Net::MIME::GetMIMEFromFileName(att->fileName->v, att->fileName->leng);
-		stm->Write(mime.v, mime.leng);
-		stm->Write(UTF8STRC("; name=\""));
-		stm->Write(att->fileName->v, att->fileName->leng);
-		stm->Write(UTF8STRC("\"\r\nContent-Description: "));
-		stm->Write(att->fileName->v, att->fileName->leng);
-		stm->Write(UTF8STRC("\r\nContent-Disposition: "));
+		stm->Write(mime.ToByteArray());
+		stm->Write(CSTR("; name=\"").ToByteArray());
+		stm->Write(att->fileName->ToByteArray());
+		stm->Write(CSTR("\"\r\nContent-Description: ").ToByteArray());
+		stm->Write(att->fileName->ToByteArray());
+		stm->Write(CSTR("\r\nContent-Disposition: ").ToByteArray());
 		if (att->isInline)
 		{
-			stm->Write(UTF8STRC("inline;"));
+			stm->Write(CSTR("inline;").ToByteArray());
 			k = 21 + 7;
 		}
 		else
 		{
-			stm->Write(UTF8STRC("attachment;"));
+			stm->Write(CSTR("attachment;").ToByteArray());
 			k = 21 + 11;
 		}
 		if (k + 13 + att->fileName->leng > LINECHARCNT)
 		{
-			stm->Write(UTF8STRC("\r\n\tfilename=\""));
-			stm->Write(att->fileName->v, att->fileName->leng);
-			stm->Write(UTF8STRC("\";"));
+			stm->Write(CSTR("\r\n\tfilename=\"").ToByteArray());
+			stm->Write(att->fileName->ToByteArray());
+			stm->Write(CSTR("\";").ToByteArray());
 			k = 16 + att->fileName->leng;
 		}
 		else
 		{
-			stm->Write(UTF8STRC(" filename=\""));
-			stm->Write(att->fileName->v, att->fileName->leng);
-			stm->Write(UTF8STRC("\";"));
+			stm->Write(CSTR(" filename=\"").ToByteArray());
+			stm->Write(att->fileName->ToByteArray());
+			stm->Write(CSTR("\";").ToByteArray());
 			k += 13 + att->fileName->leng;
 		}
 		sptr = Text::StrUOSInt(sbuff, att->contentLen);
 		if (k + 7 + (UOSInt)(sptr - sbuff) > LINECHARCNT)
 		{
-			stm->Write(UTF8STRC("\r\n\tsize="));
-			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			stm->Write(UTF8STRC(";"));
+			stm->Write(CSTR("\r\n\tsize=").ToByteArray());
+			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+			stm->Write(CSTR(";").ToByteArray());
 			k = 10 + (UOSInt)(sptr - sbuff);
 		}
 		else
 		{
-			stm->Write(UTF8STRC(" size="));
-			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			stm->Write(UTF8STRC(";"));
+			stm->Write(CSTR(" size=").ToByteArray());
+			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+			stm->Write(CSTR(";").ToByteArray());
 			k += 7 + (UOSInt)(sptr - sbuff);
 		}
 		if (k + 47 > LINECHARCNT)
 		{
-			stm->Write(UTF8STRC("\r\n\tcreation-date=\""));
+			stm->Write(CSTR("\r\n\tcreation-date=\"").ToByteArray());
 			sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
-			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			stm->Write(UTF8STRC("\";"));
+			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+			stm->Write(CSTR("\";").ToByteArray());
 			k = 21 + (UOSInt)(sptr - sbuff);
 		}
 		else
 		{
-			stm->Write(UTF8STRC(" creation-date=\""));
+			stm->Write(CSTR(" creation-date=\"").ToByteArray());
 			sptr = Net::WebUtil::Date2Str(sbuff, att->createTime);
-			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			stm->Write(UTF8STRC("\";"));
+			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+			stm->Write(CSTR("\";").ToByteArray());
 			k += 18 + (UOSInt)(sptr - sbuff);
 		}
 		if (k + 50 > LINECHARCNT)
 		{
-			stm->Write(UTF8STRC("\r\n\tmodification-date=\""));
+			stm->Write(CSTR("\r\n\tmodification-date=\"").ToByteArray());
 			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
-			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			stm->Write(UTF8STRC("\"\r\n"));
+			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+			stm->Write(CSTR("\"\r\n").ToByteArray());
 		}
 		else
 		{
-			stm->Write(UTF8STRC(" modification-date=\""));
+			stm->Write(CSTR(" modification-date=\"").ToByteArray());
 			sptr = Net::WebUtil::Date2Str(sbuff, att->modifyTime);
-			stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-			stm->Write(UTF8STRC("\"\r\n"));
+			stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+			stm->Write(CSTR("\"\r\n").ToByteArray());
 			k = 21 + (UOSInt)(sptr - sbuff);
 		}
-		stm->Write(UTF8STRC("Content-ID: <"));
-		stm->Write(att->contentId->v, att->contentId->leng);
-		stm->Write(UTF8STRC(">\r\nContent-Transfer-Encoding: base64\r\n\r\n"));
+		stm->Write(CSTR("Content-ID: <").ToByteArray());
+		stm->Write(att->contentId->ToByteArray());
+		stm->Write(CSTR(">\r\nContent-Transfer-Encoding: base64\r\n\r\n").ToByteArray());
 		WriteB64Data(stm, att->content, att->contentLen);
 	}
-	stm->Write(UTF8STRC("--"));
-	stm->Write(boundary.v, boundary.leng);
-	stm->Write(UTF8STRC("--\r\n"));
+	stm->Write(CSTR("--").ToByteArray());
+	stm->Write(boundary.ToByteArray());
+	stm->Write(CSTR("--\r\n").ToByteArray());
 }
 
 void Net::Email::EmailMessage::WriteHeaders(NN<IO::Stream> stm)
@@ -179,8 +179,8 @@ void Net::Email::EmailMessage::WriteHeaders(NN<IO::Stream> stm)
 	while (it.HasNext())
 	{
 		header = it.Next();
-		stm->Write(header->v, header->leng);
-		stm->Write((const UInt8*)"\r\n", 2);
+		stm->Write(header->ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
 	}
 }
 
@@ -191,29 +191,29 @@ void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 	if (this->attachments.GetCount() > 0)
 	{
 		sptr = GenBoundary(sbuff, this->content, this->contentLen);
-		stm->Write(UTF8STRC("Content-Type: multipart/mixed;\r\n\tboundary=\""));
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write(UTF8STRC("\"\r\n"));
+		stm->Write(CSTR("Content-Type: multipart/mixed;\r\n\tboundary=\"").ToByteArray());
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("\"\r\n").ToByteArray());
 		IO::MemoryStream mstm;
 		GenMultipart(mstm, CSTRP(sbuff, sptr));
-		stm->Write(UTF8STRC("Content-Length: "));
+		stm->Write(CSTR("Content-Length: ").ToByteArray());
 		sptr = Text::StrUInt64(sbuff, mstm.GetLength());
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(mstm.GetArray());
 	}
 	else
 	{
-		stm->Write(UTF8STRC("Content-Type: "));
-		stm->Write(this->contentType->v, this->contentType->leng);
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(UTF8STRC("Content-Length: "));
+		stm->Write(CSTR("Content-Type: ").ToByteArray());
+		stm->Write(this->contentType->ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(CSTR("Content-Length: ").ToByteArray());
 		sptr = Text::StrUOSInt(sbuff, this->contentLen);
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write((const UInt8*)"\r\n", 2);
-		stm->Write(this->content, this->contentLen);
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(Data::ByteArrayR(this->content, this->contentLen));
 	}
 }
 
@@ -240,7 +240,7 @@ void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, const UInt8 *dat
 		sptr[0] = '\r';
 		sptr[1] = '\n';
 		sptr += 2;
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 		data += 57;
 		dataSize -= 57;
 	}
@@ -248,7 +248,7 @@ void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, const UInt8 *dat
 	sptr[0] = '\r';
 	sptr[1] = '\n';
 	sptr += 2;
-	stm->Write(sbuff, (UOSInt)(sptr - sbuff));
+	stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 }
 
 void Net::Email::EmailMessage::AttachmentFree(NN<Attachment> attachment)
@@ -587,28 +587,28 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 	{
 		IO::MemoryStream mstm;
 		this->WriteContents(mstm);
-		mstm.Write(UTF8STRC("\r\n"));
+		mstm.Write(CSTR("\r\n").ToByteArray());
 
 		UInt8 signData[512];
 		UOSInt signLen;
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = GenBoundary(sbuff, mstm.GetBuff(), (UOSInt)mstm.GetLength());
-		stm->Write(UTF8STRC("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\""));
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write(UTF8STRC("\"\r\n\r\n"));
-		stm->Write(UTF8STRC("This is a cryptographically signed message in MIME format.\r\n"));
-		stm->Write(UTF8STRC("\r\n\r\n--"));
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write(UTF8STRC("\r\n"));
-		stm->Write(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-		stm->Write(UTF8STRC("\r\n\r\n--"));
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write(UTF8STRC("\r\n"));
-		stm->Write(UTF8STRC("Content-Type: application/pkcs7-signature; name=\"smime.p7s\"\r\n"));
-		stm->Write(UTF8STRC("Content-Transfer-Encoding: base64\r\n"));
-		stm->Write(UTF8STRC("Content-Disposition: attachment; filename=\"smime.p7s\"\r\n"));
-		stm->Write(UTF8STRC("Content-Description: S/MIME Cryptographic Signature\r\n\r\n"));
+		stm->Write(CSTR("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\"").ToByteArray());
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("\"\r\n\r\n").ToByteArray());
+		stm->Write(CSTR("This is a cryptographically signed message in MIME format.\r\n").ToByteArray());
+		stm->Write(CSTR("\r\n\r\n--").ToByteArray());
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(mstm.GetArray());
+		stm->Write(CSTR("\r\n\r\n--").ToByteArray());
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("\r\n").ToByteArray());
+		stm->Write(CSTR("Content-Type: application/pkcs7-signature; name=\"smime.p7s\"\r\n").ToByteArray());
+		stm->Write(CSTR("Content-Transfer-Encoding: base64\r\n").ToByteArray());
+		stm->Write(CSTR("Content-Disposition: attachment; filename=\"smime.p7s\"\r\n").ToByteArray());
+		stm->Write(CSTR("Content-Description: S/MIME Cryptographic Signature\r\n\r\n").ToByteArray());
 
 		UnsafeArrayOpt<const UInt8> data;
 		UOSInt dataSize;
@@ -736,9 +736,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 		builder.EndLevel();
 		
 		WriteB64Data(stm, builder.GetBuff(), builder.GetBuffSize());
-		stm->Write(UTF8STRC("\r\n--"));
-		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
-		stm->Write(UTF8STRC("--"));
+		stm->Write(CSTR("\r\n--").ToByteArray());
+		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
+		stm->Write(CSTR("--").ToByteArray());
 	}
 	else
 	{

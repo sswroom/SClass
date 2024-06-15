@@ -65,17 +65,17 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 	return 0;
 }
 
-Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle> channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
 {
 	return false;
 }
 
-UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	return 0;
 }
 
-void Net::SSHConn::ChannelClose(SSHChannelHandle *channel)
+void Net::SSHConn::ChannelClose(NN<SSHChannelHandle> channel)
 {
 }
 

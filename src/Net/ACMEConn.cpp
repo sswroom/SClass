@@ -155,7 +155,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN d
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	cli->AddContentType(CSTR("application/jose+json"));
 	cli->AddContentLength(jwsLen);
-	cli->Write(jws->v, jwsLen);
+	cli->Write(jws->ToByteArray());
 	jws->Release();
 
 	Text::StringBuilderUTF8 sb;
@@ -285,7 +285,7 @@ Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost
 			{
 				break;
 			}
-			mstm.Write(buff, recvSize);
+			mstm.Write(Data::ByteArrayR(buff, recvSize));
 		}
 		if (mstm.GetLength() > 32)
 		{

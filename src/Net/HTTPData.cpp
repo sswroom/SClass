@@ -91,7 +91,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 					fdh->seekCnt++;
 					fdh->currentOffset = fdh->loadSize;
 				}
-				fdh->file->Write(buff, readSize);
+				fdh->file->Write(Data::ByteArrayR(buff, readSize));
 				fdh->loadSize += readSize;
 				fdh->currentOffset = fdh->loadSize;
 				mutUsage.EndUse();
@@ -136,7 +136,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 						fdh->file->SeekFromBeginning(fdh->loadSize);
 						fdh->seekCnt++;
 					}
-					fdh->file->Write(buff, readSize);
+					fdh->file->Write(Data::ByteArrayR(buff, readSize));
 					fdh->loadSize += readSize;
 					fdh->fileLength = fdh->loadSize;
 					fdh->currentOffset = fdh->fileLength;

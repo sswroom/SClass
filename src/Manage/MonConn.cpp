@@ -258,7 +258,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 					data = me->cmdList.GetItem(0);
 					me->requesting = true;
 					me->lastReqTime.SetCurrTimeUTC();
-					me->cli->Write(data, ReadUInt16(&data[2]));
+					me->cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
 				}
 			}
 		}

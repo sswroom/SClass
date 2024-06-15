@@ -150,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 					cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
 					while (i >= 2048)
 					{
-						j = cli->Write(buff, 2048);
+						j = cli->Write(Data::ByteArrayR(buff, 2048));
 						if (j <= 0)
 						{
 							break;
@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 					}
 					if (i > 0)
 					{
-						cli->Write(buff, i);
+						cli->Write(Data::ByteArrayR(buff, i));
 					}
 				}
 				cli->EndRequest(timeReq, timeResp);

@@ -38,7 +38,7 @@ UOSInt PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<C
 	crc->Clear();
 	crc->Calc(&tmpBuff[4], colorCnt * 3 + 4);
 	crc->GetValue(&tmpBuff[colorCnt * 3 + 8]);
-	stm->Write(tmpBuff, colorCnt * 3 + 12);
+	stm->Write(Data::ByteArrayR(tmpBuff, colorCnt * 3 + 12));
 	MemFree(tmpBuff);
 	return colorCnt * 3 + 12;
 }
@@ -1544,7 +1544,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	crc.Clear();
 	crc.Calc(&hdr[12], 13 + 4);
 	crc.GetValue(&hdr[29]);
-	stm->Write(hdr, 33);
+	stm->Write(Data::ByteArrayR(hdr, 33));
 
 	const UInt8 *iccBuff = img->info.color.GetRAWICC();
 	if (iccBuff)
@@ -1562,7 +1562,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			crc.Clear();
 			crc.Calc(&tmpBuff[4], 27 + i);
 			crc.GetValue(&tmpBuff[31 + i]);
-			stm->Write(tmpBuff, 35 + i);
+			stm->Write(Data::ByteArrayR(tmpBuff, 35 + i));
 		}
 		MemFree(tmpBuff);
 	}
@@ -1576,7 +1576,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			crc.Clear();
 			crc.Calc(&hdr[4], 8);
 			crc.GetValue(&hdr[12]);
-			stm->Write(hdr, 16);
+			stm->Write(Data::ByteArrayR(hdr, 16));
 		}
 		else if (img->info.color.rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
 		{
@@ -1586,7 +1586,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			crc.Clear();
 			crc.Calc(&hdr[4], 5);
 			crc.GetValue(&hdr[9]);
-			stm->Write(hdr, 13);
+			stm->Write(Data::ByteArrayR(hdr, 13));
 		}
 		
 		if (img->info.color.primaries.colorType != Media::ColorProfile::CT_VUNKNOWN && img->info.color.primaries.colorType != Media::ColorProfile::CT_PUNKNOWN)
@@ -1604,7 +1604,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			crc.Clear();
 			crc.Calc(&hdr[4], 36);
 			crc.GetValue(&hdr[40]);
-			stm->Write(hdr, 44);
+			stm->Write(Data::ByteArrayR(hdr, 44));
 		}
 	}
 
@@ -1620,7 +1620,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&hdr[4], 13);
 		crc.GetValue(&hdr[17]);
-		stm->Write(hdr, 21);
+		stm->Write(Data::ByteArrayR(hdr, 21));
 	}
 
 	switch (img->info.pf)
@@ -1652,7 +1652,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1683,7 +1683,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1714,7 +1714,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1746,7 +1746,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1781,7 +1781,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1811,7 +1811,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1848,7 +1848,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1884,7 +1884,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1921,7 +1921,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -1960,7 +1960,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -2001,7 +2001,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		crc.Clear();
 		crc.Calc(&tmpBuff2[4], i + 4);
 		crc.GetValue(&tmpBuff2[i + 8]);
-		stm->Write(tmpBuff2, i + 12);
+		stm->Write(Data::ByteArrayR(tmpBuff2, i + 12));
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
@@ -2028,6 +2028,6 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	WriteMInt32(&hdr[0], 0);
 	*(Int32*)&hdr[4] = *(Int32*)"IEND";
 	WriteMUInt32(&hdr[8], 0xAE426082);
-	stm->Write(hdr, 12);
+	stm->Write(Data::ByteArrayR(hdr, 12));
 	return true;
 }

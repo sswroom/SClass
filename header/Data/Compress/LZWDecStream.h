@@ -29,13 +29,13 @@ namespace Data
 		private:
 			void ResetTable();
 		public:
-			LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
+			LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
 			LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj);
 			virtual ~LZWDecStream();
 
 			virtual Bool IsDown() const;
 			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
+			virtual UOSInt Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

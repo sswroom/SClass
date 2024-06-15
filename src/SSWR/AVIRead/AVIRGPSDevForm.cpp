@@ -380,7 +380,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		this->cli->Write(buff, cmdSize);
+		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -391,7 +391,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		this->cli->Write(buff, cmdSize);
+		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -402,7 +402,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		this->cli->Write(buff, cmdSize);
+		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -413,7 +413,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevice(Int64 devId)
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		this->cli->Write(buff, cmdSize);
+		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -424,7 +424,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlert(Int32 alertId)
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		this->cli->Write(buff, cmdSize);
+		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -435,7 +435,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		this->cli->Write(buff, cmdSize);
+		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 

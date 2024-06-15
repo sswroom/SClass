@@ -73,11 +73,11 @@ UOSInt Text::MIMEObj::MIMEMessage::WriteStream(NN<IO::Stream> stm) const
 		i++;
 	}
 	sbc.AppendC(UTF8STRC("\r\n"));
-	stm->Write(sbc.ToString(), sbc.GetLength());
+	stm->Write(sbc.ToByteArray());
 	i = sbc.GetLength();
 	if (this->transferData)
 	{
-		stm->Write(this->transferData, this->transferSize);
+		stm->Write(Data::ByteArrayR(this->transferData, this->transferSize));
 		i += this->transferSize;
 	}
 	else if (this->content.SetTo(content))

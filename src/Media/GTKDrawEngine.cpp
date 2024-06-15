@@ -1219,7 +1219,7 @@ UOSInt Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)
 	gdk_pixbuf_save_to_buffer(pixbuf, &buff, &buffSize, "png", 0, (void*)0);
 	if (buff)
 	{
-		buffSize = stm->Write((UInt8*)buff, buffSize);
+		buffSize = stm->Write(Data::ByteArrayR((UInt8*)buff, buffSize));
 		g_free(buff);
 		g_object_unref(pixbuf);
 		return buffSize;

@@ -277,7 +277,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -354,7 +354,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -534,7 +534,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -653,7 +653,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -794,7 +794,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -918,7 +918,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -1018,7 +1018,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-		resp->Write(buff, buffSize);
+		resp->Write(Data::ByteArrayR(buff, buffSize));
 		return true;
 	}
 
@@ -1446,7 +1446,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-		resp->Write(buff, buffSize);
+		resp->Write(Data::ByteArrayR(buff, buffSize));
 
 		mutUsage.ReplaceMutex(dev->mut, true);
 		if (dev->imgCaches.Put((sensorId << 16) + (readingId << 8) + (readingType), mstm).SetTo(mstm))
@@ -1575,7 +1575,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -1798,7 +1798,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
 		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-		resp->Write(buff, buffSize);
+		resp->Write(Data::ByteArrayR(buff, buffSize));
 		return true;
 	}
 	else
@@ -1888,7 +1888,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -1956,7 +1956,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -2019,7 +2019,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 
@@ -2156,7 +2156,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
 	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
-	resp->Write(buff, buffSize);
+	resp->Write(Data::ByteArrayR(buff, buffSize));
 	return true;
 }
 

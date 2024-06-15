@@ -242,7 +242,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 			else if (blkNum == sess->currBlock + 1)
 			{
 				sess->currBlock = blkNum;
-				sess->stm->Write(&data[4], data.GetSize() - 4);
+				sess->stm->Write(data.SubArray(4));
 				if (data.GetSize() - 4 != sess->blockSize)
 				{
 					if (me->log->HasHandler())

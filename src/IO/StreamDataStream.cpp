@@ -38,7 +38,7 @@ UOSInt IO::StreamDataStream::Read(const Data::ByteArray &buff)
 	return thisSize;
 }
 
-UOSInt IO::StreamDataStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::StreamDataStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
@@ -60,7 +60,7 @@ void IO::StreamDataStream::CancelRead(void *reqData)
 {
 }
 
-void *IO::StreamDataStream::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::StreamDataStream::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
 	return 0;
 }

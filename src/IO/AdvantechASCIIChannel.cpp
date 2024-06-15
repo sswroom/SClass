@@ -102,7 +102,7 @@ UnsafeArrayOpt<UTF8Char> IO::AdvantechASCIIChannel::SendCommand(UnsafeArray<UTF8
 	Text::StrConcatC(replyBuff, cmd, cmdLen);
 	replyBuff[cmdLen] = 13;
 	Sync::MutexUsage mutUsage(this->cmdResMut);
-	this->stm->Write(replyBuff, cmdLen + 1);
+	this->stm->Write(Data::ByteArrayR(replyBuff, cmdLen + 1));
 	this->cmdResBuff = replyBuff;
 	this->cmdResEnd = 0;
 	mutUsage.EndUse();
@@ -206,7 +206,7 @@ Bool IO::AdvantechASCIIChannel::StoreCurrInputs()
 {
 	if (!this->threadRunning)
 		return false;
-	return this->stm->Write((const UInt8*)"#**", 3) == 3;
+	return this->stm->Write(CSTR("#**").ToByteArray()) == 3;
 }
 
 Bool IO::AdvantechASCIIChannel::AnalogOGetResetStatus(UInt8 addr, Bool *hasReset)

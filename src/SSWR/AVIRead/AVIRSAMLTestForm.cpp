@@ -379,7 +379,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 	resp->AddCacheControl(0);
 	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
-	resp->Write(sb.ToString(), sb.GetLength());
+	resp->Write(sb.ToByteArray());
 	return true;
 }
 

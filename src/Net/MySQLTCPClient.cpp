@@ -1589,7 +1589,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										WriteInt24(buff, (ptrCurr - buff - 4));
 										buff[3] = 1;
 										me->cmdSeqNum = 1;
-										me->cli->Write(buff, (UOSInt)(ptrCurr - buff));
+										me->cli->Write(Data::ByteArrayR(buff, (UOSInt)(ptrCurr - buff)));
 	#if defined(VERBOSE)
 										printf("MySQLTCP %d handshake response sent\r\n", me->cli->GetLocalPort());
 	#endif
@@ -1663,7 +1663,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							UOSInt authSize = Net::MySQLUtil::BuildAuthen(&packetBuff[4], me->authenType, &buff[6 + nameLen], readSize - 3 - nameLen, me->password->ToCString());
 							WriteUInt32(packetBuff, (UInt32)authSize);
 							packetBuff[3] = (UInt8)me->cmdSeqNum;
-							me->cli->Write(packetBuff, authSize + 4);
+							me->cli->Write(Data::ByteArrayR(packetBuff, authSize + 4));
 						}
 						else
 						{
@@ -2031,7 +2031,7 @@ void Net::MySQLTCPClient::SendExecuteStmt(UInt32 stmtId)
 	WriteUInt32(&sbuff[5], stmtId);
 	sbuff[9] = 0;
 	WriteUInt32(&sbuff[10], 1);
-	this->cli->Write(sbuff, 14);
+	this->cli->Write(Data::ByteArrayR(sbuff, 14));
 }
 
 void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
@@ -2041,7 +2041,7 @@ void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
 	sbuff[3] = 0;
 	sbuff[4] = 0x19; //COM_STMT_CLOSE
 	WriteUInt32(&sbuff[5], stmtId);
-	this->cli->Write(sbuff, 9);
+	this->cli->Write(Data::ByteArrayR(sbuff, 9));
 }
 
 Net::MySQLTCPClient::MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database) : DB::DBConn(CSTR("MySQLTCPClient"))
@@ -2224,7 +2224,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 3;
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
-	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
+	if (this->cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
 	{
 		this->cmdTCPReader = 0;
 		reader.Delete();
@@ -2278,7 +2278,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 22;
 	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
-	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
+	if (this->cli->Write(Data::ByteArrayR(buff, 5 + sql.leng)) != 5 + sql.leng)
 	{
 		this->cmdBinReader = 0;
 		reader.Delete();

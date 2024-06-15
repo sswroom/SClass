@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 					thisSize = stm->Read(buff);
 					if (thisSize == 0)
 						break;
-					mstm->Write(buff.Arr().Ptr(), thisSize);
+					mstm->Write(buff.WithSize(thisSize));
 					totalSize += thisSize;
 				}
 			}

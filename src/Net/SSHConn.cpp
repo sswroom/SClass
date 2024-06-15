@@ -174,7 +174,8 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 	else
 		printf("SSHConn: Remote failed connecting to %s:%d\r\n", remoteHost.v, remotePort);
 #endif
-	if (channel == 0)
+	NN<SSHChannelHandle> nnchannel;
+	if (!nnchannel.Set((SSHChannelHandle*)channel))
 	{
 		this->lastError = libssh2_session_last_errno(this->clsData->session);
 #if defined(VERBOSE)
@@ -191,14 +192,14 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 		this->clsData->blocking = false;
 	}*/
 	NN<Net::SSHTCPChannel> ch;
-	NEW_CLASSNN(ch, Net::SSHTCPChannel(*this, (SSHChannelHandle*)channel, remoteHost));
+	NEW_CLASSNN(ch, Net::SSHTCPChannel(*this, nnchannel, remoteHost));
 	return ch;
 }
 
-Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHConn::ChannelTryRead(NN<SSHChannelHandle>channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	ssize_t sz = libssh2_channel_read_ex((LIBSSH2_CHANNEL*)channel, 0, (Char*)buff.Ptr(), (size_t)maxSize);
+	ssize_t sz = libssh2_channel_read_ex((LIBSSH2_CHANNEL*)channel.Ptr(), 0, (Char*)buff.Ptr(), (size_t)maxSize);
 	if (sz == LIBSSH2_ERROR_EAGAIN)
 		return false;
 	if (sz < 0)
@@ -217,10 +218,10 @@ Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> 
 	return true;
 }
 
-UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::SSHConn::ChannelWrite(NN<SSHChannelHandle> channel, UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	ssize_t sz = libssh2_channel_write_ex((LIBSSH2_CHANNEL*)channel, 0, (const Char*)buff.Ptr(), size);
+	ssize_t sz = libssh2_channel_write_ex((LIBSSH2_CHANNEL*)channel.Ptr(), 0, (const Char*)buff.Ptr(), size);
 	if (sz >= 0)
 	{
 #if defined(VERBOSE)
@@ -235,15 +236,15 @@ UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, UnsafeArray<const U
 	return 0;
 }
 
-void Net::SSHConn::ChannelClose(SSHChannelHandle *channel)
+void Net::SSHConn::ChannelClose(NN<SSHChannelHandle> channel)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	libssh2_channel_set_blocking((LIBSSH2_CHANNEL*)channel, -1); 
-	int err = libssh2_channel_close((LIBSSH2_CHANNEL*)channel);
+	libssh2_channel_set_blocking((LIBSSH2_CHANNEL*)channel.Ptr(), -1); 
+	int err = libssh2_channel_close((LIBSSH2_CHANNEL*)channel.Ptr());
 #if defined(VERBOSE)
 	printf("SSHConn: Channel close response: %d (%s)\r\n", err, Net::SSHManager::ErrorGetName(err).v);
 #endif
-	err = libssh2_channel_free((LIBSSH2_CHANNEL*)channel);
+	err = libssh2_channel_free((LIBSSH2_CHANNEL*)channel.Ptr());
 #if defined(VERBOSE)
 	printf("SSHConn: Channel free response: %d (%s)\r\n", err, Net::SSHManager::ErrorGetName(err).v);
 #endif

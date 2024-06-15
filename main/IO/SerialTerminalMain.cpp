@@ -78,7 +78,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						break;
 					}
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
-					port->Write(sbuff, (UOSInt)(sptr - sbuff));
+					port->Write(Data::ByteArrayR(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				threadToStop = true;
 				port->Close();

@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientData(NN<Net::TCPClient>
 	NN<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	if (me->echo)
 	{
-		cli->Write(buff.Arr().Ptr(), buff.GetSize());
+		cli->Write(buff);
 	}
 }
 
@@ -106,7 +106,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(AnyType userObj)
 		if (recvSize <= 0)
 			break;
 		if (cliStatus->echo)
-			cliStatus->cli->Write(recvBuff.Arr().Ptr(), recvSize);
+			cliStatus->cli->Write(recvBuff.WithSize(recvSize));
 	}
 	cliStatus->cli.Delete();
 	MemFreeNN(cliStatus);

@@ -1021,7 +1021,7 @@ void Map::HKTrafficLayer::ReloadData()
 			readSize = stm->Read(BYTEARR(buff));
 			if (readSize <= 0)
 				break;
-			mstm.Write(buff, readSize);
+			mstm.Write(Data::ByteArrayR(buff, readSize));
 		}
 		const UInt8 *xmlBuff = mstm.GetBuff(readSize);
 		NN<Text::XMLNode> node1;

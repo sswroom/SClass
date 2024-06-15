@@ -158,14 +158,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		while (i < j)
 		{
 			param = me->params.GetItemNoCheck(i);
-			mstm.Write((const UInt8*)"--", 2);
-			mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
-			mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; name=\""));
+			mstm.Write(CSTR("--").ToByteArray());
+			mstm.Write(sbBoundary.ToByteArray());
+			mstm.Write(CSTR("\r\nContent-Disposition: form-data; name=\"").ToByteArray());
 			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
-			mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
-			mstm.Write((const UInt8*)"\"\r\n\r\n", 5);
-			mstm.Write(param->value->v, param->value->leng);
-			mstm.Write((const UInt8*)"\r\n", 2);
+			mstm.Write(CSTRP(sbuff, sptr).ToByteArray());
+			mstm.Write(CSTR("\"\r\n\r\n").ToByteArray());
+			mstm.Write(param->value->ToByteArray());
+			mstm.Write(CSTR("\r\n").ToByteArray());
 
 			i++;
 		}
@@ -183,27 +183,27 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 			fileLength = fs.GetLength();
 			if (fileLength > 0 && fileLength < 104857600)
 			{
-				mstm.Write((const UInt8*)"--", 2);
-				mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
-				mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; "));
+				mstm.Write(CSTR("--").ToByteArray());
+				mstm.Write(sbBoundary.ToByteArray());
+				mstm.Write(CSTR("\r\nContent-Disposition: form-data; ").ToByteArray());
 				if (sb.GetCharCnt() > 0)
 				{
-					mstm.Write((const UInt8*)"name=\"", 6);
+					mstm.Write(CSTR("name=\"").ToByteArray());
 					sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, sb2.ToString());
-					mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
-					mstm.Write((const UInt8*)"\"; ", 3);
+					mstm.Write(CSTRP(sbuff, sptr).ToByteArray());
+					mstm.Write(CSTR("\"; ").ToByteArray());
 				}
 				k = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
-				mstm.Write((const UInt8*)"filename=\"", 10);
+				mstm.Write(CSTR("filename=\"").ToByteArray());
 				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, &s->v[k + 1]);
-				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
-				mstm.Write((const UInt8*)"\"\r\n", 3);
+				mstm.Write(CSTRP(sbuff, sptr).ToByteArray());
+				mstm.Write(CSTR("\"\r\n").ToByteArray());
 
 				sptr = IO::Path::GetFileExt(sbuff, &s->v[k], s->leng - k);
 				mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
-				mstm.Write((const UInt8*)"Content-Type: ", 14);
-				mstm.Write(mime.v, mime.leng);
-				mstm.Write((const UInt8*)"\r\n\r\n", 4);
+				mstm.Write(CSTR("Content-Type: ").ToByteArray());
+				mstm.Write(mime.ToByteArray());
+				mstm.Write(CSTR("\r\n\r\n").ToByteArray());
 
 				ofst = 0;
 				while (ofst < fileLength)
@@ -213,15 +213,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 					{
 						break;
 					}
-					mstm.Write(fileBuff, k);
+					mstm.Write(Data::ByteArrayR(fileBuff, k));
 					ofst += k;
 				}
-				mstm.Write((const UInt8*)"\r\n", 2);
+				mstm.Write(CSTR("\r\n").ToByteArray());
 			}
 		}
-		mstm.Write((const UInt8*)"--", 2);
-		mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
-		mstm.Write((const UInt8*)"--", 2);
+		mstm.Write(CSTR("--").ToByteArray());
+		mstm.Write(sbBoundary.ToByteArray());
+		mstm.Write(CSTR("--").ToByteArray());
 
 		UOSInt buffSize;
 		UInt8 *reqBuff = mstm.GetBuff(buffSize);
@@ -365,7 +365,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 				UOSInt buffSize;
 				UOSInt writeSize;
 				UInt8 *buff = me->respData->GetBuff(buffSize);
-				writeSize = fs.Write(buff, buffSize);
+				writeSize = fs.Write(Data::ByteArrayR(buff, buffSize));
 				succ = (writeSize == buffSize);
 			}
 			mutUsage.EndUse();
@@ -646,7 +646,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 					sptr = Text::StrUOSInt(sbuff, currBodyLen);
 					cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 					cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
-					cli->Write(nncurrBody, currBodyLen);
+					cli->Write(Data::ByteArrayR(nncurrBody, currBodyLen));
 				}
 
 				cli->EndRequest(me->respTimeReq, me->respTimeResp);
@@ -654,7 +654,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				UOSInt thisRead;
 				while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 				{
-					mstm->Write(buff, thisRead);
+					mstm->Write(Data::ByteArrayR(buff, thisRead));
 					totalRead += thisRead;
 				}
 				me->respTimeTotal = cli->GetTotalTime();
@@ -689,7 +689,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 							sptr = Text::StrUOSInt(sbuff, currBodyLen);
 							cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 							cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
-							cli->Write(nncurrBody, currBodyLen);
+							cli->Write(Data::ByteArrayR(nncurrBody, currBodyLen));
 						}
 						if (currHeaders)
 						{
@@ -717,7 +717,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 						totalRead = 0;
 						while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 						{
-							mstm->Write(buff, thisRead);
+							mstm->Write(Data::ByteArrayR(buff, thisRead));
 							totalRead += thisRead;
 						}
 						me->respTimeTotal = cli->GetTotalTime();

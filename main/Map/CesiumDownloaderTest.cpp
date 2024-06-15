@@ -96,7 +96,7 @@ private:
 
 	static void ParseJSON(NN<ThreadStatus> stat, Text::String *url, IO::MemoryStream *mstm, NN<Text::StringBuilderUTF8> tmpSb)
 	{
-		mstm->Write((const UInt8*)"", 1);
+		mstm->Write(Data::ByteArrayR(U8STR(""), 1));
 		UOSInt i;
 		const UInt8 *buff = mstm->GetBuff(i);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, i - 1));
@@ -129,7 +129,7 @@ private:
 			NEW_CLASS(mstm, IO::MemoryStream());
 			while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 			{
-				mstm->Write(buff, thisRead);
+				mstm->Write(Data::ByteArrayR(buff, thisRead));
 //				totalRead += thisRead;
 			}
 			stat->totalDownload += cli->GetTotalDownload();
@@ -473,7 +473,7 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 		sb.AppendUTF8Char('\t');
 		sb.AppendU64(file->downloadSize);
 		sb.AppendC(UTF8STRC("\r\n"));
-		fs.Write(sb.ToString(), sb.GetLength());
+		fs.Write(sb.ToByteArray());
 		i++;
 	}
 	downloader->ClearFiles();

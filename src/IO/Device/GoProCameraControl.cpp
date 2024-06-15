@@ -256,7 +256,7 @@ Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> fil
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
-		totalWriteSize += outStm->Write(sbuff, readSize);
+		totalWriteSize += outStm->Write(Data::ByteArrayR(sbuff, readSize));
 	}
 	cli.Delete();
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
@@ -282,7 +282,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::File
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
-		outStm->Write(sbuff, readSize);
+		outStm->Write(Data::ByteArrayR(sbuff, readSize));
 	}
 	cli.Delete();
 	return totalSize > 512;

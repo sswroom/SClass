@@ -93,7 +93,7 @@ Bool IO::Device::DensoWaveQK30U::ScanModeStart()
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	succ = this->stm->Write((UInt8*)"R\r", 2) == 2;
+	succ = this->stm->Write(CSTR("R\r").ToByteArray()) == 2;
 	return succ;
 }
 
@@ -101,7 +101,7 @@ Bool IO::Device::DensoWaveQK30U::ScanModeEnd()
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	succ = this->stm->Write((UInt8*)"Z\r", 2) == 2;
+	succ = this->stm->Write(CSTR("Z\r").ToByteArray()) == 2;
 	return succ;
 }
 
@@ -211,7 +211,7 @@ Int32 IO::Device::DensoWaveQK30U::ReadCommand(const Char *cmdStr, UOSInt cmdLen)
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	if (this->stm->Write((const UInt8*)cmdStr, cmdLen) == cmdLen)
+	if (this->stm->Write(Data::ByteArrayR((const UInt8*)cmdStr, cmdLen)) == cmdLen)
 	{
 		if (!this->WaitForReplyVal(1000, result))
 		{
@@ -233,7 +233,7 @@ Bool IO::Device::DensoWaveQK30U::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	if (this->stm->Write((UInt8*)cmdStr, cmdLen) == cmdLen)
+	if (this->stm->Write(Data::ByteArrayR((UInt8*)cmdStr, cmdLen)) == cmdLen)
 	{
 		if (this->WaitForReply(1000))
 		{
@@ -302,7 +302,7 @@ Bool IO::Device::DensoWaveQK30U::SoftReset()
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	succ = this->stm->Write((UInt8*)"RESET\r", 6) == 6;
+	succ = this->stm->Write(CSTR("RESET\r").ToByteArray()) == 6;
 	mutUsage.EndUse();
 	if (succ)
 	{
@@ -318,7 +318,7 @@ Bool IO::Device::DensoWaveQK30U::ResetDefault()
 	Sync::MutexUsage recvMutUsage(this->recvMut);
 	this->recvSize = 0;
 	recvMutUsage.EndUse();
-	succ = this->stm->Write((UInt8*)"DEFAULT\r", 8) == 8;
+	succ = this->stm->Write(CSTR("DEFAULT\r").ToByteArray()) == 8;
 	mutUsage.EndUse();
 	if (succ)
 	{

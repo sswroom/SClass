@@ -114,5 +114,5 @@ void IO::SNBProtocol::SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 		i++;
 	}
 	buff[j] = chk;
-	this->stm->Write(buff, j + 1);
+	this->stm->Write(Data::ByteArrayR(buff, j + 1));
 }

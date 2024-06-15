@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 			NN<Net::HTTPClient> cli;
 			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
-			cli->Write(sbData.ToString(), sbData.GetLength());
+			cli->Write(sbData.ToByteArray());
 			respStatus = cli->GetRespStatus();
 			cli.Delete();
 			if (respStatus == 200)

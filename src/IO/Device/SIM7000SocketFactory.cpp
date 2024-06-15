@@ -365,17 +365,17 @@ void IO::Device::SIM7000SocketFactory::AddIPMembership(NN<Socket> socket, UInt32
 
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::SendData(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt IO::Device::SIM7000SocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-void *IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+void *IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	return 0;
 }
@@ -482,7 +482,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendToIF(NN<Socket> socket, UnsafeArray
 	return 0;
 }
 
-Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl)
+Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, OutParam<UInt32> respTime_us, OutParam<UInt32> ttl)
 {
 	UTF8Char sbuff[32];
 	if (addr->addrType != Net::AddrType::IPv4)
@@ -491,10 +491,10 @@ Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::A
 	}
 	Net::SocketUtil::GetAddrName(sbuff, addr);
 	UInt32 respTimeMS;
-	Bool succ = this->modem->NetPing(sbuff, &respTimeMS, ttl);
-	if (succ && respTime_us)
+	Bool succ = this->modem->NetPing(sbuff, respTimeMS, ttl);
+	if (succ)
 	{
-		*respTime_us = respTimeMS * 1000;
+		respTime_us.Set(respTimeMS * 1000);
 	}
 	return succ;
 }
@@ -517,7 +517,7 @@ void IO::Device::SIM7000SocketFactory::ShutdownSocket(NN<Socket> socket)
 {
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(NN<Socket> socket, UInt32 *size)
+Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32> size)
 {
 	return false;
 }

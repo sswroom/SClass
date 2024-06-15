@@ -109,5 +109,5 @@ void Map::TileMapFolderWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::By
 		break;
 	}
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-	fs.Write(imgData.Arr().Ptr(), imgData.GetSize());
+	fs.Write(imgData);
 }

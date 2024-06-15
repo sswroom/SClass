@@ -11,6 +11,6 @@ Bool IO::IOTool::EchoFile(Text::CStringNN fileName, Text::CStringNN msg)
 	{
 		return false;
 	}
-	fs.Write(msg.v, msg.leng);
+	fs.Write(msg.ToByteArray());
 	return true;
 }

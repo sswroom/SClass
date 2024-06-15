@@ -168,11 +168,11 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	{
 	case 0: //KA
 		replySize = this->protoHdlr.BuildPacket(reply, 1, seqId, 0, 0, 0);
-		stm->Write(reply, replySize);
+		stm->Write(Data::ByteArrayR(reply, replySize));
 		break;
 	case 2: //Log Message
 		replySize = this->protoHdlr.BuildPacket(reply, 3, seqId, cmd, 8, 0);
-		stm->Write(reply, replySize);
+		stm->Write(Data::ByteArrayR(reply, replySize));
 		if (this->redirLog)
 		{
 			Text::StringBuilderUTF8 sb;

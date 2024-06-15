@@ -14,7 +14,7 @@ UInt32 __stdcall IO::ActiveStreamReader::ReadThread(AnyType obj)
 	{
 		while (me->buffs[i].buffSize > 0)
 		{
-			me->hdlr(me->buffs[i].buff, me->buffs[i].buffSize, me->userData);
+			me->hdlr(Data::ByteArrayR(me->buffs[i].buff, me->buffs[i].buffSize), me->userData);
 			me->buffs[i].buffSize = 0;
 			me->emptyEvt.Set();
 			i = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;

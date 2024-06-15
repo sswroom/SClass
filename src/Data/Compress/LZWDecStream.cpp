@@ -29,7 +29,7 @@ void Data::Compress::LZWDecStream::ResetTable()
 	this->localCode = (UInt32)-1;
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
+Data::Compress::LZWDecStream::LZWDecStream(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
 	this->tableSize = ((UOSInt)1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
@@ -206,7 +206,7 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 	return writeSize;
 }
 
-UOSInt Data::Compress::LZWDecStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Data::Compress::LZWDecStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

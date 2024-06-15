@@ -70,7 +70,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(AnyType userObj)
 		{
 			me->recvCount += recvSize;
 			me->recvUpdated = true;
-			me->stm->Write(buff, recvSize);
+			me->stm->Write(Data::ByteArrayR(buff, recvSize));
 		}
 	}
 	me->threadRunning = false;

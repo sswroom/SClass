@@ -324,7 +324,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd
 		UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, cmd, cmdLen);
 		sptr[0] = '\r';
 //		sptr[1] = '\n';
-		this->prog->Write(sbuff, cmdLen + 1);
+		this->prog->Write(Data::ByteArrayR(sbuff, cmdLen + 1));
 	}
 	else
 	{
@@ -332,7 +332,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(UnsafeArray<const UTF8Char> cmd
 		sb.AppendC(cmd, cmdLen);
 		sb.AppendUTF8Char('\r');
 //		sb.AppendUTF8Char('\n');
-		this->prog->Write(sb.ToString(), sb.GetLength());
+		this->prog->Write(sb.ToByteArray());
 	}
 }
 

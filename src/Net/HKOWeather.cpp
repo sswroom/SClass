@@ -92,7 +92,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 	IO::MemoryStream mstm;
 	while ((i = cli->Read(BYTEARR(buff))) > 0)
 	{
-		mstm.Write(buff, i);
+		mstm.Write(Data::ByteArrayR(buff, i));
 	}
 	cli.Delete();
 

@@ -275,7 +275,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 		tmpPacket[7] = '0';
 		tmpPacket[8] = '0';
 		i = this->protoHdlr->BuildPacket(packet, 0x8100, data->seqId++, tmpPacket, 9, data->cliData);
-		stm->Write(packet, i);
+		stm->Write(Data::ByteArrayR(packet, i));
 		break;
 	case 0x102: //Authentication
 		this->log.LogMessage(CSTR("Cmd: Authentication"), IO::LogHandler::LogLevel::Action);
@@ -283,7 +283,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 		WriteMInt16(&tmpPacket[2], 0x102);
 		tmpPacket[4] = 0;
 		i = this->protoHdlr->BuildPacket(packet, 0x8001, data->seqId++, tmpPacket, 5, data->cliData);
-		stm->Write(packet, i);
+		stm->Write(Data::ByteArrayR(packet, i));
 		break;
 	case 0x200:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Location: Alert = 0x"));

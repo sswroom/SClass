@@ -56,7 +56,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(AnyType userObj)
 		if (buff1[3] != 0 && buff1[3] != 255)
 		{
 			Net::SocketUtil::SetAddrInfoV4(addr, ReadNUInt32(buff1));
-			if (status->me->sockf->IcmpSendEcho2(addr, &respTime, &ttl))
+			if (status->me->sockf->IcmpSendEcho2(addr, respTime, ttl))
 			{
 				result = MemAllocNN(ScanResult);
 				result->ip = ReadNUInt32(buff1);

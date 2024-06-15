@@ -649,7 +649,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendLoginReply(NN<IO::Stream> stm, Int6
 	WriteInt64(&cmdBuff[8], svrTime);
 	cmdBuff[16] = status;
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 1, 0, cmdBuff, 17, 0);
-	stm->Write(packetBuff, packetSize);
+	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(NN<IO::Stream> stm, Int64 cliTime, Int64 svrTime)
@@ -660,7 +660,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendKAReply(NN<IO::Stream> stm, Int64 c
 	WriteInt64(&cmdBuff[0], cliTime);
 	WriteInt64(&cmdBuff[8], svrTime);
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 7, 0, cmdBuff, 16, 0);
-	stm->Write(packetBuff, packetSize);
+	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(NN<IO::Stream> stm)
@@ -668,7 +668,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(NN<IO::Stream> stm)
 	UInt8 packetBuff[10];
 	UOSInt packetSize;
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 9, 0, 0, 0, 0);
-	stm->Write(packetBuff, packetSize);
+	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(NN<IO::Stream> stm, Int64 photoTime)
@@ -678,7 +678,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendPhotoEnd(NN<IO::Stream> stm, Int64 
 	UOSInt packetSize;
 	WriteInt64(&cmdBuff[0], photoTime);
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 15, 0, cmdBuff, 8, 0);
-	stm->Write(packetBuff, packetSize);
+	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(NN<IO::Stream> stm, UInt32 outputNum, Bool toHigh)
@@ -689,7 +689,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendSetOutput(NN<IO::Stream> stm, UInt3
 	cmdBuff[0] = (UInt8)outputNum;
 	cmdBuff[1] = toHigh?1:0;
 	packetSize = this->protoHdlr.BuildPacket(packetBuff, 21, 0, cmdBuff, 2, 0);
-	stm->Write(packetBuff, packetSize);
+	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UDPSendReadingRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 recTime)
@@ -843,10 +843,10 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				fsBuff[21] = 0;
 				WriteInt16(&fsBuff[22], -2);
 				WriteInt64(&fsBuff[24], rec->recvTime);
-				fs->Write(fsBuff, 32);
+				fs->Write(Data::ByteArrayR(fsBuff, 32));
 				if (rec->nreading)
 				{
-					fs->Write((UInt8*)&rec->readings[0], 16 * rec->nreading);
+					fs->Write(Data::ByteArrayR((UInt8*)&rec->readings[0], 16 * rec->nreading));
 				}
 				MemFreeNN(rec);
 			}
@@ -889,7 +889,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, In
 	sptr = Text::StrInt64(sptr, photoTime);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	fs.Write(photoBuff, photoSize);
+	fs.Write(Data::ByteArrayR(photoBuff, photoSize));
 	
 	/////////////////////////////////////////////
 }

@@ -146,7 +146,7 @@ Bool SSWR::DataSync::SyncClient::SendLogin()
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		succ = (this->cli->Write(packetBuff, len) == len);
+		succ = (this->cli->Write(Data::ByteArrayR(packetBuff, len)) == len);
 	}
 	mutUsage.EndUse();
 	return succ;
@@ -162,7 +162,7 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
-		succ = (this->cli->Write(packetBuff, len) == len);
+		succ = (this->cli->Write(Data::ByteArrayR(packetBuff, len)) == len);
 	}
 	mutUsage.EndUse();
 	return succ;
@@ -181,7 +181,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
-			succ = (this->cli->Write(dataBuff, len) == len);
+			succ = (this->cli->Write(Data::ByteArrayR(dataBuff, len)) == len);
 		}
 		mutUsage.EndUse();
 		MemFree(dataBuff);
@@ -193,7 +193,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 		Sync::MutexUsage mutUsage(this->cliMut);
 		if (this->cli)
 		{
-			succ = (this->cli->Write(packetBuff, len) == len);
+			succ = (this->cli->Write(Data::ByteArrayR(packetBuff, len)) == len);
 		}
 		mutUsage.EndUse();
 	}

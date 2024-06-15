@@ -73,7 +73,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			UInt32 chunkSize;
 			Int32 chunkType;
 			UOSInt i;
-			stm->Write(pngBuff, 8);
+			stm->Write(Data::ByteArrayR(pngBuff, 8));
 			i = 8;
 			while (true)
 			{
@@ -115,7 +115,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						{
 							WriteMUInt32(chunkBuff, 23 + compSize);
 							WriteMUInt32(&chunkBuff[31 + compSize], crc.CalcDirect(&chunkBuff[4], 27 + compSize));
-							stm->Write(chunkBuff, 35 + compSize);
+							stm->Write(Data::ByteArrayR(chunkBuff, 35 + compSize));
 						}
 						MemFree(chunkBuff);
 					}
@@ -127,7 +127,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 							WriteInt32(&tmpBuff[4], ReadInt32("sRGB"));
 							tmpBuff[8] = 0;
 							WriteMUInt32(&tmpBuff[9], crc.CalcDirect(&tmpBuff[4], 5));
-							stm->Write(tmpBuff, 13);
+							stm->Write(Data::ByteArrayR(tmpBuff, 13));
 						}
 
 						NN<const Media::ColorProfile::ColorPrimaries> prim = nnimg->info.color.GetPrimariesRead();
@@ -142,7 +142,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						WriteMInt32(&tmpBuff[32], Double2Int32(prim->b.x * 100000));
 						WriteMInt32(&tmpBuff[36], Double2Int32(prim->b.y * 100000));
 						WriteMUInt32(&tmpBuff[40], crc.CalcDirect(&tmpBuff[4], 36));
-						stm->Write(tmpBuff, 44);
+						stm->Write(Data::ByteArrayR(tmpBuff, 44));
 					}
 					if (nnimg->info.hdpi != 72.0 || nnimg->info.vdpi != 72.0)
 					{
@@ -154,22 +154,22 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						WriteMInt32(&tmpBuff[12], vVal);
 						tmpBuff[16] = 1;
 						WriteMUInt32(&tmpBuff[17], crc.CalcDirect(&tmpBuff[4], 13));
-						stm->Write(tmpBuff, 21);
+						stm->Write(Data::ByteArrayR(tmpBuff, 21));
 					}
 
-					stm->Write(&pngBuff[i], pngSize - i);
+					stm->Write(Data::ByteArrayR(&pngBuff[i], pngSize - i));
 					break;
 				}
 				else
 				{
-					stm->Write(&pngBuff[i], chunkSize + 12);
+					stm->Write(Data::ByteArrayR(&pngBuff[i], chunkSize + 12));
 					i += chunkSize + 12;
 				}
 			}
 		}
 		else
 		{
-			stm->Write(pngBuff, pngSize);
+			stm->Write(Data::ByteArrayR(pngBuff, pngSize));
 		}
 		g_free(buff);
 		return true;

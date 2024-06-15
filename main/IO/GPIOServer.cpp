@@ -116,7 +116,7 @@ public:
 		resp->AddContentLength(sb.GetLength());
 		resp->AddContentType(CSTR("text/html"));
 		resp->AddCacheControl(0);
-		resp->Write(sb.ToString(), sb.GetLength());
+		resp->Write(sb.ToByteArray());
 		return true;
 	}
 };

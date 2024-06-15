@@ -8,7 +8,7 @@ namespace IO
 	class DataCaptureStream : public Stream
 	{
 	public:
-		typedef void (__stdcall *DataHandler)(AnyType userObj, UnsafeArray<const UInt8> dataBuff, UOSInt dataSize);
+		typedef void (__stdcall *DataHandler)(AnyType userObj, Data::ByteArrayR dataBuff);
 	private:
 		IO::Stream *stm;
 		DataHandler recvHdlr;
@@ -21,7 +21,7 @@ namespace IO
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
+		virtual UOSInt Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

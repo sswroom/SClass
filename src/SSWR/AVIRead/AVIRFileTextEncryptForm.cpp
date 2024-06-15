@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 			sbSrc.ClearStr();
 			destEnc->EncodeBin(sbSrc, srcBuff.Arr().Ptr(), buffSize);
 			IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			fs2.Write(sbSrc.v, sbSrc.leng);
+			fs2.Write(sbSrc.ToByteArray());
 		}
 
 	}

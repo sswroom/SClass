@@ -260,7 +260,7 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 						if (!lastIsSpace)
 						{
 							lastIsSpace = true;
-							wmstm.Write((const UInt8*)" ", 1);
+							wmstm.Write(Data::ByteArrayR((const UInt8*)" ", 1));
 						}
 					}
 					else if (c == '&')
@@ -272,25 +272,25 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 								if (!lastIsSpace)
 								{
 									lastIsSpace = true;
-									wmstm.Write((const UInt8*)" ", 1);
+									wmstm.Write(Data::ByteArrayR((const UInt8*)" ", 1));
 								}
 							}
 							else
 							{
-								wmstm.Write((const UInt8*)" ", 1);
+								wmstm.Write(Data::ByteArrayR((const UInt8*)" ", 1));
 								lastIsSpace = true;
 							}
 							csptr += 5;
 						}
 						else
 						{
-							wmstm.Write((const UInt8*)"&", 1);
+							wmstm.Write(Data::ByteArrayR((const UInt8*)"&", 1));
 							lastIsSpace = false;
 						}
 					}
 					else
 					{
-						wmstm.Write(csptr, 1);
+						wmstm.Write(Data::ByteArrayR(csptr, 1));
 						lastIsSpace = false;
 					}
 					csptr++;
@@ -314,12 +314,12 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 				{
 					if (!lastIsSpace)
 					{
-						wmstm.Write((const UInt8*)" ", 1);
+						wmstm.Write(Data::ByteArrayR((const UInt8*)" ", 1));
 					}					
 				}
 				else
 				{
-					wmstm.Write((const UInt8*)"\r\n", 2);
+					wmstm.Write(Data::ByteArrayR((const UInt8*)"\r\n", 2));
 				}
 				lastIsSpace = true;
 				lastType = 0;

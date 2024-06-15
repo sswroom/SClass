@@ -108,7 +108,7 @@ namespace IO
 			//AT+CIPTKA
 			Bool NetSetDisableNagle(Bool disable); //AT+CIPOPTION
 
-			Bool NetPing(UnsafeArray<const UTF8Char> addr, UInt32 *respTime, UInt32 *ttl);//AT+CIPPING
+			Bool NetPing(UnsafeArray<const UTF8Char> addr, OutParam<UInt32> respTime, OutParam<UInt32> ttl);//AT+CIPPING
 			//AT+CIPCTL
 			//AT+CIPFLT
 		};		

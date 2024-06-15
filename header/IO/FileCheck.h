@@ -23,7 +23,7 @@ namespace IO
 	public:
 		static Optional<FileCheck> CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError);
 	private:
-		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, AnyType userData);
+		static void __stdcall CheckData(Data::ByteArrayR data, AnyType userData);
 		static Bool CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::IHash> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError); //true = error
 
 	public:

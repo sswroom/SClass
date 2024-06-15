@@ -8,14 +8,14 @@ namespace Net
 	{
 	private:
 		NN<Net::SSHConn> conn;
-		SSHChannelHandle *channel;
+		Optional<SSHChannelHandle> channel;
 	public:
-		SSHTCPChannel(NN<Net::SSHConn> conn, SSHChannelHandle *channel, Text::CStringNN channelName);
+		SSHTCPChannel(NN<Net::SSHConn> conn, NN<SSHChannelHandle> channel, Text::CStringNN channelName);
 		virtual ~SSHTCPChannel();
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
+		virtual UOSInt Write(Data::ByteArrayR buff);
 
 		virtual Int32 Flush();
 		virtual void Close();

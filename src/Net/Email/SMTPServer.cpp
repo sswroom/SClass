@@ -85,7 +85,7 @@ void __stdcall Net::Email::SMTPServer::ClientData(NN<Net::TCPClient> cli, AnyTyp
 		{
 			if (me->rawLog)
 			{
-				me->rawLog->Write(buff.Arr().Ptr(), 4096 - cliStatus->buffSize);
+				me->rawLog->Write(buff.WithSize(4096 - cliStatus->buffSize));
 			}
 			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Arr().Ptr(), 4096 - cliStatus->buffSize);
 			buff += 4096 - cliStatus->buffSize;
@@ -95,7 +95,7 @@ void __stdcall Net::Email::SMTPServer::ClientData(NN<Net::TCPClient> cli, AnyTyp
 		{
 			if (me->rawLog)
 			{
-				me->rawLog->Write(buff.Arr().Ptr(), buff.GetSize());
+				me->rawLog->Write(buff);
 			}
 			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Arr().Ptr(), buff.GetSize());
 			cliStatus->buffSize += buff.GetSize();
@@ -183,10 +183,10 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 status
 
 
 	UOSInt buffSize;
-	buffSize = cli->Write(sb.ToString(), sb.GetLength());
+	buffSize = cli->Write(sb.ToByteArray());
 	if (this->rawLog)
 	{
-		this->rawLog->Write(sb.ToString(), buffSize);
+		this->rawLog->Write(sb.ToByteArray().WithSize(buffSize));
 	}
 	return buffSize;
 }
@@ -323,18 +323,18 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 			{
 				if (cliStatus->lastLBT == Text::LineBreakType::CRLF)
 				{
-					cliStatus->dataStm->Write(UTF8STRC("\r\n"));
+					cliStatus->dataStm->Write(CSTR("\r\n").ToByteArray());
 				}
 				else if (cliStatus->lastLBT == Text::LineBreakType::CR)
 				{
-					cliStatus->dataStm->Write(UTF8STRC("\r"));
+					cliStatus->dataStm->Write(CSTR("\r").ToByteArray());
 				}
 				else if (cliStatus->lastLBT == Text::LineBreakType::LF)
 				{
-					cliStatus->dataStm->Write(UTF8STRC("\n"));
+					cliStatus->dataStm->Write(CSTR("\n").ToByteArray());
 				}
 			}
-			cliStatus->dataStm->Write(cmd, cmdLen);
+			cliStatus->dataStm->Write(Data::ByteArrayR(cmd, cmdLen));
 			cliStatus->lastLBT = lbt;
 		}
 	}

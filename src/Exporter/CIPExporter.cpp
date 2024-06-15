@@ -123,8 +123,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 	WriteUInt32(&buff[0], (UInt32)objIds.GetCount());
 	WriteInt32(&buff[4], iLayerType);
-	stm->Write(buff, 8);
-	cix.Write(buff, 4);
+	stm->Write(Data::ByteArrayR(buff, 8));
+	cix.Write(Data::ByteArrayR(buff, 4));
 
 	i = 0;
 	recCnt = objIds.GetCount();
@@ -135,21 +135,21 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			WriteUInt32(&buff[0], (UInt32)i);
 			WriteUInt32(&buff[4], (UInt32)stmPos);
-			cix.Write(buff, 8);
+			cix.Write(Data::ByteArrayR(buff, 8));
 
 			if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 			{
 				WriteUInt32(&buff[4], 1);
 				WriteUInt32(&buff[8], 0);
-				stm->Write(buff, 12);
+				stm->Write(Data::ByteArrayR(buff, 12));
 				stmPos += 12;
 
 				Math::Coord2DDbl center = vec->GetCenter();
 				WriteUInt32(&buff[0], 1);
 				WriteInt32(&buff[4], Double2Int32(center.x * 200000.0));
 				WriteInt32(&buff[8], Double2Int32(center.y * 200000.0));
-				stm->Write(buff, 4);
-				stm->Write(&buff[4], 8);
+				stm->Write(Data::ByteArrayR(buff, 4));
+				stm->Write(Data::ByteArrayR(&buff[4], 8));
 				stmPos += 8 + 4;
 
 				maxX = minX = ReadInt32(&buff[4]);
@@ -177,8 +177,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					else
 						ptOfstArr[i] = ptOfstArr[i - 1];
 				}
-				stm->Write(buff, 8);
-				stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
+				stm->Write(Data::ByteArrayR(buff, 8));
+				stm->Write(Data::ByteArrayR((UInt8*)ptOfstArr, nPtOfst * 4));
 				stmPos += 8 + nPtOfst * 4;
 
 				UOSInt nPoint = ptOfstArr[nPtOfst];
@@ -205,8 +205,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					}
 					i++;
 				}
-				stm->Write((UInt8*)&nPoint, 4);
-				stm->Write((UInt8*)ptArr, 8 * nPoint);
+				stm->Write(Data::ByteArrayR((UInt8*)&nPoint, 4));
+				stm->Write(Data::ByteArrayR((UInt8*)ptArr, 8 * nPoint));
 				stmPos += 8 * nPoint + 4;
 
 				maxX = minX = ptArr[0];
@@ -246,8 +246,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					j++;
 				}
 				WriteUInt32(&buff[4], (UInt32)nPtOfst);
-				stm->Write(buff, 8);
-				stm->Write((UInt8*)ptOfstArr, nPtOfst * 4);
+				stm->Write(Data::ByteArrayR(buff, 8));
+				stm->Write(Data::ByteArrayR((UInt8*)ptOfstArr, nPtOfst * 4));
 				stmPos += 8 + nPtOfst * 4;
 
 				Int32 *ptArr = MemAlloc(Int32, pointArr.GetCount() << 1);
@@ -259,8 +259,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					ptArr[(j << 1) + 1] = Double2Int32(pt.y * 200000.0);
 				}
 				UInt32 nPoint = (UInt32)pointArr.GetCount();
-				stm->Write((UInt8*)&nPoint, 4);
-				stm->Write((UInt8*)ptArr, 8 * nPoint);
+				stm->Write(Data::ByteArrayR((UInt8*)&nPoint, 4));
+				stm->Write(Data::ByteArrayR((UInt8*)ptArr, 8 * nPoint));
 				stmPos += 8 * nPoint + 4;
 
 				maxX = minX = ptArr[0];
@@ -383,8 +383,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 	*(Int32*)&buff[0] = (Int32)blks.GetCount();
 	*(Int32*)&buff[4] = p->scale;
-	blk.Write(buff, 8);
-	cib.Write(buff, 8);
+	blk.Write(Data::ByteArrayR(buff, 8));
+	cib.Write(Data::ByteArrayR(buff, 8));
 	stmPos = 8;
 
 	i = 0;
@@ -395,14 +395,14 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
         *(Int32*)&buff[0] = (Int32)theBlk->records.GetCount();
         *(Int32*)&buff[4] = theBlk->blockX;
 		*(Int32*)&buff[8] = theBlk->blockY;
-		blk.Write(buff, 12);
+		blk.Write(Data::ByteArrayR(buff, 12));
 		k = 0;
 		while (k < theBlk->records.GetCount())
 		{
-			blk.Write((UInt8*)&theBlk->records.GetItemNoCheck(k)->recId, 4);
+			blk.Write(Data::ByteArrayR((UInt8*)&theBlk->records.GetItemNoCheck(k)->recId, 4));
 			k += 1;
 		}
-		cib.Write(buff, 16);
+		cib.Write(Data::ByteArrayR(buff, 16));
 		stmPos += 16;
 		i += 1;
 	}
@@ -418,7 +418,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		*(Int32*)&buff[4] = theBlk->blockY;
 		*(Int32*)&buff[8] = (Int32)theBlk->records.GetCount();
 		*(Int32*)&buff[12] = (Int32)stmPos;
-		cib.Write(buff, 16);
+		cib.Write(Data::ByteArrayR(buff, 16));
 
 		cib.SeekFromBeginning(stmPos);
 		k = 0;
@@ -429,7 +429,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			if (strRec->str == 0)
 			{
 				buff[4] = 0;
-				cib.Write(buff, 5);
+				cib.Write(Data::ByteArrayR(buff, 5));
 			}
 			else
 			{
@@ -439,8 +439,8 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					l = 127;
 				}
 				buff[4] = (UInt8)(l << 1);
-				cib.Write(buff, 5);
-				cib.Write((UInt8*)strRec->str, l << 1);
+				cib.Write(Data::ByteArrayR(buff, 5));
+				cib.Write(Data::ByteArrayR((UInt8*)strRec->str, l << 1));
 			}
 
 			stmPos += (UOSInt)buff[4] + 5;

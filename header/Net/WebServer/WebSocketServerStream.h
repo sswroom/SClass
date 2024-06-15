@@ -20,7 +20,7 @@ namespace Net
 			UOSInt recvCapacity;
 			UOSInt recvSize;
 
-			Bool SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			Bool SendPacket(UInt8 opcode, Data::ByteArrayR buff);
 			void NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
 			WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::IWebResponse> resp);
@@ -28,7 +28,7 @@ namespace Net
 
 			virtual Bool IsDown() const;
 			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
+			virtual UOSInt Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

@@ -145,7 +145,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 
 			while ((i = cli->Read(BYTEARR(buff))) > 0)
 			{
-				fs.Write(buff, i);
+				fs.Write(Data::ByteArrayR(buff, i));
 				me->currSize += i;
 			}
 			me->respTimeTotal = cli->GetTotalTime();

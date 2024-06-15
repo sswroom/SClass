@@ -123,8 +123,8 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 			}
 			cptr = url.ConcatTo(cptr);
 			cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
-			cli->Write((UInt8*)dataBuff, (UOSInt)(cptr - dataBuff));
-			cli->Write((UInt8*)host, (UOSInt)(hostEnd - host));
+			cli->Write(Data::ByteArrayR((UInt8*)dataBuff, (UOSInt)(cptr - dataBuff)));
+			cli->Write(Data::ByteArrayR((UInt8*)host, (UOSInt)(hostEnd - host)));
 			return true;
 		}
 	}

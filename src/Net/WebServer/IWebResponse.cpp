@@ -41,7 +41,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(NN<Net::WebServer::IWebRequest>
 	sb.AppendNE(UTF8STRC("</h1>\r\n"));
 	sb.AppendC(UTF8STRC("</body></html>\r\n"));
 	this->AddContentLength(sb.GetLength());
-	this->Write(sb.ToString(), sb.GetLength());
+	this->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -72,7 +72,7 @@ Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NN<Net::WebServer::IWebReq
 	"</script>\r\n"
 	"</head><body onLoad=\"afterLoad()\"></body></html>"));
 	this->AddContentLength(sb.leng);
-	this->Write(sb.v, sb.leng);
+	this->Write(sb.ToByteArray());
 	return true;
 }
 
@@ -94,7 +94,7 @@ Bool Net::WebServer::IWebResponse::ResponseText(Text::CStringNN txt, Text::CStri
 {
 	this->AddContentLength(txt.leng);
 	this->AddContentType(contentType);
-	this->Write(txt.v, txt.leng);
+	this->Write(txt.ToByteArray());
 	return true;
 }
 

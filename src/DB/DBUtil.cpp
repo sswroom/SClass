@@ -1746,12 +1746,12 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 				WriteNDouble(&buff[56], min);
 				WriteNDouble(&buff[64], max);
 				buff[3] = (UInt8)(buff[3] + 8);
-				mstm.Write(buff, 72);
+				mstm.Write(Data::ByteArrayR(buff, 72));
 			}
 			else
 			{
 				buff[3] = (UInt8)(buff[3] + 4);
-				mstm.Write(buff, 56);
+				mstm.Write(Data::ByteArrayR(buff, 56));
 			}
 		}
 		else if (nnvec->GetMBounds(min, max))
@@ -1759,12 +1759,12 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 			WriteNDouble(&buff[40], min);
 			WriteNDouble(&buff[48], max);
 			buff[3] = (UInt8)(buff[3] + 6);
-			mstm.Write(buff, 56);
+			mstm.Write(Data::ByteArrayR(buff, 56));
 		}
 		else
 		{
 			buff[3] = (UInt8)(buff[3] + 2);
-			mstm.Write(buff, 40);
+			mstm.Write(Data::ByteArrayR(buff, 40));
 		}
 		if (writer.Write(mstm, nnvec))
 		{

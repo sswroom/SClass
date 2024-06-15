@@ -48,7 +48,7 @@ Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 	if (buff)
 	{
-		stm->Write((UInt8*)buff, buffSize);
+		stm->Write(Data::ByteArrayR((UInt8*)buff, buffSize));
 		g_free(buff);
 		return true;
 	}

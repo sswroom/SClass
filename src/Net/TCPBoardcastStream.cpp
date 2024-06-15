@@ -27,7 +27,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(NN<Socket> s, AnyType userOb
 			sb.AppendUOSInt(size);
 			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
-		cli->Write(me->writeBuff, size);
+		cli->Write(Data::ByteArrayR(me->writeBuff, size));
 	}
 }
 
@@ -215,7 +215,7 @@ UOSInt Net::TCPBoardcastStream::Read(const Data::ByteArray &buff)
 	return myBuff.GetSize();
 }
 
-UOSInt Net::TCPBoardcastStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::TCPBoardcastStream::Write(Data::ByteArrayR buff)
 {
 	Bool cliFound = false;
 	UOSInt i;
@@ -231,7 +231,7 @@ UOSInt Net::TCPBoardcastStream::Write(UnsafeArray<const UInt8> buff, UOSInt size
 	{
 		if (this->cliMgr->GetClient(i, cliData).SetTo(cli))
 		{
-			cli->Write(buff, size);
+			cli->Write(buff);
 
 			if (this->log->HasHandler())
 			{
@@ -240,7 +240,7 @@ UOSInt Net::TCPBoardcastStream::Write(UnsafeArray<const UInt8> buff, UOSInt size
 				sptr = cli->GetRemoteName(sbuff).Or(sbuff);
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC(" with "));
-				sb.AppendUOSInt(size);
+				sb.AppendUOSInt(buff.GetSize());
 				this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 			}
 
@@ -251,20 +251,20 @@ UOSInt Net::TCPBoardcastStream::Write(UnsafeArray<const UInt8> buff, UOSInt size
 	if (!cliFound)
 	{
 		UOSInt buffSizeLeft = 2048 - this->writeBuffSize;
-		if (buffSizeLeft >= size)
+		if (buffSizeLeft >= buff.GetSize())
 		{
-			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), size);
-			this->writeBuffSize += size;
+			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), buff.GetSize());
+			this->writeBuffSize += buff.GetSize();
 		}
 		else
 		{
-			MemCopyO(this->writeBuff, &this->writeBuff[size - buffSizeLeft], this->writeBuffSize - size + buffSizeLeft);
-			this->writeBuffSize -= size - buffSizeLeft;
-			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), size);
-			this->writeBuffSize += size;
+			MemCopyO(this->writeBuff, &this->writeBuff[buff.GetSize() - buffSizeLeft], this->writeBuffSize - buff.GetSize() + buffSizeLeft);
+			this->writeBuffSize -= buff.GetSize() - buffSizeLeft;
+			MemCopyNO(&this->writeBuff[this->writeBuffSize], buff.Ptr(), buff.GetSize());
+			this->writeBuffSize += buff.GetSize();
 		}
 	}
-	return size;
+	return buff.GetSize();
 }
 
 Int32 Net::TCPBoardcastStream::Flush()

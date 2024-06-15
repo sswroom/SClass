@@ -22,15 +22,15 @@ UOSInt Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
 	UOSInt retSize = this->srcStm->Read(buff);
 	if (retSize > 0)
 	{
-		this->hash->Calc(buff.Arr().Ptr(), retSize);
+		this->hash->Calc(buff.Arr(), retSize);
 	}
 	return retSize;
 }
 
-UOSInt Crypto::Hash::HashStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Crypto::Hash::HashStream::Write(Data::ByteArrayR buff)
 {
-	this->hash->Calc(buff.Ptr(), size);
-	return this->srcStm->Write(buff, size);
+	this->hash->Calc(buff.Arr(), buff.GetSize());
+	return this->srcStm->Write(buff);
 }
 
 Int32 Crypto::Hash::HashStream::Flush()

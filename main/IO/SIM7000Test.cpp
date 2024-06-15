@@ -187,7 +187,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					UInt32 ttl;
 					while (i-- > 0)
 					{
-						if (sockf->IcmpSendEcho2(addr, &respTime, &ttl))
+						if (sockf->IcmpSendEcho2(addr, respTime, ttl))
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Resp time = "));

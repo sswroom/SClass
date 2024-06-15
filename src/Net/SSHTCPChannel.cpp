@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/SSHTCPChannel.h"
 
-Net::SSHTCPChannel::SSHTCPChannel(NN<Net::SSHConn> conn, SSHChannelHandle *channel, Text::CStringNN channelName) : IO::Stream(channelName)
+Net::SSHTCPChannel::SSHTCPChannel(NN<Net::SSHConn> conn, NN<SSHChannelHandle> channel, Text::CStringNN channelName) : IO::Stream(channelName)
 {
 	this->conn = conn;
 	this->channel = channel;
@@ -14,27 +14,32 @@ Net::SSHTCPChannel::~SSHTCPChannel()
 
 Bool Net::SSHTCPChannel::IsDown() const
 {
-	return this->channel == 0;
+	return this->channel.IsNull();
 }
 
 UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 {
 	NN<Net::TCPClient> cli;
+	NN<SSHChannelHandle> channel;
 	UOSInt readSize = 0;
-	while (!this->conn->ChannelTryRead(this->channel, buff.Arr(), buff.GetSize(), readSize))
+	if (this->channel.SetTo(channel))
 	{
-		if (!this->conn->GetTCPClient().SetTo(cli))
-			return 0;
-		cli->Wait(1000);
+		while (!this->conn->ChannelTryRead(channel, buff.Arr(), buff.GetSize(), readSize))
+		{
+			if (!this->conn->GetTCPClient().SetTo(cli))
+				return 0;
+			cli->Wait(1000);
+		}
 	}
 	return readSize;
 }
 
-UOSInt Net::SSHTCPChannel::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::SSHTCPChannel::Write(Data::ByteArrayR buff)
 {
-	if (this->channel)
+	NN<SSHChannelHandle> channel;
+	if (this->channel.SetTo(channel))
 	{
-		return this->conn->ChannelWrite(this->channel, buff, size);
+		return this->conn->ChannelWrite(channel, buff.Arr(), buff.GetSize());
 	}
 	return 0;
 }
@@ -46,9 +51,10 @@ Int32 Net::SSHTCPChannel::Flush()
 
 void Net::SSHTCPChannel::Close()
 {
-	if (this->channel)
+	NN<SSHChannelHandle> channel;
+	if (this->channel.SetTo(channel))
 	{
-		this->conn->ChannelClose(this->channel);
+		this->conn->ChannelClose(channel);
 		this->channel = 0;
 	}
 }
@@ -65,9 +71,10 @@ IO::StreamType Net::SSHTCPChannel::GetStreamType() const
 
 Bool Net::SSHTCPChannel::TryRead(UInt8 *buff, UOSInt maxSize, OutParam<UOSInt> size)
 {
-	if (this->channel)
+	NN<SSHChannelHandle> channel;
+	if (this->channel.SetTo(channel))
 	{
-		return this->conn->ChannelTryRead(this->channel, buff, maxSize, size);
+		return this->conn->ChannelTryRead(channel, buff, maxSize, size);
 	}
 	else
 	{

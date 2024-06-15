@@ -33,15 +33,15 @@ typedef enum
 	MNU_OPEN_SELECTED
 } MenuItem;
 
-void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, AnyType userData)
+void AVIRPackageForm_TestHandler(Data::ByteArrayR buff, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm::ReadSession> sess = userData.GetNN<SSWR::AVIRead::AVIRPackageForm::ReadSession>();
 	NN<Crypto::Hash::IHash> hash;
 	if (sess->hash.SetTo(hash))
 	{
-		hash->Calc(buff, buffSize);
+		hash->Calc(buff.Arr(), buff.GetSize());
 	}
-	sess->fileReadSize += buffSize;
+	sess->fileReadSize += buff.GetSize();
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)

@@ -59,7 +59,7 @@ Bool IO::ServiceManager::ServiceCreate(Text::CStringNN svcName, Text::CString sv
 		sb.Append(cmdLine);
 		sb.AppendC(UTF8STRC("\n\n[Install]\n"));
 		sb.AppendC(UTF8STRC("WantedBy=multi-user.target\n"));
-		fs.Write(sb.ToString(), sb.GetLength());
+		fs.Write(sb.ToByteArray());
 	}
 	sb.ClearStr();
 	Manage::Process::ExecuteProcess(CSTR("systemctl daemon-reload"), sb);

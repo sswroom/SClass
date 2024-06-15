@@ -87,21 +87,22 @@ UOSInt Net::TCPServerStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::TCPServerStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::TCPServerStream::Write(Data::ByteArrayR buff)
 {
 	Bool toClose = false;
 	Net::TCPClient *cli = 0;
 	Sync::MutexUsage mutUsage(this->connMut);
+	UOSInt writeSize;
 	if (this->currCli)
 	{
 		cli = this->currCli;
-		size = this->currCli->Write(buff, size);
-		if (size == 0)
+		writeSize = this->currCli->Write(buff);
+		if (writeSize == 0)
 			toClose = true;
 	}
 	else
 	{
-		size = 0;
+		writeSize = 0;
 	}
 	mutUsage.EndUse();
 	if (toClose)
@@ -115,7 +116,7 @@ UOSInt Net::TCPServerStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 		readMutUsage.EndUse();
 		mutUsage.EndUse();
 	}
-	return size;
+	return writeSize;
 }
 
 Int32 Net::TCPServerStream::Flush()

@@ -92,7 +92,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 								cmdBuff[2] = me->cameraId;
 								WriteInt16(&cmdBuff[3], 1);
 								cmdBuff[5] = '#';
-								me->stm->Write(cmdBuff, 6);
+								me->stm->Write(Data::ByteArrayR(cmdBuff, 6));
 							}
 							else
 							{
@@ -134,7 +134,7 @@ UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 									cmdBuff[2] = me->cameraId;
 									WriteInt16(&cmdBuff[3], me->imgNextPacket);
 									cmdBuff[5] = '#';
-									me->stm->Write(cmdBuff, 6);
+									me->stm->Write(Data::ByteArrayR(cmdBuff, 6));
 								}
 								else if (me->imgNextOfst == me->imgSize)
 								{
@@ -225,7 +225,7 @@ Bool IO::Device::QQZMSerialCamera::CapturePhoto(IO::Stream *outStm)
 	this->imgEnd = false;
 	this->imgLastUpdateTime = currTime;
 //	printf("Start CapturePhoto\r\n");
-	this->stm->Write(cmdBuff, 7);
+	this->stm->Write(Data::ByteArrayR(cmdBuff, 7));
 	while (!this->imgEnd)
 	{
 		dt.SetCurrTimeUTC();
@@ -240,7 +240,7 @@ Bool IO::Device::QQZMSerialCamera::CapturePhoto(IO::Stream *outStm)
 	{
 //		printf("CapturePhoto Success\r\n");
 		this->imgNextPacket = -1;
-		outStm->Write(this->imgBuff, this->imgSize);
+		outStm->Write(Data::ByteArrayR(this->imgBuff, this->imgSize));
 		MemFree(this->imgBuff);
 		this->imgBuff = 0;
 		return true;

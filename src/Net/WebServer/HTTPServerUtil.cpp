@@ -121,19 +121,19 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 						compBuff[7] = 0;
 						compBuff[8] = 0;
 						compBuff[9] = 0xff;
-						succ = (resp->Write(compBuff, 10) == 10);
+						succ = (resp->Write(Data::ByteArrayR(compBuff, 10)) == 10);
 
 						Crypto::Hash::CRC32RIEEE crc;
 						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, compLevel, false);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
-							succ = succ && (resp->Write(compBuff, readSize) == readSize);
+							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
 						}
 
 						WriteUInt32(&compBuff[0], crc.GetValueU32());
 						WriteInt32(&compBuff[4], (Int32)contLeng);
-						succ = succ && (resp->Write(compBuff, 8) == 8);
+						succ = succ && (resp->Write(Data::ByteArrayR(compBuff, 8)) == 8);
 
 						contSent = true;
 						break;
@@ -151,7 +151,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
-							succ = succ && (resp->Write(compBuff, readSize) == readSize);
+							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
 						}
 
 						contSent = true;
@@ -173,7 +173,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 			{
 				break;
 			}
-			writeSize = resp->Write(compBuff, readSize);
+			writeSize = resp->Write(Data::ByteArrayR(compBuff, readSize));
 			if (writeSize != readSize)
 			{
 				succ = false;
@@ -224,7 +224,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 					compBuff[7] = 0;
 					compBuff[8] = 4;
 					compBuff[9] = 11; //0xff;
-					succ = (resp->Write(compBuff, 10) == 10);
+					succ = (resp->Write(Data::ByteArrayR(compBuff, 10)) == 10);
 
 					Crypto::Hash::CRC32RIEEE crc;
 					crc.Calc(buff.Ptr(), (UOSInt)contLeng);
@@ -234,11 +234,11 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 					UOSInt readSize;
 					while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 					{
-						succ = succ && (resp->Write(compBuff, readSize) == readSize);
+						succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
 					}
 					WriteUInt32(&compBuff[0], crc.GetValueU32());
 					WriteInt32(&compBuff[4], (Int32)contLeng);
-					succ = succ && (resp->Write(compBuff, 8) == 8);
+					succ = succ && (resp->Write(Data::ByteArrayR(compBuff, 8)) == 8);
 					contSent = true;
 					break;
 				}
@@ -254,7 +254,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
-							succ = succ && (resp->Write(compBuff, readSize) == readSize);
+							succ = succ && (resp->Write(Data::ByteArrayR(compBuff, readSize)) == readSize);
 						}
 						contSent = true;
 						break;
@@ -267,7 +267,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 	if (!contSent)
 	{
 		resp->AddContentLength(contLeng);
-		succ = (resp->Write(buff, (UOSInt)contLeng) == contLeng);
+		succ = (resp->Write(Data::ByteArrayR(buff, (UOSInt)contLeng)) == contLeng);
 	}
 	return succ;
 }
@@ -300,7 +300,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
-			resp->Write(sbuff, 0);
+			resp->Write(Data::ByteArrayR(sbuff, 0));
 			return true;
 		}
 	}
@@ -319,7 +319,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
-			resp->Write(sbuff, 0);
+			resp->Write(Data::ByteArrayR(sbuff, 0));
 			return true;
 		}
 		if (sb2.IndexOf(',') != INVALID_INDEX)
@@ -328,7 +328,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
-			resp->Write(sbuff, 0);
+			resp->Write(Data::ByteArrayR(sbuff, 0));
 			return true;
 		}
 		UInt64 start = 0;
@@ -340,7 +340,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
-			resp->Write(sbuff, 0);
+			resp->Write(Data::ByteArrayR(sbuff, 0));
 			return true;
 		}
 		sptr = sb2.v;
@@ -351,7 +351,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(cacheAge);
 			resp->AddContentLength(0);
-			resp->Write(sbuff, 0);
+			resp->Write(Data::ByteArrayR(sbuff, 0));
 			return true;
 		}
 		if (i + 1 < sb2.GetLength())
@@ -362,7 +362,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 				resp->AddDefHeaders(req);
 				resp->AddCacheControl(cacheAge);
 				resp->AddContentLength(0);
-				resp->Write(sbuff, 0);
+				resp->Write(Data::ByteArrayR(sbuff, 0));
 				return true;
 			}
 			if (end <= (Int64)start || end > (Int64)sizeLeft)
@@ -371,7 +371,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 				resp->AddDefHeaders(req);
 				resp->AddCacheControl(cacheAge);
 				resp->AddContentLength(0);
-				resp->Write(sbuff, 0);
+				resp->Write(Data::ByteArrayR(sbuff, 0));
 				return true;
 			}
 			sizeLeft = (UInt64)end - start;
@@ -411,7 +411,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 			IO::MemoryStream mstm;
 			while (readSize > 0)
 			{
-				sizeLeft += mstm.Write(buff, readSize);
+				sizeLeft += mstm.Write(Data::ByteArrayR(buff, readSize));
 				readSize = fs.Read(BYTEARR(buff));
 			}
 			mstm.SeekFromBeginning(0);

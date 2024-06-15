@@ -1251,7 +1251,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		}
 		if (readBuff[j + 3] == 0xB9) //End Of File
 		{
-			dfs->Write(&readBuff[j], 4);
+			dfs->Write(Data::ByteArrayR(&readBuff[j], 4));
 			break;
 		}
 		if (readBuff[j + 3] == 0xba) 
@@ -1276,7 +1276,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 		}
 		if (j + frameSize <= buffSize)
 		{
-			dfs->Write(&readBuff[j], frameSize);
+			dfs->Write(Data::ByteArrayR(&readBuff[j], frameSize));
 			if (j + frameSize < buffSize)
 			{
 				readBuff.CopyInner(0, j + frameSize, buffSize - j - frameSize);
@@ -1293,7 +1293,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 			readOfst += readSize;
 			if (readSize == j + frameSize - buffSize)
 			{
-				dfs->Write(&readBuff[j], frameSize);
+				dfs->Write(Data::ByteArrayR(&readBuff[j], frameSize));
 				buffSize = 0;
 			}
 			else

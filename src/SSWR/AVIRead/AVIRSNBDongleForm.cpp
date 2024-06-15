@@ -388,7 +388,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 	else
 	{
 		cli->AddContentLength(sb.GetLength());
-		cli->Write(sb.ToString(), sb.GetLength());
+		cli->Write(sb.ToByteArray());
 		cli->EndRequest(0, 0);
 		status = cli->GetRespStatus();
 	}
@@ -465,7 +465,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("snb.dat"));
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write(dataBuff, k);
+		fs.Write(Data::ByteArrayR(dataBuff, k));
 	}
 	MemFree(dataBuff);
 }

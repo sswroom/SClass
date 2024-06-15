@@ -200,7 +200,7 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease)
 	WriteInt32(&hdr[4], 2);
 	WriteInt64(&hdr[8], 24);
 	WriteInt64(&hdr[16], 0);
-	this->stm->Write(hdr, 24);
+	this->stm->Write(Data::ByteArrayR(hdr, 24));
 	this->customType = 0;
 	this->customSize = 0;
 	this->writeMode = true;
@@ -208,7 +208,7 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease)
 	this->pauseCommit = false;
 	WriteInt64(&hdr[0], 0);
 	WriteInt64(&hdr[8], 0);
-	this->mstm.Write(hdr, 16);
+	this->mstm.Write(Data::ByteArrayR(hdr, 16));
 }
 
 IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff)
@@ -226,10 +226,10 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32
 	WriteInt64(&hdr[16], 0);
 	WriteInt32(&hdr[24], customType);
 	WriteUInt32(&hdr[28], (UInt32)customSize);
-	this->stm->Write(hdr, 32);
+	this->stm->Write(Data::ByteArrayR(hdr, 32));
 	if (customSize > 0)
 	{
-		this->stm->Write(customBuff.Arr(), customSize);
+		this->stm->Write(customBuff.WithSize(customSize));
 	}
 	this->flags = 3;
 	this->customType = customType;
@@ -243,7 +243,7 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32
 	this->pauseCommit = false;
 	WriteInt64(&hdr[0], 0);
 	WriteInt64(&hdr[8], 0);
-	this->mstm.Write(hdr, 16);
+	this->mstm.Write(Data::ByteArrayR(hdr, 16));
 }
 
 IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
@@ -279,12 +279,12 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					WriteInt32(&hdr[4], 2);
 					WriteInt64(&hdr[8], 24);
 					WriteInt64(&hdr[16], 0);
-					this->stm->Write(hdr, 24);
+					this->stm->Write(Data::ByteArrayR(hdr, 24));
 					this->flags = 2;
 					this->currOfst = 24;
 					WriteInt64(&hdr[0], 0);
 					WriteInt64(&hdr[8], 0);
-					this->mstm.Write(hdr, 16);
+					this->mstm.Write(Data::ByteArrayR(hdr, 16));
 				}
 				else
 				{
@@ -300,7 +300,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 							this->stm->Read(this->customBuff);
 						}
 					}
-					this->mstm.Write(&hdr[8], 16);
+					this->mstm.Write(Data::ByteArrayR(&hdr[8], 16));
 					this->ReadV2DirEnt(lastOfst, lastSize);
 					this->stm->SeekFromBeginning(this->currOfst);
 				}
@@ -315,7 +315,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					this->stm->SeekFromBeginning(this->currOfst);
 					this->stm->Read(dirBuff);
 					this->stm->SeekFromBeginning(this->currOfst);
-					this->mstm.Write(dirBuff.Arr().Ptr(), (UOSInt)dirSize);
+					this->mstm.Write(dirBuff);
 
 					UOSInt i;
 					UOSInt nameSize;
@@ -354,12 +354,12 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 			WriteInt32(&hdr[4], 2);
 			WriteInt64(&hdr[8], 24);
 			WriteInt64(&hdr[16], 0);
-			this->stm->Write(hdr, 24);
+			this->stm->Write(Data::ByteArrayR(hdr, 24));
 			this->flags = 2;
 			this->currOfst = 24;
 			WriteInt64(&hdr[0], 0);
 			WriteInt64(&hdr[8], 0);
-			this->mstm.Write(hdr, 16);
+			this->mstm.Write(Data::ByteArrayR(hdr, 16));
 		}
 	}
 	else
@@ -371,12 +371,12 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 		WriteInt32(&hdr[4], 2);
 		WriteInt64(&hdr[8], 24);
 		WriteInt64(&hdr[16], 0);
-		this->stm->Write(hdr, 24);
+		this->stm->Write(Data::ByteArrayR(hdr, 24));
 		this->flags = 2;
 		this->currOfst = 24;
 		WriteInt64(&hdr[0], 0);
 		WriteInt64(&hdr[8], 0);
-		this->mstm.Write(hdr, 16);
+		this->mstm.Write(Data::ByteArrayR(hdr, 16));
 	}
 	this->writeMode = true;
 	this->pauseCommit = false;
@@ -397,22 +397,22 @@ IO::SPackageFile::~SPackageFile()
 	{
 		if (buffSize > 16)
 		{
-			this->stm->Write(buff, buffSize);
+			this->stm->Write(Data::ByteArrayR(buff, buffSize));
 			this->stm->SeekFromBeginning(8);
 			WriteUInt64(&hdr[0], this->currOfst);
 			WriteUInt64(&hdr[8], buffSize);
-			this->stm->Write(hdr, 16);
+			this->stm->Write(Data::ByteArrayR(hdr, 16));
 		}
 	}
 	else
 	{
 		if (buffSize > 0)
 		{
-			this->stm->Write(buff, buffSize);
+			this->stm->Write(Data::ByteArrayR(buff, buffSize));
 		}
 		this->stm->SeekFromBeginning(8);
 		WriteUInt64(hdr, this->currOfst);
-		this->stm->Write(hdr, 8);
+		this->stm->Write(Data::ByteArrayR(hdr, 8));
 	}
 
 	if (this->toRelease)
@@ -477,7 +477,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 				readSize = (UOSInt)sizeLeft;
 			}
 			fd->GetRealData(fileOfst, readSize, fileBuff);
-			writeSize += this->stm->Write(fileBuff.Arr(), readSize);
+			writeSize += this->stm->Write(fileBuff.WithSize(readSize));
 			fileOfst += readSize;
 			sizeLeft -= readSize;
 		}
@@ -486,7 +486,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 	{
 		Data::ByteBuffer fileBuff((UOSInt)dataSize);
 		fd->GetRealData(0, (UOSInt)dataSize, fileBuff);
-		writeSize = this->stm->Write(fileBuff.Arr(), (UOSInt)dataSize);
+		writeSize = this->stm->Write(fileBuff);
 	}
 	Bool succ = false;
 	if (writeSize == dataSize)
@@ -496,7 +496,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, 
 		file->size = dataSize;
 		this->fileMap.Put(fileName, file);
 
-		this->mstm.Write(dataBuff, 26 + fileName.leng);
+		this->mstm.Write(Data::ByteArrayR(dataBuff, 26 + fileName.leng));
 		this->currOfst += dataSize;
 		succ = true;
 		if (this->mstm.GetLength() >= 65536)
@@ -542,14 +542,14 @@ Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSiz
 		this->stm->SeekFromBeginning(this->currOfst);
 	}
 	Bool succ = false;
-	if (this->stm->Write(fileBuff, fileSize) == fileSize)
+	if (this->stm->Write(Data::ByteArrayR(fileBuff, fileSize)) == fileSize)
 	{
 		FileInfo *file = MemAlloc(FileInfo, 1);
 		file->ofst = this->currOfst;
 		file->size = fileSize;
 		this->fileMap.Put(fileName, file);
 
-		this->mstm.Write(dataBuff, 26 + fileName.leng);
+		this->mstm.Write(Data::ByteArrayR(dataBuff, 26 + fileName.leng));
 		this->currOfst += fileSize;
 		succ = true;
 		if (this->mstm.GetLength() >= 65536)
@@ -596,16 +596,16 @@ Bool IO::SPackageFile::Commit()
 				this->stm->SeekFromBeginning(this->currOfst);
 			}
 
-			writeSize = this->stm->Write(buff, buffSize);
+			writeSize = this->stm->Write(Data::ByteArrayR(buff, buffSize));
 			if (writeSize == buffSize)
 			{
 				this->stm->SeekFromBeginning(8);
 				WriteUInt64(&hdr[0], this->currOfst);
 				WriteUInt64(&hdr[8], buffSize);
-				this->stm->Write(hdr, 16);
+				this->stm->Write(Data::ByteArrayR(hdr, 16));
 				this->writeMode = false;
 				this->mstm.Clear();
-				this->mstm.Write(hdr, 16);
+				this->mstm.Write(Data::ByteArrayR(hdr, 16));
 				this->currOfst += writeSize;
 				succ = true;
 			}

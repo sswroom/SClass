@@ -66,7 +66,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 				}
 				hmac.Calc(srcBuff.Arr().Ptr(), readSize);
 				aes.Decrypt(srcBuff.Arr().Ptr(), readSize, destBuff);
-				if (destStream->Write(destBuff, 1048576) != 1048576)
+				if (destStream->Write(Data::ByteArrayR(destBuff, 1048576)) != 1048576)
 				{
 					succ = false;
 					break;
@@ -85,7 +85,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 					hmac.Calc(srcBuff.Arr().Ptr(), readSize);
 					aes.Decrypt(srcBuff.Arr().Ptr(), readSize, destBuff);
 					readSize = RemovePadding(destBuff, readSize);
-					if (destStream->Write(destBuff, readSize) != readSize)
+					if (destStream->Write(Data::ByteArrayR(destBuff, readSize)) != readSize)
 					{
 						succ = false;
 					}
@@ -108,7 +108,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO
 				hmac.Calc(srcBuff.Arr().Ptr(), readSize);
 				aes.Decrypt(srcBuff.Arr().Ptr(), readSize, destBuff);
 				readSize = RemovePadding(destBuff, readSize);
-				if (destStream->Write(destBuff, readSize) != readSize)
+				if (destStream->Write(Data::ByteArrayR(destBuff, readSize)) != readSize)
 				{
 					succ = false;
 				}
@@ -180,9 +180,9 @@ Bool Crypto::Encrypt::RNCryptor::Encrypt(NN<IO::SeekableStream> srcStream, NN<IO
 	hmac.Calc(destBuff, (UOSInt)fileLength);
 	hmac.GetValue(hmacCalc);
 	Bool succ = true;
-	if (destStream->Write(header, 34) != 34 ||
-		destStream->Write(destBuff, (UOSInt)fileLength) != fileLength ||
-		destStream->Write(hmacCalc, 32) != 32)
+	if (destStream->Write(Data::ByteArrayR(header, 34)) != 34 ||
+		destStream->Write(Data::ByteArrayR(destBuff, (UOSInt)fileLength)) != fileLength ||
+		destStream->Write(Data::ByteArrayR(hmacCalc, 32)) != 32)
 	{
 		succ = false;
 	}

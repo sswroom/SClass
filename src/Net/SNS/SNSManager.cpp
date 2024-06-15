@@ -206,7 +206,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 							{
 								break;
 							}
-							leng += fs.Write(tmpBuff.Arr().Ptr(), k);
+							leng += fs.Write(tmpBuff.WithSize(k));
 						}
 					}
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
@@ -263,7 +263,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 							{
 								break;
 							}
-							leng += fs.Write(tmpBuff.Arr().Ptr(), k);
+							leng += fs.Write(tmpBuff.WithSize(k));
 						}
 					}
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)

@@ -95,7 +95,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CStringNN cmd, UnsafeArray<UTF8
 	mutUsage.EndUse();
 
 
-	this->stm->Write(buff, 11 + cmdLen);
+	this->stm->Write(Data::ByteArrayR(buff, 11 + cmdLen));
 	this->nextTime.SetCurrTimeUTC();
 	Bool found = false;
 	while (true)
@@ -186,7 +186,7 @@ Bool IO::TVCtrl::NECTVControl::GetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	mutUsage.EndUse();
 
 
-	this->stm->Write(buff, 15);
+	this->stm->Write(Data::ByteArrayR(buff, 15));
 	this->nextTime.SetCurrTimeUTC();
 	Bool found = false;
 	while (true)
@@ -283,7 +283,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	mutUsage.EndUse();
 
 
-	this->stm->Write(buff, 19);
+	this->stm->Write(Data::ByteArrayR(buff, 19));
 	this->nextTime.SetCurrTimeUTC();
 	Bool found = false;
 	while (true)

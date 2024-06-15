@@ -16,7 +16,7 @@ IO::BufferedOutputStream::~BufferedOutputStream()
 {
 	if (this->cacheSize > 0)
 	{
-		this->outStm->Write(this->cacheBuff, this->cacheSize);
+		this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 	}
 	MemFree(this->cacheBuff);
 	this->cacheBuff = 0;
@@ -32,31 +32,30 @@ UOSInt IO::BufferedOutputStream::Read(const Data::ByteArray &buff)
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::BufferedOutputStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::BufferedOutputStream::Write(Data::ByteArrayR buff)
 {
-	this->totalWrite += size;
-	if (this->cacheSize + size < this->cacheBuffSize)
+	this->totalWrite += buff.GetSize();
+	if (this->cacheSize + buff.GetSize() < this->cacheBuffSize)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
-		this->cacheSize += size;
-		return size;
+		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), buff.GetSize());
+		this->cacheSize += buff.GetSize();
+		return buff.GetSize();
 	}
-	else if (size >= this->cacheSize)
+	else if (buff.GetSize() >= this->cacheSize)
 	{
 		if (this->cacheSize > 0)
 		{
 			this->outStm->WriteCont(this->cacheBuff, this->cacheSize);
 			this->cacheSize = 0;
 		}
-		return this->outStm->WriteCont(buff, size);
+		return this->outStm->WriteCont(buff.Arr(), buff.GetSize());
 	}
 	
 	UOSInt ret = this->cacheBuffSize - this->cacheSize;
 	if (ret > 0)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), ret);
+		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), ret);
 		buff += ret;
-		size -= ret;
 	}
 
 	UOSInt writeSize = this->outStm->WriteCont(this->cacheBuff, this->cacheBuffSize);
@@ -68,52 +67,51 @@ UOSInt IO::BufferedOutputStream::Write(UnsafeArray<const UInt8> buff, UOSInt siz
 	{
 		MemCopyO(this->cacheBuff, &this->cacheBuff[writeSize], this->cacheBuffSize - writeSize);
 		this->cacheSize = this->cacheBuffSize - writeSize;
-		if (this->cacheBuffSize - this->cacheSize < size)
+		if (this->cacheBuffSize - this->cacheSize < buff.GetSize())
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), this->cacheBuffSize - this->cacheSize);
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), this->cacheBuffSize - this->cacheSize);
 			ret += this->cacheBuffSize - this->cacheSize;
 			this->cacheSize = this->cacheBuffSize;
 			return ret;
 		}
 		else
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
-			this->cacheSize += size;
-			ret += size;
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), buff.GetSize());
+			this->cacheSize += buff.GetSize();
+			ret += buff.GetSize();
 			return ret;
 		}
 	}
 	this->cacheSize = 0;
-	if (size >= this->cacheBuffSize)
+	if (buff.GetSize() >= this->cacheBuffSize)
 	{
-		writeSize = this->outStm->WriteCont(buff, size);
+		writeSize = this->outStm->WriteCont(buff.Arr(), buff.GetSize());
 		ret += writeSize;
-		if (writeSize == size)
+		if (writeSize == buff.GetSize())
 		{
 			return ret;
 		}
 		buff += writeSize;
-		size -= writeSize;
-		if (this->cacheBuffSize - this->cacheSize < size)
+		if (this->cacheBuffSize - this->cacheSize < buff.GetSize())
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), this->cacheBuffSize - this->cacheSize);
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), this->cacheBuffSize - this->cacheSize);
 			ret += this->cacheBuffSize - this->cacheSize;
 			this->cacheSize = this->cacheBuffSize;
 			return ret;
 		}
 		else
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
-			this->cacheSize += size;
-			ret += size;
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Arr().Ptr(), buff.GetSize());
+			this->cacheSize += buff.GetSize();
+			ret += buff.GetSize();
 			return ret;
 		}
 	}
 	else
 	{
-		MemCopyNO(this->cacheBuff, buff.Ptr(), size);
-		this->cacheSize += size;
-		ret += size;
+		MemCopyNO(this->cacheBuff, buff.Arr().Ptr(), buff.GetSize());
+		this->cacheSize += buff.GetSize();
+		ret += buff.GetSize();
 		return ret;
 	}
 }
@@ -122,7 +120,7 @@ Int32 IO::BufferedOutputStream::Flush()
 {
 	if (this->cacheSize > 0)
 	{
-		this->outStm->Write(this->cacheBuff, this->cacheSize);
+		this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 		this->cacheSize = 0;
 	}
 	return this->outStm->Flush();
@@ -132,7 +130,7 @@ void IO::BufferedOutputStream::Close()
 {
 	if (this->cacheSize > 0)
 	{
-		this->outStm->Write(this->cacheBuff, this->cacheSize);
+		this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 		this->cacheSize = 0;
 	}
 	this->outStm->Close();

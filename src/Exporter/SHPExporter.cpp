@@ -94,8 +94,8 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	}
 	
-	shx->Write(buff, 100);
-	stm->Write(buff, 100);
+	shx->Write(Data::ByteArrayR(buff, 100));
+	stm->Write(Data::ByteArrayR(buff, 100));
 	Data::ArrayListInt64 objIds;
 	sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(objIds, &nameArr);
@@ -124,13 +124,13 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				WriteMInt32(buff, (Int32)(fileSize >> 1));
 				WriteMInt32(&buff[4], 10);
-				shx->Write(buff, 8);
+				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)i);
 				*(Int32*)&buff[8] = 1;
 				*(Double*)&buff[12] = coord.x;
 				*(Double*)&buff[20] = coord.y;
-				stm->Write(buff, 28);
+				stm->Write(Data::ByteArrayR(buff, 28));
 				fileSize += 28;
 
 
@@ -173,7 +173,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				WriteMInt32(buff, (Int32)(i + 1));
 				WriteMInt32(&buff[4], 18);
-				shx->Write(buff, 8);
+				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)i);
 				*(Int32*)&buff[8] = 11;
@@ -181,7 +181,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				*(Double*)&buff[20] = coord.y;
 				*(Double*)&buff[28] = pos.GetZ();
 				*(Double*)&buff[36] = 0;
-				stm->Write(buff, 44);
+				stm->Write(Data::ByteArrayR(buff, 44));
 				fileSize += 44;
 
 				pt.Delete();
@@ -229,16 +229,16 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				WriteMInt32(buff, (Int32)(fileSize >> 1));
 				WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
-				shx->Write(buff, 8);
+				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)(i + 1));
 				WriteUInt32(&buff[8], 3);
-				stm->Write(buff, 12);
-				stm->Write((UInt8*)&box, 32);
-				stm->Write(nvals, 8);
+				stm->Write(Data::ByteArrayR(buff, 12));
+				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
+				stm->Write(Data::ByteArrayR(nvals, 8));
 				fileSize += 52;
-				stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
-				stm->Write((UInt8*)points, nPoint * 16);
+				stm->Write(Data::ByteArrayR((UInt8*)ptOfsts, nPtOfst * 4));
+				stm->Write(Data::ByteArrayR((UInt8*)points, nPoint * 16));
 				fileSize += nPtOfst * 4 + nPoint * 16;
 
 				MemFreeA(points);
@@ -315,19 +315,19 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				WriteMInt32(buff, (Int32)(fileSize >> 1));
 				WriteMInt32(&buff[4], (Int32)(30 + 2 * nPtOfst + 12 * nPoint));
-				shx->Write(buff, 8);
+				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)(i + 1));
 				WriteUInt32(&buff[8], 3);
-				stm->Write(buff, 12);
-				stm->Write((UInt8*)&box, 32);
-				stm->Write((UInt8*)nvals, 8);
+				stm->Write(Data::ByteArrayR(buff, 12));
+				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
+				stm->Write(Data::ByteArrayR((UInt8*)nvals, 8));
 				fileSize += 52;
-				stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
-				stm->Write((UInt8*)points, nPoint * 16);
+				stm->Write(Data::ByteArrayR((UInt8*)ptOfsts, nPtOfst * 4));
+				stm->Write(Data::ByteArrayR((UInt8*)points, nPoint * 16));
 				fileSize += nPtOfst * 4 + nPoint * 16;
-				stm->Write((UInt8*)ranges, 16);
-				stm->Write((UInt8*)alts, nPoint * 8);
+				stm->Write(Data::ByteArrayR((UInt8*)ranges, 16));
+				stm->Write(Data::ByteArrayR((UInt8*)alts, nPoint * 8));
 				fileSize += 16 + nPoint * 8;
 
 				MemFree(alts);
@@ -377,16 +377,16 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 				WriteMInt32(buff, (Int32)(fileSize >> 1));
 				WriteMInt32(&buff[4], (Int32)(22 + 2 * nPtOfst + 8 * nPoint));
-				shx->Write(buff, 8);
+				shx->Write(Data::ByteArrayR(buff, 8));
 
 				WriteMInt32(buff, (Int32)(i + 1));
 				WriteUInt32(&buff[8], 5);
-				stm->Write(buff, 12);
-				stm->Write((UInt8*)&box, 32);
-				stm->Write((UInt8*)nvals, 8);
+				stm->Write(Data::ByteArrayR(buff, 12));
+				stm->Write(Data::ByteArrayR((UInt8*)&box, 32));
+				stm->Write(Data::ByteArrayR((UInt8*)nvals, 8));
 				fileSize += 52;
-				stm->Write((UInt8*)ptOfsts, nPtOfst * 4);
-				stm->Write((UInt8*)points, nPoint * 16);
+				stm->Write(Data::ByteArrayR((UInt8*)ptOfsts, nPtOfst * 4));
+				stm->Write(Data::ByteArrayR((UInt8*)points, nPoint * 16));
 				fileSize += nPtOfst * 4 + nPoint * 16;
 				MemFreeA(points);
 				MemFree(ptOfsts);
@@ -416,11 +416,11 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	*(Double*)&buff[84] = 0;
 	*(Double*)&buff[92] = 0;
 	stm->SeekFromBeginning(0);
-	stm->Write(buff, 100);
+	stm->Write(Data::ByteArrayR(buff, 100));
 
 	WriteMInt32(&buff[24], (Int32)(50 + (recCnt << 2)));
 	shx->SeekFromBeginning(0);
-	shx->Write(buff, 100);
+	shx->Write(Data::ByteArrayR(buff, 100));
 	DEL_CLASS(shx);
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("dbf"));
@@ -437,6 +437,6 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Math::SRESRIWKTWriter wkt;
 	UnsafeArray<UTF8Char> cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
 	IO::FileStream fs(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-	fs.Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
+	fs.Write(Data::ByteArrayR((UInt8*)projArr, (UOSInt)(cptr - projArr)));
 	return true;
 }

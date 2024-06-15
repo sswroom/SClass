@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 			buff[1] = 'l';
 			WriteInt64(&buff[2], currTime);
 			buff[10] = buff[0] ^ buff[1] ^ buff[2] ^ buff[3] ^ buff[4] ^ buff[5] ^ buff[6] ^ buff[7] ^ buff[8] ^ buff[9];
-			me->stm->Write(buff, 11);
+			me->stm->Write(Data::ByteArrayR(buff, 11));
 			me->sentCnt++;
 		}
 	}

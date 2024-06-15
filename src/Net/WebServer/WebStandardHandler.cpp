@@ -104,7 +104,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 		sb.ClearStr();
 		sb.AppendUOSInt(maxAge);
 		resp->AddHeader(CSTR("Access-Control-Max-Age"), sb.ToCString());
-		resp->Write(U8STR(""), 0);
+		resp->Write(Data::ByteArrayR(U8STR(""), 0));
 		return true;
 	}
 	else
@@ -112,7 +112,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 		resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
 		this->AddResponseHeaders(req, resp);
 		resp->AddHeader(CSTR("Allow"), options);
-		resp->Write(U8STR(""), 0);
+		resp->Write(Data::ByteArrayR(U8STR(""), 0));
 		return true;
 	}
 

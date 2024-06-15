@@ -23,19 +23,19 @@ namespace Data
 			UInt16 nextTableOfst;
 			UOSInt tableSize;
 			OSInt codeSizeAdj;
-			IO::Stream *stm;
+			NN<IO::Stream> stm;
 			IO::BitWriter *writer;
 			Bool toRelease;
 
 		private:
 			void ResetTable();
 		public:
-			LZWEncStream2(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
+			LZWEncStream2(NN<IO::Stream> stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
 			virtual ~LZWEncStream2();
 
 			virtual Bool IsDown() const;
 			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
+			virtual UOSInt Write(Data::ByteArrayR buff);
 
 			virtual Int32 Flush();
 			virtual void Close();

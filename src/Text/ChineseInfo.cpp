@@ -123,12 +123,12 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 		{
 			if (writeSize >= 65536)
 			{
-				this->fs->Write(tmpBuff, 65536);
+				this->fs->Write(Data::ByteArrayR(tmpBuff, 65536));
 				writeSize -= 65536;
 			}
 			else
 			{
-				this->fs->Write(tmpBuff, (UOSInt)writeSize);
+				this->fs->Write(Data::ByteArrayR(tmpBuff, (UOSInt)writeSize));
 				writeSize = 0;
 			}
 		}
@@ -184,7 +184,7 @@ Bool Text::ChineseInfo::SetCharInfo(UInt32 charCode, CharacterInfo *chInfo)
 	if (!diff)
 		return true;
 
-	if (this->fs->Write(buff, 256) != 256)
+	if (this->fs->Write(Data::ByteArrayR(buff, 256)) != 256)
 	{
 		return false;
 	}
@@ -259,7 +259,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 	if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 		return false;
 
-	this->fs->Write(buff, 256);
+	this->fs->Write(Data::ByteArrayR(buff, 256));
 	if (relatedCharCode == this->currCharCode)
 	{
 		MemCopyNO(this->currCharBuff, buff, 256);
@@ -284,7 +284,7 @@ Bool Text::ChineseInfo::AddRelation(UInt32 charCode, UInt32 relatedCharCode)
 			WriteUInt32(&buff[16], relatedCharCode);
 			if (this->fs->SeekFromBeginning(startOfst) != startOfst)
 				return false;
-			if (this->fs->Write(buff, 256) != 256)
+			if (this->fs->Write(Data::ByteArrayR(buff, 256)) != 256)
 				return false;
 
 			if (currCode == this->currCharCode)

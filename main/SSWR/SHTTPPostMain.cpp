@@ -79,7 +79,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 			while (totalSize < fileSize)
 			{
-				writeSize = cli->Write(&fileBuff[totalSize], fileSize - totalSize);
+				writeSize = cli->Write(Data::ByteArrayR(&fileBuff[totalSize], fileSize - totalSize));
 				if (writeSize <= 0)
 				{
 					console->WriteLine(CSTR("Error in uploading to server"));
@@ -108,7 +108,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 				while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 				{
-					mstm.Write(buff, readSize);
+					mstm.Write(Data::ByteArrayR(buff, readSize));
 				}
 				if (mstm.GetLength() == 0)
 				{

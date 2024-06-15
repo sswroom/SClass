@@ -96,7 +96,7 @@ namespace Net
 
 		void SetLogFile(Text::CStringNN logFile);
 		void AddClient(NN<TCPClient> cli, AnyType cliData);
-		Bool SendClientData(UInt64 cliId, const UInt8 *buff, UOSInt buffSize);
+		Bool SendClientData(UInt64 cliId, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		Bool IsError();
 		void CloseAll();
 

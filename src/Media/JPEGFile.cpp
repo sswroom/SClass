@@ -96,14 +96,14 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 						flirCurrSegm = buff[6];
 						Data::ByteBuffer tagBuff(j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
-						flirMstm->Write(&tagBuff[8], j - 8);
+						flirMstm->Write(Data::ByteArrayR(&tagBuff[8], j - 8));
 					}
 					else if (flirMstm && buff[6] == (flirCurrSegm + 1))
 					{
 						flirCurrSegm = (UInt8)(flirCurrSegm + 1);
 						Data::ByteBuffer tagBuff(j);
 						fd->GetRealData(ofst + 4, j, tagBuff);
-						flirMstm->Write(&tagBuff[8], j - 8);
+						flirMstm->Write(Data::ByteArrayR(&tagBuff[8], j - 8));
 					}
 				}
 				ofst += j + 4;
@@ -445,7 +445,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 		UOSInt i;
 		UOSInt j;
 		i = 2;
-		stm->Write(jpgBuff, 2);
+		stm->Write(Data::ByteArrayR(jpgBuff, 2));
 		while (true)
 		{
 			if (i >= buffSize)
@@ -454,7 +454,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 			}
 			if (jpgBuff[i] != 0xff)
 			{
-				stm->Write(&jpgBuff[i], buffSize - i);
+				stm->Write(Data::ByteArrayR(&jpgBuff[i], buffSize - i));
 				break;
 			}
 			if (jpgBuff[i + 1] == 0xdb)
@@ -470,8 +470,8 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 					Text::StrConcatC(&iccHdr[4], UTF8STRC("ICC_PROFILE"));
 					iccHdr[16] = 1;
 					iccHdr[17] = 1;
-					stm->Write(iccHdr, 18);
-					stm->Write(iccBuff, iccLeng);
+					stm->Write(Data::ByteArrayR(iccHdr, 18));
+					stm->Write(Data::ByteArrayR(iccBuff, iccLeng));
 				}
 				NN<Media::EXIFData> exif;
 				if (nnimg->exif.SetTo(exif))
@@ -519,12 +519,12 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 					k = 8;
 					l = (UInt32)(endOfst + 8);
 					exif->ToExifBuff(&exifBuff[10], k, l);
-					stm->Write(exifBuff, exifSize + 18);
+					stm->Write(Data::ByteArrayR(exifBuff, exifSize + 18));
 					MemFree(exifBuff);
 					exif.Delete();
 				}
 
-				stm->Write(&jpgBuff[i], buffSize - i);
+				stm->Write(Data::ByteArrayR(&jpgBuff[i], buffSize - i));
 				break;
 			}
 			else if (jpgBuff[i + 1] == 0xe1)
@@ -534,13 +534,13 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 			else
 			{
 				j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
-				stm->Write(&jpgBuff[i], j);
+				stm->Write(Data::ByteArrayR(&jpgBuff[i], j));
 				i += j;
 			}
 		}
 	}
 	else
 	{
-		stm->Write(jpgBuff, buffSize);
+		stm->Write(Data::ByteArrayR(jpgBuff, buffSize));
 	}
 }

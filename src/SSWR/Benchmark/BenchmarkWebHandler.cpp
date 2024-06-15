@@ -51,7 +51,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
 			NEW_CLASSNN(mstm, IO::MemoryStream(leng));
-			mstm->Write(data, leng);
+			mstm->Write(Data::ByteArrayR(data, leng));
 			mstm->SeekFromBeginning(0);
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
 
@@ -162,7 +162,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 				}
 				else
 				{
-					fs.Write(data, leng);
+					fs.Write(Data::ByteArrayR(data, leng));
 				}
 			}
 			SDEL_TEXT(platform);
@@ -177,7 +177,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 	resp->AddDefHeaders(req);
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddContentLength(2);
-	resp->Write((const UInt8*)"ok", 2);
+	resp->Write(CSTR("ok").ToByteArray());
 	return true;
 }
 
@@ -207,7 +207,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 			resp->AddDefHeaders(req);
 			resp->AddContentType(CSTR("text/plain"));
 			resp->AddContentLength(fileSize);
-			resp->Write(fileBuff.Arr(), fileSize);
+			resp->Write(fileBuff);
 			return true;
 		}
 	}
@@ -236,15 +236,15 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				*sptr++ = '\t';
 				sptr = Text::StrInt32(sptr, cpuStepping);
 				*sptr++ = '\t';
-				fs.Write(fileName, (UOSInt)(sptr - fileName));
-				fs.Write(reqData, reqSize);
-				fs.Write((const UInt8*)"\r\n", 2);
+				fs.Write(Data::ByteArrayR(fileName, (UOSInt)(sptr - fileName)));
+				fs.Write(Data::ByteArrayR(reqData, reqSize));
+				fs.Write(CSTR("\r\n").ToByteArray());
 
 				resp->SetStatusCode(Net::WebStatus::SC_OK);
 				resp->AddDefHeaders(req);
 				resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 				resp->AddContentLength(2);
-				resp->Write((const UInt8*)"ok", 2);
+				resp->Write(CSTR("ok").ToByteArray());
 				return true;
 			}
 		}
@@ -279,7 +279,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				Text::CString cpuModel;
 				{
 					IO::MemoryStream mstm(fileSize);
-					mstm.Write(fileBuff, fileSize);
+					mstm.Write(Data::ByteArrayR(fileBuff, fileSize));
 					mstm.SeekFromBeginning(0);
 					cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				}
@@ -299,7 +299,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 					if (IO::Path::GetPathType(CSTRP(path, sptr)) == IO::Path::PathType::Unknown)
 					{
 						IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (fileSize == fs.Write(fileBuff, fileSize))
+						if (fileSize == fs.Write(Data::ByteArrayR(fileBuff, fileSize)))
 						{
 						}
 					}
@@ -316,7 +316,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 					sptr = Text::StrInt64(sptr, dt.ToTicks());
 
 					IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (fileSize == fs.Write(fileBuff, fileSize))
+					if (fileSize == fs.Write(Data::ByteArrayR(fileBuff, fileSize)))
 					{
 						msg = CSTR("File uploaded successfully");
 					}
@@ -439,7 +439,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 	resp->AddDefHeaders(req);
 	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
-	resp->Write(sbOut.ToString(), sbOut.GetLength());
+	resp->Write(sbOut.ToByteArray());
 	return true;
 }
 

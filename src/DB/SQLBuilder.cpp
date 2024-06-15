@@ -232,6 +232,11 @@ NN<Text::String> DB::SQLBuilder::ToNewString() const
 	return Text::String::New(this->sb.ToCString());
 }
 
+Data::ByteArrayR DB::SQLBuilder::ToByteArray() const
+{
+	return this->sb.ToByteArray();
+}
+
 DB::SQLType DB::SQLBuilder::GetSQLType() const
 {
 	return this->sqlType;

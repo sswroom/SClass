@@ -284,7 +284,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 			compBuff[7] = 0;
 			compBuff[8] = 0;
 			compBuff[9] = 0xff;
-			resp->Write(compBuff, 10);
+			resp->Write(Data::ByteArrayR(compBuff, 10));
 
 			UInt64 dataSize = pitem->dataLength;
 			UInt64 ofst;
@@ -293,7 +293,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 			{
 				Data::ByteBuffer buff((UOSInt)dataSize);
 				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
-				resp->Write(buff.Arr(), (UOSInt)dataSize);
+				resp->Write(buff);
 			}
 			else
 			{
@@ -310,14 +310,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 						readSize = (UOSInt)dataSize;
 					}
 					pitem->fullFd->GetRealData(ofst, readSize, buff);
-					resp->Write(buff.Arr(), readSize);
+					resp->Write(buff.WithSize(readSize));
 					ofst += readSize;
 					dataSize -= readSize;
 				}
 			}
 			WriteUInt32(&compBuff[0], ReadMUInt32(pitem->compInfo->checkBytes));
 			WriteUInt32(&compBuff[4], (UInt32)pitem->compInfo->decSize);
-			resp->Write(compBuff, 8);
+			resp->Write(Data::ByteArrayR(compBuff, 8));
 
 			return true;
 		}
@@ -337,7 +337,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 			{
 				Data::ByteBuffer buff((UOSInt)dataSize);
 				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
-				resp->Write(buff.Arr(), (UOSInt)dataSize);
+				resp->Write(buff);
 			}
 			else
 			{
@@ -354,7 +354,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 						readSize = (UOSInt)dataSize;
 					}
 					pitem->fullFd->GetRealData(ofst, readSize, buff);
-					resp->Write(buff.Arr(), readSize);
+					resp->Write(buff.WithSize(readSize));
 					ofst += readSize;
 					dataSize -= readSize;
 				}
@@ -895,7 +895,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					this->AddResponseHeaders(req, resp);
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
-					resp->Write(buff, 0);
+					resp->Write(Data::ByteArrayR(buff, 0));
 					return true;
 				}
 			}
@@ -925,7 +925,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				else
 				{
 					resp->AddContentLength(sizeLeft);
-					resp->Write(cache->buff, readSize);
+					resp->Write(Data::ByteArrayR(cache->buff, readSize));
 					MemFree(cache->buff);
 					MemFree(cache);
 				}
@@ -972,7 +972,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 						{
 							IO::FileStream *uplFS;
 							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-							uplFS->Write(uplfile, uplSize);
+							uplFS->Write(Data::ByteArrayR(uplfile, uplSize));
 							DEL_CLASS(uplFS);
 						}
 						fileId++;
@@ -984,7 +984,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 						resp->AddContentType(CSTR("text/plain"));
 						AddCacheHeader(resp);
 						resp->AddContentLength(2);
-						resp->Write((const UInt8*)"ok", 2);
+						resp->Write(Data::ByteArrayR((const UInt8*)"ok", 2));
 						return true;
 					}
 				}
@@ -1343,7 +1343,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
-				resp->Write(buff, 0);
+				resp->Write(Data::ByteArrayR(buff, 0));
 				return true;
 			}
 		}
@@ -1409,7 +1409,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
-				resp->Write(buff, 0);
+				resp->Write(Data::ByteArrayR(buff, 0));
 				return true;
 			}
 			if (sb2.IndexOf(',') != INVALID_INDEX)
@@ -1418,7 +1418,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
-				resp->Write(buff, 0);
+				resp->Write(Data::ByteArrayR(buff, 0));
 				return true;
 			}
 			Int64 start = 0;
@@ -1430,7 +1430,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
-				resp->Write(buff, 0);
+				resp->Write(Data::ByteArrayR(buff, 0));
 				return true;
 			}
 			sptr = sb2.v;
@@ -1441,7 +1441,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				this->AddResponseHeaders(req, resp);
 				AddCacheHeader(resp);
 				resp->AddContentLength(0);
-				resp->Write(buff, 0);
+				resp->Write(Data::ByteArrayR(buff, 0));
 				return true;
 			}
 			if (i + 1 < sb2.GetLength())
@@ -1452,7 +1452,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					this->AddResponseHeaders(req, resp);
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
-					resp->Write(buff, 0);
+					resp->Write(Data::ByteArrayR(buff, 0));
 					return true;
 				}
 				if (end <= start || (UInt64)end > sizeLeft)
@@ -1461,7 +1461,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					this->AddResponseHeaders(req, resp);
 					AddCacheHeader(resp);
 					resp->AddContentLength(0);
-					resp->Write(buff, 0);
+					resp->Write(Data::ByteArrayR(buff, 0));
 					return true;
 				}
 				sizeLeft = (UInt64)(end - start);
@@ -1503,7 +1503,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				IO::MemoryStream mstm;
 				while (readSize > 0)
 				{
-					sizeLeft += mstm.Write(buff, readSize);
+					sizeLeft += mstm.Write(Data::ByteArrayR(buff, readSize));
 					readSize = fs.Read(BYTEARR(buff));
 				}
 				mstm.SeekFromBeginning(0);
@@ -1534,7 +1534,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 			{
 				//this->SendContent(req, resp, mime.v, mime.len, readSize, cache->buff);
 				resp->AddContentLength(sizeLeft);
-				resp->Write(cache->buff, readSize);
+				resp->Write(Data::ByteArrayR(cache->buff, readSize));
 				MemFree(cache->buff);
 				MemFree(cache);
 			}

@@ -22,7 +22,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo>
 		sb.AppendUTF8Char('\t');
 		sb.AppendDouble(bss->GetRSSI());
 		sb.AppendC(UTF8STRC("\r\n"));
-		me->fs->Write(sb.ToString(), sb.GetLength());
+		me->fs->Write(sb.ToByteArray());
 		me->wifiCnt++;
 	}
 }
@@ -66,7 +66,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> 
 		sb.AppendUTF8Char('\t');
 		sb.AppendI32(dev->rssi);
 		sb.AppendC(UTF8STRC("\r\n"));
-		me->fs->Write(sb.ToString(), sb.GetLength());
+		me->fs->Write(sb.ToByteArray());
 		me->btCnt++;
 	}
 }

@@ -317,7 +317,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequ
 	}
 	IO::MemoryStream mstm;
 	fs.ReadToEnd(mstm, 8192);
-	mstm.Write((const UInt8*)"", 1);
+	mstm.Write(Data::ByteArrayR(U8STR(""), 1));
 
 	UOSInt buffSize;
 	UInt8 *buff = mstm.GetBuff(buffSize);

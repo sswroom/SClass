@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 			sql.Clear();			
 			DB::SQLGenerator::GenInsertCmd(sql, sbSchema.ToCString(), sbTable.ToCString(), r);
 			sql.AppendCmdC(CSTR(";\r\n"));
-			fs.Write(sql.ToString(), sql.GetLength());
+			fs.Write(sql.ToByteArray());
 		}
 		me->db->CloseReader(r);
 		cols.FreeAll();

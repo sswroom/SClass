@@ -23,7 +23,7 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(NN<Net::WebServer::IWebRequ
 			resp->AddContentLength(this->faviconSize);
 			Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTR("ico"));
 			resp->AddContentType(mime);
-			resp->Write(this->faviconBuff, this->faviconSize);
+			resp->Write(Data::ByteArrayR(this->faviconBuff, this->faviconSize));
 			return true;
 		}
 		else

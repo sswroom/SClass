@@ -74,8 +74,8 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		missSeq = true;
 		this->mstm.Clear();
 		WriteMInt32(tmpBuff, 1);
-		this->mstm.Write(tmpBuff,4);
-		this->mstm.Write(buff, dataSize);
+		this->mstm.Write(Data::ByteArrayR(tmpBuff, 4));
+		this->mstm.Write(Data::ByteArrayR(buff, dataSize));
 		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
@@ -88,15 +88,15 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		this->mstm.Clear();
 		if (this->sps)
 		{
-			this->mstm.Write(this->sps, this->spsSize);
+			this->mstm.Write(Data::ByteArrayR(this->sps, this->spsSize));
 		}
 		if (this->pps)
 		{
-			this->mstm.Write(this->pps, this->ppsSize);
+			this->mstm.Write(Data::ByteArrayR(this->pps, this->ppsSize));
 		}
 		WriteMInt32(tmpBuff, 1);
-		this->mstm.Write(tmpBuff,4);
-		this->mstm.Write(buff, dataSize);
+		this->mstm.Write(Data::ByteArrayR(tmpBuff, 4));
+		this->mstm.Write(Data::ByteArrayR(buff, dataSize));
 		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
@@ -113,21 +113,21 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			switch (buff[i + 2] & 0x1f)
 			{
 			case 1:
-				this->mstm.Write(tmpBuff, 4);
-				this->mstm.Write(&buff[i + 2], frameSize);
+				this->mstm.Write(Data::ByteArrayR(tmpBuff, 4));
+				this->mstm.Write(Data::ByteArrayR(&buff[i + 2], frameSize));
 				this->isKey = false;
 				break;
 			case 5:
 				if (this->sps)
 				{
-					this->mstm.Write(this->sps, this->spsSize);
+					this->mstm.Write(Data::ByteArrayR(this->sps, this->spsSize));
 				}
 				if (this->pps)
 				{
-					this->mstm.Write(this->pps, this->ppsSize);
+					this->mstm.Write(Data::ByteArrayR(this->pps, this->ppsSize));
 				}
-				this->mstm.Write(tmpBuff, 4);
-				this->mstm.Write(&buff[i + 2], frameSize);
+				this->mstm.Write(Data::ByteArrayR(tmpBuff, 4));
+				this->mstm.Write(Data::ByteArrayR(&buff[i + 2], frameSize));
 				this->isKey = true;
 				break;
 			case 6:
@@ -155,11 +155,11 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 				this->isKey = true;
 				if (this->sps)
 				{
-					this->mstm.Write(this->sps, this->spsSize);
+					this->mstm.Write(Data::ByteArrayR(this->sps, this->spsSize));
 				}
 				if (this->pps)
 				{
-					this->mstm.Write(this->pps, this->ppsSize);
+					this->mstm.Write(Data::ByteArrayR(this->pps, this->ppsSize));
 				}
 			}
 			else if ((buff[1] & 0x1f) == 1)
@@ -173,9 +173,9 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 
 			WriteMInt32(tmpBuff, 1);
 			tmpBuff[4] = (buff[0] & 0xe0) | (buff[1] & 0x1f);
-			this->mstm.Write(tmpBuff, 5);
+			this->mstm.Write(Data::ByteArrayR(tmpBuff, 5));
 		}
-		this->mstm.Write(&buff[2], dataSize - 2);
+		this->mstm.Write(Data::ByteArrayR(&buff[2], dataSize - 2));
 		if (buff[1] & 0x40) //end
 		{
 			if (!missSeq)
@@ -208,11 +208,11 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 				this->isKey = true;
 				if (this->sps)
 				{
-					this->mstm.Write(this->sps, this->spsSize);
+					this->mstm.Write(Data::ByteArrayR(this->sps, this->spsSize));
 				}
 				if (this->pps)
 				{
-					this->mstm.Write(this->pps, this->ppsSize);
+					this->mstm.Write(Data::ByteArrayR(this->pps, this->ppsSize));
 				}
 			}
 			else
@@ -221,9 +221,9 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 			}
 			WriteMInt32(tmpBuff, 1);
 			tmpBuff[4] = (buff[0] & 0xe0) | (buff[1] & 0x1f);
-			this->mstm.Write(tmpBuff, 5);
+			this->mstm.Write(Data::ByteArrayR(tmpBuff, 5));
 		}
-		this->mstm.Write(&buff[4], dataSize - 4);
+		this->mstm.Write(Data::ByteArrayR(&buff[4], dataSize - 4));
 		if (buff[1] & 0x40)
 		{
 			if (!missSeq)

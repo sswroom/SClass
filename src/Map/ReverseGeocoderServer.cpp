@@ -87,7 +87,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::SearchName(UnsafeArray<UTF8
 			WriteInt32(&dataBuff[0], this->reqLat);
 			WriteInt32(&dataBuff[4], this->reqLon);
 			WriteUInt32(&dataBuff[8], this->reqLCID);
-			cli->Write(dataBuff2, this->protocol.BuildPacket(dataBuff2, 0, 0, dataBuff, 12, 0));
+			cli->Write(Data::ByteArrayR(dataBuff2, this->protocol.BuildPacket(dataBuff2, 0, 0, dataBuff, 12, 0)));
 			sent = true;
 		}
 		sptr = 0;
@@ -140,7 +140,7 @@ UnsafeArrayOpt<UTF8Char> Map::ReverseGeocoderServer::CacheName(UnsafeArray<UTF8C
 			WriteInt32(&dataBuff[0], this->reqLat);
 			WriteInt32(&dataBuff[4], this->reqLon);
 			WriteUInt32(&dataBuff[8], this->reqLCID);
-			cli->Write(dataBuff2, this->protocol.BuildPacket(dataBuff2, 2, 0, dataBuff, 12, 0));
+			cli->Write(Data::ByteArrayR(dataBuff2, this->protocol.BuildPacket(dataBuff2, 2, 0, dataBuff, 12, 0)));
 			sent = true;
 		}
 		sptr = 0;
@@ -254,7 +254,7 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	else if (cmdType == 4)
 	{
 		UInt8 buff[16];
-		stm->Write(buff, this->protocol.BuildPacket(buff, 4, 0, 0, 0, 0));
+		stm->Write(Data::ByteArrayR(buff, this->protocol.BuildPacket(buff, 4, 0, 0, 0, 0)));
 	}
 }
 

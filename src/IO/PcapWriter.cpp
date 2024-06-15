@@ -12,7 +12,7 @@ IO::PcapWriter::PcapWriter(Text::CStringNN fileName, Int32 linkType) : fs(fileNa
 	WriteInt32(&buff[12], 0); //sigfigs
 	WriteInt32(&buff[16], 65536); //snaplen
 	WriteInt32(&buff[20], linkType); //network
-	this->fs.Write(buff, 24);
+	this->fs.Write(Data::ByteArrayR(buff, 24));
 }
 
 IO::PcapWriter::~PcapWriter()
@@ -34,7 +34,7 @@ Bool IO::PcapWriter::WritePacket(Data::ByteArrayR packet)
 	WriteInt32(&buff[12], (Int32)packet.GetSize());
 	Sync::MutexUsage mutUsage(this->mut);
 	Bool succ;
-	succ = (this->fs.Write(buff, 16) == 16);
-	succ = succ && (this->fs.Write(packet.Arr().Ptr(), packet.GetSize()) == packet.GetSize());
+	succ = (this->fs.Write(Data::ByteArrayR(buff, 16)) == 16);
+	succ = succ && (this->fs.Write(packet) == packet.GetSize());
 	return succ;
 }

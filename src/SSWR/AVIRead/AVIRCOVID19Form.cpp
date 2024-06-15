@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(AnyType userObj
 		{
 			break;
 		}
-		mstm.Write(buff, i);
+		mstm.Write(Data::ByteArrayR(buff, i));
 	}
 	cli.Delete();
 	if (mstm.GetLength() > 100)

@@ -178,7 +178,7 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 12);
+		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -206,7 +206,7 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 12);
+		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -234,7 +234,7 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 12);
+		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -262,7 +262,7 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 12);
+		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -297,7 +297,7 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 12);
+		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -325,7 +325,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, 12);
+		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
@@ -356,7 +356,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 		{
 			Sync::SimpleThread::Sleep((UOSInt)(CMDDELAY - Double2Int32(t * 1000)));
 		}
-		this->stm->Write(buff, (UOSInt)cnt * 2 + 13);
+		this->stm->Write(Data::ByteArrayR(buff, (UOSInt)cnt * 2 + 13));
 		this->clk.Start();
 		mutUsage.EndUse();
 	}
