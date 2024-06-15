@@ -213,7 +213,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::HTTPOSClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Write(Data::ByteArrayR buff)
 {
 	if (this->canWrite && !this->hasForm)
 	{
@@ -222,7 +222,7 @@ UOSInt Net::HTTPOSClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 //			this->reqMstm->Write((UInt8*)"\r\n", 2);
 		}
 		writing = true;
-		return this->reqMstm->Write(buff, size);
+		return this->reqMstm->Write(buff);
 	}
 	return 0;
 }
@@ -507,7 +507,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 			UOSInt len = this->formSb->GetLength();
 			this->AddContentLength(len);
 			this->hasForm = false;
-			this->Write(this->formSb->ToString(), len);
+			this->Write(this->formSb->ToByteArray());
 			DEL_CLASS(this->formSb);
 			this->formSb = 0;
 		}

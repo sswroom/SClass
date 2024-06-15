@@ -117,7 +117,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			UInt32 chunkSize;
 			Int32 chunkType;
 			UOSInt i;
-			stm->Write(pngBuff, 8);
+			stm->Write(Data::ByteArrayR(pngBuff, 8));
 			i = 8;
 			while (true)
 			{
@@ -151,28 +151,28 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						crc.Calc(&chunkBuff[4], 27 + compSize);
 						crc.GetValue(crcBuff);
 						WriteMUInt32(&chunkBuff[31 + compSize], ReadMUInt32(crcBuff));
-						stm->Write(chunkBuff, 35 + compSize);
+						stm->Write(Data::ByteArrayR(chunkBuff, 35 + compSize));
 					}
 					MemFree(chunkBuff);
 
-					stm->Write(&pngBuff[i], pngSize - i);
+					stm->Write(Data::ByteArrayR(&pngBuff[i], pngSize - i));
 					break;
 				}
 				else
 				{
-					stm->Write(&pngBuff[i], chunkSize + 12);
+					stm->Write(Data::ByteArrayR(&pngBuff[i], chunkSize + 12));
 					i += chunkSize + 12;
 				}
 			}
 		}
 		else
 		{
-			stm->Write(pngBuff, pngSize);
+			stm->Write(Data::ByteArrayR(pngBuff, pngSize));
 		}
 	}
 	else
 	{
-		stm->Write(pngBuff, pngSize);
+		stm->Write(Data::ByteArrayR(pngBuff, pngSize));
 	}
 	return true;
 #endif

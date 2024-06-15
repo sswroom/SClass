@@ -325,12 +325,12 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::FileStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::FileStream::Write(Data::ByteArrayR buff)
 {
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
 	UInt32 readSize;
-	if (WriteFile(handle, buff.Ptr(), (UInt32)size, (DWORD*)&readSize, 0))
+	if (WriteFile(handle, buff.Ptr(), (UInt32)buff.GetSize(), (DWORD*)&readSize, 0))
 	{
 		this->currPos += readSize;
 		return readSize;

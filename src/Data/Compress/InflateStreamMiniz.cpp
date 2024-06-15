@@ -65,26 +65,26 @@ UOSInt Data::Compress::InflateStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Data::Compress::InflateStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Data::Compress::InflateStream::Write(Data::ByteArrayR buff)
 {
 	mz_stream *mzstm = (mz_stream *)this->cmpInfo;
 //	UInt32 lastSize;
 //	int ret;
-	if (size <= headerSize)
+	if (buff.GetSize() <= headerSize)
 	{
-		headerSize -= size;
-		return size;
+		headerSize -= buff.GetSize();
+		return buff.GetSize();
 	}
 	else if (headerSize > 0)
 	{
 		mzstm->next_in = buff.Ptr() + headerSize;
-		mzstm->avail_in = (UInt32)(size - headerSize);
+		mzstm->avail_in = (UInt32)(buff.GetSize() - headerSize);
 		headerSize = 0;
 	}
 	else
 	{
 		mzstm->next_in = buff.Ptr();
-		mzstm->avail_in = (UInt32)size;
+		mzstm->avail_in = (UInt32)buff.GetSize();
 	}
 	while (true || mzstm->avail_in > 0)
 	{
@@ -105,12 +105,12 @@ UOSInt Data::Compress::InflateStream::Write(UnsafeArray<const UInt8> buff, UOSIn
 		}
 		else //	if (ret == MZ_STREAM_END || mzstm->avail_in != lastSize)
 		{
-			this->outStm->Write(writeBuff, BUFFSIZE - mzstm->avail_out);
+			this->outStm->Write(Data::ByteArrayR(writeBuff, BUFFSIZE - mzstm->avail_out));
 			mzstm->avail_out = BUFFSIZE;
 			mzstm->next_out = writeBuff;
 		}
 	}
-	return size - mzstm->avail_in;
+	return buff.GetSize() - mzstm->avail_in;
 }
 
 Int32 Data::Compress::InflateStream::Flush()

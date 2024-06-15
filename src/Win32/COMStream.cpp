@@ -60,9 +60,9 @@ HRESULT __stdcall Win32::COMStream::Write(const void *pv, ULONG cb, ULONG *pcbWr
 {
 	DebugMsg("Write");
 	if (pcbWritten)
-		*pcbWritten = (ULONG)stm->Write((UInt8*)pv, cb);
+		*pcbWritten = (ULONG)stm->Write(Data::ByteArrayR((UInt8*)pv, cb));
 	else
-		stm->Write((UInt8*)pv, cb);
+		stm->Write(Data::ByteArrayR((UInt8*)pv, cb));
 	return 0;
 }
 

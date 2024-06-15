@@ -401,12 +401,12 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 
 }
 
-UOSInt IO::SerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
 {
 	UOSInt writeCnt = 0;
 	void *h = this->handle;
 #ifdef _WIN32_WCE
-	if (WriteFile(h, buff, size, (DWORD*)&writeCnt, 0))
+	if (WriteFile(h, buff.Ptr(), buff.GetSize(), (DWORD*)&writeCnt, 0))
 	{
 		return writeCnt;
 	}
@@ -423,7 +423,7 @@ UOSInt IO::SerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 	ol.InternalHigh = 0;
 	ol.Offset = 0;
 	ol.OffsetHigh = 0;
-	WriteFile(h, buff.Ptr(), (DWORD)size, (LPDWORD)&writeCnt, &ol);
+	WriteFile(h, buff.Ptr(), (DWORD)buff.GetSize(), (LPDWORD)&writeCnt, &ol);
 	if (GetOverlappedResult(h, &ol, (LPDWORD)&writeCnt, TRUE))
 	{
 		CloseHandle(ol.hEvent);
@@ -505,12 +505,12 @@ void IO::SerialPort::CancelRead(void *reqData)
 #endif
 }
 
-void *IO::SerialPort::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
 	evt->Set();
 	if (handle == 0)
 		return 0;
-	return (void*)(OSInt)Write(buff, size);
+	return (void*)(OSInt)Write(buff);
 }
 
 UOSInt IO::SerialPort::EndWrite(void *reqData, Bool toWait)

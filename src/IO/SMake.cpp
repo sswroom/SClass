@@ -1464,7 +1464,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 			else
 			{
 				IO::FileStream fs(CSTR("filelist.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				fs.Write(sb.v + 1, sb.leng - 1);
+				fs.Write(sb.ToByteArray().SubArray(1));
 			}
 			sb.ClearStr();
 			AppendCfgPath(sb, cppCfg->value->ToCString());

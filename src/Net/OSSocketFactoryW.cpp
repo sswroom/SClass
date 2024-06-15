@@ -449,14 +449,14 @@ void Net::OSSocketFactory::AddIPMembership(NN<Socket> socket, UInt32 ip)
 	setsockopt(SocketGetFD(socket), IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 }
 
-UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 //	return send(SocketGetFD(socket) (const char*)buff, (int)buffSize, 0);
 	WSABUF buf;
 	DWORD sendSize;
 	DWORD flags = 0;
 	Int32 iResult;
-	buf.buf = (char*)buff;
+	buf.buf = (char*)buff.Ptr();
 	buf.len = (ULONG)buffSize;
 	iResult = WSASend((SOCKET)SocketGetFD(socket), &buf, 1, &sendSize, flags, 0, 0);
 	if (iResult == 0)
@@ -471,13 +471,13 @@ UOSInt Net::OSSocketFactory::SendData(NN<Socket> socket, const UInt8 *buff, UOSI
 	return 0;
 }
 
-UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	WSABUF buf;
 	DWORD flags = 0;
 	DWORD recvSize;
 	Int32 iResult;
-	buf.buf = (char*)buff;
+	buf.buf = (char*)buff.Ptr();
 	buf.len = (ULONG)buffSize;
 	iResult = WSARecv(SocketGetFD(socket), &buf, 1, &recvSize, &flags, 0, 0);
 	if (iResult == 0)
@@ -501,13 +501,13 @@ typedef struct
 	NN<Socket> s;
 } WSAOverlapped;
 
-void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	WSAOverlapped *overlapped;
 	overlapped = MemAlloc(WSAOverlapped, 1);
 	overlapped->flags = 0;
 	overlapped->recvSize = 0;
-	overlapped->buf.buf = (char*)buff;
+	overlapped->buf.buf = (char*)buff.Ptr();
 	overlapped->buf.len = (ULONG)buffSize;
 	overlapped->s = socket;
 	MemClear(&overlapped->overlapped, sizeof(WSAOVERLAPPED));
@@ -644,7 +644,7 @@ UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, UnsafeArray<const UInt8
 	return 0;
 }
 
-Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl)
+Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, OutParam<UInt32> respTime_us, OutParam<UInt32> ttl)
 {
 	UInt8 sendData[32];
 	UInt8 replyBuff[sizeof(ICMP_ECHO_REPLY) + sizeof(sendData)];
@@ -662,8 +662,8 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
     if (dwRetVal != 0)
 	{
         reply = (PICMP_ECHO_REPLY)replyBuff;
-		*respTime_us = reply->RoundTripTime * 1000;
-		*ttl = reply->Options.Ttl;
+		respTime_us.Set(reply->RoundTripTime * 1000);
+		ttl.Set(reply->Options.Ttl);
 		return true;
     }
     else
@@ -716,7 +716,7 @@ void Net::OSSocketFactory::ShutdownSocket(NN<Socket> socket)
 	shutdown(SocketGetFD(socket), SD_BOTH);
 }
 
-Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, UInt32 *size)
+Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32> size)
 {
 #if defined(__CYGWIN__)
 	__ms_u_long argp;
@@ -724,7 +724,7 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, UInt32 *size)
 	u_long argp;
 #endif
 	int ret = ioctlsocket(SocketGetFD(socket), FIONREAD, &argp);
-	*size = argp;
+	size.Set(argp);
 	return ret == 0;
 }
 

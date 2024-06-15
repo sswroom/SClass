@@ -340,7 +340,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), ((Sync::Event*)this->clsData));
 }
 
-Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *data, UOSInt buffSize)
+Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, UnsafeArray<const UInt8> data, UOSInt buffSize)
 {
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Sync::MutexUsage mutUsage(this->cliMut);
@@ -348,7 +348,7 @@ Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, const UInt8 *data, UOSInt b
 	{
 		mutUsage.EndUse();
 		if (this->logWriter) this->logWriter->TCPSend(cliStat->cli, data, buffSize);
-		return cliStat->cli->Write(data, buffSize) == buffSize;
+		return cliStat->cli->Write(Data::ByteArrayR(data, buffSize)) == buffSize;
 	}
 	else
 	{

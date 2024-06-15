@@ -48,12 +48,12 @@ UOSInt IO::DeviceStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::DeviceStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt IO::DeviceStream::Write(Data::ByteArrayR buff)
 {
 	if (this->hand)
 	{
 		UInt32 readSize;
-		WriteFile((HANDLE)this->hand, buff.Ptr(), (DWORD)size, (LPDWORD)&readSize, 0);
+		WriteFile((HANDLE)this->hand, buff.Ptr(), (DWORD)buff.GetSize(), (LPDWORD)&readSize, 0);
 		return readSize;
 	}
 	else

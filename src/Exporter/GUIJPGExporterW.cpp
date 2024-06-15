@@ -128,7 +128,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		exif->Remove(34377); //PhotoshopImageResources
 		exif->Remove(34675); //ICC Profile
 		i = 2;
-		stm->Write(jpgBuff, 2);
+		stm->Write(Data::ByteArrayR(jpgBuff, 2));
 		while (true)
 		{
 			if (i >= jpgSize)
@@ -137,7 +137,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			}
 			if (jpgBuff[i] != 0xff)
 			{
-				stm->Write(&jpgBuff[i], jpgSize - i);
+				stm->Write(Data::ByteArrayR(&jpgBuff[i], jpgSize - i));
 				break;
 			}
 			if (jpgBuff[i + 1] == 0xdb)
@@ -153,8 +153,8 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					Text::StrConcatC((UTF8Char*)&iccHdr[4], UTF8STRC("ICC_PROFILE"));
 					iccHdr[16] = 1;
 					iccHdr[17] = 1;
-					stm->Write(iccHdr, 18);
-					stm->Write(iccBuff, iccLeng);
+					stm->Write(Data::ByteArrayR(iccHdr, 18));
+					stm->Write(Data::ByteArrayR(iccBuff, iccLeng));
 				}
 				/////////////////////////////////////
 
@@ -178,10 +178,10 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				k = 8;
 				l = (UInt32)(endOfst + 8);
 				exif->ToExifBuff(&exifBuff[10], k, l);
-				stm->Write(exifBuff, exifSize + 18);
+				stm->Write(Data::ByteArrayR(exifBuff, exifSize + 18));
 				MemFree(exifBuff);
 
-				stm->Write(&jpgBuff[i], jpgSize - i);
+				stm->Write(Data::ByteArrayR(&jpgBuff[i], jpgSize - i));
 				break;
 			}
 			else if (jpgBuff[i + 1] == 0xe1)
@@ -191,7 +191,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			else
 			{
 				j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
-				stm->Write(&jpgBuff[i], j);
+				stm->Write(Data::ByteArrayR(&jpgBuff[i], j));
 				i += j;
 			}
 		}
@@ -199,7 +199,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	}
 	else
 	{
-		stm->Write(jpgBuff, jpgSize);
+		stm->Write(Data::ByteArrayR(jpgBuff, jpgSize));
 	}
 	return true;
 #endif
