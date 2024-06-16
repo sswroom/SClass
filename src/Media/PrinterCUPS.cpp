@@ -19,6 +19,7 @@
 
 // https://stackoverflow.com/questions/14518004/linux-cups-printing-example-tutorial
 // https://refspecs.linuxfoundation.org/LSB_4.0.0/LSB-Printing/LSB-Printing/libcupsman.html
+#define VERBOSE
 
 namespace Media
 {
@@ -26,7 +27,7 @@ namespace Media
 	{
 	private:
 		NN<IPrintHandler> hdlr;
-		Media::GTKDrawEngine *eng;
+		NN<Media::GTKDrawEngine> eng;
 		Optional<Text::String> docName;
 		Bool started;
 		Bool running;
@@ -36,7 +37,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		CUPSPrintDocument(NN<Text::String> printerName, Media::GTKDrawEngine *eng, NN<IPrintHandler> hdlr);
+		CUPSPrintDocument(NN<Text::String> printerName, NN<Media::GTKDrawEngine> eng, NN<IPrintHandler> hdlr);
 		virtual ~CUPSPrintDocument();
 
 		Bool IsError();
@@ -58,6 +59,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 
 	UTF8Char fileName[512];
 	UnsafeArray<UTF8Char> sptr;
+	UTF8Char *sptr2;
 	Int64 t;
 	UOSInt i;
 	Double paperWidth;
@@ -127,8 +129,8 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	{
 		sb2.AppendC(UTF8STRC("Untitled"));
 	}
-	sptr = fileName;
-	cupsPrintFiles((Char*)sb1.ToPtr(), 1, (const Char**)&sptr, (Char*)sb2.ToPtr(), 0, 0);
+	sptr2 = fileName;
+	cupsPrintFiles((Char*)sb1.ToPtr(), 1, (const Char**)&sptr2, (Char*)sb2.ToPtr(), 0, 0);
 
 	IO::Path::DeleteFile(fileName);
 	me->hdlr->EndPrint(me);
@@ -137,7 +139,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::CUPSPrintDocument::CUPSPrintDocument(NN<Text::String> printerName, Media::GTKDrawEngine *eng, NN<IPrintHandler> hdlr)
+Media::CUPSPrintDocument::CUPSPrintDocument(NN<Text::String> printerName, NN<Media::GTKDrawEngine> eng, NN<IPrintHandler> hdlr)
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
@@ -260,7 +262,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 Optional<Media::IPrintDocument> Media::Printer::StartPrint(NN<IPrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
 	Media::CUPSPrintDocument *doc;
-	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, (Media::GTKDrawEngine*)eng.Ptr(), hdlr));
+	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, NN<Media::GTKDrawEngine>::ConvertFrom(eng), hdlr));
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);
