@@ -6,10 +6,11 @@
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
-#include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
 #include "UI/GUIPictureBoxSimple.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -31,6 +32,7 @@ namespace SSWR
 
 			NN<UI::GUILabel> lblCharCode;
 			NN<UI::GUITextBox> txtCharCode;
+			NN<UI::GUIButton> btnPasteCharCode;
 			NN<UI::GUILabel> lblChar;
 			NN<UI::GUITextBox> txtChar;
 			NN<UI::GUIButton> btnCharPrev;
@@ -41,8 +43,23 @@ namespace SSWR
 			NN<UI::GUILabel> lblRelatedAdd;
 			NN<UI::GUITextBox> txtRelatedAdd;
 			NN<UI::GUIButton> btnRelatedGo;
+			NN<UI::GUITabControl> tcMain;
 
-			NN<UI::GUIGroupBox> grpCharInfo;
+			NN<UI::GUITabPage> tpBaseInfo;
+			NN<UI::GUILabel> lblCurrChar;
+			NN<UI::GUITextBox> txtCurrChar;
+			NN<UI::GUILabel> lblUTF8Code;
+			NN<UI::GUITextBox> txtUTF8Code;
+			NN<UI::GUILabel> lblUTF16Code;
+			NN<UI::GUITextBox> txtUTF16Code;
+			NN<UI::GUILabel> lblUTF32Code;
+			NN<UI::GUITextBox> txtUTF32Code;
+			NN<UI::GUILabel> lblBlockRange;
+			NN<UI::GUITextBox> txtBlockRange;
+			NN<UI::GUILabel> lblBlockName;
+			NN<UI::GUITextBox> txtBlockName;
+
+			NN<UI::GUITabPage> tpCharInfo;
 			NN<UI::GUILabel> lblRadical;
 			NN<UI::GUITextBox> txtRadical;
 			NN<UI::GUILabel> lblRadicalV;
@@ -63,6 +80,7 @@ namespace SSWR
 			
 			static void __stdcall OnCharChg(AnyType userObj);
 			static Bool __stdcall OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
+			static void __stdcall OnPasteCharCodeClicked(AnyType userObj);
 			static void __stdcall OnCharPrevClicked(AnyType userObj);
 			static void __stdcall OnCharNextClicked(AnyType userObj);
 			static void __stdcall OnRadicalChg(AnyType userObj);

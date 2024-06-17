@@ -5,6 +5,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/Unicode.h"
+#include "UI/Clipboard.h"
 #include "UI/GUIFontDialog.h"
 #include <wchar.h>
 
@@ -43,6 +45,42 @@ Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, 
 	}
 	dlg.Delete();
 	return false;
+}
+
+void __stdcall SSWR::AVIRead::AVIRChineseForm::OnPasteCharCodeClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	Text::StringBuilderUTF8 sb;
+	UInt32 code;
+	if (UI::Clipboard::GetString(me->GetHandle(), sb))
+	{
+		if (sb.StartsWith(UTF8STRC("\\u")))
+		{
+			if (sb.leng == 6 && sb.Substring(2).Hex2UInt32(code))
+			{
+				me->UpdateChar(code);
+			}
+			else if (sb.leng == 12 && sb.StartsWith(6, UTF8STRC("\\u")) && sb.Substring(8).Hex2UInt32(code))
+			{
+				UInt32 code2;
+				sb.TrimToLength(6);
+				if (sb.Substring(2).Hex2UInt32(code2))
+				{
+					UTF16Char u16buff[3];
+					u16buff[0] = (UTF16Char)code2;
+					u16buff[1] = (UTF16Char)code;
+					u16buff[2] = 0;
+					UTF32Char outChar;
+					Text::StrReadChar(u16buff, outChar);
+					me->UpdateChar((UInt32)outChar);
+				}
+			}
+		}
+		else if (sb.Hex2UInt32(code))
+		{
+			me->UpdateChar(code);
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharPrevClicked(AnyType userObj)
@@ -243,14 +281,50 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 
 void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 {
-	UTF8Char sbuff[9];
+	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
+	UTF8Char u8buff[7];
+	UTF16Char u16buff[3];
+	UOSInt charCnt;
+	UOSInt i;
 	if (this->SaveChar())
 	{
 		sptr = Text::StrHexVal32(sbuff, charCode);
 		this->txtCharCode->SetText(CSTRP(sbuff, sptr));
 		this->currChar = charCode;
 		this->UpdateImg();
+
+		this->txtUTF32Code->SetText(CSTRP(sbuff, sptr));
+		charCnt = (UOSInt)(Text::StrWriteChar(u8buff, (UTF32Char)charCode) - u8buff);
+		sptr = Text::StrHexBytes(sbuff, u8buff, charCnt, ' ');
+		this->txtUTF8Code->SetText(CSTRP(sbuff, sptr));
+		u8buff[charCnt] = 0;
+		this->txtCurrChar->SetText(Text::CStringNN(u8buff, charCnt));
+		charCnt = (UOSInt)(Text::StrWriteChar(u16buff, (UTF32Char)charCode) - u16buff);
+		sptr = sbuff;
+		i = 0;
+		while (i < charCnt)
+		{
+			if (i > 0) *sptr++ = ' ';
+			sptr = Text::StrHexVal16(sptr, u16buff[i]);
+			i++;
+		}
+		this->txtUTF16Code->SetText(CSTRP(sbuff, sptr));
+		NN<Text::Unicode::Block> blk;
+		if (Text::Unicode::GetBlock(charCode).SetTo(blk))
+		{
+			this->txtBlockName->SetText(Text::CStringNN(blk->name, blk->nameLen));
+			sptr = sbuff;
+			sptr = Text::StrHexVal32V(sptr, blk->beginCode);
+			*sptr++ = '-';
+			sptr = Text::StrHexVal32V(sptr, blk->endCode);
+			this->txtBlockRange->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			this->txtBlockName->SetText(CSTR(""));
+			this->txtBlockRange->SetText(CSTR(""));
+		}
 
 		Text::StringBuilderUTF8 sb;
 		Text::ChineseInfo::CharacterInfo chInfo;
@@ -408,6 +482,9 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->txtCharCode = ui->NewTextBox(*this, CSTR("0"));
 	this->txtCharCode->SetRect(104, 4, 100, 23, false);
 	this->txtCharCode->SetReadOnly(true);
+	this->btnPasteCharCode = ui->NewButton(*this, CSTR("Paste"));
+	this->btnPasteCharCode->SetRect(204, 4, 75, 23, false);
+	this->btnPasteCharCode->HandleButtonClick(OnPasteCharCodeClicked, this);
 	this->btnCharPrev = ui->NewButton(*this, CSTR("Prev"));
 	this->btnCharPrev->SetRect(104, 28, 55, 23, false);
 	this->btnCharPrev->HandleButtonClick(OnCharPrevClicked, this);
@@ -434,26 +511,60 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->btnRelatedGo->SetRect(128, 124, 95, 23, false);
 	this->btnRelatedGo->HandleButtonClick(OnRelatedGoClicked, this);
 	this->pbChar = ui->NewPictureBoxSimple(*this, this->deng, true);
-	this->pbChar->SetRect(240, 4, 256, 256, false);
+	this->pbChar->SetRect(284, 4, 256, 256, false);
 	this->pbChar->HandleMouseDown(OnCharMouseDown, this);
+	this->tcMain = ui->NewTabControl(*this);
+	this->tcMain->SetRect(0, 0, 640, 448, false);
+	this->tcMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 
-	this->grpCharInfo = ui->NewGroupBox(*this, CSTR("Char Info"));
-	this->grpCharInfo->SetRect(0, 0, 640, 448, false);
-	this->grpCharInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->lblRadical = ui->NewLabel(this->grpCharInfo, CSTR("Radical"));
+	this->tpBaseInfo = this->tcMain->AddTabPage(CSTR("Base Info"));
+	this->lblCurrChar = ui->NewLabel(this->tpBaseInfo, CSTR("Character"));
+	this->lblCurrChar->SetRect(4, 4, 100, 23, false);
+	this->txtCurrChar = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtCurrChar->SetFont(0, 0, 48, false);
+	this->txtCurrChar->SetRect(104, 4, 50, 71, false);
+	this->txtCurrChar->SetReadOnly(true);
+	this->lblUTF8Code = ui->NewLabel(this->tpBaseInfo, CSTR("UTF-8"));
+	this->lblUTF8Code->SetRect(4, 76, 100, 23, false);
+	this->txtUTF8Code = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtUTF8Code->SetRect(104, 76, 200, 23, false);
+	this->txtUTF8Code->SetReadOnly(true);
+	this->lblUTF16Code = ui->NewLabel(this->tpBaseInfo, CSTR("UTF-16"));
+	this->lblUTF16Code->SetRect(4, 100, 100, 23, false);
+	this->txtUTF16Code = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtUTF16Code->SetRect(104, 100, 200, 23, false);
+	this->txtUTF16Code->SetReadOnly(true);
+	this->lblUTF32Code = ui->NewLabel(this->tpBaseInfo, CSTR("UTF-32"));
+	this->lblUTF32Code->SetRect(4, 124, 100, 23, false);
+	this->txtUTF32Code = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtUTF32Code->SetRect(104, 124, 200, 23, false);
+	this->txtUTF32Code->SetReadOnly(true);
+	this->lblBlockRange = ui->NewLabel(this->tpBaseInfo, CSTR("Block Range"));
+	this->lblBlockRange->SetRect(4, 148, 100, 23, false);
+	this->txtBlockRange = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtBlockRange->SetRect(104, 148, 200, 23, false);
+	this->txtBlockRange->SetReadOnly(true);
+	this->lblBlockName = ui->NewLabel(this->tpBaseInfo, CSTR("Block Name"));
+	this->lblBlockName->SetRect(4, 172, 100, 23, false);
+	this->txtBlockName = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtBlockName->SetRect(104, 172, 200, 23, false);
+	this->txtBlockName->SetReadOnly(true);
+
+	this->tpCharInfo = this->tcMain->AddTabPage(CSTR("Char Info"));
+	this->lblRadical = ui->NewLabel(this->tpCharInfo, CSTR("Radical"));
 	this->lblRadical->SetRect(0, 0, 100, 23, false);
-	this->txtRadical = ui->NewTextBox(this->grpCharInfo, CSTR(""));
+	this->txtRadical = ui->NewTextBox(this->tpCharInfo, CSTR(""));
 	this->txtRadical->SetRect(100, 0, 23, 23, false);
 	this->txtRadical->HandleTextChanged(OnRadicalChg, this);
-	this->lblRadicalV = ui->NewLabel(this->grpCharInfo, CSTR(""));
+	this->lblRadicalV = ui->NewLabel(this->tpCharInfo, CSTR(""));
 	this->lblRadicalV->SetRect(124, 0, 100, 23, false);
-	this->lblStrokeCount = ui->NewLabel(this->grpCharInfo, CSTR("Stroke Count"));
+	this->lblStrokeCount = ui->NewLabel(this->tpCharInfo, CSTR("Stroke Count"));
 	this->lblStrokeCount->SetRect(0, 24, 100, 23, false);
-	this->txtStrokeCount = ui->NewTextBox(this->grpCharInfo, CSTR("0"));
+	this->txtStrokeCount = ui->NewTextBox(this->tpCharInfo, CSTR("0"));
 	this->txtStrokeCount->SetRect(100, 24, 50, 23, false);
-	this->lblCharType = ui->NewLabel(this->grpCharInfo, CSTR("Char Type"));
+	this->lblCharType = ui->NewLabel(this->tpCharInfo, CSTR("Char Type"));
 	this->lblCharType->SetRect(0, 48, 100, 23, false);
-	this->cboCharType = ui->NewComboBox(this->grpCharInfo, false);
+	this->cboCharType = ui->NewComboBox(this->tpCharInfo, false);
 	this->cboCharType->SetRect(100, 48, 150, 23, false);
 	this->cboCharType->AddItem(CSTR("Unknown"), (void*)Text::ChineseInfo::CT_UNKNOWN);
 	this->cboCharType->AddItem(CSTR("Chinese (Trad.)"), (void*)Text::ChineseInfo::CT_CHINESET);
@@ -462,25 +573,25 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->cboCharType->AddItem(CSTR("English"), (void*)Text::ChineseInfo::CT_ENGLISH);
 	this->cboCharType->AddItem(CSTR("Japanese"), (void*)Text::ChineseInfo::CT_JAPANESE);
 	this->cboCharType->AddItem(CSTR("Japanese (Kanji)"), (void*)Text::ChineseInfo::CT_JAPANESE_KANJI);
-	this->lblFlags = ui->NewLabel(this->grpCharInfo, CSTR("Flags"));
+	this->lblFlags = ui->NewLabel(this->tpCharInfo, CSTR("Flags"));
 	this->lblFlags->SetRect(0, 72, 100, 23, false);
-	this->chkMainChar = ui->NewCheckBox(this->grpCharInfo, CSTR("Main Char"), false);
+	this->chkMainChar = ui->NewCheckBox(this->tpCharInfo, CSTR("Main Char"), false);
 	this->chkMainChar->SetRect(100, 72, 120, 23, false);
-	this->lblPronun1 = ui->NewLabel(this->grpCharInfo, CSTR("Pronun 1"));
+	this->lblPronun1 = ui->NewLabel(this->tpCharInfo, CSTR("Pronun 1"));
 	this->lblPronun1->SetRect(0, 96, 100, 23, false);
-	this->txtPronun1 = ui->NewTextBox(this->grpCharInfo, CSTR(""));
+	this->txtPronun1 = ui->NewTextBox(this->tpCharInfo, CSTR(""));
 	this->txtPronun1->SetRect(100, 96, 100, 23, false);
-	this->lblPronun2 = ui->NewLabel(this->grpCharInfo, CSTR("Pronun 2"));
+	this->lblPronun2 = ui->NewLabel(this->tpCharInfo, CSTR("Pronun 2"));
 	this->lblPronun2->SetRect(0, 120, 100, 23, false);
-	this->txtPronun2 = ui->NewTextBox(this->grpCharInfo, CSTR(""));
+	this->txtPronun2 = ui->NewTextBox(this->tpCharInfo, CSTR(""));
 	this->txtPronun2->SetRect(100, 120, 100, 23, false);
-	this->lblPronun3 = ui->NewLabel(this->grpCharInfo, CSTR("Pronun 3"));
+	this->lblPronun3 = ui->NewLabel(this->tpCharInfo, CSTR("Pronun 3"));
 	this->lblPronun3->SetRect(0, 144, 100, 23, false);
-	this->txtPronun3 = ui->NewTextBox(this->grpCharInfo, CSTR(""));
+	this->txtPronun3 = ui->NewTextBox(this->tpCharInfo, CSTR(""));
 	this->txtPronun3->SetRect(100, 144, 100, 23, false);
-	this->lblPronun4 = ui->NewLabel(this->grpCharInfo, CSTR("Pronun 4"));
+	this->lblPronun4 = ui->NewLabel(this->tpCharInfo, CSTR("Pronun 4"));
 	this->lblPronun4->SetRect(0, 168, 100, 23, false);
-	this->txtPronun4 = ui->NewTextBox(this->grpCharInfo, CSTR(""));
+	this->txtPronun4 = ui->NewTextBox(this->tpCharInfo, CSTR(""));
 	this->txtPronun4->SetRect(100, 168, 100, 23, false);
 
 	this->HandleFormClosed(OnFormClosed, this);

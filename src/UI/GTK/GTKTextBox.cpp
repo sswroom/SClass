@@ -240,3 +240,8 @@ void UI::GTK::GTKTextBox::SelectAll()
 		gtk_editable_select_region((GtkEditable*)this->widget, 0, -1);
 	}
 }
+
+ControlHandle *UI::GTK::GTKTextBox::GetDisplayHandle()
+{
+	return (ControlHandle*)this->widget;
+}

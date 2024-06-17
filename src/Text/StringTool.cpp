@@ -125,9 +125,16 @@ Bool Text::StringTool::IsEmailAddress(UnsafeArray<const UTF8Char> s)
 	UTF8Char c;
 	while ((c = *s++) != 0)
 	{
-		if (Text::CharUtil::IsAlphaNumeric(c) || c == '-' || c == '_')
+		if (Text::CharUtil::IsAlphaNumeric(c) || c == '-')
 		{
 
+		}
+		else if (c == '_')
+		{
+			if (atPos != INVALID_INDEX)
+			{
+				return false;
+			}
 		}
 		else if (c == '.')
 		{

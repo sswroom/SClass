@@ -68,7 +68,6 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::Str
 	UOSInt i = this->strCnt;
 	UOSInt j = 0;
 	UOSInt k;
-	UnsafeArray<const UTF8Char> nns;
 	while (i-- > 0)
 	{
 		if (strs[i])
@@ -119,7 +118,6 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(Text::PSt
 	UOSInt i = this->strCnt;
 	UOSInt j = 0;
 	UOSInt k;
-	UnsafeArray<const UTF8Char> nns;
 	while (i-- > 0)
 	{
 		if (strs[i].v.Ptr())
@@ -171,7 +169,6 @@ UnsafeArray<UnsafeArrayOpt<const UTF8Char>> Map::VectorLayer::CopyStrs(NN<Data::
 	UOSInt j = 0;
 	UOSInt k;
 	NN<Text::String> s;
-	UnsafeArray<const UTF8Char> nns;
 	while (i-- > 0)
 	{
 		if (strs->GetItem(i).SetTo(s))

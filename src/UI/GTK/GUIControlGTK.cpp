@@ -317,14 +317,14 @@ void UI::GUIControl::InitFont()
 	if (this->fontName.SetTo(nns)) builder.AddFontFamily(nns->v);
 	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
-	GtkWidget *widget = (GtkWidget*)this->hwnd;
+	GtkWidget *widget = (GtkWidget*)this->GetDisplayHandle();
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
 	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	gtk_widget_reset_style(widget);
 #else
-	gtk_widget_override_font((GtkWidget*)this->hwnd, font);
+	gtk_widget_override_font((GtkWidget*)this->GetDisplayHandle(), font);
 #endif
 }
 
@@ -725,6 +725,11 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 }
 
 ControlHandle *UI::GUIControl::GetHandle()
+{
+	return this->hwnd;
+}
+
+ControlHandle *UI::GUIControl::GetDisplayHandle()
 {
 	return this->hwnd;
 }

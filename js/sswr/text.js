@@ -321,6 +321,13 @@ export function isEmailAddress(s)
 		{
 
 		}
+		if (c == '_')
+		{
+			if (atPos != -1)
+			{
+				return false;
+			}
+		}
 		else if (c == '.')
 		{
 			if (atPos != -1)

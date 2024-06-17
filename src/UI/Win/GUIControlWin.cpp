@@ -721,6 +721,11 @@ ControlHandle *UI::GUIControl::GetHandle()
 	return this->hwnd;
 }
 
+ControlHandle *UI::GUIControl::GetDisplayHandle()
+{
+	return this->hwnd;
+}
+
 MonitorHandle *UI::GUIControl::GetHMonitor()
 {
 	return (MonitorHandle*)MonitorFromWindow((HWND)this->hwnd, MONITOR_DEFAULTTONEAREST);

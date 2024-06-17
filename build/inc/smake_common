@@ -4575,6 +4575,8 @@ Text/TextAnalyzer.h:
 @TextAnalyzer.o
 Text/TextCommon.h:
 Text/TextEncoding.h:
+Text/Unicode.h:
+@Unicode.o
 Text/URLString.h:
 @URLString.o
 Text/UTF8Reader.h:

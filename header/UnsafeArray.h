@@ -13,7 +13,7 @@ template <typename T> struct UnsafeArray
 private:
 	T *p;
 
-	virtual void SetPtr(T *p)
+	void SetPtr(T *p)
 	{
 /*		if (p == 0)
 		{

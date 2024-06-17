@@ -307,6 +307,7 @@ namespace UI
 		virtual Optional<GUIClientControl> GetParent();
 		GUIForm *GetRootForm();
 		ControlHandle *GetHandle();
+		virtual ControlHandle *GetDisplayHandle();
 		MonitorHandle *GetHMonitor();
 		Media::MonitorInfo *GetMonitorInfo();
 		virtual void SetDPI(Double hdpi, Double ddpi);
