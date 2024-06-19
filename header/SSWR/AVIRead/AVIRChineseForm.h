@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRCHINESEFORM
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/ChineseInfo.h"
+#include "Text/UnicodeCharacterData.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
@@ -21,12 +22,13 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Text::ChineseInfo *chinese;
+			NN<Text::ChineseInfo> chinese;
 			NN<Media::DrawEngine> deng;
 			UInt32 currChar;
 			Optional<Media::DrawImage> charImg;
 			NN<Text::String> currFont;
 			UInt32 currRadical;
+			Text::UnicodeCharacterData ucd;
 
 			NN<UI::GUIMainMenu> mnuMain;
 
@@ -58,6 +60,16 @@ namespace SSWR
 			NN<UI::GUITextBox> txtBlockRange;
 			NN<UI::GUILabel> lblBlockName;
 			NN<UI::GUITextBox> txtBlockName;
+			NN<UI::GUILabel> lblCharacterName;
+			NN<UI::GUITextBox> txtCharacterName;
+			NN<UI::GUILabel> lblUnicode10Name;
+			NN<UI::GUITextBox> txtUnicode10Name;
+			NN<UI::GUILabel> lblUppercaseCode;
+			NN<UI::GUITextBox> txtUppercaseCode;
+			NN<UI::GUILabel> lblLowercaseCode;
+			NN<UI::GUITextBox> txtLowercaseCode;
+			NN<UI::GUILabel> lblTitlecaseCode;
+			NN<UI::GUITextBox> txtTitlecaseCode;
 
 			NN<UI::GUITabPage> tpCharInfo;
 			NN<UI::GUILabel> lblRadical;

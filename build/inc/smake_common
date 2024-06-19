@@ -4577,6 +4577,8 @@ Text/TextCommon.h:
 Text/TextEncoding.h:
 Text/Unicode.h:
 @Unicode.o
+Text/UnicodeCharacterData.h:
+@UnicodeCharacterData.o
 Text/URLString.h:
 @URLString.o
 Text/UTF8Reader.h:

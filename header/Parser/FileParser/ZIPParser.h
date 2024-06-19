@@ -2,6 +2,7 @@
 #define _SM_PARSER_FILEPARSER_ZIPPARSER
 #include "IO/FileParser.h"
 #include "IO/VirtualPackageFile.h"
+#include "Text/Encoding.h"
 
 namespace Parser
 {

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChineseForm.h"
 #include "Text/MyString.h"
@@ -325,6 +326,47 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 			this->txtBlockName->SetText(CSTR(""));
 			this->txtBlockRange->SetText(CSTR(""));
 		}
+		NN<Text::UnicodeCharacterData::UnicodeData> unicodeData;
+		if (this->ucd.GetUnicodeData(charCode).SetTo(unicodeData))
+		{
+			this->txtCharacterName->SetText(unicodeData->characterName->ToCString());
+			this->txtUnicode10Name->SetText(unicodeData->unicode10Name->ToCString());
+			if (unicodeData->uppercaseMapping)
+			{
+				sptr = Text::StrHexVal32V(sbuff, unicodeData->uppercaseMapping);
+				this->txtUppercaseCode->SetText(CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				this->txtUppercaseCode->SetText(CSTR(""));
+			}
+			if (unicodeData->lowercaseMapping)
+			{
+				sptr = Text::StrHexVal32V(sbuff, unicodeData->lowercaseMapping);
+				this->txtLowercaseCode->SetText(CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				this->txtLowercaseCode->SetText(CSTR(""));
+			}
+			if (unicodeData->titlecaseMapping)
+			{
+				sptr = Text::StrHexVal32V(sbuff, unicodeData->titlecaseMapping);
+				this->txtTitlecaseCode->SetText(CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				this->txtTitlecaseCode->SetText(CSTR(""));
+			}
+		}
+		else
+		{
+			this->txtCharacterName->SetText(CSTR(""));
+			this->txtUnicode10Name->SetText(CSTR(""));
+			this->txtUppercaseCode->SetText(CSTR(""));
+			this->txtLowercaseCode->SetText(CSTR(""));
+			this->txtTitlecaseCode->SetText(CSTR(""));
+		}
 
 		Text::StringBuilderUTF8 sb;
 		Text::ChineseInfo::CharacterInfo chInfo;
@@ -458,6 +500,8 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 
 SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
 	this->SetText(CSTR("Chinese"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
@@ -468,7 +512,11 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->charImg = 0;
 	this->currFont = Text::String::New(UTF8STRC("MingLiU"));
 	this->currRadical = 0;
-	NEW_CLASS(this->chinese, Text::ChineseInfo());
+	NEW_CLASSNN(this->chinese, Text::ChineseInfo());
+
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UCD.zip"));
+	this->ucd.LoadUCDZip(CSTRP(sbuff, sptr));
 
 	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
@@ -549,6 +597,31 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->txtBlockName = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
 	this->txtBlockName->SetRect(104, 172, 200, 23, false);
 	this->txtBlockName->SetReadOnly(true);
+	this->lblCharacterName = ui->NewLabel(this->tpBaseInfo, CSTR("Character Name"));
+	this->lblCharacterName->SetRect(4, 196, 100, 23, false);
+	this->txtCharacterName = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtCharacterName->SetRect(104, 196, 200, 23, false);
+	this->txtCharacterName->SetReadOnly(true);
+	this->lblUnicode10Name = ui->NewLabel(this->tpBaseInfo, CSTR("Unicode 1.0 Name"));
+	this->lblUnicode10Name->SetRect(4, 220, 100, 23, false);
+	this->txtUnicode10Name = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtUnicode10Name->SetRect(104, 220, 200, 23, false);
+	this->txtUnicode10Name->SetReadOnly(true);
+	this->lblUppercaseCode = ui->NewLabel(this->tpBaseInfo, CSTR("Uppercase code"));
+	this->lblUppercaseCode->SetRect(4, 244, 100, 23, false);
+	this->txtUppercaseCode = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtUppercaseCode->SetRect(104, 244, 200, 23, false);
+	this->txtUppercaseCode->SetReadOnly(true);
+	this->lblLowercaseCode = ui->NewLabel(this->tpBaseInfo, CSTR("Lowercase code"));
+	this->lblLowercaseCode->SetRect(4, 268, 100, 23, false);
+	this->txtLowercaseCode = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtLowercaseCode->SetRect(104, 268, 200, 23, false);
+	this->txtLowercaseCode->SetReadOnly(true);
+	this->lblTitlecaseCode = ui->NewLabel(this->tpBaseInfo, CSTR("Titlecase code"));
+	this->lblTitlecaseCode->SetRect(4, 292, 100, 23, false);
+	this->txtTitlecaseCode = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
+	this->txtTitlecaseCode->SetRect(104, 292, 200, 23, false);
+	this->txtTitlecaseCode->SetReadOnly(true);
 
 	this->tpCharInfo = this->tcMain->AddTabPage(CSTR("Char Info"));
 	this->lblRadical = ui->NewLabel(this->tpCharInfo, CSTR("Radical"));
@@ -606,7 +679,7 @@ SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 		this->charImg = 0;
 	}
 	this->currFont->Release();
-	DEL_CLASS(this->chinese);
+	this->chinese.Delete();
 }
 
 void SSWR::AVIRead::AVIRChineseForm::OnMonitorChanged()
