@@ -2114,6 +2114,7 @@ StringTool.o: ../../src/Text/StringTool.cpp
 StringUtil.o: ../../src/Text/StringUtil.cpp
 TextAnalyzer.o: ../../src/Text/TextAnalyzer.cpp
 Unicode.o: ../../src/Text/Unicode.cpp
+UnicodeCharacterData.o: ../../src/Text/UnicodeCharacterData.cpp
 URLString.o: ../../src/Text/URLString.cpp
 UTF8Reader.o: ../../src/Text/UTF8Reader.cpp
 UTF8Util.o: ../../src/Text/UTF8Util.cpp
