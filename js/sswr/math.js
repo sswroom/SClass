@@ -1316,6 +1316,8 @@ export class CoordinateSystemManager
 			return this.srCreateGeogCSysData(srid, 6326, "WGS 84");
 		case 4611:
 			return this.srCreateGeogCSysData(srid, 6611, "Hong Kong 1980");
+		case 8428:
+			return this.srCreateGeogCSysData(srid, 1207, "Macau_2009");
 		default:
 			console.log("Unsupported Geog SRID: "+srid);
 			return null;
@@ -1335,6 +1337,8 @@ export class CoordinateSystemManager
 		case 3857:
 		case 900913:
 			return this.srCreateProjCSysData(srid, 4326, CoordinateSystemType.Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1);
+		case 8432:
+			return this.srCreateProjCSysData(srid, 8428, CoordinateSystemType.MercatorProjected, "Macau Grid", 20000.00, 20000.00, 113.53646944444444444444444444444, 22.21239722222222222222222222222222, 1);
 		default:
 			console.log("Unsupported Proj SRID: "+srid);
 			return null;
@@ -1349,11 +1353,13 @@ export class CoordinateSystemManager
 		{
 		case 2326:
 		case 3857:
+		case 8432:
 		case 102140:
 		case 900913:
 			return this.srCreateProjCSys(srid);
 		case 4326:
 		case 4611:
+		case 8428:
 			return this.srCreateGeogCSys(srid);
 		default:
 			console.log("Unsupported SRID: "+srid);
@@ -1368,6 +1374,8 @@ export class CoordinateSystemManager
 	{
 		switch (srid)
 		{
+		case 1207:
+			return new DatumData(1207, CoordinateSystemManager.srGetSpheroid(7022), "Macao_1920", -2361554.788, 5417536.177, 2391608.926, -202.865, -303.990, -155.873, -34.079, 76.126, 32.660, 6.096, unit.Angle.Unit.ARCSECOND);
 		case 6326:
 			return new DatumData(6326, CoordinateSystemManager.srGetSpheroid(7030), "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, unit.Angle.Unit.RADIAN);
 		case 6600:

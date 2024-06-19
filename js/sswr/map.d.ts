@@ -56,7 +56,7 @@ declare class GeoJSON
 declare class Geometry
 {
 	type: GeometryType;
-	coordinates?: any[];
+	coordinates?: number[]|number[][]|number[][][]|number[][][][];
 	geometries?: Geometry[];
 }
 
