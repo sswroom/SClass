@@ -1,6 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/TextBinEnc/CPPTextBinEnc.h"
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 
 Text::TextBinEnc::CPPTextBinEnc::CPPTextBinEnc()
 {
@@ -141,7 +145,12 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 		if (c == 0)
 		{
 			if (isQuote)
+			{
+#if defined(VERBOSE)
+				printf("End quote not found\r\n");
+#endif
 				return 0;
+			}
 			break;
 		}
 		else if (!isQuote)
@@ -155,6 +164,9 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 			}
 			else
 			{
+#if defined(VERBOSE)
+				printf("Unknown character: %c\r\n", c);
+#endif
 				return 0;
 			}
 		}
@@ -163,6 +175,9 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 			c = *str++;
 			if (c == 0)
 			{
+#if defined(VERBOSE)
+				printf("End with \\\r\n");
+#endif
 				return 0;
 			}
 			else if (c == 'r')
@@ -181,12 +196,19 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 			{
 				ret++;
 			}
+			else if (c == '"')
+			{
+				ret++;
+			}
 			else if (c == '0')
 			{
 				ret++;
 			}
 			else
 			{
+#if defined(VERBOSE)
+				printf("Unknown escape sequence: \\%c\r\n", c);
+#endif
 				return 0;
 			}
 		}
@@ -214,7 +236,12 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray
 		if (c == 0)
 		{
 			if (isQuote)
+			{
+#if defined(VERBOSE)
+				printf("End quote not found\r\n");
+#endif
 				return 0;
+			}
 			break;
 		}
 		else if (!isQuote)
@@ -228,6 +255,9 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray
 			}
 			else
 			{
+#if defined(VERBOSE)
+				printf("Unknown character: %c\r\n", c);
+#endif
 				return 0;
 			}
 		}
@@ -236,6 +266,9 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray
 			c = *str++;
 			if (c == 0)
 			{
+#if defined(VERBOSE)
+				printf("End with \\\r\n");
+#endif
 				return 0;
 			}
 			else if (c == 'r')
@@ -263,8 +296,16 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray
 				*dataBuff++ = '\0';
 				ret++;
 			}
+			else if (c == '"')
+			{
+				*dataBuff++ = '\"';
+				ret++;
+			}
 			else
 			{
+#if defined(VERBOSE)
+				printf("Unknown escape sequence: \\%c\r\n", c);
+#endif
 				return 0;
 			}
 		}
