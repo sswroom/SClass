@@ -1491,7 +1491,6 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 	UnsafeArray<const UTF8Char> sql = s.v;
 	NN<Data::VariItem> item;
 	Data::QueryConditions *cond;
-	UOSInt i;
 	NEW_CLASS(cond, Data::QueryConditions());
 	while (true)
 	{
@@ -1540,7 +1539,6 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 								return 0;
 							}
 							vals.Add(item->GetItemValue().str->v);
-							i++;
 						}
 						cond->StrIn(sbField.ToCString(), vals);
 						items.DeleteAll();
@@ -1605,7 +1603,6 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 									return 0;
 								}
 								vals.Add(item->GetItemValue().str->v);
-								i++;
 							}
 							cond->StrNotIn(sbField.ToCString(), vals);
 							items.DeleteAll();

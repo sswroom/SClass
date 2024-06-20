@@ -68,7 +68,6 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<DB::DBReader> r;
 	NN<DB::ColDef> colDef;
 	Data::ArrayListStringNN tables;
-	UOSInt i;
 	UOSInt k;
 	UOSInt l;
 	if (!DB::MDBFileConn::CreateDBTool(fileName, log, CSTR("DB: ")).SetTo(mdb))
@@ -124,7 +123,6 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			}
 			srcDB->CloseReader(r);
 		}
-		i++;
 	}
 	tables.FreeAll();
 	mdb.Delete();

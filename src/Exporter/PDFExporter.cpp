@@ -63,14 +63,14 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Int64 refPos;
 	Int64 currPos;
 	Data::DateTime dt;
-	stm->Write((UInt8*)"%PDF-1.4\r", 9);
+	stm->Write(CSTR("%PDF-1.4\r").ToByteArray());
 	currPos = 9;
 	objPos.Add(0);
 	objPos.Add(currPos);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("1 0 obj\r"));
 	sb.AppendC(UTF8STRC("<< /Type /Catalog /Pages 2 0 R\r>>\rendobj\r"));
-	stm->Write(sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToByteArray());
 	currPos += sb.GetLength();
 	objPos.Add(0);
 
@@ -97,7 +97,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sb2.AppendC(UTF8STRC("endobj\r"));
 
 		objPos.SetItem(pageContentId, currPos);
-		stm->Write(sb2.ToString(), sb2.GetLength());
+		stm->Write(sb2.ToByteArray());
 		currPos += sb2.GetLength();
 
 		pageList.Add((Int32)objPos.GetCount());
@@ -117,7 +117,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sb.AppendC(UTF8STRC("endobj\r"));
 
 		objPos.Add(currPos);
-		stm->Write(sb.ToString(), sb.GetLength());
+		stm->Write(sb.ToByteArray());
 		currPos += sb.GetLength();
 
 		i++;
@@ -140,7 +140,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("endobj\r"));
-	stm->Write(sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToByteArray());
 	currPos += sb.GetLength();
 
 	infoId = objPos.GetCount();
@@ -203,7 +203,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	sb.AppendC(UTF8STRC(">>\r"));
 	sb.AppendC(UTF8STRC("endobj\r"));
-	stm->Write(sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToByteArray());
 	currPos += sb.GetLength();
 
 	refPos = currPos;
@@ -242,7 +242,7 @@ Bool Exporter::PDFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sb.AppendI64(refPos);
 	sb.AppendC(UTF8STRC("\r"));
 	sb.AppendC(UTF8STRC("%%EOF\r"));
-	stm->Write(sb.ToString(), sb.GetLength());
+	stm->Write(sb.ToByteArray());
 	currPos += sb.GetLength();
 
 	return true;
