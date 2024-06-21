@@ -375,7 +375,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 UInt64 Media::MPGFile::GetBitRate()
 {
 	Data::Duration currTime = this->vstm->GetFrameStreamTime();
-	if (currTime.IsPositiveNonZero() > 0 && this->readOfst > 0)
+	if (currTime.IsPositiveNonZero() && this->readOfst > 0)
 	{
 		return (this->readOfst * 8000LL / (UInt64)currTime.GetTotalMS());
 	}

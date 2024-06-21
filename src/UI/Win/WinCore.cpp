@@ -313,7 +313,7 @@ NN<UI::GUIGroupBox> UI::Win::WinCore::NewGroupBox(NN<GUIClientControl> parent, T
 NN<UI::GUIHScrollBar> UI::Win::WinCore::NewHScrollBar(NN<GUIClientControl> parent, Double width)
 {
 	NN<UI::Win::WinHScrollBar> ctrl;
-	NEW_CLASSNN(ctrl, UI::Win::WinHScrollBar(*this, parent, width));
+	NEW_CLASSNN(ctrl, UI::Win::WinHScrollBar(*this, parent, Double2Int32(width)));
 	return ctrl;
 }
 

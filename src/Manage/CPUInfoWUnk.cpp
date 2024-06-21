@@ -55,7 +55,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
+UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
 {
 	return 0;
 }
@@ -92,7 +92,7 @@ Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->clsData)
 	{

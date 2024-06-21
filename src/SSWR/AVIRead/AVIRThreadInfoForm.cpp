@@ -522,7 +522,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 
 				Text::StringBuilderWriter sbWriter(sb);
 				Manage::DasmARM64::DasmARM64_Regs regs;
-				context->GetRegs(&regs);
+				context->GetRegs(regs);
 				callLev = 0;
 				while (true)
 				{
@@ -531,7 +531,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					sb.ClearStr();
 					sb.AppendHex64(pc);
 					sb.AppendC(UTF8STRC(" "));
-					sptr = symbol->ResolveName(sbuff, pc);
+					sptr = symbol->ResolveName(sbuff, pc).Or(sbuff);
 					i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 					sb.AppendP(&sbuff[i + 1], sptr);
 					i = this->lbMyStack->AddItem(sb.ToCString(), 0);
@@ -559,7 +559,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					this->stacksMem.Add(Text::StrCopyNew(sb.ToString()));
 
 					sb.ClearStr();
-					ret = dasm.Disasm64(sbWriter, symbol, &pc, &sp, &lr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+					ret = dasm.Disasm64(sbWriter, symbol, &pc, &sp, &lr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
 					this->stacks.Add(Text::StrCopyNew(sb.ToString()));
 					if (!ret)
 						break;

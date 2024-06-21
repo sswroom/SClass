@@ -570,7 +570,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->lblCurrChar->SetRect(4, 4, 100, 23, false);
 	this->txtCurrChar = ui->NewTextBox(this->tpBaseInfo, CSTR(""));
 	this->txtCurrChar->SetFont(0, 0, 48, false);
-	this->txtCurrChar->SetRect(104, 4, 50, 71, false);
+	this->txtCurrChar->SetRect(104, 4, 90, 71, false);
 	this->txtCurrChar->SetReadOnly(true);
 	this->lblUTF8Code = ui->NewLabel(this->tpBaseInfo, CSTR("UTF-8"));
 	this->lblUTF8Code->SetRect(4, 76, 100, 23, false);
