@@ -282,7 +282,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::WinSSLClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
+UOSInt Net::WinSSLClient::Write(Data::ByteArrayR buff)
 {
 	if (this->clsData->step == 0)
 	{
@@ -296,24 +296,23 @@ UOSInt Net::WinSSLClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 		Data::DateTime debugDt;
 #endif
 		UOSInt writeSize = 0;
-		while (size > this->clsData->stmSizes.cbMaximumMessage)
+		while (buff.GetSize() > this->clsData->stmSizes.cbMaximumMessage)
 		{
-			writeSize += Write(buff, this->clsData->stmSizes.cbMaximumMessage);
+			writeSize += Write(buff.WithSize(this->clsData->stmSizes.cbMaximumMessage));
 			buff += (UOSInt)this->clsData->stmSizes.cbMaximumMessage;
-			size -= this->clsData->stmSizes.cbMaximumMessage;
 		}
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
 		printf("%s Writing %d bytes, enc size = %d\r\n", debugBuff, (UInt32)size, (UInt32)(this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer));
 #endif
-		UInt8 *encBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer);
-		MemCopyNO(&encBuff[this->clsData->stmSizes.cbHeader], buff.Ptr(), size);
+		UInt8 *encBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbHeader + buff.GetSize() + this->clsData->stmSizes.cbTrailer);
+		MemCopyNO(&encBuff[this->clsData->stmSizes.cbHeader], buff.Ptr(), buff.GetSize());
 		SecBuffer outputBuff[4];
 		SecBufferDesc outputDesc;
 		SecBuffer_Set(&outputBuff[0], SECBUFFER_STREAM_HEADER, &encBuff[0], this->clsData->stmSizes.cbHeader);
-		SecBuffer_Set(&outputBuff[1], SECBUFFER_DATA, &encBuff[this->clsData->stmSizes.cbHeader], (UInt32)size);
-		SecBuffer_Set(&outputBuff[2], SECBUFFER_STREAM_TRAILER, &encBuff[this->clsData->stmSizes.cbHeader + size], this->clsData->stmSizes.cbTrailer);
+		SecBuffer_Set(&outputBuff[1], SECBUFFER_DATA, &encBuff[this->clsData->stmSizes.cbHeader], (UInt32)buff.GetSize());
+		SecBuffer_Set(&outputBuff[2], SECBUFFER_STREAM_TRAILER, &encBuff[this->clsData->stmSizes.cbHeader + buff.GetSize()], this->clsData->stmSizes.cbTrailer);
 		SecBuffer_Set(&outputBuff[3], SECBUFFER_EMPTY, 0, 0);
 		SecBufferDesc_Set(&outputDesc, outputBuff, 4);
 
@@ -356,7 +355,7 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 	{
 		return 0;
 	}
-	this->clsData->readBuff = buff.Arr().Ptr();
+	this->clsData->readBuff = buff.Ptr();
 	this->clsData->readSize = buff.GetSize();
 	if (this->clsData->decSize > 0)
 	{
@@ -670,9 +669,9 @@ void Net::WinSSLClient::CancelRead(void *reqData)
 
 }
 
-void *Net::WinSSLClient::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
+void *Net::WinSSLClient::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 {
-	UOSInt ret = this->Write(buff, size);
+	UOSInt ret = this->Write(buff);
 	if (ret)
 	{
 		evt->Set();
