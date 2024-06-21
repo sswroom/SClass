@@ -184,10 +184,12 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar) + 1;
 		tmpBuff = MemAlloc(UInt8, nBytes + 2);
 		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
-		tmpBuff[nBytes - 1] = '\n';
 		if (this->clsData->fileOutput)
 		{
-			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
+			tmpBuff[nBytes - 1] = '\r';
+			tmpBuff[nBytes] = '\n';
+			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
+			nBytes += 1;
 		}
 		else
 		{
@@ -197,6 +199,7 @@ Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes + 1, (LPDWORD)&outChars, 0);
 			nBytes += 1;
 #else
+			tmpBuff[nBytes - 1] = '\n';
 			WriteConsoleA(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
 #endif
 		}
@@ -219,7 +222,7 @@ Bool IO::ConsoleWriter::WriteLine()
 	UInt32 nChar;
 	if (this->clsData->fileOutput)
 	{
-		WriteFile(this->clsData->hand, "\n", nChar = 1, (LPDWORD)&outChars, 0);
+		WriteFile(this->clsData->hand, "\r\n", nChar = 2, (LPDWORD)&outChars, 0);
 	}
 	else
 	{

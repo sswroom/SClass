@@ -748,7 +748,7 @@ Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE 
 	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff(), (DWORD)privKey->GetASN1BuffSize(), 0)) != 0)
     {
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
-		printf("SSL: NCryptImportKey failed: 0x%x\r\n", (UInt32)status);
+		printf("SSL: NCryptImportKey failed: algName = %ls, 0x%x\r\n", algName, (UInt32)status);
 #endif
 		privKey.Delete();
 		NCryptFreeObject(hProv);
@@ -833,7 +833,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *hRootStore)
 
 	}
 #if defined(VERBOSE_SVR)
-	printf("WinSSLEngine: AcquireCredentialsHandleW error: 0x%x (%s)\r\n", status, IO::WindowsError::GetString(status).v);
+	printf("WinSSLEngine: AcquireCredentialsHandleW error: 0x%x (%s)\r\n", status, IO::WindowsError::GetString(status).v.Ptr());
 #endif
 	return status == 0;
 }
@@ -873,7 +873,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
 #if defined(VERBOSE_CLI)
-		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)status);
 #endif
 		Text::StrDelNew(wptr);
 		err.Set(ErrorType::InitSession);
@@ -881,12 +881,12 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	}
 	Net::SocketFactory::ErrorType et;
 #if defined(VERBOSE_CLI)
-	printf("SSL: Cli %x, SendData, size = %d\r\n", (Int32)(OSInt)s, (Int32)outputBuff[0].cbBuffer);
+	printf("SSL: Cli %x, SendData, size = %d\r\n", (Int32)(OSInt)s.Ptr(), (Int32)outputBuff[0].cbBuffer);
 #endif
 	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, et) != outputBuff[0].cbBuffer)
 	{
 #if defined(VERBOSE_CLI)
-		printf("SSL: Cli %x, Error in sendData, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+		printf("SSL: Cli %x, Error in sendData, ret = %x\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)status);
 #endif
 		DeleteSecurityContext(&ctxt);
 		FreeContextBuffer(outputBuff[0].pvBuffer);
@@ -908,7 +908,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 		{
 			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 8192 - recvOfst, et);
 #if defined(VERBOSE_CLI)
-			printf("SSL: Cli %x, recvData, size = %d\r\n", (Int32)(OSInt)s, (UInt32)recvSize);
+			printf("SSL: Cli %x, recvData, size = %d\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)recvSize);
 #endif
 			if (recvSize <= 0)
 			{
@@ -990,7 +990,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 		else
 		{
 #if defined(VERBOSE_CLI)
-			printf("SSL: Cli %x, Error in InitializeSecurityContext 2, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+			printf("SSL: Cli %x, Error in InitializeSecurityContext 2, ret = %x\r\n", (Int32)(OSInt)s.Ptr(), (UInt32)status);
 #endif
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
 			{
@@ -1026,7 +1026,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 	Data::DateTime dtDebug;
 	dtDebug.SetCurrTime();
 	dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-	printf("%s SSL: Svr %x, Init begin, Tid = %d\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)GetCurrentThreadId());
+	printf("%s SSL: Svr %x, Init begin, Tid = %d\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), (UInt32)GetCurrentThreadId());
 #endif
 
 	this->sockf->SetRecvTimeout(s, 3000);
@@ -1047,7 +1047,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 		dtDebug.SetCurrTime();
 		dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s SSL: Svr %x, Recv size 0\r\n", debugBuff, (Int32)(OSInt)s);
+		printf("%s SSL: Svr %x, Recv size 0\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
 #endif
 		this->sockf->DestroySocket(s);
 		return 0;
@@ -1093,7 +1093,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 		dtDebug.SetCurrTime();
 		dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)status);
+		printf("%s SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), (UInt32)status);
 #endif
 		this->sockf->DestroySocket(s);
 		return 0;
@@ -1109,7 +1109,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 				dtDebug.SetCurrTime();
 				dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-				printf("%s SSL: Svr %x, Send data error\r\n", debugBuff, (Int32)(OSInt)s);
+				printf("%s SSL: Svr %x, Send data error\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
 #endif
 				succ = false;
 			}
@@ -1143,7 +1143,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 				dtDebug.SetCurrTime();
 				dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-				printf("%s SSL: Svr %x, Recv size2 0\r\n", debugBuff, (Int32)(OSInt)s);
+				printf("%s SSL: Svr %x, Recv size2 0\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
 #endif
 				DeleteSecurityContext(&ctxt);
 				this->sockf->DestroySocket(s);
@@ -1200,7 +1200,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 						dtDebug.SetCurrTime();
 						dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-						printf("%s SSL: Svr %x, Send data error2\r\n", debugBuff, (Int32)(OSInt)s);
+						printf("%s SSL: Svr %x, Send data error2\r\n", debugBuff, (Int32)(OSInt)s.Ptr());
 #endif
 						succ = false;
 					}
@@ -1237,7 +1237,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 			dtDebug.SetCurrTime();
 			dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-			printf("%s SSL: Svr %x, AcceptSecurityContext error2, status %s (%x)\r\n", debugBuff, (Int32)(OSInt)s, IO::WindowsError::GetString(status).v, (UInt32)status);
+			printf("%s SSL: Svr %x, AcceptSecurityContext error2, status %s (%x)\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), IO::WindowsError::GetString(status).v.Ptr(), (UInt32)status);
 #endif
 			DeleteSecurityContext(&ctxt);
 			this->sockf->DestroySocket(s);
@@ -1248,7 +1248,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 #if defined(VERBOSE_SVR)
 	dtDebug.SetCurrTime();
 	dtDebug.ToString(debugBuff, "HH:mm:ss.fff");
-	printf("%s SSL: Svr %x, Success, extra size = %d\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)recvOfst);
+	printf("%s SSL: Svr %x, Success, extra size = %d\r\n", debugBuff, (Int32)(OSInt)s.Ptr(), (UInt32)recvOfst);
 #endif
 
 	Net::SSLClient *cli;
@@ -1743,11 +1743,17 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 		BCRYPT_ALG_HANDLE hHashAlg = WinSSLEngine_BCryptOpenHash(hashType);
 		if (hHashAlg == 0)
 		{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+			printf("SSL: BCryptOpenHash failed, hashType = %s\r\n", Crypto::Hash::HashTypeGetName(hashType).v.Ptr());
+#endif
 			return false;
 		}
 		BCRYPT_ALG_HANDLE hSignAlg = WinSSLEngine_BCryptOpenECDSA(key->GetECName());
 		if (hSignAlg == 0)
 		{
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
+			printf("SSL: BCryptOpenECDSA failed, ecName = %s\r\n", Crypto::Cert::X509File::ECNameGetName(key->GetECName()).v.Ptr());
+#endif
 			BCryptCloseAlgorithmProvider(hHashAlg, 0);
 			return false;
 		}
@@ -1887,7 +1893,7 @@ UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData,
 		CryptDestroyKey(hKey);
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 err = GetLastError();
-		printf("SSL: CryptEncrypt failed, 0x%x (%s)\r\n", err, IO::WindowsError::GetString(err).v);
+		printf("SSL: CryptEncrypt failed, 0x%x (%s)\r\n", err, IO::WindowsError::GetString(err).v.Ptr());
 #endif
 		return 0;
 	}
@@ -1966,7 +1972,7 @@ UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData,
 		CryptDestroyKey(hKey);
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 err = GetLastError();
-		printf("SSL: CryptDecrypt failed, 0x%x (%s)\r\n", err, IO::WindowsError::GetString(err).v);
+		printf("SSL: CryptDecrypt failed, 0x%x (%s)\r\n", err, IO::WindowsError::GetString(err).v.Ptr());
 #endif
 		return 0;
 	}
