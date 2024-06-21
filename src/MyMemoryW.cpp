@@ -517,6 +517,8 @@ Int32 MemCheckError()
 					}
 					else
 					{
+						sptr = Text::StrConcatC(sptr, UTF8STRC("0x"));
+						sptr = Text::StrHexValOS(sptr, address);
 					}
 				}
 

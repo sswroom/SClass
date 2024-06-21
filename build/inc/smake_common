@@ -92,6 +92,7 @@ console:
 @BME280Test
 @BTListDevices
 @ConsoleInputTest
+@ConsoleWriterTest
 @DHT22Capture
 @DHT22Test
 @DS18B20Test
@@ -328,6 +329,9 @@ BTListDevices:
 @ConsoleStartup.o
 ConsoleInputTest:
 @ConsoleInputTest.o
+@ConsoleStartup.o
+ConsoleWriterTest:
+@ConsoleWriterTest.o
 @ConsoleStartup.o
 DHT22Capture:
 @DHT22Capture.o
@@ -1004,6 +1008,7 @@ BLEScanTest.o: ../../main/IO/BLEScanTest.cpp
 BME280Test.o: ../../main/IO/BME280Test.cpp
 BTListDevices.o: ../../main/IO/BTListDevices.cpp
 ConsoleInputTest.o: ../../main/IO/ConsoleInputTest.cpp
+ConsoleWriterTest.o: ../../main/IO/ConsoleWriterTest.cpp
 DHT22Capture.o: ../../main/IO/DHT22Capture.cpp
 DHT22Test.o: ../../main/IO/DHT22Test.cpp
 DS18B20Test.o: ../../main/IO/DS18B20Test.cpp
