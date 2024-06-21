@@ -1,6 +1,8 @@
 1.6.6
 -Enhance Email Address checking
 -Added Macau 2009 Grid
+-Added map.LayerInfo minX, minY, maxX, maxY
+-Leaflet support createLayer with bounds
 
 1.6.5
 -Fixed some bugs

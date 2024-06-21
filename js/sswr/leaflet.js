@@ -41,6 +41,8 @@ export function createLayer(layer, options)
 			lyrOpts.minZoom = layer.minZoom;
 		if (layer.maxZoom)
 			lyrOpts.maxZoom = layer.maxZoom;
+		if (layer.minX != null && layer.minY != null && layer.maxX != null && layer.maxY != null)
+			lyrOpts.bounds = L.latLngBounds(L.latLng(layer.minY, layer.minX), L.latLng(layer.maxY, layer.maxX));
 		lyrOpts.maxNativeZoom = lyrOpts.maxZoom;
 		lyrOpts.maxZoom = 25;
 		return L.tileLayer(layer.url, lyrOpts);

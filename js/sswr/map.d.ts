@@ -45,6 +45,10 @@ declare class LayerInfo
 	format?: string;
 	minZoom?: number;
 	maxZoom?: number;
+	minX?: number;
+	minY?: number;
+	maxX?: number;
+	maxY?: number;
 }
 
 declare class GeoJSON
