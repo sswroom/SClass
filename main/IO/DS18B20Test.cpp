@@ -13,8 +13,8 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	IO::OneWireGPIO *oneWire;
-	IO::Device::DS18B20 *sensor;
+	NN<IO::OneWireGPIO> oneWire;
+	NN<IO::Device::DS18B20> sensor;
 	IO::ConsoleWriter console;
 	Double temp;
 	Text::StringBuilderUTF8 sb;
@@ -32,8 +32,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	console.WriteLine(sb.ToCString());
 	IO::GPIOControl gpioCtrl;
 	IO::GPIOPin pin(gpioCtrl, pinNum);
-	NEW_CLASS(oneWire, IO::OneWireGPIO(pin));
-	NEW_CLASS(sensor, IO::Device::DS18B20(oneWire));
+	NEW_CLASSNN(oneWire, IO::OneWireGPIO(pin));
+	NEW_CLASSNN(sensor, IO::Device::DS18B20(oneWire));
 	if (gpioCtrl.IsError() || pin.IsError())
 	{
 		console.WriteLine(CSTR("Error in opening GPIO, root permission?"));
@@ -57,7 +57,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				console.WriteLine(CSTR("Error in converting temperature"));
 			}
-			else if (!sensor->ReadTemp(&temp))
+			else if (!sensor->ReadTemp(temp))
 			{
 				console.WriteLine(CSTR("Error in reading temperature"));
 			}
@@ -72,7 +72,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 	}
 
-	DEL_CLASS(sensor);
-	DEL_CLASS(oneWire);
+	sensor.Delete();
+	oneWire.Delete();
 	return 0;
 }

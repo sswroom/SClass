@@ -610,7 +610,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 	this->devMut.UnlockWrite();
 }
 
-void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
+void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, UnsafeArray<IO::SNBDongle::ReadingType> readingTypes, UnsafeArray<Double> readingVals)
 {
 	NN<DeviceInfo> dev;
 	this->devMut.LockRead();

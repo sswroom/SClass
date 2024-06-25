@@ -37,7 +37,7 @@ void SSWR::AVIRead::AVIRDS18B20Form::ReadData()
 	Double temp;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (this->ds18b20->ConvTemp() && this->ds18b20->ReadTemp(&temp))
+	if (this->ds18b20->ConvTemp() && this->ds18b20->ReadTemp(temp))
 	{
 		sptr = Text::StrDouble(sbuff, temp);
 		this->txtTemp->SetText(CSTRP(sbuff, sptr));
@@ -56,8 +56,8 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(Optional<UI::GUIClientControl> p
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;
-	NEW_CLASS(this->oneWire, IO::OneWireGPIO(this->pin));
-	NEW_CLASS(this->ds18b20, IO::Device::DS18B20(this->oneWire));
+	NEW_CLASSNN(this->oneWire, IO::OneWireGPIO(this->pin));
+	NEW_CLASSNN(this->ds18b20, IO::Device::DS18B20(this->oneWire));
 	sptr = this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("DS18B20 - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	this->SetNoResize(true);
@@ -92,8 +92,8 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRDS18B20Form::~AVIRDS18B20Form()
 {
-	DEL_CLASS(this->ds18b20);
-	DEL_CLASS(this->oneWire);
+	this->ds18b20.Delete();
+	this->oneWire.Delete();
 	this->pin.Delete();
 }
 

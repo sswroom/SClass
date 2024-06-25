@@ -17,7 +17,7 @@ namespace IO
 	class RS232GPIO : public IO::Stream
 	{
 	private:
-		IO::GPIOControl *gpio;
+		NN<IO::GPIOControl> gpio;
 		UOSInt rxdPin;
 		UOSInt txdPin;
 		UInt8 readBuff[RS232GPIO_BUFFSIZE];
@@ -35,7 +35,7 @@ namespace IO
 		static UInt32 __stdcall ReadThread(AnyType userObj);
 		static void __stdcall IntHdlr(AnyType userObj);
 	public:
-		RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate);
+		RS232GPIO(NN<IO::GPIOControl> gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate);
 		virtual ~RS232GPIO();
 
 		virtual Bool IsDown() const;

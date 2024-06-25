@@ -3,7 +3,7 @@
 #include "IO/Device/DS18B20.h"
 #include "Sync/ThreadUtil.h"
 
-UInt8 IO::Device::DS18B20::CalcCRC(const UInt8 *buff, OSInt size)
+UInt8 IO::Device::DS18B20::CalcCRC(UnsafeArray<const UInt8> buff, OSInt size)
 {
 	UInt8 v = 0;
 	OSInt i;
@@ -26,7 +26,7 @@ UInt8 IO::Device::DS18B20::CalcCRC(const UInt8 *buff, OSInt size)
 	return v;
 }
 
-IO::Device::DS18B20::DS18B20(IO::OneWireGPIO *oneWire)
+IO::Device::DS18B20::DS18B20(NN<IO::OneWireGPIO> oneWire)
 {
 	this->oneWire = oneWire;
 }
@@ -35,7 +35,7 @@ IO::Device::DS18B20::~DS18B20()
 {
 }
 
-Bool IO::Device::DS18B20::ReadSensorID(UInt8 *buff)
+Bool IO::Device::DS18B20::ReadSensorID(UnsafeArray<UInt8> buff)
 {
 	UInt8 rbuff[8];
 	if (!this->oneWire->Init())
@@ -79,7 +79,7 @@ Bool IO::Device::DS18B20::ConvTemp()
 	return true;
 }
 
-Bool IO::Device::DS18B20::ReadTemp(Double *temp)
+Bool IO::Device::DS18B20::ReadTemp(OutParam<Double> temp)
 {
 	UInt8 buff[9];
 	if (!oneWire->Init())
@@ -96,19 +96,19 @@ Bool IO::Device::DS18B20::ReadTemp(Double *temp)
 	}
 	if ((buff[4] & 0x60) == 0)
 	{
-		*temp = ReadInt16(buff) / 2.0;
+		temp.Set(ReadInt16(buff) / 2.0);
 	}
 	else if ((buff[4] & 0x60) == 0x20) 
 	{
-		*temp = ReadInt16(buff) / 4.0;
+		temp.Set(ReadInt16(buff) / 4.0);
 	}
 	else if ((buff[4] & 0x60) == 0x40) 
 	{
-		*temp = ReadInt16(buff) / 8.0;
+		temp.Set(ReadInt16(buff) / 8.0);
 	}
 	else if ((buff[4] & 0x60) == 0x60) 
 	{
-		*temp = ReadInt16(buff) / 16.0;
+		temp.Set(ReadInt16(buff) / 16.0);
 	}
 	return true;
 }

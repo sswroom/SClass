@@ -28,8 +28,8 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::IOPin> pin;
-			IO::OneWireGPIO *oneWire;
-			IO::Device::DS18B20 *ds18b20;
+			NN<IO::OneWireGPIO> oneWire;
+			NN<IO::Device::DS18B20> ds18b20;
 
 			static void __stdcall OnSNClicked(AnyType userObj);
 			static void __stdcall OnReadClicked(AnyType userObj);

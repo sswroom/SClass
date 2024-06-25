@@ -103,7 +103,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 	return 0;
 }
 
-IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream(CSTR("RS-232"))
+IO::RS232GPIO::RS232GPIO(NN<IO::GPIOControl> gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream(CSTR("RS-232"))
 {
 	this->running = false;
 	this->toStop = false;
