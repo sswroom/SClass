@@ -35,9 +35,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmar
 	if (valid)
 	{
 		UOSInt leng;
-		const UInt8 *data;
-		data = req->GetReqData(leng);
-		if (leng <= 128 || leng >= 65536)
+		UnsafeArray<const UInt8> data;
+		if (!req->GetReqData(leng).SetTo(data) || leng <= 128 || leng >= 65536)
 		{
 			printf("leng out of range: %d\r\n", (Int32)leng);
 			valid = false;
@@ -223,8 +222,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);
 			UOSInt reqSize;
-			const UInt8 *reqData = req->GetReqData(reqSize);
-			if (reqSize > 0 && reqSize <= 128)
+			UnsafeArray<const UInt8> reqData;
+			if (req->GetReqData(reqSize).SetTo(reqData) && reqSize > 0 && reqSize <= 128)
 			{
 				sptr = IO::Path::GetProcessFileName(path).Or(path);
 				sptr = IO::Path::AppendPath(path, sptr, CSTR("X86CPUInfo.txt"));
@@ -251,7 +250,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 		else
 		{
 			UOSInt fileSize;
-			const UInt8 *fileBuff;
+			UnsafeArrayOpt<const UInt8> fileBuff;
+			UnsafeArray<const UInt8> nnfileBuff;
 			if (req->GetQueryValueStr(CSTR("file"), fileName, 512).SetTo(fileNameEnd))
 			{
 				fileBuff = req->GetReqData(fileSize);
@@ -262,7 +262,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				req->ParseHTTPForm();
 				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), fileNameEnd, fileSize);
 			}
-			if (fileBuff == 0)
+			if (!fileBuff.SetTo(nnfileBuff))
 			{
 				msg = CSTR("Upload file not found");
 			}
@@ -279,7 +279,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 				Text::CString cpuModel;
 				{
 					IO::MemoryStream mstm(fileSize);
-					mstm.Write(Data::ByteArrayR(fileBuff, fileSize));
+					mstm.Write(Data::ByteArrayR(nnfileBuff, fileSize));
 					mstm.SeekFromBeginning(0);
 					cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				}
@@ -299,7 +299,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 					if (IO::Path::GetPathType(CSTRP(path, sptr)) == IO::Path::PathType::Unknown)
 					{
 						IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (fileSize == fs.Write(Data::ByteArrayR(fileBuff, fileSize)))
+						if (fileSize == fs.Write(Data::ByteArrayR(nnfileBuff, fileSize)))
 						{
 						}
 					}
@@ -316,7 +316,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 					sptr = Text::StrInt64(sptr, dt.ToTicks());
 
 					IO::FileStream fs({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-					if (fileSize == fs.Write(Data::ByteArrayR(fileBuff, fileSize)))
+					if (fileSize == fs.Write(Data::ByteArrayR(nnfileBuff, fileSize)))
 					{
 						msg = CSTR("File uploaded successfully");
 					}

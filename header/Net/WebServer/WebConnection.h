@@ -61,7 +61,7 @@ namespace Net
 			void EndProxyConn();
 			void ProxyShutdown();
 			void ProcessTimeout();
-			Text::String *GetRequestURL();
+			Optional<Text::String> GetRequestURL();
 
 		private:
 			void SendHeaders(IWebRequest::RequestProtocol protocol);

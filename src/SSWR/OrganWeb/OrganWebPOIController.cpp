@@ -1034,7 +1034,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 	UOSInt fileSize;
 	UTF8Char fileName[512];
 	UnsafeArray<UTF8Char> fileNameEnd;
-	const UInt8 *fileCont;
+	UnsafeArray<const UInt8> fileCont;
 	NN<Text::String> location;
 	Text::CString msg = CSTR_NULL;
 	Bool succ = true;
@@ -1042,8 +1042,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), fileNameEnd, fileSize);
-		if (fileCont == 0)
+		if (!req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), fileNameEnd, fileSize).SetTo(fileCont))
 		{
 			break;
 		}

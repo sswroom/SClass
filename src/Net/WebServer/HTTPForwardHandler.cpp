@@ -196,9 +196,9 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 	SDEL_TEXT(fwdPrefix);
 	SDEL_STRING(svrHost);
 
-	const UInt8 *reqData = req->GetReqData(i);
+	UnsafeArray<const UInt8> reqData;
 	Text::PString sarr[2];
-	if (reqData)
+	if (req->GetReqData(i).SetTo(reqData))
 	{
 		if (this->log && this->logContent)
 		{

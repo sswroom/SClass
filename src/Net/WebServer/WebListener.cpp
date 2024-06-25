@@ -159,7 +159,7 @@ Net::WebServer::WebListener::WebListener(NN<Net::SocketFactory> sockf, Optional<
 	NEW_CLASSNN(this->svr, Net::TCPServer(sockf, 0, port, this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
 	if (this->allowProxy)
 	{
-		NEW_CLASS(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));
+		NEW_CLASSOPT(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));
 	}
 }
 
@@ -171,7 +171,7 @@ Net::WebServer::WebListener::~WebListener()
 	{
 		this->cliMgrs.GetItem(i).Delete();
 	}
-	SDEL_CLASS(this->proxyCliMgr);
+	this->proxyCliMgr.Delete();
 	this->svrName->Release();
 }
 
@@ -204,14 +204,14 @@ void Net::WebServer::WebListener::SetClientLog(Text::CStringNN logFile)
 	}
 }
 
-void Net::WebServer::WebListener::SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev)
+void Net::WebServer::WebListener::SetAccessLog(Optional<IO::LogTool> accLog, IO::LogHandler::LogLevel accLogLev)
 {
 	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->accLog = accLog;
 	this->accLogLev = accLogLev;
 }
 
-void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqLog)
+void Net::WebServer::WebListener::SetRequestLog(Optional<Net::WebServer::IReqLogger> reqLog)
 {
 	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->reqLog = reqLog;
@@ -224,11 +224,13 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 	Text::CStringNN cstr;
 	Interlocked_IncrementU32(&this->status.reqCnt);
 	Sync::MutexUsage accLogMutUsage(this->accLogMut);
-	if (this->reqLog)
+	NN<IO::LogTool> accLog;
+	NN<Net::WebServer::IReqLogger> reqLog;
+	if (this->reqLog.SetTo(reqLog))
 	{
-		this->reqLog->LogRequest(req);
+		reqLog->LogRequest(req);
 	}
-	if (this->accLog)
+	if (this->accLog.SetTo(accLog))
 	{
 		Text::StringBuilderUTF8 sb;
 		if (!Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).SetTo(sptr))
@@ -270,37 +272,40 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 		sb.AppendC(UTF8STRC(" "));
 		sb.AppendDouble(time);
 
-		this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
+		accLog->LogMessage(sb.ToCString(), this->accLogLev);
 	}
 }
 
-void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, Text::CStringNN msg)
+void Net::WebServer::WebListener::LogMessageC(Optional<Net::WebServer::IWebRequest> req, Text::CStringNN msg)
 {
 	UTF8Char sbuff[32];
+	NN<IO::LogTool> accLog;
+	NN<Net::WebServer::IWebRequest> nnreq;
 	Sync::MutexUsage mutUsage(this->accLogMut);
-	if (this->accLog)
+	if (this->accLog.SetTo(accLog))
 	{
-		if (req)
+		if (req.SetTo(nnreq))
 		{
 			Text::StringBuilderUTF8 sb;
-			UnsafeArray<UTF8Char> sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).Or(sbuff);
+			UnsafeArray<UTF8Char> sptr = Net::SocketUtil::GetAddrName(sbuff, nnreq->GetClientAddr(), nnreq->GetClientPort()).Or(sbuff);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" "));
 			sb.Append(msg);
-			this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
+			accLog->LogMessage(sb.ToCString(), this->accLogLev);
 		}
 		else
 		{
-			this->accLog->LogMessage(msg, this->accLogLev);
+			accLog->LogMessage(msg, this->accLogLev);
 		}
 	}
 }
 
-void Net::WebServer::WebListener::AddProxyConn(Net::WebServer::WebConnection *conn, NN<Net::TCPClient> proxyCli)
+void Net::WebServer::WebListener::AddProxyConn(NN<Net::WebServer::WebConnection> conn, NN<Net::TCPClient> proxyCli)
 {
-	if (this->proxyCliMgr)
+	NN<Net::TCPClientMgr> proxyCliMgr;
+	if (this->proxyCliMgr.SetTo(proxyCliMgr))
 	{
-		this->proxyCliMgr->AddClient(proxyCli, conn);
+		proxyCliMgr->AddClient(proxyCli, conn);
 	}
 	else
 	{
@@ -323,9 +328,9 @@ void Net::WebServer::WebListener::ExtendTimeout(NN<Net::TCPClient> cli)
 	}
 }
 
-void Net::WebServer::WebListener::GetStatus(SERVER_STATUS *status)
+void Net::WebServer::WebListener::GetStatus(NN<SERVER_STATUS> status)
 {
-	MemCopyNO(status, &this->status, sizeof(SERVER_STATUS));
+	status.CopyFrom(this->status);
 	status->currConn = (UInt32)this->GetClientCount();
 }
 

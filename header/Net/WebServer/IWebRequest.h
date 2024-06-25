@@ -66,7 +66,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name) = 0;
-			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
+			virtual UnsafeArrayOpt<const UInt8> GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
 			Bool GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut);
 			Bool GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut);
 			Bool GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut);
@@ -82,7 +82,7 @@ namespace Net
 			virtual UInt16 GetClientPort() const = 0;
 			virtual Bool IsSecure() const = 0;
 			virtual Optional<Crypto::Cert::X509Cert> GetClientCert() = 0;
-			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize) = 0;
+			virtual UnsafeArrayOpt<const UInt8> GetReqData(OutParam<UOSInt> dataSize) = 0;
 			void GetRequestAddr(NN<Net::SocketUtil::AddressInfo> addr) const;
 
 			Text::CStringNN GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }

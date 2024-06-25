@@ -2144,7 +2144,7 @@ UnsafeArray<UTF8Char> SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UnsafeArray<U
 	return sbuff;
 }
 
-Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
+Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -2964,7 +2964,7 @@ void SSWR::OrganWeb::OrganWebEnv::WebFilePrevUpdated(NN<Sync::RWMutexUsage> mutU
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg)
+Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg)
 {
 	NN<WebUserInfo> webUser;
 	if (DataFileAdd(mutUsage, webuserId, fileName, startTime, endTime, DataFileType::GPSTrack, fileCont, fileSize, errMsg) && this->userMap.Get(webuserId).SetTo(webUser))
@@ -2996,7 +2996,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, In
 	return false;
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg)
+Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg)
 {
 	if (startTime.IsNull())
 	{

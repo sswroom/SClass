@@ -958,12 +958,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				}
 				if (this->allowUpload && req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
-					const UInt8 *uplfile;
+					UnsafeArray<const UInt8> uplfile;
 					UOSInt uplSize;
 					UOSInt fileId;
 					req->ParseHTTPForm();
 					fileId = 0;
-					while ((uplfile = req->GetHTTPFormFile(CSTR("uploadfile"), fileId, (UTF8Char*)buff, sizeof(buff), sptr2, uplSize)) != 0)
+					while (req->GetHTTPFormFile(CSTR("uploadfile"), fileId, (UTF8Char*)buff, sizeof(buff), sptr2, uplSize).SetTo(uplfile))
 					{
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.AppendC(sb.ToString(), sb.GetLength());

@@ -30,7 +30,7 @@ Bool Net::WebServer::EGaugeHandler::ProcessRequest(NN<Net::WebServer::IWebReques
 		return true;
 	}
 	UOSInt buffSize;
-	const UTF8Char *buff = req->GetReqData(buffSize);
+	UnsafeArray<const UTF8Char> buff = req->GetReqData(buffSize).Or((const UTF8Char*)&buffSize);
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddContentLength(2);
 	resp->AddContentType(CSTR("text/plain"));

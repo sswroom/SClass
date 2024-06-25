@@ -22,7 +22,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 	{
 		Bool failed = false;
 		UOSInt dataSize;
-		const UInt8 *content = req->GetReqData(dataSize);
+		UnsafeArray<const UInt8> content = req->GetReqData(dataSize).Or((const UInt8*)&dataSize);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(content, dataSize);
 		Text::CString resultCd = CSTR("0000");
 		Text::CString resultMsg = CSTR("Request processed successfully.");
@@ -204,7 +204,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NN<Net::WebServer
 {
 	NN<GCISNotifyHandler> me = NN<GCISNotifyHandler>::ConvertFrom(svcHdlr);
 	UOSInt size;
-	const UInt8 *data = req->GetReqData(size);
+	UnsafeArray<const UInt8> data = req->GetReqData(size).Or((const UInt8*)&size);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(data, size);
 	printf("%s\r\n", sb.v.Ptr());

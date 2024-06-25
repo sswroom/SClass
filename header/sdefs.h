@@ -633,4 +633,5 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #endif
 #endif
 
+#define CALLBACKFUNC __stdcall *
 #endif

@@ -378,11 +378,11 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	this->svr->LogMessageC(0, sb.ToCString());
 }
 
-Text::String *Net::WebServer::WebConnection::GetRequestURL()
+Optional<Text::String> Net::WebServer::WebConnection::GetRequestURL()
 {
 	if (this->currReq)
 	{
-		return this->currReq->GetRequestURI().Ptr();
+		return this->currReq->GetRequestURI();
 	}
 	return 0;
 }
@@ -481,7 +481,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			}
 			this->svr->LogAccess(currReq, *this, 0);
 			this->proxyMode = true;
-			this->svr->AddProxyConn(this, proxyCli);
+			this->svr->AddProxyConn(*this, proxyCli);
 		}
 		else if ((reqMeth == Net::WebUtil::RequestMethod::HTTP_GET || reqMeth == Net::WebUtil::RequestMethod::HTTP_POST) && reqURI->StartsWith(UTF8STRC("http://")))
 		{
@@ -544,10 +544,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					}
 					if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
 					{
-						const UInt8 *reqBuff;
+						UnsafeArray<const UInt8> reqBuff;
 						UOSInt reqSize;
-						reqBuff = currReq->GetReqData(reqSize);
-						if (reqBuff && reqSize > 0)
+						if (currReq->GetReqData(reqSize).SetTo(reqBuff) && reqSize > 0)
 						{
 							httpCli->Write(Data::ByteArrayR(reqBuff, reqSize));
 						}

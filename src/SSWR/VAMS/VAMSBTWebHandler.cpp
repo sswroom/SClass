@@ -56,8 +56,8 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(NN<Net::WebServer::IWebRequ
 		return true;
 	}
 	UOSInt dataSize;
-	const UInt8 *reqData = req->GetReqData(dataSize);
-	if (dataSize > 0)
+	UnsafeArray<const UInt8> reqData;
+	if (req->GetReqData(dataSize).SetTo(reqData) && dataSize > 0)
 	{
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;

@@ -867,7 +867,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			}
 		}
 	}
-	return agent;
+	return optagent;
 }
 
 UOSInt Net::SNMPManager::AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, NN<Data::ArrayListNN<AgentInfo>> agentList, Bool scanIP)

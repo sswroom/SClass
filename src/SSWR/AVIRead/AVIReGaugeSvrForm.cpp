@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(AnyType userObj, const UInt8 *data, UOSInt dataSize)
+void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
 	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	Sync::MutexUsage mutUsage(me->reqMut);

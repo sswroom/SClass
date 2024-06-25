@@ -541,7 +541,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetHTTPFormStr(Text::CStringN
 	return this->formMap->GetC(name);
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize)
+UnsafeArrayOpt<const UInt8> Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize)
 {
 	if (this->formFileList == 0)
 		return 0;
@@ -645,7 +645,7 @@ Optional<Crypto::Cert::X509Cert> Net::WebServer::WebRequest::GetClientCert()
 	return 0;
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetReqData(OutParam<UOSInt> dataSize)
+UnsafeArrayOpt<const UInt8> Net::WebServer::WebRequest::GetReqData(OutParam<UOSInt> dataSize)
 {
 	if (this->reqData == 0)
 	{

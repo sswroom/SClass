@@ -28,13 +28,13 @@ namespace Net
 				UInt32 reqCnt;
 			} SERVER_STATUS;
 
-			typedef void (__stdcall *TimeoutHandler)(AnyType userObj, Text::String *url);
+			typedef void (CALLBACKFUNC TimeoutHandler)(AnyType userObj, Optional<Text::String> url);
 		private:
 			NN<IWebHandler> hdlr;
 			NN<Net::TCPServer> svr;
 			Data::ArrayListNN<Net::TCPClientMgr> cliMgrs;
 			UOSInt nextCli;
-			Net::TCPClientMgr *proxyCliMgr;
+			Optional<Net::TCPClientMgr> proxyCliMgr;
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::SocketFactory> sockf;
 			IO::LogTool log;
@@ -44,9 +44,9 @@ namespace Net
 			SERVER_STATUS status;
 
 			Sync::Mutex accLogMut;
-			IO::LogTool *accLog;
+			Optional<IO::LogTool> accLog;
 			IO::LogHandler::LogLevel accLogLev;
-			IReqLogger *reqLog;
+			Optional<IReqLogger> reqLog;
 
 			TimeoutHandler timeoutHdlr;
 			AnyType timeoutObj;
@@ -73,15 +73,15 @@ namespace Net
 			NN<Text::String> GetServerName() const;
 			UInt16 GetListenPort();
 			void SetClientLog(Text::CStringNN logFile);
-			void SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev);
-			void SetRequestLog(IReqLogger *reqLog);
+			void SetAccessLog(Optional<IO::LogTool> accLog, IO::LogHandler::LogLevel accLogLev);
+			void SetRequestLog(Optional<IReqLogger> reqLog);
 			void LogAccess(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Double time);
-			void LogMessageC(Net::WebServer::IWebRequest *req, Text::CStringNN msg);
-			void AddProxyConn(Net::WebServer::WebConnection *conn, NN<Net::TCPClient> proxyCli);
+			void LogMessageC(Optional<Net::WebServer::IWebRequest> req, Text::CStringNN msg);
+			void AddProxyConn(NN<Net::WebServer::WebConnection> conn, NN<Net::TCPClient> proxyCli);
 			void HandleTimeout(TimeoutHandler hdlr, AnyType userObj);
 
 			void ExtendTimeout(NN<Net::TCPClient> cli);
-			void GetStatus(SERVER_STATUS *status);
+			void GetStatus(NN<SERVER_STATUS> status);
 			UOSInt GetClientCount() const;
 		};
 	}

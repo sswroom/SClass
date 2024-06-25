@@ -321,7 +321,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 	if (me->svr)
 	{
 		Net::WebServer::WebListener::SERVER_STATUS status;
-		me->svr->GetStatus(&status);
+		me->svr->GetStatus(status);
 
 		if (me->lastStatus.currConn != status.currConn)
 		{
