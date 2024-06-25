@@ -376,7 +376,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearUserConts()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 {
 	UInt8 buff[12];
-	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 0, 0, 0, 0, 0);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 0, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -387,7 +387,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 {
 	UInt8 buff[12];
-	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 2, 0, 0, 0, 0);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 2, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -398,7 +398,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 {
 	UInt8 buff[12];
-	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 4, 0, 0, 0, 0);
+	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 4, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
 	{
@@ -613,7 +613,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -1003,6 +1003,6 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 	}
 }
 
-void SSWR::AVIRead::AVIRGPSDevForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRGPSDevForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }

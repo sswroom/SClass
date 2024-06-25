@@ -61,14 +61,14 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NN<IO::Stream> stm, 
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
-	WriteNInt16(buff, ReadNInt16((const UInt8*)"GD"));
+	WriteNInt16(&buff[0], ReadNInt16((const UInt8*)"GD"));
 	WriteUInt16(&buff[2], (UInt16)(cmdSize + 8));
 	WriteUInt16(&buff[4], (UInt16)cmdType);
 	if (cmdSize > 0)
 	{
-		MemCopyNO(&buff[6], cmd, cmdSize);
+		MemCopyNO(&buff[6], cmd.Ptr(), cmdSize);
 	}
 	UInt8 crcVal[4];
 	Sync::MutexUsage mutUsage(this->crcMut);

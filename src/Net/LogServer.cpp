@@ -156,7 +156,7 @@ void Net::LogServer::HandleClientLog(ClientLogHandler hdlr, AnyType userObj)
 	this->logHdlr = hdlr;
 }
 
-void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	UInt8 reply[18];
 	UOSInt replySize;
@@ -167,7 +167,7 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	switch (cmdType)
 	{
 	case 0: //KA
-		replySize = this->protoHdlr.BuildPacket(reply, 1, seqId, 0, 0, 0);
+		replySize = this->protoHdlr.BuildPacket(reply, 1, seqId, cmd, 0, 0);
 		stm->Write(Data::ByteArrayR(reply, replySize));
 		break;
 	case 2: //Log Message
@@ -232,7 +232,7 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	}
 }
 
-void Net::LogServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 
 }

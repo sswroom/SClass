@@ -3,9 +3,8 @@
 #include "IO/ProtoHdlr/ProtoMapSvrHandler.h"
 #include "Sync/MutexUsage.h"
 
-UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(const UInt8 *buff, Int32 sz)
+UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(UnsafeArray<const UInt8> buff, Int32 sz)
 {
-#ifndef HAS_ASM32
 	UInt8 ChkDigit1;
 	UInt8 ChkDigit2;
 	Int32 i;
@@ -21,23 +20,6 @@ UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(const UInt8 *buff, Int32 sz)
 		i++;
 	}
 	return ChkDigit1 | (((Int32)ChkDigit2) << 8);
-#else
-	_asm
-	{
-		mov esi,buff
-		mov edx,0
-		mov ecx,sz
-mcclop:
-		lodsb
-		rol dh,1
-		add dl,al
-		adc dh,0
-		xor dh,al
-		dec ecx
-		jnz mcclop
-		mov ax,dx
-	}
-#endif
 }
 
 IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(NN<IO::IProtocolHandler::DataListener> listener)
@@ -115,19 +97,19 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
 	*(Int16*)&buff[4] = cmdType;
 	if (cmdSize > 0)
 	{
-		MemCopyNO(&buff[6], cmd, cmdSize);
+		MemCopyNO(&buff[6], cmd.Ptr(), cmdSize);
 	}
 
 	if (cmdType & 0x10000)
 	{
 		UInt32 crcVal;
-		*(Int16*)buff = *(Int16*)"ma";
+		*(Int16*)&buff[0] = *(Int16*)"ma";
 
 		Sync::MutexUsage mutUsage(this->crcMut);
 		this->crc.Clear();
@@ -138,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 	}
 	else
 	{
-		*(Int16*)buff = *(Int16*)"Ma";
+		*(Int16*)&buff[0] = *(Int16*)"Ma";
 		*(UInt16*)&buff[cmdSize + 6] = CalCheck(buff, (Int32)cmdSize + 6);
 	}
 	return cmdSize + 8;

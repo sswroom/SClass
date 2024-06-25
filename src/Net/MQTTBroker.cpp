@@ -153,7 +153,7 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
@@ -178,7 +178,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				sb.AppendUOSInt(cmdSize);
 				sb.AppendC(UTF8STRC(" bytes, protoName = "));
 				i = 0;
-				if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -203,7 +203,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				i += 4;
 				sb.AppendC(UTF8STRC(", ClientId = "));
 				sb2.ClearStr();
-				if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb2))
+				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb2))
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -215,7 +215,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				if (connFlags & 4)
 				{
 					sb.AppendC(UTF8STRC(", Will Topic = "));
-					if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -224,7 +224,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 						break;
 					}
 					sb.AppendC(UTF8STRC(", Will Message = "));
-					if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -237,7 +237,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				{
 					sb.AppendC(UTF8STRC(", User Name = "));
 					sb2.ClearStr();
-					if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb2))
+					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb2))
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -284,7 +284,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				UInt8 connFlags;
 				Text::StringBuilderUTF8 sb;
 				i = 0;
-				if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 				{
 					break;
 				}
@@ -296,7 +296,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				connFlags = cmd[i + 1];
 				i += 4;
 				sb.ClearStr();
-				if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 				{
 					break;
 				}
@@ -304,13 +304,13 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				if (connFlags & 4)
 				{
 					sb.ClearStr();
-					if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
 						SDEL_STRING(clientId);
 						break;
 					}
 					sb.ClearStr();
-					if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
 						SDEL_STRING(clientId);
 						break;
@@ -319,7 +319,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				if (connFlags & 0x80)
 				{
 					sb.ClearStr();
-					if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+					if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 					{
 						SDEL_STRING(clientId);
 						break;
@@ -430,7 +430,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				sb.AppendHex8(cmdType & 15);
 				sb.AppendC(UTF8STRC(", Topic = "));
 				i = 0;
-				if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, topicSb))
+				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, topicSb))
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -470,7 +470,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			else
 			{
 				i = 0;
-				if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, topicSb))
+				if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, topicSb))
 				{
 					break;
 				}
@@ -597,7 +597,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			}
 			i = 2;
 			sb.AppendC(UTF8STRC(", Topic = "));
-			if (!this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sb))
+			if (!this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sb))
 			{
 				sb.AppendC(UTF8STRC(", data = "));
 				sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
@@ -616,7 +616,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			Text::StringBuilderUTF8 sbTopic;
 			i = 2;
 			sbTopic.ClearStr();
-			this->protoHdlr.ParseUTF8Str(cmd, &i, cmdSize, sbTopic);
+			this->protoHdlr.ParseUTF8Str(cmd, i, cmdSize, sbTopic);
 			if (cmdSize >= 2)
 			{
 				packetId = ReadMUInt16(&cmd[0]);
@@ -762,11 +762,11 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 	}
 }
 
-void Net::MQTTBroker::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTBroker::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }
 
-void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
+void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize, Bool suppressUnchg)
 {
 	NN<TopicInfo> topicInfo;
 	Bool unchanged = false;
@@ -776,7 +776,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 		topicInfo = MemAllocNN(TopicInfo);
 		topicInfo->topic = Text::String::New(topic);
 		topicInfo->message = MemAlloc(UInt8, msgSize);
-		MemCopyNO(topicInfo->message, message, msgSize);
+		MemCopyNO(topicInfo->message, message.Ptr(), msgSize);
 		topicInfo->msgSize = msgSize;
 		this->topicMap.PutNN(topicInfo->topic, topicInfo);
 	}
@@ -787,7 +787,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 			MemFree(topicInfo->message);
 			topicInfo->message = MemAlloc(UInt8, msgSize);
 			topicInfo->msgSize = msgSize;
-			MemCopyNO(topicInfo->message, message, msgSize);
+			MemCopyNO(topicInfo->message, message.Ptr(), msgSize);
 		}
 		else
 		{
@@ -811,7 +811,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 			}
 			else
 			{
-				MemCopyNO(topicInfo->message, message, msgSize);
+				MemCopyNO(topicInfo->message, message.Ptr(), msgSize);
 			}		
 		}
 	}
@@ -819,7 +819,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 	
 	if (this->topicUpdHdlr)
 	{
-		this->topicUpdHdlr(this->topicUpdObj, topic, message, msgSize);
+		this->topicUpdHdlr(this->topicUpdObj, topic, message.Ptr(), msgSize);
 	}
 
 	NN<SubscribeInfo> subscribe;

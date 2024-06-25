@@ -69,7 +69,7 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return 0;
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	UInt8 chk;
 	UOSInt i;
@@ -78,7 +78,7 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UInt8 *buff, Int32 cmdType
 	buff[2] = (UInt8)(cmdSize & 0xff);
 	if (cmdSize > 0)
 	{
-		MemCopyNO(&buff[3], cmd, cmdSize);
+		MemCopyNO(&buff[3], cmd.Ptr(), cmdSize);
 	}
 	i = 3 + cmdSize;
 	chk = 0;

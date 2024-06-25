@@ -188,7 +188,7 @@ UOSInt Map::ReverseGeocoderServer::ReceivedData(NN<Net::TCPClient> cli, AnyType 
 	return this->protocol.ParseProtocol(cli, cliObj, stat->cliData, buff);
 }
 
-void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	UnsafeArray<UTF8Char> reqBuff;
 	if (cmdType == 1)
@@ -254,11 +254,11 @@ void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, 
 	else if (cmdType == 4)
 	{
 		UInt8 buff[16];
-		stm->Write(Data::ByteArrayR(buff, this->protocol.BuildPacket(buff, 4, 0, 0, 0, 0)));
+		stm->Write(Data::ByteArrayR(buff, this->protocol.BuildPacket(buff, 4, 0, buff, 0, 0)));
 	}
 }
 
-void Map::ReverseGeocoderServer::DataSkipped(NN<IO::Stream> stm, AnyType cliObj, const UInt8 *buff, UOSInt buffSize)
+void Map::ReverseGeocoderServer::DataSkipped(NN<IO::Stream> stm, AnyType cliObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }
 

@@ -11,24 +11,24 @@ IO::ProtoHdlr::ProtoTramwayV1Handler::~ProtoTramwayV1Handler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoTramwayV1Handler::CreateStreamData(NN<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoTramwayV1Handler::CreateStreamData(NN<IO::Stream> stm)
 {
-	ProtocolStatus *stat = MemAlloc(ProtocolStatus, 1);
+	NN<ProtocolStatus> stat = MemAllocNN(ProtocolStatus);
 	stat->buffSize = 0;
-	stat->packetBuff = MemAlloc(UInt8, 0x7fffff);
+	stat->packetBuff = MemAllocArr(UInt8, 0x7fffff);
 	return stat;
 }
 
-void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
-	ProtocolStatus *stat = (ProtocolStatus *)stmData;;
-	MemFree(stat->packetBuff);
-	MemFree(stat);
+	NN<ProtocolStatus> stat = stmData.GetNN<ProtocolStatus>();
+	MemFreeArr(stat->packetBuff);
+	MemFreeNN(stat);
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
-	ProtocolStatus *stat = (ProtocolStatus *)stmData;;
+	NN<ProtocolStatus> stat = stmData.GetNN<ProtocolStatus>();
 	UOSInt skipStart = 0;
 	UOSInt i = 0;
 	UOSInt j;
@@ -58,7 +58,7 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, v
 			{
 				return buff.GetSize() - i;
 			}
-			*(Int32*)stat->packetBuff = *(Int32*)&buff[i];
+			*(Int32*)&stat->packetBuff[0] = *(Int32*)&buff[i];
 			stat->buffSize = 4;
 			i += 4;
 		}
@@ -103,7 +103,7 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, v
 	return 0;
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	return 0;
 }

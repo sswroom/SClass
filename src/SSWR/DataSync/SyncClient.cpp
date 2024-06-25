@@ -157,7 +157,7 @@ Bool SSWR::DataSync::SyncClient::SendKA()
 	Bool succ = false;
 	UInt8 packetBuff[32];
 	UOSInt len;
-	len = this->protoHdlr.BuildPacket(packetBuff, 2, 0, 0, 0, 0);
+	len = this->protoHdlr.BuildPacket(packetBuff, 2, 0, packetBuff, 0, 0);
 	
 	Sync::MutexUsage mutUsage(this->cliMut);
 	if (this->cli)
@@ -241,11 +241,11 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	this->serverName->Release();
 }
 
-void SSWR::DataSync::SyncClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 }
 
-void SSWR::DataSync::SyncClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::DataSync::SyncClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }
 

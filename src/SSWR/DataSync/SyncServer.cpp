@@ -194,7 +194,7 @@ void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UOSInt data
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 replyBuff[20];
@@ -206,7 +206,7 @@ void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 			NN<ServerInfo> svr;
 			if (data->serverId == 0 && cmdSize > 5 && (UOSInt)(cmd[4] + 4) <= cmdSize)
 			{
-				Int32 serverId = ReadInt32(cmd);
+				Int32 serverId = ReadInt32(&cmd[0]);
 				Sync::RWMutexUsage svrMutUsage(this->svrMut, false);
 				if (this->svrMap.Get(serverId).SetTo(svr))
 				{
@@ -229,13 +229,13 @@ void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 				}
 				data->serverId = serverId;
 			}
-			replySize = this->protoHdlr.BuildPacket(replyBuff, 1, seqId, 0, 0, 0);
+			replySize = this->protoHdlr.BuildPacket(replyBuff, 1, seqId, replyBuff, 0, 0);
 			stm->Write(Data::ByteArrayR(replyBuff, replySize));
 		}
 		break;
 	case 2: //ka
 		{
-			replySize = this->protoHdlr.BuildPacket(replyBuff, 3, seqId, 0, 0, 0);
+			replySize = this->protoHdlr.BuildPacket(replyBuff, 3, seqId, replyBuff, 0, 0);
 			stm->Write(Data::ByteArrayR(replyBuff, replySize));
 		}
 		break;
@@ -250,6 +250,6 @@ void SSWR::DataSync::SyncServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, 
 	}
 }
 
-void SSWR::DataSync::SyncServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::DataSync::SyncServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }

@@ -61,16 +61,16 @@ UOSInt IO::ProtoHdlr::ProtoSMonHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoSMonHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoSMonHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	UInt8 crcVal[4];
-	*(Int16*)buff = *(Int16*)"Sm";
+	*(Int16*)&buff[0] = *(Int16*)"Sm";
 	*(Int16*)&buff[2] = *(Int16*)"SM";
 	WriteInt16(&buff[4], cmdType);
 	WriteInt16(&buff[6], (Int16)(cmdSize + 10));
 	if (cmdSize > 0)
 	{
-		MemCopyNO(&buff[8], cmd, cmdSize);
+		MemCopyNO(&buff[8], cmd.Ptr(), cmdSize);
 	}
 
 	this->crc->Calc(buff, cmdSize + 8, crcVal);

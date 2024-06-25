@@ -72,7 +72,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize() - i;
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	if (cmdSize >= 1024)
 		return 0;
@@ -82,7 +82,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UInt8 *buff, Int32 cmdType
 		buff[1] = 0x79;
 		WriteMUInt16(&buff[2], (cmdSize + 5));
 		buff[4] = (UInt8)cmdType;
-		MemCopyNO(&buff[5], cmd, cmdSize);
+		MemCopyNO(&buff[5], cmd.Ptr(), cmdSize);
 		WriteMUInt16(&buff[5 + cmdSize], seqId);
 		UInt16 crc = this->crc.CalcDirect(&buff[2], 5 + cmdSize);
 		WriteMUInt16(&buff[7 + cmdSize], crc);
@@ -96,7 +96,7 @@ UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::BuildPacket(UInt8 *buff, Int32 cmdType
 		buff[1] = 0x78;
 		buff[2] = (UInt8)(cmdSize + 5);
 		buff[3] = (UInt8)cmdType;
-		MemCopyNO(&buff[4], cmd, cmdSize);
+		MemCopyNO(&buff[4], cmd.Ptr(), cmdSize);
 		WriteMUInt16(&buff[4 + cmdSize], seqId);
 		UInt16 crc = this->crc.CalcDirect(&buff[2], 4 + cmdSize);
 		WriteMUInt16(&buff[6 + cmdSize], crc);

@@ -120,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	buff[0] = (UInt8)(cmdType & 0xff);
 	if (cmdSize < 128)
@@ -128,7 +128,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 		buff[1] = (UInt8)cmdSize;
 		if (cmdSize > 0)
 		{
-			MemCopyNO(&buff[2], cmd, cmdSize);
+			MemCopyNO(&buff[2], cmd.Ptr(), cmdSize);
 		}
 		return cmdSize + 2;
 	}
@@ -136,7 +136,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 	{
 		buff[1] = (UInt8)((cmdSize & 0x7F) | 0x80);
 		buff[2] = (UInt8)(cmdSize >> 7);
-		MemCopyNO(&buff[3], cmd, cmdSize);
+		MemCopyNO(&buff[3], cmd.Ptr(), cmdSize);
 		return cmdSize + 3;
 	}
 	else if (cmdSize < 2097152)
@@ -145,7 +145,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 		cmdSize >>= 7;
 		buff[2] = (UInt8)((cmdSize & 0x7F) | 0x80);
 		buff[3] = (UInt8)(cmdSize >> 7);
-		MemCopyNO(&buff[4], cmd, cmdSize);
+		MemCopyNO(&buff[4], cmd.Ptr(), cmdSize);
 		return cmdSize + 4;
 	}
 	else if (cmdSize < 268435456)
@@ -156,7 +156,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 		cmdSize >>= 7;
 		buff[3] = (UInt8)((cmdSize & 0x7F) | 0x80);
 		buff[4] = (UInt8)(cmdSize >> 7);
-		MemCopyNO(&buff[5], cmd, cmdSize);
+		MemCopyNO(&buff[5], cmd.Ptr(), cmdSize);
 		return cmdSize + 5;
 	}
 	else
@@ -165,17 +165,17 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 	}
 }
 
-Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(UnsafeArray<const UTF8Char> buff, InOutParam<UOSInt> index, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt16 strSize;
-	if ((buffSize - *index) < 2)
+	if ((buffSize - index.Get()) < 2)
 		return false;
-	strSize = ReadMUInt16(&buff[*index]);
-	if (buffSize - 2 - *index < strSize)
+	strSize = ReadMUInt16(&buff[index.Get()]);
+	if (buffSize - 2 - index.Get() < strSize)
 	{
 		return false;
 	}
-	sb->AppendC((const UTF8Char*)&buff[2 + *index], strSize);
-	*index = (UOSInt)strSize + 2 + *index;
+	sb->AppendC((const UTF8Char*)&buff[2 + index.Get()], strSize);
+	index.Set((UOSInt)strSize + 2 + index.Get());
 	return true;
 }

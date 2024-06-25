@@ -437,7 +437,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnNotifyUDPPacket(NN<const Net::
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	NN<DeviceInfo> dev;
 	NN<DeviceInfo> sdev;
@@ -600,7 +600,7 @@ void SSWR::SMonitor::SMonitorSvrCore::DataParsed(NN<IO::Stream> stm, AnyType stm
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::SMonitor::SMonitorSvrCore::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }
 
@@ -667,7 +667,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(NN<IO::Stream> stm)
 {
 	UInt8 packetBuff[10];
 	UOSInt packetSize;
-	packetSize = this->protoHdlr.BuildPacket(packetBuff, 9, 0, 0, 0, 0);
+	packetSize = this->protoHdlr.BuildPacket(packetBuff, 9, 0, packetBuff, 0, 0);
 	stm->Write(Data::ByteArrayR(packetBuff, packetSize));
 }
 

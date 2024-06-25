@@ -32,14 +32,14 @@ namespace Map
 		Data::DateTime lastKARecv;
 
 	private:
-		static UInt32 __stdcall ClientThread(void *userObj);
-		static UInt32 __stdcall MonThread(void *userObj);
+		static UInt32 __stdcall ClientThread(AnyType userObj);
+		static UInt32 __stdcall MonThread(AnyType userObj);
 	public:
-		ReverseGeocoderClient(NN<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter);
+		ReverseGeocoderClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter);
 		virtual ~ReverseGeocoderClient();
 
-		virtual void DataParsed(NN<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	};
 }
 #endif

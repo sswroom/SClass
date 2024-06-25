@@ -44,8 +44,8 @@ namespace SSWR
 			SyncClient(NN<Net::SocketFactory> sockf, Int32 serverId, Text::CStringNN serverName, Text::CStringNN clientHost, UInt16 cliPort, Data::Duration timeout);
 			virtual ~SyncClient();
 
-			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 
 			void AddUserData(const UInt8 *data, UOSInt dataSize);
 		};

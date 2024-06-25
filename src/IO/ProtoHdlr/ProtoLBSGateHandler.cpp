@@ -60,14 +60,14 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(NN<IO::Stream> stm, Any
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
-	*(Int16*)buff = *(Int16*)"lg";
+	*(Int16*)&buff[0] = *(Int16*)"lg";
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
 	*(Int16*)&buff[4] = cmdType;
 	if (cmdSize > 0)
 	{
-		MemCopyNO(&buff[6], cmd, cmdSize);
+		MemCopyNO(&buff[6], cmd.Ptr(), cmdSize);
 	}
 	Sync::MutexUsage mutUsage(this->crcMut);
 	this->crc.Clear();

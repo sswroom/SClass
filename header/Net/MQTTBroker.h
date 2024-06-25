@@ -100,9 +100,9 @@ namespace Net
 		
 		static UInt32 __stdcall SysInfoThread(AnyType userObj);
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
-		void UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		void UpdateTopic(Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const TopicInfo> topic);
 
 		virtual AnyType StreamCreated(NN<IO::Stream> stm);

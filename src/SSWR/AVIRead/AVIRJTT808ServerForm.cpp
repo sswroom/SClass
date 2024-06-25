@@ -184,7 +184,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
@@ -205,7 +205,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 	UOSInt i;
 	OSInt j;
 	UInt8 c;
-	const UInt8 *packetContent = this->protoHdlr->GetPacketContent(cmd, &contSize);
+	UnsafeArray<const UInt8> packetContent = this->protoHdlr->GetPacketContent(cmd, contSize);
 
 	switch (cmdType)
 	{
@@ -409,7 +409,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(NN<IO::Stream> stm, AnyType
 	}
 }
 
-void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

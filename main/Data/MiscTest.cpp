@@ -33,12 +33,12 @@
 class ProtoListener : public IO::IProtocolHandler::DataListener
 {
 public:
-	virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+	virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 	{
 		printf("Received cmdType 0x%x, size=%d\r\n", cmdType, (UInt32)cmdSize);
 	}
 
-	virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+	virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 	{
 
 	}

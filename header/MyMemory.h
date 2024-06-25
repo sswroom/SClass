@@ -37,6 +37,7 @@ void MemDecCounter(void *ptr);
 #else
 #define NEW_CLASS(variable, className) {variable = new className;MemPtrChk(variable);}
 #define NEW_CLASSNN(variable, className) {variable.SetPtr(new className);MemPtrChk(variable.Ptr());}
+#define NEW_CLASSOPT(variable, className) {variable = new className;MemPtrChk(variable.OrNull());}
 #define DEL_CLASS(variable) {delete variable;}
 #endif
 #define SDEL_CLASS(variable) if (variable) {DEL_CLASS(variable); variable = 0;}

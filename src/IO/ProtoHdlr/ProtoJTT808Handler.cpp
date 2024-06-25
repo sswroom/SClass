@@ -136,7 +136,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyT
 	return buff.GetSize() - parseOfst;
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
 	NN<JTT808StreamData> data;
 	UInt8 hdr[12];
@@ -229,16 +229,16 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType
 	return i;
 }
 
-const UInt8 *IO::ProtoHdlr::ProtoJTT808Handler::GetPacketContent(const UInt8 *packet, UOSInt *contSize)
+UnsafeArray<const UInt8> IO::ProtoHdlr::ProtoJTT808Handler::GetPacketContent(UnsafeArray<const UInt8> packet, OutParam<UOSInt> contSize)
 {
 	UInt16 size;
 	if (packet[0] != 0x7e)
 	{
-		*contSize = 0;
+		contSize.Set(0);
 		return packet;
 	}
 	size = ReadMUInt16(&packet[3]);
-	*contSize = size & 0x3ff;
+	contSize.Set(size & 0x3ff);
 	if (size & 0x2000)
 	{
 		return packet + 17;

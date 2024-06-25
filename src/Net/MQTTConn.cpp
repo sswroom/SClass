@@ -22,7 +22,7 @@
 #endif
 #endif
 
-void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
@@ -84,7 +84,7 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 		packet = (PacketInfo*)MemAlloc(UInt8, sizeof(PacketInfo) + cmdSize);
 		packet->packetType = (UInt8)cmdType;
 		packet->size = cmdSize;
-		MemCopyNO(packet->content, cmd, cmdSize);
+		MemCopyNO(packet->content, cmd.Ptr(), cmdSize);
 		{
 			Sync::MutexUsage mutUsage(this->packetMut);
 			this->packetList.Add(NN<PacketInfo>::FromPtr(packet));
@@ -93,7 +93,7 @@ void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType
 	}
 }
 
-void Net::MQTTConn::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTConn::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }
 
@@ -446,7 +446,7 @@ Bool Net::MQTTConn::SendPing()
 {
 	UInt8 packet2[16];
 	UOSInt j;
-	j = this->protoHdlr.BuildPacket(packet2, 0xc0, 0, 0, 0, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0xc0, 0, packet2, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -454,7 +454,7 @@ Bool Net::MQTTConn::SendDisconnect()
 {
 	UInt8 packet2[16];
 	UOSInt j;
-	j = this->protoHdlr.BuildPacket(packet2, 0xe0, 0, 0, 0, this->cliData);
+	j = this->protoHdlr.BuildPacket(packet2, 0xe0, 0, packet2, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 

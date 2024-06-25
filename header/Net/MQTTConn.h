@@ -53,8 +53,8 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 
 		void OnPublishMessage(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize);

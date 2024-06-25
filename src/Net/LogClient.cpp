@@ -107,7 +107,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 		{
 			if (t >= nextKATime)
 			{
-				buffSize = me->protoHdlr.BuildPacket(kaBuff, 0, 0, 0, 0, 0);
+				buffSize = me->protoHdlr.BuildPacket(kaBuff, 0, 0, kaBuff, 0, 0);
 				me->cli->Write(Data::ByteArrayR(kaBuff, buffSize));
 				nextKATime = t + 60000;
 			}
@@ -197,7 +197,7 @@ void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CStringNN logMs
 	this->sendEvt.Set();
 }
 
-void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -205,7 +205,7 @@ void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 		break;
 	case 3: //Log Reply
 		{
-			Int64 msgTime = ReadInt64(cmd);
+			Int64 msgTime = ReadInt64(&cmd[0]);
 			Sync::MutexUsage mutUsage(this->mut);
 			if (msgTime == this->dateList.GetItem(0).ToTicks())
 			{
@@ -220,6 +220,6 @@ void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	}
 }
 
-void Net::LogClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 }

@@ -55,21 +55,21 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType 
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
+UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UnsafeArray<UInt8> buff, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize, AnyType stmData)
 {
-	*(Int16*)buff = *(Int16*)"MW";
+	*(Int16*)&buff[0] = *(Int16*)"MW";
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 10);
 	*(Int16*)&buff[4] = cmdType;
 	*(Int16*)&buff[6] = seqId;
 	if (cmdSize > 0)
 	{
-		MemCopyNO(&buff[8], cmd, cmdSize);
+		MemCopyNO(&buff[8], cmd.Ptr(), cmdSize);
 	}
 	*(Int16*)&buff[cmdSize + 8] = CalCheck(buff, cmdSize + 8);
 	return cmdSize + 10;
 }
 
-UInt16 IO::ProtoHdlr::ProtoLSHandler::CalCheck(const UInt8 *buff, UOSInt buffSize)
+UInt16 IO::ProtoHdlr::ProtoLSHandler::CalCheck(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Crypto::Hash::CRC32R crc;
 	UInt32 crcVal;
