@@ -10,3 +10,6 @@
 [submodule "js/dom-to-image"]
 	path = js/dom-to-image
 	url = https://github.com/sswroom/dom-to-image
+[submodule "js/leaflet-rotate"]
+	path = js/leaflet-rotate
+	url = https://github.com/sswroom/leaflet-rotate
