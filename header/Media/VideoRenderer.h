@@ -19,7 +19,7 @@ namespace Media
 	class VideoRenderer
 	{
 	public:
-		typedef void (__stdcall *EndNotifier)(AnyType userObj);
+		typedef void (CALLBACKFUNC EndNotifier)(AnyType userObj);
 
 		enum DeinterlaceType
 		{

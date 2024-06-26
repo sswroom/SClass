@@ -9,7 +9,7 @@ namespace Media
 	class IAudioRenderer
 	{
 	public:
-		typedef void (__stdcall *EndNotifier)(AnyType userObj);
+		typedef void (CALLBACKFUNC EndNotifier)(AnyType userObj);
 
 	public:
 		virtual ~IAudioRenderer() {};

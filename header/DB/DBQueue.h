@@ -11,8 +11,8 @@ namespace DB
 	class DBQueue
 	{
 	public:
-		typedef void (__stdcall *DBReadHdlr)(AnyType userData, AnyType userData2, NN<DB::DBTool> db, Optional<DB::DBReader> r);
-		typedef Bool (__stdcall *DBToolHdlr)(AnyType userData, AnyType userData2, NN<DB::DBTool> db);
+		typedef void (CALLBACKFUNC DBReadHdlr)(AnyType userData, AnyType userData2, NN<DB::DBTool> db, Optional<DB::DBReader> r);
+		typedef Bool (CALLBACKFUNC DBToolHdlr)(AnyType userData, AnyType userData2, NN<DB::DBTool> db);
 
 		enum class Priority
 		{

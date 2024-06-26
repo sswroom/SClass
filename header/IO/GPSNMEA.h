@@ -14,7 +14,7 @@ namespace IO
 	class GPSNMEA : public Map::ILocationService
 	{
 	public:
-		typedef void (__stdcall *CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		typedef void (CALLBACKFUNC CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 
 	private:
 		enum class ParseStatus

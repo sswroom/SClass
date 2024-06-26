@@ -16,8 +16,8 @@ namespace Core
 {
 	struct IProgControl
 	{
-		typedef void (__stdcall *WaitForExitFunc)(NN<IProgControl> progCtrl);
-		typedef UTF8Char **(__stdcall *GetCommandLinesFunc)(NN<IProgControl> progCtrl, OutParam<UOSInt> cmdCnt);
+		typedef void (CALLBACKFUNC WaitForExitFunc)(NN<IProgControl> progCtrl);
+		typedef UTF8Char **(CALLBACKFUNC GetCommandLinesFunc)(NN<IProgControl> progCtrl, OutParam<UOSInt> cmdCnt);
 
 		WaitForExitFunc WaitForExit;
 		WaitForExitFunc SignalExit;
@@ -26,9 +26,9 @@ namespace Core
 
 		static Optional<UI::GUICore> CreateGUICore(NN<IProgControl> progCtrl);
 	};
-	typedef Media::IVideoSource *(__stdcall *DecodeVideoFunc)(NN<Media::IVideoSource> video);
-	typedef Media::IAudioSource *(__stdcall *DecodeAudioFunc)(NN<Media::IAudioSource> audio);
-	typedef void (__stdcall *SimpleFunc)();
+	typedef Media::IVideoSource *(CALLBACKFUNC DecodeVideoFunc)(NN<Media::IVideoSource> video);
+	typedef Media::IAudioSource *(CALLBACKFUNC DecodeAudioFunc)(NN<Media::IAudioSource> audio);
+	typedef void (CALLBACKFUNC SimpleFunc)();
 
 	void CoreStart();
 	void CoreEnd();

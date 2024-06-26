@@ -599,7 +599,7 @@ FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *des
 
 void MemTool_Init();
 
-typedef void (__stdcall *MemCopyBFunc)(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+typedef void (CALLBACKFUNC MemCopyBFunc)(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
 
 void __stdcall MyMemCopy0(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
 void __stdcall MyMemCopy1(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);

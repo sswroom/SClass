@@ -14,7 +14,7 @@ namespace Manage
 		MON_EVT_STOP_PROCESS,
 		MON_EVT_PROCESS_START_ERR
 	} MonEvent;
-	typedef void (__stdcall *EventHandler)(MonEvent evt, Int32 eventStatus, AnyType userObj);
+	typedef void (CALLBACKFUNC EventHandler)(MonEvent evt, Int32 eventStatus, AnyType userObj);
 	class MonConn
 	{
 	public:

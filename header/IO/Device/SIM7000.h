@@ -11,7 +11,7 @@ namespace IO
 		class SIM7000 : public IO::GSMModemController
 		{
 		public:
-			typedef void (__stdcall *ReceiveHandler)(AnyType userObj, UOSInt index, UInt32 ip, UInt16 port, const UInt8 *buff, UOSInt buffSize);
+			typedef void (CALLBACKFUNC ReceiveHandler)(AnyType userObj, UOSInt index, UInt32 ip, UInt16 port, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		private:
 			Sync::Event respEvt;
 			Sync::Mutex dnsMut;

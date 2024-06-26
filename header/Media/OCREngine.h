@@ -16,7 +16,7 @@ namespace Media
 			English
 		};
 		
-		typedef void (__stdcall *OCRResultFunc)(AnyType userObj, NN<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
+		typedef void (CALLBACKFUNC OCRResultFunc)(AnyType userObj, NN<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
 	private:
 		class ClassData;
 		ClassData *clsData;

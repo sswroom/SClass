@@ -9,7 +9,7 @@ namespace Map
 	class MapRenderer
 	{
 	public:
-		typedef void (__stdcall *UpdatedHandler)(AnyType userObj);
+		typedef void (CALLBACKFUNC UpdatedHandler)(AnyType userObj);
 
 		virtual ~MapRenderer(){};
 		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS) = 0;

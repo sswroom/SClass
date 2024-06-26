@@ -8,7 +8,7 @@ namespace IO
 	class DataCaptureStream : public Stream
 	{
 	public:
-		typedef void (__stdcall *DataHandler)(AnyType userObj, Data::ByteArrayR dataBuff);
+		typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, Data::ByteArrayR dataBuff);
 	private:
 		IO::Stream *stm;
 		DataHandler recvHdlr;

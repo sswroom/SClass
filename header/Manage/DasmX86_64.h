@@ -112,7 +112,7 @@ namespace Manage
 			void **codes0f3a;
 		} DasmX86_64_Sess;
 
-		typedef Bool (__stdcall *DasmX86_64_Code)(NN<DasmX86_64_Sess> sess);
+		typedef Bool (CALLBACKFUNC DasmX86_64_Code)(NN<DasmX86_64_Sess> sess);
 	private:
 		DasmX86_64_Code *codes;
 		DasmX86_64_Code *codes0f;

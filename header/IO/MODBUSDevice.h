@@ -11,7 +11,7 @@ namespace IO
 	class MODBUSDevice
 	{
 	public:
-		typedef void (__stdcall *MODBUSDataEntry)(AnyType userObj, Text::CStringNN name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
+		typedef void (CALLBACKFUNC MODBUSDataEntry)(AnyType userObj, Text::CStringNN name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 	private:
 		NN<IO::MODBUSMaster> modbus;
 		Data::Duration timeout;
@@ -24,7 +24,7 @@ namespace IO
 		Bool reqHasResult;
 		UInt16 reqSetStartAddr;
 		UInt16 reqSetCount;
-		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
+		static void __stdcall ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize);
 		static void __stdcall SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 	protected:

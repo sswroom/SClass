@@ -9,7 +9,7 @@ namespace Net
 	class ARPHandler
 	{
 	public:
-		typedef void (__stdcall *ARPResponseHdlr)(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData);
+		typedef void (CALLBACKFUNC ARPResponseHdlr)(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType userData);
 
 		typedef struct
 		{

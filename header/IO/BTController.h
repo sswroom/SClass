@@ -12,7 +12,7 @@ namespace IO
 	class BTController
 	{
 	public:
-		typedef void (__stdcall *LEScanHandler)(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name);
+		typedef void (CALLBACKFUNC LEScanHandler)(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name);
 
 		class BTDevice
 		{

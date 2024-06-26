@@ -11,7 +11,7 @@ namespace Data
 		template <class T> class ArtificialQuickSortFunc
 		{
 		public:
-			typedef OSInt (__stdcall *CompareFunc)(T obj1, T obj2);
+			typedef OSInt (CALLBACKFUNC CompareFunc)(T obj1, T obj2);
 		private:
 			static void PreSort(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
 			{

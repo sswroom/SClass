@@ -10,7 +10,7 @@
 
 //#include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipAddr, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
 	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 	if (!me->arpMap.Get(ipAddr).SetTo(ipInfo))
 	{
 		ipInfo = MemAllocNN(SSWR::AVIRead::AVIRARPScanForm::IPMapInfo);
-		MemCopyNO(ipInfo->hwAddr, hwAddr, 6);
+		MemCopyNO(ipInfo->hwAddr, hwAddr.Ptr(), 6);
 		ipInfo->ipAddr = ipAddr;
 		me->arpMap.Put(ipInfo->ipAddr, ipInfo);
 		me->arpUpdated = true;

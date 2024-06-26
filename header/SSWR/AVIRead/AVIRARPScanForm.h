@@ -44,7 +44,7 @@ namespace SSWR
 			Data::FastMapNN<UInt32, IPMapInfo> arpMap;
 			Bool arpUpdated;
 
-			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj);
+			static void __stdcall OnARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipAddr, AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnScanClicked(AnyType userObj);
 

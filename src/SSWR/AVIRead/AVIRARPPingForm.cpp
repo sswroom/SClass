@@ -7,7 +7,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipAddr, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->requested)

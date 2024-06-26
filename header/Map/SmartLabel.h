@@ -9,8 +9,8 @@ namespace Map
 			LF_SMART = 2,
 			LF_ALIGN = 4
 		} LabelFlags;
-		typedef void (__stdcall *DrawFunc)(void *userObj, const WChar *str, Int32 x, Int32 y, Int32 scaleW, Int32 scaleH, Int32 style, LabelFlags flags);
-		typedef void (__stdcall *SizeFunc)(void *userObj, const WChar *str, Int32 scaleW, Int32 scaleH, Int32 style, Int32 *width, Int32 *height, LabelFlags flags);
+		typedef void (CALLBACKFUNC DrawFunc)(AnyType userObj, const WChar *str, Int32 x, Int32 y, Int32 scaleW, Int32 scaleH, Int32 style, LabelFlags flags);
+		typedef void (CALLBACKFUNC SizeFunc)(AnyType userObj, const WChar *str, Int32 scaleW, Int32 scaleH, Int32 style, Int32 *width, Int32 *height, LabelFlags flags);
 
 	private:
 		Int32 NewLabel(void *sess, Int32 priority);
@@ -21,7 +21,7 @@ namespace Map
 		SmartLabel();
 		~SmartLabel();
 
-		void *BeginDraw(Int32 nLabels, MapView *view, DrawFunc func1, SizeFunc func2, void *userObj);
+		void *BeginDraw(Int32 nLabels, MapView *view, DrawFunc func1, SizeFunc func2, AnyType userObj);
 		void EndDraw(void *sess);
 		void DrawImage(void *sess, Media::DrawImage *img);
 

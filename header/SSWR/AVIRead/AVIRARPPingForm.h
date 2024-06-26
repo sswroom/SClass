@@ -57,7 +57,7 @@ namespace SSWR
 			NN<UI::GUIVSplitter> vspPing;
 			NN<UI::GUIListBox> lbLog;
 
-			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj);
+			static void __stdcall OnARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipAddr, AnyType userObj);
 			static void __stdcall OnPingClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:

@@ -121,7 +121,7 @@ namespace Math
 			return rect.min.x <= this->max.x && rect.max.x >= this->min.x && rect.min.y <= this->max.y && rect.max.y >= this->min.y;	
 		}
 
-		static void GetRectArea(RectArea<T> *area, Coord2D<T> *points, UOSInt nPoints)
+		static void GetRectArea(RectArea<T> *area, UnsafeArray<Coord2D<T>> points, UOSInt nPoints)
 		{
 			UOSInt i = nPoints - 1;
 			T minX = points[i].x;

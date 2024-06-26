@@ -14,8 +14,8 @@ namespace IO
 	class ATCommandChannel
 	{
 	public:
-		typedef void (__stdcall *EventHandler)(AnyType userObj, UInt8 eventType);
-		typedef Bool (__stdcall *CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		typedef void (CALLBACKFUNC EventHandler)(AnyType userObj, UInt8 eventType);
+		typedef Bool (CALLBACKFUNC CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 
 	private:
 		NN<IO::Stream> stm;

@@ -119,7 +119,7 @@ namespace IO
 		UInt64 dongleId;
 		UInt32 dongleBaudRate;
 
-		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
+		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd);
 		DeviceInfo *GetDevice(UInt64 devId);
 	public:
 		SNBDongle(NN<IO::Stream> stm, SNBHandler *hdlr);

@@ -156,7 +156,7 @@ namespace IO
 			DC_SET_BUZZER_OFF
 		} DeviceCommand;
 
-		typedef void (__stdcall *ScanHandler)(AnyType userObj, Text::CStringNN code);
+		typedef void (CALLBACKFUNC ScanHandler)(AnyType userObj, Text::CStringNN code);
 
 	private:
 		NN<Text::String> devName;

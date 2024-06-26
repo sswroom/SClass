@@ -19,7 +19,7 @@ namespace IO
 			Write
 		};
 
-		typedef void (__stdcall *DataHdlr)(Data::ByteArrayR buff, AnyType userData);
+		typedef void (CALLBACKFUNC DataHdlr)(Data::ByteArrayR buff, AnyType userData);
 		typedef struct
 		{
 			UInt8 *buff;

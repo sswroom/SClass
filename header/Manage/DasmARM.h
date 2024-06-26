@@ -68,7 +68,7 @@ namespace Manage
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 		} DasmARM_Sess;
 
-		typedef Bool (__stdcall *DasmARM_Code)(DasmARM_Sess *sess);
+		typedef Bool (CALLBACKFUNC DasmARM_Code)(NN<DasmARM_Sess> sess);
 	private:
 		DasmARM_Code *codes;
 		DasmARM_Code *codesT;

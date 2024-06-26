@@ -22,8 +22,8 @@ namespace Math
 		Double CalcLenTop() const;
 		Double CalcLenRight() const;
 		Double CalcLenBottom() const;
-		static Quadrilateral FromPolygon(Coord2D<UOSInt> *pg);
-		static Quadrilateral FromPolygon(Coord2DDbl *pg);
+		static Quadrilateral FromPolygon(UnsafeArray<Coord2D<UOSInt>> pg);
+		static Quadrilateral FromPolygon(UnsafeArray<Coord2DDbl> pg);
 	};
 }
 #endif

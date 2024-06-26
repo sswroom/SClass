@@ -8,7 +8,7 @@ namespace Media
 	class VFWVideoCapture
 	{
 	public:
-		typedef void (__stdcall *FrameCallback)(UInt8 *imgData, UInt32 dataSize);
+		typedef void (CALLBACKFUNC FrameCallback)(UnsafeArray<UInt8> imgData, UInt32 dataSize);
 	private:
 		Int32 devErr;
 		void *hWnd;

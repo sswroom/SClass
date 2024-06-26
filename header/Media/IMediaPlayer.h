@@ -9,7 +9,7 @@ namespace Media
 	class IMediaPlayer : public IPBControl
 	{
 	public:
-		typedef void (__stdcall *PBEndHandler)(AnyType userObj);
+		typedef void (CALLBACKFUNC PBEndHandler)(AnyType userObj);
 	public:
 		virtual ~IMediaPlayer(){};
 

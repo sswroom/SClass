@@ -87,7 +87,7 @@ namespace Manage
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 		} DasmMIPS_Sess;
 
-		typedef Bool (__stdcall *DasmMIPS_Code)(DasmMIPS_Sess *sess);
+		typedef Bool (CALLBACKFUNC DasmMIPS_Code)(NN<DasmMIPS_Sess> sess);
 	private:
 		DasmMIPS_Code *codes;
 		DasmMIPS_Code *codes_0;

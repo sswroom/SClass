@@ -5,12 +5,12 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
+void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
 {
 	NN<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
 	if (me->reqResult && funcCode == me->reqFuncCode && resultSize == me->reqResultSize)
 	{
-		MemCopyNO(me->reqResult, result, resultSize);
+		MemCopyNO(me->reqResult, result.Ptr(), resultSize);
 		me->reqHasResult = true;
 		me->cbEvt.Set();
 	}

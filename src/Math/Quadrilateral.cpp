@@ -74,7 +74,7 @@ Double Math::Quadrilateral::CalcLenBottom() const
 	return br.CalcLengTo(bl);
 }
 
-Math::Quadrilateral Math::Quadrilateral::FromPolygon(Math::Coord2D<UOSInt> *pg)
+Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2D<UOSInt>> pg)
 {
 	UOSInt minX = pg[3].x;
 	UOSInt minY = pg[3].y;
@@ -189,7 +189,7 @@ Math::Quadrilateral Math::Quadrilateral::FromPolygon(Math::Coord2D<UOSInt> *pg)
 	return quad;
 }
 
-Math::Quadrilateral Math::Quadrilateral::FromPolygon(Math::Coord2DDbl *pg)
+Math::Quadrilateral Math::Quadrilateral::FromPolygon(UnsafeArray<Math::Coord2DDbl> pg)
 {
 	Double minX = pg[3].x;
 	Double minY = pg[3].y;

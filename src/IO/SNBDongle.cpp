@@ -3,7 +3,7 @@
 #include "Data/ByteTool.h"
 #include "IO/SNBDongle.h"
 
-void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
+void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd)
 {
 	NN<IO::SNBDongle> me = userObj.GetNN<IO::SNBDongle>();
 	DeviceInfo *dev;
@@ -111,7 +111,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOS
 	case 0xc6:
 		if (cmdSize >= 17)
 		{
-			dev = me->GetDevice(ReadUInt64(cmd));
+			dev = me->GetDevice(ReadUInt64(&cmd[0]));
 			if (dev->shortAddr != ReadUInt16(&cmd[8]))
 			{
 				dev->shortAddr = ReadUInt16(&cmd[8]);
@@ -126,7 +126,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOS
 		}
 		else if (cmdSize >= 14)
 		{
-			dev = me->GetDevice(ReadUInt64(cmd));
+			dev = me->GetDevice(ReadUInt64(&cmd[0]));
 			if (dev->shortAddr != ReadUInt16(&cmd[8]))
 			{
 				dev->shortAddr = ReadUInt16(&cmd[8]);
@@ -141,7 +141,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOS
 	case 0xdc:
 		if (cmdSize >= 10)
 		{
-			dev = me->GetDevice(ReadUInt64(cmd));
+			dev = me->GetDevice(ReadUInt64(&cmd[0]));
 			if (dev->shortAddr != ReadUInt16(&cmd[8]))
 			{
 				dev->shortAddr = ReadUInt16(&cmd[8]);
@@ -369,7 +369,7 @@ void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOS
 	case 0xe7:
 		if (cmdSize >= 24)
 		{
-			dev = me->GetDevice(ReadUInt64(cmd));
+			dev = me->GetDevice(ReadUInt64(&cmd[0]));
 			sensorType = ST_CUSTOM;
 			if (dev->handType == IO::SNBDongle::HT_MOBILEPLUG)
 			{

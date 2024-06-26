@@ -153,7 +153,7 @@ void Media::OpenCV::OCVNumPlateFinder::Find(NN<Media::OpenCV::OCVFrame> frame, P
 					rect[1] = Math::Coord2D<UOSInt>((UOSInt)poly[1].x, (UOSInt)poly[1].y);
 					rect[2] = Math::Coord2D<UOSInt>((UOSInt)poly[2].x, (UOSInt)poly[2].y);
 					rect[3] = Math::Coord2D<UOSInt>((UOSInt)poly[3].x, (UOSInt)poly[3].y);
-					func(userObj, &filteredFrame, rect, maxTiltAngle, area, pSize);
+					func(userObj, filteredFrame, rect, maxTiltAngle, area, pSize);
 				}
 			}
 		}

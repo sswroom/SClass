@@ -27,7 +27,7 @@ namespace IO
 			SM_PASSIVE
 		} ScanMode;
 		
-		typedef void (__stdcall *RecordHandler)(NN<IO::BTScanLog::ScanRecord3> rec, UpdateType updateType, AnyType userObj);
+		typedef void (CALLBACKFUNC RecordHandler)(NN<IO::BTScanLog::ScanRecord3> rec, UpdateType updateType, AnyType userObj);
 	public:
 		virtual ~BTScanner() {};
 

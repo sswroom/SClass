@@ -13,7 +13,7 @@ namespace Media
 		class DTMFDecoder : public IAudioFilter
 		{
 		public:
-			typedef void (__stdcall *ToneChangeEvent)(AnyType userObj, WChar newTone);
+			typedef void (CALLBACKFUNC ToneChangeEvent)(AnyType userObj, WChar newTone);
 		private:
 			ToneChangeEvent toneChgHdlr;
 			AnyType toneChgObj;

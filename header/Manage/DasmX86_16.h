@@ -25,7 +25,7 @@ namespace Manage
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 		} DasmX86_16_Sess;
 
-		typedef Bool (__stdcall *DasmX86_16_Code)(NN<DasmX86_16_Sess> sess);
+		typedef Bool (CALLBACKFUNC DasmX86_16_Code)(NN<DasmX86_16_Sess> sess);
 	private:
 		DasmX86_16_Code *codes;
 		DasmX86_16_Code *codes0f;

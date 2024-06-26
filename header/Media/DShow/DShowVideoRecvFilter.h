@@ -9,17 +9,17 @@ namespace Media
 		class DShowVideoRecvFilter : public DShowFilter
 		{
 		public:
-			typedef void (__stdcall *VFrame32Hdlr)(void *userObj, UInt8 *frameBuff, Int32 frameTime, Int32 frameW, Int32 frmaeH);
+			typedef void (CALLBACKFUNC VFrame32Hdlr)(AnyType userObj, UnsafeArray<UInt8> frameBuff, Int32 frameTime, Int32 frameW, Int32 frmaeH);
 		private:
 			VFrame32Hdlr hdlr;
-			void *userObj;
+			AnyType userObj;
 		public:
-			DShowVideoRecvFilter(Media::DShow::DShowManager *mgr, VFrame32Hdlr hdlr, void *userObj);
+			DShowVideoRecvFilter(Media::DShow::DShowManager *mgr, VFrame32Hdlr hdlr, AnyType userObj);
 			virtual ~DShowVideoRecvFilter();
 
 			virtual const WChar *GetName();
 		};
-	};
-};
+	}
+}
 
 #endif

@@ -1,5 +1,6 @@
 #ifndef _SM_IO_GPIOCONTROL
 #define _SM_IO_GPIOCONTROL
+#include "AnyType.h"
 #include "IO/IOPin.h"
 #include "Text/CString.h"
 
@@ -8,7 +9,7 @@ namespace IO
 	class GPIOControl
 	{
 	public:
-		typedef void (__stdcall *InterruptHandler)(void *userObj);	
+		typedef void (CALLBACKFUNC InterruptHandler)(AnyType userObj);	
 	private:
 		struct ClassData;
 		ClassData *clsData;
@@ -27,8 +28,8 @@ namespace IO
 		Bool SetPullType(UOSInt pinNum, IO::IOPin::PullType pt);
 
 		Bool InterruptEnable(UOSInt pinNum, Bool enable);
-		void HandleInterrupt(InterruptHandler hdlr, void *userObj);
-		void UnhandleInterrupt(InterruptHandler hdlr, void *userObj);
+		void HandleInterrupt(InterruptHandler hdlr, AnyType userObj);
+		void UnhandleInterrupt(InterruptHandler hdlr, AnyType userObj);
 
 		void SetEventOnHigh(UOSInt pinNum, Bool enable);
 		void SetEventOnLow(UOSInt pinNum, Bool enable);

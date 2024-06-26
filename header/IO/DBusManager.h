@@ -78,13 +78,13 @@ namespace IO
 		typedef Bool (*PropertyGetter)(const PropertyTable *property, void *itera, void *data);
 		typedef void (*PropertySetter)(const PropertyTable *property, void *value, UInt32 id, void *data);
 		typedef Bool (*PropertyExists)(const PropertyTable *property, void *data);
-		typedef void (__stdcall* MessageFunction) (DBusManager *dbusManager, Message *message, void *userData);
-		typedef Bool (__stdcall* SignalFunction) (DBusManager *dbusManager, Message *message, void *userData);
-		typedef void (__stdcall* WatchFunction) (DBusManager *dbusManager, void *userData);
-		typedef void (__stdcall* DestroyFunction) (void *userData);
-		typedef void *(__stdcall* MethodFunction) (DBusManager *dbusManager, Message *message, void *userData);
-		typedef void (__stdcall* SecurityFunction) (DBusManager *dbusManager, const Char *action, Bool interaction, UInt32 pending);
-		typedef void (__stdcall *PolkitFunction) (Bool authorized, void *userData);
+		typedef void (CALLBACKFUNC MessageFunction) (DBusManager *dbusManager, Message *message, void *userData);
+		typedef Bool (CALLBACKFUNC SignalFunction) (DBusManager *dbusManager, Message *message, void *userData);
+		typedef void (CALLBACKFUNC WatchFunction) (DBusManager *dbusManager, void *userData);
+		typedef void (CALLBACKFUNC DestroyFunction) (void *userData);
+		typedef void *(CALLBACKFUNC MethodFunction) (DBusManager *dbusManager, Message *message, void *userData);
+		typedef void (CALLBACKFUNC SecurityFunction) (DBusManager *dbusManager, const Char *action, Bool interaction, UInt32 pending);
+		typedef void (CALLBACKFUNC PolkitFunction) (Bool authorized, void *userData);
 
 		enum PropertyFlags
 		{

@@ -7,8 +7,8 @@ namespace IO
 	class MODBUSMaster
 	{
 	public:
-		typedef void (__stdcall *ReadResultFunc)(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize);
-		typedef void (__stdcall *SetResultFunc)(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 count);
+		typedef void (CALLBACKFUNC ReadResultFunc)(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize);
+		typedef void (CALLBACKFUNC SetResultFunc)(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 count);
 
 	public:
 		virtual ~MODBUSMaster() {};

@@ -32,7 +32,7 @@ namespace DB
 			Optional<Text::String> sql;
 		};
 
-		typedef Int32 (__stdcall * SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
+		typedef Int32 (CALLBACKFUNC SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
 
 	protected:
 		NN<DB::DBConn> db;

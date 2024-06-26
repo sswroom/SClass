@@ -121,7 +121,7 @@ void IO::Console::PreventCtrlC()
 {
 }
 
-void IO::Console::HandleExitCmd(IO::Console::ConsoleHandler exitCmdHdlr, void *userObj)
+void IO::Console::HandleExitCmd(IO::Console::ConsoleHandler exitCmdHdlr, AnyType userObj)
 {
 }
 

@@ -5,14 +5,14 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
+void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
 {
 	NN<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
 	if (funcCode == 4)
 	{
 		if (me->reqBResult)
 		{
-			MemCopyNO(me->reqBResult, result, resultSize);
+			MemCopyNO(me->reqBResult, result.Ptr(), resultSize);
 			me->reqHasResult = true;
 			me->cbEvt.Set();
 		}
@@ -20,13 +20,13 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 		{
 			if (me->reqDResult)
 			{
-				me->reqDResult[0] = ReadMFloat(result);
+				me->reqDResult[0] = ReadMFloat(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (me->reqIResult)
 			{
-				me->reqIResult[0] = ReadMInt32(result);
+				me->reqIResult[0] = ReadMInt32(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -35,7 +35,7 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 		{
 			if (me->reqIResult)
 			{
-				me->reqIResult[0] = ReadMUInt16(result);
+				me->reqIResult[0] = ReadMUInt16(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -45,7 +45,7 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 	{
 		if (me->reqBResult)
 		{
-			MemCopyNO(me->reqBResult, result, resultSize);
+			MemCopyNO(me->reqBResult, result.Ptr(), resultSize);
 			me->reqHasResult = true;
 			me->cbEvt.Set();
 		}
@@ -53,13 +53,13 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 		{
 			if (me->reqDResult)
 			{
-				me->reqDResult[0] = ReadMFloat(result);
+				me->reqDResult[0] = ReadMFloat(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (me->reqIResult)
 			{
-				me->reqIResult[0] = ReadMInt32(result);
+				me->reqIResult[0] = ReadMInt32(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -68,7 +68,7 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 		{
 			if (me->reqIResult)
 			{
-				me->reqIResult[0] = ReadMUInt16(result);
+				me->reqIResult[0] = ReadMUInt16(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -86,19 +86,19 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 			}
 			else if (resultSize == 2)
 			{
-				me->reqIResult[0] = ReadUInt16(result);
+				me->reqIResult[0] = ReadUInt16(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult[0] = (Int32)ReadUInt24(result);
+				me->reqIResult[0] = (Int32)ReadUInt24(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 4)
 			{
-				me->reqIResult[0] = ReadInt32(result);
+				me->reqIResult[0] = ReadInt32(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
@@ -116,19 +116,19 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 			}
 			else if (resultSize == 2)
 			{
-				me->reqIResult[0] = ReadUInt16(result);
+				me->reqIResult[0] = ReadUInt16(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 3)
 			{
-				me->reqIResult[0] = (Int32)ReadUInt24(result);
+				me->reqIResult[0] = (Int32)ReadUInt24(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}
 			else if (resultSize == 4)
 			{
-				me->reqIResult[0] = ReadInt32(result);
+				me->reqIResult[0] = ReadInt32(&result[0]);
 				me->reqHasResult = true;
 				me->cbEvt.Set();
 			}

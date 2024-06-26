@@ -12,7 +12,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
+void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::StringBuilderUTF8 sb;

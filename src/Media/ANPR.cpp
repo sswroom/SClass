@@ -16,7 +16,7 @@ struct ParseStatus
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
-void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+void Media::ANPR::NumPlateArea(AnyType userObj, NN<Media::OpenCV::OCVFrame> filteredFrame, UnsafeArray<Math::Coord2D<UOSInt>> rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	NN<ParseStatus> status = userObj.GetNN<ParseStatus>();
 	Math::RectArea<UOSInt> area;
@@ -78,7 +78,7 @@ void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filtere
 	plainImg.Delete();
 }
 
-NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UnsafeArray<UInt8> sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UnsafeArray<UInt8> sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, UnsafeArray<Math::Coord2D<UOSInt>> rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	return CreatePlainImage(sptr, sSize, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
 }

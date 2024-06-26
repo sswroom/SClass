@@ -82,7 +82,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 			NN<UI::ListBoxLogger> logger;
 
-			static void __stdcall OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
+			static void __stdcall OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UnsafeArray<UInt8> cmd);
 			static void __stdcall OnDongleInfoClicked(AnyType userObj);
 			static void __stdcall OnCheckDongleClicked(AnyType userObj);
 			static void __stdcall OnCheckDevicesClicked(AnyType userObj);

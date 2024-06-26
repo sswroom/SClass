@@ -11,7 +11,7 @@ namespace IO
 		class IProtocolDecoder
 		{
 		public:
-			typedef void (__stdcall *ProtocolInfo)(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
+			typedef void (CALLBACKFUNC ProtocolInfo)(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
 		public:
 			virtual ~IProtocolDecoder(){};
 

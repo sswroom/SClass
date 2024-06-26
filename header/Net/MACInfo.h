@@ -20,7 +20,7 @@ namespace Net
 		static MACEntry uncMac;
 	public:
 		static const MACEntry *GetMACInfo(UInt64 macAddr);
-		static const MACEntry *GetMACInfoBuff(const UInt8 *mac);
+		static const MACEntry *GetMACInfoBuff(UnsafeArray<const UInt8> mac);
 		static const MACEntry *GetMACInfoOUI(const UInt8 *oui);
 		static MACEntry *GetMACEntryList(UOSInt *cnt);
 	};

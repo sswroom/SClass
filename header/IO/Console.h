@@ -1,11 +1,12 @@
 #ifndef _SM_IO_CONSOLE
 #define _SM_IO_CONSOLE
+#include "AnyType.h"
 namespace IO
 {
 	class Console
 	{
 	public:
-		typedef void (__stdcall *ConsoleHandler)(void *userObj);
+		typedef void (CALLBACKFUNC ConsoleHandler)(AnyType userObj);
 	private:
 		static ConsoleHandler exitCmdHdlr;
 		static void *exitCmdObj;
@@ -17,7 +18,7 @@ namespace IO
 		static void PrintStrO(const UTF8Char *str1);
 		static UOSInt WriteStdOut(UInt8 *buff, UOSInt size);
 		static void PreventCtrlC();
-		static void HandleExitCmd(ConsoleHandler exitCmdHdlr, void *userObj);
+		static void HandleExitCmd(ConsoleHandler exitCmdHdlr, AnyType userObj);
 		static void SetCodePage(UInt32 codePage);
 		static Int32 GetKey();
 	};

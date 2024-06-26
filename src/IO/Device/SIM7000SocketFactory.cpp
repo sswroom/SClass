@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize)
+void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	NN<IO::Device::SIM7000SocketFactory> me = userObj.GetNN<IO::Device::SIM7000SocketFactory>();
 	DataPacket *packet;
@@ -19,7 +19,7 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, 
 		packet->remoteIP = remoteIP;
 		packet->remotePort = remotePort;
 		packet->dataSize = buffSize;
-		MemCopyNO(packet->data, buff, buffSize);
+		MemCopyNO(packet->data, buff.Ptr(), buffSize);
 		Sync::MutexUsage mutUsage(me->status[index].dataMut);
 		me->status[index].dataList.Put(packet);
 		me->status[index].dataEvt.Set();
