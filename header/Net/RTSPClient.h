@@ -42,7 +42,7 @@ namespace Net
 		static UInt32 __stdcall ControlThread(AnyType userObj);
 		Int32 NextRequest();
 		Bool WaitForReply();
-		Bool SendData(UInt8 *buff, UOSInt buffSize);
+		Bool SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 
 		RTSPClient(const RTSPClient *cli);
 	public:

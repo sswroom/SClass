@@ -473,14 +473,14 @@ Bool Net::SDPFile::BuildBuff()
 		i++;
 	}
 	UOSInt buffSize;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	buff = mstm.GetBuff(buffSize);
 	if (this->buff)
 	{
 		MemFree(this->buff);
 	}
 	this->buff = MemAlloc(UInt8, buffSize);
-	MemCopyNO(this->buff, buff, buffSize);
+	MemCopyNO(this->buff, buff.Ptr(), buffSize);
 	this->buffSize = buffSize;
 	return true;
 }

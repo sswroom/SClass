@@ -63,7 +63,7 @@ namespace Net
 
 			void WriteHeaders(NN<IO::Stream> stm);
 			void WriteContents(NN<IO::Stream> stm);
-			static UnsafeArray<UTF8Char> GenBoundary(UnsafeArray<UTF8Char> sbuff, const UInt8 *data, UOSInt dataLen);
+			static UnsafeArray<UTF8Char> GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UOSInt dataLen);
 			static void WriteB64Data(NN<IO::Stream> stm, const UInt8 *data, UOSInt dataSize);
 			static void AttachmentFree(NN<Attachment> attachment);
 			static void EmailAddressFree(NN<EmailAddress> recipient);

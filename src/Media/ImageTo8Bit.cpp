@@ -50,7 +50,7 @@ namespace Media
 	};
 }
 
-void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, UInt8 *palette, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
 	Data::ArrayListCmp *arr[256];
 	UOSInt i;
@@ -58,10 +58,10 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 	UOSInt h;
 	UOSInt l;
 	UOSInt k;
-	UInt8 *currPtr;
-	UInt8 *currPtr2;
-	UInt8 *ptr;
-	UInt8 *ptr2;
+	UnsafeArray<UInt8> currPtr;
+	UnsafeArray<UInt8> currPtr2;
+	UnsafeArray<UInt8> ptr;
+	UnsafeArray<UInt8> ptr2;
 	Data::ArrayListCmp *currArr;
 	Data::ArrayListCmp *cArr;
 	Media::ColorStat *cs;
@@ -93,7 +93,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 			while (k-- > 0)
 			{
 				cs = (Media::ColorStat*) currArr->GetItem(k);
-				if (cs->color == *(Int32*)currPtr)
+				if (cs->color == *(Int32*)&currPtr[0])
 				{
 					l = 1;
 					cs->count++;
@@ -103,7 +103,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 			if (l == 0)
 			{
 				NEW_CLASS(cs, ColorStat());
-				cs->color = *(Int32*)currPtr;
+				cs->color = *(Int32*)&currPtr[0];
 				cs->count = 1;
 				currArr->Add(cs);
 				colorCnt++;
@@ -357,7 +357,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 				while (k-- > 0)
 				{
 					cs = (ColorStat*)currArr->GetItem(k);
-					if (cs->color == *(Int32*)currPtr)
+					if (cs->color == *(Int32*)&currPtr[0])
 					{
 						l = 1;
 						*currPtr2 = (UInt8)cs->index;

@@ -43,7 +43,7 @@ namespace SSWR
 			NN<UI::GUIHSplitter> hspStream;
 			NN<UI::GUITextBox> txtStream;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
 			static void __stdcall OnAudioEnd(AnyType userData);
 			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);

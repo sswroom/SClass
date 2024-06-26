@@ -58,7 +58,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 	}
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt size;
 	UInt64 fileSize;
 
@@ -199,7 +199,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 	{
 		this->iface->PBIncAVOfst();
 	}
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	NN<Text::String> s;
 	UOSInt size;
 

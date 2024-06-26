@@ -217,7 +217,7 @@ void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 	}
 }
 
-UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char> sbuff, const UInt8 *data, UOSInt dataLen)
+UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UOSInt dataLen)
 {
 	Int64 ts = Data::DateTimeUtil::GetCurrTimeMillis();
 	Crypto::Hash::SHA1 sha1;

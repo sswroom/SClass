@@ -17,9 +17,9 @@ namespace Media
 
 			Bool yuvUpdated;
 			Bool rgbUpdated;
-			Int64 *yuv2rgb;
-			Int64 *yuv2rgb14;
-			Int64 *rgbGammaCorr;
+			UnsafeArray<Int64> yuv2rgb;
+			UnsafeArray<Int64> yuv2rgb14;
+			UnsafeArray<Int64> rgbGammaCorr;
 			Media::PixelFormat destPF;
 
 			void SetupRGB13_LR();
@@ -27,7 +27,7 @@ namespace Media
 			void SetupYUV14_RGB13();
 
 		protected:
-			CSYUV16_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);
+			CSYUV16_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess, Media::PixelFormat destPF);
 			virtual ~CSYUV16_RGB32C();
 			virtual void UpdateTable();
 

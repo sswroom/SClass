@@ -21,19 +21,19 @@ namespace Media
 
 			typedef struct
 			{
-				Sync::Event *evt;
+				NN<Sync::Event> evt;
 				Int32 status; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
-				UInt8 *yPtr;
+				UnsafeArray<UInt8> yPtr;
 				Int32 yBpl;
-				UInt8 *uPtr;
-				UInt8 *vPtr;
+				UnsafeArray<UInt8> uPtr;
+				UnsafeArray<UInt8> vPtr;
 				Int32 uvBpl;
-				UInt8 *dest;
+				UnsafeArray<UInt8> dest;
 				Int32 width;
 				Int32 height;
 				Int32 isFirst;
 				Int32 isLast;
-				YVPARAMETER *yvParam;
+				NN<YVPARAMETER> yvParam;
 				Media::YCOffset ycOfst;
 				Int32 dbpl;
 				Int32 csLineSize;
@@ -51,11 +51,11 @@ namespace Media
 
 			Int32 currId;
 			Int32 nThread;
-			Sync::Event *evtMain;
-			THREADSTAT *stats;
+			Sync::Event evtMain;
+			UnsafeArray<THREADSTAT> stats;
 
 			static Double lanczos3_weight(Double phase);
-			static void SetupInterpolationParameter(Int32 source_length, Int32 result_length, YVPARAMETER *out, Int32 indexSep, Double offsetCorr);
+			static void SetupInterpolationParameter(Int32 source_length, Int32 result_length, NN<YVPARAMETER> out, Int32 indexSep, Double offsetCorr);
 			static void VerticalFilter(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep);
 			static void VerticalFilter16(UInt8 *inPt, UInt8 *outPt, Int32 width, Int32 height, Int32 tap, Int32 *index, Int64 *weight, UInt32 sstep, UInt32 dstep);
 
@@ -66,9 +66,9 @@ namespace Media
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
-			CSYV12_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYV12_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYV12_LRGB();
-			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, Int32 width, Int32 height, Int32 srcRGBBpl, Int32 destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, Int32 width, Int32 height, Int32 srcRGBBpl, Int32 destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

@@ -30,13 +30,14 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	Double dV;
 	UInt16 v[4];
 	NN<Media::ColorProfile> srcProfile;
-	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefVProfile();
+		srcProfile = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefPProfile();
+		srcProfile = nncolorSess->GetDefPProfile();
 	}
 	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
@@ -102,7 +103,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	}
 }
 
-Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
@@ -110,9 +111,10 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 	this->srcPal = 0;
 	this->destPal = 0;
 
-	if (colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
 	{
-		this->rgbParam.Set(colorSess->GetRGBParam());
+		this->rgbParam.Set(nncolorSess->GetRGBParam());
 	}
 	else
 	{
@@ -153,7 +155,7 @@ Media::CS::CSRGB8_LRGBC::~CSRGB8_LRGBC()
 	}
 }
 
-void Media::CS::CSRGB8_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB8_LRGBC::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -162,52 +164,52 @@ void Media::CS::CSRGB8_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOS
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
+		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
 	if (this->srcPF == Media::PF_W8A8)
 	{
-		CSRGB8_LRGBC_ConvertW8A8(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertW8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_LE_R5G5B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G5R5(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertB5G5R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_LE_R5G6B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_R8G8B8)
 	{
-		CSRGB8_LRGBC_ConvertR8G8B8(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertR8G8B8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_R8G8B8A8)
 	{
-		CSRGB8_LRGBC_ConvertR8G8B8A8(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertR8G8B8A8(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_LE_R5G6B5)
 	{
-		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertB5G6R5(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_PAL_1_A1)
 	{
-		CSRGB8_LRGBC_ConvertP1_A1(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP1_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_PAL_2_A1)
 	{
-		CSRGB8_LRGBC_ConvertP2_A1(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP2_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_PAL_4_A1)
 	{
-		CSRGB8_LRGBC_ConvertP4_A1(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP4_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else if (this->srcPF == Media::PF_PAL_8_A1)
 	{
-		CSRGB8_LRGBC_ConvertP8_A1(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_ConvertP8_A1(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 	else
 	{
-		CSRGB8_LRGBC_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
+		CSRGB8_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, this->srcPal, this->destPal, this->rgbTable);
 	}
 }
 

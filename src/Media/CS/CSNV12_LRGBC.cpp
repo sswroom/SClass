@@ -35,7 +35,7 @@ Double Media::CS::CSNV12_LRGBC::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr)
+void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<YVPARAMETER> out, UOSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -144,7 +144,7 @@ UInt32 Media::CS::CSNV12_LRGBC::WorkerThread(AnyType obj)
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -156,28 +156,28 @@ UInt32 Media::CS::CSNV12_LRGBC::WorkerThread(AnyType obj)
 		{
 			if (ts->width & 3)
 			{
-				CSNV12_LRGBC_do_yv12rgb2(ts->yPtr, ts->uvPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				CSNV12_LRGBC_do_yv12rgb2(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			}
 			else
 			{
-				CSNV12_LRGBC_do_yv12rgb8(ts->yPtr, ts->uvPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				CSNV12_LRGBC_do_yv12rgb8(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			}
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 		else if (ts->status == 11)
 		{
 #if LANCZOS_NTAP == 4
-			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uvPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
+			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
 #else
-			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr, ts->uvPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
+			CSNV12_LRGBC_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uvPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
 #endif
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
@@ -200,11 +200,11 @@ void Media::CS::CSNV12_LRGBC::WaitForWorker(Int32 jobStatus)
 		}
 		if (exited)
 			break;
-		this->evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
-Media::CS::CSNV12_LRGBC::CSNV12_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGBC(srcProfile, destProfile, yuvType, colorSess)
+Media::CS::CSNV12_LRGBC::CSNV12_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -222,12 +222,11 @@ Media::CS::CSNV12_LRGBC::CSNV12_LRGBC(NN<const Media::ColorProfile> srcProfile, 
 	this->uvBuff = 0;
 	this->uvBuffSize = 0;
 
-	NEW_CLASS(evtMain, Sync::Event());
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;
@@ -237,7 +236,7 @@ Media::CS::CSNV12_LRGBC::CSNV12_LRGBC(NN<const Media::ColorProfile> srcProfile, 
 		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -286,7 +285,7 @@ Media::CS::CSNV12_LRGBC::~CSNV12_LRGBC()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
@@ -301,10 +300,9 @@ Media::CS::CSNV12_LRGBC::~CSNV12_LRGBC()
 			MemFreeA(stats[i].csLineBuff2);
 			stats[i].csLineBuff2 = 0;
 		}
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
-	MemFree(stats);
+	MemFreeArr(stats);
 
 	if (this->yvParamO.index)
 	{
@@ -336,7 +334,7 @@ Media::CS::CSNV12_LRGBC::~CSNV12_LRGBC()
 	}
 }
 
-void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSNV12_LRGBC::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr2, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UInt32 isLast = 1;
@@ -345,7 +343,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 	UOSInt lastHeight = dispHeight;
 	UOSInt currHeight;
 	UOSInt cSize = dispWidth << 4;
-	UInt8 *srcPtr = srcPtr2[0];
+	UnsafeArray<UInt8> srcPtr = srcPtr2[0];
 	if (srcStoreWidth & 1)
 	{
 		srcStoreWidth = srcStoreWidth + 1;
@@ -357,7 +355,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 	
 	if (ftype == Media::FT_MERGED_TF || ftype == Media::FT_MERGED_BF)
 	{
-		UInt8 *uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
+		UnsafeArray<UInt8> uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
 
 		if (ftype == Media::FT_MERGED_TF)
 		{
@@ -382,7 +380,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 						this->yvParamO.index = 0;
 					}
 					this->yvStepO = srcStoreWidth << 1;
-					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, &this->yvParamO, this->yvStepO, 0);
+					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamO, this->yvStepO, 0);
 				}
 			}
 			else
@@ -397,7 +395,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 						this->yvParamE.index = 0;
 					}
 					this->yvStepE = srcStoreWidth << 1;
-					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, &this->yvParamE, this->yvStepE, YVADJ);
+					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamE, this->yvStepE, YVADJ);
 				}
 			}
 
@@ -414,17 +412,17 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 				{
 					stats[i].yPtr = srcPtr + (srcStoreWidth * currHeight << 1);
 					stats[i].uvPtr = uvStart;
-					stats[i].yvParam = &this->yvParamO;
+					stats[i].yvParam = this->yvParamO;
 				}
 				else
 				{
 					stats[i].yPtr = srcPtr + (srcStoreWidth * (currHeight << 1));
 					stats[i].uvPtr = uvStart;
-					stats[i].yvParam = &this->yvParamE;
+					stats[i].yvParam = this->yvParamE;
 				}
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].uvBpl = currHeight;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+				stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -463,7 +461,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 				stats[i].yBpl = srcStoreWidth << 1;
 				stats[i].uvPtr = uvStart + (srcStoreWidth * currHeight);
 				stats[i].uvBpl = srcStoreWidth << 1;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+				stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -500,7 +498,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 		{
 			if ((ycOfst == Media::YCOFST_C_CENTER_LEFT || ycOfst == Media::YCOFST_C_CENTER_CENTER) && (srcStoreWidth & 3) == 0)
 			{
-				UInt8 *uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
+				UnsafeArray<UInt8> uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
 
 				if (this->yvParamO.index == 0 || this->yvParamO.length != (dispHeight >> 1) || this->yvStepO != (srcStoreWidth << 1))
 				{
@@ -512,7 +510,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 						this->yvParamO.index = 0;
 					}
 					this->yvStepO = srcStoreWidth << 1;
-					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, &this->yvParamO, this->yvStepO, 0);
+					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamO, this->yvStepO, 0);
 				}
 				if (this->yvParamE.index == 0 || this->yvParamE.length != (dispHeight >> 1) || this->yvStepE != (srcStoreWidth << 1))
 				{
@@ -524,7 +522,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 						this->yvParamE.index = 0;
 					}
 					this->yvStepE = srcStoreWidth << 1;
-					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, &this->yvParamE, this->yvStepE, YVADJ);
+					SetupInterpolationParameter(dispHeight >> 2, dispHeight >> 1, this->yvParamE, this->yvStepE, YVADJ);
 				}
 
 				j = this->nThread >> 1;
@@ -541,7 +539,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					stats[i].uvPtr = uvStart;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvBpl = currHeight >> 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+					stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -549,7 +547,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					stats[i].width = dispWidth;
 					stats[i].height = (lastHeight - currHeight) >> 1;
 					stats[i].dbpl = destRGBBpl << 1;
-					stats[i].yvParam = &this->yvParamO;
+					stats[i].yvParam = this->yvParamO;
 
 					if (stats[i].csLineSize < dispWidth)
 					{
@@ -579,7 +577,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					stats[i].uvPtr = uvStart + srcStoreWidth;
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvBpl = currHeight >> 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+					stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -587,7 +585,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					stats[i].width = dispWidth;
 					stats[i].height = (lastHeight - currHeight) >> 1;
 					stats[i].dbpl = destRGBBpl << 1;
-					stats[i].yvParam = &this->yvParamE;
+					stats[i].yvParam = this->yvParamE;
 
 					if (stats[i].csLineSize < dispWidth)
 					{
@@ -620,7 +618,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvPtr = srcPtr + srcStoreWidth * srcStoreHeight + (srcStoreWidth * (currHeight >> 1));
 					stats[i].uvBpl = srcStoreWidth << 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+					stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -658,7 +656,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					stats[i].yBpl = srcStoreWidth << 1;
 					stats[i].uvPtr = srcPtr + srcStoreWidth * srcStoreHeight + (srcStoreWidth * ((currHeight >> 1) + 1));
 					stats[i].uvBpl = srcStoreWidth << 1;
-					stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+					stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 					stats[i].isFirst = isFirst;
 					stats[i].isLast = isLast;
 					stats[i].ycOfst = ycOfst;
@@ -689,7 +687,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 	{
 		if ((ycOfst == Media::YCOFST_C_CENTER_LEFT || ycOfst == Media::YCOFST_C_CENTER_CENTER))
 		{
-			UInt8 *uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
+			UnsafeArray<UInt8> uvStart = srcPtr + srcStoreWidth * srcStoreHeight;
 
 			if (this->yvParamO.index == 0 || this->yvParamO.length != dispHeight || this->yvStepO != srcStoreWidth)
 			{
@@ -701,7 +699,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 					this->yvParamO.index = 0;
 				}
 				this->yvStepO = srcStoreWidth;
-				SetupInterpolationParameter(dispHeight >> 1, dispHeight, &this->yvParamO, this->yvStepO, 0);
+				SetupInterpolationParameter(dispHeight >> 1, dispHeight, this->yvParamO, this->yvStepO, 0);
 			}
 
 			i = this->nThread;
@@ -717,7 +715,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 				stats[i].uvPtr = uvStart;
 				stats[i].yBpl = srcStoreWidth;
 				stats[i].uvBpl = currHeight;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+				stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;
@@ -725,7 +723,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 				stats[i].width = dispWidth;
 				stats[i].height = lastHeight - currHeight;
 				stats[i].dbpl = destRGBBpl;
-				stats[i].yvParam = &this->yvParamO;
+				stats[i].yvParam = this->yvParamO;
 
 				if (stats[i].csLineSize < dispWidth)
 				{
@@ -755,7 +753,7 @@ void Media::CS::CSNV12_LRGBC::ConvertV2(UInt8 *const*srcPtr2, UInt8 *destPtr, UO
 				stats[i].yBpl = srcStoreWidth;
 				stats[i].uvPtr = srcPtr + srcStoreWidth * srcStoreHeight + ((srcStoreWidth * currHeight) >> 1);
 				stats[i].uvBpl = srcStoreWidth;
-				stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+				stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 				stats[i].isFirst = isFirst;
 				stats[i].isLast = isLast;
 				stats[i].ycOfst = ycOfst;

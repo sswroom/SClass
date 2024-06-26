@@ -697,7 +697,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDa
 							UInt32 norm;
 							UInt32 denorm;
 							UInt64 br;
-							Media::MPEGVideoParser::GetFrameInfo(&buff[atomOfst + 8], subAtomSize - 8, frInfo, norm, denorm, &br, false);
+							Media::MPEGVideoParser::GetFrameInfo(&buff[atomOfst + 8], subAtomSize - 8, frInfo, norm, denorm, br, false);
 							frInfo.fourcc = *(UInt32*)"m2v1";
 						}
 					}

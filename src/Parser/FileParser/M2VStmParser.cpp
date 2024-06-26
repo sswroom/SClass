@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO:
 	UInt32 frameRateDenorm;
 	UInt64 bitRate;
 	Media::FrameInfo info;
-	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, &bitRate, false))
+	if (!Media::MPEGVideoParser::GetFrameInfo(tmpBuff, readSize, info, frameRateNorm, frameRateDenorm, bitRate, false))
 		return 0;
 
 	Media::MediaFile *file;

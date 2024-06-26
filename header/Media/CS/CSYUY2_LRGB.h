@@ -13,10 +13,10 @@ namespace Media
 		private:
 			typedef struct
 			{
-				Sync::Event *evt;
+				NN<Sync::Event> evt;
 				Int32 status; // 0 = not running, 1 = idling, 2 = toExit, 3 = converting, 4 = finished
-				UInt8 *yPtr;
-				UInt8 *dest;
+				UnsafeArray<UInt8> yPtr;
+				UnsafeArray<UInt8> dest;
 				OSInt width;
 				OSInt height;
 				OSInt dbpl;
@@ -24,15 +24,15 @@ namespace Media
 
 			OSInt currId;
 			OSInt nThread;
-			Sync::Event *evtMain;
-			THREADSTAT *stats;
+			Sync::Event evtMain;
+			UnsafeArray<THREADSTAT> stats;
 
 			void do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl);
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 		public:
-			CSYUY2_LRGB(Media::ColorProfile *srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUY2_LRGB(NN<Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYUY2_LRGB();
-			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

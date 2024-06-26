@@ -26,18 +26,18 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 		GdkPixbuf *buf;
 		this->tmpImage = (Media::StaticImage*)simg->Clone().Ptr();
 		this->tmpImage->To32bpp();
-		ImageUtil_SwapRGB(this->tmpImage->data, this->tmpImage->info.storeSize.x * this->tmpImage->info.storeSize.y, this->tmpImage->info.storeBPP);
+		ImageUtil_SwapRGB(this->tmpImage->data.Ptr(), this->tmpImage->info.storeSize.x * this->tmpImage->info.storeSize.y, this->tmpImage->info.storeBPP);
 		if (this->tmpImage->info.atype == Media::AT_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		else if (simg->info.atype == Media::AT_PREMUL_ALPHA)
 		{
-			buf = gdk_pixbuf_new_from_data(this->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		else
 		{
-			buf = gdk_pixbuf_new_from_data(this->tmpImage->data, GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
+			buf = gdk_pixbuf_new_from_data(this->tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, true, 8, (int)(UInt32)this->tmpImage->info.dispSize.x, (int)(UInt32)this->tmpImage->info.dispSize.y, (int)(UInt32)(this->tmpImage->info.storeSize.x << 2), 0, 0);
 		}
 		this->pixbuf = buf;
 		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd, buf);

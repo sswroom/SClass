@@ -11,11 +11,11 @@ namespace Media
 		{
 		private:
 			UOSInt srcNBits;
-			Media::ColorProfile  *srcProfile;
+			Media::ColorProfile srcProfile;
 			Media::CS::TransferType currRGBType;
 			Bool invert;
 
-			Media::IColorHandler::RGBPARAM2 *rgbParam;
+			Media::IColorHandler::RGBPARAM2 rgbParam;
 			UInt8 *srcPal;
 			UInt8 *destPal;
 			UInt8 *rgbTable;
@@ -23,9 +23,9 @@ namespace Media
 		private:
 			void UpdateRGBTable();
 		public:
-			CSRGB8_LRGB(UOSInt srcNBits, Bool invert, Media::ColorProfile *srcProfile, Media::ColorManagerSess *colorSess);
+			CSRGB8_LRGB(UOSInt srcNBits, Bool invert, NN<Media::ColorProfile> srcProfile, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSRGB8_LRGB();
-			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 			virtual void SetPalette(UInt8 *pal);

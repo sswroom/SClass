@@ -17,14 +17,14 @@ namespace Media
 		private:
 			typedef struct
 			{
-				AlphaBlend8_C8 *me;
+				NN<AlphaBlend8_C8> me;
 				UOSInt index;
-				Sync::Event *evt;
+				NN<Sync::Event> evt;
 				Int32 status; //0 = not running, 1 = running/idle, 2 = toStop, 3 = stopped, 4 = Blend, 5 = BlendPA
 
-				UInt8 *dest;
+				UnsafeArray<UInt8> dest;
 				OSInt dbpl;
-				const UInt8 *src;
+				UnsafeArray<const UInt8> src;
 				OSInt sbpl;
 				UOSInt width;
 				UOSInt height;
@@ -36,28 +36,28 @@ namespace Media
 				Media::ColorProfile sProfile;
 				Media::ColorProfile dProfile;
 				Media::ColorProfile oProfile;
-				UInt8 *rgbTable;
+				UnsafeArray<UInt8> rgbTable;
 			};
 		private:
 			Optional<Data::ArrayListNN<LUTInfo>> lutList;
-			UInt8 *rgbTable;
-			Media::ColorSess *colorSess;
-			ThreadStat *stats;
+			UnsafeArray<UInt8> rgbTable;
+			Optional<Media::ColorSess> colorSess;
+			UnsafeArray<ThreadStat> stats;
 			UOSInt threadCnt;
 			Sync::Mutex mut;
 			Sync::Event mainEvt;
 			
-			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
-			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
+			void MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
+			void MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
 
 			void UpdateLUT();
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
-			AlphaBlend8_C8(Media::ColorSess *colorSess, Bool multiProfile);
+			AlphaBlend8_C8(Optional<Media::ColorSess> colorSess, Bool multiProfile);
 			virtual ~AlphaBlend8_C8();
 
-			virtual void Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
-			virtual void PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
+			virtual void Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
+			virtual void PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
 
 			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);

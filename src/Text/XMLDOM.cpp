@@ -1379,7 +1379,7 @@ Bool Text::XMLDocument::ParseStream(NN<Text::EncodingFactory> encFact, IO::Strea
 {
 	Bool parseRes;
 	UInt8 buff[2048];
-	UInt8 *mbuff;
+	UnsafeArray<UInt8> mbuff;
 	UOSInt buffSize;
 	IO::MemoryStream mstm;
 	while ((buffSize = stm->Read(BYTEARR(buff))) > 0)

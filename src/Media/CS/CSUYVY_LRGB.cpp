@@ -177,7 +177,7 @@ UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -187,34 +187,33 @@ UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 		}
 		else if (ts->status == 3)
 		{
-			CSUYVY_LRGB_do_uyvy2rgb(ts->yPtr, ts->dest, ts->width, ts->height, ts->dbpl, converter->yuv2rgb, converter->rgbGammaCorr);
+			CSUYVY_LRGB_do_uyvy2rgb(ts->yPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
-Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
+Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
-	NEW_CLASS(evtMain, Sync::Event());
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;
 		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -263,18 +262,17 @@ Media::CS::CSUYVY_LRGB::~CSUYVY_LRGB()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
 	{
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
-	MemFree(stats);
+	MemFreeArr(stats);
 }
 
-void Media::CS::CSUYVY_LRGB::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSUYVY_LRGB::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UOSInt i = this->nThread;
@@ -312,7 +310,7 @@ void Media::CS::CSUYVY_LRGB::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSI
 		}
 		if (exited)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 

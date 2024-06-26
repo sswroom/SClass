@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	{
 		do
 		{
-			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data, simg->GetDataBpl() * simg->info.dispSize.y, (int)simg->GetDataBpl());
+			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data.Ptr(), simg->GetDataBpl() * simg->info.dispSize.y, (int)simg->GetDataBpl());
 		} while (WebPDemuxNextFrame(&iter));
 		WebPDemuxReleaseIterator(&iter);
 	}

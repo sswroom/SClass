@@ -588,10 +588,10 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARA
 		}
 		else
 		{
-			UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.storeSize.y);
+			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.storeSize.y);
 			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
 			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
-			MemFreeA(imgData);
+			MemFreeAArr(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
@@ -1076,7 +1076,7 @@ Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Me
 	csConv->ConvertV2(&image->data, prevImgData, image->info.dispSize.x, image->info.dispSize.y, image->info.storeSize.x, image->info.storeSize.y, (OSInt)image->info.dispSize.x * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASSNN(outImage, Media::StaticImage(image->info.dispSize, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));
-	resizer->Resize(prevImgData, (OSInt)image->info.dispSize.x * 8, UOSInt2Double(image->info.dispSize.x), UOSInt2Double(image->info.dispSize.y), 0, 0, outImage->data, (OSInt)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
+	resizer->Resize(prevImgData, (OSInt)image->info.dispSize.x * 8, UOSInt2Double(image->info.dispSize.x), UOSInt2Double(image->info.dispSize.y), 0, 0, outImage->data.Ptr(), (OSInt)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
 
 	DEL_CLASS(resizer);
 	csConv.Delete();

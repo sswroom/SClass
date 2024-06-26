@@ -90,7 +90,7 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(MonitorHandle 
 		if (valid)
 		{
 			NEW_CLASS(retImg, Media::StaticImage(info));
-			MemCopyNANC(retImg->data, image->data, info.byteSize);
+			MemCopyNANC(retImg->data.Ptr(), image->data, info.byteSize);
 		}
 	    XDestroyImage(image);
 	}	

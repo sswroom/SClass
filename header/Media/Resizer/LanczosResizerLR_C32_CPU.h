@@ -15,10 +15,10 @@ namespace Media
 		protected:
 			typedef struct
 			{
-				LanczosResizerLR_C32_CPU *me;
+				NN<LanczosResizerLR_C32_CPU> me;
 				Int32 funcType; // 3 = h filter, 5 = v filter, 7 = expand, 9 = collapse, 11 = copying, 12 = v filter na, 13 = collapse na
-				const UInt8 *inPt;
-				UInt8 *outPt;
+				UnsafeArray<const UInt8> inPt;
+				UnsafeArray<UInt8> outPt;
 				UOSInt width;
 				UOSInt height;
 				UOSInt width0;
@@ -42,8 +42,8 @@ namespace Media
 			} LRHPARAMETER;
 
 		private:
-			TaskParam *params;
-			Sync::ParallelTask *ptask;
+			UnsafeArray<TaskParam> params;
+			NN<Sync::ParallelTask> ptask;
 			UOSInt nThread;
 
 			UInt8 *rgbTable;
@@ -55,20 +55,20 @@ namespace Media
 			Double vTotTime;
 			UOSInt vTotCount;
 
-			void mt_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
-			void mt_hv_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType);
-			void mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			void mt_hv_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType);
+			void mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
 			static void __stdcall DoTask(AnyType obj);
 		public:
 			LanczosResizerLR_C32_CPU();
 			virtual ~LanczosResizerLR_C32_CPU();
 
-			virtual void DoHorizontalVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hfilter, NN<VertFilter> vfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
-			virtual void DoHorizontalFilterCollapse(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
-			virtual void DoVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
-			virtual void DoCollapse(const UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			virtual void DoHorizontalVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hfilter, NN<VertFilter> vfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			virtual void DoHorizontalFilterCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			virtual void DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vfilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
+			virtual void DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType);
 
 			virtual void UpdateRGBTable(UInt8 *rgbTable);
 			virtual NN<HoriFilter> CreateHoriFilter(UOSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length);

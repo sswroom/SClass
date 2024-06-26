@@ -475,7 +475,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		this->writing = true;
 
 		UOSInt reqSize;
-		UInt8 *reqBuff = this->reqMstm->GetBuff(reqSize);
+		UnsafeArray<UInt8> reqBuff = this->reqMstm->GetBuff(reqSize);
 
 		if (this->clsData->headers)
 		{

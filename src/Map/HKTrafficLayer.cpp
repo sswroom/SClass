@@ -1023,7 +1023,7 @@ void Map::HKTrafficLayer::ReloadData()
 				break;
 			mstm.Write(Data::ByteArrayR(buff, readSize));
 		}
-		const UInt8 *xmlBuff = mstm.GetBuff(readSize);
+		UnsafeArray<const UInt8> xmlBuff = mstm.GetBuff(readSize);
 		NN<Text::XMLNode> node1;
 		NN<Text::XMLNode> node2;
 		NN<Text::XMLNode> node3;

@@ -25,15 +25,15 @@ namespace Media
 			Media::ColorProfile::YUVType yuvType;
 
 		protected:
-			UInt8 *rgbGammaCorr;
-			Int64 *yuv2rgb;
+			UnsafeArray<UInt8> rgbGammaCorr;
+			UnsafeArray<Int64> yuv2rgb;
 
 		private:
 			void SetupRGB13_8();
 			void SetupYUV_RGB13();
 
 		protected:
-			CSYUV10_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV10_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			void UpdateTable();
 			void Release();
 

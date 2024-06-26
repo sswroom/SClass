@@ -6,7 +6,7 @@
 #include "Media/Decoder/MP2GDecoder.h"
 #include "Sync/SimpleThread.h"
 
-void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	UOSInt endSize = dataSize - 4;
@@ -16,14 +16,14 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	UOSInt startOfst;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
 	Data::ArrayListUInt32 frames;
-	if (ReadMInt32(imgData[0]) == 0x000001b3)
+	if (ReadMInt32(imgData[0].Ptr()) == 0x000001b3)
 	{
 		Media::FrameInfo info;
 		UInt32 norm;
 		UInt32 denorm;
 		UInt64 bitRate;
 
-		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, &bitRate, true))
+		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, bitRate, true))
 		{
 			if (info.par2 != this->par)
 			{
@@ -60,7 +60,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	i = 1;
 	endSize = frames.GetCount();
 	startOfst = frames.GetItem(0);
-	if (Media::MPEGVideoParser::GetFrameProp(&imgData[0][startOfst], dataSize - startOfst, &frameProp))
+	if (Media::MPEGVideoParser::GetFrameProp(&imgData[0][startOfst], dataSize - startOfst, frameProp))
 	{
 		ycOfst = Media::YCOFST_C_CENTER_LEFT;
 		if (frameProp.pictureStruct == Media::MPEGVideoParser::PS_TOPFIELD)
@@ -227,7 +227,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}
 		else
 		{
-			UInt8 *imgPtr = &imgData[0][startOfst];
+			UnsafeArray<UInt8> imgPtr = &imgData[0][startOfst];
 			this->frameCb(ftime, frameNum, &imgPtr, endOfst - startOfst, outFrameStruct, this->frameCbData, outFrameType, outFrameFlag, ycOfst);
 		}
 		startOfst = endOfst;
@@ -249,7 +249,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}
 
 
-		if (Media::MPEGVideoParser::GetFrameProp(&imgData[0][startOfst], dataSize - startOfst, &frameProp))
+		if (Media::MPEGVideoParser::GetFrameProp(&imgData[0][startOfst], dataSize - startOfst, frameProp))
 		{
 			ycOfst = Media::YCOFST_C_CENTER_LEFT;
 			if (frameProp.pictureStruct == Media::MPEGVideoParser::PS_TOPFIELD)
@@ -314,7 +314,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		{
 			outFrameFlag = Media::IVideoSource::FF_BFRAMEPROC;
 		}
-		UInt8 *imgPtr = &imgData[0][startOfst];
+		UnsafeArray<UInt8> imgPtr = &imgData[0][startOfst];
 		this->frameCb(ftime, frameNum, &imgPtr, endOfst - startOfst, outFrameStruct, this->frameCbData, outFrameType, outFrameFlag, ycOfst);
 	}
 }

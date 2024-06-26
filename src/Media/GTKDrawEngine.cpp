@@ -105,17 +105,17 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 		if (simg->To32bpp())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
-			UInt8 *sptr = (UInt8*)simg->data;
+			UnsafeArray<UInt8> sptr = simg->data;
 			UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
 			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
+				this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 			}
 			else
 			{
-				ImageCopy_ImgCopy(sptr, dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
+				ImageCopy_ImgCopy(sptr.Ptr(), dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
 		}
@@ -126,17 +126,17 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 		if (simg->To32bpp())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
-			UInt8 *sptr = (UInt8*)simg->data;
+			UnsafeArray<UInt8> sptr = simg->data;
 			UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
 			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab.PremulAlpha(dptr, dbpl, sptr, sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
+				this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 			}
 			else
 			{
-				ImageCopy_ImgCopy(sptr, dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
+				ImageCopy_ImgCopy(sptr.Ptr(), dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
 			}
 			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
 		}
@@ -938,7 +938,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	cairo_surface_flush((cairo_surface_t*)this->surface);
 	UInt8 *dimgPtr = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 	OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)this->surface);
-	UInt8 *simgPtr = img->data;
+	UnsafeArray<UInt8> simgPtr = img->data;
 	OSInt sbpl = (OSInt)img->info.storeSize.x * 4;
 
 	Int32 ixPos = Double2Int32(tl.x);
@@ -971,7 +971,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 
 	if (img->info.atype == Media::AT_NO_ALPHA)
 	{
-		ImageCopy_ImgCopy(simgPtr, dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
+		ImageCopy_ImgCopy(simgPtr.Ptr(), dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}
@@ -980,7 +980,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 		this->eng->iab.SetSourceProfile(img->info.color);
 		this->eng->iab.SetDestProfile(this->info.color);
 		this->eng->iab.SetOutputProfile(this->info.color);
-		this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
+		this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}
@@ -1193,7 +1193,7 @@ Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
 		if (srcData == 0)
 			return 0;
 		NEW_CLASS(simg, Media::StaticImage(this->info));
-		MemCopyNO(simg->data, srcData, this->info.storeSize.CalcArea() * 4);
+		MemCopyNO(simg->data.Ptr(), srcData, this->info.storeSize.CalcArea() * 4);
 		return simg;
 	}
 	return 0;
@@ -1289,9 +1289,9 @@ Media::RasterImage::ImageType Media::GTKDrawImage::GetImageType() const
 	return Media::RasterImage::ImageType::GUIImage;
 }
 
-void Media::GTKDrawImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::GTKDrawImage::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
-	this->CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
+	this->CopyBits(left, top, destBuff.Ptr(), destBpl, width, height, upsideDown);
 }
 
 Int32 Media::GTKDrawImage::GetPixel32(OSInt x, OSInt y) const

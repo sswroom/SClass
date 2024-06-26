@@ -14,7 +14,7 @@ namespace Media
 		private:
 			UOSInt maxFrameSize;
 			Sync::Mutex frameMut;
-			UInt8 *frameBuff;
+			UnsafeArray<UInt8> frameBuff;
 			UOSInt frameSize;
 			Bool lastIsField;
 			Bool spsFound;
@@ -32,7 +32,7 @@ namespace Media
 			Bool finfoMode;
 			Data::CallbackStorage<Media::IVideoSource::FrameInfoCallback> finfoCb;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader);
 			virtual ~RAVCDecoder();
@@ -44,11 +44,11 @@ namespace Media
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
-			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
+			virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
 
 			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		private:
-			UOSInt BuildIFrameHeader(UInt8 *buff, Bool forceBuild);
+			UOSInt BuildIFrameHeader(UnsafeArray<UInt8> buff, Bool forceBuild);
 		};
 	}
 }

@@ -103,12 +103,12 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 			}
 			IO::Path::FindFileClose(sess);
 		}
-		UInt8 *mstmBuff = mstm.GetBuff(readSize);
+		UnsafeArray<UInt8> mstmBuff = mstm.GetBuff(readSize);
 		if (readSize > 0)
 		{
 			dataBuff = MemAlloc(UInt8, readSize);
 			buffSize = (UInt32)readSize;
-			MemCopyNO(dataBuff, mstmBuff, readSize);
+			MemCopyNO(dataBuff, mstmBuff.Ptr(), readSize);
 		}
 	}
 	if (dataBuff)

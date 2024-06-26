@@ -48,7 +48,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 	UInt32 thisSize;
 	UInt16 bitCnt;
 	UInt8 *pal;
-	UInt8 *dbits;
+	UnsafeArray<UInt8> dbits;
 	OSInt dbpl;
 	UInt16 fileType;
 
@@ -100,7 +100,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			{
 				UInt8 *sptr = 8 + (UInt8*)pal;
 				UInt8 *maskPtr;
-				UInt8 *currPtr;
+				UnsafeArray<UInt8> currPtr;
 				UOSInt i;
 				UOSInt dataSize = (imgWidth + 7) >> 3;
 				UOSInt dataAdd;
@@ -127,7 +127,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					dbits -= dbpl;
 
 					currPtr = dbits;
-					MemCopyNO(currPtr, sptr, dataSize);
+					MemCopyNO(currPtr.Ptr(), sptr, dataSize);
 					currPtr += dataSize;
 					sptr += dataSize + dataAdd;
 
@@ -145,7 +145,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			{
 				UInt8 *sptr = 64 + (UInt8*)pal;
 				UInt8 *maskPtr;;
-				UInt8 *currPtr;
+				UnsafeArray<UInt8> currPtr;
 				UOSInt i;
 				UOSInt maskByteSize = (imgWidth + 7) >> 3;
 				UOSInt imgByteSize = (imgWidth + 1) >> 1;
@@ -179,7 +179,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					dbits -= dbpl;
 
 					currPtr = dbits;
-					MemCopyNO(currPtr, sptr, imgByteSize);
+					MemCopyNO(currPtr.Ptr(), sptr, imgByteSize);
 					currPtr += imgByteSize;
 					sptr += imgByteSize + imgByteAdd;
 
@@ -197,7 +197,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			{
 				UInt8 *sptr = 1024 + (UInt8*)pal;
 				UInt8 *maskPtr;
-				UInt8 *currPtr;
+				UnsafeArray<UInt8> currPtr;
 				UOSInt i;
 				UOSInt maskByteSize = (imgWidth + 7) >> 3;
 				UOSInt maskByteAdd;
@@ -230,7 +230,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 					dbits -= dbpl;
 
 					currPtr = dbits;
-					MemCopyNO(currPtr, sptr, imgWidth);
+					MemCopyNO(currPtr.Ptr(), sptr, imgWidth);
 					currPtr += imgWidth;
 					sptr += imgWidth + imgByteAdd;
 
@@ -248,7 +248,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 			{
 				UInt8 *sptr = (UInt8*)pal;
 				UInt8 *maskPtr;
-				UInt8 *currPtr;
+				UnsafeArray<UInt8> currPtr;
 				UOSInt i;
 				OSInt maskByteSize = (OSInt)(imgWidth + 7) >> 3;
 				OSInt maskByteAdd;
@@ -339,7 +339,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 
 				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
-				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits, imgWidth * 4, imgHeight, -(OSInt)imgWidth * 4, (OSInt)imgWidth * 4);
+				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits.Ptr(), imgWidth * 4, imgHeight, -(OSInt)imgWidth * 4, (OSInt)imgWidth * 4);
 			}
 			break;
 		default:

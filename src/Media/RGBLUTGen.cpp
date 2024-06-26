@@ -140,7 +140,7 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 	return tranType;
 }
 
-void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, NN<const Media::ColorProfile> srcProfile, Int32 nBitLRGB)
+void Media::RGBLUTGen::GenRGB8_LRGB(UnsafeArray<UInt16> rgbTable, NN<const Media::ColorProfile> srcProfile, Int32 nBitLRGB)
 {
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
@@ -163,7 +163,7 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, NN<const Media::ColorProfi
 	ibFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
+void Media::RGBLUTGen::GenRGBA8_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
 {
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
@@ -236,7 +236,7 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NN<const Media::ColorProf
 	ibFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
+void Media::RGBLUTGen::GenRGB16_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile::ColorPrimaries> destPrimaries, Int32 nBitLRGB)
 {
 	Media::CS::TransferParam rTran;
 	Media::CS::TransferParam gTran;
@@ -313,7 +313,7 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NN<const Media::ColorProf
 	irFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
+void Media::RGBLUTGen::GenLRGB_BGRA8(UnsafeArray<UInt8> rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
 {
 	Double rGammaVal;
 	Double gGammaVal;
@@ -442,7 +442,7 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NN<const Media::ColorProfi
 	fbFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
+void Media::RGBLUTGen::GenLRGB_RGB16(UnsafeArray<UInt8> rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
 {
 	Double rGammaVal;
 	Double gGammaVal;
@@ -580,7 +580,7 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NN<const Media::ColorProfi
 	fbFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
+void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UnsafeArray<UInt8> rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
 {
 	Double rGammaVal;
 	Double gGammaVal;
@@ -718,7 +718,7 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::Colo
 	fbFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
+void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UnsafeArray<UInt8> rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
 {
 	Double rGammaVal;
 	Double gGammaVal;
@@ -862,7 +862,7 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::Col
 	fbFunc.Delete();
 }
 
-void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
+void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UnsafeArray<UInt8> rgbTable, NN<const Media::ColorProfile> destProfile, Int32 nBitLRGB, Double srcRefLuminance)
 {
 	Double rGammaVal;
 	Double gGammaVal;

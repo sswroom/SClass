@@ -140,7 +140,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
 						NN<Media::StaticImage> img;
 						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
-						UInt8 *dataPtr = img->data;
+						UnsafeArray<UInt8> dataPtr = img->data;
 						Data::ByteArray currBuffPtr = currBuff + 60;
 						UInt32 cnt = imageWidth * imageHeight;
 						while (cnt-- > 0)
@@ -195,7 +195,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						Int32 valDiff = maxVal - minVal;
 						NN<Media::StaticImage> img;
 						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
-						UInt8 *dataPtr = img->data;
+						UnsafeArray<UInt8> dataPtr = img->data;
 						Data::ByteArray currBuffPtr = currBuff + 64;
 						UInt32 cnt = imageWidth * imageHeight;
 						Int32 v;
@@ -206,13 +206,13 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 								v = 0;
 							else if (v > 65535)
 								v = 65535;
-							WriteInt16(dataPtr, v);
+							WriteInt16(&dataPtr[0], v);
 							currBuffPtr += 2;
 							dataPtr += 2;
 						}
 						j = imgList->AddImage(img, 0);
 						imgList->SetImageType(j, Media::ImageList::IT_IRIMAGE);
-						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff.Arr().Ptr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
+						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff.Arr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
 					}
 					break;
 				case 0x22: //Output Image
@@ -221,7 +221,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						UInt32 imageHeight = ReadUInt32(&currBuff[24]);
 						NN<Media::StaticImage> img;
 						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
-						UInt8 *dataPtr = img->data;
+						UnsafeArray<UInt8> dataPtr = img->data;
 						Data::ByteArray currBuffPtr = currBuff + 56;
 						UInt32 cnt = imageWidth * imageHeight;
 						while (cnt-- > 0)

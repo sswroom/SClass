@@ -12,14 +12,14 @@ Media::CS::CSYUV_Y8::~CSYUV_Y8()
 {
 }
 
-void Media::CS::CSYUV_Y8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->srcFmt == *(UInt32*)"YUYV" || this->srcFmt == *(UInt32*)"YUY2")
 	{
 		UOSInt i = dispHeight;
 		UOSInt j;
 		UOSInt sAdd = (srcStoreWidth - dispWidth) * 2;
-		UInt8 *sptr = srcPtr[0];
+		UnsafeArray<UInt8> sptr = srcPtr[0];
 		if (dispWidth & 15)
 		{
 			while (i-- > 0)
@@ -42,7 +42,7 @@ void Media::CS::CSYUV_Y8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt 
 				j = dispWidth;
 				while (j-- > 0)
 				{
-					PStoreUInt8x16(destPtr, SI16ToU8x16(PANDW8(PLoadInt16x8A(sptr), andV), PANDW8(PLoadInt16x8A(sptr + 16), andV)));
+					PStoreUInt8x16(destPtr.Ptr(), SI16ToU8x16(PANDW8(PLoadInt16x8A(sptr.Ptr()), andV), PANDW8(PLoadInt16x8A(sptr.Ptr() + 16), andV)));
 					destPtr += 16;
 					sptr += 32;
 				}
@@ -64,15 +64,15 @@ void Media::CS::CSYUV_Y8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt 
 	{
 		if (dispWidth == srcStoreWidth)
 		{
-			MemCopyNO(destPtr, srcPtr[0], srcStoreWidth * dispHeight);
+			MemCopyNO(destPtr.Ptr(), srcPtr[0].Ptr(), srcStoreWidth * dispHeight);
 		}
 		else
 		{
-			UInt8 *sptr = srcPtr[0];
+			UnsafeArray<UInt8> sptr = srcPtr[0];
 			UOSInt i = dispHeight;
 			while (i-- > 0)
 			{
-				MemCopyNO(destPtr, sptr, dispWidth);
+				MemCopyNO(destPtr.Ptr(), sptr.Ptr(), dispWidth);
 				sptr += srcStoreWidth;
 				destPtr += dispWidth;
 			}

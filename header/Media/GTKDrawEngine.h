@@ -154,7 +154,7 @@ namespace Media
 
 		virtual NN<Media::RasterImage> Clone() const; ////////////////////////////////////
 		virtual Media::RasterImage::ImageType GetImageType() const;
-		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
+		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 		virtual Int32 GetPixel32(OSInt x, OSInt y) const; ////////////////////////////////////
 
 		void *GetSurface() const;

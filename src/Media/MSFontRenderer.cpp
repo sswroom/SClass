@@ -95,7 +95,7 @@ Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCo
 	simg->pal[6] = 0xff;
 	simg->pal[7] = 0;
 	UInt8 *srcPtr;
-	UInt8 *destPtr;
+	UnsafeArray<UInt8> destPtr;
 	UInt8 *tmpPtr;
 	UOSInt j;
 	UOSInt lineSize = (fntW + 7) >> 3;

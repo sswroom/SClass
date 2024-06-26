@@ -567,7 +567,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 						else if (buff[12 + stmHdrSize] == 0)
 						{
 							Media::MPEGVideoParser::MPEGFrameProp prop;
-							if (Media::MPEGVideoParser::GetFrameProp(&buff[9 + stmHdrSize], 256 - 9 - stmHdrSize, &prop) && prop.pictureCodingType == 'I')
+							if (Media::MPEGVideoParser::GetFrameProp(&buff[9 + stmHdrSize], 256 - 9 - stmHdrSize, prop) && prop.pictureCodingType == 'I')
 							{
 								isFrame = true;
 
@@ -607,7 +607,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 						{
 							if (*(Int32*)&frameBuff[currPtr] == srchByte)
 							{
-								if (Media::MPEGVideoParser::GetFrameProp(&frameBuff[currPtr], frameSize - currPtr, &prop) && prop.pictureCodingType == 'I')
+								if (Media::MPEGVideoParser::GetFrameProp(&frameBuff[currPtr], frameSize - currPtr, prop) && prop.pictureCodingType == 'I')
 								{
 									isFrame = true;
 									vstm->AddFramePart(currOfst + 9 + stmHdrSize, (UInt32)currPtr);

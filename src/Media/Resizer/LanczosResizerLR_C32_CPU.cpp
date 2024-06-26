@@ -23,12 +23,12 @@ typedef struct
 	Int64 *weight;
 } FilterParam;
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
 	Manage::HiResClock clk;
 	if (this->nThread == 1 || height < this->nThread)
 	{
-		LanczosResizerLR_C32_CPU_horizontal_filter(inPt, outPt, width, height, tap, index, weight, sstep, dstep, this->rgbTable);
+		LanczosResizerLR_C32_CPU_horizontal_filter(inPt.Ptr(), outPt.Ptr(), width, height, tap, index, weight, sstep, dstep, this->rgbTable);
 	}
 	else
 	{
@@ -58,18 +58,18 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_horizontal_filter(const UInt8 
 	this->hTotCount = 1;
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
 	Manage::HiResClock clk;
 	if (this->nThread == 1 || height < this->nThread)
 	{
 		if (srcAlphaType == Media::AT_NO_ALPHA)
 		{
-			LanczosResizerLR_C32_CPU_vertical_filter_na(inPt, outPt, width, height, tap, index, weight, sstep, dstep, this->rgbTable);
+			LanczosResizerLR_C32_CPU_vertical_filter_na(inPt.Ptr(), outPt.Ptr(), width, height, tap, index, weight, sstep, dstep, this->rgbTable);
 		}
 		else
 		{
-			LanczosResizerLR_C32_CPU_vertical_filter(inPt, outPt, width, height, tap, index, weight, sstep, dstep, this->rgbTable);
+			LanczosResizerLR_C32_CPU_vertical_filter(inPt.Ptr(), outPt.Ptr(), width, height, tap, index, weight, sstep, dstep, this->rgbTable);
 		}
 	}
 	else
@@ -114,11 +114,11 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(const UInt8 *i
 	this->vTotCount = 1;
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt dheight, UOSInt swidth, UOSInt htap, OSInt *hindex, Int64 *hweight, UOSInt vtap, OSInt *vindex, Int64 *vweight, OSInt sstep, OSInt dstep, UInt8 *buffPt, Media::AlphaType srcAlphaType)
 {
 	if (this->nThread == 1 || dheight < this->nThread)
 	{
-		LanczosResizerLR_C32_CPU_hv_filter(inPt, outPt, dwidth, dheight, swidth, htap, hindex, hweight, vtap, vindex, vweight, sstep, dstep, this->rgbTable, buffPt);
+		LanczosResizerLR_C32_CPU_hv_filter(inPt.Ptr(), outPt.Ptr(), dwidth, dheight, swidth, htap, hindex, hweight, vtap, vindex, vweight, sstep, dstep, this->rgbTable, buffPt);
 	}
 	else
 	{
@@ -152,17 +152,17 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_hv_filter(const UInt8 *inPt, U
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
 	if (this->nThread == 1 || height < this->nThread)
 	{
 		if (srcAlphaType == Media::AT_NO_ALPHA)
 		{
-			LanczosResizerLR_C32_CPU_collapse_na(inPt, outPt, width, height, sstep, dstep, this->rgbTable);
+			LanczosResizerLR_C32_CPU_collapse_na(inPt.Ptr(), outPt.Ptr(), width, height, sstep, dstep, this->rgbTable);
 		}
 		else
 		{
-			LanczosResizerLR_C32_CPU_collapse(inPt, outPt, width, height, sstep, dstep, this->rgbTable);
+			LanczosResizerLR_C32_CPU_collapse(inPt.Ptr(), outPt.Ptr(), width, height, sstep, dstep, this->rgbTable);
 		}
 	}
 	else
@@ -198,27 +198,27 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoTask(AnyType obj)
 	NN<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
-		LanczosResizerLR_C32_CPU_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C32_CPU_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 5)
 	{
-		LanczosResizerLR_C32_CPU_vertical_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C32_CPU_vertical_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 9)
 	{
-		LanczosResizerLR_C32_CPU_collapse(ts->inPt, ts->outPt, ts->width, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C32_CPU_collapse(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 12)
 	{
-		LanczosResizerLR_C32_CPU_vertical_filter_na(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C32_CPU_vertical_filter_na(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 13)
 	{
-		LanczosResizerLR_C32_CPU_collapse_na(ts->inPt, ts->outPt, ts->width, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C32_CPU_collapse_na(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 14)
 	{
-		LanczosResizerLR_C32_CPU_hv_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->width0, ts->tap, ts->index, ts->weight, ts->tap2, ts->index2, ts->weight2, ts->sstep, ts->dstep, ts->me->rgbTable, ts->buffPt);
+		LanczosResizerLR_C32_CPU_hv_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->width0, ts->tap, ts->index, ts->weight, ts->tap2, ts->index2, ts->weight2, ts->sstep, ts->dstep, ts->me->rgbTable, ts->buffPt);
 	}
 }
 
@@ -235,14 +235,14 @@ Media::Resizer::LanczosResizerLR_C32_CPU::LanczosResizerLR_C32_CPU()
 	this->vTotCount = 0;
 	this->vTotTime = 0;
 
-	this->params = MemAlloc(Media::Resizer::LanczosResizerLR_C32_CPU::TaskParam, this->nThread);
-	MemClear(this->params, sizeof(Media::Resizer::LanczosResizerLR_C32_CPU::TaskParam) * this->nThread);
+	this->params = MemAllocArr(Media::Resizer::LanczosResizerLR_C32_CPU::TaskParam, this->nThread);
+	MemClear(this->params.Ptr(), sizeof(Media::Resizer::LanczosResizerLR_C32_CPU::TaskParam) * this->nThread);
 	i = nThread;
 	while (i-- > 0)
 	{
-		this->params[i].me = this;
+		this->params[i].me = *this;
 	}
-	NEW_CLASS(this->ptask, Sync::ParallelTask(this->nThread, false));
+	NEW_CLASSNN(this->ptask, Sync::ParallelTask(this->nThread, false));
 
 	this->buffSize = 0;
 	this->buffPtr = 0;
@@ -251,8 +251,8 @@ Media::Resizer::LanczosResizerLR_C32_CPU::LanczosResizerLR_C32_CPU()
 
 Media::Resizer::LanczosResizerLR_C32_CPU::~LanczosResizerLR_C32_CPU()
 {
-	DEL_CLASS(this->ptask);
-	MemFree(this->params);
+	this->ptask.Delete();
+	MemFreeArr(this->params);
 	if (buffPtr)
 	{
 		MemFreeA64(buffPtr);
@@ -260,7 +260,7 @@ Media::Resizer::LanczosResizerLR_C32_CPU::~LanczosResizerLR_C32_CPU()
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
 	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
@@ -279,7 +279,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(const 
 	this->mt_vertical_filter(this->buffPtr, outPt, dwidth, dheight, vparam->tap, vparam->index, vparam->weight, (OSInt)dwidth << 3, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
 	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 	if (this->buffSize < (sheight * dwidth << 3))
@@ -296,13 +296,13 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(const 
 	this->mt_collapse(this->buffPtr, outPt, dwidth, sheight, (OSInt)dwidth << 3, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
 	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
 	this->mt_vertical_filter(inPt, outPt, swidth, dheight, vparam->tap, vparam->index, vparam->weight, sstep, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoCollapse(const UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt swidth, UOSInt sheight, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
 	this->mt_collapse(inPt, outPt, swidth, sheight, sstep, dstep, srcAlphaType);
 }

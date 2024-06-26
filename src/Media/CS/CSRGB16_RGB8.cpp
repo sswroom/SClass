@@ -31,13 +31,14 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	}
 	NN<Media::ColorProfile> srcProfile;
 	NN<Media::ColorProfile> destProfile;
-	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefVProfile();
+		srcProfile = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefPProfile();
+		srcProfile = nncolorSess->GetDefPProfile();
 	}
 	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
@@ -151,7 +152,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	fbFunc.Delete();
 }
 
-Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
@@ -159,7 +160,15 @@ Media::CS::CSRGB16_RGB8::CSRGB16_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF,
 	this->destPF = destPF;
 	this->invert = invert;
 
-	this->rgbParam.Set(colorSess->GetRGBParam());
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
+	{
+		this->rgbParam.Set(nncolorSess->GetRGBParam());
+	}
+	else
+	{
+		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
+	}
 	this->rgbTable = 0;
 	this->rgbUpdated = true;
 }
@@ -173,7 +182,7 @@ Media::CS::CSRGB16_RGB8::~CSRGB16_RGB8()
 	}
 }
 
-void Media::CS::CSRGB16_RGB8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB16_RGB8::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -182,10 +191,10 @@ void Media::CS::CSRGB16_RGB8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOS
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
+		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
-	CSRGB16_RGB8_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable);
+	CSRGB16_RGB8_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, srcNBits, destNBits, this->rgbTable);
 }
 
 UOSInt Media::CS::CSRGB16_RGB8::GetSrcFrameSize(UOSInt width, UOSInt height)

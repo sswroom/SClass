@@ -57,7 +57,7 @@ void Media::CS::CSYUV_RGB8HQ::SetupYUV14_RGB13()
 	if (updateC)
 	{
 		Double Kr;
-		Double Kb;
+		Double Kb;*
 		Double Kg;
 		Double Kc1;
 		Double Kc2;
@@ -181,14 +181,14 @@ void Media::CS::CSYUV_RGB8HQ::SetupYUV14_RGB13()
 	}*/
 }
 
-Media::CS::CSYUV_RGB8HQ::CSYUV_RGB8HQ(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
+Media::CS::CSYUV_RGB8HQ::CSYUV_RGB8HQ(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
 {
-	this->yuv2rgb14 = MemAlloc(Int64, 256 + 65536 * 2);
+	this->yuv2rgb14 = MemAllocArr(Int64, 256 + 65536 * 2);
 }
 
 Media::CS::CSYUV_RGB8HQ::~CSYUV_RGB8HQ()
 {
-	MemFree(this->yuv2rgb14);
+	MemFreeArr(this->yuv2rgb14);
 }
 
 void Media::CS::CSYUV_RGB8HQ::UpdateTable()

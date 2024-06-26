@@ -59,7 +59,7 @@ void __stdcall Media::V4LVideoCapture::PlayThread(NN<Sync::Thread> thread)
 				}
 				else if (me->cb)
 				{
-					me->cb((UInt32)Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
+					me->cb((UInt32)Double2Int32(t * 1000), frameNum, UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>((UInt8**)&buf.m.userptr)), buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
 				}
 				frameNum++;
 				ioctl(me->fd, VIDIOC_QBUF, &buf);
@@ -378,7 +378,7 @@ UOSInt Media::V4LVideoCapture::GetDataSeekCount()
 	return 0;
 }
 
-UOSInt Media::V4LVideoCapture::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::V4LVideoCapture::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	struct timeval tv;
 	fd_set fds;
@@ -409,7 +409,7 @@ UOSInt Media::V4LVideoCapture::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	if (r == 0)
 	{
 		UOSInt size = buf.bytesused;
-		MemCopyNO(buff, (void*)buf.m.userptr, size);
+		MemCopyNO(buff.Ptr(), (void*)buf.m.userptr, size);
 		ioctl(this->fd, VIDIOC_QBUF, &buf);
 		return size;
 	}

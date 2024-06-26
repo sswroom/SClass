@@ -34,7 +34,7 @@ Double Media::CS::CSYUV420_RGB32C::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, YVPARAMETER *out, UOSInt indexSep, Double offsetCorr)
+void Media::CS::CSYUV420_RGB32C::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<YVPARAMETER> out, UOSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -143,7 +143,7 @@ UInt32 Media::CS::CSYUV420_RGB32C::WorkerThread(AnyType obj)
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -155,28 +155,28 @@ UInt32 Media::CS::CSYUV420_RGB32C::WorkerThread(AnyType obj)
 		{
 			if (ts->width & 3)
 			{
-				CSYUV420_RGB32C_do_yv12rgb2(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				CSYUV420_RGB32C_do_yv12rgb2(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			}
 			else
 			{
-				CSYUV420_RGB32C_do_yv12rgb8(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				CSYUV420_RGB32C_do_yv12rgb8(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->uvBpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			}
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 		else if (ts->status == 11)
 		{
 #if LANCZOS_NTAP == 4
-			CSYUV420_RGB32C_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
+			CSYUV420_RGB32C_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl, ts->yvParam->weight + ts->uvBpl * 6, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
 #else
-			CSYUV420_RGB32C_VerticalFilterLRGB(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14, converter->rgbGammaCorr);
+			CSYUV420_RGB32C_VerticalFilterLRGB(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->yvParam->tap, ts->yvParam->index + ts->uvBpl * LANCZOS_NTAP, ts->yvParam->weight + ts->uvBpl * LANCZOS_NTAP, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, ts->yBpl, ts->dbpl, converter->yuv2rgb14.Ptr(), converter->rgbGammaCorr.Ptr());
 #endif
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
@@ -199,11 +199,11 @@ void Media::CS::CSYUV420_RGB32C::WaitForWorker(Int32 jobStatus)
 		}
 		if (exited)
 			break;
-		this->evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
-Media::CS::CSYUV420_RGB32C::CSYUV420_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
+Media::CS::CSYUV420_RGB32C::CSYUV420_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -221,12 +221,11 @@ Media::CS::CSYUV420_RGB32C::CSYUV420_RGB32C(NN<const Media::ColorProfile> srcPro
 	this->uvBuff = 0;
 	this->uvBuffSize = 0;
 
-	NEW_CLASS(evtMain, Sync::Event());
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;
@@ -236,7 +235,7 @@ Media::CS::CSYUV420_RGB32C::CSYUV420_RGB32C(NN<const Media::ColorProfile> srcPro
 		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -285,7 +284,7 @@ Media::CS::CSYUV420_RGB32C::~CSYUV420_RGB32C()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
@@ -300,10 +299,9 @@ Media::CS::CSYUV420_RGB32C::~CSYUV420_RGB32C()
 			MemFreeA(stats[i].csLineBuff2);
 			stats[i].csLineBuff2 = 0;
 		}
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
-	MemFree(stats);
+	MemFreeArr(stats);
 
 	if (this->yvParamO.index)
 	{

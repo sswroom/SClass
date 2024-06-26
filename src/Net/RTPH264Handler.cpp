@@ -64,7 +64,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 	}
 	lastSeq = seqNum;
 	UOSInt frameSize;
-	UInt8 *frameBuff;
+	UnsafeArray<UInt8> frameBuff;
 
 	UInt8 tmpBuff[5];
 	UOSInt i = 0;

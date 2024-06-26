@@ -73,9 +73,9 @@ namespace Net
 		static NN<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CStringNN protStr, Text::CStringNN data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb);
 		Net::HTTPClient *ACMEPost(NN<Text::String> url, Text::CStringNN data);
-		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);
-		Challenge *ChallengeJSON(Text::JSONBase *json);
-		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
+		Optional<Order> OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Optional<Challenge> ChallengeJSON(Text::JSONBase *json);
+		Optional<Challenge> ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	public:
 		ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port);
 		~ACMEConn();
@@ -89,14 +89,14 @@ namespace Net
 		Bool AccountNew();
 		Bool AccountRetr();
 
-		Order *OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen); //comma seperated
-		Challenge *OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
+		Optional<Order> OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen); //comma seperated
+		Optional<Challenge> OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
 		Order *OrderGetStatus(UnsafeArray<const UTF8Char> orderURL);
 		Order *OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, Crypto::Cert::X509CertReq *csr);
 		void OrderFree(Order *order);
 
-		Challenge *ChallengeBegin(NN<Text::String> challURL);
-		Challenge *ChallengeGetStatus(NN<Text::String> challURL);
+		Optional<Challenge> ChallengeBegin(NN<Text::String> challURL);
+		Optional<Challenge> ChallengeGetStatus(NN<Text::String> challURL);
 		void ChallengeFree(Challenge *chall);
 
 		Bool NewKey();

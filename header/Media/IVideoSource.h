@@ -44,10 +44,10 @@ namespace Media
 			FF_FORCEDISP = 16
 		} FrameFlag;
 
-		typedef void (__stdcall *FrameCallback)(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-		typedef void (__stdcall *FrameChangeCallback)(FrameChange frChg, AnyType userData);
-		typedef Bool (__stdcall *FrameInfoCallback)(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst); //return true to continue
-		typedef void (__stdcall *ImageCallback)(AnyType userData, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
+		typedef void (CALLBACKFUNC FrameCallback)(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		typedef void (CALLBACKFUNC FrameChangeCallback)(FrameChange frChg, AnyType userData);
+		typedef Bool (CALLBACKFUNC FrameInfoCallback)(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst); //return true to continue
+		typedef void (CALLBACKFUNC ImageCallback)(AnyType userData, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
 
 		IVideoSource();
 		virtual ~IVideoSource();
@@ -78,7 +78,7 @@ namespace Media
 		virtual Data::Duration GetFrameTime(UOSInt frameIndex) = 0;
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData) = 0;
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
-		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
+		virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
 		virtual Bool ReadFrameBegin();
 		virtual Bool ReadFrameEnd();
 

@@ -4,7 +4,7 @@
 #include "Media/H264Parser.h"
 #include "Text/MyString.h"
 
-Bool Media::H264Parser::ParseHRDParameters(NN<IO::BitReaderMSB> reader, H264Flags *flags)
+Bool Media::H264Parser::ParseHRDParameters(NN<IO::BitReaderMSB> reader, Optional<H264Flags> flags)
 {
 	UInt32 cpb_cnt_minus1;
 	UInt32 bit_rate_scale;
@@ -15,6 +15,7 @@ Bool Media::H264Parser::ParseHRDParameters(NN<IO::BitReaderMSB> reader, H264Flag
 	UInt32 time_offset_length;
 	UInt32 v;
 	UInt32 i;
+	NN<H264Flags> nnflags;
 	ParseVari(reader, cpb_cnt_minus1);
 	reader->ReadBits(bit_rate_scale, 4);
 	reader->ReadBits(cpb_size_scale, 4);
@@ -30,16 +31,16 @@ Bool Media::H264Parser::ParseHRDParameters(NN<IO::BitReaderMSB> reader, H264Flag
 	reader->ReadBits(cpb_removal_delay_length_minus1, 5);
 	reader->ReadBits(dpb_output_delay_length_minus1, 5);
 	reader->ReadBits(time_offset_length, 5);
-	if (flags)
+	if (flags.SetTo(nnflags))
 	{
-		flags->initial_cpb_removal_delay_length_minus1 = initial_cpb_removal_delay_length_minus1;
-		flags->cpb_removal_delay_length_minus1 = cpb_removal_delay_length_minus1;
-		flags->dpb_output_delay_length_minus1 = dpb_output_delay_length_minus1;
+		nnflags->initial_cpb_removal_delay_length_minus1 = initial_cpb_removal_delay_length_minus1;
+		nnflags->cpb_removal_delay_length_minus1 = cpb_removal_delay_length_minus1;
+		nnflags->dpb_output_delay_length_minus1 = dpb_output_delay_length_minus1;
 	}
 	return true;
 }
 
-Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media::FrameInfo> info, H264Flags *flags)
+Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media::FrameInfo> info, Optional<H264Flags> flags)
 {
 	UInt32 aspect_ratio_info_present_flag = 0;
 	UInt32 overscan_info_present_flag = 0;
@@ -52,6 +53,7 @@ Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media
 	UInt32 pic_struct_present_flag = 0;
 	UInt32 bitstream_restriction_flag = 0;
 	UInt32 temp;
+	NN<H264Flags> nnflags;
 	reader->ReadBits(aspect_ratio_info_present_flag, 1);
 	if (aspect_ratio_info_present_flag != 0)
 	{
@@ -261,10 +263,10 @@ Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media
 	reader->ReadBits(timing_info_present_flag, 1);
 	if (timing_info_present_flag != 0)
 	{
-		if (flags)
+		if (flags.SetTo(nnflags))
 		{
-			reader->ReadBits(flags->frameRateDenorm, 32); //num_units_in_tick
-			reader->ReadBits(flags->frameRateNorm, 32); //time_scale
+			reader->ReadBits(nnflags->frameRateDenorm, 32); //num_units_in_tick
+			reader->ReadBits(nnflags->frameRateNorm, 32); //time_scale
 		}
 		else
 		{
@@ -290,18 +292,18 @@ Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media
 	reader->ReadBits(pic_struct_present_flag, 1);
 	reader->ReadBits(bitstream_restriction_flag, 1);
 
-	if (flags)
+	if (flags.SetTo(nnflags))
 	{
-		flags->pic_struct_present_flag = pic_struct_present_flag != 0;
-		flags->nal_hrd_parameters_present_flag = nal_hrd_parameters_present_flag != 0;
-		flags->vcl_hrd_parameters_present_flag = vcl_hrd_parameters_present_flag != 0;
+		nnflags->pic_struct_present_flag = pic_struct_present_flag != 0;
+		nnflags->nal_hrd_parameters_present_flag = nal_hrd_parameters_present_flag != 0;
+		nnflags->vcl_hrd_parameters_present_flag = vcl_hrd_parameters_present_flag != 0;
 	}
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	info->rotateType = Media::RotateType::None;
 	return true;
 }
 
-Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
+Bool Media::H264Parser::GetFrameInfo(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, Optional<H264Flags> flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
 {
 	Bool succ = false;
 	UInt8 *tmpBuff;
@@ -319,8 +321,9 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NN<Me
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
+	NN<H264Flags> nnflags;
 
-	if (ReadMInt32(frame) != 1)
+	if (ReadMInt32(&frame[0]) != 1)
 		return false;
 	if ((frame[4] & 0x1f) != 7)
 		return false;
@@ -427,10 +430,10 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NN<Me
 			}
 		}
 		ParseVari(reader, temp); //log2_max_frame_num_minus4
-		if (flags)
+		if (flags.SetTo(nnflags))
 		{
-			flags->separateColourPlane = separate_colour_plane_flag != 0;
-			flags->maxFrameNum_4 = temp;
+			nnflags->separateColourPlane = separate_colour_plane_flag != 0;
+			nnflags->maxFrameNum_4 = temp;
 		}
 		ParseVari(reader, pic_order_cnt_type);
 		if (pic_order_cnt_type == 0)
@@ -482,13 +485,13 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NN<Me
 				frameInfo->dispSize.y -= temp;
 		}
 
-		if (flags)
+		if (flags.SetTo(nnflags))
 		{
-			flags->frameOnly = frame_mbs_only_flag != 0;
-			flags->mbaff = mb_adaptive_frame_field_flag != 0;
-			flags->pic_struct_present_flag = false;
-			flags->nal_hrd_parameters_present_flag = false;
-			flags->vcl_hrd_parameters_present_flag = false;
+			nnflags->frameOnly = frame_mbs_only_flag != 0;
+			nnflags->mbaff = mb_adaptive_frame_field_flag != 0;
+			nnflags->pic_struct_present_flag = false;
+			nnflags->nal_hrd_parameters_present_flag = false;
+			nnflags->vcl_hrd_parameters_present_flag = false;
 		}
 
 		reader.ReadBits(temp, 1);

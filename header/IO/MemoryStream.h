@@ -16,8 +16,8 @@ namespace IO
 		MemoryStream(UOSInt capacity);
 		virtual ~MemoryStream();
 
-		UInt8 *GetBuff();
-		UInt8 *GetBuff(OutParam<UOSInt> buffSize);
+		UnsafeArray<UInt8> GetBuff();
+		UnsafeArray<UInt8> GetBuff(OutParam<UOSInt> buffSize);
 		Data::ByteArray GetArray() const;
 
 		virtual Bool IsDown() const;

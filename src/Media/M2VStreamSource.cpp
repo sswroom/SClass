@@ -98,7 +98,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 		}
 	}
 	Bool ret;
-	ret = Media::MPEGVideoParser::GetFrameProp(&this->frameBuff[pictureStart], frameSize, &prop);
+	ret = Media::MPEGVideoParser::GetFrameProp(&this->frameBuff[pictureStart], frameSize, prop);
 	if (ret)
 	{
 		if (prop.rff)
@@ -278,7 +278,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 					UInt32 denorm;
 					UInt64 bitRate;
 
-					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, info, norm, denorm, &bitRate, true))
+					if (Media::MPEGVideoParser::GetFrameInfo(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize, info, norm, denorm, bitRate, true))
 					{
 						if (info.par2 != me->par)
 						{
@@ -342,7 +342,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 					break;
 				}
 			}
-			ret = Media::MPEGVideoParser::GetFrameProp(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize - pictureStart, &prop);
+			ret = Media::MPEGVideoParser::GetFrameProp(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize - pictureStart, prop);
 			Media::IVideoSource::FrameStruct fs;
 			Media::FrameType ft;
 			if (ret)
@@ -370,7 +370,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 				ft = Media::FT_NON_INTERLACE;
 			}
 
-			UInt8 *frameBuff = me->playBuff[me->playBuffStart].frame;
+			UnsafeArray<UInt8> frameBuff = me->playBuff[me->playBuffStart].frame;
 			UInt32 frameSize = (UInt32)me->playBuff[me->playBuffStart].frameSize;
 			UInt32 frameNum = (UInt32)me->playBuff[me->playBuffStart].frameNum;
 			Data::Duration frameTime = me->playBuff[me->playBuffStart].frameTime;
@@ -392,7 +392,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 			}
 #endif
 			me->frameCb(frameTime, frameNum, &frameBuff, frameSize, fs, me->frameCbData, ft, (frameNum == 0)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
-			MemFree(frameBuff);
+			MemFreeArr(frameBuff);
 
 		}
 	}
@@ -613,7 +613,7 @@ UOSInt Media::M2VStreamSource::GetFrameSize(UOSInt frameIndex)
 	return 0;
 }
 
-UOSInt Media::M2VStreamSource::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::M2VStreamSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
@@ -626,7 +626,7 @@ UOSInt Media::M2VStreamSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime
 void Media::M2VStreamSource::DetectStreamInfo(UInt8 *header, UOSInt headerSize)
 {
 	UInt64 bitRate;
-	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, this->frameRateNorm, this->frameRateDenorm, &bitRate, false);
+	Media::MPEGVideoParser::GetFrameInfo(header, headerSize, this->info, this->frameRateNorm, this->frameRateDenorm, bitRate, false);
 	this->par = this->info.par2;
 	this->bitRate = bitRate;
 }

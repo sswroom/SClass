@@ -22,13 +22,14 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	Double dV;
 	UInt16 v[4];
 	NN<Media::ColorProfile> srcProfile;
-	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefVProfile();
+		srcProfile = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefPProfile();
+		srcProfile = nncolorSess->GetDefPProfile();
 	}
 	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
@@ -82,15 +83,16 @@ void Media::CS::CSRGB16_LRGBC::UpdateRGBTable()
 	btFunc.Delete();
 }
 
-Media::CS::CSRGB16_LRGBC::CSRGB16_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB16_LRGBC::CSRGB16_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
 	this->invert = invert;
 
-	if (colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
 	{
-		this->rgbParam.Set(colorSess->GetRGBParam());
+		this->rgbParam.Set(nncolorSess->GetRGBParam());
 	}
 	else
 	{
@@ -109,7 +111,7 @@ Media::CS::CSRGB16_LRGBC::~CSRGB16_LRGBC()
 	}
 }
 
-void Media::CS::CSRGB16_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSRGB16_LRGBC::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->rgbUpdated)
 	{
@@ -118,16 +120,16 @@ void Media::CS::CSRGB16_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UO
 	}
 	if (invert)
 	{
-		destPtr = ((UInt8*)destPtr) + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
+		destPtr = destPtr + (OSInt)(srcStoreHeight - 1) * destRGBBpl;
 		destRGBBpl = -destRGBBpl;
 	}
 	if (this->srcPF == Media::PF_LE_A2B10G10R10)
 	{
-		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 	}
 	else
 	{
-		CSRGB16_LRGBC_Convert(srcPtr[0], destPtr, dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 	}
 }
 

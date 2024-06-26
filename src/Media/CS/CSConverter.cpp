@@ -43,20 +43,22 @@
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd206750%28v=vs.85%29.aspx
 //https://msdn.microsoft.com/en-us/library/windows/desktop/bb970578%28v=vs.85%29.aspx
 
-Media::CS::CSConverter::CSConverter(Media::ColorManagerSess *colorSess)
+Media::CS::CSConverter::CSConverter(Optional<Media::ColorManagerSess> colorSess)
 {
 	this->colorSess = colorSess;
-	if (this->colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess->AddHandler(*this);
+		nncolorSess->AddHandler(*this);
 	}
 }
 
 Media::CS::CSConverter::~CSConverter()
 {
-	if (this->colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess->RemoveHandler(*this);
+		nncolorSess->RemoveHandler(*this);
 	}
 }
 
@@ -108,9 +110,8 @@ Bool Media::CS::CSConverter::IsSupported(UInt32 fourcc)
 	return csList.SortedIndexOf(fourcc) >= 0;
 }
 
-Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> optcolorSess)
+Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess)
 {
-	Media::ColorManagerSess *colorSess = optcolorSess.OrNull();
 	Media::CS::CSConverter *conv;
 	if (destFormat == *(UInt32*)"LRGB")
 	{

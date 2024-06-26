@@ -12,12 +12,12 @@ namespace Media
 		class CSConverter : public Media::IColorHandler
 		{
 		protected:
-			Media::ColorManagerSess *colorSess;
+			Optional<Media::ColorManagerSess> colorSess;
 		public:
-			CSConverter(Media::ColorManagerSess *colorSess);
+			CSConverter(Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSConverter();
 
-			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destLineAdd, Media::FrameType ftype, Media::YCOffset ycOfst) = 0;
+			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destLineAdd, Media::FrameType ftype, Media::YCOffset ycOfst) = 0;
 			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height) = 0;
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height) = 0;
 			virtual void SetPalette(UInt8 *pal);

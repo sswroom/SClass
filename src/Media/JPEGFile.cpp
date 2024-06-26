@@ -209,11 +209,11 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 										stImg = innerImg->CreateStaticImage();
 										if (stImg->info.pf == Media::PF_LE_W16)
 										{
-											UInt8 *imgPtr = stImg->data;
+											UnsafeArray<UInt8> imgPtr = stImg->data;
 											UOSInt pixelCnt = stImg->info.dispSize.CalcArea();
 											while (pixelCnt-- > 0)
 											{
-												WriteInt16(imgPtr, ReadMInt16(imgPtr));
+												WriteInt16(&imgPtr[0], ReadMInt16(imgPtr));
 												imgPtr += 2;
 											}
 											imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);

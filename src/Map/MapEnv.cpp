@@ -1218,7 +1218,7 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 	else
 		atype = Media::AlphaType::AT_ALPHA;
 	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(size, size), 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, Media::ColorProfile(Media::ColorProfile::CPT_SRGB), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
-	ImageUtil_ColorFill32(simg->data, size * size, color);
+	ImageUtil_ColorFill32(simg->data.Ptr(), size * size, color);
 	imgInfo->imgs->AddImage(simg, 0);
 	this->images.PutNN(imgInfo->fileName, imgInfo);
 	this->imgList.Add(imgInfo);

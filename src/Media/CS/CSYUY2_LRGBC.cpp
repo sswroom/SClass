@@ -29,7 +29,7 @@ UInt32 Media::CS::CSYUY2_LRGBC::WorkerThread(AnyType obj)
 		}
 		else if (ts->status == 3)
 		{
-			CSYUY2_LRGBC_do_yuy2rgb(ts->yPtr, ts->dest, ts->width, ts->height, ts->dbpl, converter->yuv2rgb, converter->rgbGammaCorr);
+			CSYUY2_LRGBC_do_yuy2rgb(ts->yPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			ts->status = 4;
 			converter->evtMain.Set();
 		}
@@ -39,17 +39,17 @@ UInt32 Media::CS::CSYUY2_LRGBC::WorkerThread(AnyType obj)
 	return 0;
 }
 
-Media::CS::CSYUY2_LRGBC::CSYUY2_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGBC(srcProfile, destProfile, yuvType, colorSess)
+Media::CS::CSYUY2_LRGBC::CSYUY2_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 8) this->nThread = 8;
 
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;
@@ -110,12 +110,12 @@ Media::CS::CSYUY2_LRGBC::~CSYUY2_LRGBC()
 	i = nThread;
 	while (i-- > 0)
 	{
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	MemFree(stats);
+	MemFreeArr(stats);
 }
 
-void Media::CS::CSYUY2_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUY2_LRGBC::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UOSInt i = this->nThread;

@@ -113,7 +113,7 @@ Media::TimedImageList::~TimedImageList()
 		if (this->changed)
 		{
 			UOSInt indexSize;
-			UInt8 *indexBuff;
+			UnsafeArray<UInt8> indexBuff;
 			indexBuff = this->indexStm.GetBuff(indexSize);
 			this->fs->Write(Data::ByteArrayR(indexBuff, indexSize));
 
@@ -136,7 +136,7 @@ Bool Media::TimedImageList::IsError()
 	return this->fs == 0;
 }
 
-Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, const UInt8 *imgBuff, UOSInt imgSize, ImageFormat imgFmt)
+Bool Media::TimedImageList::AddImage(Int64 captureTimeTicks, UnsafeArray<const UInt8> imgBuff, UOSInt imgSize, ImageFormat imgFmt)
 {
 	UInt8 indexBuff[32];
 	Bool succ = true;

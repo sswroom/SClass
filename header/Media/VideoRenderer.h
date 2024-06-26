@@ -203,7 +203,7 @@ namespace Media
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
 
 		static UInt32 __stdcall ProcessThread(AnyType userObj);

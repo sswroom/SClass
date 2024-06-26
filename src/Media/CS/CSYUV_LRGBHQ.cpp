@@ -19,10 +19,11 @@ void Media::CS::CSYUV_LRGBHQ::SetupYUV14_RGB13()
 	Double Kc3;
 	Double Kc4;
 	Media::ColorProfile::YUVType yuvType;
+	NN<Media::ColorManagerSess> nncolorSess;
 	Bool fullRange = (this->yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255) != 0;
-	if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN)
+	if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		yuvType = this->colorSess->GetDefYUVType();
+		yuvType = nncolorSess->GetDefYUVType();
 	}
 	else
 	{
@@ -98,14 +99,14 @@ void Media::CS::CSYUV_LRGBHQ::SetupYUV14_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGBHQ::CSYUV_LRGBHQ(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
+Media::CS::CSYUV_LRGBHQ::CSYUV_LRGBHQ(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
-	this->yuv2rgb14 = MemAlloc(Int64, 256 + 65536 * 2);
+	this->yuv2rgb14 = MemAllocArr(Int64, 256 + 65536 * 2);
 }
 
 Media::CS::CSYUV_LRGBHQ::~CSYUV_LRGBHQ()
 {
-	MemFree(this->yuv2rgb14);
+	MemFreeArr(this->yuv2rgb14);
 }
 
 void Media::CS::CSYUV_LRGBHQ::UpdateTable()

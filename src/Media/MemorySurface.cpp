@@ -53,7 +53,7 @@ Media::RasterImage::ImageType Media::MemorySurface::GetImageType() const
 	return Media::RasterImage::ImageType::MonitorSurface;
 }
 
-void Media::MemorySurface::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::MemorySurface::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;

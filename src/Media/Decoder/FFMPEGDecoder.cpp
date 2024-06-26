@@ -185,7 +185,7 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 	Double par;
 	UInt32 currFmt;
 	UInt32 srcFCC;
-	UInt8 *frameBuff;
+	UnsafeArray<UInt8> frameBuff;
 	UOSInt frameSize;
 	Bool seeked;
 	Data::Duration seekTime;
@@ -203,7 +203,7 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 #endif
 };
 
-void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	ClassData *data = this->clsData;
     AVPacket avpkt;
@@ -258,7 +258,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 	}
 
 	FFMPEGDecoder_av_init_packet(&avpkt);
-	avpkt.data = imgData[0];
+	avpkt.data = imgData[0].Ptr();
 	avpkt.size = (int)dataSize;
 	avpkt.dts = (Int64)frameTime.MultiplyU64(90000);
 	avpkt.pts = (Int64)frameTime.MultiplyU64(90000);
@@ -322,14 +322,14 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 			outFrameType = Media::FT_NON_INTERLACE;
 		}
 		outFlags = (Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_BFRAMEPROC | (flags & Media::IVideoSource::FF_REALTIME));
-		UInt8 **outFrameBuff = &data->frameBuff;
+		UnsafeArray<UnsafeArray<UInt8>> outFrameBuff = &data->frameBuff;
 
 		UInt8 *frameTempBuff = 0;
 		switch (data->frame->format)
 		{
 		case AV_PIX_FMT_YUV420P:
 		case AV_PIX_FMT_YUVJ420P:
-			outFrameBuff = data->frame->data;
+			outFrameBuff = UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>(data->frame->data));
 			break;
 		case AV_PIX_FMT_YUVJ422P:
 			{
@@ -362,19 +362,19 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 					uptr += ubpl;
 					vptr += vbpl;					
 				}
-				outFrameBuff = &frameTempBuff;
+				outFrameBuff = UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>(&frameTempBuff));
 			}
 			break;
 		case AV_PIX_FMT_YUV420P10LE:
-			outFrameBuff = data->frame->data;
+			outFrameBuff = UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>(data->frame->data));
 			break;
 #if VERSION_FROM(57, 27, 2) //not sure
 		case AV_PIX_FMT_YUV420P12LE:
-			outFrameBuff = data->frame->data;
+			outFrameBuff = UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>(data->frame->data));
 			break;
 #endif
 		case AV_PIX_FMT_YUV444P10LE:
-			outFrameBuff = data->frame->data;
+			outFrameBuff = UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>(data->frame->data));
 			break;
 		default:
 			break;
@@ -543,7 +543,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<IVideoSource> sourceVideo) : Med
 	data->storeHeight = 0;
 	data->par = 1.0;
 	data->currFmt = (UInt32)-1;
-	data->frameBuff = 0;
+	data->frameBuff = MemAllocAArr(UInt8, 0);
 	data->seeked = false;
 	data->frameIndexE = 0;
 	data->frameIndexS = 0;
@@ -842,7 +842,8 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<IVideoSource> sourceVideo) : Med
 				data->frameSize = maxFrameSize;
 				if (data->frameSize > 0)
 				{
-					data->frameBuff = MemAllocA(UInt8, data->frameSize);
+					MemFreeAArr(data->frameBuff);
+					data->frameBuff = MemAllocAArr(UInt8, data->frameSize);
 				}
 				data->inited = true;
 			}
@@ -872,11 +873,7 @@ Media::Decoder::FFMPEGDecoder::~FFMPEGDecoder()
 		FFMPEGDecoder_avcodec_free_context(&data->ctx);
 		data->ctx = 0;
 	}
-	if (data->frameBuff)
-	{
-		MemFreeA(data->frameBuff);
-		data->frameBuff = 0;
-	}
+	MemFreeAArr(data->frameBuff);
 #ifdef _DEBUG
 	DEL_CLASS(data->dbgStm);
 	DEL_CLASS(data->dbgWriter);

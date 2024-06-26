@@ -346,7 +346,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 			}
 			Int32 srcIX = (Int32)srcPos.x;
 			Int32 srcIY = (Int32)srcPos.y;
-			resizer.Resize((srcIX * 4) + (srcIY * (OSInt)(srcImg->info.storeSize.x * 4)) + srcImg->data, (OSInt)srcImg->info.storeSize.x * 4, srcSize.x, srcSize.y, srcPos.x - srcIX, srcPos.y - srcIY, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
+			resizer.Resize(srcImg->data + (srcIX * 4) + (srcIY * (OSInt)(srcImg->info.storeSize.x * 4)), (OSInt)srcImg->info.storeSize.x * 4, srcSize.x, srcSize.y, srcPos.x - srcIX, srcPos.y - srcIY, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
 		}
 		else
 		{

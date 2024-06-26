@@ -9,13 +9,13 @@
 
 #define ALLONE 1
 
-void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 	Bool found = false;
 	Media::FrameType seiFrameType = Media::FT_INTERLACED_TFF;
 
-	UInt8 *frameBuff = this->frameBuff;
+	UnsafeArray<UInt8> frameBuff = this->frameBuff;
 	UOSInt imgOfst = 0;
 	UOSInt imgSize;
 	Bool frameFound = false;
@@ -70,15 +70,15 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}
 
 #if defined(ALLONE)
-		WriteMInt32(frameBuff, 1);
+		WriteMInt32(&frameBuff[0], 1);
 #else
-		WriteMInt32(frameBuff, imgSize);
+		WriteMInt32(&frameBuff[0], imgSize);
 #endif
 		MemCopyNAC(&frameBuff[4], &imgData[0][imgOfst], imgSize);
 		if ((imgData[0][imgOfst] & 0x1f) == 7) //seq_parameter_set_rbsp( )
 		{
 			Media::FrameInfo info;
-			Media::H264Parser::GetFrameInfo(frameBuff, imgSize + 4, info, &h264Flags);
+			Media::H264Parser::GetFrameInfo(frameBuff, imgSize + 4, info, h264Flags);
 			this->spsFound = true;
 		}
 		else if ((imgData[0][imgOfst] & 0x1f) == 8) //pic_parameter_set_rbsp( )
@@ -170,9 +170,9 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 				frameBuff = this->frameBuff;
 				frameTime = frameTime.AddMS(16);
 #if defined(ALLONE)
-				WriteMInt32(frameBuff, 1);
+				WriteMInt32(&frameBuff[0], 1);
 #else
-				WriteMInt32(frameBuff, imgSize);
+				WriteMInt32(&frameBuff[0], imgSize);
 #endif
 				MemCopyNAC(&frameBuff[4], &imgData[0][imgOfst], imgSize);
 				found = false;
@@ -344,7 +344,6 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	this->toRelease = toRelease;
 	this->sps = 0;
 	this->pps = 0;
-	this->frameBuff = 0;
 	this->frameSize = 0;
 	this->size32 = false;
 	this->spsFound = false;
@@ -357,11 +356,13 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 
 	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, size))
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
 	if (info.fourcc != *(UInt32*)"ravc")
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -369,6 +370,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	buff = sourceVideo->GetProp(*(Int32*)"sps", &size32);
 	if (buff == 0)
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -380,6 +382,7 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	buff = sourceVideo->GetProp(*(Int32*)"pps", &size32);
 	if (buff == 0)
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -387,13 +390,13 @@ Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	this->ppsSize = size32;
 	MemCopyNO(this->pps, buff, size32);
 	this->maxFrameSize += 4 + size32;
-	this->frameBuff = MemAllocA(UInt8, this->maxFrameSize);
+	this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 //	OSInt oriW;
 //	OSInt oriH;
 //	oriW = info.dispSize.x;
 //	oriH = info.dispSize.y;
 	size = this->BuildIFrameHeader(this->frameBuff, true);
-	Media::H264Parser::GetFrameInfo(this->frameBuff, size, info, &this->h264Flags);
+	Media::H264Parser::GetFrameInfo(this->frameBuff, size, info, this->h264Flags);
 /*	OSInt cropRight = 0;
 	OSInt cropBottom = 0;
 	if (info.dispSize.x < oriW)
@@ -424,10 +427,7 @@ Media::Decoder::RAVCDecoder::~RAVCDecoder()
 	{
 		MemFree(this->pps);
 	}
-	if (this->frameBuff)
-	{
-		MemFreeA(this->frameBuff);
-	}
+	MemFreeAArr(this->frameBuff);
 }
 
 Text::CStringNN Media::Decoder::RAVCDecoder::GetFilterName()
@@ -489,7 +489,7 @@ UOSInt Media::Decoder::RAVCDecoder::GetFrameSize(UOSInt frameIndex)
 	return this->maxFrameSize;
 }
 
-UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo == 0)
 		return 0;
@@ -498,8 +498,8 @@ UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	UOSInt outSize = 0;
 	UOSInt imgOfst = 0;
 	UOSInt imgSize;
-	const UInt8 *imgData = this->frameBuff;
-	UInt8 *frameBuff = buff;
+	UnsafeArray<const UInt8> imgData = this->frameBuff;
+	UnsafeArray<UInt8> frameBuff = buff;
 	while (imgOfst < frameSize)
 	{
 		if (this->firstFrame)
@@ -542,9 +542,9 @@ UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 		}
 
 #if defined(ALLONE)
-		WriteMInt32(frameBuff, 1);
+		WriteMInt32(&frameBuff[0], 1);
 #else
-		WriteMInt32(frameBuff, imgSize);
+		WriteMInt32(&frameBuff[0], imgSize);
 #endif
 		MemCopyNAC(&frameBuff[4], &imgData[imgOfst], imgSize);
 		if ((imgData[imgOfst] & 0x1f) == 7) //seq_parameter_set_rbsp( )
@@ -589,7 +589,7 @@ Bool Media::Decoder::RAVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutPar
 	return true;
 }
 
-UOSInt Media::Decoder::RAVCDecoder::BuildIFrameHeader(UInt8 *buff, Bool forceBuild)
+UOSInt Media::Decoder::RAVCDecoder::BuildIFrameHeader(UnsafeArray<UInt8> buff, Bool forceBuild)
 {
 	if (this->skipHeader && !forceBuild)
 	{

@@ -36,15 +36,15 @@ IO::MemoryStream::~MemoryStream()
 {
 }
 
-UInt8 *IO::MemoryStream::GetBuff()
+UnsafeArray<UInt8> IO::MemoryStream::GetBuff()
 {
-	return this->buff.Arr().Ptr();
+	return this->buff.Arr();
 }
 
-UInt8 *IO::MemoryStream::GetBuff(OutParam<UOSInt> buffSize)
+UnsafeArray<UInt8> IO::MemoryStream::GetBuff(OutParam<UOSInt> buffSize)
 {
 	buffSize.Set(this->currSize);
-	return this->buff.Arr().Ptr();
+	return this->buff.Arr();
 }
 
 Data::ByteArray IO::MemoryStream::GetArray() const

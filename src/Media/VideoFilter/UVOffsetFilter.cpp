@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/UVOffsetFilter.h"
 
-void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 	{
@@ -12,7 +12,7 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 		UOSInt h = this->videoInfo.storeSize.y;
 		UOSInt hh = h >> 1;
 		UOSInt wh = w >> 1;
-		UInt8 *imgPtr = imgData[0] + w * h;
+		UnsafeArray<UInt8> imgPtr = imgData[0] + w * h;
 		if (vOfst > 0)
 		{
 			UOSInt moveSize = wh - (UOSInt)(OSInt)vOfst;
@@ -21,7 +21,7 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
-				MemCopyO(imgPtr + vOfst, imgPtr, moveSize);
+				MemCopyO(imgPtr.Ptr() + vOfst, imgPtr.Ptr(), moveSize);
 				v = *imgPtr;
 				wLeft = (UOSInt)vOfst;
 				while (wLeft-- > 1)
@@ -39,7 +39,7 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
-				MemCopyO(imgPtr, imgPtr - vOfst, moveSize);
+				MemCopyO(imgPtr.Ptr(), imgPtr.Ptr() - vOfst, moveSize);
 				imgPtr += wh;
 				v = imgPtr[-1];
 				wLeft = (UOSInt)-vOfst;
@@ -61,7 +61,7 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
-				MemCopyO(imgPtr + uOfst, imgPtr, moveSize);
+				MemCopyO(imgPtr.Ptr() + uOfst, imgPtr.Ptr(), moveSize);
 				v = *imgPtr;
 				wLeft = (UOSInt)uOfst;
 				while (wLeft-- > 1)
@@ -79,7 +79,7 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 			UInt8 v;
 			while (hLeft-- > 0)
 			{
-				MemCopyO(imgPtr, imgPtr - uOfst, moveSize);
+				MemCopyO(imgPtr.Ptr(), imgPtr.Ptr() - uOfst, moveSize);
 				imgPtr += wh;
 				v = imgPtr[-1];
 				wLeft = (UOSInt)-uOfst;

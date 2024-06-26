@@ -12,11 +12,11 @@ extern "C"
 	void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, UInt8 *rgbTable);
 }
 
-void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_C8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (width < 64 || height < this->threadCnt)
 	{
-		AlphaBlend8_C8_DoBlend(dest, dbpl, src, sbpl, width, height, this->rgbTable);
+		AlphaBlend8_C8_DoBlend(dest.Ptr(), dbpl, src.Ptr(), sbpl, width, height, this->rgbTable.Ptr());
 	}
 	else
 	{
@@ -56,11 +56,11 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (width < 64 || height < this->threadCnt)
 	{
-		AlphaBlend8_C8_DoBlendPA(dest, dbpl, src, sbpl, width, height, this->rgbTable);
+		AlphaBlend8_C8_DoBlendPA(dest.Ptr(), dbpl, src.Ptr(), sbpl, width, height, this->rgbTable.Ptr());
 	}
 	else
 	{
@@ -121,7 +121,7 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 		lut->sProfile.Set(this->sProfile);
 		lut->dProfile.Set(this->dProfile);
 		lut->oProfile.Set(this->oProfile);
-		lut->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
+		lut->rgbTable = MemAllocArr(UInt8, 262144 + 8192 + 8192);
 		lutList->Add(lut);
 		this->rgbTable = lut->rgbTable;
 	}
@@ -142,7 +142,7 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 	{
 		Sync::Event evt;
 		stat->status = 1;
-		stat->evt = &evt;
+		stat->evt = evt;
 		stat->me->mainEvt.Set();
 		while (true)
 		{
@@ -153,13 +153,13 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 			}
 			else if (stat->status == 4)
 			{
-				AlphaBlend8_C8_DoBlend(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height, stat->me->rgbTable);
+				AlphaBlend8_C8_DoBlend(stat->dest.Ptr(), stat->dbpl, stat->src.Ptr(), stat->sbpl, stat->width, stat->height, stat->me->rgbTable.Ptr());
 				stat->status = 1;
 				stat->me->mainEvt.Set();
 			}
 			else if (stat->status == 5)
 			{
-				AlphaBlend8_C8_DoBlendPA(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height, stat->me->rgbTable);
+				AlphaBlend8_C8_DoBlendPA(stat->dest.Ptr(), stat->dbpl, stat->src.Ptr(), stat->sbpl, stat->width, stat->height, stat->me->rgbTable.Ptr());
 				stat->status = 1;
 				stat->me->mainEvt.Set();
 			}
@@ -170,24 +170,24 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 	return 0;
 }
 
-Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool multiProfile) : Media::ImageAlphaBlend()
+Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Optional<Media::ColorSess> colorSess, Bool multiProfile) : Media::ImageAlphaBlend()
 {
 	this->colorSess = colorSess;
-	if (this->colorSess)
+	NN<Media::ColorSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess->AddHandler(*this);
+		nncolorSess->AddHandler(*this);
 	}
 	if (multiProfile)
 	{
 		NN<Data::ArrayListNN<LUTInfo>> lutList;
 		NEW_CLASSNN(lutList, Data::ArrayListNN<LUTInfo>());
 		this->lutList = lutList;
-		this->rgbTable = 0;
 	}
 	else
 	{
 		this->lutList = 0;
-		this->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
+		this->rgbTable = MemAllocArr(UInt8, 262144 + 8192 + 8192);
 	}
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
 	if (this->threadCnt > 4)
@@ -199,7 +199,7 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
-		this->stats[i].me = this;
+		this->stats[i].me = *this;
 		this->stats[i].index = i;
 		this->stats[i].status = 0;
 		Sync::ThreadUtil::Create(ProcessThread, &this->stats[i], 65536);
@@ -248,10 +248,11 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 		if (!found)
 			break;
 	}
-	MemFree(this->stats);
-	if (this->colorSess)
+	MemFreeArr(this->stats);
+	NN<Media::ColorSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess->RemoveHandler(*this);
+		nncolorSess->RemoveHandler(*this);
 	}
 
 	NN<Data::ArrayListNN<LUTInfo>> lutList;
@@ -262,18 +263,18 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 		while (i-- > 0)
 		{
 			lut = lutList->GetItemNoCheck(i);
-			MemFree(lut->rgbTable);
+			MemFreeArr(lut->rgbTable);
 			lut.Delete();
 		}
 		this->lutList.Delete();
 	}
 	else
 	{
-		MemFree(this->rgbTable);
+		MemFreeArr(this->rgbTable);
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
+void Media::ABlend::AlphaBlend8_C8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
@@ -293,7 +294,7 @@ void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *
 	}
 }
 
-void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	UOSInt i;
 	UInt32 bVal;
@@ -348,7 +349,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::IColorHandle
 		while (i-- > 0)
 		{
 			lut = lutList->GetItemNoCheck(i);
-			MemFree(lut->rgbTable);
+			MemFreeArr(lut->rgbTable);
 			lut.Delete();
 		}
 		lutList->Clear();

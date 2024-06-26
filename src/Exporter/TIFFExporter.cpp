@@ -122,7 +122,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 b
 				{
 					IO::MemoryStream mstm;
 					UOSInt buffSize;
-					UInt8 *mbuff;
+					UnsafeArray<UInt8> mbuff;
 					GenSubExifBuff(mstm, currOfst, exifItem->dataBuff.GetNN<Media::EXIFData>());
 					mbuff = mstm.GetBuff(buffSize);
 					WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
@@ -842,7 +842,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					{
 						IO::MemoryStream mstm;
 						UOSInt buffSize;
-						UInt8 *mbuff;
+						UnsafeArray<UInt8> mbuff;
 						GenSubExifBuff(mstm, currOfst, exifItem->dataBuff.GetNN<Media::EXIFData>());
 						mbuff = mstm.GetBuff(buffSize);
 						WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);

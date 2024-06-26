@@ -7,7 +7,7 @@ extern "C"
 	void AutoCropFilter_CropCalc(UInt8 *yptr, UOSInt w, UOSInt h, UOSInt ySplit, UOSInt *crops);
 }
 
-void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	if (this->enabled && frameStruct == Media::IVideoSource::FS_I)
 	{
@@ -32,7 +32,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameT
 
 			UOSInt w = this->videoInfo.dispSize.x;
 			UOSInt h = this->videoInfo.dispSize.y;
-			UInt8 *yptr = imgData[0];
+			UnsafeArray<UInt8> yptr = imgData[0];
 			UOSInt ySplit;
 			UOSInt crops[4];
 			crops[0] = oriCropLeft;
@@ -58,7 +58,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameT
 
 			if (ySplit > 0)
 			{
-				AutoCropFilter_CropCalc(yptr, w, h, ySplit, crops);
+				AutoCropFilter_CropCalc(yptr.Ptr(), w, h, ySplit, crops);
 			}
 			if (oriCropLeft != crops[0] || oriCropRight != crops[2] || oriCropTop != crops[1] || oriCropBottom != crops[3])
 			{

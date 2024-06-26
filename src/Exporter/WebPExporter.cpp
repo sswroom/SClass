@@ -132,11 +132,11 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		UOSInt bpl = simg->GetDataBpl();
 		if (quality < 0)
 		{
-			vp8len = WebPEncodeLosslessBGRA(simg->data, (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, &vp8);
+			vp8len = WebPEncodeLosslessBGRA(simg->data.Ptr(), (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, &vp8);
 		}
 		else
 		{
-			vp8len = WebPEncodeBGRA(simg->data, (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
+			vp8len = WebPEncodeBGRA(simg->data.Ptr(), (int)simg->info.dispSize.x, (int)simg->info.dispSize.y, (int)bpl, (float)quality, &vp8);
 		}
 		simg.Delete();
 	}

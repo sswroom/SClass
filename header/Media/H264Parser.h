@@ -25,10 +25,10 @@ namespace Media
 			UInt32 frameRateDenorm;
 		} H264Flags;
 	private:
-		static Bool ParseHRDParameters(NN<IO::BitReaderMSB> reader, H264Flags *flags);
-		static Bool ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media::FrameInfo> info, H264Flags *flags);
+		static Bool ParseHRDParameters(NN<IO::BitReaderMSB> reader, Optional<H264Flags> flags);
+		static Bool ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media::FrameInfo> info, Optional<H264Flags> flags);
 	public:
-		static Bool GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NN<Media::FrameInfo> info, H264Flags *flags); //Only update defined values
+		static Bool GetFrameInfo(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Media::FrameInfo> info, Optional<H264Flags> flags); //Only update defined values
 		static Bool ParseVari(NN<IO::BitReaderMSB> reader, OutParam<UInt32> val);
 		static Bool ParseSVari(NN<IO::BitReaderMSB> reader, OutParam<Int32> val);
 		static Bool FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize);

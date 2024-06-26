@@ -19,16 +19,16 @@ namespace Media
 
 			Bool yuvUpdated;
 			Bool rgbUpdated;
-			Int64 *yuv2rgb;
-			Int64 *yuv2rgb14;
-			Int64 *rgbGammaCorr;
+			UnsafeArray<Int64> yuv2rgb;
+			UnsafeArray<Int64> yuv2rgb14;
+			UnsafeArray<Int64> rgbGammaCorr;
 
 			void SetupRGB13_LR();
 			void SetupYUV_RGB13();
 			void SetupYUV14_RGB13();
 
 		protected:
-			CSYUV16_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV16_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYUV16_LRGBC();
 			virtual void UpdateTable();
 

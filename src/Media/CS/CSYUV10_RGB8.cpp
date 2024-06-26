@@ -192,10 +192,11 @@ void Media::CS::CSYUV10_RGB8::SetupYUV_RGB13()
 		Double Kc4;
 
 		Media::ColorProfile::YUVType yuvType;
+		NN<Media::ColorManagerSess> nncolorSess;
 //		Bool fullRange = (this->yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255) != 0;
-		if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN)
+		if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN && this->colorSess.SetTo(nncolorSess))
 		{
-			yuvType = this->colorSess->GetDefYUVType();
+			yuvType = nncolorSess->GetDefYUVType();
 		}
 		else
 		{
@@ -312,28 +313,36 @@ void Media::CS::CSYUV10_RGB8::SetupYUV_RGB13()
 	}
 }
 
-Media::CS::CSYUV10_RGB8::CSYUV10_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
+Media::CS::CSYUV10_RGB8::CSYUV10_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
 {
 	this->yuvType = yuvType;
-	this->rgbGammaCorr = MemAlloc(UInt8, 65536 * 3);
-	this->yuv2rgb = MemAlloc(Int64, 3072);
+	this->rgbGammaCorr = MemAllocArr(UInt8, 65536 * 3);
+	this->yuv2rgb = MemAllocArr(Int64, 3072);
 
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
-	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
-	this->rgbParam.Set(colorSess->GetRGBParam());
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
+	{
+		MemCopyNO(&this->yuvParam, nncolorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
+		this->rgbParam.Set(nncolorSess->GetRGBParam());
+	}
+	else
+	{
+		this->rgbParam.SetDefault();
+	}
 
 	NN<Media::ColorProfile> srcProfile;
 	NN<Media::ColorProfile> destProfile;
 
-	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefVProfile();
+		srcProfile = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcProfile = this->colorSess->GetDefPProfile();
+		srcProfile = nncolorSess->GetDefPProfile();
 	}
 	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
@@ -379,8 +388,8 @@ void Media::CS::CSYUV10_RGB8::UpdateTable()
 
 void Media::CS::CSYUV10_RGB8::Release()
 {
-	MemFree(this->rgbGammaCorr);
-	MemFree(this->yuv2rgb);
+	MemFreeArr(this->rgbGammaCorr);
+	MemFreeArr(this->yuv2rgb);
 	this->irFunc.Delete();
 	this->igFunc.Delete();
 	this->ibFunc.Delete();
@@ -399,13 +408,14 @@ void Media::CS::CSYUV10_RGB8::RGBParamChanged(NN<const Media::IColorHandler::RGB
 {
 	NN<const Media::ColorProfile> srcColor;
 	NN<const Media::ColorProfile> destColor;
-	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefVProfile();
+		srcColor = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefPProfile();
+		srcColor = nncolorSess->GetDefPProfile();
 	}
 	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{

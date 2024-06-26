@@ -505,7 +505,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 								}
 							}
 						}
-						MemCopyANC(simg->data, scnImg32.Arr().Ptr(), scnWidth * scnHeight * 4);
+						MemCopyANC(simg->data.Ptr(), scnImg32.Ptr(), scnWidth * scnHeight * 4);
 					}
 					else
 					{
@@ -637,7 +637,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							}
 						}
 
-						MemCopyANC(simg->data, scnImg.Arr().Ptr(), scnWidth * scnHeight);
+						MemCopyANC(simg->data.Ptr(), scnImg.Arr().Ptr(), scnWidth * scnHeight);
 						if (localColorTable.GetSize() > 0)
 						{
 							readSize = (UInt32)(1 << ((imgDesc[8] & 7) + 1));

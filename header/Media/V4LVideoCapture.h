@@ -39,7 +39,7 @@ namespace Media
 		virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 		virtual UOSInt GetDataSeekCount();
 
-		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
+		virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
 		virtual Bool ReadFrameBegin();
 		virtual Bool ReadFrameEnd();
 	};

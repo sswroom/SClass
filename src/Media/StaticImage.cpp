@@ -11,7 +11,7 @@
 
 Media::StaticImage::StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::RasterImage(dispSize, Math::Size2D<UOSInt>(0, 0), fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
-	this->data = MemAllocA(UInt8, this->info.byteSize + 4);
+	this->data = MemAllocAArr(UInt8, this->info.byteSize + 4);
 }
 
 Media::StaticImage::StaticImage(NN<const Media::FrameInfo> imgInfo) : Media::RasterImage(imgInfo->dispSize, imgInfo->storeSize, imgInfo->fourcc, imgInfo->storeBPP, imgInfo->pf, imgInfo->byteSize, imgInfo->color, imgInfo->yuvType, imgInfo->atype, imgInfo->ycOfst)
@@ -21,19 +21,19 @@ Media::StaticImage::StaticImage(NN<const Media::FrameInfo> imgInfo) : Media::Ras
 	this->info.vdpi = imgInfo->vdpi;
 	this->info.ftype = imgInfo->ftype;
 	this->info.rotateType = imgInfo->rotateType;
-	this->data = MemAllocA(UInt8, this->info.byteSize + 4);
+	this->data = MemAllocAArr(UInt8, this->info.byteSize + 4);
 }
 
 Media::StaticImage::~StaticImage()
 {
-	MemFreeA(data);
+	MemFreeAArr(data);
 }
 
 NN<Media::RasterImage> Media::StaticImage::Clone() const
 {
 	NN<Media::StaticImage> img;
 	NEW_CLASSNN(img, Media::StaticImage(this->info));
-	MemCopyANC(img->data, this->data, this->info.byteSize + 4);
+	MemCopyANC(img->data.Ptr(), this->data.Ptr(), this->info.byteSize + 4);
 	if (this->info.fourcc == 0)
 	{
 		if (this->pal)
@@ -54,7 +54,7 @@ Media::RasterImage::ImageType Media::StaticImage::GetImageType() const
 	return Media::RasterImage::ImageType::Static;
 }
 
-void Media::StaticImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::StaticImage::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	UOSInt srcBpl = this->GetDataBpl();
 	if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
@@ -81,16 +81,16 @@ void Media::StaticImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, U
 		}
 		if ((OSInt)width > 0 && (OSInt)height > 0)
 		{
-			UInt8 *srcBuff = this->data;
-			UInt8 *srcBuff2 = srcBuff + ((this->info.storeSize.x * (this->info.storeBPP - 1) + 7) >> 3);
+			UnsafeArray<UInt8> srcBuff = this->data;
+			UnsafeArray<UInt8> srcBuff2 = srcBuff + ((this->info.storeSize.x * (this->info.storeBPP - 1) + 7) >> 3);
 			UOSInt lineSize1 = (width * (this->info.storeBPP - 1) + 7) >> 3;
 			UOSInt lineSize2 = (width + 7) >> 3;
 			srcBuff = srcBuff + (((UOSInt)left * (this->info.storeBPP - 1)) >> 3) + (UOSInt)top * srcBpl;
 			srcBuff2 = srcBuff2 + (UOSInt)(left >> 3) + (UOSInt)top * srcBpl;
 			while (height-- > 0)
 			{
-				MemCopyNANC(destBuff, srcBuff, lineSize1);
-				MemCopyNANC(destBuff + lineSize1, srcBuff2, lineSize2);
+				MemCopyNANC(destBuff.Ptr(), srcBuff.Ptr(), lineSize1);
+				MemCopyNANC(destBuff.Ptr() + lineSize1, srcBuff2.Ptr(), lineSize2);
 				srcBuff += srcBpl;
 				srcBuff2 += srcBpl;
 				destBuff += destBpl;
@@ -121,7 +121,7 @@ void Media::StaticImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, U
 		}
 		if (width > 0 && height > 0)
 		{
-			UInt8 *srcBuff = this->data;
+			UnsafeArray<UInt8> srcBuff = this->data;
 			Media::ImageUtil::ImageCopyR(destBuff, (OSInt)destBpl, srcBuff, (OSInt)srcBpl, left, top, width, height, this->info.storeBPP, upsideDown, this->info.rotateType, destRotate);
 		}
 	}
@@ -135,7 +135,7 @@ Bool Media::StaticImage::To32bpp()
 	UOSInt dispWidth = this->info.dispSize.x;
 	UOSInt dispHeight = this->info.dispSize.y;
 	UOSInt storeWidth = this->info.storeSize.x;
-	UInt8 *pBits = (UInt8*)this->data;
+	UnsafeArray<UInt8> pBits = this->data;
 	UInt8 *buff;
 	UInt8 *pal = this->pal;
 	UOSInt buffSize;
@@ -144,8 +144,8 @@ Bool Media::StaticImage::To32bpp()
 	case Media::PF_PAL_1:
 	case Media::PF_PAL_W1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP1_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth >> 3, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP1_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 3, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -157,8 +157,8 @@ Bool Media::StaticImage::To32bpp()
 	case Media::PF_PAL_2:
 	case Media::PF_PAL_W2:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP2_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth >> 2, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP2_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 2, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -170,8 +170,8 @@ Bool Media::StaticImage::To32bpp()
 	case Media::PF_PAL_4:
 	case Media::PF_PAL_W4:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP4_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth >> 1, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP4_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 1, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -183,8 +183,8 @@ Bool Media::StaticImage::To32bpp()
 	case Media::PF_PAL_8:
 	case Media::PF_PAL_W8:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP8_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP8_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -195,8 +195,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_R5G5B5:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvB5G5R5_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvB5G5R5_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -205,8 +205,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_R5G6B5:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvB5G6R5_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvB5G6R5_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -215,8 +215,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_B8G8R8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvB8G8R8_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvB8G8R8_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -225,8 +225,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_R8G8B8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvR8G8B8_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvR8G8B8_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -234,7 +234,7 @@ Bool Media::StaticImage::To32bpp()
 		this->info.pf = Media::PF_B8G8R8A8;
 		return true;
 	case Media::PF_R8G8B8A8:
-		ImageUtil_SwapRGB(this->data, this->info.storeSize.CalcArea(), 32);
+		ImageUtil_SwapRGB(this->data.Ptr(), this->info.storeSize.CalcArea(), 32);
 		this->info.pf = Media::PF_B8G8R8A8;
 		return true;
 	case Media::PF_B8G8R8A8:
@@ -244,8 +244,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_B16G16R16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvARGB48_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 6, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvARGB48_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 6, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -254,8 +254,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_B16G16R16A16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvARGB64_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 3, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvARGB64_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 3, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -264,8 +264,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_W16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvW16_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvW16_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -274,8 +274,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_W16A16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvW16A16_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvW16A16_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -284,8 +284,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_W8A8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvW8A8_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvW8A8_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -294,8 +294,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_A2B10G10R10:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvA2B10G10R10_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvA2B10G10R10_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -304,8 +304,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_FB32G32R32A32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvFB32G32R32A32_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 4, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvFB32G32R32A32_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 4, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -314,8 +314,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_FB32G32R32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvFB32G32R32_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 12, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvFB32G32R32_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 12, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -324,8 +324,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_FW32A32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvFW32A32_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 3, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvFW32A32_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 3, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -334,8 +334,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_LE_FW32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 2));
-		ImageUtil_ConvFW32_32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 2);
-		MemFreeA(this->data);
+		ImageUtil_ConvFW32_32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 2);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 2);
@@ -344,8 +344,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_PAL_1_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP1_A1_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP1_A1_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -356,8 +356,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_PAL_2_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP2_A1_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP2_A1_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -368,8 +368,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_PAL_4_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP4_A1_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP4_A1_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -380,8 +380,8 @@ Bool Media::StaticImage::To32bpp()
 		return true;
 	case Media::PF_PAL_8_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 2) + 4);
-		ImageUtil_ConvP8_A1_ARGB32(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP8_A1_ARGB32(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 2, pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -404,7 +404,7 @@ Bool Media::StaticImage::To64bpp()
 	UOSInt dispWidth = this->info.dispSize.x;
 	UOSInt dispHeight = this->info.dispSize.y;
 	UOSInt storeWidth = this->info.storeSize.x;
-	UInt8 *pBits = (UInt8*)this->data;
+	UnsafeArray<UInt8> pBits = this->data;
 	UInt8 *buff;
 	UOSInt buffSize;
 	switch (this->info.pf)
@@ -412,8 +412,8 @@ Bool Media::StaticImage::To64bpp()
 	case Media::PF_PAL_1:
 	case Media::PF_PAL_W1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP1_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth >> 3, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP1_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 3, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -425,8 +425,8 @@ Bool Media::StaticImage::To64bpp()
 	case Media::PF_PAL_2:
 	case Media::PF_PAL_W2:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP2_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth >> 2, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP2_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 2, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -438,8 +438,8 @@ Bool Media::StaticImage::To64bpp()
 	case Media::PF_PAL_4:
 	case Media::PF_PAL_W4:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP4_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth >> 1, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP4_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth >> 1, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -451,8 +451,8 @@ Bool Media::StaticImage::To64bpp()
 	case Media::PF_PAL_8:
 	case Media::PF_PAL_W8:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP8_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP8_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -463,8 +463,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_R5G5B5:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvB5G5R5_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvB5G5R5_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -473,8 +473,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_R5G6B5:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvB5G6R5_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvB5G6R5_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -483,8 +483,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_B8G8R8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvB8G8R8_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvB8G8R8_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -493,8 +493,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_R8G8B8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvR8G8B8_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvR8G8B8_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 3, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -504,8 +504,8 @@ Bool Media::StaticImage::To64bpp()
 	case Media::PF_B8G8R8A1:
 	case Media::PF_B8G8R8A8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvARGB32_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvARGB32_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -514,8 +514,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_R8G8B8A8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvR8G8B8A8_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvR8G8B8A8_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -524,8 +524,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_B16G16R16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvARGB48_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 6, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvARGB48_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 6, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispWidth << 3);
@@ -536,8 +536,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_W16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvW16_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvW16_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -546,8 +546,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_W16A16:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvW16A16_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvW16A16_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -556,8 +556,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_W8A8:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvW8A8_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvW8A8_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 1, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -566,8 +566,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_A2B10G10R10:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvA2B10G10R10_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvA2B10G10R10_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -576,8 +576,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_FB32G32R32A32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvFB32G32R32A32_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 4, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvFB32G32R32A32_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 4, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -586,8 +586,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_FB32G32R32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvFB32G32R32_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth * 12, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvFB32G32R32_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth * 12, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -596,8 +596,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_FW32A32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvFW32A32_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 3, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvFW32A32_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 3, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -606,8 +606,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_LE_FW32:
 		buff = MemAllocA(UInt8, buffSize = (dispWidth * dispHeight << 3));
-		ImageUtil_ConvFW32_64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
-		MemFreeA(this->data);
+		ImageUtil_ConvFW32_64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth << 2, (OSInt)dispWidth << 3);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = (dispWidth * dispHeight << 3);
@@ -616,8 +616,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_PAL_1_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP1_A1_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP1_A1_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -628,8 +628,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_PAL_2_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP2_A1_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP2_A1_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -640,8 +640,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_PAL_4_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP4_A1_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP4_A1_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -652,8 +652,8 @@ Bool Media::StaticImage::To64bpp()
 		return true;
 	case Media::PF_PAL_8_A1:
 		buff = MemAllocA(UInt8, (dispWidth * dispHeight << 3) + 4);
-		ImageUtil_ConvP8_A1_ARGB64(pBits, buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
-		MemFreeA(this->data);
+		ImageUtil_ConvP8_A1_ARGB64(pBits.Ptr(), buff, dispWidth, dispHeight, (OSInt)storeWidth, (OSInt)dispWidth << 3, this->pal);
+		MemFreeAArr(this->data);
 		MemFree(this->pal);
 		this->pal = 0;
 		this->data = buff;
@@ -680,7 +680,7 @@ Bool Media::StaticImage::ToW8()
 		UInt32 c;
 		UInt8 *buff;
 		UInt8 *dptr;
-		UInt8 *sptr;
+		UnsafeArray<UInt8> sptr;
 		UOSInt lineAdd;
 		switch (this->info.pf)
 		{
@@ -718,7 +718,7 @@ Bool Media::StaticImage::ToW8()
 				}
 				sptr += lineAdd;
 			}
-			MemFreeA(this->data);
+			MemFreeAArr(this->data);
 			this->data = buff;
 			this->info.storeSize = this->info.dispSize;
 			this->info.byteSize = this->info.dispSize.CalcArea();
@@ -756,7 +756,7 @@ Bool Media::StaticImage::ToW8()
 				}
 				sptr += lineAdd;
 			}
-			MemFreeA(this->data);
+			MemFreeAArr(this->data);
 			this->data = buff;
 			this->info.storeSize = this->info.dispSize;
 			this->info.byteSize = this->info.dispSize.CalcArea();
@@ -795,7 +795,7 @@ Bool Media::StaticImage::ToW8()
 				}
 				sptr += lineAdd;
 			}
-			MemFreeA(this->data);
+			MemFreeAArr(this->data);
 			this->data = buff;
 			this->info.storeSize = this->info.dispSize;
 			this->info.byteSize = this->info.dispSize.CalcArea();
@@ -861,7 +861,7 @@ Bool Media::StaticImage::ToPal8()
 			this->pal = MemAlloc(UInt8, 1024);
 		}
 		Media::ImageTo8Bit::From32bpp(this->data, buff, this->pal, this->info.dispSize.x, this->info.dispSize.y, (OSInt)this->GetDataBpl(), (OSInt)this->info.dispSize.x);
-		MemFreeA(this->data);
+		MemFreeAArr(this->data);
 		this->data = buff;
 		this->info.storeSize = this->info.dispSize;
 		this->info.byteSize = this->info.dispSize.CalcArea();
@@ -905,7 +905,7 @@ Bool Media::StaticImage::FillColor(UInt32 color)
 {
 	if (this->info.fourcc == 0 && this->info.storeBPP == 32 && this->info.pf == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ColorFill32(this->data, this->info.storeSize.CalcArea(), color);
+		ImageUtil_ColorFill32(this->data.Ptr(), this->info.storeSize.CalcArea(), color);
 		return true;
 	}
 	return false;
@@ -929,7 +929,7 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 				a = 255;
 			else
 				a = (UInt8)i32a;
-			UInt8 *ptr = this->data;
+			UnsafeArray<UInt8> ptr = this->data;
 			UOSInt cnt = this->info.storeSize.CalcArea();
 			while (cnt-- > 0)
 			{
@@ -954,7 +954,7 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 				else
 					atable[i] = (UInt8)i32a;
 			}
-			UInt8 *ptr = this->data;
+			UnsafeArray<UInt8> ptr = this->data;
 			i = this->info.storeSize.CalcArea();
 			while (i-- > 0)
 			{
@@ -971,7 +971,7 @@ Bool Media::StaticImage::MultiplyColor(UInt32 color)
 {
 	if (this->info.fourcc == 0 && this->info.storeBPP == 32 && this->info.pf == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ImageColorMul32(this->data, this->info.storeSize.x, this->info.storeSize.y, this->info.storeSize.x << 2, color);
+		ImageUtil_ImageColorMul32(this->data.Ptr(), this->info.storeSize.x, this->info.storeSize.y, this->info.storeSize.x << 2, color);
 		return true;
 	}
 	return false;
@@ -984,8 +984,8 @@ Bool Media::StaticImage::Resize(Media::IImgResizer *resizer, Math::Size2D<UOSInt
 	if (this->To32bpp())
 	{
 		UInt8 *outBuff = MemAllocA(UInt8, (newSize.CalcArea() << 2) + 4);
-		resizer->Resize((UInt8*)this->data, (OSInt)this->info.storeSize.x << 2, UOSInt2Double(this->info.dispSize.x), UOSInt2Double(this->info.dispSize.y), 0, 0, outBuff, (OSInt)newSize.x << 2, newSize.x, newSize.y);
-		MemFreeA(this->data);
+		resizer->Resize(this->data.Ptr(), (OSInt)this->info.storeSize.x << 2, UOSInt2Double(this->info.dispSize.x), UOSInt2Double(this->info.dispSize.y), 0, 0, outBuff, (OSInt)newSize.x << 2, newSize.x, newSize.y);
+		MemFreeAArr(this->data);
 		this->data = outBuff;
 		this->info.dispSize = newSize;
 		this->info.storeSize = this->info.dispSize;
@@ -1009,8 +1009,8 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				if (rtype == RotateType::CW90)
 				{
 					outBuff = MemAllocA(UInt8, (this->info.dispSize.CalcArea() << 2) + 4);
-					ImageUtil_Rotate32_CW90(this->data, outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 2, this->info.dispSize.y << 2);
-					MemFreeA(this->data);
+					ImageUtil_Rotate32_CW90(this->data.Ptr(), outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 2, this->info.dispSize.y << 2);
+					MemFreeAArr(this->data);
 					this->data = outBuff;
 					this->info.dispSize = Math::Size2D<UOSInt>(srcHeight, srcWidth);
 					this->info.storeSize = this->info.dispSize;
@@ -1019,8 +1019,8 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RotateType::CW180)
 				{
 					outBuff = MemAllocA(UInt8, (this->info.dispSize.CalcArea() << 2) + 4);
-					ImageUtil_Rotate32_CW180(this->data, outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 2, this->info.dispSize.x << 2);
-					MemFreeA(this->data);
+					ImageUtil_Rotate32_CW180(this->data.Ptr(), outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 2, this->info.dispSize.x << 2);
+					MemFreeAArr(this->data);
 					this->data = outBuff;
 					this->info.storeSize = this->info.dispSize;
 					return true;
@@ -1028,8 +1028,8 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RotateType::CW270)
 				{
 					outBuff = MemAllocA(UInt8, (this->info.dispSize.CalcArea() << 2) + 4);
-					ImageUtil_Rotate32_CW270(this->data, outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 2, this->info.dispSize.y << 2);
-					MemFreeA(this->data);
+					ImageUtil_Rotate32_CW270(this->data.Ptr(), outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 2, this->info.dispSize.y << 2);
+					MemFreeAArr(this->data);
 					this->data = outBuff;
 					this->info.dispSize = Math::Size2D<UOSInt>(srcHeight, srcWidth);
 					this->info.storeSize = this->info.dispSize;
@@ -1044,8 +1044,8 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				if (rtype == RotateType::CW90)
 				{
 					outBuff = MemAllocA(UInt8, (this->info.dispSize.CalcArea() << 3) + 4);
-					ImageUtil_Rotate64_CW90(this->data, outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 3, this->info.dispSize.y << 3);
-					MemFreeA(this->data);
+					ImageUtil_Rotate64_CW90(this->data.Ptr(), outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 3, this->info.dispSize.y << 3);
+					MemFreeAArr(this->data);
 					this->data = outBuff;
 					this->info.dispSize = Math::Size2D<UOSInt>(srcHeight, srcWidth);
 					this->info.storeSize = this->info.dispSize;
@@ -1054,8 +1054,8 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RotateType::CW180)
 				{
 					outBuff = MemAllocA(UInt8, (this->info.dispSize.CalcArea() << 3) + 4);
-					ImageUtil_Rotate64_CW180(this->data, outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 3, this->info.dispSize.x << 3);
-					MemFreeA(this->data);
+					ImageUtil_Rotate64_CW180(this->data.Ptr(), outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 3, this->info.dispSize.x << 3);
+					MemFreeAArr(this->data);
 					this->data = outBuff;
 					this->info.storeSize = this->info.dispSize;
 					return true;
@@ -1063,8 +1063,8 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 				else if (rtype == RotateType::CW270)
 				{
 					outBuff = MemAllocA(UInt8, (this->info.dispSize.CalcArea() << 3) + 4);
-					ImageUtil_Rotate64_CW270(this->data, outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 3, this->info.dispSize.y << 3);
-					MemFreeA(this->data);
+					ImageUtil_Rotate64_CW270(this->data.Ptr(), outBuff, this->info.dispSize.x, this->info.dispSize.y, this->info.storeSize.x << 3, this->info.dispSize.y << 3);
+					MemFreeAArr(this->data);
 					this->data = outBuff;
 					this->info.dispSize = Math::Size2D<UOSInt>(srcHeight, srcWidth);
 					this->info.storeSize = this->info.dispSize;
@@ -1100,8 +1100,8 @@ Double Media::StaticImage::CalcPSNR(NN<Media::StaticImage> simg) const
 		UOSInt j;
 		Int64 sum = 0;
 		Int32 v;
-		UInt8 *sptr = this->data;
-		UInt8 *dptr = simg->data;
+		UnsafeArray<UInt8> sptr = this->data;
+		UnsafeArray<UInt8> dptr = simg->data;
 		UOSInt sAdd = (this->info.storeSize.x - this->info.dispSize.x) * 8; 
 		UOSInt dAdd = (simg->info.storeSize.x - simg->info.dispSize.x) * 8;
 		i = this->info.dispSize.y;
@@ -1135,8 +1135,8 @@ Double Media::StaticImage::CalcPSNR(NN<Media::StaticImage> simg) const
 		UOSInt j;
 		Int64 sum = 0;
 		Int32 v;
-		UInt8 *sptr = this->data;
-		UInt8 *dptr = simg->data;
+		UnsafeArray<UInt8> sptr = this->data;
+		UnsafeArray<UInt8> dptr = simg->data;
 		UOSInt sAdd = (this->info.storeSize.x - this->info.dispSize.x) * 4; 
 		UOSInt dAdd = (simg->info.storeSize.x - simg->info.dispSize.x) * 4;
 		i = this->info.dispSize.y;
@@ -1172,7 +1172,7 @@ Double Media::StaticImage::CalcAvgContrast(UOSInt *bgPxCnt) const
 {
 	UOSInt i;
 	UOSInt j;
-	UInt8 *ptr = this->data;
+	UnsafeArray<UInt8> ptr = this->data;
 	UOSInt dataBpl = this->GetDataBpl();
 	Double sum;
 	Double thisPx;
@@ -1227,7 +1227,7 @@ Double Media::StaticImage::CalcColorRate() const
 {
 	UOSInt i;
 	UOSInt j;
-	UInt8 *ptr = this->data;
+	UnsafeArray<UInt8> ptr = this->data;
 	UOSInt dataBpl = this->GetDataBpl();
 	UOSInt lineAdd;
 	Double sum;
@@ -1290,7 +1290,7 @@ UInt8 *Media::StaticImage::CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, In
 		UOSInt h = this->info.dispSize.y;
 		UInt8 *selMask = MemAlloc(UInt8, w * h);
 		UOSInt bpl = this->GetDataBpl();
-		UInt8 *imgPtr = this->data;
+		UnsafeArray<UInt8> imgPtr = this->data;
 		MemClear(selMask, w * h);
 		selMask[pxCoord.y * w + pxCoord.x] = 0xff;
 		CalcNearPixelMaskH32(selMask, pxCoord.x, pxCoord.y, imgPtr + pxCoord.y * bpl + pxCoord.x * 4, maxRate);
@@ -1303,7 +1303,7 @@ UInt8 *Media::StaticImage::CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, In
 		UOSInt h = this->info.dispSize.y;
 		UInt8 *selMask = MemAlloc(UInt8, w * h);
 		UOSInt bpl = this->GetDataBpl();
-		UInt8 *imgPtr = this->data;
+		UnsafeArray<UInt8> imgPtr = this->data;
 		MemClear(selMask, w * h);
 		selMask[pxCoord.y * w + pxCoord.x] = 0xff;
 		CalcNearPixelMaskH32(selMask, pxCoord.x, pxCoord.y, imgPtr + pxCoord.y * bpl + pxCoord.x * 3, maxRate);
@@ -1371,15 +1371,15 @@ Data::ByteArray Media::StaticImage::GetDataArray() const
 	return Data::ByteArray(this->data, this->GetDataBpl() * this->info.dispSize.y);
 }
 
-void Media::StaticImage::CalcNearPixelMaskH32(UInt8 *pixelMask, UOSInt x, UOSInt y, UInt8 *c, Int32 maxRate)
+void Media::StaticImage::CalcNearPixelMaskH32(UnsafeArray<UInt8> pixelMask, UOSInt x, UOSInt y, UnsafeArray<UInt8> c, Int32 maxRate)
 {
 	UOSInt w = this->info.dispSize.x;
 	UOSInt bpl = this->GetDataBpl();
-	UInt8 *imgPtr = this->data;
+	UnsafeArray<UInt8> imgPtr = this->data;
 	UOSInt pxSize = this->info.storeBPP >> 3;
-	UInt8 *c2;
-	UInt8 *lastC;
-	UInt8 *lastC2;
+	UnsafeArray<UInt8> c2;
+	UnsafeArray<UInt8> lastC;
+	UnsafeArray<UInt8> lastC2;
 	Int32 r;
 	Int32 g;
 	Int32 b;
@@ -1468,16 +1468,16 @@ void Media::StaticImage::CalcNearPixelMaskH32(UInt8 *pixelMask, UOSInt x, UOSInt
 	}
 }
 
-void Media::StaticImage::CalcNearPixelMaskV32(UInt8 *pixelMask, UOSInt x, UOSInt y, UInt8 *c, Int32 maxRate)
+void Media::StaticImage::CalcNearPixelMaskV32(UnsafeArray<UInt8> pixelMask, UOSInt x, UOSInt y, UnsafeArray<UInt8> c, Int32 maxRate)
 {
 	UOSInt w = this->info.dispSize.x;
 	UOSInt h = this->info.dispSize.y;
 	UOSInt bpl = this->GetDataBpl();
 	UOSInt pxSize = this->info.storeBPP >> 3;
-	UInt8 *imgPtr = this->data;
-	UInt8 *lastC;
-	UInt8 *lastC2;
-	UInt8 *c2;
+	UnsafeArray<UInt8> imgPtr = this->data;
+	UnsafeArray<UInt8> lastC;
+	UnsafeArray<UInt8> lastC2;
+	UnsafeArray<UInt8> c2;
 	Int32 r;
 	Int32 g;
 	Int32 b;

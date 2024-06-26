@@ -34,7 +34,7 @@ namespace Media
 
 		virtual NN<Media::RasterImage> Clone() const = 0;
 		virtual Media::RasterImage::ImageType GetImageType() const = 0;
-		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const = 0;
+		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const = 0;
 		void InitGrayPal();
 		UOSInt GetDataBpl() const;
 		Bool IsUpsideDown() const;

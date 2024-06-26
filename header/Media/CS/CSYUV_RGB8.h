@@ -25,14 +25,14 @@ namespace Media
 		protected:
 			Bool yuvUpdated;
 			Bool rgbUpdated;
-			UInt8 *rgbGammaCorr;
-			Int64 *yuv2rgb;
+			UnsafeArray<UInt8> rgbGammaCorr;
+			UnsafeArray<Int64> yuv2rgb;
 
 			void SetupRGB13_8();
 			void SetupYUV_RGB13();
 
 		protected:
-			CSYUV_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYUV_RGB8();
 			virtual void UpdateTable();
 

@@ -419,7 +419,7 @@ Bool Net::Email::SMTPConn::SendQuit()
 	return code == 221;
 }
 
-Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
+Bool Net::Email::SMTPConn::SendData(UnsafeArray<const UTF8Char> buff, UOSInt buffSize)
 {
 	NN<IO::Writer> lwriter;
 	this->statusChg = false;

@@ -10,7 +10,7 @@ namespace Parser
 		class PNGParser : public IO::FileParser
 		{
 		private:
-			static void ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette);
+			static void ParseImage(UInt8 bitDepth, UInt8 colorType, UnsafeArray<UInt8> dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette);
 		public:
 			PNGParser();
 			virtual ~PNGParser();

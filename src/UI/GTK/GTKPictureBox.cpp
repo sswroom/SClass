@@ -99,7 +99,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 			Media::StaticImage *tmpImage = resizer->ProcessToNew(img);
 			if (tmpImage)
 			{
-				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data, GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(OSInt)tmpImage->info.dispSize.x, (int)(OSInt)tmpImage->info.dispSize.y, (int)(OSInt)tmpImage->info.storeSize.x << 2, 0, 0);
+				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(OSInt)tmpImage->info.dispSize.x, (int)(OSInt)tmpImage->info.dispSize.y, (int)(OSInt)tmpImage->info.storeSize.x << 2, 0, 0);
 				guchar *pixels = gdk_pixbuf_get_pixels(buf);
 				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
 				if (img->info.atype != Media::AT_ALPHA)
@@ -113,7 +113,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 		}
 		else
 		{
-			GdkPixbuf *buf = gdk_pixbuf_new_from_data(img->data, GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(OSInt)img->info.dispSize.x, (int)(OSInt)img->info.dispSize.y, (int)(OSInt)img->info.storeSize.x << 2, 0, 0);
+			GdkPixbuf *buf = gdk_pixbuf_new_from_data(img->data.Ptr(), GDK_COLORSPACE_RGB, img->info.storeBPP == 32, 8, (int)(OSInt)img->info.dispSize.x, (int)(OSInt)img->info.dispSize.y, (int)(OSInt)img->info.storeSize.x << 2, 0, 0);
 			guchar *pixels = gdk_pixbuf_get_pixels(buf);
 			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * img->info.dispSize.y, 32);
 			if (img->info.atype != Media::AT_ALPHA)

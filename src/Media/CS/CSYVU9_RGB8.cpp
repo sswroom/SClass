@@ -668,7 +668,7 @@ UInt32 Media::CS::CSYVU9_RGB8::WorkerThread(AnyType obj)
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -684,28 +684,27 @@ UInt32 Media::CS::CSYVU9_RGB8::WorkerThread(AnyType obj)
 			}
 			else
 			{
-				CSYVU9_RGB8_do_yvu9rgb8(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, converter->yuv2rgb, converter->rgbGammaCorr);
+				CSYVU9_RGB8_do_yvu9rgb8(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->isFirst, ts->isLast, ts->csLineBuff, ts->csLineBuff2, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			}
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
-Media::CS::CSYVU9_RGB8::CSYVU9_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
+Media::CS::CSYVU9_RGB8::CSYVU9_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
-	NEW_CLASS(evtMain, Sync::Event());
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;
@@ -717,7 +716,7 @@ Media::CS::CSYVU9_RGB8::CSYVU9_RGB8(NN<const Media::ColorProfile> srcColor, NN<c
 		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -766,7 +765,7 @@ Media::CS::CSYVU9_RGB8::~CSYVU9_RGB8()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
@@ -783,14 +782,13 @@ Media::CS::CSYVU9_RGB8::~CSYVU9_RGB8()
 			stats[i].csNALineBuff2 = 0;
 			stats[i].csLineBuff2 = 0;
 		}
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
-	MemFree(stats);
+	MemFreeArr(stats);
 }
 
 ////////////////////////////////////////////////////////////////
-void Media::CS::CSYVU9_RGB8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYVU9_RGB8::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UInt32 isLast = 1;
@@ -818,7 +816,7 @@ void Media::CS::CSYVU9_RGB8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSI
 		stats[i].yPtr = srcPtr[0] + srcStoreWidth * currHeight;
 		stats[i].vPtr = srcPtr[0] + srcStoreWidth * srcStoreHeight + ((srcStoreWidth * currHeight) >> 4);
 		stats[i].uPtr = stats[i].vPtr + ((srcStoreWidth * srcStoreHeight) >> 4);
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 		stats[i].isFirst = isFirst;
 		stats[i].isLast = isLast;
 		isLast = 0;
@@ -872,7 +870,7 @@ void Media::CS::CSYVU9_RGB8::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSI
 		}
 		if (exited)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 

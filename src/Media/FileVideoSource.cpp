@@ -9,8 +9,8 @@
 UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 {
 	NN<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
-	UInt8 *frameBuff;
-	UInt8 *frameBuff2;
+	UnsafeArray<UInt8> frameBuff;
+	UnsafeArray<UInt8> frameBuff2;
 	UInt32 lastFrameNum;
 	UInt32 frameNum;
 	UOSInt frameSize;
@@ -22,11 +22,11 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 	me->playing = true;
 	me->mainEvt.Set();
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
-	frameBuff = MemAllocA(UInt8, me->maxFrameSize);
+	frameBuff = MemAllocAArr(UInt8, me->maxFrameSize);
 	nextIndex = BUFFCNT;
 	while (nextIndex-- > 0)
 	{
-		me->outputFrames[nextIndex].frameBuff = MemAllocA(UInt8, me->maxFrameSize);
+		me->outputFrames[nextIndex].frameBuff = MemAllocAArr(UInt8, me->maxFrameSize);
 	}
 	lastFrameNum = me->currFrameNum - 2;
 	while (!me->playToStop)
@@ -149,9 +149,9 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 	nextIndex = BUFFCNT;
 	while (nextIndex-- > 0)
 	{
-		MemFreeA(me->outputFrames[nextIndex].frameBuff);
+		MemFreeAArr(me->outputFrames[nextIndex].frameBuff);
 	}
-	MemFreeA(frameBuff);
+	MemFreeAArr(frameBuff);
 	me->playing = false;
 	me->mainEvt.Set();
 	if (needNotify)
@@ -531,7 +531,7 @@ UOSInt Media::FileVideoSource::GetFrameSize(UOSInt frameIndex)
 	return this->frameSizes.GetItem(frameIndex);
 }
 
-UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UInt8 *frameBuff)
+UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> frameBuff)
 {
 	if(frameIndex >= this->frameSizes.GetCount())
 		return 0;

@@ -85,7 +85,7 @@ UInt8 *Media::OpenCV::OCVFrame::GetDataPtr()
 	return fr->data;
 }
 
-void Media::OpenCV::OCVFrame::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate)
+void Media::OpenCV::OCVFrame::GetImageData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate)
 {
 	cv::Mat *fr = (cv::Mat *)this->frame;
 	OSInt srcW = fr->cols;
@@ -148,7 +148,7 @@ NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Do
 	return ret;
 }
 
-Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
+Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
 	NN<Media::CS::CSConverter> converter;
 	if (Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, Media::ColorProfile(), *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, 0).SetTo(converter))

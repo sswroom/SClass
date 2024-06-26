@@ -340,7 +340,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 				{
 					WriteMessage(cli, true, CSTR("Content follows"));
 					UOSInt buffSize;
-					UInt8 *buff;
+					UnsafeArray<UInt8> buff;
 					buff = mstm.GetBuff(buffSize);
 					cli->Write(Data::ByteArrayR(buff, buffSize));
 					if (this->rawLog)

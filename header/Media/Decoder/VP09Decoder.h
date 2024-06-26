@@ -20,7 +20,7 @@ namespace Media
 			Data::ArrayList<VP9FrameInfo*> frameList;
 			Bool finfoMode;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
 			VP09Decoder(NN<IVideoSource> sourceVideo, Bool toRelease);
 			virtual ~VP09Decoder();
@@ -32,7 +32,7 @@ namespace Media
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
-			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
+			virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff);
 
 			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};

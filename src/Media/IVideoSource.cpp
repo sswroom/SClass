@@ -39,7 +39,7 @@ UOSInt Media::IVideoSource::GetFrameSize(UOSInt frameIndex)
 	return 0;
 }
 
-UOSInt Media::IVideoSource::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::IVideoSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

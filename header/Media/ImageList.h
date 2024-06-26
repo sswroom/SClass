@@ -81,7 +81,7 @@ namespace Media
 		void SetAuthor(UnsafeArray<const UTF8Char> name);
 		void SetImageName(UnsafeArrayOpt<const UTF8Char> imgName);
 
-		void SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
+		void SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
 		Bool HasThermoImage() const;
 		Double GetThermoValue(Double x, Double y) const;
 

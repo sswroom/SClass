@@ -10,11 +10,11 @@ extern "C"
 	void AlphaBlend8_8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 }
 
-void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_8::MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (height < (this->threadCnt << 4))
 	{
-		AlphaBlend8_8_DoBlend(dest, dbpl, src, sbpl, width, height);
+		AlphaBlend8_8_DoBlend(dest.Ptr(), dbpl, src.Ptr(), sbpl, width, height);
 	}
 	else
 	{
@@ -54,11 +54,11 @@ void Media::ABlend::AlphaBlend8_8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 
 	}
 }
 
-void Media::ABlend::AlphaBlend8_8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_8::MTBlendPA(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	if (height < (this->threadCnt << 4))
 	{
-		AlphaBlend8_8_DoBlendPA(dest, dbpl, src, sbpl, width, height);
+		AlphaBlend8_8_DoBlendPA(dest.Ptr(), dbpl, src.Ptr(), sbpl, width, height);
 	}
 	else
 	{
@@ -103,7 +103,7 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_8::ProcessThread(AnyType userObj)
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	{
 		Sync::Event evt;
-		stat->evt = &evt;
+		stat->evt = evt;
 		stat->status = 1;
 		stat->me->mainEvt.Set();
 		while (true)
@@ -115,13 +115,13 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_8::ProcessThread(AnyType userObj)
 			}
 			else if (stat->status == 4)
 			{
-				AlphaBlend8_8_DoBlend(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height);
+				AlphaBlend8_8_DoBlend(stat->dest.Ptr(), stat->dbpl, stat->src.Ptr(), stat->sbpl, stat->width, stat->height);
 				stat->status = 1;
 				stat->me->mainEvt.Set();
 			}
 			else if (stat->status == 5)
 			{
-				AlphaBlend8_8_DoBlendPA(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height);
+				AlphaBlend8_8_DoBlendPA(stat->dest.Ptr(), stat->dbpl, stat->src.Ptr(), stat->sbpl, stat->width, stat->height);
 				stat->status = 1;
 				stat->me->mainEvt.Set();
 			}
@@ -139,11 +139,11 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 	{
 		this->threadCnt = 4;
 	}
-	this->stats = MemAlloc(ThreadStat, this->threadCnt);
+	this->stats = MemAllocArr(ThreadStat, this->threadCnt);
 	UOSInt i = this->threadCnt;
 	while (i-- > 0)
 	{
-		this->stats[i].me = this;
+		this->stats[i].me = *this;
 		this->stats[i].status = 0;
 		Sync::ThreadUtil::Create(ProcessThread, &this->stats[i], 65536);
 	}
@@ -191,10 +191,10 @@ Media::ABlend::AlphaBlend8_8::~AlphaBlend8_8()
 		if (!found)
 			break;
 	}
-	MemFree(this->stats);
+	MemFreeArr(this->stats);
 }
 
-void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
+void Media::ABlend::AlphaBlend8_8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (srcAType == Media::AT_PREMUL_ALPHA)
@@ -210,7 +210,7 @@ void Media::ABlend::AlphaBlend8_8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *s
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_8::PremulAlpha(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height)
+void Media::ABlend::AlphaBlend8_8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height)
 {
 	UOSInt i;
 	sbpl -= (OSInt)width << 2;

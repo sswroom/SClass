@@ -112,53 +112,32 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			if (nChannels == 3 && bps == 8 && !hasAlpha)
 			{
 				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
-				UInt8 *imgDest = (UInt8*)img->data;
-				if (imgDest)
-				{
-					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
-					nnimgList->AddImage(img, 0);
-					imgList = nnimgList;
-					optimg = img;
-				}
-				else
-				{
-					img.Delete();
-				}
+				UnsafeArray<UInt8> imgDest = img->data;
+				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UOSInt)width * 3, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
+				imgList = nnimgList;
+				optimg = img;
 			}
 			else if (nChannels == 3 && bps == 8 && hasAlpha)
 			{
 				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
-				UInt8 *imgDest = (UInt8*)img->data;
-				if (imgDest)
-				{
-					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
-					nnimgList->AddImage(img, 0);
-					imgList = nnimgList;
-					optimg = img;
-				}
-				else
-				{
-					img.Delete();
-				}
+				UnsafeArray<UInt8> imgDest = img->data;
+				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
+				imgList = nnimgList;
+				optimg = img;
 			}
 			else if (nChannels == 4 && bps == 8 && hasAlpha)
 			{
 				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
-				UInt8 *imgDest = (UInt8*)img->data;
-				if (imgDest)
-				{
-					ImageCopy_ImgCopyR(imgPtr, imgDest, (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
-					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
-					nnimgList->AddImage(img, 0);
-					imgList = nnimgList;
-					optimg = img;
-				}
-				else
-				{
-					img.Delete();
-				}
+				UnsafeArray<UInt8> imgDest = img->data;
+				ImageCopy_ImgCopyR(imgPtr, imgDest.Ptr(), (UOSInt)width * 4, (UOSInt)height, bpl, img->GetDataBpl(), img->IsUpsideDown());
+				NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
+				nnimgList->AddImage(img, 0);
+				imgList = nnimgList;
+				optimg = img;
 			}
 			else
 			{

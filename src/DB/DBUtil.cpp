@@ -1768,7 +1768,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 		}
 		if (writer.Write(mstm, nnvec))
 		{
-			return SDBBin(sqlstr, mstm.GetBuff(), (UOSInt)mstm.GetLength(), sqlType);
+			return SDBBin(sqlstr, UnsafeArray<const UInt8>(mstm.GetBuff()), (UOSInt)mstm.GetLength(), sqlType);
 		}
 		else
 		{
@@ -1844,7 +1844,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 				headerSize += 16;
 			if (nnvec->HasM())
 				headerSize += 16;
-			return SDBBinLeng(mstm.GetBuff(), (UOSInt)mstm.GetLength() + headerSize, sqlType);
+			return SDBBinLeng(UnsafeArray<const UInt8>(mstm.GetBuff()), (UOSInt)mstm.GetLength() + headerSize, sqlType);
 		}
 		else
 		{

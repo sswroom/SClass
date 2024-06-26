@@ -52,7 +52,7 @@ namespace Net
 			Bool SendAuth(Text::CStringNN userName, Text::CStringNN password);
 			Bool SendMailFrom(Text::CStringNN fromEmail);
 			Bool SendRcptTo(Text::CStringNN toEmail);
-			Bool SendData(const UTF8Char *buff, UOSInt buffSize);
+			Bool SendData(UnsafeArray<const UTF8Char> buff, UOSInt buffSize);
 			Bool SendQuit();
 		};
 	}

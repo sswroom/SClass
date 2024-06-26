@@ -224,7 +224,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 	me->txtSaveCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 		NN<Media::StaticImage> simg;
 		Data::DateTime dt;
 		Optional<IO::FileExporter::ParamData> param;
-		UInt8 *imgBuff;
+		UnsafeArray<UInt8> imgBuff;
 		UOSInt imgSize;
 		Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 		dt.SetCurrTimeUTC();

@@ -168,7 +168,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN d
 	return cli.Ptr();
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSize)
+Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 	if (json)
@@ -212,7 +212,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 	return 0;
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 {
 	NN<Text::String> type;
 	NN<Text::String> status;
@@ -224,7 +224,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 		json->GetValueString(CSTR("url")).SetTo(url) &&
 		json->GetValueString(CSTR("token")).SetTo(token))
 	{
-		Challenge *chall = MemAlloc(Challenge, 1);
+		NN<Challenge> chall = MemAllocNN(Challenge);
 		chall->status = ACMEStatusFromString(status);
 		chall->type = AuthorizeTypeFromString(type);
 		chall->url = url->Clone();
@@ -234,10 +234,10 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 	return 0;
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSInt buffSize)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
-	Challenge *chall = 0;
+	Optional<Challenge> chall = 0;
 	if (json)
 	{
 		chall = ChallengeJSON(json);
@@ -289,7 +289,7 @@ Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost
 		}
 		if (mstm.GetLength() > 32)
 		{
-			UInt8 *jsonBuff = mstm.GetBuff(recvSize);
+			UnsafeArray<UInt8> jsonBuff = mstm.GetBuff(recvSize);
 			NN<Text::String> s;
 			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
 			if (json)
@@ -433,7 +433,7 @@ Bool Net::ACMEConn::AccountNew()
 		cli->ReadToEnd(mstm, 4096);
 		DEL_CLASS(cli);
 		UOSInt buffSize;
-		UInt8 *buff = mstm.GetBuff(buffSize);
+		UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
 		Text::JSONBase *base = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 		if (base != 0)
 		{
@@ -506,7 +506,7 @@ Bool Net::ACMEConn::AccountRetr()
 	return succ;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen)
+Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen)
 {
 	NN<Text::String> url;
 	if (!url.Set(this->urlNewOrder))
@@ -552,13 +552,15 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domain
 		cli->GetRespHeader(CSTR("Location"), sb);
 		DEL_CLASS(cli);
 
-		const UInt8 *replyBuff = mstm.GetBuff(i);
-		Order *order = this->OrderParse(replyBuff, i);
-		if (order && sb.GetLength() > 0)
+		UnsafeArray<const UInt8> replyBuff = mstm.GetBuff(i);
+		NN<Order> order;
+		if (this->OrderParse(replyBuff, i).SetTo(order))
 		{
-			order->orderURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+			if (sb.GetLength() > 0)
+				order->orderURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+			return order;
 		}
-		return order;
+		return 0;
 	}
 	else
 	{
@@ -567,7 +569,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domain
 	}
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType)
 {
 	Net::HTTPClient *cli = this->ACMEPost(authorizeURL, CSTR(""));
 	if (cli)
@@ -585,7 +587,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NN<Text::String> authori
 		UOSInt i;
 		UOSInt j;
 		NN<Text::String> s;
-		const UInt8 *authBuff = mstm.GetBuff(i);
+		UnsafeArray<const UInt8> authBuff = mstm.GetBuff(i);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(authBuff, i);
 		if (json == 0)
 		{
@@ -596,7 +598,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NN<Text::String> authori
 			json->EndUse();
 			return 0;
 		}
-		Challenge *ret = 0;
+		Optional<Challenge> ret = 0;
 		Text::JSONObject *authObj = (Text::JSONObject*)json;
 		json = authObj->GetObjectValue(CSTR("challenges"));
 		if (json && json->GetType() == Text::JSONType::Array)
@@ -647,7 +649,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 	MemFree(order);
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NN<Text::String> challURL)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeBegin(NN<Text::String> challURL)
 {
 	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR("{}"));
 	if (cli)
@@ -658,7 +660,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NN<Text::String> challUR
 			cli->ReadToEnd(mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
-			const UInt8 *buff = mstm.GetBuff(i);
+			UnsafeArray<const UInt8> buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
 		else
@@ -670,7 +672,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NN<Text::String> challUR
 	return 0;
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(NN<Text::String> challURL)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeGetStatus(NN<Text::String> challURL)
 {
 	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR(""));
 	if (cli)
@@ -681,7 +683,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(NN<Text::String> cha
 			cli->ReadToEnd(mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
-			const UInt8 *buff = mstm.GetBuff(i);
+			UnsafeArray<const UInt8> buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
 		else

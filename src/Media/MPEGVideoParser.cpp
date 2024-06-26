@@ -3,10 +3,10 @@
 #include "IO/BitReaderMSB.h"
 #include "Media/MPEGVideoParser.h"
 
-Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, OutParam<UInt32> fRateNorm, OutParam<UInt32> fRateDenorm, UInt64 *bitRate, Bool decoderFix)
+Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, OutParam<UInt32> fRateNorm, OutParam<UInt32> fRateDenorm, OptOut<UInt64> bitRate, Bool decoderFix)
 {
 	decoderFix = false;
-	if (ReadMInt32(frame) != 0x1b3)
+	if (ReadMInt32(&frame[0]) != 0x1b3)
 		return false;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
@@ -348,16 +348,13 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UInt8 *frame, UOSInt frameSize, NN<Med
 	}
 	fRateNorm.Set(frameRateNorm);
 	fRateDenorm.Set(frameRateDenorm);
-	if (bitRate)
-	{
-		*bitRate = bit_rate * 400ULL;
-	}
+	bitRate.Set(bit_rate * 400ULL);
 	return true;
 }
 
-Bool Media::MPEGVideoParser::GetFrameProp(const UInt8 *frame, UOSInt frameSize, MPEGFrameProp *prop)
+Bool Media::MPEGVideoParser::GetFrameProp(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<MPEGFrameProp> prop)
 {
-	if (ReadMInt32(frame) != 0x00000100)
+	if (ReadMInt32(&frame[0]) != 0x00000100)
 		return false;
 	UInt32 temporal_reference;
 	UInt32 picture_coding_type;

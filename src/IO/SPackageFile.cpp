@@ -385,7 +385,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 IO::SPackageFile::~SPackageFile()
 {
 	UInt8 hdr[16];
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	if (!this->writeMode)
 	{
@@ -580,7 +580,7 @@ Bool IO::SPackageFile::AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperato
 Bool IO::SPackageFile::Commit()
 {
 	UOSInt buffSize;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UInt8 hdr[16];
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->mut);

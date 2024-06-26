@@ -16,7 +16,7 @@ UInt32 Media::CS::CSY416_RGB32C::WorkerThread(AnyType obj)
 	THREADSTAT *ts = &converter->stats[threadId];
 
 	ts->status = 1;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	while (true)
 	{
 		ts->evt->Wait();
@@ -26,13 +26,13 @@ UInt32 Media::CS::CSY416_RGB32C::WorkerThread(AnyType obj)
 		}
 		else if (ts->status == 3)
 		{
-			CSY416_RGB32C_convert(ts->yPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->yBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+			CSY416_RGB32C_convert(ts->yPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->yBpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 			ts->status = 4;
-			converter->evtMain->Set();
+			converter->evtMain.Set();
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
@@ -55,11 +55,11 @@ void Media::CS::CSY416_RGB32C::WaitForWorker(Int32 jobStatus)
 		}
 		if (exited)
 			break;
-		this->evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
-Media::CS::CSY416_RGB32C::CSY416_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV16_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
+Media::CS::CSY416_RGB32C::CSY416_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV16_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -67,19 +67,18 @@ Media::CS::CSY416_RGB32C::CSY416_RGB32C(NN<const Media::ColorProfile> srcProfile
 	{
 		this->nThread = 2;
 	}
-	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
+		NEW_CLASSNN(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;
 		Sync::ThreadUtil::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -128,18 +127,17 @@ Media::CS::CSY416_RGB32C::~CSY416_RGB32C()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
 	i = nThread;
 	while (i-- > 0)
 	{
-		DEL_CLASS(stats[i].evt);
+		stats[i].evt.Delete();
 	}
-	DEL_CLASS(evtMain);
-	MemFree(stats);
+	MemFreeArr(stats);
 }
 
-void Media::CS::CSY416_RGB32C::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSY416_RGB32C::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UOSInt i = this->nThread;
@@ -155,7 +153,7 @@ void Media::CS::CSY416_RGB32C::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UO
 
 		stats[i].yPtr = srcPtr[0] + (srcStoreWidth * currHeight << 3);
 		stats[i].yBpl = srcStoreWidth << 3;
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;

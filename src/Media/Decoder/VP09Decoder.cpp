@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Media/Decoder/VP09Decoder.h"
 
-void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	UOSInt nextFrameNum = 0;
 	VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
@@ -85,7 +85,7 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 	if (dblFrame)
 	{
-		UInt8 *imgPtr = &imgData[0][fr1];
+		UnsafeArray<UInt8> imgPtr = &imgData[0][fr1];
 		this->frameCb(frameTime, frameNum, &imgData[0], fr1, Media::IVideoSource::FS_N, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
 		flags = (Media::IVideoSource::FrameFlag)(flags & ~Media::IVideoSource::FF_DISCONTTIME);
 		this->frameCb(frameTime, frameNum, &imgPtr, fr2, frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
@@ -250,7 +250,7 @@ UOSInt Media::Decoder::VP09Decoder::GetFrameSize(UOSInt frameIndex)
 	}
 }
 
-UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo == 0)
 		return 0;
@@ -331,7 +331,7 @@ UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 			frInfo->fullFrameSize = frameSize;
 			this->frameList.Add(frInfo);
 		}
-		MemCopyNO(buff, &frameBuff[frInfo->frameOfst], frInfo->frameSize);
+		MemCopyNO(buff.Ptr(), &frameBuff[frInfo->frameOfst], frInfo->frameSize);
 		MemFree(frameBuff);
 		return frInfo->frameSize;
 	}
@@ -350,7 +350,7 @@ UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 			UOSInt frameSize = this->sourceVideo->ReadFrame(frInfo->srcFrameIndex, frameBuff);
 			if (frameSize == frInfo->fullFrameSize)
 			{
-				MemCopyNO(buff, &frameBuff[frInfo->frameOfst], frInfo->frameSize);
+				MemCopyNO(buff.Ptr(), &frameBuff[frInfo->frameOfst], frInfo->frameSize);
 				MemFree(frameBuff);
 				return frInfo->frameSize;
 			}

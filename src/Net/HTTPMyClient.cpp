@@ -997,7 +997,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		UOSInt reqSize;
 		UOSInt writeSize = 0;
 		UOSInt currSize = 0;
-		UInt8 *reqBuff = this->reqMstm.GetBuff(reqSize);
+		UnsafeArray<UInt8> reqBuff = this->reqMstm.GetBuff(reqSize);
 		while (writeSize < reqSize)
 		{
 			currSize = cli->Write(Data::ByteArrayR(&reqBuff[writeSize], reqSize - writeSize));

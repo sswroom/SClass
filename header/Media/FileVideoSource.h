@@ -16,7 +16,7 @@ namespace Media
 		{
 			UInt32 frameTime;
 			UInt32 frameNum;
-			UInt8 *frameBuff;
+			UnsafeArray<UInt8> frameBuff;
 			UOSInt frameSize;
 			Media::IVideoSource::FrameStruct frameStruct;
 			Media::FrameType fType;
@@ -90,7 +90,7 @@ namespace Media
 		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 		virtual UOSInt GetFrameSize(UOSInt frameIndex);
-		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *frameBuff);
+		virtual UOSInt ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> frameBuff);
 
 		virtual UOSInt ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
 

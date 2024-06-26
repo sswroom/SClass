@@ -3,7 +3,7 @@
 #include "Media/ImageCopyC.h"
 #include "Media/ImageUtil.h"
 
-void Media::ImageUtil::ColorReplaceAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
+void Media::ImageUtil::ColorReplaceAlpha32(UnsafeArray<UInt8> pixelPtr, UOSInt w, UOSInt h, UInt32 col)
 {
 	UInt8 lut[256];
 	UInt8 b;
@@ -21,14 +21,14 @@ void Media::ImageUtil::ColorReplaceAlpha32(UInt8 *pixelPtr, UOSInt w, UOSInt h, 
 		b = pixelPtr[0];
 		if (b)
 		{
-			WriteUInt32(pixelPtr, col);
+			WriteUInt32(&pixelPtr[0], col);
 			pixelPtr[3] = lut[b];
 		}
 		pixelPtr += 4;
 	}
 }
 
-void Media::ImageUtil::DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt y, OSInt x1, OSInt x2, UInt32 col)
+void Media::ImageUtil::DrawHLineNA32(UnsafeArray<UInt8> pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt y, OSInt x1, OSInt x2, UInt32 col)
 {
 	if (y < 0 || (UOSInt)y >= h || x1 >= (OSInt)w || x2 < 0)
 	{
@@ -50,12 +50,12 @@ void Media::ImageUtil::DrawHLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt
 	pixelPtr = pixelPtr + (UOSInt)y * bpl + (UOSInt)x1 * 4;
 	while (cnt-- > 0)
 	{
-		WriteUInt32(pixelPtr, col);
+		WriteUInt32(&pixelPtr[0], col);
 		pixelPtr += 4;
 	}
 }
 
-void Media::ImageUtil::DrawVLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt x, OSInt y1, OSInt y2, UInt32 col)
+void Media::ImageUtil::DrawVLineNA32(UnsafeArray<UInt8> pixelPtr, UOSInt w, UOSInt h, UOSInt bpl, OSInt x, OSInt y1, OSInt y2, UInt32 col)
 {
 	if (x < 0 || (UOSInt)x >= w || y1 >= (OSInt)h || y2 < 0)
 	{
@@ -77,12 +77,12 @@ void Media::ImageUtil::DrawVLineNA32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UOSInt
 	pixelPtr = pixelPtr + (UOSInt)y1 * bpl + (UOSInt)x * 4;
 	while (cnt-- > 0)
 	{
-		WriteUInt32(pixelPtr, col);
+		WriteUInt32(&pixelPtr[0], col);
 		pixelPtr += bpl;
 	}
 }
 
-void Media::ImageUtil::ImageCopyR(UInt8 *destPtr, OSInt destBpl, const UInt8 *srcPtr, OSInt srcBpl, OSInt srcX, OSInt srcY, UOSInt srcw, UOSInt srch, UOSInt bpp, Bool upSideDown, Media::RotateType srcRotate, Media::RotateType destRotate)
+void Media::ImageUtil::ImageCopyR(UnsafeArray<UInt8> destPtr, OSInt destBpl, UnsafeArray<const UInt8> srcPtr, OSInt srcBpl, OSInt srcX, OSInt srcY, UOSInt srcw, UOSInt srch, UOSInt bpp, Bool upSideDown, Media::RotateType srcRotate, Media::RotateType destRotate)
 {
 	RotateType rt = Media::RotateTypeCalc(srcRotate, destRotate);
 	switch (srcRotate)
@@ -107,14 +107,14 @@ void Media::ImageUtil::ImageCopyR(UInt8 *destPtr, OSInt destBpl, const UInt8 *sr
 	}
 	if (rt == RotateType::None)
 	{
-		ImageCopy_ImgCopyR(srcPtr, destPtr, srcw * (bpp >> 3), srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
+		ImageCopy_ImgCopyR(srcPtr.Ptr(), destPtr.Ptr(), srcw * (bpp >> 3), srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
 	}
 	else if (rt == RotateType::HFLIP)
 	{
 		if (bpp == 32)
-			ImageUtil_HFlip32(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
+			ImageUtil_HFlip32(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
 		else if (bpp == 64)
-			ImageUtil_HFlip64(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
+			ImageUtil_HFlip64(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
 	}
 	else
 	{
@@ -136,27 +136,27 @@ void Media::ImageUtil::ImageCopyR(UInt8 *destPtr, OSInt destBpl, const UInt8 *sr
 			switch (rt)
 			{
 			case RotateType::CW_90:
-				ImageUtil_Rotate32_CW90(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_Rotate32_CW90(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::CW_180:
-				ImageUtil_Rotate32_CW180(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_Rotate32_CW180(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::CW_270:
-				ImageUtil_Rotate32_CW270(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_Rotate32_CW270(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP_CW_90:
-				ImageUtil_HFRotate32_CW90(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_HFRotate32_CW90(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP_CW_180:
-				ImageUtil_HFRotate32_CW180(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_HFRotate32_CW180(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP_CW_270:
-				ImageUtil_HFRotate32_CW270(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_HFRotate32_CW270(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP:
 			case RotateType::None:
 			default:
-				ImageCopy_ImgCopy(srcPtr, destPtr, srcw * (bpp >> 3), srch, srcBpl, destBpl);
+				ImageCopy_ImgCopy(srcPtr.Ptr(), destPtr.Ptr(), srcw * (bpp >> 3), srch, srcBpl, destBpl);
 				break;
 			}
 		}
@@ -165,33 +165,33 @@ void Media::ImageUtil::ImageCopyR(UInt8 *destPtr, OSInt destBpl, const UInt8 *sr
 			switch (rt)
 			{
 			case RotateType::CW_90:
-				ImageUtil_Rotate64_CW90(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_Rotate64_CW90(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::CW_180:
-				ImageUtil_Rotate64_CW180(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_Rotate64_CW180(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::CW_270:
-				ImageUtil_Rotate64_CW270(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_Rotate64_CW270(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP_CW_90:
-				ImageUtil_HFRotate64_CW90(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_HFRotate64_CW90(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP_CW_180:
-				ImageUtil_HFRotate64_CW180(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_HFRotate64_CW180(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP_CW_270:
-				ImageUtil_HFRotate64_CW270(srcPtr, destPtr, srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
+				ImageUtil_HFRotate64_CW270(srcPtr.Ptr(), destPtr.Ptr(), srcw, srch, (UOSInt)srcBpl, (UOSInt)destBpl);
 				break;
 			case RotateType::HFLIP:
 			case RotateType::None:
 			default:
-				ImageCopy_ImgCopy(srcPtr, destPtr, srcw * (bpp >> 3), srch, srcBpl, destBpl);
+				ImageCopy_ImgCopy(srcPtr.Ptr(), destPtr.Ptr(), srcw * (bpp >> 3), srch, srcBpl, destBpl);
 				break;
 			}
 		}
 		else
 		{
-			ImageCopy_ImgCopyR(srcPtr, destPtr, srcw * (bpp >> 3), srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
+			ImageCopy_ImgCopyR(srcPtr.Ptr(), destPtr.Ptr(), srcw * (bpp >> 3), srch, (UOSInt)srcBpl, (UOSInt)destBpl, upSideDown);
 		}
 	}
 }

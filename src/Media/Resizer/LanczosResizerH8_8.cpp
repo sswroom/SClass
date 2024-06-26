@@ -947,7 +947,7 @@ Media::Resizer::LanczosResizerH8_8::~LanczosResizerH8_8()
 	}
 }
 
-void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizerH8_8::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	LRHPARAMETER prm;
 	if (dwidth < 1 || dheight < 1)
@@ -1021,15 +1021,15 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 		}
 		if (dheight < 16)
 		{
-			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
-			LanczosResizerH8_8_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap, hIndex, hWeight, (OSInt)siWidth << 3, dbpl);
+			LanczosResizerH8_8_vertical_filter(src.Ptr(), buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			LanczosResizerH8_8_horizontal_filter(buffPtr, dest.Ptr(), dwidth, dheight, hTap, hIndex, hWeight, (OSInt)siWidth << 3, dbpl);
 		}
 		else
 		{
-			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			mt_vertical_filter(src.Ptr(), buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
 //			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, siWidth << 3);
 //			LanczosResizerH8_8_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, siWidth << 3, dbpl);
-			mt_horizontal_filter(buffPtr, dest, dwidth, dheight, hTap,hIndex, hWeight, (OSInt)siWidth << 3, dbpl);
+			mt_horizontal_filter(buffPtr, dest.Ptr(), dwidth, dheight, hTap,hIndex, hWeight, (OSInt)siWidth << 3, dbpl);
 		}
 		mutUsage.EndUse();
 	}
@@ -1068,11 +1068,11 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 		}
 		if (sheight < 16)
 		{
-			LanczosResizerH8_8_horizontal_filter8(src, dest, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dbpl);
+			LanczosResizerH8_8_horizontal_filter8(src.Ptr(), dest.Ptr(), dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dbpl);
 		}
 		else
 		{
-			mt_horizontal_filter8(src, dest, dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dbpl);
+			mt_horizontal_filter8(src.Ptr(), dest.Ptr(), dwidth, siHeight, hTap, hIndex, hWeight, sbpl, dbpl);
 		}
 		mutUsage.EndUse();
 	}
@@ -1112,19 +1112,19 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 		}
 		if (dheight < 16)
 		{
-			LanczosResizerH8_8_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
-			LanczosResizerH8_8_collapse(buffPtr, dest, siWidth, dheight, (OSInt)siWidth << 3, dbpl);
+			LanczosResizerH8_8_vertical_filter(src.Ptr(), buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			LanczosResizerH8_8_collapse(buffPtr, dest.Ptr(), siWidth, dheight, (OSInt)siWidth << 3, dbpl);
 		}
 		else
 		{
-			mt_vertical_filter(src, buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
-			mt_collapse(buffPtr, dest, siWidth, dheight, (OSInt)siWidth << 3, dbpl);
+			mt_vertical_filter(src.Ptr(), buffPtr, siWidth, dheight, vTap, vIndex, vWeight, sbpl, (OSInt)siWidth << 3);
+			mt_collapse(buffPtr, dest.Ptr(), siWidth, dheight, (OSInt)siWidth << 3, dbpl);
 		}
 		mutUsage.EndUse();
 	}
 	else
 	{
-		ImageCopy_ImgCopy(src, dest, siWidth << 2, dheight, sbpl, dbpl);
+		ImageCopy_ImgCopy(src.Ptr(), dest.Ptr(), siWidth << 2, dheight, sbpl, dbpl);
 	}
 }
 

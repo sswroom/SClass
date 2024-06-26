@@ -220,7 +220,7 @@ Bool Net::RTSPClient::WaitForReply()
 	return this->cliData->reqSuccess;
 }
 
-Bool Net::RTSPClient::SendData(UInt8 *buff, UOSInt buffSize)
+Bool Net::RTSPClient::SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->cliData->cliMut);
@@ -285,7 +285,7 @@ Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	Text::PString sarr[10];
 	UOSInt i;
 	UOSInt buffSize;
@@ -336,7 +336,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
@@ -374,7 +374,7 @@ UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdO
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
@@ -491,7 +491,7 @@ Bool Net::RTSPClient::Play(Text::CStringNN url, Text::CStringNN sessId)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
@@ -530,7 +530,7 @@ Bool Net::RTSPClient::Close(Text::CStringNN url, Text::CStringNN sessId)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);

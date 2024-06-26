@@ -49,10 +49,11 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 	Double Kc4;
 
 	Media::ColorProfile::YUVType yuvType;
+	NN<Media::ColorManagerSess> nncolorSess;
 //	Bool fullRange = (this->yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255) != 0;
-	if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN)
+	if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		yuvType = this->colorSess->GetDefYUVType();
+		yuvType = nncolorSess->GetDefYUVType();
 	}
 	else
 	{
@@ -128,26 +129,34 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGB::CSYUV_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
+Media::CS::CSYUV_LRGB::CSYUV_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
 {
 	this->yuvType = yuvType;
-	this->rgbGammaCorr = MemAlloc(UInt8, 65536 * 2);
-	this->yuv2rgb = MemAlloc(Int64, 768);
+	this->rgbGammaCorr = MemAllocArr(UInt8, 65536 * 2);
+	this->yuv2rgb = MemAllocArr(Int64, 768);
 
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
-	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
-	this->rgbParam.Set(colorSess->GetRGBParam());
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
+	{
+		MemCopyNO(&this->yuvParam, nncolorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
+		this->rgbParam.Set(nncolorSess->GetRGBParam());
+	}
+	else
+	{
+		this->rgbParam.SetDefault();
+	}
 
 	NN<Media::ColorProfile> tranColor;
-	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		tranColor = this->colorSess->GetDefVProfile();
+		tranColor = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		tranColor = this->colorSess->GetDefPProfile();
+		tranColor = nncolorSess->GetDefPProfile();
 	}
 	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
@@ -164,8 +173,8 @@ Media::CS::CSYUV_LRGB::CSYUV_LRGB(NN<const Media::ColorProfile> srcColor, Media:
 
 Media::CS::CSYUV_LRGB::~CSYUV_LRGB()
 {
-	MemFree(this->rgbGammaCorr);
-	MemFree(this->yuv2rgb);
+	MemFreeArr(this->rgbGammaCorr);
+	MemFreeArr(this->yuv2rgb);
 	this->irFunc.Delete();
 	this->igFunc.Delete();
 	this->ibFunc.Delete();
@@ -194,21 +203,22 @@ void Media::CS::CSYUV_LRGB::YUVParamChanged(NN<const Media::IColorHandler::YUVPA
 void Media::CS::CSYUV_LRGB::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
 {
 	NN<Media::ColorProfile> srcColor;
-	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefVProfile();
+		srcColor = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefPProfile();
+		srcColor = nncolorSess->GetDefPProfile();
 	}
-	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefVProfile();
+		srcColor = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefPProfile();
+		srcColor = nncolorSess->GetDefPProfile();
  	}
 	else
 	{

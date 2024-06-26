@@ -22,7 +22,7 @@ namespace Media
 		IImgResizer(Media::AlphaType srcAlphaType);
 		virtual ~IImgResizer(){};
 
-		virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight) = 0;
+		virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight) = 0;
 		virtual Bool Resize(NN<const Media::StaticImage> srcImage, NN<Media::StaticImage> destImage) { return false;};
 
 		virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo) = 0;

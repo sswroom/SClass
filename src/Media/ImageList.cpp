@@ -129,7 +129,7 @@ void Media::ImageList::SetImageName(UnsafeArrayOpt<const UTF8Char> imgName)
 	this->imgName = Text::StrSCopyNew(imgName);
 }
 
-void Media::ImageList::SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
+void Media::ImageList::SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UnsafeArray<UInt8> thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
 {
 	this->thermoSize = thermoSize;
 	this->thermoBPP = thermoBPP;
@@ -139,7 +139,7 @@ void Media::ImageList::SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt th
 		MemFree(this->thermoPtr);
 	}
 	this->thermoPtr = MemAlloc(UInt8, dataSize);
-	MemCopyNO(this->thermoPtr, thermoPtr, dataSize);
+	MemCopyNO(this->thermoPtr, thermoPtr.Ptr(), dataSize);
 	this->thermoEmissivity = thermoEmissivity;
 	this->thermoTransmission = thermoTransmission;
 	this->thermoBKGTemp = thermoBKGTemp;

@@ -24,13 +24,13 @@ namespace Media
 			Math::Size2D<UOSInt> GetSize() const;
 			OSInt GetBpl();
 			UInt8 *GetDataPtr();
-			void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate);
+			void GetImageData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate);
 			Media::StaticImage *CreateStaticImage();
 			void ToBlackAndWhite(UInt8 middleV);
 			void Normalize();
 			NN<Media::OpenCV::OCVFrame> BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);
 
-			static Optional<OCVFrame> CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
+			static Optional<OCVFrame> CreateYFrame(UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
 			static Optional<OCVFrame> CreateYFrame(NN<Media::StaticImage> simg);
 		};
 	}

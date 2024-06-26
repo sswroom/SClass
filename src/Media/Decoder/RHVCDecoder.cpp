@@ -57,11 +57,11 @@ UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBu
 	return outBuff;
 }
 
-void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 
-	UInt8 *frameBuff = this->frameBuff;
+	UnsafeArray<UInt8> frameBuff = this->frameBuff;
 	UOSInt imgOfst = 0;
 	UOSInt imgSize;
 	Bool frameFound = false;
@@ -76,8 +76,8 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	if ((dataSize + this->vpsSize + this->spsSize + this->ppsSize + 12) > this->maxFrameSize)
 	{
 		this->maxFrameSize = dataSize + this->vpsSize + this->spsSize + this->ppsSize + 12;
-		MemFreeA(this->frameBuff);
-		this->frameBuff = MemAllocA(UInt8, this->maxFrameSize);
+		MemFreeAArr(this->frameBuff);
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		frameBuff = this->frameBuff;
 	}
 
@@ -171,7 +171,6 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	this->sps = 0;
 	this->pps = 0;
 	this->vps = 0;
-	this->frameBuff = 0;
 	this->frameSize = 0;
 	this->spsFound = false;
 	this->finfoMode = false;
@@ -181,11 +180,13 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 
 	if (!sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, size))
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
 	if (info.fourcc != *(UInt32*)"rhvc")
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -194,6 +195,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	buff = sourceVideo->GetProp(*(Int32*)"sps", &size32);
 	if (buff == 0)
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -205,6 +207,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	buff = sourceVideo->GetProp(*(Int32*)"pps", &size32);
 	if (buff == 0)
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -216,6 +219,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	buff = sourceVideo->GetProp(*(Int32*)"vps", &size32);
 	if (buff == 0)
 	{
+		this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 		this->sourceVideo = 0;
 		return;
 	}
@@ -224,7 +228,7 @@ Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	MemCopyNO(this->vps, buff, size32);
 	this->maxFrameSize += 4 + this->vpsSize;
 
-	this->frameBuff = MemAllocA(UInt8, this->maxFrameSize);
+	this->frameBuff = MemAllocAArr(UInt8, this->maxFrameSize);
 	UOSInt oriW;
 	UOSInt oriH;
 	oriW = info.dispSize.x;
@@ -264,10 +268,7 @@ Media::Decoder::RHVCDecoder::~RHVCDecoder()
 	{
 		MemFree(this->vps);
 	}
-	if (this->frameBuff)
-	{
-		MemFreeA(this->frameBuff);
-	}
+	MemFreeAArr(this->frameBuff);
 }
 
 Text::CStringNN Media::Decoder::RHVCDecoder::GetFilterName()
@@ -329,7 +330,7 @@ UOSInt Media::Decoder::RHVCDecoder::GetFrameSize(UOSInt frameIndex)
 	return this->maxFrameSize;
 }
 
-UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo == 0)
 		return 0;
@@ -338,8 +339,8 @@ UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	UOSInt outSize = 0;
 	UOSInt imgOfst = 0;
 	UOSInt imgSize;
-	const UInt8 *imgData = this->frameBuff;
-	UInt8 *frameBuff = buff;
+	UnsafeArray<const UInt8> imgData = this->frameBuff;
+	UnsafeArray<UInt8> frameBuff = buff;
 	while (imgOfst < frameSize)
 	{
 		imgSize = ReadMUInt32(&imgData[imgOfst]);

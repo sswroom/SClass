@@ -16,21 +16,22 @@ void Media::CS::CSYUV444P10LEP_LRGBC::SetupRGB13_LR()
 	Double thisV;
 	UInt16 v[4];
 	NN<Media::ColorProfile> srcColor;
-	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefVProfile();
+		srcColor = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefPProfile();
+		srcColor = nncolorSess->GetDefPProfile();
 	}
-	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefVProfile();
+		srcColor = nncolorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(nncolorSess))
 	{
-		srcColor = this->colorSess->GetDefPProfile();
+		srcColor = nncolorSess->GetDefPProfile();
 	}
 	else
 	{
@@ -120,10 +121,11 @@ void Media::CS::CSYUV444P10LEP_LRGBC::SetupYUV_RGB13()
 	Double Kc4;
 
 	Media::ColorProfile::YUVType yuvType;
+	NN<Media::ColorManagerSess> nncolorSess;
 	Bool fullRange = (this->yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255) != 0;
-	if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN)
+	if ((this->yuvType & Media::ColorProfile::YUVT_MASK) == Media::ColorProfile::YUVT_UNKNOWN && this->colorSess.SetTo(nncolorSess))
 	{
-		yuvType = this->colorSess->GetDefYUVType();
+		yuvType = nncolorSess->GetDefYUVType();
 	}
 	else
 	{
@@ -236,7 +238,7 @@ UInt32 Media::CS::CSYUV444P10LEP_LRGBC::WorkerThread(AnyType obj)
 	THREADSTAT *ts = &converter->stats[threadId];
 	{
 		Sync::Event evt;
-		ts->evt = &evt;
+		ts->evt = evt;
 		ts->status = 1;
 		converter->evtMain.Set();
 		while (true)
@@ -248,7 +250,7 @@ UInt32 Media::CS::CSYUV444P10LEP_LRGBC::WorkerThread(AnyType obj)
 			}
 			else if (ts->status == 3)
 			{
-				CSYUV444P10LEP_LRGBC_convert(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->yBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				CSYUV444P10LEP_LRGBC_convert(ts->yPtr.Ptr(), ts->uPtr.Ptr(), ts->vPtr.Ptr(), ts->dest.Ptr(), ts->width, ts->height, ts->dbpl, ts->yBpl, converter->yuv2rgb.Ptr(), converter->rgbGammaCorr.Ptr());
 				ts->status = 4;
 				converter->evtMain.Set();
 			}
@@ -282,24 +284,32 @@ void Media::CS::CSYUV444P10LEP_LRGBC::WaitForWorker(Int32 jobStatus)
 	}
 }
 
-Media::CS::CSYUV444P10LEP_LRGBC::CSYUV444P10LEP_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSYUV444P10LEP_LRGBC::CSYUV444P10LEP_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
 	this->yuvType = yuvType;
-	this->rgbGammaCorr = MemAlloc(Int64, 65536 * 3);
-	this->yuv2rgb = MemAlloc(Int64, 65536 * 3);
+	this->rgbGammaCorr = MemAllocArr(Int64, 65536 * 3);
+	this->yuv2rgb = MemAllocArr(Int64, 65536 * 3);
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
-	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
-	this->rgbParam.Set(colorSess->GetRGBParam());
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
+	{
+		MemCopyNO(&this->yuvParam, nncolorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
+		this->rgbParam.Set(nncolorSess->GetRGBParam());
+	}
+	else
+	{
+		Media::MonitorColorManager::SetDefaultRGB(this->rgbParam);
+	}
 
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 2)
 	{
 		this->nThread = 2;
 	}
-	stats = MemAlloc(THREADSTAT, nThread);
+	stats = MemAllocArr(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
@@ -360,22 +370,22 @@ Media::CS::CSYUV444P10LEP_LRGBC::~CSYUV444P10LEP_LRGBC()
 
 		this->evtMain.Wait(100);
 	}
-	MemFree(stats);
+	MemFreeArr(stats);
 
-	MemFree(this->rgbGammaCorr);
-	MemFree(this->yuv2rgb);
+	MemFreeArr(this->rgbGammaCorr);
+	MemFreeArr(this->yuv2rgb);
 }
 
-void Media::CS::CSYUV444P10LEP_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUV444P10LEP_LRGBC::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	this->UpdateTable();
 	UOSInt i = this->nThread;
 	UOSInt lastHeight = dispHeight;
 	UOSInt currHeight;
 	
-	UInt8 *yPtr = srcPtr[0];
-	UInt8 *uPtr = yPtr + (srcStoreWidth * srcStoreHeight << 1);
-	UInt8 *vPtr = uPtr + (srcStoreWidth * srcStoreHeight << 1);
+	UnsafeArray<UInt8> yPtr = srcPtr[0];
+	UnsafeArray<UInt8> uPtr = yPtr + (srcStoreWidth * srcStoreHeight << 1);
+	UnsafeArray<UInt8> vPtr = uPtr + (srcStoreWidth * srcStoreHeight << 1);
 	i = this->nThread;
 	lastHeight = dispHeight;
 	while (i-- > 0)
@@ -385,7 +395,7 @@ void Media::CS::CSYUV444P10LEP_LRGBC::ConvertV2(UInt8 *const*srcPtr, UInt8 *dest
 		stats[i].yPtr = yPtr + (srcStoreWidth * currHeight << 1);
 		stats[i].uPtr = uPtr + (srcStoreWidth * currHeight << 1);
 		stats[i].vPtr = vPtr + (srcStoreWidth * currHeight << 1);
-		stats[i].dest = ((UInt8*)destPtr) + destRGBBpl * (OSInt)currHeight;
+		stats[i].dest = destPtr + destRGBBpl * (OSInt)currHeight;
 		stats[i].width = dispWidth;
 		stats[i].height = lastHeight - currHeight;
 		stats[i].dbpl = destRGBBpl;

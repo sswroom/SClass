@@ -6,19 +6,19 @@
 #include "Media/Decoder/M2VDecoder.h"
 #include "Sync/ThreadUtil.h"
 
-void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
 	UInt32 startOfst = 0;
-	if (ReadMInt32(imgData[0]) == 0x000001b3)
+	if (ReadMInt32(imgData[0].Ptr()) == 0x000001b3)
 	{
 		Media::FrameInfo info;
 		UInt32 norm;
 		UInt32 denorm;
 		UInt64 bitRate;
 
-		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, &bitRate, true))
+		if (Media::MPEGVideoParser::GetFrameInfo(imgData[0], dataSize, info, norm, denorm, bitRate, true))
 		{
 			if (info.par2 != this->par)
 			{
@@ -42,7 +42,7 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 		i++;
 	}
 	Media::MPEGVideoParser::MPEGFrameProp frameProp;
-	if (Media::MPEGVideoParser::GetFrameProp(&imgData[0][startOfst], dataSize - startOfst, &frameProp))
+	if (Media::MPEGVideoParser::GetFrameProp(&imgData[0][startOfst], dataSize - startOfst, frameProp))
 	{
 		if (frameProp.pictureCodingType == 'I')
 		{
@@ -194,7 +194,7 @@ UOSInt Media::Decoder::M2VDecoder::GetFrameSize(UOSInt frameIndex)
 	return 0;
 }
 
-UOSInt Media::Decoder::M2VDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
+UOSInt Media::Decoder::M2VDecoder::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->sourceVideo)
 	{

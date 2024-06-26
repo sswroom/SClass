@@ -224,11 +224,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		mstm.Write(CSTR("--").ToByteArray());
 
 		UOSInt buffSize;
-		UInt8 *reqBuff = mstm.GetBuff(buffSize);
+		UnsafeArray<UInt8> reqBuff = mstm.GetBuff(buffSize);
 
 		me->reqBody = MemAlloc(UInt8, buffSize);
 		me->reqBodyLen = buffSize;
-		MemCopyNO((UInt8*)me->reqBody.Ptr(), reqBuff, buffSize);
+		MemCopyNO((UInt8*)me->reqBody.Ptr(), reqBuff.Ptr(), buffSize);
 	}
 	else if (me->cboPostFormat->GetSelectedIndex() == 1)
 	{
@@ -364,7 +364,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 			{
 				UOSInt buffSize;
 				UOSInt writeSize;
-				UInt8 *buff = me->respData->GetBuff(buffSize);
+				UnsafeArray<UInt8> buff = me->respData->GetBuff(buffSize);
 				writeSize = fs.Write(Data::ByteArrayR(buff, buffSize));
 				succ = (writeSize == buffSize);
 			}
@@ -385,7 +385,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 	if (me->respData)
 	{
 		UOSInt buffSize;
-		UInt8 *buff = me->respData->GetBuff(buffSize);
+		UnsafeArray<UInt8> buff = me->respData->GetBuff(buffSize);
 		NN<Text::IMIMEObj> mimeObj;
 		{
 			IO::StmData::MemoryDataRef md(buff, buffSize);
@@ -756,7 +756,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 					if (sb.Equals(UTF8STRC("gzip")))
 					{
 						UOSInt respSize;
-						const UInt8 *respData = mstm->GetBuff(respSize);
+						UnsafeArray<const UInt8> respData = mstm->GetBuff(respSize);
 						if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 						{
 							NN<IO::MemoryStream> mstm2;

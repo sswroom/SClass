@@ -36,7 +36,7 @@ UInt8 PNGParser_PaethPredictor(UInt8 a, UInt8 b, UInt8 c)
 	}
 }
 
-UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, OSInt pxMask, OSInt pxAMask, OSInt pxShift)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits(UnsafeArray<UInt8> srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, OSInt pxMask, OSInt pxAMask, OSInt pxShift)
 {
 	UInt8 *lineStart = destBuff + initY * bpl;
 	UOSInt currX;
@@ -148,9 +148,9 @@ UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsBits1(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits1(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	currY = initY;
@@ -170,9 +170,9 @@ UInt8 *PNGParser_ParsePixelsBits1(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsBits2(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits2(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	currY = initY;
@@ -192,9 +192,9 @@ UInt8 *PNGParser_ParsePixelsBits2(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsBits4(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsBits4(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	currY = initY;
@@ -214,13 +214,14 @@ UInt8 *PNGParser_ParsePixelsBits4(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsByte(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsByte(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx;
 	lastLineStart = 0;
 	currY = initY;
@@ -248,11 +249,11 @@ UInt8 *PNGParser_ParsePixelsByte(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX] = (UInt8)(lastLineStart[currX] + *srcData++);
+					lineStart[currX] = (UInt8)(nnlastLineStart[currX] + *srcData++);
 					currX += xAdd;
 				}
 			}
@@ -267,12 +268,12 @@ UInt8 *PNGParser_ParsePixelsByte(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx = 0;
 				while (currX < maxX)
 				{
-					lastPx = (UInt8)(((lastPx + lastLineStart[currX]) >> 1) + *srcData++);
+					lastPx = (UInt8)(((lastPx + nnlastLineStart[currX]) >> 1) + *srcData++);
 					lineStart[currX] = lastPx;
 					currX += xAdd;
 				}
@@ -290,18 +291,18 @@ UInt8 *PNGParser_ParsePixelsByte(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx = 0;
 				while (currX < maxX)
 				{
 					if (currX < xAdd)
 					{
-						lastPx = (UInt8)(lastLineStart[currX] + *srcData++);
+						lastPx = (UInt8)(nnlastLineStart[currX] + *srcData++);
 					}
 					else
 					{
-						lastPx = (UInt8)(PNGParser_PaethPredictor(lastPx, lastLineStart[currX], lastLineStart[currX - xAdd]) + *srcData++);
+						lastPx = (UInt8)(PNGParser_PaethPredictor(lastPx, nnlastLineStart[currX], nnlastLineStart[currX - xAdd]) + *srcData++);
 					}
 					lineStart[currX] = lastPx;
 					currX += xAdd;
@@ -340,13 +341,14 @@ UInt8 *PNGParser_ParsePixelsByte(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsWord(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[2];
 	lastLineStart = 0;
 	currY = initY;
@@ -380,12 +382,12 @@ UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 2 + 0] = (UInt8)(lastLineStart[currX * 2 + 0] + srcData[1]);
-					lineStart[currX * 2 + 1] = (UInt8)(lastLineStart[currX * 2 + 1] + srcData[0]);
+					lineStart[currX * 2 + 0] = (UInt8)(nnlastLineStart[currX * 2 + 0] + srcData[1]);
+					lineStart[currX * 2 + 1] = (UInt8)(nnlastLineStart[currX * 2 + 1] + srcData[0]);
 					srcData += 2;
 					currX += xAdd;
 				}
@@ -403,14 +405,14 @@ UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 2 + 0]) >> 1) + srcData[1]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 2 + 1]) >> 1) + srcData[0]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 2 + 0]) >> 1) + srcData[1]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 2 + 1]) >> 1) + srcData[0]);
 					lineStart[currX * 2 + 0] = lastPx[0];
 					lineStart[currX * 2 + 1] = lastPx[1];
 					srcData += 2;
@@ -434,7 +436,7 @@ UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -442,13 +444,13 @@ UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 2 + 0] + srcData[1]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 2 + 1] + srcData[0]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 2 + 0] + srcData[1]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 2 + 1] + srcData[0]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 2 + 0], lastLineStart[(currX - xAdd) * 2 + 0]) + srcData[1]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 2 + 1], lastLineStart[(currX - xAdd) * 2 + 1]) + srcData[0]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 2 + 0], nnlastLineStart[(currX - xAdd) * 2 + 0]) + srcData[1]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 2 + 1], nnlastLineStart[(currX - xAdd) * 2 + 1]) + srcData[0]);
 					}
 					lineStart[currX * 2 + 0] = lastPx[0];
 					lineStart[currX * 2 + 1] = lastPx[1];
@@ -496,13 +498,14 @@ UInt8 *PNGParser_ParsePixelsWord(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsRGB24(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[3];
 	lastLineStart = 0;
 	currY = initY;
@@ -540,13 +543,13 @@ UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 3 + 0] = (UInt8)(lastLineStart[currX * 3 + 0] + srcData[2]);
-					lineStart[currX * 3 + 1] = (UInt8)(lastLineStart[currX * 3 + 1] + srcData[1]);
-					lineStart[currX * 3 + 2] = (UInt8)(lastLineStart[currX * 3 + 2] + srcData[0]);
+					lineStart[currX * 3 + 0] = (UInt8)(nnlastLineStart[currX * 3 + 0] + srcData[2]);
+					lineStart[currX * 3 + 1] = (UInt8)(nnlastLineStart[currX * 3 + 1] + srcData[1]);
+					lineStart[currX * 3 + 2] = (UInt8)(nnlastLineStart[currX * 3 + 2] + srcData[0]);
 					srcData += 3;
 					currX += xAdd;
 				}
@@ -565,16 +568,16 @@ UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
 				lastPx[2] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 3 + 0]) >> 1) + srcData[2]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 3 + 1]) >> 1) + srcData[1]);
-					lastPx[2] = (UInt8)(((lastPx[2] + lastLineStart[currX * 3 + 2]) >> 1) + srcData[0]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 3 + 0]) >> 1) + srcData[2]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 3 + 1]) >> 1) + srcData[1]);
+					lastPx[2] = (UInt8)(((lastPx[2] + nnlastLineStart[currX * 3 + 2]) >> 1) + srcData[0]);
 					lineStart[currX * 3 + 0] = lastPx[0];
 					lineStart[currX * 3 + 1] = lastPx[1];
 					lineStart[currX * 3 + 2] = lastPx[2];
@@ -602,7 +605,7 @@ UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -611,15 +614,15 @@ UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 3 + 0] + srcData[2]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 3 + 1] + srcData[1]);
-						lastPx[2] = (UInt8)(lastLineStart[currX * 3 + 2] + srcData[0]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 3 + 0] + srcData[2]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 3 + 1] + srcData[1]);
+						lastPx[2] = (UInt8)(nnlastLineStart[currX * 3 + 2] + srcData[0]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 3 + 0], lastLineStart[(currX - xAdd) * 3 + 0]) + srcData[2]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 3 + 1], lastLineStart[(currX - xAdd) * 3 + 1]) + srcData[1]);
-						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], lastLineStart[currX * 3 + 2], lastLineStart[(currX - xAdd) * 3 + 2]) + srcData[0]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 3 + 0], nnlastLineStart[(currX - xAdd) * 3 + 0]) + srcData[2]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 3 + 1], nnlastLineStart[(currX - xAdd) * 3 + 1]) + srcData[1]);
+						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], nnlastLineStart[currX * 3 + 2], nnlastLineStart[(currX - xAdd) * 3 + 2]) + srcData[0]);
 					}
 					lineStart[currX * 3 + 0] = lastPx[0];
 					lineStart[currX * 3 + 1] = lastPx[1];
@@ -673,13 +676,14 @@ UInt8 *PNGParser_ParsePixelsRGB24(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
+UnsafeArray<UInt8> PNGParser_ParsePixelsRGB48(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[6];
 	lastLineStart = 0;
 	currY = initY;
@@ -729,16 +733,16 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 6 + 0] = (UInt8)(lastLineStart[currX * 6 + 0] + srcData[5]);
-					lineStart[currX * 6 + 1] = (UInt8)(lastLineStart[currX * 6 + 1] + srcData[4]);
-					lineStart[currX * 6 + 2] = (UInt8)(lastLineStart[currX * 6 + 2] + srcData[3]);
-					lineStart[currX * 6 + 3] = (UInt8)(lastLineStart[currX * 6 + 3] + srcData[2]);
-					lineStart[currX * 6 + 4] = (UInt8)(lastLineStart[currX * 6 + 4] + srcData[1]);
-					lineStart[currX * 6 + 5] = (UInt8)(lastLineStart[currX * 6 + 5] + srcData[0]);
+					lineStart[currX * 6 + 0] = (UInt8)(nnlastLineStart[currX * 6 + 0] + srcData[5]);
+					lineStart[currX * 6 + 1] = (UInt8)(nnlastLineStart[currX * 6 + 1] + srcData[4]);
+					lineStart[currX * 6 + 2] = (UInt8)(nnlastLineStart[currX * 6 + 2] + srcData[3]);
+					lineStart[currX * 6 + 3] = (UInt8)(nnlastLineStart[currX * 6 + 3] + srcData[2]);
+					lineStart[currX * 6 + 4] = (UInt8)(nnlastLineStart[currX * 6 + 4] + srcData[1]);
+					lineStart[currX * 6 + 5] = (UInt8)(nnlastLineStart[currX * 6 + 5] + srcData[0]);
 					srcData += 6;
 					currX += xAdd;
 				}
@@ -760,7 +764,7 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -770,12 +774,12 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 				lastPx[5] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 6 + 0]) >> 1) + srcData[5]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 6 + 1]) >> 1) + srcData[4]);
-					lastPx[2] = (UInt8)(((lastPx[2] + lastLineStart[currX * 6 + 2]) >> 1) + srcData[3]);
-					lastPx[3] = (UInt8)(((lastPx[3] + lastLineStart[currX * 6 + 3]) >> 1) + srcData[2]);
-					lastPx[4] = (UInt8)(((lastPx[4] + lastLineStart[currX * 6 + 4]) >> 1) + srcData[1]);
-					lastPx[5] = (UInt8)(((lastPx[5] + lastLineStart[currX * 6 + 5]) >> 1) + srcData[0]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 6 + 0]) >> 1) + srcData[5]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 6 + 1]) >> 1) + srcData[4]);
+					lastPx[2] = (UInt8)(((lastPx[2] + nnlastLineStart[currX * 6 + 2]) >> 1) + srcData[3]);
+					lastPx[3] = (UInt8)(((lastPx[3] + nnlastLineStart[currX * 6 + 3]) >> 1) + srcData[2]);
+					lastPx[4] = (UInt8)(((lastPx[4] + nnlastLineStart[currX * 6 + 4]) >> 1) + srcData[1]);
+					lastPx[5] = (UInt8)(((lastPx[5] + nnlastLineStart[currX * 6 + 5]) >> 1) + srcData[0]);
 					lineStart[currX * 6 + 0] = lastPx[0];
 					lineStart[currX * 6 + 1] = lastPx[1];
 					lineStart[currX * 6 + 2] = lastPx[2];
@@ -815,7 +819,7 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -827,21 +831,21 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 6 + 0] + srcData[5]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 6 + 1] + srcData[4]);
-						lastPx[2] = (UInt8)(lastLineStart[currX * 6 + 2] + srcData[3]);
-						lastPx[3] = (UInt8)(lastLineStart[currX * 6 + 3] + srcData[2]);
-						lastPx[4] = (UInt8)(lastLineStart[currX * 6 + 4] + srcData[1]);
-						lastPx[5] = (UInt8)(lastLineStart[currX * 6 + 5] + srcData[0]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 6 + 0] + srcData[5]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 6 + 1] + srcData[4]);
+						lastPx[2] = (UInt8)(nnlastLineStart[currX * 6 + 2] + srcData[3]);
+						lastPx[3] = (UInt8)(nnlastLineStart[currX * 6 + 3] + srcData[2]);
+						lastPx[4] = (UInt8)(nnlastLineStart[currX * 6 + 4] + srcData[1]);
+						lastPx[5] = (UInt8)(nnlastLineStart[currX * 6 + 5] + srcData[0]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 6 + 0], lastLineStart[(currX - xAdd) * 6 + 0]) + srcData[5]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 6 + 1], lastLineStart[(currX - xAdd) * 6 + 1]) + srcData[4]);
-						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], lastLineStart[currX * 6 + 2], lastLineStart[(currX - xAdd) * 6 + 2]) + srcData[3]);
-						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], lastLineStart[currX * 6 + 3], lastLineStart[(currX - xAdd) * 6 + 3]) + srcData[2]);
-						lastPx[4] = (UInt8)(PNGParser_PaethPredictor(lastPx[4], lastLineStart[currX * 6 + 4], lastLineStart[(currX - xAdd) * 6 + 4]) + srcData[1]);
-						lastPx[5] = (UInt8)(PNGParser_PaethPredictor(lastPx[5], lastLineStart[currX * 6 + 5], lastLineStart[(currX - xAdd) * 6 + 5]) + srcData[0]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 6 + 0], nnlastLineStart[(currX - xAdd) * 6 + 0]) + srcData[5]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 6 + 1], nnlastLineStart[(currX - xAdd) * 6 + 1]) + srcData[4]);
+						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], nnlastLineStart[currX * 6 + 2], nnlastLineStart[(currX - xAdd) * 6 + 2]) + srcData[3]);
+						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], nnlastLineStart[currX * 6 + 3], nnlastLineStart[(currX - xAdd) * 6 + 3]) + srcData[2]);
+						lastPx[4] = (UInt8)(PNGParser_PaethPredictor(lastPx[4], nnlastLineStart[currX * 6 + 4], nnlastLineStart[(currX - xAdd) * 6 + 4]) + srcData[1]);
+						lastPx[5] = (UInt8)(PNGParser_PaethPredictor(lastPx[5], nnlastLineStart[currX * 6 + 5], nnlastLineStart[(currX - xAdd) * 6 + 5]) + srcData[0]);
 					}
 					lineStart[currX * 6 + 0] = lastPx[0];
 					lineStart[currX * 6 + 1] = lastPx[1];
@@ -913,13 +917,14 @@ UInt8 *PNGParser_ParsePixelsRGB48(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, U
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsARGB32(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[4];
 	UInt8 a;
 	UInt8 aAnd = 0xff;
@@ -962,14 +967,14 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 4 + 0] = (UInt8)(lastLineStart[currX * 4 + 0] + srcData[2]);
-					lineStart[currX * 4 + 1] = (UInt8)(lastLineStart[currX * 4 + 1] + srcData[1]);
-					lineStart[currX * 4 + 2] = (UInt8)(lastLineStart[currX * 4 + 2] + srcData[0]);
-					a = lineStart[currX * 4 + 3] = (UInt8)(lastLineStart[currX * 4 + 3] + srcData[3]);
+					lineStart[currX * 4 + 0] = (UInt8)(nnlastLineStart[currX * 4 + 0] + srcData[2]);
+					lineStart[currX * 4 + 1] = (UInt8)(nnlastLineStart[currX * 4 + 1] + srcData[1]);
+					lineStart[currX * 4 + 2] = (UInt8)(nnlastLineStart[currX * 4 + 2] + srcData[0]);
+					a = lineStart[currX * 4 + 3] = (UInt8)(nnlastLineStart[currX * 4 + 3] + srcData[3]);
 					aAnd &= a;
 					srcData += 4;
 					currX += xAdd;
@@ -991,7 +996,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -999,10 +1004,10 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				lastPx[3] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 4 + 0]) >> 1) + srcData[2]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 4 + 1]) >> 1) + srcData[1]);
-					lastPx[2] = (UInt8)(((lastPx[2] + lastLineStart[currX * 4 + 2]) >> 1) + srcData[0]);
-					lastPx[3] = (UInt8)(((lastPx[3] + lastLineStart[currX * 4 + 3]) >> 1) + srcData[3]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 4 + 0]) >> 1) + srcData[2]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 4 + 1]) >> 1) + srcData[1]);
+					lastPx[2] = (UInt8)(((lastPx[2] + nnlastLineStart[currX * 4 + 2]) >> 1) + srcData[0]);
+					lastPx[3] = (UInt8)(((lastPx[3] + nnlastLineStart[currX * 4 + 3]) >> 1) + srcData[3]);
 					WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
 					aAnd &= lastPx[3];
 					srcData += 4;
@@ -1030,7 +1035,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -1040,17 +1045,17 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 4 + 0] + srcData[2]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 4 + 1] + srcData[1]);
-						lastPx[2] = (UInt8)(lastLineStart[currX * 4 + 2] + srcData[0]);
-						lastPx[3] = (UInt8)(lastLineStart[currX * 4 + 3] + srcData[3]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 4 + 0] + srcData[2]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 4 + 1] + srcData[1]);
+						lastPx[2] = (UInt8)(nnlastLineStart[currX * 4 + 2] + srcData[0]);
+						lastPx[3] = (UInt8)(nnlastLineStart[currX * 4 + 3] + srcData[3]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 4 + 0], lastLineStart[(currX - xAdd) * 4 + 0]) + srcData[2]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 4 + 1], lastLineStart[(currX - xAdd) * 4 + 1]) + srcData[1]);
-						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], lastLineStart[currX * 4 + 2], lastLineStart[(currX - xAdd) * 4 + 2]) + srcData[0]);
-						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], lastLineStart[currX * 4 + 3], lastLineStart[(currX - xAdd) * 4 + 3]) + srcData[3]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 4 + 0], nnlastLineStart[(currX - xAdd) * 4 + 0]) + srcData[2]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 4 + 1], nnlastLineStart[(currX - xAdd) * 4 + 1]) + srcData[1]);
+						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], nnlastLineStart[currX * 4 + 2], nnlastLineStart[(currX - xAdd) * 4 + 2]) + srcData[0]);
+						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], nnlastLineStart[currX * 4 + 3], nnlastLineStart[(currX - xAdd) * 4 + 3]) + srcData[3]);
 					}
 					WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
 					aAnd &= lastPx[3];
@@ -1111,13 +1116,14 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsARGB64(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[8];
 	UInt8 a0;
 	UInt8 a1;
@@ -1186,18 +1192,18 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 8 + 0] = (UInt8)(lastLineStart[currX * 8 + 0] + srcData[5]);
-					lineStart[currX * 8 + 1] = (UInt8)(lastLineStart[currX * 8 + 1] + srcData[4]);
-					lineStart[currX * 8 + 2] = (UInt8)(lastLineStart[currX * 8 + 2] + srcData[3]);
-					lineStart[currX * 8 + 3] = (UInt8)(lastLineStart[currX * 8 + 3] + srcData[2]);
-					lineStart[currX * 8 + 4] = (UInt8)(lastLineStart[currX * 8 + 4] + srcData[1]);
-					lineStart[currX * 8 + 5] = (UInt8)(lastLineStart[currX * 8 + 5] + srcData[0]);
-					a0 = lineStart[currX * 8 + 6] = (UInt8)(lastLineStart[currX * 8 + 6] + srcData[7]);
-					a1 = lineStart[currX * 8 + 7] = (UInt8)(lastLineStart[currX * 8 + 7] + srcData[6]);
+					lineStart[currX * 8 + 0] = (UInt8)(nnlastLineStart[currX * 8 + 0] + srcData[5]);
+					lineStart[currX * 8 + 1] = (UInt8)(nnlastLineStart[currX * 8 + 1] + srcData[4]);
+					lineStart[currX * 8 + 2] = (UInt8)(nnlastLineStart[currX * 8 + 2] + srcData[3]);
+					lineStart[currX * 8 + 3] = (UInt8)(nnlastLineStart[currX * 8 + 3] + srcData[2]);
+					lineStart[currX * 8 + 4] = (UInt8)(nnlastLineStart[currX * 8 + 4] + srcData[1]);
+					lineStart[currX * 8 + 5] = (UInt8)(nnlastLineStart[currX * 8 + 5] + srcData[0]);
+					a0 = lineStart[currX * 8 + 6] = (UInt8)(nnlastLineStart[currX * 8 + 6] + srcData[7]);
+					a1 = lineStart[currX * 8 + 7] = (UInt8)(nnlastLineStart[currX * 8 + 7] + srcData[6]);
 					if (a0 != 0xff || a1 != 0xff)
 					{
 						semiTr = true;
@@ -1229,7 +1235,7 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -1241,14 +1247,14 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				lastPx[7] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 8 + 0]) >> 1) + srcData[5]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 8 + 1]) >> 1) + srcData[4]);
-					lastPx[2] = (UInt8)(((lastPx[2] + lastLineStart[currX * 8 + 2]) >> 1) + srcData[3]);
-					lastPx[3] = (UInt8)(((lastPx[3] + lastLineStart[currX * 8 + 3]) >> 1) + srcData[2]);
-					lastPx[4] = (UInt8)(((lastPx[4] + lastLineStart[currX * 8 + 4]) >> 1) + srcData[1]);
-					lastPx[5] = (UInt8)(((lastPx[5] + lastLineStart[currX * 8 + 5]) >> 1) + srcData[0]);
-					lastPx[6] = (UInt8)(((lastPx[6] + lastLineStart[currX * 8 + 6]) >> 1) + srcData[7]);
-					lastPx[7] = (UInt8)(((lastPx[7] + lastLineStart[currX * 8 + 7]) >> 1) + srcData[6]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 8 + 0]) >> 1) + srcData[5]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 8 + 1]) >> 1) + srcData[4]);
+					lastPx[2] = (UInt8)(((lastPx[2] + nnlastLineStart[currX * 8 + 2]) >> 1) + srcData[3]);
+					lastPx[3] = (UInt8)(((lastPx[3] + nnlastLineStart[currX * 8 + 3]) >> 1) + srcData[2]);
+					lastPx[4] = (UInt8)(((lastPx[4] + nnlastLineStart[currX * 8 + 4]) >> 1) + srcData[1]);
+					lastPx[5] = (UInt8)(((lastPx[5] + nnlastLineStart[currX * 8 + 5]) >> 1) + srcData[0]);
+					lastPx[6] = (UInt8)(((lastPx[6] + nnlastLineStart[currX * 8 + 6]) >> 1) + srcData[7]);
+					lastPx[7] = (UInt8)(((lastPx[7] + nnlastLineStart[currX * 8 + 7]) >> 1) + srcData[6]);
 					lineStart[currX * 8 + 0] = lastPx[0];
 					lineStart[currX * 8 + 1] = lastPx[1];
 					lineStart[currX * 8 + 2] = lastPx[2];
@@ -1304,7 +1310,7 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -1318,25 +1324,25 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 8 + 0] + srcData[5]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 8 + 1] + srcData[4]);
-						lastPx[2] = (UInt8)(lastLineStart[currX * 8 + 2] + srcData[3]);
-						lastPx[3] = (UInt8)(lastLineStart[currX * 8 + 3] + srcData[2]);
-						lastPx[4] = (UInt8)(lastLineStart[currX * 8 + 4] + srcData[1]);
-						lastPx[5] = (UInt8)(lastLineStart[currX * 8 + 5] + srcData[0]);
-						lastPx[6] = (UInt8)(lastLineStart[currX * 8 + 6] + srcData[7]);
-						lastPx[7] = (UInt8)(lastLineStart[currX * 8 + 7] + srcData[6]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 8 + 0] + srcData[5]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 8 + 1] + srcData[4]);
+						lastPx[2] = (UInt8)(nnlastLineStart[currX * 8 + 2] + srcData[3]);
+						lastPx[3] = (UInt8)(nnlastLineStart[currX * 8 + 3] + srcData[2]);
+						lastPx[4] = (UInt8)(nnlastLineStart[currX * 8 + 4] + srcData[1]);
+						lastPx[5] = (UInt8)(nnlastLineStart[currX * 8 + 5] + srcData[0]);
+						lastPx[6] = (UInt8)(nnlastLineStart[currX * 8 + 6] + srcData[7]);
+						lastPx[7] = (UInt8)(nnlastLineStart[currX * 8 + 7] + srcData[6]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 8 + 0], lastLineStart[(currX - xAdd) * 8 + 0]) + srcData[5]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 8 + 1], lastLineStart[(currX - xAdd) * 8 + 1]) + srcData[4]);
-						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], lastLineStart[currX * 8 + 2], lastLineStart[(currX - xAdd) * 8 + 2]) + srcData[3]);
-						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], lastLineStart[currX * 8 + 3], lastLineStart[(currX - xAdd) * 8 + 3]) + srcData[2]);
-						lastPx[4] = (UInt8)(PNGParser_PaethPredictor(lastPx[4], lastLineStart[currX * 8 + 4], lastLineStart[(currX - xAdd) * 8 + 4]) + srcData[1]);
-						lastPx[5] = (UInt8)(PNGParser_PaethPredictor(lastPx[5], lastLineStart[currX * 8 + 5], lastLineStart[(currX - xAdd) * 8 + 5]) + srcData[0]);
-						lastPx[6] = (UInt8)(PNGParser_PaethPredictor(lastPx[6], lastLineStart[currX * 8 + 6], lastLineStart[(currX - xAdd) * 8 + 6]) + srcData[7]);
-						lastPx[7] = (UInt8)(PNGParser_PaethPredictor(lastPx[7], lastLineStart[currX * 8 + 7], lastLineStart[(currX - xAdd) * 8 + 7]) + srcData[6]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 8 + 0], nnlastLineStart[(currX - xAdd) * 8 + 0]) + srcData[5]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 8 + 1], nnlastLineStart[(currX - xAdd) * 8 + 1]) + srcData[4]);
+						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], nnlastLineStart[currX * 8 + 2], nnlastLineStart[(currX - xAdd) * 8 + 2]) + srcData[3]);
+						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], nnlastLineStart[currX * 8 + 3], nnlastLineStart[(currX - xAdd) * 8 + 3]) + srcData[2]);
+						lastPx[4] = (UInt8)(PNGParser_PaethPredictor(lastPx[4], nnlastLineStart[currX * 8 + 4], nnlastLineStart[(currX - xAdd) * 8 + 4]) + srcData[1]);
+						lastPx[5] = (UInt8)(PNGParser_PaethPredictor(lastPx[5], nnlastLineStart[currX * 8 + 5], nnlastLineStart[(currX - xAdd) * 8 + 5]) + srcData[0]);
+						lastPx[6] = (UInt8)(PNGParser_PaethPredictor(lastPx[6], nnlastLineStart[currX * 8 + 6], nnlastLineStart[(currX - xAdd) * 8 + 6]) + srcData[7]);
+						lastPx[7] = (UInt8)(PNGParser_PaethPredictor(lastPx[7], nnlastLineStart[currX * 8 + 7], nnlastLineStart[(currX - xAdd) * 8 + 7]) + srcData[6]);
 					}
 					lineStart[currX * 8 + 0] = lastPx[0];
 					lineStart[currX * 8 + 1] = lastPx[1];
@@ -1436,13 +1442,14 @@ UInt8 *PNGParser_ParsePixelsARGB64(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsAW16(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[2];
 	UInt8 a;
 	Bool semiTr = false;
@@ -1486,12 +1493,12 @@ UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 2 + 0] = (UInt8)(lastLineStart[currX * 2 + 0] + srcData[0]);
-					a = lineStart[currX * 2 + 1] = (UInt8)(lastLineStart[currX * 2 + 1] + srcData[1]);
+					lineStart[currX * 2 + 0] = (UInt8)(nnlastLineStart[currX * 2 + 0] + srcData[0]);
+					a = lineStart[currX * 2 + 1] = (UInt8)(nnlastLineStart[currX * 2 + 1] + srcData[1]);
 					if (a != 0xff)
 					{
 						semiTr = true;
@@ -1517,14 +1524,14 @@ UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 2 + 0]) >> 1) + srcData[0]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 2 + 1]) >> 1) + srcData[1]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 2 + 0]) >> 1) + srcData[0]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 2 + 1]) >> 1) + srcData[1]);
 					lineStart[currX * 2 + 0] = lastPx[0];
 					lineStart[currX * 2 + 1] = lastPx[1];
 					if (lastPx[1] != 0xff)
@@ -1556,7 +1563,7 @@ UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -1564,13 +1571,13 @@ UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 2 + 0] + srcData[0]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 2 + 1] + srcData[1]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 2 + 0] + srcData[0]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 2 + 1] + srcData[1]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 2 + 0], lastLineStart[(currX - xAdd) * 2 + 0]) + srcData[0]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 2 + 1], lastLineStart[(currX - xAdd) * 2 + 1]) + srcData[1]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 2 + 0], nnlastLineStart[(currX - xAdd) * 2 + 0]) + srcData[0]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 2 + 1], nnlastLineStart[(currX - xAdd) * 2 + 1]) + srcData[1]);
 					}
 					lineStart[currX * 2 + 0] = lastPx[0];
 					lineStart[currX * 2 + 1] = lastPx[1];
@@ -1634,13 +1641,14 @@ UInt8 *PNGParser_ParsePixelsAW16(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
+UnsafeArray<UInt8> PNGParser_ParsePixelsAW32(UnsafeArray<UInt8> srcData, UnsafeArray<UInt8> destBuff, UOSInt bpl, UOSInt initX, UOSInt initY, UOSInt maxX, UOSInt maxY, UOSInt xAdd, UOSInt yAdd, Bool *alphaFound)
 {
-	UInt8 *lineStart = destBuff + initY * bpl;
+	UnsafeArray<UInt8> lineStart = destBuff + initY * bpl;
 	UOSInt currX;
 	UOSInt currY;
 	UInt8 px;
-	UInt8 *lastLineStart;
+	UnsafeArrayOpt<UInt8> lastLineStart;
+	UnsafeArray<UInt8> nnlastLineStart;
 	UInt8 lastPx[4];
 	UInt8 a0;
 	UInt8 a1;
@@ -1693,14 +1701,14 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 2)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				while (currX < maxX)
 				{
-					lineStart[currX * 4 + 0] = (UInt8)(lastLineStart[currX * 4 + 0] + srcData[1]);
-					lineStart[currX * 4 + 1] = (UInt8)(lastLineStart[currX * 4 + 1] + srcData[0]);
-					a0 = lineStart[currX * 4 + 2] = (UInt8)(lastLineStart[currX * 4 + 2] + srcData[3]);
-					a1 = lineStart[currX * 4 + 3] = (UInt8)(lastLineStart[currX * 4 + 3] + srcData[2]);
+					lineStart[currX * 4 + 0] = (UInt8)(nnlastLineStart[currX * 4 + 0] + srcData[1]);
+					lineStart[currX * 4 + 1] = (UInt8)(nnlastLineStart[currX * 4 + 1] + srcData[0]);
+					a0 = lineStart[currX * 4 + 2] = (UInt8)(nnlastLineStart[currX * 4 + 2] + srcData[3]);
+					a1 = lineStart[currX * 4 + 3] = (UInt8)(nnlastLineStart[currX * 4 + 3] + srcData[2]);
 					if (a0 != 0xff || a1 != 0xff)
 					{
 						semiTr = true;
@@ -1728,7 +1736,7 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 3)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -1736,10 +1744,10 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 				lastPx[3] = 0;
 				while (currX < maxX)
 				{
-					lastPx[0] = (UInt8)(((lastPx[0] + lastLineStart[currX * 4 + 0]) >> 1) + srcData[1]);
-					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 4 + 1]) >> 1) + srcData[0]);
-					lastPx[2] = (UInt8)(((lastPx[2] + lastLineStart[currX * 4 + 2]) >> 1) + srcData[3]);
-					lastPx[3] = (UInt8)(((lastPx[3] + lastLineStart[currX * 4 + 3]) >> 1) + srcData[2]);
+					lastPx[0] = (UInt8)(((lastPx[0] + nnlastLineStart[currX * 4 + 0]) >> 1) + srcData[1]);
+					lastPx[1] = (UInt8)(((lastPx[1] + nnlastLineStart[currX * 4 + 1]) >> 1) + srcData[0]);
+					lastPx[2] = (UInt8)(((lastPx[2] + nnlastLineStart[currX * 4 + 2]) >> 1) + srcData[3]);
+					lastPx[3] = (UInt8)(((lastPx[3] + nnlastLineStart[currX * 4 + 3]) >> 1) + srcData[2]);
 					lineStart[currX * 4 + 0] = lastPx[0];
 					lineStart[currX * 4 + 1] = lastPx[1];
 					lineStart[currX * 4 + 2] = lastPx[2];
@@ -1779,7 +1787,7 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		}
 		else if (px == 4)
 		{
-			if (lastLineStart)
+			if (lastLineStart.SetTo(nnlastLineStart))
 			{
 				lastPx[0] = 0;
 				lastPx[1] = 0;
@@ -1789,17 +1797,17 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 				{
 					if (currX < xAdd)
 					{
-						lastPx[0] = (UInt8)(lastLineStart[currX * 4 + 0] + srcData[1]);
-						lastPx[1] = (UInt8)(lastLineStart[currX * 4 + 1] + srcData[0]);
-						lastPx[2] = (UInt8)(lastLineStart[currX * 4 + 2] + srcData[3]);
-						lastPx[3] = (UInt8)(lastLineStart[currX * 4 + 3] + srcData[2]);
+						lastPx[0] = (UInt8)(nnlastLineStart[currX * 4 + 0] + srcData[1]);
+						lastPx[1] = (UInt8)(nnlastLineStart[currX * 4 + 1] + srcData[0]);
+						lastPx[2] = (UInt8)(nnlastLineStart[currX * 4 + 2] + srcData[3]);
+						lastPx[3] = (UInt8)(nnlastLineStart[currX * 4 + 3] + srcData[2]);
 					}
 					else
 					{
-						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], lastLineStart[currX * 4 + 0], lastLineStart[(currX - xAdd) * 4 + 0]) + srcData[1]);
-						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], lastLineStart[currX * 4 + 1], lastLineStart[(currX - xAdd) * 4 + 1]) + srcData[0]);
-						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], lastLineStart[currX * 4 + 2], lastLineStart[(currX - xAdd) * 4 + 2]) + srcData[3]);
-						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], lastLineStart[currX * 4 + 3], lastLineStart[(currX - xAdd) * 4 + 3]) + srcData[2]);
+						lastPx[0] = (UInt8)(PNGParser_PaethPredictor(lastPx[0], nnlastLineStart[currX * 4 + 0], nnlastLineStart[(currX - xAdd) * 4 + 0]) + srcData[1]);
+						lastPx[1] = (UInt8)(PNGParser_PaethPredictor(lastPx[1], nnlastLineStart[currX * 4 + 1], nnlastLineStart[(currX - xAdd) * 4 + 1]) + srcData[0]);
+						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], nnlastLineStart[currX * 4 + 2], nnlastLineStart[(currX - xAdd) * 4 + 2]) + srcData[3]);
+						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], nnlastLineStart[currX * 4 + 3], nnlastLineStart[(currX - xAdd) * 4 + 3]) + srcData[2]);
 					}
 					lineStart[currX * 4 + 0] = lastPx[0];
 					lineStart[currX * 4 + 1] = lastPx[1];
@@ -1875,7 +1883,7 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
+void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UnsafeArray<UInt8> dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
 {
 	NN<Media::StaticImage> simg;
 	switch (colorType)
@@ -1885,7 +1893,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
 			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispSize.y);
-			UInt8 *lineStart;
+			UnsafeArray<UInt8> lineStart;
 			OSInt pxMask;
 			OSInt pxAMask;
 			OSInt pxShift;
@@ -2038,7 +2046,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 			if (info->dispSize.x != imgW || info->dispSize.y != imgH)
 			{
-				MemClearAC(simg->data, info->byteSize);
+				MemClearAC(simg->data.Ptr(), info->byteSize);
 			}
 
 			if (interlaceMeth == 1)
@@ -2198,7 +2206,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			if (bitDepth < 8)
 			{
 				UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
-				UInt8 *lineStart;
+				UnsafeArray<UInt8> lineStart;
 
 				info->atype = Media::AT_ALPHA;
 				info->storeSize.x = storeWidth;
@@ -2212,7 +2220,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 
 					lineStart = simg->data;
 
-					MemClearAC(lineStart, info->byteSize);
+					MemClearAC(lineStart.Ptr(), info->byteSize);
 					if (interlaceMeth == 1)
 					{
 						//Pass1
@@ -2246,7 +2254,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					MemCopyNO(simg->pal, palette, 16);
 
 					lineStart = simg->data;
-					MemClearAC(lineStart, info->byteSize);
+					MemClearAC(lineStart.Ptr(), info->byteSize);
 					if (interlaceMeth == 1)
 					{
 						//Pass1
@@ -2280,7 +2288,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					MemCopyNO(simg->pal, palette, 64);
 
 					lineStart = simg->data;
-					MemClearAC(lineStart, info->byteSize);
+					MemClearAC(lineStart.Ptr(), info->byteSize);
 					if (interlaceMeth == 1)
 					{
 						//Pass1
@@ -2791,7 +2799,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				if (mstm.SetTo(nnmstm))
 				{
 					UOSInt dataSize;
-					UInt8 *dataBuff = nnmstm->GetBuff(dataSize);
+					UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 					if (dataSize == imgSize || imgSize != 0)
 					{
 						ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
@@ -2912,7 +2920,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 			{
 				wcstm->Flush();
 				UOSInt dataSize;
-				UInt8 *dataBuff = nnmstm->GetBuff(dataSize);
+				UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 				if (dataSize == imgSize || imgSize != 0)
 				{
 					ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
@@ -2930,7 +2938,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	{
 		wcstm->Flush();
 		UOSInt dataSize;
-		UInt8 *dataBuff = nnmstm->GetBuff(dataSize);
+		UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 		if (dataSize == imgSize || imgSize != 0)
 		{
 			ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
