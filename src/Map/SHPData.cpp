@@ -53,7 +53,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
 	NN<Math::CoordinateSystem> csys;
-	if (prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)}).SetTo(csys))
+	if (prjParser->ParsePRJFile(CSTRP(sbuff, sptr)).SetTo(csys))
 	{
 		this->SetCoordinateSystem(csys);	
 	}
@@ -410,7 +410,7 @@ UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray 
 		}
 		return j;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE)
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
 		j = this->recs->GetCount();
 		i = 0;
@@ -485,7 +485,7 @@ Int64 Map::SHPData::GetObjectIdMax() const
 	{
 		return (Int64)this->ptX->GetCount() - 1;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE)
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
 		return (Int64)this->recs->GetCount() - 1;
 	}
