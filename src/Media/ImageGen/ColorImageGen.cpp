@@ -21,8 +21,8 @@ Text::CStringNN Media::ImageGen::ColorImageGen::GetName() const
 Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
-	Int64 *imgPtr;
-	UInt8 *imgPtr2;
+	UnsafeArray<Int64> imgPtr;
+	UnsafeArray<UInt8> imgPtr2;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -39,7 +39,7 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	imgPtr2 = outImage->data;
 	k = 0;
 
-	imgPtr = (Int64*)imgPtr2;
+	imgPtr = UnsafeArray<Int64>::ConvertFrom(imgPtr2);
 	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(1) * 65535.0);
@@ -134,12 +134,12 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, bpl);
+		MemCopyNO(imgPtr2.Ptr(), imgPtr.Ptr(), bpl);
 		imgPtr2 += bpl;
 		k++;
 	}
 
-	imgPtr = (Int64*)imgPtr2;
+	imgPtr = UnsafeArray<Int64>::ConvertFrom(imgPtr2);
 	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(1) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
@@ -234,12 +234,12 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, bpl);
+		MemCopyNO(imgPtr2.Ptr(), imgPtr.Ptr(), bpl);
 		imgPtr2 += bpl;
 		k++;
 	}
 
-	imgPtr = (Int64*)imgPtr2;
+	imgPtr = UnsafeArray<Int64>::ConvertFrom(imgPtr2);
 	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(1) * 65535.0);
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
@@ -334,12 +334,12 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, (UOSInt)bpl);
+		MemCopyNO(imgPtr2.Ptr(), imgPtr.Ptr(), (UOSInt)bpl);
 		imgPtr2 += bpl;
 		k++;
 	}
 
-	imgPtr = (Int64*)imgPtr2;
+	imgPtr = UnsafeArray<Int64>::ConvertFrom(imgPtr2);
 	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
 	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
 	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
@@ -434,7 +434,7 @@ Optional<Media::RasterImage> Media::ImageGen::ColorImageGen::GenerateImage(NN<co
 	imgPtr2 += bpl;
 	while (k < l)
 	{
-		MemCopyNO(imgPtr2, imgPtr, bpl);
+		MemCopyNO(imgPtr2.Ptr(), imgPtr.Ptr(), bpl);
 		imgPtr2 += bpl;
 		k++;
 	}

@@ -1439,7 +1439,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	UInt8 *tmpBuff;
 	UInt8 *tmpBuff2;
-	UInt8 *imgPtr1;
+	UnsafeArray<UInt8> imgPtr1;
 	UInt8 *imgPtr2;
 	UOSInt i;
 	UOSInt j;
@@ -1637,7 +1637,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1, k);
+			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x >> 3;
 		}
@@ -1668,7 +1668,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1, k);
+			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x >> 2;
 		}
@@ -1699,7 +1699,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1, k);
+			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x >> 1;
 		}
@@ -1730,7 +1730,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1, k);
+			MemCopyNO(imgPtr2, imgPtr1.Ptr(), k);
 			imgPtr2 += k;
 			imgPtr1 += img->info.storeSize.x;
 		}
@@ -1795,7 +1795,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		{
 			j = img->info.dispSize.x;
 			*imgPtr2++ = 0;
-			MemCopyNO(imgPtr2, imgPtr1, j << 1);
+			MemCopyNO(imgPtr2, imgPtr1.Ptr(), j << 1);
 			imgPtr1 += img->info.storeSize.x << 1;
 			imgPtr2 += img->info.dispSize.x << 1;
 		}

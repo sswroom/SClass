@@ -33,7 +33,7 @@ Media::Resizer::NearestNeighbourResizer32_32::~NearestNeighbourResizer32_32()
 	}
 }
 
-void Media::Resizer::NearestNeighbourResizer32_32::Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::NearestNeighbourResizer32_32::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	UOSInt i;
 	UOSInt j;
@@ -88,7 +88,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(const UInt8 *src, OSIn
 			i++;
 		}
 	}
-	NearestNeighbourResizer32_32_Resize(src, dest, dwidth, dheight, dbpl, this->xindex, this->yindex);
+	NearestNeighbourResizer32_32_Resize(src.Ptr(), dest.Ptr(), dwidth, dheight, dbpl, this->xindex, this->yindex);
 }
 
 Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg)

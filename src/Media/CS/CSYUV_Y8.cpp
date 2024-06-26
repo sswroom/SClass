@@ -12,7 +12,7 @@ Media::CS::CSYUV_Y8::~CSYUV_Y8()
 {
 }
 
-void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
+void Media::CS::CSYUV_Y8::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
 {
 	if (this->srcFmt == *(UInt32*)"YUYV" || this->srcFmt == *(UInt32*)"YUY2")
 	{

@@ -28,8 +28,8 @@ namespace Media
 		void SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status);
 		Bool GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSInt> vOfst, OptOut<OSInt> level, OptOut<Int32> status);
 
-		void ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
-		void ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
+		void ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
+		void ProcessImage64(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
 	};
 }
 #endif

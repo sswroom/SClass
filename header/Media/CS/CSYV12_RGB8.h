@@ -72,7 +72,7 @@ namespace Media
 		public:
 			CSYV12_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYV12_RGB8();
-			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

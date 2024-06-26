@@ -603,7 +603,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				}
 				if (dimg.SetTo(simg))
 				{
-					UInt8 *buff;
+					UnsafeArray<UInt8> buff;
 					UOSInt buffSize;
 					simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
@@ -907,7 +907,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					}
 					if (dimg.SetTo(simg))
 					{
-						UInt8 *buff;
+						UnsafeArray<UInt8> buff;
 						UOSInt buffSize;
 						simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 

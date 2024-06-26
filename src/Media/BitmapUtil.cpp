@@ -50,7 +50,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)imgWidth, (UOSInt)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	outImg->info.hdpi = hdpi;
 	outImg->info.vdpi = vdpi;
-	UInt8 *pBits = (UInt8*)outImg->data;
+	UnsafeArray<UInt8> pBits = outImg->data;
 	UOSInt lineW;
 	UOSInt lineW2;
 	UOSInt currOfst;
@@ -84,7 +84,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 				while (imgHeight-- > 0)
 				{
 					currOfst -= lineW;
-					MemCopyNO(pBits, &dataBuff[currOfst], lineW2);
+					MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], lineW2);
 					pBits += lineW2;
 				}
 			}
@@ -106,7 +106,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			while (imgHeight-- > 0)
 			{
 				currOfst -= lineW;
-				MemCopyNO(pBits, &dataBuff[currOfst], (UOSInt)imgWidth);
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UOSInt)imgWidth);
 				pBits += imgWidth;
 			}
 			break;
@@ -121,7 +121,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			while (imgHeight-- > 0)
 			{
 				currOfst -= lineW;
-				MemCopyNO(pBits, &dataBuff[currOfst], lineW2);
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], lineW2);
 				pBits += lineW2;
 			}
 			break;
@@ -136,7 +136,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			while (imgHeight-- > 0)
 			{
 				currOfst -= lineW;
-				MemCopyNO(pBits, &dataBuff[currOfst], lineW2);
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], lineW2);
 				pBits += lineW2;
 			}
 			break;
@@ -146,7 +146,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			while (imgHeight-- > 0)
 			{
 				pBits -= imgWidth << 2;
-				MemCopyNO(pBits, &dataBuff[currOfst], (UOSInt)imgWidth << 2);
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UOSInt)imgWidth << 2);
 				currOfst += (UOSInt)imgWidth << 2;
 			}
 			break;
@@ -165,14 +165,14 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 			lineW2 = lineW + 4 - (lineW & 3);
 			while (imgHeight-- > 0)
 			{
-				MemCopyNO(pBits, &dataBuff[currOfst], lineW);
+				MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], lineW);
 				pBits += lineW;
 				currOfst += lineW2;
 			}
 		}
 		else
 		{
-			MemCopyNO(pBits, &dataBuff[currOfst], (UOSInt)imgHeight * lineW);
+			MemCopyNO(pBits.Ptr(), &dataBuff[currOfst], (UOSInt)imgHeight * lineW);
 		}
 	}
 	return outImg;

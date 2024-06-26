@@ -157,7 +157,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		buff[10] = 8;
 		stm->Write(Data::ByteArrayR(buff, 11));
 
-		UInt8 *imgData = MemAlloc(UInt8, img->info.dispSize.CalcArea());
+		UnsafeArray<UInt8> imgData = MemAllocArr(UInt8, img->info.dispSize.CalcArea());
 		UOSInt imgSize;
 		Data::Compress::LZWEncStream2 *lzw;
 		imgSize = img->info.dispSize.CalcArea() >> 1;
@@ -167,7 +167,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(mstm, true, 8, 12, 0));
 		img->GetRasterData(imgData, 0, 0, img->info.dispSize.x, img->info.dispSize.y, img->info.dispSize.x, false, Media::RotateType::None);
 		lzw->Write(Data::ByteArrayR(imgData, img->info.dispSize.CalcArea()));
-		MemFree(imgData);
+		MemFreeArr(imgData);
 		DEL_CLASS(lzw);
 		imgData = mstm.GetBuff(imgSize);
 		i = 0;

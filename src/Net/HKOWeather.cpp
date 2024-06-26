@@ -78,7 +78,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *text
 Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact)
 {
 	UInt8 buff[1024];
-	UInt8 *mbuff;
+	UnsafeArray<UInt8> mbuff;
 	NN<Net::HTTPClient> cli;
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;

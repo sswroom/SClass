@@ -527,14 +527,14 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	return attachment;
 }
 
-NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CStringNN fileName)
+NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(UnsafeArray<const UInt8> content, UOSInt contentLen, Text::CStringNN fileName)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = contentLen;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
-	MemCopyNO(attachment->content, content, contentLen);
+	MemCopyNO(attachment->content, content.Ptr(), contentLen);
 	attachment->createTime.SetCurrTimeUTC();
 	attachment->modifyTime.SetValue(attachment->createTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));

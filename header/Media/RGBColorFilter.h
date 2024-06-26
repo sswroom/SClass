@@ -12,14 +12,14 @@ namespace Media
 	private:
 		typedef struct
 		{
-			UInt8 *srcPtr;
-			UInt8 *destPtr;
+			UnsafeArray<UInt8> srcPtr;
+			UnsafeArray<UInt8> destPtr;
 			UOSInt width;
 			UOSInt height;
 			OSInt sAdd;
 			OSInt dAdd;
 			Int32 threadStat;
-			Media::RGBColorFilter *me;
+			NN<Media::RGBColorFilter> me;
 			Sync::Event *evt;
 		} ThreadStat;
 
@@ -38,7 +38,7 @@ namespace Media
 
 		UOSInt nThread;
 		Sync::Event threadEvt;
-		ThreadStat *threadStats;
+		UnsafeArray<ThreadStat> threadStats;
 
 		static UInt32 __stdcall ProcessThread(AnyType userObj);
 		void WaitForThread(Int32 stat);
@@ -46,9 +46,9 @@ namespace Media
 		RGBColorFilter(NN<Media::ColorManager> colorMgr);
 		~RGBColorFilter();
 
-		void SetGammaCorr(Double *gammaParam, UOSInt gammaCnt);
+		void SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UOSInt gammaCnt);
 		void SetParameter(Double brightness, Double contrast, Double gamma, NN<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev);
-		void ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
+		void ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
 	};
 }
 #endif

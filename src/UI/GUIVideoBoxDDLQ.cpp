@@ -11,6 +11,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 {
 	NN<Media::CS::CSConverter> csconv;
 	NN<Media::MonitorSurface> destSurface;
+	UnsafeArray<UInt8> vsrcBuff;
 	DrawRect rect;
 	UOSInt srcWidth = 0;
 	UOSInt srcHeight = 0;
@@ -19,6 +20,8 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	UOSInt cropDY;
 	UInt8 *srcBuff = tstat->lrBuff;
 	UOSInt sizeNeeded;
+	if (!vbuff->srcBuff.SetTo(vsrcBuff))
+		return;
 
 #if 0
 	tstat->me->buffMut->Lock();
@@ -36,7 +39,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 		return;
 
 	Manage::HiResClock clk;
-	csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, this->videoInfo.dispSize.x, this->videoInfo.dispSize.y, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y, (OSInt)this->videoInfo.dispSize.x * 4, vbuff->frameType, vbuff->ycOfst);
+	csconv->ConvertV2(&vsrcBuff, tstat->lrBuff, this->videoInfo.dispSize.x, this->videoInfo.dispSize.y, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y, (OSInt)this->videoInfo.dispSize.x * 4, vbuff->frameType, vbuff->ycOfst);
 	tstat->csTime = clk.GetTimeDiff();
 
 	if (vbuff->frameType == Media::FT_NON_INTERLACE)

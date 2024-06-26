@@ -7,7 +7,7 @@
 void Media::LRGBLimiter::TaskFunc(AnyType userObj)
 {
 	NN<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
-	LRGBLimiter_LimitImageLRGB(status->imgPtr, status->w, status->h);
+	LRGBLimiter_LimitImageLRGB(status->imgPtr.Ptr(), status->w, status->h);
 }
 
 Media::LRGBLimiter::LRGBLimiter() : ptask((Sync::ThreadUtil::GetThreadCnt() >= 4)?4:Sync::ThreadUtil::GetThreadCnt(), false)
@@ -18,7 +18,7 @@ Media::LRGBLimiter::~LRGBLimiter()
 {
 }
 
-void Media::LRGBLimiter::LimitImageLRGB(UInt8 *imgPtr, UOSInt w, UOSInt h)
+void Media::LRGBLimiter::LimitImageLRGB(UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h)
 {
 	ThreadStatus status[4];
 	UOSInt j = this->ptask.GetThreadCnt();

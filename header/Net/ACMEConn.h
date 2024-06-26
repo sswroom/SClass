@@ -93,11 +93,11 @@ namespace Net
 		Optional<Challenge> OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
 		Order *OrderGetStatus(UnsafeArray<const UTF8Char> orderURL);
 		Order *OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, Crypto::Cert::X509CertReq *csr);
-		void OrderFree(Order *order);
+		void OrderFree(NN<Order> order);
 
 		Optional<Challenge> ChallengeBegin(NN<Text::String> challURL);
 		Optional<Challenge> ChallengeGetStatus(NN<Text::String> challURL);
-		void ChallengeFree(Challenge *chall);
+		void ChallengeFree(NN<Challenge> chall);
 
 		Bool NewKey();
 		Bool SetKey(Crypto::Cert::X509Key *key);

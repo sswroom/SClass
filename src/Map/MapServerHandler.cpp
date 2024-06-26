@@ -320,7 +320,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequ
 	mstm.Write(Data::ByteArrayR(U8STR(""), 1));
 
 	UOSInt buffSize;
-	UInt8 *buff = mstm.GetBuff(buffSize);
+	UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, buffSize - 1));
 	if (json == 0)
 	{

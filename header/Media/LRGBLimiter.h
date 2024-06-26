@@ -10,7 +10,7 @@ namespace Media
 	private:
 		struct ThreadStatus
 		{
-			UInt8 *imgPtr;
+			UnsafeArray<UInt8> imgPtr;
 			UOSInt w;
 			UOSInt h;
 		};
@@ -22,7 +22,7 @@ namespace Media
 		LRGBLimiter();
 		~LRGBLimiter();
 
-		void LimitImageLRGB(UInt8 *imgPtr, UOSInt w, UOSInt h);
+		void LimitImageLRGB(UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h);
 	};
 }
 #endif

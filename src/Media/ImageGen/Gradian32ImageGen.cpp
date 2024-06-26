@@ -20,7 +20,7 @@ Text::CStringNN Media::ImageGen::Gradian32ImageGen::GetName() const
 Optional<Media::RasterImage> Media::ImageGen::Gradian32ImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
-	UInt8 *imgPtr;
+	UnsafeArray<UInt8> imgPtr;
 	UOSInt i;
 	UOSInt j;
 	UInt8 hv;

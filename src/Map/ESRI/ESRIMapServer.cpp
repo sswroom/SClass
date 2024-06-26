@@ -72,8 +72,8 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFacto
 		cli.Delete();
 
 
-		UInt8 *jsonBuff = mstm.GetBuff(readSize);
-		if (jsonBuff && readSize > 0)
+		UnsafeArray<UInt8> jsonBuff = mstm.GetBuff(readSize);
+		if (readSize > 0)
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::Encoding enc(codePage);
@@ -427,7 +427,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 		}
 
 		mstm.Write(Data::ByteArrayR(U8STR(""), 1));
-		UInt8 *buff = mstm.GetBuff(readSize);
+		UnsafeArray<UInt8> buff = mstm.GetBuff(readSize);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, readSize - 1));
 		if (json)
 		{

@@ -57,6 +57,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 {
 	NN<Media::CS::CSConverter> csconv;
 	NN<Media::MonitorSurface> destSurface;
+	UnsafeArray<UInt8> vsrcBuff;
 	DrawRect rect;
 	UOSInt srcWidth = 0;
 	UOSInt srcHeight = 0;
@@ -67,6 +68,10 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 	UOSInt sizeNeeded;
 	UOSInt cropTotal = tstat->me->cropLeft + tstat->me->cropRight + tstat->me->cropTop + tstat->me->cropBottom;
 	Double par;
+	if (!vbuff->srcBuff.SetTo(vsrcBuff))
+	{
+		return;
+	}
 	if (tstat->me->forcePAR == 0)
 	{
 		par = tstat->me->videoInfo.par2 / tstat->me->monPAR;
@@ -117,8 +122,8 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 			UOSInt i;
 			NN<Media::StaticImage> simg;
 			NEW_CLASSNN(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
-			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispSize.x, info->dispSize.y, info->storeSize.x, info->storeSize.y, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
-			ImageUtil_ImageFillAlpha32(simg->data, info->dispSize.x, info->dispSize.y, simg->GetDataBpl(), 0xff);
+			csconv->ConvertV2(&vsrcBuff, simg->data, info->dispSize.x, info->dispSize.y, info->storeSize.x, info->storeSize.y, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
+			ImageUtil_ImageFillAlpha32(simg->data.Ptr(), info->dispSize.x, info->dispSize.y, simg->GetDataBpl(), 0xff);
 			sptr = this->video->GetSourceName(sbuff).Or(sbuff);
 			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			sptr = &sbuff[i + 1];
@@ -166,7 +171,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 		{
 			OSInt destBpl;
 			UInt8* destBuff = destSurface->LockSurface(destBpl);
-			csconv->ConvertV2(&vbuff->srcBuff, destBuff, tstat->me->videoInfo.dispSize.x, tstat->me->videoInfo.dispSize.y, tstat->me->videoInfo.storeSize.x, tstat->me->videoInfo.storeSize.y, destBpl, vbuff->frameType, vbuff->ycOfst);
+			csconv->ConvertV2(&vsrcBuff, destBuff, tstat->me->videoInfo.dispSize.x, tstat->me->videoInfo.dispSize.y, tstat->me->videoInfo.storeSize.x, tstat->me->videoInfo.storeSize.y, destBpl, vbuff->frameType, vbuff->ycOfst);
 			destSurface->UnlockSurface();
 		}
 		tstat->csTime = clk.GetTimeDiff();
@@ -202,7 +207,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 		}
 
 		Manage::HiResClock clk;
-		csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, tstat->me->videoInfo.dispSize.x, tstat->me->videoInfo.dispSize.y, tstat->me->videoInfo.storeSize.x, tstat->me->videoInfo.storeSize.y, (OSInt)tstat->me->videoInfo.dispSize.x * 8, vbuff->frameType, vbuff->ycOfst);
+		csconv->ConvertV2(&vsrcBuff, tstat->lrBuff, tstat->me->videoInfo.dispSize.x, tstat->me->videoInfo.dispSize.y, tstat->me->videoInfo.storeSize.x, tstat->me->videoInfo.storeSize.y, (OSInt)tstat->me->videoInfo.dispSize.x * 8, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
 		if (tstat->procType == 1)
@@ -854,6 +859,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 	printf("OnVideoFrame, frameTime = %d\r\n", frameTime);
 #endif
 
+	UnsafeArray<UInt8> srcBuff;
 	UOSInt i;
 	UOSInt j;
 	Int32 picCnt = Sync::Interlocked::IncrementI32(me->picCnt);
@@ -929,7 +935,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 		if(!me->playing)
 			return;
 	}
-	if (me->buffs[frameIndex].srcBuff == 0)
+	if (!me->buffs[frameIndex].srcBuff.SetTo(srcBuff))
 	{
 		mutUsage.EndUse();
 		return;
@@ -947,37 +953,37 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 	{
 		if (me->videoInfo.storeSize.x & 31)
 		{
-			MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+			MemCopyNANC(srcBuff.Ptr(), imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+			MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+			MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
 		}
 		else
 		{
-			MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-			MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-			MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+			MemCopyANC(srcBuff.Ptr(), imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+			MemCopyANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+			MemCopyANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
 		}
 		//			ImageUtil_YUV_Y416ShiftW(me->buffs[frameIndex].srcBuff, imgData[0], imgData[1], imgData[2], me->videoInfo.storeSize.x * me->videoInfo.dispSize.y, 0);
 	}
 	else if (me->videoInfo.fourcc == FFMT_YUV420P10LE)
 	{
-		ImageUtil_CopyShiftW(imgData[0].Ptr(), me->buffs[frameIndex].srcBuff, me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 6);
-		ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 6);
+		ImageUtil_CopyShiftW(imgData[0].Ptr(), srcBuff.Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 6);
+		ImageUtil_UVInterleaveShiftW(srcBuff.Ptr() + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 6);
 	}
 	else if (me->videoInfo.fourcc == FFMT_YUV420P12LE)
 	{
-		ImageUtil_CopyShiftW(imgData[0].Ptr(), me->buffs[frameIndex].srcBuff, me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 4);
-		ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 4);
+		ImageUtil_CopyShiftW(imgData[0].Ptr(), srcBuff.Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 4);
+		ImageUtil_UVInterleaveShiftW(srcBuff.Ptr() + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 4);
 	}
 	else if (me->videoInfo.fourcc == FFMT_YUV420P8)
 	{
-		MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y);
-		MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
-		MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y >> 2), imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
+		MemCopyNANC(srcBuff.Ptr(), imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y);
+		MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
+		MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y >> 2), imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
 	}
 	else
 	{
-		MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), dataSize);
+		MemCopyANC(srcBuff.Ptr(), imgData[0].Ptr(), dataSize);
 	}
 	me->buffs[frameIndex].frameTime = frameTime;
 	me->buffs[frameIndex].frameNum = frameNum;
@@ -1120,7 +1126,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 			if(!me->playing)
 				return;
 		}
-		if (me->buffs[frameIndex].srcBuff == 0)
+		if (!me->buffs[frameIndex].srcBuff.SetTo(srcBuff))
 		{
 			mutUsage.EndUse();
 			return;
@@ -1130,37 +1136,37 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 		{
 			if (me->videoInfo.storeSize.x & 31)
 			{
-				MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-				MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-				MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+				MemCopyNANC(srcBuff.Ptr(), imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+				MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+				MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
 			}
 			else
 			{
-				MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-				MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
-				MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+				MemCopyANC(srcBuff.Ptr(), imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+				MemCopyANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 2, imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
+				MemCopyANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y * 4, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2);
 			}
 //			ImageUtil_YUV_Y416ShiftW(me->buffs[frameIndex].srcBuff, imgData[0], imgData[1], imgData[2], me->videoInfo.storeSize.x * me->videoInfo.dispSize.y, 0);
 		}
 		else if (me->videoInfo.fourcc == FFMT_YUV420P10LE)
 		{
-			ImageUtil_CopyShiftW(imgData[0].Ptr(), me->buffs[frameIndex].srcBuff, me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 6);
-			ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 6);
+			ImageUtil_CopyShiftW(imgData[0].Ptr(), srcBuff.Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 6);
+			ImageUtil_UVInterleaveShiftW(srcBuff.Ptr() + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 6);
 		}
 		else if (me->videoInfo.fourcc == FFMT_YUV420P12LE)
 		{
-			ImageUtil_CopyShiftW(imgData[0].Ptr(), me->buffs[frameIndex].srcBuff, me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 4);
-			ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 4);
+			ImageUtil_CopyShiftW(imgData[0].Ptr(), srcBuff.Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y * 2, 4);
+			ImageUtil_UVInterleaveShiftW(srcBuff.Ptr() + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y << 1), imgData[1].Ptr(), imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2, 4);
 		}
 		else if (me->videoInfo.fourcc == FFMT_YUV420P8)
 		{
-			MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y >> 2), imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
+			MemCopyNANC(srcBuff.Ptr(), imgData[0].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y);
+			MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y, imgData[2].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
+			MemCopyNANC(srcBuff.Ptr() + me->videoInfo.storeSize.x * me->videoInfo.storeSize.y + (me->videoInfo.storeSize.x * me->videoInfo.storeSize.y >> 2), imgData[1].Ptr(), me->videoInfo.storeSize.x * me->videoInfo.dispSize.y >> 2);
 		}
 		else
 		{
-			MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0].Ptr(), dataSize);
+			MemCopyANC(srcBuff.Ptr(), imgData[0].Ptr(), dataSize);
 		}
 		me->buffs[frameIndex].frameTime = frameTime + 16;
 		me->buffs[frameIndex].frameNum = frameNum;
@@ -1352,7 +1358,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(AnyType userObj)
 				Double t;
 				clk.Start();
 				tstat->me->VideoBeginProc();
-				if (buff->srcBuff)
+				if (buff->srcBuff.NotNull())
 				{
 					tstat->me->ProcessVideo(tstat, buff, buff2);
 				}
@@ -1933,12 +1939,13 @@ Media::VideoRenderer::~VideoRenderer()
 	}
 	MemFree(this->tstats);
 
+	UnsafeArray<UInt8> srcBuff;
 	i = this->allBuffCnt;
 	while (i-- > 0)
 	{
-		if (buffs[i].srcBuff)
+		if (buffs[i].srcBuff.SetTo(srcBuff))
 		{
-			MemFreeA64(buffs[i].srcBuff);
+			MemFreeAArr(srcBuff);
 		}
 		buffs[i].destSurface.Delete();
 	}
@@ -1954,6 +1961,7 @@ Media::VideoRenderer::~VideoRenderer()
 void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 {
 	UOSInt i;
+	UnsafeArray<UInt8> srcBuff;
 	///////////////////////////////////////
 	this->playing = false;
 	this->dispMut.LockWrite();
@@ -1984,9 +1992,9 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 	i = this->allBuffCnt;
 	while (i-- > 0)
 	{
-		if (this->buffs[i].srcBuff)
+		if (this->buffs[i].srcBuff.SetTo(srcBuff))
 		{
-			MemFreeA(this->buffs[i].srcBuff);
+			MemFreeAArr(srcBuff);
 		}
 		this->buffs[i].srcBuff = 0;
 	}

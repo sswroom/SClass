@@ -520,10 +520,10 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 			}
 			else
 			{
-				UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.storeSize.y);
+				UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.storeSize.y);
 				img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
 				csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
-				MemFreeA(imgData);
+				MemFreeAArr(imgData);
 			}
 			if (this->enableLRGBLimit)
 			{
@@ -644,10 +644,10 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::IColorHandler::RGBPARA
 		}
 		else
 		{
-			UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.dispSize.y);
+			UnsafeArray<UInt8> imgData = MemAllocAArr(UInt8, img->GetDataBpl() * img->info.dispSize.y);
 			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
 			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
-			MemFreeA(imgData);
+			MemFreeAArr(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{

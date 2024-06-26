@@ -2169,7 +2169,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		sptr2 = Text::StrInt32(sptr2, id);
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
 
-		UInt8 *buff = mstm.GetBuff(i);
+		UnsafeArray<UInt8> buff = mstm.GetBuff(i);
 		{
 			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs.Write(Data::ByteArrayR(buff, i));
@@ -2390,7 +2390,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, Un
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		UOSInt size;
-		UInt8 *buff = mstm.GetBuff(size);
+		UnsafeArray<UInt8> buff = mstm.GetBuff(size);
 		fs.Write(Data::ByteArrayR(buff, size));
 	}
 	return true;

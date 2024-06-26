@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Dat
 	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	UOSInt w = img->info.dispSize.x;
 	UOSInt h = img->info.dispSize.y;
-	UInt8 *yptr = img->data;
+	UnsafeArray<UInt8> yptr = img->data;
 	UOSInt ySplit;
 	UOSInt crops[4];
 	if (img->info.fourcc == *(UInt32*)"YV12")
@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Dat
 		return;
 	}
 
-	MediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
+	MediaPlayer_VideoCropImageY(yptr.Ptr(), w, h, ySplit, crops);
 	img.Delete();
 	me->currDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vbdMain->UpdateCrop();

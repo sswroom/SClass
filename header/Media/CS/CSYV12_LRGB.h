@@ -68,7 +68,7 @@ namespace Media
 		public:
 			CSYV12_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYV12_LRGB();
-			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, Int32 width, Int32 height, Int32 srcRGBBpl, Int32 destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, Int32 width, Int32 height, Int32 srcRGBBpl, Int32 destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

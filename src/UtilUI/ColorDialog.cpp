@@ -775,7 +775,7 @@ void __inline UtilUI::ColorDialog::RGB2HSV(Double r, Double g, Double b, Double 
 	}
 }
 
-void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h)
+void UtilUI::ColorDialog::GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h)
 {
 	UOSInt i;
 	UOSInt j;
@@ -933,7 +933,7 @@ void UtilUI::ColorDialog::GenMainImage()
 {
 	UOSInt i;
 	Bool found;
-	UInt8 *imgPtr = this->mainImg->data;
+	UnsafeArray<UInt8> imgPtr = this->mainImg->data;
 	UOSInt w = this->mainImg->info.dispSize.x;
 	UOSInt h = this->mainImg->info.dispSize.y;
 
@@ -984,7 +984,7 @@ void UtilUI::ColorDialog::GenSubImage()
 	Math::Vector3 rgbv3;
 
 	UInt8 c[4];
-	UInt8 *imgPtr = this->subImg->data;
+	UnsafeArray<UInt8> imgPtr = this->subImg->data;
 	UOSInt w = this->subImg->info.dispSize.x;
 	UOSInt h = this->subImg->info.dispSize.y;
 	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
@@ -1137,7 +1137,7 @@ void UtilUI::ColorDialog::GenSubImage()
 		j = w;
 		while (j-- > 0)
 		{
-			*(Int32*)imgPtr = *(Int32*)c;
+			*(Int32*)&imgPtr[0] = *(Int32*)c;
 
 			imgPtr += 4;
 		}
@@ -1545,13 +1545,13 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 	this->genThreadCnt = Sync::ThreadUtil::GetThreadCnt();
 	NEW_CLASS(this->genEvt, Sync::Event(true));
 	UOSInt i;
-	this->genStats = MemAlloc(ThreadStat, this->genThreadCnt);
+	this->genStats = MemAllocArr(ThreadStat, this->genThreadCnt);
 	Bool running;
 	i = this->genThreadCnt;
 	while (i-- > 0)
 	{
-		NEW_CLASS(this->genStats[i].evt, Sync::Event(true));
-		this->genStats[i].me = this;
+		NEW_CLASSNN(this->genStats[i].evt, Sync::Event(true));
+		this->genStats[i].me = *this;
 		this->genStats[i].status = 0;
 		Sync::ThreadUtil::Create(GenThread, &this->genStats[i], 65536);
 	}
@@ -1622,9 +1622,9 @@ UtilUI::ColorDialog::~ColorDialog()
 	i = this->genThreadCnt;
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->genStats[i].evt);
+		this->genStats[i].evt.Delete();
 	}
-	MemFree(this->genStats);
+	MemFreeArr(this->genStats);
 
 	DEL_CLASS(this->mainImg);
 	DEL_CLASS(this->subImg);

@@ -31,11 +31,11 @@ UInt32 __stdcall Media::RGBColorFilter::ProcessThread(AnyType userObj)
 			{
 				if (tstat->me->hdrLev != 0 && tstat->me->hasSSE41)
 				{
-					RGBColorFilter_ProcessImageHDRDLPart(tstat->srcPtr, tstat->destPtr, tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp, tstat->me->hdrLev);
+					RGBColorFilter_ProcessImageHDRDLPart(tstat->srcPtr.Ptr(), tstat->destPtr.Ptr(), tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp, tstat->me->hdrLev);
 				}
 				else
 				{
-					RGBColorFilter_ProcessImagePart(tstat->srcPtr, tstat->destPtr, tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp);
+					RGBColorFilter_ProcessImagePart(tstat->srcPtr.Ptr(), tstat->destPtr.Ptr(), tstat->width, tstat->height, tstat->sAdd, tstat->dAdd, tstat->me->lut, tstat->me->bpp);
 				}
 				tstat->threadStat = 1;
 				tstat->me->threadEvt.Set();
@@ -73,7 +73,7 @@ Media::RGBColorFilter::RGBColorFilter(NN<Media::ColorManager> colorMgr)
 	this->colorMgr = colorMgr;
 	this->lut = 0;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
-	this->threadStats = MemAlloc(ThreadStat, this->nThread);
+	this->threadStats = MemAllocArr(ThreadStat, this->nThread);
 	this->hdrLev = 0;
 	this->gammaParam = 0;
 	this->gammaCnt = 0;
@@ -87,7 +87,7 @@ Media::RGBColorFilter::RGBColorFilter(NN<Media::ColorManager> colorMgr)
 	while (i-- > 0)
 	{
 		this->threadStats[i].threadStat = 0;
-		this->threadStats[i].me = this;
+		this->threadStats[i].me = *this;
 		Sync::ThreadUtil::Create(ProcessThread, &this->threadStats[i]);
 	}
 	WaitForThread(0);
@@ -121,7 +121,7 @@ Media::RGBColorFilter::~RGBColorFilter()
 			}
 		}
 	}
-	MemFree(this->threadStats);
+	MemFreeArr(this->threadStats);
 	if (this->lut)
 	{
 		MemFree(this->lut);
@@ -134,17 +134,18 @@ Media::RGBColorFilter::~RGBColorFilter()
 	}
 }
 
-void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, UOSInt gammaCnt)
+void Media::RGBColorFilter::SetGammaCorr(UnsafeArrayOpt<Double> gammaParam, UOSInt gammaCnt)
 {
 	if (this->gammaParam)
 	{
 		MemFree(this->gammaParam);
 	}
-	if (gammaParam != 0 && gammaCnt > 0)
+	UnsafeArray<Double> nngammaParam;
+	if (gammaParam.SetTo(nngammaParam) && gammaCnt > 0)
 	{
 		this->gammaCnt = gammaCnt;
 		this->gammaParam = MemAlloc(Double, gammaCnt);
-		MemCopyNO(this->gammaParam, gammaParam, sizeof(Double) * gammaCnt);
+		MemCopyNO(this->gammaParam, nngammaParam.Ptr(), sizeof(Double) * gammaCnt);
 	}
 	else
 	{
@@ -302,7 +303,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	btFunc.Delete();
 }
 
-void Media::RGBColorFilter::ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
+void Media::RGBColorFilter::ProcessImage(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown)
 {
 	if (this->lut == 0)
 		return;

@@ -18,7 +18,7 @@ extern "C"
 	void LanczosResizerLR_C16_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
 }
 
-void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -82,7 +82,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_interpolation_parameter(UOSInt 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -155,7 +155,7 @@ void Media::Resizer::LanczosResizerLR_C16::setup_decimation_parameter(UOSInt nTa
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizerLR_C16::mt_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerLR_C16::mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -180,7 +180,7 @@ void Media::Resizer::LanczosResizerLR_C16::mt_horizontal_filter(const UInt8 *inP
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizerLR_C16::mt_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerLR_C16::mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -205,7 +205,7 @@ void Media::Resizer::LanczosResizerLR_C16::mt_vertical_filter(const UInt8 *inPt,
 	this->ptask->WaitForIdle();
 }
 
-void Media::Resizer::LanczosResizerLR_C16::mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep)
+void Media::Resizer::LanczosResizerLR_C16::mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep)
 {
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -242,15 +242,15 @@ void __stdcall Media::Resizer::LanczosResizerLR_C16::DoTask(AnyType obj)
 	NN<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
-		LanczosResizerLR_C16_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C16_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 5)
 	{
-		LanczosResizerLR_C16_vertical_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C16_vertical_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 	else if (ts->funcType == 9)
 	{
-		LanczosResizerLR_C16_collapse(ts->inPt, ts->outPt, ts->width, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizerLR_C16_collapse(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->width, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
 	}
 }
 
@@ -310,14 +310,14 @@ Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt 
 	this->srcRefLuminance = srcRefLuminance;
 	this->rgbTable = 0;
 
-	this->params = MemAlloc(TaskParam, this->nThread);
-	MemClear(this->params, sizeof(TaskParam) * this->nThread);
+	this->params = MemAllocArr(TaskParam, this->nThread);
+	MemClear(this->params.Ptr(), sizeof(TaskParam) * this->nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		this->params[i].me = this;
+		this->params[i].me = *this;
 	}
-	NEW_CLASS(this->ptask, Sync::ParallelTask(this->nThread, false));
+	NEW_CLASSNN(this->ptask, Sync::ParallelTask(this->nThread, false));
 
 	hsSize = 0;
 	hsOfst = 0;
@@ -346,8 +346,8 @@ Media::Resizer::LanczosResizerLR_C16::~LanczosResizerLR_C16()
 	{
 		nncolorSess->RemoveHandler(*this);
 	}
-	DEL_CLASS(this->ptask);
-	MemFree(this->params);
+	this->ptask.Delete();
+	MemFreeArr(this->params);
 
 	DestoryHori();
 	DestoryVert();
@@ -362,7 +362,7 @@ Media::Resizer::LanczosResizerLR_C16::~LanczosResizerLR_C16()
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C16::Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
+void Media::Resizer::LanczosResizerLR_C16::Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight)
 {
 	LRHPARAMETER prm;
 	Double w;
@@ -401,11 +401,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(const UInt8 *src, OSInt sbpl, 
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				setup_decimation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				setup_interpolation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
@@ -421,11 +421,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(const UInt8 *src, OSInt sbpl, 
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, yOfst);
+				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, prm, (OSInt)dwidth << 3, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, (OSInt)dwidth << 3, yOfst);
+				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, prm, (OSInt)dwidth << 3, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
@@ -460,11 +460,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(const UInt8 *src, OSInt sbpl, 
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				setup_decimation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
+				setup_interpolation_parameter(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
@@ -497,11 +497,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(const UInt8 *src, OSInt sbpl, 
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
+				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, prm, sbpl, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, sbpl, yOfst);
+				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, prm, sbpl, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;

@@ -20,7 +20,7 @@ namespace Media
 			UOSInt preferedWidth;
 			UOSInt preferedHeight;
 
-			static void __stdcall OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnFrameChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
 		public:
 			OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NN<Media::IVideoSource> src);

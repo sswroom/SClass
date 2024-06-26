@@ -636,7 +636,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderFinalize(UnsafeArray<const UTF8Char> f
 	return 0;
 }
 
-void Net::ACMEConn::OrderFree(Order *order)
+void Net::ACMEConn::OrderFree(NN<Order> order)
 {
 	SDEL_STRING(order->orderURL);
 	if (order->authURLs)
@@ -646,7 +646,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 	}
 	OPTSTR_DEL(order->finalizeURL);
 	SDEL_STRING(order->certificateURL);
-	MemFree(order);
+	MemFreeNN(order);
 }
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeBegin(NN<Text::String> challURL)
@@ -695,11 +695,11 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeGetStatus(NN<Text::St
 	return 0;
 }
 
-void Net::ACMEConn::ChallengeFree(Challenge *chall)
+void Net::ACMEConn::ChallengeFree(NN<Challenge> chall)
 {
 	chall->token->Release();
 	chall->url->Release();
-	MemFree(chall);
+	MemFreeNN(chall);
 }
 
 Bool Net::ACMEConn::NewKey()

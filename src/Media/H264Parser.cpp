@@ -549,14 +549,14 @@ Bool Media::H264Parser::ParseSVari(NN<IO::BitReaderMSB> reader, OutParam<Int32> 
 	return ret;
 }
 
-Bool Media::H264Parser::FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize)
+Bool Media::H264Parser::FindSPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
 	UOSInt i;
 	Data::ArrayListUInt32 nalList;
 	UInt8 t;
-	FindNALs(frame, frameSize, &nalList);
+	FindNALs(frame, frameSize, nalList);
 
 	UOSInt startOfst;
 	UOSInt endOfst = frameSize;
@@ -577,13 +577,13 @@ Bool Media::H264Parser::FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt
 }
 
 
-Bool Media::H264Parser::FindPPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize)
+Bool Media::H264Parser::FindPPS(UnsafeArray<const UInt8> frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
 	UOSInt i;
 	Data::ArrayListUInt32 nalList;
-	FindNALs(frame, frameSize, &nalList);
+	FindNALs(frame, frameSize, nalList);
 
 	UOSInt startOfst;
 	UOSInt endOfst = frameSize;
@@ -602,7 +602,7 @@ Bool Media::H264Parser::FindPPS(const UInt8 *frame, UOSInt frameSize, const UInt
 	return false;
 }
 
-Bool Media::H264Parser::FindNALs(const UInt8 *frame, UOSInt frameSize, Data::ArrayListUInt32 *nalList)
+Bool Media::H264Parser::FindNALs(UnsafeArray<const UInt8> frame, UOSInt frameSize, NN<Data::ArrayListUInt32> nalList)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return false;
@@ -634,7 +634,7 @@ UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> s
 
 	UOSInt i;
 	Data::ArrayListUInt32 nalList;
-	FindNALs(frame, frameSize, &nalList);
+	FindNALs(frame, frameSize, nalList);
 
 	UOSInt startOfst;
 	UOSInt endOfst = frameSize;

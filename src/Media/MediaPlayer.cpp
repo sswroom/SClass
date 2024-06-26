@@ -105,7 +105,7 @@ void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duratio
 	NN<Media::MediaPlayer> me = userObj.GetNN<Media::MediaPlayer>();
 	UOSInt w = img->info.dispSize.x;
 	UOSInt h = img->info.dispSize.y;
-	UInt8 *yptr = img->data;
+	UnsafeArray<UInt8> yptr = img->data;
 	UOSInt ySplit;
 	UOSInt crops[4];
 	if (img->info.fourcc == *(UInt32*)"YV12")
@@ -125,7 +125,7 @@ void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duratio
 		img.Delete();
 		return;
 	}
-	MediaPlayer_VideoCropImageY(yptr, w, h, ySplit, crops);
+	MediaPlayer_VideoCropImageY(yptr.Ptr(), w, h, ySplit, crops);
 	img.Delete();
 	me->currVDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vrenderer->UpdateCrop();

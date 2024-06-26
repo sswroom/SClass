@@ -19,14 +19,14 @@ namespace UtilUI
 	private:
 		typedef struct
 		{
-			ColorDialog *me;
+			NN<ColorDialog> me;
 			Int32 status;// 1 = running, 2 = queued task, 3 = processing, 4 = toStop
-			UInt8 *imgPtr;
+			UnsafeArray<UInt8> imgPtr;
 			UOSInt startIndex;
 			UOSInt endIndex;
 			UOSInt w;
 			UOSInt h;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 		} ThreadStat;
 
 		typedef enum
@@ -107,7 +107,7 @@ namespace UtilUI
 
 		UOSInt genThreadCnt;
 		Sync::Event *genEvt;
-		ThreadStat *genStats;
+		UnsafeArray<ThreadStat> genStats;
 
 		static void __stdcall OnOKClicked(AnyType userObj);
 		static void __stdcall OnCancelClicked(AnyType userObj);
@@ -146,7 +146,7 @@ namespace UtilUI
 		static void __inline RGB2YIQ(Double r, Double g, Double b, Double *y, Double *i, Double *q);
 		static void __inline RGB2HSV(Double r, Double g, Double b, Double *h, Double *s, Double *v);
 
-		void GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h);
+		void GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h);
 		void GenMainImage();
 		void GenSubImage();
 		void StoreColor();

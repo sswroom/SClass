@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 	NN<Media::OpenCV::OCVFrame> frame;

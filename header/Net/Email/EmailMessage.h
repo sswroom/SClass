@@ -84,7 +84,7 @@ namespace Net
 			Bool AddBcc(Text::CStringNN addr);
 			void AddCustomHeader(Text::CStringNN name, Text::CStringNN value);
 			Optional<Attachment> AddAttachment(Text::CStringNN fileName);
-			NN<Attachment> AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CStringNN fileName);
+			NN<Attachment> AddAttachment(UnsafeArray<const UInt8> content, UOSInt contentLen, Text::CStringNN fileName);
 			Bool AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
 
 			Bool CompletedMessage();

@@ -74,7 +74,7 @@ namespace Media
 			Bool isEmpty;
 			Bool isProcessing;
 			Bool isOutputReady;
-			UInt8 *srcBuff;
+			UnsafeArrayOpt<UInt8> srcBuff;
 			OSInt srcW;
 			OSInt srcH;
 

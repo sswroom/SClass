@@ -27,12 +27,12 @@ namespace Media
 			Sync::Event evtMain;
 			UnsafeArray<THREADSTAT> stats;
 
-			void do_yuy2rgb(UInt8 *src, UInt8 *dest, OSInt width, OSInt height, OSInt dbpl);
+			void do_yuy2rgb(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, OSInt width, OSInt height, OSInt dbpl);
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 		public:
 			CSYUY2_LRGB(NN<Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			virtual ~CSYUY2_LRGB();
-			virtual void ConvertV2(UnsafeArray<UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
+			virtual void ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> srcPtr, UnsafeArray<UInt8> destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);
 		};
 	}

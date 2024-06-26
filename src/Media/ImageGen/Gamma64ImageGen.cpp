@@ -21,7 +21,7 @@ Text::CStringNN Media::ImageGen::Gamma64ImageGen::GetName() const
 Optional<Media::RasterImage> Media::ImageGen::Gamma64ImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
-	UInt16 *imgPtr;
+	UnsafeArray<UInt16> imgPtr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -32,7 +32,7 @@ Optional<Media::RasterImage> Media::ImageGen::Gamma64ImageGen::GenerateImage(NN<
 	NN<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
 	NN<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
 	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	imgPtr = (UInt16*)outImage->data;
+	imgPtr = UnsafeArray<UInt16>::ConvertFrom(outImage->data);
 	i = size.x >> 1;
 	j = 0;
 	while (j < i)
@@ -88,13 +88,13 @@ Optional<Media::RasterImage> Media::ImageGen::Gamma64ImageGen::GenerateImage(NN<
 	j = size.y >> 1;
 	while (i < j)
 	{
-		MemCopyNO(imgPtr, outImage->data, bpl);
+		MemCopyNO(imgPtr.Ptr(), outImage->data.Ptr(), bpl);
 		imgPtr += bpl >> 1;
 		i++;
 	}
 	if (size.y & 1)
 	{
-		MemCopyNO(imgPtr, outImage->data, bpl >> 1);
+		MemCopyNO(imgPtr.Ptr(), outImage->data.Ptr(), bpl >> 1);
 	}
 	bfunc.Delete();
 	gfunc.Delete();

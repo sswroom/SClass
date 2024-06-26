@@ -145,8 +145,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 	UOSInt l;
 	UOSInt shiftCnt;
 	UInt8 mask;
-	UInt8 *srcPtr;
-	UInt8 *currPtr;
+	UnsafeArray<UInt8> srcPtr;
+	UnsafeArray<UInt8> currPtr;
 	OSInt sbpl;
 	UInt8 *maskPtr;
 	UOSInt imgSize;
@@ -261,7 +261,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			while (l-- > 0)
 			{
 				srcPtr -= img->info.storeSize.x * 4;
-				MemCopyNO(imgPtr, srcPtr, img->info.dispSize.x * 4);
+				MemCopyNO(imgPtr, srcPtr.Ptr(), img->info.dispSize.x * 4);
 				imgPtr += img->info.dispSize.x * 4;
 
 				currPtr = srcPtr;
@@ -482,7 +482,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, (img->info.dispSize.x + 7) >> 3);
+				MemCopyNO(imgPtr, currPtr.Ptr(), (img->info.dispSize.x + 7) >> 3);
 				currPtr += (img->info.dispSize.x + 7) >> 3;
 				imgPtr += (img->info.dispSize.x + 7) >> 3;
 				k = (img->info.dispSize.x + 7) >> 3;
@@ -558,7 +558,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, (img->info.dispSize.x + 1) >> 1);
+				MemCopyNO(imgPtr, currPtr.Ptr(), (img->info.dispSize.x + 1) >> 1);
 				currPtr += (img->info.dispSize.x + 1) >> 1;
 				imgPtr += (img->info.dispSize.x + 1) >> 1;
 				k = (img->info.dispSize.x + 7) >> 3;
@@ -634,7 +634,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, img->info.dispSize.x);
+				MemCopyNO(imgPtr, currPtr.Ptr(), img->info.dispSize.x);
 				currPtr += img->info.dispSize.x;
 				imgPtr += img->info.dispSize.x;
 				k = (img->info.dispSize.x + 7) >> 3;

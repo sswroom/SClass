@@ -43,7 +43,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(SSWR::SMonitor::SM
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -284,7 +284,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	NN<Net::WebServer::IWebSession> sess;
 	UnsafeArrayOpt<const UTF8Char> msg = 0;
@@ -372,7 +372,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(SSWR::SMonitor::SMo
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -541,7 +541,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -660,7 +660,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -801,7 +801,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -994,7 +994,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	UOSInt j;
 	UOSInt k;
 	NN<IO::MemoryStream> mstm;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 
 	if (dev->valUpdated)
@@ -1466,7 +1466,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	Text::UTF8Writer *writer;
 	Int32 userId = 0;
 	Int32 userType = 0;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -1649,7 +1649,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
@@ -1810,7 +1810,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	NN<Net::WebServer::IWebSession> sess;
 	Text::CString msg = CSTR_NULL;
@@ -1895,7 +1895,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -1963,7 +1963,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	NN<Net::WebServer::IWebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -2026,7 +2026,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;

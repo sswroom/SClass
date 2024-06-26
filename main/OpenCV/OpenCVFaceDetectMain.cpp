@@ -28,7 +28,7 @@ UOSInt preferedHeight;
 Optional<Media::CS::CSConverter> csConv;
 Exporter::GUIJPGExporter *exporter;
 
-void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData)
+void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData)
 {
 	IO::ConsoleWriter *console = (IO::ConsoleWriter*)userObj;
 	UOSInt thisCnt = objCnt;
@@ -73,7 +73,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			UOSInt i = 0;
 			while (i < objCnt)
 			{
-				ImageUtil_DrawRectNA32(simg->data + (OSInt)frInfo->dispSize.x * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
+				ImageUtil_DrawRectNA32(simg->data.Ptr() + (OSInt)frInfo->dispSize.x * 4 * objRects[i].top + objRects[i].left * 4, (UOSInt)(objRects[i].right - objRects[i].left), (UOSInt)(objRects[i].bottom - objRects[i].top), frInfo->dispSize.x * 4, 0xffff0000);
 				i++;
 			}
 			Media::ImageList imgList(CSTR("ImageCapture"));

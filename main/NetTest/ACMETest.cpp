@@ -21,8 +21,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
 	NEW_CLASS(acme, Net::ACMEClient(sockf, CSTR("acme-staging-v02.api.letsencrypt.org"), 0, CSTRP(sbuff, sptr)));
 	Net::ACMEConn *conn = acme->GetConn();
-	Net::ACMEConn::Order *order = conn->OrderNew(domain.v, domain.leng);
-	if (order)
+	NN<Net::ACMEConn::Order> order;
+	if (conn->OrderNew(domain.v, domain.leng).SetTo(order))
 	{
 		if (order->authURLs)
 		{
@@ -30,20 +30,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			UOSInt j = order->authURLs->GetCount();
 			while (i < j)
 			{
-				Net::ACMEConn::Challenge *chall = conn->OrderAuthorize(Text::String::OrEmpty(order->authURLs->GetItem(i)), Net::ACMEConn::AuthorizeType::TLS_ALPN_01);
-				if (chall)
+				NN<Net::ACMEConn::Challenge> chall;
+				if (conn->OrderAuthorize(Text::String::OrEmpty(order->authURLs->GetItem(i)), Net::ACMEConn::AuthorizeType::TLS_ALPN_01).SetTo(chall))
 				{
-					Net::ACMEConn::Challenge *challStatus = conn->ChallengeBegin(chall->url);
-					while (challStatus && (challStatus->status == Net::ACMEConn::ACMEStatus::Pending || challStatus->status == Net::ACMEConn::ACMEStatus::Processing))
+					Optional<Net::ACMEConn::Challenge> challStatus = conn->ChallengeBegin(chall->url);
+					NN<Net::ACMEConn::Challenge> nnchallStatus;
+					while (challStatus.SetTo(nnchallStatus) && (nnchallStatus->status == Net::ACMEConn::ACMEStatus::Pending || nnchallStatus->status == Net::ACMEConn::ACMEStatus::Processing))
 					{
-						conn->ChallengeFree(challStatus);
+						conn->ChallengeFree(nnchallStatus);
 						Sync::SimpleThread::Sleep(5000);
 
 						challStatus = conn->ChallengeGetStatus(chall->url);
 					}
-					if (challStatus)
+					if (challStatus.SetTo(nnchallStatus))
 					{
-						conn->ChallengeFree(challStatus);
+						conn->ChallengeFree(nnchallStatus);
 					}
 					conn->ChallengeFree(chall);
 				}

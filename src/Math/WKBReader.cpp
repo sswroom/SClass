@@ -46,7 +46,7 @@ Math::WKBReader::~WKBReader()
 
 }
 
-Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, UOSInt wkbLen, OptOut<UOSInt> sizeUsed)
+Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const UInt8> wkb, UOSInt wkbLen, OptOut<UOSInt> sizeUsed)
 {
 	if (wkbLen < 5)
 	{

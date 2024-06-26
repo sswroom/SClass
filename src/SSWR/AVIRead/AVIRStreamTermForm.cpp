@@ -176,7 +176,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::StopStream(Bool clearUI)
 
 void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 {
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UOSInt j;
 	Sync::MutexUsage mutUsage(this->recvMut);
@@ -203,7 +203,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 		else
 		{
 			UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, buffSize + 1);
-			MemCopyNO(sbuff.Ptr(), buff, buffSize);
+			MemCopyNO(sbuff.Ptr(), buff.Ptr(), buffSize);
 			sbuff[buffSize] = 0;
 			this->txtRecvDisp->SetText({sbuff, buffSize});
 			MemFreeArr(sbuff);
@@ -218,7 +218,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 
 void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 {
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	buff = this->sendBuff.GetBuff(buffSize);
 	UOSInt i = this->cboSendType->GetSelectedIndex();
@@ -244,7 +244,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 		else
 		{
 			UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, buffSize + 1);
-			MemCopyNO(sbuff.Ptr(), buff, buffSize);
+			MemCopyNO(sbuff.Ptr(), buff.Ptr(), buffSize);
 			sbuff[buffSize] = 0;
 			this->txtSendDisp->SetText({sbuff, buffSize});
 			MemFreeArr(sbuff);

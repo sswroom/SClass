@@ -81,17 +81,17 @@ Bool Media::GRFilter::GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSI
 	}
 }
 
-void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::GRFilter::ProcessImage32(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
 	UOSInt i;
 	UOSInt j;
 	NN<LayerSetting> lyr;
-	UInt8 *tmpPtr1 = srcPtr;
-	UInt8 *tmpPtr2 = destPtr;
+	UnsafeArray<UInt8> tmpPtr1 = srcPtr;
+	UnsafeArray<UInt8> tmpPtr2 = destPtr;
 	i = height;
 	while (i-- > 0)
 	{
-		MemCopyNANC(tmpPtr2, tmpPtr1, width << 2);
+		MemCopyNANC(tmpPtr2.Ptr(), tmpPtr1.Ptr(), width << 2);
 		tmpPtr1 += sbpl;
 		tmpPtr2 += dbpl;
 	}
@@ -105,32 +105,32 @@ void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width
 		{
 			if ((lyr->status & 3) == 0)
 			{
-				GRFilter_ProcessLayer32H(srcPtr, destPtr, width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
+				GRFilter_ProcessLayer32H(srcPtr.Ptr(), destPtr.Ptr(), width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
 			}
 			else if ((lyr->status & 3) == 1)
 			{
-				GRFilter_ProcessLayer32V(srcPtr, destPtr, width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
+				GRFilter_ProcessLayer32V(srcPtr.Ptr(), destPtr.Ptr(), width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
 			}
 			else if ((lyr->status & 3) == 2)
 			{
-				GRFilter_ProcessLayer32HV(srcPtr, destPtr, width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
+				GRFilter_ProcessLayer32HV(srcPtr.Ptr(), destPtr.Ptr(), width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
 			}
 		}
 		i++;
 	}
 }
 
-void Media::GRFilter::ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
+void Media::GRFilter::ProcessImage64(UnsafeArray<UInt8> srcPtr, UnsafeArray<UInt8> destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl)
 {
 	UOSInt i;
 	UOSInt j;
 	NN<LayerSetting> lyr;
-	UInt8 *tmpPtr1 = srcPtr;
-	UInt8 *tmpPtr2 = destPtr;
+	UnsafeArray<UInt8> tmpPtr1 = srcPtr;
+	UnsafeArray<UInt8> tmpPtr2 = destPtr;
 	i = height;
 	while (i-- > 0)
 	{
-		MemCopyNANC(tmpPtr2, tmpPtr1, width << 3);
+		MemCopyNANC(tmpPtr2.Ptr(), tmpPtr1.Ptr(), width << 3);
 		tmpPtr1 += sbpl;
 		tmpPtr2 += dbpl;
 	}
@@ -144,15 +144,15 @@ void Media::GRFilter::ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width
 		{
 			if ((lyr->status & 3) == 0)
 			{
-				GRFilter_ProcessLayer64H(srcPtr, destPtr, width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
+				GRFilter_ProcessLayer64H(srcPtr.Ptr(), destPtr.Ptr(), width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
 			}
 			else if ((lyr->status & 3) == 1)
 			{
-				GRFilter_ProcessLayer64V(srcPtr, destPtr, width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
+				GRFilter_ProcessLayer64V(srcPtr.Ptr(), destPtr.Ptr(), width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
 			}
 			else if ((lyr->status & 3) == 2)
 			{
-				GRFilter_ProcessLayer64HV(srcPtr, destPtr, width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
+				GRFilter_ProcessLayer64HV(srcPtr.Ptr(), destPtr.Ptr(), width, height, sbpl, dbpl, lyr->level, lyr->hOfst, lyr->vOfst);
 			}
 		}
 		i++;

@@ -30,7 +30,7 @@ void Media::Batch::BatchLimiter::ImageOutput(NN<Media::ImageList> imgList, Text:
 	{
 		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(newImg) && newImg->info.fourcc == *(UInt32*)"LRGB")
 		{
-			LRGBLimiter_LimitImageLRGB(newImg->data, newImg->info.storeSize.x, newImg->info.storeSize.y);
+			LRGBLimiter_LimitImageLRGB(newImg->data.Ptr(), newImg->info.storeSize.x, newImg->info.storeSize.y);
 		}
 		j++;
 	}

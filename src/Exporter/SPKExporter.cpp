@@ -125,7 +125,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			Int32 tileY;
 			UTF8Char sbuff[256];
 			UnsafeArray<UTF8Char> sptr;
-			const UInt8 *fileBuff;
+			UnsafeArray<const UInt8> fileBuff;
 			UOSInt fileSize;
 			Int64 modTimeTicks;
 

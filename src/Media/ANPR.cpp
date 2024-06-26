@@ -78,12 +78,12 @@ void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filtere
 	plainImg.Delete();
 }
 
-NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UnsafeArray<UInt8> sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	return CreatePlainImage(sptr, sSize, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
 }
 
-NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UnsafeArray<UInt8> sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	Math::Size2D<UOSInt> imgSize;
 

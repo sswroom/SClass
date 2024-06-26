@@ -21,8 +21,8 @@ Text::CStringNN Media::ImageGen::RingsImageGen::GetName() const
 Optional<Media::RasterImage> Media::ImageGen::RingsImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
-	Int64 *imgPtr;
-	UInt8 *imgPtr2;
+	UnsafeArray<Int64> imgPtr;
+	UnsafeArray<UInt8> imgPtr2;
 	UInt16 c[4];
 	UOSInt i;
 	UOSInt j;
@@ -47,7 +47,7 @@ Optional<Media::RasterImage> Media::ImageGen::RingsImageGen::GenerateImage(NN<co
 	j = 0;
 	while (j < size.y)
 	{
-		imgPtr = (Int64*)imgPtr2;
+		imgPtr = UnsafeArray<Int64>::ConvertFrom(imgPtr2);
 		i = 0;
 		while (i < size.x)
 		{

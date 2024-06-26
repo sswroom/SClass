@@ -2048,7 +2048,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 		sptr2 = Text::StrInt32(sptr2, id);
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
 
-		UInt8 *buff = mstm.GetBuff(i);
+		UnsafeArray<UInt8> buff = mstm.GetBuff(i);
 		{
 			IO::FileStream fs(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs.Write(Data::ByteArrayR(buff, i));

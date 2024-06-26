@@ -16,11 +16,11 @@ namespace Media
 		private:
 			typedef struct
 			{
-				LanczosResizerLR_C16 *me;
+				NN<LanczosResizerLR_C16> me;
 				Int32 funcType; // 3 = h filter, 5 = v filter, 7 = expand, 9 = collapse, 11 = copying
-				Sync::Event *evt;
-				const UInt8 *inPt;
-				UInt8 *outPt;
+				NN<Sync::Event> evt;
+				UnsafeArray<const UInt8> inPt;
+				UnsafeArray<UInt8> outPt;
 				UOSInt width;
 				UOSInt height;
 				UOSInt tap;
@@ -43,8 +43,8 @@ namespace Media
 			UOSInt vnTap;
 			UOSInt nThread;
 			Sync::Mutex mut;
-			TaskParam *params;
-			Sync::ParallelTask *ptask;
+			UnsafeArray<TaskParam> params;
+			NN<Sync::ParallelTask> ptask;
 
 			Double hsSize;
 			Double hsOfst;
@@ -71,12 +71,12 @@ namespace Media
 			Bool rgbChanged;
 			UInt8 *rgbTable;
 
-			void setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
-			void setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, LRHPARAMETER *out, OSInt indexSep, Double offsetCorr);
+			void setup_interpolation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
+			void setup_decimation_parameter(UOSInt nTap, Double source_length, UOSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
 
-			void mt_horizontal_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_vertical_filter(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
-			void mt_collapse(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
+			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_vertical_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep);
+			void mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 			void UpdateRGBTable();
 
@@ -87,7 +87,7 @@ namespace Media
 			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
 			virtual ~LanczosResizerLR_C16();
 
-			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
+			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
 			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);

@@ -17,7 +17,7 @@ namespace Media
 				OSInt right;
 				OSInt bottom;
 			} ObjectRect;
-			typedef void (__stdcall *DetectResultFunc)(void *userObj, UOSInt objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData);
+			typedef void (CALLBACKFUNC DetectResultFunc)(void *userObj, UOSInt objCnt, const ObjectRect *objRects, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
 			
 		private:
 			void *cascade;
@@ -28,7 +28,7 @@ namespace Media
 			~OCVObjectDetector();
 
 			Bool IsError();
-			void NextFrame(NN<Media::OpenCV::OCVFrame> frame, Media::FrameInfo *frInfo, UInt8 **imgData);
+			void NextFrame(NN<Media::OpenCV::OCVFrame> frame, Media::FrameInfo *frInfo, UnsafeArray<UnsafeArray<UInt8>> imgData);
 
 			void HandleDetectResult(DetectResultFunc func, void *userObj);
 		};
