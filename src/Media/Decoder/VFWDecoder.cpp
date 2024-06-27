@@ -95,7 +95,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	Media::IVideoSource::FrameFlag bFlags = (Media::IVideoSource::FrameFlag)((flags & (Media::IVideoSource::FF_REALTIME)) | Media::IVideoSource::FF_BFRAMEPROC);
 
 	((BITMAPINFOHEADER*)this->bmihSrc)->biSizeImage = (DWORD)dataSize;
-	if (ICDecompress((HIC)this->hic, (frameStruct != Media::IVideoSource::FS_I)?ICDECOMPRESS_NOTKEYFRAME:0, (BITMAPINFOHEADER*)this->bmihSrc, imgData[0], (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff) == ICERR_OK)
+	if (ICDecompress((HIC)this->hic, (frameStruct != Media::IVideoSource::FS_I)?ICDECOMPRESS_NOTKEYFRAME:0, (BITMAPINFOHEADER*)this->bmihSrc, imgData[0].Ptr(), (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff.Ptr()) == ICERR_OK)
 	{
 		if (((BITMAPINFOHEADER*)this->bmihDest)->biCompression != 0)
 		{
@@ -170,7 +170,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			UOSInt maxFrameSize;
 			this->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 			NEW_CLASSNN(img, Media::StaticImage(info));
-			MemCopyNO(img->data, this->frameBuff, this->maxFrameSize);
+			MemCopyNO(img->data.Ptr(), this->frameBuff.Ptr(), this->maxFrameSize);
 			this->imgCb.func(this->imgCb.userObj, frameTime, frameNum, img);
 			this->imgCb = 0;
 		}
@@ -205,7 +205,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Me
 	this->hic = 0;
 	this->frameCb = 0;
 	this->frameCbData = 0;
-	this->frameBuff = 0;
+	this->frameBuff = MemAllocAArr(UInt8, 0);
 	this->imgCb = 0;
 	this->frameChg = false;
 	this->endProcessing = false;
@@ -394,8 +394,9 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Me
 				this->hic = hic;
 				this->sourceFCC = fcc;
 				this->sourceVideo = sourceVideo.Ptr();
+				MemFreeAArr(this->frameBuff);
 				this->frameBuff = MemAllocA64(UInt8, this->maxFrameSize);
-				MemClear(this->frameBuff, this->maxFrameSize);
+				MemClear(this->frameBuff.Ptr(), this->maxFrameSize);
 				return;
 			}
 			k++;
@@ -423,11 +424,7 @@ Media::Decoder::VFWDecoder::~VFWDecoder()
 		MemFree(this->bmihDest);
 		this->bmihDest = 0;
 	}
-	if (this->frameBuff)
-	{
-		MemFreeA64(this->frameBuff);
-		this->frameBuff = 0;
-	}
+	MemFreeAArr(this->frameBuff);
 }
 
 Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)
@@ -520,7 +517,7 @@ void Media::Decoder::VFWDecoder::OnFrameChanged(Media::IVideoSource::FrameChange
 			i = 0;
 			while (i < this->bCnt)
 			{
-				if (ICDecompress((HIC)this->hic, ICDECOMPRESS_NOTKEYFRAME, (BITMAPINFOHEADER*)this->bmihSrc, 0, (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff) == ICERR_OK)
+				if (ICDecompress((HIC)this->hic, ICDECOMPRESS_NOTKEYFRAME, (BITMAPINFOHEADER*)this->bmihSrc, 0, (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff.Ptr()) == ICERR_OK)
 				{
 					this->frameCb(this->bBuff[i].frameTime, this->bBuff[i].frameNum, &this->frameBuff, this->maxFrameSize, Media::IVideoSource::FS_N, this->frameCbData, this->bBuff[i].frameType, Media::IVideoSource::FF_BFRAMEPROC, this->lastYCOfst);
 				}

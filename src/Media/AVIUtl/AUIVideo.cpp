@@ -10,13 +10,13 @@
 UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(AnyType userObj)
 {
 	NN<Media::AVIUtl::AUIVideo> me = userObj.GetNN<Media::AVIUtl::AUIVideo>();
-	UInt8 *frameBuff;
+	UnsafeArray<UInt8> frameBuff;
 	UInt32 lastFrameNum = (UInt32)-2;
 	UInt32 thisFrameNum;
 	UOSInt buffSize;
 
 	me->threadRunning = true;
-	frameBuff = MemAlloc(UInt8, me->GetMaxFrameSize());
+	frameBuff = MemAllocArr(UInt8, me->GetMaxFrameSize());
 	while (!me->threadToStop)
 	{
 		if (me->playing)
@@ -41,7 +41,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(AnyType userObj)
 			me->threadEvt.Wait(10000);
 		}
 	}
-	MemFree(frameBuff);
+	MemFreeArr(frameBuff);
 	me->threadRunning = false;
 	return 0;
 }
@@ -218,7 +218,7 @@ void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, AnyType userD
 	}
 }
 
-UOSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::AVIUtl::AUIVideo::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

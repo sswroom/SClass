@@ -9,7 +9,7 @@ namespace IO
 		typedef void (CALLBACKFUNC ConsoleHandler)(AnyType userObj);
 	private:
 		static ConsoleHandler exitCmdHdlr;
-		static void *exitCmdObj;
+		static AnyType exitCmdObj;
 		static Int32 __stdcall ConsoleHdlr(UInt32 dwCtrlType);
 	public:
 		static UTF32Char GetChar();

@@ -10,7 +10,7 @@
 #include <sys/poll.h>
 
 IO::Console::ConsoleHandler IO::Console::exitCmdHdlr = 0;
-void *IO::Console::exitCmdObj = 0;
+AnyType IO::Console::exitCmdObj = 0;
 Int32 Console_nextKey = 0;
 
 Int32 __stdcall IO::Console::ConsoleHdlr(UInt32 dwCtrlType)

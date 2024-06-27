@@ -515,7 +515,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		this->writing = true;
 
 		UOSInt reqSize;
-		UInt8 *reqBuff = this->reqMstm->GetBuff(reqSize);
+		UnsafeArray<UInt8> reqBuff = this->reqMstm->GetBuff(reqSize);
 
 		BOOL succ;
 		if (reqSize <= 0)
@@ -524,7 +524,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		}
 		else
 		{
-			succ = WinHttpSendRequest(data->hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, reqBuff, (DWORD)reqSize, (DWORD)reqSize, 0);
+			succ = WinHttpSendRequest(data->hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, reqBuff.Ptr(), (DWORD)reqSize, (DWORD)reqSize, 0);
 		}
 		this->reqMstm->Clear();
 		t1 = this->clk.GetTimeDiff();

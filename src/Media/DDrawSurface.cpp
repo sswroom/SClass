@@ -85,7 +85,7 @@ Media::RasterImage::ImageType Media::DDrawSurface::GetImageType() const
 	return Media::RasterImage::ImageType::MonitorSurface;
 }
 
-void Media::DDrawSurface::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::DDrawSurface::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
 	HRESULT res;
 	DDSURFACEDESC2 ddsd;
@@ -102,7 +102,7 @@ void Media::DDrawSurface::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, 
 	{
 		if (left == 0 && top == 0 && width == ddsd.dwWidth && height == ddsd.dwHeight && ddsd.lPitch == (OSInt)destBpl && !upsideDown && ddsd.dwWidth * ((UOSInt)ddsd.ddpfPixelFormat.dwRGBBitCount >> 3) == destBpl && this->info.rotateType == destRotate)
 		{
-			MemCopyANC(destBuff, ddsd.lpSurface, destBpl * height);
+			MemCopyANC(destBuff.Ptr(), ddsd.lpSurface, destBpl * height);
 		}
 		else
 		{

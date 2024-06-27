@@ -98,7 +98,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	Optional<Media::RasterImage> srcImg = 0;
 	NN<Media::RasterImage> nnsrcImg;
 	NN<Media::ImageList> imgList;
-	UInt8 *jpgBuff;
+	UnsafeArray<UInt8> jpgBuff;
 	UOSInt jpgSize;
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{

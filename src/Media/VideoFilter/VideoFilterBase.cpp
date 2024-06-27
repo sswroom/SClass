@@ -224,7 +224,7 @@ void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, A
 	}
 }
 
-UOSInt Media::VideoFilter::VideoFilterBase::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::VideoFilter::VideoFilterBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

@@ -31,7 +31,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Me
 	this->hic = 0;
 	this->frameCb = 0;
 	this->frameCbData = 0;
-	this->frameBuff = 0;
+	this->frameBuff = MemAllocAArr(UInt8, 0);
 	this->imgCb = 0;
 	this->frameChg = false;
 	this->endProcessing = false;
@@ -52,6 +52,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Me
 Media::Decoder::VFWDecoder::~VFWDecoder()
 {
 	this->Stop();
+	MemFreeAArr(this->frameBuff);
 }
 
 Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, AnyType userData)

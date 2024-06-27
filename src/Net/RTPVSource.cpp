@@ -101,7 +101,7 @@ void Net::RTPVSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
 }
 
-UOSInt Net::RTPVSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
+UOSInt Net::RTPVSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return this->hdlr->ReadNextFrame(frameBuff, frameTime, ftype);
 }

@@ -540,7 +540,7 @@ UOSInt Media::FileVideoSource::ReadFrame(UOSInt frameIndex, UnsafeArray<UInt8> f
 	return this->data->GetRealData(this->frameOfsts.GetItem(frameIndex), frameSize, Data::ByteArray(frameBuff, frameSize));
 }
 
-UOSInt Media::FileVideoSource::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::FileVideoSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

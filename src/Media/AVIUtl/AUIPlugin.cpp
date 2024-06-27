@@ -258,10 +258,10 @@ Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, NN<Media::AudioForm
 	return true;
 }
 
-UOSInt Media::AVIUtl::AUIPlugin::GetVideoFrame(void *hand, UOSInt frameNum, UInt8 *buff)
+UOSInt Media::AVIUtl::AUIPlugin::GetVideoFrame(void *hand, UOSInt frameNum, UnsafeArray<UInt8> buff)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
-	return (UInt32)pluginTab->func_read_video((INPUT_HANDLE)hand, (int)frameNum, buff);
+	return (UInt32)pluginTab->func_read_video((INPUT_HANDLE)hand, (int)frameNum, buff.Ptr());
 }
 
 UOSInt Media::AVIUtl::AUIPlugin::GetAudioData(void *hand, UOSInt startSample, UOSInt sampleLength, UInt8 *buff)

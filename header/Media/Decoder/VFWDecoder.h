@@ -34,7 +34,7 @@ namespace Media
 			void *bmihSrc;
 			void *bmihDest;
 			void *hic;
-			UInt8 *frameBuff;
+			UnsafeArray<UInt8> frameBuff;
 
 			Data::CallbackStorage<ImageCallback> imgCb;
 			EncodingType encType;

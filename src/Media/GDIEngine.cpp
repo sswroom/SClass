@@ -481,11 +481,11 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
 		{
-			UInt8 *sptr = (UInt8*)simg->data;
+			UnsafeArray<UInt8> sptr = simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
 			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
 			OSInt dbpl = (OSInt)simg->info.dispSize.x << 2;
-			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info.dispSize.y - 1)), simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, -dbpl);
+			ImageCopy_ImgCopy(sptr.Ptr(), dptr + ((UOSInt)dbpl * (simg->info.dispSize.y - 1)), simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, -dbpl);
 		}
 	}
 	else
@@ -493,11 +493,11 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 		NN<Media::StaticImage> simg = img->CreateStaticImage();
 		if (simg->To32bpp())
 		{
-			UInt8 *sptr = (UInt8*)simg->data;
+			UnsafeArray<UInt8> sptr = simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
 			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
 			OSInt dbpl = (OSInt)simg->info.dispSize.x << 2;
-			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info.dispSize.y - 1)), simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, -dbpl);
+			ImageCopy_ImgCopy(sptr.Ptr(), dptr + ((UOSInt)dbpl * (simg->info.dispSize.y - 1)), simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, -dbpl);
 		}
 		simg.Delete();
 	}
@@ -2039,7 +2039,7 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(simg->data + (sy * simg->info.storeSize.x << 2) + (sx << 2), ((UInt8*)this->bmpBits) + (this->size.y - y - 1) * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, -(OSInt)this->size.x << 2);
+				ImageCopy_ImgCopy(simg->data.Ptr() + (sy * simg->info.storeSize.x << 2) + (sx << 2), ((UInt8*)this->bmpBits) + (this->size.y - y - 1) * bpl + (x << 2), w << 2, h, simg->info.storeSize.x << 2, -(OSInt)this->size.x << 2);
 			}
 		}
 		else
@@ -2047,7 +2047,7 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 			OSInt w = (OSInt)simg->info.dispSize.x;
 			OSInt h = (OSInt)simg->info.dispSize.y;
 			UInt8 *dbits = (UInt8*)this->bmpBits;
-			UInt8 *sbits = simg->data;
+			UnsafeArray<UInt8> sbits = simg->data;
 			UOSInt dbpl = this->size.x << 2;
 			UOSInt sbpl = simg->info.storeSize.x << 2;
 
@@ -2825,9 +2825,9 @@ Media::RasterImage::ImageType Media::GDIImage::GetImageType() const
 	return Media::RasterImage::ImageType::GUIImage;
 }
 
-void Media::GDIImage::GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
+void Media::GDIImage::GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const
 {
-	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
+	CopyBits(left, top, destBuff.Ptr(), destBpl, width, height, upsideDown);
 }
 
 void Media::GDIImage::PolylineAccel(void *hdc, const Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height)

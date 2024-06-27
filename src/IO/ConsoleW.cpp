@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 IO::Console::ConsoleHandler IO::Console::exitCmdHdlr = 0;
-void *IO::Console::exitCmdObj = 0;
+AnyType IO::Console::exitCmdObj = 0;
 
 Int32 __stdcall IO::Console::ConsoleHdlr(UInt32 dwCtrlType)
 {
@@ -123,7 +123,7 @@ void IO::Console::PreventCtrlC()
 #endif
 }
 
-void IO::Console::HandleExitCmd(IO::Console::ConsoleHandler exitCmdHdlr, void *userObj)
+void IO::Console::HandleExitCmd(IO::Console::ConsoleHandler exitCmdHdlr, AnyType userObj)
 {
 #if (defined(WIN32) || defined(__CYGWIN__)) && !defined(_WIN32_WCE)
 	IO::Console::exitCmdHdlr = exitCmdHdlr;

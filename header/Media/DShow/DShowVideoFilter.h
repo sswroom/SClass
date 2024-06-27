@@ -257,7 +257,8 @@ namespace Media
 						sample->GetTime(&t1, &t2);
 						t = (Int32)(t1 / 10);
 					}
-					cb((UInt32)t, this->frameNum++, &dataPtr, frameSize, fs, ud, ftype, (sample->IsDiscontinuity() == S_OK)?((Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_REALTIME)):(Media::IVideoSource::FF_REALTIME), Media::YCOFST_C_CENTER_LEFT);
+					UnsafeArray<UInt8> dataArr = dataPtr;
+					cb((UInt32)t, this->frameNum++, &dataArr, frameSize, fs, ud, ftype, (sample->IsDiscontinuity() == S_OK)?((Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_REALTIME)):(Media::IVideoSource::FF_REALTIME), Media::YCOFST_C_CENTER_LEFT);
 					return S_OK;
 				}
 				else

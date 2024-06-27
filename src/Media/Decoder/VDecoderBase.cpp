@@ -124,7 +124,7 @@ UOSInt Media::Decoder::VDecoderBase::GetDataSeekCount()
 	return 0;
 }
 
-UOSInt Media::Decoder::VDecoderBase::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::Decoder::VDecoderBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	return 0;
 }

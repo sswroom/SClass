@@ -11,7 +11,7 @@
 UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 {
 	NN<Media::VFVideoStream> me = userObj.GetNN<Media::VFVideoStream>();
-	UInt8 *frameBuff;
+	UnsafeArray<UInt8> frameBuff;
 	UInt32 frameTime;
 	Media::FrameType ft;
 	UOSInt frameSize;
@@ -19,12 +19,12 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 	me->threadRunning = true;
 	frameNum = 0;
 	frameSize = me->info.storeSize.x * me->info.storeSize.y * (me->info.storeBPP >> 3);
-	frameBuff = MemAlloc(UInt8, frameSize);
+	frameBuff = MemAllocArr(UInt8, frameSize);
 	while (!me->threadToStop)
 	{
 		if (me->playing)
 		{
-			if (me->ReadNextFrame(frameBuff, &frameTime, &ft) == 0)
+			if (me->ReadNextFrame(frameBuff, frameTime, ft) == 0)
 			{
 				me->playing = false;
 				me->currFrameNum = 0;
@@ -40,7 +40,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 			me->threadEvt.Wait(1000);
 		}
 	}
-	MemFree(frameBuff);
+	MemFreeArr(frameBuff);
 	me->threadRunning = false;
 	return 0;
 }
@@ -268,7 +268,7 @@ void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, AnyType userData
 	}
 }
 
-UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, Media::FrameType *ftype)
+UOSInt Media::VFVideoStream::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
 	if (this->currFrameNum >= this->frameCnt)
@@ -278,11 +278,11 @@ UOSInt Media::VFVideoStream::ReadNextFrame(UInt8 *frameBuff, UInt32 *frameTime, 
 	rd.dwSize = sizeof(rd);
 	rd.dwFrameNumberH = 0;
 	rd.dwFrameNumberL = this->currFrameNum;
-	rd.lpData = frameBuff;
+	rd.lpData = frameBuff.Ptr();
 	rd.lPitch = (int)(this->info.storeSize.x * (this->info.storeBPP >> 3));
 	funcs->ReadData(mfile->file, VF_STREAM_VIDEO, &rd);
-	*frameTime = MulDivU32(this->currFrameNum, this->frameRateScale * 1000, this->frameRate);
-	*ftype = this->info.ftype;
+	frameTime.Set(MulDivU32(this->currFrameNum, this->frameRateScale * 1000, this->frameRate));
+	ftype.Set(this->info.ftype);
 	this->currFrameNum++;
 	return (UInt32)rd.lPitch * this->info.storeSize.y;
 }
