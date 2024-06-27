@@ -12,7 +12,7 @@ namespace Net
 	class TCPServer
 	{
 	public:
-		typedef void (__stdcall *TCPServerConn)(NN<Socket> s, AnyType userObj);
+		typedef void (CALLBACKFUNC TCPServerConn)(NN<Socket> s, AnyType userObj);
 		typedef struct
 		{
 			NN<TCPServer> me;

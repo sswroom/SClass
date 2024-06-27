@@ -129,7 +129,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 					{
 						SAMLMessage msg;
 						msg.rawMessage = Text::CString(buff, buffSize);
-						succ = this->loginHdlr(this->loginObj, req, resp, &msg);
+						succ = this->loginHdlr(this->loginObj, req, resp, msg);
 					}
 					MemFree(buff);
 				}

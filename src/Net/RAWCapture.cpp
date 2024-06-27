@@ -10,7 +10,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::RAWCapture::DataHandler(AnyType userData, const UInt8 *packetData, UOSInt packetSize)
+void __stdcall Net::RAWCapture::DataHandler(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
 {
 	NN<Net::RAWCapture> me = userData.GetNN<Net::RAWCapture>();
 	{

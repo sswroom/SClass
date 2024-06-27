@@ -11,7 +11,7 @@ namespace UI
 	class GUIHexFileView : public GUITextView
 	{
 	public:
-		typedef void (__stdcall *OffsetChgHandler)(AnyType userObj, UInt64 offset);
+		typedef void (CALLBACKFUNC OffsetChgHandler)(AnyType userObj, UInt64 offset);
 	private:
 		IO::FileStream *fs;
 		IO::StreamData *fd;

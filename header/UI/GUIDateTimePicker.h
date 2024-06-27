@@ -12,7 +12,7 @@ namespace UI
 	class GUIDateTimePicker : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *DateChangedHandler)(AnyType userObj, NN<Data::DateTime> newDate);
+		typedef void (CALLBACKFUNC DateChangedHandler)(AnyType userObj, NN<Data::DateTime> newDate);
 	private:
 		Data::ArrayList<Data::CallbackStorage<DateChangedHandler>> dateChangedHdlrs;
 

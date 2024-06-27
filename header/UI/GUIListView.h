@@ -10,8 +10,8 @@ namespace UI
 	class GUIListView : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *ItemEvent)(AnyType userObj, UOSInt itemIndex);
-		typedef void (__stdcall *MouseEvent)(AnyType userObj, Math::Coord2DDbl pos, UOSInt index);
+		typedef void (CALLBACKFUNC ItemEvent)(AnyType userObj, UOSInt itemIndex);
+		typedef void (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2DDbl pos, UOSInt index);
 	protected:
 		void *clsData;
 	private:

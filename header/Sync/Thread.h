@@ -9,7 +9,7 @@ namespace Sync
 	class Thread
 	{
 	public:
-		typedef void (__stdcall *ThreadFunc)(NN<Thread> thread);
+		typedef void (CALLBACKFUNC ThreadFunc)(NN<Thread> thread);
 	private:
 		UInt32 running;
 		UInt8 stopping;

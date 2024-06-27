@@ -15,10 +15,10 @@ namespace UI
 	class GUIMapControl : public GUICustomDraw, public Media::IColorHandler
 	{
 	public:
-		typedef void (__stdcall *MapUpdatedHandler)(AnyType userObj, Math::Coord2DDbl center, Double drawTime);
-		typedef void (__stdcall *ScaleChangedHandler)(AnyType userObj, Double newScale);
-		typedef void (__stdcall *MouseMoveHandler)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-		typedef void (__stdcall *DrawHandler)(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
+		typedef void (CALLBACKFUNC MapUpdatedHandler)(AnyType userObj, Math::Coord2DDbl center, Double drawTime);
+		typedef void (CALLBACKFUNC ScaleChangedHandler)(AnyType userObj, Double newScale);
+		typedef void (CALLBACKFUNC MouseMoveHandler)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+		typedef void (CALLBACKFUNC DrawHandler)(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 	private:
 		Optional<Media::DrawImage> bgImg;
 		NN<Media::ColorManagerSess> colorSess;

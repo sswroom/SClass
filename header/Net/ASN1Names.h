@@ -9,7 +9,7 @@ namespace Net
 	class ASN1Names
 	{
 	private:
-		typedef void (__stdcall *ContentFunc)(NN<ASN1Names> names);
+		typedef void (CALLBACKFUNC ContentFunc)(NN<ASN1Names> names);
 
 		enum class RuleCond
 		{

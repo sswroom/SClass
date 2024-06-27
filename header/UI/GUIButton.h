@@ -9,7 +9,7 @@ namespace UI
 	class GUIButton : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *UpDownEvent)(AnyType userObj, Bool isDown);
+		typedef void (CALLBACKFUNC UpDownEvent)(AnyType userObj, Bool isDown);
 	private:
 		Data::ArrayList<Data::CallbackStorage<UIEvent>> btnClkHandlers;
 		Data::ArrayList<Data::CallbackStorage<UpDownEvent>> btnUpDownHandlers;

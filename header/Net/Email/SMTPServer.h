@@ -32,8 +32,8 @@ namespace Net
 				Text::String *userName;
 			} MailStatus;
 
-			typedef UnsafeArrayOpt<UTF8Char> (__stdcall *MailHandler)(UnsafeArray<UTF8Char> queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const MailStatus> mail);
-			typedef Bool (__stdcall *LoginHandler)(AnyType userObj, Text::CStringNN userName, Text::CStringNN pwd);
+			typedef UnsafeArrayOpt<UTF8Char> (CALLBACKFUNC MailHandler)(UnsafeArray<UTF8Char> queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const MailStatus> mail);
+			typedef Bool (CALLBACKFUNC LoginHandler)(AnyType userObj, Text::CStringNN userName, Text::CStringNN pwd);
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;

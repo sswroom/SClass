@@ -53,9 +53,9 @@ namespace SSWR
 			} CameraCorr;
 
 		public:
-			typedef void (__stdcall *DispImageChanged)(AnyType userObj, Text::CString fileName, const ImageSetting *setting);
-			typedef void (__stdcall *ProgressUpdated)(AnyType userObj, UOSInt finCnt);
-			typedef void (__stdcall *KeyDownHandler)(AnyType userObj, UI::GUIControl::GUIKey key);
+			typedef void (CALLBACKFUNC DispImageChanged)(AnyType userObj, Text::CString fileName, Optional<const ImageSetting> setting);
+			typedef void (CALLBACKFUNC ProgressUpdated)(AnyType userObj, UOSInt finCnt);
+			typedef void (CALLBACKFUNC KeyDownHandler)(AnyType userObj, UI::GUIControl::GUIKey key);
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;

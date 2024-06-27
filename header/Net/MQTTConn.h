@@ -34,8 +34,8 @@ namespace Net
 			UInt8 content[1];
 		} PacketInfo;
 
-		typedef void (__stdcall *PublishMessageHdlr)(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
-		typedef void (__stdcall *DisconnectHdlr)(AnyType userObj);
+		typedef void (CALLBACKFUNC PublishMessageHdlr)(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
+		typedef void (CALLBACKFUNC DisconnectHdlr)(AnyType userObj);
 	private:
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
 		IO::Stream *stm;

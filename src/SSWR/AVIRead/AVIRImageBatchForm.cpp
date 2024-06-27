@@ -32,11 +32,12 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(AnyType userOb
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj, Text::CString fileName, Optional<const SSWR::AVIRead::AVIRImageControl::ImageSetting> setting)
 {
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	Text::CStringNN nnfileName;
-	if (!fileName.SetTo(nnfileName) || nnfileName.leng == 0)
+	NN<const SSWR::AVIRead::AVIRImageControl::ImageSetting> nnsetting;
+	if (!fileName.SetTo(nnfileName) || nnfileName.leng == 0 || !setting.SetTo(nnsetting))
 	{
 		me->dispImage.Delete();
 		SDEL_CLASS(me->previewImage);
@@ -61,10 +62,10 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 			me->previewImage = me->resizer->ProcessToNew(simg);
 			me->filteredImage = me->previewImage->CreateStaticImage().Ptr();
 			me->initPos = true;
-			me->hsbBright->SetPos((UOSInt)Double2OSInt(setting->brightness * 1000));
-			me->hsbContr->SetPos((UOSInt)Double2OSInt(setting->contrast * 100));
-			me->hsbGamma->SetPos((UOSInt)Double2OSInt(setting->gamma * 100));
-			me->hsbHDRLev->SetPos((setting->flags & 240) >> 4);
+			me->hsbBright->SetPos((UOSInt)Double2OSInt(nnsetting->brightness * 1000));
+			me->hsbContr->SetPos((UOSInt)Double2OSInt(nnsetting->contrast * 100));
+			me->hsbGamma->SetPos((UOSInt)Double2OSInt(nnsetting->gamma * 100));
+			me->hsbHDRLev->SetPos((nnsetting->flags & 240) >> 4);
 			me->initPos = false;
 			me->UpdatePreview();
 		}

@@ -9,7 +9,7 @@ namespace UI
 	class GUICalendar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *DateChangedHandler)(AnyType userObj, Data::DateTime *newDate);
+		typedef void (CALLBACKFUNC DateChangedHandler)(AnyType userObj, NN<Data::DateTime> newDate);
 	private:
 		static Int32 useCnt;
 

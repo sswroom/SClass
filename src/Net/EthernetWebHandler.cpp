@@ -41,7 +41,7 @@ void Net::EthernetWebHandler::AppendFooter(NN<Text::StringBuilderUTF8> sbOut)
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
 
-Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DeviceReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -167,7 +167,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::IPTransferReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -230,7 +230,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NN
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -343,7 +343,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<N
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -456,7 +456,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<N
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -569,7 +569,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -659,7 +659,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSClientReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -756,7 +756,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DHCPReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -868,7 +868,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NN<Net::
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::IPLogReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -958,9 +958,9 @@ Bool Net::EthernetWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req
 	RequestHandler reqHdlr = this->reqMap.GetC(subReq);
 	if (reqHdlr)
 	{
-		return reqHdlr(this, req, resp);
+		return reqHdlr(*this, req, resp);
 	}
-	return this->reqMap.GetItem(0)(this, req, resp);
+	return this->reqMap.GetItem(0)(*this, req, resp);
 }
 
 Net::EthernetWebHandler::EthernetWebHandler(NN<Net::EthernetAnalyzer> analyzer)

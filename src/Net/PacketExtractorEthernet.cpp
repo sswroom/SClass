@@ -3,34 +3,36 @@
 #include "Data/ByteTool.h"
 #include "Net/PacketExtractorEthernet.h"
 
-const UInt8 *Net::PacketExtractorEthernet::EthernetExtractUDP(const UInt8 *packet, UOSInt packetSize, UOSInt *udpSize, EthernetHeader *etherHdr, IPv4Header *ipv4Hdr, UDPHeader *udpHdr)
+UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::EthernetExtractUDP(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> udpSize, Optional<EthernetHeader> etherHdr, Optional<IPv4Header> ipv4Hdr, NN<UDPHeader> udpHdr)
 {
 	EthernetHeader myEtherHdr;
-	if (etherHdr == 0)
+	NN<EthernetHeader> nnetherHdr;
+	if (!etherHdr.SetTo(nnetherHdr))
 	{
-		etherHdr = &myEtherHdr;
+		nnetherHdr = myEtherHdr;
 	}
 	UOSInt etherDataSize;
-	const UInt8 *etherData = EthernetExtract(packet, packetSize, &etherDataSize, etherHdr);
-	if (etherData == 0)
+	UnsafeArray<const UInt8> etherData;
+	if (!EthernetExtract(packet, packetSize, etherDataSize, nnetherHdr).SetTo(etherData))
 	{
 		return 0;
 	}
-	if (etherHdr->etherType == 0x0800)
+	if (nnetherHdr->etherType == 0x0800)
 	{
 		IPv4Header myIPv4Hdr;
-		if (ipv4Hdr == 0)
+		NN<IPv4Header> nnipv4Hdr;
+		if (!ipv4Hdr.SetTo(nnipv4Hdr))
 		{
-			ipv4Hdr = &myIPv4Hdr;
+			nnipv4Hdr = myIPv4Hdr;
 		}
 		UOSInt ipv4Size;
-		const UInt8 *ipv4Data = IPv4Extract(etherData, etherDataSize, &ipv4Size, ipv4Hdr);
-		if (ipv4Data == 0)
+		UnsafeArray<const UInt8> ipv4Data;
+		if (!IPv4Extract(etherData, etherDataSize, ipv4Size, nnipv4Hdr).SetTo(ipv4Data))
 		{
 			return 0;
 		}
 
-		if (ipv4Hdr->protocol != 17) //UDP
+		if (nnipv4Hdr->protocol != 17) //UDP
 		{
 			return 0;
 		}
@@ -42,7 +44,7 @@ const UInt8 *Net::PacketExtractorEthernet::EthernetExtractUDP(const UInt8 *packe
 	}
 }
 
-const UInt8 *Net::PacketExtractorEthernet::EthernetExtract(const UInt8 *packet, UOSInt packetSize, UOSInt *dataSize, EthernetHeader *etherHdr)
+UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::EthernetExtract(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, NN<EthernetHeader> etherHdr)
 {
 	if (packetSize < 14)
 	{
@@ -51,11 +53,11 @@ const UInt8 *Net::PacketExtractorEthernet::EthernetExtract(const UInt8 *packet, 
 	MemCopyNO(etherHdr->destAddr, &packet[0], 6);
 	MemCopyNO(etherHdr->srcAddr, &packet[6], 6);
 	etherHdr->etherType = ReadMUInt16(&packet[12]);
-	*dataSize = packetSize - 14;
+	dataSize.Set(packetSize - 14);
 	return packet + 14;
 }
 
-const UInt8 *Net::PacketExtractorEthernet::IPv4Extract(const UInt8 *packet, UOSInt packetSize, UOSInt *dataSize, IPv4Header *ipv4Hdr)
+UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::IPv4Extract(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, NN<IPv4Header> ipv4Hdr)
 {
 	if (packetSize < 20)
 	{
@@ -75,11 +77,11 @@ const UInt8 *Net::PacketExtractorEthernet::IPv4Extract(const UInt8 *packet, UOSI
 	ipv4Hdr->chksum = ReadMUInt16(&packet[10]);
 	MemCopyNO(ipv4Hdr->srcAddr, &packet[12], 4);
 	MemCopyNO(ipv4Hdr->destAddr, &packet[16], 4);
-	*dataSize = packetSize - 20;
+	dataSize.Set(packetSize - 20);
 	return packet + 20;
 }
 
-const UInt8 *Net::PacketExtractorEthernet::UDPExtract(const UInt8 *packet, UOSInt packetSize, UOSInt *dataSize, UDPHeader *udpHdr)
+UnsafeArrayOpt<const UInt8> Net::PacketExtractorEthernet::UDPExtract(UnsafeArray<const UInt8> packet, UOSInt packetSize, OutParam<UOSInt> dataSize, NN<UDPHeader> udpHdr)
 {
 	if (packetSize < 8)
 	{
@@ -89,6 +91,6 @@ const UInt8 *Net::PacketExtractorEthernet::UDPExtract(const UInt8 *packet, UOSIn
 	udpHdr->destPort = ReadMUInt16(&packet[2]);
 	udpHdr->leng = ReadMUInt16(&packet[4]);
 	udpHdr->chksum = ReadMUInt16(&packet[6]);
-	*dataSize = packetSize - 8;
+	dataSize.Set(packetSize - 8);
 	return packet + 8;
 }

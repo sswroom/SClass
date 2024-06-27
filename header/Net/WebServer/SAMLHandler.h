@@ -39,8 +39,8 @@ namespace Net
 		class SAMLHandler : public Net::WebServer::WebStandardHandler
 		{
 		public:
-			typedef void (__stdcall *SAMLStrFunc)(AnyType userObj, Text::CStringNN msg);
-			typedef Bool (__stdcall *SAMLLoginFunc)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, const SAMLMessage *msg);
+			typedef void (CALLBACKFUNC SAMLStrFunc)(AnyType userObj, Text::CStringNN msg);
+			typedef Bool (CALLBACKFUNC SAMLLoginFunc)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<const SAMLMessage> msg);
 		private:
 			WebStandardHandler *defHdlr;
 			Optional<Net::SSLEngine> ssl;

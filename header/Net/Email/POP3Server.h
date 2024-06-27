@@ -27,7 +27,7 @@ namespace Net
 				IO::MemoryStream *dataStm;
 			} MailStatus;
 
-			typedef WChar *(__stdcall *MailHandler)(WChar *queryId, AnyType userObj, Net::TCPClient *cli, MailStatus *mail);
+			typedef WChar *(CALLBACKFUNC MailHandler)(WChar *queryId, AnyType userObj, Net::TCPClient *cli, MailStatus *mail);
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;

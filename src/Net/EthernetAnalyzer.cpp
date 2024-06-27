@@ -457,7 +457,7 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	UInt16 etherType;
 	UInt64 destAddr;
@@ -698,7 +698,7 @@ BF AC E2 BF 1B 3D 2D 10 94 98 96 30 25 D4 C1 DB
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 //	Net::SocketUtil::AddressInfo addr;
 //	UInt16 port;

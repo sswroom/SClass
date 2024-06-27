@@ -1287,7 +1287,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 		this->dispImg->setting.flags |= 1;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, this->dispImg->fileName, &this->dispImg->setting);
+			this->dispHdlr(this->dispHdlrObj, this->dispImg->fileName, this->dispImg->setting);
 		}
 	}
 	mutUsage.EndUse();

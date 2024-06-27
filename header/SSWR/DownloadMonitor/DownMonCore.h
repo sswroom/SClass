@@ -46,7 +46,7 @@ namespace SSWR
 				Sync::Mutex mut;
 			};
 
-			typedef void (__stdcall *FileEndHandler)(AnyType userObj, Int32 fileId, Int32 webType);
+			typedef void (CALLBACKFUNC FileEndHandler)(AnyType userObj, Int32 fileId, Int32 webType);
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;

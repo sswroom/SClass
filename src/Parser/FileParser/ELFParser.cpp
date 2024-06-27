@@ -8,34 +8,34 @@
 #include "Text/MyString.h"
 #include "Text/Cpp/CppDemangler.h"
 
-Int64 __stdcall Parser::FileParser::ELFParser::TReadInt64(const UInt8 *pVal)
+Int64 __stdcall Parser::FileParser::ELFParser::TReadInt64(UnsafeArray<const UInt8> pVal)
 {
-	return ReadInt64(pVal);
+	return ReadInt64(pVal.Ptr());
 }
 
-Int64 __stdcall Parser::FileParser::ELFParser::TReadMInt64(const UInt8 *pVal)
+Int64 __stdcall Parser::FileParser::ELFParser::TReadMInt64(UnsafeArray<const UInt8> pVal)
 {
-	return ReadMInt64(pVal);
+	return ReadMInt64(pVal.Ptr());
 }
 
-Int32 __stdcall Parser::FileParser::ELFParser::TReadInt32(const UInt8 *pVal)
+Int32 __stdcall Parser::FileParser::ELFParser::TReadInt32(UnsafeArray<const UInt8> pVal)
 {
-	return ReadInt32(pVal);
+	return ReadInt32(pVal.Ptr());
 }
 
-Int32 __stdcall Parser::FileParser::ELFParser::TReadMInt32(const UInt8 *pVal)
+Int32 __stdcall Parser::FileParser::ELFParser::TReadMInt32(UnsafeArray<const UInt8> pVal)
 {
-	return ReadMInt32(pVal);
+	return ReadMInt32(pVal.Ptr());
 }
 
-Int16 __stdcall Parser::FileParser::ELFParser::TReadInt16(const UInt8 *pVal)
+Int16 __stdcall Parser::FileParser::ELFParser::TReadInt16(UnsafeArray<const UInt8> pVal)
 {
-	return ReadInt16(pVal);
+	return ReadInt16(pVal.Ptr());
 }
 
-Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(const UInt8 *pVal)
+Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(UnsafeArray<const UInt8> pVal)
 {
-	return ReadMInt16(pVal);
+	return ReadMInt16(pVal.Ptr());
 }
 
 Parser::FileParser::ELFParser::ELFParser()

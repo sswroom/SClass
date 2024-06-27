@@ -9,7 +9,7 @@ namespace UI
 	class GUITrackBar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *ScrollEvent)(AnyType userObj, UOSInt scrollPos);
+		typedef void (CALLBACKFUNC ScrollEvent)(AnyType userObj, UOSInt scrollPos);
 
 	private:
 		Data::ArrayList<Data::CallbackStorage<ScrollEvent>> scrollHandlers;

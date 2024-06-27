@@ -14,7 +14,7 @@ namespace Net
 	class UDPServer
 	{
 	public:
-		typedef void (__stdcall *UDPPacketHdlr)(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
+		typedef void (CALLBACKFUNC UDPPacketHdlr)(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 
 		typedef struct
 		{

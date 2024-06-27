@@ -12,7 +12,7 @@ namespace Net
 	class SocketMonitor
 	{
 	public:
-		typedef void (__stdcall *RAWDataHdlr)(AnyType userData, const UInt8 *packetData, UOSInt packetSize);
+		typedef void (CALLBACKFUNC RAWDataHdlr)(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
 
 	private:
 		NN<Net::SocketFactory> sockf;

@@ -10,7 +10,7 @@ namespace UI
 	class GUICheckBox : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *CheckedChangeHandler)(AnyType userObj, Bool newState);
+		typedef void (CALLBACKFUNC CheckedChangeHandler)(AnyType userObj, Bool newState);
 	protected:
 		Bool checked;
 		Data::ArrayList<Data::CallbackStorage<CheckedChangeHandler>> checkedChangeHdlrs;

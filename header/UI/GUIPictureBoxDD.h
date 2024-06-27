@@ -16,7 +16,7 @@ namespace UI
 	class GUIPictureBoxDD : public GUIDDrawControl, public Media::IColorHandler
 	{
 	public:
-		typedef void (__stdcall *DrawHandler32)(AnyType userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
+		typedef void (CALLBACKFUNC DrawHandler32)(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 	private:
 		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseDownHdlrs;
 		Data::ArrayList<Data::CallbackStorage<MouseEventHandler>> mouseUpHdlrs;

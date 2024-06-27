@@ -62,9 +62,9 @@ namespace Net
 			TCPClientMgr *me;
 		} WorkerStatus;
 
-		typedef void (__stdcall *TCPClientEvent)(NN<TCPClient> cli, AnyType userObj, AnyType cliData, TCPEventType evtType);
-		typedef void (__stdcall *TCPClientData)(NN<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-		typedef void (__stdcall *TCPClientTimeout)(NN<TCPClient> cli, AnyType userObj, AnyType cliData);
+		typedef void (CALLBACKFUNC TCPClientEvent)(NN<TCPClient> cli, AnyType userObj, AnyType cliData, TCPEventType evtType);
+		typedef void (CALLBACKFUNC TCPClientData)(NN<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		typedef void (CALLBACKFUNC TCPClientTimeout)(NN<TCPClient> cli, AnyType userObj, AnyType cliData);
 
 	private:
 		TCPClientEvent evtHdlr;

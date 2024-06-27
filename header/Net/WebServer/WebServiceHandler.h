@@ -11,7 +11,7 @@ namespace Net
 		class WebServiceHandler : public Net::WebServer::HTTPDirectoryHandler
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
+			typedef Bool (CALLBACKFUNC ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		private:
 			typedef struct
 			{

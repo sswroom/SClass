@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/AVIRIPScanDetectorForm.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 *hwAddr, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(UnsafeArray<const UInt8> hwAddr, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRIPScanDetectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanDetectorForm>();
 	Text::StringBuilderUTF8 sb;

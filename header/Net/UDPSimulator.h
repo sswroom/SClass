@@ -1,5 +1,6 @@
 #ifndef _SM_NET_UDPSIMULATOR
 #define _SM_NET_UDPSIMULATOR
+#include "AnyType.h"
 #include "Data/DateTime.h"
 #include "Text/String.h"
 
@@ -8,7 +9,7 @@ namespace Net
 	class UDPSimulator
 	{
 	public:
-		typedef Bool (__stdcall *UDPPacketHdlr)(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData, Data::DateTime *recvTime); //return true to continue
+		typedef Bool (CALLBACKFUNC UDPPacketHdlr)(UInt32 ip, UInt16 port, UnsafeArray<UInt8> buff, OSInt dataSize, AnyType userData, NN<Data::DateTime> recvTime); //return true to continue
 
 	private:
 		Text::String *logFileName;

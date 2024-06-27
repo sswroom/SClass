@@ -12,7 +12,7 @@ namespace SSWR
 		class SMonitorRedir
 		{
 		public:
-			typedef void (__stdcall *RecordReplyHandler)(AnyType userObj, Int64 recTime, Int64 svrTime);
+			typedef void (CALLBACKFUNC RecordReplyHandler)(AnyType userObj, Int64 recTime, Int64 svrTime);
 		private:
 			NN<Net::SocketFactory> sockf;
 			Net::UDPServer *svr;

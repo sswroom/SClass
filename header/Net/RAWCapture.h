@@ -39,7 +39,7 @@ namespace Net
 		UInt64 packetCnt;
 		UInt64 dataSize;
 	
-		static void __stdcall DataHandler(AnyType userData, const UInt8 *packetData, UOSInt packetSize);
+		static void __stdcall DataHandler(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize);
 	public:
 		RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CStringNN fileName, Text::CString appName);
 		~RAWCapture();

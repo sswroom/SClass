@@ -19,7 +19,7 @@ namespace Net
 				Transparent
 			};
 
-			typedef void (__stdcall *ReqHandler)(void *userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			typedef void (CALLBACKFUNC ReqHandler)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		private:
 			Data::ArrayListStringNN forwardAddrs;
 			Data::ArrayListStringNN injHeaders;
@@ -30,8 +30,8 @@ namespace Net
 			Optional<Text::String> forceHost;
 			ForwardType fwdType;
 			ReqHandler reqHdlr;
-			void *reqHdlrObj;
-			IO::LogTool *log;
+			AnyType reqHdlrObj;
+			Optional<IO::LogTool> log;
 			Bool logContent;
 
 			virtual Optional<Text::String> GetNextURL(NN<Net::WebServer::IWebRequest> req);
@@ -44,10 +44,10 @@ namespace Net
 			void AddForwardURL(Text::CStringNN url);
 			void AddInjectHeader(NN<Text::String> header);
 			void AddInjectHeader(Text::CStringNN header);
-			void SetLog(IO::LogTool *log, Bool logContent);
+			void SetLog(Optional<IO::LogTool> log, Bool logContent);
 			void SetForceHost(Text::CStringNN forceHost);
 
-			void HandleForwardRequest(ReqHandler reqHdlr, void *userObj);
+			void HandleForwardRequest(ReqHandler reqHdlr, AnyType userObj);
 		};
 	}
 }

@@ -15,7 +15,7 @@ namespace UI
 	class GUITextFileView : public GUITextView
 	{
 	public:
-		typedef void (__stdcall *TextPosEvent)(AnyType userObj, UInt32 textPosX, UOSInt textPosY);
+		typedef void (CALLBACKFUNC TextPosEvent)(AnyType userObj, UInt32 textPosX, UOSInt textPosY);
 	private:
 		enum class LoadFileType
 		{

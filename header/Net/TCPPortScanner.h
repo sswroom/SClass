@@ -11,7 +11,7 @@ namespace Net
 	class TCPPortScanner
 	{
 	private:
-		typedef void (__stdcall *PortUpdatedHandler)(AnyType userObj, UInt16 port);
+		typedef void (CALLBACKFUNC PortUpdatedHandler)(AnyType userObj, UInt16 port);
 	private:
 		NN<Net::SocketFactory> sockf;
 		Net::SocketUtil::AddressInfo addr;

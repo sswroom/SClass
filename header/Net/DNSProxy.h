@@ -46,7 +46,7 @@ namespace Net
 			Sync::Event finEvt;
 		} CliRequestStatus;
 	public:
-		typedef void (__stdcall *DNSProxyRequest)(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+		typedef void (CALLBACKFUNC DNSProxyRequest)(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 	private:
 		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *cli;

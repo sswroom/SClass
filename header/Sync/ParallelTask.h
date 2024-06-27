@@ -8,7 +8,7 @@ namespace Sync
 	class ParallelTask
 	{
 	public:
-		typedef void (__stdcall *TaskFunc)(AnyType taskObj);
+		typedef void (CALLBACKFUNC TaskFunc)(AnyType taskObj);
 	private:
 		typedef struct
 		{

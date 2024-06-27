@@ -18,7 +18,7 @@ namespace UI
 			Optional<Map::MapEnv::MapItem> item;
 		} ItemIndex;
 
-		typedef void (__stdcall *TreeDragHandler)(AnyType userObj, NN<ItemIndex> dragItem, NN<ItemIndex> dropItem);
+		typedef void (CALLBACKFUNC TreeDragHandler)(AnyType userObj, NN<ItemIndex> dragItem, NN<ItemIndex> dropItem);
 
 	private:
 		NN<Map::MapEnv> env;

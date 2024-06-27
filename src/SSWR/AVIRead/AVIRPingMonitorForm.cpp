@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
-void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize)
 {
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	me->analyzer.PacketIPv4(rawData, packetSize, 0, 0);

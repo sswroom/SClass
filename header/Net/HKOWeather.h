@@ -171,7 +171,7 @@ namespace Net
 
 		static const Int32 INVALID_READING = -99;
 
-		typedef void (__stdcall *UpdateHandler)(WeatherSignal updatedSignal);
+		typedef void (CALLBACKFUNC UpdateHandler)(WeatherSignal updatedSignal);
 	private:
 		UpdateHandler hdlr;
 		NN<Net::SocketFactory> sockf;

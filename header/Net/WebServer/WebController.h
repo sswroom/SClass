@@ -12,7 +12,7 @@ namespace Net
 		class WebController
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebController> me);
+			typedef Bool (CALLBACKFUNC ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebController> me);
 		private:
 			typedef struct
 			{

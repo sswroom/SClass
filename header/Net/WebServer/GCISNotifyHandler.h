@@ -13,7 +13,7 @@ namespace Net
 		class GCISNotifyHandler : public WebServiceHandler
 		{
 		public:
-			typedef void (__stdcall *MailHandler)(AnyType userObj, NN<Net::NetConnection> cli, NN<const Text::MIMEObj::MailMessage> msg);
+			typedef void (CALLBACKFUNC MailHandler)(AnyType userObj, NN<Net::NetConnection> cli, NN<const Text::MIMEObj::MailMessage> msg);
 		private:
 			MailHandler hdlr;
 			AnyType hdlrObj;

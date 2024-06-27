@@ -28,7 +28,7 @@ namespace Net
 			Optional<IPStatus> status;
 		} ClientStatus;
 
-		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CStringNN logMessage);
+		typedef void (CALLBACKFUNC ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CStringNN logMessage);
 	private:
 		NN<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;

@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CStringNN topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize)
 {
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topicSt;
@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 			topicSt->message = MemAlloc(UInt8, msgSize);
 			topicSt->msgSize = msgSize;
 		}
-		MemCopyNO(topicSt->message, message, msgSize);
+		MemCopyNO(topicSt->message, message.Ptr(), msgSize);
 		topicSt->updated = true;
 		topicSt->updateTime = dt.ToTicks();
 	}
@@ -216,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 		topicSt->message = MemAlloc(UInt8, msgSize);
 		topicSt->msgSize = msgSize;
 		topicSt->updated = true;
-		MemCopyNO(topicSt->message, message, msgSize);
+		MemCopyNO(topicSt->message, message.Ptr(), msgSize);
 		topicSt->updateTime = dt.ToTicks();
 		me->topicMap.Put(topic, topicSt);
 		me->topicListUpdated = true;

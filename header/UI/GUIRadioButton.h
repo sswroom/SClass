@@ -9,7 +9,7 @@ namespace UI
 	class GUIRadioButton : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *SelectedChangeHandler)(AnyType userObj, Bool newState);
+		typedef void (CALLBACKFUNC SelectedChangeHandler)(AnyType userObj, Bool newState);
 	private:
 		Data::ArrayList<Data::CallbackStorage<SelectedChangeHandler>> selectedChangeHdlrs;
 

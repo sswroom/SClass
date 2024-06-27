@@ -12,7 +12,7 @@ namespace Net
 	class IPScanDetector
 	{
 	public:
-		typedef void (__stdcall *IPScanHandler)(const UInt8 *hwAddr, AnyType userData);
+		typedef void (CALLBACKFUNC IPScanHandler)(UnsafeArray<const UInt8> hwAddr, AnyType userData);
 
 		typedef struct
 		{

@@ -27,7 +27,7 @@ namespace Net
 			UOSInt namesCnt;
 		};
 
-		typedef void (__stdcall *AnswerUpdated)(AnyType userObj, UInt32 sortableIP);
+		typedef void (CALLBACKFUNC AnswerUpdated)(AnyType userObj, UInt32 sortableIP);
 	private:
 		Net::UDPServer *svr;
 		Sync::Mutex ansMut;

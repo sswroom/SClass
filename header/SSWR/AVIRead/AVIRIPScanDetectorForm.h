@@ -22,7 +22,7 @@ namespace SSWR
 			IO::LogTool *log;
 			Net::IPScanDetector *ipScanDetect;
 
-			static void __stdcall OnIPScanEvent(const UInt8 *hwAddr, AnyType userObj);
+			static void __stdcall OnIPScanEvent(UnsafeArray<const UInt8> hwAddr, AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);
 
 		public:

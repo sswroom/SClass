@@ -12,7 +12,7 @@
 typedef struct
 {
 	AnyType cliData;
-	Text::String *cliId;
+	Optional<Text::String> cliId;
 	UOSInt buffSize;
 	UInt8 recvBuff[20000];
 	UInt16 keepAlive;
@@ -169,6 +169,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			Text::String *clientId = 0;
 			Text::String *userName = 0;
 			Text::String *password = 0;
+			NN<Text::String> nnclientId;
 			if (this->log->HasHandler())
 			{
 				UInt8 connFlags;
@@ -349,15 +350,22 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				}
 			}
 			ConnectStatus cs;
-			if (this->connHdlr)
+			if (nnclientId.Set(clientId))
 			{
-				Net::SocketUtil::AddressInfo addr;
-				((Net::TCPClient*)stm.Ptr())->GetRemoteAddr(addr);
-				cs = this->connHdlr(this->connObj, clientId, userName, password, &addr);
+				if (this->connHdlr)
+				{
+					Net::SocketUtil::AddressInfo addr;
+					((Net::TCPClient*)stm.Ptr())->GetRemoteAddr(addr);
+					cs = this->connHdlr(this->connObj, nnclientId, userName, password, addr);
+				}
+				else
+				{
+					cs = CS_ACCEPTED;
+				}
 			}
 			else
 			{
-				cs = CS_ACCEPTED;
+				cs = CS_CLI_ID_NOT_VALID;
 			}
 
 			packet[0] = 0; //Session Present = 0;
@@ -393,8 +401,8 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			if (cs == CS_ACCEPTED)
 			{
 				data->connected = true;
-				SDEL_STRING(data->cliId);
-				data->cliId = clientId->Clone().Ptr();
+				OPTSTR_DEL(data->cliId);
+				data->cliId = clientId->Clone();
 			}
 
 			i = this->protoHdlr.BuildPacket(packet2, 0x20, 0, packet, 2, data->cliData);
@@ -623,7 +631,8 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			}
 
 			ConnectStatus cs = CS_NOT_AUTHORIZED;
-			if (data->cliId == 0)
+			NN<Text::String> cliId;
+			if (!data->cliId.SetTo(cliId))
 			{
 				cs = CS_CLI_ID_NOT_VALID;
 			}
@@ -633,7 +642,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 			}
 			else if (this->subscribeHdlr)
 			{
-				cs = this->subscribeHdlr(this->subscribeObj, data->cliId, sbTopic.ToCString());
+				cs = this->subscribeHdlr(this->subscribeObj, cliId, sbTopic.ToCString());
 			}
 			else
 			{
@@ -931,7 +940,7 @@ void Net::MQTTBroker::StreamClosed(NN<IO::Stream> stm, AnyType stmData)
 {
 	NN<ClientData> data = stmData.GetNN<ClientData>();
 	this->protoHdlr.DeleteStreamData(stm, data->cliData);
-	SDEL_STRING(data->cliId);
+	OPTSTR_DEL(data->cliId);
 	MemFree(data.Ptr());
 
 	UOSInt i;

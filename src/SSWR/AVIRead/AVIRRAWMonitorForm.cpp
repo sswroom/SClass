@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData,
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	{
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(AnyType userData, co
 	me->analyzer->PacketEthernet(rawData, packetSize);
 }
 
-void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, UnsafeArray<const UInt8> rawData, UOSInt packetSize)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	{

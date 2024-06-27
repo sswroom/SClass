@@ -4,15 +4,16 @@
 
 #include <stdio.h>
 
-void __stdcall Net::LoRaGWMonitor::OnRAWPacket(AnyType userData, const UInt8 *packetData, UOSInt packetSize)
+void __stdcall Net::LoRaGWMonitor::OnRAWPacket(AnyType userData, UnsafeArray<const UInt8> packetData, UOSInt packetSize)
 {
 	NN<Net::LoRaGWMonitor> me = userData.GetNN<Net::LoRaGWMonitor>();
 	Net::PacketExtractorEthernet::IPv4Header ipv4Hdr;
 	Net::PacketExtractorEthernet::UDPHeader udpHdr;
 	Net::PacketExtractorEthernet::EthernetHeader etherHdr;
 	UOSInt udpSize;
-	const UInt8 *udpData = Net::PacketExtractorEthernet::EthernetExtractUDP(packetData, packetSize, &udpSize, &etherHdr, &ipv4Hdr, &udpHdr);
-	if (udpData && udpSize >= ((UOSInt)udpHdr.leng - 8) && udpHdr.leng >= 12)
+	UnsafeArray<const UInt8> udpData;
+	if (Net::PacketExtractorEthernet::EthernetExtractUDP(packetData, packetSize, udpSize, etherHdr, ipv4Hdr, udpHdr).SetTo(udpData) &&
+		udpSize >= ((UOSInt)udpHdr.leng - 8) && udpHdr.leng >= 12)
 	{
 		if (udpHdr.srcPort == me->port)
 		{

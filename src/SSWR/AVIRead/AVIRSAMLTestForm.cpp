@@ -338,7 +338,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(AnyType userObj, 
 	me->respNew = Text::String::New(msg).Ptr();
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg)
+Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Text::StringBuilderUTF8 sb;

@@ -11,7 +11,7 @@ namespace Net
 	class WiFiCapturer
 	{
 	public:
-		typedef void (__stdcall *UpdateHandler)(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj);
+		typedef void (CALLBACKFUNC UpdateHandler)(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj);
 	private:
 		Net::WirelessLAN wlan;
 		Sync::Thread thread;

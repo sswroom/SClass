@@ -30,7 +30,7 @@ namespace Net
 		class IWebResponse : public IO::Stream
 		{
 		public:
-			typedef void (__stdcall *SSEDisconnectHandler)(NN<Net::WebServer::IWebResponse> resp, AnyType userObj);
+			typedef void (CALLBACKFUNC SSEDisconnectHandler)(NN<Net::WebServer::IWebResponse> resp, AnyType userObj);
 		public:
 			IWebResponse(NN<Text::String> sourceName);
 			IWebResponse(Text::CStringNN sourceName);

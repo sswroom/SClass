@@ -10,16 +10,16 @@ namespace Parser
 		class ELFParser : public IO::FileParser
 		{
 		private:
-			static Int64 __stdcall TReadInt64(const UInt8 *pVal);
-			static Int64 __stdcall TReadMInt64(const UInt8 *pVal);
-			static Int32 __stdcall TReadInt32(const UInt8 *pVal);
-			static Int32 __stdcall TReadMInt32(const UInt8 *pVal);
-			static Int16 __stdcall TReadInt16(const UInt8 *pVal);
-			static Int16 __stdcall TReadMInt16(const UInt8 *pVal);
+			static Int64 __stdcall TReadInt64(UnsafeArray<const UInt8> pVal);
+			static Int64 __stdcall TReadMInt64(UnsafeArray<const UInt8> pVal);
+			static Int32 __stdcall TReadInt32(UnsafeArray<const UInt8> pVal);
+			static Int32 __stdcall TReadMInt32(UnsafeArray<const UInt8> pVal);
+			static Int16 __stdcall TReadInt16(UnsafeArray<const UInt8> pVal);
+			static Int16 __stdcall TReadMInt16(UnsafeArray<const UInt8> pVal);
 
-			typedef Int64 (__stdcall *RInt64Func)(const UInt8* pVal);
-			typedef Int32 (__stdcall *RInt32Func)(const UInt8* pVal);
-			typedef Int16 (__stdcall *RInt16Func)(const UInt8* pVal);
+			typedef Int64 (CALLBACKFUNC RInt64Func)(UnsafeArray<const UInt8> pVal);
+			typedef Int32 (CALLBACKFUNC RInt32Func)(UnsafeArray<const UInt8> pVal);
+			typedef Int16 (CALLBACKFUNC RInt16Func)(UnsafeArray<const UInt8> pVal);
 		public:
 			ELFParser();
 			virtual ~ELFParser();

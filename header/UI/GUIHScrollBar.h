@@ -9,7 +9,7 @@ namespace UI
 	class GUIHScrollBar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *PosChgEvent)(AnyType userObj, UOSInt newPos);
+		typedef void (CALLBACKFUNC PosChgEvent)(AnyType userObj, UOSInt newPos);
 
 	private:
 		Data::ArrayList<Data::CallbackStorage<PosChgEvent>> posChgHdlrs;

@@ -5,7 +5,7 @@
 #include "Text/CString.h"
 namespace Sync
 {
-	typedef UInt32 (__stdcall *ThreadProc)(AnyType userObj);
+	typedef UInt32 (CALLBACKFUNC ThreadProc)(AnyType userObj);
 	struct ThreadHandle;
 
 	class ThreadUtil

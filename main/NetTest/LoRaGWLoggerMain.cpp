@@ -8,7 +8,7 @@
 #include "Net/LoRaGWUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall OnMessage(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
+void __stdcall OnMessage(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, UnsafeArray<const UInt8> msg, UOSInt msgSize)
 {
 	NN<IO::LogTool> log = userObj.GetNN<IO::LogTool>();
 	Text::StringBuilderUTF8 sb;

@@ -17,7 +17,7 @@ namespace UI
 			MA_START,
 			MA_PAUSE
 		} MouseAction;
-		typedef void (__stdcall *MouseActionHandler)(AnyType userObj, MouseAction ma, Math::Coord2D<OSInt> pos);
+		typedef void (CALLBACKFUNC MouseActionHandler)(AnyType userObj, MouseAction ma, Math::Coord2D<OSInt> pos);
 	protected:
 		IO::Writer *debugLog;
 		IO::Stream *debugFS;

@@ -13,8 +13,8 @@ namespace UI
 	class GUIButton;
 	class GUIIcon;
 
-	typedef void (__stdcall *FileEvent)(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-	typedef void (__stdcall *MenuEvent)(AnyType userObj, UInt16 cmdId);
+	typedef void (CALLBACKFUNC FileEvent)(AnyType userObj, Data::DataArray<NN<Text::String>> files);
+	typedef void (CALLBACKFUNC MenuEvent)(AnyType userObj, UInt16 cmdId);
 
 	class GUIForm : public GUIClientControl
 	{
@@ -37,9 +37,9 @@ namespace UI
 		{
 			CR_USER
 		} CloseReason;
-		typedef Bool (__stdcall *FormClosingEvent)(AnyType userObj, CloseReason reason); //true to cancel
-		typedef void (__stdcall *FormClosedEvent)(AnyType userObj, NN<UI::GUIForm> frm);
-		typedef void (__stdcall *KeyEvent)(AnyType userObj, UOSInt keyCode, Bool extendedKey);
+		typedef Bool (CALLBACKFUNC FormClosingEvent)(AnyType userObj, CloseReason reason); //true to cancel
+		typedef void (CALLBACKFUNC FormClosedEvent)(AnyType userObj, NN<UI::GUIForm> frm);
+		typedef void (CALLBACKFUNC KeyEvent)(AnyType userObj, UOSInt keyCode, Bool extendedKey);
 
 	private:
 		Bool virtualMode;

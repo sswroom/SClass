@@ -8,7 +8,7 @@ namespace UI
 	class GUISudokuViewer : public UI::GUICustomDraw
 	{
 	public:
-		typedef void (__stdcall *NumberInputEvent)(AnyType userObj, UOSInt x, UOSInt y, UInt8 num);
+		typedef void (CALLBACKFUNC NumberInputEvent)(AnyType userObj, UOSInt x, UOSInt y, UInt8 num);
 
 	private:
 		Game::Sudoku::SudokuBoard *board;

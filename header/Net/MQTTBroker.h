@@ -55,10 +55,10 @@ namespace Net
 		};
 		
 
-		typedef ConnectStatus (__stdcall *ConnectHandler)(AnyType userObj, Text::String *clientId, Text::String *userName, Text::String *password, const Net::SocketUtil::AddressInfo *addr);
-		typedef void (__stdcall *PublishHandler)(AnyType userObj, Text::CStringNN topic, UInt16 packetId, const UInt8 *message, UOSInt msgSize);
-		typedef ConnectStatus (__stdcall *SubscribeHandler)(AnyType userObj, Text::String *clientId, Text::CStringNN topic);
-		typedef void (__stdcall *TopicUpdateHandler)(AnyType userObj, Text::CStringNN topic, const UInt8 *message, UOSInt msgSize);
+		typedef ConnectStatus (CALLBACKFUNC ConnectHandler)(AnyType userObj, NN<Text::String> clientId, Optional<Text::String> userName, Optional<Text::String> password, NN<const Net::SocketUtil::AddressInfo> addr);
+		typedef void (CALLBACKFUNC PublishHandler)(AnyType userObj, Text::CStringNN topic, UInt16 packetId, UnsafeArray<const UInt8> message, UOSInt msgSize);
+		typedef ConnectStatus (CALLBACKFUNC SubscribeHandler)(AnyType userObj, NN<Text::String> clientId, Text::CStringNN topic);
+		typedef void (CALLBACKFUNC TopicUpdateHandler)(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize);
 	private:
 		NN<Net::SocketFactory> sockf;
 		NN<IO::LogTool> log;

@@ -12,7 +12,7 @@ namespace Net
 		class IWebSessionManager
 		{
 		public:
-			typedef Bool (__stdcall *SessionHandler)(NN<IWebSession> sess, AnyType userObj);
+			typedef Bool (CALLBACKFUNC SessionHandler)(NN<IWebSession> sess, AnyType userObj);
 
 		protected:
 			SessionHandler delHdlr;

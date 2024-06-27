@@ -24,7 +24,7 @@ namespace SSWR
 				Sync::Mutex mut;
 			};
 
-			typedef void (__stdcall *DataHandler)(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
+			typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, UnsafeArray<const UInt8> data, UOSInt dataSize);
 		private:
 			NN<Net::SocketFactory> sockf;
 			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;

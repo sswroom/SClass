@@ -17,7 +17,7 @@ namespace Net
 	class EthernetAnalyzer : public IO::ParsedObject
 	{
 	public:
-		typedef void (__stdcall *Pingv4Handler)(AnyType userData, UInt32 fromIP, UInt32 toIP, UInt8 ttl, UOSInt packetSize);
+		typedef void (CALLBACKFUNC Pingv4Handler)(AnyType userData, UInt32 fromIP, UInt32 toIP, UInt8 ttl, UOSInt packetSize);
 
 		typedef enum
 		{
@@ -231,10 +231,10 @@ namespace Net
 
 		Bool PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize); //Return valid
 		Bool PacketNull(const UInt8 *packet, UOSInt packetSize); //Return valid
-		Bool PacketEthernet(const UInt8 *packet, UOSInt packetSize); //Return valid
+		Bool PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketLinux(const UInt8 *packet, UOSInt packetSize); //Return valid
 		Bool PacketEthernetData(const UInt8 *packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC); //Return valid
-		Bool PacketIPv4(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
 		Bool PacketIPv6(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
 		Bool PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
 

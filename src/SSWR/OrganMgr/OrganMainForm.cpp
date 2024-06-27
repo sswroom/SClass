@@ -535,7 +535,7 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseMove(AnyType userObj, Ma
 	return false;
 }
 
-void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl)
+void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Math::Coord2DDbl pos1;
@@ -567,7 +567,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 					}
 					else
 					{
-						ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
+						ImageUtil_DrawRectNA32(imgPtr.Ptr() + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
 					}
 				}
 			}
@@ -594,7 +594,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 					}
 					else
 					{
-						ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
+						ImageUtil_DrawRectNA32(imgPtr.Ptr() + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
 					}
 				}
 			}
@@ -605,7 +605,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 		Math::Coord2D<OSInt> rect[2];
 		if (me->CalcCropRect(rect))
 		{
-			ImageUtil_DrawRectNA32(imgPtr + (OSInt)bpl * rect[0].y + rect[0].x * 4, (UOSInt)(rect[1].x - rect[0].x), (UOSInt)(rect[1].y - rect[0].y), bpl, 0xffff0000);
+			ImageUtil_DrawRectNA32(imgPtr.Ptr() + (OSInt)bpl * rect[0].y + rect[0].x * 4, (UOSInt)(rect[1].x - rect[0].x), (UOSInt)(rect[1].y - rect[0].y), bpl, 0xffff0000);
 		}
 	}
 }

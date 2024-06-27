@@ -55,7 +55,7 @@ namespace SSWR
 			UOSInt selCnt;
 
 			static void __stdcall OnFolderClicked(AnyType userObj);
-			static void __stdcall OnImageChanged(AnyType userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting);
+			static void __stdcall OnImageChanged(AnyType userObj, Text::CString fileName, Optional<const SSWR::AVIRead::AVIRImageControl::ImageSetting> setting);
 			static void __stdcall OnColorChg(AnyType userObj, UOSInt newPos);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
 			static void __stdcall OnProgressUpdated(AnyType userObj, UOSInt finCnt);

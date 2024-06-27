@@ -35,12 +35,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer
 	return false;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	return resp->RedirectURL(req, CSTR("/monitor/index"), -2);
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -281,7 +281,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -358,7 +358,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	NN<Net::WebServer::IWebSession> sess;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
@@ -369,7 +369,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(SSWR::SMonitor::SMo
 	return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -538,7 +538,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -657,7 +657,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -798,7 +798,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -922,7 +922,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	NN<Text::String> s;
 	Int64 cliId = 0;
@@ -1461,7 +1461,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	}
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	Int32 userId = 0;
@@ -1579,7 +1579,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	NN<Text::String> s;
 	Int64 cliId = 0;
@@ -1807,7 +1807,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	}
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -1892,7 +1892,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -1960,7 +1960,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -2023,7 +2023,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -2278,7 +2278,7 @@ Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NN<Net::WebServer::IWebR
 	RequestHandler reqHdlr = this->reqMap->GetC(subReq);
 	if (reqHdlr)
 	{
-		return reqHdlr(this, req, resp);
+		return reqHdlr(*this, req, resp);
 	}
 	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	return true;

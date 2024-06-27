@@ -9,8 +9,8 @@
 
 namespace UI
 {
-	typedef void (__stdcall *UIEvent)(AnyType userObj);
-	typedef Bool (__stdcall *KeyEvent)(AnyType userObj, UInt32 osKey);
+	typedef void (CALLBACKFUNC UIEvent)(AnyType userObj);
+	typedef Bool (CALLBACKFUNC KeyEvent)(AnyType userObj, UInt32 osKey);
 
 	struct InstanceHandle;
 	

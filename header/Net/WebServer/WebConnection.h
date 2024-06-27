@@ -17,7 +17,7 @@ namespace Net
 		class WebConnection : public IWebResponse
 		{
 		public:
-			typedef void (__stdcall *SendLogger)(AnyType userObj, UOSInt buffSize);
+			typedef void (CALLBACKFUNC SendLogger)(AnyType userObj, UOSInt buffSize);
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;

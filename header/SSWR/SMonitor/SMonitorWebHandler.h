@@ -13,7 +13,7 @@ namespace SSWR
 		class SMonitorWebHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			typedef Bool (__stdcall *RequestHandler)(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			typedef Bool (CALLBACKFUNC RequestHandler)(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		private:
 			SSWR::SMonitor::ISMonitorCore *core;
 			Data::FastStringMap<RequestHandler> *reqMap;
@@ -22,21 +22,21 @@ namespace SSWR
 			static Bool __stdcall OnSessDeleted(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
 			static Bool __stdcall OnSessCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
 
-			static Bool __stdcall DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall LoginReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall LogoutReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceEditReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceReadingReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceDigitalsReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceReadingImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DevicePastDataReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DevicePastDataImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UsersReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DefaultReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall IndexReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall LoginReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall LogoutReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceEditReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceReadingReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceDigitalsReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceReadingImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DevicePastDataReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DevicePastDataImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UserPasswordReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UsersReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UserAddReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UserAssignReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
 			static void __stdcall WriteHeaderBegin(IO::Writer *writer);
 			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
