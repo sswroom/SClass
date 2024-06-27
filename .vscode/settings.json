@@ -7,6 +7,9 @@
 		"**/.vscode": true,
 		"**/.vs": true
 	},
+	"search.exclude": {
+		"**/ThirdParty/**": true
+	},
 	"files.associations": {
 		"memory": "cpp"
 	}

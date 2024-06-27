@@ -11,11 +11,11 @@ extern "C"
 	UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal);
 }
 
-Crypto::Hash::CRC32R::CRC32R(const CRC32R *crc)
+Crypto::Hash::CRC32R::CRC32R(NN<const CRC32R> crc)
 {
-	this->crctab = MemAlloc(UInt32, 256*16);
+	this->crctab = MemAllocArr(UInt32, 256*16);
 	this->currVal = crc->currVal;
-	MemCopyNO(this->crctab, crc->crctab, sizeof(UInt32) * 256*16);
+	MemCopyNO(this->crctab.Ptr(), crc->crctab.Ptr(), sizeof(UInt32) * 256*16);
 }
 
 void Crypto::Hash::CRC32R::InitTable(UInt32 polynomial)
@@ -23,8 +23,8 @@ void Crypto::Hash::CRC32R::InitTable(UInt32 polynomial)
 	currVal = 0xffffffff;
 
 	UInt32 rpn = CRC32R_Reverse(polynomial);
-	UInt32 *tab = crctab = MemAlloc(UInt32, 256*16);
-	CRC32R_InitTable(tab, rpn);
+	UnsafeArray<UInt32> tab = crctab = MemAllocArr(UInt32, 256*16);
+	CRC32R_InitTable(tab.Ptr(), rpn);
 }
 
 Crypto::Hash::CRC32R::CRC32R()
@@ -39,7 +39,7 @@ Crypto::Hash::CRC32R::CRC32R(UInt32 polynomial)
 
 Crypto::Hash::CRC32R::~CRC32R()
 {
-	MemFree(crctab);
+	MemFreeArr(crctab);
 }
 
 UnsafeArray<UTF8Char> Crypto::Hash::CRC32R::GetName(UnsafeArray<UTF8Char> sbuff) const
@@ -50,7 +50,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::CRC32R::GetName(UnsafeArray<UTF8Char> sbuff)
 NN<Crypto::Hash::IHash> Crypto::Hash::CRC32R::Clone() const
 {
 	NN<Crypto::Hash::CRC32R> crc;
-	NEW_CLASSNN(crc, Crypto::Hash::CRC32R(this));
+	NEW_CLASSNN(crc, Crypto::Hash::CRC32R(*this));
 	return crc;
 }
 
@@ -61,7 +61,7 @@ void Crypto::Hash::CRC32R::Clear()
 
 void Crypto::Hash::CRC32R::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = CRC32R_Calc(buff.Ptr(), buffSize, this->crctab, this->currVal);
+	this->currVal = CRC32R_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), this->currVal);
 }
 
 void Crypto::Hash::CRC32R::GetValue(UnsafeArray<UInt8> buff) const

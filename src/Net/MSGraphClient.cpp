@@ -143,8 +143,8 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 #endif
 		return 0;
 	}
-	Text::JSONBase *result = Text::JSONBase::ParseJSONStr(content);
-	if (result == 0)
+	NN<Text::JSONBase> result;
+	if (!Text::JSONBase::ParseJSONStr(content).SetTo(result))
 	{
 		if (this->log.SetTo(log))
 		{
@@ -205,8 +205,8 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 	if (cli->ReadAllContent(sb, 4096, 1048576 * 4))
 	{
 		cli.Delete();
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
-		if (json == 0)
+		NN<Text::JSONBase> json;
+		if (!Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
 		{
 #if defined(VERBOSE)
 			printf("MSGraphClient: %s cannot parse result: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
@@ -222,9 +222,9 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 #endif
 			return false;
 		}
-		Text::JSONObject *obj = (Text::JSONObject*)json;
-		Text::JSONArray *arr = obj->GetObjectArray(CSTR("value"));
-		if (arr == 0)
+		NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(json);
+		NN<Text::JSONArray> arr;
+		if (!obj->GetObjectArray(CSTR("value")).SetTo(arr))
 		{
 			json->EndUse();
 #if defined(VERBOSE)
@@ -238,7 +238,7 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
 		{
-			if (dataObj.Set(arr->GetArrayObject(i)))
+			if (arr->GetArrayObject(i).SetTo(dataObj))
 			{
 				NEW_CLASSNN(data, T(dataObj));
 				if (data->IsValid())
@@ -371,7 +371,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 		printf("MSGraphClient: EntityGetMe %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
 		NN<Text::JSONBase> json;
-		if (json.Set(Text::JSONBase::ParseJSONStr(sb.ToCString())))
+		if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
 		{
 			NN<MSGraphEntity> entity;
 			NEW_CLASSNN(entity, MSGraphEntity(json));
@@ -452,8 +452,8 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 		{
 			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		}
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
-		if (json == 0)
+		NN<Text::JSONBase> json;
+		if (!Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
 		{
 			if (this->log.SetTo(log))
 			{
@@ -476,10 +476,10 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 #endif
 			return false;
 		}
-		Text::JSONObject *obj = (Text::JSONObject*)json;
-		hasNext.Set(obj->GetValue(CSTR("@odata.nextLink")) != 0);
-		Text::JSONArray *arr = obj->GetObjectArray(CSTR("value"));
-		if (arr == 0)
+		NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(json);
+		hasNext.Set(obj->GetValue(CSTR("@odata.nextLink")).NotNull());
+		NN<Text::JSONArray> arr;
+		if (!obj->GetObjectArray(CSTR("value")).SetTo(arr))
 		{
 			json->EndUse();
 			if (this->log.SetTo(log))
@@ -497,7 +497,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
 		{
-			if (msgObj.Set(arr->GetArrayObject(i)))
+			if (arr->GetArrayObject(i).SetTo(msgObj))
 			{
 				NEW_CLASSNN(msg, MSGraphEventMessageRequest(msgObj));
 				if (msg->IsValid())

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #endif
 
-Text::JSONBase *Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
+Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
 {
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
@@ -49,9 +49,9 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional
 		cli.Delete();
 	}
 	cli.Delete();
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
+	Optional<Text::JSONBase> json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 #if defined(VERBOSE)
-	if (json == 0)
+	if (json.IsNull())
 	{
 		printf("HTTPJSONReader: Error in Parsing JSON data\r\n");
 		printf("%s\r\n-------------- End of data -----------------\r\n", sb.ToPtr());

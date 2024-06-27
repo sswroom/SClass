@@ -18,7 +18,7 @@ namespace Net
 		static Bool __stdcall UsersHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 		static Bool __stdcall ListDevicesHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 
-		void ParseJSONSend(Text::JSONBase *sendJson);
+		void ParseJSONSend(NN<Text::JSONBase> sendJson);
 	public:
 		PushServerHandler(NN<PushManager> mgr);
 		virtual ~PushServerHandler();

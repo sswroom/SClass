@@ -102,10 +102,10 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PrivKey::CreateKey() const
 	return 0;
 }
 
-NN<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName)
+NN<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, Optional<Text::String> sourceName)
 {
 	NN<Text::String> mySourceName;
-	if (!mySourceName.Set(sourceName))
+	if (!sourceName.SetTo(mySourceName))
 	{
 		mySourceName = Text::String::NewEmpty();
 	}

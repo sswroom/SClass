@@ -74,7 +74,7 @@ namespace Net
 		static Bool KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb);
 		Net::HTTPClient *ACMEPost(NN<Text::String> url, Text::CStringNN data);
 		Optional<Order> OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		Optional<Challenge> ChallengeJSON(Text::JSONBase *json);
+		Optional<Challenge> ChallengeJSON(NN<Text::JSONBase> json);
 		Optional<Challenge> ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	public:
 		ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port);

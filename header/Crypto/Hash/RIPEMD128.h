@@ -14,7 +14,7 @@ namespace Crypto
 			UInt32 h1;
 			UInt32 h2;
 			UInt32 h3;
-			UInt8 *buff;
+			UInt8 buff[64];
 			UInt32 buffSize;
 
 		public:

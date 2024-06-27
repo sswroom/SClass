@@ -41,19 +41,19 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	{
 		return;
 	}
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb2.ToCString());
+	NN<Text::JSONBase> json;
 	NN<Text::String> s;
-	if (json)
+	if (Text::JSONBase::ParseJSONStr(sb2.ToCString()).SetTo(json))
 	{
 		this->brandLogoUri = Text::String::CopyOrNull(json->GetValueString(CSTR("brandLogoUri")));
-		Text::JSONBase *resourceBase = json->GetValue(CSTR("resourceSets[0].resources[0]"));
-		if (resourceBase && resourceBase->GetType() == Text::JSONType::Object)
+		NN<Text::JSONBase> resourceBase;
+		if (json->GetValue(CSTR("resourceSets[0].resources[0]")).SetTo(resourceBase) && resourceBase->GetType() == Text::JSONType::Object)
 		{
 			this->url = Text::String::CopyOrNull(resourceBase->GetValueString(CSTR("imageUrl")));
-			Text::JSONBase *subdObj = resourceBase->GetValue(CSTR("imageUrlSubdomains"));
-			if (subdObj && subdObj->GetType() == Text::JSONType::Array)
+			NN<Text::JSONBase> subdObj;
+			if (resourceBase->GetValue(CSTR("imageUrlSubdomains")).SetTo(subdObj) && subdObj->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONArray *subd = (Text::JSONArray*)subdObj;
+				NN<Text::JSONArray> subd = NN<Text::JSONArray>::ConvertFrom(subdObj);
 				UOSInt i = 0;
 				UOSInt j = subd->GetArrayLength();
 				while (i < j)

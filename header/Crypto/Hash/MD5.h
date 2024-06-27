@@ -11,7 +11,7 @@ namespace Crypto
 		private:
 			UInt64 msgLeng;
 			UInt32 h[4];
-			UInt8 *buff;
+			UInt8 buff[64];
 			UOSInt buffSize;
 
 		public:

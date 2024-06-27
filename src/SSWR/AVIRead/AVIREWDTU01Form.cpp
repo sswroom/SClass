@@ -11,10 +11,10 @@
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
 	NN<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
-	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Arr(), buff.GetSize());
-	Text::JSONObject *obj;
-	Text::JSONBase *baseObj;
-	Text::JSONArray *arr;
+	NN<Text::JSONBase> jsonObj;
+	NN<Text::JSONObject> obj;
+	NN<Text::JSONBase> baseObj;
+	NN<Text::JSONArray> arr;
 	Optional<Text::String> name;
 	NN<Text::String> mac;
 	NN<Text::String> rssi;
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 	UInt64 macInt;
 	UOSInt i;
 	UOSInt j;
-	if (jsonObj == 0)
+	if (!Text::JSONBase::ParseJSONBytes(buff.Arr(), buff.GetSize()).SetTo(jsonObj))
 	{
 		return;
 	}
@@ -33,15 +33,14 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 		Sync::MutexUsage mutUsage(me->dataMut);
 		me->dataChg = true;
 		me->DataClear();
-		arr = (Text::JSONArray*)jsonObj;
+		arr = NN<Text::JSONArray>::ConvertFrom(jsonObj);
 		i = 0;
 		j = arr->GetArrayLength();
 		while (i < j)
 		{
-			baseObj = arr->GetArrayValue(i);
-			if (baseObj && baseObj->GetType() == Text::JSONType::Object)
+			if (arr->GetArrayValue(i).SetTo(baseObj) && baseObj->GetType() == Text::JSONType::Object)
 			{
-				obj = (Text::JSONObject*)baseObj;
+				obj = NN<Text::JSONObject>::ConvertFrom(baseObj);
 				name = obj->GetObjectString(CSTR("name"));
 				if (obj->GetObjectString(CSTR("mac")).SetTo(mac) && obj->GetObjectString(CSTR("rssi")).SetTo(rssi) && mac->leng == 12)
 				{

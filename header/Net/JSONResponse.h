@@ -131,8 +131,8 @@ namespace Net
 	Bool hasError = false; \
 	NN<ArrayNNField<className>> field; \
 	NEW_CLASSNN(field, ArrayNNField<className>(CSTR(name), optional, allowNull)); \
-	Text::JSONArray *arr = this->json->GetValueArray(CSTR(name)); \
-	if (arr == 0) \
+	NN<Text::JSONArray> arr; \
+	if (!this->json->GetValueArray(CSTR(name)).SetTo(arr)) \
 	{ \
 		if (!optional) \
 		{ \
@@ -146,13 +146,14 @@ namespace Net
 	UOSInt j = arr->GetArrayLength(); \
 	while (i < j) \
 	{ \
-		if (!val.Set(arr->GetArrayObject(i))) \
+		if (!arr->GetArrayObject(i).SetTo(val)) \
 		{ \
 			if (!hasError) \
 			{ \
 				hasError = true; \
 				this->valid = false; \
-				printf("JSONResponse: %s.%s[%d] is not object, type = %s\r\n", clsName.v.Ptr(), name, (UInt32)i, Text::JSONTypeGetName(arr->GetArrayValue(i)?arr->GetArrayValue(i)->GetType():Text::JSONType::Null).v.Ptr()); \
+				NN<Text::JSONBase> jobj; \
+				printf("JSONResponse: %s.%s[%d] is not object, type = %s\r\n", clsName.v.Ptr(), name, (UInt32)i, Text::JSONTypeGetName(arr->GetArrayValue(i).SetTo(jobj)?jobj->GetType():Text::JSONType::Null).v.Ptr()); \
 			} \
 		} \
 		else \
@@ -180,14 +181,14 @@ namespace Net
 	NN<className> cobj; \
 	NN<ObjectField> ofield; \
 	NN<Field> field; \
-	if (jobj.Set(this->json->GetValue(CSTR(name))) && jobj->GetType() == Text::JSONType::Object) { \
+	if (this->json->GetValue(CSTR(name)).SetTo(jobj) && jobj->GetType() == Text::JSONType::Object) { \
 		NEW_CLASSNN(cobj, className(jobj)); \
 		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, Optional<className>(cobj))); \
 		if (this->fieldMap.PutC(CSTR(name), ofield).SetTo(field)) { field.Delete(); } \
 	} else { \
 		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, 0)); \
 		if (this->fieldMap.PutC(CSTR(name), ofield).SetTo(field)) { field.Delete(); } \
-		if (jobj.Set(this->json->GetValue(CSTR(name)))) { \
+		if (this->json->GetValue(CSTR(name)).SetTo(jobj)) { \
 			if (jobj->GetType() != Text::JSONType::Null) printf("JSONResponse: %s.%s is not object type, type is %s\r\n", this->clsName.v.Ptr(), name, Text::JSONTypeGetName(jobj->GetType()).v.Ptr()); \
 			else if (!allowNull) printf("JSONResponse: %s.%s is null which is not allowed\r\n", this->clsName.v.Ptr(), name); \
 		} else if (!optional) printf("JSONResponse: %s.%s is not found which is not optional\r\n", this->clsName.v.Ptr(), name); \
@@ -206,7 +207,7 @@ namespace Net
 
 #define JSONREQ_RET(sockf, ssl, url, respType) \
 	NN<Text::JSONBase> json; \
-	if (!json.Set(Net::HTTPJSONReader::Read(sockf, ssl, url))) return 0; \
+	if (!Net::HTTPJSONReader::Read(sockf, ssl, url).SetTo(json)) return 0; \
 	NN<respType> ret; \
 	NEW_CLASSNN(ret, respType(json)); \
 	json->EndUse(); \

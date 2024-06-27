@@ -27,13 +27,13 @@ void IO::Device::GoProCameraControl::GetMediaList()
 			reader.ReadToEnd(sb);
 		}
 		cli.Delete();
-		Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStr(sb.ToCString());
-		Text::JSONObject *jsObj;
-		Text::JSONBase *jsBase2;
-		Text::JSONArray *jsArrDir;
-		Text::JSONObject *jsObjDir;
-		Text::JSONArray *jsArrFS;
-		Text::JSONObject *jsObjFS;
+		NN<Text::JSONBase> jsBase;
+		NN<Text::JSONObject> jsObj;
+		NN<Text::JSONBase> jsBase2;
+		NN<Text::JSONArray> jsArrDir;
+		NN<Text::JSONObject> jsObjDir;
+		NN<Text::JSONArray> jsArrFS;
+		NN<Text::JSONObject> jsObjFS;
 		Int64 timeDiff;
 		Data::DateTime dt;
 		dt.SetCurrTime();
@@ -42,41 +42,39 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
-		if (jsBase)
+		if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(jsBase))
 		{
 			if (jsBase->GetType() == Text::JSONType::Object)
 			{
-				jsObj = (Text::JSONObject*)jsBase;
-				jsBase2 = jsObj->GetObjectValue(CSTR("media"));
-				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
+				jsObj = NN<Text::JSONObject>::ConvertFrom(jsBase);
+				if (jsObj->GetObjectValue(CSTR("media")).SetTo(jsBase2) && jsBase2->GetType() == Text::JSONType::Array)
 				{
-					jsArrDir = (Text::JSONArray*)jsBase2;
+					jsArrDir = NN<Text::JSONArray>::ConvertFrom(jsBase2);
 					i = 0;
 					j = jsArrDir->GetArrayLength();
 					while (i < j)
 					{
-						jsBase2 = jsArrDir->GetArrayValue(i);
-						if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
+						if (jsArrDir->GetArrayValue(i).SetTo(jsBase2) && jsBase->GetType() == Text::JSONType::Object)
 						{
 							NN<Text::String> dirName;
-							jsObjDir = (Text::JSONObject *)jsBase2;
+							jsObjDir = NN<Text::JSONObject>::ConvertFrom(jsBase2);
 
-							jsBase2 = jsObjDir->GetObjectValue(CSTR("fs"));
-							if (jsObjDir->GetObjectString(CSTR("d")).SetTo(dirName) && jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
+							if (jsObjDir->GetObjectString(CSTR("d")).SetTo(dirName) &&
+								jsObjDir->GetObjectValue(CSTR("fs")).SetTo(jsBase2) &&
+								jsBase2->GetType() == Text::JSONType::Array)
 							{
-								jsArrFS = (Text::JSONArray*)jsBase2;
+								jsArrFS = NN<Text::JSONArray>::ConvertFrom(jsBase2);
 								k = 0;
 								l = jsArrFS->GetArrayLength();
 								while (k < l)
 								{
-									jsBase2 = jsArrFS->GetArrayValue(k);
-									if (jsBase2 && jsBase2->GetType() == Text::JSONType::Object)
+									if (jsArrFS->GetArrayValue(k).SetTo(jsBase2) && jsBase2->GetType() == Text::JSONType::Object)
 									{
 										NN<Text::String> fileName;
 										Optional<Text::String> modTime;
 										NN<Text::String> fileSize;
 										NN<Text::String> s;
-										jsObjFS = (Text::JSONObject*)jsBase2;
+										jsObjFS = NN<Text::JSONObject>::ConvertFrom(jsBase2);
 										modTime = jsObjFS->GetObjectString(CSTR("mod"));
 										
 										if (jsObjFS->GetObjectString(CSTR("n")).SetTo(fileName) && jsObjFS->GetObjectString(CSTR("s")).SetTo(fileSize))
@@ -134,24 +132,22 @@ Bool IO::Device::GoProCameraControl::GetInfo(NN<Data::ArrayListStringNN> nameLis
 		reader.ReadToEnd(sb);
 	}
 	cli.Delete();
-	Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStr(sb.ToCString());
-	Text::JSONObject *jsObj;
-	Text::JSONBase *jsBase2;
-	Text::JSONObject *jsInfo;
-	if (jsBase)
+	NN<Text::JSONBase> jsBase;
+	NN<Text::JSONObject> jsObj;
+	NN<Text::JSONBase> jsBase2;
+	NN<Text::JSONObject> jsInfo;
+	if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(jsBase))
 	{
 		if (jsBase->GetType() == Text::JSONType::Object)
 		{
-			jsObj = (Text::JSONObject*)jsBase;
-			jsBase2 = jsObj->GetObjectValue(CSTR("info"));
-			if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
+			jsObj = NN<Text::JSONObject>::ConvertFrom(jsBase);
+			if (jsObj->GetObjectValue(CSTR("info")).SetTo(jsBase2) && jsBase->GetType() == Text::JSONType::Object)
 			{
-				jsInfo = (Text::JSONObject*)jsBase2;
-				jsBase2 = jsInfo->GetObjectValue(CSTR("model_name"));
-				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
+				jsInfo = NN<Text::JSONObject>::ConvertFrom(jsBase2);
+				if (jsInfo->GetObjectValue(CSTR("model_name")).SetTo(jsBase2) && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Model")));
-					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
+					valueList->Add(NN<Text::JSONString>::ConvertFrom(jsBase2)->GetValue()->Clone());
 				}
 				Double modelNo = jsInfo->GetObjectDouble(CSTR("model_number"));
 				if (modelNo != 0)
@@ -161,23 +157,20 @@ Bool IO::Device::GoProCameraControl::GetInfo(NN<Data::ArrayListStringNN> nameLis
 					sb.AppendDouble(modelNo);
 					valueList->Add(Text::String::New(sb.ToCString()));
 				}
-				jsBase2 = jsInfo->GetObjectValue(CSTR("firmware_version"));
-				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
+				if (jsInfo->GetObjectValue(CSTR("firmware_version")).SetTo(jsBase2) && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Firmware Version")));
-					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
+					valueList->Add(NN<Text::JSONString>::ConvertFrom(jsBase2)->GetValue()->Clone());
 				}
-				jsBase2 = jsInfo->GetObjectValue(CSTR("serial_number"));
-				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
+				if (jsInfo->GetObjectValue(CSTR("serial_number")).SetTo(jsBase2) && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Serial Number")));
-					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
+					valueList->Add(NN<Text::JSONString>::ConvertFrom(jsBase2)->GetValue()->Clone());
 				}
-				jsBase2 = jsInfo->GetObjectValue(CSTR("board_type"));
-				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
+				if (jsInfo->GetObjectValue(CSTR("board_type")).SetTo(jsBase2) && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Board Type")));
-					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
+					valueList->Add(NN<Text::JSONString>::ConvertFrom(jsBase2)->GetValue()->Clone());
 				}
 			}
 		}

@@ -13,7 +13,7 @@ namespace Parser
 		FullParserList();
 		virtual ~FullParserList();
 
-		Math::ArcGISPRJParser *GetPRJParser();
+		NN<Math::ArcGISPRJParser> GetPRJParser();
 	};
 }
 #endif

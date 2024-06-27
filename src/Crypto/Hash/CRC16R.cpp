@@ -10,8 +10,8 @@ void Crypto::Hash::CRC16R::BuildTable(UInt16 polynomial)
 
 	this->polynomial = polynomial;
 	UInt16 rpn = Reverse(polynomial);
-	UInt16 *tab = crctab = MemAlloc(UInt16, 256 * 16);
-	CRC16R_InitTable(tab, rpn);
+	UnsafeArray<UInt16> tab = crctab = MemAllocArr(UInt16, 256 * 16);
+	CRC16R_InitTable(tab.Ptr(), rpn);
 }
 
 Crypto::Hash::CRC16R::CRC16R(UInt16 polynomial)
@@ -26,7 +26,7 @@ Crypto::Hash::CRC16R::CRC16R()
 
 Crypto::Hash::CRC16R::~CRC16R()
 {
-	MemFree(crctab);
+	MemFreeArr(crctab);
 }
 
 UnsafeArray<UTF8Char> Crypto::Hash::CRC16R::GetName(UnsafeArray<UTF8Char> sbuff) const
@@ -48,7 +48,7 @@ void Crypto::Hash::CRC16R::Clear()
 
 void Crypto::Hash::CRC16R::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = CRC16R_Calc(buff.Ptr(), buffSize, this->crctab, this->currVal);;
+	this->currVal = CRC16R_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), this->currVal);;
 }
 
 void Crypto::Hash::CRC16R::GetValue(UnsafeArray<UInt8> buff) const

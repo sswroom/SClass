@@ -161,33 +161,32 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 
 		if (status == 200)
 		{
-			Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(sb.ToCString());
-			if (obj)
+			NN<Text::JSONBase> obj;
+			if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(obj))
 			{
 				if (obj->GetType() == Text::JSONType::Object)
 				{
-					Text::JSONObject *jobj = (Text::JSONObject*)obj;
-					if (jobj->GetObjectValue(CSTR("status"))->Equals(CSTR("OK")))
+					NN<Text::JSONBase> base;
+					NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
+					if (jobj->GetObjectValue(CSTR("status")).SetTo(base) && base->Equals(CSTR("OK")))
 					{
 						UOSInt i;
 						UOSInt j;
 						UOSInt bestResult = 0;
-						Text::JSONObject *result;
-						Text::JSONArray *resultType;
-						Text::JSONArray *arr = (Text::JSONArray*)jobj->GetObjectValue(CSTR("results"));
-						if (arr)
+						NN<Text::JSONObject> result;
+						NN<Text::JSONArray> resultType;
+						NN<Text::JSONArray> arr;
+						if (jobj->GetObjectArray(CSTR("results")).SetTo(arr))
 						{
 							j = arr->GetArrayLength();
 							i = 0;
 							while (i < j)
 							{
-								result = (Text::JSONObject*)arr->GetArrayValue(i);
-								if (result)
+								if (arr->GetArrayObject(i).SetTo(result))
 								{
-									resultType = (Text::JSONArray*)result->GetObjectValue(CSTR("types"));
-									if (resultType && resultType->GetArrayLength() > 0)
+									if (result->GetObjectArray(CSTR("types")).SetTo(resultType) && resultType->GetArrayLength() > 0)
 									{
-										if (resultType->GetArrayValue(0)->Equals(CSTR("street_address")))
+										if (resultType->GetArrayValue(0).SetTo(base) && base->Equals(CSTR("street_address")))
 										{
 											bestResult = i;
 											break;
@@ -196,10 +195,9 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 								}
 								i++;
 							}
-							if (j > 0)
+							if (j > 0 && arr->GetArrayObject(bestResult).SetTo(result) && result->GetObjectValue(CSTR("formatted_address")).SetTo(base) && base->GetType() == Text::JSONType::String)
 							{
-								result = (Text::JSONObject*)arr->GetArrayValue(bestResult);
-								buff = Text::StrConcatS(buff, ((Text::JSONString*)result->GetObjectValue(CSTR("formatted_address")))->GetValue()->v, buffSize);
+								buff = Text::StrConcatS(buff, NN<Text::JSONString>::ConvertFrom(base)->GetValue()->v, buffSize);
 							}
 							else
 							{
@@ -213,17 +211,25 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 					}
 					else
 					{
-						Text::JSONString *jstr = (Text::JSONString*)jobj->GetObjectValue(CSTR("status"));
-						if (jstr->GetValue()->Equals(UTF8STRC("ZERO_RESULTS")))
+						if (jobj->GetObjectValue(CSTR("status")).SetTo(base) && base->GetType() == Text::JSONType::String)
 						{
-							buff = Text::StrConcatS(buff, (const UTF8Char*)"-", buffSize);
+							NN<Text::JSONString> jstr = NN<Text::JSONString>::ConvertFrom(base);
+							if (jstr->GetValue()->Equals(UTF8STRC("ZERO_RESULTS")))
+							{
+								buff = Text::StrConcatS(buff, (const UTF8Char*)"-", buffSize);
+							}
+							else
+							{
+								sptr = Text::StrConcatC(url, UTF8STRC("Google JSON Status "));
+								sptr = jstr->GetValue()->ConcatTo(sptr);
+								sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
+								errWriter->WriteLine(CSTRP(url, sptr));
+								this->lastIsError = 1;
+							}
 						}
 						else
 						{
-							sptr = Text::StrConcatC(url, UTF8STRC("Google JSON Status "));
-							sptr = jstr->GetValue()->ConcatTo(sptr);
-							sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-							errWriter->WriteLine(CSTRP(url, sptr));
+							errWriter->WriteLine(CSTR("Google JSON Status not found error"));
 							this->lastIsError = 1;
 						}
 					}

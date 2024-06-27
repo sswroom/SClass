@@ -62,10 +62,10 @@ namespace Net
 		static Bool PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, OptOut<UnsafeArray<const UInt8>> pduNext, Optional<Net::ASN1Names> names);
 
 		static Bool PDUDSizeEnd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UnsafeArray<const UInt8>> pduNext);
-		static UnsafeArrayOpt<const UInt8> PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst);
-		static UnsafeArrayOpt<const UInt8> PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, OptOut<UOSInt> len, OptOut<ItemType> itemType);
-		static ItemType PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path);
-		static UOSInt PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path);
+		static UnsafeArrayOpt<const UInt8> PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst);
+		static UnsafeArrayOpt<const UInt8> PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UOSInt> len, OptOut<ItemType> itemType);
+		static ItemType PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path);
+		static UOSInt PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path);
 		static Bool PDUIsValid(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 		static void PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Optional<Net::ASN1Names> names);
 

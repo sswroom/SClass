@@ -518,15 +518,17 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					UOSInt i;
 					UOSInt j;
 					UOSInt k;
-					Text::String *s;
+					NN<Text::String> s;
 					Bool lengFound = false;
 					
 					i = 0;
 					j = currReq->GetHeaderCnt();
 					while (i < j)
 					{
-						s = currReq->GetHeaderName(i);
-						if (s->EqualsICase(UTF8STRC("Host")))
+						if (!currReq->GetHeaderName(i).SetTo(s))
+						{
+						}
+						else if (s->EqualsICase(UTF8STRC("Host")))
 						{
 						}
 						else if (s->EqualsICase(UTF8STRC("Proxy-Connection")))

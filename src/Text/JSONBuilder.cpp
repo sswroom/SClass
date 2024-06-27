@@ -559,7 +559,7 @@ Bool Text::JSONBuilder::ArrayAdd(NN<Text::JSONArray> arr)
 	NN<Text::JSONBase> json;
 	while (i < j)
 	{
-		if (json.Set(arr->GetArrayValue(i)))
+		if (arr->GetArrayValue(i).SetTo(json))
 		{
 			switch (json->GetType())
 			{
@@ -1130,7 +1130,7 @@ Bool Text::JSONBuilder::ObjectAdd(NN<Text::JSONObject> obj)
 	while (it.HasNext())
 	{
 		name = it.Next();
-		if (json.Set(obj->GetObjectValue(name->ToCString())))
+		if (obj->GetObjectValue(name->ToCString()).SetTo(json))
 		{
 			switch (json->GetType())
 			{

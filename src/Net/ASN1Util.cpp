@@ -776,16 +776,17 @@ Bool Net::ASN1Util::PDUDSizeEnd(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 	return true;
 }
 
-UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *cpath, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> cpath, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst)
 {
 	len.Set(0);
 	UTF8Char sbuff[11];
-	const UTF8Char *path = (const UTF8Char*)cpath;
+	UnsafeArray<const UTF8Char> path;
+	Bool emptyStr = false;
 	UInt32 itemLen;
 	UOSInt size;
 	UOSInt cnt;
 	UOSInt ofst;
-	if (path == 0 || path[0] == 0)
+	if (!UnsafeArrayOpt<const UTF8Char>::ConvertFrom(cpath).SetTo(path) || path[0] == 0)
 	{
 		return 0;
 	}
@@ -793,7 +794,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 	if (size == INVALID_INDEX)
 	{
 		cnt = Text::StrToUOSInt(path);
-		path = 0;
+		emptyStr = true;
 	}
 	else if (size > 0 && size < 11)
 	{
@@ -831,7 +832,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 		cnt--;
 		if (cnt == 0)
 		{
-			if (path == 0)
+			if (emptyStr)
 			{
 				if (pdu[1] == 0x80)
 				{
@@ -857,11 +858,11 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 			}
 			if (pdu[1] == 0x80)
 			{
-				return PDUGetItemRAW(&pdu[ofst], pduEnd, (const Char*)path, len, itemOfst);
+				return PDUGetItemRAW(&pdu[ofst], pduEnd, UnsafeArray<const Char>::ConvertFrom(path), len, itemOfst);
 			}
 			else
 			{
-				return PDUGetItemRAW(&pdu[ofst], &pdu[ofst + itemLen], (const Char*)path, len, itemOfst);
+				return PDUGetItemRAW(&pdu[ofst], &pdu[ofst + itemLen], UnsafeArray<const Char>::ConvertFrom(path), len, itemOfst);
 			}
 		}
 		else if (pdu[1] == 0x80)
@@ -879,7 +880,7 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8
 	return 0;
 }
 
-UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, OptOut<UOSInt> len, OptOut<ItemType> itemType)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, OptOut<UOSInt> len, OptOut<ItemType> itemType)
 {
 	itemType.Set(IT_UNKNOWN);
 	UOSInt itemOfst;
@@ -892,22 +893,22 @@ UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> p
 	return pduOut + itemOfst;
 }
 
-Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path)
+Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path)
 {
 	Net::ASN1Util::ItemType itemType;
 	PDUGetItem(pdu, pduEnd, path, 0, itemType);
 	return itemType;
 }
 
-UOSInt Net::ASN1Util::PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *cpath)
+UOSInt Net::ASN1Util::PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> cpath)
 {
 	UTF8Char sbuff[11];
-	const UTF8Char *path = (const UTF8Char*)cpath;
+	UnsafeArray<const UTF8Char> path;
 	UInt32 len;
 	UOSInt size;
 	UOSInt cnt;
 	UOSInt ofst;
-	if (path == 0 || path[0] == 0)
+	if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(cpath).SetTo(path) || path[0] == 0)
 	{
 		cnt = 0;
 		while (pdu < pduEnd)
@@ -945,7 +946,7 @@ UOSInt Net::ASN1Util::PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<con
 	if (size == INVALID_INDEX)
 	{
 		cnt = Text::StrToUOSInt(path);
-		path = 0;
+		path = U8STR("");
 	}
 	else if (size > 0 && size < 11)
 	{
@@ -985,11 +986,11 @@ UOSInt Net::ASN1Util::PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<con
 		{
 			if (pdu[1] == 0x80)
 			{
-				return PDUCountItem(pdu + ofst, pduEnd, (const Char*)path);
+				return PDUCountItem(pdu + ofst, pduEnd, UnsafeArray<const Char>::ConvertFrom(path));
 			}
 			else
 			{
-				return PDUCountItem(pdu + ofst, pdu + ofst + len, (const Char*)path);
+				return PDUCountItem(pdu + ofst, pdu + ofst + len, UnsafeArray<const Char>::ConvertFrom(path));
 			}
 		}
 		else if (pdu[1] == 0x80)

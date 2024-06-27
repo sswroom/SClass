@@ -3,7 +3,7 @@
 
 void IO::ConfigFile::MergeCate(NN<Data::FastStringMapNN<Text::String>> myCate, NN<Data::FastStringMapNN<Text::String>> cateToMerge)
 {
-	Text::String *name;
+	Optional<Text::String> name;
 	NN<Text::String> value;
 	UOSInt i = 0;
 	UOSInt j = cateToMerge->GetCount();

@@ -56,7 +56,7 @@ namespace Net
 			virtual Bool GetHeaderC(NN<Text::StringBuilderUTF8> sb, Text::CStringNN name) const;
 			virtual UOSInt GetHeaderNames(NN<Data::ArrayListStringNN> names) const;
 			UOSInt GetHeaderCnt() const;
-			Text::String *GetHeaderName(UOSInt index) const;
+			Optional<Text::String> GetHeaderName(UOSInt index) const;
 			Optional<Text::String> GetHeaderValue(UOSInt index) const;
 
 			virtual NN<Text::String> GetRequestURI() const;

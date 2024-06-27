@@ -7,13 +7,13 @@
 class JSONDBReader : public DB::DBReader
 {
 private:
-	Text::JSONArray *data;
+	NN<Text::JSONArray> data;
 	NN<DB::TableDef> tab;
-	Text::JSONObject *obj;
+	Optional<Text::JSONObject> obj;
 	UOSInt nextIndex;
 	UOSInt endOfst;
 public:
-	JSONDBReader(NN<DB::TableDef> tab, Text::JSONArray *data, UOSInt ofst, UOSInt endOfst)
+	JSONDBReader(NN<DB::TableDef> tab, NN<Text::JSONArray> data, UOSInt ofst, UOSInt endOfst)
 	{
 		this->data = data;
 		this->tab = tab;
@@ -32,12 +32,12 @@ public:
 		this->obj = 0;
 		if (this->nextIndex >= this->endOfst)
 			return false;
-		Text::JSONBase *obj = this->data->GetArrayValue(this->nextIndex++);
-		if (obj == 0)
+		NN<Text::JSONBase> obj;
+		if (!this->data->GetArrayValue(this->nextIndex++).SetTo(obj))
 			return false;
 		if (obj->GetType() != Text::JSONType::Object)
 			return false;
-		this->obj = (Text::JSONObject*)obj;
+		this->obj = NN<Text::JSONObject>::ConvertFrom(obj);
 		return true;
 	}
 
@@ -53,37 +53,40 @@ public:
 
 	virtual Int32 GetInt32(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		return this->obj->GetValueAsInt32(col->GetColName()->ToCString());
+		return obj->GetValueAsInt32(col->GetColName()->ToCString());
 	}
 
 	virtual Int64 GetInt64(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		return this->obj->GetValueAsInt64(col->GetColName()->ToCString());
+		return obj->GetValueAsInt64(col->GetColName()->ToCString());
 	}
 
 	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		NN<Text::String> s;
-		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Text::StrUTF8_WChar(buff, s->v, 0);
 		}
-		if (this->obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			buff = Text::StrUTF8_WChar(buff, s->v, 0);
 			s->Release();
@@ -94,18 +97,19 @@ public:
 
 	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return false;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return false;
 		NN<Text::String> s;
-		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			sb->Append(s);
 			return true;
 		}
-		if (this->obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			sb->Append(s);
 			s->Release();
@@ -116,27 +120,29 @@ public:
 
 	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		return this->obj->GetValueNewString(col->GetColName()->ToCString());
+		return obj->GetValueNewString(col->GetColName()->ToCString());
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		NN<Text::String> s;
-		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return s->ConcatToS(buff, buffSize);
 		}
-		if (this->obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueNewString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			buff = s->ConcatToS(buff, buffSize);
 			s->Release();
@@ -147,13 +153,14 @@ public:
 
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		NN<Text::String> s;
-		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
+		if (obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		}
@@ -162,22 +169,24 @@ public:
 
 	virtual Double GetDbl(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		return this->obj->GetValueAsDouble(col->GetColName()->ToCString());
+		return obj->GetValueAsDouble(col->GetColName()->ToCString());
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return 0;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		return this->obj->GetValueAsBool(col->GetColName()->ToCString());
+		return obj->GetValueAsBool(col->GetColName()->ToCString());
 	}
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
@@ -202,13 +211,14 @@ public:
 	
 	virtual Bool IsNull(UOSInt colIndex)
 	{
-		if (this->obj == 0)
+		NN<Text::JSONObject> obj;
+		if (!this->obj.SetTo(obj))
 			return true;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return true;
-		Text::JSONBase *o = this->obj->GetObjectValue(col->GetColName()->ToCString());
-		return o == 0 || o->GetType() == Text::JSONType::Null;
+		NN<Text::JSONBase> o;
+		return !obj->GetObjectValue(col->GetColName()->ToCString()).SetTo(o) || o->GetType() == Text::JSONType::Null;
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
@@ -238,7 +248,7 @@ public:
 	}
 };
 
-DB::JSONDB::JSONDB(NN<Text::String> sourceName, Text::CStringNN layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
+DB::JSONDB::JSONDB(NN<Text::String> sourceName, Text::CStringNN layerName, NN<Text::JSONArray> data) : DB::ReadingDB(sourceName)
 {
 	this->layerName = Text::String::New(layerName);
 	this->data = data;
@@ -280,11 +290,11 @@ Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::C
 	if (!tableName.Equals(this->layerName->ToCString()))
 		return 0;
 	NEW_CLASS(tab, DB::TableDef(schemaName, this->layerName->ToCString()));
-	Text::JSONBase *json = this->data->GetArrayValue(0);
-	if (json != 0 && json->GetType() == Text::JSONType::Object)
+	NN<Text::JSONBase> json;
+	if (this->data->GetArrayValue(0).SetTo(json) && json->GetType() == Text::JSONType::Object)
 	{
 		Data::ArrayListStringNN names;
-		Text::JSONObject *obj = (Text::JSONObject*)json;
+		NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(json);
 		Text::JSONType type;
 		NN<DB::ColDef> col;
 		obj->GetObjectNames(names);
@@ -293,42 +303,44 @@ Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::C
 		while (it.HasNext())
 		{
 			name = it.Next();
-			json = obj->GetObjectValue(name->ToCString());
-			type = json->GetType();
-			if (type == Text::JSONType::Array)
+			if (obj->GetObjectValue(name->ToCString()).SetTo(json))
 			{
+				type = json->GetType();
+				if (type == Text::JSONType::Array)
+				{
 
-			}
-			else if (type == Text::JSONType::BOOL)
-			{
-				NEW_CLASSNN(col, DB::ColDef(name));
-				col->SetColType(DB::DBUtil::ColType::CT_Bool);
-				tab->AddCol(col);
-			}
-			else if (type == Text::JSONType::INT32)
-			{
-				NEW_CLASSNN(col, DB::ColDef(name));
-				col->SetColType(DB::DBUtil::ColType::CT_Int32);
-				tab->AddCol(col);
-			}
-			else if (type == Text::JSONType::INT64)
-			{
-				NEW_CLASSNN(col, DB::ColDef(name));
-				col->SetColType(DB::DBUtil::ColType::CT_Int64);
-				tab->AddCol(col);
-			}
-			else if (type == Text::JSONType::Number)
-			{
-				NEW_CLASSNN(col, DB::ColDef(name));
-				col->SetColType(DB::DBUtil::ColType::CT_Double);
-				tab->AddCol(col);
-			}
-			else if (type == Text::JSONType::String)
-			{
-				NEW_CLASSNN(col, DB::ColDef(name));
-				col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
-				col->SetColSize((UOSInt)-1);
-				tab->AddCol(col);
+				}
+				else if (type == Text::JSONType::BOOL)
+				{
+					NEW_CLASSNN(col, DB::ColDef(name));
+					col->SetColType(DB::DBUtil::ColType::CT_Bool);
+					tab->AddCol(col);
+				}
+				else if (type == Text::JSONType::INT32)
+				{
+					NEW_CLASSNN(col, DB::ColDef(name));
+					col->SetColType(DB::DBUtil::ColType::CT_Int32);
+					tab->AddCol(col);
+				}
+				else if (type == Text::JSONType::INT64)
+				{
+					NEW_CLASSNN(col, DB::ColDef(name));
+					col->SetColType(DB::DBUtil::ColType::CT_Int64);
+					tab->AddCol(col);
+				}
+				else if (type == Text::JSONType::Number)
+				{
+					NEW_CLASSNN(col, DB::ColDef(name));
+					col->SetColType(DB::DBUtil::ColType::CT_Double);
+					tab->AddCol(col);
+				}
+				else if (type == Text::JSONType::String)
+				{
+					NEW_CLASSNN(col, DB::ColDef(name));
+					col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
+					col->SetColSize((UOSInt)-1);
+					tab->AddCol(col);
+				}
 			}
 		}
 	}

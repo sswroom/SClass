@@ -321,17 +321,17 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequ
 
 	UOSInt buffSize;
 	UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, buffSize - 1));
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, buffSize - 1)).SetTo(json))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
 	if (json->GetType() == Text::JSONType::Object)
 	{
-		Text::JSONObject *jobj = (Text::JSONObject*)json;
-		Text::JSONBase *obj = jobj->GetObjectValue(CSTR("root"));
-		if (obj)
+		NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(json);
+		NN<Text::JSONBase> obj;
+		if (jobj->GetObjectValue(CSTR("root")).SetTo(obj))
 		{
 			if (!me->InObjectRange(obj, x1, y1, x2, y2))
 			{
@@ -389,7 +389,7 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NN<Net::WebServer::IWebRequ
 	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
 }
 
-void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NN<Text::String> fileName, NN<Text::StringBuilderUTF8> tmpSb)
+void Map::MapServerHandler::CheckObject(NN<Text::JSONBase> obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NN<Text::String> fileName, NN<Text::StringBuilderUTF8> tmpSb)
 {
 	if (obj->GetType() != Text::JSONType::Object)
 	{
@@ -397,15 +397,13 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 	}
 	UOSInt i;
 	NN<Text::String> s;
-	Text::JSONObject *jobj = (Text::JSONObject*)obj;
-	obj = jobj->GetObjectValue(CSTR("content"));
-	if (obj && obj->GetType() == Text::JSONType::Object)
+	NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
+	if (jobj->GetObjectValue(CSTR("content")).SetTo(obj) && obj->GetType() == Text::JSONType::Object)
 	{
-		Text::JSONObject *content = (Text::JSONObject*)obj;
-		obj = content->GetObjectValue(CSTR("url"));
-		if (obj && obj->GetType() == Text::JSONType::String)
+		NN<Text::JSONObject> content = NN<Text::JSONObject>::ConvertFrom(obj);
+		if (content->GetObjectValue(CSTR("url")).SetTo(obj) && obj->GetType() == Text::JSONType::String)
 		{
-			Text::JSONString *url = (Text::JSONString*)obj;
+			NN<Text::JSONString> url = NN<Text::JSONString>::ConvertFrom(obj);
 			s = url->GetValue();
 			if (s->EndsWith(UTF8STRC(".json")))
 			{
@@ -452,15 +450,13 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 		}
 	}
 
-	obj = jobj->GetObjectValue(CSTR("children"));
-	if (obj && obj->GetType() == Text::JSONType::Array)
+	if (jobj->GetObjectValue(CSTR("children")).SetTo(obj) && obj->GetType() == Text::JSONType::Array)
 	{
-		Text::JSONArray *children = (Text::JSONArray*)obj;
+		NN<Text::JSONArray> children = NN<Text::JSONArray>::ConvertFrom(obj);
 		i = children->GetArrayLength();
 		while (i-- > 0)
 		{
-			obj = children->GetArrayValue(i);
-			if (!this->InObjectRange(obj, x1, y1, x2, y2))
+			if (!children->GetArrayValue(i).SetTo(obj) || !this->InObjectRange(obj, x1, y1, x2, y2))
 			{
 				children->RemoveArrayItem(i);
 			}
@@ -472,34 +468,32 @@ void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y
 	}
 }
 
-Bool Map::MapServerHandler::InObjectRange(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2)
+Bool Map::MapServerHandler::InObjectRange(NN<Text::JSONBase> obj, Double x1, Double y1, Double x2, Double y2)
 {
 	if (obj->GetType() != Text::JSONType::Object)
 	{
 		return false;
 	}
-	Text::JSONObject *jobj = (Text::JSONObject*)obj;
-	obj = jobj->GetObjectValue(CSTR("boundingVolume"));
-	if (obj == 0)
+	NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
+	if (!jobj->GetObjectValue(CSTR("boundingVolume")).SetTo(obj))
 	{
 		return false;
 	}
-	jobj = (Text::JSONObject*)obj;
-	obj = jobj->GetObjectValue(CSTR("sphere"));
-	if (obj != 0)
+	jobj = NN<Text::JSONObject>::ConvertFrom(obj);
+	if (jobj->GetObjectValue(CSTR("sphere")).SetTo(obj))
 	{
 		return this->InSphereRange(obj, x1, y1, x2, y2);
 	}
 	return false;
 }
 
-Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Double y1, Double x2, Double y2)
+Bool Map::MapServerHandler::InSphereRange(NN<Text::JSONBase> sphere, Double x1, Double y1, Double x2, Double y2)
 {
-	if (sphere->GetType() != Text::JSONType::Array || ((Text::JSONArray*)sphere)->GetArrayLength() != 4)
+	if (sphere->GetType() != Text::JSONType::Array || NN<Text::JSONArray>::ConvertFrom(sphere)->GetArrayLength() != 4)
 	{
 		return false;
 	}
-	Text::JSONArray *arr = (Text::JSONArray*)sphere;
+	NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(sphere);
 	Math::Vector3 pos;
 	Double radius = arr->GetArrayDouble(3);
 	pos = this->wgs84->FromCartesianCoordDeg(Math::Vector3(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2)));

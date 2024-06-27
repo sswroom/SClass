@@ -131,31 +131,31 @@ namespace Crypto
 			};
 
 		public:
-			static Bool IsSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
-			static Bool IsTBSCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendTBSCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
-			static Bool IsCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
-			static Bool IsTBSCertList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // RFC3280
-			static void AppendTBSCertList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC3280
-			static Bool IsCertificateList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // RFC3280
-			static void AppendCertificateList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC3280
-			static Bool IsPrivateKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // PKCS-8
-			static void AppendPrivateKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb); // PKCS-8
-			static Bool IsCertificateRequestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // PKCS-10
-			static void AppendCertificateRequestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb); // PKCS-10
-			static Bool IsCertificateRequest(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // PKCS-10
-			static void AppendCertificateRequest(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb); // PKCS-8
-			static Bool IsPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // AuthenticationFramework
-			static void AppendPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb); // AuthenticationFramework
-			static Bool IsContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // RFC2315 / PKCS7
-			static void AppendContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType); // RFC2315 / PKCS7
-			static Bool IsPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path); // PKCS12
-			static void AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // PKCS12
+			static Bool IsSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // AuthenticationFramework
+			static void AppendSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
+			static Bool IsTBSCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // AuthenticationFramework
+			static void AppendTBSCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
+			static Bool IsCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // AuthenticationFramework
+			static void AppendCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
+			static Bool IsTBSCertList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // RFC3280
+			static void AppendTBSCertList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC3280
+			static Bool IsCertificateList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // RFC3280
+			static void AppendCertificateList(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC3280
+			static Bool IsPrivateKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // PKCS-8
+			static void AppendPrivateKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb); // PKCS-8
+			static Bool IsCertificateRequestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // PKCS-10
+			static void AppendCertificateRequestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb); // PKCS-10
+			static Bool IsCertificateRequest(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // PKCS-10
+			static void AppendCertificateRequest(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb); // PKCS-8
+			static Bool IsPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // AuthenticationFramework
+			static void AppendPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb); // AuthenticationFramework
+			static Bool IsContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // RFC2315 / PKCS7
+			static void AppendContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType); // RFC2315 / PKCS7
+			static Bool IsPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path); // PKCS12
+			static void AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // PKCS12
 
 		protected:
-			static void AppendVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb); // AuthenticationFramework
+			static void AppendVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, NN<Text::StringBuilderUTF8> sb); // AuthenticationFramework
 
 			static void AppendAlgorithmIdentifier(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, Bool pubKey, OptOut<KeyType> keyTypeOut); // PKCS-5
 			static void AppendValidity(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // AuthenticationFramework
@@ -169,17 +169,17 @@ namespace Crypto
 			static void AppendMSRequestClientInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
 			static void AppendMSEnrollmentCSPProvider(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
 			static void AppendGeneralNames(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
-			static Bool AppendGeneralName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
-			static Bool AppendDistributionPoint(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static Bool AppendGeneralName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static Bool AppendDistributionPoint(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
 			static void AppendDistributionPointName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
-			static Bool AppendPolicyInformation(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static Bool AppendPolicyInformation(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
 			static void AppendPKCS7SignedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
 			static void AppendPKCS7DigestAlgorithmIdentifiers(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
 			static void AppendPKCS7SignerInfos(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
 			static void AppendPKCS7SignerInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
 			static void AppendIssuerAndSerialNumber(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
 			static void AppendPKCS7Attributes(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
-			static Bool AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // PKCS12
+			static Bool AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArrayOpt<const Char> path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // PKCS12
 			static void AppendDigestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315 / PKCS7
 			static void AppendData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, ContentDataType dataType);
 			static void AppendEncryptedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
@@ -192,8 +192,8 @@ namespace Crypto
 			static UnsafeArrayOpt<UTF8Char> NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<UTF8Char> sbuff);
 			static Bool NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertNames> names);
 			static Bool ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertExtensions> ext);
-			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
-			static UOSInt DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
+			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayList<Text::CString>> crlDistributionPoints);
+			static UOSInt DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Data::ArrayList<Text::CString>> crlDistributionPoints);
 			static Optional<Crypto::Cert::X509Key> PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 
 			static UOSInt KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType);
@@ -219,7 +219,7 @@ namespace Crypto
 			Bool IsSignatureKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key) const;
 			Bool GetSignedInfo(NN<SignedInfo> signedInfo) const;
 
-			static Bool ParseDigestType(DigestInfo *digestInfo, UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
+			static Bool ParseDigestType(NN<DigestInfo> digestInfo, UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 			static Crypto::Hash::HashType GetAlgHash(AlgType algType);
 			static Text::CStringNN FileTypeGetName(FileType fileType);
 			static Text::CStringNN KeyTypeGetName(KeyType keyType);

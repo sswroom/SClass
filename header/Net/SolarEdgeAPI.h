@@ -83,7 +83,7 @@ namespace Net
 		NN<Text::String> apikey;
 
 		void BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN path);
-		Text::JSONBase *GetJSON(Text::CStringNN url);
+		Optional<Text::JSONBase> GetJSON(Text::CStringNN url);
 	public:
 		SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN apikey);
 		~SolarEdgeAPI();

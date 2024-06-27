@@ -12,13 +12,11 @@ extern "C"
 
 Crypto::Hash::RIPEMD128::RIPEMD128()
 {
-	buff = MemAlloc(UInt8, 64);
 	Clear();
 }
 
 Crypto::Hash::RIPEMD128::~RIPEMD128()
 {
-	MemFree(buff);
 }
 
 UnsafeArray<UTF8Char> Crypto::Hash::RIPEMD128::GetName(UnsafeArray<UTF8Char> sbuff) const

@@ -10,11 +10,11 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 	UOSInt buffSize;
 	Text::StringBuilderUTF8 sb;
 	me->txtJSON->GetText(sb);
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
 	{
 		NN<Text::String> rxdata;
-		Text::JSONBase *rxstat = json->GetValue(CSTR("rxpk[0].stat"));
+		NN<Text::JSONBase> rxstat;
 		NN<Text::String> txdata;
 		if (json->GetValueString(CSTR("rxpk[0].data")).SetTo(rxdata))
 		{
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 			sb.AppendC(UTF8STRC("Received Packet:\r\n"));
 			sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 			sb.AppendC(UTF8STRC("\r\n\r\n"));
-			if (rxstat == 0)
+			if (!json->GetValue(CSTR("rxpk[0].stat")).SetTo(rxstat))
 			{
 				sb.AppendC(UTF8STRC("CRC state unknown"));
 			}

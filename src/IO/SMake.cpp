@@ -1855,7 +1855,7 @@ UOSInt IO::SMake::GetProgList(NN<Data::ArrayListNN<Text::String>> progList)
 	UOSInt j = this->progMap.GetCount();
 	while (i < j)
 	{
-		if (prog.Set(this->progMap.GetKey(i)))
+		if (this->progMap.GetKey(i).SetTo(prog))
 		{
 			if (prog->EndsWith(UTF8STRC(".o")))
 			{

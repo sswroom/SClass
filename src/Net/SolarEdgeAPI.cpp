@@ -18,7 +18,7 @@ void Net::SolarEdgeAPI::BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 	sb->Append(this->apikey);
 }
 
-Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
+Optional<Text::JSONBase> Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 {
 #if defined(VERBOSE)
 	printf("SolarEdgeAPI requesting: %s\r\n", url.v);
@@ -53,8 +53,8 @@ Optional<Text::String> Net::SolarEdgeAPI::GetCurrentVersion()
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/version/current"));
-	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
 		return 0;
 	Optional<Text::String> s = json->GetValueString(CSTR("version.release"));
 	if (s.IsNull())
@@ -70,26 +70,29 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(NN<Data::ArrayListStringNN> version
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/version/supported"));
-	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
 		return false;
-	Text::JSONBase *supported = json->GetValue(CSTR("supported"));
-	if (supported && supported->GetType() == Text::JSONType::Array)
+	NN<Text::JSONBase> supported;
+	if (json->GetValue(CSTR("supported")).SetTo(supported) && supported->GetType() == Text::JSONType::Array)
 	{
-		Text::JSONArray *arr = (Text::JSONArray*)supported;
+		NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(supported);
 		UOSInt i = 0;
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
 		{
-			Text::JSONBase *obj = arr->GetArrayValue(i);
 			NN<Text::String> s;
-			if (obj->GetType() == Text::JSONType::String)
+			NN<Text::JSONBase> obj;
+			if (arr->GetArrayValue(i).SetTo(obj))
 			{
-				versions->Add(((Text::JSONString*)obj)->GetValue()->Clone());
-			}
-			else if (obj->GetValueString(CSTR("release")).SetTo(s))
-			{
-				versions->Add(s->Clone());
+				if (obj->GetType() == Text::JSONType::String)
+				{
+					versions->Add(NN<Text::JSONString>::ConvertFrom(obj)->GetValue()->Clone());
+				}
+				else if (obj->GetValueString(CSTR("release")).SetTo(s))
+				{
+					versions->Add(s->Clone());
+				}
 			}
 			i++;
 		}
@@ -111,27 +114,29 @@ Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UOSInt
 		sbURL.AppendC(UTF8STRC("&startIndex="));
 		sbURL.AppendUOSInt(startOfst);
 	}
-	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
 		return false;
 	
-	Text::JSONBase *count = json->GetValue(CSTR("sites.count"));
-	Text::JSONBase *sites = json->GetValue(CSTR("sites.site"));
-	if (count && sites && (count->GetType() == Text::JSONType::Number || count->GetType() == Text::JSONType::INT32) && sites->GetType() == Text::JSONType::Array)
+	NN<Text::JSONBase> count;
+	NN<Text::JSONBase> sites;
+	if (json->GetValue(CSTR("sites.count")).SetTo(count) &&
+		json->GetValue(CSTR("sites.site")).SetTo(sites) &&
+		(count->GetType() == Text::JSONType::Number || count->GetType() == Text::JSONType::INT32) && sites->GetType() == Text::JSONType::Array)
 	{
 		if (totalCount.IsNotNull())
 		{
 			totalCount.SetNoCheck((UOSInt)count->GetAsInt32());
 		}
-		Text::JSONArray *siteArr = (Text::JSONArray*)sites;
+		NN<Text::JSONArray> siteArr = NN<Text::JSONArray>::ConvertFrom(sites);
 		UOSInt i = 0;
 		UOSInt j = siteArr->GetArrayLength();
 		while (i < j)
 		{
-			Text::JSONObject *siteObj = (Text::JSONObject*)siteArr->GetArrayValue(i);
+			NN<Text::JSONObject> siteObj;
 			NN<Site> site;
 			NN<Text::String> s;
-			if (siteObj->GetType() == Text::JSONType::Object)
+			if (Optional<Text::JSONObject>::ConvertFrom(siteArr->GetArrayValue(i)).SetTo(siteObj) && siteObj->GetType() == Text::JSONType::Object)
 			{
 				site = MemAllocNN(Site);
 				site->id = siteObj->GetObjectInt32(CSTR("id"));
@@ -211,8 +216,8 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/overview"));
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTRP(sbuff, sptr));
-	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
 		return false;
 	NN<Text::String> s;
 	if (json->GetValueString(CSTR("overview.lastUpdateTime")).SetTo(s))
@@ -244,25 +249,29 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	AppendFormDate(sbURL, startTime, false);
 	sbURL.AppendC(UTF8STRC("&endDate="));
 	AppendFormDate(sbURL, endTime, false);
-	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
 		return false;
 	Bool succ = false;
-	Text::JSONBase *valueObj = json->GetValue(CSTR("energy.values"));
-	Text::JSONArray *valueArr;
-	if (valueObj && valueObj->GetType() == Text::JSONType::Array)
+	NN<Text::JSONBase> valueObj;
+	NN<Text::JSONArray> valueArr;
+	if (json->GetValue(CSTR("energy.values")).SetTo(valueObj) && valueObj->GetType() == Text::JSONType::Array)
 	{
-		valueArr = (Text::JSONArray*)valueObj;
+		valueArr = NN<Text::JSONArray>::ConvertFrom(valueObj);
 		UOSInt i = 0;
 		UOSInt j = valueArr->GetArrayLength();
 		while (i < j)
 		{
-			valueObj = valueArr->GetArrayValue(i);
-			Text::JSONBase *dateObj = valueObj->GetValue(CSTR("date"));
-			Text::JSONBase *valObj = valueObj->GetValue(CSTR("value"));
-			if (dateObj && valObj && valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
+			if (valueArr->GetArrayValue(i).SetTo(valueObj))
 			{
-				values->Add(TimedValue(Data::Timestamp::FromStr(((Text::JSONString*)dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+				NN<Text::JSONBase> dateObj;
+				NN<Text::JSONBase> valObj;
+				if (valueObj->GetValue(CSTR("date")).SetTo(dateObj) &&
+					valueObj->GetValue(CSTR("value")).SetTo(valObj) &&
+					valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
+				{
+					values->Add(TimedValue(Data::Timestamp::FromStr(NN<Text::JSONString>::ConvertFrom(dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+				}
 			}
 			i++;
 		}
@@ -285,25 +294,29 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 	AppendFormDate(sbURL, startTime, true);
 	sbURL.AppendC(UTF8STRC("&endTime="));
 	AppendFormDate(sbURL, endTime, true);
-	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!this->GetJSON(sbURL.ToCString()).SetTo(json))
 		return false;
 	Bool succ = false;
-	Text::JSONBase *valueObj = json->GetValue(CSTR("power.values"));
-	Text::JSONArray *valueArr;
-	if (valueObj && valueObj->GetType() == Text::JSONType::Array)
+	NN<Text::JSONBase> valueObj;
+	NN<Text::JSONArray> valueArr;
+	if (json->GetValue(CSTR("power.values")).SetTo(valueObj) && valueObj->GetType() == Text::JSONType::Array)
 	{
-		valueArr = (Text::JSONArray*)valueObj;
+		valueArr = NN<Text::JSONArray>::ConvertFrom(valueObj);
 		UOSInt i = 0;
 		UOSInt j = valueArr->GetArrayLength();
 		while (i < j)
 		{
-			valueObj = valueArr->GetArrayValue(i);
-			Text::JSONBase *dateObj = valueObj->GetValue(CSTR("date"));
-			Text::JSONBase *valObj = valueObj->GetValue(CSTR("value"));
-			if (dateObj && valObj && valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
+			if (valueArr->GetArrayValue(i).SetTo(valueObj))
 			{
-				values->Add(TimedValue(Data::Timestamp::FromStr(((Text::JSONString*)dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+				NN<Text::JSONBase> dateObj;
+				NN<Text::JSONBase> valObj;
+				if (valueObj->GetValue(CSTR("date")).SetTo(dateObj) &&
+					valueObj->GetValue(CSTR("value")).SetTo(valObj) &&
+					valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
+				{
+					values->Add(TimedValue(Data::Timestamp::FromStr(NN<Text::JSONString>::ConvertFrom(dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+				}
 			}
 			i++;
 		}

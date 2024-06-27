@@ -36,7 +36,7 @@ namespace Net
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
-			Optional<ItemData> ParsePost(Text::JSONObject *postObj);
+			Optional<ItemData> ParsePost(NN<Text::JSONObject> postObj);
 		public:
 			WebSite7gogoControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSite7gogoControl();

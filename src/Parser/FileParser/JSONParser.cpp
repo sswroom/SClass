@@ -77,21 +77,22 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 	UOSInt buffSize = (UOSInt)(fd->GetDataSize() - fileOfst);
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
 	fileBuff[fd->GetRealData(fileOfst, buffSize, Data::ByteArray(fileBuff, buffSize + 1))] = 0;
-	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));
+	Optional<Text::JSONBase> fileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));
 	MemFree(fileBuff);
 
-	IO::ParsedObject *pobj = 0;
-	if (fileJSON == 0)
+	Optional<IO::ParsedObject> pobj = 0;
+	NN<Text::JSONBase> nnfileJSON;
+	if (!fileJSON.SetTo(nnfileJSON))
 	{
 		return 0;
 	}
 
-	pobj = ParseJSON(fileJSON, fd->GetFullName(), fd->GetShortName().OrEmpty(), targetType, pkgFile, this->parsers);
-	fileJSON->EndUse();
+	pobj = ParseJSON(nnfileJSON, fd->GetFullName(), fd->GetShortName().OrEmpty(), targetType, pkgFile, this->parsers);
+	nnfileJSON->EndUse();
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NN<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
+Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseJSON(NN<Text::JSONBase> fileJSON, NN<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
@@ -99,20 +100,23 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 	{
 		NN<IO::PackageFile> nnpkgFile;
 		NN<Parser::ParserList> nnparsers;
-		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
-		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
-		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
+		NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(fileJSON);
+		NN<Text::JSONBase> jbase;
+		if (!jobj->GetObjectValue(CSTR("type")).SetTo(jbase))
+		{
+		}
+		else if (jbase->Equals(CSTR("FeatureCollection")))
 		{
 			Optional<Math::CoordinateSystem> csys = 0;
 			NN<Math::CoordinateSystem> nncsys;
-			Text::JSONBase *crs = jobj->GetObjectValue(CSTR("crs"));
-			if (crs && crs->GetType() == Text::JSONType::Object)
+			NN<Text::JSONBase> crs;
+			if (jobj->GetObjectValue(CSTR("crs")).SetTo(crs) && crs->GetType() == Text::JSONType::Object)
 			{
-				Text::JSONBase *crsProp = ((Text::JSONObject*)crs)->GetObjectValue(CSTR("properties"));
-				if (crsProp && crsProp->GetType() == Text::JSONType::Object)
+				NN<Text::JSONBase> crsProp;
+				if (NN<Text::JSONObject>::ConvertFrom(crs)->GetObjectValue(CSTR("properties")).SetTo(crsProp) && crsProp->GetType() == Text::JSONType::Object)
 				{
 					NN<Text::String> crsName;
-					if (((Text::JSONObject*)crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
+					if (NN<Text::JSONObject>::ConvertFrom(crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
 					{
 						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
 						if (csys.SetTo(nncsys))
@@ -127,32 +131,30 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				nncsys = Math::CoordinateSystemManager::CreateWGS84Csys();
 			}
 
-			jbase = jobj->GetObjectValue(CSTR("features"));
-			if (jbase && jbase->GetType() == Text::JSONType::Array)
+			if (jobj->GetObjectValue(CSTR("features")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
 				Map::VectorLayer *lyr = 0;
 				UnsafeArrayOpt<const UTF8Char> tabHdrs[32];
 				Text::String *tabCols[32];
 				Text::String *tabVals[32];
 				UOSInt colCnt;
-				Text::JSONArray *features = (Text::JSONArray*)jbase;
+				NN<Text::JSONArray> features = NN<Text::JSONArray>::ConvertFrom(jbase);
 				UOSInt i;
 				UOSInt j = features->GetArrayLength();
 				UOSInt k;
-				Text::JSONBase *feature = features->GetArrayValue(0);
-				Text::JSONBase *featType;
-				Text::JSONBase *featProp;
-				Text::JSONBase *featGeom;
+				NN<Text::JSONBase> feature;
+				NN<Text::JSONBase> featType;
+				NN<Text::JSONBase> featProp;
+				NN<Text::JSONBase> featGeom;
 				NN<Math::Geometry::Vector2D> vec;
-				if (feature && feature->GetType() == Text::JSONType::Object)
+				if (features->GetArrayValue(0).SetTo(feature) && feature->GetType() == Text::JSONType::Object)
 				{
-					featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
-					featProp = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("properties"));
-					featGeom = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("geometry"));
-					if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
+					if (NN<Text::JSONObject>::ConvertFrom(feature)->GetObjectValue(CSTR("type")).SetTo(featType) && featType->GetType() == Text::JSONType::String &&
+						NN<Text::JSONObject>::ConvertFrom(feature)->GetObjectValue(CSTR("properties")).SetTo(featProp) && featProp->GetType() == Text::JSONType::Object &&
+						NN<Text::JSONObject>::ConvertFrom(feature)->GetObjectValue(CSTR("geometry")).SetTo(featGeom) && featGeom->GetType() == Text::JSONType::Object)
 					{
 						Data::ArrayListNN<Text::String> colNames;
-						((Text::JSONObject*)featProp)->GetObjectNames(colNames);
+						NN<Text::JSONObject>::ConvertFrom(featProp)->GetObjectNames(colNames);
 						colCnt = colNames.GetCount();
 						k = 0;
 						while (k < colCnt)
@@ -161,7 +163,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 							tabHdrs[k] = UnsafeArray<const UTF8Char>(tabCols[k]->v);
 							k++;
 						}
-						if (vec.Set(ParseGeomJSON((Text::JSONObject*)featGeom, srid)))
+						if (ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(featGeom), srid).SetTo(vec))
 						{
 							NN<Text::String> s = Text::String::New(layerName);
 							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, nncsys, 0, s.Ptr()));
@@ -176,21 +178,18 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 					i = 0;
 					while (i < j)
 					{
-						feature = features->GetArrayValue(i);
-						if (feature && feature->GetType() == Text::JSONType::Object)
+						if (features->GetArrayValue(i).SetTo(feature) && feature->GetType() == Text::JSONType::Object)
 						{
-							featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
-							featProp = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("properties"));
-							featGeom = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("geometry"));
-							if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom)
+							if (NN<Text::JSONObject>::ConvertFrom(feature)->GetObjectValue(CSTR("type")).SetTo(featType) && featType->GetType() == Text::JSONType::String &&
+								NN<Text::JSONObject>::ConvertFrom(feature)->GetObjectValue(CSTR("properties")).SetTo(featProp) && featProp->GetType() == Text::JSONType::Object &&
+								NN<Text::JSONObject>::ConvertFrom(feature)->GetObjectValue(CSTR("geometry")).SetTo(featGeom))
 							{
 								k = 0;
 								while (k < colCnt)
 								{
-									jbase = ((Text::JSONObject*)featProp)->GetObjectValue(tabCols[k]->ToCString());
-									if (jbase && jbase->GetType() == Text::JSONType::String)
+									if (NN<Text::JSONObject>::ConvertFrom(featProp)->GetObjectValue(tabCols[k]->ToCString()).SetTo(jbase) && jbase->GetType() == Text::JSONType::String)
 									{
-										tabVals[k] = ((Text::JSONString*)jbase)->GetValue().Ptr();
+										tabVals[k] = NN<Text::JSONString>::ConvertFrom(jbase)->GetValue().Ptr();
 									}
 									else
 									{
@@ -198,7 +197,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 									}
 									k++;
 								}
-								if (vec.Set(ParseGeomJSON((Text::JSONObject*)featGeom, srid)))
+								if (ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(featGeom), srid).SetTo(vec))
 								{
 									lyr->AddVector(vec, tabVals);
 								}
@@ -220,7 +219,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			}
 			return pobj;
 		}
-		else if (jbase && jbase->Equals(CSTR("overlay")) && layerName.EndsWith(UTF8STRC("metadata.json")) && pkgFile.SetTo(nnpkgFile) && parsers.SetTo(nnparsers))
+		else if (jbase->Equals(CSTR("overlay")) && layerName.EndsWith(UTF8STRC("metadata.json")) && pkgFile.SetTo(nnpkgFile) && parsers.SetTo(nnparsers))
 		{
 			NN<Text::String> name;
 			NN<Text::String> format;
@@ -228,11 +227,12 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			NN<Text::String> sMaxZoom;
 			UInt32 minZoom;
 			UInt32 maxZoom;
-			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
+			NN<Text::JSONArray> bounds;
 			if (jobj->GetObjectString(CSTR("name")).SetTo(name) &&
 				jobj->GetObjectString(CSTR("format")).SetTo(format) &&
 				jobj->GetObjectString(CSTR("minzoom")).SetTo(sMinZoom) &&
-				jobj->GetObjectString(CSTR("maxzoom")).SetTo(sMaxZoom) && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
+				jobj->GetObjectString(CSTR("maxzoom")).SetTo(sMaxZoom) &&
+				jobj->GetObjectArray(CSTR("bounds")).SetTo(bounds) && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
 			{
 				Math::Coord2DDbl maxCoord;
 				Math::Coord2DDbl minCoord;
@@ -249,8 +249,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			}
 		}
 	}
-	Text::JSONArray *dataArr = GetDataArray(fileJSON);
-	if (dataArr == 0)
+	NN<Text::JSONArray> dataArr;
+	if (!GetDataArray(fileJSON).SetTo(dataArr))
 	{
 		return 0;
 	}
@@ -266,58 +266,53 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		}
 		DEL_CLASS(layer);
 	}
-	return db.Ptr();
+	return db;
 }
 
-Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
+Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON(NN<Text::JSONObject> obj, UInt32 srid)
 {
 	NN<Text::String> sType;
 	if (obj->GetObjectString(CSTR("type")).SetTo(sType))
 	{
-		Text::JSONBase *jbase;
+		NN<Text::JSONBase> jbase;
 		if (sType->Equals(UTF8STRC("LineString")))
 		{
-			jbase = obj->GetObjectValue(CSTR("coordinates"));
-			if (jbase && jbase->GetType() == Text::JSONType::Array)
+			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONArray *coord = (Text::JSONArray*)jbase;
+				NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
 				Data::ArrayListA<Double> ptList;
 				Data::ArrayList<Double> zList;
 				Bool hasZ = false;
-				Text::JSONArray *pt;
+				NN<Text::JSONArray> pt;
 				UOSInt i = 0;
 				UOSInt j = coord->GetArrayLength();
 				while (i < j)
 				{
-					jbase = coord->GetArrayValue(i);
-					if (jbase && jbase->GetType() == Text::JSONType::Array)
+					if (coord->GetArrayValue(i).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 					{
-						pt = (Text::JSONArray*)jbase;
+						pt = NN<Text::JSONArray>::ConvertFrom(jbase);
 						if (pt->GetArrayLength() == 3)
 						{
 							hasZ = true;
-							jbase = pt->GetArrayValue(0);
-							if (jbase && jbase->GetType() == Text::JSONType::Number)
+							if (pt->GetArrayValue(0).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 							{
-								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
+								ptList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 							}
 							else
 							{
 								ptList.Add(0);
 							}
-							jbase = pt->GetArrayValue(1);
-							if (jbase && jbase->GetType() == Text::JSONType::Number)
+							if (pt->GetArrayValue(1).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 							{
-								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
+								ptList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 							}
 							else
 							{
 								ptList.Add(0);
 							}
-							jbase = pt->GetArrayValue(2);
-							if (jbase && jbase->GetType() == Text::JSONType::Number)
+							if (pt->GetArrayValue(2).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 							{
-								zList.Add(((Text::JSONNumber*)jbase)->GetValue());
+								zList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 							}
 							else
 							{
@@ -326,19 +321,17 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 						}
 						else if (pt->GetArrayLength() == 2)
 						{
-							jbase = pt->GetArrayValue(0);
-							if (jbase && jbase->GetType() == Text::JSONType::Number)
+							if (pt->GetArrayValue(0).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 							{
-								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
+								ptList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 							}
 							else
 							{
 								ptList.Add(0);
 							}
-							jbase = pt->GetArrayValue(1);
-							if (jbase && jbase->GetType() == Text::JSONType::Number)
+							if (pt->GetArrayValue(1).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 							{
-								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
+								ptList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 							}
 							else
 							{
@@ -389,17 +382,16 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 		}
 		else if (sType->Equals(UTF8STRC("Polygon")))
 		{
-			jbase = obj->GetObjectValue(CSTR("coordinates"));
-			if (jbase && jbase->GetType() == Text::JSONType::Array)
+			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONArray *coord = (Text::JSONArray*)jbase;
+				NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
 				Data::ArrayList<Double> ptList;
 				Data::ArrayList<Double> altList;
 				Data::ArrayList<UInt32> partList;
 				Bool hasData = false;
 				Bool hasAlt = false;
-				Text::JSONArray *ptArr;
-				Text::JSONArray *pt;
+				NN<Text::JSONArray> ptArr;
+				NN<Text::JSONArray> pt;
 				UOSInt i = 0;
 				UOSInt j = coord->GetArrayLength();
 				UOSInt k;
@@ -407,19 +399,17 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 				UOSInt arrLen;
 				while (i < j)
 				{
-					jbase = coord->GetArrayValue(i);
-					if (jbase && jbase->GetType() == Text::JSONType::Array)
+					if (coord->GetArrayValue(i).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 					{
-						ptArr = (Text::JSONArray*)jbase;
+						ptArr = NN<Text::JSONArray>::ConvertFrom(jbase);
 						hasData = false;
 						k = 0;
 						l = ptArr->GetArrayLength();
 						while (k < l)
 						{
-							jbase = ptArr->GetArrayValue(k);
-							if (jbase && jbase->GetType() == Text::JSONType::Array)
+							if (ptArr->GetArrayValue(k).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 							{
-								pt = (Text::JSONArray*)jbase;
+								pt = NN<Text::JSONArray>::ConvertFrom(jbase);
 								arrLen = pt->GetArrayLength();
 								if (arrLen >= 2)
 								{
@@ -428,28 +418,26 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 										hasData = true;
 										partList.Add((UInt32)ptList.GetCount() >> 1);
 									}
-									jbase = pt->GetArrayValue(0);
-									if (jbase && jbase->GetType() == Text::JSONType::Number)
+									if (pt->GetArrayValue(0).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 									{
-										ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
+										ptList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 									}
 									else
 									{
 										ptList.Add(0);
 									}
-									jbase = pt->GetArrayValue(1);
-									if (jbase && jbase->GetType() == Text::JSONType::Number)
+									if (pt->GetArrayValue(1).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 									{
-										ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
+										ptList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 									}
 									else
 									{
 										ptList.Add(0);
 									}
 
-									if (arrLen >= 3 && (jbase = pt->GetArrayValue(2)) != 0 && jbase->GetType() == Text::JSONType::Number)
+									if (arrLen >= 3 && pt->GetArrayValue(2).SetTo(jbase) && jbase->GetType() == Text::JSONType::Number)
 									{
-										altList.Add(((Text::JSONNumber*)jbase)->GetValue());
+										altList.Add(NN<Text::JSONNumber>::ConvertFrom(jbase)->GetValue());
 										hasAlt = true;
 									}
 									else
@@ -501,25 +489,23 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 		}
 		else if (sType->Equals(UTF8STRC("MultiPolygon")))
 		{
-			jbase = obj->GetObjectValue(CSTR("coordinates"));
-			if (jbase && jbase->GetType() == Text::JSONType::Array)
+			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
 				Math::Geometry::MultiPolygon *mpg = 0;
-				Text::JSONArray *pgCoords = (Text::JSONArray*)jbase;
+				NN<Text::JSONArray> pgCoords = NN<Text::JSONArray>::ConvertFrom(jbase);
 				UOSInt pgIndex = 0;
 				UOSInt pgCnt = pgCoords->GetArrayLength();
 				while (pgIndex < pgCnt)
 				{
-					jbase = pgCoords->GetArrayValue(pgIndex);
-					if (jbase && jbase->GetType() == Text::JSONType::Array)
+					if (pgCoords->GetArrayValue(pgIndex).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 					{
-						Text::JSONArray *coord = (Text::JSONArray*)jbase;
+						NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
 						Data::ArrayList<Double> ptList;
 						Data::ArrayList<Double> altList;
 						Data::ArrayList<UInt32> partList;
 						Bool hasData = false;
-						Text::JSONArray *ptArr;
-						Text::JSONArray *pt;
+						NN<Text::JSONArray> ptArr;
+						NN<Text::JSONArray> pt;
 						UOSInt i = 0;
 						UOSInt j = coord->GetArrayLength();
 						UOSInt k;
@@ -527,19 +513,17 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 						UOSInt nVal;
 						while (i < j)
 						{
-							jbase = coord->GetArrayValue(i);
-							if (jbase && jbase->GetType() == Text::JSONType::Array)
+							if (coord->GetArrayValue(i).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 							{
-								ptArr = (Text::JSONArray*)jbase;
+								ptArr = NN<Text::JSONArray>::ConvertFrom(jbase);
 								hasData = false;
 								k = 0;
 								l = ptArr->GetArrayLength();
 								while (k < l)
 								{
-									jbase = ptArr->GetArrayValue(k);
-									if (jbase && jbase->GetType() == Text::JSONType::Array)
+									if (ptArr->GetArrayValue(k).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 									{
-										pt = (Text::JSONArray*)jbase;
+										pt = NN<Text::JSONArray>::ConvertFrom(jbase);
 										nVal = pt->GetArrayLength();
 										if (nVal >= 2)
 										{
@@ -609,10 +593,9 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 		}
 		else if (sType->Equals(UTF8STRC("Point")))
 		{
-			jbase = obj->GetObjectValue(CSTR("coordinates"));
-			if (jbase && jbase->GetType() == Text::JSONType::Array)
+			if (obj->GetObjectValue(CSTR("coordinates")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONArray *coord = (Text::JSONArray*)jbase;
+				NN<Text::JSONArray> coord = NN<Text::JSONArray>::ConvertFrom(jbase);
 				Math::Geometry::Point *pt = 0;
 				if (coord->GetArrayLength() == 2)
 				{
@@ -641,27 +624,26 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 	return 0;
 }
 
-Text::JSONArray *Parser::FileParser::JSONParser::GetDataArray(Text::JSONBase *fileJSON)
+Optional<Text::JSONArray> Parser::FileParser::JSONParser::GetDataArray(NN<Text::JSONBase> fileJSON)
 {
 	Text::JSONType type = fileJSON->GetType();
 	if (type == Text::JSONType::Array)
 	{
-		return (Text::JSONArray*)fileJSON;
+		return NN<Text::JSONArray>::ConvertFrom(fileJSON);
 	}
 	else if (type != Text::JSONType::Object)
 	{
 		return 0;
 	}
 	Text::String *arrayName = 0;
-	Text::JSONObject *obj = (Text::JSONObject*)fileJSON;
-	Text::JSONBase *o;
+	NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(fileJSON);
+	NN<Text::JSONBase> o;
 	Data::ArrayListNN<Text::String> names;
 	obj->GetObjectNames(names);
 	UOSInt i = names.GetCount();
 	while (i-- > 0)
 	{
-		o = obj->GetObjectValue(names.GetItemNoCheck(i)->ToCString());
-		if (o && o->GetType() == Text::JSONType::Array)
+		if (obj->GetObjectValue(names.GetItemNoCheck(i)->ToCString()).SetTo(o) && o->GetType() == Text::JSONType::Array)
 		{
 			if (arrayName == 0)
 			{
@@ -677,5 +659,5 @@ Text::JSONArray *Parser::FileParser::JSONParser::GetDataArray(Text::JSONBase *fi
 	{
 		return 0;
 	}
-	return (Text::JSONArray*)obj->GetObjectValue(arrayName->ToCString());
+	return Optional<Text::JSONArray>::ConvertFrom(obj->GetObjectValue(arrayName->ToCString()));
 }

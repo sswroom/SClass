@@ -18,8 +18,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
 		fs.Read(Data::ByteArray(buff, (UOSInt)flen));
 		buff[flen] = 0;
-		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UOSInt)flen));
-		if (obj)
+		NN<Text::JSONBase> obj;
+		if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, (UOSInt)flen)).SetTo(obj))
 		{
 			IO::ConsoleWriter console;
 			Text::StringBuilderUTF8 sb;

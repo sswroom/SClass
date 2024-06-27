@@ -8,12 +8,12 @@
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
-Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogoControl::ParsePost(Text::JSONObject *postObj)
+Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogoControl::ParsePost(NN<Text::JSONObject> postObj)
 {
-	Text::JSONBase *jsBase;
-	Text::JSONString *str1;
-	Text::JSONArray *arr1;
-	Text::JSONObject *obj1;
+	NN<Text::JSONBase> jsBase;
+	NN<Text::JSONString> str1;
+	NN<Text::JSONArray> arr1;
+	NN<Text::JSONObject> obj1;
 	Int32 bodyType;
 	UOSInt i;
 	UOSInt j;
@@ -22,32 +22,31 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 	item->id = postObj->GetObjectInt64(CSTR("postId"));
 	item->recTime = postObj->GetObjectInt64(CSTR("time")) * 1000;
 	item->message = Text::String::NewEmpty();
-	if ((jsBase = postObj->GetObjectValue(CSTR("body"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+	if (postObj->GetObjectValue(CSTR("body")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 	{
-		arr1 = (Text::JSONArray*)jsBase;
+		arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
 		i = 0;
 		j = arr1->GetArrayLength();
 		while (i < j)
 		{
-			jsBase = arr1->GetArrayValue(i);
-			if (jsBase->GetType() == Text::JSONType::Object)
+			if (arr1->GetArrayValue(i).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 			{
-				obj1 = (Text::JSONObject*)jsBase;
+				obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
 				bodyType = obj1->GetObjectInt32(CSTR("bodyType"));
 				if (bodyType == 1)
 				{
-					if ((jsBase = obj1->GetObjectValue(CSTR("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+					if (obj1->GetObjectValue(CSTR("text")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 					{
-						str1 = (Text::JSONString*)jsBase;
+						str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 						item->message->Release();
 						item->message = str1->GetValue()->Clone();
 					}
 				}
 				else if (bodyType == 3)
 				{
-					if ((jsBase = obj1->GetObjectValue(CSTR("image"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+					if (obj1->GetObjectValue(CSTR("image")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 					{
-						str1 = (Text::JSONString*)jsBase;
+						str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 						if (item->imgURL)
 						{
 							Text::StringBuilderUTF8 sb;
@@ -65,9 +64,9 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 				}
 				else if (bodyType == 8)
 				{
-					if ((jsBase = obj1->GetObjectValue(CSTR("movieUrlHq"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+					if (obj1->GetObjectValue(CSTR("movieUrlHq")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 					{
-						str1 = (Text::JSONString*)jsBase;
+						str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 						if (item->imgURL)
 						{
 							Text::StringBuilderUTF8 sb;
@@ -133,16 +132,16 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 			reader.ReadNodeText(sb);
 			if (sb.StartsWith(UTF8STRC("window.__DEHYDRATED_STATES__ = ")))
 			{
-				Text::JSONBase *baseData = Text::JSONBase::ParseJSONStr(sb.ToCString().Substring(31));
-				if (baseData)
+				NN<Text::JSONBase> baseData;
+				if (Text::JSONBase::ParseJSONStr(sb.ToCString().Substring(31)).SetTo(baseData))
 				{
 					if (baseData->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *baseObj = (Text::JSONObject*)baseData;
-						Text::JSONBase *jsBase;
-						Text::JSONObject *obj1;
-						Text::JSONArray *arr1;
-						Text::JSONString *str1;
+						NN<Text::JSONObject> baseObj = NN<Text::JSONObject>::ConvertFrom(baseData);
+						NN<Text::JSONBase> jsBase;
+						NN<Text::JSONObject> obj1;
+						NN<Text::JSONArray> arr1;
+						NN<Text::JSONString> str1;
 						UOSInt i;
 						UOSInt j;
 						UOSInt k;
@@ -150,60 +149,57 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 						NN<ChannelInfo> nnchInfo;
 						if (chInfo.SetTo(nnchInfo))
 						{
-							jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:talk"));
-							if (jsBase && jsBase->GetType() == Text::JSONType::Object)
+							if (baseObj->GetObjectValue(CSTR("page:talk:service:entity:talk")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 							{
-								obj1 = (Text::JSONObject*)jsBase;
-								if ((jsBase = obj1->GetObjectValue(CSTR("talkCode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+								if (obj1->GetObjectValue(CSTR("talkCode")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
-									str1 = (Text::JSONString*)jsBase;
+									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 									SDEL_STRING(nnchInfo->talkCode);
 									nnchInfo->talkCode = str1->GetValue()->Clone().Ptr();
 								}
-								if ((jsBase = obj1->GetObjectValue(CSTR("name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if (obj1->GetObjectValue(CSTR("name")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
-									str1 = (Text::JSONString*)jsBase;
+									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 									SDEL_STRING(nnchInfo->name);
 									nnchInfo->name = str1->GetValue()->Clone().Ptr();
 								}
-								if ((jsBase = obj1->GetObjectValue(CSTR("detail"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if (obj1->GetObjectValue(CSTR("detail")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
-									str1 = (Text::JSONString*)jsBase;
+									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 									SDEL_STRING(nnchInfo->detail);
 									nnchInfo->detail = str1->GetValue()->Clone().Ptr();
 								}
-								if ((jsBase = obj1->GetObjectValue(CSTR("imagePath"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if (obj1->GetObjectValue(CSTR("imagePath")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
-									str1 = (Text::JSONString*)jsBase;
+									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 									SDEL_STRING(nnchInfo->imagePath);
 									nnchInfo->imagePath = str1->GetValue()->Clone().Ptr();
 								}
 								nnchInfo->editDate = obj1->GetObjectInt64(CSTR("editDate")) * 1000;
-								if ((jsBase = obj1->GetObjectValue(CSTR("screenName"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if (obj1->GetObjectValue(CSTR("screenName")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
-									str1 = (Text::JSONString*)jsBase;
+									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 									SDEL_STRING(nnchInfo->screenName);
 									nnchInfo->screenName = str1->GetValue()->Clone().Ptr();
 								}
 							}
 						}
-						jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:talkImages"));
-						if (jsBase && jsBase->GetType() == Text::JSONType::Object)
+						if (baseObj->GetObjectValue(CSTR("page:talk:service:entity:talkImages")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 						{
-							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(CSTR("images"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+							obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+							if (obj1->GetObjectValue(CSTR("images")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 							{
-								arr1 = (Text::JSONArray*)jsBase;
+								arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
 								i = arr1->GetArrayLength();
 								while (i-- > 0)
 								{
-									jsBase = arr1->GetArrayValue(i);
-									if (jsBase->GetType() == Text::JSONType::Object)
+									if (arr1->GetArrayValue(i).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 									{
-										obj1 = (Text::JSONObject*)jsBase;
-										if ((jsBase = obj1->GetObjectValue(CSTR("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+										obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+										if (obj1->GetObjectValue(CSTR("post")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 										{
-											if (ParsePost((Text::JSONObject*)jsBase).SetTo(item))
+											if (ParsePost(NN<Text::JSONObject>::ConvertFrom(jsBase)).SetTo(item))
 											{
 												si = idList.SortedIndexOf(item->id);
 												if (si >= 0)
@@ -224,24 +220,22 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 								}
 							}
 						}
-						jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:posts"));
-						if (jsBase && jsBase->GetType() == Text::JSONType::Object)
+						if (baseObj->GetObjectValue(CSTR("page:talk:service:entity:posts")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 						{
-							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(CSTR("posts"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+							obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+							if (obj1->GetObjectValue(CSTR("posts")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 							{
-								arr1 = (Text::JSONArray*)jsBase;
+								arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
 								i = 0;
 								j = arr1->GetArrayLength();
 								while (i < j)
 								{
-									jsBase = arr1->GetArrayValue(i);
-									if (jsBase->GetType() == Text::JSONType::Object)
+									if (arr1->GetArrayValue(i).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 									{
-										obj1 = (Text::JSONObject*)jsBase;
-										if ((jsBase = obj1->GetObjectValue(CSTR("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+										obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+										if (obj1->GetObjectValue(CSTR("post")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 										{
-											if (ParsePost((Text::JSONObject*)jsBase).SetTo(item))
+											if (ParsePost(NN<Text::JSONObject>::ConvertFrom(jsBase)).SetTo(item))
 											{
 												si = idList.SortedIndexOf(item->id);
 												if (si >= 0)

@@ -23,10 +23,11 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 		Bool failed = false;
 		UOSInt dataSize;
 		UnsafeArray<const UInt8> content = req->GetReqData(dataSize).Or((const UInt8*)&dataSize);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(content, dataSize);
-		Text::CString resultCd = CSTR("0000");
-		Text::CString resultMsg = CSTR("Request processed successfully.");
-		if (json == 0)
+		Optional<Text::JSONBase> optjson = 0;
+		NN<Text::JSONBase> json;
+		Text::CStringNN resultCd = CSTR("0000");
+		Text::CStringNN resultMsg = CSTR("Request processed successfully.");
+		if (!Text::JSONBase::ParseJSONBytes(content, dataSize).SetTo(json))
 		{
 			failed = true;
 			resultCd = CSTR("0021");
@@ -39,13 +40,15 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 			resultCd = CSTR("0021");
 			resultMsg = CSTR("Invalid content type");
 			me->log->LogMessage(CSTR("JSON is not object"), IO::LogHandler::LogLevel::Error);
+			optjson = json;
 		}
 		else
 		{
+			optjson = json;
 			Text::MailCreator mail;
 			cert->GetSubjectCN(sb2);
 			mail.SetFrom(0, sb2.ToCString());
-			Text::JSONObject *msgObj = (Text::JSONObject*)json;
+			NN<Text::JSONObject> msgObj = NN<Text::JSONObject>::ConvertFrom(json);
 			NN<Text::String> s;
 			if (msgObj->GetObjectString(CSTR("ChanType")).SetTo(s) && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))
 			{
@@ -56,8 +59,8 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 			}
 			if (!failed)
 			{
-				Text::JSONArray *recipientDetail = msgObj->GetObjectArray(CSTR("RecipientDetail"));
-				if (recipientDetail == 0)
+				NN<Text::JSONArray> recipientDetail;
+				if (!msgObj->GetObjectArray(CSTR("RecipientDetail")).SetTo(recipientDetail))
 				{
 					failed = true;
 					resultCd = CSTR("0032");
@@ -66,13 +69,12 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 				}
 				else
 				{
-					Text::JSONObject *recipient;
+					NN<Text::JSONObject> recipient;
 					UOSInt i = 0;
 					UOSInt j = recipientDetail->GetArrayLength();
 					while (i < j)
 					{
-						recipient = recipientDetail->GetArrayObject(i);
-						if (recipient == 0)
+						if (!recipientDetail->GetArrayObject(i).SetTo(recipient))
 						{
 							failed = true;
 							resultCd = CSTR("0032");
@@ -107,9 +109,9 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 			}
 			if (!failed)
 			{
-				Text::JSONObject *contentDetail = msgObj->GetObjectObject(CSTR("ContentDetail"));
+				NN<Text::JSONObject> contentDetail;
 				NN<Text::String> content;
-				if (contentDetail == 0)
+				if (!msgObj->GetObjectObject(CSTR("ContentDetail")).SetTo(contentDetail))
 				{
 					failed = true;
 					resultCd = CSTR("0024");
@@ -175,12 +177,11 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::
 
 		builder.ObjectAddStr(CSTR("Status"), failed?CSTR("F"):CSTR("S"));
 		builder.ObjectBeginObject(CSTR("NotificationStatus"));
-		NN<Text::JSONBase> nnjson;
-		if (nnjson.Set(json))
+		if (optjson.SetTo(json))
 		{
-			if (nnjson->GetType() == Text::JSONType::Object)
-				builder.ObjectAdd(NN<Text::JSONObject>::ConvertFrom(nnjson));
-			nnjson->EndUse();
+			if (json->GetType() == Text::JSONType::Object)
+				builder.ObjectAdd(NN<Text::JSONObject>::ConvertFrom(json));
+			json->EndUse();
 		}
 		if (!failed)
 		{

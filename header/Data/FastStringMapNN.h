@@ -41,7 +41,7 @@ namespace Data
 		}
 	};
 
-	template <class T> class FastStringMapNN : public ListMapNN<Text::String *, T>
+	template <class T> class FastStringMapNN : public ListMapNN<Optional<Text::String>, T>
 	{
 	private:
 		UOSInt capacity;
@@ -58,18 +58,18 @@ namespace Data
 		virtual UOSInt GetCount() const;
 		virtual Optional<T> GetItem(UOSInt index) const;
 		virtual NN<T> GetItemNoCheck(UOSInt index) const;
-		virtual Text::String *GetKey(UOSInt index) const;
+		virtual Optional<Text::String> GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		OSInt IndexOf(NN<Text::String> s) const;
 		OSInt IndexOfC(Text::CStringNN s) const;
 
-		virtual Optional<T> Put(Text::String *key, NN<T> val);
+		virtual Optional<T> Put(Optional<Text::String> key, NN<T> val);
 		Optional<T> PutNN(NN<Text::String> key, NN<T> val);
 		Optional<T> PutC(Text::CStringNN key, NN<T> val);
-		virtual Optional<T> Get(Text::String *key) const;
+		virtual Optional<T> Get(Optional<Text::String> key) const;
 		Optional<T> GetNN(NN<Text::String> key) const;
 		Optional<T> GetC(Text::CStringNN key) const;
-		virtual Optional<T> Remove(Text::String *key);
+		virtual Optional<T> Remove(Optional<Text::String> key);
 		Optional<T> RemoveNN(NN<Text::String> key);
 		Optional<T> RemoveC(Text::CStringNN key);
 		Optional<T> RemoveAt(UOSInt index);
@@ -170,13 +170,13 @@ namespace Data
 		return this->items[index].val;
 	}
 
-	template <class T> Text::String *FastStringMapNN<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> FastStringMapNN<T>::GetKey(UOSInt index) const
 	{
 		if (index >= this->cnt)
 		{
 			return 0;
 		}
-		return this->items[index].s.Ptr();
+		return this->items[index].s;
 	}
 
 	template <class T> OSInt FastStringMapNN<T>::IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const
@@ -266,9 +266,9 @@ namespace Data
 		return IndexOf(hash, s.v, s.leng);
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::Put(Text::String *key, NN<T> val)
+	template <class T> Optional<T> FastStringMapNN<T>::Put(Optional<Text::String> key, NN<T> val)
 	{
-		return PutNN(NN<Text::String>::FromPtr(key), val);
+		return PutNN(Text::String::OrEmpty(key), val);
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::PutNN(NN<Text::String> key, NN<T> val)
@@ -305,9 +305,9 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::Get(Text::String *key) const
+	template <class T> Optional<T> FastStringMapNN<T>::Get(Optional<Text::String> key) const
 	{
-		return GetNN(NN<Text::String>::FromPtr(key));
+		return GetNN(Text::String::OrEmpty(key));
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::GetNN(NN<Text::String> key) const
@@ -332,9 +332,9 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::Remove(Text::String *key)
+	template <class T> Optional<T> FastStringMapNN<T>::Remove(Optional<Text::String> key)
 	{
-		return RemoveNN(NN<Text::String>::FromPtr(key));
+		return RemoveNN(Text::String::OrEmpty(key));
 	}
 
 	template <class T> Optional<T> FastStringMapNN<T>::RemoveNN(NN<Text::String> key)

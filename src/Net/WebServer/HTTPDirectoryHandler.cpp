@@ -380,7 +380,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 	return false;
 }
 
-void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirectoryHandler::StatInfo *stat)
+void Net::WebServer::HTTPDirectoryHandler::StatLoad(NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(stat->statFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -400,7 +400,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirector
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirectoryHandler::StatInfo *stat)
+void Net::WebServer::HTTPDirectoryHandler::StatSave(NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat)
 {
 	Text::StringBuilderUTF8 sb;
 	stat->updated = false;
@@ -485,17 +485,17 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	}
 	if (this->statMap)
 	{
-		Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
+		NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
 		UOSInt i = this->statMap->GetCount();
 		while (i-- > 0)
 		{
-			stat = this->statMap->GetItem(i);
+			stat = this->statMap->GetItemNoCheck(i);
 			this->StatSave(stat);
 
 			stat->reqPath->Release();
 			stat->statFileName->Release();
 			DEL_CLASS(stat->cntMap);
-			MemFree(stat);
+			MemFreeNN(stat);
 		}
 		DEL_CLASS(this->statMap);
 		DEL_CLASS(this->statMut);
@@ -745,14 +745,13 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 		NN<Sync::Mutex> statMut;
 		if (this->statMap && statMut.Set(this->statMut))
 		{
-			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
+			NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
 			sb.ClearStr();
 			sb.Append(subReq);
 			i = sb.LastIndexOf('/');
 			sb.TrimToLength(i);
 			Sync::MutexUsage statMutUsage(statMut);
-			stat = this->statMap->GetC(sb.ToCString());
-			if (stat)
+			if (this->statMap->GetC(sb.ToCString()).SetTo(stat))
 			{
 				sb.Append(subReq.Substring(i + 1));
 				i = sb.IndexOf('?');
@@ -942,7 +941,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 			{
 				Text::StringBuilderUTF8 sb2;
 				Text::StringBuilderUTF8 sbOut;
-				Net::WebServer::HTTPDirectoryHandler::StatInfo *stat = 0;
+				Optional<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat = 0;
+				NN<StatInfo> nnstat;
 				Int32 sort = 0;
 
 				sb2.ClearStr();
@@ -1129,19 +1129,19 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 						{
 							sb2.RemoveChars(1);
 						}
-						stat = this->statMap->GetC(sb2.ToCString());
-						if (stat == 0)
+						if (!this->statMap->GetC(sb2.ToCString()).SetTo(nnstat))
 						{
-							stat = MemAlloc(Net::WebServer::HTTPDirectoryHandler::StatInfo, 1);
-							stat->reqPath = Text::String::New(sb2.ToString(), sb2.GetLength());
-							NEW_CLASS(stat->cntMap, Data::FastStringMap<UInt32>());
-							stat->updated = true;
+							nnstat = MemAllocNN(Net::WebServer::HTTPDirectoryHandler::StatInfo);
+							nnstat->reqPath = Text::String::New(sb2.ToString(), sb2.GetLength());
+							NEW_CLASS(nnstat->cntMap, Data::FastStringMap<UInt32>());
+							nnstat->updated = true;
 							sb2.ClearStr();
 							sb2.AppendC2(sb.ToString(), sb.GetLength(), UTF8STRC(".counts"));
-							stat->statFileName = Text::String::New(sb2.ToString(), sb2.GetLength());
-							this->statMap->PutNN(stat->reqPath, stat);
-							this->StatLoad(stat);
+							nnstat->statFileName = Text::String::New(sb2.ToString(), sb2.GetLength());
+							this->statMap->PutNN(nnstat->reqPath, nnstat);
+							this->StatLoad(nnstat);
 						}
+						stat = nnstat;
 					}
 
 					UInt32 cnt;
@@ -1157,9 +1157,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 							}
 							else
 							{
-								if (stat)
+								if (stat.SetTo(nnstat))
 								{
-									cnt = stat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
+									cnt = nnstat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
 								}
 								else
 								{
@@ -1207,7 +1207,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 							}
 						}
 						IO::Path::FindFileClose(sess);
-						if (stat)
+						if (stat.NotNull())
 						{
 							mutUsage.EndUse();
 						}
@@ -1224,9 +1224,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 							else
 							{
 								ent = MemAlloc(DirectoryEntry, 1);
-								if (stat)
+								if (stat.SetTo(nnstat))
 								{
-									ent->cnt = stat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
+									ent->cnt = nnstat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
 								}
 								else
 								{
@@ -1240,7 +1240,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 							}
 						}
 						IO::Path::FindFileClose(sess);
-						if (stat)
+						if (stat.NotNull())
 						{
 							mutUsage.EndUse();
 						}
@@ -1361,7 +1361,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 			sptr2 = sb2.v + i + 1;
 			sb2.v[i] = 0;
 			Sync::MutexUsage mutUsage(statMut);
-			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
+			Optional<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
+			NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> nnstat;
 			if (sb2.ToString()[0] == 0)
 			{
 				stat = this->statMap->GetC(CSTR("/"));
@@ -1370,28 +1371,28 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 			{
 				stat = this->statMap->GetC({sb2.ToString(), i});
 			}
-			if (stat == 0)
+			if (!stat.SetTo(nnstat))
 			{
-				stat = MemAlloc(Net::WebServer::HTTPDirectoryHandler::StatInfo, 1);
+				nnstat = MemAllocNN(Net::WebServer::HTTPDirectoryHandler::StatInfo);
 				if (sb2.ToString()[0] == 0)
 				{
-					stat->reqPath = Text::String::New(UTF8STRC("/"));
+					nnstat->reqPath = Text::String::New(UTF8STRC("/"));
 				}
 				else
 				{
-					stat->reqPath = Text::String::New(sb2.ToString(), i);
+					nnstat->reqPath = Text::String::New(sb2.ToString(), i);
 				}
-				NEW_CLASS(stat->cntMap, Data::FastStringMap<UInt32>());
-				stat->updated = true;
+				NEW_CLASS(nnstat->cntMap, Data::FastStringMap<UInt32>());
+				nnstat->updated = true;
 				sptr3 = Text::StrConcatC(sbuff, sptr, sptrLen);
 				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
-				stat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
-				this->statMap->PutNN(stat->reqPath, stat);
-				this->StatLoad(stat);
+				nnstat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
+				this->statMap->PutNN(nnstat->reqPath, nnstat);
+				this->StatLoad(nnstat);
 			}
-			stat->cntMap->PutC({sptr2, sb2.GetLength() - i - 1}, stat->cntMap->GetC({sptr2, sb2.GetLength() - i - 1}) + 1);
-			stat->updated = true;
+			nnstat->cntMap->PutC({sptr2, sb2.GetLength() - i - 1}, nnstat->cntMap->GetC({sptr2, sb2.GetLength() - i - 1}) + 1);
+			nnstat->updated = true;
 			mutUsage.EndUse();
 		}
 
@@ -1751,7 +1752,7 @@ void Net::WebServer::HTTPDirectoryHandler::EnableStats()
 	if (this->statMap == 0)
 	{
 		NEW_CLASS(this->statMut, Sync::Mutex());
-		NEW_CLASS(this->statMap, Data::FastStringMap<Net::WebServer::HTTPDirectoryHandler::StatInfo*>());
+		NEW_CLASS(this->statMap, Data::FastStringMapNN<Net::WebServer::HTTPDirectoryHandler::StatInfo>());
 	}
 }
 
@@ -1760,13 +1761,13 @@ void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 	NN<Sync::Mutex> mut;
 	if (this->statMap && mut.Set(this->statMut))
 	{
-		Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
+		NN<Net::WebServer::HTTPDirectoryHandler::StatInfo> stat;
 		UOSInt i;
 		Sync::MutexUsage mutUsage(mut);
 		i = this->statMap->GetCount();
 		while (i-- > 0)
 		{
-			stat = this->statMap->GetItem(i);
+			stat = this->statMap->GetItemNoCheck(i);
 			if (stat->updated)
 			{
 				this->StatSave(stat);

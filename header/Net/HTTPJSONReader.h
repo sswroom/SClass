@@ -8,7 +8,7 @@ namespace Net
 	class HTTPJSONReader
 	{
 	public:
-		static Text::JSONBase *Read(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url);
+		static Optional<Text::JSONBase> Read(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url);
 	};
 }
 #endif

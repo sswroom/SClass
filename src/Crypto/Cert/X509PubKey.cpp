@@ -93,7 +93,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 	return 0;
 }
 
-NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NN<Text::String> sourceName)
+NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Text::String> sourceName)
 {
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();

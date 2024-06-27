@@ -390,7 +390,7 @@ Parser::FullParserList::~FullParserList()
 {
 }
 
-Math::ArcGISPRJParser *Parser::FullParserList::GetPRJParser()
+NN<Math::ArcGISPRJParser> Parser::FullParserList::GetPRJParser()
 {
-	return &this->prjParser;
+	return this->prjParser;
 }

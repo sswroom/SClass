@@ -37,8 +37,8 @@ Bool Net::GoogleFCM::SendMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	{
 		sb.ClearStr();
 		cli->ReadAllContent(sb, 2048, 1048576);
-		Text::JSONBase *jobj = Text::JSONBase::ParseJSONStr(sb.ToCString());
-		if (jobj)
+		NN<Text::JSONBase> jobj;
+		if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(jobj))
 		{
 			succ = jobj->GetValueAsInt32(CSTR("success"));
 			if (succ)
@@ -118,8 +118,8 @@ Bool Net::GoogleFCM::SendMessages(NN<Net::SocketFactory> sockf, Optional<Net::SS
 	{
 		sb.ClearStr();
 		cli->ReadAllContent(sb, 2048, 1048576);
-		Text::JSONBase *jobj = Text::JSONBase::ParseJSONStr(sb.ToCString());
-		if (jobj)
+		NN<Text::JSONBase> jobj;
+		if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(jobj))
 		{
 			succ = jobj->GetValueAsInt32(CSTR("success"));
 			if (succ)

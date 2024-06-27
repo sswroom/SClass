@@ -9,11 +9,11 @@ namespace Crypto
 		class CRC32 : public IHash
 		{
 		private:
-			UInt32 *crctab;
+			UnsafeArray<UInt32> crctab;
 			UInt32 currVal;
 
 		private:
-			CRC32(const CRC32 *crc);
+			CRC32(NN<const CRC32> crc);
 			void InitTable(UInt32 polynomial);
 		public:
 			CRC32(); //IEEE polynomial

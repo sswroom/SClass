@@ -462,7 +462,7 @@ Crypto::Cert::X509File::ECName Crypto::Cert::X509Key::GetECName() const
 	return ECName::Unknown;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509Key::FromECPublicKey(Data::ByteArrayR buff, Data::ByteArrayR paramOID)
+NN<Crypto::Cert::X509Key> Crypto::Cert::X509Key::FromECPublicKey(Data::ByteArrayR buff, Data::ByteArrayR paramOID)
 {
 	Net::ASN1PDUBuilder pdu;
 	pdu.BeginSequence();
@@ -472,7 +472,9 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::FromECPublicKey(Data::ByteArrayR b
 	pdu.EndLevel();
 	pdu.AppendBitString(0, buff);
 	pdu.EndLevel();
-	return NEW_CLASS_D(X509Key(CSTR("ECPublic.key"), pdu.GetArray(), KeyType::ECPublic));
+	NN<X509Key> key;
+	NEW_CLASSNN(key, X509Key(CSTR("ECPublic.key"), pdu.GetArray(), KeyType::ECPublic));
+	return key;
 }
 
 Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::FromRSAKey(NN<RSAKey> key)

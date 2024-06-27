@@ -403,7 +403,7 @@ UOSInt Net::WebServer::WebRequest::GetHeaderNames(NN<Data::ArrayListStringNN> na
 	names->EnsureCapacity(j);
 	while (i < j)
 	{
-		if (s.Set(this->headers.GetKey(i)))
+		if (this->headers.GetKey(i).SetTo(s))
 			names->Add(s);
 		i++;
 	}
@@ -415,7 +415,7 @@ UOSInt Net::WebServer::WebRequest::GetHeaderCnt() const
 	return this->headers.GetCount();
 }
 
-Text::String *Net::WebServer::WebRequest::GetHeaderName(UOSInt index) const
+Optional<Text::String> Net::WebServer::WebRequest::GetHeaderName(UOSInt index) const
 {
 	return this->headers.GetKey(index);
 }

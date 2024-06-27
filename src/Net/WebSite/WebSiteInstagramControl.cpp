@@ -8,10 +8,10 @@
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
-Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStringNN url)
+Optional<Text::JSONBase> Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStringNN url)
 {
 	Text::StringBuilderUTF8 sb;
-	Text::JSONBase *baseData = 0;
+	Optional<Text::JSONBase> baseData = 0;
 	NN<Text::XMLReader> reader;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -58,88 +58,86 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 	sb.Append(channelId);
 	sb.AppendUTF8Char('/');
 	NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
-	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToCString());
-	if (baseData)
+	NN<Text::JSONBase> baseData;
+	if (this->ParsePageJSON(sb.ToCString()).SetTo(baseData))
 	{
-		Text::JSONBase *jsBase;
-		Text::JSONObject *obj1;
-		Text::JSONArray *arr1;
-		Text::JSONString *str1;
+		NN<Text::JSONBase> jsBase;
+		NN<Text::JSONObject> obj1;
+		NN<Text::JSONArray> arr1;
+		NN<Text::JSONString> str1;
 		UOSInt i;
 		UOSInt j;
 		if (baseData->GetType() == Text::JSONType::Object)
 		{
-			obj1 = (Text::JSONObject*)baseData;
-			if ((jsBase = obj1->GetObjectValue(CSTR("entry_data"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+			obj1 = NN<Text::JSONObject>::ConvertFrom(baseData);
+			if (obj1->GetObjectValue(CSTR("entry_data")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 			{
-				obj1 = (Text::JSONObject*)jsBase;
-				if ((jsBase = obj1->GetObjectValue(CSTR("ProfilePage"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+				obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+				if (obj1->GetObjectValue(CSTR("ProfilePage")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 				{
-					arr1 = (Text::JSONArray*)jsBase;
-					jsBase = arr1->GetArrayValue(0);
-					if (jsBase && jsBase->GetType() == Text::JSONType::Object)
+					arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
+					if (arr1->GetArrayValue(0).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 					{
-						obj1 = (Text::JSONObject*)jsBase;
-						if ((jsBase = obj1->GetObjectValue(CSTR("graphql"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+						obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+						if (obj1->GetObjectValue(CSTR("graphql")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 						{
-							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(CSTR("user"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+							obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+							if (obj1->GetObjectValue(CSTR("user")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 							{
-								obj1 = (Text::JSONObject*)jsBase;
+								obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
 								NN<ChannelInfo> nnchInfo;
 								if (chInfo.SetTo(nnchInfo))
 								{
-									if ((jsBase = obj1->GetObjectValue(CSTR("full_name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if (obj1->GetObjectValue(CSTR("full_name")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
-										str1 = (Text::JSONString*)jsBase;
+										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 										SDEL_STRING(nnchInfo->full_name);
 										nnchInfo->full_name = str1->GetValue()->Clone().Ptr();
 									}
-									if ((jsBase = obj1->GetObjectValue(CSTR("biography"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if (obj1->GetObjectValue(CSTR("biography")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
-										str1 = (Text::JSONString*)jsBase;
+										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 										SDEL_STRING(nnchInfo->biography);
 										nnchInfo->biography = str1->GetValue()->Clone().Ptr();
 									}
-									if ((jsBase = obj1->GetObjectValue(CSTR("profile_pic_url_hd"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if (obj1->GetObjectValue(CSTR("profile_pic_url_hd")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
-										str1 = (Text::JSONString*)jsBase;
+										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 										SDEL_STRING(nnchInfo->profile_pic_url_hd);
 										nnchInfo->profile_pic_url_hd = str1->GetValue()->Clone().Ptr();
 									}
-									if ((jsBase = obj1->GetObjectValue(CSTR("username"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if (obj1->GetObjectValue(CSTR("username")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
-										str1 = (Text::JSONString*)jsBase;
+										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
 										SDEL_STRING(nnchInfo->username);
 										nnchInfo->username = str1->GetValue()->Clone().Ptr();
 									}
 								}
-								if ((jsBase = obj1->GetObjectValue(CSTR("edge_owner_to_timeline_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+								if (obj1->GetObjectValue(CSTR("edge_owner_to_timeline_media")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 								{
-									obj1 = (Text::JSONObject*)jsBase;
-									if ((jsBase = obj1->GetObjectValue(CSTR("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+									obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+									if (obj1->GetObjectValue(CSTR("edges")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 									{
-										arr1 = (Text::JSONArray*)jsBase;
+										arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
 										i = 0;
 										j = arr1->GetArrayLength();
 										while (i < j)
 										{
-											jsBase = arr1->GetArrayValue(i);
-											if (jsBase->GetType() == Text::JSONType::Object)
+											if (arr1->GetArrayValue(i).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 											{
-												obj1 = (Text::JSONObject*)jsBase;
-												if ((jsBase = obj1->GetObjectValue(CSTR("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+												obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+												if (obj1->GetObjectValue(CSTR("node")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 												{
-													obj1 = (Text::JSONObject*)jsBase;
+													obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
 													item = MemAllocNN(Net::WebSite::WebSiteInstagramControl::ItemData);
 													item.ZeroContent();
-													if ((jsBase = obj1->GetObjectValue(CSTR("id"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if (obj1->GetObjectValue(CSTR("id")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->id = ((Text::JSONString*)jsBase)->GetValue()->ToInt64();
+														item->id = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->ToInt64();
 													}
-													if ((jsBase = obj1->GetObjectValue(CSTR("shortcode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if (obj1->GetObjectValue(CSTR("shortcode")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->shortCode = ((Text::JSONString*)jsBase)->GetValue()->Clone();
+														item->shortCode = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone();
 													}
 													else
 													{
@@ -147,35 +145,34 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 													}
 													item->message = Text::String::NewEmpty();
 													item->recTime = obj1->GetObjectInt64(CSTR("taken_at_timestamp")) * 1000;
-													if ((jsBase = obj1->GetObjectValue(CSTR("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if (obj1->GetObjectValue(CSTR("display_url")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->imgURL = ((Text::JSONString*)jsBase)->GetValue()->Clone().Ptr();
+														item->imgURL = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone().Ptr();
 													}
-													if ((jsBase = obj1->GetObjectValue(CSTR("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if (obj1->GetObjectValue(CSTR("video_url")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->videoURL = ((Text::JSONString*)jsBase)->GetValue()->Clone().Ptr();
+														item->videoURL = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone().Ptr();
 													}
-													if ((jsBase = obj1->GetObjectValue(CSTR("__typename"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if (obj1->GetObjectValue(CSTR("__typename")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->moreImages = ((Text::JSONString*)jsBase)->GetValue()->Equals(UTF8STRC("GraphSidecar"));
+														item->moreImages = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Equals(UTF8STRC("GraphSidecar"));
 													}
 
-													if ((jsBase = obj1->GetObjectValue(CSTR("edge_media_to_caption"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+													if (obj1->GetObjectValue(CSTR("edge_media_to_caption")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 													{
-														obj1 = (Text::JSONObject*)jsBase;
-														if ((jsBase = obj1->GetObjectValue(CSTR("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+														obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+														if (obj1->GetObjectValue(CSTR("edges")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 														{
-															jsBase = ((Text::JSONArray*)jsBase)->GetArrayValue(0);
-															if (jsBase != 0 && jsBase->GetType() == Text::JSONType::Object)
+															if (NN<Text::JSONArray>::ConvertFrom(jsBase)->GetArrayValue(0).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 															{
-																obj1 = (Text::JSONObject*)jsBase;
-																if ((jsBase = obj1->GetObjectValue(CSTR("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+																obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+																if (obj1->GetObjectValue(CSTR("node")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 																{
-																	obj1 = (Text::JSONObject*)jsBase;
-																	if ((jsBase = obj1->GetObjectValue(CSTR("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+																	obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+																	if (obj1->GetObjectValue(CSTR("text")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 																	{
 																		item->message->Release();
-																		item->message = ((Text::JSONString*)jsBase)->GetValue()->Clone();
+																		item->message = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone();
 																	}
 																}
 															}
@@ -246,58 +243,56 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shor
 	sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 	sb.Append(shortCode);
 	sb.AppendUTF8Char('/');
-	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToCString());
-	if (baseData)
+	NN<Text::JSONBase> baseData;
+	if (this->ParsePageJSON(sb.ToCString()).SetTo(baseData))
 	{
-		Text::JSONBase *jsBase;
-		Text::JSONObject *obj1;
-		Text::JSONArray *arr1;
+		NN<Text::JSONBase> jsBase;
+		NN<Text::JSONObject> obj1;
+		NN<Text::JSONArray> arr1;
 		UOSInt i;
 		UOSInt j;
 		if (baseData->GetType() == Text::JSONType::Object)
 		{
-			obj1 = (Text::JSONObject*)baseData;
-			if ((jsBase = obj1->GetObjectValue(CSTR("entry_data"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+			obj1 = NN<Text::JSONObject>::ConvertFrom(baseData);
+			if (obj1->GetObjectValue(CSTR("entry_data")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 			{
-				obj1 = (Text::JSONObject*)jsBase;
-				if ((jsBase = obj1->GetObjectValue(CSTR("PostPage"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+				obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+				if (obj1->GetObjectValue(CSTR("PostPage")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 				{
-					arr1 = (Text::JSONArray*)jsBase;
-					jsBase = arr1->GetArrayValue(0);
-					if (jsBase && jsBase->GetType() == Text::JSONType::Object)
+					arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
+					if (arr1->GetArrayValue(0).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 					{
-						obj1 = (Text::JSONObject*)jsBase;
-						if ((jsBase = obj1->GetObjectValue(CSTR("graphql"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+						obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+						if (obj1->GetObjectValue(CSTR("graphql")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 						{
-							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(CSTR("shortcode_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+							obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+							if (obj1->GetObjectValue(CSTR("shortcode_media")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 							{
-								obj1 = (Text::JSONObject*)jsBase;
-								if ((jsBase = obj1->GetObjectValue(CSTR("edge_sidecar_to_children"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+								obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+								if (obj1->GetObjectValue(CSTR("edge_sidecar_to_children")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 								{
-									obj1 = (Text::JSONObject*)jsBase;
-									if ((jsBase = obj1->GetObjectValue(CSTR("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+									obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+									if (obj1->GetObjectValue(CSTR("edges")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Array)
 									{
-										arr1 = (Text::JSONArray*)jsBase;
+										arr1 = NN<Text::JSONArray>::ConvertFrom(jsBase);
 										i = 0;
 										j = arr1->GetArrayLength();
 										while (i < j)
 										{
-											jsBase = arr1->GetArrayValue(i);
-											if (jsBase->GetType() == Text::JSONType::Object)
+											if (arr1->GetArrayValue(i).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 											{
-												obj1 = (Text::JSONObject*)jsBase;
-												if ((jsBase = obj1->GetObjectValue(CSTR("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+												obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+												if (obj1->GetObjectValue(CSTR("node")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
 												{
-													obj1 = (Text::JSONObject*)jsBase;
-													if ((jsBase = obj1->GetObjectValue(CSTR("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													obj1 = NN<Text::JSONObject>::ConvertFrom(jsBase);
+													if (obj1->GetObjectValue(CSTR("video_url")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														videoList->Add(((Text::JSONString*)jsBase)->GetValue()->Clone());
+														videoList->Add(NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone());
 														retCnt++;
 													}
-													else if ((jsBase = obj1->GetObjectValue(CSTR("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													else if (obj1->GetObjectValue(CSTR("display_url")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														imageList->Add(((Text::JSONString*)jsBase)->GetValue()->Clone());
+														imageList->Add(NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone());
 														retCnt++;
 													}
 												}												

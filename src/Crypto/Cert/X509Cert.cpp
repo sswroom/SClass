@@ -210,7 +210,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NN<Net::SSLE
 	}
 
 	Data::ArrayList<Text::CString> crlDistributionPoints;
-	this->GetCRLDistributionPoints(&crlDistributionPoints);
+	this->GetCRLDistributionPoints(crlDistributionPoints);
 	//////////////////////////
 	// CRL
 	return Crypto::Cert::X509File::ValidStatus::Valid;
@@ -482,7 +482,7 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned() const
 	return ret;
 }
 
-UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const
+UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(NN<Data::ArrayList<Text::CString>> crlDistributionPoints) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;

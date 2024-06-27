@@ -15,7 +15,7 @@ namespace Crypto
 		class CRC16R : public IHash
 		{
 		private:
-			UInt16 *crctab;
+			UnsafeArray<UInt16> crctab;
 			UInt16 currVal;
 			UInt16 polynomial;
 
@@ -37,7 +37,7 @@ namespace Crypto
 
 			UInt16 CalcDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 			{
-				return (UInt16)~CRC16R_Calc(buff.Ptr(), buffSize, this->crctab, 0xffff);
+				return (UInt16)~CRC16R_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), 0xffff);
 			}
 		};
 	}

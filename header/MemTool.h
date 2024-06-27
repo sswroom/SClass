@@ -75,10 +75,14 @@ extern "C" void MemClear(void *buff, UOSInt count);
 #define MemClear(buff, count) memset(buff, 0, count);
 #else
 #include <memory.h>
+//FORCEINLINE void MemCopyO(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UOSInt len) { memmove(destPtr.Ptr(), srcPtr.Ptr(), len); }
+//FORCEINLINE void MemCopyNO(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UOSInt len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
+//FORCEINLINE void MemClear(UnsafeArray<void> buff, UOSInt count) { memset(buff.Ptr(), 0, count); }
 #define MemCopyO(destPtr, srcPtr, len) memmove(destPtr, srcPtr, len)
 #define MemCopyNO(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
+//FORCEINLINE void MemCopyNOShort(UnsafeArray<void> destPtr, UnsafeArray<const void> srcPtr, UOSInt len) { memcpy(destPtr.Ptr(), srcPtr.Ptr(), len); }
 #define MemCopyNOShort(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 
 #if defined(HAS_ASM32)

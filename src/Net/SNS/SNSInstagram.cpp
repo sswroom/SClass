@@ -143,7 +143,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 	idList.EnsureCapacity(j);
 	while (i < j)
 	{
-		idList.Add(this->itemMap.GetKey(i));
+		idList.Add(this->itemMap.GetKey(i).OrNull());
 		i++;
 	}
 

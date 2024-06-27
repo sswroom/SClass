@@ -189,7 +189,7 @@ void Net::ASN1PDUBuilder::AppendUInt32(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSInt len)
+void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, UnsafeArray<const UInt8> buff, UOSInt len)
 {
 	len++;
 	if (len < 128)
@@ -199,7 +199,7 @@ void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSI
 		this->buff[this->currOffset + 1] = (UInt8)len;
 		if (len > 1)
 		{
-			MemCopyNO(&this->buff[this->currOffset + 3], buff, len - 1);
+			MemCopyNO(&this->buff[this->currOffset + 3], buff.Ptr(), len - 1);
 		}
 		this->buff[this->currOffset + 2] = bitLeft;
 		this->currOffset += len + 2;
@@ -210,7 +210,7 @@ void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSI
 		this->buff[this->currOffset] = 3;
 		this->buff[this->currOffset + 1] = 0x81;
 		this->buff[this->currOffset + 2] = (UInt8)len;
-		MemCopyNO(&this->buff[this->currOffset + 4], buff, len - 1);
+		MemCopyNO(&this->buff[this->currOffset + 4], buff.Ptr(), len - 1);
 		this->buff[this->currOffset + 3] = bitLeft;
 		this->currOffset += len + 3;
 	}
@@ -220,7 +220,7 @@ void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSI
 		this->buff[this->currOffset] = 3;
 		this->buff[this->currOffset + 1] = 0x82;
 		WriteMInt16(&this->buff[this->currOffset + 2], len);
-		MemCopyNO(&this->buff[this->currOffset + 5], buff, len - 1);
+		MemCopyNO(&this->buff[this->currOffset + 5], buff.Ptr(), len - 1);
 		this->buff[this->currOffset + 4] = bitLeft;
 		this->currOffset += len + 4;
 	}
@@ -230,7 +230,7 @@ void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSI
 		this->buff[this->currOffset] = 3;
 		this->buff[this->currOffset + 1] = 0x83;
 		WriteMInt24(&this->buff[this->currOffset + 2], len);
-		MemCopyNO(&this->buff[this->currOffset + 6], buff, len - 1);
+		MemCopyNO(&this->buff[this->currOffset + 6], buff.Ptr(), len - 1);
 		this->buff[this->currOffset + 5] = bitLeft;
 		this->currOffset += len + 5;
 	}

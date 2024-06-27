@@ -119,7 +119,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 												UOSInt decLen = ssl->Decrypt(key, decBuff, Data::ByteArrayR(encDigestData, encLen), Crypto::Encrypt::RSACipher::Padding::PKCS1);
 												if (decLen > 0)
 												{
-													if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
+													if (Crypto::Cert::X509File::ParseDigestType(digestInfo, decBuff, decBuff + decLen))
 													{
 														sb.AppendC(UTF8STRC("\r\nHash Type: "));
 														sb.Append(Crypto::Hash::HashTypeGetName(digestInfo.hashType));

@@ -149,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 		if (decLen > 0)
 		{
 			Crypto::Cert::DigestInfo digestInfo;
-			if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
+			if (Crypto::Cert::X509File::ParseDigestType(digestInfo, decBuff, decBuff + decLen))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Hash Type: "));

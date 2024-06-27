@@ -170,14 +170,14 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN d
 
 Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(json))
 	{
 		NN<Text::String> s;
 		Order *order = 0;
 		if (json->GetType() == Text::JSONType::Object)
 		{
-			Text::JSONObject *o = (Text::JSONObject*)json;
+			NN<Text::JSONObject> o = NN<Text::JSONObject>::ConvertFrom(json);
 			order = MemAlloc(Order, 1);
 			MemClear(order, sizeof(Order));
 			order->status = ACMEStatusFromString(o->GetObjectString(CSTR("status")));
@@ -188,19 +188,18 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 				order->expires = dt.ToTicks();
 			}
 			order->finalizeURL = o->GetObjectNewString(CSTR("finalize"));
-			Text::JSONBase *auth = o->GetObjectValue(CSTR("authorizations"));
-			if (auth && auth->GetType() == Text::JSONType::Array)
+			NN<Text::JSONBase> auth;
+			if (o->GetObjectValue(CSTR("authorizations")).SetTo(auth) && auth->GetType() == Text::JSONType::Array)
 			{
-				Text::JSONArray *authArr = (Text::JSONArray*)auth;
+				NN<Text::JSONArray> authArr = NN<Text::JSONArray>::ConvertFrom(auth);
 				NEW_CLASS(order->authURLs, Data::ArrayListStringNN());
 				UOSInt i = 0;
 				UOSInt j = authArr->GetArrayLength();
 				while (i < j)
 				{
-					auth = authArr->GetArrayValue(i);
-					if (auth && auth->GetType() == Text::JSONType::String)
+					if (authArr->GetArrayValue(i).SetTo(auth) && auth->GetType() == Text::JSONType::String)
 					{
-						order->authURLs->Add(((Text::JSONString*)auth)->GetValue()->Clone());
+						order->authURLs->Add(NN<Text::JSONString>::ConvertFrom(auth)->GetValue()->Clone());
 					}
 					i++;
 				}
@@ -212,7 +211,7 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 	return 0;
 }
 
-Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
+Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(NN<Text::JSONBase> json)
 {
 	NN<Text::String> type;
 	NN<Text::String> status;
@@ -236,9 +235,9 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeJSON(Text::JSONBase *
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 	Optional<Challenge> chall = 0;
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(json))
 	{
 		chall = ChallengeJSON(json);
 		json->EndUse();
@@ -291,12 +290,12 @@ Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost
 		{
 			UnsafeArray<UInt8> jsonBuff = mstm.GetBuff(recvSize);
 			NN<Text::String> s;
-			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
-			if (json)
+			NN<Text::JSONBase> json;
+			if (Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize).SetTo(json))
 			{
 				if (json->GetType() == Text::JSONType::Object)
 				{
-					Text::JSONObject *o = (Text::JSONObject*)json;
+					NN<Text::JSONObject> o = NN<Text::JSONObject>::ConvertFrom(json);
 					if (o->GetObjectString(CSTR("newNonce")).SetTo(s))
 					{
 						this->urlNewNonce = s->Clone().Ptr();
@@ -321,10 +320,10 @@ Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost
 					{
 						this->urlKeyChange = s->Clone().Ptr();
 					}
-					Text::JSONBase *metaBase = o->GetObjectValue(CSTR("meta"));
-					if (metaBase && metaBase->GetType() == Text::JSONType::Object)
+					NN<Text::JSONBase> metaBase;
+					if (o->GetObjectValue(CSTR("meta")).SetTo(metaBase) && metaBase->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
+						NN<Text::JSONObject> metaObj = NN<Text::JSONObject>::ConvertFrom(metaBase);
 						if (metaObj->GetObjectString(CSTR("termsOfService")).SetTo(s))
 						{
 							this->urlTermOfService = s->Clone().Ptr();
@@ -434,12 +433,12 @@ Bool Net::ACMEConn::AccountNew()
 		DEL_CLASS(cli);
 		UOSInt buffSize;
 		UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
-		Text::JSONBase *base = Text::JSONBase::ParseJSONBytes(buff, buffSize);
-		if (base != 0)
+		NN<Text::JSONBase> base;
+		if (Text::JSONBase::ParseJSONBytes(buff, buffSize).SetTo(base))
 		{
 			if (base->GetType() == Text::JSONType::Object)
 			{
-				Text::JSONObject *o = (Text::JSONObject*)base;
+				NN<Text::JSONObject> o = NN<Text::JSONObject>::ConvertFrom(base);
 				NN<Text::String> s;
 				if (o->GetObjectString(CSTR("type")).SetTo(s) && s->Equals(UTF8STRC("urn:ietf:params:acme:error:accountDoesNotExist")))
 				{
@@ -588,8 +587,8 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 		UOSInt j;
 		NN<Text::String> s;
 		UnsafeArray<const UInt8> authBuff = mstm.GetBuff(i);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(authBuff, i);
-		if (json == 0)
+		NN<Text::JSONBase> json;
+		if (!Text::JSONBase::ParseJSONBytes(authBuff, i).SetTo(json))
 		{
 			return 0;
 		}
@@ -599,17 +598,15 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 			return 0;
 		}
 		Optional<Challenge> ret = 0;
-		Text::JSONObject *authObj = (Text::JSONObject*)json;
-		json = authObj->GetObjectValue(CSTR("challenges"));
-		if (json && json->GetType() == Text::JSONType::Array)
+		NN<Text::JSONObject> authObj = NN<Text::JSONObject>::ConvertFrom(json);
+		if (authObj->GetObjectValue(CSTR("challenges")).SetTo(json) && json->GetType() == Text::JSONType::Array)
 		{
-			Text::JSONArray *challArr = (Text::JSONArray*)json;
+			NN<Text::JSONArray> challArr = NN<Text::JSONArray>::ConvertFrom(json);
 			i = 0;
 			j = challArr->GetArrayLength();
 			while (i < j)
 			{
-				json = challArr->GetArrayValue(i);
-				if (json)
+				if (challArr->GetArrayValue(i).SetTo(json))
 				{
 					if (json->GetValueString(CSTR("type")).SetTo(s) && s->EqualsICase(sAuthType.v, sAuthType.leng))
 					{

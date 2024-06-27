@@ -14,13 +14,11 @@ extern "C"
 
 Crypto::Hash::MD5::MD5()
 {
-	buff = MemAlloc(UInt8, 64);
 	Clear();
 }
 
 Crypto::Hash::MD5::~MD5()
 {
-	MemFree(buff);
 }
 
 UnsafeArray<UTF8Char> Crypto::Hash::MD5::GetName(UnsafeArray<UTF8Char> sbuff) const

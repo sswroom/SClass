@@ -160,7 +160,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	i = 0;
 	while (i < j)
 	{
-		idList.Add(this->itemMap.GetKey(i));
+		idList.Add(this->itemMap.GetKey(i).OrNull());
 		i++;
 	}
 

@@ -19,7 +19,7 @@ namespace Crypto
 		class BlockCipher : public ICrypto
 		{
 		protected:
-			UInt8 *iv;
+			UnsafeArray<UInt8> iv;
 			UOSInt blockSize;
 			ChainMode cm;
 

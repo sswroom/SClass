@@ -50,19 +50,20 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 	UOSInt buffSize = (UOSInt)fd->GetDataSize();
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
 	fileBuff[fd->GetRealData(0, buffSize, Data::ByteArray(fileBuff, buffSize + 1))] = 0;
-	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));
+	Optional<Text::JSONBase> optfileJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(fileBuff, buffSize));
+	NN<Text::JSONBase> fileJSON;
 	MemFree(fileBuff);
 
-	if (fileJSON == 0)
+	if (!optfileJSON.SetTo(fileJSON))
 	{
 		fd.Delete();
 		return 0;
 	}
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
-		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
-		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
-		if (jbase && jbase->Equals(CSTR("overlay")) && fd->GetShortName().OrEmpty().EndsWith(UTF8STRC("metadata.json")))
+		NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(fileJSON);
+		NN<Text::JSONBase> jbase;
+		if (jobj->GetObjectValue(CSTR("type")).SetTo(jbase) && jbase->Equals(CSTR("overlay")) && fd->GetShortName().OrEmpty().EndsWith(UTF8STRC("metadata.json")))
 		{
 			NN<Text::String> name;
 			NN<Text::String> format;
@@ -70,11 +71,12 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 			NN<Text::String> sMaxZoom;
 			UInt32 minZoom;
 			UInt32 maxZoom;
-			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
+			NN<Text::JSONArray> bounds;
 			if (jobj->GetObjectString(CSTR("name")).SetTo(name) &&
 				jobj->GetObjectString(CSTR("format")).SetTo(format) &&
 				jobj->GetObjectString(CSTR("minzoom")).SetTo(sMinZoom) &&
-				jobj->GetObjectString(CSTR("maxzoom")).SetTo(sMaxZoom) && bounds && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
+				jobj->GetObjectString(CSTR("maxzoom")).SetTo(sMaxZoom) &&
+				jobj->GetObjectArray(CSTR("bounds")).SetTo(bounds) && sMinZoom->ToUInt32(minZoom) && sMaxZoom->ToUInt32(maxZoom) && bounds->GetArrayLength() == 4)
 			{
 				Math::Coord2DDbl maxCoord;
 				Math::Coord2DDbl minCoord;

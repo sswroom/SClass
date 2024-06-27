@@ -58,13 +58,14 @@ private:
 	Sync::Mutex filesMut;
 	Data::ArrayList<FileEntry*> filesList;
 
-	static void ParseJSONObj(NN<ThreadStatus> stat, Text::String *url, Text::JSONBase *obj, NN<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSONObj(NN<ThreadStatus> stat, Text::String *url, Optional<Text::JSONBase> optobj, NN<Text::StringBuilderUTF8> tmpSb)
 	{
-		if (obj == 0 || obj->GetType() != Text::JSONType::Object)
+		NN<Text::JSONBase> obj;
+		if (!optobj.SetTo(obj) || obj->GetType() != Text::JSONType::Object)
 		{
 			return;
 		}
-		Text::JSONObject *jobj = (Text::JSONObject*)obj;
+		NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(obj);
 		UOSInt i;
 		NN<Text::String> contURL;
 		if (jobj->GetValueString(CSTR("content.url")).SetTo(contURL))
@@ -82,10 +83,9 @@ private:
 			stat->me->AddURL(tmpSb->ToCString());
 		}
 
-		obj = obj->GetValue(CSTR("children"));
-		if (obj && obj->GetType() == Text::JSONType::Array)
+		if (obj->GetValue(CSTR("children")).SetTo(obj) && obj->GetType() == Text::JSONType::Array)
 		{
-			Text::JSONArray *children = (Text::JSONArray*)obj;
+			NN<Text::JSONArray> children = NN<Text::JSONArray>::ConvertFrom(obj);
 			i = children->GetArrayLength();
 			while (i-- > 0)
 			{
@@ -99,8 +99,8 @@ private:
 		mstm->Write(Data::ByteArrayR(U8STR(""), 1));
 		UOSInt i;
 		UnsafeArray<const UInt8> buff = mstm->GetBuff(i);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, i - 1));
-		if (json)
+		NN<Text::JSONBase> json;
+		if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, i - 1)).SetTo(json))
 		{
 			ParseJSONObj(stat, url, json->GetValue(CSTR("root")), tmpSb);
 			json->EndUse();

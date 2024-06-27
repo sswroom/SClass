@@ -191,16 +191,16 @@ Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<
 #if defined(VERBOSE)
 	printf("Getting Weather forecast from: %s\r\n", url.v);
 #endif
-	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, url);
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Net::HTTPJSONReader::Read(sockf, ssl, url).SetTo(json))
 	{
 		weatherForecast->seaTemp = json->GetValueAsInt32(CSTR("seaTemp.value"));
 		NN<Text::String> sUpdateTime;
 		NN<Text::String> sSeaTempTime;
 		weatherForecast->generalSituation = json->GetValueNewString(CSTR("generalSituation"));
 		weatherForecast->seaTempPlace = json->GetValueNewString(CSTR("seaTemp.place"));
-		Text::JSONBase *weatherForecastBase = json->GetValue(CSTR("weatherForecast"));
-		if (!json->GetValueString(CSTR("updateTime")).SetTo(sUpdateTime) || !json->GetValueString(CSTR("seaTemp.recordTime")).SetTo(sSeaTempTime) || weatherForecast->generalSituation.IsNull() || weatherForecast->seaTempPlace.IsNull() || weatherForecastBase == 0)
+		NN<Text::JSONBase> weatherForecastBase;
+		if (!json->GetValueString(CSTR("updateTime")).SetTo(sUpdateTime) || !json->GetValueString(CSTR("seaTemp.recordTime")).SetTo(sSeaTempTime) || weatherForecast->generalSituation.IsNull() || weatherForecast->seaTempPlace.IsNull() || !json->GetValue(CSTR("weatherForecast")).SetTo(weatherForecastBase))
 		{
 			OPTSTR_DEL(weatherForecast->generalSituation);
 			OPTSTR_DEL(weatherForecast->seaTempPlace);
@@ -212,18 +212,19 @@ Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<
 		}
 		weatherForecast->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 		weatherForecast->seaTempTime = Data::Timestamp::FromStr(sSeaTempTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
-		Text::JSONArray *weatherForecastArr = (Text::JSONArray*)weatherForecastBase;
+		NN<Text::JSONArray> weatherForecastArr = NN<Text::JSONArray>::ConvertFrom(weatherForecastBase);
 		UOSInt i = 0;
 		UOSInt j = weatherForecastArr->GetArrayLength();
 		while (i < j)
 		{
-			Text::JSONBase *weatherForecastItem = weatherForecastArr->GetArrayValue(i);
+			NN<Text::JSONBase> weatherForecastItem;
 			NN<Text::String> sDate;
 			NN<Text::String> sWeekday;
 			NN<Text::String> sWind;
 			NN<Text::String> sWeather;
 			NN<Text::String> sPSR;
-			if (weatherForecastItem->GetValueString(CSTR("forecastDate")).SetTo(sDate) &&
+			if (weatherForecastArr->GetArrayValue(i).SetTo(weatherForecastItem) &&
+				weatherForecastItem->GetValueString(CSTR("forecastDate")).SetTo(sDate) &&
 				weatherForecastItem->GetValueString(CSTR("week")).SetTo(sWeekday) &&
 				weatherForecastItem->GetValueString(CSTR("forecastWind")).SetTo(sWind) &&
 				weatherForecastItem->GetValueString(CSTR("forecastWeather")).SetTo(sWeather) &&
@@ -290,8 +291,8 @@ Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Ne
 		url = CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=en");
 		break;
 	}
-	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, url);
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Net::HTTPJSONReader::Read(sockf, ssl, url).SetTo(json))
 	{
 		localForecast->generalSituation = json->GetValueString(CSTR("generalSituation"));
 		localForecast->tcInfo = json->GetValueString(CSTR("tcInfo"));
@@ -336,20 +337,19 @@ void Net::HKOWeather::FreeLocalForecast(NN<LocalForecast> localForecast)
 
 Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Data::ArrayListNN<WarningSummary>> warnings)
 {
-	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"));
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en")).SetTo(json))
 	{
 		if (json->GetType() == Text::JSONType::Object)
 		{
-			Text::JSONObject *obj = (Text::JSONObject*)json;
+			NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(json);
 			Data::ArrayListNN<Text::String> objNames;
 			obj->GetObjectNames(objNames);
-			Text::JSONObject *warnObj;
+			NN<Text::JSONObject> warnObj;
 			Data::ArrayIterator<NN<Text::String>> it = objNames.Iterator();
 			while (it.HasNext())
 			{
-				warnObj = obj->GetValueObject(it.Next()->ToCString());
-				if (warnObj)
+				if (obj->GetValueObject(it.Next()->ToCString()).SetTo(warnObj))
 				{
 					NN<Text::String> sCode;
 					NN<Text::String> sActionCode;

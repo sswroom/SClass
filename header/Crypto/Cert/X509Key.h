@@ -44,7 +44,7 @@ namespace Crypto
 			UnsafeArrayOpt<const UInt8> GetECPublic(OptOut<UOSInt> size) const;
 			ECName GetECName() const;
 
-			static X509Key *FromECPublicKey(Data::ByteArrayR buff, Data::ByteArrayR paramOID);
+			static NN<X509Key> FromECPublicKey(Data::ByteArrayR buff, Data::ByteArrayR paramOID);
 			static Optional<X509Key> FromRSAKey(NN<RSAKey> key);
 		};
 	}

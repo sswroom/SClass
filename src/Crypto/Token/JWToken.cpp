@@ -184,8 +184,8 @@ Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, Unsafe
 Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NN<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr)
 {
 	param->Clear();
-	Text::JSONBase *payloadJson = Text::JSONBase::ParseJSONStr(this->payload->ToCString());
-	if (payloadJson == 0)
+	NN<Text::JSONBase> payloadJson;
+	if (!Text::JSONBase::ParseJSONStr(this->payload->ToCString()).SetTo(payloadJson))
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Payload cannot be parsed with JSON"));
 		return 0;
@@ -199,8 +199,8 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NN<JWTParam
 	Text::StringBuilderUTF8 sb;
 	Data::StringMap<Text::String *> *retMap;
 	NEW_CLASS(retMap, Data::StringMap<Text::String *>());
-	Text::JSONObject *payloadObj = (Text::JSONObject*)payloadJson;
-	Text::JSONBase *json;
+	NN<Text::JSONObject> payloadObj = NN<Text::JSONObject>::ConvertFrom(payloadJson);
+	NN<Text::JSONBase> json;
 	Data::ArrayListNN<Text::String> objNames;
 	payloadObj->GetObjectNames(objNames);
 	NN<Text::String> name;
@@ -209,56 +209,55 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NN<JWTParam
 	while (it.HasNext())
 	{
 		name = it.Next();
-		json = payloadObj->GetObjectValue(name->ToCString());
 
 		isDefault = true;
 		if (name->Equals(UTF8STRC("iss")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::String)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::String)
 			{
-				param->SetIssuer(((Text::JSONString*)json)->GetValue());
+				param->SetIssuer(NN<Text::JSONString>::ConvertFrom(json)->GetValue());
 			}
 		}
 		else if (name->Equals(UTF8STRC("sub")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::String)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::String)
 			{
-				param->SetSubject(((Text::JSONString*)json)->GetValue());
+				param->SetSubject(NN<Text::JSONString>::ConvertFrom(json)->GetValue());
 			}
 		}
 		else if (name->Equals(UTF8STRC("aud")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::String)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::String)
 			{
-				param->SetAudience(((Text::JSONString*)json)->GetValue());
+				param->SetAudience(NN<Text::JSONString>::ConvertFrom(json)->GetValue());
 			}
 		}
 		else if (name->Equals(UTF8STRC("exp")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::Number)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::Number)
 			{
-				param->SetExpirationTime(((Text::JSONNumber*)json)->GetAsInt64());
+				param->SetExpirationTime(NN<Text::JSONNumber>::ConvertFrom(json)->GetAsInt64());
 			}
 		}
 		else if (name->Equals(UTF8STRC("nbf")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::Number)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::Number)
 			{
-				param->SetNotBefore(((Text::JSONNumber*)json)->GetAsInt64());
+				param->SetNotBefore(NN<Text::JSONNumber>::ConvertFrom(json)->GetAsInt64());
 			}
 		}
 		else if (name->Equals(UTF8STRC("iat")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::Number)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::Number)
 			{
-				param->SetIssuedAt(((Text::JSONNumber*)json)->GetAsInt64());
+				param->SetIssuedAt(NN<Text::JSONNumber>::ConvertFrom(json)->GetAsInt64());
 			}
 		}
 		else if (name->Equals(UTF8STRC("jti")))
 		{
-			if (json != 0 && json->GetType() == Text::JSONType::String)
+			if (payloadObj->GetObjectValue(name->ToCString()).SetTo(json) && json->GetType() == Text::JSONType::String)
 			{
-				param->SetJWTId(((Text::JSONString*)json)->GetValue());
+				param->SetJWTId(NN<Text::JSONString>::ConvertFrom(json)->GetValue());
 			}
 		}
 		else
@@ -267,13 +266,13 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NN<JWTParam
 		}
 		if (keepDefault || !isDefault)
 		{
-			if (json == 0)
+			if (!payloadObj->GetObjectValue(name->ToCString()).SetTo(json))
 			{
 				retMap->PutNN(name, 0);
 			}
 			else if (json->GetType() == Text::JSONType::String)
 			{
-				retMap->PutNN(name, ((Text::JSONString*)json)->GetValue()->Clone().Ptr());
+				retMap->PutNN(name, NN<Text::JSONString>::ConvertFrom(json)->GetValue()->Clone().Ptr());
 			}
 			else
 			{
@@ -365,8 +364,8 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 	headerBuff[headerSize] = 0;
 	payloadBuff[payloadSize] = 0;
 	Crypto::Token::JWSignature::Algorithm alg;
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(headerBuff, headerSize));
-	if (json == 0)
+	NN<Text::JSONBase> json;
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(headerBuff, headerSize)).SetTo(json))
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Token format error: header is not JSON"));
 		MemFree(headerBuff);
@@ -404,8 +403,7 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 		return 0;
 	}
 	json->EndUse();
-	json = Text::JSONBase::ParseJSONStr(Text::CStringNN(payloadBuff, payloadSize));
-	if (json == 0)
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(payloadBuff, payloadSize)).SetTo(json))
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Token format error: payload is not JSON"));
 		MemFree(headerBuff);

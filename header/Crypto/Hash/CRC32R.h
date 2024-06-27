@@ -15,11 +15,11 @@ namespace Crypto
 		class CRC32R : public IHash
 		{
 		private:
-			UInt32 *crctab;
+			UnsafeArray<UInt32> crctab;
 			UInt32 currVal;
 
 		private:
-			CRC32R(const CRC32R *crc);
+			CRC32R(NN<const CRC32R> crc);
 			void InitTable(UInt32 polynomial);
 		public:
 			CRC32R(); //IEEE polynomial
@@ -36,7 +36,7 @@ namespace Crypto
 
 			UInt32 CalcDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize) const
 			{
-				return ~CRC32R_Calc(buff.Ptr(), buffSize, this->crctab, 0xffffffff);
+				return ~CRC32R_Calc(buff.Ptr(), buffSize, this->crctab.Ptr(), 0xffffffff);
 			}
 		};
 	}

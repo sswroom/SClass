@@ -83,29 +83,28 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFacto
 			jsonStr = MemAllocArr(UTF8Char, charsCnt + 1);
 			enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
 			
-			Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(jsonStr, charsCnt));
-			if (json)
+			NN<Text::JSONBase> json;
+			if (Text::JSONBase::ParseJSONStr(Text::CStringNN(jsonStr, charsCnt)).SetTo(json))
 			{
 				if (json->GetType() == Text::JSONType::Object)
 				{
-					Text::JSONObject *jobj = (Text::JSONObject*)json;
-					Text::JSONBase *o = jobj->GetObjectValue(CSTR("initialExtent"));
-					Text::JSONBase *v;
-					Text::JSONObject *vobj;
+					NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(json);
+					NN<Text::JSONBase> o;
+					NN<Text::JSONBase> v;
+					NN<Text::JSONObject> vobj;
 					Bool hasInit = false;
-					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					if (jobj->GetObjectValue(CSTR("initialExtent")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *ext = (Text::JSONObject*)o;
+						NN<Text::JSONObject> ext = NN<Text::JSONObject>::ConvertFrom(o);
 						this->initBounds.min.x = ext->GetObjectDouble(CSTR("xmin"));
 						this->initBounds.min.y = ext->GetObjectDouble(CSTR("ymin"));
 						this->initBounds.max.x = ext->GetObjectDouble(CSTR("xmax"));
 						this->initBounds.max.y = ext->GetObjectDouble(CSTR("ymax"));
 						hasInit = true;
 					}
-					o = jobj->GetObjectValue(CSTR("fullExtent"));
-					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					if (jobj->GetObjectValue(CSTR("fullExtent")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *ext = (Text::JSONObject*)o;
+						NN<Text::JSONObject> ext = NN<Text::JSONObject>::ConvertFrom(o);
 						this->bounds.min.x = ext->GetObjectDouble(CSTR("xmin"));
 						this->bounds.min.y = ext->GetObjectDouble(CSTR("ymin"));
 						this->bounds.max.x = ext->GetObjectDouble(CSTR("xmax"));
@@ -128,10 +127,9 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFacto
 						}
 					}
 
-					o = jobj->GetObjectValue(CSTR("spatialReference"));
-					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					if (jobj->GetObjectValue(CSTR("spatialReference")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *spRef = (Text::JSONObject*)o;
+						NN<Text::JSONObject> spRef = NN<Text::JSONObject>::ConvertFrom(o);
 						UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
 						NN<Math::CoordinateSystem> csys;
 						if (Math::CoordinateSystemManager::SRCreateCSys(wkid).SetTo(csys))
@@ -141,11 +139,10 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFacto
 						}
 					}
 
-					o = jobj->GetObjectValue(CSTR("capabilities"));
-					if (o != 0 && o->GetType() == Text::JSONType::String)
+					if (jobj->GetObjectValue(CSTR("capabilities")).SetTo(o) && o->GetType() == Text::JSONType::String)
 					{
 						sb.ClearStr();
-						sb.Append(((Text::JSONString*)o)->GetValue());
+						sb.Append(NN<Text::JSONString>::ConvertFrom(o)->GetValue());
 						Text::PString sarr[2];
 						sarr[1] = sb;
 						UOSInt sarrCnt;
@@ -165,31 +162,27 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFacto
 						}
 					}
 
-					o = jobj->GetObjectValue(CSTR("tileInfo"));
-					if (o != 0 && o->GetType() == Text::JSONType::Object)
+					if (jobj->GetObjectValue(CSTR("tileInfo")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *tinfo = (Text::JSONObject*)o;
+						NN<Text::JSONObject> tinfo = NN<Text::JSONObject>::ConvertFrom(o);
 						this->tileHeight = (UOSInt)tinfo->GetObjectInt32(CSTR("rows"));
 						this->tileWidth = (UOSInt)tinfo->GetObjectInt32(CSTR("cols"));
-						v = tinfo->GetObjectValue(CSTR("origin"));
-						if (v != 0 && v->GetType() == Text::JSONType::Object)
+						if (tinfo->GetObjectValue(CSTR("origin")).SetTo(v) && v->GetType() == Text::JSONType::Object)
 						{
-							Text::JSONObject *origin = (Text::JSONObject*)v;
+							NN<Text::JSONObject> origin = NN<Text::JSONObject>::ConvertFrom(v);
 							this->tileOrigin.x = origin->GetObjectDouble(CSTR("x"));
 							this->tileOrigin.y = origin->GetObjectDouble(CSTR("y"));
 						}
-						v = tinfo->GetObjectValue(CSTR("lods"));
-						if (v != 0 && v->GetType() == Text::JSONType::Array)
+						if (tinfo->GetObjectValue(CSTR("lods")).SetTo(v) && v->GetType() == Text::JSONType::Array)
 						{
-							Text::JSONArray *levs = (Text::JSONArray*)v;
+							NN<Text::JSONArray> levs = NN<Text::JSONArray>::ConvertFrom(v);
 							i = 0;
 							j = levs->GetArrayLength();
 							while (i < j)
 							{
-								v = levs->GetArrayValue(i);
-								if (v != 0 && v->GetType() == Text::JSONType::Object)
+								if (levs->GetArrayValue(i).SetTo(v) && v->GetType() == Text::JSONType::Object)
 								{
-									vobj = (Text::JSONObject*)v;
+									vobj = NN<Text::JSONObject>::ConvertFrom(v);
 									Double lev = vobj->GetObjectDouble(CSTR("resolution"));
 									if (lev != 0)
 										this->tileLevels.Add(lev);
@@ -428,34 +421,32 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 
 		mstm.Write(Data::ByteArrayR(U8STR(""), 1));
 		UnsafeArray<UInt8> buff = mstm.GetBuff(readSize);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, readSize - 1));
-		if (json)
+		NN<Text::JSONBase> json;
+		if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, readSize - 1)).SetTo(json))
 		{
-			Text::JSONBase *o = json->GetValue(CSTR("results"));
-			if (o && o->GetType() == Text::JSONType::Array)
+			NN<Text::JSONBase> o;
+			if (json->GetValue(CSTR("results")).SetTo(o) && o->GetType() == Text::JSONType::Array)
 			{
 				NN<Math::Geometry::Vector2D> vec;
-				Text::JSONArray *results = (Text::JSONArray*)o;
+				NN<Text::JSONArray> results = NN<Text::JSONArray>::ConvertFrom(o);
 				succ = true;
 				UOSInt i = 0;
 				UOSInt j = results->GetArrayLength();
 				while (i < j)
 				{
-					o = results->GetArrayValue(i);
-					if (o && o->GetType() == Text::JSONType::Object)
+					if (results->GetArrayValue(i).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
-						Text::JSONObject *result = (Text::JSONObject*)o;
+						NN<Text::JSONObject> result = NN<Text::JSONObject>::ConvertFrom(o);
 						NN<Text::String> geometryType;
 						if (result->GetValueString(CSTR("geometryType")).SetTo(geometryType))
 						{
 							NN<Text::JSONBase> geometryJSON;
-							if (geometryJSON.Set(result->GetObjectValue(CSTR("geometry"))) && ParseGeometry(this->csys->GetSRID(), geometryType, geometryJSON).SetTo(vec))
+							if (result->GetObjectValue(CSTR("geometry")).SetTo(geometryJSON) && ParseGeometry(this->csys->GetSRID(), geometryType, geometryJSON).SetTo(vec))
 							{
 								valueOfstList->Add(nameList->GetCount());
-								o = result->GetObjectValue(CSTR("attributes"));
-								if (o && o->GetType() == Text::JSONType::Object)
+								if (result->GetObjectValue(CSTR("attributes")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 								{
-									Text::JSONObject *attr = (Text::JSONObject*)o;
+									NN<Text::JSONObject> attr = NN<Text::JSONObject>::ConvertFrom(o);
 									Data::ArrayListNN<Text::String> attNames;
 									NN<Text::String> name;
 									Text::StringBuilderUTF8 sb;
@@ -465,7 +456,8 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 									{
 										name = it.Next();
 										sb.ClearStr();
-										attr->GetObjectValue(name->ToCString())->ToString(sb);
+										if (attr->GetObjectValue(name->ToCString()).SetTo(o))
+											o->ToString(sb);
 										nameList->Add(name->Clone());
 										valueList->Add(Text::String::New(sb.ToCString()));
 									}
@@ -545,40 +537,36 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 
 Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, NN<Text::String> geometryType, NN<Text::JSONBase> geometry)
 {
-	Text::JSONBase *o;
-	o = geometry->GetValue(CSTR("spatialReference.wkid"));
-	if (o)
+	NN<Text::JSONBase> o;
+	if (geometry->GetValue(CSTR("spatialReference.wkid")).SetTo(o))
 	{
 		srid = (UInt32)o->GetAsInt32();
 	}
 
 	if (geometryType->Equals(UTF8STRC("esriGeometryPolygon")))
 	{
-		o = geometry->GetValue(CSTR("rings"));
-		if (o && o->GetType() == Text::JSONType::Array)
+		if (geometry->GetValue(CSTR("rings")).SetTo(o) && o->GetType() == Text::JSONType::Array)
 		{
 			NN<Math::Geometry::LinearRing> lr;
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
-			Text::JSONArray *rings = (Text::JSONArray*)o;
+			NN<Text::JSONArray> rings = NN<Text::JSONArray>::ConvertFrom(o);
 			UOSInt i = 0;
 			UOSInt j = rings->GetArrayLength();
 			while (i < j)
 			{
-				o = rings->GetArrayValue(i);
-				if (o->GetType() == Text::JSONType::Array)
+				if (rings->GetArrayValue(i).SetTo(o) && o->GetType() == Text::JSONType::Array)
 				{
-					Text::JSONArray *ring = (Text::JSONArray*)o;
+					NN<Text::JSONArray> ring = NN<Text::JSONArray>::ConvertFrom(o);
 					ptArr.Clear();
 					UOSInt k = 0;
 					UOSInt l = ring->GetArrayLength();
 					while (k < l)
 					{
-						o = ring->GetArrayValue(k);
-						if (o && o->GetType() == Text::JSONType::Array)
+						if (ring->GetArrayValue(k).SetTo(o) && o->GetType() == Text::JSONType::Array)
 						{
-							Text::JSONArray *pt = (Text::JSONArray*)o;
+							NN<Text::JSONArray> pt = NN<Text::JSONArray>::ConvertFrom(o);
 							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDouble(0), pt->GetArrayDouble(1)));
 						}
 						k++;
@@ -600,29 +588,26 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 	}
 	else if (geometryType->Equals(UTF8STRC("esriGeometryPolyline")))
 	{
-		o = geometry->GetValue(CSTR("paths"));
-		if (o && o->GetType() == Text::JSONType::Array)
+		if (geometry->GetValue(CSTR("paths")).SetTo(o) && o->GetType() == Text::JSONType::Array)
 		{
 			Data::ArrayList<UInt32> ptOfstArr;
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;
-			Text::JSONArray *paths = (Text::JSONArray*)o;
+			NN<Text::JSONArray> paths = NN<Text::JSONArray>::ConvertFrom(o);
 			UOSInt i = 0;
 			UOSInt j = paths->GetArrayLength();
 			while (i < j)
 			{
-				o = paths->GetArrayValue(i);
-				if (o->GetType() == Text::JSONType::Array)
+				if (paths->GetArrayValue(i).SetTo(o) && o->GetType() == Text::JSONType::Array)
 				{
-					Text::JSONArray *path = (Text::JSONArray*)o;
+					NN<Text::JSONArray> path = NN<Text::JSONArray>::ConvertFrom(o);
 					ptOfstArr.Add((UInt32)ptArr.GetCount());
 					UOSInt k = 0;
 					UOSInt l = path->GetArrayLength();
 					while (k < l)
 					{
-						o = path->GetArrayValue(k);
-						if (o && o->GetType() == Text::JSONType::Array)
+						if (path->GetArrayValue(k).SetTo(o) && o->GetType() == Text::JSONType::Array)
 						{
-							Text::JSONArray *pt = (Text::JSONArray*)o;
+							NN<Text::JSONArray> pt = NN<Text::JSONArray>::ConvertFrom(o);
 							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDouble(0), pt->GetArrayDouble(1)));
 						}
 						k++;
@@ -641,13 +626,14 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 	}
 	else if (geometryType->Equals(UTF8STRC("esriGeometryPoint")))
 	{
-		Text::JSONBase *x = geometry->GetValue(CSTR("x"));
-		Text::JSONBase *y = geometry->GetValue(CSTR("y"));
-		Text::JSONBase *z = geometry->GetValue(CSTR("z"));
-		if (x && y && x->GetType() == Text::JSONType::Number && y->GetType() == Text::JSONType::Number)
+		NN<Text::JSONBase> x;
+		NN<Text::JSONBase> y;
+		NN<Text::JSONBase> z;
+		if (geometry->GetValue(CSTR("x")).SetTo(x) && geometry->GetValue(CSTR("y")).SetTo(y) &&
+			x->GetType() == Text::JSONType::Number && y->GetType() == Text::JSONType::Number)
 		{
 			Math::Geometry::Point *pt;
-			if (z && z->GetType() == Text::JSONType::Number)
+			if (geometry->GetValue(CSTR("z")).SetTo(z) && z->GetType() == Text::JSONType::Number)
 			{
 				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x->GetAsDouble(), y->GetAsDouble(), z->GetAsDouble()));
 			}

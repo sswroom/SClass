@@ -38,7 +38,7 @@ namespace Net
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
-			Text::JSONBase *ParsePageJSON(Text::CStringNN url);
+			Optional<Text::JSONBase> ParsePageJSON(Text::CStringNN url);
 		public:
 			WebSiteInstagramControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSiteInstagramControl();

@@ -2,7 +2,7 @@
 #define _SM_TEXT_JSON
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -43,7 +43,7 @@ namespace Text
 		void EndUse();
 		Bool IsString();
 
-		JSONBase *GetValue(Text::CStringNN path);
+		Optional<JSONBase> GetValue(Text::CStringNN path);
 		Optional<Text::String> GetValueString(Text::CStringNN path);
 		Optional<Text::String> GetValueNewString(Text::CStringNN path);
 		Int32 GetValueAsInt32(Text::CStringNN path);
@@ -53,8 +53,8 @@ namespace Text
 		Double GetValueAsDouble(Text::CStringNN path);
 		Bool GetValueAsDouble(Text::CStringNN path, OutParam<Double> val);
 		Bool GetValueAsBool(Text::CStringNN path);
-		Text::JSONArray *GetValueArray(Text::CStringNN path);
-		Text::JSONObject *GetValueObject(Text::CStringNN path);
+		Optional<Text::JSONArray> GetValueArray(Text::CStringNN path);
+		Optional<Text::JSONObject> GetValueObject(Text::CStringNN path);
 		Int32 GetAsInt32();
 		Bool GetAsInt32(OutParam<Int32> val);
 		Int64 GetAsInt64();
@@ -63,15 +63,15 @@ namespace Text
 		Bool GetAsDouble(OutParam<Double> val);
 		Bool GetAsBool();
 
-		static JSONBase *ParseJSONStr(Text::CStringNN jsonStr);
-		static JSONBase *ParseJSONBytes(UnsafeArray<const UInt8> jsonBytes, UOSInt len);
-		static JSONBase *ParseJSONBytes(const Data::ByteArrayR &jsonBytes);
+		static Optional<JSONBase> ParseJSONStr(Text::CStringNN jsonStr);
+		static Optional<JSONBase> ParseJSONBytes(UnsafeArray<const UInt8> jsonBytes, UOSInt len);
+		static Optional<JSONBase> ParseJSONBytes(const Data::ByteArrayR &jsonBytes);
 
 	private:
 		static UnsafeArray<const UTF8Char> ClearWS(UnsafeArray<const UTF8Char> jsonStr);
 		static UnsafeArrayOpt<const UTF8Char> ParseJSString(UnsafeArray<const UTF8Char> jsonStr, NN<Text::StringBuilderUTF8> sb);
 		static UnsafeArrayOpt<const UTF8Char> ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val);
-		static JSONBase *ParseJSONStr2(UnsafeArray<const UTF8Char> jsonStr, UnsafeArray<const UTF8Char> jsonStrEnd, OutParam<UnsafeArrayOpt<const UTF8Char>> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv);
+		static Optional<JSONBase> ParseJSONStr2(UnsafeArray<const UTF8Char> jsonStr, UnsafeArray<const UTF8Char> jsonStrEnd, OutParam<UnsafeArrayOpt<const UTF8Char>> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv);
 		static Bool Str2Bool(NN<Text::String> s);
 	};
 
@@ -174,7 +174,7 @@ namespace Text
 	class JSONObject : public JSONBase
 	{
 	private:
-		Data::FastStringMap<Text::JSONBase *> objVals;
+		Data::FastStringMapNN<Text::JSONBase> objVals;
 	public:
 		JSONObject();
 	private:
@@ -186,7 +186,7 @@ namespace Text
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
-		void SetObjectValue(Text::CStringNN name, JSONBase *val);
+		void SetObjectValue(Text::CStringNN name, Optional<JSONBase> val);
 		void SetObjectInt32(Text::CStringNN name, Int32 val);
 		void SetObjectInt64(Text::CStringNN name, Int64 val);
 		void SetObjectDouble(Text::CStringNN name, Double val);
@@ -194,9 +194,9 @@ namespace Text
 		void SetObjectString(Text::CStringNN name, Optional<Text::String> val);
 		void SetObjectString(Text::CStringNN name, NN<Text::String> val);
 		void SetObjectBool(Text::CStringNN name, Bool val);
-		JSONBase *GetObjectValue(Text::CStringNN name);
-		JSONArray *GetObjectArray(Text::CStringNN name);
-		JSONObject *GetObjectObject(Text::CStringNN name);
+		Optional<JSONBase> GetObjectValue(Text::CStringNN name);
+		Optional<JSONArray> GetObjectArray(Text::CStringNN name);
+		Optional<JSONObject> GetObjectObject(Text::CStringNN name);
 		void GetObjectNames(NN<Data::ArrayListNN<Text::String>> names);
 		Optional<Text::String> GetObjectString(Text::CStringNN name);
 		Optional<Text::String> GetObjectNewString(Text::CStringNN name);
@@ -210,7 +210,7 @@ namespace Text
 	class JSONArray : public JSONBase
 	{
 	private:
-		Data::ArrayList<Text::JSONBase *> arrVals;
+		Data::ArrayList<Optional<Text::JSONBase>> arrVals;
 	public:
 		JSONArray();
 	private:
@@ -222,10 +222,11 @@ namespace Text
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
-		void SetArrayValue(UOSInt index, Text::JSONBase *val);
-		void AddArrayValue(Text::JSONBase *val);
-		JSONBase *GetArrayValue(UOSInt index);
-		JSONObject *GetArrayObject(UOSInt index);
+		void SetArrayValue(UOSInt index, Optional<Text::JSONBase> val);
+		void AddArrayValue(Optional<Text::JSONBase> val);
+		JSONType GetArrayType(UOSInt index);
+		Optional<JSONBase> GetArrayValue(UOSInt index);
+		Optional<JSONObject> GetArrayObject(UOSInt index);
 		Double GetArrayDouble(UOSInt index);
 		Optional<Text::String> GetArrayString(UOSInt index);
 		UOSInt GetArrayLength();

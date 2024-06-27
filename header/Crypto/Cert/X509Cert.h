@@ -41,7 +41,7 @@ namespace Crypto
 			Bool GetNotAfter(NN<Data::DateTime> dt) const;
 			Bool DomainValid(Text::CStringNN domain) const;
 			Bool IsSelfSigned() const;
-			UOSInt GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const;
+			UOSInt GetCRLDistributionPoints(NN<Data::ArrayList<Text::CString>> crlDistributionPoints) const;
 
 			UnsafeArrayOpt<const UInt8> GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const;
 			UnsafeArrayOpt<const UInt8> GetSerialNumber(OutParam<UOSInt> dataLen) const;

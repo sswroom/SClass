@@ -2153,31 +2153,29 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					Text::StringBuilderUTF8 sb;
 					Text::JSText::JSONWellFormat(&packet[12], packetSize - 12, 0, sb);
 					frame->AddField(frameOfst + 12, (UInt32)packetSize - 12, sb.ToCString(), CSTR_NULL);
-					Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(&packet[12], packetSize - 12);
-					if (json)
+					NN<Text::JSONBase> json;
+					if (Text::JSONBase::ParseJSONBytes(&packet[12], packetSize - 12).SetTo(json))
 					{
 						if (json->GetType() == Text::JSONType::Object)
 						{
-							Text::JSONObject *jobj = (Text::JSONObject*)json;
-							Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("rxpk"));
-							if (jbase && jbase->GetType() == Text::JSONType::Array)
+							NN<Text::JSONObject> jobj = NN<Text::JSONObject>::ConvertFrom(json);
+							NN<Text::JSONBase> jbase;
+							if (jobj->GetObjectValue(CSTR("rxpk")).SetTo(jbase) && jbase->GetType() == Text::JSONType::Array)
 							{
 								Text::TextBinEnc::Base64Enc b64;
-								Text::JSONArray *jarr = (Text::JSONArray*)jbase;
+								NN<Text::JSONArray> jarr = NN<Text::JSONArray>::ConvertFrom(jbase);
 								UOSInt i;
 								UOSInt j;
 								i = 0;
 								j = jarr->GetArrayLength();
 								while (i < j)
 								{
-									jbase = jarr->GetArrayValue(i);
-									if (jbase && jbase->GetType() == Text::JSONType::Object)
+									if (jarr->GetArrayValue(i).SetTo(jbase) && jbase->GetType() == Text::JSONType::Object)
 									{
-										jobj = (Text::JSONObject*)jbase;
-										jbase = jobj->GetObjectValue(CSTR("data"));
-										if (jbase && jbase->GetType() == Text::JSONType::String)
+										jobj = NN<Text::JSONObject>::ConvertFrom(jbase);
+										if (jobj->GetObjectValue(CSTR("data")).SetTo(jbase) && jbase->GetType() == Text::JSONType::String)
 										{
-											Text::JSONString *jstr = (Text::JSONString*)jbase;
+											NN<Text::JSONString> jstr = NN<Text::JSONString>::ConvertFrom(jbase);
 											UOSInt dataLen;
 											UInt8 *dataBuff;
 											NN<Text::String> dataStr = jstr->GetValue();

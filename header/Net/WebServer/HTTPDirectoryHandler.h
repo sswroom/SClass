@@ -56,7 +56,7 @@ namespace Net
 			UInt64 fileCacheSize;
 			Data::BTreeUTF8Map<CacheInfo*> fileCache;
 			Sync::Mutex fileCacheMut;
-			Data::FastStringMap<StatInfo*> *statMap;
+			Data::FastStringMapNN<StatInfo> *statMap;
 			Sync::Mutex *statMut;
 			Int32 fileCacheUsing;
 			Sync::RWMutex *packageMut;
@@ -66,8 +66,8 @@ namespace Net
 			void ResponsePackageFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile);
 			Bool ResponsePackageFileItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem);
 
-			void StatLoad(StatInfo *stat);
-			void StatSave(StatInfo *stat);
+			void StatLoad(NN<StatInfo> stat);
+			void StatSave(NN<StatInfo> stat);
 		public:
 			HTTPDirectoryHandler(NN<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 			HTTPDirectoryHandler(Text::CStringNN rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);

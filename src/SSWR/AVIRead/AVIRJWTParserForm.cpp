@@ -76,8 +76,8 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 
 			if (me->verifyType == Crypto::Token::JWToken::VerifyType::Azure)
 			{
-				Text::JSONBase *json = Text::JSONBase::ParseJSONStr(me->token->GetHeader()->ToCString());
-				if (json == 0)
+				NN<Text::JSONBase> json;
+				if (!Text::JSONBase::ParseJSONStr(me->token->GetHeader()->ToCString()).SetTo(json))
 				{
 					me->txtVerifyStatus->SetText(CSTR("Cannot parse JWT header"));
 				}

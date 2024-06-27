@@ -580,7 +580,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 								{
 									Int32 dwSize = *(Int32*)&buffer[l + 4];
 									totalSize += dwSize & 0x7fffffff;
-									audsData->AddBlock(base + *(UInt32*)&buffer[l], dwSize & 0x7fffffff, EstimateDecodeSize(&fmt, totalSize, dwSize & 0x7fffffff));
+									audsData->AddBlock(base + *(UInt32*)&buffer[l], dwSize & 0x7fffffff, EstimateDecodeSize(fmt, totalSize, dwSize & 0x7fffffff));
 								}
 								l += 8;
 							}
@@ -643,7 +643,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 						if (*(Int32*)&idx1[k] == cmpTmp)
 						{
 							totalSize += ReadUInt32(&idx1[k + 12]);
-							audsData->AddBlock(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]), EstimateDecodeSize(&fmt, totalSize, ReadUInt32(&idx1[k + 12])));
+							audsData->AddBlock(base + ReadUInt32(&idx1[k + 8]) + 4, ReadUInt32(&idx1[k + 12]), EstimateDecodeSize(fmt, totalSize, ReadUInt32(&idx1[k + 12])));
 						}
 						k += 16;
 					}
@@ -720,7 +720,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	return mf;
 }
 
-UInt32 Parser::FileParser::AVIParser::EstimateDecodeSize(Media::AudioFormat *fmt, UInt64 totalSize, UOSInt frameSize)
+UInt32 Parser::FileParser::AVIParser::EstimateDecodeSize(NN<Media::AudioFormat> fmt, UInt64 totalSize, UOSInt frameSize)
 {
 	if (fmt->formatId == 1)
 	{

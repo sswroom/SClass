@@ -33,20 +33,20 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 		Text::StringBuilderUTF8 sb;
 		if (Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://login.microsoftonline.com/common/discovery/v2.0/keys"), sb, 1048576))
 		{
-			Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
-			if (json)
+			NN<Text::JSONBase> json;
+			if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
 			{
-				Text::JSONArray *keys = json->GetValueArray(CSTR("keys"));
-				if (keys)
+				NN<Text::JSONArray> keys;
+				if (json->GetValueArray(CSTR("keys")).SetTo(keys))
 				{
 					UOSInt i = 0;
 					UOSInt j = keys->GetArrayLength();
 					while (i < j)
 					{
-						Text::JSONBase *key = keys->GetArrayValue(i);
+						NN<Text::JSONBase> key;
 						NN<Text::String> kid;
 						NN<Text::String> cert;
-						if (key->GetValueString(CSTR("kid")).SetTo(kid) && key->GetValueString(CSTR("x5c[0]")).SetTo(cert))
+						if (keys->GetArrayValue(i).SetTo(key) && key->GetValueString(CSTR("kid")).SetTo(kid) && key->GetValueString(CSTR("x5c[0]")).SetTo(cert))
 						{
 							this->keyMap->PutNN(kid, cert->Clone());
 						}

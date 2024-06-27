@@ -83,8 +83,8 @@ Bool Map::OWSFeatureParser::ParseText(Text::PString txt, UInt32 srid, Math::Coor
 
 Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList, Math::Coord2DDbl coord)
 {
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(txt);
-	if (json)
+	NN<Text::JSONBase> json;
+	if (Text::JSONBase::ParseJSONStr(txt).SetTo(json))
 	{
 		if (json->GetType() == Text::JSONType::Object)
 		{
@@ -99,23 +99,23 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 				}
 			}
 		}
-		Text::JSONBase *featuresObj = json->GetValue(CSTR("features"));
-		if (featuresObj && featuresObj->GetType() == Text::JSONType::Array)
+		NN<Text::JSONBase> featuresObj;
+		if (json->GetValue(CSTR("features")).SetTo(featuresObj) && featuresObj->GetType() == Text::JSONType::Array)
 		{
-			Text::JSONArray *features = (Text::JSONArray*)featuresObj;
+			NN<Text::JSONArray> features = NN<Text::JSONArray>::ConvertFrom(featuresObj);
 			UOSInt i = 0;
 			UOSInt j = features->GetArrayLength();
 			while (i < j)
 			{
-				Text::JSONBase *feature = features->GetArrayValue(i);
-				Text::JSONBase *geometry = feature->GetValue(CSTR("geometry"));
-				if (geometry)
+				NN<Text::JSONBase> feature;
+				NN<Text::JSONBase> geometry;
+				if (features->GetArrayValue(i).SetTo(feature) && feature->GetValue(CSTR("geometry")).SetTo(geometry))
 				{
 					Optional<Math::Geometry::Vector2D> vec = 0;
 					NN<Math::Geometry::Vector2D> nnvec;
 					if (geometry->GetType() == Text::JSONType::Object)
 					{
-						vec = Parser::FileParser::JSONParser::ParseGeomJSON((Text::JSONObject*)geometry, srid);
+						vec = Parser::FileParser::JSONParser::ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(geometry), srid);
 					}
 					else if (geometry->GetType() == Text::JSONType::Null)
 					{
@@ -125,13 +125,14 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 					if (vec.SetTo(nnvec))
 					{
 						valueOfstList->Add(nameList->GetCount());
-						Text::JSONBase *properties = feature->GetValue(CSTR("properties"));
-						if (properties && properties->GetType() == Text::JSONType::Object)
+						NN<Text::JSONBase> properties;
+						if (feature->GetValue(CSTR("properties")).SetTo(properties) && properties->GetType() == Text::JSONType::Object)
 						{
 							Data::ArrayListNN<Text::String> names;
 							NN<Text::String> name;
 							Text::StringBuilderUTF8 sb;
-							Text::JSONObject *obj = (Text::JSONObject*)properties;
+							NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(properties);
+							NN<Text::JSONBase> val;
 							obj->GetObjectNames(names);
 							Data::ArrayIterator<NN<Text::String>> it = names.Iterator();
 							while (it.HasNext())
@@ -139,7 +140,8 @@ Bool Map::OWSFeatureParser::ParseJSON(Text::CStringNN txt, UInt32 srid, NN<Data:
 								name = it.Next();
 								nameList->Add(name->Clone());
 								sb.ClearStr();
-								obj->GetValue(name->ToCString())->ToString(sb);
+								if (obj->GetValue(name->ToCString()).SetTo(val))
+									val->ToString(sb);
 								valueList->Add(Text::String::New(sb.ToCString()));
 							}
 						}
