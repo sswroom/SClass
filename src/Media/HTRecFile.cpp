@@ -417,7 +417,7 @@ UOSInt Media::HTRecFile::HTRecReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Media::HTRecFile::HTRecReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Media::HTRecFile::HTRecReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

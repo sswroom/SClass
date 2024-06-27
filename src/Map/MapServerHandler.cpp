@@ -74,9 +74,9 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
 			NN<Text::String> s;
-			Map::NameArray *nameArr;
+			Optional<Map::NameArray> nameArr;
 			Text::StringBuilderUTF8 sb;
-			layer->GetAllObjectIds(objIds, &nameArr);
+			layer->GetAllObjectIds(objIds, nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				Text::StringBuilderUTF8 sbTmp;
@@ -171,8 +171,8 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 			UOSInt l;
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
-			Map::NameArray *nameArr;
-			layer->GetAllObjectIds(objIds, &nameArr);
+			Optional<Map::NameArray> nameArr;
+			layer->GetAllObjectIds(objIds, nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();

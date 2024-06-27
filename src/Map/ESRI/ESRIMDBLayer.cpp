@@ -218,11 +218,11 @@ Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
-		*nameArr = (NameArray*)ReadNameArr();
+		nameArr.SetNoCheck((NameArray*)ReadNameArr());
 	}
 	UOSInt i = 0;
 	UOSInt j = this->objects.GetCount();
@@ -234,16 +234,16 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr,
 	return j;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
-		*nameArr = (NameArray*)ReadNameArr();
+		nameArr.SetNoCheck((NameArray*)ReadNameArr());
 	}
 	UOSInt cnt = 0;
 	Math::RectAreaDbl minMax;
@@ -271,31 +271,35 @@ Int64 Map::ESRI::ESRIMDBLayer::GetObjectIdMax() const
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
-void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
-	UOSInt i = names->GetCount();
-	UOSInt colCnt = this->colNames.GetCount();
-	UOSInt j;
-	const UTF8Char **nameStrs;
-	while (i-- > 0)
+	NN<NameArray> nnnameArr;
+	if (nameArr.SetTo(nnnameArr))
 	{
-		nameStrs = names->GetItem(i);
-		j = colCnt;
-		while (j-- > 0)
+		NN<Data::FastMap<Int32, const UTF8Char **>> names = NN<Data::FastMap<Int32, const UTF8Char **>>::ConvertFrom(nnnameArr);
+		UOSInt i = names->GetCount();
+		UOSInt colCnt = this->colNames.GetCount();
+		UOSInt j;
+		const UTF8Char **nameStrs;
+		while (i-- > 0)
 		{
-			if (nameStrs[j])
-				Text::StrDelNew(nameStrs[j]);
+			nameStrs = names->GetItem(i);
+			j = colCnt;
+			while (j-- > 0)
+			{
+				if (nameStrs[j])
+					Text::StrDelNew(nameStrs[j]);
+			}
+			MemFree(nameStrs);
 		}
-		MemFree(nameStrs);
+		names.Delete();
 	}
-	DEL_CLASS(names);
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::ESRI::ESRIMDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
-	if (names == 0)
+	NN<Data::FastMap<Int32, const UTF8Char **>> names;
+	if (!Optional<Data::FastMap<Int32, const UTF8Char **>>::ConvertFrom(nameArr).SetTo(names))
 		return false;
 	const UTF8Char **nameStrs = names->Get((Int32)id);
 	if (nameStrs == 0)
@@ -507,7 +511,7 @@ UOSInt Map::ESRI::ESRIMDBReader::GetBinarySize(UOSInt colIndex)
 	return this->r->GetBinarySize((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UOSInt Map::ESRI::ESRIMDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Map::ESRI::ESRIMDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }

@@ -145,14 +145,14 @@ public:
 		return cell->cellValue->leng;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		if (cell == 0 || cell->cellValue == 0)
 		{
 			return 0;
 		}
-		MemCopyNO(buff, cell->cellValue->v.Ptr(), cell->cellValue->leng);
+		MemCopyNO(buff.Ptr(), cell->cellValue->v.Ptr(), cell->cellValue->leng);
 		return cell->cellValue->leng;
 	}
 

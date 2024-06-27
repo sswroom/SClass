@@ -124,7 +124,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		else
 		{
 			Data::ArrayListInt64 arr;
-			Map::NameArray *nameArr;
+			Optional<Map::NameArray> nameArr;
 			me->txtLayer->SetText(lyr->GetName()->ToCString());
 			csysLyr = lyr->GetCoordinateSystem();
 			if (!csysEnv->Equals(csysLyr))
@@ -137,7 +137,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 			}
 			Text::StringBuilderUTF8 sb;
 			sess = lyr->BeginGetObject();
-			lyr->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
+			lyr->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(mapLyrPos, mapLyrPos), true);
 			i = 0;
 			j = lyr->GetColumnCnt();
 			while (i < j)

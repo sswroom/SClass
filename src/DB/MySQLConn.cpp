@@ -664,13 +664,13 @@ UOSInt DB::MySQLReader::GetBinarySize(UOSInt colIndex)
 	return this->lengs[colIndex];
 }
 
-UOSInt DB::MySQLReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::MySQLReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	if (this->row == 0)
 		return 0;
 	if (colIndex >= this->colCount)
 		return 0;
-	MemCopyNO(buff, ((MYSQL_ROW)this->row)[colIndex], this->lengs[colIndex]);
+	MemCopyNO(buff.Ptr(), ((MYSQL_ROW)this->row)[colIndex], this->lengs[colIndex]);
 	return this->lengs[colIndex];
 }
 

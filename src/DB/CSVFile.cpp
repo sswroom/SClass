@@ -781,7 +781,7 @@ UOSInt DB::CSVReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::CSVReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

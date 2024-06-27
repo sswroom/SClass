@@ -3,9 +3,9 @@
 #include "Map/GeoPackageLayer.h"
 #include "Math/CoordinateSystemManager.h"
 
-Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
+NN<Map::GeoPackageLayer::StringSession> Map::GeoPackageLayer::StringSessCreate()
 {
-	StringSession *sess = MemAlloc(StringSession, 1);
+	NN<StringSession> sess = MemAllocNN(StringSession);
 	NN<DB::DBReader> r;
 	sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 	if (sess->r.SetTo(r) && r->ReadNext())
@@ -19,7 +19,7 @@ Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
 	return sess;
 }
 
-Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
+Bool Map::GeoPackageLayer::StringSessGoRow(NN<StringSession> sess, UOSInt index)
 {
 	NN<DB::DBReader> r;
 	if (sess->thisId == index)
@@ -119,9 +119,9 @@ void Map::GeoPackageLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
+	if (nameArr.IsNotNull()) nameArr.SetNoCheck(NN<NameArray>::ConvertFrom(this->StringSessCreate()));
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
@@ -163,14 +163,14 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Na
 	}
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GeoPackageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
+	if (nameArr.IsNotNull()) nameArr.SetNoCheck(NN<NameArray>::ConvertFrom(this->StringSessCreate()));
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
@@ -219,22 +219,22 @@ Int64 Map::GeoPackageLayer::GetObjectIdMax() const
 	return (Int64)(this->vecList.GetCount() - 1);
 }
 
-void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::GeoPackageLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	StringSession *sess = (StringSession*)nameArr;
-	if (sess)
+	NN<StringSession> sess;
+	if (Optional<StringSession>::ConvertFrom(nameArr).SetTo(sess))
 	{
 		NN<DB::DBReader> r;
 		if (sess->r.SetTo(r)) this->gpkg->CloseReader(r);
-		MemFree(sess);
+		MemFreeNN(sess);
 	}
 }
 
-Bool Map::GeoPackageLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GeoPackageLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	StringSession *sess = (StringSession*)nameArr;
+	NN<StringSession> sess;
 	NN<DB::DBReader> r;
-	if (sess && sess->r.SetTo(r))
+	if (Optional<StringSession>::ConvertFrom(nameArr).SetTo(sess) && sess->r.SetTo(r))
 	{
 		if (!StringSessGoRow(sess, (UOSInt)id))
 			return false;

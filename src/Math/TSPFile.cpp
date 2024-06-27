@@ -461,7 +461,7 @@ UOSInt Math::TSPReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Math::TSPReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Math::TSPReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }
@@ -715,7 +715,7 @@ UOSInt Math::TSPHReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

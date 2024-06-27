@@ -906,13 +906,13 @@ Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 	NN<CenterlineInfo> lineInfo;
 	Bool isFirst = false;
 	Math::RectAreaDbl minMax;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	if (this->minX == 0 && this->minY == 0)
 	{
 		isFirst = true;
 	}
 	NN<Map::GetObjectSess> sess = roadLayer->BeginGetObject();
-	roadLayer->GetAllObjectIds(idArr, &nameArr);
+	roadLayer->GetAllObjectIds(idArr, nameArr);
 	colCnt = roadLayer->GetColumnCnt();
 	i = 0;
 	while (i < colCnt)
@@ -1123,7 +1123,7 @@ Map::DrawLayerType Map::HKTrafficLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -1145,12 +1145,12 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Nam
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	NN<RoadInfo> road;
@@ -1179,11 +1179,11 @@ Int64 Map::HKTrafficLayer::GetObjectIdMax() const
 	return this->roadMap.GetKey(this->roadMap.GetCount() - 1);
 }
 
-void Map::HKTrafficLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::HKTrafficLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::HKTrafficLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKTrafficLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	return false;
 }

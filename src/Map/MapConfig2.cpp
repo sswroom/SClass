@@ -2378,7 +2378,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 
 void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty)
 {
-	Map::NameArray *arr;
+	Optional<Map::NameArray> arr;
 	UOSInt i;
 	NN<Math::Geometry::Vector2D> vec;
 	Double scaleW;
@@ -2403,7 +2403,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	Data::ArrayListInt64 arri;
 	Text::StringBuilderUTF8 sb;
 	Math::RectAreaDbl rect = view->GetVerticalRect();
-	lyrs->lyr->GetObjectIdsMapXY(arri, &arr, rect, false);
+	lyrs->lyr->GetObjectIdsMapXY(arri, arr, rect, false);
 	session = lyrs->lyr->BeginGetObject();
 	i = arri.GetCount();
 	while (i-- > 0)

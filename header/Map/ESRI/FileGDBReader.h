@@ -49,7 +49,7 @@ namespace Map
 			virtual Double GetDbl(UOSInt colIndex);
 			virtual Bool GetBool(UOSInt colIndex);
 			virtual UOSInt GetBinarySize(UOSInt colIndex);
-			virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
+			virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
 			virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
 			virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 			virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);

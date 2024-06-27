@@ -188,11 +188,11 @@ Map::DrawLayerType Map::FileGDBLayer::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
-		*nameArr = (NameArray*)ReadNameArr().OrNull();
+		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
 	UOSInt i = 0;
 	UOSInt j = this->objects.GetCount();
@@ -204,16 +204,16 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameA
 	return j;
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
-		*nameArr = (NameArray*)ReadNameArr().OrNull();
+		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
 	UOSInt cnt = 0;
 	Math::Geometry::Vector2D *vec;
@@ -239,34 +239,37 @@ Int64 Map::FileGDBLayer::GetObjectIdMax() const
 	return this->objects.GetKey(this->objects.GetCount() - 1);
 }
 
-void Map::FileGDBLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *names = (Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *)nameArr;
-	UOSInt i = names->GetCount();
-	UOSInt colCnt = this->colNames.GetCount();
-	UOSInt j;
-	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
-	UnsafeArray<const UTF8Char> nameStr;
-	while (i-- > 0)
+	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
+	if (Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 	{
-		if (names->GetItem(i).SetTo(nameStrs))
+		UOSInt i = names->GetCount();
+		UOSInt colCnt = this->colNames.GetCount();
+		UOSInt j;
+		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
+		UnsafeArray<const UTF8Char> nameStr;
+		while (i-- > 0)
 		{
-			j = colCnt;
-			while (j-- > 0)
+			if (names->GetItem(i).SetTo(nameStrs))
 			{
-				if (nameStrs[j].SetTo(nameStr))
-					Text::StrDelNew(nameStr);
+				j = colCnt;
+				while (j-- > 0)
+				{
+					if (nameStrs[j].SetTo(nameStr))
+						Text::StrDelNew(nameStr);
+				}
+				MemFreeArr(nameStrs);
 			}
-			MemFreeArr(nameStrs);
 		}
+		names.Delete();
 	}
-	DEL_CLASS(names);
 }
 
-Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *names = (Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *)nameArr;
-	if (names == 0)
+	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
+	if (!Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 		return false;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
 	if (!names->Get((Int32)id).SetTo(nameStrs))
@@ -480,7 +483,7 @@ UOSInt Map::FileGDBLReader::GetBinarySize(UOSInt colIndex)
 	return this->r->GetBinarySize((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UOSInt Map::FileGDBLReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Map::FileGDBLReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return this->r->GetBinary((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }

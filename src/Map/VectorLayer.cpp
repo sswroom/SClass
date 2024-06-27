@@ -468,7 +468,7 @@ void Map::VectorLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::VectorLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::VectorLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->vectorList.GetCount();
@@ -498,12 +498,12 @@ UOSInt Map::VectorLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameAr
 	}
 }
 
-UOSInt Map::VectorLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::VectorLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
@@ -554,11 +554,11 @@ Int64 Map::VectorLayer::GetObjectIdMax() const
 	return (Int64)this->vectorList.GetCount() - 1;
 }
 
-void Map::VectorLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::VectorLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::VectorLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::VectorLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	if (id < 0 || (UInt64)id >= this->strList.GetCount())
 	{

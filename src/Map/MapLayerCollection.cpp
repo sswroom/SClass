@@ -168,7 +168,7 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::MapLayerCollection::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::MapLayerCollection::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	NN<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -198,7 +198,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(NN<Data::ArrayListInt64> outArr,
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	NN<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -227,7 +227,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(NN<Data::ArrayListInt64> outArr, Na
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	NN<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
@@ -272,11 +272,11 @@ Int64 Map::MapLayerCollection::GetObjectIdMax() const
 	return currId - 1;
 }
 
-void Map::MapLayerCollection::ReleaseNameArr(NameArray *nameArr)
+void Map::MapLayerCollection::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::MapLayerCollection::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::MapLayerCollection::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	Int64 currId = 0;
 	Int64 maxId;

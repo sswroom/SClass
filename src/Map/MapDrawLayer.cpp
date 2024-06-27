@@ -284,12 +284,12 @@ Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 		return retVal;
 
 	NN<Map::GetObjectSess> sess = BeginGetObject();
-	Map::NameArray *names;
+	Optional<Map::NameArray> names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	UOSInt i;
 	Int64 thisId;
-	GetObjectIdsMapXY(arr, &names, Math::RectAreaDbl(coord, coord), false);
+	GetObjectIdsMapXY(arr, names, Math::RectAreaDbl(coord, coord), false);
 	lastId = -1;
 	i = arr.GetCount();
 	while (i-- > 0)
@@ -333,7 +333,7 @@ Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 
 	NN<Map::GetObjectSess> sess = BeginGetObject();
 	Text::StringBuilderUTF8 tmpSb;
-	Map::NameArray *names;
+	Optional<Map::NameArray> names;
 	Data::ArrayListInt64 arr;
 	Int64 lastId;
 	Int64 thisId;
@@ -346,7 +346,7 @@ Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 
 	Int32 xBlk = Double2Int32(coord.x * 200000.0 / blkSize);
 	Int32 yBlk = Double2Int32(coord.y * 200000.0 / blkSize);
-	GetObjectIds(arr, &names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
+	GetObjectIds(arr, names, 200000.0, Math::RectArea<Int32>((xBlk - 1) * blkSize, (yBlk - 1) * blkSize, 3 * blkSize - 1, 3 * blkSize - 1), false);
 	lastId = -1;
 	i = arr.GetCount();
 	while (i-- > 0)
@@ -561,7 +561,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	Data::ArrayListInt64 objIds;
 	Optional<Math::Geometry::Vector2D> vec;
 	NN<Math::Geometry::Vector2D> nnvec;
-	NameArray *nameArr;
+	Optional<NameArray> nameArr;
 	NN<GetObjectSess> sess;
 	UOSInt i;
 	UOSInt j;
@@ -590,7 +590,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
-	this->GetAllObjectIds(objIds, &nameArr);
+	this->GetAllObjectIds(objIds, nameArr);
 	i = 0;
 	j = objIds.GetCount();
 	while (i < j)
@@ -642,18 +642,18 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	return lyr;
 }
 
-Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex)
+Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UOSInt strIndex)
 {
 	if (strIndex >= this->GetColumnCnt())
 		return 0;
 
 	Text::SearchIndexer *searching;
 	Data::ArrayListInt64 objIds;
-	NameArray *nameArr;
+	Optional<NameArray> nameArr;
 	UOSInt i;
 
 	NEW_CLASS(searching, Text::SearchIndexer(ta));
-	this->GetAllObjectIds(objIds, &nameArr);
+	this->GetAllObjectIds(objIds, nameArr);
 	Text::StringBuilderUTF8 sb;
 	i = objIds.GetCount();
 	while (i-- > 0)
@@ -668,7 +668,7 @@ Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(Text::TextA
 	return searching;
 }
 
-UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Text::PString s;
 
@@ -712,7 +712,7 @@ void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 	LIST_FREE_STRING(strArr);
 }
 
-Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Map::NameArray *nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex)
+Optional<Math::Geometry::Vector2D> Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<Map::NameArray> nameArr, NN<Map::GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex)
 {
 	Optional<Math::Geometry::Vector2D> vec = 0;
 	NN<Math::Geometry::Vector2D> nnvec;
@@ -875,7 +875,7 @@ Map::MapLayerReader::MapLayerReader(NN<Map::MapDrawLayer> layer) : DB::DBReader(
 {
 	this->layer = layer;
 
-	this->layer->GetAllObjectIds(this->objIds, &this->nameArr);
+	this->layer->GetAllObjectIds(this->objIds, this->nameArr);
 	this->currIndex = -1;
 }
 
@@ -1040,7 +1040,7 @@ UOSInt Map::MapLayerReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Map::MapLayerReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Map::MapLayerReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

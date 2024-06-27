@@ -4,7 +4,7 @@
 #include "Data/ICaseBTreeUTF8Map.h"
 #include "Text/SearchIndexer.h"
 
-Text::SearchIndexer::SearchIndexer(Text::TextAnalyzer* ta)
+Text::SearchIndexer::SearchIndexer(NN<Text::TextAnalyzer> ta)
 {
 	this->ta = ta;
 }

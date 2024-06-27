@@ -13,7 +13,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 	NN<Map::GetObjectSess> sess = routeLyr->BeginGetObject();
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	Data::ArrayListInt64 idArr;
 	UOSInt colCnt;
 	UOSInt i;
@@ -22,7 +22,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBT
 	NN<RouteInfo> route;
 	NN<Math::Geometry::Vector2D> vec;
 
-	routeLyr->GetAllObjectIds(idArr, &nameArr);
+	routeLyr->GetAllObjectIds(idArr, nameArr);
 	colCnt = routeLyr->GetColumnCnt();
 	i = 0;
 	while (i < colCnt)

@@ -812,13 +812,13 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClient
 	this->txtBottom->SetReadOnly(true);
 
 	Data::ArrayListInt64 objIds;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt cnt = lyr->GetColumnCnt();
 	UOSInt i;
 	UOSInt j;
-	lyr->GetAllObjectIds(objIds, &nameArr);
+	lyr->GetAllObjectIds(objIds, nameArr);
 	if (cnt > 0)
 	{
 		i = 0;

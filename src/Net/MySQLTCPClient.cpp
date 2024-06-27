@@ -286,7 +286,7 @@ namespace Net
 			return 0;
 		}
 
-		virtual UOSInt GetBinary(UOSInt UOSInt, UInt8 *buff)
+		virtual UOSInt GetBinary(UOSInt UOSInt, UnsafeArray<UInt8> buff)
 		{
 			/////////////////////////////
 			return 0;
@@ -805,7 +805,7 @@ namespace Net
 			return this->currRow->cols[colIndex].len;
 		}
 
-		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 		{
 			if (this->currRow == 0)
 			{
@@ -816,7 +816,7 @@ namespace Net
 				return 0;
 			}
 			UOSInt len = this->currRow->cols[colIndex].len;
-			MemCopyNO(buff, &this->currRow->rowBuff[this->currRow->cols[colIndex].ofst], len);
+			MemCopyNO(buff.Ptr(), &this->currRow->rowBuff[this->currRow->cols[colIndex].ofst], len);
 			return len;
 		}
 

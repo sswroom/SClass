@@ -786,6 +786,7 @@ RevGeoCfg.o: ../../src/Map/RevGeoCfg.cpp
 RevGeoDir.o: ../../src/Map/RevGeoDir.cpp
 ReverseGeocoderServer.o: ../../src/Map/ReverseGeocoderServer.cpp
 ScaledMapView.o: ../../src/Map/ScaledMapView.cpp
+ShortestPath3D.o: ../../src/Map/ShortestPath3D.cpp
 SHPData.o: ../../src/Map/SHPData.cpp
 SHPUtil.o: ../../src/Map/SHPUtil.cpp
 SPDLayer.o: ../../src/Map/SPDLayer.cpp

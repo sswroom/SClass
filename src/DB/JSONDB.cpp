@@ -194,7 +194,7 @@ public:
 		return 0;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
 		return 0;
 	}

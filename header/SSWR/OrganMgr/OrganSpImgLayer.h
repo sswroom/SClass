@@ -19,12 +19,12 @@ namespace SSWR
 			virtual ~OrganSpImgLayer();
 
 			virtual Map::DrawLayerType GetLayerType() const;
-			virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr);
-			virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-			virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+			virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr);
+			virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+			virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 			virtual Int64 GetObjectIdMax() const;
-			virtual void ReleaseNameArr(Map::NameArray *nameArr);
-			virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex);
+			virtual void ReleaseNameArr(Optional<Map::NameArray> nameArr);
+			virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UOSInt strIndex);
 			virtual UOSInt GetColumnCnt() const;
 			virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);

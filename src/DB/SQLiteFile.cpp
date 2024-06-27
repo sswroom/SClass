@@ -153,7 +153,7 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 		{
 			this->lastDataError = DE_NO_ERROR;
 			NN<DB::SQLiteReader> r;
-			NEW_CLASSNN(r, DB::SQLiteReader(this, stmt));
+			NEW_CLASSNN(r, DB::SQLiteReader(*this, stmt));
 			return r;
 		}
 		else
@@ -406,7 +406,7 @@ Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NN<I
 	return db;
 }
 
-DB::SQLiteReader::SQLiteReader(DB::SQLiteFile *conn, void *hStmt)
+DB::SQLiteReader::SQLiteReader(NN<DB::SQLiteFile> conn, void *hStmt)
 {
 	UOSInt i;
 	this->conn = conn;
@@ -414,7 +414,7 @@ DB::SQLiteReader::SQLiteReader(DB::SQLiteFile *conn, void *hStmt)
 	this->isFirst = true;
 	this->firstResult = (sqlite3_step((sqlite3_stmt*)this->hStmt) == SQLITE_ROW);
 	this->colCnt = ColCount();
-	this->colTypes = MemAlloc(DB::DBUtil::ColType, this->colCnt);
+	this->colTypes = MemAllocArr(DB::DBUtil::ColType, this->colCnt);
 	i = this->colCnt;
 	while (i-- > 0)
 	{
@@ -426,7 +426,7 @@ DB::SQLiteReader::SQLiteReader(DB::SQLiteFile *conn, void *hStmt)
 DB::SQLiteReader::~SQLiteReader()
 {
 	sqlite3_finalize((sqlite3_stmt*)this->hStmt);
-	MemFree(this->colTypes);
+	MemFreeArr(this->colTypes);
 }
 
 Bool DB::SQLiteReader::ReadNext()
@@ -605,7 +605,7 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteReader::GetVector(UOSInt colIndex)
 	}
 }
 
-UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	UOSInt leng = GetBinarySize(colIndex);
 	if (leng > 0)
@@ -613,7 +613,7 @@ UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 		const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt, (int)colIndex);
 		if (data)
 		{
-			MemCopyNO(buff, data, leng);
+			MemCopyNO(buff.Ptr(), data, leng);
 			return leng;
 		}
 		else

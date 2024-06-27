@@ -94,8 +94,8 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientContro
 	this->lbResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 
-	Map::NameArray *nameArr;
-	this->layer->GetAllObjectIds(this->objIds, &nameArr);
+	Optional<Map::NameArray> nameArr;
+	this->layer->GetAllObjectIds(this->objIds, nameArr);
 	this->nameArr = nameArr;
 	this->UpdateResults();
 }

@@ -154,7 +154,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		Double v;
 		Math::Coord2DDbl *points;
 		Int32 currInd = 1;
-		Map::NameArray *nameArr;
+		Optional<Map::NameArray> nameArr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -165,7 +165,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		Data::ArrayListInt64 objIds;
 		NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 		layer->GetBounds(minMax);
-		layer->GetObjectIdsMapXY(objIds, &nameArr, minMax, true);
+		layer->GetObjectIdsMapXY(objIds, nameArr, minMax, true);
 		i = 0;
 		j = objIds.GetCount();
 		while (i < j)

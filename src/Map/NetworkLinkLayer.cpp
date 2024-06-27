@@ -337,7 +337,7 @@ Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType() const
 	return this->innerLayerType;
 }
 
-UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -373,7 +373,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, N
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -421,7 +421,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, Name
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -487,14 +487,14 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax() const
 	}
 	return currId - 1;
 }
-void Map::NetworkLinkLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::NetworkLinkLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 /*	Map::MapDrawLayer *lyr = this->innerLayer;
 	if (lyr)
 		lyr->ReleaseNameArr(nameArr);*/
 }
 
-Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	UOSInt i;
 	UOSInt j;

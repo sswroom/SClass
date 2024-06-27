@@ -101,12 +101,12 @@ namespace Map
 
 		virtual DrawLayerType GetLayerType() const = 0;
 		virtual void SetMixedData(MixedData MixedData);
-		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr) = 0;
-		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
-		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr) = 0;
+		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty) = 0;
+		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty) = 0;
 		virtual Int64 GetObjectIdMax() const = 0;
-		virtual void ReleaseNameArr(NameArray *nameArr) = 0;
-		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex) = 0;
+		virtual void ReleaseNameArr(Optional<NameArray> nameArr) = 0;
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex) = 0;
 		virtual UOSInt GetColumnCnt() const = 0;
 		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex) = 0;
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
@@ -152,10 +152,10 @@ namespace Map
 		void FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList);
 		NN<Map::VectorLayer> CreateEditableLayer();
 
-		Optional<Text::SearchIndexer> CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
-		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		Optional<Text::SearchIndexer> CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UOSInt strIndex);
+		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(NN<Data::ArrayListString> strArr);
-		Optional<Math::Geometry::Vector2D> GetVectorByStr(NN<Text::SearchIndexer> srchInd, NameArray *nameArr, NN<GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex);
+		Optional<Math::Geometry::Vector2D> GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, NN<GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();
@@ -180,7 +180,7 @@ namespace Map
 	protected:
 		NN<MapDrawLayer> layer;
 		Data::ArrayListInt64 objIds; 
-		NameArray *nameArr;
+		Optional<NameArray> nameArr;
 		OSInt currIndex;
 
 		Int64 GetCurrObjId();
@@ -202,7 +202,7 @@ namespace Map
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
-		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
+		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 

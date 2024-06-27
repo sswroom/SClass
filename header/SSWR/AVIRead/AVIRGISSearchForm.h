@@ -26,7 +26,7 @@ namespace SSWR
 			NN<Text::SearchIndexer> searching;
 			Data::ArrayListString dispList;
 			Data::ArrayListInt64 objIds;
-			Map::NameArray *nameArr;
+			Optional<Map::NameArray> nameArr;
 			UOSInt strIndex;
 			Int32 flags;
 

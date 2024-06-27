@@ -316,12 +316,11 @@ Map::DrawLayerType Map::TileMapLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::TileMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::TileMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-	if (nameArr)
-		*nameArr = 0;
+	nameArr.Set(0);
 	Data::ArrayList<Math::Coord2D<Int32>> idArr;
 	retCnt = this->tileMap->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), &idArr);
 	UOSInt i = 0;
@@ -339,12 +338,11 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameA
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-	if (nameArr)
-		*nameArr = 0;
+	nameArr.Set(0);
 	Data::ArrayList<Math::Coord2D<Int32>> idArr;
 	retCnt = this->tileMap->GetTileImageIDs(level, rect.ToDouble() / mapRate, &idArr);
 	UOSInt i = 0;
@@ -363,12 +361,11 @@ UOSInt Map::TileMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArra
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
-	if (nameArr)
-		*nameArr = 0;
+	nameArr.Set(0);
 	Data::ArrayList<Math::Coord2D<Int32>> idArr;
 	retCnt = this->tileMap->GetTileImageIDs(level, rect, &idArr);
 	UOSInt i = 0;
@@ -392,11 +389,11 @@ Int64 Map::TileMapLayer::GetObjectIdMax() const
 	return 0;
 }
 
-void Map::TileMapLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::TileMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::TileMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::TileMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{

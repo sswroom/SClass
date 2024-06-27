@@ -208,7 +208,7 @@ public:
 		return 0;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -216,7 +216,7 @@ public:
 		if (arr)
 		{
 			UOSInt ret = arr->GetCount();
-			MemCopyNO(buff, arr->GetArray(), ret);
+			MemCopyNO(buff.Ptr(), arr->GetArray(), ret);
 			DEL_CLASS(arr);
 			return ret;
 		}

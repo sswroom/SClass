@@ -282,7 +282,7 @@ namespace DB
 			return row[colIndex]->leng;
 		}
 
-		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
@@ -290,7 +290,7 @@ namespace DB
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
 			UOSInt cnt = row[colIndex]->leng;
-			MemCopyNO(buff, row[colIndex]->v.Ptr(), cnt);
+			MemCopyNO(buff.Ptr(), row[colIndex]->v.Ptr(), cnt);
 			return cnt;
 		}
 

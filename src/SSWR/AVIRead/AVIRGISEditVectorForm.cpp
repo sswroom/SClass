@@ -61,13 +61,13 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	UOSInt nameCol = lyr->GetNameCol();
 	Int64 objId;
 	Data::ArrayListInt64 objIds;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt cnt = lyr->GetColumnCnt();
 	UOSInt i;
 	UOSInt j;
-	lyr->GetAllObjectIds(objIds, &nameArr);
+	lyr->GetAllObjectIds(objIds, nameArr);
 	if (cnt > nameCol)
 	{
 		i = 0;

@@ -19,7 +19,7 @@ Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->userFileList->GetCount();
@@ -31,12 +31,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt6
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<Map::NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -62,11 +62,11 @@ Int64 SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdMax() const
 	return (Int64)userFileList->GetCount() - 1;
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Map::NameArray *nameArr)
+void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Optional<Map::NameArray> nameArr)
 {
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NN<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<Map::NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	return false;
 }

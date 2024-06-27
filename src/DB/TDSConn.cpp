@@ -537,7 +537,7 @@ public:
 		return (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
 		if (colIndex >= this->nCols)
 			return 0;
@@ -549,7 +549,7 @@ public:
 			return 0;
 		UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 		UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
-		MemCopyNO(buff, buffPtr, dataSize);
+		MemCopyNO(buff.Ptr(), buffPtr, dataSize);
 		return dataSize;
 	}
 

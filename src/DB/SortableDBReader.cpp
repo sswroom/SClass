@@ -425,13 +425,13 @@ UOSInt DB::SortableDBReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt DB::SortableDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::SortableDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::ByteArr)
 	{
 		Data::ReadonlyArray<UInt8> *arr = item->GetItemValue().byteArr;
-		MemCopyNO(buff, arr->GetArray(), arr->GetCount());
+		MemCopyNO(buff.Ptr(), arr->GetArray(), arr->GetCount());
 		return arr->GetCount();
 	}
 	return 0;

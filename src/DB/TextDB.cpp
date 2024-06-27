@@ -10,11 +10,11 @@
 class TextDBReader : public DB::DBReader
 {
 private:
-	DB::TextDB::DBData *data;
+	NN<DB::TextDB::DBData> data;
 	UOSInt index;
 	Text::String **row;
 public:
-	TextDBReader(DB::TextDB::DBData *data)
+	TextDBReader(NN<DB::TextDB::DBData> data)
 	{
 		this->row = 0;
 		this->index = 0;
@@ -163,7 +163,7 @@ public:
 		return this->row[colIndex]->leng;
 	}
 
-	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
 		if (this->row == 0)
 			return 0;
@@ -172,7 +172,7 @@ public:
 		if (this->row[colIndex] == 0)
 			return 0;
 		UOSInt len = this->row[colIndex]->leng;
-		MemCopyNO(buff, this->row[colIndex]->v.Ptr(), len);
+		MemCopyNO(buff.Ptr(), this->row[colIndex]->v.Ptr(), len);
 		return len;
 	}
 
@@ -296,9 +296,8 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 
 Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	DBData *data;
-	data = this->dbMap.Get(tableName);
-	if (data == 0)
+	NN<DBData> data;
+	if (!data.Set(this->dbMap.Get(tableName)))
 	{
 		return 0;
 	}

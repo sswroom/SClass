@@ -2246,7 +2246,7 @@ UOSInt DB::ODBCReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
@@ -2281,7 +2281,7 @@ UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 	case DB::DBUtil::CT_Binary:
-		MemCopyNO(buff, this->colDatas[colIndex].colData, (UOSInt)this->colDatas[colIndex].dataVal);
+		MemCopyNO(buff.Ptr(), this->colDatas[colIndex].colData, (UOSInt)this->colDatas[colIndex].dataVal);
 		return (UOSInt)(UInt64)this->colDatas[colIndex].dataVal;
 	case DB::DBUtil::CT_Unknown:
 	default:

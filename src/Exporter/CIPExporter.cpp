@@ -103,7 +103,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<CIPStrRecord> strRec;
 	NN<CIPBlock> theBlk;
 	NN<Map::GetObjectSess> sess;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	UOSInt stmPos = 8;
 	UOSInt i;
 	UOSInt j;
@@ -118,7 +118,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Int32 top;
 	Int32 right;
 	Int32 bottom;
-	layer->GetAllObjectIds(objIds, &nameArr);
+	layer->GetAllObjectIds(objIds, nameArr);
 	sess = layer->BeginGetObject();
 
 	WriteUInt32(&buff[0], (UInt32)objIds.GetCount());

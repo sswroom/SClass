@@ -1832,7 +1832,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 
 void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> layer, UOSInt fontStyle, UOSInt labelCol, Int32 priority, Int32 flags, UOSInt imgWidth, UOSInt imgHeight, Map::MapEnv::FontType fontType)
 {
-	Map::NameArray *arr;
+	Optional<Map::NameArray> arr;
 	Data::ArrayListInt64 arri;
 	UOSInt i;
 	NN<Math::Geometry::Vector2D> vec;
@@ -1858,7 +1858,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 	}
 
 	Math::CoordinateSystemConverter converter(lyrCSys, envCSys);
-	layer->GetObjectIdsMapXY(arri, &arr, Math::RectAreaDbl(tl, br), false);
+	layer->GetObjectIdsMapXY(arri, arr, Math::RectAreaDbl(tl, br), false);
 	session = layer->BeginGetObject();
 	i = arri.GetCount();
 	while (i-- > 0)

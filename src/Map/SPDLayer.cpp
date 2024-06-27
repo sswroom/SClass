@@ -167,7 +167,7 @@ Map::DrawLayerType Map::SPDLayer::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -176,11 +176,11 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray
 
 	k = 0;
 	l = 0;
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
-		Data::ArrayList<WChar *> *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayList<WChar *>());
-		*nameArr = (NameArray*)tmpArr;
+		Data::ArrayList<UTF16Char *> *tmpArr;
+		NEW_CLASS(tmpArr, Data::ArrayList<UTF16Char *>());
+		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream *cis;
@@ -190,7 +190,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray
 		
 		while (k < this->nblks)
 		{
-			WChar *strTmp;
+			UTF16Char *strTmp;
 			UInt8 buff[13];
 			cis->SeekFromBeginning(this->blks[k].sofst);
 			i = this->blks[k].objCnt;
@@ -199,19 +199,19 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray
 				cis->Read(Data::ByteArray(buff, 13));
 				if (buff[4])
 				{
-					strTmp = MemAlloc(WChar, (UOSInt)(buff[12] >> 1) + 1);
+					strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[12] >> 1) + 1);
 					cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
 					strTmp[buff[12] >> 1] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
 					cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
-					textSize = Text::StrWChar_UTF8Cnt(strTmp) - 1;
+					textSize = Text::StrUTF16_UTF8Cnt(strTmp) - 1;
 					if (textSize > this->maxTextSize)
 						maxTextSize = textSize;
 				}
 				else
 				{
-					strTmp = MemAlloc(WChar, 1);
+					strTmp = MemAlloc(UTF16Char, 1);
 					strTmp[0] = 0;
 					outArr->Add(*(Int32*)buff);
 					tmpArr->Add(strTmp);
@@ -234,7 +234,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
@@ -296,11 +296,11 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **
 
 	k = j;
 	l = 0;
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
-		Data::ArrayList<WChar *> *tmpArr;
-		NEW_CLASS(tmpArr, Data::ArrayList<WChar *>());
-		*nameArr = (NameArray*)tmpArr;
+		Data::ArrayList<UTF16Char *> *tmpArr;
+		NEW_CLASS(tmpArr, Data::ArrayList<UTF16Char *>());
+		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream *cis;
@@ -316,7 +316,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **
 
 			if ((this->blks[k].blk.y >= topBlk) && (this->blks[k].blk.y <= bottomBlk) && (this->blks[k].blk.x >= leftBlk))
 			{
-				WChar *strTmp;
+				UTF16Char *strTmp;
 				UInt8 buff[13];
 				cis->SeekFromBeginning(this->blks[k].sofst);
 				i = (Int32)this->blks[k].objCnt;
@@ -325,13 +325,13 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **
 					cis->Read(Data::ByteArray(buff, 13));
 					if (buff[4])
 					{
-						strTmp = MemAlloc(WChar, (UOSInt)(buff[12] >> 1) + 1);
+						strTmp = MemAlloc(UTF16Char, (UOSInt)(buff[12] >> 1) + 1);
 						cis->Read(Data::ByteArray((UInt8*)strTmp, buff[12]));
 						strTmp[buff[12] >> 1] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
 						cis->SeekFromCurrent(ReadInt32(&buff[4]) - 13 - buff[12]);
-						textSize = Text::StrWChar_UTF8Cnt(strTmp);
+						textSize = Text::StrUTF16_UTF8Cnt(strTmp);
 						if (textSize > this->maxTextSize)
 						{
 							this->maxTextSize = textSize;
@@ -339,7 +339,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **
 					}
 					else if (keepEmpty)
 					{
-						strTmp = MemAlloc(WChar, 1);
+						strTmp = MemAlloc(UTF16Char, 1);
 						strTmp[0] = 0;
 						outArr->Add(*(Int32*)buff);
 						tmpArr->Add(strTmp);
@@ -370,7 +370,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
@@ -382,28 +382,31 @@ Int64 Map::SPDLayer::GetObjectIdMax() const
 	return this->maxId;
 }
 
-void Map::SPDLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::SPDLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	Data::ArrayList<WChar *>*tmpArr = (Data::ArrayList<WChar*>*)nameArr;
-	UOSInt i = tmpArr->GetCount();
-	while (i-- > 0)
+	NN<Data::ArrayList<UTF16Char *>> tmpArr;
+	if (Optional<Data::ArrayList<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr))
 	{
-		MemFree(tmpArr->RemoveAt(i));
+		UOSInt i = tmpArr->GetCount();
+		while (i-- > 0)
+		{
+			MemFree(tmpArr->RemoveAt(i));
+		}
+		tmpArr.Delete();
 	}
-	DEL_CLASS(tmpArr);
 }
 
-Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::ArrayList<WChar*> *tmpArr = (Data::ArrayList<WChar*>*)nameArr;
-	if (strIndex != 0)
+	NN<Data::ArrayList<UTF16Char*>> tmpArr;
+	if (!Optional<Data::ArrayList<UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpArr) || strIndex != 0)
 	{
 		return false;
 	}
-	WChar *s = tmpArr->GetItem((UOSInt)id);
+	UTF16Char *s = tmpArr->GetItem((UOSInt)id);
 	if (s)
 	{
-		sb->AppendW(s);
+		sb->AppendUTF16(s);
 		return true;
 	}
 	else

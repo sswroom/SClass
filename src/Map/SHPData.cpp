@@ -395,7 +395,7 @@ Map::DrawLayerType Map::SHPData::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -427,12 +427,12 @@ UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray 
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
@@ -495,11 +495,11 @@ Int64 Map::SHPData::GetObjectIdMax() const
 	}
 }
 
-void Map::SHPData::ReleaseNameArr(NameArray *nameArr)
+void Map::SHPData::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id, strIndex);
 	sb->Trim();

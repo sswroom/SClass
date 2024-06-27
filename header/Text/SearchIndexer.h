@@ -11,10 +11,10 @@ namespace Text
 	{
 	private:
 		Data::ICaseBTreeUTF8Map<Data::ArrayListInt64*> strIndex;
-		Text::TextAnalyzer *ta;
+		NN<Text::TextAnalyzer> ta;
 
 	public:
-		SearchIndexer(Text::TextAnalyzer* ta);
+		SearchIndexer(NN<Text::TextAnalyzer> ta);
 		~SearchIndexer();
 
 		void IndexString(UnsafeArray<const UTF8Char> str, Int64 key);

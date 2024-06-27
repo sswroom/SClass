@@ -208,18 +208,18 @@ Map::DrawLayerType Map::CIPLayer2::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
 	UOSInt l = 0;
 	UOSInt k;
 	
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
 		Data::FastMap<Int32, UTF16Char*> *tmpArr;
 		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
-		*nameArr = (NameArray*)tmpArr;
+		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = this->layerName->ConcatTo(fileName);
@@ -303,7 +303,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArra
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
@@ -364,11 +364,11 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray *
 
 	k = j;
 	l = 0;
-	if (nameArr)
+	if (nameArr.IsNotNull())
 	{
 		Data::FastMap<Int32, UTF16Char*> *tmpArr;
 		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
-		*nameArr = (NameArray*)tmpArr;
+		nameArr.SetNoCheck((NameArray*)tmpArr);
 		UTF8Char fileName[256];
 		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream *cis;
@@ -471,7 +471,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray *
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
@@ -483,21 +483,24 @@ Int64 Map::CIPLayer2::GetObjectIdMax() const
 	return this->maxId;
 }
 
-void Map::CIPLayer2::ReleaseNameArr(NameArray *nameArr)
+void Map::CIPLayer2::ReleaseNameArr(Optional<NameArray> nameArr)
 {
-	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
-	UOSInt i = tmpMap->GetCount();
-	while (i-- > 0)
+	NN<Data::FastMap<Int32, UTF16Char*>> tmpMap;
+	if (Optional<Data::FastMap<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap))
 	{
-		MemFree(tmpMap->GetItem(i));
+		UOSInt i = tmpMap->GetCount();
+		while (i-- > 0)
+		{
+			MemFree(tmpMap->GetItem(i));
+		}
+		tmpMap.Delete();
 	}
-	DEL_CLASS(tmpMap);
 }
 
-Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
-	if (strIndex != 0)
+	NN<Data::FastMap<Int32, UTF16Char*>> tmpMap;;
+	if (!Optional<Data::FastMap<Int32, UTF16Char*>>::ConvertFrom(nameArr).SetTo(tmpMap) || strIndex != 0)
 	{
 		return false;
 	}

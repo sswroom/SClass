@@ -1063,7 +1063,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(ind->item).SetTo(layer))
 			{
 				NN<Text::SearchIndexer> searching;
-				if (layer->layer->CreateSearchIndexer(&this->ta, setting.labelCol).SetTo(searching))
+				if (layer->layer->CreateSearchIndexer(this->ta, setting.labelCol).SetTo(searching))
 				{
 					this->SetCtrlForm(NEW_CLASS_D(AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags)), item);
 				}

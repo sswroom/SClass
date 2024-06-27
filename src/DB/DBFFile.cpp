@@ -744,13 +744,13 @@ UOSInt DB::DBFReader::GetBinarySize(UOSInt colIndex)
 	return this->cols[colIndex].colSize;
 }
 
-UOSInt DB::DBFReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::DBFReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	if (!this->recordExist)
 		return 0;
 	if (colIndex >= this->colCnt)
 		return 0;
-	MemCopyNO(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
+	MemCopyNO(buff.Ptr(), &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	return this->cols[colIndex].colSize;
 }
 

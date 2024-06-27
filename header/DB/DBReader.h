@@ -91,7 +91,7 @@ namespace DB
 		virtual Double GetDbl(UOSInt colIndex) = 0;
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
-		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff) = 0;
+		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff) = 0;
 		Optional<Data::ByteBuffer> GetNewByteBuff(UOSInt colIndex)
 		{
 			if (IsNull(colIndex))
@@ -99,7 +99,7 @@ namespace DB
 			UOSInt byteSize = GetBinarySize(colIndex);
 			NN<Data::ByteBuffer> buff;
 			NEW_CLASSNN(buff, Data::ByteBuffer(byteSize));
-			if (GetBinary(byteSize, buff->Arr().Ptr()) == byteSize)
+			if (GetBinary(byteSize, buff->Arr()) == byteSize)
 				return buff;
 			buff.Delete();
 			return 0;

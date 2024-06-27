@@ -33,13 +33,13 @@ void Map::DBMapLayer::ClearDB()
 	this->objCondition.Delete();
 }
 
-Map::NameArray *Map::DBMapLayer::InitNameArr()
+Optional<Map::NameArray> Map::DBMapLayer::InitNameArr()
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
 	{
 		UOSInt i;
-		DBMapLayer_NameArr *nameArr = MemAlloc(DBMapLayer_NameArr, 1);
+		NN<DBMapLayer_NameArr> nameArr = MemAllocNN(DBMapLayer_NameArr);
 		nameArr->currId = 0;
 		i = tabDef->GetColCnt();
 		nameArr->names = MemAlloc(Text::String*, i);
@@ -47,7 +47,7 @@ Map::NameArray *Map::DBMapLayer::InitNameArr()
 		{
 			nameArr->names[i] = 0;
 		}
-		return (Map::NameArray*)nameArr;
+		return NN<Map::NameArray>::ConvertFrom(nameArr);
 	}
 	return 0;
 }
@@ -120,7 +120,7 @@ void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 	}
 }
 
-UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	NN<Data::QueryConditions> cond;
 	NN<DB::ReadingDB> db;
@@ -177,17 +177,17 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArr
 			this->vecMap.AddKeysTo(outArr);
 		}
 	}
-	if (nameArr)
-		*nameArr = InitNameArr();
+	if (nameArr.IsNotNull())
+		nameArr.SetNoCheck(InitNameArr());
 	return outArr->GetCount() - initCnt;
 }
 
-UOSInt Map::DBMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	NN<Data::QueryConditions> cond;
 	NN<DB::ReadingDB> db;
@@ -271,8 +271,8 @@ UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameA
 			}
 		}
 	}
-	if (nameArr)
-		*nameArr = InitNameArr();
+	if (nameArr.IsNotNull())
+		nameArr.SetNoCheck(InitNameArr());
 	return outArr->GetCount() - initCnt;
 }
 
@@ -281,29 +281,29 @@ Int64 Map::DBMapLayer::GetObjectIdMax() const
 	return this->vecMap.GetKey(this->vecMap.GetCount() - 1);
 }
 
-void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::DBMapLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 	NN<DB::TableDef> tabDef;
-	if (nameArr && this->tabDef.SetTo(tabDef))
+	NN<DBMapLayer_NameArr> narr;
+	if (Optional<DBMapLayer_NameArr>::ConvertFrom(nameArr).SetTo(narr) && this->tabDef.SetTo(tabDef))
 	{
-		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
 		UOSInt i = tabDef->GetColCnt();
 		while (i-- > 0)
 		{
 			SDEL_STRING(narr->names[i]);
 		}
 		MemFree(narr->names);
-		MemFree(nameArr);
+		MemFreeNN(narr);
 	}
 }
 
-Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	NN<DB::TableDef> tabDef;
 	NN<DB::ReadingDB> db;
-	if (nameArr && this->tabDef.SetTo(tabDef) && this->db.SetTo(db))
+	NN<DBMapLayer_NameArr> narr;
+	if (Optional<DBMapLayer_NameArr>::ConvertFrom(nameArr).SetTo(narr) && this->tabDef.SetTo(tabDef) && this->db.SetTo(db))
 	{
-		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
 		UOSInt colCnt = tabDef->GetColCnt();
 		if (strIndex >= colCnt)
 		{

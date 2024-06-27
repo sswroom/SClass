@@ -671,7 +671,7 @@ UOSInt Map::ESRI::FileGDBReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
@@ -688,39 +688,39 @@ UOSInt Map::ESRI::FileGDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	switch (field->fieldType)
 	{
 	case 0:
-		MemCopyNO(buff, &this->rowData[this->fieldOfst[fieldIndex]], 2);
+		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 2);
 		return 2;
 	case 1:
-		MemCopyNO(buff, &this->rowData[this->fieldOfst[fieldIndex]], 4);
+		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 4);
 		return 4;
 	case 2:
-		MemCopyNO(buff, &this->rowData[this->fieldOfst[fieldIndex]], 4);
+		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 4);
 		return 4;
 	case 3:
-		MemCopyNO(buff, &this->rowData[this->fieldOfst[fieldIndex]], 8);
+		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 8);
 		return 8;
 	case 12:
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		MemCopyNO(buff, &this->rowData[ofst], (UOSInt)v);
+		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UOSInt)v);
 		return (UOSInt)v;
 	case 5:
-		MemCopyNO(buff, &this->rowData[this->fieldOfst[fieldIndex]], 8);
+		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 8);
 		return 8;
 	case 6:
-		MemCopyNO(buff, &this->objectId, 4);
+		MemCopyNO(buff.Ptr(), &this->objectId, 4);
 		return 4;
 	case 7:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		MemCopyNO(buff, &this->rowData[ofst], (UOSInt)v);
+		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UOSInt)v);
 		return (UOSInt)v;
 	case 8:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
-		MemCopyNO(buff, &this->rowData[ofst], (UOSInt)v);
+		MemCopyNO(buff.Ptr(), &this->rowData[ofst], (UOSInt)v);
 		return (UOSInt)v;
 	case 10:
 	case 11:
-		MemCopyNO(buff, &this->rowData[this->fieldOfst[fieldIndex]], 16);
+		MemCopyNO(buff.Ptr(), &this->rowData[this->fieldOfst[fieldIndex]], 16);
 		return 16;
 	}
 	return 0;

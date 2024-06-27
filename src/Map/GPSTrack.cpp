@@ -81,7 +81,7 @@ Map::DrawLayerType Map::GPSTrack::GetLayerType() const
 	}
 }
 
-UOSInt Map::GPSTrack::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::GPSTrack::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	UOSInt i = 0;
@@ -104,12 +104,12 @@ UOSInt Map::GPSTrack::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray
 	}
 }
 
-UOSInt Map::GPSTrack::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::GPSTrack::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	rect = rect.Reorder();
@@ -150,11 +150,11 @@ Int64 Map::GPSTrack::GetObjectIdMax() const
 	}
 }
 
-void Map::GPSTrack::ReleaseNameArr(NameArray *nameArr)
+void Map::GPSTrack::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::GPSTrack::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GPSTrack::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	NN<Text::String> s;
 	if (strIndex >= 3)
@@ -502,7 +502,7 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return 2;
 }
 
-Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	NN<DB::DBReader> r;
 	if (tableName.Equals(UTF8STRC("GPSData")))
@@ -1344,7 +1344,7 @@ UOSInt Map::GPSDataReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt Map::GPSDataReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Map::GPSDataReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

@@ -238,10 +238,10 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapMouseUp(AnyType userObj, M
 			else
 			{
 				Data::ArrayListInt64 arr;
-				Map::NameArray *nameArr;
+				Optional<Map::NameArray> nameArr;
 				UOSInt nameCol = me->dbLayer->GetNameCol();
 				Text::StringBuilderUTF8 sb;
-				me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
+				me->dbLayer->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(mapPt, mapPt), true);
 				k = 0;
 				l = ids.GetCount();
 				while (k < l)
@@ -510,11 +510,11 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapItemSelChg(AnyType userObj
 	UnsafeArray<UTF8Char> sptr;
 	OSInt id = me->cboMapItem->GetSelectedItem().GetOSInt();
 	Data::ArrayListInt64 arr;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
-	me->dbLayer->GetObjectIdsMapXY(arr, &nameArr, Math::RectAreaDbl(me->mapItemPt, me->mapItemPt), true);
+	me->dbLayer->GetObjectIdsMapXY(arr, nameArr, Math::RectAreaDbl(me->mapItemPt, me->mapItemPt), true);
 	me->lvMapRecord->ClearItems();
 	i = 0;
 	j = me->dbLayer->GetColumnCnt();

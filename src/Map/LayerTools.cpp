@@ -130,14 +130,14 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDr
 			ofsts[l] = INVALID_INDEX;
 		}
 
-		Map::NameArray *lyrNameArr;
+		Optional<Map::NameArray> lyrNameArr;
 		NN<Map::GetObjectSess> sess;
 		Int64 id;
 		Text::StringBuilderUTF8 sb;
 
 		objIds.Clear();
 		sess = lyr->BeginGetObject();
-		lyr->GetAllObjectIds(objIds, &lyrNameArr);
+		lyr->GetAllObjectIds(objIds, lyrNameArr);
 		l = objIds.GetCount();
 		while (l-- > 0)
 		{

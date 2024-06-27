@@ -117,7 +117,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			IO::SPackageFile *spkg;
 			NN<Map::OruxDBLayer> orux = NN<Map::OruxDBLayer>::ConvertFrom(layer);
 			Math::RectAreaDbl bounds;
-			Map::NameArray *nameArr;
+			Optional<Map::NameArray> nameArr;
 			Data::ArrayListInt64 objIds;
 			Int32 xAdd;
 			Int32 yAdd;
@@ -144,7 +144,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 				yAdd = Map::OSM::OSMTileMap::Lat2TileYR(bounds.max.y, i);
 
 				objIds.Clear();
-				orux->GetAllObjectIds(objIds, &nameArr);
+				orux->GetAllObjectIds(objIds, nameArr);
 				k = objIds.GetCount();
 				while (k-- > 0)
 				{

@@ -2301,6 +2301,8 @@ Map/RevGeoDir.h:
 Map/ScaledMapView.h:
 @ScaledMapView.o
 @ScaledMapView_CPP.o
+Map/ShortestPath3D.h:
+@ShortestPath3D.o
 Map/ShortestPathFinder.h:
 @ShortestPathFinder.o
 Map/SHPData.h:

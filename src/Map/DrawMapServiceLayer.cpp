@@ -152,17 +152,17 @@ Map::DrawLayerType Map::DrawMapServiceLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispBounds == rect)
@@ -201,11 +201,11 @@ Int64 Map::DrawMapServiceLayer::GetObjectIdMax() const
 	return 0;
 }
 
-void Map::DrawMapServiceLayer::ReleaseNameArr(NameArray *nameArr)
+void Map::DrawMapServiceLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::DrawMapServiceLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DrawMapServiceLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{

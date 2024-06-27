@@ -324,7 +324,7 @@ UOSInt DB::MongoDBReader::GetBinarySize(UOSInt colIndex)
 	return 0;
 }
 
-UOSInt DB::MongoDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::MongoDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	return 0;
 }

@@ -79,7 +79,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Double zMin = 0;
 	Double zMax = 0;
 	IO::FileStream *shx;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	NN<Map::GetObjectSess> sess;
 	if (layerType != Map::DRAW_LAYER_POINT && layerType != Map::DRAW_LAYER_POINT3D && layerType != Map::DRAW_LAYER_POLYLINE && layerType != Map::DRAW_LAYER_POLYLINE3D && layerType != Map::DRAW_LAYER_POLYGON)
 	{
@@ -98,7 +98,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	stm->Write(Data::ByteArrayR(buff, 100));
 	Data::ArrayListInt64 objIds;
 	sess = layer->BeginGetObject();
-	layer->GetAllObjectIds(objIds, &nameArr);
+	layer->GetAllObjectIds(objIds, nameArr);
 	recCnt = objIds.GetCount();
 
 	if (layerType == Map::DRAW_LAYER_POINT)

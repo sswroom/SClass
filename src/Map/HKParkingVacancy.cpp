@@ -271,7 +271,7 @@ Map::DrawLayerType Map::HKParkingVacancy::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt Map::HKParkingVacancy::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::HKParkingVacancy::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->parkingMap.GetCount();
@@ -283,12 +283,12 @@ UOSInt Map::HKParkingVacancy::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, N
 	return j;
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	NN<ParkingInfo> parking;
 	UOSInt i = 0;
@@ -310,11 +310,11 @@ Int64 Map::HKParkingVacancy::GetObjectIdMax() const
 	return (Int64)this->parkingMap.GetCount() - 1;
 }
 
-void Map::HKParkingVacancy::ReleaseNameArr(NameArray *nameArr)
+void Map::HKParkingVacancy::ReleaseNameArr(Optional<NameArray> nameArr)
 {
 }
 
-Bool Map::HKParkingVacancy::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKParkingVacancy::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	Sync::MutexUsage mutUsage(this->parkingMut);
 	NN<ParkingInfo> parking;

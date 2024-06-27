@@ -1589,7 +1589,7 @@ UOSInt DB::OLEDBReader::GetBinarySize(UOSInt colIndex)
 	return *valLen;
 }
 
-UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1603,7 +1603,7 @@ UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*valLen > 0)
 	{
-		MemCopyNO(buff, val, *valLen);
+		MemCopyNO(buff.Ptr(), val, *valLen);
 	}
 	return *valLen;
 }

@@ -107,7 +107,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt k;
 	Int64 currId;
 	Int64 lastId;
-	Map::NameArray *nameArr;
+	Optional<Map::NameArray> nameArr;
 	NN<Map::GetObjectSess> sess;
 	NN<Math::Geometry::Vector2D> vec;
 	Text::Encoding enc(this->codePage);
@@ -153,7 +153,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	writer.Write(CSTR("<Style id=\"lineLabel\"><LineStyle><gx:labelVisibility>1</gx:labelVisibility></LineStyle></Style>"));
 
 	Data::ArrayListInt64 ids;
-	layer->GetAllObjectIds(ids, &nameArr);
+	layer->GetAllObjectIds(ids, nameArr);
 
 	sess = layer->BeginGetObject();
 	lastId = -1;

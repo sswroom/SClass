@@ -776,7 +776,7 @@ UOSInt Win32::WMIReader::GetBinarySize(UOSInt colIndex)
 	return ret;
 }
 
-UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UInt8 *buff)
+UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -800,7 +800,7 @@ UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 			case CIM_UINT8 | CIM_FLAG_ARRAY:
 				{
 					SAFEARRAY * arr = V_ARRAY(&v);
-					MemCopyNO(buff, arr->pvData, arr->rgsabound[0].cElements);
+					MemCopyNO(buff.Ptr(), arr->pvData, arr->rgsabound[0].cElements);
 					ret = arr->rgsabound[0].cElements;
 				}
 				break;
