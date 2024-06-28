@@ -153,7 +153,7 @@ namespace Map
 		NN<Map::VectorLayer> CreateEditableLayer();
 
 		Optional<Text::SearchIndexer> CreateSearchIndexer(NN<Text::TextAnalyzer> ta, UOSInt strIndex);
-		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, UnsafeArray<const UTF8Char> srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(NN<Data::ArrayListString> strArr);
 		Optional<Math::Geometry::Vector2D> GetVectorByStr(NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, NN<GetObjectSess> session, Text::CStringNN srchStr, UOSInt strIndex);
 

@@ -12,17 +12,17 @@ Text::TextAnalyzer::~TextAnalyzer()
 {
 }
 
-void *Text::TextAnalyzer::BeginAnalyze(UnsafeArray<const UTF8Char> s)
+NN<Text::TextAnalyzer::TextSession> Text::TextAnalyzer::BeginAnalyze(UnsafeArray<const UTF8Char> s)
 {
-	TextSession *tsess;
-	tsess = MemAlloc(TextSession, 1);
+	NN<TextSession> tsess;
+	tsess = MemAllocNN(TextSession);
 	tsess->currPos = s;
 	return tsess;
 }
 
-UnsafeArrayOpt<UTF8Char> Text::TextAnalyzer::NextWord(UnsafeArray<UTF8Char> sbuff, void *sess)
+UnsafeArrayOpt<UTF8Char> Text::TextAnalyzer::NextWord(UnsafeArray<UTF8Char> sbuff, NN<TextSession> sess)
 {
-	TextSession *tsess = (TextSession*)sess;
+	NN<TextSession> tsess = sess;
 	UTF32Char c;
 	UnsafeArray<UTF8Char> sptr = sbuff;
 	while (true)
@@ -71,7 +71,7 @@ UnsafeArrayOpt<UTF8Char> Text::TextAnalyzer::NextWord(UnsafeArray<UTF8Char> sbuf
 	}
 }
 
-void Text::TextAnalyzer::EndAnalyze(void *sess)
+void Text::TextAnalyzer::EndAnalyze(NN<TextSession> sess)
 {
-	MemFree(sess);
+	MemFreeNN(sess);
 }

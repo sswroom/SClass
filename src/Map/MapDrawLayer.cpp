@@ -668,7 +668,7 @@ Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(NN<Text::Te
 	return searching;
 }
 
-UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, Optional<NameArray> nameArr, UnsafeArray<const UTF8Char> srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Text::PString s;
 

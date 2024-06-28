@@ -14,9 +14,9 @@ namespace Text
 		TextAnalyzer();
 		~TextAnalyzer();
 
-		void *BeginAnalyze(UnsafeArray<const UTF8Char> s);
-		UnsafeArrayOpt<UTF8Char> NextWord(UnsafeArray<UTF8Char> sbuff, void *sess);
-		void EndAnalyze(void *sess);
+		NN<TextSession> BeginAnalyze(UnsafeArray<const UTF8Char> s);
+		UnsafeArrayOpt<UTF8Char> NextWord(UnsafeArray<UTF8Char> sbuff, NN<TextSession> sess);
+		void EndAnalyze(NN<TextSession> sess);
 	};
 }
 #endif
