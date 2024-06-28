@@ -321,7 +321,7 @@ export function isEmailAddress(s)
 		{
 
 		}
-		if (c == '_')
+		else if (c == '_')
 		{
 			if (atPos != -1)
 			{
