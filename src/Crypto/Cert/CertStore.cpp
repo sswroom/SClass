@@ -56,13 +56,12 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CStringNN certsDir)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, fileSize).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

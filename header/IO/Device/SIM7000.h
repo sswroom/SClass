@@ -87,7 +87,7 @@ namespace IO
 			UnsafeArrayOpt<UTF8Char> NetGetIFAddr(UnsafeArray<UTF8Char> addr); //AT+CIFSR
 			//AT+CIFSREX
 			//AT+CIPSTATUS
-			Bool NetGetDNSList(Data::ArrayList<UInt32> *dnsList); //AT+CDNSCFG
+			Bool NetGetDNSList(NN<Data::ArrayList<UInt32>> dnsList); //AT+CDNSCFG
 			Bool NetDNSResolveIP(Text::CStringNN domain, NN<Net::SocketUtil::AddressInfo> addr); //AT+CDNSGIP //////////////////////////////
 			//AT+CIPHEAD
 			//AT+CIPATS

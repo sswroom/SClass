@@ -19,7 +19,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 		}
 		else
 		{
-			*output = Text::StrToInt32(wbuff);
+			*output = Text::StrToInt32W(UnsafeArray<WChar>(wbuff));
 			if (*output == 0)
 			{
 				return IRT_ESCAPE;
@@ -205,7 +205,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 		}
 		else 
 		{
-			*output = Text::StrToInt32(wbuff) != 0;
+			*output = Text::StrToInt32W(UnsafeArray<WChar>(wbuff)) != 0;
 			return IRT_ENTER;
 		}
 	}
@@ -642,7 +642,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	{
 		WChar wbuff[256];
 		console->ReadLine(wbuff, buffSize * 2);
-		*inputSize = Text::StrHex2Bytes(wbuff, buff);
+		*inputSize = Text::StrHex2BytesW(wbuff, buff);
 		return IRT_ENTER;
 	}
 

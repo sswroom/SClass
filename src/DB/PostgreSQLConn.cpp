@@ -101,7 +101,7 @@ public:
 		return item.GetAsI64();
 	}
 
-	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);

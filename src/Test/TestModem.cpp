@@ -4,7 +4,7 @@
 #include "Test/TestModem.h"
 #include "Text/StringBuilderUTF8.h"
 
-UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
+UOSInt Test::TestModem::ListPorts(NN<IO::Writer> writer)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<UOSInt> ports;
@@ -28,7 +28,7 @@ UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
 	return ports.GetItem(0);
 }
 
-void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *modem, Bool quick)
+void Test::TestModem::GSMModemTest(NN<IO::Writer> writer, NN<IO::GSMModemController> modem, Bool quick)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[256];

@@ -89,7 +89,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendChar(UTF32Char c, UOS
 
 NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char **sarr, UOSInt nStr)
 {
-	const UTF16Char *csptr;
+	UnsafeArray<const UTF16Char> csptr;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)

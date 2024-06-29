@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(AnyType userObj)
 	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
 		NN<Win32::WMIQuery> db;
-		const WChar *wptr = Text::StrToWCharNew(ns->v);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(ns->v);
 		NEW_CLASSNN(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
 		ns->Release();
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(AnyType userObj)
 	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
 		NN<Win32::WMIQuery> db;
-		const WChar *wptr = Text::StrToWCharNew(ns->v);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(ns->v);
 		NEW_CLASSNN(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
 		ns->Release();

@@ -412,7 +412,7 @@ Int64 DB::CSVReader::GetInt64(UOSInt colIndex)
 	return Text::StrToInt64(buff);
 }
 
-WChar *DB::CSVReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex >= nCol)
 		return 0;
@@ -424,8 +424,8 @@ WChar *DB::CSVReader::GetStr(UOSInt colIndex, WChar *buff)
 			return 0;
 		}
 	}
-	const WChar *csptr = Text::StrToWCharNew(cols[colIndex]);
-	const WChar *ptr = csptr;
+	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex]);
+	UnsafeArray<const WChar> ptr = csptr;
 	WChar c;
 	Int32 quote = 0;
 	c = *ptr;
@@ -494,8 +494,8 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 			return 0;
 		}
 	}
-	const WChar *csptr = Text::StrToWCharNew(cols[colIndex]);
-	const WChar *ptr = csptr;
+	UnsafeArray<const WChar> csptr = Text::StrToWCharNew(cols[colIndex]);
+	UnsafeArray<const WChar> ptr = csptr;
 	WChar c;
 	Int32 quote = 0;
 	c = *ptr;

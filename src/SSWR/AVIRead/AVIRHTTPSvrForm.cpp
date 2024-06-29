@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 		UTF8Char sbuff[128];
 		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
-		IO::BuildTime::GetBuildTime(&dt);
+		IO::BuildTime::GetBuildTime(dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NN<Net::WebServer::HTTPDirectoryHandler> dirHdlr;

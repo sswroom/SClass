@@ -71,13 +71,12 @@ namespace IO
 		virtual Int32 Read(UInt8 *buff, Int32 size);
 		virtual Int32 Write(const UInt8 *buff, Int32 size);
 
-		virtual void *BeginRead(UInt8 *buff, Int32 size, Sync::Event *evt);
-		virtual Int32 EndRead(void *reqData, Bool toWait);
-		virtual void CancelRead(void *reqData);
-
-		virtual void *BeginWrite(const UInt8 *buff, Int32 size, Sync::Event *evt);
-		virtual Int32 EndWrite(void *reqData, Bool toWait);
-		virtual void CancelWrite(void *reqData);
+		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
+		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual void CancelRead(NN<StreamReadReq> reqData);
+		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
+		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 		
 		virtual Int32 Flush();
 		virtual void Close();

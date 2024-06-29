@@ -380,7 +380,7 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-WChar *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))

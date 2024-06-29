@@ -3,7 +3,7 @@
 #include "Data/DataComparer.h"
 #include "Text/MyString.h"
 
-OSInt Data::DataComparer::Compare(const UTF8Char *val1, const UTF8Char *val2)
+OSInt Data::DataComparer::Compare(UnsafeArray<const UTF8Char> val1, UnsafeArray<const UTF8Char> val2)
 {
 	return Text::StrCompare(val1, val2);
 }
@@ -172,15 +172,15 @@ OSInt Data::DataComparer::Compare(Math::Geometry::Vector2D *val1, Math::Geometry
 	}
 }
 
-OSInt Data::DataComparer::Compare(Data::UUID* val1, Data::UUID *val2)
+OSInt Data::DataComparer::Compare(Optional<Data::UUID> val1, Optional<Data::UUID> val2)
 {
 	if (val1 == val2)
 		return 0;
 	NN<Data::UUID> uuid1;
 	NN<Data::UUID> uuid2;
-	if (!uuid1.Set(val1))
+	if (!val1.SetTo(uuid1))
 		return -1;
-	else if (!uuid2.Set(val2))
+	else if (!val2.SetTo(uuid2))
 		return 1;
 	return uuid1->CompareTo(uuid2);
 }

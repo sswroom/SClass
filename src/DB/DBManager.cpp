@@ -98,7 +98,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 		{
 			NN<Win32::WMIQuery> wmi = NN<Win32::WMIQuery>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("wmi:ns="));
-			const WChar *ns = wmi->GetNS();
+			UnsafeArray<const WChar> ns = wmi->GetNS();
 			nns = Text::String::NewNotNull(ns);
 			connStr->Append(nns);
 			nns->Release();
@@ -109,7 +109,7 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 		{
 			NN<DB::OLEDBConn> oledb = NN<DB::OLEDBConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("oledb:"));
-			const WChar *cStr = oledb->GetConnStr();
+			UnsafeArray<const WChar> cStr = oledb->GetConnStr().Or(L"");
 			nns = Text::String::NewNotNull(cStr);
 			connStr->Append(nns);
 			nns->Release();
@@ -339,9 +339,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	{
 		if (connStr.Substring(4).StartsWithICase(UTF8STRC("NS=")))
 		{
-			const WChar *ns = Text::StrToWCharNew(connStr.v + 7);
+			UnsafeArray<const WChar> ns = Text::StrToWCharNew(connStr.v + 7);
 			NN<Win32::WMIQuery> wmi;
 			NEW_CLASSNN(wmi, Win32::WMIQuery(ns));
+			Text::StrDelNew(ns);
 			if (wmi->IsError())
 			{
 				wmi.Delete();
@@ -355,9 +356,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	}
 	else if (connStr.StartsWith(UTF8STRC("oledb:")))
 	{
-		const WChar *cstr = Text::StrToWCharNew(connStr.v + 6);
+		UnsafeArray<const WChar> cstr = Text::StrToWCharNew(connStr.v + 6);
 		NN<DB::OLEDBConn> oledb;
 		NEW_CLASSNN(oledb, DB::OLEDBConn(cstr, log));
+		Text::StrDelNew(cstr);
 		if (oledb->GetConnError() != DB::OLEDBConn::CE_NONE)
 		{
 			oledb.Delete();

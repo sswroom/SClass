@@ -22,11 +22,11 @@ void IO::LogFileManager::QueryLogMonths(Data::ArrayList<UInt32> *months)
 	UnsafeArray<UTF8Char> sptr;
 	sptr = this->logPath->ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("??????"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(sbuff, sess, 0, pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{
@@ -54,11 +54,11 @@ void IO::LogFileManager::QueryLogByMonth(Data::ArrayList<UInt32> *dates, UInt32 
 	UOSInt i = this->logPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = this->logPath->ToCString().Substring(i).ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("????????.log"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(sbuff, sess, 0, pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

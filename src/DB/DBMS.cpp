@@ -199,7 +199,7 @@ namespace DB
 			return row[colIndex]->ToInt64();
 		}
 
-		virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;

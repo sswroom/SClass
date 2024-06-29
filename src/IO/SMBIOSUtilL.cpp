@@ -77,13 +77,12 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptr2;
 		UTF8Char sbuff[512];
-		IO::Path::FindFileSession *sess;
+		NN<IO::Path::FindFileSession> sess;
 		UOSInt readSize;
 		IO::MemoryStream mstm;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/firmware/dmi/entries/"));
 		sptr2 = Text::StrConcatC(sptr, UTF8STRC("*"));
-		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
+		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
 			while (IO::Path::FindNextFile(sptr, sess, 0, 0, 0).SetTo(sptr2))
 			{

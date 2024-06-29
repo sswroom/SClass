@@ -1832,10 +1832,10 @@ void IO::SMake::CleanFiles()
 	sptr = Text::StrConcatC(this->basePath->ConcatTo(sbuff), UTF8STRC(OBJECTPATH));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.o"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).NotNull())
 		{
 			if (pt == IO::Path::PathType::File)
 			{

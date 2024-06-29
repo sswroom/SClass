@@ -310,13 +310,15 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 									Double mapXMax;
 									Double mapYMax;
 									UOSInt i;
+									NN<Text::String> aname;
+									NN<Text::String> avalue;
 									NN<Text::XMLAttrib> attr;
 									i = reader.GetAttribCount();
 									while (i-- > 0)
 									{
-										if (reader.GetAttrib(i).SetTo(attr) && attr->name->Equals(UTF8STRC("layerLevel")))
+										if (reader.GetAttrib(i).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("layerLevel")))
 										{
-											if (attr->value->ToUInt32(layerId))
+											if (Text::String::OrEmpty(attr->value)->ToUInt32(layerId))
 											{
 												flags |= 1;
 												break;
@@ -331,21 +333,22 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 											i = reader.GetAttribCount();
 											while (i-- > 0)
 											{
-												if (reader.GetAttrib(i).SetTo(attr))
+												if (reader.GetAttrib(i).SetTo(attr) && attr->name.SetTo(aname) && attr->value.SetTo(avalue))
 												{
-													if (attr->name->Equals(UTF8STRC("xMax")))
+													
+													if (aname->Equals(UTF8STRC("xMax")))
 													{
-														if (attr->value->ToUInt32(maxX))
+														if (avalue->ToUInt32(maxX))
 															flags |= 2;
 													}
-													else if (attr->name->Equals(UTF8STRC("yMax")))
+													else if (aname->Equals(UTF8STRC("yMax")))
 													{
-														if (attr->value->ToUInt32(maxY))
+														if (avalue->ToUInt32(maxY))
 															flags |= 4;
 													}
-													else if (attr->name->Equals(UTF8STRC("img_width")))
+													else if (aname->Equals(UTF8STRC("img_width")))
 													{
-														if (attr->value->ToUInt32(tileSize))
+														if (avalue->ToUInt32(tileSize))
 															flags |= 8;
 													}
 												}
@@ -357,26 +360,26 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 											i = reader.GetAttribCount();
 											while (i-- > 0)
 											{
-												if (reader.GetAttrib(i).SetTo(attr))
+												if (reader.GetAttrib(i).SetTo(attr) && attr->name.SetTo(aname) && attr->value.SetTo(avalue))
 												{
-													if (attr->name->Equals(UTF8STRC("minLat")))
+													if (aname->Equals(UTF8STRC("minLat")))
 													{
-														if (attr->value->ToDouble(mapYMin))
+														if (avalue->ToDouble(mapYMin))
 															flags |= 16;
 													}
-													else if (attr->name->Equals(UTF8STRC("maxLat")))
+													else if (aname->Equals(UTF8STRC("maxLat")))
 													{
-														if (attr->value->ToDouble(mapYMax))
+														if (avalue->ToDouble(mapYMax))
 															flags |= 32;
 													}
-													else if (attr->name->Equals(UTF8STRC("minLon")))
+													else if (aname->Equals(UTF8STRC("minLon")))
 													{
-														if (attr->value->ToDouble(mapXMin))
+														if (avalue->ToDouble(mapXMin))
 															flags |= 64;
 													}
-													else if (attr->name->Equals(UTF8STRC("maxLon")))
+													else if (aname->Equals(UTF8STRC("maxLon")))
 													{
-														if (attr->value->ToDouble(mapXMax))
+														if (avalue->ToDouble(mapXMax))
 															flags |= 128;
 													}
 												}
@@ -442,39 +445,42 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	{
 		NN<Text::XMLAttrib> attr;
 		Text::VSProject::VisualStudioVersion ver = Text::VSProject::VSV_UNKNOWN;
-		Text::String *projName = 0;
+		Optional<Text::String> projName = 0;
+		NN<Text::String> nnprojName;
+		NN<Text::String> aname;
+		NN<Text::String> avalue;
 		UOSInt i;
 		i = reader.GetAttribCount();
 		while (i-- > 0)
 		{
-			if (reader.GetAttrib(i).SetTo(attr))
+			if (reader.GetAttrib(i).SetTo(attr) && attr->name.SetTo(aname))
 			{
-				if (attr->name->Equals(UTF8STRC("Version")))
+				if (aname->Equals(UTF8STRC("Version")) && attr->value.SetTo(avalue))
 				{
-					if (attr->value->Equals(UTF8STRC("7.10")))
+					if (avalue->Equals(UTF8STRC("7.10")))
 					{
 						ver = Text::VSProject::VSV_VS71;
 					}
-					else if (attr->value->Equals(UTF8STRC("8.00")))
+					else if (avalue->Equals(UTF8STRC("8.00")))
 					{
 						ver = Text::VSProject::VSV_VS8;
 					}
-					else if (attr->value->Equals(UTF8STRC("9.00")))
+					else if (avalue->Equals(UTF8STRC("9.00")))
 					{
 						ver = Text::VSProject::VSV_VS9;
 					}
 				}
-				else if (attr->name->Equals(UTF8STRC("Name")))
+				else if (aname->Equals(UTF8STRC("Name")))
 				{
 					projName = attr->value;
 				}
 			}
 		}
-		if (projName && ver != Text::VSProject::VSV_UNKNOWN)
+		if (projName.SetTo(nnprojName) && ver != Text::VSProject::VSV_UNKNOWN)
 		{
 			NN<Text::VSProject> proj;
 			NEW_CLASSNN(proj, Text::VSProject(fileName, ver));
-			proj->SetProjectName(projName);
+			proj->SetProjectName(nnprojName);
 			i = 0;
 			while (reader.NextElementName().SetTo(nodeText))
 			{
@@ -950,6 +956,8 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Ma
 	UOSInt i;
 	UOSInt j;
 	NN<Text::XMLAttrib> attr;
+	NN<Text::String> aname;
+	NN<Text::String> avalue;
 	Text::StringBuilderUTF8 sb;
 	Bool succ;
 
@@ -957,15 +965,15 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Ma
 	j = reader->GetAttribCount();
 	while (i < j)
 	{
-		if (reader->GetAttrib(i).SetTo(attr))
+		if (reader->GetAttrib(i).SetTo(attr) && attr->name.SetTo(aname) && attr->value.SetTo(avalue))
 		{
-			if (attr->name->EqualsICase(UTF8STRC("LAT")))
+			if (aname->EqualsICase(UTF8STRC("LAT")))
 			{
-				rec->pos.SetLat(attr->value->ToDouble());
+				rec->pos.SetLat(avalue->ToDouble());
 			}
-			else if (attr->name->EqualsICase(UTF8STRC("LON")))
+			else if (aname->EqualsICase(UTF8STRC("LON")))
 			{
-				rec->pos.SetLon(attr->value->ToDouble());
+				rec->pos.SetLon(avalue->ToDouble());
 			}
 		}
 		i++;
@@ -1028,10 +1036,10 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NN<Text::XMLReader> reader, 
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				if (reader->GetAttrib(i).SetTo(attr) && attr->name->Equals(UTF8STRC("Name")))
+				if (reader->GetAttrib(i).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("Name")))
 				{
 					NN<Text::String> name;
-					if (name.Set(attr->value))
+					if (attr->value.SetTo(name))
 					{
 						NN<Text::VSContainer> childCont;
 						found = true;
@@ -1055,10 +1063,10 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NN<Text::XMLReader> reader, 
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				if (reader->GetAttrib(i).SetTo(attr) && attr->name->Equals(UTF8STRC("RelativePath")))
+				if (reader->GetAttrib(i).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("RelativePath")))
 				{
 					NN<Text::String> path;
-					if (path.Set(attr->value))
+					if (attr->value.SetTo(path))
 					{
 						NN<Text::VSFile> childFile;
 						NEW_CLASSNN(childFile, Text::VSFile(path));
@@ -1082,7 +1090,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NN<Text::XMLReader> reader, 
 	UOSInt i;
 	NN<Text::CodeProjectCfg> cfg;
 	NN<Text::XMLAttrib> attr;
-	Text::String *cfgName;
+	Optional<Text::String> cfgName;
 	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
@@ -1092,14 +1100,14 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NN<Text::XMLReader> reader, 
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				if (reader->GetAttrib(i).SetTo(attr) && attr->name->Equals(UTF8STRC("Name")))
+				if (reader->GetAttrib(i).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("Name")))
 				{
 					cfgName = attr->value;
 					break;
 				}
 			}
 			NN<Text::String> cfgNameStr;
-			if (cfgNameStr.Set(cfgName))
+			if (cfgName.SetTo(cfgNameStr))
 			{
 				NEW_CLASSNN(cfg, Text::CodeProjectCfg(cfgNameStr));
 				while (true)
@@ -1120,7 +1128,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NN<Text::XMLReader> reader, 
 							while (i-- > 0)
 							{
 								NN<Text::String> name;
-								if (reader->GetAttrib(i).SetTo(attr) && name.Set(attr->name))
+								if (reader->GetAttrib(i).SetTo(attr) && attr->name.SetTo(name))
 								{
 									if (name->Equals(UTF8STRC("Name")))
 									{

@@ -4,6 +4,11 @@
 #include "Text/MyStringW.h"
 #include "Text/TextAnalyzer.h"
 
+struct Text::TextAnalyzer::TextSession
+{
+	UnsafeArray<const UTF8Char> currPos;
+};
+
 Text::TextAnalyzer::TextAnalyzer()
 {
 }

@@ -13,20 +13,20 @@ void Media::PhotoInfo::ParseXMF(NN<Text::XMLDocument> xmf)
 	NN<Text::XMLNode> node;
 	if (xmf->SearchFirstNode(CSTR("//@exif:ExposureTime")).SetTo(node))
 	{
-		this->expTime = ParseFraction(node->value);
+		this->expTime = ParseFraction(Text::String::OrEmpty(node->value));
 	}
 	if (xmf->SearchFirstNode(CSTR("//@exif:FNumber")).SetTo(node))
 	{
-		this->fNumber = ParseFraction(node->value);
+		this->fNumber = ParseFraction(Text::String::OrEmpty(node->value));
 	}
 	if (xmf->SearchFirstNode(CSTR("//@aux:Lens")).SetTo(node))
 	{
 		OPTSTR_DEL(this->lens);
-		this->lens = node->value->Clone();
+		this->lens = Text::String::OrEmpty(node->value)->Clone();
 	}
 	if (xmf->SearchFirstNode(CSTR("//@exif:FocalLength")).SetTo(node))
 	{
-		this->focalLength = ParseFraction(node->value);
+		this->focalLength = ParseFraction(Text::String::OrEmpty(node->value));
 	}
 	if (xmf->SearchFirstNode(CSTR("//exif:ISOSpeedRatings")).SetTo(node))
 	{
@@ -37,7 +37,7 @@ void Media::PhotoInfo::ParseXMF(NN<Text::XMLDocument> xmf)
 	}
 }
 
-Double Media::PhotoInfo::ParseFraction(Text::String *s)
+Double Media::PhotoInfo::ParseFraction(NN<Text::String> s)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sarr[3];

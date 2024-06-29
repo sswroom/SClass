@@ -104,8 +104,8 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, Unsaf
 	if (dirEnd[-1] != IO::Path::PATH_SEPERATOR)
 		*dirEnd++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(dirEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(dir, sptr));
-	if (sess == 0)
+	NN<IO::Path::FindFileSession> sess;
+	if (!IO::Path::FindFile(CSTRP(dir, sptr)).SetTo(sess))
 		return;
 
 	UInt8 *fileBuff = 0;
@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, Unsaf
 	UOSInt matchCount;
 
 	IO::Path::PathType pt;
-	while (IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0).SetTo(sptr))
+	while (IO::Path::FindNextFile(dirEnd, sess, 0, pt, 0).SetTo(sptr))
 	{
 		if (pt == IO::Path::PathType::Directory)
 		{

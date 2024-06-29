@@ -452,7 +452,7 @@ Bool Text::CharUtil::UTF8CharValid(UnsafeArray<const UTF8Char> sptr)
 	return false;
 }
 
-const Text::CharUtil::UnicodeBlock *Text::CharUtil::GetUnicodeBlock(UTF32Char c)
+Optional<const Text::CharUtil::UnicodeBlock> Text::CharUtil::GetUnicodeBlock(UTF32Char c)
 {
 	UnicodeBlock *blk;
 	OSInt i = 0;
@@ -488,8 +488,8 @@ Bool Text::CharUtil::IsDoubleSize(UTF32Char c)
 	{
 		return true;
 	}
-	const UnicodeBlock *blk = GetUnicodeBlock(c);
-	if (blk == 0)
+	NN<const UnicodeBlock> blk;
+	if (!GetUnicodeBlock(c).SetTo(blk))
 	{
 		return false;
 	}

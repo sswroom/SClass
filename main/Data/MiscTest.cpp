@@ -220,12 +220,12 @@ Int32 RenameFileTest()
 	UnsafeArray<UTF8Char> sptr2End;
 	sptr = path.ConcatTo(sbuff);
 	sptrEnd = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptrEnd));
-	IO::Path::FindFileSession *sess2;
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	NN<IO::Path::FindFileSession> sess2;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptrEnd)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
 			if (sptr[0] != '.' && pt == IO::Path::PathType::Directory)
 			{
@@ -237,8 +237,7 @@ Int32 RenameFileTest()
 					sptr2 = sptrEnd;
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					sptr2 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-					if (sess2)
+					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess2))
 					{
 						sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -246,7 +245,7 @@ Int32 RenameFileTest()
 						IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
 						*sptrEnd++ = IO::Path::PATH_SEPERATOR;
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
-						while (IO::Path::FindNextFile(sptrEnd, sess2, 0, &pt, 0).SetTo(sptrEnd2))
+						while (IO::Path::FindNextFile(sptrEnd, sess2, 0, pt, 0).SetTo(sptrEnd2))
 						{
 							if (sptrEnd[0] != '.' && pt == IO::Path::PathType::Directory)
 							{

@@ -61,9 +61,11 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	UInt32 defLineStyle;
 	UInt32 defFontStyle;
 	Parser::FileParser::MEVParser::MEVImageInfo *imgFileArr;
-	const WChar **dirArr;
-	WChar *wptr;
-	WChar *wptr2;
+	UnsafeArray<UnsafeArrayOpt<const WChar>> dirArr;
+	UnsafeArray<WChar> wptr;
+	UnsafeArray<WChar> wptr2;
+	UnsafeArrayOpt<WChar> optwptr2;
+	UnsafeArray<const WChar> cwptr;
 	WChar wbuff[256];
 	WChar wbuff2[256];
 	UTF8Char sbuff[256];
@@ -114,15 +116,16 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	*wptr2 = 0;
 	if (wptr == wbuff && wptr2 == wbuff2)
 	{
-		wptr2 = 0;
+		optwptr2 = 0;
 	}
 	else
 	{
+		optwptr2 = wptr2;
 		Text::StrConcat(wptr2 + 1, wbuff);
 	}
 
 	imgFileArr = MemAlloc(MEVImageInfo, imgFileCnt);
-	dirArr = MemAlloc(const WChar*, dirCnt);
+	dirArr = MemAllocArr(UnsafeArrayOpt<const WChar>, dirCnt);
 	i = 0;
 	while (i < dirCnt)
 	{
@@ -131,7 +134,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 		{
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(8));
 			Text::StrUTF8_WCharC(wbuff, &buff[8], ReadUInt32(&buff[4]), 0);
-			if (wptr2)
+			if (optwptr2.SetTo(wptr2))
 			{
 				Text::StrReplaceW(wbuff, wptr2 + 1, wbuff2);
 			}
@@ -151,7 +154,10 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 		fd->GetRealData(currPos, 16, BYTEARR(buff));
 		imgFileArr[i].fileIndex = ReadInt32(&buff[12]);
 		fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(16));
-		wptr = Text::StrConcat(wbuff, dirArr[ReadInt32(&buff[8])]);
+		if (dirArr[ReadInt32(&buff[8])].SetTo(cwptr))
+			wptr = Text::StrConcat(wbuff, cwptr);
+		else
+			wptr = wbuff;
 		*wptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrUTF8_WCharC(wptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
@@ -223,21 +229,22 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	i = dirCnt;
 	while (i-- > 0)
 	{
-		if (dirArr[i])
+		if (dirArr[i].SetTo(cwptr))
 		{
-			Text::StrDelNew(dirArr[i]);
+			Text::StrDelNew(cwptr);
 		}
 	}
-	MemFree(dirArr);
+	MemFreeArr(dirArr);
 	MemFree(imgFileArr);
 	return env;
 }
 
-void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::MapEnv> env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos, NN<Parser::ParserList> parsers, NN<Map::MapManager> mapMgr)
+void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::MapEnv> env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, UnsafeArray<UnsafeArrayOpt<const WChar>> dirArr, MEVImageInfo *imgInfos, NN<Parser::ParserList> parsers, NN<Map::MapManager> mapMgr)
 {
 	UInt8 buff[512];
 	WChar wbuff[256];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
+	UnsafeArray<const WChar> cwptr;
 	UInt32 pos = currPos.Get();
 	UOSInt i = 0;
 	while (i < itemCnt)
@@ -262,7 +269,11 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::Map
 			pos = 20 + pos;
 
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), BYTEARR(buff).SubArray(20));
-			wptr = Text::StrConcat(Text::StrConcat(wbuff, dirArr[ReadUInt32(&buff[8])]), L"\\");
+			if (dirArr[ReadUInt32(&buff[8])].SetTo(cwptr))
+				wptr = Text::StrConcat(wbuff, cwptr);
+			else
+				wptr = wbuff;
+			wptr = Text::StrConcat(wptr, L"\\");
 			Text::StrUTF8_WCharC(wptr, &buff[20], ReadUInt32(&buff[4]), 0);
 			if (ReadUInt32(&buff[12]))
 			{

@@ -164,45 +164,45 @@ namespace IO
 
 		UnsafeArrayOpt<UTF8Char> GetFirmwareVer(UnsafeArray<UTF8Char> firmwareBuff, UInt8 addr);
 		UnsafeArrayOpt<UTF8Char> GetModuleName(UnsafeArray<UTF8Char> moduleBuff, UInt8 addr);
-		Bool GetConfigStatus(UInt8 addr, ADAMConfig *config);
+		Bool GetConfigStatus(UInt8 addr, NN<ADAMConfig> config);
 		Bool StoreCurrInputs();
 
-		Bool AnalogOGetResetStatus(UInt8 addr, Bool *hasReset);
+		Bool AnalogOGetResetStatus(UInt8 addr, OutParam<Bool> hasReset);
 
 		Bool DigitalSetConfig(UInt8 addr, UInt8 newAddr, BaudRate baudRate, Bool checksum, Bool modbus);
 		Bool DigitalSetAllOutput8Ch(UInt8 addr, UInt8 outputs);
 		Bool DigitalSetAllOutput16Ch(UInt8 addr, UInt16 outputs);
-		Bool DigitalGetResetStatus(UInt8 addr, Bool *hasReset);
+		Bool DigitalGetResetStatus(UInt8 addr, OutParam<Bool> hasReset);
 
-		Bool ADAM4050GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4051GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4052GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4053GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4055GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4056GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4060GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4068GetIOStatus(UInt8 addr, UInt16 *outputs, UInt16 *inputs);
+		Bool ADAM4050GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4051GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4052GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4053GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4055GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4056GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4060GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4068GetIOStatus(UInt8 addr, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
 
-		Bool ADAM4050GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4051GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4052GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4053GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4060GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
-		Bool ADAM4068GetStoredIO(UInt8 addr, Bool *firstRead, UInt16 *outputs, UInt16 *inputs);
+		Bool ADAM4050GetStoredIO(UInt8 addr, OutParam<Bool> firstRead, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4051GetStoredIO(UInt8 addr, OutParam<Bool> firstRead, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4052GetStoredIO(UInt8 addr, OutParam<Bool> firstRead, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4053GetStoredIO(UInt8 addr, OutParam<Bool> firstRead, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4060GetStoredIO(UInt8 addr, OutParam<Bool> firstRead, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
+		Bool ADAM4068GetStoredIO(UInt8 addr, OutParam<Bool> firstRead, OutParam<UInt16> outputs, OutParam<UInt16> inputs);
 
 		Bool ADAM4080SetConfig(UInt8 addr, UInt8 newAddr, Bool frequency, BaudRate baudRate, Bool checksum, FreqGateTime freqGateTime);
-		Bool ADAM4080GetInputMode(UInt8 addr, UInt8 *inputMode);
+		Bool ADAM4080GetInputMode(UInt8 addr, OutParam<UInt8> inputMode);
 		Bool ADAM4080SetInputMode(UInt8 addr, UInt8 inputMode);
-		Bool ADAM4080GetValue(UInt8 addr, UInt8 channel, UInt32 *value);
+		Bool ADAM4080GetValue(UInt8 addr, UInt8 channel, OutParam<UInt32> value);
 		Bool ADAM4080SetGateMode(UInt8 addr, GateMode gateMode);
-		Bool ADAM4080GetGateMode(UInt8 addr, GateMode *gateMode);
+		Bool ADAM4080GetGateMode(UInt8 addr, OutParam<GateMode> gateMode);
 		Bool ADAM4080SetMaxCounter(UInt8 addr, UInt8 channel, UInt32 maxCounter);
-		Bool ADAM4080GetMaxCounter(UInt8 addr, UInt8 channel, UInt32 *maxCounter);
+		Bool ADAM4080GetMaxCounter(UInt8 addr, UInt8 channel, OutParam<UInt32> maxCounter);
 		Bool ADAM4080StartCounter(UInt8 addr, UInt8 channel);
 		Bool ADAM4080StopCounter(UInt8 addr, UInt8 channel);
-		Bool ADAM4080CounterIsStarted(UInt8 addr, UInt8 channel, Bool *started);
+		Bool ADAM4080CounterIsStarted(UInt8 addr, UInt8 channel, OutParam<Bool> started);
 		Bool ADAM4080ClearCounter(UInt8 addr, UInt8 channel);
-		Bool ADAM4080CounterHasOverflow(UInt8 addr, UInt8 channel, Bool *overflow);
+		Bool ADAM4080CounterHasOverflow(UInt8 addr, UInt8 channel, OutParam<Bool> overflow);
 
 		static UInt32 BaudRateGetBps(BaudRate baudRate);
 		static Text::CStringNN DataFormatGetName(DataFormat dataFormat);

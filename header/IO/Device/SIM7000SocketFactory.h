@@ -41,19 +41,19 @@ namespace IO
 			};
 			
 		private:
-			IO::Device::SIM7000 *modem;
+			NN<IO::Device::SIM7000> modem;
 			Bool needRelease;
-			Text::String *apn;
+			Optional<Text::String> apn;
 			SocketStatus status[8];
 
 			static void __stdcall OnReceiveData(AnyType userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			void CloseAllSockets();
 		public:
-			SIM7000SocketFactory(IO::Device::SIM7000 *modem, Bool needRelease);
+			SIM7000SocketFactory(NN<IO::Device::SIM7000> modem, Bool needRelease);
 			virtual ~SIM7000SocketFactory();
 
 			void SetAPN(Text::CString apn);
-			Text::String *GetAPN();
+			Optional<Text::String> GetAPN();
 			void Init();
 			Bool NetworkStart();
 			Bool NetworkEnd();
@@ -71,7 +71,7 @@ namespace IO
 
 			virtual void DestroySocket(NN<Socket> socket);
 			virtual Bool SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port);
-			virtual Bool SocketBind(NN<Socket> socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port); ////////////////////////
+			virtual Bool SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port); ////////////////////////
 			virtual Bool SocketBindRAWIf(NN<Socket> socket, UOSInt ifIndex); ////////////////////////
 			virtual Bool SocketListen(NN<Socket> socket); ////////////////////////
 			virtual Optional<Socket> SocketAccept(NN<Socket> socket); ////////////////////////
@@ -93,9 +93,9 @@ namespace IO
 
 			virtual UOSInt SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et); ////////////////////////
 			virtual UOSInt ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et); ////////////////////////
-			virtual void *BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et); ////////////////////////
-			virtual UOSInt EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete); ////////////////////////
-			virtual void CancelReceiveData(void *reqData); ////////////////////////
+			virtual Optional<Net::SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et); ////////////////////////
+			virtual UOSInt EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete); ////////////////////////
+			virtual void CancelReceiveData(NN<Net::SocketRecvSess> reqData); ////////////////////////
 
 			virtual UOSInt UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et); ////////////////////////
 			virtual UOSInt SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
@@ -110,12 +110,12 @@ namespace IO
 
 			virtual Bool SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32> size); ////////////////////////
 
-			virtual Bool DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr);
+			virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr);
 			virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr);
-			virtual UOSInt GetDNSList(Data::ArrayList<UInt32> *dnsList);
+			virtual UOSInt GetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
 			virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr);
 
-			virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4);
+			virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4);
 
 			virtual UOSInt GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList);
 			virtual Bool GetIPInfo(NN<IPInfo> info); //////////////////////////////////

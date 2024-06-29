@@ -8,7 +8,7 @@ namespace Test
 	class TestSIM7000
 	{
 	public:
-		static void SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *modem);
+		static void SIM7000Info(NN<IO::Writer> writer, NN<IO::Device::SIM7000> modem);
 	};
 }
 #endif

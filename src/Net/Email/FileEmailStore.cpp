@@ -124,12 +124,12 @@ Net::Email::FileEmailStore::FileEmailStore()
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.eml"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
 		UInt64 fileSize;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, fileSize).SetTo(sptr2))
 		{
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
 			NN<Text::MIMEObj::MailMessage> mail;

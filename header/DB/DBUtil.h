@@ -82,8 +82,8 @@ namespace DB
 
 		static UnsafeArray<UTF8Char> SDBStrUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UTF8Char> str, SQLType sqlType);
 		static UOSInt SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> str, SQLType sqlType);
-		static UnsafeArray<UTF8Char> SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WChar *str, SQLType sqlType);
-		static UOSInt SDBStrWLeng(const WChar *str, SQLType sqlType);
+		static UnsafeArray<UTF8Char> SDBStrW(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const WChar> str, SQLType sqlType);
+		static UOSInt SDBStrWLeng(UnsafeArrayOpt<const WChar> str, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBInt32(UnsafeArray<UTF8Char> sqlstr, Int32 val, SQLType sqlType);
 		static UOSInt SDBInt32Leng(Int32 val, SQLType sqlType);
 		static UnsafeArray<UTF8Char> SDBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 val, SQLType sqlType);

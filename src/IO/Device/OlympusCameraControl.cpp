@@ -49,16 +49,17 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 				}
 				else if (nodeName->Equals(UTF8STRC("cgi")))
 				{
+					NN<Text::String> avalue;
 					i = reader.GetAttribCount();
 					while (i-- > 0)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->value && attr->name->Equals(UTF8STRC("name")))
+						if (attr->value.SetTo(avalue) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("name")))
 						{
-							j = this->cmdList.SortedIndexOf(Text::String::OrEmpty(attr->value));
+							j = this->cmdList.SortedIndexOf(avalue);
 							if (j < 0)
 							{
-								this->cmdList.SortedInsert(attr->value->Clone());
+								this->cmdList.SortedInsert(avalue->Clone());
 							}
 						}
 					}

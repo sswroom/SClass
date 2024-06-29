@@ -236,7 +236,7 @@ Int64 Math::TSPReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-WChar *Math::TSPReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRowPtr == 0)
 		return 0;
@@ -654,7 +654,7 @@ Int64 Math::TSPHReader::GetInt64(UOSInt colIndex)
 	return (Int64)GetDbl(colIndex);
 }
 
-WChar *Math::TSPHReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRow != 0)
 		return 0;

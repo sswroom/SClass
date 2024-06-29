@@ -745,11 +745,12 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> optval, DB::SQL
 	}
 }
 
-UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WChar *val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const WChar> val, DB::SQLType sqlType)
 {
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const WChar> nnval;
 	UTF32Char c;
-	if (val == 0)
+	if (!val.SetTo(nnval))
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 
 	if (sqlType == DB::SQLType::MySQL)
@@ -758,7 +759,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -825,7 +826,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -851,7 +852,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -876,7 +877,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -901,7 +902,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -926,7 +927,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 		*sptr++ = '\'';
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -947,18 +948,19 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WC
 	}
 }
 
-UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBStrWLeng(UnsafeArrayOpt<const WChar> val, DB::SQLType sqlType)
 {
 	UOSInt leng = 0;
 	UTF32Char c;
-	if (val == 0)
+	UnsafeArray<const WChar> nnval;
+	if (!val.SetTo(nnval))
 		return 4;
 
 	if (sqlType == DB::SQLType::MySQL)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -1030,7 +1032,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -1071,7 +1073,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -1112,7 +1114,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;
@@ -1153,7 +1155,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	{
 		while (true)
 		{
-			val = Text::StrReadChar(val, c);
+			nnval = Text::StrReadChar(nnval, c);
 			if (c == 0)
 			{
 				break;

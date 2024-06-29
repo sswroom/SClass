@@ -109,7 +109,7 @@ UnsafeArray<UTF8Char> Text::TextBinEnc::Punycode::Encode(UnsafeArray<UTF8Char> b
 	return Text::StrWChar_UTF8(buff, strToEnc);
 }
 
-WChar *Text::TextBinEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)
+UnsafeArray<WChar> Text::TextBinEnc::Punycode::Encode(UnsafeArray<WChar> buff, UnsafeArray<const WChar> strToEnc)
 {
 /*	const WChar *srcPtr;
 	WChar c;

@@ -59,16 +59,16 @@ UOSInt IO::StreamLogger::Write(Data::ByteArrayR buff)
 	return writeCnt;
 }
 
-void *IO::StreamLogger::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> IO::StreamLogger::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
-	void *reqData = this->stm->BeginRead(buff, evt);
-	MyReqData *myReqData;
-	if (reqData)
+	NN<MyReqData> myReqData;
+	NN<IO::StreamReadReq> reqData;
+	if (this->stm->BeginRead(buff, evt).SetTo(reqData))
 	{
-		myReqData = MemAlloc(MyReqData, 1);
+		myReqData = MemAllocNN(MyReqData);
 		myReqData->buff = buff.Arr();
-		myReqData->reqData = reqData;
-		return myReqData;
+		myReqData->reqData = NN<IO::StreamWriteReq>::ConvertFrom(reqData);
+		return NN<IO::StreamReadReq>::ConvertFrom(myReqData);
 	}
 	else
 	{
@@ -76,11 +76,11 @@ void *IO::StreamLogger::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	}
 }
 
-UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt IO::StreamLogger::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	MyReqData *myReqData = (MyReqData*)reqData;
+	NN<MyReqData> myReqData = NN<MyReqData>::ConvertFrom(reqData);
 	Bool incomp;
-	UOSInt readCnt = this->stm->EndRead(myReqData->reqData, toWait, incomp);
+	UOSInt readCnt = this->stm->EndRead(NN<IO::StreamReadReq>::ConvertFrom(myReqData->reqData), toWait, incomp);
 	incomplete.Set(incomp);
 	if (!incomp)
 	{
@@ -88,28 +88,28 @@ UOSInt IO::StreamLogger::EndRead(void *reqData, Bool toWait, OutParam<Bool> inco
 		{
 			this->readLog->Write(Data::ByteArrayR(myReqData->buff, readCnt));
 		}
-		MemFree(myReqData);
+		MemFreeNN(myReqData);
 	}
 	return readCnt;
 }
 
-void IO::StreamLogger::CancelRead(void *reqData)
+void IO::StreamLogger::CancelRead(NN<IO::StreamReadReq> reqData)
 {
-	MyReqData *myReqData = (MyReqData*)reqData;
-	this->stm->CancelRead(reqData);
-	MemFree(myReqData);
+	NN<MyReqData> myReqData = NN<MyReqData>::ConvertFrom(reqData);
+	this->stm->CancelRead(NN<IO::StreamReadReq>::ConvertFrom(reqData));
+	MemFreeNN(myReqData);
 }
 
-void *IO::StreamLogger::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> IO::StreamLogger::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	void *reqData = this->stm->BeginWrite(buff, evt);
-	MyReqData *myReqData;
-	if (reqData)
+	NN<MyReqData> myReqData;
+	NN<IO::StreamWriteReq> reqData;
+	if (this->stm->BeginWrite(buff, evt).SetTo(reqData))
 	{
-		myReqData = MemAlloc(MyReqData, 1);
+		myReqData = MemAllocNN(MyReqData);
 		myReqData->buff = buff.Arr();
 		myReqData->reqData = reqData;
-		return myReqData;
+		return NN<IO::StreamWriteReq>::ConvertFrom(myReqData);
 	}
 	else
 	{
@@ -117,9 +117,9 @@ void *IO::StreamLogger::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
 	}
 }
 
-UOSInt IO::StreamLogger::EndWrite(void *reqData, Bool toWait)
+UOSInt IO::StreamLogger::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	MyReqData *myReqData = (MyReqData*)reqData;
+	NN<MyReqData> myReqData = NN<MyReqData>::ConvertFrom(reqData);
 	UOSInt writeCnt = this->stm->EndWrite(myReqData->reqData, toWait);
 	if (writeCnt >= 0)
 	{
@@ -127,16 +127,16 @@ UOSInt IO::StreamLogger::EndWrite(void *reqData, Bool toWait)
 		{
 			this->writeLog->Write(Data::ByteArrayR(myReqData->buff, writeCnt));
 		}
-		MemFree(myReqData);
+		MemFreeNN(myReqData);
 	}
 	return writeCnt;
 }
 
-void IO::StreamLogger::CancelWrite(void *reqData)
+void IO::StreamLogger::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
-	MyReqData *myReqData = (MyReqData*)reqData;
+	NN<MyReqData> myReqData = NN<MyReqData>::ConvertFrom(reqData);
 	this->stm->CancelWrite(reqData);
-	MemFree(myReqData);
+	MemFreeNN(myReqData);
 }
 
 Int32 IO::StreamLogger::Flush()

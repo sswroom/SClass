@@ -18,6 +18,8 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	NN<Text::String> nodeText;
 	Media::Jasper::JasperReport *report;
 	Text::StringBuilderUTF8 sb;
+	NN<Text::String> aname;
+	NN<Text::String> nns;
 	NN<JasperBand> band;
 	NEW_CLASS(report, Media::Jasper::JasperReport(fileName));
 	i = 0;
@@ -25,105 +27,106 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	while (i < j)
 	{
 		attr = reader->GetAttribNoCheck(i);
-		if (attr->name->Equals(UTF8STRC("xmlns")))
+		aname = Text::String::OrEmpty(attr->name);
+		if (aname->Equals(UTF8STRC("xmlns")))
 		{
 
 		}
-		else if (attr->name->Equals(UTF8STRC("xmlns:xsi")))
+		else if (aname->Equals(UTF8STRC("xmlns:xsi")))
 		{
 
 		}
-		else if (attr->name->Equals(UTF8STRC("xsi:schemaLocation")))
+		else if (aname->Equals(UTF8STRC("xsi:schemaLocation")))
 		{
 
 		}
-		else if (attr->name->Equals(UTF8STRC("name")))
+		else if (aname->Equals(UTF8STRC("name")))
 		{
 			report->SetReportName(attr->value);
 		}
-		else if (attr->name->Equals(UTF8STRC("pageWidth")))
+		else if (aname->Equals(UTF8STRC("pageWidth")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 				report->SetPageWidth(uval);
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("pageHeight")))
+		else if (aname->Equals(UTF8STRC("pageHeight")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 				report->SetPageHeight(uval);
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("columnWidth")))
+		else if (aname->Equals(UTF8STRC("columnWidth")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("leftMargin")))
+		else if (aname->Equals(UTF8STRC("leftMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 				report->SetMarginLeft(uval);
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("rightMargin")))
+		else if (aname->Equals(UTF8STRC("rightMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 				report->SetPageWidth(uval);
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("topMargin")))
+		else if (aname->Equals(UTF8STRC("topMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 				report->SetMarginTop(uval);
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("bottomMargin")))
+		else if (aname->Equals(UTF8STRC("bottomMargin")))
 		{
-			if (attr->value == 0 || !attr->value->ToUInt32(uval))
+			if (!attr->value.SetTo(nns) || !nns->ToUInt32(uval))
 			{
-				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr value in jasperReport (%s)\r\n", aname->v.Ptr());
 			}
 			else
 			{
 				report->SetMarginBottom(uval);
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("uuid")))
+		else if (aname->Equals(UTF8STRC("uuid")))
 		{
 			report->SetUUID(attr->value);
 		}
 		else
 		{
-			printf("JasperXML: Unknown attr in jasperReport (%s)\r\n", attr->name->v.Ptr());
+			printf("JasperXML: Unknown attr in jasperReport (%s)\r\n", aname->v.Ptr());
 		}
 
 		i++;
@@ -133,62 +136,64 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	{
 		if (nodeText->Equals(UTF8STRC("property")))
 		{
-			Text::String *name = 0;
-			Text::String *value = 0;
+			Optional<Text::String> name = 0;
+			Optional<Text::String> value = 0;
+			NN<Text::String> nameStr;
+			NN<Text::String> valueStr;
 			i = 0;
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("name")))
+				aname = Text::String::OrEmpty(attr->name);
+				if (aname->Equals(UTF8STRC("name")))
 				{
 					name = attr->value;
 				}
-				else if (attr->name->Equals(UTF8STRC("value")))
+				else if (aname->Equals(UTF8STRC("value")))
 				{
 					value = attr->value;
 				}
 				else
 				{
-					printf("JasperXML: Unknown attr in property (%s)\r\n", attr->name->v.Ptr());
+					printf("JasperXML: Unknown attr in property (%s)\r\n", aname->v.Ptr());
 				}
 				i++;
 			}
 			if (!reader->IsElementEmpty())
 			{
-				printf("JasperXML: property is not empty element (%s)\r\n", name?name->v.Ptr():(const UTF8Char*)"");
+				printf("JasperXML: property is not empty element (%s)\r\n", name.SetTo(nameStr)?nameStr->v.Ptr():(const UTF8Char*)"");
 			}
-			NN<Text::String> nameStr;
-			NN<Text::String> valueStr;
-			if (nameStr.Set(name) && valueStr.Set(value))
+			if (name.SetTo(nameStr) && value.SetTo(valueStr))
 			{
 				report->SetProperty(nameStr, valueStr);
 			}
 		}
 		else if (nodeText->Equals(UTF8STRC("import")))
 		{
-			Text::String *value = 0;
+			Optional<Text::String> value = 0;
+			NN<Text::String> valueStr;
 			i = 0;
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("value")))
+				aname = Text::String::OrEmpty(attr->name);
+				if (aname->Equals(UTF8STRC("value")))
 				{
 					value = attr->value;
 				}
 				else
 				{
-					printf("JasperXML: Unknown attr in import (%s)\r\n", attr->name->v.Ptr());
+					printf("JasperXML: Unknown attr in import (%s)\r\n", aname->v.Ptr());
 				}
 				i++;
 			}
 			if (!reader->IsElementEmpty())
 			{
-				printf("JasperXML: import is not empty element (%s)\r\n", value?value->v.Ptr():(const UTF8Char*)"");
+				printf("JasperXML: import is not empty element (%s)\r\n", value.SetTo(valueStr)?valueStr->v.Ptr():(const UTF8Char*)"");
 			}
-			NN<Text::String> valueStr;
-			if (valueStr.Set(value))
+			if (value.SetTo(valueStr))
 			{
 				report->AddImport(valueStr);
 			}
@@ -199,38 +204,41 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 		}
 		else if (nodeText->Equals(UTF8STRC("parameter")))
 		{
-			Text::String *name = 0;
-			Text::String *className = 0;
+			Optional<Text::String> name = 0;
+			Optional<Text::String> className = 0;
+			NN<Text::String> nameStr;
+			NN<Text::String> classNameStr;
 			i = 0;
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("name")))
+				aname = Text::String::OrEmpty(attr->name);
+				if (aname->Equals(UTF8STRC("name")))
 				{
 					name = attr->value;
 				}
-				else if (attr->name->Equals(UTF8STRC("class")))
+				else if (aname->Equals(UTF8STRC("class")))
 				{
 					className = attr->value;
 				}
 				else
 				{
-					printf("JasperXML: Unknown attr in parameter (%s)\r\n", attr->name->v.Ptr());
+					printf("JasperXML: Unknown attr in parameter (%s)\r\n", aname->v.Ptr());
 				}
 				i++;
 			}
-			if (name && className)
+			if (name.SetTo(nameStr) && className.SetTo(classNameStr))
 			{
 				if (reader->IsElementEmpty())
 				{
-					report->AddParameter(name, className, CSTR_NULL);
+					report->AddParameter(nameStr, classNameStr, CSTR_NULL);
 				}
 				else
 				{
 					sb.ClearStr();
 					reader->ReadNodeText(sb);
-					report->AddParameter(name, className, sb.ToCString());
+					report->AddParameter(nameStr, classNameStr, sb.ToCString());
 				}
 			}
 			else
@@ -246,7 +254,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 			while (i < j)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				printf("JasperXML: Unknown attr in queryString (%s)\r\n", attr->name->v.Ptr());
+				printf("JasperXML: Unknown attr in queryString (%s)\r\n", Text::String::OrEmpty(attr->name)->v.Ptr());
 				i++;
 			}
 			if (!reader->IsElementEmpty())
@@ -325,22 +333,25 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 
 	NN<Media::Jasper::JasperBand> band;
 	NEW_CLASSNN(band, Media::Jasper::JasperBand());
+	NN<Text::String> aname;
+	NN<Text::String> nns;
 	UOSInt i = 0;
 	UOSInt j = reader->GetAttribCount();
 	while (i < j)
 	{
 		NN<Text::XMLAttrib> attr = reader->GetAttribNoCheck(i);
-		if (attr->name->Equals(UTF8STRC("splitType")))
+		aname = Text::String::OrEmpty(attr->name);
+		if (aname->Equals(UTF8STRC("splitType")))
 		{
 			band->SetSplitType(attr->value);
 		}
-		else if (attr->name->Equals(UTF8STRC("height")) && attr->value)
+		else if (aname->Equals(UTF8STRC("height")) && attr->value.SetTo(nns))
 		{
-			band->SetHeight(attr->value->ToUOSInt());
+			band->SetHeight(nns->ToUOSInt());
 		}
 		else
 		{
-			printf("JasperXML: unknown attr in band: (%s)\r\n", attr->name->v.Ptr());
+			printf("JasperXML: unknown attr in band: (%s)\r\n", aname->v.Ptr());
 		}
 		i++;
 	}
@@ -355,8 +366,8 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 			}
 			else if (nodeType == Text::XMLNode::NodeType::Element)
 			{
-				Media::Jasper::JasperElement *element = ParseElement(reader);
-				if (element)
+				NN<Media::Jasper::JasperElement> element;
+				if (ParseElement(reader).SetTo(element))
 				{
 					band->AddElement(element);
 				}
@@ -366,7 +377,7 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 	return band;
 }
 
-Media::Jasper::JasperElement *Media::Jasper::JasperXML::ParseElement(NN<Text::XMLReader> reader)
+Optional<Media::Jasper::JasperElement> Media::Jasper::JasperXML::ParseElement(NN<Text::XMLReader> reader)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{

@@ -7,7 +7,7 @@
 Int32 Win32::WMIQuery::securityCnt = 0;
 
 
-void Win32::WMIQuery::InitQuery(const WChar *ns)
+void Win32::WMIQuery::InitQuery(UnsafeArray<const WChar> ns)
 {
 	this->pService = 0;
 }
@@ -18,7 +18,7 @@ Win32::WMIQuery::WMIQuery() : DB::DBConn(CSTR("WMIQuery"))
 	this->InitQuery(this->ns);
 }
 
-Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
+Win32::WMIQuery::WMIQuery(UnsafeArray<const WChar> ns) : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(ns);
 	this->InitQuery(this->ns);
@@ -26,7 +26,7 @@ Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
 
 Win32::WMIQuery::~WMIQuery()
 {
-	if (this->ns) Text::StrDelNew(this->ns);
+	Text::StrDelNew(this->ns);
 }
 
 Bool Win32::WMIQuery::IsError()
@@ -133,7 +133,7 @@ void Win32::WMIQuery::Reconnect()
 {
 }
 
-const WChar *Win32::WMIQuery::GetNS()
+UnsafeArray<const WChar> Win32::WMIQuery::GetNS()
 {
 	return this->ns;
 }

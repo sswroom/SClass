@@ -921,7 +921,7 @@ Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
 	return sb.ToInt64();
 }
 
-WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex <= 0)
 	{

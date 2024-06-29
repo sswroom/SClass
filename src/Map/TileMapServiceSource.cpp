@@ -35,6 +35,8 @@ void Map::TileMapServiceSource::LoadXML()
 		{
 			Text::StringBuilderUTF8 sb;
 			NN<Text::XMLAttrib> attr;
+			NN<Text::String> aname;
+			NN<Text::String> avalue;
 			UOSInt i;
 			while (reader.NextElementName().SetTo(nodeText))
 			{
@@ -82,30 +84,31 @@ void Map::TileMapServiceSource::LoadXML()
 					while (i-- > 0)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->name->Equals(UTF8STRC("minx")))
+						aname = Text::String::OrEmpty(attr->name);
+						if (aname->Equals(UTF8STRC("minx")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.min.x = attr->value->ToDouble();
+							this->bounds.min.x = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("minx = %lf\r\n", this->bounds.min.x);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("miny")))
+						else if (aname->Equals(UTF8STRC("miny")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.min.y = attr->value->ToDouble();
+							this->bounds.min.y = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("miny = %lf\r\n", this->bounds.min.y);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("maxx")))
+						else if (aname->Equals(UTF8STRC("maxx")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.max.x = attr->value->ToDouble();
+							this->bounds.max.x = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("maxx = %lf\r\n", this->bounds.max.x);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("maxy")))
+						else if (aname->Equals(UTF8STRC("maxy")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.max.y = attr->value->ToDouble();
+							this->bounds.max.y = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("maxy = %lf\r\n", this->bounds.max.y);
 #endif
@@ -119,16 +122,17 @@ void Map::TileMapServiceSource::LoadXML()
 					while (i-- > 0)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->name->Equals(UTF8STRC("x")))
+						aname = Text::String::OrEmpty(attr->name);
+						if (aname->Equals(UTF8STRC("x")) && attr->value.SetTo(avalue))
 						{
-							this->origin.x = attr->value->ToDouble();
+							this->origin.x = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("originX = %lf\r\n", this->origin.x);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("y")))
+						else if (aname->Equals(UTF8STRC("y")) && attr->value.SetTo(avalue))
 						{
-							this->origin.y = attr->value->ToDouble();
+							this->origin.y = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("originY = %lf\r\n", this->origin.y);
 #endif
@@ -142,16 +146,17 @@ void Map::TileMapServiceSource::LoadXML()
 					while (i-- > 0)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->name->Equals(UTF8STRC("x")))
+						aname = Text::String::OrEmpty(attr->name);
+						if (aname->Equals(UTF8STRC("x")) && attr->value.SetTo(avalue))
 						{
-							this->origin.x = attr->value->ToDouble();
+							this->origin.x = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("originX = %lf\r\n", this->origin.x);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("y")))
+						else if (aname->Equals(UTF8STRC("y")) && attr->value.SetTo(avalue))
 						{
-							this->origin.y = attr->value->ToDouble();
+							this->origin.y = avalue->ToDouble();
 #if defined(VERBOSE)
 							printf("originY = %lf\r\n", this->origin.y);
 #endif
@@ -165,36 +170,37 @@ void Map::TileMapServiceSource::LoadXML()
 					while (i-- > 0)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->name->Equals(UTF8STRC("width")))
+						aname = Text::String::OrEmpty(attr->name);
+						if (aname->Equals(UTF8STRC("width")) && attr->value.SetTo(avalue))
 						{
-							this->tileWidth = attr->value->ToUInt32();
+							this->tileWidth = avalue->ToUInt32();
 #if defined(VERBOSE)
 							printf("tileWidth = %d\r\n", (UInt32)this->tileWidth);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("height")))
+						else if (aname->Equals(UTF8STRC("height")) && attr->value.SetTo(avalue))
 						{
-							this->tileHeight = attr->value->ToUInt32();
+							this->tileHeight = avalue->ToUInt32();
 #if defined(VERBOSE)
 							printf("tileHeight = %d\r\n", (UInt32)this->tileHeight);
 #endif
 						}
-						else if (attr->name->Equals(UTF8STRC("extension")))
+						else if (aname->Equals(UTF8STRC("extension")) && attr->value.SetTo(avalue))
 						{
-							if (attr->value->Equals(UTF8STRC("jpg")))
+							if (avalue->Equals(UTF8STRC("jpg")))
 							{
 								SDEL_STRING(this->tileExt);
-								this->tileExt = attr->value->Clone().Ptr();
+								this->tileExt = avalue->Clone().Ptr();
 								this->imgType = IT_JPG;
 							}
-							else if (attr->value->Equals(UTF8STRC("png")))
+							else if (avalue->Equals(UTF8STRC("png")))
 							{
 								SDEL_STRING(this->tileExt);
-								this->tileExt = attr->value->Clone().Ptr();
+								this->tileExt = avalue->Clone().Ptr();
 								this->imgType = IT_PNG;
 							}
 #if defined(VERBOSE)
-							printf("found tileExt = %s, use = %s\r\n", attr->value->v, STR_PTR(this->tileExt));
+							printf("found tileExt = %s, use = %s\r\n", avalue->v, STR_PTR(this->tileExt));
 #endif
 						}
 					}
@@ -215,32 +221,33 @@ void Map::TileMapServiceSource::LoadXML()
 							while (i-- > 0)
 							{
 								attr = reader.GetAttribNoCheck(i);
-								if (attr->name->Equals(UTF8STRC("href")))
+								aname = Text::String::OrEmpty(attr->name);
+								if (aname->Equals(UTF8STRC("href")) && attr->value.SetTo(avalue))
 								{
 									SDEL_STRING(href);
-									href = attr->value->Clone().Ptr();
+									href = avalue->Clone().Ptr();
 #if defined(VERBOSE)
 									printf("tileHref = %s\r\n", href->v);
 #endif
 								}
-								else if (attr->name->Equals(UTF8STRC("profile")))
+								else if (aname->Equals(UTF8STRC("profile")) && attr->value.SetTo(avalue))
 								{
 									SDEL_STRING(href);
-									href = attr->value->Clone().Ptr();
+									href = avalue->Clone().Ptr();
 #if defined(VERBOSE)
 									printf("tileProfile = %s\r\n", href->v);
 #endif
 								}
-								else if (attr->name->Equals(UTF8STRC("units-per-pixel")))
+								else if (aname->Equals(UTF8STRC("units-per-pixel")) && attr->value.SetTo(avalue))
 								{
-									unitPerPixel = attr->value->ToDouble();
+									unitPerPixel = avalue->ToDouble();
 #if defined(VERBOSE)
 									printf("tileUnitPerPixel = %lf\r\n", unitPerPixel);
 #endif
 								}
-								else if (attr->name->Equals(UTF8STRC("order")))
+								else if (aname->Equals(UTF8STRC("order")) && attr->value.SetTo(avalue))
 								{
-									order = attr->value->ToUOSInt();
+									order = avalue->ToUOSInt();
 #if defined(VERBOSE)
 									printf("tileOrder = %d\r\n", (UInt32)order);
 #endif

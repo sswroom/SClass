@@ -33,9 +33,9 @@ namespace DB
 
 	protected:
 		OLEDBConn(NN<IO::LogTool> log);
-		void Init(const WChar *connStr);
+		void Init(UnsafeArray<const WChar> connStr);
 	public:
-		OLEDBConn(const WChar *connStr, NN<IO::LogTool> log);
+		OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log);
 		virtual ~OLEDBConn();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -61,7 +61,7 @@ namespace DB
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
 		ConnError GetConnError();
-		const WChar *GetConnStr();
+		UnsafeArrayOpt<const WChar> GetConnStr();
 		static const ProviderInfo *GetProviderInfo(const UTF8Char *providerName);
 	};
 

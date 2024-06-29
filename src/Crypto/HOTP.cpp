@@ -8,17 +8,17 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 
 //RFC 4226
-Crypto::HOTP::HOTP(const UInt8 *key, UOSInt keySize, UInt64 counter) : OTP(6)
+Crypto::HOTP::HOTP(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter) : OTP(6)
 {
-	this->key = MemAlloc(UInt8, keySize);
+	this->key = MemAllocArr(UInt8, keySize);
 	this->keySize = keySize;
-	MemCopyNO(this->key, key, keySize);
+	MemCopyNO(this->key.Ptr(), key.Ptr(), keySize);
 	this->counter = counter;
 }
 
 Crypto::HOTP::~HOTP()
 {
-	MemFree(this->key);
+	MemFreeArr(this->key);
 }
 
 Crypto::OTP::OTPType Crypto::HOTP::GetType()

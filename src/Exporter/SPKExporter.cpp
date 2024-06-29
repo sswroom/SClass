@@ -69,10 +69,8 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	{
 		NN<IO::PackageFile> pkgFile = NN<IO::PackageFile>::ConvertFrom(pobj);
 		UTF8Char sbuff[512];
-		IO::SPackageFile *spkg;
-		NEW_CLASS(spkg, IO::SPackageFile(stm, false));
+		IO::SPackageFile spkg(stm, false);
 		ExportPackageFile(spkg, pkgFile, sbuff, sbuff);
-		DEL_CLASS(spkg);
 		return true;
 	}
 	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
@@ -176,7 +174,7 @@ Bool Exporter::SPKExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 }
 
-void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, NN<IO::PackageFile> pkgFile, UnsafeArray<UTF8Char> buff, UnsafeArray<UTF8Char> buffEnd)
+void Exporter::SPKExporter::ExportPackageFile(NN<IO::SPackageFile> spkg, NN<IO::PackageFile> pkgFile, UnsafeArray<UTF8Char> buff, UnsafeArray<UTF8Char> buffEnd)
 {
 	UOSInt i;
 	UOSInt j;

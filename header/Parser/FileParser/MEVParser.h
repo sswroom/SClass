@@ -31,7 +31,7 @@ namespace Parser
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
 		private:
-			static void ReadItems(NN<IO::StreamData> fd, NN<Map::MapEnv> env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos, NN<Parser::ParserList> parsers, NN<Map::MapManager> mapMgr);
+			static void ReadItems(NN<IO::StreamData> fd, NN<Map::MapEnv> env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, UnsafeArray<UnsafeArrayOpt<const WChar>> dirArr, MEVImageInfo *imgInfos, NN<Parser::ParserList> parsers, NN<Map::MapManager> mapMgr);
 		};
 	}
 }

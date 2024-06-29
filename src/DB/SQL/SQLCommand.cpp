@@ -14,7 +14,7 @@ Bool DB::SQL::SQLCommand::IsPunctuation(UnsafeArray<const UTF8Char> s)
 	return Text::CharUtil::IsPunctuation(s[0]) && s[1] == 0;
 }
 
-DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType)
+Optional<DB::SQL::SQLCommand> DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType)
 {
 #if defined(VERBOSE)
 	printf("SQLCommand: Cmd: %s\r\n", sql);

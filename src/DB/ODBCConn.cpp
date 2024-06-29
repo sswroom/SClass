@@ -296,7 +296,7 @@ Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 	SQLSMALLINT outSize;
 	UOSInt outMaxSize = Text::StrUTF8_UTF16CntC(connStr->v, connStr->leng);
 	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, outMaxSize + 2);
-	SQLWCHAR *connEnd = (SQLWCHAR*)Text::StrUTF8_UTF16C((UTF16Char*)connBuff, connStr->v, connStr->leng, 0);
+	SQLWCHAR *connEnd = (SQLWCHAR*)Text::StrUTF8_UTF16C((UTF16Char*)connBuff, connStr->v, connStr->leng, 0).Ptr();
 	connEnd[0] = 0;
 	connEnd[1] = 0;
 	outSize = 0;
@@ -820,7 +820,7 @@ Bool DB::ODBCConn::IsLastDataError()
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
 		state[5] = 0;
-		NN<Text::String> s = Text::String::New((const UTF16Char*)state, 5);
+		NN<Text::String> s = Text::String::NewW((const UTF16Char*)state, 5);
 		Bool ret = false;
 		if (s->Equals(UTF8STRC("23000")))
 			ret = true;
@@ -1823,7 +1823,7 @@ Int64 DB::ODBCReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	UTF8Char sbuff[64];
 	if (colIndex >= this->colCnt)

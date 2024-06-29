@@ -141,7 +141,7 @@ Int64 Media::HTRecFile::HTRecReader::GetInt64(UOSInt colIndex)
 	return GetInt32(colIndex);
 }
 
-WChar *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	UTF8Char sbuff[40];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)

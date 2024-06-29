@@ -7,9 +7,9 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-void UI::GTK::GTKDropData::AppendWC(NN<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen)
+void UI::GTK::GTKDropData::AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UOSInt slen)
 {
-	NN<Text::String> str = Text::String::New(s, slen);
+	NN<Text::String> str = Text::String::NewW(s, slen);
 	sb->Append(str);
 	str->Release();
 }

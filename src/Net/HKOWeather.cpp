@@ -16,7 +16,7 @@
 #include <stdio.h>
 #endif
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *textMessage)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(NN<Text::String> textMessage)
 {
 	WeatherSignal signal;
 	signal = Net::HKOWeather::WS_NONE;
@@ -113,7 +113,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 			n2 = n->GetChildNoCheck(i);
 			if (n2->GetNodeType() == Text::XMLNode::NodeType::CData)
 			{
-				signal = String2Signal(n2->value);
+				signal = String2Signal(Text::String::OrEmpty(n2->value));
 
 				break;
 			}
@@ -413,7 +413,7 @@ Net::HKOWeather::~HKOWeather()
 
 void Net::HKOWeather::ItemAdded(NN<Net::RSSItem> item)
 {
-	WeatherSignal signal = String2Signal(item->description);
+	WeatherSignal signal = String2Signal(Text::String::OrEmpty(item->description));
 	if (signal != this->currSignal)
 	{
 		this->currSignal = signal;

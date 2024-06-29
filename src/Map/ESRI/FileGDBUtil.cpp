@@ -38,7 +38,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		}
 		field = MemAlloc(FileGDBFieldInfo, 1);
 		MemClear(field, sizeof(FileGDBFieldInfo));
-		field->name = Text::String::New((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
+		field->name = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
 		ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		if (fieldDesc[ofst] == 0)
 		{
@@ -52,7 +52,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 		}
 		else
 		{
-			field->alias = Text::String::New((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]).Ptr();
+			field->alias = Text::String::NewW((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]).Ptr();
 			ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		}
 		field->fieldType = fieldDesc[ofst];

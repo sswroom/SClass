@@ -25,9 +25,7 @@ void Text::SearchIndexer::IndexString(UnsafeArray<const UTF8Char> str, Int64 key
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
-	void *sess = this->ta->BeginAnalyze(str);
-	if (sess == 0)
-		return;
+	NN<Text::TextAnalyzer::TextSession> sess = this->ta->BeginAnalyze(str);
 	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))
 	{
 		Data::ArrayListInt64 *tmpVal = this->strIndex.Get(CSTRP(sbuff, sptr));
@@ -51,9 +49,7 @@ UOSInt Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, Unsafe
 	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListInt64 *tmpIndex;
 	Data::ArrayListInt64 *tmpIndex2;
-	void *sess = this->ta->BeginAnalyze(searchStr);
-	if (sess == 0)
-		return 0;
+	NN<Text::TextAnalyzer::TextSession> sess = this->ta->BeginAnalyze(searchStr);
 	Data::ArrayList<Data::ArrayListInt64*> resultList;
 	Data::ArrayListInt32 resultListCnt;
 	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))

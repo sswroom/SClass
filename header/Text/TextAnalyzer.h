@@ -5,11 +5,8 @@ namespace Text
 {
 	class TextAnalyzer
 	{
-	private:
-		typedef struct
-		{
-			UnsafeArray<const UTF8Char> currPos;
-		} TextSession;
+	public:
+		struct TextSession;
 	public:
 		TextAnalyzer();
 		~TextAnalyzer();

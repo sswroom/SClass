@@ -9,14 +9,14 @@ namespace Win32
 	class WMIQuery : public DB::DBConn
 	{
 	private:
-		const WChar *ns;
+		UnsafeArray<const WChar> ns;
 		void *pService;
 		static Int32 securityCnt;
 
-		void InitQuery(const WChar *ns);
+		void InitQuery(UnsafeArray<const WChar> ns);
 	public:
 		WMIQuery();
-		WMIQuery(const WChar *ns);
+		WMIQuery(UnsafeArray<const WChar> ns);
 		virtual ~WMIQuery();
 
 		Bool IsError();
@@ -43,7 +43,7 @@ namespace Win32
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		const WChar *GetNS();
+		UnsafeArray<const WChar> GetNS();
 
 		static UOSInt GetNSList(Data::ArrayList<const WChar *> *nsList);
 		static void FreeNSList(Data::ArrayList<const WChar *> *nsList);

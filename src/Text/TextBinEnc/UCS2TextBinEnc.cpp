@@ -17,7 +17,7 @@ UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> s
 {
 	if (buffSize & 1)
 		return 0;
-	NN<Text::String> s = Text::String::New((const UTF16Char*)dataBuff.Ptr(), buffSize >> 1);
+	NN<Text::String> s = Text::String::NewW((const UTF16Char*)dataBuff.Ptr(), buffSize >> 1);
 	sb->Append(s);
 	s->Release();
 	return buffSize >> 1;

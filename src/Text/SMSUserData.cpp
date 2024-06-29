@@ -4,7 +4,7 @@
 #include "Text/MyStringW.h"
 #include "Text/SMSUserData.h"
 
-Text::SMSUserData::SMSUserData(const UTF16Char *msg, Text::SMSUtil::DCS dcs, const UInt8 *udh)
+Text::SMSUserData::SMSUserData(UnsafeArray<const UTF16Char> msg, Text::SMSUtil::DCS dcs, const UInt8 *udh)
 {
 	this->msg = Text::StrCopyNew(msg);
 	this->dcs = dcs;
@@ -50,7 +50,7 @@ UInt32 Text::SMSUserData::GetByteSize()
 	{
 		Text::SMSUtil::DCS dcs;
 		UInt32 dataSize;
-		Text::SMSUtil::GetTextInfo(this->msg, &dcs, &dataSize);
+		Text::SMSUtil::GetTextInfo(this->msg, dcs, dataSize);
 		return 1 + udhSize + Text::SMSUtil::GSMTextSize2DataSize(dataSize);
 		
 	}
@@ -64,11 +64,11 @@ UInt32 Text::SMSUserData::GetByteSize()
 	}
 } //Including UDL
 
-UInt32 Text::SMSUserData::GetBytes(UInt8 *bytes)
+UInt32 Text::SMSUserData::GetBytes(UnsafeArray<UInt8> bytes)
 {
 	Int32 i;
-	UInt8 *currPtr;
-	const UTF16Char *src = this->msg;
+	UnsafeArray<UInt8> currPtr;
+	UnsafeArray<const UTF16Char> src = this->msg;
 	UTF16Char c;
 	if (this->dcs == Text::SMSUtil::DCS_GSM7BIT)
 	{
@@ -235,12 +235,13 @@ const UInt8 *Text::SMSUserData::GetUDH()
 {
 	return this->udh;
 }
-const UTF16Char *Text::SMSUserData::GetMessage()
+
+UnsafeArray<const UTF16Char> Text::SMSUserData::GetMessage()
 {
 	return this->msg;
 }
 
-UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, const UTF8Char *osmsMessage)
+UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, UnsafeArray<const UTF8Char> osmsMessage)
 {
 	UInt8 udh[6];
 	UTF16Char sbuff[161];
@@ -252,12 +253,12 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 	u16MsgPtr = MemAlloc(UTF16Char, u16Len + 1);
 	u16Msg = u16MsgPtr;
 	Text::StrUTF8_UTF16(u16MsgPtr, osmsMessage, 0);
-	Text::SMSUtil::GetTextInfo(u16Msg, &dcs, &msgLeng);
+	Text::SMSUtil::GetTextInfo(u16Msg, dcs, msgLeng);
 	UOSInt cnt = 0;
 	UInt8 refId = (UInt8)(u16Msg[0] & 0xff);
 	UInt8 totalCnt;
 	NN<Text::SMSUserData> ud;
-	const UTF16Char *sptr;
+	UnsafeArray<const UTF16Char> sptr;
 
 	if (dcs == Text::SMSUtil::DCS_UCS2)
 	{
@@ -322,7 +323,7 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 			}
 			while (*u16Msg)
 			{
-				sptr = Text::SMSUtil::TrimGSMText(sbuff, u16Msg, 134);
+				sptr = Text::SMSUtil::TrimGSMText(sbuff, u16Msg, 134).Or(sbuff);
 
 				udh[0] = 5;
 				udh[1] = 0;
@@ -353,7 +354,7 @@ UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> sm
 	}
 }
 
-Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(const UTF16Char *smsMessage, UInt8 *udh)
+Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(UnsafeArray<const UTF16Char> smsMessage, UInt8 *udh)
 {
 	UTF16Char sbuff[161];
 	UInt32 udhSize;
@@ -368,12 +369,12 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(const UTF16Char *sm
 		udhSize = (UInt32)udh[0] + 1;
 	}
 	Text::SMSUserData *ud;
-	Text::SMSUtil::GetTextInfo(smsMessage, &dcs, &msgLeng);
+	Text::SMSUtil::GetTextInfo(smsMessage, dcs, msgLeng);
 	if (dcs == Text::SMSUtil::DCS_UCS2)
 	{
 		if (msgLeng > 140 - udhSize)
 		{
-			MemCopyNO(sbuff, smsMessage, sizeof(WChar) * ((140 - udhSize) >> 1));
+			MemCopyNO(sbuff, smsMessage.Ptr(), sizeof(WChar) * ((140 - udhSize) >> 1));
 			sbuff[(140 - udhSize) >> 1] = 0;
 			NEW_CLASS(ud, Text::SMSUserData(sbuff, dcs, udh));
 			return ud;

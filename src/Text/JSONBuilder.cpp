@@ -72,7 +72,7 @@ void Text::JSONBuilder::AppendStrUTF8(UnsafeArray<const UTF8Char> val)
 	this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-void Text::JSONBuilder::AppendStrW(const WChar *val)
+void Text::JSONBuilder::AppendStrW(UnsafeArray<const WChar> val)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;

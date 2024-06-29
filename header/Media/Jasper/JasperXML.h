@@ -13,7 +13,7 @@ namespace Media
 			static Media::Jasper::JasperReport *ParseJasperReport(NN<Text::XMLReader> reader, Text::CStringNN fileName);
 		private:
 			static Optional<Media::Jasper::JasperBand> ParseBand(NN<Text::XMLReader> reader);
-			static Media::Jasper::JasperElement *ParseElement(NN<Text::XMLReader> reader);
+			static Optional<Media::Jasper::JasperElement> ParseElement(NN<Text::XMLReader> reader);
 		};
 	}
 }

@@ -346,7 +346,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrInt32(sptr, sms->index);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
-		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress());
+		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress().Or(U16STR("")));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sms"));
 		dlg->SetFileName(CSTRP(sbuff, sptr));
 
@@ -356,17 +356,17 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
 			writer.Write(CSTR("From: "));
-			writer.WriteLineW(smsMsg->GetAddress());
-			if (smsMsg->GetSMSC())
+			writer.WriteLineW(smsMsg->GetAddress().Or(U16STR("")));
+			if (smsMsg->GetSMSC().NotNull())
 			{
 				writer.Write(CSTR("SMSC: "));
-				writer.WriteLineW(smsMsg->GetSMSC());
+				writer.WriteLineW(smsMsg->GetSMSC().Or(U16STR("")));
 			}
 			writer.Write(CSTR("Date: "));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 			writer.WriteLine(CSTRP(sbuff, sptr));
 			writer.WriteLine(CSTR("Content: "));
-			writer.WriteLineW(smsMsg->GetContent());
+			writer.WriteLineW(smsMsg->GetContent().Or(U16STR("")));
 		}
 		dlg.Delete();
 		smsMsg.Delete();
@@ -423,7 +423,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 					sb.AppendC(UTF8STRC("_"));
 					sb.AppendI32(sms->index);
 					sb.AppendC(UTF8STRC("_"));
-					NN<Text::String> s = Text::String::NewNotNull(smsMsg->GetAddress());
+					NN<Text::String> s = Text::String::NewNotNull(smsMsg->GetAddress().Or(U16STR("")));
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(".sms"));
@@ -432,17 +432,17 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 					Text::UTF8Writer writer(fs);
 					writer.WriteSignature();
 					writer.Write(CSTR("From: "));
-					writer.WriteLineW(smsMsg->GetAddress());
-					if (smsMsg->GetSMSC())
+					writer.WriteLineW(smsMsg->GetAddress().Or(U16STR("")));
+					if (smsMsg->GetSMSC().NotNull())
 					{
 						writer.Write(CSTR("SMSC: "));
-						writer.WriteLineW(smsMsg->GetSMSC());
+						writer.WriteLineW(smsMsg->GetSMSC().Or(U16STR("")));
 					}
 					writer.Write(CSTR("Date: "));
 					sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer.WriteLine(CSTRP(sbuff, sptr));
 					writer.WriteLine(CSTR("Content: "));
-					writer.WriteLineW(smsMsg->GetContent());
+					writer.WriteLineW(smsMsg->GetContent().Or(U16STR("")));
 				}
 				else
 				{
@@ -820,9 +820,9 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 		if (Text::SMSMessage::CreateFromPDU(sms->pduMessage).SetTo(smsMsg))
 		{
 	#if _WCHAR_SIZE == 2
-			k = this->lvSMS->AddItem(smsMsg->GetAddress(), sms);
+			k = this->lvSMS->AddItem(smsMsg->GetAddress().Or(U16STR("")), sms);
 	#elif _WCHAR_SIZE == 4
-			Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress());
+			Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress().Or(U16STR("")));
 			k = this->lvSMS->AddItem(wbuff, sms);
 	#endif
 			smsMsg->GetMessageTime(dt);
@@ -830,8 +830,8 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 			this->lvSMS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			sptr = Text::StrInt32(sbuff, sms->index);
 			this->lvSMS->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-			const UTF16Char *cont = smsMsg->GetContent();
-			if (cont)
+			UnsafeArray<const UTF16Char> cont;
+			if (smsMsg->GetContent().SetTo(cont))
 			{
 	#if _WCHAR_SIZE == 2
 				this->lvSMS->SetSubItem(k, 3, cont);

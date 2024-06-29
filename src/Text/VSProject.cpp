@@ -101,9 +101,9 @@ Text::CodeProject::ProjectType Text::VSProject::GetProjectType() const
 	return Text::CodeProject::PROJT_VSPROJECT;
 }
 
-void Text::VSProject::SetProjectName(Text::String *projName)
+void Text::VSProject::SetProjectName(NN<Text::String> projName)
 {
-	if (projName)
+	if (projName->leng > 0)
 	{
 		this->projName->Release();
 		this->projName = projName->Clone();

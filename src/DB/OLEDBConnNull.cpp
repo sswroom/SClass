@@ -10,7 +10,7 @@
 struct DB::OLEDBConn::ClassData
 {
 	NN<IO::LogTool> log;
-	const WChar *connStr;
+	UnsafeArrayOpt<const WChar> connStr;
 };
 
 DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
@@ -21,25 +21,27 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 	data->connStr = 0;
 }
 
-void DB::OLEDBConn::Init(const WChar *connStr)
+void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
 {
-	if (this->clsData->connStr) Text::StrDelNew(this->clsData->connStr);
+	UnsafeArray<const WChar> nnconnStr;
+	if (this->clsData->connStr.SetTo(nnconnStr)) Text::StrDelNew(nnconnStr);
 	this->clsData->connStr = Text::StrCopyNew(connStr);
 	this->connErr = CE_COCREATE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
 	data->log = log;
-	data->connStr = 0;
+	data->connStr = Text::StrCopyNew(connStr);
 	this->Init(connStr);
 }
 
 DB::OLEDBConn::~OLEDBConn()
 {
-	if (this->clsData->connStr) Text::StrDelNew(this->clsData->connStr);
+	UnsafeArray<const WChar> connStr;
+	if (this->clsData->connStr.SetTo(connStr)) Text::StrDelNew(connStr);
 	MemFree(this->clsData);
 }
 
@@ -65,9 +67,10 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 void DB::OLEDBConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("OLEDB:"));
-	if (this->clsData->connStr)
+	UnsafeArray<const WChar> connStr;
+	if (this->clsData->connStr.SetTo(connStr))
 	{
-		NN<Text::String> s = Text::String::NewNotNull(this->clsData->connStr);
+		NN<Text::String> s = Text::String::NewNotNull(connStr);
 		sb->Append(s);
 		s->Release();
 	}
@@ -295,7 +298,7 @@ DB::OLEDBConn::ConnError DB::OLEDBConn::GetConnError()
 	return this->connErr;
 }
 
-const WChar *DB::OLEDBConn::GetConnStr()
+UnsafeArrayOpt<const WChar> DB::OLEDBConn::GetConnStr()
 {
 	return this->clsData->connStr;
 }

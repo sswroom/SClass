@@ -143,7 +143,7 @@ Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8
 {
 	UnsafeArray<UTF8Char> sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	NN<IO::FileStream> fs;
 	ReadSess readSess;
@@ -154,10 +154,9 @@ Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(fullPath, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(fullPath, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{

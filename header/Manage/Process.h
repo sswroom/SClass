@@ -84,7 +84,7 @@ namespace Manage
 		UOSInt GetProcId();
 		Bool IsRunning() const;
 		Bool Kill();
-		WChar *GetFilename(WChar *buff);
+		UnsafeArray<WChar> GetFilename(UnsafeArray<WChar> buff);
 		Bool GetFilename(NN<Text::StringBuilderUTF8> sb);
 		Bool GetCommandLine(NN<Text::StringBuilderUTF8> sb);
 		Bool GetWorkingDir(NN<Text::StringBuilderUTF8> sb);
@@ -127,7 +127,7 @@ namespace Manage
 		static FindProcSess *FindProcess(Text::CString processName);
 		static FindProcSess *FindProcessW(const WChar *processName);
 		static UnsafeArrayOpt<UTF8Char> FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, FindProcSess *sess, ProcessInfo *info);
-		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
+		static UnsafeArrayOpt<WChar> FindProcessNextW(UnsafeArray<WChar> processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static void FindProcessClose(FindProcSess *sess);
 		static Int32 ExecuteProcess(Text::CStringNN cmdLine, NN<Text::StringBuilderUTF8> result);
 		static Int32 ExecuteProcessW(const WChar *cmdLine, NN<Text::StringBuilderUTF8> result);

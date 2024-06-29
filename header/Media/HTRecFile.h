@@ -29,7 +29,7 @@ namespace Media
 
 			virtual Int32 GetInt32(UOSInt colIndex);
 			virtual Int64 GetInt64(UOSInt colIndex);
-			virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
+			virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
 			virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 			virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);

@@ -532,13 +532,13 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 	}
 	sptr = &sbuff[i + 1];
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	NN<Crypto::Cert::X509File> x509;
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, fileSize).SetTo(sptr2))
 		{
 			if (fileSize > 0 && fileSize <= sizeof(dataBuff))
 			{

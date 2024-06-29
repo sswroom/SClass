@@ -30,7 +30,7 @@ namespace Text
 
 		void AppendStr(Text::CStringNN val);
 		void AppendStrUTF8(UnsafeArray<const UTF8Char> val);
-		void AppendStrW(const WChar *val);
+		void AppendStrW(UnsafeArray<const WChar> val);
 		void AppendDouble(Double val);
 		void AppendTSStr(Data::Timestamp ts);
 		void AppendDateStr(Data::Date dat);

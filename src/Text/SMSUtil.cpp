@@ -112,14 +112,14 @@ UInt16 Text::SMSUtil::text2gsm[] = {
 	0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF
 };
 
-OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, UInt32 *dataLen)
+OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff, OutParam<DCS> dcs, OutParam<UInt32> dataLen)
 {
 	UOSInt len = 0;
 	Int32 t = Text::SMSUtil::DCS_GSM7BIT;
 	UInt16 v;
 	UTF16Char c;
-	const UTF16Char *src;
-	UInt8 *dest;
+	UnsafeArray<const UTF16Char> src;
+	UnsafeArray<UInt8> dest;
 
 	src = msg;
 	while ((c = *src++) != 0)
@@ -149,12 +149,12 @@ OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, UIn
 	}
 	if (t == Text::SMSUtil::DCS_GSM7BIT)
 	{
-		*dcs = Text::SMSUtil::DCS_GSM7BIT;
+		dcs.Set(Text::SMSUtil::DCS_GSM7BIT);
 		if (len > 160)
 		{
 			return -(OSInt)len;
 		}
-		*dataLen = (UInt32)len;
+		dataLen.Set((UInt32)len);
 		t = 0;
 		src = msg;
 		dest = buff;
@@ -268,9 +268,9 @@ OSInt Text::SMSUtil::ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, UIn
 	}
 	else if (t == Text::SMSUtil::DCS_UCS2)
 	{
-		*dcs = Text::SMSUtil::DCS_UCS2;
+		dcs.Set(Text::SMSUtil::DCS_UCS2);
 		len = Text::StrCharCnt(msg) << 1;
-		*dataLen = (UInt32)len;
+		dataLen.Set((UInt32)len);
 		if (len > 140)
 		{
 			return -(OSInt)len;
@@ -303,17 +303,17 @@ OSInt Text::SMSUtil::ToUCS2Bytes(const UTF16Char *msg, UInt8 *buff)
 	return (OSInt)len;
 }
 
-void Text::SMSUtil::GetTextInfo(const UTF16Char *msg, DCS *dcs, UInt32 *msgLeng)
+void Text::SMSUtil::GetTextInfo(UnsafeArray<const UTF16Char> msg, OutParam<DCS> dcs, OutParam<UInt32> msgLeng)
 {
 	UInt8 buff[140];
 	OSInt len = ToGSMBytes(msg, buff, dcs, msgLeng);
 	if (len < 0)
 	{
-		*msgLeng = (UInt32)-len;
+		msgLeng.Set((UInt32)-len);
 	}
 	else
 	{
-		*msgLeng = (UInt32)len;
+		msgLeng.Set((UInt32)len);
 	}
 }
 
@@ -326,12 +326,12 @@ UInt32 Text::SMSUtil::GSMTextSize2DataSize(UInt32 textSize)
 	return dataSize;
 }
 
-Bool Text::SMSUtil::TrimGSMText(UTF16Char *msg)
+Bool Text::SMSUtil::TrimGSMText(UnsafeArray<UTF16Char> msg)
 {
 	UOSInt len = 0;
 	UInt16 v;
 	UTF16Char c;
-	UTF16Char *src;
+	UnsafeArray<UTF16Char> src;
 
 	src = msg;
 	while ((c = *src++) != 0)
@@ -365,12 +365,12 @@ Bool Text::SMSUtil::TrimGSMText(UTF16Char *msg)
 	return true;
 }
 
-UTF16Char *Text::SMSUtil::TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg, UInt32 dataLen)
+UnsafeArrayOpt<UTF16Char> Text::SMSUtil::TrimGSMText(UnsafeArray<UTF16Char> destBuff, UnsafeArray<const UTF16Char> msg, UInt32 dataLen)
 {
 	UOSInt len = 0;
 	UInt16 v;
 	UTF16Char c;
-	const UTF16Char *src;
+	UnsafeArray<const UTF16Char> src;
 	Int32 t = 0;
 
 	src = msg;
@@ -435,7 +435,7 @@ UTF16Char *Text::SMSUtil::TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg,
 	return destBuff;
 }
 
-Bool Text::SMSUtil::IsPhone(const UTF16Char *txt)
+Bool Text::SMSUtil::IsPhone(UnsafeArray<const UTF16Char> txt)
 {
 	if (txt[0] == '+')
 	{
@@ -469,7 +469,7 @@ Bool Text::SMSUtil::IsIntlPhone(UnsafeArray<const UTF8Char> txt)
 	return true;
 }
 
-Bool Text::SMSUtil::IsIntlPhone(const UTF16Char *txt)
+Bool Text::SMSUtil::IsIntlPhone(UnsafeArray<const UTF16Char> txt)
 {
 	if (txt[0] != '+')
 	{

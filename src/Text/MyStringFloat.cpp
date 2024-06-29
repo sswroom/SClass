@@ -207,7 +207,7 @@ UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val)
 	return StrDouble(oriStr, val, 15, DoubleStyleExcel);
 }
 
-UTF16Char *Text::StrDoubleW(UTF16Char *oriStr, Double val)
+UnsafeArray<UTF16Char> Text::StrDoubleW(UnsafeArray<UTF16Char> oriStr, Double val)
 {
 	if (val == 0)
 	{
@@ -279,7 +279,7 @@ UTF16Char *Text::StrDoubleW(UTF16Char *oriStr, Double val)
 		{
 			oriStr[1] = '+';
 		}
-		UTF16Char *tmpStr = oriStr + 13;
+		UnsafeArray<UTF16Char> tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
 		UInt32 uex = (UInt32)ex;
@@ -391,7 +391,7 @@ UTF16Char *Text::StrDoubleW(UTF16Char *oriStr, Double val)
 	return oriStr;
 }
 
-UTF32Char *Text::StrDoubleW(UTF32Char *oriStr, Double val)
+UnsafeArray<UTF32Char> Text::StrDoubleW(UnsafeArray<UTF32Char> oriStr, Double val)
 {
 	if (val == 0)
 	{
@@ -459,7 +459,7 @@ UTF32Char *Text::StrDoubleW(UTF32Char *oriStr, Double val)
 		{
 			oriStr[1] = '+';
 		}
-		UTF32Char *tmpStr = oriStr + 13;
+		UnsafeArray<UTF32Char> tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
 		UInt32 uex = (UInt32)ex;
@@ -594,7 +594,7 @@ UnsafeArray<UTF8Char> Text::StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val
 	return StrDoubleFmt(oriStr, val, (const Char*)fmt);
 }
 
-UTF16Char *Text::StrDoubleDPW(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF16Char> Text::StrDoubleDPW(UnsafeArray<UTF16Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
@@ -617,7 +617,7 @@ UTF16Char *Text::StrDoubleDPW(UTF16Char *oriStr, Double val, UOSInt minDP, UOSIn
 	return StrDoubleFmtW(oriStr, val, fmt);
 }
 
-UTF32Char *Text::StrDoubleDPW(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF32Char> Text::StrDoubleDPW(UnsafeArray<UTF32Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
@@ -1125,7 +1125,7 @@ UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double va
 	}
 }
 
-UTF16Char *Text::StrDoubleFmtW(UTF16Char *oriStr, Double val, UnsafeArray<const Char> format)
+UnsafeArray<UTF16Char> Text::StrDoubleFmtW(UnsafeArray<UTF16Char> oriStr, Double val, UnsafeArray<const Char> format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -1553,7 +1553,7 @@ UTF16Char *Text::StrDoubleFmtW(UTF16Char *oriStr, Double val, UnsafeArray<const 
 	}
 }
 
-UTF32Char *Text::StrDoubleFmtW(UTF32Char *oriStr, Double val, UnsafeArray<const Char> format)
+UnsafeArray<UTF32Char> Text::StrDoubleFmtW(UnsafeArray<UTF32Char> oriStr, Double val, UnsafeArray<const Char> format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -2109,7 +2109,7 @@ Bool Text::StrToDouble(UnsafeArray<const UTF8Char> str1, OutParam<Double> outVal
 	return true;
 }
 
-Bool Text::StrToDoubleW(const UTF16Char *str1, OutParam<Double> outVal)
+Bool Text::StrToDoubleW(UnsafeArray<const UTF16Char> str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
@@ -2202,7 +2202,7 @@ Bool Text::StrToDoubleW(const UTF16Char *str1, OutParam<Double> outVal)
 	return true;
 }
 
-Bool Text::StrToDoubleW(const UTF32Char *str1, OutParam<Double> outVal)
+Bool Text::StrToDoubleW(UnsafeArray<const UTF32Char> str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
@@ -2306,7 +2306,7 @@ Double Text::StrToDouble(UnsafeArray<const UTF8Char> str1)
 	return 0;
 }
 
-Double Text::StrToDoubleW(const UTF16Char *str1)
+Double Text::StrToDoubleW(UnsafeArray<const UTF16Char> str1)
 {
 	Double r;
 	if (Text::StrToDoubleW(str1, r))
@@ -2314,7 +2314,7 @@ Double Text::StrToDoubleW(const UTF16Char *str1)
 	return 0;
 }
 
-Double Text::StrToDoubleW(const UTF32Char *str1)
+Double Text::StrToDoubleW(UnsafeArray<const UTF32Char> str1)
 {
 	Double r;
 	if (Text::StrToDoubleW(str1, r))
@@ -2322,13 +2322,13 @@ Double Text::StrToDoubleW(const UTF32Char *str1)
 	return 0;
 }
 
-void Text::SBAppendF32(Text::StringBuilderUTF *sb, Single v)
+void Text::SBAppendF32(NN<Text::StringBuilderUTF> sb, Single v)
 {
 	UTF8Char sbuff[33];
 	sb->AppendC(sbuff, (UOSInt)(Text::StrDouble(sbuff, v) - sbuff));
 }
 
-void Text::SBAppendF64(Text::StringBuilderUTF *sb, Double v)
+void Text::SBAppendF64(NN<Text::StringBuilderUTF> sb, Double v)
 {
 	UTF8Char sbuff[33];
 	sb->AppendC(sbuff, (UOSInt)(Text::StrDouble(sbuff, v) - sbuff));

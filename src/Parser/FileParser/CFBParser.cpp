@@ -458,7 +458,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					sb.ClearStr();
 					if (readBuff[i + 11] & 1)
 					{
-						NN<Text::String> s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
+						NN<Text::String> s = Text::String::NewW((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
 						sb.Append(s);
 						s->Release();
 					}
@@ -1165,7 +1165,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 	{
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[3], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[3], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + charCnt * 2;
@@ -1181,7 +1181,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 		cchExtRst = ReadUInt32(&buff[3]);
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[7], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[7], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + charCnt * 2;
@@ -1199,7 +1199,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 		fmtCnt = ReadUInt16(&buff[3]);
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[5], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[5], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + charCnt * 2;
@@ -1218,7 +1218,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBu
 		cchExtRst = ReadUInt32(&buff[5]);
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[9], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[9], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 9 + charCnt * 2;
@@ -1247,7 +1247,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 > buffSize)
 				thisCnt = (buffSize - 1) >> 1;
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[1], thisCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[1], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 1 + thisCnt * 2;
@@ -1267,7 +1267,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 + cchExtRst > buffSize)
 				thisCnt = (buffSize - 1 - cchExtRst) >> 1;
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[5], thisCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[5], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + thisCnt * 2;
@@ -1289,7 +1289,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 3 + (fmtCnt << 2) > buffSize)
 				thisCnt = (buffSize - 3 - (fmtCnt << 2)) >> 1;
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[3], thisCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[3], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + thisCnt * 2;
@@ -1312,7 +1312,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 7 + (fmtCnt << 2) + cchExtRst > buffSize)
 				thisCnt = (buffSize - 7 - (fmtCnt << 2) - cchExtRst) >> 1;
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[7], thisCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[7], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + thisCnt * 2;
@@ -1342,7 +1342,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 	{
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[2], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[2], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + charCnt * 2;
@@ -1358,7 +1358,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 		cchExtRst = ReadUInt32(&buff[2]);
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[6], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[6], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + charCnt * 2;
@@ -1376,7 +1376,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 		fmtCnt = ReadUInt16(&buff[2]);
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[4], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[4], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + charCnt * 2;
@@ -1395,7 +1395,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringB
 		cchExtRst = ReadUInt32(&buff[4]);
 		if (flags & 1)
 		{
-			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[8], charCnt);
+			NN<Text::String> s = Text::String::NewW((UTF16Char*)&buff[8], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 9 + charCnt * 2;

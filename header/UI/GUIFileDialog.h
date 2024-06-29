@@ -13,7 +13,7 @@ namespace UI
 	protected:
 		IO::Registry *reg;
 		WChar *dialogName;
-		const WChar *lastName;
+		UnsafeArrayOpt<const WChar> lastName;
 		Optional<Text::String> fileName;
 		Bool isSave;
 		Bool allowMulti;

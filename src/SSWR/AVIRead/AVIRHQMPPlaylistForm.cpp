@@ -112,10 +112,10 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UnsafeArray<UTF8Char> folder
 	UnsafeArray<UTF8Char> sptr;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(folderBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(folderBuff, sptr));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(folderBuff, sptr)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(folderBuffEnd, sess, 0, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(folderBuffEnd, sess, 0, pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

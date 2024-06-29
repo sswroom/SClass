@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/BuildTime.h"
 
-void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
+void IO::BuildTime::GetBuildTime(NN<Data::DateTime> dt)
 {
 	dt->SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 	dt->SetValue(CSTR(__DATE__ " " __TIME__));

@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	}
 
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	csess.succ = true;
 	csess.errMsg = 0;
 	Text::CStringNN ext;
@@ -74,8 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 		ext = CSTR("jpg");
 	}
 	IO::Path::PathType pt;
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		*sptr = 0;
 		sptr2 = Text::StrConcat(sbuff2, sbuff);
@@ -90,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 			}
 		}
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
 			if (pt == IO::Path::PathType::File && !Text::StrEndsWithICaseC(sptr, (UOSInt)(sptrEnd - sptr), ext.v, ext.leng))
 			{

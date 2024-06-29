@@ -11,14 +11,13 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList
 	UOSInt ret = 0;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	*linkPathEnd++ = '/';
 	sptr = Text::StrConcatC(linkPathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(linkPath, sptr));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(linkPath, sptr)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(linkPathEnd, sess, 0, pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

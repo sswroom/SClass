@@ -138,8 +138,8 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 //		printf("checking: %s\r\n", sbuff);
 		this->chkStatus = CS_CHECKING;
@@ -149,7 +149,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 		Data::Timestamp modTime;
 		IO::ActiveStreamReader::BottleNeckType bnt;
 
-		while (IO::Path::FindNextFile(sptr, sess, &modTime, &pt, &fileSize).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, modTime, pt, fileSize).SetTo(sptr2))
 		{
 //			printf("File: %s\r\n", sptr);
 			if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.MP4")))

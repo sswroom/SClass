@@ -9,20 +9,14 @@ Media::Jasper::JasperBand::JasperBand()
 
 Media::Jasper::JasperBand::~JasperBand()
 {
-	SDEL_STRING(this->splitType);
-	JasperElement *ele;
-	UOSInt i = this->elements.GetCount();
-	while (i-- > 0)
-	{
-		ele = this->elements.GetItem(i);
-		DEL_CLASS(ele);
-	}
+	OPTSTR_DEL(this->splitType);
+	this->elements.DeleteAll();
 }
 
-void Media::Jasper::JasperBand::SetSplitType(Text::String *splitType)
+void Media::Jasper::JasperBand::SetSplitType(Optional<Text::String> splitType)
 {
-	SDEL_STRING(this->splitType);
-	this->splitType = SCOPY_STRING(splitType);
+	OPTSTR_DEL(this->splitType);
+	this->splitType = Text::String::CopyOrNull(splitType);
 }
 
 void Media::Jasper::JasperBand::SetHeight(UOSInt height)
@@ -30,7 +24,7 @@ void Media::Jasper::JasperBand::SetHeight(UOSInt height)
 	this->height = height;
 }
 
-Text::String *Media::Jasper::JasperBand::GetSplitType() const
+Optional<Text::String> Media::Jasper::JasperBand::GetSplitType() const
 {
 	return this->splitType;
 }
@@ -45,7 +39,7 @@ UOSInt Media::Jasper::JasperBand::GetHeight() const
 	return this->height;
 }
 
-void Media::Jasper::JasperBand::AddElement(JasperElement *element)
+void Media::Jasper::JasperBand::AddElement(NN<JasperElement> element)
 {
 	this->elements.Add(element);
 }
@@ -55,7 +49,7 @@ UOSInt Media::Jasper::JasperBand::GetCount() const
 	return this->elements.GetCount();
 }
 
-Media::Jasper::JasperElement *Media::Jasper::JasperBand::GetElement(UOSInt index) const
+Optional<Media::Jasper::JasperElement> Media::Jasper::JasperBand::GetElement(UOSInt index) const
 {
 	return this->elements.GetItem(index);
 }

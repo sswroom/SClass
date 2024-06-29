@@ -108,7 +108,7 @@ Optional<Text::String> Data::Chart::GetYAxisName() const
 	return this->yAxisName;
 }
 
-UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
+UOSInt Data::Chart::CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
@@ -165,7 +165,7 @@ UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit)
+UOSInt Data::Chart::CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
@@ -221,7 +221,7 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat)
+UOSInt Data::Chart::CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];

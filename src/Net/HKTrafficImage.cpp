@@ -27,6 +27,7 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 		Text::StringBuilderUTF8 sbDesc;
 		Text::StringBuilderUTF8 sbURL;
 		Text::StringBuilderUTF8 sb;
+		NN<Text::String> name;
 		Double lat;
 		Double lon;
 
@@ -34,14 +35,14 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 		while (i-- > 0)
 		{
 			node1 = doc.GetChildNoCheck(i);
-			if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->EqualsICase(UTF8STRC("image-list")))
+			if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node1->name)->EqualsICase(UTF8STRC("image-list")))
 			{
 				j = 0;
 				k = node1->GetChildCnt();
 				while (j < k)
 				{
 					node2 = node1->GetChildNoCheck(j);
-					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("image")))
+					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && Text::String::OrEmpty(node2->name)->EqualsICase(UTF8STRC("image")))
 					{
 						sbKey.ClearStr();
 						sbRegion.ClearStr();
@@ -53,33 +54,33 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 						while (l-- > 0)
 						{
 							node3 = node2->GetChildNoCheck(l);
-							if (node3->GetNodeType() == Text::XMLNode::NodeType::Element)
+							if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name.SetTo(name))
 							{
-								if (node3->name->EqualsICase(UTF8STRC("key")))
+								if (name->EqualsICase(UTF8STRC("key")))
 								{
 									node3->GetInnerText(sbKey);
 								}
-								else if (node3->name->EqualsICase(UTF8STRC("region")))
+								else if (name->EqualsICase(UTF8STRC("region")))
 								{
 									node3->GetInnerText(sbRegion);
 								}
-								else if (node3->name->EqualsICase(UTF8STRC("description")))
+								else if (name->EqualsICase(UTF8STRC("description")))
 								{
 									node3->GetInnerText(sbDesc);
 								}
-								else if (node3->name->EqualsICase(UTF8STRC("latitude")))
+								else if (name->EqualsICase(UTF8STRC("latitude")))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(sb);
 									lat = Text::StrToDouble(sb.ToString());
 								}
-								else if (node3->name->EqualsICase(UTF8STRC("longitude")))
+								else if (name->EqualsICase(UTF8STRC("longitude")))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(sb);
 									lon = Text::StrToDouble(sb.ToString());
 								}
-								else if (node3->name->EqualsICase(UTF8STRC("url")))
+								else if (name->EqualsICase(UTF8STRC("url")))
 								{
 									node3->GetInnerText(sbURL);
 								}

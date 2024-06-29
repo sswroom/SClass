@@ -14,7 +14,7 @@ namespace Text
 		public:
 			static UnsafeArray<UTF8Char> Encode(UnsafeArray<UTF8Char> buff, Text::CStringNN strToEnc);
 			static UnsafeArray<UTF8Char> Encode(UnsafeArray<UTF8Char> buff, const WChar *strToEnc);
-			static WChar *Encode(WChar *buff, const WChar *strToEnc);
+			static UnsafeArray<WChar> Encode(UnsafeArray<WChar> buff, UnsafeArray<const WChar> strToEnc);
 			static UnsafeArray<UTF8Char> Decode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> strToDec, UOSInt strLen);
 			static WChar *Decode(WChar *buff, UnsafeArray<const UTF8Char> strToDec);
 			static WChar *Decode(WChar *buff, const WChar *strToDec);

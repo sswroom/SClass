@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(Optional<UI::GUIClientControl> paren
 	lbl = ui->NewLabel(*this, CSTRP(sbuff, sptr));
 	lbl->SetRect(8, 32, 400, 23, false);
 
-	IO::BuildTime::GetBuildTime(&t);
+	IO::BuildTime::GetBuildTime(t);
 	sptr = t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
 	lbl = ui->NewLabel(*this, CSTRP(sbuff, sptr));
 	lbl->SetRect(8, 56, 400, 23, false);

@@ -10,7 +10,7 @@ Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer>
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	Data::Timestamp modTime;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 
 	this->defLCID = defLCID;
@@ -21,12 +21,11 @@ Map::RevGeoDir::RevGeoDir(Text::CStringNN cfgDir, UInt32 defLCID, NN<IO::Writer>
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("RevGeo_*.*"));
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess == 0)
+	if (!IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		return;
 	}
-	while (IO::Path::FindNextFile(sptr, sess, &modTime, &pt, 0).SetTo(sptr2))
+	while (IO::Path::FindNextFile(sptr, sess, modTime, pt, 0).SetTo(sptr2))
 	{
 		if (Text::StrStartsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("REVGEO_")))
 		{

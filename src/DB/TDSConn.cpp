@@ -268,7 +268,7 @@ public:
 		return 0;
 	}
 
-	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
 		return 0;
 	}

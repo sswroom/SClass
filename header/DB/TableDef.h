@@ -41,15 +41,15 @@ namespace DB
 		UOSInt CountPK() const;
 		Data::ArrayIterator<NN<DB::ColDef>> ColIterator() const;
 
-		TableDef *AddCol(NN<DB::ColDef> col);
-		TableDef *SetDatabaseName(Text::CString databaseName);
-		TableDef *SetSchemaName(Text::CString schemaName);
-		TableDef *SetTableName(Text::CStringNN tableName);
-		TableDef *SetEngine(Text::CString engine);
-		TableDef *SetCharset(Text::CString charset);
-		TableDef *SetAttr(UnsafeArrayOpt<const UTF8Char> attr);
-		TableDef *SetComments(UnsafeArrayOpt<const UTF8Char> comments);
-		TableDef *SetSQLType(SQLType sqlType);
+		NN<TableDef> AddCol(NN<DB::ColDef> col);
+		NN<TableDef> SetDatabaseName(Text::CString databaseName);
+		NN<TableDef> SetSchemaName(Text::CString schemaName);
+		NN<TableDef> SetTableName(Text::CStringNN tableName);
+		NN<TableDef> SetEngine(Text::CString engine);
+		NN<TableDef> SetCharset(Text::CString charset);
+		NN<TableDef> SetAttr(UnsafeArrayOpt<const UTF8Char> attr);
+		NN<TableDef> SetComments(UnsafeArrayOpt<const UTF8Char> comments);
+		NN<TableDef> SetSQLType(SQLType sqlType);
 		
 		void ColFromReader(NN<DB::DBReader> r);
 		NN<TableDef> Clone() const;

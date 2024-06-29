@@ -125,15 +125,16 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 				}
 				else if (s->EqualsICase(UTF8STRC("script")))
 				{
+					NN<Text::String> avalue;
 					elementType = 2;
 					i = 0;
 					j = reader.GetAttribCount();
 					while (i < j)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->name->Equals(UTF8STRC("type")) && attr->value != 0)
+						if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("type")) && attr->value.SetTo(avalue))
 						{
-							if (attr->value->Equals(UTF8STRC("application/ld+json")))
+							if (avalue->Equals(UTF8STRC("application/ld+json")))
 							{
 								elementType = 3;
 							}
@@ -331,12 +332,13 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 					UOSInt i = 0;
 					UOSInt j = reader.GetAttribCount();
 					NN<Text::XMLAttrib> attr;
+					NN<Text::String> avalue;
 					while (i < j)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						if (attr->name->EqualsICase(UTF8STRC("SRC")) && attr->value)
+						if (Text::String::OrEmpty(attr->name)->EqualsICase(UTF8STRC("SRC")) && attr->value.SetTo(avalue))
 						{
-							imgList->Add(attr->value->Clone());
+							imgList->Add(avalue->Clone());
 						}
 						i++;
 					}

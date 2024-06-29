@@ -298,14 +298,14 @@ UOSInt Net::TCPClient::Write(Data::ByteArrayR buff)
 	}
 }
 
-void *Net::TCPClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> Net::TCPClient::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 6) != 0)
 		return 0;
 	Net::SocketFactory::ErrorType et;
-	void *data = sockf->BeginReceiveData(s, buff.Arr().Ptr(), buff.GetSize(), evt, et);
-	if (data == 0)
+	Optional<Net::SocketRecvSess> data = sockf->BeginReceiveData(s, buff.Arr(), buff.GetSize(), evt, et);
+	if (data.IsNull())
 	{
 		if (et == Net::SocketFactory::ET_SHUTDOWN)
 		{
@@ -320,44 +320,37 @@ void *Net::TCPClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 			this->Close();
 		}
 	}
-	return data;
+	return Optional<IO::StreamReadReq>::ConvertFrom(data);
 }
 
-UOSInt Net::TCPClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt Net::TCPClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	if (reqData == 0)
-	{
-		incomplete.Set(false);
-		return 0;
-	}
-	return sockf->EndReceiveData(reqData, toWait, incomplete);
+	return sockf->EndReceiveData(NN<Net::SocketRecvSess>::ConvertFrom(reqData), toWait, incomplete);
 }
 
-void Net::TCPClient::CancelRead(void *reqData)
+void Net::TCPClient::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 	Bool incomplete;
 	EndRead(reqData, true, incomplete);
 }
 
-void *Net::TCPClient::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> Net::TCPClient::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 5) != 0)
 		return 0;
-	void *data = (void*)Write(buff);
-	if (data != 0 && evt != 0)
+	UOSInt data = Write(buff);
+	if (data != 0)
 		evt->Set();
-	return data;
+	return (IO::StreamWriteReq*)data;
 }
 
-UOSInt Net::TCPClient::EndWrite(void *reqData, Bool toWait)
+UOSInt Net::TCPClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	if (reqData == 0)
-		return 0;
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void Net::TCPClient::CancelWrite(void *reqData)
+void Net::TCPClient::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 	EndWrite(reqData, true);
 }

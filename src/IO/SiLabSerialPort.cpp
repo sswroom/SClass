@@ -136,21 +136,21 @@ UOSInt IO::SiLabSerialPort::Write(Data::ByteArrayR buff)
 
 struct ReadEvent
 {
-	UInt8 *buff;
+	UnsafeArray<UInt8> buff;
 	UOSInt size;	
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 	UInt32 readSize;
 	OVERLAPPED ol;
 };
 
-void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	void *h = this->handle;
 	if (h == 0)
 		return 0;
 
-	ReadEvent *re = MemAlloc(ReadEvent, 1);
-	re->buff = buff.Arr().Ptr();
+	NN<ReadEvent> re = MemAllocNN(ReadEvent);
+	re->buff = buff.Arr();
 	re->evt = evt;
 	re->size = buff.GetSize();
 	re->ol.hEvent = evt->hand;
@@ -159,49 +159,49 @@ void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *e
 	re->ol.Offset = 0;
 	re->ol.OffsetHigh = 0;
 	this->driver->SI_Read(h, (void*)buff.Arr().Ptr(), (UInt32)buff.GetSize(), &re->readSize, &re->ol);
-	return re;
+	return NN<IO::StreamReadReq>::ConvertFrom(re);
 }
 
-UOSInt IO::SiLabSerialPort::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt IO::SiLabSerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	ReadEvent *re = (ReadEvent*)reqData;
+	NN<ReadEvent> re = NN<ReadEvent>::ConvertFrom(reqData);
 #if defined(_WIN32) && !defined(_WIN32_WCE)
 	DWORD retVal;
 	Int32 result = GetOverlappedResult(this->handle, &re->ol, (DWORD*)&retVal, TRUE);
-	MemFree(re);
+	MemFreeNN(re);
 	if (result)
 		return retVal;
 	return 0;
 #else
 	UInt32 retVal = re->readSize;
 	incomplete.Set(false);
-	MemFree(re);
+	MemFreeNN(re);
 	return retVal;
 #endif
 }
 
-void IO::SiLabSerialPort::CancelRead(void *reqData)
+void IO::SiLabSerialPort::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 //	ReadEvent *re = (ReadEvent*)reqData;
 	this->driver->SI_CancelIo(this->handle);
-	MemFree(reqData);
+	MemFreeNN(reqData);
 //	PurgeComm(this->handle, PURGE_RXABORT);
 }
 
-void *IO::SiLabSerialPort::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> IO::SiLabSerialPort::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
-	evt->Set();
 	if (handle == 0)
 		return 0;
-	return (void*)Write(buff);
+	evt->Set();
+	return (IO::StreamWriteReq*)Write(buff);
 }
 
-UOSInt IO::SiLabSerialPort::EndWrite(void *reqData, Bool toWait)
+UOSInt IO::SiLabSerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void IO::SiLabSerialPort::CancelWrite(void *reqData)
+void IO::SiLabSerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 }
 

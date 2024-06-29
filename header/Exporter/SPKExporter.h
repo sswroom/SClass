@@ -19,7 +19,7 @@ namespace Exporter
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 	private:
-		void ExportPackageFile(IO::SPackageFile *spkg, NN<IO::PackageFile> pkgFile, UnsafeArray<UTF8Char> buff, UnsafeArray<UTF8Char> buffEnd);
+		void ExportPackageFile(NN<IO::SPackageFile> spkg, NN<IO::PackageFile> pkgFile, UnsafeArray<UTF8Char> buff, UnsafeArray<UTF8Char> buffEnd);
 	};
 }
 #endif

@@ -181,7 +181,7 @@ namespace Net
 		WeatherSignal currSignal;
 		NN<IO::LogTool> log;
 
-		static WeatherSignal String2Signal(Text::String *textMessage);
+		static WeatherSignal String2Signal(NN<Text::String> textMessage);
 	public:
 		static WeatherSignal GetSignalSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
 		static Bool GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log);

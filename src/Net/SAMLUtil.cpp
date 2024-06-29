@@ -13,6 +13,7 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 	Crypto::Encrypt::RSACipher::Padding rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1;
 	Bool algFound = false;
 	NN<Text::XMLAttrib> attr;
+	NN<Text::String> avalue;
 	UOSInt keySize = 0;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
@@ -22,9 +23,9 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("Algorithm")))
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("Algorithm")) && attr->value.SetTo(avalue))
 				{
-					if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p")))
+					if (avalue->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p")))
 					{
 						algFound = true;
 						rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP;
@@ -123,6 +124,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 	MemClear(keyBuff, sizeof(keyBuff));
 	Crypto::Encrypt::BlockCipher *cipher = 0;
 	NN<Text::XMLAttrib> attr;
+	NN<Text::String> avalue;
 	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
@@ -138,9 +140,9 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("Algorithm")))
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("Algorithm")) && attr->value.SetTo(avalue))
 				{
-					if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#aes256-cbc")))
+					if (avalue->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#aes256-cbc")))
 					{
 						NEW_CLASS(cipher, Crypto::Encrypt::AES256(keyBuff));
 						cipher->SetChainMode(Crypto::Encrypt::ChainMode::CBC);
@@ -150,7 +152,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					else
 					{
 						sbResult->AppendC(UTF8STRC("Algorithm not supported: "));
-						sbResult->Append(attr->value);
+						sbResult->Append(avalue);
 						break;
 					}
 				}

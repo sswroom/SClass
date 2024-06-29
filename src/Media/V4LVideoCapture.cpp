@@ -518,10 +518,10 @@ UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList
 	UInt32 devId;
 	IO::Path::PathType pt;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("video*"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).NotNull())
 		{
 			devId = Text::StrToUInt32(&sptr[5]);
 			devList->Add(devId);

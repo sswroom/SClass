@@ -182,9 +182,8 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	IO::Path::FindFileSession *sess;
-	sess = IO::Path::FindFile(CSTR("/dev/tty*"));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTR("/dev/tty*")).SetTo(sess))
 	{
 		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
@@ -209,8 +208,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 		}
 		IO::Path::FindFileClose(sess);
 	}
-	sess = IO::Path::FindFile(CSTR("/dev/rfcomm*"));
-	if (sess)
+	if (IO::Path::FindFile(CSTR("/dev/rfcomm*")).SetTo(sess))
 	{
 		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
@@ -446,37 +444,37 @@ UOSInt IO::SerialPort::Write(Data::ByteArrayR buff)
 	return (UOSInt)writeCnt;
 }
 
-void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	return 0;
 }
 
-UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
 	return 0;
 }
 
-void IO::SerialPort::CancelRead(void *reqData)
+void IO::SerialPort::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 }
 
-void *IO::SerialPort::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> IO::SerialPort::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	evt->Set();
 	if (this->handle == 0)
 		return 0;
-	return (void*)Write(buff);
+	return (IO::StreamWriteReq*)Write(buff);
 }
 
-UOSInt IO::SerialPort::EndWrite(void *reqData, Bool toWait)
+UOSInt IO::SerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
 	OSInt h = (OSInt)this->handle;
 	fsync((int)h);
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void IO::SerialPort::CancelWrite(void *reqData)
+void IO::SerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 }
 

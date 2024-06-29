@@ -139,7 +139,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff,
 {
 	IO::Path::PathType pt;
 	UnsafeArray<UTF8Char> sptr;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	Text::StringBuilderUTF8 sb;
 	UOSInt lineCnt;
 	UOSInt nonEmptyCnt;
@@ -150,10 +150,9 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UnsafeArray<UTF8Char> pathBuff,
 
 	*pathBuffEnd++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(pathBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(pathBuff, sptr));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(pathBuff, sptr)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(pathBuffEnd, sess, 0, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(pathBuffEnd, sess, 0, pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{

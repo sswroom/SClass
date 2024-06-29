@@ -47,7 +47,7 @@ UnsafeArray<UTF8Char> Text::Encoding::ToString(UnsafeArray<UTF8Char> buff)
 	return Text::EncodingFactory::GetName(buff, this->codePage);
 }
 
-UOSInt Text::Encoding::CountWChars(const UInt8 *bytes, UOSInt byteSize)
+UOSInt Text::Encoding::CountWChars(UnsafeArray<const UInt8> bytes, UOSInt byteSize)
 {
 	if (this->codePage == 65001)
 	{
@@ -64,14 +64,14 @@ UOSInt Text::Encoding::CountWChars(const UInt8 *bytes, UOSInt byteSize)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, 0, 0);
+		return (UOSInt)MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, 0, 0);
 #else
 		return byteSize;
 #endif
 	}
 }
 
-WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
 	UOSInt size = byteSize * 2 + 2;
 
@@ -88,8 +88,8 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 	{
 		if (byteSize == (UOSInt)-1)
 		{
-			WChar *oriBuff = buff;
-			while ((*buff++ = ReadUInt16(bytes)) != 0)
+			UnsafeArray<WChar> oriBuff = buff;
+			while ((*buff++ = ReadUInt16(&bytes[0])) != 0)
 			{
 				bytes += 2;
 			}
@@ -102,7 +102,7 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 			byteConv.Set(size << 1);
 			while (size-- > 0)
 			{
-				*buff++ = ReadUInt16(bytes);
+				*buff++ = ReadUInt16(&bytes[0]);
 				bytes += 2;
 			}
 			*buff = 0;
@@ -113,8 +113,8 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 	{
 		if (byteSize == (UOSInt)-1)
 		{
-			WChar *oriBuff = buff;
-			while ((*buff++ = ReadMUInt16(bytes)) != 0)
+			UnsafeArray<WChar> oriBuff = buff;
+			while ((*buff++ = ReadMUInt16(&bytes[0])) != 0)
 			{
 				bytes += 2;
 			}
@@ -253,7 +253,8 @@ WChar *Text::Encoding::WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSi
 		}
 #else
 		byteConv.Set(0);
-		return 0;
+		*buff = 0;
+		return buff;
 #endif
 	}
 }
@@ -540,7 +541,7 @@ UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, 
 	}
 }
 
-UOSInt Text::Encoding::WCountBytes(const WChar *stri)
+UOSInt Text::Encoding::WCountBytes(UnsafeArray<const WChar> stri)
 {
 	if (this->codePage == 65001)
 	{
@@ -564,7 +565,7 @@ UOSInt Text::Encoding::WCountBytes(const WChar *stri)
 	}
 }
 
-UOSInt Text::Encoding::WCountBytesC(const WChar *stri, UOSInt strLen)
+UOSInt Text::Encoding::WCountBytesC(UnsafeArray<const WChar> stri, UOSInt strLen)
 {
 	if (this->codePage == 65001)
 	{
@@ -588,7 +589,7 @@ UOSInt Text::Encoding::WCountBytesC(const WChar *stri, UOSInt strLen)
 	}
 }
 
-UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, const WChar *wstr)
+UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const WChar> wstr)
 {
 	UOSInt size;
 	if (this->codePage == 65001)
@@ -637,7 +638,7 @@ UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, const WChar *wstr)
 	}
 }
 
-UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, const WChar *wstr, UOSInt strLen)
+UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const WChar> wstr, UOSInt strLen)
 {
 	UOSInt size;
 	if (this->codePage == 65001)
@@ -1070,7 +1071,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const 
 	}
 }
 
-const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
+UnsafeArray<const UInt8> Text::Encoding::NextWChar(UnsafeArray<const UInt8> buff, OutParam<WChar> outputChar)
 {
 	if (this->codePage == 65001)
 	{
@@ -1079,13 +1080,13 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 			UInt32 code = (UInt32)((buff[5] & 0x3f) | (((UInt32)buff[4] & 0x3f) << 6) | (((UInt32)buff[3] & 0x3f) << 12) | (((UInt32)buff[2] & 0x3f) << 18) | (((UInt32)buff[1] & 0x3f) << 24) | (((UInt32)buff[0] & 0x01) << 30));
 			if (this->lastHigh)
 			{
-				*outputChar = (WChar)(((code - 0x10000) & 0x3ff) + 0xdc00);
+				outputChar.Set((WChar)(((code - 0x10000) & 0x3ff) + 0xdc00));
 				this->lastHigh = false;
 				return &buff[6];
 			}
 			else
 			{
-				*outputChar = (WChar)(((code - 0x10000) >> 10) + 0xd800);
+				outputChar.Set((WChar)(((code - 0x10000) >> 10) + 0xd800));
 				this->lastHigh = true;
 				return buff;
 			}
@@ -1095,13 +1096,13 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 			UInt32 code = (buff[4] & 0x3f) | (((UInt32)buff[3] & 0x3f) << 6) | (((UInt32)buff[2] & 0x3f) << 12) | (((UInt32)buff[1] & 0x3f) << 18) | (((UInt32)buff[0] & 0x03) << 24);
 			if (this->lastHigh)
 			{
-				*outputChar = (WChar)(((code - 0x10000) & 0x3ff) + 0xdc00);
+				outputChar.Set((WChar)(((code - 0x10000) & 0x3ff) + 0xdc00));
 				this->lastHigh = false;
 				return &buff[5];
 			}
 			else
 			{
-				*outputChar = (WChar)(((code - 0x10000) >> 10) + 0xd800);
+				outputChar.Set((WChar)(((code - 0x10000) >> 10) + 0xd800));
 				this->lastHigh = true;
 				return buff;
 			}
@@ -1111,13 +1112,13 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 			UInt32 code = (buff[3] & 0x3f) | (((UInt32)buff[2] & 0x3f) << 6) | (((UInt32)buff[1] & 0x3f) << 12) | (((UInt32)buff[0] & 0x03) << 18);
 			if (this->lastHigh)
 			{
-				*outputChar = (WChar)(((code - 0x10000) & 0x3ff) + 0xdc00);
+				outputChar.Set((WChar)(((code - 0x10000) & 0x3ff) + 0xdc00));
 				this->lastHigh = false;
 				return &buff[4];
 			}
 			else
 			{
-				*outputChar = (WChar)(((code - 0x10000) >> 10) + 0xd800);
+				outputChar.Set((WChar)(((code - 0x10000) >> 10) + 0xd800));
 				this->lastHigh = true;
 				return buff;
 			}
@@ -1125,30 +1126,30 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 		else if ((buff[0] & 0xf0) == 0xe0)
 		{
 			this->lastHigh = false;
-			*outputChar = (WChar)((buff[2] & 0x3f) | ((buff[1] & 0x3f) << 6) | ((buff[0] & 0x0f) << 12));
+			outputChar.Set((WChar)((buff[2] & 0x3f) | ((buff[1] & 0x3f) << 6) | ((buff[0] & 0x0f) << 12)));
 			return &buff[3];
 		}
 		else if ((buff[0] & 0xe0) == 0xc0)
 		{
 			this->lastHigh = false;
-			*outputChar = (WChar)((buff[1] & 0x3f) | ((buff[0] & 0x1f) << 6));
+			outputChar.Set((WChar)((buff[1] & 0x3f) | ((buff[0] & 0x1f) << 6)));
 			return &buff[2];
 		}
 		else
 		{
 			this->lastHigh = false;
-			*outputChar = buff[0];
+			outputChar.Set(buff[0]);
 			return &buff[1];
 		}
 	}
 	else if (this->codePage == 1200)
 	{
-		*outputChar = *(WChar*)buff;
+		outputChar.Set(*(WChar*)buff.Ptr());
 		return buff + 2;
 	}
 	else if (this->codePage == 1201)
 	{
-		*outputChar = (WChar)((buff[0] << 8) | buff[1]);
+		outputChar.Set((WChar)((buff[0] << 8) | buff[1]));
 		return buff + 2;
 	}
 	else
@@ -1165,7 +1166,7 @@ const UInt8 *Text::Encoding::NextWChar(const UInt8 *buff, WChar *outputChar)
 			return &buff[1];
 		}
 #else
-		*outputChar = buff[0];
+		outputChar.Set(buff[0]);
 		return buff + 1;
 #endif
 	}

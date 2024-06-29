@@ -22,7 +22,7 @@ namespace Media
 		Data::DateTime *photoDate;
 
 		void ParseXMF(NN<Text::XMLDocument> xmf);
-		Double ParseFraction(Text::String *s);
+		Double ParseFraction(NN<Text::String> s);
 	public:
 		PhotoInfo(NN<IO::StreamData> fd);
 		~PhotoInfo();

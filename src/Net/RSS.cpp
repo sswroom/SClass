@@ -24,16 +24,18 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 
 	Text::StringBuilderUTF8 sb;
 	NN<Text::XMLAttrib> attr;
+	NN<Text::String> avalue;
+	NN<Text::String> name;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = itemNode->GetAttribCnt();
 	while (i < j)
 	{
-		if (itemNode->GetAttrib(i).SetTo(attr) && attr->name->EqualsICase(UTF8STRC("rdf:about")) && attr->value)
+		if (itemNode->GetAttrib(i).SetTo(attr) && Text::String::OrEmpty(attr->name)->EqualsICase(UTF8STRC("rdf:about")) && attr->value.SetTo(avalue))
 		{
 			SDEL_STRING(this->guid);
-			this->guid = attr->value->Clone().Ptr();
+			this->guid = avalue->Clone().Ptr();
 		}
 		i++;
 	}
@@ -43,26 +45,26 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	while (i < j)
 	{
 		NN<Text::XMLNode> node = itemNode->GetChildNoCheck(i);
-		if (node->GetNodeType() == Text::XMLNode::NodeType::Element)
+		if (node->GetNodeType() == Text::XMLNode::NodeType::Element && node->name.SetTo(name))
 		{
-			if (node->name->EqualsICase(UTF8STRC("title")))
+			if (name->EqualsICase(UTF8STRC("title")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->title);
 				this->title = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("link")))
+			else if (name->EqualsICase(UTF8STRC("link")))
 			{
 				if (node->GetChildCnt() == 0)
 				{
 					UOSInt k = node->GetAttribCnt();
 					while (k-- > 0)
 					{
-						if (node->GetAttrib(k).SetTo(attr) && attr->name->Equals(UTF8STRC("href")) && attr->value)
+						if (node->GetAttrib(k).SetTo(attr) && Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && attr->value.SetTo(avalue))
 						{
 							SDEL_STRING(this->link);
-							this->link = attr->value->Clone().Ptr();
+							this->link = avalue->Clone().Ptr();
 							break;
 						}
 					}
@@ -75,116 +77,116 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 					this->link = Text::String::New(sb.ToCString()).Ptr();
 				}
 			}
-			else if (node->name->EqualsICase(UTF8STRC("guid")))
+			else if (name->EqualsICase(UTF8STRC("guid")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->guid);
 				this->guid = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("id")))
+			else if (name->EqualsICase(UTF8STRC("id")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->guid);
 				this->guid = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("description")))
+			else if (name->EqualsICase(UTF8STRC("description")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->description);
 				this->description = Text::String::New(sb.ToCString()).Ptr();
-				this->descHTML = itemNode->name->Equals(UTF8STRC("item"));
+				this->descHTML = Text::String::OrEmpty(itemNode->name)->Equals(UTF8STRC("item"));
 			}
-			else if (node->name->EqualsICase(UTF8STRC("category")))
+			else if (name->EqualsICase(UTF8STRC("category")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->category);
 				this->category = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("author")))
+			else if (name->EqualsICase(UTF8STRC("author")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->author);
 				this->author = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("pubDate")))
+			else if (name->EqualsICase(UTF8STRC("pubDate")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
-			else if (node->name->EqualsICase(UTF8STRC("dc:date")))
+			else if (name->EqualsICase(UTF8STRC("dc:date")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
-			else if (node->name->EqualsICase(UTF8STRC("published")))
+			else if (name->EqualsICase(UTF8STRC("published")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
-			else if (node->name->EqualsICase(UTF8STRC("updated")))
+			else if (name->EqualsICase(UTF8STRC("updated")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				this->pubDate = Data::Timestamp::FromStr(sb.ToCString(), 0);
 			}
-			else if (node->name->EqualsICase(UTF8STRC("objectId")))
+			else if (name->EqualsICase(UTF8STRC("objectId")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->objectId);
 				this->objectId = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("yt:videoId")))
+			else if (name->EqualsICase(UTF8STRC("yt:videoId")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->objectId);
 				this->objectId = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("geo:lat")))
+			else if (name->EqualsICase(UTF8STRC("geo:lat")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				this->lat = sb.ToDouble();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("geo:long")))
+			else if (name->EqualsICase(UTF8STRC("geo:long")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				this->lon = sb.ToDouble();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("content")))
+			else if (name->EqualsICase(UTF8STRC("content")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
 				SDEL_STRING(this->description);
 				this->description = Text::String::New(sb.ToCString()).Ptr();
 			}
-			else if (node->name->EqualsICase(UTF8STRC("media:group")))
+			else if (name->EqualsICase(UTF8STRC("media:group")))
 			{
 				UOSInt k = node->GetChildCnt();
 				NN<Text::XMLNode> node2;
 				while (k-- > 0)
 				{
 					node2 = node->GetChildNoCheck(k);
-					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element)
+					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name.SetTo(name))
 					{
-						if (node2->name->Equals(UTF8STRC("media:description")))
+						if (name->Equals(UTF8STRC("media:description")))
 						{
 							sb.ClearStr();
 							node->GetInnerText(sb);
 							SDEL_STRING(this->description);
 							this->description = Text::String::New(sb.ToCString()).Ptr();
 						}
-						else if (node2->name->Equals(UTF8STRC("media:imgURL")))
+						else if (name->Equals(UTF8STRC("media:imgURL")))
 						{
 							sb.ClearStr();
 							node->GetInnerText(sb);
@@ -221,6 +223,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 	Text::StringBuilderUTF8 sb;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::String> name;
+	NN<Text::String> avalue;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -228,10 +231,10 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 	while (i < j)
 	{
 		attr = reader->GetAttribNoCheck(i);
-		if (attr->name->EqualsICase(UTF8STRC("rdf:about")) && attr->value)
+		if (Text::String::OrEmpty(attr->name)->EqualsICase(UTF8STRC("rdf:about")) && attr->value.SetTo(avalue))
 		{
 			SDEL_STRING(this->guid);
-			this->guid = attr->value->Clone().Ptr();
+			this->guid = avalue->Clone().Ptr();
 		}
 		i++;
 	}
@@ -252,10 +255,10 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 			while (k-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(k);
-				if (attr->name->Equals(UTF8STRC("href")) && attr->value)
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("href")) && attr->value.SetTo(avalue))
 				{
 					SDEL_STRING(this->link);
-					this->link = attr->value->Clone().Ptr();
+					this->link = avalue->Clone().Ptr();
 					found = true;
 					break;
 				}
@@ -820,6 +823,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> name;
+	NN<Text::String> avalue;
 	while (reader.NextElementName().SetTo(name))
 	{
 		if (name->EqualsICase(UTF8STRC("RSS")))
@@ -1049,23 +1053,24 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 					while (k < l)
 					{
 						attr = reader.GetAttribNoCheck(k);
-						if (attr->name->Equals(UTF8STRC("rel")) && attr->value)
+						name = Text::String::OrEmpty(attr->name);
+						if (name->Equals(UTF8STRC("rel")) && attr->value.SetTo(avalue))
 						{
-							if (attr->value->Equals(UTF8STRC("self")))
+							if (avalue->Equals(UTF8STRC("self")))
 							{
 								linkType = 1;
 							}
-							else if (attr->value->Equals(UTF8STRC("alternate")))
+							else if (avalue->Equals(UTF8STRC("alternate")))
 							{
 								linkType = 2;
 							}
 						}
-						else if (attr->name->Equals(UTF8STRC("href")) && attr->value)
+						else if (name->Equals(UTF8STRC("href")) && attr->value.SetTo(avalue))
 						{
 							if (linkType == 2)
 							{
 								SDEL_STRING(this->link);
-								this->link = attr->value->Clone().Ptr();
+								this->link = avalue->Clone().Ptr();
 							}
 						}
 						k++;

@@ -11,14 +11,14 @@
 void IO::DirectoryPackage::AddFile(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[512];
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName);
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(fileName).SetTo(sess))
 	{
 		Data::Timestamp ts;
 		UInt64 fileSize;
 		IO::Path::PathType pt;
 		FileItem item;
-		if (IO::Path::FindNextFile(sbuff, sess, &ts, &pt, &fileSize).NotNull())
+		if (IO::Path::FindNextFile(sbuff, sess, ts, pt, fileSize).NotNull())
 		{
 			item.fileName = Text::String::New(fileName);
 			item.fileSize = fileSize;
@@ -42,7 +42,7 @@ void IO::DirectoryPackage::Init()
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	FileItem item;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	this->parent = 0;
 	if (this->dirName->leng > 0)
 	{
@@ -52,10 +52,9 @@ void IO::DirectoryPackage::Init()
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
+		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
-			while (IO::Path::FindNextFile(sptr, sess, &ts, &pt, &fileSize).SetTo(sptr2))
+			while (IO::Path::FindNextFile(sptr, sess, ts, pt, fileSize).SetTo(sptr2))
 			{
 				if (sptr[0] == '.' && sptr[1] == 0)
 				{

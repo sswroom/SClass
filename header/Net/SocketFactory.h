@@ -15,6 +15,7 @@ namespace Net
 {
 	class ConnectionInfo;
 	class DNSHandler;
+	class SocketRecvSess;
 
 	class SocketFactory
 	{
@@ -167,7 +168,7 @@ namespace Net
 
 		virtual void DestroySocket(NN<Socket> socket) = 0;
 		virtual Bool SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port) = 0;
-		virtual Bool SocketBind(NN<Socket> socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port) = 0;
+		virtual Bool SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
 		virtual Bool SocketBindRAWIf(NN<Socket> socket, UOSInt ifIndex) = 0;
 		virtual Bool SocketListen(NN<Socket> socket) = 0;
 		virtual Optional<Socket> SocketAccept(NN<Socket> socket) = 0;
@@ -189,9 +190,9 @@ namespace Net
 
 		virtual UOSInt SendData(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et) = 0;
 		virtual UOSInt ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, OptOut<ErrorType> et) = 0;
-		virtual void *BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et) = 0;
-		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete) = 0;
-		virtual void CancelReceiveData(void *reqData) = 0;
+		virtual Optional<SocketRecvSess> BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et) = 0;
+		virtual UOSInt EndReceiveData(NN<SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete) = 0;
+		virtual void CancelReceiveData(NN<SocketRecvSess> reqData) = 0;
 
 		virtual UOSInt UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et) = 0;
 		virtual UOSInt SendTo(NN<Socket> socket, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
@@ -206,12 +207,12 @@ namespace Net
 
 		virtual Bool SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32> size) = 0;
 
-		virtual Bool DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr) = 0;
+		virtual Bool DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr) = 0;
 		virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr) = 0;
-		virtual UOSInt GetDNSList(Data::ArrayList<UInt32> *dnsList) = 0;
+		virtual UOSInt GetDNSList(NN<Data::ArrayList<UInt32>> dnsList) = 0;
 		virtual Bool LoadHosts(NN<Net::DNSHandler> dnsHdlr) = 0;
 
-		virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4) = 0;
+		virtual Bool ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4) = 0;
 
 		virtual UOSInt GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList) = 0;
 		virtual Bool GetIPInfo(NN<IPInfo> info) = 0; //////////////////////////////////
@@ -222,7 +223,7 @@ namespace Net
 		virtual UOSInt QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList) = 0;
 
-		virtual Bool AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr);
+		virtual Bool AdapterSetHWAddr(Text::CStringNN adapterName, UnsafeArray<const UInt8> hwAddr);
 		virtual Bool AdapterEnable(Text::CStringNN adapterName, Bool enable);
 
 		Bool ReloadDNS();
@@ -230,11 +231,6 @@ namespace Net
 		Bool DNSResolveIP(Text::CStringNN host, NN<Net::SocketUtil::AddressInfo> addr);
 		UOSInt DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
 		UInt32 DNSResolveIPv4(Text::CStringNN host);
-//		Bool GetIPByHost(const WChar *host, Net::SocketUtil::AddressInfo *addr);
-//		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(UnsafeArray<const UTF8Char> host);
-//		UInt32 GetIPv4ByHostOS(const WChar *host
-//		UInt32 GetLocalIPByDest(const WChar *host);////////////////////
-//		UInt32 GetLocalIPByDest(UInt32 ip);//////////////////////////
 
 		UnsafeArrayOpt<UTF8Char> GetRemoteName(UnsafeArray<UTF8Char> buff, NN<Socket> socket);
 		UnsafeArrayOpt<UTF8Char> GetLocalName(UnsafeArray<UTF8Char> buff, NN<Socket> socket);

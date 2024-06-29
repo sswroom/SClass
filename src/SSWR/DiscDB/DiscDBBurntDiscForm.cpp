@@ -330,7 +330,7 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(UnsafeArray<const UTF8Cha
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	NN<BurntFile> file;
 	UOSInt i = Text::StrCharCnt(relPath);
@@ -338,10 +338,9 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(UnsafeArray<const UTF8Cha
 	relPath = sptr - i;
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &size).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, size).SetTo(sptr2))
 		{
 			if (size + currSize > maxSize)
 				break;
@@ -389,7 +388,7 @@ NN<SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile> SSWR::DiscDB::DiscDBBurntDiscFo
 	file->cate = CSTR("ISO");
 	file->video = true;
 	file->anime = 0;
-	const WChar *wfileName = Text::StrToWCharNew(fileName.v);
+	UnsafeArray<const WChar> wfileName = Text::StrToWCharNew(fileName.v);
 	if (fileName.IndexOfICase(UTF8STRC("EAC")) != INVALID_INDEX)
 	{
 		file->cate = CSTR("AC");
@@ -403,11 +402,11 @@ NN<SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile> SSWR::DiscDB::DiscDBBurntDiscFo
 	{
 		file->cate = CSTR("ISO");
 	}
-	else if (Text::StrIndexOf(wfileName, L"アプリ") != INVALID_INDEX)
+	else if (Text::StrIndexOfW(wfileName, L"アプリ") != INVALID_INDEX)
 	{
 		file->cate = CSTR("APP");
 	}
-	else if (Text::StrIndexOf(wfileName, L"ラジオ") != INVALID_INDEX)
+	else if (Text::StrIndexOfW(wfileName, L"ラジオ") != INVALID_INDEX)
 	{
 		file->cate = CSTR("RA");
 	}
@@ -456,7 +455,7 @@ NN<SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile> SSWR::DiscDB::DiscDBBurntDiscFo
 	{
 		file->cate = CSTR("PG");
 	}
-	else if (Text::StrIndexOf(wfileName, L"ゲーム") != INVALID_INDEX)
+	else if (Text::StrIndexOfW(wfileName, L"ゲーム") != INVALID_INDEX)
 	{
 		if (fileName.IndexOfICase(UTF8STRC("DVD")) != INVALID_INDEX)
 		{
@@ -515,7 +514,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		j = 0;
 		if (Text::StrStartsWith(fname, L"["))
 		{
-			i = Text::StrIndexOf(fname, L"]");
+			i = Text::StrIndexOfW(fname, L"]");
 			if (i != INVALID_INDEX)
 			{
 				j = 1;
@@ -528,7 +527,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		}
 		if (Text::StrStartsWith(fname, L"【"))
 		{
-			i = Text::StrIndexOf(fname, L"】");
+			i = Text::StrIndexOfW(fname, L"】");
 			if (i != INVALID_INDEX)
 			{
 				j = 1;
@@ -541,7 +540,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		}
 		if (Text::StrStartsWith(fname, L"〔"))
 		{
-			i = Text::StrIndexOf(fname, L"〕");
+			i = Text::StrIndexOfW(fname, L"〕");
 			if (i != INVALID_INDEX)
 			{
 				j = 1;
@@ -554,7 +553,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		}
 		if (Text::StrStartsWith(fname, L"("))
 		{
-			i = Text::StrIndexOf(fname, L")");
+			i = Text::StrIndexOfW(fname, L")");
 			if (i != INVALID_INDEX)
 			{
 				j = 1;
@@ -567,7 +566,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		}
 		if (Text::StrStartsWith(fname, L"（"))
 		{
-			i = Text::StrIndexOf(fname, L"）");
+			i = Text::StrIndexOfW(fname, L"）");
 			if (i != INVALID_INDEX)
 			{
 				j = 1;
@@ -584,57 +583,57 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		}
 	}
 
-	if ((i = Text::StrIndexOf(fname, L"「")) != INVALID_INDEX)
+	if ((i = Text::StrIndexOfW(fname, L"「")) != INVALID_INDEX)
 	{
 		mainTitle = fname;
 		fname[i] = 0;
 		Text::StrConcat(chapterTitle, &fname[i + 1]);
-		if ((i = Text::StrIndexOf(chapterTitle, L"」")) != INVALID_INDEX)
+		if ((i = Text::StrIndexOfW(chapterTitle, L"」")) != INVALID_INDEX)
 		{
 			anime->remark = Text::StrToUTF8New(&chapterTitle[i + 1]);
 			chapterTitle[i] = 0;
 		}
-		else if ((i = Text::StrLastIndexOf(chapterTitle, L".")) != INVALID_INDEX)
+		else if ((i = Text::StrLastIndexOfW(chapterTitle, L".")) != INVALID_INDEX)
 		{
 			chapterTitle[i] = 0;
 			anime->remark = Text::StrCopyNewC(UTF8STRC("")).Ptr();
 		}
 	}
-	else if ((i = Text::StrIndexOf(fname, L"｢")) != INVALID_INDEX)
+	else if ((i = Text::StrIndexOfW(fname, L"｢")) != INVALID_INDEX)
 	{
 		mainTitle = fname;
 		fname[i] = 0;
 		Text::StrConcat(chapterTitle, &fname[i + 1]);
-		if ((i = Text::StrIndexOf(chapterTitle, L"｣")) != INVALID_INDEX)
+		if ((i = Text::StrIndexOfW(chapterTitle, L"｣")) != INVALID_INDEX)
 		{
 			anime->remark = Text::StrToUTF8New(&chapterTitle[i + 1]);
 			chapterTitle[i] = 0;
 		}
-		else if ((i = Text::StrLastIndexOf(chapterTitle, L".")) != INVALID_INDEX)
+		else if ((i = Text::StrLastIndexOfW(chapterTitle, L".")) != INVALID_INDEX)
 		{
 			chapterTitle[i] = 0;
 			anime->remark = Text::StrCopyNewC(UTF8STRC("")).Ptr();
 		}
 	}
-	else if ((i = Text::StrIndexOf(fname, L"(")) != INVALID_INDEX)
+	else if ((i = Text::StrIndexOfW(fname, L"(")) != INVALID_INDEX)
 	{
 		anime->remark = Text::StrToUTF8New(&fname[i]);
 		mainTitle = fname;
 		fname[i] = 0;
 	}
-	else if ((i = Text::StrIndexOf(fname, L"（")) != INVALID_INDEX)
+	else if ((i = Text::StrIndexOfW(fname, L"（")) != INVALID_INDEX)
 	{
 		anime->remark = Text::StrToUTF8New(&fname[i]);
 		mainTitle = fname;
 		fname[i] = 0;
 	}
-	else if ((i = Text::StrIndexOf(fname, L"640")) != INVALID_INDEX)
+	else if ((i = Text::StrIndexOfW(fname, L"640")) != INVALID_INDEX)
 	{
 		anime->remark = Text::StrToUTF8New(&fname[i]);
 		mainTitle = fname;
 		fname[i] = 0;
 	}
-	else if ((i = Text::StrIndexOf(fname, L"848")) != INVALID_INDEX)
+	else if ((i = Text::StrIndexOfW(fname, L"848")) != INVALID_INDEX)
 	{
 		anime->remark = Text::StrToUTF8New(&fname[i]);
 		mainTitle = fname;
@@ -645,11 +644,11 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		mainTitle = fname;
 		anime->remark = Text::StrCopyNewC(UTF8STRC("")).Ptr();
 	}
-	if ((i = Text::StrIndexOf(mainTitle, L"\\")) != INVALID_INDEX)
+	if ((i = Text::StrIndexOfW(mainTitle, L"\\")) != INVALID_INDEX)
 	{
 		Text::StrConcat(mainTitle, &mainTitle[i + 1]);
 	}
-	i = Text::StrLastIndexOfChar(mainTitle, '.');
+	i = Text::StrLastIndexOfCharW(mainTitle, '.');
 	if ((i != INVALID_INDEX && i == Text::StrCharCnt(mainTitle) - 4) || Text::StrEndsWithICase(mainTitle, L".TS"))
 	{
 		mainTitle[i] = 0;
@@ -659,7 +658,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	{
 		if ((mainTitle[i] >= 0x30 && mainTitle[i] <= 0x39 && mainTitle[i + 1] >= 0x30 && mainTitle[i + 1] <= 0x39) || (mainTitle[i] == 0x7B2C && mainTitle[i + 1] >= 0x30 && mainTitle[i + 1] <= 0x39)) //0x7b2c == '第'
 		{
-			if ((j = Text::StrIndexOf(&mainTitle[i + 2], L" ")) != INVALID_INDEX)
+			if ((j = Text::StrIndexOfW(&mainTitle[i + 2], L" ")) != INVALID_INDEX)
 			{
 				if (mainTitle[0] >= 0x30 && mainTitle[0] <= 0x39)
 				{
@@ -682,8 +681,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			}
 			if (mainTitle[0] >= 0x30 && mainTitle[0] <= 0x39)
 			{
-				j = Text::StrIndexOf(mainTitle, L" ");
-				i = Text::StrIndexOf(mainTitle, L"　");
+				j = Text::StrIndexOfW(mainTitle, L" ");
+				i = Text::StrIndexOfW(mainTitle, L"　");
 				if (j != INVALID_INDEX && j > i)
 				{
 					i = j;
@@ -701,15 +700,15 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			}
 			else
 			{
-				j = Text::StrLastIndexOf(mainTitle, L" ");
-				i = Text::StrLastIndexOf(mainTitle, L"　");
+				j = Text::StrLastIndexOfW(mainTitle, L" ");
+				i = Text::StrLastIndexOfW(mainTitle, L"　");
 				if (j != INVALID_INDEX && j > i)
 				{
 					i = j;
 				}
 				if (j == INVALID_INDEX)
 				{
-					j = Text::StrIndexOf(mainTitle, L"0");
+					j = Text::StrIndexOfW(mainTitle, L"0");
 					if (j == INVALID_INDEX)
 					{
 						anime->chapter = 0;
@@ -750,12 +749,12 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 
 	}
 	anime->remark = 0;
-	if ((i = Text::StrIndexOf(fname, L"(")) != INVALID_INDEX && (j = Text::StrIndexOf(fname, L")")) != INVALID_INDEX)
+	if ((i = Text::StrIndexOfW(fname, L"(")) != INVALID_INDEX && (j = Text::StrIndexOfW(fname, L")")) != INVALID_INDEX)
 	{
 		fname[j] = 0;
 		anime->remark = Text::StrToUTF8New(&fname[i + 1]);
 	}
-	else if ((i = Text::StrIndexOf(fname, L"（")) != INVALID_INDEX && (j = Text::StrIndexOf(fname, L"）")) != INVALID_INDEX)
+	else if ((i = Text::StrIndexOfW(fname, L"（")) != INVALID_INDEX && (j = Text::StrIndexOfW(fname, L"）")) != INVALID_INDEX)
 	{
 		fname[j] = 0;
 		anime->remark = Text::StrToUTF8New(&fname[i + 1]);
@@ -776,17 +775,17 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	if (anime->type->Equals(UTF8STRC("TV")))
 	{
 		Text::StrUTF8_WChar(fname, anime->mainTitle, 0);
-		if (Text::StrIndexOf(fname, L"ショウ") != INVALID_INDEX)
+		if (Text::StrIndexOfW(fname, L"ショウ") != INVALID_INDEX)
 		{
 			anime->type->Release();
 			anime->type = Text::String::New(UTF8STRC("Live"));
 		}
-		else if (Text::StrIndexOf(fname, L"OVA") != INVALID_INDEX)
+		else if (Text::StrIndexOfW(fname, L"OVA") != INVALID_INDEX)
 		{
 			anime->type->Release();
 			anime->type = Text::String::New(UTF8STRC("OVA"));
 		}
-		else if (Text::StrIndexOf(fname, L"劇場版") != INVALID_INDEX)
+		else if (Text::StrIndexOfW(fname, L"劇場版") != INVALID_INDEX)
 		{
 			anime->type->Release();
 			anime->type = Text::String::New(UTF8STRC("Movie"));
@@ -1176,7 +1175,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(AnyType userOb
 		IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"DVDDB");
 		if (reg)
 		{
-			const WChar *wptr = Text::StrToWCharNew(sbDiscId.ToString());
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sbDiscId.ToString());
 			reg->SetValue(L"DiscType", wptr);
 			Text::StrDelNew(wptr);
 			IO::Registry::CloseRegistry(reg);
@@ -1449,7 +1448,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientCon
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		WChar wbuff[64];
-		if (reg->GetValueStr(L"DiscType", wbuff))
+		if (reg->GetValueStr(L"DiscType", wbuff).NotNull())
 		{
 			
 			sptr = Text::StrWChar_UTF8(sbuff, wbuff);

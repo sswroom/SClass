@@ -59,7 +59,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		minFreq = MemAlloc(Double, fftSize);
 
 		f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
+		Data::Chart::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
 		yAxis = 0;
 		it = chartLabels.Iterator();
 		while (it.HasNext())
@@ -77,7 +77,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 		chartPos.Clear();
 		chartLabels.Clear();
-		Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+		Data::Chart::CalScaleMarkDbl(chartPos, chartLabels, 0, (Double)sampleCnt / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
 		xAxis = 0;
 		it = chartLabels.Iterator();
 		while (it.HasNext())
@@ -268,7 +268,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 			chartPos.Clear();
 			chartLabels.Clear();
-			Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
+			Data::Chart::CalScaleMarkDbl(chartPos, chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
 			it = chartLabels.Iterator();
 			while (it.HasNext())
 			{
@@ -284,7 +284,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 
 			chartPos.Clear();
 			chartLabels.Clear();
-			Data::Chart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
+			Data::Chart::CalScaleMarkDbl(chartPos, chartLabels, 0, UInt64_Double(sampleCnt) / (Double)fmt.frequency, UOSInt2Double(timeRes), fontSizePx, "0.#", 1, 0);
 			it = chartLabels.Iterator();
 			while (it.HasNext())
 			{

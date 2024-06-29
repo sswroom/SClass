@@ -464,7 +464,7 @@ Int64 DB::SQLiteReader::GetInt64(UOSInt colIndex)
 	return sqlite3_column_int64((sqlite3_stmt*)this->hStmt, (int)colIndex);
 }
 
-WChar *DB::SQLiteReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 #if _WCHAR_SIZE == 2
 	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);

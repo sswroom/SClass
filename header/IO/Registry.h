@@ -33,19 +33,19 @@ namespace IO
 		~Registry();
 
 	public:
-		Registry *OpenSubReg(const WChar *name);
-		WChar *GetSubReg(WChar *buff, UOSInt index);
+		Registry *OpenSubReg(UnsafeArray<const WChar> name);
+		UnsafeArrayOpt<WChar> GetSubReg(UnsafeArray<WChar> buff, UOSInt index);
 
-		void SetValue(const WChar *name, Int32 value);
-		void SetValue(const WChar *name, const WChar *value);
-		void DelValue(const WChar *name);
+		void SetValue(UnsafeArray<const WChar> name, Int32 value);
+		void SetValue(UnsafeArray<const WChar> name, UnsafeArray<const WChar> value);
+		void DelValue(UnsafeArray<const WChar> name);
 
-		Int32 GetValueI32(const WChar *name);
-		WChar *GetValueStr(const WChar *name, WChar *buff);
+		Int32 GetValueI32(UnsafeArray<const WChar> name);
+		UnsafeArrayOpt<WChar> GetValueStr(UnsafeArray<const WChar> name, UnsafeArray<WChar> buff);
 
-		Bool GetValueI32(const WChar *name, OutParam<Int32> value);
+		Bool GetValueI32(UnsafeArray<const WChar> name, OutParam<Int32> value);
 
-		WChar *GetName(WChar *nameBuff, UOSInt index);
+		UnsafeArrayOpt<WChar> GetName(UnsafeArray<WChar> nameBuff, UOSInt index);
 	};
 }
 #endif

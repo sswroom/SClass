@@ -7,12 +7,12 @@ namespace Crypto
 	class HOTP : public OTP
 	{
 	private:
-		UInt8 *key;
+		UnsafeArray<UInt8> key;
 		UOSInt keySize;
 		UInt64 counter;
 
 	public:
-		HOTP(const UInt8 *key, UOSInt keySize, UInt64 counter);
+		HOTP(UnsafeArray<const UInt8> key, UOSInt keySize, UInt64 counter);
 		virtual ~HOTP();
 
 		virtual OTPType GetType();

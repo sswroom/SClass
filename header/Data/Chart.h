@@ -50,23 +50,23 @@ namespace Data
 
 		virtual DataType GetXAxisType() const = 0;
 		virtual UOSInt GetXDataCount() const = 0;
-		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt) const = 0;
-		virtual Double *GetXDouble(UOSInt index, UOSInt *cnt) const = 0;
-		virtual Int32 *GetXInt32(UOSInt index, UOSInt *cnt) const = 0;
+		virtual UnsafeArrayOpt<Int64> GetXDateTicks(UOSInt index, OutParam<UOSInt> cnt) const = 0;
+		virtual UnsafeArrayOpt<Double> GetXDouble(UOSInt index, OutParam<UOSInt> cnt) const = 0;
+		virtual UnsafeArrayOpt<Int32> GetXInt32(UOSInt index, OutParam<UOSInt> cnt) const = 0;
 		virtual UOSInt GetYDataCount() const = 0;
-		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt) const = 0;
-		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt) const = 0;
-		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt) const = 0;
-		virtual Text::String *GetYName(UOSInt index) const = 0;
+		virtual UnsafeArrayOpt<Int64> GetYDateTicks(UOSInt index, OutParam<UOSInt> cnt) const = 0;
+		virtual UnsafeArrayOpt<Double> GetYDouble(UOSInt index, OutParam<UOSInt> cnt) const = 0;
+		virtual UnsafeArrayOpt<Int32> GetYInt32(UOSInt index, OutParam<UOSInt> cnt) const = 0;
+		virtual Optional<Text::String> GetYName(UOSInt index) const = 0;
 		virtual DataType GetYType(UOSInt index) const = 0;
 
 		virtual void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const = 0;
 		virtual UOSInt GetLegendCount() const = 0;
-		virtual UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, UInt32 *color, UOSInt index) const = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const = 0;
 
-		static UOSInt CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
-		static UOSInt CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
-		static UOSInt CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
+		static UOSInt CalScaleMarkDbl(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Double min, Double max, Double leng, Double minLeng, UnsafeArray<const Char> dblFormat, Double minDblVal, Optional<Text::String> unit);
+		static UOSInt CalScaleMarkInt(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, Int32 min, Int32 max, Double leng, Double minLeng, Optional<Text::String> unit);
+		static UOSInt CalScaleMarkDate(NN<Data::ArrayListDbl> locations, NN<Data::ArrayListStringNN> labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, UnsafeArray<const Char> dateFormat, UnsafeArrayOpt<const Char> timeFormat);
 	};
 }
 #endif

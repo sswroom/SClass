@@ -19,7 +19,7 @@ namespace UI
 			Data::StringUTF8Map<OSInt> targetMap;
 			Data::FastMapNN<Int32, Text::String> targetText;
 
-			static void AppendWC(NN<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen);
+			static void AppendWC(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF16Char> s, UOSInt slen);
 
 			void LoadData();
 		public:

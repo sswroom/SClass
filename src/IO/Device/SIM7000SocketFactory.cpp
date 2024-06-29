@@ -59,7 +59,7 @@ void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 	}
 }
 
-IO::Device::SIM7000SocketFactory::SIM7000SocketFactory(IO::Device::SIM7000 *modem, Bool needRelease) : Net::SocketFactory(true)
+IO::Device::SIM7000SocketFactory::SIM7000SocketFactory(NN<IO::Device::SIM7000> modem, Bool needRelease) : Net::SocketFactory(true)
 {
 	this->modem = modem;
 	this->needRelease = needRelease;
@@ -77,16 +77,16 @@ IO::Device::SIM7000SocketFactory::~SIM7000SocketFactory()
 {
 	this->CloseAllSockets();
 	this->modem->SetReceiveHandler(0, 0);
-	SDEL_STRING(this->apn);
+	OPTSTR_DEL(this->apn);
 	if (this->needRelease)
 	{
-		DEL_CLASS(this->modem);
+		this->modem.Delete();
 	}
 }
 
 void IO::Device::SIM7000SocketFactory::SetAPN(Text::CString apn)
 {
-	SDEL_STRING(this->apn);
+	OPTSTR_DEL(this->apn);
 	Text::CStringNN nnapn;
 	if (apn.SetTo(nnapn))
 	{
@@ -94,7 +94,7 @@ void IO::Device::SIM7000SocketFactory::SetAPN(Text::CString apn)
 	}
 }
 
-Text::String *IO::Device::SIM7000SocketFactory::GetAPN()
+Optional<Text::String> IO::Device::SIM7000SocketFactory::GetAPN()
 {
 	return this->apn;
 }
@@ -130,9 +130,10 @@ Bool IO::Device::SIM7000SocketFactory::NetworkStart()
 	}
 	modem->GPRSSetPDPActive(true);
 
-	if (this->apn)
+	NN<Text::String> apn;
+	if (this->apn.SetTo(apn))
 	{
-		if (!modem->NetSetAPN(this->apn->ToCString()))
+		if (!modem->NetSetAPN(apn->ToCString()))
 		{
 //			return false;			
 		}
@@ -277,7 +278,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::SocketBind(NN<Socket> socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool IO::Device::SIM7000SocketFactory::SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	return false;
 }
@@ -375,18 +376,18 @@ UOSInt IO::Device::SIM7000SocketFactory::ReceiveData(NN<Socket> socket, UnsafeAr
 	return 0;
 }
 
-void *IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+Optional<Net::SocketRecvSess> IO::Device::SIM7000SocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
 	return 0;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt IO::Device::SIM7000SocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
 	return 0;
 }
 
-void IO::Device::SIM7000SocketFactory::CancelReceiveData(void *reqData)
+void IO::Device::SIM7000SocketFactory::CancelReceiveData(NN<Net::SocketRecvSess> reqData)
 {
 
 }
@@ -522,15 +523,15 @@ Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(NN<Socket> socket, OutP
 	return false;
 }
 
-Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr)
+Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr)
 {
-	return this->modem->NetDNSResolveIP(Text::CStringNN::FromPtr((const UTF8Char*)host), addr);
+	return this->modem->NetDNSResolveIP(Text::CStringNN::FromPtr(UnsafeArray<const UTF8Char>::ConvertFrom(host)), addr);
 }
 
 Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 {
 	Data::ArrayList<UInt32> dnsList;
-	if (this->modem->NetGetDNSList(&dnsList))
+	if (this->modem->NetGetDNSList(dnsList))
 	{
 		Net::SocketUtil::SetAddrInfoV4(addr, dnsList.GetItem(0));
 		return true;
@@ -538,7 +539,7 @@ Bool IO::Device::SIM7000SocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo
 	return false;
 }
 
-UOSInt IO::Device::SIM7000SocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
+UOSInt IO::Device::SIM7000SocketFactory::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
 {
 	UOSInt i = dnsList->GetCount();
 	if (this->modem->NetGetDNSList(dnsList))
@@ -553,7 +554,7 @@ Bool IO::Device::SIM7000SocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 	return true;
 }
 
-Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
+Bool IO::Device::SIM7000SocketFactory::ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
 {
 	return false;
 }

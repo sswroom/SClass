@@ -34,7 +34,7 @@ namespace Map
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 
-		Text::String *version;
+		Optional<Text::String> version;
 		Data::ArrayListNN<FeatureType> features;
 		Optional<FeatureType> currFeature;
 

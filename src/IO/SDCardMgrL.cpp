@@ -40,19 +40,19 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList
 
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/mmc_host/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] != '.' && pt != IO::Path::PathType::File)
 			{
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/"));
 				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				IO::Path::FindFileSession *sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-				if (sess2)
+				NN<IO::Path::FindFileSession> sess2;
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
-					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
 						if (sptr2[0] != '.' && pt != IO::Path::PathType::File && (sptr3 - sptr2) <= 15 && Text::StrIndexOfChar(sptr2, ':') != INVALID_INDEX)
 						{

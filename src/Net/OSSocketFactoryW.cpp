@@ -86,13 +86,13 @@ Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS
 	WSAStartup(MAKEWORD(2, 2), &data);
 	this->toRelease = true;
 	this->icmpHand = 0;
-	NEW_CLASS(this->clsData, ClassData());
+	NEW_CLASSNN(this->clsData, ClassData());
 }
 
 Net::OSSocketFactory::~OSSocketFactory()
 {
 	this->dnsHdlr.Delete();
-	DEL_CLASS(this->clsData);
+	this->clsData.Delete();
 	if (this->toRelease)
 	{
 		WSACleanup();

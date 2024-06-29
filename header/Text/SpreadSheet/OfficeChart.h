@@ -82,7 +82,7 @@ namespace Text
 			Optional<OfficeChartAxis> GetCategoryAxis();
 			Optional<OfficeChartAxis> GetValueAxis();
 
-			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker);
+			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Optional<Text::String> name, Bool showMarker);
 			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker);
 			UOSInt GetSeriesCount() const;
 			NN<OfficeChartSeries> GetSeriesNoCheck(UOSInt index) const;

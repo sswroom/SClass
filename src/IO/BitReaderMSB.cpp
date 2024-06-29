@@ -113,19 +113,19 @@ Bool IO::BitReaderMSB::ByteAlign()
 	return true;
 }
 
-UOSInt IO::BitReaderMSB::ReadBytes(UInt8 *buff, UOSInt cnt)
+UOSInt IO::BitReaderMSB::ReadBytes(UnsafeArray<UInt8> buff, UOSInt cnt)
 {
 	this->ByteAlign();
 	if (this->buffSize - this->currBytePos >= cnt)
 	{
-		MemCopyNO(buff, &this->buff[this->currBytePos], cnt);
+		MemCopyNO(buff.Ptr(), &this->buff[this->currBytePos], cnt);
 		this->currBytePos += cnt;
 		return cnt;
 	}
 	UOSInt ret = this->buffSize - this->currBytePos;
 	if (ret > 0)
 	{
-		MemCopyNO(buff, &this->buff[this->currBytePos], ret);
+		MemCopyNO(buff.Ptr(), &this->buff[this->currBytePos], ret);
 		cnt -= ret;
 		this->currBytePos = this->buffSize;
 	}

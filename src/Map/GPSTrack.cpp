@@ -1193,7 +1193,7 @@ Int64 Map::GPSDataReader::GetInt64(UOSInt colIndex)
 	return this->GetInt32(colIndex);
 }
 
-WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRec == 0)
 		return 0;

@@ -443,7 +443,7 @@ Int64 Map::FileGDBLReader::GetInt64(UOSInt colIndex)
 	return this->r->GetInt64((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-WChar *Map::FileGDBLReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Map::FileGDBLReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }

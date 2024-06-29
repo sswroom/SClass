@@ -73,7 +73,7 @@ public:
 		return obj->GetValueAsInt64(col->GetColName()->ToCString());
 	}
 
-	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))

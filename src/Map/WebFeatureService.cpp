@@ -53,10 +53,10 @@ void Map::WebFeatureService::LoadXML(Version version)
 			while (i-- > 0)
 			{
 				attr = reader.GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("version")))
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("version")))
 				{
-					SDEL_STRING(this->version);
-					this->version = SCOPY_STRING(attr->value);
+					OPTSTR_DEL(this->version);
+					this->version = Text::String::CopyOrNull(attr->value);
 				}
 			}
 			while (reader.NextElementName().SetTo(nodeName))
@@ -219,24 +219,27 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 		{
 			UOSInt i = reader->GetAttribCount();
 			NN<Text::XMLAttrib> attr;
+			NN<Text::String> aname;
+			NN<Text::String> avalue;
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("minx")) && attr->value != 0)
+				aname = Text::String::OrEmpty(attr->name);
+				if (aname->Equals(UTF8STRC("minx")) && attr->value.SetTo(avalue))
 				{
-					hasTL = attr->value->ToDouble(wgs84Bounds.min.x);
+					hasTL = avalue->ToDouble(wgs84Bounds.min.x);
 				}
-				else if (attr->name->Equals(UTF8STRC("miny")) && attr->value != 0)
+				else if (aname->Equals(UTF8STRC("miny")) && attr->value.SetTo(avalue))
 				{
-					hasTL = attr->value->ToDouble(wgs84Bounds.min.y);
+					hasTL = avalue->ToDouble(wgs84Bounds.min.y);
 				}
-				else if (attr->name->Equals(UTF8STRC("maxx")) && attr->value != 0)
+				else if (aname->Equals(UTF8STRC("maxx")) && attr->value.SetTo(avalue))
 				{
-					hasBR = attr->value->ToDouble(wgs84Bounds.max.x);
+					hasBR = avalue->ToDouble(wgs84Bounds.max.x);
 				}
-				else if (attr->name->Equals(UTF8STRC("maxy")) && attr->value != 0)
+				else if (aname->Equals(UTF8STRC("maxy")) && attr->value.SetTo(avalue))
 				{
-					hasBR = attr->value->ToDouble(wgs84Bounds.max.y);
+					hasBR = avalue->ToDouble(wgs84Bounds.max.y);
 				}
 			}
 			reader->SkipElement();
@@ -278,7 +281,7 @@ Map::WebFeatureService::WebFeatureService(NN<Net::SocketFactory> sockf, Optional
 Map::WebFeatureService::~WebFeatureService()
 {
 	this->wfsURL->Release();
-	SDEL_STRING(this->version);
+	OPTSTR_DEL(this->version);
 	NN<FeatureType> feature;
 	UOSInt i = this->features.GetCount();
 	while (i-- > 0)
@@ -317,23 +320,24 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 {
 	Bool needSwapXY = false;
 	NN<FeatureType> currFeature;
-	if (this->currFeature.SetTo(currFeature))
+	NN<Text::String> version;
+	if (this->currFeature.SetTo(currFeature) && this->version.SetTo(version))
 	{
 		Text::StringBuilderUTF8 sb;
-		if (this->version->Equals(UTF8STRC("1.0.0")))
+		if (version->Equals(UTF8STRC("1.0.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=1.0.0&request=GetFeature&outputFormat=GML2&typeName="));
 			Text::TextBinEnc::FormEncoding::FormEncode(sb, currFeature->name->ToCString());
 		}
-		else if (this->version->Equals(UTF8STRC("1.1.0")))
+		else if (version->Equals(UTF8STRC("1.1.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=1.1.0&request=GetFeature&outputFormat=GML2&typeName="));
 			Text::TextBinEnc::FormEncoding::FormEncode(sb, currFeature->name->ToCString());
 			needSwapXY = true;
 		}
-		else if (this->version->Equals(UTF8STRC("2.0.0")))
+		else if (version->Equals(UTF8STRC("2.0.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=2.0.0&request=GetFeature&outputFormat=GML2&typeName="));

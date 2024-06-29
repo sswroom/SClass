@@ -14,7 +14,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > 0)
 	{
 		Text::StrInt64(wbuff, i);
-		j = Text::StrToInt64(wbuff);
+		j = Text::StrToInt64W(wbuff);
 		if (i != j)
 		{
 			printf("%lld != %lld\r\n", i, j);
@@ -25,7 +25,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > 10000000000LL)
 	{
 		Text::StrInt64(wbuff, i);
-		j = Text::StrToInt64(wbuff);
+		j = Text::StrToInt64W(wbuff);
 		if (i != j)
 		{
 			printf("%lld != %lld\r\n", i, j);
@@ -38,7 +38,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > 0xffffFFF0LL)
 	{
 		Text::StrInt64(wbuff, i);
-		j = Text::StrToInt64(wbuff);
+		j = Text::StrToInt64W(wbuff);
 		if (i != j)
 		{
 			printf("%lld != %lld\r\n", i, j);
@@ -49,7 +49,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i++ < 0)
 	{
 		Text::StrInt64(wbuff, i);
-		j = Text::StrToInt64(wbuff);
+		j = Text::StrToInt64W(wbuff);
 		if (i != j)
 		{
 			printf("%lld != %lld\r\n", i, j);
@@ -60,7 +60,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i++ < -10000000000LL)
 	{
 		Text::StrInt64(wbuff, i);
-		j = Text::StrToInt64(wbuff);
+		j = Text::StrToInt64W(wbuff);
 		if (i != j)
 		{
 			printf("%lld != %lld\r\n", i, j);

@@ -95,7 +95,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	UnsafeArray<UTF8Char> sptr2End;
 	UnsafeArray<UTF8Char> sptr3;
 	UnsafeArray<UTF8Char> sarr[11];
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 
@@ -164,8 +164,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	}
 
 	sptr3 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess))
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
@@ -175,7 +174,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
 		UOSInt currCnt = 0;
-		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr3))
+		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr3))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -348,7 +347,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	NN<Media::DrawImage> img;
 	UOSInt i;
@@ -362,10 +361,9 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.png"));
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).NotNull())
 		{
 			if (pt == IO::Path::PathType::File)
 			{

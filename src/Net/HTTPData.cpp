@@ -107,14 +107,13 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 			Text::StringBuilderUTF8 sb;
 			if (!fdh->cli->GetRespHeader(CSTR("Content-Length"), sb))
 			{
-				void *sess;
+				NN<IO::StreamReadReq> sess;
 				Sync::Event readEvt(false);
 				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				while (true)
 				{
 					readEvt.Clear();
-					sess = fdh->cli->BeginRead(BYTEARR(buff), &readEvt);
-					if (sess)
+					if (fdh->cli->BeginRead(BYTEARR(buff), readEvt).SetTo(sess))
 					{
 						Bool incomplete;
 						readEvt.Wait(2000);

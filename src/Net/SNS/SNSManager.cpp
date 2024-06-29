@@ -440,13 +440,13 @@ Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::Path::PathType pt;
 		Net::SNS::SNSControl::SNSType type = Net::SNS::SNSControl::ST_UNKNOWN;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{

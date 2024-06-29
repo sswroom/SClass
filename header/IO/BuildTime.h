@@ -8,7 +8,7 @@ namespace IO
 	class BuildTime
 	{
 	public:
-		static void GetBuildTime(Data::DateTime *dt);
+		static void GetBuildTime(NN<Data::DateTime> dt);
 		static Data::Timestamp GetBuildTime();
 	};
 };

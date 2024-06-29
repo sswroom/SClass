@@ -160,7 +160,7 @@ namespace Net
 			return Text::StrToInt64(this->currRow[colIndex]->v);
 		}
 
-		virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 		{
 			if (this->currRow == 0)
 			{
@@ -639,7 +639,7 @@ namespace Net
 			return item.GetAsI64();
 		}
 
-		virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))

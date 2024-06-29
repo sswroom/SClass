@@ -41,7 +41,7 @@ namespace Map
 		Optional<Net::SSLEngine> ssl;
 		NN<Math::CoordinateSystem> envCsys;
 
-		Text::String *version;
+		Optional<Text::String> version;
 		Data::ArrayListNN<LayerInfo> layers;
 		Data::ArrayListStringNN mapImageTypeNames;
 		Data::ArrayListStringNN infoTypeNames;

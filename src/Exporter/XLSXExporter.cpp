@@ -1177,7 +1177,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.AppendC(UTF8STRC("<TotalTime>1</TotalTime>"));
 	sb.AppendC(UTF8STRC("<Application>"));
 	sb.AppendC(UTF8STRC("AVIRead/"));
-	IO::BuildTime::GetBuildTime(&dt2);
+	IO::BuildTime::GetBuildTime(dt2);
 	sptr = dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("</Application>"));

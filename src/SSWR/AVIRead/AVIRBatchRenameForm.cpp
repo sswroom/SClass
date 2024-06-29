@@ -26,11 +26,11 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyTy
 	sptr = sb.ConcatTo(sbuff);
 	sptr2 = sb.ConcatTo(sbuff2);
 	sptrEnd = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptrEnd));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptrEnd)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
 			UOSInt i;
 			if (pt == IO::Path::PathType::File)
@@ -71,11 +71,11 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyTy
 	sptr = sb.ConcatTo(sbuff);
 	sptr2 = sb.ConcatTo(sbuff2);
 	sptrEnd = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptrEnd));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptrEnd)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptrEnd))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptrEnd))
 		{
 			UOSInt i;
 			if (pt == IO::Path::PathType::File)

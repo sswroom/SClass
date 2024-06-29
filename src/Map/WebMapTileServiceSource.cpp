@@ -185,33 +185,38 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 			NN<Text::XMLAttrib> nnresourceTypeAttr;
 			NN<Text::XMLAttrib> nntemplateAttr;
 			NN<Text::XMLAttrib> attr;
+			NN<Text::String> aname;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("format")))
+				aname = Text::String::OrEmpty(attr->name);
+				if (aname->Equals(UTF8STRC("format")))
 				{
 					formatAttr = attr;
 				}
-				else if (attr->name->Equals(UTF8STRC("resourceType")))
+				else if (aname->Equals(UTF8STRC("resourceType")))
 				{
 					resourceTypeAttr = attr;
 				}
-				else if (attr->name->Equals(UTF8STRC("template")))
+				else if (aname->Equals(UTF8STRC("template")))
 				{
 					templateAttr = attr;
 				}
 			}
-			if (formatAttr.SetTo(nnformatAttr) && resourceTypeAttr.SetTo(nnresourceTypeAttr) && templateAttr.SetTo(nntemplateAttr) && nnformatAttr->value && nnresourceTypeAttr->value && nntemplateAttr->value)
+			NN<Text::String> formatValue;
+			NN<Text::String> templateValue;
+			NN<Text::String> resourceTypeValue;
+			if (formatAttr.SetTo(nnformatAttr) && resourceTypeAttr.SetTo(nnresourceTypeAttr) && templateAttr.SetTo(nntemplateAttr) && nnformatAttr->value.SetTo(formatValue) && nnresourceTypeAttr->value.SetTo(resourceTypeValue) && nntemplateAttr->value.SetTo(templateValue))
 			{
 				NN<ResourceURL> resource = MemAllocNN(ResourceURL);
-				resource->format = nnformatAttr->value->Clone();
-				resource->templateURL = nntemplateAttr->value->Clone();
-				if (nnresourceTypeAttr->value->Equals(UTF8STRC("tile")))
+				resource->format = formatValue->Clone();
+				resource->templateURL = templateValue->Clone();
+				if (resourceTypeValue->Equals(UTF8STRC("tile")))
 				{
 					resource->resourceType = ResourceType::Tile;
 				}
-				else if (nnresourceTypeAttr->value->Equals(UTF8STRC("FeatureInfo")))
+				else if (resourceTypeValue->Equals(UTF8STRC("FeatureInfo")))
 				{
 					resource->resourceType = ResourceType::FeatureInfo;
 				}

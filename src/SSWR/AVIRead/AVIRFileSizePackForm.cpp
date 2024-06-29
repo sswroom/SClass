@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile> file;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	UOSInt i;
 	UOSInt j;
 	IO::Path::PathType pt;
@@ -163,10 +163,9 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UInt64 totalFileSize = 0;
 	this->filePath = Text::StrCopyNew(sbuff).Ptr();
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, fileSize).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

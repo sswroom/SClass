@@ -32,12 +32,12 @@ namespace Net
 		virtual UOSInt Read(const Data::ByteArray &buff);
 		virtual UOSInt Write(Data::ByteArrayR buff);
 
-		virtual void *BeginRead(const Data::ByteArray &buff, Sync::Event *evt);
-		virtual UOSInt EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete);
-		virtual void CancelRead(void *reqData);
-		virtual void *BeginWrite(Data::ByteArrayR buff, Sync::Event *evt);
-		virtual UOSInt EndWrite(void *reqData, Bool toWait);
-		virtual void CancelWrite(void *reqData);
+		virtual Optional<IO::StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
+		virtual UOSInt EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual void CancelRead(NN<IO::StreamReadReq> reqData);
+		virtual Optional<IO::StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
+		virtual UOSInt EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait);
+		virtual void CancelWrite(NN<IO::StreamWriteReq> reqData);
 
 		virtual Int32 Flush();
 		virtual void Close();

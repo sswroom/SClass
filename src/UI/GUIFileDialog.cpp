@@ -12,7 +12,7 @@ UI::GUIFileDialog::GUIFileDialog(const WChar *compName, const WChar *appName, co
 {
 	UOSInt i;
 	WChar buff[256];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
 	this->filterIndex = (UOSInt)-1;
@@ -24,8 +24,7 @@ UI::GUIFileDialog::GUIFileDialog(const WChar *compName, const WChar *appName, co
 
 	this->fileName = 0;
 	this->lastName = 0;
-	wptr = this->reg->GetValueStr(this->dialogName, buff);
-	if (wptr)
+	if (this->reg->GetValueStr(this->dialogName, buff).SetTo(wptr))
 	{
 		this->lastName = Text::StrCopyNew(buff);
 	}
@@ -35,7 +34,8 @@ UI::GUIFileDialog::~GUIFileDialog()
 {
 	IO::Registry::CloseRegistry(this->reg);
 	MemFree(this->dialogName);
-	if (this->lastName) Text::StrDelNew(this->lastName);
+	UnsafeArray<const WChar> lastName;
+	if (this->lastName.SetTo(lastName)) Text::StrDelNew(lastName);
 	OPTSTR_DEL(this->fileName);
 	this->patterns.FreeAll();
 	this->names.FreeAll();

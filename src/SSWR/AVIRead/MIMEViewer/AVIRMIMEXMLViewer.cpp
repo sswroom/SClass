@@ -50,12 +50,12 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 			{
 				attr = reader.GetAttribNoCheck(i);
 				sbCont.AppendUTF8Char(' ');
-				sbCont.Append(attr->name);
-				if (attr->value)
+				sbCont.AppendOpt(attr->name);
+				if (attr->value.SetTo(s))
 				{
 					sbCont.AppendUTF8Char('=');
 					sbCont.AppendUTF8Char('"');
-					s = Text::XML::ToNewAttrText(attr->value->v);
+					s = Text::XML::ToNewAttrText(s->v);
 					sbCont.Append(s);
 					s->Release();
 					sbCont.AppendUTF8Char('"');
@@ -120,11 +120,11 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 			{
 				attr = reader.GetAttribNoCheck(i);
 				sbCont.AppendUTF8Char(' ');
-				sbCont.Append(attr->name);
-				if (attr->value)
+				sbCont.AppendOpt(attr->name);
+				if (attr->value.SetTo(s))
 				{
 					sbCont.AppendUTF8Char('=');
-					s = Text::XML::ToNewAttrText(attr->value->v);
+					s = Text::XML::ToNewAttrText(s->v);
 					sbCont.Append(s);
 					s->Release();
 				}

@@ -7,17 +7,17 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 
 //RFC 6238
-Crypto::TOTP::TOTP(const UInt8 *key, UOSInt keySize) : OTP(6)
+Crypto::TOTP::TOTP(UnsafeArray<const UInt8> key, UOSInt keySize) : OTP(6)
 {
 	this->keySize = keySize;
-	this->key = MemAlloc(UInt8, keySize);
-	MemCopyNO(this->key, key, keySize);
+	this->key = MemAllocArr(UInt8, keySize);
+	MemCopyNO(this->key.Ptr(), key.Ptr(), keySize);
 	this->intervalMS = 30000;
 }
 
 Crypto::TOTP::~TOTP()
 {
-	MemFree(this->key);
+	MemFreeArr(this->key);
 }
 
 Crypto::OTP::OTPType Crypto::TOTP::GetType()

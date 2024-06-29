@@ -35,12 +35,12 @@ namespace IO
 		virtual OSInt Read(UInt8 *buff, OSInt size);
 		virtual OSInt Write(const UInt8 *buff, OSInt size);
 
-		virtual void *BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt);
-		virtual OSInt EndRead(void *reqData, Bool toWait);
-		virtual void CancelRead(void *reqData);
-		virtual void *BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt);
-		virtual OSInt EndWrite(void *reqData, Bool toWait);
-		virtual void CancelWrite(void *reqData);
+		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
+		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual void CancelRead(NN<StreamReadReq> reqData);
+		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
+		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 
 		virtual Int32 Flush();
 		virtual void Close();
@@ -53,5 +53,5 @@ namespace IO
 		virtual void GetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
 		virtual void SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
 	};
-};
+}
 #endif

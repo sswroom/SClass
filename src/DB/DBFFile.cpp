@@ -160,14 +160,14 @@ OSInt DB::DBFFile::GetColIndex(UnsafeArray<const UTF8Char> name)
 	return -1;
 }
 
-WChar *DB::DBFFile::GetRecord(WChar *buff, UOSInt row, UOSInt col)
+UnsafeArrayOpt<WChar> DB::DBFFile::GetRecord(UnsafeArray<WChar> buff, UOSInt row, UOSInt col)
 {
 	if (col >= this->colCnt)
 		return 0;
 
 	UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
 	this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
-	WChar *ret = this->enc.WFromBytes(buff, cbuff, this->cols[col].colSize, 0);
+	UnsafeArray<WChar> ret = this->enc.WFromBytes(buff, cbuff, this->cols[col].colSize, 0);
 	MemFree(cbuff);
 	return ret;
 }
@@ -602,7 +602,7 @@ Int64 DB::DBFReader::GetInt64(UOSInt colIndex)
 	return Text::StrToInt64Ch(buff);
 }
 
-WChar *DB::DBFReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::DBFReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (!this->recordExist)
 		return 0;

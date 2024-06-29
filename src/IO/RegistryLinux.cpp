@@ -213,7 +213,7 @@ IO::Registry::~Registry()
 	MemFree(this->clsData);
 }
 
-IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
+IO::Registry *IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
 {
 	Registry_Param param;
 	param.reg = this->clsData->reg;
@@ -230,7 +230,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	return reg;
 }
 
-WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
+UnsafeArrayOpt<WChar> IO::Registry::GetSubReg(UnsafeArray<WChar> buff, UOSInt index)
 {
 	Data::ArrayListStrUTF8 names;
 	Data::ArrayListStringNN cateList;
@@ -242,7 +242,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	}
 	NN<Text::String> cate;
 	cfg->GetCateList(cateList, false);
-	WChar *ret = 0;
+	UnsafeArrayOpt<WChar> ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
 	UOSInt thisCateLen = this->clsData->cate->leng;
 	Data::ArrayIterator<NN<Text::String>> it = cateList.Iterator();
@@ -280,7 +280,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	return ret;
 }
 
-void IO::Registry::SetValue(const WChar *name, Int32 value)
+void IO::Registry::SetValue(UnsafeArray<const WChar> name, Int32 value)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("dword:"));
@@ -299,7 +299,7 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 	s->Release();
 }
 
-void IO::Registry::SetValue(const WChar *name, const WChar *value)
+void IO::Registry::SetValue(UnsafeArray<const WChar> name, UnsafeArray<const WChar> value)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("sz:"));
@@ -320,7 +320,7 @@ void IO::Registry::SetValue(const WChar *name, const WChar *value)
 	s->Release();
 }
 
-void IO::Registry::DelValue(const WChar *name)
+void IO::Registry::DelValue(UnsafeArray<const WChar> name)
 {
 	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
@@ -333,7 +333,7 @@ void IO::Registry::DelValue(const WChar *name)
 	s->Release();
 }
 
-Int32 IO::Registry::GetValueI32(const WChar *name)
+Int32 IO::Registry::GetValueI32(UnsafeArray<const WChar> name)
 {
 	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
@@ -346,13 +346,13 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 	if (cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		s->Release();
-		return Text::StrHex2Int32C(csval->v + 6);
+		return Text::StrHex2Int32C(UnsafeArray<const UInt8>(csval->v + 6));
 	}
 	s->Release();
 	return 0;
 }
 
-WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
+UnsafeArrayOpt<WChar> IO::Registry::GetValueStr(UnsafeArray<const WChar> name, UnsafeArray<WChar> buff)
 {
 	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
@@ -371,7 +371,7 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 	return 0;
 }
 
-Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
+Bool IO::Registry::GetValueI32(UnsafeArray<const WChar> name, OutParam<Int32> value)
 {
 	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
@@ -384,14 +384,14 @@ Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
 	if (cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		s->Release();
-		value.Set(Text::StrHex2Int32C(csval->v + 6));
+		value.Set(Text::StrHex2Int32C(UnsafeArray<const UInt8>(csval->v + 6)));
 		return true;
 	}
 	s->Release();
 	return false;
 }
 
-WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
+UnsafeArrayOpt<WChar> IO::Registry::GetName(UnsafeArray<WChar> nameBuff, UOSInt index)
 {
 	NN<IO::ConfigFile> cfg;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);

@@ -237,7 +237,7 @@ Bool Manage::Process::Kill()
 	return true;
 }
 
-WChar *Manage::Process::GetFilename(WChar *buff)
+UnsafeArray<WChar> Manage::Process::GetFilename(UnsafeArray<WChar> buff)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
@@ -398,13 +398,13 @@ Bool Manage::Process::GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb)
 		sz = fs.Read(BYTEARR(sbuff));
 	}
 	sbuff[sz] = 0;
-	i = Text::StrCharCnt(UARR(sbuff));
+	i = Text::StrCharCnt(UnsafeArray<const UTF8Char>(UARR(sbuff)));
 	if (Text::StrEqualsC(UARR(sbuff), i, UTF8STRC("/usr/bin/valgrind.bin")))
 	{
 		i += 1;
 		while (i < sz)
 		{
-			j = Text::StrCharCnt(UARR(sbuff) + i);
+			j = Text::StrCharCnt(UnsafeArray<const UTF8Char>(UARR(sbuff) + i));
 			if (sbuff[i] == '-')
 			{
 				i += j + 1;
@@ -559,13 +559,13 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 				ret = Text::StrSplitTrim(sarr, 6, sb.v, ' ');
 				if (ret == 6)
 				{
-					Int32 inode = Text::StrToInt32(sarr[4]);
+					Int32 inode = Text::StrToInt32(UnsafeArray<const UTF8Char>(sarr[4]));
 					if (inode != 0)
 					{
 						if (Text::StrSplit(sarr2, 2, sarr[0], '-') == 2)
 						{
-							UOSInt startAddr = (UOSInt)Text::StrHex2Int64C(sarr2[0]);
-							UOSInt endAddr = (UOSInt)Text::StrHex2Int64C(sarr2[1]);
+							UOSInt startAddr = (UOSInt)Text::StrHex2Int64C(UnsafeArray<const UTF8Char>(sarr2[0]));
+							UOSInt endAddr = (UOSInt)Text::StrHex2Int64C(UnsafeArray<const UTF8Char>(sarr2[1]));
 							data = dataMap.Get(inode);
 							if (data)
 							{
@@ -574,7 +574,7 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 							else
 							{
 								data = MemAlloc(ModuleInfoData, 1);
-								data->fileName = Text::StrCopyNew(sarr[5]).Ptr();
+								data->fileName = Text::StrCopyNew(UnsafeArray<const UInt8>(sarr[5])).Ptr();
 								data->addr = startAddr;
 								data->size = (UOSInt)(endAddr - startAddr);
 								dataMap.Put(inode, data);
@@ -659,16 +659,16 @@ UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 	UOSInt ret = 0;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/fd/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		Data::Timestamp ts;
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, ts, pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] != '.')
 			{
-				handleList->Add(HandleInfo(Text::StrToInt32(sptr), ts));
+				handleList->Add(HandleInfo(Text::StrToInt32(UnsafeArray<const UTF8Char>(sptr)), ts));
 			}
 		}
 		IO::Path::FindFileClose(sess);
@@ -760,7 +760,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 		UnsafeArray<UTF8Char> sarr[8];
 		if (Text::StrSplit(sarr, 8, sb.v, ' ') == 7)
 		{
-			UOSInt wsSize = (UOSInt)Text::StrToUInt64(sarr[1]);
+			UOSInt wsSize = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[1]));
 			succ = true;
 			if (pageFault)
 			{
@@ -772,15 +772,15 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 			}
 			if (pagedPoolUsage)
 			{
-				*pagedPoolUsage = (UOSInt)Text::StrToUInt64(sarr[2]) * pageSize;
+				*pagedPoolUsage = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[2])) * pageSize;
 			}
 			if (nonPagedPoolUsage)
 			{
-				*nonPagedPoolUsage = (UOSInt)Text::StrToUInt64(sarr[5]) * pageSize;
+				*nonPagedPoolUsage = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[5])) * pageSize;
 			}
 			if (pageFileUsage)
 			{
-				*pageFileUsage = (UOSInt)Text::StrToUInt64(sarr[0]) * pageSize;
+				*pageFileUsage = (UOSInt)Text::StrToUInt64(UnsafeArray<const UTF8Char>(sarr[0])) * pageSize;
 			}
 		}
 	}
@@ -807,17 +807,17 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 			succ = true;
 			if (createTime)
 			{
-				ticks = Text::StrToInt64(sarr[21]);
+				ticks = Text::StrToInt64(UnsafeArray<const UTF8Char>(sarr[21]));
 				*createTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
 			}
 			if (kernelTime)
 			{
-				ticks = Text::StrToInt64(sarr[14]);
+				ticks = Text::StrToInt64(UnsafeArray<const UTF8Char>(sarr[14]));
 				*kernelTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
 			}
 			if (userTime)
 			{
-				ticks = Text::StrToInt64(sarr[13]);
+				ticks = Text::StrToInt64(UnsafeArray<const UTF8Char>(sarr[13]));
 				*userTime = Data::Timestamp(Data::TimeInstant(ticks / hertz, (UInt32)MulDiv32((Int32)(ticks % hertz), 1000000000, (Int32)hertz)), 0);
 			}
 		}
@@ -954,15 +954,15 @@ UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 
 struct Manage::Process::FindProcSess
 {
-	IO::Path::FindFileSession *findFileSess;
+	NN<IO::Path::FindFileSession> findFileSess;
 	Optional<Text::String> procName;
 };
 
 Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
 {
-	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(CSTR("/proc/*"));
+	NN<IO::Path::FindFileSession> ffsess;
 	FindProcSess *sess;
-	if (ffsess == 0)
+	if (!IO::Path::FindFile(CSTR("/proc/*")).SetTo(ffsess))
 	{
 		return 0;
 	}
@@ -982,9 +982,9 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 
 Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
 {
-	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(CSTR("/proc/*"));
+	NN<IO::Path::FindFileSession> ffsess;
 	FindProcSess *sess;
-	if (ffsess == 0)
+	if (!IO::Path::FindFile(CSTR("/proc/*")).SetTo(ffsess))
 	{
 		return 0;
 	}
@@ -1012,7 +1012,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
-	while (IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0).SetTo(sptr2))
+	while (IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, pid))
 		{
@@ -1069,7 +1069,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 	return 0;
 }
 
-WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
 {
 	UInt32 pid;
 	UTF8Char sbuff[256];
@@ -1080,7 +1080,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
-	while (IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0).SetTo(sptr2))
+	while (IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, pid))
 		{

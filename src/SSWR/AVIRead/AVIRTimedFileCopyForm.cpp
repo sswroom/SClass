@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType user
 Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, UnsafeArray<const UTF8Char> buffStart, UnsafeArray<const UTF8Char> pathBase, UnsafeArray<UTF8Char> pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir)
 {
 	UnsafeArray<UTF8Char> sptr;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	Int32 iVal;
 	Bool succ;
@@ -99,10 +99,9 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, Unsa
 	Data::Timestamp createTime;
 	UInt32 unixAttr;
 	sptr = Text::StrConcatC(pathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr)));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(buffStart, UnsafeArray<const UTF8Char>(sptr))).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(pathEnd, sess, &modTime, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(pathEnd, sess, modTime, pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

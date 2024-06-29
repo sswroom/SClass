@@ -351,11 +351,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 	IO::Path::CreateDirectory(CSTRP(path, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(path, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(path, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

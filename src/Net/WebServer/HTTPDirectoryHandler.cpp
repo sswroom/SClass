@@ -1117,8 +1117,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 
 				sptr2 = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-				if (sess)
+				NN<IO::Path::FindFileSession> sess;
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess))
 				{
 					NN<Sync::Mutex> statMut;
 					Sync::MutexUsage mutUsage;
@@ -1150,7 +1150,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					Data::Timestamp modTime;
 					if (sort == 0)
 					{
-						while (IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize).SetTo(sptr3))
+						while (IO::Path::FindNextFile(sptr2, sess, modTime, pt, fileSize).SetTo(sptr3))
 						{
 							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
 							{
@@ -1216,7 +1216,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					{
 						Data::ArrayList<DirectoryEntry *> entList;
 						DirectoryEntry *ent;
-						while (IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize).SetTo(sptr3))
+						while (IO::Path::FindNextFile(sptr2, sess, modTime, pt, fileSize).SetTo(sptr3))
 						{
 							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
 							{
@@ -1681,7 +1681,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	NN<Sync::RWMutex> packageMut;
 	Sync::RWMutexUsage packageMutUsage;
 	if (!packageMut.Set(this->packageMut) || this->packageMap == 0)
@@ -1704,8 +1704,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = searchPattern.ConcatTo(sptr);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		Data::Timestamp ts;
 		IO::Path::PathType pt;
@@ -1714,7 +1713,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 		UOSInt i;
 		PackageInfo *package;
 
-		while (IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, ts, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

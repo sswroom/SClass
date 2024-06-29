@@ -23,7 +23,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	WChar fname2[512];
 	WChar fname3[512];
 	WChar fname[MAXFILENAMESIZE];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
 	const WChar *initDir;
 	const WChar *initFileName;
 	WChar *multiBuff = 0;
@@ -125,7 +125,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		Text::StrReplaceW(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		UOSInt i = Text::StrLastIndexOfChar(fname2, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfCharW(fname2, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			fname2[i] = 0;
@@ -151,10 +151,11 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		initFileName = initDir + 1;
 	}
 
-	if (this->lastName)
+	UnsafeArray<const WChar> lastName;
+	if (this->lastName.SetTo(lastName))
 	{
-		Text::StrConcat(fname1, this->lastName);
-		WChar *wptr = fnameBuff;
+		Text::StrConcat(fname1, lastName);
+		UnsafeArray<WChar> wptr = fnameBuff;
 		WChar *currPtr = fname1;
 		WChar *ptrStart = 0;
 		WChar c;
@@ -179,7 +180,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else if (c == 'N')
 				{
-					i = Text::StrLastIndexOfChar(initFileName, '.');
+					i = Text::StrLastIndexOfCharW(initFileName, '.');
 					if (i == INVALID_INDEX)
 					{
 						wptr = Text::StrConcat(wptr, initFileName);
@@ -191,7 +192,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else if (c == 'x')
 				{
-					i = Text::StrLastIndexOfChar(initFileName, '.');
+					i = Text::StrLastIndexOfCharW(initFileName, '.');
 					if (i != INVALID_INDEX)
 					{
 						wptr = Text::StrConcat(wptr, &initFileName[i]);
@@ -305,7 +306,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	UnsafeArray<const UTF8Char> csptr;
 	if (fnameBuff)
 	{
-		si = Text::StrLastIndexOfChar(fnameBuff, IO::Path::PATH_SEPERATOR);
+		si = Text::StrLastIndexOfCharW(fnameBuff, IO::Path::PATH_SEPERATOR);
 		if (si == INVALID_INDEX)
 		{
 			csptr = Text::StrToUTF8New(initDir);
@@ -408,7 +409,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 			}
 			if (initFileName[0])
 			{
-				i = Text::StrIndexOf(currPtr, initFileName);
+				i = Text::StrIndexOfW(currPtr, initFileName);
 				if (i != INVALID_INDEX)
 				{
 					currPtr[i] = 0;
@@ -418,7 +419,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else
 				{
-					i = Text::StrLastIndexOfChar(initFileName, '.');
+					i = Text::StrLastIndexOfCharW(initFileName, '.');
 					if (i == INVALID_INDEX)
 					{
 						Text::StrConcat(wptr, currPtr);
@@ -426,7 +427,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 					else
 					{
 						Text::StrConcatC(fname3, initFileName, i);
-						UOSInt j = Text::StrIndexOf(currPtr, fname3);
+						UOSInt j = Text::StrIndexOfW(currPtr, fname3);
 						if (j != INVALID_INDEX)
 						{
 							currPtr[j] = 0;
@@ -434,7 +435,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 							wptr = Text::StrConcat(wptr, L"|N");
 							currPtr += i + j;
 						}
-						j = Text::StrIndexOf(currPtr, &initFileName[i]);
+						j = Text::StrIndexOfW(currPtr, &initFileName[i]);
 						if (j != INVALID_INDEX)
 						{
 							wptr = Text::StrConcatC(wptr, currPtr, j);

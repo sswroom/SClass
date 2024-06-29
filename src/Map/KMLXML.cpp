@@ -55,6 +55,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sbuffEnd;
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
+	NN<Text::String> nns;
 
 	Map::WebImageLayer *imgLyr = 0;
 	Text::StringBuilderUTF8 containerNameSb;
@@ -259,9 +260,9 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->EqualsICase(UTF8STRC("ID")))
+				if (attr->name.SetTo(nns) && nns->EqualsICase(UTF8STRC("ID")))
 				{
-					styleId = attr->value->Clone().Ptr();
+					styleId = Text::String::OrEmpty(attr->value)->Clone().Ptr();
 					break;
 				}
 			}
@@ -330,13 +331,16 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							while (i-- > 0)
 							{
 								attr = reader->GetAttribNoCheck(i);
-								if (attr->name->EqualsICase(UTF8STRC("X")))
+								if (attr->name.SetTo(nns))
 								{
-									style->iconSpotX = attr->value->ToInt32();
-								}
-								else if (attr->name->EqualsICase(UTF8STRC("Y")))
-								{
-									style->iconSpotY = attr->value->ToInt32();
+									if (nns->EqualsICase(UTF8STRC("X")))
+									{
+										style->iconSpotX = Text::String::OrEmpty(attr->value)->ToInt32();
+									}
+									else if (nns->EqualsICase(UTF8STRC("Y")))
+									{
+										style->iconSpotY = Text::String::OrEmpty(attr->value)->ToInt32();
+									}
 								}
 							}
 							sb.ClearStr();
@@ -403,9 +407,9 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->EqualsICase(UTF8STRC("ID")))
+				if (attr->name.SetTo(nns) && nns->EqualsICase(UTF8STRC("ID")))
 				{
-					styleId = attr->value->Clone().Ptr();
+					styleId = Text::String::OrEmpty(attr->value)->Clone().Ptr();
 					break;
 				}
 			}
@@ -580,13 +584,16 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 						while (i-- > 0)
 						{
 							attr = reader->GetAttribNoCheck(i);
-							if (attr->name->EqualsICase(UTF8STRC("X")))
+							if (attr->name.SetTo(nns))
 							{
-								minX = attr->value->ToDouble();
-							}
-							else if (attr->name->EqualsICase(UTF8STRC("Y")))
-							{
-								minY = attr->value->ToDouble();
+								if (nns->EqualsICase(UTF8STRC("X")))
+								{
+									minX = Text::String::OrEmpty(attr->value)->ToDouble();
+								}
+								else if (nns->EqualsICase(UTF8STRC("Y")))
+								{
+									minY = Text::String::OrEmpty(attr->value)->ToDouble();
+								}
 							}
 						}
 						reader->SkipElement();
@@ -597,13 +604,16 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 						while (i-- > 0)
 						{
 							attr = reader->GetAttribNoCheck(i);
-							if (attr->name->EqualsICase(UTF8STRC("X")))
+							if (attr->name.SetTo(nns))
 							{
-								oX = attr->value->ToDouble();
-							}
-							else if (attr->name->EqualsICase(UTF8STRC("Y")))
-							{
-								oY = attr->value->ToDouble();
+								if (nns->EqualsICase(UTF8STRC("X")))
+								{
+									oX = Text::String::OrEmpty(attr->value)->ToDouble();
+								}
+								else if (nns->EqualsICase(UTF8STRC("Y")))
+								{
+									oY = Text::String::OrEmpty(attr->value)->ToDouble();
+								}
 							}
 						}
 						reader->SkipElement();
@@ -614,13 +624,16 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 						while (i--)
 						{
 							attr = reader->GetAttribNoCheck(i);
-							if (attr->name->EqualsICase(UTF8STRC("X")))
+							if (attr->name.SetTo(nns))
 							{
-								sizeX = attr->value->ToDouble();
-							}
-							else if (attr->name->EqualsICase(UTF8STRC("Y")))
-							{
-								sizeY = attr->value->ToDouble();
+								if (nns->EqualsICase(UTF8STRC("X")))
+								{
+									sizeX = Text::String::OrEmpty(attr->value)->ToDouble();
+								}
+								else if (nns->EqualsICase(UTF8STRC("Y")))
+								{
+									sizeY = Text::String::OrEmpty(attr->value)->ToDouble();
+								}
 							}
 						}
 						reader->SkipElement();
@@ -975,6 +988,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 											{
 												NN<Text::XMLAttrib> attr;
 												Text::StringBuilderUTF8 sb;
+												NN<Text::String> nnval;
 												Bool found = false;
 												UOSInt i;
 												UOSInt j;
@@ -982,9 +996,9 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 												while (i-- > 0)
 												{
 													attr = reader->GetAttribNoCheck(i);
-													if (attr->name->EqualsICase(UTF8STRC("NAME")))
+													if (Text::String::OrEmpty(attr->name)->EqualsICase(UTF8STRC("NAME")) && attr->value.SetTo(nnval))
 													{
-														if (attr->value->EqualsICase(UTF8STRC("SPEED")))
+														if (nnval->EqualsICase(UTF8STRC("SPEED")))
 														{
 															j = 0;
 															while (reader->NextElementName().SetTo(nodeName))
@@ -1005,7 +1019,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 																}
 															}
 														}
-														else if (attr->value->EqualsICase(UTF8STRC("BEARING")))
+														else if (nnval->EqualsICase(UTF8STRC("BEARING")))
 														{
 															j = 0;
 															while (reader->NextElementName().SetTo(nodeName))
@@ -1026,7 +1040,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 																}
 															}
 														}
-														else if (attr->value->EqualsICase(UTF8STRC("ACCURACY")))
+														else if (nnval->EqualsICase(UTF8STRC("ACCURACY")))
 														{
 															j = 0;
 															while (reader->NextElementName().SetTo(nodeName))

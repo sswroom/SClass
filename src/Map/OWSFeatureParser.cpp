@@ -441,7 +441,7 @@ Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, M
 					while (i < j)
 					{
 						attr = reader.GetAttribNoCheck(i);
-						nameList->Add(attr->name->Clone());
+						nameList->Add(Text::String::OrEmpty(attr->name)->Clone());
 						valueList->Add(Text::String::OrEmpty(Text::String::CopyOrNull(attr->value)));
 						i++;
 					}

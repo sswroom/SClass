@@ -310,7 +310,7 @@ Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
 	}
 }
 
-WChar *DB::SortableDBReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))

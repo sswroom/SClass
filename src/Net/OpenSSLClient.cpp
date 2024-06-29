@@ -147,43 +147,43 @@ UOSInt Net::OpenSSLClient::Write(Data::ByteArrayR buff)
 	}
 }
 
-void *Net::OpenSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> Net::OpenSSLClient::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	UOSInt ret = this->Read(buff);
 	if (ret)
 	{
 		evt->Set();
 	}
-	return (void*)ret;
+	return (IO::StreamReadReq*)ret;
 }
 
-UOSInt Net::OpenSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt Net::OpenSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void Net::OpenSSLClient::CancelRead(void *reqData)
+void Net::OpenSSLClient::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 
 }
 
-void *Net::OpenSSLClient::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> Net::OpenSSLClient::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	UOSInt ret = this->Write(buff);
 	if (ret)
 	{
 		evt->Set();
 	}
-	return (void*)ret;
+	return (IO::StreamWriteReq*)ret;
 }
 
-UOSInt Net::OpenSSLClient::EndWrite(void *reqData, Bool toWait)
+UOSInt Net::OpenSSLClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void Net::OpenSSLClient::CancelWrite(void *reqData)
+void Net::OpenSSLClient::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 
 }

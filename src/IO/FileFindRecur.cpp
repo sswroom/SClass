@@ -23,12 +23,13 @@ IO::FileFindRecur::FileFindRecur(Text::CStringNN path)
 
 IO::FileFindRecur::~FileFindRecur()
 {
+	NN<IO::Path::FindFileSession> sess;
 	UOSInt i = this->partCnt;
 	while (i-- > 0)
 	{
-		if (this->srchParts[i].sess)
+		if (this->srchParts[i].sess.SetTo(sess))
 		{
-			IO::Path::FindFileClose(this->srchParts[i].sess);
+			IO::Path::FindFileClose(sess);
 			this->srchParts[i].sess = 0;
 		}
 	}
@@ -42,6 +43,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 	UOSInt i;
 	IO::Path::PathType thisPt;
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::Path::FindFileSession> sess;
 
 	while (true)
 	{
@@ -62,16 +64,16 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					return CSTR_NULL;
 				}
 				i--;
-				if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
+				if (this->srchParts[i].sess.SetTo(sess) && IO::Path::IsSearchPattern(this->srcStrs[i].v))
 				{
-					if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
+					if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, sess, 0, thisPt, 0).SetTo(sptr))
 					{
 						i++;
 						break;
 					}
 					else
 					{
-						IO::Path::FindFileClose(this->srchParts[i].sess);
+						IO::Path::FindFileClose(sess);
 						this->srchParts[i].sess = 0;
 					}
 				}
@@ -89,14 +91,14 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 			{
 				this->srchParts[i].sess = IO::Path::FindFile(CSTRP(this->currBuff, sptr));
-				if (this->srchParts[i].sess)
+				if (this->srchParts[i].sess.SetTo(sess))
 				{
-					if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
+					if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, sess, 0, thisPt, 0).SetTo(sptr))
 					{
 					}
 					else
 					{
-						IO::Path::FindFileClose(this->srchParts[i].sess);
+						IO::Path::FindFileClose(sess);
 						this->srchParts[i].sess = 0;
 						while (true)
 						{
@@ -105,15 +107,15 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 								return CSTR_NULL;
 							}
 							i--;
-							if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
+							if (this->srchParts[i].sess.SetTo(sess) && IO::Path::IsSearchPattern(this->srcStrs[i].v))
 							{
-								if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
+								if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, sess, 0, thisPt, 0).SetTo(sptr))
 								{
 									break;
 								}
 								else
 								{
-									IO::Path::FindFileClose(this->srchParts[i].sess);
+									IO::Path::FindFileClose(sess);
 									this->srchParts[i].sess = 0;
 								}
 							}
@@ -129,15 +131,15 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 							return CSTR_NULL;
 						}
 						i--;
-						if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
+						if (this->srchParts[i].sess.SetTo(sess) && IO::Path::IsSearchPattern(this->srcStrs[i].v))
 						{
-							if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
+							if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, sess, 0, thisPt, 0).SetTo(sptr))
 							{
 								break;
 							}
 							else
 							{
-								IO::Path::FindFileClose(this->srchParts[i].sess);
+								IO::Path::FindFileClose(sess);
 								this->srchParts[i].sess = 0;
 							}
 						}

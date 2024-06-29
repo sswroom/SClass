@@ -109,7 +109,7 @@ Bool Media::MonitorColorManager::Load()
 		reg = regBase;
 		if (this->profileName.SetTo(s))
 		{
-			const WChar *wptr = Text::StrToWCharNew(s->v);
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(s->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2 == 0)
@@ -180,7 +180,7 @@ Bool Media::MonitorColorManager::Load()
 		if (reg->GetValueI32(L"MonLuminance", tmpVal))
 			this->rgb.monLuminance = tmpVal * 0.1;
 
-		if (reg->GetValueStr(L"MonProfileFile", wbuff))
+		if (reg->GetValueStr(L"MonProfileFile", wbuff).NotNull())
 		{
 			OPTSTR_DEL(this->monProfileFile);
 			this->monProfileFile = Text::String::NewNotNull(wbuff);
@@ -252,7 +252,7 @@ Bool Media::MonitorColorManager::Save()
 		reg = regBase;
 		if (this->profileName.SetTo(s))
 		{
-			const WChar *wptr = Text::StrToWCharNew(s->v);
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(s->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2 == 0)
@@ -295,7 +295,7 @@ Bool Media::MonitorColorManager::Save()
 		NN<Text::String> monProfileFile;
 		if (this->monProfileFile.SetTo(monProfileFile))
 		{
-			const WChar *wptr = Text::StrToWCharNew(monProfileFile->v);
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monProfileFile->v);
 			reg->SetValue(L"MonProfileFile", wptr);
 			Text::StrDelNew(wptr);
 		}

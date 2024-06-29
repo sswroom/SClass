@@ -69,7 +69,7 @@ public:
 		return this->row[colIndex]->ToInt64();
 	}
 
-	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
 		if (this->row == 0)
 			return 0;

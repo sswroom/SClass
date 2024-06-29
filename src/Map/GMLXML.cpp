@@ -200,22 +200,24 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 	UOSInt j;
 	NN<Text::XMLAttrib> attr;
 	NN<Math::CoordinateSystem> csys;
+	NN<Text::String> aname;
 	UOSInt dimension = 0;
 	i = reader->GetAttribCount();
 	while (i-- > 0)
 	{
 		attr = reader->GetAttribNoCheck(i);
-		if (attr->name->Equals(UTF8STRC("srsName")) && env->csys.IsNull())
+		aname = Text::String::OrEmpty(attr->name);
+		if (aname->Equals(UTF8STRC("srsName")) && env->csys.IsNull())
 		{
-			env->csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
+			env->csys = Math::CoordinateSystemManager::CreateFromName(Text::String::OrEmpty(attr->value)->ToCString());
 			if (env->csys.SetTo(csys))
 			{
 				env->srid = csys->GetSRID();
 			}
 		}
-		else if (attr->name->Equals(UTF8STRC("srsDimension")))
+		else if (aname->Equals(UTF8STRC("srsDimension")))
 		{
-			dimension = attr->value->ToUOSInt();
+			dimension = Text::String::OrEmpty(attr->value)->ToUOSInt();
 		}
 	}
 

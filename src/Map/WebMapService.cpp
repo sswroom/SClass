@@ -54,10 +54,10 @@ void Map::WebMapService::LoadXML(Version version)
 			while (i-- > 0)
 			{
 				attr = reader.GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("version")))
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("version")))
 				{
-					SDEL_STRING(this->version);
-					this->version = SCOPY_STRING(attr->value);
+					OPTSTR_DEL(this->version);
+					this->version = Text::String::CopyOrNull(attr->value);
 				}
 			}
 			while (reader.NextElementName().SetTo(nodeName))
@@ -198,13 +198,15 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 			NN<LayerCRS> crs;
 			UOSInt i;
 			NN<Text::XMLAttrib> attr;
+			NN<Text::String> aname;
+			NN<Text::String> avalue;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
 				attr = reader->GetAttribNoCheck(i);
-				if (attr->name->Equals(UTF8STRC("queryable")))
+				if (Text::String::OrEmpty(attr->name)->Equals(UTF8STRC("queryable")))
 				{
-					queryable = (attr->value != 0 && attr->value->Equals(UTF8STRC("1")));
+					queryable = (attr->value.SetTo(avalue) && avalue->Equals(UTF8STRC("1")));
 				}
 			}
 			while (reader->NextElementName().SetTo(nodeName))
@@ -236,40 +238,41 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 					while (i-- > 0)
 					{
 						attr = reader->GetAttribNoCheck(i);
-						if (attr->value)
+						if (attr->value.SetTo(avalue) && attr->name.SetTo(aname))
 						{
-							if (attr->name->Equals(UTF8STRC("minx")))
+							if (aname->Equals(UTF8STRC("minx")))
 							{
-								crs->bounds.min.x = attr->value->ToDouble();
+								crs->bounds.min.x = avalue->ToDouble();
 							}
-							else if (attr->name->Equals(UTF8STRC("miny")))
+							else if (aname->Equals(UTF8STRC("miny")))
 							{
-								crs->bounds.min.y = attr->value->ToDouble();
+								crs->bounds.min.y = avalue->ToDouble();
 							}
-							else if (attr->name->Equals(UTF8STRC("maxx")))
+							else if (aname->Equals(UTF8STRC("maxx")))
 							{
-								crs->bounds.max.x = attr->value->ToDouble();
+								crs->bounds.max.x = avalue->ToDouble();
 							}
-							else if (attr->name->Equals(UTF8STRC("maxy")))
+							else if (aname->Equals(UTF8STRC("maxy")))
 							{
-								crs->bounds.max.y = attr->value->ToDouble();
+								crs->bounds.max.y = avalue->ToDouble();
 							}
-							else if (attr->name->Equals(UTF8STRC("CRS")))
+							else if (aname->Equals(UTF8STRC("CRS")))
 							{
 								SDEL_STRING(crs->name);
-								crs->name = attr->value->Clone().Ptr();
+								crs->name = avalue->Clone().Ptr();
 							}
-							else if (attr->name->Equals(UTF8STRC("SRS")))
+							else if (aname->Equals(UTF8STRC("SRS")))
 							{
 								SDEL_STRING(crs->name);
-								crs->name = attr->value->Clone().Ptr();
+								crs->name = avalue->Clone().Ptr();
 							}
 						}
 					}
 					reader->SkipElement();
 					if (crs->name)
 					{
-						if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version->Equals(UTF8STRC("1.3.0")))
+						NN<Text::String> version;
+						if (crs->name->Equals(UTF8STRC("EPSG:4326")) && this->version.SetTo(version) && version->Equals(UTF8STRC("1.3.0")))
 						{
 							crs->bounds.min = crs->bounds.min.SwapXY();
 							crs->bounds.max = crs->bounds.max.SwapXY();
@@ -365,7 +368,7 @@ Map::WebMapService::~WebMapService()
 		layer.Delete();
 	}
 	this->wmsURL->Release();
-	SDEL_STRING(this->version);
+	OPTSTR_DEL(this->version);
 	this->csys.Delete();
 }
 
@@ -425,7 +428,10 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		bounds.max = bounds.max.SwapXY();
 	}
 	Text::StringBuilderUTF8 sb;
-	if (this->version->Equals(UTF8STRC("1.1.1")))
+	NN<Text::String> version;
+	if (!this->version.SetTo(version))
+		return false;
+	if (version->Equals(UTF8STRC("1.1.1")))
 	{
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetFeatureInfo&layers="));
@@ -456,7 +462,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("&Y="));
 		sb.AppendI32(Double2Int32(y));
 	}
-	else if (this->version->Equals(UTF8STRC("1.3.0")))
+	else if (version->Equals(UTF8STRC("1.3.0")))
 	{
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetFeatureInfo&layers="));
@@ -556,7 +562,8 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		bounds.min = bounds.min.SwapXY();
 		bounds.max = bounds.max.SwapXY();
 	}
-	if (this->version->Equals(UTF8STRC("1.1.1")))
+	NN<Text::String> version = Text::String::OrEmpty(this->version);
+	if (version->Equals(UTF8STRC("1.1.1")))
 	{
 		// http://127.0.0.1:8080/geoserver/Dev/wms?service=WMS&version=1.1.0&request=GetMap&layers=Dev%3Athreed_burial_poly&bbox=113.9587574553149%2C22.34255390361735%2C114.1047088037185%2C22.3992408177216&width=768&height=330&srs=EPSG%3A4326&styles=&format=image%2Fpng
 		sb.Append(this->wmsURL);
@@ -580,7 +587,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		sb.AppendC(UTF8STRC("&styles=&format="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 	}
-	else if (this->version->Equals(UTF8STRC("1.3.0")))
+	else if (version->Equals(UTF8STRC("1.3.0")))
 	{
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetMap&layers="));
@@ -665,7 +672,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 
 Bool Map::WebMapService::IsError() const
 {
-	return this->version == 0 || this->layers.GetCount() == 0 || this->mapImageTypeNames.GetCount() == 0;
+	return this->version.IsNull() || this->layers.GetCount() == 0 || this->mapImageTypeNames.GetCount() == 0;
 }
 
 UOSInt Map::WebMapService::GetInfoType() const

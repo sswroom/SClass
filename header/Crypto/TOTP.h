@@ -7,12 +7,12 @@ namespace Crypto
 	class TOTP : public OTP
 	{
 	private:
-		UInt8 *key;
+		UnsafeArray<UInt8> key;
 		UOSInt keySize;
 		UOSInt intervalMS;
 
 	public:
-		TOTP(const UInt8 *key, UOSInt keySize);
+		TOTP(UnsafeArray<const UInt8> key, UOSInt keySize);
 		virtual ~TOTP();
 
 		virtual OTPType GetType();

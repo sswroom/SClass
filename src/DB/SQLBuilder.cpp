@@ -175,7 +175,7 @@ void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)
 	UOSInt i = name->IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
-		UnsafeArray<const UTF8Char> catalog = Text::StrCopyNewC(name->v, i);
+		UnsafeArray<const UTF8Char> catalog = Text::StrCopyNewC(UnsafeArray<const UTF8Char>(name->v), i);
 		this->AppendCol(catalog);
 		this->sb.AppendUTF8Char('.');
 		Text::StrDelNew(catalog);

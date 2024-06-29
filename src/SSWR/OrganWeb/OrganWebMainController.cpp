@@ -793,7 +793,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		UTF8Char sbuff2[512];
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptr2;
-		IO::Path::FindFileSession *sess;
+		NN<IO::Path::FindFileSession> sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
 		NN<SpeciesInfo> species;
@@ -1146,10 +1146,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		sptr = species->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
+		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
-			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+			while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 			{
 				if (pt == IO::Path::PathType::File)
 				{
@@ -2094,7 +2093,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptrEnd;
 		UnsafeArray<UTF8Char> sptr2;
-		IO::Path::FindFileSession *sess;
+		NN<IO::Path::FindFileSession> sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
 		NN<SpeciesInfo> species;
@@ -2224,11 +2223,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					Data::ArrayListICaseString fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-					if (sess)
+					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 					{
 
-						while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+						while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 						{
 							if (pt == IO::Path::PathType::File)
 							{
@@ -2546,11 +2544,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					Data::ArrayListICaseString fileNameList;
 
 					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-					if (sess)
+					if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 					{
 
-						while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+						while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 						{
 							if (pt == IO::Path::PathType::File)
 							{
@@ -2890,10 +2887,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				Data::ArrayListICaseString fileNameList;
 
 				sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-				if (sess)
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 				{
-					while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+					while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 					{
 						if (pt == IO::Path::PathType::File)
 						{

@@ -33,8 +33,8 @@ Media::Jasper::JasperReport::JasperReport(Text::CStringNN sourceName) : IO::Pars
 Media::Jasper::JasperReport::~JasperReport()
 {
 	OPTSTR_DEL(this->queryString);
-	SDEL_STRING(this->uuid);
-	SDEL_STRING(this->reportName);
+	OPTSTR_DEL(this->uuid);
+	OPTSTR_DEL(this->reportName);
 	this->title.Delete();
 
 	UOSInt i = this->properties.GetCount();
@@ -67,10 +67,10 @@ IO::ParserType Media::Jasper::JasperReport::GetParserType() const
 	return IO::ParserType::JasperReport;
 }
 
-void Media::Jasper::JasperReport::SetReportName(Text::String *reportName)
+void Media::Jasper::JasperReport::SetReportName(Optional<Text::String> reportName)
 {
-	SDEL_STRING(this->reportName);
-	this->reportName = SCOPY_STRING(reportName);
+	OPTSTR_DEL(this->reportName);
+	this->reportName = Text::String::CopyOrNull(reportName);
 }
 
 void Media::Jasper::JasperReport::SetPageWidth(UInt32 pageWidth)
@@ -103,13 +103,13 @@ void Media::Jasper::JasperReport::SetMarginBottom(UInt32 marginBottom)
 	this->marginBottom = marginBottom;
 }
 
-void Media::Jasper::JasperReport::SetUUID(Text::String *uuid)
+void Media::Jasper::JasperReport::SetUUID(Optional<Text::String> uuid)
 {
-	SDEL_STRING(this->uuid);
-	this->uuid = SCOPY_STRING(uuid);
+	OPTSTR_DEL(this->uuid);
+	this->uuid = Text::String::CopyOrNull(uuid);
 }
 
-Text::String *Media::Jasper::JasperReport::GetReportName() const
+Optional<Text::String> Media::Jasper::JasperReport::GetReportName() const
 {
 	return this->reportName;
 }
@@ -144,7 +144,7 @@ UInt32 Media::Jasper::JasperReport::GetMarginBottom() const
 	return this->marginBottom;
 }
 
-Text::String *Media::Jasper::JasperReport::GetUUID() const
+Optional<Text::String> Media::Jasper::JasperReport::GetUUID() const
 {
 	return this->uuid;
 }
@@ -168,7 +168,7 @@ void Media::Jasper::JasperReport::AddImport(NN<Text::String> value)
 	this->importList.Add(value->Clone());
 }
 
-void Media::Jasper::JasperReport::AddParameter(Text::String *name, Text::String *className, Text::CString defValueExp)
+void Media::Jasper::JasperReport::AddParameter(NN<Text::String> name, NN<Text::String> className, Text::CString defValueExp)
 {
 	NN<JasperParameter> param = MemAllocNN(JasperParameter);
 	param->name = name->Clone();

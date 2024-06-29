@@ -28,8 +28,8 @@ namespace Text
 			DocType
 		};
 	public:
-		Text::String *name;
-		Text::String *value;
+		Optional<Text::String> name;
+		Optional<Text::String> value;
 		Text::String *valueOri;
 
 	protected:
@@ -83,8 +83,8 @@ namespace Text
 	private:
 		UTF8Char *doc;
 		UOSInt docLeng;
-		Text::String *version;
-		Text::String *encoding;
+		Optional<Text::String> version;
+		Optional<Text::String> encoding;
 
 	private:
 		UTF8Char *ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStart, UTF8Char *xmlEnd);

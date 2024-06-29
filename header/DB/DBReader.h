@@ -39,7 +39,7 @@ namespace DB
 				return GetInt32(colIndex);
 		}
 		virtual Int64 GetInt64(UOSInt colIndex) = 0;
-		virtual WChar *GetStr(UOSInt colIndex, WChar *buff) = 0;
+		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff) = 0;
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb) = 0;
 		Bool GetStrN(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex) = 0;

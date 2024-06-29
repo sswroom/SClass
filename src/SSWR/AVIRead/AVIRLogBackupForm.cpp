@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	UnsafeArray<UTF8Char> filePathEnd;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	Data::DateTime currTime;
 	Data::StringUTF8Map<LogGroup*> logGrps;
 	NN<const Data::ArrayList<LogGroup*>> logGrpList;
@@ -47,8 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	sptr = me->txtLogName->GetText(filePath).Or(filePath);
 	logNameSize = (UOSInt)(sptr - filePath);
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		while (IO::Path::FindNextFile(filePath, sess, 0, 0, 0).SetTo(filePathEnd))
 		{

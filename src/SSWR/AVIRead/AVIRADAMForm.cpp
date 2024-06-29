@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 			}
 
 			IO::AdvantechASCIIChannel::ADAMConfig cfg;
-			if (me->channel->GetConfigStatus(me->channelAddr, &cfg))
+			if (me->channel->GetConfigStatus(me->channelAddr, cfg))
 			{
 				sptr = Text::StrUInt16(sbuff, cfg.addr);
 				me->txtDevAddress->SetText(CSTRP(sbuff, sptr));
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(AnyType userObj)
 	{
 		UInt16 inputs;
 		UInt16 outputs;
-		if (me->channel->ADAM4050GetIOStatus(me->channelAddr, &outputs, &inputs))
+		if (me->channel->ADAM4050GetIOStatus(me->channelAddr, outputs, inputs))
 		{
 			i = me->lvData->AddItem(CSTR("Inputs"), 0);
 			sptr = Text::StrHexVal16(sbuff, inputs);
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(AnyType userObj)
 	{
 		UInt16 inputs;
 		UInt16 outputs;
-		if (me->channel->ADAM4051GetIOStatus(me->channelAddr, &outputs, &inputs))
+		if (me->channel->ADAM4051GetIOStatus(me->channelAddr, outputs, inputs))
 		{
 			i = me->lvData->AddItem(CSTR("Inputs"), 0);
 			sptr = Text::StrHexVal16(sbuff, inputs);

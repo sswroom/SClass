@@ -18,16 +18,15 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr3;
 	UnsafeArray<UTF8Char> sptr4;
-	IO::Path::FindFileSession *sess;
-	IO::Path::FindFileSession *sess2;
-	IO::Path::FindFileSession *sess3;
+	NN<IO::Path::FindFileSession> sess;
+	NN<IO::Path::FindFileSession> sess2;
+	NN<IO::Path::FindFileSession> sess3;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/devices/pci0000:00/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			Text::StrConcatC(sptr2, UTF8STRC("/drm"));
 			if (sptr[0] != '0')
@@ -38,10 +37,9 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 			{
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
-				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-				if (sess2)
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
-					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
 						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -67,19 +65,17 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-				if (sess2)
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
-					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
 						if (sptr2[0] == '0')
 						{
 							sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/drm/card0/"));
 							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("card0-*"));
-							sess3 = IO::Path::FindFile(CSTRP(sbuff, sptr4));
-							if (sess3)
+							if (IO::Path::FindFile(CSTRP(sbuff, sptr4)).SetTo(sess3))
 							{
-								while (IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0).SetTo(sptr4))
+								while (IO::Path::FindNextFile(sptr3, sess3, 0, pt, 0).SetTo(sptr4))
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
 									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -205,16 +201,15 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr3;
 	UnsafeArray<UTF8Char> sptr4;
-	IO::Path::FindFileSession *sess;
-	IO::Path::FindFileSession *sess2;
-	IO::Path::FindFileSession *sess3;
+	NN<IO::Path::FindFileSession> sess;
+	NN<IO::Path::FindFileSession> sess2;
+	NN<IO::Path::FindFileSession> sess3;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/devices/pci0000:00/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			Text::StrConcatC(sptr2, UTF8STRC("/drm"));
 			if (sptr[0] != '0')
@@ -225,10 +220,9 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 			{
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
-				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-				if (sess2)
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
-					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
 						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -250,19 +244,17 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-				if (sess2)
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
-					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
 						if (sptr2[0] == '0')
 						{
 							sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/drm/card0/"));
 							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("card0-*"));
-							sess3 = IO::Path::FindFile(CSTRP(sbuff, sptr4));
-							if (sess3)
+							if (IO::Path::FindFile(CSTRP(sbuff, sptr4)).SetTo(sess3))
 							{
-								while (IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0).SetTo(sptr4))
+								while (IO::Path::FindNextFile(sptr3, sess3, 0, pt, 0).SetTo(sptr4))
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
 									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

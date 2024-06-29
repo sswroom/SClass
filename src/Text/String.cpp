@@ -77,24 +77,27 @@ NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArray
 	return s;
 }
 
-Optional<Text::String> Text::String::NewOrNull(const UTF16Char *str)
+Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF16Char> str)
 {
-	if (str == 0) return 0;
-	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
-	Text::String *s = New(charCnt).Ptr();
-	Text::StrUTF16_UTF8(s->v.Ptr(), str);
+	UnsafeArray<const UTF16Char> nnstr;
+	if (!str.SetTo(nnstr)) return 0;
+	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(nnstr);
+	if (charCnt == 0) return NewEmpty();
+	NN<Text::String> s = New(charCnt);
+	Text::StrUTF16_UTF8(s->v.Ptr(), nnstr);
 	return s;
 }
 
-NN<Text::String> Text::String::NewNotNull(const UTF16Char *str)
+NN<Text::String> Text::String::NewNotNull(UnsafeArray<const UTF16Char> str)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
+	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF16_UTF8(s->v.Ptr(), str);
 	return s;
 }
 
-NN<Text::String> Text::String::New(const UTF16Char *str, UOSInt len)
+NN<Text::String> Text::String::NewW(UnsafeArray<const UTF16Char> str, UOSInt len)
 {
 	if (len == 0) return NewEmpty();
 	UOSInt charCnt = Text::StrUTF16_UTF8CntC(str, len);
@@ -104,27 +107,31 @@ NN<Text::String> Text::String::New(const UTF16Char *str, UOSInt len)
 	return s;
 }
 
-Optional<Text::String> Text::String::NewOrNull(const UTF32Char *str)
+Optional<Text::String> Text::String::NewOrNull(UnsafeArrayOpt<const UTF32Char> str)
 {
-	if (str == 0) return 0;
-	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
-	Text::String *s = New(charCnt).Ptr();
-	Text::StrUTF32_UTF8(s->v.Ptr(), str);
+	UnsafeArray<const UTF32Char> nnstr;
+	if (!str.SetTo(nnstr)) return 0;
+	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(nnstr);
+	if (charCnt == 0) return NewEmpty();
+	NN<Text::String> s = New(charCnt);
+	Text::StrUTF32_UTF8(s->v.Ptr(), nnstr);
 	return s;
 }
 
-NN<Text::String> Text::String::NewNotNull(const UTF32Char *str)
+NN<Text::String> Text::String::NewNotNull(UnsafeArray<const UTF32Char> str)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
+	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8(s->v.Ptr(), str);
 	return s;
 }
 
-NN<Text::String> Text::String::New(const UTF32Char *str, UOSInt len)
+NN<Text::String> Text::String::NewW(UnsafeArray<const UTF32Char> str, UOSInt len)
 {
 	if (len == 0) return NewEmpty();
 	UOSInt charCnt = Text::StrUTF32_UTF8CntC(str, len);
+	if (charCnt == 0) return NewEmpty();
 	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8C(s->v.Ptr(), str, len);
 	s->v[charCnt] = 0;

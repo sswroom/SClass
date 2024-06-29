@@ -236,7 +236,7 @@ Int64 DB::MongoDBReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-WChar *DB::MongoDBReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::MongoDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (colIndex != 0)
 		return 0;

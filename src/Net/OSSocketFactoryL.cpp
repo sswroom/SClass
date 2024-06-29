@@ -177,29 +177,32 @@ Bool Net::OSSocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 por
 	return bind((Int32)this->SocketGetFD(socket), (sockaddr*)&addr, sizeof(addr)) != -1;
 }
 
-Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
-	if (addr == 0 || addr->addrType == Net::AddrType::IPv6)
+	NN<const Net::SocketUtil::AddressInfo> nnaddr;
+	if (!addr.SetTo(nnaddr))
 	{
 		UInt8 addrBuff[28];
 		*(Int16*)&addrBuff[0] = AF_INET6;
 		WriteMInt16(&addrBuff[2], port);
 		WriteMInt32(&addrBuff[4], 0);
-		if (addr == 0)
-		{
-			MemClear(&addrBuff[8], 20);
-		}
-		else
-		{
-			MemCopyNO(&addrBuff[8], addr->addr, 20);
-		}
+		MemClear(&addrBuff[8], 20);
 		return bind((Int32)this->SocketGetFD(socket), (sockaddr*)&addrBuff, 28) != -1;
 	}
-	else if (addr->addrType == Net::AddrType::IPv4)
+	else if (nnaddr->addrType == Net::AddrType::IPv6)
+	{
+		UInt8 addrBuff[28];
+		*(Int16*)&addrBuff[0] = AF_INET6;
+		WriteMInt16(&addrBuff[2], port);
+		WriteMInt32(&addrBuff[4], 0);
+		MemCopyNO(&addrBuff[8], nnaddr->addr, 20);
+		return bind((Int32)this->SocketGetFD(socket), (sockaddr*)&addrBuff, 28) != -1;
+	}
+	else if (nnaddr->addrType == Net::AddrType::IPv4)
 	{
 		sockaddr_in saddr;
 		saddr.sin_family = AF_INET;
-		saddr.sin_addr.s_addr = *(in_addr_t*)addr->addr;
+		saddr.sin_addr.s_addr = *(in_addr_t*)nnaddr->addr;
 		saddr.sin_port = htons(port);
 		return bind((Int32)this->SocketGetFD(socket), (sockaddr*)&saddr, sizeof(saddr)) != -1;
 	}
@@ -523,23 +526,23 @@ UOSInt Net::OSSocketFactory::ReceiveData(NN<Socket> socket, UnsafeArray<UInt8> b
 	}
 }
 
-void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+Optional<Net::SocketRecvSess> Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
 	UOSInt ret = ReceiveData(socket, buff, buffSize, et);
 	if (ret)
 	{
 		evt->Set();
 	}
-	return (void*)ret;
+	return (SocketRecvSess*)ret;
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt Net::OSSocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void Net::OSSocketFactory::CancelReceiveData(void *reqData)
+void Net::OSSocketFactory::CancelReceiveData(NN<Net::SocketRecvSess> reqData)
 {
 }
 
@@ -935,10 +938,10 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32>
 	return ioctl((Int32)this->SocketGetFD(socket), FIONREAD, (int*)size.Ptr()) == 0;
 }
 
-Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr)
+Bool Net::OSSocketFactory::DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr)
 {
 	addrinfo *result = 0;
-	Int32 iResult = getaddrinfo(host, 0, 0, &result);
+	Int32 iResult = getaddrinfo(host.Ptr(), 0, 0, &result);
 	if (iResult == 0)
 	{
 		Bool succ = false;
@@ -1003,7 +1006,7 @@ Bool Net::OSSocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 	return ret;
 }
 
-UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
+UOSInt Net::OSSocketFactory::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
 {
 	IO::FileStream fs(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -1088,7 +1091,7 @@ Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 	return true;
 }
 
-Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
+Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
 {
 	return false;
 }
@@ -1595,7 +1598,7 @@ void Net::OSSocketFactory::FreePortInfos2(NN<Data::ArrayListNN<Net::SocketFactor
 	portInfoList->MemFreeAll();
 }
 
-Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr)
+Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, UnsafeArray<const UInt8> hwAddr)
 {
 #if !defined(__APPLE__) && !defined(__FreeBSD__)
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
@@ -1622,7 +1625,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, const U
 		Text::StrConcatC(ifrAddr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v.Ptr(), adapterName.leng);
 		MemClear(&ifrAddr.ifr_ifru.ifru_hwaddr, sizeof(sockaddr));
 		ifrAddr.ifr_ifru.ifru_hwaddr.sa_family = ARPHRD_ETHER;
-		MemCopyNO(ifrAddr.ifr_ifru.ifru_hwaddr.sa_data, hwAddr, 6);
+		MemCopyNO(ifrAddr.ifr_ifru.ifru_hwaddr.sa_data, hwAddr.Ptr(), 6);
 		if (ioctl(sock, SIOCSIFHWADDR, &ifrAddr) < 0)
 		{
 //			printf("Sockf: Error in setting hw addr\r\n");

@@ -210,7 +210,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::FileCheck *fileChk = 0;
 		NN<IO::FileCheck> thisChk;
 		NN<IO::FileCheck> nnfileChk;
-		IO::Path::FindFileSession *sess;
+		NN<IO::Path::FindFileSession> sess;
 		Text::StringBuilderUTF8 sb;
 		IO::Path::PathType pt;
 		UOSInt i;
@@ -241,10 +241,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				Text::CStringNN cstr = CSTRP(sbuff, sptr).Substring(i + 1);
 				if (cstr.IndexOf('*') != INVALID_INDEX || cstr.IndexOf('?') != INVALID_INDEX)
 				{
-					sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
-					if (sess)
+					if (IO::Path::FindFile(CSTRP(sbuff, sptr)).SetTo(sess))
 					{
-						while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0).SetTo(sptr))
+						while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, pt, 0).SetTo(sptr))
 						{
 							if (sbuff[i + 1] == '.' && (sbuff[i + 2] == 0 || (sbuff[i + 2] == '.' && sbuff[i + 3] == 0)))
 							{

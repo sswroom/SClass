@@ -47,7 +47,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 		IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 		if (reg)
 		{
-			const WChar *wptr = Text::StrToWCharNew(monName->v);
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monName->v);
 			IO::Registry *reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2)
@@ -171,7 +171,7 @@ void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHD
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
 	{
-		const WChar *wptr = Text::StrToWCharNew(monName->v);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monName->v);
 		IO::Registry *reg2 = reg->OpenSubReg(wptr);
 		Text::StrDelNew(wptr);
 		if (reg2)
@@ -246,7 +246,7 @@ void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDD
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
 	{
-		const WChar *wptr = Text::StrToWCharNew(monName->v);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monName->v);
 		IO::Registry *reg2 = reg->OpenSubReg(wptr);
 		Text::StrDelNew(wptr);
 		if (reg2)

@@ -24,7 +24,7 @@ namespace Text
 		static Bool IsDigit(UTF8Char c);
 		static Bool IsAlphabet(UTF8Char c);
 		static Bool UTF8CharValid(UnsafeArray<const UTF8Char> sptr);
-		static const UnicodeBlock *GetUnicodeBlock(UTF32Char c);
+		static Optional<const UnicodeBlock> GetUnicodeBlock(UTF32Char c);
 		static Bool IsDoubleSize(UTF32Char c);
 		static UTF8Char ToUpper(UTF8Char c);
 		static UTF8Char ToLower(UTF8Char c);

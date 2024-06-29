@@ -541,7 +541,7 @@ Int64 DB::MySQLReader::GetInt64(UOSInt colIndex)
 	}
 }
 
-WChar *DB::MySQLReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->row == 0)
 		return 0;

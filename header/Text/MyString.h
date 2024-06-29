@@ -71,7 +71,7 @@ namespace Text
 	{
 		MemCopyO(oriStr.Ptr(), strToJoin.Ptr(), charCnt);
 		oriStr += charCnt;
-		*oriStr = 0;
+		oriStr[0] = 0;
 		return oriStr;
 	}
 
@@ -130,7 +130,7 @@ namespace Text
 	FORCEINLINE UOSInt StrCharCnt(UnsafeArray<const UTF8Char> str)
 	{
 #if 0 //defined(__GNUC__)
-		return (UOSInt)strlen((const Char*)str);
+		return (UOSInt)strlen(UnsafeArray<const Char>::Convert(str).Ptr());
 #else
 		return MyString_StrCharCnt(str.Ptr());
 #endif
@@ -315,7 +315,7 @@ namespace Text
 	FORCEINLINE Int16 StrHex2Int16ChC(UnsafeArray<const Char> str) { return StrHex2Int16C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 	FORCEINLINE UInt16 StrHex2UInt16ChC(UnsafeArray<const Char> str) { return (UInt16)StrHex2Int16C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
 	FORCEINLINE UInt8 StrHex2UInt8ChC(UnsafeArray<const Char> str) { return StrHex2UInt8C(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
-	FORCEINLINE UOSInt StrHex2BytesCh(UnsafeArray<const Char> str, UInt8 *buff) { return StrHex2Bytes(UnsafeArray<const UTF8Char>::ConvertFrom(str), buff); };
+	FORCEINLINE UOSInt StrHex2BytesCh(UnsafeArray<const Char> str, UnsafeArray<UInt8> buff) { return StrHex2Bytes(UnsafeArray<const UTF8Char>::ConvertFrom(str), buff); };
 #ifdef HAS_INT64
 	FORCEINLINE Int64 StrOct2Int64Ch(UnsafeArray<const Char> str) { return StrOct2Int64(UnsafeArray<const UTF8Char>::ConvertFrom(str)); };
 #endif
@@ -411,11 +411,6 @@ Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray
 		{
 			return false;
 		}
-/*		v = ReadNUInt64(&str1[8]);
-		if (v != ReadNUInt64(&str2[8]))
-		{
-			return false;
-		}*/
 		str1 += 8;
 		str2 += 8;
 		len2 -= 8;
@@ -433,16 +428,6 @@ Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray
 		{
 			return false;
 		}
-/*		v = ReadNUInt32(&str1[8]);
-		if (v != ReadNUInt32(&str2[8]))
-		{
-			return false;
-		}
-		v = ReadNUInt32(&str1[12]);
-		if (v != ReadNUInt32(&str2[12]))
-		{
-			return false;
-		}*/
 		str1 += 8;
 		str2 += 8;
 		len2 -= 8;
@@ -450,22 +435,6 @@ Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray
 #endif
 	switch (len2)
 	{
-/*	case 15:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
-	case 14:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
-	case 13:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
-	case 12:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
-	case 11:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
-	case 10:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
-	case 9:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && str1[8] == str2[8];
-	case 8:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr());*/
 	case 7:
 		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
 	case 6:
@@ -514,22 +483,6 @@ Bool Text::StrStartsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeA
 #endif
 	switch (len2)
 	{
-/*	case 15:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
-	case 14:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
-	case 13:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
-	case 12:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
-	case 11:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
-	case 10:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
-	case 9:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && str1[8] == str2[8];
-	case 8:
-		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr());*/
 	case 7:
 		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
 	case 6:

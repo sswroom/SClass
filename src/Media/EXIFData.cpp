@@ -3006,7 +3006,7 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 					}
 					else
 					{
-						NN<Text::String> s = Text::String::New((const UTF16Char*)valBuff, exItem->cnt >> 1);
+						NN<Text::String> s = Text::String::NewW((const UTF16Char*)valBuff, exItem->cnt >> 1);
 						sb->Append(s);
 						s->Release();
 					}

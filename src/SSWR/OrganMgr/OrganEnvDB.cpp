@@ -627,7 +627,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 	Text::CStringNN nncoverName;
 	Int32 coverId = sp->GetPhotoId();
 	Int32 coverWId = sp->GetPhotoWId();
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
 	UOSInt i;
@@ -734,8 +734,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		/*
             currImageDir = di->FullName;
@@ -750,7 +749,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 			ImageSetting *imgSet;
 		*/
 
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -4101,7 +4100,7 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> cols[4];
 	Text::CString coverName = OPTSTR_CSTR(sp->GetPhoto());
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	UOSInt i;
 	Optional<IO::ParsedObject> pobj = 0;
@@ -4148,10 +4147,9 @@ Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpec
 	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(coverName.OrEmpty().ConcatTo(sptr), UTF8STRC(".*"));
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		if (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		if (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -5013,7 +5011,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(NN<OrganSpecies> sp)
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArrayOpt<const UTF8Char> coverName = OPTSTR_CSTR(sp->GetPhoto()).v;
 	UnsafeArray<const UTF8Char> nncoverName;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
 	UOSInt i;
@@ -5037,11 +5035,10 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(NN<OrganSpecies> sp)
 	sptr = Text::String::OrEmpty(sp->GetDirName())->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 	
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

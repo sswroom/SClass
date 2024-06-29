@@ -43,12 +43,12 @@ namespace IO
 		virtual UOSInt Write(Data::ByteArrayR buff);
 		Bool HasData();
 
-		virtual void *BeginRead(const Data::ByteArray &buff, Sync::Event *evt);
-		virtual UOSInt EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete);
-		virtual void CancelRead(void *reqData);
-		virtual void *BeginWrite(Data::ByteArrayR buff, Sync::Event *evt);
-		virtual UOSInt EndWrite(void *reqData, Bool toWait);
-		virtual void CancelWrite(void *reqData);
+		virtual Optional<StreamReadReq> BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt);
+		virtual UOSInt EndRead(NN<StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete);
+		virtual void CancelRead(NN<StreamReadReq> reqData);
+		virtual Optional<StreamWriteReq> BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt);
+		virtual UOSInt EndWrite(NN<StreamWriteReq> reqData, Bool toWait);
+		virtual void CancelWrite(NN<StreamWriteReq> reqData);
 
 		virtual Int32 Flush();
 		virtual void Close();

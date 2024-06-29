@@ -178,12 +178,12 @@ Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetValueAxis()
 	return this->valueAxis;
 }
 
-void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker)
+void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Optional<Text::String> name, Bool showMarker)
 {
 	UOSInt i = this->series.GetCount();
 	NN<OfficeChartSeries> series;
 	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
-	if (name)
+	if (name.NotNull())
 		series->SetTitle(name, 0);
 	series->SetSmooth(false);
 	if (showMarker)

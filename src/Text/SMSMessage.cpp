@@ -4,7 +4,7 @@
 #include "Text/MyStringW.h"
 #include "Text/SMSMessage.h"
 
-UTF16Char *Text::SMSMessage::ParsePDUPhone(UTF16Char *buff, const UInt8 *pduPhone, UInt8 phoneByteLen)
+UnsafeArray<UTF16Char> Text::SMSMessage::ParsePDUPhone(UnsafeArray<UTF16Char> buff, UnsafeArray<const UInt8> pduPhone, UInt8 phoneByteLen)
 {
 	UInt8 phoneSize = phoneByteLen;
 	if (phoneSize > 0)
@@ -128,7 +128,7 @@ void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, NN<Data::DateTime> time
 	}
 }
 
-UInt8 *Text::SMSMessage::ToPDUPhone(UInt8 *buff, const UTF16Char *phoneNum, UInt8 *byteSize, UInt8 *phoneSize)
+UnsafeArray<UInt8> Text::SMSMessage::ToPDUPhone(UnsafeArray<UInt8> buff, UnsafeArray<const UTF16Char> phoneNum, OptOut<UInt8> byteSize, OptOut<UInt8> phoneSize)
 {
 	UTF16Char c;
 	UInt8 oByteSize = 1;
@@ -159,21 +159,20 @@ UInt8 *Text::SMSMessage::ToPDUPhone(UInt8 *buff, const UTF16Char *phoneNum, UInt
 			break;
 		}
 	}
-	if (byteSize)
-		*byteSize = oByteSize;
-	if (phoneSize)
-		*phoneSize = oPhoneSize;
+	byteSize.Set(oByteSize);
+	phoneSize.Set(oPhoneSize);
 	return buff;
 }
 
-Text::SMSMessage::SMSMessage(const UTF16Char *address, const UTF16Char *smsc, Optional<SMSUserData> ud)
+Text::SMSMessage::SMSMessage(UnsafeArray<const UTF16Char> address, UnsafeArrayOpt<const UTF16Char> smsc, Optional<SMSUserData> ud)
 {
-	if (Text::SMSUtil::IsPhone(address) && (smsc == 0 || Text::SMSUtil::IsPhone(smsc)))
+	UnsafeArray<const UTF16Char> nnsmsc;
+	if (Text::SMSUtil::IsPhone(address) && (!smsc.SetTo(nnsmsc) || Text::SMSUtil::IsPhone(nnsmsc)))
 	{
 		this->address = Text::StrCopyNew(address);
-		if (smsc)
+		if (smsc.SetTo(nnsmsc))
 		{
-			this->smsc = Text::StrCopyNew(smsc);
+			this->smsc = Text::StrCopyNew(nnsmsc);
 		}
 		else
 		{
@@ -196,13 +195,14 @@ Text::SMSMessage::SMSMessage(const UTF16Char *address, const UTF16Char *smsc, Op
 Text::SMSMessage::~SMSMessage()
 {
 	this->ud.Delete();
-	if (this->address)
+	UnsafeArray<const UTF16Char> s;
+	if (this->address.SetTo(s))
 	{
-		Text::StrDelNew(this->address);
+		Text::StrDelNew(s);
 	}
-	if (this->smsc)
+	if (this->smsc.SetTo(s))
 	{
-		Text::StrDelNew(this->smsc);
+		Text::StrDelNew(s);
 	}
 }
 
@@ -241,17 +241,17 @@ void Text::SMSMessage::GetMessageTime(NN<Data::DateTime> msgTime)
 	msgTime->SetValue(this->msgTime);
 }
 
-const UTF16Char *Text::SMSMessage::GetAddress()
+UnsafeArrayOpt<const UTF16Char> Text::SMSMessage::GetAddress()
 {
 	return this->address;
 }
 
-const UTF16Char *Text::SMSMessage::GetSMSC()
+UnsafeArrayOpt<const UTF16Char> Text::SMSMessage::GetSMSC()
 {
 	return this->smsc;
 }
 
-const UTF16Char *Text::SMSMessage::GetContent()
+UnsafeArrayOpt<const UTF16Char> Text::SMSMessage::GetContent()
 {
 	NN<SMSUserData> ud;
 	if (this->ud.SetTo(ud))
@@ -259,12 +259,13 @@ const UTF16Char *Text::SMSMessage::GetContent()
 	return 0;
 }
 
-UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
+UOSInt Text::SMSMessage::ToSubmitPDU(UnsafeArray<UInt8> buff)
 {
 	NN<SMSUserData> ud;
-	if (!this->ud.SetTo(ud))
+	UnsafeArray<const UTF16Char> address;
+	if (!this->ud.SetTo(ud) || !this->address.SetTo(address))
 		return 0;
-	UInt8 *currPtr = buff;
+	UnsafeArray<UInt8> currPtr = buff;
 	*currPtr++ = 0;
 	currPtr[0] = 1;
 	if (this->rejectDup)
@@ -277,7 +278,7 @@ UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 		currPtr[0] |= 32;
 	currPtr[1] = this->msgRef;
 	currPtr += 2;
-	currPtr = ToPDUPhone(currPtr + 1, this->address, 0, currPtr);
+	currPtr = ToPDUPhone(currPtr + 1, address, 0, currPtr[0]);
 	*currPtr++ = 0;
 	*currPtr++ = (UInt8)ud->GetDCS();
 	currPtr += ud->GetBytes(currPtr);
@@ -287,9 +288,9 @@ UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
 {
 	UTF16Char sbuff[256];
-	UTF16Char *sptr = sbuff;
-	UTF16Char *smsc;
-	UTF16Char *address;
+	UnsafeArray<UTF16Char> sptr = sbuff;
+	UnsafeArrayOpt<UTF16Char> smsc;
+	UnsafeArray<UTF16Char> address;
 	Data::DateTime msgTime;
 	Optional<Text::SMSUserData> ud;
 	Text::SMSMessage *msg;

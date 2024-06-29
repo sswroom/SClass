@@ -66,7 +66,7 @@ namespace Text
 		virtual ~VSProject();
 
 		virtual ProjectType GetProjectType() const;
-		virtual void SetProjectName(Text::String *projName);
+		virtual void SetProjectName(NN<Text::String> projName);
 		virtual void SetProjectName(Text::CStringNN projName);
 		virtual NN<Text::String> GetContainerName() const;
 

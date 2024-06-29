@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_JASPER_JASPERBAND
 #define _SM_MEDIA_JASPER_JASPERBAND
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Media/Jasper/JasperElement.h"
 #include "Text/String.h"
 namespace Media
@@ -10,22 +10,22 @@ namespace Media
 		class JasperBand
 		{
 		private:
-			Data::ArrayList<JasperElement*> elements;
+			Data::ArrayListNN<JasperElement> elements;
 			UOSInt height;
-			Text::String *splitType;
+			Optional<Text::String> splitType;
 		public:
 			JasperBand();
 			~JasperBand();
 
-			void SetSplitType(Text::String *splitType);
+			void SetSplitType(Optional<Text::String> splitType);
 			void SetHeight(UOSInt height);
-			Text::String *GetSplitType() const;
+			Optional<Text::String> GetSplitType() const;
 			Bool HasHeight() const;
 			UOSInt GetHeight() const;
-			void AddElement(JasperElement *element);
+			void AddElement(NN<JasperElement> element);
 
 			UOSInt GetCount() const;
-			JasperElement *GetElement(UOSInt index) const;
+			Optional<JasperElement> GetElement(UOSInt index) const;
 		};
 	}
 }

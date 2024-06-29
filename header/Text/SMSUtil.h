@@ -17,15 +17,15 @@ namespace Text
 		} DCS;
 
 	public:
-		static OSInt ToGSMBytes(const UTF16Char *msg, UInt8 *buff, DCS *dcs, UInt32 *dataLen);
+		static OSInt ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff, OutParam<DCS> dcs, OutParam<UInt32> dataLen);
 		static OSInt ToUCS2Bytes(const UTF16Char *msg, UInt8 *buff);
-		static void GetTextInfo(const UTF16Char *msg, DCS *dcs, UInt32 *dataLen);
+		static void GetTextInfo(UnsafeArray<const UTF16Char> msg, OutParam<DCS> dcs, OutParam<UInt32> dataLen);
 		static UInt32 GSMTextSize2DataSize(UInt32 textSize);
-		static Bool TrimGSMText(UTF16Char *msg);
-		static UTF16Char *TrimGSMText(UTF16Char *destBuff, const UTF16Char *msg, UInt32 dataLen);
-		static Bool IsPhone(const UTF16Char *txt);
+		static Bool TrimGSMText(UnsafeArray<UTF16Char> msg);
+		static UnsafeArrayOpt<UTF16Char> TrimGSMText(UnsafeArray<UTF16Char> destBuff, UnsafeArray<const UTF16Char> msg, UInt32 dataLen);
+		static Bool IsPhone(UnsafeArray<const UTF16Char> txt);
 		static Bool IsIntlPhone(UnsafeArray<const UTF8Char> txt);
-		static Bool IsIntlPhone(const UTF16Char *txt);
+		static Bool IsIntlPhone(UnsafeArray<const UTF16Char> txt);
 	};
 }
 #endif

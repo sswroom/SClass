@@ -453,27 +453,27 @@ UOSInt Data::LineChart::GetXDataCount() const
 	return this->xDatas->GetCount();
 }
 
-Int64 *Data::LineChart::GetXDateTicks(UOSInt index, UOSInt *cnt) const
+UnsafeArrayOpt<Int64> Data::LineChart::GetXDateTicks(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	if (this->xType != DataType::DateTicks)
 		return 0;
-	*cnt = this->xDataCnt->GetItem(index);
+	cnt.Set(this->xDataCnt->GetItem(index));
 	return (Int64*)this->xDatas->GetItem(index);
 }
 
-Double *Data::LineChart::GetXDouble(UOSInt index, UOSInt *cnt) const
+UnsafeArrayOpt<Double> Data::LineChart::GetXDouble(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	if (this->xType != DataType::DOUBLE)
 		return 0;
-	*cnt = this->xDataCnt->GetItem(index);
+	cnt.Set(this->xDataCnt->GetItem(index));
 	return (Double*)this->xDatas->GetItem(index);
 }
 
-Int32 *Data::LineChart::GetXInt32(UOSInt index, UOSInt *cnt) const
+UnsafeArrayOpt<Int32> Data::LineChart::GetXInt32(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	if (this->xType != DataType::Integer)
 		return 0;
-	*cnt = this->xDataCnt->GetItem(index);
+	cnt.Set(this->xDataCnt->GetItem(index));
 	return (Int32*)this->xDatas->GetItem(index);
 }
 
@@ -482,39 +482,39 @@ UOSInt Data::LineChart::GetYDataCount() const
 	return this->yCharts->GetCount();
 }
 
-Int64 *Data::LineChart::GetYDateTicks(UOSInt index, UOSInt *cnt) const
+UnsafeArrayOpt<Int64> Data::LineChart::GetYDateTicks(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	ChartData *data = this->yCharts->GetItem(index);
 	if (data == 0 || data->dataType != DataType::DateTicks)
 		return 0;
-	*cnt = data->dataCnt;
+	cnt.Set(data->dataCnt);
 	return (Int64*)data->data;
 }
 
-Double *Data::LineChart::GetYDouble(UOSInt index, UOSInt *cnt) const
+UnsafeArrayOpt<Double> Data::LineChart::GetYDouble(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	ChartData *data = this->yCharts->GetItem(index);
 	if (data == 0 || data->dataType != DataType::DOUBLE)
 		return 0;
-	*cnt = data->dataCnt;
+	cnt.Set(data->dataCnt);
 	return (Double*)data->data;
 }
 
-Int32 *Data::LineChart::GetYInt32(UOSInt index, UOSInt *cnt) const
+UnsafeArrayOpt<Int32> Data::LineChart::GetYInt32(UOSInt index, OutParam<UOSInt> cnt) const
 {
 	ChartData *data = this->yCharts->GetItem(index);
 	if (data == 0 || data->dataType != DataType::Integer)
 		return 0;
-	*cnt = data->dataCnt;
+	cnt.Set(data->dataCnt);
 	return (Int32*)data->data;
 }
 
-Text::String *Data::LineChart::GetYName(UOSInt index) const
+Optional<Text::String> Data::LineChart::GetYName(UOSInt index) const
 {
 	ChartData *data = this->yCharts->GetItem(index);
 	if (data == 0)
 		return 0;
-	return data->name.Ptr();
+	return data->name;
 }
 
 Data::Chart::DataType Data::LineChart::GetYType(UOSInt index) const
@@ -1231,11 +1231,11 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 	Data::ArrayListStringNN labels;
 	if (xType == Data::Chart::DataType::Integer)
 	{
-		Data::Chart::CalScaleMarkInt(&locations, &labels, xMinInt, xMaxInt, width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);
+		Data::Chart::CalScaleMarkInt(locations, labels, xMinInt, xMaxInt, width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);
 	}
 	else if (xType == Data::Chart::DataType::DOUBLE)
 	{
-		Data::Chart::CalScaleMarkDbl(&locations, &labels, xMinDbl, xMaxDbl, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
+		Data::Chart::CalScaleMarkDbl(locations, labels, xMinDbl, xMaxDbl, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, 0);
 	}
 	else if (xType == Data::Chart::DataType::DateTicks)
 	{
@@ -1243,7 +1243,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(xMaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::Chart::CalScaleMarkDate(&locations, &labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
+		Data::Chart::CalScaleMarkDate(locations, labels, dt1, dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 	}
 	else
 	{
@@ -1276,11 +1276,11 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 
 	if (yAxis1Type == Data::Chart::DataType::Integer)
 	{
-		Data::Chart::CalScaleMarkInt(&locations, &labels, y1MinInt, y1MaxInt, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit);
+		Data::Chart::CalScaleMarkInt(locations, labels, y1MinInt, y1MaxInt, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit);
 	}
 	else if (yAxis1Type == Data::Chart::DataType::DOUBLE)
 	{
-		Data::Chart::CalScaleMarkDbl(&locations, &labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, this->yUnit);
+		Data::Chart::CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dblFormat->v), minDblVal, this->yUnit);
 	}
 	else if (yAxis1Type == Data::Chart::DataType::DateTicks)
 	{
@@ -1288,7 +1288,7 @@ void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double 
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(y2MaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::Chart::CalScaleMarkDate(&locations, &labels, dt1, dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
+		Data::Chart::CalScaleMarkDate(locations, labels, dt1, dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, UnsafeArray<const Char>::ConvertFrom(this->dateFormat->v), UnsafeArray<const Char>::ConvertFrom(this->timeFormat->v));
 	}
 	else
 	{
@@ -1667,12 +1667,12 @@ UOSInt Data::LineChart::GetLegendCount() const
 	return this->yCharts->GetCount();
 }
 
-UnsafeArrayOpt<UTF8Char> Data::LineChart::GetLegend(UnsafeArray<UTF8Char> sbuff, UInt32 *color, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> Data::LineChart::GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const
 {
 	if (index >= this->yCharts->GetCount())
 		return 0;
 	Data::LineChart::ChartData *cdata = this->yCharts->GetItem(index);
-	*color = cdata->lineColor;
+	color.Set(cdata->lineColor);
 	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
 }
 

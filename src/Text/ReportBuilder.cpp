@@ -824,12 +824,15 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				{
 					dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
 				}
-				Int64 *dateTicks = chart->GetXDateTicks(0, &colCount);
-				i = 0;
-				while (i < colCount)
+				UnsafeArray<Int64> dateTicks;
+				if (chart->GetXDateTicks(0, colCount).SetTo(dateTicks))
 				{
-					dataSheet->SetCellTS(0, i + 1, dateStyle, Data::Timestamp(dateTicks[i], Data::DateTimeUtil::GetLocalTzQhr()));
-					i++;
+					i = 0;
+					while (i < colCount)
+					{
+						dataSheet->SetCellTS(0, i + 1, dateStyle, Data::Timestamp(dateTicks[i], Data::DateTimeUtil::GetLocalTzQhr()));
+						i++;
+					}
 				}
 				break;
 			}
@@ -839,12 +842,15 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				{
 					dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
 				}
-				Double *dblValues = chart->GetXDouble(0, &colCount);
-				i = 0;
-				while (i < colCount)
+				UnsafeArray<Double> dblValues;
+				if (chart->GetXDouble(0, colCount).SetTo(dblValues))
 				{
-					dataSheet->SetCellDouble(0, i + 1, dblStyle, dblValues[i]);
-					i++;
+					i = 0;
+					while (i < colCount)
+					{
+						dataSheet->SetCellDouble(0, i + 1, dblStyle, dblValues[i]);
+						i++;
+					}
 				}
 				break;
 			}
@@ -854,12 +860,15 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 				{
 					intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
 				}
-				Int32 *intValues = chart->GetXInt32(0, &colCount);
-				i = 0;
-				while (i < colCount)
+				UnsafeArray<Int32> intValues;
+				if (chart->GetXInt32(0, colCount).SetTo(intValues))
 				{
-					dataSheet->SetCellInt32(0, i + 1, intStyle, intValues[i]);
-					i++;
+					i = 0;
+					while (i < colCount)
+					{
+						dataSheet->SetCellInt32(0, i + 1, intStyle, intValues[i]);
+						i++;
+					}
 				}
 				break;
 			}
@@ -880,12 +889,15 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					{
 						dateStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetTimeFormat()->ToCString()).Ptr();
 					}
-					Int64 *dateTicks = chart->GetYDateTicks(i, &colCount);
-					k = 0;
-					while (k < colCount)
+					UnsafeArray<Int64> dateTicks;
+					if (chart->GetYDateTicks(i, colCount).SetTo(dateTicks))
 					{
-						dataSheet->SetCellTS(i + 1, k + 1, dateStyle, Data::Timestamp(dateTicks[k], Data::DateTimeUtil::GetLocalTzQhr()));
-						k++;
+						k = 0;
+						while (k < colCount)
+						{
+							dataSheet->SetCellTS(i + 1, k + 1, dateStyle, Data::Timestamp(dateTicks[k], Data::DateTimeUtil::GetLocalTzQhr()));
+							k++;
+						}
 					}
 					break;
 				}
@@ -895,12 +907,15 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					{
 						dblStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, chart->GetDblFormat()->ToCString()).Ptr();
 					}
-					Double *dblValues = chart->GetYDouble(i, &colCount);
-					k = 0;
-					while (k < colCount)
+					UnsafeArray<Double> dblValues;
+					if (chart->GetYDouble(i, colCount).SetTo(dblValues))
 					{
-						dataSheet->SetCellDouble(i + 1, k + 1, dblStyle, dblValues[k]);
-						k++;
+						k = 0;
+						while (k < colCount)
+						{
+							dataSheet->SetCellDouble(i + 1, k + 1, dblStyle, dblValues[k]);
+							k++;
+						}
 					}
 					break;
 				}
@@ -910,12 +925,15 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					{
 						intStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0")).Ptr();
 					}
-					Int32 *intValues = chart->GetYInt32(i, &colCount);
-					k = 0;
-					while (k < colCount)
+					UnsafeArray<Int32> intValues;
+					if (chart->GetYInt32(i, colCount).SetTo(intValues))
 					{
-						dataSheet->SetCellInt32(i + 1, k + 1, intStyle, intValues[k]);
-						k++;
+						k = 0;
+						while (k < colCount)
+						{
+							dataSheet->SetCellInt32(i + 1, k + 1, intStyle, intValues[k]);
+							k++;
+						}
 					}
 					break;
 				}

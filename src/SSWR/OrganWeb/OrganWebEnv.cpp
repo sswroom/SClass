@@ -20,7 +20,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	UInt32 langId;
 	IO::Path::PathType pt;
 	UOSInt i;
@@ -30,10 +30,9 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Langs"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

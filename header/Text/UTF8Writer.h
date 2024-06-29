@@ -15,14 +15,14 @@ namespace Text
 
 		virtual Bool Write(Text::CStringNN str);
 		virtual Bool WriteLine(Text::CStringNN str);
-		virtual Bool WriteW(const UTF16Char *str, UOSInt nChar);
-		virtual Bool WriteW(const UTF16Char *str);
-		virtual Bool WriteLineW(const UTF16Char *str, UOSInt nChar);
-		virtual Bool WriteLineW(const UTF16Char *str);
-		virtual Bool WriteW(const UTF32Char *str, UOSInt nChar);
-		virtual Bool WriteW(const UTF32Char *str);
-		virtual Bool WriteLineW(const UTF32Char *str, UOSInt nChar);
-		virtual Bool WriteLineW(const UTF32Char *str);
+		virtual Bool WriteW(UnsafeArray<const UTF16Char> str, UOSInt nChar);
+		virtual Bool WriteW(UnsafeArray<const UTF16Char> str);
+		virtual Bool WriteLineW(UnsafeArray<const UTF16Char> str, UOSInt nChar);
+		virtual Bool WriteLineW(UnsafeArray<const UTF16Char> str);
+		virtual Bool WriteW(UnsafeArray<const UTF32Char> str, UOSInt nChar);
+		virtual Bool WriteW(UnsafeArray<const UTF32Char> str);
+		virtual Bool WriteLineW(UnsafeArray<const UTF32Char> str, UOSInt nChar);
+		virtual Bool WriteLineW(UnsafeArray<const UTF32Char> str);
 		virtual Bool WriteLine();
 
 		void WriteSignature();

@@ -11,36 +11,36 @@ IO::Stream::Stream(const Text::CStringNN &sourceName) : IO::ParsedObject(sourceN
 {
 }
 
-void *IO::Stream::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> IO::Stream::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	UOSInt retVal = Read(buff);
 	evt->Set();
-	return (void*)retVal;
+	return (IO::StreamReadReq*)retVal;
 }
 
-UOSInt IO::Stream::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt IO::Stream::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	incomplete.Set(false);
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void IO::Stream::CancelRead(void *reqData)
+void IO::Stream::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 }
 
-void *IO::Stream::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> IO::Stream::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	UOSInt retVal = Write(buff);
 	evt->Set();
-	return (void*)retVal;
+	return (IO::StreamWriteReq*)retVal;
 }
 
-UOSInt IO::Stream::EndWrite(void *reqData, Bool toWait)
+UOSInt IO::Stream::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void IO::Stream::CancelWrite(void *reqData)
+void IO::Stream::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 }
 

@@ -69,7 +69,7 @@ public:
 		return cell->cellValue->ToInt64();
 	}
 
-	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		if (cell == 0 || cell->cellValue == 0)

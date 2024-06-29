@@ -21,7 +21,7 @@ namespace DB
 
 			virtual CommandType GetCommandType() = 0;
 
-			static SQLCommand *Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType);
+			static Optional<SQLCommand> Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType);
 		};
 	}
 }

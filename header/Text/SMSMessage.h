@@ -8,8 +8,8 @@ namespace Text
 	class SMSMessage
 	{
 	private:
-		const UTF16Char *smsc;
-		const UTF16Char *address;
+		UnsafeArrayOpt<const UTF16Char> smsc;
+		UnsafeArrayOpt<const UTF16Char> address;
 		Optional<SMSUserData> ud;
 		Data::DateTime msgTime;
 		Bool mms;
@@ -19,12 +19,12 @@ namespace Text
 		UInt8 msgRef;
 
 	private:
-		static UTF16Char *ParsePDUPhone(UTF16Char *buff, const UInt8 *pduPhone, UInt8 phoneByteLen);
+		static UnsafeArray<UTF16Char> ParsePDUPhone(UnsafeArray<UTF16Char> buff, UnsafeArray<const UInt8> pduPhone, UInt8 phoneByteLen);
 		static UInt8 ParseIBCD(UInt8 byte);
 		static void ParseTimestamp(const UInt8 *buff, NN<Data::DateTime> time);
-		static UInt8 *ToPDUPhone(UInt8 *buff, const UTF16Char *phoneNum, UInt8 *byteSize, UInt8 *phoneSize);
+		static UnsafeArray<UInt8> ToPDUPhone(UnsafeArray<UInt8> buff, UnsafeArray<const UTF16Char> phoneNum, OptOut<UInt8> byteSize, OptOut<UInt8> phoneSize);
 	public:
-		SMSMessage(const UTF16Char *address, const UTF16Char *smsc, Optional<SMSUserData> ud);
+		SMSMessage(UnsafeArray<const UTF16Char> address, UnsafeArrayOpt<const UTF16Char> smsc, Optional<SMSUserData> ud);
 		~SMSMessage();
 
 		void SetMessageTime(NN<Data::DateTime> msgTime);
@@ -34,11 +34,11 @@ namespace Text
 		void SetRejectDuplicates(Bool rejectDup);
 		void SetMessageRef(UInt8 msgRef);
 		void GetMessageTime(NN<Data::DateTime> msgTime);
-		const UTF16Char *GetAddress();
-		const UTF16Char *GetSMSC();
-		const UTF16Char *GetContent();
+		UnsafeArrayOpt<const UTF16Char> GetAddress();
+		UnsafeArrayOpt<const UTF16Char> GetSMSC();
+		UnsafeArrayOpt<const UTF16Char> GetContent();
 
-		UOSInt ToSubmitPDU(UInt8 *buff);
+		UOSInt ToSubmitPDU(UnsafeArray<UInt8> buff);
 
 		static Optional<Text::SMSMessage> CreateFromPDU(const UInt8 *pduBytes);
 	};

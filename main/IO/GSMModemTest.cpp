@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
-	UOSInt portNum = Test::TestModem::ListPorts(&console);
+	UOSInt portNum = Test::TestModem::ListPorts(console);
 	UInt32 baudRate = 115200;
 
 	UOSInt argc;
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::ATCommandChannel channel(port, false);
 		IO::GSMModemController modem(channel, false);
 
-		Test::TestModem::GSMModemTest(&console, &modem, false);		
+		Test::TestModem::GSMModemTest(console, modem, false);		
 	}
 	return 0;
 }

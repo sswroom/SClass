@@ -629,7 +629,7 @@ Net::DNSProxy::DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO:
 		this->targetUpdated = false;
 	}
 	this->lastId = 0;
-	sockf->GetDNSList(&this->dnsList);
+	sockf->GetDNSList(this->dnsList);
 	this->currServerIP = this->dnsList.GetItem(0);
 	this->currServerIndex = 0;
 	this->currIPTime.SetCurrTimeUTC();

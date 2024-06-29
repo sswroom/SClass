@@ -62,7 +62,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 	Media::MediaType mt;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	i = 0;
 	while (mf->GetStream(i++, 0).SetTo(msrc))
 	{
@@ -86,10 +86,9 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 			if (j != INVALID_INDEX)
 			{
 				sptr = Text::StrConcatC(&sbuff[i + j + 1], IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
-				if (sess)
+				if (IO::Path::FindFile(CSTRP(sbuff, sptr)).SetTo(sess))
 				{
-					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize).SetTo(sptr))
+					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, pt, fileSize).SetTo(sptr))
 					{
 						j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
 						if (j != INVALID_INDEX)

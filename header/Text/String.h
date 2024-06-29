@@ -54,12 +54,12 @@ namespace Text
 			return s;
 		}
 
-		static Optional<String> NewOrNull(const UTF16Char *str);
-		static NN<String> NewNotNull(const UTF16Char *str);
-		static NN<String> New(const UTF16Char *str, UOSInt len);
-		static Optional<String> NewOrNull(const UTF32Char *str);
-		static NN<String> NewNotNull(const UTF32Char *str);
-		static NN<String> New(const UTF32Char *str, UOSInt len);
+		static Optional<String> NewOrNull(UnsafeArrayOpt<const UTF16Char> str);
+		static NN<String> NewNotNull(UnsafeArray<const UTF16Char> str);
+		static NN<String> NewW(UnsafeArray<const UTF16Char> str, UOSInt len);
+		static Optional<String> NewOrNull(UnsafeArrayOpt<const UTF32Char> str);
+		static NN<String> NewNotNull(UnsafeArray<const UTF32Char> str);
+		static NN<String> NewW(UnsafeArray<const UTF32Char> str, UOSInt len);
 		static NN<String> NewCSVRec(UnsafeArray<const UTF8Char> str);
 		static NN<String> NewEmpty();
 		static NN<String> OrEmpty(Optional<Text::String> s);

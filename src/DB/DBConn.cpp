@@ -286,14 +286,14 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		this->CloseReader(r);
 
 		DB::TableDef *tab = 0;
-		DB::SQL::SQLCommand *cmd = DB::SQL::SQLCommand::Parse(sb.ToString(), DB::SQLType::SQLite);
-		if (cmd)
+		NN<DB::SQL::SQLCommand> cmd;
+		if (DB::SQL::SQLCommand::Parse(sb.ToString(), DB::SQLType::SQLite).SetTo(cmd))
 		{
 			if (cmd->GetCommandType() == DB::SQL::SQLCommand::CT_CREATE_TABLE)
 			{
-				tab = ((DB::SQL::CreateTableCommand*)cmd)->GetTableDef()->Clone().Ptr();
+				tab = NN<DB::SQL::CreateTableCommand>::ConvertFrom(cmd)->GetTableDef()->Clone().Ptr();
 			}
-			DEL_CLASS(cmd);
+			cmd.Delete();
 		}
 		if (tab)
 		{

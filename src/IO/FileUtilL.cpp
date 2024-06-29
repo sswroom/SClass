@@ -308,7 +308,7 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> dptr;
 	UnsafeArray<UTF8Char> dptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 //	UInt32 attr = GetFileAttributesW(srcDir);
 	sptr = srcDir.ConcatTo(sbuff);
 	dptr = destDir.ConcatTo(dbuff);
@@ -324,12 +324,11 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
 		Bool succ = true;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -408,7 +407,7 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> dptr;
 	UnsafeArray<UTF8Char> dptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	Bool succ;
 
 	Bool samePart = IsSamePartition(srcDir.v, destDir.v);
@@ -432,12 +431,11 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	succ = true;
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] == '.' && sptr[1] == 0)
 			{
@@ -581,10 +579,10 @@ Bool IO::FileUtil::DeleteDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> di
 	sptr2 = Text::StrConcatC(dirEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	Bool succ = true;
 	IO::Path::PathType pt;
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(dir, sptr2));
-	if (sess == 0)
+	NN<IO::Path::FindFileSession> sess;
+	if (!IO::Path::FindFile(CSTRP(dir, sptr2)).SetTo(sess))
 		return false;
-	while (succ && IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0).SetTo(sptr2))
+	while (succ && IO::Path::FindNextFile(dirEnd, sess, 0, pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::File)
 		{

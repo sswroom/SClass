@@ -199,11 +199,11 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	UOSInt fileCnt = 0;
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).NotNull())
 		{
 			if (pt == IO::Path::PathType::File)
 			{

@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 		UTF8Char sbuff[128];
 		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime dt;
-		IO::BuildTime::GetBuildTime(&dt);
+		IO::BuildTime::GetBuildTime(dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));

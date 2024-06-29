@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 
 void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	UOSInt portNum = Test::TestModem::ListPorts(console);
 	UInt32 baudRate = 115200;
 
@@ -60,9 +60,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	else
 	{
 		NN<IO::ATCommandChannel> channel;
-		IO::Device::SIM7000 *modem;
+		NN<IO::Device::SIM7000> modem;
 		NEW_CLASSNN(channel, IO::ATCommandChannel(port, false));
-		NEW_CLASS(modem, IO::Device::SIM7000(channel, false));
+		NEW_CLASSNN(modem, IO::Device::SIM7000(channel, false));
 		modem->SetEcho(true);
 
 		Test::TestModem::GSMModemTest(console, modem, true);
@@ -153,7 +153,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					Data::ArrayList<UInt32> dnsList;
 					UOSInt i;
 					UOSInt j;
-					if (sockf->GetDNSList(&dnsList))
+					if (sockf->GetDNSList(dnsList))
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("DNS List: "));
@@ -276,11 +276,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Error in getting plmn"));
 		}
 		
-
-		DEL_CLASS(modem);
+		modem.Delete();
 		channel.Delete();
 	}
 	port.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

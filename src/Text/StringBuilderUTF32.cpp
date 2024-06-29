@@ -70,7 +70,7 @@ NN<Text::StringBuilderUTF> Text::StringBuilderUTF32::AppendChar(UTF32Char c, UOS
 
 NN<Text::StringBuilderUTF32> Text::StringBuilderUTF32::AppendCSV(const UTF32Char **sarr, UOSInt nStr)
 {
-	const UTF32Char *csptr;
+	UnsafeArray<const UTF32Char> csptr;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)

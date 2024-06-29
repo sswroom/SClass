@@ -481,7 +481,7 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char
 		}
 		if (reg2)
 		{
-			if (reg2->GetValueStr(L"InstallDir", wbuff))
+			if (reg2->GetValueStr(L"InstallDir", wbuff).NotNull())
 			{
 				nnsptr = Text::StrWChar_UTF8(sbuff, wbuff);
 				if (vsv == Text::VSProject::VSV_VS71)
@@ -525,9 +525,9 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetWindowsSdkDir(UnsafeArray<UTF8Cha
 	if (reg == 0)
 		return 0;
 	WChar wbuff[512];
-	WChar *wptr = reg->GetValueStr(L"CurrentInstallFolder", wbuff);
+	UnsafeArrayOpt<WChar> wptr = reg->GetValueStr(L"CurrentInstallFolder", wbuff);
 	IO::Registry::CloseRegistry(reg);
-	if (wptr)
+	if (wptr.NotNull())
 	{
 		return Text::StrWChar_UTF8(sbuff, wbuff);
 	}

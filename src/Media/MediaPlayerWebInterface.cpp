@@ -57,7 +57,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 		}
 	}
 	IO::Path::PathType pt;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	UnsafeArray<UInt8> buff;
 	UOSInt size;
 	UInt64 fileSize;
@@ -81,13 +81,12 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 		writer.WriteLine(CSTR("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
 
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
+		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
 			Data::ArrayList<VideoFileInfo *> fileList;
 			VideoFileInfo *vfile;
 
-			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
+			while (IO::Path::FindNextFile(sptr, sess, 0, pt, fileSize).SetTo(sptr2))
 			{
 				if (pt == IO::Path::PathType::File)
 				{

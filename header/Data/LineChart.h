@@ -125,19 +125,19 @@ namespace Data
 		virtual void SetTitle(Text::CString title);
 		virtual DataType GetXAxisType() const;
 		virtual UOSInt GetXDataCount() const;
-		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt) const;
-		virtual Double *GetXDouble(UOSInt index, UOSInt *cnt) const;
-		virtual Int32 *GetXInt32(UOSInt index, UOSInt *cnt) const;
+		virtual UnsafeArrayOpt<Int64> GetXDateTicks(UOSInt index, OutParam<UOSInt> cnt) const;
+		virtual UnsafeArrayOpt<Double> GetXDouble(UOSInt index, OutParam<UOSInt> cnt) const;
+		virtual UnsafeArrayOpt<Int32> GetXInt32(UOSInt index, OutParam<UOSInt> cnt) const;
 		virtual UOSInt GetYDataCount() const;
-		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt) const;
-		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt) const;
-		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt) const;
-		virtual Text::String *GetYName(UOSInt index) const;
+		virtual UnsafeArrayOpt<Int64> GetYDateTicks(UOSInt index, OutParam<UOSInt> cnt) const;
+		virtual UnsafeArrayOpt<Double> GetYDouble(UOSInt index, OutParam<UOSInt> cnt) const;
+		virtual UnsafeArrayOpt<Int32> GetYInt32(UOSInt index, OutParam<UOSInt> cnt) const;
+		virtual Optional<Text::String> GetYName(UOSInt index) const;
 		virtual DataType GetYType(UOSInt index) const;
 
 		virtual void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const;
 		virtual UOSInt GetLegendCount() const;
-		virtual UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, UInt32 *color, UOSInt index) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetLegend(UnsafeArray<UTF8Char> sbuff, OutParam<UInt32> color, UOSInt index) const;
 
 	};
 }

@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > -10000)
 	{
 		Text::StrInt32(wbuff, i);
-		j = Text::StrToInt32(wbuff);
+		j = Text::StrToInt32W(UnsafeArray<WChar>(wbuff));
 		if (i != j)
 		{
 			return 1;
