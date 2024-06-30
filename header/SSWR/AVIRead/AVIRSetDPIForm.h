@@ -34,7 +34,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::StaticImage *pimg;
+			Optional<Media::StaticImage> pimg;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -50,6 +50,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

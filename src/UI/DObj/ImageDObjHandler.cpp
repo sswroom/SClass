@@ -21,7 +21,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 		if (this->bmpBuff.IsNull())
 		{
 			NN<Media::StaticImage> simg;
-			if (simg.Set(bmpBkg->ToStaticImage()))
+			if (bmpBkg->ToStaticImage().SetTo(simg))
 			{
 				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 				Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);

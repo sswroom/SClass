@@ -59,11 +59,8 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 		i++;
 	}
 
-	if (this->prevsImage)
-	{
-		this->pbPreview->SetImage(0);
-		DEL_CLASS(this->prevsImage);
-	}
+	this->pbPreview->SetImage(0);
+	this->prevsImage.Delete();
 	this->prevsImage = prevImage->ToStaticImage();
 	this->pbPreview->SetImage(this->prevsImage);
 }
@@ -427,11 +424,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 	{
 		this->eng->DeleteImage(img);
 	}
-	if (this->prevsImage)
-	{
-		DEL_CLASS(this->prevsImage);
-		this->prevsImage = 0;
-	}
+	this->prevsImage.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);

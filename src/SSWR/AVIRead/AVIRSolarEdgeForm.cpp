@@ -315,9 +315,9 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
-			Media::StaticImage *simg = dimg->ToStaticImage();
+			Optional<Media::StaticImage> simg = dimg->ToStaticImage();
 			this->pbSiteEnergy->SetImage(simg);
-			SDEL_CLASS(this->imgSiteEnergy);
+			this->imgSiteEnergy.Delete();
 			this->imgSiteEnergy = simg;
 			deng->DeleteImage(dimg);
 		}
@@ -352,9 +352,9 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 			chart.Plot(dimg, 0, 0, UOSInt2Double(size.x), UOSInt2Double(size.y));
 			MemFree(tsList);
 			MemFree(valList);
-			Media::StaticImage *simg = dimg->ToStaticImage();
+			Optional<Media::StaticImage> simg = dimg->ToStaticImage();
 			this->pbSitePower->SetImage(simg);
-			SDEL_CLASS(this->imgSitePower);
+			this->imgSitePower.Delete();
 			this->imgSitePower = simg;
 			deng->DeleteImage(dimg);
 		}
@@ -565,8 +565,8 @@ SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
 	}
 	this->ClearChildren();
 	this->ssl.Delete();
-	SDEL_CLASS(this->imgSiteEnergy);
-	SDEL_CLASS(this->imgSitePower);
+	this->imgSiteEnergy.Delete();
+	this->imgSitePower.Delete();
 }
 
 void SSWR::AVIRead::AVIRSolarEdgeForm::OnMonitorChanged()

@@ -27,7 +27,7 @@ namespace SSWR
 			NN<Text::String> fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
-			Media::StaticImage *previewImage;
+			Optional<Media::StaticImage> previewImage;
 
 			NN<UI::GUIPictureBox> pbPreview;
 			NN<UI::GUIPanel> pnlMain;

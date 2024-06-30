@@ -145,10 +145,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 			dimg->DelFont(f);
 		}
 
-		if (this->previewImage)
-		{
-			DEL_CLASS(this->previewImage);
-		}
+		this->previewImage.Delete();
 		this->previewImage = dimg->ToStaticImage();
 		this->eng->DeleteImage(dimg);
 		this->pbFontPreview->SetImage(this->previewImage);
@@ -252,11 +249,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRGISFontEditForm::~AVIRGISFontEditForm()
 {
-	if (this->previewImage)
-	{
-		DEL_CLASS(this->previewImage);
-		this->previewImage = 0;
-	}
+	this->previewImage.Delete();
 	SDEL_STRING(this->currFontName);
 	DEL_CLASS(this->colorConv);
 	this->colorSess->RemoveHandler(*this);

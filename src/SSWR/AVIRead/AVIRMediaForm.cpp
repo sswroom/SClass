@@ -626,7 +626,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				UnsafeArray<UTF8Char> sptr;
 				NN<Media::ImageList> imgList;
 				NN<Media::StaticImage> simg;
-				if (simg.Set(img->ToStaticImage()))
+				if (img->ToStaticImage().SetTo(simg))
 				{
 					this->core->GetDrawEngine()->DeleteImage(img);
 					sbuff[0] = 0;

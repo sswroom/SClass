@@ -131,11 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 		me->lineType = 1;
 		me->lineThick = frm.GetLineThick();
 		me->lineColor = frm.GetLineColor();
-
-		if (me->imgLine)
-		{
-			DEL_CLASS(me->imgLine);
-		}
+		me->imgLine.Delete();
 		sz = me->pbLineStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
 		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
@@ -159,11 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 		Math::Size2D<UOSInt> sz;
 		me->lineType = 0;
 		me->lineStyle = frm.GetLineStyle();
-
-		if (me->imgLine)
-		{
-			DEL_CLASS(me->imgLine);
-		}
+		me->imgLine.Delete();
 		sz = me->pbLineStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
 		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
@@ -215,11 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 		me->fontName = frm.GetFontName()->Clone().Ptr();
 		me->fontSizePt = frm.GetFontSizePt();
 		me->fontColor = frm.GetFontColor();
-
-		if (me->imgFont)
-		{
-			DEL_CLASS(me->imgFont);
-		}
+		me->imgFont.Delete();
 		sz = me->pbFontStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
 		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
@@ -243,11 +231,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 		Math::Size2D<UOSInt> sz;
 		me->fontStyle = frm.GetFontStyle();
 		me->fontType = Map::MapEnv::FontType::GlobalStyle;
-
-		if (me->imgFont)
-		{
-			DEL_CLASS(me->imgFont);
-		}
+		me->imgFont.Delete();
 		sz = me->pbFontStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
 		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
@@ -522,16 +506,8 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRGISPropForm::~AVIRGISPropForm()
 {
-	if (this->imgLine)
-	{
-		DEL_CLASS(this->imgLine);
-		this->imgLine = 0;
-	}
-	if (this->imgFont)
-	{
-		DEL_CLASS(this->imgFont);
-		this->imgFont = 0;
-	}
+	this->imgLine.Delete();
+	this->imgFont.Delete();
 	SDEL_STRING(this->fontName);
 	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
@@ -556,10 +532,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::IColorHandl
 	this->pbFillStyle->SetBGColor(this->colorConv->ConvRGB8(this->fillStyle));
 	this->pbFillStyle->Redraw();
 
-	if (this->imgLine)
-	{
-		DEL_CLASS(this->imgLine);
-	}
+	this->imgLine.Delete();
 	sz = this->pbLineStyle->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
@@ -579,10 +552,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::IColorHandl
 		this->eng->DeleteImage(dimg);
 	}
 
-	if (this->imgFont)
-	{
-		DEL_CLASS(this->imgFont);
-	}
+	this->imgFont.Delete();
 	sz = this->pbFontStyle->GetSizeP();
 	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 	{

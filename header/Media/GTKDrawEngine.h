@@ -147,7 +147,7 @@ namespace Media
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY); ////////////////////////////////////
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const; ////////////////////////////////////
 
-		virtual Media::StaticImage *ToStaticImage() const; ////////////////////////////////////
+		virtual Optional<Media::StaticImage> ToStaticImage() const; ////////////////////////////////////
 		virtual UOSInt SavePng(NN<IO::SeekableStream> stm);
 		virtual UOSInt SaveGIF(NN<IO::SeekableStream> stm); ////////////////////////////////////
 		virtual UOSInt SaveJPG(NN<IO::SeekableStream> stm);

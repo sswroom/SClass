@@ -37,10 +37,10 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType use
 			NN<Media::DrawImage> dimg;
 			if (codeImgGen->GenCode(sb.ToCString(), codeWidth, me->core->GetDrawEngine()).SetTo(dimg))
 			{
-				Media::StaticImage *simg = dimg->ToStaticImage();
+				Optional<Media::StaticImage> simg = dimg->ToStaticImage();
 				me->pbMain->SetImage(simg, false);
 				me->core->GetDrawEngine()->DeleteImage(dimg);
-				SDEL_CLASS(me->simg);
+				me->simg.Delete();
 				me->simg = simg;
 			}
 			else
@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::~AVIRCodeImageGenForm()
 {
 	this->codeImgGen.Delete();
 	this->ClearChildren();
-	SDEL_CLASS(this->simg);
+	this->simg.Delete();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

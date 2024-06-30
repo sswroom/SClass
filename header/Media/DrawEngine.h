@@ -74,10 +74,10 @@ namespace Media
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img) = 0;
 		virtual Bool DeleteImage(NN<DrawImage> img) = 0;
 
-		Optional<DrawImage> ConvImageOrNull(Media::RasterImage *img)
+		Optional<DrawImage> ConvImageOrNull(Optional<Media::RasterImage> img)
 		{
 			NN<Media::RasterImage> nnimg;
-			if (nnimg.Set(img)) return ConvImage(nnimg);
+			if (img.SetTo(nnimg)) return ConvImage(nnimg);
 			return 0;
 		}
 	};
@@ -144,7 +144,7 @@ namespace Media
 		void SetImageAlpha(UInt8 alpha);
 		void MulImageAlpha(Double val);
 
-		virtual Media::StaticImage *ToStaticImage() const = 0;
+		virtual Optional<Media::StaticImage> ToStaticImage() const = 0;
 		virtual UOSInt SavePng(NN<IO::SeekableStream> stm) = 0;
 		virtual UOSInt SaveGIF(NN<IO::SeekableStream> stm) = 0;
 		virtual UOSInt SaveJPG(NN<IO::SeekableStream> stm) = 0;

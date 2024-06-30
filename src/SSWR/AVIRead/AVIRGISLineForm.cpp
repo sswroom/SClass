@@ -58,7 +58,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 		dimg->SetHDPI(this->GetHDPI());
 		dimg->SetVDPI(this->GetHDPI());
 		this->core->GenLinePreview(dimg, this->eng, this->lineThick, this->lineColor, this->colorConv);
-		SDEL_CLASS(this->prevImg);
+		this->prevImg.Delete();
 		this->prevImg = dimg->ToStaticImage();
 		this->eng->DeleteImage(dimg);
 		this->pbPreview->SetImage(this->prevImg);
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRGISLineForm::~AVIRGISLineForm()
 {
-	SDEL_CLASS(this->prevImg);
+	this->prevImg.Delete();
 	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();

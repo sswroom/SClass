@@ -1429,7 +1429,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		NN<Media::StaticImage> simg;
 
 		NEW_CLASSNN(imgList, Media::ImageList(CSTR("temp.png")));
-		if (simg.Set(dimg->ToStaticImage()))
+		if (dimg->ToStaticImage().SetTo(simg))
 		{
 			imgList->AddImage(simg, 0);
 		}
@@ -1781,7 +1781,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		NN<Media::StaticImage> simg;
 
 		NEW_CLASSNN(imgList, Media::ImageList(CSTR("temp.png")));
-		if (simg.Set(dimg->ToStaticImage()))
+		if (dimg->ToStaticImage().SetTo(simg))
 		{
 			imgList->AddImage(simg, 0);
 		}

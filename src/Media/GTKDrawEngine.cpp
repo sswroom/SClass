@@ -1182,17 +1182,17 @@ void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, U
 	}
 }
 
-Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
+Optional<Media::StaticImage> Media::GTKDrawImage::ToStaticImage() const
 {
 	if (this->surface)
 	{
-		Media::StaticImage *simg = 0;
+		NN<Media::StaticImage> simg;
 		UInt8 *srcData;
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 		srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData == 0)
 			return 0;
-		NEW_CLASS(simg, Media::StaticImage(this->info));
+		NEW_CLASSNN(simg, Media::StaticImage(this->info));
 		MemCopyNO(simg->data.Ptr(), srcData, this->info.storeSize.CalcArea() * 4);
 		return simg;
 	}

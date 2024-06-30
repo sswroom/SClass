@@ -19,12 +19,12 @@ namespace IO
 		NN<IO::FileStream> fileStm;
 		NN<Text::String> fileName;
 		const UTF8Char *extName;
-		Int64 fileSize;
+		UInt64 fileSize;
 		Bool closed;
 
 		void SwapFiles();
 	public:
-		SizeRotateFileLog(Text::CStringNN fileName, UOSInt nFiles, Int64 fileSize);
+		SizeRotateFileLog(Text::CStringNN fileName, UOSInt nFiles, UInt64 fileSize);
 		virtual ~SizeRotateFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	NN<Media::DrawFont> f;
 	NN<Media::DrawPen> p;
 	this->pbPreview->SetImage(0);
-	SDEL_CLASS(this->pimg);
+	this->pimg.Delete();
 	usz = this->pbPreview->GetSizeP();
 	eng = this->core->GetDrawEngine();
 	if (usz.x > 0 && usz.y > 0)
@@ -208,7 +208,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRSetDPIForm::~AVIRSetDPIForm()
 {
-	SDEL_CLASS(this->pimg);
+	this->pimg.Delete();
 }
 
 void SSWR::AVIRead::AVIRSetDPIForm::OnMonitorChanged()

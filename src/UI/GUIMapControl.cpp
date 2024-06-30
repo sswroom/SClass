@@ -288,7 +288,8 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 	if (this->gZoom)
 	{
 		NN<Media::StaticImage> drawImg;
-		Media::StaticImage *srcImg;
+		Optional<Media::StaticImage> srcImg;
+		NN<Media::StaticImage> nnsrcImg;
 		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
 		Math::Size2D<UOSInt> sz;
 
@@ -311,18 +312,13 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 		{
 			srcImg = bgImg->ToStaticImage();
 		}
-		
 		if (this->gZoomCurrDist > this->gZoomDist)
 		{
 			tl = Math::Coord2DDbl(0, 0);
 			sz = this->currSize;
-			NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Double rate = (Double)this->gZoomDist / (Double)this->gZoomCurrDist;
 			Math::Size2DDbl srcSize = this->currSize.ToDouble() * rate;
 			Math::Coord2DDbl srcPos = this->gZoomPos.ToDouble() - this->gZoomCurrPos.ToDouble() * rate;
-			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
 
 			if (srcPos.x < 0)
 			{
@@ -346,7 +342,18 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 			}
 			Int32 srcIX = (Int32)srcPos.x;
 			Int32 srcIY = (Int32)srcPos.y;
-			resizer.Resize(srcImg->data + (srcIX * 4) + (srcIY * (OSInt)(srcImg->info.storeSize.x * 4)), (OSInt)srcImg->info.storeSize.x * 4, srcSize.x, srcSize.y, srcPos.x - srcIX, srcPos.y - srcIY, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
+			if (srcImg.SetTo(nnsrcImg))
+			{
+				NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+				drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+				drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
+				resizer.Resize(nnsrcImg->data + (srcIX * 4) + (srcIY * (OSInt)(nnsrcImg->info.storeSize.x * 4)), (OSInt)nnsrcImg->info.storeSize.x * 4, srcSize.x, srcSize.y, srcPos.x - srcIX, srcPos.y - srcIY, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
+				mutUsage.EndUse();
+				nnsrcImg.Delete();
+				img->DrawImagePt2(drawImg, tl);
+				drawImg.Delete();
+			}
 		}
 		else
 		{
@@ -354,18 +361,19 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 			sz.x = (UOSInt)Double2OSInt(UOSInt2Double(this->currSize.x) * rate);
 			sz.y = (UOSInt)Double2OSInt(UOSInt2Double(this->currSize.y) * rate);
 			tl = this->gZoomCurrPos.ToDouble() - this->gZoomPos.ToDouble() * rate;
-			NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
-			resizer.Resize(srcImg->data, (OSInt)srcImg->info.storeSize.x * 4, UOSInt2Double(this->currSize.x), UOSInt2Double(this->currSize.y), 0, 0, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
+			if (srcImg.SetTo(nnsrcImg))
+			{
+				NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+				drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+				drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
+				resizer.Resize(nnsrcImg->data, (OSInt)nnsrcImg->info.storeSize.x * 4, UOSInt2Double(this->currSize.x), UOSInt2Double(this->currSize.y), 0, 0, drawImg->data, (OSInt)drawImg->info.storeSize.x * 4, sz.x, sz.y);
+				mutUsage.EndUse();
+				nnsrcImg.Delete();
+				img->DrawImagePt2(drawImg, tl);
+				drawImg.Delete();
+			}
 		}
-		mutUsage.EndUse();
-		DEL_CLASS(srcImg);
-
-		img->DrawImagePt2(drawImg, tl);
-		drawImg.Delete();
-
 
 		NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)

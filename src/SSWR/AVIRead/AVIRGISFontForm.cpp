@@ -66,7 +66,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontText()
 
 void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 {
-	SDEL_CLASS(this->previewImage);
+	this->previewImage.Delete();
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
 	NN<Media::DrawImage> dimg;
 	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
@@ -141,11 +141,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRGISFontForm::~AVIRGISFontForm()
 {
-	if (this->previewImage)
-	{
-		DEL_CLASS(this->previewImage);
-		this->previewImage = 0;
-	}
+	this->previewImage.Delete();
 	this->fontName->Release();
 	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);

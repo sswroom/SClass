@@ -32,7 +32,7 @@ namespace SSWR
 			UOSInt currBuffSize;
 			UInt32 currBuffColor;
 			Bool isBold;
-			Media::StaticImage *previewImage;
+			Optional<Media::StaticImage> previewImage;
 
 			NN<UI::GUIPictureBox> pbFontPreview;
 			NN<UI::GUILabel> lblStyleName;

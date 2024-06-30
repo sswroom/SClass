@@ -37,7 +37,7 @@ namespace SSWR
 			Optional<LineLayer> currLayer;
 			Data::ArrayListNN<LineLayer> lineLayers;
 			Optional<Media::DrawImage> prevImage;
-			Media::StaticImage *prevsImage;
+			Optional<Media::StaticImage> prevsImage;
 			Bool thickChging;
 
 			NN<UI::GUIPanel> pnlButtons;

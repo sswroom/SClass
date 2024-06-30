@@ -466,7 +466,7 @@ Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	NN<Media::StaticImage> stImg;
 	NN<Math::Geometry::VectorImage> vimg;
 	NN<Media::ImageList> imgList;
-	if (!stImg.Set(img->ToStaticImage()))
+	if (!img->ToStaticImage().SetTo(stImg))
 		return false;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
@@ -505,7 +505,7 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 	NN<Media::StaticImage> stImg;
 	NN<Math::Geometry::VectorImage> vimg;
 	NN<Media::ImageList> imgList;
-	if (!stImg.Set(img->ToStaticImage()))
+	if (!img->ToStaticImage().SetTo(stImg))
 		return false;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg, 0);
@@ -659,7 +659,7 @@ void Media::VectorGraph::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UO
 {
 }
 
-Media::StaticImage *Media::VectorGraph::ToStaticImage() const
+Optional<Media::StaticImage> Media::VectorGraph::ToStaticImage() const
 {
 	return 0;
 }

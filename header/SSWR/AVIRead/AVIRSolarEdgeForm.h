@@ -25,8 +25,8 @@ namespace SSWR
 			Data::ArrayListNN<Net::SolarEdgeAPI::Site> siteList;
 			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> siteEnergyList;
 			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> sitePowerList;
-			Media::StaticImage *imgSiteEnergy;
-			Media::StaticImage *imgSitePower;
+			Optional<Media::StaticImage> imgSiteEnergy;
+			Optional<Media::StaticImage> imgSitePower;
 
 			NN<UI::GUIPanel> pnlAPIKey;
 			NN<UI::GUILabel> lblAPIKey;

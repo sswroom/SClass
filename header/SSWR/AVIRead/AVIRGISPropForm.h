@@ -46,8 +46,8 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 
 			NN<Media::DrawEngine> eng;
-			Media::StaticImage *imgLine;
-			Media::StaticImage *imgFont;
+			Optional<Media::StaticImage> imgLine;
+			Optional<Media::StaticImage> imgFont;
 			NN<Map::MapEnv> env;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;

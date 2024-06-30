@@ -25,7 +25,7 @@ namespace SSWR
 			NN<Media::DrawEngine> eng;
 			Double lineThick;
 			UInt32 lineColor;
-			Media::StaticImage *prevImg;
+			Optional<Media::StaticImage> prevImg;
 
 			NN<UI::GUIPictureBox> pbPreview;
 			NN<UI::GUIPanel> pnlMain;
