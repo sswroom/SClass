@@ -60,7 +60,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj,
 	{
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -423,7 +423,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -448,7 +448,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -472,7 +472,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -497,7 +497,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -521,7 +521,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -546,7 +546,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -570,7 +570,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -595,7 +595,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))
@@ -619,7 +619,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false))

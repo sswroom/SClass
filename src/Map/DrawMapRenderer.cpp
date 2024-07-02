@@ -20,6 +20,7 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 	UOSInt i;
 	UOSInt j;
 	Double k;
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
 	if (*labelCnt >= maxLabel)
 	{
@@ -48,8 +49,8 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 			return j;
 		if (labels[j].label)
 			labels[j].label->Release();
-		if (labels[j].points)
-			MemFreeA(labels[j].points);
+		if (labels[j].points.SetTo(ptPtr))
+			MemFreeAArr(ptPtr);
 		labels[j].label = 0;
 		labels[j].points = 0;
 		labels[j].priority = priority;
@@ -84,7 +85,7 @@ Bool Map::DrawMapRenderer::LabelOverlapped(Math::RectAreaDbl *points, UOSInt nPo
 	return false;
 }
 
-Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, Math::Coord2DDbl *points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
+Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, NN<Map::MapView> view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
 {
 	Double size;
 	Double visibleSize;
@@ -92,7 +93,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 	UOSInt i;
 	UOSInt j;
 
-	Math::Coord2DDbl *ptPtr;
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
 	Math::Coord2DDbl scnPos;
 	Double scnSqrLen;
 	Int32 found;
@@ -150,7 +151,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			j = nPoints;
 			while (j--)
 			{
-				if (rect.ContainPt(ptPtr->x, ptPtr->y))
+				if (rect.ContainPt(ptPtr[0].x, ptPtr[0].y))
 				{
 					found = 1;
 
@@ -295,7 +296,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (labels[i].label->Equals(label))
+				if (labels[i].label->Equals(label) && labels[i].points.SetTo(ptPtr))
 				{
 					found++;
 					if (totalSize == 0)
@@ -318,45 +319,45 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 					{
 
 					}
-					else if (labels[i].points[0] == endPt)
+					else if (ptPtr[0] == endPt)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoints - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, points, nPoints << 4);
-						MemCopyNO(&newArr[nPoints], &labels[i].points[1], (labels[i].nPoints - 1) << 4);
+						MemCopyNO(newArr, points.Ptr(), nPoints << 4);
+						MemCopyNO(&newArr[nPoints], &ptPtr[1], (labels[i].nPoints - 1) << 4);
 
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
 
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
 						toUpdate = 0;
 						foundInd = i;
 					}
-					else if (labels[i].points[labels[i].nPoints - 1] == startPt)
+					else if (ptPtr[labels[i].nPoints - 1] == startPt)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoints - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, labels[i].points, labels[i].nPoints << 4);
+						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
 						MemCopyNO(&newArr[labels[i].nPoints], &points[1], (nPoints - 1) << 4);
 
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
 
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
 						toUpdate = 0;
 						foundInd = i;
 					}
-					else if (labels[i].points[0] == startPt)
+					else if (ptPtr[0] == startPt)
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoints - 1;
@@ -367,27 +368,27 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 						k = labels[i].nPoints;
 						while (k-- > 1)
 						{
-							newArr[l] = labels[i].points[k];
+							newArr[l] = ptPtr[k];
 							l++;
 						}
-						MemCopyNO(&newArr[l], points, nPoints << 4);
+						MemCopyNO(&newArr[l], points.Ptr(), nPoints << 4);
 
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
 
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
 						toUpdate = 0;
 						foundInd = i;
 					}
-					else if (labels[i].points[labels[i].nPoints - 1] == endPt)
+					else if (ptPtr[labels[i].nPoints - 1] == endPt)
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoints - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
-						MemCopyNO(newArr, labels[i].points, labels[i].nPoints << 4);
+						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
 						UOSInt k;
 						UOSInt l;
 						l = labels[i].nPoints;
@@ -398,7 +399,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 						}
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
@@ -450,10 +451,10 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		if (toUpdate)
 		{
 			j = labels[i].nPoints = nPoints;
-			if (labels[i].points)
-				MemFreeA(labels[i].points);
+			if (labels[i].points.SetTo(ptPtr))
+				MemFreeAArr(ptPtr);
 			labels[i].points = ptPtr = MemAllocA(Math::Coord2DDbl, nPoints);
-			MemCopyNO(ptPtr, points, j << 4);
+			MemCopyNO(ptPtr.Ptr(), points.Ptr(), j << 4);
 			return true;
 		}
 		return false;
@@ -610,8 +611,8 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 				labels[i].totalSize = UOSInt2Double(outPtCnt);
 				labels[i].nPoints = outPtCnt;
 				labels[i].layerType = recType;
-				if (labels[i].points)
-					MemFreeA(labels[i].points);
+				if (labels[i].points.SetTo(ptPtr))
+					MemFreeAArr(ptPtr);
 				labels[i].points = outPts;
 				labels[i].flags = flags;
 				return true;
@@ -632,6 +633,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 	UOSInt j;
 	Bool overlapped;
 	Text::String *lastLbl = 0;
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
 //	Double leftLon = denv->view->GetLeftX();
 //	Double topLat = denv->view->GetTopY();
 //	Double rightLon = denv->view->GetRightX();
@@ -744,7 +746,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 					currPt++;
 				}
 			}
-			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYLINE || denv->labels[i].layerType == Map::DRAW_LAYER_POLYLINE3D)
+			else if (denv->labels[i].points.SetTo(ptPtr) && (denv->labels[i].layerType == Map::DRAW_LAYER_POLYLINE || denv->labels[i].layerType == Map::DRAW_LAYER_POLYLINE3D))
 			{
 				NN<Text::String> nnlastLbl;
 				if (nnlastLbl.Set(lastLbl))
@@ -771,7 +773,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				}
 
 				Math::Coord2D<Int32> *points = MemAlloc(Math::Coord2D<Int32>, denv->labels[i].nPoints);
-				denv->view->MapXYToScnXY(denv->labels[i].points, points, denv->labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
+				denv->view->MapXYToScnXY(ptPtr, points, denv->labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
 				OSInt minX = 0;
 				OSInt minY = 0;
 				OSInt maxX = 0;
@@ -981,8 +983,8 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 				scnPt.y = points[k].y + ((points[k + 1].y - points[k].y) * scaleN / scaleD);
 				if (denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE)
 				{
-					denv->labels[i].scaleW = denv->labels[i].points[k + 1].x - denv->labels[i].points[k].y;
-					denv->labels[i].scaleH = denv->labels[i].points[k + 1].y - denv->labels[i].points[k].y;
+					denv->labels[i].scaleW = ptPtr[k + 1].x - ptPtr[k].y;
+					denv->labels[i].scaleH = ptPtr[k + 1].y - ptPtr[k].y;
 				}
 				else
 				{
@@ -1111,8 +1113,8 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 							scnPt = points[k].ToDouble() + ((points[k + 1].ToDouble() - points[k].ToDouble()) * scaleN / scaleD);
 							if (denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE)
 							{
-								denv->labels[i].scaleW = denv->labels[i].points[k + 1].x - denv->labels[i].points[k].x;
-								denv->labels[i].scaleH = denv->labels[i].points[k + 1].y - denv->labels[i].points[k].y;
+								denv->labels[i].scaleW = ptPtr[k + 1].x - ptPtr[k].x;
+								denv->labels[i].scaleH = ptPtr[k + 1].y - ptPtr[k].y;
 							}
 							else
 							{
@@ -1151,7 +1153,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 							if ((denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								DrawCharsLA(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
+								DrawCharsLA(denv, denv->labels[i].label->ToCString(), ptPtr, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
 
 								denv->objBounds[currPt] = realBounds;
 								currPt++;
@@ -1159,7 +1161,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 							else if ((denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								DrawCharsL(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
+								DrawCharsL(denv, denv->labels[i].label->ToCString(), ptPtr, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
 
 								denv->objBounds[currPt] = realBounds;
 								currPt++;
@@ -1251,8 +1253,8 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 	while (i-- > 0)
 	{
 		denv->labels[i].label->Release();
-		if (denv->labels[i].points)
-			MemFreeA(denv->labels[i].points);
+		if (denv->labels[i].points.SetTo(ptPtr))
+			MemFreeAArr(ptPtr);
 	}
 	if (lastLbl)
 		lastLbl->Release();
@@ -1898,7 +1900,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 						UOSInt maxSize;
 						UOSInt maxPos;
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr;
+						UnsafeArray<Math::Coord2DDbl> pointArr;
 						Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 						if (it.HasNext())
 						{
@@ -1938,7 +1940,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 						UOSInt maxSize;
 						UOSInt maxPos;
 						UOSInt nPoint;
-						Math::Coord2DDbl *pointArr;
+						UnsafeArray<Math::Coord2DDbl> pointArr;
 						Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 						if (it.HasNext())
 						{
@@ -2000,7 +2002,7 @@ void Map::DrawMapRenderer::DrawLabel(NN<DrawEnv> denv, NN<Map::MapDrawLayer> lay
 						if (pl->GetItem(pl->GetCount() >> 1).SetTo(lineString))
 						{
 							UOSInt nPoint;
-							Math::Coord2DDbl *pointArr = lineString->GetPointList(nPoint);
+							UnsafeArray<Math::Coord2DDbl> pointArr = lineString->GetPointList(nPoint);
 							if (nPoint & 1)
 							{
 								UOSInt l = nPoint >> 1;
@@ -2597,7 +2599,7 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 	}
 }
 
-void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
+void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -3128,7 +3130,7 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 	realBounds->max = max;
 }
 
-void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
+void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	UOSInt lblSize = str1.leng;

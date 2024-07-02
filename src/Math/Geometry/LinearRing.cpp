@@ -21,15 +21,17 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::LinearRing::GetVectorType()
 NN<Math::Geometry::Vector2D> Math::Geometry::LinearRing::Clone() const
 {
 	NN<Math::Geometry::LinearRing> lr;
-	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
-	MemCopyNO(lr->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * this->nPoint);
-	if (this->zArr)
+	UnsafeArray<Double> thisArr;
+	UnsafeArray<Double> lrArr;
+	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, this->nPoint, this->zArr.NotNull(), this->mArr.NotNull()));
+	MemCopyNO(lr->pointArr.Ptr(), this->pointArr.Ptr(), sizeof(Math::Coord2DDbl) * this->nPoint);
+	if (this->zArr.SetTo(thisArr) && lr->zArr.SetTo(lrArr))
 	{
-		MemCopyNO(lr->zArr, this->zArr, sizeof(Double) * this->nPoint);
+		MemCopyNO(lrArr.Ptr(), thisArr.Ptr(), sizeof(Double) * this->nPoint);
 	}
-	if (this->mArr)
+	if (this->mArr.SetTo(thisArr) && lr->mArr.SetTo(lrArr))
 	{
-		MemCopyNO(lr->mArr, this->mArr, sizeof(Double) * this->nPoint);
+		MemCopyNO(lrArr.Ptr(), thisArr.Ptr(), sizeof(Double) * this->nPoint);
 	}
 	return lr;
 }
@@ -121,7 +123,7 @@ NN<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt
 	UOSInt i;
 	UOSInt j;
 	Double angle;
-	Math::Coord2DDbl *pointList = lr->GetPointList(j);
+	UnsafeArray<Math::Coord2DDbl> pointList = lr->GetPointList(j);
 	i = 0;
 	while (i < j)
 	{

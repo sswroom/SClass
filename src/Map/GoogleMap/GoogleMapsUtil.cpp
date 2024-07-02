@@ -15,7 +15,7 @@ Optional<Math::Geometry::LineString> Map::GoogleMap::GoogleMapsUtil::ParsePolyli
 	Math::Geometry::LineString *pl;
 	UOSInt i;
 	UOSInt j;
-	Math::Coord2DDbl *ptList;
+	UnsafeArray<Math::Coord2DDbl> ptList;
 	lastX = 0;
 	lastY = 0;
 	i = 0;

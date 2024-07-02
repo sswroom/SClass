@@ -60,8 +60,8 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surfa
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
 		Bool revOrder;
-		UInt8 *bits = img->GetImgBits(revOrder);
-		if (bits)
+		UnsafeArray<UInt8> bits;
+		if (img->GetImgBits(revOrder).SetTo(bits))
 		{
 			surface->GetRasterData(bits, 0, 0, buffSize.x, buffSize.y, img->GetImgBpl(), revOrder, Media::RotateType::None);
 			img->GetImgBitsEnd(true);

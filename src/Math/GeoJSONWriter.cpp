@@ -69,7 +69,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
 			NN<Math::Geometry::LinearRing> lr;
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointList;
+			UnsafeArray<Math::Coord2DDbl> pointList;
 			Math::Coord2DDbl initPt;
 			UOSInt j;
 			Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
@@ -125,7 +125,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 			sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 			UOSInt i = 0;
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
+			UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
 			sb->AppendC(UTF8STRC("\t\t\t["));
 			sb->AppendDouble(pointList[i].x);
 			sb->AppendC(UTF8STRC(", "));
@@ -157,7 +157,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 			{
 				NN<Math::Geometry::LineString> lineString = it.Next();
 				UOSInt nPoint;
-				Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
+				UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
 				Math::Coord2DDbl initPt;
 				UOSInt k;
 				if (!found)
@@ -220,7 +220,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 				}
 				NN<Math::Geometry::Polygon> pg = itPG.Next();
 				UOSInt nPoint;
-				Math::Coord2DDbl *pointList;
+				UnsafeArray<Math::Coord2DDbl> pointList;
 				Math::Coord2DDbl initPt;
 				NN<Math::Geometry::LinearRing> lr;
 				Data::ArrayIterator<NN<Math::Geometry::LinearRing>> itLR = pg->Iterator();
@@ -327,7 +327,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NN<Text::JSONBuilder> json, NN<const Math::
 			NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 			UOSInt nPoint;
 			UOSInt j;
-			Math::Coord2DDbl *pointList;
+			UnsafeArray<Math::Coord2DDbl> pointList;
 			Math::Coord2DDbl initPt;
 			NN<Math::Geometry::LinearRing> lr;
 			Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
@@ -359,7 +359,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NN<Text::JSONBuilder> json, NN<const Math::
 		{
 			NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 			UOSInt nPoint;
-			Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
+			UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
 			UOSInt i = 0;
 			while (i < nPoint)
 			{
@@ -375,7 +375,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NN<Text::JSONBuilder> json, NN<const Math::
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
 			NN<Math::Geometry::LineString> lineString;
-			Math::Coord2DDbl *pointList;
+			UnsafeArray<Math::Coord2DDbl> pointList;
 			UOSInt k;
 			UOSInt l;
 			Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();

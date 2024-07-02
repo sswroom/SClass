@@ -35,9 +35,9 @@ namespace Map
 		virtual Double GetDDPI() const = 0;
 
 		virtual Bool InViewXY(Math::Coord2DDbl mapPos) const = 0;
-		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
-		virtual Bool MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const = 0; // return inScreen
-		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
+		virtual Bool MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
+		virtual Bool MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const = 0; // return inScreen
+		virtual Bool IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const = 0;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const = 0;
 		virtual NN<Map::MapView> Clone() const = 0;
@@ -48,14 +48,14 @@ namespace Map
 		void SetVAngle(Double angleRad);
 
 		void SetDestImage(NN<Media::DrawImage> img);
-		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const;
+		void ToPointCnt(UnsafeArray<Int32> parts, Int32 nParts, Int32 nPoints) const;
 		void SetViewBounds(Math::RectAreaDbl bounds);
 
 		void SetConverterOfst(Math::Coord2DDbl ofst);
 		virtual UInt32 GetOutputSRID() const;
 		virtual Math::Coord2DDbl Convert2D(Math::Coord2DDbl coord) const;
 		virtual Math::Vector3 Convert3D(Math::Vector3 vec3) const;
-		virtual void Convert2DArr(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints) const;
+		virtual void Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints) const;
 	};
 }
 #endif

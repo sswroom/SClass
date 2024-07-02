@@ -13,26 +13,29 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Media::VectorGraph::VectorPenStyle::VectorPenStyle(UOSInt index, UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+Media::VectorGraph::VectorPenStyle::VectorPenStyle(UOSInt index, UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	this->index = index;
 	this->color = color;
 	this->thick = thick;
-	this->nPattern = nPattern;
-	if (this->nPattern > 0)
+	UnsafeArray<UInt8> nnpattern;
+	if (this->nPattern > 0 && pattern.SetTo(nnpattern))
 	{
+		this->nPattern = nPattern;
 		this->pattern = MemAlloc(UInt8, this->nPattern);
-		MemCopyNO(this->pattern, pattern, this->nPattern);
+		MemCopyNO(this->pattern.Ptr(), nnpattern.Ptr(), this->nPattern);
 	}
 	else
 	{
 		this->pattern = 0;
+		this->nPattern = 0;
 	}
 }
 Media::VectorGraph::VectorPenStyle::~VectorPenStyle()
 {
-	if (this->pattern)
-		MemFree(this->pattern);
+	UnsafeArray<UInt8> nnpattern;
+	if (this->pattern.SetTo(nnpattern))
+		MemFreeArr(nnpattern);
 }
 
 Double Media::VectorGraph::VectorPenStyle::GetThick()
@@ -40,20 +43,32 @@ Double Media::VectorGraph::VectorPenStyle::GetThick()
 	return this->thick;
 }
 
-Bool Media::VectorGraph::VectorPenStyle::IsSame(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+Bool Media::VectorGraph::VectorPenStyle::IsSame(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	UOSInt i;
 	if (this->color != color)
 		return false;
 	if (this->thick != thick)
 		return false;
+	UnsafeArray<UInt8> thisPattern;
+	UnsafeArray<UInt8> nnpattern;
 	if (this->nPattern != nPattern)
 		return false;
-	i = this->nPattern;
-	while (i-- > 0)
+	if (this->nPattern != 0)
 	{
-		if (pattern[i] != this->pattern[i])
+		if (this->pattern.SetTo(thisPattern) && pattern.SetTo(nnpattern))
+		{
+			i = this->nPattern;
+			while (i-- > 0)
+			{
+				if (nnpattern[i] != thisPattern[i])
+					return false;
+			}
+		}
+		else
+		{
 			return false;
+		}
 	}
 	return true;
 }
@@ -232,7 +247,7 @@ void Media::VectorGraph::SetVDPI(Double dpi)
 {
 }
 
-UInt8 *Media::VectorGraph::GetImgBits(OutParam<Bool> revOrder)
+UnsafeArrayOpt<UInt8> Media::VectorGraph::GetImgBits(OutParam<Bool> revOrder)
 {
 	return 0;
 }
@@ -273,10 +288,10 @@ Bool Media::VectorGraph::DrawLine(Double x1, Double y1, Double x2, Double y2, NN
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::VectorGraph::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p)
 {
 	Double *dPoints = MemAlloc(Double, nPoints * 2);
-	Math_Int32Arr2DblArr(dPoints, points, nPoints * 2);
+	Math_Int32Arr2DblArr(dPoints, points.Ptr(), nPoints * 2);
 	NN<Math::Geometry::LineString> pl;
 	NN<VectorStyles> style;
 	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, (Math::Coord2DDbl*)dPoints, nPoints, 0, 0));
@@ -290,19 +305,19 @@ Bool Media::VectorGraph::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<D
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::VectorGraph::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, NN<DrawPen> p)
 {
 	NN<Math::Geometry::LineString> pl;
 	NN<VectorStyles> style;
@@ -316,13 +331,13 @@ Bool Media::VectorGraph::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPo
 	return true;
 }
 
-Bool Media::VectorGraph::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
 }
 
-Bool Media::VectorGraph::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::VectorGraph::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	/////////////////////////////////
 	return false;
@@ -520,7 +535,7 @@ Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL
 	return true;
 }
 
-NN<Media::DrawPen> Media::VectorGraph::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::VectorGraph::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	NN<Media::VectorGraph::VectorPenStyle> pen;
 	Data::ArrayIterator<NN<Media::VectorGraph::VectorPenStyle>> it = this->penStyles.Iterator();
@@ -645,12 +660,12 @@ void Media::VectorGraph::SetTextAlign(Media::DrawEngine::DrawPos pos)
 	this->align = pos;
 }
 
-void Media::VectorGraph::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::VectorGraph::GetStringBound(UnsafeArray<Int32> pos, OSInt centX, OSInt centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	////////////////////////////////////////
 }
 
-void Media::VectorGraph::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::VectorGraph::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	////////////////////////////////////////
 }
@@ -776,7 +791,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 				NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 				UOSInt nPoints;
 				Math::Coord2DDbl *points;
-				Math::Coord2DDbl *dpoints;
+				UnsafeArray<Math::Coord2DDbl> dpoints;
 				NN<Math::Geometry::LineString> lineString;
 				Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 				while (it.HasNext())
@@ -802,7 +817,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 				NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 				UOSInt nPoints;
 				Math::Coord2DDbl *points;
-				Math::Coord2DDbl *dpoints;
+				UnsafeArray<Math::Coord2DDbl> dpoints;
 				dpoints = lineString->GetPointList(nPoints);
 				points = MemAllocA(Math::Coord2DDbl, nPoints);
 				Math::Coord2DDbl dScale = Math::Coord2DDbl(scale, scale);

@@ -412,7 +412,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 		UOSInt tmpV;
 		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
-		Math::Coord2DDbl *ptList = lineString->GetPointList(tmpV);
+		UnsafeArray<Math::Coord2DDbl> ptList = lineString->GetPointList(tmpV);
 		UOSInt i = 0;
 		while (i < nPoints)
 		{

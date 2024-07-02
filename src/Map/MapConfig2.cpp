@@ -409,7 +409,7 @@ void Map::MapConfig2::DrawChars(NN<Media::DrawImage> img, Text::CStringNN str1, 
 	}
 }
 
-void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
+void Map::MapConfig2::DrawCharsLA(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -1588,7 +1588,7 @@ void Map::MapConfig2::DrawCharsLAo(NN<Media::DrawImage> img, Text::CStringNN str
 	}
 }
 
-void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
+void Map::MapConfig2::DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -2319,11 +2319,14 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 		{
 			Bool revOrder;
 			Bool revOrder2;
-			UInt8 *bmpBits = gimg->GetImgBits(revOrder);
-			UInt8 *bmpBits2 = gimg2->GetImgBits(revOrder2);
-			resizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
-			gimg->GetImgBitsEnd(true);
-			gimg2->GetImgBitsEnd(false);
+			UnsafeArray<UInt8> bmpBits;
+			UnsafeArray<UInt8> bmpBits2;
+			if (gimg->GetImgBits(revOrder).SetTo(bmpBits) && gimg2->GetImgBits(revOrder2).SetTo(bmpBits2))
+			{
+				resizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
+				gimg->GetImgBitsEnd(true);
+				gimg2->GetImgBitsEnd(false);
+			}
 			dimg = gimg;
 			imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
 			imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
@@ -2429,7 +2432,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 					UOSInt maxSize;
 					UOSInt maxPos;
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr;
+					UnsafeArray<Math::Coord2DDbl> pointArr;
 					NN<Math::Geometry::LineString> ls;
 					maxSize = (pl->GetItem(0).SetTo(ls))?ls->GetPointCount():0;
 					maxPos = 0;
@@ -2462,7 +2465,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 					UOSInt maxSize;
 					UOSInt maxPos;
 					UOSInt nPoint;
-					Math::Coord2DDbl *pointArr;
+					UnsafeArray<Math::Coord2DDbl> pointArr;
 					NN<Math::Geometry::LinearRing> lr;
 					maxSize = (pg->GetItem(0).SetTo(lr))?lr->GetPointCount():0;
 					maxPos = 0;
@@ -2526,7 +2529,7 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 					UOSInt nPoint;
 					if (pl->GetItem(pl->GetCount() >> 1).SetTo(ls))
 					{
-						Math::Coord2DDbl *pointArr = ls->GetPointList(nPoint);
+						UnsafeArray<Math::Coord2DDbl> pointArr = ls->GetPointList(nPoint);
 						if (nPoint & 1)
 						{
 							UOSInt l = nPoint >> 1;
@@ -2614,6 +2617,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 	UInt32 i;
 	UInt32 j;
 	Double k;
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
 	if (*labelCnt >= maxLabel)
 	{
@@ -2642,8 +2646,8 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 			return j;
 		if (labels[j].label)
 			labels[j].label->Release();
-		if (labels[j].points)
-			MemFreeA(labels[j].points);
+		if (labels[j].points.SetTo(ptPtr))
+			MemFreeAArr(ptPtr);
 		labels[j].label = 0;
 		labels[j].points = 0;
 		labels[j].priority = priority;
@@ -2660,7 +2664,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CStringNN labelt, UOSInt nPoint, Math::Coord2DDbl *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NN<Map::MapView> view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CStringNN labelt, UOSInt nPoint, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, NN<Map::MapView> view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
@@ -2668,7 +2672,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 	UInt32 i;
 	UOSInt j;
 
-	Math::Coord2DDbl *ptPtr;
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
 	Math::Coord2DDbl scnPos;
 	Double scnSqrLen;
@@ -2869,7 +2873,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (labels[i].label->Equals(labelt))
+				if (labels[i].label->Equals(labelt) && labels[i].points.SetTo(ptPtr))
 				{
 					found++;
 					if (totalSize == 0)
@@ -2892,45 +2896,45 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 					{
 
 					}
-					else if (labels[i].points[0] == endPt)
+					else if (ptPtr[0] == endPt)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, points, nPoint << 4);
-						MemCopyNO(&newArr[nPoint], &labels[i].points[1], (labels[i].nPoints - 1) << 4);
+						MemCopyNO(newArr, points.Ptr(), nPoint << 4);
+						MemCopyNO(&newArr[nPoint], &ptPtr[1], (labels[i].nPoints - 1) << 4);
 
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
 
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
 						toUpdate = 0;
 						foundInd = i;
 					}
-					else if (labels[i].points[labels[i].nPoints - 1] == startPt)
+					else if (ptPtr[labels[i].nPoints - 1] == startPt)
 					{
 //						wprintf(L"Shape: %s merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
 
-						MemCopyNO(newArr, labels[i].points, labels[i].nPoints << 4);
+						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
 						MemCopyNO(&newArr[labels[i].nPoints], &points[1], (nPoint - 1) << 4);
 
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
 
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
 						toUpdate = 0;
 						foundInd = i;
 					}
-					else if (labels[i].points[0] == startPt)
+					else if (ptPtr[0] == startPt)
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoint - 1;
@@ -2941,27 +2945,27 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 						k = labels[i].nPoints;
 						while (k-- > 1)
 						{
-							newArr[l++] = labels[i].points[k << 1];
-							newArr[l++] = labels[i].points[(k << 1) + 1];
+							newArr[l++] = ptPtr[k << 1];
+							newArr[l++] = ptPtr[(k << 1) + 1];
 						}
-						MemCopyNO(&newArr[l], points, nPoint << 4);
+						MemCopyNO(&newArr[l], points.Ptr(), nPoint << 4);
 
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
 
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
 						toUpdate = 0;
 						foundInd = i;
 					}
-					else if (labels[i].points[labels[i].nPoints - 1] == endPt)
+					else if (ptPtr[labels[i].nPoints - 1] == endPt)
 					{
 //						wprintf(L"Shape: %s inverse merged (%d + %d)\n", labelt, labels[i].nPoints, nPoint);
 						UOSInt newSize = labels[i].nPoints + nPoint - 1;
 						Math::Coord2DDbl* newArr = MemAllocA(Math::Coord2DDbl, newSize);
-						MemCopyNO(newArr, labels[i].points, labels[i].nPoints << 4);
+						MemCopyNO(newArr, ptPtr.Ptr(), labels[i].nPoints << 4);
 						UOSInt k;
 						UOSInt l;
 						l = labels[i].nPoints;
@@ -2972,7 +2976,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 						}
 						startPt = newArr[0];
 						endPt = newArr[newSize - 1];
-						MemFreeA(labels[i].points);
+						MemFreeAArr(ptPtr);
 						labels[i].points = newArr;
 						labels[i].nPoints = newSize;
 						labels[i].currSize += visibleSize;
@@ -3021,10 +3025,10 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 		if (toUpdate)
 		{
 			j = labels[i].nPoints = nPoint;
-			if (labels[i].points)
-				MemFreeA(labels[i].points);
-			labels[i].points = ptPtr = MemAllocA(Math::Coord2DDbl, nPoint);
-			MemCopyNO(ptPtr, points, j << 4);
+			if (labels[i].points.SetTo(ptPtr))
+				MemFreeAArr(ptPtr);
+			labels[i].points = ptPtr = MemAllocAArr(Math::Coord2DDbl, nPoint);
+			MemCopyNO(ptPtr.Ptr(), points.Ptr(), j << 4);
 			return true;
 		}
 		return false;
@@ -3175,8 +3179,8 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 				labels[i].totalSize = UOSInt2Double(outPtCnt);
 				labels[i].nPoints = outPtCnt;
 				labels[i].shapeType = 5;
-				if (labels[i].points)
-					MemFreeA(labels[i].points);
+				if (labels[i].points.SetTo(ptPtr))
+					MemFreeAArr(ptPtr);
 				labels[i].points = outPts;
 				labels[i].flags = flags;
 				return true;
@@ -3260,6 +3264,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 	Text::String *lastLbl = 0;
 	UOSInt scnWidth = img->GetWidth();
 	UOSInt scnHeight = img->GetHeight();
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
 
 	if (*labelCnt)
 	{
@@ -3363,7 +3368,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 					currPt++;
 				}
 			}
-			else if (labels[i].shapeType == 3)
+			else if (labels[i].shapeType == 3 && labels[i].points.SetTo(ptPtr))
 			{
 //				wprintf(L"Label: %s, nPoints: %d\n", labels[i].label, labels[i].nPoints);
 
@@ -3391,7 +3396,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 				}
 
 				Math::Coord2D<Int32> *points = MemAlloc(Math::Coord2D<Int32>, labels[i].nPoints);
-				view->MapXYToScnXY(labels[i].points, points, labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
+				view->MapXYToScnXY(ptPtr, points, labels[i].nPoints, Math::Coord2D<Int32>(0, 0));
 				OSInt minX = 0;
 				OSInt minY = 0;
 				OSInt maxX = 0;
@@ -3604,8 +3609,8 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 				scnPt = points[k].ToDouble() + (points[k + 1].ToDouble() - points[k].ToDouble()) * scaleN / scaleD;
 				if (labels[i].flags & SFLG_ROTATE)
 				{
-					labels[i].scaleW = labels[i].points[k + 1].x - labels[i].points[k].x;
-					labels[i].scaleH = labels[i].points[k + 1].y - labels[i].points[k].y;
+					labels[i].scaleW = ptPtr[k + 1].x - ptPtr[k].x;
+					labels[i].scaleH = ptPtr[k + 1].y - ptPtr[k].y;
 				}
 				else
 				{
@@ -3734,8 +3739,8 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 							scnPt = points[k].ToDouble() + (points[k + 1].ToDouble() - points[k].ToDouble()) * scaleN / scaleD;
 							if (labels[i].flags & SFLG_ROTATE)
 							{
-								labels[i].scaleW = labels[i].points[k + 1].x - labels[i].points[k].x;
-								labels[i].scaleH = labels[i].points[k + 1].y - labels[i].points[k].y;
+								labels[i].scaleW = ptPtr[k + 1].x - ptPtr[k].x;
+								labels[i].scaleH = ptPtr[k + 1].y - ptPtr[k].y;
 							}
 							else
 							{
@@ -3774,7 +3779,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 							if ((labels[i].flags & SFLG_ALIGN) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								DrawCharsLA(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
+								DrawCharsLA(img, labels[i].label->ToCString(), ptPtr, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
 
 								objBounds[currPt] = realBounds;
 								currPt++;
@@ -3782,7 +3787,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 							else if ((labels[i].flags & SFLG_ROTATE) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								DrawCharsL(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
+								DrawCharsL(img, labels[i].label->ToCString(), ptPtr, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], &realBounds);
 
 								objBounds[currPt] = realBounds;
 								currPt++;
@@ -3874,8 +3879,8 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 	while (i-- > 0)
 	{
 		labels[i].label->Release();
-		if (labels[i].points)
-			MemFreeA(labels[i].points);
+		if (labels[i].points.SetTo(ptPtr))
+			MemFreeAArr(ptPtr);
 	}
 	if (lastLbl)
 		lastLbl->Release();

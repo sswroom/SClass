@@ -248,21 +248,27 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 				}
 	#else
 				Bool revOrder;
-				UInt8 *ptrS1 = (UInt8*)bmpS1->GetImgBits(revOrder);
-				UInt8 *ptrS2 = (UInt8*)bmpS2->GetImgBits(revOrder);
-				UInt8 *ptrD = (UInt8*)bmpTmp->GetImgBits(revOrder);
-				UOSInt lineBytes = bmpS1->GetWidth() * 4;
-				UOSInt i;
-				UOSInt j = bmpS1->GetHeight();
-				Double a1 = this->alpha;
-				Double a2 = 1 - this->alpha; 
-				while (j-- > 0)
+				UnsafeArray<UInt8> ptrS1;
+				UnsafeArray<UInt8> ptrS2;
+				UnsafeArray<UInt8> ptrD;
+				if (bmpS1->GetImgBits(revOrder).SetTo(ptrS1) && bmpS2->GetImgBits(revOrder).SetTo(ptrS2) && bmpTmp->GetImgBits(revOrder).SetTo(ptrD))
 				{
-					i = lineBytes;
-					while (i-- > 0)
+					UOSInt lineBytes = bmpS1->GetWidth() * 4;
+					UOSInt i;
+					UOSInt j = bmpS1->GetHeight();
+					Double a1 = this->alpha;
+					Double a2 = 1 - this->alpha; 
+					while (j-- > 0)
 					{
-						*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+						i = lineBytes;
+						while (i-- > 0)
+						{
+							*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+						}
 					}
+					bmpTmp->GetImgBitsEnd(true);
+					bmpS2->GetImgBitsEnd(false);
+					bmpS1->GetImgBitsEnd(false);
 				}
 	#endif
 				dimg->DrawImagePt(bmpTmp, tl.ToDouble());

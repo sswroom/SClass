@@ -535,7 +535,7 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	UInt32 ofst = this->ofsts[2 + (id << 1)];
 	UInt32 *ptOfsts;
 	Int32 *points;
-	Math::Coord2DDbl *tmpPoints;
+	UnsafeArray<Math::Coord2DDbl> tmpPoints;
 
 	cip->SeekFromBeginning(ofst);
 	cip->Read(Data::ByteArray((UInt8*)buff, 8));

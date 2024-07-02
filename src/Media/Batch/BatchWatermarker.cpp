@@ -87,15 +87,18 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 							gimg2->DrawString(Math::Coord2DDbl(0, 0), watermark, f, b);
 							gimg2->SetAlphaType(Media::AT_ALPHA);
 							Bool revOrder;
-							UInt8 *bmpBits = gimg2->GetImgBits(revOrder);
-							ImageUtil_ColorReplace32A(bmpBits, iWidth, iHeight, (this->rnd.NextInt30() & 0xffffff) | 0x5f808080);
-							if (revOrder)
+							UnsafeArray<UInt8> bmpBits;
+							if (gimg2->GetImgBits(revOrder).SetTo(bmpBits))
 							{
-								this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeSize.x * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeSize.x << 2, bmpBits + iWidth * 4 * (iHeight - 1), -(Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
-							}
-							else
-							{
-								this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeSize.x * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeSize.x << 2, bmpBits, (Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+								ImageUtil_ColorReplace32A(bmpBits.Ptr(), iWidth, iHeight, (this->rnd.NextInt30() & 0xffffff) | 0x5f808080);
+								if (revOrder)
+								{
+									this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeSize.x * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeSize.x << 2, bmpBits + iWidth * 4 * (iHeight - 1), -(Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+								}
+								else
+								{
+									this->ablend.Blend(simg->data + (UInt32)Double2Int32(this->rnd.NextDouble() * yRand) * simg->info.storeSize.x * 4 + Double2Int32(this->rnd.NextDouble() * xRand) * 4, (OSInt)simg->info.storeSize.x << 2, bmpBits, (Int32)iWidth * 4, iWidth, iHeight, Media::AT_ALPHA);
+								}
 							}
 							this->deng->DeleteImage(gimg2);
 						}

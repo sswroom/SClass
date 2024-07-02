@@ -18,15 +18,17 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::CircularString::GetVectorTy
 NN<Math::Geometry::Vector2D> Math::Geometry::CircularString::Clone() const
 {
 	NN<Math::Geometry::CircularString> pl;
-	NEW_CLASSNN(pl, Math::Geometry::CircularString(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
-	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
-	if (this->zArr)
+	UnsafeArray<Double> thisArr;
+	UnsafeArray<Double> plArr;
+	NEW_CLASSNN(pl, Math::Geometry::CircularString(this->srid, this->nPoint, this->zArr.NotNull(), this->mArr.NotNull()));
+	MemCopyAC(pl->pointArr.Ptr(), this->pointArr.Ptr(), sizeof(Math::Coord2DDbl) * nPoint);
+	if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(plArr))
 	{	
-		MemCopyAC(pl->zArr, this->zArr, sizeof(Double) * nPoint);
+		MemCopyAC(plArr.Ptr(), thisArr.Ptr(), sizeof(Double) * nPoint);
 	}
-	if (this->mArr)
+	if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(plArr))
 	{	
-		MemCopyAC(pl->mArr, this->mArr, sizeof(Double) * nPoint);
+		MemCopyAC(plArr.Ptr(), thisArr.Ptr(), sizeof(Double) * nPoint);
 	}
 	return pl;
 }

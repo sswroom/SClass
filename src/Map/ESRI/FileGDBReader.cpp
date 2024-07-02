@@ -851,9 +851,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			UOSInt k;
 			NN<Math::Geometry::LineString> lineString;
 			UInt32 *ptOfstList;
-			Math::Coord2DDbl *points;
-			Double *zArr;
-			Double *mArr;
+			UnsafeArray<Math::Coord2DDbl> points;
+			UnsafeArray<Double> zArr;
+			UnsafeArray<Double> mArr;
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
 			ptOfstList = MemAlloc(UInt32, (UOSInt)nParts);
@@ -885,8 +885,6 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				}
 				NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
 				points = lineString->GetPointList(j);
-				zArr = lineString->GetZList(j);
-				mArr = lineString->GetMList(j);
 
 				j = 0;
 				while (j < k)
@@ -901,7 +899,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 					points[j].y = y;
 					j++;
 				}
-				if (this->tableInfo->geometryFlags & 0x80)
+				if ((this->tableInfo->geometryFlags & 0x80) && lineString->GetZList(j).SetTo(zArr))
 				{
 					j = 0;
 					while (j < k)
@@ -913,7 +911,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 						j++;
 					}
 				}
-				if (this->tableInfo->geometryFlags & 0x40)
+				if ((this->tableInfo->geometryFlags & 0x40) && lineString->GetMList(j).SetTo(mArr))
 				{
 					j = 0;
 					while (j < k)
@@ -1067,9 +1065,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			UOSInt k;
 			NN<Math::Geometry::LineString> lineString;
 			UInt32 *ptOfstList;
-			Math::Coord2DDbl *points;
-			Double *zArr;
-			Double *mArr;
+			UnsafeArray<Math::Coord2DDbl> points;
+			UnsafeArray<Double> zArr;
+			UnsafeArray<Double> mArr;
 			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
 			ptOfstList = MemAlloc(UInt32, (UOSInt)nParts);
@@ -1097,8 +1095,6 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				}
 				NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
 				points = lineString->GetPointList(j);
-				zArr = lineString->GetZList(j);
-				mArr = lineString->GetMList(j);
 
 				OSInt dx = 0;
 				OSInt dy = 0;
@@ -1117,7 +1113,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 					points[j].y = y;
 					j++;
 				}
-				if (this->tableInfo->geometryFlags & 0x80)
+				if ((this->tableInfo->geometryFlags & 0x80) && lineString->GetZList(j).SetTo(zArr))
 				{
 					j = 0;
 					while (j < k)
@@ -1129,7 +1125,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 						j++;
 					}
 				}
-				if (this->tableInfo->geometryFlags & 0x40)
+				if ((this->tableInfo->geometryFlags & 0x40) && lineString->GetMList(j).SetTo(mArr))
 				{
 					j = 0;
 					while (j < k)

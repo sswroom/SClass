@@ -30,8 +30,8 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UI
 	}
 
 	Bool revOrder;
-	UInt8 *bptr = dimg->GetImgBits(revOrder);
-	if (bptr)
+	UnsafeArray<UInt8> bptr;
+	if (dimg->GetImgBits(revOrder).SetTo(bptr))
 	{
 		Sync::MutexUsage mutUsage(me->frameMut);
 		if (revOrder)
@@ -42,6 +42,7 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UI
 		{
 			me->resizer->Resize(frameBuff, frameW << 2, frameW, frameH, 0, 0, bptr + (Int32)((me->videoSize.y - outH) >> 1) * dbpl + (((me->videoSize.x - outW) >> 1) << 2), dbpl, outW, outH);
 		}
+		dimg->GetImgBitsEnd(true);
 	}
 	me->shown = false;
 }

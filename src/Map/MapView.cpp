@@ -41,7 +41,7 @@ void Map::MapView::SetDestImage(NN<Media::DrawImage> img)
 	}
 }
 
-void Map::MapView::ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const
+void Map::MapView::ToPointCnt(UnsafeArray<Int32> parts, Int32 nParts, Int32 nPoints) const
 {
 	Int32 tmpV;
 	while (nParts-- > 0)
@@ -97,7 +97,7 @@ Math::Vector3 Map::MapView::Convert3D(Math::Vector3 vec3) const
 	return Math::Vector3(this->MapXYToScnXY(vec3.GetXY()) + this->converterOfst, 0);
 }
 
-void Map::MapView::Convert2DArr(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints) const
+void Map::MapView::Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints) const
 {
 	this->MapXYToScnXY(srcArr, destArr, nPoints, this->converterOfst);
 }

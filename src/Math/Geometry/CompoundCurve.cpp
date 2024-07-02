@@ -46,7 +46,7 @@ UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Co
 	UOSInt ret = 0;
 	NN<LineString> ls;
 	UOSInt nPoint;
-	const Math::Coord2DDbl *ptArr;
+	UnsafeArray<const Math::Coord2DDbl> ptArr;
 	Data::ArrayIterator<NN<LineString>> it = this->Iterator();
 	while (it.HasNext())
 	{

@@ -110,7 +110,7 @@ Bool Map::ScaledMapView::InViewXY(Math::Coord2DDbl mapPos) const
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
+Bool Map::ScaledMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -128,8 +128,8 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coor
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		destArr->x = thisX = Double2Int32((srcArr->x - dleft) * mul.x + ofst.x);
-		destArr->y = thisY = Double2Int32((dbottom - srcArr->y) * mul.y + ofst.y);
+		destArr[0].x = thisX = Double2Int32((srcArr[0].x - dleft) * mul.x + ofst.x);
+		destArr[0].y = thisY = Double2Int32((dbottom - srcArr[0].y) * mul.y + ofst.y);
 		srcArr++;
 		destArr++;
 		if (iminX == 0 && imaxX == 0)
@@ -152,7 +152,7 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coor
 	return (imaxX >= 0) && (iminX < (OSInt)scnSize.x) && (imaxY >= 0) && (iminY < (OSInt)scnSize.y);
 }
 
-Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
+Bool Map::ScaledMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -199,17 +199,17 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coor
 	Doublex2 thisVal;
 	Doublex2 minVal;
 	Doublex2 maxVal;
-	thisVal = PDoublex2Set((srcArr->x  - dleft), (dbottom - srcArr->y));
+	thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
 	minVal = maxVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
-	PStoreDoublex2((Double*)destArr, minVal);
+	PStoreDoublex2((Double*)destArr.Ptr(), minVal);
 	srcArr++;
 	destArr++;
 	nPoints--;
 	while (nPoints-- > 0)
 	{
-		thisVal = PDoublex2Set((srcArr->x  - dleft), (dbottom - srcArr->y));
+		thisVal = PDoublex2Set((srcArr[0].x  - dleft), (dbottom - srcArr[0].y));
 		thisVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
-		PStoreDoublex2((Double*)destArr, thisVal);
+		PStoreDoublex2((Double*)destArr.Ptr(), thisVal);
 		srcArr++;
 		destArr++;
 		minVal = PMINPD(minVal, thisVal);
@@ -218,7 +218,7 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coor
 	return (Doublex2GetLo(maxVal) >= 0) && (Doublex2GetLo(minVal) < scnSize.x) && (Doublex2GetHi(maxVal) >= 0) && (Doublex2GetHi(minVal) < scnSize.y);
 }
 
-Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
+Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -229,7 +229,7 @@ Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32
 	Double dbottom = this->br.y;
 	Double rRate = 1 / mapRate;
 
-	return ScaledMapView_IMapXYToScnXY(srcArr, destArr, nPoints, rRate, dleft, dbottom, mul.x, mul.y, ofst.x, ofst.y, (UOSInt)this->scnSize.x, (UOSInt)this->scnSize.y);
+	return ScaledMapView_IMapXYToScnXY(srcArr.Ptr(), destArr.Ptr(), nPoints, rRate, dleft, dbottom, mul.x, mul.y, ofst.x, ofst.y, (UOSInt)this->scnSize.x, (UOSInt)this->scnSize.y);
 }
 
 Math::Coord2DDbl Map::ScaledMapView::MapXYToScnXY(Math::Coord2DDbl mapPos) const

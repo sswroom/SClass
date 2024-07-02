@@ -153,7 +153,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, false));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -177,18 +177,26 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, false));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(i);
-			i = 0;
-			while (i < numPoints)
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
+			UnsafeArray<Double> zArr;
+			if (pl->GetZList(i).SetTo(zArr))
 			{
-				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
-				zArr[i] = readDouble(&wkb[ofst + 16]);
-				ofst += 24;
-				i++;
+				i = 0;
+				while (i < numPoints)
+				{
+					points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+					zArr[i] = readDouble(&wkb[ofst + 16]);
+					ofst += 24;
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
 			}
-			sizeUsed.Set(ofst);
-			return pl;
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 	case 2002: //LineStringM
 	case 0x40000002:
@@ -203,18 +211,26 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, false, true));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *mArr = pl->GetMList(i);
-			i = 0;
-			while (i < numPoints)
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
+			UnsafeArray<Double> mArr;
+			if (pl->GetMList(i).SetTo(mArr))
 			{
-				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
-				mArr[i] = readDouble(&wkb[ofst + 16]);
-				ofst += 24;
-				i++;
+				i = 0;
+				while (i < numPoints)
+				{
+					points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+					mArr[i] = readDouble(&wkb[ofst + 16]);
+					ofst += 24;
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
 			}
-			sizeUsed.Set(ofst);
-			return pl;
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 	case 3002: //LineStringZM
 	case 0xC0000002:
@@ -229,20 +245,28 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::LineString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, numPoints, true, true));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(i);
-			Double *mArr = pl->GetMList(i);
-			i = 0;
-			while (i < numPoints)
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
+			UnsafeArray<Double> zArr;
+			UnsafeArray<Double> mArr;
+			if (pl->GetZList(i).SetTo(zArr) && pl->GetMList(i).SetTo(mArr))
 			{
-				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
-				zArr[i] = readDouble(&wkb[ofst + 16]);
-				mArr[i] = readDouble(&wkb[ofst + 24]);
-				ofst += 32;
-				i++;
+				i = 0;
+				while (i < numPoints)
+				{
+					points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+					zArr[i] = readDouble(&wkb[ofst + 16]);
+					mArr[i] = readDouble(&wkb[ofst + 24]);
+					ofst += 32;
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
 			}
-			sizeUsed.Set(ofst);
-			return pl;
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 	case 3: //Polygon
 		if (wkbLen < ofst + 4)
@@ -277,7 +301,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, false, false));
-				Math::Coord2DDbl *points = lr->GetPointList(tmp);
+				UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(tmp);
 				j = 0;
 				while (j < numPoints)
 				{
@@ -325,17 +349,24 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, true, false));
-				Math::Coord2DDbl *points = lr->GetPointList(tmp);
-				Double *zList = lr->GetZList(tmp);
-				j = 0;
-				while (j < numPoints)
+				UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(tmp);
+				UnsafeArray<Double> zList;
+				if (lr->GetZList(tmp).SetTo(zList))
 				{
-					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
-					zList[j] = readDouble(&wkb[ofst + 16]);
-					ofst += 24;
-					j++;
+					j = 0;
+					while (j < numPoints)
+					{
+						points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
+						zList[j] = readDouble(&wkb[ofst + 16]);
+						ofst += 24;
+						j++;
+					}
+					pg->AddGeometry(lr);
 				}
-				pg->AddGeometry(lr);
+				else
+				{
+					lr.Delete();
+				}
 				i++;
 			}
 			sizeUsed.Set(ofst);
@@ -375,17 +406,24 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, false, true));
-				Math::Coord2DDbl *points = lr->GetPointList(tmp);
-				Double *mList = lr->GetMList(tmp);
-				j = 0;
-				while (j < numPoints)
+				UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(tmp);
+				UnsafeArray<Double> mList;
+				if (lr->GetMList(tmp).SetTo(mList))
 				{
-					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
-					mList[j] = readDouble(&wkb[ofst + 16]);
-					ofst += 24;
-					j++;
+					j = 0;
+					while (j < numPoints)
+					{
+						points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
+						mList[j] = readDouble(&wkb[ofst + 16]);
+						ofst += 24;
+						j++;
+					}
+					pg->AddGeometry(lr);
 				}
-				pg->AddGeometry(lr);
+				else
+				{
+					lr.Delete();
+				}
 				i++;
 			}
 			sizeUsed.Set(ofst);
@@ -425,19 +463,26 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 				UOSInt tmp;
 				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, true, true))
-				Math::Coord2DDbl *points = lr->GetPointList(tmp);
-				Double *zList = lr->GetZList(tmp);
-				Double *mList = lr->GetMList(tmp);
-				j = 0;
-				while (j < numPoints)
+				UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(tmp);
+				UnsafeArray<Double> zList;
+				UnsafeArray<Double> mList;
+				if (lr->GetZList(tmp).SetTo(zList) && lr->GetMList(tmp).SetTo(mList))
 				{
-					points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
-					zList[j] = readDouble(&wkb[ofst + 16]);
-					mList[j] = readDouble(&wkb[ofst + 24]);
-					ofst += 32;
-					j++;
+					j = 0;
+					while (j < numPoints)
+					{
+						points[j] = Math::Coord2DDbl(readDouble(&wkb[ofst]), readDouble(&wkb[ofst + 8]));
+						zList[j] = readDouble(&wkb[ofst + 16]);
+						mList[j] = readDouble(&wkb[ofst + 24]);
+						ofst += 32;
+						j++;
+					}
+					pg->AddGeometry(lr);
 				}
-				pg->AddGeometry(lr);
+				else
+				{
+					lr.Delete();
+				}
 				i++;
 			}
 			sizeUsed.Set(ofst);
@@ -560,7 +605,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, false));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
 			i = 0;
 			while (i < numPoints)
 			{
@@ -584,18 +629,26 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, false));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(i);
-			i = 0;
-			while (i < numPoints)
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
+			UnsafeArray<Double> zArr;
+			if (pl->GetZList(i).SetTo(zArr))
 			{
-				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
-				zArr[i] = readDouble(&wkb[ofst + 16]);
-				ofst += 24;
-				i++;
+				i = 0;
+				while (i < numPoints)
+				{
+					points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+					zArr[i] = readDouble(&wkb[ofst + 16]);
+					ofst += 24;
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
 			}
-			sizeUsed.Set(ofst);
-			return pl;
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 	case 2008: //CircularStringM
 	case 0x40000008:
@@ -610,18 +663,26 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, false, true));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *mArr = pl->GetMList(i);
-			i = 0;
-			while (i < numPoints)
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
+			UnsafeArray<Double> mArr;
+			if (pl->GetMList(i).SetTo(mArr))
 			{
-				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
-				mArr[i] = readDouble(&wkb[ofst + 16]);
-				ofst += 24;
-				i++;
+				i = 0;
+				while (i < numPoints)
+				{
+					points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+					mArr[i] = readDouble(&wkb[ofst + 16]);
+					ofst += 24;
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
 			}
-			sizeUsed.Set(ofst);
-			return pl;
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 	case 3008: //CircularStringZM
 	case 0xC0000008:
@@ -636,20 +697,28 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			Math::Geometry::CircularString *pl;
 			UOSInt i;
 			NEW_CLASS(pl, Math::Geometry::CircularString(srid, numPoints, true, true));
-			Math::Coord2DDbl *points = pl->GetPointList(i);
-			Double *zArr = pl->GetZList(i);
-			Double *mArr = pl->GetMList(i);
-			i = 0;
-			while (i < numPoints)
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
+			UnsafeArray<Double> zArr;
+			UnsafeArray<Double> mArr;
+			if (pl->GetZList(i).SetTo(zArr) && pl->GetMList(i).SetTo(mArr))
 			{
-				points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
-				zArr[i] = readDouble(&wkb[ofst + 16]);
-				mArr[i] = readDouble(&wkb[ofst + 24]);
-				ofst += 32;
-				i++;
+				i = 0;
+				while (i < numPoints)
+				{
+					points[i] = Math::Coord2DDbl(readDouble(&wkb[ofst + 0]), readDouble(&wkb[ofst + 8]));
+					zArr[i] = readDouble(&wkb[ofst + 16]);
+					mArr[i] = readDouble(&wkb[ofst + 24]);
+					ofst += 32;
+					i++;
+				}
+				sizeUsed.Set(ofst);
+				return pl;
 			}
-			sizeUsed.Set(ofst);
-			return pl;
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 	case 9: //CompoundCurve
 	case 1009: //CompoundCurveZ

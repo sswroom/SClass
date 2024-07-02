@@ -1322,7 +1322,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 					NN<Math::Geometry::LinearRing> lr;
 					NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
 					NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, latList.GetCount(), false, false));
-					Math::Coord2DDbl *points = lr->GetPointList(i);
+					UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(i);
 					while (i-- > 0)
 					{
 						points[i].x = lonList.GetItem(i);
@@ -1344,7 +1344,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 					}
 					NN<Math::Geometry::LineString> pl;
 					NEW_CLASSNN(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));
-					Math::Coord2DDbl *points = pl->GetPointList(i);
+					UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(i);
 					while (i-- > 0)
 					{
 						points[i].x = lonList.GetItem(i);

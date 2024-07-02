@@ -52,7 +52,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj
 		Math::Geometry::LinearRing *lr;
 		NEW_CLASS(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = lr->GetPointList(nPoints);
+		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
 		ptList[0].x = me->sel1.x;
 		ptList[0].y = me->sel1.y;
 		ptList[1].x = me->sel2.x;
@@ -111,7 +111,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userO
 		Math::Geometry::LinearRing *lr;
 		NEW_CLASS(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
-		Math::Coord2DDbl *ptList = lr->GetPointList(nPoints);
+		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoints);
 		ptList[0].x = mapPt1.x;
 		ptList[0].y = mapPt1.y;
 		ptList[1].x = mapPt2.x;

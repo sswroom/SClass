@@ -171,7 +171,7 @@ void Text::JSONBuilder::AppendCoord2D(Math::Coord2DDbl coord)
 	this->sb.AppendUTF8Char(']');
 }
 
-void Text::JSONBuilder::AppendCoord2DArray(const Math::Coord2DDbl *coordList, UOSInt nPoints)
+void Text::JSONBuilder::AppendCoord2DArray(UnsafeArray<const Math::Coord2DDbl> coordList, UOSInt nPoints)
 {
 	this->sb.AppendUTF8Char('[');
 	if (nPoints > 0)
@@ -197,13 +197,13 @@ void Text::JSONBuilder::AppendCoordPL(NN<Math::Geometry::Polyline> pl)
 	{
 		ls = it.Next();
 		UOSInt nPoints;
-		const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
+		UnsafeArray<const Math::Coord2DDbl> ptList = ls->GetPointListRead(nPoints);
 		this->AppendCoord2DArray(ptList, nPoints);
 		while (it.HasNext())
 		{
 			ls = it.Next();
 			UOSInt nPoints;
-			const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
+			UnsafeArray<const Math::Coord2DDbl> ptList = ls->GetPointListRead(nPoints);
 			this->sb.AppendUTF8Char(',');
 			this->AppendCoord2DArray(ptList, nPoints);
 		}
@@ -220,13 +220,13 @@ void Text::JSONBuilder::AppendCoordPG(NN<Math::Geometry::Polygon> pg)
 	{
 		lr = it.Next();
 		UOSInt nPoints;
-		const Math::Coord2DDbl *ptList = lr->GetPointListRead(nPoints);
+		UnsafeArray<const Math::Coord2DDbl> ptList = lr->GetPointListRead(nPoints);
 		this->AppendCoord2DArray(ptList, nPoints);
 		while (it.HasNext())
 		{
 			lr = it.Next();
 			UOSInt nPoints;
-			const Math::Coord2DDbl *ptList = lr->GetPointListRead(nPoints);
+			UnsafeArray<const Math::Coord2DDbl> ptList = lr->GetPointListRead(nPoints);
 			this->sb.AppendUTF8Char(',');
 			this->AppendCoord2DArray(ptList, nPoints);
 		}
@@ -249,7 +249,7 @@ void Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
 		NN<Math::Geometry::LineString> ls = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"LineString\",\"coordinates\":"));
 		UOSInt nPoints;
-		const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
+		UnsafeArray<const Math::Coord2DDbl> ptList = ls->GetPointListRead(nPoints);
 		this->AppendCoord2DArray(ptList, nPoints);
 		this->sb.AppendUTF8Char('}');
 	}
@@ -396,27 +396,6 @@ Bool Text::JSONBuilder::ArrayAddBool(Bool val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAddStr(Text::PString *val)
-{
-	if (this->currType != OT_ARRAY)
-		return false;
-	if (this->isFirst)
-		this->isFirst = false;
-	else
-	{
-		this->sb.AppendC(UTF8STRC(","));
-	}
-	if (val == 0)
-	{
-		this->sb.AppendC(UTF8STRC("null"));
-	}
-	else
-	{
-		this->AppendStrUTF8(val->v);
-	}
-	return true;
-}
-
 Bool Text::JSONBuilder::ArrayAddStr(Text::CString val)
 {
 	if (this->currType != OT_ARRAY)
@@ -450,6 +429,28 @@ Bool Text::JSONBuilder::ArrayAddStr(NN<Text::String> val)
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->AppendStrUTF8(val->v);
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddStrOpt(Optional<Text::PString> val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	NN<Text::PString> nnval;
+	if (!val.SetTo(nnval))
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		this->AppendStrUTF8(nnval->v);
+	}
 	return true;
 }
 
@@ -748,29 +749,6 @@ Bool Text::JSONBuilder::ObjectAddBool(Text::CStringNN name, Bool val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::PString *val)
-{
-	if (this->currType != OT_OBJECT)
-		return false;
-	if (this->isFirst)
-		this->isFirst = false;
-	else
-	{
-		this->sb.AppendC(UTF8STRC(","));
-	}
-	this->AppendStr(name);
-	this->sb.AppendC(UTF8STRC(":"));
-	if (val == 0)
-	{
-		this->sb.AppendC(UTF8STRC("null"));
-	}
-	else
-	{
-		this->AppendStr(val->ToCString());
-	}
-	return true;
-}
-
 Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, NN<const Text::String> val)
 {
 	if (this->currType != OT_OBJECT)
@@ -810,7 +788,7 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::CString val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::String> val)
+Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::PString> val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -822,14 +800,14 @@ Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::Str
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
-	NN<Text::String> s;
-	if (!val.SetTo(s))
+	NN<Text::PString> nnval;
+	if (!val.SetTo(nnval))
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 	}
 	else
 	{
-		this->AppendStr(s->ToCString());
+		this->AppendStr(nnval->ToCString());
 	}
 	return true;
 }
@@ -858,7 +836,7 @@ Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CStringNN name, UnsafeArrayOpt<co
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStrW(Text::CStringNN name, const WChar *val)
+Bool Text::JSONBuilder::ObjectAddStrW(Text::CStringNN name, UnsafeArrayOpt<const WChar> val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -870,13 +848,14 @@ Bool Text::JSONBuilder::ObjectAddStrW(Text::CStringNN name, const WChar *val)
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
-	if (val == 0)
+	UnsafeArray<const WChar> nnval;
+	if (!val.SetTo(nnval))
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 	}
 	else
 	{
-		this->AppendStrW(val);
+		this->AppendStrW(nnval);
 	}
 	return true;
 }
@@ -928,7 +907,7 @@ Bool Text::JSONBuilder::ObjectAddNull(Text::CStringNN name)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayList<Int32> *i32Arr)
+Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Optional<Data::ArrayList<Int32>> i32Arr)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -939,20 +918,21 @@ Bool Text::JSONBuilder::ObjectAddArrayInt32(Text::CStringNN name, Data::ArrayLis
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->AppendStr(name);
-	if (i32Arr == 0)
+	NN<Data::ArrayList<Int32>> nni32Arr;
+	if (!i32Arr.SetTo(nni32Arr))
 	{
 		this->sb.AppendC(UTF8STRC(":null"));
 	}
 	else
 	{
 		UOSInt i = 0;
-		UOSInt j = i32Arr->GetCount();
+		UOSInt j = nni32Arr->GetCount();
 		this->sb.AppendC(UTF8STRC(":["));
 		while (i < j)
 		{
 			if (i > 0)
 				sb.AppendUTF8Char(',');
-			sb.AppendI32(i32Arr->GetItem(i));
+			sb.AppendI32(nni32Arr->GetItem(i));
 			i++;
 		}
 		this->sb.AppendUTF8Char(']');
@@ -976,7 +956,7 @@ Bool Text::JSONBuilder::ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl 
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayListA<Math::Coord2DDbl> *coordArr)
+Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Optional<Data::ArrayListA<Math::Coord2DDbl>> coordArr)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -987,7 +967,8 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayL
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->AppendStr(name);
-	if (coordArr == 0)
+	NN<Data::ArrayListA<Math::Coord2DDbl>> nncoordArr;
+	if (!coordArr.SetTo(nncoordArr))
 	{
 		this->sb.AppendC(UTF8STRC(":null"));
 	}
@@ -995,11 +976,11 @@ Bool Text::JSONBuilder::ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayL
 	{
 		Math::Coord2DDbl coord;
 		UOSInt i = 0;
-		UOSInt j = coordArr->GetCount();
+		UOSInt j = nncoordArr->GetCount();
 		this->sb.AppendC(UTF8STRC(":["));
 		while (i < j)
 		{
-			coord = coordArr->GetItem(i);
+			coord = nncoordArr->GetItem(i);
 			if (i > 0)
 				sb.AppendUTF8Char(',');
 			this->AppendCoord2D(coord);
@@ -1112,7 +1093,7 @@ Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NN<Data::VariItem
 	case Data::VariItem::ItemType::Date:
 		return ObjectAddDateStr(name, item->GetAsDate());
 	case Data::VariItem::ItemType::Str:
-		return ObjectAddStr(name, item->GetItemValue().str);
+		return ObjectAddStrOpt(name, Optional<Text::String>(item->GetItemValue().str));
 	case Data::VariItem::ItemType::Vector:
 		return ObjectAddGeometry(name, item->GetItemValue().vector);
 	}

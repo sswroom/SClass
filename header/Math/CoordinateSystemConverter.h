@@ -18,7 +18,7 @@ namespace Math
 		virtual UInt32 GetOutputSRID() const;
 		virtual Math::Coord2DDbl Convert2D(Math::Coord2DDbl coord) const;
 		virtual Math::Vector3 Convert3D(Math::Vector3 vec3) const;
-		virtual void Convert2DArr(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints) const;
+		virtual void Convert2DArr(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints) const;
 	};
 }
 #endif

@@ -148,7 +148,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		Media::CS::TransferParam tranParam(Media::CS::TRANT_sRGB, 2.2);
 		NN<Media::CS::TransferFunc> trans = Media::CS::TransferFunc::CreateFunc(tranParam);
 		UOSInt sbpl;
-		UInt8 *imgPtr;
+		UnsafeArray<UInt8> imgPtr;
 		UInt8 v;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		if (eng->CreateImage32(Math::Size2D<UOSInt>((timeRes + 4) + yAxis + ihFontSize, (fftSize >> 1) + 4 + ihFontSize + xAxis), Media::AT_NO_ALPHA).SetTo(tmpImg))
@@ -189,72 +189,75 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 			}
 
 			Bool revOrder;
-			UInt8 *bmpBits = tmpImg->GetImgBits(revOrder);
-			freqs = allFreqs;
-			if (revOrder)
+			UnsafeArray<UInt8> bmpBits;
+			if (tmpImg->GetImgBits(revOrder).SetTo(bmpBits))
 			{
-				i = 0;
-				j = timeRes;
-				while (i <= j)
+				freqs = allFreqs;
+				if (revOrder)
 				{
-					imgPtr = bmpBits + sbpl * (xAxis + 4) + (i + yAxis + 3) * 4;
-					k = fftSize >> 1;
-
-					thisMin = freqs[0];
-					l = k;
-					while (l-- > 0)
+					i = 0;
+					j = timeRes;
+					while (i <= j)
 					{
-						if (freqs[l] < thisMin)
+						imgPtr = bmpBits + sbpl * (xAxis + 4) + (i + yAxis + 3) * 4;
+						k = fftSize >> 1;
+
+						thisMin = freqs[0];
+						l = k;
+						while (l-- > 0)
 						{
-							thisMin = freqs[l];
+							if (freqs[l] < thisMin)
+							{
+								thisMin = freqs[l];
+							}
 						}
+
+
+						l = 0;
+						while (l < k)
+						{
+							*(UInt32*)imgPtr.Ptr() = lut[Double2Int32(freqs[l] * imaxVal)];
+
+							imgPtr += sbpl;
+							l++;
+						}
+
+						freqs += fftSize;
+						i++;
 					}
-
-
-					l = 0;
-					while (l < k)
-					{
-						*(UInt32*)imgPtr = lut[Double2Int32(freqs[l] * imaxVal)];
-
-						imgPtr += sbpl;
-						l++;
-					}
-
-					freqs += fftSize;
-					i++;
 				}
-			}
-			else
-			{
-				i = 0;
-				j = timeRes;
-				while (i <= j)
+				else
 				{
-					imgPtr = bmpBits + sbpl * (xAxis + 4) + (i + yAxis + 3) * 4;
-					k = fftSize >> 1;
-
-					thisMin = freqs[0];
-					l = k;
-					while (l-- > 0)
+					i = 0;
+					j = timeRes;
+					while (i <= j)
 					{
-						if (freqs[l] < thisMin)
+						imgPtr = bmpBits + sbpl * (xAxis + 4) + (i + yAxis + 3) * 4;
+						k = fftSize >> 1;
+
+						thisMin = freqs[0];
+						l = k;
+						while (l-- > 0)
 						{
-							thisMin = freqs[l];
+							if (freqs[l] < thisMin)
+							{
+								thisMin = freqs[l];
+							}
 						}
+
+
+						l = 0;
+						while (l < k)
+						{
+							*(UInt32*)imgPtr.Ptr() = lut[Double2Int32(freqs[l] * imaxVal)];
+
+							imgPtr += sbpl;
+							l++;
+						}
+
+						freqs += fftSize;
+						i++;
 					}
-
-
-					l = 0;
-					while (l < k)
-					{
-						*(UInt32*)imgPtr = lut[Double2Int32(freqs[l] * imaxVal)];
-
-						imgPtr += sbpl;
-						l++;
-					}
-
-					freqs += fftSize;
-					i++;
 				}
 			}
 			trans.Delete();

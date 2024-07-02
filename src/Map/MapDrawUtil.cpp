@@ -17,7 +17,7 @@ Bool Map::MapDrawUtil::DrawLineString(NN<Math::Geometry::LineString> pl, NN<Medi
 	if (!p.SetTo(nnp))
 		return false;
 	UOSInt nPoint;
-	Math::Coord2DDbl *points = pl->GetPointList(nPoint);
+	UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(nPoint);
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
 	img->DrawPolyline(dpoints, nPoint, nnp);
@@ -38,7 +38,7 @@ Bool Map::MapDrawUtil::DrawPolyline(NN<Math::Geometry::Polyline> pl, NN<Media::D
 	while (it.HasNext())
 	{
 		lineString = it.Next();
-		Math::Coord2DDbl *points = lineString->GetPointList(nPoint);
+		UnsafeArray<Math::Coord2DDbl> points = lineString->GetPointList(nPoint);
 		if (nPoint > dpointsSize)
 		{
 			if (dpoints)
@@ -59,7 +59,7 @@ Bool Map::MapDrawUtil::DrawPolyline(NN<Math::Geometry::Polyline> pl, NN<Media::D
 Bool Map::MapDrawUtil::DrawLinearRing(NN<Math::Geometry::LinearRing> lr, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UOSInt nPoint;
-	Math::Coord2DDbl *points = lr->GetPointList(nPoint);
+	UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(nPoint);
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 	view->MapXYToScnXY(points, dpoints, nPoint, ofst);
 	img->DrawPolygon(dpoints, nPoint, p, b);
@@ -71,7 +71,7 @@ Bool Map::MapDrawUtil::DrawPolygon(NN<Math::Geometry::Polygon> pg, NN<Media::Dra
 {
 	UOSInt nPoint = pg->GetPointCount();
 	UOSInt k;
-	Math::Coord2DDbl *points;
+	UnsafeArray<Math::Coord2DDbl> points;
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 	NN<Math::Geometry::LinearRing> lr;
 	UOSInt nPtOfst = pg->GetCount();
@@ -144,7 +144,7 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			const Math::Coord2DDbl *ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
+			UnsafeArray<const Math::Coord2DDbl> ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			ptList.AddRange(ptArr, nPoint);
 		}
 		else

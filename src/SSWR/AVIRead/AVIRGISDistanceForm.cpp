@@ -83,7 +83,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userOb
 		if (me->radTypePath->IsSelected())
 		{
 			Math::Geometry::LineString *pl;
-			Math::Coord2DDbl *pts;
+			UnsafeArray<Math::Coord2DDbl> pts;
 			UOSInt i;
 			UOSInt j;
 			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList->GetCount() >> 1) + 1, false, false));

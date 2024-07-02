@@ -194,7 +194,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					if (pl->GetItem(i).SetTo(lineString))
 					{
 						k = 0;
-						Math::Coord2DDbl *pointArr = lineString->GetPointList(l);
+						UnsafeArray<Math::Coord2DDbl> pointArr = lineString->GetPointList(l);
 						while (k < l)
 						{
 							ptArr[j] = Double2Int32(pointArr[k].x * 200000.0);

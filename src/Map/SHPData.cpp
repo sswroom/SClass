@@ -369,7 +369,7 @@ Map::SHPData::~SHPData()
 			NN<RecHdr> obj;
 			if (this->recs->RemoveAt(i).SetTo(obj))
 			{
-				SDEL_CLASS(obj->vec);
+				obj->vec.Delete();
 				MemFreeNN(obj);
 			}
 		}
@@ -550,6 +550,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 {
 	NN<Map::SHPData::RecHdr> rec;
 	NN<Sync::Mutex> mut;
+	NN<Math::Geometry::Vector2D> vec;
 
 	UInt32 srid = this->csys->GetSRID();
 	if (this->layerType == Map::DRAW_LAYER_POINT)
@@ -578,7 +579,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Sync::MutexUsage mutUsage(mut);
 		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
 			return 0;
-		if (rec->vec) return rec->vec->Clone().Ptr();
+		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
 		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
@@ -587,7 +588,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		pg->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);
-		rec->vec = pg->Clone().Ptr();
+		rec->vec = pg->Clone();
 		return pg;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE && mut.Set(this->recsMut))
@@ -596,7 +597,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Sync::MutexUsage mutUsage(mut);
 		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
 			return 0;
-		if (rec->vec) return rec->vec->Clone().Ptr();
+		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
 		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
@@ -605,7 +606,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);
-		rec->vec = pl->Clone().Ptr();
+		rec->vec = pl->Clone();
 		return pl;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D && mut.Set(this->recsMut))
@@ -614,7 +615,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Sync::MutexUsage mutUsage(mut);
 		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
 			return 0;
-		if (rec->vec) return rec->vec->Clone().Ptr();
+		if (rec->vec.SetTo(vec)) return vec->Clone();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 		UInt32 *ptOfstList = MemAlloc(UInt32, rec->nPtOfst);
 		Math::Coord2DDbl *pointList = MemAllocA(Math::Coord2DDbl, rec->nPoint);
@@ -626,7 +627,7 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		MemFree(zList);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);
-		rec->vec = pl->Clone().Ptr();
+		rec->vec = pl->Clone();
 		return pl;
 	}
 	else

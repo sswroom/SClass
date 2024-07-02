@@ -370,8 +370,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		Math::Geometry::PointZ *pt;
 		Math::Geometry::Vector2D *vec;
 		NN<Math::Geometry::Vector2D> nnvec;
-		Math::Coord2DDbl *ptList;
-		Double *hList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
+		UnsafeArray<Double> hList;
 
 		{
 			IO::FileStream fs2({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -415,16 +415,22 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 							hasPL = true;
 							NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
 							ptList = pl->GetPointList(k);
-							hList = pl->GetZList(k);
-							k = 0;
-							while (k < j)
+							if (pl->GetZList(k).SetTo(hList))
 							{
-								ptList[k].x = ptX.GetItem(k);
-								ptList[k].y = ptY.GetItem(k);
-								hList[k] = ptZ.GetItem(k);
-								k++;
+								k = 0;
+								while (k < j)
+								{
+									ptList[k].x = ptX.GetItem(k);
+									ptList[k].y = ptY.GetItem(k);
+									hList[k] = ptZ.GetItem(k);
+									k++;
+								}
+								vecMap.Put(currId, pl);
 							}
-							vecMap.Put(currId, pl);
+							else
+							{
+								DEL_CLASS(pl);
+							}
 						}
 					}
 					ptX.Clear();
@@ -475,16 +481,22 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				hasPL = true;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, j, true, false));
 				ptList = pl->GetPointList(k);
-				hList = pl->GetZList(k);
-				k = 0;
-				while (k < j)
+				if (pl->GetZList(k).SetTo(hList))
 				{
-					ptList[k].x = ptX.GetItem(k);
-					ptList[k].y = ptY.GetItem(k);
-					hList[k] = ptZ.GetItem(k);
-					k++;
+					k = 0;
+					while (k < j)
+					{
+						ptList[k].x = ptX.GetItem(k);
+						ptList[k].y = ptY.GetItem(k);
+						hList[k] = ptZ.GetItem(k);
+						k++;
+					}
+					vecMap.Put(currId, pl);
 				}
-				vecMap.Put(currId, pl);
+				else
+				{
+					DEL_CLASS(pl);
+				}
 			}
 		}
 		ptX.Clear();

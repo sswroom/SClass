@@ -347,8 +347,8 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 					if (hasZ)
 					{
 						Math::Geometry::LineString *pl;
-						Math::Coord2DDbl *ptArr;
-						Double *altArr;
+						UnsafeArray<Math::Coord2DDbl> ptArr;
+						UnsafeArray<Double> altArr;
 						NEW_CLASS(pl, Math::Geometry::LineString(srid, zList.GetCount(), true, false));
 						ptArr = pl->GetPointList(i);
 						i = 0;
@@ -359,13 +359,15 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 							ptArr[i].y = ptList.GetItem((i << 1) + 1);
 							i++;
 						}
-						altArr = pl->GetZList(i);
-						i = 0;
-						j = zList.GetCount();
-						while (i < j)
+						if (pl->GetZList(i).SetTo(altArr))
 						{
-							altArr[i] = zList.GetItem(i);
-							i++;
+							i = 0;
+							j = zList.GetCount();
+							while (i < j)
+							{
+								altArr[i] = zList.GetItem(i);
+								i++;
+							}
 						}
 						return pl;
 					}
@@ -453,7 +455,7 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 				}
 				if (ptList.GetCount() >= 4)
 				{
-					Math::Coord2DDbl *ptArr;
+					UnsafeArray<Math::Coord2DDbl> ptArr;
 					Math::Geometry::Polygon *pg;
 					NN<Math::Geometry::LinearRing> lr;
 					UOSInt m;
@@ -470,14 +472,15 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 							l = partList.GetItem(i);
 						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k), hasAlt, false));
 						ptArr = lr->GetPointList(m);
-						Double *altArr = lr->GetZList(m);
+						UnsafeArrayOpt<Double> altArr = lr->GetZList(m);
+						UnsafeArray<Double> nnaltArr;
 						m = 0;
 						while (k < l)
 						{
 							ptArr[m].x = ptList.GetItem((k << 1));
 							ptArr[m].y = ptList.GetItem((k << 1) + 1);
-							if (altArr)
-								altArr[m] = altList.GetItem(k);
+							if (altArr.SetTo(nnaltArr))
+								nnaltArr[m] = altList.GetItem(k);
 							k++;
 						}
 						pg->AddGeometry(lr);
@@ -547,7 +550,7 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 						}
 						if (ptList.GetCount() >= 4)
 						{
-							Math::Coord2DDbl *ptArr;
+							UnsafeArray<Math::Coord2DDbl> ptArr;
 							NN<Math::Geometry::Polygon> pg;
 							Bool hasZ = ptList.GetCount() == altList.GetCount() * 2;
 							NN<Math::Geometry::LinearRing> lr;
@@ -565,14 +568,15 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 									l = partList.GetItem(i);
 								NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k), hasZ, false));
 								ptArr = lr->GetPointList(m);
-								Double *altArr = lr->GetZList(m);
+								UnsafeArrayOpt<Double> altArr = lr->GetZList(m);
+								UnsafeArray<Double> nnaltArr;
 								m = 0;
 								while (k < l)
 								{
 									ptArr[m].x = ptList.GetItem((k << 1));
 									ptArr[m].y = ptList.GetItem((k << 1) + 1);
-									if (altArr)
-										altArr[m] = altList.GetItem(k);
+									if (altArr.SetTo(nnaltArr))
+										nnaltArr[m] = altList.GetItem(k);
 									k++;
 									m++;
 								}

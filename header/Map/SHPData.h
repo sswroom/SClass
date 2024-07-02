@@ -18,7 +18,7 @@ namespace Map
 			Double y1;
 			Double x2;
 			Double y2;
-			Math::Geometry::Vector2D *vec;
+			Optional<Math::Geometry::Vector2D> vec;
 			UInt32 nPoint;
 			UInt32 nPtOfst;
 			UInt32 ofst;

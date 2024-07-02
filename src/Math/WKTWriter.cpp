@@ -21,13 +21,15 @@ void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointList = pl->GetPointList(nPoint);
-	Double *zArr = pl->GetZList(nPoint);
-	Double *mArr = pl->GetMList(nPoint);
+	UnsafeArray<Math::Coord2DDbl> pointList = pl->GetPointList(nPoint);
+	UnsafeArrayOpt<Double> zArr = pl->GetZList(nPoint);
+	UnsafeArrayOpt<Double> mArr = pl->GetMList(nPoint);
+	UnsafeArray<Double> nnzArr;
+	UnsafeArray<Double> nnmArr;
 	UOSInt i;
-	if (zArr || mArr)
+	if (zArr.SetTo(nnzArr))
 	{
-		if (zArr && mArr)
+		if (mArr.SetTo(nnmArr))
 		{
 			i = 0;
 			while (i < nPoint)
@@ -46,13 +48,39 @@ void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::
 					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
+				sb->AppendDouble(nnzArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(mArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
+				sb->AppendDouble(nnmArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
-		else if (mArr)
+		else
+		{
+			i = 0;
+			while (i < nPoint)
+			{
+				if (i > 0) sb->AppendUTF8Char(',');
+				if (reverseAxis)
+				{
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
+				}
+				else
+				{
+					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
+					sb->AppendUTF8Char(' ');
+					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
+				}
+				sb->AppendUTF8Char(' ');
+				sb->AppendDouble(nnzArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
+				i++;
+			}
+		}
+	}
+	else
+	{
+		if (mArr.SetTo(nnmArr))
 		{
 			i = 0;
 			while (i < nPoint)
@@ -71,58 +99,35 @@ void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::
 					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 				}
 				sb->AppendC(UTF8STRC(" NaN "));
-				sb->AppendDouble(mArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
+				sb->AppendDouble(nnmArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
 				i++;
 			}
 		}
 		else
 		{
-			i = 0;
-			while (i < nPoint)
+			if (reverseAxis)
 			{
-				if (i > 0) sb->AppendUTF8Char(',');
-				if (reverseAxis)
+				i = 0;
+				while (i < nPoint)
 				{
+					if (i > 0) sb->AppendUTF8Char(',');
 					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
 					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
+					i++;
 				}
-				else
+			}
+			else
+			{
+				i = 0;
+				while (i < nPoint)
 				{
+					if (i > 0) sb->AppendUTF8Char(',');
 					sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
 					sb->AppendUTF8Char(' ');
 					sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
+					i++;
 				}
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(zArr[i], DOUBLESIGFIG, Text::DoubleStyleC);
-				i++;
-			}
-		}
-	}
-	else
-	{
-		if (reverseAxis)
-		{
-			i = 0;
-			while (i < nPoint)
-			{
-				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
-				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
-				i++;
-			}
-		}
-		else
-		{
-			i = 0;
-			while (i < nPoint)
-			{
-				if (i > 0) sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[i].x, DOUBLESIGFIG, Text::DoubleStyleC);
- 				sb->AppendUTF8Char(' ');
-				sb->AppendDouble(pointList[i].y, DOUBLESIGFIG, Text::DoubleStyleC);
-				i++;
 			}
 		}
 	}

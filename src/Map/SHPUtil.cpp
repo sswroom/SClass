@@ -46,7 +46,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt j;
 				UOSInt k;
 				UInt32 *ptOfsts;
-				Math::Coord2DDbl *points;
+				UnsafeArray<Math::Coord2DDbl> points;
 				NN<Math::Geometry::LineString> lineString;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
@@ -106,7 +106,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			{
 				UOSInt tmpV;
 				const UInt8 *ptOfsts;
-				Math::Coord2DDbl *points;
+				UnsafeArray<Math::Coord2DDbl> points;
 				UOSInt i = 0;
 				UOSInt j = 0;
 				UOSInt k;
@@ -125,8 +125,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 					points = lr->GetPointList(tmpV);
 					while (tmpV-- > 0)
 					{
-						points->x = ReadDouble(&buff[0]);
-						points->y = ReadDouble(&buff[8]);
+						points[0].x = ReadDouble(&buff[0]);
+						points[0].y = ReadDouble(&buff[8]);
 						points++;
 						buff += 16;
 					}
@@ -183,8 +183,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt k;
 				UInt32 *ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
-				Math::Coord2DDbl *points;
-				Double *alts;
+				UnsafeArray<Math::Coord2DDbl> points;
+				UnsafeArray<Double> alts;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
@@ -222,9 +222,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (pl->GetItem(i).SetTo(lineString))
+					if (pl->GetItem(i).SetTo(lineString) && lineString->GetZList(k).SetTo(alts))
 					{
-						alts = lineString->GetZList(k);
 						j = 0;
 						while (j < k)
 						{
@@ -269,8 +268,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt k;
 				UInt32 *ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
-				Math::Coord2DDbl *points;
-				Double *dArr;
+				UnsafeArray<Math::Coord2DDbl> points;
+				UnsafeArray<Double> dArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
@@ -308,9 +307,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (pl->GetItem(i).SetTo(lineString))
+					if (pl->GetItem(i).SetTo(lineString) && lineString->GetZList(k).SetTo(dArr))
 					{
-						dArr = lineString->GetZList(k);
 						j = 0;
 						while (j < k)
 						{
@@ -324,9 +322,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (pl->GetItem(i).SetTo(lineString))
+					if (pl->GetItem(i).SetTo(lineString) && lineString->GetMList(k).SetTo(dArr))
 					{
-						dArr = lineString->GetMList(k);
 						j = 0;
 						while (j < k)
 						{
@@ -489,8 +486,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt k;
 				UInt32 *ptOfsts;
 				NN<Math::Geometry::LineString> lineString;
-				Math::Coord2DDbl *points;
-				Double *mArr;
+				UnsafeArray<Math::Coord2DDbl> points;
+				UnsafeArray<Double> mArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
@@ -528,9 +525,8 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				i = 0;
 				while (i < nPtOfst)
 				{
-					if (pl->GetItem(i).SetTo(lineString))
+					if (pl->GetItem(i).SetTo(lineString) && lineString->GetMList(k).SetTo(mArr))
 					{
-						mArr = lineString->GetMList(k);
 						j = 0;
 						while (j < k)
 						{

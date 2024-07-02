@@ -9,18 +9,18 @@ namespace Data
 		class QuickBubbleSort
 		{
 		public:
-			static void Sort(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
-			static void Sort(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
-			static void Sort(Double *arr, OSInt firstIndex, OSInt lastIndex);
-			static void Sort(Single *arr, OSInt firstIndex, OSInt lastIndex);
+			static void Sort(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
+			static void Sort(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
+			static void Sort(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex);
+			static void Sort(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex);
 			static void Sort(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
-			static void Sort(Int64 *arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortInv(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortInv(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortInv(Double *arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortInv(Single *arr, OSInt firstIndex, OSInt lastIndex);
+			static void Sort(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortInv(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortInv(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortInv(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortInv(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex);
 			static void SortInv(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortInv(Int64 *arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortInv(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }

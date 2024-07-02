@@ -124,7 +124,7 @@ Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NN<Math::Geomet
 	NN<Math::Geometry::LineString> tmpLS = NN<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
 	Double ret = 0;
 	UOSInt i;
-	Math::Coord2DDbl *ptList = tmpLS->GetPointList(i);
+	UnsafeArray<Math::Coord2DDbl> ptList = tmpLS->GetPointList(i);
 	while (i-- > 0)
 	{
 		ptList[i] = ToBaseXY(ptList[i]);

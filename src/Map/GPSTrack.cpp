@@ -337,8 +337,8 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 	UOSInt j;
 	Math::Coord2DDbl lastPos;
 	Double lastAlt;
-	Math::Coord2DDbl *ptPtr;
-	Double *altList;
+	UnsafeArray<Math::Coord2DDbl> ptPtr;
+	UnsafeArray<Double> altList;
 	if (id < 0)
 		return 0;
 	Sync::MutexUsage mutUsage(this->recMut);
@@ -360,23 +360,25 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 
 				NEW_CLASS(pl, Math::Geometry::LineString(4326, j = this->currRecs.GetCount(), true, false));
 				ptPtr = pl->GetPointList(j);
-				altList = pl->GetZList(j);
-				i = 0;
-				while (i < j)
+				if (pl->GetZList(j).SetTo(altList))
 				{
-					rec = this->currRecs.GetItemNoCheck(i);
-					if (rec->pos.IsZero())
+					i = 0;
+					while (i < j)
 					{
-						*ptPtr = lastPos;
-						altList[i] = lastAlt;
+						rec = this->currRecs.GetItemNoCheck(i);
+						if (rec->pos.IsZero())
+						{
+							*ptPtr = lastPos;
+							altList[i] = lastAlt;
+						}
+						else
+						{
+							lastPos = *ptPtr = rec->pos;
+							lastAlt = altList[i] = rec->altitude;
+						}
+						ptPtr += 1;
+						i++;
 					}
-					else
-					{
-						lastPos = *ptPtr = rec->pos;
-						lastAlt = altList[i] = rec->altitude;
-					}
-					ptPtr += 1;
-					i++;
 				}
 				mutUsage.EndUse();
 				return pl;
@@ -424,22 +426,24 @@ Optional<Math::Geometry::Vector2D> Map::GPSTrack::GetNewVectorById(NN<Map::GetOb
 
 			NEW_CLASS(pl, Math::Geometry::LineString(4326, track->nRecords, true, false));
 			ptPtr = pl->GetPointList(j);
-			altList = pl->GetZList(j);
-			i = 0;
-			while (i < j)
+			if (pl->GetZList(j).SetTo(altList))
 			{
-				if (track->records[i].pos.IsZero())
+				i = 0;
+				while (i < j)
 				{
-					*ptPtr = lastPos;
-					altList[i] = lastAlt;
+					if (track->records[i].pos.IsZero())
+					{
+						*ptPtr = lastPos;
+						altList[i] = lastAlt;
+					}
+					else
+					{
+						lastPos = *ptPtr = track->records[i].pos;
+						lastAlt = altList[i] = track->records[i].altitude;
+					}
+					ptPtr += 1;
+					i++;
 				}
-				else
-				{
-					lastPos = *ptPtr = track->records[i].pos;
-					lastAlt = altList[i] = track->records[i].altitude;
-				}
-				ptPtr += 1;
-				i++;
 			}
 			mutUsage.EndUse();
 			return pl;

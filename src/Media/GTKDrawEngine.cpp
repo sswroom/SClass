@@ -154,11 +154,10 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
 	{
 		NN<Media::GTKDrawImage> newImg;
 		Bool upsideDown;
-		UInt8 *dptr;
-		if (Optional<GTKDrawImage>::ConvertFrom(this->CreateImage32(size, atype)).SetTo(newImg))
+		UnsafeArray<UInt8> dptr;
+		if (Optional<GTKDrawImage>::ConvertFrom(this->CreateImage32(size, atype)).SetTo(newImg) && newImg->GetImgBits(upsideDown).SetTo(dptr))
 		{
-			dptr = newImg->GetImgBits(upsideDown);
-			((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
+			((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr.Ptr(), newImg->GetDataBpl(), size.x, size.y, upsideDown);
 			newImg->SetHDPI(img->GetHDPI());
 			newImg->SetVDPI(img->GetVDPI());
 			return newImg;
@@ -384,7 +383,7 @@ void Media::GTKDrawImage::SetVDPI(Double dpi)
 	this->info.vdpi = dpi;
 }
 
-UInt8 *Media::GTKDrawImage::GetImgBits(OutParam<Bool> revOrder)
+UnsafeArrayOpt<UInt8> Media::GTKDrawImage::GetImgBits(OutParam<Bool> revOrder)
 {
 	cairo_surface_flush((cairo_surface_t*)this->surface);
 	revOrder.Set(false);
@@ -424,35 +423,35 @@ Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, N
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GTKDrawImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p)
 {
 	printf("GTK: Draw PolylineI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	printf("GTK: Draw PolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	printf("GTK: Draw PolyPolygonI (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GTKDrawImage::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, NN<DrawPen> p)
 {
 	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);
 	if (nPoints >= 2)
 	{
 		pen->Init(this->cr);
-		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
+		cairo_move_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
 		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
+			cairo_line_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
 			points++;
 		}
 		cairo_stroke((cairo_t*)this->cr);
@@ -464,7 +463,7 @@ Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nP
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NN<GTKDrawPen> pen;
 	NN<DrawPen> nnp;
@@ -472,11 +471,11 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 	NN<GTKDrawBrush> brush;
 	if (nPoints >= 2)
 	{
-		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
+		cairo_move_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
 		points++;
 		while (nPoints-- > 1)
 		{
-			cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
+			cairo_line_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
 			points++;
 		}
 		cairo_close_path((cairo_t*)this->cr);
@@ -513,7 +512,7 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 	}
 }
 
-Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NN<GTKDrawPen> pen;
 	NN<DrawPen> nnp;
@@ -527,11 +526,11 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 			i = *pointCnt++;
 			if (i > 0)
 			{
-				cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
+				cairo_move_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
 				points++;
 				while (i-- > 1)
 				{
-					cairo_line_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
+					cairo_line_to((cairo_t*)this->cr, points[0].x + OSInt2Double(this->tl.x), points[0].y + OSInt2Double(this->tl.y));
 					points++;
 				}
 				cairo_close_path((cairo_t*)this->cr);
@@ -836,11 +835,12 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	}
 	if (this->surface == 0)
 	{
+		Bool revOrder;
+		UnsafeArray<UInt8> imgBits;
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
-		if (gimg->info.atype == Media::AT_NO_ALPHA)
+		if (gimg->info.atype == Media::AT_NO_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
 		{
-			Bool revOrder;
-			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
@@ -996,11 +996,12 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 	}
 	if (this->surface == 0)
 	{
+		UnsafeArray<UInt8> imgBits;
+		Bool revOrder;
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
-		if (gimg->info.atype == Media::AT_NO_ALPHA)
+		if (gimg->info.atype == Media::AT_NO_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
 		{
-			Bool revOrder;
-			ImageUtil_ImageFillAlpha32(gimg->GetImgBits(revOrder), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
@@ -1081,7 +1082,7 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 	}
 }
 
-NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	NN<Media::GTKDrawPen> p;
 	NEW_CLASSNN(p, Media::GTKDrawPen(color, thick));
@@ -1151,11 +1152,11 @@ void Media::GTKDrawImage::SetTextAlign(DrawEngine::DrawPos pos)
 {
 }
 
-void Media::GTKDrawImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GTKDrawImage::GetStringBound(UnsafeArray<Int32> pos, OSInt centX, OSInt centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 }
 
-void Media::GTKDrawImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GTKDrawImage::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 }
 
@@ -1248,11 +1249,11 @@ UOSInt Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 	{
 		cairo_surface_flush((cairo_surface_t*)this->surface);
 	}
-	if (this->GetBitCount() == 32)
+	Bool revOrder;
+	UnsafeArray<UInt8> imgPtr;
+	if (this->GetBitCount() == 32 && this->GetImgBits(revOrder).SetTo(imgPtr))
 	{
-		Bool revOrder;
-		UInt8 *imgPtr = this->GetImgBits(revOrder);
-		ImageUtil_ImageFillAlpha32(imgPtr, this->GetWidth(), this->GetHeight(), this->GetDataBpl(), 0xff);
+		ImageUtil_ImageFillAlpha32(imgPtr.Ptr(), this->GetWidth(), this->GetHeight(), this->GetDataBpl(), 0xff);
 		this->GetImgBitsEnd(true);
 	}
 	GdkPixbuf *pixbuf;

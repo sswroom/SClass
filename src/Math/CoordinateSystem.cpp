@@ -202,7 +202,7 @@ Math::Vector3 Math::CoordinateSystem::Convert3D(NN<const Math::CoordinateSystem>
 	}
 }
 
-void Math::CoordinateSystem::ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
+void Math::CoordinateSystem::ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints)
 {
 	UOSInt i;
 	Bool srcRad = false;
@@ -230,7 +230,7 @@ void Math::CoordinateSystem::ConvertArray(NN<const Math::CoordinateSystem> srcCo
 		}
 		else if (srcArr != destArr)
 		{
-			MemCopyAC(destArr, srcArr, nPoints * sizeof(Math::Coord2DDbl));
+			MemCopyAC(destArr.Ptr(), srcArr.Ptr(), nPoints * sizeof(Math::Coord2DDbl));
 		}
 		return;
 	}

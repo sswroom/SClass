@@ -96,14 +96,14 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	NN<LCIDInfo> lcid;
 	this->revGeos.DeleteAll();
 	this->conn.Delete();
-	Text::String **strArr = this->strMap.ToArray(&j);
+	UnsafeArray<Text::String*> strArr = this->strMap.ToArray(j);
 	i = 0;
 	while (i < j)
 	{
 		strArr[i]->Release();
 		i++;
 	}
-	MemFree(strArr);
+	MemFreeArr(strArr);
 	i = this->lcidMap.GetCount();
 	while (i-- > 0)
 	{

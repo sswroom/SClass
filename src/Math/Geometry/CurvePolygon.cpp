@@ -65,7 +65,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			const Math::Coord2DDbl *ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
+			UnsafeArray<const Math::Coord2DDbl> ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, 0, 0));
 			pg->AddGeometry(lr);
 		}

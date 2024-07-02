@@ -1049,13 +1049,14 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	UOSInt sHeight = srcImg->GetHeight();
 	UOSInt sbpl = srcImg->GetImgBpl();
 	Bool srev;
-	UInt8 *sptr = srcImg->GetImgBits(srev);
+	UnsafeArray<UInt8> sptr;
 	UOSInt dWidth = destImg->GetWidth();
 	UOSInt dHeight = destImg->GetHeight();
 	UOSInt dbpl = destImg->GetImgBpl();
 	Bool drev;
-	UInt8 *dptr = destImg->GetImgBits(drev);
-
+	UnsafeArray<UInt8> dptr;
+	if (!srcImg->GetImgBits(srev).SetTo(sptr) || !destImg->GetImgBits(drev).SetTo(dptr))
+		return;
 	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * (UOSInt)sbpl);
 
 	Double *gammaParam;

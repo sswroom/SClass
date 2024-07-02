@@ -152,7 +152,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	{
 		Math::RectAreaDbl minMax;
 		Double v;
-		Math::Coord2DDbl *points;
+		UnsafeArray<Math::Coord2DDbl> points;
 		Int32 currInd = 1;
 		Optional<Map::NameArray> nameArr;
 		UOSInt i;

@@ -291,7 +291,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 		Data::ArrayListDbl zPts;
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
 		{
@@ -388,8 +388,8 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
 		Math::Geometry::LineString *pl;
-		Math::Coord2DDbl *ptList;
-		Double *hList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
+		UnsafeArray<Double> hList;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
 		{
@@ -416,15 +416,21 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 				{
 					NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
 					ptList = pl->GetPointList(i);
-					hList = pl->GetZList(i);
-					while (i-- > 0)
+					if (pl->GetZList(i).SetTo(hList))
 					{
-						hList[i] = zPts.GetItem(i);
-						ptList[i].x = xPts.GetItem(i);
-						ptList[i].y = yPts.GetItem(i);
+						while (i-- > 0)
+						{
+							hList[i] = zPts.GetItem(i);
+							ptList[i].x = xPts.GetItem(i);
+							ptList[i].y = yPts.GetItem(i);
+						}
+						SDEL_CLASS(vec);
+						vec = pl;
 					}
-					SDEL_CLASS(vec);
-					vec = pl;
+					else
+					{
+						DEL_CLASS(pl);
+					}
 				}
 			}
 			else
@@ -475,7 +481,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 		Data::ArrayListDbl zPts;
 		Math::Geometry::Polygon *pg;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *ptList;
+		UnsafeArray<Math::Coord2DDbl> ptList;
 		Text::StringBuilderUTF8 sb;
 		NEW_CLASS(pg, Math::Geometry::Polygon(env->srid));
 		while (reader->NextElementName().SetTo(nodeName))
@@ -569,9 +575,9 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 						ptList[i].x = xPts.GetItem(i);
 						ptList[i].y = yPts.GetItem(i);
 					}
-					if (xPts.GetCount() == zPts.GetCount())
+					UnsafeArray<Double> altList;
+					if (xPts.GetCount() == zPts.GetCount() && lr->GetZList(i).SetTo(altList))
 					{
-						Double *altList = lr->GetZList(i);
 						while (i-- > 0)
 						{
 							altList[i] = zPts.GetItem(i);

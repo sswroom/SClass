@@ -9,12 +9,12 @@
 
 Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : Vector2D(srid)
 {
-	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
+	this->pointArr = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
-	MemClearAC(this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
+	MemClearAC(this->pointArr.Ptr(), sizeof(Math::Coord2DDbl) * nPoint);
 	if (hasZ)
 	{
-		this->zArr = MemAllocA(Double, nPoint);
+		this->zArr = MemAllocAArr(Double, nPoint);
 	}
 	else
 	{
@@ -22,7 +22,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 	if (hasM)
 	{
-		this->mArr = MemAllocA(Double, nPoint);
+		this->mArr = MemAllocAArr(Double, nPoint);
 	}
 	else
 	{
@@ -30,24 +30,26 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 }
 
-Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : Vector2D(srid)
+Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : Vector2D(srid)
 {
-	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
+	this->pointArr = MemAllocAArr(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
-	MemCopyAC(this->pointArr, pointArr.Ptr(), nPoint * sizeof(Math::Coord2DDbl));
-	if (zArr)
+	UnsafeArray<Double> arr;
+	UnsafeArray<Double> narr;
+	MemCopyAC(this->pointArr.Ptr(), pointArr.Ptr(), nPoint * sizeof(Math::Coord2DDbl));
+	if (zArr.SetTo(arr))
 	{
-		this->zArr = MemAllocA(Double, nPoint);
-		MemCopyNO(this->zArr, zArr, sizeof(Double) * nPoint);
+		this->zArr = narr = MemAllocAArr(Double, nPoint);
+		MemCopyNO(narr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
 	}
 	else
 	{
 		this->zArr = 0;
 	}
-	if (mArr)
+	if (mArr.SetTo(arr))
 	{
-		this->mArr = MemAllocA(Double, nPoint);
-		MemCopyNO(this->mArr, mArr, sizeof(Double) * nPoint);
+		this->mArr = narr = MemAllocA(Double, nPoint);
+		MemCopyNO(narr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
 	}
 	else
 	{
@@ -57,11 +59,12 @@ Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coor
 
 Math::Geometry::LineString::~LineString()
 {
-	MemFreeA(this->pointArr);
-	if (this->zArr)
-		MemFreeA(this->zArr);
-	if (this->mArr)
-		MemFreeA(this->mArr);
+	UnsafeArray<Double> arr;
+	MemFreeAArr(this->pointArr);
+	if (this->zArr.SetTo(arr))
+		MemFreeAArr(arr);
+	if (this->mArr.SetTo(arr))
+		MemFreeAArr(arr);
 }
 
 Math::Geometry::Vector2D::VectorType Math::Geometry::LineString::GetVectorType() const
@@ -71,7 +74,7 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::LineString::GetVectorType()
 
 Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
 {
-	const Math::Coord2DDbl *points;
+	UnsafeArray<const Math::Coord2DDbl> points;
 	UOSInt nPoints;
 
 	Double maxX;
@@ -118,15 +121,17 @@ Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
 NN<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 {
 	NN<Math::Geometry::LineString> pl;
-	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
-	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
-	if (this->zArr)
+	UnsafeArray<Double> arr;
+	UnsafeArray<Double> plArr;
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, this->nPoint, this->zArr.NotNull(), this->mArr.NotNull()));
+	MemCopyAC(pl->pointArr.Ptr(), this->pointArr.Ptr(), sizeof(Math::Coord2DDbl) * nPoint);
+	if (this->zArr.SetTo(arr) && pl->zArr.SetTo(plArr))
 	{	
-		MemCopyAC(pl->zArr, this->zArr, sizeof(Double) * nPoint);
+		MemCopyAC(plArr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
 	}
-	if (this->mArr)
+	if (this->mArr.SetTo(arr) && pl->mArr.SetTo(plArr))
 	{	
-		MemCopyAC(pl->mArr, this->mArr, sizeof(Double) * nPoint);
+		MemCopyAC(plArr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
 	}
 	return pl;
 }
@@ -149,7 +154,7 @@ Math::RectAreaDbl Math::Geometry::LineString::GetBounds() const
 Double Math::Geometry::LineString::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	UOSInt l;
-	Math::Coord2DDbl *points;
+	UnsafeArray<Math::Coord2DDbl> points;
 
 	points = this->pointArr;
 
@@ -261,22 +266,22 @@ Bool Math::Geometry::LineString::JoinVector(NN<const Math::Geometry::Vector2D> v
 	UOSInt nPoint;
 	UOSInt i;
 	UOSInt j;
-	const Math::Coord2DDbl *points = ls->GetPointListRead(nPoint);
-	Math::Coord2DDbl *newPoints;
+	UnsafeArray<const Math::Coord2DDbl> points = ls->GetPointListRead(nPoint);
+	UnsafeArray<Math::Coord2DDbl> newPoints;
 	if (points[0] == this->pointArr[this->nPoint - 1])
 	{
-		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
-		MemCopyAC(newPoints, this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		newPoints = MemAllocAArr(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(newPoints.Ptr(), this->pointArr.Ptr(), this->nPoint * sizeof(Math::Coord2DDbl));
 		MemCopyAC(&newPoints[this->nPoint], &points[1], (nPoint - 1) * sizeof(Math::Coord2DDbl));
-		MemFreeA(this->pointArr);
+		MemFreeAArr(this->pointArr);
 		this->pointArr = newPoints;
 		this->nPoint += nPoint - 1;
 		return true;
 	}
 	else if (points[nPoint - 1] == this->pointArr[this->nPoint - 1])
 	{
-		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
-		MemCopyAC(newPoints, this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		newPoints = MemAllocAArr(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(newPoints.Ptr(), this->pointArr.Ptr(), this->nPoint * sizeof(Math::Coord2DDbl));
 		i = nPoint - 1;
 		j = this->nPoint;
 		while (i-- > 0)
@@ -284,25 +289,25 @@ Bool Math::Geometry::LineString::JoinVector(NN<const Math::Geometry::Vector2D> v
 			newPoints[j] = points[i];
 			j++;
 		}
-		MemFreeA(this->pointArr);
+		MemFreeAArr(this->pointArr);
 		this->pointArr = newPoints;
 		this->nPoint += nPoint - 1;
 		return true;
 	}
 	else if (points[nPoint - 1] == this->pointArr[0])
 	{
-		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
-		MemCopyAC(newPoints, points, (nPoint - 1) * sizeof(Math::Coord2DDbl));
-		MemCopyAC(&newPoints[nPoint - 1], this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
-		MemFreeA(this->pointArr);
+		newPoints = MemAllocAArr(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(newPoints.Ptr(), points.Ptr(), (nPoint - 1) * sizeof(Math::Coord2DDbl));
+		MemCopyAC(&newPoints[nPoint - 1], this->pointArr.Ptr(), this->nPoint * sizeof(Math::Coord2DDbl));
+		MemFreeAArr(this->pointArr);
 		this->pointArr = newPoints;
 		this->nPoint += nPoint - 1;
 		return true;
 	}
 	else if (points[0] == this->pointArr[0])
 	{
-		newPoints = MemAllocA(Math::Coord2DDbl, this->nPoint + nPoint - 1);
-		MemCopyAC(&newPoints[nPoint - 1], this->pointArr, this->nPoint * sizeof(Math::Coord2DDbl));
+		newPoints = MemAllocAArr(Math::Coord2DDbl, this->nPoint + nPoint - 1);
+		MemCopyAC(&newPoints[nPoint - 1], this->pointArr.Ptr(), this->nPoint * sizeof(Math::Coord2DDbl));
 		i = nPoint - 1;
 		j = 1;
 		while (i-- > 0)
@@ -310,7 +315,7 @@ Bool Math::Geometry::LineString::JoinVector(NN<const Math::Geometry::Vector2D> v
 			newPoints[i] = points[j];
 			j++;
 		}
-		MemFreeA(this->pointArr);
+		MemFreeAArr(this->pointArr);
 		this->pointArr = newPoints;
 		this->nPoint += nPoint - 1;
 		return true;
@@ -320,27 +325,28 @@ Bool Math::Geometry::LineString::JoinVector(NN<const Math::Geometry::Vector2D> v
 
 Bool Math::Geometry::LineString::HasZ() const
 {
-	return this->zArr != 0;
+	return this->zArr.NotNull();
 }
 
 Bool Math::Geometry::LineString::HasM() const
 {
-	return this->mArr != 0;
+	return this->mArr.NotNull();
 }
 
 Bool Math::Geometry::LineString::GetZBounds(OutParam<Double> min, OutParam<Double> max) const
 {
-	if (this->zArr == 0)
+	UnsafeArray<Double> zArr;
+	if (!this->zArr.SetTo(zArr))
 		return false;
-	Double minVal = this->zArr[0];
+	Double minVal = zArr[0];
 	Double maxVal = minVal;
 	UOSInt i = this->nPoint;
 	while (i-- > 1)
 	{
-		if (this->zArr[i] < minVal)
-			minVal = this->zArr[i];
-		if (this->zArr[i] > maxVal)
-			maxVal = this->zArr[i];
+		if (zArr[i] < minVal)
+			minVal = zArr[i];
+		if (zArr[i] > maxVal)
+			maxVal = zArr[i];
 	}
 	min.Set(minVal);
 	max.Set(maxVal);
@@ -349,17 +355,18 @@ Bool Math::Geometry::LineString::GetZBounds(OutParam<Double> min, OutParam<Doubl
 
 Bool Math::Geometry::LineString::GetMBounds(OutParam<Double> min, OutParam<Double> max) const
 {
-	if (this->mArr == 0)
+	UnsafeArray<Double> mArr;
+	if (!this->mArr.SetTo(mArr))
 		return false;
-	Double minVal = this->mArr[0];
+	Double minVal = mArr[0];
 	Double maxVal = minVal;
 	UOSInt i = this->nPoint;
 	while (i-- > 1)
 	{
-		if (this->mArr[i] < minVal)
-			minVal = this->mArr[i];
-		if (this->mArr[i] > maxVal)
-			maxVal = this->mArr[i];
+		if (mArr[i] < minVal)
+			minVal = mArr[i];
+		if (mArr[i] > maxVal)
+			maxVal = mArr[i];
 	}
 	min.Set(minVal);
 	max.Set(maxVal);
@@ -368,15 +375,16 @@ Bool Math::Geometry::LineString::GetMBounds(OutParam<Double> min, OutParam<Doubl
 
 void Math::Geometry::LineString::Convert(NN<Math::CoordinateConverter> converter)
 {
-	if (this->zArr)
+	UnsafeArray<Double> zArr;
+	if (this->zArr.SetTo(zArr))
 	{
 		Math::Vector3 tmpPos;
 		UOSInt i = this->nPoint;
 		while (i-- > 0)
 		{
-			tmpPos = converter->Convert3D(Math::Vector3(this->pointArr[i], this->zArr[i]));
+			tmpPos = converter->Convert3D(Math::Vector3(this->pointArr[i], zArr[i]));
 			this->pointArr[i] = tmpPos.GetXY();
-			this->zArr[i] = tmpPos.GetZ();
+			zArr[i] = tmpPos.GetZ();
 		}
 		this->srid = converter->GetOutputSRID();
 	}
@@ -395,10 +403,11 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 	}
 	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
 	{
-		Math::Geometry::LineString *pl = (Math::Geometry::LineString*)vec.Ptr();
+		NN<Math::Geometry::LineString> pl = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 		UOSInt nPoint;
-		Math::Coord2DDbl *ptList = pl->GetPointList(nPoint);
-		Double *valArr;
+		UnsafeArray<Math::Coord2DDbl> ptList = pl->GetPointList(nPoint);
+		UnsafeArray<Double> thisArr;
+		UnsafeArray<Double> valArr;
 		if (nPoint != this->nPoint)
 		{
 			return false;
@@ -414,25 +423,23 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 					return false;
 				}
 			}
-			if (this->zArr)
+			if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(valArr))
 			{
-				valArr = pl->zArr;
 				i = nPoint;
 				while (i-- > 0)
 				{
-					if (!Math::NearlyEqualsDbl(valArr[i], this->zArr[i]))
+					if (!Math::NearlyEqualsDbl(valArr[i], thisArr[i]))
 					{
 						return false;
 					}
 				}
 			}
-			if (this->mArr)
+			if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(valArr))
 			{
-				valArr = pl->mArr;
 				i = nPoint;
 				while (i-- > 0)
 				{
-					if (!Math::NearlyEqualsDbl(valArr[i], this->mArr[i]))
+					if (!Math::NearlyEqualsDbl(valArr[i], thisArr[i]))
 					{
 						return false;
 					}
@@ -449,25 +456,23 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 					return false;
 				}
 			}
-			if (this->zArr)
+			if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(valArr))
 			{
-				valArr = pl->zArr;
 				i = nPoint;
 				while (i-- > 0)
 				{
-					if (valArr[i] != this->zArr[i])
+					if (valArr[i] != thisArr[i])
 					{
 						return false;
 					}
 				}
 			}
-			if (this->mArr)
+			if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(valArr))
 			{
-				valArr = pl->mArr;
 				i = nPoint;
 				while (i-- > 0)
 				{
-					if (valArr[i] != this->mArr[i])
+					if (valArr[i] != thisArr[i])
 					{
 						return false;
 					}
@@ -584,19 +589,19 @@ Double Math::Geometry::LineString::CalcLength() const
 	return leng;
 }
 
-Double *Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
+UnsafeArrayOpt<Double> Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
 {
 	nPoint.Set(this->nPoint);
 	return this->zArr;
 }
 
-Double *Math::Geometry::LineString::GetMList(OutParam<UOSInt> nPoint) const
+UnsafeArrayOpt<Double> Math::Geometry::LineString::GetMList(OutParam<UOSInt> nPoint) const
 {
 	nPoint.Set(this->nPoint);
 	return this->mArr;
 }
 
-Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord2DDbl pt)
+Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Math::Coord2DDbl pt)
 {
 	UOSInt l;
 	l = this->nPoint;
@@ -605,14 +610,16 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 	Double calZ;
 	Double calM;
 	Bool isPoint;
-	UOSInt minId = (UOSInt)this->GetPointNo(pt, &isPoint, &calPt, &calZ, &calM);
+	UOSInt minId = (UOSInt)this->GetPointNo(pt, isPoint, calPt, calZ, calM);
 
-	Math::Coord2DDbl *oldPoints;
-	Math::Coord2DDbl *newPoints;
-	Double *oldZ;
-	Double *newZ;
-	Double *oldM;
-	Double *newM;
+	UnsafeArray<Math::Coord2DDbl> oldPoints;
+	UnsafeArray<Math::Coord2DDbl> newPoints;
+	UnsafeArrayOpt<Double> oldZ;
+	UnsafeArrayOpt<Double> newZ;
+	UnsafeArrayOpt<Double> oldM;
+	UnsafeArrayOpt<Double> newM;
+	UnsafeArray<Double> oldArr;
+	UnsafeArray<Double> newArr;
 	Math::Geometry::LineString *newPL;
 	if (isPoint)
 	{
@@ -625,20 +632,20 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		oldZ = this->zArr;
 		oldM = this->mArr;
 
-		newPoints = MemAllocA(Math::Coord2DDbl, (minId + 1));
-		if (oldZ)
+		newPoints = MemAllocAArr(Math::Coord2DDbl, (minId + 1));
+		if (oldZ.SetTo(oldArr))
 		{
-			newZ = MemAllocA(Double, (minId + 1));
-			MemCopyAC(newZ, oldZ, sizeof(Double) * (minId + 1));
+			newZ = newArr = MemAllocAArr(Double, (minId + 1));
+			MemCopyAC(newArr.Ptr(), oldArr.Ptr(), sizeof(Double) * (minId + 1));
 		}
 		else
 		{
 			newZ = 0;
 		}
-		if (oldM)
+		if (oldM.SetTo(oldArr))
 		{
-			newM = MemAllocA(Double, (minId + 1));
-			MemCopyAC(newM, oldM, sizeof(Double) * (minId + 1));
+			newM = newArr = MemAllocAArr(Double, (minId + 1));
+			MemCopyAC(newArr.Ptr(), oldArr.Ptr(), sizeof(Double) * (minId + 1));
 		}
 		else
 		{
@@ -653,35 +660,33 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		this->pointArr = newPoints;
 		this->zArr = newZ;
 		this->mArr = newM;
-		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, this->zArr != 0, this->mArr != 0));
+		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, this->zArr.NotNull(), this->mArr.NotNull()));
 		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
 		while (l-- > minId)
 		{
 			newPoints[l - minId] = oldPoints[l];
 		}
-		if (oldZ)
+		if (oldZ.SetTo(oldArr) && newPL->GetZList(l).SetTo(newArr))
 		{
 			l = this->nPoint;
-			newZ = newPL->GetZList(l);
 			while (l-- > minId)
 			{
-				newZ[l - minId] = oldZ[l];
+				newArr[l - minId] = oldArr[l];
 			}
-			MemFreeA(oldZ);
+			MemFreeAArr(oldArr);
 		}
-		if (oldM)
+		if (oldM.SetTo(oldArr) && newPL->GetMList(l).SetTo(newArr))
 		{
 			l = this->nPoint;
-			newM = newPL->GetMList(l);
 			while (l-- > minId)
 			{
-				newM[l - minId] = oldM[l];
+				newArr[l - minId] = oldArr[l];
 			}
-			MemFreeA(oldM);
+			MemFreeAArr(oldArr);
 		}
 		this->nPoint = minId + 1;
-		MemFreeA(oldPoints);
+		MemFreeAArr(oldPoints);
 
 		return newPL;
 	}
@@ -691,22 +696,22 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		oldZ = this->zArr;
 		oldM = this->mArr;
 
-		newPoints = MemAllocA(Math::Coord2DDbl, (minId + 2));
-		if (oldZ)
+		newPoints = MemAllocAArr(Math::Coord2DDbl, (minId + 2));
+		if (oldZ.SetTo(oldArr))
 		{
-			newZ = MemAllocA(Double, (minId + 2));
-			MemCopyAC(newZ, oldZ, sizeof(Double) * (minId + 1));
-			newZ[minId + 1] = calZ;
+			newZ = newArr = MemAllocAArr(Double, (minId + 2));
+			MemCopyAC(newArr.Ptr(), oldArr.Ptr(), sizeof(Double) * (minId + 1));
+			newArr[minId + 1] = calZ;
 		}
 		else
 		{
 			newZ = 0;
 		}
-		if (oldM)
+		if (oldM.SetTo(oldArr))
 		{
-			newM = MemAllocA(Double, (minId + 2));
-			MemCopyAC(newM, oldM, sizeof(Double) * (minId + 1));
-			newM[minId + 1] = calM;
+			newM = newArr = MemAllocAArr(Double, (minId + 2));
+			MemCopyAC(newArr.Ptr(), oldArr.Ptr(), sizeof(Double) * (minId + 1));
+			newArr[minId + 1] = calM;
 		}
 		else
 		{
@@ -722,7 +727,7 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 		this->pointArr = newPoints;
 		this->zArr = newZ;
 		this->mArr = newM;
-		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, oldZ != 0, oldM != 0));
+		NEW_CLASS(newPL, Math::Geometry::LineString(this->srid, this->nPoint - minId, oldZ.NotNull(), oldM.NotNull()));
 
 		newPoints = newPL->GetPointList(l);
 		l = this->nPoint;
@@ -731,30 +736,28 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 			newPoints[l - minId] = oldPoints[l];
 		}
 		newPoints[0] = calPt;
-		MemFreeA(oldPoints);
+		MemFreeAArr(oldPoints);
 
-		if (oldZ)
+		if (oldZ.SetTo(oldArr) && newPL->GetZList(l).SetTo(newArr))
 		{
-			newZ = newPL->GetZList(l);
 			l = this->nPoint;
 			while (--l > minId)
 			{
-				newZ[l - minId] = oldZ[l];
+				newArr[l - minId] = oldArr[l];
 			}
-			newZ[0] = calZ;
-			MemFreeA(oldZ);
+			newArr[0] = calZ;
+			MemFreeAArr(oldArr);
 		}
 
-		if (oldM)
+		if (oldM.SetTo(oldArr) && newPL->GetMList(l).SetTo(newArr))
 		{
-			newM = newPL->GetMList(l);
 			l = this->nPoint;
 			while (--l > minId)
 			{
-				newM[l - minId] = oldM[l];
+				newArr[l - minId] = oldArr[l];
 			}
-			newM[0] = calM;
-			MemFreeA(oldM);
+			newArr[0] = calM;
+			MemFreeAArr(oldArr);
 		}
 
 		this->nPoint = minId + 2;
@@ -763,12 +766,13 @@ Math::Geometry::LineString *Math::Geometry::LineString::SplitByPoint(Math::Coord
 	}
 }
 
-OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPtOutPtr, Double *calZOutPtr, Double *calMOutPtr)
+OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPtOutPtr, OptOut<Double> calZOutPtr, OptOut<Double> calMOutPtr)
 {
 	UOSInt l;
-	Math::Coord2DDbl *points;
-	Double *zArr;
-	Double *mArr;
+	UnsafeArray<Math::Coord2DDbl> points;
+	UnsafeArrayOpt<Double> zArr;
+	UnsafeArrayOpt<Double> mArr;
+	UnsafeArray<Double> arr;
 
 	points = this->pointArr;
 	zArr = this->zArr;
@@ -799,17 +803,17 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint,
 		{
 			calPt.x = pt.x;
 			calPt.y = pt.y;
-			if (zArr)
+			if (zArr.SetTo(arr))
 			{
-				calZ = zArr[l];
+				calZ = arr[l];
 			}
 			else
 			{
 				calZ = 0;
 			}
-			if (mArr)
+			if (mArr.SetTo(arr))
 			{
-				calM = mArr[l];
+				calM = arr[l];
 			}
 			else
 			{
@@ -847,17 +851,17 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint,
 			{
 				Double ratio = (calPt.x - (points[l].x)) / calDiff.x;
 				calPt.y = (ratio * calDiff.y) + points[l].y;
-				if (zArr)
+				if (zArr.SetTo(arr))
 				{
-					calZ = (ratio * (zArr[l] - zArr[l + 1])) + zArr[l];
+					calZ = (ratio * (arr[l] - arr[l + 1])) + arr[l];
 				}
 				else
 				{
 					calZ = 0;
 				}
-				if (mArr)
+				if (mArr.SetTo(arr))
 				{
-					calM = (ratio * (mArr[l] - mArr[l + 1])) + mArr[l];
+					calM = (ratio * (arr[l] - arr[l + 1])) + arr[l];
 				}
 				else
 				{
@@ -919,29 +923,17 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint,
 		{
 			dist = calD;
 			calPtOut = points[l];
-			calZOut = zArr?zArr[l]:0;
-			calMOut = mArr?mArr[l]:0;
+			calZOut = zArr.SetTo(arr)?arr[l]:0;
+			calMOut = mArr.SetTo(arr)?arr[l]:0;
 			minId = (OSInt)l;
 			isPointI = true;
 		}
 	}
 
-	if (isPoint)
-	{
-		*isPoint = isPointI;
-	}
-	if (calPtOutPtr)
-	{
-		*calPtOutPtr = calPtOut;
-	}
-	if (calZOutPtr)
-	{
-		*calZOutPtr = calZOut;
-	}
-	if (calMOutPtr)
-	{
-		*calMOutPtr = calMOut;
-	}
+	isPoint.Set(isPointI);
+	calPtOutPtr.Set(calPtOut);
+	calZOutPtr.Set(calZOut);
+	calMOutPtr.Set(calMOut);
 	return minId;
 }
 
@@ -1069,7 +1061,7 @@ Optional<Math::Geometry::Polygon> Math::Geometry::LineString::CreatePolygonByDis
 	Math::Geometry::Polygon *pg;
 	NN<Math::Geometry::LinearRing> lr;
 	UOSInt nPoints;
-	Math::Coord2DDbl *pts;
+	UnsafeArray<Math::Coord2DDbl> pts;
 	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
 	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, outPoints.GetCount() >> 1, false, false));
 	pts = lr->GetPointList(nPoints);

@@ -13,13 +13,13 @@ namespace Math
 		class LineString : public Vector2D
 		{
 		protected:
-			Math::Coord2DDbl *pointArr;
+			UnsafeArray<Math::Coord2DDbl> pointArr;
 			UOSInt nPoint;
-			Double *zArr;
-			Double *mArr;
+			UnsafeArrayOpt<Double> zArr;
+			UnsafeArrayOpt<Double> mArr;
 		public:
 			LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM);
-			LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, Double *zArr, Double *mArr);
+			LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr);
 			virtual ~LineString();
 
 			virtual VectorType GetVectorType() const;
@@ -41,15 +41,15 @@ namespace Math
 			virtual void MultiplyCoordinatesXY(Double v);
 			virtual UOSInt GetPointCount() const;
 
-			Math::Coord2DDbl *GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
-			const Math::Coord2DDbl *GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
+			UnsafeArray<Math::Coord2DDbl> GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
+			UnsafeArray<const Math::Coord2DDbl> GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
 			Math::Coord2DDbl GetPoint(UOSInt index) const;
 			Double CalcLength() const;
 
-			Double *GetZList(OutParam<UOSInt> nPoint) const;
-			Double *GetMList(OutParam<UOSInt> nPoint) const;
-			Math::Geometry::LineString *SplitByPoint(Math::Coord2DDbl pt);
-			OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt, Double *calZ, Double *calM);
+			UnsafeArrayOpt<Double> GetZList(OutParam<UOSInt> nPoint) const;
+			UnsafeArrayOpt<Double> GetMList(OutParam<UOSInt> nPoint) const;
+			Optional<Math::Geometry::LineString> SplitByPoint(Math::Coord2DDbl pt);
+			OSInt GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPt, OptOut<Double> calZ, OptOut<Double> calM);
 
 			Optional<Math::Geometry::Polygon> CreatePolygonByDist(Double dist) const;
 			NN<Math::Geometry::Polyline> CreatePolyline() const;

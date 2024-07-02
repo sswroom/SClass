@@ -391,9 +391,9 @@ void Math::Geometry::Polygon::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, 
 	UOSInt j;
 	UOSInt k;
 	UOSInt tmp;
-	Math::Coord2DDbl *ptArr;
-	Double *zArr;
-	Double *mArr;
+	UnsafeArray<Math::Coord2DDbl> ptArr;
+	UnsafeArray<Double> zArr;
+	UnsafeArray<Double> mArr;
 	while (i < nPtOfst)
 	{
 		j = ptOfstList[i];
@@ -403,16 +403,14 @@ void Math::Geometry::Polygon::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, 
 			k = ptOfstList[i + 1];
 		NEW_CLASSNN(linearRing, LinearRing(this->srid, k - j, zList != 0, mList != 0));
 		ptArr = linearRing->GetPointList(tmp);
-		zArr = linearRing->GetZList(tmp);
-		mArr = linearRing->GetMList(tmp);
-		MemCopyNO(ptArr, &pointList[j], (k - j) * sizeof(Math::Coord2DDbl));
-		if (zList)
+		MemCopyNO(ptArr.Ptr(), &pointList[j], (k - j) * sizeof(Math::Coord2DDbl));
+		if (linearRing->GetZList(tmp).SetTo(zArr))
 		{
-			MemCopyNO(zArr, &zList[j], (k - j) * sizeof(Double));
+			MemCopyNO(zArr.Ptr(), &zList[j], (k - j) * sizeof(Double));
 		}
-		if (mList)
+		if (linearRing->GetMList(tmp).SetTo(mArr))
 		{
-			MemCopyNO(mArr, &mList[j], (k - j) * sizeof(Double));
+			MemCopyNO(mArr.Ptr(), &mList[j], (k - j) * sizeof(Double));
 		}
 		this->AddGeometry(linearRing);
 		i++;
@@ -424,8 +422,8 @@ UOSInt Math::Geometry::Polygon::FillPointOfstList(Math::Coord2DDbl *pointList, U
 	UOSInt totalCnt = 0;
 	UOSInt nPoint;
 	NN<LineString> lineString;
-	Math::Coord2DDbl *thisPtList;
-	Double *dList;
+	UnsafeArray<Math::Coord2DDbl> thisPtList;
+	UnsafeArray<Double> dList;
 	UOSInt k;
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	UOSInt i = 0;
@@ -434,21 +432,19 @@ UOSInt Math::Geometry::Polygon::FillPointOfstList(Math::Coord2DDbl *pointList, U
 		ptOfstList[i] = (UInt32)totalCnt;
 		lineString = it.Next();
 		thisPtList = lineString->GetPointList(nPoint);
-		MemCopyNO(&pointList[totalCnt], thisPtList, sizeof(Math::Coord2DDbl) * nPoint);
+		MemCopyNO(&pointList[totalCnt], thisPtList.Ptr(), sizeof(Math::Coord2DDbl) * nPoint);
 		if (zList)
 		{
-			dList = lineString->GetZList(k);
-			if (dList)
+			if (lineString->GetZList(k).SetTo(dList))
 			{
-				MemCopyNO(&zList[totalCnt], dList, sizeof(Double) * k);
+				MemCopyNO(&zList[totalCnt], dList.Ptr(), sizeof(Double) * k);
 			}
 		}
 		if (mList)
 		{
-			dList = lineString->GetMList(k);
-			if (dList)
+			if (lineString->GetMList(k).SetTo(dList))
 			{
-				MemCopyNO(&mList[totalCnt], dList, sizeof(Double) * k);
+				MemCopyNO(&mList[totalCnt], dList.Ptr(), sizeof(Double) * k);
 			}
 		}
 		totalCnt += nPoint;

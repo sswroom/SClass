@@ -171,7 +171,7 @@ void Map::MapScheduler::DrawLineString(NN<Math::Geometry::LineString> pl)
 		return;
 	}
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr = pl->GetPointList(nPoint);
+	UnsafeArray<Math::Coord2DDbl> pointArr = pl->GetPointList(nPoint);
 	if (this->isFirst)
 	{
 		if (this->map->MapXYToScnXY(pointArr, pointArr, nPoint, Math::Coord2DDbl(0, 0)))
@@ -190,7 +190,7 @@ void Map::MapScheduler::DrawPolyline(NN<Math::Geometry::Polyline> pl)
 	}
 	NN<Math::Geometry::LineString> lineString;
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr;
+	UnsafeArray<Math::Coord2DDbl> pointArr;
 	Data::ArrayIterator<NN<Math::Geometry::LineString>> it;
 	if (this->isFirst)
 	{
@@ -231,7 +231,7 @@ void Map::MapScheduler::DrawPolyline(NN<Math::Geometry::Polyline> pl)
 void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 {
 	UOSInt nPoint;
-	Math::Coord2DDbl *pointArr;
+	UnsafeArray<Math::Coord2DDbl> pointArr;
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it;
 	if (this->isFirst)
 	{
@@ -307,7 +307,7 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			const Math::Coord2DDbl *ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
+			UnsafeArray<const Math::Coord2DDbl> ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			ptList.AddRange(ptArr, nPoint);
 		}
 		else
@@ -317,7 +317,7 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 	}
 	if (ptList.GetCount() > 0)
 	{
-		Math::Coord2DDbl *pointArr = ptList.GetArr(nPoint).Ptr();
+		UnsafeArray<Math::Coord2DDbl> pointArr = ptList.GetArr(nPoint);
 		UOSInt nPtOfst;
 		UInt32 *ptOfstArr = ptOfst.GetArr(nPtOfst).Ptr();
 		if (this->isFirst)

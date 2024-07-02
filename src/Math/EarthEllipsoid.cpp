@@ -117,8 +117,8 @@ Double Math::EarthEllipsoid::CalLineStringDistance(NN<Math::Geometry::LineString
 {
 	UOSInt nPoint;
 	UOSInt nAlts;
-	Math::Coord2DDbl *points;
-	Double *alts;
+	UnsafeArray<Math::Coord2DDbl> points;
+	UnsafeArray<Double> alts;
 	points = lineString->GetPointList(nPoint);
 	UOSInt j = nPoint;
 	Double totalDist = 0;
@@ -127,7 +127,7 @@ Double Math::EarthEllipsoid::CalLineStringDistance(NN<Math::Geometry::LineString
 	Double lastH;
 	if (j == 0)
 		return 0;
-	if (include3D && (alts = lineString->GetZList(nAlts)) != 0)
+	if (include3D && lineString->GetZList(nAlts).SetTo(alts))
 	{
 		if (lineString->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
 		{

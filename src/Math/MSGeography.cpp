@@ -110,7 +110,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				UOSInt j;
 				UOSInt k;
 				UOSInt l;
-				Math::Coord2DDbl *points;
+				UnsafeArray<Math::Coord2DDbl> points;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
@@ -176,7 +176,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					else
 						k = ReadUInt32(&figurePtr[i * 5 + 1]);
 					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), false ,false));
-					Math::Coord2DDbl *points = lr->GetPointList(l);
+					UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(l);
 					l = 0;
 					while (j < k)
 					{
@@ -197,7 +197,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				UOSInt j;
 				UOSInt k;
 				UOSInt l;
-				Math::Coord2DDbl *points;
+				UnsafeArray<Math::Coord2DDbl> points;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
@@ -267,7 +267,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					}
 					NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), false, false));
-					Math::Coord2DDbl *points = lr->GetPointList(l);
+					UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(l);
 					l = 0;
 					while (j < k)
 					{
@@ -343,8 +343,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, false));
-				Math::Coord2DDbl *points = pl->GetPointList(j);
-				Double *zList = pl->GetZList(j);
+				UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
+				UnsafeArray<Double> zList;
 				i = 0;
 				while (i < j)
 				{
@@ -352,11 +352,14 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					i++;
 				}
 				pointPtr += j * 16;
-				i = 0;
-				while (i < j)
+				if (pl->GetZList(j).SetTo(zList))
 				{
-					zList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
+					i = 0;
+					while (i < j)
+					{
+						zList[i] = ReadDouble(&pointPtr[i * 8]);
+						i++;
+					}
 				}
 				if (nFigures > 1)
 				{
@@ -391,15 +394,18 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					else
 						k = ReadUInt32(&figurePtr[i * 5 + 1]);
 					NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (k - j), true, false));
-					Math::Coord2DDbl *points = lr->GetPointList(l);
-					Double *zList = lr->GetZList(l);
-					l = 0;
-					while (j < k)
+					UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(l);
+					UnsafeArray<Double> zList;
+					if (lr->GetZList(l).SetTo(zList))
 					{
-						points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
-						zList[l] = ReadDouble(&zPtr[j * 8]);
-						j++;
-						l++;
+						l = 0;
+						while (j < k)
+						{
+							points[l] = Math::Coord2DDbl(ReadDouble(&pointPtr[j * 16]), ReadDouble(&pointPtr[j * 16 + 8]));
+							zList[l] = ReadDouble(&zPtr[j * 8]);
+							j++;
+							l++;
+						}
 					}
 					pg->AddGeometry(lr);
 				}
@@ -414,20 +420,22 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				UOSInt j;
 				UOSInt k;
 				UOSInt l;
-				Math::Coord2DDbl *points;
-				Double *zArr;
+				UnsafeArray<Math::Coord2DDbl> points;
+				UnsafeArray<Double> zArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
 					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, true, false));
 					points = lineString->GetPointList(j);
-					zArr = lineString->GetZList(j);
-					i = 0;
-					while (i < j)
+					if (lineString->GetZList(j).SetTo(zArr))
 					{
-						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-						zArr[i] = ReadDouble(&zPtr[i * 8]);
-						i++;
+						i = 0;
+						while (i < j)
+						{
+							points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+							zArr[i] = ReadDouble(&zPtr[i * 8]);
+							i++;
+						}
 					}
 					pl->AddGeometry(lineString);
 				}
@@ -447,14 +455,16 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 						}
 						NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k - l, true, false));
 						points = lineString->GetPointList(j);
-						zArr = lineString->GetZList(j);
-						j = 0;
-						while (l < k)
+						if (lineString->GetZList(j).SetTo(zArr))
 						{
-							points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
-							zArr[j] = ReadDouble(&zPtr[l * 8]);
-							l++;
-							j++;
+							j = 0;
+							while (l < k)
+							{
+								points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
+								zArr[j] = ReadDouble(&zPtr[l * 8]);
+								l++;
+								j++;
+							}
 						}
 						pl->AddGeometry(lineString);
 						i++;
@@ -506,13 +516,16 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 						else
 							l = ReadUInt32(&figurePtr[(k + thisFigure) * 5 + 1]);
 						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, l - k, true, false));
-						Math::Coord2DDbl *points = lr->GetPointList(tmpV);
-						Double *zList = lr->GetZList(tmpV);
-						while (k < l)
+						UnsafeArray<Math::Coord2DDbl> points = lr->GetPointList(tmpV);
+						UnsafeArray<Double> zList;
+						if (lr->GetZList(tmpV).SetTo(zList))
 						{
-							points[k] = Math::Coord2DDbl(ReadDouble(&pointPtr[(k + thisPtOfst) * 16]), ReadDouble(&pointPtr[(k + thisPtOfst) * 16 + 8]));
-							zList[k] = ReadDouble(&pointPtrTmp[(k + thisPtOfst) * 8]);
-							k++;
+							while (k < l)
+							{
+								points[k] = Math::Coord2DDbl(ReadDouble(&pointPtr[(k + thisPtOfst) * 16]), ReadDouble(&pointPtr[(k + thisPtOfst) * 16 + 8]));
+								zList[k] = ReadDouble(&pointPtrTmp[(k + thisPtOfst) * 8]);
+								k++;
+							}
 						}
 						pg->AddGeometry(lr);
 					}
@@ -572,9 +585,9 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(pl, Math::Geometry::LineString(srid, nPoints, true, true));
-				Math::Coord2DDbl *points = pl->GetPointList(j);
-				Double *zList = pl->GetZList(j);
-				Double *mList = pl->GetMList(j);
+				UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
+				UnsafeArray<Double> zList;
+				UnsafeArray<Double> mList;
 				i = 0;
 				while (i < j)
 				{
@@ -582,18 +595,24 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					i++;
 				}
 				pointPtr += j * 16;
-				i = 0;
-				while (i < j)
+				if (pl->GetZList(j).SetTo(zList))
 				{
-					zList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
+					i = 0;
+					while (i < j)
+					{
+						zList[i] = ReadDouble(&pointPtr[i * 8]);
+						i++;
+					}
 				}
 				pointPtr += j * 8;
-				i = 0;
-				while (i < j)
+				if (pl->GetMList(j).SetTo(mList))
 				{
-					mList[i] = ReadDouble(&pointPtr[i * 8]);
-					i++;
+					i = 0;
+					while (i < j)
+					{
+						mList[i] = ReadDouble(&pointPtr[i * 8]);
+						i++;
+					}
 				}
 				if (nFigures > 1)
 				{
@@ -652,23 +671,24 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				UOSInt j;
 				UOSInt k;
 				UOSInt l;
-				Math::Coord2DDbl *points;
-				Double *zArr;
-				Double *mArr;
+				UnsafeArray<Math::Coord2DDbl> points;
+				UnsafeArray<Double> zArr;
+				UnsafeArray<Double> mArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				if (nFigures <= 1)
 				{
 					NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, true, true));
 					points = lineString->GetPointList(j);
-					zArr = lineString->GetZList(j);
-					mArr = lineString->GetMList(j);
-					i = 0;
-					while (i < j)
+					if (lineString->GetZList(j).SetTo(zArr) && lineString->GetMList(j).SetTo(mArr))
 					{
-						points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
-						zArr[i] = ReadDouble(&zPtr[i * 8]);
-						mArr[i] = ReadDouble(&mPtr[i * 8]);
-						i++;
+						i = 0;
+						while (i < j)
+						{
+							points[i] = Math::Coord2DDbl(ReadDouble(&pointPtr[i * 16]), ReadDouble(&pointPtr[i * 16 + 8]));
+							zArr[i] = ReadDouble(&zPtr[i * 8]);
+							mArr[i] = ReadDouble(&mPtr[i * 8]);
+							i++;
+						}
 					}
 					pl->AddGeometry(lineString);
 				}
@@ -688,16 +708,17 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 						}
 						NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k - l, true, true));
 						points = lineString->GetPointList(j);
-						zArr = lineString->GetZList(j);
-						mArr = lineString->GetMList(j);
-						j = 0;
-						while (l < k)
+						if (lineString->GetZList(j).SetTo(zArr) && lineString->GetMList(j).SetTo(mArr))
 						{
-							points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
-							zArr[j] = ReadDouble(&zPtr[l * 8]);
-							mArr[j] = ReadDouble(&mPtr[l * 8]);
-							l++;
-							j++;
+							j = 0;
+							while (l < k)
+							{
+								points[j] = Math::Coord2DDbl(ReadDouble(&pointPtr[l * 16]), ReadDouble(&pointPtr[l * 16 + 8]));
+								zArr[j] = ReadDouble(&zPtr[l * 8]);
+								mArr[j] = ReadDouble(&mPtr[l * 8]);
+								l++;
+								j++;
+							}
 						}
 						pl->AddGeometry(lineString);
 						i++;
@@ -720,7 +741,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, false, false));
 			UOSInt j;
-			Math::Coord2DDbl *points = pl->GetPointList(j);
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
 			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
 			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
 			return pl;
@@ -734,13 +755,21 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, false));
 			UOSInt j;
-			Math::Coord2DDbl *points = pl->GetPointList(j);
-			Double *zList = pl->GetZList(j);
-			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
-			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
-			zList[0] = ReadDouble(&buffPtr[38]);
-			zList[1] = ReadDouble(&buffPtr[46]);
-			return pl;
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
+			UnsafeArray<Double> zList;
+			if (pl->GetZList(j).SetTo(zList))
+			{
+				points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
+				points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
+				zList[0] = ReadDouble(&buffPtr[38]);
+				zList[1] = ReadDouble(&buffPtr[46]);
+				return pl;
+			}
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 		else if (buffPtr[5] == 23) // LineString ZM
 		{
@@ -751,16 +780,24 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			Math::Geometry::LineString *pl;
 			NEW_CLASS(pl, Math::Geometry::LineString(srid, 2, true, true));
 			UOSInt j;
-			Math::Coord2DDbl *points = pl->GetPointList(j);
-			Double *zList = pl->GetZList(j);
-			Double *mList = pl->GetMList(j);
-			points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
-			points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
-			zList[0] = ReadDouble(&buffPtr[38]);
-			zList[1] = ReadDouble(&buffPtr[46]);
-			mList[0] = ReadDouble(&buffPtr[54]);
-			mList[1] = ReadDouble(&buffPtr[62]);
-			return pl;
+			UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(j);
+			UnsafeArray<Double> zList;
+			UnsafeArray<Double> mList;
+			if (pl->GetZList(j).SetTo(zList) && pl->GetMList(j).SetTo(mList))
+			{
+				points[0] = Math::Coord2DDbl(ReadDouble(&buffPtr[6]), ReadDouble(&buffPtr[14]));
+				points[1] = Math::Coord2DDbl(ReadDouble(&buffPtr[22]), ReadDouble(&buffPtr[30]));
+				zList[0] = ReadDouble(&buffPtr[38]);
+				zList[1] = ReadDouble(&buffPtr[46]);
+				mList[0] = ReadDouble(&buffPtr[54]);
+				mList[1] = ReadDouble(&buffPtr[62]);
+				return pl;
+			}
+			else
+			{
+				DEL_CLASS(pl);
+				return 0;
+			}
 		}
 		else
 		{

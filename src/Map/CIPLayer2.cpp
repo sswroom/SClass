@@ -740,7 +740,7 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
-		Math::Coord2DDbl *tmpPoints;
+		UnsafeArray<Math::Coord2DDbl> tmpPoints;
 		while (i < fobj->nPtOfst)
 		{
 			j = fobj->ptOfstArr[i];
@@ -767,7 +767,7 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	{
 		Math::Geometry::Polygon *pg = 0;
 		NN<Math::Geometry::LinearRing> lr;
-		Math::Coord2DDbl *tmpPoints;
+		UnsafeArray<Math::Coord2DDbl> tmpPoints;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;

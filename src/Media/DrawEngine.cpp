@@ -44,8 +44,8 @@ UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 	if (y < 0 || (UOSInt)y >= height)
 		return 0;
 	Bool revOrder;
-	UInt8 *bmpBits = this->GetImgBits(revOrder);
-	if (bmpBits == 0)
+	UnsafeArray<UInt8> bmpBits;
+	if (!this->GetImgBits(revOrder).SetTo(bmpBits))
 		return 0;
 	if (revOrder)
 	{
@@ -54,11 +54,11 @@ UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 	UInt32 bitCount = this->GetBitCount();
 	if (bitCount == 32)
 	{
-		return *(UInt32*)(((y * (OSInt)width + x) * 4) + bmpBits);
+		return *(UInt32*)(((y * (OSInt)width + x) * 4) + bmpBits.Ptr());
 	}
 	else if (bitCount == 24)
 	{
-		return 0xff000000 | *(UInt32*)(((y * (OSInt)width + x) * 3) + bmpBits);
+		return 0xff000000 | *(UInt32*)(((y * (OSInt)width + x) * 3) + bmpBits.Ptr());
 	}
 	else
 	{
@@ -69,10 +69,10 @@ UInt32 Media::DrawImage::GetPixel32(OSInt x, OSInt y)
 void Media::DrawImage::SetImageAlpha(UInt8 alpha)
 {
 	Bool revOrder;
-	UInt8 *bmpBits = this->GetImgBits(revOrder);
-	if (this->GetBitCount() == 32 && bmpBits && this->GetPixelFormat() == Media::PF_B8G8R8A8)
+	UnsafeArray<UInt8> bmpBits;
+	if (this->GetBitCount() == 32 && this->GetImgBits(revOrder).SetTo(bmpBits) && this->GetPixelFormat() == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ImageFillAlpha32(bmpBits, this->GetWidth(), this->GetHeight(), this->GetImgBpl(), alpha);
+		ImageUtil_ImageFillAlpha32(bmpBits.Ptr(), this->GetWidth(), this->GetHeight(), this->GetImgBpl(), alpha);
 	}
 }
 
@@ -89,10 +89,10 @@ void Media::DrawImage::MulImageAlpha(Double val)
 	if (this->GetBitCount() == 32 && this->GetPixelFormat() == Media::PF_B8G8R8A8)
 	{
 		Bool revOrder;
-		UInt8 *bmpBits = this->GetImgBits(revOrder);
-		if (bmpBits)
+		UnsafeArray<UInt8> bmpBits;
+		if (this->GetImgBits(revOrder).SetTo(bmpBits))
 		{
-			ImageUtil_ImageAlphaMul32(bmpBits, this->GetWidth(), this->GetHeight(), this->GetImgBpl(), (UInt32)Double2Int32(val * 65536.0));
+			ImageUtil_ImageAlphaMul32(bmpBits.Ptr(), this->GetWidth(), this->GetHeight(), this->GetImgBpl(), (UInt32)Double2Int32(val * 65536.0));
 
 		}
 	}

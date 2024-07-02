@@ -12,9 +12,9 @@ namespace Data
 	{
 		UInt32 nodeCnt;
 		UInt32 maxLev;
-		BTreeNode<T> *parNode;
-		BTreeNode<T> *leftNode;
-		BTreeNode<T> *rightNode;
+		Optional<BTreeNode<T>> parNode;
+		Optional<BTreeNode<T>> leftNode;
+		Optional<BTreeNode<T>> rightNode;
 		T nodeVal;
 		NN<Text::String> nodeStr;
 		UInt32 nodeHash;
@@ -24,16 +24,16 @@ namespace Data
 	{
 	protected:
 		Crypto::Hash::CRC32RC crc;
-		BTreeNode<T> *rootNode;
+		Optional<BTreeNode<T>> rootNode;
 
 	protected:
-		void OptimizeNode(BTreeNode<T> *node);
-		void ReleaseNodeTree(BTreeNode<T> *node);
-		BTreeNode<T> *NewNode(NN<Text::String> key, UInt32 hash, T val);
-		virtual T PutNode(BTreeNode<T> *node, NN<Text::String> key, UInt32 hash, T val);
-		BTreeNode<T> *RemoveNode(BTreeNode<T> *node);
-		void FillArr(T **arr, BTreeNode<T> *node);
-		void FillNameArr(NN<Text::String> **arr, BTreeNode<T> *node);
+		void OptimizeNode(NN<BTreeNode<T>> node);
+		void ReleaseNodeTree(NN<BTreeNode<T>> node);
+		NN<BTreeNode<T>> NewNode(NN<Text::String> key, UInt32 hash, T val);
+		virtual T PutNode(NN<BTreeNode<T>> node, NN<Text::String> key, UInt32 hash, T val);
+		Optional<BTreeNode<T>> RemoveNode(NN<BTreeNode<T>> node);
+		void FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeNode<T>> node);
+		void FillNameArr(InOutParam<UnsafeArray<NN<Text::String>>> arr, NN<BTreeNode<T>> node);
 		virtual UInt32 CalHash(NN<Text::String> key) const;
 		UInt32 CalHash(Text::CStringNN key) const;
 	public:
@@ -45,26 +45,27 @@ namespace Data
 		T Get(Text::CStringNN key) const;
 		virtual T Remove(NN<Text::String> key);
 		virtual Bool IsEmpty() const;
-		virtual T *ToArray(UOSInt *objCnt);
-		virtual NN<Text::String> *ToNameArray(UOSInt *objCnt);
+		virtual UnsafeArray<T> ToArray(OutParam<UOSInt> objCnt);
+		virtual UnsafeArray<NN<Text::String>> ToNameArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
-	template <class T> void BTreeMap<T>::OptimizeNode(BTreeNode<T> *node)
+	template <class T> void BTreeMap<T>::OptimizeNode(NN<BTreeNode<T>> node)
 	{
 		Int32 leftLev;
 		Int32 rightLev;
-		if (node->leftNode)
+		NN<BTreeNode<T>> nnnode;
+		if (node->leftNode.SetTo(nnnode))
 		{
-			leftLev = node->leftNode->nodeCnt + 1;
+			leftLev = nnnode->nodeCnt + 1;
 		}
 		else
 		{
 			leftLev = 0;
 		}
-		if (node->rightNode)
+		if (node->rightNode.SetTo(nnnode))
 		{
-			rightLev = node->rightNode->nodeCnt + 1;
+			rightLev = nnnode->nodeCnt + 1;
 		}
 		else
 		{
@@ -80,23 +81,24 @@ namespace Data
 		}
 	}
 
-	template <class T> void BTreeMap<T>::ReleaseNodeTree(BTreeNode<T> *node)
+	template <class T> void BTreeMap<T>::ReleaseNodeTree(NN<BTreeNode<T>> node)
 	{
-		if (node->leftNode)
+		NN<BTreeNode<T>> nnnode;
+		if (node->leftNode.SetTo(nnnode))
 		{
-			ReleaseNodeTree(node->leftNode);
+			ReleaseNodeTree(nnnode);
 		}
-		if (node->rightNode)
+		if (node->rightNode.SetTo(nnnode))
 		{
-			ReleaseNodeTree(node->rightNode);
+			ReleaseNodeTree(nnnode);
 		}
 		node->nodeStr->Release();
-		MemFree(node);
+		MemFreeNN(node);
 	}
 
-	template <class T> BTreeNode<T> *BTreeMap<T>::NewNode(NN<Text::String> key, UInt32 hash, T val)
+	template <class T> NN<BTreeNode<T>> BTreeMap<T>::NewNode(NN<Text::String> key, UInt32 hash, T val)
 	{
-		BTreeNode<T> *node = MemAlloc(BTreeNode<T>, 1);
+		NN<BTreeNode<T>> node = MemAllocNN(BTreeNode<T>);
 		node->nodeCnt = 0;
 		node->parNode = 0;
 		node->leftNode = 0;
@@ -108,9 +110,11 @@ namespace Data
 		return node;
 	}
 
-	template <class T> T BTreeMap<T>::PutNode(BTreeNode<T> *node, NN<Text::String> key, UInt32 hash, T val)
+	template <class T> T BTreeMap<T>::PutNode(NN<BTreeNode<T>> node, NN<Text::String> key, UInt32 hash, T val)
 	{
-		BTreeNode<T> *tmpNode;
+		NN<BTreeNode<T>> tmpNode;
+		NN<BTreeNode<T>> nnnode;
+		Optional<BTreeNode<T>> optnode;
 		T retVal;
 		OSInt i;
 		if (node->nodeHash == hash)
@@ -133,19 +137,20 @@ namespace Data
 		}
 		else if (i > 0)
 		{
-			if (node->leftNode == 0)
+			if (!node->leftNode.SetTo(nnnode))
 			{
 				tmpNode = node;
-				node->leftNode = NewNode(key, hash, val);
-				node->leftNode->parNode = node;
-				while (node)
+				node->leftNode = nnnode = NewNode(key, hash, val);
+				nnnode->parNode = node;
+				optnode = node;
+				while (optnode.SetTo(node))
 				{
 					node->nodeCnt++;
-					node = node->parNode;
+					optnode = node->parNode;
 				}
-				node = tmpNode;
+				optnode = tmpNode;
 				UInt32 currLev = 1;
-				while (node)
+				while (optnode.SetTo(node))
 				{
 					if (node->maxLev >= currLev)
 					{
@@ -153,46 +158,32 @@ namespace Data
 					}
 					node->maxLev = currLev;
 					currLev++;
-					node = node->parNode;
+					optnode = node->parNode;
 				}
 				return 0;
 			}
 			else
 			{
-				retVal = PutNode(node->leftNode, key, hash, val);
-/*				Int32 leftLev;
-				Int32 rightLev;
-				if (node->rightNode == 0)
-				{
-					rightLev = 0;
-				}
-				else
-				{
-					rightLev = node->rightNode->maxLev + 1;
-				}
-				leftLev = node->leftNode->maxLev + 1;
-				if (leftLev > rightLev + 1)
-				{
-					OptimizeNode(node);
-				}*/
+				retVal = PutNode(nnnode, key, hash, val);
 				return retVal;
 			}
 		}
 		else
 		{
-			if (node->rightNode == 0)
+			if (!node->rightNode.SetTo(nnnode))
 			{
 				tmpNode = node;
-				node->rightNode = NewNode(key, hash, val);
-				node->rightNode->parNode = node;
-				while (node)
+				node->rightNode = nnnode = NewNode(key, hash, val);
+				nnnode->parNode = node;
+				optnode = node;
+				while (optnode.SetTo(node))
 				{
 					node->nodeCnt++;
-					node = node->parNode;
+					optnode = node->parNode;
 				}
-				node = tmpNode;
+				optnode = tmpNode;
 				UInt32 currLev = 1;
-				while (node)
+				while (optnode.SetTo(node))
 				{
 					if (node->maxLev >= currLev)
 					{
@@ -200,151 +191,135 @@ namespace Data
 					}
 					node->maxLev = currLev;
 					currLev++;
-					node = node->parNode;
+					optnode = node->parNode;
 				}
 				return 0;
 			}
 			else
 			{
-				retVal = PutNode(node->rightNode, key, hash, val);
-/*				Int32 leftLev;
-				Int32 rightLev;
-				if (node->leftNode == 0)
-				{
-					leftLev = 0;
-				}
-				else
-				{
-					leftLev = node->leftNode->maxLev + 1;
-				}
-				rightLev = node->rightNode->maxLev + 1;
-				if (rightLev > leftLev + 1)
-				{
-					OptimizeNode(node);
-				}*/
+				retVal = PutNode(nnnode, key, hash, val);
 				return retVal;
 			}
 		}
 
 	}
 
-	template <class T> BTreeNode<T> *BTreeMap<T>::RemoveNode(BTreeNode<T> *node)
+	template <class T> Optional<BTreeNode<T>> BTreeMap<T>::RemoveNode(NN<BTreeNode<T>> node)
 	{
-		BTreeNode<T> *parNode = node->parNode;
-		while (parNode)
+		Optional<BTreeNode<T>> parNode = node->parNode;
+		NN<BTreeNode<T>> leftNode;
+		NN<BTreeNode<T>> rightNode;
+		while (parNode.SetTo(leftNode))
 		{
-			parNode->nodeCnt--;
-			parNode = parNode->parNode;
+			leftNode->nodeCnt--;
+			parNode = leftNode->parNode;
 		}
-		if (node->leftNode == 0 && node->rightNode == 0)
+		if (!node->leftNode.SetTo(leftNode))
 		{
-			node->nodeStr->Release();
-			MemFree(node);
-			return 0;
+			if (node->rightNode.SetTo(rightNode))
+			{
+				rightNode->parNode = node->parNode;
+				node->nodeStr->Release();
+				MemFreeNN(node);
+				return rightNode;
+			}
+			else
+			{
+				node->nodeStr->Release();
+				MemFreeNN(node);
+				return 0;
+			}
 		}
-		else if (node->leftNode == 0)
+		else if (!node->rightNode.SetTo(rightNode))
 		{
-			BTreeNode<T> *outNode = node->rightNode;
-			outNode->parNode = node->parNode;
+			leftNode->parNode = node->parNode;
 			node->nodeStr->Release();
-			MemFree(node);
-			return outNode;
-		}
-		else if (node->rightNode == 0)
-		{
-			BTreeNode<T> *outNode = node->leftNode;
-			outNode->parNode = node->parNode;
-			node->nodeStr->Release();
-			MemFree(node);
-			return outNode;
+			MemFreeNN(node);
+			return leftNode;
 		}
 
-		if (node->leftNode->nodeCnt >= node->rightNode->nodeCnt)
+		if (leftNode->nodeCnt >= rightNode->nodeCnt)
 		{
-			BTreeNode<T> *outNode = node->leftNode;
-			BTreeNode<T> *tmpNode;
-			while (outNode->rightNode)
-			{
-				outNode = outNode->rightNode;
-			}
+			NN<BTreeNode<T>> outNode = leftNode;
+			Optional<BTreeNode<T>> tmpNode;
+			NN<BTreeNode<T>> nnnode;
+			while (outNode->rightNode.SetTo(outNode));
 			tmpNode = outNode->parNode;
-			while (tmpNode != node && tmpNode != 0)
+			while (tmpNode.SetTo(nnnode) && nnnode != node)
 			{
-				tmpNode->nodeCnt--;
-				tmpNode = tmpNode->parNode;
+				nnnode->nodeCnt--;
+				tmpNode = nnnode->parNode;
 			}
-			if (outNode->leftNode)
+			if (outNode->parNode.SetTo(rightNode) && outNode->leftNode.SetTo(leftNode))
 			{
-				if (outNode->parNode->leftNode == outNode)
+				if (rightNode->leftNode == outNode)
 				{
-					outNode->parNode->leftNode = outNode->leftNode;
+					rightNode->leftNode = outNode->leftNode;
 				}
 				else
 				{
-					outNode->parNode->rightNode = outNode->leftNode;
+					rightNode->rightNode = outNode->leftNode;
 				}
-				outNode->leftNode->parNode = outNode->parNode;
+				leftNode->parNode = rightNode;
 			}
 			outNode->parNode = node->parNode;
 			outNode->leftNode = node->leftNode;
 			outNode->rightNode = node->rightNode;
 			outNode->nodeCnt = 0;
-			if (outNode->leftNode)
+			if (outNode->leftNode.SetTo(leftNode))
 			{
-				outNode->leftNode->parNode = outNode;
-				outNode->nodeCnt += outNode->leftNode->nodeCnt + 1;
+				leftNode->parNode = outNode;
+				outNode->nodeCnt += leftNode->nodeCnt + 1;
 			}
-			if (outNode->rightNode)
+			if (outNode->rightNode.SetTo(rightNode))
 			{
-				outNode->rightNode->parNode = outNode;
-				outNode->nodeCnt += outNode->rightNode->nodeCnt + 1;
+				rightNode->parNode = outNode;
+				outNode->nodeCnt += rightNode->nodeCnt + 1;
 			}
 			node->nodeStr->Release();
-			MemFree(node);
+			MemFreeNN(node);
 			return outNode;
 		}
 		else
 		{
-			BTreeNode<T> *outNode = node->rightNode;
-			BTreeNode<T> *tmpNode;
-			while (outNode->leftNode)
-			{
-				outNode = outNode->leftNode;
-			}
+			NN<BTreeNode<T>> outNode = rightNode;
+			Optional<BTreeNode<T>> tmpNode;
+			NN<BTreeNode<T>> nnnode;
+			while (outNode->leftNode.SetTo(outNode));
 			tmpNode = outNode->parNode;
-			while (tmpNode != node && tmpNode != 0)
+			while (tmpNode.SetTo(nnnode) && nnnode != node)
 			{
-				tmpNode->nodeCnt--;
-				tmpNode = tmpNode->parNode;
+				nnnode->nodeCnt--;
+				tmpNode = nnnode->parNode;
 			}
-			if (outNode->rightNode)
+			if (outNode->parNode.SetTo(leftNode) && outNode->rightNode.SetTo(rightNode))
 			{
-				if (outNode->parNode->leftNode == outNode)
+				if (leftNode->leftNode == outNode)
 				{
-					outNode->parNode->leftNode = outNode->rightNode;
+					leftNode->leftNode = outNode->rightNode;
 				}
 				else
 				{
-					outNode->parNode->rightNode = outNode->rightNode;
+					leftNode->rightNode = outNode->rightNode;
 				}
-				outNode->rightNode->parNode = outNode->parNode;
+				rightNode->parNode = leftNode;
 			}
 			outNode->parNode = node->parNode;
 			outNode->leftNode = node->leftNode;
 			outNode->rightNode = node->rightNode;
 			outNode->nodeCnt = 0;
-			if (outNode->leftNode)
+			if (outNode->leftNode.SetTo(leftNode))
 			{
-				outNode->leftNode->parNode = outNode;
-				outNode->nodeCnt += outNode->leftNode->nodeCnt + 1;
+				leftNode->parNode = outNode;
+				outNode->nodeCnt += leftNode->nodeCnt + 1;
 			}
-			if (outNode->rightNode)
+			if (outNode->rightNode.SetTo(rightNode))
 			{
-				outNode->rightNode->parNode = outNode;
-				outNode->nodeCnt += outNode->rightNode->nodeCnt + 1;
+				rightNode->parNode = outNode;
+				outNode->nodeCnt += rightNode->nodeCnt + 1;
 			}
 			node->nodeStr->Release();
-			MemFree(node);
+			MemFreeNN(node);
 			return outNode;
 		}
 	}
@@ -359,24 +334,30 @@ namespace Data
 		return this->crc.CalcDirect(key.v, key.leng);
 	}
 
-	template <class T> void BTreeMap<T>::FillArr(T **arr, BTreeNode<T> *node)
+	template <class T> void BTreeMap<T>::FillArr(InOutParam<UnsafeArray<T>> arr, NN<BTreeNode<T>> node)
 	{
-		if (node == 0)
-			return;
-		FillArr(arr, node->leftNode);
-		**arr = node->nodeVal;
-		++*arr;
-		FillArr(arr, node->rightNode);
+		UnsafeArray<T> narr;
+		NN<BTreeNode<T>> nnnode;
+		if (node->leftNode.SetTo(nnnode))
+			FillArr(arr, nnnode);
+		narr = arr.Get();
+		narr[0] = node->nodeVal;
+		arr.Set(narr + 1);
+		if (node->rightNode.SetTo(nnnode))
+			FillArr(arr, nnnode);
 	}
 
-	template <class T> void BTreeMap<T>::FillNameArr(NN<Text::String> **arr, BTreeNode<T> *node)
+	template <class T> void BTreeMap<T>::FillNameArr(InOutParam<UnsafeArray<NN<Text::String>>> arr, NN<BTreeNode<T>> node)
 	{
-		if (node == 0)
-			return;
-		FillNameArr(arr, node->leftNode);
-		**arr = node->nodeStr;
-		++*arr;
-		FillNameArr(arr, node->rightNode);
+		UnsafeArray<NN<Text::String>> narr;
+		NN<BTreeNode<T>> nnnode;
+		if (node->leftNode.SetTo(nnnode))
+			FillNameArr(arr, nnnode);
+		narr = arr.Get();
+		narr[0] = node->nodeStr;
+		arr.Set(narr + 1);
+		if (node->rightNode.SetTo(nnnode))
+			FillNameArr(arr, nnnode);
 	}
 
 	template <class T> BTreeMap<T>::BTreeMap() : DataMap<NN<Text::String>, T>()
@@ -386,9 +367,10 @@ namespace Data
 
 	template <class T> BTreeMap<T>::~BTreeMap()
 	{
-		if (this->rootNode)
+		NN<BTreeNode<T>> node;
+		if (this->rootNode.SetTo(node))
 		{
-			ReleaseNodeTree(this->rootNode);
+			ReleaseNodeTree(node);
 			this->rootNode = 0;
 		}
 	}
@@ -396,7 +378,8 @@ namespace Data
 	template <class T> T BTreeMap<T>::Put(NN<Text::String> key, T val)
 	{
 		UInt32 hash = CalHash(key);
-		if (this->rootNode == 0)
+		NN<BTreeNode<T>> node;
+		if (!this->rootNode.SetTo(node))
 		{
 			this->rootNode = NewNode(key, hash, val);
 			return 0;
@@ -404,7 +387,7 @@ namespace Data
 		else
 		{
 			T tmpVal;
-			tmpVal = PutNode(this->rootNode, key, hash, val);
+			tmpVal = PutNode(node, key, hash, val);
 			return tmpVal;
 		}
 	}
@@ -412,8 +395,9 @@ namespace Data
 	template <class T> T BTreeMap<T>::Get(NN<Text::String> key) const
 	{
 		UInt32 hash = CalHash(key);
-		BTreeNode<T> *node = this->rootNode;
-		while (node)
+		Optional<BTreeNode<T>> optnode = this->rootNode;
+		NN<BTreeNode<T>> node;
+		while (optnode.SetTo(node))
 		{
 			OSInt i;
 			if (node->nodeHash == hash)
@@ -430,11 +414,11 @@ namespace Data
 			}
 			if (i > 0)
 			{
-				node = node->leftNode;
+				optnode = node->leftNode;
 			}
 			else if (i < 0)
 			{
-				node = node->rightNode;
+				optnode = node->rightNode;
 			}
 			else
 			{
@@ -447,8 +431,9 @@ namespace Data
 	template <class T> T BTreeMap<T>::Get(Text::CStringNN key) const
 	{
 		UInt32 hash = CalHash(key);
-		BTreeNode<T> *node = this->rootNode;
-		while (node)
+		Optional<BTreeNode<T>> optnode = this->rootNode;
+		NN<BTreeNode<T>> node;
+		while (optnode.SetTo(node))
 		{
 			OSInt i;
 			if (node->nodeHash == hash)
@@ -465,11 +450,11 @@ namespace Data
 			}
 			if (i > 0)
 			{
-				node = node->leftNode;
+				optnode = node->leftNode;
 			}
 			else if (i < 0)
 			{
-				node = node->rightNode;
+				optnode = node->rightNode;
 			}
 			else
 			{
@@ -481,20 +466,23 @@ namespace Data
 
 	template <class T> T BTreeMap<T>::Remove(NN<Text::String> key)
 	{
-		if (this->rootNode == 0)
+		NN<BTreeNode<T>> node;
+		if (!this->rootNode.SetTo(node))
 			return 0;
-		if (this->rootNode->nodeStr->Equals(key))
+		if (node->nodeStr->Equals(key))
 		{
-			T nodeVal = this->rootNode->nodeVal;
-			this->rootNode = RemoveNode(this->rootNode);
+			T nodeVal = node->nodeVal;
+			this->rootNode = RemoveNode(node);
 			return nodeVal;
 		}
 		else
 		{
 			UInt32 hash = CalHash(key);
-			BTreeNode<T> *parNode = 0;
-			BTreeNode<T> *node = this->rootNode;
-			while (node)
+			Optional<BTreeNode<T>> parNode = 0;
+			NN<BTreeNode<T>> nnparNode;
+			Optional<BTreeNode<T>> optnode = this->rootNode;
+			NN<BTreeNode<T>> node;
+			while (optnode.SetTo(node))
 			{
 				OSInt i;
 				if (node->nodeHash == hash)
@@ -512,23 +500,26 @@ namespace Data
 				if (i > 0)
 				{
 					parNode = node;
-					node = node->leftNode;
+					optnode = node->leftNode;
 				}
 				else if (i < 0)
 				{
 					parNode = node;
-					node = node->rightNode;
+					optnode = node->rightNode;
 				}
 				else
 				{
 					T nodeVal = node->nodeVal;
-					if (parNode->leftNode == node)
+					if (parNode.SetTo(nnparNode))
 					{
-						parNode->leftNode = RemoveNode(node);
-					}
-					else
-					{
-						parNode->rightNode = RemoveNode(node);
+						if (nnparNode->leftNode == node)
+						{
+							nnparNode->leftNode = RemoveNode(node);
+						}
+						else
+						{
+							nnparNode->rightNode = RemoveNode(node);
+						}
 					}
 					return nodeVal;
 				}
@@ -539,42 +530,49 @@ namespace Data
 
 	template <class T> Bool BTreeMap<T>::IsEmpty() const
 	{
-		return this->rootNode == 0;
+		return this->rootNode.IsNull();
 	}
 
-	template <class T> T *BTreeMap<T>::ToArray(UOSInt *objCnt)
+	template <class T> UnsafeArray<T> BTreeMap<T>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = 0;
-		if (this->rootNode)
+		NN<BTreeNode<T>> node;
+		if (!this->rootNode.SetTo(node))
 		{
-			cnt = this->rootNode->nodeCnt + 1;
+			objCnt.Set(0);
+			return MemAllocArr(T, 0);
 		}
-		T *outArr = MemAlloc(T, cnt);
-		T *tmpArr = outArr;
-		FillArr(&tmpArr, this->rootNode);
-		*objCnt = cnt;
+		cnt = node->nodeCnt + 1;
+		UnsafeArray<T> outArr = MemAllocArr(T, cnt);
+		UnsafeArray<T> tmpArr = outArr;
+		FillArr(tmpArr, node);
+		objCnt.Set(cnt);
 		return outArr;
 	}
 
-	template <class T> NN<Text::String> *BTreeMap<T>::ToNameArray(UOSInt *objCnt)
+	template <class T> UnsafeArray<NN<Text::String>> BTreeMap<T>::ToNameArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt = 0;
-		if (this->rootNode)
+		NN<BTreeNode<T>> node;
+		if (!this->rootNode.SetTo(node))
 		{
-			cnt = this->rootNode->nodeCnt + 1;
+			objCnt.Set(0);
+			return MemAllocArr(NN<Text::String>, 0);
 		}
-		NN<Text::String> *outArr = MemAlloc(NN<Text::String>, cnt);
-		NN<Text::String> *tmpArr = outArr;
-		FillNameArr(&tmpArr, this->rootNode);
-		*objCnt = cnt;
+		cnt = node->nodeCnt + 1;
+		UnsafeArray<NN<Text::String>> outArr = MemAllocArr(NN<Text::String>, cnt);
+		UnsafeArray<NN<Text::String>> tmpArr = outArr;
+		FillNameArr(tmpArr, node);
+		objCnt.Set(cnt);
 		return outArr;
 	}
 
 	template <class T>void BTreeMap<T>::Clear()
 	{
-		if (this->rootNode)
+		NN<BTreeNode<T>> node;
+		if (this->rootNode.SetTo(node))
 		{
-			ReleaseNodeTree(this->rootNode);
+			ReleaseNodeTree(node);
 			this->rootNode = 0;
 		}
 	}

@@ -28,7 +28,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 		{
 			NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 			NN<Math::Geometry::LinearRing> lr;
-			Math::Coord2DDbl *points;
+			UnsafeArray<Math::Coord2DDbl> points;
 			geomType = 3;
 			j = pg->GetCount();
 			if (vec->HasZ())
@@ -74,17 +74,18 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 					{
 						WriteNUInt32(buff, (UInt32)nPoint);
 						stm->Write(Data::ByteArrayR(buff, 4));
-						stm->Write(Data::ByteArrayR((const UInt8*)points, nPoint * 16));
+						stm->Write(Data::ByteArrayR(UnsafeArray<const UInt8>::ConvertFrom(points), nPoint * 16));
 					}
 					else
 					{
 						WriteNUInt32(buff, (UInt32)nPoint);
 						stm->Write(Data::ByteArrayR(buff, 4));
-						Double *zList = lr->GetZList(nPoint);
+						UnsafeArray<Double> zList;
+						UnsafeArray<Double> mList;
 						k = 0;
  						if (!pg->HasM())
 						{
-							if (zList)
+							if (lr->GetZList(nPoint).SetTo(zList))
 							{
 								while (k < nPoint)
 								{
@@ -109,10 +110,9 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 						}
 						else
 						{
-							Double *mList = lr->GetZList(nPoint);
-							if (zList)
+							if (lr->GetZList(nPoint).SetTo(zList))
 							{
-								if (mList)
+								if (lr->GetMList(nPoint).SetTo(mList))
 								{
 									while (k < nPoint)
 									{
@@ -139,7 +139,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 							}
 							else
 							{
-								if (mList)
+								if (lr->GetMList(nPoint).SetTo(mList))
 								{
 									while (k < nPoint)
 									{

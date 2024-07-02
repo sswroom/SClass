@@ -80,9 +80,9 @@ void Math::Geometry::Polyline::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst,
 	UOSInt j;
 	UOSInt k;
 	UOSInt tmp;
-	Math::Coord2DDbl *ptArr;
-	Double *zArr;
-	Double *mArr;
+	UnsafeArray<Math::Coord2DDbl> ptArr;
+	UnsafeArray<Double> zArr;
+	UnsafeArray<Double> mArr;
 	while (i < nPtOfst)
 	{
 		j = ptOfstList[i];
@@ -92,16 +92,14 @@ void Math::Geometry::Polyline::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst,
 			k = ptOfstList[i + 1];
 		NEW_CLASSNN(lineString, LineString(this->srid, (k - j), zList != 0, mList != 0));
 		ptArr = lineString->GetPointList(tmp);
-		zArr = lineString->GetZList(tmp);
-		mArr = lineString->GetMList(tmp);
-		MemCopyNO(ptArr, &pointList[j], (k - j) * sizeof(Math::Coord2DDbl));
-		if (zList)
+		MemCopyNO(ptArr.Ptr(), &pointList[j], (k - j) * sizeof(Math::Coord2DDbl));
+		if (zList && lineString->GetZList(tmp).SetTo(zArr))
 		{
-			MemCopyNO(zArr, &zList[j], (k - j) * sizeof(Double));
+			MemCopyNO(zArr.Ptr(), &zList[j], (k - j) * sizeof(Double));
 		}
-		if (mList)
+		if (mList && lineString->GetMList(tmp).SetTo(mArr))
 		{
-			MemCopyNO(mArr, &mList[j], (k - j) * sizeof(Double));
+			MemCopyNO(mArr.Ptr(), &mList[j], (k - j) * sizeof(Double));
 		}
 		this->AddGeometry(lineString);
 		i++;
@@ -124,8 +122,8 @@ UOSInt Math::Geometry::Polyline::FillPointOfstList(Math::Coord2DDbl *pointList, 
 	UOSInt totalCnt = 0;
 	UOSInt nPoint;
 	NN<LineString> lineString;
-	Math::Coord2DDbl *thisPtList;
-	Double *dList;
+	UnsafeArray<Math::Coord2DDbl> thisPtList;
+	UnsafeArray<Double> dList;
 	UOSInt k;
 	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	UOSInt i = 0;
@@ -134,21 +132,19 @@ UOSInt Math::Geometry::Polyline::FillPointOfstList(Math::Coord2DDbl *pointList, 
 		ptOfstList[i] = (UInt32)totalCnt;
 		lineString = it.Next();
 		thisPtList = lineString->GetPointList(nPoint);
-		MemCopyNO(&pointList[totalCnt], thisPtList, sizeof(Math::Coord2DDbl) * nPoint);
+		MemCopyNO(&pointList[totalCnt], thisPtList.Ptr(), sizeof(Math::Coord2DDbl) * nPoint);
 		if (zList)
 		{
-			dList = lineString->GetZList(k);
-			if (dList)
+			if (lineString->GetZList(k).SetTo(dList))
 			{
-				MemCopyNO(&zList[totalCnt], dList, sizeof(Double) * k);
+				MemCopyNO(&zList[totalCnt], dList.Ptr(), sizeof(Double) * k);
 			}
 		}
 		if (mList)
 		{
-			dList = lineString->GetMList(k);
-			if (dList)
+			if (lineString->GetMList(k).SetTo(dList))
 			{
-				MemCopyNO(&mList[totalCnt], dList, sizeof(Double) * k);
+				MemCopyNO(&mList[totalCnt], dList.Ptr(), sizeof(Double) * k);
 			}
 		}
 		totalCnt += nPoint;
@@ -160,7 +156,7 @@ UOSInt Math::Geometry::Polyline::FillPointOfstList(Math::Coord2DDbl *pointList, 
 Math::Coord2DDbl Math::Geometry::Polyline::CalcPosAtDistance(Double dist) const
 {
 	NN<Math::Geometry::LineString> lineString;
-	Math::Coord2DDbl *points;
+	UnsafeArray<Math::Coord2DDbl> points;
 	Math::Coord2DDbl lastPt = Math::Coord2DDbl(0, 0);
 	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	UOSInt k;
@@ -242,7 +238,7 @@ Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::
 		else if (minId < nPoint)
 		{
 			NEW_CLASS(newPL, Math::Geometry::Polyline(this->srid));
-			if (lineString.Set(lineString->SplitByPoint(pt)))
+			if (lineString->SplitByPoint(pt).SetTo(lineString))
 			{
 				newPL->AddGeometry(lineString);
 			}
@@ -446,9 +442,11 @@ OSInt Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 {
 	UOSInt k;
 	UOSInt l;
-	Math::Coord2DDbl *points;
-	Double *zArr;
-	Double *mArr;
+	UnsafeArray<Math::Coord2DDbl> points;
+	UnsafeArrayOpt<Double> zArr;
+	UnsafeArrayOpt<Double> mArr;
+	UnsafeArray<Double> nnzArr;
+	UnsafeArray<Double> nnmArr;
 	Double calBase;
 	Math::Coord2DDbl calDiff;
 	Math::Coord2DDbl calSqDiff;
@@ -482,8 +480,8 @@ OSInt Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 			{
 				dist = calD;
 				calPtOut = points[k];
-				calZOut = zArr?zArr[k]:0;
-				calMOut = mArr?mArr[k]:0;
+				calZOut = zArr.SetTo(nnzArr)?nnzArr[k]:0;
+				calMOut = mArr.SetTo(nnmArr)?nnmArr[k]:0;
 				minId = (OSInt)(currId + k);
 				isPointI = true;
 			}
@@ -497,8 +495,8 @@ OSInt Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 				{
 					calPt.x = pt.x;
 					calPt.y = pt.y;
-					calZ = zArr?zArr[k - 1]:0;
-					calM = mArr?mArr[k - 1]:0;
+					calZ = zArr.SetTo(nnzArr)?nnzArr[k - 1]:0;
+					calM = mArr.SetTo(nnmArr)?nnmArr[k - 1]:0;
 				}
 				else
 				{
@@ -531,17 +529,17 @@ OSInt Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 					{
 						Double ratio = (calPt.x - (points[k - 1].x)) / calDiff.x;
 						calPt.y = (ratio * calDiff.y) + points[k - 1].y;
-						if (zArr)
+						if (zArr.SetTo(nnzArr))
 						{
-							calZ = (ratio * (zArr[k - 1] - zArr[k])) + zArr[k - 1];
+							calZ = (ratio * (nnzArr[k - 1] - nnzArr[k])) + nnzArr[k - 1];
 						}
 						else
 						{
 							calZ = 0;
 						}
-						if (mArr)
+						if (mArr.SetTo(nnmArr))
 						{
-							calM = (ratio * (mArr[k - 1] - mArr[k])) + mArr[k - 1];
+							calM = (ratio * (nnmArr[k - 1] - nnmArr[k])) + nnmArr[k - 1];
 						}
 						else
 						{

@@ -4,7 +4,7 @@
 #include "Data/Sort/QuickBubbleSort.h"
 #include "Data/Sort/BubbleSort.h"
 
-void Data::Sort::QuickBubbleSort::Sort(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -16,7 +16,7 @@ void Data::Sort::QuickBubbleSort::Sort(Int32 *arr, OSInt firstIndex, OSInt lastI
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortInt32(arr, lo, hi);
+			BubbleSort_SortInt32(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -68,7 +68,7 @@ void Data::Sort::QuickBubbleSort::Sort(Int32 *arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -80,7 +80,7 @@ void Data::Sort::QuickBubbleSort::Sort(UInt32 *arr, OSInt firstIndex, OSInt last
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortUInt32(arr, lo, hi);
+			BubbleSort_SortUInt32(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -132,7 +132,7 @@ void Data::Sort::QuickBubbleSort::Sort(UInt32 *arr, OSInt firstIndex, OSInt last
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(Double *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -144,7 +144,7 @@ void Data::Sort::QuickBubbleSort::Sort(Double *arr, OSInt firstIndex, OSInt last
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortDouble(arr, lo, hi);
+			BubbleSort_SortDouble(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -196,7 +196,7 @@ void Data::Sort::QuickBubbleSort::Sort(Double *arr, OSInt firstIndex, OSInt last
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(Single *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -208,7 +208,7 @@ void Data::Sort::QuickBubbleSort::Sort(Single *arr, OSInt firstIndex, OSInt last
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortSingle(arr, lo, hi);
+			BubbleSort_SortSingle(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -324,7 +324,7 @@ void Data::Sort::QuickBubbleSort::Sort(Data::IComparable **arr, OSInt firstIndex
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(Int64 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -336,7 +336,7 @@ void Data::Sort::QuickBubbleSort::Sort(Int64 *arr, OSInt firstIndex, OSInt lastI
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortInt64(arr, lo, hi);
+			BubbleSort_SortInt64(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -388,71 +388,7 @@ void Data::Sort::QuickBubbleSort::Sort(Int64 *arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
-{
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
-	void *pivot;
-	void *tmp;
-	void **tmparr;
-
-	while (hi > lo)
-	{
-		if ((hi - lo) <= 6)
-		{
-			BubbleSort_SortCmp(arr, func, lo, hi);
-			return;
-		}
-
-		pivot = arr[(lo + hi) >> 1];
-		arr[(lo + hi) >> 1] = arr[hi];
-		arr[hi--] = pivot;
-
-		while( lo <= hi )
-		{
-			tmparr = &arr[lo];
-			while (func(*tmparr++, pivot) <= 0)
-				if ((++lo) >= hi)
-					break;
-			tmparr = &arr[hi];
-			while (func(pivot, *tmparr--) <= 0)
-				if (lo >= (--hi))
-					break;
-			if (lo < hi)
-			{
-				tmp = arr[lo];
-				arr[lo] = arr[hi];
-				arr[hi] = tmp;
-			}
-		}
-		tmparr = &arr[hi];
-		if (hi < firstIndex || func(*tmparr, pivot) < 0)
-		{
-			arr[lastIndex] = *++tmparr;
-			*tmparr = pivot;
-		}
-		else
-		{
-			arr[lastIndex] = *tmparr;
-			*tmparr = pivot;
-		}
-
-		if ((lo - firstIndex) > (lastIndex - hi))
-		{
-			Sort(arr, func, hi+1, lastIndex);
-			hi = lastIndex = lo - 1;
-			lo = firstIndex;
-		}
-		else
-		{
-			Sort(arr, func, firstIndex, lo-1);
-			lo = firstIndex = hi + 1;
-			hi = lastIndex;
-		}
-	}
-}
-
-void Data::Sort::QuickBubbleSort::SortInv(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -464,7 +400,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Int32 *arr, OSInt firstIndex, OSInt la
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortInt32Inv(arr, lo, hi);
+			BubbleSort_SortInt32Inv(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -516,7 +452,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Int32 *arr, OSInt firstIndex, OSInt la
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -528,7 +464,7 @@ void Data::Sort::QuickBubbleSort::SortInv(UInt32 *arr, OSInt firstIndex, OSInt l
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortUInt32Inv(arr, lo, hi);
+			BubbleSort_SortUInt32Inv(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -580,7 +516,7 @@ void Data::Sort::QuickBubbleSort::SortInv(UInt32 *arr, OSInt firstIndex, OSInt l
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(Double *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Double> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -592,7 +528,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Double *arr, OSInt firstIndex, OSInt l
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortDoubleInv(arr, lo, hi);
+			BubbleSort_SortDoubleInv(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -644,7 +580,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Double *arr, OSInt firstIndex, OSInt l
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(Single *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Single> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -656,7 +592,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Single *arr, OSInt firstIndex, OSInt l
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortSingleInv(arr, lo, hi);
+			BubbleSort_SortSingleInv(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -772,7 +708,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Data::IComparable **arr, OSInt firstIn
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(Int64 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Int64> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
@@ -784,7 +720,7 @@ void Data::Sort::QuickBubbleSort::SortInv(Int64 *arr, OSInt firstIndex, OSInt la
 	{
 		if ((hi - lo) <= 6)
 		{
-			BubbleSort_SortInt64Inv(arr, lo, hi);
+			BubbleSort_SortInt64Inv(arr.Ptr(), lo, hi);
 			return;
 		}
 
@@ -830,70 +766,6 @@ void Data::Sort::QuickBubbleSort::SortInv(Int64 *arr, OSInt firstIndex, OSInt la
 		else
 		{
 			SortInv(arr, firstIndex, lo-1);
-			lo = firstIndex = hi + 1;
-			hi = lastIndex;
-		}
-	}
-}
-
-void Data::Sort::QuickBubbleSort::SortInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
-{
-	OSInt lo = firstIndex;
-	OSInt hi = lastIndex;
-	void *pivot;
-	void *tmp;
-	void **tmparr;
-
-	while (hi > lo)
-	{
-		if ((hi - lo) <= 6)
-		{
-			BubbleSort_SortCmpInv(arr, func, lo, hi);
-			return;
-		}
-
-		pivot = arr[(lo + hi) >> 1];
-		arr[(lo + hi) >> 1] = arr[hi];
-		arr[hi--] = pivot;
-
-		while( lo <= hi )
-		{
-			tmparr = &arr[lo];
-			while (func(*tmparr++, pivot) >= 0)
-				if ((++lo) >= hi)
-					break;
-			tmparr = &arr[hi];
-			while (func(pivot, *tmparr--) >= 0)
-				if (lo >= (--hi))
-					break;
-			if (lo < hi)
-			{
-				tmp = arr[lo];
-				arr[lo] = arr[hi];
-				arr[hi] = tmp;
-			}
-		}
-		tmparr = &arr[hi];
-		if (hi < firstIndex || func(*tmparr, pivot) > 0)
-		{
-			arr[lastIndex] = *++tmparr;
-			*tmparr = pivot;
-		}
-		else
-		{
-			arr[lastIndex] = *tmparr;
-			*tmparr = pivot;
-		}
-
-		if ((lo - firstIndex) > (lastIndex - hi))
-		{
-			SortInv(arr, func, hi+1, lastIndex);
-			hi = lastIndex = lo - 1;
-			lo = firstIndex;
-		}
-		else
-		{
-			SortInv(arr, func, firstIndex, lo-1);
 			lo = firstIndex = hi + 1;
 			hi = lastIndex;
 		}

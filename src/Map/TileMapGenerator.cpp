@@ -213,8 +213,14 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 				mcfg->DrawMap(dimg2, view, &isLayerEmpty, mapSch, resizer, CSTR_NULL, &params);
 				
 				Bool revOrder;
-				UInt8 *imgPtr = dimg2->GetImgBits(revOrder);
-				resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimg->GetImgBits(revOrder), this->imgSize * 4, this->imgSize, this->imgSize);
+				UnsafeArray<UInt8> imgPtr;
+				UnsafeArray<UInt8> dimgPtr;
+				if (dimg2->GetImgBits(revOrder).SetTo(imgPtr) && dimg->GetImgBits(revOrder).SetTo(dimgPtr))
+				{
+					resizer->Resize(imgPtr, (Int32)(this->imgSize * 4 * this->osSize), (Int32)(this->imgSize * this->osSize), (Int32)(this->imgSize * this->osSize), 0, 0, dimgPtr, this->imgSize * 4, this->imgSize, this->imgSize);
+					dimg2->GetImgBitsEnd(false);
+					dimg->GetImgBitsEnd(true);
+				}
 				geng->DeleteImage(dimg2);
 			}
 		}

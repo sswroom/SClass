@@ -1537,17 +1537,16 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				{
 					NN<Math::Geometry::LineString> pl;
 					UOSInt nPoints;
-					Math::Coord2DDbl *ptArr;
-					Double *altArr;
+					UnsafeArray<Math::Coord2DDbl> ptArr;
+					UnsafeArray<Double> altArr;
 
 					NEW_CLASSNN(pl, Math::Geometry::LineString(4326, coord.GetCount(), coord.GetCount() == altList.GetCount(), false));
-					altArr = pl->GetZList(nPoints);
 					ptArr = pl->GetPointList(nPoints);
 					i = coord.GetCount();
-					MemCopyAC(ptArr, coord.Arr().Ptr(), sizeof(Math::Coord2DDbl) * i);
-					if (altArr)
+					MemCopyAC(ptArr.Ptr(), coord.Arr().Ptr(), sizeof(Math::Coord2DDbl) * i);
+					if (pl->GetZList(nPoints).SetTo(altArr))
 					{
-						MemCopyAC(altArr, altList.Arr().Ptr(), sizeof(Double) * i);
+						MemCopyAC(altArr.Ptr(), altList.Arr().Ptr(), sizeof(Double) * i);
 					}
 					vec.Delete();
 					vec = Optional<Math::Geometry::Vector2D>(pl);
@@ -1629,15 +1628,15 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 			{
 				NN<Math::Geometry::LinearRing> lr;
 				UOSInt nPoints;
-				Math::Coord2DDbl *ptArr;
+				UnsafeArray<Math::Coord2DDbl> ptArr;
+				UnsafeArray<Double> zList;
 
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, coord.GetCount(), altList.GetCount() == coord.GetCount(), false));
 				ptArr = lr->GetPointList(nPoints);
-				MemCopyNO(ptArr, coord.Arr().Ptr(), sizeof(Math::Coord2DDbl) * coord.GetCount());
-				if (altList.GetCount() == coord.GetCount())
+				MemCopyNO(ptArr.Ptr(), coord.Arr().Ptr(), sizeof(Math::Coord2DDbl) * coord.GetCount());
+				if (altList.GetCount() == coord.GetCount() && lr->GetZList(nPoints).SetTo(zList))
 				{
-					Double *zList = lr->GetZList(nPoints);
-					MemCopyNO(zList, altList.Arr().Ptr(), sizeof(Double) * nPoints);
+					MemCopyNO(zList.Ptr(), altList.Arr().Ptr(), sizeof(Double) * nPoints);
 				}
 				pg->AddGeometry(lr);
 			}

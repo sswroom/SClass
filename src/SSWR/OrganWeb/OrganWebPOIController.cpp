@@ -30,7 +30,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcLang(NN<Net::WebServer:
 		while (it.HasNext())
 		{
 			key = it.Next();
-			json.ObjectAddStr(key->ToCString(), lang->GetValue(key).OrNull());
+			json.ObjectAddStrOpt(key->ToCString(), lang->GetValue(key));
 		}
 	}
 	return me->ResponseJSON(req, resp, 0, json.Build());

@@ -973,7 +973,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 
 	Math::Coord2DDbl pt;
 	Math::Coord2DDbl nearPt;
-	Math::Coord2DDbl *points;
+	UnsafeArray<Math::Coord2DDbl> points;
 	UOSInt nPoints;
 	Int32 ix;
 	Int32 iy;

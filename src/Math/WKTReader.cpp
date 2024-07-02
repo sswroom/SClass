@@ -197,21 +197,20 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 		}
 		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 		UOSInt i;
-		Math::Coord2DDbl *ptArr = pl->GetPointList(i);
-		MemCopyNO(ptArr, ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
-		if (hasM)
+		UnsafeArray<Math::Coord2DDbl> ptArr = pl->GetPointList(i);
+		MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
+		UnsafeArray<Double> zArr;
+		UnsafeArray<Double> mArr;
+		if (hasM && pl->GetZList(i).SetTo(zArr) && pl->GetMList(i).SetTo(mArr))
 		{
-			Double *zArr = pl->GetZList(i);
-			Double *mArr = pl->GetMList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem(i << 1);
 				mArr[i] = zList.GetItem((i << 1) + 1);
 			}
 		}
-		else if (hasZ)
+		else if (hasZ && pl->GetZList(i).SetTo(zArr))
 		{
-			Double *zArr = pl->GetZList(i);
 			while (i-- > 0)
 			{
 				zArr[i] = zList.GetItem(i);
@@ -326,21 +325,20 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 			else
 				l = ptOfstList.GetItem(i) << 1;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
-			Math::Coord2DDbl *ptArr = lr->GetPointList(m);
-			MemCopyNO(ptArr, ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
-			if (hasM)
+			UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(m);
+			MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
+			UnsafeArray<Double> zArr;
+			UnsafeArray<Double> mArr;
+			if (hasM && lr->GetZList(m).SetTo(zArr) && lr->GetMList(m).SetTo(mArr))
 			{
-				Double *zArr = lr->GetZList(m);
-				Double *mArr = lr->GetMList(m);
 				while (m-- > 0)
 				{
 					zArr[m] = zList.GetItem(((k >> 1) + m) << 1);
 					mArr[m] = zList.GetItem((((k >> 1) + m) << 1) + 1);
 				}
 			}
-			else if (hasZ)
+			else if (hasZ && lr->GetZList(m).SetTo(zArr))
 			{
-				Double *zArr = lr->GetZList(m);
 				while (m-- > 0)
 				{
 					zArr[m] = zList.GetItem((k >> 1) + m);
@@ -435,21 +433,20 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 			}
 			NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, ptList.GetCount() >> 1, hasZ, hasM));
 			UOSInt i;
-			Math::Coord2DDbl *ptArr = lineString->GetPointList(i);
-			MemCopyNO(ptArr, ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
-			if (hasM)
+			UnsafeArray<Math::Coord2DDbl> ptArr = lineString->GetPointList(i);
+			MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
+			UnsafeArray<Double> zArr;
+			UnsafeArray<Double> mArr;
+			if (hasM && lineString->GetZList(i).SetTo(zArr) && lineString->GetMList(i).SetTo(mArr))
 			{
-				Double *zArr = lineString->GetZList(i);
-				Double *mArr = lineString->GetMList(i);
 				while (i-- > 0)
 				{
 					zArr[i] = zList.GetItem((i << 1));
 					mArr[i] = zList.GetItem((i << 1) + 1);
 				}
 			}
-			else if (hasZ)
+			else if (hasZ && lineString->GetZList(i).SetTo(zArr))
 			{
-				Double *zArr = lineString->GetZList(i);
 				while (i-- > 0)
 				{
 					zArr[i] = zList.GetItem(i);
@@ -600,21 +597,20 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 				else
 					l = ptOfstList.GetItem(i) << 1;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
-				Math::Coord2DDbl *ptArr = lr->GetPointList(m);
-				MemCopyNO(ptArr, ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
-				if (hasM)
+				UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(m);
+				MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
+				UnsafeArray<Double> zArr;
+				UnsafeArray<Double> mArr;
+				if (hasM && lr->GetZList(m).SetTo(zArr) && lr->GetMList(m).SetTo(mArr))
 				{
-					Double *zArr = lr->GetZList(m);
-					Double *mArr = lr->GetMList(m);
 					while (m-- > 0)
 					{
 						zArr[m] = zList.GetItem(((k >> 1) + m) << 1);
 						mArr[m] = zList.GetItem((((k >> 1) + m) << 1) + 1);
 					}
 				}
-				else if (hasZ)
+				else if (hasZ && lr->GetZList(m).SetTo(zArr))
 				{
-					Double *zArr = lr->GetZList(m);
 					while (m-- > 0)
 					{
 						zArr[m] = zList.GetItem((k >> 1) + m);

@@ -128,7 +128,7 @@ Bool Map::LeveledMapView::InViewXY(Math::Coord2DDbl mapPos) const
 	return mapPos >= this->tl && mapPos < this->br;
 }
 
-Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
+Bool Map::LeveledMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -146,8 +146,8 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coo
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		destArr[0].x = thisX = Double2Int32((srcArr->x  - dleft) * mul.x + ofst.x);
-		destArr[0].y = thisY = Double2Int32((dbottom - srcArr->y) * mul.y + ofst.y);
+		destArr[0].x = thisX = Double2Int32((srcArr[0].x  - dleft) * mul.x + ofst.x);
+		destArr[0].y = thisY = Double2Int32((dbottom - srcArr[0].y) * mul.y + ofst.y);
 		srcArr++;
 		destArr++;
 		if (iminX == 0 && imaxX == 0)
@@ -170,7 +170,7 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coo
 	return (imaxX >= 0) && (iminX < (OSInt)scnSize.x) && (imaxY >= 0) && (iminY < (OSInt)scnSize.y);
 }
 
-Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
+Bool Map::LeveledMapView::MapXYToScnXY(UnsafeArray<const Math::Coord2DDbl> srcArr, UnsafeArray<Math::Coord2DDbl> destArr, UOSInt nPoints, Math::Coord2DDbl ofst) const
 {
 	if (nPoints == 0)
 	{
@@ -187,7 +187,7 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coo
 	Math::Coord2DDbl thisPt;
 	while (nPoints-- > 0)
 	{
-		destArr[0] = thisPt = Math::Coord2DDbl(srcArr->x  - dleft, dbottom - srcArr->y) * mul + ofst;
+		destArr[0] = thisPt = Math::Coord2DDbl(srcArr[0].x  - dleft, dbottom - srcArr[0].y) * mul + ofst;
 		destArr++;
 		srcArr++;
 		if (iminX == 0 && imaxX == 0)
@@ -210,7 +210,7 @@ Bool Map::LeveledMapView::MapXYToScnXY(const Math::Coord2DDbl *srcArr, Math::Coo
 	return (imaxX >= 0) && (iminX < scnSize.x) && (imaxY >= 0) && (iminY < scnSize.y);
 }
 
-Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
+Bool Map::LeveledMapView::IMapXYToScnXY(Double mapRate, UnsafeArray<const Math::Coord2D<Int32>> srcArr, UnsafeArray<Math::Coord2D<Int32>> destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const
 {
 	if (nPoints == 0)
 	{

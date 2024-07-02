@@ -5,11 +5,11 @@
 #include "Data/Sort/QuickBubbleSort.h"
 #include <stdlib.h>
 
-void Data::ArrayListDate::Init(UOSInt Capacity)
+void Data::ArrayListDate::Init(UOSInt capacity)
 {
 	objCnt = 0;
-	this->capacity = Capacity;
-	arr = MemAlloc(Int64, Capacity);
+	this->capacity = capacity;
+	arr = MemAllocArr(Int64, capacity);
 }
 
 Data::ArrayListDate::ArrayListDate()
@@ -17,50 +17,49 @@ Data::ArrayListDate::ArrayListDate()
 	Init(40);
 }
 
-Data::ArrayListDate::ArrayListDate(UOSInt Capacity)
+Data::ArrayListDate::ArrayListDate(UOSInt capacity)
 {
 	Init(Capacity);
 }
 
 Data::ArrayListDate::~ArrayListDate()
 {
-	MemFree(arr);
-	arr = 0;
+	MemFreeArr(arr);
 }
 
-UOSInt Data::ArrayListDate::Add(Data::DateTime *Val)
+UOSInt Data::ArrayListDate::Add(NN<Data::DateTime> val)
 {
 	UOSInt ret;
 	if (objCnt == this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity << 1);
 		UOSInt i = this->capacity;
 		while (i-- > 0)
 		{
 			newArr[i] = arr[i];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(arr);
+		MemFreeArr(arr);
 		arr = newArr;
 	}
-	arr[ret = objCnt++] = Val->ToTicks();
+	arr[ret = objCnt++] = val->ToTicks();
 	return ret;
 }
 
-void Data::ArrayListDate::AddRange(const ArrayListDate * arr)
+void Data::ArrayListDate::AddAll(NN<const ArrayListDate> arr)
 {
 	UOSInt i;
 	UOSInt j;
 	while (objCnt + arr->GetCount() >= this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity << 1);
 		i = objCnt;
 		while (i-- > 0)
 		{
 			newArr[i] = this->arr[i];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(this->arr);
+		MemFreeArr(this->arr);
 		this->arr = newArr;
 	}
 	i = objCnt + arr->GetCount();
@@ -72,45 +71,45 @@ void Data::ArrayListDate::AddRange(const ArrayListDate * arr)
 	this->objCnt += arr->objCnt;
 }
 
-void Data::ArrayListDate::AddRange(const Data::DateTime **arr, UOSInt cnt)
+void Data::ArrayListDate::AddRange(UnsafeArray<NN<const Data::DateTime>> arr, UOSInt cnt)
 {
 	UOSInt i;
 	UOSInt j;
 	while (objCnt + cnt >= this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity << 1);
 		i = objCnt;
 		while (i-- > 0)
 		{
 			newArr[i] = this->arr[i];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(this->arr);
+		MemFreeArr(this->arr);
 		this->arr = newArr;
 	}
 	i = objCnt + cnt;
 	j = cnt;
 	while (j-- > 0)
 	{
-		this->arr[--i] = ((Data::DateTime*)arr[j])->ToTicks();
+		this->arr[--i] = NN<Data::DateTime>::ConvertFrom(arr[j])->ToTicks();
 	}
 	this->objCnt += cnt;
 }
 
-void Data::ArrayListDate::GetItem(UOSInt Index, Data::DateTime *ValOut) const
+void Data::ArrayListDate::GetItem(UOSInt index, NN<Data::DateTime> valOut) const
 {
-	*ValOut = this->arr[Index];
+	valOut->SetTicks(this->arr[index]);
 }
 
-void Data::ArrayListDate::SetItem(UOSInt Index, Data::DateTime *Val)
+void Data::ArrayListDate::SetItem(UOSInt index, NN<Data::DateTime> val)
 {
-	if (Index == objCnt)
+	if (index == objCnt)
 	{
-		Add(Val);
+		Add(val);
 	}
-	else if (Index < objCnt)
+	else if (index < objCnt)
 	{
-		this->arr[Index] = Val->ToTicks();
+		this->arr[index] = val->ToTicks();
 	}
 	else
 	{
@@ -128,10 +127,11 @@ void Data::ArrayListDate::Clear()
 	this->objCnt = 0;
 }
 
-Data::ArrayListDate *Data::ArrayListDate::Clone() const
+NN<Data::ArrayListDate> Data::ArrayListDate::Clone() const
 {
-	Data::ArrayListDate *newArr = new Data::ArrayListDate(this->capacity);
-	newArr->AddRange(this);
+	NN<Data::ArrayListDate> newArr;
+	NEW_CLASSNN(newArr, Data::ArrayListDate(this->capacity));
+	newArr->AddAll(*this);
 	return newArr;
 }
 
@@ -156,38 +156,38 @@ void Data::ArrayListDate::RemoveAt(UOSInt index)
 	arr[--objCnt] = 0;
 }
 
-void Data::ArrayListDate::Insert(UOSInt Index, Data::DateTime *Val)
+void Data::ArrayListDate::Insert(UOSInt index, NN<Data::DateTime> val)
 {
 	UOSInt j;
 	if (objCnt == this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity << 1);
 		j = this->objCnt;
 		while (j-- > 0)
 		{
 			newArr[j] = this->arr[j];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(arr);
+		MemFreeArr(arr);
 		arr = newArr;
 	}
 	j = objCnt;
-	while (j > Index)
+	while (j > index)
 	{
 		arr[j] = arr[j - 1];
 		j--;
 	}
 	objCnt++;
-	arr[Index] = Val->ToTicks();
+	arr[index] = val->ToTicks();
 }
 
-UOSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
+UOSInt Data::ArrayListDate::SortedInsert(NN<Data::DateTime> val)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	Int64 l;
-	Int64 ts = Val->ToTicks();
+	Int64 ts = val->ToTicks();
 	i = 0;
 	j = objCnt - 1;
 	while (i <= j)
@@ -211,14 +211,14 @@ UOSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
 
 	if (objCnt == this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity << 1);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity << 1);
 		k = (OSInt)this->objCnt;
 		while (k-- > 0)
 		{
 			newArr[k] = arr[k];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(arr);
+		MemFreeArr(arr);
 		arr = newArr;
 	}
 	j =(OSInt)objCnt;
@@ -232,13 +232,13 @@ UOSInt Data::ArrayListDate::SortedInsert(Data::DateTime *Val)
 	return (UOSInt)i;
 }
 
-OSInt Data::ArrayListDate::SortedIndexOf(Data::DateTime *Val) const
+OSInt Data::ArrayListDate::SortedIndexOf(NN<Data::DateTime> Val) const
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	Int64 l;
-	Int64 ts = Val->ToTicks();
+	Int64 ts = val->ToTicks();
 	i = 0;
 	j = objCnt - 1;
 	while (i <= j)
@@ -261,9 +261,9 @@ OSInt Data::ArrayListDate::SortedIndexOf(Data::DateTime *Val) const
 	return -i - 1;
 }
 
-UOSInt Data::ArrayListDate::IndexOf(Data::DateTime *Val) const
+UOSInt Data::ArrayListDate::IndexOf(NN<Data::DateTime> val) const
 {
-	Int64 ts = Val->ToTicks();
+	Int64 ts = val->ToTicks();
 	UOSInt i = objCnt;
 	while (i-- > 0)
 		if (arr[i] == ts)

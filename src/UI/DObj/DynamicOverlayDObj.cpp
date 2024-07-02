@@ -87,23 +87,28 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 			{
 				bmpTmp->SetAlphaType(bmp1->GetAlphaType());
 				Bool revOrder;
-				UInt8 *ptrS1 = bmp1->GetImgBits(revOrder);
-				UInt8 *ptrS2 = bmp2->GetImgBits(revOrder);
-				UInt8 *ptrD = bmpTmp->GetImgBits(revOrder);
-				UOSInt lineBytes = bmp1->GetWidth() * 4;
-				UOSInt i;
-				UOSInt j = bmp1->GetHeight();
-				Double a1 = this->alpha;
-				Double a2 = 1 - this->alpha; 
-				while (j-- > 0)
+				UnsafeArray<UInt8> ptrS1;
+				UnsafeArray<UInt8> ptrS2;
+				UnsafeArray<UInt8> ptrD;
+				if (bmp1->GetImgBits(revOrder).SetTo(ptrS1) && bmp2->GetImgBits(revOrder).SetTo(ptrS2) && bmpTmp->GetImgBits(revOrder).SetTo(ptrD))
 				{
-					i = lineBytes;
-					while (i-- > 0)
+					UOSInt lineBytes = bmp1->GetWidth() * 4;
+					UOSInt i;
+					UOSInt j = bmp1->GetHeight();
+					Double a1 = this->alpha;
+					Double a2 = 1 - this->alpha; 
+					while (j-- > 0)
 					{
-						*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+						i = lineBytes;
+						while (i-- > 0)
+						{
+							*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+						}
 					}
+					bmp1->GetImgBitsEnd(false);
+					bmp2->GetImgBitsEnd(false);
+					bmpTmp->GetImgBitsEnd(true);
 				}
-
 				dimg->DrawImagePt(bmpTmp, tl);
 				this->deng->DeleteImage(bmpTmp);
 			}

@@ -306,9 +306,9 @@ UOSInt Math::GeometryTool::BoundPolygonX(const Int32 *points, UOSInt nPoints, In
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonY(const Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
+UOSInt Math::GeometryTool::BoundPolygonY(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> pointOut, Double minY, Double maxY, Math::Coord2DDbl ofst)
 {
-	Math::Coord2DDbl *pointsCurr = pointOut;
+	UnsafeArray<Math::Coord2DDbl> pointsCurr = pointOut;
 	Math::Coord2DDbl lastPt;
 	Math::Coord2DDbl thisPt;
 	OSInt yStat;
@@ -425,9 +425,9 @@ UOSInt Math::GeometryTool::BoundPolygonY(const Math::Coord2DDbl *points, UOSInt 
 	return (UOSInt)((pointsCurr - pointOut) >> 1);
 }
 
-UOSInt Math::GeometryTool::BoundPolygonX(const Math::Coord2DDbl *points, UOSInt nPoints, Math::Coord2DDbl *pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
+UOSInt Math::GeometryTool::BoundPolygonX(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> pointOut, Double minX, Double maxX, Math::Coord2DDbl ofst)
 {
-	Math::Coord2DDbl *pointsCurr = pointOut;
+	UnsafeArray<Math::Coord2DDbl> pointsCurr = pointOut;
 	Math::Coord2DDbl lastPt;
 	Math::Coord2DDbl thisPt;
 	Double xStat;
@@ -1036,7 +1036,7 @@ Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84
 			NN<Math::Geometry::LinearRing> lr;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(3857, nPoints + 1, false, false));
 			UOSInt pgNPt;
-			Math::Coord2DDbl *ptArr = lr->GetPointList(pgNPt);
+			UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(pgNPt);
 			Double pi2 = Math::PI * 2;
 			Double angle;
 			UOSInt i = 0;

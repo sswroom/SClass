@@ -50,9 +50,12 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 			dimg->DelFont(f);
 
 			Bool revOrder;
-			UInt8 *bmpPtr = dimg->GetImgBits(revOrder);
-			ImageUtil_ColorReplace32A2(bmpPtr, dimg->GetWidth(), dimg->GetHeight(), this->fontColor);
-			dimg->GetImgBitsEnd(true);
+			UnsafeArray<UInt8> bmpPtr;
+			if (dimg->GetImgBits(revOrder).SetTo(bmpPtr))
+			{
+				ImageUtil_ColorReplace32A2(bmpPtr.Ptr(), dimg->GetWidth(), dimg->GetHeight(), this->fontColor);
+				dimg->GetImgBitsEnd(true);
+			}
 			dimg->SetAlphaType(Media::AT_ALPHA);
 	/*
 			UInt8 *imgPtr = (UInt8*)((Media::GDIImage*)this->dimg)->bmpBits;

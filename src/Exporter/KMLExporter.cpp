@@ -227,13 +227,13 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-					Math::Coord2DDbl *points = pl->GetPointList(nPoints);
+					UnsafeArray<Math::Coord2DDbl> points = pl->GetPointList(nPoints);
+					UnsafeArray<Double> alts;
 					if (needConv)
 					{
 						Math::Vector3 v;
-						if (vec->HasZ())
+						if (vec->HasZ() && pl->GetZList(nPoints).SetTo(alts))
 						{
-							Double *alts = pl->GetZList(nPoints);
 							k = 0;
 							while (k < nPoints)
 							{
@@ -274,9 +274,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					}
 					else
 					{
-						if (vec->HasZ())
+						if (vec->HasZ() && pl->GetZList(nPoints).SetTo(alts))
 						{
-							Double *alts = pl->GetZList(nPoints);
 							k = 0;
 							while (k < nPoints)
 							{
@@ -337,13 +336,13 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					while (it.HasNext())
 					{
 						lineString = it.Next();
-						Math::Coord2DDbl *points = lineString->GetPointList(nPoints);
+						UnsafeArray<Math::Coord2DDbl> points = lineString->GetPointList(nPoints);
+						UnsafeArray<Double> alts;
 						if (needConv)
 						{
 							Math::Vector3 v;
-							if (lineString->HasZ())
+							if (lineString->HasZ() && lineString->GetZList(nPoints).SetTo(alts))
 							{
-								Double *alts = lineString->GetZList(nPoints);
 								k = 0;
 								while (k < nPoints)
 								{
@@ -384,9 +383,8 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						}
 						else
 						{
-							if (lineString->HasZ())
+							if (lineString->HasZ() && lineString->GetZList(nPoints).SetTo(alts))
 							{
-								Double *alts = lineString->GetZList(nPoints);
 								k = 0;
 								while (k < nPoints)
 								{
@@ -447,7 +445,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
 					sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
-					Math::Coord2DDbl *points;
+					UnsafeArray<Math::Coord2DDbl> points;
 					NN<Math::Geometry::LinearRing> lr;
 
 					if (needConv)
