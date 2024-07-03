@@ -431,8 +431,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 
 //-------------------------------------------------------------------------------
-	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
-	if (smbios)
+	NN<IO::SMBIOS> smbios;
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
 		console->WriteLine();
 		writer->WriteLine();
@@ -443,7 +443,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		console->WriteLine(sb.ToCString());
 		writer->WriteLine(sb.ToCString());
 
-		DEL_CLASS(smbios);
+		smbios.Delete();
 	}
 //-------------------------------------------------------------------------------
 	IO::PowerInfo::PowerStatus pstatus;

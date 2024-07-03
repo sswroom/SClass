@@ -409,8 +409,8 @@ UI::GUIForm::GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientCon
 UI::GUIForm *UI::GUIForm::FindForm(NN<UI::GUICore> ui, const UTF8Char *formName)
 {
 	HWND hWnd;
-	const WChar *wptr = Text::StrToWCharNew(formName);
-	hWnd = FindWindowW(L"WinForm", wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(formName);
+	hWnd = FindWindowW(L"WinForm", wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (hWnd == 0)
 		return 0;
@@ -656,8 +656,8 @@ void UI::GUIForm::Close()
 
 void UI::GUIForm::SetText(Text::CStringNN text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)this->hwnd, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
+	SetWindowTextW((HWND)this->hwnd, wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 

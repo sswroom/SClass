@@ -33,8 +33,8 @@ namespace Media
 			IPin *pin2;
 			FrameCallback cb;
 			FrameChangeCallback fcCb;
-			const WChar *devName;
-			const WChar *displayName;
+			UnsafeArray<const WChar> devName;
+			UnsafeArrayOpt<const WChar> displayName;
 
 		public:
 			DShowVideoCapture(IBaseFilter *baseFilter, IPropertyBag *pPropBag, const WChar *devName, const WChar *displayName);
@@ -70,7 +70,7 @@ namespace Media
 			~DShowVideoCaptureMgr();
 			UOSInt GetDeviceCount();
 			UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devNo);
-			WChar *GetDeviceId(WChar *buff, UOSInt devNo);
+			UnsafeArrayOpt<WChar> GetDeviceId(UnsafeArray<WChar> buff, UOSInt devNo);
 			DShowVideoCapture *GetDevice(UOSInt devNo);
 		};
 	}

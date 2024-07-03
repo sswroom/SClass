@@ -7,7 +7,7 @@ namespace IO
 	class SMBIOSUtil
 	{
 	public:
-		static SMBIOS *GetSMBIOS();
+		static Optional<SMBIOS> GetSMBIOS();
 	};
 }
 #endif

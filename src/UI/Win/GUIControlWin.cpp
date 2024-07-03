@@ -34,8 +34,8 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const 
 	this->ddpi = 96.0;
 	ReleaseDC((HWND)parentHWnd, hdc);
 
-	const WChar *wptr = Text::StrToWCharNew(txt);
-	this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32(x * this->hdpi / this->ddpi), Double2Int32(y * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parentHWnd, 0, (HINSTANCE)hInst, 0);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(txt);
+	this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32(x * this->hdpi / this->ddpi), Double2Int32(y * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)parentHWnd, 0, (HINSTANCE)hInst, 0);
 	Text::StrDelNew(wptr);
 	this->lxPos = x;
 	this->lyPos = y;
@@ -62,8 +62,8 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientCo
 		}
 		else
 		{
-			const WChar *wptr = Text::StrToWCharNew(nntxt);
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(nntxt);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32((x + ofst.x) * this->hdpi / this->ddpi), Double2Int32((y + ofst.y) * this->hdpi / this->ddpi), Double2Int32(w * this->hdpi / this->ddpi), Double2Int32(h * this->hdpi / this->ddpi), (HWND)nnparent->GetHandle(), 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
 		this->lxPos = x;
@@ -80,8 +80,8 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientCo
 		}
 		else
 		{
-			const WChar *wptr = Text::StrToWCharNew(nntxt);
-			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr, style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst, 0);
+			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(nntxt);
+			this->hwnd = (ControlHandle*)CreateWindowExW(exStyle, className, wptr.Ptr(), style, Double2Int32(x), Double2Int32(y), Double2Int32(w), Double2Int32(h), 0, 0, (HINSTANCE)hInst, 0);
 			Text::StrDelNew(wptr);
 		}
 		ReleaseDC((HWND)this->hwnd, hdc);
@@ -186,8 +186,8 @@ void UI::GUIControl::Close()
 
 void UI::GUIControl::SetText(Text::CStringNN text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)hwnd, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
+	SetWindowTextW((HWND)hwnd, wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 
@@ -789,7 +789,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	}
 	else
 	{
-		const WChar *wptr = Text::StrToWCharNew(fontName->v);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(fontName->v);
 		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img.Ptr())->hdcBmp, wptr, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 		Text::StrDelNew(wptr);
 	}

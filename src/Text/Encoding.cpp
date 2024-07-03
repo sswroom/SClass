@@ -139,7 +139,7 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 	{
 		UInt8 dataBuff[512];
 		UInt8 *tmpPtr;
-		const UInt8 *oriBytes = bytes;
+		UnsafeArray<const UInt8> oriBytes = bytes;
 		tmpPtr = dataBuff;
 		UInt8 b;
 		UInt32 currCP = 850;
@@ -151,7 +151,7 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 				if (tmpPtr > dataBuff)
 				{
 					Int32 iRet = 0;
-					iRet = MultiByteToWideChar(currCP, 0, (LPCSTR)dataBuff, (Int32)(tmpPtr - dataBuff), buff, (Int32)((tmpPtr - dataBuff) * 2 + 2));
+					iRet = MultiByteToWideChar(currCP, 0, (LPCSTR)dataBuff, (Int32)(tmpPtr - dataBuff), buff.Ptr(), (Int32)((tmpPtr - dataBuff) * 2 + 2));
 					if (iRet > 0)
 					{
 						buff += iRet;
@@ -194,7 +194,7 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 		if (tmpPtr > dataBuff)
 		{
 			Int32 iRet = 0;
-			iRet = MultiByteToWideChar(currCP, 0, (LPCSTR)dataBuff, (Int32)(tmpPtr - dataBuff), buff, (Int32)((tmpPtr - dataBuff) * 2 + 2));
+			iRet = MultiByteToWideChar(currCP, 0, (LPCSTR)dataBuff, (Int32)(tmpPtr - dataBuff), buff.Ptr(), (Int32)((tmpPtr - dataBuff) * 2 + 2));
 			if (iRet > 0)
 			{
 				buff += iRet;
@@ -214,36 +214,38 @@ UnsafeArray<WChar> Text::Encoding::WFromBytes(UnsafeArray<WChar> buff, UnsafeArr
 			Int32 iRet = 0;
 			while (iRet <= 0)
 			{
-				iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes, (Int32)convSize, buff, (Int32)size);
+				iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes.Ptr(), (Int32)convSize, buff.Ptr(), (Int32)size);
 				
 				if (iRet <= 0)
 				{
 					//UInt32 err = GetLastError();
-					iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes, (Int32)--convSize, buff, (Int32)size);
+					iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes.Ptr(), (Int32)--convSize, buff.Ptr(), (Int32)size);
 				}
 				if (iRet <= 0)
 				{
-					iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes, (Int32)--convSize, buff, (Int32)size);
+					iRet = MultiByteToWideChar(this->codePage, MB_ERR_INVALID_CHARS, (LPCSTR)bytes.Ptr(), (Int32)--convSize, buff.Ptr(), (Int32)size);
 				}
 				if (iRet <= 0)
 				{
 					if (this->codePage == 65001)
-						return 0;
+					{
+						return Text::StrUTF8_WChar(buff, bytes, 0);
+					}
 					else
 						this->codePage = 65001;
 				}
 			}
 
 			buff[iRet] = 0;
-			buff = &buff[Text::StrCharCnt(buff)];
+			buff = &buff[Text::StrCharCnt(UnsafeArray<const WChar>(buff))];
 			byteConv.SetNoCheck(convSize);
 			return buff;
 		}
 		else
 		{
-			Int32 iRet = MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes, (Int32)byteSize, buff, (Int32)size);
+			Int32 iRet = MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, buff.Ptr(), (Int32)size);
 			if (iRet <= 0)
-				return 0;
+				return Text::StrUTF8_WChar(buff, bytes, 0);
 			else
 			{
 				buff += iRet;
@@ -558,7 +560,7 @@ UOSInt Text::Encoding::WCountBytes(UnsafeArray<const WChar> stri)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri, -1, 0, 0, 0, 0);
+		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri.Ptr(), -1, 0, 0, 0, 0);
 #else
 		return StrWChar_UTF8Cnt(stri) + 1;
 #endif
@@ -582,7 +584,7 @@ UOSInt Text::Encoding::WCountBytesC(UnsafeArray<const WChar> stri, UOSInt strLen
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri, (Int32)strLen, 0, 0, 0, 0);
+		return (UOSInt)WideCharToMultiByte(this->codePage, 0, stri.Ptr(), (Int32)strLen, 0, 0, 0, 0);
 #else
 		return (UOSInt)strLen;
 #endif
@@ -630,7 +632,7 @@ UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const WCha
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		size = 1024;
-		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, -1, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
+		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr.Ptr(), -1, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
 		return (UOSInt)iRet;
 #else
 		return (UOSInt)(Text::StrWChar_UTF8(bytes, wstr) - bytes + 1);
@@ -673,7 +675,7 @@ UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const WCh
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		size = (UOSInt)(strLen * 3);
-		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr, (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
+		Int32 iRet = WideCharToMultiByte(this->codePage, 0, wstr.Ptr(), (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)size, 0, 0);
 		return (UOSInt)iRet;
 #else
 		return (UOSInt)(Text::StrWChar_UTF8C(bytes, wstr, strLen) - bytes);
@@ -728,9 +730,9 @@ UOSInt Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		const WChar *wptr = Text::StrToWCharNew(str);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str);
 		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
-		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, 0, 0, 0, 0) + 1;
+		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)strLen, 0, 0, 0, 0) + 1;
 		Text::StrDelNew(wptr);
 		return ret;
 #else
@@ -927,9 +929,9 @@ UOSInt Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const U
 	else
 	{
 #if defined(_MSC_VER) || defined(__MINGW32__)
-		const WChar *wptr = Text::StrToWCharNew(str);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str);
 		OSInt strLen = (OSInt)Text::StrCharCnt(wptr);
-		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr, (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)(strLen * 3), 0, 0);
+		UOSInt ret = (UOSInt)WideCharToMultiByte(this->codePage, 0, wptr.Ptr(), (Int32)strLen, (LPSTR)bytes.Ptr(), (Int32)(strLen * 3), 0, 0);
 		Text::StrDelNew(wptr);
 		return ret;
 #else
@@ -1157,12 +1159,12 @@ UnsafeArray<const UInt8> Text::Encoding::NextWChar(UnsafeArray<const UInt8> buff
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		if (IsDBCSLeadByteEx(this->codePage, buff[0]))
 		{
-			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff.Ptr(), 2, outputChar, 1);
+			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff.Ptr(), 2, outputChar.Ptr(), 1);
 			return &buff[2];
 		}
 		else
 		{
-			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff.Ptr(), 1, outputChar, 1);
+			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff.Ptr(), 1, outputChar.Ptr(), 1);
 			return &buff[1];
 		}
 #else

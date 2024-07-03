@@ -218,7 +218,7 @@ Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 	return true;
 }
 
-Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(UnsafeArray<const WChar> columnName, Double colWidth)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	if (data->colCnt <= this->colCnt)
@@ -287,7 +287,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListView::AddItem(const WChar *text, AnyType itemObj)
+UOSInt UI::GUIListView::AddItem(UnsafeArray<const WChar> text, AnyType itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);
@@ -331,7 +331,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::CStringNN text)
 	return true;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const WChar *text)
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, UnsafeArray<const WChar> text)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> r;
@@ -387,7 +387,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, AnyTy
 	return index;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, UnsafeArray<const WChar> itemText, AnyType itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> row = MemAllocNN(MyRow);

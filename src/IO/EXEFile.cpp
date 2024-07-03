@@ -247,7 +247,7 @@ Optional<const IO::EXEFile::ResourceInfo> IO::EXEFile::GetResource(UOSInt index)
 	return this->resList.GetItem(index);
 }
 
-Bool IO::EXEFile::GetFileTime(Text::CStringNN fileName, Data::DateTime *fileTimeOut)
+Bool IO::EXEFile::GetFileTime(Text::CStringNN fileName, NN<Data::DateTime> fileTimeOut)
 {
 	UInt8 buff[64];
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

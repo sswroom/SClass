@@ -100,24 +100,24 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 						clsData->devPath = Text::String::NewNotNull(&data2[2]);
 						clsData->product = 0;
 						clsData->vendor = 0;
-						j = Text::StrIndexOf(&data2[2], L"vid_");
+						j = Text::StrIndexOfW(&data2[2], L"vid_");
 						if (j != INVALID_INDEX && data2[2 + 8 + j] == '&')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->vendor = Text::StrHex2UInt16C(&data2[2 + 4 + j]);
+							clsData->vendor = Text::StrHex2UInt16WC(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '&';
 						}
-						j = Text::StrIndexOf(&data2[2], L"pid_");
+						j = Text::StrIndexOfW(&data2[2], L"pid_");
 						if (j != INVALID_INDEX && data2[2 + 8 + j] == '&')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->product = Text::StrHex2UInt16C(&data2[2 + 4 + j]);
+							clsData->product = Text::StrHex2UInt16WC(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '&';
 						}
 						else if (j != INVALID_INDEX && data2[2 + 8 + j] == '#')
 						{
 							data2[2 + 8 + j] = 0;
-							clsData->product = Text::StrHex2UInt16C(&data2[2 + 4 + j]);
+							clsData->product = Text::StrHex2UInt16WC(&data2[2 + 4 + j]);
 							data2[2 + 8 + j] = '#';
 						}
 						
@@ -141,16 +141,15 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptr2;
 		UnsafeArray<UTF8Char> sptr3;
-		IO::Path::FindFileSession *sess;
-		IO::Path::FindFileSession *sess2;
+		NN<IO::Path::FindFileSession> sess;
+		NN<IO::Path::FindFileSession> sess2;
 		IO::Path::PathType pt;
 		Int32 busType;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/hid/devices/"));
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
+		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
-			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+			while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 			{
 				if ((sptr2 - sptr) == 19 && sptr[4] == ':' && sptr[9] == ':' && sptr[14] == '.' && sptr[19] == 0)
 				{
@@ -178,10 +177,9 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 					}
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/hidraw/"));
 					sptr3 = Text::StrConcatC(sptr2, UTF8STRC("hidraw*"));
-					sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
-					if (sess2)
+					if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 					{
-						if (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).NotNull())
+						if (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).NotNull())
 						{
 							sptr3 = Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
 							clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));

@@ -45,7 +45,7 @@ Media::DDCReader::DDCReader(void *hMon)
 			{
 				if (ddMon.StateFlags & DISPLAY_DEVICE_ACTIVE && !(ddMon.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER))
 				{
-					k = Text::StrIndexOfChar(&ddMon.DeviceID[1], '\\') + 2;
+					k = Text::StrIndexOfCharW(&ddMon.DeviceID[1], '\\') + 2;
 					monVID[0] = ddMon.DeviceID[k];
 					monVID[1] = ddMon.DeviceID[k + 1];
 					monVID[2] = ddMon.DeviceID[k + 2];

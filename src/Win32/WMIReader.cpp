@@ -142,7 +142,7 @@ Int32 Win32::WMIReader::GetInt32(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -188,7 +188,7 @@ Int32 Win32::WMIReader::GetInt32(UOSInt colIndex)
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					ret = Text::StrToInt32(bs);
+					ret = Text::StrToInt32W(UnsafeArray<const WChar>(bs));
 				}
 				break;
 			case CIM_DATETIME:
@@ -211,7 +211,7 @@ Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -257,7 +257,7 @@ Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					ret = Text::StrToInt64(bs);
+					ret = Text::StrToInt64W(UnsafeArray<const WChar>(bs));
 				}
 				break;
 			case CIM_DATETIME:
@@ -269,18 +269,18 @@ Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
 	return ret;
 }
 
-WChar *Win32::WMIReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
 		return 0;
 
-	WChar *ret = 0;
+	UnsafeArrayOpt<WChar> ret = 0;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -364,7 +364,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -465,7 +465,7 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -558,7 +558,7 @@ UnsafeArrayOpt<UTF8Char> Win32::WMIReader::GetStr(UOSInt colIndex, UnsafeArray<U
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -645,7 +645,7 @@ Data::Timestamp Win32::WMIReader::GetTimestamp(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -678,7 +678,7 @@ Double Win32::WMIReader::GetDbl(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -753,7 +753,7 @@ UOSInt Win32::WMIReader::GetBinarySize(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -787,7 +787,7 @@ UOSInt Win32::WMIReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		if (V_VT(&v) == VT_NULL)
@@ -832,7 +832,7 @@ Bool Win32::WMIReader::IsNull(UOSInt colIndex)
 	VARIANT v;
 	CIMTYPE t;
 	VariantInit(&v);
-	hr = ((IWbemClassObject*)this->pObject)->Get(col->name, 0, &v, &t, NULL);
+	hr = ((IWbemClassObject*)this->pObject)->Get(col->name.Ptr(), 0, &v, &t, NULL);
 	if (SUCCEEDED(hr))
 	{
 		switch (t)
@@ -969,7 +969,7 @@ Bool Win32::WMIReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	return false;
 }
 
-Int32 Win32::WMIReader::GetInt32(const WChar *colName)
+Int32 Win32::WMIReader::GetInt32(UnsafeArray<const WChar> colName)
 {
 	if (this->pObject == 0)
 	{
@@ -977,7 +977,7 @@ Int32 Win32::WMIReader::GetInt32(const WChar *colName)
 	}
 	Int32 ret = 0;
 
-	BSTR temp = SysAllocString(colName);
+	BSTR temp = SysAllocString(colName.Ptr());
 	HRESULT hr;
 	VARIANT v;
 	VariantInit(&v);
@@ -991,15 +991,15 @@ Int32 Win32::WMIReader::GetInt32(const WChar *colName)
 	return ret;
 }
 
-WChar *Win32::WMIReader::GetStr(const WChar *colName, WChar *buff)
+UnsafeArrayOpt<WChar> Win32::WMIReader::GetStr(UnsafeArray<const WChar> colName, UnsafeArray<WChar> buff)
 {
 	if (this->pObject == 0)
 	{
 		return 0;
 	}
-	WChar *ret = 0;
+	UnsafeArrayOpt<WChar> ret = 0;
 
-	BSTR temp = SysAllocString(colName);
+	BSTR temp = SysAllocString(colName.Ptr());
 	HRESULT hr;
 	VARIANT v;
 	VariantInit(&v);

@@ -22,22 +22,22 @@ namespace IO
 		static void *OpenUserType(RegistryUser usr);
 		static void CloseInternal(void *reg);
 	public:
-		static Registry *OpenSoftware(RegistryUser usr, const WChar *compName, const WChar *appName);
-		static Registry *OpenSoftware(RegistryUser usr, const WChar *compName);
-		static Registry *OpenLocalHardware();
-		static Registry *OpenLocalSoftware(const WChar *softwareName);
-		static void CloseRegistry(IO::Registry *reg);
+		static Optional<Registry> OpenSoftware(RegistryUser usr, UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName);
+		static Optional<Registry> OpenSoftware(RegistryUser usr, UnsafeArray<const WChar> compName);
+		static Optional<Registry> OpenLocalHardware();
+		static Optional<Registry> OpenLocalSoftware(UnsafeArray<const WChar> softwareName);
+		static void CloseRegistry(NN<IO::Registry> reg);
 
 	private:
 		Registry(void *hand);
 		~Registry();
 
 	public:
-		Registry *OpenSubReg(UnsafeArray<const WChar> name);
+		Optional<Registry> OpenSubReg(UnsafeArray<const WChar> name);
 		UnsafeArrayOpt<WChar> GetSubReg(UnsafeArray<WChar> buff, UOSInt index);
 
 		void SetValue(UnsafeArray<const WChar> name, Int32 value);
-		void SetValue(UnsafeArray<const WChar> name, UnsafeArray<const WChar> value);
+		void SetValue(UnsafeArray<const WChar> name, UnsafeArrayOpt<const WChar> value);
 		void DelValue(UnsafeArray<const WChar> name);
 
 		Int32 GetValueI32(UnsafeArray<const WChar> name);

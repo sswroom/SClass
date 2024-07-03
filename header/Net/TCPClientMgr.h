@@ -42,7 +42,7 @@ namespace Net
 			Bool recvDataExist;
 			UInt8 buff[TCP_BUFF_SIZE];
 			UOSInt buffSize;
-			void *readReq;
+			Optional<IO::StreamReadReq> readReq;
 		};
 
 		enum class WorkerState
@@ -73,7 +73,7 @@ namespace Net
 		AnyType userObj;
 		Data::Duration timeout;
 
-		ClassData *clsData;
+		Optional<ClassData> clsData;
 		Bool toStop;
 		Bool clientThreadRunning;
 

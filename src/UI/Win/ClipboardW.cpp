@@ -516,7 +516,7 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
-	const WChar *wptr = Text::StrToWCharNew(s.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(s.v);
 	UOSInt len = Text::StrCharCnt(wptr);
 	HGLOBAL hglbCopy;
 	hglbCopy = GlobalAlloc(GMEM_MOVEABLE, (len + 1) * sizeof(WChar));
@@ -534,7 +534,7 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CStringNN s)
 		return false;
 	}
 	WChar *lptstrCopy = (WChar*)GlobalLock(hglbCopy); 
-	MemCopyNO(lptstrCopy, wptr, (len + 1) * sizeof(WChar));
+	MemCopyNO(lptstrCopy, wptr.Ptr(), (len + 1) * sizeof(WChar));
 	GlobalUnlock(hglbCopy);
 	SetClipboardData(CF_UNICODETEXT, hglbCopy); 
 	CloseClipboard();

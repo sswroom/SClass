@@ -77,8 +77,8 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	this->gisForm = 0;
 	this->ui->SetMonitorMgr(&this->monMgr);
 
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
-	if (reg)
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 	{
 		OSInt i = 0;
 		while (true)
@@ -336,7 +336,6 @@ NN<Media::MonitorMgr> SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 
 void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devList)
 {
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	WChar wbuff[32];
 	UOSInt i;
 	i = this->audDevList.GetCount();
@@ -345,7 +344,8 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devLis
 		OPTSTR_DEL(this->audDevList.GetItem(i));
 	}
 	this->audDevList.Clear();
-	if (reg)
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 	{
 		if (devList == 0)
 		{

@@ -583,9 +583,9 @@ Double Media::GDIPen::GetThick()
 	return 0;
 }*/
 
-Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NN<DrawImage> img, Int32 codePage)
+Media::GDIFont::GDIFont(void *hdc, UnsafeArray<const Char> fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NN<DrawImage> img, Int32 codePage)
 {
-	this->fontName = Text::StrToWCharNew((const UTF8Char*)fontName);
+	this->fontName = Text::StrToWCharNew(UnsafeArray<const UTF8Char>::ConvertFrom(fontName));
 	this->hdc = hdc;
 	this->ptSize = ptSize;
 	this->style = style;
@@ -631,7 +631,7 @@ Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::D
 	this->hfont = CreateFontIndirectW(&lf);
 }
 
-Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NN<DrawImage> img, Int32 codePage)
+Media::GDIFont::GDIFont(void *hdc, UnsafeArray<const WChar> fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NN<DrawImage> img, Int32 codePage)
 {
 	this->hdc = hdc;
 	this->ptSize = ptSize;
@@ -687,7 +687,7 @@ Media::GDIFont::~GDIFont()
 	DeleteObject((HFONT)this->hfont);
 }
 
-const WChar *Media::GDIFont::GetNameW()
+UnsafeArray<const WChar> Media::GDIFont::GetNameW()
 {
 	return this->fontName;
 }
@@ -793,7 +793,7 @@ void Media::GDIImage::SetVDPI(Double dpi)
 	}
 }
 
-UInt8 *Media::GDIImage::GetImgBits(OutParam<Bool> revOrder)
+UnsafeArrayOpt<UInt8> Media::GDIImage::GetImgBits(OutParam<Bool> revOrder)
 {
 	revOrder.Set(true);
 	return (UInt8*)this->bmpBits;
@@ -833,7 +833,7 @@ Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<Dr
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GDIImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p)
 {
 	if (this->currPen != p.Ptr())
 	{
@@ -842,12 +842,12 @@ Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<Draw
 	}
 	if ((((GDIPen*)p.Ptr())->oriColor & 0xff000000))
 	{
-		Polyline((HDC)this->hdcBmp, (POINT*)points, (int)nPoints);
+		Polyline((HDC)this->hdcBmp, (POINT*)points.Ptr(), (int)nPoints);
 	}
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NN<DrawPen> nnp;
 	if (p.SetTo(nnp))
@@ -870,14 +870,14 @@ Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional
 			line2[1] = points[1];
 			line2[2] = points[(nPoints << 1) - 2];
 			line2[3] = points[(nPoints << 1) - 1];
-			PolylineAccel(this->hdcBmp, points, nPoints, left, top, width, height);
+			PolylineAccel(this->hdcBmp, points.Ptr(), nPoints, left, top, width, height);
 			PolylineAccel(this->hdcBmp, line2, 2, left, top, width, height);
 		}
 #else
 		if (p.SetTo(nnp))
 		{
 			MoveToEx((HDC)this->hdcBmp, points[(nPoints << 1) - 2], points[(nPoints << 1) - 1], 0);
-			PolylineTo((HDC)this->hdcBmp, (POINT*)points, (DWORD)nPoints);
+			PolylineTo((HDC)this->hdcBmp, (POINT*)points.Ptr(), (DWORD)nPoints);
 		}
 #endif
 	}
@@ -890,13 +890,13 @@ Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional
 			SelectObject((HDC)this->hdcBmp, (HBRUSH)brush->hbrush);
 		}
 		
-		Polygon((HDC)this->hdcBmp, (POINT*)points, (int)nPoints);
+		Polygon((HDC)this->hdcBmp, (POINT*)points.Ptr(), (int)nPoints);
 	}
 
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	UOSInt i;
 	UInt32 j;
@@ -926,7 +926,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 	NN<DrawBrush> nnb;
 	if (!b.SetTo(nnb))
 	{
-		const Int32 *pts = points;
+		UnsafeArray<const Int32> pts = points;
 		if (p.SetTo(nnp))
 		{
 			i = 0;
@@ -940,11 +940,11 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 				line2[1] = points[1];
 				line2[2] = points[(j << 1) - 2];
 				line2[3] = points[(j << 1) - 1];
-				PolylineAccel(this->hdcBmp, points, j, left, top, width, height);
+				PolylineAccel(this->hdcBmp, points.Ptr(), j, left, top, width, height);
 				PolylineAccel(this->hdcBmp, line2, 2, left, top, width, height);
 #else
 				MoveToEx((HDC)this->hdcBmp, points[(j << 1) - 2], points[(j << 1) - 1], 0);
-				PolylineTo((HDC)this->hdcBmp, (POINT*)points, j);
+				PolylineTo((HDC)this->hdcBmp, (POINT*)points.Ptr(), j);
 #endif
 
 				points += j << 1;
@@ -969,13 +969,13 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 			{
 				j = pointCnt[i];
 
-				PolygonAccel(this->hdcBmp, points, j, this->tl.x, this->tl.y, this->size.x, this->size.y, Double2Int32(penWidth));
+				PolygonAccel(this->hdcBmp, points.Ptr(), j, this->tl.x, this->tl.y, this->size.x, this->size.y, Double2Int32(penWidth));
 
 				points += j << 1;
 				i++;
 			}
 #else
-			PolyPolygonAccel((HDC)this->hdcBmp, points, pointCnt, nPointCnt, this->tl.x, this->tl.y, (OSInt)this->size.x, (OSInt)this->size.y, Double2Int32(penWidth));
+			PolyPolygonAccel((HDC)this->hdcBmp, points.Ptr(), pointCnt.Ptr(), nPointCnt, this->tl.x, this->tl.y, (OSInt)this->size.x, (OSInt)this->size.y, Double2Int32(penWidth));
 #endif
 		}
 		else if (this->bmpBits && (NN<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
@@ -1002,7 +1002,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 				SelectObject(hdcBmp, hBmp);
 				HBRUSH hbr = CreateSolidBrush(0xffffff);
 				SelectObject(hdcBmp, hbr);
-				PolyPolygon(hdcBmp, (POINT*)points, (const Int32*)pointCnt, (Int32)nPointCnt);
+				PolyPolygon(hdcBmp, (POINT*)points.Ptr(), (const Int32*)pointCnt.Ptr(), (Int32)nPointCnt);
 				DeleteObject(hbr);
 
 				UInt32 *sptr = (UInt32*)pbits;
@@ -1019,7 +1019,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 				}
 				if (p.SetTo(nnp))
 				{
-					PolyPolyline((HDC)this->hdcBmp, (POINT*)points, (const DWORD*)pointCnt, (Int32)nPointCnt);
+					PolyPolyline((HDC)this->hdcBmp, (POINT*)points.Ptr(), (const DWORD*)pointCnt.Ptr(), (Int32)nPointCnt);
 				}
 
 				DeleteObject(hBmp);
@@ -1050,7 +1050,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 				SelectObject(hdcBmp, hBmp);
 				HBRUSH hbr = CreateSolidBrush(0xffffff);
 				SelectObject(hdcBmp, hbr);
-				PolyPolygon(hdcBmp, (POINT*)points, (const Int32*)pointCnt, (Int32)nPointCnt);
+				PolyPolygon(hdcBmp, (POINT*)points.Ptr(), (const Int32*)pointCnt.Ptr(), (Int32)nPointCnt);
 				DeleteObject(hbr);
 
 
@@ -1073,7 +1073,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 
 				if (p.SetTo(nnp))
 				{
-					PolyPolyline((HDC)this->hdcBmp, (POINT*)points, (const DWORD*)pointCnt, (Int32)nPointCnt);
+					PolyPolyline((HDC)this->hdcBmp, (POINT*)points.Ptr(), (const DWORD*)pointCnt.Ptr(), (Int32)nPointCnt);
 				}
 
 				DeleteObject(hBmp);
@@ -1085,7 +1085,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NN<DrawPen> p)
+Bool Media::GDIImage::DrawPolyline(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, NN<DrawPen> p)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1100,7 +1100,7 @@ Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoint
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolygon(UnsafeArray<const Math::Coord2DDbl> points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1115,7 +1115,7 @@ Bool Media::GDIImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints
 	return ret;
 }
 
-Bool Media::GDIImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
+Bool Media::GDIImage::DrawPolyPolygon(UnsafeArray<const Math::Coord2DDbl> points, UnsafeArray<const UInt32> pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	UOSInt i = 0;
 	UOSInt j = nPointCnt;
@@ -1333,7 +1333,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 
 Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b)
 {
-	const WChar *wptr = Text::StrToWCharNew(str->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str->v);
 	Bool ret = this->DrawStringW(tl, wptr, f, b);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -1341,16 +1341,16 @@ Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<D
 
 Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
-	const WChar *wptr = Text::StrToWCharNew(str.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str.v);
 	Bool ret = this->DrawStringW(tl, wptr, f, b);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NN<DrawFont> f, NN<DrawBrush> b)
+Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, UnsafeArray<const WChar> str, NN<DrawFont> f, NN<DrawBrush> b)
 {
 	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
-	const WChar *src = str;
+	UnsafeArray<const WChar> src = str;
 	while (*src++);
 	if (this->bmpBits == 0 || (this->info.atype == Media::AT_NO_ALPHA && (brush->oriColor & 0xff000000) == 0xff000000))
 	{
@@ -1371,9 +1371,9 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NN<Draw
 			sz.y = 0;
 		}
 #ifdef _WIN32_WCE
-		ExtTextOut((HDC)this->hdcBmp, Double2Int32(tl.x), Double2Int32(tl.y - (sz.y * 0.5)), 0, 0, str, (Int32)(src - str - 1), 0);
+		ExtTextOut((HDC)this->hdcBmp, Double2Int32(tl.x), Double2Int32(tl.y - (sz.y * 0.5)), 0, 0, str.Ptr(), (Int32)(src - str - 1), 0);
 #else
-		TextOutW((HDC)this->hdcBmp, Double2Int32(tl.x), Double2Int32(tl.y - (sz.y * 0.5)), str, (Int32)(src - str - 1));
+		TextOutW((HDC)this->hdcBmp, Double2Int32(tl.x), Double2Int32(tl.y - (sz.y * 0.5)), str.Ptr(), (Int32)(src - str - 1));
 #endif
 	}
 	else
@@ -1422,7 +1422,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NN<Draw
 
 Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
-	const WChar *wptr = Text::StrToWCharNew(str->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str->v);
 	Bool ret = this->DrawStringRotW(center, wptr, f, b, angleDegree);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -1430,17 +1430,17 @@ Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NN<Text::String> st
 
 Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
-	const WChar *wptr = Text::StrToWCharNew(str.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str.v);
 	Bool ret = this->DrawStringRotW(center, wptr, f, b, angleDegree);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, UnsafeArray<const WChar> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
 	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
-	const WChar *src = str;
+	UnsafeArray<const WChar> src = str;
 	while (*src++);
 
 	SetTextColor((HDC)this->hdcBmp, brush->color);
@@ -1475,7 +1475,7 @@ Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, 
 	OSInt py;
 	GetStringBoundRotW(bnds, Double2Int32(center.x), Double2Int32(center.y), str, f, angleDegree, px, py);
 	HGDIOBJ ofont = SelectObject((HDC)this->hdcBmp, (HFONT)hfont);
-	TextOutW((HDC)this->hdcBmp, (int)px, (int)py, str, (Int32)(src - str - 1));
+	TextOutW((HDC)this->hdcBmp, (int)px, (int)py, str.Ptr(), (Int32)(src - str - 1));
 	SelectObject((HDC)this->hdcBmp, ofont);
 	DeleteObject(hfont);
 	return true;
@@ -1483,7 +1483,7 @@ Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, 
 
 Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
-	const WChar *wptr = Text::StrToWCharNew(str1->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str1->v);
 	Bool ret = DrawStringBW(tl, wptr, f, b, buffSize);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -1491,18 +1491,18 @@ Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str1, NN
 
 Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
-	const WChar *wptr = Text::StrToWCharNew(str1.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str1.v);
 	Bool ret = DrawStringBW(tl, wptr, f, b, buffSize);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, UnsafeArray<const WChar> str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
 	OSInt px = Double2Int32(tl.x);
 	OSInt py = Double2Int32(tl.y);
 	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
-	const WChar *src = str1;
+	UnsafeArray<const WChar> src = str1;
 	while (*src++);
 
 	OSInt drawX;
@@ -1621,9 +1621,9 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NN<Dr
 				SelectObject((HDC)gimg->hdcBmp, (HFONT)font->hfont);
 			}
 #ifdef _WIN32_WCE
-			ExtTextOut((HDC)gimg->hdcBmp, drawX + buffSize, drawY + buffSize, 0, 0, str1, (Int32)(src - str1 - 1), 0);
+			ExtTextOut((HDC)gimg->hdcBmp, drawX + buffSize, drawY + buffSize, 0, 0, str1.Ptr(), (Int32)(src - str1 - 1), 0);
 #else
-			TextOutW((HDC)gimg->hdcBmp, (int)(drawX + buffSize), (int)(drawY + buffSize), str1, (Int32)(src - str1 - 1));
+			TextOutW((HDC)gimg->hdcBmp, (int)(drawX + buffSize), (int)(drawY + buffSize), str1.Ptr(), (Int32)(src - str1 - 1));
 #endif
 
 			OSInt bpl = (sz[0] + (buffSize << 1)) << 2;
@@ -1676,7 +1676,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NN<Dr
 
 Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
-	const WChar *wptr = Text::StrToWCharNew(str1->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str1->v);
 	Bool ret = this->DrawStringRotBW(center, wptr, f, b, angleDegree, buffSize);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -1684,18 +1684,18 @@ Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> s
 
 Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
-	const WChar *wptr = Text::StrToWCharNew(str1.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str1.v);
 	Bool ret = this->DrawStringRotBW(center, wptr, f, b, angleDegree, buffSize);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, UnsafeArray<const WChar> str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
 	OSInt px = Double2Int32(center.x);
 	OSInt py = Double2Int32(center.y);
 	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
-	const WChar *src = str1;
+	UnsafeArray<const WChar> src = str1;
 	while (*src++);
 
 	OSInt drawX;
@@ -1831,7 +1831,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1
 			hfont = CreateFontIndirectW(&lf);
 
 			HGDIOBJ ofont = SelectObject((HDC)gimg->hdcBmp, (HFONT)hfont);
-			TextOutW((HDC)gimg->hdcBmp, (int)(drawX + buffSize), (int)(drawY + buffSize), str1, (Int32)(src - str1 - 1));
+			TextOutW((HDC)gimg->hdcBmp, (int)(drawX + buffSize), (int)(drawY + buffSize), str1.Ptr(), (Int32)(src - str1 - 1));
 			SelectObject((HDC)gimg->hdcBmp, ofont);
 			DeleteObject(hfont);
 
@@ -2242,13 +2242,14 @@ Bool Media::GDIImage::DrawImageRect(NN<DrawImage> img, OSInt tlx, OSInt tly, OSI
 	return true;
 }
 
-NN<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UnsafeArrayOpt<UInt8> pattern, UOSInt nPattern)
 {
 	if (thick < 1)
 		thick = 1;
 	HPEN hpen;
 	DWORD *dwPattern = 0;
-	if (nPattern == 0)
+	UnsafeArray<UInt8> nnpattern;
+	if (nPattern == 0 || !pattern.SetTo(nnpattern))
 	{
 		hpen = CreatePen(PS_SOLID, Double2Int32(thick), GDIEGetCol(color));
 	}
@@ -2270,7 +2271,7 @@ NN<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8
 		OSInt i = nPattern;
 		while (i-- > 0)
 		{
-			dwPattern[i] = pattern[i];
+			dwPattern[i] = nnpattern[i];
 		}
 		hpen = ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE | PS_ENDCAP_ROUND, Double2Int32(thick), &lb, (UInt32)nPattern, dwPattern);
 #endif
@@ -2291,13 +2292,13 @@ NN<Media::DrawBrush> Media::GDIImage::NewBrushARGB(UInt32 color)
 NN<Media::DrawFont> Media::GDIImage::NewFontPt(Text::CStringNN name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<GDIFont> f;
-	const WChar *wptr = Text::StrToWCharNew(name.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, wptr, ptSize, fontStyle, *this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
 
-NN<Media::DrawFont> Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPtW(UnsafeArray<const WChar> name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<GDIFont> f;
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, name, ptSize, fontStyle, *this, codePage));
@@ -2307,13 +2308,13 @@ NN<Media::DrawFont> Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize
 NN<Media::DrawFont> Media::GDIImage::NewFontPx(Text::CStringNN name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<GDIFont> f;
-	const WChar *wptr = Text::StrToWCharNew(name.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, wptr, pxSize * 72.0 / this->info.hdpi, fontStyle, *this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
 
-NN<Media::DrawFont> Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPxW(UnsafeArray<const WChar> name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	NN<GDIFont> f;
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, name, pxSize * 72.0 / this->info.hdpi, fontStyle, *this, codePage));
@@ -2366,7 +2367,7 @@ Math::Size2DDbl Media::GDIImage::GetTextSize(NN<DrawFont> fnt, Text::CStringNN t
 	return ret;
 }
 
-Math::Size2DDbl Media::GDIImage::GetTextSize(NN<DrawFont> fnt, const WChar *txt, OSInt txtLen)
+Math::Size2DDbl Media::GDIImage::GetTextSize(NN<DrawFont> fnt, UnsafeArray<const WChar> txt, OSInt txtLen)
 {
 	Bool isCJK = true;
 	if (txtLen == -1)
@@ -2396,7 +2397,7 @@ Math::Size2DDbl Media::GDIImage::GetTextSize(NN<DrawFont> fnt, const WChar *txt,
 			NN<GDIFont> f = NN<GDIFont>::ConvertFrom(fnt);
 			SelectObject((HDC)this->hdcBmp, (HFONT)f->hfont);
 		}
-		while (GetTextExtentExPointW((HDC)this->hdcBmp, txt, (int)txtLen, (int)this->size.x, 0, 0, &size) == 0)
+		while (GetTextExtentExPointW((HDC)this->hdcBmp, txt.Ptr(), (int)txtLen, (int)this->size.x, 0, 0, &size) == 0)
 		{
 			if (i-- <= 0)
 			{
@@ -2426,14 +2427,14 @@ void Media::GDIImage::SetTextAlign(Media::DrawEngine::DrawPos pos)
 	::SetTextAlign((HDC)this->hdcBmp, textAlign[pos]);
 }
 
-void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBound(UnsafeArray<Int32> pos, OSInt centX, OSInt centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
-	const WChar *wptr = Text::StrToWCharNew(str);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str);
 	GetStringBoundW(pos, centX, centY, wptr, f, drawX, drawY);
 	Text::StrDelNew(wptr);
 }
 
-void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBoundW(UnsafeArray<Int32> pos, OSInt centX, OSInt centY, UnsafeArray<const WChar> str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	Math::Size2DDbl sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Bool isCenter = false;
@@ -2503,14 +2504,14 @@ void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, cons
 	}
 }
 
-void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const UTF8Char> str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
-	const WChar *wptr = Text::StrToWCharNew(str);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str);
 	this->GetStringBoundRotW(pos, centX, centY, wptr, f, angleDegree, drawX, drawY);
 	Text::StrDelNew(wptr);
 }
 
-void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBoundRotW(UnsafeArray<Int32> pos, Double centX, Double centY, UnsafeArray<const WChar> str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	Math::Size2DDbl sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Double pts[10];
@@ -2656,9 +2657,9 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSI
 	}
 }
 
-Media::StaticImage *Media::GDIImage::ToStaticImage() const
+Optional<Media::StaticImage> Media::GDIImage::ToStaticImage() const
 {
-	return CreateStaticImage().Ptr();
+	return CreateStaticImage();
 }
 
 UOSInt Media::GDIImage::SavePng(NN<IO::SeekableStream> stm)

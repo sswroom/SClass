@@ -20,47 +20,50 @@ Media::VFPManager::VFPManager()
 	UOSInt i = 0;
 	WChar wbuff[256];
 	WChar wbuff2[256];
-	WChar *wptr;
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"VFPlugin");
-	while (reg->GetName(wbuff, i))
+	UnsafeArray<WChar> wptr;
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"VFPlugin").SetTo(reg))
 	{
-		if (reg->GetValueStr(wbuff, wbuff2))
+		while (reg->GetName(wbuff, i).NotNull())
 		{
-			j = Text::StrLastIndexOfChar(wbuff2, '\\');
-			wptr = &wbuff2[j + 1];
-			if (Text::StrCompareICase(wptr, L"DVD2AVI.vfp") == 0)
+			if (reg->GetValueStr(wbuff, wbuff2).NotNull())
 			{
-				LoadPlugin(wbuff2);
+				j = Text::StrLastIndexOfCharW(wbuff2, '\\');
+				wptr = &wbuff2[j + 1];
+				if (Text::StrCompareICase(wptr, L"DVD2AVI.vfp") == 0)
+				{
+					LoadPlugin(wbuff2);
+				}
+				else if (Text::StrCompareICase(wptr, L"aviutl.vfp") == 0)
+				{
+					LoadPlugin(wbuff2);
+				}
+				else if (Text::StrCompareICase(wptr, L"TMPGEnc.vfp") == 0)
+				{
+	//				LoadPlugin(wbuff2);
+				}
+				else if (Text::StrCompareICase(wptr, L"DGVfapi.vfp") == 0)
+				{
+					LoadPlugin(wbuff2);
+				}
+				else
+				{
+					LoadPlugin(wbuff2);
+				}
 			}
-			else if (Text::StrCompareICase(wptr, L"aviutl.vfp") == 0)
-			{
-				LoadPlugin(wbuff2);
-			}
-			else if (Text::StrCompareICase(wptr, L"TMPGEnc.vfp") == 0)
-			{
-//				LoadPlugin(wbuff2);
-			}
-			else if (Text::StrCompareICase(wptr, L"DGVfapi.vfp") == 0)
-			{
-				LoadPlugin(wbuff2);
-			}
-			else
-			{
-				LoadPlugin(wbuff2);
-			}
+			i++;
 		}
-		i++;
+		IO::Registry::CloseRegistry(reg);
 	}
-	IO::Registry::CloseRegistry(reg);
 
 	IO::Path::GetProcessFileNameW(wbuff);
 	wptr = IO::Path::GetFileDirectoryW(wbuff2, wbuff);
 	*wptr++ = '\\';
 	Text::StrConcat(wptr, L"*.vfp");
-	IO::Path::FindFileSession *sess = IO::Path::FindFileW(wbuff2);
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFileW(wbuff2).SetTo(sess))
 	{
-		if (IO::Path::FindNextFileW(wptr, sess, 0, 0, 0))
+		if (IO::Path::FindNextFileW(wptr, sess, 0, 0, 0).NotNull())
 		{
 			LoadPlugin(wbuff2);
 		}
@@ -74,6 +77,7 @@ UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data
 	Char *cFile;
 	Text::Encoding enc;
 	NN<VFPluginFile> plugin;
+	UnsafeArray<const WChar> searchPattern;
 	VF_PluginFunc *funcs;
 	VF_FileHandle fhand;
 	VF_FileInfo finfo;
@@ -85,7 +89,7 @@ UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data
 	while (i-- > 0)
 	{
 		plugin = this->plugins.GetItemNoCheck(i);
-		if (IO::Path::FilePathMatchW(wbuff, plugin->searchPattern))
+		if (plugin->searchPattern.SetTo(searchPattern) && IO::Path::FilePathMatchW(wbuff, searchPattern))
 		{
 			funcs = (VF_PluginFunc*)plugin->funcs;
 			if (funcs->OpenFile(cFile, &fhand) == VF_OK)
@@ -143,14 +147,15 @@ UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data
 Media::VFPManager::~VFPManager()
 {
 	NN<VFPluginFile> plugin;
+	UnsafeArray<const WChar> searchPattern;
 	UOSInt i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
 		plugin = plugins.GetItemNoCheck(i);
 		MemFree(plugin->funcs);
-		if (plugin->searchPattern)
+		if (plugin->searchPattern.SetTo(searchPattern))
 		{
-			Text::StrDelNew(plugin->searchPattern);
+			Text::StrDelNew(searchPattern);
 		}
 		FreeLibrary((HMODULE)plugin->hMod);
 		MemFreeNN(plugin);
@@ -171,8 +176,8 @@ void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 	VF_GetPluginInfo GetInfo;
 	VF_PluginInfo info;
 	Text::Encoding enc(932);
-	WChar *sarr[3];
-	WChar *wptr;
+	UnsafeArray<WChar> sarr[3];
+	UnsafeArray<WChar> wptr;
 	UOSInt k;
 	UOSInt j;
 	UOSInt i = this->plugins.GetCount();
@@ -185,7 +190,7 @@ void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 		{
 			k = Text::StrCharCntCh(info.cFileType);
 			j = enc.CountWChars((UInt8*)info.cFileType, k);
-			wptr = MemAlloc(WChar, j + 1);
+			wptr = MemAllocArr(WChar, j + 1);
 			enc.WFromBytes(wptr, (UInt8*)info.cFileType, k, 0);
 			sarr[2] = wptr;
 			while (true)
@@ -193,15 +198,15 @@ void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 				j = Text::StrSplit(sarr, 3, sarr[2], '|');
 				if (j == 1)
 					break;
-				NN<Text::String> wptr1 = Text::String::NewNotNull(sarr[1]);
-				NN<Text::String> wptr0 = Text::String::NewNotNull(sarr[0]);
+				NN<Text::String> wptr1 = Text::String::NewNotNull(UnsafeArray<const WChar>(sarr[1]));
+				NN<Text::String> wptr0 = Text::String::NewNotNull(UnsafeArray<const WChar>(sarr[0]));
 				selector->AddFilter(wptr1->ToCString(), wptr0->ToCString());
 				wptr1->Release();
 				wptr0->Release();
 				if (j == 2)
 					break;
 			}
-			MemFree(wptr);
+			MemFreeArr(wptr);
 		}
 	}
 }
@@ -212,7 +217,7 @@ void Media::VFPManager::LoadPlugin(const WChar *fileName)
 	if (hMod == 0)
 		return;
 	WChar wbuff[256];
-	WChar *wptrs[2];
+	UnsafeArray<WChar> wptrs[2];
 	VF_GetPluginInfo GetInfo;
 	VF_GetPluginFunc GetFunc;
 #ifdef _WIN32_WCE
@@ -254,7 +259,7 @@ void Media::VFPManager::LoadPlugin(const WChar *fileName)
 	plugin->funcs = funcPtr;
 	if (Text::StrSplit(wptrs, 2, wbuff, '|') == 2)
 	{
-		plugin->searchPattern = Text::StrCopyNew(wptrs[1]);
+		plugin->searchPattern = Text::StrCopyNew(UnsafeArray<const WChar>(wptrs[1]));
 	}
 	else
 	{

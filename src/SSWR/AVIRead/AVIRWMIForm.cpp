@@ -81,21 +81,21 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(Optional<UI::GUIClientControl> parent, N
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayList<const WChar *> nsList;
+	Data::ArrayListArr<const WChar> nsList;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	Win32::WMIQuery::GetNSList(&nsList);
+	Win32::WMIQuery::GetNSList(nsList);
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = nsList.GetCount();
 	while (i < j)
 	{
-		sptr = Text::StrWChar_UTF8(sbuff, nsList.GetItem(i));
+		sptr = Text::StrWChar_UTF8(sbuff, nsList.GetItemNoCheck(i));
 		this->lbNS->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
-	Win32::WMIQuery::FreeNSList(&nsList);
+	Win32::WMIQuery::FreeNSList(nsList);
 }
 
 SSWR::AVIRead::AVIRWMIForm::~AVIRWMIForm()

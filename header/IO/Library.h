@@ -9,10 +9,10 @@ namespace IO
 		void *hModule;
 
 	public:
-		Library(const UTF8Char *fileName);
+		Library(UnsafeArray<const UTF8Char> fileName);
 		~Library();
 		Bool IsError();
-		void *GetFunc(const Char *funcName);
+		void *GetFunc(UnsafeArray<const Char> funcName);
 		void *GetFuncNum(OSInt num);
 	};
 };

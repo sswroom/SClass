@@ -206,8 +206,8 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	UOSInt retCnt = 0;
 	NN<RAMInfo> ram;
-	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
-	if (smbios)
+	NN<IO::SMBIOS> smbios;
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
 		Data::ArrayListNN<IO::SMBIOS::MemoryDeviceInfo> memList;
 		NN<IO::SMBIOS::MemoryDeviceInfo> mem;
@@ -236,10 +236,10 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 			}
 
 			smbios->FreeMemoryInfo(memList);
-			DEL_CLASS(smbios);
+			smbios.Delete();
 			return retCnt;
 		}
-		DEL_CLASS(smbios);
+		smbios.Delete();
 	}
 	return 0;
 }

@@ -122,7 +122,7 @@ void IO::Registry::CloseInternal(void *data)
 	}
 }
 
-IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const WChar *compName, const WChar *appName)
+Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, UnsafeArray<const WChar> compName, UnsafeArray<const WChar> appName)
 {
 	Registry_Param param; 
 	param.reg = (Registry_File*)OpenUserType(usr);
@@ -145,7 +145,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	return reg;
 }
 
-IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const WChar *compName)
+Optional<IO::Registry> IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, UnsafeArray<const WChar> compName)
 {
 	Registry_Param param; 
 	param.reg = (Registry_File*)OpenUserType(usr);
@@ -165,7 +165,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 }
 
 
-IO::Registry *IO::Registry::OpenLocalHardware()
+Optional<IO::Registry> IO::Registry::OpenLocalHardware()
 {
 	Registry_Param param; 
 	param.reg = (Registry_File*)OpenUserType(REG_USER_ALL);
@@ -179,7 +179,7 @@ IO::Registry *IO::Registry::OpenLocalHardware()
 	return reg;
 }
 
-IO::Registry *IO::Registry::OpenLocalSoftware(const WChar *softwareName)
+Optional<IO::Registry> IO::Registry::OpenLocalSoftware(UnsafeArray<const WChar> softwareName)
 {
 	Registry_Param param; 
 	param.reg = (Registry_File*)OpenUserType(REG_USER_ALL);
@@ -193,9 +193,10 @@ IO::Registry *IO::Registry::OpenLocalSoftware(const WChar *softwareName)
 	return reg;
 }
 
-void IO::Registry::CloseRegistry(IO::Registry *reg)
+void IO::Registry::CloseRegistry(NN<IO::Registry> reg)
 {
-	DEL_CLASS(reg);
+	IO::Registry *preg = reg.Ptr();
+	DEL_CLASS(preg);
 }
 
 IO::Registry::Registry(void *hand)
@@ -213,7 +214,7 @@ IO::Registry::~Registry()
 	MemFree(this->clsData);
 }
 
-IO::Registry *IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
+Optional<IO::Registry> IO::Registry::OpenSubReg(UnsafeArray<const WChar> name)
 {
 	Registry_Param param;
 	param.reg = this->clsData->reg;
@@ -299,13 +300,18 @@ void IO::Registry::SetValue(UnsafeArray<const WChar> name, Int32 value)
 	s->Release();
 }
 
-void IO::Registry::SetValue(UnsafeArray<const WChar> name, UnsafeArray<const WChar> value)
+void IO::Registry::SetValue(UnsafeArray<const WChar> name, UnsafeArrayOpt<const WChar> value)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("sz:"));
-	NN<Text::String> s = Text::String::NewNotNull(value);
-	sb.Append(s);
-	s->Release();
+	UnsafeArray<const WChar> nnvalue;
+	NN<Text::String> s;
+	if (value.SetTo(nnvalue))
+	{
+		s = Text::String::NewNotNull(nnvalue);
+		sb.Append(s);
+		s->Release();
+	}
 
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	NN<IO::ConfigFile> cfg;

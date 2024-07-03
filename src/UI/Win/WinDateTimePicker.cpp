@@ -110,8 +110,8 @@ Data::Timestamp UI::Win::WinDateTimePicker::GetSelectedTime()
 
 void UI::Win::WinDateTimePicker::SetFormat(const Char *format)
 {
-	const WChar *wptr = Text::StrToWCharNew((const UTF8Char*)format);
-	SendMessage((HWND)this->hwnd, DTM_SETFORMATW, 0, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew((const UTF8Char*)format);
+	SendMessage((HWND)this->hwnd, DTM_SETFORMATW, 0, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 

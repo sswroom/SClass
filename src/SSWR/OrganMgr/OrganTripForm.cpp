@@ -131,8 +131,8 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(AnyType userObj)
 		Location *selVal = frm.GetSelVal();
 		me->locId = selVal->id;
 		me->txtLocation->SetText(selVal->cname->ToCString());
-		IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"OrganMgr");
-		if (reg)
+		NN<IO::Registry> reg;
+		if (IO::Registry::OpenLocalSoftware(L"OrganMgr").SetTo(reg))
 		{
 			reg->SetValue(L"TripLocationLast", me->locId);
 			IO::Registry::CloseRegistry(reg);
@@ -174,8 +174,8 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(AnyType userObj)
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationLastClicked(AnyType userObj)
 {
 	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
-	IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"OrganMgr");
-	if (reg)
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenLocalSoftware(L"OrganMgr").SetTo(reg))
 	{
 		Int32 locId = reg->GetValueI32(L"TripLocationLast");
 		IO::Registry::CloseRegistry(reg);

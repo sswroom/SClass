@@ -44,14 +44,14 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 	{
 		hdpi = 96.0;
 		ddpi = 96.0;
-		IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
-		if (reg)
+		NN<IO::Registry> reg;
+		if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 		{
 			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monName->v);
-			IO::Registry *reg2 = reg->OpenSubReg(wptr);
-			Text::StrDelNew(wptr);
-			if (reg2)
+			NN<IO::Registry> reg2;
+			if (reg->OpenSubReg(wptr).SetTo(reg2))
 			{
+				Text::StrDelNew(wptr);
 				hdpi = reg2->GetValueI32(L"MonitorHDPI") * 0.1;
 				ddpi = reg2->GetValueI32(L"MonitorDDPI") * 0.1;
 				IO::Registry::CloseRegistry(reg2);
@@ -64,6 +64,10 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 				{
 					ddpi = 96.0;
 				}
+			}
+			else
+			{
+				Text::StrDelNew(wptr);
 			}
 			IO::Registry::CloseRegistry(reg);
 		}
@@ -151,7 +155,8 @@ void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHD
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	NN<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
-	Text::String *monDesc = monInfo.GetDesc();
+	Optional<Text::String> monDesc = monInfo.GetDesc();
+	NN<Text::String> nnmonDesc;
 	MonitorSetting *mon;
 	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap.GetNN(monName);
@@ -168,22 +173,26 @@ void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHD
 	}
 	mutUsage.EndUse();
 
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
-	if (reg)
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 	{
 		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monName->v);
-		IO::Registry *reg2 = reg->OpenSubReg(wptr);
-		Text::StrDelNew(wptr);
-		if (reg2)
+		NN<IO::Registry> reg2;
+		if (reg->OpenSubReg(wptr).SetTo(reg2))
 		{
+			Text::StrDelNew(wptr);
 			reg2->SetValue(L"MonitorHDPI", Double2Int32(monitorHDPI * 10));
-			if (monDesc)
+			if (monDesc.SetTo(nnmonDesc))
 			{
-				wptr = Text::StrToWCharNew(monDesc->v);
+				wptr = Text::StrToWCharNew(nnmonDesc->v);
 				reg2->SetValue(L"Desc", wptr);
 				Text::StrDelNew(wptr);
 			}
 			IO::Registry::CloseRegistry(reg2);
+		}
+		else
+		{
+			Text::StrDelNew(wptr);
 		}
 		IO::Registry::CloseRegistry(reg);
 	}
@@ -226,7 +235,8 @@ void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDD
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	NN<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
-	Text::String *monDesc = monInfo.GetDesc();
+	Optional<Text::String> monDesc = monInfo.GetDesc();
+	NN<Text::String> nnmonDesc;
 	MonitorSetting *mon;
 	Sync::MutexUsage mutUsage(this->monMut);
 	mon = this->monMap.GetNN(monName);
@@ -243,22 +253,26 @@ void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDD
 	}
 	mutUsage.EndUse();
 
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
-	if (reg)
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 	{
 		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(monName->v);
-		IO::Registry *reg2 = reg->OpenSubReg(wptr);
-		Text::StrDelNew(wptr);
-		if (reg2)
+		NN<IO::Registry> reg2;
+		if (reg->OpenSubReg(wptr).SetTo(reg2))
 		{
+			Text::StrDelNew(wptr);
 			reg2->SetValue(L"MonitorDDPI", Double2Int32(monitorDDPI * 10));
-			if (monDesc)
+			if (monDesc.SetTo(nnmonDesc))
 			{
-				wptr = Text::StrToWCharNew(monDesc->v);
+				wptr = Text::StrToWCharNew(nnmonDesc->v);
 				reg2->SetValue(L"Desc", wptr);
 				Text::StrDelNew(wptr);
 			}
 			IO::Registry::CloseRegistry(reg2);
+		}
+		else
+		{
+			Text::StrDelNew(wptr);
 		}
 		IO::Registry::CloseRegistry(reg);
 	}

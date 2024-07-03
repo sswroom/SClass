@@ -444,14 +444,14 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char
 	WChar wbuff[512];
 	UnsafeArrayOpt<UTF8Char> sptr = 0;
 	UnsafeArray<UTF8Char> nnsptr;
-	IO::Registry *reg;
-	IO::Registry *reg2;
+	NN<IO::Registry> reg;
+	Optional<IO::Registry> reg2;
+	NN<IO::Registry> nnreg2;
 #if defined(_WIN64)
-	reg = IO::Registry::OpenLocalSoftware(L"Wow6432Node\\Microsoft\\VisualStudio");
+	if (IO::Registry::OpenLocalSoftware(L"Wow6432Node\\Microsoft\\VisualStudio").SetTo(reg))
 #else
-	reg = IO::Registry::OpenLocalSoftware(L"Microsoft\\VisualStudio");
+	if (IO::Registry::OpenLocalSoftware(L"Microsoft\\VisualStudio").SetTo(reg))
 #endif
-	if (reg)
 	{
 		reg2 = 0;
 		switch (vsv)
@@ -479,9 +479,9 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char
 		default:
 			break;
 		}
-		if (reg2)
+		if (reg2.SetTo(nnreg2))
 		{
-			if (reg2->GetValueStr(L"InstallDir", wbuff).NotNull())
+			if (nnreg2->GetValueStr(L"InstallDir", wbuff).NotNull())
 			{
 				nnsptr = Text::StrWChar_UTF8(sbuff, wbuff);
 				if (vsv == Text::VSProject::VSV_VS71)
@@ -493,7 +493,7 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char
 					sptr = IO::Path::AppendPath(sbuff, nnsptr, CSTR("..\\..\\Vc\\"));
 				}
 			}
-			IO::Registry::CloseRegistry(reg2);
+			IO::Registry::CloseRegistry(nnreg2);
 		}
 		IO::Registry::CloseRegistry(reg);
 	}
@@ -521,8 +521,8 @@ UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetVCInstallDir(UnsafeArray<UTF8Char
 
 UnsafeArrayOpt<UTF8Char> Text::Cpp::CppEnv::GetWindowsSdkDir(UnsafeArray<UTF8Char> sbuff)
 {
-	IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"Microsoft\\Microsoft SDKs\\Windows");
-	if (reg == 0)
+	NN<IO::Registry> reg;
+	if (!IO::Registry::OpenLocalSoftware(L"Microsoft\\Microsoft SDKs\\Windows").SetTo(reg))
 		return 0;
 	WChar wbuff[512];
 	UnsafeArrayOpt<WChar> wptr = reg->GetValueStr(L"CurrentInstallFolder", wbuff);

@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(AnyType userObj)
 	me->txtConnStr->GetText(sb);
 
 	DB::OLEDBConn *conn;
-	const WChar *wptr = Text::StrToWCharNew(sb.ToString());
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sb.ToString());
 	NEW_CLASS(conn, DB::OLEDBConn(wptr, me->core->GetLog()));
 	Text::StrDelNew(wptr);
 	if (conn->GetConnError() != DB::OLEDBConn::CE_NONE)

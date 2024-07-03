@@ -69,8 +69,8 @@ UI::Win::WinButton::~WinButton()
 
 void UI::Win::WinButton::SetText(Text::CStringNN text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)this->hwnd, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
+	SetWindowTextW((HWND)this->hwnd, wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 

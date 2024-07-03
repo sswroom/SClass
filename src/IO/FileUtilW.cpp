@@ -31,14 +31,14 @@ Bool IO::FileUtil::DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile)
 		sptr = file.ConcatTo(sbuff);
 		return DeleteDir(sbuff, sptr, deleteRdonlyFile);
 	}
-	const WChar *wptr = Text::StrToWCharNew(file.v);
-	BOOL ret = ::DeleteFileW(wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(file.v);
+	BOOL ret = ::DeleteFileW(wptr.Ptr());
 	if (ret == 0)
 	{
 		if (deleteRdonlyFile && GetLastError() == ERROR_ACCESS_DENIED)
 		{
-			::SetFileAttributesW(wptr, FILE_ATTRIBUTE_NORMAL);
-			Bool succ = ::DeleteFileW(wptr) != 0;
+			::SetFileAttributesW(wptr.Ptr(), FILE_ATTRIBUTE_NORMAL);
+			Bool succ = ::DeleteFileW(wptr.Ptr()) != 0;
 			Text::StrDelNew(wptr);
 			return succ;
 		}
@@ -85,9 +85,9 @@ Bool IO::FileUtil::DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile)
 
 Bool IO::FileUtil::RenameFile(UnsafeArray<const UTF8Char> srcFile, UnsafeArray<const UTF8Char> destFile)
 {
-	const WChar *srcFileW = Text::StrToWCharNew(srcFile);
-	const WChar *destFileW = Text::StrToWCharNew(destFile);
-	BOOL retV = MoveFileW(srcFileW, destFileW);
+	UnsafeArray<const WChar> srcFileW = Text::StrToWCharNew(srcFile);
+	UnsafeArray<const WChar> destFileW = Text::StrToWCharNew(destFile);
+	BOOL retV = MoveFileW(srcFileW.Ptr(), destFileW.Ptr());
 	Text::StrDelNew(srcFileW);
 	Text::StrDelNew(destFileW);
 	if (retV)
@@ -131,8 +131,8 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 UnsafeArrayOpt<UTF8Char> IO::FileUtil::GetMountPoint(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName)
 {
 	WChar wbuff[512];
-	const WChar *wptr = Text::StrToWCharNew(fileName);
-	if (GetVolumePathNameW(wptr, wbuff, 512))
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(fileName);
+	if (GetVolumePathNameW(wptr.Ptr(), wbuff, 512))
 	{
 		Text::StrDelNew(wptr);
 		return Text::StrWChar_UTF8(buff, wbuff);
@@ -148,15 +148,15 @@ Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArra
 {
 	WChar buff1[256];
 	WChar buff2[256];
-	const WChar *wptr = Text::StrToWCharNew(file1);
-	if (GetVolumePathNameW(wptr, buff1, 256) == 0)
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(file1);
+	if (GetVolumePathNameW(wptr.Ptr(), buff1, 256) == 0)
 	{
 		Text::StrDelNew(wptr);
 		return false;
 	}
 	Text::StrDelNew(wptr);
 	wptr = Text::StrToWCharNew(file2);
-	if (GetVolumePathNameW(wptr, buff2, 256) == 0)
+	if (GetVolumePathNameW(wptr.Ptr(), buff2, 256) == 0)
 	{
 		Text::StrDelNew(wptr);
 		return false;
@@ -320,8 +320,8 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 		}
 		DEL_CLASS(fs2);
 	}
-	const WChar *wptr = Text::StrToWCharNew(file1.v);
-	UInt32 attr = GetFileAttributesW(wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(file1.v);
+	UInt32 attr = GetFileAttributesW(wptr.Ptr());
 	Text::StrDelNew(wptr);
 	SetFileAttributesW(wfile2, attr);
 	return writeSize == fileSize;
@@ -335,10 +335,10 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> dptr;
 	UnsafeArray<UTF8Char> dptr2;
-	IO::Path::FindFileSession *sess;
-	const WChar *wptr;
+	NN<IO::Path::FindFileSession> sess;
+	UnsafeArray<const WChar> wptr;
 	wptr = Text::StrToWCharNew(srcDir.v);
-	UInt32 attr = GetFileAttributesW(wptr);
+	UInt32 attr = GetFileAttributesW(wptr.Ptr());
 	Text::StrDelNew(wptr);
 	sptr = srcDir.ConcatTo(sbuff);
 	dptr = destDir.ConcatTo(dbuff);
@@ -346,7 +346,7 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	if (attr != 0xffffffff)
 	{
 		wptr = Text::StrToWCharNew(destDir.v);
-		SetFileAttributesW(wptr, attr);
+		SetFileAttributesW(wptr.Ptr(), attr);
 		Text::StrDelNew(wptr);
 	}
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -358,12 +358,11 @@ Bool IO::FileUtil::CopyDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
 		Bool succ = true;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -408,9 +407,9 @@ Bool IO::FileUtil::MoveFile(Text::CStringNN srcFile, Text::CStringNN destFile, F
 	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)
 	{
-		const WChar *sFile = Text::StrToWCharNew(srcFile.v);
-		const WChar *dFile = Text::StrToWCharNew(destFile.v);
-		BOOL retV = MoveFileW(sFile, dFile);
+		UnsafeArray<const WChar> sFile = Text::StrToWCharNew(srcFile.v);
+		UnsafeArray<const WChar> dFile = Text::StrToWCharNew(destFile.v);
+		BOOL retV = MoveFileW(sFile.Ptr(), dFile.Ptr());
 		Text::StrDelNew(sFile);
 		Text::StrDelNew(dFile);
 		if (retV)
@@ -447,15 +446,15 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> dptr;
 	UnsafeArray<UTF8Char> dptr2;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	Bool succ;
 
 	Bool samePart = IsSamePartition(srcDir.v, destDir.v);
 	if (samePart)
 	{
-		const WChar *sDir = Text::StrToWCharNew(srcDir.v);
-		const WChar *dDir = Text::StrToWCharNew(destDir.v);
-		BOOL retV = MoveFileW(sDir, dDir);
+		UnsafeArray<const WChar> sDir = Text::StrToWCharNew(srcDir.v);
+		UnsafeArray<const WChar> dDir = Text::StrToWCharNew(destDir.v);
+		BOOL retV = MoveFileW(sDir.Ptr(), dDir.Ptr());
 		Text::StrDelNew(sDir);
 		Text::StrDelNew(dDir);
 		if (retV)
@@ -475,12 +474,11 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	succ = true;
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] == '.' && sptr[1] == 0)
 			{
@@ -546,21 +544,21 @@ Bool IO::FileUtil::DeleteDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> di
 	sptr2 = Text::StrConcatC(dirEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	Bool succ = true;
 	IO::Path::PathType pt;
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(dir, sptr2));
-	if (sess == 0)
+	NN<IO::Path::FindFileSession> sess;
+	if (!IO::Path::FindFile(CSTRP(dir, sptr2)).SetTo(sess))
 		return false;
-	while (succ && IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0).SetTo(sptr2))
+	while (succ && IO::Path::FindNextFile(dirEnd, sess, 0, pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::File)
 		{
-			const WChar *wdir = Text::StrToWCharNew(dir);
-			BOOL ret = ::DeleteFileW(wdir);
+			UnsafeArray<const WChar> wdir = Text::StrToWCharNew(dir);
+			BOOL ret = ::DeleteFileW(wdir.Ptr());
 			if (ret == 0)
 			{
 				if (deleteRdonlyFile && GetLastError() == ERROR_ACCESS_DENIED)
 				{
-					::SetFileAttributesW(wdir, FILE_ATTRIBUTE_NORMAL);
-					if (::DeleteFileW(wdir) == 0)
+					::SetFileAttributesW(wdir.Ptr(), FILE_ATTRIBUTE_NORMAL);
+					if (::DeleteFileW(wdir.Ptr()) == 0)
 						succ = false;
 				}
 				else

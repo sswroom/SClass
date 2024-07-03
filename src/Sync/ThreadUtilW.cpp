@@ -107,8 +107,8 @@ Bool Sync::ThreadUtil::SetName(Text::CStringNN name)
 	SetThreadDescriptionFunc SetThreadDescription = (SetThreadDescriptionFunc)lib.GetFunc("SetThreadDescription");
 	if (SetThreadDescription == 0)
 		return false;
-	const WChar *wName = Text::StrToWCharNew(name.v);
-	HRESULT hr = SetThreadDescription(GetCurrentThread(), wName);
+	UnsafeArray<const WChar> wName = Text::StrToWCharNew(name.v);
+	HRESULT hr = SetThreadDescription(GetCurrentThread(), wName.Ptr());
 	Text::StrDelNew(wName);
 	return hr == 0;
 }

@@ -499,15 +499,14 @@ Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
 	UnsafeArrayOpt<UTF8Char> ret = 0;
-	IO::Registry *reg = IO::Registry::OpenLocalHardware();
-	IO::Registry *reg2;
+	NN<IO::Registry> reg;
+	NN<IO::Registry> reg2;
 	WChar wbuff[256];
-	if (reg)
+	if (IO::Registry::OpenLocalHardware().SetTo(reg))
 	{
-		reg2 = reg->OpenSubReg(L"DESCRIPTION\\System\\CentralProcessor\\0");
-		if (reg2)
+		if (reg->OpenSubReg(L"DESCRIPTION\\System\\CentralProcessor\\0").SetTo(reg2))
 		{
-			UnsafeArray<>WChar> wptr;
+			UnsafeArray<WChar> wptr;
 			if (reg2->GetValueStr(L"ProcessorNameString", wbuff).SetTo(wptr))
 			{
 				ret = Text::StrWChar_UTF8(sbuff, wbuff);

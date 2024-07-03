@@ -43,7 +43,7 @@ DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
 struct DB::OLEDBConn::ClassData
 {
 	NN<IO::LogTool> log;
-	const WChar *connStr;
+	UnsafeArrayOpt<const WChar> connStr;
 	HRESULT ci;
 	IDataInitialize *pIDataInitialize;
 	IDBInitialize *pIDBInitialize;
@@ -83,10 +83,11 @@ DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 	data->connStr = 0;
 }
 
-void DB::OLEDBConn::Init(const WChar *connStr)
+void DB::OLEDBConn::Init(UnsafeArray<const WChar> connStr)
 {
 	ClassData *data = this->clsData;
-	if (data->connStr) Text::StrDelNew(data->connStr);
+	UnsafeArray<const WChar> nnconnStr;
+	if (data->connStr.SetTo(nnconnStr)) Text::StrDelNew(nnconnStr);
 	data->connStr = Text::StrCopyNew(connStr);
 	HRESULT hr;
 	hr = CoCreateInstance(CLSID_MSDAINITIALIZE, NULL, CLSCTX_INPROC_SERVER, IID_IDataInitialize, (LPVOID *) &data->pIDataInitialize);
@@ -96,7 +97,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 		return;
 	}
 
-	hr = data->pIDataInitialize->GetDataSource(0, CLSCTX_INPROC_SERVER, (LPCOLESTR )connStr, IID_IDBInitialize, ( IUnknown** )&data->pIDBInitialize);
+	hr = data->pIDataInitialize->GetDataSource(0, CLSCTX_INPROC_SERVER, (LPCOLESTR )connStr.Ptr(), IID_IDBInitialize, ( IUnknown** )&data->pIDBInitialize);
 	if (FAILED(hr))
 	{
 		this->connErr = CE_GETDATASOURCE;
@@ -160,7 +161,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_NONE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(UnsafeArray<const WChar> connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -202,27 +203,29 @@ DB::OLEDBConn::~OLEDBConn()
 	{
 		CoUninitialize();
 	}
-	if (data->connStr) Text::StrDelNew(data->connStr);
+	UnsafeArray<const WChar> nnconnStr;
+	if (data->connStr.SetTo(nnconnStr)) Text::StrDelNew(nnconnStr);
 	MemFree(data);
 }
 
 DB::SQLType DB::OLEDBConn::GetSQLType() const
 {
 	ClassData *data = this->clsData;
-	if (data->connStr)
+	UnsafeArray<const WChar> nnconnStr;
+	if (data->connStr.SetTo(nnconnStr))
 	{
-		UOSInt i = Text::StrIndexOfICase(data->connStr, L"Provider=");
+		UOSInt i = Text::StrIndexOfICaseW(nnconnStr, L"Provider=");
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt j = Text::StrIndexOfChar(&data->connStr[i + 9], ';');
+			UOSInt j = Text::StrIndexOfCharW(&nnconnStr[i + 9], ';');
 			if (j != INVALID_INDEX)
 			{
-				sb.AppendW(&data->connStr[i + 9], (UOSInt)j);
+				sb.AppendW(&nnconnStr[i + 9], (UOSInt)j);
 			}
 			else
 			{
-				sb.AppendW(&data->connStr[i + 9]);
+				sb.AppendW(&nnconnStr[i + 9]);
 			}
 			if (sb.EqualsICase(UTF8STRC("SQLOLEDB")))
 			{
@@ -268,9 +271,10 @@ void DB::OLEDBConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	ClassData *data = this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
-	if (data->connStr)
+	UnsafeArray<const WChar> nnconnStr;
+	if (data->connStr.SetTo(nnconnStr))
 	{
-		sb->AppendW(data->connStr);
+		sb->AppendW(nnconnStr);
 	}
 }
 
@@ -305,8 +309,8 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 		return -2;
 	}
 
-	const WChar *wptr = Text::StrToWCharNew(sql.v);
-	hr = pICommandText->SetCommandText(DBGUID_DEFAULT, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
+	hr = pICommandText->SetCommandText(DBGUID_DEFAULT, wptr.Ptr());
 	if (FAILED(hr))
 	{
 		Text::StrDelNew(wptr);
@@ -554,8 +558,8 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 		return 0;
 	}
 
-	const WChar *wptr = Text::StrToWCharNew(sql.v);
-	hr = pICommandText->SetCommandText(DBGUID_DEFAULT, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
+	hr = pICommandText->SetCommandText(DBGUID_DEFAULT, wptr.Ptr());
 	if (FAILED(hr))
 	{
 		Text::StrDelNew(wptr);
@@ -737,7 +741,7 @@ DB::OLEDBConn::ConnError DB::OLEDBConn::GetConnError()
 	return this->connErr;
 }
 
-const WChar *DB::OLEDBConn::GetConnStr()
+UnsafeArrayOpt<const WChar> DB::OLEDBConn::GetConnStr()
 {
 	ClassData *data = this->clsData;
 	return data->connStr;
@@ -1068,7 +1072,7 @@ Int64 DB::OLEDBReader::GetInt64(UOSInt colIndex)
 	return 0;
 }
 
-WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
+UnsafeArrayOpt<WChar> DB::OLEDBReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1320,12 +1324,12 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			WChar *tmpBuff = MemAlloc(WChar, (*valLen / sizeof(WChar*)) + 1);
 			MemCopyNO(tmpBuff, val, *valLen);
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
-			NN<Text::String> ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
+			NN<Text::String> ret = Text::String::NewW(UnsafeArray<const WChar>(tmpBuff), *valLen / sizeof(WChar*));
 			MemFree(tmpBuff);
 			return ret;
 		}
 	default:
-		if (GetStr(colIndex, wbuff))
+		if (GetStr(colIndex, wbuff).NotNull())
 		{
 			return Text::String::NewNotNull(wbuff);
 		}

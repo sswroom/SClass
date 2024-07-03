@@ -91,8 +91,9 @@ Media::DShow::DShowVideoCapture::~DShowVideoCapture()
 	{
 		this->pPropBag->Release();
 	}
-	if (this->devName) Text::StrDelNew(this->devName);
-	if (this->displayName) Text::StrDelNew(this->displayName);
+	Text::StrDelNew(this->devName);
+	UnsafeArray<const WChar> ws;
+	if (this->displayName.SetTo(ws)) Text::StrDelNew(ws);
 }
 
 UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCapture::GetSourceName(UnsafeArray<UTF8Char> buff)
@@ -544,10 +545,11 @@ void Media::DShow::DShowVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 			VariantClear(&var);
 		}
 	}
-	if (this->displayName)
+	UnsafeArray<const WChar> ws;
+	if (this->displayName.SetTo(ws))
 	{
 		sb->AppendC(UTF8STRC("DisplayName: "));
-		sb->AppendW(this->displayName);
+		sb->AppendW(ws);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
@@ -654,13 +656,13 @@ UnsafeArrayOpt<UTF8Char> Media::DShow::DShowVideoCaptureMgr::GetDeviceName(Unsaf
 	return 0;
 }
 
-WChar *Media::DShow::DShowVideoCaptureMgr::GetDeviceId(WChar *buff, UOSInt devNo)
+UnsafeArrayOpt<WChar> Media::DShow::DShowVideoCaptureMgr::GetDeviceId(UnsafeArray<WChar> buff, UOSInt devNo)
 {
 	IEnumMoniker *pEnum = (IEnumMoniker*)this->pEnum;
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
 	UInt32 cnt;
-	WChar *wptr = 0;
+	UnsafeArrayOpt<WChar> wptr = 0;
 
 	if (pEnum == 0)
 	{

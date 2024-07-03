@@ -19,6 +19,9 @@
 UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 {
 	NN<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
+	NN<Sync::Event> mainEvt;
+	if (!Optional<Sync::Event>::ConvertFrom(me->clsData).SetTo(mainEvt))
+		return 0;
 	Double t;
 	UInt32 waitPeriod = 1;
 	Data::Timestamp intT;
@@ -35,7 +38,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 		while (!me->toStop)
 		{
 			found = false;
-			((Sync::Event*)me->clsData)->Clear();
+			mainEvt->Clear();
 			clk.Start();
 			currTime = Data::Timestamp::UtcNow();
 			intT = currTime;
@@ -49,7 +52,8 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 					{
 						Sync::MutexUsage mutUsage(cliStat->readMut);
 						Bool incomplete = false;
-						if (cliStat->readReq == 0)
+						NN<IO::StreamReadReq> readReq;
+						if (!cliStat->readReq.SetTo(readReq))
 						{
 							if (cliStat->cli->IsClosed())
 							{
@@ -66,10 +70,10 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 							{
 								Sync::SimpleThread::Sleep(1);
 							}
-							readSize = cliStat->cli->EndRead(cliStat->readReq, false, incomplete);
+							readSize = cliStat->cli->EndRead(readReq, false, incomplete);
 						}
 						mutUsage.EndUse();
-						if (incomplete)
+						if (incomplete && cliStat->readReq.SetTo(readReq))
 						{
 							currTime = Data::Timestamp::UtcNow();
 							if (currTime.Diff(cliStat->lastDataTime) > cliStat->cli->GetTimeout())
@@ -78,7 +82,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 								cliStat->cli->ShutdownSend();
 								cliStat->cli->Close();
 								Sync::SimpleThread::Sleep(1);
-								cliStat->cli->EndRead(cliStat->readReq, true, incomplete);
+								cliStat->cli->EndRead(readReq, true, incomplete);
 								me->cliMap.RemoveAt(i);
 								cliMutUsage.EndUse();
 
@@ -138,9 +142,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 			if (!found)
 			{
 				clk.Start();
-				((Sync::Event*)me->clsData)->Wait(waitPeriod);
+				mainEvt->Wait(waitPeriod);
 				t = clk.GetTimeDiff();
-				if (t > 0.5 && ((Sync::Event*)me->clsData)->IsSet())
+				if (t > 0.5 && mainEvt->IsSet())
 				{
 					clk.Start();
 				}
@@ -210,14 +214,17 @@ void Net::TCPClientMgr::ClientBeginRead(NN<TCPClientStatus> cliStat)
 	{
 		setEvt = true;
 	}
-
-	Sync::MutexUsage mutUsage(cliStat->readMut);
-	cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), ((Sync::Event*)this->clsData));
-	cliStat->reading = true;
-	mutUsage.EndUse();
-	if (setEvt)
+	NN<Sync::Event> mainEvt;
+	if (Optional<Sync::Event>::ConvertFrom(this->clsData).SetTo(mainEvt))
 	{
-		((Sync::Event*)this->clsData)->Set();
+		Sync::MutexUsage mutUsage(cliStat->readMut);
+		cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), mainEvt);
+		cliStat->reading = true;
+		mutUsage.EndUse();
+		if (setEvt)
+		{
+			mainEvt->Set();
+		}
 	}
 }
 
@@ -234,9 +241,9 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	if (workerCnt <= 0)
 		workerCnt = 1;
 	this->workerCnt = workerCnt;
-	Sync::Event *recvEvt;
-	NEW_CLASS(recvEvt, Sync::Event(false));
-	this->clsData = (ClassData*)recvEvt;
+	NN<Sync::Event> recvEvt;
+	NEW_CLASSNN(recvEvt, Sync::Event(false));
+	this->clsData = NN<ClassData>::ConvertFrom(recvEvt);
 	Sync::ThreadUtil::Create(ClientThread, this);
 	this->workers = MemAlloc(WorkerStatus, workerCnt);
 	while (workerCnt-- > 0)
@@ -273,7 +280,9 @@ Net::TCPClientMgr::~TCPClientMgr()
 		Sync::SimpleThread::Sleep(10);
 	}
 	this->toStop = true;
-	((Sync::Event*)this->clsData)->Set();
+	NN<Sync::Event> mainEvt;
+	if (Optional<Sync::Event>::ConvertFrom(this->clsData).SetTo(mainEvt))
+		mainEvt->Set();
 	while (clientThreadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
@@ -308,8 +317,8 @@ Net::TCPClientMgr::~TCPClientMgr()
 	}
 	MemFree(this->workers);
 
-	Sync::Event *recvEvt = ((Sync::Event*)this->clsData);
-	DEL_CLASS(recvEvt);
+	if (Optional<Sync::Event>::ConvertFrom(this->clsData).SetTo(mainEvt))
+		mainEvt.Delete();
 	SDEL_CLASS(this->logWriter);
 }
 
@@ -334,10 +343,19 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	cliStat->processing = false;
 	cliStat->timeAlerted = false;
 	cliStat->timeStart = 0;
+	cliStat->reading = false;
 	Sync::MutexUsage readMutUsage(cliStat->readMut);
-	cliStat->reading = true;
 	this->cliMap.Put(cli->GetCliId(), cliStat);
-	cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), ((Sync::Event*)this->clsData));
+	NN<Sync::Event> mainEvt;
+	if (Optional<Sync::Event>::ConvertFrom(this->clsData).SetTo(mainEvt))
+	{
+		cliStat->reading = true;
+		cliStat->readReq = cliStat->cli->BeginRead(Data::ByteArray(cliStat->buff, TCP_BUFF_SIZE), mainEvt);
+	}
+	else
+	{
+		cliStat->readReq = 0;
+	}
 }
 
 Bool Net::TCPClientMgr::SendClientData(UInt64 cliId, UnsafeArray<const UInt8> data, UOSInt buffSize)

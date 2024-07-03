@@ -99,11 +99,11 @@ Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
 	if (!this->devIds->GetItem(index).SetTo(devId))
 		return 0;
 	DEVITEMTYPE *devItem;
-	const WChar *wptr = Text::StrToWCharNew(devId);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(devId);
 #if defined(__WiaDevMgr2_FWD_DEFINED__) && (_MSC_VER >= 1400)
-	HRESULT hr = ((DEVMGRTYPE*)this->pWiaDevMgr)->CreateDevice(0, (BSTR)wptr, &devItem);
+	HRESULT hr = ((DEVMGRTYPE*)this->pWiaDevMgr)->CreateDevice(0, (BSTR)wptr.Ptr(), &devItem);
 #else
-	HRESULT hr = ((DEVMGRTYPE*)this->pWiaDevMgr)->CreateDevice((BSTR)wptr, &devItem);
+	HRESULT hr = ((DEVMGRTYPE*)this->pWiaDevMgr)->CreateDevice((BSTR)wptr.Ptr(), &devItem);
 #endif
 	Text::StrDelNew(wptr);
 	if (hr == S_OK)

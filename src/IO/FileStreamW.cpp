@@ -171,20 +171,20 @@ IO::FileStream::FileStream(NN<Text::String> fileName, FileMode mode, FileShare s
 	}
 
 
-	const WChar *wptr = Text::StrToWCharNew(fileName->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(fileName->v);
 	if (mode == IO::FileMode::Create)
 	{
-		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::CreateWrite)
 	{
-		handle = CreateFileW(wptr, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::Append)
 	{
-		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
 		{
 			this->currPos = 0;
@@ -198,7 +198,7 @@ IO::FileStream::FileStream(NN<Text::String> fileName, FileMode mode, FileShare s
 	}
 	else if (mode == IO::FileMode::ReadOnly)
 	{
-		handle = CreateFileW(wptr, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	Text::StrDelNew(wptr);
@@ -260,20 +260,20 @@ IO::FileStream::FileStream(Text::CStringNN fileName, IO::FileMode mode, FileShar
 	}
 
 
-	const WChar *wptr = Text::StrToWCharNew(fileName.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(fileName.v);
 	if (mode == IO::FileMode::Create)
 	{
-		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::CreateWrite)
 	{
-		handle = CreateFileW(wptr, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	else if (mode == IO::FileMode::Append)
 	{
-		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
 		{
 			this->currPos = 0;
@@ -287,7 +287,7 @@ IO::FileStream::FileStream(Text::CStringNN fileName, IO::FileMode mode, FileShar
 	}
 	else if (mode == IO::FileMode::ReadOnly)
 	{
-		handle = CreateFileW(wptr, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		handle = CreateFileW(wptr.Ptr(), GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
 	Text::StrDelNew(wptr);
@@ -572,7 +572,7 @@ Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(const UTF8Char *pipeNam
 	return 0;
 #else
 	WChar wbuff[256];
-	WChar *wptr = Text::StrConcat(wbuff, L"\\\\.\\pipe\\");
+	UnsafeArray<WChar> wptr = Text::StrConcat(wbuff, L"\\\\.\\pipe\\");
 	HANDLE hand;
 	wptr = Text::StrUTF8_WChar(wptr, pipeName, 0);
 	hand = ::CreateNamedPipeW(wbuff, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, buffSize, buffSize, 0, 0);

@@ -14,16 +14,16 @@ namespace Media
 		Int32 bottom;
 		Bool isPrimary;
 		NN<Text::String> name;
-		Text::String *desc;
-		Text::String *monId;
+		Optional<Text::String> desc;
+		Optional<Text::String> monId;
 
 	public:
 		MonitorInfo(MonitorHandle *hMonitor);
 		~MonitorInfo();
 
 		NN<Text::String> GetName() const;
-		Text::String *GetDesc() const;
-		Text::String *GetMonitorID() const;
+		Optional<Text::String> GetDesc() const;
+		Optional<Text::String> GetMonitorID() const;
 		Int32 GetLeft() const;
 		Int32 GetTop() const;
 		Int32 GetPixelWidth() const;

@@ -7,7 +7,7 @@
 #include "IO/SMBIOSUtil.h"
 #include "Text/MyString.h"
 
-IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
+Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
 	IO::SMBIOS *smbios;
 	UInt8 *dataBuff = 0;

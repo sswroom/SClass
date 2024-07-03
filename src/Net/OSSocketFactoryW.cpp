@@ -44,7 +44,7 @@ OSInt Net::OSSocketFactory::SSocketGetFD(NN<Socket> socket)
 	return (SOCKET)socket.Ptr();
 }
 
-Bool Net::OSSocketFactory::MyConnect(NN<Socket> socket, const UInt8 *addrBuff, UOSInt addrLen, Data::Duration timeout)
+Bool Net::OSSocketFactory::MyConnect(NN<Socket> socket, UnsafeArray<const UInt8> addrBuff, UOSInt addrLen, Data::Duration timeout)
 {
 	int error = -1;
 	int len = sizeof(int);
@@ -53,7 +53,7 @@ Bool Net::OSSocketFactory::MyConnect(NN<Socket> socket, const UInt8 *addrBuff, U
 	u_long ul = 1;
 	ioctlsocket((SOCKET)SSocketGetFD(socket), FIONBIO, &ul);
 	Bool ret = false;
-	if (connect((SOCKET)SSocketGetFD(socket), (struct sockaddr *)addrBuff, (int)addrLen) == -1)
+	if (connect((SOCKET)SSocketGetFD(socket), (struct sockaddr *)addrBuff.Ptr(), (int)addrLen) == -1)
 	{
 		tm.tv_sec = (long)timeout.GetSeconds();	// set the timeout. 10s
 		tm.tv_usec = (long)timeout.GetNS() / 1000;
@@ -215,17 +215,18 @@ Bool Net::OSSocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 por
 	return bind((SOCKET)SocketGetFD(socket), (sockaddr*)&addr, sizeof(addr)) != SOCKET_ERROR;
 }
 
-Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, Optional<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
-	if (addr == 0 || addr->addrType == Net::AddrType::IPv6)
+	NN<const Net::SocketUtil::AddressInfo> nnaddr;
+	if (!addr.SetTo(nnaddr) || nnaddr->addrType == Net::AddrType::IPv6)
 	{
 		UInt8 addrBuff[28];
 		WriteInt16(&addrBuff[0], AF_INET6);
 		WriteMInt16(&addrBuff[2], port); //sin6_port
 		WriteMInt32(&addrBuff[4], 0); //sin6_flowinfo
-		if (addr)
+		if (addr.SetTo(nnaddr))
 		{
-			MemCopyNO(&addrBuff[8], addr->addr, 20);
+			MemCopyNO(&addrBuff[8], nnaddr->addr, 20);
 		}
 		else
 		{
@@ -234,11 +235,11 @@ Bool Net::OSSocketFactory::SocketBind(NN<Socket> socket, const Net::SocketUtil::
 		}
 		return bind((SOCKET)SocketGetFD(socket), (sockaddr*)addrBuff, 28) != SOCKET_ERROR;
 	}
-	else if (addr->addrType == Net::AddrType::IPv4)
+	else if (nnaddr->addrType == Net::AddrType::IPv4)
 	{
 		sockaddr_in saddr;
 		saddr.sin_family = AF_INET;
-		saddr.sin_addr.s_addr = *(UInt32*)addr->addr;
+		saddr.sin_addr.s_addr = *(UInt32*)nnaddr->addr;
 		saddr.sin_port = htons(port);
 		return bind((SOCKET)SocketGetFD(socket), (sockaddr*)&saddr, sizeof(saddr)) != SOCKET_ERROR;
 	}
@@ -501,7 +502,7 @@ typedef struct
 	NN<Socket> s;
 } WSAOverlapped;
 
-void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+Optional<Net::SocketRecvSess> Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Sync::Event> evt, OptOut<ErrorType> et)
 {
 	WSAOverlapped *overlapped;
 	overlapped = MemAlloc(WSAOverlapped, 1);
@@ -530,20 +531,18 @@ void *Net::OSSocketFactory::BeginReceiveData(NN<Socket> socket, UnsafeArray<UInt
 			}
 		}
 	}
-	return overlapped;
+	return Optional<Net::SocketRecvSess>::ConvertFrom(Optional<WSAOverlapped>(overlapped));
 }
 
-UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt Net::OSSocketFactory::EndReceiveData(NN<Net::SocketRecvSess> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
-	WSAOverlapped *overlapped = (WSAOverlapped*)reqData;
+	NN<WSAOverlapped> overlapped = NN<WSAOverlapped>::ConvertFrom(reqData);
 	incomplete.Set(false);
-	if (overlapped == 0)
-		return 0;
 	DWORD recvSize;
 	DWORD flags;
 	if (WSAGetOverlappedResult((SOCKET)SocketGetFD(overlapped->s), &overlapped->overlapped, &recvSize, toWait?TRUE:FALSE, &flags))
 	{
-		MemFree(overlapped);
+		MemFreeNN(overlapped);
 		return recvSize;
 	}
 	else
@@ -554,20 +553,18 @@ UOSInt Net::OSSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutParam
 			incomplete.Set(true);
 			return 0;
 		}
-		MemFree(overlapped);
+		MemFreeNN(overlapped);
 		return 0;
 	}
 }
 
-void Net::OSSocketFactory::CancelReceiveData(void *reqData)
+void Net::OSSocketFactory::CancelReceiveData(NN<Net::SocketRecvSess> reqData)
 {
-	WSAOverlapped *overlapped = (WSAOverlapped*)reqData;
-	if (overlapped == 0)
-		return;
+	NN<WSAOverlapped> overlapped = NN<WSAOverlapped>::ConvertFrom(reqData);
 #ifndef _WIN32_WCE
 	CancelIo((HANDLE)SocketGetFD(overlapped->s));
 #endif
-	MemFree(overlapped);
+	MemFreeNN(overlapped);
 }
 
 UOSInt Net::OSSocketFactory::UDPReceive(NN<Socket> socket, UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
@@ -729,11 +726,11 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(NN<Socket> socket, OutParam<UInt32>
 }
 
 
-Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr)
+Bool Net::OSSocketFactory::DNSResolveIPDef(UnsafeArray<const Char> host, NN<Net::SocketUtil::AddressInfo> addr)
 {
 	Bool succ = false;
 	addrinfo *result = 0;
-	Int32 iResult = getaddrinfo(host, 0, 0, &result);
+	Int32 iResult = getaddrinfo(host.Ptr(), 0, 0, &result);
 	if (iResult == 0)
 	{
 		if (result->ai_addr->sa_family ==AF_INET)
@@ -810,7 +807,7 @@ Bool Net::OSSocketFactory::GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr)
 #endif
 }
 
-UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
+UOSInt Net::OSSocketFactory::GetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
 {
 #ifdef _WIN32_WCE
 	/////////////////////////////////
@@ -919,13 +916,13 @@ Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 	return true;
 }
 
-Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4)
+Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, UnsafeArray<const UInt8> hwAddr, UInt32 ipv4)
 {
 #if defined(__MINGW32__) || defined(__CYGWIN__)
 	MIB_IPNETROW row;
 	row.dwIndex = (UInt32)ifIndex;
 	row.dwPhysAddrLen = 6;
-	MemCopyNO(row.bPhysAddr, hwAddr, 6);
+	MemCopyNO(row.bPhysAddr, hwAddr.Ptr(), 6);
 	row.dwAddr = ipv4;
 	row.dwType = MIB_IPNET_TYPE_DYNAMIC;
 	return 0 == CreateIpNetEntry(&row);
@@ -933,7 +930,7 @@ Bool Net::OSSocketFactory::ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UIn
 	MIB_IPNETROW_LH row;
 	row.dwIndex = (UInt32)ifIndex;
 	row.dwPhysAddrLen = 6;
-	MemCopyNO(row.bPhysAddr, hwAddr, 6);
+	MemCopyNO(row.bPhysAddr, hwAddr.Ptr(), 6);
 	row.dwAddr = ipv4;
 	row.dwType = MIB_IPNET_TYPE_DYNAMIC;
 	return 0 == CreateIpNetEntry(&row);
@@ -1312,7 +1309,7 @@ UInt32 Net::SocketFactory::GetLocalIPByDest(UInt32 ip)
 	}
 }*/
 
-Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, const UInt8 *hwAddr)
+Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CStringNN adapterName, UnsafeArray<const UInt8> hwAddr)
 {
 	return false;
 }

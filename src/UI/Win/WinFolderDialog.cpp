@@ -52,11 +52,12 @@ Bool UI::Win::WinFolderDialog::ShowDialog(ControlHandle *ownerHandle)
 		wbuff[0] = 0;
 	}
 	info.pszDisplayName = wbuff;
-	const WChar *wptr = 0;
+	UnsafeArrayOpt<const WChar> wptr = 0;
+	UnsafeArray<const WChar> nnwptr;
 	if (this->message.SetTo(s))
 	{
-		wptr = Text::StrToWCharNew(s->v);
-		info.lpszTitle = wptr;
+		wptr = nnwptr = Text::StrToWCharNew(s->v);
+		info.lpszTitle = nnwptr.Ptr();
 	}
 	else
 	{
@@ -68,7 +69,7 @@ Bool UI::Win::WinFolderDialog::ShowDialog(ControlHandle *ownerHandle)
 	info.iImage = 0;
 
 	PIDLIST_ABSOLUTE idList = SHBrowseForFolderW(&info);
-	if (wptr) Text::StrDelNew(wptr);
+	if (wptr.SetTo(nnwptr)) Text::StrDelNew(nnwptr);
 	if (info.pidlRoot)
 	{
 		CoTaskMemFree((LPVOID)info.pidlRoot);

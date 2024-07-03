@@ -39,21 +39,21 @@ namespace UI
 		UOSInt GetColumnCnt();
 		Bool AddColumn(NN<Text::String> columnName, Double colWidth);
 		Bool AddColumn(Text::CStringNN columnName, Double colWidth);
-		Bool AddColumn(const WChar *columnName, Double colWidth);
+		Bool AddColumn(UnsafeArray<const WChar> columnName, Double colWidth);
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
 		UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
 		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
-		UOSInt AddItem(const WChar *itemText, AnyType itemObj);
+		UOSInt AddItem(UnsafeArray<const WChar> itemText, AnyType itemObj);
 		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj, UOSInt imageIndex);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String> text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, UnsafeArray<const WChar> text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, NN<Text::StringBuilderUTF8> sb);
 		UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj);
 		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
-		UOSInt InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj);
+		UOSInt InsertItem(UOSInt index, UnsafeArray<const WChar> itemText, AnyType itemObj);
 		AnyType RemoveItem(UOSInt index);
 		AnyType GetItem(UOSInt index);
 		void ClearItems();

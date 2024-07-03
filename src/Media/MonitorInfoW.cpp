@@ -12,7 +12,7 @@
 Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 {
 	WChar wbuff[512];
-	WChar *sarr[3];
+	UnsafeArray<WChar> sarr[3];
 	UOSInt i;
 	MONITORINFOEXW info;
 	info.cbSize = sizeof(info);
@@ -38,12 +38,12 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		dev.cb = sizeof(dev);
 		if (EnumDisplayDevicesW(info.szDevice, 0, &dev, 0))
 		{
-			this->desc = Text::String::NewNotNull(dev.DeviceString).Ptr();
+			this->desc = Text::String::NewNotNull(dev.DeviceString);
 			Text::StrConcat(wbuff, dev.DeviceID);
 			i = Text::StrSplit(sarr, 3, wbuff, '\\');
 			if (i == 3)
 			{
-				this->monId = Text::String::NewNotNull(sarr[1]).Ptr();
+				this->monId = Text::String::NewNotNull(UnsafeArray<const WChar>(sarr[1]));
 			}
 			else
 			{
@@ -73,8 +73,8 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 Media::MonitorInfo::~MonitorInfo()
 {
 	this->name->Release();
-	SDEL_STRING(this->desc);
-	SDEL_STRING(this->monId);
+	OPTSTR_DEL(this->desc);
+	OPTSTR_DEL(this->monId);
 }
 
 NN<Text::String> Media::MonitorInfo::GetName() const
@@ -82,12 +82,12 @@ NN<Text::String> Media::MonitorInfo::GetName() const
 	return this->name;
 }
 
-Text::String *Media::MonitorInfo::GetDesc() const
+Optional<Text::String> Media::MonitorInfo::GetDesc() const
 {
 	return this->desc;
 }
 
-Text::String *Media::MonitorInfo::GetMonitorID() const
+Optional<Text::String> Media::MonitorInfo::GetMonitorID() const
 {
 	return this->monId;
 }

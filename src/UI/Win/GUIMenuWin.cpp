@@ -447,7 +447,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyM
 	{
 		WChar wbuff[256];
 		UTF8Char sbuff[64];
-		WChar *wptr;
+		UnsafeArray<WChar> wptr;
 		wptr = Text::StrUTF8_WChar(wbuff, name.v, 0);
 		wptr = Text::StrConcat(wptr, L"\t");
 		ToKeyDisplay(sbuff, keyModifier, shortcutKey);
@@ -461,8 +461,8 @@ UOSInt UI::GUIMenu::AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyM
 	}
 	else
 	{
-		const WChar *wptr = Text::StrToWCharNew(name.v);
-		AppendMenuW((HMENU)this->hMenu, 0, cmdId, wptr);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
+		AppendMenuW((HMENU)this->hMenu, 0, cmdId, wptr.Ptr());
 		Text::StrDelNew(wptr);
 	}
 	return id;
@@ -480,8 +480,8 @@ NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CStringNN name)
 	NEW_CLASSNN(subMenu, UI::GUIMenu(true));
 	this->subMenus.Add(subMenu);
 	
-	const WChar *wptr = Text::StrToWCharNew(name.v);
-	AppendMenuW((HMENU)this->hMenu, MF_POPUP, (UOSInt)subMenu->hMenu, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
+	AppendMenuW((HMENU)this->hMenu, MF_POPUP, (UOSInt)subMenu->hMenu, wptr.Ptr());
 	Text::StrDelNew(wptr);
 
 	return subMenu;

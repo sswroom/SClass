@@ -96,14 +96,13 @@ Optional<Text::String> Media::MonitorColorManager::GetProfileName()
 
 Bool Media::MonitorColorManager::Load()
 {
-	IO::Registry *regBase;
-	IO::Registry *reg2;
-	IO::Registry *reg;
+	NN<IO::Registry> regBase;
+	Optional<IO::Registry> reg2;
+	NN<IO::Registry> reg;
 	NN<Text::String> s;
 	WChar wbuff[512];
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
-	if (regBase)
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color").SetTo(regBase))
 	{
 		reg2 = 0;
 		reg = regBase;
@@ -112,12 +111,11 @@ Bool Media::MonitorColorManager::Load()
 			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(s->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
-			if (reg2 == 0)
+			if (!reg2.SetTo(reg))
 			{
 				IO::Registry::CloseRegistry(regBase);
 				return false;
 			}
-			reg = reg2;
 		}
 
 		Int32 tmpVal;
@@ -224,9 +222,9 @@ Bool Media::MonitorColorManager::Load()
 			this->color10Bit = (tmpVal != 0);
 
 		IO::Registry::CloseRegistry(regBase);
-		if (reg2)
+		if (reg2.SetTo(reg))
 		{
-			IO::Registry::CloseRegistry(reg2);
+			IO::Registry::CloseRegistry(reg);
 		}
 		this->RGBUpdated();
 		this->YUVUpdated();
@@ -240,13 +238,12 @@ Bool Media::MonitorColorManager::Load()
 
 Bool Media::MonitorColorManager::Save()
 {
-	IO::Registry *regBase;
-	IO::Registry *reg2;
-	IO::Registry *reg;
+	NN<IO::Registry> regBase;
+	Optional<IO::Registry> reg2;
+	NN<IO::Registry> reg;
 	NN<Text::String> s;
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
-	if (regBase)
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color").SetTo(regBase))
 	{
 		reg2 = 0;
 		reg = regBase;
@@ -255,12 +252,11 @@ Bool Media::MonitorColorManager::Save()
 			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(s->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
-			if (reg2 == 0)
+			if (!reg2.SetTo(reg))
 			{
 				IO::Registry::CloseRegistry(regBase);
 				return false;
 			}
-			reg = reg2;
 		}
 
 		reg->SetValue(L"MonRB", Double2Int32(this->rgb.MonRBright * 1000.0));
@@ -309,9 +305,9 @@ Bool Media::MonitorColorManager::Save()
 		reg->SetValue(L"Color10Bit", this->color10Bit?1:0);
 
 		IO::Registry::CloseRegistry(regBase);
-		if (reg2)
+		if (reg2.SetTo(reg))
 		{
-			IO::Registry::CloseRegistry(reg2);
+			IO::Registry::CloseRegistry(reg);
 		}
 		this->RGBUpdated();
 		return true;
@@ -761,11 +757,10 @@ Media::ColorManager::~ColorManager()
 
 Bool Media::ColorManager::LoadDef()
 {
-	IO::Registry *regBase;
-	IO::Registry *reg;
+	NN<IO::Registry> regBase;
+	NN<IO::Registry> reg;
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
-	if (regBase)
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color").SetTo(regBase))
 	{
 		reg = regBase;
 
@@ -795,11 +790,10 @@ Bool Media::ColorManager::LoadDef()
 
 Bool Media::ColorManager::SaveDef()
 {
-	IO::Registry *regBase;
-	IO::Registry *reg;
+	NN<IO::Registry> regBase;
+	NN<IO::Registry> reg;
 
-	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
-	if (regBase)
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color").SetTo(regBase))
 	{
 		reg = regBase;
 
@@ -867,29 +861,30 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 	return this->defYUVType;
 }
 
-NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Text::String *profileName)
+NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Optional<Text::String> profileName)
 {
 	Optional<Media::MonitorColorManager> monColor;
 	NN<Media::MonitorColorManager> nnmonColor;
+	NN<Text::String> nnprofileName;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (profileName == 0)
+	if (!profileName.SetTo(nnprofileName))
 	{
 		monColor = this->monColor.GetC(CSTR(""));
 	}
 	else
 	{
-		monColor = this->monColor.Get(profileName);
+		monColor = this->monColor.GetNN(nnprofileName);
 	}
 	if (!monColor.SetTo(nnmonColor))
 	{
 		NEW_CLASSNN(nnmonColor, Media::MonitorColorManager(profileName));
-		if (profileName == 0)
+		if (!profileName.SetTo(nnprofileName))
 		{
 			this->monColor.PutNN(Text::String::NewEmpty(), nnmonColor);
 		}
 		else
 		{
-			this->monColor.Put(profileName, nnmonColor);
+			this->monColor.PutNN(nnprofileName, nnmonColor);
 		}
 		return nnmonColor;
 	}
@@ -982,8 +977,8 @@ Bool Media::ColorManagerSess::Get10BitColor()
 void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
-	Text::String *monName = monInfo.GetMonitorID();
-	if (monName == 0)
+	NN<Text::String> monName;
+	if (!monInfo.GetMonitorID().SetTo(monName))
 		return;
 	this->mut.LockWrite();
 	if (Text::StringTool::Equals(monName, this->monColor->GetProfileName()))

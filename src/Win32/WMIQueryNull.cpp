@@ -68,7 +68,7 @@ OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 	return -2;
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
+OSInt Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -80,7 +80,7 @@ Optional<DB::DBReader> Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 	return 0;
 }
 
-Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
+Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(UnsafeArray<const WChar> sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
@@ -138,18 +138,18 @@ UnsafeArray<const WChar> Win32::WMIQuery::GetNS()
 	return this->ns;
 }
 
-UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
+UOSInt Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
 	UOSInt ret = 0;
 	return ret;
 }
 
-void Win32::WMIQuery::FreeNSList(Data::ArrayList<const WChar *> *nsList)
+void Win32::WMIQuery::FreeNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
 	UOSInt i = nsList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(nsList->GetItem(i));
+		Text::StrDelNew(nsList->GetItemNoCheck(i));
 	}
 	nsList->Clear();
 }

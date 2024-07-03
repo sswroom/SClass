@@ -106,7 +106,7 @@ namespace Media
 		void SetYUVType(Media::ColorProfile::YUVType newVal);
 		Media::ColorProfile::YUVType GetDefYUVType();
 
-		NN<MonitorColorManager> GetMonColorManager(Text::String *profileName);
+		NN<MonitorColorManager> GetMonColorManager(Optional<Text::String> profileName);
 		NN<MonitorColorManager> GetMonColorManager(MonitorHandle *hMon);
 		NN<ColorManagerSess> CreateSess(MonitorHandle *hMon);
 		void DeleteSess(NN<ColorManagerSess> sess);

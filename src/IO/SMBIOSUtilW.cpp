@@ -18,7 +18,7 @@ struct RawSMBIOSData
     BYTE    SMBIOSTableData[1];
 };
 
-IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
+Optional<IO::SMBIOS> IO::SMBIOSUtil::GetSMBIOS()
 {
 	IO::SMBIOS *smbios;
 	IO::Library lib((const UTF8Char*)"kernel32.dll");

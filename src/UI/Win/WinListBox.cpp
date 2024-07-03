@@ -102,8 +102,8 @@ UOSInt UI::Win::WinListBox::AddItem(const WChar *itemText, AnyType itemObj)
 
 UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText->v);
-	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
+	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return INVALID_INDEX;
@@ -116,8 +116,8 @@ UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::String *itemText, Any
 
 UOSInt UI::Win::WinListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText.v);
-	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
+	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return INVALID_INDEX;

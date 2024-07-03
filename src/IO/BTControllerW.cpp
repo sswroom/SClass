@@ -124,8 +124,8 @@ Bool IO::BTController::BTDevice::Pair(const UTF8Char *key)
 		return false;
 
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
-	const WChar *wptr = Text::StrToWCharNew(key);
-	Bool ret = (ERROR_SUCCESS == AuthDev(0, this->hRadio, dev, (PWSTR)wptr, (ULONG)Text::StrCharCnt(wptr)));
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(key);
+	Bool ret = (ERROR_SUCCESS == AuthDev(0, this->hRadio, dev, (PWSTR)wptr.Ptr(), (ULONG)Text::StrCharCnt(wptr)));
 	Text::StrDelNew(key);
 	return ret;
 }

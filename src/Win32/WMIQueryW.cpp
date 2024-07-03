@@ -11,7 +11,7 @@
 Int32 Win32::WMIQuery::securityCnt = 0;
 
 
-void Win32::WMIQuery::InitQuery(const WChar *ns)
+void Win32::WMIQuery::InitQuery(UnsafeArray<const WChar> ns)
 {
 	this->pService = 0;
 	this->lastDataError = DE_NO_ERROR;
@@ -29,7 +29,7 @@ void Win32::WMIQuery::InitQuery(const WChar *ns)
 		if (SUCCEEDED(hr))
 		{
 			IWbemServices *pServices;
-			BSTR nsstr = SysAllocString(ns);
+			BSTR nsstr = SysAllocString(ns.Ptr());
 			hr = pLocator->ConnectServer(nsstr, NULL, NULL, NULL, 0, NULL, NULL, &pServices);
 			pLocator->Release();
 			SysFreeString(nsstr);
@@ -55,7 +55,7 @@ Win32::WMIQuery::WMIQuery() : DB::DBConn(CSTR("WMIQuery"))
 	this->InitQuery(this->ns);
 }
 
-Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
+Win32::WMIQuery::WMIQuery(UnsafeArray<const WChar> ns) : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(ns);
 	this->InitQuery(this->ns);
@@ -64,7 +64,7 @@ Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
 Win32::WMIQuery::~WMIQuery()
 {
 	this->Close();
-	if (this->ns) Text::StrDelNew(this->ns);
+	Text::StrDelNew(this->ns);
 }
 
 Bool Win32::WMIQuery::IsError()
@@ -109,13 +109,13 @@ void Win32::WMIQuery::Close()
 
 OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CStringNN sql)
 {
-	const WChar *wptr = Text::StrToWCharNew(sql.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
 	OSInt ret = this->ExecuteNonQueryW(wptr);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
+OSInt Win32::WMIQuery::ExecuteNonQueryW(UnsafeArray<const WChar> sql)
 {
 	this->lastDataError = DE_EXEC_SQL_ERROR;
 	return -2;
@@ -123,16 +123,16 @@ OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
 
 Optional<DB::DBReader> Win32::WMIQuery::ExecuteReader(Text::CStringNN sqlCmd)
 {
-	const WChar *wptr = Text::StrToWCharNew(sqlCmd.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sqlCmd.v);
 	Optional<DB::DBReader> r = this->ExecuteReaderW(wptr);
 	Text::StrDelNew(wptr);
 	return r;
 }
 
-Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
+Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(UnsafeArray<const WChar> sqlCmd)
 {
 	HRESULT hr;
-	BSTR query = SysAllocString(sqlCmd);
+	BSTR query = SysAllocString(sqlCmd.Ptr());
 	BSTR wql = SysAllocString(L"WQL");
 	IEnumWbemClassObject *pEnum;
 	hr = ((IWbemServices*)this->pService)->ExecQuery(wql, query, WBEM_FLAG_RETURN_IMMEDIATELY | WBEM_FLAG_FORWARD_ONLY, NULL, &pEnum);
@@ -236,18 +236,18 @@ void Win32::WMIQuery::Reconnect()
 	this->InitQuery(this->ns);
 }
 
-const WChar *Win32::WMIQuery::GetNS()
+UnsafeArray<const WChar> Win32::WMIQuery::GetNS()
 {
 	return this->ns;
 }
 
-UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
+UOSInt Win32::WMIQuery::GetNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
 	UOSInt ret = 0;
 	Win32::WMIQuery *query;
 	NN<Win32::WMIReader> reader;
 	WChar wbuff[256];
-	WChar *wptr = Text::StrConcat(wbuff, L"ROOT\\");
+	UnsafeArray<WChar> wptr = Text::StrConcat(wbuff, L"ROOT\\");
 
 	NEW_CLASS(query, Win32::WMIQuery(L"ROOT"));
 	if (!query->IsError())
@@ -256,7 +256,7 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 		{
 			while (reader->ReadNext())
 			{
-				if (reader->GetStr(L"Name", wptr))
+				if (reader->GetStr(L"Name", wptr).NotNull())
 				{
 					nsList->Add(Text::StrCopyNew(wbuff));
 				}
@@ -268,12 +268,12 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 	return ret;
 }
 
-void Win32::WMIQuery::FreeNSList(Data::ArrayList<const WChar *> *nsList)
+void Win32::WMIQuery::FreeNSList(NN<Data::ArrayListArr<const WChar>> nsList)
 {
 	UOSInt i = nsList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(nsList->GetItem(i));
+		Text::StrDelNew(nsList->GetItemNoCheck(i));
 	}
 	nsList->Clear();
 }

@@ -10,23 +10,24 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::MonitorInfo *info;
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
+	NN<Text::String> s;
 	NEW_CLASS(info, Media::MonitorInfo(0));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Name = "));
 	sb.Append(info->GetName());
 	console.WriteLine(sb.ToCString());
-	if (info->GetDesc())
+	if (info->GetDesc().SetTo(s))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Desc = "));
-		sb.Append(info->GetDesc());
+		sb.Append(s);
 		console.WriteLine(sb.ToCString());
 	}
-	if (info->GetMonitorID())
+	if (info->GetMonitorID().SetTo(s))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("MonitorID = "));
-		sb.Append(info->GetMonitorID());
+		sb.Append(s);
 		console.WriteLine(sb.ToCString());
 	}
 	DEL_CLASS(info);

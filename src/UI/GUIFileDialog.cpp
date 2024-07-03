@@ -24,7 +24,8 @@ UI::GUIFileDialog::GUIFileDialog(const WChar *compName, const WChar *appName, co
 
 	this->fileName = 0;
 	this->lastName = 0;
-	if (this->reg->GetValueStr(this->dialogName, buff).SetTo(wptr))
+	NN<IO::Registry> nnreg;
+	if (this->reg.SetTo(nnreg) && nnreg->GetValueStr(this->dialogName, buff).SetTo(wptr))
 	{
 		this->lastName = Text::StrCopyNew(buff);
 	}
@@ -32,7 +33,9 @@ UI::GUIFileDialog::GUIFileDialog(const WChar *compName, const WChar *appName, co
 
 UI::GUIFileDialog::~GUIFileDialog()
 {
-	IO::Registry::CloseRegistry(this->reg);
+	NN<IO::Registry> nnreg;
+	if (this->reg.SetTo(nnreg))
+		IO::Registry::CloseRegistry(nnreg);
 	MemFree(this->dialogName);
 	UnsafeArray<const WChar> lastName;
 	if (this->lastName.SetTo(lastName)) Text::StrDelNew(lastName);

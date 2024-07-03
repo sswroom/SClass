@@ -106,7 +106,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(NN<Text::String> tabName)
 	UOSInt index;
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName->v);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName->v).Ptr();
 	item.cchTextMax = 0;
 	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
@@ -129,7 +129,7 @@ NN<UI::GUITabPage> UI::Win::WinTabControl::AddTabPage(Text::CStringNN tabName)
 	UOSInt index;
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName.v);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName.v).Ptr();
 	item.cchTextMax = 0;
 	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages.GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
@@ -192,7 +192,7 @@ void UI::Win::WinTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 {
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(name.v);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(name.v).Ptr();
 	item.cchTextMax = 0;
 	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_SETITEMW, index, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);

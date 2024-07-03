@@ -72,9 +72,9 @@ UnsafeArrayOpt<const UTF8Char> Manage::EnvironmentVar::GetValue(Text::CStringNN 
 
 void Manage::EnvironmentVar::SetValue(Text::CStringNN name, Text::CStringNN val)
 {
-	const WChar *wname = Text::StrToWCharNew(name.v);
-	const WChar *wval = Text::StrToWCharNew(val.v);
-	SetEnvironmentVariableW(wname, wval);
+	UnsafeArray<const WChar> wname = Text::StrToWCharNew(name.v);
+	UnsafeArray<const WChar> wval = Text::StrToWCharNew(val.v);
+	SetEnvironmentVariableW(wname.Ptr(), wval.Ptr());
 	Text::StrDelNew(wname);
 	Text::StrDelNew(wval);
 }
@@ -84,7 +84,7 @@ UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Cha
 #ifndef _WIN32_WCE
 	WChar wbuff[512];
 	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
-	UInt32 retSize = GetEnvironmentVariableW(wptr, wbuff, 512);
+	UInt32 retSize = GetEnvironmentVariableW(wptr.Ptr(), wbuff, 512);
 	Text::StrDelNew(wptr);
 	if (retSize == 0)
 		return 0;

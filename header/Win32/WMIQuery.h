@@ -28,9 +28,9 @@ namespace Win32
 		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
-		OSInt ExecuteNonQueryW(const WChar *sql);
+		OSInt ExecuteNonQueryW(UnsafeArray<const WChar> sql);
 		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
-		Optional<DB::DBReader> ExecuteReaderW(const WChar *sql);
+		Optional<DB::DBReader> ExecuteReaderW(UnsafeArray<const WChar> sql);
 		virtual Bool IsLastDataError();
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
@@ -45,8 +45,8 @@ namespace Win32
 
 		UnsafeArray<const WChar> GetNS();
 
-		static UOSInt GetNSList(Data::ArrayList<const WChar *> *nsList);
-		static void FreeNSList(Data::ArrayList<const WChar *> *nsList);
+		static UOSInt GetNSList(NN<Data::ArrayListArr<const WChar>> nsList);
+		static void FreeNSList(NN<Data::ArrayListArr<const WChar>> nsList);
 	};
 }
 #endif

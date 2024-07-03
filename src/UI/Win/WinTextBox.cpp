@@ -51,8 +51,8 @@ void UI::Win::WinTextBox::SetPasswordChar(UTF32Char c)
 
 void UI::Win::WinTextBox::SetText(Text::CStringNN txt)
 {
-	const WChar *wptr = Text::StrToWCharNew(txt.v);
-	SetWindowTextW((HWND)hwnd, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(txt.v);
+	SetWindowTextW((HWND)hwnd, wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 

@@ -14,8 +14,8 @@ IO::DeviceStream::DeviceStream(Text::CStringNN devPath) : IO::Stream(devPath)
 	attr.bInheritHandle = true;
 	attr.lpSecurityDescriptor = 0;
 
-	const WChar *wptr = Text::StrToWCharNew(devPath.v);
-	this->hand = CreateFileW(wptr, 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(devPath.v);
+	this->hand = CreateFileW(wptr.Ptr(), 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
 	Text::StrDelNew(wptr);
 }
 
@@ -84,8 +84,8 @@ Bool IO::DeviceStream::Recover()
 	attr.bInheritHandle = true;
 	attr.lpSecurityDescriptor = 0;
 
-	const WChar *wptr = Text::StrToWCharNew(this->sourceName->v);
-	this->hand = CreateFileW(wptr, 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(this->sourceName->v);
+	this->hand = CreateFileW(wptr.Ptr(), 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
 	Text::StrDelNew(wptr);
 	return true;
 }

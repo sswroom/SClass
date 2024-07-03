@@ -26,8 +26,8 @@ UI::Win::WinLabel::~WinLabel()
 
 void UI::Win::WinLabel::SetText(Text::CStringNN text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text.v);
-	SetWindowTextW((HWND)this->hwnd, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
+	SetWindowTextW((HWND)this->hwnd, wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 

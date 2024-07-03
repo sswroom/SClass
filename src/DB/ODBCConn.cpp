@@ -545,8 +545,8 @@ OSInt DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 	}
 
 	#if _WCHAR_SIZE == 2
-	const WChar *wptr = Text::StrToWCharNew(sql.v);
-	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr, SQL_NTS);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
+	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr.Ptr(), SQL_NTS);
 	Text::StrDelNew(wptr);
 	#else
 	ret = SQLPrepareA(hStmt, (SQLCHAR*)sql.v.Ptr(), SQL_NTS);
@@ -655,8 +655,8 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	}
 
 	#if _WCHAR_SIZE == 2
-	const WChar *wptr = Text::StrToWCharNew(sql.v);
-	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr, SQL_NTS);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sql.v);
+	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr.Ptr(), SQL_NTS);
 	Text::StrDelNew(wptr);
 	#else
 	ret = SQLPrepare(hStmt, (SQLCHAR*)sql.v.Ptr(), SQL_NTS);
@@ -1127,11 +1127,11 @@ UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	WChar wbuff[512];
-	IO::Registry* reg = IO::Registry::OpenLocalSoftware(L"ODBC\\ODBCINST.INI\\ODBC Drivers");
+	NN<IO::Registry> reg;
 	UOSInt i = 0;
-	if (reg)
+	if (IO::Registry::OpenLocalSoftware(L"ODBC\\ODBCINST.INI\\ODBC Drivers").SetTo(reg))
 	{
-		while (reg->GetName(wbuff, i))
+		while (reg->GetName(wbuff, i).NotNull())
 		{
 			driverList->Add(Text::String::NewNotNull(wbuff));
 			i++;

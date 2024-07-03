@@ -330,7 +330,8 @@ void ASIOHdlrSRChg(ASIOSampleRate sRate)
 Int32 Media::ASIOOutRenderer::GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff)
 {
 	HKEY hkEnum;
-	const WChar *wbuff = 0;
+	UnsafeArrayOpt<const WChar> wbuff = 0;
+	UnsafeArray<const WChar> nnwbuff;
 	UnsafeArray<const UTF8Char> nnbuff;
 	if (buff.SetTo(nnbuff))
 	{
@@ -345,17 +346,17 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff
 	{
 		if ((cr = RegEnumKeyW(hkEnum, index, keyname, nameSize))== ERROR_SUCCESS)
 		{
-			if (buff == 0)
+			if (!wbuff.SetTo(nnwbuff))
 			{
 				ret = (Int32)index;
 				break;
 			}
-			else if (Text::StrEquals(keyname, wbuff) == 0)
+			else if (Text::StrEquals(keyname, nnwbuff) == 0)
 			{
 				ret = (Int32)index;
 				break;
 			}
-			else if (Text::StrEndsWith(keyname, wbuff))
+			else if (Text::StrEndsWith(keyname, nnwbuff))
 			{
 				ret = (Int32)index;
 				break;
@@ -365,7 +366,7 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(UnsafeArrayOpt<const UTF8Char> buff
 	}
 	if (hkEnum)
 		RegCloseKey(hkEnum);
-	if (wbuff) Text::StrDelNew(wbuff);
+	if (wbuff.SetTo(nnwbuff)) Text::StrDelNew(nnwbuff);
 	return ret;
 }
 
@@ -771,9 +772,10 @@ Media::ASIOOutRenderer::ASIOOutRenderer(UInt32 devId)
 Media::ASIOOutRenderer::~ASIOOutRenderer()
 {
 	Stop();
-	if (drvName)
+	UnsafeArray<const WChar> nndrvName;
+	if (drvName.SetTo(nndrvName))
 	{
-		Text::StrDelNew(drvName);
+		Text::StrDelNew(nndrvName);
 		drvName = 0;
 	}
 	if (asiodrv)

@@ -247,12 +247,12 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	{
 		is.hInsertAfter = TVI_LAST;
 	}
-	const WChar *wptr = Text::StrToWCharNew(itemText->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
 	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	is.item.mask = TVIF_TEXT | TVIF_PARAM;
 	is.item.lParam = (LPARAM)item.Ptr();
 	is.item.cchTextMax = (Int32)Text::StrCharCnt(wptr);
-	is.item.pszText = (LPWSTR)wptr;
+	is.item.pszText = (LPWSTR)wptr.Ptr();
 	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd, TVM_INSERTITEMW, 0, (LPARAM)&is);
 	Text::StrDelNew(wptr);
 	if(hItem == 0)
@@ -294,12 +294,12 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	{
 		is.hInsertAfter = TVI_LAST;
 	}
-	const WChar *wptr = Text::StrToWCharNew(itemText.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
 	NEW_CLASSNN(item, TreeItem(itemObj, itemText));
 	is.item.mask = TVIF_TEXT | TVIF_PARAM;
 	is.item.lParam = (LPARAM)item.Ptr();
 	is.item.cchTextMax = (Int32)Text::StrCharCnt(wptr);
-	is.item.pszText = (LPWSTR)wptr;
+	is.item.pszText = (LPWSTR)wptr.Ptr();
 	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd, TVM_INSERTITEMW, 0, (LPARAM)&is);
 	Text::StrDelNew(wptr);
 	if(hItem == 0)

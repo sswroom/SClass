@@ -99,7 +99,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Text::CString s)
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(UnsafeArray<const WChar> s)
 {
 	UOSInt charCnt = Text::StrWChar_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -108,7 +108,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s)
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(UnsafeArray<const WChar> s, UOSInt len)
 {
 	UOSInt charCnt = Text::StrWChar_UTF8CntC(s, len);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -118,7 +118,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s, UOS
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<const UTF16Char> s)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -127,7 +127,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s, UOSInt utf16Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(UnsafeArray<const UTF16Char> s, UOSInt utf16Cnt)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8CntC(s, utf16Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -147,7 +147,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(UnsafeArray<c
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(UnsafeArray<const UTF32Char> s)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -156,7 +156,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(UnsafeArray<const UTF32Char> s, UOSInt utf32Cnt)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8CntC(s, utf32Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);

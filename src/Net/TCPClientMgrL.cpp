@@ -44,7 +44,9 @@ void TCPClientMgr_RemoveCliStat(NN<Data::UInt64FastMapNN<Net::TCPClientMgr::TCPC
 UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 {
 	NN<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
-	ClassData *clsData = me->clsData;
+	NN<ClassData> clsData;
+	if (!me->clsData.SetTo(clsData))
+		return 0;
 	Data::Timestamp currTime;
 	OSInt pollRet;
 	UOSInt i;
@@ -248,7 +250,11 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
 	NN<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
 	Net::TCPClientMgr *me = stat->me;
-	ClassData *clsData = me->clsData;
+	NN<ClassData> clsData;
+	if (!me->clsData.SetTo(clsData))
+	{
+		return 0;
+	}
 	Data::Timestamp currTime;
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Data::Timestamp lastCheckTime = 0;
@@ -348,17 +354,17 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	if (workerCnt <= 0)
 		workerCnt = 1;
 	this->workerCnt = workerCnt;
-	ClassData *clsData = 0;
+	NN<ClassData> clsData;
 	int pipefd[2];
 	if (pipe(pipefd) != -1)
 	{
-		clsData = MemAlloc(ClassData, 1);
+		clsData = MemAllocNN(ClassData);
 		clsData->piperdfd = pipefd[0];
 		clsData->pipewrfd = pipefd[1];
 		clsData->hasData = false;
 	}
 	this->clsData = clsData;
-	if (clsData == 0)
+	if (!this->clsData.SetTo(clsData))
 	{
 		this->workers = 0;
 	}
@@ -381,7 +387,8 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 
 Net::TCPClientMgr::~TCPClientMgr()
 {
-	ClassData *clsData = this->clsData;
+	Optional<ClassData> clsData = this->clsData;
+	NN<ClassData> nnclsData;
 	UOSInt i = this->cliMap.GetCount();
 	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	if (i)
@@ -396,20 +403,20 @@ Net::TCPClientMgr::~TCPClientMgr()
 			}
 		}
 	}
-	if (clsData)
+	if (clsData.SetTo(nnclsData))
 	{
-		clsData->hasData = true;
-		i = (UOSInt)write(clsData->pipewrfd, "", 1);
+		nnclsData->hasData = true;
+		i = (UOSInt)write(nnclsData->pipewrfd, "", 1);
 	}
 	while (this->cliMap.GetCount() > 0)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
 	this->toStop = true;
-	if (clsData)
+	if (clsData.SetTo(nnclsData))
 	{
-		clsData->hasData = true;
-		i = (UOSInt)write(clsData->pipewrfd, "", 1);
+		nnclsData->hasData = true;
+		i = (UOSInt)write(nnclsData->pipewrfd, "", 1);
 	}
 	while (clientThreadRunning)
 	{
@@ -446,11 +453,11 @@ Net::TCPClientMgr::~TCPClientMgr()
 		MemFree(this->workers);
 	}
 
-	if (clsData)
+	if (clsData.SetTo(nnclsData))
 	{
-		close(clsData->pipewrfd);
-		close(clsData->piperdfd);
-		MemFree(clsData);
+		close(nnclsData->pipewrfd);
+		close(nnclsData->piperdfd);
+		MemFreeNN(nnclsData);
 	}
 	SDEL_CLASS(this->logWriter);
 }
@@ -468,9 +475,10 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 #endif
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
+	NN<ClassData> clsData;
 	UInt64 cliId = cli->GetCliId();
 	if (this->logWriter) this->logWriter->TCPConnect(cli);
-	if (cliId == 0)
+	if (cliId == 0 || !this->clsData.SetTo(clsData))
 	{
 		if (this->logWriter) this->logWriter->TCPDisconnect(cli);
 		this->evtHdlr(cli, this->userObj, cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
@@ -502,7 +510,7 @@ void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 	}
 	readMutUsage.EndUse();
 	mutUsage.EndUse();
-	if (write((this->clsData)->pipewrfd, "", 1) == -1)
+	if (write(clsData->pipewrfd, "", 1) == -1)
 	{
 		printf("TCPClientMgr: Error in writing to pipe\r\n");
 	}

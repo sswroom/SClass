@@ -161,7 +161,7 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 #else
 	BOOL fCreated;
 	UTF16Char sbuff[512];
-	UTF16Char *sptr;
+	UnsafeArray<UTF16Char> sptr;
 	sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DB=", 0);
 	sptr = Text::StrUTF8_UTF16(sptr, fileName.v, 0);
 	sptr = Text::StrUTF8_UTF16(sptr, (const UTF8Char*)" General");

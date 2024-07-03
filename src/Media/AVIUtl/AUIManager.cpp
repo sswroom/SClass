@@ -9,10 +9,10 @@ Media::AVIUtl::AUIManager::AUIManager()
 	IO::Path::PathType pt;
 	NN<Media::AVIUtl::AUIPlugin> plugin;
 
-	IO::Path::FindFileSession *sess = IO::Path::FindFileW(L"*.aui");
-	if (sess)
+	NN<IO::Path::FindFileSession> sess;
+	if (IO::Path::FindFileW(L"*.aui").SetTo(sess))
 	{
-		while (IO::Path::FindNextFileW(wbuff, sess, 0, &pt, 0))
+		while (IO::Path::FindNextFileW(wbuff, sess, 0, pt, 0).NotNull())
 		{
 			if (Media::AVIUtl::AUIPlugin::LoadPlugin(wbuff).SetTo(plugin))
 			{

@@ -469,7 +469,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->hMon = hMon;
 	this->monFileName = 0;
 	Media::MonitorInfo monInfo(this->hMon);
-	Text::String *monName = monInfo.GetDesc();
+	Optional<Text::String> monName = monInfo.GetDesc();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 
@@ -498,9 +498,10 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->txtMonitor = ui->NewTextBox(this->pnlMonitor, CSTR(""), false);
 	this->txtMonitor->SetRect(100, 0, 300, 23, false);
 	this->txtMonitor->SetReadOnly(true);
-	if (monName)
+	NN<Text::String> nnmonName;
+	if (monName.SetTo(nnmonName))
 	{
-		this->txtMonitor->SetText(monName->ToCString());
+		this->txtMonitor->SetText(nnmonName->ToCString());
 	}
 	this->pnlButtons = ui->NewPanel(*this);
 	this->pnlButtons->SetRect(0, 0, 100, 40, false);

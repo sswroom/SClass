@@ -25,14 +25,13 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> s
 	UnsafeArrayOpt<UTF8Char> ret = 0;
 	UnsafeArray<UTF8Char> nnret;
 
-	IO::Registry *reg = IO::Registry::OpenLocalHardware();
-	IO::Registry *reg2;
-	if (reg)
+	NN<IO::Registry> reg;
+	NN<IO::Registry> reg2;
+	if (IO::Registry::OpenLocalHardware().SetTo(reg))
 	{
-		reg2 = reg->OpenSubReg(L"DESCRIPTION\\System\\BIOS");
-		if (reg2)
+		if (reg->OpenSubReg(L"DESCRIPTION\\System\\BIOS").SetTo(reg2))
 		{
-			if (reg2->GetValueStr(L"SystemManufacturer", wbuff))
+			if (reg2->GetValueStr(L"SystemManufacturer", wbuff).NotNull())
 			{
 				nnret = Text::StrWChar_UTF8(sbuff, wbuff);
 				*nnret++ = ' ';
@@ -46,11 +45,11 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> s
 
 	if (ret == 0)
 	{
-		IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
-		if (smbios)
+		NN<IO::SMBIOS> smbios;
+		if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 		{
 			ret = smbios->GetPlatformName(sbuff);
-			DEL_CLASS(smbios);
+			smbios.Delete();
 			if (ret.SetTo(nnret))
 				return nnret;
 		}
@@ -61,11 +60,11 @@ UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> s
 UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
 	UnsafeArrayOpt<UTF8Char> ret = 0;
-	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
-	if (smbios)
+	NN<IO::SMBIOS> smbios;
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
 		ret = smbios->GetPlatformSN(sbuff);
-		DEL_CLASS(smbios);
+		smbios.Delete();
 		if (ret.NotNull())
 			return ret;
 	}
@@ -103,12 +102,12 @@ UInt64 IO::SystemInfo::GetTotalUsableMemSize()
 
 IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 {
-	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
+	NN<IO::SMBIOS> smbios;
 	Int32 ctype;
-	if (smbios)
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
 		ctype = smbios->GetChassisType();
-		DEL_CLASS(smbios);
+		smbios.Delete();
 		switch (ctype)
 		{
 		case 3:
@@ -194,8 +193,8 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<DB::DBReader> r;
-	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
-	if (smbios)
+	NN<IO::SMBIOS> smbios;
+	if (IO::SMBIOSUtil::GetSMBIOS().SetTo(smbios))
 	{
 		Data::ArrayListNN<IO::SMBIOS::MemoryDeviceInfo> memList;
 		NN<IO::SMBIOS::MemoryDeviceInfo> mem;
@@ -261,10 +260,10 @@ UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 			}
 
 			smbios->FreeMemoryInfo(memList);
-			DEL_CLASS(smbios);
+			smbios.Delete();
 			return retCnt;
 		}
-		DEL_CLASS(smbios);
+		smbios.Delete();
 	}
 
 

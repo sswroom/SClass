@@ -52,13 +52,13 @@ namespace Text
 		NN<StringBuilderUTF8> Append(const Text::StringBase<const UTF8Char> &s);
 		NN<StringBuilderUTF8> AppendOpt(Optional<Text::String> s);
 		NN<StringBuilderUTF8> AppendOpt(Text::CString s);
-		NN<StringBuilderUTF8> AppendW(const WChar *s);
-		NN<StringBuilderUTF8> AppendW(const WChar *s, UOSInt len);
-		NN<StringBuilderUTF8> AppendUTF16(const UTF16Char *s);
-		NN<StringBuilderUTF8> AppendUTF16(const UTF16Char *s, UOSInt utf16Cnt);
+		NN<StringBuilderUTF8> AppendW(UnsafeArray<const WChar> s);
+		NN<StringBuilderUTF8> AppendW(UnsafeArray<const WChar> s, UOSInt len);
+		NN<StringBuilderUTF8> AppendUTF16(UnsafeArray<const UTF16Char> s);
+		NN<StringBuilderUTF8> AppendUTF16(UnsafeArray<const UTF16Char> s, UOSInt utf16Cnt);
 		NN<StringBuilderUTF8> AppendUTF16BE(UnsafeArray<const UInt8> s, UOSInt utf16Cnt);
-		NN<StringBuilderUTF8> AppendUTF32(const UTF32Char *s);
-		NN<StringBuilderUTF8> AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt);
+		NN<StringBuilderUTF8> AppendUTF32(UnsafeArray<const UTF32Char> s);
+		NN<StringBuilderUTF8> AppendUTF32(UnsafeArray<const UTF32Char> s, UOSInt utf32Cnt);
 		NN<StringBuilderUTF8> AppendSlow(UnsafeArrayOpt<const UTF8Char> s);
 
 		NN<StringBuilderUTF8> AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen);

@@ -292,14 +292,14 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(NN<IO::FileSelector> selector)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	Text::Encoding enc(932);
-	WChar *wptr;
-	WChar *sarr[3];
+	UnsafeArray<WChar> wptr;
+	UnsafeArray<WChar> sarr[3];
 	Char *filter = pluginTab->filefilter;
 	UOSInt i;
 	UOSInt j;
 	i = Text::StrCharCntCh(filter);
 	j = enc.CountWChars((UInt8*)filter, i);
-	wptr = MemAlloc(WChar, j + 1);
+	wptr = MemAllocArr(WChar, j + 1);
 	enc.WFromBytes(wptr, (UInt8*)filter, i, 0);
 	sarr[2] = wptr;
 	while (true)
@@ -307,15 +307,15 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(NN<IO::FileSelector> selector)
 		j = Text::StrSplit(sarr, 3, sarr[2], '|');
 		if (j == 1)
 			break;
-		NN<Text::String> sptr1 = Text::String::NewNotNull(sarr[1]);
-		NN<Text::String> sptr0 = Text::String::NewNotNull(sarr[0]);
+		NN<Text::String> sptr1 = Text::String::NewNotNull(UnsafeArray<const WChar>(sarr[1]));
+		NN<Text::String> sptr0 = Text::String::NewNotNull(UnsafeArray<const WChar>(sarr[0]));
 		selector->AddFilter(sptr1->ToCString(), sptr0->ToCString());
 		sptr1->Release();
 		sptr0->Release();
 		if (j == 2)
 			break;
 	}
-	MemFree(wptr);
+	MemFreeArr(wptr);
 }
 
 Optional<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::LoadPlugin(const WChar *fileName)

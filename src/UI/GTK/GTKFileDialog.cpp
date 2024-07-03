@@ -457,7 +457,9 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 			{
 				Text::StrConcat(wptr, currPtr);
 			}
-			this->reg->SetValue(this->dialogName, fname1);
+			NN<IO::Registry> nnreg;
+			if (this->reg.SetTo(nnreg))
+				nnreg->SetValue(this->dialogName, fname1);
 		}
 	}
 	if (multiBuff)

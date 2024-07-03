@@ -141,27 +141,25 @@ Bool IO::SerialPort::InitStream()
 
 Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
 {
-	IO::Registry *reg;
-	IO::Registry *comreg;
+	NN<IO::Registry> reg;
+	NN<IO::Registry> comreg;
 	Bool succ = false;
 	WChar wbuff[512];
 	WChar wbuff2[32];
-	reg = IO::Registry::OpenLocalHardware();
-	if (reg)
+	if (IO::Registry::OpenLocalHardware().SetTo(reg))
 	{
-		comreg = reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM");
-		if (comreg)
+		if (reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM").SetTo(comreg))
 		{
 			UOSInt i;
 			succ = true;
 			i = 0;
-			while (comreg->GetName(wbuff, i))
+			while (comreg->GetName(wbuff, i).NotNull())
 			{
-				if (comreg->GetValueStr(wbuff, wbuff2))
+				if (comreg->GetValueStr(wbuff, wbuff2).NotNull())
 				{
 					if (Text::StrStartsWith(wbuff2, L"COM"))
 					{
-						ports->Add(Text::StrToUOSInt(&wbuff2[3]));
+						ports->Add(Text::StrToUOSIntW(&wbuff2[3]));
 						if (portTypes)
 						{
 							if (Text::StrStartsWith(wbuff, L"\\Device\\com0com"))
@@ -240,30 +238,28 @@ Text::CStringNN IO::SerialPort::GetPortTypeName(SerialPortType portType)
 UOSInt IO::SerialPort::GetPortWithType(Text::CStringNN portName)
 {
 	UOSInt port = 0;
-	IO::Registry *reg;
-	IO::Registry *comreg;
+	NN<IO::Registry> reg;
+	NN<IO::Registry> comreg;
 	WChar wbuff[512];
 	WChar wbuff2[32];
-	const WChar *wportName = Text::StrToWCharNew(portName.v);
-	reg = IO::Registry::OpenLocalHardware();
-	if (reg)
+	UnsafeArray<const WChar> wportName = Text::StrToWCharNew(portName.v);
+	if (IO::Registry::OpenLocalHardware().SetTo(reg))
 	{
-		comreg = reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM");
-		if (comreg)
+		if (reg->OpenSubReg(L"DEVICEMAP\\SERIALCOMM").SetTo(comreg))
 		{
 			UOSInt i;
 			i = 0;
-			while (comreg->GetName(wbuff, i))
+			while (comreg->GetName(wbuff, i).NotNull())
 			{
-				if (comreg->GetValueStr(wbuff, wbuff2))
+				if (comreg->GetValueStr(wbuff, wbuff2).NotNull())
 				{
-					if (Text::StrIndexOf(wbuff, wportName) != INVALID_INDEX)
+					if (Text::StrIndexOfW(wbuff, wportName) != INVALID_INDEX)
 					{
-						if (comreg->GetValueStr(wbuff, wbuff2))
+						if (comreg->GetValueStr(wbuff, wbuff2).NotNull())
 						{
 							if (Text::StrStartsWith(wbuff2, L"COM"))
 							{
-								port = Text::StrToUOSInt(&wbuff2[3]);
+								port = Text::StrToUOSIntW(&wbuff2[3]);
 								break;
 							}
 						}
@@ -441,12 +437,12 @@ struct ReadEvent
 {
 	UInt8 *buff;
 	UOSInt size;	
-	Sync::Event *evt;
+	NN<Sync::Event> evt;
 	UInt32 readSize;
 	OVERLAPPED ol;
 };
 
-void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> IO::SerialPort::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	void *h = this->handle;
 	if (h == 0)
@@ -456,14 +452,14 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	UInt32 readSize;
 	if (ReadFile(h, buff.Ptr(), buff.GetSize(), (LPDWORD)&readSize, 0))
 	{
-		return (void*)(OSInt)readSize;
+		return (IO::StreamReadReq*)(OSInt)readSize;
 	}
 	else
 	{
 		return 0;
 	}
 #else
-	ReadEvent *re = MemAlloc(ReadEvent, 1);
+	NN<ReadEvent> re = MemAllocNN(ReadEvent);
 	re->buff = buff.Arr().Ptr();
 	re->evt = evt;
 	re->size = buff.GetSize();
@@ -473,20 +469,20 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	re->ol.Offset = 0;
 	re->ol.OffsetHigh = 0;
 	ReadFile(h, buff.Arr().Ptr(), (DWORD)buff.GetSize(), (DWORD*)&re->readSize, &re->ol);
-	return re;
+	return NN<IO::StreamReadReq>::ConvertFrom(re);
 #endif
 }
 
-UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt IO::SerialPort::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 #ifdef _WIN32_WCE
 	incomplete.Set(false);
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 #else
-	ReadEvent *re = (ReadEvent*)reqData;
+	NN<ReadEvent> re = NN<ReadEvent>::ConvertFrom(reqData);
 	UInt32 retVal;
 	Int32 result = GetOverlappedResult(this->handle, &re->ol, (DWORD*)&retVal, toWait?TRUE:FALSE);
-	MemFree(re);
+	MemFreeNN(re);
 	incomplete.Set(false);
 	if (result)
 		return retVal;
@@ -494,31 +490,31 @@ UOSInt IO::SerialPort::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomp
 #endif
 }
 
-void IO::SerialPort::CancelRead(void *reqData)
+void IO::SerialPort::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 #ifdef _WIN32_WCE
 #else
 //	ReadEvent *re = (ReadEvent*)reqData;
 	CancelIo(this->handle);
-	MemFree(reqData);
+	MemFreeNN(reqData);
 //	PurgeComm(this->handle, PURGE_RXABORT);
 #endif
 }
 
-void *IO::SerialPort::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> IO::SerialPort::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	evt->Set();
 	if (handle == 0)
 		return 0;
-	return (void*)(OSInt)Write(buff);
+	return (IO::StreamWriteReq*)Write(buff);
 }
 
-UOSInt IO::SerialPort::EndWrite(void *reqData, Bool toWait)
+UOSInt IO::SerialPort::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void IO::SerialPort::CancelWrite(void *reqData)
+void IO::SerialPort::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 }
 

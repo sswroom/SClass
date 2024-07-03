@@ -47,7 +47,7 @@ UnsafeArray<UTF8Char> IO::Path::GetTempFile(UnsafeArray<UTF8Char> buff, UnsafeAr
 	return Text::StrConcatC(Text::StrWChar_UTF8(buff, tmpBuff), fileName, fileNameLen);
 }
 
-WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
+UnsafeArray<WChar> IO::Path::GetTempFileW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> fileName)
 {
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
@@ -70,8 +70,8 @@ Bool IO::Path::IsDirectoryExist(Text::CStringNN dir)
 	}
 	else
 	{
-		const WChar *wdir = Text::StrToWCharNew(dir.v);
-		ret = GetFileAttributesW(wdir);
+		UnsafeArray<const WChar> wdir = Text::StrToWCharNew(dir.v);
+		ret = GetFileAttributesW(wdir.Ptr());
 		Text::StrDelNew(wdir);
 	}
 	if (ret == INVALID_FILE_ATTRIBUTES)
@@ -80,9 +80,9 @@ Bool IO::Path::IsDirectoryExist(Text::CStringNN dir)
 		return (ret & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-Bool IO::Path::IsDirectoryExistW(const WChar *dir)
+Bool IO::Path::IsDirectoryExistW(UnsafeArray<const WChar> dir)
 {
-	UInt32 ret = GetFileAttributesW(dir);
+	UInt32 ret = GetFileAttributesW(dir.Ptr());
 	if (ret == INVALID_FILE_ATTRIBUTES)
 		return false;
 	else
@@ -95,7 +95,7 @@ Bool IO::Path::CreateDirectory(Text::CStringNN dirInput)
 	Text::StrUTF8_WChar(dir, dirInput.v, 0);
 	if (IsDirectoryExistW(dir))
 		return true;
-	UOSInt i = Text::StrLastIndexOfChar(dir, '\\');
+	UOSInt i = Text::StrLastIndexOfCharW(dir, '\\');
 	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
 	if (dir[i - 1] != ':')
@@ -107,13 +107,13 @@ Bool IO::Path::CreateDirectory(Text::CStringNN dirInput)
 	return ::CreateDirectoryW(dir, 0) != 0;
 }
 
-Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
+Bool IO::Path::CreateDirectoryW(UnsafeArray<const WChar> dirInput)
 {
 	WChar dir[MAX_PATH];
 	Text::StrConcat(dir, dirInput);
 	if (IsDirectoryExistW(dir))
 		return true;
-	UOSInt i = Text::StrLastIndexOfChar(dir, '\\');
+	UOSInt i = Text::StrLastIndexOfCharW(dir, '\\');
 	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
 	if (dir[i - 1] != ':')
@@ -127,28 +127,28 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 
 Bool IO::Path::RemoveDirectory(UnsafeArray<const UTF8Char> dir)
 {
-	const WChar *wdir = Text::StrToWCharNew(dir);
-	Bool ret = ::RemoveDirectoryW(wdir) != 0;
+	UnsafeArray<const WChar> wdir = Text::StrToWCharNew(dir);
+	Bool ret = ::RemoveDirectoryW(wdir.Ptr()) != 0;
 	Text::StrDelNew(wdir);
 	return ret;
 }
 
-Bool IO::Path::RemoveDirectoryW(const WChar *dir)
+Bool IO::Path::RemoveDirectoryW(UnsafeArray<const WChar> dir)
 {
-	return ::RemoveDirectoryW(dir) != 0;
+	return ::RemoveDirectoryW(dir.Ptr()) != 0;
 }
 
 Bool IO::Path::DeleteFile(UnsafeArray<const UTF8Char> fileName)
 {
-	const WChar *wfileName = Text::StrToWCharNew(fileName);
-	Bool ret = ::DeleteFileW(wfileName) != 0;
+	UnsafeArray<const WChar> wfileName = Text::StrToWCharNew(fileName);
+	Bool ret = ::DeleteFileW(wfileName.Ptr()) != 0;
 	Text::StrDelNew(wfileName);
 	return ret;
 }
 
-Bool IO::Path::DeleteFileW(const WChar *fileName)
+Bool IO::Path::DeleteFileW(UnsafeArray<const WChar> fileName)
 {
-	return ::DeleteFileW(fileName) != 0;
+	return ::DeleteFileW(fileName.Ptr()) != 0;
 }
 
 OSInt IO::Path::FileNameCompare(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
@@ -156,7 +156,7 @@ OSInt IO::Path::FileNameCompare(UnsafeArray<const UTF8Char> file1, UnsafeArray<c
 	return Text::StrCompareICase(file1, file2);
 }
 
-OSInt IO::Path::FileNameCompareW(const WChar *file1, const WChar *file2)
+OSInt IO::Path::FileNameCompareW(UnsafeArray<const WChar> file1, UnsafeArray<const WChar> file2)
 {
 	return Text::StrCompareICase(file1, file2);
 }
@@ -184,8 +184,8 @@ UnsafeArray<UTF8Char> IO::Path::GetFileDirectory(UnsafeArray<UTF8Char> buff, Uns
 	else
 	{
 		ptr3 = MemAlloc(WChar, MAX_PATH);
-		const WChar *wfileName = Text::StrToWCharNew(fileName);
-		GetFullPathNameW(wfileName, MAX_PATH, ptr3, &ptr);
+		UnsafeArray<const WChar> wfileName = Text::StrToWCharNew(fileName);
+		GetFullPathNameW(wfileName.Ptr(), MAX_PATH, ptr3, &ptr);
 		Text::StrDelNew(wfileName);
 		if (ptr)
 		{
@@ -198,13 +198,13 @@ UnsafeArray<UTF8Char> IO::Path::GetFileDirectory(UnsafeArray<UTF8Char> buff, Uns
 #endif
 }
 
-WChar *IO::Path::GetFileDirectoryW(WChar *buff, const WChar *fileName)
+UnsafeArray<WChar> IO::Path::GetFileDirectoryW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> fileName)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, fileName);
 #else
-	WChar *ptr;
-	WChar *ptr3 = 0;
+	UnsafeArray<WChar> ptr;
+	UnsafeArray<WChar> ptr3;
 	if (fileName[1] == ':')
 	{
 		ptr = buff;
@@ -217,14 +217,15 @@ WChar *IO::Path::GetFileDirectoryW(WChar *buff, const WChar *fileName)
 	}
 	else
 	{
-		ptr3 = MemAlloc(WChar, MAX_PATH);
-		GetFullPathNameW(fileName, MAX_PATH, ptr3, &ptr);
-		if (ptr)
+		ptr3 = MemAllocArr(WChar, MAX_PATH);
+		WChar *ptr2;
+		GetFullPathNameW(fileName.Ptr(), MAX_PATH, ptr3.Ptr(), &ptr2);
+		if (ptr2)
 		{
-			ptr[-1] = 0;
+			ptr2[-1] = 0;
 		}
 		ptr = Text::StrConcat(buff, ptr3);
-		MemFree(ptr3);
+		MemFreeArr(ptr3);
 		return ptr;
 	}
 #endif
@@ -243,13 +244,13 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetProcessFileName(UnsafeArray<UTF8Char> buff
 	return Text::StrWChar_UTF8(buff, tmpBuff);
 }
 
-WChar *IO::Path::GetProcessFileNameW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetProcessFileNameW(UnsafeArray<WChar> buff)
 {
 	UInt32 retSize;
 #ifdef _WIN32_WCE
 	retSize = GetModuleFileNameW(0, buff, 1024);
 #else
-	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, buff, 1024);
+	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, buff.Ptr(), 1024);
 #endif
 	buff[retSize] = 0;
 	return &buff[retSize];
@@ -294,9 +295,10 @@ UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, Unsaf
 	return Text::StrConcatC(nnoldExt, ext, extLen);
 }
 
-WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
+UnsafeArray<WChar> IO::Path::ReplaceExtW(UnsafeArray<WChar> fileName, UnsafeArray<const WChar> ext)
 {
-	WChar *oldExt = 0;
+	UnsafeArrayOpt<WChar> oldExt = 0;
+	UnsafeArray<WChar> nnoldExt;
 	WChar c;
 	while ((c = *fileName++) != 0)
 	{
@@ -309,12 +311,12 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 			oldExt = fileName;
 		}
 	}
-	if (oldExt == 0)
+	if (!oldExt.SetTo(nnoldExt))
 	{
-		oldExt = fileName;
-		oldExt[-1] = '.';
+		nnoldExt = fileName;
+		nnoldExt[-1] = '.';
 	}
-	return Text::StrConcat(oldExt, ext);
+	return Text::StrConcat(nnoldExt, ext);
 }
 
 UnsafeArray<UTF8Char> IO::Path::GetFileExt(UnsafeArray<UTF8Char> fileBuff, UnsafeArray<const UTF8Char> path, UOSInt pathLen)
@@ -340,14 +342,14 @@ UnsafeArray<UTF8Char> IO::Path::GetFileExt(UnsafeArray<UTF8Char> fileBuff, Unsaf
 	return fileBuff;
 }
 
-WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
+UnsafeArray<WChar> IO::Path::GetFileExtW(UnsafeArray<WChar> fileBuff, UnsafeArray<const WChar> path)
 {
-	UOSInt i = Text::StrLastIndexOfChar(path, '\\');
+	UOSInt i = Text::StrLastIndexOfCharW(path, '\\');
 	if (i != INVALID_INDEX)
 	{
 		path = &path[i + 1];
 	}
-	i = Text::StrLastIndexOfChar(path, '.');
+	i = Text::StrLastIndexOfCharW(path, '.');
 	if (i != INVALID_INDEX)
 	{
 		return Text::StrConcat(fileBuff, &path[i + 1]);
@@ -493,16 +495,16 @@ UnsafeArray<UTF8Char> IO::Path::AppendPath(UnsafeArray<UTF8Char> path, UnsafeArr
 	}
 	else
 	{
-		return &lastSep[Text::StrCharCnt(lastSep)];
+		return &lastSep[Text::StrCharCnt(UnsafeArray<const UInt8>(lastSep))];
 	}
 }
 
-WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
+UnsafeArray<WChar> IO::Path::AppendPathW(UnsafeArray<WChar> path, UnsafeArray<const WChar> toAppend)
 {
 	WChar pathTmp[512];
-	WChar *lastSep;
-	WChar *firstSep;
-	WChar *pathArr[5];
+	UnsafeArray<WChar> lastSep;
+	UnsafeArray<WChar> firstSep;
+	UnsafeArray<WChar> pathArr[5];
 	UOSInt pathCnt;
 	UOSInt j;
 	UInt32 i;
@@ -517,7 +519,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 	if (path[0] == '\\' && path[1] == '\\')
 	{
-		firstSep = &path[2 + Text::StrIndexOfChar(&path[2], '\\')];
+		firstSep = &path[2 + Text::StrIndexOfCharW(&path[2], '\\')];
 	}
 	else if (path[1] == ':' && path[2] == '\\')
 	{
@@ -537,7 +539,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	{
 		return Text::StrConcat(firstSep, toAppend);
 	}
-	lastSep = &path[Text::StrLastIndexOfChar(path, '\\')];
+	lastSep = &path[Text::StrLastIndexOfCharW(UnsafeArray<const WChar>(path), '\\')];
 	if (lastSep < path)
 	{
 		lastSep = path;
@@ -547,12 +549,12 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 	else
 	{
-		if (Text::StrIndexOfChar(lastSep, '*') != INVALID_INDEX)
+		if (Text::StrIndexOfCharW(UnsafeArray<const WChar>(lastSep), '*') != INVALID_INDEX)
 		{
 		}
 		else if (IO::Path::GetPathTypeW(path) == PathType::Directory)
 		{
-			lastSep = &path[Text::StrCharCnt(path)];
+			lastSep = &path[Text::StrCharCnt(UnsafeArray<const WChar>(path))];
 			*lastSep = '\\';
 			lastSep[1] = 0;
 		}
@@ -583,7 +585,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 				{
 					if (lastSep > firstSep)
 					{
-						WChar *wptr = lastSep;
+						UnsafeArray<WChar> wptr = lastSep;
 						while (wptr-- > firstSep)
 						{
 							if (*wptr == '\\')
@@ -631,7 +633,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 	else
 	{
-		return &lastSep[Text::StrCharCnt(lastSep)];
+		return &lastSep[Text::StrCharCnt(UnsafeArray<const WChar>(lastSep))];
 	}
 }
 
@@ -1042,7 +1044,7 @@ Bool IO::Path::FilePathMatch(UnsafeArray<const UTF8Char> path, UOSInt pathLen, U
 Bool IO::Path::FilePathMatchW(UnsafeArray<const WChar> path, UnsafeArray<const WChar> searchPattern)
 {
 	WChar wbuff[256];
-	UOSInt i = Text::StrLastIndexOfChar(path, '\\');
+	UOSInt i = Text::StrLastIndexOfCharW(path, '\\');
 	const WChar *fileName = &path[i + 1];
 	Text::StrConcat(wbuff, searchPattern);
 	Bool isWC = false;

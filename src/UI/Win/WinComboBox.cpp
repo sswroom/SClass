@@ -43,8 +43,8 @@ void UI::Win::WinComboBox::SetText(Text::CStringNN text)
 {
 	if (this->allowEdit)
 	{
-		const WChar *wptr = Text::StrToWCharNew(text.v);
-		SetWindowTextW((HWND)hwnd, wptr);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(text.v);
+		SetWindowTextW((HWND)hwnd, wptr.Ptr());
 		Text::StrDelNew(wptr);
 	}
 	else
@@ -96,8 +96,8 @@ void UI::Win::WinComboBox::EndUpdate()
 
 UOSInt UI::Win::WinComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText->v);
-	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
+	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
@@ -111,8 +111,8 @@ UOSInt UI::Win::WinComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 
 UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText.v);
-	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
+	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
@@ -126,8 +126,8 @@ UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 
 UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText->v);
-	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText->v);
+	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;
@@ -141,8 +141,8 @@ UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NN<Text::String> itemText,
 
 UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText.v);
-	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
+	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (i < 0)
 		return (UOSInt)i;

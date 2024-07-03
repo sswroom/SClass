@@ -9,7 +9,7 @@ namespace Media
 	{
 	private:
 		void *asiodrv;
-		const WChar *drvName;
+		UnsafeArrayOpt<const WChar> drvName;
 		void *bufferInfos;
 		Int32 *sampleTypes;
 		UInt32 bufferSize;

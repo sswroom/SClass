@@ -142,14 +142,13 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 	{
 		UInt8 cbuff[256];
 		UOSInt readSize;
-		IO::Path::FindFileSession *sess;
+		NN<IO::Path::FindFileSession> sess;
 		IO::Path::PathType pt;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\bus\\usb\\devices\\"));
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
-		if (sess)
+		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
-			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
+			while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2))
 			{
 				if (sptr[0] != '.')
 				{

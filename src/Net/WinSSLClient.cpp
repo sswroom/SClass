@@ -36,8 +36,8 @@ struct Net::WinSSLClient::ClassData
 
 	UInt8 *readBuff;
 	UOSInt readSize;
-	void *readData;
-	Sync::Event *readEvt;
+	Optional<Net::SocketRecvSess> readData;
+	Optional<Sync::Event> readEvt;
 	Data::ArrayListNN<Crypto::Cert::Certificate> *remoteCerts;
 };
 
@@ -349,7 +349,7 @@ UOSInt Net::WinSSLClient::Write(Data::ByteArrayR buff)
 	}
 }
 
-void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
+Optional<IO::StreamReadReq> Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, NN<Sync::Event> evt)
 {
 	if (this->clsData->step == 0)
 	{
@@ -360,7 +360,7 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 	if (this->clsData->decSize > 0)
 	{
 		evt->Set();
-		return (void*)-1;
+		return (IO::StreamReadReq*)-1;
 	}
 	if (this->clsData->recvOfst > 0)
 	{
@@ -407,7 +407,7 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 			}
 
 			evt->Set();
-			return (void*)-1;
+			return (IO::StreamReadReq*)-1;
 		}
 	}
 
@@ -416,8 +416,8 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 		return 0;
 	Net::SocketFactory::ErrorType et;
 	this->clsData->readEvt = evt;
-	void *data = sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, evt, et);
-	if (data == 0)
+	NN<Net::SocketRecvSess> data;
+	if (!sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, evt, et).SetTo(data))
 	{
 		if (et == Net::SocketFactory::ET_SHUTDOWN)
 		{
@@ -431,22 +431,18 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 		{
 			this->Close();
 		}
+		return 0;
 	}
 	else
 	{
 		this->clsData->readData = data;
 	}
-	return data;
+	return NN<IO::StreamReadReq>::ConvertFrom(data);
 }
 
-UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
+UOSInt Net::WinSSLClient::EndRead(NN<IO::StreamReadReq> reqData, Bool toWait, OutParam<Bool> incomplete)
 {
 	NN<Socket> s;
-	if (reqData == 0)
-	{
-		incomplete.Set(false);
-		return 0;
-	}
 	if (!this->s.SetTo(s))
 	{
 		incomplete.Set(false);
@@ -457,6 +453,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 	Data::DateTime debugDt;
 #endif
 	UOSInt ret = 0;
+	NN<Net::SocketRecvSess> readData;
 	if (this->clsData->decSize > 0)
 	{
 		if (this->clsData->decSize >= this->clsData->readSize)
@@ -483,7 +480,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 		this->clsData->decSize = 0;
 		return ret;
 	}
-	else if (this->clsData->readData == 0)
+	else if (!this->clsData->readData.SetTo(readData))
 	{
 		incomplete.Set(false);
 		return 0;
@@ -496,7 +493,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 	Bool incomp;
 
 	status = SEC_E_INCOMPLETE_MESSAGE;
-	recvSize = sockf->EndReceiveData(this->clsData->readData, toWait, incomp);
+	recvSize = sockf->EndReceiveData(readData, toWait, incomp);
 	if (recvSize <= 0)
 	{
 		incomplete.Set(incomp);
@@ -532,25 +529,29 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 		if (!toWait)
 		{
 			Net::SocketFactory::ErrorType et;
-			void *data = sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, this->clsData->readEvt, et);
-			if (data == 0)
+			NN<Net::SocketRecvSess> data;
+			NN<Sync::Event> readEvt;
+			if (this->clsData->readEvt.SetTo(readEvt))
 			{
-				if (et == Net::SocketFactory::ET_SHUTDOWN)
+				if (!sockf->BeginReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, readEvt, et).SetTo(data))
 				{
-					this->flags |= 2;
-				}
-				else if (et == Net::SocketFactory::ET_DISCONNECT)
-				{
-					this->flags |= 2;
+					if (et == Net::SocketFactory::ET_SHUTDOWN)
+					{
+						this->flags |= 2;
+					}
+					else if (et == Net::SocketFactory::ET_DISCONNECT)
+					{
+						this->flags |= 2;
+					}
+					else
+					{
+						this->Close();
+					}
 				}
 				else
 				{
-					this->Close();
+					this->clsData->readData = data;
 				}
-			}
-			else
-			{
-				this->clsData->readData = data;
 			}
 			incomplete.Set(true);
 			return 0;
@@ -664,27 +665,27 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 	return ret;
 }
 
-void Net::WinSSLClient::CancelRead(void *reqData)
+void Net::WinSSLClient::CancelRead(NN<IO::StreamReadReq> reqData)
 {
 
 }
 
-void *Net::WinSSLClient::BeginWrite(Data::ByteArrayR buff, Sync::Event *evt)
+Optional<IO::StreamWriteReq> Net::WinSSLClient::BeginWrite(Data::ByteArrayR buff, NN<Sync::Event> evt)
 {
 	UOSInt ret = this->Write(buff);
 	if (ret)
 	{
 		evt->Set();
 	}
-	return (void*)ret;
+	return (IO::StreamWriteReq*)ret;
 }
 
-UOSInt Net::WinSSLClient::EndWrite(void *reqData, Bool toWait)
+UOSInt Net::WinSSLClient::EndWrite(NN<IO::StreamWriteReq> reqData, Bool toWait)
 {
-	return (UOSInt)reqData;
+	return (UOSInt)reqData.Ptr();
 }
 
-void Net::WinSSLClient::CancelWrite(void *reqData)
+void Net::WinSSLClient::CancelWrite(NN<IO::StreamWriteReq> reqData)
 {
 
 }

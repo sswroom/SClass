@@ -11,7 +11,7 @@ namespace UI
 	class GUIFileDialog : public IO::FileSelector
 	{
 	protected:
-		IO::Registry *reg;
+		Optional<IO::Registry> reg;
 		WChar *dialogName;
 		UnsafeArrayOpt<const WChar> lastName;
 		Optional<Text::String> fileName;

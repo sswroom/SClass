@@ -10,7 +10,7 @@ namespace Win32
 	private:
 		typedef struct
 		{
-			const WChar *name;
+			UnsafeArray<const WChar> name;
 			Int32 colType;
 		} WMIColumn;
 
@@ -31,7 +31,7 @@ namespace Win32
 
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
-		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
+		virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff);
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
@@ -48,8 +48,8 @@ namespace Win32
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
-		Int32 GetInt32(const WChar *colName);
-		WChar *GetStr(const WChar *colName, WChar *buff);
+		Int32 GetInt32(UnsafeArray<const WChar> colName);
+		UnsafeArrayOpt<WChar> GetStr(UnsafeArray<const WChar> colName, UnsafeArray<WChar> buff);
 	};
 }
 #endif

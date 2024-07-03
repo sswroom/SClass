@@ -1172,8 +1172,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(AnyType userOb
 			i++;
 		}
 
-		IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"DVDDB");
-		if (reg)
+		NN<IO::Registry> reg;
+		if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"DVDDB").SetTo(reg))
 		{
 			UnsafeArray<const WChar> wptr = Text::StrToWCharNew(sbDiscId.ToString());
 			reg->SetValue(L"DiscType", wptr);
@@ -1442,8 +1442,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientCon
 	this->UpdateBrand();
 	this->UpdateAnimeName();
 
-	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"DVDDB");
-	if (reg)
+	NN<IO::Registry> reg;
+	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"DVDDB").SetTo(reg))
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;

@@ -15,7 +15,7 @@ namespace Media
 		void *funcs;
 		void *getInfo;
 		void *getFunc;
-		const WChar *searchPattern;
+		UnsafeArrayOpt<const WChar> searchPattern;
 	} VFPluginFile;
 
 	struct VFMediaFile
@@ -23,7 +23,7 @@ namespace Media
 		NN<Media::VFPManager> vfpmgr;
 		NN<Media::VFPluginFile> plugin;
 		UInt32 file;
-		const WChar *fileName;
+		UnsafeArray<const WChar> fileName;
 		UInt32 useCnt;
 		Sync::Mutex mut;
 	};

@@ -115,7 +115,7 @@ UOSInt UI::GUIListView::GetColumnCnt()
 
 Bool UI::GUIListView::AddColumn(NN<Text::String> columnName, Double colWidth)
 {
-	const WChar *wptr = Text::StrToWCharNew(columnName->v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(columnName->v);
 	Bool ret = this->AddColumn(wptr, colWidth);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -123,17 +123,17 @@ Bool UI::GUIListView::AddColumn(NN<Text::String> columnName, Double colWidth)
 
 Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 {
-	const WChar *wptr = Text::StrToWCharNew(columnName.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(columnName.v);
 	Bool ret = this->AddColumn(wptr, colWidth);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(UnsafeArray<const WChar> columnName, Double colWidth)
 {
 	LVCOLUMNW col;
 	col.mask = LVCF_TEXT | LVCF_WIDTH;
-	col.pszText = (LPWSTR)columnName;
+	col.pszText = (LPWSTR)columnName.Ptr();
 	col.cx = Double2Int32(colWidth * this->hdpi / this->ddpi);
 
 	OSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTCOLUMNW, this->colCnt, (LPARAM)&col);
@@ -204,14 +204,14 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	return strLen;
 }
 
-UOSInt UI::GUIListView::AddItem(const WChar *itemText, AnyType itemObj)
+UOSInt UI::GUIListView::AddItem(UnsafeArray<const WChar> itemText, AnyType itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
 	item.lParam = (LPARAM)itemObj.p;
-	item.pszText = (LPWSTR)itemText;
+	item.pszText = (LPWSTR)itemText.Ptr();
 	item.cchTextMax = 256;
 	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
@@ -223,7 +223,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj, UOSIn
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
 	item.lParam = (LPARAM)itemObj.p;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText.v);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText.v).Ptr();
 	item.cchTextMax = (int)itemText.leng;
 	item.iImage = (Int32)imageIndex;
 	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
@@ -233,22 +233,23 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj, UOSIn
 
 Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String> text)
 {
-	const WChar *ws = 0;
+	UnsafeArray<const WChar> ws;
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
 	item.mask = LVIF_TEXT;
 	ws = Text::StrToWCharNew(text->v);
-	item.pszText = (LPWSTR)ws;
+	item.pszText = (LPWSTR)ws.Ptr();
 	item.cchTextMax = (int)Text::StrCharCnt(ws);
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
-	if (ws) Text::StrDelNew(ws);
+	Text::StrDelNew(ws);
 	return ret;
 }
 
 Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text)
 {
-	const WChar *ws = 0;
+	UnsafeArray<const WChar> ws;
+	UnsafeArrayOpt<const WChar> optws = 0;
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
@@ -256,8 +257,9 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN 
 	if (text.leng != 0)
 	{
 		ws = Text::StrToWCharNew(text.v);
-		item.pszText = (LPWSTR)ws;
+		item.pszText = (LPWSTR)ws.Ptr();
 		item.cchTextMax = (int)Text::StrCharCnt(ws);
+		optws = ws;
 	}
 	else
 	{
@@ -265,17 +267,17 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN 
 		item.cchTextMax = 0;
 	}
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
-	if (ws) Text::StrDelNew(ws);
+	if (optws.SetTo(ws)) Text::StrDelNew(ws);
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, UnsafeArray<const WChar> text)
 {
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
 	item.mask = LVIF_TEXT;
-	item.pszText = (LPWSTR)text;
+	item.pszText = (LPWSTR)text.Ptr();
 	item.cchTextMax = 256;
 	return (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 }
@@ -308,22 +310,22 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, AnyTy
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
 	item.lParam = (LPARAM)itemObj.p;
-	const WChar *wptr = Text::StrToWCharNew(itemText.v);
-	item.pszText = (LPWSTR)wptr;
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(itemText.v);
+	item.pszText = (LPWSTR)wptr.Ptr();
 	item.cchTextMax = 256;
 	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, UnsafeArray<const WChar> itemText, AnyType itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
 	item.lParam = (LPARAM)itemObj.p;
-	item.pszText = (LPWSTR)itemText;
+	item.pszText = (LPWSTR)itemText.Ptr();
 	item.cchTextMax = 256;
 	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 }

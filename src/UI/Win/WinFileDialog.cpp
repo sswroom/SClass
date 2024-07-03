@@ -23,17 +23,18 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	WChar fname1[512];
 	WChar fname2[512];
 	WChar fname[MAXFILENAMESIZE];
-	WChar *wptr;
-	WChar *dptr;
+	UnsafeArray<WChar> wptr;
+	UnsafeArray<WChar> dptr;
 	const WChar *initDir;
 	WChar *initFileName;
 	WChar *multiBuff = 0;
 	WChar *fnameBuff;
 	OSInt fnameBuffSize;
+	NN<Text::String> s;
+	UnsafeArray<const WChar> ws;
 	Text::StringBuilderUTF16 sb;
 	UOSInt i = 0;
 	UOSInt filterCnt = this->names.GetCount();
-	NN<Text::String> s;
 
 	OPENFILENAMEW ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -91,7 +92,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		Text::StrReplaceW(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		i = Text::StrLastIndexOfChar(fname2, '\\');
+		i = Text::StrLastIndexOfCharW(fname2, '\\');
 		if (i != INVALID_INDEX)
 		{
 			fname2[i] = 0;
@@ -107,7 +108,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 			initFileName = fname2;
 			initDir = L".";
 		}
-		i = Text::StrLastIndexOfChar(initFileName, '.');
+		i = Text::StrLastIndexOfCharW(initFileName, '.');
 		if (i != INVALID_INDEX)
 		{
 			initFileName[i] = 0;
@@ -121,10 +122,10 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		initFileName = (WChar*)(initDir + 1);
 	}
 
-	if (this->lastName)
+	if (this->lastName.SetTo(ws))
 	{
-		Text::StrConcat(fname1, this->lastName);
-		WChar *wptr = fnameBuff;
+		Text::StrConcat(fname1, ws);
+		UnsafeArray<WChar> wptr = fnameBuff;
 		WChar *currPtr = fname1;
 		WChar *ptrStart = 0;
 		WChar c;
@@ -262,7 +263,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 				{
 					Text::StrConcat(dptr, wptr);
 					this->fileNames.Add(Text::String::NewNotNull(fname));
-					wptr = &wptr[Text::StrCharCnt(wptr) + 1];
+					wptr = &wptr[Text::StrCharCnt(UnsafeArray<const WChar>(wptr)) + 1];
 					i++;
 				}
 				if (i == 1)
@@ -300,7 +301,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 			}
 			if (initFileName[0])
 			{
-				i = Text::StrIndexOf(currPtr, initFileName);
+				i = Text::StrIndexOfW(currPtr, initFileName);
 				if (i >= 0)
 				{
 					currPtr[i] = 0;
@@ -317,7 +318,9 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 			{
 				Text::StrConcat(wptr, currPtr);
 			}
-			this->reg->SetValue(this->dialogName, fname1);
+			NN<IO::Registry> reg;
+			if (this->reg.SetTo(reg))
+				reg->SetValue(this->dialogName, fname1);
 		}
 	}
 	if (multiBuff)

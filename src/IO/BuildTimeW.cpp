@@ -3,7 +3,7 @@
 #include "IO/EXEFile.h"
 #include "IO/Path.h"
 
-void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
+void IO::BuildTime::GetBuildTime(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

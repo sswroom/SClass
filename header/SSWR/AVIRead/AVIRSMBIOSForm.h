@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::SMBIOS *smbios;
+			Optional<IO::SMBIOS> smbios;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUIButton> btnHex;

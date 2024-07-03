@@ -841,7 +841,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *hRootStore)
 Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	CtxtHandle ctxt;
-	const WChar* wptr = Text::StrToWCharNew(hostName.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(hostName.v);
 	UInt32 retFlags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_STREAM;
 	TimeStamp ts;
 	SecBuffer outputBuff[3];
@@ -859,7 +859,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 	status = InitializeSecurityContextW(
 		&this->clsData->hCredCli,
 		0,
-		(WChar*)wptr,
+		(WChar*)wptr.Ptr(),
 		(unsigned long)retFlags,
 		0,
 		0,
@@ -935,7 +935,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<So
 		status = InitializeSecurityContextW(
 			&this->clsData->hCredCli,
 			&ctxt,
-			(WChar*)wptr,
+			(WChar*)wptr.Ptr(),
 			retFlags,
 			0,
 			0,

@@ -7,10 +7,10 @@
 #endif
 #include <windows.h>
 
-IO::Library::Library(const UTF8Char *fileName)
+IO::Library::Library(UnsafeArray<const UTF8Char> fileName)
 {
-	const WChar *wptr = Text::StrToWCharNew(fileName);
-	this->hModule = LoadLibraryW(wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(fileName);
+	this->hModule = LoadLibraryW(wptr.Ptr());
 	Text::StrDelNew(wptr);
 }
 
@@ -28,13 +28,13 @@ Bool IO::Library::IsError()
 	return this->hModule == 0;
 }
 
-void *IO::Library::GetFunc(const Char *funcName)
+void *IO::Library::GetFunc(UnsafeArray<const Char> funcName)
 {
 #ifndef _WIN32_WCE
-	return (void*)GetProcAddress((HMODULE)this->hModule, funcName);
+	return (void*)GetProcAddress((HMODULE)this->hModule, funcName.Ptr());
 #else
-	const WChar *wptr = Text::StrToWCharNew((const UTF8Char*)funcName);
-	void *ptr = (void*)GetProcAddressW((HMODULE)this->hModule, wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(UnsafeArray<const UTF8Char>::ConvertFrom(funcName));
+	void *ptr = (void*)GetProcAddressW((HMODULE)this->hModule, wptr.Ptr());
 	Text::StrDelNew(wptr);
 	return ptr;
 #endif

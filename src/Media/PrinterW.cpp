@@ -94,8 +94,8 @@ Media::GDIPrintDocument::GDIPrintDocument(NN<Text::String> printerName, UInt8 *d
 	this->docName = 0;
 	this->started = false;
 	this->running = false;
-	const WChar *wptr = Text::StrToWCharNew(printerName->v);
-	this->hdcPrinter = CreateDCW(L"WINSPOOL", wptr, 0, (DEVMODEW*)this->devMode);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(printerName->v);
+	this->hdcPrinter = CreateDCW(L"WINSPOOL", wptr.Ptr(), 0, (DEVMODEW*)this->devMode);
 	Text::StrDelNew(wptr);
 	DEVMODEW *devM = (DEVMODEW*)devMode;
 	if (devM->dmOrientation == DMORIENT_LANDSCAPE)
@@ -158,15 +158,17 @@ void Media::GDIPrintDocument::Start()
 
 	if (this->hdlr->BeginPrint(*this))
 	{
-		const WChar *wptr = 0;
+		UnsafeArrayOpt<const WChar> wptr = 0;
+		UnsafeArray<const WChar> nnwptr;
 		DOCINFOW docInfo;
 		NN<Text::String> s;
 
 		docInfo.cbSize = sizeof(DOCINFOW);
 		if (this->docName.SetTo(s))
 		{
-			wptr = Text::StrToWCharNew(s->v);
-			docInfo.lpszDocName = wptr;
+			nnwptr = Text::StrToWCharNew(s->v);
+			docInfo.lpszDocName = nnwptr.Ptr();
+			wptr = nnwptr;
 		}
 		else
 		{
@@ -186,9 +188,9 @@ void Media::GDIPrintDocument::Start()
 			this->hdlr->EndPrint(*this);
 		}
 
-		if (wptr)
+		if (wptr.SetTo(nnwptr))
 		{
-			Text::StrDelNew(wptr);
+			Text::StrDelNew(nnwptr);
 			wptr = 0;
 		}
 	}
@@ -305,17 +307,17 @@ Media::Printer::Printer(NN<Text::String> printerName)
 	this->devMode = 0;
 	this->hPrinter = 0;
 	this->printerName = printerName->Clone();
-	const WChar *wptr = Text::StrToWCharNew(printerName->v);
-	if (OpenPrinterW((LPWSTR)wptr, &hPrinter, 0) == 0)
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(printerName->v);
+	if (OpenPrinterW((LPWSTR)wptr.Ptr(), &hPrinter, 0) == 0)
 	{
 		Text::StrDelNew(wptr);
 		return;
 	}
 
-	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, 0);
+	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, 0);
 	UOSInt size = (UOSInt)lReturn;
 	this->devMode = MemAlloc(UInt8, size);
-	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
+	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
 	Text::StrDelNew(wptr);
 	if (lReturn < 0)
 	{
@@ -330,17 +332,17 @@ Media::Printer::Printer(Text::CStringNN printerName)
 	this->devMode = 0;
 	this->hPrinter = 0;
 	this->printerName = Text::String::New(printerName);
-	const WChar *wptr = Text::StrToWCharNew(printerName.v);
-	if (OpenPrinterW((LPWSTR)wptr, &hPrinter, 0) == 0)
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(printerName.v);
+	if (OpenPrinterW((LPWSTR)wptr.Ptr(), &hPrinter, 0) == 0)
 	{
 		Text::StrDelNew(wptr);
 		return;
 	}
 
-	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, 0);
+	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, 0);
 	UOSInt size = (UOSInt)lReturn;
 	this->devMode = MemAlloc(UInt8, size);
-	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
+	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr.Ptr(), (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
 	Text::StrDelNew(wptr);
 	if (lReturn < 0)
 	{
