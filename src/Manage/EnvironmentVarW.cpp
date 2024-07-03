@@ -83,7 +83,7 @@ UnsafeArrayOpt<UTF8Char> Manage::EnvironmentVar::GetEnvValue(UnsafeArray<UTF8Cha
 {
 #ifndef _WIN32_WCE
 	WChar wbuff[512];
-	const WChar *wptr = Text::StrToWCharNew(name.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(name.v);
 	UInt32 retSize = GetEnvironmentVariableW(wptr, wbuff, 512);
 	Text::StrDelNew(wptr);
 	if (retSize == 0)

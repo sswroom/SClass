@@ -417,16 +417,12 @@ Int32 Math::Geometry::VectorImage::GetZIndex() const
 	return this->zIndex;
 }
 
-void Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2) const
+Math::RectAreaDbl Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi) const
 {
 	NN<Media::StaticImage> simg;
 	if (!this->img->GetImage(0).SetTo(simg))
 	{
-		*x1 = 0;
-		*y1 = 0;
-		*x2 = 0;
-		*y2 = 0;
-		return;
+		return Math::RectAreaDbl(0, 0, 0, 0);
 	}
 	Double scnX;
 	Double scnY;
@@ -456,10 +452,7 @@ void Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHei
 
 	scnX = UOSInt2Double(scnWidth) * this->tl.x - sizeX * this->br.x;
 	scnY = UOSInt2Double(scnHeight) * (1 - this->tl.y) - sizeY * (1 - this->br.y);
-	*x1 = scnX;
-	*y1 = scnY;
-	*x2 = scnX + sizeX;
-	*y2 = scnY + sizeY;
+	return Math::RectAreaDbl(scnX, scnY, sizeX, sizeY);
 }
 
 Math::Size2DDbl Math::Geometry::VectorImage::GetVectorSize() const

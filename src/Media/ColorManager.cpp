@@ -653,13 +653,13 @@ void Media::MonitorColorManager::SetOSProfile()
 	dev.cb = sizeof(DISPLAY_DEVICEW);
 	if (this->profileName.SetTo(s))
 	{
-		const WChar *wprofileName = Text::StrToWCharNew(s->v);
+		UnsafeArray<const WChar> wprofileName = Text::StrToWCharNew(s->v);
 		while (EnumDisplayDevicesW(0, i, &dev, 0) != 0)
 		{
 			Text::StrConcat(wbuff2, dev.DeviceName);
 			if (EnumDisplayDevicesW(wbuff2, 0, &dev, 0) != 0)
 			{
-				j = Text::StrIndexOfChar(dev.DeviceID, '\\');
+				j = Text::StrIndexOfCharW(dev.DeviceID, '\\');
 				if (Text::StrStartsWith(&dev.DeviceID[j + 1], wprofileName))
 				{
 					HDC hdc = CreateDCW(L"DISPLAY", wbuff2, 0, 0);

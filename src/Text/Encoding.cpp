@@ -1157,12 +1157,12 @@ UnsafeArray<const UInt8> Text::Encoding::NextWChar(UnsafeArray<const UInt8> buff
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		if (IsDBCSLeadByteEx(this->codePage, buff[0]))
 		{
-			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff, 2, outputChar, 1);
+			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff.Ptr(), 2, outputChar, 1);
 			return &buff[2];
 		}
 		else
 		{
-			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff, 1, outputChar, 1);
+			MultiByteToWideChar(this->codePage, 0, (LPCSTR)buff.Ptr(), 1, outputChar, 1);
 			return &buff[1];
 		}
 #else

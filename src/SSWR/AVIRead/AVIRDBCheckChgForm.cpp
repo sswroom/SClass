@@ -1771,7 +1771,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 			if (succ)
 			{
-				Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&idList, idList);
+				Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(idList, idList);
 				k = 0;
 				srcCnt = csvData.GetCount();
 				while (k < srcCnt)

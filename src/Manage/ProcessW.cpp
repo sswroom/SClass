@@ -130,8 +130,8 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> cmdLine)
 {
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];
-	const WChar *wptr = Text::StrToWCharNew(cmdLine);
-	const WChar *cptr = wptr;
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(cmdLine);
+	UnsafeArray<const WChar> cptr = wptr;
 	WChar *pptr = progName;
 	Bool isQuote = false;
 	WChar c;
@@ -156,9 +156,9 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> cmdLine)
 	ZeroMemory(&startInfo, sizeof(startInfo));
 	startInfo.cb = sizeof(startInfo);
 #ifdef _WIN32_WCE
-	CreateProcessW(0, (LPWSTR)wptr, 0, 0, false, 0, 0, buff, &startInfo, &procInfo);
+	CreateProcessW(0, (LPWSTR)wptr.Ptr(), 0, 0, false, 0, 0, buff, &startInfo, &procInfo);
 #else
-	CreateProcessW(0, (LPWSTR)wptr, 0, 0, false, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
+	CreateProcessW(0, (LPWSTR)wptr.Ptr(), 0, 0, false, NORMAL_PRIORITY_CLASS, 0, buff, &startInfo, &procInfo);
 #endif
 	Text::StrDelNew(wptr);
 	this->handle = procInfo.hProcess;
@@ -258,7 +258,7 @@ Bool Manage::Process::Kill()
 	return false;
 }
 
-WChar *Manage::Process::GetFilename(WChar *buff)
+UnsafeArray<WChar> Manage::Process::GetFilename(UnsafeArray<WChar> buff)
 {
 	if (this->handle)
 	{
@@ -267,14 +267,15 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 		retSize = GetModuleFileNameW((HMODULE)this->handle, buff, 1024);
 #else
 		//retSize = GetProcessImageFileNameW(this->handle, buff, 1024);
-		retSize = GetModuleFileNameExW(this->handle, 0, buff, 1024);
+		retSize = GetModuleFileNameExW(this->handle, 0, buff.Ptr(), 1024);
 #endif
 		buff[retSize] = 0;
 		return &buff[retSize];
 	}
 	else
 	{
-		return 0;
+		buff[0] = 0;
+		return buff;
 	}
 }
 
@@ -363,7 +364,7 @@ Bool Manage::Process::GetWorkingDir(NN<Text::StringBuilderUTF8> sb)
 		retSize = GetModuleFileNameExW(this->handle, 0, buff, 1024);
 #endif
 		buff[retSize] = 0;
-		retSize = Text::StrLastIndexOfChar(buff, '\\');
+		retSize = Text::StrLastIndexOfCharW(buff, '\\');
 		if (retSize != INVALID_INDEX)
 		{
 			buff[retSize] = 0;
@@ -1223,7 +1224,7 @@ UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 
 struct Manage::Process::FindProcSess
 {
-	const WChar *fileName;
+	UnsafeArrayOpt<const WChar> fileName;
 	HANDLE hand;
 	Bool isFirst;
 };
@@ -1311,6 +1312,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 	return 0;
 #else
 	PROCESSENTRY32W pe32;
+	UnsafeArray<const WChar> fileName;
 	BOOL ret;
 	pe32.dwSize = sizeof(PROCESSENTRY32W);
 	if (pfsess->isFirst)
@@ -1325,9 +1327,9 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 
 	while (ret)
 	{
-		if (pfsess->fileName)
+		if (pfsess->fileName.SetTo(fileName))
 		{
-			if (IO::Path::FileNameCompareW(pfsess->fileName, pe32.szExeFile) == 0)
+			if (IO::Path::FileNameCompareW(fileName, pe32.szExeFile) == 0)
 			{
 				info->parentId = pe32.th32ParentProcessID;
 				info->processId = pe32.th32ProcessID;
@@ -1348,7 +1350,7 @@ UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> 
 #endif
 }
 
-WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<WChar> Manage::Process::FindProcessNextW(UnsafeArray<WChar> processNameBuff, Manage::Process::FindProcSess *pfsess, Manage::Process::ProcessInfo *info)
 {
 #ifdef _WIN32_WCE
 	PROCESSENTRY32 pe32;
@@ -1389,6 +1391,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 #else
 	PROCESSENTRY32W pe32;
 	BOOL ret;
+	UnsafeArray<const WChar> fileName;
 	pe32.dwSize = sizeof(PROCESSENTRY32W);
 	if (pfsess->isFirst)
 	{
@@ -1402,9 +1405,9 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 
 	while (ret)
 	{
-		if (pfsess->fileName)
+		if (pfsess->fileName.SetTo(fileName))
 		{
-			if (IO::Path::FileNameCompareW(pfsess->fileName, pe32.szExeFile) == 0)
+			if (IO::Path::FileNameCompareW(fileName, pe32.szExeFile) == 0)
 			{
 				info->parentId = pe32.th32ParentProcessID;
 				info->processId = pe32.th32ProcessID;
@@ -1427,9 +1430,10 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 
 void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 {
-	if (pfsess->fileName)
+	UnsafeArray<const WChar> fileName;
+	if (pfsess->fileName.SetTo(fileName))
 	{
-		Text::StrDelNew(pfsess->fileName);
+		Text::StrDelNew(fileName);
 	}
 	CloseToolhelp32Snapshot(pfsess->hand);
 	MemFree(pfsess);
@@ -1441,8 +1445,8 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	{
 		return -1;
 	}
-	const WChar *wptr = Text::StrToWCharNew(cmd.v);
-	Int32 ret = ExecuteProcessW(wptr, result);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(cmd.v);
+	Int32 ret = ExecuteProcessW(wptr.Ptr(), result);
 	Text::StrDelNew(wptr);
 	return ret;
 }
@@ -1501,8 +1505,8 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderU
 #else
 	startInfo.cb = sizeof(startInfo);
 	startInfo.dwFlags = STARTF_USESTDHANDLES;
-	const WChar *wptr = Text::StrToWCharNew(tmpFile);
-	startInfo.hStdOutput = CreateFileW(wptr, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(tmpFile);
+	startInfo.hStdOutput = CreateFileW(wptr.Ptr(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, &sa, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 	Text::StrDelNew(wptr);
 	startInfo.hStdError = startInfo.hStdOutput;
 	startInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
@@ -1566,7 +1570,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	IO::Path::GetProcessFileNameW(wbuff);
 	Manage::Process::ProcessInfo info;
 
-	i = Text::StrLastIndexOfChar(wbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharW(wbuff, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sess = Manage::Process::FindProcessW(&wbuff[i + 1]);
@@ -1577,7 +1581,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	}
 	if (sess)
 	{
-		while (Manage::Process::FindProcessNextW(wbuff, sess, &info))
+		while (Manage::Process::FindProcessNextW(wbuff, sess, &info).NotNull())
 		{
 			if (info.processId != procId)
 			{

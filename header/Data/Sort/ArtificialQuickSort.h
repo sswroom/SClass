@@ -21,11 +21,11 @@ namespace Data
 		private:
 			typedef struct
 			{
-				ArtificialQuickSort *me;
+				NN<ArtificialQuickSort> me;
 				UOSInt threadId;
 				Bool toStop;
 				Int32 state; // 0 = not running, 1 = idle, 2 = processing
-				Sync::Event *evt;
+				NN<Sync::Event> evt;
 			} ThreadStat;
 
 			typedef enum
@@ -36,30 +36,30 @@ namespace Data
 			} ArrayType;
 		private:
 			UOSInt threadCnt;
-			ThreadStat *threads;
+			UnsafeArray<ThreadStat> threads;
 			Sync::Event mainEvt;
 
 			Sync::Mutex mut;
-			void *arr;
+			UnsafeArrayOpt<UInt8> arr;
 			ArrayType arrType;
-			OSInt *tasks;
+			UnsafeArray<OSInt> tasks;
 			UOSInt taskCnt;
 
-			void DoSortInt32(NN<ThreadStat> stat, Int32 *arr, OSInt firstIndex, OSInt lastIndex);
-			void DoSortUInt32(NN<ThreadStat> stat, UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
-			void DoSortStr(NN<ThreadStat> stat, UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
+			void DoSortInt32(NN<ThreadStat> stat, UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
+			void DoSortUInt32(NN<ThreadStat> stat, UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
+			void DoSortStr(NN<ThreadStat> stat, UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex);
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 		public:
 			ArtificialQuickSort();
 			~ArtificialQuickSort();
 
-			void SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
-			void SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
-			void SortStr(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
+			void SortInt32(UnsafeArray<Int32> arr, OSInt firstIndex, OSInt lastIndex);
+			void SortUInt32(UnsafeArray<UInt32> arr, OSInt firstIndex, OSInt lastIndex);
+			void SortStr(UnsafeArray<UnsafeArray<UTF8Char>> arr, OSInt firstIndex, OSInt lastIndex);
 
 			template <class T> static void PreSort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T> static void Sort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(Data::ArrayCollection<T> *list, NN<Data::Comparator<T>> comparator);
+			template <class T> static void Sort(NN<Data::ArrayCollection<T>> list, NN<Data::Comparator<T>> comparator);
 		};
 	}
 }
@@ -88,8 +88,8 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr
 	OSInt levi[256];
 	OSInt desni[256];
 #else
-	OSInt *levi = MemAlloc(OSInt, 65536);
-	OSInt *desni = &levi[32768];
+	UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
+	UnsafeArray<OSInt> desni = &levi[32768];
 #endif
 	OSInt index;
 	OSInt i;
@@ -162,11 +162,11 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr
 		}
 	}
 #if _OSINT_SIZE != 16
-	MemFree(levi);
+	MemFreeArr(levi);
 #endif
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, NN<Data::Comparator<T>> comparator)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(NN<Data::ArrayCollection<T>> list, NN<Data::Comparator<T>> comparator)
 {
 	UOSInt len;
 	UnsafeArray<T> arr = list->GetArr(len);

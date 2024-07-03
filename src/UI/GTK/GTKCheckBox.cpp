@@ -7,6 +7,7 @@
 void UI::GTK::GTKCheckBox::SignalToggled(GtkToggleButton *btn, gpointer data)
 {
 	UI::GTK::GTKCheckBox *me = (UI::GTK::GTKCheckBox*)data;
+	me->checked = !me->checked;
 	me->EventCheckedChange(me->checked);
 }
 

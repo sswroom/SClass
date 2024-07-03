@@ -5,7 +5,7 @@ Math::Geometry::LinearRing::LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 {
 }
 
-Math::Geometry::LinearRing::LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
+Math::Geometry::LinearRing::LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
 {
 }
 

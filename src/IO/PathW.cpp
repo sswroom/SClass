@@ -786,7 +786,7 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8
 	}
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(Text::CStringNN path)
+Optional<IO::Path::FindFileSession> IO::Path::FindFile(Text::CStringNN path)
 {
 	WChar wbuff[MAX_PATH];
 	FindFileSession *sess;
@@ -810,12 +810,12 @@ IO::Path::FindFileSession *IO::Path::FindFile(Text::CStringNN path)
 	}
 }
 
-IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
+Optional<IO::Path::FindFileSession> IO::Path::FindFileW(UnsafeArray<const WChar> path)
 {
 	FindFileSession *sess;
 	sess = MemAlloc(FindFileSession, 1);
 	sess->lastFound = true;
-	sess->handle = FindFirstFileW(path, &sess->findData);
+	sess->handle = FindFirstFileW(path.Ptr(), &sess->findData);
 	if (sess->handle != INVALID_HANDLE_VALUE)
 	{
 		return sess;
@@ -832,36 +832,28 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	}
 }
 
-UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, NN<IO::Path::FindFileSession> sess, OptOut<Data::Timestamp> modTime, OptOut<IO::Path::PathType> pt, OptOut<UInt64> fileSize)
 {
-	IO::Path::PathType tmp;
-	if (pt == 0)
-	{
-		pt = &tmp;
-	}
 	UnsafeArray<UTF8Char> outPtr;
 	if (sess->lastFound)
 	{
 		outPtr = Text::StrWChar_UTF8(buff, sess->findData.cFileName);
-		if (modTime)
+		if (modTime.IsNotNull())
 		{
-			*modTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&sess->findData.ftLastWriteTime), 0);
+			modTime.SetNoCheck(Data::Timestamp(Data::TimeInstant::FromFILETIME(&sess->findData.ftLastWriteTime), 0));
 		}
-		if (pt)
+		if (pt.IsNotNull())
 		{
 			if (sess->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				*pt = IO::Path::PathType::Directory;
+				pt.SetNoCheck(IO::Path::PathType::Directory);
 			}
 			else
 			{
-				*pt = IO::Path::PathType::File;
+				pt.SetNoCheck(IO::Path::PathType::File);
 			}
 		}
-		if (fileSize)
-		{
-			*fileSize = (((UInt64)sess->findData.nFileSizeHigh) << 32) | sess->findData.nFileSizeLow;
-		}
+		fileSize.Set((((UInt64)sess->findData.nFileSizeHigh) << 32) | sess->findData.nFileSizeLow);
 		sess->lastFound = (::FindNextFileW(sess->handle, &sess->findData) != 0);
 		return outPtr;
 	}
@@ -871,36 +863,28 @@ UnsafeArrayOpt<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, IO::
 	}
 }
 
-WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UnsafeArrayOpt<WChar> IO::Path::FindNextFileW(UnsafeArray<WChar> buff, NN<IO::Path::FindFileSession> sess, OptOut<Data::Timestamp> modTime, OptOut<IO::Path::PathType> pt, OptOut<UInt64> fileSize)
 {
-	IO::Path::PathType tmp;
-	if (pt == 0)
-	{
-		pt = &tmp;
-	}
-	WChar *outPtr;
+	UnsafeArray<WChar> outPtr;
 	if (sess->lastFound)
 	{
 		outPtr = Text::StrConcat(buff, sess->findData.cFileName);
-		if (modTime)
+		if (modTime.IsNotNull())
 		{
-			*modTime = Data::Timestamp(Data::TimeInstant::FromFILETIME(&sess->findData.ftLastWriteTime), 0);
+			modTime.SetNoCheck(Data::Timestamp(Data::TimeInstant::FromFILETIME(&sess->findData.ftLastWriteTime), 0));
 		}
-		if (pt)
+		if (pt.IsNotNull())
 		{
 			if (sess->findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				*pt = IO::Path::PathType::Directory;
+				pt.SetNoCheck(IO::Path::PathType::Directory);
 			}
 			else
 			{
-				*pt = IO::Path::PathType::File;
+				pt.SetNoCheck(IO::Path::PathType::File);
 			}
 		}
-		if (fileSize)
-		{
-			*fileSize = (((UInt64)sess->findData.nFileSizeHigh) << 32) | sess->findData.nFileSizeLow;
-		}
+		fileSize.Set((((UInt64)sess->findData.nFileSizeHigh) << 32) | sess->findData.nFileSizeLow);
 		sess->lastFound = (::FindNextFileW(sess->handle, &sess->findData) != 0);
 		return outPtr;
 	}
@@ -910,11 +894,11 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 	}
 }
 
-void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
+void IO::Path::FindFileClose(NN<IO::Path::FindFileSession> sess)
 {
 	if (sess->handle != INVALID_HANDLE_VALUE)
 		FindClose(sess->handle);
-	MemFree(sess);
+	MemFreeNN(sess);
 }
 
 IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
@@ -928,18 +912,18 @@ IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
 	}
 	else
 	{
-		const WChar* wpath = Text::StrToWCharNew(path.v);
+		UnsafeArray<const WChar> wpath = Text::StrToWCharNew(path.v);
 		PathType ret = GetPathTypeW(wpath);
 		Text::StrDelNew(wpath);
 		return ret;
 	}
 }
 
-IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
+IO::Path::PathType IO::Path::GetPathTypeW(UnsafeArray<const WChar> path)
 {
 #if (_WIN32_WINNT >= 0x0600)
 	FILE_BASIC_INFO info;
-	HANDLE handle = CreateFileW(path, 0, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, 0);
+	HANDLE handle = CreateFileW(path.Ptr(), 0, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, 0);
 	if (handle == INVALID_HANDLE_VALUE)
 	{
 		return PathType::Unknown;
@@ -959,7 +943,7 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 		return PathType::File;
 	}
 #else
-	UInt32 fatt = GetFileAttributesW(path);
+	UInt32 fatt = GetFileAttributesW(path.Ptr());
 	if (fatt == INVALID_FILE_ATTRIBUTES)
 	{
 		return PathType::Unknown;
@@ -1055,7 +1039,7 @@ Bool IO::Path::FilePathMatch(UnsafeArray<const UTF8Char> path, UOSInt pathLen, U
 	return FileNameMatch(&path[i + 1], pathLen - i - 1, searchPattern, patternLen);
 }
 
-Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
+Bool IO::Path::FilePathMatchW(UnsafeArray<const WChar> path, UnsafeArray<const WChar> searchPattern)
 {
 	WChar wbuff[256];
 	UOSInt i = Text::StrLastIndexOfChar(path, '\\');
@@ -1092,7 +1076,7 @@ Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
+				if ((i = Text::StrIndexOfW(fileName, patternStart)) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;
@@ -1135,8 +1119,8 @@ Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 UInt64 IO::Path::GetFileSize(UnsafeArray<const UTF8Char> path)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attr;
-	const WChar *wptr = Text::StrToWCharNew(path);
-	if (GetFileAttributesExW(wptr, GetFileExInfoStandard, &attr) != 0)
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(path);
+	if (GetFileAttributesExW(wptr.Ptr(), GetFileExInfoStandard, &attr) != 0)
 	{
 		Text::StrDelNew(wptr);
 		return (((UInt64)attr.nFileSizeHigh) << 32) | attr.nFileSizeLow;
@@ -1148,10 +1132,10 @@ UInt64 IO::Path::GetFileSize(UnsafeArray<const UTF8Char> path)
 	}
 }
 
-UInt64 IO::Path::GetFileSizeW(const WChar *path)
+UInt64 IO::Path::GetFileSizeW(UnsafeArray<const WChar> path)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attr;
-	if (GetFileAttributesExW(path, GetFileExInfoStandard, &attr) != 0)
+	if (GetFileAttributesExW(path.Ptr(), GetFileExInfoStandard, &attr) != 0)
 	{
 		return (((UInt64)attr.nFileSizeHigh) << 32) | attr.nFileSizeLow;
 	}
@@ -1161,7 +1145,7 @@ UInt64 IO::Path::GetFileSizeW(const WChar *path)
 	}
 }
 
-WChar *IO::Path::GetSystemProgramPathW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetSystemProgramPathW(UnsafeArray<WChar> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, L"\\Program Files\\");
@@ -1186,16 +1170,16 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetLocAppDataPath(UnsafeArray<UTF8Char> buff)
 #endif
 }
 
-WChar *IO::Path::GetLocAppDataPathW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetLocAppDataPathW(UnsafeArray<WChar> buff)
 {
 #ifdef _WIN32_WCE
 	return 0;
 #else
-	if (SHGetFolderPathW(0, CSIDL_LOCAL_APPDATA, 0, SHGFP_TYPE_CURRENT, buff) != S_OK)
+	if (SHGetFolderPathW(0, CSIDL_LOCAL_APPDATA, 0, SHGFP_TYPE_CURRENT, buff.Ptr()) != S_OK)
 	{
 		return 0;
 	}
-	return &buff[Text::StrCharCnt(buff)];
+	return &buff[Text::StrCharCnt(UnsafeArray<const WChar>(buff))];
 #endif
 }
 
@@ -1208,7 +1192,7 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetOSPath(UnsafeArray<UTF8Char> buff)
 #endif
 }
 
-WChar *IO::Path::GetOSPathW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetOSPathW(UnsafeArray<WChar> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, L"\\Windows\\");
@@ -1228,8 +1212,8 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetUserHome(UnsafeArray<UTF8Char> buff)
 Bool IO::Path::GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime, OptOut<Data::Timestamp> createTime, OptOut<Data::Timestamp> accessTime)
 {
 	WIN32_FIND_DATAW fd;
-	const WChar *wptr = Text::StrToWCharNew(path.v);
-	HANDLE hand = FindFirstFileW(wptr, &fd);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(path.v);
+	HANDLE hand = FindFirstFileW(wptr.Ptr(), &fd);
 	Text::StrDelNew(wptr);
 	if (hand == INVALID_HANDLE_VALUE)
 		return false;
@@ -1251,8 +1235,8 @@ Bool IO::Path::GetFileTime(Text::CStringNN path, OptOut<Data::Timestamp> modTime
 
 UInt32 IO::Path::GetFileUnixAttr(Text::CStringNN path)
 {
-	const WChar *wptr = Text::StrToWCharNew(path.v);
-	DWORD attr = GetFileAttributesW(wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(path.v);
+	DWORD attr = GetFileAttributesW(wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (attr == INVALID_FILE_ATTRIBUTES)
 		return 0;
@@ -1267,8 +1251,8 @@ UInt32 IO::Path::GetFileUnixAttr(Text::CStringNN path)
 Data::Timestamp IO::Path::GetModifyTime(UnsafeArray<const UTF8Char> path)
 {
 	WIN32_FIND_DATAW fd;
-	const WChar *wptr = Text::StrToWCharNew(path);
-	HANDLE hand = FindFirstFileW(wptr, &fd);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(path);
+	HANDLE hand = FindFirstFileW(wptr.Ptr(), &fd);
 	Text::StrDelNew(wptr);
 	if (hand == INVALID_HANDLE_VALUE)
 		return Data::Timestamp(0);
@@ -1287,29 +1271,29 @@ UnsafeArrayOpt<UTF8Char> IO::Path::GetCurrDirectory(UnsafeArray<UTF8Char> buff)
 #endif
 }
 
-WChar *IO::Path::GetCurrDirectoryW(WChar *buff)
+UnsafeArrayOpt<WChar> IO::Path::GetCurrDirectoryW(UnsafeArray<WChar> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, L"\\");
 #else
-	return buff + ::GetCurrentDirectoryW(512, buff);
+	return buff + (UOSInt)::GetCurrentDirectoryW(512, buff.Ptr());
 #endif
 }
 
 Bool IO::Path::SetCurrDirectory(UnsafeArray<const UTF8Char> path)
 {
-	const WChar *wptr = Text::StrToWCharNew(path);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(path);
 	Bool ret = SetCurrDirectoryW(wptr);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-Bool IO::Path::SetCurrDirectoryW(const WChar *path)
+Bool IO::Path::SetCurrDirectoryW(UnsafeArray<const WChar> path)
 {
 #ifdef _WIN32_WCE
 	return false;
 #else
-	return ::SetCurrentDirectoryW(path) != 0;
+	return ::SetCurrentDirectoryW(path.Ptr()) != 0;
 #endif
 }
 

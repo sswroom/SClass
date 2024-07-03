@@ -255,7 +255,7 @@ namespace Math
 #endif
 					return false;
 				}
-				Math::Geometry::MultiGeometry<T> *obj = (Math::Geometry::MultiGeometry<T> *)vec.Ptr();
+				NN<Math::Geometry::MultiGeometry<T>> obj = NN<Math::Geometry::MultiGeometry<T>>::ConvertFrom(vec);
 				if (obj->GetCount() != this->GetCount())
 				{
 #if defined(VERBOSE)

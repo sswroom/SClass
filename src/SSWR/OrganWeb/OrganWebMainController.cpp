@@ -1215,7 +1215,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			if (env.user != 0)
 			{
 				UserFileDescComparator comparator(env);
-				Data::Sort::ArtificialQuickSort::Sort<NN<UserFileInfo>>(&fileList, comparator);
+				Data::Sort::ArtificialQuickSort::Sort<NN<UserFileInfo>>(fileList, comparator);
 			}
 			i = 0;
 			j = fileList.GetCount();

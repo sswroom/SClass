@@ -507,14 +507,13 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 		reg2 = reg->OpenSubReg(L"DESCRIPTION\\System\\CentralProcessor\\0");
 		if (reg2)
 		{
-			WChar *wptr;
-			wptr = reg2->GetValueStr(L"ProcessorNameString", wbuff);
-			IO::Registry::CloseRegistry(reg2);
-			if (wptr)
+			UnsafeArray<>WChar> wptr;
+			if (reg2->GetValueStr(L"ProcessorNameString", wbuff).SetTo(wptr))
 			{
 				ret = Text::StrWChar_UTF8(sbuff, wbuff);
 				ret = Text::StrTrim(sbuff);
 			}
+			IO::Registry::CloseRegistry(reg2);
 		}
 		IO::Registry::CloseRegistry(reg);
 	}

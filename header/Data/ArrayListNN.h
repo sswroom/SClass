@@ -56,6 +56,7 @@ namespace Data
 		void FreeAll(FreeFunc freeFunc);
 		void MemFreeAll();
 		Data::DataArray<NN<T>> ToArray() const;
+		void Reverse();
 	};
 
 
@@ -450,6 +451,24 @@ namespace Data
 	template <class T> Data::DataArray<NN<T>> ArrayListNN<T>::ToArray() const
 	{
 		return Data::DataArray<NN<T>>(this->arr, this->objCnt);
+	}
+
+	template <class T> void ArrayListNN<T>::Reverse()
+	{
+		NN<T> tmp;
+		if (this->objCnt > 0)
+		{
+			UOSInt i = 0;
+			UOSInt j = this->objCnt - 1;
+			while (i < j)
+			{
+				tmp = this->arr[i];
+				this->arr[i] = this->arr[j];
+				this->arr[j] = tmp;
+				i++;
+				j--;
+			}
+		}
 	}
 }
 

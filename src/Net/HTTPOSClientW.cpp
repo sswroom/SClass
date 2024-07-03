@@ -105,16 +105,16 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString user
 	{
 		nnuserAgent = CSTR("sswr/1.0");
 	}
-	const WChar *wptr = Text::StrToWCharNew(nnuserAgent.v);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(nnuserAgent.v);
 #if defined(WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY)
-	data->hSession = WinHttpOpen(wptr, WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+	data->hSession = WinHttpOpen(wptr.Ptr(), WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 #endif
 	if (data->hSession == 0)
 	{
-		data->hSession = WinHttpOpen(wptr, WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+		data->hSession = WinHttpOpen(wptr.Ptr(), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 		if (data->hSession == 0)
 		{
-			data->hSession = WinHttpOpen(wptr, WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+			data->hSession = WinHttpOpen(wptr.Ptr(), WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 			if (data->hSession == 0)
 			{
 				printf("hSession is null, code = %ld\r\n", GetLastError());
@@ -373,8 +373,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		}
 		timeDNS.Set(this->clk.GetTimeDiff());
 
-		const WChar *wptr = Text::StrToWCharNew(cliHost);
-		data->hConnect = WinHttpConnect(data->hSession, wptr, port, 0);
+		UnsafeArray<const WChar> wptr = Text::StrToWCharNew(cliHost);
+		data->hConnect = WinHttpConnect(data->hSession, wptr.Ptr(), port, 0);
 		Text::StrDelNew(wptr);
 		if (data->hConnect == 0)
 		{
@@ -422,8 +422,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		ptr2 = (const UTF8Char*)"/";
 	}
 
-	const WChar *target = Text::StrToWCharNew(ptr2);
-	const WChar *wmethod;
+	UnsafeArray<const WChar> target = Text::StrToWCharNew(ptr2);
+	UnsafeArray<const WChar> wmethod;
 	if (method == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		wmethod = L"POST";
@@ -436,7 +436,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		this->canWrite = false;
 		this->writing = false;
 	}
-	data->hRequest = WinHttpOpenRequest(data->hConnect, wmethod, target, 0, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, https?WINHTTP_FLAG_SECURE:0);
+	data->hRequest = WinHttpOpenRequest(data->hConnect, wmethod.Ptr(), target.Ptr(), 0, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, https?WINHTTP_FLAG_SECURE:0);
 	Text::StrDelNew(target);
 
 	if (data->hRequest)
@@ -573,7 +573,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 						WChar *wptr = buff;
 						NN<Text::String> s;
 						UOSInt i;
-						while ((i = Text::StrIndexOf(wptr, L"\r\n")) != INVALID_INDEX && i > 0)
+						while ((i = Text::StrIndexOfW(wptr, L"\r\n")) != INVALID_INDEX && i > 0)
 						{
 							if (Text::StrStartsWith(wptr, L"HTTP/"))
 							{

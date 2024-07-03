@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 		}
 	}
 	CertComparator comp;
-	Data::Sort::ArtificialQuickSort::Sort<NN<CertEntry>>(&certs, comp);
+	Data::Sort::ArtificialQuickSort::Sort<NN<CertEntry>>(certs, comp);
 
 	Data::DateTime dt;
 	UTF8Char sbuff[64];

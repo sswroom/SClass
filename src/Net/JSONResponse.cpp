@@ -63,7 +63,7 @@ void Net::JSONResponse::FindMissingFields()
 		Text::StringBuilderUTF8 sbGet;
 		Data::ArrayListStringNN nameList;
 		obj->GetObjectNames(nameList);
-		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&nameList, nameList);
+		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(nameList, nameList);
 		NN<Text::String> name;
 		NN<Text::String> s;
 		Bool hasObj = false;
@@ -486,7 +486,7 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 	Data::FastStringNNKeyIterator<Field> it = this->fieldMap.KeyIterator();
 	while (it.HasNext())
 		keys.Add(it.Next());
-	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&keys, keys);
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(keys, keys);
 	NN<Field> field;
 	Data::ArrayIterator<NN<Text::String>> itKey = keys.Iterator();
 	while (itKey.HasNext())

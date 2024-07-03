@@ -48,7 +48,7 @@ Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coor
 	}
 	if (mArr.SetTo(arr))
 	{
-		this->mArr = narr = MemAllocA(Double, nPoint);
+		this->mArr = narr = MemAllocAArr(Double, nPoint);
 		MemCopyNO(narr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
 	}
 	else
@@ -576,7 +576,7 @@ Math::Coord2DDbl Math::Geometry::LineString::GetPoint(UOSInt index) const
 	}
 }
 
-Double Math::Geometry::LineString::CalcLength() const
+Double Math::Geometry::LineString::CalcHLength() const
 {
 	Double leng = 0;
 	Math::Coord2DDbl diff;
@@ -587,6 +587,104 @@ Double Math::Geometry::LineString::CalcLength() const
 		leng += Math_Sqrt(diff.x * diff.x + diff.y * diff.y);
 	}
 	return leng;
+}
+
+Double Math::Geometry::LineString::Calc3DLength() const
+{
+	UnsafeArray<Double> zArr;
+	if (this->zArr.SetTo(zArr))
+	{
+		Double leng = 0;
+		Math::Coord2DDbl diff;
+		Double zDiff;
+		UOSInt i = this->nPoint;
+		while (i-- > 1)
+		{
+			diff = this->pointArr[i] - this->pointArr[i - 1];
+			zDiff = zArr[i] - zArr[i - 1];
+			leng += Math_Sqrt(diff.x * diff.x + diff.y * diff.y + zDiff * zDiff);
+		}
+		return leng;
+	}
+	else
+	{
+		return this->CalcHLength();
+	}
+}
+
+void Math::Geometry::LineString::Reverse()
+{
+	if (this->nPoint == 0)
+		return;
+	UOSInt i = 0;
+	UOSInt j = this->nPoint - 1;
+	Math::Coord2DDbl pos;
+	Double tmpZ;
+	Double tmpM;
+	UnsafeArray<Double> zArr;
+	UnsafeArray<Double> mArr;
+	if (this->zArr.SetTo(zArr))
+	{
+		if (this->mArr.SetTo(mArr))
+		{
+			while (i < j)
+			{
+				pos = this->pointArr[i];
+				tmpZ = zArr[i];
+				tmpM = mArr[i];
+				this->pointArr[i] = this->pointArr[j];
+				zArr[i] = zArr[j];
+				mArr[i] = mArr[j];
+				this->pointArr[j] = pos;
+				zArr[i] = tmpZ;
+				mArr[j] = tmpM;
+				i++;
+				j--;
+			}
+		}
+		else
+		{
+			while (i < j)
+			{
+				pos = this->pointArr[i];
+				tmpZ = zArr[i];
+				this->pointArr[i] = this->pointArr[j];
+				zArr[i] = zArr[j];
+				this->pointArr[j] = pos;
+				zArr[j] = tmpZ;
+				i++;
+				j--;
+			}
+		}
+	}
+	else
+	{
+		if (this->mArr.SetTo(mArr))
+		{
+			while (i < j)
+			{
+				pos = this->pointArr[i];
+				tmpM = mArr[i];
+				this->pointArr[i] = this->pointArr[j];
+				mArr[i] = mArr[j];
+				this->pointArr[j] = pos;
+				mArr[j] = tmpM;
+				i++;
+				j--;
+			}
+		}
+		else
+		{
+			while (i < j)
+			{
+				pos = this->pointArr[i];
+				this->pointArr[i] = this->pointArr[j];
+				this->pointArr[j] = pos;
+				i++;
+				j--;
+			}
+		}
+	}
 }
 
 UnsafeArrayOpt<Double> Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
@@ -1082,4 +1180,125 @@ NN<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline() const
 	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid));
 	pl->AddGeometry(NN<LineString>::ConvertFrom(this->Clone()));
 	return pl;
+}
+
+Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Data::ArrayListNN<LineString>> lines)
+{
+	if (lines->GetCount() == 0)
+		return 0;
+	Bool hasZ = true;
+	Bool hasM = true;
+	UOSInt nPoints = 0;
+	Math::Coord2DDbl lastPt;
+	UOSInt i = 1;
+	UOSInt j = lines->GetCount();
+	UOSInt k;
+	NN<LineString> ls;
+	UInt32 srid;
+	ls = lines->GetItemNoCheck(0);
+	srid = ls->GetSRID();
+	if (!ls->HasM()) hasM = false;
+	if (!ls->HasZ()) hasZ = false;
+	lastPt = ls->GetPoint(ls->GetPointCount() - 1);
+	nPoints = ls->GetPointCount();
+	while (i < j)
+	{
+		ls = lines->GetItemNoCheck(i);
+		if (!ls->HasM()) hasM = false;
+		if (!ls->HasZ()) hasZ = false;
+		nPoints += ls->GetPointCount();
+		if (ls->GetPoint(0) == lastPt)
+		{
+			nPoints--;
+			lastPt = ls->GetPoint(ls->GetPointCount() - 1);
+		}
+		else if (ls->GetPoint(ls->GetPointCount() - 1) == lastPt)
+		{
+			nPoints--;
+			lastPt = ls->GetPoint(0);
+		}
+		else
+		{
+			return 0;
+		}
+		i++;
+	}
+
+	NN<LineString> newLine;
+	NEW_CLASSNN(newLine, LineString(srid, nPoints, hasZ, hasM));
+	UnsafeArray<Math::Coord2DDbl> ptList;
+	UnsafeArray<Math::Coord2DDbl> sptList;
+	UnsafeArray<Double> sList;
+	UnsafeArray<Double> nList;
+	UOSInt i2;
+	UOSInt j2;
+	UOSInt tmp;
+	UOSInt startI;
+	ptList = newLine->GetPointList(tmp);
+	k = 0;
+	i = 0;
+	while (i < j)
+	{
+		ls = lines->GetItemNoCheck(i);
+		nPoints = ls->GetPointCount();
+		if (k == 0 || ls->GetPoint(0) == lastPt)
+		{
+			if (k == 0)
+			{
+				startI = 0;
+			}
+			else
+			{
+				startI = 1;
+				nPoints--;
+			}
+			MemCopyNO(&ptList[k], &ls->GetPointList(tmp)[startI], sizeof(Math::Coord2DDbl) * nPoints);
+			if (newLine->GetZList(tmp).SetTo(nList) && ls->GetZList(tmp).SetTo(sList))
+			{
+				MemCopyNO(&nList[k], &sList[startI], sizeof(Double) * nPoints);
+			}
+			if (newLine->GetMList(tmp).SetTo(nList) && ls->GetMList(tmp).SetTo(sList))
+			{
+				MemCopyNO(&nList[k], &sList[startI], sizeof(Double) * nPoints);
+			}
+			lastPt = ls->GetPoint(ls->GetPointCount() - 1);
+		}
+		else
+		{
+			nPoints--;
+			sptList = ls->GetPointList(tmp);			
+			i2 = 0;
+			j2 = nPoints;
+			while (j2-- > 0)
+			{
+				ptList[k + i2] = sptList[j2];
+				i2++;
+			}
+			if (newLine->GetZList(tmp).SetTo(nList) && ls->GetZList(tmp).SetTo(sList))
+			{
+				i2 = 0;
+				j2 = nPoints;
+				while (j2-- > 0)
+				{
+					nList[k + i2] = sList[j2];
+					i2++;
+				}
+			}
+			if (newLine->GetMList(tmp).SetTo(nList) && ls->GetMList(tmp).SetTo(sList))
+			{
+				i2 = 0;
+				j2 = nPoints;
+				while (j2-- > 0)
+				{
+					nList[k + i2] = sList[j2];
+					i2++;
+				}
+			}
+			lastPt = ls->GetPoint(0);
+		}
+		
+		k += nPoints;
+		i++;
+	}
+	return newLine;
 }

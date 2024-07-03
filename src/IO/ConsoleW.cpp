@@ -93,8 +93,8 @@ UnsafeArray<UTF8Char> IO::Console::GetLine(UnsafeArray<UTF8Char> buff)
 
 void IO::Console::PrintStrO(const UTF8Char *str1)
 {
-	const WChar *wptr = Text::StrToWCharNew(str1);
-	wprintf(L"%ls", wptr);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(str1);
+	wprintf(L"%ls", wptr.Ptr());
 	Text::StrDelNew(wptr);
 	fflush(stdout);
 }

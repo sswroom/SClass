@@ -51,7 +51,7 @@ Media::DDCReader::DDCReader(void *hMon)
 					monVID[2] = ddMon.DeviceID[k + 2];
 					monVID[3] = 0;
 					Text::StrConcatS(wbuff, &ddMon.DeviceID[k + 3], 4);
-					monPID = (UInt32)Text::StrHex2Int32C(wbuff);
+					monPID = (UInt32)Text::StrHex2Int32WC(wbuff);
 
 					HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT, NULL, NULL, NULL);
 					if (devInfo)
@@ -154,7 +154,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 		{
 			if (ddMon.StateFlags & DISPLAY_DEVICE_ACTIVE && !(ddMon.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER))
 			{
-				k = Text::StrIndexOfChar(&ddMon.DeviceID[1], '\\') + 2;
+				k = Text::StrIndexOfCharW(&ddMon.DeviceID[1], '\\') + 2;
 				monVID[0] = (UTF8Char)ddMon.DeviceID[k];
 				monVID[1] = (UTF8Char)ddMon.DeviceID[k + 1];
 				monVID[2] = (UTF8Char)ddMon.DeviceID[k + 2];
@@ -286,13 +286,13 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 		{
 			if (ddMon.StateFlags & DISPLAY_DEVICE_ACTIVE && !(ddMon.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER))
 			{
-				k = Text::StrIndexOfChar(&ddMon.DeviceID[1], '\\') + 2;
+				k = Text::StrIndexOfCharW(&ddMon.DeviceID[1], '\\') + 2;
 				monVID[0] = ddMon.DeviceID[k];
 				monVID[1] = ddMon.DeviceID[k + 1];
 				monVID[2] = ddMon.DeviceID[k + 2];
 				monVID[3] = 0;
 				Text::StrConcatS(wbuff, &ddMon.DeviceID[k + 3], 4);
-				monPID = (UInt32)Text::StrHex2Int32C(wbuff);
+				monPID = (UInt32)Text::StrHex2Int32WC(wbuff);
 
 				HDEVINFO devInfo = SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR, NULL, NULL, DIGCF_PRESENT, NULL, NULL, NULL);
 				if (devInfo)

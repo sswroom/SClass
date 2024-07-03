@@ -112,7 +112,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBCo
 {
 	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
-	Data::Sort::ArtificialQuickSort::Sort(&tableNames, NN<Data::Comparator<NN<Text::String>>>(tableNames));
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(tableNames, NN<Data::Comparator<NN<Text::String>>>(tableNames));
 	if (tableNames.SortedIndexOfC(CSTR("gpkg_spatial_ref_sys")) < 0 ||
 		tableNames.SortedIndexOfC(CSTR("gpkg_contents")) < 0 ||
 		tableNames.SortedIndexOfC(CSTR("gpkg_geometry_columns")) < 0 ||

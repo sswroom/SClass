@@ -143,7 +143,7 @@ DB::SortableDBReader::SortableDBReader(NN<DB::ReadingDB> db, Text::CString schem
 	if (ordering.leng > 0)
 	{
 		Data::FieldComparator comparator(ordering);
-		Data::Sort::ArtificialQuickSort::Sort<NN<Data::VariObject>>(&this->objList, comparator);
+		Data::Sort::ArtificialQuickSort::Sort<NN<Data::VariObject>>(this->objList, comparator);
 	}
 	if (dataOfst > 0)
 	{

@@ -21,9 +21,10 @@ namespace Math
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 
-			void AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList);
-			Double CalcLength() const;
-			UOSInt FillPointOfstList(Math::Coord2DDbl *pointList, UInt32 *ptOfstList, Double *zList, Double *mList) const;
+			void AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UOSInt nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UOSInt nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList);
+			Double CalcHLength() const;
+			Double Calc3DLength() const;
+			UOSInt FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const;
 			Math::Coord2DDbl CalcPosAtDistance(Double dist) const;
 
 			Optional<Math::Geometry::Polyline> SplitByPoint(Math::Coord2DDbl pt);

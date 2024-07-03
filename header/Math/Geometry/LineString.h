@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_GEOMETRY_LINESTRING
 #define _SM_MATH_GEOMETRY_LINESTRING
 #include "Data/ArrayListA.h"
+#include "Data/ArrayListNN.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Geometry/Vector2D.h"
 
@@ -44,7 +45,9 @@ namespace Math
 			UnsafeArray<Math::Coord2DDbl> GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
 			UnsafeArray<const Math::Coord2DDbl> GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
 			Math::Coord2DDbl GetPoint(UOSInt index) const;
-			Double CalcLength() const;
+			Double CalcHLength() const;
+			Double Calc3DLength() const;
+			void Reverse();
 
 			UnsafeArrayOpt<Double> GetZList(OutParam<UOSInt> nPoint) const;
 			UnsafeArrayOpt<Double> GetMList(OutParam<UOSInt> nPoint) const;
@@ -53,6 +56,7 @@ namespace Math
 
 			Optional<Math::Geometry::Polygon> CreatePolygonByDist(Double dist) const;
 			NN<Math::Geometry::Polyline> CreatePolyline() const;
+			static Optional<Math::Geometry::LineString> JoinLines(NN<Data::ArrayListNN<LineString>> lines);
 		};
 	}
 }

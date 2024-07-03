@@ -208,7 +208,7 @@ Bool Map::MapDrawUtil::DrawVectorImage(NN<Math::Geometry::VectorImage> vimg, NN<
 	
 	if (vimg->IsScnCoord())
 	{
-		vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI(), &bounds.min.x, &bounds.min.y, &bounds.max.x, &bounds.max.y);
+		bounds = vimg->GetScreenBounds(img->GetWidth(), img->GetHeight(), img->GetHDPI(), img->GetVDPI());
 		pts[0] = bounds.min + ofst;
 		pts[1].x = bounds.min.x + ofst.x;
 		pts[1].y = bounds.max.y + ofst.y;

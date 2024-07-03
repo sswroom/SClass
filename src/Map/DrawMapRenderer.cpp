@@ -2147,11 +2147,11 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 	j = imgList.GetCount();
 	while (i < j)
 	{
-		Math::Coord2DDbl scnCoords[2];
+		Math::RectAreaDbl scnCoords;
 		vimg = imgList.GetItemNoCheck(i);
 		if (vimg->IsScnCoord())
 		{
-			vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0].x, &scnCoords[0].y, &scnCoords[1].x, &scnCoords[1].y);
+			scnCoords = vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI());
 		}
 		else
 		{
@@ -2164,14 +2164,15 @@ void Map::DrawMapRenderer::DrawImageLayer(NN<DrawEnv> denv, NN<Map::MapDrawLayer
 				mapCoords.min = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.min);
 				mapCoords.max = Math::CoordinateSystem::Convert(coord, denv->env->GetCoordinateSystem(), mapCoords.max);
 			}
-			scnCoords[0] = denv->view->MapXYToScnXY(mapCoords.min);
-			scnCoords[1] = denv->view->MapXYToScnXY(mapCoords.max);
+			scnCoords.min = denv->view->MapXYToScnXY(mapCoords.min);
+			scnCoords.max = denv->view->MapXYToScnXY(mapCoords.max);
+			scnCoords = scnCoords.Reorder();
 		}
 		UInt32 imgTimeMS;
 		NN<Media::StaticImage> simg;
-		if (vimg->GetImage(scnCoords[1].x - scnCoords[0].x, scnCoords[1].y - scnCoords[0].y, imgTimeMS).SetTo(simg))
+		if (vimg->GetImage(scnCoords.GetWidth(), scnCoords.GetHeight(), imgTimeMS).SetTo(simg))
 		{
-			DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], vimg->GetSrcAlpha());
+			DrawImageObject(denv, simg, scnCoords.min, scnCoords.max, vimg->GetSrcAlpha());
 			if (imgTimeMS != 0)
 			{
 				if (denv->imgDurMS == 0)

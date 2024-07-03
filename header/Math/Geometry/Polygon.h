@@ -20,11 +20,11 @@ namespace Math
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
-/*			Bool HasJunction() const;
-			void SplitByJunction(NN<Data::ArrayListNN<Math::Geometry::Polygon>> results);*/
+//			Bool HasJunction() const;
+//			void SplitByJunction(NN<Data::ArrayListNN<Math::Geometry::Polygon>> results);
 			NN<Math::Geometry::MultiPolygon> CreateMultiPolygon() const;
-			void AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList);
-			UOSInt FillPointOfstList(Math::Coord2DDbl *pointList, UInt32 *ptOfstList, Double *zList, Double *mList) const;
+			void AddFromPtOfst(UnsafeArray<UInt32> ptOfstList, UOSInt nPtOfst, UnsafeArray<Math::Coord2DDbl> pointList, UOSInt nPoint, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList);
+			UOSInt FillPointOfstList(UnsafeArray<Math::Coord2DDbl> pointList, UnsafeArray<UInt32> ptOfstList, UnsafeArrayOpt<Double> zList, UnsafeArrayOpt<Double> mList) const;
 		};
 	}
 }

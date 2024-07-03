@@ -457,7 +457,7 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 	FilesComparator comparator;
 	Data::ArrayList<CesiumDownloader::FileEntry*> filesList;
 	filesList.AddAll(downloader->GetFilesList());
-	Data::Sort::ArtificialQuickSort::Sort<CesiumDownloader::FileEntry*>(&filesList, comparator);
+	Data::Sort::ArtificialQuickSort::Sort<CesiumDownloader::FileEntry*>(filesList, comparator);
 	
 	IO::FileStream fs(CSTR("CesiumFiles.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	CesiumDownloader::FileEntry *file;

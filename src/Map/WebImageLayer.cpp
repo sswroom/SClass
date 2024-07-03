@@ -607,7 +607,7 @@ void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 	}
 }
 
-void Map::WebImageLayer::AddImage(Text::CString name, Text::CStringNN url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
+void Map::WebImageLayer::AddImage(Text::CString name, Text::CStringNN url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStartTS, Int64 timeEndTS, Double alpha, Bool hasAltitude, Double altitude)
 {
 	NN<ImageStat> stat;
 	NEW_CLASSNN(stat, ImageStat());
@@ -616,24 +616,24 @@ void Map::WebImageLayer::AddImage(Text::CString name, Text::CStringNN url, Int32
 	stat->simg = 0;
 	stat->data = 0;
 	stat->name = Text::String::NewOrNull(name);
-	stat->timeStart = timeStart;
-	stat->timeEnd = timeEnd;
-	if (timeStart != 0)
+	stat->timeStart = timeStartTS;
+	stat->timeEnd = timeEndTS;
+	if (timeStartTS != 0)
 	{
 		if (this->minTime == 0)
-			this->minTime = timeStart;
-		else if (this->minTime > timeStart)
+			this->minTime = timeStartTS;
+		else if (this->minTime > timeStartTS)
 		{
-			this->minTime = timeStart;
+			this->minTime = timeStartTS;
 		}
 	}
-	if (timeEnd != 0)
+	if (timeEndTS != 0)
 	{
 		if (this->maxTime == 0)
-			this->maxTime = timeEnd;
-		else if (this->maxTime < timeEnd)
+			this->maxTime = timeEndTS;
+		else if (this->maxTime < timeEndTS)
 		{
-			this->maxTime = timeEnd;
+			this->maxTime = timeEndTS;
 		}
 	}
 	stat->zIndex = zIndex;
