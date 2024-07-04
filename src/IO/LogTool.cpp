@@ -54,7 +54,7 @@ void IO::LogTool::Close()
 	this->HandlerClose();
 }
 
-void IO::LogTool::AddFileLog(NN<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(NN<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, UnsafeArrayOpt<const Char> dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;
@@ -74,7 +74,7 @@ void IO::LogTool::AddFileLog(NN<Text::String> fileName, LogHandler::LogType styl
 	}
 }
 
-void IO::LogTool::AddFileLog(Text::CStringNN fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(Text::CStringNN fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, UnsafeArrayOpt<const Char> dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;

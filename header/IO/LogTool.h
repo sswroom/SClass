@@ -64,8 +64,8 @@ namespace IO
 		LogTool();
 		virtual ~LogTool();
 		void Close();
-		void AddFileLog(NN<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
-		void AddFileLog(Text::CStringNN fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
+		void AddFileLog(NN<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, UnsafeArrayOpt<const Char> dateFormat, Bool directWrite);
+		void AddFileLog(Text::CStringNN fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, UnsafeArrayOpt<const Char> dateFormat, Bool directWrite);
 		void AddLogHandler(NN<LogHandler> hdlr, LogHandler::LogLevel logLev);
 		void RemoveLogHandler(NN<LogHandler> hdlr);
 		Bool HasHandler() const;

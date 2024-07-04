@@ -38,7 +38,7 @@ namespace Text
 
 			virtual IO::ParserType GetParserType() const;
 
-			Workbook *Clone() const;
+			NN<Workbook> Clone() const;
 
 			void AddDefaultStyles();
 

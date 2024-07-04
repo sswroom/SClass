@@ -79,7 +79,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	UOSInt n;
 	UOSInt drawingCnt = 0;
 	UOSInt chartCnt = 0;
-	Data::ArrayList<Text::String*> sharedStrings;
+	Data::ArrayListNN<Text::String> sharedStrings;
 	Data::FastStringMap<UOSInt> stringMap;
 	ts = Data::Timestamp::UtcNow();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm, IO::ZIPOS::MSDOS));
@@ -214,11 +214,12 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("\" customFormat=\"false\" ht=\"12.8\" hidden=\"false\" customHeight=\"false\" outlineLevel=\"0\" collapsed=\"false\">"));
 
 					m = 0;
-					n = row->cells->GetCount();
+					n = row->cells.GetCount();
 					while (m < n)
 					{
-						Text::SpreadSheet::Worksheet::CellData *cell = row->cells->GetItem(m);
-						if (cell && cell->cellValue && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedUp)
+						NN<Text::String> cellValue;
+						NN<Text::SpreadSheet::Worksheet::CellData> cell;
+						if (row->cells.GetItem(m).SetTo(cell) && cell->cellValue.SetTo(cellValue) && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedUp)
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
 							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
@@ -248,24 +249,24 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 							{
 							case Text::SpreadSheet::CellDataType::String:
 								{
-									UOSInt sIndex = stringMap.Get(cell->cellValue);
-									if (sIndex == 0 && stringMap.IndexOf(Text::String::OrEmpty(cell->cellValue)) < 0)
+									UOSInt sIndex = stringMap.GetNN(cellValue);
+									if (sIndex == 0 && stringMap.IndexOf(cellValue) < 0)
 									{
-										sIndex = sharedStrings.Add(cell->cellValue);
-										stringMap.Put(cell->cellValue, sIndex);
+										sIndex = sharedStrings.Add(cellValue);
+										stringMap.PutNN(cellValue, sIndex);
 									}
 									sb.AppendUOSInt(sIndex);
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::Number:
-								sb.Append(cell->cellValue);
+								sb.Append(cellValue);
 								break;
 							case Text::SpreadSheet::CellDataType::DateTime:
 								{
 									Data::DateTime dt;
 									dt.ToLocalTime();
-									dt.SetValue(cell->cellValue->ToCString());
-									sb.AppendDouble(Text::XLSUtil::Date2Number(Data::Timestamp::FromStr(cell->cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())));
+									dt.SetValue(cellValue->ToCString());
+									sb.AppendDouble(Text::XLSUtil::Date2Number(Data::Timestamp::FromStr(cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())));
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::MergedLeft:
@@ -273,7 +274,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 								break;
 							}
 							
-							if (cell->cellURL)
+							if (cell->cellURL.NotNull())
 							{
 								link = MemAlloc(LinkInfo, 1);
 								link->row = k;
@@ -288,7 +289,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 							
 							sb.AppendC(UTF8STRC("</v></c>"));
 						}
-						else if (cell && cell->style.SetTo(tmpStyle))
+						else if (row->cells.GetItem(m).SetTo(cell) && cell->style.SetTo(tmpStyle))
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
 							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
@@ -345,7 +346,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("\" r:id=\"rId"));
 					sb.AppendUOSInt(idBase + m);
 					sb.AppendC(UTF8STRC("\" display="));
-					s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(link->cell->cellValue->v));
+					s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(Text::String::OrEmpty(link->cell->cellValue)->v));
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("/>"));
@@ -427,7 +428,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
 				sb.AppendUOSInt(l + m + 1);
 				sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target="));
-				s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(link->cell->cellURL->v));
+				s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(Text::String::OrEmpty(link->cell->cellURL)->v));
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(" TargetMode=\"External\"/>"));
@@ -1041,7 +1042,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		while (i < k)
 		{
 			sb.AppendC(UTF8STRC("<si><t xml:space=\"preserve\">"));
-			s = Text::XML::ToNewXMLText(sharedStrings.GetItem(i)->v);
+			s = Text::XML::ToNewXMLText(sharedStrings.GetItemNoCheck(i)->v);
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC("</t></si>"));
@@ -1458,20 +1459,20 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 		sb->AppendUOSInt(lastCol - firstCol + 1);
 		sb->AppendC(UTF8STRC("\"/>"));
 		NN<Worksheet::RowData> row;
-		Worksheet::CellData *cell;
+		NN<Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
 		UOSInt i;
 		if (sheet->GetItem(firstRow).SetTo(row))
 		{
 			i = firstCol;
 			while (i <= lastCol)
 			{
-				cell = row->cells->GetItem(i);
-				if (cell && cell->cellValue && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
+				if (row->cells.GetItem(i).SetTo(cell) && cell->cellValue.SetTo(cellValue) && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
 				{
 					sb->AppendC(UTF8STRC("<c:pt idx=\""));
 					sb->AppendUOSInt(i - firstCol);
 					sb->AppendC(UTF8STRC("\"><c:v>"));
-					sb->Append(cell->cellValue);
+					sb->Append(cellValue);
 					sb->AppendC(UTF8STRC("</c:v></c:pt>"));
 				}
 				i++;
@@ -1487,20 +1488,20 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 		sb->AppendUOSInt(lastRow - firstRow + 1);
 		sb->AppendC(UTF8STRC("\"/>"));
 		NN<Worksheet::RowData> row;
-		Worksheet::CellData *cell;
+		NN<Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
 		UOSInt i;
 		i = firstRow;
 		while (i <= lastRow)
 		{
 			if (sheet->GetItem(i).SetTo(row))
 			{
-				cell = row->cells->GetItem(firstCol);
-				if (cell && cell->cellValue && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
+				if (row->cells.GetItem(firstCol).SetTo(cell) && cell->cellValue.SetTo(cellValue) && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
 				{
 					sb->AppendC(UTF8STRC("<c:pt idx=\""));
 					sb->AppendUOSInt(i - firstRow);
 					sb->AppendC(UTF8STRC("\"><c:v>"));
-					sb->Append(cell->cellValue);
+					sb->Append(cellValue);
 					sb->AppendC(UTF8STRC("</c:v></c:pt>"));
 				}
 				i++;

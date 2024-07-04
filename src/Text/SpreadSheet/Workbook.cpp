@@ -52,12 +52,12 @@ IO::ParserType Text::SpreadSheet::Workbook::GetParserType() const
 	return IO::ParserType::Workbook;
 }
 
-Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
+NN<Text::SpreadSheet::Workbook> Text::SpreadSheet::Workbook::Clone() const
 {
 	UOSInt i;
 	UOSInt j;
-	Text::SpreadSheet::Workbook *newWB;
-	NEW_CLASS(newWB, Text::SpreadSheet::Workbook());
+	NN<Text::SpreadSheet::Workbook> newWB;
+	NEW_CLASSNN(newWB, Text::SpreadSheet::Workbook());
 	newWB->author = Text::StrSCopyNew(this->author);
 	newWB->lastAuthor = Text::StrSCopyNew(this->lastAuthor);
 	newWB->company = Text::StrSCopyNew(this->company);
@@ -87,7 +87,7 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	Data::ArrayIterator<NN<Worksheet>> itSheet = this->sheets.Iterator();
 	while (itSheet.HasNext())
 	{
-		newWB->sheets.Add(itSheet.Next()->Clone(this, newWB));
+		newWB->sheets.Add(itSheet.Next()->Clone(*this, newWB));
 		i++;
 	}
 	i = 0;

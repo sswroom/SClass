@@ -19,7 +19,7 @@ namespace Exporter
 		{
 			UOSInt row;
 			UOSInt col;
-			Text::SpreadSheet::Worksheet::CellData *cell;
+			NN<Text::SpreadSheet::Worksheet::CellData> cell;
 		};
 
 		struct BorderInfo

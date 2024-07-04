@@ -19,9 +19,9 @@ Optional<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::Cr
 	rowData = this->rows.GetItem(row);
 	if (rowData.IsNull())
 	{
-		NN<RowData> nnrowData = MemAllocNN(RowData);
+		NN<RowData> nnrowData;
+		NEW_CLASSNN(nnrowData, RowData());
 		nnrowData->style = 0;
-		NEW_CLASS(nnrowData->cells, Data::ArrayList<CellData*>());
 		nnrowData->height = -1;
 		this->rows.SetItem(row, nnrowData);
 		rowData = nnrowData;
@@ -29,10 +29,10 @@ Optional<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::Cr
 	return rowData;
 }
 
-Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellData(UOSInt row, UOSInt col, Bool keepMerge)
+Optional<Text::SpreadSheet::Worksheet::CellData> Text::SpreadSheet::Worksheet::GetCellData(UOSInt row, UOSInt col, Bool keepMerge)
 {
 	NN<RowData> rowData;
-	CellData *cell;
+	NN<CellData> cell;
 	if (row >= this->rows.GetCount() + 65536)
 		return 0;
 	if (col >= 65536)
@@ -45,14 +45,13 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 	{
 		if (!CreateRow(row).SetTo(rowData))
 			return 0;
-		while (col >= rowData->cells->GetCount())
+		while (col >= rowData->cells.GetCount())
 		{
-			rowData->cells->Add(0);
+			rowData->cells.Add(0);
 		}
-		cell = rowData->cells->GetItem(col);
-		if (cell == 0)
+		if (!rowData->cells.GetItem(col).SetTo(cell))
 		{
-			cell = MemAlloc(CellData, 1);
+			cell = MemAllocNN(CellData);
 			cell->cdt = CellDataType::String;
 			cell->cellValue = 0;
 			cell->style = 0;
@@ -60,7 +59,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 			cell->mergeVert = 0;
 			cell->hidden = false;
 			cell->cellURL = 0;
-			rowData->cells->SetItem(col, cell);
+			rowData->cells.SetItem(col, cell);
 		}
 
 		if (keepMerge)
@@ -83,70 +82,64 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 
 void Text::SpreadSheet::Worksheet::FreeRowData(NN<Text::SpreadSheet::Worksheet::RowData> data)
 {
-	CellData *cell;
-	if (data->cells)
+	NN<CellData> cell;
+	UOSInt i = data->cells.GetCount();
+	while (i-- > 0)
 	{
-		UOSInt i = data->cells->GetCount();
-		while (i-- > 0)
+		if (data->cells.GetItem(i).SetTo(cell))
 		{
-			cell = data->cells->GetItem(i);
-			if (cell)
-			{
-				FreeCellData(cell);
-			}
+			FreeCellData(cell);
 		}
-		DEL_CLASS(data->cells);
 	}
+	data.Delete();
+}
+
+void Text::SpreadSheet::Worksheet::FreeCellData(NN<Text::SpreadSheet::Worksheet::CellData> data)
+{
+	OPTSTR_DEL(data->cellValue);
+	OPTSTR_DEL(data->cellURL);
 	MemFreeNN(data);
 }
 
-void Text::SpreadSheet::Worksheet::FreeCellData(Text::SpreadSheet::Worksheet::CellData *data)
-{
-	SDEL_STRING(data->cellValue);
-	SDEL_STRING(data->cellURL);
-	MemFree(data);
-}
-
-NN<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CloneRow(NN<RowData> row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+NN<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CloneRow(NN<RowData> row, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl)
 {
 	NN<RowData> newRow;
-	CellData *cell;
+	NN<CellData> cell;
 	UOSInt i;
 	UOSInt j;
 	NN<CellStyle> tmpStyle;
-	newRow = MemAllocNN(RowData);
+	NEW_CLASSNN(newRow, RowData());
 	if (row->style.SetTo(tmpStyle))
 		newRow->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(tmpStyle));
 	else
 		newRow->style = 0;
-	NEW_CLASS(newRow->cells, Data::ArrayList<CellData*>());
 	newRow->height = row->height;
 	i = 0;
-	j = row->cells->GetCount();
+	j = row->cells.GetCount();
 	while (i < j)
 	{
-		cell = row->cells->GetItem(i);
-		if (cell == 0)
+		if (!row->cells.GetItem(i).SetTo(cell))
 		{
-			newRow->cells->Add(0);
+			newRow->cells.Add(0);
 		}
 		else
 		{
-			newRow->cells->Add(this->CloneCell(cell, srcCtrl, newCtrl));
+			newRow->cells.Add(this->CloneCell(cell, srcCtrl, newCtrl));
 		}
 		i++;
 	}
 	return newRow;
 }
 
-Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+NN<Text::SpreadSheet::Worksheet::CellData> Text::SpreadSheet::Worksheet::CloneCell(NN<CellData> cell, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl)
 {
-	CellData *newCell;
-	newCell = MemAlloc(CellData, 1);
+	NN<CellData> newCell;
+	newCell = MemAllocNN(CellData);
 	newCell->cdt = cell->cdt;
-	if (cell->cellValue)
+	NN<Text::String> s;
+	if (cell->cellValue.SetTo(s))
 	{
-		newCell->cellValue = cell->cellValue->Clone().Ptr();
+		newCell->cellValue = s->Clone();
 	}
 	else
 	{
@@ -160,9 +153,9 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	newCell->mergeHori = cell->mergeHori;
 	newCell->mergeVert = cell->mergeVert;
 	newCell->hidden = cell->hidden;
-	if (cell->cellURL)
+	if (cell->cellURL.SetTo(s))
 	{
-		newCell->cellURL = cell->cellURL->Clone().Ptr();
+		newCell->cellURL = s->Clone();
 	}
 	else
 	{
@@ -229,7 +222,7 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 	this->drawings.FreeAll(FreeDrawing);
 }
 
-NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl)
 {
 	UOSInt i;
 	UOSInt j;
@@ -438,11 +431,15 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, Int64 va
 	return this->SetCellInt64(row, col, 0, val);
 }
 
+Bool Text::SpreadSheet::Worksheet::SetCellEmpty(UOSInt row, UOSInt col)
+{
+	return this->SetCellEmpty(row, col, 0);
+}
+
 Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Optional<Text::SpreadSheet::CellStyle> style)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->style = style;
 	return true;
@@ -450,9 +447,8 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Optional
 
 Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, HAlignment hAlign)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	NN<CellStyle> tmpStyle;
 	if (!cell->style.SetTo(tmpStyle))
@@ -478,9 +474,8 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, NN
 
 Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, UInt32 color, BorderType borderType)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, true);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, true).SetTo(cell))
 		return false;
 	NN<CellStyle> tmpStyle;
 	if (!cell->style.SetTo(tmpStyle))
@@ -505,77 +500,73 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt c
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::String *url)
+Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Optional<Text::String> url)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
-	SDEL_STRING(cell->cellURL);
-	if (url)
+	OPTSTR_DEL(cell->cellURL);
+	NN<Text::String> nnurl;
+	if (url.SetTo(nnurl))
 	{
-		cell->cellURL = url->Clone().Ptr();
+		cell->cellURL = nnurl->Clone();
 	}
 	return true;
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::CString url)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
-	SDEL_STRING(cell->cellURL);
+	OPTSTR_DEL(cell->cellURL);
 	Text::CStringNN nnurl;
 	if (url.SetTo(nnurl) && nnurl.leng > 0)
 	{
-		cell->cellURL = Text::String::New(nnurl).Ptr();
+		cell->cellURL = Text::String::New(nnurl);
 	}
 	return true;
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NN<Text::String> val)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::String;
-	SDEL_STRING(cell->cellValue);
-	cell->cellValue = val->Clone().Ptr();
+	OPTSTR_DEL(cell->cellValue);
+	cell->cellValue = val->Clone();
 	if (!style.IsNull()) cell->style = style;
 	return true;
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, Text::CStringNN val)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::String;
-	SDEL_STRING(cell->cellValue);
+	OPTSTR_DEL(cell->cellValue);
 	if (val.leng > 0)
 	{
-		cell->cellValue = Text::String::New(val).Ptr();
+		cell->cellValue = Text::String::New(val);
 	}
 	if (!style.IsNull()) cell->style = style;
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *style, Data::Timestamp val)
+Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, Optional<CellStyle> style, Data::Timestamp val)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::DateTime;
-	SDEL_STRING(cell->cellValue);
+	OPTSTR_DEL(cell->cellValue);
 	sptr = val.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffffffff");
-	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
-	if (style)
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	if (style.NotNull())
 	{
 		 cell->style = style;
 	}
@@ -599,67 +590,74 @@ Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NN<Data::DateTime> val)
+Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, Optional<CellStyle> style, NN<Data::DateTime> val)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::DateTime;
-	SDEL_STRING(cell->cellValue);
+	OPTSTR_DEL(cell->cellValue);
 	sptr = val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffffffff");
-	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
-	if (style) cell->style = style;
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	if (style.NotNull()) cell->style = style;
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val)
+Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, Optional<CellStyle> style, Double val)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::Number;
-	SDEL_STRING(cell->cellValue);
+	OPTSTR_DEL(cell->cellValue);
 	sptr = Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
-	if (style) cell->style = style;
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	if (style.NotNull()) cell->style = style;
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val)
+Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, Optional<CellStyle> style, Int32 val)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::Number;
-	SDEL_STRING(cell->cellValue);
+	OPTSTR_DEL(cell->cellValue);
 	sptr = Text::StrInt32(sbuff, val);
-	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
-	if (style) cell->style = style;
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	if (style.NotNull()) cell->style = style;
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, CellStyle *style, Int64 val)
+Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, Optional<CellStyle> style, Int64 val)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
 		return false;
 	cell->cdt = CellDataType::Number;
-	SDEL_STRING(cell->cellValue);
+	OPTSTR_DEL(cell->cellValue);
 	sptr = Text::StrInt64(sbuff, val);
-	cell->cellValue = Text::String::NewP(sbuff, sptr).Ptr();
-	if (style) cell->style = style;
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	if (style.NotNull()) cell->style = style;
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellEmpty(UOSInt row, UOSInt col, Optional<CellStyle> style)
+{
+	NN<CellData> cell;
+	if (!GetCellData(row, col, false).SetTo(cell))
+		return false;
+	cell->cdt = CellDataType::Number;
+	OPTSTR_DEL(cell->cellValue);
+	if (style.NotNull()) cell->style = style;
 	return true;
 }
 
@@ -672,7 +670,7 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 	if (width == 0 && height == 0)
 		return false;
 
-	CellData *cell;
+	NN<CellData> cell;
 	UInt32 i;
 	UInt32 j;
 	i = 0;
@@ -681,8 +679,7 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 		j = 0;
 		while (j < width)
 		{
-			cell = GetCellData(row + i, col + j, true);
-			if (cell->cdt == CellDataType::MergedLeft || cell->cdt == CellDataType::MergedUp)
+			if (GetCellData(row + i, col + j, true).SetTo(cell) && (cell->cdt == CellDataType::MergedLeft || cell->cdt == CellDataType::MergedUp))
 				return false;
 			j++;
 		}
@@ -695,22 +692,24 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 		j = 0;
 		while (j < width)
 		{
-			cell = GetCellData(row + i, col + j, true);
-			if (i == 0)
+			if (GetCellData(row + i, col + j, true).SetTo(cell))
 			{
-				if (j == 0)
+				if (i == 0)
 				{
-					cell->mergeHori = width;
-					cell->mergeVert = height;
+					if (j == 0)
+					{
+						cell->mergeHori = width;
+						cell->mergeVert = height;
+					}
+					else
+					{
+						cell->cdt = CellDataType::MergedLeft;
+					}
 				}
 				else
 				{
-					cell->cdt = CellDataType::MergedLeft;
+					cell->cdt = CellDataType::MergedUp;
 				}
-			}
-			else
-			{
-				cell->cdt = CellDataType::MergedUp;
 			}
 			j++;
 		}
@@ -724,17 +723,20 @@ Bool Text::SpreadSheet::Worksheet::SetCellMergeLeft(UOSInt row, UOSInt col)
 	if (col == 0)
 		return false;
 
-	CellData *cell;
+	NN<CellData> cell;
 	UInt32 width = 1;
 	UInt32 height = 1;
-	cell = GetCellData(row, col, true);
-	cell->cdt = CellDataType::MergedLeft;
+	if (GetCellData(row, col, true).SetTo(cell))
+		cell->cdt = CellDataType::MergedLeft;
 	col--;
 	width++;
 	while (true)
 	{
-		cell = GetCellData(row, col, true);
-		if (cell->cdt == CellDataType::MergedUp)
+		if (!GetCellData(row, col, true).SetTo(cell))
+		{
+			return false;
+		}
+		else if (cell->cdt == CellDataType::MergedUp)
 		{
 			row--;
 			height++;
@@ -765,17 +767,20 @@ Bool Text::SpreadSheet::Worksheet::SetCellMergeUp(UOSInt row, UOSInt col)
 	if (row == 0)
 		return false;
 
-	CellData *cell;
+	NN<CellData> cell;
 	UInt32 width = 1;
 	UInt32 height = 1;
-	cell = GetCellData(row, col, true);
-	cell->cdt = CellDataType::MergedUp;
+	if (GetCellData(row, col, true).SetTo(cell))
+		cell->cdt = CellDataType::MergedUp;
 	row--;
 	height++;
 	while (true)
 	{
-		cell = GetCellData(row, col, true);
-		if (cell->cdt == CellDataType::MergedUp)
+		if (!GetCellData(row, col, true).SetTo(cell))
+		{
+			return false;
+		}
+		else if (cell->cdt == CellDataType::MergedUp)
 		{
 			row--;
 			height++;
@@ -803,10 +808,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellMergeUp(UOSInt row, UOSInt col)
 
 Bool Text::SpreadSheet::Worksheet::SetRowHidden(UOSInt row, Bool hidden)
 {
-	if (row >= 65536)
+	NN<CellData> cell;
+	if (row >= 65536 || !GetCellData(row, 0, true).SetTo(cell))
 		return false;
-	CellData *cell;
-	cell = GetCellData(row, 0, true);
 	cell->hidden = hidden;
 	return true;
 }
@@ -839,7 +843,7 @@ void Text::SpreadSheet::Worksheet::RemoveCol(UOSInt col)
 {
 	UOSInt i;
 	NN<RowData> row;
-	CellData *cell;
+	NN<CellData> cell;
 
 	this->colWidthsPt.RemoveAt(col);
 	i = this->rows.GetCount();
@@ -847,8 +851,7 @@ void Text::SpreadSheet::Worksheet::RemoveCol(UOSInt col)
 	{
 		if (this->rows.GetItem(i).SetTo(row))
 		{
-			cell = row->cells->RemoveAt(col);
-			if (cell)
+			if (row->cells.RemoveAt(col).SetTo(cell))
 			{
 				FreeCellData(cell);
 			}
@@ -870,9 +873,9 @@ void Text::SpreadSheet::Worksheet::InsertCol(UOSInt col)
 	{
 		if (this->rows.GetItem(i).SetTo(row))
 		{
-			if (row->cells->GetCount() > col)
+			if (row->cells.GetCount() > col)
 			{
-				row->cells->Insert(col, 0);
+				row->cells.Insert(col, 0);
 			}
 		}
 	}
@@ -920,10 +923,10 @@ Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col, Math::Unit::Distanc
 	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_POINT, unit, this->colWidthsPt.GetItem(col));
 }
 
-const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDataRead(UOSInt row, UOSInt col) const
+Optional<const Text::SpreadSheet::Worksheet::CellData> Text::SpreadSheet::Worksheet::GetCellDataRead(UOSInt row, UOSInt col) const
 {
 	NN<RowData> rowData;
-	CellData *cell;
+	NN<CellData> cell;
 	if (row >= this->rows.GetCount() + 65536)
 		return 0;
 	if (col >= 65536)
@@ -936,8 +939,7 @@ const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetC
 	{
 		if (!this->rows.GetItem(row).SetTo(rowData))
 			return 0;
-		cell = rowData->cells->GetItem(col);
-		if (cell == 0)
+		if (!rowData->cells.GetItem(col).SetTo(cell))
 		{
 			return 0;
 		}
@@ -959,7 +961,8 @@ const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetC
 
 Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NN<Text::StringBuilderUTF8> sb)
 {
-	if (cell == 0 || cell->cellValue == 0)
+	NN<Text::String> cellValue;
+	if (cell == 0 || !cell->cellValue.SetTo(cellValue))
 	{
 		return false;
 	}
@@ -967,9 +970,9 @@ Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NN<Text::
 	{
 		Double v;
 		Int32 iv;
-		if (!cell->cellValue->ToDouble(v))
+		if (!cellValue->ToDouble(v))
 		{
-			sb->Append(cell->cellValue);
+			sb->Append(cellValue);
 		}
 		else
 		{
@@ -995,7 +998,7 @@ Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NN<Text::
 	}
 	else
 	{
-		sb->Append(cell->cellValue);
+		sb->Append(cellValue);
 	}
 	return true;
 }

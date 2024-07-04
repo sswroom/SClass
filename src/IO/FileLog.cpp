@@ -11,7 +11,7 @@
 UnsafeArray<UTF8Char> IO::FileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec)
 {
 	UnsafeArray<UTF8Char> currName;
-
+	UnsafeArray<const UTF8Char> extName;
 	if (this->groupStyle == IO::LogHandler::LogGroup::NoGroup)
 	{
 		currName = this->fileName->ConcatTo(buff);
@@ -24,7 +24,8 @@ UnsafeArray<UTF8Char> IO::FileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Dat
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = Text::StrConcat(currName, this->extName);
+		if (this->extName.SetTo(extName))
+			currName = Text::StrConcat(currName, extName);
 	}
 	else if (this->groupStyle == IO::LogHandler::LogGroup::PerMonth)
 	{
@@ -34,7 +35,8 @@ UnsafeArray<UTF8Char> IO::FileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Dat
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = Text::StrConcat(currName, this->extName);
+		if (this->extName.SetTo(extName))
+			currName = Text::StrConcat(currName, extName);
 	}
 	else if (this->groupStyle == IO::LogHandler::LogGroup::PerDay)
 	{
@@ -44,7 +46,8 @@ UnsafeArray<UTF8Char> IO::FileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Dat
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = Text::StrConcat(currName, this->extName);
+		if (this->extName.SetTo(extName))
+			currName = Text::StrConcat(currName, extName);
 	}
 	else
 	{
@@ -77,14 +80,15 @@ UnsafeArray<UTF8Char> IO::FileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Dat
 	return currName;
 }
 
-void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
+void IO::FileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat)
 {
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Char cbuff[256];
-	if (dateFormat)
+	UnsafeArray<const Char> nndateFormat;
+	if (dateFormat.SetTo(nndateFormat))
 	{
-		Text::StrConcatC(Text::StrConcat(cbuff, dateFormat), "\t", 1);
+		Text::StrConcatC(Text::StrConcat(cbuff, nndateFormat), "\t", 1);
 		this->dateFormat = Text::StrCopyNewCh(cbuff);
 	}
 	else
@@ -100,7 +104,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	if (this->groupStyle != IO::LogHandler::LogGroup::NoGroup)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]).Ptr();
+		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]);
 	}
 	else
 	{
@@ -127,13 +131,13 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	log->WriteSignature();
 }
 
-IO::FileLog::FileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::FileLog::FileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat)
 {
 	this->fileName = fileName->Clone();
 	this->Init(style, groupStyle, dateFormat);
 }
 
-IO::FileLog::FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::FileLog::FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat)
 {
 	this->fileName = Text::String::New(fileName);
 	this->Init(style, groupStyle, dateFormat);
@@ -143,9 +147,10 @@ IO::FileLog::~FileLog()
 {
 	Text::StrDelNewCh(this->dateFormat);
 	this->fileName->Release();
-	if (this->extName)
+	UnsafeArray<const UTF8Char> extName;
+	if (this->extName.SetTo(extName))
 	{
-		Text::StrDelNew(this->extName);
+		Text::StrDelNew(extName);
 		this->extName = 0;
 	}
 

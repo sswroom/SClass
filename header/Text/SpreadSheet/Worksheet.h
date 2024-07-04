@@ -50,18 +50,18 @@ namespace Text
 			typedef struct
 			{
 				CellDataType cdt;
-				Text::String *cellValue;
+				Optional<Text::String> cellValue;
 				Optional<CellStyle> style;
 				UInt32 mergeHori;
 				UInt32 mergeVert;
 				Bool hidden;
-				Text::String *cellURL;
+				Optional<Text::String> cellURL;
 			} CellData;
 
 			typedef struct
 			{
 				Optional<CellStyle> style;
-				Data::ArrayList<CellData*> *cells;
+				Data::ArrayList<Optional<CellData>> cells;
 				Double height;
 			} RowData;
 
@@ -87,18 +87,18 @@ namespace Text
 		public:
 			Optional<RowData> CreateRow(UOSInt row);
 		private:
-			CellData *GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
+			Optional<CellData> GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
 			void FreeRowData(NN<RowData> data);
-			void FreeCellData(CellData *data);
-			NN<RowData> CloneRow(NN<RowData> row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
-			CellData *CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			void FreeCellData(NN<CellData> data);
+			NN<RowData> CloneRow(NN<RowData> row, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
+			NN<CellData> CloneCell(NN<CellData> cell, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
 			static void FreeDrawing(NN<WorksheetDrawing> drawing);
 		public:
 			Worksheet(NotNullPtr<Text::String> name);
 			Worksheet(Text::CStringNN name);
 			~Worksheet();
 
-			NotNullPtr<Worksheet> Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			NotNullPtr<Worksheet> Clone(NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
 
 			void SetOptions(UInt16 options);
 			UInt16 GetOptions();
@@ -134,18 +134,20 @@ namespace Text
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellInt64(UOSInt row, UOSInt col, Int64 val);
+			Bool SetCellEmpty(UOSInt row, UOSInt col);
 			Bool SetCellStyle(UOSInt row, UOSInt col, Optional<CellStyle> style);
 			Bool SetCellStyleHAlign(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, HAlignment hAlign);
 			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, UInt32 color, BorderType borderType);
-			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
+			Bool SetCellURL(UOSInt row, UOSInt col, Optional<Text::String> url);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
 			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val);
 			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, Text::CStringNN val);
-			Bool SetCellTS(UOSInt row, UOSInt col, CellStyle *style, Data::Timestamp val);
-			Bool SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Data::DateTime> val);
-			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);
-			Bool SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val);
-			Bool SetCellInt64(UOSInt row, UOSInt col, CellStyle *style, Int64 val);
+			Bool SetCellTS(UOSInt row, UOSInt col, Optional<CellStyle> style, Data::Timestamp val);
+			Bool SetCellDateTime(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Data::DateTime> val);
+			Bool SetCellDouble(UOSInt row, UOSInt col, Optional<CellStyle> style, Double val);
+			Bool SetCellInt32(UOSInt row, UOSInt col, Optional<CellStyle> style, Int32 val);
+			Bool SetCellInt64(UOSInt row, UOSInt col, Optional<CellStyle> style, Int64 val);
+			Bool SetCellEmpty(UOSInt row, UOSInt col, Optional<CellStyle> style);
 			Bool MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width);
 			Bool SetCellMergeLeft(UOSInt row, UOSInt col);
 			Bool SetCellMergeUp(UOSInt row, UOSInt col);
@@ -163,7 +165,7 @@ namespace Text
 			Double GetColWidthPt(UOSInt col);
 			Double GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit);
 
-			const CellData *GetCellDataRead(UOSInt row, UOSInt col) const;
+			Optional<const CellData> GetCellDataRead(UOSInt row, UOSInt col) const;
 			Bool GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDrawingCount();

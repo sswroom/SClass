@@ -759,6 +759,48 @@ namespace Text
 			return changeCnt;
 		}
 
+		UOSInt ReplaceStr(StringBase<const UTF8Char> fromStr, StringBase<const UTF8Char> toStr)
+		{
+			return ReplaceStr(fromStr.v, fromStr.leng, toStr.v, toStr.leng);
+		}
+
+		UOSInt ReplaceStrICase(UnsafeArray<const UTF8Char> fromStr, UOSInt fromLen, UnsafeArray<const UTF8Char> toStr, UOSInt toLen)
+		{
+			UOSInt changeCnt;
+			if (fromLen >= toLen)
+			{
+				changeCnt = Text::StrReplaceICase(this->v, fromStr, toStr);
+				this->leng += (UOSInt)((OSInt)changeCnt * (OSInt)(toLen - fromLen));
+			}
+			else
+			{
+				UOSInt i;
+				UOSInt j;
+				changeCnt = 0;
+				i = 0;
+				while (true)
+				{
+					j = Text::StrIndexOfICase(this->v + i, fromStr);
+					if (j == INVALID_INDEX)
+						break;
+					i += j + fromLen;
+					changeCnt++;
+				}
+				if (changeCnt > 0)
+				{
+					this->AllocLeng(this->leng + (toLen - fromLen) * changeCnt);
+					changeCnt = Text::StrReplaceICase(this->v, fromStr, toStr);
+					this->leng += changeCnt * (toLen - fromLen);
+				}
+			}
+			return changeCnt;
+		}
+
+		UOSInt ReplaceStrICase(StringBase<const UTF8Char> fromStr, StringBase<const UTF8Char> toStr)
+		{
+			return ReplaceStrICase(fromStr.v, fromStr.leng, toStr.v, toStr.leng);
+		}
+
 		void ClearStr()
 		{
 			this->leng = 0;

@@ -71,7 +71,7 @@ NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() const
 	return style;
 }
 
-void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
+void Text::SpreadSheet::CellStyle::CopyFrom(NN<CellStyle> style)
 {
 	this->index = style->index;
 	SDEL_TEXT(this->id);

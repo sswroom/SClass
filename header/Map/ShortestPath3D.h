@@ -2,6 +2,7 @@
 #define _SM_MAP_SHORTESTPATH3D
 #include "Map/MapDrawLayer.h"
 #include "Math/Geometry/LineString.h"
+#include "Sync/Mutex.h"
 
 namespace Map
 {
@@ -79,6 +80,7 @@ namespace Map
 		Double searchDist;
 		Data::ArrayListNN<LineInfo> lines;
 		Data::ArrayListNN<AreaInfo> areas;
+		Sync::Mutex mut;
 
 		static void FreeLineInfo(NN<LineInfo> lineInfo);
 		static void FreeAreaInfo(NN<AreaInfo> areaInfo);

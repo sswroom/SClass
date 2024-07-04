@@ -18,14 +18,14 @@ namespace IO
 		NN<IO::FileStream> fileStm;
 		UnsafeArray<const Char> dateFormat;
 		NN<Text::String> fileName;
-		const UTF8Char *extName;
+		UnsafeArrayOpt<const UTF8Char> extName;
 		Bool closed;
 
 		UnsafeArray<UTF8Char> GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec);
-		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
+		void Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
 	public:
-		FileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
-		FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		FileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
+		FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
 		virtual ~FileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

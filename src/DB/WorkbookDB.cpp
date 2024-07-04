@@ -51,109 +51,125 @@ public:
 
 	virtual Int32 GetInt32(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return cell->cellValue->ToInt32();
+		return cellValue->ToInt32();
 	}
 
 	virtual Int64 GetInt64(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return cell->cellValue->ToInt64();
+		return cellValue->ToInt64();
 	}
 
 	virtual UnsafeArrayOpt<WChar> GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return Text::StrUTF8_WChar(buff, cell->cellValue->v, 0);
+		return Text::StrUTF8_WChar(buff, cellValue->v, 0);
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		return this->sheet->GetCellString(cell, sb);
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
+		{
+			return false;
+		}
+		sb->Append(cellValue);
+		return true;
 	}
 
 	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return cell->cellValue->Clone().Ptr();
+		return cellValue->Clone();
 	}
 
 	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return cell->cellValue->ConcatToS(buff, buffSize);
+		return cellValue->ConcatToS(buff, buffSize);
 	}
 
 	virtual Data::Timestamp GetTimestamp(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return Data::Timestamp::FromStr(cell->cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
+		return Data::Timestamp::FromStr(cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return cell->cellValue->ToDouble();
+		return cellValue->ToDouble();
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return false;
+			return 0;
 		}
-		return cell->cellValue->v[0] == 'T' || cell->cellValue->v[0] == 't' || cell->cellValue->ToInt32() != 0;
+		return cellValue->v[0] == 'T' || cellValue->v[0] == 't' || cellValue->ToInt32() != 0;
 	}
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		return cell->cellValue->leng;
+		return cellValue->leng;
 	}
 
 	virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return 0;
 		}
-		MemCopyNO(buff.Ptr(), cell->cellValue->v.Ptr(), cell->cellValue->leng);
-		return cell->cellValue->leng;
+		MemCopyNO(buff.Ptr(), cellValue->v.Ptr(), cellValue->leng);
+		return cellValue->leng;
 	}
 
 	virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex)
@@ -168,20 +184,21 @@ public:
 
 	virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		NN<Text::String> s;
-		if (cell == 0 || !s.Set(cell->cellValue))
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return false;
+			return 0;
 		}
-		item->SetStr(s);
+		item->SetStr(cellValue);
 		return true;
 	}
 
 	virtual Bool IsNull(UOSInt colIndex)
 	{
-		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		if (cell == 0 || cell->cellValue == 0)
+		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
+		NN<Text::String> cellValue;
+		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
 			return true;
 		}
@@ -287,18 +304,27 @@ Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Tex
 	NN<DB::ColDef> col;
 	NEW_CLASS(tabDef, DB::TableDef(schemaName, sheet->GetName()->ToCString()));
 	NN<Text::SpreadSheet::Worksheet::RowData> row;
-	Text::SpreadSheet::Worksheet::CellData *cell;
+	NN<Text::SpreadSheet::Worksheet::CellData> cell;
 	if (sheet->GetItem(0).SetTo(row))
 	{
 		UOSInt i = 0;
-		UOSInt j = row->cells->GetCount();
+		UOSInt j = row->cells.GetCount();
 		while (i < j)
 		{
-			cell = row->cells->GetItem(i);
-			NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
-			col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
-			col->SetColSize(256);
-			tabDef->AddCol(col);
+			if (row->cells.GetItem(i).SetTo(cell))
+			{
+				NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
+				col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
+				col->SetColSize(256);
+				tabDef->AddCol(col);
+			}
+			else
+			{
+				NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
+				col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
+				col->SetColSize(256);
+				tabDef->AddCol(col);
+			}
 			i++;
 		}
 	}

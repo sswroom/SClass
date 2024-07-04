@@ -425,7 +425,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			Bool rowSkipped = false;
 			UOSInt lastDispCol;
 			NN<Text::SpreadSheet::Worksheet::RowData> row;
-			Text::SpreadSheet::Worksheet::CellData *cell;
+			NN<Text::SpreadSheet::Worksheet::CellData> cell;
 			writer.WriteLine(CSTR("  <Table>"));
 
 			Double lastColWidth = -1;
@@ -517,8 +517,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					}
 					rowSkipped = false;
 
-					cell = row->cells->GetItem(0);
-					if (cell)
+					if (row->cells.GetItem(0).SetTo(cell))
 					{
 						if (cell->hidden)
 						{
@@ -538,7 +537,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 						}
 						sb.AppendC(UTF8STRC("\""));
 					}
-					if (row->cells->GetCount() == 0)
+					if (row->cells.GetCount() == 0)
 					{
 						sb.AppendC(UTF8STRC("/>"));
 						writer.WriteLine(sb.ToCString());
@@ -550,11 +549,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 
 						lastDispCol = INVALID_INDEX;
 						m = 0;
-						n = row->cells->GetCount();
+						n = row->cells.GetCount();
 						while (m < n)
 						{
-							cell = row->cells->GetItem(m);
-							if (cell == 0)
+							if (!row->cells.GetItem(m).SetTo(cell))
 							{
 							}
 							else if (cell->cdt == Text::SpreadSheet::CellDataType::MergedLeft)
@@ -598,28 +596,29 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 										s->Release();
 									}
 								}
-								if (cell->cellURL)
+								NN<Text::String> s;
+								if (cell->cellURL.SetTo(s))
 								{
 									 sb.AppendC(UTF8STRC(" ss:HRef="));
-									 s = Text::XML::ToNewAttrText(cell->cellURL->v);
+									 s = Text::XML::ToNewAttrText(s->v);
 									 sb.Append(s);
 									 s->Release();
 								}
 								sb.AppendC(UTF8STRC(">"));
-								if (cell->cellValue)
+								if (cell->cellValue.SetTo(s))
 								{
 									switch (cell->cdt)
 									{
 									case Text::SpreadSheet::CellDataType::Number:
 										sb.AppendC(UTF8STRC("<Data ss:Type=\"Number\">"));
-										s = Text::XML::ToNewXMLText(cell->cellValue->v);
+										s = Text::XML::ToNewXMLText(s->v);
 										sb.Append(s);
 										s->Release();
 										sb.AppendC(UTF8STRC("</Data>"));
 										break;
 									case Text::SpreadSheet::CellDataType::DateTime:
 										sb.AppendC(UTF8STRC("<Data ss:Type=\"DateTime\">"));
-										sptr = Data::Timestamp::FromStr(cell->cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+										sptr = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
 										sb.AppendP(sbuff, sptr);
 										sb.AppendC(UTF8STRC("</Data>"));
 										break;
@@ -628,7 +627,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 									case Text::SpreadSheet::CellDataType::String:
 									default:
 										sb.AppendC(UTF8STRC("<Data ss:Type=\"String\">"));
-										s = Text::XML::ToNewXMLText(cell->cellValue->v);
+										s = Text::XML::ToNewXMLText(s->v);
 										sb.Append(s);
 										s->Release();
 										sb.AppendC(UTF8STRC("</Data>"));

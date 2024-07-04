@@ -9,9 +9,10 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec, Int32 *lastVal)
+UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec, OptOut<Int32> lastVal)
 {
 	UnsafeArray<UTF8Char> currName;
+	NN<Text::String> extName;
 	switch (this->groupStyle)
 	{
 	case IO::LogHandler::LogGroup::PerYear:
@@ -21,7 +22,8 @@ UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<D
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = this->extName->ConcatTo(currName);
+		if (this->extName.SetTo(extName))
+			currName = extName->ConcatTo(currName);
 		break;
 	case IO::LogHandler::LogGroup::PerMonth:
 		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyyMM");
@@ -30,7 +32,8 @@ UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<D
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = this->extName->ConcatTo(currName);
+		if (this->extName.SetTo(extName))
+			currName = extName->ConcatTo(currName);
 		break;
 	case IO::LogHandler::LogGroup::PerDay:
 		currName = Data::DateTimeUtil::ToString(this->fileName->ConcatTo(buff), time, 0, nanosec, (const UTF8Char*)"yyyyMMdd");
@@ -39,7 +42,8 @@ UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<D
 			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = this->extName->ConcatTo(currName);
+		if (this->extName.SetTo(extName))
+			currName = extName->ConcatTo(currName);
 		break;
 	case IO::LogHandler::LogGroup::NoGroup:
 	default:
@@ -50,19 +54,19 @@ UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<D
 	switch (this->logStyle)
 	{
 	case IO::LogHandler::LogType::PerHour:
-		if (lastVal) *lastVal = time->day * 24 + time->hour;
+		lastVal.Set(time->day * 24 + time->hour);
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMMddHH"), UTF8STRC(".log"));
 		break;
 	case IO::LogHandler::LogType::PerDay:
-		if (lastVal) *lastVal = time->day;
+		lastVal.Set(time->day);
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMMdd"), UTF8STRC(".log"));
 		break;
 	case IO::LogHandler::LogType::PerMonth:
-		if (lastVal) *lastVal = time->month;
+		lastVal.Set(time->month);
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyyMM"), UTF8STRC(".log"));
 		break;
 	case IO::LogHandler::LogType::PerYear:
-		if (lastVal) *lastVal = time->year;
+		lastVal.Set(time->year);
 		currName = Text::StrConcatC(Data::DateTimeUtil::ToString(currName, time, 0, nanosec, (const UTF8Char*)"yyyy"), UTF8STRC(".log"));
 		break;
 	case IO::LogHandler::LogType::SingleFile:
@@ -72,7 +76,7 @@ UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<D
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt)
+void IO::MTFileLog::WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<Data::Timestamp> dateArr, UOSInt arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
@@ -93,28 +97,28 @@ void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr,
 			if (tval.day != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, tval, time.inst.nanosec, &lastVal);
+				sptr = GetNewName(buff, tval, time.inst.nanosec, lastVal);
 			}
 			break;
 		case LogHandler::LogType::PerMonth:
 			if (tval.month != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, tval, time.inst.nanosec, &lastVal);
+				sptr = GetNewName(buff, tval, time.inst.nanosec, lastVal);
 			}
 			break;
 		case LogHandler::LogType::PerYear:
 			if (tval.year != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, tval, time.inst.nanosec, &lastVal);
+				sptr = GetNewName(buff, tval, time.inst.nanosec, lastVal);
 			}
 			break;
 		case LogHandler::LogType::PerHour:
 			if (lastVal != (tval.day * 24 + tval.hour))
 			{
 				newFile = true;
-				sptr = GetNewName(buff, tval, time.inst.nanosec, &lastVal);
+				sptr = GetNewName(buff, tval, time.inst.nanosec, lastVal);
 			}
 			break;
 		case LogHandler::LogType::SingleFile:
@@ -134,13 +138,13 @@ void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr,
 			NEW_CLASSNN(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
 
-			sptr = Text::StrConcatC(time.ToString(buff, (const Char*)this->dateFormat), UTF8STRC("Program running"));
+			sptr = Text::StrConcatC(time.ToString(buff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat)), UTF8STRC("Program running"));
 			log->WriteLine(CSTRP(buff, sptr));
 			newFile = false;
 			this->hasNewFile = true;
 		}
 
-		sptr = time.ToString(buff, (const Char*)this->dateFormat);
+		sptr = time.ToString(buff, UnsafeArray<const Char>::ConvertFrom(this->dateFormat));
 		sb.ClearStr();
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(msgArr[i]);
@@ -157,61 +161,59 @@ UInt32 __stdcall IO::MTFileLog::FileThread(AnyType userObj)
 	NN<IO::MTFileLog> me = userObj.GetNN<IO::MTFileLog>();
 	Sync::ThreadUtil::SetName(CSTR("MTFileLog"));
 	UOSInt arrCnt;
-	NN<Text::String> *msgArr = 0;
-	Data::Timestamp *dateArr = 0;
+	UnsafeArray<NN<Text::String>> msgArr;
+	UnsafeArray<Data::Timestamp> dateArr;
 	while (!me->closed)
 	{
 		Sync::MutexUsage mutUsage(me->mut);
 		if ((arrCnt = me->msgList.GetCount()) > 0)
 		{
-			msgArr = MemAlloc(NN<Text::String>, arrCnt);
-			dateArr = MemAlloc(Data::Timestamp, arrCnt);
+			msgArr = MemAllocArr(NN<Text::String>, arrCnt);
+			dateArr = MemAllocArr(Data::Timestamp, arrCnt);
 			me->msgList.GetRange(msgArr, 0, arrCnt);
 			me->dateList.GetRange(dateArr, 0, arrCnt);
 			me->msgList.RemoveRange(0, arrCnt);
 			me->dateList.RemoveRange(0, arrCnt);
+			mutUsage.EndUse();
+			me->WriteArr(msgArr, dateArr, arrCnt);
+			MemFreeArr(msgArr);
+			MemFreeArr(dateArr);
 		}
 		mutUsage.EndUse();
-		
-		if (arrCnt > 0)
-		{
-			me->WriteArr(msgArr, dateArr, arrCnt);
-			MemFree(msgArr);
-			MemFree(dateArr);
-		}
 		me->evt.Wait(1000);
 	}
 
 	if ((arrCnt = me->msgList.GetCount()) > 0)
 	{
-		msgArr = MemAlloc(NN<Text::String>, arrCnt);
-		dateArr = MemAlloc(Data::Timestamp, arrCnt);
+		msgArr = MemAllocArr(NN<Text::String>, arrCnt);
+		dateArr = MemAllocArr(Data::Timestamp, arrCnt);
 		me->msgList.GetRange(msgArr, 0, arrCnt);
 		me->dateList.GetRange(dateArr, 0, arrCnt);
 		me->msgList.RemoveRange(0, arrCnt);
 		me->dateList.RemoveRange(0, arrCnt);
 		me->WriteArr(msgArr, dateArr, arrCnt);
-		MemFree(msgArr);
-		MemFree(dateArr);
+		MemFreeArr(msgArr);
+		MemFreeArr(dateArr);
 	}
 
 	me->running = false;
 	return 0;
 }
 
-void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
+void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat)
 {
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
-	if (dateFormat == 0)
+	UnsafeArray<const Char> nndateFormat;
+	if (!dateFormat.SetTo(nndateFormat))
 	{
-		this->dateFormat = Text::StrCopyNewC(UTF8STRC("yyyy-MM-dd HH:mm:ss\t")).Ptr();
+		this->dateFormat = Text::StrCopyNewC(UTF8STRC("yyyy-MM-dd HH:mm:ss\t"));
 	}
 	else
 	{
-		sptr = Text::StrConcatC(Text::StrConcat(buff, (const UTF8Char*)dateFormat), UTF8STRC("\t"));
-		this->dateFormat = Text::StrCopyNewC(buff, (UOSInt)(sptr - buff)).Ptr();
+		sptr = Text::StrConcatC(Text::StrConcat(buff, UnsafeArray<const UTF8Char>::ConvertFrom(nndateFormat)), UTF8STRC("\t"));
+		this->dateFormat = Text::StrCopyNewC(buff, (UOSInt)(sptr - buff));
 	}
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
@@ -222,7 +224,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	if (this->groupStyle != IO::LogHandler::LogGroup::NoGroup)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->extName = Text::String::New(this->fileName->ToCString().Substring(i + 1)).Ptr();
+		this->extName = Text::String::New(this->fileName->ToCString().Substring(i + 1));
 	}
 	else
 	{
@@ -242,7 +244,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Data::DateTimeUtil::TimeValue tval;
 	Data::DateTimeUtil::Instant2TimeValue(ts.inst.sec, ts.inst.nanosec, tval, ts.tzQhr);
-	sptr = GetNewName(buff, tval, ts.inst.nanosec, &this->lastVal);
+	sptr = GetNewName(buff, tval, ts.inst.nanosec, this->lastVal);
 
 	NEW_CLASSNN(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASSNN(cstm, IO::BufferedOutputStream(fileStm, 4096));
@@ -256,13 +258,13 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	Sync::ThreadUtil::Create(FileThread, this, 0x20000);
 }
 
-IO::MTFileLog::MTFileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::MTFileLog::MTFileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat)
 {
 	this->fileName = fileName->Clone();
 	this->Init(style, groupStyle, dateFormat);
 }
 
-IO::MTFileLog::MTFileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::MTFileLog::MTFileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat)
 {
 	this->fileName = Text::String::New(fileName);
 	this->Init(style, groupStyle, dateFormat);
@@ -285,7 +287,7 @@ IO::MTFileLog::~MTFileLog()
 	mutUsage.EndUse();
 
 	this->fileName->Release();
-	SDEL_STRING(this->extName);
+	OPTSTR_DEL(this->extName);
 
 	log.Delete();
 	cstm.Delete();

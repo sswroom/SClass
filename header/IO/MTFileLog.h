@@ -27,20 +27,20 @@ namespace IO
 		NN<Text::UTF8Writer> log;
 		NN<IO::BufferedOutputStream> cstm;
 		NN<IO::FileStream> fileStm;
-		const UTF8Char *dateFormat;
+		UnsafeArray<const UTF8Char> dateFormat;
 		NN<Text::String> fileName;
-		Text::String *extName;
+		Optional<Text::String> extName;
 		Bool closed;
 		Bool running;
 		Bool hasNewFile;
 
-		UnsafeArray<UTF8Char> GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
-		void WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
+		UnsafeArray<UTF8Char> GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, OptOut<Int32> lastVal);
+		void WriteArr(UnsafeArray<NN<Text::String>> msgArr, UnsafeArray<Data::Timestamp> dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(AnyType userObj);
-		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
+		void Init(LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
 	public:
-		MTFileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
-		MTFileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		MTFileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
+		MTFileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, UnsafeArrayOpt<const Char> dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

@@ -2,6 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Map/ShortestPath3D.h"
 #include "Math/CoordinateSystemConverter.h"
+#include "Sync/MutexUsage.h"
 
 #define MAX_DIST 1.0e+30
 
@@ -546,7 +547,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 		printf("GetShortestPath internal error\r\n");
 		return 0;
 	}
-
+	Sync::MutexUsage mutUsage(this->mut);
 	Data::ArrayListNN<NodeInfo> calcNodes;
 	NN<AreaInfo> areaInfo;
 	NN<NodeInfo> nodeInfo;

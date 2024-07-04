@@ -86,7 +86,7 @@ namespace Text
 			~CellStyle();
 
 			NN<CellStyle> Clone() const;
-			void CopyFrom(CellStyle *style);
+			void CopyFrom(NN<CellStyle> style);
 			Bool Equals(NN<const CellStyle> style) const;
 
 			CellStyle *SetIndex(UOSInt index);
