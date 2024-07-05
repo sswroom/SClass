@@ -908,7 +908,7 @@ UOSInt Net::ASN1Util::PDUCountItem(UnsafeArray<const UInt8> pdu, UnsafeArray<con
 	UOSInt size;
 	UOSInt cnt;
 	UOSInt ofst;
-	if (UnsafeArrayOpt<const UTF8Char>::ConvertFrom(cpath).SetTo(path) || path[0] == 0)
+	if (!UnsafeArrayOpt<const UTF8Char>::ConvertFrom(cpath).SetTo(path) || path[0] == 0)
 	{
 		cnt = 0;
 		while (pdu < pduEnd)
