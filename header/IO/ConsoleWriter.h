@@ -46,7 +46,7 @@ namespace IO
 
 		UOSInt CalDisplaySize(const WChar *str);
 
-		WChar *ReadLine(WChar *sbuff, UOSInt nChar);
+		UnsafeArrayOpt<WChar> ReadLine(UnsafeArray<WChar> sbuff, UOSInt nChar);
 
 		void EnableCPFix(Bool isEnable);
 		void SetAutoFlush(Bool autoFlush);

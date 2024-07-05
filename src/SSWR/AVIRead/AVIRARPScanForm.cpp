@@ -96,7 +96,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 
-	const Net::MACInfo::MACEntry *macEntry;
+	NN<const Net::MACInfo::MACEntry> macEntry;
 	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Sync::MutexUsage mutUsage(this->arpMut);
 	this->lvARP->ClearItems();
@@ -110,10 +110,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 		sptr = Text::StrHexBytes(sbuff, ipInfo->hwAddr, 6, ':');
 		this->lvARP->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		macEntry = Net::MACInfo::GetMACInfoBuff(ipInfo->hwAddr);
-		if (macEntry)
-		{
-			this->lvARP->SetSubItem(k, 2, {macEntry->name, macEntry->nameLen});
-		}
+		this->lvARP->SetSubItem(k, 2, {macEntry->name, macEntry->nameLen});
 		i++;
 	}
 	mutUsage.EndUse();

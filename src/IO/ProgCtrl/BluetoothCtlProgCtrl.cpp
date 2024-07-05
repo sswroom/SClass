@@ -115,8 +115,8 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 						sarr[0].v[30] = 0;
 						if (me->DeviceGetByStr(Text::CStringNN(&sarr[0].v[13], 30 - 13)).SetTo(dev))
 						{
-							SDEL_STRING(dev->name);
-							dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31).Ptr();
+							OPTSTR_DEL(dev->name);
+							dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31);
 							dev->inRange = true;
 							dev->lastSeenTime = Data::DateTimeUtil::GetCurrTimeMillis();
 							if (me->recHdlr) me->recHdlr(dev, UT_NEW_DEVICE, me->recHdlrObj);
@@ -156,15 +156,15 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 							//[CHG] Device 19:08:19:32:09:3A Name: Ble T70939
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Name: ")))
 							{
-								SDEL_STRING(dev->name);
-								dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37).Ptr();
+								OPTSTR_DEL(dev->name);
+								dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37);
 								if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
 							}
 							//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
 							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Alias: ")))
 							{
-								SDEL_STRING(dev->name);
-								dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38).Ptr();
+								OPTSTR_DEL(dev->name);
+								dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38);
 								if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
 							}
 							//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
@@ -383,7 +383,7 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord3> dev)
 {
-	SDEL_STRING(dev->name);
+	OPTSTR_DEL(dev->name);
 	MemFreeNN(dev);
 }
 

@@ -4,7 +4,7 @@
 
 void IO::BTScanLog::FreeDev(NN<DevEntry> dev)
 {
-	SDEL_STRING(dev->name);
+	OPTSTR_DEL(dev->name);
 	dev->logs.Delete();
 	MemFreeNN(dev);
 }
@@ -23,7 +23,7 @@ IO::ParserType IO::BTScanLog::GetParserType() const
 	return IO::ParserType::BTScanLog;
 }
 
-NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
+NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
 {
 	NN<LogEntry> log = MemAllocNN(LogEntry);
 	log->macInt = macInt;
@@ -49,7 +49,7 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macI
 		dev->radioType = radioType;
 		dev->addrType = addrType;
 		dev->measurePower = measurePower;
-		dev->name = SCOPY_STRING(name);
+		dev->name = Text::String::CopyOrNull(name);
 		dev->lastAdvType = advType;
 		NEW_CLASSNN(dev->logs, Data::ArrayListNN<LogEntry>());
 		if (addrType == AT_RANDOM)
@@ -61,9 +61,10 @@ NN<IO::BTScanLog::LogEntry> IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macI
 			this->pubDevs.Put(macInt, dev);
 		}
 	}
-	if (name && dev->name == 0)
+	NN<Text::String> nnname;
+	if (dev->name.IsNull() && name.SetTo(nnname))
 	{
-		dev->name = name->Clone().Ptr();
+		dev->name = nnname->Clone();
 	}
 	if (company && dev->company == 0)
 	{
@@ -88,7 +89,7 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff)
 	if (ParseBTRAWPacket(rec, timeTicks, buff))
 	{
 		this->AddScanRec(rec);
-		SDEL_STRING(rec.name);
+		OPTSTR_DEL(rec.name);
 		return;
 	}
 }

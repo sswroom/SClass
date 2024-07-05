@@ -378,7 +378,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 			sb->AppendC(UTF8STRC("<tr><td>"));
 			sb->AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
+			NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
 			sb->AppendC(macEntry->name, macEntry->nameLen);
 			sb->AppendC(UTF8STRC("</td><td>"));
 			sb->Append(entry->ssid);
@@ -467,13 +467,13 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF
 			}
 			else
 			{
-				const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
+				NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
 				sb->AppendC(macEntry->name, macEntry->nameLen);
 			}
 			sb->AppendC(UTF8STRC("</td><td>"));
-			if (entry->name)
+			if (entry->name.SetTo(s))
 			{
-				sb->Append(entry->name);
+				sb->Append(s);
 			}
 			sb->AppendC(UTF8STRC("</td><td>"));
 			sb->AppendI32(entry->rssi);
@@ -551,23 +551,25 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::W
 
 OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2)
 {
+	NN<Text::String> name1;
+	NN<Text::String> name2;
 	if (obj1->rssi == obj2->rssi)
 	{
 		if (obj1->name == obj2->name)
 		{
 			return 0;
 		}
-		else if (obj1->name == 0)
+		else if (!obj1->name.SetTo(name1))
 		{
 			return -1;
 		}
-		else if (obj2->name == 0)
+		else if (!obj2->name.SetTo(name2))
 		{
 			return 1;
 		}
 		else
 		{
-			return Text::StrCompare(obj1->name->v, obj2->name->v);
+			return Text::StrCompare(name1->v, name2->v);
 		}
 	}
 	else if (obj1->rssi == 0)

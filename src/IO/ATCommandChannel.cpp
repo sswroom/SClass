@@ -53,9 +53,10 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(AnyType userObj)
 						cmdResult = Text::String::New(i - cmdStart);
 						MemCopyNO(cmdResult->v.Ptr(), &readBuff[cmdStart], i - cmdStart);
 						cmdResult->v[i - cmdStart] = 0;
-						if (me->log)
+						NN<IO::ILogger> log;
+						if (me->log.SetTo(log))
 						{
-							me->log->LogMessage({cmdResult->v, (i - cmdStart)}, IO::LogHandler::LogLevel::Raw);
+							log->LogMessage({cmdResult->v, (i - cmdStart)}, IO::LogHandler::LogLevel::Raw);
 						}
 
 						if (me->cmdHdlr && me->cmdHdlr(me->cmdHdlrObj, cmdResult->v, i - cmdStart))

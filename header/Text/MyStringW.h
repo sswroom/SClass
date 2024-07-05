@@ -96,8 +96,8 @@ namespace Text
 	FORCEINLINE UInt16 StrHex2UInt16WC(UnsafeArray<const UTF32Char> str) { return (UInt16)StrHex2Int16WC(str); }
 	UInt8 StrHex2UInt8WC(UnsafeArray<const UTF16Char> str);
 	UInt8 StrHex2UInt8WC(UnsafeArray<const UTF32Char> str);
-	UOSInt StrHex2BytesW(UnsafeArray<const UTF16Char> str, UInt8 *buff);
-	UOSInt StrHex2BytesW(UnsafeArray<const UTF32Char> str, UInt8 *buff);
+	UOSInt StrHex2BytesW(UnsafeArray<const UTF16Char> str, UnsafeArray<UInt8> buff);
+	UOSInt StrHex2BytesW(UnsafeArray<const UTF32Char> str, UnsafeArray<UInt8> buff);
 #ifdef HAS_INT64
 	Int64 StrOct2Int64W(UnsafeArray<const UTF16Char> str);
 	Int64 StrOct2Int64W(UnsafeArray<const UTF32Char> str);
@@ -140,48 +140,48 @@ namespace Text
 	UOSInt StrSplitLine(UnsafeArray<UnsafeArray<UTF32Char>> strs, UOSInt maxStrs, UnsafeArray<UTF32Char> str); //Optimized
 	UOSInt StrSplitWS(UnsafeArray<UnsafeArray<UTF16Char>> strs, UOSInt maxStrs, UnsafeArray<UTF16Char> str); //Optimized
 	UOSInt StrSplitWS(UnsafeArray<UnsafeArray<UTF32Char>> strs, UOSInt maxStrs, UnsafeArray<UTF32Char> str); //Optimized
-	Bool StrToUInt8W(UnsafeArray<const UTF16Char> intStr, UInt8 *outVal);
-	Bool StrToUInt8W(UnsafeArray<const UTF32Char> intStr, UInt8 *outVal);
-	FORCEINLINE Bool StrToUInt8W(UnsafeArray<WChar> intStr, UInt8 *outVal) { return StrToUInt8W(UnsafeArray<const WChar>(intStr), outVal); }
+	Bool StrToUInt8W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt8> outVal);
+	Bool StrToUInt8W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt8> outVal);
+	FORCEINLINE Bool StrToUInt8W(UnsafeArray<WChar> intStr, OutParam<UInt8> outVal) { return StrToUInt8W(UnsafeArray<const WChar>(intStr), outVal); }
 	UInt8 StrToUInt8W(UnsafeArray<const UTF16Char> intStr);
 	UInt8 StrToUInt8W(UnsafeArray<const UTF32Char> intStr);
-	Bool StrToUInt16W(UnsafeArray<const UTF16Char> intStr, UInt16 *outVal);
-	Bool StrToUInt16W(UnsafeArray<const UTF32Char> intStr, UInt16 *outVal);
-	Bool StrToInt16W(UnsafeArray<const UTF16Char> intStr, Int16 *outVal);
-	Bool StrToInt16W(UnsafeArray<const UTF32Char> intStr, Int16 *outVal);
+	Bool StrToUInt16W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt16> outVal);
+	Bool StrToUInt16W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt16> outVal);
+	Bool StrToInt16W(UnsafeArray<const UTF16Char> intStr, OutParam<Int16> outVal);
+	Bool StrToInt16W(UnsafeArray<const UTF32Char> intStr, OutParam<Int16> outVal);
 	Int16 StrToInt16W(UnsafeArray<const UTF16Char> str);
 	Int16 StrToInt16W(UnsafeArray<const UTF32Char> str);
-	Bool StrToUInt32W(UnsafeArray<const UTF16Char> intStr, UInt32 *outVal);
-	Bool StrToUInt32W(UnsafeArray<const UTF32Char> intStr, UInt32 *outVal);
+	Bool StrToUInt32W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt32> outVal);
+	Bool StrToUInt32W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt32> outVal);
 	UInt32 StrToUInt32W(UnsafeArray<const UTF16Char> intStr);
 	UInt32 StrToUInt32W(UnsafeArray<const UTF32Char> intStr);
-	Bool StrToInt32W(UnsafeArray<const UTF16Char> intStr, Int32 *outVal);
-	Bool StrToInt32W(UnsafeArray<const UTF32Char> intStr, Int32 *outVal);
+	Bool StrToInt32W(UnsafeArray<const UTF16Char> intStr, OutParam<Int32> outVal);
+	Bool StrToInt32W(UnsafeArray<const UTF32Char> intStr, OutParam<Int32> outVal);
 	Int32 StrToInt32W(UnsafeArray<const UTF16Char> str);
 	Int32 StrToInt32W(UnsafeArray<const UTF32Char> str);
 	FORCEINLINE Int32 StrToInt32W(UnsafeArray<WChar> intStr) { return StrToInt32W(UnsafeArray<const WChar>(intStr)); }
 
 #ifdef HAS_INT64
-	Bool StrToInt64W(UnsafeArray<const UTF16Char> intStr, Int64 *outVal);
-	Bool StrToInt64W(UnsafeArray<const UTF32Char> intStr, Int64 *outVal);
+	Bool StrToInt64W(UnsafeArray<const UTF16Char> intStr, OutParam<Int64> outVal);
+	Bool StrToInt64W(UnsafeArray<const UTF32Char> intStr, OutParam<Int64> outVal);
 	FORCEINLINE Int64 StrToInt64W(UnsafeArray<const UTF16Char> str) { return MyString_StrToInt64UTF16(str.Ptr()); }
 	FORCEINLINE Int64 StrToInt64W(UnsafeArray<const UTF32Char> str) { return MyString_StrToInt64UTF32(str.Ptr()); }
-	Bool StrToUInt64W(UnsafeArray<const UTF16Char> intStr, UInt64 *outVal);
-	Bool StrToUInt64W(UnsafeArray<const UTF32Char> intStr, UInt64 *outVal);
-	Bool StrToUInt64SW(UnsafeArray<const UTF16Char> intStr, UInt64 *outVal, UInt64 failVal);
-	Bool StrToUInt64SW(UnsafeArray<const UTF32Char> intStr, UInt64 *outVal, UInt64 failVal);
+	Bool StrToUInt64W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt64> outVal);
+	Bool StrToUInt64W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt64> outVal);
+	Bool StrToUInt64SW(UnsafeArray<const UTF16Char> intStr, OutParam<UInt64> outVal, UInt64 failVal);
+	Bool StrToUInt64SW(UnsafeArray<const UTF32Char> intStr, OutParam<UInt64> outVal, UInt64 failVal);
 	UInt64 StrToUInt64W(UnsafeArray<const UTF16Char> str);
 	UInt64 StrToUInt64W(UnsafeArray<const UTF32Char> str);
 #endif
 
 	OSInt StrToOSIntW(UnsafeArray<const UTF16Char> str);
 	OSInt StrToOSIntW(UnsafeArray<const UTF32Char> str);
-	Bool StrToOSIntW(UnsafeArray<const UTF16Char> intStr, OSInt *outVal);
-	Bool StrToOSIntW(UnsafeArray<const UTF32Char> intStr, OSInt *outVal);
+	Bool StrToOSIntW(UnsafeArray<const UTF16Char> intStr, OutParam<OSInt> outVal);
+	Bool StrToOSIntW(UnsafeArray<const UTF32Char> intStr, OutParam<OSInt> outVal);
 	UOSInt StrToUOSIntW(UnsafeArray<const UTF16Char> str);
 	UOSInt StrToUOSIntW(UnsafeArray<const UTF32Char> str);
-	Bool StrToUOSIntW(UnsafeArray<const UTF16Char> intStr, UOSInt *outVal);
-	Bool StrToUOSIntW(UnsafeArray<const UTF32Char> intStr, UOSInt *outVal);
+	Bool StrToUOSIntW(UnsafeArray<const UTF16Char> intStr, OutParam<UOSInt> outVal);
+	Bool StrToUOSIntW(UnsafeArray<const UTF32Char> intStr, OutParam<UOSInt> outVal);
 
 	Bool StrToBoolW(UnsafeArrayOpt<const UTF16Char> str);
 	Bool StrToBoolW(UnsafeArrayOpt<const UTF32Char> str);
@@ -223,8 +223,8 @@ namespace Text
 	Bool StrStartsWith(UnsafeArray<const UTF32Char> str1, UnsafeArray<const UTF32Char> str2);
 	Bool StrStartsWithICase(UnsafeArray<const UTF16Char> str1, UnsafeArray<const UTF16Char> str2);
 	Bool StrStartsWithICase(UnsafeArray<const UTF32Char> str1, UnsafeArray<const UTF32Char> str2);
-	Bool StrStartsWithICase(UnsafeArray<const UTF16Char> str1, const Char *str2);
-	Bool StrStartsWithICase(UnsafeArray<const UTF32Char> str1, const Char *str2);
+	Bool StrStartsWithICase(UnsafeArray<const UTF16Char> str1, UnsafeArray<const Char> str2);
+	Bool StrStartsWithICase(UnsafeArray<const UTF32Char> str1, UnsafeArray<const Char> str2);
 	Bool StrEndsWith(UnsafeArray<const UTF16Char> str1, UnsafeArray<const UTF16Char> str2);
 	Bool StrEndsWith(UnsafeArray<const UTF32Char> str1, UnsafeArray<const UTF32Char> str2);
 	Bool StrEndsWithICase(UnsafeArray<const UTF16Char> str1, UnsafeArray<const UTF16Char> str2);

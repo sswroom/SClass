@@ -148,14 +148,14 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64
 			}
 			else
 			{
-				const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(dev->macInt);
+				NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfo(dev->macInt);
 				this->lvDevices->SetSubItem(i, 4, {mac->name, mac->nameLen});
 			}
 			statusMap->Put(dev->macInt, 1);
 		}
 		if (statusMap->Get(dev->macInt) != 0)
 		{
-			if (s.Set(dev->name))
+			if (dev->name.SetTo(s))
 			{
 				this->lvDevices->SetSubItem(i, 3, s);
 			}

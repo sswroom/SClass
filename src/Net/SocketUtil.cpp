@@ -256,7 +256,7 @@ UInt32 Net::SocketUtil::GetIPAddr(UnsafeArray<const WChar> ipName)
 		return 0;
 	if (Text::StrSplit(sarr, 4, wbuff, '.') != 4)
 		return 0;
-	if (!Text::StrToUInt8W(sarr[0], &ip[0]) || !Text::StrToUInt8W(sarr[1], &ip[1]) || !Text::StrToUInt8W(sarr[2], &ip[2]) || !Text::StrToUInt8W(sarr[3], &ip[3]))
+	if (!Text::StrToUInt8W(sarr[0], ip[0]) || !Text::StrToUInt8W(sarr[1], ip[1]) || !Text::StrToUInt8W(sarr[2], ip[2]) || !Text::StrToUInt8W(sarr[3], ip[3]))
 		return 0;
 	return *(UInt32*)ip;
 }

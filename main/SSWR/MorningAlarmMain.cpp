@@ -38,9 +38,9 @@
 #define NTPHOST CSTR("stdtime.gov.hk")
 
 Optional<Media::IAudioRenderer> audOut;
-Data::DateTime *startDt;
+NN<Data::DateTime> startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
-IO::ConsoleWriter *console;
+NN<IO::ConsoleWriter> console;
 NN<Net::SocketFactory> sockf;
 Optional<Net::SSLEngine> ssl;
 NN<Text::EncodingFactory> encFact;
@@ -158,7 +158,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 			}
 			currSignal = nextSignal;
 		}
-		if (currDt > *startDt && !typhoonStop)
+		if (currDt > *startDt.Ptr() && !typhoonStop)
 		{
 			break;
 		}
@@ -237,31 +237,31 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
-	Text::String **sel;
+	UnsafeArray<NN<Text::String>> sel;
 	UOSInt i;
 	UOSInt devCnt;
 	IO::ConsoleInput::InputReturnType irt;
 	IO::LogTool log;
 
-	NEW_CLASS(console, IO::ConsoleWriter());
+	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASSNN(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562, log));
 	NEW_CLASSNN(tmpDt, Data::DateTime());
 	devCnt = i = Media::AudioDevice::GetDeviceCount();
-	sel = MemAlloc(Text::String*, devCnt);
+	sel = MemAllocArr(NN<Text::String>, devCnt);
 	while (i-- > 0)
 	{
 		sptr = Media::AudioDevice::GetDeviceName(buff, i).Or(buff);
-		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff)).Ptr();
+		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff));
 	}
 	if (timeCli->GetServerTime(NTPHOST, 123, tmpDt))
 	{
 		tmpDt->SetAsComputerTime();
 	}
 	console->Write(CSTR("Select audio device: "));
-	irt = IO::ConsoleInput::InputSelect(console, sel, devCnt, &i);
+	irt = IO::ConsoleInput::InputSelect(console, sel, devCnt, i);
 	if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 	{
 		audioDevice = sel[i]->Clone().Ptr();
@@ -270,7 +270,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			sel[i]->Release();
 		}
-		MemFree(sel);
+		MemFreeArr(sel);
 
 		audOut = Media::AudioDevice::CreateRenderer(audioDevice->ToCString());
 		NN<Media::IAudioRenderer> audRenderer;
@@ -278,13 +278,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			Int32 vol = audRenderer->GetDeviceVolume();
 			console->Write(CSTR("Current Volume: "));
-			irt = IO::ConsoleInput::InputInt32(console, &vol, true);
+			irt = IO::ConsoleInput::InputInt32(console, vol, true);
 
 			if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 			{
 				audRenderer->SetDeviceVolume((UInt16)vol);
 
-				NEW_CLASS(startDt, Data::DateTime());
+				NEW_CLASSNN(startDt, Data::DateTime());
 				startDt->SetCurrTime();
 				sptr = Text::StrConcatC(buff, UTF8STRC("Curr Date: "));
 				sptr = startDt->ToString(sptr, "yyyy-MM-dd HH:mm:ss");
@@ -311,7 +311,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 					thread.Stop();
 				}
-				DEL_CLASS(startDt);
+				startDt.Delete();
 			}
 
 			audOut.Delete();
@@ -329,8 +329,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			sel[i]->Release();
 		}
-		MemFree(sel);
-
+		MemFreeArr(sel);
 	}
 
 	tmpDt.Delete();
@@ -338,6 +337,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	encFact.Delete();
 	ssl.Delete();
 	sockf.Delete();
-	DEL_CLASS(console);
+	console.Delete();
 	return 0;
 }

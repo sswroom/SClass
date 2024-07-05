@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUI
 
 	UOSInt i;
 	UOSInt j;
-	Net::MACInfo::MACEntry *macList = Net::MACInfo::GetMACEntryList(&i);
+	UnsafeArray<Net::MACInfo::MACEntry> macList = Net::MACInfo::GetMACEntryList(i);
 	Net::MACInfo::MACEntry **macListSort = MemAlloc(Net::MACInfo::MACEntry*, i);
 	Net::MACInfo::MACEntry *lastMAC;
 	j = 0;

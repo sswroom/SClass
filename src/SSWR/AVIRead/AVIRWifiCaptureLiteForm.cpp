@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 					sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
 					me->lvCurrWifi->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 					sptr = Text::StrInt32(sbuff, bss->GetBSSType());
-					const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
+					NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfo(imac);
 					me->lvCurrWifi->SetSubItem(k, 3, {entry->name, entry->nameLen});
 					me->lvCurrWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 					sptr = Text::StrInt32(sbuff, bss->GetPHYType());
@@ -153,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 
 						sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
 						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap.GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
-						const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
+						NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfo(imac);
 						me->lvLogWifi->SetSubItem(k, 1, {entry->name, entry->nameLen});
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
 						sptr = Text::StrInt32(sbuff, wifiLog->phyType);
@@ -170,17 +170,17 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 							me->lvLogWifi->SetSubItem(k, 8, s);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
 						{
-							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0]);
+							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0]);
 							me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
 						}
 						if (wifiLog->ouis[1][0] != 0 || wifiLog->ouis[1][1] != 0 || wifiLog->ouis[1][2] != 0)
 						{
-							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1]);
+							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1]);
 							me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
 						}
 						if (wifiLog->ouis[2][0] != 0 || wifiLog->ouis[2][1] != 0 || wifiLog->ouis[2][2] != 0)
 						{
-							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2]);
+							NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2]);
 							me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
 						}
 					}
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
 									me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
 								}
 								l++;
@@ -250,7 +250,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
 									me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
 								}
 								l++;
@@ -272,7 +272,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
 									me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
 								}
 								l++;
@@ -544,7 +544,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(Any
 				MemCopyNO(&macBuff[2], wifiLog->mac, 6);
 				macBuff[0] = 0;
 				macBuff[1] = 0;
-				const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
+				NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
 				if (Text::StrEqualsC(ent->name, ent->nameLen, UTF8STRC("Unknown")))
 				{
 					sb.ClearStr();

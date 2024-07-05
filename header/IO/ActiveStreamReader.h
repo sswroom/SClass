@@ -22,7 +22,7 @@ namespace IO
 		typedef void (CALLBACKFUNC DataHdlr)(Data::ByteArrayR buff, AnyType userData);
 		typedef struct
 		{
-			UInt8 *buff;
+			UnsafeArray<UInt8> buff;
 			UOSInt buffSize;
 		} ReadBuffer;
 	private:

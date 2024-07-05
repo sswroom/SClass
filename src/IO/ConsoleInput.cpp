@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter *console, Int32 *output, Bool showOriVal)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(NN<IO::ConsoleWriter> console, InOutParam<Int32> output, Bool showOriVal)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	if (console->IsFileOutput())
@@ -14,13 +14,13 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 		console->ReadLine(wbuff, 256);
 		if (Text::StrEquals(wbuff, L"0"))
 		{
-			*output = 0;
+			output.Set(0);
 			return IRT_ENTER;
 		}
 		else
 		{
-			*output = Text::StrToInt32W(UnsafeArray<WChar>(wbuff));
-			if (*output == 0)
+			output.Set(Text::StrToInt32W(UnsafeArray<WChar>(wbuff)));
+			if (output.Get() == 0)
 			{
 				return IRT_ESCAPE;
 			}
@@ -51,7 +51,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	UOSInt j;
 	if (showOriVal)
 	{
-		currSize = (UOSInt)(Text::StrInt32(cbuff, *output) - cbuff);
+		currSize = (UOSInt)(Text::StrInt32(cbuff, output.Get()) - cbuff);
 		currPos = currSize;
 		console->Write(Text::CStringNN(cbuff, currSize));
 	}
@@ -179,14 +179,14 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 		else
 			return IRT_TABEMPTY;
 	}
-	*output = Text::StrToInt32(cbuff);
+	output.Set(Text::StrToInt32(cbuff));
 	if (i == 0xd)
 		return IRT_ENTER;
 	else
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter *console, Bool *output)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(NN<IO::ConsoleWriter> console, InOutParam<Bool> output)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	if (console->IsFileOutput())
@@ -195,17 +195,17 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 		console->ReadLine(wbuff, 256);
 		if (wbuff[0] == 'T' || wbuff[0] == 't')
 		{
-			*output = true;
+			output.Set(true);
 			return IRT_ENTER;
 		}
 		else if (wbuff[0] == 'F' || wbuff[0] == 'f')
 		{
-			*output = false;
+			output.Set(false);
 			return IRT_ENTER;
 		}
 		else 
 		{
-			*output = Text::StrToInt32W(UnsafeArray<WChar>(wbuff)) != 0;
+			output.Set(Text::StrToInt32W(UnsafeArray<WChar>(wbuff)) != 0);
 			return IRT_ENTER;
 		}
 	}
@@ -221,7 +221,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 		state.currY += 1;
 	}
 
-	Bool o = *output;
+	Bool o = output.Get();
 	Int32 i;
 	while (true)
 	{
@@ -265,14 +265,14 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 	console->WriteLine();
 	if (i == 0x1b)
 		return IRT_ESCAPE;
-	*output = o;
+	output.Set(o);
 	if (i == 0xd)
 		return IRT_ENTER;
 	else
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWriter *console, Text::String **names, UOSInt nNames, UOSInt *selection)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(NN<IO::ConsoleWriter> console, UnsafeArray<NN<Text::String>> names, UOSInt nNames, InOutParam<UOSInt> selection)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	UOSInt i;
@@ -293,7 +293,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 	}
 	if (j <= 0)
 		return IRT_UNKNOWN;
-	k = *selection;
+	k = selection.Get();
 	if (k < 0)
 		k = 0;
 	if (k >= nNames)
@@ -430,20 +430,18 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 	console->WriteLine();
 	if (i == 0x1b)
 		return IRT_ESCAPE;
-	*selection = k;
+	selection.Set(k);
 	if (i == 0xd)
 		return IRT_ENTER;
 	else
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWriter *console, Data::DateTime *output)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(NN<IO::ConsoleWriter> console, NN<Data::DateTime> output)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter::ConsoleState state;
-	if (output == 0)
-		return IRT_UNKNOWN;
 	if (console->IsFileOutput())
 	{
 		WChar wbuff2[256];
@@ -632,7 +630,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, UOSInt buffSize, UOSInt *inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(NN<IO::ConsoleWriter> console, UnsafeArray<UInt8> buff, UOSInt buffSize, OutParam<UOSInt> inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	UOSInt i;
@@ -642,7 +640,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	{
 		WChar wbuff[256];
 		console->ReadLine(wbuff, buffSize * 2);
-		*inputSize = Text::StrHex2BytesW(wbuff, buff);
+		inputSize.Set(Text::StrHex2BytesW(wbuff, buff));
 		return IRT_ENTER;
 	}
 
@@ -797,13 +795,13 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	if (currSize == 0)
 	{
 		MemFreeArr(cbuff);
-		*inputSize = 0;
+		inputSize.Set(0);
 		if (i == 0xd)
 			return IRT_ENTEREMPTY;
 		else
 			return IRT_TABEMPTY;
 	}
-	*inputSize = Text::StrHex2Bytes(cbuff, buff);
+	inputSize.Set(Text::StrHex2Bytes(cbuff, buff));
 	MemFreeArr(cbuff);
 	if (i == 0xd)
 		return IRT_ENTER;
@@ -812,7 +810,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 }
 
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWriter *console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, UOSInt *inputSize)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(NN<IO::ConsoleWriter> console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, OutParam<UOSInt> inputSize)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	UOSInt i;
@@ -821,8 +819,17 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	if (console->IsFileOutput())
 	{
 		WChar wbuff[256];
-		*inputSize = (UOSInt)(console->ReadLine(wbuff, maxCharCnt) - wbuff);
-		return IRT_ENTER;
+		UnsafeArray<WChar> wptr;
+		if (console->ReadLine(wbuff, maxCharCnt).SetTo(wptr))
+		{
+			inputSize.Set((UOSInt)(Text::StrWChar_UTF8C(output, wbuff, (UOSInt)(wptr - wbuff)) - output));
+			return IRT_ENTER;
+		}
+		else
+		{
+			inputSize.Set(0);
+			return IRT_UNKNOWN;
+		}
 	}
 
 	console->GetConsoleState(&state);
@@ -930,13 +937,13 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	}
 	if (currSize == 0)
 	{
-		*inputSize = 0;
+		inputSize.Set(0);
 		if (i == 0xd)
 			return IRT_ENTEREMPTY;
 		else
 			return IRT_TABEMPTY;
 	}
-	*inputSize = currSize;
+	inputSize.Set(currSize);
 	if (i == 0xd)
 		return IRT_ENTER;
 	else

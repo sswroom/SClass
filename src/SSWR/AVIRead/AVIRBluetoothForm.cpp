@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(NN<BTStatus> btStatus)
 		sb.ClearStr();
 		IO::BTUtil::GetAddrText(sb, dev->GetAddress());
 		this->lvDevice->SetSubItem(k, 1, sb.ToCString());
-		const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(IO::BTUtil::GetAddrMAC(dev->GetAddress()));
+		NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfo(IO::BTUtil::GetAddrMAC(dev->GetAddress()));
 		this->lvDevice->SetSubItem(k, 2, {mac->name, mac->nameLen});
 		this->lvDevice->SetSubItem(k, 3, dev->IsConnected()?CSTR("Y"):CSTR("N"));
 		this->lvDevice->SetSubItem(k, 4, dev->IsAuthenticated()?CSTR("Y"):CSTR("N"));

@@ -10,11 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(UnsafeArray<
 	sb.AppendC(UTF8STRC("IP Scan detected from "));
 	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 	sb.AppendC(UTF8STRC(", vendor = "));
-	const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
-	if (macEntry)
-	{
-		sb.AppendC(macEntry->name, macEntry->nameLen);
-	}
+	NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
+	sb.AppendC(macEntry->name, macEntry->nameLen);
 	me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 }
 

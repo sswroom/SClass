@@ -1661,7 +1661,7 @@ UInt8 Text::StrHex2UInt8WC(UnsafeArray<const UTF32Char> str)
 	return 0;
 }
 
-UOSInt Text::StrHex2BytesW(UnsafeArray<const UTF16Char> str, UInt8 *buff)
+UOSInt Text::StrHex2BytesW(UnsafeArray<const UTF16Char> str, UnsafeArray<UInt8> buff)
 {
 	UOSInt outVal = 0;
 	UInt8 tmpVal;
@@ -1721,7 +1721,7 @@ UOSInt Text::StrHex2BytesW(UnsafeArray<const UTF16Char> str, UInt8 *buff)
 	return 0;
 }
 
-UOSInt Text::StrHex2BytesW(UnsafeArray<const UTF32Char> str, UInt8 *buff)
+UOSInt Text::StrHex2BytesW(UnsafeArray<const UTF32Char> str, UnsafeArray<UInt8> buff)
 {
 	UOSInt outVal = 0;
 	UInt8 tmpVal;
@@ -2107,7 +2107,7 @@ UOSInt Text::StrSplitWS(UnsafeArray<UnsafeArray<UTF32Char>> strs, UOSInt maxStrs
 	return i;
 }
 
-Bool Text::StrToUInt8W(UnsafeArray<const UTF16Char> intStr, UInt8 *outVal)
+Bool Text::StrToUInt8W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt8> outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -2119,11 +2119,11 @@ Bool Text::StrToUInt8W(UnsafeArray<const UTF16Char> intStr, UInt8 *outVal)
 		if (retVal & 0xffffff00)
 			return false;
 	}
-	*outVal = (UInt8)retVal;
+	outVal.Set((UInt8)retVal);
 	return true;
 }
 
-Bool Text::StrToUInt8W(UnsafeArray<const UTF32Char> intStr, UInt8 *outVal)
+Bool Text::StrToUInt8W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt8> outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -2135,7 +2135,7 @@ Bool Text::StrToUInt8W(UnsafeArray<const UTF32Char> intStr, UInt8 *outVal)
 		if (retVal & 0xffffff00)
 			return false;
 	}
-	*outVal = (UInt8)retVal;
+	outVal.Set((UInt8)retVal);
 	return true;
 }
 
@@ -2169,7 +2169,7 @@ UInt8 Text::StrToUInt8W(UnsafeArray<const UTF32Char> intStr)
 	return (UInt8)retVal;
 }
 
-Bool Text::StrToUInt16W(UnsafeArray<const UTF16Char> intStr, UInt16 *outVal)
+Bool Text::StrToUInt16W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt16> outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -2181,11 +2181,11 @@ Bool Text::StrToUInt16W(UnsafeArray<const UTF16Char> intStr, UInt16 *outVal)
 		if (retVal & 0xffff0000)
 			return false;
 	}
-	*outVal = (UInt16)retVal;
+	outVal.Set((UInt16)retVal);
 	return true;
 }
 
-Bool Text::StrToUInt16W(UnsafeArray<const UTF32Char> intStr, UInt16 *outVal)
+Bool Text::StrToUInt16W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt16> outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -2197,11 +2197,11 @@ Bool Text::StrToUInt16W(UnsafeArray<const UTF32Char> intStr, UInt16 *outVal)
 		if (retVal & 0xffff0000)
 			return false;
 	}
-	*outVal = (UInt16)retVal;
+	outVal.Set((UInt16)retVal);
 	return true;
 }
 
-Bool Text::StrToInt16W(UnsafeArray<const UTF16Char> intStr, Int16 *outVal)
+Bool Text::StrToInt16W(UnsafeArray<const UTF16Char> intStr, OutParam<Int16> outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -2229,13 +2229,13 @@ Bool Text::StrToInt16W(UnsafeArray<const UTF16Char> intStr, Int16 *outVal)
 		}
 	}
 	if (sign)
-		*outVal = (Int16)-retVal;
+		outVal.Set((Int16)-retVal);
 	else
-		*outVal = (Int16)retVal;
+		outVal.Set((Int16)retVal);
 	return true;
 }
 
-Bool Text::StrToInt16W(UnsafeArray<const UTF32Char> intStr, Int16 *outVal)
+Bool Text::StrToInt16W(UnsafeArray<const UTF32Char> intStr, OutParam<Int16> outVal)
 {
 	Bool sign;
 	Int16 retVal = 0;
@@ -2263,9 +2263,9 @@ Bool Text::StrToInt16W(UnsafeArray<const UTF32Char> intStr, Int16 *outVal)
 		}
 	}
 	if (sign)
-		*outVal = (Int16)-retVal;
+		outVal.Set((Int16)-retVal);
 	else
-		*outVal = retVal;
+		outVal.Set(retVal);
 	return true;
 }
 
@@ -2336,7 +2336,7 @@ Int16 Text::StrToInt16W(UnsafeArray<const UTF32Char> intStr)
 	return true;
 }
 
-Bool Text::StrToUInt32W(UnsafeArray<const UTF16Char> intStr, UInt32 *outVal)
+Bool Text::StrToUInt32W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt32> outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -2346,11 +2346,11 @@ Bool Text::StrToUInt32W(UnsafeArray<const UTF16Char> intStr, UInt32 *outVal)
 		retVal = retVal * 10 + *intStr - 48;
 		intStr++;
 	}
-	*outVal = retVal;
+	outVal.Set(retVal);
 	return true;
 }
 
-Bool Text::StrToUInt32W(UnsafeArray<const UTF32Char> intStr, UInt32 *outVal)
+Bool Text::StrToUInt32W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt32> outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -2360,7 +2360,7 @@ Bool Text::StrToUInt32W(UnsafeArray<const UTF32Char> intStr, UInt32 *outVal)
 		retVal = retVal * 10 + (UInt32)*intStr - 48;
 		intStr++;
 	}
-	*outVal = retVal;
+	outVal.Set(retVal);
 	return true;
 }
 
@@ -2398,7 +2398,7 @@ UInt32 Text::StrToUInt32W(UnsafeArray<const UTF32Char> intStr)
 	return retVal;
 }
 
-Bool Text::StrToInt32W(UnsafeArray<const UTF16Char> intStr, Int32 *outVal)
+Bool Text::StrToInt32W(UnsafeArray<const UTF16Char> intStr, OutParam<Int32> outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -2426,13 +2426,13 @@ Bool Text::StrToInt32W(UnsafeArray<const UTF16Char> intStr, Int32 *outVal)
 		}
 	}
 	if (sign)
-		*outVal = -retVal;
+		outVal.Set(-retVal);
 	else
-		*outVal = retVal;
+		outVal.Set(retVal);
 	return true;
 }
 
-Bool Text::StrToInt32W(UnsafeArray<const UTF32Char> intStr, Int32 *outVal)
+Bool Text::StrToInt32W(UnsafeArray<const UTF32Char> intStr, OutParam<Int32> outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -2460,9 +2460,9 @@ Bool Text::StrToInt32W(UnsafeArray<const UTF32Char> intStr, Int32 *outVal)
 		}
 	}
 	if (sign)
-		*outVal = -retVal;
+		outVal.Set(-retVal);
 	else
-		*outVal = retVal;
+		outVal.Set(retVal);
 	return true;
 }
 
@@ -2533,7 +2533,7 @@ Int32 Text::StrToInt32W(UnsafeArray<const UTF32Char> intStr)
 	return true;
 }
 
-Bool Text::StrToInt64W(UnsafeArray<const UTF16Char> intStr, Int64 *outVal)
+Bool Text::StrToInt64W(UnsafeArray<const UTF16Char> intStr, OutParam<Int64> outVal)
 {
 	Int64 ret = Text::StrToInt64W(intStr);
 	if (ret == 0)
@@ -2541,11 +2541,11 @@ Bool Text::StrToInt64W(UnsafeArray<const UTF16Char> intStr, Int64 *outVal)
 		if (intStr[0] != '0' || intStr[1] != 0)
 			return false;
 	}
-	*outVal = ret;
+	outVal.Set(ret);
 	return true;
 }
 
-Bool Text::StrToInt64W(UnsafeArray<const UTF32Char> intStr, Int64 *outVal)
+Bool Text::StrToInt64W(UnsafeArray<const UTF32Char> intStr, OutParam<Int64> outVal)
 {
 	Int64 ret = Text::StrToInt64W(intStr);
 	if (ret == 0)
@@ -2553,11 +2553,11 @@ Bool Text::StrToInt64W(UnsafeArray<const UTF32Char> intStr, Int64 *outVal)
 		if (intStr[0] != '0' || intStr[1] != 0)
 			return false;
 	}
-	*outVal = ret;
+	outVal.Set(ret);
 	return true;
 }
 
-Bool Text::StrToUInt64W(UnsafeArray<const UTF16Char> intStr, UInt64 *outVal)
+Bool Text::StrToUInt64W(UnsafeArray<const UTF16Char> intStr, OutParam<UInt64> outVal)
 {
 	if (intStr[0] == 0)
 		return false;
@@ -2569,11 +2569,11 @@ Bool Text::StrToUInt64W(UnsafeArray<const UTF16Char> intStr, UInt64 *outVal)
 			return false;
 		v = v * 10 + (UInt64)(c - '0');
 	}
-	*outVal = v;
+	outVal.Set(v);
 	return true;
 }
 
-Bool Text::StrToUInt64W(UnsafeArray<const UTF32Char> intStr, UInt64 *outVal)
+Bool Text::StrToUInt64W(UnsafeArray<const UTF32Char> intStr, OutParam<UInt64> outVal)
 {
 	if (intStr[0] == 0)
 		return false;
@@ -2585,15 +2585,15 @@ Bool Text::StrToUInt64W(UnsafeArray<const UTF32Char> intStr, UInt64 *outVal)
 			return false;
 		v = v * 10 + (UInt64)(c - '0');
 	}
-	*outVal = v;
+	outVal.Set(v);
 	return true;
 }
 
-Bool Text::StrToUInt64SW(UnsafeArray<const UTF16Char> intStr, UInt64 *outVal, UInt64 failVal)
+Bool Text::StrToUInt64SW(UnsafeArray<const UTF16Char> intStr, OutParam<UInt64> outVal, UInt64 failVal)
 {
 	if (intStr[0] == 0)
 	{
-		*outVal = failVal;
+		outVal.Set(failVal);
 		return false;
 	}
 	UTF16Char c;
@@ -2602,20 +2602,20 @@ Bool Text::StrToUInt64SW(UnsafeArray<const UTF16Char> intStr, UInt64 *outVal, UI
 	{
 		if (c < '0' || c > '9')
 		{
-			*outVal = failVal;
+			outVal.Set(failVal);
 			return false;
 		}
 		v = v * 10 + (UInt64)(c - '0');
 	}
-	*outVal = v;
+	outVal.Set(v);
 	return true;
 }
 
-Bool Text::StrToUInt64SW(UnsafeArray<const UTF32Char> intStr, UInt64 *outVal, UInt64 failVal)
+Bool Text::StrToUInt64SW(UnsafeArray<const UTF32Char> intStr, OutParam<UInt64> outVal, UInt64 failVal)
 {
 	if (intStr[0] == 0)
 	{
-		*outVal = failVal;
+		outVal.Set(failVal);
 		return false;
 	}
 	UTF32Char c;
@@ -2624,26 +2624,26 @@ Bool Text::StrToUInt64SW(UnsafeArray<const UTF32Char> intStr, UInt64 *outVal, UI
 	{
 		if (c < '0' || c > '9')
 		{
-			*outVal = failVal;
+			outVal.Set(failVal);
 			return false;
 		}
 		v = v * 10 + (UInt64)(c - '0');
 	}
-	*outVal = v;
+	outVal.Set(v);
 	return true;
 }
 
 UInt64 Text::StrToUInt64W(UnsafeArray<const UTF16Char> str)
 {
 	UInt64 v;
-	StrToUInt64SW(str, &v, 0);
+	StrToUInt64SW(str, v, 0);
 	return v;
 }
 
 UInt64 Text::StrToUInt64W(UnsafeArray<const UTF32Char> str)
 {
 	UInt64 v;
-	StrToUInt64SW(str, &v, 0);
+	StrToUInt64SW(str, v, 0);
 	return v;
 }
 
@@ -2669,7 +2669,7 @@ OSInt Text::StrToOSIntW(UnsafeArray<const UTF32Char> str)
 #endif
 }
 
-Bool Text::StrToOSIntW(UnsafeArray<const UTF16Char> intStr, OSInt *outVal)
+Bool Text::StrToOSIntW(UnsafeArray<const UTF16Char> intStr, OutParam<OSInt> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64W(intStr, outVal);
@@ -2680,7 +2680,7 @@ Bool Text::StrToOSIntW(UnsafeArray<const UTF16Char> intStr, OSInt *outVal)
 #endif
 }
 
-Bool Text::StrToOSIntW(UnsafeArray<const UTF32Char> intStr, OSInt *outVal)
+Bool Text::StrToOSIntW(UnsafeArray<const UTF32Char> intStr, OutParam<OSInt> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64W(intStr, outVal);
@@ -2714,7 +2714,7 @@ UOSInt Text::StrToUOSIntW(UnsafeArray<const UTF32Char> str)
 #endif
 }
 
-Bool Text::StrToUOSIntW(UnsafeArray<const UTF16Char> intStr, UOSInt *outVal)
+Bool Text::StrToUOSIntW(UnsafeArray<const UTF16Char> intStr, OutParam<UOSInt> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64W(intStr, outVal);
@@ -2725,7 +2725,7 @@ Bool Text::StrToUOSIntW(UnsafeArray<const UTF16Char> intStr, UOSInt *outVal)
 #endif
 }
 
-Bool Text::StrToUOSIntW(UnsafeArray<const UTF32Char> intStr, UOSInt *outVal)
+Bool Text::StrToUOSIntW(UnsafeArray<const UTF32Char> intStr, OutParam<UOSInt> outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64W(intStr, outVal);
@@ -3353,7 +3353,7 @@ Bool Text::StrStartsWithICase(UnsafeArray<const UTF32Char> str1, UnsafeArray<con
 	return true;
 }
 
-Bool Text::StrStartsWithICase(UnsafeArray<const UTF16Char> str1, const Char *str2)
+Bool Text::StrStartsWithICase(UnsafeArray<const UTF16Char> str1, UnsafeArray<const Char> str2)
 {
 	UTF16Char c1;
 	Char c2;
@@ -3375,7 +3375,7 @@ Bool Text::StrStartsWithICase(UnsafeArray<const UTF16Char> str1, const Char *str
 	return true;
 }
 
-Bool Text::StrStartsWithICase(UnsafeArray<const UTF32Char> str1, const Char *str2)
+Bool Text::StrStartsWithICase(UnsafeArray<const UTF32Char> str1, UnsafeArray<const Char> str2)
 {
 	UTF32Char c1;
 	Char c2;

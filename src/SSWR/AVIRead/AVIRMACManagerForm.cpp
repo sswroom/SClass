@@ -403,7 +403,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 		}
 
 		NN<const Net::MACInfo::MACEntry> entry;
-		const Net::MACInfo::MACEntry *pentry;
+		NN<const Net::MACInfo::MACEntry> pentry;
 		NN<Text::String> s;
 		this->lvContent->BeginUpdate();
 		this->lvContent->ClearItems();

@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 	if (me->dataChg)
 	{
 		NN<DeviceEntry> entry;
-		const Net::MACInfo::MACEntry *macEntry;
+		NN<const Net::MACInfo::MACEntry> macEntry;
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage(me->dataMut);
 		me->lvDevices->ClearItems();
@@ -141,14 +141,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 				me->lvDevices->SetSubItem(i, 1, s);
 			}
 			macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
-			if (macEntry)
-			{
-				me->lvDevices->SetSubItem(i, 2, {macEntry->name, macEntry->nameLen});
-			}
-			else
-			{
-				me->lvDevices->SetSubItem(i, 2, CSTR("Unknown"));
-			}
+			me->lvDevices->SetSubItem(i, 2, {macEntry->name, macEntry->nameLen});
 			sptr = Text::StrInt32(sbuff, entry->rssi);
 			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			if (s.Set(entry->remark))

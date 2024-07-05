@@ -253,17 +253,17 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			SDEL_STRING(serialNum);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
 			{
-				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
+				NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
 				this->lvContent->SetSubItem(l, 8, {entry->name, entry->nameLen});
 			}
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)
 			{
-				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[1]);
+				NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(log->ouis[1]);
 				this->lvContent->SetSubItem(l, 9, {entry->name, entry->nameLen});
 			}
 			if (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0)
 			{
-				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
+				NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
 				this->lvContent->SetSubItem(l, 10, {entry->name, entry->nameLen});
 			}
 			if (log->country.SetTo(s))

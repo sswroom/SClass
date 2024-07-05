@@ -51,7 +51,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(NN<EthernetWebHandler> me, NN<
 		UOSInt j;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> macList;
 		NN<Net::EthernetAnalyzer::MACStatus> mac;
-		const Net::MACInfo::MACEntry *macInfo;
+		NN<const Net::MACInfo::MACEntry> macInfo;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -767,7 +767,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(NN<EthernetWebHandler> me, NN<Ne
 		UOSInt k;
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> dhcpList;
 		NN<Net::EthernetAnalyzer::DHCPInfo> dhcp;
-		const Net::MACInfo::MACEntry *macInfo;
+		NN<const Net::MACInfo::MACEntry> macInfo;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
 		me->AppendMenu(sb);

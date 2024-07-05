@@ -905,7 +905,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> macList;
 		NN<Net::EthernetAnalyzer::MACStatus> mac;
-		const Net::MACInfo::MACEntry *entry;
+		NN<const Net::MACInfo::MACEntry> entry;
 		UInt8 macBuff[8];
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseMAC(mutUsage);
@@ -989,7 +989,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		UOSInt k;
 		UnsafeArray<UTF8Char> sptr;
 		NN<Net::EthernetAnalyzer::DHCPInfo> dhcp;
-		const Net::MACInfo::MACEntry *macInfo;
+		NN<const Net::MACInfo::MACEntry> macInfo;
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseDHCP(mutUsage);
 		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> dhcpList = me->analyzer->DHCPGetList();

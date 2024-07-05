@@ -54,7 +54,7 @@ namespace IO
 			Bool inRange;
 			RadioType radioType;
 			AddressType addrType;
-			Text::String *name;
+			Optional<Text::String> name;
 			Int8 rssi;
 			Int8 measurePower;
 			Int8 txPower;
@@ -80,7 +80,7 @@ namespace IO
 			UInt16 company;
 			Int8 measurePower;
 			AdvType lastAdvType;
-			Text::String *name;
+			Optional<Text::String> name;
 			NN<Data::ArrayListNN<LogEntry>> logs;
 		};
 	private:
@@ -95,7 +95,7 @@ namespace IO
 
 		virtual IO::ParserType GetParserType() const;
 
-		NN<LogEntry> AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
+		NN<LogEntry> AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Optional<Text::String> name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
 		NN<LogEntry> AddScanRec(NN<const ScanRecord3> rec);
 		void AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff);
 		void ClearList();

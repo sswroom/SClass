@@ -26,7 +26,7 @@ namespace IO
 		AnyType evtHdlrObj;
 		CommandHandler cmdHdlr;
 		AnyType cmdHdlrObj;
-		IO::ILogger *log;
+		Optional<IO::ILogger> log;
 
 		Data::ArrayListStringNN cmdResults;
 		Sync::Mutex cmdResultMut;

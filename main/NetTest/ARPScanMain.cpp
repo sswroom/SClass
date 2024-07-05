@@ -20,7 +20,7 @@ void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType 
 {
 	if (ipList->SortedIndexOf(ipv4) < 0)
 	{
-		const Net::MACInfo::MACEntry *macEntry;
+		NN<const Net::MACInfo::MACEntry> macEntry;
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
@@ -33,10 +33,7 @@ void __stdcall ARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipv4, AnyType 
 		sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 		sb.AppendC(UTF8STRC(", Vendor = "));
 		macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
-		if (macEntry)
-		{
-			sb.AppendC(macEntry->name, macEntry->nameLen);
-		}
+		sb.AppendC(macEntry->name, macEntry->nameLen);
 		console->WriteLine(sb.ToCString());
 		ipList->SortedInsert(ipv4);
 	}
@@ -56,7 +53,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
-	const Net::MACInfo::MACEntry *macEntry;
+	NN<const Net::MACInfo::MACEntry> macEntry;
 	Net::ARPInfo::ARPType arpType;
 	NN<Net::ARPInfo> arp;
 	Net::ARPInfo::GetARPInfoList(arpList);
@@ -79,10 +76,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC(", Vendor = "));
 			macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
-			if (macEntry)
-			{
-				sb.AppendC(macEntry->name, macEntry->nameLen);
-			}
+			sb.AppendC(macEntry->name, macEntry->nameLen);
 			console->WriteLine(sb.ToCString());
 			ipList->SortedInsert(arp->GetIPAddress());
 		}

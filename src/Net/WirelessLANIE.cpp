@@ -409,7 +409,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 			sb->AppendC(UTF8STRC("\r\n\tGroup cipher suite OUI = "));
 			sb->AppendHexBuff(&ieBuff[4], 3, '-', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC(" ("));
-			const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[4]);
+			NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[4]);
 			sb->AppendC(ent->name, ent->nameLen);
 			sb->AppendC(UTF8STRC(")"));
 			sb->AppendC(UTF8STRC("\r\n\tGroup cipher suite Type = "));
@@ -449,7 +449,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 				sb->AppendC(UTF8STRC("\r\n\tPairwise cipher suite OUI = "));
 				sb->AppendHexBuff(&ieBuff[i + 2], 3, '-', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC(" ("));
-				const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 2]);
+				NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 2]);
 				sb->AppendC(ent->name, ent->nameLen);
 				sb->AppendC(UTF8STRC(")"));
 				sb->AppendC(UTF8STRC("\r\n\tPairwise cipher suite Type = "));
@@ -493,7 +493,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 					sb->AppendC(UTF8STRC("\r\n\tAuthentication Suites OUI = "));
 					sb->AppendHexBuff(&ieBuff[i + 2], 3, '-', Text::LineBreakType::None);
 					sb->AppendC(UTF8STRC(" ("));
-					const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 2]);
+					NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 2]);
 					sb->AppendC(ent->name, ent->nameLen);
 					sb->AppendC(UTF8STRC(")"));
 					sb->AppendC(UTF8STRC("\r\n\tAuthentication Suites Type = "));
@@ -918,7 +918,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 		sb->AppendHexBuff(&ieBuff[2], 3, '-', Text::LineBreakType::None);
 		sb->AppendC(UTF8STRC(" ("));
 		{
-			const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[2]);
+			NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[2]);
 			sb->AppendC(ent->name, ent->nameLen);
 		}
 		sb->AppendC(UTF8STRC(")"));
@@ -1075,7 +1075,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 						sb->AppendC(UTF8STRC("\r\n\t\tVendor OUI: "));
 						sb->AppendHexBuff(&ieBuff[i + 6], 3, '-', Text::LineBreakType::None);
 						sb->AppendC(UTF8STRC(" ("));
-						const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 6]);
+						NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 6]);
 						sb->AppendC(ent->name, ent->nameLen);
 						sb->AppendUTF8Char(')');
 						UOSInt j = 3;

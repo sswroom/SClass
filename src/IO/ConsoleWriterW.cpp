@@ -318,7 +318,7 @@ UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return size;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
+UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UOSInt nChar)
 {
 #if defined(__CYGWIN__)
 	Char buff[512];
@@ -329,10 +329,10 @@ WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
 		return Text::StrUTF8_WChar(sbuff, (UTF8Char*)buff, 0);
 	}
 #else
-	if (fgetws(sbuff, (int)nChar, stdin) == 0)
+	if (fgetws(sbuff.Ptr(), (int)nChar, stdin) == 0)
 		return 0;
 	else
-		return &sbuff[Text::StrCharCnt(sbuff)];
+		return &sbuff[Text::StrCharCnt(UnsafeArray<const WChar>(sbuff))];
 #endif
 }
 

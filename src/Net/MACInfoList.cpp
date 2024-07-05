@@ -14,7 +14,7 @@ Net::MACInfoList::MACInfoList()
 {
 	this->modified = false;
 	UOSInt cnt;
-	Net::MACInfo::MACEntry *ents = Net::MACInfo::GetMACEntryList(&cnt);
+	UnsafeArray<Net::MACInfo::MACEntry> ents = Net::MACInfo::GetMACEntryList(cnt);
 	NN<Net::MACInfo::MACEntry> entry;
 	UOSInt i = 0;
 	while (i < cnt)

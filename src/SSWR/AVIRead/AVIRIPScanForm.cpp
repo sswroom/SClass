@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 			me->lvIP->AddItem(CSTRP(sbuff, sptr), result);
 			sptr = Text::StrHexBytes(sbuff, result->mac, 6, ':');
 			me->lvIP->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoBuff(result->mac);
+			NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoBuff(result->mac);
 			me->lvIP->SetSubItem(i, 2, {entry->name, entry->nameLen});
 			sptr = Text::StrDouble(sbuff, result->respTime);
 			me->lvIP->SetSubItem(i, 3, CSTRP(sbuff, sptr));

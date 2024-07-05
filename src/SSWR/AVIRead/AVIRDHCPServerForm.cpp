@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		UOSInt i;
 		UOSInt j;
 		NN<Net::DHCPServer::DeviceStatus> dhcp;
-		const Net::MACInfo::MACEntry *macInfo;
+		NN<const Net::MACInfo::MACEntry> macInfo;
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage;
 		me->svr->UseStatus(mutUsage);

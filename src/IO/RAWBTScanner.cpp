@@ -38,7 +38,7 @@ void __stdcall IO::RAWBTScanner::RecvThread(NN<Sync::Thread> thread)
 
 void IO::RAWBTScanner::FreeRec(NN<IO::BTScanLog::ScanRecord3> rec)
 {
-	SDEL_STRING(rec->name);
+	OPTSTR_DEL(rec->name);
 	MemFreeNN(rec);
 }
 
@@ -182,7 +182,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 		{
 			dev = MemAllocNN(IO::BTScanLog::ScanRecord3);
 			dev.CopyFrom(rec);
-			dev->name = SCOPY_STRING(rec.name);
+			dev->name = Text::String::CopyOrNull(rec.name);
 			if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 			{
 				this->randRecMap.Put(dev->macInt, dev);
@@ -197,9 +197,10 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 		{
 			dev->company = rec.company;
 		}
-		if (dev->name == 0 && rec.name != 0)
+		NN<Text::String> name;
+		if (dev->name.IsNull() && rec.name.SetTo(name))
 		{
-			dev->name = rec.name->Clone().Ptr();
+			dev->name = name->Clone();
 		}
 		dev->inRange = rec.inRange;
 		dev->connected = rec.connected;
@@ -213,6 +214,6 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 		
 		if (this->clsData->hdlr)
 			this->clsData->hdlr(rec, IO::BTScanner::UT_RSSI, this->clsData->hdlrObj);
-		SDEL_STRING(rec.name);
+		OPTSTR_DEL(rec.name);
 	}
 }

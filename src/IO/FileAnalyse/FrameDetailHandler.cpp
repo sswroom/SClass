@@ -302,10 +302,10 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CSt
 	sb.AppendHexBuff(macBuff, 6, ':', Text::LineBreakType::None);
 	if (showVendor)
 	{
-		const Net::MACInfo::MACEntry *entry;
+		NN<const Net::MACInfo::MACEntry> entry;
 		sb.AppendC(UTF8STRC(" ("));
 		entry = Net::MACInfo::GetMACInfoBuff(macBuff);
-		if (entry && entry->nameLen > 0)
+		if (entry->nameLen > 0)
 		{
 			sb.AppendC(entry->name, entry->nameLen);
 		}

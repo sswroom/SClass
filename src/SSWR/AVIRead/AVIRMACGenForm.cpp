@@ -99,8 +99,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 	Data::ArrayListNN<Net::MACInfo::MACEntry> *macArr;
 	UOSInt macCnt;
 	UOSInt i;
-	Net::MACInfo::MACEntry *entList;
-	entList = Net::MACInfo::GetMACEntryList(&macCnt);
+	UnsafeArray<Net::MACInfo::MACEntry> entList;
+	entList = Net::MACInfo::GetMACEntryList(macCnt);
 	i = 1;
 	macCnt--;
 	while (i < macCnt)

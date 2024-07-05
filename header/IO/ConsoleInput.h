@@ -19,12 +19,12 @@ namespace IO
 			IRT_TABEMPTY
 		} InputReturnType;
 	public:
-		static InputReturnType InputInt32(IO::ConsoleWriter *console, Int32 *output, Bool showOriVal);
-		static InputReturnType InputBool(IO::ConsoleWriter *console, Bool *output);
-		static InputReturnType InputSelect(IO::ConsoleWriter *console, Text::String **names, UOSInt nNames, UOSInt *selection);
-		static InputReturnType InputDateTime(IO::ConsoleWriter *console, Data::DateTime *output);
-		static InputReturnType InputHexBytes(IO::ConsoleWriter *console, UInt8 *buff, UOSInt buffSize, UOSInt *inputSize);
-		static InputReturnType InputString(IO::ConsoleWriter *console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, UOSInt *inputSize);
+		static InputReturnType InputInt32(NN<IO::ConsoleWriter> console, InOutParam<Int32> output, Bool showOriVal);
+		static InputReturnType InputBool(NN<IO::ConsoleWriter> console, InOutParam<Bool> output);
+		static InputReturnType InputSelect(NN<IO::ConsoleWriter> console, UnsafeArray<NN<Text::String>> names, UOSInt nNames, InOutParam<UOSInt> selection);
+		static InputReturnType InputDateTime(NN<IO::ConsoleWriter> console, NN<Data::DateTime> output);
+		static InputReturnType InputHexBytes(NN<IO::ConsoleWriter> console, UnsafeArray<UInt8> buff, UOSInt buffSize, OutParam<UOSInt> inputSize);
+		static InputReturnType InputString(NN<IO::ConsoleWriter> console, UnsafeArray<UTF8Char> output, UOSInt maxCharCnt, OutParam<UOSInt> inputSize);
 	};
 }
 #endif

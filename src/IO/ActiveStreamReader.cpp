@@ -45,7 +45,7 @@ IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, AnyType userData, UOSI
 	Int32 i = ACTIVESTREAMREADER_BUFFCNT;
 	while (i-- > 0)
 	{
-		buffs[i].buff = MemAllocA(UInt8, buffSize);
+		buffs[i].buff = MemAllocAArr(UInt8, buffSize);
 		buffs[i].buffSize = 0;
 	}
 	Sync::ThreadUtil::Create(ReadThread, this);
@@ -62,7 +62,7 @@ IO::ActiveStreamReader::~ActiveStreamReader()
 	Int32 i = ACTIVESTREAMREADER_BUFFCNT;
 	while (i-- > 0)
 	{
-		MemFreeA(this->buffs[i].buff);
+		MemFreeAArr(this->buffs[i].buff);
 	}
 
 }

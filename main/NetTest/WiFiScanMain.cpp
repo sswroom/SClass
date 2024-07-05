@@ -159,7 +159,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					buff[5] = macPtr[3];
 					buff[6] = macPtr[4];
 					buff[7] = macPtr[5];
-					const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfo(ReadMUInt64(buff));
+					NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfo(ReadMUInt64(buff));
 					sb.AppendC(macEntry->name, macEntry->nameLen);
 					console.WriteLine(sb.ToCString());
 					bss.Delete();

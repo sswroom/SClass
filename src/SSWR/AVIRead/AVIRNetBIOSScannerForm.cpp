@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userOb
 			me->lvAnswers->AddItem(CSTRP(sbuff, sptr), ans);
 			sptr = Text::StrHexBytes(sbuff, ans->unitId, 6, ':');
 			me->lvAnswers->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfoBuff(ans->unitId);
+			NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfoBuff(ans->unitId);
 			me->lvAnswers->SetSubItem(i, 2, {mac->name, mac->nameLen});
 			sptr = Text::StrUInt32(sbuff, ans->ttl);
 			me->lvAnswers->SetSubItem(i, 4, CSTRP(sbuff, sptr));

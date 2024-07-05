@@ -77,10 +77,10 @@ UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 	return 0;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
+UnsafeArrayOpt<WChar> IO::ConsoleWriter::ReadLine(UnsafeArray<WChar> sbuff, UOSInt nChar)
 {
 #if !defined(__arm__)
-	if (fgetws(sbuff, (int)nChar, stdin) == 0)
+	if (fgetws(sbuff.Ptr(), (int)nChar, stdin) == 0)
 		return 0;
 	else
 	{

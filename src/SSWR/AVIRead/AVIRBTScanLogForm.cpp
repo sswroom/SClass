@@ -178,7 +178,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 				this->lvContent->SetSubItem(l, 4, CSTR("?"));
 			}
 		}
-		if (s.Set(log->name))
+		if (log->name.SetTo(s))
 			this->lvContent->SetSubItem(l, 5, s);
 		sptr = Text::StrUOSInt(sbuff, log->logs->GetCount());
 		this->lvContent->SetSubItem(l, 6, CSTRP(sbuff, sptr));

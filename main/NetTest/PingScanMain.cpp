@@ -41,7 +41,7 @@ void PingScan(UInt32 ip)
 			sb.AppendUTF8Char('\t');
 			sb.AppendHexBuff(result->mac, 6, ':', Text::LineBreakType::None);
 			sb.AppendUTF8Char('\t');
-			const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfoBuff(result->mac);
+			NN<const Net::MACInfo::MACEntry> macEntry = Net::MACInfo::GetMACInfoBuff(result->mac);
 			sb.AppendC(macEntry->name, macEntry->nameLen);
 			console->WriteLine(sb.ToCString());
 			i++;

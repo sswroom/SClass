@@ -78,9 +78,10 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 	this->txtMAC->SetReadOnly(true);
 	this->lblName = ui->NewLabel(this->pnlDevInfo, CSTR("Name"));
 	this->lblName->SetRect(4, 28, 100, 23, false);
-	if (entry->name)
+	NN<Text::String> name;
+	if (entry->name.SetTo(name))
 	{
-		this->txtName = ui->NewTextBox(this->pnlDevInfo, entry->name->ToCString());
+		this->txtName = ui->NewTextBox(this->pnlDevInfo, name->ToCString());
 	}
 	else
 	{

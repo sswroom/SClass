@@ -95,7 +95,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
 			this->lvWifi->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			sptr = Text::StrInt32(sbuff, bss->GetBSSType());
-			const Net::MACInfo::MACEntry * entry = Net::MACInfo::GetMACInfo(imac);
+			NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfo(imac);
 			this->lvWifi->SetSubItem(i, 3, {entry->name, entry->nameLen});
 			this->lvWifi->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 			sptr = Text::StrInt32(sbuff, bss->GetPHYType());
