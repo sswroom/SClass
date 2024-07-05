@@ -51,7 +51,7 @@ OSInt UI::GUICalendar::OnNotify(UInt32 code, void *lParam)
 		i = this->dateChangedHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->dateChangedHdlrs.GetItem(i)(this->dateChangedObjs.GetItem(i), &dt);
+			this->dateChangedHdlrs.GetItem(i)(this->dateChangedObjs.GetItem(i), dt);
 		}
 	}
 	return 0;

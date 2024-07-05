@@ -17,10 +17,10 @@ namespace Win32
 		};
 	private:
 		void *hand;
-		const WChar *progName;
+		UnsafeArray<const WChar> progName;
 
 	public:
-		WindowsEvent(const WChar *progName);
+		WindowsEvent(UnsafeArray<const WChar> progName);
 		~WindowsEvent();
 
 		Bool WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize);

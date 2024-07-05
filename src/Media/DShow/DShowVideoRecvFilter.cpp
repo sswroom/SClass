@@ -16,14 +16,14 @@ class VideoRecvFilter : public CBaseVideoRenderer
 {
 private:
 	Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr;
-	void *userObj;
+	AnyType userObj;
 	Optional<Media::CS::CSConverter> csConv;
 	UInt8 *frameBuff;
 	Int32 frameW;
 	Int32 frameH;
 	Int32 frameFmt;
 public:
-	VideoRecvFilter(Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr, void *userObj, HRESULT *hr) : CBaseVideoRenderer(GUID_VideoRecv, L"VideoRecvFilter", 0, hr)
+	VideoRecvFilter(Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr, AnyType userObj, HRESULT *hr) : CBaseVideoRenderer(GUID_VideoRecv, L"VideoRecvFilter", 0, hr)
 	{
 		this->hdlr = hdlr;
 		this->userObj = userObj;
@@ -129,7 +129,8 @@ public:
 			pMediaSample->GetPointer(&pSample);
 			if (pSample)
 			{
-				csConv->ConvertV2(&pSample, this->frameBuff, this->frameW, this->frameH, this->frameW, this->frameH, this->frameW << 2, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				UnsafeArray<UInt8> dataPtr = pSample;
+				csConv->ConvertV2(&dataPtr, this->frameBuff, this->frameW, this->frameH, this->frameW, this->frameH, this->frameW << 2, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				LONGLONG startTime;
 				LONGLONG endTime;
 				pMediaSample->GetMediaTime(&startTime, &endTime);
@@ -140,7 +141,7 @@ public:
 	}
 };
 
-Media::DShow::DShowVideoRecvFilter::DShowVideoRecvFilter(Media::DShow::DShowManager *mgr, VFrame32Hdlr hdlr, void *userObj) : Media::DShow::DShowFilter(mgr)
+Media::DShow::DShowVideoRecvFilter::DShowVideoRecvFilter(Media::DShow::DShowManager *mgr, VFrame32Hdlr hdlr, AnyType userObj) : Media::DShow::DShowFilter(mgr)
 {
 	HRESULT hr;
 	VideoRecvFilter *f = new VideoRecvFilter(hdlr, userObj, &hr);

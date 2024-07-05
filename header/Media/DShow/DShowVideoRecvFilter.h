@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DSHOW_DSHOWVIDEORECVFILTER
 #define _SM_MEDIA_DSHOW_DSHOWVIDEORECVFILTER
+#include "AnyType.h"
 #include "Media/DShow/DShowFilter.h"
 
 namespace Media

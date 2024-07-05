@@ -25,7 +25,7 @@ OSInt Data::ArrayListStrW::Compare(const WChar* obj1, const WChar* obj2) const
 	return Text::StrCompare(obj1, obj2);
 }
 
-const WChar *Data::ArrayListStrW::JoinNewStr() const
+UnsafeArray<const WChar> Data::ArrayListStrW::JoinNewStr() const
 {
 	OSInt j;
 	OSInt k;
@@ -35,8 +35,8 @@ const WChar *Data::ArrayListStrW::JoinNewStr() const
 	{
 		strSize += Text::StrCharCnt(arr[j]);
 	}
-	WChar *sbuff = MemAlloc(WChar, strSize + 1);
-	WChar *wptr = sbuff;
+	UnsafeArray<WChar> sbuff = MemAllocArr(WChar, strSize + 1);
+	UnsafeArray<WChar> wptr = sbuff;
 	j = 0;
 	while (j < k)
 	{

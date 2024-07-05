@@ -21,7 +21,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 	else if (Text::StrEqualsC(sb.ToString(), sb.GetLength(), UTF8STRC("application/x-www-form-urlencoded")))
 	{
 		UOSInt buffSize;
-		const UInt8 *buff;
+		UnsafeArray<const UInt8> buff;
 		UInt8 *tmpBuff = 0;
 		UTF8Char *tmpBuff2 = 0;
 		OSInt tmpBuffSize = 0;
@@ -36,8 +36,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 		Text::Encoding enc(codePage);
 		Crypto::Encrypt::FormEncode formEnc;
 
-		buff = req->GetReqData(buffSize);
-		if (buff == 0)
+		if (!req->GetReqData(buffSize).SetTo(buff))
 			return;
 		i = 0;
 		j = 0;

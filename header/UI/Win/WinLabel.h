@@ -17,9 +17,9 @@ namespace UI
 
 			virtual void SetText(Text::CStringNN text);
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			Bool HasTextColor();
-			UInt32 GetTextColor();
-			void SetTextColor(UInt32 textColor);
+			virtual Bool HasTextColor();
+			virtual UInt32 GetTextColor();
+			virtual void SetTextColor(UInt32 textColor);
 		};
 	}
 }

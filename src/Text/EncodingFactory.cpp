@@ -350,7 +350,7 @@ void Text::EncodingFactory::GetCodePages(NN<Data::ArrayList<UInt32>> codePages)
 
 Int32 __stdcall EncodingFactory_CodePageResult(WChar *codePageName)
 {
-	EncodingFactory_codePageResult->Add(Text::StrToInt32(codePageName));
+	EncodingFactory_codePageResult->Add(Text::StrToInt32W((const WChar*)codePageName));
 	return 1;
 }
 #else

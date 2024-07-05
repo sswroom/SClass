@@ -5,9 +5,9 @@
 #include "Win32/WindowsEvent.h"
 #include <windows.h>
 
-Win32::WindowsEvent::WindowsEvent(const WChar *progName)
+Win32::WindowsEvent::WindowsEvent(UnsafeArray<const WChar> progName)
 {
-    this->hand = RegisterEventSourceW(0, progName);
+    this->hand = RegisterEventSourceW(0, progName.Ptr());
 	this->progName = Text::StrCopyNew(progName);
 }
 
@@ -17,7 +17,7 @@ Win32::WindowsEvent::~WindowsEvent()
 	{
         DeregisterEventSource((HANDLE)this->hand);
 	}
-	if (this->progName) Text::StrDelNew(this->progName);
+	Text::StrDelNew(this->progName);
 }
 
 Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize)
@@ -54,7 +54,7 @@ Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const 
 	if (evtMessage)
 	{
 		nStr = 2;
-		lpszStrings[0] = this->progName;
+		lpszStrings[0] = this->progName.Ptr();
 		lpszStrings[1] = evtMessage;
 	}
 	else

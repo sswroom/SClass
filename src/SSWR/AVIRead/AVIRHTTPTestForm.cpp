@@ -262,6 +262,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 		{
 			this->threads[i]->BeginStop();
 		}
+		i = this->threadCnt;
 		while (i-- > 0)
 		{
 			this->threads[i]->WaitForEnd();

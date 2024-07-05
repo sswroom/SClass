@@ -12,7 +12,7 @@ namespace Data
 
 		virtual NN<Data::ArrayList<const WChar*>> Clone() const;
 		virtual OSInt Compare(const WChar* obj1, const WChar* obj2) const;
-		const WChar *JoinNewStr() const;
+		UnsafeArray<const WChar> JoinNewStr() const;
 	};
 }
 #endif

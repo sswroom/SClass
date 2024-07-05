@@ -15,14 +15,13 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	UOSInt ret = 0;
-	IO::Path::FindFileSession *sess;
+	NN<IO::Path::FindFileSession> sess;
 	*linkPathEnd++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(linkPathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(CSTRP(linkPath, sptr));
-	if (sess)
+	if (IO::Path::FindFile(CSTRP(linkPath, sptr)).SetTo(sess))
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0).SetTo(sptr))
+		while (IO::Path::FindNextFile(linkPathEnd, sess, 0, pt, 0).SetTo(sptr))
 		{
 			if (linkPathEnd[0] != '.')
 			{
@@ -166,7 +165,7 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName
 	UnsafeArray<UTF8Char> sptr;
 	HRESULT hres;
 	IShellLink* psl;
-	const WChar* wptr;
+	UnsafeArray<const WChar> wptr;
 	UOSInt i;
 
 	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl);
@@ -201,7 +200,7 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName
 			}
 		}
 		wptr = Text::StrToWCharNew(sbuff);
-		psl->SetPath(wptr);
+		psl->SetPath(wptr.Ptr());
 		Text::StrDelNew(wptr);
 
 		if (i != INVALID_INDEX)
@@ -215,7 +214,7 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName
 			if (i < cmdLine.leng)
 			{
 				wptr = Text::StrToWCharNew(&cmdLine.v[i]);
-				psl->SetArguments(wptr);
+				psl->SetArguments(wptr.Ptr());
 				Text::StrDelNew(wptr);
 			}
 		}
@@ -223,7 +222,7 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName
 		if (comment.SetTo(nncomment) && nncomment.leng > 0)
 		{
 			wptr = Text::StrToWCharNew(nncomment.v);
-			psl->SetDescription(wptr);
+			psl->SetDescription(wptr.Ptr());
 			Text::StrDelNew(wptr);
 		}
 

@@ -174,7 +174,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		{
 			UI::GUILabel *lbl;
 			lbl = (UI::GUILabel*)(OSInt)GetWindowLongPtr((HWND)lParam, GWL_USERDATA);
-			if (lbl)
+			if (lbl && lbl->GetObjectClass().Equals(CSTR("Label")))
 			{
 				if (lbl->HasTextColor())
 				{

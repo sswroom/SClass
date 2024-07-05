@@ -36,7 +36,7 @@ Int32 IO::FileVersion::GetFirstLang()
 UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetInternalName(Int32 lang, UnsafeArray<UTF8Char> sbuff)
 {
 	WChar wbuff2[256];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
 	wptr = Text::StrConcat(wbuff2, L"\\StringFileInfo\\");
 	wptr = Text::StrHexVal32(wptr, lang);
 	wptr = Text::StrConcat(wptr, L"\\InternalName");
@@ -52,7 +52,7 @@ UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetInternalName(Int32 lang, UnsafeArra
 UnsafeArrayOpt<UTF8Char> IO::FileVersion::GetFileDescription(Int32 lang, UnsafeArray<UTF8Char> sbuff)
 {
 	WChar wbuff2[256];
-	WChar *wptr;
+	UnsafeArray<WChar> wptr;
 	wptr = Text::StrConcat(wbuff2, L"\\StringFileInfo\\");
 	wptr = Text::StrHexVal32(wptr, lang);
 	wptr = Text::StrConcat(wptr, L"\\FileDescription");
@@ -70,7 +70,7 @@ IO::FileVersion *IO::FileVersion::Open(const UTF8Char *file)
 	DWORD dwSize;
 	UTF8Char sbuff[512];
 	UInt8 *buff;
-	const WChar *fileName;
+	UnsafeArray<const WChar> fileName;
 	if (file == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
@@ -80,11 +80,11 @@ IO::FileVersion *IO::FileVersion::Open(const UTF8Char *file)
 	{
 		fileName = Text::StrToWCharNew(file);
 	}
-	dwSize = GetFileVersionInfoSizeW(fileName, 0);
+	dwSize = GetFileVersionInfoSizeW(fileName.Ptr(), 0);
 	if (dwSize > 0)
 	{
 		buff = MemAlloc(UInt8, dwSize);
-		if (GetFileVersionInfoW(fileName, 0, dwSize, buff) != 0)
+		if (GetFileVersionInfoW(fileName.Ptr(), 0, dwSize, buff) != 0)
 		{
 			IO::FileVersion *ver;
 			NEW_CLASS(ver, IO::FileVersion(buff, dwSize));

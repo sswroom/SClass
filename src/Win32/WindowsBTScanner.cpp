@@ -78,10 +78,11 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	if (wptr[0] != 0)
 	{
 		NN<Text::String> s = Text::String::NewNotNull(wptr);
-		if (rec->name == 0 || !Text::StrEqualsC(s->v, s->leng, rec->name->v, rec->name->leng))
+		NN<Text::String> name;
+		if (!rec->name.SetTo(name) || !Text::StrEqualsC(s->v, s->leng, name->v, name->leng))
 		{
-			SDEL_STRING(rec->name);
-			rec->name = s.Ptr();
+			OPTSTR_DEL(rec->name);
+			rec->name = s;
 			if (this->recHdlr)
 				this->recHdlr(rec, IO::BTScanner::UT_NAME, this->recHdlrObj);
 		}
@@ -147,7 +148,7 @@ NN<IO::BTScanLog::ScanRecord3> Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO
 
 void Win32::WindowsBTScanner::DeviceFree(NN<IO::BTScanLog::ScanRecord3> rec)
 {
-	SDEL_STRING(rec->name);
+	OPTSTR_DEL(rec->name);
 	MemFreeNN(rec);
 }
 
