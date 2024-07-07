@@ -25,7 +25,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 		if (thisNT == Text::XMLNode::NodeType::Text)
 		{
 			toWrite = false;
-			if (!s.Set(reader.GetNodeOriText()))
+			if (!reader.GetNodeOriText().SetTo(s))
 			{
 				s = reader.GetNodeTextNN();
 			}
@@ -68,7 +68,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 			}
 			else if (thisNT == Text::XMLNode::NodeType::Text)
 			{
-				if (!s.Set(reader.GetNodeOriText()))
+				if (!reader.GetNodeOriText().SetTo(s))
 				{
 					s = reader.GetNodeTextNN();
 				}
