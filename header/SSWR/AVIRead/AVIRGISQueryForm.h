@@ -30,6 +30,8 @@ namespace SSWR
 
 			NN<UI::GUITabPage> tpShape;
 			NN<UI::GUIPanel> pnlShape;
+			NN<UI::GUILabel> lblShapeHLength;
+			NN<UI::GUITextBox> txtShapeHLength;
 			NN<UI::GUILabel> lblShapeLength;
 			NN<UI::GUITextBox> txtShapeLength;
 			NN<UI::GUILabel> lblShapeArea;

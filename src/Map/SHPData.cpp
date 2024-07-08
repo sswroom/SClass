@@ -162,6 +162,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
+					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					this->recs->Add(rec);
 				}
 				else
@@ -201,6 +202,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
+					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					this->recs->Add(rec);
 				}
 				else
@@ -268,6 +270,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
+					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					this->recs->Add(rec);
 				}
 				else
@@ -307,6 +310,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 					rec->nPoint = ReadUInt32(&shpBuff[40]);
 					rec->nPtOfst = ReadUInt32(&shpBuff[36]);
 					rec->ofst = (UInt32)(currOfst + 44);
+					rec->endOfst = (UInt32)currOfst + (fileLen << 1);
 					this->recs->Add(rec);
 				}
 				else
@@ -622,8 +626,8 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 		Double *zList = MemAlloc(Double, rec->nPoint);
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, Data::ByteArray((UInt8*)ptOfstList, rec->nPtOfst << 2));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, Data::ByteArray((UInt8*)pointList, rec->nPoint << 4));
-		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, Data::ByteArray((UInt8*)zList, rec->nPoint << 3));
-		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, 0, 0);
+		shpData->GetRealData(rec->endOfst - (rec->nPoint << 3), rec->nPoint << 3, Data::ByteArray((UInt8*)zList, rec->nPoint << 3));
+		pl->AddFromPtOfst(ptOfstList, rec->nPtOfst, pointList, rec->nPoint, zList, 0);
 		MemFree(zList);
 		MemFreeA(pointList);
 		MemFree(ptOfstList);

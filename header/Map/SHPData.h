@@ -22,6 +22,7 @@ namespace Map
 			UInt32 nPoint;
 			UInt32 nPtOfst;
 			UInt32 ofst;
+			UInt32 endOfst;
 		} RecHdr;
 
 		DB::DBFFile *dbf;

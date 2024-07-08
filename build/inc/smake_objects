@@ -1340,6 +1340,7 @@ HTTPProxyClient.o: ../../src/Net/HTTPProxyClient.cpp
 HTTPProxyTCPClient.o: ../../src/Net/HTTPProxyTCPClient.cpp
 HTTPQueue.o: ../../src/Net/HTTPQueue.cpp
 HTTPServerMonitor.o: ../../src/Net/HTTPServerMonitor.cpp
+IAMSmartAPI.o: ../../src/Net/IAMSmartAPI.cpp
 ICMPScanner.o: ../../src/Net/ICMPScanner.cpp
 IPScanDetector.o: ../../src/Net/IPScanDetector.cpp
 JSONResponse.o: ../../src/Net/JSONResponse.cpp

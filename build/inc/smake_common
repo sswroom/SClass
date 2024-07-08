@@ -3134,6 +3134,8 @@ Net/HTTPQueue.h:
 @HTTPQueue.o
 Net/HTTPServerMonitor.h:
 @HTTPServerMonitor.o
+Net/IAMSmartAPI.h:
+@IAMSmartAPI.o
 Net/ICMPScanner.h:
 @ICMPScanner.o
 Net/IPScanDetector.h:

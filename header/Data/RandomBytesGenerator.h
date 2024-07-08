@@ -7,12 +7,12 @@ namespace Data
 	class RandomBytesGenerator
 	{
 	private:
-		Data::RandomMT19937 *random;
+		Optional<Data::RandomMT19937> random;
 	public:
 		RandomBytesGenerator();
 		~RandomBytesGenerator();
 
-		void NextBytes(UInt8 *buff, UOSInt len);
+		void NextBytes(UnsafeArray<UInt8> buff, UOSInt len);
 	};
 }
 #endif

@@ -288,6 +288,9 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	NN<Math::CoordinateSystem> csys = this->lyr->GetCoordinateSystem();
 	sb.ClearStr();
 	sb.AppendDouble(csys->CalDistance(vec, false, Math::Unit::Distance::DU_METER));
+	this->txtShapeHLength->SetText(sb.ToCString());
+	sb.ClearStr();
+	sb.AppendDouble(csys->CalDistance(vec, true, Math::Unit::Distance::DU_METER));
 	this->txtShapeLength->SetText(sb.ToCString());
 	sb.ClearStr();
 	if (csys->IsProjected())
@@ -343,20 +346,24 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 
 	this->tpShape = this->tcMain->AddTabPage(CSTR("Shape"));
 	this->pnlShape = ui->NewPanel(this->tpShape);
-	this->pnlShape->SetRect(0, 0, 100, 79, false);
+	this->pnlShape->SetRect(0, 0, 100, 103, false);
 	this->pnlShape->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->lblShapeLength = ui->NewLabel(this->pnlShape, CSTR("Length"));
-	this->lblShapeLength->SetRect(4, 4, 100, 23, false);
+	this->lblShapeHLength = ui->NewLabel(this->pnlShape, CSTR("H. Length"));
+	this->lblShapeHLength->SetRect(4, 4, 100, 23, false);
+	this->txtShapeHLength = ui->NewTextBox(this->pnlShape, CSTR(""));
+	this->txtShapeHLength->SetRect(104, 4, 150, 23, false);
+	this->lblShapeLength = ui->NewLabel(this->pnlShape, CSTR("3D Length"));
+	this->lblShapeLength->SetRect(4, 28, 100, 23, false);
 	this->txtShapeLength = ui->NewTextBox(this->pnlShape, CSTR(""));
-	this->txtShapeLength->SetRect(104, 4, 150, 23, false);
+	this->txtShapeLength->SetRect(104, 28, 150, 23, false);
 	this->lblShapeArea = ui->NewLabel(this->pnlShape, CSTR("Area"));
-	this->lblShapeArea->SetRect(4, 28, 100, 23, false);
+	this->lblShapeArea->SetRect(4, 52, 100, 23, false);
 	this->txtShapeArea = ui->NewTextBox(this->pnlShape, CSTR(""));
-	this->txtShapeArea->SetRect(104, 28, 150, 23, false);
+	this->txtShapeArea->SetRect(104, 52, 150, 23, false);
 	this->lblShapeFmt = ui->NewLabel(this->pnlShape, CSTR("Format"));
-	this->lblShapeFmt->SetRect(4, 52, 100, 23, false);
+	this->lblShapeFmt->SetRect(4, 76, 100, 23, false);
 	this->cboShapeFmt = ui->NewComboBox(this->pnlShape, false);
-	this->cboShapeFmt->SetRect(104, 52, 200, 23, false);
+	this->cboShapeFmt->SetRect(104, 76, 200, 23, false);
 	this->cboShapeFmt->HandleSelectionChange(OnShapeFmtChanged, this);
 	this->txtShape = ui->NewTextBox(this->tpShape, CSTR(""), true);
 	this->txtShape->SetDockType(UI::GUIControl::DOCK_FILL);

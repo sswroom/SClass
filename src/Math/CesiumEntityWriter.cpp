@@ -93,18 +93,37 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 			NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 			UOSInt nPoint;
 			UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
+			UnsafeArray<Double> zList;
 			UOSInt k;
 			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));
-			k = 0;
-			while (k < nPoint)
+			if (lineString->GetZList(nPoint).SetTo(zList))
 			{
-				sb->AppendC(UTF8STRC("\t\t\t"));
-				sb->AppendDouble(pointList[k].x);
-				sb->AppendUTF8Char(',');
-				sb->AppendDouble(pointList[k].y);
-				sb->AppendC(UTF8STRC(",\r\n"));
-				k++;
+				k = 0;
+				while (k < nPoint)
+				{
+					sb->AppendC(UTF8STRC("\t\t\t"));
+					sb->AppendDouble(pointList[k].x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(pointList[k].y);
+					sb->AppendC(UTF8STRC(","));
+					sb->AppendDouble(zList[k]);
+					sb->AppendC(UTF8STRC("\r\n"));
+					k++;
+				}
+			}
+			else
+			{
+				k = 0;
+				while (k < nPoint)
+				{
+					sb->AppendC(UTF8STRC("\t\t\t"));
+					sb->AppendDouble(pointList[k].x);
+					sb->AppendUTF8Char(',');
+					sb->AppendDouble(pointList[k].y);
+					sb->AppendC(UTF8STRC(",\r\n"));
+					k++;
+				}
 			}
 			sb->AppendC(UTF8STRC("\t\t]),\r\n"));
 			sb->AppendC(UTF8STRC("\t}\r\n"));
@@ -124,16 +143,35 @@ Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const M
 				lineString = it.Next();
 				UOSInt nPoint;
 				UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
+				UnsafeArray<Double> zList;
 				UOSInt k;
-				k = 0;
-				while (k < nPoint)
+				if (lineString->GetZList(nPoint).SetTo(zList))
 				{
-					sb->AppendC(UTF8STRC("\t\t\t"));
-					sb->AppendDouble(pointList[k].x);
-					sb->AppendUTF8Char(',');
-					sb->AppendDouble(pointList[k].y);
-					sb->AppendC(UTF8STRC(",\r\n"));
-					k++;
+					k = 0;
+					while (k < nPoint)
+					{
+						sb->AppendC(UTF8STRC("\t\t\t"));
+						sb->AppendDouble(pointList[k].x);
+						sb->AppendUTF8Char(',');
+						sb->AppendDouble(pointList[k].y);
+						sb->AppendUTF8Char(',');
+						sb->AppendDouble(zList[k]);
+						sb->AppendC(UTF8STRC(",\r\n"));
+						k++;
+					}
+				}
+				else
+				{
+					k = 0;
+					while (k < nPoint)
+					{
+						sb->AppendC(UTF8STRC("\t\t\t"));
+						sb->AppendDouble(pointList[k].x);
+						sb->AppendUTF8Char(',');
+						sb->AppendDouble(pointList[k].y);
+						sb->AppendC(UTF8STRC(",\r\n"));
+						k++;
+					}
 				}
 			}
 			sb->AppendC(UTF8STRC("\t\t]),\r\n"));

@@ -126,20 +126,46 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 			UOSInt i = 0;
 			UOSInt nPoint;
 			UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
-			sb->AppendC(UTF8STRC("\t\t\t["));
-			sb->AppendDouble(pointList[i].x);
-			sb->AppendC(UTF8STRC(", "));
-			sb->AppendDouble(pointList[i].y);
-			sb->AppendUTF8Char(']');
-			i++;
-			while (i < nPoint)
+			UnsafeArray<Double> zList;
+			if (lineString->GetZList(nPoint).SetTo(zList))
 			{
-				sb->AppendC(UTF8STRC(",\r\n\t\t\t["));
+				sb->AppendC(UTF8STRC("\t\t\t["));
+				sb->AppendDouble(pointList[i].x);
+				sb->AppendC(UTF8STRC(", "));
+				sb->AppendDouble(pointList[i].y);
+				sb->AppendC(UTF8STRC(", "));
+				sb->AppendDouble(zList[i]);
+				sb->AppendUTF8Char(']');
+				i++;
+				while (i < nPoint)
+				{
+					sb->AppendC(UTF8STRC(",\r\n\t\t\t["));
+					sb->AppendDouble(pointList[i].x);
+					sb->AppendC(UTF8STRC(", "));
+					sb->AppendDouble(pointList[i].y);
+					sb->AppendC(UTF8STRC(", "));
+					sb->AppendDouble(zList[i]);
+					sb->AppendUTF8Char(']');
+					i++;
+				}
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("\t\t\t["));
 				sb->AppendDouble(pointList[i].x);
 				sb->AppendC(UTF8STRC(", "));
 				sb->AppendDouble(pointList[i].y);
 				sb->AppendUTF8Char(']');
 				i++;
+				while (i < nPoint)
+				{
+					sb->AppendC(UTF8STRC(",\r\n\t\t\t["));
+					sb->AppendDouble(pointList[i].x);
+					sb->AppendC(UTF8STRC(", "));
+					sb->AppendDouble(pointList[i].y);
+					sb->AppendUTF8Char(']');
+					i++;
+				}
 			}
 			sb->AppendC(UTF8STRC("\r\n\t\t]\r\n"));
 			sb->AppendC(UTF8STRC("\t}"));
@@ -158,7 +184,7 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 				NN<Math::Geometry::LineString> lineString = it.Next();
 				UOSInt nPoint;
 				UnsafeArray<Math::Coord2DDbl> pointList = lineString->GetPointList(nPoint);
-				Math::Coord2DDbl initPt;
+				UnsafeArray<Double> zList;
 				UOSInt k;
 				if (!found)
 				{
@@ -168,30 +194,47 @@ Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::
 				{
 					sb->AppendC(UTF8STRC(",\r\n\t\t\t[\r\n"));
 				}
-				k = 0;
-				sb->AppendC(UTF8STRC("\t\t\t\t["));
-				sb->AppendDouble(pointList[k].x);
-				sb->AppendC(UTF8STRC(", "));
-				sb->AppendDouble(pointList[k].y);
-				sb->AppendUTF8Char(']');
-				initPt = pointList[k];
-				k++;
-				while (k < nPoint)
+				if (lineString->GetZList(nPoint).SetTo(zList))
 				{
-					sb->AppendC(UTF8STRC(",\r\n\t\t\t\t["));
+					k = 0;
+					sb->AppendC(UTF8STRC("\t\t\t\t["));
+					sb->AppendDouble(pointList[k].x);
+					sb->AppendC(UTF8STRC(", "));
+					sb->AppendDouble(pointList[k].y);
+					sb->AppendC(UTF8STRC(", "));
+					sb->AppendDouble(zList[k]);
+					sb->AppendUTF8Char(']');
+					k++;
+					while (k < nPoint)
+					{
+						sb->AppendC(UTF8STRC(",\r\n\t\t\t\t["));
+						sb->AppendDouble(pointList[k].x);
+						sb->AppendC(UTF8STRC(", "));
+						sb->AppendDouble(pointList[k].y);
+						sb->AppendC(UTF8STRC(", "));
+						sb->AppendDouble(zList[k]);
+						sb->AppendUTF8Char(']');
+						k++;
+					}
+				}
+				else
+				{
+					k = 0;
+					sb->AppendC(UTF8STRC("\t\t\t\t["));
 					sb->AppendDouble(pointList[k].x);
 					sb->AppendC(UTF8STRC(", "));
 					sb->AppendDouble(pointList[k].y);
 					sb->AppendUTF8Char(']');
 					k++;
-				}
-				if (pointList[nPoint - 1] != initPt)
-				{
-					sb->AppendC(UTF8STRC(",\r\n\t\t\t\t["));
-					sb->AppendDouble(initPt.x);
-					sb->AppendC(UTF8STRC(", "));
-					sb->AppendDouble(initPt.y);
-					sb->AppendUTF8Char(']');
+					while (k < nPoint)
+					{
+						sb->AppendC(UTF8STRC(",\r\n\t\t\t\t["));
+						sb->AppendDouble(pointList[k].x);
+						sb->AppendC(UTF8STRC(", "));
+						sb->AppendDouble(pointList[k].y);
+						sb->AppendUTF8Char(']');
+						k++;
+					}
 				}
 				sb->AppendC(UTF8STRC("\r\n\t\t\t]"));
 				found = true;
