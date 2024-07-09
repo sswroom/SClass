@@ -289,7 +289,7 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1,
 #if OPENSSL_VERSION_NUMBER >= 0x10002000
 	SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 #endif
-	if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
+	if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff().Ptr()) <= 0)
 	{
 		return false;
 	}
@@ -297,7 +297,7 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1,
 	while (it.HasNext())
 	{
 		NN<Crypto::Cert::X509Cert> caCert = it.Next();
-		const UInt8 *asn1 = caCert->GetASN1Buff();
+		const UInt8 *asn1 = caCert->GetASN1Buff().Ptr();
 		X509 *x509 = d2i_X509(0, &asn1, (long)caCert->GetASN1BuffSize());
 		if (x509 == 0)
 		{
@@ -312,14 +312,14 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1,
 		Crypto::Cert::X509File::KeyType keyType = pkey->GetKeyType();
 		if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
 		{
-			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, keyASN1->GetASN1Buff().Ptr(), (long)keyASN1->GetASN1BuffSize()) <= 0)
 			{
 				return false;
 			}
 		}
 		else
 		{
-			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff().Ptr(), (long)keyASN1->GetASN1BuffSize()) <= 0)
 			{
 				return false;
 			}
@@ -334,7 +334,7 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1,
 			Crypto::Cert::X509File::KeyType keyType = privKey->GetKeyType();
 			if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
 			{
-				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_EC, this->clsData->ctx, privKey->GetASN1Buff().Ptr(), (long)privKey->GetASN1BuffSize()) <= 0)
 				{
 					privKey.Delete();
 					return false;
@@ -342,7 +342,7 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1,
 			}
 			else
 			{
-				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff().Ptr(), (long)privKey->GetASN1BuffSize()) <= 0)
 				{
 					privKey.Delete();
 					return false;
@@ -499,11 +499,11 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostN
 	}
 	if (this->clsData->cliCert)
 	{
-		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
+		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
 	}
 	if (this->clsData->cliKey)
 	{
-		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
+		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	NN<Socket> s;
 	UOSInt addrInd = 0;
@@ -555,11 +555,11 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientInit(NN<Socket> s, Text::CStr
 	}
 	if (this->clsData->cliCert)
 	{
-		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
+		SSL_use_certificate_ASN1(ssl, this->clsData->cliCert->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliCert->GetASN1BuffSize());
 	}
 	if (this->clsData->cliKey)
 	{
-		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
+		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	return CreateClientConn(ssl, s, hostName, err);
 }
@@ -750,7 +750,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOn
 	EVP_PKEY *pkey = 0;
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
 	{
-		const UInt8 *keyPtr = key->GetASN1Buff();
+		const UInt8 *keyPtr = key->GetASN1Buff().Ptr();
 		pkey = d2i_PrivateKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
 #ifdef SHOW_DEBUG
 		if (pkey == 0)
@@ -761,7 +761,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOn
 	}
 	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::ECDSA)
 	{
-		const UInt8 *keyPtr = key->GetASN1Buff();
+		const UInt8 *keyPtr = key->GetASN1Buff().Ptr();
 		pkey = d2i_PrivateKey(EVP_PKEY_EC, 0, &keyPtr, (long)key->GetASN1BuffSize());
 #ifdef SHOW_DEBUG
 		if (pkey == 0)
@@ -835,7 +835,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOn
 	}
 	else if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		const UInt8 *keyPtr = key->GetASN1Buff();
+		const UInt8 *keyPtr = key->GetASN1Buff().Ptr();
 		pkey = d2i_PublicKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
 #ifdef SHOW_DEBUG
 		if (pkey == 0)

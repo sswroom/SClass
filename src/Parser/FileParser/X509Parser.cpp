@@ -537,11 +537,15 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ToType(NN<IO::P
 	return 0;
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBinary(Data::ByteArrayR buff)
+Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBinary(Data::ByteArrayR buff)
 {
 	if (Crypto::Cert::X509File::IsCertificate(buff.Arr(), buff.ArrEnd(), "1"))
 	{
 		return NEW_CLASS_D(Crypto::Cert::X509Cert(CSTR("Certificate.crt"), buff));
+	}
+	else if (Crypto::Cert::X509File::IsPublicKeyInfo(buff.Arr(), buff.ArrEnd(), "1"))
+	{
+		return NEW_CLASS_D(Crypto::Cert::X509PubKey(CSTR("PublicKey.key"), buff));
 	}
 	return 0;
 }

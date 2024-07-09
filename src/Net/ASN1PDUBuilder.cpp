@@ -11,13 +11,13 @@ Net::ASN1PDUBuilder::ASN1PDUBuilder()
 {
 	this->currLev = 0;
 	this->buffSize = 128;
-	this->buff = MemAlloc(UInt8, buffSize);
+	this->buff = MemAllocArr(UInt8, buffSize);
 	this->currOffset = 0;
 }
 
 Net::ASN1PDUBuilder::~ASN1PDUBuilder()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 void Net::ASN1PDUBuilder::AllocateSize(UOSInt size)
@@ -28,9 +28,9 @@ void Net::ASN1PDUBuilder::AllocateSize(UOSInt size)
 		{
 			this->buffSize = this->buffSize << 1;
 		}
-		UInt8 *newBuff = MemAlloc(UInt8, this->buffSize);
-		MemCopyNO(newBuff, this->buff, this->currOffset);
-		MemFree(this->buff);
+		UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, this->buffSize);
+		MemCopyNO(newBuff.Ptr(), this->buff.Ptr(), this->currOffset);
+		MemFreeArr(this->buff);
 		this->buff = newBuff;
 	}
 }
@@ -285,12 +285,12 @@ void Net::ASN1PDUBuilder::AppendNull()
 	this->currOffset += 2;
 }
 
-void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, UOSInt len)
+void Net::ASN1PDUBuilder::AppendOID(UnsafeArray<const UInt8> oid, UOSInt len)
 {
 	this->AllocateSize(len + 2);
 	this->buff[this->currOffset] = 6;
 	this->buff[this->currOffset + 1] = (UInt8)len;
-	MemCopyNO(&this->buff[this->currOffset + 2], oid, len);
+	MemCopyNO(&this->buff[this->currOffset + 2], oid.Ptr(), len);
 	this->currOffset += len + 2;
 }
 
@@ -417,12 +417,12 @@ void Net::ASN1PDUBuilder::AppendOther(UInt8 type, UnsafeArray<const UInt8> buff,
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendContentSpecific(UInt8 n, const UInt8 *buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendContentSpecific(UInt8 n, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->AppendOther((UInt8)(0xA0 + n), buff, buffSize);
 }
 
-void Net::ASN1PDUBuilder::AppendSequence(const UInt8 *buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendSequence(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->AppendOther(0x30, buff, buffSize);
 }
@@ -432,7 +432,7 @@ void Net::ASN1PDUBuilder::AppendInteger(UnsafeArray<const UInt8> buff, UOSInt bu
 	this->AppendOther(2, buff, buffSize);
 }
 
-UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(const Char *path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst)
+UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(UnsafeArrayOpt<const Char> path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst)
 {
 	UOSInt startOfst;
 	if (this->currLev > 0)
@@ -446,14 +446,14 @@ UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(const Char *path, Op
 	return Net::ASN1Util::PDUGetItemRAW(&this->buff[startOfst], &this->buff[this->currOffset], path, itemLen, itemOfst);
 }
 
-const UInt8 *Net::ASN1PDUBuilder::GetBuff(OutParam<UOSInt> buffSize)
+UnsafeArray<const UInt8> Net::ASN1PDUBuilder::GetBuff(OutParam<UOSInt> buffSize)
 {
 	this->EndAll();
 	buffSize.Set(this->currOffset);
 	return this->buff;
 }
 
-const UInt8 *Net::ASN1PDUBuilder::GetBuff()
+UnsafeArray<const UInt8> Net::ASN1PDUBuilder::GetBuff()
 {
 	this->EndAll();
 	return this->buff;

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_IAMSMARTAPI
 #define _SM_NET_IAMSMARTAPI
+#include "Crypto/Cert/X509PrivKey.h"
 #include "Data/RandomBytesGenerator.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngine.h"
@@ -21,8 +22,7 @@ namespace Net
 		IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret);
 		~IAMSmartAPI();
 
-		Bool GetKey();
-
+		Bool GetKey(NN<Crypto::Cert::X509PrivKey> privKey);
 	};
 }
 #endif

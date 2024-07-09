@@ -3,9 +3,14 @@
 #include "Crypto/Hash/SHA256.h"
 #include "Net/HTTPClient.h"
 #include "Net/IAMSmartAPI.h"
+#include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
+
+#define VERBOSE
+#if defined(VERBOSE)
 #include <stdio.h>
+#endif
 
 void Net::IAMSmartAPI::InitHTTPClient(NN<Net::HTTPClient> cli, Text::CStringNN content)
 {
@@ -56,7 +61,7 @@ Net::IAMSmartAPI::~IAMSmartAPI()
 	this->clientSecret->Release();
 }
 
-Bool Net::IAMSmartAPI::GetKey()
+Bool Net::IAMSmartAPI::GetKey(NN<Crypto::Cert::X509PrivKey> privKey)
 {
 	Text::StringBuilderUTF8 sbURL;
 	sbURL.Append(CSTR("https://"));
@@ -68,8 +73,43 @@ Bool Net::IAMSmartAPI::GetKey()
 	cli->ReadToEnd(mstm, 65536);
 	
 	mstm.Write(Data::ByteArrayR(U8STR(""), 1));
-	printf("Status: %d\r\n", (Int32)cli->GetRespStatus());
-	printf("Content: %s\r\n", mstm.GetBuff().Ptr());
+	Net::WebStatus::StatusCode code = cli->GetRespStatus();
 	cli.Delete();
+#if defined(VERBOSE)
+	printf("Status: %d\r\n", (Int32)code);
+	printf("Content: %s\r\n", mstm.GetBuff().Ptr());
+#endif
+	if (code != Net::WebStatus::SC_OK)
+	{
+#if defined(VERBOSE)
+		printf("Status is not OK\r\n");
+#endif
+		return false;
+	}
+	NN<Text::JSONBase> json;
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength() - 1)).SetTo(json))
+	{
+#if defined(VERBOSE)
+		printf("Response is not JSON\r\n");
+#endif
+		return false;
+	}
+	NN<Text::String> secretKey;
+	NN<Text::String> pubKey;
+	Int64 issueAt;
+	Int64 expiresIn;
+	if (!json->GetValueString(CSTR("content.secretKey")).SetTo(secretKey) ||
+		!json->GetValueString(CSTR("content.pubKey")).SetTo(pubKey) ||
+		!json->GetValueAsInt64(CSTR("content.issueAt"), issueAt) ||
+		!json->GetValueAsInt64(CSTR("content.expiresIn"), issueAt))
+	{
+#if defined(VERBOSE)
+		printf("Response content is not valid\r\n");
+#endif
+		json->EndUse();
+		return false;
+	}
+
+	json->EndUse();
 	return false;
 }

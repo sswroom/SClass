@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Net/ASN1UnknownData.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "SSWR/AVIRead/AVIRCertTextForm.h"
 #include "Text/TextBinEnc/Base64Enc.h"
@@ -47,10 +48,18 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 		return;
 	}
 	NN<Crypto::Cert::X509File> file;
-	if (file.Set(Parser::FileParser::X509Parser::ParseBinary(Data::ByteArray(buff, buffSize))))
+	if (Parser::FileParser::X509Parser::ParseBinary(Data::ByteArray(buff, buffSize)).SetTo(file))
 	{
 		MemFree(buff);
 		me->core->OpenObject(file);
+		me->Close();
+	}
+	else if (Net::ASN1Util::PDUIsValid(buff, buff + buffSize))
+	{
+		NN<Net::ASN1UnknownData> asn;
+		NEW_CLASSNN(asn, Net::ASN1UnknownData(CSTR("Data"), Data::ByteArrayR(buff, buffSize)));
+		MemFree(buff);
+		me->core->OpenObject(asn);
 		me->Close();
 	}
 	else

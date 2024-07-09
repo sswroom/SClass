@@ -194,7 +194,7 @@ void IO::StmData::FileData::SetFullName(Text::CStringNN fullName)
 	}
 }
 
-const UInt8 *IO::StmData::FileData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::FileData::GetPointer()
 {
 	return 0;
 }

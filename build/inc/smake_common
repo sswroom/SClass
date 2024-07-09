@@ -3079,6 +3079,8 @@ Net/ASN1OIDDB.h:
 @ASN1OIDDB.o
 Net/ASN1PDUBuilder.h:
 @ASN1PDUBuilder.o
+Net/ASN1UnknownData.h:
+@ASN1UnknownData.o
 Net/ASN1Util.h:
 @ASN1Util.o
 Net/AzureManager.h:

@@ -1309,6 +1309,7 @@ ASN1MIB.o: ../../src/Net/ASN1MIB.cpp
 ASN1Names.o: ../../src/Net/ASN1Names.cpp
 ASN1OIDDB.o: ../../src/Net/ASN1OIDDB.cpp
 ASN1PDUBuilder.o: ../../src/Net/ASN1PDUBuilder.cpp
+ASN1UnknownData.o: ../../src/Net/ASN1UnknownData.cpp
 ASN1Util.o: ../../src/Net/ASN1Util.cpp
 AzureManager.o: ../../src/Net/AzureManager.cpp
 BrowserInfo.o: ../../src/Net/BrowserInfo.cpp

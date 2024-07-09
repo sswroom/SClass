@@ -364,7 +364,7 @@ void Net::HTTPData::SetFullName(Text::CStringNN fullName)
 	mutUsage.EndUse();
 }
 
-const UInt8 *Net::HTTPData::GetPointer()
+UnsafeArrayOpt<const UInt8> Net::HTTPData::GetPointer()
 {
 	return 0;
 }

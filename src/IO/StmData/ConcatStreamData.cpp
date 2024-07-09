@@ -126,7 +126,7 @@ UInt64 IO::StmData::ConcatStreamData::GetDataSize()
 	}
 }
 
-const UInt8 *IO::StmData::ConcatStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::ConcatStreamData::GetPointer()
 {
 	return 0;
 }

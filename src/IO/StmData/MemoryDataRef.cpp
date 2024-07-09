@@ -62,9 +62,9 @@ UInt64 IO::StmData::MemoryDataRef::GetDataSize()
 	return this->data.GetSize();
 }
 
-const UInt8 *IO::StmData::MemoryDataRef::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::MemoryDataRef::GetPointer()
 {
-	return this->data.Arr().Ptr();
+	return this->data.Arr();
 }
 
 NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)

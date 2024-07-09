@@ -1072,6 +1072,12 @@ void Net::ASN1Util::PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::Byt
 				frame->AddUInt(pduOfst + 1, 5, CSTR("Item Length"), len);
 				pduOfst += 6;
 			}
+			else if (buff[pduOfst + 1] == 0x80)
+			{
+				len = 0;
+				frame->AddField(pduOfst + 1, 1, CSTR("Item Length"), CSTR("To End Mode"));
+				pduOfst += 2;
+			}
 			else
 			{
 				return;

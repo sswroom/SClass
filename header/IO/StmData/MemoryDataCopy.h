@@ -11,18 +11,18 @@ namespace IO
 		private:
 			typedef struct
 			{
-				UInt8 *data;
+				UnsafeArray<UInt8> data;
 				UOSInt dataLength;
 				Int32 useCnt;
-				Text::String *fullName;
+				Optional<Text::String> fullName;
 			} MemoryStats;
-			MemoryStats *stat;
-			const UInt8 *data;
+			NN<MemoryStats> stat;
+			UnsafeArray<const UInt8> data;
 			UOSInt dataLength;
 
-			MemoryDataCopy(MemoryStats *stat, const UInt8 *data, UOSInt dataLength);
+			MemoryDataCopy(NN<MemoryStats> stat, UnsafeArray<const UInt8> data, UOSInt dataLength);
 		public:
-			MemoryDataCopy(const UInt8 *data, UOSInt dataLength);
+			MemoryDataCopy(UnsafeArray<const UInt8> data, UOSInt dataLength);
 			MemoryDataCopy(const Data::ByteArrayR &data);
 			virtual ~MemoryDataCopy();
 
@@ -31,7 +31,7 @@ namespace IO
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CStringNN fullName);
 			virtual UInt64 GetDataSize();
-			virtual const UInt8 *GetPointer();
+			virtual UnsafeArrayOpt<const UInt8> GetPointer();
 
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();

@@ -84,7 +84,7 @@ UInt64 IO::StmData::BufferedStreamData::GetDataSize()
 	return this->stmData->GetDataSize();
 }
 
-const UInt8 *IO::StmData::BufferedStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::BufferedStreamData::GetPointer()
 {
 	return this->stmData->GetPointer();
 }

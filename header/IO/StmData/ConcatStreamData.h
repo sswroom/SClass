@@ -39,7 +39,7 @@ namespace IO
 			virtual NN<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();
-			virtual const UInt8 *GetPointer();
+			virtual UnsafeArrayOpt<const UInt8> GetPointer();
 
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();

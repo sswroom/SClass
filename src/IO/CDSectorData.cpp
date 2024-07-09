@@ -121,7 +121,7 @@ UInt64 IO::CDSectorStreamData::GetDataSize()
 	return this->dataSize;
 }
 
-const UInt8 *IO::CDSectorStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::CDSectorStreamData::GetPointer()
 {
 	return 0;
 }

@@ -538,12 +538,12 @@ Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto
 	if (this->clsData->curl)
 	{
 		struct curl_blob blob;
-		blob.data = (void*)cert->GetASN1Buff();
+		blob.data = (void*)cert->GetASN1Buff().Ptr();
 		blob.len = (size_t)cert->GetASN1BuffSize();
 		blob.flags = CURL_BLOB_COPY;
 		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLCERTTYPE, "DER");
 		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLCERT_BLOB, &blob);
-		blob.data = (void*)key->GetASN1Buff();
+		blob.data = (void*)key->GetASN1Buff().Ptr();
 		blob.len = (size_t)key->GetASN1BuffSize();
 		blob.flags = CURL_BLOB_COPY;
 		curl_easy_setopt(this->clsData->curl, CURLOPT_SSLKEYTYPE, "DER");

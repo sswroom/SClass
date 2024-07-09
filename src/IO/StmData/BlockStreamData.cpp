@@ -75,7 +75,7 @@ UInt64 IO::StmData::BlockStreamData::GetDataSize()
 	return totalSize;
 }
 
-const UInt8 *IO::StmData::BlockStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::BlockStreamData::GetPointer()
 {
 	return 0;
 }

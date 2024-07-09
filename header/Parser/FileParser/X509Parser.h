@@ -21,7 +21,7 @@ namespace Parser
 
 			static Optional<Crypto::Cert::X509File> ParseBuff(Data::ByteArrayR buff, NN<Text::String> fileName);
 			static Optional<Crypto::Cert::X509File> ToType(NN<IO::ParsedObject> pobj, Crypto::Cert::X509File::FileType ftype);
-			static Crypto::Cert::X509File *ParseBinary(Data::ByteArrayR buff);
+			static Optional<Crypto::Cert::X509File> ParseBinary(Data::ByteArrayR buff);
 		};
 	}
 }

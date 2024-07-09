@@ -760,7 +760,7 @@ void Crypto::Cert::X509File::AppendCertificateRequest(UnsafeArray<const UInt8> p
 Bool Crypto::Cert::X509File::IsPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<const Char> path)
 {
 	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, path);
-	if (cnt < 2)
+	if (cnt != 2)
 	{
 		return false;
 	}

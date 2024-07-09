@@ -229,7 +229,7 @@ UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char
 	return b64.EncodeBin(sbuff, sha1Val, 20);
 }
 
-void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, const UInt8 *data, UOSInt dataSize)
+void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, UnsafeArray<const UInt8> data, UOSInt dataSize)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
 	UTF8Char sbuff[80];

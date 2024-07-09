@@ -12,7 +12,8 @@ namespace Net
 	public:
 		enum class ASN1Type
 		{
-			X509
+			X509,
+			Unknown
 		};
 	protected:
 		Data::ByteBuffer buff;
@@ -29,11 +30,11 @@ namespace Net
 		virtual NN<ASN1Names> CreateNames() const = 0;
 
 		Bool ToASN1String(NN<Text::StringBuilderUTF8> sb) const;
-		const UInt8 *GetASN1Buff() const;
+		UnsafeArray<const UInt8> GetASN1Buff() const;
 		UOSInt GetASN1BuffSize() const;
 		Data::ByteArrayR GetASN1Array() const;
 
-		static void AppendInteger(NN<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len);
+		static void AppendInteger(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> pdu, UOSInt len);
 	};
 }
 #endif

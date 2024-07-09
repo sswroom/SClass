@@ -12,7 +12,7 @@ namespace Net
 		UOSInt seqOffset[16];
 		UOSInt currLev;
 		UOSInt buffSize;
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UOSInt currOffset;
 
 	public:
@@ -36,7 +36,7 @@ namespace Net
 		void AppendOctetString(NN<Text::String> s);
 		void AppendOctetStringC(Text::CStringNN s);
 		void AppendNull();
-		void AppendOID(const UInt8 *oid, UOSInt len);
+		void AppendOID(UnsafeArray<const UInt8> oid, UOSInt len);
 		void AppendOID(Data::ByteArrayR oid);
 		void AppendOIDString(Text::CStringNN oidStr);
 		void AppendChoice(UInt32 v);
@@ -45,13 +45,13 @@ namespace Net
 		void AppendIA5String(NN<Text::String> s);
 		void AppendUTCTime(NN<Data::DateTime> t);
 		void AppendOther(UInt8 type, UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		void AppendContentSpecific(UInt8 n, const UInt8 *buff, UOSInt buffSize);
-		void AppendSequence(const UInt8 *buff, UOSInt buffSize);
+		void AppendContentSpecific(UInt8 n, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		void AppendSequence(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		void AppendInteger(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 
-		UnsafeArrayOpt<const UInt8> GetItemRAW(const Char *path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst);
-		const UInt8 *GetBuff(OutParam<UOSInt> buffSize);
-		const UInt8 *GetBuff();
+		UnsafeArrayOpt<const UInt8> GetItemRAW(UnsafeArrayOpt<const Char> path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst);
+		UnsafeArray<const UInt8> GetBuff(OutParam<UOSInt> buffSize);
+		UnsafeArray<const UInt8> GetBuff();
 		UOSInt GetBuffSize();
 		Data::ByteArrayR GetArray();
 	};

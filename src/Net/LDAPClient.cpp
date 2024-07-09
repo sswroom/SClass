@@ -567,7 +567,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 {
 	Net::ASN1PDUBuilder *pdu;
 	UOSInt buffSize;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	Net::LDAPClient::ReqStatus status;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
@@ -628,7 +628,7 @@ Bool Net::LDAPClient::Unbind()
 {
 	Net::ASN1PDUBuilder *pdu;
 	UOSInt buffSize;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
 	pdu->BeginSequence();
@@ -655,7 +655,7 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 {
 	Net::ASN1PDUBuilder *pdu;
 	UOSInt buffSize;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	Net::LDAPClient::ReqStatus status;
 	Data::ArrayListNN<Net::LDAPClient::SearchResObject> resObjs;
 	Bool valid;

@@ -81,7 +81,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NN<const Net::SocketUti
 Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	UOSInt buffSize;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	Net::SNMPUtil::ErrorStatus ret;
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
@@ -124,7 +124,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NN<const Net::Socke
 Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	UOSInt buffSize;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	Net::SNMPUtil::ErrorStatus ret;
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;
@@ -204,7 +204,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> 
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
 	UOSInt buffSize;
-	const UInt8 *buff;
+	UnsafeArray<const UInt8> buff;
 	UOSInt initCnt = addrList->GetCount();
 	Sync::MutexUsage mutUsage(this->mut);
 	Net::ASN1PDUBuilder pdu;

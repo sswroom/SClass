@@ -25,7 +25,7 @@ namespace IO
 			virtual Text::CString GetShortName();
 			virtual void SetFullName(Text::CStringNN fullName);
 			virtual UInt64 GetDataSize();
-			virtual const UInt8 *GetPointer();
+			virtual UnsafeArrayOpt<const UInt8> GetPointer();
 
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
