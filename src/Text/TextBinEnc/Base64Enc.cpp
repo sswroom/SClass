@@ -315,7 +315,7 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(Text::CStringNN b64Str) const
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const WChar *sbuff) const
+UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(UnsafeArray<const WChar> sbuff) const
 {
 	UOSInt cnt = 0;
 	WChar c;
@@ -391,7 +391,7 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(Text::CStringNN str, UnsafeArray<U
 	return decSize;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const WChar *b64Str, UnsafeArray<UInt8> dataBuff) const
+UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(UnsafeArray<const WChar> b64Str, UnsafeArray<UInt8> dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;

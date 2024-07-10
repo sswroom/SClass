@@ -1,3 +1,13 @@
+1.6.9
+-Enhance web.getBrowserInfo
+
+1.6.8
+-Added text.replaceAll
+-Added web.OSType
+-Added web.BrowserType
+-Added web.getBrowserInfo
+-Added web.parseUserAgent
+
 1.6.7
 -Fixed text.isEmailAddress
 

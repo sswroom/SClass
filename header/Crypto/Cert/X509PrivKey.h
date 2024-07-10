@@ -24,6 +24,7 @@ namespace Crypto
 			
 			Crypto::Cert::X509File::KeyType GetKeyType() const;
 			Optional<Crypto::Cert::X509Key> CreateKey() const;
+			Bool GetKeyId(const Data::ByteArray &keyId) const;
 
 			static NN<X509PrivKey> CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, Optional<Text::String> sourceName);
 			static Optional<X509PrivKey> CreateFromKey(NN<Crypto::Cert::X509Key> key);

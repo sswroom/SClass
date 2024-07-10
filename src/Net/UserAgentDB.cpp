@@ -1316,6 +1316,7 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 						ent->devName = Text::StrCopyNewC(strs2[j].v, strs2[j].leng);
 						ent->devNameLen = strs2[j].leng;
 					}
+					lastIsAndroid = false;
 				}
 				j++;
 			}
@@ -1369,6 +1370,48 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 			SDEL_TEXT(ent->browserVer);
 			ent->browserVer = Text::StrCopyNewC(&strs[i].v[5], strs[i].leng - 5);
 			ent->browserVerLen = strs[i].leng - 5;
+		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Edg/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_EDGE;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[4], strs[i].leng - 4);
+			ent->browserVerLen = strs[i].leng - 4;
+		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("EdgiOS/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_EDGE;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[7], strs[i].leng - 7);
+			ent->browserVerLen = strs[i].leng - 7;
+		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("OPT/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_OPERA;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[4], strs[i].leng - 4);
+			ent->browserVerLen = strs[i].leng - 4;
+		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("OPR/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_OPERA;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[4], strs[i].leng - 4);
+			ent->browserVerLen = strs[i].leng - 4;
+		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("HuaweiBrowser/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_HUAWEIBROWSER;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[14], strs[i].leng - 14);
+			ent->browserVerLen = strs[i].leng - 14;
+		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("XiaoMi/MiuiBrowser/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_MIBROWSER;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[19], strs[i].leng - 19);
+			ent->browserVerLen = strs[i].leng - 19;
 		}
 		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Safari/")))
 		{

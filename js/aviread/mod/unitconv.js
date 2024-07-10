@@ -1,25 +1,26 @@
 import * as unit from "/js/@sswroom/sswr/unit.js";
+import * as web from "/js/@sswroom/sswr/web.js";
 
 function updateResult()
 {
-	let val = Number.parseFloat(document.getElementById("fromValue").value);
+	let val = Number.parseFloat(web.getInputElement("fromValue").value);
 	if (Number.isNaN(val))
 	{
-		document.getElementById("toValue").value = "";
+		web.getInputElement("toValue").value = "";
 		return;
 	}
-	let unitType = document.getElementById("unitType");
+	let unitType = web.getSelectElement("unitType");
 	let u = units[unitType.value];
-	val = u.convert(u.Unit[document.getElementById("fromUnit").value], u.Unit[document.getElementById("toUnit").value], val);
-	document.getElementById("toValue").value = val;
+	val = u.convert(u.Unit[web.getSelectElement("fromUnit").value], u.Unit[web.getSelectElement("toUnit").value], val);
+	web.getInputElement("toValue").value = ""+val;
 }
 
 function onUnitTypeChg()
 {
-	let unitType = document.getElementById("unitType");
+	let unitType = web.getSelectElement("unitType");
 	let u = units[unitType.value];
-	let fromType = document.getElementById("fromUnit");
-	let toType = document.getElementById("toUnit");
+	let fromType = web.getSelectElement("fromUnit");
+	let toType = web.getSelectElement("toUnit");
 	let i;
 	let info;
 	i = fromType.options.length;
@@ -44,7 +45,7 @@ function onUnitTypeChg()
 }
 
 let units = unit.getList();
-let unitType = document.getElementById("unitType");
+let unitType = web.getSelectElement("unitType");
 let i;
 let opt;
 for (i in units)

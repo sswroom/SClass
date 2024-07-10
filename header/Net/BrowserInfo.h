@@ -59,9 +59,12 @@ namespace Net
 			BT_NETSEEN,
 			BT_MSNBOT,
 			BT_LIBWWW_PERL,
+			BT_HUAWEIBROWSER,
+			BT_OPERA,
+			BT_MIBROWSER,
 
 			BT_FIRST = BT_UNKNOWN,
-			BT_LAST = BT_LIBWWW_PERL
+			BT_LAST = BT_MIBROWSER
 		} BrowserType;
 
 	public:

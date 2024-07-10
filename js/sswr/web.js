@@ -1,6 +1,80 @@
 import * as data from "./data.js";
 import * as text from "./text.js";
 
+export const OSType = {
+	Unknown: "Unknown",
+	WindowsNT: "WindowsNT",
+	WindowsCE: "WindowsCE",
+	WindowsSvr: "WindowsSvr",
+	Linux_X86_64: "Linux_X86_64",
+	Android: "Android",
+	iPad: "iPad",
+	iPhone: "iPhone",
+	Darwin: "Darwin",
+	MacOS: "MacOS",
+	WindowsNT64: "WindowsNT64",
+	ChromeOS: "ChromeOS",
+	Linux_i686: "Linux_i686",
+	Netcast: "Netcast"
+}
+
+export const BrowserType = {
+	Unknown: "Unknown",
+	IE: "IE",
+	Firefox: "Firefox",
+	Chrome: "Chrome",
+	Safari: "Safari",
+	UCBrowser: "UCBrowser",
+	CFNetwork: "CFNetwork",
+	SogouWeb: "SogouWeb",
+	Baidu: "Baidu",
+	Semrush: "Semrush",
+	Dalvik: "Dalvik",
+	Indy: "Indy",
+	GoogleBots: "GoogleBots",
+	AndroidWV: "AndroidWV",
+	Samsung: "Samsung",
+	WestWind: "WestWind",
+	Yandex: "Yandex",
+	Bing: "Bing",
+	Masscan: "Masscan",
+	PyRequests: "PyRequests",
+	Zgrab: "Zgrab",
+	Edge: "Edge",
+	PyURLLib: "PyURLLib",
+	GoogleBotD: "GoogleBotD",
+	DotNet: "DotNet",
+	WinDiag: "WinDiag",
+	SSWR: "SSWR",
+	SmartTV: "SmartTV",
+	BlexBot: "BlexBot",
+	SogouPic: "SogouPic",
+	Nutch: "Nutch",
+	Yisou: "Yisou",
+	Wget: "Wget",
+	Scrapy: "Scrapy",
+	GoHTTP: "GoHTTP",
+	WinHTTP: "WinHTTP",
+	NLPProject: "NLPProject",
+	ApacheHTTP: "ApacheHTTP",
+	BannerDet: "BannerDet",
+	NetcraftWeb: "NetcraftWeb",
+	NetcraftAG: "NetcraftAG",
+	AhrefsBot: "AhrefsBot",
+	Mj12Bot: "Mj12Bot",
+	NetSysRes: "NetSysRes",
+	Whatsapp: "Whatsapp",
+	Curl: "Curl",
+	GSA: "GSA",
+	Facebook: "Facebook",
+	Netseen: "Netseen",
+	MSNBot: "MSNBot",
+	LibwwwPerl: "LibwwwPerl",
+	HuaweiBrowser: "HuaweiBrowser",
+	Opera: "Opera",
+	MiBrowser: "MiBrowser"
+}
+
 export function getRequestURLBase()
 {
 	let url = document.location.href;
@@ -891,6 +965,603 @@ export function getSelectElement(id)
 		return ele;
 	throw new Error("Element with id \""+id+"\" is not a select");
 }
+
+/**
+ * @returns {Promise<{os: String,osVer?:string,browser: String,browserVer?: string,devName?:string}>}
+ */
+export async function getBrowserInfo()
+{
+	let ret = parseUserAgent(navigator.userAgent);
+	// @ts-ignore
+	if (navigator.userAgentData)
+	{
+		// @ts-ignore
+		let data = await navigator.userAgentData.getHighEntropyValues(['fullVersionList', 'platformVersion', 'model']);
+		if (data.platformVersion)
+			ret.osVer = data.platformVersion;
+		if (data.model)
+			ret.devName = data.model;
+		if (data.fullVersionList)
+		{
+			console.log(data.fullVersionList);
+			let i = 0;
+			while (i < data.fullVersionList.length)
+			{
+				if (ret.browser == BrowserType.Edge)
+				{
+					if (data.fullVersionList[i].brand == "Microsoft Edge")
+						ret.browserVer = data.fullVersionList[i].version;
+				}
+				else if (ret.browser == BrowserType.Chrome)
+				{
+					if (data.fullVersionList[i].brand == "Chrome" || data.fullVersionList[i].brand == "Chromium")
+						ret.browserVer = data.fullVersionList[i].version;
+				}
+				else if (ret.browser == BrowserType.Opera)
+				{
+					if (data.fullVersionList[i].brand == "Opera")
+						ret.browserVer = data.fullVersionList[i].version;
+				}
+				i++;
+			}
+		}
+	}
+	return ret;
+}
+
+/**
+ * @param {string} userAgent
+ * @returns {{os: String;osVer?: string;browser: String;browserVer?: string;devName?: string;}}
+ */
+export function parseUserAgent(userAgent)
+{
+	let ent = {os: OSType.Unknown, browser: BrowserType.Unknown};
+	let i;
+	if (userAgent == "Microsoft Windows Network Diagnostics")
+	{
+		ent.browser = BrowserType.WinDiag;
+		return ent;
+	}
+	else if (userAgent.startsWith("West Wind Internet Protocols "))
+	{
+		ent.browser = BrowserType.WestWind;
+		ent.browserVer = userAgent.substring(29);
+		return ent;
+	}
+	else if (userAgent.startsWith("Sogou web spider/"))
+	{
+		ent.browser = BrowserType.SogouWeb;
+		i = userAgent.indexOf('(');
+		if (i >= 0)
+		{
+			ent.browserVer = userAgent.substring(17, i);
+		}
+		else
+		{
+			ent.browserVer = userAgent.substring(17);
+		}
+		return ent;
+	}
+	else if (userAgent.startsWith("Sogou Pic Spider/"))
+	{
+		ent.browser = BrowserType.SogouPic;
+		i = userAgent.indexOf('(');
+		if (i >= 0)
+		{
+			ent.browserVer = ent.userAgent.substring(17, i);
+		}
+		else
+		{
+			ent.browserVer = ent.userAgent.substring(17);
+		}
+		return ent;
+	}
+	else if (userAgent == "Nutch Master Test/Dolphin-0.1-Beta")
+	{
+		ent.browser = BrowserType.Nutch;
+		ent.browserVer = "0.1";
+		return ent;
+	}
+	else if (userAgent == "YisouSpider")
+	{
+		ent.browser = BrowserType.Yisou;
+		return ent;
+	}
+	else if (userAgent.startsWith("HTTP Banner Detection"))
+	{
+		ent.browser = BrowserType.BannerDet;
+		return ent;
+	}
+	else if (userAgent.startsWith("NetSystemsResearch "))
+	{
+		ent.browser = BrowserType.NetSysRes;
+		return ent;
+	}
+	if (userAgent.startsWith("\"") && userAgent.endsWith("\""))
+	{
+		userAgent.substring(1, userAgent.length - 1);
+	}
+	userAgent = userAgent.trim();
+	if (userAgent == "nlpproject.info research")
+	{
+		ent.browser = BrowserType.NLPProject;
+		return ent;
+	}
+
+	let strs = [];
+	let bst = false;
+	let j;
+	let c;
+	j = 0;
+	i = 0;
+	while (i < userAgent.length)
+	{
+		c = userAgent.charAt(i);
+		if (c == ' ' && !bst)
+		{
+			strs.push(userAgent.substring(j, i));
+			j = i + 1;
+		}
+		else if (c == ')' && bst)
+		{
+			bst = false;
+		}
+		else if (c == '(')
+		{
+			bst = true;
+		}
+		i++;
+	}
+	if (j < userAgent.length)
+	{
+		strs.push(userAgent.substring(j));
+	}
+	i = 0;
+	while (i < strs.length)
+	{
+		if (strs[i].charAt(0) == '(')
+		{
+			let charCnt = strs[i].length;
+			if (strs[i].endsWith(')'))
+			{
+				strs[i] = strs[i].substring(0, strs[i].length - 1);
+			}
+			let strs2 = strs[i].substring(1).split(";");
+			j = 0;
+			let lastIsAndroid = false;
+			while (j < strs2.length)
+			{
+				strs2[j] = strs2[j].trim();
+				if (strs2[j].startsWith("MSIE "))
+				{
+					ent.browser = BrowserType.IE;
+					ent.browserVer = strs2[j].substring(5);
+				}
+				else if (strs2[j].startsWith("Windows NT "))
+				{
+					ent.os = OSType.WindowsNT;
+					ent.osVer = strs2[j].substring(11);
+				}
+				else if (strs2[j] == "WOW64")
+				{
+					if (ent.os == OSType.WindowsNT)
+					{
+						ent.os = OSType.WindowsNT64;
+					}
+				}
+				else if (strs2[j] == "Win64")
+				{
+					if (ent.os == OSType.WindowsNT)
+					{
+						ent.os = OSType.WindowsNT64;
+					}
+				}
+				else if (strs2[j] == "iPad")
+				{
+					ent.os = OSType.iPad;
+				}
+				else if (ent.os == OSType.Unknown && strs2[j] == "Linux i686")
+				{
+					ent.os = OSType.Linux_i686;
+				}
+				else if (ent.os == OSType.Unknown && strs2[j] == "Linux x86_64")
+				{
+					ent.os = OSType.Linux_X86_64;
+				}
+				else if (strs2[j] == "Android")
+				{
+					ent.os = OSType.Android;
+				}
+				else if (strs2[j] == "wv")
+				{
+					if (ent.os == OSType.Android)
+					{
+						ent.browser = BrowserType.AndroidWV;
+					}
+				}
+				else if (strs2[j].startsWith("Android "))
+				{
+					ent.os = OSType.Android;
+					ent.osVer = strs2[j].substring(8);
+					lastIsAndroid = true;
+				}
+				else if (strs2[j].startsWith("CrOS "))
+				{
+					ent.os = OSType.ChromeOS;
+					let k = strs2[j].indexOf(' ', 5);
+					ent.osVer = strs2[j].substring(k + 1);
+				}
+				else if (ent.os == OSType.iPad && strs2[j] == "U")
+				{
+					ent.os = OSType.Android;
+				}
+				else if (strs2[j] == "iPhone")
+				{
+					ent.os = OSType.iPhone;
+				}
+				else if (strs2[j] == "Macintosh")
+				{
+					ent.os = OSType.MacOS;
+				}
+				else if ((ent.os == OSType.iPad || ent.os == OSType.iPhone) && strs2[j].startsWith("CPU OS "))
+				{
+					let k = strs2[j].indexOf(' ', 7);
+					if (k >= 0)
+					{
+						strs2[j] = strs2[j].substring(0, k);
+					}
+					strs2[j] = text.replaceAll(strs2[j], '_', '.');
+					ent.osVer = strs2[j].substring(7);
+				}
+				else if (ent.os == OSType.iPhone && strs2[j].startsWith("CPU iPhone OS "))
+				{
+					let k = strs2[j].indexOf(' ', 14);
+					if (k >= 0)
+					{
+						strs2[j].substring(0, k);
+					}
+					k = strs2[j].indexOf(" like Mac OS");
+					if (k >= 0)
+					{
+						strs2[j] = strs2[j].substring(0, k);
+					}
+					strs2[j] = text.replaceAll(strs2[j], '_', '.');
+					ent.osVer = strs2[j].substring(14);
+				}
+				else if (ent.os == OSType.MacOS && strs2[j].startsWith("Intel Mac OS X "))
+				{
+					let k = strs2[j].indexOf(' ', 15);
+					if (k >= 0)
+					{
+						strs2[j].substring(0, k);
+					}
+					strs2[j] = text.replaceAll(strs2[j], '_', '.');
+					ent.osVer = strs2[j].substring(15);
+				}
+				else if (strs2[j] == "Trident/7.0")
+				{
+					ent.browser = BrowserType.IE;
+					ent.browserVer = "11.0";
+				}
+				else if (strs2[j] == "JuziBrowser") //JuziBrowser
+				{
+				}
+				else if (strs2[j] == "SE 2.X MetaSr 1.0") //Sugou Browser
+				{
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j] == "Indy Library")
+				{
+					ent.browser = BrowserType.Indy;
+				}
+				else if (strs2[j].startsWith("Googlebot/"))
+				{
+					if (ent.os == OSType.Android)
+					{
+						ent.browser = BrowserType.GoogleBots;
+						ent.browserVer = strs2[j].substring(10);
+					}
+					else if (ent.os == OSType.Unknown)
+					{
+						ent.browser = BrowserType.GoogleBotD;
+						ent.browserVer = strs2[j].substring(10);
+					}
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("Baiduspider-render/"))
+				{
+					ent.browser = BrowserType.Baidu;
+					ent.browserVer = strs2[j].substring(19);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("SemrushBot/"))
+				{
+					ent.browser = BrowserType.Semrush;
+					ent.browserVer = strs2[j].substring(11);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("YandexBot/"))
+				{
+					ent.browser = BrowserType.Yandex;
+					ent.browserVer = strs2[j].substring(10);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("BLEXBot/"))
+				{
+					ent.browser = BrowserType.BlexBot;
+					ent.browserVer = strs2[j].substring(10);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("bingbot/"))
+				{
+					ent.browser = BrowserType.Bing;
+					ent.browserVer = strs2[j].substring(8);
+				}
+				else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.IE) && strs2[j].startsWith("MS Web Services Client Protocol "))
+				{
+					ent.browser = BrowserType.DotNet;
+					ent.browserVer = strs2[j].substring(32);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("WinHttp.WinHttpRequest."))
+				{
+					ent.browser = BrowserType.WinHTTP;
+					ent.browserVer = strs2[j].substring(23);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("NetcraftSurveyAgent/"))
+				{
+					ent.browser = BrowserType.NetcraftAG;
+					ent.browserVer = strs2[j].substring(20);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("AhrefsBot/"))
+				{
+					ent.browser = BrowserType.AhrefsBot;
+					ent.browserVer = strs2[j].substring(10);
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j].startsWith("MJ12bot/"))
+				{
+					ent.browser = BrowserType.Mj12Bot;
+					if (strs2[j].charAt(8) == 'v')
+					{
+						ent.browserVer = strs2[j].substring(9);
+					}
+					else
+					{
+						ent.browserVer = strs2[j].substring(8);
+					}
+				}
+				else if (ent.browser == BrowserType.Unknown && strs2[j] == "Netcraft Web Server Survey")
+				{
+					ent.browser = BrowserType.NetcraftWeb;
+				}
+				else if (strs2[j] == "Mobile")
+				{
+				}
+				else if (strs2[j] == "rv:")
+				{
+				}
+				else if (lastIsAndroid)
+				{
+					let k = strs2[j].indexOf(" Build/");
+					if (k >= 0)
+					{
+						strs2[j] = strs2[j].substring(0, k);
+					}
+
+					k = strs2[j].indexOf(" MIUI/");
+					if (k >= 0)
+					{
+						strs2[j] = strs2[j].substring(0, k);
+					}
+					if (strs2[j].startsWith("SAMSUNG SM-"))
+					{
+						ent.devName = strs2[j].substring(8);
+					}
+					else if (strs2[j].startsWith("HUAWEI "))
+					{
+						ent.devName = strs2[j].substring(7);
+					}
+					else if (strs2[j] == "K")
+					{
+					}
+					else
+					{
+						ent.devName = strs2[j];
+					}
+					lastIsAndroid = false;
+				}
+				j++;
+			}
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Firefox/"))
+		{
+			ent.browser = BrowserType.Firefox;
+			ent.browserVer = strs[i].substring(8);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Safari) && strs[i].startsWith("SamsungBrowser/"))
+		{
+			ent.browser = BrowserType.Samsung;
+			ent.browserVer = strs[i].substring(15);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Safari) && strs[i].startsWith("GSA/"))
+		{
+			ent.browser = BrowserType.GSA;
+			ent.browserVer = strs[i].substring(4);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Safari) && strs[i].startsWith("CriOS/"))
+		{
+			ent.browser = BrowserType.Chrome;
+			ent.browserVer = strs[i].substring(6);
+		}
+		else if (strs[i].startsWith("Chrome/"))
+		{
+			if (ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Safari)
+			{
+				ent.browser = BrowserType.Chrome;
+				ent.browserVer = strs[i].substring(7);
+			}
+			else if (ent.browser == BrowserType.AndroidWV)
+			{
+				ent.browserVer = strs[i].substring(7);
+			}
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("Edge/"))
+		{
+			ent.browser = BrowserType.Edge;
+			ent.browserVer = strs[i].substring(5);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("Edg/"))
+		{
+			ent.browser = BrowserType.Edge;
+			ent.browserVer = strs[i].substring(4);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("EdgiOS/"))
+		{
+			ent.browser = BrowserType.Edge;
+			ent.browserVer = strs[i].substring(7);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("OPT/"))
+		{
+			ent.browser = BrowserType.Opera;
+			ent.browserVer = strs[i].substring(4);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("OPR/"))
+		{
+			ent.browser = BrowserType.Opera;
+			ent.browserVer = strs[i].substring(4);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("HuaweiBrowser/"))
+		{
+			ent.browser = BrowserType.HuaweiBrowser;
+			ent.browserVer = strs[i].substring(14);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("XiaoMi/MiuiBrowser/"))
+		{
+			ent.browser = BrowserType.MiBrowser;
+			ent.browserVer = strs[i].substring(19);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Safari/"))
+		{
+			ent.browser = BrowserType.Safari;
+			ent.browserVer = strs[i].substring(7);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("UCBrowser/"))
+		{
+			ent.browser = BrowserType.UCBrowser;
+			ent.browserVer = strs[i].substring(10);
+		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Chrome) && strs[i].startsWith("baidu.sogo.uc.UCBrowser/"))
+		{
+			ent.browser = BrowserType.UCBrowser;
+			ent.browserVer = strs[i].substring(24);
+		}
+		else if (strs[i].startsWith("UBrowser/"))
+		{
+		}
+		else if (strs[i].startsWith("baiduboxapp/"))
+		{
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Dalvik/"))
+		{
+			ent.browser = BrowserType.Dalvik;
+			ent.browserVer = strs[i].substring(7);
+		}
+		else if (ent.os == OSType.Unknown && strs[i].startsWith("Darwin/"))
+		{
+			ent.os = OSType.Darwin;
+			ent.osVer = strs[i].substring(7);
+		}
+		else if (ent.os == OSType.Unknown && strs[i].startsWith("SmartTV/"))
+		{
+			ent.os = OSType.Netcast;
+			ent.osVer = strs[i].substring(8);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("CFNetwork/"))
+		{
+			ent.browser = BrowserType.CFNetwork;
+			ent.browserVer = strs[i].substring(10);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Version/"))
+		{
+			ent.browser = BrowserType.Safari;
+			ent.browserVer = strs[i].substring(8);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("masscan/"))
+		{
+			ent.browser = BrowserType.Masscan;
+			ent.browserVer = strs[i].substring(8);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("zgrab/"))
+		{
+			ent.browser = BrowserType.Zgrab;
+			ent.browserVer = strs[i].substring(6);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("python-requests/"))
+		{
+			ent.browser = BrowserType.PyRequests;
+			ent.browserVer = strs[i].substring(16);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Python-urllib/"))
+		{
+			ent.browser = BrowserType.PyURLLib;
+			ent.browserVer = strs[i].substring(14);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Wget/"))
+		{
+			ent.browser = BrowserType.Wget;
+			ent.browserVer = strs[i].substring(5);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Scrapy/"))
+		{
+			ent.browser = BrowserType.Scrapy;
+			ent.browserVer = strs[i].substring(7);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Go-http-client/"))
+		{
+			ent.browser = BrowserType.GoHTTP;
+			ent.browserVer = strs[i].substring(15);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("Apache-HttpClient/"))
+		{
+			ent.browser = BrowserType.ApacheHTTP;
+			ent.browserVer = strs[i].substring(18);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("WhatsApp/"))
+		{
+			ent.browser = BrowserType.Whatsapp;
+			ent.browserVer = strs[i].substring(9);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("curl/"))
+		{
+			ent.browser = BrowserType.Curl;
+			ent.browserVer = strs[i].substring(5);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("sswr/"))
+		{
+			ent.browser = BrowserType.SSWR;
+			ent.browserVer = strs[i].substring(5);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("facebookexternalhit/"))
+		{
+			ent.browser = BrowserType.Facebook;
+			ent.browserVer = strs[i].substring(20);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("NetSeen/"))
+		{
+			ent.browser = BrowserType.Netseen;
+			ent.browserVer = strs[i].substring(8);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("msnbot/"))
+		{
+			ent.browser = BrowserType.MSNBot;
+			ent.browserVer = strs[i].substring(7);
+		}
+		else if (ent.browser == BrowserType.Unknown && strs[i].startsWith("libwww-perl/"))
+		{
+			ent.browser = BrowserType.LibwwwPerl;
+			ent.browserVer = strs[i].substring(12);
+		}
+		else if (strs[i] == "LBBROWSER")
+		{
+		}
+		i++;
+	}
+	return ent;
+}
+
 
 export class Dialog
 {

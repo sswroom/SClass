@@ -93,6 +93,18 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 	return 0;
 }
 
+Bool Crypto::Cert::X509PubKey::GetKeyId(const Data::ByteArray &keyId) const
+{
+	NN<X509Key> key;
+	if (CreateKey().SetTo(key))
+	{
+		Bool ret = key->GetKeyId(keyId);
+		key.Delete();
+		return ret;
+	}
+	return false;
+}
+
 NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Text::String> sourceName)
 {
 	Net::ASN1PDUBuilder keyPDU;

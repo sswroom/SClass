@@ -74,6 +74,7 @@ export class NetworkLinkControl extends Element
 	expires?: data.Timestamp;
 
 	getUsedNS(ns: object): void;
+	getBounds(): math.RectArea | null;
 	appendOuterXML(strs: string[], level: number): void;
 }
 

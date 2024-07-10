@@ -12,6 +12,91 @@ declare class ImageInfo
 	height: number;
 }
 
+export enum OSType
+{
+	Unknown,
+	WindowsNT,
+	WindowsCE,
+	WindowsSvr,
+	Linux_X86_64,
+	Android,
+	iPad,
+	iPhone,
+	Darwin,
+	MacOS,
+	WindowsNT64,
+	ChromeOS,
+	Linux_i686,
+	Netcast
+}
+
+export enum BrowserType
+{
+	Unknown,
+	IE,
+	Firefox,
+	Chrome,
+	Safari,
+	UCBrowser,
+	CFNetwork,
+	SogouWeb,
+	Baidu,
+	Semrush,
+	Dalvik,
+	Indy,
+	GoogleBots,
+	AndroidWV,
+	Samsung,
+	WestWind,
+	Yandex,
+	Bing,
+	Masscan,
+	PyRequests,
+	Zgrab,
+	Edge,
+	PyURLLib,
+	GoogleBotD,
+	DotNet,
+	WinDiag,
+	SSWR,
+	SmartTV,
+	BlexBot,
+	SogouPic,
+	Nutch,
+	Yisou,
+	Wget,
+	Scrapy,
+	GoHTTP,
+	WinHTTP,
+	NLPProject,
+	ApacheHTTP,
+	BannerDet,
+	NetcraftWeb,
+	NetcraftAG,
+	AhrefsBot,
+	Mj12Bot,
+	NetSysRes,
+	Whatsapp,
+	Curl,
+	GSA,
+	Facebook,
+	Netseen,
+	MSNBot,
+	LibwwwPerl,
+	HuaweiBrowser,
+	Opera,
+	MiBrowser
+}
+
+declare class BrowserInfo
+{
+	os: OSType;
+	osVer?: string;
+	browser: BrowserType;
+	browserVer?: string;
+	devName?: string;
+}
+
 export function getRequestURLBase(): string;
 export function getParameterByName(name: string): string | null;
 export function loadJSON(url: string, onResultFunc: Function): void;
@@ -28,6 +113,8 @@ export function getCacheSize(name: string): Promise<number>;
 export function getInputOrSelectElement(id: string): HTMLInputElement|HTMLSelectElement;
 export function getInputElement(id: string): HTMLInputElement;
 export function getSelectElement(id: string): HTMLSelectElement;
+export function getBrowserInfo(): Promise<BrowserInfo>;
+export function parseUserAgent(userAgent: string): BrowserInfo;
 
 declare class DialogButton
 {

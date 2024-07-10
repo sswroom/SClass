@@ -538,6 +538,25 @@ export function charIsLowerCase(s, index)
 	return false;
 }
 
+/**
+ * @param {string} s
+ * @param {string} replaceFrom
+ * @param {string} replaceTo
+ */
+export function replaceAll(s, replaceFrom, replaceTo)
+{
+	let i = 0;
+	let j;
+	while (true)
+	{
+		j = s.indexOf(replaceFrom, i);
+		if (j < 0)
+			return s;
+		s = s.substring(0, j) + replaceTo + s.substring(j + replaceFrom.length);
+		i = j + replaceTo.length;
+	}
+}
+
 export function getEncList()
 {
 	let ret = [];

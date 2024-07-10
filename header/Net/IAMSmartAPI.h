@@ -9,6 +9,14 @@ namespace Net
 {
 	class IAMSmartAPI
 	{
+	public:
+		struct CEKInfo
+		{
+			UnsafeArray<UInt8> key;
+			UOSInt keyLen;
+			Int64 issueAt;
+			Int64 expiresAt;
+		};
 	private:
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
@@ -22,7 +30,9 @@ namespace Net
 		IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret);
 		~IAMSmartAPI();
 
-		Bool GetKey(NN<Crypto::Cert::X509PrivKey> privKey);
+		void FreeCEK(NN<CEKInfo> cek) const;
+		Bool GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo> cek);
+		Bool RevokeKey();
 	};
 }
 #endif

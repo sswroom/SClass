@@ -1,8 +1,9 @@
 {
 	"compilerOptions": {
-		"module": "es6",
-		"target": "es6",
+		"module": "esnext",
+		"target": "es2017",
 		"baseUrl": ".",
+		"checkJs": true,
 		"paths": {
 			"/js/@sswroom/sswr/*":["../sswr/*"],
 			"/js/leaflet/*":["../../../VCClass/Release/SMonitorSvr/node_modules/leaflet/*"],

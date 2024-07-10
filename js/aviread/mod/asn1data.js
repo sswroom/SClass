@@ -43,10 +43,10 @@ function updateDisp()
 	switch (currTab)
 	{
 	case 0:
-		document.getElementById("txtDesc").value = currData.toString();
+		web.getInputElement("txtDesc").value = currData.toString();
 		break;
 	case 1:
-		document.getElementById("txtASN1").value = currData.toASN1String();
+		web.getInputElement("txtASN1").value = currData.toASN1String();
 		break;
 	}
 }

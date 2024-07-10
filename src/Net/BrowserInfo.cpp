@@ -106,6 +106,12 @@ Text::CStringNN Net::BrowserInfo::GetName(BrowserType btype)
 		return CSTR("MSNBOT");
 	case BT_LIBWWW_PERL:
 		return CSTR("libwww-perl");
+	case BT_HUAWEIBROWSER:
+		return CSTR("HuaweiBrowser");
+	case BT_OPERA:
+		return CSTR("Opera");
+	case BT_MIBROWSER:
+		return CSTR("MiBrowser");
 	case BT_UNKNOWN:
 	default:
 		return CSTR("Unknown");
@@ -216,6 +222,12 @@ Text::CStringNN Net::BrowserInfo::GetDefName(BrowserType btype)
 		return CSTR("BT_NETSEEN");
 	case BT_LIBWWW_PERL:
 		return CSTR("BT_LIBWWW_PERL");
+	case BT_HUAWEIBROWSER:
+		return CSTR("BT_HUAWEIBROWSER");
+	case BT_OPERA:
+		return CSTR("BT_OPERA");
+	case BT_MIBROWSER:
+		return CSTR("BT_MIBROWSER");
 	case BT_UNKNOWN:
 	default:
 		return CSTR("BT_UNKNOWN");

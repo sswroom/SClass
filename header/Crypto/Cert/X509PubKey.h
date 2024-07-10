@@ -23,6 +23,7 @@ namespace Crypto
 			virtual NN<Net::ASN1Names> CreateNames() const;
 			
 			Optional<Crypto::Cert::X509Key> CreateKey() const;
+			Bool GetKeyId(const Data::ByteArray &keyId) const;
 
 			static NN<X509PubKey> CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Text::String> sourceName);
 			static NN<X509PubKey> CreateFromKey(NN<Crypto::Cert::X509Key> key);

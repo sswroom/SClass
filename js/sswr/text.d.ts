@@ -24,7 +24,7 @@ export function arrayToNumbers(arr: string[]): number[];
 export function toHex8(v: number): string;
 export function toHex16(v: number): string;
 export function toHex32(v: number): string;
-export function u8Arr2Hex(buff: Uint8Array, byteSep: string | null, rowSep: string | null): string;
+export function u8Arr2Hex(buff: Uint8Array, byteSep?: string | null, rowSep?: string | null): string;
 export function splitLines(txt: string): string[];
 export function isEmailAddress(s: string): boolean;
 export function toUTF32Length(s: string): number;
@@ -33,6 +33,7 @@ export function charIsAlphaNumeric(s: string, index: number): boolean;
 export function charIsDigit(s: string, index: number): boolean;
 export function charIsUpperCase(s: string, index: number): boolean;
 export function charIsLowerCase(s: string, index: number): boolean;
+export function replaceAll(s: string, replaceFrom: string, replaceTo: string): string;
 export function getEncList(): TextBinEnc[];
 
 export class TextBinEnc

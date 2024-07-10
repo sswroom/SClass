@@ -102,6 +102,18 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PrivKey::CreateKey() const
 	return 0;
 }
 
+Bool Crypto::Cert::X509PrivKey::GetKeyId(const Data::ByteArray &keyId) const
+{
+	NN<X509Key> key;
+	if (CreateKey().SetTo(key))
+	{
+		Bool ret = key->GetKeyId(keyId);
+		key.Delete();
+		return ret;
+	}
+	return false;
+}
+
 NN<Crypto::Cert::X509PrivKey> Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, UnsafeArray<const UInt8> buff, UOSInt buffSize, Optional<Text::String> sourceName)
 {
 	NN<Text::String> mySourceName;
