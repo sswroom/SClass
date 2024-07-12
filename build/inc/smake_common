@@ -3138,6 +3138,8 @@ Net/HTTPServerMonitor.h:
 @HTTPServerMonitor.o
 Net/IAMSmartAPI.h:
 @IAMSmartAPI.o
+Net/IAMSmartClient.h:
+@IAMSmartClient.o
 Net/ICMPScanner.h:
 @ICMPScanner.o
 Net/IPScanDetector.h:

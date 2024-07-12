@@ -125,6 +125,32 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(UnsafeArray<const UInt8> inBuff, UO
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
+	case ChainMode::CTR:
+		blk = MemAlloc(UInt8, this->blockSize);
+		MemCopyNO(blk, this->iv.Ptr(), this->blockSize);
+		while (inSize >= blockSize)
+		{
+			UOSInt i = this->blockSize;
+			EncryptBlock(blk, outBuff);
+			while (i-- > 0)
+			{
+				if (++(blk[i]) != 0)
+					break;
+			}
+			MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), this->blockSize);
+			blkCnt++;
+			inBuff += this->blockSize;
+			outBuff += this->blockSize;
+			inSize = inSize - this->blockSize;
+		}
+		if (inSize > 0)
+		{
+			EncryptBlock(blk, outBuff);
+			MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), inSize);
+			blkCnt++;
+		}
+		MemFree(blk);
+		return blkCnt * this->blockSize;
 	default:
 		return 0;
 	}
@@ -300,6 +326,53 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(UnsafeArray<const UInt8> inBuff, UO
 			MemFree(blk2);
 		}
 		return blkCnt * this->blockSize;
+	case ChainMode::CTR:
+		if (inBuff != outBuff)
+		{
+			blk = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv.Ptr(), this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				DecryptBlock(blk, outBuff);
+				blkCnt++;
+				UOSInt i = this->blockSize;
+				while (i-- > 0)
+				{
+					if (++(blk[i]) != 0)
+						break;
+				}
+				MemXOR(outBuff.Ptr(), inBuff.Ptr(), outBuff.Ptr(), this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
+		}
+		else
+		{
+			blk = MemAlloc(UInt8, this->blockSize);
+			blk2 = MemAlloc(UInt8, this->blockSize);
+			MemCopyNO(blk, this->iv.Ptr(), this->blockSize);
+			while (inSize >= this->blockSize)
+			{
+				MemCopyNO(blk2, inBuff.Ptr(), this->blockSize);
+				DecryptBlock(blk, outBuff);
+				blkCnt++;
+				UOSInt i = this->blockSize;
+				while (i-- > 0)
+				{
+					if (++(blk[i]) != 0)
+						break;
+				}
+				MemXOR(outBuff.Ptr(), blk2, outBuff.Ptr(), this->blockSize);
+				inBuff += this->blockSize;
+				outBuff += this->blockSize;
+				inSize = inSize - this->blockSize;
+			}
+			MemFree(blk);
+			MemFree(blk2);
+		}
+		return blkCnt * this->blockSize;
 	default:
 		return 0;
 	}
@@ -339,6 +412,8 @@ Text::CStringNN Crypto::Encrypt::ChainModeGetName(ChainMode cm)
 		return CSTR("CFB");
 	case ChainMode::OFB:
 		return CSTR("OFB");
+	case ChainMode::CTR:
+		return CSTR("CTR");
 	default:
 		return CSTR("Unknown");
 	}

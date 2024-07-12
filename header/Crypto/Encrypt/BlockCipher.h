@@ -13,7 +13,8 @@ namespace Crypto
 			CBC,
 			PCBC,
 			CFB,
-			OFB
+			OFB,
+			CTR
 		};
 
 		class BlockCipher : public ICrypto
