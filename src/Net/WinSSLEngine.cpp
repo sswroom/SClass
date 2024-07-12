@@ -551,7 +551,7 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NN<Crypto::Cert::X509Key> key
 	NN<Crypto::Cert::X509PrivKey> privKey;
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA && Crypto::Cert::X509PrivKey::CreateFromKey(key).SetTo(privKey))
 	{
-		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), signature))
+		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff().Ptr(), (ULONG)privKey->GetASN1BuffSize(), signature))
 		{
 			privKey.Delete();
 			return hKey;
@@ -569,7 +569,7 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NN<Crypto::Cert::X509Key> key
 	else if (keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
 		NN<Crypto::Cert::X509PubKey> pubKey = Crypto::Cert::X509PubKey::CreateFromKey(key);
-		if (WinSSLEngine_CryptImportPublicKey(&hKey, hProv, pubKey->GetASN1Buff(), (ULONG)pubKey->GetASN1BuffSize(), true))
+		if (WinSSLEngine_CryptImportPublicKey(&hKey, hProv, pubKey->GetASN1Buff().Ptr(), (ULONG)pubKey->GetASN1BuffSize(), true))
 		{
 			pubKey.Delete();
 			return hKey;
@@ -590,7 +590,7 @@ HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, NN<Crypto::Cert::X509Priv
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
 	{
-		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, key->GetASN1Buff(), (ULONG)key->GetASN1BuffSize(), signature))
+		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, key->GetASN1Buff().Ptr(), (ULONG)key->GetASN1BuffSize(), signature))
 		{
 			return hKey;
 		}
@@ -745,7 +745,7 @@ Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE 
 		NCryptFreeObject(hProv);
 		return false;
 	}
-	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff(), (DWORD)privKey->GetASN1BuffSize(), 0)) != 0)
+	if ((status = NCryptImportKey(hProv, 0, algName, 0, &hKey, (PBYTE)privKey->GetASN1Buff().Ptr(), (DWORD)privKey->GetASN1BuffSize(), 0)) != 0)
     {
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: NCryptImportKey failed: algName = %ls, 0x%x\r\n", algName, (UInt32)status);
@@ -1302,7 +1302,7 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1, 
 	}
 
 	PCCERT_CONTEXT svrCert;
-	svrCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
+	svrCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff().Ptr(), (DWORD)certASN1->GetASN1BuffSize());
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
@@ -1332,7 +1332,7 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1, 
 		while (it.HasNext())
 		{
 			NN<Crypto::Cert::X509Cert> caCert = it.Next();
-			CertAddCertificateContextToStore(certStore, CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff(), (DWORD)caCert->GetASN1BuffSize()), CERT_STORE_ADD_NEW, 0);
+			CertAddCertificateContextToStore(certStore, CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff().Ptr(), (DWORD)caCert->GetASN1BuffSize()), CERT_STORE_ADD_NEW, 0);
 		}
 	}
 	if (!this->InitServer(this->clsData->method, &svrCert, certStore))
@@ -1389,7 +1389,7 @@ Bool Net::WinSSLEngine::ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, N
 	WinSSLEngine_HCRYPTPROV_ToString(hProv, &sbDebug);
 	debug.WriteLineW(sbDebug.ToString());*/
 
-	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff(), (DWORD)certASN1->GetASN1BuffSize());
+	PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, certASN1->GetASN1Buff().Ptr(), (DWORD)certASN1->GetASN1BuffSize());
 	keyProvInfo.cProvParam = 0;
 	keyProvInfo.rgProvParam = NULL;
 	keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
