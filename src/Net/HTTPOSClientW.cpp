@@ -39,13 +39,13 @@ struct Net::HTTPOSClient::ClassData
 
 void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, DWORD dwInternetStatus, LPVOID lpvStatusInformation, DWORD dwStatusInformationLength)
 {
-	printf("WinHTTP Callback status = 0x%lx\r\n", dwInternetStatus);
+	printf("WinHTTP Callback status = 0x%lx\r\n", (UInt32)dwInternetStatus);
 
 	if (dwInternetStatus == WINHTTP_CALLBACK_STATUS_SECURE_FAILURE)
 	{
 //		OSInt i = 0;
 		DWORD err = *(DWORD*)lpvStatusInformation;
-		printf("WINHTTP_CALLBACK_STATUS_SECURE_FAILURE, info = 0x%lx\r\n", err);
+		printf("WINHTTP_CALLBACK_STATUS_SECURE_FAILURE, info = 0x%lx\r\n", (UInt32)err);
 		if (err & WINHTTP_CALLBACK_STATUS_FLAG_CERT_REV_FAILED)
 		{
 //			i = 0;
@@ -117,7 +117,7 @@ Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString user
 			data->hSession = WinHttpOpen(wptr.Ptr(), WINHTTP_ACCESS_TYPE_NO_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 			if (data->hSession == 0)
 			{
-				printf("hSession is null, code = %ld\r\n", GetLastError());
+				printf("hSession is null, code = %ld\r\n", (UInt32)GetLastError());
 			}
 		}
 	}
@@ -632,7 +632,7 @@ Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto
 			return false;
 		}
 
-		PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, cert->GetASN1Buff(), (DWORD)cert->GetASN1BuffSize());
+		PCCERT_CONTEXT serverCert = CertCreateCertificateContext(X509_ASN_ENCODING, cert->GetASN1Buff().Ptr(), (DWORD)cert->GetASN1BuffSize());
 		keyProvInfo.cProvParam = 0;
 		keyProvInfo.rgProvParam = NULL;
 		keyProvInfo.dwKeySpec = AT_KEYEXCHANGE;
