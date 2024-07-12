@@ -1747,6 +1747,7 @@ AVIReGaugeSvrForm.o: ../../src/SSWR/AVIRead/AVIReGaugeSvrForm.cpp
 AVIRElectronicScaleForm.o: ../../src/SSWR/AVIRead/AVIRElectronicScaleForm.cpp
 AVIREmailAddrValidForm.o: ../../src/SSWR/AVIRead/AVIREmailAddrValidForm.cpp
 AVIREmailServerForm.o: ../../src/SSWR/AVIRead/AVIREmailServerForm.cpp
+AVIREncryptFileForm.o: ../../src/SSWR/AVIRead/AVIREncryptFileForm.cpp
 AVIREncryptForm.o: ../../src/SSWR/AVIRead/AVIREncryptForm.cpp
 AVIREncryptMsgForm.o: ../../src/SSWR/AVIRead/AVIREncryptMsgForm.cpp
 AVIRESRIMapForm.o: ../../src/SSWR/AVIRead/AVIRESRIMapForm.cpp

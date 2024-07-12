@@ -83,6 +83,7 @@
 #include "SSWR/AVIRead/AVIRElectronicScaleForm.h"
 #include "SSWR/AVIRead/AVIREmailAddrValidForm.h"
 #include "SSWR/AVIRead/AVIREmailServerForm.h"
+#include "SSWR/AVIRead/AVIREncryptFileForm.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
 #include "SSWR/AVIRead/AVIREncryptMsgForm.h"
 #include "SSWR/AVIRead/AVIRESRIMapForm.h"
@@ -512,7 +513,8 @@ typedef enum
 	MNU_SSH_INFO,
 	MNU_DATA_MODEL,
 	MNU_MSGRAPH_EMAIL,
-	MNU_HKID
+	MNU_HKID,
+	MNU_ENCRYPT_FILE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -657,6 +659,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("One-Time Password (OTP)"), MNU_OTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("BCrypt"), MNU_BCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Encrypt Message"), MNU_ENCRYPT_MSG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Encrypt File"), MNU_ENCRYPT_FILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RNCryptor"), MNU_RNCRYPTOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JWT Parser"), MNU_JWT_PARSER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Certificates"));
@@ -2969,6 +2972,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRHKIDForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKIDForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_ENCRYPT_FILE:
+		{
+			NN<SSWR::AVIRead::AVIREncryptFileForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIREncryptFileForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

@@ -3853,6 +3853,8 @@ SSWR/AVIRead/AVIREmailAddrValidForm.h:
 @AVIREmailAddrValidForm.o
 SSWR/AVIRead/AVIREmailServerForm.h:
 @AVIREmailServerForm.o
+SSWR/AVIRead/AVIREncryptFileForm.h:
+@AVIREncryptFileForm.o
 SSWR/AVIRead/AVIREncryptForm.h:
 @AVIREncryptForm.o
 SSWR/AVIRead/AVIREncryptMsgForm.h:

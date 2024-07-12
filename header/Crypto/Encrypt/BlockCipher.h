@@ -17,12 +17,19 @@ namespace Crypto
 			CTR
 		};
 
+		enum class PaddingMode
+		{
+			None,
+			PKCS7
+		};
+
 		class BlockCipher : public ICrypto
 		{
 		protected:
 			UnsafeArray<UInt8> iv;
 			UOSInt blockSize;
 			ChainMode cm;
+			PaddingMode pad;
 
 		public:
 			BlockCipher(UOSInt blockSize);
@@ -38,9 +45,11 @@ namespace Crypto
 
 			void SetChainMode(ChainMode cm);
 			void SetIV(UnsafeArray<const UInt8> iv);
+			void SetPaddingMode(PaddingMode pad);
 		};
 
 		Text::CStringNN ChainModeGetName(ChainMode cm);
+		Text::CStringNN PaddingModeGetName(PaddingMode pad);
 	}
 }
 #endif
