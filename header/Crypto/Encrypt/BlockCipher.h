@@ -14,7 +14,8 @@ namespace Crypto
 			PCBC,
 			CFB,
 			OFB,
-			CTR
+			CTR,
+			GCM
 		};
 
 		enum class PaddingMode

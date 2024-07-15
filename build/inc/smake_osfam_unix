@@ -4,6 +4,10 @@ MyMemory.h:
 
 Crypto/Cert/OpenSSLCert.h:
 @OpenSSLCert.o
+Crypto/Encrypt/AES128GCM.h:
+@AES128GCM_OpenSSL.o
+Crypto/Encrypt/AES256GCM.h:
+@AES256GCM_OpenSSL.o
 
 DB/OLEDBConn.h:
 @OLEDBConnNull.o

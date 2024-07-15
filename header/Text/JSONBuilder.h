@@ -72,6 +72,7 @@ namespace Text
 		Bool ObjectAddStrOpt(Text::CStringNN name, Optional<Text::PString> val);
 		Bool ObjectAddStrUTF8(Text::CStringNN name, UnsafeArrayOpt<const UTF8Char> val);
 		Bool ObjectAddStrW(Text::CStringNN name, UnsafeArrayOpt<const WChar> val);
+		Bool ObjectAddArrayStr(Text::CStringNN name, Text::CStringNN value, UTF8Char splitChar);
 		Bool ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts);
 		Bool ObjectAddDateStr(Text::CStringNN name, Data::Date dat);
 		Bool ObjectAddNull(Text::CStringNN name);

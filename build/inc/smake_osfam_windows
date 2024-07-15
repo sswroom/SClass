@@ -2,6 +2,11 @@
 MyMemory.h:
 @MyMemoryW.o
 
+Crypto/Encrypt/AES128GCM.h:
+@AES128GCM_Win.o
+Crypto/Encrypt/AES256GCM.h:
+@AES256GCM_Win.o
+
 IO/BuildTime.h:
 @BuildTimeW.o
 IO/Console.h:

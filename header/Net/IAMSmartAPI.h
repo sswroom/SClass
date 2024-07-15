@@ -4,6 +4,7 @@
 #include "Data/RandomBytesGenerator.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngine.h"
+#include "Text/JSON.h"
 
 namespace Net
 {
@@ -17,6 +18,38 @@ namespace Net
 			Int64 issueAt;
 			Int64 expiresAt;
 		};
+
+		struct TokenInfo
+		{
+			NN<Text::String> accessToken;
+			NN<Text::String> openID;
+			Int64 issueAt;
+			Int64 expiresAt;
+			Int64 lastModifiedDate;
+		};
+
+		struct ProfileInfo
+		{
+			Optional<Text::String> hkid;
+			UTF8Char hkidChk;
+			Optional<Text::String> prefix;
+			Optional<Text::String> enName;
+			Optional<Text::String> chName;
+			Optional<Text::String> chNameVerfied;
+			UInt32 birthDate;
+			UTF8Char gender;
+			UTF8Char maritalStatus;
+			Optional<Text::String> homeTelNumberICC;
+			Optional<Text::String> homeTelNumber;
+			Optional<Text::String> officeTelNumberICC;
+			Optional<Text::String> officeTelNumber;
+			Optional<Text::String> mobileTelNumberICC;
+			Optional<Text::String> mobileTelNumber;
+			Optional<Text::String> emailAddress;
+			Optional<Text::String> residentialAddress;
+			Optional<Text::String> postalAddress;
+			UTF8Char educationLevel;
+		};
 	private:
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
@@ -26,6 +59,7 @@ namespace Net
 		Data::RandomBytesGenerator rand;
 
 		void InitHTTPClient(NN<Net::HTTPClient> cli, Text::CStringNN content);
+		Optional<Text::JSONBase> PostEncReq(Text::CStringNN url, NN<CEKInfo> cek, Text::CStringNN jsonMsg);
 	public:
 		IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret);
 		~IAMSmartAPI();
@@ -33,6 +67,10 @@ namespace Net
 		void FreeCEK(NN<CEKInfo> cek) const;
 		Bool GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo> cek);
 		Bool RevokeKey();
+		void FreeToken(NN<TokenInfo> token) const;
+		Bool GetToken(Text::CStringNN code, NN<CEKInfo> cek, NN<TokenInfo> token);
+		void FreeProfiles(NN<ProfileInfo> profiles);
+		Bool GetProfiles(NN<TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<CEKInfo> cek, NN<ProfileInfo> profiles);
 	};
 }
 #endif

@@ -7,6 +7,7 @@
 #include "Text/JSONBuilder.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "Text/StringTool.h"
 
 void Text::JSONBuilder::AppendStr(Text::CStringNN val)
 {
@@ -858,6 +859,34 @@ Bool Text::JSONBuilder::ObjectAddStrW(Text::CStringNN name, UnsafeArrayOpt<const
 		this->AppendStrW(nnval);
 	}
 	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddArrayStr(Text::CStringNN name, Text::CStringNN value, UTF8Char splitChar)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendUTF8Char(':');
+	this->sb.AppendUTF8Char('[');
+	Data::ArrayListStringNN strs;
+	Text::StringTool::SplitAsNewString(value, splitChar, strs);
+	UOSInt i = 0;
+	UOSInt j = strs.GetCount();
+	while (i < j)
+	{
+		if (i > 0)
+			this->sb.AppendC(UTF8STRC(","));
+		this->AppendStr(strs.GetItemNoCheck(i)->ToCString());
+		i++;
+	}
+	strs.FreeAll();
+	this->sb.AppendUTF8Char(']');
 }
 
 Bool Text::JSONBuilder::ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts)

@@ -1,10 +1,61 @@
 #include "Stdafx.h"
 #include "Net/IAMSmartClient.h"
+#include "Parser/FileParser/X509Parser.h"
 
-Net::IAMSmartClient::IAMSmartClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret) : api(sockf, ssl, domain, clientID, clientSecret)
+Bool Net::IAMSmartClient::PrepareCEK()
 {
+	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	if (currTime < cek.expiresAt)
+	{
+		return true;
+	}
+	NN<Crypto::Cert::X509PrivKey> key;
+	if (!this->key.SetTo(key))
+		return false;
+	if (cek.issueAt != 0)
+	{
+		this->api.FreeCEK(this->cek);
+		this->cek.issueAt = 0;
+	}
+	if (!this->api.GetKey(key, cek))
+		return false;
+	return currTime < cek.expiresAt;
+}
+
+Net::IAMSmartClient::IAMSmartClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret, Text::CStringNN keyFile) : api(sockf, ssl, domain, clientID, clientSecret)
+{
+	cek.issueAt = 0;
+	cek.expiresAt = 0;
+	this->key = 0;
+	Parser::FileParser::X509Parser parser;
+	NN<Crypto::Cert::X509File> file;
+	if (Optional<Crypto::Cert::X509File>::ConvertFrom(parser.ParseFilePath(keyFile)).SetTo(file))
+	{
+		if (file->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+		{
+			this->key = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(file);
+		}
+		else if (file->GetFileType() == Crypto::Cert::X509File::FileType::Key)
+		{
+			this->key = Crypto::Cert::X509PrivKey::CreateFromKey(NN<Crypto::Cert::X509Key>::ConvertFrom(file));
+			file.Delete();
+		}
+		else
+		{
+			file.Delete();
+		}
+	}
 }
 
 Net::IAMSmartClient::~IAMSmartClient()
 {
+	this->key.Delete();
+}
+
+Bool Net::IAMSmartClient::GetToken(Text::CStringNN code, NN<IAMSmartAPI::TokenInfo> token)
+{
+	if (!this->PrepareCEK())
+		return false;
+	
+	return this->api.GetToken(code, this->cek, token);
 }

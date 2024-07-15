@@ -37,8 +37,18 @@ X509PKCS12.o: ../../src/Crypto/Cert/X509PKCS12.cpp
 X509PrivKey.o: ../../src/Crypto/Cert/X509PrivKey.cpp
 X509PubKey.o: ../../src/Crypto/Cert/X509PubKey.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp
+AES128GCM_OpenSSL.o: ../../src/Crypto/Encrypt/AES128GCM_OpenSSL.cpp
+!-lssl
+!-lcrypto
+AES128GCM_Win.o: ../../src/Crypto/Encrypt/AES128GCM_Win.cpp
+!-lbcrypt
 AES192.o: ../../src/Crypto/Encrypt/AES192.cpp
 AES256.o: ../../src/Crypto/Encrypt/AES256.cpp
+AES256GCM_OpenSSL.o: ../../src/Crypto/Encrypt/AES256GCM_OpenSSL.cpp
+!-lssl
+!-lcrypto
+AES256GCM_Win.o: ../../src/Crypto/Encrypt/AES256GCM_Win.cpp
+!-lbcrypt
 AESBase.o: ../../src/Crypto/Encrypt/AESBase.cpp
 Base64.o: ../../src/Crypto/Encrypt/Base64.cpp
 BlockCipher.o: ../../src/Crypto/Encrypt/BlockCipher.cpp

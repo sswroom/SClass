@@ -68,6 +68,7 @@ test:
 
 console:
 @test
+@AES128GCMTest
 @CSRTest
 @HOTPTest
 @JasyptEncryptorTest
@@ -250,6 +251,9 @@ all:
 #@GUITest9
 
 #CryptoTest
+AES128GCMTest:
+@AES128GCMTest.o
+@ConsoleStartup.o
 CSRTest:
 @CSRTest.o
 @ConsoleStartup.o
@@ -984,6 +988,7 @@ GUITest9:
 @GUITest9.o
 @GUIStartup.o
 
+AES128GCMTest.o: ../../main/CryptoTest/AES128GCMTest.cpp
 CSRTest.o: ../../main/CryptoTest/CSRTest.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp

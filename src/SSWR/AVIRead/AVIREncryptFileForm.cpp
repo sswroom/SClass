@@ -247,6 +247,10 @@ void SSWR::AVIRead::AVIREncryptFileForm::SetInputFile(Text::CStringNN file)
 	{
 		this->cboChainMode->SetSelectedIndex(5);
 	}
+	else if (file.IndexOfICase(CSTR("GCM")) != INVALID_INDEX)
+	{
+		this->cboChainMode->SetSelectedIndex(6);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnEncryptClicked(AnyType userObj)
@@ -374,6 +378,7 @@ SSWR::AVIRead::AVIREncryptFileForm::AVIREncryptFileForm(Optional<UI::GUIClientCo
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, CFB);
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, OFB);
 	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, CTR);
+	CBOADDENUM(this->cboChainMode, Crypto::Encrypt::ChainMode, GCM);
 	this->cboChainMode->SetSelectedIndex(0);
 	this->lblChainMode = ui->NewLabel(*this, CSTR("Padding Mode"));
 	this->lblChainMode->SetRect(4, 124, 100, 23, false);

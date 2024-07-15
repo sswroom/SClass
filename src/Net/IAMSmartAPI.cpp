@@ -1,10 +1,13 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509PubKey.h"
+#include "Crypto/Encrypt/AES256GCM.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA256.h"
+#include "Data/RandomBytesGenerator.h"
 #include "Net/HTTPClient.h"
 #include "Net/IAMSmartAPI.h"
-#include "Text/JSON.h"
+#include "Text/JSONBuilder.h"
+#include "Text/StringTool.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
@@ -32,6 +35,11 @@ void Net::IAMSmartAPI::InitHTTPClient(NN<Net::HTTPClient> cli, Text::CStringNN c
 	this->rand.NextBytes(buff, 18);
 	sptr = Text::StrHexBytes(sbuff, buff, 18, 0);
 	hmac.Calc(sbuff, (UOSInt)(sptr - sbuff));
+	if (content.leng > 0)
+	{
+		hmac.Calc(content.v, content.leng);
+		cli->AddContentType(CSTR("application/json"));
+	}
 	cli->AddHeaderC(CSTR("nonce"), CSTRP(sbuff, sptr));
 	hmac.GetValue(buff);
 	Text::StringBuilderUTF8 sbSignature;
@@ -44,6 +52,120 @@ void Net::IAMSmartAPI::InitHTTPClient(NN<Net::HTTPClient> cli, Text::CStringNN c
 	{
 		cli->Write(content.ToByteArray());
 	}
+}
+
+Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CEKInfo> cek, Text::CStringNN jsonMsg)
+{
+	Data::RandomBytesGenerator byteGen;
+	UnsafeArray<UInt8> msgBuff = MemAllocArr(UInt8, jsonMsg.leng + 32);
+	WriteMInt32(msgBuff.Ptr(), 12);
+	byteGen.NextBytes(msgBuff + 4, 12);
+	Crypto::Encrypt::AES256GCM aes(cek->key, msgBuff + 4);
+	UOSInt encLeng = aes.Encrypt(jsonMsg.v, jsonMsg.leng, msgBuff + 16);
+	if (encLeng != jsonMsg.leng + 16)
+	{
+		MemFreeArr(msgBuff);
+		return 0;
+	}
+	Text::StringBuilderUTF8 sb;
+	Text::TextBinEnc::Base64Enc b64;
+	sb.Append(CSTR("{\"content\":\""));
+	b64.EncodeBin(sb, msgBuff, jsonMsg.leng + 32);
+	sb.Append(CSTR("\"}"));
+	MemFreeArr(msgBuff);
+#if defined(VERBOSE)
+	printf("PostEncReq.Url: %s\r\n", url.v.Ptr());
+	printf("PostEncReq.Req: %s\r\n", sb.v.Ptr());
+#endif
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_POST, false);
+	this->InitHTTPClient(cli, sb.ToCString());
+	IO::MemoryStream mstm;
+	cli->ReadToEnd(mstm, 65536);
+	
+	mstm.Write(Data::ByteArrayR(U8STR(""), 1));
+	Net::WebStatus::StatusCode code = cli->GetRespStatus();
+	cli.Delete();
+#if defined(VERBOSE)
+	printf("PostEncReq.Status: %d\r\n", (Int32)code);
+	printf("PostEncReq.Content: %s\r\n", mstm.GetBuff().Ptr());
+#endif
+	if (code != Net::WebStatus::SC_OK)
+	{
+#if defined(VERBOSE)
+		printf("Status is not OK\r\n");
+#endif
+		return 0;
+	}
+	NN<Text::JSONBase> json;
+	if (!Text::JSONBase::ParseJSONStr(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength() - 1)).SetTo(json))
+	{
+#if defined(VERBOSE)
+		printf("Response is not JSON\r\n");
+#endif
+		return 0;
+	}
+	NN<Text::String> s;
+	if (!json->GetValueString(CSTR("message")).SetTo(s) || !s->Equals(CSTR("SUCCESS")))
+	{
+#if defined(VERBOSE)
+		printf("Response is not success\r\n");
+#endif
+		json->EndUse();
+		return 0;
+	}
+	if (!json->GetValueString(CSTR("content")).SetTo(s))
+	{
+#if defined(VERBOSE)
+		printf("Response content not found\r\n");
+#endif
+		json->EndUse();
+		return 0;
+	}
+
+	msgBuff = MemAllocArr(UInt8, s->leng);
+	UOSInt msgLeng = b64.DecodeBin(s->ToCString(), msgBuff);
+	json->EndUse();
+	if (msgLeng < 32)
+	{
+#if defined(VERBOSE)
+		printf("Response content too short\r\n");
+#endif
+		MemFreeArr(msgBuff);
+		return 0;
+	}
+	if (ReadMUInt32(&msgBuff[0]) != 12)
+	{
+#if defined(VERBOSE)
+		printf("Response content IV not found\r\n");
+#endif
+		MemFreeArr(msgBuff);
+		return 0;
+	}
+	UnsafeArray<UInt8> decBuff = MemAllocArr(UInt8, msgLeng - 32 + 1);
+	aes.SetIV(&msgBuff[4]);
+	UOSInt decLeng = aes.Decrypt(&msgBuff[16], msgLeng - 16, decBuff);
+	MemFreeArr(msgBuff);
+	if (decLeng != msgLeng - 32)
+	{
+#if defined(VERBOSE)
+		printf("Decrypted length not valid\r\n");
+#endif
+		MemFreeArr(decBuff);
+		return 0;
+	}
+	decBuff[decLeng] = 0;
+#if defined(VERBOSE)
+	printf("PostEncReq.Dec Content = %s\r\n", decBuff.Ptr());
+#endif
+	Optional<Text::JSONBase> decJSON = Text::JSONBase::ParseJSONStr(Text::CStringNN(decBuff, decLeng));
+	MemFreeArr(decBuff);
+#if defined(VERBOSE)
+	if (decJSON.IsNull())
+	{
+		printf("Decrypted content is not JSON\r\n");
+	}
+#endif
+	return decJSON;
 }
 
 Net::IAMSmartAPI::IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret)
@@ -250,4 +372,95 @@ Bool Net::IAMSmartAPI::RevokeKey()
 	Bool succ = json->GetValueString(CSTR("message")).SetTo(s) && s->Equals(CSTR("SUCCESS"));
 	json->EndUse();
 	return succ;
+}
+
+void Net::IAMSmartAPI::FreeToken(NN<TokenInfo> token) const
+{
+	token->accessToken->Release();
+	token->openID->Release();
+}
+
+Bool Net::IAMSmartAPI::GetToken(Text::CStringNN code, NN<CEKInfo> cek, NN<TokenInfo> token)
+{
+	Text::JSONBuilder jsonMsg(Text::JSONBuilder::OT_OBJECT);
+	jsonMsg.ObjectAddStr(CSTR("code"), code);
+	jsonMsg.ObjectAddStr(CSTR("grantType"), CSTR("authorization_code"));
+	Text::StringBuilderUTF8 sbURL;
+	sbURL.Append(CSTR("https://"));
+	sbURL.Append(this->domain);
+	sbURL.Append(CSTR("/api/v1/auth/getToken"));
+	NN<Text::JSONBase> json;
+	if (!this->PostEncReq(sbURL.ToCString(), cek, jsonMsg.Build()).SetTo(json))
+		return false;
+	Int64 expiresIn;
+	NN<Text::String> accessToken;
+	NN<Text::String> openID;
+	if (json->GetValueAsInt64(CSTR("issueAt"), token->issueAt) && json->GetValueAsInt64(CSTR("expiresIn"), expiresIn) && json->GetValueAsInt64(CSTR("lastModifiedDate"), token->lastModifiedDate) && json->GetValueString(CSTR("accessToken")).SetTo(accessToken) && json->GetValueString(CSTR("openID")).SetTo(openID))
+	{
+		token->accessToken = accessToken->Clone();
+		token->openID = openID->Clone();
+		token->expiresAt = token->issueAt + expiresIn;
+		json->EndUse();
+		return true;
+	}
+	json->EndUse();
+	return false;
+}
+
+void Net::IAMSmartAPI::FreeProfiles(NN<ProfileInfo> profiles)
+{
+	OPTSTR_DEL(profiles->hkid);
+	OPTSTR_DEL(profiles->prefix);
+	OPTSTR_DEL(profiles->enName);
+	OPTSTR_DEL(profiles->chName);
+	OPTSTR_DEL(profiles->chNameVerfied);
+	OPTSTR_DEL(profiles->homeTelNumber);
+	OPTSTR_DEL(profiles->homeTelNumberICC);
+	OPTSTR_DEL(profiles->officeTelNumber);
+	OPTSTR_DEL(profiles->officeTelNumberICC);
+	OPTSTR_DEL(profiles->mobileTelNumber);
+	OPTSTR_DEL(profiles->mobileTelNumberICC);
+	OPTSTR_DEL(profiles->emailAddress);
+	OPTSTR_DEL(profiles->residentialAddress);
+	OPTSTR_DEL(profiles->postalAddress);
+}
+
+Bool Net::IAMSmartAPI::GetProfiles(NN<TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<CEKInfo> cek, NN<ProfileInfo> profiles)
+{
+	Text::JSONBuilder jsonMsg(Text::JSONBuilder::OT_OBJECT);
+	jsonMsg.ObjectAddStr(CSTR("accessToken"), token->accessToken);
+	jsonMsg.ObjectAddStr(CSTR("openID"), token->openID);
+	jsonMsg.ObjectAddArrayStr(CSTR("profileFields"), profileFields, ',');
+	jsonMsg.ObjectAddArrayStr(CSTR("eMEFields"), eMEFields, ',');
+	Text::StringBuilderUTF8 sbURL;
+	sbURL.Append(CSTR("https://"));
+	sbURL.Append(this->domain);
+	sbURL.Append(CSTR("/api/v1/profiles"));
+	NN<Text::JSONBase> json;
+	if (!this->PostEncReq(sbURL.ToCString(), cek, jsonMsg.Build()).SetTo(json))
+		return false;
+	profiles->hkid = 0;
+	profiles->hkidChk = 0;
+	profiles->prefix = 0;
+	profiles->enName = 0;
+	profiles->chName = 0;
+	profiles->chNameVerfied = 0;
+	profiles->birthDate = 0;
+	profiles->gender = 0;
+	profiles->maritalStatus = 0;
+	profiles->homeTelNumber = 0;
+	profiles->homeTelNumberICC = 0;
+	profiles->officeTelNumber = 0;
+	profiles->officeTelNumberICC = 0;
+	profiles->mobileTelNumber = 0;
+	profiles->mobileTelNumberICC = 0;
+	profiles->emailAddress = 0;
+	profiles->residentialAddress = 0;
+	profiles->postalAddress = 0;
+	profiles->educationLevel = 0;
+	NN<Text::String> s;
+	////////////////////////////////////////////////////
+	json->EndUse();
+	return false;
+
 }
