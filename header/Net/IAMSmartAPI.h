@@ -60,16 +60,17 @@ namespace Net
 
 		void InitHTTPClient(NN<Net::HTTPClient> cli, Text::CStringNN content);
 		Optional<Text::JSONBase> PostEncReq(Text::CStringNN url, NN<CEKInfo> cek, Text::CStringNN jsonMsg);
+		Optional<Text::String> ParseAddress(NN<Text::JSONBase> json, Text::CStringNN path);
 	public:
 		IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret);
 		~IAMSmartAPI();
 
-		void FreeCEK(NN<CEKInfo> cek) const;
+		static void FreeCEK(NN<CEKInfo> cek);
 		Bool GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo> cek);
 		Bool RevokeKey();
-		void FreeToken(NN<TokenInfo> token) const;
+		static void FreeToken(NN<TokenInfo> token);
 		Bool GetToken(Text::CStringNN code, NN<CEKInfo> cek, NN<TokenInfo> token);
-		void FreeProfiles(NN<ProfileInfo> profiles);
+		static void FreeProfiles(NN<ProfileInfo> profiles);
 		Bool GetProfiles(NN<TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<CEKInfo> cek, NN<ProfileInfo> profiles);
 	};
 }

@@ -168,6 +168,64 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	return decJSON;
 }
 
+Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, Text::CStringNN path)
+{
+	NN<Text::JSONBase> addr;
+	if (!json->GetValue(path).SetTo(addr))
+		return 0;
+	Text::StringBuilderUTF8 sb;
+	if (addr->GetValue(CSTR("ChiPremisesAddress")).SetTo(json))
+	{
+		sb.AppendOpt(json->GetValueString(CSTR("Region")));
+		sb.AppendOpt(json->GetValueString(CSTR("ChiDistrict.Sub-district")));
+		sb.AppendOpt(json->GetValueString(CSTR("ChiStreet.StreetName")));
+		sb.AppendOpt(json->GetValueString(CSTR("ChiStreet.BuildingNoFrom")));
+		sb.Append(CSTR("號"));
+		sb.AppendOpt(json->GetValueString(CSTR("BuildingName")));
+		sb.AppendOpt(json->GetValueString(CSTR("ChiBlock.BlockNo")));
+		sb.AppendOpt(json->GetValueString(CSTR("ChiBlock.BlockDescriptor")));
+		sb.AppendOpt(json->GetValueString(CSTR("Chi3dAddress.ChiFloor.FloorNum")));
+		sb.AppendOpt(json->GetValueString(CSTR("Chi3dAddress.ChiUnit.UnitNo")));
+		sb.AppendOpt(json->GetValueString(CSTR("Chi3dAddress.ChiUnit.UnitDescriptor")));
+		return Text::String::New(sb.ToCString());
+	}
+	else if (addr->GetValue(CSTR("EngPremisesAddress")).SetTo(json))
+	{
+
+	}
+	else if (addr->GetValue(CSTR("FreeFormatAddress")).SetTo(json))
+	{
+		sb.AppendOpt(json->GetValueString(CSTR("AddressLine1")));
+		sb.Append(CSTR(", "));
+		sb.AppendOpt(json->GetValueString(CSTR("AddressLine2")));
+		sb.Append(CSTR(", "));
+		sb.AppendOpt(json->GetValueString(CSTR("AddressLine3")));
+		return Text::String::New(sb.ToCString());
+	}
+	else if (addr->GetValue(CSTR("PostBoxAddress")).SetTo(json))
+	{
+		if (json->GetValue(CSTR("EngPostBox")).SetTo(addr))
+		{
+			sb.AppendOpt(addr->GetValueString(CSTR("PostOffice")));
+			sb.Append(CSTR(" Box "));
+			sb.AppendI32(addr->GetValueAsInt32(CSTR("PoBoxNo")));
+			sb.Append(CSTR(", "));
+			sb.AppendOpt(addr->GetValueString(CSTR("PostOfficeRegion")));
+			return Text::String::New(sb.ToCString());
+		}
+		else if (json->GetValue(CSTR("ChiPostBox")).SetTo(addr))
+		{
+			sb.AppendOpt(addr->GetValueString(CSTR("PostOfficeRegion")));
+			sb.AppendOpt(addr->GetValueString(CSTR("PostOffice")));
+			sb.Append(CSTR("信箱"));
+			sb.AppendI32(addr->GetValueAsInt32(CSTR("PoBoxNo")));
+			sb.Append(CSTR("號"));
+			return Text::String::New(sb.ToCString());
+		}
+	}
+	return 0;
+}
+
 Net::IAMSmartAPI::IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret)
 {
 	this->sockf = sockf;
@@ -184,7 +242,7 @@ Net::IAMSmartAPI::~IAMSmartAPI()
 	this->clientSecret->Release();
 }
 
-void Net::IAMSmartAPI::FreeCEK(NN<CEKInfo> cek) const
+void Net::IAMSmartAPI::FreeCEK(NN<CEKInfo> cek)
 {
 	MemFreeArr(cek->key);
 }
@@ -374,7 +432,7 @@ Bool Net::IAMSmartAPI::RevokeKey()
 	return succ;
 }
 
-void Net::IAMSmartAPI::FreeToken(NN<TokenInfo> token) const
+void Net::IAMSmartAPI::FreeToken(NN<TokenInfo> token)
 {
 	token->accessToken->Release();
 	token->openID->Release();
@@ -459,8 +517,31 @@ Bool Net::IAMSmartAPI::GetProfiles(NN<TokenInfo> token, Text::CStringNN eMEField
 	profiles->postalAddress = 0;
 	profiles->educationLevel = 0;
 	NN<Text::String> s;
-	////////////////////////////////////////////////////
+	profiles->hkid = json->GetValueNewString(CSTR("idNo.Identification"));
+	if (json->GetValueString(CSTR("idNo.CheckDigit")).SetTo(s))
+		profiles->hkidChk = s->v[0];
+	profiles->prefix = json->GetValueNewString(CSTR("prefix"));
+	profiles->enName = json->GetValueNewString(CSTR("enName.UnstructuredName"));
+	profiles->chName = json->GetValueNewString(CSTR("chName.ChineseName"));
+	profiles->chNameVerfied = json->GetValueNewString(CSTR("chNameVerified"));
+	if (json->GetValueString(CSTR("birthDate")).SetTo(s))
+		profiles->birthDate = s->ToUInt32();
+	if (json->GetValueString(CSTR("gender")).SetTo(s))
+		profiles->gender = s->v[0];
+	if (json->GetValueString(CSTR("maritalStatus")).SetTo(s))
+		profiles->maritalStatus = s->v[0];
+	profiles->homeTelNumber = json->GetValueNewString(CSTR("homeTelNumber.SubscriberNumber"));
+	profiles->homeTelNumberICC = json->GetValueNewString(CSTR("homeTelNumber.CountryCode"));
+	profiles->officeTelNumber = json->GetValueNewString(CSTR("officeTelNumber.SubscriberNumber"));
+	profiles->officeTelNumberICC = json->GetValueNewString(CSTR("officeTelNumber.CountryCode"));
+	profiles->mobileTelNumber = json->GetValueNewString(CSTR("mobileNumber.SubscriberNumber"));
+	profiles->mobileTelNumberICC = json->GetValueNewString(CSTR("mobileNumber.CountryCode"));
+	profiles->emailAddress = json->GetValueNewString(CSTR("emailAddress"));
+	profiles->residentialAddress = ParseAddress(json, CSTR("residentialAddress"));
+	profiles->postalAddress = ParseAddress(json, CSTR("postalAddress"));
+	if (json->GetValueString(CSTR("educationLevel")).SetTo(s))
+		profiles->educationLevel = s->v[0];
 	json->EndUse();
-	return false;
+	return true;
 
 }

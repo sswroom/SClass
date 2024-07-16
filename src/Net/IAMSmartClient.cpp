@@ -14,7 +14,7 @@ Bool Net::IAMSmartClient::PrepareCEK()
 		return false;
 	if (cek.issueAt != 0)
 	{
-		this->api.FreeCEK(this->cek);
+		Net::IAMSmartAPI::FreeCEK(this->cek);
 		this->cek.issueAt = 0;
 	}
 	if (!this->api.GetKey(key, cek))
@@ -58,4 +58,12 @@ Bool Net::IAMSmartClient::GetToken(Text::CStringNN code, NN<IAMSmartAPI::TokenIn
 		return false;
 	
 	return this->api.GetToken(code, this->cek, token);
+}
+
+Bool Net::IAMSmartClient::GetProfiles(NN<IAMSmartAPI::TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<IAMSmartAPI::ProfileInfo> profiles)
+{
+	if (!this->PrepareCEK())
+		return false;
+	
+	return this->api.GetProfiles(token, eMEFields, profileFields, this->cek, profiles);
 }

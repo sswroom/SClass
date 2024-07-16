@@ -17,6 +17,7 @@ namespace Net
 		~IAMSmartClient();
 
 		Bool GetToken(Text::CStringNN code, NN<IAMSmartAPI::TokenInfo> token);
+		Bool GetProfiles(NN<IAMSmartAPI::TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<IAMSmartAPI::ProfileInfo> profiles);
 	};
 }
 #endif

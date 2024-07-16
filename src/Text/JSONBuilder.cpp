@@ -874,20 +874,51 @@ Bool Text::JSONBuilder::ObjectAddArrayStr(Text::CStringNN name, Text::CStringNN 
 	this->AppendStr(name);
 	this->sb.AppendUTF8Char(':');
 	this->sb.AppendUTF8Char('[');
-	Data::ArrayListStringNN strs;
-	Text::StringTool::SplitAsNewString(value, splitChar, strs);
-	UOSInt i = 0;
-	UOSInt j = strs.GetCount();
-	while (i < j)
+	if (value.leng > 0)
 	{
-		if (i > 0)
-			this->sb.AppendC(UTF8STRC(","));
-		this->AppendStr(strs.GetItemNoCheck(i)->ToCString());
-		i++;
+		Data::ArrayListStringNN strs;
+		Text::StringTool::SplitAsNewString(value, splitChar, strs);
+		UOSInt i = 0;
+		UOSInt j = strs.GetCount();
+		while (i < j)
+		{
+			if (i > 0)
+				this->sb.AppendC(UTF8STRC(","));
+			this->AppendStr(strs.GetItemNoCheck(i)->ToCString());
+			i++;
+		}
+		strs.FreeAll();
 	}
-	strs.FreeAll();
 	this->sb.AppendUTF8Char(']');
+	return true;
 }
+
+Bool Text::JSONBuilder::ObjectAddChar(Text::CStringNN name, UTF8Char val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb.AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
+	this->sb.AppendC(UTF8STRC(":"));
+	UTF8Char sbuff[2];
+	if (val == 0)
+	{
+		this->sb.AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		sbuff[0] = val;
+		sbuff[1] = 0;
+		this->AppendStrUTF8(sbuff);
+	}
+	return true;
+}
+
 
 Bool Text::JSONBuilder::ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts)
 {
