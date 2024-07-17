@@ -732,11 +732,9 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 					sb->AppendChar('\t', tabLev + 1);
 					sb->AppendC(UTF8STRC("this->"));
 					sb->Append(field->name);
-					sb->AppendC(UTF8STRC(" = !"));
+					sb->AppendC(UTF8STRC(" = Text::String::CopyOrNull("));
 					sb->Append(field->name);
-					sb->AppendC(UTF8STRC(".IsNull()?"));
-					sb->Append(field->name);
-					sb->AppendC(UTF8STRC(".OrNull()->Clone():Optional<Text::String>(0);\r\n"));
+					sb->AppendC(UTF8STRC(");\r\n"));
 					sb->AppendChar('\t', tabLev);
 					sb->AppendC(UTF8STRC("}\r\n"));
 					sb->AppendC(UTF8STRC("\r\n"));
