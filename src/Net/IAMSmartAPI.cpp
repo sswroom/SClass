@@ -174,6 +174,7 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 	if (!json->GetValue(path).SetTo(addr))
 		return 0;
 	Text::StringBuilderUTF8 sb;
+	NN<Text::String> s;
 	if (addr->GetValue(CSTR("ChiPremisesAddress")).SetTo(json))
 	{
 		sb.AppendOpt(json->GetValueString(CSTR("Region")));
@@ -191,7 +192,60 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 	}
 	else if (addr->GetValue(CSTR("EngPremisesAddress")).SetTo(json))
 	{
-
+		if (json->GetValue(CSTR("Eng3dAddress.EngUnit")).NotNull())
+		{
+			sb.AppendOpt(json->GetValueString(CSTR("Eng3dAddress.EngUnit.UnitDescriptor")));
+			sb.AppendUTF8Char(' ');
+			sb.AppendOpt(json->GetValueString(CSTR("Eng3dAddress.EngUnit.UnitNo")));
+			sb.Append(CSTR(", "));
+		}
+		if (json->GetValueString(CSTR("Eng3dAddress.EngFloor.FloorNum")).SetTo(s))
+		{
+			sb.Append(s);
+			sb.Append(CSTR("/F "));
+		}
+		if (json->GetValue(CSTR("EngBlock")).NotNull())
+		{
+			sb.AppendOpt(json->GetValueString(CSTR("EngBlock.BlockDescriptor")));
+			sb.AppendUTF8Char(' ');
+			sb.AppendOpt(json->GetValueString(CSTR("EngBlock.BlockNo")));
+			sb.Append(CSTR(", "));
+		}
+		sb.AppendOpt(json->GetValueString(CSTR("BuildingName")));
+		if (json->GetValue(CSTR("EngStreet")).NotNull())
+		{
+			if (sb.leng > 0)
+				sb.Append(CSTR(", "));
+			Bool found = false;
+			if (json->GetValueString(CSTR("EngStreet.BuildingNoFrom")).SetTo(s))
+			{
+				if (found) sb.AppendUTF8Char(' ');
+				sb.Append(s);
+				found = true;
+			}
+			if (json->GetValueString(CSTR("EngStreet.StreetName")).SetTo(s))
+			{
+				if (found) sb.AppendUTF8Char(' ');
+				sb.Append(s);
+				found = true;
+			}
+		}
+		if (json->GetValueString(CSTR("EngDistrict.Sub-district")).SetTo(s))
+		{
+			if (sb.leng > 0)
+				sb.Append(CSTR(", "));
+			sb.Append(s);
+		}
+		if (json->GetValueString(CSTR("Region")).SetTo(s))
+		{
+			if (s->Equals(CSTR("KLN")))
+				sb.Append(CSTR(", KOWLOON"));
+			else if (s->Equals(CSTR("HK")))
+				sb.Append(CSTR(", HONG KONG"));
+			else if (s->Equals(CSTR("NT")))
+				sb.Append(CSTR(", NEW TERRITORIES"));
+		}
+		return Text::String::New(sb.ToCString());
 	}
 	else if (addr->GetValue(CSTR("FreeFormatAddress")).SetTo(json))
 	{
