@@ -52,6 +52,11 @@ Net::IAMSmartClient::~IAMSmartClient()
 	this->key.Delete();
 }
 
+Bool Net::IAMSmartClient::IsError() const
+{
+	return this->key.IsNull();
+}
+
 Bool Net::IAMSmartClient::GetToken(Text::CStringNN code, NN<IAMSmartAPI::TokenInfo> token)
 {
 	if (!this->PrepareCEK())
