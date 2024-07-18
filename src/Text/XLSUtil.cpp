@@ -2,7 +2,7 @@
 #include "Math/Math.h"
 #include "Text/XLSUtil.h"
 
-Double Text::XLSUtil::Date2Number(Data::DateTime *dt)
+Double Text::XLSUtil::Date2Number(NN<Data::DateTime> dt)
 {
 	dt->ToLocalTime();
 	dt->SetTimeZoneQHR(0);
@@ -31,7 +31,7 @@ Double Text::XLSUtil::Date2Number(Data::Timestamp ts)
 	return days + (Double)secs / 86400.0 + (ts.inst.nanosec + 50000) / 86400000000000.0;
 }
 
-void Text::XLSUtil::Number2Date(Data::DateTime *dt, Double v)
+void Text::XLSUtil::Number2Date(NN<Data::DateTime> dt, Double v)
 {
 	Int32 days = (Int32)v;
 	Int8 tz;

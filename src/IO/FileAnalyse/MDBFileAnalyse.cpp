@@ -164,7 +164,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 				frame->AddHexBuff(24 + 0x3E, 24, CSTR("Unknown"), &decBuff[0x3E], true);
 				frame->AddUInt(24 + 0x56, 2, CSTR("Unknown"), ReadUInt16(&decBuff[0x56]));
 				Data::DateTime dt;
-				Text::XLSUtil::Number2Date(&dt, ddays);
+				Text::XLSUtil::Number2Date(dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
 				frame->AddField(24 + 0x5A, 8, CSTR("Creation date"), CSTRP(sbuff, sptr));
@@ -194,7 +194,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 				frame->AddHex32(24 + 0x52, CSTR("Unknown"), ReadUInt32(&decBuff[0x52]));
 				frame->AddUInt(24 + 0x56, 4, CSTR("System Collation"), ReadUInt32(&decBuff[0x56]));
 				Data::DateTime dt;
-				Text::XLSUtil::Number2Date(&dt, ddays);
+				Text::XLSUtil::Number2Date(dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
 				frame->AddField(24 + 0x5A, 8, CSTR("Creation date"), CSTRP(sbuff, sptr));

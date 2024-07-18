@@ -33,8 +33,8 @@ namespace Text
 		Text::String *valueOri;
 
 	protected:
-		Data::ArrayListNN<XMLNode> *childArr;
-		Data::ArrayListNN<XMLAttrib> *attribArr;
+		Optional<Data::ArrayListNN<XMLNode>> childArr;
+		Optional<Data::ArrayListNN<XMLAttrib>> attribArr;
 		NodeType nt;
 
 	public:

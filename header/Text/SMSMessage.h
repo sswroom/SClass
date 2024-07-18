@@ -21,7 +21,7 @@ namespace Text
 	private:
 		static UnsafeArray<UTF16Char> ParsePDUPhone(UnsafeArray<UTF16Char> buff, UnsafeArray<const UInt8> pduPhone, UInt8 phoneByteLen);
 		static UInt8 ParseIBCD(UInt8 byte);
-		static void ParseTimestamp(const UInt8 *buff, NN<Data::DateTime> time);
+		static void ParseTimestamp(UnsafeArray<const UInt8> buff, NN<Data::DateTime> time);
 		static UnsafeArray<UInt8> ToPDUPhone(UnsafeArray<UInt8> buff, UnsafeArray<const UTF16Char> phoneNum, OptOut<UInt8> byteSize, OptOut<UInt8> phoneSize);
 	public:
 		SMSMessage(UnsafeArray<const UTF16Char> address, UnsafeArrayOpt<const UTF16Char> smsc, Optional<SMSUserData> ud);
@@ -40,7 +40,7 @@ namespace Text
 
 		UOSInt ToSubmitPDU(UnsafeArray<UInt8> buff);
 
-		static Optional<Text::SMSMessage> CreateFromPDU(const UInt8 *pduBytes);
+		static Optional<Text::SMSMessage> CreateFromPDU(UnsafeArray<const UInt8> pduBytes);
 	};
 }
 #endif

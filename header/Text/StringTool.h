@@ -18,9 +18,9 @@ namespace Text
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> s);
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map);
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
-		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls);
-		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen);
-		static void Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CStringNN seperator);
+		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, NN<Data::NamedClass<T>> cls);
+		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen);
+		static void Int32Join(NN<Text::StringBuilderUTF8> sb, NN<Data::List<Int32>> list, Text::CStringNN seperator);
 		static Bool IsNonASCII(UnsafeArray<const UTF8Char> s);
 		static Bool IsASCIIText(const Data::ByteArrayR &buff);
 		static Bool IsEmailAddress(UnsafeArray<const UTF8Char> s);
@@ -36,10 +36,10 @@ namespace Text
 	};
 }
 
-template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls)
+template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, NN<Data::NamedClass<T>> cls)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb->AppendUTF8Char('{');
 	Bool found = false;
 	UOSInt i = 0;
@@ -54,8 +54,8 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 		sptr = Text::JSText::ToJSTextDQuote(sbuff, cls->GetFieldName(i));
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendUTF8Char(':');
-		Data::VariItem *item = cls->GetNewValue(i, obj);
-		if (item)
+		NN<Data::VariItem> item;
+		if (cls->GetNewValue(i, obj).SetTo(item))
 		{
 			item->ToString(sb);
 			DEL_CLASS(item);
@@ -69,7 +69,7 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 	sb->AppendUTF8Char('}');
 }
 
-template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen)
+template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen)
 {
 	if (list == 0)
 	{
@@ -88,7 +88,7 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 			sb->AppendUTF8Char(',');
 		}
 		sb->AppendC(clsName, nameLen);
-		BuildString(sb, list->GetItem(i), cls);
+		BuildJSONString(sb, list->GetItem(i), cls);
 		i++;
 	}
 	sb->AppendUTF8Char(']');

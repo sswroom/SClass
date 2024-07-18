@@ -102,6 +102,11 @@ namespace Data
 			return this->dateVal * 86400000LL;
 		}
 
+		Int64 ToTicks(Int8 tzQhr) const
+		{
+			return this->dateVal * 86400000LL - tzQhr * 900000LL;
+		}
+
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const
 		{
 			return ToString(buff, "yyyy-MM-dd");

@@ -4,15 +4,17 @@
 #include "Text/MyStringW.h"
 #include "Text/SMSUserData.h"
 
-Text::SMSUserData::SMSUserData(UnsafeArray<const UTF16Char> msg, Text::SMSUtil::DCS dcs, const UInt8 *udh)
+Text::SMSUserData::SMSUserData(UnsafeArray<const UTF16Char> msg, Text::SMSUtil::DCS dcs, UnsafeArrayOpt<const UInt8> udh)
 {
 	this->msg = Text::StrCopyNew(msg);
 	this->dcs = dcs;
-	if (udh)
+	UnsafeArray<const UInt8> nnudh;
+	if (udh.SetTo(nnudh))
 	{
-		UInt32 len = (UInt32)udh[0] + 1;
-		this->udh = MemAlloc(UInt8, len);
-		MemCopyNO(this->udh, udh, len);
+		UnsafeArray<UInt8> destudh;
+		UInt32 len = (UInt32)nnudh[0] + 1;
+		this->udh = destudh = MemAllocArr(UInt8, len);
+		MemCopyNO(destudh.Ptr(), nnudh.Ptr(), len);
 	}
 	else
 	{
@@ -23,15 +25,17 @@ Text::SMSUserData::SMSUserData(UnsafeArray<const UTF16Char> msg, Text::SMSUtil::
 Text::SMSUserData::~SMSUserData()
 {
 	Text::StrDelNew(this->msg);
-	if (this->udh)
+	UnsafeArray<UInt8> udh;
+	if (this->udh.SetTo(udh))
 	{
-		MemFree(this->udh);
+		MemFreeArr(udh);
+		this->udh = 0;
 	}
 }
 
 Bool Text::SMSUserData::HasUDH()
 {
-	return this->udh != 0;
+	return this->udh.NotNull();
 }
 
 Text::SMSUtil::DCS Text::SMSUserData::GetDCS()
@@ -42,9 +46,10 @@ Text::SMSUtil::DCS Text::SMSUserData::GetDCS()
 UInt32 Text::SMSUserData::GetByteSize()
 {
 	UInt32 udhSize = 0;
-	if (this->udh)
+	UnsafeArray<UInt8> udh;
+	if (this->udh.SetTo(udh))
 	{
-		udhSize = (UInt32)this->udh[0] + 1;
+		udhSize = (UInt32)udh[0] + 1;
 	}
 	if (this->dcs == Text::SMSUtil::DCS_GSM7BIT)
 	{
@@ -70,13 +75,14 @@ UInt32 Text::SMSUserData::GetBytes(UnsafeArray<UInt8> bytes)
 	UnsafeArray<UInt8> currPtr;
 	UnsafeArray<const UTF16Char> src = this->msg;
 	UTF16Char c;
+	UnsafeArray<UInt8> udh;
 	if (this->dcs == Text::SMSUtil::DCS_GSM7BIT)
 	{
 		Int32 septetLeng = 0;
 		Int32 t = 0;
 		UInt16 v;
 		currPtr = bytes + 1;
-		if (udh)
+		if (this->udh.SetTo(udh))
 		{
 			t = i = udh[0] + 1;
 			while (i-- > 0)
@@ -210,7 +216,7 @@ UInt32 Text::SMSUserData::GetBytes(UnsafeArray<UInt8> bytes)
 	else if (this->dcs == Text::SMSUtil::DCS_UCS2)
 	{
 		currPtr = bytes + 1;
-		if (this->udh)
+		if (this->udh.SetTo(udh))
 		{
 			i = udh[0] + 1;
 			while (i-- > 0)
@@ -231,7 +237,7 @@ UInt32 Text::SMSUserData::GetBytes(UnsafeArray<UInt8> bytes)
 	return 0;
 }
 
-const UInt8 *Text::SMSUserData::GetUDH()
+UnsafeArrayOpt<const UInt8> Text::SMSUserData::GetUDH()
 {
 	return this->udh;
 }
@@ -406,7 +412,7 @@ Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(UnsafeArray<const U
 	}
 }
 
-Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Bool hasUDH, Text::SMSUtil::DCS dcs)
+Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSFromBytes(UnsafeArray<const UInt8> bytes, Bool hasUDH, Text::SMSUtil::DCS dcs)
 {
 	UTF16Char sbuff[161];
 	UTF16Char *sptr = sbuff;

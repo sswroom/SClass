@@ -116,7 +116,7 @@ UInt8 Text::SMSMessage::ParseIBCD(UInt8 byte)
 	return (UInt8)((byte & 0xf) * 10 + (byte >> 4));
 }
 
-void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, NN<Data::DateTime> time)
+void Text::SMSMessage::ParseTimestamp(UnsafeArray<const UInt8> buff, NN<Data::DateTime> time)
 {
 	if ((buff[6] & 0x8) != 0)
 	{
@@ -285,7 +285,7 @@ UOSInt Text::SMSMessage::ToSubmitPDU(UnsafeArray<UInt8> buff)
 	return (UOSInt)(currPtr - buff);
 }
 
-Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
+Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(UnsafeArray<const UInt8> pduBytes)
 {
 	UTF16Char sbuff[256];
 	UnsafeArray<UTF16Char> sptr = sbuff;

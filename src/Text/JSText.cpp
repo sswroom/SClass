@@ -156,7 +156,7 @@ void Text::JSText::ToJSTextDQuote(NN<Text::StringBuilderUTF8> sb, UnsafeArray<co
 	sb->AppendUTF8Char('\"');
 }
 
-WChar *Text::JSText::ToJSTextW(WChar *buff, const WChar *s)
+UnsafeArray<WChar> Text::JSText::ToJSTextW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> s)
 {
 	WChar c;
 	*buff++ = '\'';
@@ -186,7 +186,7 @@ WChar *Text::JSText::ToJSTextW(WChar *buff, const WChar *s)
 	return buff;
 }
 
-WChar *Text::JSText::ToJSTextDQuoteW(WChar *buff, const WChar *s)
+UnsafeArray<WChar> Text::JSText::ToJSTextDQuoteW(UnsafeArray<WChar> buff, UnsafeArray<const WChar> s)
 {
 	WChar c;
 	*buff++ = '\"';
@@ -214,11 +214,6 @@ WChar *Text::JSText::ToJSTextDQuoteW(WChar *buff, const WChar *s)
 	*buff++ = '\"';
 	*buff = 0;
 	return buff;
-}
-
-NN<Text::String> Text::JSText::ToNewJSText(Text::String *s)
-{
-	return ToNewJSText(STR_PTR(s));
 }
 
 NN<Text::String> Text::JSText::ToNewJSText(Optional<Text::String> s)
@@ -319,20 +314,20 @@ NN<Text::String> Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char> s)
 	return retS;
 }
 
-const WChar *Text::JSText::ToNewJSTextW(const WChar *s)
+UnsafeArray<const WChar> Text::JSText::ToNewJSTextW(UnsafeArrayOpt<const WChar> s)
 {
-	WChar *destStr;
-	if (s == 0)
+	UnsafeArray<WChar> destStr;
+	UnsafeArray<const WChar> srcPtr;
+	UnsafeArray<const WChar> nns;
+	if (!s.SetTo(srcPtr))
 	{
 		destStr = MemAlloc(WChar, 5);
 		Text::StrConcat(destStr, L"null");
 		return destStr;
 	}
-	const WChar *srcPtr;
+	nns = srcPtr;
 	WChar c;
 	UOSInt chCnt;
-
-	srcPtr = s;
 	chCnt = 3;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -349,24 +344,25 @@ const WChar *Text::JSText::ToNewJSTextW(const WChar *s)
 		}
 	}
 	destStr = MemAlloc(WChar, chCnt);
-	ToJSTextW(destStr, s);
+	ToJSTextW(destStr, nns);
 	return destStr;
 }
 
-const WChar *Text::JSText::ToNewJSTextDQuoteW(const WChar *s)
+UnsafeArray<const WChar> Text::JSText::ToNewJSTextDQuoteW(UnsafeArrayOpt<const WChar> s)
 {
-	WChar *destStr;
-	if (s == 0)
+	UnsafeArray<WChar> destStr;
+	UnsafeArray<const WChar> nns;
+	if (!s.SetTo(nns))
 	{
-		destStr = MemAlloc(WChar, 5);
+		destStr = MemAllocArr(WChar, 5);
 		Text::StrConcat(destStr, L"null");
 		return destStr;
 	}
-	const WChar *srcPtr;
+	UnsafeArray<const WChar> srcPtr;
 	WChar c;
 	UOSInt chCnt;
 
-	srcPtr = s;
+	srcPtr = nns;
 	chCnt = 3;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -382,13 +378,13 @@ const WChar *Text::JSText::ToNewJSTextDQuoteW(const WChar *s)
 			break;
 		}
 	}
-	destStr = MemAlloc(WChar, chCnt);
-	ToJSTextDQuoteW(destStr, s);
+	destStr = MemAllocArr(WChar, chCnt);
+	ToJSTextDQuoteW(destStr, nns);
 	return destStr;
 }
 
 
-Text::String *Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s)
+Optional<Text::String> Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s)
 {
 	UnsafeArray<const UTF8Char> srcPtr;
 	UnsafeArray<UTF8Char> destPtr;
@@ -644,14 +640,14 @@ Text::String *Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s)
 		}
 	}
 	*destPtr = 0;
-	return outS.Ptr();
+	return outS;
 }
 
-const WChar *Text::JSText::FromNewJSTextW(const WChar *s)
+UnsafeArrayOpt<const WChar> Text::JSText::FromNewJSTextW(UnsafeArray<const WChar> s)
 {
-	const WChar *srcPtr;
-	WChar *destPtr;
-	WChar *outStr;
+	UnsafeArray<const WChar> srcPtr;
+	UnsafeArray<WChar> destPtr;
+	UnsafeArray<WChar> outStr;
 	UOSInt chCnt;
 	WChar c;
 	WChar startC;
@@ -756,7 +752,7 @@ const WChar *Text::JSText::FromNewJSTextW(const WChar *s)
 	if (*srcPtr != 0)
 		return 0;
 
-	outStr = MemAlloc(WChar, chCnt + 1);
+	outStr = MemAllocArr(WChar, chCnt + 1);
 	destPtr = outStr;
 	srcPtr = s;
 	srcPtr++;
@@ -863,12 +859,12 @@ const WChar *Text::JSText::FromNewJSTextW(const WChar *s)
 		}
 	}
 	*destPtr = 0;
-	return outStr;
+	return UnsafeArray<const WChar>(outStr);
 }
 
-void Text::JSText::FreeNewText(const WChar *s)
+void Text::JSText::FreeNewText(UnsafeArray<const WChar> s)
 {
-	MemFree((void*)s);
+	MemFreeArr(s);
 }
 
 Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)

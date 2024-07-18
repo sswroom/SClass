@@ -606,6 +606,14 @@ namespace Data
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), 0), tzQhr);
 		}
 
+		static Timestamp FromDate(Date date, Int8 tzQhr)
+		{
+			if (date.IsNull())
+				return Timestamp();
+			else
+				return Timestamp(Data::TimeInstant(date.GetTotalDays() * 86400 - tzQhr * 900, 0), tzQhr);
+		}
+
 		static Timestamp Null()
 		{
 			return Data::Timestamp(0);

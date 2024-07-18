@@ -287,10 +287,10 @@ OSInt Text::SMSUtil::ToGSMBytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UI
 	return 0;
 }
 
-OSInt Text::SMSUtil::ToUCS2Bytes(const UTF16Char *msg, UInt8 *buff)
+OSInt Text::SMSUtil::ToUCS2Bytes(UnsafeArray<const UTF16Char> msg, UnsafeArray<UInt8> buff)
 {
 	UOSInt len;
-	const UTF16Char *src;
+	UnsafeArray<const UTF16Char> src;
 	UTF16Char c;
 	len = Text::StrCharCnt(msg) << 1;
 	src = msg;

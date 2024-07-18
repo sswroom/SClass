@@ -439,7 +439,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 						sptr = field->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("RAW ")));
 						frame->AddFloat(ofst, 8, CSTRP(sbuff, sptr), t);
 						Data::DateTime dt;
-						Text::XLSUtil::Number2Date(&dt, t);
+						Text::XLSUtil::Number2Date(dt, t);
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 						frame->AddField(ofst, 8, field->name->ToCString(), CSTRP(sbuff, sptr));
 						ofst += 8;

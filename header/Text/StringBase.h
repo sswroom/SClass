@@ -108,7 +108,7 @@ template <typename T> UnsafeArray<UTF8Char> Text::StringBase<T>::ConcatTo(Unsafe
 	REGVAR UOSInt len = this->leng;
 	MemCopyNO(sbuff.Ptr(), this->v.Ptr(), len);
 	sbuff += len;
-	*sbuff = 0;
+	sbuff[0] = 0;
 	return sbuff;
 }
 
@@ -119,7 +119,7 @@ template <typename T> UnsafeArray<UTF8Char> Text::StringBase<T>::ConcatWith(Unsa
 	sbuff += len;
 	MemCopyNO(sbuff.Ptr(), s1.Ptr(), len1);
 	sbuff += len1;
-	*sbuff = 0;
+	sbuff[0] = 0;
 	return sbuff;
 }
 
@@ -129,7 +129,7 @@ template <typename T> UnsafeArray<UTF8Char> Text::StringBase<T>::ConcatToS(Unsaf
 	{
 		MemCopyNO(sbuff.Ptr(), this->v.Ptr(), this->leng);
 		sbuff += this->leng;
-		*sbuff = 0;
+		sbuff[0] = 0;
 		return sbuff;
 	}
 	else

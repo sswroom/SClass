@@ -246,7 +246,7 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(NN<Text::StringBuild
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
-		Text::StringTool::Int32Join(sb, &this->vals, CSTR(", "));
+		Text::StringTool::Int32Join(sb, this->vals, CSTR(", "));
 		sb->AppendC(UTF8STRC(")"));
 		return true;
 	}

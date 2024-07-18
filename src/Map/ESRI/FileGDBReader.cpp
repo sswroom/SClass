@@ -1695,7 +1695,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 			if (field->defSize == 8)
 			{
 				Data::DateTime dt;
-				Text::XLSUtil::Number2Date(&dt, ReadDouble(field->defValue));
+				Text::XLSUtil::Number2Date(dt, ReadDouble(field->defValue));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}

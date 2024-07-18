@@ -2257,7 +2257,7 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *write
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, Text::String *txt)
 {
-	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
+	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(Optional<Text::String>(txt));
 	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }
