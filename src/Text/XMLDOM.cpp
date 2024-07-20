@@ -30,9 +30,6 @@ Text::XMLAttrib::XMLAttrib(Text::CStringNN name, Text::CString value) : XMLNode(
 
 Text::XMLAttrib::~XMLAttrib()
 {
-	OPTSTR_DEL(this->name);
-	OPTSTR_DEL(this->value);
-	SDEL_STRING(this->valueOri);
 }
 
 Bool Text::XMLAttrib::ToString(NN<Text::StringBuilderUTF8> sb) const
