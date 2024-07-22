@@ -46,7 +46,7 @@ UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	BCRYPT_KEY_DATA_BLOB_HEADER *keyHdr = (BCRYPT_KEY_DATA_BLOB_HEADER*)keyBuff;
 	keyHdr->dwMagic = BCRYPT_KEY_DATA_BLOB_MAGIC;
 	keyHdr->dwVersion = BCRYPT_KEY_DATA_BLOB_VERSION1;
-	keyHdr->cbKeyData = 16;
+	keyHdr->cbKeyData = 32;
 	MemCopyNO(&keyBuff[sizeof(BCRYPT_KEY_DATA_BLOB_HEADER)], this->key, 32);
 	status = BCryptImportKey(
 		hAlg,
@@ -130,7 +130,7 @@ UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 	BCRYPT_KEY_DATA_BLOB_HEADER *keyHdr = (BCRYPT_KEY_DATA_BLOB_HEADER*)keyBuff;
 	keyHdr->dwMagic = BCRYPT_KEY_DATA_BLOB_MAGIC;
 	keyHdr->dwVersion = BCRYPT_KEY_DATA_BLOB_VERSION1;
-	keyHdr->cbKeyData = 16;
+	keyHdr->cbKeyData = 32;
 	MemCopyNO(&keyBuff[sizeof(BCRYPT_KEY_DATA_BLOB_HEADER)], this->key, 32);
 	status = BCryptImportKey(
 		hAlg,
