@@ -47,7 +47,7 @@ Single Data::VariItem::GetAsF32() const
 	case ItemType::Unknown:
 	case ItemType::Null:
 	default:
-		return 0;
+		return NAN;
 	}
 }
 
@@ -90,7 +90,7 @@ Double Data::VariItem::GetAsF64() const
 	case ItemType::Unknown:
 	case ItemType::Null:
 	default:
-		return 0;
+		return NAN;
 	}
 }
 
