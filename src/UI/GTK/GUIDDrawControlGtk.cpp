@@ -372,7 +372,12 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		{
 			surface->info.atype = Media::AT_ALPHA;
 			OSInt lineAdd;
-			ImageUtil_ColorFill32((UInt8*)surface->LockSurface(lineAdd), this->dispSize.CalcArea(), 0xff000000);
+			UnsafeArray<UInt8> buff;
+			if (surface->LockSurface(lineAdd).SetTo(buff))
+			{
+				ImageUtil_ColorFill32(buff.Ptr(), this->dispSize.CalcArea(), 0xff000000);
+				surface->UnlockSurface();
+			}
 			this->clsData->pixBuf = buf;
 			this->clsData->pSurfaceUpdated = true;
 		}
@@ -401,7 +406,7 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 	}
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
+UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
 {
 	NN<Media::MonitorSurface> buffSurface;
 	this->surfaceMut.Lock();
@@ -412,8 +417,8 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 	}
 	if (targetWidth == buffSurface->info.dispSize.x && targetHeight == buffSurface->info.dispSize.y)
 	{
-		UInt8 *dptr = buffSurface->LockSurface(bpl);
-		if (dptr)
+		UnsafeArray<UInt8> dptr;
+		if (buffSurface->LockSurface(bpl).SetTo(dptr))
 		{
 			return dptr;
 		}

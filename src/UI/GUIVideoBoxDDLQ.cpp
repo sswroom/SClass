@@ -251,9 +251,12 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	if (vbuff->destSurface.SetTo(destSurface))
 	{
 		OSInt destBpl;
-		UInt8* destBuff = destSurface->LockSurface(destBpl);
-		tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
-		destSurface->UnlockSurface();
+		UnsafeArray<UInt8> destBuff;
+		if (destSurface->LockSurface(destBpl).SetTo(destBuff))
+		{
+			tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
+			destSurface->UnlockSurface();
+		}
 	}
 	tstat->hTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetHAvgTime();
 	tstat->vTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetVAvgTime();
@@ -278,9 +281,12 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 		if (vbuff2->destSurface.SetTo(destSurface))
 		{
 			OSInt destBpl;
-			UInt8* destBuff = destSurface->LockSurface(destBpl);
-			tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
-			destSurface->UnlockSurface();
+			UnsafeArray<UInt8> destBuff;
+			if (destSurface->LockSurface(destBpl).SetTo(destBuff))
+			{
+				tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
+				destSurface->UnlockSurface();
+			}
 		}
 		vbuff2->frameNum = vbuff->frameNum;
 		vbuff2->frameTime = vbuff->frameTime + 17;

@@ -104,12 +104,12 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 		}
 		else
 		{
-			UInt8 *dptr = this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl);
-			if (dptr)
+			UnsafeArray<UInt8> dptr;
+			if (this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl).SetTo(dptr))
 			{
 				Math::RectAreaDbl srcRect;
 				Math::RectArea<OSInt> destRect;
-				ImageUtil_ImageColorFill32(dptr, this->bkBuffSize.x, this->bkBuffSize.y, (UOSInt)bpl, 0);
+				ImageUtil_ImageColorFill32(dptr.Ptr(), this->bkBuffSize.x, this->bkBuffSize.y, (UOSInt)bpl, 0);
 
 				if (this->mouseDowned)
 				{
@@ -326,12 +326,12 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 void UI::GUIPictureBoxDD::DrawFromBG()
 {
 	OSInt bpl;
-	UInt8 *dptr = this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, bpl);
-	if (dptr)
+	UnsafeArray<UInt8> dptr;
+	if (this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, bpl).SetTo(dptr))
 	{
 		UOSInt i;
 		UOSInt j;
-		ImageCopy_ImgCopy(this->bgBuff, dptr, this->bgBuffSize.x << 2, this->bgBuffSize.y, (OSInt)this->bgBuffSize.x << 2, (OSInt)bpl);
+		ImageCopy_ImgCopy(this->bgBuff, dptr.Ptr(), this->bgBuffSize.x << 2, this->bgBuffSize.y, (OSInt)this->bgBuffSize.x << 2, (OSInt)bpl);
 		i = 0;
 		j = this->drawHdlrs.GetCount();
 		while (i < j)

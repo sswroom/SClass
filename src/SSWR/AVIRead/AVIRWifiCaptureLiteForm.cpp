@@ -395,8 +395,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
-	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
-	if (s)
+	NN<Text::String> s;
+	if (me->lvLogWifi->GetItemTextNew(index).SetTo(s))
 	{
 		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();

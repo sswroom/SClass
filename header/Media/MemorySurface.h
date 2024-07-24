@@ -7,7 +7,7 @@ namespace Media
 	class MemorySurface : public Media::MonitorSurface
 	{
 	private:
-		UInt8 *buffPtr;
+		UnsafeArray<UInt8> buffPtr;
 
 	public:
 		MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixel, const Media::ColorProfile *color, Double dpi);
@@ -24,7 +24,7 @@ namespace Media
 
 		virtual Bool DrawFromBuff();
 		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank);
-		virtual UInt8 *LockSurface(OutParam<OSInt> lineAdd);
+		virtual UnsafeArrayOpt<UInt8> LockSurface(OutParam<OSInt> lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 	};

@@ -520,7 +520,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetSelectedItemText(UnsafeArray<UTF8Ch
 	return 0;
 }
 
-Text::String *UI::GUIListView::GetSelectedItemTextNew()
+Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
 {
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
@@ -537,13 +537,13 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff
 	return Text::StrConcatC(buff, r->txt->v, r->txt->leng);
 }
 
-Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
+Optional<Text::String> UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> r;
 	if (!data->rows->GetItem(index).SetTo(r))
 		return 0;
-	return r->txt->Clone().Ptr();
+	return r->txt->Clone();
 }
 
 void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)

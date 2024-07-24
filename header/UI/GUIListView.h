@@ -63,9 +63,9 @@ namespace UI
 		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
 		AnyType GetSelectedItem();
 		UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
-		Text::String *GetSelectedItemTextNew();
+		Optional<Text::String> GetSelectedItemTextNew();
 		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index);
-		Text::String *GetItemTextNew(UOSInt index);
+		Optional<Text::String> GetItemTextNew(UOSInt index);
 		void SetFullRowSelect(Bool fullRowSelect);
 		void SetShowGrid(Bool showGrid);
 		UOSInt GetStringWidth(UnsafeArray<const UTF8Char> s);

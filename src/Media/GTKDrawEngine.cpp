@@ -1160,7 +1160,7 @@ void Media::GTKDrawImage::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX
 {
 }
 
-void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
+void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
 {
 	if (this->surface)
 	{
@@ -1178,7 +1178,7 @@ void Media::GTKDrawImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, U
 		UInt8 *srcData = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 		if (srcData)
 		{
-			ImageCopy_ImgCopyR(srcData + x * 4 + y * (OSInt)this->info.storeSize.x * 4, (UInt8*)imgPtr, width * 4, height, this->info.storeSize.x * 4, bpl, upsideDown);
+			ImageCopy_ImgCopyR(srcData + x * 4 + y * (OSInt)this->info.storeSize.x * 4, imgPtr.Ptr(), width * 4, height, this->info.storeSize.x * 4, bpl, upsideDown);
 		}
 	}
 }

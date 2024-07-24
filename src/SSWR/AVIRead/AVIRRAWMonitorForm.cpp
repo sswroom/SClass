@@ -10,6 +10,7 @@
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
+#include "UI/Clipboard.h"
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
 {
@@ -1132,6 +1133,17 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj
 	me->txtDevice->SetText(sb.ToCString());
 }
 
+void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceDblClk(AnyType userObj, UOSInt itemIndex)
+{
+	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
+	NN<Text::String> s;
+	if (me->lvDevice->GetItemTextNew(itemIndex).SetTo(s))
+	{
+		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
+		s->Release();
+	}
+}
+
 SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::EthernetAnalyzer> analyzer) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
 {
 	this->SetFont(0, 0, 8.25, false);
@@ -1213,6 +1225,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->lvDevice->AddColumn(CSTR("Name"), 120);
 	this->lvDevice->AddColumn(CSTR("IP List"), 280);
 	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
+	this->lvDevice->HandleDblClk(OnDeviceDblClk, this);
 
 	this->tpIPTran = this->tcMain->AddTabPage(CSTR("IP Tran"));
 	this->lbIPTran = ui->NewListBox(this->tpIPTran, false);

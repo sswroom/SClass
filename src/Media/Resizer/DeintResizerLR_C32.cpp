@@ -79,7 +79,7 @@ Media::Resizer::DeintResizerLR_C32::~DeintResizerLR_C32()
 	DestoryVertE();
 }
 
-void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::DeintType dType, UInt8 *src, UOSInt sbpl, Double swidth, Double sheight, UInt8 *dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown)
+void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::DeintType dType, UnsafeArray<UInt8> src, UOSInt sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown)
 {
 	LRHPARAMETER prm;
 	Double w;

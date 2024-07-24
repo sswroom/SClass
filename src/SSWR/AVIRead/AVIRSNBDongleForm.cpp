@@ -201,8 +201,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
@@ -212,8 +212,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		UInt64 devId = s->ToUInt64();
 		s->Release();
@@ -224,8 +224,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		UInt64 devId = s->ToUInt64();
 		s->Release();
@@ -236,8 +236,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(AnyTy
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		UInt64 devId = s->ToUInt64();
 		s->Release();
@@ -248,8 +248,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		UInt64 devId = s->ToUInt64();
 		s->Release();
@@ -260,8 +260,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		UInt64 devId = s->ToUInt64();
 		s->Release();
@@ -272,8 +272,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Text::String *s = me->lvDevice->GetItemTextNew(index);
-	if (s)
+	NN<Text::String> s;
+	if (me->lvDevice->GetItemTextNew(index).SetTo(s))
 	{
 		UInt64 devId = s->ToUInt64();
 		s->Release();

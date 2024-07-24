@@ -74,7 +74,7 @@ namespace UI
 		void CreateSubSurface();
 		void ReleaseSubSurface();
 
-		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl);
+		UnsafeArrayOpt<UInt8> LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl);
 		void LockSurfaceEnd();
 		Media::PixelFormat GetPixelFormat();
 

@@ -1187,8 +1187,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(AnyType userObj
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookSelChg(AnyType userObj)
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
-	Text::String *s = me->lvSpBook->GetSelectedItemTextNew();
-	if (s)
+	NN<Text::String> s;
+	if (me->lvSpBook->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtSpBook->SetText(s->ToCString());
 		s->Release();

@@ -14,7 +14,7 @@ namespace Media
 
 		Bool UpdateToScreen(Bool waitForVBlank);
 	public:
-		FBSurface(MonitorHandle *hMon, const Media::ColorProfile *color, Double dpi, Media::RotateType rotateType);
+		FBSurface(MonitorHandle *hMon, Optional<const Media::ColorProfile> color, Double dpi, Media::RotateType rotateType);
 		virtual ~FBSurface();
 
 		Bool IsError() const;
@@ -28,7 +28,7 @@ namespace Media
 
 		virtual Bool DrawFromBuff();
 		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank);
-		virtual UInt8 *LockSurface(OutParam<OSInt> lineAdd);
+		virtual UnsafeArrayOpt<UInt8> LockSurface(OutParam<OSInt> lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 

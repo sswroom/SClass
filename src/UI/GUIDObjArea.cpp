@@ -18,8 +18,8 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 				if (me->colorSess->Get10BitColor() && me->currScnMode == UI::GUIDDrawControl::SM_VFS)
 				{
 					OSInt dbpl;
-					UInt8 *destBuff = me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), dbpl);
-					if (destBuff)
+					UnsafeArray<UInt8> destBuff;
+					if (me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), dbpl).SetTo(destBuff))
 					{
 						UInt8 *tmpBuff = MemAlloc(UInt8, me->dispSize.CalcArea() << 2);
 						currDrawImg->CopyBits(0, 0, tmpBuff, me->dispSize.x << 2, me->dispSize.x, me->dispSize.y, false);
@@ -119,8 +119,8 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 				else
 				{
 					OSInt dbpl;
-					UInt8 *destBuff = me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), dbpl);
-					if (destBuff)
+					UnsafeArray<UInt8> destBuff;
+					if (me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), dbpl).SetTo(destBuff))
 					{
 						currDrawImg->CopyBits(0, 0, destBuff, (UOSInt)dbpl, me->dispSize.x, me->dispSize.y, false);
 						me->LockSurfaceEnd();
