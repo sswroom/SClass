@@ -59,12 +59,12 @@ namespace Net
 			UInt64 ipv6DestCnt;
 			UInt64 othSrcCnt;
 			UInt64 othDestCnt;
-			Text::String *name;
+			Optional<Text::String> name;
 			Data::TimeInstant packetTime[16];
 			UInt64 packetDestMAC[16];
 			UInt16 packetEtherType[16];
 			UOSInt packetSize[16];
-			UInt8 *packetData[16];
+			UnsafeArrayOpt<UInt8> packetData[16];
 		} MACStatus;
 
 		typedef struct
@@ -123,8 +123,8 @@ namespace Net
 			UInt32 rebindTime;
 			UInt32 router;
 			UInt32 dns[4];
-			Text::String *hostName;
-			Text::String *vendorClass;
+			Optional<Text::String> hostName;
+			Optional<Text::String> vendorClass;
 		};
 
 		struct TCP4SYNInfo
@@ -136,7 +136,7 @@ namespace Net
 			Data::Timestamp reqTime;
 
 			TCP4SYNInfo() = default;
-			TCP4SYNInfo(TCP4SYNInfo*)
+			TCP4SYNInfo(std::nullptr_t)
 			{
 				this->srcAddr = 0;
 				this->destAddr = 0;
@@ -185,15 +185,15 @@ namespace Net
 		UInt64 packetCnt;
 		UInt64 packetTotalSize;
 		Bool isFirst;
-		IO::Writer *errWriter;
+		Optional<IO::Writer> errWriter;
 
 		static void NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSInt nameSize);
 
 		NN<MACStatus> MACGet(UInt64 macAddr);
 		void MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans);
 	public:
-		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, NN<Text::String> name);
-		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::CStringNN name);
+		EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeType ctype, NN<Text::String> name);
+		EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeType ctype, Text::CStringNN name);
 		virtual ~EthernetAnalyzer();
 
 		virtual IO::ParserType GetParserType() const;
@@ -227,16 +227,16 @@ namespace Net
 		NN<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
-		UOSInt TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const;
+		UOSInt TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
 
-		Bool PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize); //Return valid
-		Bool PacketNull(const UInt8 *packet, UOSInt packetSize); //Return valid
+		Bool PacketData(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
+		Bool PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
-		Bool PacketLinux(const UInt8 *packet, UOSInt packetSize); //Return valid
-		Bool PacketEthernetData(const UInt8 *packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketLinux(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
+		Bool PacketEthernetData(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC); //Return valid
 		Bool PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
-		Bool PacketIPv6(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
-		Bool PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
+		Bool PacketARP(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC); //Return valid
 
 		AnalyzeType GetAnalyzeType();
 		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj);

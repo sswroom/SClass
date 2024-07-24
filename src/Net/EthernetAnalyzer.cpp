@@ -81,7 +81,7 @@ void Net::EthernetAnalyzer::MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans)
 	this->mdnsList.Insert((UOSInt)i, ans);
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, NN<Text::String> name) : IO::ParsedObject(name), tcp4synList(128)
+Net::EthernetAnalyzer::EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeType aType, NN<Text::String> name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;
@@ -91,7 +91,7 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	this->pingv4ReqHdlr = 0;
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CStringNN name) : IO::ParsedObject(name), tcp4synList(128)
+Net::EthernetAnalyzer::EthernetAnalyzer(Optional<IO::Writer> errWriter, AnalyzeType aType, Text::CStringNN name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;
@@ -105,17 +105,18 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 {
 	UOSInt i;
 	UOSInt j;
+	UnsafeArray<UInt8> packetData;
 	NN<MACStatus> mac;
 	i = this->macMap.GetCount();
 	while (i-- > 0)
 	{
 		mac = this->macMap.GetItemNoCheck(i);
-		SDEL_STRING(mac->name);
+		OPTSTR_DEL(mac->name);
 		j = 16;
 		while (j-- > 0)
 		{
-			if (mac->packetData[j])
-				MemFree(mac->packetData[j]);
+			if (mac->packetData[j].SetTo(packetData))
+				MemFreeArr(packetData);
 		}
 		MemFreeNN(mac);
 	}
@@ -194,8 +195,8 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		dhcp = this->dhcpMap.GetItemNoCheck(i);
-		SDEL_STRING(dhcp->vendorClass);
-		SDEL_STRING(dhcp->hostName);
+		OPTSTR_DEL(dhcp->vendorClass);
+		OPTSTR_DEL(dhcp->hostName);
 		dhcp.Delete();
 	}
 	this->mdnsList.FreeAll(Net::DNSClient::FreeAnswer);
@@ -398,14 +399,14 @@ Bool Net::EthernetAnalyzer::TCP4SYNIsDiff(UOSInt lastIndex) const
 	return this->tcp4synList.GetPutIndex() != lastIndex;
 }
 
-UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const
+UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const
 {
 	Sync::MutexUsage mutUsage(this->tcp4synMut);
-	if (thisIndex) *thisIndex = this->tcp4synList.GetPutIndex();
+	thisIndex.Set(this->tcp4synList.GetPutIndex());
 	return this->tcp4synList.GetItems(synList);
 }
 
-Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, const UInt8 *packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	switch (linkType)
 	{
@@ -419,7 +420,7 @@ Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, const UInt8 *packet, UOS
 	return false;
 }
 
-Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	UInt32 packetType;
 	Bool valid;
@@ -428,7 +429,7 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 		return false;
 	}
 
-	packetType = ReadMUInt32(packet);
+	packetType = ReadMUInt32(&packet[0]);
 	valid = false;
 	switch (packetType)
 	{
@@ -444,12 +445,13 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 	
 	if (!valid)
 	{
-		if (this->isFirst && this->errWriter)
+		NN<IO::Writer> errWriter;
+		if (this->isFirst && this->errWriter.SetTo(errWriter))
 		{
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
-			this->errWriter->WriteLine(sb.ToCString());
+			errWriter->WriteLine(sb.ToCString());
 		}
 	}
 	Sync::Interlocked::IncrementU64(this->packetCnt);
@@ -480,12 +482,13 @@ Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UOSI
 	
 	if (!valid)
 	{
-		if (this->isFirst && this->errWriter)
+		NN<IO::Writer> errWriter;
+		if (this->isFirst && this->errWriter.SetTo(errWriter))
 		{
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
-			this->errWriter->WriteLine(sb.ToCString());
+			errWriter->WriteLine(sb.ToCString());
 		}
 	}
 	Sync::Interlocked::IncrementU64(this->packetCnt);
@@ -493,7 +496,7 @@ Bool Net::EthernetAnalyzer::PacketEthernet(UnsafeArray<const UInt8> packet, UOSI
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketLinux(UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	UInt16 etherType;
 	UInt64 destAddr;
@@ -532,12 +535,13 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 	
 	if (!valid)
 	{
-		if (this->isFirst && this->errWriter)
+		NN<IO::Writer> errWriter;
+		if (this->isFirst && this->errWriter.SetTo(errWriter))
 		{
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
-			this->errWriter->WriteLine(sb.ToCString());
+			errWriter->WriteLine(sb.ToCString());
 		}
 	}
 	Sync::Interlocked::IncrementU64(this->packetCnt);
@@ -545,7 +549,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketEthernetData(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC)
 {
 	NN<MACStatus> mac;
 	Bool valid = true;
@@ -556,6 +560,7 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packe
 		return true;
 	}
 	Sync::MutexUsage mutUsage(this->macMut);
+	UnsafeArray<UInt8> packetData;
 	UOSInt cnt;
 	mac = this->MACGet(srcMAC);
 	cnt = (UOSInt)(mac->ipv4SrcCnt + mac->ipv6SrcCnt + mac->othSrcCnt);
@@ -563,12 +568,12 @@ Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packe
 	mac->packetSize[cnt & 15] = packetSize;
 	mac->packetDestMAC[cnt & 15] = destMAC;
 	mac->packetEtherType[cnt & 15] = etherType;
-	if (mac->packetData[cnt & 15])
+	if (mac->packetData[cnt & 15].SetTo(packetData))
 	{
-		MemFree(mac->packetData[cnt & 15]);
+		MemFreeArr(packetData);
 	}
-	mac->packetData[cnt & 15] = MemAlloc(UInt8, packetSize);
-	MemCopyNO(mac->packetData[cnt & 15], packet, packetSize);
+	mac->packetData[cnt & 15] = packetData = MemAllocArr(UInt8, packetSize);
+	MemCopyNO(packetData.Ptr(), packet.Ptr(), packetSize);
 	mutUsage.EndUse();
 
 	switch (etherType)
@@ -1295,6 +1300,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 							UInt8 msgType = 0;
 							UInt8 t;
 							UInt8 len;
+							NN<Text::String> s;
 							Sync::MutexUsage mutUsage(dhcp->mut);
 							dhcp->updated = true;
 							while (currPtr < endPtr)
@@ -1315,20 +1321,20 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 								}
 								else if (t == 12 && len >= 1 && msgType == 1)
 								{
-									if (dhcp->hostName == 0)
+									if (dhcp->hostName.IsNull())
 									{
-										dhcp->hostName = Text::String::New(len).Ptr();
-										MemCopyNO(dhcp->hostName->v.Ptr(), currPtr, len);
-										dhcp->hostName->v[len] = 0;
+										dhcp->hostName = s = Text::String::New(len);
+										MemCopyNO(s->v.Ptr(), currPtr, len);
+										s->v[len] = 0;
 									}
 								}
 								else if (t == 60 && len >= 1 && msgType == 1)
 								{
-									if (dhcp->vendorClass == 0)
+									if (dhcp->vendorClass.IsNull())
 									{
-										dhcp->vendorClass = Text::String::New(len).Ptr();
-										MemCopyNO(dhcp->vendorClass->v.Ptr(), currPtr, len);
-										dhcp->vendorClass->v[len] = 0;
+										dhcp->vendorClass = s = Text::String::New(len);
+										MemCopyNO(s->v.Ptr(), currPtr, len);
+										s->v[len] = 0;
 									}
 								}
 								else if (t == 1 && len == 4 && (msgType == 2 || msgType == 5))
@@ -1479,12 +1485,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 												{
 													Sync::MutexUsage mutUsage(this->macMut);
 													mac = this->MACGet(srcMAC);
-													if (mac->name == 0)
+													if (mac->name.IsNull())
 													{
 														MemCopyNO(sbuff, &ipData[65 + i * 18], 15);
 														sbuff[15] = 0;
 														sptr = Text::StrRTrim(sbuff);
-														mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+														mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 													}
 													mutUsage.EndUse();
 													break;
@@ -1554,12 +1560,12 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								{
 									Sync::MutexUsage mutUsage(this->macMut);
 									mac = this->MACGet(srcMAC);
-									if (mac->name == 0)
+									if (mac->name.IsNull())
 									{
 										MemCopyNO(sbuff, &ipData[23], 32);
 										NetBIOSDecName(sbuff, 32);
 										sptr = Text::StrRTrim(sbuff);
-										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 /*										NetBIOSDecName(&ipData[57], 32);
 										console->Write(&ipData[23]);
 										console->Write(CSTR(", ");
@@ -1684,10 +1690,10 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 						{
 							Sync::MutexUsage mutUsage(this->macMut);
 							mac = this->MACGet(srcMAC);
-							if (mac->name == 0)
+							if (mac->name.IsNull())
 							{
 								sptr = Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
-								mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+								mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 							}
 							mutUsage.EndUse();
 						}
@@ -1724,7 +1730,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketIPv6(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 	NN<MACStatus> mac;
 	Bool valid = true;
@@ -1758,7 +1764,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, UOSInt packetSize, U
 	return valid;
 }
 
-Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
+Bool Net::EthernetAnalyzer::PacketARP(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 	Bool valid = true;
 	NN<MACStatus> mac;

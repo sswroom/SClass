@@ -382,7 +382,7 @@ void Net::DNSClient::UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> server
 	this->serverAddr = serverAddr.Ptr()[0];
 }
 
-UOSInt Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut)
+UOSInt Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut)
 {
 	Bool found = false;
 	UOSInt i = stringOfst;
@@ -442,7 +442,7 @@ UOSInt Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, const UInt8 *buf
 	return i;
 }
 
-UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers)
+UOSInt Net::DNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers)
 {
 	UTF8Char sbuff[512];
 	NN<RequestAnswer> ans;
@@ -466,7 +466,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NN<Data:
 	return ansCount;
 }
 
-NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff, UOSInt dataSize, InOutParam<UOSInt> index)
+NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const UInt8> buff, UOSInt dataSize, InOutParam<UOSInt> index)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -646,7 +646,7 @@ void Net::DNSClient::FreeAnswer(NN<RequestAnswer> ans)
 	MemFreeNN(ans);
 }
 
-UInt32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)
+UInt32 Net::DNSClient::GetResponseTTL(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UOSInt ansCount = ReadMUInt16(&buff[6]);
 	UOSInt i;
@@ -674,7 +674,7 @@ UInt32 Net::DNSClient::GetResponseTTL(const UInt8 *buff, UOSInt buffSize)
 	return minTTL;
 }
 
-UOSInt Net::DNSClient::SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst)
+UOSInt Net::DNSClient::SkipString(UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst)
 {
 	UOSInt i = stringOfst;
 	UOSInt j;

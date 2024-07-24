@@ -56,13 +56,13 @@ namespace Net
 
 		void UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> serverAddr);
 
-		static UOSInt ParseString(UnsafeArray<UTF8Char> sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut); //return actEndOfst
-		static UOSInt ParseAnswers(const UInt8 *buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers);
-		static NN<RequestAnswer> ParseAnswer(const UInt8 *buff, UOSInt dataSize, InOutParam<UOSInt> index);
+		static UOSInt ParseString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut); //return actEndOfst
+		static UOSInt ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers);
+		static NN<RequestAnswer> ParseAnswer(UnsafeArray<const UInt8> buff, UOSInt dataSize, InOutParam<UOSInt> index);
 		static void FreeAnswers(NN<Data::ArrayListNN<RequestAnswer>> answers);
 		static void FreeAnswer(NN<RequestAnswer> answer);
-		static UInt32 GetResponseTTL(const UInt8 *buff, UOSInt buffSize);
-		static UOSInt SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst);
+		static UInt32 GetResponseTTL(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		static UOSInt SkipString(UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst);
 		static Text::CString TypeGetID(UInt16 type);
 	};
 }

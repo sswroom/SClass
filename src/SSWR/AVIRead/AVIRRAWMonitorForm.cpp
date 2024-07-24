@@ -542,6 +542,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> s;
 	if (me->pingIPContUpdated)
 	{
 		me->pingIPContUpdated = false;
@@ -575,7 +576,6 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	{
 		Data::ArrayListNN<Text::String> nameList;
 		Text::String *selName = (Text::String*)me->lbDNSReqv4->GetSelectedItem().p;
-		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqv4->ClearItems();
@@ -597,7 +597,6 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	{
 		Data::ArrayListNN<Text::String> nameList;
 		Text::String *selName = (Text::String*)me->lbDNSReqv6->GetSelectedItem().p;
-		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqv6->ClearItems();
@@ -619,7 +618,6 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	{
 		Data::ArrayListNN<Text::String> nameList;
 		Text::String *selName = (Text::String*)me->lbDNSReqOth->GetSelectedItem().p;
-		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqOth->ClearItems();
@@ -812,7 +810,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		Data::ArrayList<Net::EthernetAnalyzer::TCP4SYNInfo> synList;
 		Net::EthernetAnalyzer::TCP4SYNInfo syn;
 		UOSInt i = 0;
-		UOSInt j = me->analyzer->TCP4SYNGetList(&synList, &me->tcp4synLastIndex);
+		UOSInt j = me->analyzer->TCP4SYNGetList(synList, me->tcp4synLastIndex);
 		me->lvTCP4SYN->ClearItems();
 		while (i < j)
 		{
@@ -923,9 +921,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 				me->lvDevice->AddItem(CSTRP(sbuff, sptr), mac);
 				entry = Net::MACInfo::GetMACInfo(mac->macAddr);
 				me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
-				if (mac->name)
+				if (mac->name.SetTo(s))
 				{
-					me->lvDevice->SetSubItem(i, 8, mac->name->ToCString());
+					me->lvDevice->SetSubItem(i, 8, s->ToCString());
 				}
 				else
 				{
@@ -1059,10 +1057,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 				me->lvDHCP->SetSubItem(i, 10, CSTRP(sbuff, sptr));
 				sptr = Text::StrUInt32(sbuff, dhcp->rebindTime);
 				me->lvDHCP->SetSubItem(i, 11, CSTRP(sbuff, sptr));
-				if (dhcp->hostName)
-					me->lvDHCP->SetSubItem(i, 12, Text::String::OrEmpty(dhcp->hostName));
-				if (dhcp->vendorClass)
-					me->lvDHCP->SetSubItem(i, 13, Text::String::OrEmpty(dhcp->vendorClass));
+				if (dhcp->hostName.SetTo(s))
+					me->lvDHCP->SetSubItem(i, 12, s);
+				if (dhcp->vendorClass.SetTo(s))
+					me->lvDHCP->SetSubItem(i, 13, s);
 				mutUsage.EndUse();
 			}
 			i++;
@@ -1079,6 +1077,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UInt8> packetData;
 	if (me->lvDevice->GetSelectedItem().GetOpt<Net::EthernetAnalyzer::MACStatus>().SetTo(mac))
 	{
 		UOSInt cnt;
@@ -1098,7 +1097,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[i]);
-				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[i], mac->packetData[i], mac->packetSize[i], sb);
+				if (mac->packetData[i].SetTo(packetData))
+				{
+					Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[i], packetData, mac->packetSize[i], sb);
+				}
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
@@ -1117,7 +1119,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj
 				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[(cnt + i) & 15]);
 				sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
-				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], mac->packetData[(cnt + i) & 15], mac->packetSize[(cnt + i) & 15], sb);
+				if (mac->packetData[(cnt + i) & 15].SetTo(packetData))
+				{
+					Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], packetData, mac->packetSize[(cnt + i) & 15], sb);
+				}
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("\r\n"));
 				i++;

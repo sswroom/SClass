@@ -45,6 +45,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(NN<EthernetWebHandler> me, NN<
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> s;
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
@@ -100,9 +101,9 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(NN<EthernetWebHandler> me, NN<
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sb.AppendU64(mac->othDestCnt);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			if (mac->name)
+			if (mac->name.SetTo(s))
 			{
-				sb.Append(mac->name);
+				sb.Append(s);
 			}
 			else
 			{
@@ -842,11 +843,9 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(NN<EthernetWebHandler> me, NN<Ne
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sb.AppendU32(dhcp->rebindTime);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			if (dhcp->hostName)
-				sb.Append(dhcp->hostName);
+			sb.AppendOpt(dhcp->hostName);
 			sb.AppendC(UTF8STRC("</td><td>"));
-			if (dhcp->vendorClass)
-				sb.Append(dhcp->vendorClass);
+			sb.AppendOpt(dhcp->vendorClass);
 			sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 			mutUsage.EndUse();
 			i++;

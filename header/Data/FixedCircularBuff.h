@@ -7,7 +7,7 @@ namespace Data
 	template <typename T> class FixedCircularBuff
 	{
 	private:
-		T *buff;
+		UnsafeArray<T> buff;
 		UOSInt capacity;
 		UOSInt getIndex;
 		UOSInt putIndex;
@@ -25,21 +25,21 @@ namespace Data
 		UOSInt GetCount() const;
 		UOSInt IndexOf(T item) const;
 		UOSInt GetPutIndex() const;
-		UOSInt GetItems(Data::ArrayList<T> *list) const;
+		UOSInt GetItems(NN<Data::ArrayList<T>> list) const;
 	};
 }
 
 template<typename T> Data::FixedCircularBuff<T>::FixedCircularBuff(UOSInt capacity)
 {
 	this->capacity = capacity;
-	this->buff = MemAlloc(T, capacity);
+	this->buff = MemAllocArr(T, capacity);
 	this->getIndex = 0;
 	this->putIndex = 0;
 }
 
 template<typename T> Data::FixedCircularBuff<T>::~FixedCircularBuff()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 template<typename T> Bool Data::FixedCircularBuff<T>::HasItems() const
@@ -135,7 +135,7 @@ template<typename T> UOSInt Data::FixedCircularBuff<T>::GetPutIndex() const
 	return this->putIndex;
 }
 
-template<typename T> UOSInt Data::FixedCircularBuff<T>::GetItems(Data::ArrayList<T> *list) const
+template<typename T> UOSInt Data::FixedCircularBuff<T>::GetItems(NN<Data::ArrayList<T>> list) const
 {
 	UOSInt i;
 	UOSInt j;
