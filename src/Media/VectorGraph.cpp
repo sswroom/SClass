@@ -670,7 +670,7 @@ void Media::VectorGraph::GetStringBoundRot(UnsafeArray<Int32> pos, Double centX,
 	////////////////////////////////////////
 }
 
-void Media::VectorGraph::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
+void Media::VectorGraph::CopyBits(OSInt x, OSInt y, UnsafeArray<UInt8> imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const
 {
 }
 
