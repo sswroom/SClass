@@ -595,9 +595,46 @@ Int32 CurveToLine()
 	return 0;
 }
 
+Int32 SQLConvFunc()
+{
+	Text::CStringNN srcFile = CSTR("application_location.sql");
+	Text::CStringNN destFile = CSTR("application_location_upd.sql");
+	IO::FileStream srcFS(srcFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!srcFS.IsError())
+	{
+		Text::PString sarr[7];
+		Text::StringBuilderUTF8 sbSrc;
+		Text::StringBuilderUTF8 sbDest;
+		Text::UTF8Reader reader(srcFS);
+		IO::FileStream destFS(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!destFS.IsError())
+		{
+			Text::UTF8Writer writer(destFS);
+			while (reader.ReadLine(sbSrc, 65536))
+			{
+				UOSInt i = sbSrc.IndexOf(CSTR(") VALUES ("));
+				if (i != INVALID_INDEX && Text::StrSplitTrimP(sarr, 7, sbSrc.Substring(i + 10), ',') == 6)
+				{
+					if (!sarr[1].Equals(CSTR("NULL")))
+					{
+						sbDest.ClearStr();
+						sbDest.Append(CSTR("update \"application_location\" set \"burial_location_point\" = "));
+						sbDest.Append(sarr[1]);
+						sbDest.Append(CSTR(" where \"burial_no_gen\" = "));
+						sbDest.Append(sarr[0]);
+						sbDest.AppendUTF8Char(';');
+						writer.WriteLine(sbDest.ToCString());
+					}
+				}
+				sbSrc.ClearStr();
+			}
+		}
+	}
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 12;
+	UOSInt testType = 13;
 	switch (testType)
 	{
 	case 0:
@@ -626,6 +663,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return PaperSize();
 	case 12:
 		return CurveToLine();
+	case 13:
+		return SQLConvFunc();
 	default:
 		return 0;
 	}

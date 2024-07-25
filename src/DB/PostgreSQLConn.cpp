@@ -717,6 +717,10 @@ Bool DB::PostgreSQLConn::Connect()
 		}
 		else
 		{
+			if (this->log->HasHandler())
+			{
+				this->log->LogMessage(CSTR("PostgreSQL DB Connected"), IO::LogHandler::LogLevel::Raw);
+			}
 #if defined(VERBOSE)
 			printf("PostgreSQL: DB Connected\r\n");
 #endif
@@ -725,6 +729,10 @@ Bool DB::PostgreSQLConn::Connect()
 	}
 	else
 	{
+		if (this->log->HasHandler())
+		{
+			this->log->LogMessage(CSTR("PostgreSQL Already Connected"), IO::LogHandler::LogLevel::Raw);
+		}
 		return true;
 	}
 }
@@ -842,6 +850,10 @@ void DB::PostgreSQLConn::Close()
 	{
 		PQfinish(this->clsData->conn);
 		this->clsData->conn = 0;
+		if (this->log->HasHandler())
+		{
+			this->log->LogMessage(CSTR("PostgreSQL DB Disconnected"), IO::LogHandler::LogLevel::Raw);
+		}
 #if defined(VERBOSE)
 		printf("PostgreSQL: DB disconnected\r\n");
 #endif
@@ -863,13 +875,17 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v.Ptr());
 	ExecStatusType status = PQresultStatus(res);
 #if defined(VERBOSE)
-	printf("PostgreSQL: ExecuteNonQuery: %s\r\n", sql.v);
-	printf("PostgreSQL: ExecuteNonQuery status = %d (%s)\r\n", status, ExecStatusTypeGetName(status).v);
+	printf("PostgreSQL: ExecuteNonQuery: %s\r\n", sql.v.Ptr());
+	printf("PostgreSQL: ExecuteNonQuery status = %d (%s)\r\n", status, ExecStatusTypeGetName(status).v.Ptr());
 #endif
 	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
-		if (status == PGRES_FATAL_ERROR)
+		char *errMsg = PQerrorMessage(this->clsData->conn);
+		if (status == PGRES_FATAL_ERROR && Text::StrStartsWith(errMsg, "ERROR: "))
 			this->lastDataError = true;
+#if defined(VERBOSE)
+		printf("PostgreSQL: Error: %s\r\n", errMsg);
+#endif
 		PQclear(res);
 		return -2;
 	}
@@ -901,10 +917,11 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 #endif
 	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
-		if (status == PGRES_FATAL_ERROR)
+		char *errMsg = PQerrorMessage(this->clsData->conn);
+		if (status == PGRES_FATAL_ERROR && Text::StrStartsWith(errMsg, "ERROR: "))
 			this->lastDataError = true;
 #if defined(VERBOSE)
-		printf("PostgreSQL: Error: %s\r\n", PQerrorMessage(this->clsData->conn));
+		printf("PostgreSQL: Error: %s\r\n", errMsg);
 #endif
 		PQclear(res);
 		return 0;
