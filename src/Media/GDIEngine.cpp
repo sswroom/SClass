@@ -2602,9 +2602,9 @@ void Media::GDIImage::GetStringBoundRotW(UnsafeArray<Int32> pos, Double centX, D
 	}
 }
 
-void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSInt width, UOSInt height, Bool upsideDown) const
+void Media::GDIImage::CopyBits(OSInt x, OSInt y, UnsafeArray<UInt8> imgPtr, UOSInt dbpl, UOSInt width, UOSInt height, Bool upsideDown) const
 {
-	UInt8 *iptr = (UInt8*)imgPtr;
+	UnsafeArray<UInt8> iptr = imgPtr;
 	UInt8 *sptr = (UInt8*)this->bmpBits;
 	UOSInt sbpl = this->size.x << 2;
 	OSInt dAdd = (OSInt)dbpl;
@@ -2641,7 +2641,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSI
 		while (height-- > 0)
 		{
 			sptr -= sbpl;
-			MemCopyNO(iptr, sptr, width << 2);
+			MemCopyNO(iptr.Ptr(), sptr, width << 2);
 			iptr += dAdd;
 		}
 	}
@@ -2651,7 +2651,7 @@ void Media::GDIImage::CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt dbpl, UOSI
 		while (height-- > 0)
 		{
 			sptr -= sbpl;
-			MemCopyNANC(iptr, sptr, width << 2);
+			MemCopyNANC(iptr.Ptr(), sptr, width << 2);
 			iptr += dAdd;
 		}
 	}

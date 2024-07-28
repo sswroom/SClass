@@ -772,7 +772,7 @@ void DB::PostgreSQLConn::InitConnection()
 	}
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NN<Text::String> database, NN<IO::LogTool> log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Optional<Text::String> uid, Optional<Text::String> pwd, NN<Text::String> database, NN<IO::LogTool> log) : DBConn(server)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->conn = 0;
@@ -781,8 +781,8 @@ DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Text::S
 	this->server = server->Clone();
 	this->port = port;
 	this->database = database->Clone();
-	this->uid = SCOPY_STRING(uid);
-	this->pwd = SCOPY_STRING(pwd);
+	this->uid = Text::String::CopyOrNull(uid);
+	this->pwd = Text::String::CopyOrNull(pwd);
 	this->geometryOid = 0;
 	this->stgeometryOid = 0;
 	this->citextOid = 0;
@@ -1284,7 +1284,7 @@ Text::CString DB::PostgreSQLConn::ExecStatusTypeGetName(OSInt status)
 	}
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Optional<Text::String> uid, Optional<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
