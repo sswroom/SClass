@@ -19,7 +19,8 @@ DB/TDSConn.h:
 @TDSConn.o
 
 Exporter/HEIFExporter.h:
-@HEIFExporter.o
+@?(NO_HEIF == 0)HEIFExporter.o
+@?(NO_HEIF > 0)HEIFExporter_Null.o
 Exporter/WebPExporter.h:
 @WebPExporter.o
 
@@ -127,7 +128,8 @@ Net/WLANLinuxMTKInterface.h:
 @WLANLinuxMTKInterface.o
 
 Parser/FileParser/HEIFParser.h:
-@HEIFParser.o
+@?(NO_HEIF == 0)HEIFParser.o
+@?(NO_HEIF > 0)HEIFParser_Null.o
 Parser/FileParser/JP2Parser.h:
 @JP2Parser.o
 Parser/FileParser/WebPParser.h:

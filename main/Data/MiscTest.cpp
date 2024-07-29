@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "DB/MSSQLConn.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/ConsoleLogHandler.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/MemoryStream.h"
@@ -21,6 +22,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/SSHManager.h"
 #include "Net/SSLEngineFactory.h"
+#include "Net/Email/SMTPClient.h"
 #include "Parser/FullParserList.h"
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
@@ -630,11 +632,45 @@ Int32 SQLConvFunc()
 			}
 		}
 	}
+	return 0;
+}
+
+Int32 SMTPProxyTest()
+{
+	Text::CStringNN smtpHost = CSTR("");
+	UInt16 smtpPort = 465;
+	Text::CStringNN smtpUser = CSTR("");
+	Text::CStringNN smtpPwd = CSTR("");
+	Text::CStringNN smtpTo = CSTR("");
+
+	Text::CStringNN proxyHost = CSTR("127.0.0.1");
+	UInt16 proxyPort = 8080;
+	Text::CString proxyUser = 0;
+	Text::CString proxyPwd = 0;	
+	Net::Email::SMTPConn::ConnType connType = Net::Email::SMTPConn::ConnType::STARTTLS;
+	Net::OSSocketFactory sockf(true);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+	IO::ConsoleWriter console;
+	IO::LogTool log;
+	IO::ConsoleLogHandler logHdlr(console);
+	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
+	Net::Email::SMTPClient cli(sockf, ssl, smtpHost, smtpPort, connType, log, 15000);
+	cli.SetPlainAuth(smtpUser, smtpPwd);
+	cli.SetProxy(proxyHost, proxyPort, proxyUser, proxyPwd);
+	Net::Email::EmailMessage msg;
+	msg.SetFrom(0, smtpUser);
+	msg.AddTo(0, smtpTo);
+	msg.SetSubject(CSTR("SMTP Proxy Test"));
+	msg.SetSentDate(Data::Timestamp::Now());
+	msg.SetContent(CSTR("Message Content to display"), CSTR("text/plain"));
+	cli.Send(msg);
+	ssl.Delete();
+	return 0;
 }
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 13;
+	UOSInt testType = 14;
 	switch (testType)
 	{
 	case 0:
@@ -665,6 +701,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return CurveToLine();
 	case 13:
 		return SQLConvFunc();
+	case 14:
+		return SMTPProxyTest();
 	default:
 		return 0;
 	}

@@ -47,6 +47,8 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		this->flags |= 12;
 		return;
 	}
+	this->flags = 0;
+	this->cliId = sockf->GenSocketId(s);
 	
 	UTF8Char reqBuff[512];
 	UTF8Char userPwd[256];
@@ -88,4 +90,8 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		return;
 	}
 	this->cliId = sockf->GenSocketId(s);
+}
+
+Net::HTTPProxyTCPClient::~HTTPProxyTCPClient()
+{
 }

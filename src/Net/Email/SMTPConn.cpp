@@ -106,7 +106,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult(OptOut<UnsafeArrayOpt<UTF8Char>> msgR
 		return 0;
 }
 
-Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
+Net::Email::SMTPConn::SMTPConn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -116,24 +116,24 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	this->maxSize = 0;
 	this->authLogin = false;
 	this->authPlain = false;
+	this->logWriter = logWriter;
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::AddrType::Unknown;
-	sockf->DNSResolveIP(host, addr);
-	this->logWriter = logWriter;
+	clif->GetSocketFactory()->DNSResolveIP(host, addr);
 	NN<IO::Writer> lwriter;
 	if (connType == ConnType::SSL)
 	{
 		NN<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !Optional<Net::TCPClient>(nnssl->ClientConnect(host, port, 0, timeout)).SetTo(this->cli))
 		{
-			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+			this->cli = clif->Create(host, port, timeout);
 		}
 	}
 	else if (connType == ConnType::STARTTLS)
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+		this->cli = clif->Create(host, port, timeout);
 		this->cli->SetTimeout(2000);
 		buffSize = this->cli->Read(BYTEARR(buff));
 		if (this->logWriter.SetTo(lwriter)) lwriter->Write(Text::CStringNN(buff, buffSize));
@@ -172,7 +172,7 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	}
 	else
 	{
-		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+		this->cli = clif->Create(host, port, timeout);
 	}
 	this->cli->SetNoDelay(false);
 	this->cli->SetTimeout(timeout);

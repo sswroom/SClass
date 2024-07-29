@@ -68,6 +68,15 @@ Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(
 		}
 
 		NEW_CLASSNN(cli, Net::Email::SMTPClient(sockf, ssl, host->ToCString(), port, connType, Optional<IO::LogTool>(log), timeout));
+		NN<Text::String> proxyHost;
+		NN<Text::String> proxyPort;
+		UInt16 proxyIPort;
+		if (cfg->GetCateValue(category, CSTR("SMTPProxyHost")).SetTo(proxyHost) && cfg->GetCateValue(category, CSTR("SMTPProxyPort")).SetTo(proxyPort) && proxyPort->ToUInt16(proxyIPort))
+		{
+			Optional<Text::String> proxyUser = cfg->GetCateValue(category, CSTR("SMTPProxyUser"));
+			Optional<Text::String> proxyPwd = cfg->GetCateValue(category, CSTR("SMTPProxyPwd"));
+			cli->SetProxy(proxyHost->ToCString(), proxyIPort, OPTSTR_CSTR(proxyUser), OPTSTR_CSTR(proxyPwd));
+		}
 		NN<Text::String> user;
 		NN<Text::String> password;
 		if (cfg->GetCateValue(category, CSTR("SMTPUser")).SetTo(user) && cfg->GetCateValue(category, CSTR("SMTPPassword")).SetTo(password))

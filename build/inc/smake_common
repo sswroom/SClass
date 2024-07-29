@@ -3290,6 +3290,8 @@ Net/TCPBoardcastStream.h:
 @TCPBoardcastStream.o
 Net/TCPClient.h:
 @TCPClient.o
+Net/TCPClientFactory.h:
+@TCPClientFactory.o
 Net/TCPPortScanner.h:
 @TCPPortScanner.o
 Net/TCPServer.h:

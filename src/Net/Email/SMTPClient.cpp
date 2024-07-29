@@ -4,9 +4,8 @@
 #include "Net/Email/SMTPClient.h"
 #include "Sync/SimpleThread.h"
 
-Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
+Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout) : clif(sockf)
 {
-	this->sockf = sockf;
 	this->ssl = ssl;
 	this->host = Text::String::New(host);
 	this->port = port;
@@ -18,9 +17,8 @@ Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::S
 	this->timeout = timeout;
 }
 
-Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout)
+Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout) : clif(sockf)
 {
-	this->sockf = sockf;
 	this->ssl = ssl;
 	this->host = Text::String::New(host);
 	this->port = port;
@@ -51,6 +49,11 @@ Net::Email::SMTPClient::~SMTPClient()
 	}
 }
 
+void Net::Email::SMTPClient::SetProxy(Text::CStringNN proxyHost, UInt16 proxyPort, Text::CString proxyUser, Text::CString proxyPwd)
+{
+	this->clif.SetProxy(proxyHost, proxyPort, proxyUser, proxyPwd);
+}
+
 void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString password)
 {
 	OPTSTR_DEL(this->authUser);
@@ -70,7 +73,7 @@ Bool Net::Email::SMTPClient::Send(NN<Net::Email::EmailMessage> message)
 	{
 		return false;
 	}
-	Net::Email::SMTPConn conn(this->sockf, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter, this->timeout);
+	Net::Email::SMTPConn conn(this->clif, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter, this->timeout);
 	if (conn.IsError())
 	{
 		return false;

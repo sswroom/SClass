@@ -15,6 +15,7 @@ namespace Net
 
 	public:
 		HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, UnsafeArrayOpt<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, Text::CStringNN destHost, UInt16 destPort);
+		virtual ~HTTPProxyTCPClient();
 	};
 }
 #endif

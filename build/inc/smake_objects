@@ -1441,6 +1441,7 @@ SSLUtil.o: ../../src/Net/SSLUtil.cpp
 SyslogServer.o: ../../src/Net/SyslogServer.cpp
 TCPBoardcastStream.o: ../../src/Net/TCPBoardcastStream.cpp
 TCPClient.o: ../../src/Net/TCPClient.cpp
+TCPClientFactory.o: ../../src/Net/TCPClientFactory.cpp
 TCPClientMgrL.o: ../../src/Net/TCPClientMgrL.cpp
 TCPClientMgrMT.o: ../../src/Net/TCPClientMgrMT.cpp
 TCPClientMgrW.o: ../../src/Net/TCPClientMgrW.cpp
