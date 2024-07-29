@@ -11,7 +11,7 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif

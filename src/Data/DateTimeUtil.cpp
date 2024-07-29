@@ -39,13 +39,13 @@ void Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, T
 	Text::StrToUInt32(dateStrs[0].v, vals[0]);
 	Text::StrToUInt32(dateStrs[1].v, vals[1]);
 	Text::StrToUInt32(dateStrs[2].v, vals[2]);
-	if (vals[0] > 100)
+	if (vals[0] > 100 || dateStrs[0].leng >= 4)
 	{
 		t->year = (UInt16)vals[0];
 		t->month = (UInt8)vals[1];
 		t->day = (UInt8)vals[2];
 	}
-	else if (vals[2] > 100)
+	else if (vals[2] > 100 || dateStrs[2].leng >= 4)
 	{
 		t->year = (UInt16)vals[2];
 		if (vals[0] > 12)

@@ -351,8 +351,11 @@ public:
 			return true;
 		case 1114: //timestamp
 		case 1184: //timestamptz
-			item->SetDate(Data::Timestamp(Text::CStringNN::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex)), this->tzQhr));
-			return true;
+			{
+				Text::CStringNN s = Text::CStringNN::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
+				item->SetDate(Data::Timestamp(s, this->tzQhr));
+				return true;
+			}
 		case 2950: //uuid
 		{
 			NN<Data::UUID> uuid;

@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <bcrypt.h>
 
+//#define VERBOSE
+
 Crypto::Encrypt::AES256GCM::AES256GCM(UnsafeArray<const UInt8> key, UnsafeArray<const UInt8> iv)
 {
 	MemCopyNO(this->key, key.Ptr(), 32);
@@ -26,7 +28,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptOpenAlgorithmProvider: status = 0x%lx\r\n", status);
+#endif
 		return 0;
 	}
 
@@ -38,7 +42,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptSetProperty: status = 0x%lx\r\n", status);
+#endif
 		BCryptCloseAlgorithmProvider(hAlg, 0);
 		return 0;
 	}
@@ -60,7 +66,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptImportKey: status = 0x%lx\r\n", status);
+#endif
 		BCryptCloseAlgorithmProvider(hAlg, 0);
 		return 0;
 	}
@@ -91,7 +99,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Encrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptDecrypt: status = 0x%lx\r\n", status);
+#endif
 	}
 	BCryptDestroyKey(hKey);
 	BCryptCloseAlgorithmProvider(hAlg, 0);
@@ -110,7 +120,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptOpenAlgorithmProvider: status = 0x%lx\r\n", status);
+#endif
 		return 0;
 	}
 
@@ -122,7 +134,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptSetProperty: status = 0x%lx\r\n", status);
+#endif
 		BCryptCloseAlgorithmProvider(hAlg, 0);
 		return 0;
 	}
@@ -144,7 +158,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptImportKey: status = 0x%lx\r\n", status);
+#endif
 		BCryptCloseAlgorithmProvider(hAlg, 0);
 		return 0;
 	}
@@ -175,7 +191,9 @@ UOSInt Crypto::Encrypt::AES256GCM::Decrypt(UnsafeArray<const UInt8> inBuff, UOSI
 		0);
 	if (status != 0)
 	{
+#if defined(VERBOSE)
 		printf("Error in BCryptDecrypt: status = 0x%lx\r\n", status);
+#endif
 	}
 	BCryptDestroyKey(hKey);
 	BCryptCloseAlgorithmProvider(hAlg, 0);
