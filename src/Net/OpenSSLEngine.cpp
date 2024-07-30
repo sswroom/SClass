@@ -674,7 +674,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[4096];
-		Crypto::Cert::X509File *pobjKey = 0;
+		Optional<Crypto::Cert::X509File> pobjKey = 0;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 		PEM_write_bio_RSAPrivateKey(bio1, rsa, nullptr, nullptr, 0, nullptr, nullptr);
@@ -690,7 +690,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
 
 		RSA_free(rsa);
 		BN_free(bn);
-		return (Crypto::Cert::X509Key*)pobjKey;
+		return Optional<Crypto::Cert::X509Key>::ConvertFrom(pobjKey);
 	}
 	RSA_free(rsa);
 	BN_free(bn);

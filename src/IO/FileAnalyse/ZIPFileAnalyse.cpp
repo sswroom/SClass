@@ -685,7 +685,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		frame->AddStrC(30, fnameLen, CSTR("File name"), &tagData[30]);
 		if (extraLen)
 		{
-			i = 30 + fnameLen;
+			i = 30 + (UOSInt)fnameLen;
 			ParseExtraTag(frame, tagData, i, extraLen, tag->size, compSize, uncompSize, 0);
 		}
 		break;

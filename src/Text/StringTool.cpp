@@ -243,7 +243,7 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 	}
 
 	if (Text::CharUtil::IsDigit(chk))
-		ichk = chk - 0x30;
+		ichk = (UOSInt)chk - 0x30;
 	else if (chk == 'A')
 		ichk = 10;
 	else

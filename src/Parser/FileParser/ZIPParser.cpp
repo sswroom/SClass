@@ -675,7 +675,7 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 					break;
 				}
 			}
-			UOSInt hdrLen = 30 + fnameLen;
+			UOSInt hdrLen = 30 + (UOSInt)fnameLen;
 			if (compSize >= 0xffffffffLL || uncompSize >= 0xffffffffLL)
 			{
 				hdrLen += 4;
