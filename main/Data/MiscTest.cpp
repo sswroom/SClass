@@ -19,6 +19,7 @@
 #include "Math/WKTReader.h"
 #include "Media/PaperSize.h"
 #include "Net/HKOAPI.h"
+#include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSHManager.h"
 #include "Net/SSLEngineFactory.h"
@@ -671,9 +672,24 @@ Int32 SMTPProxyTest()
 	return 0;
 }
 
+Int32 HTTPSProxyCliTest()
+{
+	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
+	clif.SetProxy(CSTR("127.0.0.1"), 8080, 0, 0);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://a.tile.openstreetmap.org/13/6693/3571.png"), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	IO::MemoryStream mstm;
+	cli->ReadAllContent(mstm, 8192, 1048576);
+	printf("Status = %d, Read size = %lld\r\n", (Int32)cli->GetRespStatus(), mstm.GetLength());
+	cli.Delete();
+	ssl.Delete();
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 14;
+	UOSInt testType = 15;
 	switch (testType)
 	{
 	case 0:
@@ -706,6 +722,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return SQLConvFunc();
 	case 14:
 		return SMTPProxyTest();
+	case 15:
+		return HTTPSProxyCliTest();
 	default:
 		return 0;
 	}
