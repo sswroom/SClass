@@ -272,7 +272,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 #ifdef SHOWDEBUG
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(this->dataBuff, i, ' ', Text::LineBreakType::None);
-			printf("Return read size(8) = %d, i = %d, (%s)\r\n", 0, (UInt32)i, sb.ToString());
+			printf("Return read size(8) = %d, i = %d, (%s)\r\n", 0, (UInt32)i, sb.ToPtr());
 #endif
 			return 0;
 		}
@@ -590,7 +590,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 
 	this->SetSourceName(url);
 #ifdef SHOWDEBUG
-	printf("Request URL: %s %s\r\n", Net::WebUtil::RequestMethodGetName(method).v, url.v);
+	printf("Request URL: %s %s\r\n", Net::WebUtil::RequestMethodGetName(method).v.Ptr(), url.v.Ptr());
 #endif
 	i = ptr1.IndexOf('/');
 	if (i != INVALID_INDEX)
@@ -706,9 +706,9 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 				Net::SSLEngine::ErrorType err;
 				this->cli = ssl->ClientConnect(this->cliHost->ToCString(), port, err, this->timeout);
 #if defined(SHOWDEBUG)
-				if (this->cli == 0)
+				if (this->cli.IsNull())
 				{
-					printf("Connect error: %s\r\n", Net::SSLEngine::ErrorTypeGetName(err).v);
+					printf("Connect error: %s\r\n", Net::SSLEngine::ErrorTypeGetName(err).v.Ptr());
 				}
 #endif
 			}
@@ -921,7 +921,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 	if (this->reqHeaders.SortedIndexOfPtr(name.v, name.leng) >= 0)
 	{
 #ifdef SHOWDEBUG
-		printf("Add Header Failed(duplicated): %s: %s\r\n", name.v, value.v);
+		printf("Add Header Failed(duplicated): %s: %s\r\n", name.v.Ptr(), value.v.Ptr());
 #endif
 		return;
 	}
@@ -935,7 +935,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 			this->reqMstm.Write(value.OrEmpty().ToByteArray());
 			this->reqMstm.Write(CSTR("\r\n").ToByteArray());
 #ifdef SHOWDEBUG
-			printf("Add Header: %s: %s\r\n", name.v, value.v);
+			printf("Add Header: %s: %s\r\n", name.v.Ptr(), value.v.Ptr());
 #endif
 		}
 		else
@@ -960,7 +960,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 	else
 	{
 #ifdef SHOWDEBUG
-		printf("Add Header Failed(Non-writing state): %s: %s\r\n", name.v, value.v);
+		printf("Add Header Failed(Non-writing state): %s: %s\r\n", name.v.Ptr(), value.v.Ptr());
 #endif
 	}
 }
@@ -1099,7 +1099,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 						s = Text::String::New(ptr, i);
 					}
 #ifdef SHOWDEBUG
-					printf("Read Header: %s\r\n", s->v);
+					printf("Read Header: %s\r\n", s->v.Ptr());
 #endif
 					this->headers.Add(s);
 

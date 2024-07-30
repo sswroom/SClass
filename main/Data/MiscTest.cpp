@@ -676,7 +676,7 @@ Int32 HTTPSProxyCliTest()
 {
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
-	clif.SetProxy(CSTR("127.0.0.1"), 8080, 0, 0);
+	clif.SetProxy(CSTR("localhost"), 8080, 0, 0);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://a.tile.openstreetmap.org/13/6693/3571.png"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	IO::MemoryStream mstm;
