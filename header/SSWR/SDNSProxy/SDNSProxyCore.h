@@ -7,6 +7,7 @@
 #include "IO/Writer.h"
 #include "Net/DNSProxy.h"
 #include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/SDNSProxy/SDNSProxyWebHandler.h"
 #include "Sync/Mutex.h"
@@ -39,6 +40,7 @@ namespace SSWR
 			IO::Writer *console;
 			NN<Net::DNSProxy> proxy;
 			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 
 			Sync::Mutex cliInfoMut;
 			Data::FastMapNN<UInt32, ClientInfo> cliInfos;

@@ -9,7 +9,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::MQTTFailoverClient *cli;
 	Net::OSSocketFactory sockf(true);
-	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, sockf, 0, 30));
+	Net::TCPClientFactory clif(sockf);
+	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, clif, 0, 30));
 	cli->AddClient(CSTR("127.0.0.1"), 1883, CSTR_NULL, CSTR_NULL, false);
 	cli->AddClient(CSTR("127.0.0.1"), 1884, CSTR_NULL, CSTR_NULL, false);
 	Data::DateTime dt;

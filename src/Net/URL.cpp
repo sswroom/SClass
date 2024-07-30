@@ -8,7 +8,7 @@
 #include "Text/URLString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
+Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	Optional<IO::ParsedObject> pobj;
 	NN<IO::ParsedObject> nnpobj;
@@ -16,7 +16,7 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 	UnsafeArray<UTF8Char> sptr;
 	if (url.StartsWithICase(UTF8STRC("http://")))
 	{
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, userAgent, true, false);
 		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -24,7 +24,7 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
-				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout, log);
+				pobj = OpenObject(newUrl, userAgent, clif, ssl, timeout, log);
 				cli.Delete();
 				return pobj;
 			}
@@ -33,7 +33,7 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 	}
 	else if (url.StartsWithICase(UTF8STRC("https://")))
 	{
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, userAgent, true, true);
 		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
 			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
 			{
-				pobj = OpenObject(newUrl, userAgent, sockf, ssl, timeout, log);
+				pobj = OpenObject(newUrl, userAgent, clif, ssl, timeout, log);
 				cli.Delete();
 				return pobj;
 			}
@@ -57,12 +57,12 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 	}
 	else if (url.StartsWithICase(UTF8STRC("ftp://")))
 	{
-		NEW_CLASSNN(nnpobj, Net::FTPClient(url, sockf, true, 0, timeout));
+		NEW_CLASSNN(nnpobj, Net::FTPClient(url, clif, true, 0, timeout));
 		return nnpobj;
 	}
 	else if (url.StartsWithICase(UTF8STRC("rtsp://")))
 	{
-		pobj = Net::RTSPClient::ParseURL(sockf, url, timeout, log);
+		pobj = Net::RTSPClient::ParseURL(clif, url, timeout, log);
 		return pobj;
 	}
 	else if (url.StartsWithICase(UTF8STRC("data:")))

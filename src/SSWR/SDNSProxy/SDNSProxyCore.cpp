@@ -78,6 +78,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, IO::Writer
 {
 	this->console = console;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	this->lastHour = 0;
 	this->lastMinute = 0;
 	this->lastCnt = 0;
@@ -162,7 +163,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(NN<IO::ConfigFile> cfg, IO::Writer
 	{
 		NN<SSWR::SDNSProxy::SDNSProxyWebHandler> hdlr;
 		NEW_CLASSNN(hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->clif, 0, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (this->listener->IsError())
 		{
 			console->WriteLine(CSTR("Error in listening to ManagePort"));
@@ -202,6 +203,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 		cli.Delete();
 	}
 
+	this->clif.Delete();
 	this->sockf.Delete();
 }
 

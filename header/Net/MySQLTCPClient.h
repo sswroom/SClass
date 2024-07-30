@@ -5,7 +5,7 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "Net/MySQLUtil.h"
-#include "Net/TCPClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
@@ -35,10 +35,10 @@ namespace Net
 			Data
 		};
 	private:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
-		Net::TCPClient *cli;
+		Optional<Net::TCPClient> cli;
 		Sync::Mutex cliMut;
 		Bool recvRunning;
 		Bool recvStarted;
@@ -70,8 +70,8 @@ namespace Net
 		void SendExecuteStmt(UInt32 stmtId);
 		void SendStmtClose(UInt32 stmtId);
 	public:
-		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database);
-		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CStringNN userName, Text::CStringNN password, Text::CString database);
+		MySQLTCPClient(NN<Net::TCPClientFactory> clif, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database);
+		MySQLTCPClient(NN<Net::TCPClientFactory> clif, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CStringNN userName, Text::CStringNN password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -115,8 +115,8 @@ namespace Net
 		NN<Text::String> GetConnPWD() const;
 
 		static UInt16 GetDefaultPort();
-		static Optional<DB::DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DB::DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DB::DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DB::DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

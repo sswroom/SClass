@@ -136,8 +136,8 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientContro
 	this->SetText(CSTR("JWT Parser"));
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
-	NEW_CLASS(this->azure, Net::AzureManager(this->core->GetSocketFactory(), this->ssl));
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
+	NEW_CLASS(this->azure, Net::AzureManager(this->core->GetTCPClientFactory(), this->ssl));
 	this->token = 0;
 	this->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

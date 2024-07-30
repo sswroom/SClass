@@ -18,7 +18,7 @@ namespace Map
 		private:
 			NN<Text::String> url;
 			NN<Text::String> name;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Math::RectAreaDbl bounds;
 			Math::RectAreaDbl initBounds;
@@ -36,7 +36,7 @@ namespace Map
 			Data::ArrayListDbl tileLevels;
 
 		public:
-			ESRIMapServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource);
+			ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Bool noResource);
 			virtual ~ESRIMapServer();
 
 			Bool IsError() const;

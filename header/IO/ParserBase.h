@@ -18,6 +18,7 @@ namespace Net
 {
 	class SocketFactory;
 	class SSLEngine;
+	class TCPClientFactory;
 	class WebBrowser;
 }
 namespace Parser
@@ -43,7 +44,7 @@ namespace IO
 		virtual void SetMapManager(Optional<Map::MapManager> mapMgr) {};
 		virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact) {};
 		virtual void SetProgressHandler(Optional<IO::ProgressHandler> progHdlr) {};
-		virtual void SetSocketFactory(NN<Net::SocketFactory> sockf) {};
+		virtual void SetTCPClientFactory(NN<Net::TCPClientFactory> clif) {};
 		virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl) {};
 		virtual void SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser) {};
 		virtual void SetLogTool(Optional<IO::LogTool> log) {};

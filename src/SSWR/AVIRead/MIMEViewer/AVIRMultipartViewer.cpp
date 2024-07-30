@@ -103,7 +103,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 										else
 										{
 											NN<Net::SSLEngine> ssl;
-											if (!Net::SSLEngineFactory::Create(core->GetSocketFactory(), false).SetTo(ssl))
+											if (!Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), false).SetTo(ssl))
 											{
 												this->txtSignState->SetText(CSTR("Error in initializing SSL Engine"));
 											}

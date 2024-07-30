@@ -188,12 +188,12 @@ Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> co
 	return false;
 }
 
-Optional<DB::ReadingDB> DB::DBManager::OpenConn(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
 {
-	return OpenConn(connStr->ToCString(), log, sockf, parsers);
+	return OpenConn(connStr->ToCString(), log, clif, parsers);
 }
 
-Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
 {
 	Optional<DB::DBTool> db;
 	NN<DB::DBTool> nndb;
@@ -309,7 +309,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		if (nnserver.Set(server) && uid.SetTo(nnuid) && pwd.SetTo(nnpwd))
 		{
-			db = DB::MySQLConn::CreateDBTool(sockf, nnserver, schema, nnuid, nnpwd, log, DBPREFIX);
+			db = DB::MySQLConn::CreateDBTool(clif, nnserver, schema, nnuid, nnpwd, log, DBPREFIX);
 		}
 		else
 		{
@@ -420,7 +420,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		NN<Text::String> pwdStr;
 		if (uidStr.Set(uid) && pwdStr.Set(pwd))
 		{
-			NEW_CLASS(cli, Net::MySQLTCPClient(sockf, addr, port, uidStr, pwdStr, schema));
+			NEW_CLASS(cli, Net::MySQLTCPClient(clif, addr, port, uidStr, pwdStr, schema));
 		}
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
@@ -822,7 +822,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB:
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NN<IO::LogTool> log, NN<Net::TCPClientFactory> clif, Optional<Parser::ParserList> parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -860,7 +860,7 @@ Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<D
 			cnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 			if (sarr[0].leng > 0)
 			{
-				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, sockf, parsers));
+				ctrlList->Add(DB::DBManagerCtrl::Create(sarr[0].ToCString(), log, clif, parsers));
 			}
 			if (cnt != 2)
 			{

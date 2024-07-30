@@ -234,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		}
 		samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
 		samlHdlr->HandleLoginRequest(OnLoginRequest, me);
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			SDEL_CLASS(me->svr);
@@ -403,7 +403,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->SetText(CSTR("SAML Test"));
 	this->SetFont(0, 0, 8.25, false);
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;

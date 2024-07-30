@@ -3,9 +3,8 @@
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "IO/Writer.h"
-#include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
-#include "Net/TCPClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/UTF8Writer.h"
 
 namespace Net
@@ -49,7 +48,7 @@ namespace Net
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 			ResultStatus WaitForResult(OptOut<UnsafeArrayOpt<UTF8Char>> msgRetEnd);
 		public:
-			POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
 			~POP3Conn();
 
 			Bool IsError();

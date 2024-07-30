@@ -20,7 +20,7 @@ Optional<Text::String> Map::BingMapsTile::GetNextSubdomain()
 	return thisUrl;
 }
 
-Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 1, 19, sockf, ssl)
+Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 1, 19, clif, ssl)
 {
 	this->url = 0;
 	this->key = Text::String::NewOrNull(key);
@@ -37,7 +37,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	sb.Append(ImagerySetGetName(is));
 	sb.AppendC(UTF8STRC("?output=json&include=ImageryProviders&key="));
 	sb.AppendOpt(key);
-	if (!Net::HTTPClient::LoadContent(sockf, ssl, sb.ToCString(), sb2, 1048576))
+	if (!Net::HTTPClient::LoadContent(clif, ssl, sb.ToCString(), sb2, 1048576))
 	{
 		return;
 	}
@@ -72,7 +72,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 	if (this->brandLogoUri.SetTo(s))
 	{
 		IO::MemoryStream mstm;
-		if (Net::HTTPClient::LoadContent(sockf, ssl, s->ToCString(), mstm, 1048576))
+		if (Net::HTTPClient::LoadContent(clif, ssl, s->ToCString(), mstm, 1048576))
 		{
 			Parser::FileParser::PNGParser parser;
 			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());

@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj
 	}
 	NN<Net::EthernetWebHandler> webHdlr;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (me->listener->IsError())
 	{
 		DEL_CLASS(me->listener);
@@ -117,9 +117,9 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userOb
 	if (ip)
 	{
 		NN<Socket> soc;
-		if (me->sockf->CreateICMPIPv4Socket(ip).SetTo(soc))
+		if (me->clif->GetSocketFactory()->CreateICMPIPv4Socket(ip).SetTo(soc))
 		{
-			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnRAWData, me, 3));
+			NEW_CLASS(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else
@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	this->SetText(CSTR("Ping Monitor"));
 
 	this->core = core;
-	this->sockf = core->GetSocketFactory();
+	this->clif = core->GetTCPClientFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->listener = 0;
 	this->webHdlr = 0;
@@ -289,7 +289,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	this->sockf->GetConnInfoList(connInfoList);
+	this->clif->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)

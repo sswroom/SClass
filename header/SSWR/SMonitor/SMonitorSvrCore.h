@@ -38,6 +38,7 @@ namespace SSWR
 
 		private:
 			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
 			Net::TCPServer *cliSvr;

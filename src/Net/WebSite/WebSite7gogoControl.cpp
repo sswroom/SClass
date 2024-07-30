@@ -100,9 +100,9 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 	}
 }
 
-Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
+Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->encFact = encFact;
 	this->userAgent = Text::String::CopyOrNull(userAgent);
 }
@@ -121,7 +121,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 	Data::ArrayListInt64 idList;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())

@@ -47,7 +47,7 @@ private:
 		Text::String *currURL;
 	};
 private:
-	NN<Net::SocketFactory> sockf;
+	NN<Net::TCPClientFactory> clif;
 	Optional<Net::SSLEngine> ssl;
 	UOSInt threadCount;
 	Bool threadToStop;
@@ -111,7 +111,7 @@ private:
 	{
 		UInt8 buff[4096];
 		stat->reqCnt++;
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(stat->me->sockf, stat->me->ssl, url->ToCString(), true, url->StartsWithICase(UTF8STRC("HTTPS://")));
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(stat->me->clif, stat->me->ssl, url->ToCString(), true, url->StartsWithICase(UTF8STRC("HTTPS://")));
 		if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false))
 		{
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
@@ -222,10 +222,10 @@ private:
 	}
 
 public:
-	CesiumDownloader(NN<Net::SocketFactory> sockf, UOSInt threadCount, Bool useComp)
+	CesiumDownloader(NN<Net::TCPClientFactory> clif, UOSInt threadCount, Bool useComp)
 	{
-		this->sockf = sockf;
-		this->ssl = Net::SSLEngineFactory::Create(sockf, true);
+		this->clif = clif;
+		this->ssl = Net::SSLEngineFactory::Create(clif, true);
 		this->threadCount = threadCount;
 		this->threadToStop = false;
 		this->useComp = useComp;
@@ -482,8 +482,9 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CStringNN 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
 	IO::ConsoleWriter console;
-	CesiumDownloader downloader(sockf, 16, true);
+	CesiumDownloader downloader(clif, 16, true);
 /*	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.8"));
 	TestURL(&console, &downloader, CSTR("http://127.0.0.1:12345/mapSvc/cesiumdata?file=20220411HAD01_Cesium.json&range=114.22109831332,22.361996166922,114.2219974849,22.364057802242&minErr=0.4"));

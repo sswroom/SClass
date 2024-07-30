@@ -9,6 +9,7 @@
 #include "Crypto/Hash/IHash.h"
 #include "Data/ArrayListNN.h"
 #include "Net/SSLClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/CString.h"
 
 namespace Net
@@ -73,7 +74,7 @@ namespace Net
 			SSLEngine *me;
 		};
 	protected:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		UOSInt maxThreadCnt;
 		UOSInt currThreadCnt;
 		Bool threadToStop;
@@ -86,7 +87,7 @@ namespace Net
 
 		static UInt32 __stdcall ServerThread(AnyType userObj);
 		virtual Optional<Net::SSLClient> CreateServerConn(NN<Socket> s) = 0;
-		SSLEngine(NN<Net::SocketFactory> sockf);
+		SSLEngine(NN<Net::TCPClientFactory> clif);
 	public:
 		virtual ~SSLEngine();
 		

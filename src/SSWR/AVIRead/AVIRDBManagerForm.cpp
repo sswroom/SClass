@@ -492,7 +492,7 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 			}
 			if (db.SetTo(nndb))
 			{
-				NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
+				NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetTCPClientFactory(), me->core->GetParserList());
 				me->dbList.Add(ctrl);
 				Text::StringBuilderUTF8 sb;
 				ctrl->GetConnName(sb);
@@ -1292,14 +1292,14 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Database Manager"));
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), true);
 	this->currDB = 0;
 	this->currCond = 0;
 	this->sqlFileMode = false;
 	this->mapItemPt = Math::Coord2DDbl(0, 0);
 	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateWGS84Csys()));
 	NN<Map::MapDrawLayer> layer;
-	if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(layer))
+	if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(layer))
 	{
 		this->mapEnv->AddLayer(0, layer, true);
 		layer->AddUpdatedHandler(OnLayerUpdated, this);
@@ -1539,7 +1539,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, DBCONNFILE);
-	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), this->dbList, this->log, this->core->GetSocketFactory(), this->core->GetParserList()))
+	if (DB::DBManager::RestoreConn(CSTRP(sbuff, sptr), this->dbList, this->log, this->core->GetTCPClientFactory(), this->core->GetParserList()))
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<DB::DBManagerCtrl> ctrl;
@@ -1888,7 +1888,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(NN<DB::DBConn> conn)
 {
 	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, this->log, CSTR("DB: ")));
-	NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetSocketFactory(), this->core->GetParserList());
+	NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::Create(db, this->log, this->core->GetTCPClientFactory(), this->core->GetParserList());
 	this->dbList.Add(ctrl);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(sb);

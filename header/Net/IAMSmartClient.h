@@ -13,7 +13,7 @@ namespace Net
 
 		Bool PrepareCEK();
 	public:
-		IAMSmartClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret, Text::CStringNN keyFile);
+		IAMSmartClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret, Text::CStringNN keyFile);
 		~IAMSmartClient();
 
 		Bool IsError() const;

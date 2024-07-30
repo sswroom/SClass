@@ -630,7 +630,7 @@ void SSWR::SMonitor::SMonitorSvrCore::NewNotify(NN<const Net::SocketUtil::Addres
 
 	Text::CStringNN smtpFrom = CSTR("alert@caronline.hk");
 	IO::LogWriter logWriter(this->log, IO::LogHandler::LogLevel::Raw);
-	Net::Email::SMTPClient cli(this->sockf, this->ssl, CSTR("webmail.caronline.hk"), 465, Net::Email::SMTPConn::ConnType::SSL, &logWriter, 60);
+	Net::Email::SMTPClient cli(this->clif, this->ssl, CSTR("webmail.caronline.hk"), 465, Net::Email::SMTPConn::ConnType::SSL, &logWriter, 60);
 	cli.SetPlainAuth(CSTR("alert@caronline.hk"), CSTR("caronlineskypower"));
 
 	msg.SetFrom(CSTR_NULL, smtpFrom);
@@ -1153,7 +1153,8 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(UnsafeArray<const UTF8Char> us
 SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media::DrawEngine> deng) : protoHdlr(*this), thread(CheckThread, this, CSTR("SMonitorSvrCore"))
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
-	this->ssl = Net::SSLEngineFactory::Create(sockf, true);
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
+	this->ssl = Net::SSLEngineFactory::Create(clif, true);
 	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	this->deng = deng;
 	this->dataDir = 0;
@@ -1244,7 +1245,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 
 		if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s) && cfg->GetValue(CSTR("MySQLDB")).SetTo(s2))
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, s, s2, Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))), this->log, CSTR("DB: "));
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db.IsNull())
 			{
@@ -1314,7 +1315,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 
 					hdlr->ExpandPackageFiles(this->parsers, CSTR("*.spk"));
 					this->webHdlr = hdlr.Ptr();
-					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 1, 4, CSTR("SSWRServer/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->clif, 0, hdlr, port, 60, 1, 4, CSTR("SSWRServer/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 					if (this->listener->IsError())
 					{
 						DEL_CLASS(this->listener);
@@ -1496,6 +1497,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	SDEL_CLASS(this->dataCRC);
 	this->parsers.Delete();
 	this->ssl.Delete();
+	this->clif.Delete();
 	this->sockf.Delete();
 	this->deng.Delete();
 	SDEL_STRING(this->notifyPwd);

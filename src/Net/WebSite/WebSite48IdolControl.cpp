@@ -8,9 +8,9 @@
 #define BASEURL "https://48idol.tv/archive/"
 #define TVBASEURL "https://48idol.tv/all-videos"
 
-Net::WebSite::WebSite48IdolControl::WebSite48IdolControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent)
+Net::WebSite::WebSite48IdolControl::WebSite48IdolControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = SCOPY_STRING(userAgent);
@@ -43,7 +43,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, NN<Data::
 	NN<Text::XMLAttrib> attr2;
 	NN<Text::XMLAttrib> attr3;
 	Data::DateTime dt;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
@@ -105,7 +105,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 	NN<ItemData> item;
 	NN<Text::XMLAttrib> attr;
 	Data::DateTime dt;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
@@ -207,7 +207,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	sb.AppendI32(videoId);
 	NN<Text::XMLAttrib> attr;
 	Bool found = false;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (!found && reader.ReadNext())
@@ -247,7 +247,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NN<Text::St
 	sb.AppendI32(videoId);
 	NN<Text::XMLAttrib> attr;
 	Bool found = false;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (!found && reader.ReadNext())

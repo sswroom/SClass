@@ -432,7 +432,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl>
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	NEW_CLASS(this->sanList, Data::ArrayListStringNN());
 	this->key = 0;
 

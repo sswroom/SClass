@@ -2193,7 +2193,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				else
 				{
 					Net::OSSocketFactory sockf(false);
-					cli = Net::HTTPClient::CreateConnect(sockf, 0, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
+					Net::TCPClientFactory clif(sockf);
+					cli = Net::HTTPClient::CreateConnect(clif, 0, CSTR("http://sswroom.no-ip.org:5080/benchmark/upload"), Net::WebUtil::RequestMethod::HTTP_POST, false);
 					cli->AddContentType(CSTR("text/plain"));
 					cli->AddContentLength(fileSize);
 					cli->Write(txtBuff.WithSize((UOSInt)fileSize));

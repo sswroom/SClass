@@ -56,9 +56,9 @@ UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char>
 	}
 }
 
-Net::WebBrowser::WebBrowser(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN cacheDir) : queue(sockf, ssl)
+Net::WebBrowser::WebBrowser(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN cacheDir) : queue(clif, ssl)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->cacheDir = Text::String::New(cacheDir);
 }
@@ -107,7 +107,7 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, 
 		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
 			return 0;
 		Net::HTTPData *data;
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
+		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
@@ -118,7 +118,7 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, 
 #if defined(VERBOSE)
 		printf("WebBrowser: Loading HTTPS: %s\r\n", url.v);
 #endif
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
+		NEW_CLASS(data, Net::HTTPData(this->clif, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP")))

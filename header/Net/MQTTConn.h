@@ -63,7 +63,7 @@ namespace Net
 
 		void InitStream(NN<IO::Stream> stm);
 	public:
-		MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout);
+		MQTTConn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout);
 		MQTTConn(NN<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj);
 		virtual ~MQTTConn();
 
@@ -85,7 +85,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout);
+		static Bool PublishMessage(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout);
 	};
 }
 #endif

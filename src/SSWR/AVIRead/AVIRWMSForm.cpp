@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWMSURL->GetText(sb);
 	SDEL_CLASS(me->wms);
-	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)me->cboWMSVersion->GetSelectedItem().GetOSInt(), me->envCsys));
+	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)me->cboWMSVersion->GetSelectedItem().GetOSInt(), me->envCsys));
 	if (me->wms->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));

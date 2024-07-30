@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn)
 {
 	this->clsData = 0;
 	this->cliHost = 0;
@@ -36,7 +36,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::HTTPOSClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }

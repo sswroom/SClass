@@ -37,7 +37,7 @@ namespace SSWR
 
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener *listener;

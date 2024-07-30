@@ -149,11 +149,11 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	return lyr;
 }
 
-Optional<Map::HKTrafficLayer2> Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact)
+Optional<Map::HKTrafficLayer2> Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact)
 {
 	if (this->fgdb.NotNull())
 	{
-		return NEW_CLASS_D(Map::HKTrafficLayer2(sockf, ssl, encFact, this));
+		return NEW_CLASS_D(Map::HKTrafficLayer2(clif, ssl, encFact, this));
 	}
 	return 0;
 }

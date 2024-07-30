@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
 
-Map::ESRI::ESRIFeatureServer::ESRIFeatureServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Map::ESRI::ESRIFeatureServer::ESRIFeatureServer(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	this->url = Text::String::New(url);
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 //	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 
@@ -40,7 +40,7 @@ Optional<Map::ESRI::ESRIFeatureServer::LayerInfo> Map::ESRI::ESRIFeatureServer::
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->url);
 	sb.Append(CSTR("/0?f=json"));
-	JSONREQ_RET(this->sockf, this->ssl, sb.ToCString(), LayerInfo)
+	JSONREQ_RET(this->clif, this->ssl, sb.ToCString(), LayerInfo)
 }
 
 NN<Text::String> Map::ESRI::ESRIFeatureServer::GetURL() const

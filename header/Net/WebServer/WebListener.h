@@ -36,7 +36,7 @@ namespace Net
 			UOSInt nextCli;
 			Optional<Net::TCPClientMgr> proxyCliMgr;
 			Optional<Net::SSLEngine> ssl;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			IO::LogTool log;
 			NN<Text::String> svrName;
 			Bool allowProxy;
@@ -65,7 +65,7 @@ namespace Net
 
 			static void __stdcall OnDataSent(AnyType userObj, UOSInt buffSize);
 		public:
-			WebListener(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
+			WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
 			~WebListener();
 
 			Bool Start();

@@ -9,9 +9,9 @@
 #include <stdio.h>
 #endif
 
-Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
+Net::WebSite::WebSiteTwitterControl::WebSiteTwitterControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = 0;
@@ -44,7 +44,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
 	cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 	cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));

@@ -17,7 +17,7 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NN<Net::TCPClient> cli, 
 		if (me->cliMgrs.GetItem(i).SetTo(cliMgr))
 		{
 			Net::WebServer::WebConnection *conn;
-			NEW_CLASS(conn, Net::WebServer::WebConnection(me->sockf, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
+			NEW_CLASS(conn, Net::WebServer::WebConnection(me->clif, me->ssl, cli, me, me->hdlr, me->allowProxy, me->keepAlive));
 			conn->SetLogWriter(cliMgr->GetLogWriter());
 			conn->SetSendLogger(OnDataSent, userObj);
 			cliMgr->AddClient(cli, conn);
@@ -41,7 +41,7 @@ void __stdcall Net::WebServer::WebListener::ConnHdlr(NN<Socket> s, AnyType userO
 	}
 	else
 	{
-		NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
+		NEW_CLASSNN(cli, Net::TCPClient(me->clif->GetSocketFactory(), s));
 		ClientReady(cli, me);
 	}
 	Interlocked_IncrementU32(&me->status.connCnt);
@@ -114,7 +114,7 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(AnyType userObj, UOSInt b
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
+Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
 {
 	this->hdlr = hdlr;
 	UOSInt i = mgrCnt;
@@ -128,7 +128,7 @@ Net::WebServer::WebListener::WebListener(NN<Net::SocketFactory> sockf, Optional<
 	}
 	this->nextCli = 0;
 
-	this->sockf = sockf;
+	this->clif = clif;
 	this->accLog = 0;
 	this->reqLog = 0;
 	this->ssl = ssl;
@@ -156,7 +156,7 @@ Net::WebServer::WebListener::WebListener(NN<Net::SocketFactory> sockf, Optional<
 	this->status.reqCnt = 0;
 	this->status.totalRead = 0;
 	this->status.totalWrite = 0;
-	NEW_CLASSNN(this->svr, Net::TCPServer(sockf, 0, port, this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
+	NEW_CLASSNN(this->svr, Net::TCPServer(clif->GetSocketFactory(), 0, port, this->log, ConnHdlr, this, CSTR("Web: "), autoStart));
 	if (this->allowProxy)
 	{
 		NEW_CLASSOPT(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));

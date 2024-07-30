@@ -9,11 +9,11 @@
 #include "Net/HTTPClient.h"
 #include "Text/MyString.h"
 
-Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
 	this->cacheDir = Text::String::NewOrNull(cacheDir);
 	this->spkg = 0;
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
@@ -277,7 +277,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	urlPtr = this->GetTileImageURL(url, level, tileId).Or(url);
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
 	cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	cli->SetTimeout(5000);
 	if (hasTime)
@@ -457,7 +457,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 
 	urlPtr = this->GetTileImageURL(url, level, tileId).Or(url);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
 	cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{

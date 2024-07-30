@@ -441,11 +441,11 @@ namespace Map
 		private:
 			NN<Text::String> url;
 			NN<Text::String> name;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 
 		public:
-			ESRIFeatureServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+			ESRIFeatureServer(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 			virtual ~ESRIFeatureServer();
 
 			Optional<LayerInfo> GetLayerInfo();

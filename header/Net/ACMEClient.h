@@ -7,19 +7,19 @@ namespace Net
 	class ACMEClient
 	{
 	private:
-		Net::ACMEConn *acme;
+		NN<Net::ACMEConn> acme;
 		Bool keyReady;
 		Bool accReady;
 
 	public:
-		ACMEClient(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port, Text::CStringNN keyFile);
+		ACMEClient(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port, Text::CStringNN keyFile);
 		~ACMEClient();
 
 		Bool IsError();
 		Text::String *GetTermOfService();
 		Text::String *GetWebsite();
 		Text::String *GetAccountId();
-		Net::ACMEConn *GetConn();
+		NN<Net::ACMEConn> GetConn();
 	};
 }
 #endif

@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_GOOGLEMAP_GOOGLESTATICMAP
 #define _SM_MAP_GOOGLEMAP_GOOGLESTATICMAP
 #include "Math/Size2D.h"
-#include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Net/TCPClientFactory.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"
 
@@ -17,12 +17,12 @@ namespace Map
 			Optional<Text::String> gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			
 		public:
-			GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);
-			GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey);
+			GoogleStaticMap(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);
+			GoogleStaticMap(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey);
 			~GoogleStaticMap();
 
 			static UInt32 Level2Scale(UInt32 level);

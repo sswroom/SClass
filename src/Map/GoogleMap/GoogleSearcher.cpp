@@ -19,9 +19,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->lastIsError = 0;
@@ -44,9 +44,9 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::SocketFactory> sockf, Opt
 	this->lastSrchDate.SetCurrTimeUTC();
 }
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, NN<IO::Writer> errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, NN<IO::Writer> errWriter)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->lastIsError = 0;
@@ -135,7 +135,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleSearcher::SearchName(UnsafeArray<
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
 	}
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		if (lang.leng)

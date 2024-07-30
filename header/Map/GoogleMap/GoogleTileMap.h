@@ -21,7 +21,7 @@ namespace Map
 			MapType mapType;
 
 		public:
-			GoogleTileMap(Text::CString cacheDir, MapType mapType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+			GoogleTileMap(Text::CString cacheDir, MapType mapType, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 			virtual ~GoogleTileMap();
 
 			virtual Text::CStringNN GetName() const;

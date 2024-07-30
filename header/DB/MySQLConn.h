@@ -5,7 +5,7 @@
 #include "DB/DBReader.h"
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
-#include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 
 namespace DB
 {
@@ -60,8 +60,8 @@ namespace DB
 		Optional<Text::String> GetConnPWD();
 
 //		static Optional<DBTool> CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log);
-		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 //		static Optional<DBTool> CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 

@@ -15,9 +15,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::HTTPClient::HTTPClient(NN<Net::SocketFactory> sockf, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
+Net::HTTPClient::HTTPClient(NN<Net::TCPClientFactory> clif, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->canWrite = false;
 	this->contLeng = 0;
 	this->respStatus = Net::WebStatus::SC_UNKNOWN;
@@ -504,33 +504,33 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 	return 0;
 }
 
-NN<Net::HTTPClient> Net::HTTPClient::CreateClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
+NN<Net::HTTPClient> Net::HTTPClient::CreateClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
 {
 	NN<Net::HTTPClient> cli;
 	if (isSecure && ssl.IsNull())
 	{
-		NEW_CLASSNN(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
+		NEW_CLASSNN(cli, Net::HTTPOSClient(clif, userAgent, kaConn));
 	}
 	else
 	{
-		NEW_CLASSNN(cli, Net::HTTPMyClient(sockf, ssl, userAgent, kaConn));
+		NEW_CLASSNN(cli, Net::HTTPMyClient(clif, ssl, userAgent, kaConn));
 	}
 	return cli;
 }
 
-NN<Net::HTTPClient> Net::HTTPClient::CreateConnect(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
+NN<Net::HTTPClient> Net::HTTPClient::CreateConnect(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }
 
-NN<Net::HTTPClient> Net::HTTPClient::CreateGet(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn)
+NN<Net::HTTPClient> Net::HTTPClient::CreateGet(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn)
 {
 	Data::ArrayListStringNN urlList;
 	while (true)
 	{
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		Net::WebStatus::StatusCode status = cli->GetRespStatus();
 		if (status != Net::WebStatus::SC_MOVED_TEMPORARILY && status != Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -558,9 +558,9 @@ void Net::HTTPClient::PrepareSSL(Optional<Net::SSLEngine> ssl)
 {
 }
 
-Bool Net::HTTPClient::LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<IO::Stream> stm, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<IO::Stream> stm, UInt64 maxSize)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
 		cli.Delete();
@@ -582,9 +582,9 @@ Bool Net::HTTPClient::LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SS
 	return true;
 }
 
-Bool Net::HTTPClient::LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<Text::StringBuilderUTF8> sb, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<Text::StringBuilderUTF8> sb, UInt64 maxSize)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
 		cli.Delete();

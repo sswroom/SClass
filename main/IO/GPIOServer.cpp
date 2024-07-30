@@ -127,9 +127,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<GPIOWebHandler> webHdlr;
 	IO::GPIOControl *gpio;
 	Net::OSSocketFactory sockf(false);
+	Net::TCPClientFactory clif(sockf);
 	NEW_CLASS(gpio, IO::GPIOControl());
 	NEW_CLASSNN(webHdlr, GPIOWebHandler(gpio));
-	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, PORT, 120, 1, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(listener, Net::WebServer::WebListener(clif, 0, webHdlr, PORT, 120, 1, Sync::ThreadUtil::GetThreadCnt(), CSTR("GPIO/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	progCtrl->WaitForExit(progCtrl);
 	DEL_CLASS(listener);
 	webHdlr.Delete();

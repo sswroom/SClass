@@ -78,14 +78,14 @@ namespace Net
 			}
 		};
 	private:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<Text::String> apikey;
 
 		void BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN path);
 		Optional<Text::JSONBase> GetJSON(Text::CStringNN url);
 	public:
-		SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN apikey);
+		SolarEdgeAPI(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apikey);
 		~SolarEdgeAPI();
 
 		Optional<Text::String> GetCurrentVersion();

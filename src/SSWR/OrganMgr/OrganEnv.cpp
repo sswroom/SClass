@@ -140,7 +140,8 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 {
 	this->drawEng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->currCate = 0;
 	this->cateIsFullDir = false;
 	this->bookIds = 0;
@@ -179,6 +180,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	this->langFile.Delete();
 	this->drawEng.Delete();
 	this->ssl.Delete();
+	this->clif.Delete();
 	this->sockf.Delete();
 }
 
@@ -195,6 +197,11 @@ NN<Parser::ParserList> SSWR::OrganMgr::OrganEnv::GetParserList()
 NN<Net::SocketFactory> SSWR::OrganMgr::OrganEnv::GetSocketFactory()
 {
 	return this->sockf;
+}
+
+NN<Net::TCPClientFactory> SSWR::OrganMgr::OrganEnv::GetTCPClientFactory()
+{
+	return this->clif;
 }
 
 Optional<Net::SSLEngine> SSWR::OrganMgr::OrganEnv::GetSSLEngine()

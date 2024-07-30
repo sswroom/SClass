@@ -24,7 +24,7 @@ namespace Net
 			UOSInt seekCnt;
 
 			Net::HTTPClient *cli;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Net::HTTPQueue *queue;
 			UInt64 loadSize;
@@ -43,7 +43,7 @@ namespace Net
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
 		HTTPData(const HTTPData *fd, UInt64 offset, UInt64 length);
-		HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload);
+		HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload);
 		virtual ~HTTPData();
 
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);

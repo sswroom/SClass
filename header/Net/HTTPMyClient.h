@@ -8,7 +8,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngine.h"
-#include "Net/TCPClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -39,7 +39,7 @@ namespace Net
 
 		UOSInt ReadRAWInternal(Data::ByteArray buff);
 	public:
-		HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn);
+		HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError() const;

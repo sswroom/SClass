@@ -9,7 +9,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
-#include "Net/TCPClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Net/WebStatus.h"
 #include "Net/WebUtil.h"
 #include "Text/CString.h"
@@ -20,7 +20,7 @@ namespace Net
 	class HTTPClient : public IO::Stream
 	{
 	protected:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Manage::HiResClock clk;
 
 		Net::SocketUtil::AddressInfo svrAddr;
@@ -39,7 +39,7 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		HTTPClient(NN<Net::SocketFactory> sockf, Bool kaConn);
+		HTTPClient(NN<Net::TCPClientFactory> clif, Bool kaConn);
 	public:
 		virtual ~HTTPClient();
 
@@ -92,13 +92,13 @@ namespace Net
 
 		static void ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateStr);
 		static Data::Timestamp ParseDateStr(Text::CStringNN dateStr);
-		static NN<Net::HTTPClient> CreateClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
-		static NN<Net::HTTPClient> CreateConnect(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
-		static NN<Net::HTTPClient> CreateGet(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn);
+		static NN<Net::HTTPClient> CreateClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
+		static NN<Net::HTTPClient> CreateConnect(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
+		static NN<Net::HTTPClient> CreateGet(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn);
 		static Bool IsHTTPURL(Text::CStringNN url);
 		static void PrepareSSL(Optional<Net::SSLEngine> ssl);
-		static Bool LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<IO::Stream> stm, UInt64 maxSize);
-		static Bool LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<Text::StringBuilderUTF8> sb, UInt64 maxSize);
+		static Bool LoadContent(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<IO::Stream> stm, UInt64 maxSize);
+		static Bool LoadContent(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<Text::StringBuilderUTF8> sb, UInt64 maxSize);
 	};
 }
 #endif

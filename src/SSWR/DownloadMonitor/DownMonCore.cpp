@@ -466,7 +466,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(NN<Sync::Thread> 
 SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CSTR("DownMonCore")), checker(false)
 {
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->chkStatus = CS_IDLE;
 
 	NEW_CLASS(this->parsers, Parser::FullParserList());
@@ -515,6 +516,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 
 	this->fileTypeMap.FreeAll(FileFree);
 	this->ssl.Delete();
+	this->clif.Delete();
 	this->sockf.Delete();
 }
 
@@ -526,6 +528,11 @@ Bool SSWR::DownloadMonitor::DownMonCore::IsError()
 NN<Net::SocketFactory> SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()
 {
 	return this->sockf;
+}
+
+NN<Net::TCPClientFactory> SSWR::DownloadMonitor::DownMonCore::GetTCPClientFactory()
+{
+	return this->clif;
 }
 
 Optional<Net::SSLEngine> SSWR::DownloadMonitor::DownMonCore::GetSSLEngine()

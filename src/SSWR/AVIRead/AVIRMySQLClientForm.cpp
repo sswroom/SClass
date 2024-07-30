@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 	}
 	
 	me->cliConnected = false;
-	NEW_CLASS(me->cli, Net::MySQLTCPClient(me->core->GetSocketFactory(), addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
+	NEW_CLASS(me->cli, Net::MySQLTCPClient(me->core->GetTCPClientFactory(), addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
 	if (me->cli->IsError())
 	{
 		sbUser.ClearStr();

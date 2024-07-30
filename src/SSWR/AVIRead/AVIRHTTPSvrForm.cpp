@@ -179,7 +179,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NN<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
 		NEW_CLASSNN(dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetOSInt(), false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetOSInt(), false));
 		if (me->svr->IsError())
 		{
 			valid = false;
@@ -459,7 +459,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->SetText(CSTR("HTTP Server"));
 	this->SetFont(0, 0, 8.25, false);
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;

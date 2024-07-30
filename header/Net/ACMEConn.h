@@ -52,7 +52,7 @@ namespace Net
 			NN<Text::String> token;
 		};
 	private:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Optional<Crypto::Cert::X509Key> key;
 		NN<Text::String> serverHost;
@@ -77,7 +77,7 @@ namespace Net
 		Optional<Challenge> ChallengeJSON(NN<Text::JSONBase> json);
 		Optional<Challenge> ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	public:
-		ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port);
+		ACMEConn(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port);
 		~ACMEConn();
 
 		Bool IsError();

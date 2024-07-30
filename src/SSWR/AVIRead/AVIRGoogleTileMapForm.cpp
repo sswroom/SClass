@@ -8,16 +8,16 @@ void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(AnyType userObj
 	switch (me->cboMapType->GetSelectedIndex())
 	{
 	case 0:
-		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_MAP, me->core->GetSocketFactory(), me->ssl, me->core->GetParserList());
+		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_MAP, me->core->GetTCPClientFactory(), me->ssl, me->core->GetParserList());
 		break;
 	case 1:
-		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_TRAIN, me->core->GetSocketFactory(), me->ssl, me->core->GetParserList());
+		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_TRAIN, me->core->GetTCPClientFactory(), me->ssl, me->core->GetParserList());
 		break;
 	case 2:
-		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_SATELITE, me->core->GetSocketFactory(), me->ssl, me->core->GetParserList());
+		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_SATELITE, me->core->GetTCPClientFactory(), me->ssl, me->core->GetParserList());
 		break;
 	case 3:
-		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_HYBRID, me->core->GetSocketFactory(), me->ssl, me->core->GetParserList());
+		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_HYBRID, me->core->GetTCPClientFactory(), me->ssl, me->core->GetParserList());
 		break;
 	}
 	if (me->layer.NotNull())

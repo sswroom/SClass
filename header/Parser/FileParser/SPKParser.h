@@ -10,7 +10,7 @@ namespace Parser
 		{
 		private:
 			Optional<Parser::ParserList> parsers;
-			Optional<Net::SocketFactory> sockf;
+			Optional<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 		public:
 			SPKParser();
@@ -18,7 +18,7 @@ namespace Parser
 
 			virtual Int32 GetName();
 			virtual void SetParserList(Optional<Parser::ParserList> parsers);
-			virtual void SetSocketFactory(NN<Net::SocketFactory> sockf);
+			virtual void SetTCPClientFactory(NN<Net::TCPClientFactory> clif);
 			virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl);
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();

@@ -22,7 +22,7 @@ namespace Net
 			Data::FastMapNN<Int64, SNSItem> itemMap;
 
 		public:
-			SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId);
+			SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId);
 			virtual ~SNS7gogo();
 
 			virtual Bool IsError();

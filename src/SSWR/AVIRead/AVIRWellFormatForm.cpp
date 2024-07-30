@@ -36,9 +36,9 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 		Optional<Net::SSLEngine> ssl = 0;
 		if (reqSSL)
 		{
-			ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
+			ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 		}
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), ssl, fileName, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), ssl, fileName, Net::WebUtil::RequestMethod::HTTP_GET, true);
 		if (!cli->IsError() && cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
 			Text::CStringNN contType;

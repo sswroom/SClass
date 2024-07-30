@@ -27,7 +27,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
 	Net::OSSocketFactory sockf(true);
-	NEW_CLASS(analyzer, Net::RAWAnalyzer(sockf, portNum, console, Net::EthernetAnalyzer::AT_ALL));
+	Net::TCPClientFactory clif(sockf);
+	NEW_CLASS(analyzer, Net::RAWAnalyzer(clif, portNum, console, Net::EthernetAnalyzer::AT_ALL));
 	if (!analyzer->IsError())
 	{
 		console->WriteLine(CSTR("NetRAWCapture Started"));

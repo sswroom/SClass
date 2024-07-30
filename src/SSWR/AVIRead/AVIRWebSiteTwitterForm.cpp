@@ -56,9 +56,9 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUICl
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	//const UnsafeArray<UTF8Char> userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), 0));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), 0));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);

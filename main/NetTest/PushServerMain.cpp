@@ -42,7 +42,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Net::OSSocketFactory sockf(true);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	IO::LogTool log;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
@@ -50,7 +51,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
 	log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	{
-		Net::PushServer svr(sockf, ssl, port, fcmKey->ToCString(), log);
+		Net::PushServer svr(clif, ssl, port, fcmKey->ToCString(), log);
 		if (svr.IsError())
 		{
 			console.WriteLine(CSTR("Error in listening to port"));

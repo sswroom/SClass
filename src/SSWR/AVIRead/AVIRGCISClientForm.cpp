@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Content cannot be empty"), CSTR("GCIS Client"), me);
 		return;
 	}
-	Net::Email::GCISClient cli(me->core->GetSocketFactory(), me->ssl, sbURL.ToCString(), cliCert, cliKey);
+	Net::Email::GCISClient cli(me->core->GetTCPClientFactory(), me->ssl, sbURL.ToCString(), cliCert, cliKey);
 	Text::StringBuilderUTF8 sbErr;
 	cli.SendMessage(false, CSTR("UTF-8"), sbContType.ToCString(), sbSubject.ToCString(), sbContent.ToCString(), sbTo.ToCString(), sbCC.ToCString(), sbBCC.ToCString(), &sbErr);
 	me->txtResponseStatus->SetText(sbErr.ToCString());
@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(Optional<UI::GUIClientCont
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), true);
 	this->cliCert = 0;
 	this->cliKey = 0;
 	this->svrCert = 0;

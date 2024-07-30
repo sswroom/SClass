@@ -16,7 +16,7 @@
 
 void Map::TileMapServiceSource::LoadXML()
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -279,9 +279,9 @@ void Map::TileMapServiceSource::LoadXML()
 	cli.Delete();
 }
 
-Map::TileMapServiceSource::TileMapServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN tmsURL)
+Map::TileMapServiceSource::TileMapServiceSource(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN tmsURL)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->tmsURL = Text::String::New(tmsURL);
@@ -578,7 +578,7 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	printf("Tile URL: %s\r\n", urlSb.ToString());
 #endif
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("TileMapService/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("TileMapService/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{

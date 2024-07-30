@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 			me->ui->ShowMsgOK(CSTR("Please enter API Key"), CSTR("SolarEdge API"), me);
 			return;
 		}
-		NEW_CLASS(me->seAPI, Net::SolarEdgeAPI(me->core->GetSocketFactory(), me->ssl, sb.ToCString()));
+		NEW_CLASS(me->seAPI, Net::SolarEdgeAPI(me->core->GetTCPClientFactory(), me->ssl, sb.ToCString()));
 		NN<Text::String> s;
 		if (me->seAPI->GetCurrentVersion().SetTo(s))
 		{
@@ -367,7 +367,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientContro
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->seAPI = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->imgSiteEnergy = 0;

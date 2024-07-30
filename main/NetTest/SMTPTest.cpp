@@ -13,7 +13,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Data::DateTime dt;
 	IO::ConsoleWriter writer;
 	Net::OSSocketFactory sockf(false);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	{
 		Net::Email::EmailMessage message;
 		message.SetSubject(CSTR("Email Testing"));
@@ -25,7 +26,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 //		message.AddAttachment(CSTR("/home/sswroom/Progs/Temp/OCR2.jpg"));
 		message.AddSignature(ssl, Optional<Crypto::Cert::X509Cert>::ConvertFrom(parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.crt"))).OrNull(),
 			Optional<Crypto::Cert::X509Key>::ConvertFrom(parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.key"))).OrNull());
-		Net::Email::SMTPClient client(sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer, 30000);
+		Net::Email::SMTPClient client(clif, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer, 30000);
 		client.Send(message);
 	}
 	ssl.Delete();

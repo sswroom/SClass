@@ -35,7 +35,7 @@ namespace Map
 	private:
 		Data::FastStringMapNN<ParkingInfo> parkingMap;
 		Sync::Mutex parkingMut;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Math::RectAreaDbl bounds;
 
@@ -43,7 +43,7 @@ namespace Map
 		void LoadVacancy();
 		static void ParkingInfoFree(NN<ParkingInfo> parking);
 	public:
-		HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		virtual ~HKParkingVacancy();
 
 		virtual DrawLayerType GetLayerType() const;

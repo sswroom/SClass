@@ -56,7 +56,7 @@ void Net::MQTTStaticClient::Connect()
 	if (this->webSocket)
 	{
 		NN<Net::WebSocketClient> ws;
-		NEW_CLASSNN(ws, Net::WebSocketClient(this->sockf, this->ssl, host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
+		NEW_CLASSNN(ws, Net::WebSocketClient(this->clif, this->ssl, host->ToCString(), this->port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, this->connTimeout));
 		if (ws->IsDown())
 		{
 			ws.Delete();
@@ -67,7 +67,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	else
 	{
-		NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
+		NEW_CLASS(conn, Net::MQTTConn(this->clif, this->ssl, host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
 	}
 	if (conn->IsError())
 	{
@@ -144,7 +144,7 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 	return this->packetId++;
 }
 
-void Net::MQTTStaticClient::Init(NN<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog)
+void Net::MQTTStaticClient::Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog)
 {
 	this->kaSeconds = 30;
 	this->conn = 0;
@@ -158,7 +158,7 @@ void Net::MQTTStaticClient::Init(NN<Net::SocketFactory> sockf, Net::MQTTConn::Pu
 	this->packetId = 1;
 	this->hdlrList.Add({hdlr, userObj});
 
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = 0;
 	this->host = 0;
 	this->port = 0;
@@ -167,14 +167,14 @@ void Net::MQTTStaticClient::Init(NN<Net::SocketFactory> sockf, Net::MQTTConn::Pu
 	this->webSocket = false;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NN<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
-	this->Init(sockf, hdlr, userObj, errLog);
+	this->Init(clif, hdlr, userObj, errLog);
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
-	this->Init(sockf, hdlr, userObj, errLog);
+	this->Init(clif, hdlr, userObj, errLog);
 	this->ssl = ssl;
 	this->host = Text::String::New(host);
 	this->port = port;

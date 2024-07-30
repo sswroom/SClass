@@ -2,7 +2,7 @@
 #include "Net/Email/EmailSenderConfig.h"
 #include "Net/Email/SMTPClient.h"
 
-Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log)
+Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log)
 {
 	Text::CStringNN category = cfgCategory.OrEmpty();
 	NN<Text::String> s;
@@ -67,7 +67,7 @@ Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(
 			timeout = Data::Duration(ticks);
 		}
 
-		NEW_CLASSNN(cli, Net::Email::SMTPClient(sockf, ssl, host->ToCString(), port, connType, Optional<IO::LogTool>(log), timeout));
+		NEW_CLASSNN(cli, Net::Email::SMTPClient(clif, ssl, host->ToCString(), port, connType, Optional<IO::LogTool>(log), timeout));
 		NN<Text::String> proxyHost;
 		NN<Text::String> proxyPort;
 		UInt16 proxyIPort;
@@ -75,7 +75,7 @@ Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(
 		{
 			Optional<Text::String> proxyUser = cfg->GetCateValue(category, CSTR("SMTPProxyUser"));
 			Optional<Text::String> proxyPwd = cfg->GetCateValue(category, CSTR("SMTPProxyPwd"));
-			cli->SetProxy(proxyHost->ToCString(), proxyIPort, OPTSTR_CSTR(proxyUser), OPTSTR_CSTR(proxyPwd));
+			clif->SetProxy(proxyHost->ToCString(), proxyIPort, OPTSTR_CSTR(proxyUser), OPTSTR_CSTR(proxyPwd));
 		}
 		NN<Text::String> user;
 		NN<Text::String> password;

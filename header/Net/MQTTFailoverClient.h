@@ -19,7 +19,7 @@ namespace Net
 		};
 	private:
 		Net::FailoverHandler<MQTTStaticClient> foHdlr;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		UInt16 kaSeconds;
 		Sync::Mutex hdlrMut;
@@ -29,7 +29,7 @@ namespace Net
 		static void FreeClient(NN<ClientInfo> cliInfo);
 		static void __stdcall OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
 	public:
-		MQTTFailoverClient(Net::FailoverType foType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds);
+		MQTTFailoverClient(Net::FailoverType foType, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds);
 		virtual ~MQTTFailoverClient();
 
 		void AddClient(Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket);

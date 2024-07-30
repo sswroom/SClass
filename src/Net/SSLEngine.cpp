@@ -49,9 +49,9 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
 	return 0;
 }
 
-Net::SSLEngine::SSLEngine(NN<Net::SocketFactory> sockf)
+Net::SSLEngine::SSLEngine(NN<Net::TCPClientFactory> clif)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->maxThreadCnt = 10;
 	this->currThreadCnt = 0;
 	this->usedTrustStore = 0;

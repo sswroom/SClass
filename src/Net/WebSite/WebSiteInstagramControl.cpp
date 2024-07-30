@@ -13,7 +13,7 @@ Optional<Text::JSONBase> Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Te
 	Text::StringBuilderUTF8 sb;
 	Optional<Text::JSONBase> baseData = 0;
 	NN<Text::XMLReader> reader;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASSNN(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
@@ -37,9 +37,9 @@ Optional<Text::JSONBase> Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Te
 	return baseData;
 }
 
-Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
+Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = Text::String::CopyOrNull(userAgent);

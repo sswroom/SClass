@@ -28,28 +28,28 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 	case 0://MNU_OSM_TILE:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
 		break;
 	case 1: //MNU_OSM_CYCLE:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOpenCycleMap"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/cycle/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/cycle/"));
 		break;
 	case 2: //MNU_OSM_TRANSP:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransport"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport/"));
 		break;
 	case 3: //MNU_OSM_MAPQUEST:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMMapQuest"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
 		hdlr->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
 		hdlr->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
@@ -57,34 +57,34 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 	case 4: //MNU_OSM_LANDSCAPE:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMLandscape"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/landscape/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/landscape/"));
 		break;
 	case 5: //MNU_OSM_OUTDOORS:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOutdoors"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/outdoors/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/outdoors/"));
 		break;
 	case 6: //MNU_OSM_TRANSP_DARK:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransportDark"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport-dark/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport-dark/"));
 		break;
 	case 7: //MNU_OSM_SPINAL:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMSpinalMap"));
-		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASSNN(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 18, me->core->GetTCPClientFactory(), me->ssl));
 		hdlr->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/spinal-map/"));
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/spinal-map/"));
 		break;
 	}
 	NN<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, hdlr, port, 120, 1, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, hdlr, port, 120, 1, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -113,7 +113,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(Optional<UI::GUIClientCo
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->lblMapType = ui->NewLabel(*this, CSTR("Map Type"));
 	this->lblMapType->SetRect(8, 8, 100, 23, false);
 	this->cboMapType = ui->NewComboBox(*this, false);

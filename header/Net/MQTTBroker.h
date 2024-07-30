@@ -60,7 +60,7 @@ namespace Net
 		typedef ConnectStatus (CALLBACKFUNC SubscribeHandler)(AnyType userObj, NN<Text::String> clientId, Text::CStringNN topic);
 		typedef void (CALLBACKFUNC TopicUpdateHandler)(AnyType userObj, Text::CStringNN topic, UnsafeArray<const UInt8> message, UOSInt msgSize);
 	private:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		NN<IO::LogTool> log;
 		Data::ArrayListNN<Listener> listeners;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
@@ -109,7 +109,7 @@ namespace Net
 		virtual void StreamData(NN<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff);
 		virtual void StreamClosed(NN<IO::Stream> stm, AnyType stmData);
 	public:
-		MQTTBroker(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart);
+		MQTTBroker(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
 
 		Bool AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart);

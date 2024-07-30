@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnReadClicked(AnyType userOb
 		return;
 	}
 
-    Net::MSGraphClient cli(me->core->GetSocketFactory(), me->ssl);
+    Net::MSGraphClient cli(me->core->GetTCPClientFactory(), me->ssl);
 	cli.SetLog(me->log);
     NN<Net::MSGraphAccessToken> token;
     if (cli.AccessTokenGet(sbTenantId.ToCString(), sbClientId.ToCString(), sbClientSecret.ToCString(), CSTR_NULL).SetTo(token))
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRMSGraphEmailForm::AVIRMSGraphEmailForm(Optional<UI::GUIClient
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
 	this->core = core;
-    this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), false);
+    this->ssl = Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASSNN(logger, UI::ListBoxLogger(*this, this->lbLog, 500, false));
 	this->log.AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);

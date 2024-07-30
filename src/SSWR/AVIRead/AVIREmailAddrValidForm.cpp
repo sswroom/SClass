@@ -18,7 +18,7 @@ SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(Optional<UI::GUICl
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->validator, Net::Email::EmailValidator(this->core->GetSocketFactory(), this->core->GetLog()));
+	NEW_CLASS(this->validator, Net::Email::EmailValidator(this->core->GetTCPClientFactory(), this->core->GetLog()));
 
 	this->lblAddr = ui->NewLabel(*this, CSTR("Email Address"));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);

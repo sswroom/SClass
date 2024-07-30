@@ -5,14 +5,14 @@
 #include "IO/Stream.h"
 #include "IO/StreamWriter.h"
 #include "Net/TCPClient.h"
-#include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 
 namespace Net
 {
 	class FTPConn
 	{
 	private:
-		Net::TCPClient cli;
+		NN<Net::TCPClient> cli;
 		IO::StreamWriter *writer;
 		Bool threadToStop;
 		Bool threadRunning;
@@ -26,7 +26,7 @@ namespace Net
 		static UInt32 __stdcall FTPThread(AnyType userObj);
 		Int32 WaitForResult();
 	public:
-		FTPConn(Text::CStringNN host, UInt16 port, NN<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout);
+		FTPConn(Text::CStringNN host, UInt16 port, NN<Net::TCPClientFactory> clif, UInt32 codePage, Data::Duration timeout);
 		~FTPConn();
 
 		Bool IsLogged();

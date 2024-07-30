@@ -377,7 +377,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 
 
 	Int32 status = 0;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
 	cli->Connect(url.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, 0, 0, false);
 	cli->AddHeaderC(CSTR("Iot-Program"), CSTR("margorpnomis"));
 	if (cli->IsError())
@@ -476,7 +476,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientContro
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->stm = stm;
 	this->devChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

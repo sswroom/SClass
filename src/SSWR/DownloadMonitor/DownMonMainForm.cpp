@@ -358,7 +358,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASSNN(encFact, Text::EncodingFactory());
-	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
+	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetTCPClientFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
 	ua->Release();
 	while (true)
 	{
@@ -507,7 +507,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						if (ctrl == 0)
 						{
 							NEW_CLASS(encFact, Text::EncodingFactory());
-							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
+							NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetTCPClientFactory(), this->core->GetSSLEngine(), encFact, ua.Ptr()));
 						}
 						sb2.ClearStr();
 						if (ctrl->GetVideoName(id, sb2))

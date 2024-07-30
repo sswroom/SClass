@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(AnyType userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 sbStatus;
-	Net::GoogleFCM::SendMessage(me->core->GetSocketFactory(), me->ssl, sbAPIKey.ToCString(), sbDeviceToken.ToCString(), sbMessage.ToCString(), &sbStatus);
+	Net::GoogleFCM::SendMessage(me->core->GetTCPClientFactory(), me->ssl, sbAPIKey.ToCString(), sbDeviceToken.ToCString(), sbMessage.ToCString(), &sbStatus);
 	me->txtStatus->SetText(sbStatus.ToCString());
 }
 
@@ -39,7 +39,7 @@ SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(Optional<UI::GUIClientControl> parent, N
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblAPIKey = ui->NewLabel(*this, CSTR("API Key"));

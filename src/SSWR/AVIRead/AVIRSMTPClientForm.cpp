@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 	Net::Email::SMTPClient *cli;
 	Text::StringBuilderUTF8 sbLog;
 	Text::StringBuilderWriter writer(sbLog);
-	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetSocketFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)me->cboSSLType->GetSelectedItem().GetOSInt(), &writer, 60000));
+	NEW_CLASS(cli, Net::Email::SMTPClient(me->core->GetTCPClientFactory(), me->ssl, sb1.ToCString(), port, (Net::Email::SMTPConn::ConnType)me->cboSSLType->GetSelectedItem().GetOSInt(), &writer, 60000));
 	sb1.ClearStr();
 	sb2.ClearStr();
 	me->txtUsername->GetText(sb1);
@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(Optional<UI::GUIClientCont
 	this->SetText(CSTR("SMTP Client"));
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlControl = ui->NewPanel(*this);

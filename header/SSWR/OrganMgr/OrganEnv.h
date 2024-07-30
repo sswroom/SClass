@@ -187,6 +187,7 @@ namespace SSWR
 			Parser::FullParserList parsers;
 			NN<Media::DrawEngine> drawEng;
 			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Media::MonitorMgr monMgr;
 			ErrorType errType;
@@ -219,6 +220,7 @@ namespace SSWR
 			NN<Media::DrawEngine> GetDrawEngine();
 			NN<Parser::ParserList> GetParserList();
 			NN<Net::SocketFactory> GetSocketFactory();
+			NN<Net::TCPClientFactory> GetTCPClientFactory();
 			Optional<Net::SSLEngine> GetSSLEngine();
 			NN<Media::ColorManager> GetColorMgr();
 			NN<Media::MonitorMgr> GetMonitorMgr();

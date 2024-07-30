@@ -152,7 +152,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN d
 	jws = EncodeJWS(ssl, protStr->ToCString(), data, key, alg);
 	protStr->Release();
 	UOSInt jwsLen = jws->leng;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	cli->AddContentType(CSTR("application/jose+json"));
 	cli->AddContentLength(jwsLen);
 	cli->Write(jws->ToByteArray());
@@ -245,13 +245,13 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeParse(UnsafeArray<con
 	return chall;
 }
 
-Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port)
+Net::ACMEConn::ACMEConn(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port)
 {
 	UInt8 buff[2048];
 	UOSInt recvSize;
-	this->sockf = sockf;
+	this->clif = clif;
 	this->key = 0;
-	this->ssl = Net::SSLEngineFactory::Create(sockf, false);
+	this->ssl = Net::SSLEngineFactory::Create(clif, false);
 	this->serverHost = Text::String::New(serverHost);
 	this->port = port;
 	this->urlNewNonce = 0;
@@ -273,7 +273,7 @@ Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost
 		sb.AppendU16(port);
 	}
 	sb.AppendC(UTF8STRC("/directory"));
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		IO::MemoryStream mstm;
@@ -392,7 +392,7 @@ Bool Net::ACMEConn::NewNonce()
 	{
 		return false;
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError())
 	{
 		cli.Delete();

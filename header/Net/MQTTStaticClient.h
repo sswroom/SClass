@@ -29,7 +29,7 @@ namespace Net
 		Sync::Mutex topicMut;
 		Data::ArrayList<Text::String*> topicList;
 
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Data::Duration connTimeout;
 		Optional<Text::String> host;
@@ -43,10 +43,10 @@ namespace Net
 		void Connect();
 		UInt16 GetNextPacketId();
 
-		void Init(NN<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
+		void Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
 	public:
-		MQTTStaticClient(NN<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
-		MQTTStaticClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog);
+		MQTTStaticClient(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
+		MQTTStaticClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();

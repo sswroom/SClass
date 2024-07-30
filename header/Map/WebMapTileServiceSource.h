@@ -78,7 +78,7 @@ namespace Map
 		Optional<Text::EncodingFactory> encFact;
 		NN<Text::String> wmtsURL;
 		NN<Text::String> cacheDir;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Data::FastStringMapNN<TileLayer> layers;
 		Optional<TileLayer> currLayer;
@@ -101,7 +101,7 @@ namespace Map
 		static void ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set);
 		static void ReleaseResourceURL(NN<ResourceURL> resourceURL);
 	public:
-		WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL);
+		WebMapTileServiceSource(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL);
 		virtual ~WebMapTileServiceSource();
 
 		virtual Text::CStringNN GetName() const;

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtWMTSURL->GetText(sb);
 	SDEL_CLASS(me->wmts);
-	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
+	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
 	if (me->wmts->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));

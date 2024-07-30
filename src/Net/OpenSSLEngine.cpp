@@ -39,9 +39,9 @@ struct Net::OpenSSLEngine::ClassData
 Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
-	this->sockf->SetRecvTimeout(s, 2000);
-	this->sockf->SetNoDelay(s, true);
-	SSL_set_fd(ssl, (int)this->sockf->SocketGetFD(s));
+	this->clif->GetSocketFactory()->SetRecvTimeout(s, 2000);
+	this->clif->GetSocketFactory()->SetNoDelay(s, true);
+	SSL_set_fd(ssl, (int)this->clif->GetSocketFactory()->SocketGetFD(s));
 	int ret;
 	if ((ret = SSL_accept(ssl)) <= 0)
 	{
@@ -50,14 +50,14 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
 		printf("SSL_accept: ret = %d, Error code = %d, %s\r\n", ret, code, ERR_error_string(ERR_get_error(), 0));
 #endif
 		SSL_free(ssl);
-		this->sockf->DestroySocket(s);
+		this->clif->GetSocketFactory()->DestroySocket(s);
 		return 0;
 	}
 	else
 	{
-		this->sockf->SetRecvTimeout(s, 120000);
+		this->clif->GetSocketFactory()->SetRecvTimeout(s, 120000);
 		Net::SSLClient *cli;
-		NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
+		NEW_CLASS(cli, OpenSSLClient(this->clif->GetSocketFactory(), ssl, s));
 		return cli;
 	}
 }
@@ -65,14 +65,14 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
 Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	SSL *ssl = (SSL*)sslObj;
-	this->sockf->SetNoDelay(s, true);
-	this->sockf->SetRecvTimeout(s, 2000);
-	SSL_set_fd(ssl, (int)this->sockf->SocketGetFD(s));
+	this->clif->GetSocketFactory()->SetNoDelay(s, true);
+	this->clif->GetSocketFactory()->SetRecvTimeout(s, 2000);
+	SSL_set_fd(ssl, (int)this->clif->GetSocketFactory()->SocketGetFD(s));
 	SSL_set_tlsext_host_name(ssl, hostName.v.Ptr());
 	int ret;
 	if ((ret = SSL_connect(ssl)) <= 0)
 	{
-		this->sockf->DestroySocket(s);
+		this->clif->GetSocketFactory()->DestroySocket(s);
 #ifdef SHOW_DEBUG
 		int code = SSL_get_error(ssl, ret);
 		printf("SSL_connect: ret = %d, Error code = %d\r\n", ret, code);
@@ -86,7 +86,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		stack_st_X509 *certs = SSL_get_peer_cert_chain(ssl);
 		if (certs == 0)
 		{
-			this->sockf->DestroySocket(s);
+			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::CertNotFound);
 			return 0;
@@ -97,7 +97,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		Int32 certLen = i2d_X509(cert, &certPtr);
 		if (certLen <= 0)
 		{
-			this->sockf->DestroySocket(s);
+			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::CertNotFound);
 			return 0;
@@ -111,7 +111,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		if (!svrCert->GetNotBefore(dt) || currTime < dt.ToTicks())
 		{
 			DEL_CLASS(svrCert);
-			this->sockf->DestroySocket(s);
+			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidPeriod);
 			return 0;
@@ -119,7 +119,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		if (!svrCert->GetNotAfter(dt) || currTime > dt.ToTicks())
 		{
 			DEL_CLASS(svrCert);
-			this->sockf->DestroySocket(s);
+			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidPeriod);
 			return 0;
@@ -127,7 +127,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		if (!svrCert->DomainValid(hostName))
 		{
 			DEL_CLASS(svrCert);
-			this->sockf->DestroySocket(s);
+			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::InvalidName);
 			return 0;
@@ -135,16 +135,16 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 		if (svrCert->IsSelfSigned())
 		{
 			DEL_CLASS(svrCert);
-			this->sockf->DestroySocket(s);
+			this->clif->GetSocketFactory()->DestroySocket(s);
 			SSL_free(ssl);
 			err.Set(ErrorType::SelfSign);
 			return 0;
 		}
 		DEL_CLASS(svrCert);
 	}
-	this->sockf->SetRecvTimeout(s, 120000);
+	this->clif->GetSocketFactory()->SetRecvTimeout(s, 120000);
 	Net::SSLClient *cli;
-	NEW_CLASS(cli, OpenSSLClient(this->sockf, ssl, s));
+	NEW_CLASS(cli, OpenSSLClient(this->clif->GetSocketFactory(), ssl, s));
 	return cli;
 }
 
@@ -182,7 +182,7 @@ Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Pa
 	return EVP_PKEY_CTX_set_rsa_padding((EVP_PKEY_CTX*)ctx, ipadding) > 0;
 }
 
-Net::OpenSSLEngine::OpenSSLEngine(NN<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
+Net::OpenSSLEngine::OpenSSLEngine(NN<Net::TCPClientFactory> clif, Method method) : Net::SSLEngine(clif)
 {
 	Net::OpenSSLCore::Init();
 	const SSL_METHOD *m = 0;
@@ -485,7 +485,7 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[1];
-	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
+	UOSInt addrCnt = this->clif->GetSocketFactory()->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
 	if (addrCnt == 0)
 	{
 		err.Set(ErrorType::HostnameNotResolved);
@@ -506,36 +506,23 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostN
 		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff().Ptr(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	NN<Socket> s;
+	NN<Net::TCPClient> cli;
 	UOSInt addrInd = 0;
 	while (addrInd < addrCnt)
 	{
-		if (addr[addrInd].addrType == Net::AddrType::IPv4)
+		cli = this->clif->Create(addr[addrInd], port, timeout);
+		if (cli->IsConnectError())
 		{
-			if (!this->sockf->CreateTCPSocketv4().SetTo(s))
-			{
-				SSL_free(ssl);
-				err.Set(ErrorType::OutOfMemory);
-				return 0;
-			}
-			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
-			{
-				return CreateClientConn(ssl, s, hostName, err);
-			}
-			this->sockf->DestroySocket(s);
+			cli.Delete();
 		}
-		else if (addr[addrInd].addrType == Net::AddrType::IPv6)
+		else if (cli->RemoveSocket().SetTo(s))
 		{
-			if (!this->sockf->CreateTCPSocketv6().SetTo(s))
-			{
-				SSL_free(ssl);
-				err.Set(ErrorType::OutOfMemory);
-				return 0;
-			}
-			if (this->sockf->Connect(s, addr[addrInd], port, timeout))
-			{
-				return CreateClientConn(ssl, s, hostName, err);
-			}
-			this->sockf->DestroySocket(s);
+			cli.Delete();
+			return CreateClientConn(ssl, s, hostName, err);
+		}
+		else
+		{
+			cli.Delete();
 		}
 		addrInd++;
 	}

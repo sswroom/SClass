@@ -57,7 +57,7 @@ namespace Net
 		Data::ArrayListNN<RSSItem> items;
 
 	public:
-		RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
+		RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
 		virtual ~RSS();
 
 		Bool IsError();

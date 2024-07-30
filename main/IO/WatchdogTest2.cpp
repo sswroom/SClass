@@ -27,6 +27,7 @@ Sync::Event *evt;
 Sync::Event *httpEvt;
 IO::Device::AM2315 *am2315;
 NN<Net::SocketFactory> sockf;
+NN<Net::TCPClientFactory> clif;
 Optional<Net::SSLEngine> ssl;
 IO::ConsoleWriter *consoleWriter;
 
@@ -89,7 +90,7 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 		{
 			consoleWriter->Write(CSTR("Requesting to "));
 			consoleWriter->WriteLine(CSTR(TESTURL));
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR(USERAGENT), false, Text::StrStartsWithC(UTF8STRC(TESTURL), UTF8STRC("https://")));
+			cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR(USERAGENT), false, Text::StrStartsWithC(UTF8STRC(TESTURL), UTF8STRC("https://")));
 			cli->Connect(CSTR(TESTURL), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
 			cli->AddHeaderC(CSTR("User-Agent"), CSTR(USERAGENT));
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
@@ -148,7 +149,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(evt, Sync::Event(true));
 	NEW_CLASS(httpEvt, Sync::Event(true));
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(false));
-	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
+	ssl = Net::SSLEngineFactory::Create(clif, true);
 
 	wd = IO::Watchdog::Create(1);
 	if (wd.SetTo(nnwd) && nnwd->IsError())
@@ -206,6 +208,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	DEL_CLASS(evt);
 	DEL_CLASS(httpEvt);
 	ssl.Delete();
+	clif.Delete();
 	sockf.Delete();
 	DEL_CLASS(am2315);
 	return 0;

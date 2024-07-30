@@ -4,7 +4,7 @@
 #include "Net/IRTPController.h"
 #include "Net/RTPCliChannel.h"
 #include "Net/SDPFile.h"
-#include "Net/TCPClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"
 
@@ -17,8 +17,8 @@ namespace Net
 		{
 			Int32 useCnt;
 
-			NN<Net::SocketFactory> sockf;
-			Net::TCPClient *cli;
+			NN<Net::TCPClientFactory> clif;
+			Optional<Net::TCPClient> cli;
 			Sync::Mutex cliMut;
 			NN<Text::String> host;
 			UInt16 port;
@@ -46,14 +46,14 @@ namespace Net
 
 		RTSPClient(const RTSPClient *cli);
 	public:
-		RTSPClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
+		RTSPClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host, UInt16 port, Data::Duration timeout);
 		~RTSPClient();
 
 
 		Bool GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(Text::CStringNN url);
 
-		static IO::ParsedObject *ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
+		static IO::ParsedObject *ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
 
 	private:
 		UnsafeArrayOpt<UTF8Char> SetupRTP(UnsafeArray<UTF8Char> sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel);

@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType us
 			ssl->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetOSInt();
-		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->smtpSSL, port, connType, me->log, SERVER_DOMAIN, CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me, true));
+		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->clif->GetSocketFactory(), me->smtpSSL, port, connType, me->log, SERVER_DOMAIN, CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me, true));
 		if (me->smtpSvr->IsError())
 		{
 			DEL_CLASS(me->smtpSvr);
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 		issuerCert.Delete();
 		NN<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 		NEW_CLASSNN(gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
-		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, gcisHdlr, port, 60, 1, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, gcisHdlr, port, 60, 1, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
 		{
 			DEL_CLASS(me->gcisListener);
@@ -511,16 +511,16 @@ SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientCo
 	this->SetText(CSTR("Email Server"));
 
 	this->core = core;
-	this->sockf = core->GetSocketFactory();
-	this->smtpSSL = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->clif = core->GetTCPClientFactory();
+	this->smtpSSL = Net::SSLEngineFactory::Create(this->clif, true);
 	this->smtpSSLCert = 0;
 	this->smtpSSLKey = 0;
 	this->smtpSvr = 0;
-	this->pop3SSL = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->pop3SSL = Net::SSLEngineFactory::Create(this->clif, true);
 	this->pop3SSLCert = 0;
 	this->pop3SSLKey = 0;
 	this->pop3Svr = 0;
-	this->gcisSSL = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->gcisSSL = Net::SSLEngineFactory::Create(this->clif, true);
 	this->gcisSSLCert = 0;
 	this->gcisSSLKey = 0;
 	this->gcisListener = 0;

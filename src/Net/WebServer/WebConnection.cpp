@@ -42,9 +42,9 @@ UOSInt Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UO
 	return buffSize;
 }
 
-Net::WebServer::WebConnection::WebConnection(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->cli = cli;
 	this->svr = svr;
@@ -459,7 +459,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			}
 		
 			sbuff[i] = 0;
-			NEW_CLASSNN(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000));
+			proxyCli = this->clif->Create(Text::CStringNN(sbuff, i), (UInt16)Text::StrToInt32(&sbuff[i + 1]), 30000);
 			if (proxyCli->IsConnectError())
 			{
 				proxyCli.Delete();
@@ -493,7 +493,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			clk.Start();
 			if (this->allowProxy)
 			{
-				httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR_NULL, true, reqURI->StartsWith(UTF8STRC("https://")));
+				httpCli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR_NULL, true, reqURI->StartsWith(UTF8STRC("https://")));
 				httpCli->SetTimeout(5000);
 				httpCli->Connect(reqURI->ToCString(), reqMeth, 0, 0, false);
 

@@ -27,7 +27,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 		sb.AppendC(UTF8STRC("?SERVICE=WFS&REQUEST=GetCapabilities"));
 		break;
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -268,9 +268,9 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 	}
 }
 
-Map::WebFeatureService::WebFeatureService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wfsURL, Version version)
+Map::WebFeatureService::WebFeatureService(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wfsURL, Version version)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->wfsURL = Text::String::New(wfsURL);
@@ -349,7 +349,7 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 			return 0;
 		}
 		IO::MemoryStream mstm;
-		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), mstm, 104857600))
+		if (!Net::HTTPClient::LoadContent(this->clif, this->ssl, sb.ToCString(), mstm, 104857600))
 		{
 			return 0;
 		}

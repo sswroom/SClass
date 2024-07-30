@@ -433,7 +433,7 @@ void TestBinaryRead(NN<DB::DBTool> db)
 	}
 }
 
-void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
+void TempTest(NN<Net::TCPClientFactory> clif, IO::Writer *console)
 {
 	Text::CStringNN mysqlServer;
 	Text::CStringNN mysqlDB;
@@ -445,7 +445,7 @@ void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
 	mysqlDB = CSTR("organism");
 	mysqlUID = CSTR("organ");
 	mysqlPWD = CSTR("organ");
-	if (Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
+	if (Net::MySQLTCPClient::CreateDBTool(clif, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		NN<DB::DBReader> r;
 		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
@@ -480,8 +480,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<DB::DBTool> db;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(false);
-	TempTest(sockf, console);
-	if (Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
+	Net::TCPClientFactory clif(sockf);
+	TempTest(clif, console);
+	if (Net::MySQLTCPClient::CreateDBTool(clif, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		TestBinaryRead(db);
 		TextReadAll(db);

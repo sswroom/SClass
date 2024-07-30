@@ -597,7 +597,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 480, ui)
 {
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 #if defined(CPU_X86_32)
 	this->SetText(CSTR("AVIRead (x86 32-bit)"));
 #elif defined(CPU_X86_64)
@@ -1081,35 +1081,35 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_CYCLE:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_CYCLE, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_LANDSCAPE:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_LANDSCAPE, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_OUTDOORS:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_OUTDOORS, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TRANSP_DARK, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_SPINAL:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_SPINAL, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_MAPQUEST:
-		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
+		if (Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_MAPQUEST, this->core->GetTCPClientFactory(), this->ssl, this->core->GetParserList()).SetTo(mapLyr))
 			this->core->OpenObject(mapLyr);
 		break;
 	case MNU_ESRI_MAP:
@@ -1202,7 +1202,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				else
 				{
 					NN<IO::ParsedObject> pobj;
-					if (!Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
+					if (!Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetTCPClientFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
@@ -1614,7 +1614,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TEST:
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
-		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 0, 18, this->core->GetSocketFactory(), this->ssl));
+		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 0, 18, this->core->GetTCPClientFactory(), this->ssl));
 		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
@@ -2161,7 +2161,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRCameraControlForm> frm;
 			NN<IO::Device::OlympusCameraControl> camera;
-			if (IO::Device::OlympusCameraControl::CreateControl(this->core->GetSocketFactory(), this->core->GetEncFactory()).SetTo(camera))
+			if (IO::Device::OlympusCameraControl::CreateControl(this->core->GetTCPClientFactory(), this->core->GetEncFactory()).SetTo(camera))
 			{
 				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(0, this->ui, this->core, camera));
 				this->core->ShowForm(frm);
@@ -2191,8 +2191,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NN<SSWR::AVIRead::AVIRCameraControlForm> frm;
 			Optional<IO::CameraControl> camera;
 			NN<IO::CameraControl> nncamera;
-			camera = IO::Device::OlympusCameraControl::CreateControl(this->core->GetSocketFactory(), this->core->GetEncFactory());
-			if (camera.IsNull()) camera = IO::Device::GoProCameraControl::CreateControl(this->core->GetSocketFactory());
+			camera = IO::Device::OlympusCameraControl::CreateControl(this->core->GetTCPClientFactory(), this->core->GetEncFactory());
+			if (camera.IsNull()) camera = IO::Device::GoProCameraControl::CreateControl(this->core->GetTCPClientFactory());
 			if (camera.SetTo(nncamera))
 			{
 				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(0, this->ui, this->core, nncamera));
@@ -2208,7 +2208,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRCameraControlForm> frm;
 			NN<IO::Device::GoProCameraControl> camera;
-			if (IO::Device::GoProCameraControl::CreateControl(this->core->GetSocketFactory()).SetTo(camera))
+			if (IO::Device::GoProCameraControl::CreateControl(this->core->GetTCPClientFactory()).SetTo(camera))
 			{
 				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCameraControlForm(0, this->ui, this->core, camera));
 				this->core->ShowForm(frm);

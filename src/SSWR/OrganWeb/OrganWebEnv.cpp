@@ -788,10 +788,10 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 	this->dataFileMap.Clear();
 }
 
-SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Optional<DB::DBTool> db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CStringNN osmCachePath)
+SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Optional<DB::DBTool> db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CStringNN osmCachePath)
 {
 	this->imageDir = imageDir->Clone();
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->log = log;
 	this->scnSize = scnSize;
@@ -807,7 +807,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<
 	this->colorSess = this->colorMgr.CreateSess(0);
 	this->eng = eng;
 
-	NEW_CLASSNN(this->osmHdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), osmCachePath, 18, this->sockf, this->ssl));
+	NEW_CLASSNN(this->osmHdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), osmCachePath, 18, this->clif, this->ssl));
 	this->osmHdlr->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
 	this->osmHdlr->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
@@ -838,10 +838,10 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<
 		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
 		this->webHdlr = webHdlr.Ptr();
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->clif, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!this->ssl.IsNull() && sslPort)
 		{
-			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->sockf, this->ssl, webHdlr, sslPort, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->clif, this->ssl, webHdlr, sslPort, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		}
 		else
 		{
@@ -1972,7 +1972,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 		if (species->wfiles.GetItemNoCheck(i)->imgUrl->Equals(imgURL))
 			return false;
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, imgURL, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, imgURL, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError() || cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
 		cli.Delete();

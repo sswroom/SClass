@@ -10,13 +10,13 @@ namespace Net
 	class PushServer
 	{
 	private:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Net::WebServer::WebListener *listener;
 		NN<PushServerHandler> webHdlr;
 		PushManager mgr;
 
 	public:
-		PushServer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Text::CStringNN fcmKey, NN<IO::LogTool> log);
+		PushServer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, Text::CStringNN fcmKey, NN<IO::LogTool> log);
 		~PushServer();
 
 		Bool IsError();

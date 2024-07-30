@@ -535,7 +535,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->qMode = qMode;
 	this->pbEnd = false;
 	this->listener = 0;
@@ -824,7 +824,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				else
 				{
 					NN<IO::ParsedObject> pobj;
-					if (!Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
+					if (!Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetTCPClientFactory(), this->ssl, 30000, this->core->GetLog()).SetTo(pobj))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
@@ -909,7 +909,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<Media::MediaPlayerWebInterface> hdlr;
 			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(this, true));
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), 0, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())
 			{
 				DEL_CLASS(this->listener);

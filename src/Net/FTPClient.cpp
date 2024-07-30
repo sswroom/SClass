@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
-#include "Sync/ThreadUtil.h"
 #include "Net/FTPClient.h"
+#include "Sync/ThreadUtil.h"
+#include "Text/MyString.h"
 
-Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout) : IO::Stream(url)
+Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Bool passiveMode, UInt32 codePage, Data::Duration timeout) : IO::Stream(url)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -58,7 +58,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Boo
 			{
 				this->port = 21;
 			}
-			NEW_CLASS(this->conn, Net::FTPConn(this->host->ToCString(), this->port, sockf, this->codePage, timeout));
+			NEW_CLASS(this->conn, Net::FTPConn(this->host->ToCString(), this->port, clif, this->codePage, timeout));
 			this->conn->SendUser(this->userName);
 			if (this->password)
 			{
@@ -92,7 +92,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Boo
 					this->conn->ToBinaryType();
 					if (this->conn->ChangePassiveMode(&ip, &port))
 					{
-						NEW_CLASS(this->cli2, Net::TCPClient(sockf, ip, port, timeout));
+						this->cli2 = clif->Create(ip, port, timeout);
 						this->conn->GetFile(&sbuff[i + 1]);
 					}
 				}
@@ -145,14 +145,15 @@ Net::FTPClient::~FTPClient()
 
 Bool Net::FTPClient::IsDown() const
 {
-	return this->cli2 == 0;
+	return this->cli2.IsNull();
 }
 
 UOSInt Net::FTPClient::Read(const Data::ByteArray &buff)
 {
-	if (this->cli2)
+	NN<Net::TCPClient> cli2;
+	if (this->cli2.SetTo(cli2))
 	{
-		return this->cli2->Read(buff);
+		return cli2->Read(buff);
 	}
 	else
 	{
@@ -172,11 +173,7 @@ Int32 Net::FTPClient::Flush()
 
 void Net::FTPClient::Close()
 {
-	if (this->cli2)
-	{
-		DEL_CLASS(this->cli2);
-		this->cli2 = 0;
-	}
+	this->cli2.Delete();
 }
 
 Bool Net::FTPClient::Recover()

@@ -22,7 +22,7 @@ Bool Net::IAMSmartClient::PrepareCEK()
 	return currTime < cek.expiresAt;
 }
 
-Net::IAMSmartClient::IAMSmartClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret, Text::CStringNN keyFile) : api(sockf, ssl, domain, clientID, clientSecret)
+Net::IAMSmartClient::IAMSmartClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret, Text::CStringNN keyFile) : api(clif, ssl, domain, clientID, clientSecret)
 {
 	cek.issueAt = 0;
 	cek.expiresAt = 0;

@@ -36,7 +36,7 @@ namespace Net
 			Data::FastStringMapNN<DeviceInfo2> devMap;
 		};
 
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<Text::String> fcmKey;
 		NN<IO::LogTool> log;
@@ -50,7 +50,7 @@ namespace Net
 		void LoadData();
 		void SaveData();
 	public:
-		PushManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN fcmKey, NN<IO::LogTool> log);
+		PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN fcmKey, NN<IO::LogTool> log);
 		~PushManager();
 
 		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);

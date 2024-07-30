@@ -812,7 +812,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	{
 		Int32 status;
 		NN<Net::HTTPClient> cli;
-		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		while (true)
 		{
 			status = cli->GetRespStatus();
@@ -847,9 +847,9 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer::HKTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer::HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->minX = 0;

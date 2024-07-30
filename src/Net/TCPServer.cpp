@@ -413,6 +413,7 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 		if (!this->svrSocv6.SetTo(soc))
 		{
 			this->AddLogMsgC(CSTR("Error in creating TCPv6 socket"), IO::LogHandler::LogLevel::Error);
+			this->errorv6 = true;
 		}
 		else if (!this->socf->SocketBind(soc, &addrTmp, this->port))
 		{

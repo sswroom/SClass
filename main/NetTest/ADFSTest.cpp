@@ -47,8 +47,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr5 = sbuff5;
 	IO::ConsoleWriter console;
 	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
 	initSucc = false;
-	ssl = Net::SSLEngineFactory::Create(sockf, false);
+	ssl = Net::SSLEngineFactory::Create(clif, false);
 	sptr3 = IO::Path::GetProcessFileName(sbuff3).Or(sbuff3);
 	sptr3 = IO::Path::AppendPath(sbuff3, sptr3, CSTR("SAMLCert.crt"));
 	sptr4 = IO::Path::GetProcessFileName(sbuff4).Or(sbuff4);
@@ -125,7 +126,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NEW_CLASS(svcHdlr, MyADFSService());
 		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl, svcHdlr));
 		NEW_CLASSNN(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, console));
-		Net::WebServer::WebListener listener(sockf, ssl, logHdlr, PORTNUM, 120, 1, 4, CSTR("ADFSTest/1.0"), false, Net::WebServer::KeepAlive::Default, true);
+		Net::WebServer::WebListener listener(clif, ssl, logHdlr, PORTNUM, 120, 1, 4, CSTR("ADFSTest/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (listener.IsError())
 		{
 			console.WriteLine(CSTR("Error in listening to port " STR(PORTNUM)));

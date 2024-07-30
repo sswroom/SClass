@@ -44,9 +44,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			radioLogger.CaptureBT(&btCapturer);
 			radioLogger.CaptureWiFi(&wifiCapturer);
 			Net::OSSocketFactory sockf(true);
+			Net::TCPClientFactory clif(sockf);
 			{
 				Net::WebServer::CapturerWebHandler webHdlr(&wifiCapturer, &btCapturer, &radioLogger);
-				Net::WebServer::WebListener listener(sockf, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true);
+				Net::WebServer::WebListener listener(clif, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 				if (listener.IsError())
 				{
 					sb.AppendC(UTF8STRC("Error in starting web server at port "));

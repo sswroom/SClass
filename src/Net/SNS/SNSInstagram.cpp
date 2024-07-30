@@ -3,9 +3,9 @@
 #include "Net/SNS/SNSInstagram.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNSInstagram::SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
+Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
 {
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(sockf, ssl, encFact, userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;

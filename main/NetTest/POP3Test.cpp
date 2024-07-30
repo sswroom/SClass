@@ -10,9 +10,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter writer;
 
 	Net::OSSocketFactory sockf(false);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	{
-		Net::Email::POP3Client client(sockf, ssl, CSTR("127.0.0.1"), 110, Net::Email::POP3Conn::CT_PLAIN, &writer, CSTR("sswroom@yahoo.com"), CSTR("sswroom@yahoo.com"), 30000);
+		Net::Email::POP3Client client(clif, ssl, CSTR("127.0.0.1"), 110, Net::Email::POP3Conn::CT_PLAIN, &writer, CSTR("sswroom@yahoo.com"), CSTR("sswroom@yahoo.com"), 30000);
 		if (!client.IsError())
 		{
 			Text::StringBuilderUTF8 sb;

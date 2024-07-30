@@ -39,7 +39,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	}
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(core->GetSocketFactory(), false);
+	this->ssl = Net::SSLEngineFactory::Create(core->GetTCPClientFactory(), false);
 	this->store = store;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

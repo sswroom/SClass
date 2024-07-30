@@ -37,8 +37,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::OSSocketFactory sockf(true);
+		Net::TCPClientFactory clif(sockf);
 		Net::WebServer::CapturerWebHandler webHdlr(capturer, 0, 0);
-		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASS(listener, Net::WebServer::WebListener(clif, 0, webHdlr, webPort, 120, 1, 4, CSTR("WiFiCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (listener->IsError())
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));

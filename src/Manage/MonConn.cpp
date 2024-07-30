@@ -125,17 +125,18 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 {
 	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UOSInt buffSize;
+	NN<Net::TCPClient> cli;
 	me->ConnRRunning = true;
 	{
 		Data::ByteBuffer dataBuff(3000);
 
 		while (!me->ToStop || me->ConnTRunning)
 		{
-			if (me->cli == 0)
+			if (!me->cli.SetTo(cli))
 			{
 				me->cliErr = true;
-				NEW_CLASS(me->cli, Net::TCPClient(me->sockf, CSTR("127.0.0.1"), me->port, me->timeout));
-				me->cliErr = me->cli->IsConnectError();
+				me->cli = cli = me->clif->Create(CSTR("127.0.0.1"), me->port, me->timeout);
+				me->cliErr = cli->IsConnectError();
 				if (!me->cliErr)
 					me->svrMonConn++;
 				me->requesting = false;
@@ -143,13 +144,12 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 
 			if (me->cliErr)
 			{
-				DEL_CLASS(me->cli);
-				me->cli = 0;
+				me->cli.Delete();
 			}
 
-			if (me->cli)
+			if (me->cli.SetTo(cli))
 			{
-				buffSize = me->cli->Read(dataBuff);
+				buffSize = cli->Read(dataBuff);
 				if (buffSize)
 				{
 					UInt8 *packet = dataBuff.Arr().Ptr();
@@ -209,11 +209,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 				me->connREvt->Wait(1000);
 			}
 		}
-		if (me->cli)
-		{
-			DEL_CLASS(me->cli);
-			me->cli = 0;
-		}
+		me->cli.Delete();
 	}
 	me->ConnRRunning = false;
 	me->msgWriter->WriteLine(CSTR("MonConn RThread Stopped"));
@@ -224,6 +220,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 {
 	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UInt8 *data;
+	NN<Net::TCPClient> cli;
 	me->ConnTRunning = true;
 	while (true)
 	{
@@ -233,7 +230,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 				break;
 		}
 
-		if (me->cli && !me->cliErr)
+		if (me->cli.SetTo(cli) && !me->cliErr)
 		{
 			Data::DateTime currTime;
 			currTime.SetCurrTimeUTC();
@@ -258,15 +255,15 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 					data = me->cmdList.GetItem(0);
 					me->requesting = true;
 					me->lastReqTime.SetCurrTimeUTC();
-					me->cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
+					cli->Write(Data::ByteArrayR(data, ReadUInt16(&data[2])));
 				}
 			}
 		}
 		me->connTEvt->Wait(500);
 	}
-	if (me->cli)
+	if (me->cli.SetTo(cli))
 	{
-		me->cli->Close();
+		cli->Close();
 	}
 	if (me->connREvt)
 		me->connREvt->Set();
@@ -285,7 +282,7 @@ void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 	connTEvt->Set();
 }
 
-Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFactory> sockf, NN<IO::Writer> msgWriter, Data::Duration timeout)
+Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFactory> clif, NN<IO::Writer> msgWriter, Data::Duration timeout)
 {
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -294,7 +291,7 @@ Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFacto
 	this->userObj = userObj;
 	this->timeout = timeout;
 	this->hdlr = hdlr;
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ConnTRunning = false;
 	this->ConnRRunning = false;
 	this->ToStop = false;

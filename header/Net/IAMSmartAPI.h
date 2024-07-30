@@ -51,7 +51,7 @@ namespace Net
 			UTF8Char educationLevel;
 		};
 	private:
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<Text::String> domain;
 		NN<Text::String> clientID;
@@ -62,7 +62,7 @@ namespace Net
 		Optional<Text::JSONBase> PostEncReq(Text::CStringNN url, NN<CEKInfo> cek, Text::CStringNN jsonMsg);
 		Optional<Text::String> ParseAddress(NN<Text::JSONBase> json, Text::CStringNN path);
 	public:
-		IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret);
+		IAMSmartAPI(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret);
 		~IAMSmartAPI();
 
 		static void FreeCEK(NN<CEKInfo> cek);

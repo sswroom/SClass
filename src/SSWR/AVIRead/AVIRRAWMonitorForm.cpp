@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
 	}
 	NN<Net::EthernetWebHandler> webHdlr;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 1, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (me->listener->IsError())
 	{
 		DEL_CLASS(me->listener);
@@ -146,16 +146,16 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj
 	{
 		NN<Socket> soc;
 		
-		if (me->sockf->CreateRAWSocket().SetTo(soc))
+		if (me->clif->GetSocketFactory()->CreateRAWSocket().SetTo(soc))
 		{
 			me->linkType = 1;
-			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnRAWData, me, 3));
+			NEW_CLASS(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
-		else if (me->sockf->CreateRAWIPv4Socket(ip).SetTo(soc))
+		else if (me->clif->GetSocketFactory()->CreateRAWIPv4Socket(ip).SetTo(soc))
 		{
 			me->linkType = 101;
-			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnIPv4Data, me, 3));
+			NEW_CLASS(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnIPv4Data, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else
@@ -1150,7 +1150,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->SetText(CSTR("RAW Monitor"));
 
 	this->core = core;
-	this->sockf = core->GetSocketFactory();
+	this->clif = core->GetTCPClientFactory();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->listener = 0;
 	this->webHdlr = 0;
@@ -1517,7 +1517,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	UOSInt j;
 	UOSInt k;
 	UInt32 ip;
-	this->sockf->GetConnInfoList(connInfoList);
+	this->clif->GetSocketFactory()->GetConnInfoList(connInfoList);
 	i = 0;
 	j = connInfoList.GetCount();
 	while (i < j)

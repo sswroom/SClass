@@ -131,9 +131,9 @@ void Net::PushManager::SaveData()
 	}
 }
 
-Net::PushManager::PushManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN fcmKey, NN<IO::LogTool> log)
+Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN fcmKey, NN<IO::LogTool> log)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->fcmKey = Text::String::New(fcmKey);
 	this->log = log;
@@ -282,7 +282,7 @@ Bool Net::PushManager::Send(NN<Data::ArrayListStringNN> userNames, NN<Text::Stri
 		while (it.HasNext())
 		{
 			sbResult.AppendC(UTF8STRC("Send Message result: "));
-			ret |= Net::GoogleFCM::SendMessage(this->sockf, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
+			ret |= Net::GoogleFCM::SendMessage(this->clif, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
 			this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
 		}
 		tokenList.FreeAll();

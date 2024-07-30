@@ -49,6 +49,7 @@ namespace SSWR
 			typedef void (CALLBACKFUNC FileEndHandler)(AnyType userObj, Int32 fileId, Int32 webType);
 		private:
 			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Sync::Thread thread;
 			CheckStatus chkStatus;
@@ -82,6 +83,7 @@ namespace SSWR
 
 			Bool IsError();
 			NN<Net::SocketFactory> GetSocketFactory();
+			NN<Net::TCPClientFactory> GetTCPClientFactory();
 			Optional<Net::SSLEngine> GetSSLEngine();
 			CheckStatus GetCurrStatus();
 			void SetFileEndHandler(FileEndHandler hdlr, void *userObj);

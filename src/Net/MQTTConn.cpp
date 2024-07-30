@@ -201,7 +201,7 @@ void Net::MQTTConn::InitStream(NN<IO::Stream> stm)
 	}
 }
 
-Net::MQTTConn::MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
+Net::MQTTConn::MQTTConn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -216,7 +216,7 @@ Net::MQTTConn::MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> s
 	if (ssl.SetTo(nnssl))
 	{
 		Net::SSLEngine::ErrorType err;
-		sockf->ReloadDNS();
+		clif->GetSocketFactory()->ReloadDNS();
 		if (!Optional<Net::TCPClient>(nnssl->ClientConnect(host, port, err, timeout)).SetTo(cli))
 		{
 			return;
@@ -227,7 +227,7 @@ Net::MQTTConn::MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> s
 	}
 	else
 	{
-		NEW_CLASSNN(cli, Net::TCPClient(sockf, host, port, timeout));
+		cli = clif->Create(host, port, timeout);
 	}
 	if (cli->IsConnectError() != 0)
 	{
@@ -504,12 +504,12 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout)
+Bool Net::MQTTConn::PublishMessage(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CStringNN topic, Text::CStringNN message, Data::Duration timeout)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	NEW_CLASS(cli, Net::MQTTConn(sockf, ssl, host, port, 0, 0, timeout));
+	NEW_CLASS(cli, Net::MQTTConn(clif, ssl, host, port, 0, 0, timeout));
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);

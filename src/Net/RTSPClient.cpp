@@ -29,24 +29,24 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 	
 	cliData->threadRunning = true;
 	{
+		NN<Net::TCPClient> cli;
 		IO::MemoryStream mstm;
 		buffSize = 0;
 		content = false;
 		while (!cliData->threadToStop)
 		{
-			if (cliData->cli == 0)
+			if (!cliData->cli.SetTo(cli))
 			{
 				Sync::MutexUsage mutUsage(cliData->cliMut);
-				NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port, cliData->timeout));
+				cliData->cli = cli = cliData->clif->Create(cliData->host->ToCString(), cliData->port, cliData->timeout);
 			}
 			if (content)
 			{
-				thisSize = cliData->cli->Read(BYTEARR(dataBuff));
+				thisSize = cli->Read(BYTEARR(dataBuff));
 				if (thisSize == 0)
 				{
 					Sync::MutexUsage mutUsage(cliData->cliMut);
-					DEL_CLASS(cliData->cli);
-					cliData->cli = 0;
+					cliData->cli.Delete();
 					continue;
 				}
 				if (cliData->reqReplySize > buffSize + thisSize)
@@ -71,12 +71,11 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 			}
 			else
 			{
-				thisSize = cliData->cli->Read(Data::ByteArray(&dataBuff[buffSize], 2048 - buffSize));
+				thisSize = cli->Read(Data::ByteArray(&dataBuff[buffSize], 2048 - buffSize));
 				if (thisSize == 0)
 				{
 					Sync::MutexUsage mutUsage(cliData->cliMut);
-					DEL_CLASS(cliData->cli);
-					cliData->cli = 0;
+					cliData->cli.Delete();
 					continue;
 				}
 				buffSize += thisSize;
@@ -184,11 +183,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 				}
 			}
 		}
-		if (cliData->cli)
-		{
-			DEL_CLASS(cliData->cli);
-			cliData->cli = 0;
-		}
+		cliData->cli.Delete();
 	}
 	cliData->threadRunning = false;
 	return 0;
@@ -224,9 +219,10 @@ Bool Net::RTSPClient::SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Bool succ = false;
 	Sync::MutexUsage mutUsage(this->cliData->cliMut);
-	if (this->cliData->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cliData->cli.SetTo(cli))
 	{
-		succ = this->cliData->cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize;
+		succ = cli->Write(Data::ByteArrayR(buff, buffSize)) == buffSize;
 	}
 	return succ;
 }
@@ -237,12 +233,12 @@ Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
 	this->cliData->useCnt++;
 }
 
-Net::RTSPClient::RTSPClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
+Net::RTSPClient::RTSPClient(NN<Net::TCPClientFactory> clif, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	NEW_CLASS(this->cliData, ClientData());
 	this->cliData->useCnt = 1;
 	this->cliData->timeout = timeout;
-	this->cliData->sockf = sockf;
+	this->cliData->clif = clif;
 	this->cliData->nextSeq = 1;
 	this->cliData->threadRunning = false;
 	this->cliData->threadToStop = false;
@@ -262,13 +258,14 @@ Net::RTSPClient::RTSPClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, 
 
 Net::RTSPClient::~RTSPClient()
 {
+	NN<Net::TCPClient> cli;
 	if (--this->cliData->useCnt == 0)
 	{
 		this->cliData->threadToStop = true;
 		Sync::MutexUsage mutUsage(this->cliData->cliMut);
-		if (this->cliData->cli)
+		if (this->cliData->cli.SetTo(cli))
 		{
-			this->cliData->cli->Close();
+			cli->Close();
 		}
 		mutUsage.EndUse();
 		while (this->cliData->threadRunning)
@@ -410,7 +407,7 @@ UnsafeArrayOpt<UTF8Char> Net::RTSPClient::SetupRTP(UnsafeArray<UTF8Char> sessIdO
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log)
+IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> clif, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -426,7 +423,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 		port = 554;
 	}
 
-	NEW_CLASS(cli, Net::RTSPClient(sockf, CSTRP(sbuff, sptr), port, timeout));
+	NEW_CLASS(cli, Net::RTSPClient(clif, CSTRP(sbuff, sptr), port, timeout));
 
 	Net::SDPFile *sdp = cli->GetMediaInfo(url);
 	if (sdp)
@@ -443,7 +440,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 			NN<Data::ArrayListStrUTF8> mediaDesc;
 			if (sdp->GetMediaDesc(i).SetTo(mediaDesc))
 			{
-				NN<Net::RTPCliChannel> rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli, log);
+				NN<Net::RTPCliChannel> rtp = Net::RTPCliChannel::CreateChannel(clif->GetSocketFactory(), mediaDesc, url, cli, log);
 				chList.Add(rtp);
 			}
 			i++;

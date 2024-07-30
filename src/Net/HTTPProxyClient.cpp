@@ -21,20 +21,14 @@
 
 #define BUFFSIZE 2048
 
-Net::HTTPProxyClient::HTTPProxyClient(NN<Net::SocketFactory> sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(sockf, 0, CSTR_NULL, noShutdown)
+Net::HTTPProxyClient::HTTPProxyClient(NN<Net::TCPClientFactory> clif, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(clif, 0, CSTR_NULL, noShutdown)
 {
 	this->proxyIP = proxyIP;
 	this->proxyPort = proxyPort;
-	this->authBuff = 0;
-	this->authBuffSize = 0;
 }
 
 Net::HTTPProxyClient::~HTTPProxyClient()
 {
-	if (this->authBuff)
-	{
-		MemFree(this->authBuff);
-	}
 }
 
 Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders)
@@ -84,7 +78,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 		this->svrAddr.addrType = Net::AddrType::IPv4;
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
-		NEW_CLASSNN(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort, 30000));
+		cli = this->clif->Create(this->proxyIP, this->proxyPort, 30000);
 		t1 = this->clk.GetTimeDiff();
 		timeConn.Set(t1);
 #ifdef DEBUGSPEED
@@ -104,7 +98,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 		else
 		{
 			this->cli = cli;
-			this->sockf->SetLinger(soc, 0);
+			this->clif->GetSocketFactory()->SetLinger(soc, 0);
 			i = url.leng;
 			if ((i + 16) > BUFFSIZE)
 			{
@@ -136,7 +130,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	}
 }
 
-Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdType, const UTF8Char *userName, const UTF8Char *password)
+Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdType, UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password)
 {
 	if (pwdType == Net::HTTPProxyTCPClient::PWDT_BASIC)
 	{

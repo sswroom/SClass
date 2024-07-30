@@ -15,7 +15,7 @@ namespace Net
 		class SNSRSS : public SNSControl
 		{
 		private:
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
@@ -30,7 +30,7 @@ namespace Net
 
 			void CalcCRC(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal);
 		public:
-			SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId, NN<IO::LogTool> log);
+			SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId, NN<IO::LogTool> log);
 			virtual ~SNSRSS();
 
 			virtual Bool IsError();

@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 				ssl = me->ssl;
 				nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
 			}
-			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true, false));
+			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetTCPClientFactory(), ssl, port, me->log, true, false));
 			if (me->broker->IsError())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in initing server"), CSTR("Error"), me);
@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->topicListUpdated = false;

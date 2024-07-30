@@ -3,8 +3,8 @@
 #include "IO/PackageFile.h"
 #include "IO/SPackageFile.h"
 #include "Map/TileMap.h"
-#include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/CString.h"
 
 namespace Map
@@ -14,7 +14,7 @@ namespace Map
 	protected:
 		Optional<Text::String> cacheDir;
 		IO::SPackageFile *spkg;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		UOSInt minLevel;
 		UOSInt maxLevel;
@@ -24,7 +24,7 @@ namespace Map
 		NN<Math::CoordinateSystem> csys;
 
 	public:
-		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		virtual ~MercatorTileMap();
 
 		void SetSPackageFile(IO::SPackageFile *spkg);

@@ -366,9 +366,10 @@ Int32 CFBTimeTest()
 Int32 ESRIFeatureServerTest()
 {
 	Net::OSSocketFactory sockf(true);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, false);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
 	{
-		Map::ESRI::ESRIFeatureServer svr(CSTR("https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634958957456_52030/FeatureServer"), sockf, ssl);
+		Map::ESRI::ESRIFeatureServer svr(CSTR("https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634958957456_52030/FeatureServer"), clif, ssl);
 		NN<Map::ESRI::ESRIFeatureServer::LayerInfo> info;
 		if (svr.GetLayerInfo().SetTo(info))
 		{
@@ -382,14 +383,15 @@ Int32 ESRIFeatureServerTest()
 Int32 HKOTest()
 {
 	Net::OSSocketFactory sockf(true);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, false);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
 	Text::StringBuilderUTF8 sb;
 	Net::HKOAPI::Language lang = Net::HKOAPI::Language::En;
 
 	if (false)
 	{
 		NN<Net::HKOAPI::LocalWeatherForecast> resp;
-		if (Net::HKOAPI::GetLocalWeatherForecast(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetLocalWeatherForecast(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -401,7 +403,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::NineDayWeatherForecast> resp;
-		if (Net::HKOAPI::Get9DayWeatherForecast(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::Get9DayWeatherForecast(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -413,7 +415,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::CurrentWeatherReport> resp;
-		if (Net::HKOAPI::GetCurrentWeatherReport(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetCurrentWeatherReport(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -425,7 +427,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::WeatherWarningSummary> resp;
-		if (Net::HKOAPI::GetWeatherWarningSummary(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetWeatherWarningSummary(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -438,7 +440,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::WeatherWarningInfo> resp;
-		if (Net::HKOAPI::GetWeatherWarningInfo(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetWeatherWarningInfo(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -450,7 +452,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::SpecialWeatherTips> resp;
-		if (Net::HKOAPI::GetSpecialWeatherTips(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetSpecialWeatherTips(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -462,7 +464,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::QuickEarthquakeMessages> resp;
-		if (Net::HKOAPI::GetQuickEarthquakeMessages(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetQuickEarthquakeMessages(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -475,7 +477,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::LocallyFeltEarthTremorReport> resp;
-		if (Net::HKOAPI::GetLocallyFeltEarthTremorReport(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetLocallyFeltEarthTremorReport(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -487,7 +489,7 @@ Int32 HKOTest()
 	if (false)
 	{
 		NN<Net::HKOAPI::LunarDate> resp;
-		if (Net::HKOAPI::GetLunarDate(sockf, ssl, Data::Date::Today()).SetTo(resp))
+		if (Net::HKOAPI::GetLunarDate(clif, ssl, Data::Date::Today()).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -498,7 +500,7 @@ Int32 HKOTest()
 
 	{
 		NN<Net::HKOAPI::HourlyRainfall> resp;
-		if (Net::HKOAPI::GetHourlyRainfall(sockf, ssl, lang).SetTo(resp))
+		if (Net::HKOAPI::GetHourlyRainfall(clif, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
 			resp->ToString(sb);
@@ -649,14 +651,15 @@ Int32 SMTPProxyTest()
 	Text::CString proxyPwd = 0;	
 	Net::Email::SMTPConn::ConnType connType = Net::Email::SMTPConn::ConnType::STARTTLS;
 	Net::OSSocketFactory sockf(true);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	IO::ConsoleLogHandler logHdlr(console);
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
-	Net::Email::SMTPClient cli(sockf, ssl, smtpHost, smtpPort, connType, log, 15000);
+	clif.SetProxy(proxyHost, proxyPort, proxyUser, proxyPwd);
+	Net::Email::SMTPClient cli(clif, ssl, smtpHost, smtpPort, connType, log, 15000);
 	cli.SetPlainAuth(smtpUser, smtpPwd);
-	cli.SetProxy(proxyHost, proxyPort, proxyUser, proxyPwd);
 	Net::Email::EmailMessage msg;
 	msg.SetFrom(0, smtpUser);
 	msg.AddTo(0, smtpTo);

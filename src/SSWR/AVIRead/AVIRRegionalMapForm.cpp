@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj,
 	NN<const Map::RegionalMapSource::MapInfo> map;
 	if (me->lvMaps->GetItem(index).GetOpt<const Map::RegionalMapSource::MapInfo>().SetTo(map))
 	{
-		me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
+		me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
 		if (me->layer.NotNull())
 		{
 			me->SetDialogResult(UI::GUIForm::DR_OK);

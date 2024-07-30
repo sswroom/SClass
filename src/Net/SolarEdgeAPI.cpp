@@ -23,7 +23,7 @@ Optional<Text::JSONBase> Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 #if defined(VERBOSE)
 	printf("SolarEdgeAPI requesting: %s\r\n", url.v);
 #endif
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::StringBuilderUTF8 sb;
 	if (!cli->ReadAllContent(sb, 8192, 1048576))
 	{
@@ -37,9 +37,9 @@ Optional<Text::JSONBase> Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 	return Text::JSONBase::ParseJSONStr(sb.ToCString());
 }
 
-Net::SolarEdgeAPI::SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN apikey)
+Net::SolarEdgeAPI::SolarEdgeAPI(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apikey)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->apikey = Text::String::New(apikey);
 }

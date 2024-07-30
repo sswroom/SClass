@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrHexVal32(&sbuff[i + 1], crc.CalcDirect(sb.v, sb.leng));
-	NEW_CLASS(me->tileMap, Map::CustomTileMap(sb.ToCString(), CSTRP(sbuff, sptr), (UInt32)minLevel, (UInt32)maxLevel, me->core->GetSocketFactory(), me->ssl));
+	NEW_CLASS(me->tileMap, Map::CustomTileMap(sb.ToCString(), CSTRP(sbuff, sptr), (UInt32)minLevel, (UInt32)maxLevel, me->core->GetTCPClientFactory(), me->ssl));
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 

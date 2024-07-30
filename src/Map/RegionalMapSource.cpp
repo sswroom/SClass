@@ -278,7 +278,7 @@ const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSIn
 	return maps;
 }
 
-Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys)
+Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys)
 {
 	Map::MapDrawLayer *layer;
 	switch (map->mapType)
@@ -286,7 +286,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	case MapType::TMS:
 	{
 		NN<Map::TileMapServiceSource> tms;
-		NEW_CLASSNN(tms, Map::TileMapServiceSource(sockf, ssl, encFact, Text::CStringNN(map->url, map->urlLen)));
+		NEW_CLASSNN(tms, Map::TileMapServiceSource(clif, ssl, encFact, Text::CStringNN(map->url, map->urlLen)));
 		if (tms->IsError())
 		{
 			tms.Delete();
@@ -331,7 +331,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Crypto::Hash::CRC32RC crc;
 		sptr = Text::StrHexVal32(sptr, crc.CalcDirect(map->url, map->urlLen));
-		NEW_CLASSNN(tileMap, Map::CustomTileMap(Text::CStringNN(map->url, map->urlLen), CSTRP(sbuff, sptr), map->minLevel, map->maxLevel, sockf, ssl));
+		NEW_CLASSNN(tileMap, Map::CustomTileMap(Text::CStringNN(map->url, map->urlLen), CSTRP(sbuff, sptr), map->minLevel, map->maxLevel, clif, ssl));
 		tileMap->SetName(Text::CStringNN(map->name, map->nameLen));
 		tileMap->SetBounds(Math::RectAreaDbl(Math::Coord2DDbl(map->boundsX1, map->boundsY1), Math::Coord2DDbl(map->boundsX2, map->boundsY2)));
 		NEW_CLASS(layer, Map::TileMapLayer(tileMap, parsers));
@@ -340,7 +340,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	case MapType::ESRIMap:
 	{
 		Map::ESRI::ESRIMapServer *esriMap;
-		NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(map->url, map->urlLen), sockf, ssl, map->mapTypeParam != 0));
+		NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(map->url, map->urlLen), clif, ssl, map->mapTypeParam != 0));
 		if (map->mapTypeParam != 0)
 		{
 			esriMap->SetSRID((UInt32)map->mapTypeParam);
@@ -351,7 +351,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	case MapType::WMS:
 	{
 		Map::WebMapService *wms;
-		NEW_CLASS(wms, Map::WebMapService(sockf, ssl, encFact, Text::CStringNN(map->url, map->urlLen), Map::WebMapService::Version::ANY, envCSys));
+		NEW_CLASS(wms, Map::WebMapService(clif, ssl, encFact, Text::CStringNN(map->url, map->urlLen), Map::WebMapService::Version::ANY, envCSys));
 		if (wms->IsError())
 		{
 			printf("RegionalMapSource: Error in loading wms layer\r\n");
@@ -363,7 +363,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	}
 	case MapType::WFS:
 	{
-		Map::WebFeatureService wfs(sockf, ssl, encFact, Text::CStringNN(map->url, map->urlLen), Map::WebFeatureService::Version::ANY);
+		Map::WebFeatureService wfs(clif, ssl, encFact, Text::CStringNN(map->url, map->urlLen), Map::WebFeatureService::Version::ANY);
 		return wfs.LoadAsLayer();
 	}
 	default:

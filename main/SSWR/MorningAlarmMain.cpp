@@ -42,6 +42,7 @@ NN<Data::DateTime> startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 NN<IO::ConsoleWriter> console;
 NN<Net::SocketFactory> sockf;
+NN<Net::TCPClientFactory> clif;
 Optional<Net::SSLEngine> ssl;
 NN<Text::EncodingFactory> encFact;
 Net::NTPClient *timeCli;
@@ -104,7 +105,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 				tmpDt->SetAsComputerTime();
 			}
 
-			nextSignal = Net::HKOWeather::GetSignalSummary(sockf, ssl, encFact);
+			nextSignal = Net::HKOWeather::GetSignalSummary(clif, ssl, encFact);
 			if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0 || (currSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0)
 			{
 				sptr = currDt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
@@ -245,7 +246,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	NEW_CLASSNN(console, IO::ConsoleWriter());
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
-	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	NEW_CLASSNN(clif, Net::TCPClientFactory(sockf));
+	ssl = Net::SSLEngineFactory::Create(clif, true);
 	NEW_CLASSNN(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562, log));
 	NEW_CLASSNN(tmpDt, Data::DateTime());
@@ -336,6 +338,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	DEL_CLASS(timeCli);
 	encFact.Delete();
 	ssl.Delete();
+	clif.Delete();
 	sockf.Delete();
 	console.Delete();
 	return 0;

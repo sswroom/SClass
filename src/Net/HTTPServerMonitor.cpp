@@ -19,15 +19,15 @@ UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(AnyType userObj)
 
 Bool Net::HTTPServerMonitor::CheckOnline()
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	cli.Delete();
 	return status == Net::WebStatus::SC_OK;
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::String> url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::String> url)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->url = url->Clone();
 	this->currOnline = false;
@@ -41,9 +41,9 @@ Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional
 	}
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->url = Text::String::New(url);
 	this->currOnline = false;

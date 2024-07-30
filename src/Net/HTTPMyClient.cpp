@@ -421,7 +421,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 	}
 }
 
-Net::HTTPMyClient::HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
+Net::HTTPMyClient::HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn), reqMstm(1024)
 {
 	Text::CStringNN nnuserAgent;
 	if (!userAgent.SetTo(nnuserAgent))
@@ -461,7 +461,7 @@ Net::HTTPMyClient::~HTTPMyClient()
 		NN<Socket> soc;
 		if (cli->GetSocket().SetTo(soc))
 		{
-			this->sockf->SetLinger(soc, 0);
+			this->clif->GetSocketFactory()->SetLinger(soc, 0);
 		}
 		cli->ShutdownSend();
 		this->cli.Delete();
@@ -684,7 +684,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			addr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1")));
 		}
-		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), addr))
+		else if (!this->clif->GetSocketFactory()->DNSResolveIP(CSTRP(svrname, svrnameEnd), addr))
 		{
 			this->cli = 0;
 
@@ -714,7 +714,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			}
 			else
 			{
-				NEW_CLASSNN(cli, Net::TCPClient(sockf, this->svrAddr, port, this->timeout));
+				cli = this->clif->Create(this->svrAddr, port, this->timeout);
 				this->cli = cli;
 			}
 		}
@@ -753,8 +753,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->canWrite = false;
 			return false;
 		}
-		this->sockf->SetLinger(soc, 0);
-		this->sockf->SetNoDelay(soc, true);
+		this->clif->GetSocketFactory()->SetLinger(soc, 0);
+		this->clif->GetSocketFactory()->SetNoDelay(soc, true);
 	}
 	else if (Text::StrEqualsC(this->cliHost->v, this->cliHost->leng, urltmp, urltmpLen) && this->cli.SetTo(cli))
 	{
@@ -1011,7 +1011,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		}
 		this->reqMstm.Clear();
 
-		this->sockf->SetLinger(soc, 0);
+		this->clif->GetSocketFactory()->SetLinger(soc, 0);
 		if (!this->kaConn && !cli->IsSSL())
 			cli->ShutdownSend();
 		cli->SetTimeout(this->timeout);

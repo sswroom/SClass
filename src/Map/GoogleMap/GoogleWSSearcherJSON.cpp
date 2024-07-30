@@ -13,9 +13,9 @@
 #include "Text/Locale.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::Writer> errWriter, Optional<Text::EncodingFactory> encFact)
+Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::Writer> errWriter, Optional<Text::EncodingFactory> encFact)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->encFact = encFact;
@@ -144,7 +144,7 @@ UnsafeArrayOpt<UTF8Char> Map::GoogleMap::GoogleWSSearcherJSON::SearchName(Unsafe
 		sptr = s->ConcatTo(sptr);
 	}
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		if (lang.SetTo(nnlang))

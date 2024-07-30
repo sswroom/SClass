@@ -127,6 +127,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	NN<IO::ConfigFile> cfg;
 	this->db = 0;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(false));
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 
 	if (IO::IniFile::ParseProgConfig(0).SetTo(cfg))
@@ -142,7 +143,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		}
 		else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(str))
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->clif,
 				str,
 				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))).Ptr(),
 				Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))),
@@ -236,6 +237,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 		dvdVideo->dvdType->Release();
 		MemFreeNN(dvdVideo);
 	}
+	this->clif.Delete();
 	this->sockf.Delete();
 }
 

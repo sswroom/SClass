@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Net::ACMEClient *client;
 
 			NN<UI::GUILabel> lblHost;

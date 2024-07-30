@@ -586,7 +586,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 			
 			NN<Net::HTTPClient> cli;
 			me->respTimeStart = Data::Timestamp::Now();
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
+			cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 			NN<Crypto::Cert::X509Cert> cliCert;
 			NN<Crypto::Cert::X509File> cliKey;
 			if (me->cliCert.SetTo(cliCert) && me->cliKey.SetTo(cliKey))
@@ -665,7 +665,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
 					cli.Delete();
-					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 					if (cli->Connect(currURL->ToCString(), currMeth, me->respTimeDNS, me->respTimeConn, false))
 					{
 						contType = 0;
@@ -1218,8 +1218,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->clif = core->GetTCPClientFactory();
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	Net::HTTPClient::PrepareSSL(this->ssl);
 	this->respChanged = false;
 	this->cliCert = 0;

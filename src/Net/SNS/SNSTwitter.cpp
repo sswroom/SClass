@@ -3,9 +3,9 @@
 #include "Net/SNS/SNSTwitter.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
+Net::SNS::SNSTwitter::SNSTwitter(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
 {
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(sockf, ssl, encFact, userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;

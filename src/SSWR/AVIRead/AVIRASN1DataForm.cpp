@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 		return;
 	}
 	NN<Net::SSLEngine> ssl;
-	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
+	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
 		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)me->cboVerifyHash->GetSelectedItem().GetOSInt(), mstm.GetArray(), Data::ByteArrayR(signBuff, signLen)))
 		{
@@ -143,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 		return;
 	}
 	NN<Net::SSLEngine> ssl;
-	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
+	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
 		decLen = ssl->Decrypt(key, decBuff, Data::ByteArrayR(signBuff, signLen), Crypto::Encrypt::RSACipher::Padding::PKCS1);
 		if (decLen > 0)
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 		return;
 	}
 	NN<Net::SSLEngine> ssl;
-	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
+	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
 		UOSInt outSize = ssl->Encrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
@@ -313,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 		return;
 	}
 	NN<Net::SSLEngine> ssl;
-	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
+	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
 		UOSInt outSize = ssl->Decrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
@@ -596,7 +596,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 	{
 		NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(this->asn1);
 		NN<Net::SSLEngine> ssl;
-		if (Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false).SetTo(ssl))
+		if (Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false).SetTo(ssl))
 		{
 			this->txtStatus->SetText(Crypto::Cert::X509File::ValidStatusGetDesc(x509->IsValid(ssl, ssl->GetTrustStore())));
 			ssl.Delete();

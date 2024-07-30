@@ -21,9 +21,9 @@ void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CString
 	}
 }
 
-Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds) : foHdlr(foType)
+Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds) : foHdlr(foType)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->kaSeconds = kaSeconds;
 }
@@ -37,7 +37,7 @@ void Net::MQTTFailoverClient::AddClient(Text::CStringNN host, UInt16 port, Text:
 {
 	NN<ClientInfo> cliInfo = MemAllocNN(ClientInfo);
 	cliInfo->me = this;
-	NEW_CLASSNN(cliInfo->client, Net::MQTTStaticClient(this->sockf, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, 0));
+	NEW_CLASSNN(cliInfo->client, Net::MQTTStaticClient(this->clif, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, 0));
 	this->cliList.Add(cliInfo);
 	this->foHdlr.AddChannel(cliInfo->client);
 }

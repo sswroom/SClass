@@ -119,7 +119,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpCookie;
 			NN<UI::GUIListView> lvCookie;
 
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Text::String *reqURL;
 			UnsafeArrayOpt<const UTF8Char> reqBody;

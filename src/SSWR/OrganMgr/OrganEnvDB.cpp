@@ -86,7 +86,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	this->log.AddFileLog(CSTR("OrganMgr.log"), IO::LogHandler::LogType::SingleFile, IO::LogHandler::LogGroup::NoGroup, IO::LogHandler::LogLevel::Raw, 0, false);
 	if (cfg->GetValue(CSTR("MySQLDB")).SetTo(cfgMySQLDB) && cfg->GetValue(CSTR("MySQLHost")).SetTo(cfgMySQLHost))
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, CSTR_NULL);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->clif, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), this->log, CSTR_NULL);
 	}
 	else if (cfg->GetValue(CSTR("DBDSN")).SetTo(cfgDSN))
 	{

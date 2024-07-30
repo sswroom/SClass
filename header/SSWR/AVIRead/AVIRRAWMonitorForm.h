@@ -5,6 +5,7 @@
 #include "Net/EthernetAnalyzer.h"
 #include "Net/EthernetWebHandler.h"
 #include "Net/SocketMonitor.h"
+#include "Net/TCPClientFactory.h"
 #include "Net/WhoisHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -46,7 +47,7 @@ namespace SSWR
 
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener *listener;

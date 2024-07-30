@@ -52,8 +52,9 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CacheDir"));
 	NEW_CLASSNN(this->parsers, Parser::FullParserList());
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, CSTRP(sbuff, sptr)));
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
+	NEW_CLASS(this->browser, Net::WebBrowser(clif, this->ssl, CSTRP(sbuff, sptr)));
 	NEW_CLASS(this->gpioCtrl, IO::GPIOControl());
 	if (this->gpioCtrl->IsError())
 	{
@@ -69,7 +70,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	this->parsers->SetEncFactory(&this->encFact);
 	this->parsers->SetMapManager(&this->mapMgr);
 	this->parsers->SetWebBrowser(this->browser);
-	this->parsers->SetSocketFactory(this->sockf);
+	this->parsers->SetTCPClientFactory(this->clif);
 	this->parsers->SetSSLEngine(this->ssl);
 	this->parsers->SetLogTool(&this->log);
 	this->batchLyrs = 0;
@@ -107,6 +108,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	this->parsers.Delete();
 	DEL_CLASS(this->browser);
 	this->ssl.Delete();
+	this->clif.Delete();
 	this->sockf.Delete();
 	this->eng.Delete();
 	this->ui->SetMonitorMgr(0);
@@ -233,6 +235,11 @@ NN<Media::ColorManager> SSWR::AVIRead::AVIRCore::GetColorMgr()
 NN<Net::SocketFactory> SSWR::AVIRead::AVIRCore::GetSocketFactory()
 {
 	return this->sockf;
+}
+
+NN<Net::TCPClientFactory> SSWR::AVIRead::AVIRCore::GetTCPClientFactory()
+{
+	return this->clif;
 }
 
 NN<Media::DrawEngine> SSWR::AVIRead::AVIRCore::GetDrawEngine()

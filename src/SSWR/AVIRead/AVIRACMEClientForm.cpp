@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Please enter key file"), CSTR("ACME Client"), me);
 		return;
 	}
-	NEW_CLASS(me->client, Net::ACMEClient(me->sockf, sb.ToCString(), port, sbKey.ToCString()));
+	NEW_CLASS(me->client, Net::ACMEClient(me->clif, sb.ToCString(), port, sbKey.ToCString()));
 	if (me->client->IsError())
 	{
 		me->ui->ShowMsgOK(CSTR("Server does not have valid response"), CSTR("ACME Client"), me);
@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(Optional<UI::GUIClientCont
 	this->SetText(CSTR("ACME Client"));
 
 	this->core = core;
-	this->sockf = core->GetSocketFactory();
+	this->clif = core->GetTCPClientFactory();
 	this->client = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

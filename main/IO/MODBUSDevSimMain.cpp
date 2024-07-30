@@ -75,6 +75,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	Int32 ret = 0;
 	Net::OSSocketFactory sockf(false);
+	Net::TCPClientFactory clif(sockf);
 	IO::LogTool log;
 	Net::MODBUSTCPListener modbusListener(sockf, modbusPort, log, false);
 	if (modbusListener.IsError())
@@ -87,7 +88,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		modbusListener.AddDevice(devAddr, dev);
 		Net::WebServer::MODBUSDevSimHandler devHdlr(modbusListener, dev);
-		Net::WebServer::WebListener webListener(sockf, 0, devHdlr, ctrlPort, 120, 1, 2, CSTR("MODBUSSim/1.0"), false, Net::WebServer::KeepAlive::Default, false);
+		Net::WebServer::WebListener webListener(clif, 0, devHdlr, ctrlPort, 120, 1, 2, CSTR("MODBUSSim/1.0"), false, Net::WebServer::KeepAlive::Default, false);
 		if (webListener.IsError())
 		{
 			console.WriteLine(CSTR("Error in listening to CtrlPort"));

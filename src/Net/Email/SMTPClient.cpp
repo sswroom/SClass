@@ -4,7 +4,7 @@
 #include "Net/Email/SMTPClient.h"
 #include "Sync/SimpleThread.h"
 
-Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout) : clif(sockf)
+Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->ssl = ssl;
 	this->host = Text::String::New(host);
@@ -17,7 +17,7 @@ Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::S
 	this->timeout = timeout;
 }
 
-Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout) : clif(sockf)
+Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout)
 {
 	this->ssl = ssl;
 	this->host = Text::String::New(host);
@@ -47,11 +47,6 @@ Net::Email::SMTPClient::~SMTPClient()
 	{
 		this->logWriter.Delete();
 	}
-}
-
-void Net::Email::SMTPClient::SetProxy(Text::CStringNN proxyHost, UInt16 proxyPort, Text::CString proxyUser, Text::CString proxyPwd)
-{
-	this->clif.SetProxy(proxyHost, proxyPort, proxyUser, proxyPwd);
 }
 
 void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString password)

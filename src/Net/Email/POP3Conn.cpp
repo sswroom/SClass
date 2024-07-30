@@ -129,7 +129,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(OptOut<Un
 		return ResultStatus::TimedOut;
 }
 
-Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -142,21 +142,21 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	this->authPlain = false;
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::AddrType::Unknown;
-	sockf->DNSResolveIP(host, addr);
+	clif->GetSocketFactory()->DNSResolveIP(host, addr);
 	this->logWriter = logWriter;
 	NN<Net::SSLEngine> nnssl;
 	if (connType == CT_SSL && ssl.SetTo(nnssl))
 	{
 		if (!Optional<Net::TCPClient>(nnssl->ClientConnect(host, port, 0, timeout)).SetTo(this->cli))
 		{
-			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+			this->cli = clif->Create(addr, port, timeout);
 		}
 	}
 	else if (connType == CT_STARTTLS && ssl.SetTo(nnssl))
 	{
 		UInt8 buff[1024];
 		UOSInt buffSize;
-		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+		this->cli = clif->Create(addr, port, timeout);
 		this->cli->SetTimeout(timeout);
 		buffSize = this->cli->Read(BYTEARR(buff));
 		if (this->logWriter)
@@ -212,7 +212,7 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	}
 	else
 	{
-		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
+		this->cli = clif->Create(addr, port, timeout);
 	}
 	this->cli->SetNoDelay(false);
 	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));

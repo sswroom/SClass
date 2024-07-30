@@ -1,11 +1,11 @@
 #ifndef _SM_MANAGE_MONCONN
 #define _SM_MANAGE_MONCONN
 #include "AnyType.h"
-#include "Net/SocketFactory.h"
-#include "Net/TCPClient.h"
+#include "Data/DateTime.h"
 #include "Data/SyncArrayList.h"
 #include "IO/ConsoleWriter.h"
-#include "Data/DateTime.h"
+#include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 
 namespace Manage
 {
@@ -35,8 +35,8 @@ namespace Manage
 		UInt16 port;
 		Int32 svrMonConn;
 
-		NN<Net::SocketFactory> sockf;
-		Net::TCPClient *cli;
+		NN<Net::TCPClientFactory> clif;
+		Optional<Net::TCPClient> cli;
 		Bool cliErr;
 		Sync::Event *connREvt;
 		Sync::Event *connTEvt;
@@ -51,7 +51,7 @@ namespace Manage
 		static UInt32 __stdcall ConnRThread(AnyType conn);
 		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
-		MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFactory> sockf, NN<IO::Writer> msgWriter, Data::Duration timeout);
+		MonConn(EventHandler hdlr, AnyType userObj, NN<Net::TCPClientFactory> clif, NN<IO::Writer> msgWriter, Data::Duration timeout);
 		~MonConn();
 
 		Bool IsError();

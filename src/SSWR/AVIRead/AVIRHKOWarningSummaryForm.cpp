@@ -13,7 +13,7 @@ void SSWR::AVIRead::AVIRHKOWarningSummaryForm::Reload()
 	NN<Net::HKOWeather::WarningSummary> warning;
 	Data::ArrayListNN<Net::HKOWeather::WarningSummary> warnings;
 	this->lvWarning->ClearItems();
-	if (Net::HKOWeather::GetWarningSummary(this->core->GetSocketFactory(), this->ssl, warnings))
+	if (Net::HKOWeather::GetWarningSummary(this->core->GetTCPClientFactory(), this->ssl, warnings))
 	{
 		UOSInt i = 0;
 		UOSInt j = warnings.GetCount();
@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRHKOWarningSummaryForm::AVIRHKOWarningSummaryForm(Optional<UI:
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlReqTime = ui->NewPanel(*this);

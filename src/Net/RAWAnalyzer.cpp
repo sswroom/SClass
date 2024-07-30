@@ -19,7 +19,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 	{
 		while (!me->threadToStop)
 		{
-			packetSize = me->sockf->UDPReceive(soc, packetBuff, 10240, addr, port, 0);
+			packetSize = me->clif->GetSocketFactory()->UDPReceive(soc, packetBuff, 10240, addr, port, 0);
 			if (packetSize >= 14)
 			{
 				me->analyzer->PacketEthernet(packetBuff, packetSize);
@@ -30,9 +30,9 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 	return 0;
 }
 
-Net::RAWAnalyzer::RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
+Net::RAWAnalyzer::RAWAnalyzer(NN<Net::TCPClientFactory> clif, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, CSTR("RAWAnalyzer"))); 
 	this->listener = 0;
 	this->rawSock = 0;
@@ -41,7 +41,7 @@ Net::RAWAnalyzer::RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO:
 
 	NEW_CLASSNN(this->webHdlr, Net::EthernetWebHandler(this->analyzer));
 	NN<Net::WebServer::WebListener> listener;
-	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, infoPort, 120, 1, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->clif, 0, this->webHdlr, infoPort, 120, 1, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
 		listener.Delete();
@@ -49,7 +49,7 @@ Net::RAWAnalyzer::RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO:
 	else
 	{
 		this->listener = listener;
-		this->rawSock = this->sockf->CreateRAWSocket();
+		this->rawSock = this->clif->GetSocketFactory()->CreateRAWSocket();
 		NN<Socket> soc;
 		if (this->rawSock.SetTo(soc))
 		{
@@ -68,7 +68,7 @@ Net::RAWAnalyzer::~RAWAnalyzer()
 	if (this->rawSock.SetTo(soc))
 	{
 		this->threadToStop = true;
-		this->sockf->DestroySocket(soc);
+		this->clif->GetSocketFactory()->DestroySocket(soc);
 		while (this->threadCnt > 0)
 		{
 			Sync::SimpleThread::Sleep(1);

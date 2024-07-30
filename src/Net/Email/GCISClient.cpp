@@ -28,9 +28,9 @@
 }
 {"ChanType":"EM","IsEncrypt":false,"IsSign":false,"IsRestricted":false,"IsUrgent":false,"ValidityPeriod":-1,"ContentDetail":{"CharSet":"UTF-8","ContentType":"text/html","Subject":"Email Testing","Content":"This is a test email","AtthFile":[]},"RecipientDetail":[{"ChanAddr":"sswroom@yahoo.com","CcAddr":null,"BccAddr":null,"RecipientAtthFile":[]}]}
 */
-Net::Email::GCISClient::GCISClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN notifyURL, NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
+Net::Email::GCISClient::GCISClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN notifyURL, NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->notifyURL = Text::String::New(notifyURL);
 	this->cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(cert->Clone());
@@ -48,7 +48,7 @@ Net::Email::GCISClient::~GCISClient()
 
 Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Text::StringBuilderUTF8 *sbError)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, ssl, CSTR("GCISClient/1.0"), false, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, ssl, CSTR("GCISClient/1.0"), false, true);
 	if (!cli->SetClientCert(this->cert, this->key))
 	{
 		if (sbError) sbError->AppendC(UTF8STRC("Error in adding client cert"));

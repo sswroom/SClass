@@ -13,9 +13,9 @@ Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NN<Net::We
 	return this->forwardAddrs.GetItem(i);
 }
 
-Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType)
+Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->forceHost = 0;
 	this->fwdType = fwdType;
@@ -78,7 +78,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 		sbHeader.Append(req->GetReqMethodStr());
 		log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
 	NN<Text::String> hdr;
 	if (this->forceHost.SetTo(hdr))
 	{

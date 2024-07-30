@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(AnyType userObj
 	NN<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
 	UInt8 buff[2048];
 	UOSInt i;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->clif, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	IO::MemoryStream mstm(1024);
 	while (true)
 	{
@@ -241,8 +241,8 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(Optional<UI::GUIClientControl> p
 	this->SetText(CSTR("COVID-19"));
 
 	this->core = core;
-	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->clif = core->GetTCPClientFactory();
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);

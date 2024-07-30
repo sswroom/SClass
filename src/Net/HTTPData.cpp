@@ -22,7 +22,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
+		fdh->cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 	}
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile->ToCString()) == IO::Path::PathType::File)
@@ -51,7 +51,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 			else
 			{
 				DEL_CLASS(fdh->cli);
-				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
+				fdh->cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
 			}
 		}
 		else
@@ -182,7 +182,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	fdh->objectCnt++;
 }
 
-Net::HTTPData::HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload)
+Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CStringNN url, Text::CStringNN localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;
@@ -248,7 +248,7 @@ Net::HTTPData::HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> s
 		fdh->localFile = Text::String::New(localFile);
 		fdh->isLoading = true;
 		fdh->loadSize = 0;
-		fdh->sockf = sockf;
+		fdh->clif = clif;
 		fdh->ssl = ssl;
 		fdh->queue = queue;
 		i = fdh->url->LastIndexOf('/');

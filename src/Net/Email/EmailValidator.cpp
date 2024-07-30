@@ -2,12 +2,12 @@
 #include "Net/Email/EmailValidator.h"
 #include "Net/Email/SMTPConn.h"
 
-Net::Email::EmailValidator::EmailValidator(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
+Net::Email::EmailValidator::EmailValidator(NN<Net::TCPClientFactory> clif, NN<IO::LogTool> log)
 {
 	Net::SocketUtil::AddressInfo dnsAddr;
-	this->sockf = sockf;
-	this->sockf->GetDefDNS(dnsAddr);
-	NEW_CLASS(this->dnsClient, Net::DNSClient(this->sockf, dnsAddr, log));
+	this->clif = clif;
+	this->clif->GetSocketFactory()->GetDefDNS(dnsAddr);
+	NEW_CLASS(this->dnsClient, Net::DNSClient(this->clif->GetSocketFactory(), dnsAddr, log));
 }
 
 Net::Email::EmailValidator::~EmailValidator()
@@ -55,12 +55,12 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 		return S_DOMAIN_NOT_RESOLVED;
 	}
 
-	if (!this->sockf->DNSResolveIP(emailSvr->ToCString(), addr))
+	if (!this->clif->GetSocketFactory()->DNSResolveIP(emailSvr->ToCString(), addr))
 	{
 		emailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;
 	}
-	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, 0, emailSvr->ToCString(), 25, Net::Email::SMTPConn::ConnType::Plain, 0, 60000));
+	NEW_CLASS(conn, Net::Email::SMTPConn(this->clif, 0, emailSvr->ToCString(), 25, Net::Email::SMTPConn::ConnType::Plain, 0, 60000));
 	emailSvr->Release();
 	if (conn->IsError())
 	{

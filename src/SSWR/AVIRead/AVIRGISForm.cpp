@@ -589,7 +589,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CStringNN listFile, Text::CStri
 	sb.Append(listFile);
 	sb.AppendC(UTF8STRC("?t="));
 	sb.AppendI64(dt.ToTicks());
-	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	{
 		Text::UTF8Reader reader(cli);
 		dateStr = 0;
@@ -626,7 +626,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CStringNN listFile, Text::CStri
 
 void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CStringNN nameCol, Text::CStringNN latCol, Text::CStringNN lonCol)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		NN<Map::MapDrawLayer> lyr;
@@ -641,7 +641,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Map::MapView> view) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->env = env;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->scaleChanging = false;
@@ -1530,7 +1530,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UTF8Char sbuff[10];
 			UOSInt i;
 			Data::DateTime dt;
-			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, CSTR("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
+			cli = Net::HTTPClient::CreateConnect(this->core->GetTCPClientFactory(), this->ssl, CSTR("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
 			reader->ReadLine(sb, 4096);
 			while (true)
@@ -1641,7 +1641,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_HK_PARKING_VACANCY:
 		{
 			NN<Map::HKParkingVacancy> parking;
-			NEW_CLASSNN(parking, Map::HKParkingVacancy(this->core->GetSocketFactory(), this->ssl));
+			NEW_CLASSNN(parking, Map::HKParkingVacancy(this->core->GetTCPClientFactory(), this->ssl));
 			this->AddLayer(parking);
 			break;
 		}

@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 		NN<MapServer> v;
 		if (me->cboPredefine->GetItem(i).GetOpt<MapServer>().SetTo(v))
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl, false));
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetTCPClientFactory(), me->ssl, false));
 		}
 		else
 		{
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 		}
 		else
 		{
-			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetSocketFactory(), me->ssl, noResource));
+			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(CSTRP(sbuff, sptr), me->core->GetTCPClientFactory(), me->ssl, noResource));
 			if (noResource)
 			{
 				esriMap->SetSRID(srid);

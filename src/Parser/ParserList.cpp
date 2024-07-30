@@ -98,20 +98,20 @@ void Parser::ParserList::SetWebBrowser(Optional<Net::WebBrowser> browser)
 	}
 }
 
-void Parser::ParserList::SetSocketFactory(NN<Net::SocketFactory> sockf)
+void Parser::ParserList::SetTCPClientFactory(NN<Net::TCPClientFactory> clif)
 {
 	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
-		parser->SetSocketFactory(sockf);
+		parser->SetTCPClientFactory(clif);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
 		parser = this->objPArr.GetItemNoCheck(i);
-		parser->SetSocketFactory(sockf);
+		parser->SetTCPClientFactory(clif);
 	}
 }
 

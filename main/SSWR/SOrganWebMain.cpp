@@ -23,6 +23,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		UInt32 scnSize = 0;
 		Int32 unorganizedGroupId = 0;
 		Net::OSSocketFactory sockf(true);
+		Net::TCPClientFactory clif(sockf);
 		Optional<Net::SSLEngine> ssl = 0;
 		IO::LogTool log;
 		NN<Text::String> s;
@@ -44,7 +45,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				if (s->ToUInt16(sslPort) && sslPort != 0)
 				{
-					ssl = Net::SSLEngineFactory::Create(sockf, false);
+					ssl = Net::SSLEngineFactory::Create(clif, false);
 					NN<Net::SSLEngine> nnssl;
 					if (!ssl.SetTo(nnssl))
 					{
@@ -90,7 +91,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}
 			else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s))
 			{
-				db = Net::MySQLTCPClient::CreateDBTool(sockf, s, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
+				db = Net::MySQLTCPClient::CreateDBTool(clif, s, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), log, CSTR("DB: "));
 			}
 			else if (cfg->GetValue(CSTR("DBDSN")).SetTo(s))
 			{
@@ -125,7 +126,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}
 			else
 			{
-				SSWR::OrganWeb::OrganWebEnv env(sockf, ssl, log, db, imageDir, port, sslPort, cfg->GetValue(CSTR("CacheDir")), dataDir, scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
+				SSWR::OrganWeb::OrganWebEnv env(clif, ssl, log, db, imageDir, port, sslPort, cfg->GetValue(CSTR("CacheDir")), dataDir, scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
 
 				if (env.IsError())
 				{

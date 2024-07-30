@@ -25,7 +25,7 @@ namespace Net
 		} RSSStatus;
 	private:
 		NN<Text::String> url;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<IO::LogTool> log;
 		RSSHandler *hdlr;
@@ -41,7 +41,7 @@ namespace Net
 
 		static UInt32 __stdcall RSSThread(AnyType userObj);
 	public:
-		RSSReader(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout, NN<IO::LogTool> log);
+		RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout, NN<IO::LogTool> log);
 		~RSSReader();
 
 		Bool IsError();

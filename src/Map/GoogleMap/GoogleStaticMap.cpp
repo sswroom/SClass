@@ -17,9 +17,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	if (gooCliId && gooPrivKey)
 	{
@@ -37,9 +37,9 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, O
 	}
 }
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	Text::CStringNN nngooCliId;
 	Text::CStringNN nngooPrivKey;
@@ -212,7 +212,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	}
 
 //	wprintf(L"%s\r\n", url);
-	cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		if (lang.leng > 0)

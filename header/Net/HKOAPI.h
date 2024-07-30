@@ -329,18 +329,18 @@ namespace Net
 		JSONRESP_END
 
 	public:
-		static Optional<LocalWeatherForecast> GetLocalWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
-		static Optional<NineDayWeatherForecast> Get9DayWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
-		static Optional<CurrentWeatherReport> GetCurrentWeatherReport(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
-		static Optional<WeatherWarningSummary> GetWeatherWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<LocalWeatherForecast> GetLocalWeatherForecast(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<NineDayWeatherForecast> Get9DayWeatherForecast(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<CurrentWeatherReport> GetCurrentWeatherReport(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<WeatherWarningSummary> GetWeatherWarningSummary(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
 		///////////////
-		static Optional<WeatherWarningInfo> GetWeatherWarningInfo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
-		static Optional<SpecialWeatherTips> GetSpecialWeatherTips(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
-		static Optional<QuickEarthquakeMessages> GetQuickEarthquakeMessages(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<WeatherWarningInfo> GetWeatherWarningInfo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<SpecialWeatherTips> GetSpecialWeatherTips(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<QuickEarthquakeMessages> GetQuickEarthquakeMessages(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
 		///////////////
-		static Optional<LocallyFeltEarthTremorReport> GetLocallyFeltEarthTremorReport(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
-		static Optional<LunarDate> GetLunarDate(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Date date);
-		static Optional<HourlyRainfall> GetHourlyRainfall(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<LocallyFeltEarthTremorReport> GetLocallyFeltEarthTremorReport(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
+		static Optional<LunarDate> GetLunarDate(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Date date);
+		static Optional<HourlyRainfall> GetHourlyRainfall(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang);
 	};
 }
 #endif

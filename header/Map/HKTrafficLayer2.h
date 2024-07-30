@@ -26,7 +26,7 @@ namespace Map
 		Math::RectAreaDbl bounds;
 
 		NN<Text::String> url;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Optional<Text::EncodingFactory> encFact;
 		Sync::Mutex roadMut;
@@ -36,7 +36,7 @@ namespace Map
 		void SetSpeedMap(Int32 segmentId, Double speed, Bool valid);
 		IO::Stream *OpenURLStream();
 	public:
-		HKTrafficLayer2(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2);
+		HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2);
 		virtual ~HKTrafficLayer2();
 
 		void ReloadData();

@@ -7,7 +7,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "Net/SocketFactory.h"
-#include "Net/TCPClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -29,7 +29,7 @@ namespace Net
 		UOSInt buffSize;
 
 	public:
-		HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn);
+		HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPOSClient();
 
 		virtual Bool IsError() const;

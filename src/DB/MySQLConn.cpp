@@ -409,7 +409,7 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	}
 }*/
 
-Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;
@@ -426,7 +426,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, N
 	}
 }
 
-Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;

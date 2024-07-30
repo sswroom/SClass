@@ -69,8 +69,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::HTTPClient> cli;
 			Net::OSSocketFactory sockf(true);
-			ssl = Net::SSLEngineFactory::Create(sockf, true);
-			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
+			Net::TCPClientFactory clif(sockf);
+			ssl = Net::SSLEngineFactory::Create(clif, true);
+			cli = Net::HTTPClient::CreateConnect(clif, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
 			if (mime.SetTo(nnmime))
 			{
 				cli->AddContentType(nnmime);

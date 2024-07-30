@@ -41,7 +41,7 @@ namespace Net
 		UnsafeArrayOpt<const UInt8> NextPacket(OutParam<UInt8> opcode, OutParam<UOSInt> packetSize);
 		UnsafeArrayOpt<const UInt8> NextPacket(NN<Sync::MutexUsage> mutUsage, OutParam<UOSInt> packetSize);
 	public:
-		WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout);
+		WebSocketClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout);
 		virtual ~WebSocketClient();
 
 		virtual UnsafeArrayOpt<UTF8Char> GetRemoteName(UnsafeArray<UTF8Char> buff) const;

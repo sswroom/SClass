@@ -28,6 +28,7 @@ Int32 connLeft;
 Manage::HiResClock *clk;
 Double t;
 NN<Net::SocketFactory> sockf;
+NN<Net::TCPClientFactory> clif;
 Optional<Net::SSLEngine> ssl;
 
 struct ThreadStatus
@@ -69,7 +70,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 		if (kaConn)
 		{
 			url = CSTR(URL);
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, false);
+			cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, false);
 			while (!status->threadToStop)
 			{
 				if (Interlocked_DecrementI32(&connLeft) < 0)
@@ -131,13 +132,13 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 					if (cli->IsError())
 					{
 						cli.Delete();
-						cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+						cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 					}
 				}
 				else
 				{
 					cli.Delete();
-					cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 					status->failCnt++;
 				}
 			}
@@ -151,7 +152,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 				if (Sync::Interlocked::DecrementI32(connLeft) < 0)
 					break;
 				respClk.Start();
-				cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+				cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 				if (cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, timeDNS, timeConn, false))
 				{
 					cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
@@ -261,9 +262,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	Manage::HiResClock localClk;
 	Net::OSSocketFactory localSockf(true);
+	Net::TCPClientFactory localClif(localSockf);
 	clk = &localClk;
 	sockf = localSockf;
-	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	clif = localClif;
+	ssl = Net::SSLEngineFactory::Create(localClif, true);
 	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, threadCnt);
 	clk->Start();
 	i = threadCnt;

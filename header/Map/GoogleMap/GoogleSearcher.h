@@ -3,8 +3,8 @@
 #include "Data/DateTime.h"
 #include "IO/Writer.h"
 #include "Map/IReverseGeocoder.h"
-#include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Net/TCPClientFactory.h"
 #include "Sync/Mutex.h"
 
 namespace Map
@@ -18,7 +18,7 @@ namespace Map
 			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
@@ -27,8 +27,8 @@ namespace Map
 			UInt32 srchCnt;
 			
 		public:
-			GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter);
-			GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, NN<IO::Writer> errWriter);
+			GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter);
+			GoogleSearcher(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, NN<IO::Writer> errWriter);
 			virtual ~GoogleSearcher();
 
 			UnsafeArrayOpt<UTF8Char> SearchName(UnsafeArray<UTF8Char> buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang); //lang = en-us, zh-cn, zh-tw

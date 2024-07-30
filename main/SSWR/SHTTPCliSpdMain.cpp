@@ -40,8 +40,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::HTTPClient> cli;
 			Net::OSSocketFactory sockf(true);
-			ssl = Net::SSLEngineFactory::Create(sockf, true);
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));
+			Net::TCPClientFactory clif(sockf);
+			ssl = Net::SSLEngineFactory::Create(clif, true);
+			cli = Net::HTTPClient::CreateClient(clif, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));
 			if (!cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, respTimeDNS, respTimeConn, false))
 			{
 				console->WriteLine(CSTR("Error in requesting to server"));

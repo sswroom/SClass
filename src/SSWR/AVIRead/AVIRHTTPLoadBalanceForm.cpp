@@ -50,8 +50,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	if (port > 0 && port < 65535)
 	{
 		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
-		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;
@@ -292,7 +292,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUI
 	this->core = core;
 	this->SetText(CSTR("HTTP Load Balance"));
 	this->SetFont(0, 0, 8.25, false);
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;

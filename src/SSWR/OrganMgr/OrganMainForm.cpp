@@ -2737,7 +2737,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->txtMapPos->SetReadOnly(true);
 
 	NN<Map::OSM::OSMTileMap> tileMap;
-	NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 0, 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
+	NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 0, 18, this->env->GetTCPClientFactory(), this->env->GetSSLEngine()));
 	tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
 	tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
 	this->mapTile = tileMap;

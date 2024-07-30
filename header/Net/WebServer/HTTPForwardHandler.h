@@ -25,7 +25,7 @@ namespace Net
 			Data::ArrayListStringNN injHeaders;
 			UOSInt nextURL;
 			Sync::Mutex mut;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::String> forceHost;
 			ForwardType fwdType;
@@ -36,7 +36,7 @@ namespace Net
 
 			virtual Optional<Text::String> GetNextURL(NN<Net::WebServer::IWebRequest> req);
 		public:
-			HTTPForwardHandler(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType);
+			HTTPForwardHandler(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType);
 			virtual ~HTTPForwardHandler();
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);

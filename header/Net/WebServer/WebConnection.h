@@ -19,7 +19,7 @@ namespace Net
 		public:
 			typedef void (CALLBACKFUNC SendLogger)(AnyType userObj, UOSInt buffSize);
 		private:
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			NN<Net::TCPClient> cli;
 			IO::BufferedOutputStream *cstm;
@@ -53,7 +53,7 @@ namespace Net
 
 			UOSInt SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
-			WebConnection(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
+			WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const Data::ByteArrayR &buff);

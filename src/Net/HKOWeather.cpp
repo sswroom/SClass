@@ -75,7 +75,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(NN<Text::String> t
 	return signal;
 }
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact)
 {
 	UInt8 buff[1024];
 	UnsafeArray<UInt8> mbuff;
@@ -83,7 +83,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
 
-	cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -123,13 +123,13 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 	return signal;
 }
 
-Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log)
+Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log)
 {
 	Bool succ = false;
 	Net::RSS *rss;
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
-	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), sockf, ssl, 30000, log));
+	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), clif, ssl, 30000, log));
 	ua->Release();
 	if (!rss->IsError())
 	{
@@ -172,7 +172,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Ne
 	return succ;
 }
 
-Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, NN<WeatherForecast> weatherForecast)
+Bool Net::HKOWeather::GetWeatherForecast(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang, NN<WeatherForecast> weatherForecast)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -192,7 +192,7 @@ Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<
 	printf("Getting Weather forecast from: %s\r\n", url.v);
 #endif
 	NN<Text::JSONBase> json;
-	if (Net::HTTPJSONReader::Read(sockf, ssl, url).SetTo(json))
+	if (Net::HTTPJSONReader::Read(clif, ssl, url).SetTo(json))
 	{
 		weatherForecast->seaTemp = json->GetValueAsInt32(CSTR("seaTemp.value"));
 		NN<Text::String> sUpdateTime;
@@ -275,7 +275,7 @@ void Net::HKOWeather::FreeWeatherForecast(NN<WeatherForecast> weatherForecast)
 	}
 }
 
-Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, NN<LocalForecast> localForecast)
+Bool Net::HKOWeather::GetLocalForecast(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Language lang, NN<LocalForecast> localForecast)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -292,7 +292,7 @@ Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Ne
 		break;
 	}
 	NN<Text::JSONBase> json;
-	if (Net::HTTPJSONReader::Read(sockf, ssl, url).SetTo(json))
+	if (Net::HTTPJSONReader::Read(clif, ssl, url).SetTo(json))
 	{
 		localForecast->generalSituation = json->GetValueString(CSTR("generalSituation"));
 		localForecast->tcInfo = json->GetValueString(CSTR("tcInfo"));
@@ -335,10 +335,10 @@ void Net::HKOWeather::FreeLocalForecast(NN<LocalForecast> localForecast)
 	OPTSTR_DEL(localForecast->outlook);
 }
 
-Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Data::ArrayListNN<WarningSummary>> warnings)
+Bool Net::HKOWeather::GetWarningSummary(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Data::ArrayListNN<WarningSummary>> warnings)
 {
 	NN<Text::JSONBase> json;
-	if (Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en")).SetTo(json))
+	if (Net::HTTPJSONReader::Read(clif, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en")).SetTo(json))
 	{
 		if (json->GetType() == Text::JSONType::Object)
 		{
@@ -397,13 +397,13 @@ void Net::HKOWeather::FreeWarningSummary(NN<Data::ArrayListNN<WarningSummary>> w
 	warnings->MemFreeAll();
 }
 
-Net::HKOWeather::HKOWeather(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, UpdateHandler hdlr, NN<IO::LogTool> log)
+Net::HKOWeather::HKOWeather(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, UpdateHandler hdlr, NN<IO::LogTool> log)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->sockf, this->ssl, 10, this, 30000, log));
+	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->clif, this->ssl, 10, this, 30000, log));
 }
 
 Net::HKOWeather::~HKOWeather()

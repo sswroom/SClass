@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 		NN<Net::RSSItem> item;
 		Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 		NN<Text::String> ua = Text::String::New(userAgent);
-		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetSocketFactory(), me->ssl, 30000, me->core->GetLog()));
+		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetTCPClientFactory(), me->ssl, 30000, me->core->GetLog()));
 		ua->Release();
 		if (!rss->IsError())
 		{
@@ -196,7 +196,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientContro
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

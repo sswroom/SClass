@@ -19,19 +19,19 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 	UInt16 port;
 
 	Net::MySQLTCPClient *conn;
-	NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+	NN<Net::TCPClientFactory> clif = me->core->GetTCPClientFactory();
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(port))
 	{
 		me->ui->ShowMsgOK(CSTR("Port is not valid"), CSTR("MySQL Connection"), me);
 		return;
 	}
-	else if (!sockf->DNSResolveIP(sb.ToCString(), addr))
+	else if (!clif->GetSocketFactory()->DNSResolveIP(sb.ToCString(), addr))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in resolving server host"), CSTR("MySQL Connection"), me);
 		return;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
+	NEW_CLASS(conn, Net::MySQLTCPClient(clif, addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);

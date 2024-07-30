@@ -73,7 +73,7 @@ namespace SSWR
 			Net::Email::POP3Server *pop3Svr;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> smtpSSL;
 			Optional<Crypto::Cert::X509Cert> smtpSSLCert;
 			Optional<Crypto::Cert::X509File> smtpSSLKey;

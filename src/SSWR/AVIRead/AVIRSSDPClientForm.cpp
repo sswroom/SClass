@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userOb
 			NN<Net::SSDPClient::SSDPRoot> root;
 			if (!me->rootMap.GetNN(s).SetTo(root))
 			{
-				NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->clif, me->ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli->IsError())
 				{
 					root = MemAllocNN(Net::SSDPClient::SSDPRoot);
@@ -156,9 +156,9 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientCont
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
-	this->sockf = this->core->GetSocketFactory();
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, false);
-	NEW_CLASS(this->ssdp, Net::SSDPClient(this->sockf, CSTR_NULL, this->core->GetLog()));
+	this->clif = this->core->GetTCPClientFactory();
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
+	NEW_CLASS(this->ssdp, Net::SSDPClient(this->clif->GetSocketFactory(), CSTR_NULL, this->core->GetLog()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lbDevice = ui->NewListBox(*this, false);

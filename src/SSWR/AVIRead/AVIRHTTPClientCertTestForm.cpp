@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 		IO::BuildTime::GetBuildTime(dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
+		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
 		{
 			valid = false;
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<U
 	this->core = core;
 	this->SetText(CSTR("HTTP Client Cert Test"));
 	this->SetFont(0, 0, 8.25, false);
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;

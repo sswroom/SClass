@@ -1,6 +1,7 @@
 #ifndef _SM_NET_EMAIL_EMAILVALIDATOR
 #define _SM_NET_EMAIL_EMAILVALIDATOR
 #include "Net/DNSClient.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/CString.h"
 
 namespace Net
@@ -21,10 +22,10 @@ namespace Net
 				S_DOMAIN_NOT_RESOLVED
 			};
 		private:
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Net::DNSClient *dnsClient;
 		public:
-			EmailValidator(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
+			EmailValidator(NN<Net::TCPClientFactory> clif, NN<IO::LogTool> log);
 			~EmailValidator();
 
 			Status Validate(Text::CStringNN emailAddr);

@@ -40,7 +40,7 @@ void Map::WebMapService::LoadXML(Version version)
 		break;
 	}
 	IO::MemoryStream mstm;
-	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, sb.ToCString(), mstm, 1048576))
+	if (!Net::HTTPClient::LoadContent(this->clif, this->ssl, sb.ToCString(), mstm, 1048576))
 		return;
 	mstm.SeekFromBeginning(0);
 	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
@@ -321,9 +321,9 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 	}
 }
 
-Map::WebMapService::WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CoordinateSystem> envCsys)
+Map::WebMapService::WebMapService(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmsURL, Version version, NN<Math::CoordinateSystem> envCsys)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->envCsys = envCsys;
@@ -503,7 +503,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sbData;
@@ -622,7 +622,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Optional<Media::ImageList> ret = 0;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{

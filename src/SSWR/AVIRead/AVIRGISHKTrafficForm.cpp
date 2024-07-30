@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(AnyType userObj)
 	if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 	{
 		Map::HKTrafficLayer *traffic;
-		NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory()));
+		NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory()));
 		traffic->AddRoadLayer(lyr);
 		traffic->EndInit();
 		me->lyr = traffic;
@@ -69,7 +69,7 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(Optional<UI::GUIClient
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = 0;
 

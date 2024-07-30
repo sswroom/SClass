@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		if (useWS)
 		{
 			NN<Net::WebSocketClient> ws;
-			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
+			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
 				ws.Delete();
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		}
 		else
 		{
-			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 10000));
+			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 10000));
 		}
 		if (me->client->IsError())
 		{
@@ -372,7 +372,7 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(Optional<UI::GUI
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->cliCert = 0;
 	this->cliKey = 0;
 	this->totalCount = 0;

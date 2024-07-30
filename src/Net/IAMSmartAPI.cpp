@@ -77,7 +77,7 @@ Optional<Text::JSONBase> Net::IAMSmartAPI::PostEncReq(Text::CStringNN url, NN<CE
 	printf("PostEncReq.Url: %s\r\n", url.v.Ptr());
 	printf("PostEncReq.Req: %s\r\n", sb.v.Ptr());
 #endif
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_POST, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_POST, false);
 	this->InitHTTPClient(cli, sb.ToCString());
 	IO::MemoryStream mstm;
 	cli->ReadToEnd(mstm, 65536);
@@ -280,9 +280,9 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 	return 0;
 }
 
-Net::IAMSmartAPI::IAMSmartAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret)
+Net::IAMSmartAPI::IAMSmartAPI(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN domain, Text::CStringNN clientID, Text::CStringNN clientSecret)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->domain = Text::String::New(domain);
 	this->clientID = Text::String::New(clientID);
@@ -315,7 +315,7 @@ Bool Net::IAMSmartAPI::GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo>
 	sbURL.Append(CSTR("https://"));
 	sbURL.Append(this->domain);
 	sbURL.Append(CSTR("/api/v1/security/getKey"));
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 	this->InitHTTPClient(cli, CSTR(""));
 	IO::MemoryStream mstm;
 	cli->ReadToEnd(mstm, 65536);
@@ -453,7 +453,7 @@ Bool Net::IAMSmartAPI::RevokeKey()
 	sbURL.Append(CSTR("https://"));
 	sbURL.Append(this->domain);
 	sbURL.Append(CSTR("/api/v1/security/revokeKey"));
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 	this->InitHTTPClient(cli, CSTR(""));
 	IO::MemoryStream mstm;
 	cli->ReadToEnd(mstm, 65536);

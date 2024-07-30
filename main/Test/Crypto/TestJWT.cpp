@@ -19,7 +19,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::StringBuilderUTF8 sb;
 	Crypto::Token::JWTHandler *jwt;
 	Net::OSSocketFactory sockf(false);
-	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, UTF8STRC("your-256-bit-secret"), Crypto::Cert::X509Key::KeyType::Unknown));
 
 	Crypto::Token::JWTParam param;

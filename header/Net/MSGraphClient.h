@@ -205,7 +205,7 @@ namespace Net
 	{
 	private:
 		typedef Bool (*IsKnownTypeFunc)(Text::CStringNN type);
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Optional<IO::LogTool> log;
 
@@ -213,7 +213,7 @@ namespace Net
 
 		template<class T> Bool GetList(NN<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NN<Data::ArrayListNN<T>> dataList);
 	public:
-		MSGraphClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		~MSGraphClient();
 
 		void SetLog(NN<IO::LogTool> log);

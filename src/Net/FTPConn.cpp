@@ -86,8 +86,9 @@ Int32 Net::FTPConn::WaitForResult()
 		return 0;
 }
 
-Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NN<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout) : cli(sockf, host, port, timeout)
+Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NN<Net::TCPClientFactory> clif, UInt32 codePage, Data::Duration timeout)
 {
+	this->cli = clif->Create(host, port, timeout);
 	this->codePage = codePage;
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -103,13 +104,14 @@ Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NN<Net::SocketFactory> 
 Net::FTPConn::~FTPConn()
 {
 	this->threadToStop = true;
-	this->cli.Close();
+	this->cli->Close();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
 	DEL_CLASS(this->writer);
 	DEL_CLASS(this->evt);
+	this->cli.Delete();
 }
 
 Bool Net::FTPConn::IsLogged()

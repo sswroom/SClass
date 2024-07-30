@@ -3,9 +3,9 @@
 #include "Net/SNS/SNS7gogo.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
+Net::SNS::SNS7gogo::SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
 {
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(sockf, ssl, encFact, userAgent));
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;

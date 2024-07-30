@@ -42,7 +42,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	Optional<Net::SSLEngine> ssl;
 	Net::OSSocketFactory sockf(false);
-	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	ssl = Net::SSLEngineFactory::Create(clif, true);
 	NN<Crypto::Cert::X509Key> key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 	Crypto::Cert::CertNames names;
 	Crypto::Cert::CertExtensions ext;

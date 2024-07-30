@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
 	if (me->kaConn)
 	{
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, false);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, false);
 		while (!thread->IsStopping())
 		{
 			if (!me->GetNextURL().SetTo(url))
@@ -186,13 +186,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 				if (cli->IsError())
 				{
 					cli.Delete();
-					cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 				}
 			}
 			else
 			{
 				cli.Delete();
-				cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+				cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 				Sync::Interlocked::IncrementU32(me->failCnt);
 			}
 		}
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 		{
 			if (!me->GetNextURL().SetTo(url))
 				break;
-			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, timeDNS, timeConn, false))
 			{
 				if (me->enableGZip)
@@ -317,8 +317,8 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("HTTP Test"));
 
 	this->core = core;
-	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->clif = core->GetTCPClientFactory();
+	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	this->threads = 0;
 	this->connCurrIndex = 0;
 	this->connLeftCnt = 0;

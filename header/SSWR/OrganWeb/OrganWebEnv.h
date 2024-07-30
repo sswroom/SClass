@@ -10,7 +10,7 @@
 #include "Map/GPSTrack.h"
 #include "Map/OSM/OSMCacheHandler.h"
 #include "Media/ColorManager.h"
-#include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 #include "Net/WebServer/NodeModuleHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Parser/FullParserList.h"
@@ -35,7 +35,7 @@ namespace SSWR
 			Int32 unorganizedGroupId;
 			UInt32 scnSize;
 			Optional<Text::String> reloadPwd;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			NN<IO::LogTool> log;
 			Net::WebServer::WebListener *listener;
@@ -81,7 +81,7 @@ namespace SSWR
 			void FreeUsers();
 			void ClearUsers();
 		public:
-			OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Optional<DB::DBTool> db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CStringNN osmCachePath);
+			OrganWebEnv(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Optional<DB::DBTool> db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CStringNN osmCachePath);
 			~OrganWebEnv();
 
 			Bool IsError();

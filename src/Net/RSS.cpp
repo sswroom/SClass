@@ -430,7 +430,7 @@ Text::String *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
+Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	this->isError = true;
 	this->title = 0;
@@ -448,7 +448,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 
 	NN<IO::ParsedObject> pobj;
 	NN<IO::Stream> stm;
-	if (!Net::URL::OpenObject(url, OPTSTR_CSTR(userAgent), sockf, ssl, timeout, log).SetTo(pobj))
+	if (!Net::URL::OpenObject(url, OPTSTR_CSTR(userAgent), clif, ssl, timeout, log).SetTo(pobj))
 	{
 		return;
 	}

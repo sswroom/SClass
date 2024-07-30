@@ -54,7 +54,7 @@ namespace Map
 		Double maxY;
 
 		NN<Text::String> url;
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<Text::EncodingFactory> encFact;
 		Sync::Mutex roadMut;
@@ -65,7 +65,7 @@ namespace Map
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);
 		IO::Stream *OpenURLStream();
 	public:
-		HKTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
+		HKTrafficLayer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
 		virtual ~HKTrafficLayer();
 
 		void SetURL(Text::String *url);

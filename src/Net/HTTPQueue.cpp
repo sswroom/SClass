@@ -4,9 +4,9 @@
 #include "Sync/SimpleThread.h"
 #include "Text/URLString.h"
 
-Net::HTTPQueue::HTTPQueue(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Net::HTTPQueue::HTTPQueue(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 }
 
@@ -30,13 +30,13 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 		{
 			if (status->req1 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, method, noShutdown);
 				status->req1 = cli.Ptr();
 				found = true;
 			}
 			else if (status->req2 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, method, noShutdown);
 				status->req2 = cli.Ptr();
 				found = true;
 			}
@@ -46,7 +46,7 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 			status = MemAllocNN(DomainStatus);
 			status->req1 = 0;
 			status->req2 = 0;
-			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
+			cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, method, noShutdown);
 			status->req1 = cli.Ptr();
 			this->statusMap.Put(CSTRP(sbuff, sptr), status);
 			found = true;

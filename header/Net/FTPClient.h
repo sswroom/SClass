@@ -3,7 +3,7 @@
 #include "IO/Stream.h"
 #include "Net/FTPConn.h"
 #include "Net/TCPClient.h"
-#include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 
 namespace Net
 {
@@ -17,10 +17,10 @@ namespace Net
 		const UTF8Char *path;
 		UInt32 codePage;
 		Net::FTPConn *conn;
-		Net::TCPClient *cli2;
+		Optional<Net::TCPClient> cli2;
 
 	public:
-		FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout);
+		FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Bool passiveMode, UInt32 codePage, Data::Duration timeout);
 		~FTPClient();
 
 		virtual Bool IsDown() const;

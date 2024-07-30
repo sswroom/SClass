@@ -3,8 +3,8 @@
 #include "Data/ArrayListStringNN.h"
 #include "IO/CameraControl.h"
 #include "IO/Stream.h"
-#include "Net/SocketFactory.h"
 #include "Net/SocketUtil.h"
+#include "Net/TCPClientFactory.h"
 #include "Text/EncodingFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -16,7 +16,7 @@ namespace IO
 		{
 		private:
 			Net::SocketUtil::AddressInfo addr;
-			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Text::EncodingFactory> encFact;
 			Text::String *oiVersion;
 			Text::String *oiTrackVersion;
@@ -28,7 +28,7 @@ namespace IO
 			void GetGPSLogList();
 			void GetSNSLogList();
 		public:
-			OlympusCameraControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr);
+			OlympusCameraControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~OlympusCameraControl();
 
 			virtual UOSInt GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList);
@@ -41,7 +41,7 @@ namespace IO
 			Text::String *GetOITrackVersion();
 			Bool GetModel(NN<Text::StringBuilderUTF8> sb);
 			
-			static Optional<OlympusCameraControl> CreateControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact);
+			static Optional<OlympusCameraControl> CreateControl(NN<Net::TCPClientFactory> clif, Optional<Text::EncodingFactory> encFact);
 		};
 	}
 }

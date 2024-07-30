@@ -269,7 +269,7 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(Optional<UI::GUIClientControl> p
 	
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
-	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->currCerts = 0;
 	this->packetBuff = 0;
 	this->packetSize = 0;

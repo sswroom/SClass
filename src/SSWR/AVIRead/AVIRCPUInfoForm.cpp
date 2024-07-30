@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 		{
 			Int32 respStatus;
 			Text::StringBuilderUTF8 sbData;
-			NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+			NN<Net::TCPClientFactory> clif = me->core->GetTCPClientFactory();
 			Text::StringBuilderUTF8 sbURL;
 			sbURL.AppendC(UTF8STRC("http://sswroom.no-ip.org:5080/benchmark/cpuinfo?family="));
 			sbURL.AppendI32(cpu.GetFamilyId());
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 
 			sbData.AppendP(sbuff, sptr);
 			NN<Net::HTTPClient> cli;
-			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+			cli = Net::HTTPClient::CreateConnect(clif, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
 			cli->Write(sbData.ToByteArray());
 			respStatus = cli->GetRespStatus();
@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);

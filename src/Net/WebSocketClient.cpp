@@ -285,7 +285,7 @@ UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage
 	}
 }
 
-Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
+Net::WebSocketClient::WebSocketClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
@@ -304,8 +304,7 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 	}
 	else
 	{
-		NEW_CLASSNN(cli, Net::TCPClient(sockf, host, port, timeout));
-		this->cli = cli;
+		this->cli = clif->Create(host, port, timeout);;
 	}
 	if (!this->cli.SetTo(cli))
 	{

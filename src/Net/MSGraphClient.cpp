@@ -198,7 +198,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 
 template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NN<Data::ArrayListNN<T>> dataList)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Text::StringBuilderUTF8 sb;
@@ -267,9 +267,9 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 	return false;
 }
 
-Net::MSGraphClient::MSGraphClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Net::MSGraphClient::MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->log = 0;
 }
@@ -304,7 +304,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 		sbLog.Append(sb);
 		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 	cli->FormBegin();
 	cli->FormAdd(CSTR("client_id"), clientId);
 	cli->FormAdd(CSTR("client_secret"), clientSecret);
@@ -360,7 +360,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 	{
 		sb.Append(CSTR("me"));
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	sb.ClearStr();
@@ -441,7 +441,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 		sbLog.Append(sb);
 		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	sb.ClearStr();

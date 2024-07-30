@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> par
 
 	this->core = core;
 	this->listener = 0;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), false);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpCANBus = ui->NewGroupBox(*this, CSTR("CAN Bus"));

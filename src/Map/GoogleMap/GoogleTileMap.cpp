@@ -4,7 +4,7 @@
 
 #define GMAPURL "http://mt1.google.com/vt/"
 
-Map::GoogleMap::GoogleTileMap::GoogleTileMap(Text::CString cacheDir, MapType mapType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 0, 18, sockf, ssl)
+Map::GoogleMap::GoogleTileMap::GoogleTileMap(Text::CString cacheDir, MapType mapType, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 0, 18, clif, ssl)
 {
 	this->mapType = mapType;
 }

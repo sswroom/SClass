@@ -2,9 +2,9 @@
 #include "IO/Path.h"
 #include "Net/ACMEClient.h"
 
-Net::ACMEClient::ACMEClient(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port, Text::CStringNN keyFile)
+Net::ACMEClient::ACMEClient(NN<Net::TCPClientFactory> clif, Text::CStringNN serverHost, UInt16 port, Text::CStringNN keyFile)
 {
-	NEW_CLASS(this->acme, Net::ACMEConn(sockf, serverHost, port));
+	NEW_CLASSNN(this->acme, Net::ACMEConn(clif, serverHost, port));
 	this->keyReady = false;
 	this->accReady = false;
 	if (!this->acme->IsError())
@@ -30,7 +30,7 @@ Net::ACMEClient::ACMEClient(NN<Net::SocketFactory> sockf, Text::CStringNN server
 
 Net::ACMEClient::~ACMEClient()
 {
-	DEL_CLASS(this->acme);
+	this->acme.Delete();
 }
 
 Bool Net::ACMEClient::IsError()
@@ -53,7 +53,7 @@ Text::String *Net::ACMEClient::GetAccountId()
 	return this->acme->GetAccountId();
 }
 
-Net::ACMEConn *Net::ACMEClient::GetConn()
+NN<Net::ACMEConn> Net::ACMEClient::GetConn()
 {
 	return this->acme;
 }

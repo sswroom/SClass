@@ -67,7 +67,7 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	{
 		Int32 status;
 		NN<Net::HTTPClient> cli;
-		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		while (true)
 		{
 			status = cli->GetRespStatus();
@@ -102,9 +102,9 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->bounds = Math::RectAreaDbl(0, 0, 0, 0);

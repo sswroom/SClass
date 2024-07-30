@@ -23,7 +23,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Optional<Net::SSLEngine> ssl;
 	Bool succ = true;
 	Net::OSSocketFactory sockf(false);
-	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	Net::TCPClientFactory clif(sockf);
+	ssl = Net::SSLEngineFactory::Create(clif, true);
 	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
@@ -42,8 +43,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		NN<Net::WebServer::HTTPForwardHandler> hdlr;
 		Net::WebServer::WebListener *svr;
-		NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(sockf, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
-		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(clif, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
+		NEW_CLASS(svr, Net::WebServer::WebListener(clif, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())
 		{
 			console->WriteLine(CSTR("HTTP Forwarding started"));

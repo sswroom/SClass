@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
 	me->log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-	NEW_CLASS(me->svr, Net::PushServer(me->core->GetSocketFactory(), me->ssl, port, sbAPIKey.ToCString(), me->log));
+	NEW_CLASS(me->svr, Net::PushServer(me->core->GetTCPClientFactory(), me->ssl, port, sbAPIKey.ToCString(), me->log));
 	if (me->svr->IsError())
 	{
 		DEL_CLASS(me->svr);
@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(Optional<UI::GUIClientCont
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));

@@ -43,6 +43,7 @@ namespace SSWR
 			Media::ColorManager colorMgr;
 			IO::SiLabDriver *siLabDriver;
 			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebBrowser *browser;
 			Text::EncodingFactory encFact;
@@ -90,6 +91,7 @@ namespace SSWR
 			Map::MapManager *GetMapManager();
 			NN<Media::ColorManager> GetColorMgr();
 			NN<Net::SocketFactory> GetSocketFactory();
+			NN<Net::TCPClientFactory> GetTCPClientFactory();
 			NN<Media::DrawEngine> GetDrawEngine();
 			NN<Text::EncodingFactory> GetEncFactory();
 			IO::SiLabDriver *GetSiLabDriver();

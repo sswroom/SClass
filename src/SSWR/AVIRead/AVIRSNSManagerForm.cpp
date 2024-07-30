@@ -58,9 +58,9 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent, CSTR_NULL, this->core->GetLog()));
+	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), userAgent, CSTR_NULL, this->core->GetLog()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlChannel = ui->NewPanel(*this);

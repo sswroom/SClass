@@ -5,9 +5,9 @@
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Net::AzureManager::AzureManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Net::AzureManager::AzureManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->keyMap = 0;
 }
@@ -31,7 +31,7 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 	{
 		NEW_CLASS(this->keyMap, Data::FastStringMapNN<Text::String>());
 		Text::StringBuilderUTF8 sb;
-		if (Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://login.microsoftonline.com/common/discovery/v2.0/keys"), sb, 1048576))
+		if (Net::HTTPClient::LoadContent(this->clif, this->ssl, CSTR("https://login.microsoftonline.com/common/discovery/v2.0/keys"), sb, 1048576))
 		{
 			NN<Text::JSONBase> json;
 			if (Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))

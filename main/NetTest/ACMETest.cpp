@@ -16,11 +16,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
 
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
-	NEW_CLASS(acme, Net::ACMEClient(sockf, CSTR("acme-staging-v02.api.letsencrypt.org"), 0, CSTRP(sbuff, sptr)));
-	Net::ACMEConn *conn = acme->GetConn();
+	NEW_CLASS(acme, Net::ACMEClient(clif, CSTR("acme-staging-v02.api.letsencrypt.org"), 0, CSTRP(sbuff, sptr)));
+	NN<Net::ACMEConn> conn = acme->GetConn();
 	NN<Net::ACMEConn::Order> order;
 	if (conn->OrderNew(domain.v, domain.leng).SetTo(order))
 	{

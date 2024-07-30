@@ -143,6 +143,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	Int32 retNum = 0;
 	Net::OSSocketFactory sockf(false);
+	Net::TCPClientFactory clif(sockf);
 	if (!sockf.DNSResolveIP(mysqlServer->ToCString(), addr))
 	{
 		console.WriteLine(CSTR("MySQLServer cannot be resolved"));
@@ -160,7 +161,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::MySQLTCPClient(sockf, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), 0));
+		NEW_CLASS(cli, Net::MySQLTCPClient(clif, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), 0));
 		if (cli->IsError())
 		{
 			console.WriteLine(CSTR("Error in connecting to MySQL server"));
@@ -197,11 +198,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			IO::LogWriter *writer;
 			NEW_CLASS(writer, IO::LogWriter(log, IO::LogHandler::LogLevel::Command));
 
-			Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
+			Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
 			Net::Email::SMTPClient *smtp;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
-			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->ToCString(), smtpIPort, connType, writer, 30000));
+			NEW_CLASS(smtp, Net::Email::SMTPClient(clif, ssl, smtpHost->ToCString(), smtpIPort, connType, writer, 30000));
 			if (cfg->GetValue(CSTR("SMTPUser")).SetTo(smtpUser) && cfg->GetValue(CSTR("SMTPPassword")).SetTo(smtpPassword) && smtpUser->v[0] && smtpPassword->v[0])
 			{
 				smtp->SetPlainAuth(smtpUser->ToCString(), smtpPassword->ToCString());

@@ -67,7 +67,7 @@ size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userda
 	return size * nmemb;
 }
 
-Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(clif, kaConn)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->curl = curl_easy_init();
@@ -321,7 +321,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1")));
 		}
-		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), this->svrAddr))
+		else if (!clif->GetSocketFactory()->DNSResolveIP(CSTRP(svrname, svrnameEnd), this->svrAddr))
 		{
 			this->writing = true;
 			this->canWrite = false;

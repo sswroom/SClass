@@ -70,7 +70,7 @@ void __stdcall Net::MQTTBroker::OnClientConn(NN<Socket> s, AnyType userObj)
 	else
 	{
 		NN<Net::TCPClient> cli;
-		NEW_CLASSNN(cli, Net::TCPClient(listener->me->sockf, s));
+		NEW_CLASSNN(cli, Net::TCPClient(listener->me->clif->GetSocketFactory(), s));
 		OnClientReady(cli, listener);
 	}
 }
@@ -959,9 +959,9 @@ void Net::MQTTBroker::StreamClosed(NN<IO::Stream> stm, AnyType stmData)
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
+Net::MQTTBroker::MQTTBroker(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->log = log;
 	this->connHdlr = 0;
 	this->connObj = 0;
@@ -1051,7 +1051,7 @@ Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Boo
 	listener->ssl = ssl;
 	listener->listener = 0;
 	NEW_CLASS(listener->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, listener, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(listener->svr, Net::TCPServer(this->sockf, 0, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
+	NEW_CLASS(listener->svr, Net::TCPServer(this->clif->GetSocketFactory(), 0, port, this->log, OnClientConn, listener, CSTR("MQTT: "), autoStart));
 	if (listener->svr->IsV4Error())
 	{
 		DEL_CLASS(listener->svr);
@@ -1075,7 +1075,7 @@ Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, B
 	listener->ssl = 0;
 	listener->cliMgr = 0;
 	listener->svr = 0;
-	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->sockf, ssl, this->wsHdlr, port, 60, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
+	NEW_CLASS(listener->listener, Net::WebServer::WebListener(this->clif, ssl, this->wsHdlr, port, 60, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SSWRMQTT/1.0"), false, Net::WebServer::KeepAlive::No, autoStart));
 	if (listener->listener->IsError())
 	{
 		DEL_CLASS(listener->listener);

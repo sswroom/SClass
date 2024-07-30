@@ -13,7 +13,7 @@
 
 Parser::FileParser::SPKParser::SPKParser()
 {
-	this->sockf = 0;
+	this->clif = 0;
 	this->parsers = 0;
 }
 
@@ -31,9 +31,9 @@ void Parser::FileParser::SPKParser::SetParserList(Optional<Parser::ParserList> p
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::SPKParser::SetSocketFactory(NN<Net::SocketFactory> sockf)
+void Parser::FileParser::SPKParser::SetTCPClientFactory(NN<Net::TCPClientFactory> clif)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 }
 
 void Parser::FileParser::SPKParser::SetSSLEngine(Optional<Net::SSLEngine> ssl)
@@ -89,9 +89,9 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 		}
 		customType = ReadInt32(&hdr[i + 0]);
 		customSize = ReadUInt32(&hdr[i + 4]);
-		NN<Net::SocketFactory> sockf;
+		NN<Net::TCPClientFactory> clif;
 		NN<Parser::ParserList> parsers;
-		if (customType == 1 && fd->IsFullFile() && this->sockf.SetTo(sockf) && this->parsers.SetTo(parsers))
+		if (customType == 1 && fd->IsFullFile() && this->clif.SetTo(clif) && this->parsers.SetTo(parsers))
 		{
 			Data::ByteBuffer customBuff(customSize);
 			IO::SPackageFile *spkg;
@@ -101,7 +101,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UOSInt)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
-			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 0, 18, sockf, this->ssl));
+			NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 0, 18, clif, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
 			{

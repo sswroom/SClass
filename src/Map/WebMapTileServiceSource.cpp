@@ -25,7 +25,7 @@ void Map::WebMapTileServiceSource::LoadXML()
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->wmtsURL);
 	sb.AppendC(UTF8STRC("?REQUEST=GetCapabilities"));
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -611,9 +611,9 @@ void Map::WebMapTileServiceSource::ReleaseResourceURL(NN<ResourceURL> resourceUR
 	MemFreeNN(resourceURL);
 }
 
-Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL)
+Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL)
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->wmtsURL = Text::String::New(wmtsURL);
@@ -822,7 +822,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 #endif
 
 	Text::StringBuilderUTF8 sb;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	UOSInt readSize;
 	while ((readSize = cli->Read(BYTEARR(tmpBuff))) > 0)
@@ -1041,7 +1041,7 @@ Optional<IO::StreamData> Map::WebMapTileServiceSource::LoadTileImageData(UOSInt 
 	printf("URL: %s\r\n", urlSb.ToString());
 #endif
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(this->clif, this->ssl, CSTR("WMTS/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{

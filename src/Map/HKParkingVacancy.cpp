@@ -18,7 +18,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage(this->parkingMut);
 	IO::MemoryStream mstm;
-	if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://ogciopsi.blob.core.windows.net/dataset/parking-vacancy/parking-vacancy-info.csv"), mstm, 10485760))
+	if (!Net::HTTPClient::LoadContent(this->clif, this->ssl, CSTR("https://ogciopsi.blob.core.windows.net/dataset/parking-vacancy/parking-vacancy-info.csv"), mstm, 10485760))
 	{
 		return;
 	}
@@ -162,7 +162,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 	{
 		Sync::MutexUsage mutUsage(this->parkingMut);
 		IO::MemoryStream mstm;
-		if (!Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://dashboard.data.gov.hk/api/parking-vacancy?format=csv"), mstm, 10485760))
+		if (!Net::HTTPClient::LoadContent(this->clif, this->ssl, CSTR("https://dashboard.data.gov.hk/api/parking-vacancy?format=csv"), mstm, 10485760))
 		{
 			return;
 		}
@@ -244,9 +244,9 @@ void Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
 	MemFreeNN(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::HKParkingVacancy::HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateWGS84Csys())
 {
-	this->sockf = sockf;
+	this->clif = clif;
 	this->ssl = ssl;
 	this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(0, 0));
 	this->LoadParkingInfo();

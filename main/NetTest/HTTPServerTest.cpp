@@ -87,8 +87,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 
 	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
 #if defined(USESSL)
-	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	ssl = Net::SSLEngineFactory::Create(clif, true);
 	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
@@ -117,7 +118,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
 		NEW_CLASSNN(myHdlr, MyHandler());
 		hdlr->HandlePath(CSTR("/api"), myHdlr, true);
-		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASS(svr, Net::WebServer::WebListener(clif, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())
 		{
 			progCtrl->WaitForExit(progCtrl);
