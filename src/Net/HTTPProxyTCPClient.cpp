@@ -26,7 +26,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 			return;
 		}
 	}
-	else if (addr.addrType == Net::AddrType::IPv4)
+	else if (addr.addrType == Net::AddrType::IPv6)
 	{
 		this->s = sockf->CreateTCPSocketv6();
 		if (!this->s.SetTo(s))
@@ -59,6 +59,11 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	*sptr++ = ':';
 	sptr = Text::StrUInt16(sptr, destPort);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" HTTP/1.1\r\n"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("Host: "));
+	sptr = destHost.ConcatTo(sptr);
+	*sptr++ = ':';
+	sptr = Text::StrUInt16(sptr, destPort);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	UnsafeArray<const UTF8Char> nnuserName;
 	UnsafeArray<const UTF8Char> nnpwd;
 	if (pt == PWDT_BASIC && userName.SetTo(nnuserName) && pwd.SetTo(nnpwd))
@@ -80,7 +85,9 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 
 	if (Text::StrStartsWithC(reqBuff, respSize, UTF8STRC("HTTP/1.1 200")))
 	{
-
+	}
+	else if (Text::StrStartsWithC(reqBuff, respSize, UTF8STRC("HTTP/1.0 200")))
+	{
 	}
 	else
 	{
