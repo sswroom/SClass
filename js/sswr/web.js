@@ -1386,6 +1386,11 @@ export function parseUserAgent(userAgent)
 			ent.browser = BrowserType.Chrome;
 			ent.browserVer = strs[i].substring(6);
 		}
+		else if ((ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Safari) && strs[i].startsWith("FxiOS/"))
+		{
+			ent.browser = BrowserType.Firefox;
+			ent.browserVer = strs[i].substring(6);
+		}
 		else if (strs[i].startsWith("Chrome/"))
 		{
 			if (ent.browser == BrowserType.Unknown || ent.browser == BrowserType.Safari)

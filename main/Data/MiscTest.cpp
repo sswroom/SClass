@@ -687,6 +687,12 @@ Int32 HTTPSProxyCliTest()
 	return 0;
 }
 
+Int32 AWSEmailTest()
+{
+
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt testType = 15;
@@ -724,6 +730,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return SMTPProxyTest();
 	case 15:
 		return HTTPSProxyCliTest();
+	case 16:
+		return AWSEmailTest();
 	default:
 		return 0;
 	}

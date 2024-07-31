@@ -1,5 +1,6 @@
 1.6.9
 -Enhance web.getBrowserInfo
+-web.parseUserAgent support FxiOS (Firefox in iOS)
 
 1.6.8
 -Added text.replaceAll

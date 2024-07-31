@@ -1348,6 +1348,13 @@ void Net::UserAgentDB::ParseUserAgent(NN<Net::UserAgentDB::UAEntry> ent, Text::C
 			ent->browserVer = Text::StrCopyNewC(&strs[i].v[6], strs[i].leng - 6);
 			ent->browserVerLen = strs[i].leng - 6;
 		}
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("FxiOS/")))
+		{
+			ent->browser = Net::BrowserInfo::BT_FIREFOX;
+			SDEL_TEXT(ent->browserVer);
+			ent->browserVer = Text::StrCopyNewC(&strs[i].v[6], strs[i].leng - 6);
+			ent->browserVerLen = strs[i].leng - 6;
+		}
 		else if (Text::StrStartsWithC(strs[i].v, strs[i].leng, UTF8STRC("Chrome/")))
 		{
 			if (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI)
