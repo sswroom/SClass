@@ -6,6 +6,8 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
+//#define VERBOSE
+
 Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, UnsafeArrayOpt<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, 0)
 {
 	this->SetSourceName(destHost);
@@ -13,6 +15,9 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(proxyHost, addr))
 	{
+#if defined(VERBOSE)
+		printf("HTTPProxyTCP: Error in resolving host: %s\r\n", proxyHost.v.Ptr());
+#endif
 		this->flags |= 12;
 		return;
 	}
@@ -22,6 +27,9 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		this->s = sockf->CreateTCPSocketv4();
 		if (!this->s.SetTo(s))
 		{
+#if defined(VERBOSE)
+			printf("HTTPProxyTCP: Error in creating v4 socket\r\n");
+#endif
 			this->flags |= 12;
 			return;
 		}
@@ -31,17 +39,26 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		this->s = sockf->CreateTCPSocketv6();
 		if (!this->s.SetTo(s))
 		{
+#if defined(VERBOSE)
+			printf("HTTPProxyTCP: Error in creating v6 socket\r\n");
+#endif
 			this->flags |= 12;
 			return;
 		}
 	}
 	else
 	{
+#if defined(VERBOSE)
+		printf("HTTPProxyTCP: Unknown address type\r\n");
+#endif
 		this->flags |= 12;
 		return;
 	}
 	if (!sockf->Connect(s, addr, proxyPort, 15000))
 	{
+#if defined(VERBOSE)
+		printf("HTTPProxyTCP: Error in connecting to proxy server\r\n");
+#endif
 		sockf->DestroySocket(s);
 		this->s = 0;
 		this->flags |= 12;
@@ -78,10 +95,18 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
+#if defined(VERBOSE)
+	printf("HTTPProxyTCP: Sending:\r\n%s", reqBuff);
+#endif
 	this->Write(Data::ByteArrayR((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff)));
 	this->SetTimeout(4000);
 	respSize = this->Read(BYTEARR(reqBuff));
 	this->SetTimeout(-1);
+
+#if defined(VERBOSE)
+	reqBuff[respSize] = 0;
+	printf("HTTPProxyTCP: Recv:\r\n%s", reqBuff);
+#endif
 
 	if (Text::StrStartsWithC(reqBuff, respSize, UTF8STRC("HTTP/1.1 200")))
 	{
@@ -91,6 +116,9 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	}
 	else
 	{
+#if defined(VERBOSE)
+		printf("HTTPProxyTCP: Unknown response\r\n");
+#endif
 		sockf->DestroySocket(s);
 		this->s = 0;
 		this->flags |= 12;
