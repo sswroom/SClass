@@ -7,6 +7,7 @@
 Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->ssl = ssl;
+	this->clif = clif;
 	this->host = Text::String::New(host);
 	this->port = port;
 	this->connType = connType;
@@ -20,6 +21,7 @@ Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net:
 Net::Email::SMTPClient::SMTPClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout)
 {
 	this->ssl = ssl;
+	this->clif = clif;
 	this->host = Text::String::New(host);
 	this->port = port;
 	this->connType = connType;
