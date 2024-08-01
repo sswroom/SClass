@@ -66,12 +66,19 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, 
 
 void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN boundary)
 {
+	UnsafeArray<UInt8> content;
+	if (!this->content.SetTo(content))
+		return;
 	stm->Write(CSTR("--").ToByteArray());
 	stm->Write(boundary.ToByteArray());
-	stm->Write(CSTR("\r\nContent-Type: ").ToByteArray());
-	stm->Write(this->contentType->ToByteArray());
+	NN<Text::String> contentType;
+	if (this->contentType.SetTo(contentType))
+	{
+		stm->Write(CSTR("\r\nContent-Type: ").ToByteArray());
+		stm->Write(contentType->ToByteArray());
+	}
 	stm->Write(CSTR("\r\nContent-Transfer-Encoding: base64\r\n\r\n").ToByteArray());
-	WriteB64Data(stm, this->content, this->contentLen);
+	WriteB64Data(stm, content, this->contentLen);
 
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -184,13 +191,16 @@ void Net::Email::EmailMessage::WriteHeaders(NN<IO::Stream> stm)
 	}
 }
 
-void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
+Bool Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 {
+	UnsafeArray<UInt8> content;
+	if (!this->content.SetTo(content))
+		return false;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	if (this->attachments.GetCount() > 0)
 	{
-		sptr = GenBoundary(sbuff, this->content, this->contentLen);
+		sptr = GenBoundary(sbuff, content, this->contentLen);
 		stm->Write(CSTR("Content-Type: multipart/mixed;\r\n\tboundary=\"").ToByteArray());
 		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 		stm->Write(CSTR("\"\r\n").ToByteArray());
@@ -205,16 +215,21 @@ void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 	}
 	else
 	{
-		stm->Write(CSTR("Content-Type: ").ToByteArray());
-		stm->Write(this->contentType->ToByteArray());
-		stm->Write(CSTR("\r\n").ToByteArray());
+		NN<Text::String> contentType;
+		if (this->contentType.SetTo(contentType))
+		{
+			stm->Write(CSTR("Content-Type: ").ToByteArray());
+			stm->Write(contentType->ToByteArray());
+			stm->Write(CSTR("\r\n").ToByteArray());
+		}
 		stm->Write(CSTR("Content-Length: ").ToByteArray());
 		sptr = Text::StrUOSInt(sbuff, this->contentLen);
 		stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 		stm->Write(CSTR("\r\n").ToByteArray());
 		stm->Write(CSTR("\r\n").ToByteArray());
-		stm->Write(Data::ByteArrayR(this->content, this->contentLen));
+		stm->Write(Data::ByteArrayR(content, this->contentLen));
 	}
+	return true;
 }
 
 UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UOSInt dataLen)
@@ -292,14 +307,15 @@ Net::Email::EmailMessage::~EmailMessage()
 	this->fromAddr.FreeBy(EmailAddressFree);
 	this->recpList.FreeAll(EmailAddressFree);
 	this->headerList.FreeAll();
-	SDEL_STRING(this->contentType);
-	if (this->content)
+	OPTSTR_DEL(this->contentType);
+	UnsafeArray<UInt8> content;
+	if (this->content.SetTo(content))
 	{
-		MemFree(this->content);
+		MemFreeArr(content);
 	}
 	this->attachments.FreeAll(AttachmentFree);
-	SDEL_CLASS(this->signCert);
-	SDEL_CLASS(this->signKey);
+	this->signCert.Delete();
+	this->signKey.Delete();
 }
 
 Bool Net::Email::EmailMessage::SetSubject(Text::CStringNN subject)
@@ -319,12 +335,14 @@ Bool Net::Email::EmailMessage::SetSubject(Text::CStringNN subject)
 
 Bool Net::Email::EmailMessage::SetContent(Text::CStringNN content, Text::CStringNN contentType)
 {
-	SDEL_STRING(this->contentType);
-	this->contentType = Text::String::New(contentType).Ptr();
-	if (this->content)
-		MemFree(this->content);
-	this->content = MemAlloc(UInt8, content.leng);
-	MemCopyNO(this->content, content.v.Ptr(), content.leng);
+	UnsafeArray<UInt8> contentBuff;
+	OPTSTR_DEL(this->contentType);
+	this->contentType = Text::String::New(contentType);
+	if (this->content.SetTo(contentBuff))
+		MemFreeArr(contentBuff);
+	this->content = contentBuff = MemAllocArr(UInt8, content.leng + 1);
+	MemCopyNO(contentBuff.Ptr(), content.v.Ptr(), content.leng);
+	contentBuff[content.leng] = 0;
 	this->contentLen = content.leng;
 	return true;
 }
@@ -545,14 +563,14 @@ NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment
 	return attachment;
 }
 
-Bool Net::Email::EmailMessage::AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key)
+Bool Net::Email::EmailMessage::AddSignature(Optional<Net::SSLEngine> ssl, Optional<Crypto::Cert::X509Cert> cert, Optional<Crypto::Cert::X509Key> key)
 {
-	SDEL_CLASS(this->signCert);
-	SDEL_CLASS(this->signKey);
+	this->signCert.Delete();
+	this->signKey.Delete();
 	this->ssl = ssl;
 	this->signCert = cert;
 	this->signKey = key;
-	return cert != 0 && key != 0;
+	return cert.NotNull() && key.NotNull();
 }
 
 Bool Net::Email::EmailMessage::CompletedMessage()
@@ -574,6 +592,34 @@ NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> Net::Email::
 	return this->recpList;
 }
 
+Text::CString Net::Email::EmailMessage::GetSubject()
+{
+	NN<Text::String> header;
+	UOSInt i = 0;
+	UOSInt j = this->headerList.GetCount();
+	while (i < j)
+	{
+		header = this->headerList.GetItemNoCheck(i);
+		if (header->StartsWith(CSTR("Subject: ")))
+		{
+			return header->ToCString().Substring(9);
+		}
+		i++;
+	}
+	return 0;
+}
+
+Optional<Text::String> Net::Email::EmailMessage::GetContentType()
+{
+	return this->contentType;
+}
+
+UnsafeArrayOpt<UInt8> Net::Email::EmailMessage::GetContent(OutParam<UOSInt> contentLeng)
+{
+	contentLeng.Set(this->contentLen);
+	return this->content;
+}
+
 Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 {
 	if (!this->CompletedMessage())
@@ -583,7 +629,8 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 	this->WriteHeaders(stm);
 	NN<Net::SSLEngine> nnssl;
 	NN<Crypto::Cert::X509Key> signKey;
-	if (this->signCert && signKey.Set(this->signKey) && this->ssl.SetTo(nnssl))
+	NN<Crypto::Cert::X509Cert> signCert;
+	if (this->signCert.SetTo(signCert) && this->signKey.SetTo(signKey) && this->ssl.SetTo(nnssl))
 	{
 		IO::MemoryStream mstm;
 		this->WriteContents(mstm);
@@ -629,14 +676,14 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 					builder.BeginSequence();
 						builder.AppendOIDString(CSTR("1.2.840.113549.1.7.1")); //data
 					builder.EndLevel();
-					builder.AppendContentSpecific(0, this->signCert->GetASN1Buff(), this->signCert->GetASN1BuffSize());
+					builder.AppendContentSpecific(0, signCert->GetASN1Buff(), signCert->GetASN1BuffSize());
 					builder.BeginSet();
 						builder.BeginSequence();
 							builder.AppendInt32(1);
 							builder.BeginSequence();
-								data = this->signCert->GetIssuerNamesSeq(dataSize);
+								data = signCert->GetIssuerNamesSeq(dataSize);
 								builder.AppendSequence(data.Ptr(), dataSize);
-								data = this->signCert->GetSerialNumber(dataSize);
+								data = signCert->GetSerialNumber(dataSize);
 								builder.AppendInteger(data.Ptr(), dataSize);
 							builder.EndLevel();
 							builder.BeginSequence();
@@ -703,9 +750,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 									builder.AppendOIDString(CSTR("1.3.6.1.4.1.311.16.4")); //outlookExpress
 									builder.BeginSet();
 										builder.BeginSequence();
-											data = this->signCert->GetIssuerNamesSeq(dataSize);
+											data = signCert->GetIssuerNamesSeq(dataSize);
 											builder.AppendSequence(data.Ptr(), dataSize);
-											data = this->signCert->GetSerialNumber(dataSize);
+											data = signCert->GetSerialNumber(dataSize);
 											builder.AppendInteger(data.Ptr(), dataSize);
 										builder.EndLevel();
 									builder.EndLevel();
@@ -714,9 +761,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 									builder.AppendOIDString(CSTR("1.2.840.113549.1.9.16.2.11")); //id-aa-encrypKeyPref
 									builder.BeginSet();
 										builder.BeginContentSpecific(0);
-											data = this->signCert->GetIssuerNamesSeq(dataSize);
+											data = signCert->GetIssuerNamesSeq(dataSize);
 											builder.AppendSequence(data.Ptr(), dataSize);
-											data = this->signCert->GetSerialNumber(dataSize);
+											data = signCert->GetSerialNumber(dataSize);
 											builder.AppendInteger(data.Ptr(), dataSize);
 										builder.EndLevel();
 									builder.EndLevel();

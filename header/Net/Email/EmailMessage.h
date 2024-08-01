@@ -47,14 +47,14 @@ namespace Net
 			Optional<EmailAddress> fromAddr;
 			Data::ArrayListNN<EmailAddress> recpList;
 			Data::ArrayListStringNN headerList;
-			Text::String *contentType;
-			UInt8 *content;
+			Optional<Text::String> contentType;
+			UnsafeArrayOpt<UInt8> content;
 			UOSInt contentLen;
 			Data::ArrayListNN<Attachment> attachments;
 
 			Optional<Net::SSLEngine> ssl;
-			Crypto::Cert::X509Cert *signCert;
-			Crypto::Cert::X509Key *signKey;
+			Optional<Crypto::Cert::X509Cert> signCert;
+			Optional<Crypto::Cert::X509Key> signKey;
 
 			UOSInt GetHeaderIndex(Text::CStringNN name);
 			Bool SetHeader(Text::CStringNN name, Text::CStringNN val);
@@ -62,7 +62,7 @@ namespace Net
 			void GenMultipart(NN<IO::Stream> stm, Text::CStringNN boundary);
 
 			void WriteHeaders(NN<IO::Stream> stm);
-			void WriteContents(NN<IO::Stream> stm);
+			Bool WriteContents(NN<IO::Stream> stm);
 			static UnsafeArray<UTF8Char> GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UOSInt dataLen);
 			static void WriteB64Data(NN<IO::Stream> stm, UnsafeArray<const UInt8> data, UOSInt dataSize);
 			static void AttachmentFree(NN<Attachment> attachment);
@@ -85,11 +85,14 @@ namespace Net
 			void AddCustomHeader(Text::CStringNN name, Text::CStringNN value);
 			Optional<Attachment> AddAttachment(Text::CStringNN fileName);
 			NN<Attachment> AddAttachment(UnsafeArray<const UInt8> content, UOSInt contentLen, Text::CStringNN fileName);
-			Bool AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
+			Bool AddSignature(Optional<Net::SSLEngine> ssl, Optional<Crypto::Cert::X509Cert> cert, Optional<Crypto::Cert::X509Key> key);
 
 			Bool CompletedMessage();
 			Optional<EmailAddress> GetFrom();
 			NN<const Data::ArrayListNN<EmailAddress>> GetRecpList();
+			Text::CString GetSubject();
+			Optional<Text::String> GetContentType();
+			UnsafeArrayOpt<UInt8> GetContent(OutParam<UOSInt> contentLeng);
 			Bool WriteToStream(NN<IO::Stream> stm);
 
 			static Bool GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CStringNN fromAddr);

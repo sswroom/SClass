@@ -23,6 +23,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/SSHManager.h"
 #include "Net/SSLEngineFactory.h"
+#include "Net/Email/AWSEmailClient.h"
 #include "Net/Email/SMTPClient.h"
 #include "Parser/FullParserList.h"
 #include "Sync/SimpleThread.h"
@@ -689,7 +690,17 @@ Int32 HTTPSProxyCliTest()
 
 Int32 AWSEmailTest()
 {
+	Text::CStringNN smtpUser = CSTR("");
+	Text::CStringNN smtpTo = CSTR("sswroom@yahoo.com");
 
+	Net::Email::AWSEmailClient cli(CSTR("us-east-2"));
+	Net::Email::EmailMessage msg;
+	msg.SetFrom(0, smtpUser);
+	msg.AddTo(0, smtpTo);
+	msg.SetSubject(CSTR("AWS Email Test"));
+	msg.SetSentDate(Data::Timestamp::Now());
+	msg.SetContent(CSTR("Message Content to display"), CSTR("text/plain"));
+	cli.Send(msg);
 	return 0;
 }
 

@@ -1481,6 +1481,10 @@ WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
+AWSEmailClient.o: ../../src/Net/Email/AWSEmailClient.cpp
+!-laws-cpp-sdk-core
+!-laws-cpp-sdk-email
+AWSEmailClientNull.o: ../../src/Net/Email/AWSEmailClientNull.cpp
 EmailMessage.o: ../../src/Net/Email/EmailMessage.cpp
 EmailSenderConfig.o: ../../src/Net/Email/EmailSenderConfig.cpp
 EmailStore.o: ../../src/Net/Email/EmailStore.cpp

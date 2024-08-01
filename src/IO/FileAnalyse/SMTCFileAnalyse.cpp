@@ -29,7 +29,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NN<Sync::Thread> th
 		}
 		else if (data->type == 2 || data->type == 3)
 		{
-			data->size = 23 + ReadUInt16(&packetHdr[21]);
+			data->size = 23 + (UOSInt)ReadUInt16(&packetHdr[21]);
 		}
 		else
 		{
