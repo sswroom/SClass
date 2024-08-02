@@ -14,6 +14,7 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 	NN<Text::JSONString> str1;
 	NN<Text::JSONArray> arr1;
 	NN<Text::JSONObject> obj1;
+	NN<Text::String> s;
 	Int32 bodyType;
 	UOSInt i;
 	UOSInt j;
@@ -47,18 +48,18 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 					if (obj1->GetObjectValue(CSTR("image")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 					{
 						str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-						if (item->imgURL)
+						if (item->imgURL.SetTo(s))
 						{
 							Text::StringBuilderUTF8 sb;
-							sb.Append(item->imgURL);
+							sb.Append(s);
 							sb.AppendUTF8Char(' ');
 							sb.Append(str1->GetValue());
-							item->imgURL->Release();
-							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							s->Release();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 						else
 						{
-							item->imgURL = str1->GetValue()->Clone().Ptr();
+							item->imgURL = str1->GetValue()->Clone();
 						}
 					}
 				}
@@ -67,18 +68,18 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 					if (obj1->GetObjectValue(CSTR("movieUrlHq")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 					{
 						str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-						if (item->imgURL)
+						if (item->imgURL.SetTo(s))
 						{
 							Text::StringBuilderUTF8 sb;
-							sb.Append(item->imgURL);
+							sb.Append(s);
 							sb.AppendUTF8Char(' ');
 							sb.Append(str1->GetValue());
-							item->imgURL->Release();
-							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							s->Release();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 						else
 						{
-							item->imgURL = str1->GetValue()->Clone().Ptr();
+							item->imgURL = str1->GetValue()->Clone();
 						}
 					}
 				}
@@ -93,7 +94,7 @@ Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogo
 	}
 	else
 	{
-		SDEL_STRING(item->imgURL);
+		OPTSTR_DEL(item->imgURL);
 		item->message->Release();
 		MemFreeNN(item);
 		return 0;
@@ -155,33 +156,33 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 								if (obj1->GetObjectValue(CSTR("talkCode")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-									SDEL_STRING(nnchInfo->talkCode);
-									nnchInfo->talkCode = str1->GetValue()->Clone().Ptr();
+									OPTSTR_DEL(nnchInfo->talkCode);
+									nnchInfo->talkCode = str1->GetValue()->Clone();
 								}
 								if (obj1->GetObjectValue(CSTR("name")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-									SDEL_STRING(nnchInfo->name);
-									nnchInfo->name = str1->GetValue()->Clone().Ptr();
+									OPTSTR_DEL(nnchInfo->name);
+									nnchInfo->name = str1->GetValue()->Clone();
 								}
 								if (obj1->GetObjectValue(CSTR("detail")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-									SDEL_STRING(nnchInfo->detail);
-									nnchInfo->detail = str1->GetValue()->Clone().Ptr();
+									OPTSTR_DEL(nnchInfo->detail);
+									nnchInfo->detail = str1->GetValue()->Clone();
 								}
 								if (obj1->GetObjectValue(CSTR("imagePath")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-									SDEL_STRING(nnchInfo->imagePath);
-									nnchInfo->imagePath = str1->GetValue()->Clone().Ptr();
+									OPTSTR_DEL(nnchInfo->imagePath);
+									nnchInfo->imagePath = str1->GetValue()->Clone();
 								}
 								nnchInfo->editDate = obj1->GetObjectInt64(CSTR("editDate")) * 1000;
 								if (obj1->GetObjectValue(CSTR("screenName")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-									SDEL_STRING(nnchInfo->screenName);
-									nnchInfo->screenName = str1->GetValue()->Clone().Ptr();
+									OPTSTR_DEL(nnchInfo->screenName);
+									nnchInfo->screenName = str1->GetValue()->Clone();
 								}
 							}
 						}
@@ -205,7 +206,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 												if (si >= 0)
 												{
 													item->message->Release();
-													SDEL_STRING(item->imgURL);
+													OPTSTR_DEL(item->imgURL);
 													MemFreeNN(item);
 												}
 												else
@@ -241,7 +242,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 												if (si >= 0)
 												{
 													item->message->Release();
-													SDEL_STRING(item->imgURL);
+													OPTSTR_DEL(item->imgURL);
 													MemFreeNN(item);
 												}
 												else
@@ -284,7 +285,7 @@ void Net::WebSite::WebSite7gogoControl::FreeItems(NN<Data::ArrayListNN<Net::WebS
 	{
 		item = itemList->GetItemNoCheck(i);
 		item->message->Release();
-		SDEL_STRING(item->imgURL);
+		OPTSTR_DEL(item->imgURL);
 		MemFreeNN(item);
 	}
 	itemList->Clear();
@@ -297,9 +298,9 @@ Optional<Text::String> Net::WebSite::WebSite7gogoControl::GetUserAgent()
 
 void Net::WebSite::WebSite7gogoControl::FreeChannelInfo(NN<Net::WebSite::WebSite7gogoControl::ChannelInfo> chInfo)
 {
-	SDEL_STRING(chInfo->talkCode);
-	SDEL_STRING(chInfo->name);
-	SDEL_STRING(chInfo->detail);
-	SDEL_STRING(chInfo->imagePath);
-	SDEL_STRING(chInfo->screenName);
+	OPTSTR_DEL(chInfo->talkCode);
+	OPTSTR_DEL(chInfo->name);
+	OPTSTR_DEL(chInfo->detail);
+	OPTSTR_DEL(chInfo->imagePath);
+	OPTSTR_DEL(chInfo->screenName);
 }

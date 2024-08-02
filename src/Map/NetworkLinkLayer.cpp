@@ -87,7 +87,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 
 void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 {
-	IO::StreamData *data = 0;
+	Optional<IO::StreamData> data = 0;
 	if (link->viewFormat.IsNull())
 	{
 #if defined(VERBOSE)
@@ -129,7 +129,7 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 		data = this->browser->GetData(sb.ToCString(), true, 0);
 	}
 	NN<IO::StreamData> fd;
-	if (fd.Set(data))
+	if (data.SetTo(fd))
 	{
 		while (fd->IsLoading())
 		{

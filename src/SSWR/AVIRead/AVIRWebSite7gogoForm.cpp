@@ -34,10 +34,10 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			if (item->imgURL)
+			if (item->imgURL.SetTo(s))
 			{
 				sb.ClearStr();
-				sb.Append(item->imgURL);
+				sb.Append(s);
 				sb.Replace(' ', '\n');
 				me->lvItems->SetSubItem(i, 2, sb.ToCString());
 			}

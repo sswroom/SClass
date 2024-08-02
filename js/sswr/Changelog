@@ -1,6 +1,7 @@
 1.6.9
 -Enhance web.getBrowserInfo
 -web.parseUserAgent support FxiOS (Firefox in iOS)
+-leaflet.toKMLFeature() change to empty name
 
 1.6.8
 -Added text.replaceAll

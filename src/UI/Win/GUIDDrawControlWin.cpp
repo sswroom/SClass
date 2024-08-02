@@ -414,7 +414,7 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 	this->buffSurface.Delete();
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
+UnsafeArrayOpt<UInt8> UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
 {
 	NN<Media::MonitorSurface> buffSurface;
 	this->surfaceMut.Lock();
@@ -425,8 +425,8 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 	}
 	if (targetWidth == this->bkBuffSize.x && targetHeight == this->bkBuffSize.y)
 	{
-		UInt8 *dptr = buffSurface->LockSurface(bpl);
-		if (dptr)
+		UnsafeArray<UInt8> dptr;
+		if (buffSurface->LockSurface(bpl).SetTo(dptr))
 		{
 			return dptr;
 		}

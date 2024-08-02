@@ -127,6 +127,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::TCPClientFactory> clif, Optional<
 {
 	Bool succ = false;
 	Net::RSS *rss;
+	NN<Text::String> s;
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), clif, ssl, 30000, log));
@@ -139,7 +140,8 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::TCPClientFactory> clif, Optional<
 			rh.Set(INVALID_READING);
 			UOSInt i;
 			NN<Net::RSSItem> item = rss->GetItemNoCheck(0);
-			IO::MemoryReadingStream mstm(item->description->v, item->description->leng);
+			s = Text::String::OrEmpty(item->description);
+			IO::MemoryReadingStream mstm(s->v, s->leng);
 			Text::UTF8Reader reader(mstm);
 			Text::StringBuilderUTF8 sb;
 			while (reader.ReadLine(sb, 512))

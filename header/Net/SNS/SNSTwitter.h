@@ -14,10 +14,10 @@ namespace Net
 		class SNSTwitter : public SNSControl
 		{
 		private:
-			Net::WebSite::WebSiteTwitterControl *ctrl;
+			NN<Net::WebSite::WebSiteTwitterControl> ctrl;
 			NN<Text::String> channelId;
 			NN<Text::String> chName;
-			Text::String *chDesc;
+			Optional<Text::String> chDesc;
 			Bool chError;
 			Data::FastMapNN<Int64, SNSItem> itemMap;
 

@@ -19,17 +19,17 @@ namespace Net
 				NN<Text::String> shortCode;
 				Int64 recTime;
 				NN<Text::String> message;
-				Text::String *imgURL;
-				Text::String *videoURL;
+				Optional<Text::String> imgURL;
+				Optional<Text::String> videoURL;
 				Bool moreImages;
 			} ItemData;
 
 			typedef struct
 			{
-				Text::String *full_name;
-				Text::String *biography;
-				Text::String *profile_pic_url_hd;
-				Text::String *username;
+				Optional<Text::String> full_name;
+				Optional<Text::String> biography;
+				Optional<Text::String> profile_pic_url_hd;
+				Optional<Text::String> username;
 			} ChannelInfo;
 			
 		private:
@@ -46,7 +46,7 @@ namespace Net
 			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList, Optional<ChannelInfo> chInfo);
 			void FreeItems(NN<Data::ArrayListNN<ItemData>> itemList);
 			void FreeChannelInfo(NN<ChannelInfo> chInfo);
-			OSInt GetPageImages(NN<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList);
+			OSInt GetPageImages(NN<Text::String> shortCode, NN<Data::ArrayListStringNN> imageList, NN<Data::ArrayListStringNN> videoList);
 			Optional<Text::String> GetUserAgent();
 		};
 	}

@@ -30,12 +30,12 @@ namespace Net
 			UInt8 objId[64];
 			UOSInt objIdLen;
 			NN<Text::String> descr;
-			Text::String *contact;
-			Text::String *name;
-			Text::String *location;
-			Text::String *model;
-			Text::String *vendor;
-			Text::String *cpuName;
+			Optional<Text::String> contact;
+			Optional<Text::String> name;
+			Optional<Text::String> location;
+			Optional<Text::String> model;
+			Optional<Text::String> vendor;
+			Optional<Text::String> cpuName;
 			UInt8 mac[6];
 			Data::ArrayListNN<ReadingInfo> readingList;
 		} AgentInfo;

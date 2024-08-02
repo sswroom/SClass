@@ -428,7 +428,7 @@ Bool Media::DDrawSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Mat
 	return false;
 }
 
-UInt8 *Media::DDrawSurface::LockSurface(OutParam<OSInt> lineAdd)
+UnsafeArrayOpt<UInt8> Media::DDrawSurface::LockSurface(OutParam<OSInt> lineAdd)
 {
 	RECT rcSrc;
 	HRESULT hRes;

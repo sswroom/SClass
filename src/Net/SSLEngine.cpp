@@ -56,7 +56,7 @@ Net::SSLEngine::SSLEngine(NN<Net::TCPClientFactory> clif)
 	this->currThreadCnt = 0;
 	this->usedTrustStore = 0;
 	this->threadMut.SetDebName((const UTF8Char*)"SSLEngine");
-	this->threadSt = MemAlloc(ThreadState, this->maxThreadCnt);
+	this->threadSt = MemAllocArr(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
 	UOSInt i = this->maxThreadCnt;
 	while (i-- > 0)
@@ -101,7 +101,7 @@ Net::SSLEngine::~SSLEngine()
 	{
 		DEL_CLASS(this->threadSt[i].evt);
 	}
-	MemFree(this->threadSt);
+	MemFreeArr(this->threadSt);
 	if (this->usedTrustStore.NotNull())
 	{
 		if (Sync::Interlocked::DecrementU32(trustStoreCnt) == 0)

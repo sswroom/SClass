@@ -91,26 +91,26 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 									if (obj1->GetObjectValue(CSTR("full_name")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-										SDEL_STRING(nnchInfo->full_name);
-										nnchInfo->full_name = str1->GetValue()->Clone().Ptr();
+										OPTSTR_DEL(nnchInfo->full_name);
+										nnchInfo->full_name = str1->GetValue()->Clone();
 									}
 									if (obj1->GetObjectValue(CSTR("biography")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-										SDEL_STRING(nnchInfo->biography);
-										nnchInfo->biography = str1->GetValue()->Clone().Ptr();
+										OPTSTR_DEL(nnchInfo->biography);
+										nnchInfo->biography = str1->GetValue()->Clone();
 									}
 									if (obj1->GetObjectValue(CSTR("profile_pic_url_hd")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-										SDEL_STRING(nnchInfo->profile_pic_url_hd);
-										nnchInfo->profile_pic_url_hd = str1->GetValue()->Clone().Ptr();
+										OPTSTR_DEL(nnchInfo->profile_pic_url_hd);
+										nnchInfo->profile_pic_url_hd = str1->GetValue()->Clone();
 									}
 									if (obj1->GetObjectValue(CSTR("username")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = NN<Text::JSONString>::ConvertFrom(jsBase);
-										SDEL_STRING(nnchInfo->username);
-										nnchInfo->username = str1->GetValue()->Clone().Ptr();
+										OPTSTR_DEL(nnchInfo->username);
+										nnchInfo->username = str1->GetValue()->Clone();
 									}
 								}
 								if (obj1->GetObjectValue(CSTR("edge_owner_to_timeline_media")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::Object)
@@ -147,11 +147,11 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 													item->recTime = obj1->GetObjectInt64(CSTR("taken_at_timestamp")) * 1000;
 													if (obj1->GetObjectValue(CSTR("display_url")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->imgURL = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone().Ptr();
+														item->imgURL = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone();
 													}
 													if (obj1->GetObjectValue(CSTR("video_url")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->videoURL = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone().Ptr();
+														item->videoURL = NN<Text::JSONString>::ConvertFrom(jsBase)->GetValue()->Clone();
 													}
 													if (obj1->GetObjectValue(CSTR("__typename")).SetTo(jsBase) && jsBase->GetType() == Text::JSONType::String)
 													{
@@ -186,8 +186,8 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> ch
 													else
 													{
 														item->shortCode->Release();
-														SDEL_STRING(item->imgURL);
-														SDEL_STRING(item->videoURL);
+														OPTSTR_DEL(item->imgURL);
+														OPTSTR_DEL(item->videoURL);
 														item->message->Release();
 														MemFreeNN(item);
 													}
@@ -221,8 +221,8 @@ void Net::WebSite::WebSiteInstagramControl::FreeItems(NN<Data::ArrayListNN<Net::
 	{
 		item = itemList->GetItemNoCheck(i);
 		item->message->Release();
-		SDEL_STRING(item->imgURL);
-		SDEL_STRING(item->videoURL);
+		OPTSTR_DEL(item->imgURL);
+		OPTSTR_DEL(item->videoURL);
 		MemFreeNN(item);
 	}
 	itemList->Clear();
@@ -230,13 +230,13 @@ void Net::WebSite::WebSiteInstagramControl::FreeItems(NN<Data::ArrayListNN<Net::
 
 void Net::WebSite::WebSiteInstagramControl::FreeChannelInfo(NN<Net::WebSite::WebSiteInstagramControl::ChannelInfo> chInfo)
 {
-	SDEL_STRING(chInfo->full_name);
-	SDEL_STRING(chInfo->biography);
-	SDEL_STRING(chInfo->profile_pic_url_hd);
-	SDEL_STRING(chInfo->username);
+	OPTSTR_DEL(chInfo->full_name);
+	OPTSTR_DEL(chInfo->biography);
+	OPTSTR_DEL(chInfo->profile_pic_url_hd);
+	OPTSTR_DEL(chInfo->username);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList)
+OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shortCode, NN<Data::ArrayListStringNN> imageList, NN<Data::ArrayListStringNN> videoList)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;

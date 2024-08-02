@@ -11,7 +11,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 	Data::DateTime *dt;
 	UOSInt i;
 	UOSInt cnt;
-	Text::String *id;
+	NN<Text::String> id;
 
 	me->threadRunning = true;
 	NEW_CLASS(dt, Data::DateTime());
@@ -42,7 +42,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 				while (i < cnt)
 				{
 					NN<Net::RSSItem> item = rss->GetItemNoCheck(i);
-					id = item->GetId();
+					id = Text::String::OrEmpty(item->GetId());
 
 					if (me->currRSSMaps.Get(id).SetTo(status))
 					{

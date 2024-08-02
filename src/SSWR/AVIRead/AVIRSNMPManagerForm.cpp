@@ -15,6 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
+	NN<Text::String> s;
+	NN<Text::String> s2;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	me->txtAgentAddr->GetText(sb);
@@ -59,28 +61,28 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 			{
 				agent = agentList.GetItemNoCheck(i);
 				cliId = me->mgr->Agent2CliId(agent);
-				if (agent->name)
+				if (agent->name.SetTo(s))
 				{
-					me->redir->SendDevName(cliId, agent->name->v, agent->name->leng);
+					me->redir->SendDevName(cliId, s->v, s->leng);
 				}
-				if (agent->model)
+				if (agent->model.SetTo(s))
 				{
-					if (agent->vendor)
+					if (agent->vendor.SetTo(s2))
 					{
 						Text::StringBuilderUTF8 sbPlatform;
-						sbPlatform.Append(agent->vendor);
+						sbPlatform.Append(s2);
 						sbPlatform.AppendUTF8Char(' ');
-						sbPlatform.Append(agent->model);
+						sbPlatform.Append(s);
 						me->redir->SendDevPlatform(cliId, sbPlatform.ToString(), sbPlatform.GetLength());
 					}
 					else
 					{
-						me->redir->SendDevPlatform(cliId, agent->model->v, agent->model->leng);
+						me->redir->SendDevPlatform(cliId, s->v, s->leng);
 					}
 				}
-				if (agent->cpuName)
+				if (agent->cpuName.SetTo(s))
 				{
-					me->redir->SendDevPlatform(cliId, agent->cpuName->v, agent->cpuName->leng);
+					me->redir->SendDevPlatform(cliId, s->v, s->leng);
 				}
 				k = 0;
 				l = agent->readingList.GetCount();
@@ -115,6 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	NN<Text::String> s;
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
@@ -135,25 +138,25 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 			me->txtAgentOID->SetText(CSTR(""));
 			me->txtAgentOIDName->SetText(CSTR(""));
 		}
-		if (agent->name)
+		if (agent->name.SetTo(s))
 		{
-			me->txtAgentName->SetText(agent->name->ToCString());
+			me->txtAgentName->SetText(s->ToCString());
 		}
 		else
 		{
 			me->txtAgentName->SetText(CSTR(""));
 		}
-		if (agent->contact)
+		if (agent->contact.SetTo(s))
 		{
-			me->txtAgentContact->SetText(agent->contact->ToCString());
+			me->txtAgentContact->SetText(s->ToCString());
 		}
 		else
 		{
 			me->txtAgentContact->SetText(CSTR(""));
 		}
-		if (agent->location)
+		if (agent->location.SetTo(s))
 		{
-			me->txtAgentLocation->SetText(agent->location->ToCString());
+			me->txtAgentLocation->SetText(s->ToCString());
 		}
 		else
 		{
@@ -163,9 +166,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 		me->txtAgentPhyAddr->SetText(CSTRP(sbuff, sptr));
 		NN<const Net::MACInfo::MACEntry> ent = Net::MACInfo::GetMACInfoBuff(agent->mac);
 		me->txtAgentVendor->SetText({ent->name, ent->nameLen});
-		if (agent->model)
+		if (agent->model.SetTo(s))
 		{
-			me->txtAgentModel->SetText(agent->model->ToCString());	
+			me->txtAgentModel->SetText(s->ToCString());	
 		}
 		else
 		{

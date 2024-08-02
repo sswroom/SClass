@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/Email/POP3Client.h"
 
-Net::Email::POP3Client::POP3Client(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CStringNN username, Text::CStringNN password, Data::Duration timeout) : conn(clif, ssl, host, port, connType, logWriter, timeout)
+Net::Email::POP3Client::POP3Client(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, Optional<IO::Writer> logWriter, Text::CStringNN username, Text::CStringNN password, Data::Duration timeout) : conn(clif, ssl, host, port, connType, logWriter, timeout)
 {
 	this->loggedIn = false;
 	this->msgCnt = 0;
@@ -12,7 +12,7 @@ Net::Email::POP3Client::POP3Client(NN<Net::TCPClientFactory> clif, Optional<Net:
 		if (this->conn.SendUser(username) == Net::Email::POP3Conn::ResultStatus::Success && this->conn.SendPass(password) == Net::Email::POP3Conn::ResultStatus::Success)
 		{
 			this->loggedIn = true;
-			this->conn.SendStat(&this->msgCnt, &this->msgSize);
+			this->conn.SendStat(this->msgCnt, this->msgSize);
 		}
 	}
 }

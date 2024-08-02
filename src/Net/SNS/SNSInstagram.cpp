@@ -5,29 +5,30 @@
 
 Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
 {
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(clif, ssl, encFact, userAgent));
+	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteInstagramControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;
 
+	NN<Text::String> s;
 	NN<SNSItem> snsItem;
 	NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
 	Net::WebSite::WebSiteInstagramControl::ChannelInfo chInfo;
 	Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData> itemList;
 	MemClear(&chInfo, sizeof(chInfo));
 	this->ctrl->GetChannelItems(this->channelId, 0, itemList, &chInfo);
-	if (chInfo.full_name)
+	if (chInfo.full_name.SetTo(s))
 	{
-		this->chName = chInfo.full_name->Clone();
+		this->chName = s->Clone();
 	}
 	else
 	{
 		this->chName = this->channelId->Clone();
 		this->chError = true;
 	}
-	if (chInfo.biography)
+	if (chInfo.biography.SetTo(s))
 	{
-		this->chDesc = chInfo.biography->Clone().Ptr();
+		this->chDesc = s->Clone();
 	}
 	this->ctrl->FreeChannelInfo(chInfo);
 	UOSInt i = itemList.GetCount();
@@ -39,10 +40,10 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Ne
 		{
 			Data::ArrayListStringNN imgList;
 			Data::ArrayListStringNN videoList;
-			if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
+			if (this->ctrl->GetPageImages(item->shortCode, imgList, videoList))
 			{
-				SDEL_STRING(item->imgURL);
-				SDEL_STRING(item->videoURL);
+				OPTSTR_DEL(item->imgURL);
+				OPTSTR_DEL(item->videoURL);
 				if (imgList.GetCount() > 0)
 				{
 					sb.ClearStr();
@@ -76,9 +77,9 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::TCPClientFactory> clif, Optional<Ne
 Net::SNS::SNSInstagram::~SNSInstagram()
 {
 	UOSInt i;
-	DEL_CLASS(this->ctrl);
+	this->ctrl.Delete();
 	this->chName->Release();
-	SDEL_STRING(this->chDesc);
+	OPTSTR_DEL(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
@@ -166,16 +167,16 @@ Bool Net::SNS::SNSInstagram::Reload()
 				{
 					Data::ArrayListStringNN imgList;
 					Data::ArrayListStringNN videoList;
-					if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
+					if (this->ctrl->GetPageImages(item->shortCode, imgList, videoList))
 					{
-						SDEL_STRING(item->imgURL);
-						SDEL_STRING(item->videoURL);
+						OPTSTR_DEL(item->imgURL);
+						OPTSTR_DEL(item->videoURL);
 						if (imgList.GetCount() > 0)
 						{
 							sb.ClearStr();
 							sb.AppendJoin(imgList.Iterator(), ' ');
 							imgList.FreeAll();
-							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 
 						if (videoList.GetCount() > 0)
@@ -183,7 +184,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 							sb.ClearStr();
 							sb.AppendJoin(videoList.Iterator(), ' ');
 							videoList.FreeAll();
-							item->videoURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							item->videoURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 					}
 				}
@@ -193,7 +194,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 				sb.Append(item->shortCode);
 				sb.AppendC(UTF8STRC("/"));
 				NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
+				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
 				s->Release();
 				this->itemMap.PutNN(item->shortCode, snsItem);
 				changed = true;

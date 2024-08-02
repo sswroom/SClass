@@ -551,7 +551,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::ClientInit(NN<Socket> s, Text::CStr
 	return CreateClientConn(ssl, s, hostName, err);
 }
 
-UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> Net::OpenSSLEngine::GetErrorDetail(UnsafeArray<UTF8Char> sbuff)
 {
 	UInt32 err = (UInt32)ERR_get_error();
 	if (err == 0)
@@ -559,7 +559,7 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 		*sbuff = 0;
 		return sbuff;
 	}
-	ERR_error_string(err, (char*)sbuff);
+	ERR_error_string(err, (char*)sbuff.Ptr());
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
@@ -955,7 +955,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -985,7 +985,7 @@ UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData
 		}
 	}
 	size_t outlen = 512;
-	int ret = EVP_PKEY_encrypt(ctx, encData, &outlen, payload.Arr().Ptr(), payload.GetSize());
+	int ret = EVP_PKEY_encrypt(ctx, encData.Ptr(), &outlen, payload.Arr().Ptr(), payload.GetSize());
 	if (ret <= 0)
 	{
 //		printf("EVP_PKEY_encrypt returns %d\r\n", ret);
@@ -999,7 +999,7 @@ UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, Data::ByteArrayR  payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR  payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
@@ -1033,7 +1033,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData
 		}
 	}
 	size_t outlen = 512;
-	int ret = EVP_PKEY_decrypt(ctx, decData, &outlen, payload.Arr().Ptr(), payload.GetSize());
+	int ret = EVP_PKEY_decrypt(ctx, decData.Ptr(), &outlen, payload.Arr().Ptr(), payload.GetSize());
 	if (ret <= 0)
 	{
 		printf("EVP_PKEY_decrypt returns %d\r\n", ret);
@@ -1048,7 +1048,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1075,7 +1075,7 @@ UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UInt8
 		return 0;
 	}
 	size_t outlen = 512;
-	int ret = EVP_PKEY_verify_recover(ctx, decData, &outlen, payload.Arr().Ptr(), payload.GetSize());
+	int ret = EVP_PKEY_verify_recover(ctx, decData.Ptr(), &outlen, payload.Arr().Ptr(), payload.GetSize());
 	if (ret <= 0)
 	{
 		printf("EVP_PKEY_verify_recover returns %d\r\n", ret);

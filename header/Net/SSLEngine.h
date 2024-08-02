@@ -79,7 +79,7 @@ namespace Net
 		UOSInt currThreadCnt;
 		Bool threadToStop;
 		Sync::Mutex threadMut;
-		ThreadState *threadSt;
+		UnsafeArray<ThreadState> threadSt;
 
 		static Optional<Crypto::Cert::CertStore> trustStore;
 		static UInt32 trustStoreCnt;
@@ -106,13 +106,13 @@ namespace Net
 		virtual Optional<Net::SSLClient> ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err) = 0;
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;
 
-		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
+		virtual UnsafeArray<UTF8Char> GetErrorDetail(UnsafeArray<UTF8Char> sbuff) = 0;
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1) = 0;
 		virtual Optional<Crypto::Cert::X509Key> GenerateRSAKey() = 0;
 		virtual Bool Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen) = 0;
 		virtual Bool SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, Data::ByteArrayR signData) = 0;
-		virtual UOSInt Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
-		virtual UOSInt Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
+		virtual UOSInt Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
+		virtual UOSInt Decrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
 
 		NN<Crypto::Cert::CertStore> GetTrustStore();
 

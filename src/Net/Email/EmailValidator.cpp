@@ -7,12 +7,12 @@ Net::Email::EmailValidator::EmailValidator(NN<Net::TCPClientFactory> clif, NN<IO
 	Net::SocketUtil::AddressInfo dnsAddr;
 	this->clif = clif;
 	this->clif->GetSocketFactory()->GetDefDNS(dnsAddr);
-	NEW_CLASS(this->dnsClient, Net::DNSClient(this->clif->GetSocketFactory(), dnsAddr, log));
+	NEW_CLASSNN(this->dnsClient, Net::DNSClient(this->clif->GetSocketFactory(), dnsAddr, log));
 }
 
 Net::Email::EmailValidator::~EmailValidator()
 {
-	DEL_CLASS(this->dnsClient);
+	this->dnsClient.Delete();
 }
 
 Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CStringNN emailAddr)

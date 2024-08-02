@@ -16,7 +16,7 @@ namespace Net
 		static void AddHCIPacketType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 packetType);
 		static void AddParamLen(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 len);
 		static void AddCmdOpcode(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 cmd);
-		static void AddBDAddr(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, const UInt8 *mac, Bool randomAddr);
+		static void AddBDAddr(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> mac, Bool randomAddr);
 		static void AddScanType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 scanType);
 		static void AddScanFilterPolicy(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 scanType);
 		static void AddScanInterval(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 scanInt);
@@ -26,7 +26,7 @@ namespace Net
 		static void AddLESubEvent(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 subEvt);
 		static void AddAdvEvtType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 evtType);
 		static void AddRSSI(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Int8 rssi);
-		static void AddAdvData(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize);
+		static void AddAdvData(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UOSInt packetSize);
 		static void AddLAP(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt32 lap);
 		static void AddInquiryLen(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 len);
 		static void AddPageScanMode(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 mode);
@@ -37,11 +37,11 @@ namespace Net
 		static void AddAdvSID(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt8 sid);
 		static void AddTxPower(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Int8 txPower);
 		static void AddPeriodicAdv(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UInt16 interval);
-		static void AddUnknown(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize);
+		static void AddUnknown(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UOSInt packetSize);
 
-		static Bool PacketGetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb);
-		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb);
-		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
+		static Bool PacketGetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb);
+		static void PacketGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb);
+		static void PacketGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
 
 		static Text::CString CompanyGetName(UInt16 company);
 		static Text::CString CmdGetName(UInt16 cmd);

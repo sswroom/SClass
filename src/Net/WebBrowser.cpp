@@ -69,7 +69,7 @@ Net::WebBrowser::~WebBrowser()
 	this->cacheDir->Release();
 }
 
-IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType)
+Optional<IO::StreamData> Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

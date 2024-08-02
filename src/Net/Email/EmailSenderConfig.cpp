@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Net/Email/AWSEmailClient.h"
 #include "Net/Email/EmailSenderConfig.h"
 #include "Net/Email/SMTPClient.h"
 
@@ -82,6 +83,25 @@ Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(
 		if (cfg->GetCateValue(category, CSTR("SMTPUser")).SetTo(user) && cfg->GetCateValue(category, CSTR("SMTPPassword")).SetTo(password))
 		{
 			cli->SetPlainAuth(user->ToCString(), password->ToCString());
+		}
+		return cli;
+	}
+	else if (s->Equals(CSTR("AWS")))
+	{
+		if (!cfg->GetValue(CSTR("AWSRegion")).SetTo(s))
+		{
+			log->LogMessage(CSTR("AWSRegion not found"), IO::LogHandler::LogLevel::Error);
+			return 0;
+		}
+		NN<Net::Email::AWSEmailClient> cli;
+		NEW_CLASSNN(cli, Net::Email::AWSEmailClient(s->ToCString()));
+		NN<Text::String> sport;
+		UInt16 port;
+		if (cfg->GetValue(CSTR("AWSProxyHost")).SetTo(s) && cfg->GetValue(CSTR("AWSProxyPort")).SetTo(sport) && sport->ToUInt16(port))
+		{
+			Optional<Text::String> proxyUser = cfg->GetValue(CSTR("AWSProxyUser"));
+			Optional<Text::String> proxyPwd = cfg->GetValue(CSTR("AWSProxyPwd"));
+			cli->SetProxy(s->ToCString(), port, OPTSTR_CSTR(proxyUser), OPTSTR_CSTR(proxyPwd));
 		}
 		return cli;
 	}

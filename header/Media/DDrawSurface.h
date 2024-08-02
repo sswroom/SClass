@@ -28,7 +28,7 @@ namespace Media
 
 		virtual Bool DrawFromBuff();
 		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn, Bool waitForVBlank);
-		virtual UInt8 *LockSurface(OutParam<OSInt> lineAdd);
+		virtual UnsafeArrayOpt<UInt8> LockSurface(OutParam<OSInt> lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 

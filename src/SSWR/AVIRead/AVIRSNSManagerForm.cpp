@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			me->lvCurrItems->SetSubItem(j, 1, CSTRP(sbuff, sptr));
-			if (s.Set(item->title))
+			if (item->title.SetTo(s))
 			{
 				me->lvCurrItems->SetSubItem(j, 2, s);
 			}

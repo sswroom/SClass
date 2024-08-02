@@ -10,50 +10,50 @@ namespace Net
 	class RSSItem
 	{
 	public:
-		Text::String *objectId;
-		Text::String *title;
-		Text::String *link;
-		Text::String *description;
+		Optional<Text::String> objectId;
+		Optional<Text::String> title;
+		Optional<Text::String> link;
+		Optional<Text::String> description;
 		Bool descHTML;
-		Text::String *author;
-		Text::String *category;
-		Text::String *comments;
-		Text::String *enclosure;
+		Optional<Text::String> author;
+		Optional<Text::String> category;
+		Optional<Text::String> comments;
+		Optional<Text::String> enclosure;
 		Data::Timestamp pubDate;
-		Text::String *source;
-		Text::String *guid;
-		Text::String *imgURL;
+		Optional<Text::String> source;
+		Optional<Text::String> guid;
+		Optional<Text::String> imgURL;
 		Double lat;
 		Double lon;
 
 	public:
-		RSSItem(Text::XMLNode *itemNode);
+		RSSItem(NN<Text::XMLNode> itemNode);
 		RSSItem(NN<Text::XMLReader> itemNode);
 		~RSSItem();
 
 		Bool IsError();
-		Text::String *GetId();
+		Optional<Text::String> GetId();
 	};
 
 	class RSS : public Data::ReadingListNN<RSSItem>
 	{
 	private:
 		Bool isError;
-		Text::String *title;
-		Text::String *link;
-		Text::String *description;
-		Text::String *language;
-		Text::String *copyright;
-		Text::String *managingEditor;
-		Text::String *webMaster;
+		Optional<Text::String> title;
+		Optional<Text::String> link;
+		Optional<Text::String> description;
+		Optional<Text::String> language;
+		Optional<Text::String> copyright;
+		Optional<Text::String> managingEditor;
+		Optional<Text::String> webMaster;
 		Data::Timestamp pubDate;
 		Data::Timestamp lastBuildDate;
-//		Text::String *category;
-		Text::String *generator;
-		Text::String *docs;
-//		Text::String *cloud;
+//		Optional<Text::String< category;
+		Optional<Text::String> generator;
+		Optional<Text::String> docs;
+//		Optional<Text::String> cloud;
 		Int32 ttl;
-//		RSSImage *image;
+//		Optional<RSSImage> image;
 		Data::ArrayListNN<RSSItem> items;
 
 	public:
@@ -66,17 +66,17 @@ namespace Net
 		virtual NN<RSSItem> GetItemNoCheck(UOSInt Index) const;
 		virtual Optional<RSSItem> GetItem(UOSInt Index) const;
 
-		Text::String *GetTitle() const;
-		Text::String *GetLink() const;
-		Text::String *GetDescription() const;
-		Text::String *GetLanguage() const;
-		Text::String *GetCopyright() const;
-		Text::String *GetManagingEditor() const;
-		Text::String *GetWebMaster() const;
+		Optional<Text::String> GetTitle() const;
+		Optional<Text::String> GetLink() const;
+		Optional<Text::String> GetDescription() const;
+		Optional<Text::String> GetLanguage() const;
+		Optional<Text::String> GetCopyright() const;
+		Optional<Text::String> GetManagingEditor() const;
+		Optional<Text::String> GetWebMaster() const;
 		Data::Timestamp GetPubDate() const;
 		Data::Timestamp GetLastBuildDate() const;
-		Text::String *GetGenerator() const;
-		Text::String *GetDocs() const;
+		Optional<Text::String> GetGenerator() const;
+		Optional<Text::String> GetDocs() const;
 		Int32 GetTTL() const;
 
 		static void GetYoutubeURL(Text::CStringNN channelId, NN<Text::StringBuilderUTF8> outURL);

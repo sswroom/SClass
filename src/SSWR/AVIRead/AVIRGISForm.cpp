@@ -551,7 +551,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString cust
 	Net::WebBrowser *browser = this->core->GetWebBrowser();
 	NN<IO::StreamData> fd;
 	Text::CStringNN nncustomeName;
-	if (fd.Set(browser->GetData(url, false, 0)))
+	if (browser->GetData(url, false, 0).SetTo(fd))
 	{
 		if (customName.SetTo(nncustomeName) && nncustomeName.leng > 0)
 		{

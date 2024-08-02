@@ -365,7 +365,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			*(UInt32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1"));
 		}
-		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), this->svrAddr))
+		else if (!this->clif->GetSocketFactory()->DNSResolveIP(CSTRP(svrname, svrnameEnd), this->svrAddr))
 		{
 			this->writing = true;
 			this->canWrite = false;

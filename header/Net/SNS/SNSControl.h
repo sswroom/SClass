@@ -27,11 +27,11 @@ namespace Net
 			{
 				NN<Text::String> id;
 				Int64 msgTime;
-				Text::String *title;
+				Optional<Text::String> title;
 				NN<Text::String> message;
-				Text::String *msgLink;
-				Text::String *imgURL;
-				Text::String *videoURL;
+				Optional<Text::String> msgLink;
+				Optional<Text::String> imgURL;
+				Optional<Text::String> videoURL;
 			} SNSItem;
 			
 		public:
@@ -50,7 +50,7 @@ namespace Net
 			static Text::CStringNN SNSTypeGetName(SNSType snsType);
 			static SNSType SNSTypeFromName(Text::CStringNN name);
 
-			static NN<SNSItem> CreateItem(NN<Text::String> id, Int64 msgTime, Text::String *title, NN<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);
+			static NN<SNSItem> CreateItem(NN<Text::String> id, Int64 msgTime, Optional<Text::String> title, NN<Text::String> message, Optional<Text::String> msgLink, Optional<Text::String> imgURL, Optional<Text::String> videoURL);
 			static void FreeItem(NN<SNSItem> item);
 		};
 	}

@@ -14,10 +14,10 @@ namespace Net
 		class SNS7gogo : public SNSControl
 		{
 		private:
-			Net::WebSite::WebSite7gogoControl *ctrl;
+			NN<Net::WebSite::WebSite7gogoControl> ctrl;
 			NN<Text::String> channelId;
 			NN<Text::String> chName;
-			Text::String *chDesc;
+			Optional<Text::String> chDesc;
 			Bool chError;
 			Data::FastMapNN<Int64, SNSItem> itemMap;
 

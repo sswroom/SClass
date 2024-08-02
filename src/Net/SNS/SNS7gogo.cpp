@@ -5,7 +5,7 @@
 
 Net::SNS::SNS7gogo::SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
 {
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(clif, ssl, encFact, userAgent));
+	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSite7gogoControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;
@@ -16,20 +16,21 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEn
 	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 	Net::WebSite::WebSite7gogoControl::ChannelInfo chInfo;
 	Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData> itemList;
+	NN<Text::String> s;
 	MemClear(&chInfo, sizeof(chInfo));
 	this->ctrl->GetChannelItems(this->channelId, 0, itemList, chInfo);
-	if (chInfo.name)
+	if (chInfo.name.SetTo(s))
 	{
-		this->chName = chInfo.name->Clone();
+		this->chName = s->Clone();
 	}
 	else
 	{
 		this->chName = this->channelId->Clone();
 		this->chError = true;
 	}
-	if (chInfo.detail)
+	if (chInfo.detail.SetTo(s))
 	{
-		this->chDesc = chInfo.detail->Clone().Ptr();
+		this->chDesc = s->Clone();
 	}
 	this->ctrl->FreeChannelInfo(chInfo);
 	UOSInt i = itemList.GetCount();
@@ -56,9 +57,9 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEn
 Net::SNS::SNS7gogo::~SNS7gogo()
 {
 	UOSInt i;
-	DEL_CLASS(this->ctrl);
+	this->ctrl.Delete();
 	this->chName->Release();
-	SDEL_STRING(this->chDesc);
+	OPTSTR_DEL(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{

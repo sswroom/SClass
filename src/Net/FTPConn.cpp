@@ -51,7 +51,7 @@ UInt32 __stdcall Net::FTPConn::FTPThread(AnyType userObj)
 				}
 				me->lastStatus = msgCode;
 				me->statusChg = true;
-				me->evt->Set();
+				me->evt.Set();
 			}
 			else if (sbuff[3] == '-')
 			{
@@ -64,7 +64,7 @@ UInt32 __stdcall Net::FTPConn::FTPThread(AnyType userObj)
 		}
 	}
 	me->statusChg = true;
-	me->evt->Set();
+	me->evt.Set();
 	reader.Delete();
 	me->threadRunning = false;
 	return 0;
@@ -75,7 +75,7 @@ Int32 Net::FTPConn::WaitForResult()
 	Manage::HiResClock clk;
 	while (!this->statusChg && clk.GetTimeDiff() < 30.0)
 	{
-		this->evt->Wait(1000);
+		this->evt.Wait(1000);
 	}
 	this->msgRet = 0;
 	if (this->statusChg)
@@ -95,8 +95,7 @@ Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NN<Net::TCPClientFactor
 	this->logged = true;
 	this->msgRet = 0;
 	this->statusChg = false;
-	NEW_CLASS(this->evt, Sync::Event(true));
-	NEW_CLASS(this->writer, IO::StreamWriter(this->cli, codePage));
+	NEW_CLASSNN(this->writer, IO::StreamWriter(this->cli, codePage));
 	Sync::ThreadUtil::Create(FTPThread, this);
 	WaitForResult();
 }
@@ -109,8 +108,7 @@ Net::FTPConn::~FTPConn()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->writer);
-	DEL_CLASS(this->evt);
+	this->writer.Delete();
 	this->cli.Delete();
 }
 
@@ -174,7 +172,7 @@ Bool Net::FTPConn::RemoveDirectory(UnsafeArray<const UTF8Char> dir)
 	return code == 250;
 }
 
-Bool Net::FTPConn::GetFileSize(UnsafeArray<const UTF8Char> fileName, UInt64 *fileSize)
+Bool Net::FTPConn::GetFileSize(UnsafeArray<const UTF8Char> fileName, OutParam<UInt64> fileSize)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -185,10 +183,7 @@ Bool Net::FTPConn::GetFileSize(UnsafeArray<const UTF8Char> fileName, UInt64 *fil
 	Int32 code = WaitForResult();
 	if (code == 213)
 	{
-		if (fileSize)
-		{
-			*fileSize = Text::StrToUInt64(sbuff);
-		}
+		fileSize.Set(Text::StrToUInt64(sbuff));
 		return true;
 	}
 	else
@@ -197,7 +192,7 @@ Bool Net::FTPConn::GetFileSize(UnsafeArray<const UTF8Char> fileName, UInt64 *fil
 	}
 }
 
-Bool Net::FTPConn::GetFileModTime(UnsafeArray<const UTF8Char> fileName, Data::DateTime *modTime)
+Bool Net::FTPConn::GetFileModTime(UnsafeArray<const UTF8Char> fileName, NN<Data::DateTime> modTime)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -260,7 +255,7 @@ Bool Net::FTPConn::ToEBCDICType()
 }
 
 
-Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
+Bool Net::FTPConn::ChangePassiveMode(OutParam<UInt32> ip, OutParam<UInt16> port)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -291,14 +286,8 @@ Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 		buff[3] = (UInt8)Text::StrToUInt32(sarr[3]);
 		buff[4] = (UInt8)Text::StrToUInt32(sarr[5]);
 		buff[5] = (UInt8)Text::StrToUInt32(sarr[4]);
-		if (ip)
-		{
-			*ip = *(UInt32*)buff;
-		}
-		if (port)
-		{
-			*port = *(UInt16*)&buff[4];
-		}
+		ip.Set(*(UInt32*)buff);
+		port.Set(*(UInt16*)&buff[4]);
 		return true;
 	}
 	else

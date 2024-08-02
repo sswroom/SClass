@@ -5,7 +5,7 @@
 
 Net::SNS::SNSTwitter::SNSTwitter(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CStringNN channelId)
 {
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(clif, ssl, encFact, userAgent));
+	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteTwitterControl(clif, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
 	this->chDesc = 0;
 	this->chError = false;
@@ -16,16 +16,17 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::TCPClientFactory> clif, Optional<Net::S
 	NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 	Net::WebSite::WebSiteTwitterControl::ChannelInfo chInfo;
 	Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
+	NN<Text::String> s;
 	MemClear(&chInfo, sizeof(chInfo));
 	this->ctrl->GetChannelItems(this->channelId, 0, itemList, chInfo);
-	if (!this->chName.Set(chInfo.name))
+	if (!chInfo.name.SetTo(this->chName))
 	{
 		this->chName = this->channelId->Clone();
 		this->chError = true;
 	}
-	if (chInfo.bio)
+	if (chInfo.bio.SetTo(s))
 	{
-		this->chDesc = chInfo.bio;
+		this->chDesc = s;
 	}
 	UOSInt i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
@@ -51,9 +52,9 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::TCPClientFactory> clif, Optional<Net::S
 Net::SNS::SNSTwitter::~SNSTwitter()
 {
 	UOSInt i;
-	DEL_CLASS(this->ctrl);
+	this->ctrl.Delete();
 	this->chName->Release();
-	SDEL_STRING(this->chDesc);
+	OPTSTR_DEL(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{

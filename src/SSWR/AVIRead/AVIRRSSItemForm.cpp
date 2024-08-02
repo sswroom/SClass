@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 	sptr = me->cboImage->GetItemText(sbuff, i).Or(sbuff);
 	Net::WebBrowser *browser = me->core->GetWebBrowser();
 	NN<IO::StreamData> fd;
-	if (fd.Set(browser->GetData(CSTRP(sbuff, sptr), false, sbuff)))
+	if (browser->GetData(CSTRP(sbuff, sptr), false, sbuff).SetTo(fd))
 	{
 		NN<Media::ImageList> imgList;
 		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFile(fd, 0, IO::ParserType::ImageList)).SetTo(imgList))
@@ -69,34 +69,35 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtText->SetReadOnly(true);
 	NN<Text::String> s;
+	NN<Text::String> s2;
 
 	i = this->lvInfo->AddItem(CSTR("Title"), 0);
-	if (s.Set(rssItem->title))
+	if (rssItem->title.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Link"), 0);
-	if (s.Set(rssItem->link))
+	if (rssItem->link.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Author"), 0);
-	if (s.Set(rssItem->author))
+	if (rssItem->author.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Category"), 0);
-	if (s.Set(rssItem->category))
+	if (rssItem->category.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Comments"), 0);
-	if (s.Set(rssItem->comments))
+	if (rssItem->comments.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("Enclosure"), 0);
-	if (s.Set(rssItem->enclosure))
+	if (rssItem->enclosure.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
@@ -107,38 +108,38 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 		this->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	}
 	i = this->lvInfo->AddItem(CSTR("Source"), 0);
-	if (s.Set(rssItem->source))
+	if (rssItem->source.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 	i = this->lvInfo->AddItem(CSTR("GUID"), 0);
-	if (s.Set(rssItem->guid))
+	if (rssItem->guid.SetTo(s))
 	{
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
-	if (s.Set(rssItem->objectId))
+	if (rssItem->objectId.SetTo(s))
 	{
 		i = this->lvInfo->AddItem(CSTR("ObjectId"), 0);
 		this->lvInfo->SetSubItem(i, 1, s);
 	}
 
-	if (rssItem->description)
+	if (rssItem->description.SetTo(s))
 	{
 		Data::ArrayListStringNN imgList;
 		NN<Text::String> url;
 		if (rssItem->descHTML)
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), rssItem->description->v, rssItem->description->leng, false, sb, &imgList);
+			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), s->v, s->leng, false, sb, &imgList);
 			this->txtText->SetText(sb.ToCString());
 		}
 		else
 		{
-			if (rssItem->imgURL)
+			if (rssItem->imgURL.SetTo(s2))
 			{
-				imgList.Add(rssItem->imgURL->Clone());
+				imgList.Add(s2->Clone());
 			}
-			this->txtText->SetText(rssItem->description->ToCString());
+			this->txtText->SetText(s->ToCString());
 		}
 
 		Data::ArrayIterator<NN<Text::String>> it = imgList.Iterator();

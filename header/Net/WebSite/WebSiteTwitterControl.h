@@ -15,14 +15,14 @@ namespace Net
 			{
 				Int64 id;
 				Int64 recTime;
-				Text::String *message;
-				Text::String *imgURL;
+				NN<Text::String> message;
+				Optional<Text::String> imgURL;
 			} ItemData;
 
 			typedef struct
 			{
-				Text::String *name;
-				Text::String *bio;
+				Optional<Text::String> name;
+				Optional<Text::String> bio;
 			} ChannelInfo;
 			
 		private:

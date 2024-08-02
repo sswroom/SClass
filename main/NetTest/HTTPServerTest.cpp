@@ -58,7 +58,7 @@ public:
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::WebServer::WebListener *svr;
 	Optional<Net::SSLEngine> ssl;
 	Text::StringBuilderUTF8 sb;

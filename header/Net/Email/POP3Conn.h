@@ -29,17 +29,17 @@ namespace Net
 			};
 		private:
 			NN<Net::TCPClient> cli;
-			Text::UTF8Writer *writer;
+			NN<Text::UTF8Writer> writer;
 			Bool threadToStop;
 			Bool threadRunning;
 			Bool threadStarted;
 			Bool statusChg;
 			ResultStatus lastStatus;
 			UnsafeArrayOpt<UTF8Char> msgRet;
-			Text::StringBuilderUTF8 *msgData;
+			Optional<Text::StringBuilderUTF8> msgData;
 			Bool msgToDataMode;
 			Sync::Event evt;
-			IO::Writer *logWriter;
+			Optional<IO::Writer> logWriter;
 			ResultStatus welcomeMsg;
 			UOSInt maxSize;
 			Bool authPlain;
@@ -48,7 +48,7 @@ namespace Net
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 			ResultStatus WaitForResult(OptOut<UnsafeArrayOpt<UTF8Char>> msgRetEnd);
 		public:
-			POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
 			~POP3Conn();
 
 			Bool IsError();
@@ -56,7 +56,7 @@ namespace Net
 			ResultStatus SendUser(Text::CStringNN username);
 			ResultStatus SendPass(Text::CStringNN password);
 			ResultStatus SendNoop();
-			ResultStatus SendStat(UOSInt *msgCount, UOSInt *msgSize);
+			ResultStatus SendStat(OutParam<UOSInt> msgCount, OutParam<UOSInt> msgSize);
 			ResultStatus SendRetr(UOSInt msgIndex, NN<Text::StringBuilderUTF8> msgBuff);
 			ResultStatus SendDele(UOSInt msgIndex);
 			ResultStatus SendQuit();

@@ -90,7 +90,7 @@ Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::TCPClientFactory> clif, B
 //					this->conn->GetFileModTime(&sbuff[i + 1], &dt);
 
 					this->conn->ToBinaryType();
-					if (this->conn->ChangePassiveMode(&ip, &port))
+					if (this->conn->ChangePassiveMode(ip, port))
 					{
 						this->cli2 = clif->Create(ip, port, timeout);
 						this->conn->GetFile(&sbuff[i + 1]);

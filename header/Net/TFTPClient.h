@@ -12,12 +12,12 @@ namespace Net
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		UInt16 recvPort;
-		Net::UDPServer *svr;
+		Optional<Net::UDPServer> svr;
 		UInt16 nextId;
 		Bool replyRecv;
 		Bool replyError;
 		UOSInt recvSize;
-		IO::Stream *recvStm;
+		Optional<IO::Stream> recvStm;
 		Sync::Event evt;
 
 		static void __stdcall OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
@@ -26,8 +26,8 @@ namespace Net
 		~TFTPClient();
 
 		Bool IsError();
-		Bool SendFile(UnsafeArray<const UTF8Char> fileName, IO::Stream *stm);
-		Bool RecvFile(UnsafeArray<const UTF8Char> fileName, IO::Stream *stm);
+		Bool SendFile(UnsafeArray<const UTF8Char> fileName, NN<IO::Stream> stm);
+		Bool RecvFile(UnsafeArray<const UTF8Char> fileName, NN<IO::Stream> stm);
 	};
 }
 #endif

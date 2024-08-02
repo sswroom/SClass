@@ -21,7 +21,7 @@ namespace Net
 			Optional<Text::String> userAgent;
 			NN<Text::String> channelId;
 			NN<Text::String> chName;
-			Text::String *chDesc;
+			Optional<Text::String> chDesc;
 			Data::FastStringMapNN<SNSItem> itemMap;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;

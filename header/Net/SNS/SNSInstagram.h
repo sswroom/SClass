@@ -14,10 +14,10 @@ namespace Net
 		class SNSInstagram : public SNSControl
 		{
 		private:
-			Net::WebSite::WebSiteInstagramControl *ctrl;
+			NN<Net::WebSite::WebSiteInstagramControl> ctrl;
 			NN<Text::String> channelId;
 			NN<Text::String> chName;
-			Text::String *chDesc;
+			Optional<Text::String> chDesc;
 			Bool chError;
 			Data::FastStringMapNN<SNSItem> itemMap;
 

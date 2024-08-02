@@ -35,6 +35,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	Int64 conversationId;
 	Int64 recTime;
 	Text::String *message;
+	NN<Text::String> nnmessage;
 	Text::String *imgURL;
 	NN<Text::String> avalue;
 	conversationId = 0;
@@ -214,12 +215,12 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #if defined(VERBOSE)
 				printf("stream-item-footer found\r\n");
 #endif				
-				if (conversationId != 0 && recTime != 0 && message != 0)
+				if (conversationId != 0 && recTime != 0 && nnmessage.Set(message))
 				{
 					item = MemAllocNN(ItemData);
 					item->id = conversationId;
 					item->recTime = recTime;
-					item->message = message;
+					item->message = nnmessage;
 					item->imgURL = imgURL;
 					message = 0;
 					imgURL = 0;
@@ -242,8 +243,8 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 							sb.TrimWSCRLF();
 							if (chInfo.SetTo(nnchInfo))
 							{
-								SDEL_STRING(nnchInfo->name);
-								nnchInfo->name = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+								OPTSTR_DEL(nnchInfo->name);
+								nnchInfo->name = Text::String::New(sb.ToString(), sb.GetLength());
 							}
 						}
 						else if (reader.GetNodeTextNN()->Equals(UTF8STRC("p")))
@@ -260,8 +261,8 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 									sb.TrimWSCRLF();
 									if (chInfo.SetTo(nnchInfo))
 									{
-										SDEL_STRING(nnchInfo->bio);
-										nnchInfo->bio = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+										OPTSTR_DEL(nnchInfo->bio);
+										nnchInfo->bio = Text::String::New(sb.ToString(), sb.GetLength());
 									}
 									break;
 								}
@@ -294,7 +295,7 @@ void Net::WebSite::WebSiteTwitterControl::FreeItems(NN<Data::ArrayListNN<Net::We
 	{
 		item = itemList->GetItemNoCheck(i);
 		item->message->Release();
-		SDEL_STRING(item->imgURL);
+		OPTSTR_DEL(item->imgURL);
 		MemFreeNN(item);
 	}
 	itemList->Clear();

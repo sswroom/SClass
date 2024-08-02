@@ -1180,7 +1180,7 @@ void Net::PacketAnalyzerBluetooth::AddCmdOpcode(NN<IO::FileAnalyse::FrameDetailH
 	frame->AddHex16Name(frameOfst, CSTR("Command Opcode"), cmd, CmdGetName(cmd));
 }
 
-void Net::PacketAnalyzerBluetooth::AddBDAddr(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, const UInt8 *mac, Bool randomAddr)
+void Net::PacketAnalyzerBluetooth::AddBDAddr(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Text::CStringNN name, UnsafeArray<const UInt8> mac, Bool randomAddr)
 {
 	UInt8 macBuff[6];
 	macBuff[0] = mac[5];
@@ -1287,7 +1287,7 @@ void Net::PacketAnalyzerBluetooth::AddRSSI(NN<IO::FileAnalyse::FrameDetailHandle
 	frame->AddField(frameOfst, 1, CSTR("RSSI"), CSTRP(sbuff, sptr));
 }
 
-void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	Text::CString vName;
 	Text::StringBuilderUTF8 sb;
@@ -1976,12 +1976,12 @@ void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(NN<IO::FileAnalyse::FrameDetai
 	frame->AddHex16Name(frameOfst, CSTR("Periodic Advertising Interval"), interval, vName);
 }
 
-void Net::PacketAnalyzerBluetooth::AddUnknown(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
+void Net::PacketAnalyzerBluetooth::AddUnknown(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	frame->AddHexBuff(frameOfst, (UInt32)packetSize, CSTR("Unknown"), packet, true);
 }
 
-Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerBluetooth::PacketGetName(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 mac[6];
 	Text::CStringNN name;
@@ -2089,13 +2089,13 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(UnsafeArray<const UInt8> packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UInt32 i;

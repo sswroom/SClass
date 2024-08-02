@@ -34,10 +34,10 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			if (item->imgURL)
+			if (item->imgURL.SetTo(s))
 			{
 				sb.ClearStr();
-				sb.Append(item->imgURL);
+				sb.Append(s);
 				sb.Replace(' ', '\n');
 				me->lvItems->SetSubItem(i, 2, sb.ToCString());
 			}
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(AnyType us
 		Data::ArrayListStringNN imageList;
 		Data::ArrayListStringNN videoList;
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		me->ctrl->GetPageImages(s, &imageList, &videoList);
+		me->ctrl->GetPageImages(s, imageList, videoList);
 		s->Release();
 		Data::ArrayIterator<NN<Text::String>> it = imageList.Iterator();
 		while (it.HasNext())

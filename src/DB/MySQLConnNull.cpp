@@ -31,12 +31,12 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	return 0;
 }*/
 
-Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(serverName->ToCString(), addr))
+	if (!clif->GetSocketFactory()->DNSResolveIP(serverName->ToCString(), addr))
 	{
 		if (log->HasHandler())
 		{
@@ -47,7 +47,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, N
 		}
 		return 0;
 	}
-	NEW_CLASSNN(conn, Net::MySQLTCPClient(sockf, addr, 3306, uid, pwd, dbName));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -68,12 +68,12 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, N
 	}
 }
 
-Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::TCPClientFactory> clif, Text::CStringNN serverName, Text::CString dbName, Text::CStringNN uid, Text::CStringNN pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(serverName, addr))
+	if (!clif->GetSocketFactory()->DNSResolveIP(serverName, addr))
 	{
 		if (log->HasHandler())
 		{
@@ -84,7 +84,7 @@ Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, T
 		}
 		return 0;
 	}
-	NEW_CLASSNN(conn, Net::MySQLTCPClient(sockf, addr, 3306, uid, pwd, dbName));
+	NEW_CLASSNN(conn, Net::MySQLTCPClient(clif, addr, 3306, uid, pwd, dbName));
 	if (!conn->IsError())
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));

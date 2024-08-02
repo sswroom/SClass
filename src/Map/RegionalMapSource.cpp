@@ -302,7 +302,7 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	case MapType::File:
 	{
 		NN<IO::StreamData> fd;
-		if (fd.Set(browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0)))
+		if (browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0).SetTo(fd))
 		{
 			NN<IO::ParsedObject> pobj;
 			if (parsers->ParseFile(fd).SetTo(pobj))

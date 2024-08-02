@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(AnyType userObj)
 	else
 	{
 		IO::MemoryStream mstm;
-		if (cli.RecvFile(sb.ToString(), &mstm))
+		if (cli.RecvFile(sb.ToString(), mstm))
 		{
 			UnsafeArray<UInt8> buff;
 			UOSInt buffSize;
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(AnyType userObj)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("TFTP Client"), me);
 			}
-			else if (cli.SendFile(&fileName->v[i + 1], &fs))
+			else if (cli.SendFile(&fileName->v[i + 1], fs))
 			{
 				me->ui->ShowMsgOK(CSTR("File sent successfully"), CSTR("TFTP Client"), me);
 			}

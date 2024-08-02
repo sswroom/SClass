@@ -17,17 +17,17 @@ namespace Net
 				Int64 id;
 				Int64 recTime;
 				NN<Text::String> message;
-				Text::String *imgURL;
+				Optional<Text::String> imgURL;
 			} ItemData;
 
 			typedef struct
 			{
-				Text::String *talkCode;
-				Text::String *name;
-				Text::String *detail;
-				Text::String *imagePath;
+				Optional<Text::String> talkCode;
+				Optional<Text::String> name;
+				Optional<Text::String> detail;
+				Optional<Text::String> imagePath;
 				Int64 editDate;
-				Text::String *screenName;
+				Optional<Text::String> screenName;
 			} ChannelInfo;
 			
 		private:

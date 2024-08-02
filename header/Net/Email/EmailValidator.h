@@ -23,7 +23,7 @@ namespace Net
 			};
 		private:
 			NN<Net::TCPClientFactory> clif;
-			Net::DNSClient *dnsClient;
+			NN<Net::DNSClient> dnsClient;
 		public:
 			EmailValidator(NN<Net::TCPClientFactory> clif, NN<IO::LogTool> log);
 			~EmailValidator();

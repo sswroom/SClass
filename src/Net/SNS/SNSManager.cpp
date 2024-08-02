@@ -108,9 +108,9 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 		sb.AppendI64(item->msgTime);
 		sb.AppendUTF8Char('"');
 		sb.AppendUTF8Char(',');
-		if (item->title)
+		if (item->title.SetTo(s))
 		{
-			s = Text::String::NewCSVRec(item->title->v);
+			s = Text::String::NewCSVRec(s->v);
 			sb.Append(s);
 			s->Release();
 		}
@@ -123,9 +123,9 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 		sb.Append(s);
 		s->Release();
 		sb.AppendUTF8Char(',');
-		if (item->msgLink)
+		if (item->msgLink.SetTo(s))
 		{
-			s = Text::String::NewCSVRec(item->msgLink->v);
+			s = Text::String::NewCSVRec(s->v);
 			sb.Append(s);
 			s->Release();
 		}
@@ -134,9 +134,9 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 			sb.AppendChar('"', 2);
 		}
 		sb.AppendUTF8Char(',');
-		if (item->imgURL)
+		if (item->imgURL.SetTo(s))
 		{
-			s = Text::String::NewCSVRec(item->imgURL->v);
+			s = Text::String::NewCSVRec(s->v);
 			sb.Append(s);
 			s->Release();
 		}
@@ -147,7 +147,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 		writer.WriteLine(sb.ToCString());
 	}
 
-	if (item->imgURL && item->imgURL->v[0])
+	if (item->imgURL.SetTo(s) && s->v[0])
 	{
 		UOSInt i = 0;
 		UOSInt j;
@@ -173,7 +173,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 		*sptr++ = '_';
 
 		sb.ClearStr();
-		sb.Append(item->imgURL);
+		sb.Append(s);
 		sarr[1] = sb;
 		while (true)
 		{
@@ -241,10 +241,10 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 			}
 		}
 
-		if (item->videoURL && item->videoURL->v[0])
+		if (item->videoURL.SetTo(s) && s->v[0])
 		{
 			sb.ClearStr();
-			sb.Append(item->videoURL);
+			sb.Append(s);
 			sarr[1] = sb;
 			while (true)
 			{

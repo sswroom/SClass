@@ -403,7 +403,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetSelectedItemText(UnsafeArray<UTF8Ch
 	return 0;
 }
 
-Text::String *UI::GUIListView::GetSelectedItemTextNew()
+Optional<Text::String> UI::GUIListView::GetSelectedItemTextNew()
 {
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
@@ -424,7 +424,7 @@ UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
+Optional<Text::String> UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	UTF8Char sbuff[768];
 	NN<Text::String> sout;
@@ -433,7 +433,7 @@ Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
 		return 0;
 	sout = Text::String::New((UOSInt)(sptr - sbuff));
 	MemCopyNO(sout->v.Ptr(), sbuff, sizeof(UTF8Char) * (UOSInt)(sptr - sbuff + 1));
-	return sout.Ptr();
+	return sout;
 }
 
 void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)

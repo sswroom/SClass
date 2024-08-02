@@ -21,6 +21,7 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Bool dataMode = false;
+	NN<IO::Writer> logWriter;
 
 	me->threadStarted = true;
 	me->threadRunning = true;
@@ -30,16 +31,16 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 		{
 			if (!reader.ReadLine(sbuff, 2048).SetTo(sptr))
 			{
-				if (me->logWriter)
+				if (me->logWriter.SetTo(logWriter))
 				{
-					me->logWriter->WriteLine(CSTR("Connection Closed"));
+					logWriter->WriteLine(CSTR("Connection Closed"));
 				}
 				break;
 			}
 
-			if (me->logWriter)
+			if (me->logWriter.SetTo(logWriter))
 			{
-				me->logWriter->WriteLine(CSTRP(sbuff, sptr));
+				logWriter->WriteLine(CSTRP(sbuff, sptr));
 			}
 	#ifdef VERBOSE
 			printf("POP3 Read: %s\r\n", sbuff);
@@ -54,9 +55,9 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 					me->evt.Set();
 				}
 				NN<Text::StringBuilderUTF8> sb;
-				if (sb.Set(me->msgData))
+				if (me->msgData.SetTo(sb))
 				{
-					me->msgData->AppendP(sbuff, sptr);
+					sb->AppendP(sbuff, sptr);
 					reader.GetLastLineBreak(sb);					
 				}
 			}
@@ -129,7 +130,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(OptOut<Un
 		return ResultStatus::TimedOut;
 }
 
-Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -140,6 +141,7 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 	this->maxSize = 0;
 	this->authLogin = false;
 	this->authPlain = false;
+	NN<IO::Writer> nnlogWriter;
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::AddrType::Unknown;
 	clif->GetSocketFactory()->DNSResolveIP(host, addr);
@@ -159,44 +161,44 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 		this->cli = clif->Create(addr, port, timeout);
 		this->cli->SetTimeout(timeout);
 		buffSize = this->cli->Read(BYTEARR(buff));
-		if (this->logWriter)
+		if (this->logWriter.SetTo(nnlogWriter))
 		{
-			this->logWriter->Write(Text::CStringNN(buff, buffSize));
+			nnlogWriter->Write(Text::CStringNN(buff, buffSize));
 		}
 		if (buffSize > 2 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("+OK ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 		{
-			if (this->logWriter)
+			if (this->logWriter.SetTo(nnlogWriter))
 			{
-				this->logWriter->WriteLine(CSTR("STARTTLS"));
+				nnlogWriter->WriteLine(CSTR("STARTTLS"));
 			}
 			this->cli->Write(CSTR("STARTTLS\r\n").ToByteArray());
 			buffSize = this->cli->Read(BYTEARR(buff));
-			if (this->logWriter)
+			if (this->logWriter.SetTo(nnlogWriter))
 			{
-				this->logWriter->Write(Text::CStringNN(buff, buffSize));
+				nnlogWriter->Write(Text::CStringNN(buff, buffSize));
 			}
 			if (buffSize > 0 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("+OK ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 			{
-				if (this->logWriter)
+				if (this->logWriter.SetTo(nnlogWriter))
 				{
-					this->logWriter->WriteLine(CSTR("SSL Handshake begin"));
+					nnlogWriter->WriteLine(CSTR("SSL Handshake begin"));
 				}
 				NN<Socket> s;
 				NN<Net::SSLClient> cli;
 				if (this->cli->RemoveSocket().SetTo(s) && nnssl->ClientInit(s, host, 0).SetTo(cli))
 				{
-					if (this->logWriter)
+					if (this->logWriter.SetTo(nnlogWriter))
 					{
-						this->logWriter->WriteLine(CSTR("SSL Handshake success"));
+						nnlogWriter->WriteLine(CSTR("SSL Handshake success"));
 					}
 					this->cli.Delete();
 					this->cli = cli;
 				}
 				else
 				{
-					if (this->logWriter)
+					if (this->logWriter.SetTo(nnlogWriter))
 					{
-						this->logWriter->WriteLine(CSTR("SSL Handshake failed"));
+						nnlogWriter->WriteLine(CSTR("SSL Handshake failed"));
 					}
 				}
 			}
@@ -215,8 +217,8 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 		this->cli = clif->Create(addr, port, timeout);
 	}
 	this->cli->SetNoDelay(false);
-	NEW_CLASS(this->writer, Text::UTF8Writer(this->cli));
-	if (this->logWriter)
+	NEW_CLASSNN(this->writer, Text::UTF8Writer(this->cli));
+	if (this->logWriter.SetTo(nnlogWriter))
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[128];
@@ -228,7 +230,7 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("):"));
 		sb.AppendU16(port);
-		this->logWriter->WriteLine(sb.ToCString());
+		nnlogWriter->WriteLine(sb.ToCString());
 	}
 	Sync::ThreadUtil::Create(RecvThread, this);
 	while (!this->threadStarted)
@@ -238,7 +240,8 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::TCPClientFactory> clif, Optional<Net::SSL
 	if (connType == CT_STARTTLS)
 	{
 		this->welcomeMsg = ResultStatus::Success;
-		this->logWriter->WriteLine(CSTR("Connected"));
+		if (this->logWriter.SetTo(nnlogWriter))
+			nnlogWriter->WriteLine(CSTR("Connected"));
 	}
 	else
 	{
@@ -254,7 +257,7 @@ Net::Email::POP3Conn::~POP3Conn()
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->writer);
+	this->writer.Delete();
 	this->cli.Delete();
 }
 
@@ -267,11 +270,12 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendUser(Text::CStringN
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::Writer> logWriter;
 	sptr = username.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("USER ")));
 	this->statusChg = false;
-	if (this->logWriter)
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTRP(sbuff, sptr));
+		logWriter->WriteLine(CSTRP(sbuff, sptr));
 	}
 	writer->WriteLine(CSTRP(sbuff, sptr));
 	return WaitForResult(0);
@@ -281,11 +285,12 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendPass(Text::CStringN
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::Writer> logWriter;
 	sptr = password.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("PASS ")));
 	this->statusChg = false;
-	if (this->logWriter)
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTRP(sbuff, sptr));
+		logWriter->WriteLine(CSTRP(sbuff, sptr));
 	}
 	writer->WriteLine(CSTRP(sbuff, sptr));
 	return WaitForResult(0);
@@ -293,26 +298,28 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendPass(Text::CStringN
 
 Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendNoop()
 {
+	NN<IO::Writer> logWriter;
 	this->statusChg = false;
-	if (this->logWriter)
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTR("NOOP"));
+		logWriter->WriteLine(CSTR("NOOP"));
 	}
 	writer->WriteLine(CSTR("NOOP"));
 	return WaitForResult(0);
 }
 
-Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCount, UOSInt *msgSize)
+Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(OutParam<UOSInt> msgCount, OutParam<UOSInt> msgSize)
 {
 	UTF8Char returnMsg[2048];
 	UnsafeArrayOpt<UTF8Char> returnMsgEnd;
 	UnsafeArray<UTF8Char> nnreturnMsgEnd;
+	NN<IO::Writer> logWriter;
 	this->statusChg = false;
 	returnMsg[0] = 0;
 	this->msgRet = returnMsg;
-	if (this->logWriter)
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTR("STAT"));
+		logWriter->WriteLine(CSTR("STAT"));
 	}
 	writer->WriteLine(CSTR("STAT"));
 	ResultStatus status = WaitForResult(returnMsgEnd);
@@ -322,13 +329,13 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCou
 		if (returnMsgEnd.SetTo(nnreturnMsgEnd) && (i = Text::StrIndexOfCharC(returnMsg, (UOSInt)(nnreturnMsgEnd - returnMsg), ' ')) != INVALID_INDEX)
 		{
 			returnMsg[i] = 0;
-			*msgCount = Text::StrToUOSInt(returnMsg);
-			*msgSize = Text::StrToUOSInt(&returnMsg[i + 1]);
+			msgCount.Set(Text::StrToUOSInt(returnMsg));
+			msgSize.Set(Text::StrToUOSInt(&returnMsg[i + 1]));
 		}
 		else
 		{
-			*msgCount = 0;
-			*msgSize = 0;
+			msgCount.Set(0);
+			msgSize.Set(0);
 		}
 	}
 	return status;
@@ -338,13 +345,14 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgInde
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::Writer> logWriter;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("RETR ")), msgIndex + 1);
 	this->statusChg = false;
 	this->msgToDataMode = true;
-	this->msgData = msgBuff.Ptr();
-	if (this->logWriter)
+	this->msgData = msgBuff;
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTRP(sbuff, sptr));
+		logWriter->WriteLine(CSTRP(sbuff, sptr));
 	}
 	writer->WriteLine(CSTRP(sbuff, sptr));
 	return WaitForResult(0);
@@ -354,11 +362,12 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendDele(UOSInt msgInde
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::Writer> logWriter;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("DELE ")), msgIndex + 1);
 	this->statusChg = false;
-	if (this->logWriter)
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTRP(sbuff, sptr));
+		logWriter->WriteLine(CSTRP(sbuff, sptr));
 	}
 	writer->WriteLine(CSTRP(sbuff, sptr));
 	return WaitForResult(0);
@@ -366,10 +375,11 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendDele(UOSInt msgInde
 
 Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendQuit()
 {
+	NN<IO::Writer> logWriter;
 	this->statusChg = false;
-	if (this->logWriter)
+	if (this->logWriter.SetTo(logWriter))
 	{
-		this->logWriter->WriteLine(CSTR("QUIT"));
+		logWriter->WriteLine(CSTR("QUIT"));
 	}
 	writer->WriteLine(CSTR("QUIT"));
 	return WaitForResult(0);

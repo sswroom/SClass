@@ -17,7 +17,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN fwdUrl = CSTR("https://192.168.0.196:8448/");
 	UInt16 port = 12345;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Optional<Net::SSLEngine> ssl;

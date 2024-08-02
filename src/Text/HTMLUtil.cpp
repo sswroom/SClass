@@ -226,7 +226,7 @@ Bool Text::HTMLUtil::CSSWellFormat(UnsafeArray<const UInt8> buff, UOSInt buffSiz
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize, Bool singleLine, NN<Text::StringBuilderUTF8> sb, Data::ArrayListStringNN *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize, Bool singleLine, NN<Text::StringBuilderUTF8> sb, Optional<Data::ArrayListStringNN> imgList)
 {
 	UOSInt len;
 	Text::XMLNode::NodeType nt;
@@ -327,7 +327,8 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 			}
 			else if (s->EqualsICase(UTF8STRC("IMG")))
 			{
-				if (imgList)
+				NN<Data::ArrayListStringNN> nnimgList;
+				if (imgList.SetTo(nnimgList))
 				{
 					UOSInt i = 0;
 					UOSInt j = reader.GetAttribCount();
@@ -338,7 +339,7 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, Unsafe
 						attr = reader.GetAttribNoCheck(i);
 						if (Text::String::OrEmpty(attr->name)->EqualsICase(UTF8STRC("SRC")) && attr->value.SetTo(avalue))
 						{
-							imgList->Add(avalue->Clone());
+							nnimgList->Add(avalue->Clone());
 						}
 						i++;
 					}

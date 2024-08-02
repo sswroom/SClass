@@ -26,20 +26,21 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 	this->timeout = 30000;
 
 	Net::RSS *rss;
+	NN<Text::String> s;
 	NN<SNSItem> snsItem;
 	NN<Net::RSSItem> item;
 	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->clif, this->ssl, this->timeout, this->log));
-	if (rss->GetTitle())
+	if (rss->GetTitle().SetTo(s))
 	{
-		this->chName = rss->GetTitle()->Clone();
+		this->chName = s->Clone();
 	}
 	else
 	{
 		this->chName = this->channelId->Clone();
 	}
-	if (rss->GetDescription())
+	if (rss->GetDescription().SetTo(s))
 	{
-		this->chDesc = rss->GetDescription()->Clone().Ptr();
+		this->chDesc = s->Clone();
 	}
 	UOSInt i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
@@ -51,11 +52,12 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine
 		{
 			Data::ArrayListStringNN imgList;
 			sb.ClearStr();
-			Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, sb, &imgList);
+			s = Text::String::OrEmpty(item->description);
+			Text::HTMLUtil::HTMLGetText(this->encFact, s->v, s->leng, false, sb, &imgList);
 			sb2.ClearStr();
-			if (item->imgURL)
+			if (item->imgURL.SetTo(s))
 			{
-				sb2.Append(item->imgURL);
+				sb2.Append(s);
 			}
 			Data::ArrayIterator<NN<Text::String>> it = imgList.Iterator();
 			NN<Text::String> s;
@@ -91,7 +93,7 @@ Net::SNS::SNSRSS::~SNSRSS()
 	UOSInt i;
 	OPTSTR_DEL(this->userAgent);
 	this->chName->Release();
-	SDEL_STRING(this->chDesc);
+	OPTSTR_DEL(this->chDesc);
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
@@ -152,7 +154,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	NN<SNSItem> snsItem;
 	OSInt si;
 	NN<Net::RSSItem> item;
-	Data::ArrayListString idList;
+	Data::ArrayListStringNN idList;
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j = this->itemMap.GetCount();
@@ -160,11 +162,12 @@ Bool Net::SNS::SNSRSS::Reload()
 	i = 0;
 	while (i < j)
 	{
-		idList.Add(this->itemMap.GetKey(i).OrNull());
+		idList.Add(Text::String::OrEmpty(this->itemMap.GetKey(i)));
 		i++;
 	}
 
 	Net::RSS *rss;
+	NN<Text::String> nns;
 	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->clif, this->ssl, this->timeout, this->log));
 	i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
@@ -174,7 +177,7 @@ Bool Net::SNS::SNSRSS::Reload()
 		while (i-- > 0)
 		{
 			item = rss->GetItemNoCheck(i);
-			si = idList.SortedIndexOf(item->guid);
+			si = idList.SortedIndexOf(Text::String::OrEmpty(item->guid));
 			if (si >= 0)
 			{
 				idList.RemoveAt((UOSInt)si);
@@ -185,11 +188,12 @@ Bool Net::SNS::SNSRSS::Reload()
 				{
 					Data::ArrayListStringNN imgList;
 					sb.ClearStr();
-					Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, sb, &imgList);
+					nns = Text::String::OrEmpty(item->description);
+					Text::HTMLUtil::HTMLGetText(this->encFact, nns->v, nns->leng, false, sb, &imgList);
 					sb2.ClearStr();
-					if (item->imgURL)
+					if (item->imgURL.SetTo(nns))
 					{
-						sb2.Append(item->imgURL);
+						sb2.Append(nns);
 					}
 					Data::ArrayIterator<NN<Text::String>> it = imgList.Iterator();
 					NN<Text::String> s;
@@ -203,7 +207,6 @@ Bool Net::SNS::SNSRSS::Reload()
 						sb2.Append(s);
 						s->Release();
 					}
-					NN<Text::String> nns;
 					NN<Text::String> s2;
 					nns = Text::String::New(sb.ToString(), sb.GetLength());
 					s2 = Text::String::New(sb2.ToString(), sb2.GetLength());

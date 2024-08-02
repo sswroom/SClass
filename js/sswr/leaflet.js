@@ -406,7 +406,7 @@ export function toKMLFeature(layer, doc)
 	if (layer instanceof L.FeatureGroup)
 	{
 		let featureGroup = new kml.Folder();
-		featureGroup.setName("FeatureGroup");
+		featureGroup.setName("");
 		let i;
 		for (i in layer._layers)
 		{
@@ -419,7 +419,7 @@ export function toKMLFeature(layer, doc)
 	else if (layer instanceof L.Marker)
 	{
 		feature = new kml.Placemark(toPoint(layer));
-		feature.setName("Marker");
+		feature.setName("");
 //		console.log("Marker found", layer);
 		if (layer._popup && layer._popup._content)
 		{
@@ -460,7 +460,7 @@ export function toKMLFeature(layer, doc)
 	else if (layer instanceof L.Polyline)
 	{
 		feature = new kml.Placemark(toLineString(layer));
-		feature.setName("Polyline");
+		feature.setName("");
 		if (layer.options.color || layer.options.weight)
 		{
 			let lineStyle = new kml.LineStyle();

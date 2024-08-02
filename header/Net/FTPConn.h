@@ -13,7 +13,7 @@ namespace Net
 	{
 	private:
 		NN<Net::TCPClient> cli;
-		IO::StreamWriter *writer;
+		NN<IO::StreamWriter> writer;
 		Bool threadToStop;
 		Bool threadRunning;
 		UInt32 codePage;
@@ -21,7 +21,7 @@ namespace Net
 		Bool statusChg;
 		Int32 lastStatus;
 		UnsafeArrayOpt<UTF8Char> msgRet;
-		Sync::Event *evt;
+		Sync::Event evt;
 
 		static UInt32 __stdcall FTPThread(AnyType userObj);
 		Int32 WaitForResult();
@@ -36,12 +36,12 @@ namespace Net
 		Bool ChangeDirectory(UnsafeArray<const UTF8Char> dir);
 		Bool MakeDirectory(UnsafeArray<const UTF8Char> dir);
 		Bool RemoveDirectory(UnsafeArray<const UTF8Char> dir);
-		Bool GetFileSize(UnsafeArray<const UTF8Char> fileName, UInt64 *fileSize);
-		Bool GetFileModTime(UnsafeArray<const UTF8Char> fileName, Data::DateTime *modTime);
+		Bool GetFileSize(UnsafeArray<const UTF8Char> fileName, OutParam<UInt64> fileSize);
+		Bool GetFileModTime(UnsafeArray<const UTF8Char> fileName, NN<Data::DateTime> modTime);
 		Bool ToBinaryType();
 		Bool ToASCIIType();
 		Bool ToEBCDICType();
-		Bool ChangePassiveMode(UInt32 *ip, UInt16 *port);
+		Bool ChangePassiveMode(OutParam<UInt32> ip, OutParam<UInt16> port);
 		Bool ChangeActiveMode(UInt32 ip, UInt16 port);
 		Bool ResumeTransferPos(UInt64 pos);
 		Bool GetFile(UnsafeArray<const UTF8Char> fileName);

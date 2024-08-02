@@ -96,7 +96,7 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 #endif
 	stat->data = this->browser->GetData(stat->url->ToCString(), false, 0);
 	NN<IO::StreamData> fd;
-	if (!fd.Set(stat->data))
+	if (!stat->data.SetTo(fd))
 	{
 		OPTSTR_DEL(stat->name);
 		stat->url->Release();
@@ -168,7 +168,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 		while (i-- > 0)
 		{
 			stat = me->loadingList.GetItemNoCheck(i);
-			if (fd.Set(stat->data) && !stat->data->IsLoading())
+			if (stat->data.SetTo(fd) && !fd->IsLoading())
 			{
 				me->loadingList.RemoveAt(i);
 				pobj = me->parsers->ParseFile(fd);
@@ -271,10 +271,7 @@ Map::WebImageLayer::~WebImageLayer()
 		stat = this->loadingList.GetItemNoCheck(i);
 		OPTSTR_DEL(stat->name);
 		stat->url->Release();
-		if (stat->data)
-		{
-			DEL_CLASS(stat->data);
-		}
+		stat->data.Delete();
 		stat.Delete();
 	}
 	this->loadingList.Clear();

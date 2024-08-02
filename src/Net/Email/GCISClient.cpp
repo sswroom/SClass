@@ -46,12 +46,13 @@ Net::Email::GCISClient::~GCISClient()
 	this->svrCert.Delete();
 }
 
-Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Text::StringBuilderUTF8 *sbError)
+Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Optional<Text::StringBuilderUTF8> sbError)
 {
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->clif, ssl, CSTR("GCISClient/1.0"), false, true);
+	NN<Text::StringBuilderUTF8> nnsb;
 	if (!cli->SetClientCert(this->cert, this->key))
 	{
-		if (sbError) sbError->AppendC(UTF8STRC("Error in adding client cert"));
+		if (sbError.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Error in adding client cert"));
 		cli.Delete();
 		return false;
 	}
@@ -77,17 +78,17 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 	builder.ObjectEnd();
 	if (!cli->WriteContent(CSTR("application/json"), builder.Build()))
 	{
-		if (sbError) sbError->AppendC(UTF8STRC("Error in sending json"));
+		if (sbError.SetTo(nnsb)) nnsb->AppendC(UTF8STRC("Error in sending json"));
 		cli.Delete();
 		return false;
 	}
 	Net::WebStatus::StatusCode code = cli->GetRespStatus();
 	if (code != Net::WebStatus::SC_OK)
 	{
-		if (sbError)
+		if (sbError.SetTo(nnsb))
 		{
-			sbError->AppendC(UTF8STRC("Return HTTP status not success: "));
-			sbError->AppendI32((Int32)code);
+			nnsb->AppendC(UTF8STRC("Return HTTP status not success: "));
+			nnsb->AppendI32((Int32)code);
 		}
 		cli.Delete();
 		return false;
@@ -125,9 +126,8 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 		}
 		this->svrCert = certList;
 	}
-	NN<Text::StringBuilderUTF8> sb;
-	if (sb.Set(sbError))
-		cli->ReadAllContent(sb, 4096, 1048576);
+	if (sbError.SetTo(nnsb))
+		cli->ReadAllContent(nnsb, 4096, 1048576);
 	cli.Delete();
 	return true;
 }

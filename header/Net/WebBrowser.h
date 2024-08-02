@@ -24,7 +24,7 @@ namespace Net
 		WebBrowser(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN cacheDir);
 		~WebBrowser();
 
-		IO::StreamData *GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType);
+		Optional<IO::StreamData> GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType);
 	};
 }
 #endif
