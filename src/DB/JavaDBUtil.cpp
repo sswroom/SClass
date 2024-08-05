@@ -11,18 +11,18 @@ NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb,
 {
 	if (colDef->IsPK())
 	{
-		importMap->Put(CSTR("javax.persistence.Id"), true);
+		importMap->Put(CSTR("jakarta.persistence.Id"), true);
 		sb->AppendC(UTF8STRC("\t@Id\r\n"));
 		if (colDef->IsAutoInc())
 		{
 			sb->AppendC(UTF8STRC("\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n"));
-			importMap->Put(CSTR("javax.persistence.GeneratedValue"), true);
-			importMap->Put(CSTR("javax.persistence.GenerationType"), true);
+			importMap->Put(CSTR("jakarta.persistence.GeneratedValue"), true);
+			importMap->Put(CSTR("jakarta.persistence.GenerationType"), true);
 		}
 	}
 	if (colDef->GetColName()->HasUpperCase())
 	{
-		importMap->Put(CSTR("javax.persistence.Column"), true);
+		importMap->Put(CSTR("jakarta.persistence.Column"), true);
 		sb->AppendC(UTF8STRC("\t@Column(name="));
 		NN<Text::String> s = Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char>(colDef->GetColName()->v));
 		sb->Append(s);
@@ -251,8 +251,8 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 	Text::StringBuilderUTF8 sbEquals;
 	Text::StringBuilderUTF8 sbHashCode;
 	Text::StringBuilderUTF8 sbFieldOrder;
-	importMap.Put(CSTR("javax.persistence.Entity"), true);
-	importMap.Put(CSTR("javax.persistence.Table"), true);
+	importMap.Put(CSTR("jakarta.persistence.Entity"), true);
+	importMap.Put(CSTR("jakarta.persistence.Table"), true);
 
 	sbCode.AppendC(UTF8STRC("@Entity\r\n"));
 	sbCode.AppendC(UTF8STRC("@Table(name="));

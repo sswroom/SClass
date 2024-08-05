@@ -947,8 +947,8 @@ void Data::Class::ToJavaClass(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev
 	Text::StringBuilderUTF8 sbHashCode;
 	Text::StringBuilderUTF8 sbFieldOrder;
 	Text::StringBuilderUTF8 sbTmp;
-	importMap.Put(CSTR("javax.persistence.Entity"), true);
-	importMap.Put(CSTR("javax.persistence.Table"), true);
+	importMap.Put(CSTR("jakarta.persistence.Entity"), true);
+	importMap.Put(CSTR("jakarta.persistence.Table"), true);
 
 	sbCode.AppendC(UTF8STRC("@Entity\r\n"));
 	sbCode.AppendC(UTF8STRC("@Table(name="));
