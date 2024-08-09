@@ -1048,11 +1048,11 @@ export function parseUserAgent(userAgent)
 		i = userAgent.indexOf('(');
 		if (i >= 0)
 		{
-			ent.browserVer = ent.userAgent.substring(17, i);
+			ent.browserVer = userAgent.substring(17, i);
 		}
 		else
 		{
-			ent.browserVer = ent.userAgent.substring(17);
+			ent.browserVer = userAgent.substring(17);
 		}
 		return ent;
 	}

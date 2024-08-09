@@ -492,10 +492,14 @@ void Net::IAMSmartAPI::FreeToken(NN<TokenInfo> token)
 	token->openID->Release();
 }
 
-Bool Net::IAMSmartAPI::GetToken(Text::CStringNN code, NN<CEKInfo> cek, NN<TokenInfo> token)
+Bool Net::IAMSmartAPI::GetToken(Text::CStringNN code, Bool directLogin, NN<CEKInfo> cek, NN<TokenInfo> token)
 {
 	Text::JSONBuilder jsonMsg(Text::JSONBuilder::OT_OBJECT);
 	jsonMsg.ObjectAddStr(CSTR("code"), code);
+	if (directLogin)
+	{
+		jsonMsg.ObjectAddStr(CSTR("isDirectLoginV2"), CSTR("true"));
+	}
 	jsonMsg.ObjectAddStr(CSTR("grantType"), CSTR("authorization_code"));
 	Text::StringBuilderUTF8 sbURL;
 	sbURL.Append(CSTR("https://"));

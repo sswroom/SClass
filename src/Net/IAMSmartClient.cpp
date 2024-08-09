@@ -57,12 +57,12 @@ Bool Net::IAMSmartClient::IsError() const
 	return this->key.IsNull();
 }
 
-Bool Net::IAMSmartClient::GetToken(Text::CStringNN code, NN<IAMSmartAPI::TokenInfo> token)
+Bool Net::IAMSmartClient::GetToken(Text::CStringNN code, Bool directLogin, NN<IAMSmartAPI::TokenInfo> token)
 {
 	if (!this->PrepareCEK())
 		return false;
 	
-	return this->api.GetToken(code, this->cek, token);
+	return this->api.GetToken(code, directLogin, this->cek, token);
 }
 
 Bool Net::IAMSmartClient::GetProfiles(NN<IAMSmartAPI::TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<IAMSmartAPI::ProfileInfo> profiles)

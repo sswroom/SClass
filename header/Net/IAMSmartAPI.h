@@ -69,7 +69,7 @@ namespace Net
 		Bool GetKey(NN<Crypto::Cert::X509PrivKey> privKey, NN<CEKInfo> cek);
 		Bool RevokeKey();
 		static void FreeToken(NN<TokenInfo> token);
-		Bool GetToken(Text::CStringNN code, NN<CEKInfo> cek, NN<TokenInfo> token);
+		Bool GetToken(Text::CStringNN code, Bool directLogin, NN<CEKInfo> cek, NN<TokenInfo> token);
 		static void FreeProfiles(NN<ProfileInfo> profiles);
 		Bool GetProfiles(NN<TokenInfo> token, Text::CStringNN eMEFields, Text::CStringNN profileFields, NN<CEKInfo> cek, NN<ProfileInfo> profiles);
 	};
