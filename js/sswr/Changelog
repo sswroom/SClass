@@ -1,3 +1,6 @@
+1.6.10
+-web.getBrowserInfo enhance iPad Pro detection
+
 1.6.9
 -Enhance web.getBrowserInfo
 -web.parseUserAgent support FxiOS (Firefox in iOS)

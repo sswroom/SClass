@@ -1006,6 +1006,14 @@ export async function getBrowserInfo()
 			}
 		}
 	}
+	if (ret.os == OSType.MacOS)
+	{
+		if (navigator.platform === "MacIntel" && navigator.maxTouchPoints && navigator.maxTouchPoints > 2)
+		{
+			ret.os = OSType.iPad;
+			ret.osVer = ret.browserVer;
+		}
+	}
 	return ret;
 }
 
