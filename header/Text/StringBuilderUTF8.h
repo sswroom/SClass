@@ -5,6 +5,7 @@
 #include "Data/ByteArray.h"
 #include "Data/DateTime.h"
 #include "Data/Timestamp.h"
+#include "Math/Math.h"
 #include "Text/LineBreakType.h"
 #include "Text/PString.h"
 #include "Text/String.h"
