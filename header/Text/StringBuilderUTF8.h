@@ -842,5 +842,21 @@ namespace Text
 	{
 		sb->AppendDouble(v);
 	}	
+
+	FORCEINLINE void SBAppendNF32(NN<Text::StringBuilderUTF8> sb, Single v)
+	{
+		if (Math::IsNAN(v))
+			sb->Append(CSTR("null"));
+		else
+			sb->AppendDouble(v);
+	}	
+
+	FORCEINLINE void SBAppendNF64(NN<Text::StringBuilderUTF8> sb, Double v)
+	{
+		if (Math::IsNAN(v))
+			sb->Append(CSTR("null"));
+		else
+			sb->AppendDouble(v);
+	}	
 }
 #endif
