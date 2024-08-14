@@ -867,6 +867,14 @@ void Text::JSText::FreeNewText(UnsafeArray<const WChar> s)
 	MemFreeArr(s);
 }
 
+UnsafeArray<UTF8Char> Text::JSText::JSDouble(UnsafeArray<UTF8Char> buff, Double val)
+{
+	if (Math::IsNAN(val))
+		return Text::StrConcatC(buff, UTF8STRC("null"));
+	else
+		return Text::StrDouble(buff, val);
+}
+
 Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt lev = initLev;
