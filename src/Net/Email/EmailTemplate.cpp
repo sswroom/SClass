@@ -79,7 +79,7 @@ Bool Net::Email::EmailTemplate::ParseTemplate(NN<Text::StringBuilderUTF8> sbOut,
 					sb.ClearStr();
 					Text::TextBinEnc::FormEncoding::FormEncode(sb, sbParam.ToCString());
 					sbParam.ClearStr();
-					sb.Append(sbParam);
+					sbParam.Append(sb);
 				}
 				else if (tpl.v[i] == '$')
 				{
