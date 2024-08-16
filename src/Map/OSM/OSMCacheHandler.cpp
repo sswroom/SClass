@@ -14,7 +14,7 @@
 #include <stdio.h>
 #endif
 
-IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage)
+Optional<IO::SeekableStream> Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -35,7 +35,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	Data::DateTime currTime;
 
 	NN<Sync::Mutex> ioMut;
-	if (ioMut.Set(this->ioMut))
+	if (this->ioMut.SetTo(ioMut))
 	{
 		mutUsage->ReplaceMutex(ioMut);
 	}
@@ -112,7 +112,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 			if (currPos >= contLeng)
 			{
 				NN<Sync::Mutex> ioMut;
-				if (ioMut.Set(this->ioMut))
+				if (this->ioMut.SetTo(ioMut))
 				{
 					mutUsage->ReplaceMutex(ioMut);
 				}
@@ -178,12 +178,12 @@ void Map::OSM::OSMCacheHandler::AddAlternateURL(Text::CStringNN url)
 	this->urls.Add(Text::String::New(url));
 }
 
-void Map::OSM::OSMCacheHandler::GetStatus(CacheStatus *status)
+void Map::OSM::OSMCacheHandler::GetStatus(NN<CacheStatus> status)
 {
-	MemCopyNO(status, &this->status, sizeof(CacheStatus));
+	MemCopyNO(status.Ptr(), &this->status, sizeof(CacheStatus));
 }
 
-void Map::OSM::OSMCacheHandler::SetIOMut(Sync::Mutex *ioMut)
+void Map::OSM::OSMCacheHandler::SetIOMut(Optional<Sync::Mutex> ioMut)
 {
 	this->ioMut = ioMut;
 }
@@ -219,8 +219,8 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> r
 	yTile = Text::StrToInt32(sarr[3]);
 
 	Sync::MutexUsage mutUsage;
-	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile, mutUsage);
-	if (stm == 0)
+	NN<IO::SeekableStream> stm;
+	if (!GetTileData(lev, xTile, yTile, mutUsage).SetTo(stm))
 	{
 #ifdef VERBOSE
 		printf("OSMCacheHandler: Get Tile Data failed, lev = %d, xTile = %d, yTile = %d\r\n", lev, xTile, yTile);
@@ -252,7 +252,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> r
 			}
 			buffSize += readSize;
 		}
-		DEL_CLASS(stm);
+		stm.Delete();
 		mutUsage.EndUse();
 		if (buffSize < stmLeng)
 		{

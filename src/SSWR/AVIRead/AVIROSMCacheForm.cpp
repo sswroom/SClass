@@ -7,7 +7,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	Map::OSM::OSMCacheHandler::CacheStatus status;
-	me->hdlr->GetStatus(&status);
+	me->hdlr->GetStatus(status);
 	sptr = Text::StrInt32(sbuff, status.reqCnt);
 	me->txtReqCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrInt32(sbuff, status.remoteSuccCnt);

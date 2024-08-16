@@ -35,7 +35,7 @@ namespace Map
 			typedef struct
 			{
 				Int32 stat; //0 = not running, 1 = idle, 2 = to stop, 3 = working
-				Sync::Event *evt;
+				NN<Sync::Event> evt;
 				OSMCacheHandler *me;
 			} ThreadStatus;
 
@@ -49,16 +49,16 @@ namespace Map
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			CacheStatus status;
-			Sync::Mutex *ioMut;
+			Optional<Sync::Mutex> ioMut;
 
-			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage);
+			Optional<IO::SeekableStream> GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage);
 		public:
 			OSMCacheHandler(Text::CString url, Text::CStringNN cacheDir, Int32 maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 			virtual ~OSMCacheHandler();
 
 			void AddAlternateURL(Text::CStringNN url);
-			void GetStatus(CacheStatus *status);
-			void SetIOMut(Sync::Mutex *ioMut);
+			void GetStatus(NN<CacheStatus> status);
+			void SetIOMut(Optional<Sync::Mutex> ioMut);
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		};
