@@ -1307,7 +1307,7 @@ export class EXIFData
 		let ret = [];
 		let i;
 		for (i in this.exifMap)
-			ret.push(i);
+			ret.push(Number(i));
 		return ret;
 	}
 
@@ -1319,11 +1319,20 @@ export class EXIFData
 		return EXIFType.Unknown;
 	}
 
+	/**
+	 * 
+	 * @param {number} id 
+	 * @returns {EXIFItem|null}
+	 */
 	getExifItem(id)
 	{
 		return this.exifMap[id];
 	}
 
+	/**
+	 * 
+	 * @param {number} id 
+	 */
 	getExifUInt16(id)
 	{
 		let item = this.exifMap[id];
@@ -1563,7 +1572,9 @@ export class EXIFData
 	{
 		let subExif = this.getExifSubexif(34853);
 		if (subExif == null)
+		{
 			return null;
+		}
 
 		let ret = {};
 		let item1;
@@ -1587,11 +1598,13 @@ export class EXIFData
 				}
 				else
 				{
+					console.log("Latitude length is not valid");
 					return null;
 				}
 			}
 			else
 			{
+				console.log("Latitude type not valid");
 				return null;
 			}
 			if (item1.type == EXIFType.STRING)
@@ -1603,12 +1616,14 @@ export class EXIFData
 			}
 			else
 			{
+				console.log("LatitudeRef type not valid");
 				return null;
 			}
 			ret.lat = val;
 		}
 		else
 		{
+			console.log("Latitude / LatitudeRef not found");
 			return null;
 		}
 		item1 = subExif.getExifItem(3);
@@ -1629,11 +1644,13 @@ export class EXIFData
 				}
 				else
 				{
+					console.log("Longitude length is not valid");
 					return null;
 				}
 			}
 			else
 			{
+				console.log("Longitude type not valid");
 				return null;
 			}
 			if (item1.type == EXIFType.STRING)
@@ -1645,12 +1662,14 @@ export class EXIFData
 			}
 			else
 			{
+				console.log("LongitudeRef type not valid");
 				return null;
 			}
 			ret.lon = val;
 		}
 		else
 		{
+			console.log("Longitude / LongitudeRef not found");
 			return null;
 		}
 		item1 = subExif.getExifItem(5);
@@ -1665,11 +1684,13 @@ export class EXIFData
 				}
 				else
 				{
+					console.log("Altitude length is not valid");
 					return null;
 				}
 			}
 			else
 			{
+				console.log("Altitude Type is not valid");
 				return null;
 			}
 			if (item1.type == EXIFType.Bytes && item1.data.length == 1)
@@ -1688,13 +1709,14 @@ export class EXIFData
 			}
 			else
 			{
-				return false;
+				console.log("AltitudeRef Type is not valid");
+				return null;
 			}
 			ret.altitude = val;
 		}
 		else
 		{
-			ret.altitude = 0;
+			ret.altitude = null;
 		}
 		item1 = subExif.getExifItem(7);
 		item2 = subExif.getExifItem(29);
@@ -1709,6 +1731,7 @@ export class EXIFData
 			{
 				if (item1.data[1] != 1 || item1.data[3] != 1)
 				{
+					console.log("GPSTime denominator is not valid");
 					return null;
 				}
 				else
@@ -1722,13 +1745,15 @@ export class EXIFData
 			}
 			else
 			{
+				console.log("GPSTime Type is not valid");
 				return null;
 			}
-			if (item2.type == EXIFType.STRING && item2.data.length == 11)
+			if (item2.type == EXIFType.STRING && item2.data.length >= 10)
 			{
 				let dateArr = item2.data.split(":");
 				if (dateArr.length != 3)
 				{
+					console.log("GPSDate is not valid");
 					return null;
 				}
 				else
@@ -1741,12 +1766,13 @@ export class EXIFData
 					tv.minute = mm;
 					tv.second = ss;
 					tv.nanosec = Math.floor(ms * 1000000000);
-					tv.tzQhr = data.DateTimeUtil.getLocalTzQhr();
+					tv.tzQhr = 0;
 					ret.gpsTime = data.Timestamp.fromTimeValue(tv);
 				}
 			}
 			else
 			{
+				console.log("GPSDate format is not valid", item2.data);
 				return null;
 			}
 		}
@@ -1764,7 +1790,7 @@ export class EXIFData
 		for (i in this.exifMap)
 		{
 			item = this.exifMap[i];
-			name = EXIFData.getEXIFName(this.exifMaker, id, i);
+			name = EXIFData.getEXIFName(this.exifMaker, i, id);
 			if (item.type == EXIFType.SubExif)
 			{
 				ret[name] = item.data.getProperties(i);
@@ -1787,6 +1813,1791 @@ export class EXIFData
 			}
 		}
 		return ret;
+	}
+
+	toString(linePrefix)
+	{
+		let sb = [];
+		let exItem;
+		let i;
+		let j;
+		let k;
+		let v;
+	
+		sb.push("EXIF Content:");
+		let exifIds = this.getExifIds();
+		i = 0;
+		j = exifIds.length;
+		while (i < j)
+		{
+			v = exifIds[i];
+			sb.push("\r\n");
+			if (linePrefix) sb.push(linePrefix);
+			sb.push("Id = ");
+			sb.push(v);
+			sb.push(", name = ");
+			sb.push(EXIFData.getEXIFName(this.exifMaker, v));
+			if ((exItem = this.getExifItem(v)) != null)
+			{
+				if (exItem.type == EXIFType.SubExif)
+				{
+					let i2;
+					let j2;
+					let v2;
+					let subExItem;
+					let subExif = exItem.data;
+					let subExIds = subExif.getExifIds();
+					i2 = 0;
+					j2 = subExIds.length;
+					while (i2 < j2)
+					{
+						v2 = subExIds[i2];
+						sb.push("\r\n");
+						if (linePrefix) sb.push(linePrefix);
+						sb.push(" Subid = ");
+						sb.push(v2);
+						sb.push(", name = ");
+						sb.push(EXIFData.getEXIFName(this.exifMaker, v2, v));
+	
+						if ((subExItem = subExif.getExifItem(v2)) != null)
+						{
+							if (subExItem.type == EXIFType.STRING)
+							{
+								sb.push(", value = ");
+								sb.push(subExItem.data);
+							}
+							else if (subExItem.type == EXIFType.Double)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									k++;
+								}
+							}
+							else if (subExItem.type == EXIFType.Bytes)
+							{
+								let valBuff = subExItem.data;
+								sb.push(", value = ");
+								if (valBuff.length > 1024)
+								{
+									sb.push(valBuff.length);
+									sb.push(" bytes: ");
+									sb.push(text.u8Arr2Hex(new Uint8Array(valBuff, 0, 256), ' ', "\r\n"));
+									sb.push("\r\n...\r\n");
+									sb.push(text.u8Arr2Hex(new Uint8Array(valBuff, (valBuff.length & ~15) - 256, 256 + (valBuff.length & 15)), ' ', "\r\n"));
+								}
+								else
+								{
+									sb.push(text.u8Arr2Hex(new Uint8Array(valBuff), ' ', "\r\n"));
+								}
+							}
+							else if (subExItem.type == EXIFType.UINT16)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									k++;
+								}
+							}
+							else if (subExItem.type == EXIFType.UINT32)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									k++;
+								}
+							}
+							else if (subExItem.type == EXIFType.Rational)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									sb.push(" / ");
+									sb.push(valBuff[k + 1]);
+									if (valBuff[k + 1] != 0)
+									{
+										sb.push(" (");
+										sb.push(valBuff[k] / valBuff[k + 1]);
+										sb.push(")");
+									}
+									k += 2;
+								}
+							}
+							else if (subExItem.type == EXIFType.SRational)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									sb.push(" / ");
+									sb.push(valBuff[k + 1]);
+									if (valBuff[k + 1] != 0)
+									{
+										sb.push(" (");
+										sb.push(valBuff[k] / valBuff[k + 1]);
+										sb.push(")");
+									}
+									k += 2;
+								}
+							}
+							else if (subExItem.type == EXIFType.INT16)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									k++;
+								}
+							}
+							else if (subExItem.type == EXIFType.INT32)
+							{
+								let valBuff = subExItem.data;
+								k = 0;
+								while (k < valBuff.length)
+								{
+									if (k == 0)
+									{
+										sb.push(", value = ");
+									}
+									else
+									{
+										sb.push(", ");
+									}
+									sb.push(valBuff[k]);
+									k++;
+								}
+							}
+							else if (subExItem.id == 37500)
+							{
+								let valBuff = subExItem.data;
+								let innerExif;
+								let nnlinePrefix;
+								if ((innerExif = this.parseMakerNote(valBuff)) != null)
+								{
+									sb.push(", Format = ");
+									sb.push(innerExif.getEXIFMaker());
+									sb.push(", Inner ");
+									if (linePrefix)
+									{
+										sb.push(innerExif.toString(" "+linePrefix));
+									}
+									else
+									{
+										sb.push(innerExif.toString(" "));
+									}
+								}
+								else
+								{
+									sb.push(", value (Other) = ");
+									sb.push(text.u8Arr2Hex(valBuff, ' ', "\r\n"));
+								}
+							}
+							else if (subExItem.type == EXIFType.Other)
+							{
+								let valBuff = subExItem.data;
+								if (this.exifMaker == EXIFMaker.Olympus && subExItem.id == 0)
+								{
+									sb.push(", value = ");
+									sb.push(valBuff); //////////////////
+								}
+								else
+								{
+									sb.push(", value (Other) = ");
+									sb.push(text.u8Arr2Hex(valBuff, ' ', "\r\n"));
+								}
+							}
+							else
+							{
+								let valBuff = subExItem.data;
+								sb.push(", value (Unk) = ");
+								sb.push(text.u8Arr2Hex(valBuff, ' ', "\r\n"));
+							}
+						}	
+						i2++;
+					}
+				}
+				else if (exItem.type == EXIFType.STRING)
+				{
+					sb.push(", value = ");
+					sb.push(exItem.data);
+				}
+				else if (exItem.type == EXIFType.Double)
+				{
+					let valBuff = exItem.data;
+					k = 0;
+					while (k < valBuff.length)
+					{
+						if (k == 0)
+						{
+							sb.push(", value = ");
+						}
+						else
+						{
+							sb.push(", ");
+						}
+						sb.push(valBuff[k]);
+						k++;
+					}
+				}
+				else if (exItem.type == EXIFType.Bytes)
+				{
+					let valBuff = exItem.data;
+					sb.push(", value = ");
+					if (exItem.id >= 40091 && exItem.id <= 40095)
+					{
+						let enc = new text.UTF16LETextBinEnc();
+						if (valBuff[valBuff.length - 2] == 0)
+						{
+							sb.push(enc.encodeBin(new Uint8Array(valBuff, 0, valBuff.length - 2)));
+						}
+						else
+						{
+							sb.push(enc.encodeBin(new Uint8Array(valBuff, 0, valBuff.length)));
+						}
+					}
+					else
+					{
+						if (exItem.data.length > 1024)
+						{
+							sb.push(exItem.data.length);
+							sb.push(" bytes: ");
+							sb.push(text.u8Arr2Hex(new Uint8Array(valBuff, 0, 256), ' ', "\r\n"));
+							sb.push("\r\n...\r\n");
+							sb.push(text.u8Arr2Hex(new Uint8Array(valBuff, (valBuff.length & ~15) - 256, 256 + (valBuff.length & 15)), ' ', "\r\n"));
+						}
+						else
+						{
+							sb.push(text.u8Arr2Hex(new Uint8Array(valBuff), ' ', "\r\n"));
+						}
+					}
+				}
+				else if (exItem.type == EXIFType.UINT16)
+				{
+					let valBuff = exItem.data;
+					if (this.exifMaker == EXIFMaker.Canon && exItem.id == 1)
+					{
+						sb.push(this.toStringCanonCameraSettings(linePrefix, valBuff));
+					}
+					else if (this.exifMaker == EXIFMaker.Canon && exItem.id == 2)
+					{
+						sb.push(this.toStringCanonFocalLength(linePrefix, valBuff));
+					}
+					else if (this.exifMaker == EXIFMaker.Canon && exItem.id == 4)
+					{
+						sb.push(this.toStringCanonShotInfo(linePrefix, valBuff));
+					}
+					else
+					{
+						k = 0;
+						while (k < valBuff.length)
+						{
+							if (k == 0)
+							{
+								sb.push(", value = ");
+							}
+							else
+							{
+								sb.push(", ");
+							}
+							sb.push(valBuff[k]);
+							k++;
+						}
+					}
+				}
+				else if (exItem.type == EXIFType.UINT32)
+				{
+					let valBuff = exItem.data;
+					k = 0;
+					while (k < valBuff.length)
+					{
+						if (k == 0)
+						{
+							sb.push(", value = ");
+						}
+						else
+						{
+							sb.push(", ");
+						}
+						sb.push(valBuff[k]);
+						k++;
+					}
+				}
+				else if (exItem.type == EXIFType.Rational)
+				{
+					let valBuff = exItem.data;
+					k = 0;
+					while (k < valBuff.length)
+					{
+						if (k == 0)
+						{
+							sb.push(", value = ");
+						}
+						else
+						{
+							sb.push(", ");
+						}
+						sb.push(valBuff[k]);
+						sb.push(" / ");
+						sb.push(valBuff[k + 1]);
+						if (valBuff[k + 1] != 0)
+						{
+							sb.push(" (");
+							sb.push(valBuff[k] / valBuff[k + 1]);
+							sb.push(")");
+						}
+						k += 2;
+					}
+				}
+				else if (exItem.type == EXIFType.SRational)
+				{
+					let valBuff = exItem.data;
+					k = 0;
+					while (k < valBuff.length)
+					{
+						if (k == 0)
+						{
+							sb.push(", value = ");
+						}
+						else
+						{
+							sb.push(", ");
+						}
+						sb.push(valBuff[k]);
+						sb.push(" / ");
+						sb.push(valBuff[k + 1]);
+						if (valBuff[k + 1] != 0)
+						{
+							sb.push(" (");
+							sb.push(valBuff[k] / valBuff[k + 1]);
+							sb.push(")");
+						}
+						k += 2;
+					}
+				}
+				else if (exItem.type == EXIFType.INT16)
+				{
+					let valBuff = exItem.data;
+					k = 0;
+					while (k < valBuff.length)
+					{
+						if (k == 0)
+						{
+							sb.push(", value = ");
+						}
+						else
+						{
+							sb.push(", ");
+						}
+						sb.push(valBuff[k]);
+						k++;
+					}
+				}
+				else if (exItem.type == EXIFType.INT32)
+				{
+					let valBuff = exItem.data;
+					k = 0;
+					while (k < valBuff.length)
+					{
+						if (k == 0)
+						{
+							sb.push(", value = ");
+						}
+						else
+						{
+							sb.push(", ");
+						}
+						sb.push(valBuff[k]);
+						k++;
+					}
+				}
+				else if (exItem.type == EXIFType.Other)
+				{
+					if (this.exifMaker == EXIFMaker.Olympus && exItem.id == 521)
+					{
+						sb.push(", value = ");
+						sb.push(exItem.data);
+					}
+					else
+					{
+			//			UInt8 *valBuff;
+			//			valBuff = (UInt8*)exItem->dataBuff;
+						sb.push(", Other: size = ");
+						sb.push(exItem.data.length);
+			//			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
+					}
+				}
+				else
+				{
+		/*			UInt8 *valBuff;
+					if (exItem->cnt <= 4)
+					{
+						valBuff = (UInt8*)&exItem->value;
+					}
+					else
+					{
+						valBuff = (UInt8*)exItem->dataBuff;
+					}*/
+					sb.push(", Unknown: size = ");
+					sb.push(exItem.data.length);
+		//			sb->AppendHex(valBuff, subExItem->cnt, ' ', Text::StringBuilder::LBT_CRLF);
+				}
+			}
+			i++;
+		}
+		let loc;
+		if ((loc = this.getPhotoLocation()) != null)
+		{
+			sb.push("\r\nGPS Location: ");
+			sb.push(loc.lat);
+			sb.push(", ");
+			sb.push(loc.lon);
+			sb.push(", ");
+			sb.push(loc.altitude);
+		}
+		return sb.join("");
+	}
+
+	toStringCanonCameraSettings(linePrefix, valBuff)
+	{
+		let sb = [];
+		let isInt16;
+		let isUInt16;
+		let k;
+		k = 0;
+		while (k < valBuff.length)
+		{
+			sb.push("\r\n");
+			if (linePrefix) sb.push(linePrefix);
+			sb.push(" ");
+			isInt16 = false;
+			isUInt16 = false;
+			switch (k)
+			{
+			case 1:
+				sb.push("MacroMode = ");
+				switch (valBuff[k])
+				{
+				case 1:
+					sb.push("1-Macro");
+					break;
+				case 2:
+					sb.push("2-Normal");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 2:
+				sb.push("SelfTimer = ");
+				isInt16 = true;
+				break;
+			case 3:
+				sb.push("Quality = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-n/a");
+					break;
+				case 1:
+					sb.push("1-Economy");
+					break;
+				case 2:
+					sb.push("2-Normal");
+					break;
+				case 3:
+					sb.push("3-Fine");
+					break;
+				case 4:
+					sb.push("4-RAW");
+					break;
+				case 5:
+					sb.push("5-Superfine");
+					break;
+				case 7:
+					sb.push("7-CRAW");
+					break;
+				case 130:
+					sb.push("130-Normal Movie");
+					break;
+				case 131:
+					sb.push("131-Movie (2)");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 4:
+				sb.push("CanonFlashMode = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-n/a");
+					break;
+				case 0:
+					sb.push("0-Off");
+					break;
+				case 1:
+					sb.push("1-Auto");
+					break;
+				case 2:
+					sb.push("2-On");
+					break;
+				case 3:
+					sb.push("3-Red-eye Reduction");
+					break;
+				case 4:
+					sb.push("4-Slow Sync");
+					break;
+				case 5:
+					sb.push("5-Red-eye Reduction (Auto)");
+					break;
+				case 6:
+					sb.push("6-Red-eye Reduction (On)");
+					break;
+				case 16:
+					sb.push("16-External Flash");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 5:
+				sb.push("ContinuousDrive = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Single");
+					break;
+				case 1:
+					sb.push("1-Continuous");
+					break;
+				case 2:
+					sb.push("2-Movie");
+					break;
+				case 3:
+					sb.push("3-Continuous, Speed Priority");
+					break;
+				case 4:
+					sb.push("4-Continuous, Low");
+					break;
+				case 5:
+					sb.push("5-Continuous, High");
+					break;
+				case 6:
+					sb.push("6-Silent Single");
+					break;
+				case 9:
+					sb.push("9-Single, Silent");
+					break;
+				case 10:
+					sb.push("10-Continuous, Silent");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 7:
+				sb.push("FocusMode = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-One-shot AF");
+					break;
+				case 1:
+					sb.push("1-AI Servo AF");
+					break;
+				case 2:
+					sb.push("2-AI Focus AF");
+					break;
+				case 3:
+					sb.push("3-Manual Focus");
+					break;
+				case 4:
+					sb.push("4-Single");
+					break;
+				case 5:
+					sb.push("5-Continuous");
+					break;
+				case 6:
+					sb.push("6-Manual Focus");
+					break;
+				case 16:
+					sb.push("16-Pan Focus");
+					break;
+				case 256:
+					sb.push("256-AF+MF");
+					break;
+				case 512:
+					sb.push("512-Movie Snap Focus");
+					break;
+				case 519:
+					sb.push("519-Movie Servo AF");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 9:
+				sb.push("RecordMode = ");
+				switch (valBuff[k])
+				{
+				case 1:
+					sb.push("1-JPEG");
+					break;
+				case 2:
+					sb.push("2-CRW+THM");
+					break;
+				case 3:
+					sb.push("3-AVI+THM");
+					break;
+				case 4:
+					sb.push("4-TIF");
+					break;
+				case 5:
+					sb.push("5-TIF+JPEG");
+					break;
+				case 6:
+					sb.push("6-CR2");
+					break;
+				case 7:
+					sb.push("7-CR2+JPEG");
+					break;
+				case 9:
+					sb.push("9-MOV");
+					break;
+				case 10:
+					sb.push("10-MP4");
+					break;
+				case 11:
+					sb.push("11-CRM");
+					break;
+				case 12:
+					sb.push("12-CR3");
+					break;
+				case 13:
+					sb.push("13-CR3+JPEG");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 10:
+				sb.push("CanonImageSize = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-n/a");
+					break;
+				case 0:
+					sb.push("0-Large");
+					break;
+				case 1:
+					sb.push("1-Medium");
+					break;
+				case 2:
+					sb.push("2-Small");
+					break;
+				case 5:
+					sb.push("5-Medium 1");
+					break;
+				case 6:
+					sb.push("6-Medium 2");
+					break;
+				case 7:
+					sb.push("7-Medium 3");
+					break;
+				case 8:
+					sb.push("8-Postcard");
+					break;
+				case 9:
+					sb.push("9-Widescreen");
+					break;
+				case 10:
+					sb.push("10-Medium Widescreen");
+					break;
+				case 14:
+					sb.push("14-Small 1");
+					break;
+				case 15:
+					sb.push("15-Small 2");
+					break;
+				case 16:
+					sb.push("16-Small 3");
+					break;
+				case 128:
+					sb.push("128-640x480 Movie");
+					break;
+				case 129:
+					sb.push("129-Medium Movie");
+					break;
+				case 130:
+					sb.push("130-Small Movie");
+					break;
+				case 137:
+					sb.push("137-1280x720 Movie");
+					break;
+				case 142:
+					sb.push("142-1920x1080 Movie");
+					break;
+				case 143:
+					sb.push("143-4096x2160 Movie");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 11:
+				sb.push("EasyMode = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Full auto");
+					break;
+				case 1:
+					sb.push("1-Manual");
+					break;
+				case 2:
+					sb.push("2-Landscape");
+					break;
+				case 3:
+					sb.push("3-Fast shutter");
+					break;
+				case 4:
+					sb.push("4-Slow shutter");
+					break;
+				case 5:
+					sb.push("5-Night");
+					break;
+				case 6:
+					sb.push("6-Grey Scale");
+					break;
+				case 7:
+					sb.push("7-Sepia");
+					break;
+				case 8:
+					sb.push("8-Portrait");
+					break;
+				case 9:
+					sb.push("9-Sports");
+					break;
+				case 10:
+					sb.push("10-Macro");
+					break;
+				case 11:
+					sb.push("11-Black & White");
+					break;
+				case 12:
+					sb.push("12-Pan focus");
+					break;
+				case 13:
+					sb.push("13-Vivid");
+					break;
+				case 14:
+					sb.push("14-Neutral");
+					break;
+				case 15:
+					sb.push("15-Flash Off");
+					break;
+				case 16:
+					sb.push("16-Long Shutter");
+					break;
+				case 17:
+					sb.push("17-Super Macro");
+					break;
+				case 18:
+					sb.push("18-Foliage");
+					break;
+				case 19:
+					sb.push("19-Indoor");
+					break;
+				case 20:
+					sb.push("20-Fireworks");
+					break;
+				case 21:
+					sb.push("21-Beach");
+					break;
+				case 22:
+					sb.push("22-Underwater");
+					break;
+				case 23:
+					sb.push("23-Snow");
+					break;
+				case 24:
+					sb.push("24-Kids & Pets");
+					break;
+				case 25:
+					sb.push("25-Night Snapshot");
+					break;
+				case 26:
+					sb.push("26-Digital Macro");
+					break;
+				case 27:
+					sb.push("27-My Colors");
+					break;
+				case 28:
+					sb.push("28-Movie Snap");
+					break;
+				case 29:
+					sb.push("29-Super Macro 2");
+					break;
+				case 30:
+					sb.push("30-Color Accent");
+					break;
+				case 31:
+					sb.push("31-Color Swap");
+					break;
+				case 32:
+					sb.push("32-Aquarium");
+					break;
+				case 33:
+					sb.push("33-ISO 3200");
+					break;
+				case 34:
+					sb.push("34-ISO 6400");
+					break;
+				case 35:
+					sb.push("35-Creative Light Effect");
+					break;
+				case 36:
+					sb.push("36-Easy");
+					break;
+				case 37:
+					sb.push("37-Quick Shot");
+					break;
+				case 38:
+					sb.push("38-Creative Auto");
+					break;
+				case 39:
+					sb.push("39-Zoom Blur");
+					break;
+				case 40:
+					sb.push("40-Low Light");
+					break;
+				case 41:
+					sb.push("41-Nostalgic");
+					break;
+				case 42:
+					sb.push("42-Super Vivid");
+					break;
+				case 43:
+					sb.push("43-Poster Effect");
+					break;
+				case 44:
+					sb.push("44-Face Self-Time");
+					break;
+				case 45:
+					sb.push("45-Smile");
+					break;
+				case 46:
+					sb.push("46-Wink Self-Timer");
+					break;
+				case 47:
+					sb.push("47-Fisheye Effect");
+					break;
+				case 48:
+					sb.push("48-Miniature Effect");
+					break;
+				case 49:
+					sb.push("49-High-speed Burst");
+					break;
+				case 50:
+					sb.push("50-Best Image Selection");
+					break;
+				case 51:
+					sb.push("51-High Dynamic Range");
+					break;
+				case 52:
+					sb.push("52-Handheld Night Scene");
+					break;
+				case 53:
+					sb.push("53-Movie Digest");
+					break;
+				case 54:
+					sb.push("54-Live View Control");
+					break;
+				case 55:
+					sb.push("55-Discreet");
+					break;
+				case 56:
+					sb.push("56-Blur Reduction");
+					break;
+				case 57:
+					sb.push("57-Monochrome");
+					break;
+				case 58:
+					sb.push("58-Toy Camera Effect");
+					break;
+				case 59:
+					sb.push("59-Scene Intelligent Auto");
+					break;
+				case 60:
+					sb.push("60-High-speed Burst HQ");
+					break;
+				case 61:
+					sb.push("61-Smooth Skin");
+					break;
+				case 62:
+					sb.push("62-Soft Focus");
+					break;
+				case 257:
+					sb.push("257-Spotlight");
+					break;
+				case 258:
+					sb.push("258-Night 2");
+					break;
+				case 259:
+					sb.push("259-Night+");
+					break;
+				case 260:
+					sb.push("260-Super Night");
+					break;
+				case 261:
+					sb.push("261-Sunset");
+					break;
+				case 263:
+					sb.push("263-Night Scene");
+					break;
+				case 264:
+					sb.push("264-Surface");
+					break;
+				case 265:
+					sb.push("265-Low Light 2");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 12:
+				sb.push("DigitalZoom = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-None");
+					break;
+				case 1:
+					sb.push("1-2x");
+					break;
+				case 2:
+					sb.push("2-4x");
+					break;
+				case 3:
+					sb.push("3-Other");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 13:
+				sb.push("Contrast = ");
+				isInt16 = true;
+				break;
+			case 14:
+				sb.push("Saturation = ");
+				isInt16 = true;
+				break;
+			case 15:
+				sb.push("Sharpness = ");
+				isInt16 = true;
+				break;
+			case 16:
+				sb.push("CameraISO = ");
+				isInt16 = true;
+				break;
+			case 17:
+				sb.push("MeteringMode = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Default");
+					break;
+				case 1:
+					sb.push("1-Spot");
+					break;
+				case 2:
+					sb.push("2-Average");
+					break;
+				case 3:
+					sb.push("3-Evaluative");
+					break;
+				case 4:
+					sb.push("4-Partial");
+					break;
+				case 5:
+					sb.push("5-Center-weighted average");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 18:
+				sb.push("FocusRange = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Manual");
+					break;
+				case 1:
+					sb.push("1-Auto");
+					break;
+				case 2:
+					sb.push("2-Not Known");
+					break;
+				case 3:
+					sb.push("3-Macro");
+					break;
+				case 4:
+					sb.push("4-Very Close");
+					break;
+				case 5:
+					sb.push("5-Close");
+					break;
+				case 6:
+					sb.push("6-Middle Range");
+					break;
+				case 7:
+					sb.push("7-Far Range");
+					break;
+				case 8:
+					sb.push("8-Pan Focus");
+					break;
+				case 9:
+					sb.push("9-Super Macro");
+					break;
+				case 10:
+					sb.push("10-Infinity");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 19:
+				sb.push("AFPoint = ");
+				switch (valBuff[k])
+				{
+				case 0x2005:
+					sb.push("0x2005-Manual AF point selection ");
+					break;
+				case 0x3000:
+					sb.push("0x3000-None (MF)");
+					break;
+				case 0x3001:
+					sb.push("0x3001-Auto AF point selection");
+					break;
+				case 0x3002:
+					sb.push("0x3002-Right");
+					break;
+				case 0x3003:
+					sb.push("0x3003-Center");
+					break;
+				case 0x3004:
+					sb.push("0x3004-Left");
+					break;
+				case 0x4001:
+					sb.push("0x4001-Auto AF point selection");
+					break;
+				case 0x4006:
+					sb.push("0x4006-Face Detect");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 20:
+				sb.push("CanonExposureMode = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Easy");
+					break;
+				case 1:
+					sb.push("1-Program AE");
+					break;
+				case 2:
+					sb.push("2-Shutter speed priority AE");
+					break;
+				case 3:
+					sb.push("3-Aperture-priority AE");
+					break;
+				case 4:
+					sb.push("4-Manual");
+					break;
+				case 5:
+					sb.push("5-Depth-of-field AE");
+					break;
+				case 6:
+					sb.push("6-M-Dep");
+					break;
+				case 7:
+					sb.push("7-Bulb");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 22:
+				sb.push("LensType = ");
+				sb.push(this.toStringCanonLensType(valBuff[k]));
+				break;
+			case 23:
+				sb.push("MaxFocalLength = ");
+				isUInt16 = true;
+				break;
+			case 24:
+				sb.push("MinFocalLength = ");
+				isUInt16 = true;
+				break;
+			case 25:
+				sb.push("FocalUnits = ");
+				isInt16 = true;
+				break;
+			case 26:
+				sb.push("MaxAperture = ");
+				isInt16 = true;
+				break;
+			case 27:
+				sb.push("MinAperture = ");
+				isInt16 = true;
+				break;
+			case 28:
+				sb.push("FlashActivity = ");
+				isInt16 = true;
+				break;
+			case 29:
+				sb.push("FlashBits = 0x");
+				sb.push(text.toHex16(valBuff[k]));
+				break;
+			case 32:
+				sb.push("FocusContinuous = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Single");
+					break;
+				case 1:
+					sb.push("1-Continuous");
+					break;
+				case 8:
+					sb.push("8-Manual");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 33:
+				sb.push("AESetting = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Normal AE");
+					break;
+				case 1:
+					sb.push("1-Exposure Compensation");
+					break;
+				case 2:
+					sb.push("2-AE Lock");
+					break;
+				case 3:
+					sb.push("3-AE Lock + Exposure Comp.");
+					break;
+				case 4:
+					sb.push("4-No AE");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 34:
+				sb.push("ImageStabilization = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Off");
+					break;
+				case 1:
+					sb.push("1-On");
+					break;
+				case 2:
+					sb.push("2-Shoot Only");
+					break;
+				case 3:
+					sb.push("3-Panning");
+					break;
+				case 4:
+					sb.push("4-Dynamic");
+					break;
+				case 256:
+					sb.push("256-Off");
+					break;
+				case 257:
+					sb.push("257-On");
+					break;
+				case 258:
+					sb.push("258-Shoot Only");
+					break;
+				case 259:
+					sb.push("259-Panning");
+					break;
+				case 260:
+					sb.push("260-Dynamic");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 35:
+				sb.push("DisplayAperture = ");
+				isInt16 = true;
+				break;
+			case 36:
+				sb.push("ZoomSourceWidth = ");
+				isInt16 = true;
+				break;
+			case 37:
+				sb.push("ZoomTargetWidth = ");
+				isInt16 = true;
+				break;
+			case 39:
+				sb.push("AESetting = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Center");
+					break;
+				case 1:
+					sb.push("1-AF Point");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 40:
+				sb.push("PhotoEffect = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-Off");
+					break;
+				case 1:
+					sb.push("1-Vivid");
+					break;
+				case 2:
+					sb.push("2-Neutral");
+					break;
+				case 3:
+					sb.push("3-Smooth");
+					break;
+				case 4:
+					sb.push("4-Sepia");
+					break;
+				case 5:
+					sb.push("5-B&W");
+					break;
+				case 6:
+					sb.push("6-Custom");
+					break;
+				case 100:
+					sb.push("100-My Color Data");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 41:
+				sb.push("ManualFlashOutput = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-n/a");
+					break;
+				case 0x500:
+					sb.push("0x500-Full");
+					break;
+				case 0x502:
+					sb.push("0x500-Medium");
+					break;
+				case 0x504:
+					sb.push("0x500-Low");
+					break;
+				case 0x7fff:
+					sb.push("0x7fff-n/a");
+					break;
+				default:
+					sb.push("0x");
+					sb.push(text.toHex16(valBuff[k]));
+					break;
+				}
+				break;
+			case 42:
+				sb.push("ColorTone = ");
+				isInt16 = true;
+				break;
+			case 46:
+				sb.push("SRAWQuality = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-n/a");
+					break;
+				case 1:
+					sb.push("1-sRAW1(mRAW)");
+					break;
+				case 2:
+					sb.push("2-sRAW2(sRAW)");
+					break;
+				default:
+					sb.push("0x");
+					sb.push(text.toHex16(valBuff[k]));
+					break;
+				}
+				break;
+			default:
+				sb.push("Unknown(");
+				sb.push(k);
+				sb.push(") = ");
+				isInt16 = true;
+				break;
+			}
+			if (isInt16)
+			{
+				sb.push(valBuff[k]);
+			}
+			else if (isUInt16)
+			{
+				sb.push(valBuff[k]);
+			}
+			k++;
+		}
+		return sb.join("");
+	}
+
+	toStringCanonFocalLength(linePrefix, valBuff)
+	{
+		let sb = [];
+		let isInt16;
+		let isUInt16;
+		let k;
+		k = 0;
+		while (k < valBuff.length)
+		{
+			sb.push("\r\n");
+			if (linePrefix) sb.push(linePrefix);
+			sb.push(" ");
+			isInt16 = false;
+			isUInt16 = false;
+			switch (k)
+			{
+			case 0:
+				sb.push("FocalType = ");
+				switch (valBuff[k])
+				{
+				case 1:
+					sb.push("1-Fixed");
+					break;
+				case 2:
+					sb.push("2-Zoom");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 1:
+				sb.push("FocalLength = ");
+				isUInt16 = true;
+				break;
+			case 2:
+				sb.push("FocalPlaneXSize = ");
+				isUInt16 = true;
+				break;
+			case 3:
+				sb.push("FocalPlaneYSize = ");
+				isUInt16 = true;
+				break;
+			default:
+				sb.push("Unknown(");
+				sb.push(k);
+				sb.push(") = ");
+				isInt16 = true;
+				break;
+			}
+			if (isInt16)
+			{
+				sb.push(valBuff[k]);
+			}
+			else if (isUInt16)
+			{
+				sb.push(valBuff[k]);
+			}
+			k++;
+		}
+		return sb.join("");
+	}
+
+	toStringCanonShotInfo(linePrefix, valBuff)
+	{
+		let sb = [];
+		let isInt16;
+		let isUInt16;
+		let k;
+		k = 0;
+		while (k < valBuff.length)
+		{
+			sb.push("\r\n");
+			if (linePrefix) sb.push(linePrefix);
+			sb.push(" ");
+			isInt16 = false;
+			isUInt16 = false;
+			switch (k)
+			{
+			case 1:
+				sb.push("AutoISO = ");
+				isInt16 = true;
+				break;
+			case 2:
+				sb.push("BaseISO = ");
+				isInt16 = true;
+				break;
+			case 3:
+				sb.push("MeasuredEV = ");
+				isInt16 = true;
+				break;
+			case 4:
+				sb.push("TargetAperture = ");
+				isInt16 = true;
+				break;
+			case 5:
+				sb.push("TargetExposureTime = ");
+				isInt16 = true;
+				break;
+			case 6:
+				sb.push("ExposureCompensation = ");
+				isInt16 = true;
+				break;
+			case 7:
+				sb.push("WhiteBalance = ");
+				isInt16 = true;
+				break;
+			case 8:
+				sb.push("SlowShutter = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-n/a");
+					break;
+				case 0:
+					sb.push("0-Off");
+					break;
+				case 1:
+					sb.push("1-Night Scene");
+					break;
+				case 2:
+					sb.push("2-On");
+					break;
+				case 3:
+					sb.push("3-None");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 9:
+				sb.push("SequenceNumber = ");
+				isInt16 = true;
+				break;
+			case 10:
+				sb.push("OpticalZoomCode = ");
+				isInt16 = true;
+				break;
+			case 12:
+				sb.push("CameraTemperature = ");
+				isInt16 = true;
+				break;
+			case 13:
+				sb.push("FlashGuideNumber = ");
+				isInt16 = true;
+				break;
+			case 14:
+				sb.push("AFPointsInFocus = ");
+				switch (valBuff[k])
+				{
+				case 0x3000:
+					sb.push("0x3000-None (MF)");
+					break;
+				case 0x3001:
+					sb.push("0x3001-Right");
+					break;
+				case 0x3002:
+					sb.push("0x3002-Center");
+					break;
+				case 0x3003:
+					sb.push("0x3003-Center+Right");
+					break;
+				case 0x3004:
+					sb.push("0x3004-Left");
+					break;
+				case 0x3005:
+					sb.push("0x3005-Left+Right");
+					break;
+				case 0x3006:
+					sb.push("0x3006-Left+Center");
+					break;
+				case 0x3007:
+					sb.push("0x3007-All");
+					break;
+				default:
+					sb.push("0x");
+					sb.push(text.toHex16(valBuff[k]));
+					break;
+				}
+				break;
+			case 15:
+				sb.push("FlashExposureComp = ");
+				isInt16 = true;
+				break;
+			case 16:
+				sb.push("AutoExposureBracketing = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-On");
+					break;
+				case 0:
+					sb.push("0-Off");
+					break;
+				case 1:
+					sb.push("1-On (shot 1)");
+					break;
+				case 2:
+					sb.push("2-On (shot 2)");
+					break;
+				case 3:
+					sb.push("3-On (shot 3)");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 17:
+				sb.push("AEBBracketValue = ");
+				isInt16 = true;
+				break;
+			case 18:
+				sb.push("ControlMode = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-n/a");
+					break;
+				case 1:
+					sb.push("1-Camera Local Control");
+					break;
+				case 3:
+					sb.push("3-Computer Remote Control");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 19:
+				sb.push("FocusDistanceUpper = ");
+				isUInt16 = true;
+				break;
+			case 20:
+				sb.push("FocusDistanceLower = ");
+				isUInt16 = true;
+				break;
+			case 21:
+				sb.push("FNumber = ");
+				isInt16 = true;
+				break;
+			case 22:
+				sb.push("ExposureTime = ");
+				isInt16 = true;
+				break;
+			case 23:
+				sb.push("MeasuredEV2 = ");
+				isInt16 = true;
+				break;
+			case 24:
+				sb.push("BulbDuration = ");
+				isInt16 = true;
+				break;
+			case 26:
+				sb.push("CameraType = ");
+				switch (valBuff[k])
+				{
+				case 0:
+					sb.push("0-n/a");
+					break;
+				case 248:
+					sb.push("248-EOS High-end");
+					break;
+				case 250:
+					sb.push("250-Compact");
+					break;
+				case 252:
+					sb.push("252-EOS Mid-range");
+					break;
+				case 255:
+					sb.push("255-DV Camera");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 27:
+				sb.push("AutoRotate = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-n/a");
+					break;
+				case 0:
+					sb.push("0-None");
+					break;
+				case 1:
+					sb.push("1-Rotate 90 CW");
+					break;
+				case 2:
+					sb.push("1-Rotate 180");
+					break;
+				case 3:
+					sb.push("3-Rotate 270 CW");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 28:
+				sb.push("NDFilter = ");
+				switch (valBuff[k])
+				{
+				case -1:
+					sb.push("-1-n/a");
+					break;
+				case 0:
+					sb.push("0-Off");
+					break;
+				case 1:
+					sb.push("1-On");
+					break;
+				default:
+					sb.push(valBuff[k]);
+					break;
+				}
+				break;
+			case 29:
+				sb.push("SelfTimer2 = ");
+				isInt16 = true;
+				break;
+			case 33:
+				sb.push("FlashOutput = ");
+				isInt16 = true;
+				break;
+			default:
+				sb.push("Unknown(");
+				sb.push(k);
+				sb.push(") = ");
+				isInt16 = true;
+				break;
+			}
+			if (isInt16)
+			{
+				sb.push(valBuff[k]);
+			}
+			else if (isUInt16)
+			{
+				sb.push(valBuff[k]);
+			}
+			k++;
+		}
+		return sb.join("");
+	}
+
+	toStringCanonLensType(lensType)
+	{
+		return "0x" + text.toHex16(lensType);
 	}
 
 	parseMakerNote(buff)
@@ -1844,93 +3655,98 @@ export class EXIFData
 			{
 				if (maker == "Canon")
 				{
-					return EXIFData.parseIFD(reader, 0, true, null, 0, EXIFMaker.Canon);
+					return EXIFData.parseIFD(reader, 0, true, null, null, EXIFMaker.Canon);
 				}
 				else if (maker == "CASIO")
 				{
-					return EXIFData.parseIFD(reader, 0, false, null, 0, EXIFMaker.Casio1);
+					return EXIFData.parseIFD(reader, 0, false, null, null, EXIFMaker.Casio1);
 				}
 				else if (maker == "FLIR Systems AB")
 				{
-					return EXIFData.parseIFD(reader, 0, true, null, 0, EXIFMaker.FLIR);
+					return EXIFData.parseIFD(reader, 0, true, null, null, EXIFMaker.FLIR);
 				}
 			}
 		}
 		return null;
 	}
 
-	static getEXIFName(exifMaker, id, subId)
+	/**
+	 * @param {string} exifMaker
+	 * @param {string | number} id
+	 * @param {number | undefined} [parentId]
+	 */
+	static getEXIFName(exifMaker, id, parentId)
 	{
 		let name = null;
-		if (id == 0)
+		if (parentId === undefined)
 		{
 			switch (exifMaker)
 			{
 			case EXIFMaker.Panasonic:
-				name = EXIFNamesPanasonic[subId];
+				name = EXIFNamesPanasonic[id];
 				break;
 			case EXIFMaker.Canon:
-				name = EXIFNamesCanon[subId];
+				name = EXIFNamesCanon[id];
 				break;
 			case EXIFMaker.Olympus:
-				name = EXIFNamesOlympus[subId];
+				name = EXIFNamesOlympus[id];
 				break;
 			case EXIFMaker.Casio1:
-				name = EXIFNamesCasio1[subId];
+				name = EXIFNamesCasio1[id];
 				break;
 			case EXIFMaker.Casio2:
-				name = EXIFNamesCasio2[subId];
+				name = EXIFNamesCasio2[id];
 				break;
 			case EXIFMaker.FLIR:
-				name = EXIFNamesFLIR[subId];
+				name = EXIFNamesFLIR[id];
 				break;
 			case EXIFMaker.Nikon3:
-				name = EXIFNamesNikon3[subId];
+				name = EXIFNamesNikon3[id];
 				break;
 			case EXIFMaker.Sanyo:
-				name = EXIFNamesSanyo1[subId];
+				name = EXIFNamesSanyo1[id];
 				break;
 			case EXIFMaker.Apple:
-				name = EXIFNamesApple[subId];
+				name = EXIFNamesApple[id];
 				break;
 			case EXIFMaker.Standard:
 			default:
-				name = EXIFNamesStandard[subId];
+				name = EXIFNamesStandard[id];
 				break;
 			}
 		}
-		else if (id == 34665)
+		else if (parentId == 34665)
 		{
-			name = EXIFNamesInfo[subId];
+			name = EXIFNamesInfo[id];
 		}
-		else if (id == 34853)
+		else if (parentId == 34853)
 		{
-			name = EXIFNamesGPS[subId];
+			name = EXIFNamesGPS[id];
 		}
 		else if (exifMaker == EXIFMaker.Olympus)
 		{
-			if (id == 0x2010)
+			if (parentId == 0x2010)
 			{
-				name = EXIFNamesOlympus2010[subId];
+				name = EXIFNamesOlympus2010[id];
 			}
-			else if (id == 0x2020)
+			else if (parentId == 0x2020)
 			{
-				name = EXIFNamesOlympus2020[subId];
+				name = EXIFNamesOlympus2020[id];
 			}
-			else if (id == 0x2030)
+			else if (parentId == 0x2030)
 			{
-				name = EXIFNamesOlympus2030[subId];
+				name = EXIFNamesOlympus2030[id];
 			}
-			else if (id == 0x2040)
+			else if (parentId == 0x2040)
 			{
-				name = EXIFNamesOlympus2040[subId];
+				name = EXIFNamesOlympus2040[id];
 			}
-			else if (id == 0x2050)
+			else if (parentId == 0x2050)
 			{
-				name = EXIFNamesOlympus2050[subId];
+				name = EXIFNamesOlympus2050[id];
 			}
 		}
-		return name || ("Tag "+subId);
+		return name || ("Tag "+id);
 	}
 
 	/**
@@ -2125,7 +3941,15 @@ export class EXIFData
 				}
 				else
 				{
-					exif.addUInt16(tag, reader.readUInt16Arr(reader.readUInt32(ifdOfst + 8, lsb) + readBase, lsb, fcnt));
+					try
+					{
+						exif.addUInt16(tag, reader.readUInt16Arr(reader.readUInt32(ifdOfst + 8, lsb) + readBase, lsb, fcnt));
+					}
+					catch (e)
+					{
+						console.log("Error in parsing file", e, ifdOfst, readBase, lsb, fcnt, tag);
+						console.log(reader, reader.getLength(), reader.readUInt32(ifdOfst + 8, lsb));
+					}
 				}
 				break;
 			}

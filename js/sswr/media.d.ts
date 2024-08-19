@@ -95,6 +95,11 @@ export class EXIFData
 	getPhotoLocation(): GPSInfo | null;
 
 	getProperties(): object;
+	toString(linePrefix?: string): string;
+	toStringCanonCameraSettings(linePrefix: string | null | undefined, valBuff: number[]): string;
+	toStringCanonFocalLength(linePrefix: string | null | undefined, valBuff: number[]): string;
+	toStringCanonShotInfo(linePrefix: string | null | undefined, valBuff: number[]): string;
+	toStringCanonLensType(lensType: number): string;
 	parseMakerNote(buff: ArrayBuffer): EXIFData | null;
 
 	static getEXIFName(exifMaker: EXIFMaker, id: number, subId: number): string;

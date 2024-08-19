@@ -2401,13 +2401,13 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 			{
 				succ = false;
 			}
-			if (item2->type == Media::EXIFData::ET_STRING && item2->cnt == 11)
+			if (item2->type == Media::EXIFData::ET_STRING && item2->cnt >= 10 && item2->cnt <= 11)
 			{
 				Char dateStr[12];
 				UOSInt dateCnt;
 				UnsafeArray<Char> dateArr[3];
-				MemCopyNO(dateStr, item2->dataBuff.GetOpt<UTF8Char>().OrNull(), 11);
-				dateStr[11] = 0;
+				MemCopyNO(dateStr, item2->dataBuff.GetOpt<UTF8Char>().OrNull(), item2->cnt);
+				dateStr[item2->cnt] = 0;
 				dateCnt = Text::StrSplitCh(dateArr, 3, dateStr, ':');
 				if (dateCnt != 3)
 				{
@@ -2416,7 +2416,7 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 				else if (gpsTimeTick.IsNotNull())
 				{
 					Data::DateTime dt;
-					dt.SetValue((UInt16)Text::StrToUInt32Ch(dateArr[0]), Text::StrToInt32Ch(dateArr[1]), Text::StrToInt32Ch(dateArr[2]), hh, mm, ss, ms);
+					dt.SetValue((UInt16)Text::StrToUInt32Ch(dateArr[0]), Text::StrToInt32Ch(dateArr[1]), Text::StrToInt32Ch(dateArr[2]), hh, mm, ss, ms, 0);
 					gpsTimeTick.SetNoCheck(dt.ToTicks());
 				}
 			}

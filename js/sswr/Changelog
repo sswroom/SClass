@@ -1,3 +1,7 @@
+1.6.11
+-media.EXIFData.getPhotoLocation fixed getting problem
+-Added media.EXIFData.toString
+
 1.6.10
 -web.getBrowserInfo enhance iPad Pro detection
 
