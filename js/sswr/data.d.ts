@@ -31,6 +31,8 @@ export function readUInt24(arr: Uint8Array, index: number): number;
 export function readMUInt24(arr: Uint8Array, index: number): number;
 export function readUInt32(arr: Uint8Array, index: number): number;
 export function readMUInt32(arr: Uint8Array, index: number): number;
+export function readUInt64(arr: Uint8Array, index: number): bigint;
+export function readMUInt64(arr: Uint8Array, index: number): bigint;
 export function rol32(v: number, n: number): number;
 export function ror32(v: number, n: number): number;
 export function shl32(v: number, n: number): number;
@@ -227,10 +229,12 @@ export class ByteReader
 	readUInt16(ofst: number, lsb: boolean): number;
 	readUInt24(ofst: number, lsb: boolean): number;
 	readUInt32(ofst: number, lsb: boolean): number;
+	readUInt64(ofst: number, lsb: boolean): bigint;
 	readInt8(ofst: number): number;
 	readInt16(ofst: number, lsb: boolean): number;
 	readInt24(ofst: number, lsb: boolean): number;
 	readInt32(ofst: number, lsb: boolean): number;
+	readInt64(ofst: number, lsb: boolean): bigint;
 	readFloat64(ofst: number, lsb: boolean): number;
 	readUTF8(ofst: number, len: number): string;
 	readUTF8Z(ofst: number, maxSize?: number): string;
@@ -252,4 +256,5 @@ export abstract class ParsedObject
 	sourceName: string;
 	objType: string;
 	constructor(sourceName: string, objType: string);
+	setSourceName(sourceName: string);
 }

@@ -127,7 +127,7 @@ export abstract class X509File extends ASN1Data
 	getCertCount(): number;
 	getCertName(index: number): string | null;
 	getNewCert(index: number): X509Cert | null;
-	abstract isValid(): CertValidStatus;
+	abstract isValid(): Promise<CertValidStatus>;
 
 	toShortString(): string;
 	isSignatureKey(key: X509Key): boolean;
@@ -213,7 +213,7 @@ export class X509Cert extends X509File
 	getCertCount(): number;
 	getCertName(index: number): string | null;
 	getNewCert(index: number): X509Cert | null;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 
 	clone(): ASN1Data;
 	createX509Cert(): X509Cert;
@@ -241,7 +241,7 @@ export class X509CertReq extends X509File
 
 	getFileType(): X509FileType;
 	toShortName(): string;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 	
 	clone(): X509CertReq;
 	toString(): string;
@@ -258,7 +258,7 @@ export class X509Key extends X509File
 	constructor(sourceName: string, buff: ArrayBuffer, keyType: KeyType);
 	getFileType(): X509FileType;
 	toShortName(): string;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 	clone(): X509Key;
 	toString(): string;
 	createNames(): ASN1Names;
@@ -281,7 +281,7 @@ export class X509Key extends X509File
 	getECPrivate(): ArrayBuffer | null;
 	getECPublic(): ArrayBuffer | null;
 	getECName(): ECName;
-
+	signatureVerify(hashType: hash.HashType, payload: ArrayBuffer, signature: ArrayBuffer): Promise<boolean>;
 	static fromECPublicKey(buff: ArrayBuffer, paramOID: ArrayBuffer): X509Key;
 }
 
@@ -291,7 +291,7 @@ export class X509PrivKey extends X509File
 
 	getFileType(): X509FileType;
 	toShortName(): string;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 
 	clone(): X509PrivKey;
 	toString(): string;
@@ -310,7 +310,7 @@ export class X509PubKey extends X509File
 
 	getFileType(): X509FileType;
 	toShortName(): string;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 	clone(): X509PubKey;
 	toString(): string;
 	createNames(): ASN1Names;
@@ -331,7 +331,7 @@ export class X509PKCS7 extends X509File
 	getCertCount(): number;
 	getCertName(index: number): string;
 	getNewCert(index: number): X509Cert;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 
 	clone(): X509PKCS7;
 	toString(): string;
@@ -352,7 +352,7 @@ export class X509PKCS12 extends X509File
 	getCertCount(): number;
 	getCertName(index: number): string;
 	getNewCert(index: number): X509Cert;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 
 	clone(): X509PKCS12;
 	toString(): string;
@@ -371,7 +371,7 @@ export class X509FileList extends X509File
 	getCertCount(): number;
 	getCertName(index: number): string | null;
 	getNewCert(index: number): X509Cert | null;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 
 	clone(): X509FileList;
 	createX509Cert(): X509Cert;
@@ -390,7 +390,7 @@ export class X509CRL extends X509File
 
 	getFileType(): X509FileType;
 	toShortName(): string;
-	isValid(): CertValidStatus;
+	isValid(): Promise<CertValidStatus>;
 	
 	clone(): X509CRL;
 	toString(): string;

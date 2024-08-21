@@ -6,6 +6,7 @@ import * as math from "./math.js";
 import * as osm from "./osm.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
+import * as OpenLayers from "./dummy/olayer2.js";
 
 export function toPointArray(numArr, options)
 {
@@ -148,6 +149,11 @@ export async function createFromKML(feature, options)
 	}
 }
 
+/**
+ * @param {geometry.Vector2D} geom
+ * @param {{ objProjection: any; mapProjection: any; iconUrl?: any; iconOffset?: any; } | null} options
+ * @returns {Promise<OpenLayers.Geometry|OpenLayers.Marker|null>}
+ */
 export async function createFromGeometry(geom, options)
 {
 	if (options == null)
@@ -221,8 +227,11 @@ export class Olayer2Map extends map.MapControl
 		this.initLev = 12;
 		this.mapId = mapId;
 		let dom = document.getElementById(mapId);
-		dom.style.minWidth = '1px';
-		dom.style.minHeight = '1px';
+		if (dom)
+		{
+			dom.style.minWidth = '1px';
+			dom.style.minHeight = '1px';
+		}
 		this.mapProjection = new OpenLayers.Projection("EPSG:4326");
 		this.map = new OpenLayers.Map(this.mapId, {
 			eventListeners: {
@@ -674,7 +683,7 @@ export class Olayer2Map extends map.MapControl
 			let polyStyle = null;
 			if (layer.style)
 			{
-				if (layer.style.stroke)
+				if (layer.style.stroke && layer.style.strokeColor)
 				{
 					let c = web.parseCSSColor(layer.style.strokeColor);
 					lineStyle = new kml.LineStyle();
@@ -682,7 +691,7 @@ export class Olayer2Map extends map.MapControl
 					if (layer.style.strokeWidth)
 						lineStyle.setWidth(layer.style.strokeWidth)
 				}
-				if (layer.style.fill)
+				if (layer.style.fill && layer.style.fillColor)
 				{
 					let c = web.parseCSSColor(layer.style.fillColor);
 					if (layer.style.fillOpacity)

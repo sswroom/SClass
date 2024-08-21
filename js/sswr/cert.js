@@ -87,6 +87,14 @@ export class ASN1Data extends data.ParsedObject
 		return lines.join("\r\n");
 	}
 
+	/**
+	 * @returns {ASN1Names|null}
+	 */
+	createNames()
+	{
+		throw new Error("createNames must be inherit");
+	}
+
 	getASN1Buff()
 	{
 		return this.reader;
@@ -130,13 +138,37 @@ export class ASN1Data extends data.ParsedObject
 export class X509File extends ASN1Data
 {
 	/**
-	 * @param {any} sourceName
-	 * @param {any} objType
-	 * @param {any} buff
+	 * @param {string} sourceName
+	 * @param {string} objType
+	 * @param {ArrayBuffer} buff
 	 */
 	constructor(sourceName, objType, buff)
 	{
 		super(sourceName, objType, buff);
+	}
+
+	/**
+	 * @returns {number}
+	 */
+	getFileType()
+	{
+		throw new Error("getFileType must be inherited");
+	}
+
+	/**
+	 * @returns {string|null}
+	 */
+	toShortName()
+	{
+		throw new Error("toShortName must be inherited");
+	}
+
+	/**
+	 * @returns {Promise<string>}
+	 */
+	async isValid()
+	{
+		return CertValidStatus.FileFormatInvalid;
 	}
 
 	getASN1Type()
@@ -150,7 +182,8 @@ export class X509File extends ASN1Data
 	}
 
 	/**
-	 * @param {any} index
+	 * @param {number} index
+	 * @returns {string|null}
 	 */
 	getCertName(index)
 	{
@@ -158,7 +191,8 @@ export class X509File extends ASN1Data
 	}
 
 	/**
-	 * @param {any} index
+	 * @param {number} index
+	 * @returns {X509Cert|null}
 	 */
 	getNewCert(index)
 	{
@@ -330,7 +364,7 @@ export class X509File extends ASN1Data
 	 * @param {number} endOfst
 	 * @param {string} path
 	 * @param {string[]} sb
-	 * @param {string} varName
+	 * @param {string|null} varName
 	 */
 	static appendTBSCertificate(reader, startOfst, endOfst, path, sb, varName)
 	{
@@ -522,7 +556,7 @@ export class X509File extends ASN1Data
 	 * @param {number} endOfst
 	 * @param {string} path
 	 * @param {(string | number)[]} sb
-	 * @param {string} varName
+	 * @param {string|null} varName
 	 */
 	static appendTBSCertList(reader, startOfst, endOfst, path, sb, varName)
 	{
@@ -675,7 +709,7 @@ export class X509File extends ASN1Data
 	 * @param {number} endOfst
 	 * @param {string} path
 	 * @param {any[]} sb
-	 * @param {string} varName
+	 * @param {string|null} varName
 	 */
 	static appendCertificateList(reader, startOfst, endOfst, path, sb, varName)
 	{
@@ -999,10 +1033,10 @@ export class X509File extends ASN1Data
 				sb.push("content-type = ");
 				sb.push(ASN1Util.oidToString(reader.getU8Arr(contentType.dataOfst, contentType.contLen)));
 				let oid = null; //oiddb.oidGetEntry(reader.getU8Arr(contentType.dataOfst, contentType.contLen));
-				if (oid)
+				/*if (oid)
 				{
 					sb.push(" ("+oid.name+')');
-				}
+				}*/
 				sb.push("\r\n");
 			}
 			if (contentType && content)
@@ -1121,7 +1155,7 @@ export class X509File extends ASN1Data
 	 * @param {number} startOfst
 	 * @param {number} endOfst
 	 * @param {string} path
-	 * @param {string[]} sb
+	 * @param {(string|number)[]} sb
 	 */
 	static appendVersion(reader, startOfst, endOfst, path, sb)
 	{
@@ -1150,7 +1184,7 @@ export class X509File extends ASN1Data
 	 * @param {data.ByteReader} reader
 	 * @param {number} startOfst
 	 * @param {number} endOfst
-	 * @param {string[]} sb
+	 * @param {(string|number)[]} sb
 	 * @param {string} varName
 	 * @param {boolean} pubKey
 	 */
@@ -1168,10 +1202,10 @@ export class X509File extends ASN1Data
 			sb.push(ASN1Util.oidToString(new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen))));
 			keyType = X509File.keyTypeFromOID(new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen)), pubKey);
 			let oid = null; //oiddb.oidGetEntry(new Uint8Array(reader.getArrayBuffer(algorithm.rawOfst + algorithm.hdrLen, algorithm.contLen)));
-			if (oid)
+			/*if (oid)
 			{
 				sb.push(" (" + oid.name + ")");
-			}
+			}*/
 			sb.push("\r\n");
 		}
 		if (parameters)
@@ -1237,10 +1271,10 @@ export class X509File extends ASN1Data
 				sb.push(".ecPublicKey.parameters = ");
 				sb.push(ASN1Util.oidToString(new Uint8Array(reader.getArrayBuffer(parameters.rawOfst + parameters.hdrLen, parameters.contLen))));
 				let oidInfo = null; //oiddb.oidGetEntry(new Uint8Array(reader.getArrayBuffer(parameters.rawOfst + parameters.hdrLen, parameters.contLen)));
-				if (oidInfo)
+				/*if (oidInfo)
 				{
 					sb.push(" ("+oidInfo.name+")");
-				}
+				}*/
 				sb.push("\r\n");
 			}
 			else
@@ -1503,10 +1537,10 @@ export class X509File extends ASN1Data
 				sb.push("extensionType = ");
 				sb.push(ASN1Util.oidToString(reader.getU8Arr(extension.dataOfst, extension.contLen)));
 				let oid = null; //oiddb.oidGetEntry(reader.getU8Arr(extension.dataOfst, extension.contLen));
-				if (oid)
+				/*if (oid)
 				{
 					sb.push(" ("+oid.name+')');
-				}
+				}*/
 				sb.push("\r\n");
 			}
 		}
@@ -1972,10 +2006,10 @@ export class X509File extends ASN1Data
 				sb.push(ASN1Util.oidToString(reader.getU8Arr(subItemPDU.dataOfst, subItemPDU.contLen)));
 				{
 					let ent = null; //oiddb.oidGetEntry(reader.getU8Arr(subItemPDU.dataOfst, subItemPDU.contLen));
-					if (ent)
+					/*if (ent)
 					{
 						sb.push(" ("+ent.name+')');
-					}
+					}*/
 				}
 				sb.push("\r\n");
 				return true;
@@ -2337,10 +2371,10 @@ export class X509File extends ASN1Data
 					sb.push(".attributeType = ");
 					sb.push(ASN1Util.oidToString(reader.getU8Arr(oidPDU.dataOfst, oidPDU.contLen)));
 					let oid = null; //oiddb.oidGetEntry(reader.getU8Arr(oidPDU.dataOfst, oidPDU.contLen));
-					if (oid)
+					/*if (oid)
 					{
 						sb.push(" ("+oid.name+")");
-					}
+					}*/
 					sb.push("\r\n");
 				}
 				if (valuePDU && valuePDU.itemType == ASN1ItemType.SET)
@@ -2354,10 +2388,10 @@ export class X509File extends ASN1Data
 							sb.push(".contentType = ");
 							sb.push(ASN1Util.oidToString(reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen)));
 							let oid = null; //oiddb.oidGetEntry(reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen));
-							if (oid)
+							/*if (oid)
 							{
 								sb.push(" ("+oid.name+")");
-							}
+							}*/
 							sb.push("\r\n");
 						}
 					}
@@ -2520,7 +2554,7 @@ export class X509File extends ASN1Data
 			if ((subitemPDU = ASN1Util.pduGetItem(reader, itemPDU.dataOfst, itemPDU.endOfst, "3")) != null && subitemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 			{
 				let name = "unprotectedAttributes";
-				if (varName.v)
+				if (varName)
 				{
 					name = varName+"."+name;
 				}
@@ -2570,10 +2604,10 @@ export class X509File extends ASN1Data
 			sb.push(".contentType = ");
 			sb.push(ASN1Util.oidToString(reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen)));
 			let oid = null; //oiddb.oidGetEntry(reader.getU8Arr(itemPDU.dataOfst, itemPDU.contLen));
-			if (oid)
+			/*if (oid)
 			{
 				sb.push(" ("+oid.name+")");
-			}
+			}*/
 			sb.push("\r\n");
 		}
 		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "2")) != null && itemPDU.itemType == ASN1ItemType.SEQUENCE)
@@ -2875,9 +2909,9 @@ export class X509File extends ASN1Data
 		let itemPDU;
 		if ((itemPDU = ASN1Util.pduGetItem(reader, startOfst, endOfst, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 		{
-			if ((itemPDU = ASN1Util.pduGetItem(reader.getU8Arr(itemPDU.rawOfst), itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
+			if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CONTEXT_SPECIFIC_0)
 			{
-				if ((itemPDU = ASN1Util.pduGetItem(reader.getU8Arr(itemPDU.rawOfst), itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CHOICE_6)
+				if ((itemPDU = ASN1Util.pduGetItem(reader, itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.rawOfst + itemPDU.hdrLen + itemPDU.contLen, "1")) != null && itemPDU.itemType == ASN1ItemType.CHOICE_6)
 				{
 					distPoints.push(reader.readUTF8(itemPDU.rawOfst + itemPDU.hdrLen, itemPDU.contLen));
 					return true;
@@ -2974,7 +3008,11 @@ export class X509File extends ASN1Data
 	 */
 	static keyTypeFromOID(oid, pubKey)
 	{
-		let arr = new Uint8Array(oid);
+		let arr;
+		if (oid instanceof ArrayBuffer)
+			arr = new Uint8Array(oid);
+		else
+			arr = new Uint8Array(oid);
 		if (ASN1Util.oidEqualsText(arr, "1.2.840.113549.1.1.1"))
 		{
 			if (pubKey)
@@ -3151,7 +3189,7 @@ export class X509Cert extends X509File
 		return this.clone();
 	}
 
-	isValid()
+	async isValid()
 	{
 		/*
 			if (trustStore == 0)
@@ -3204,7 +3242,7 @@ export class X509Cert extends X509File
 			{
 				return CertValidStatus.FileFormatInvalid;
 			}
-			let signValid = key.signatureVerify(hashType, signedInfo.payload, signedInfo.signature);
+			let signValid = await key.signatureVerify(hashType, signedInfo.payload, signedInfo.signature);
 			if (signValid)
 			{
 				return CertValidStatus.SelfSigned;
@@ -3215,7 +3253,7 @@ export class X509Cert extends X509File
 			}
 		}
 
-		let key = issuer.getNewPublicKey();
+/*		let key = issuer.getNewPublicKey();
 		if (key == null)
 		{
 			return CertValidStatus.FileFormatInvalid;
@@ -3226,7 +3264,7 @@ export class X509Cert extends X509File
 			return CertValidStatus.SignatureInvalid;
 		}
 
-		let crlDistributionPoints = this.getCRLDistributionPoints();
+		let crlDistributionPoints = this.getCRLDistributionPoints();*/
 		//////////////////////////
 		// CRL
 		return CertValidStatus.Valid;
@@ -3584,7 +3622,7 @@ export class X509CertReq extends X509File
 		return "";
 	}
 
-	isValid()
+	async isValid()
 	{
 		let signedInfo;
 		if ((signedInfo = this.getSignedInfo()) == null)
@@ -3601,7 +3639,7 @@ export class X509CertReq extends X509File
 		{
 			return CertValidStatus.FileFormatInvalid;
 		}
-		let valid = key.signatureVerify(hashType, signedInfo.payload, signedInfo.signature);
+		let valid = await key.signatureVerify(hashType, signedInfo.payload, signedInfo.signature);
 		if (valid)
 		{
 			return CertValidStatus.Valid;
@@ -3704,7 +3742,7 @@ export class X509Key extends X509File
 		return keyTypeGetName(this.keyType)+" "+this.getKeySizeBits()+" bits";
 	}
 
-	isValid()
+	async isValid()
 	{
 		if (this.keyType == KeyType.Unknown)
 		{
@@ -4087,6 +4125,60 @@ export class X509Key extends X509File
 	}
 
 	/**
+	 * @param {hash.HashType} hashType
+	 * @param {ArrayBuffer} payload
+	 * @param {ArrayBuffer} signature
+	 */
+	async signatureVerify(hashType, payload, signature)
+	{
+		let privKey = X509PrivKey.createFromKey(this);
+		if (privKey == null)
+		{
+			return false;
+		}
+		let alg;
+		if (this.keyType == KeyType.RSA)
+		{
+			alg = {name: "RSASSA-PKCS1-v1_5", hash: "SHA-256"};
+			switch (hashType)
+			{
+			case hash.HashType.SHA1:
+				alg.hash = "SHA-1";
+				break;
+			case hash.HashType.SHA224:
+				alg.hash = "SHA-224";
+				break;
+			case hash.HashType.SHA256:
+				alg.hash = "SHA-256";
+				break;
+			case hash.HashType.SHA384:
+				alg.hash = "SHA-384";
+				break;
+			case hash.HashType.SHA512:
+				alg.hash = "SHA-512";
+				break;
+			}
+		}
+		else if (this.keyType == KeyType.ECDSA)
+		{
+			return false;
+		}
+		else
+		{
+			return false;
+		}
+		let key = await window.crypto.subtle.importKey("pkcs8", privKey.getASN1Buff().getArrayBuffer(), alg, false, ["verify"]);
+		let result = await window.crypto.subtle.verify(
+			"RSASSA-PKCS1-v1_5",
+			key,
+			signature,
+			payload
+		  );
+		
+		return result;
+	}
+
+	/**
 	 * @param {ArrayBuffer} buff
 	 * @param {ArrayBuffer} paramOID
 	 */
@@ -4144,7 +4236,7 @@ export class X509PrivKey extends X509File
 		}
 	}
 
-	isValid()
+	async isValid()
 	{
 		return CertValidStatus.SignatureInvalid;
 	}
@@ -4219,7 +4311,7 @@ export class X509PrivKey extends X509File
 	}
 
 	/**
-	 * @param {{ getKeyType: () => any; getECName: () => any; getECPrivate: () => any; getECPublic: () => any; sourceName: any; getASN1Buff: () => { (): any; new (): any; getArrayBuffer: { (): any; new (): any; }; }; }} key
+	 * @param {X509Key} key
 	 */
 	static createFromKey(key)
 	{
@@ -4310,7 +4402,7 @@ export class X509PubKey extends X509File
 		return null;
 	}
 
-	isValid()
+	async isValid()
 	{
 		return CertValidStatus.SignatureInvalid;
 	}
@@ -4404,6 +4496,7 @@ export class X509PKCS7 extends X509File
 
 	toShortName()
 	{
+		return null;
 	}
 	
 	getCertCount()
@@ -4461,7 +4554,7 @@ export class X509PKCS7 extends X509File
 		return null;
 	}
 
-	isValid()
+	async isValid()
 	{
 		return CertValidStatus.SignatureInvalid;
 	}
@@ -4565,6 +4658,7 @@ export class X509PKCS12 extends X509File
 
 	toShortName()
 	{
+		return null;
 	}
 
 	getCertCount()
@@ -4573,7 +4667,7 @@ export class X509PKCS12 extends X509File
 	}
 
 	/**
-	 * @param {any} index
+	 * @param {number} index
 	 */
 	getCertName(index)
 	{
@@ -4581,14 +4675,14 @@ export class X509PKCS12 extends X509File
 	}
 
 	/**
-	 * @param {any} index
+	 * @param {number} index
 	 */
 	getNewCert(index)
 	{
 		return null;
 	}
 
-	isValid()
+	async isValid()
 	{
 		return CertValidStatus.SignatureInvalid
 	}
@@ -4618,7 +4712,7 @@ export class X509FileList extends X509File
 {
 	/**
 	 * @param {string} sourceName
-	 * @param {{ reader: { getArrayBuffer: () => any; }; }} cert
+	 * @param {X509Cert} cert
 	 */
 	constructor(sourceName, cert)
 	{
@@ -4689,7 +4783,7 @@ export class X509FileList extends X509File
 		return null;
 	}
 
-	isValid()
+	async isValid()
 	{
 		let status;
 		let i;
@@ -4699,7 +4793,7 @@ export class X509FileList extends X509File
 			for (i in this.fileList)
 			{
 				file = this.fileList[i];
-				status = file.isValid();
+				status = await file.isValid();
 				if (status != CertValidStatus.Valid)
 				{
 					return status;
@@ -4709,7 +4803,7 @@ export class X509FileList extends X509File
 		}
 		else
 		{
-			return this.fileList[0].isValid();
+			return await this.fileList[0].isValid();
 		}		
 	}
 
@@ -4819,10 +4913,10 @@ export class X509CRL extends X509File
 				return X509File.nameGetCN(this.reader, tmpBuff.dataOfst, tmpBuff.endOfst);
 			}
 		}
-		return "";
+		return null;
 	}
 
-	isValid()
+	async isValid()
 	{
 		let issuer = this.getIssuerCN();
 		if (issuer == null)
@@ -4862,7 +4956,7 @@ export class X509CRL extends X509File
 		{
 			return CertValidStatus.UnknownIssuer;
 		}
-		let key = issuerCert.getNewPublicKey();
+/*		let key = issuerCert.getNewPublicKey();
 		if (key == null)
 		{
 			return CertValidStatus.FileFormatInvalid;
@@ -4871,7 +4965,7 @@ export class X509CRL extends X509File
 		if (!signValid)
 		{
 			return CertValidStatus.SignatureInvalid;
-		}
+		}*/
 		return CertValidStatus.Valid;
 	}
 	
@@ -5170,7 +5264,11 @@ export function ecNameGetOID(ecName)
  */
 export function ecNameFromOID(buff)
 {
-	let arr = new Uint8Array(buff);
+	let arr;
+	if (buff instanceof ArrayBuffer)
+		arr = new Uint8Array(buff);
+	else
+		arr = new Uint8Array(buff);
 	if (ASN1Util.oidEqualsText(arr, "1.2.840.10045.3.1.7"))
 	{
 		return ECName.secp256r1;

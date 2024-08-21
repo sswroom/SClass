@@ -1,6 +1,12 @@
 1.6.11
 -media.EXIFData.getPhotoLocation fixed getting problem
 -Added media.EXIFData.toString
+-Added cert.X509Key.signatureVerify
+-Change cert.X509File.isValid to return Promise<>
+-Enhance cert.js function types
+-Added data.readUInt64, readMUInt64
+-Added data.ByteReader.readInt64, readUInt64
+-Added dummy/olayer2.js
 
 1.6.10
 -web.getBrowserInfo enhance iPad Pro detection

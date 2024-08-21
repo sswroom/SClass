@@ -297,14 +297,44 @@ export function readMUInt24(arr, index)
 	return arr[index + 2] | (arr[index + 1] << 8) | (arr[index + 0] << 16);
 }
 
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ * @returns {number}
+ */
 export function readUInt32(arr, index)
 {
 	return arr[index] | (arr[index + 1] << 8) | (arr[index + 2] << 16) | (arr[index + 3] << 24);
 }
 
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ * @returns {number}
+ */
 export function readMUInt32(arr, index)
 {
 	return arr[index + 3] | (arr[index + 2] << 8) | (arr[index + 1] << 16) | (arr[index + 0] << 24);
+}
+
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ * @returns {bigint}
+ */
+export function readUInt64(arr, index)
+{
+	return BigInt(readUInt32(arr, index)) + (BigInt(readUInt32(arr, index + 4)) << 32n);
+}
+
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ * @returns {bigint}
+ */
+export function readMUInt64(arr, index)
+{
+	return (BigInt(readUInt32(arr, index)) << 32n) + BigInt(readUInt32(arr, index + 4));
 }
 
 export function rol32(v, n)
@@ -2524,16 +2554,27 @@ export class ByteReader
 		return new Uint8Array(this.getArrayBuffer(ofst, size));
 	}
 
+	/**
+	 * @param {number} ofst
+	 */
 	readUInt8(ofst)
 	{
 		return this.view.getUint8(ofst);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readUInt16(ofst, lsb)
 	{
 		return this.view.getUint16(ofst, lsb);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readUInt24(ofst, lsb)
 	{
 		if (lsb)
@@ -2542,21 +2583,45 @@ export class ByteReader
 			return (this.view.getUint16(ofst, false) << 8) | this.view.getUint8(ofst + 2);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readUInt32(ofst, lsb)
 	{
 		return this.view.getUint32(ofst, lsb);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
+	readUInt64(ofst, lsb)
+	{
+		return this.view.getBigUint64(ofst, lsb);
+	}
+
+	/**
+	 * @param {number} ofst
+	 */
 	readInt8(ofst)
 	{
 		return this.view.getInt8(ofst);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readInt16(ofst, lsb)
 	{
 		return this.view.getInt16(ofst, lsb);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readInt24(ofst, lsb)
 	{
 		if (lsb)
@@ -2565,9 +2630,22 @@ export class ByteReader
 			return (this.view.getInt16(ofst, false) << 8) | this.view.getUint8(ofst + 2);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readInt32(ofst, lsb)
 	{
 		return this.view.getInt32(ofst, lsb);
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
+	readInt64(ofst, lsb)
+	{
+		return this.view.getBigInt64(ofst, lsb);
 	}
 
 	readFloat64(ofst, lsb)
@@ -2710,9 +2788,21 @@ export class ByteReader
 
 export class ParsedObject
 {
+	/**
+	 * @param {string} sourceName
+	 * @param {string} objType
+	 */
 	constructor(sourceName, objType)
 	{
 		this.sourceName = sourceName;
 		this.objType = objType;
+	}
+
+	/**
+	 * @param {string} sourceName
+	 */
+	setSourceName(sourceName)
+	{
+		this.sourceName = sourceName;
 	}
 }
