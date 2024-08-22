@@ -56,6 +56,7 @@ export async function createFromKML(feature, options)
 	}
 	else if (feature instanceof kml.Placemark)
 	{
+		/** @type {{objProjection?: OpenLayers.Projection, mapProjection?: OpenLayers.Projection, name?: string, iconUrl?: string, iconOffset?: OpenLayers.Pixel, strokeColor?: string, strokeWidth?: number, stroke?: boolean, fillColor?: string, fill?: boolean}} */
 		let opt = {objProjection: options.objProjection, mapProjection: options.mapProjection};
 		if (feature.name)
 			opt.name = feature.name;
@@ -151,7 +152,7 @@ export async function createFromKML(feature, options)
 
 /**
  * @param {geometry.Vector2D} geom
- * @param {{ objProjection: any; mapProjection: any; iconUrl?: any; iconOffset?: any; } | null} options
+ * @param {{ objProjection?: OpenLayers.Projection; mapProjection?: OpenLayers.Projection; iconUrl?: string; iconOffset?: OpenLayers.Pixel; } | null} options
  * @returns {Promise<OpenLayers.Geometry|OpenLayers.Marker|null>}
  */
 export async function createFromGeometry(geom, options)
@@ -164,6 +165,11 @@ export async function createFromGeometry(geom, options)
 	if (geom instanceof geometry.Point)
 	{
 		let icon;
+		let lonLat = new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]);
+		if (options.objProjection && options.mapProjection)
+		{
+			lonLat = lonLat.transform(options.objProjection, options.mapProjection);
+		}
 		if (options.iconUrl && options.iconOffset)
 		{
 			let size = await web.getImageInfo(options.iconUrl);
@@ -173,11 +179,10 @@ export async function createFromGeometry(geom, options)
 				return null;
 			}
 			icon = new OpenLayers.Icon(options.iconUrl, new OpenLayers.Size(size.width, size.height), options.iconOffset);
-			return new OpenLayers.Marker(new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]).transform(options.objProjection, options.mapProjection), icon);
+			return new OpenLayers.Marker(lonLat, icon);
 		}
 		else
 		{
-			let lonLat = new OpenLayers.LonLat(geom.coordinates[0], geom.coordinates[1]).transform(options.objProjection, options.mapProjection);
 			return new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat);
 		}
 	}
@@ -195,7 +200,9 @@ export async function createFromGeometry(geom, options)
 		let i;
 		for (i in geom.geometries)
 		{
-			lrList.push(await createFromGeometry(geom.geometries[i], options));
+			let lr = await createFromGeometry(geom.geometries[i], options);
+			if (lr instanceof OpenLayers.Geometry.LinearRing)
+				lrList.push(lr);
 		}
 		return new OpenLayers.Geometry.Polygon(lrList);
 	}
@@ -205,7 +212,9 @@ export async function createFromGeometry(geom, options)
 		let i;
 		for (i in geom.geometries)
 		{
-			pgList.push(await createFromGeometry(geom.geometries[i], options));
+			let pg = await createFromGeometry(geom.geometries[i], options);
+			if (pg instanceof OpenLayers.Geometry.Polygon)
+				pgList.push(pg);
 		}
 		return new OpenLayers.Geometry.MultiPolygon(pgList);
 	}
@@ -279,6 +288,10 @@ export class Olayer2Map extends map.MapControl
 		this.currMarkerPopupObj = null;
 	}
 
+	/**
+	 * @param {map.LayerInfo} layer
+	 * @param {object} options
+	 */
 	createLayer(layer, options)
 	{
 		if (layer.type == map.WebMapType.OSMTile)
@@ -557,7 +570,7 @@ export class Olayer2Map extends map.MapControl
 					let pos = new OpenLayers.LonLat(lr.coordinates[j][0], lr.coordinates[j][1]).transform(this.mapProjection, this.map.getProjectionObject());
 					points.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 				}
-				lrArr.push(new OpenLayers.Geometry.LineString(points));
+				lrArr.push(new OpenLayers.Geometry.LinearRing(points));
 			}
 			return new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon(lrArr), null, opt);
 		}
@@ -580,7 +593,7 @@ export class Olayer2Map extends map.MapControl
 						let pos = new OpenLayers.LonLat(lr.coordinates[k][0], lr.coordinates[k][1]).transform(this.mapProjection, this.map.getProjectionObject());
 						points.push(new OpenLayers.Geometry.Point(pos.lon, pos.lat));
 					}
-					lrArr.push(new OpenLayers.Geometry.LineString(points));
+					lrArr.push(new OpenLayers.Geometry.LinearRing(points));
 				}
 				pgArr.push(new OpenLayers.Geometry.Polygon(lrArr));
 			}
