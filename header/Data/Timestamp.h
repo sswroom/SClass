@@ -446,6 +446,11 @@ namespace Data
 			return (this->GetLocalSecs() / 86400) == (ts.GetLocalSecs() / 86400);
 		}
 
+		Bool SameHour(const Data::Timestamp &ts) const
+		{
+			return (this->inst.sec / 3600) == (ts.inst.sec / 3600);
+		}
+
 		Bool IsNull() const
 		{
 			return this->inst.sec == 0 && this->tzQhr == 127;

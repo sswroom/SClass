@@ -8,6 +8,7 @@
 -Added data.ByteReader.readInt64, readUInt64
 -Added dummy/olayer2.js
 -Enhance olayer2.js
+-Added text.b64Enc and text.b64Dec
 
 1.6.10
 -web.getBrowserInfo enhance iPad Pro detection

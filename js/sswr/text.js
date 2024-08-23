@@ -577,6 +577,29 @@ export function getEncList()
 	return ret;
 }
 
+/**
+ * @param {string} s
+ * @param {number|undefined} cs
+ * @returns {string}
+ */
+export function b64Enc(s, cs)
+{
+	let b64 = new Base64Enc(cs, false);
+	let enc = new TextEncoder();
+	return b64.encodeBin(enc.encode(s));
+}
+
+/**
+ * @param {string} b64Str
+ * @returns {string}
+ */
+export function b64Dec(b64Str)
+{
+	let b64 = new Base64Enc();
+	let dec = new TextDecoder();
+	return dec.decode(b64.decodeBin(b64Str));
+}
+
 export class TextBinEnc
 {
 	constructor(name)

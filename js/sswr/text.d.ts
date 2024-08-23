@@ -35,6 +35,8 @@ export function charIsUpperCase(s: string, index: number): boolean;
 export function charIsLowerCase(s: string, index: number): boolean;
 export function replaceAll(s: string, replaceFrom: string, replaceTo: string): string;
 export function getEncList(): TextBinEnc[];
+export function b64Enc(s: string, cs?: Base64Charset): string;
+export function b64Dec(b64Str: string): string;
 
 export class TextBinEnc
 {
