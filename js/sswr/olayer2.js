@@ -6,7 +6,7 @@ import * as math from "./math.js";
 import * as osm from "./osm.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
-import * as OpenLayers from "./dummy/olayer2.js";
+import OpenLayers from "./dummy/olayer2.js";
 
 export function toPointArray(numArr, options)
 {
