@@ -28,7 +28,7 @@ NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb,
 		sb->Append(s);
 		s->Release();
 		sb->AppendC(UTF8STRC(")\r\n"));
-		return colDef->GetColName()->ToLower();
+		return colDef->GetColName()->ToNewLower();
 	}
 	else
 	{

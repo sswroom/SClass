@@ -29,6 +29,7 @@ namespace Text
 		Bool StartsWith(StringBase<const UTF8Char> s) const;
 		Bool StartsWith(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool StartsWith(UOSInt startIndex, UnsafeArray<const UTF8Char> s, UOSInt len) const;
+		Bool StartsWithICase(StringBase<const UTF8Char> s) const;
 		Bool StartsWithICase(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool StartsWithICase(UOSInt startIndex, UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool EndsWith(UTF8Char c) const;
@@ -198,6 +199,11 @@ template <typename T> Bool Text::StringBase<T>::StartsWith(UOSInt startIndex, Un
 		return false;
 	}
 	return Text::StrStartsWithC(&this->v[startIndex], this->leng - startIndex, s, len);
+}
+
+template <typename T> Bool Text::StringBase<T>::StartsWithICase(StringBase<const UTF8Char> s) const
+{
+	return Text::StrStartsWithICaseC(this->v, this->leng, s.v, s.leng);
 }
 
 template <typename T> Bool Text::StringBase<T>::StartsWithICase(UnsafeArray<const UTF8Char> str2, UOSInt len) const

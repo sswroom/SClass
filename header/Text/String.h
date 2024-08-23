@@ -67,7 +67,7 @@ namespace Text
 		void Release();
 		NN<String> Clone() const;
 
-		NN<String> ToLower();
+		NN<String> ToNewLower() const;
 	private:
 		String(UOSInt cnt);
 		~String();

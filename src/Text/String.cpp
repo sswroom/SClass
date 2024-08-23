@@ -232,7 +232,7 @@ NN<Text::String> Text::String::Clone() const
 #endif
 }
 
-NN<Text::String> Text::String::ToLower()
+NN<Text::String> Text::String::ToNewLower() const
 {
 	if (this->HasUpperCase())
 	{
