@@ -90,7 +90,12 @@ namespace Text
 
 		Bool IsNull() const
 		{
-			return this->v.Ptr() == 0;
+			return this->v.IsNull();
+		}
+
+		Bool NotNull() const
+		{
+			return this->v.NotNull();
 		}
 
 		Bool operator==(Text::CString cstr) const
