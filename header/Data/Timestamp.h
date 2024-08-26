@@ -614,7 +614,7 @@ namespace Data
 		static Timestamp FromDate(Date date, Int8 tzQhr)
 		{
 			if (date.IsNull())
-				return Timestamp();
+				return Timestamp(nullptr);
 			else
 				return Timestamp(Data::TimeInstant(date.GetTotalDays() * 86400 - tzQhr * 900, 0), tzQhr);
 		}

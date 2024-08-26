@@ -2229,6 +2229,8 @@ Bool Text::StrHex2Int32V(UnsafeArray<const UTF8Char> str, OutParam<Int32> outVal
 	UOSInt i = 0;
 	Int32 currVal = 0;
 	UTF8Char c;
+	if (*str == 0)
+		return false;
 	while (true)
 	{
 		c = *str++;
@@ -2828,11 +2830,14 @@ Bool Text::StrToInt32(UnsafeArray<const UTF8Char> intStr, OutParam<Int32> outVal
 	}
 	if (intStr[0] == '0' && intStr[1] == 'x')
 	{
-		retVal = StrHex2Int32C(intStr + 2);
+		if (!StrHex2Int32V(intStr + 2, retVal))
+			return false;
 	}
 	else
 	{
 		UInt32 c;
+		if (*intStr == 0)
+			return false;
 		while ((c = *intStr) != 0)
 		{
 			if (c < '0' || c > '9')
