@@ -42,7 +42,7 @@ namespace Data
 		}
 	};
 
-	template <class T> class FastStringMap : public ListMap<Text::String *, T>
+	template <class T> class FastStringMap : public ListMap<Optional<Text::String>, T>
 	{
 	private:
 		UOSInt capacity;
@@ -53,23 +53,23 @@ namespace Data
 		void Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val);
 	public:
 		FastStringMap();
-		FastStringMap(const FastStringMap<T> *map);
+		FastStringMap(NN<const FastStringMap<T>> map);
 		virtual ~FastStringMap();
 
 		virtual UOSInt GetCount() const;
 		virtual T GetItem(UOSInt index) const;
-		virtual Text::String *GetKey(UOSInt index) const;
+		virtual Optional<Text::String> GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		OSInt IndexOf(NN<Text::String> s) const;
 		OSInt IndexOfC(Text::CStringNN s) const;
 
-		virtual T Put(Text::String *key, T val);
+		virtual T Put(Optional<Text::String> key, T val);
 		T PutNN(NN<Text::String> key, T val);
 		T PutC(Text::CStringNN key, T val);
-		virtual T Get(Text::String *key) const;
+		virtual T Get(Optional<Text::String> key) const;
 		T GetNN(NN<Text::String> key) const;
 		T GetC(Text::CStringNN key) const;
-		virtual T Remove(Text::String *key);
+		virtual T Remove(Optional<Text::String> key);
 		T RemoveNN(NN<Text::String> key);
 		T RemoveC(Text::CStringNN key);
 		T RemoveAt(UOSInt index);
@@ -77,7 +77,7 @@ namespace Data
 		virtual void Clear();
 		FastStringKeyIterator<T> KeyIterator() const;
 		
-		UInt32 CalcHash(const UTF8Char *s, UOSInt len) const;
+		UInt32 CalcHash(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 	};
 
 	template <class T> void FastStringMap<T>::Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val)
@@ -125,7 +125,7 @@ namespace Data
 		this->items = MemAllocArr(FastStringItem<T>, this->capacity);
 	}
 
-	template <class T> FastStringMap<T>::FastStringMap(const FastStringMap<T> *map)
+	template <class T> FastStringMap<T>::FastStringMap(NN<const FastStringMap<T>> map)
 	{
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;
@@ -165,13 +165,13 @@ namespace Data
 		return this->items[index].val;
 	}
 
-	template <class T> Text::String *FastStringMap<T>::GetKey(UOSInt index) const
+	template <class T> Optional<Text::String> FastStringMap<T>::GetKey(UOSInt index) const
 	{
 		if (index >= this->cnt)
 		{
 			return 0;
 		}
-		return this->items[index].s.Ptr();
+		return this->items[index].s;
 	}
 
 	template <class T> OSInt FastStringMap<T>::IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const
@@ -261,9 +261,9 @@ namespace Data
 		return IndexOf(hash, s.v, s.leng);
 	}
 
-	template <class T> T FastStringMap<T>::Put(Text::String *key, T val)
+	template <class T> T FastStringMap<T>::Put(Optional<Text::String> key, T val)
 	{
-		return PutNN(NN<Text::String>::FromPtr(key), val);
+		return PutNN(Text::String::OrEmpty(key), val);
 	}
 
 	template <class T> T FastStringMap<T>::PutNN(NN<Text::String> key, T val)
@@ -300,9 +300,9 @@ namespace Data
 		}
 	}
 
-	template <class T> T FastStringMap<T>::Get(Text::String *key) const
+	template <class T> T FastStringMap<T>::Get(Optional<Text::String> key) const
 	{
-		return GetNN(NN<Text::String>::FromPtr(key));
+		return GetNN(Text::String::OrEmpty(key));
 	}
 
 	template <class T> T FastStringMap<T>::GetNN(NN<Text::String> key) const
@@ -327,9 +327,9 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T FastStringMap<T>::Remove(Text::String *key)
+	template <class T> T FastStringMap<T>::Remove(Optional<Text::String> key)
 	{
-		return RemoveNN(NN<Text::String>::FromPtr(key));
+		return RemoveNN(Text::String::OrEmpty(key));
 	}
 
 	template <class T> T FastStringMap<T>::RemoveNN(NN<Text::String> key)
@@ -404,7 +404,7 @@ namespace Data
 		return FastStringKeyIterator<T>(this->items, this->cnt);
 	}
 
-	template <class T> UInt32 FastStringMap<T>::CalcHash(const UTF8Char *s, UOSInt len) const
+	template <class T> UInt32 FastStringMap<T>::CalcHash(UnsafeArray<const UTF8Char> s, UOSInt len) const
 	{
 		return this->crc.CalcDirect(s, len);
 	}

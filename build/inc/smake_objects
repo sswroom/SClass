@@ -104,7 +104,6 @@ SHA256.o: ../../src/Crypto/Hash/SHA256.cpp
 SHA256_CPP.o: ../../src/Crypto/Hash/SHA256_CPP.cpp
 SHA384.o: ../../src/Crypto/Hash/SHA384.cpp
 SHA512.o: ../../src/Crypto/Hash/SHA512.cpp
-SHA512_CPP.o: ../../src/Crypto/Hash/SHA512_CPP.cpp
 JWSignature.o: ../../src/Crypto/Token/JWSignature.cpp
 JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
 JWToken.o: ../../src/Crypto/Token/JWToken.cpp

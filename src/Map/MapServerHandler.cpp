@@ -25,12 +25,12 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NN<Net::WebServer::IWebReque
 	j = me->layerMap.GetCount();
 	if (j > 0)
 	{
-		Text::JSText::ToJSTextDQuote(sb, me->layerMap.GetKey(0)->v);
+		Text::JSText::ToJSTextDQuote(sb, Text::String::OrEmpty(me->layerMap.GetKey(0))->v);
 		i = 1;
 		while (i < j)
 		{
 			sb.AppendUTF8Char(',');
-			Text::JSText::ToJSTextDQuote(sb, me->layerMap.GetKey(i)->v);
+			Text::JSText::ToJSTextDQuote(sb, Text::String::OrEmpty(me->layerMap.GetKey(i))->v);
 			i++;
 		}
 	}

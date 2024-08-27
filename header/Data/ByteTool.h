@@ -23,8 +23,8 @@
 
 #define ReadInt64(uint8Ptr) (*(Int64*)(uint8Ptr))
 #define ReadUInt64(uint8Ptr) (*(UInt64*)(uint8Ptr))
-#define ReadMInt64(uint8Ptr) ((((Int64)ReadMInt32(uint8Ptr)) << 32) | ReadMUInt32(&(uint8Ptr)[4]))
-#define ReadMUInt64(uint8Ptr) ((((UInt64)ReadMUInt32(uint8Ptr)) << 32) | ReadMUInt32(&(uint8Ptr)[4]))
+#define ReadMInt64(uint8Ptr) (BSWAP64(*(Int64*)(uint8Ptr)))
+#define ReadMUInt64(uint8Ptr) (BSWAPU64(*(UInt64*)(uint8Ptr)))
 #define WriteInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
 #define WriteUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
 #define WriteMInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = BSWAP64(val)

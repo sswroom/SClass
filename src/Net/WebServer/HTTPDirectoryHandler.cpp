@@ -419,7 +419,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(NN<Net::WebServer::HTTPDirec
 				sb.ClearStr();
 				sb.AppendU32(stat->cntMap->GetItem(i));
 				sb.AppendUTF8Char('\t');
-				sb.Append(stat->cntMap->GetKey(i));
+				sb.AppendOpt(stat->cntMap->GetKey(i));
 				writer.WriteLine(sb.ToCString());
 				i++;
 			}

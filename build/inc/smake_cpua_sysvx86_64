@@ -35,6 +35,7 @@ CRC32_CPP.o: ../../src/Crypto/Hash/CRC32_CPP.cpp
 CRC32R_CPP.o: ../../src/Crypto/Hash/CRC32R_CPP.cpp
 MD5_CPP.o: ../../src/Crypto/Hash/MD5_SysV64.asm
 SHA1_CPP.o: ../../src/Crypto/Hash/SHA1_SysV64.asm
+SHA512_CPP.o: ../../src/Crypto/Hash/SHA512_CPP.cpp
 LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
 Benchmark_CPP.o: ../../src/Manage/Benchmark_SysV64.asm
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_SysV64.asm

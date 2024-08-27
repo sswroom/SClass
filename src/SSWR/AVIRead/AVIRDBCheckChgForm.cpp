@@ -1776,7 +1776,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 				srcCnt = csvData.GetCount();
 				while (k < srcCnt)
 				{
-					if (s.Set(csvData.GetKey(k)) && idList.SortedIndexOf(s) < 0)
+					if (csvData.GetKey(k).SetTo(s) && idList.SortedIndexOf(s) < 0)
 					{
 						rowData = csvData.GetItem(k);
 						sql.Clear();
