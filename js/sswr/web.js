@@ -149,7 +149,14 @@ export function buildTable(o)
 			ret.push("<tr>");
 			for (name in o[0])
 			{
-				ret.push("<td>"+text.toHTMLText(""+obj[name])+"</td>");
+				if (typeof obj[name] == "object")
+				{
+					ret.push("<td>"+text.toHTMLText(JSON.stringify(obj[name]))+"</td>");
+				}
+				else
+				{
+					ret.push("<td>"+text.toHTMLText(""+obj[name])+"</td>");
+				}
 			}
 			ret.push("</tr>");
 			i++;
@@ -161,7 +168,14 @@ export function buildTable(o)
 		{
 			ret.push("<tr>");
 			ret.push("<td>"+text.toHTMLText(name)+"</td>");
-			ret.push("<td>"+text.toHTMLText(""+o[name])+"</td>");
+			if (typeof o[name] == "object")
+			{
+				ret.push("<td>"+text.toHTMLText(JSON.stringify(o[name]))+"</td>");
+			}
+			else
+			{
+				ret.push("<td>"+text.toHTMLText(""+o[name])+"</td>");
+			}
 			ret.push("</tr>");
 		}
 	}
@@ -924,22 +938,6 @@ export async function getCacheSize(name)
 
 /**
  * @param {string} id
- * @returns {HTMLInputElement|HTMLSelectElement}
- */
-export function getInputOrSelectElement(id)
-{
-	let ele = document.getElementById(id);
-	if (ele == null)
-		throw new Error("Element with id \""+id+"\" not found");
-	if (ele instanceof HTMLInputElement)
-		return ele;
-	if (ele instanceof HTMLSelectElement)
-		return ele;
-	throw new Error("Element with id \""+id+"\" is not an input");
-}
-
-/**
- * @param {string} id
  * @returns {HTMLInputElement}
  */
 export function getInputElement(id)
@@ -964,6 +962,48 @@ export function getSelectElement(id)
 	if (ele instanceof HTMLSelectElement)
 		return ele;
 	throw new Error("Element with id \""+id+"\" is not a select");
+}
+
+/**
+ * @param {string} id
+ * @returns {HTMLButtonElement}
+ */
+export function getButtonElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLButtonElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not a button");
+}
+
+/**
+ * @param {string} id
+ * @returns {HTMLDivElement}
+ */
+export function getDivElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLDivElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not a div");
+}
+
+/**
+ * @param {string} id
+ * @returns {HTMLSpanElement}
+ */
+export function getSpanElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLSpanElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not a span");
 }
 
 /**
