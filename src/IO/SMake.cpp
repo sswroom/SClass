@@ -1489,7 +1489,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 			{
 		//		printf("Libs: %s\r\n", libList.GetItem(i));
 				sb.AppendUTF8Char(' ');
-				Text::String *lib = libList.GetKey(i);
+				NN<Text::String> lib = Text::String::OrEmpty(libList.GetKey(i));
 				AppendCfg(sb, lib->ToCString());
 				i++;
 			}
