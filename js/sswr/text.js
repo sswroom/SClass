@@ -625,12 +625,20 @@ export class UTF8TextBinEnc extends TextBinEnc
 		super("UTF-8 Text");
 	}
 
+	/**
+	 * @param {Uint8Array} buff
+	 * @returns {string}
+	 */
 	encodeBin(buff)
 	{
 		let enc = new TextDecoder();
 		return enc.decode(buff);
 	}
 
+	/**
+	 * @param {string} str 
+	 * @returns {Uint8Array}
+	 */
 	decodeBin(str)
 	{
 		let enc = new TextEncoder();

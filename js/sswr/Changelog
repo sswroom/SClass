@@ -1,3 +1,6 @@
+1.6.13
+-Added crypto.ICrypto, crypto.AES256GCM
+
 1.6.12
 -Added dummy/i18next.js
 -Added web.getButtonElement, getDivElement, getSpanElement
