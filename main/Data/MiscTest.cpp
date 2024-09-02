@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "Crypto/Encrypt/JasyptEncryptor.h"
 #include "DB/MSSQLConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/ConsoleLogHandler.h"
@@ -704,9 +705,22 @@ Int32 AWSEmailTest()
 	return 0;
 }
 
+Int32 JasyptTest()
+{
+	Text::CStringNN text = CSTR("sbdW6Uuf+wHmgWOKlZNp1P7nww7vkBsXHcpnbLcbInBoVMFxzTqeY9cvc0fktysc");
+	Text::CStringNN password = CSTR("");
+	Crypto::Encrypt::JasyptEncryptor encryptor(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, password.ToByteArray());
+	UInt8 buff[256];
+	UOSInt buffLeng = encryptor.DecryptB64(text, buff);
+	Text::StringBuilderUTF8 sb;
+	sb.AppendHexBuff(buff, buffLeng, ' ', Text::LineBreakType::CRLF);
+	printf("%s\r\n", sb.ToPtr());
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 15;
+	UOSInt testType = 17;
 	switch (testType)
 	{
 	case 0:
@@ -743,6 +757,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return HTTPSProxyCliTest();
 	case 16:
 		return AWSEmailTest();
+	case 17:
+		return JasyptTest();
 	default:
 		return 0;
 	}
