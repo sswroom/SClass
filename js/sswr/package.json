@@ -11,5 +11,8 @@
   "devDependencies": {
     "cesium": "^1.113.0",
     "leaflet": "^1.9.4"
+  },
+  "dependencies": {
+    "pako": "^2.1.0"
   }
 }
