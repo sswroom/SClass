@@ -80,6 +80,9 @@ export class SHA1 extends Hash
 		this.messageBlock = new Array(64);
 	}
 
+	/**
+	 * @param {ArrayBuffer | ArrayLike<number>} buff
+	 */
 	calc(buff)
 	{
 		if (!(buff instanceof ArrayBuffer))
@@ -167,7 +170,7 @@ export class SHA1 extends Hash
 				calBuff[i] = 0;
 				i++;
 			}
-			SHA1.calcBlock(intHash, calBuff);
+			SHA1.calcBlock(intHash, new Uint8Array(calBuff));
 			i = 0;
 			while (i < 56)
 			{
@@ -193,6 +196,10 @@ export class SHA1 extends Hash
 		return 64;
 	}
 
+	/**
+	 * @param {number[]} intermediateHash
+	 * @param {ArrayBuffer} messageBlock
+	 */
 	static calcBlock(intermediateHash, messageBlock)
 	{
 		let w = new Array(80);
@@ -306,6 +313,9 @@ export class MD5 extends Hash
 		this.buffSize = 0;
 	}
 
+	/**
+	 * @param {ArrayBuffer | ArrayLike<number>} buff
+	 */
 	calc(buff)
 	{
 		if (!(buff instanceof ArrayBuffer))
@@ -356,6 +366,7 @@ export class MD5 extends Hash
 
 	getValue()
 	{
+		/** @type {number[]} */
 		let calBuff = new Array(64);
 		let intHash = [
 			this.h[0],
@@ -389,7 +400,7 @@ export class MD5 extends Hash
 				calBuff[i] = 0;
 				i++;
 			}
-			MD5.calcBlock(intHash, calBuff);
+			MD5.calcBlock(intHash, new Uint8Array(calBuff));
 			i = 0;
 			while (i < 56)
 			{
@@ -415,6 +426,15 @@ export class MD5 extends Hash
 		return 64;
 	}
 
+	/**
+	 * @param {number[]} vals
+	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} dataNum
+	 * @param {number} s
+	 */
 	static step1(vals, w, x, y, z, dataNum, s)
 	{
 		vals[w] += vals[z] ^ (vals[x] & (vals[y] ^ vals[z]));
@@ -423,6 +443,15 @@ export class MD5 extends Hash
 		vals[w] += vals[x];
 	}
 	
+	/**
+	 * @param {number[]} vals
+	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} dataNum
+	 * @param {number} s
+	 */
 	static step2(vals, w, x, y, z, dataNum, s)
 	{
 		vals[w] += vals[y] ^ (vals[z] & (vals[x] ^ vals[y]));
@@ -431,6 +460,15 @@ export class MD5 extends Hash
 		vals[w] += vals[x];
 	}
 
+	/**
+	 * @param {number[]} vals
+	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} dataNum
+	 * @param {number} s
+	 */
 	static step3(vals, w, x, y, z, dataNum, s)
 	{
 		vals[w] += vals[z] ^ vals[y] ^ vals[x];
@@ -439,6 +477,15 @@ export class MD5 extends Hash
 		vals[w] += vals[x];
 	}
 	
+	/**
+	 * @param {number[]} vals
+	 * @param {number} w
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @param {number} dataNum
+	 * @param {number} s
+	 */
 	static step4(vals, w, x, y, z, dataNum, s)
 	{
 		vals[w] += vals[y] ^ (vals[x] | ~vals[z]);
@@ -447,6 +494,10 @@ export class MD5 extends Hash
 		vals[w] += vals[x];
 	}
 
+	/**
+	 * @param {number[]} hVals
+	 * @param {ArrayBuffer} block
+	 */
 	static calcBlock(hVals, block)
 	{
 		let view = new DataView(block);
@@ -548,5 +599,209 @@ export class MD5 extends Hash
 		hVals[1] = vals[b];
 		hVals[2] = vals[c];
 		hVals[3] = vals[d];
+	}
+}
+
+/**
+ * @param {number} polynomial
+ */
+function crc32rReverse(polynomial)
+{
+	let v = polynomial;
+	let v2 = 0;
+	let i = 32;
+	while (i-- > 0)
+	{
+		v2 = (v2 >>> 1) | (v & 0x80000000);
+		v <<= 1;
+	}
+	return v2;
+}
+
+/**
+ * @param {number[]} tab
+ * @param {number} rpn
+ */
+function crc32rInitTable(tab, rpn)
+{
+	let i = 256;
+	let j;
+	let v;
+	while (i-- > 0)
+	{
+		v = i;
+		j = 8;
+		while (j-- > 0)
+		{
+			if (v & 1)
+			{
+				v = (v >>> 1) ^ rpn;
+			}
+			else
+			{
+				v = (v >>> 1);
+			}
+		}
+		tab[i] = v;
+	}
+
+	i = 256;
+	while (i-- > 0)
+	{
+		tab[256  + i] = (tab[0    + i] >>> 8) ^ tab[tab[0    + i] & 0xff];
+		tab[512  + i] = (tab[256  + i] >>> 8) ^ tab[tab[256  + i] & 0xff];
+		tab[768  + i] = (tab[512  + i] >>> 8) ^ tab[tab[512  + i] & 0xff];
+		tab[1024 + i] = (tab[768  + i] >>> 8) ^ tab[tab[768  + i] & 0xff];
+		tab[1280 + i] = (tab[1024 + i] >>> 8) ^ tab[tab[1024 + i] & 0xff];
+		tab[1536 + i] = (tab[1280 + i] >>> 8) ^ tab[tab[1280 + i] & 0xff];
+		tab[1792 + i] = (tab[1536 + i] >>> 8) ^ tab[tab[1536 + i] & 0xff];
+		tab[2048 + i] = (tab[1792 + i] >>> 8) ^ tab[tab[1792 + i] & 0xff];
+		tab[2304 + i] = (tab[2048 + i] >>> 8) ^ tab[tab[2048 + i] & 0xff];
+		tab[2560 + i] = (tab[2304 + i] >>> 8) ^ tab[tab[2304 + i] & 0xff];
+		tab[2816 + i] = (tab[2560 + i] >>> 8) ^ tab[tab[2560 + i] & 0xff];
+		tab[3072 + i] = (tab[2816 + i] >>> 8) ^ tab[tab[2816 + i] & 0xff];
+		tab[3328 + i] = (tab[3072 + i] >>> 8) ^ tab[tab[3072 + i] & 0xff];
+		tab[3584 + i] = (tab[3328 + i] >>> 8) ^ tab[tab[3328 + i] & 0xff];
+		tab[3840 + i] = (tab[3584 + i] >>> 8) ^ tab[tab[3584 + i] & 0xff];
+	}
+}
+
+/**
+ * @param {ArrayBuffer} buff
+ * @param {number[]} tab
+ * @param {number} currVal
+ */
+function crc32rCalc(buff, tab, currVal)
+{
+	let reader = new data.ByteReader(buff);
+	let i = 0;
+	let length = reader.getLength();
+	while ((length - i) >= 16)
+	{
+		let currVal1 = reader.readUInt32(i, true) ^ currVal;
+		let currVal2 = reader.readUInt32(i + 4, true);
+		let currVal3 = reader.readUInt32(i + 8, true);
+		let currVal4 = reader.readUInt32(i + 12, true);
+		i += 16;
+		currVal  = tab[0    +  (currVal4 >>> 24)];
+		currVal ^= tab[256  + ((currVal4 >>> 16) & 0xff)];
+		currVal ^= tab[512  + ((currVal4 >>> 8) & 0xff)];
+		currVal ^= tab[768  +  (currVal4 & 0xff)];
+		currVal ^= tab[1024 +  (currVal3 >>> 24)];
+		currVal ^= tab[1280 + ((currVal3 >>> 16) & 0xff)];
+		currVal ^= tab[1536 + ((currVal3 >>> 8) & 0xff)];
+		currVal ^= tab[1792 +  (currVal3 & 0xff)];
+		currVal ^= tab[2048 +  (currVal2 >>> 24)];
+		currVal ^= tab[2304 + ((currVal2 >>> 16) & 0xff)];
+		currVal ^= tab[2560 + ((currVal2 >>> 8) & 0xff)];
+		currVal ^= tab[2816 +  (currVal2 & 0xff)];
+		currVal ^= tab[3072 +  (currVal1 >>> 24)];
+		currVal ^= tab[3328 + ((currVal1 >>> 16) & 0xff)];
+		currVal ^= tab[3584 + ((currVal1 >>> 8) & 0xff)];
+		currVal ^= tab[3840 +  (currVal1  & 0xff)];
+	}
+	while ((length - i) >= 4)
+	{
+		currVal ^= reader.readUInt32(i, true);
+		i += 4;
+		currVal = tab[768 + (currVal & 0xff)] ^ tab[512 + ((currVal >>> 8) & 0xff)] ^  tab[256 + ((currVal >>> 16) & 0xff)] ^ tab[0 + (currVal >>> 24)];
+	}
+	while ((length - i) > 0)
+	{
+		currVal = tab[(currVal & 0xff) ^ reader.readUInt8(i)] ^ (currVal >>> 8);
+		i++;
+	}
+	return currVal;
+}
+
+export class CRC32
+{
+	static getPolynormialIEEE()
+	{
+		return 0x04C11DB7;
+	}
+
+	static getPolynormialCastagnoli()
+	{
+		return 0x1EDC6F41;
+	}
+}
+
+export class CRC32R extends Hash
+{
+	/**
+	 * @param {number} polynomial
+	 */
+	initTable(polynomial)
+	{
+		this.currVal = 0xffffffff;
+		let rpn = crc32rReverse(polynomial);
+		this.crctab = new Array(256 * 16);
+		crc32rInitTable(this.crctab, rpn);
+	}
+
+	/**
+	 * @param {{ crctab: any; currVal: any; }} param
+	 */
+	constructor(param)
+	{
+		super();
+		if (param instanceof CRC32R)
+		{
+			this.crctab = param.crctab;
+			this.currVal = param.currVal;
+		}
+		else if (typeof param == "number")
+		{
+
+			this.initTable(param);
+		}
+		else
+		{
+			this.initTable(CRC32.getPolynormialIEEE());
+		}
+	}
+
+	getName()
+	{
+		return "CRC (32-bit Reversed)";
+	}
+
+	clone()
+	{
+		return new CRC32R(this);
+	}
+
+	clear()
+	{
+		this.currVal = 0xffffffff;
+	}
+
+	/**
+	 * @param {ArrayBuffer} buff
+	 */
+	calc(buff)
+	{
+		this.currVal = crc32rCalc(buff, this.crctab, this.currVal);
+	}
+
+	getValue()
+	{
+		let builder = new data.ByteBuilder();
+		builder.writeInt32(0, ~this.currVal, false);
+		return builder.build();
+	}
+
+	getBlockSize()
+	{
+		return 1;
+	}
+
+	/**
+	 * @param {ArrayBuffer} buff
+	 */
+	calcDirect(buff)
+	{
+		return ~crc32rCalc(buff, this.crctab, 0xffffffff);
 	}
 }

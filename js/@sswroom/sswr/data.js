@@ -10,16 +10,26 @@ export const Weekday = {
 	Saturday: 6
 }
 
+/**
+ * @param {any} o
+ */
 export function isArray(o)
 {
 	return o != null && o.constructor === Array;
 }
 
+/**
+ * @param {any} o
+ */
 export function isObject(o)
 {
 	return o != null && (typeof o) == "object";
 }
 
+/**
+ * @param {string} o
+ * @param {number} lev
+ */
 export function toObjectString(o, lev)
 {
 	if (lev && lev > 8)
@@ -42,6 +52,7 @@ export function toObjectString(o, lev)
 	{
 		out = new Array();
 		out.push("[");
+		// @ts-ignore
 		for (name in o)
 		{
 			out.push(toObjectString(o[name], nextLev));
@@ -55,6 +66,7 @@ export function toObjectString(o, lev)
 	{
 		out = new Array();
 		out.push("{");
+		// @ts-ignore
 		for (name in o)
 		{
 			out.push(text.toJSText(name));
@@ -85,11 +97,18 @@ export function toObjectString(o, lev)
 	}
 }
 
+/**
+ * @param {Iterable<number>} buff
+ */
 export function arrayBuffer2Base64(buff)
 {
 	return btoa(String.fromCharCode.apply(null, new Uint8Array(buff)));
 }
 
+/**
+ * @param {Iterable<number>} buff1
+ * @param {Iterable<number>} buff2
+ */
 export function arrayBufferEquals(buff1, buff2)
 {
 	let arr1 = new Uint8Array(buff1);
@@ -107,6 +126,10 @@ export function arrayBufferEquals(buff1, buff2)
 	return true;
 }
 
+/**
+ * @param {string | number | null} a
+ * @param {string | number | null} b
+ */
 export function compare(a, b)
 {
 	if (a == b)
@@ -115,12 +138,11 @@ export function compare(a, b)
 		return -1;
 	if (b == null)
 		return 1;
-	let ta = typeof a;
-	if (ta == "string")
+	if (typeof a == "string" && typeof b == "string")
 	{
 		return a.localeCompare(b);
 	}
-	else if (ta == "number")
+	else if (typeof a == "number" && typeof b == "number")
 	{
 		if (a > b)
 			return 1;
@@ -129,12 +151,15 @@ export function compare(a, b)
 		else
 			return 0;
 	}
-	else if (ta == "object")
+	else if (typeof a == "object" && typeof b == "object")
 	{
+		// @ts-ignore
 		if (a.compareTo)
 		{
+			// @ts-ignore
 			return a.compareTo(b);
 		}
+		// @ts-ignore
 		return a.toString().localeCompare(b.toString());
 	}
 	else
@@ -143,6 +168,12 @@ export function compare(a, b)
 	}
 }
 
+/**
+ * @param {any[]} arr
+ * @param {((a: any, b: any) => number) | null} compareFunc
+ * @param {number | null} firstIndex
+ * @param {number | null} lastIndex
+ */
 export function sort(arr, compareFunc, firstIndex, lastIndex)
 {
     let levi = new Array();
@@ -264,6 +295,10 @@ export function sort(arr, compareFunc, firstIndex, lastIndex)
 	}
 }
 
+/**
+ * @param {{ [x: string]: any; } | null} options
+ * @param {{ [x: string]: any; }} defOptions
+ */
 export function mergeOptions(options, defOptions)
 {
 	if (options == null)
@@ -277,21 +312,37 @@ export function mergeOptions(options, defOptions)
 	return options;
 }
 
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ */
 export function readUInt16(arr, index)
 {
 	return arr[index] | (arr[index + 1] << 8);
 }
 
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ */
 export function readMUInt16(arr, index)
 {
 	return arr[index + 1] | (arr[index + 0] << 8);
 }
 
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ */
 export function readUInt24(arr, index)
 {
 	return arr[index] | (arr[index + 1] << 8) | (arr[index + 2] << 16);
 }
 
+/**
+ * @param {Uint8Array} arr
+ * @param {number} index
+ */
 export function readMUInt24(arr, index)
 {
 	return arr[index + 2] | (arr[index + 1] << 8) | (arr[index + 0] << 16);
@@ -337,6 +388,10 @@ export function readMUInt64(arr, index)
 	return (BigInt(readUInt32(arr, index)) << 32n) + BigInt(readUInt32(arr, index + 4));
 }
 
+/**
+ * @param {number} v
+ * @param {number} n
+ */
 export function rol32(v, n)
 {
 	if (n == 0)
@@ -344,6 +399,10 @@ export function rol32(v, n)
 	return ((v << n) | ((v >> 1) & 0x7fffffff) >> (31 - n));
 }
 
+/**
+ * @param {number} v
+ * @param {number} n
+ */
 export function ror32(v, n)
 {
 	if (n == 0)
@@ -351,16 +410,28 @@ export function ror32(v, n)
 	return ((v << (32 - n)) | ((v >> 1) & 0x7fffffff) >> (n - 1));
 }
 
+/**
+ * @param {number} v
+ * @param {number} n
+ */
 export function shl32(v, n)
 {
 	return v << n;
 }
 
+/**
+ * @param {number} v
+ * @param {number} n
+ */
 export function sar32(v, n)
 {
 	return v >> n;
 }
 
+/**
+ * @param {number} v
+ * @param {number} n
+ */
 export function shr32(v, n)
 {
 	if (n == 0)
@@ -368,6 +439,10 @@ export function shr32(v, n)
 	return ((v >> 1) & 0x7fffffff) >> (n - 1);
 }
 
+/**
+ * @param {{ [x: string]: any; }} o
+ * @param {{ [x: string]: string; }} items
+ */
 export function objectParseTS(o, items)
 {
 	let item;
@@ -375,7 +450,7 @@ export function objectParseTS(o, items)
 	{
 		if (o[items[item]] && typeof o[items[item]] == "string")
 		{
-			o[items[item]] = Timestamp.fromStr(o[items[item]]);
+			o[items[item]] = Timestamp.fromStr(o[items[item]], null);
 		}
 	}
 }
@@ -407,11 +482,15 @@ export class DateTimeUtil
 {
 	static monString = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 	static monthString = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	/**
+	 * @param {TimeValue} t
+	 * @param {string[]} dateStrs
+	 */
 	static dateValueSetDate(t, dateStrs)
 	{
-		let vals0 = dateStrs[0] - 0;
-		let vals1 = dateStrs[1] - 0;
-		let vals2 = dateStrs[2] - 0;
+		let vals0 = Number(dateStrs[0]);
+		let vals1 = Number(dateStrs[1]);
+		let vals2 = Number(dateStrs[2]);
 		if (vals0 > 100)
 		{
 			t.year = vals0;
@@ -446,57 +525,66 @@ export class DateTimeUtil
 		}
 	}
 
+	/**
+	 * @param {TimeValue} t
+	 * @param {string[]} timeStrs
+	 */
 	static timeValueSetTime(t, timeStrs)
 	{
 		let strs;
 
-		t.hour = timeStrs[0] - 0;
-		t.minute = timeStrs[1] - 0;
+		t.hour = Number(timeStrs[0]);
+		t.minute = Number(timeStrs[1]);
 		strs = timeStrs[2].split('.');
 		if (strs.length == 1)
 		{
-			t.second = strs[0] - 0;
+			t.second = Number(strs[0]);
 			t.nanosec = 0;
 		}
 		else
 		{
-			t.second = strs[0] - 0;
+			t.second = Number(strs[0]);
 			switch (strs[1].length)
 			{
 			case 0:
 				t.nanosec = 0;
 				break;
 			case 1:
-				t.nanosec = (strs[1] - 0) * 100000000;
+				t.nanosec = Number(strs[1]) * 100000000;
 				break;
 			case 2:
-				t.nanosec = (strs[1] - 0) * 10000000;
+				t.nanosec = Number(strs[1]) * 10000000;
 				break;
 			case 3:
-				t.nanosec = (strs[1] - 0) * 1000000;
+				t.nanosec = Number(strs[1]) * 1000000;
 				break;
 			case 4:
-				t.nanosec = (strs[1] - 0) * 100000;
+				t.nanosec = Number(strs[1]) * 100000;
 				break;
 			case 5:
-				t.nanosec = (strs[1] - 0) * 10000;
+				t.nanosec = Number(strs[1]) * 10000;
 				break;
 			case 6:
-				t.nanosec = (strs[1] - 0) * 1000;
+				t.nanosec = Number(strs[1]) * 1000;
 				break;
 			case 7:
-				t.nanosec = (strs[1] - 0) * 100;
+				t.nanosec = Number(strs[1]) * 100;
 				break;
 			case 8:
-				t.nanosec = (strs[1] - 0) * 10;
+				t.nanosec = Number(strs[1]) * 10;
 				break;
 			default:
-				t.nanosec = strs[1].substr(0, 9) - 0;
+				t.nanosec = Number(strs[1].substring(0, 9));
 				break;
 			}
 		}
 	}
 
+	/**
+	 * @param {number} year
+	 * @param {number} month
+	 * @param {number} day
+	 */
 	static date2TotalDays(year, month, day)
 	{
 		let totalDays;
@@ -567,31 +655,53 @@ export class DateTimeUtil
 		return totalDays;
 	}
 
+	/**
+	 * @param {DateValue} d
+	 */
 	static dateValue2TotalDays(d)
 	{
 		return DateTimeUtil.date2TotalDays(d.year, d.month, d.day);
 	}
 
+	/**
+	 * @param {TimeValue} tval
+	 */
 	static timeValue2Secs(tval)
 	{
 		return BigInt(DateTimeUtil.dateValue2TotalDays(tval)) * 86400n + BigInt(tval.second + tval.minute * 60 + tval.hour * 3600 - tval.tzQhr * 900);
 	}
 
+	/**
+	 * @param {TimeValue} t
+	 */
 	static timeValue2Ticks(t)
 	{
+		// @ts-ignore
 		return DateTimeUtil.timeValue2Secs(t) * 1000n + BigInt(Math.floor(t.nanosec / 1000000));
 	}
 
+	/**
+	 * @param {number} ticks
+	 * @param {number} tzQhr
+	 */
 	static ticks2TimeValue(ticks, tzQhr)
 	{
 		return DateTimeUtil.instant2TimeValue(ticks / 1000, (ticks % 1000) * 1000000, tzQhr);
 	}
 
+	/**
+	 * @param {any} secs
+	 * @param {number} tzQhr
+	 */
 	static secs2TimeValue(secs, tzQhr)
 	{
 		return DateTimeUtil.instant2TimeValue(secs, 0, tzQhr);
 	}
 
+	/**
+	 * @param {number | bigint} totalDays
+	 * @param {DateValue} t
+	 */
 	static totalDays2DateValue(totalDays, t)
 	{
 		totalDays = BigInt(totalDays);
@@ -831,6 +941,11 @@ export class DateTimeUtil
 		}
 	}
 
+	/**
+	 * @param {string | number | bigint | boolean} secs
+	 * @param {number} nanosec
+	 * @param {number | null} tzQhr
+	 */
 	static instant2TimeValue(secs, nanosec, tzQhr)
 	{
 		if (tzQhr == null)
@@ -864,6 +979,10 @@ export class DateTimeUtil
 		return t;
 	}
 
+	/**
+	 * @param {number} ticks
+	 * @param {number} tzQhr
+	 */
 	static ticks2Weekday(ticks, tzQhr)
 	{
 		let days = ((ticks + tzQhr * 900000) / 86400000 + 4);
@@ -877,6 +996,10 @@ export class DateTimeUtil
 		}
 	}
 
+	/**
+	 * @param {TimeValue} tval
+	 * @param {string} pattern
+	 */
 	static toString(tval, pattern)
 	{
 		let output = new Array();
@@ -1236,6 +1359,10 @@ export class DateTimeUtil
 		return output.join("");
 	}
 
+	/**
+	 * @param {string} dateStr
+	 * @param {number | null|undefined} tzQhr
+	 */
 	static string2TimeValue(dateStr, tzQhr)
 	{
 		if (dateStr.length < 4)
@@ -1286,19 +1413,19 @@ export class DateTimeUtil
 			if (i != -1)
 			{
 				let c = strs2[1].charAt(i);
-				let tz = strs2[1].substr(i + 1);
+				let tz = strs2[1].substring(i + 1);
 				if (tz.length == 5)
 				{
-					let min = strs2[1].substr(i + 4) - 0;
+					let min = Number(strs2[1].substring(i + 4));
 					if (tz.charAt(2) == ':')
 					{
-						tz = tz.substr(0, 2);
+						tz = tz.substring(0, 2);
 					}
 					else
 					{
-						tz = tz.substr(0, 3);
+						tz = tz.substring(0, 3);
 					}
-					min = min + (tz - 0) * 60;
+					min = min + Number(tz) * 60;
 					if (c == '-')
 					{
 						tval.tzQhr = -min / 15;
@@ -1312,21 +1439,21 @@ export class DateTimeUtil
 				{
 					if (c == '-')
 					{
-						tval.tzQhr = -(tz - 0) * 4;
+						tval.tzQhr = -Number(tz) * 4;
 					}
 					else
 					{
-						tval.tzQhr = (tz - 0) * 4;
+						tval.tzQhr = Number(tz) * 4;
 					}
 				}
-				strs2[1] = strs2.substr(0, i);
+				strs2[1] = strs2[1].substring(0, i);
 			}
 			if ((strs = strs2[1].split(':')).length == 3)
 			{
 				if (strs[2].endsWith('Z'))
 				{
 					tval.tzQhr = 0;
-					strs[2] = strs[2].substr(0, strs[2].length - 1);
+					strs[2] = strs[2].substring(0, strs[2].length - 1);
 				}
 				DateTimeUtil.timeValueSetTime(tval, strs);
 			}
@@ -1381,19 +1508,19 @@ export class DateTimeUtil
 			{
 				tval.year = DateTimeUtil.parseYearStr(strs2[2]);
 				tval.month = DateTimeUtil.parseMonthStr(strs2[0]);
-				tval.day = strs2[1] - 0;
+				tval.day = Number(strs2[1]);
 			}
 			else if (len1 <= 2 && len2 == 3 && len3 == 4)
 			{
 				tval.year = DateTimeUtil.parseYearStr(strs2[2]);
 				tval.month = DateTimeUtil.parseMonthStr(strs2[1]);
-				tval.day = strs2[0] - 0;
+				tval.day = Number(strs2[0]);
 			}
 			else if (len1 == 3 && len2 <= 2 && len4 == 4)
 			{
 				tval.year = DateTimeUtil.parseYearStr(strs2[3]);
 				tval.month = DateTimeUtil.parseMonthStr(strs2[0]);
-				tval.day = strs2[1] - 0;
+				tval.day = Number(strs2[1]);
 				timeStr = strs2[2];
 			}
 			else
@@ -1417,16 +1544,16 @@ export class DateTimeUtil
 				}
 				else if (strs2[4].length == 5)
 				{
-					let min = strs2[4].substr(3) - 0;
+					let min = Number(strs2[4].substring(3));
 					if (strs2[4].charAt(2) == ':')
 					{
-						strs2[4] = strs2[4].substr(0, 2);
+						strs2[4] = strs2[4].substring(0, 2);
 					}
 					else
 					{
-						strs2[4] = strs2[4].substr(0, 3);
+						strs2[4] = strs2[4].substring(0, 3);
 					}
-					min = min + (strs2[4].substr(1) - 0) * 60;
+					min = min + Number(strs2[4].substring(1)) * 60;
 					if (strs2[4].charAt(0) == '-')
 					{
 						tval.tzQhr = (-min / 15);
@@ -1461,26 +1588,26 @@ export class DateTimeUtil
 					{
 						if ((strs = strs2[j].split(':')).length == 2)
 						{
-							tval.tzQhr = -(((strs[0].substr(1) - 0) * 4) + (strs[1] - 0) / 15);
+							tval.tzQhr = -((Number(strs[0].substring(1)) * 4) + Number(strs[1]) / 15);
 						}
-						else if (strs2[j].leng == 5)
+						else if (strs2[j].length == 5)
 						{
-							tval.tzQhr = (strs2[j].substr(3) - 0) / 15;
-							strs2[j] = strs2[j].substr(0, 3);
-							tval.tzQhr = -(tval.tzQhr + (strs2[j].substr(1) - 0) * 4);
+							tval.tzQhr = Number(strs2[j].substring(3)) / 15;
+							strs2[j] = strs2[j].substring(0, 3);
+							tval.tzQhr = -(tval.tzQhr + Number(strs2[j].substring(1)) * 4);
 						}
 					}
 					else if (strs2[j].charAt(0) == '+')
 					{
 						if ((strs = strs2[j].split(':')).length == 2)
 						{
-							tval.tzQhr = ((strs[0].substr(1) - 0) * 4) + (strs[1] - 0) / 15;
+							tval.tzQhr = (Number(strs[0].substring(1)) * 4) + Number(strs[1]) / 15;
 						}
-						else if (strs2[j].leng == 5)
+						else if (strs2[j].length == 5)
 						{
-							tval.tzQhr = (strs2[j].substr(3) - 0) / 15;
-							strs2[j] = strs2[j].substr(0, 3);
-							tval.tzQhr = (tval.tzQhr + (strs2[j].substr(1) - 0) * 4);
+							tval.tzQhr = Number(strs2[j].substring(3)) / 15;
+							strs2[j] = strs2[j].substring(0, 3);
+							tval.tzQhr = (tval.tzQhr + Number(strs2[j].substring(1)) * 4);
 						}
 					}
 					else
@@ -1503,7 +1630,7 @@ export class DateTimeUtil
 						}
 						else
 						{
-							i = strs2[j] - 0;
+							i = Number(strs2[j]);
 							if (isNaN(i))
 							{
 								i = DateTimeUtil.parseMonthStr(strs2[j]);
@@ -1529,6 +1656,9 @@ export class DateTimeUtil
 		return tval;
 	}
 
+	/**
+	 * @param {string | number | bigint | boolean} prmymdhms
+	 */
 	static timeValueFromYMDHMS(prmymdhms)
 	{
 		let ymdhms = BigInt(prmymdhms);
@@ -1563,19 +1693,28 @@ export class DateTimeUtil
 		return tval;
 	}
 
+	/**
+	 * @param {number} year
+	 */
 	static isYearLeap(year)
 	{
 		return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 	}
 
+	/**
+	 * @param {string} year
+	 */
 	static parseYearStr(year)
 	{
-		let y = year - 0;
+		let y = Number(year);
 		if (y > 0)
 			return y;
 		return y + 1;
 	}
 
+	/**
+	 * @param {string} month
+	 */
 	static parseMonthStr(month)
 	{
 		if (month.length < 3)
@@ -1632,6 +1771,10 @@ export class DateTimeUtil
 		return 0;
 	}
 
+	/**
+	 * @param {number} year
+	 * @param {number} month
+	 */
 	static dayInMonth(year, month)
 	{
 		while (month < 1)
@@ -1682,16 +1825,33 @@ export class DateTimeUtil
 	{
 		return new Date().getTimezoneOffset() / -15;
 	}
+
+	/**
+	 * @param {bigint} secs
+	 * @param {number} nanosec
+	 */
+	static secs2FILETIME(secs, nanosec)
+	{
+ 		secs = secs * 10000000n + BigInt(Math.round(nanosec / 100));
+		return secs + 116444736000000000n;
+	}
 }
 
 export class Duration
 {
+	/**
+	 * @param {string | number | bigint | boolean} seconds
+	 * @param {number} nanosec
+	 */
 	constructor(seconds, nanosec)
 	{
 		this.seconds = BigInt(seconds);
 		this.nanosec = nanosec;
 	}
 
+	/**
+	 * @param {number | bigint} ticks
+	 */
 	static fromTicks(ticks)
 	{
 		if (ticks < 0)
@@ -1711,6 +1871,9 @@ export class Duration
 		}
 	}
 
+	/**
+	 * @param {number | bigint} us
+	 */
 	static fromUs(us)
 	{
 		if (us < 0)
@@ -1807,6 +1970,11 @@ export class LocalDate
 {
 	static DATE_NULL = -1234567;
 
+	/**
+	 * @param {string | number | null | DateValue} year
+	 * @param {number | null | undefined} [month]
+	 * @param {number | null | undefined} [day]
+	 */
 	constructor(year, month, day)
 	{
 		if (year == null)
@@ -1815,8 +1983,7 @@ export class LocalDate
 		}
 		else
 		{
-			let t = typeof year;
-			if (t == "number")
+			if (typeof year == "number")
 			{
 				if (month != null && day != null)
 				{
@@ -1827,15 +1994,15 @@ export class LocalDate
 					this.dateVal = year;
 				}
 			}
-			else if (t == "string" && text.isInteger(year))
+			else if (typeof year == "string" && text.isInteger(year))
 			{
 				if (month != null && day != null)
 				{
-					this.dateVal = DateTimeUtil.date2TotalDays(year - 0, month - 0, day - 0);
+					this.dateVal = DateTimeUtil.date2TotalDays(Number(year), Number(month), Number(day));
 				}
 				else
 				{
-					this.dateVal = year;
+					this.dateVal = Number(year);
 				}
 			}
 			else if (year instanceof DateValue)
@@ -1857,6 +2024,11 @@ export class LocalDate
 		}
 	}
 
+	/**
+	 * @param {number} year
+	 * @param {number} month
+	 * @param {number} day
+	 */
 	setValue(year, month, day)
 	{
 		this.dateVal = DateTimeUtil.date2TotalDays(year, month, day);
@@ -1874,6 +2046,9 @@ export class LocalDate
 		return this.dateVal;
 	}
 
+	/**
+	 * @param {number} year
+	 */
 	setYear(year)
 	{
 		let d = new DateValue();
@@ -1881,6 +2056,9 @@ export class LocalDate
 		this.dateVal = DateTimeUtil.date2TotalDays(year, d.month, d.day);
 	}
 
+	/**
+	 * @param {number} month
+	 */
 	setMonth(month)
 	{
 		let d = new DateValue();
@@ -1888,6 +2066,9 @@ export class LocalDate
 		this.dateVal = DateTimeUtil.date2TotalDays(d.year, month, d.day);
 	}
 
+	/**
+	 * @param {number} day
+	 */
 	setDay(day)
 	{
 		let d = new DateValue();
@@ -1907,6 +2088,9 @@ export class LocalDate
 		return this.dateVal * 86400000;
 	}
 
+	/**
+	 * @param {string | null} pattern
+	 */
 	toString(pattern)
 	{
 		if (pattern == null)
@@ -1916,14 +2100,17 @@ export class LocalDate
 		return DateTimeUtil.toString(t, pattern);
 	}
 
+	/**
+	 * @param {LocalDate} obj
+	 */
 	compareTo(obj)
 	{
 		if (this.dateVal > obj.dateVal)
-		return 1;
-	else if (this.dateVal < obj.dateVal)
-		return -1;
-	else
-		return 0;
+			return 1;
+		else if (this.dateVal < obj.dateVal)
+			return -1;
+		else
+			return 0;
 	}
 
 	isNull()
@@ -1942,6 +2129,9 @@ export class LocalDate
 		return new LocalDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
 	}
 
+	/**
+	 * @param {any} s
+	 */
 	static fromStr(s)
 	{
 		let timeVal = DateTimeUtil.string2TimeValue(s, 0);
@@ -1955,6 +2145,10 @@ export class LocalDate
 
 export class TimeInstant
 {
+	/**
+	 * @param {string | number | bigint | boolean} sec
+	 * @param {number} nanosec
+	 */
 	constructor(sec, nanosec)
 	{
 		this.sec = BigInt(sec)
@@ -1979,6 +2173,9 @@ export class TimeInstant
 		}
 	}
 
+	/**
+	 * @param {number} variTime
+	 */
 	static fromVariTime(variTime)
 	{
 		let days = Math.floor(variTime);
@@ -1987,39 +2184,57 @@ export class TimeInstant
 		return new TimeInstant(BigInt(days - 25569) * 86400000n + BigInt(Math.floor(ds * 86400000)), ((ds * 86400 - s) * 1000000000));
 	}
 
+	/**
+	 * @param {bigint|number} ticks
+	 */
 	static fromTicks(ticks)
 	{
-		let ms = (ticks % 1000);
+		let ms = Number(BigInt(ticks) % 1000n);
 		if (ms < 0)
 		{
-			return new TimeInstant(Math.floor(ticks / 1000) - 1, (ms + 1000) * 1000000);
+			return new TimeInstant(Math.floor(Number(ticks) / 1000) - 1, (ms + 1000) * 1000000);
 		}
 		else
 		{
-			return new TimeInstant(Math.floor(ticks / 1000), ms * 1000000);
+			return new TimeInstant(Math.floor(Number(ticks) / 1000), ms * 1000000);
 		}
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addDay(val)
 	{
-		return new TimeInstant(this.sec + val * 86400n, this.nanosec);
+		return new TimeInstant(this.sec + BigInt(val) * 86400n, this.nanosec);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addHour(val)
 	{
-		return new TimeInstant(this.sec + val * 3600n, this.nanosec);
+		return new TimeInstant(this.sec + BigInt(val) * 3600n, this.nanosec);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addMinute(val)
 	{
-		return new TimeInstant(this.sec + val * 60n, this.nanosec);
+		return new TimeInstant(this.sec + BigInt(val) * 60n, this.nanosec);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addSecond(val)
 	{
-		return new TimeInstant(this.sec + val, this.nanosec);
+		return new TimeInstant(this.sec + BigInt(val), this.nanosec);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addMS(val)
 	{
 		let newSec = this.sec + BigInt(Math.floor(val / 1000));
@@ -2032,6 +2247,9 @@ export class TimeInstant
 		return new TimeInstant(newSec, val);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addNS(val)
 	{
 		let newSec = this.sec + BigInt(Math.floor(val / 1000000000));
@@ -2071,21 +2289,33 @@ export class TimeInstant
 		return Number(this.sec % 86400n) * 1000 + Math.floor(this.nanosec / 1000000);
 	}
 
+	/**
+	 * @param {TimeInstant} ts
+	 */
 	diffMS(ts)
 	{
 		return Number(this.sec - ts.sec) * 1000 + Math.floor((this.nanosec / 1000000) - (ts.nanosec / 1000000));
 	}
 
+	/**
+	 * @param {TimeInstant} ts
+	 */
 	diffSec(ts)
 	{
 		return Number(this.sec - ts.sec);
 	}
 
+	/**
+	 * @param {TimeInstant} ts
+	 */
 	diffSecDbl(ts)
 	{
 		return Number(this.sec - ts.sec) + (this.nanosec - ts.nanosec) / 1000000000.0;
 	}
 
+	/**
+	 * @param {TimeInstant} ts
+	 */
 	diff(ts)
 	{
 		let secs = this.sec - ts.sec;
@@ -2127,6 +2357,14 @@ export class TimeInstant
 		return this.sec * 1000000000n + BigInt(this.nanosec);
 	}
 
+	toFILETIME()
+	{
+		return DateTimeUtil.secs2FILETIME(this.sec, this.nanosec);
+	}
+
+	/**
+	 * @param {number | bigint} ticks
+	 */
 	static fromDotNetTicks(ticks)
 	{
 		ticks = BigInt(ticks) - 621355968000000000n;
@@ -2145,6 +2383,10 @@ export class TimeInstant
 
 export class Timestamp
 {
+	/**
+	 * @param {TimeInstant} inst
+	 * @param {number|null|undefined} tzQhr
+	 */
 	constructor(inst, tzQhr)
 	{
 		this.inst = inst;
@@ -2153,11 +2395,19 @@ export class Timestamp
 			this.tzQhr = DateTimeUtil.getLocalTzQhr();
 	}
 
+	/**
+	 * @param {number|bigint} ticks
+	 * @param {number|undefined} tzQhr
+	 */
 	static fromTicks(ticks, tzQhr)
 	{
 		return new Timestamp(TimeInstant.fromTicks(ticks), tzQhr);
 	}
 
+	/**
+	 * @param {string} str
+	 * @param {number|null|undefined} defTzQhr
+	 */
 	static fromStr(str, defTzQhr)
 	{
 		let tval = DateTimeUtil.string2TimeValue(str, defTzQhr);
@@ -2181,60 +2431,95 @@ export class Timestamp
 		return new Timestamp(TimeInstant.now(), 0);
 	}
 
+	/**
+	 * @param {number} variTime
+	 */
 	static fromVariTime(variTime)
 	{
 		return new Timestamp(TimeInstant.fromVariTime(variTime), DateTimeUtil.getLocalTzQhr());
 	}
 
+	/**
+	 * @param {number} unixTS
+	 * @param {number} nanosec
+	 * @param {number} tzQhr
+	 */
 	static fromSecNS(unixTS, nanosec, tzQhr)
 	{
 		return new Timestamp(new TimeInstant(unixTS, nanosec), tzQhr);
 	}
 
+	/**
+	 * @param {number} ticks
+	 * @param {number} tzQhr
+	 */
 	static fromDotNetTicks(ticks, tzQhr)
 	{
 		return new Timestamp(TimeInstant.fromDotNetTicks(ticks), tzQhr);
 	}
 
+	/**
+	 * @param {number|bigint} epochSec
+	 * @param {number|undefined} tzQhr
+	 */
 	static fromEpochSec(epochSec, tzQhr)
 	{
 		return new Timestamp(new TimeInstant(epochSec, 0), tzQhr);
 	}
 
+	/**
+	 * @param {number|bigint} epochMS
+	 * @param {number|undefined} tzQhr
+	 */
 	static fromEpochMS(epochMS, tzQhr)
 	{
 		return Timestamp.fromTicks(epochMS, tzQhr);
 	}
 
+	/**
+	 * @param {number|bigint} epochUS
+	 * @param {number|undefined} tzQhr
+	 */
 	static fromEpochUS(epochUS, tzQhr)
 	{
 		if (epochUS < 0)
 		{
-			return new Timestamp(new TimeInstant(epochUS / 1000000n - 1n, Number(epochUS % 1000000n + 1000000n) * 1000), tzQhr);
+			return new Timestamp(new TimeInstant(BigInt(epochUS) / 1000000n - 1n, Number(BigInt(epochUS) % 1000000n + 1000000n) * 1000), tzQhr);
 		}
 		else
 		{
-			return new Timestamp(new TimeInstant(epochUS / 1000000n, Number(epochUS % 1000000n) * 1000), tzQhr);
+			return new Timestamp(new TimeInstant(BigInt(epochUS) / 1000000n, Number(BigInt(epochUS) % 1000000n) * 1000), tzQhr);
 		}
 	}
 
+	/**
+	 * @param {number|bigint} epochNS
+	 * @param {number|undefined} tzQhr
+	 */
 	static fromEpochNS(epochNS, tzQhr)
 	{
 		if (epochNS < 0)
 		{
-			return new Timestamp(new TimeInstant(epochNS / 1000000000n - 1n, Number(epochNS % 1000000000n + 1000000000n)), tzQhr);
+			return new Timestamp(new TimeInstant(BigInt(epochNS) / 1000000000n - 1n, Number(BigInt(epochNS) % 1000000000n + 1000000000n)), tzQhr);
 		}
 		else
 		{
-			return new Timestamp(new TimeInstant(epochNS / 1000000000n, Number(epochNS % 1000000000n)), tzQhr);
+			return new Timestamp(new TimeInstant(BigInt(epochNS) / 1000000000n, Number(BigInt(epochNS) % 1000000000n)), tzQhr);
 		}
 	}
 
+	/**
+	 * @param {TimeValue} tval
+	 */
 	static fromTimeValue(tval)
 	{
 		return new Timestamp(new TimeInstant(DateTimeUtil.timeValue2Secs(tval), tval.nanosec), tval.tzQhr);
 	}
 
+	/**
+	 * @param {any} ymdhms
+	 * @param {number} tzQhr
+	 */
 	static fromYMDHMS(ymdhms, tzQhr)
 	{
 		let tval = DateTimeUtil.timeValueFromYMDHMS(ymdhms);
@@ -2248,6 +2533,9 @@ export class Timestamp
 		}
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addMonth(val)
 	{
 		let tval = this.toTimeValue();
@@ -2266,6 +2554,9 @@ export class Timestamp
 		return new Timestamp(new TimeInstant(DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addYear(val)
 	{
 		let tval = this.toTimeValue();
@@ -2273,21 +2564,33 @@ export class Timestamp
 		return new Timestamp(new TimeInstant(DateTimeUtil.timeValue2Secs(tval), this.inst.nanosec), this.tzQhr);
 	}
 
+	/**
+	 * @param {any} val
+	 */
 	addDay(val)
 	{
 		return new Timestamp(this.inst.addDay(val), this.tzQhr);
 	}
 
+	/**
+	 * @param {any} val
+	 */
 	addHour(val)
 	{
 		return new Timestamp(this.inst.addHour(val), this.tzQhr);
 	}
 
+	/**
+	 * @param {any} val
+	 */
 	addMinute(val)
 	{
 		return new Timestamp(this.inst.addMinute(val), this.tzQhr);
 	}
 
+	/**
+	 * @param {number} val
+	 */
 	addSecond(val)
 	{
 		let sec = Math.floor(val);
@@ -2295,11 +2598,17 @@ export class Timestamp
 		return new Timestamp(this.inst.addSecond(sec).addNS(ns), this.tzQhr);
 	}
 
+	/**
+	 * @param {any} val
+	 */
 	addMS(val)
 	{
 		return new Timestamp(this.inst.addMS(val), this.tzQhr);
 	}
 
+	/**
+	 * @param {any} val
+	 */
 	addNS(val)
 	{
 		return new Timestamp(this.inst.addNS(val), this.tzQhr);
@@ -2307,7 +2616,7 @@ export class Timestamp
 
 	getMS()
 	{
-		return this.inst.GetMS();
+		return this.inst.getMS();
 	}
 
 	clearTimeUTC()
@@ -2353,21 +2662,33 @@ export class Timestamp
 		return this.inst.addSecond(this.tzQhr * 900).getMSPassedDate();
 	}
 
+	/**
+	 * @param {{ inst: any; }} ts
+	 */
 	diffSec(ts)
 	{
 		return this.inst.diffSec(ts.inst);
 	}
 
+	/**
+	 * @param {{ inst: any; }} ts
+	 */
 	diffMS(ts)
 	{
 		return this.inst.diffMS(ts.inst);
 	}
 
+	/**
+	 * @param {{ inst: any; }} ts
+	 */
 	diffSecDbl(ts)
 	{
 		return this.inst.diffSecDbl(ts.inst);
 	}
 
+	/**
+	 * @param {{ inst: any; }} ts
+	 */
 	diff(ts)
 	{
 		return this.inst.diff(ts.inst);
@@ -2408,6 +2729,26 @@ export class Timestamp
 		return this.inst.toEpochNS();
 	}
 
+	toMSDOSDate()
+	{
+		let tval = this.toTimeValue();
+		return ((((tval.year - 1980) & 0x7f) << 9) | (tval.month << 5) | tval.day);
+	}
+
+	toMSDOSTime()
+	{
+		let tval = this.toTimeValue();
+		return ((tval.hour << 11) | (tval.minute << 5) | (tval.second >> 1));
+	}
+
+	toFILETIME()
+	{
+		return this.inst.toFILETIME();
+	}
+
+	/**
+	 * @param {string | null} pattern
+	 */
 	toString(pattern)
 	{
 		if (pattern == null)
@@ -2490,11 +2831,17 @@ export class Timestamp
 		return new Timestamp(this.inst, DateTimeUtil.getLocalTzQhr());
 	}
 
+	/**
+	 * @param {number} tzQhr
+	 */
 	convertTimeZoneQHR(tzQhr)
 	{
 		return new Timestamp(this.inst, tzQhr);
 	}
 
+	/**
+	 * @param {number} tzQhr
+	 */
 	setTimeZoneQHR(tzQhr)
 	{
 		if (this.tzQhr != tzQhr)
@@ -2512,9 +2859,17 @@ export class Timestamp
 		return this.tzQhr;
 	}
 
+	getLocalSecs()
+	{
+		return this.inst.sec + BigInt(this.tzQhr * 900);
+	}
+
+	/**
+	 * @param {Timestamp} ts
+	 */
 	sameDate(ts)
 	{
-		return this.inst.sameDate(ts.inst);
+		return (this.getLocalSecs() / 86400n) == (ts.getLocalSecs() / 86400n);
 	}
 
 	toTimeValue()
@@ -2530,6 +2885,9 @@ export class Timestamp
 
 export class ByteReader
 {
+	/**
+	 * @param {ArrayBufferLike & { BYTES_PER_ELEMENT?: undefined; }} arr
+	 */
 	constructor(arr)
 	{
 		this.view = new DataView(arr);
@@ -2540,6 +2898,10 @@ export class ByteReader
 		return this.view.byteLength;
 	}
 
+	/**
+	 * @param {number | null} ofst
+	 * @param {number | null} size
+	 */
 	getArrayBuffer(ofst, size)
 	{
 		if (ofst == null)
@@ -2549,6 +2911,10 @@ export class ByteReader
 		return this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + ofst + size);
 	}
 
+	/**
+	 * @param {any} ofst
+	 * @param {any} size
+	 */
 	getU8Arr(ofst, size)
 	{
 		return new Uint8Array(this.getArrayBuffer(ofst, size));
@@ -2648,17 +3014,29 @@ export class ByteReader
 		return this.view.getBigInt64(ofst, lsb);
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 */
 	readFloat64(ofst, lsb)
 	{
 		return this.view.getFloat64(ofst, lsb);
 	}
 
+	/**
+	 * @param {any} ofst
+	 * @param {any} len
+	 */
 	readUTF8(ofst, len)
 	{
 		let dec = new TextDecoder();
 		return dec.decode(this.getArrayBuffer(ofst, len));
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {any} maxSize
+	 */
 	readUTF8Z(ofst, maxSize)
 	{
 		let end = ofst;
@@ -2679,6 +3057,11 @@ export class ByteReader
 		return dec.decode(this.view.buffer.slice(this.view.byteOffset + ofst, this.view.byteOffset + end));
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {number} nChar
+	 * @param {boolean | undefined} lsb
+	 */
 	readUTF16(ofst, nChar, lsb)
 	{
 		let ret = [];
@@ -2690,6 +3073,10 @@ export class ByteReader
 		return ret.join("");
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {number} cnt
+	 */
 	readUInt8Arr(ofst, cnt)
 	{
 		let ret = [];
@@ -2701,6 +3088,11 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 * @param {number} cnt
+	 */
 	readUInt16Arr(ofst, lsb, cnt)
 	{
 		let ret = [];
@@ -2712,6 +3104,11 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 * @param {number} cnt
+	 */
 	readUInt32Arr(ofst, lsb, cnt)
 	{
 		let ret = [];
@@ -2723,6 +3120,10 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {number} cnt
+	 */
 	readInt8Arr(ofst, cnt)
 	{
 		let ret = [];
@@ -2734,6 +3135,11 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 * @param {number} cnt
+	 */
 	readInt16Arr(ofst, lsb, cnt)
 	{
 		let ret = [];
@@ -2745,6 +3151,11 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {boolean | undefined} lsb
+	 * @param {number} cnt
+	 */
 	readInt32Arr(ofst, lsb, cnt)
 	{
 		let ret = [];
@@ -2756,6 +3167,11 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {any} lsb
+	 * @param {number} cnt
+	 */
 	readFloat64Arr(ofst, lsb, cnt)
 	{
 		let ret = [];
@@ -2767,6 +3183,10 @@ export class ByteReader
 		return ret;
 	}
 
+	/**
+	 * @param {number} ofst
+	 * @param {number} len
+	 */
 	isASCIIText(ofst, len)
 	{
 		while (len-- > 0)
@@ -2783,6 +3203,187 @@ export class ByteReader
 			ofst++;
 		}
 		return true;
+	}
+}
+
+export class ByteBuilder
+{
+	constructor()
+	{
+		this.tmpBuff = new Uint8Array(8);
+		this.view = new DataView(this.tmpBuff.buffer);
+		/** @type {number[]} */
+		this.buff = [];
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {number} value
+	 */
+	writeInt8(ofst, value)
+	{
+		this.allocBuff(ofst, 1);
+		this.buff[ofst] = (value & 0xff);
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {number} value
+	 * @param {boolean} lsb
+	 */
+	writeInt16(ofst, value, lsb)
+	{
+		this.allocBuff(ofst, 2);
+		this.view.setInt16(0, value, lsb);
+		this.buff[ofst] = this.tmpBuff[0];
+		this.buff[ofst + 1] = this.tmpBuff[1];
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {number} value
+	 * @param {boolean} lsb
+	 */
+	writeInt24(ofst, value, lsb)
+	{
+		this.allocBuff(ofst, 3);
+		this.view.setInt32(0, value, lsb);
+		if (lsb)
+		{
+			this.buff[ofst] = this.tmpBuff[0];
+			this.buff[ofst + 1] = this.tmpBuff[1];
+			this.buff[ofst + 2] = this.tmpBuff[2];
+		}
+		else
+		{
+			this.buff[ofst] = this.tmpBuff[1];
+			this.buff[ofst + 1] = this.tmpBuff[2];
+			this.buff[ofst + 2] = this.tmpBuff[3];
+		}
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {number} value
+	 * @param {boolean} lsb
+	 */
+	writeInt32(ofst, value, lsb)
+	{
+		this.allocBuff(ofst, 4);
+		this.view.setInt32(0, value, lsb);
+		this.buff[ofst] = this.tmpBuff[0];
+		this.buff[ofst + 1] = this.tmpBuff[1];
+		this.buff[ofst + 2] = this.tmpBuff[2];
+		this.buff[ofst + 3] = this.tmpBuff[3];
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {bigint} value
+	 * @param {boolean} lsb
+	 */
+	writeInt64(ofst, value, lsb)
+	{
+		this.allocBuff(ofst, 8);
+		this.view.setBigInt64(0, value, lsb);
+		this.buff[ofst] = this.tmpBuff[0];
+		this.buff[ofst + 1] = this.tmpBuff[1];
+		this.buff[ofst + 2] = this.tmpBuff[2];
+		this.buff[ofst + 3] = this.tmpBuff[3];
+		this.buff[ofst + 4] = this.tmpBuff[4];
+		this.buff[ofst + 5] = this.tmpBuff[5];
+		this.buff[ofst + 6] = this.tmpBuff[6];
+		this.buff[ofst + 7] = this.tmpBuff[7];
+	}
+
+
+	/**
+	 * @param {number} ofst
+	 * @param {number} value
+	 * @param {boolean} lsb
+	 */
+	writeFloat64(ofst, value, lsb)
+	{
+		this.allocBuff(ofst, 8);
+		this.view.setFloat64(0, value, lsb);
+		this.buff[ofst] = this.tmpBuff[0];
+		this.buff[ofst + 1] = this.tmpBuff[1];
+		this.buff[ofst + 2] = this.tmpBuff[2];
+		this.buff[ofst + 3] = this.tmpBuff[3];
+		this.buff[ofst + 4] = this.tmpBuff[4];
+		this.buff[ofst + 5] = this.tmpBuff[5];
+		this.buff[ofst + 6] = this.tmpBuff[6];
+		this.buff[ofst + 7] = this.tmpBuff[7];
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {string} value
+	 */
+	writeUTF8(ofst, value)
+	{
+		let sbuff = new TextEncoder().encode(value);
+		this.allocBuff(ofst, sbuff.length);
+		let i = 0;
+		while (i < sbuff.length)
+		{
+			this.buff[ofst + i] = sbuff[i];
+			i++;
+		}
+		return sbuff.length;
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {string} value
+	 * @param {boolean} lsb
+	 */
+	writeUTF16(ofst, value, lsb)
+	{
+		this.allocBuff(ofst, value.length);
+		let i = 0;
+		while (i < value.length)
+		{
+			this.view.setInt16(0, value.charCodeAt(i), lsb);
+			this.buff[ofst + i * 2] = this.tmpBuff[0];
+			this.buff[ofst + i * 2 + 1] = this.tmpBuff[1];
+			i++;
+		}
+		return value.length * 2;
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {Uint8Array} buff
+	 */
+	writeUInt8Array(ofst, buff)
+	{
+		this.allocBuff(ofst, buff.length);
+		let i = 0;
+		let j = buff.length;
+		while (i < j)
+		{
+			this.buff[ofst + i] = buff[i];
+			i++;
+		}
+	}
+
+	build()
+	{
+		return new Uint8Array(this.buff);
+	}
+
+	/**
+	 * @param {number} ofst
+	 * @param {number} len
+	 */
+	allocBuff(ofst, len)
+	{
+		ofst += len;
+		while (this.buff.length < ofst)
+		{
+			this.buff.push(0);
+		}
 	}
 }
 

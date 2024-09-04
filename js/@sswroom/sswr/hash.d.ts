@@ -73,3 +73,28 @@ export class MD5 extends Hash
 
 	static calcBlock(hVals: number[], block: DataView): void;
 }
+
+export class CRC32
+{
+	static getPolynormialIEEE(): number;
+	static getPolynormialCastagnoli(): number;
+}
+
+export class CRC32R extends Hash
+{
+	crctab: number[];
+	currVal: number;
+
+	initTable(polynomial: number): void;
+
+	constructor(param: CRC32R|number|null|undefined);
+
+	getName(): string;
+	clone(): Hash;
+	clear(): void;
+	calc(buff: ArrayBuffer): void;
+	getValue(): ArrayBuffer;
+	getBlockSize(): number;
+
+	calcDirect(buff: ArrayBuffer): number;
+}

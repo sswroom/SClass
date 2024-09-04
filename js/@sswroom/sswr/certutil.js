@@ -51,6 +51,12 @@ export const RuleCond = {
 
 export class PDUInfo
 {
+	/**
+	 * @param {number} rawOfst
+	 * @param {number} hdrLen
+	 * @param {number} contLen
+	 * @param {number} itemType
+	 */
 	constructor(rawOfst, hdrLen, contLen, itemType)
 	{
 		this.rawOfst = rawOfst;
@@ -72,6 +78,11 @@ export class PDUInfo
 
 export class ASN1Util
 {
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} endOfst
+	 */
 	static pduParseLen(reader, ofst, endOfst)
 	{
 		if (ofst >= endOfst)
@@ -115,6 +126,11 @@ export class ASN1Util
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} endOfst
+	 */
 	static pduParseUInt32(reader, ofst, endOfst)
 	{
 		if (endOfst - ofst < 3)
@@ -148,6 +164,11 @@ export class ASN1Util
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} endOfst
+	 */
 	static pduParseString(reader, ofst, endOfst)
 	{
 		let len = ASN1Util.pduParseLen(reader, ofst, endOfst);
@@ -161,6 +182,11 @@ export class ASN1Util
 			val: reader.readUTF8(len.nextOfst, len.pduLen)};
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} endOfst
+	 */
 	static pduParseChoice(reader, ofst, endOfst)
 	{
 		if (endOfst - ofst < 3)
@@ -194,6 +220,11 @@ export class ASN1Util
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static pduParseUTCTimeCont(reader, startOfst, endOfst)
 	{
 		if ((endOfst - startOfst) == 13 && reader.readUInt8(startOfst + 12) == 'Z'.charCodeAt(0))
@@ -233,8 +264,17 @@ export class ASN1Util
 		return null;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string[]} outLines
+	 * @param {number} level
+	 * @param {ASN1Names|null|undefined} names
+	 */
 	static pduToString(reader, startOfst, endOfst, outLines, level, names)
 	{
+		let startOfstZ;
 		while (startOfst < endOfst)
 		{
 			let type = reader.readUInt8(startOfst);
@@ -542,7 +582,7 @@ export class ASN1Util
 						sb.push(" (");
 						if (reader.isASCIIText(len.nextOfst, len.pduLen))
 						{
-							sb.push(reader.getUTF8(len.nextOfst, len.pduLen));
+							sb.push(reader.readUTF8(len.nextOfst, len.pduLen));
 						}
 						else
 						{
@@ -564,19 +604,20 @@ export class ASN1Util
 				{
 					startOfst = len.nextOfst;
 					if (names) names.readContainerBegin();
-					startOfst = ASN1Util.pduToString(reader, startOfst, endOfst, outLines, level + 1, names);
-					if (startOfst == null)
+					startOfstZ = ASN1Util.pduToString(reader, startOfst, endOfst, outLines, level + 1, names);
+					if (startOfstZ == null)
 					{
 						return null;
 					}
+					startOfst = startOfstZ;
 					if (names) names.readContainerEnd();
 				}
 				else
 				{
 					startOfst = len.nextOfst;
 					if (names) names.readContainerBegin();
-					startOfst = ASN1Util.pduToString(reader, startOfst, startOfst + len.pduLen, outLines, level + 1, names);
-					if (startOfst == null)
+					startOfstZ = ASN1Util.pduToString(reader, startOfst, startOfst + len.pduLen, outLines, level + 1, names);
+					if (startOfstZ == null)
 					{
 						return null;
 					}
@@ -595,19 +636,20 @@ export class ASN1Util
 				{
 					startOfst = len.nextOfst;
 					if (names) names.readContainerBegin();
-					startOfst = ASN1Util.pduToString(reader, startOfst, endOfst, outLines, level + 1, names);
-					if (startOfst == null)
+					startOfstZ = ASN1Util.pduToString(reader, startOfst, endOfst, outLines, level + 1, names);
+					if (startOfstZ == null)
 					{
 						return null;
 					}
+					startOfst = startOfstZ;
 					if (names) names.readContainerEnd();
 				}
 				else
 				{
 					startOfst = len.nextOfst;
 					if (names) names.readContainerBegin();
-					startOfst = ASN1Util.pduToString(reader, startOfst, startOfst + len.pduLen, outLines, level + 1, names);
-					if (startOfst == null)
+					startOfstZ = ASN1Util.pduToString(reader, startOfst, startOfst + len.pduLen, outLines, level + 1, names);
+					if (startOfstZ == null)
 					{
 						return null;
 					}
@@ -635,11 +677,12 @@ export class ASN1Util
 					sb.push("{");
 					outLines.push(sb.join(""));
 					if (names) names.readContainerBegin();
-					startOfst = ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
-					if (startOfst == null)
+					startOfstZ = ASN1Util.pduToString(reader, len.nextOfst, len.nextOfst + len.pduLen, outLines, level + 1, names);
+					if (startOfstZ == null)
 					{
-						return false;
+						return null;
 					}
+					startOfst = startOfstZ;
 					if (names) names.readContainerEnd();
 					outLines.push("\t".repeat(level)+"}");
 				}
@@ -690,11 +733,12 @@ export class ASN1Util
 					sb.push("{");
 					outLines.push(sb.join(""));
 					if (names) names.readContainerBegin();
-					startOfst = ASN1Util.pduToString(reader, len.nextOfst, endOfst, outLines, level + 1, names);
-					if (startOfst == null)
+					startOfstZ = ASN1Util.pduToString(reader, len.nextOfst, endOfst, outLines, level + 1, names);
+					if (startOfstZ == null)
 					{
-						return false;
+						return null;
 					}
+					startOfst = startOfstZ;
 					if (names) names.readContainerEnd();
 					outLines.push("\t".repeat(level)+"}");
 				}
@@ -731,8 +775,14 @@ export class ASN1Util
 		return startOfst;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static pduDSizeEnd(reader, startOfst, endOfst)
 	{
+		let startOfstZ;
 		while (startOfst < endOfst)
 		{
 			let len = ASN1Util.pduParseLen(reader, startOfst + 1, endOfst);
@@ -751,11 +801,12 @@ export class ASN1Util
 			}
 			else if (reader.readUInt8(startOfst + 1) == 0x80)
 			{
-				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
-				if (startOfst == null)
+				startOfstZ = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
+				if (startOfstZ == null)
 				{
 					return null;
 				}
+				startOfst = startOfstZ;
 			}
 			else
 			{
@@ -765,8 +816,15 @@ export class ASN1Util
 		return startOfst;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null} path
+	 */
 	static pduGetItem(reader, startOfst, endOfst, path)
 	{
+		let ofstZ;
 		if (path == null || path == "")
 			return null;
 		let i = path.indexOf(".");
@@ -807,7 +865,10 @@ export class ASN1Util
 				{
 					if (reader.readUInt8(startOfst + 1) == 0x80)
 					{
-						let ret = new PDUInfo(startOfst, len.nextOfst - startOfst, ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst), reader.readUInt8(startOfst));
+						ofstZ = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
+						if (ofstZ == null)
+							return null;
+						let ret = new PDUInfo(startOfst, len.nextOfst - startOfst, ofstZ, reader.readUInt8(startOfst));
 						if (ret.contLen == null)
 							return null;
 						return ret;
@@ -828,11 +889,12 @@ export class ASN1Util
 			}
 			else if (reader.readUInt8(startOfst + 1) == 0x80)
 			{
-				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
-				if (startOfst == null)
+				ofstZ = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
+				if (ofstZ == null)
 				{
 					return null;
 				}
+				startOfst = ofstZ;
 			}
 			else
 			{
@@ -842,6 +904,12 @@ export class ASN1Util
 		return null;
 	}
 
+	/**
+	 * @param {any} reader
+	 * @param {any} startOfst
+	 * @param {any} endOfst
+	 * @param {any} path
+	 */
 	static pduGetItemType(reader, startOfst, endOfst, path)
 	{
 		let item = ASN1Util.pduGetItem(reader, startOfst, endOfst, path);
@@ -851,8 +919,15 @@ export class ASN1Util
 			return item.itemType;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 * @param {string | null} path
+	 */
 	static pduCountItem(reader, startOfst, endOfst, path)
 	{
+		let startOfstZ;
 		let cnt;
 		let len;
 		if (path == null || path == "")
@@ -935,11 +1010,12 @@ export class ASN1Util
 			}
 			else if (reader.readUInt8(startOfst + 1) == 0x80)
 			{
-				startOfst = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
-				if (startOfst == null)
+				startOfstZ = ASN1Util.pduDSizeEnd(reader, len.nextOfst, endOfst);
+				if (startOfstZ == null)
 				{
 					return 0;
 				}
+				startOfst = startOfstZ;
 			}
 			else
 			{
@@ -949,6 +1025,11 @@ export class ASN1Util
 		return 0;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} startOfst
+	 * @param {number} endOfst
+	 */
 	static pduIsValid(reader, startOfst, endOfst)
 	{
 		while (startOfst < endOfst)
@@ -975,6 +1056,10 @@ export class ASN1Util
 		return true;
 	}
 
+	/**
+	 * @param {Uint8Array | number[]} oid1
+	 * @param {Uint8Array | number[]} oid2
+	 */
 	static oidCompare(oid1, oid2)
 	{
 		let i = 0;
@@ -1006,12 +1091,21 @@ export class ASN1Util
 		}
 	}
 
+	/**
+	 * @param {Uint8Array | number[]} oidPDU
+	 * @param {string} oidText
+	 */
 	static oidEqualsText(oidPDU, oidText)
 	{
 		let oid2 = ASN1Util.oidText2PDU(oidText);
+		if (oid2 == null)
+			return false;
 		return ASN1Util.oidCompare(oidPDU, oid2) == 0;
 	}
 
+	/**
+	 * @param {Uint8Array | number[]} oidPDU
+	 */
 	static oidToString(oidPDU)
 	{
 		let sb = [];
@@ -1091,6 +1185,11 @@ export class ASN1Util
 		return pduBuff;
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} len
+	 */
 	static booleanToString(reader, ofst, len)
 	{
 		if (len == 1)
@@ -1115,6 +1214,11 @@ export class ASN1Util
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} len
+	 */
 	static integerToString(reader, ofst, len)
 	{
 		switch (len)
@@ -1132,6 +1236,11 @@ export class ASN1Util
 		}
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 * @param {number} len
+	 */
 	static utcTimeToString(reader, ofst, len)
 	{
 		let ts = ASN1Util.pduParseUTCTimeCont(reader, ofst, ofst + len);
@@ -1142,6 +1251,9 @@ export class ASN1Util
 		return "";
 	}
 
+	/**
+	 * @param {number} itemType
+	 */
 	static itemTypeGetName(itemType)
 	{
 		switch (itemType)
@@ -1219,6 +1331,10 @@ export class ASN1Util
 		}		
 	}
 
+	/**
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 */
 	static str2Digit(reader, ofst)
 	{
 		return Number.parseInt(reader.readUTF8(ofst, 2));
@@ -1239,6 +1355,9 @@ class RuleContainer
 
 export class ASN1Names
 {
+	/**
+	 * @param {{ cond: number | undefined; itemType: any; condParam: any; name: any; contentFunc: any; enumVals: any; }} rule
+	 */
 	addRule(rule)
 	{
 		if (this.readContainer)
@@ -1267,6 +1386,12 @@ export class ASN1Names
 		this.readLastOIDLen = 0;
 	}
 
+	/**
+	 * @param {any} itemType
+	 * @param {any} len
+	 * @param {any} reader
+	 * @param {any} ofst
+	 */
 	readName(itemType, len, reader, ofst)
 	{
 		let name = this.readNameNoDef(itemType, len, reader, ofst);
@@ -1275,6 +1400,12 @@ export class ASN1Names
 		return ASN1Util.itemTypeGetName(itemType);
 	}
 
+	/**
+	 * @param {number} itemType
+	 * @param {number} len
+	 * @param {data.ByteReader} reader
+	 * @param {number} ofst
+	 */
 	readNameNoDef(itemType, len, reader, ofst)
 	{
 		let anyMatch = false;
@@ -1334,7 +1465,7 @@ export class ASN1Names
 				break;
 			case RuleCond.LastOIDAndTypeIs:
 				this.readIndex++;
-				if (itemType == rule.itemType && ASN1Util.oidEqualsText(this.readLastOID, rule.condParam))
+				if (itemType == rule.itemType && this.readLastOID && ASN1Util.oidEqualsText(this.readLastOID, rule.condParam))
 					return rule.name;
 				break;
 			case RuleCond.RepeatIfTypeIs:
@@ -1415,6 +1546,9 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} itemType
+	 */
 	typeIs(itemType)
 	{
 		this.currCond = RuleCond.TypeIsItemType;
@@ -1439,6 +1573,9 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} index
+	 */
 	typeIsOpt(index)
 	{
 		this.currCond = RuleCond.TypeIsOpt;
@@ -1447,6 +1584,9 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} itemType
+	 */
 	repeatIfTypeIs(itemType)
 	{
 		this.currCond = RuleCond.RepeatIfTypeIs;
@@ -1455,6 +1595,10 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} oidText
+	 * @param {any} itemType
+	 */
 	lastOIDAndTypeIs(oidText, itemType)
 	{
 		this.currCond = RuleCond.LastOIDAndTypeIs;
@@ -1471,6 +1615,10 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} name
+	 * @param {any} contFunc
+	 */
 	container(name, contFunc)
 	{
 		let rule = {
@@ -1484,6 +1632,9 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} name
+	 */
 	nextValue(name)
 	{
 		let rule = {
@@ -1497,6 +1648,10 @@ export class ASN1Names
 		return this;
 	}
 
+	/**
+	 * @param {any} name
+	 * @param {any} enums
+	 */
 	enum(name, enums)
 	{
 		let rule = {
@@ -1555,17 +1710,26 @@ export class ASN1Names
 
 class General
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static pbeParam(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("salt");
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("iterations");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static extendedValidationCertificates(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.OCTET_STRING).nextValue("signedCertTimestamp");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeOutlookExpress(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("issuerAndSerialNumber", PKCS7.issuerAndSerialNumberCont);
@@ -1574,6 +1738,9 @@ class General
 
 class InformationFramework
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("attrId");
@@ -1600,22 +1767,34 @@ class InformationFramework
 
 class PKCS1
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static rsaPublicKey(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("RSAPublicKey", PKCS1.rsaPublicKeyCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static rsaPublicKeyCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("modulus");
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("publicExponent");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static rsaPrivateKey(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("RSAPrivateKey", PKCS1.rsaPrivateKeyCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static rsaPrivateKeyCont(names)
 	{
 		let version = ["two-prime", "multi"];
@@ -1631,6 +1810,9 @@ class PKCS1
 		names.typeIs(ASN1ItemType.SEQUENCE).container("otherPrimeInfos", PKCS1.otherPrimeInfos);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static otherPrimeInfos(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("prime");
@@ -1638,11 +1820,18 @@ class PKCS1
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("coefficient");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addDigestInfo(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS1.digestInfoCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static digestInfoCont(names)
 	{
 		PKIX1Explicit88.addAlgorithmIdentifier(names, "digestAlgorithm");
@@ -1653,16 +1842,26 @@ class PKCS1
 
 class PKCS7
 {
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addContentInfo(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS7.contentInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static contentInfo(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("ContentInfo", PKCS7.contentInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static contentInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
@@ -1676,16 +1875,25 @@ class PKCS7
 		names.nextValue("pkcs7-content"); ////////////////////////
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static data(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("data");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static signedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.signedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static signedDataCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1696,11 +1904,17 @@ class PKCS7
 		names.typeIs(ASN1ItemType.SET).container("signerInfos", PKCS7.signerInfos);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static digestAlgorithmIdentifiers(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("DigestAlgorithmIdentifier", PKIX1Explicit88.algorithmIdentifierCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificateSet(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("certificate", PKIX1Explicit88.certificateCont);
@@ -1708,16 +1922,25 @@ class PKCS7
 		names.repeatIfTypeIs(ASN1ItemType.CHOICE_1).nextValue("attributeCertificate");//, AttributeCertificate);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificateRevocationLists(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).nextValue("CertificateRevocationLists");//, CertificateListCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static signerInfos(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SignerInfo", PKCS7.signerInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static signerInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1730,28 +1953,44 @@ class PKCS7
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unauthenticatedAttributes", PKCS10.attributesCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static issuerAndSerialNumberCont(names)
 	{
 		PKIX1Explicit88.addName(names, "issuer");
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("serialNumber");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addDigestInfo(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS7.digestInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static digestInfoCont(names)
 	{
 		PKIX1Explicit88.addAlgorithmIdentifier(names, "digestAlgorithm");
 		names.nextValue("digest"); ////////////////////////
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static envelopedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("enveloped-data", PKCS7.envelopedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static envelopedDataCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1761,12 +2000,18 @@ class PKCS7
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unprotectedAttributes", PKCS10.attributesCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static originatorInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("certificates", PKCS7.certificateSet);
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("crls", PKCS7.certificateRevocationLists);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static recipientInfos(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("keyTransportRecipientInfo", PKCS7.keyTransportRecipientInfoCont);
@@ -1774,6 +2019,9 @@ class PKCS7
 		names.repeatIfTypeIs(ASN1ItemType.CHOICE_1).nextValue("keyEncryptionKeyRecipientInfo");//, PKCS7.keyEncryptionKeyRecipientInfo);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static keyTransportRecipientInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1783,11 +2031,17 @@ class PKCS7
 		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("encryptedKey");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static signedAndEnvelopedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.signedAndEnvelopedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static signedAndEnvelopedDataCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1799,21 +2053,33 @@ class PKCS7
 		names.typeIs(ASN1ItemType.SET).container("signerInfos", PKCS7.signerInfos);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static digestedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.digestedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static digestedDataCont(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.digestedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static encryptedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("encrypted-data", PKCS7.encryptedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static encryptedDataCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1821,6 +2087,9 @@ class PKCS7
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_1).container("unprotectedAttributes", PKCS10.attributesCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static encryptedContentInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("contentType");
@@ -1828,6 +2097,9 @@ class PKCS7
 		names.typeIs(ASN1ItemType.CHOICE_0).nextValue("encryptedContent");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authenticatedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.authenticatedData);
@@ -1836,11 +2108,17 @@ class PKCS7
 
 class PKCS8
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static privateKeyInfo(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("PrivateKeyInfo", PKCS8.privateKeyInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static privateKeyInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1849,11 +2127,17 @@ class PKCS8
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("attributes", PKCS10.attributesCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static encryptedPrivateKeyInfo(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("EncryptedPrivateKeyInfo", PKCS8.encryptedPrivateKeyInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static encryptedPrivateKeyInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("encryptionAlgorithm", PKIX1Explicit88.algorithmIdentifierCont);
@@ -1863,41 +2147,65 @@ class PKCS8
 
 class PKCS9
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeContentType(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("contentType");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeMessageDigest(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("messageDigest");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeSigningTime(names)
 	{
 		names.typeIsTime().nextValue("signingTime");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeFriendlyName(names)
 	{
 		names.typeIs(ASN1ItemType.BMPSTRING).nextValue("friendlyName");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeSMIMECapabilities(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("smimeCapabilities", PKCS9.smimeCapabilitiesCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeLocalKeyId(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("localKeyId");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static smimeCapabilitiesCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SMIMECapability", PKCS9.smimeCapabilityCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static smimeCapabilityCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("algorithm");
@@ -1907,11 +2215,18 @@ class PKCS9
 
 class PKCS10
 {
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addCertificationRequestInfo(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS10.certificationRequestInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificationRequestInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("version");
@@ -1920,16 +2235,25 @@ class PKCS10
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("attributes", PKCS10.attributesCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributesCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("Attribute", InformationFramework.attributeCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificationRequest(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificationRequest", PKCS10.certificationRequestCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificationRequestCont(names)
 	{
 		PKCS10.addCertificationRequestInfo(names, "certificationRequestInfo");
@@ -1940,11 +2264,17 @@ class PKCS10
 
 class PKCS12
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static pfx(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("PFX", PKCS12.pfxCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static pfxCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("Version");
@@ -1952,11 +2282,18 @@ class PKCS12
 		PKCS12.addMacData(names, "macData");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addMacData(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKCS12.macDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static macDataCont(names)
 	{
 		PKCS7.addDigestInfo(names, "mac");
@@ -1964,6 +2301,9 @@ class PKCS12
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("iterations");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authenticatedSafeContentInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
@@ -1973,31 +2313,49 @@ class PKCS12
 		names.nextValue("pkcs7-content"); ////////////////////////
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authenticatedSafeData(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).container("data", PKCS12.authenticatedSafe);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authenticatedSafeEnvelopedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("signed-data", PKCS7.envelopedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authenticatedSafeEncryptedData(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("encrypted-data", PKCS7.encryptedDataCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authenticatedSafe(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthenticatedSafe", PKCS12.authSafeContentInfo);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authSafeContentInfo(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("ContentInfo", PKCS12.authSafeContentInfoCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authSafeContentInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("content-type");
@@ -2011,21 +2369,33 @@ class PKCS12
 		names.nextValue("pkcs7-content"); ////////////////////////
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static safeContentsData(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).container("data", PKCS12.safeContents);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static safeContents(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("SafeContents", PKCS12.safeContentsCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static safeContentsCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("SafeBag", PKCS12.safeBagCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static safeBagCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("bagId");
@@ -2038,11 +2408,17 @@ class PKCS12
 		names.typeIs(ASN1ItemType.SET).container("bagAttributes", PKCS12.pkcs12Attributes);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certBag(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("CertBag", PKCS12.certBagCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certBagCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("certId");
@@ -2050,43 +2426,67 @@ class PKCS12
 		names.lastOIDAndTypeIs("1.2.840.113549.1.9.22.2", ASN1ItemType.CONTEXT_SPECIFIC_0).container("certValue", PKCS12.sdsiCertificate);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static x509Certificate(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).container("x509Certificate", PKIX1Explicit88.certificate);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static sdsiCertificate(names)
 	{
 		names.typeIs(ASN1ItemType.IA5STRING).nextValue("sdsiCertificate");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static crlBag(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("CRLBag", PKCS12.crlBagCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static crlBagCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("crlId");
 		names.lastOIDAndTypeIs("1.2.840.113549.1.9.23.1", ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlValue", PKCS12.x509CRL);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static x509CRL(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).container("x509CRL", PKIX1Explicit88.certificateList);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static secretBag(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("SecretBag", PKCS12.secretBagCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static secretBagCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("secretTypeId");
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).nextValue("secretValue");
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static pkcs12Attributes(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PKCS12Attribute", InformationFramework.attributeCont);
@@ -2095,42 +2495,68 @@ class PKCS12
 
 class PKIX1Explicit88
 {
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addAttributeTypeAndValue(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.attributeTypeAndValueCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static attributeTypeAndValueCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("type");
 		names.nextValue("value");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addName(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.rdnSequenceCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static rdnSequenceCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SET).container("rdnSequence", PKIX1Explicit88.relativeDistinguishedNameCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static relativeDistinguishedName(names)
 	{
 		names.typeIs(ASN1ItemType.SET).container("RelativeDistinguishedName", PKIX1Explicit88.relativeDistinguishedNameCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static relativeDistinguishedNameCont(names)
 	{
 		PKIX1Explicit88.addAttributeTypeAndValue(names, "AttributeTypeAndValue");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificate(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("Certificate", PKIX1Explicit88.certificateCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificateCont(names)
 	{
 		PKIX1Explicit88.addTBSCertificate(names, "tbsCertificate");
@@ -2138,11 +2564,18 @@ class PKIX1Explicit88
 		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addTBSCertificate(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.tbsCertificateCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static tbsCertificateCont(names)
 	{
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("version", PKIX1Explicit88.version);
@@ -2157,28 +2590,45 @@ class PKIX1Explicit88
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_3).container("extensions", PKIX1Explicit88.extensions);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static version(names)
 	{
 		let versions = ["v1", "v2", "v3"];
 		names.typeIs(ASN1ItemType.INTEGER).enum("Version", versions);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addValidity(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.validityCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static validityCont(names)
 	{
 		names.typeIsTime().nextValue("notBefore");
 		names.typeIsTime().nextValue("notAfter");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addSubjectPublicKeyInfo(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.subjectPublicKeyInfoCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static subjectPublicKeyInfoCont(names)
 	{
 		PKIX1Explicit88.addAlgorithmIdentifier(names, "algorithm");
@@ -2186,21 +2636,34 @@ class PKIX1Explicit88
 		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("subjectPublicKey");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addExtensions(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.extensionsCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static extensions(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("Extensions", PKIX1Explicit88.extensionsCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static extensionsCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("Extension", PKIX1Explicit88.extensionCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static extensionCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("extnID");
@@ -2218,11 +2681,17 @@ class PKIX1Explicit88
 		names.nextValue("extnValue");//////////////////////////////
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificateList(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificateList", PKIX1Explicit88.certificateListCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificateListCont(names)
 	{
 		PKIX1Explicit88.addTBSCertList(names, "tbsCertList");
@@ -2230,11 +2699,18 @@ class PKIX1Explicit88
 		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("signature");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addTBSCertList(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.tbsCertListCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static tbsCertListCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("Version");
@@ -2246,11 +2722,17 @@ class PKIX1Explicit88
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("crlExtensions", PKIX1Explicit88.extensions);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static revokedCertificates(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("revokedCertificate", PKIX1Explicit88.revokedCertificateCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static revokedCertificateCont(names)
 	{
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("userCertificate");
@@ -2258,11 +2740,18 @@ class PKIX1Explicit88
 		names.typeIs(ASN1ItemType.SEQUENCE).container("crlEntryExtensions", PKIX1Explicit88.extensionsCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 * @param {string} name
+	 */
 	static addAlgorithmIdentifier(names, name)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container(name, PKIX1Explicit88.algorithmIdentifierCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static algorithmIdentifierCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("algorithm");
@@ -2274,11 +2763,17 @@ class PKIX1Explicit88
 
 class PKIX1Implicit88
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authorityKeyIdentifier(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthorityKeyIdentifier", PKIX1Implicit88.authorityKeyIdentifierCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authorityKeyIdentifierCont(names)
 	{
 		names.typeIsOpt(0).nextValue("keyIdentifier");
@@ -2286,48 +2781,75 @@ class PKIX1Implicit88
 		names.typeIsOpt(2).nextValue("authorityCertSerialNumber");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static subjectKeyIdentifier(names)
 	{
 		names.typeIs(ASN1ItemType.OCTET_STRING).nextValue("SubjectKeyIdentifier");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static keyUsage(names)
 	{
 		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("KeyUsage");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificatePolicies(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("CertificatePolicies", PKIX1Implicit88.certificatePoliciesCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static certificatePoliciesCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PolicyInformation", PKIX1Implicit88.policyInformationCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static policyInformationCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("policyIdentifier");
 		names.typeIs(ASN1ItemType.SEQUENCE).container("policyQualifiers", PKIX1Implicit88.policyQualifiers);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static policyQualifiers(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("PolicyQualifierInfo", PKIX1Implicit88.policyQualifierInfoCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static policyQualifierInfoCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("policyQualifierId");
 		names.nextValue("qualifier");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static generalNames(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("GeneralName", PKIX1Implicit88.generalNameCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static generalNameCont(names)
 	{
 		names.typeIsOpt(0).nextValue("otherName");
@@ -2342,27 +2864,42 @@ class PKIX1Implicit88
 		names.allNotMatch().nextValue("unknown");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static basicConstraints(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("BasicConstraints", PKIX1Implicit88.basicConstraintsCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static basicConstraintsCont(names)
 	{
 		names.typeIs(ASN1ItemType.BOOLEAN).nextValue("cA");
 		names.typeIs(ASN1ItemType.INTEGER).nextValue("pathLenConstraint");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static crlDistributionPoints(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("CRLDistributionPoints", PKIX1Implicit88.crlDistributionPointsCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static crlDistributionPointsCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("DistributionPoint", PKIX1Implicit88.distributionPointCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static distributionPointCont(names)
 	{
 		names.typeIsOpt(0).container("distributionPoint", PKIX1Implicit88.distributionPointName);
@@ -2370,22 +2907,34 @@ class PKIX1Implicit88
 		names.typeIsOpt(2).container("cRLIssuer", PKIX1Implicit88.generalNames);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static distributionPointName(names)
 	{
 		names.typeIsOpt(0).container("fullName", PKIX1Implicit88.generalNameCont);
 		names.typeIsOpt(1).container("nameRelativeToCRLIssuer", PKIX1Explicit88.relativeDistinguishedNameCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static reasonFlags(names)
 	{
 		names.typeIs(ASN1ItemType.BIT_STRING).nextValue("ReasonFlags");
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static extKeyUsageSyntax(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("ExtKeyUsageSyntax", PKIX1Implicit88.extKeyUsageSyntaxCont);
 	}
 
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static extKeyUsageSyntaxCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.OID).nextValue("KeyPurposeId");
@@ -2394,16 +2943,25 @@ class PKIX1Implicit88
 
 class RFC2459
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authorityInfoAccessSyntax(names)
 	{
 		names.typeIs(ASN1ItemType.SEQUENCE).container("AuthorityInfoAccessSyntax", RFC2459.authorityInfoAccessSyntaxCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static authorityInfoAccessSyntaxCont(names)
 	{
 		names.repeatIfTypeIs(ASN1ItemType.SEQUENCE).container("AccessDescription", RFC2459.accessDescriptionCont);
 	}
 	
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static accessDescriptionCont(names)
 	{
 		names.typeIs(ASN1ItemType.OID).nextValue("accessMethod");
@@ -2413,6 +2971,9 @@ class RFC2459
 
 class RFC8551
 {
+	/**
+	 * @param {ASN1Names} names
+	 */
 	static smimeEncryptionKeyPreference(names)
 	{
 		names.typeIs(ASN1ItemType.CONTEXT_SPECIFIC_0).container("issuerAndSerialNumber", PKCS7.issuerAndSerialNumberCont);
@@ -2429,6 +2990,9 @@ export class ASN1PDUBuilder
 		this.buff = [];
 	}
 	
+	/**
+	 * @param {number} type
+	 */
 	beginOther(type)
 	{
 		this.buff.push(type);
@@ -2446,6 +3010,9 @@ export class ASN1PDUBuilder
 		this.beginOther(0x31);
 	}
 
+	/**
+	 * @param {number} n
+	 */
 	beginContentSpecific(n)
 	{
 		this.beginOther(0xa0 + n);
@@ -2487,6 +3054,9 @@ export class ASN1PDUBuilder
 		}
 	}
 
+	/**
+	 * @param {boolean} v
+	 */
 	appendBool(v)
 	{
 		this.buff.push(1);
@@ -2494,6 +3064,9 @@ export class ASN1PDUBuilder
 		this.buff.push(v?0xFF:0);
 	}
 
+	/**
+	 * @param {number} v
+	 */
 	appendInt32(v)
 	{
 		this.buff.push(2);
@@ -2525,6 +3098,10 @@ export class ASN1PDUBuilder
 		}
 	}
 
+	/**
+	 * @param {number} bitLeft
+	 * @param {ArrayBuffer} buff
+	 */
 	appendBitString(bitLeft, buff)
 	{
 		this.appendTypeLen(3, buff.byteLength + 1);
@@ -2532,6 +3109,9 @@ export class ASN1PDUBuilder
 		this.appendArrayBuffer(buff);
 	}
 
+	/**
+	 * @param {string | ArrayBuffer} buff
+	 */
 	appendOctetString(buff)
 	{
 		if (buff instanceof ArrayBuffer)
@@ -2556,12 +3136,18 @@ export class ASN1PDUBuilder
 		this.appendTypeLen(5, 0);
 	}
 
+	/**
+	 * @param {ArrayBufferLike} buff
+	 */
 	appendOID(buff)
 	{
 		this.appendTypeLen(6, buff.byteLength);
 		this.appendArrayBuffer(buff);
 	}
 
+	/**
+	 * @param {string} oidStr
+	 */
 	appendOIDString(oidStr)
 	{
 		let buff = ASN1Util.oidText2PDU(oidStr);
@@ -2570,6 +3156,9 @@ export class ASN1PDUBuilder
 		this.appendOID(new Uint8Array(buff).buffer);
 	}
 
+	/**
+	 * @param {number} v
+	 */
 	appendChoice(v)
 	{
 		this.buff.push(10);
@@ -2601,43 +3190,69 @@ export class ASN1PDUBuilder
 		}
 	}
 
+	/**
+	 * @param {string} s
+	 */
 	appendPrintableString(s)
 	{
 		this.appendOther(0x13, new TextEncoder().encode(s).buffer);
 	}
 
+	/**
+	 * @param {string} s
+	 */
 	appendUTF8String(s)
 	{
 		this.appendOther(0xc, new TextEncoder().encode(s).buffer);
 	}
 
+	/**
+	 * @param {string} s
+	 */
 	appendIA5String(s)
 	{
 		this.appendOther(0x16, new TextEncoder().encode(s).buffer);
 	}
 
+	/**
+	 * @param {data.Timestamp} t
+	 */
 	appendUTCTime(t)
 	{
 		let s = t.toUTCTime().toString("yyMMddHHmmss")+"Z";
 		this.appendOther(0x17, new TextEncoder().encode(s).buffer);
 	}
 
+	/**
+	 * @param {number} type
+	 * @param {ArrayBufferLike} buff
+	 */
 	appendOther(type, buff)
 	{
 		this.appendTypeLen(type, buff.byteLength);
 		this.appendArrayBuffer(buff);
 	}
 
+	/**
+	 * @param {number} n
+	 * @param {ArrayBuffer} buff
+	 */
 	appendContentSpecific(n, buff)
 	{
 		this.appendOther(0xa0 + n, buff);
 	}
 
+	/**
+	 * @param {ArrayBuffer} buff
+	 */
 	appendSequence(buff)
 	{
 		this.appendOther(0x30, buff);
 	}
 
+	/**
+	 * @param {ArrayBuffer} buff
+	 */
 	appendInteger(buff)
 	{
 		this.appendOther(2, buff);
@@ -2649,6 +3264,10 @@ export class ASN1PDUBuilder
 		return new Uint8Array(this.buff).buffer;
 	}
 
+	/**
+	 * @param {number} type
+	 * @param {number} len
+	 */
 	appendTypeLen(type, len)
 	{
 		this.buff.push(type);
@@ -2684,6 +3303,9 @@ export class ASN1PDUBuilder
 		}
 	}
 
+	/**
+	 * @param {ArrayBuffer} buff
+	 */
 	appendArrayBuffer(buff)
 	{
 		let arr = new Uint8Array(buff);

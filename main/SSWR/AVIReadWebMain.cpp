@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/VCClass/Release/SMonitorSvr/node_modules"));
 	NEW_CLASSNN(hdlr2, Net::WebServer::NodeModuleHandler(CSTRP(sbuff, sptr), 0));
 	baseHdlr.HandlePath(CSTR("/js"), hdlr2, true);
-	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SClass/js/sswr"));
+	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SClass/js/@sswroom/sswr"));
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), true, 0, false));
 	hdlr2->HandlePath(CSTR("/@sswroom/sswr"), hdlr, true);
 	{

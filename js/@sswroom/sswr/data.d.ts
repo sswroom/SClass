@@ -83,6 +83,7 @@ export class DateTimeUtil
 	static parseMonthStr(month: string): number;
 	static dayInMonth(year: number, month: number): number;
 	static getLocalTzQhr(): number;
+	static secs2FILETIME(secs: bigint, nanosec: number): bigint;
 }
 
 export class Duration
@@ -156,6 +157,7 @@ export class TimeInstant
 	toEpochSec(): bigint;
 	toEpochMS(): bigint;
 	toEpochNS(): bigint;
+	toFILETIME(): bigint;
 	static fromDotNetTicks(ticks: bigint | number): TimeInstant;
 }
 
@@ -164,7 +166,7 @@ export class Timestamp {
 	tzQhr: number;
 
 	constructor(inst: TimeInstant, tzQhr?: number);
-	static fromTicks(ticks: number | number, tzQhr?: number): Timestamp;
+	static fromTicks(ticks: number | bigint, tzQhr?: number): Timestamp;
 	static fromStr(str: string, defTzQhr?: number): Timestamp | null;
 	static now(): Timestamp;
 	static utcNow(): Timestamp;
@@ -203,6 +205,9 @@ export class Timestamp {
 	toEpochSec(): bigint;
 	toEpochMS(): bigint;
 	toEpochNS(): bigint;
+	toMSDOSDate(): number;
+	toMSDOSTime(): number;
+	toFILETIME(): bigint;
 	toString(pattern?: string): string;
 	toStringISO8601(): string;
 	toStringNoZone(): string;
@@ -249,6 +254,29 @@ export class ByteReader
 	readFloat64Arr(ofst: number, lsb: boolean, cnt: number): number[];
 
 	isASCIIText(ofst: number, len: number): boolean;
+}
+
+export class ByteBuilder
+{
+	tmpBuff: Uint8Array;
+	view: DataView;
+	buff: number[];
+
+	constructor();
+	writeInt8(ofst: number, value: number): void;
+	writeInt16(ofst: number, value: number, lsb: boolean): void;
+	writeInt24(ofst: number, value: number, lsb: boolean): void;
+	writeInt32(ofst: number, value: number, lsb: boolean): void;
+	writeInt64(ofst: number, value: bigint, lsb: boolean): void;
+	writeFloat64(ofst: number, value: number, lsb: boolean): void;
+	/** @returns number of bytes written */
+	writeUTF8(ofst: number, value: string): number;
+	/** @returns number of bytes written */
+	writeUTF16(ofst: number, value: string, lsb: boolean): number;
+	writeUInt8Array(ofst: number, buff: Uint8Array): void;
+	build(): Uint8Array;
+
+	allocBuff(ofst: number, len: number): void;
 }
 
 export abstract class ParsedObject

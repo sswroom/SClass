@@ -1,3 +1,7 @@
+-Added zip.ZIPBuilder
+-Added Timestamp.toFILETIME
+-Added Timestamp.toMSDOSDate, toMSDOSTime
+
 1.6.13
 -Added crypto.ICrypto, crypto.AES256GCM
 

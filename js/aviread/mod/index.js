@@ -1,6 +1,8 @@
 import * as crypto from "/js/@sswroom/sswr/crypto.js";
+import * as data from "/js/@sswroom/sswr/data.js";
 import * as text from "/js/@sswroom/sswr/text.js";
 import * as web from "/js/@sswroom/sswr/web.js";
+import * as zip from "/js/@sswroom/sswr/zip.js";
 
 if (navigator.serviceWorker) {
 	navigator.serviceWorker.register('./service-worker.js',{scope : '/aviread/'}).then(function(registration) {
@@ -18,3 +20,14 @@ let encText = await enc.encrypt(new TextEncoder().encode("Hello World"));
 let b64 = new text.Base64Enc();
 console.log(b64.encodeBin(encText));
 console.log(new TextDecoder().decode(await enc.decrypt(encText)));
+
+let builder = new data.ByteBuilder();
+builder.writeInt32(0, 1000, true);
+builder.writeInt16(4, 10000, true);
+console.log(text.u8Arr2Hex(builder.build(), " "));
+
+let zbuilder = new zip.ZIPBuilder(zip.ZIPOS.UNIX);
+let t = data.Timestamp.now();
+zbuilder.addFile("Testing.txt", new TextEncoder().encode("Testing Testing"), t, t, t, 0);
+let zipFile = zbuilder.finalize();
+web.openData(new Blob([zipFile]), "application/zip", "Testing.zip");

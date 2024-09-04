@@ -7,6 +7,9 @@ import * as media from "./media.js";
 import * as text from "./text.js";
 import * as web from "./web.js";
 
+/**
+ * @param {ChildNode} node
+ */
 function parseKMLStyle(node)
 {
 	let subNode;
@@ -180,6 +183,11 @@ function parseKMLStyle(node)
 	return style;
 }
 
+/**
+ * @param {kml.Document | kml.Folder} container
+ * @param {ChildNode} kmlNode
+ * @param {kml.Container|undefined} doc
+ */
 function parseKMLContainer(container, kmlNode, doc)
 {
 	doc = doc || container;
@@ -352,6 +360,10 @@ function parseKMLContainer(container, kmlNode, doc)
 	return container;
 }
 
+/**
+ * @param {ChildNode} kmlNode
+ * @param {kml.Container|undefined} doc
+ */
 function parseKMLPlacemark(kmlNode, doc)
 {
 	let node;
@@ -426,6 +438,9 @@ function parseKMLPlacemark(kmlNode, doc)
 	return null;
 }
 
+/**
+ * @param {{ nodeName: any; childNodes: any; }} kmlNode
+ */
 function parseKMLGeometry(kmlNode)
 {
 	let subNode;
@@ -640,6 +655,10 @@ function parseKMLGeometry(kmlNode)
 	return null;
 }
 
+/**
+ * @param {{ childNodes: any; }} kmlNode
+ * @param {any} doc
+ */
 function parseKMLNetworkLink(kmlNode, doc)
 {
 	let name;
@@ -732,6 +751,9 @@ function parseKMLNetworkLink(kmlNode, doc)
 	return null;
 }
 
+/**
+ * @param {{ childNodes: any; }} kmlNode
+ */
 function parseKMLLookAt(kmlNode)
 {
 	let longitude;
@@ -796,6 +818,10 @@ function parseKMLLookAt(kmlNode)
 	}
 }
 
+/**
+ * @param {ChildNode} kmlNode
+ * @param {kml.Container|undefined} [doc]
+ */
 function parseKMLNode(kmlNode, doc)
 {
 	switch (kmlNode.nodeName)
@@ -812,6 +838,10 @@ function parseKMLNode(kmlNode, doc)
 	}
 }
 
+/**
+ * @param {data.ByteReader} reader
+ * @param {string} sourceName
+ */
 async function parseJpg(reader, sourceName)
 {
 	if (!(reader instanceof data.ByteReader))
@@ -950,6 +980,10 @@ async function parseJpg(reader, sourceName)
 	return null;
 }
 
+/**
+ * @param {data.ByteReader} reader
+ * @param {string} sourceName
+ */
 async function parseWebp(reader, sourceName)
 {
 	if (!(reader instanceof data.ByteReader))
@@ -965,6 +999,11 @@ async function parseWebp(reader, sourceName)
 	return simg;
 }
 
+/**
+ * @param {data.ByteReader} reader
+ * @param {string} fileName
+ * @param {string} mime
+ */
 function parseX509(reader, fileName, mime)
 {
 	if (!(reader instanceof data.ByteReader))
@@ -1196,6 +1235,10 @@ function parseX509(reader, fileName, mime)
 	return null;
 }
 
+/**
+ * @param {string} txt
+ * @param {string} sourceName
+ */
 export function parseXML(txt, sourceName)
 {
 	let parser = new DOMParser();
@@ -1238,6 +1281,9 @@ export function parseXML(txt, sourceName)
 
 }
 
+/**
+ * @param {File | Response} file
+ */
 export async function parseFile(file)
 {
 	let t = file.type;

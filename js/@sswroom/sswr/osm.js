@@ -1,24 +1,53 @@
+import * as math from "./math.js";
+
+/**
+ * @param {number} lon
+ * @param {number} level
+ * @param {number} tileSize
+ */
 export function lon2PixelX(lon, level, tileSize)
 {
 	return ((lon + 180.0) / 360.0 * (1 << level)) * tileSize;
 }
 
+/**
+ * @param {number} lat
+ * @param {number} level
+ * @param {number} tileSize
+ */
 export function lat2PixelY(lat, level, tileSize)
 {
 	return ((1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) + 1.0 / Math.cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << level)) * tileSize;
 }
 
+/**
+ * @param {number} x
+ * @param {number} level
+ * @param {number} tileSize
+ */
 export function pixelX2Lon(x, level, tileSize)
 {
 	return x / tileSize * 360.0 / (1 << level) - 180;
 }
 
+/**
+ * @param {number} y
+ * @param {number} level
+ * @param {number} tileSize
+ */
 export function pixelY2Lat(y, level, tileSize)
 {
 	let n = Math.PI - 2.0 * Math.PI * y / tileSize / (1 << level);
 	return 180.0 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
 }
 
+/**
+ * @param {string} osmUrl
+ * @param {math.Coord2D} minCoord
+ * @param {math.Coord2D} maxCoord
+ * @param {number} minLev
+ * @param {number} maxLev
+ */
 export function tileUrls(osmUrl, minCoord, maxCoord, minLev, maxLev)
 {
 	let tileSize = 256;
@@ -42,7 +71,7 @@ export function tileUrls(osmUrl, minCoord, maxCoord, minLev, maxLev)
 			i = minX;
 			while (i <= maxX)
 			{
-				url = osmUrl.replace("{x}", i).replace("{y}", j).replace("{z}", minLev);
+				url = osmUrl.replace("{x}", ""+i).replace("{y}", ""+j).replace("{z}", ""+minLev);
 				ret.push(url);
 				i++;
 			}
@@ -53,6 +82,13 @@ export function tileUrls(osmUrl, minCoord, maxCoord, minLev, maxLev)
 	return ret;
 }
 
+/**
+ * @param {string[]} urls
+ * @param {string} osmUrl
+ * @param {number} minLev
+ * @param {number} maxLev
+ * @param {math.RectArea[]| null} areaList
+ */
 export function removeTileUrls(urls, osmUrl, minLev, maxLev, areaList)
 {
 	if (areaList == null || areaList.length == 0)
@@ -88,7 +124,7 @@ export function removeTileUrls(urls, osmUrl, minLev, maxLev, areaList)
 				i = minX;
 				while (i <= maxX)
 				{
-					url = osmUrl.replace("{x}", i).replace("{y}", j).replace("{z}", minLev);
+					url = osmUrl.replace("{x}", ""+i).replace("{y}", ""+j).replace("{z}", ""+minLev);
 					delete urlMap[url];
 					i++;
 				}
@@ -104,6 +140,9 @@ export function removeTileUrls(urls, osmUrl, minLev, maxLev, areaList)
 	}
 }
 
+/**
+ * @param {number} scale
+ */
 export function scale2Level(scale)
 {
 	return Math.round(Math.log10(204094080000.0 / scale / 256) / Math.log10(2));

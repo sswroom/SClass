@@ -97,7 +97,7 @@ export class ASN1Util
 	static oidEqualsText(oidPDU: Uint8Array | number[], oidText: string): boolean;
 	static oidToString(oidPDU: Uint8Array | number[]): string;
 //	static UOSInt OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen);
-	static oidText2PDU(oidText: string): number[];
+	static oidText2PDU(oidText: string): number[] | null;
 
 //	static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, NotNullPtr<Text::StringBuilderUTF8> sb);
 

@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"module": "ES6",
+		"moduleResolution": "Bundler",
+		"target": "ES2020",
+		"jsx": "react",
+		"baseUrl": ".",
+		"allowImportingTsExtensions": true,
+		"checkJs": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true
+	},
+	"include": ["@sswroom/sswr/*", "pako/dist/*"]
+}
