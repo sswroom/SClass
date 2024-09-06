@@ -13,6 +13,23 @@ export const LineBreakType = {
 	CRLF: "\r\n"
 };
 
+export const HAlignment = {
+	Unknown: 0,
+	Left: 1,
+	Center: 2,
+	Right: 3,
+	Justify: 4,
+	Fill: 5
+}
+
+export const VAlignment = {
+	Unknown: 0,
+	Top: 1,
+	Center: 2,
+	Bottom: 3,
+	Justify: 4
+}
+
 export function zeroPad(val, ndigits)
 {
 	let s = "" + val;

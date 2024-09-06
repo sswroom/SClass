@@ -12,6 +12,25 @@ export enum LineBreakType
 	CRLF
 }
 
+export enum HAlignment
+{
+	Unknown,
+	Left,
+	Center,
+	Right,
+	Justify,
+	Fill
+}
+
+export enum VAlignment
+{
+	Unknown,
+	Top,
+	Center,
+	Bottom,
+	Justify
+}
+
 export function zeroPad(val: string | number, ndigits: number): string;
 export function isInteger(s: string): boolean;
 export function isUInteger(s: string): boolean;

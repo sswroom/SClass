@@ -20,47 +20,47 @@ Text::SpreadSheet::WorkbookFont::~WorkbookFont()
 	OPTSTR_DEL(this->name);
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetName(Text::CString name)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetName(Text::CString name)
 {
 	OPTSTR_DEL(this->name);
 	this->name = Text::String::NewOrNull(name);
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetSize(Double size)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetSize(Double size)
 {
 	this->size = size;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetBold(Bool bold)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetBold(Bool bold)
 {
 	this->bold = bold;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetItalic(Bool italic)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetItalic(Bool italic)
 {
 	this->italic = italic;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetUnderline(Bool underline)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetUnderline(Bool underline)
 {
 	this->underline = underline;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetColor(UInt32 color)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetColor(UInt32 color)
 {
 	this->color = color;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetFamily(FontFamily family)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::SetFamily(FontFamily family)
 {
 	this->family = family;
-	return this;
+	return *this;
 }
 
 Optional<Text::String> Text::SpreadSheet::WorkbookFont::GetName() const

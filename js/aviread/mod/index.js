@@ -1,5 +1,7 @@
 import * as crypto from "/js/@sswroom/sswr/crypto.js";
 import * as data from "/js/@sswroom/sswr/data.js";
+import {XLSXExporter} from "/js/@sswroom/sswr/exporter/XLSXExporter.js";
+import * as spreadsheet from "/js/@sswroom/sswr/spreadsheet.js";
 import * as text from "/js/@sswroom/sswr/text.js";
 import * as web from "/js/@sswroom/sswr/web.js";
 import * as zip from "/js/@sswroom/sswr/zip.js";
@@ -26,8 +28,19 @@ builder.writeInt32(0, 1000, true);
 builder.writeInt16(4, 10000, true);
 console.log(text.u8Arr2Hex(builder.build(), " "));
 
-let zbuilder = new zip.ZIPBuilder(zip.ZIPOS.UNIX);
+/*let zbuilder = new zip.ZIPBuilder(zip.ZIPOS.UNIX);
 let t = data.Timestamp.now();
 zbuilder.addFile("Testing.txt", new TextEncoder().encode("Testing Testing"), t, t, t, 0);
 let zipFile = zbuilder.finalize();
-web.openData(new Blob([zipFile]), "application/zip", "Testing.zip");
+web.openData(new Blob([zipFile]), "application/zip", "Testing.zip");*/
+
+
+let wb = new spreadsheet.Workbook();
+let sheet = wb.addWorksheet("Test Sheet");
+sheet.setCellString(0, 0, "ABC");
+let exporter = new XLSXExporter();
+let bytes = exporter.exportFile("test.xlsx", wb);
+if (bytes)
+{
+	web.openData(new Blob([bytes]), exporter.getOutputMIME(), "test.xlsx");
+}

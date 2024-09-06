@@ -427,7 +427,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					Bool isBold = false;
 					if (font->bls == 0x2bc)
 						isBold = true;
-					Text::SpreadSheet::WorkbookFont *f = wb->NewFont(font->fontName->ToCString(), font->height * 0.05, isBold);
+					NN<Text::SpreadSheet::WorkbookFont> f = wb->NewFont(font->fontName->ToCString(), font->height * 0.05, isBold);
 					if (font->icv >= 64)
 					{
 					}

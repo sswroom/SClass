@@ -10,5 +10,5 @@
 		"strictNullChecks": true,
 		"strictFunctionTypes": true
 	},
-	"include": ["@sswroom/sswr/*", "pako/dist/*"]
+	"include": ["@sswroom/sswr/*", "@sswroom/sswr/exporter/*", "pako/dist/*"]
 }

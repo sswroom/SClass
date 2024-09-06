@@ -9,20 +9,20 @@ namespace Text
 		class OfficeShapeProp
 		{
 		private:
-			OfficeFill *fill;
-			OfficeLineStyle *lineStyle;
+			Optional<OfficeFill> fill;
+			Optional<OfficeLineStyle> lineStyle;
 
 		public:
 			OfficeShapeProp();
-			OfficeShapeProp(OfficeFill *fill);
-			OfficeShapeProp(OfficeLineStyle *lineStyle);
-			OfficeShapeProp(OfficeFill *fill, OfficeLineStyle *lineStyle);
+			OfficeShapeProp(Optional<OfficeFill> fill);
+			OfficeShapeProp(Optional<OfficeLineStyle> lineStyle);
+			OfficeShapeProp(Optional<OfficeFill> fill, Optional<OfficeLineStyle> lineStyle);
 			~OfficeShapeProp();
 
-			OfficeFill *GetFill();
-			void SetFill(OfficeFill *fill);
-			OfficeLineStyle *GetLineStyle();
-			void SetLineStyle(OfficeLineStyle *lineStyle);
+			Optional<OfficeFill> GetFill();
+			void SetFill(Optional<OfficeFill> fill);
+			Optional<OfficeLineStyle> GetLineStyle();
+			void SetLineStyle(Optional<OfficeLineStyle> lineStyle);
 		};
 	}
 }

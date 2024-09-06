@@ -342,7 +342,7 @@ NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle()
 	return style;
 }
 
-NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle(Optional<WorkbookFont> font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
 {
 	NN<CellStyle> style;
 	NEW_CLASSNN(style, CellStyle(this->styles.GetCount()));
@@ -511,7 +511,7 @@ UOSInt Text::SpreadSheet::Workbook::GetFontIndex(NN<WorkbookFont> font)
 	return INVALID_INDEX;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(Text::CString name, Double size, Bool bold)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::NewFont(Text::CString name, Double size, Bool bold)
 {
 	NN<Text::SpreadSheet::WorkbookFont> font;
 	NEW_CLASSNN(font, Text::SpreadSheet::WorkbookFont());

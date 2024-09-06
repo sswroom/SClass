@@ -1193,21 +1193,22 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	return true;
 }
 
-void Exporter::XLSXExporter::AppendFill(NN<Text::StringBuilderUTF8> sb, OfficeFill *fill)
+void Exporter::XLSXExporter::AppendFill(NN<Text::StringBuilderUTF8> sb, Optional<OfficeFill> fill)
 {
-	if (fill == 0)
+	NN<OfficeFill> nnfill;
+	if (!fill.SetTo(nnfill))
 		return;
-	switch (fill->GetFillType())
+	switch (nnfill->GetFillType())
 	{
 	case FillType::SolidFill:
-		if (fill->GetColor() == 0)
+		if (nnfill->GetColor() == 0)
 		{
 			sb->AppendC(UTF8STRC("<a:solidFill/>"));
 		}
 		else
 		{
 			sb->AppendC(UTF8STRC("<a:solidFill>"));
-			OfficeColor *color = fill->GetColor();
+			OfficeColor *color = nnfill->GetColor();
 			if (color->GetColorType() == ColorType::Preset)
 			{
 				sb->AppendC(UTF8STRC("<a:prstClr val=\""));
@@ -1221,12 +1222,13 @@ void Exporter::XLSXExporter::AppendFill(NN<Text::StringBuilderUTF8> sb, OfficeFi
 	}
 }
 
-void Exporter::XLSXExporter::AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
+void Exporter::XLSXExporter::AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeLineStyle> lineStyle)
 {
-	if (lineStyle == 0)
+	NN<Text::SpreadSheet::OfficeLineStyle> nnlineStyle;
+	if (!lineStyle.SetTo(nnlineStyle))
 		return;
 	sb->AppendC(UTF8STRC("<a:ln>"));
-	AppendFill(sb, lineStyle->GetFillStyle());
+	AppendFill(sb, nnlineStyle->GetFillStyle());
 	sb->AppendC(UTF8STRC("</a:ln>"));
 }
 

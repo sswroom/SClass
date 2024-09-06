@@ -89,19 +89,19 @@ namespace Text
 			void CopyFrom(NN<CellStyle> style);
 			Bool Equals(NN<const CellStyle> style) const;
 
-			CellStyle *SetIndex(UOSInt index);
-			CellStyle *SetID(UnsafeArrayOpt<const UTF8Char> id);
-			CellStyle *SetHAlign(HAlignment halign);
-			CellStyle *SetVAlign(VAlignment valign);
-			CellStyle *SetWordWrap(Bool wordWrap);
-			CellStyle *SetFillColor(UInt32 color, FillPattern pattern);
-			CellStyle *SetFont(Optional<WorkbookFont> font);
-			CellStyle *SetBorderLeft(const BorderStyle &border);
-			CellStyle *SetBorderRight(const BorderStyle &border);
-			CellStyle *SetBorderTop(const BorderStyle &border);
-			CellStyle *SetBorderBottom(const BorderStyle &border);
-			CellStyle *SetDataFormat(Text::String *dataFormat);
-			CellStyle *SetDataFormat(Text::CString dataFormat);
+			NN<CellStyle> SetIndex(UOSInt index);
+			NN<CellStyle> SetID(UnsafeArrayOpt<const UTF8Char> id);
+			NN<CellStyle> SetHAlign(HAlignment halign);
+			NN<CellStyle> SetVAlign(VAlignment valign);
+			NN<CellStyle> SetWordWrap(Bool wordWrap);
+			NN<CellStyle> SetFillColor(UInt32 color, FillPattern pattern);
+			NN<CellStyle> SetFont(Optional<WorkbookFont> font);
+			NN<CellStyle> SetBorderLeft(const BorderStyle &border);
+			NN<CellStyle> SetBorderRight(const BorderStyle &border);
+			NN<CellStyle> SetBorderTop(const BorderStyle &border);
+			NN<CellStyle> SetBorderBottom(const BorderStyle &border);
+			NN<CellStyle> SetDataFormat(Text::String *dataFormat);
+			NN<CellStyle> SetDataFormat(Text::CString dataFormat);
 
 			UOSInt GetIndex() const;
 			UnsafeArrayOpt<const UTF8Char> GetID() const;

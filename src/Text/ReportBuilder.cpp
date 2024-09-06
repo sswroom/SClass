@@ -668,8 +668,8 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 	else
 	{
 		NEW_CLASSNN(wb, Text::SpreadSheet::Workbook());
-		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
-		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General")).Ptr();
+		NN<Text::SpreadSheet::WorkbookFont> font10 = wb->NewFont(CSTR("Arial"), 10, false);
+		NN<Text::SpreadSheet::CellStyle> strStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General"));
 		ws = wb->AddWorksheet(this->name);
 		dataSheet = wb->AddWorksheet(CSTR("ChartData"));
 

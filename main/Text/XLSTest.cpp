@@ -36,7 +36,7 @@ void TestChart()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
 
 	Workbook wb;
-	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
+	NN<WorkbookFont> font10 = wb.NewFont(CSTR("Arial"), 10, false);
 	NN<CellStyle> dateStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
 	NN<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	NN<Worksheet> graphSheet = wb.AddWorksheet();
@@ -102,7 +102,7 @@ void TestCols()
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook wb;
-	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
+	NN<WorkbookFont> font10 = wb.NewFont(CSTR("Arial"), 10, false);
 	NN<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	UOSInt i = 0;
@@ -154,7 +154,7 @@ void TestBorder()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
 	Workbook wb;
 	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
-	WorkbookFont *font = wb.NewFont(CSTR("Arial"), 10.0, false);
+	NN<WorkbookFont> font = wb.NewFont(CSTR("Arial"), 10.0, false);
 	NN<CellStyle> borderStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	CellStyle::BorderStyle border(0xFF000000, BorderType::Medium);
 	borderStyle->SetBorderBottom(border);

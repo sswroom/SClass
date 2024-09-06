@@ -72,7 +72,7 @@ namespace Text
 
 			Bool HasCellStyle();
 			NN<CellStyle> NewCellStyle();
-			NN<CellStyle> NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
+			NN<CellStyle> NewCellStyle(Optional<WorkbookFont> font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
 			UOSInt GetStyleCount() const;
 			virtual OSInt GetStyleIndex(NN<CellStyle> style) const;
 			virtual Optional<CellStyle> GetStyle(UOSInt index) const;
@@ -96,7 +96,7 @@ namespace Text
 			NN<WorkbookFont> GetFontNoCheckc(UOSInt index) const;
 			Optional<WorkbookFont> GetFont(UOSInt index) const;
 			UOSInt GetFontIndex(NN<WorkbookFont> font);
-			WorkbookFont *NewFont(Text::CString name, Double size, Bool bold);
+			NN<WorkbookFont> NewFont(Text::CString name, Double size, Bool bold);
 
 			static void GetDefPalette(UInt32 *palette);
 			static UnsafeArray<UTF8Char> ColCode(UnsafeArray<UTF8Char> sbuff, UOSInt col);

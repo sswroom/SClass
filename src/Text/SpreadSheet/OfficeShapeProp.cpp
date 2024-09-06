@@ -8,19 +8,19 @@ Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp()
 	this->lineStyle = 0;
 }
 
-Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(OfficeFill *fill)
+Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(Optional<OfficeFill> fill)
 {
 	this->fill = fill;
 	this->lineStyle = 0;
 }
 
-Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(OfficeLineStyle *lineStyle)
+Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(Optional<OfficeLineStyle> lineStyle)
 {
 	this->fill = 0;
 	this->lineStyle = lineStyle;
 }
 
-Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(OfficeFill *fill, OfficeLineStyle *lineStyle)
+Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(Optional<OfficeFill> fill, Optional<OfficeLineStyle> lineStyle)
 {
 	this->fill = fill;
 	this->lineStyle = lineStyle;
@@ -28,28 +28,28 @@ Text::SpreadSheet::OfficeShapeProp::OfficeShapeProp(OfficeFill *fill, OfficeLine
 
 Text::SpreadSheet::OfficeShapeProp::~OfficeShapeProp()
 {
-	SDEL_CLASS(this->fill);
-	SDEL_CLASS(this->lineStyle);
+	this->fill.Delete();
+	this->lineStyle.Delete();
 }
 
-Text::SpreadSheet::OfficeFill *Text::SpreadSheet::OfficeShapeProp::GetFill()
+Optional<Text::SpreadSheet::OfficeFill> Text::SpreadSheet::OfficeShapeProp::GetFill()
 {
 	return this->fill;
 }
 
-void Text::SpreadSheet::OfficeShapeProp::SetFill(OfficeFill *fill)
+void Text::SpreadSheet::OfficeShapeProp::SetFill(Optional<OfficeFill> fill)
 {
-	SDEL_CLASS(this->fill);
+	this->fill.Delete();
 	this->fill = fill;
 }
 
-Text::SpreadSheet::OfficeLineStyle *Text::SpreadSheet::OfficeShapeProp::GetLineStyle()
+Optional<Text::SpreadSheet::OfficeLineStyle> Text::SpreadSheet::OfficeShapeProp::GetLineStyle()
 {
 	return this->lineStyle;
 }
 
-void Text::SpreadSheet::OfficeShapeProp::SetLineStyle(OfficeLineStyle *lineStyle)
+void Text::SpreadSheet::OfficeShapeProp::SetLineStyle(Optional<OfficeLineStyle> lineStyle)
 {
-	SDEL_CLASS(this->lineStyle);
+	this->lineStyle.Delete();
 	this->lineStyle = lineStyle;
 }

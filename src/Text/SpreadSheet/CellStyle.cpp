@@ -136,89 +136,89 @@ Bool Text::SpreadSheet::CellStyle::Equals(NN<const CellStyle> style) const
 	return true;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetIndex(UOSInt index)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetIndex(UOSInt index)
 {
 	this->index = index;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetID(UnsafeArrayOpt<const UTF8Char> id)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetID(UnsafeArrayOpt<const UTF8Char> id)
 {
 	UnsafeArray<const UTF8Char> nnid;
 	if (!id.SetTo(nnid))
-		return this;
+		return *this;
 	SDEL_TEXT(this->id)
-	this->id = Text::StrCopyNew(nnid).Ptr();
-	return this;
+	this->id = Text::StrCopyNew(nnid);
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetHAlign(HAlignment halign)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetHAlign(HAlignment halign)
 {
 	this->halign = halign;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetVAlign(VAlignment valign)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetVAlign(VAlignment valign)
 {
 	this->valign = valign;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetWordWrap(Bool wordWrap)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetWordWrap(Bool wordWrap)
 {
 	this->wordWrap = wordWrap;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFillColor(UInt32 color, FillPattern pattern)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetFillColor(UInt32 color, FillPattern pattern)
 {
 	this->fillColor = color;
 	this->fillPattern = pattern;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFont(Optional<Text::SpreadSheet::WorkbookFont> font)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetFont(Optional<Text::SpreadSheet::WorkbookFont> font)
 {
 	this->font = font;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderLeft(const BorderStyle &border)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetBorderLeft(const BorderStyle &border)
 {
 	this->borderLeft = border;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderRight(const BorderStyle &border)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetBorderRight(const BorderStyle &border)
 {
 	this->borderRight = border;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderTop(const BorderStyle &border)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetBorderTop(const BorderStyle &border)
 {
 	this->borderTop = border;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderBottom(const BorderStyle &border)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetBorderBottom(const BorderStyle &border)
 {
 	this->borderBottom = border;
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(Text::String *dataFormat)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetDataFormat(Text::String *dataFormat)
 {
 	OPTSTR_DEL(this->dataFormat);
 	this->dataFormat = SCOPY_STRING(dataFormat);
-	return this;
+	return *this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(Text::CString dataFormat)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::SetDataFormat(Text::CString dataFormat)
 {
 	OPTSTR_DEL(this->dataFormat);
 	this->dataFormat = Text::String::NewOrNull(dataFormat);
-	return this;
+	return *this;
 }
 
 UOSInt Text::SpreadSheet::CellStyle::GetIndex() const

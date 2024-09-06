@@ -29,13 +29,13 @@ namespace Text
 			WorkbookFont();
 			~WorkbookFont();
 
-			WorkbookFont *SetName(Text::CString name);
-			WorkbookFont *SetSize(Double size);
-			WorkbookFont *SetBold(Bool bold);
-			WorkbookFont *SetItalic(Bool italic);
-			WorkbookFont *SetUnderline(Bool underline);
-			WorkbookFont *SetColor(UInt32 color);
-			WorkbookFont *SetFamily(FontFamily family);
+			NN<WorkbookFont> SetName(Text::CString name);
+			NN<WorkbookFont> SetSize(Double size);
+			NN<WorkbookFont> SetBold(Bool bold);
+			NN<WorkbookFont> SetItalic(Bool italic);
+			NN<WorkbookFont> SetUnderline(Bool underline);
+			NN<WorkbookFont> SetColor(UInt32 color);
+			NN<WorkbookFont> SetFamily(FontFamily family);
 
 			Optional<Text::String> GetName() const;
 			Double GetSize() const;

@@ -39,8 +39,8 @@ namespace Exporter
 		virtual Bool GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff);
 		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
-		static void AppendFill(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeFill *fill);
-		static void AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle);
+		static void AppendFill(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeFill> fill);
+		static void AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeLineStyle> lineStyle);
 		static void AppendTitle(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> title);
 		static void AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
 		static void AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index);
