@@ -268,6 +268,26 @@ export enum PresetColor
 	YellowGreen
 }
 
+export enum FillType
+{
+	SolidFill
+}
+
+export enum MarkerStyle
+{
+	Circle,
+	Dash,
+	Diamond,
+	Dot,
+	None,
+	Picture,
+	Plus,
+	Square,
+	Star,
+	Triangle,
+	X
+}
+
 export class WorkbookFont
 {
 	private name: string|null;
@@ -391,6 +411,198 @@ export interface IStyleCtrl
 	findOrCreateStyle(tmpStyle: CellStyle): CellStyle;
 }
 
+export class OfficeColor
+{
+	private colorType: ColorType;
+	private color: number;
+
+	constructor(colorType: ColorType, color: number);
+
+	getColorType(): ColorType;
+	getPresetColor(): PresetColor;
+	getColorArgb(): number;
+
+	static newPreset(color: PresetColor): OfficeColor;
+	static newArgb(argb: number): OfficeColor;
+
+	static presetColorGetArgb(color: PresetColor): number;
+}
+
+export class OfficeFill
+{
+	private fillType: FillType;
+	private color: OfficeColor|null;
+
+	constructor(fillType: FillType, color: OfficeColor|null);
+
+	getFillType(): FillType;
+	getColor(): OfficeColor|null;
+
+	static newSolidFill(color: OfficeColor|null): OfficeFill;
+}
+
+export class OfficeLineStyle
+{
+	private fill: OfficeFill|null;
+
+	constructor(fill: OfficeFill|null);
+
+	getFillStyle(): OfficeFill|null;
+}
+
+export class OfficeShapeProp
+{
+	private fill: OfficeFill|null;
+	private lineStyle: OfficeLineStyle|null;
+
+	constructor(fill: OfficeFill|null, lineStyle: OfficeLineStyle|null);
+
+	getFill(): OfficeFill|null;
+	setFill(fill: OfficeFill|null): void;
+	getLineStyle(): OfficeLineStyle|null;
+	setLineStyle(lineStyle: OfficeLineStyle|null): void;
+}
+
+export class OfficeChartAxis
+{
+	private axisType: AxisType;
+	private axisPos: AxisPosition;
+	private title: string|null;
+	private shapeProp: OfficeShapeProp|null;
+	private majorGridProp: OfficeShapeProp|null;
+	private tickLblPos: TickLabelPosition;
+	private crosses: AxisCrosses;
+
+	constructor(axisType: AxisType, axisPos: AxisPosition);
+
+	getAxisType(): AxisType;
+	getAxisPos(): AxisPosition;
+	getTitle(): string|null;
+	setTitle(title: string|null): void;
+	getShapeProp(): OfficeShapeProp|null;
+	setShapeProp(shapeProp: OfficeShapeProp|null): void;
+	getMajorGridProp(): OfficeShapeProp|null;
+	setMajorGridProp(majorGridProp: OfficeShapeProp|null): void;
+	getTickLblPos(): TickLabelPosition;
+	setTickLblPos(tickLblPos: TickLabelPosition): void;
+	getCrosses(): AxisCrosses;
+	setCrosses(axisCrosses: AxisCrosses): void;
+}
+
+export class WorkbookDataSource
+{
+	private sheet: Worksheet;
+	private firstRow: number;
+	private lastRow: number;
+	private firstCol: number;
+	private lastCol: number;
+
+	constructor(sheet: Worksheet, firstRow: number, lastRow: number, firstCol: number, lastCol: number);
+
+	toCodeRange(): string;
+	getSheet(): Worksheet;
+	getFirstRow(): number;
+	getLastRow(): number;
+	getFirstCol(): number;
+	getLastCol(): number;
+}
+
+export class OfficeChartSeries
+{
+	private categoryData: WorkbookDataSource;
+	private valueData: WorkbookDataSource;
+	private title: string|null;
+	private smooth: boolean;
+	private shapeProp: OfficeShapeProp|null;
+	private markerSize: number;
+	private markerStyle: MarkerStyle;
+
+	constructor(categoryData: WorkbookDataSource, valueData: WorkbookDataSource);
+
+	getCategoryData(): WorkbookDataSource;
+	getValueData(): WorkbookDataSource;
+	getTitle(): string|null;
+	setTitle(title: string|null): void;
+	isSmooth(): boolean;
+	setSmooth(smooth: boolean): void;
+	getShapeProp(): OfficeShapeProp|null;
+	setShapeProp(shapeProp: OfficeShapeProp|null): void;
+	setLineStyle(lineStyle: OfficeLineStyle|null): void;
+	getMarkerSize(): number;
+	setMarkerSize(markerSize: number): void;
+	getMarkerStyle(): MarkerStyle;
+	setMarkerStyle(markerStyle: MarkerStyle): void;
+}
+
+class OfficeChart
+{
+	private static seriesColor: PresetColor[];
+
+	private xInch: number;
+	private yInch: number;
+	private wInch: number;
+	private hInch: number;
+	private titleText: string|null;
+	private shapeProp: OfficeShapeProp|null;
+	private legend: boolean;
+	private legendPos: LegendPos;
+	private legendOverlay: boolean;
+	private displayBlankAs: BlankAs;
+	private chartType: ChartType;
+	private categoryAxis: OfficeChartAxis|null;
+	private valueAxis: OfficeChartAxis|null;
+	private axes: OfficeChartAxis[];
+	private series: OfficeChartSeries[];
+
+	constructor(du: unit.Distance.Unit, x: number, y: number, w: number, h: number);
+	
+	getXInch(): number;
+	getYInch(): number;
+	getWInch(): number;
+	getHInch(): number;
+
+	setTitleText(titleText: string|null): void;
+	getTitleText(): string|null;
+
+	getShapeProp(): OfficeShapeProp|null;
+	setShapeProp(shapeProp: OfficeShapeProp|null): void;
+	addLegend(pos: LegendPos): void;
+	hasLegend(): boolean;
+	getLegendPos(): LegendPos;
+	isLegendOverlay(): boolean;
+	setDisplayBlankAs(displayBlankAs: BlankAs): void;
+	getDisplayBlankAs(): BlankAs;
+
+	initChart(chartType: ChartType, categoryAxis: OfficeChartAxis, valueAxis: OfficeChartAxis): void;
+	initLineChart(leftAxisName: string|null, bottomAxisName: string|null, bottomAxisType: AxisType): void;
+	getChartType(): ChartType;
+	createAxis(axisType: AxisType, axisPos: AxisPosition): OfficeChartAxis;
+	getAxisCount(): number;
+	getAxis(index: number): OfficeChartAxis|null;
+	getAxisIndex(axis: OfficeChartAxis): number;
+	getCategoryAxis(): OfficeChartAxis|null;
+	getValueAxis(): OfficeChartAxis|null;
+
+	addSeries(categoryData: WorkbookDataSource, valueData: WorkbookDataSource, name: string|null, showMarker: boolean): void;
+	getSeriesCount(): number;
+	getSeriesNoCheck(index: number): OfficeChartSeries;
+	getSeries(index: number): OfficeChartSeries|null;
+}
+
+declare class WorksheetDrawing
+{
+	anchorType: AnchorType;
+	posXInch: number;
+	posYInch: number;
+	widthInch: number;
+	heightInch: number;
+	row1: number;
+	col1: number;
+	row2: number;
+	col2: number;
+	chart: OfficeChart|null;
+}
+
 export class Worksheet
 {
 	private name: string;
@@ -478,10 +690,10 @@ export class Worksheet
 	getCellString(cell: CellData): string|null;
 
 	getDrawingCount(): number;
-//	getDrawing(index: number): WorksheetDrawing|null;
-//	getDrawingNoCheck(index: number): WorksheetDrawing;
-//	createDrawing(du: unit.Distance.Unit, x: number, y: number, w: number, h: number): WorksheetDrawing;
-//	createChart(du: unit.Distance.Unit, x: number, y: number, w: number, h: number, title: string|null): OfficeChart;
+	getDrawing(index: number): WorksheetDrawing|null;
+	getDrawingNoCheck(index: number): WorksheetDrawing;
+	createDrawing(du: unit.Distance.Unit, x: number, y: number, w: number, h: number): WorksheetDrawing;
+	createChart(du: unit.Distance.Unit, x: number, y: number, w: number, h: number, title: string|null): OfficeChart;
 }
 
 export class Workbook extends data.ParsedObject implements IStyleCtrl

@@ -44,8 +44,8 @@ namespace Text
 			AxisType axisType;
 			AxisPosition axisPos;
 			Optional<Text::String> title;
-			OfficeShapeProp *shapeProp;
-			OfficeShapeProp *majorGridProp;
+			Optional<OfficeShapeProp> shapeProp;
+			Optional<OfficeShapeProp> majorGridProp;
 			TickLabelPosition tickLblPos;
 			AxisCrosses crosses;
 
@@ -57,10 +57,10 @@ namespace Text
 			AxisPosition GetAxisPos();
 			Optional<Text::String> GetTitle();
 			void SetTitle(Text::CString title);
-			OfficeShapeProp *GetShapeProp();
-			void SetShapeProp(OfficeShapeProp *shapeProp);
-			OfficeShapeProp *GetMajorGridProp();
-			void SetMajorGridProp(OfficeShapeProp *majorGridProp);
+			Optional<OfficeShapeProp> GetShapeProp();
+			void SetShapeProp(Optional<OfficeShapeProp> shapeProp);
+			Optional<OfficeShapeProp> GetMajorGridProp();
+			void SetMajorGridProp(Optional<OfficeShapeProp> majorGridProp);
 			TickLabelPosition GetTickLblPos();
 			void SetTickLblPos(TickLabelPosition tickLblPos);
 			AxisCrosses GetCrosses();

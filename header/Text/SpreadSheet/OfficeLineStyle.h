@@ -9,13 +9,13 @@ namespace Text
 		class OfficeLineStyle
 		{
 		private:
-			OfficeFill *fill;
+			Optional<OfficeFill> fill;
 
 		public:
-			OfficeLineStyle(OfficeFill *fill);
+			OfficeLineStyle(Optional<OfficeFill> fill);
 			~OfficeLineStyle();
 
-			OfficeFill *GetFillStyle();
+			Optional<OfficeFill> GetFillStyle();
 		};
 	}
 }

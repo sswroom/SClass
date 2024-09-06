@@ -26,12 +26,12 @@ export class XLSXExporter
 	getOutputMIME(): string;
 	exportFile(fileName: string, pobj: data.ParsedObject, param?: object): Uint8Array|null;
 
-	//static appendFill(sb: string[], fill: spreadsheet.OfficeFill|null): void;
-	//static appendLineStyle(sb: string[], lineStyle: spreadsheet.OfficeLineStyle|null): void;
+	static appendFill(sb: string[], fill: spreadsheet.OfficeFill|null): void;
+	static appendLineStyle(sb: string[], lineStyle: spreadsheet.OfficeLineStyle|null): void;
 	static appendTitle(sb: string[], title: string): void;
-	//static appendShapeProp(sb: string[], shapeProp: spreadsheet.OfficeShapeProp): void;
-	//static appendAxis(sb: string[], axis: spreadsheet.OfficeChartAxis, index: number): void;
-	//static appendSeries(sb: string[], series: spreadsheet.OfficeChartSeries, index: number): void;
+	static appendShapeProp(sb: string[], shapeProp: spreadsheet.OfficeShapeProp): void;
+	static appendAxis(sb: string[], axis: spreadsheet.OfficeChartAxis, index: number): void;
+	static appendSeries(sb: string[], series: spreadsheet.OfficeChartSeries, index: number): void;
 	static appendBorder(sb: string[], border: spreadsheet.BorderStyle, name: string): void;
 	static appendXF(sb: string[], style: spreadsheet.CellStyle, borders: BorderInfo[], workbook: spreadsheet.Workbook, numFmtMap: object): void;
 

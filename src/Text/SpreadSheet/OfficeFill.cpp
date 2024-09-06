@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Text/SpreadSheet/OfficeFill.h"
 
-Text::SpreadSheet::OfficeFill::OfficeFill(FillType fillType, OfficeColor *color)
+Text::SpreadSheet::OfficeFill::OfficeFill(FillType fillType, Optional<OfficeColor> color)
 {
 	this->fillType = fillType;
 	this->color = color;
@@ -10,7 +10,7 @@ Text::SpreadSheet::OfficeFill::OfficeFill(FillType fillType, OfficeColor *color)
 
 Text::SpreadSheet::OfficeFill::~OfficeFill()
 {
-	SDEL_CLASS(this->color);
+	this->color.Delete();
 }
 
 Text::SpreadSheet::FillType Text::SpreadSheet::OfficeFill::GetFillType()
@@ -18,17 +18,21 @@ Text::SpreadSheet::FillType Text::SpreadSheet::OfficeFill::GetFillType()
 	return this->fillType;
 }
 
-Text::SpreadSheet::OfficeColor *Text::SpreadSheet::OfficeFill::GetColor()
+Optional<Text::SpreadSheet::OfficeColor> Text::SpreadSheet::OfficeFill::GetColor()
 {
 	return this->color;
 }
 
-Text::SpreadSheet::OfficeFill *Text::SpreadSheet::OfficeFill::NewSolidFill()
+NN<Text::SpreadSheet::OfficeFill> Text::SpreadSheet::OfficeFill::NewSolidFill()
 {
-	return NEW_CLASS_D(Text::SpreadSheet::OfficeFill(FillType::SolidFill, 0));
+	NN<OfficeFill> fill;
+	NEW_CLASSNN(fill, Text::SpreadSheet::OfficeFill(FillType::SolidFill, 0));
+	return fill;
 }
 
-Text::SpreadSheet::OfficeFill *Text::SpreadSheet::OfficeFill::NewSolidFill(OfficeColor *color)
+NN<Text::SpreadSheet::OfficeFill> Text::SpreadSheet::OfficeFill::NewSolidFill(Optional<OfficeColor> color)
 {
-	return NEW_CLASS_D(Text::SpreadSheet::OfficeFill(FillType::SolidFill, color));
+	NN<OfficeFill> fill;
+	NEW_CLASSNN(fill, Text::SpreadSheet::OfficeFill(FillType::SolidFill, color));
+	return fill;
 }

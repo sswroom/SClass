@@ -941,8 +941,10 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					colCount = 0;
 					break;				
 				}
-				Text::SpreadSheet::WorkbookDataSource *catSource = NEW_CLASS_D(Text::SpreadSheet::WorkbookDataSource(dataSheet, 0, 0, 1, colCount));
-				Text::SpreadSheet::WorkbookDataSource *valSource = NEW_CLASS_D(Text::SpreadSheet::WorkbookDataSource(dataSheet, i + 1, i + 1, 1, colCount));
+				NN<Text::SpreadSheet::WorkbookDataSource> catSource;
+				NEW_CLASSNN(catSource, Text::SpreadSheet::WorkbookDataSource(dataSheet, 0, 0, 1, colCount));
+				NN<Text::SpreadSheet::WorkbookDataSource> valSource;
+				NEW_CLASSNN(valSource, Text::SpreadSheet::WorkbookDataSource(dataSheet, i + 1, i + 1, 1, colCount));
 				shChart->AddSeries(catSource, valSource, chart->GetYName(i), false);
 				i++;
 			}

@@ -81,8 +81,10 @@ void TestChart()
 				}
 				i++;
 			}
-			WorkbookDataSource *chainageSource = NEW_CLASS_D(WorkbookDataSource(dataSheet, 0, 0, 1, j));
-			WorkbookDataSource *valSource = NEW_CLASS_D(WorkbookDataSource(dataSheet, rowNum, rowNum, 1, j));
+			NN<WorkbookDataSource> chainageSource;
+			NEW_CLASSNN(chainageSource, WorkbookDataSource(dataSheet, 0, 0, 1, j))
+			NN<WorkbookDataSource> valSource;
+			NEW_CLASSNN(valSource, WorkbookDataSource(dataSheet, rowNum, rowNum, 1, j))
 			sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd");
 			chart->AddSeries(chainageSource, valSource, CSTRP(sbuff2, sptr2), testRowCnt > 1);
 		}

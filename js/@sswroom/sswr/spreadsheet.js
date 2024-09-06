@@ -254,6 +254,24 @@ export const PresetColor = {
 	YellowGreen: 139
 }
 
+export const FillType = {
+	SolidFill: 0
+}
+
+export const MarkerStyle = {
+	Circle: 0,
+	Dash: 1,
+	Diamond: 2,
+	Dot: 3,
+	None: 4,
+	Picture: 5,
+	Plus: 6,
+	Square: 7,
+	Star: 8,
+	Triangle: 9,
+	X: 10
+}
+
 export class WorkbookFont
 {
 	constructor()
@@ -708,6 +726,978 @@ export class CellStyle
 	}
 }
 
+/**
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ */
+function rgbValue(r, g, b)
+{
+	return 0xFF000000 + ((r) << 16) + ((g) << 8) + (b);
+}
+
+export class OfficeColor
+{
+	/**
+	 * @param {number} colorType
+	 * @param {number} color
+	 */
+	constructor(colorType, color)
+	{
+		this.colorType = colorType;
+		this.color = color;
+	}
+
+	getColorType()
+	{
+		return this.colorType;
+	}
+
+	getPresetColor()
+	{
+		return this.color;
+	}
+
+	getColorArgb()
+	{
+		switch (this.colorType)
+		{
+		case ColorType.Argb:
+			return this.color;
+		case ColorType.Preset:
+			return OfficeColor.presetColorGetArgb(this.color);
+		}
+		return 0;
+	}
+
+	/**
+	 * @param {number} color
+	 */
+	static newPreset(color)
+	{
+		return new OfficeColor(ColorType.Preset, color);	
+	}
+
+	/**
+	 * @param {number} argb
+	 */
+	static newArgb(argb)
+	{
+		return new OfficeColor(ColorType.Argb, argb);
+	}
+
+	/**
+	 * @param {number} color
+	 */
+	static presetColorGetArgb(color)
+	{
+		switch (color)
+		{
+		case PresetColor.AliceBlue:
+			return rgbValue(240,248,255);
+		case PresetColor.AntiqueWhite:
+			return rgbValue(250,235,215);
+		case PresetColor.Aqua:
+			return rgbValue(0,255,255);
+		case PresetColor.Aquamarine:
+			return rgbValue(127,255,212);
+		case PresetColor.Azure:
+			return rgbValue(240,255,255);
+		case PresetColor.Beige:
+			return rgbValue(245,245,220);
+		case PresetColor.Bisque:
+			return rgbValue(255,228,196);
+		case PresetColor.Black:
+			return rgbValue(0,0,0);
+		case PresetColor.BlanchedAlmond:
+			return rgbValue(255,235,205);
+		case PresetColor.Blue:
+			return rgbValue(0,0,255);
+		case PresetColor.BlueViolet:
+			return rgbValue(138,43,226);
+		case PresetColor.Brown:
+			return rgbValue(165,42,42);
+		case PresetColor.BurlyWood:
+			return rgbValue(222,184,135);
+		case PresetColor.CadetBlue:
+			return rgbValue(95,158,160);
+		case PresetColor.Chartreuse:
+			return rgbValue(127,255,0);
+		case PresetColor.Chocolate:
+			return rgbValue(210,105,30);
+		case PresetColor.Coral:
+			return rgbValue(255,127,80);
+		case PresetColor.CornflowerBlue:
+			return rgbValue(100,149,237);
+		case PresetColor.Cornsilk:
+			return rgbValue(255,248,220);
+		case PresetColor.Crimson:
+			return rgbValue(220,20,60);
+		case PresetColor.Cyan:
+			return rgbValue(0,255,255);
+		case PresetColor.DeepPink:
+			return rgbValue(255,20,147);
+		case PresetColor.DeepSkyBlue:
+			return rgbValue(0,191,255);
+		case PresetColor.DimGray:
+			return rgbValue(105,105,105);
+		case PresetColor.DarkBlue:
+			return rgbValue(0,0,139);
+		case PresetColor.DarkCyan:
+			return rgbValue(0,139,139);
+		case PresetColor.DarkGoldenrod:
+			return rgbValue(184,134,11);
+		case PresetColor.DarkGray:
+			return rgbValue(169,169,169);
+		case PresetColor.DarkGreen:
+			return rgbValue(0,100,0);
+		case PresetColor.DarkKhaki:
+			return rgbValue(189,183,107);
+		case PresetColor.DarkMagenta:
+			return rgbValue(139,0,139);
+		case PresetColor.DarkOliveGreen:
+			return rgbValue(85,107,47);
+		case PresetColor.DarkOrange:
+			return rgbValue(255,140,0);
+		case PresetColor.DarkOrchid:
+			return rgbValue(153,50,204);
+		case PresetColor.DarkRed:
+			return rgbValue(153,50,204);
+		case PresetColor.DarkSalmon:
+			return rgbValue(233,150,122);
+		case PresetColor.DarkSeaGreen:
+			return rgbValue(143,188,139);
+		case PresetColor.DarkSlateBlue:
+			return rgbValue(72,61,139);
+		case PresetColor.DarkSlateGray:
+			return rgbValue(47,79,79);
+		case PresetColor.DarkTurquoise:
+			return rgbValue(0,206,209);
+		case PresetColor.DarkViolet:
+			return rgbValue(148,0,211);
+		case PresetColor.DodgerBlue:
+			return rgbValue(30,144,255);
+		case PresetColor.Firebrick:
+			return rgbValue(178,34,34);
+		case PresetColor.FloralWhite:
+			return rgbValue(255,250,240);
+		case PresetColor.ForestGreen:
+			return rgbValue(34,139,34);
+		case PresetColor.Fuchsia:
+			return rgbValue(255,0,255);
+		case PresetColor.Gainsboro:
+			return rgbValue(220,220,220);
+		case PresetColor.GhostWhite:
+			return rgbValue(248,248,255);
+		case PresetColor.Gold:
+			return rgbValue(255,215,0);
+		case PresetColor.Goldenrod:
+			return rgbValue(218,165,32);
+		case PresetColor.Gray:
+			return rgbValue(128,128,128);
+		case PresetColor.Green:
+			return rgbValue(0,128,0);
+		case PresetColor.GreenYellow:
+			return rgbValue(173,255,47);
+		case PresetColor.Honeydew:
+			return rgbValue(240,255,240);
+		case PresetColor.HotPink:
+			return rgbValue(255,105,180);
+		case PresetColor.IndianRed:
+			return rgbValue(205,92,92);
+		case PresetColor.Indigo:
+			return rgbValue(75,0,130);
+		case PresetColor.Ivory:
+			return rgbValue(255,255,240);
+		case PresetColor.Khaki:
+			return rgbValue(240,230,140);
+		case PresetColor.Lavender:
+			return rgbValue(230,230,250);
+		case PresetColor.LavenderBlush:
+			return rgbValue(255,240,245);
+		case PresetColor.LawnGreen:
+			return rgbValue(124,252,0);
+		case PresetColor.LemonChiffon:
+			return rgbValue(255,250,205);
+		case PresetColor.Lime:
+			return rgbValue(0,255,0);
+		case PresetColor.LimeGreen:
+			return rgbValue(50,205,50);
+		case PresetColor.Linen:
+			return rgbValue(250,240,230);
+		case PresetColor.LightBlue:
+			return rgbValue(173,216,230);
+		case PresetColor.LightCoral:
+			return rgbValue(240,128,128);
+		case PresetColor.LightCyan:
+			return rgbValue(224,255,255);
+		case PresetColor.LightGoldenrodYellow:
+			return rgbValue(250,250,120);
+		case PresetColor.LightGray:
+			return rgbValue(211,211,211);
+		case PresetColor.LightGreen:
+			return rgbValue(144,238,144);
+		case PresetColor.LightPink:
+			return rgbValue(255,182,193);
+		case PresetColor.LightSalmon:
+			return rgbValue(255,160,122);
+		case PresetColor.LightSeaGreen:
+			return rgbValue(32,178,170);
+		case PresetColor.LightSkyBlue:
+			return rgbValue(135,206,250);
+		case PresetColor.LightSlateGray:
+			return rgbValue(119,136,153);
+		case PresetColor.LightSteelBlue:
+			return rgbValue(176,196,222);
+		case PresetColor.LightYellow:
+			return rgbValue(255,255,224);
+		case PresetColor.Magenta:
+			return rgbValue(255,0,255);
+		case PresetColor.Maroon:
+			return rgbValue(128,0,0);
+		case PresetColor.MediumAquamarine:
+			return rgbValue(102,205,170);
+		case PresetColor.MediumBlue:
+			return rgbValue(0,0,205);
+		case PresetColor.MediumOrchid:
+			return rgbValue(186,85,211);
+		case PresetColor.MediumPurple:
+			return rgbValue(147,112,219);
+		case PresetColor.MediumSeaGreen:
+			return rgbValue(60,179,113);
+		case PresetColor.MediumSlateBlue:
+			return rgbValue(123,104,238);
+		case PresetColor.MediumSpringGreen:
+			return rgbValue(0,250,154);
+		case PresetColor.MediumTurquoise:
+			return rgbValue(72,209,204);
+		case PresetColor.MediumVioletRed:
+			return rgbValue(199,21,133);
+		case PresetColor.MidnightBlue:
+			return rgbValue(25,25,112);
+		case PresetColor.MintCream:
+			return rgbValue(245,255,250);
+		case PresetColor.MistyRose:
+			return rgbValue(255,228,225);
+		case PresetColor.Moccasin:
+			return rgbValue(255,228,181);
+		case PresetColor.NavajoWhite:
+			return rgbValue(255,222,173);
+		case PresetColor.Navy:
+			return rgbValue(0,0,128);
+		case PresetColor.OldLace:
+			return rgbValue(253,245,230);
+		case PresetColor.Olive:
+			return rgbValue(128,128,0);
+		case PresetColor.OliveDrab:
+			return rgbValue(107,142,35);
+		case PresetColor.Orange:
+			return rgbValue(255,165,0);
+		case PresetColor.OrangeRed:
+			return rgbValue(255,69,0);
+		case PresetColor.Orchid:
+			return rgbValue(218,112,214);
+		case PresetColor.PaleGoldenrod:
+			return rgbValue(238,232,170);
+		case PresetColor.PaleGreen:
+			return rgbValue(152,251,152);
+		case PresetColor.PaleTurquoise:
+			return rgbValue(175,238,238);
+		case PresetColor.PaleVioletRed:
+			return rgbValue(219,112,147);
+		case PresetColor.PapayaWhip:
+			return rgbValue(255,239,213);
+		case PresetColor.PeachPuff:
+			return rgbValue(255,218,185);
+		case PresetColor.Peru:
+			return rgbValue(205,133,63);
+		case PresetColor.Pink:
+			return rgbValue(255,192,203);
+		case PresetColor.Plum:
+			return rgbValue(221,160,221);
+		case PresetColor.PowderBlue:
+			return rgbValue(176,224,230);
+		case PresetColor.Purple:
+			return rgbValue(128,0,128);
+		case PresetColor.Red:
+			return rgbValue(255,0,0);
+		case PresetColor.RosyBrown:
+			return rgbValue(188,143,143);
+		case PresetColor.RoyalBlue:
+			return rgbValue(65,105,225);
+		case PresetColor.SaddleBrown:
+			return rgbValue(139,69,19);
+		case PresetColor.Salmon:
+			return rgbValue(250,128,114);
+		case PresetColor.SandyBrown:
+			return rgbValue(244,164,96);
+		case PresetColor.SeaGreen:
+			return rgbValue(46,139,87);
+		case PresetColor.SeaShell:
+			return rgbValue(255,245,238);
+		case PresetColor.Sienna:
+			return rgbValue(160,82,45);
+		case PresetColor.Silver:
+			return rgbValue(192,192,192);
+		case PresetColor.SkyBlue:
+			return rgbValue(135,206,235);
+		case PresetColor.SlateBlue:
+			return rgbValue(106,90,205);
+		case PresetColor.SlateGray:
+			return rgbValue(112,128,144);
+		case PresetColor.Snow:
+			return rgbValue(255,250,250);
+		case PresetColor.SpringGreen:
+			return rgbValue(0,255,127);
+		case PresetColor.SteelBlue:
+			return rgbValue(70,130,180);
+		case PresetColor.Tan:
+			return rgbValue(210,180,140);
+		case PresetColor.Teal:
+			return rgbValue(0,128,128);
+		case PresetColor.Thistle:
+			return rgbValue(216,191,216);
+		case PresetColor.Tomato:
+			return rgbValue(255,99,71);
+		case PresetColor.Turquoise:
+			return rgbValue(64,224,208);
+		case PresetColor.Violet:
+			return rgbValue(238,130,238);
+		case PresetColor.Wheat:
+			return rgbValue(245,222,179);
+		case PresetColor.White:
+			return rgbValue(255,255,255);
+		case PresetColor.WhiteSmoke:
+			return rgbValue(245,245,245);
+		case PresetColor.Yellow:
+			return rgbValue(255,255,0);
+		case PresetColor.YellowGreen:
+			return rgbValue(154,205,50);
+		default:
+			return 0;
+		}
+	}
+}
+
+export class OfficeFill
+{
+	/**
+	 * @param {number} fillType
+	 * @param {OfficeColor | null} color
+	 */
+	constructor(fillType, color)
+	{
+		this.fillType = fillType;
+		this.color = color;
+	}
+
+	getFillType()
+	{
+		return this.fillType;
+	}
+
+	getColor()
+	{
+		return this.color;
+	}
+
+	/**
+	 * @param {OfficeColor | null} color
+	 */
+	static newSolidFill(color)
+	{
+		return new OfficeFill(FillType.SolidFill, color);
+	}
+}
+
+export class OfficeLineStyle
+{
+	/**
+	 * @param {OfficeFill|null} fill
+	 */
+	constructor(fill)
+	{
+		this.fill = fill;
+	}
+
+	getFillStyle()
+	{
+		return this.fill;
+	}
+}
+
+export class OfficeShapeProp
+{
+	/**
+	 * @param {OfficeFill | null} fill
+	 * @param {OfficeLineStyle | null} lineStyle
+	 */
+	constructor(fill, lineStyle)
+	{
+		this.fill = fill;
+		this.lineStyle = lineStyle;
+	};
+
+	getFill()
+	{
+		return this.fill;
+	}
+
+	/**
+	 * @param {OfficeFill | null} fill
+	 */
+	setFill(fill)
+	{
+		this.fill = fill;
+	}
+
+	getLineStyle()
+	{
+		return this.lineStyle;
+	}
+
+	/**
+	 * @param {OfficeLineStyle | null} lineStyle
+	 */
+	setLineStyle(lineStyle)
+	{
+		this.lineStyle = lineStyle;
+	}
+}
+
+export class OfficeChartAxis
+{
+	/**
+	 * @param {number} axisType
+	 * @param {number} axisPos
+	 */
+	constructor(axisType, axisPos)
+	{
+		this.axisType = axisType;
+		this.axisPos = axisPos;
+		/** @type {string|null} */
+		this.title = null;
+		/** @type {OfficeShapeProp|null} */
+		this.shapeProp = null;
+		/** @type {OfficeShapeProp|null} */
+		this.majorGridProp = null;
+		this.tickLblPos = TickLabelPosition.NextTo;
+		this.crosses = AxisCrosses.AutoZero;
+	}
+
+	getAxisType()
+	{
+		return this.axisType;
+	}
+
+	getAxisPos()
+	{
+		return this.axisPos;
+	}
+
+	getTitle()
+	{
+		return this.title;
+	}
+
+	/**
+	 * @param {string | null} title
+	 */
+	setTitle(title)
+	{
+		this.title = title;
+	}
+	
+	getShapeProp()
+	{
+		return this.shapeProp;
+	}
+
+	/**
+	 * @param {OfficeShapeProp | null} shapeProp
+	 */
+	setShapeProp(shapeProp)
+	{
+		this.shapeProp = shapeProp;
+	}
+
+	getMajorGridProp()
+	{
+		return this.majorGridProp;
+	}
+
+	/**
+	 * @param {OfficeShapeProp | null} majorGridProp
+	 */
+	setMajorGridProp(majorGridProp)
+	{
+		this.majorGridProp = majorGridProp;
+	}
+
+	getTickLblPos()
+	{
+		return this.tickLblPos;
+	}
+
+	/**
+	 * @param {number} tickLblPos
+	 */
+	setTickLblPos(tickLblPos)
+	{
+		this.tickLblPos = tickLblPos;
+	}
+
+	getCrosses()
+	{
+		return this.crosses;
+	}
+
+	/**
+	 * @param {number} axisCrosses
+	 */
+	setCrosses(axisCrosses)
+	{
+		this.crosses = axisCrosses;
+	}
+}
+
+export class WorkbookDataSource
+{
+	/**
+	 * @param {Worksheet} sheet
+	 * @param {number} firstRow
+	 * @param {number} lastRow
+	 * @param {number} firstCol
+	 * @param {number} lastCol
+	 */
+	constructor(sheet, firstRow, lastRow, firstCol, lastCol)
+	{
+		this.sheet = sheet;
+		this.firstRow = firstRow;
+		this.lastRow = lastRow;
+		this.firstCol = firstCol;
+		this.lastCol = lastCol;
+	}
+
+	toCodeRange()
+	{
+		let sb = [];
+		sb.push(this.sheet.getName());
+		sb.push('!$');
+		sb.push(Workbook.colCode(this.firstCol));
+		sb.push('$');
+		sb.push(""+(this.firstRow + 1));
+		sb.push(':$');
+		sb.push(Workbook.colCode(this.lastCol));
+		sb.push('$');
+		sb.push(""+(this.lastRow + 1));
+		return sb.join("");
+	}
+
+	getSheet()
+	{
+		return this.sheet;
+	}
+
+	getFirstRow()
+	{
+		return this.firstRow;
+	}
+
+	getLastRow()
+	{
+		return this.lastRow;
+	}
+
+	getFirstCol()
+	{
+		return this.firstCol;
+	}
+
+	getLastCol()
+	{
+		return this.lastCol;
+	}
+}
+
+export class OfficeChartSeries
+{
+	/**
+	 * @param {WorkbookDataSource} categoryData
+	 * @param {WorkbookDataSource} valueData
+	 */
+	constructor(categoryData, valueData)
+	{
+		this.categoryData = categoryData;
+		this.valueData = valueData;
+		/** @type {string|null} */
+		this.title = null;
+		this.smooth = false;
+		/** @type {OfficeShapeProp|null} */
+		this.shapeProp = null;
+		this.markerSize = 0;
+		this.markerStyle = MarkerStyle.None;
+	}
+
+	getCategoryData()
+	{
+		return this.categoryData;
+	}
+
+	getValueData()
+	{
+		return this.valueData;
+	}
+
+	getTitle()
+	{
+		return this.title;
+	}
+
+	/**
+	 * @param {string | null} title
+	 */
+	setTitle(title)
+	{
+		this.title = title;
+	}
+
+	isSmooth()
+	{
+		return this.smooth;
+	}
+
+	/**
+	 * @param {boolean} smooth
+	 */
+	setSmooth(smooth)
+	{
+		this.smooth = smooth;
+	}
+
+	getShapeProp()
+	{
+		return this.shapeProp;
+	}
+
+	/**
+	 * @param {OfficeShapeProp | null} shapeProp
+	 */
+	setShapeProp(shapeProp)
+	{
+		this.shapeProp = shapeProp;
+	}
+
+	/**
+	 * @param {OfficeLineStyle | null} lineStyle
+	 */
+	setLineStyle(lineStyle)
+	{
+		if (this.shapeProp)
+		{
+			this.shapeProp.setLineStyle(lineStyle);
+		}
+		else
+		{
+			this.shapeProp = new OfficeShapeProp(null, lineStyle);
+		}
+	}
+
+	getMarkerSize()
+	{
+		return this.markerSize;
+	}
+
+	/**
+	 * @param {number} markerSize
+	 */
+	setMarkerSize(markerSize)
+	{
+		this.markerSize = markerSize;
+	}
+
+	getMarkerStyle()
+	{
+		return this.markerStyle;
+	}
+
+	/**
+	 * @param {number} markerStyle
+	 */
+	setMarkerStyle(markerStyle)
+	{
+		this.markerStyle = markerStyle;
+	}
+}
+
+class OfficeChart
+{
+	static seriesColor = [
+		PresetColor.DarkBlue,
+		PresetColor.Aqua,
+		PresetColor.Fuchsia,
+		PresetColor.BlueViolet,
+		PresetColor.Lavender,
+		PresetColor.GreenYellow,
+		PresetColor.Khaki,
+		PresetColor.Honeydew,
+		PresetColor.Magenta,
+		PresetColor.Orchid,
+		PresetColor.Thistle		
+	];
+
+	/**
+	 * @param {unit.Distance.Unit} du
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} w
+	 * @param {number} h
+	 */
+	constructor(du, x, y, w, h)
+	{
+		this.xInch = unit.Distance.convert(du, unit.Distance.Unit.INCH, x);
+		this.yInch = unit.Distance.convert(du, unit.Distance.Unit.INCH, y);
+		this.wInch = unit.Distance.convert(du, unit.Distance.Unit.INCH, w);
+		this.hInch = unit.Distance.convert(du, unit.Distance.Unit.INCH, h);
+		/** @type {string|null} */
+		this.titleText = null;
+		/** @type {OfficeShapeProp|null} */
+		this.shapeProp = null;
+		this.legend = false;
+		this.legendPos = LegendPos.Bottom;
+		this.legendOverlay = false;
+		this.displayBlankAs = BlankAs.Default;
+		this.chartType = ChartType.Unknown;
+		/** @type {OfficeChartAxis|null} */
+		this.categoryAxis = null;
+		/** @type {OfficeChartAxis|null} */
+		this.valueAxis = null;
+		/** @type {OfficeChartAxis[]} */
+		this.axes = [];
+		/** @type {OfficeChartSeries[]} */
+		this.series = [];
+	}
+	
+	getXInch()
+	{
+		return this.xInch;
+	}
+
+	getYInch()
+	{
+		return this.yInch;
+	}
+
+	getWInch()
+	{
+		return this.wInch;
+	}
+
+	getHInch()
+	{
+		return this.hInch;
+	}
+
+	/**
+	 * @param {string | null} titleText
+	 */
+	setTitleText(titleText)
+	{
+		this.titleText = titleText;
+	}
+
+	getTitleText()
+	{
+		return this.titleText;
+	}
+
+	getShapeProp()
+	{
+		return this.shapeProp;
+	}
+
+	/**
+	 * @param {OfficeShapeProp | null} shapeProp
+	 */
+	setShapeProp(shapeProp)
+	{
+		this.shapeProp = shapeProp;
+	}
+
+	/**
+	 * @param {number} pos
+	 */
+	addLegend(pos)
+	{
+		this.legend = true;
+		this.legendPos = pos;
+		this.legendOverlay = false;
+	}
+
+	hasLegend()
+	{
+		return this.legend;
+	}
+
+	getLegendPos()
+	{
+		return this.legendPos;
+	}
+
+	isLegendOverlay()
+	{
+		return this.legendOverlay;
+	}
+
+	/**
+	 * @param {number} displayBlankAs
+	 */
+	setDisplayBlankAs(displayBlankAs)
+	{
+		this.displayBlankAs = displayBlankAs;
+	}
+
+	getDisplayBlankAs()
+	{
+		return this.displayBlankAs;
+	}
+
+	/**
+	 * @param {number} chartType
+	 * @param {OfficeChartAxis} categoryAxis
+	 * @param {OfficeChartAxis} valueAxis
+	 */
+	initChart(chartType, categoryAxis, valueAxis)
+	{
+		this.chartType = chartType;
+		this.categoryAxis = categoryAxis;
+		this.valueAxis = valueAxis;
+	}
+
+	/**
+	 * @param {string | null} leftAxisName
+	 * @param {string | null} bottomAxisName
+	 * @param {number} bottomAxisType
+	 */
+	initLineChart(leftAxisName, bottomAxisName, bottomAxisType)
+	{
+		let leftAxis = this.createAxis(AxisType.Numeric, AxisPosition.Left);
+		if (leftAxisName && leftAxisName.length > 0) leftAxis.setTitle(leftAxisName);
+		leftAxis.setCrosses(AxisCrosses.AutoZero);
+		leftAxis.setMajorGridProp(new OfficeShapeProp(null, new OfficeLineStyle(OfficeFill.newSolidFill(OfficeColor.newPreset(PresetColor.LightGray)))));
+		leftAxis.setShapeProp(new OfficeShapeProp(null, new OfficeLineStyle(OfficeFill.newSolidFill(OfficeColor.newPreset(PresetColor.Black)))));
+		let bottomAxis = this.createAxis(bottomAxisType, AxisPosition.Bottom);
+		if (bottomAxisName && bottomAxisName.length > 0) bottomAxis.setTitle(bottomAxisName);
+		bottomAxis.setShapeProp(new OfficeShapeProp(null, new OfficeLineStyle(OfficeFill.newSolidFill(OfficeColor.newPreset(PresetColor.Black)))));
+		bottomAxis.setTickLblPos(TickLabelPosition.Low);
+	
+		this.initChart(ChartType.LineChart, bottomAxis, leftAxis);
+	}
+
+	getChartType()
+	{
+		return this.chartType;
+	}
+	
+	/**
+	 * @param {number} axisType
+	 * @param {number} axisPos
+	 */
+	createAxis(axisType, axisPos)
+	{
+		let axis = new OfficeChartAxis(axisType, axisPos);
+		this.axes.push(axis);
+		return axis;
+	}
+
+	getAxisCount()
+	{
+		return this.axes.length;
+	}
+
+	/**
+	 * @param {number} index
+	 */
+	getAxis(index)
+	{
+		return this.axes[index];
+	}
+
+	/**
+	 * @param {OfficeChartAxis} axis
+	 */
+	getAxisIndex(axis)
+	{
+		let i;
+		for (i in this.axes)
+		{
+			if (this.axes[i] == axis)
+				return Number(i);
+		}
+		return -1;
+	}
+
+	getCategoryAxis()
+	{
+		return this.categoryAxis;
+	}
+
+	getValueAxis()
+	{
+		return this.valueAxis;
+	}
+
+	/**
+	 * @param {WorkbookDataSource} categoryData
+	 * @param {WorkbookDataSource} valueData
+	 * @param {string | null} name
+	 * @param {boolean} showMarker
+	 */
+	addSeries(categoryData, valueData, name, showMarker)
+	{
+		let i = this.series.length;
+		let series = new OfficeChartSeries(categoryData, valueData);
+		if (name != null)
+			series.setTitle(name);
+		series.setSmooth(false);
+		if (showMarker)
+		{
+			series.setMarkerSize(3);
+			series.setMarkerStyle(MarkerStyle.Circle);
+		}
+		else
+		{
+			series.setMarkerStyle(MarkerStyle.None);
+		}
+		series.setLineStyle(new OfficeLineStyle(OfficeFill.newSolidFill(OfficeColor.newPreset(OfficeChart.seriesColor[i % OfficeChart.seriesColor.length]))));
+		this.series.push(series);
+	}
+
+	getSeriesCount()
+	{
+		return this.series.length;
+	}
+
+	/**
+	 * @param {number} index
+	 */
+	getSeriesNoCheck(index)
+	{
+		let o = this.series[index];
+		if (o == null)
+			throw new Error("Series is null");
+		return o;
+	}
+
+	/**
+	 * @param {number} index
+	 */
+	getSeries(index)
+	{
+		return this.series[index];
+	}
+}
+
 export class Worksheet
 {
 	/**
@@ -845,7 +1835,7 @@ export class Worksheet
 		this.rows = [];
 		/** @type {number[]} */
 		this.colWidthsPt = [];
-		// @type {WorksheetDrawing[]}
+		/** @type {{anchorType: number,posXInch: number,posYInch: number,widthInch: number,heightInch: number,row1: number,col1: number,row2: number,col2: number,chart: OfficeChart|null}[]} */
 		this.drawings = [];
 		this.freezeHori = 0;
 		this.freezeVert = 0;
@@ -1637,7 +2627,7 @@ export class Worksheet
 				{
 					sb.AppendDouble(v);
 				}*/
-	/*			Text::String *fmt;
+	/*			Text.String *fmt;
 				if (cell.style && (fmt = cell.style.GetDataFormat()) != 0)
 				{
 					printf("Style: %s\r\n", fmt.v);
@@ -1658,10 +2648,75 @@ export class Worksheet
 	{
 		return this.drawings.length;
 	}
-//	getDrawing(index: number): WorksheetDrawing|null;
-//	getDrawingNoCheck(index: number): WorksheetDrawing;
-//	createDrawing(du: unit.Distance.Unit, x: number, y: number, w: number, h: number): WorksheetDrawing;
-//	createChart(du: unit.Distance.Unit, x: number, y: number, w: number, h: number, title: string|null): OfficeChart;
+
+	/**
+	 * @param {number} index
+	 */
+	getDrawing(index)
+	{
+		return this.drawings[index];	
+	}
+
+	/**
+	 * @param {number} index
+	 */
+	getDrawingNoCheck(index)
+	{
+		let o = this.drawings[index];
+		if (o == null)
+			throw new Error("Drawing is null");
+		return o;
+	}
+
+	/**
+	 * @param {unit.Distance.Unit} du
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} w
+	 * @param {number} h
+	 */
+	createDrawing(du, x, y, w, h)
+	{
+		let inch = unit.Distance.Unit.INCH;
+		let drawing = {
+			anchorType: AnchorType.Absolute,
+			posXInch: unit.Distance.convert(du, inch, x),
+			posYInch: unit.Distance.convert(du, inch, y),
+			widthInch: unit.Distance.convert(du, inch, w),
+			heightInch: unit.Distance.convert(du, inch, h),
+			col1: 0,
+			row1: 0,
+			col2: 0,
+			row2: 0,
+			/** @type {OfficeChart|null} */
+			chart: null
+		};
+		this.drawings.push(drawing);
+		return drawing;
+	}
+
+	/**
+	 * @param {unit.Distance.Unit} du
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} w
+	 * @param {number} h
+	 * @param {string | null} title
+	 */
+	createChart(du, x, y, w, h, title)
+	{
+		let drawing = this.createDrawing(du, x, y, w, h);
+		let chart = new OfficeChart(du, x, y, w, h);
+		drawing.chart = chart;
+		if (title && title.length > 0)
+		{
+			chart.setTitleText(title);
+		}
+		chart.setShapeProp(new OfficeShapeProp(
+			OfficeFill.newSolidFill(OfficeColor.newPreset(PresetColor.White)),
+			new OfficeLineStyle(OfficeFill.newSolidFill(null))));
+		return chart;
+	}
 }
 
 
@@ -2082,6 +3137,9 @@ export class Workbook extends data.ParsedObject
 		return this.sheets[index];
 	}
 
+	/**
+	 * @param {number} index
+	 */
 	removeAt(index)
 	{
 		return this.sheets.splice(index, 1);
@@ -2141,6 +3199,11 @@ export class Workbook extends data.ParsedObject
 		return -1;
 	}
 
+	/**
+	 * @param {string | null} name
+	 * @param {number} size
+	 * @param {boolean} bold
+	 */
 	newFont(name, size, bold)
 	{
 		let font = new WorkbookFont();
@@ -2211,6 +3274,10 @@ export class XLSUtil
 		return new data.Timestamp(new data.TimeInstant(BigInt(days - 25569) * 86400n + BigInt(s), Math.round((ds * 86400 - s) * 1000000000)), tz);
 	}
 
+	/**
+	 * @param {number} col
+	 * @param {number} row
+	 */
 	static getCellID(col, row)
 	{
 		let s;

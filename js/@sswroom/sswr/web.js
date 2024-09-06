@@ -1007,6 +1007,20 @@ export function getSpanElement(id)
 }
 
 /**
+ * @param {string} id
+ * @returns {HTMLCanvasElement}
+ */
+export function getCanvasElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLCanvasElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not a canvas");
+}
+
+/**
  * @returns {Promise<{os: String,osVer?:string,browser: String,browserVer?: string,devName?:string}>}
  */
 export async function getBrowserInfo()

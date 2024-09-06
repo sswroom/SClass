@@ -17,8 +17,8 @@ Text::SpreadSheet::OfficeChartAxis::OfficeChartAxis(AxisType axisType, AxisPosit
 Text::SpreadSheet::OfficeChartAxis::~OfficeChartAxis()
 {
 	OPTSTR_DEL(this->title);
-	SDEL_CLASS(this->shapeProp);
-	SDEL_CLASS(this->majorGridProp);
+	this->shapeProp.Delete();
+	this->majorGridProp.Delete();
 }
 
 Text::SpreadSheet::AxisType Text::SpreadSheet::OfficeChartAxis::GetAxisType()
@@ -42,25 +42,25 @@ void Text::SpreadSheet::OfficeChartAxis::SetTitle(Text::CString title)
 	this->title = Text::String::NewOrNull(title);
 }
 
-Text::SpreadSheet::OfficeShapeProp *Text::SpreadSheet::OfficeChartAxis::GetShapeProp()
+Optional<Text::SpreadSheet::OfficeShapeProp> Text::SpreadSheet::OfficeChartAxis::GetShapeProp()
 {
 	return this->shapeProp;
 }
 
-void Text::SpreadSheet::OfficeChartAxis::SetShapeProp(OfficeShapeProp *shapeProp)
+void Text::SpreadSheet::OfficeChartAxis::SetShapeProp(Optional<OfficeShapeProp> shapeProp)
 {
-	SDEL_CLASS(this->shapeProp);
+	this->shapeProp.Delete();
 	this->shapeProp = shapeProp;
 }
 
-Text::SpreadSheet::OfficeShapeProp *Text::SpreadSheet::OfficeChartAxis::GetMajorGridProp()
+Optional<Text::SpreadSheet::OfficeShapeProp> Text::SpreadSheet::OfficeChartAxis::GetMajorGridProp()
 {
 	return this->majorGridProp;
 }
 
-void Text::SpreadSheet::OfficeChartAxis::SetMajorGridProp(OfficeShapeProp *majorGridProp)
+void Text::SpreadSheet::OfficeChartAxis::SetMajorGridProp(Optional<OfficeShapeProp> majorGridProp)
 {
-	SDEL_CLASS(this->majorGridProp);
+	this->majorGridProp.Delete();
 	this->majorGridProp = majorGridProp;
 }
 

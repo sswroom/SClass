@@ -42,14 +42,18 @@ UInt32 Text::SpreadSheet::OfficeColor::GetColorArgb()
 	return 0;
 }
 
-Text::SpreadSheet::OfficeColor *Text::SpreadSheet::OfficeColor::NewPreset(PresetColor color)
+NN<Text::SpreadSheet::OfficeColor> Text::SpreadSheet::OfficeColor::NewPreset(PresetColor color)
 {
-	return NEW_CLASS_D(OfficeColor(color));
+	NN<OfficeColor> c;
+	NEW_CLASSNN(c, OfficeColor(color));
+	return c;
 }
 
-Text::SpreadSheet::OfficeColor *Text::SpreadSheet::OfficeColor::NewArgb(UInt32 argb)
+NN<Text::SpreadSheet::OfficeColor> Text::SpreadSheet::OfficeColor::NewArgb(UInt32 argb)
 {
-	return NEW_CLASS_D(OfficeColor(argb));
+	NN<OfficeColor> c;
+	NEW_CLASSNN(c, OfficeColor(argb));
+	return c;
 }
 
 UInt32 Text::SpreadSheet::OfficeColor::PresetColorGetArgb(PresetColor color)

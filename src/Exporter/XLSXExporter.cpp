@@ -1196,19 +1196,19 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 void Exporter::XLSXExporter::AppendFill(NN<Text::StringBuilderUTF8> sb, Optional<OfficeFill> fill)
 {
 	NN<OfficeFill> nnfill;
+	NN<OfficeColor> color;
 	if (!fill.SetTo(nnfill))
 		return;
 	switch (nnfill->GetFillType())
 	{
 	case FillType::SolidFill:
-		if (nnfill->GetColor() == 0)
+		if (!nnfill->GetColor().SetTo(color))
 		{
 			sb->AppendC(UTF8STRC("<a:solidFill/>"));
 		}
 		else
 		{
 			sb->AppendC(UTF8STRC("<a:solidFill>"));
-			OfficeColor *color = nnfill->GetColor();
 			if (color->GetColorType() == ColorType::Preset)
 			{
 				sb->AppendC(UTF8STRC("<a:prstClr val=\""));
@@ -1259,18 +1259,20 @@ void Exporter::XLSXExporter::AppendTitle(NN<Text::StringBuilderUTF8> sb, UnsafeA
 	sb->AppendC(UTF8STRC("</c:title>"));
 }
 
-void Exporter::XLSXExporter::AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
+void Exporter::XLSXExporter::AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeShapeProp> shapeProp)
 {
-	if (shapeProp == 0)
+	NN<Text::SpreadSheet::OfficeShapeProp> nnshapeProp;
+	if (!shapeProp.SetTo(nnshapeProp))
 		return;
 	sb->AppendC(UTF8STRC("<c:spPr>"));
-	AppendFill(sb, shapeProp->GetFill());
-	AppendLineStyle(sb, shapeProp->GetLineStyle());
+	AppendFill(sb, nnshapeProp->GetFill());
+	AppendLineStyle(sb, nnshapeProp->GetLineStyle());
 	sb->AppendC(UTF8STRC("</c:spPr>"));
 }
 
 void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index)
 {
+	NN<Text::SpreadSheet::OfficeShapeProp> shapeProp;
 	NN<Text::SpreadSheet::OfficeChartAxis> nnaxis;
 	if (!axis.SetTo(nnaxis))
 		return;
@@ -1312,10 +1314,10 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional
 		sb->AppendC(UTF8STRC("<c:axPos val=\"b\"/>"));
 		break;
 	}
-	if (nnaxis->GetMajorGridProp())
+	if (nnaxis->GetMajorGridProp().SetTo(shapeProp))
 	{
 		sb->AppendC(UTF8STRC("<c:majorGridlines>"));
-		AppendShapeProp(sb, nnaxis->GetMajorGridProp());
+		AppendShapeProp(sb, shapeProp);
 		sb->AppendC(UTF8STRC("</c:majorGridlines>"));
 	}
 	if (nnaxis->GetTitle().SetTo(s))
@@ -1427,7 +1429,7 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 	sb->AppendC(UTF8STRC("</c:marker>"));
 
 	UTF8Char sbuff[128];
-	WorkbookDataSource *catData = series->GetCategoryData();
+	NN<WorkbookDataSource> catData = series->GetCategoryData();
 	sb->AppendC(UTF8STRC("<c:cat>"));
 	sb->AppendC(UTF8STRC("<c:strRef>"));
 	sb->AppendC(UTF8STRC("<c:f>"));
@@ -1440,7 +1442,7 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 	sb->AppendC(UTF8STRC("</c:strRef>"));
 	sb->AppendC(UTF8STRC("</c:cat>"));
 
-	WorkbookDataSource *valData = series->GetValueData();
+	NN<WorkbookDataSource> valData = series->GetValueData();
 	sb->AppendC(UTF8STRC("<c:val>"));
 	sb->AppendC(UTF8STRC("<c:numRef>"));
 	sb->AppendC(UTF8STRC("<c:f>"));

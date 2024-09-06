@@ -1,6 +1,12 @@
+1.6.15
+-shreadsheet Support Chart
+
+1.6.14
 -Added zip.ZIPBuilder
 -Added Timestamp.toFILETIME
 -Added Timestamp.toMSDOSDate, toMSDOSTime
+-Added spreadsheet.js
+-Added export/XLSXExporter.js
 
 1.6.13
 -Added crypto.ICrypto, crypto.AES256GCM

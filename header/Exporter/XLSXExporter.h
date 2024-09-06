@@ -42,7 +42,7 @@ namespace Exporter
 		static void AppendFill(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeFill> fill);
 		static void AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeLineStyle> lineStyle);
 		static void AppendTitle(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> title);
-		static void AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
+		static void AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeShapeProp> shapeProp);
 		static void AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index);
 		static void AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UOSInt index);
 		static void AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CStringNN name);

@@ -175,8 +175,8 @@ namespace Text
 			PresetColor GetPresetColor();
 			UInt32 GetColorArgb();
 
-			static OfficeColor *NewPreset(PresetColor color);
-			static OfficeColor *NewArgb(UInt32 argb);
+			static NN<OfficeColor> NewPreset(PresetColor color);
+			static NN<OfficeColor> NewArgb(UInt32 argb);
 
 			static UInt32 PresetColorGetArgb(PresetColor color);
 		};

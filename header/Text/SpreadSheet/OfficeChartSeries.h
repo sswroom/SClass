@@ -26,28 +26,28 @@ namespace Text
 		class OfficeChartSeries
 		{
 		private:
-			WorkbookDataSource *categoryData;
-			WorkbookDataSource *valueData;
+			NN<WorkbookDataSource> categoryData;
+			NN<WorkbookDataSource> valueData;
 			Optional<Text::String> title;
 			Bool smooth;
-			OfficeShapeProp *shapeProp;
+			Optional<OfficeShapeProp> shapeProp;
 			UInt32 markerSize;
 			MarkerStyle markerStyle;
 
 		public:
-			OfficeChartSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData);
+			OfficeChartSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData);
 			~OfficeChartSeries();
 
-			WorkbookDataSource *GetCategoryData();
-			WorkbookDataSource *GetValueData();
+			NN<WorkbookDataSource> GetCategoryData();
+			NN<WorkbookDataSource> GetValueData();
 			Optional<Text::String> GetTitle();
 			void SetTitle(Optional<Text::String> title, Text::String *dataSource);
 			void SetTitle(Text::CString title, const UTF8Char *dataSource);
 			Bool IsSmooth();
 			void SetSmooth(Bool smooth);
-			OfficeShapeProp *GetShapeProp();
-			void SetShapeProp(OfficeShapeProp *shapeProp);
-			void SetLineStyle(OfficeLineStyle *lineStyle);
+			Optional<OfficeShapeProp> GetShapeProp();
+			void SetShapeProp(Optional<OfficeShapeProp> shapeProp);
+			void SetLineStyle(Optional<OfficeLineStyle> lineStyle);
 			UInt32 GetMarkerSize();
 			void SetMarkerSize(UInt32 markerSize);
 			MarkerStyle GetMarkerStyle();

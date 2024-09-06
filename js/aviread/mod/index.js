@@ -3,6 +3,7 @@ import * as data from "/js/@sswroom/sswr/data.js";
 import {XLSXExporter} from "/js/@sswroom/sswr/exporter/XLSXExporter.js";
 import * as spreadsheet from "/js/@sswroom/sswr/spreadsheet.js";
 import * as text from "/js/@sswroom/sswr/text.js";
+import * as unit from "/js/@sswroom/sswr/unit.js";
 import * as web from "/js/@sswroom/sswr/web.js";
 import * as zip from "/js/@sswroom/sswr/zip.js";
 
@@ -37,7 +38,16 @@ web.openData(new Blob([zipFile]), "application/zip", "Testing.zip");*/
 
 let wb = new spreadsheet.Workbook();
 let sheet = wb.addWorksheet("Test Sheet");
-sheet.setCellString(0, 0, "ABC");
+sheet.setCellString(0, 0, "2024-Jan");
+sheet.setCellInt32(1, 0, 24);
+sheet.setCellString(0, 1, "2024-Feb");
+sheet.setCellInt32(1, 1, 12);
+sheet.setCellString(0, 2, "2024-Mar");
+sheet.setCellInt32(1, 2, 36);
+let chart = sheet.createChart(unit.Distance.Unit.CENTIMETER, 0, 3, 15, 10, "Chart Test");
+chart.initLineChart("Count", "Month", spreadsheet.AxisType.Category);
+chart.addLegend(spreadsheet.LegendPos.Bottom);
+chart.addSeries(new spreadsheet.WorkbookDataSource(sheet, 0, 0, 0, 2), new spreadsheet.WorkbookDataSource(sheet, 1, 1, 0, 2), "Test", false);
 let exporter = new XLSXExporter();
 let bytes = exporter.exportFile("test.xlsx", wb);
 if (bytes)

@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/SpreadSheet/OfficeChartSeries.h"
 
-Text::SpreadSheet::OfficeChartSeries::OfficeChartSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData)
+Text::SpreadSheet::OfficeChartSeries::OfficeChartSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData)
 {
 	this->categoryData = categoryData;
 	this->valueData = valueData;
@@ -16,18 +16,18 @@ Text::SpreadSheet::OfficeChartSeries::OfficeChartSeries(WorkbookDataSource *cate
 
 Text::SpreadSheet::OfficeChartSeries::~OfficeChartSeries()
 {
-	SDEL_CLASS(this->categoryData);
-	SDEL_CLASS(this->valueData);
+	this->categoryData.Delete();
+	this->valueData.Delete();
 	OPTSTR_DEL(this->title);
-	SDEL_CLASS(this->shapeProp);
+	this->shapeProp.Delete();
 }
 
-Text::SpreadSheet::WorkbookDataSource *Text::SpreadSheet::OfficeChartSeries::GetCategoryData()
+NN<Text::SpreadSheet::WorkbookDataSource> Text::SpreadSheet::OfficeChartSeries::GetCategoryData()
 {
 	return this->categoryData;
 }
 
-Text::SpreadSheet::WorkbookDataSource *Text::SpreadSheet::OfficeChartSeries::GetValueData()
+NN<Text::SpreadSheet::WorkbookDataSource> Text::SpreadSheet::OfficeChartSeries::GetValueData()
 {
 	return this->valueData;
 }
@@ -59,22 +59,23 @@ void Text::SpreadSheet::OfficeChartSeries::SetSmooth(Bool smooth)
 	this->smooth = smooth;
 }
 
-Text::SpreadSheet::OfficeShapeProp *Text::SpreadSheet::OfficeChartSeries::GetShapeProp()
+Optional<Text::SpreadSheet::OfficeShapeProp> Text::SpreadSheet::OfficeChartSeries::GetShapeProp()
 {
 	return this->shapeProp;
 }
 
-void Text::SpreadSheet::OfficeChartSeries::SetShapeProp(OfficeShapeProp *shapeProp)
+void Text::SpreadSheet::OfficeChartSeries::SetShapeProp(Optional<OfficeShapeProp> shapeProp)
 {
-	SDEL_CLASS(this->shapeProp);
+	this->shapeProp.Delete();
 	this->shapeProp = shapeProp;
 }
 
-void Text::SpreadSheet::OfficeChartSeries::SetLineStyle(OfficeLineStyle *lineStyle)
+void Text::SpreadSheet::OfficeChartSeries::SetLineStyle(Optional<OfficeLineStyle> lineStyle)
 {
-	if (this->shapeProp)
+	NN<OfficeShapeProp> shapeProp;
+	if (this->shapeProp.SetTo(shapeProp))
 	{
-		this->shapeProp->SetLineStyle(lineStyle);
+		shapeProp->SetLineStyle(lineStyle);
 	}
 	else
 	{

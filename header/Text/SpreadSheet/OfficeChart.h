@@ -40,7 +40,7 @@ namespace Text
 			Double wInch;
 			Double hInch;
 			Optional<Text::String> titleText;
-			OfficeShapeProp *shapeProp;
+			Optional<OfficeShapeProp> shapeProp;
 			Bool hasLegend;
 			LegendPos legendPos;
 			Bool legendOverlay;
@@ -63,8 +63,8 @@ namespace Text
 			void SetTitleText(Text::CString titleText);
 			Optional<Text::String> GetTitleText();
 
-			OfficeShapeProp *GetShapeProp();
-			void SetShapeProp(OfficeShapeProp *shapeProp);
+			Optional<OfficeShapeProp> GetShapeProp();
+			void SetShapeProp(Optional<OfficeShapeProp> shapeProp);
 			void AddLegend(LegendPos pos);
 			Bool HasLegend();
 			LegendPos GetLegendPos();
@@ -82,8 +82,8 @@ namespace Text
 			Optional<OfficeChartAxis> GetCategoryAxis();
 			Optional<OfficeChartAxis> GetValueAxis();
 
-			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Optional<Text::String> name, Bool showMarker);
-			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker);
+			void AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Optional<Text::String> name, Bool showMarker);
+			void AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Text::CString name, Bool showMarker);
 			UOSInt GetSeriesCount() const;
 			NN<OfficeChartSeries> GetSeriesNoCheck(UOSInt index) const;
 			Optional<OfficeChartSeries> GetSeries(UOSInt index) const;

@@ -15,17 +15,17 @@ namespace Text
 		{
 		private:
 			FillType fillType;
-			OfficeColor *color;
+			Optional<OfficeColor> color;
 
-			OfficeFill(FillType fillType, OfficeColor *color);
+			OfficeFill(FillType fillType, Optional<OfficeColor> color);
 		public:
 			~OfficeFill();
 
 			FillType GetFillType();
-			OfficeColor *GetColor();
+			Optional<OfficeColor> GetColor();
 
-			static OfficeFill *NewSolidFill();
-			static OfficeFill *NewSolidFill(OfficeColor *color);
+			static NN<OfficeFill> NewSolidFill();
+			static NN<OfficeFill> NewSolidFill(Optional<OfficeColor> color);
 		};
 	}
 }

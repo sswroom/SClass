@@ -39,7 +39,7 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 Text::SpreadSheet::OfficeChart::~OfficeChart()
 {
 	OPTSTR_DEL(this->titleText);
-	SDEL_CLASS(this->shapeProp);
+	this->shapeProp.Delete();
 	this->axes.DeleteAll();
 	this->series.DeleteAll();
 }
@@ -75,14 +75,14 @@ Optional<Text::String> Text::SpreadSheet::OfficeChart::GetTitleText()
 	return this->titleText;
 }
 
-Text::SpreadSheet::OfficeShapeProp *Text::SpreadSheet::OfficeChart::GetShapeProp()
+Optional<Text::SpreadSheet::OfficeShapeProp> Text::SpreadSheet::OfficeChart::GetShapeProp()
 {
 	return this->shapeProp;
 }
 
-void Text::SpreadSheet::OfficeChart::SetShapeProp(OfficeShapeProp *shapeProp)
+void Text::SpreadSheet::OfficeChart::SetShapeProp(Optional<OfficeShapeProp> shapeProp)
 {
-	SDEL_CLASS(this->shapeProp);
+	this->shapeProp.Delete();
 	this->shapeProp = shapeProp;
 }
 
@@ -178,7 +178,7 @@ Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetValueAxis()
 	return this->valueAxis;
 }
 
-void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Optional<Text::String> name, Bool showMarker)
+void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Optional<Text::String> name, Bool showMarker)
 {
 	UOSInt i = this->series.GetCount();
 	NN<OfficeChartSeries> series;
@@ -199,7 +199,7 @@ void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData,
 	this->series.Add(series);
 }
 
-void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker)
+void Text::SpreadSheet::OfficeChart::AddSeries(NN<WorkbookDataSource> categoryData, NN<WorkbookDataSource> valueData, Text::CString name, Bool showMarker)
 {
 	UOSInt i = this->series.GetCount();
 	NN<OfficeChartSeries> series;

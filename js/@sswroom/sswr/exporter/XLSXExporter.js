@@ -2,6 +2,7 @@ import * as data from "../data.js";
 import * as math from "../math.js";
 import * as spreadsheet from "../spreadsheet.js";
 import * as text from "../text.js";
+import * as unit from "../unit.js";
 import * as zip from "../zip.js";
 
 export class XLSXExporter
@@ -424,280 +425,278 @@ export class XLSXExporter
 				sbContTypes.push(s);
 				sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 	
-/*
 				k = 0;
 				l = sheet.getDrawingCount();
 				while (k < l)
 				{
-					NN<spreadsheet.OfficeChart> chart;
-					NN<spreadsheet.WorksheetDrawing> drawing = sheet.GetDrawingNoCheck(k);
-					sb.ClearStr();
-					sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
-					sb.push("<xdr:wsDr xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"));
+					let chart;
+					let drawing = sheet.getDrawingNoCheck(k);
+					sb = [];
+					sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+					sb.push("<xdr:wsDr xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
 					switch (drawing.anchorType)
 					{
 					case spreadsheet.AnchorType.Absolute:
-						sb.push("<xdr:absoluteAnchor>"));
-						sb.push("<xdr:pos x=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.posXInch)));
-						sb.push("\" y=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.posYInch)));
-						sb.push("\"/>"));
-						sb.push("<xdr:ext cx=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.widthInch)));
-						sb.push("\" cy=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.heightInch)));
-						sb.push("\"/>"));
+						sb.push("<xdr:absoluteAnchor>");
+						sb.push("<xdr:pos x=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.posXInch)));
+						sb.push("\" y=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.posYInch)));
+						sb.push("\"/>");
+						sb.push("<xdr:ext cx=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.widthInch)));
+						sb.push("\" cy=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.heightInch)));
+						sb.push("\"/>");
 						break;
 					case spreadsheet.AnchorType.OneCell:
-						sb.push("<xdr:oneCellAnchor>"));
-						sb.push("<xdr:from>"));
-						sb.push("<xdr:col>"));
-						sb.AppendUOSInt(drawing.col1 + 1);
-						sb.push("</xdr:col>"));
-						sb.push("<xdr:colOff>"));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.posXInch)));
-						sb.push("</xdr:colOff>"));
-						sb.push("<xdr:row>"));
-						sb.AppendUOSInt(drawing.row1 + 1);
-						sb.push("</xdr:row>"));
-						sb.push("<xdr:rowOff>"));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.posYInch)));
-						sb.push("</xdr:rowOff>"));
-						sb.push("</xdr:from>"));
-						sb.push("<xdr:ext cx=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.widthInch)));
-						sb.push("\" cy=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.heightInch)));
-						sb.push("\"/>"));
+						sb.push("<xdr:oneCellAnchor>");
+						sb.push("<xdr:from>");
+						sb.push("<xdr:col>");
+						sb.push(""+(drawing.col1 + 1));
+						sb.push("</xdr:col>");
+						sb.push("<xdr:colOff>");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.posXInch)));
+						sb.push("</xdr:colOff>");
+						sb.push("<xdr:row>");
+						sb.push(""+(drawing.row1 + 1));
+						sb.push("</xdr:row>");
+						sb.push("<xdr:rowOff>");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.posYInch)));
+						sb.push("</xdr:rowOff>");
+						sb.push("</xdr:from>");
+						sb.push("<xdr:ext cx=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.widthInch)));
+						sb.push("\" cy=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.heightInch)));
+						sb.push("\"/>");
 						break;
 					case spreadsheet.AnchorType.TwoCell:
-						sb.push("<xdr:twoCellAnchor editAs=\"twoCell\">"));
-						sb.push("<xdr:from>"));
-						sb.push("<xdr:col>"));
-						sb.AppendUOSInt(drawing.col1 + 1);
-						sb.push("</xdr:col>"));
-						sb.push("<xdr:colOff>"));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.posXInch)));
-						sb.push("</xdr:colOff>"));
-						sb.push("<xdr:row>"));
-						sb.AppendUOSInt(drawing.row1 + 1);
-						sb.push("</xdr:row>"));
-						sb.push("<xdr:rowOff>"));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.posYInch)));
-						sb.push("</xdr:rowOff>"));
-						sb.push("</xdr:from>"));
-						sb.push("<xdr:to>"));
-						sb.push("<xdr:col>"));
-						sb.AppendUOSInt(drawing.col2 + 1);
-						sb.push("</xdr:col>"));
-						sb.push("<xdr:colOff>"));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.widthInch)));
-						sb.push("</xdr:colOff>"));
-						sb.push("<xdr:row>"));
-						sb.AppendUOSInt(drawing.row2 + 1);
-						sb.push("</xdr:row>"));
-						sb.push("<xdr:rowOff>"));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, drawing.heightInch)));
-						sb.push("</xdr:rowOff>"));
-						sb.push("</xdr:to>"));
+						sb.push("<xdr:twoCellAnchor editAs=\"twoCell\">");
+						sb.push("<xdr:from>");
+						sb.push("<xdr:col>");
+						sb.push(""+(drawing.col1 + 1));
+						sb.push("</xdr:col>");
+						sb.push("<xdr:colOff>");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.posXInch)));
+						sb.push("</xdr:colOff>");
+						sb.push("<xdr:row>");
+						sb.push(""+(drawing.row1 + 1));
+						sb.push("</xdr:row>");
+						sb.push("<xdr:rowOff>");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.posYInch)));
+						sb.push("</xdr:rowOff>");
+						sb.push("</xdr:from>");
+						sb.push("<xdr:to>");
+						sb.push("<xdr:col>");
+						sb.push(""+(drawing.col2 + 1));
+						sb.push("</xdr:col>");
+						sb.push("<xdr:colOff>");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.widthInch)));
+						sb.push("</xdr:colOff>");
+						sb.push("<xdr:row>");
+						sb.push(""+(drawing.row2 + 1));
+						sb.push("</xdr:row>");
+						sb.push("<xdr:rowOff>");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, drawing.heightInch)));
+						sb.push("</xdr:rowOff>");
+						sb.push("</xdr:to>");
 						break;
 					}
-					if (drawing.chart.SetTo(chart))
+					if ((chart = drawing.chart) != null)
 					{
-						sb.push("<xdr:graphicFrame>"));
-						sb.push("<xdr:nvGraphicFramePr>"));
-						sb.push("<xdr:cNvPr id=\""));
-						sb.AppendUOSInt(chartCnt);
-						sb.push("\" name=\"Diagramm"));
-						sb.AppendUOSInt(chartCnt);
-						sb.push("\"/>"));
-						sb.push("<xdr:cNvGraphicFramePr/>"));
-						sb.push("</xdr:nvGraphicFramePr>"));
-						sb.push("<xdr:xfrm>"));
-						sb.push("<a:off x=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, chart.GetXInch())));
-						sb.push("\" y=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, chart.GetYInch())));
-						sb.push("\"/>"));
-						sb.push("<a:ext cx=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, chart.GetWInch())));
-						sb.push("\" cy=\""));
-						sb.AppendOSInt(Double2OSInt(Math.Unit.Distance.Convert(Math.Unit.Distance.DU_INCH, Math.Unit.Distance.DU_EMU, chart.GetHInch())));
-						sb.push("\"/>"));
-						sb.push("</xdr:xfrm>"));
-						sb.push("<a:graphic>"));
-						sb.push("<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/chart\">"));
-						sb.push("<c:chart r:id=\"rId"));
-						sb.AppendUOSInt(chartCnt + 1);
-						sb.push("\"/>"));
-						sb.push("</a:graphicData>"));
-						sb.push("</a:graphic>"));
-						sb.push("</xdr:graphicFrame>"));	
+						sb.push("<xdr:graphicFrame>");
+						sb.push("<xdr:nvGraphicFramePr>");
+						sb.push("<xdr:cNvPr id=\"");
+						sb.push(""+chartCnt);
+						sb.push("\" name=\"Diagramm");
+						sb.push(""+chartCnt);
+						sb.push("\"/>");
+						sb.push("<xdr:cNvGraphicFramePr/>");
+						sb.push("</xdr:nvGraphicFramePr>");
+						sb.push("<xdr:xfrm>");
+						sb.push("<a:off x=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, chart.getXInch())));
+						sb.push("\" y=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, chart.getYInch())));
+						sb.push("\"/>");
+						sb.push("<a:ext cx=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, chart.getWInch())));
+						sb.push("\" cy=\"");
+						sb.push(""+ Math.round(unit.Distance.convert(unit.Distance.Unit.INCH, unit.Distance.Unit.EMU, chart.getHInch())));
+						sb.push("\"/>");
+						sb.push("</xdr:xfrm>");
+						sb.push("<a:graphic>");
+						sb.push("<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/chart\">");
+						sb.push("<c:chart r:id=\"rId");
+						sb.push(""+(chartCnt + 1));
+						sb.push("\"/>");
+						sb.push("</a:graphicData>");
+						sb.push("</a:graphic>");
+						sb.push("</xdr:graphicFrame>");
 					}
 					else
 					{
 						///////////////////////////////////////
 					}
-					sb.push("<xdr:clientData/>"));
+					sb.push("<xdr:clientData/>");
 					switch (drawing.anchorType)
 					{
 					case spreadsheet.AnchorType.Absolute:
-						sb.push("</xdr:absoluteAnchor>"));
+						sb.push("</xdr:absoluteAnchor>");
 						break;
 					case spreadsheet.AnchorType.OneCell:
-						sb.push("</xdr:oneCellAnchor>"));
+						sb.push("</xdr:oneCellAnchor>");
 						break;
 					case spreadsheet.AnchorType.TwoCell:
-						sb.push("</xdr:twoCellAnchor>"));
+						sb.push("</xdr:twoCellAnchor>");
 						break;
 					}
-					sb.push("</xdr:wsDr>"));
+					sb.push("</xdr:wsDr>");
 					drawingCnt++;
 					if (!dirXlDraw)
 					{
 						dirXlDraw = true;
-						zip.AddDir("xl/drawings/"), ts, ts, ts, 0);
+						zipFile.addDir("xl/drawings/", ts, ts, ts, 0);
 					}
-					sptr = Text.StrConcatC(Text.StrUOSInt(Text.StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
-					zip.AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data.Compress.Inflate.CompressionLevel.BestCompression, 0);
-					sbContTypes.push("<Override PartName=\"/"));
-					sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-					sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>"));
+					s = "xl/drawings/drawing" + drawingCnt +".xml";
+					zipFile.addFile(s, new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+					sbContTypes.push("<Override PartName=\"/");
+					sbContTypes.push(s);
+					sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>");
 	
-					if (drawing.chart.SetTo(chart))
+					if ((chart = drawing.chart) != null)
 					{
-						sb.ClearStr();
-						sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"));
-						sb.push("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
-						sb.push("<Relationship Id=\"rId1\" Target=\"../charts/chart"));
-						sb.AppendUOSInt(chartCnt + 1);
-						sb.push(".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\"/>"));
-						sb.push("</Relationships>"));
+						sb = [];
+						sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+						sb.push("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+						sb.push("<Relationship Id=\"rId1\" Target=\"../charts/chart");
+						sb.push(""+(chartCnt + 1));
+						sb.push(".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\"/>");
+						sb.push("</Relationships>");
 	
 						if (!dirXlDrawRel)
 						{
 							dirXlDrawRel = true;
-							zip.AddDir("xl/drawings/_rels/"), ts, ts, ts, 0);
+							zipFile.addDir("xl/drawings/_rels/", ts, ts, ts, 0);
 						}
-						sptr = Text.StrConcatC(Text.StrUOSInt(Text.StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
-						zip.AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data.Compress.Inflate.CompressionLevel.BestCompression, 0);
-						sbContTypes.push("<Override PartName=\"/"));
-						sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-						sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
+						s = "xl/drawings/_rels/drawing"+ drawingCnt+".xml.rels";
+						zipFile.addFile(s, new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+						sbContTypes.push("<Override PartName=\"/");
+						sbContTypes.push(s);
+						sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 	
 						chartCnt++;
-						sb.ClearStr();
-						sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
-						sb.push("<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"));
-						sb.push("<c:chart>"));
-						if (chart.GetTitleText().SetTo(s))
+						sb = [];
+						sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+						sb.push("<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">");
+						sb.push("<c:chart>");
+						if ((s = chart.getTitleText()) != null)
 						{
-							
-							AppendTitle(sb, s.v);
+							XLSXExporter.appendTitle(sb, s);
 						}
-						sb.push("<c:plotArea>"));
-						sb.push("<c:layout/>"));
-						if (chart.GetChartType() != ChartType.Unknown)
+						sb.push("<c:plotArea>");
+						sb.push("<c:layout/>");
+						if (chart.getChartType() != spreadsheet.ChartType.Unknown)
 						{
-							NN<spreadsheet.OfficeChartAxis> nnaxis;
-							switch (chart.GetChartType())
+							let nnaxis;
+							switch (chart.getChartType())
 							{
-							case ChartType.LineChart:
-								sb.push("<c:lineChart>"));
+							case spreadsheet.ChartType.LineChart:
+								sb.push("<c:lineChart>");
 								break;
-							case ChartType.Unknown:
+							case spreadsheet.ChartType.Unknown:
 								break;
 							}
 							m = 0;
-							n = chart.GetSeriesCount();
+							n = chart.getSeriesCount();
 							while (m < n)
 							{
-								AppendSeries(sb, chart.GetSeriesNoCheck(m), m);
+								XLSXExporter.appendSeries(sb, chart.getSeriesNoCheck(m), m);
 								m++;
 							}
-							if (chart.GetCategoryAxis().SetTo(nnaxis))
+							if ((nnaxis = chart.getCategoryAxis()) != null)
 							{
-								sb.push("<c:axId val=\""));
-								sb.AppendUOSInt(chart.GetAxisIndex(nnaxis));
-								sb.push("\"/>"));
+								sb.push("<c:axId val=\"");
+								sb.push(""+chart.getAxisIndex(nnaxis));
+								sb.push("\"/>");
 							}
-							if (chart.GetValueAxis().SetTo(nnaxis))
+							if ((nnaxis = chart.getValueAxis()) != null)
 							{
-								sb.push("<c:axId val=\""));
-								sb.AppendUOSInt(chart.GetAxisIndex(nnaxis));
-								sb.push("\"/>"));
+								sb.push("<c:axId val=\"");
+								sb.push(""+ chart.getAxisIndex(nnaxis));
+								sb.push("\"/>");
 							}
-							switch (chart.GetChartType())
+							switch (chart.getChartType())
 							{
-							case ChartType.LineChart:
-								sb.push("</c:lineChart>"));
+							case spreadsheet.ChartType.LineChart:
+								sb.push("</c:lineChart>");
 								break;
-							case ChartType.Unknown:
+							case spreadsheet.ChartType.Unknown:
 								break;
 							}
 						}
 						m = 0;
-						n = chart.GetAxisCount();
+						n = chart.getAxisCount();
 						while (m < n)
 						{
-							AppendAxis(sb, chart.GetAxis(m), m);
+							XLSXExporter.appendAxis(sb, chart.getAxis(m), m);
 							m++;
 						}
-						AppendShapeProp(sb, chart.GetShapeProp());
-						sb.push("</c:plotArea>"));
-						if (chart.HasLegend())
+						XLSXExporter.appendShapeProp(sb, chart.getShapeProp());
+						sb.push("</c:plotArea>");
+						if (chart.hasLegend())
 						{
-							sb.push("<c:legend>"));
-							sb.push("<c:legendPos val=\""));
-							switch (chart.GetLegendPos())
+							sb.push("<c:legend>");
+							sb.push("<c:legendPos val=\"");
+							switch (chart.getLegendPos())
 							{
-							case LegendPos.Bottom:
-								sb.push("b"));
+							case spreadsheet.LegendPos.Bottom:
+								sb.push("b");
 								break;
 							}
-							sb.push("\"/>"));
-							sb.push("<c:overlay val=\""));
-							if (chart.IsLegendOverlay())
+							sb.push("\"/>");
+							sb.push("<c:overlay val=\"");
+							if (chart.isLegendOverlay())
 							{
-								sb.push("true"));
+								sb.push("true");
 							}
 							else
 							{
-								sb.push("false"));
+								sb.push("false");
 							}
-							sb.push("\"/>"));
-							sb.push("</c:legend>"));
+							sb.push("\"/>");
+							sb.push("</c:legend>");
 						}
-						sb.push("<c:plotVisOnly val=\"true\"/>"));
-						switch (chart.GetDisplayBlankAs())
+						sb.push("<c:plotVisOnly val=\"true\"/>");
+						switch (chart.getDisplayBlankAs())
 						{
-						case BlankAs.Default:
+						case spreadsheet.BlankAs.Default:
 							break;
-						case BlankAs.Gap:
-							sb.push("<c:dispBlanksAs val=\"gap\"/>"));
+						case spreadsheet.BlankAs.Gap:
+							sb.push("<c:dispBlanksAs val=\"gap\"/>");
 							break;
-						case BlankAs.Zero:
-							sb.push("<c:dispBlanksAs val=\"zero\"/>"));
+						case spreadsheet.BlankAs.Zero:
+							sb.push("<c:dispBlanksAs val=\"zero\"/>");
 							break;
 						}
-						sb.push("</c:chart>"));
+						sb.push("</c:chart>");
 						//////////////////////////////////////
-						sb.push("</c:chartSpace>"));
+						sb.push("</c:chartSpace>");
 	
 						if (!dirXlChart)
 						{
 							dirXlChart = true;
-							zip.AddDir("xl/charts/"), ts, ts, ts, 0);
+							zipFile.addDir("xl/charts/", ts, ts, ts, 0);
 						}
-						sptr = Text.StrConcatC(Text.StrUOSInt(Text.StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
-						zip.AddFile(CSTRP(sbuff, sptr), sb.ToString(), sb.GetLength(), ts, ts, ts, Data.Compress.Inflate.CompressionLevel.BestCompression, 0);
-						sbContTypes.push("<Override PartName=\"/"));
-						sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-						sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>"));
+						s = "xl/charts/chart" + chartCnt + ".xml";
+						zipFile.addFile(s, new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+						sbContTypes.push("<Override PartName=\"/");
+						sbContTypes.push(s);
+						sbContTypes.push("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>");
 					}
 					k++;
-				}*/
+				}
 			}
 			i++;
 		}
@@ -1130,43 +1129,49 @@ export class XLSXExporter
 		return zipFile.finalize();
 	}
 
-	/*static appendFill(sb, fill)
+	/**
+	 * @param {string[]} sb
+	 * @param {spreadsheet.OfficeFill|null} fill
+	 */
+	static appendFill(sb, fill)
 	{
+		let color;
 		if (fill == null)
 			return;
-		switch (fill.GetFillType())
+		switch (fill.getFillType())
 		{
-		case FillType.SolidFill:
-			if (fill.GetColor() == 0)
+		case spreadsheet.FillType.SolidFill:
+			if ((color = fill.getColor()) == null)
 			{
-				sb.push("<a:solidFill/>"));
+				sb.push("<a:solidFill/>");
 			}
 			else
 			{
-				sb.push("<a:solidFill>"));
-				OfficeColor *color = fill.GetColor();
-				if (color.GetColorType() == ColorType.Preset)
+				sb.push("<a:solidFill>");
+				if (color.getColorType() == spreadsheet.ColorType.Preset)
 				{
-					sb.push("<a:prstClr val=\""));
-					Text.CStringNN col = PresetColorCode(color.GetPresetColor());
-					sb.AppendC(col.v, col.leng);
-					sb.push("\"/>"));
+					sb.push("<a:prstClr val=\"");
+					sb.push(XLSXExporter.presetColorCode(color.getPresetColor()));
+					sb.push("\"/>");
 				}
-				sb.push("</a:solidFill>"));
+				sb.push("</a:solidFill>");
 			}
 			break;
 		}
-	}*/
+	}
 
-	/*static appendLineStyle(sb, lineStyle)
+	/**
+	 * @param {string[]} sb
+	 * @param {spreadsheet.OfficeLineStyle|null} lineStyle
+	 */
+	static appendLineStyle(sb, lineStyle)
 	{
-		NN<Text.SpreadSheet.OfficeLineStyle> nnlineStyle;
-		if (!lineStyle.SetTo(nnlineStyle))
+		if (lineStyle == null)
 			return;
-		sb.push("<a:ln>"));
-		AppendFill(sb, nnlineStyle.GetFillStyle());
-		sb.push("</a:ln>"));
-	}*/
+		sb.push("<a:ln>");
+		XLSXExporter.appendFill(sb, lineStyle.getFillStyle());
+		sb.push("</a:ln>");
+	}
 
 	/**
 	 * @param {string[]} sb
@@ -1197,7 +1202,12 @@ export class XLSXExporter
 		sb.push("<c:layout/>");
 		sb.push("</c:title>");
 	}
-	/*static appendShapeProp(sb, shapeProp)
+
+	/**
+	 * @param {string[]} sb
+	 * @param {spreadsheet.OfficeShapeProp | null} shapeProp
+	 */
+	static appendShapeProp(sb, shapeProp)
 	{
 		if (shapeProp == null)
 			return;
@@ -1205,266 +1215,269 @@ export class XLSXExporter
 		XLSXExporter.appendFill(sb, shapeProp.getFill());
 		XLSXExporter.appendLineStyle(sb, shapeProp.getLineStyle());
 		sb.push("</c:spPr>");
-	}*/
+	}
 
-	/*static appendAxis(sb, axis, index)
+	/**
+	 * @param {string[]} sb
+	 * @param {spreadsheet.OfficeChartAxis | null} axis
+	 * @param {number} index
+	 */
+	static appendAxis(sb, axis, index)
 	{
-		NN<Text.SpreadSheet.OfficeChartAxis> nnaxis;
-		if (!axis.SetTo(nnaxis))
+		if (axis == null)
 			return;
-		NN<Text.String> s;	
-		switch (nnaxis.GetAxisType())
+		let s;	
+		switch (axis.getAxisType())
 		{
-		case AxisType.Category:
-			sb.push("<c:catAx>"));
+		case spreadsheet.AxisType.Category:
+			sb.push("<c:catAx>");
 			break;
-		case AxisType.Date:
-			sb.push("<c:dateAx>"));
+		case spreadsheet.AxisType.Date:
+			sb.push("<c:dateAx>");
 			break;
-		case AxisType.Numeric:
-			sb.push("<c:valAx>"));
+		case spreadsheet.AxisType.Numeric:
+			sb.push("<c:valAx>");
 			break;
-		case AxisType.Series:
-			sb.push("<c:serAx>"));
+		case spreadsheet.AxisType.Series:
+			sb.push("<c:serAx>");
 			break;
 		}
-		sb.push("<c:axId val=\""));
-		sb.AppendUOSInt(index);
-		sb.push("\"/>"));
-		sb.push("<c:scaling>"));
-		sb.push("<c:orientation val=\"minMax\"/>"));
-		sb.push("</c:scaling>"));
-		sb.push("<c:delete val=\"false\"/>"));
-		switch (nnaxis.GetAxisPos())
+		sb.push("<c:axId val=\"");
+		sb.push(""+index);
+		sb.push("\"/>");
+		sb.push("<c:scaling>");
+		sb.push("<c:orientation val=\"minMax\"/>");
+		sb.push("</c:scaling>");
+		sb.push("<c:delete val=\"false\"/>");
+		switch (axis.getAxisPos())
 		{
-		case AxisPosition.Left:
-			sb.push("<c:axPos val=\"l\"/>"));
+		case spreadsheet.AxisPosition.Left:
+			sb.push("<c:axPos val=\"l\"/>");
 			break;
-		case AxisPosition.Top:
-			sb.push("<c:axPos val=\"t\"/>"));
+		case spreadsheet.AxisPosition.Top:
+			sb.push("<c:axPos val=\"t\"/>");
 			break;
-		case AxisPosition.Right:
-			sb.push("<c:axPos val=\"r\"/>"));
+		case spreadsheet.AxisPosition.Right:
+			sb.push("<c:axPos val=\"r\"/>");
 			break;
-		case AxisPosition.Bottom:
-			sb.push("<c:axPos val=\"b\"/>"));
+		case spreadsheet.AxisPosition.Bottom:
+			sb.push("<c:axPos val=\"b\"/>");
 			break;
 		}
-		if (nnaxis.GetMajorGridProp())
+		if (axis.getMajorGridProp())
 		{
-			sb.push("<c:majorGridlines>"));
-			AppendShapeProp(sb, nnaxis.GetMajorGridProp());
-			sb.push("</c:majorGridlines>"));
+			sb.push("<c:majorGridlines>");
+			XLSXExporter.appendShapeProp(sb, axis.getMajorGridProp());
+			sb.push("</c:majorGridlines>");
 		}
-		if (nnaxis.GetTitle().SetTo(s))
+		if ((s = axis.getTitle()) != null)
 		{
-			AppendTitle(sb, s.v);
+			XLSXExporter.appendTitle(sb, s);
 		}
-		sb.push("<c:majorTickMark val=\"cross\"/>"));
-		sb.push("<c:minorTickMark val=\"none\"/>"));
-		switch (nnaxis.GetTickLblPos())
+		sb.push("<c:majorTickMark val=\"cross\"/>");
+		sb.push("<c:minorTickMark val=\"none\"/>");
+		switch (axis.getTickLblPos())
 		{
-		case TickLabelPosition.High:
-			sb.push("<c:tickLblPos val=\"high\"/>"));
+		case spreadsheet.TickLabelPosition.High:
+			sb.push("<c:tickLblPos val=\"high\"/>");
 			break;
-		case TickLabelPosition.Low:
-			sb.push("<c:tickLblPos val=\"low\"/>"));
+		case spreadsheet.TickLabelPosition.Low:
+			sb.push("<c:tickLblPos val=\"low\"/>");
 			break;
-		case TickLabelPosition.NextTo:
-			sb.push("<c:tickLblPos val=\"nextTo\"/>"));
+		case spreadsheet.TickLabelPosition.NextTo:
+			sb.push("<c:tickLblPos val=\"nextTo\"/>");
 			break;
-		case TickLabelPosition.None:
-			sb.push("<c:tickLblPos val=\"none\"/>"));
+		case spreadsheet.TickLabelPosition.None:
+			sb.push("<c:tickLblPos val=\"none\"/>");
 			break;
 		}
-		AppendShapeProp(sb, nnaxis.GetShapeProp());
+		XLSXExporter.appendShapeProp(sb, axis.getShapeProp());
 	// 	sb.push("<c:crossAx val=\"1\"/>");
-		sb.push("<c:crosses val=\"autoZero\"/>"));
-		sb.push("<c:crossBetween val=\"midCat\"/>"));
-		switch (nnaxis.GetAxisType())
+		sb.push("<c:crosses val=\"autoZero\"/>");
+		sb.push("<c:crossBetween val=\"midCat\"/>");
+		switch (axis.getAxisType())
 		{
-		case AxisType.Category:
-			sb.push("</c:catAx>"));
+		case spreadsheet.AxisType.Category:
+			sb.push("</c:catAx>");
 			break;
-		case AxisType.Date:
-			sb.push("</c:dateAx>"));
+		case spreadsheet.AxisType.Date:
+			sb.push("</c:dateAx>");
 			break;
-		case AxisType.Numeric:
-			sb.push("</c:valAx>"));
+		case spreadsheet.AxisType.Numeric:
+			sb.push("</c:valAx>");
 			break;
-		case AxisType.Series:
-			sb.push("</c:serAx>"));
+		case spreadsheet.AxisType.Series:
+			sb.push("</c:serAx>");
 			break;
 		}
-	}*/
+	}
 
-	/*static appendSeries(sb, series, index)
+	/**
+	 * @param {string[]} sb
+	 * @param {spreadsheet.OfficeChartSeries} series
+	 * @param {number} index
+	 */
+	static appendSeries(sb, series, index)
 	{
-		NN<Text.String> s;
-		sb.push("<c:ser>"));
-		sb.push("<c:idx val=\""));
-		sb.AppendUOSInt(index);
-		sb.push("\"/>"));
-		sb.push("<c:order val=\""));
-		sb.AppendUOSInt(index);
-		sb.push("\"/>"));
-		if (series.GetTitle().SetTo(s))
+		let s;
+		sb.push("<c:ser>");
+		sb.push("<c:idx val=\"");
+		sb.push(""+index);
+		sb.push("\"/>");
+		sb.push("<c:order val=\"");
+		sb.push(""+index);
+		sb.push("\"/>");
+		if ((s = series.getTitle()) != null)
 		{
-			sb.push("<c:tx>"));
-			sb.push("<c:v>"));
-			s = Text.XML.ToNewXMLText(s.v);
-			sb.Append(s);
-			s.Release();
-			sb.push("</c:v>"));
-			sb.push("</c:tx>"));
+			sb.push("<c:tx>");
+			sb.push("<c:v>");
+			s = text.toXMLText(s);
+			sb.push(s);
+			sb.push("</c:v>");
+			sb.push("</c:tx>");
 		}
-		AppendShapeProp(sb, series.GetShapeProp());
-		sb.push("<c:marker>"));
-		switch (series.GetMarkerStyle())
+		XLSXExporter.appendShapeProp(sb, series.getShapeProp());
+		sb.push("<c:marker>");
+		switch (series.getMarkerStyle())
 		{
-		case MarkerStyle.Circle:
-			sb.push("<c:symbol val=\"circle\"/>"));
+		case spreadsheet.MarkerStyle.Circle:
+			sb.push("<c:symbol val=\"circle\"/>");
 			break;
-		case MarkerStyle.Dash:
-			sb.push("<c:symbol val=\"dash\"/>"));
+		case spreadsheet.MarkerStyle.Dash:
+			sb.push("<c:symbol val=\"dash\"/>");
 			break;
-		case MarkerStyle.Diamond:
-			sb.push("<c:symbol val=\"diamond\"/>"));
+		case spreadsheet.MarkerStyle.Diamond:
+			sb.push("<c:symbol val=\"diamond\"/>");
 			break;
-		case MarkerStyle.Dot:
-			sb.push("<c:symbol val=\"dot\"/>"));
+		case spreadsheet.MarkerStyle.Dot:
+			sb.push("<c:symbol val=\"dot\"/>");
 			break;
-		case MarkerStyle.None:
-			sb.push("<c:symbol val=\"none\"/>"));
+		case spreadsheet.MarkerStyle.None:
+			sb.push("<c:symbol val=\"none\"/>");
 			break;
-		case MarkerStyle.Picture:
-			sb.push("<c:symbol val=\"picture\"/>"));
+		case spreadsheet.MarkerStyle.Picture:
+			sb.push("<c:symbol val=\"picture\"/>");
 			break;
-		case MarkerStyle.Plus:
-			sb.push("<c:symbol val=\"plus\"/>"));
+		case spreadsheet.MarkerStyle.Plus:
+			sb.push("<c:symbol val=\"plus\"/>");
 			break;
-		case MarkerStyle.Square:
-			sb.push("<c:symbol val=\"square\"/>"));
+		case spreadsheet.MarkerStyle.Square:
+			sb.push("<c:symbol val=\"square\"/>");
 			break;
-		case MarkerStyle.Star:
-			sb.push("<c:symbol val=\"star\"/>"));
+		case spreadsheet.MarkerStyle.Star:
+			sb.push("<c:symbol val=\"star\"/>");
 			break;
-		case MarkerStyle.Triangle:
-			sb.push("<c:symbol val=\"triangle\"/>"));
+		case spreadsheet.MarkerStyle.Triangle:
+			sb.push("<c:symbol val=\"triangle\"/>");
 			break;
-		case MarkerStyle.X:
-			sb.push("<c:symbol val=\"x\"/>"));
+		case spreadsheet.MarkerStyle.X:
+			sb.push("<c:symbol val=\"x\"/>");
 			break;
 		}
-		if (series.GetMarkerSize() != 0)
+		if (series.getMarkerSize() != 0)
 		{
-			sb.push("<c:size val=\""));
-			sb.AppendU32(series.GetMarkerSize());
-			sb.push("\"/>"));
+			sb.push("<c:size val=\"");
+			sb.push(""+series.getMarkerSize());
+			sb.push("\"/>");
 		}
-		sb.push("</c:marker>"));
+		sb.push("</c:marker>");
 	
-		UTF8Char sbuff[128];
-		WorkbookDataSource *catData = series.GetCategoryData();
-		sb.push("<c:cat>"));
-		sb.push("<c:strRef>"));
-		sb.push("<c:f>"));
-		catData.ToCodeRange(sbuff);
-		s = Text.XML.ToNewXMLText(sbuff);
-		sb.Append(s);
-		s.Release();
-		sb.push("</c:f>"));
-		sb.push("<c:strCache/>"));
-		sb.push("</c:strRef>"));
-		sb.push("</c:cat>"));
+		let catData = series.getCategoryData();
+		sb.push("<c:cat>");
+		sb.push("<c:strRef>");
+		sb.push("<c:f>");
+		s = text.toXMLText(catData.toCodeRange());
+		sb.push(s);
+		sb.push("</c:f>");
+		sb.push("<c:strCache/>");
+		sb.push("</c:strRef>");
+		sb.push("</c:cat>");
 	
-		WorkbookDataSource *valData = series.GetValueData();
-		sb.push("<c:val>"));
-		sb.push("<c:numRef>"));
-		sb.push("<c:f>"));
-		valData.ToCodeRange(sbuff);
-		s = Text.XML.ToNewXMLText(sbuff);
-		sb.Append(s);
-		s.Release();
-		sb.push("</c:f>"));
-		UOSInt firstRow = valData.GetFirstRow();
-		UOSInt lastRow = valData.GetLastRow();
-		UOSInt firstCol = valData.GetFirstCol();
-		UOSInt lastCol = valData.GetLastCol();
+		let valData = series.getValueData();
+		sb.push("<c:val>");
+		sb.push("<c:numRef>");
+		sb.push("<c:f>");
+		s = text.toXMLText(valData.toCodeRange());
+		sb.push(s);
+		sb.push("</c:f>");
+		let firstRow = valData.getFirstRow();
+		let lastRow = valData.getLastRow();
+		let firstCol = valData.getFirstCol();
+		let lastCol = valData.getLastCol();
 		if (firstRow == lastRow)
 		{
-			NN<Worksheet> sheet = valData.GetSheet();
-			sb.push("<c:numCache>"));
-			sb.push("<c:ptCount val=\""));
-			sb.AppendUOSInt(lastCol - firstCol + 1);
-			sb.push("\"/>"));
-			NN<Worksheet.RowData> row;
-			NN<Worksheet.CellData> cell;
-			NN<Text.String> cellValue;
-			UOSInt i;
-			if (sheet.GetItem(firstRow).SetTo(row))
+			let sheet = valData.getSheet();
+			sb.push("<c:numCache>");
+			sb.push("<c:ptCount val=\"");
+			sb.push(""+(lastCol - firstCol + 1));
+			sb.push("\"/>");
+			let row;
+			let cell;
+			let cellValue;
+			let i;
+			if ((row = sheet.getItem(firstRow)) != null)
 			{
 				i = firstCol;
 				while (i <= lastCol)
 				{
-					if (row.cells.GetItem(i).SetTo(cell) && cell.cellValue.SetTo(cellValue) && (cell.cdt == CellDataType.DateTime || cell.cdt == CellDataType.Number))
+					if ((cell = row.cells[i]) != null && (cellValue = cell.cellValue) != null && (cell.cdt == spreadsheet.CellDataType.DateTime || cell.cdt == spreadsheet.CellDataType.Number))
 					{
-						sb.push("<c:pt idx=\""));
-						sb.AppendUOSInt(i - firstCol);
-						sb.push("\"><c:v>"));
-						sb.Append(cellValue);
-						sb.push("</c:v></c:pt>"));
+						sb.push("<c:pt idx=\"");
+						sb.push(""+(i - firstCol));
+						sb.push("\"><c:v>");
+						sb.push(cellValue);
+						sb.push("</c:v></c:pt>");
 					}
 					i++;
 				}
 			}
-			sb.push("</c:numCache>"));
+			sb.push("</c:numCache>");
 		}
 		else if (firstCol == lastCol)
 		{
-			NN<Worksheet> sheet = valData.GetSheet();
-			sb.push("<c:numCache>"));
-			sb.push("<c:ptCount val=\""));
-			sb.AppendUOSInt(lastRow - firstRow + 1);
-			sb.push("\"/>"));
-			NN<Worksheet.RowData> row;
-			NN<Worksheet.CellData> cell;
-			NN<Text.String> cellValue;
-			UOSInt i;
+			let sheet = valData.getSheet();
+			sb.push("<c:numCache>");
+			sb.push("<c:ptCount val=\"");
+			sb.push(""+(lastRow - firstRow + 1));
+			sb.push("\"/>");
+			let row;
+			let cell;
+			let cellValue;
+			let i;
 			i = firstRow;
 			while (i <= lastRow)
 			{
-				if (sheet.GetItem(i).SetTo(row))
+				if ((row = sheet.getItem(i)) != null)
 				{
-					if (row.cells.GetItem(firstCol).SetTo(cell) && cell.cellValue.SetTo(cellValue) && (cell.cdt == CellDataType.DateTime || cell.cdt == CellDataType.Number))
+					if ((cell = row.cells[firstCol]) != null && (cellValue = cell.cellValue) != null && (cell.cdt == spreadsheet.CellDataType.DateTime || cell.cdt == spreadsheet.CellDataType.Number))
 					{
-						sb.push("<c:pt idx=\""));
-						sb.AppendUOSInt(i - firstRow);
-						sb.push("\"><c:v>"));
-						sb.Append(cellValue);
-						sb.push("</c:v></c:pt>"));
+						sb.push("<c:pt idx=\"");
+						sb.push(""+(i - firstRow));
+						sb.push("\"><c:v>");
+						sb.push(cellValue);
+						sb.push("</c:v></c:pt>");
 					}
 					i++;
 				}
 				i++;	
 			}
-			sb.push("</c:numCache>"));
+			sb.push("</c:numCache>");
 		}
 		else
 		{
-			sb.push("<c:numCache/>"));
+			sb.push("<c:numCache/>");
 		}
-		sb.push("</c:numRef>"));
-		sb.push("</c:val>"));
+		sb.push("</c:numRef>");
+		sb.push("</c:val>");
 	
-		sb.push("<c:smooth val=\""));
-		if (series.IsSmooth())
-			sb.push("true"));
+		sb.push("<c:smooth val=\"");
+		if (series.isSmooth())
+			sb.push("true");
 		else
-			sb.push("false"));
-		sb.push("\"/>"));
-		sb.push("</c:ser>"));
-	}*/
+			sb.push("false");
+		sb.push("\"/>");
+		sb.push("</c:ser>");
+	}
 
 	/**
 	 * @param {string[]} sb
@@ -1935,6 +1948,9 @@ export class XLSXExporter
 		}
 	}
 
+	/**
+	 * @param {string} dataFormat
+	 */
 	static toFormatCode(dataFormat)
 	{
 		let s = [];
