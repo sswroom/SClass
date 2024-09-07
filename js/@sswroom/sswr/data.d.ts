@@ -120,7 +120,7 @@ export class LocalDate
 	setDay(day: number): void;
 	isYearLeap(): boolean;
 	toTicks(): number;
-	toString(pattern: string | null): string;
+	toString(pattern?: string | null): string;
 	compareTo(obj: Date): number;
 	isNull(): boolean;
 	getWeekday(): Weekday;

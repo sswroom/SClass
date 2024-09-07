@@ -1,4 +1,4 @@
-import { Timestamp } from "./data";
+import * as data from "./data";
 import * as geometry from "./geometry";
 import * as kml from "./kml";
 import * as map from "./map";
@@ -82,22 +82,26 @@ export function getLayerData(svcUrl: string, onResultFunc: Function, layerName: 
 
 declare class GPSRecord
 {
-	t: number;
+	recTime: number;
 	lat: number;
 	lon: number;
-	a: number;
-	s: number;
-	d: number;
-	v: boolean;
-	sate: number;
+	altitude: number;
+	speed: number;
+	heading: number;
+	valid: boolean;
+	sateUsed: number;
 }
 
-export class GPSTrack
+export class GPSTrack extends data.ParsedObject
 {
 	recs: GPSRecord[];
-	constructor(recs: GPSRecord[]);
+
+	constructor(recs: GPSRecord[], sourceName?: string);
+	addPosition(pos: GeolocationPosition);
+	getTrackCnt(): number;
+	getTrack(index: number): GPSRecord[]|null;
 	createLineString(): geometry.LineString;
-	getPosByTime(ts: Timestamp): math.Vector3;
+	getPosByTime(ts: data.Timestamp): math.Vector3;
 	getPosByTicks(ticks: number): math.Vector3;
 }
 

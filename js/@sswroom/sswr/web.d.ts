@@ -116,6 +116,7 @@ export function getButtonElement(id: string): HTMLButtonElement;
 export function getDivElement(id: string): HTMLDivElement;
 export function getSpanElement(id: string): HTMLSpanElement;
 export function getCanvasElement(id: string): HTMLCanvasElement;
+export function getImgElement(id: string): HTMLImageElement;
 export function getBrowserInfo(): Promise<BrowserInfo>;
 export function parseUserAgent(userAgent: string): BrowserInfo;
 

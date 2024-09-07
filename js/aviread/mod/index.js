@@ -1,6 +1,8 @@
 import * as crypto from "/js/@sswroom/sswr/crypto.js";
 import * as data from "/js/@sswroom/sswr/data.js";
+import * as map from "/js/@sswroom/sswr/map.js";
 import {XLSXExporter} from "/js/@sswroom/sswr/exporter/XLSXExporter.js";
+import {GPXExporter} from "/js/@sswroom/sswr/exporter/GPXExporter.js";
 import * as spreadsheet from "/js/@sswroom/sswr/spreadsheet.js";
 import * as text from "/js/@sswroom/sswr/text.js";
 import * as unit from "/js/@sswroom/sswr/unit.js";
@@ -35,8 +37,7 @@ zbuilder.addFile("Testing.txt", new TextEncoder().encode("Testing Testing"), t, 
 let zipFile = zbuilder.finalize();
 web.openData(new Blob([zipFile]), "application/zip", "Testing.zip");*/
 
-
-let wb = new spreadsheet.Workbook();
+/*let wb = new spreadsheet.Workbook();
 let sheet = wb.addWorksheet("Test Sheet");
 sheet.setCellString(0, 0, "2024-Jan");
 sheet.setCellInt32(1, 0, 24);
@@ -53,4 +54,31 @@ let bytes = exporter.exportFile("test.xlsx", wb);
 if (bytes)
 {
 	web.openData(new Blob([bytes]), exporter.getOutputMIME(), "test.xlsx");
+}*/
+
+/** @type {map.GPSRecord[]} */
+let recs = [];
+let t = new Date().getTime();
+recs.push({recTime: t, lat: 22.4, lon: 114.2, altitude: 1, speed: 0, heading: 0, sateUsed: 3, valid: true});
+recs.push({recTime: t + 1000, lat: 22.5, lon: 114.2, altitude: 2, speed: 0, heading: 0, sateUsed: 3, valid: true});
+let track = new map.GPSTrack(recs);
+let exporter = new GPXExporter();
+let bytes = exporter.exportFile("test.gpx", track);
+if (bytes)
+{
+	web.openData(new Blob([bytes]), exporter.getOutputMIME(), "test.gpx");
+}
+
+
+/**
+ * @param {GeolocationPosition} pos
+ */
+function onPosition(pos)
+{
+	track.addPosition(pos);
+}
+
+if (navigator.geolocation)
+{
+	navigator.geolocation.watchPosition(onPosition, null, {enableHighAccuracy: true})
 }

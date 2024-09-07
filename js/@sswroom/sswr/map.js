@@ -1,3 +1,4 @@
+import * as data from "./data.js";
 import * as geometry from "./geometry.js";
 import * as math from "./math.js";
 import * as web from "./web.js";
@@ -46,6 +47,9 @@ export function calcDistance(srid, geom, x, y)
 	return csys.calcSurfaceDistance(x, y, pt.x, pt.y, unit.Distance.Unit.METER);
 }
 
+/**
+ * @param {string} svcUrl
+ */
 export function getLayers(svcUrl, onResultFunc)
 {
 	web.loadJSON(svcUrl + '/getlayers', onResultFunc);
@@ -56,11 +60,47 @@ export function getLayerData(svcUrl, onResultFunc, layerName, dataFormat)
 	web.loadJSON(svcUrl + '/getlayerdata?name='+encodeURIComponent(layerName)+"&fmt="+encodeURIComponent(dataFormat), onResultFunc);
 }
 
-export class GPSTrack
+export class GPSTrack extends data.ParsedObject
 {
-	constructor(recs)
+	/**
+	 * @param {{recTime: number;lat: number;lon: number;altitude: number;speed: number;heading: number;valid: boolean;sateUsed: number;}[]} recs
+	 * @param {string|undefined} sourceName
+	 */
+	constructor(recs, sourceName)
 	{
+		super(sourceName||"Untitled.gpx", "GPSTrack");
 		this.recs = recs;
+	}
+
+	/**
+	 * @param {GeolocationPosition} pos
+	 */
+	addPosition(pos)
+	{
+		this.recs.push({
+			recTime: pos.timestamp,
+			lat: pos.coords.latitude,
+			lon: pos.coords.longitude,
+			altitude: pos.coords.altitude || 0,
+			heading: pos.coords.heading||0,
+			speed: (pos.coords.speed || 0) * 3.6 / 1.852,
+			valid: true,
+			sateUsed: -1});
+	}
+
+	getTrackCnt()
+	{
+		return 1;
+	}
+
+	/**
+	 * @param {number} index
+	 */
+	getTrack(index)
+	{
+		if (index == 0)
+			return this.recs;
+		return null;
 	}
 
 	createLineString()
@@ -70,20 +110,26 @@ export class GPSTrack
 		let j = this.recs.length;
 		while (i < j)
 		{
-			coordinates.push([this.recs[i].lon, this.recs[i].lat, this.recs[i].a]);
+			coordinates.push([this.recs[i].lon, this.recs[i].lat, this.recs[i].altitude]);
 			i++;
 		}
 		return new geometry.LineString(4326, coordinates);
 	}
 
+	/**
+	 * @param {data.Timestamp} ts
+	 */
 	getPosByTime(ts)
 	{
 		return this.getPosByTicks(ts.toTicks());
 	}
 
+	/**
+	 * @param {number} ticks
+	 */
 	getPosByTicks(ticks)
 	{
-		if (ticks >= this.recs[0].t && ticks <= this.recs[this.recs.length - 1].t)
+		if (ticks >= this.recs[0].recTime && ticks <= this.recs[this.recs.length - 1].recTime)
 		{
 			let i = 0;
 			let j = this.recs.length - 1;
@@ -92,7 +138,7 @@ export class GPSTrack
 			while (i <= j)
 			{
 				k = (i + j) >> 1;
-				l = this.recs[k].t;
+				l = this.recs[k].recTime;
 				if (ticks > l)
 				{
 					i = k + 1;
@@ -103,17 +149,17 @@ export class GPSTrack
 				}
 				else
 				{
-					return new math.Vector3(this.recs[k].lon, this.recs[k].lat, this.recs[k].a);
+					return new math.Vector3(this.recs[k].lon, this.recs[k].lat, this.recs[k].altitude);
 				}
 			}
 			let tDiff;
 			let rec1 = this.recs[i - 1];
 			let rec2 = this.recs[i];
-			tDiff = rec2.t - rec1.t;
+			tDiff = rec2.recTime - rec1.recTime;
 			return new math.Vector3(
-				(rec1.lon * (rec2.t - ticks) + rec2.lon * (ticks - rec1.t)) / tDiff,
-				(rec1.lat * (rec2.t - ticks) + rec2.lat * (ticks - rec1.t)) / tDiff,
-				(rec1.a * (rec2.t - ticks) + rec2.a * (ticks - rec1.t)) / tDiff);
+				(rec1.lon * (rec2.recTime - ticks) + rec2.lon * (ticks - rec1.recTime)) / tDiff,
+				(rec1.lat * (rec2.recTime - ticks) + rec2.lat * (ticks - rec1.recTime)) / tDiff,
+				(rec1.altitude * (rec2.recTime - ticks) + rec2.altitude * (ticks - rec1.recTime)) / tDiff);
 		}
 		return new math.Vector3(0, 0, 0);
 	}
@@ -181,6 +227,7 @@ export class WMS
 			let node = doc.childNodes[0];
 			if (node.nodeName == "WMS_Capabilities" || node.nodeName == "WMT_MS_Capabilities")
 			{
+				// @ts-ignore
 				let attr = node.attributes.getNamedItem("version");
 				if (attr)
 				{

@@ -2089,7 +2089,7 @@ export class LocalDate
 	}
 
 	/**
-	 * @param {string | null} pattern
+	 * @param {string | null | undefined} pattern
 	 */
 	toString(pattern)
 	{

@@ -1021,6 +1021,20 @@ export function getCanvasElement(id)
 }
 
 /**
+ * @param {string} id
+ * @returns {HTMLImageElement}
+ */
+export function getImgElement(id)
+{
+	let ele = document.getElementById(id);
+	if (ele == null)
+		throw new Error("Element with id \""+id+"\" not found");
+	if (ele instanceof HTMLImageElement)
+		return ele;
+	throw new Error("Element with id \""+id+"\" is not an img");
+}
+
+/**
  * @returns {Promise<{os: String,osVer?:string,browser: String,browserVer?: string,devName?:string}>}
  */
 export async function getBrowserInfo()
