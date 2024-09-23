@@ -208,6 +208,7 @@ namespace Net
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		Optional<IO::LogTool> log;
+		Bool debugLog;
 
 		Optional<MSGraphAccessToken> AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content);
 
@@ -216,7 +217,7 @@ namespace Net
 		MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		~MSGraphClient();
 
-		void SetLog(NN<IO::LogTool> log);
+		void SetLog(NN<IO::LogTool> log, Bool debugLog);
 
 		Optional<MSGraphAccessToken> AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope);
 		Optional<MSGraphEntity> EntityGet(NN<MSGraphAccessToken> token, Text::CString userName);

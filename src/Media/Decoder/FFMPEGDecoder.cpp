@@ -55,6 +55,10 @@ extern "C"
 #define AVFRAME_IS_KEY_FRAME(frame) frame->key_frame
 #endif
 
+#if VERSION_FROM(61, 3, 100)
+#define FF_API_OLD_CHANNEL_LAYOUT 1
+#endif
+
 #if !defined(__MINGW32__) && defined(__GNUC__)
 #if VERSION_FROM(55, 0, 0) //not sure
 #define FFMPEGDecoder_av_frame_alloc av_frame_alloc

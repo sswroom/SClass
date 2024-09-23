@@ -7,7 +7,7 @@
 
 #include "IO/FileStream.h"
 
-#define VERBOSE
+//#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -137,6 +137,12 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 		if (this->log.SetTo(log))
 		{
 			log->LogMessage(CSTR("Error in getting access token"), IO::LogHandler::LogLevel::Error);
+			if (debugLog)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(CSTR("MSGraphClient: Error in getting access token: status = "))->AppendI32((Int32)status)->Append(CSTR(", content = "))->Append(content);
+				log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
 		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in getting access token: status = %d, content = %s\r\n", (Int32)status, content.v.Ptr());
@@ -149,6 +155,12 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 		if (this->log.SetTo(log))
 		{
 			log->LogMessage(CSTR("Error in parsing access token (Not JSON)"), IO::LogHandler::LogLevel::Error);
+			if (debugLog)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(CSTR("MSGraphClient: Error in parsing access token (Not JSON): content = "))->Append(content);
+				log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
 		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in parsing access token (Not JSON): content = %s\r\n", content.v.Ptr());
@@ -187,6 +199,12 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 		if (this->log.SetTo(log))
 		{
 			log->LogMessage(CSTR("Error in parsing access token (Fields not found)"), IO::LogHandler::LogLevel::Error);
+			if (debugLog)
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.Append(CSTR("MSGraphClient: Error in parsing access token (Fields not found): content = "))->Append(content);
+				log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
 		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: Error in parsing access token (Fields not found): content = %s\r\n", content.v.Ptr());
@@ -202,12 +220,21 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Text::StringBuilderUTF8 sb;
+	NN<IO::LogTool> log;
 	if (cli->ReadAllContent(sb, 4096, 1048576 * 4))
 	{
 		cli.Delete();
 		NN<Text::JSONBase> json;
 		if (!Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
 		{
+			if (this->debugLog && this->log.SetTo(log))
+			{
+				Text::StringBuilderUTF8 sbLog;
+				sbLog.Append(CSTR("MSGraphClient: "))->Append(funcName)->Append(CSTR(" cannot parse result: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+				log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				sbLog.ClearStr()->Append(CSTR("MSGraphClient: "))->Append(funcName)->Append(CSTR(" url: "))->Append(url);
+				log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: %s cannot parse result: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
 			printf("MSGraphClient: %s url: %s\r\n", funcName.v.Ptr(), url.v.Ptr());
@@ -217,6 +244,12 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		if (json->GetType() != Text::JSONType::Object)
 		{
 			json->EndUse();
+			if (this->debugLog && this->log.SetTo(log))
+			{
+				Text::StringBuilderUTF8 sbLog;
+				sbLog.Append(CSTR("MSGraphClient: "))->Append(funcName)->Append(CSTR(" not json object: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+				log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: %s not json object: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
 #endif
@@ -227,6 +260,12 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 		if (!obj->GetObjectArray(CSTR("value")).SetTo(arr))
 		{
 			json->EndUse();
+			if (this->debugLog && this->log.SetTo(log))
+			{
+				Text::StringBuilderUTF8 sbLog;
+				sbLog.Append(CSTR("MSGraphClient: "))->Append(funcName)->Append(CSTR(" value array not found: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+				log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: %s value array not found: %d, %s\r\n", funcName.v.Ptr(), (Int32)status, sb.ToPtr());
 #endif
@@ -260,6 +299,12 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 	else
 	{
 		cli.Delete();
+		if (this->debugLog && this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("MSGraphClient: "))->Append(funcName)->Append(CSTR(" request error: status = "))->AppendI32((Int32)status);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: %s request error: status = %d\r\n", funcName.v.Ptr(), (Int32)status);
 #endif
@@ -272,14 +317,16 @@ Net::MSGraphClient::MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::
 	this->clif = clif;
 	this->ssl = ssl;
 	this->log = 0;
+	this->debugLog = false;
 }
 
 Net::MSGraphClient::~MSGraphClient()
 {
 }
 
-void Net::MSGraphClient::SetLog(NN<IO::LogTool> log)
+void Net::MSGraphClient::SetLog(NN<IO::LogTool> log, Bool debugLog)
 {
+	this->debugLog = debugLog;
 	this->log = log;
 }
 
@@ -347,6 +394,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::LogTool> log;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
 	Text::CStringNN nns;
@@ -367,6 +415,12 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 	if (cli->ReadAllContent(sb, 4096, 1048576))
 	{
 		cli.Delete();
+		if (this->debugLog && this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("MSGraphClient: EntityGetMe "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: EntityGetMe %d, %s\r\n", (Int32)status, sb.ToPtr());
 #endif
@@ -389,6 +443,12 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 	else
 	{
 		cli.Delete();
+		if (this->debugLog && this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("MSGraphClient: EntityGetMe request error: status = "))->AppendI32((Int32)status);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
 #if defined(VERBOSE)
 		printf("MSGraphClient: EntityGetMe request error: status = %d\r\n", (Int32)status);
 #endif
@@ -458,6 +518,12 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 			if (this->log.SetTo(log))
 			{
 				log->LogMessage(CSTR("MailMessagesGet cannot parse result"), IO::LogHandler::LogLevel::Error);
+				if (this->debugLog)
+				{
+					Text::StringBuilderUTF8 sbLog;
+					sbLog.Append(CSTR("MSGraphClient: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				}
 			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesGet cannot parse result: %d, %s\r\n", (Int32)status, sb.ToPtr());
@@ -470,6 +536,12 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 			if (this->log.SetTo(log))
 			{
 				log->LogMessage(CSTR("MailMessagesGet not json object"), IO::LogHandler::LogLevel::Error);
+				if (this->debugLog)
+				{
+					Text::StringBuilderUTF8 sbLog;
+					sbLog.Append(CSTR("MSGraphClient: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				}
 			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesGet not json object: %d, %s\r\n", (Int32)status, sb.ToPtr());
@@ -485,6 +557,12 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 			if (this->log.SetTo(log))
 			{
 				log->LogMessage(CSTR("MailMessagesGet value array not found"), IO::LogHandler::LogLevel::Error);
+				if (this->debugLog)
+				{
+					Text::StringBuilderUTF8 sbLog;
+					sbLog.Append(CSTR("MSGraphClient: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				}
 			}
 #if defined(VERBOSE)
 			printf("MSGraphClient: MailMessagesGet value array not found: %d, %s\r\n", (Int32)status, sb.ToPtr());

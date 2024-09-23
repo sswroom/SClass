@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnReadClicked(AnyType userOb
 	}
 
     Net::MSGraphClient cli(me->core->GetTCPClientFactory(), me->ssl);
-	cli.SetLog(me->log);
+	cli.SetLog(me->log, true);
     NN<Net::MSGraphAccessToken> token;
     if (cli.AccessTokenGet(sbTenantId.ToCString(), sbClientId.ToCString(), sbClientSecret.ToCString(), CSTR_NULL).SetTo(token))
     {

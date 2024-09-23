@@ -802,10 +802,11 @@ namespace Text
 			return ReplaceStrICase(fromStr.v, fromStr.leng, toStr.v, toStr.leng);
 		}
 
-		void ClearStr()
+		NN<StringBuilderUTF8> ClearStr()
 		{
 			this->leng = 0;
 			this->v[0] = 0;
+			return *this;
 		}
 
 		UnsafeArray<const UTF8Char> ToString() const

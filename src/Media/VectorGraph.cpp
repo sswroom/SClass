@@ -19,7 +19,7 @@ Media::VectorGraph::VectorPenStyle::VectorPenStyle(UOSInt index, UInt32 color, D
 	this->color = color;
 	this->thick = thick;
 	UnsafeArray<UInt8> nnpattern;
-	if (this->nPattern > 0 && pattern.SetTo(nnpattern))
+	if (nPattern > 0 && pattern.SetTo(nnpattern))
 	{
 		this->nPattern = nPattern;
 		this->pattern = MemAlloc(UInt8, this->nPattern);
