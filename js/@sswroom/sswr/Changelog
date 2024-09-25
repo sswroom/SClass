@@ -1,3 +1,6 @@
+1.6.16
+-Fixed leaflet point icon
+
 1.6.15
 -shreadsheet Support Chart
 -Added web.getCanvasElement, web.getImgElement

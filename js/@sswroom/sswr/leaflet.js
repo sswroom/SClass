@@ -179,7 +179,7 @@ export function createFromGeometry(geom, options)
 		{
 			if (options.name)
 				opt.title = options.name;
-			if (options.icon && options.icon.iconUrl)
+			if (options.icon && options.icon.options.iconUrl)
 				opt.icon = options.icon;
 		}
 		return L.marker(L.latLng(geom.coordinates[1], geom.coordinates[0]), opt);

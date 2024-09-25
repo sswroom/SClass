@@ -56,8 +56,7 @@ if (bytes)
 	web.openData(new Blob([bytes]), exporter.getOutputMIME(), "test.xlsx");
 }*/
 
-/** @type {map.GPSRecord[]} */
-let recs = [];
+/*let recs = [];
 let t = new Date().getTime();
 recs.push({recTime: t, lat: 22.4, lon: 114.2, altitude: 1, speed: 0, heading: 0, sateUsed: 3, valid: true});
 recs.push({recTime: t + 1000, lat: 22.5, lon: 114.2, altitude: 2, speed: 0, heading: 0, sateUsed: 3, valid: true});
@@ -67,18 +66,4 @@ let bytes = exporter.exportFile("test.gpx", track);
 if (bytes)
 {
 	web.openData(new Blob([bytes]), exporter.getOutputMIME(), "test.gpx");
-}
-
-
-/**
- * @param {GeolocationPosition} pos
- */
-function onPosition(pos)
-{
-	track.addPosition(pos);
-}
-
-if (navigator.geolocation)
-{
-	navigator.geolocation.watchPosition(onPosition, null, {enableHighAccuracy: true})
-}
+}*/
