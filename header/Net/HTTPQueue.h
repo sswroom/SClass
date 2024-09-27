@@ -28,7 +28,7 @@ namespace Net
 		~HTTPQueue();
 
 		NN<Net::HTTPClient> MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown);
-		void EndRequest(Net::HTTPClient *cli);
+		void EndRequest(NN<Net::HTTPClient> cli);
 		void Clear();
 	};
 }

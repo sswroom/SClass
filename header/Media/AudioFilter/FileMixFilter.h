@@ -22,7 +22,7 @@ namespace Media
 			FileMixFilter(NN<IAudioSource> sourceAudio, NN<Parser::ParserList> parsers);
 			virtual ~FileMixFilter();
 
-			virtual void GetFormat(AudioFormat *format);
+			virtual void GetFormat(NN<AudioFormat> format);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool LoadFile(NN<Text::String> fileName);

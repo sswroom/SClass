@@ -180,7 +180,7 @@ namespace Math
 		static NN<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
 
 		static Optional<const Math::CoordinateSystemManager::DatumInfo> GetDatumInfoByName(UnsafeArray<const UTF8Char> name);
-		static void FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
+		static void FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, Optional<const SpheroidInfo> spheroid);
 
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static NN<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);

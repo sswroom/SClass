@@ -22,7 +22,7 @@ Media::AudioFilter::FileMixFilter::~FileMixFilter()
 	this->fileSrc.Delete();
 }
 
-void Media::AudioFilter::FileMixFilter::GetFormat(AudioFormat *format)
+void Media::AudioFilter::FileMixFilter::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

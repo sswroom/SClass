@@ -59,7 +59,7 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 	return cli;
 }
 
-void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
+void Net::HTTPQueue::EndRequest(NN<Net::HTTPClient> cli)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -70,15 +70,15 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	Sync::MutexUsage mutUsage(this->statusMut);
 	if (this->statusMap.Get(CSTRP(sbuff, sptr)).SetTo(status))
 	{
-		if (status->req1 == cli)
+		if (status->req1 == cli.Ptr())
 		{
 			status->req1 = 0;
 		}
-		else if (status->req2 == cli)
+		else if (status->req2 == cli.Ptr())
 		{
 			status->req2 = 0;
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 		if (status->req1 == 0 && status->req2 == 0)
 		{
 			MemFreeNN(status);
@@ -88,7 +88,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	}
 	else
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	mutUsage.EndUse();
 }

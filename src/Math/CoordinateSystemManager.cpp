@@ -570,18 +570,19 @@ Optional<const Math::CoordinateSystemManager::DatumInfo> Math::CoordinateSystemM
 	return 0;
 }
 
-void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const Math::CoordinateSystemManager::DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
+void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, Optional<const Math::CoordinateSystemManager::DatumInfo> datum, Text::CStringNN name, NN<Math::EarthEllipsoid> ee, Optional<const SpheroidInfo> spheroid)
 {
 	NN<const Math::CoordinateSystemManager::DatumInfo> nndatum;
+	NN<const SpheroidInfo> nnspheroid;
 	if (datum.SetTo(nndatum))
 	{
 		data->srid = nndatum->srid;
 		data->spheroid.ellipsoid = ee;
 		data->spheroid.srid = nndatum->spheroid;
-		if (spheroid)
+		if (spheroid.SetTo(nnspheroid))
 		{
-			data->spheroid.name = spheroid->name;
-			data->spheroid.nameLen = spheroid->nameLen;
+			data->spheroid.name = nnspheroid->name;
+			data->spheroid.nameLen = nnspheroid->nameLen;
 		}
 		else
 		{
