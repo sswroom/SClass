@@ -23,7 +23,7 @@ namespace Net
 			NN<Text::String> localFile;
 			UOSInt seekCnt;
 
-			Net::HTTPClient *cli;
+			Optional<Net::HTTPClient> cli;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			Net::HTTPQueue *queue;

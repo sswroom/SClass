@@ -51,6 +51,7 @@ namespace Net
 		static UInt32 IPv4ToSortable(UInt32 ipv4);
 		static Bool IPv4SubnetValid(UInt32 subnet);
 		static IPType GetIPv4Type(UInt32 ipv4);
+		static IPType GetIPType(NN<const AddressInfo> addr);
 		static UInt32 IPv4ToBroadcast(UInt32 ipv4);
 		static Bool AddrEquals(NN<const AddressInfo> addr1, NN<const AddressInfo> addr2);
 		static Text::PString GetHostPort(Text::PString str, OutParam<UInt16> port);

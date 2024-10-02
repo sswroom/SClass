@@ -13,16 +13,17 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	UInt8 buff[2048];
 	UOSInt readSize;
 
+	NN<Net::HTTPClient> cli;
 	NN<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);
-		fdh->cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
+		fdh->cli = cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		mutUsage.EndUse();
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
+		fdh->cli = cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	}
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile->ToCString()) == IO::Path::PathType::File)
@@ -32,26 +33,26 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 		{
 			Data::DateTime dt;
 			fs.GetFileTimes(0, 0, &dt);
-			fdh->cli->AddTimeHeader(CSTR("If-Modified-Since"), dt);
+			cli->AddTimeHeader(CSTR("If-Modified-Since"), dt);
 		}
 	}
-	while (fdh->cli->GetRespStatus() == 301)
+	while (cli->GetRespStatus() == 301)
 	{
 		Text::StringBuilderUTF8 sb;
-		fdh->cli->GetRespHeader(CSTR("Location"), sb);
+		cli->GetRespHeader(CSTR("Location"), sb);
 		if (sb.GetLength() > 0 && (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://"))))
 		{
 			if (fdh->queue)
 			{
 				Sync::MutexUsage mutUsage(fdh->mut);
-				fdh->queue->EndRequest(fdh->cli);
-				fdh->cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
+				fdh->queue->EndRequest(cli);
+				fdh->cli = cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				mutUsage.EndUse();
 			}
 			else
 			{
-				DEL_CLASS(fdh->cli);
-				fdh->cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true).Ptr();
+				cli.Delete();
+				fdh->cli = cli = Net::HTTPClient::CreateConnect(fdh->clif, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 			}
 		}
 		else
@@ -60,20 +61,20 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 		}
 	}
 
-	if (fdh->cli->GetRespStatus() == 304)
+	if (cli->GetRespStatus() == 304)
 	{
 		NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fdh->fileLength = fdh->file->GetLength();
 	}
-	else if (fdh->cli->GetRespStatus() == 200)
+	else if (cli->GetRespStatus() == 200)
 	{
-		fdh->fileLength = fdh->cli->GetContentLength();
+		fdh->fileLength = cli->GetContentLength();
 		if (fdh->fileLength > 0)
 		{
 			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 			while (fdh->loadSize < fdh->fileLength)
 			{
-				readSize = fdh->cli->Read(BYTEARR(buff));
+				readSize = cli->Read(BYTEARR(buff));
 				if (readSize == 0)
 				{
 					Sync::MutexUsage mutUsage(fdh->mut);
@@ -97,7 +98,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 				mutUsage.EndUse();
 			}
 			Data::DateTime dt;
-			if (fdh->file && fdh->cli->GetLastModified(dt))
+			if (fdh->file && cli->GetLastModified(dt))
 			{
 				fdh->file->SetFileTimes(0, 0, &dt);
 			}
@@ -105,7 +106,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			if (!fdh->cli->GetRespHeader(CSTR("Content-Length"), sb))
+			if (!cli->GetRespHeader(CSTR("Content-Length"), sb))
 			{
 				NN<IO::StreamReadReq> sess;
 				Sync::Event readEvt(false);
@@ -113,14 +114,14 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 				while (true)
 				{
 					readEvt.Clear();
-					if (fdh->cli->BeginRead(BYTEARR(buff), readEvt).SetTo(sess))
+					if (cli->BeginRead(BYTEARR(buff), readEvt).SetTo(sess))
 					{
 						Bool incomplete;
 						readEvt.Wait(2000);
-						readSize = fdh->cli->EndRead(sess, false, incomplete);
+						readSize = cli->EndRead(sess, false, incomplete);
 						if (readSize <= 0)
 						{
-							fdh->cli->Close();
+							cli->Close();
 							break;
 						}
 					}
@@ -142,7 +143,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 					mutUsage.EndUse();
 				}
 				Data::DateTime dt;
-				if (fdh->file && fdh->cli->GetLastModified(dt))
+				if (fdh->file && cli->GetLastModified(dt))
 				{
 					fdh->file->SetFileTimes(0, 0, &dt);
 				}
@@ -152,11 +153,11 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	Sync::MutexUsage mutUsage(fdh->mut);
 	if (fdh->queue)
 	{
-		fdh->queue->EndRequest(fdh->cli);
+		fdh->queue->EndRequest(cli);
 	}
 	else
 	{
-		DEL_CLASS(fdh->cli);
+		cli.Delete();
 	}
 	fdh->cli = 0;
 	fdh->isLoading = false;
@@ -264,7 +265,7 @@ Net::HTTPData::HTTPData(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine>
 		fdh->cli = 0;
 		NEW_CLASS(fdh->evtTmp, Sync::Event(false));
 		Sync::ThreadUtil::Create(LoadThread, fdh);
-		while (fdh->cli == 0 && fdh->isLoading)
+		while (fdh->cli.IsNull() && fdh->isLoading)
 		{
 			fdh->evtTmp->Wait(10);
 		}
@@ -401,9 +402,10 @@ void Net::HTTPData::Close()
 	{
 		if (--(fdh->objectCnt) == 0)
 		{
+			NN<HTTPClient> cli;
 			Sync::MutexUsage mutUsage(fdh->mut);
-			if (fdh->isLoading)
-				fdh->cli->Close();
+			if (fdh->isLoading && fdh->cli.SetTo(cli))
+				cli->Close();
 			mutUsage.EndUse();
 			while (fdh->isLoading)
 			{

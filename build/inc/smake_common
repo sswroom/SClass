@@ -1448,6 +1448,10 @@ Data/ArrayListUInt32.h:
 Data/ArrayListUInt64.h:
 @ArrayListUInt64.o
 Data/ArrayMap.h:
+Data/BinaryBuilder.h:
+@BinaryBuilder.o
+Data/BinaryParser.h:
+@BinaryParser.o
 Data/BinTool.h:
 @BinTool.o
 Data/BTreeMap.h:

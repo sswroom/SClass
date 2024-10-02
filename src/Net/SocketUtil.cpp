@@ -622,6 +622,33 @@ Net::IPType Net::SocketUtil::GetIPv4Type(UInt32 ipv4)
 	}
 }
 
+Net::IPType Net::SocketUtil::GetIPType(NN<const AddressInfo> addr)
+{
+	if (addr->addrType == Net::AddrType::IPv4)
+	{
+		return GetIPv4Type(ReadNUInt32(addr->addr));
+	}
+	else if (addr->addrType == Net::AddrType::IPv6)
+	{
+		if (addr->addr[0] == 0xff)
+		{
+			return Net::IPType::Broadcast;
+		}
+		else if ((addr->addr[0] & 0xfe) == 0xfc)
+		{
+			return Net::IPType::Private;
+		}
+		else /////////////////////////////////////////
+		{
+			return Net::IPType::Public;
+		}
+	}
+	else
+	{
+		return Net::IPType::Public;
+	}
+}
+
 UInt32 Net::SocketUtil::IPv4ToBroadcast(UInt32 ipv4)
 {
 	return ipv4 | ~GetDefNetMaskv4(ipv4);

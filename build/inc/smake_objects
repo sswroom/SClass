@@ -128,6 +128,8 @@ ArrayListStringNN.o: ../../src/Data/ArrayListStringNN.cpp
 ArrayListStrUTF8.o: ../../src/Data/ArrayListStrUTF8.cpp
 ArrayListUInt32.o: ../../src/Data/ArrayListUInt32.cpp
 ArrayListUInt64.o: ../../src/Data/ArrayListUInt64.cpp
+BinaryBuilder.o: ../../src/Data/BinaryBuilder.cpp
+BinaryParser.o: ../../src/Data/BinaryParser.cpp
 BinTool.o: ../../src/Data/BinTool.cpp
 ByteOrderLSB.o: ../../src/Data/ByteOrderLSB.cpp
 ByteOrderMSB.o: ../../src/Data/ByteOrderMSB.cpp
