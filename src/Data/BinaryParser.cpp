@@ -108,7 +108,7 @@ Text::CString Data::BinaryParser::NextStr()
 		this->error = true;
 		return 0;
 	}
-	UOSInt len = ReadInt32(&this->buff[this->currOfst + 2]) + 65534;
+	UOSInt len = ReadUInt32(&this->buff[this->currOfst + 2]) + 65534;
 	if (this->currOfst + 6 + len > this->buff.GetSize())
 	{
 		this->error = true;
@@ -170,7 +170,7 @@ Data::Timestamp Data::BinaryParser::NextTS()
 		this->error = true;
 		return 0;
 	}
-	Data::Timestamp ret = Data::Timestamp(Data::TimeInstant(ReadInt64(&this->buff[this->currOfst]), ReadUInt32(&this->buff[this->currOfst + 8])), this->buff[this->currOfst + 12]);
+	Data::Timestamp ret = Data::Timestamp(Data::TimeInstant(ReadInt64(&this->buff[this->currOfst]), ReadUInt32(&this->buff[this->currOfst + 8])), (Int8)this->buff[this->currOfst + 12]);
 	this->currOfst += 13;
 	return ret;
 }
