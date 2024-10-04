@@ -53,6 +53,20 @@ NInt32 Data::BinaryParser::NextNI32()
 	return ret;
 }
 
+Int64 Data::BinaryParser::NextI64()
+{
+	if (this->error)
+		return 0;
+	if (this->currOfst + 8 > this->buff.GetSize())
+	{
+		this->error = true;
+		return 0;
+	}
+	Int64 ret = ReadInt64(&this->buff[this->currOfst]);
+	this->currOfst += 8;
+	return ret;
+}
+
 Double Data::BinaryParser::NextF64()
 {
 	if (this->error)
@@ -230,6 +244,88 @@ Bool Data::BinaryParser::NextIPAddr(NN<Net::SocketUtil::AddressInfo> addr)
 	}
 	this->error = true;
 	return false;
+}
+
+Data::ByteArrayR Data::BinaryParser::NextBArr()
+{
+	Data::ByteArrayR empty = Data::ByteArrayR((const UInt8*)"", 0);
+	if (this->error)
+		return empty;
+	if (this->currOfst + 1 > this->buff.GetSize())
+	{
+		this->error = true;
+		return empty;
+	}
+	UInt8 b = this->buff[this->currOfst];
+	UOSInt size;
+	if (b < 0x80)
+	{
+		size = b;
+		this->currOfst += 1;
+	}
+	else if ((b & 0xe0) == 0xc0)
+	{
+		if (this->currOfst + 2 > this->buff.GetSize())
+		{
+			this->error = true;
+			return empty;
+		}
+		size = (((UInt32)(b & 0x1f) << 6) | (UInt32)(this->buff[this->currOfst + 1] & 0x3f));
+		this->currOfst += 2;
+	}
+	else if ((b & 0xf0) == 0xe0)
+	{
+		if (this->currOfst + 3 > this->buff.GetSize())
+		{
+			this->error = true;
+			return empty;
+		}
+		size = (((UInt32)(b & 0x0f) << 12) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 2] & 0x3f));
+		this->currOfst += 3;
+	}
+	else if ((b & 0xf8) == 0xf0)
+	{
+		if (this->currOfst + 4 > this->buff.GetSize())
+		{
+			this->error = true;
+			return empty;
+		}
+		size = (((UInt32)(b & 0x7) << 18) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 3] & 0x3f));
+		this->currOfst += 4;
+	}
+	else if ((b & 0xfc) == 0xf8)
+	{
+		if (this->currOfst + 5 > this->buff.GetSize())
+		{
+			this->error = true;
+			return empty;
+		}
+		size = (((UInt32)(b & 0x3) << 24) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 4] & 0x3f));
+		this->currOfst += 5;
+	}
+	else if ((b & 0xfe) == 0xfc)
+	{
+		if (this->currOfst + 6 > this->buff.GetSize())
+		{
+			this->error = true;
+			return empty;
+		}
+		size = (((UInt32)(b & 0x1) << 30) | ((UInt32)(this->buff[this->currOfst + 1] & 0x3f) << 24) | ((UInt32)(this->buff[this->currOfst + 2] & 0x3f) << 18) | ((UInt32)(this->buff[this->currOfst + 3] & 0x3f) << 12) | ((UInt32)(this->buff[this->currOfst + 4] & 0x3f) << 6) | (UInt32)(this->buff[this->currOfst + 5] & 0x3f));
+		this->currOfst += 6;
+	}
+	else
+	{
+		this->error = true;
+		return empty;
+	}
+	if (this->currOfst + size > this->buff.GetSize())
+	{
+		this->error = true;
+		return empty;
+	}
+	Data::ByteArrayR arr = this->buff.SubArray(this->currOfst, size);
+	this->currOfst += size;
+	return arr;
 }
 
 Bool Data::BinaryParser::HasError()

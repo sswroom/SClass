@@ -18,6 +18,7 @@ namespace Data
 		void AppendI32(Int32 val);
 		void AppendU32(UInt32 val);
 		void AppendNI32(NInt32 val);
+		void AppendI64(Int64 val);
 		void AppendF64(Double val);
 		void AppendStr(Text::CString s);
 		void AppendStrOpt(Optional<Text::String> s);
@@ -26,6 +27,7 @@ namespace Data
 		void AppendTS(Data::Timestamp ts);
 		void AppendDate(Data::Date dat);
 		void AppendIPAddr(NN<Net::SocketUtil::AddressInfo> addr);
+		void AppendBArr(Data::ByteArrayR barr);
 
 		Data::ByteArrayR Build();
 	};

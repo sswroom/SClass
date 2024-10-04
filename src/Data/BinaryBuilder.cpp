@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/BinaryBuilder.h"
 #include "Data/ByteTool.h"
+#include "Text/MyStringW.h"
 
 Data::BinaryBuilder::BinaryBuilder() : mstm()
 {
@@ -35,9 +36,16 @@ void Data::BinaryBuilder::AppendNI32(NInt32 val)
 	this->mstm.Write(Data::ByteArrayR(buff, 4));
 }
 
+void Data::BinaryBuilder::AppendI64(Int64 val)
+{
+	UInt8 buff[8];
+	WriteInt64(buff, val);
+	this->mstm.Write(Data::ByteArrayR(buff, 8));
+}
+
 void Data::BinaryBuilder::AppendF64(Double val)
 {
-	UInt8 buff[6];
+	UInt8 buff[8];
 	WriteDouble(buff, val);
 	this->mstm.Write(Data::ByteArrayR(buff, 8));
 }
@@ -123,6 +131,14 @@ void Data::BinaryBuilder::AppendIPAddr(NN<Net::SocketUtil::AddressInfo> addr)
 		ipType = (UInt8)Net::AddrType::Unknown;
 		this->mstm.Write(Data::ByteArrayR(&ipType, 1));
 	}
+}
+
+void Data::BinaryBuilder::AppendBArr(Data::ByteArrayR barr)
+{
+	UInt8 buff[6];
+	UnsafeArray<UTF8Char> sptr = Text::StrWriteChar(buff, (UTF32Char)barr.GetSize());
+	this->mstm.Write(Data::ByteArrayR(buff, (UOSInt)(sptr - buff)));
+	this->mstm.Write(barr);
 }
 
 Data::ByteArrayR Data::BinaryBuilder::Build()

@@ -20,6 +20,7 @@ namespace Data
 		Int32 NextI32();
 		UInt32 NextU32();
 		NInt32 NextNI32();
+		Int64 NextI64();
 		Double NextF64();
 		Text::CStringNN NextStrNN();
 		Text::CString NextStr();
@@ -29,6 +30,7 @@ namespace Data
 		Data::Timestamp NextTS();
 		Data::Date NextDate();
 		Bool NextIPAddr(NN<Net::SocketUtil::AddressInfo> addr);
+		Data::ByteArrayR NextBArr();
 
 		Bool HasError();
 	};
