@@ -14,6 +14,7 @@ namespace Net
 			Data::FastStringMapNN<Net::WebServer::WebStandardHandler> hdlrs;
 			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
 			Optional<Text::String> allowOrigin;
+			Optional<Text::String> contentSecurityPolicy;
 
 		protected:
 			Bool DoRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
@@ -30,6 +31,7 @@ namespace Net
 
 			void HandlePath(Text::CStringNN relativePath, NN<Net::WebServer::WebStandardHandler> hdlr, Bool needRelease);
 			void SetAllowOrigin(Text::CString origin);
+			void SetContentSecurityPolicy(Text::CString csp);
 		};
 	}
 }

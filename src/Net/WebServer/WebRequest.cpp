@@ -622,7 +622,7 @@ UInt16 Net::WebServer::WebRequest::GetClientPort() const
 
 Bool Net::WebServer::WebRequest::IsSecure() const
 {
-	return this->cli->IsSSL();
+	return this->cli->IsSSL() || this->IsForwardedSSL();
 }
 
 Optional<Crypto::Cert::X509Cert> Net::WebServer::WebRequest::GetClientCert()
@@ -657,6 +657,32 @@ UnsafeArrayOpt<const UInt8> Net::WebServer::WebRequest::GetReqData(OutParam<UOSI
 		dataSize.Set(this->reqCurrSize);
 		return this->reqData;
 	}
+}
+
+Bool Net::WebServer::WebRequest::IsForwardedSSL() const
+{
+	NN<Text::String> s;
+	if (this->GetSHeader(CSTR("Forwarded")).SetTo(s))
+	{
+		return s->IndexOf(CSTR("proto=https")) != INVALID_INDEX;
+	}
+	if (this->GetSHeader(CSTR("X-Forwarded-Proto")).SetTo(s))
+	{
+		return s->Equals(CSTR("https"));
+	}
+	if (this->GetSHeader(CSTR("X-Forwarded-Ssl")).SetTo(s))
+	{
+		return s->Equals(CSTR("on"));
+	}
+	if (this->GetSHeader(CSTR("Front-End-Https")).SetTo(s))
+	{
+		return s->Equals(CSTR("on"));
+	}
+	if (this->GetSHeader(CSTR("X-Url-Scheme")).SetTo(s))
+	{
+		return s->Equals(CSTR("https"));
+	}
+	return false;
 }
 
 Bool Net::WebServer::WebRequest::HasData()

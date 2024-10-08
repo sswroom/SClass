@@ -76,6 +76,8 @@ namespace Net
 			virtual Optional<Crypto::Cert::X509Cert> GetClientCert();
 			virtual UnsafeArrayOpt<const UInt8> GetReqData(OutParam<UOSInt> dataSize);
 
+			Bool IsForwardedSSL() const;
+
 			Bool HasData();
 			void DataStart();
 			Bool DataStarted();

@@ -72,6 +72,10 @@ void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::I
 	{
 		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), s->ToCString());
 	}
+	if (this->contentSecurityPolicy.SetTo(s))
+	{
+		resp->AddHeader(CSTR("content-security-policy"), s->ToCString());
+	}
 }
 
 Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
@@ -121,6 +125,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
 	this->allowOrigin = 0;
+	this->contentSecurityPolicy = 0;
 }
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
@@ -131,6 +136,7 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 		this->relHdlrs.GetItem(i).Delete();
 	}
 	OPTSTR_DEL(this->allowOrigin);
+	OPTSTR_DEL(this->contentSecurityPolicy);
 }
 
 void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
@@ -211,4 +217,10 @@ void Net::WebServer::WebStandardHandler::SetAllowOrigin(Text::CString origin)
 {
 	OPTSTR_DEL(this->allowOrigin);
 	this->allowOrigin = Text::String::NewOrNull(origin);
+}
+
+void Net::WebServer::WebStandardHandler::SetContentSecurityPolicy(Text::CString csp)
+{
+	OPTSTR_DEL(this->contentSecurityPolicy);
+	this->contentSecurityPolicy = Text::String::NewOrNull(csp);
 }
