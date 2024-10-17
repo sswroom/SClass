@@ -144,12 +144,7 @@ Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Strea
 Text::XMLReader::~XMLReader()
 {
 	this->FreeCurrent();
-
-	UOSInt i = this->pathList.GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(this->pathList.GetItem(i));
-	}
+	this->pathList.FreeAll();
 	MemFreeArr(this->readBuff);
 	MemFreeArr(this->rawBuff);
 	this->enc.Delete();
@@ -342,7 +337,7 @@ Bool Text::XMLReader::ReadNext()
 				if (Text::StrStartsWithC(&this->readBuff[parseOfst], this->buffSize - parseOfst, UTF8STRC("-->")))
 				{
 					this->parseOfst = parseOfst + 3;
-					this->nodeText = Text::String::New(sb->ToString(), sb->GetLength()).Ptr();
+					this->nodeText = Text::String::New(sb->ToString(), sb->GetLength());
 					return true;
 				}
 				sb->AppendUTF8Char(this->readBuff[parseOfst++]);
@@ -380,7 +375,7 @@ Bool Text::XMLReader::ReadNext()
 				if (Text::StrStartsWithC(&this->readBuff[parseOfst], this->buffSize - parseOfst, UTF8STRC("]]>")))
 				{
 					this->parseOfst = parseOfst + 3;
-					this->nodeText = Text::String::New(sb->ToCString()).Ptr();
+					this->nodeText = Text::String::New(sb->ToCString());
 					return true;
 				}
 				sb->AppendUTF8Char(this->readBuff[parseOfst++]);

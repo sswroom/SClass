@@ -1413,6 +1413,7 @@ RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
 SAMLUtil.o: ../../src/Net/SAMLUtil.cpp
 SDPFile.o: ../../src/Net/SDPFile.cpp
+SMSGatewaySmartone.o: ../../src/Net/SMSGatewaySmartone.cpp
 SNMPClient.o: ../../src/Net/SNMPClient.cpp
 SNMPInfo.o: ../../src/Net/SNMPInfo.cpp
 SNMPManager.o: ../../src/Net/SNMPManager.cpp

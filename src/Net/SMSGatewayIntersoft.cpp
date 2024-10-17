@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, IO::LogTool *log)
+Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, Optional<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -21,11 +21,11 @@ Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NN<Net::SocketFactory> sockf, Opti
 
 Net::SMSGatewayIntersoft::~SMSGatewayIntersoft()
 {
-	SDEL_STRING(this->userName);
-	SDEL_STRING(this->password);
+	OPTSTR_DEL(this->userName);
+	OPTSTR_DEL(this->password);
 }
 
-Bool Net::SMSGatewayIntersoft::IsTargetValid(Text::CString targetNum)
+Bool Net::SMSGatewayIntersoft::IsTargetValid(Text::CStringNN targetNum)
 {
 	if (!targetNum.StartsWith(UTF8STRC("+852")))
 	{
@@ -39,30 +39,32 @@ Bool Net::SMSGatewayIntersoft::IsTargetValid(Text::CString targetNum)
 
 }
 
-Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString targetNum, Text::CString msg)
+Bool Net::SMSGatewayIntersoft::SendSMS(Text::CStringNN targetNum, Text::CStringNN msg)
 {
-	if (this->userName == 0 || this->password == 0)
+	NN<Text::String> userName;
+	NN<Text::String> password;
+	if (!this->userName.SetTo(userName) || !this->password.SetTo(password))
 	{
 		return false;
 	}
-	return this->SendSMS(this->userName->ToCString(), this->password->ToCString(), targetNum, msg);
+	return this->SendSMS(userName->ToCString(), password->ToCString(), targetNum, msg);
 }
 
-void Net::SMSGatewayIntersoft::SetAccount(Text::CString userName, Text::CString password)
+void Net::SMSGatewayIntersoft::SetAccount(Text::CStringNN userName, Text::CStringNN password)
 {
 	if (userName.leng > 0 && password.leng > 0)
 	{
-		SDEL_STRING(this->userName);
-		SDEL_STRING(this->password);
-		this->userName = Text::String::New(userName).Ptr();
-		this->password = Text::String::New(password).Ptr();
+		OPTSTR_DEL(this->userName);
+		OPTSTR_DEL(this->password);
+		this->userName = Text::String::New(userName);
+		this->password = Text::String::New(password);
 	}
 }
 
-Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString password, Text::CString targetNum, Text::CString msg)
+Bool Net::SMSGatewayIntersoft::SendSMS(Text::CStringNN userName, Text::CStringNN password, Text::CStringNN targetNum, Text::CStringNN msg)
 {
 	UTF8Char sbuff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!targetNum.StartsWith(UTF8STRC("+852")))
 	{
 		return false;
@@ -82,6 +84,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("&ScheduleTime="));
 
+	NN<IO::LogTool> log;
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Text::StringBuilderUTF8 sbMsg;
@@ -92,7 +95,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(Data::ByteArray(dataBuff, 2048))) > 0)
 		{
-			mstm.Write(dataBuff, readSize);
+			mstm.Write(Data::ByteArrayR(dataBuff, readSize));
 		}
 		cli.Delete();
 
@@ -107,64 +110,62 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 #endif
 
 		Bool ret = false;
-		UInt8 *memBuff = mstm.GetBuff(readSize);
+		UnsafeArray<UInt8> memBuff = mstm.GetBuff(readSize);
 		Text::XMLDocument doc;
 		if (doc.ParseBuff(this->encFact, memBuff, readSize))
 		{
-			Text::XMLNode *node = doc.SearchFirstNode(CSTR("/MessageResult/Accept"));
-			if (node == 0)
+			NN<Text::XMLNode> node;
+			if (!doc.SearchFirstNode(CSTR("/MessageResult/Accept")).SetTo(node))
 			{
-				if (this->log)
+				if (this->log.SetTo(log))
 				{
-					this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response error, Accept not found"), IO::LogHandler::LogLevel::Error);
+					log->LogMessage(CSTR("SMSGatewayIntersoft: Response error, Accept not found"), IO::LogHandler::LogLevel::Error);
 				}
 			}
 			else
 			{
 				sbMsg.ClearStr();
 				node->GetInnerText(sbMsg);
-				if (this->log)
+				if (this->log.SetTo(log))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response Accept = "));
 					sb.Append(sbMsg);
-					this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
+					log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 				}
 				if (sbMsg.Equals(UTF8STRC("true")))
 				{
 					ret = true;
 				}
 
-				if (this->log)
+				if (this->log.SetTo(log))
 				{
 					if (ret)
 					{
-						node = doc.SearchFirstNode(CSTR("/MessageResult/MessageID"));
-						if (node == 0)
+						if (!doc.SearchFirstNode(CSTR("/MessageResult/MessageID")).SetTo(node))
 						{
-							this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response MessageID = not found"), IO::LogHandler::LogLevel::Error);
+							log->LogMessage(CSTR("SMSGatewayIntersoft: Response MessageID = not found"), IO::LogHandler::LogLevel::Error);
 						}
 						else
 						{
 							sbMsg.ClearStr();
 							sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response MessageID = "));
 							node->GetInnerText(sbMsg);
-							this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Command);
+							log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Command);
 						}
 					}
 					else
 					{
-						node = doc.SearchFirstNode(CSTR("/MessageResult/FailReason"));
-						if (node == 0)
+						if (!doc.SearchFirstNode(CSTR("/MessageResult/FailReason")).SetTo(node))
 						{
-							this->log->LogMessage(CSTR("SMSGatewayIntersoft: Response FailReason = not found"), IO::LogHandler::LogLevel::Error);
+							log->LogMessage(CSTR("SMSGatewayIntersoft: Response FailReason = not found"), IO::LogHandler::LogLevel::Error);
 						}
 						else
 						{
 							sbMsg.ClearStr();
 							sb.AppendC(UTF8STRC("SMSGatewayIntersoft: Response FailReason = "));
 							node->GetInnerText(sbMsg);
-							this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+							log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 						}
 					}
 				}
@@ -172,9 +173,9 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 		}
 		else
 		{
-			if (this->log)
+			if (this->log.SetTo(log))
 			{
-				this->log->LogMessage(CSTR("SMSGatewayIntersoft: Error in parsing response"), IO::LogHandler::LogLevel::Error);
+				log->LogMessage(CSTR("SMSGatewayIntersoft: Error in parsing response"), IO::LogHandler::LogLevel::Error);
 			}
 		}
 		return ret;
@@ -182,12 +183,12 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 	else
 	{
 		cli.Delete();
-		if (this->log)
+		if (this->log.SetTo(log))
 		{
 			sbMsg.ClearStr();
 			sbMsg.AppendC(UTF8STRC("Error in connecting to URL: "));
 			sbMsg.AppendC(sb.ToString(), sb.GetLength());
-			this->log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
+			log->LogMessage(sbMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 			return false;
 		}
 	}

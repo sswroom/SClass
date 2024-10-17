@@ -11,21 +11,21 @@ namespace Net
 	class SMSGatewayIntersoft : public IO::SMSGateway
 	{
 	private:
-		IO::LogTool *log;
+		Optional<IO::LogTool> log;
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		NN<Text::EncodingFactory> encFact;
-		Text::String *userName;
-		Text::String *password;
+		Optional<Text::String> userName;
+		Optional<Text::String> password;
 	public:
-		SMSGatewayIntersoft(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, IO::LogTool *log);
+		SMSGatewayIntersoft(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, Optional<IO::LogTool> log);
 		virtual ~SMSGatewayIntersoft();
 
-		virtual Bool IsTargetValid(Text::CString targetNum);
-		virtual Bool SendSMS(Text::CString targetNum, Text::CString msg);
+		virtual Bool IsTargetValid(Text::CStringNN targetNum);
+		virtual Bool SendSMS(Text::CStringNN targetNum, Text::CStringNN msg);
 
-		void SetAccount(Text::CString userName, Text::CString password);
-		Bool SendSMS(Text::CString userName, Text::CString password, Text::CString targetNum, Text::CString msg);
+		void SetAccount(Text::CStringNN userName, Text::CStringNN password);
+		Bool SendSMS(Text::CStringNN userName, Text::CStringNN password, Text::CStringNN targetNum, Text::CStringNN msg);
 	};
 }
 #endif

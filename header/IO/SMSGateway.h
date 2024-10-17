@@ -9,8 +9,8 @@ namespace IO
 	public:
 		virtual ~SMSGateway() {};
 
-		virtual Bool IsTargetValid(Text::CString targetNum) = 0;
-		virtual Bool SendSMS(Text::CString targetNum, Text::CString msg) = 0;
+		virtual Bool IsTargetValid(Text::CStringNN targetNum) = 0;
+		virtual Bool SendSMS(Text::CStringNN targetNum, Text::CStringNN msg) = 0;
 	};
 }
 #endif

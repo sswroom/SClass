@@ -1947,6 +1947,7 @@ IO/SMake.h:
 @SMake.o
 IO/SMBIOS.h:
 @SMBIOS.o
+IO/SMSGateway.h:
 IO/SMTCWriter.h:
 @SMTCWriter.o
 IO/SNBDongle.h:
@@ -3259,6 +3260,8 @@ Net/SAMLUtil.h:
 @SAMLUtil.o
 Net/SDPFile.h:
 @SDPFile.o
+Net/SMSGatewaySmartone.h:
+@SMSGatewaySmartone.o
 Net/SNMPClient.h:
 @SNMPClient.o
 Net/SNMPInfo.h:
