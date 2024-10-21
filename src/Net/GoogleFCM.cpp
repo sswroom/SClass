@@ -4,14 +4,15 @@
 #include "Text/JSON.h"
 #include "Text/JSONBuilder.h"
 
-Bool Net::GoogleFCM::SendMessage(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult)
+Bool Net::GoogleFCM::SendMessage(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiKey, Text::CStringNN devToken, Text::CStringNN message, Optional<Text::StringBuilderUTF8> sbResult)
 {
+	NN<Text::StringBuilderUTF8> sbRes;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
-		if (sbResult)
-			sbResult->AppendC(UTF8STRC("Error connecting to server"));
+		if (sbResult.SetTo(sbRes))
+			sbRes->AppendC(UTF8STRC("Error connecting to server"));
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -43,50 +44,51 @@ Bool Net::GoogleFCM::SendMessage(NN<Net::TCPClientFactory> clif, Optional<Net::S
 			succ = jobj->GetValueAsInt32(CSTR("success"));
 			if (succ)
 			{
-				if (sbResult)
-					sbResult->AppendC(UTF8STRC("Success"));
+				if (sbResult.SetTo(sbRes))
+					sbRes->AppendC(UTF8STRC("Success"));
 			}
 			else
 			{
-				if (sbResult)
-					sbResult->AppendC(UTF8STRC("Server response failed"));
+				if (sbResult.SetTo(sbRes))
+					sbRes->AppendC(UTF8STRC("Server response failed"));
 			}
 			jobj->EndUse();
 		}
 		else
 		{
-			if (sbResult)
+			if (sbResult.SetTo(sbRes))
 			{
-				sbResult->AppendC(UTF8STRC("Cannot parse response as JSON"));
+				sbRes->AppendC(UTF8STRC("Cannot parse response as JSON"));
 			}
 		}
 	}
 	else
 	{
-		if (sbResult)
+		if (sbResult.SetTo(sbRes))
 		{
-			sbResult->AppendC(UTF8STRC("Response Status is not 200: "));
-			sbResult->AppendU32((UInt32)status);
+			sbRes->AppendC(UTF8STRC("Response Status is not 200: "));
+			sbRes->AppendU32((UInt32)status);
 		}
 	}
 	cli.Delete();
 	return succ;
 }
 
-Bool Net::GoogleFCM::SendMessages(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiKey, NN<Data::ArrayListNN<Text::String>> devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult)
+Bool Net::GoogleFCM::SendMessages(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiKey, NN<Data::ArrayListNN<Text::String>> devTokens, Text::CStringNN message, Optional<Text::StringBuilderUTF8> sbResult)
 {
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Text::StringBuilderUTF8> sbRes;
 	if (cli->IsError())
 	{
 		cli.Delete();
-		if (sbResult)
-			sbResult->AppendC(UTF8STRC("Error in connecting to server"));
+		if (sbResult.SetTo(sbRes))
+			sbRes->AppendC(UTF8STRC("Error in connecting to server"));
 		return false;
 	}
 	if (devTokens->GetCount() == 0)
 	{
-		if (sbResult)
-			sbResult->AppendC(UTF8STRC("No device found"));
+		if (sbResult.SetTo(sbRes))
+			sbRes->AppendC(UTF8STRC("No device found"));
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -124,30 +126,30 @@ Bool Net::GoogleFCM::SendMessages(NN<Net::TCPClientFactory> clif, Optional<Net::
 			succ = jobj->GetValueAsInt32(CSTR("success"));
 			if (succ)
 			{
-				if (sbResult)
-					sbResult->AppendC(UTF8STRC("Success"));
+				if (sbResult.SetTo(sbRes))
+					sbRes->AppendC(UTF8STRC("Success"));
 			}
 			else
 			{
-				if (sbResult)
-					sbResult->AppendC(UTF8STRC("Server response failed"));
+				if (sbResult.SetTo(sbRes))
+					sbRes->AppendC(UTF8STRC("Server response failed"));
 			}
 			jobj->EndUse();
 		}
 		else
 		{
-			if (sbResult)
+			if (sbResult.SetTo(sbRes))
 			{
-				sbResult->AppendC(UTF8STRC("Cannot parse response as JSON"));
+				sbRes->AppendC(UTF8STRC("Cannot parse response as JSON"));
 			}
 		}
 	}
 	else
 	{
-		if (sbResult)
+		if (sbResult.SetTo(sbRes))
 		{
-			sbResult->AppendC(UTF8STRC("Response Status is not 200: "));
-			sbResult->AppendU32((UInt32)status);
+			sbRes->AppendC(UTF8STRC("Response Status is not 200: "));
+			sbRes->AppendU32((UInt32)status);
 		}
 	}
 	cli.Delete();

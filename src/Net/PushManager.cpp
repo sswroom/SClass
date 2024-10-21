@@ -281,6 +281,7 @@ Bool Net::PushManager::Send(NN<Data::ArrayListStringNN> userNames, NN<Text::Stri
 		it = tokenList.Iterator();
 		while (it.HasNext())
 		{
+			sbResult.ClearStr();
 			sbResult.AppendC(UTF8STRC("Send Message result: "));
 			ret |= Net::GoogleFCM::SendMessage(this->clif, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
 			this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
