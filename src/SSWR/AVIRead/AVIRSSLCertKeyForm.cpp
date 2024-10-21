@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(AnyType user
 	NN<Crypto::Cert::X509Cert> certASN1;
 	NN<Crypto::Cert::X509File> keyASN1;
 	NN<Net::SSLEngine> ssl;
-	if (me->ssl.SetTo(ssl) && ssl->GenerateCert(sbCountry.ToCString(), sbCompany.ToCString(), sbCommonName.ToCString(), certASN1, keyASN1))
+	if (me->ssl.SetTo(ssl) && ssl->GenerateCert(sbCountry.ToCString(), sbCompany.ToCString(), sbCommonName.ToCString(), certASN1, keyASN1, Net::SSLEngine::GetRSAKeyLength()))
 	{
 		me->cert.Delete();
 		me->key.Delete();

@@ -563,19 +563,19 @@ UnsafeArray<UTF8Char> Net::OpenSSLEngine::GetErrorDetail(UnsafeArray<UTF8Char> s
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1)
+Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UOSInt keyLength)
 {
 	Bool succ = false;
 	EVP_PKEY *pkey;
 #if defined(OSSL_DEPRECATEDIN_3_0)
-	pkey = EVP_RSA_gen(2048);
+	pkey = EVP_RSA_gen(keyLength);
 	if (pkey)
 	{
 #else
 	BIGNUM *bn = BN_new();
 	BN_set_word(bn, RSA_F4);
 	RSA *rsa = RSA_new();
-	if (RSA_generate_key_ex(rsa, 2048, bn, 0) > 0)
+	if (RSA_generate_key_ex(rsa, keyLength, bn, 0) > 0)
 	{
 		pkey = EVP_PKEY_new();
 		EVP_PKEY_assign(pkey, EVP_PKEY_RSA, rsa);
@@ -598,13 +598,13 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 
 		BIO *bio1;
 		BIO *bio2;
-		UInt8 buff[4096];
+		UInt8 buff[8192];
 		Optional<Crypto::Cert::X509File> pobjKey = 0;
 		Optional<Crypto::Cert::X509Cert> pobjCert = 0;
 
-		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
+		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
-		int readSize = BIO_read(bio2, buff, 4096);
+		int readSize = BIO_read(bio2, buff, 8192);
 		if (readSize > 0)
 		{
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
@@ -612,7 +612,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 			fileName->Release();
 		}
 		PEM_write_bio_X509(bio1, cert);
-		readSize = BIO_read(bio2, buff, 4096);
+		readSize = BIO_read(bio2, buff, 8192);
 		if (readSize > 0)
 		{
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
@@ -650,22 +650,22 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 	return succ;
 }
 
-Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
+Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey(UOSInt keyLength)
 {
 #if !defined(OSSL_DEPRECATEDIN_3_0)
 	BIGNUM *bn = BN_new();
 	BN_set_word(bn, RSA_F4);
 	RSA *rsa = RSA_new();
-	if (RSA_generate_key_ex(rsa, 2048, bn, 0) > 0)
+	if (RSA_generate_key_ex(rsa, keyLength, bn, 0) > 0)
 	{
 		BIO *bio1;
 		BIO *bio2;
-		UInt8 buff[4096];
+		UInt8 buff[8192];
 		Optional<Crypto::Cert::X509File> pobjKey = 0;
 
-		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
+		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
 		PEM_write_bio_RSAPrivateKey(bio1, rsa, nullptr, nullptr, 0, nullptr, nullptr);
-		int readSize = BIO_read(bio2, buff, 4096);
+		int readSize = BIO_read(bio2, buff, 8192);
 		if (readSize > 0)
 		{
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("RSAKey.key"));
@@ -684,18 +684,18 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
 	return 0;
 #else
 	EVP_PKEY *pkey;
-	pkey = EVP_RSA_gen(2048);
+	pkey = EVP_RSA_gen(keyLength);
 	if (pkey)
 	{
 		BIO *bio1;
 		BIO *bio2;
-		UInt8 buff[4096];
+		UInt8 buff[8192];
 		Optional<Crypto::Cert::X509File> pobjKey = 0;
 		NN<Crypto::Cert::X509File> nnpobjKey;
 
-		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
+		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
-		int readSize = BIO_read(bio2, buff, 4096);
+		int readSize = BIO_read(bio2, buff, 8192);
 		if (readSize > 0)
 		{
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));

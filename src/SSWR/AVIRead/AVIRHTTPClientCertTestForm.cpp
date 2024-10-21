@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 	if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 	{
 		NN<Crypto::Cert::X509Key> key;
-		if (!ssl->GenerateRSAKey().SetTo(key))
+		if (!ssl->GenerateRSAKey(Net::SSLEngine::GetRSAKeyLength()).SetTo(key))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in initializing Key"), CSTR("HTTP Client Cert Test"), me);
 			return;

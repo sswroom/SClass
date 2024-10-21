@@ -315,6 +315,11 @@ NN<Crypto::Cert::CertStore> Net::SSLEngine::GetTrustStore()
 	}
 }
 
+UOSInt Net::SSLEngine::GetRSAKeyLength()
+{
+	return 3072;
+}
+
 Text::CStringNN Net::SSLEngine::ErrorTypeGetName(ErrorType err)
 {
 	switch (err)

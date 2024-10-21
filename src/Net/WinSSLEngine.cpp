@@ -1474,7 +1474,7 @@ UnsafeArray<UTF8Char> Net::WinSSLEngine::GetErrorDetail(UnsafeArray<UTF8Char> sb
 	return sbuff;
 }
 
-Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1)
+Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UOSInt keyLength)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1482,7 +1482,20 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	{
 		return false;
 	}
-	if (!CryptGenKey(hProv, AT_SIGNATURE, 0x08000000 | CRYPT_EXPORTABLE, &hKey))
+	UInt32 lenFlags;
+	if (keyLength == 2048)
+	{
+		lenFlags = 0x08000000;
+	}
+	else if (keyLength == 4096)
+	{
+		lenFlags = 0x10000000;
+	}
+	else
+	{
+		lenFlags = 0x0C0000000;
+	}
+	if (!CryptGenKey(hProv, AT_SIGNATURE, lenFlags | CRYPT_EXPORTABLE, &hKey))
 	{
 		CryptReleaseContext(hProv, 0);
 		return false;
@@ -1602,19 +1615,32 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	return true;
 }
 
-Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey()
+Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UOSInt keyLength)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
-	UInt8 privKeyBuff[2048];
-	DWORD privKeySize = 2048;
+	UInt8 privKeyBuff[4096];
+	DWORD privKeySize = 4096;
 	UInt8 certBuff[4096];
 	DWORD certBuffSize = 4096;
 	if (!WinSSLEngine_CryptAcquireContextW(&hProv, L"SelfSign", NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
 	{
 		return 0;
 	}
-	if (!CryptGenKey(hProv, AT_SIGNATURE, 0x08000000 | CRYPT_EXPORTABLE, &hKey))
+	UInt32 lenFlags;
+	if (keyLength == 2048)
+	{
+		lenFlags = 0x08000000;
+	}
+	else if (keyLength == 4096)
+	{
+		lenFlags = 0x10000000;
+	}
+	else
+	{
+		lenFlags = 0x0C0000000;
+	}
+	if (!CryptGenKey(hProv, AT_SIGNATURE, lenFlags | CRYPT_EXPORTABLE, &hKey))
 	{
 		CryptReleaseContext(hProv, 0);
 		return 0;

@@ -705,7 +705,7 @@ Bool Net::ACMEConn::NewKey()
 	if (this->ssl.SetTo(ssl))
 	{
 		NN<Crypto::Cert::X509Key> key;
-		if (ssl->GenerateRSAKey().SetTo(key))
+		if (ssl->GenerateRSAKey(Net::SSLEngine::GetRSAKeyLength()).SetTo(key))
 		{
 			this->key.Delete();
 			this->key = key;

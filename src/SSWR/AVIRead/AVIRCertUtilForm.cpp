@@ -154,12 +154,23 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType use
 	NN<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl))
 	{
+		UOSInt i = me->cboKeyType->GetSelectedIndex();
 		NN<Crypto::Cert::X509Key> key;
-		if (ssl->GenerateRSAKey().SetTo(key))
+		if (i < 3)
 		{
-			me->key.Delete();
-			me->key = key;
-			me->DisplayKeyDetail();
+			UOSInt keyLength;
+			if (i == 0)
+				keyLength = 2048;
+			else if (i == 1)
+				keyLength = 3072;
+			else
+				keyLength = 4096;
+			if (ssl->GenerateRSAKey(keyLength).SetTo(key))
+			{
+				me->key.Delete();
+				me->key = key;
+				me->DisplayKeyDetail();
+			}
 		}
 	}
 }
@@ -441,14 +452,20 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl>
 	this->txtKeyDetail = ui->NewTextBox(*this, CSTR("-"));
 	this->txtKeyDetail->SetReadOnly(true);
 	this->txtKeyDetail->SetRect(104, 4, 200, 23, false);
+	this->cboKeyType = ui->NewComboBox(*this, false);
+	this->cboKeyType->SetRect(304, 4, 100, 23, false);
+	this->cboKeyType->AddItem(CSTR("RSA 2048bit"), 0);
+	this->cboKeyType->AddItem(CSTR("RSA 3072bit"), 0);
+	this->cboKeyType->AddItem(CSTR("RSA 4096bit"), 0);
+	this->cboKeyType->SetSelectedIndex(1);
 	this->btnKeyGenerate = ui->NewButton(*this, CSTR("Generate"));
-	this->btnKeyGenerate->SetRect(304, 4, 75, 23, false);
+	this->btnKeyGenerate->SetRect(404, 4, 75, 23, false);
 	this->btnKeyGenerate->HandleButtonClick(OnKeyGenerateClicked, this);
 	this->btnKeyView = ui->NewButton(*this, CSTR("View"));
-	this->btnKeyView->SetRect(384, 4, 75, 23, false);
+	this->btnKeyView->SetRect(484, 4, 75, 23, false);
 	this->btnKeyView->HandleButtonClick(OnKeyViewClicked, this);
 	this->btnKeySave = ui->NewButton(*this, CSTR("Save"));
-	this->btnKeySave->SetRect(464, 4, 75, 23, false);
+	this->btnKeySave->SetRect(564, 4, 75, 23, false);
 	this->btnKeySave->HandleButtonClick(OnKeySaveClicked, this);
 	this->lblCountryName = ui->NewLabel(*this, CSTR("C"));
 	this->lblCountryName->SetRect(4, 28, 100, 23, false);
