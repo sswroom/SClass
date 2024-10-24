@@ -41,6 +41,7 @@ namespace SSWR
 
 			NN<UI::GUIGroupBox> grpData;
 			NN<UI::GUICheckBox> chkNoHeader;
+			NN<UI::GUICheckBox> chkCSVUTCTime;
 			NN<UI::GUILabel> lblDataFile;
 			NN<UI::GUITextBox> txtDataFile;
 			NN<UI::GUIButton> btnDataFile;

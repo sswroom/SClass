@@ -271,6 +271,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 			return false;
 		}
 		csv->CloseReader(r);
+		if (this->chkCSVUTCTime->IsChecked())
+			csvTZ = 0;
 		this->txtDataFile->SetText(fileName);
 		this->dataFile.Delete();
 		this->dataFile = csv;
@@ -2102,7 +2104,9 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->grpData = ui->NewGroupBox(*this, CSTR("Data Source"));
 	this->grpData->SetRect(0, 72, 800, 216, false);
 	this->chkNoHeader = ui->NewCheckBox(this->grpData, CSTR("CSV No Header"), false);
-	this->chkNoHeader->SetRect(100, 0, 200, 23, false);
+	this->chkNoHeader->SetRect(100, 0, 150, 23, false);
+	this->chkCSVUTCTime = ui->NewCheckBox(this->grpData, CSTR("CSV UTC Time"), false);
+	this->chkCSVUTCTime->SetRect(250, 0, 150, 23, false);
 	this->lblDataFile = ui->NewLabel(this->grpData, CSTR("Data File"));
 	this->lblDataFile->SetRect(0, 24, 100, 23, false);
 	this->txtDataFile = ui->NewTextBox(this->grpData, CSTR(""));
