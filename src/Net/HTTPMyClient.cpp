@@ -651,7 +651,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	else
 	{
-		i = Text::StrSplitP(ptrs, 2, {urltmp, urltmpLen}, ':');
+		UnsafeArray<Text::PString> strs = ptrs;
+		i = Text::StrSplitP(strs, 2, {urltmp, urltmpLen}, ':');
 		if (i == 2)
 		{
 			Text::StrToUInt16S(ptrs[1].v, port, 0);
