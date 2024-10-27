@@ -1,11 +1,12 @@
 #include "Stdafx.h"
+#include "IO/MemoryReadingStream.h"
 #include "Net/HTTPClient.h"
 #include "Net/SMSGatewaySmartone.h"
 #include "Text/StringTool.h"
 #include "Text/XML.h"
 #include "Text/XMLReader.h"
 
-#define VERBOSE
+//#define VERBOSE
 
 Net::SMSGatewaySmartone::SMSGatewaySmartone(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<IO::LogTool> log, Text::CStringNN fqdn, Text::CStringNN accountId, Text::CStringNN password)
 {
@@ -81,25 +82,25 @@ Bool Net::SMSGatewaySmartone::SendSMS(Text::CStringNN targetNum, Text::CStringNN
 #if defined(VERBOSE)
 		printf("%s\r\n", data.v.Ptr());
 #endif
-		/*
-		Text::XMLReader reader(0, cli, Text::XMLReader::PM_XML);
+		url.ClearStr();
+		IO::MemoryReadingStream mstm(data.ToByteArray());
+		Text::XMLReader reader(0, mstm, Text::XMLReader::PM_XML);
 		if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("Response")))
 		{
 			if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("RequestStatus")))
 			{
-				reader.ReadNodeText(data);
+				reader.ReadNodeText(url);
 			}
 		}
 		UInt32 istatus;
-		if (data.leng > 0 && data.ToUInt32(istatus))
+		if (url.leng > 0 && url.ToUInt32(istatus))
 		{
 			this->lastReqError = (RequestStatus)istatus;
 		}
 		else
 		{
 			this->lastReqError = RequestStatus::NetworkError;
-		}*/
-		this->lastReqError = RequestStatus::NetworkError;
+		}
 	}
 	else
 	{

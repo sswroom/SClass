@@ -29,9 +29,9 @@ export class Olayer2Map extends map.MapControl
 	posFunc: (lat: number, lon: number)=>void;
 
 	constructor(mapId: string);
-	createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
-	createMarkerLayer(name: string, options?: LayerOptions): any;
-	createGeometryLayer(name: string, options?: LayerOptions): any;
+	createLayer(layer: map.LayerInfo, options?: map.LayerOptions): any;
+	createMarkerLayer(name: string, options?: map.LayerOptions): any;
+	createGeometryLayer(name: string, options?: map.LayerOptions): any;
 	addLayer(layer: any): void;
 	addKML(feature: kml.Feature | kml.KMLFile): void;
 	uninit(): void;
@@ -47,13 +47,13 @@ export class Olayer2Map extends map.MapControl
 	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
 	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
 
-	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: map.MarkerOptions): any;
 	layerAddMarker(markerLayer: any, marker: any): void;
 	layerRemoveMarker(markerLayer: any, marker: any): void;
 	layerClearMarkers(markerLayer: any): void;
 	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
 
-	createGeometry(geom: geometry.Vector2D, lineColor: string, fillColor: string, fillOpacity: string): any;
+	createGeometry(geom: geometry.Vector2D, options: map.GeometryOptions): any;
 	layerAddGeometry(geometryLayer: any, geom: any): void;
 	layerRemoveGeometry(geometryLayer: any, geom: any): void;
 	layerClearGeometries(goemetryLayer: any): void;

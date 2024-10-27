@@ -333,7 +333,7 @@ export class Olayer2Map extends map.MapControl
 					new OpenLayers.LonLat(this.initX, this.initY).transform(
 						this.mapProjection,
 						this.map.getProjectionObject()
-					), this.initLev);
+					), this.initLev, false, false);
 			}
 		}
 		else if (data.isArray(layer))
@@ -507,6 +507,10 @@ export class Olayer2Map extends map.MapControl
 		return true;
 	}
 
+	/**
+	 * @param {geometry.Vector2D} geom
+	 * @param {map.GeometryOptions} options
+	 */
 	createGeometry(geom, options)
 	{
 		let opt = {};
