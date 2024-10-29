@@ -461,6 +461,15 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 			return 0;
 		}
 	}
+	else if (s->leng == 512)
+	{
+		if (Text::StrHex2Bytes(s->v, signBuff) != 256)
+		{
+			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
+			return 0;
+		}
+		signLen = 256;
+	}
 	else if (s->leng == 767)
 	{
 		if (Text::StrHex2BytesS(s->v, signBuff, s->v[2]) != 256)
