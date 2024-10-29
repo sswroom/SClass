@@ -42,6 +42,9 @@ export abstract class Vector2D {
 	abstract calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
+	abstract hasArea(): boolean;
+	abstract calcHIntersacts(y: double): number[];
+	abstract getDisplayCenter(): math.Coord2D;
 }
 
 export class Point extends Vector2D
@@ -51,6 +54,9 @@ export class Point extends Vector2D
 	calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
+	hasArea(): boolean;
+	calcHIntersacts(y: double): number[];
+	getDisplayCenter(): math.Coord2D;
 }
 
 
@@ -61,6 +67,9 @@ export class LineString extends Vector2D
 	calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
+	hasArea(): boolean;
+	calcHIntersacts(y: double): number[];
+	getDisplayCenter(): math.Coord2D;
 }
 
 export class LinearRing extends LineString
@@ -70,7 +79,10 @@ export class LinearRing extends LineString
 	isOpen(): boolean;
 	isClose(): boolean;
 	toPolygon(): Polygon;
+	hasArea(): boolean;
+	getDisplayCenter(): math.Coord2D;
 
+	static getHIntersactsCenter(xList: number[]): number;
 	static createFromCircle(srid: number, center: math.Coord2D, radiusX: number, radiusY: number, nPoints: number): LinearRing;
 }
 
@@ -82,6 +94,8 @@ export class MultiGeometry<VecType> extends Vector2D
 	calBoundaryPoint(coord: math.Coord2D): BoundaryPointResult;
 	insideOrTouch(coord: math.Coord2D): boolean;
 	getBounds(): math.RectArea;
+	hasArea(): boolean;
+	getDisplayCenter(): math.Coord2D;
 }
 
 export class Polygon extends MultiGeometry<LinearRing>

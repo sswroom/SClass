@@ -35,6 +35,58 @@ export class Vector2D {
 	{
 		this.srid = srid;
 	}
+
+	/**
+	 * @param {math.Coord2D} coord
+	 * @returns {{x: number;y: number;dist: number;}}
+	 */
+	calBoundaryPoint(coord)
+	{
+		throw new Error("Calling abstract function calBoundaryPoint is not allowed");
+	}
+
+	/**
+	 * @param {math.Coord2D} coord
+	 * @returns {boolean}
+	 */
+	insideOrTouch(coord)
+	{
+		throw new Error("Calling abstract function insideOrTouch is not allowed");
+	}
+
+	/**
+	 * @returns {math.RectArea}
+	 */
+	getBounds()
+	{
+		throw new Error("Calling abstract function getBounds is not allowed");
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	hasArea()
+	{
+		throw new Error("Calling abstract function hasArea is not allowed");
+	}
+
+	/**
+	 * @param {number} y
+	 * @returns {number[]}
+	 */
+	calcHIntersacts(y)
+	{
+		throw new Error("Calling abstract function calcHIntersacts is not allowed");
+	}
+
+	/**
+	 * @returns {math.Coord2D}
+	 */
+	getDisplayCenter()
+	{
+		throw new Error("Calling abstract function getDisplayCenter is not allowed");
+	}
+
 }
 
 export class Point extends Vector2D
@@ -78,6 +130,24 @@ export class Point extends Vector2D
 	getBounds()
 	{
 		return new math.RectArea(this.coordinates[0], this.coordinates[1], this.coordinates[0], this.coordinates[1]);
+	}
+
+	hasArea()
+	{
+		return false;
+	}
+
+	/**
+	 * @param {number} y
+	 */
+	calcHIntersacts(y)
+	{
+		return [];
+	}
+
+	getDisplayCenter()
+	{
+		return new math.Coord2D(this.coordinates[0], this.coordinates[1]);
 	}
 }
 
@@ -274,6 +344,59 @@ export class LineString extends Vector2D
 		}
 		return bounds;
 	}
+
+	hasArea()
+	{
+		return false;
+	}
+
+	/**
+	 * @param {number} y
+	 */
+	calcHIntersacts(y)
+	{
+		if (this.coordinates.length < 2)
+			throw new Error("coordinates length < 2");
+		/** @type {number[]} */
+		let ret = [];
+		let i = 1;
+		let lastPt = this.coordinates[0];
+		let thisPt;
+		let thisX;
+		while (i < this.coordinates.length)
+		{
+			thisPt = this.coordinates[i];
+			if ((lastPt[1] >= y && thisPt[1] < y) || (thisPt[1] >= y && lastPt[1] < y))
+			{
+				thisX = lastPt[0] + (y - lastPt[1]) / (thisPt[1] - lastPt[1]) * (thisPt[0] - lastPt[0]);
+				ret.push(thisX);
+			}
+			lastPt = thisPt;
+			i++;
+		}
+		if (this.hasArea())
+		{
+			thisPt = this.coordinates[0];
+			if ((lastPt[1] >= y && thisPt[1] < y) || (thisPt[1] >= y && lastPt[1] < y))
+			{
+				thisX = lastPt[0] + (y - lastPt[1]) / (thisPt[1] - lastPt[1]) * (thisPt[0] - lastPt[0]);
+				ret.push(thisX);
+			}
+		}
+		return ret;
+	}
+
+	getDisplayCenter()
+	{
+		let bounds = this.getBounds();
+		let pt = bounds.getCenter();
+		let xList = this.calcHIntersacts(pt.y);
+		if (xList.length == 0)
+		{
+			throw new Error("No intersact point in middle y");
+		}
+		return new math.Coord2D(xList[xList.length >> 1], pt.y);
+	}
 }
 
 export class LinearRing extends LineString
@@ -366,6 +489,59 @@ export class LinearRing extends LineString
 		return new Polygon(this.srid, [this.coordinates]);
 	}
 
+	hasArea()
+	{
+		return true;
+	}
+
+	getDisplayCenter()
+	{
+		let bounds = this.getBounds();
+		let pt = bounds.getCenter();
+		let xList = this.calcHIntersacts(pt.y);
+		if (xList.length == 0)
+		{
+			throw new Error("No intersact point in middle y");
+		}
+		xList.sort();
+		let x = LinearRing.getHIntersactsCenter(xList);
+		return new math.Coord2D(xList[xList.length >> 1], pt.y);
+	}
+
+	/**
+	 * @param {number[]} xList
+	 */
+	static getHIntersactsCenter(xList)
+	{
+		if (xList.length == 0)
+		{
+			throw new Error("xList is empty");
+		}
+		if ((xList.length & 1) != 0)
+		{
+			throw new Error("xList length must be even number");
+		}
+		let totalLength = 0;
+		let leng;
+		let i = xList.length;
+		while (i > 0)
+		{
+			i -= 2;
+			totalLength += xList[i + 1] - xList[i];
+		}
+		totalLength = totalLength * 0.5;
+		i = xList.length;
+		while (i > 0)
+		{
+			i -= 2;
+			leng = xList[i + 1] - xList[i];
+			if (totalLength <= leng)
+				return xList[i + 1] - totalLength;
+			totalLength -= leng;
+		}
+		return xList[0];
+	}
+	
 	/**
 	 * @param {number} srid
 	 * @param {math.Coord2D} center
@@ -398,7 +574,8 @@ export class MultiGeometry extends Vector2D
 	constructor(srid)
 	{
 		super(srid);
-		this.geometries = new Array();
+		/** @type {Vector2D[]} */
+		this.geometries = [];
 	}
 
 	/**
@@ -417,6 +594,8 @@ export class MultiGeometry extends Vector2D
 				minObj = thisObj;
 			}
 		}
+		if (minObj == null)
+			return {x: coord.x, y: coord.y, dist:0};
 		return minObj;
 	}
 
@@ -440,23 +619,71 @@ export class MultiGeometry extends Vector2D
 	{
 		if (this.geometries.length == 0)
 		{
-			return null;
+			throw new Error("No geometries");
 		}
-		let bounds;
+		let bounds = this.geometries[0].getBounds();
 		let thisBounds;
-		let i;
-		for (i in this.geometries)
+		let i = 1;
+		while (i < this.geometries.length)
 		{
 			thisBounds = this.geometries[i].getBounds();
-			if (thisBounds)
-			{
-				if (bounds)
-					bounds.unionInPlace(thisBounds);
-				else
-					bounds = thisBounds;
-			}
+			if (bounds)
+				bounds.unionInPlace(thisBounds);
+			else
+				bounds = thisBounds;
+			i++;
 		}
 		return bounds;
+	}
+
+	hasArea()
+	{
+		if (this.geometries.length == 0)
+			return false;
+		return this.geometries[0].hasArea();
+	}
+
+	/**
+	 * @param {number} y
+	 */
+	calcHIntersacts(y)
+	{
+		/** @type {number[]} */
+		let xList = [];
+		let i = 0;
+		while (i < this.geometries.length)
+		{
+			xList = xList.concat(this.geometries[i].calcHIntersacts(y));
+			i++;
+		}
+		return xList;
+	}
+
+	getDisplayCenter()
+	{
+		let bounds = this.getBounds();
+		let pt = bounds.getCenter();
+		let xList = this.calcHIntersacts(pt.y);
+		if (xList.length == 0)
+		{
+			bounds = this.geometries[0].getBounds();
+			pt = bounds.getCenter();
+			xList = this.calcHIntersacts(pt.y);
+			if (xList.length == 0)
+			{
+				throw new Error("Error in finding display center");
+			}
+		}
+		xList.sort();
+		if (this.hasArea())
+		{
+			let x = LinearRing.getHIntersactsCenter(xList);
+			return new math.Coord2D(x, pt.y);	
+		}
+		else
+		{
+			return new math.Coord2D(xList[xList.length >> 1], pt.y);
+		}
 	}
 }
 

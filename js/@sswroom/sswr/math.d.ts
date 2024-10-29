@@ -1,11 +1,12 @@
 import * as geometry from "./geometry";
+import * as map from "./map";
 import * as unit from "./unit";
 
 export function roundToFloat(n: number, decimalPoints: number): number;
 export function roundToStr(n: number, decimalPoints: number): string;
 export class GeoJSON
 {
-	static parseGeometry(srid: number, geom: object): geometry.Vector2D | null;
+	static parseGeometry(srid: number, geom: map.Geometry): geometry.Vector2D | null;
 }
 
 export class Coord2D

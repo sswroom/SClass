@@ -1,4 +1,9 @@
+1.6.17
 -Fixed olayer2 types
+-Added vector2D.hasArea
+-Added Vector2D.calcHIntersacts
+-Added Vector2D.getDisplayCenter
+-Enhance math.GeoJSON.parseGeometry
 
 1.6.16
 -Fixed leaflet point icon
