@@ -126,6 +126,7 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
 	this->allowOrigin = 0;
 	this->contentSecurityPolicy = 0;
+	this->upgradeInsecureURL = 0;
 }
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
@@ -137,13 +138,26 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	}
 	OPTSTR_DEL(this->allowOrigin);
 	OPTSTR_DEL(this->contentSecurityPolicy);
+	OPTSTR_DEL(this->upgradeInsecureURL);
 }
 
 void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	NN<Text::String> reqURL = req->GetRequestURI();
+	NN<Text::String> s;
+	NN<Text::String> s2;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	if (this->upgradeInsecureURL.SetTo(s) && !req->IsSecure() && req->GetSHeader(CSTR("Upgrade-Insecure-Requests")).SetTo(s2) && s2->Equals(CSTR("1")))
+	{
+		resp->SetStatusCode(Net::WebStatus::SC_TEMPORARY_REDIRECT);
+		resp->AddDefHeaders(req);
+		resp->AddHeader(CSTR("Vary"), CSTR("Upgrade-Insecure-Requests"));
+		resp->AddHeader(CSTR("Location"), s->ToCString());
+		resp->AddContentLength(0);
+		resp->Write(Data::ByteArrayR(sbuff, 0));
+		return;
+	}
 	sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
 	if (!this->ProcessRequest(req, resp, CSTRP(sbuff, sptr)))
 	{
@@ -223,4 +237,10 @@ void Net::WebServer::WebStandardHandler::SetContentSecurityPolicy(Text::CString 
 {
 	OPTSTR_DEL(this->contentSecurityPolicy);
 	this->contentSecurityPolicy = Text::String::NewOrNull(csp);
+}
+
+void Net::WebServer::WebStandardHandler::SetUpgradeInsecureURL(Text::CString upgradeInsecureURL)
+{
+	OPTSTR_DEL(this->upgradeInsecureURL);
+	this->upgradeInsecureURL = Text::String::NewOrNull(upgradeInsecureURL);
 }

@@ -801,6 +801,10 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::TCPClientFactory> clif, Optiona
 	this->reloadPwd = Text::String::CopyOrNull(reloadPwd);
 	this->webHdlr = 0;
 	this->selectedBook = 0;
+	this->gpsTrk = 0;
+	this->gpsUserId = 0;
+	this->gpsStartTime = 0;
+	this->gpsEndTime = 0;
 
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -838,10 +842,10 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::TCPClientFactory> clif, Optiona
 		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 
 		this->webHdlr = webHdlr.Ptr();
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->clif, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		NEW_CLASSOPT(this->listener, Net::WebServer::WebListener(this->clif, 0, webHdlr, port, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!this->ssl.IsNull() && sslPort)
 		{
-			NEW_CLASS(this->sslListener, Net::WebServer::WebListener(this->clif, this->ssl, webHdlr, sslPort, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+			NEW_CLASSOPT(this->sslListener, Net::WebServer::WebListener(this->clif, this->ssl, webHdlr, sslPort, 30, 1, 10, CSTR("OrganWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		}
 		else
 		{
@@ -860,9 +864,9 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 	UOSInt i;
 	UOSInt j;
 
-	SDEL_CLASS(this->listener);
-	SDEL_CLASS(this->sslListener);
-	SDEL_CLASS(this->webHdlr);
+	this->listener.Delete();
+	this->sslListener.Delete();
+	this->webHdlr.Delete();
 	this->db.Delete();
 	this->osmHdlr.Delete();
 	this->nodeHdlr.Delete();
@@ -918,11 +922,12 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 
 Bool SSWR::OrganWeb::OrganWebEnv::IsError()
 {
-	if (this->listener == 0)
+	NN<Net::WebServer::WebListener> listener;
+	if (!this->listener.SetTo(listener))
 		return true;
-	if (this->listener->IsError())
+	if (listener->IsError())
 		return true;
-	if (this->sslListener != 0 && this->sslListener->IsError())
+	if (this->sslListener.SetTo(listener) && listener->IsError())
 		return true;
 	return false;
 }
@@ -978,6 +983,15 @@ NN<Media::ColorManagerSess> SSWR::OrganWeb::OrganWebEnv::GetColorSess() const
 NN<Media::DrawEngine> SSWR::OrganWeb::OrganWebEnv::GetDrawEngine() const
 {
 	return this->eng;
+}
+
+void SSWR::OrganWeb::OrganWebEnv::SetUpgradeInsecureURL(Text::CStringNN upgradeInsecureURL)
+{
+	NN<SSWR::OrganWeb::OrganWebHandler> webHdlr;
+	if (this->webHdlr.SetTo(webHdlr))
+	{
+		webHdlr->SetUpgradeInsecureURL(upgradeInsecureURL);
+	}
 }
 
 void SSWR::OrganWeb::OrganWebEnv::CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group)
@@ -1356,66 +1370,68 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NN<Sync::RWMutexUsage> mutUsage
 	}
 }
 
-Bool SSWR::OrganWeb::OrganWebEnv::UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon)
+Bool SSWR::OrganWeb::OrganWebEnv::UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, OutParam<Double> lat, OutParam<Double> lon)
 {
 	mutUsage->ReplaceMutex(this->dataMut, false);
-/*	OSInt i;
-	WebUserInfo *webUser;
-	DataFileInfo *dataFile;
+	OSInt i;
+	NN<WebUserInfo> webUser;
+	NN<DataFileInfo> dataFile;
+	NN<Map::GPSTrack> gpsTrk;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	IO::StmData::FileData *fd;
-	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime->CompareTo(t) > 0 || this->gpsEndTime->CompareTo(t) < 0)
+	if (this->gpsTrk.IsNull() || this->gpsUserId != userId || this->gpsStartTime > t || this->gpsEndTime < t)
 	{
-		SDEL_CLASS(this->gpsTrk);
+		this->gpsTrk.Delete();
 		this->gpsUserId = userId;
-		webUser = this->userMap->Get(userId);
-		i = webUser->gpsFileIndex->SortedIndexOf(t->ToTicks());
-		if (i < 0)
+		if (this->userMap.Get(userId).SetTo(webUser))
 		{
-			i = ~i - 1;
-		}
-		dataFile = webUser->gpsFileObj->GetItem(i);
-		if (dataFile != 0)
-		{
-			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
-			this->gpsEndTime->SetTicks(dataFile->endTimeTicks);
-			sptr = Text::StrConcat(sbuff, this->dataDir);
-			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+			i = webUser->gpsDataFiles.GetIndex(t);
+			if (i < 0)
 			{
-				*sptr++ = IO::Path::PATH_SEPERATOR;
+				i = ~i - 1;
 			}
-			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
-			*sptr++ = IO::Path::PATH_SEPERATOR;
-			sptr = Text::StrConcat(sptr, dataFile->fileName);
-			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
-			DEL_CLASS(fd);
-			if (lyr)
+			if (webUser->gpsDataFiles.GetItem((UOSInt)i).SetTo(dataFile))
 			{
-				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
+				this->gpsStartTime = dataFile->startTime;
+				this->gpsEndTime = dataFile->endTime;
+				sptr = this->dataDir->ConcatTo(sbuff);
+				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
-					this->gpsTrk = (Map::GPSTrack*)lyr;
+					*sptr++ = IO::Path::PATH_SEPERATOR;
 				}
-				else
+				sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = dataFile->dataFileName->ConcatTo(sptr);
+				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+				NN<Map::MapDrawLayer> lyr;
+				if (Optional<Map::MapDrawLayer>::ConvertFrom(this->parsers.ParseFileType(fd, IO::ParserType::MapLayer)).SetTo(lyr))
 				{
-					DEL_CLASS(lyr);
+					if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
+					{
+						this->gpsTrk = NN<Map::GPSTrack>::ConvertFrom(lyr);
+					}
+					else
+					{
+						lyr.Delete();
+					}
 				}
 			}
 		}
 	}
 
-	if (this->gpsTrk)
+	if (this->gpsTrk.SetTo(gpsTrk))
 	{
-		this->gpsTrk->GetLatLonByTime(t, lat, lon);
+		Math::Coord2DDbl pos = gpsTrk->GetPosByTime(t);
+		lat.Set(pos.GetLat());
+		lon.Set(pos.GetLon());
 		return true;
 	}
 	else
-	{*/
-		*lat = 0;
-		*lon = 0;
+	{
+		lat.Set(0);
+		lon.Set(0);
 		return false;
-//	}
+	}
 }
 
 Optional<SSWR::OrganWeb::WebUserInfo> SSWR::OrganWeb::OrganWebEnv::UserGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id)
@@ -2143,12 +2159,13 @@ UnsafeArray<UTF8Char> SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UnsafeArray<U
 	return sbuff;
 }
 
-Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
+Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, Bool mustHaveCamera, Optional<Text::String> location)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
 		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
+	NN<Text::String> s;
 	UOSInt j;
 	UOSInt i;
 	FileType fileType = FileType::Unknown;
@@ -2235,7 +2252,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 							fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
 							if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 							{
-								if (this->UserGPSGetPos(mutUsage, userId, fileTime, &lat, &lon))
+								if (this->UserGPSGetPos(mutUsage, userId, fileTime, lat, lon))
 								{
 									locType = LocType::GPSTrack;
 								}
@@ -2398,9 +2415,9 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(0);
 					sql.AppendCmdC(CSTR(", "));
-					if (location && location->leng > 0)
+					if (location.SetTo(s) && s->leng > 0)
 					{
-						sql.AppendStr(location);
+						sql.AppendStr(s);
 					}
 					else
 					{
@@ -2430,8 +2447,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
 						userFile->descript = 0;
-						if (location && location->leng > 0)
-							userFile->location = location->Clone().Ptr();
+						if (location.SetTo(s) && s->leng > 0)
+							userFile->location = s->Clone();
 						else
 							userFile->location = 0;
 						this->userFileMap.Put(userFile->id, userFile);
@@ -2604,9 +2621,9 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(0);
-					if (location && location->leng > 0)
+					if (location.SetTo(s) && s->leng > 0)
 					{
-						sql.AppendStr(location);
+						sql.AppendStr(s);
 					}
 					else
 					{
@@ -2634,8 +2651,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 						userFile->cropTop = 0;
 						userFile->cropRight = 0;
 						userFile->cropBottom = 0;
-						if (location && location->leng > 0)
-							userFile->location = location->Clone().Ptr();
+						if (location.SetTo(s) && s->leng > 0)
+							userFile->location = s->Clone();
 						else
 							userFile->location = 0;
 						this->userFileMap.Put(userFile->id, userFile);

@@ -127,7 +127,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			else
 			{
 				SSWR::OrganWeb::OrganWebEnv env(clif, ssl, log, db, imageDir, port, sslPort, cfg->GetValue(CSTR("CacheDir")), dataDir, scnSize, cfg->GetValue(CSTR("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine(), osmCacheDir);
-
+				if (cfg->GetValue(CSTR("UpgradeInsecureURL")).SetTo(s))
+				{
+					env.SetUpgradeInsecureURL(s->ToCString());
+				}
 				if (env.IsError())
 				{
 					console.WriteLine(CSTR("Error in starting server"));

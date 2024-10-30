@@ -38,8 +38,8 @@ namespace SSWR
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
 			NN<IO::LogTool> log;
-			Net::WebServer::WebListener *listener;
-			Net::WebServer::WebListener *sslListener;
+			Optional<Net::WebServer::WebListener> listener;
+			Optional<Net::WebServer::WebListener> sslListener;
 			Sync::Mutex parserMut;
 			Parser::FullParserList parsers;
 			Optional<BookInfo> selectedBook;
@@ -49,7 +49,12 @@ namespace SSWR
 			NN<Media::DrawEngine> eng;
 			NN<Map::OSM::OSMCacheHandler> osmHdlr;
 			NN<Net::WebServer::NodeModuleHandler> nodeHdlr;
-			SSWR::OrganWeb::OrganWebHandler *webHdlr;
+			Optional<SSWR::OrganWeb::OrganWebHandler> webHdlr;
+
+			Optional<Map::GPSTrack> gpsTrk;
+			Int32 gpsUserId;
+			Data::Timestamp gpsStartTime;
+			Data::Timestamp gpsEndTime;
 
 			Data::FastStringMapNN<CategoryInfo> cateSMap;
 			Data::FastMapNN<Int32, CategoryInfo> cateMap;
@@ -96,6 +101,7 @@ namespace SSWR
 			NN<Text::String> GetDataDir() const;
 			NN<Media::ColorManagerSess> GetColorSess() const;
 			NN<Media::DrawEngine> GetDrawEngine() const;
+			void SetUpgradeInsecureURL(Text::CStringNN upgradeInsecureURL);
 
 			void CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group);
 			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Text::String*, SpeciesInfo>> spMap, Optional<WebUserInfo> user);
@@ -113,7 +119,7 @@ namespace SSWR
 			Optional<BookInfo> BookAdd(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> title, NN<Text::String> author, NN<Text::String> press, Data::Timestamp pubDate, NN<Text::String> url);
 			Bool BookAddSpecies(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, NN<Text::String> bookspecies, Bool allowDuplicate);
 
-			Bool UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
+			Bool UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, OutParam<Double> lat, OutParam<Double> lon);
 			Optional<WebUserInfo> UserGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Optional<WebUserInfo> UserGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> name);
 
@@ -132,7 +138,7 @@ namespace SSWR
 			Optional<UserFileInfo> UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, InOutParam<UnsafeArray<UTF8Char>> filePathOut);
 			Optional<UserFileInfo> UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			UnsafeArray<UTF8Char> UserfileGetPath(UnsafeArray<UTF8Char> sbuff, NN<const UserFileInfo> userfile);
-			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
+			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, UnsafeArray<const UInt8> fileCont, UOSInt fileSize, Bool mustHaveCamera, Optional<Text::String> location);
 			Bool UserfileMove(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);

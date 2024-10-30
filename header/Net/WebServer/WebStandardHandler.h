@@ -15,6 +15,7 @@ namespace Net
 			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
 			Optional<Text::String> allowOrigin;
 			Optional<Text::String> contentSecurityPolicy;
+			Optional<Text::String> upgradeInsecureURL;
 
 		protected:
 			Bool DoRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
@@ -32,6 +33,7 @@ namespace Net
 			void HandlePath(Text::CStringNN relativePath, NN<Net::WebServer::WebStandardHandler> hdlr, Bool needRelease);
 			void SetAllowOrigin(Text::CString origin);
 			void SetContentSecurityPolicy(Text::CString csp);
+			void SetUpgradeInsecureURL(Text::CString upgradeInsecureURL);
 		};
 	}
 }
