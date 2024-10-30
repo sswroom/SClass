@@ -296,7 +296,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net:
 	}
 	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA && hashType == Crypto::Hash::HashType::SHA256)
 	{
-		UInt8 signData[256];
+		UInt8 signData[1024];
 		UOSInt signLen;
 		if (!ssl->Signature(key, hashType, Data::ByteArrayR(item, itemOfst + itemLen), signData, signLen))
 		{
