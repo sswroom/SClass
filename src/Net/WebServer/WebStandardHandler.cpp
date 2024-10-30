@@ -153,7 +153,14 @@ void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebReque
 		resp->SetStatusCode(Net::WebStatus::SC_TEMPORARY_REDIRECT);
 		resp->AddDefHeaders(req);
 		resp->AddHeader(CSTR("Vary"), CSTR("Upgrade-Insecure-Requests"));
-		resp->AddHeader(CSTR("Location"), s->ToCString());
+		Text::StringBuilderUTF8 sb;
+		sb.Append(s);
+		if (sb.EndsWith('/'))
+		{
+			sb.RemoveChars(1);
+		}
+		sb.Append(reqURL);
+		resp->AddHeader(CSTR("Location"), sb.ToCString());
 		resp->AddContentLength(0);
 		resp->Write(Data::ByteArrayR(sbuff, 0));
 		return;
