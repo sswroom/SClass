@@ -36,6 +36,11 @@ namespace Data
 
 	public:
 		DataArray() = default;
+		DataArray(std::nullptr_t)
+		{
+			this->buffSize = 0;
+		}
+
 		DataArray(UnsafeArray<T> buff, UOSInt buffSize)
 		{
 			this->buff = buff;
@@ -123,6 +128,16 @@ namespace Data
 		{
 			CheckError(index);
 			return DataArray<T>(&buff[index], this->buffSize - index);
+		}
+
+		Bool operator==(const DataArray<T> ptr)
+		{
+			return this->buff == ptr.buff && this->buffSize == ptr.buffSize;
+		}
+
+		static Data::DataArray<T> Alloc(UOSInt cnt)
+		{
+			return Data::DataArray<T>(MemAllocArr(T, cnt), cnt);
 		}
 	};
 }

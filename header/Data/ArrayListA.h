@@ -42,6 +42,7 @@ namespace Data
 		virtual UnsafeArray<T> GetArr(OutParam<UOSInt> arraySize) const;
 		virtual UnsafeArray<T> Arr() const;
 		T Pop();
+		void Reverse();
 	};
 
 
@@ -349,6 +350,24 @@ namespace Data
 		T o = arr[this->objCnt - 1];
 		this->objCnt--;
 		return o;
+	}
+
+	template <class T> void ArrayListA<T>::Reverse()
+	{
+		NN<T> tmp;
+		if (this->objCnt > 0)
+		{
+			UOSInt i = 0;
+			UOSInt j = this->objCnt - 1;
+			while (i < j)
+			{
+				tmp = this->arr[i];
+				this->arr[i] = this->arr[j];
+				this->arr[j] = tmp;
+				i++;
+				j--;
+			}
+		}
 	}
 }
 #endif

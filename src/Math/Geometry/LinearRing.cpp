@@ -124,7 +124,7 @@ Math::Coord2DDbl Math::Geometry::LinearRing::GetDisplayCenter() const
 	}
 	ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (OSInt)xList.GetCount() - 1);
 	Double x = LinearRing::GetIntersactsCenter(xList);
-	return Math::Coord2DDbl(xList.GetItem(xList.GetCount() >> 1), pt.y);
+	return Math::Coord2DDbl(x, pt.y);
 }
 
 Bool Math::Geometry::LinearRing::IsOpen() const

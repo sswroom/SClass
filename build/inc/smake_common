@@ -1412,6 +1412,7 @@ Data/ArrayIterator.h:
 Data/ArrayList.h:
 Data/ArrayListA.h:
 Data/ArrayListArr.h:
+Data/ArrayListBase.h:
 Data/ArrayListCmp.h:
 @ArrayListCmp.o
 Data/ArrayListCStr.h:
@@ -1443,6 +1444,7 @@ Data/ArrayListStringNN.h:
 @ArrayListStringNN.o
 Data/ArrayListStrUTF8.h:
 @ArrayListStrUTF8.o
+Data/ArrayListT.h:
 Data/ArrayListUInt32.h:
 @ArrayListUInt32.o
 Data/ArrayListUInt64.h:

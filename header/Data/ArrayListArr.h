@@ -45,6 +45,7 @@ namespace Data
 		virtual UnsafeArray<UnsafeArray<T>> Arr() const;
 		UnsafeArrayOpt<T> Pop();
 		ArrayListArr<T> &operator =(const ArrayListArr<T> &v);
+		void Reverse();
 	};
 
 
@@ -419,6 +420,24 @@ namespace Data
 		this->EnsureCapacity(v.capacity);
 		this->AddAll(v);
 		return *this;
+	}
+
+	template <class T> void ArrayListArr<T>::Reverse()
+	{
+		NN<T> tmp;
+		if (this->objCnt > 0)
+		{
+			UOSInt i = 0;
+			UOSInt j = this->objCnt - 1;
+			while (i < j)
+			{
+				tmp = this->arr[i];
+				this->arr[i] = this->arr[j];
+				this->arr[j] = tmp;
+				i++;
+				j--;
+			}
+		}
 	}
 }
 #endif

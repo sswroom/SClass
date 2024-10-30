@@ -82,13 +82,24 @@ OSInt Map::ShortestPath3D::NodeDistanceComparator::Compare(NN<NodeInfo> a, NN<No
 void Map::ShortestPath3D::FreeLineInfo(NN<LineInfo> lineInfo)
 {
 	lineInfo->vec.Delete();
+	UOSInt i = lineInfo->properties.GetCount();
+	while (i-- > 0)
+	{
+		OPTSTR_DEL(lineInfo->properties[i]);
+	}
+	MemFreeArr(lineInfo->properties.Arr());
 	lineInfo.Delete();
 }
 
 void Map::ShortestPath3D::FreeAreaInfo(NN<AreaInfo> areaInfo)
 {
-	areaInfo->nodes.DeleteAll();
+	areaInfo->nodes.FreeAll(FreeNodeInfo);
 	areaInfo.Delete();
+}
+
+void Map::ShortestPath3D::FreeNodeInfo(NN<NodeInfo> nodeInfo)
+{
+	nodeInfo.Delete();
 }
 
 void Map::ShortestPath3D::AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo)
@@ -144,7 +155,7 @@ NN<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetArea(Math::Coord2DDbl 
 	return areaInfo;
 }
 
-Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetExistingArea(OSInt areaX, OSInt areaY)
+Optional<Map::ShortestPath3D::AreaInfo> Map::ShortestPath3D::GetExistingArea(OSInt areaX, OSInt areaY) const
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)this->areas.GetCount() - 1;
@@ -264,7 +275,7 @@ void Map::ShortestPath3D::FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId)
 	}
 }
 
-void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec)
+void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec, const Data::DataArray<Optional<Text::String>> &properties)
 {
 	Math::Geometry::Vector2D::VectorType type = vec->GetVectorType();
 	NN<Math::Geometry::Polyline> pl;
@@ -286,7 +297,7 @@ void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec)
 		{
 			if (pl->GetItem(i).SetTo(ls))
 			{
-				this->AddVector(ls->Clone());
+				this->AddVector(ls->Clone(), properties);
 			}
 			i++;
 		}
@@ -311,6 +322,14 @@ void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec)
 		lineInfo->index = this->lines.GetCount();
 		lineInfo->networkId = 0;
 		lineInfo->vec = ls;
+		i = 0;
+		j = properties.GetCount();
+		lineInfo->properties = Data::DataArray<Optional<Text::String>>::Alloc(j);
+		while (i < j)
+		{
+			lineInfo->properties[i] = Text::String::CopyOrNull(properties[i]);
+			i++;
+		}
 		lineInfo->length = ls->Calc3DLength();
 		this->lines.Add(lineInfo);
 		nodeInfo = this->GetNode(lineInfo->startPos, lineInfo->startZ);
@@ -350,6 +369,22 @@ Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double sear
 {
 	this->csys = csys;
 	this->searchDist = searchDist;
+	this->lastStartHalfLine1 = 0;
+	this->lastStartHalfLine2 = 0;
+	this->lastEndHalfLine1 = 0;
+	this->lastEndHalfLine2 = 0;
+}
+
+Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist)
+{
+	this->csys = layer->GetCoordinateSystem()->Clone();
+	this->searchDist = searchDist;
+	this->lastStartHalfLine1 = 0;
+	this->lastStartHalfLine2 = 0;
+	this->lastEndHalfLine1 = 0;
+	this->lastEndHalfLine2 = 0;
+	this->AddLayer(layer);
+	this->BuildNetwork();
 }
 
 Map::ShortestPath3D::~ShortestPath3D()
@@ -367,26 +402,49 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 	NN<Math::Geometry::Vector2D> vec;
 	NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(idArr, nameArr);
+	UOSInt colCnt = layer->GetColumnCnt();
+	UOSInt k;
+	UnsafeArray<Optional<Text::String>> properties = MemAllocArr(Optional<Text::String>, colCnt);
+	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt j = idArr.GetCount();
 	while (i < j)
 	{
 		if (layer->GetNewVectorById(sess, idArr.GetItem(i)).SetTo(vec))
 		{
+			k = colCnt;
+			while (k-- > 0)
+			{
+				sb.ClearStr();
+				if (layer->GetString(sb, nameArr, idArr.GetItem(i), k))
+				{
+					properties[k] = Text::String::New(sb.ToCString());
+				}
+				else
+				{
+					properties[k] = 0;
+				}
+
+			}
 			if (csys->Equals(this->csys))
 			{
-				this->AddVector(vec);
+				this->AddVector(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt));
 			}
 			else
 			{
 				Math::CoordinateSystemConverter converter(csys, this->csys);
 				vec->Convert(converter);
-				this->AddVector(vec);
+				this->AddVector(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt));
+			}
+			while (k-- > 0)
+			{
+				OPTSTR_DEL(properties[k]);
 			}
 		}
 		i++;
 	}
 	layer->EndGetObject(sess);
+	MemFreeArr(properties);
 }
 
 void Map::ShortestPath3D::BuildNetwork()
@@ -417,7 +475,7 @@ void Map::ShortestPath3D::BuildNetwork()
 	}
 }
 
-void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId)
+void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const
 {
 	NN<LineInfo> lineInfo;
 	UOSInt i = 0;
@@ -433,7 +491,7 @@ void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::L
 	}
 }
 
-void Map::ShortestPath3D::GetNearestPaths(NN<Data::ArrayListNN<PathResult>> paths, Math::Coord2DDbl pos)
+void Map::ShortestPath3D::GetNearestPaths(NN<Data::ArrayListNN<PathResult>> paths, Math::Coord2DDbl pos) const
 {
 	OSInt x = (OSInt)(pos.x / this->searchDist);
 	OSInt y = (OSInt)(pos.y / this->searchDist);
@@ -478,8 +536,12 @@ void Map::ShortestPath3D::GetNearestPaths(NN<Data::ArrayListNN<PathResult>> path
 	Data::Sort::ArtificialQuickSort::Sort<NN<PathResult>>(paths, pcomparator);
 }
 
-Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd)
+Bool Map::ShortestPath3D::GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList)
 {
+	this->lastStartHalfLine1.Delete();
+	this->lastStartHalfLine2.Delete();
+	this->lastEndHalfLine1.Delete();
+	this->lastEndHalfLine2.Delete();
 	Data::ArrayListNN<PathResult> paths1;
 	Data::ArrayListNN<PathResult> paths2;
 	NN<PathResult> path1;
@@ -495,7 +557,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 	j1 = paths1.GetCount();
 	j2 = paths2.GetCount();
 	if (j1 == 0 || j2 == 0)
-		return 0;
+		return false;
 	path1 = paths1.GetItemNoCheck(0);
 	path2 = paths2.GetItemNoCheck(0);
 	if (path1->line->networkId != path2->line->networkId)
@@ -519,7 +581,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 		{
 			paths1.DeleteAll();
 			paths2.DeleteAll();
-			return 0;
+			return false;
 		}
 		if (i1 >= j1)
 		{
@@ -545,7 +607,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 		paths1.DeleteAll();
 		paths2.DeleteAll();
 		printf("GetShortestPath internal error\r\n");
-		return 0;
+		return false;
 	}
 	Sync::MutexUsage mutUsage(this->mut);
 	Data::ArrayListNN<NodeInfo> calcNodes;
@@ -579,7 +641,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 		paths1.DeleteAll();
 		paths2.DeleteAll();
 		printf("GetShortestPath split start error\r\n");
-		return 0;
+		return false;
 	}
 	startHalfLine1->Reverse();
 	Double lastDist;
@@ -588,12 +650,14 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 	nodeInfo->calcFrom = posStart;
 	nodeInfo->calcFromZ = 0;
 	nodeInfo->calcLine = startHalfLine1;
+	nodeInfo->calcLineProp = path1->line->properties;
 	calcNodes.Add(nodeInfo);
 	nodeInfo = GetNode(path1->line->endPos, path1->line->endZ);
 	nodeInfo->calcNodeDist = startHalfLine2->Calc3DLength();
 	nodeInfo->calcFrom = posStart;
 	nodeInfo->calcFromZ = 0;
 	nodeInfo->calcLine = startHalfLine2;
+	nodeInfo->calcLineProp = path1->line->properties;
 	if (nodeInfo->calcNodeDist < lastDist)
 	{
 		calcNodes.Insert(0, nodeInfo);
@@ -630,6 +694,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 				destNodeInfo->calcFrom = nodeInfo->pos;
 				destNodeInfo->calcFromZ = nodeInfo->z;
 				destNodeInfo->calcLine = lineInfo->vec;
+				destNodeInfo->calcLineProp = lineInfo->properties;
 			}
 			else if (destNodeInfo->calcNodeDist > lastDist)
 			{
@@ -637,6 +702,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 				destNodeInfo->calcFrom = nodeInfo->pos;
 				destNodeInfo->calcFromZ = nodeInfo->z;
 				destNodeInfo->calcLine = lineInfo->vec;
+				destNodeInfo->calcLineProp = lineInfo->properties;
 			}
 			i2++;
 		}
@@ -663,7 +729,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 		paths1.DeleteAll();
 		paths2.DeleteAll();
 		printf("GetShortestPath start node or end node not found\r\n");
-		return 0;
+		return false;
 	}
 	NN<Math::Geometry::LineString> endHalfLine1 = NN<Math::Geometry::LineString>::ConvertFrom(path2->vec->Clone());
 	NN<Math::Geometry::LineString> endHalfLine2;
@@ -675,10 +741,9 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 		paths1.DeleteAll();
 		paths2.DeleteAll();
 		printf("GetShortestPath split end error\r\n");
-		return 0;
+		return false;
 	}
 	Math::Coord2DDbl linePt;
-	Data::ArrayListNN<Math::Geometry::LineString> lineList;
 	endHalfLine2->Reverse();
 	lastDist = endHalfLine1->Calc3DLength();
 	nodeInfo = GetNode(path2->line->startPos, path2->line->startZ);
@@ -687,31 +752,43 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 	if (nodeInfo->calcNodeDist + endHalfLine2->Calc3DLength() < lastDist)
 	{
 		linePt = endHalfLine2->GetPoint(0);
-		lineList.Add(endHalfLine2);
+		lineList->Add(endHalfLine2);
+		propList->Add(path2->line->properties);
 	}
 	else
 	{
 		nodeInfo = GetNode(path2->line->startPos, path2->line->startZ);
 		linePt = endHalfLine1->GetPoint(0);
-		lineList.Add(endHalfLine1);
+		lineList->Add(endHalfLine1);
+		propList->Add(path2->line->properties);
 	}
 	while (true)
 	{
 		linePt = nodeInfo->calcLine->GetPoint(0);
-		lineList.Add(nodeInfo->calcLine);
+		lineList->Add(nodeInfo->calcLine);
+		propList->Add(nodeInfo->calcLineProp);
 		if (nodeInfo->calcFrom == posStart && nodeInfo->calcFromZ == 0)
 			break;
 		nodeInfo = GetNode(nodeInfo->calcFrom, nodeInfo->calcFromZ);
 	}
-	lineList.Reverse();
-	Optional<Math::Geometry::LineString> ret = Math::Geometry::LineString::JoinLines(lineList);
-	startHalfLine1.Delete();
-	startHalfLine2.Delete();
-	endHalfLine1.Delete();
-	endHalfLine2.Delete();
+	lineList->Reverse();
+	propList->Reverse();
 	paths1.DeleteAll();
 	paths2.DeleteAll();
-	return ret;
+	this->lastStartHalfLine1 = startHalfLine1;
+	this->lastStartHalfLine2 = startHalfLine2;
+	this->lastEndHalfLine1 = endHalfLine1;
+	this->lastEndHalfLine2 = endHalfLine2;
+	return true;
+}
+
+Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd)
+{
+	Data::ArrayListNN<Math::Geometry::LineString> lineList;
+	Data::ArrayListT<Data::DataArray<Optional<Text::String>>> propList;
+	if (!GetShortestPath(posStart, posEnd, lineList, propList))
+		return 0;
+	return Math::Geometry::LineString::JoinLines(lineList);
 }
 
 NN<Math::CoordinateSystem> Map::ShortestPath3D::GetCoordinateSystem() const
