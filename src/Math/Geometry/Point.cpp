@@ -119,3 +119,18 @@ UOSInt Math::Geometry::Point::GetPointCount() const
 {
 	return 1;
 }
+
+Bool Math::Geometry::Point::HasArea() const
+{
+	return false;
+}
+
+UOSInt Math::Geometry::Point::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+{
+	return 0;
+}
+
+Math::Coord2DDbl Math::Geometry::Point::GetDisplayCenter() const
+{
+	return this->pos;
+}

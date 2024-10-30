@@ -1,3 +1,5 @@
+-Change geometry.LinearRing.getHIntersactsCenter to getIntersactsCenter
+
 1.6.17
 -Fixed olayer2 types
 -Added vector2D.hasArea

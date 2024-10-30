@@ -38,6 +38,9 @@ namespace Math
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
 			virtual UOSInt GetPointCount() const;
+			virtual Bool HasArea() const;
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const;
+			virtual Math::Coord2DDbl GetDisplayCenter() const;
 
 			NN<Text::String> GetString() const;
 			Double GetAngleDegree() const;

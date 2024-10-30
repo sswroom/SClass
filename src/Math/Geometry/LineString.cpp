@@ -564,6 +564,57 @@ UOSInt Math::Geometry::LineString::GetPointCount() const
 	return this->nPoint;
 }
 
+Bool Math::Geometry::LineString::HasArea() const
+{
+	return false;
+}
+
+UOSInt Math::Geometry::LineString::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+{
+	if (this->nPoint < 2)
+		return 0;
+	UOSInt initCnt = xList->GetCount();
+	UOSInt i = 1;
+	UOSInt j = this->nPoint;
+	Math::Coord2DDbl lastPt = this->pointArr[0];
+	Math::Coord2DDbl thisPt;
+	Double thisX;
+	while (i < j)
+	{
+		thisPt = this->pointArr[i];
+		if ((lastPt.y >= y && thisPt.y < y) || (thisPt.y >= y && lastPt.y < y))
+		{
+			thisX = lastPt.x + (y - lastPt.y) / (thisPt.y - lastPt.y) * (thisPt.x - lastPt.x);
+			xList->Add(thisX);
+		}
+		lastPt = thisPt;
+		i++;
+	}
+	if (this->HasArea())
+	{
+		thisPt = this->pointArr[0];
+		if ((lastPt.y >= y && thisPt.y < y) || (thisPt.y >= y && lastPt.y < y))
+		{
+			thisX = lastPt.x + (y - lastPt.y) / (thisPt.y - lastPt.y) * (thisPt.x - lastPt.x);
+			xList->Add(thisX);
+		}
+	}
+	return xList->GetCount() - initCnt;
+}
+
+Math::Coord2DDbl Math::Geometry::LineString::GetDisplayCenter() const
+{
+	Math::RectAreaDbl bounds = this->GetBounds();
+	Math::Coord2DDbl pt = bounds.GetCenter();
+	Data::ArrayList<Double> xList;
+	this->CalcHIntersacts(pt.y, xList);
+	if (xList.GetCount() == 0)
+	{
+		return Math::Coord2DDbl(0, 0);
+	}
+	return Math::Coord2DDbl(xList.GetItem(xList.GetCount() >> 1), pt.y);
+}
+
 Math::Coord2DDbl Math::Geometry::LineString::GetPoint(UOSInt index) const
 {
 	if (index >= this->nPoint)

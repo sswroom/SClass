@@ -1,8 +1,10 @@
 #ifndef _SM_MATH_GEOMETRY_MULTIGEOMETRY
 #define _SM_MATH_GEOMETRY_MULTIGEOMETRY
 #include "Data/ArrayListNN.h"
+#include "Data/Sort/ArtificialQuickSortC.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/CoordinateSystem.h"
+#include "Math/Geometry/LinearRing.h"
 #include "Math/Geometry/Vector2D.h"
 
 #ifndef VERBOSE
@@ -334,6 +336,54 @@ namespace Math
 					ret += it.Next()->GetPointCount();
 				}
 				return ret;
+			}
+
+			virtual Bool HasArea() const
+			{
+				if (this->geometries.GetCount() == 0)
+					return false;
+				return this->geometries.GetItemNoCheck(0)->HasArea();
+			}
+
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+			{
+				UOSInt initCnt = xList->GetCount();
+				UOSInt i = 0;
+				UOSInt j = this->geometries.GetCount();
+				while (i < j)
+				{
+					this->geometries.GetItemNoCheck(i)->CalcHIntersacts(y, xList);
+					i++;
+				}
+				return xList->GetCount() - initCnt;
+			}
+
+			virtual Math::Coord2DDbl GetDisplayCenter() const
+			{
+				Math::RectAreaDbl bounds = this->GetBounds();
+				Math::Coord2DDbl pt = bounds.GetCenter();
+				Data::ArrayList<Double> xList;
+				this->CalcHIntersacts(pt.y, xList);
+				if (xList.GetCount() == 0)
+				{
+					bounds = this->geometries.GetItemNoCheck(0)->GetBounds();
+					pt = bounds.GetCenter();
+					this->CalcHIntersacts(pt.y, xList);
+					if (xList.GetCount() == 0)
+					{
+						return Math::Coord2DDbl(0, 0);
+					}
+				}
+				ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (OSInt)xList.GetCount() - 1);
+				if (this->HasArea())
+				{
+					Double x = LinearRing::GetIntersactsCenter(xList);
+					return Math::Coord2DDbl(x, pt.y);	
+				}
+				else
+				{
+					return Math::Coord2DDbl(xList.GetItem(xList.GetCount() >> 1), pt.y);
+				}
 			}
 		};
 	}

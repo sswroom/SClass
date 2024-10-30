@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_GEOMETRY_VECTOR2D
 #define _SM_MATH_GEOMETRY_VECTOR2D
+#include "Data/ArrayList.h"
 #include "Data/ArrayListA.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/CoordinateConverter.h"
@@ -66,6 +67,9 @@ namespace Math
 			virtual void SwapXY() = 0;
 			virtual void MultiplyCoordinatesXY(Double v) = 0;
 			virtual UOSInt GetPointCount() const = 0;
+			virtual Bool HasArea() const = 0;
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const = 0;
+			virtual Math::Coord2DDbl GetDisplayCenter() const = 0;
 			Bool Contains(NN<Math::Geometry::Vector2D> vec) const;
 
 			UInt32 GetSRID() const;

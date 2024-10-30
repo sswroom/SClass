@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Data/ArrayListDbl.h"
+#include "Data/Sort/ArtificialQuickSortC.h"
 #include "Math/Geometry/LinearRing.h"
 
 Math::Geometry::LinearRing::LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint, hasZ, hasM)
@@ -105,6 +107,26 @@ Double Math::Geometry::LinearRing::CalArea() const
 		return total * 0.5;
 }
 
+Bool Math::Geometry::LinearRing::HasArea() const
+{
+	return true;
+}
+
+Math::Coord2DDbl Math::Geometry::LinearRing::GetDisplayCenter() const
+{
+	Math::RectAreaDbl bounds = this->GetBounds();
+	Math::Coord2DDbl pt = bounds.GetCenter();
+	Data::ArrayListDbl xList;
+	this->CalcHIntersacts(pt.y, xList);
+	if (xList.GetCount() == 0)
+	{
+		return Math::Coord2DDbl(0, 0);
+	}
+	ArtificialQuickSort_SortDouble(xList.Arr().Ptr(), 0, (OSInt)xList.GetCount() - 1);
+	Double x = LinearRing::GetIntersactsCenter(xList);
+	return Math::Coord2DDbl(xList.GetItem(xList.GetCount() >> 1), pt.y);
+}
+
 Bool Math::Geometry::LinearRing::IsOpen() const
 {
 	return this->pointArr[0] != this->pointArr[this->nPoint - 1];
@@ -113,6 +135,37 @@ Bool Math::Geometry::LinearRing::IsOpen() const
 Bool Math::Geometry::LinearRing::IsClose() const
 {
 	return this->pointArr[0] == this->pointArr[this->nPoint - 1];
+}
+
+Double Math::Geometry::LinearRing::GetIntersactsCenter(NN<Data::ArrayList<Double>> vals)
+{
+	if (vals->GetCount() == 0)
+	{
+		return 0;
+	}
+	UOSInt i = vals->GetCount();
+	if ((i & 1) != 0)
+	{
+		return 0;
+	}
+	Double totalLength = 0;
+	Double leng;
+	while (i > 0)
+	{
+		i -= 2;
+		totalLength += vals->GetItem(i + 1) - vals->GetItem(i);
+	}
+	totalLength = totalLength * 0.5;
+	i = vals->GetCount();
+	while (i > 0)
+	{
+		i -= 2;
+		leng = vals->GetItem(i + 1) - vals->GetItem(i);
+		if (totalLength <= leng)
+			return vals->GetItem(i + 1) - totalLength;
+		totalLength -= leng;
+	}
+	return vals->GetItem(0);
 }
 
 NN<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints)

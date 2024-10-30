@@ -82,7 +82,7 @@ export class LinearRing extends LineString
 	hasArea(): boolean;
 	getDisplayCenter(): math.Coord2D;
 
-	static getHIntersactsCenter(xList: number[]): number;
+	static getIntersactsCenter(vals: number[]): number;
 	static createFromCircle(srid: number, center: math.Coord2D, radiusX: number, radiusY: number, nPoints: number): LinearRing;
 }
 

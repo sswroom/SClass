@@ -360,6 +360,27 @@ UOSInt Math::Geometry::VectorImage::GetPointCount() const
 	return 4;
 }
 
+Bool Math::Geometry::VectorImage::HasArea() const
+{
+	return true;
+}
+
+UOSInt Math::Geometry::VectorImage::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+{
+	if (y >= this->tl.y && y < this->br.y)
+	{
+		xList->Add(this->tl.x);
+		xList->Add(this->br.x);
+		return 2;
+	}
+	return 0;
+}
+
+Math::Coord2DDbl Math::Geometry::VectorImage::GetDisplayCenter() const
+{
+	return this->GetCenter();
+}
+
 Optional<Text::String> Math::Geometry::VectorImage::GetSourceAddr() const
 {
 	return this->srcAddr;

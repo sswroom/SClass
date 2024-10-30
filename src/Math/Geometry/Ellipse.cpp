@@ -132,6 +132,30 @@ UOSInt Math::Geometry::Ellipse::GetPointCount() const
 	return 4;
 }
 
+Bool Math::Geometry::Ellipse::HasArea() const
+{
+	return true;
+}
+
+UOSInt Math::Geometry::Ellipse::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+{
+	if (y >= this->tl.y && y < this->tl.y + this->size.y)
+	{
+		Math::Coord2DDbl cent = this->tl + (this->size * 0.5);
+		Double ang = Math_ArcCos((y - cent.y) / this->size.y * 0.5);
+		Double x = Math_Sin(ang) * this->size.x;
+		xList->Add(cent.x - x);
+		xList->Add(cent.x + x);
+		return 2;
+	}
+	return 0;
+}
+
+Math::Coord2DDbl Math::Geometry::Ellipse::GetDisplayCenter() const
+{
+	return this->GetCenter();
+}
+
 Math::Coord2DDbl Math::Geometry::Ellipse::GetTL()
 {
 	return this->tl;

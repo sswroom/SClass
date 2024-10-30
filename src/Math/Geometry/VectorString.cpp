@@ -137,6 +137,21 @@ UOSInt Math::Geometry::VectorString::GetPointCount() const
 	return 1;
 }
 
+Bool Math::Geometry::VectorString::HasArea() const
+{
+	return false;
+}
+
+UOSInt Math::Geometry::VectorString::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+{
+	return 0;
+}
+
+Math::Coord2DDbl Math::Geometry::VectorString::GetDisplayCenter() const
+{
+	return this->GetCenter();
+}
+
 NN<Text::String> Math::Geometry::VectorString::GetString() const
 {
 	return this->s;

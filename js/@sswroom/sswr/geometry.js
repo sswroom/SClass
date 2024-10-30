@@ -504,42 +504,42 @@ export class LinearRing extends LineString
 			throw new Error("No intersact point in middle y");
 		}
 		xList.sort();
-		let x = LinearRing.getHIntersactsCenter(xList);
+		let x = LinearRing.getIntersactsCenter(xList);
 		return new math.Coord2D(xList[xList.length >> 1], pt.y);
 	}
 
 	/**
-	 * @param {number[]} xList
+	 * @param {number[]} vals
 	 */
-	static getHIntersactsCenter(xList)
+	static getIntersactsCenter(vals)
 	{
-		if (xList.length == 0)
+		if (vals.length == 0)
 		{
-			throw new Error("xList is empty");
+			throw new Error("vals is empty");
 		}
-		if ((xList.length & 1) != 0)
+		if ((vals.length & 1) != 0)
 		{
-			throw new Error("xList length must be even number");
+			throw new Error("vals length must be even number");
 		}
 		let totalLength = 0;
 		let leng;
-		let i = xList.length;
+		let i = vals.length;
 		while (i > 0)
 		{
 			i -= 2;
-			totalLength += xList[i + 1] - xList[i];
+			totalLength += vals[i + 1] - vals[i];
 		}
 		totalLength = totalLength * 0.5;
-		i = xList.length;
+		i = vals.length;
 		while (i > 0)
 		{
 			i -= 2;
-			leng = xList[i + 1] - xList[i];
+			leng = vals[i + 1] - vals[i];
 			if (totalLength <= leng)
-				return xList[i + 1] - totalLength;
+				return vals[i + 1] - totalLength;
 			totalLength -= leng;
 		}
-		return xList[0];
+		return vals[0];
 	}
 	
 	/**
@@ -677,7 +677,7 @@ export class MultiGeometry extends Vector2D
 		xList.sort();
 		if (this.hasArea())
 		{
-			let x = LinearRing.getHIntersactsCenter(xList);
+			let x = LinearRing.getIntersactsCenter(xList);
 			return new math.Coord2D(x, pt.y);	
 		}
 		else

@@ -41,6 +41,9 @@ namespace Math
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
 			virtual UOSInt GetPointCount() const;
+			virtual Bool HasArea() const;
+			virtual UOSInt CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const;
+			virtual Math::Coord2DDbl GetDisplayCenter() const;
 
 			UnsafeArray<Math::Coord2DDbl> GetPointList(OutParam<UOSInt> nPoint) { nPoint.Set(this->nPoint); return this->pointArr; }
 			UnsafeArray<const Math::Coord2DDbl> GetPointListRead(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->pointArr; }
