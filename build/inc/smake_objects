@@ -1751,6 +1751,7 @@ AVIRDBCheckChgForm.o: ../../src/SSWR/AVIRead/AVIRDBCheckChgForm.cpp
 AVIRDBCopyTablesForm.o: ../../src/SSWR/AVIRead/AVIRDBCopyTablesForm.cpp
 AVIRDBExportForm.o: ../../src/SSWR/AVIRead/AVIRDBExportForm.cpp
 AVIRDBForm.o: ../../src/SSWR/AVIRead/AVIRDBForm.cpp
+AVIRDBGenEnumForm.o: ../../src/SSWR/AVIRead/AVIRDBGenEnumForm.cpp
 AVIRDBManagerForm.o: ../../src/SSWR/AVIRead/AVIRDBManagerForm.cpp
 AVIRDHCPServerForm.o: ../../src/SSWR/AVIRead/AVIRDHCPServerForm.cpp
 AVIRDHT22Form.o: ../../src/SSWR/AVIRead/AVIRDHT22Form.cpp
@@ -2132,6 +2133,7 @@ StringBuilderUTF8.o: ../../src/Text/StringBuilderUTF8.cpp
 StringBuilderUTF16.o: ../../src/Text/StringBuilderUTF16.cpp
 StringBuilderUTF32.o: ../../src/Text/StringBuilderUTF32.cpp
 StringBuilderWriter.o: ../../src/Text/StringBuilderWriter.cpp
+StringCaseConverter.o: ../../src/Text/StringCaseConverter.cpp
 StringTool.o: ../../src/Text/StringTool.cpp
 StringUtil.o: ../../src/Text/StringUtil.cpp
 TextAnalyzer.o: ../../src/Text/TextAnalyzer.cpp

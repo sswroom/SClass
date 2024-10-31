@@ -85,6 +85,7 @@ namespace Map
 		Data::ArrayListNN<LineInfo> lines;
 		Data::ArrayListNN<AreaInfo> areas;
 		Sync::Mutex mut;
+		Optional<DB::TableDef> propDef;
 		Optional<Math::Geometry::LineString> lastStartHalfLine1;
 		Optional<Math::Geometry::LineString> lastStartHalfLine2;
 		Optional<Math::Geometry::LineString> lastEndHalfLine1;
@@ -98,7 +99,7 @@ namespace Map
 		Optional<AreaInfo> GetExistingArea(OSInt areaX, OSInt areaY) const;
 		NN<NodeInfo> GetNode(Math::Coord2DDbl pos, Double z);
 		void FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId);
-		void AddVector(NN<Math::Geometry::Vector2D> vec, const Data::DataArray<Optional<Text::String>> &properties);
+		void AddVector(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties);
 	public:
 		ShortestPath3D(NN<Math::CoordinateSystem> csys, Double searchDist);
 		ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist);
@@ -108,9 +109,10 @@ namespace Map
 		void BuildNetwork();
 		void GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const;
 		void GetNearestPaths(NN<Data::ArrayListNN<PathResult>> paths, Math::Coord2DDbl pos) const;
-		Bool GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList);
+		Bool GetShortestPathDetail(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList);
 		Optional<Math::Geometry::LineString> GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd);
 		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
+		Optional<DB::TableDef> GetPropDef() const;
 	};
 }
 #endif

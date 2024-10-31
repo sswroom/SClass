@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/Sort/ArtificialQuickSort.h"
+#include "DB/TableDef.h"
 #include "Map/ShortestPath3D.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "Sync/MutexUsage.h"
@@ -275,7 +276,7 @@ void Map::ShortestPath3D::FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId)
 	}
 }
 
-void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec, const Data::DataArray<Optional<Text::String>> &properties)
+void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties)
 {
 	Math::Geometry::Vector2D::VectorType type = vec->GetVectorType();
 	NN<Math::Geometry::Polyline> pl;
@@ -373,6 +374,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double sear
 	this->lastStartHalfLine2 = 0;
 	this->lastEndHalfLine1 = 0;
 	this->lastEndHalfLine2 = 0;
+	this->propDef = 0;
 }
 
 Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist)
@@ -383,6 +385,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDi
 	this->lastStartHalfLine2 = 0;
 	this->lastEndHalfLine1 = 0;
 	this->lastEndHalfLine2 = 0;
+	this->propDef = 0;
 	this->AddLayer(layer);
 	this->BuildNetwork();
 }
@@ -390,6 +393,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDi
 Map::ShortestPath3D::~ShortestPath3D()
 {
 	this->csys.Delete();
+	this->propDef.Delete();
 	this->areas.FreeAll(FreeAreaInfo);
 	this->lines.FreeAll(FreeLineInfo);
 }
@@ -400,6 +404,10 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 	Optional<Map::NameArray> nameArr;
 	Data::ArrayListInt64 idArr;
 	NN<Math::Geometry::Vector2D> vec;
+	if (this->propDef.IsNull())
+	{
+		this->propDef = layer->GetTableDef(CSTR_NULL, layer->GetSourceNameObj()->ToCString());
+	}
 	NN<Map::GetObjectSess> sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(idArr, nameArr);
 	UOSInt colCnt = layer->GetColumnCnt();
@@ -436,6 +444,7 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 				vec->Convert(converter);
 				this->AddVector(vec, Data::DataArray<Optional<Text::String>>(properties, colCnt));
 			}
+			k = colCnt;
 			while (k-- > 0)
 			{
 				OPTSTR_DEL(properties[k]);
@@ -536,7 +545,7 @@ void Map::ShortestPath3D::GetNearestPaths(NN<Data::ArrayListNN<PathResult>> path
 	Data::Sort::ArtificialQuickSort::Sort<NN<PathResult>>(paths, pcomparator);
 }
 
-Bool Map::ShortestPath3D::GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList)
+Bool Map::ShortestPath3D::GetShortestPathDetail(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList)
 {
 	this->lastStartHalfLine1.Delete();
 	this->lastStartHalfLine2.Delete();
@@ -786,7 +795,7 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 {
 	Data::ArrayListNN<Math::Geometry::LineString> lineList;
 	Data::ArrayListT<Data::DataArray<Optional<Text::String>>> propList;
-	if (!GetShortestPath(posStart, posEnd, lineList, propList))
+	if (!GetShortestPathDetail(posStart, posEnd, lineList, propList))
 		return 0;
 	return Math::Geometry::LineString::JoinLines(lineList);
 }
@@ -794,4 +803,9 @@ Optional<Math::Geometry::LineString> Map::ShortestPath3D::GetShortestPath(Math::
 NN<Math::CoordinateSystem> Map::ShortestPath3D::GetCoordinateSystem() const
 {
 	return this->csys;
+}
+
+Optional<DB::TableDef> Map::ShortestPath3D::GetPropDef() const
+{
+	return this->propDef;
 }

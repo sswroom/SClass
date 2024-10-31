@@ -3849,6 +3849,8 @@ SSWR/AVIRead/AVIRDBExportForm.h:
 @AVIRDBExportForm.o
 SSWR/AVIRead/AVIRDBForm.h:
 @AVIRDBForm.o
+SSWR/AVIRead/AVIRDBGenEnumForm.h:
+@AVIRDBGenEnumForm.o
 SSWR/AVIRead/AVIRDBManagerForm.h:
 @AVIRDBManagerForm.o
 SSWR/AVIRead/AVIRDHCPServerForm.h:
@@ -4601,6 +4603,8 @@ Text/StringBuilderUTF32.h:
 Text/StringBuilderW.h:
 Text/StringBuilderWriter.h:
 @StringBuilderWriter.o
+Text/StringCaseConverter.h:
+@StringCaseConverter.o
 Text/StringComparatorFast.h:
 Text/StringComparatorFastNN.h:
 Text/StringTool.h:

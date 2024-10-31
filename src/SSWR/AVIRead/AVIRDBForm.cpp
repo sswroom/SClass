@@ -11,6 +11,7 @@
 #include "SSWR/AVIRead/AVIRDBCheckChgForm.h"
 #include "SSWR/AVIRead/AVIRDBExportForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
+#include "SSWR/AVIRead/AVIRDBGenEnumForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
 #include "Text/CharUtil.h"
 #include "UI/Clipboard.h"
@@ -44,6 +45,7 @@ typedef enum
 	MNU_TABLE_EXPORT_EXCELXML,
 	MNU_TABLE_EXPORT_XLSX,
 	MNU_TABLE_CHECK_CHANGE,
+	MNU_COLUMN_GEN_ENUM,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -636,6 +638,8 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 	mnu2->AddItem(CSTR("Excel 2007"), MNU_TABLE_EXPORT_XLSX, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Excel XML"), MNU_TABLE_EXPORT_EXCELXML, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Check Table Changes"), MNU_TABLE_CHECK_CHANGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("C&olumn"));
+	mnu->AddItem(CSTR("&Generate Enum"), MNU_COLUMN_GEN_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->dbt && this->dbt->GetDatabaseNames(this->dbNames) > 0)
@@ -890,6 +894,27 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			{
 				SSWR::AVIRead::AVIRDBCheckChgForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString());
 				dlg.ShowDialog(this);
+				tableName->Release();
+			}
+			OPTSTR_DEL(schemaName);
+		}
+		break;
+	case MNU_COLUMN_GEN_ENUM:
+		{
+			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+			NN<Text::String> tableName;
+			if (this->lbTable->GetSelectedItemTextNew().SetTo(tableName))
+			{
+				UOSInt colIndex = this->lvTable->GetSelectedIndex();
+				if (colIndex != INVALID_INDEX)
+				{
+					SSWR::AVIRead::AVIRDBGenEnumForm dlg(0, ui, this->core, this->db, OPTSTR_CSTR(schemaName), tableName->ToCString(), colIndex);
+					dlg.ShowDialog(this);
+				}
+				else
+				{
+					this->ui->ShowMsgOK(CSTR("Please select column first"), CSTR("Database"), this);
+				}
 				tableName->Release();
 			}
 			OPTSTR_DEL(schemaName);
