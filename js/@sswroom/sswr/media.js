@@ -1,4 +1,6 @@
 import * as data from "./data.js";
+import * as geometry from "./geometry.js";
+import * as math from "./math.js";
 import * as text from "./text.js";
 
 export const EXIFMaker = {
@@ -46,6 +48,167 @@ export function loadImageFromBlob(blob)
         img.src = URL.createObjectURL(blob);
     });
 }
+
+
+/**
+ * @param {geometry.Vector2D} vec
+ * @param {number} width
+ * @param {number} height
+ */
+export function genVector2DPreview(vec, width, height)
+{
+	let img = new DrawImage(width, height);
+	let bounds = vec.getBounds();
+	drawVector2DPreview(img, vec, bounds);
+	return img;
+}
+
+/**
+ * @param {DrawImage} img
+ * @param {geometry.Vector2D} vec
+ * @param {math.RectArea} bounds
+ */
+function drawVector2DPreview(img, vec, bounds)
+{
+	let w = img.width;
+	let h = img.height;
+	let vecX = 0;
+	let vecY = 0;
+	let vecW = bounds.getWidth();
+	let vecH = bounds.getHeight();
+	if (vecW > vecH)
+	{
+		vecY = (vecW - vecH) * 0.5;
+		vecH = vecW;
+	}
+	else
+	{
+		vecX = (vecH - vecW) * 0.5;
+		vecW = vecH;
+	}
+	let pl = [];
+	let i;
+	if (vec instanceof geometry.LinearRing)
+	{
+		i = 0;
+		while (i < vec.coordinates.length)
+		{
+			pl.push(new math.Coord2D((vec.coordinates[i][0] - bounds.minX + vecX) * w / vecW, (bounds.maxY - vec.coordinates[i][1] + vecY) * h / vecH));
+			i++;
+		}
+		img.drawPolyline(pl, 1, "black");
+	}
+	else if (vec instanceof geometry.LineString)
+	{
+		i = 0;
+		while (i < vec.coordinates.length)
+		{
+			pl.push(new math.Coord2D((vec.coordinates[i][0] - bounds.minX + vecX) * w / vecW, (bounds.maxY - vec.coordinates[i][1] + vecY) * h / vecH));
+			i++;
+		}
+		img.drawPolyline(pl, 1, "black");
+	}
+}
+
+export class DrawImage
+{
+	/**
+	 * @param {number} width
+	 * @param {number} height
+	 */
+	constructor(width, height)
+	{
+		this.canvas = document.createElement("canvas");
+		this.canvas.width = width;
+		this.canvas.height = height;
+		this.ctx = this.canvas.getContext("2d");
+	}
+
+	/**
+	 * @param {math.Coord2D} startPt
+	 * @param {math.Coord2D} endPt
+	 * @param {undefined | null | number} lineWidth
+	 * @param {undefined | string | CanvasGradient | CanvasPattern} lineStyle
+	 */
+	drawLine(startPt, endPt, lineWidth, lineStyle)
+	{
+		let ctx = this.ctx;
+		if (ctx)
+		{
+			ctx.beginPath();
+			ctx.moveTo(startPt.x, startPt.y);
+			ctx.lineTo(endPt.x, endPt.y);
+			if (lineWidth)
+			{
+				ctx.lineWidth = lineWidth;
+			}
+			if (lineStyle)
+			{
+				ctx.strokeStyle = lineStyle;
+			}
+			ctx.stroke();
+		}
+	}
+
+	/**
+	 * @param {math.Coord2D[]} pts
+	 * @param {undefined | null | number} lineWidth
+	 * @param {undefined | string | CanvasGradient | CanvasPattern} lineStyle
+	 */
+	drawPolyline(pts, lineWidth, lineStyle)
+	{
+		let ctx = this.ctx;
+		if (ctx && pts.length > 0)
+		{
+			let i;
+			ctx.beginPath();
+			ctx.moveTo(pts[0].x, pts[0].y);
+			i = 1;
+			while (i < pts.length)
+			{
+				ctx.lineTo(pts[i].x, pts[i].y);
+				i++;
+			}
+			if (lineWidth)
+			{
+				ctx.lineWidth = lineWidth;
+			}
+			if (lineStyle)
+			{
+				ctx.strokeStyle = lineStyle;
+			}
+			ctx.stroke();
+		}
+		else
+		{
+			console.log("ctx not found or pts is empty")
+		}
+	}
+
+	get width()
+	{
+		return this.canvas.width;
+	}
+
+	get height()
+	{
+		return this.canvas.height;
+	}
+
+	toPNGURL()
+	{
+		return this.canvas.toDataURL("image/png");
+	}
+
+	createStaticImage()
+	{
+		let url = this.canvas.toDataURL("image/png");
+		let img = document.createElement("img");
+		img.src = url;
+		return new StaticImage(img, "DrawImage.png", "image/png");
+	}
+}
+
 
 export class EXIFItem
 {
@@ -4039,6 +4202,11 @@ export class EXIFData
 
 export class StaticImage extends data.ParsedObject
 {
+	/**
+	 * @param {HTMLImageElement} img
+	 * @param {string} sourceName
+	 * @param {string} objType MIME
+	 */
 	constructor(img, sourceName, objType)
 	{
 		super(sourceName, objType);

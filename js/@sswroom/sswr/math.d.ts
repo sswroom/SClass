@@ -4,6 +4,8 @@ import * as unit from "./unit";
 
 export function roundToFloat(n: number, decimalPoints: number): number;
 export function roundToStr(n: number, decimalPoints: number): string;
+export function calcDir(startPt: Coord2D, endPt: Coord2D, ang: unit.Angle.Unit): number;
+
 export class GeoJSON
 {
 	static parseGeometry(srid: number, geom: map.Geometry): geometry.Vector2D | null;

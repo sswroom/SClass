@@ -1,4 +1,5 @@
 import * as data from "./data.js";
+import * as media from "./media.js";
 import * as text from "./text.js";
 
 export const OSType = {
@@ -149,13 +150,18 @@ export function buildTable(o)
 			ret.push("<tr>");
 			for (name in o[0])
 			{
-				if (typeof obj[name] == "object")
+				let thisObj = obj[name];
+				if (thisObj instanceof media.StaticImage)
 				{
-					ret.push("<td>"+text.toHTMLText(JSON.stringify(obj[name]))+"</td>");
+					ret.push("<td><img src="+text.toAttrText(thisObj.img.src)+"/></td>");
+				}
+				else if (typeof thisObj == "object")
+				{
+					ret.push("<td>"+text.toHTMLText(JSON.stringify(thisObj))+"</td>");
 				}
 				else
 				{
-					ret.push("<td>"+text.toHTMLText(""+obj[name])+"</td>");
+					ret.push("<td>"+text.toHTMLText(""+thisObj)+"</td>");
 				}
 			}
 			ret.push("</tr>");

@@ -1,4 +1,5 @@
 import * as geometry from "./geometry.js";
+import * as map from "./map.js";
 import * as unit from "./unit.js";
 
 /**
@@ -43,22 +44,42 @@ export function roundToStr(n, decimalPoints)
 	}
 }
 
+/**
+ * @param {Coord2D} startPt
+ * @param {Coord2D} endPt
+ * @param {unit.Angle.Unit} ang
+ */
+export function calcDir(startPt, endPt, ang)
+{
+	let a = Math.atan2(endPt.x - startPt.x, endPt.y - startPt.y);
+	if (a < 0)
+	{
+		a = a + Math.PI * 2;
+	}
+	return unit.Angle.convert(unit.Angle.Unit.RADIAN, ang, a);
+}
+
 export class GeoJSON {
 	/**
 	 * @param {number} srid
-	 * @param {{ type: string; coordinates: number[][][] | number[][][][] | undefined; }} geom
+	 * @param {map.Geometry} geom
 	 */
 	static parseGeometry(srid, geom)
 	{
-		if (geom.type == "Polygon")
+		if (geom.type == map.GeometryType.Polygon)
 		{
 			// @ts-ignore
 			return new geometry.Polygon(srid, geom.coordinates);
 		}
-		else if (geom.type == "MultiPolygon")
+		else if (geom.type == map.GeometryType.MultiPolygon)
 		{
 			// @ts-ignore
 			return new geometry.MultiPolygon(srid, geom.coordinates);
+		}
+		else if (geom.type == map.GeometryType.LineString)
+		{
+			// @ts-ignore
+			return new geometry.LineString(srid, geom.coordinates);
 		}
 		else
 		{

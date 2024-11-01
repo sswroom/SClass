@@ -1,4 +1,9 @@
+1.6.18
 -Change geometry.LinearRing.getHIntersactsCenter to getIntersactsCenter
+-web.buildTable support StaticImage item
+-Added media.genVector2DPreview
+-Added media.DrawImage
+-Added math.calcDir
 
 1.6.17
 -Fixed olayer2 types

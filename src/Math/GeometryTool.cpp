@@ -1139,6 +1139,16 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 	return ptOut->GetCount() - initCnt;
 }
 
+Double Math::GeometryTool::CalcDir(Math::Coord2DDbl startPt, Math::Coord2DDbl endPt, Math::Unit::Angle::AngleUnit aunit)
+{
+	Double a = Math_ArcTan2(endPt.x - startPt.x, endPt.y - startPt.y);
+	if (a < 0)
+	{
+		a = a + Math::PI * 2;
+	}
+	return Math::Unit::Angle::Convert(Math::Unit::Angle::AU_RADIAN, aunit, a);
+}
+
 /*UOSInt Math::GeometryTool::CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	ptOut->Add(pt1);

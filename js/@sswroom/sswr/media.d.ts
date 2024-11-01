@@ -1,4 +1,6 @@
 import * as data from "./data";
+import * as geometry from "./geometry";
+import * as math from "./math";
 
 export enum EXIFMaker
 {
@@ -41,6 +43,22 @@ declare class GPSInfo
 }
 
 export function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement>;
+export function genVector2DPreview(vec: geometry.Vector2D, width: number, height: number): DrawImage;
+
+export class DrawImage
+{
+	canvas: HTMLCanvasElement;
+	ctx: CanvasRenderingContext2D | null;
+
+	constructor(width: number, height: number);
+	drawLine(startPt: math.Coord2D, endPt: math.Coord2D, lineWidth?: number, lineStyle?: string | CanvasGradient | CanvasPattern): void;
+	drawPolyline(pts: math.Coord2D[], lineWidth?: number, lineStyle?: string | CanvasGradient | CanvasPattern): void;
+	get width(): number;
+	get height(): number;
+
+	toPNGURL(): string;
+	createStaticImage(): StaticImage;
+}
 
 export class EXIFItem
 {

@@ -18,7 +18,6 @@ namespace Data
 
 	template <class T> ArrayListT<T>::ArrayListT()
 	{
-		this->Init(40);
 	}
 
 	template <class T> ArrayListT<T>::~ArrayListT()
