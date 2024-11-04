@@ -84,6 +84,7 @@ namespace Map
 		Double searchDist;
 		Data::ArrayListNN<LineInfo> lines;
 		Data::ArrayListNN<AreaInfo> areas;
+		UInt32 networkCnt;
 		Sync::Mutex mut;
 		Optional<DB::TableDef> propDef;
 		Optional<Math::Geometry::LineString> lastStartHalfLine1;
@@ -113,6 +114,7 @@ namespace Map
 		Optional<Math::Geometry::LineString> GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd);
 		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		Optional<DB::TableDef> GetPropDef() const;
+		UInt32 GetNetworkCnt() const;
 	};
 }
 #endif

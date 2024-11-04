@@ -275,7 +275,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	i = this->mapEnv->AddLayer(0, this->gpsTrk, false);
 	this->mapEnv->AddLayer(0, this->adjLyr, true);
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASSNN(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
 
 	this->env->GetUserFiles(this->userFileList, this->dataFile->startTime, this->dataFile->endTime);
@@ -307,7 +307,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->mapMain, UI::GUIMapControl(ui, *this, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
+	NEW_CLASSNN(this->mapMain, UI::GUIMapControl(ui, *this, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mapMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->cboCamera = ui->NewComboBox(this->pnlControl, false);
 	this->cboCamera->SetRect(4, 4, 150, 23, false);
@@ -409,7 +409,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 {
 	this->ClearChildren();
 	this->mapEnv.Delete();
-	DEL_CLASS(this->mapRenderer);
+	this->mapRenderer.Delete();
 	this->gpsTrk.Delete();
 	this->dispImg.Delete();
 	this->env->GetColorMgr()->DeleteSess(this->colorSess);

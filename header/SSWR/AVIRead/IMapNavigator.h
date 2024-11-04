@@ -34,7 +34,7 @@ namespace SSWR
 			virtual void HandleMapMouseMove(MouseEvent evt, AnyType userObj) = 0;
 			virtual void UnhandleMapMouse(AnyType userObj) = 0;
 
-			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid) = 0;
+			virtual void SetKMapEnv(UnsafeArray<const UTF8Char> kmapIP, Int32 kmapPort, Int32 lcid) = 0;
 			virtual Bool HasKMap() = 0;
 			virtual UnsafeArrayOpt<UTF8Char> ResolveAddress(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl pos) = 0;
 

@@ -26,12 +26,12 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			UI::GUIForm *ctrlForm;
+			Optional<UI::GUIForm> ctrlForm;
 			Optional<UI::GUITreeView::TreeItem> ctrlItem;
 			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<UI::GUIForm> subForms;
-			UI::GUIMapControl *mapCtrl;
-			UI::GUIMapTreeView *mapTree;
+			NN<UI::GUIMapControl> mapCtrl;
+			NN<UI::GUIMapTreeView> mapTree;
 			NN<UI::GUIHSplitter> splitter;
 
 			NN<UI::GUIPanel> pnlControl;
@@ -49,7 +49,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblVAngle;
 			NN<UI::GUITrackBar> tbVAngle;
 			NN<Map::MapEnv> env;
-			Map::DrawMapRenderer *envRenderer;
+			NN<Map::DrawMapRenderer> envRenderer;
 			Bool scaleChanging;
 			Optional<UI::GUITreeView::TreeItem> popNode;
 			Text::TextAnalyzer ta;
@@ -68,7 +68,7 @@ namespace SSWR
 			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseUpHdlrs;
 			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseMoveHdlrs;
 
-			Media::Printer *printer;
+			Optional<Media::Printer> printer;
 
 			CursorType currCursor;
 
@@ -91,7 +91,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
-			void SetCtrlForm(UI::GUIForm *frm, Optional<UI::GUITreeView::TreeItem> item);
+			void SetCtrlForm(NN<UI::GUIForm> frm, Optional<UI::GUITreeView::TreeItem> item);
 			Bool ParseObject(NN<IO::ParsedObject> pobj);
 			void OpenURL(Text::CStringNN url, Text::CString customName);
 			void HKOPortal(Text::CStringNN listFile, Text::CStringNN filePath);
@@ -106,7 +106,7 @@ namespace SSWR
 
 			void AddLayer(NN<Map::MapDrawLayer> layer);
 			void AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLayer>> layers);
-//			void AddLayerColl(Map::MapLayerCollection *lyrColl);
+//			void AddLayerColl(NN<Map::MapLayerCollection> lyrColl);
 			void AddSubForm(NN<UI::GUIForm> frm);
 
 			virtual UInt32 GetSRID();
@@ -128,7 +128,7 @@ namespace SSWR
 			virtual void HandleMapMouseMove(MouseEvent evt, AnyType userObj);
 			virtual void UnhandleMapMouse(AnyType userObj);
 
-			virtual void SetKMapEnv(const UTF8Char *kmapIP, Int32 kmapPort, Int32 lcid);
+			virtual void SetKMapEnv(UnsafeArray<const UTF8Char> kmapIP, Int32 kmapPort, Int32 lcid);
 			virtual Bool HasKMap();
 			virtual UnsafeArrayOpt<UTF8Char> ResolveAddress(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl pos);
 

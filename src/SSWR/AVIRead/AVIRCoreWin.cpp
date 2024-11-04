@@ -366,9 +366,9 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedO
 	}
 }
 
-Media::Printer *SSWR::AVIRead::AVIRCoreWin::SelectPrinter(UI::GUIForm *frm)
+Optional<Media::Printer> SSWR::AVIRead::AVIRCoreWin::SelectPrinter(Optional<UI::GUIForm> frm)
 {
-	Media::Printer *printer = 0;
+	Optional<Media::Printer> printer = 0;
 	SSWR::AVIRead::AVIRSelPrinterForm selFrm(0, this->ui, *this);
 	if (selFrm.ShowDialog(frm) == UI::GUIForm::DR_OK)
 	{

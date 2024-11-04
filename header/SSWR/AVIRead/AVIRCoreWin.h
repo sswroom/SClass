@@ -14,7 +14,7 @@ namespace SSWR
 
 			virtual void OpenObject(NN<IO::ParsedObject> pobj);
 			virtual void SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName);
-			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm);
+			virtual Optional<Media::Printer> SelectPrinter(Optional<UI::GUIForm> frm);
 		};
 	}
 }

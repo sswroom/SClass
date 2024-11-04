@@ -3696,7 +3696,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 	realBounds->max = max;
 }
 
-Map::DrawMapRenderer::DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, NN<const Media::ColorProfile> color, Media::ColorManagerSess *colorSess, DrawType drawType)
+Map::DrawMapRenderer::DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, NN<const Media::ColorProfile> color, Optional<Media::ColorManagerSess> colorSess, DrawType drawType)
 {
 	this->eng = eng;
 	this->env = env;
@@ -3829,9 +3829,10 @@ NN<Map::MapEnv> Map::DrawMapRenderer::GetEnv() const
 
 void Map::DrawMapRenderer::ColorUpdated()
 {
-	if (this->colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->resizer->RGBParamChanged(this->colorSess->GetRGBParam());
-		this->colorConv->RGBParamChanged(this->colorSess->GetRGBParam());
+		this->resizer->RGBParamChanged(nncolorSess->GetRGBParam());
+		this->colorConv->RGBParamChanged(nncolorSess->GetRGBParam());
 	}
 }

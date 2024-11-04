@@ -113,7 +113,7 @@ namespace SSWR
 			NN<UI::GUITrackBar> tbMapScale;
 			NN<UI::GUITextBox> txtMapPos;
 			NN<UI::GUITextBox> txtMapScale;
-			UI::GUIMapControl *mcMap;
+			NN<UI::GUIMapControl> mcMap;
 
 			NN<UI::GUIMainMenu> mnuMain;
 
@@ -143,7 +143,7 @@ namespace SSWR
 			Math::Coord2D<OSInt> dispImageDownPos;
 			Math::Coord2D<OSInt> dispImageCurrPos;
 
-			Map::DrawMapRenderer *mapRenderer;
+			NN<Map::DrawMapRenderer> mapRenderer;
 			NN<Map::MapView> mapView;
 			NN<Map::MapEnv> mapEnv;
 			NN<Map::TileMapLayer> mapTileLyr;

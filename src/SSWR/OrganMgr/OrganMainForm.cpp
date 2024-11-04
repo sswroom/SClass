@@ -2748,9 +2748,9 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), this->env->GetMapFont(), 12, false, 0xff000000, 2, 0x80ffffff);
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASSNN(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->mapView = this->mapEnv->CreateMapView(Math::Size2DDbl(1024, 768));
-	NEW_CLASS(this->mcMap, UI::GUIMapControl(ui, this->tpMap, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
+	NEW_CLASSNN(this->mcMap, UI::GUIMapControl(ui, this->tpMap, this->env->GetDrawEngine(), 0xff000000, this->mapRenderer, this->mapView, this->colorSess));
 	this->mcMap->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->mcMap->HandleMouseMove(OnMapMouseMove, this);
 	this->mcMap->HandleCustomDraw(OnMapDraw, this);
@@ -2817,7 +2817,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 		this->env->GetDrawEngine()->DeleteImage(dimg);
 		this->mapCurrImage = 0;
 	}
-	DEL_CLASS(this->mapRenderer);
+	this->mapRenderer.Delete();
 	this->mapEnv.Delete();
 	SDEL_STRING(this->initSelObj);
 	SDEL_STRING(this->initSelImg);

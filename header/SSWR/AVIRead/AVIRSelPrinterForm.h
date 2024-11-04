@@ -14,7 +14,7 @@ namespace SSWR
 		class AVIRSelPrinterForm : public UI::GUIForm
 		{
 		public:
-			Media::Printer *printer;
+			Optional<Media::Printer> printer;
 		private:
 			Media::Printer *currPrinter;
 			NN<SSWR::AVIRead::AVIRCore> core;

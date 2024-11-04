@@ -1065,7 +1065,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 				msg = CSTR("Not GPS Track");
 			}
 		}
-		else if (!me->env->UserfileAdd(mutUsage, user->id, user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, location->leng == 0?0:location.Ptr()))
+		else if (!me->env->UserfileAdd(mutUsage, user->id, user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize, true, (location->leng == 0)?0:Optional<Text::String>(location)))
 		{
 			msg = CSTR("Userfile problem");
 			succ = false;

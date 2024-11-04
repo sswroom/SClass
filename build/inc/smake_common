@@ -3961,6 +3961,8 @@ SSWR/AVIRead/AVIRGISReplayForm.h:
 @AVIRGISReplayForm.o
 SSWR/AVIRead/AVIRGISSearchForm.h:
 @AVIRGISSearchForm.o
+SSWR/AVIRead/AVIRGISShortestPathForm.h:
+@AVIRGISShortestPathForm.o
 SSWR/AVIRead/AVIRGISTileDownloadForm.h:
 @AVIRGISTileDownloadForm.o
 SSWR/AVIRead/AVIRGLBViewerForm.h:

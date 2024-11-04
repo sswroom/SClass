@@ -375,6 +375,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Math::CoordinateSystem> csys, Double sear
 	this->lastEndHalfLine1 = 0;
 	this->lastEndHalfLine2 = 0;
 	this->propDef = 0;
+	this->networkCnt = 0;
 }
 
 Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDist)
@@ -386,6 +387,7 @@ Map::ShortestPath3D::ShortestPath3D(NN<Map::MapDrawLayer> layer, Double searchDi
 	this->lastEndHalfLine1 = 0;
 	this->lastEndHalfLine2 = 0;
 	this->propDef = 0;
+	this->networkCnt = 0;
 	this->AddLayer(layer);
 	this->BuildNetwork();
 }
@@ -458,7 +460,7 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 
 void Map::ShortestPath3D::BuildNetwork()
 {
-	UInt32 networkId = 0;
+	UInt32 networkId = this->networkCnt;
 	NN<AreaInfo> areaInfo;
 	NN<NodeInfo> nodeInfo;
 	UOSInt i = 0;
@@ -482,6 +484,7 @@ void Map::ShortestPath3D::BuildNetwork()
 		}
 		i++;
 	}
+	this->networkCnt = networkId;
 }
 
 void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const
@@ -652,6 +655,8 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(Math::Coord2DDbl posStart, Math:
 		printf("GetShortestPath split start error\r\n");
 		return false;
 	}
+	///////////////////////////
+	// if (path1 == path2)
 	startHalfLine1->Reverse();
 	Double lastDist;
 	nodeInfo = GetNode(path1->line->startPos, path1->line->startZ);
@@ -808,4 +813,9 @@ NN<Math::CoordinateSystem> Map::ShortestPath3D::GetCoordinateSystem() const
 Optional<DB::TableDef> Map::ShortestPath3D::GetPropDef() const
 {
 	return this->propDef;
+}
+
+UInt32 Map::ShortestPath3D::GetNetworkCnt() const
+{
+	return this->networkCnt;
 }

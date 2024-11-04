@@ -21,7 +21,7 @@ namespace SSWR
 			NN<UI::GUIListBox> lbResults;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 			NN<Map::MapDrawLayer> layer;
 			NN<Text::SearchIndexer> searching;
 			Data::ArrayListString dispList;
@@ -33,11 +33,10 @@ namespace SSWR
 		private:
 			static void __stdcall OnTextChg(AnyType userObj);
 			static void __stdcall OnResultSelChg(AnyType userObj);
-//			System::Void txtSearchStr_KeyPress(System::Object *  sender, System::Windows::Forms::KeyPressEventArgs *  e);
 			void UpdateResults();
 
 		public:
-			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags);
+			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags);
 			virtual ~AVIRGISSearchForm();
 
 			virtual void OnMonitorChanged();

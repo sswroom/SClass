@@ -1,0 +1,55 @@
+#ifndef _SM_SSWR_AVIREAD_AVIRGISSHORTESTPATHFORM
+#define _SM_SSWR_AVIREAD_AVIRGISSHORTESTPATHFORM
+#include "Map/MapDrawLayer.h"
+#include "Map/ShortestPath3D.h"
+#include "SSWR/AVIRead/AVIRCore.h"
+#include "SSWR/AVIRead/IMapNavigator.h"
+#include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
+#include "UI/GUIForm.h"
+#include "UI/GUIGroupBox.h"
+#include "UI/GUILabel.h"
+#include "UI/GUIListView.h"
+#include "UI/GUIPanel.h"
+#include "UI/GUITextBox.h"
+
+namespace SSWR
+{
+	namespace AVIRead
+	{
+		class AVIRGISShortestPathForm : public UI::GUIForm
+		{
+		private:
+			NN<UI::GUIGroupBox> grpNetwork;
+			NN<UI::GUILabel> lblNetwork;
+			NN<UI::GUIComboBox> cboNetwork;
+			NN<UI::GUIButton> btnNetwork;
+			NN<UI::GUIGroupBox> grpPath;
+			NN<UI::GUIPanel> pnlPath;
+			NN<UI::GUILabel> lblStartPos;
+			NN<UI::GUITextBox> txtStartPos;
+			NN<UI::GUIButton> btnStartPos;
+			NN<UI::GUILabel> lblEndPos;
+			NN<UI::GUITextBox> txtEndPos;
+			NN<UI::GUIButton> btnEndPos;
+			NN<UI::GUIButton> btnSearch;
+			NN<UI::GUIListView> lvPaths;
+
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IMapNavigator> navi;
+			NN<Map::MapDrawLayer> layer;
+			Map::ShortestPath3D spath;
+
+			static void __stdcall OnNetworkClicked(AnyType userObj);
+			static void __stdcall OnStartPosClicked(AnyType userObj);
+			static void __stdcall OnEndPosClicked(AnyType userObj);
+			static void __stdcall OnSearchClicked(AnyType userObj);
+		public:
+			AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer);
+			virtual ~AVIRGISShortestPathForm();
+
+			virtual void OnMonitorChanged();
+		};
+	}
+}
+#endif

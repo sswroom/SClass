@@ -7,30 +7,30 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/TransferFunc.h"
 
-Media::ColorConv::ColorConv(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess) : srcColor(srcColor), destColor(destColor)
+Media::ColorConv::ColorConv(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess) : srcColor(srcColor), destColor(destColor)
 {
 	this->colorSess = colorSess;
-	this->rgbTable = MemAlloc(UInt8, 256 * 4 * 8 + 262144);
+	this->rgbTable = MemAllocArr(UInt8, 256 * 4 * 8 + 262144);
 	Media::RGBLUTGen rgbGen(this->colorSess);
-	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor.GetPrimaries(), 14);
+	rgbGen.GenRGBA8_LRGBC(UnsafeArray<Int64>::ConvertFrom(this->rgbTable), this->srcColor, this->destColor.GetPrimaries(), 14);
 	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor.rtransfer));
 }
 
 Media::ColorConv::~ColorConv()
 {
-	MemFree(this->rgbTable);
+	MemFreeArr(this->rgbTable);
 }
 
 void Media::ColorConv::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Media::RGBLUTGen rgbGen(this->colorSess);
-	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor.GetPrimaries(), 14);
+	rgbGen.GenRGBA8_LRGBC(UnsafeArray<Int64>::ConvertFrom(this->rgbTable), this->srcColor, this->destColor.GetPrimaries(), 14);
 	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor.rtransfer));
 }
 
 UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 {
-	UInt8 *rgbTable = this->rgbTable;
+	UInt8 *rgbTable = this->rgbTable.Ptr();
 #if defined(HAS_ASM32)
 	_asm
 	{
@@ -102,7 +102,7 @@ UInt32 Media::ColorConv::ConvRGB8(UInt32 c)
 #endif
 }
 
-UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, UInt32 c)
+UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, UInt32 c)
 {
 	UInt8 buff[4];
 	NN<const Media::IColorHandler::RGBPARAM2> rgbParam;
@@ -122,10 +122,11 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 	Double rMul;
 	Double gMul;
 	Double bMul;
+	NN<Media::ColorManagerSess> nncolorSess;
 
 	if (srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY || srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		if (colorSess == 0)
+		if (!colorSess.SetTo(nncolorSess))
 		{
 			NEW_CLASSNN(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
 			NEW_CLASSNN(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
@@ -133,7 +134,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		}
 		else
 		{
-			rgbParam = colorSess->GetRGBParam();
+			rgbParam = nncolorSess->GetRGBParam();
 			NEW_CLASSNN(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
 			NEW_CLASSNN(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
 			NEW_CLASSNN(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
@@ -141,7 +142,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 	}
 	else if (srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
-		if (colorSess == 0)
+		if (!colorSess.SetTo(nncolorSess))
 		{
 			NEW_CLASSNN(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
 			NEW_CLASSNN(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
@@ -149,7 +150,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		}
 		else
 		{
-			NN<Media::ColorProfile> defProfile = colorSess->GetDefVProfile();
+			NN<Media::ColorProfile> defProfile = nncolorSess->GetDefVProfile();
 			NEW_CLASSNN(rTran, Media::CS::TransferParam(defProfile->GetRTranParamRead()));
 			NEW_CLASSNN(gTran, Media::CS::TransferParam(defProfile->GetGTranParamRead()));
 			NEW_CLASSNN(bTran, Media::CS::TransferParam(defProfile->GetBTranParamRead()));
@@ -157,7 +158,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 	}
 	else if (srcColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
-		if (colorSess == 0)
+		if (!colorSess.SetTo(nncolorSess))
 		{
 			NEW_CLASSNN(rTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
 			NEW_CLASSNN(gTran, Media::CS::TransferParam(Media::CS::TRANT_sRGB, 2.2));
@@ -165,7 +166,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		}
 		else
 		{
-			NN<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
+			NN<Media::ColorProfile> defProfile = nncolorSess->GetDefPProfile();
 			NEW_CLASSNN(rTran, Media::CS::TransferParam(defProfile->GetRTranParamRead()));
 			NEW_CLASSNN(gTran, Media::CS::TransferParam(defProfile->GetGTranParamRead()));
 			NEW_CLASSNN(bTran, Media::CS::TransferParam(defProfile->GetBTranParamRead()));
@@ -186,9 +187,9 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 	Math::Vector3 vec2;
 	if (destColor->GetPrimariesRead()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		if (colorSess)
+		if (colorSess.SetTo(nncolorSess))
 		{
-			Media::ColorProfile::GetConvMatrix(mat1, srcColor->GetPrimariesRead(), colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
+			Media::ColorProfile::GetConvMatrix(mat1, srcColor->GetPrimariesRead(), nncolorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
 		else
 		{
@@ -202,9 +203,9 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		Media::ColorProfile::GetConvMatrix(mat1, srcColor->GetPrimariesRead(), destColor->GetPrimariesRead());
 	}
 
-	if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY && colorSess != 0)
+	if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VDISPLAY && colorSess.SetTo(nncolorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = nncolorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -223,9 +224,9 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
 		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
 	}
-	else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY && colorSess != 0)
+	else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PDISPLAY && colorSess.SetTo(nncolorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = nncolorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -273,7 +274,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		}
 		else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 		{
-			if (colorSess == 0)
+			if (!colorSess.SetTo(nncolorSess))
 			{
 				rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 				gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -281,7 +282,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 			}
 			else
 			{
-				NN<Media::ColorProfile> defProfile = colorSess->GetDefVProfile();
+				NN<Media::ColorProfile> defProfile = nncolorSess->GetDefVProfile();
 				rTran->Set(defProfile->GetRTranParamRead());
 				gTran->Set(defProfile->GetGTranParamRead());
 				bTran->Set(defProfile->GetBTranParamRead());
@@ -289,7 +290,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 		}
 		else if (destColor->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 		{
-			if (colorSess == 0)
+			if (!colorSess.SetTo(nncolorSess))
 			{
 				rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 				gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -297,7 +298,7 @@ UInt32 Media::ColorConv::ConvARGB(NN<const Media::ColorProfile> srcColor, NN<con
 			}
 			else
 			{
-				NN<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
+				NN<Media::ColorProfile> defProfile = nncolorSess->GetDefPProfile();
 				rTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
 				gTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
 				bTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetBTranParam()));

@@ -674,7 +674,7 @@ void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UnsafeArray<const UI
 	UOSInt i = this->nThread;
 	if (height < 16)
 	{
-		LanczosResizer8_C8_vertical_filter(inPt.Ptr(), outPt.Ptr(), dwidth, height, tap, index, weight, sstep, dstep, this->rgbTable);
+		LanczosResizer8_C8_vertical_filter(inPt.Ptr(), outPt.Ptr(), dwidth, height, tap, index, weight, sstep, dstep, this->rgbTable.Ptr());
 	}
 	else
 	{
@@ -701,38 +701,39 @@ void Media::Resizer::LanczosResizer8_C8::mt_vertical_filter(UnsafeArray<const UI
 
 void Media::Resizer::LanczosResizer8_C8::mt_expand_pa(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	LanczosResizer8_C8_expand_pa(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable);
+	LanczosResizer8_C8_expand_pa(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr());
 }
 
 void Media::Resizer::LanczosResizer8_C8::mt_expand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	LanczosResizer8_C8_expand(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable);
+	LanczosResizer8_C8_expand(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr());
 }
 
 void Media::Resizer::LanczosResizer8_C8::mt_collapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	LanczosResizer8_C8_collapse(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable);
+	LanczosResizer8_C8_collapse(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr());
 }
 
 void Media::Resizer::LanczosResizer8_C8::mt_copy_pa(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	LanczosResizer8_C8_imgcopy_pa(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable);
+	LanczosResizer8_C8_imgcopy_pa(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr());
 }
 
 void Media::Resizer::LanczosResizer8_C8::mt_copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
-	LanczosResizer8_C8_imgcopy(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable);
+	LanczosResizer8_C8_imgcopy(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr());
 }
 
 void Media::Resizer::LanczosResizer8_C8::UpdateRGBTable()
 {
-	if (this->rgbTable == 0)
+	UnsafeArray<UInt8> rgbTable;
+	if (!this->rgbTable.SetTo(rgbTable))
 	{
-		this->rgbTable = MemAlloc(UInt8, 65536 * 4 + 256 * 4 * 8);
+		this->rgbTable = rgbTable = MemAllocArr(UInt8, 65536 * 4 + 256 * 4 * 8);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
-	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], this->srcProfile, this->destProfile.GetPrimaries(), 14);
+	lutGen.GenLRGB_BGRA8(rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile.rtransfer));
+	lutGen.GenRGBA8_LRGBC((Int64*)&rgbTable[262144], this->srcProfile, this->destProfile.GetPrimaries(), 14);
 }
 
 void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(AnyType obj)
@@ -748,10 +749,10 @@ void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(AnyType obj)
 			ts->tmpbuffSize = ts->swidth;
 			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
-		LanczosResizer8_C8_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
+		LanczosResizer8_C8_horizontal_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, ts->tmpbuff);
 		break;
 	case FuncType::Expand:
-		LanczosResizer8_C8_expand(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer8_C8_expand(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 		break;
 	case FuncType::HFilterPA:
 		if (ts->swidth != ts->tmpbuffSize)
@@ -761,22 +762,22 @@ void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(AnyType obj)
 			ts->tmpbuffSize = ts->swidth;
 			ts->tmpbuff = MemAllocA(UInt8, ts->swidth << 3);
 		}
-		LanczosResizer8_C8_horizontal_filter_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable, ts->swidth, ts->tmpbuff);
+		LanczosResizer8_C8_horizontal_filter_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->swidth, ts->tmpbuff);
 		break;
 	case FuncType::ExpandPA:
-		LanczosResizer8_C8_expand_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer8_C8_expand_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 		break;
 	case FuncType::VFilter:
-		LanczosResizer8_C8_vertical_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer8_C8_vertical_filter(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 		break;
 	case FuncType::Collapse:
-		LanczosResizer8_C8_collapse(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer8_C8_collapse(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 		break;
 	case FuncType::ImgCopy:
-		LanczosResizer8_C8_imgcopy(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer8_C8_imgcopy(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 		break;
 	case FuncType::ImgCopyPA:
-		LanczosResizer8_C8_imgcopy_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable);
+		LanczosResizer8_C8_imgcopy_pa(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr());
 		break;
 	default:
 	case FuncType::NoFunction:
@@ -815,7 +816,7 @@ void Media::Resizer::LanczosResizer8_C8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
+Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -828,10 +829,11 @@ Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTa
 	this->vnTap = vnTap << 1;
 	this->rgbChanged = true;
 	this->rgbTable = 0;
-	if (colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess = colorSess;
-		this->colorSess->AddHandler(*this);
+		this->colorSess = nncolorSess;
+		nncolorSess->AddHandler(*this);
 	}
 	else
 	{
@@ -870,9 +872,11 @@ Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTa
 Media::Resizer::LanczosResizer8_C8::~LanczosResizer8_C8()
 {
 	UOSInt i;
-	if (this->colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	UnsafeArray<UInt8> rgbTable;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess->RemoveHandler(*this);
+		nncolorSess->RemoveHandler(*this);
 	}
 	DEL_CLASS(this->ptask);
 	i = this->nThread;
@@ -894,9 +898,9 @@ Media::Resizer::LanczosResizer8_C8::~LanczosResizer8_C8()
 		MemFreeA(buffPtr);
 		buffPtr = 0;
 	}
-	if (this->rgbTable)
+	if (this->rgbTable.SetTo(rgbTable))
 	{
-		MemFree(this->rgbTable);
+		MemFreeArr(rgbTable);
 	}
 }
 

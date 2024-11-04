@@ -24,7 +24,7 @@ namespace UI
 		NN<Media::ColorManagerSess> colorSess;
 		NN<Map::MapView> view;
 		Map::MapEnv *mapEnv;
-		Map::DrawMapRenderer *renderer;
+		NN<Map::DrawMapRenderer> renderer;
 		Bool releaseRenderer;
 		Math::Size2D<UOSInt> currSize;
 
@@ -80,7 +80,7 @@ namespace UI
 		/*
 		view - will release
 		*/
-		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess);
+		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, NN<Map::DrawMapRenderer> renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess);
 		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess);
 		virtual ~GUIMapControl();
 
@@ -94,7 +94,7 @@ namespace UI
 		void EventScaleChanged(Double newScale);
 
 		void SetBGColor(UInt32 bgColor);
-		void SetRenderer(Map::DrawMapRenderer *renderer);
+		void SetRenderer(NN<Map::DrawMapRenderer> renderer);
 		void UpdateMap();
 		Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
 		Math::Coord2DDbl ScnXYD2MapXY(Math::Coord2DDbl scnPos);

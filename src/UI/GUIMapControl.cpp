@@ -492,7 +492,7 @@ void UI::GUIMapControl::ReleaseSelVecList()
 	this->selVecList.DeleteAll();
 }
 
-UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, NN<Map::DrawMapRenderer> renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -522,10 +522,7 @@ UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	view->SetDPI(this->hdpi, this->ddpi);
 	view->ChangeViewXY(this->currSize.ToDouble(), Math::Coord2DDbl(114.2, 22.4), 10000);
 	this->SetBGColor(bgColor);
-	if (this->renderer)
-	{
-		this->renderer->SetUpdatedHandler(ImageUpdated, this);
-	}
+	this->renderer->SetUpdatedHandler(ImageUpdated, this);
 }
 
 UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
@@ -552,7 +549,7 @@ UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent
 	this->showMarker = false;
 	this->pauseUpdate = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, color, this->colorSess.Ptr(), Map::DrawMapRenderer::DT_PIXELDRAW));
+	NEW_CLASSNN(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->releaseRenderer = true;
 
 	this->view = mapEnv->CreateMapView(Math::Size2DDbl(640, 480));
@@ -560,10 +557,7 @@ UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent
 	view->ChangeViewXY(this->currSize.ToDouble(), Math::Coord2DDbl(114.2, 22.4), 10000);
 
 	this->SetBGColor(bgColor);
-	if (this->renderer)
-	{
-		this->renderer->SetUpdatedHandler(ImageUpdated, this);
-	}
+	this->renderer->SetUpdatedHandler(ImageUpdated, this);
 	this->mapEnv->AddUpdatedHandler(ImageUpdated, this);
 }
 
@@ -579,14 +573,11 @@ UI::GUIMapControl::~GUIMapControl()
 		this->eng->DeleteImage(img);
 	}
 	this->ReleaseSelVecList();
-	if (this->renderer)
-	{
-		this->renderer->SetUpdatedHandler(0, 0);
-	}
+	this->renderer->SetUpdatedHandler(0, 0);
 
 	if (this->releaseRenderer)
 	{
-		DEL_CLASS(this->renderer);
+		this->renderer.Delete();
 	}
 	this->view.Delete();
 	this->colorSess->RemoveHandler(*this);
@@ -680,17 +671,12 @@ void UI::GUIMapControl::SetBGColor(UInt32 bgColor)
 	}
 }
 
-void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
+void UI::GUIMapControl::SetRenderer(NN<Map::DrawMapRenderer> renderer)
 {
 	Sync::MutexUsage mutUsage(this->drawMut);
-	if (this->renderer)
-	{
-		this->renderer->SetUpdatedHandler(0, 0);
-	}
+	this->renderer->SetUpdatedHandler(0, 0);
 	this->renderer = renderer;
 	mutUsage.EndUse();
-	if (renderer == 0)
-		return;
 	renderer->SetUpdatedHandler(ImageUpdated, this);
 	if (!this->pauseUpdate)
 	{
@@ -703,7 +689,7 @@ void UI::GUIMapControl::UpdateMap()
 {
 	Sync::MutexUsage mutUsage(this->drawMut);
 	NN<Media::DrawImage> bgImg;
-	if (this->bgImg.SetTo(bgImg) && this->renderer)
+	if (this->bgImg.SetTo(bgImg))
 	{
 		Double t;
 		UOSInt i;

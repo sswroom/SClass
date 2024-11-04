@@ -31,7 +31,7 @@ namespace SSWR
 			NN<Map::TileMapLayer> mapTileLyr;
 			NN<OrganTimeAdjLayer> adjLyr;
 			NN<Map::TileMap> mapTile;
-			Map::DrawMapRenderer *mapRenderer;
+			NN<Map::DrawMapRenderer> mapRenderer;
 			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<UserFileInfo> userFileList;
 			Data::ArrayListNN<UserFileInfo> currFileList;
@@ -48,7 +48,7 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlMapCtrl;
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUITrackBar> tbMapScale;
-			UI::GUIMapControl *mapMain;
+			NN<UI::GUIMapControl> mapMain;
 			NN<UI::GUIComboBox> cboCamera;
 			NN<UI::GUITextBox> txtTimeAdj;
 			NN<UI::GUIButton> btnPaste;
