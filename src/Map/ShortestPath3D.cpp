@@ -2,6 +2,7 @@
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/TableDef.h"
 #include "Map/ShortestPath3D.h"
+#include "Math/GeometryTool.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "Sync/MutexUsage.h"
 
@@ -398,6 +399,10 @@ Map::ShortestPath3D::~ShortestPath3D()
 	this->propDef.Delete();
 	this->areas.FreeAll(FreeAreaInfo);
 	this->lines.FreeAll(FreeLineInfo);
+	this->lastStartHalfLine1.Delete();
+	this->lastStartHalfLine2.Delete();
+	this->lastEndHalfLine1.Delete();
+	this->lastEndHalfLine2.Delete();
 }
 
 void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
@@ -647,38 +652,62 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(Math::Coord2DDbl posStart, Math:
 	}
 	NN<Math::Geometry::LineString> startHalfLine1 = NN<Math::Geometry::LineString>::ConvertFrom(path1->vec->Clone());
 	NN<Math::Geometry::LineString> startHalfLine2;
+	Double lastDist;
+	this->lastStartHalfLine1 = startHalfLine1;
 	if (!startHalfLine1->SplitByPoint(posStart).SetTo(startHalfLine2))
 	{
+		Math::Coord2DDbl nodePt;
+		Double z;
+		startHalfLine1->GetNearEnd(posStart, nodePt, z);
 		startHalfLine1.Delete();
-		paths1.DeleteAll();
-		paths2.DeleteAll();
-		printf("GetShortestPath split start error\r\n");
-		return false;
-	}
-	///////////////////////////
-	// if (path1 == path2)
-	startHalfLine1->Reverse();
-	Double lastDist;
-	nodeInfo = GetNode(path1->line->startPos, path1->line->startZ);
-	nodeInfo->calcNodeDist = lastDist = startHalfLine1->Calc3DLength();
-	nodeInfo->calcFrom = posStart;
-	nodeInfo->calcFromZ = 0;
-	nodeInfo->calcLine = startHalfLine1;
-	nodeInfo->calcLineProp = path1->line->properties;
-	calcNodes.Add(nodeInfo);
-	nodeInfo = GetNode(path1->line->endPos, path1->line->endZ);
-	nodeInfo->calcNodeDist = startHalfLine2->Calc3DLength();
-	nodeInfo->calcFrom = posStart;
-	nodeInfo->calcFromZ = 0;
-	nodeInfo->calcLine = startHalfLine2;
-	nodeInfo->calcLineProp = path1->line->properties;
-	if (nodeInfo->calcNodeDist < lastDist)
-	{
-		calcNodes.Insert(0, nodeInfo);
+		this->lastStartHalfLine2 = 0;
+		NEW_CLASSNN(startHalfLine1, Math::Geometry::LineString(this->csys->GetSRID(), 2, true, false));
+		this->lastStartHalfLine1 = startHalfLine1;
+		UOSInt nPoint;
+		UnsafeArray<Math::Coord2DDbl> pointList = startHalfLine1->GetPointList(nPoint);
+		UnsafeArray<Double> zList;
+		pointList[0] = nodePt;
+		pointList[1] = nodePt;
+		if (startHalfLine1->GetZList(nPoint).SetTo(zList))
+		{
+			zList[0] = z;
+			zList[1] = z;
+		}
+		nodeInfo = GetNode(nodePt, z);
+		nodeInfo->calcNodeDist = 0;
+		nodeInfo->calcFrom = posStart;
+		nodeInfo->calcFromZ = 0;
+		nodeInfo->calcLine = startHalfLine1;
+		nodeInfo->calcLineProp = path1->line->properties;
+		calcNodes.Add(nodeInfo);
 	}
 	else
 	{
+		this->lastStartHalfLine2 = startHalfLine2;
+		///////////////////////////
+		// if (path1 == path2)
+		startHalfLine1->Reverse();
+		nodeInfo = GetNode(path1->line->startPos, path1->line->startZ);
+		nodeInfo->calcNodeDist = lastDist = startHalfLine1->Calc3DLength();
+		nodeInfo->calcFrom = posStart;
+		nodeInfo->calcFromZ = 0;
+		nodeInfo->calcLine = startHalfLine1;
+		nodeInfo->calcLineProp = path1->line->properties;
 		calcNodes.Add(nodeInfo);
+		nodeInfo = GetNode(path1->line->endPos, path1->line->endZ);
+		nodeInfo->calcNodeDist = startHalfLine2->Calc3DLength();
+		nodeInfo->calcFrom = posStart;
+		nodeInfo->calcFromZ = 0;
+		nodeInfo->calcLine = startHalfLine2;
+		nodeInfo->calcLineProp = path1->line->properties;
+		if (nodeInfo->calcNodeDist < lastDist)
+		{
+			calcNodes.Insert(0, nodeInfo);
+		}
+		else
+		{
+			calcNodes.Add(nodeInfo);
+		}
 	}
 	Bool startFound = false;
 	Bool endFound = false;
@@ -738,8 +767,8 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(Math::Coord2DDbl posStart, Math:
 
 	if (!startFound || !endFound)
 	{
-		startHalfLine1.Delete();
-		startHalfLine2.Delete();
+		this->lastStartHalfLine1.Delete();
+		this->lastStartHalfLine2.Delete();
 		paths1.DeleteAll();
 		paths2.DeleteAll();
 		printf("GetShortestPath start node or end node not found\r\n");
@@ -749,50 +778,51 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(Math::Coord2DDbl posStart, Math:
 	NN<Math::Geometry::LineString> endHalfLine2;
 	if (!endHalfLine1->SplitByPoint(posEnd).SetTo(endHalfLine2))
 	{
-		startHalfLine1.Delete();
-		startHalfLine2.Delete();
 		endHalfLine1.Delete();
-		paths1.DeleteAll();
-		paths2.DeleteAll();
-		printf("GetShortestPath split end error\r\n");
-		return false;
-	}
-	Math::Coord2DDbl linePt;
-	endHalfLine2->Reverse();
-	lastDist = endHalfLine1->Calc3DLength();
-	nodeInfo = GetNode(path2->line->startPos, path2->line->startZ);
-	lastDist += nodeInfo->calcNodeDist;
-	nodeInfo = GetNode(path2->line->endPos, path2->line->endZ);
-	if (nodeInfo->calcNodeDist + endHalfLine2->Calc3DLength() < lastDist)
-	{
-		linePt = endHalfLine2->GetPoint(0);
-		lineList->Add(endHalfLine2);
-		propList->Add(path2->line->properties);
+		this->lastEndHalfLine1 = 0;
+		this->lastEndHalfLine2 = 0;
+		nodeInfo = GetNode(path2->line->endPos, path2->line->endZ);
 	}
 	else
 	{
+		endHalfLine2->Reverse();
+		lastDist = endHalfLine1->Calc3DLength();
 		nodeInfo = GetNode(path2->line->startPos, path2->line->startZ);
-		linePt = endHalfLine1->GetPoint(0);
-		lineList->Add(endHalfLine1);
-		propList->Add(path2->line->properties);
+		lastDist += nodeInfo->calcNodeDist;
+		nodeInfo = GetNode(path2->line->endPos, path2->line->endZ);
+		if (nodeInfo->calcNodeDist + endHalfLine2->Calc3DLength() < lastDist)
+		{
+			lineList->Add(endHalfLine2);
+			propList->Add(path2->line->properties);
+		}
+		else
+		{
+			nodeInfo = GetNode(path2->line->startPos, path2->line->startZ);
+			lineList->Add(endHalfLine1);
+			propList->Add(path2->line->properties);
+		}
+		this->lastEndHalfLine1 = endHalfLine1;
+		this->lastEndHalfLine2 = endHalfLine2;
 	}
 	while (true)
 	{
-		linePt = nodeInfo->calcLine->GetPoint(0);
+		if (nodeInfo->calcFrom == posStart && nodeInfo->calcFromZ == 0)
+		{
+			if (nodeInfo->calcNodeDist > 0)
+			{
+				lineList->Add(nodeInfo->calcLine);
+				propList->Add(nodeInfo->calcLineProp);
+			}
+			break;
+		}
 		lineList->Add(nodeInfo->calcLine);
 		propList->Add(nodeInfo->calcLineProp);
-		if (nodeInfo->calcFrom == posStart && nodeInfo->calcFromZ == 0)
-			break;
 		nodeInfo = GetNode(nodeInfo->calcFrom, nodeInfo->calcFromZ);
 	}
 	lineList->Reverse();
 	propList->Reverse();
 	paths1.DeleteAll();
 	paths2.DeleteAll();
-	this->lastStartHalfLine1 = startHalfLine1;
-	this->lastStartHalfLine2 = startHalfLine2;
-	this->lastEndHalfLine1 = endHalfLine1;
-	this->lastEndHalfLine2 = endHalfLine2;
 	return true;
 }
 
@@ -818,4 +848,69 @@ Optional<DB::TableDef> Map::ShortestPath3D::GetPropDef() const
 UInt32 Map::ShortestPath3D::GetNetworkCnt() const
 {
 	return this->networkCnt;
+}
+
+void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayList<Double>> dirList, NN<Data::ArrayList<Bool>> reverseList)
+{
+	NN<Math::Geometry::LineString> ls;
+	NN<Math::Geometry::LineString> nextLS;
+	UnsafeArray<const Math::Coord2DDbl> thisPoints;
+	UnsafeArray<const Math::Coord2DDbl> nextPoints;
+	Math::Coord2DDbl thisEndPt;
+	Bool isReverse = false;
+	Double dir1;
+	Double dir2;
+	UOSInt k;
+	UOSInt l;
+	UOSInt i = 0;
+	UOSInt j = lineList->GetCount();
+	if (j >= 2)
+	{
+		ls = lineList->GetItemNoCheck(0);
+		nextLS = lineList->GetItemNoCheck(1);
+		thisPoints = ls->GetPointListRead(k);
+		nextPoints = nextLS->GetPointListRead(l);
+		if (thisPoints[0] == nextPoints[0] || thisPoints[0] == nextPoints[l - 1])
+		{
+			isReverse = true;
+		}
+	}
+	while (i < j)
+	{
+		ls = lineList->GetItemNoCheck(i);
+		reverseList->Add(isReverse);
+		if (i + 1 < j)
+		{
+			nextLS = lineList->GetItemNoCheck(i + 1);
+			thisPoints = ls->GetPointListRead(k);
+			nextPoints = nextLS->GetPointListRead(l);
+			if (isReverse)
+			{
+				dir1 = Math::GeometryTool::CalcDir(thisPoints[1], thisPoints[0], Math::Unit::Angle::AU_DEGREE);
+				thisEndPt = thisPoints[0];
+			}
+			else
+			{
+				dir1 = Math::GeometryTool::CalcDir(thisPoints[k - 2], thisPoints[k - 1], Math::Unit::Angle::AU_DEGREE);
+				thisEndPt = thisPoints[k - 1];
+			}
+			if (thisEndPt == nextPoints[l - 1])
+			{
+				dir2 = Math::GeometryTool::CalcDir(nextPoints[l - 1], nextPoints[l - 2], Math::Unit::Angle::AU_DEGREE);
+				isReverse = true;
+			}
+			else
+			{
+				dir2 = Math::GeometryTool::CalcDir(nextPoints[0], nextPoints[1], Math::Unit::Angle::AU_DEGREE);
+				isReverse = false;
+			}
+			Double dir = dir1 - dir2;
+			if (dir < 0)
+			{
+				dir += 360;
+			}
+			dirList->Add(dir);
+		}
+		i++;
+	}
 }

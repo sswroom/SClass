@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "DB/TableDef.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "SSWR/AVIRead/AVIRGISShortestPathForm.h"
@@ -48,6 +49,180 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnNetworkClicked(AnyType 
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnStartPosClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
+	me->mode = 1;
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnEndPosClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
+	me->mode = 2;
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
+	if (!me->startPos.IsZero() && !me->endPos.IsZero())
+	{
+		NN<Math::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> pathCsys = me->spath.GetCoordinateSystem();
+		Math::Coord2DDbl startPos = me->startPos;
+		Math::Coord2DDbl endPos = me->endPos;
+		Data::ArrayListNN<Math::Geometry::LineString> lineList;
+		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
+		Data::ArrayListT<Data::DataArray<Optional<Text::String>>> propList;
+		NN<Math::Geometry::Vector2D> vec;
+		UOSInt i;
+		UOSInt j;
+		if (!pathCsys->Equals(mapCsys))
+		{
+			startPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, startPos);
+			endPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, endPos);
+			if (me->spath.GetShortestPathDetail(startPos, endPos, lineList, propList))
+			{
+				Math::CoordinateSystemConverter converter(pathCsys, mapCsys);
+				i = 0;
+				j = lineList.GetCount();
+				while (i < j)
+				{
+					vec = lineList.GetItemNoCheck(i)->Clone();
+					vec->Convert(converter);
+					vecList.Add(vec);
+					i++;
+				}
+				me->navi->SetSelectedVectors(vecList);
+				me->UpdatePaths(lineList, propList);
+			}
+			else
+			{
+				me->lvPaths->ClearItems();
+			}
+		}
+		else
+		{
+			if (me->spath.GetShortestPathDetail(startPos, endPos, lineList, propList))
+			{
+				i = 0;
+				j = lineList.GetCount();
+				while (i < j)
+				{
+					vecList.Add(lineList.GetItemNoCheck(i)->Clone());
+					i++;
+				}
+				me->navi->SetSelectedVectors(vecList);
+				me->UpdatePaths(lineList, propList);
+			}
+			else
+			{
+				me->lvPaths->ClearItems();
+			}
+		}
+	}
+}
+
+Bool __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+{
+	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
+	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
+	if (me->mode == 1)
+	{
+		me->startPos = me->navi->ScnXY2MapXY(scnPos);
+		sptr = me->Coord2DDblToString(sbuff, me->startPos);
+		me->txtStartPos->SetText(CSTRP(sbuff, sptr));
+		me->mode = 0;
+		return true;
+	}
+	else if (me->mode == 2)
+	{
+		me->endPos = me->navi->ScnXY2MapXY(scnPos);
+		sptr = me->Coord2DDblToString(sbuff, me->endPos);
+		me->txtEndPos->SetText(CSTRP(sbuff, sptr));
+		me->mode = 0;
+		return true;
+	}
+	return false;
+}
+
+UnsafeArray<UTF8Char> SSWR::AVIRead::AVIRGISShortestPathForm::Coord2DDblToString(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl coord)
+{
+	return Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, coord.GetLat()), UTF8STRC(", ")), coord.GetLon());
+}
+
+void SSWR::AVIRead::AVIRGISShortestPathForm::UpdatePaths(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList)
+{
+	Data::ArrayList<Double> dirList;
+	Data::ArrayList<Bool> reverseList;
+	Map::ShortestPath3D::CalcDirReverse(lineList, dirList, reverseList);
+	UOSInt eName = INVALID_INDEX;
+	UOSInt cName = INVALID_INDEX;
+	UOSInt type = INVALID_INDEX;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	NN<DB::TableDef> tableDef;
+	NN<DB::ColDef> colDef;
+	if (this->spath.GetPropDef().SetTo(tableDef))
+	{
+		i = tableDef->GetColCnt();
+		while (i-- > 0)
+		{
+			if (tableDef->GetCol(i).SetTo(colDef))
+			{
+				if (colDef->GetColName()->StartsWith(CSTR("AliasNameE")))
+				{
+					eName = i;
+				}
+				else if (colDef->GetColName()->StartsWith(CSTR("AliasNameT")))
+				{
+					cName = i;
+				}
+				else if (colDef->GetColName()->StartsWith(CSTR("FeatureTyp")))
+				{
+					type = i;
+				}
+			}
+		}
+	}
+	Data::DataArray<Optional<Text::String>> prop;
+	NN<Math::Geometry::LineString> line;
+	NN<Text::String> s;
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	Double dist;
+	this->lvPaths->ClearItems();
+	i = 0;
+	j = propList->GetCount();
+	while (i < j)
+	{
+		line = lineList->GetItemNoCheck(i);
+		dist = line->Calc3DLength();
+		prop = propList->GetItem(i);
+		sptr = Text::StrDouble(sbuff, dist);
+		k = this->lvPaths->AddItem(CSTRP(sbuff, sptr), 0);
+		if (i < dirList.GetCount())
+		{
+			sptr = Text::StrDouble(sbuff, dirList.GetItem(i));
+			this->lvPaths->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+		}
+		if (eName != INVALID_INDEX && prop[eName].SetTo(s))
+		{
+			this->lvPaths->SetSubItem(k, 2, s->ToCString());
+		}
+		if (cName != INVALID_INDEX && prop[cName].SetTo(s))
+		{
+			this->lvPaths->SetSubItem(k, 3, s->ToCString());
+		}
+		if (type != INVALID_INDEX && prop[type].SetTo(s))
+		{
+			this->lvPaths->SetSubItem(k, 4, s->ToCString());
+		}
+		i++;
+	}
+}
+
 SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer) : UI::GUIForm(parent, 320, 360, ui), spath(layer, 100.0)
 {
 	this->core = core;
@@ -56,6 +231,9 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Shortest Path"));
 	this->SetFont(0, 0, 8.25, false);
+	this->mode = 0;
+	this->startPos = Math::Coord2DDbl(0, 0);
+	this->endPos = Math::Coord2DDbl(0, 0);
 
 	this->grpNetwork = ui->NewGroupBox(*this, CSTR("Network"));
 	this->grpNetwork->SetRect(4, 4, 100, 31, false);
@@ -93,11 +271,11 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	this->lvPaths = ui->NewListView(this->grpPath, UI::ListViewStyle::Table, 5);
 	this->lvPaths->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvPaths->AddColumn(CSTR("Dist"), 100);
+	this->lvPaths->AddColumn(CSTR("Dir"), 100);
 	this->lvPaths->AddColumn(CSTR("CName"), 60);
 	this->lvPaths->AddColumn(CSTR("EName"), 100);
 	this->lvPaths->AddColumn(CSTR("Type"), 100);
-	this->lvPaths->AddColumn(CSTR("Dist"), 60);
-	this->lvPaths->AddColumn(CSTR("Dir"), 60);
 
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -113,6 +291,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	{
 		this->cboNetwork->SetSelectedIndex(0);
 	}
+	this->navi->HandleMapMouseDown(OnMouseDown, this);
 }
 
 SSWR::AVIRead::AVIRGISShortestPathForm::~AVIRGISShortestPathForm()

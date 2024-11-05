@@ -51,6 +51,7 @@ namespace Math
 			Double CalcHLength() const;
 			Double Calc3DLength() const;
 			void Reverse();
+			void GetNearEnd(Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> nearEndPt, OptOut<Double> nearEndZ) const;
 
 			UnsafeArrayOpt<Double> GetZList(OutParam<UOSInt> nPoint) const;
 			UnsafeArrayOpt<Double> GetMList(OutParam<UOSInt> nPoint) const;

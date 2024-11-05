@@ -1856,8 +1856,18 @@ export class Duration
 	{
 		if (ticks < 0)
 		{
-			let ns = Number(BigInt(ticks) % 1000n);
-			let seconds = BigInt(ticks) / 1000n;
+			let ns;
+			let seconds;
+			if (typeof ticks == "number")
+			{
+				seconds = Math.floor(ticks / 1000);
+				ns = (ticks - seconds * 1000);
+			}
+			else
+			{
+				ns = Number(BigInt(ticks) % 1000n);
+				seconds = BigInt(ticks) / 1000n;
+			}
 			if (ns != 0)
 			{
 				ns = (-ns) * 1000000;
@@ -1867,7 +1877,15 @@ export class Duration
 		}
 		else
 		{
-			return new Duration(BigInt(ticks) / 1000n, Number(BigInt(ticks) % 1000n) * 1000000);
+			if (typeof ticks == "number")
+			{
+				let secs = Math.floor(ticks / 1000);
+				return new Duration(secs, (ticks - secs * 1000) * 1000000);
+			}
+			else
+			{
+				return new Duration(BigInt(ticks) / 1000n, Number(BigInt(ticks) % 1000n) * 1000000);
+			}
 		}
 	}
 
@@ -2189,14 +2207,26 @@ export class TimeInstant
 	 */
 	static fromTicks(ticks)
 	{
-		let ms = Number(BigInt(ticks) % 1000n);
-		if (ms < 0)
+		let secs;
+		let ms;
+		if (typeof ticks == "number")
 		{
-			return new TimeInstant(Math.floor(Number(ticks) / 1000) - 1, (ms + 1000) * 1000000);
+			secs = Math.floor(ticks / 1000);
+			ms = (ticks - secs) * 1000;
+			secs = BigInt(secs);
 		}
 		else
 		{
-			return new TimeInstant(Math.floor(Number(ticks) / 1000), ms * 1000000);
+			secs = BigInt(ticks) / 1000n;
+			ms = Number(BigInt(ticks) % 1000n);
+		}
+		if (ms < 0)
+		{
+			return new TimeInstant(secs - 1n, (ms + 1000) * 1000000);
+		}
+		else
+		{
+			return new TimeInstant(secs, ms * 1000000);
 		}
 	}
 

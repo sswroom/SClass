@@ -39,11 +39,18 @@ namespace SSWR
 			NN<IMapNavigator> navi;
 			NN<Map::MapDrawLayer> layer;
 			Map::ShortestPath3D spath;
+			UOSInt mode;
+			Math::Coord2DDbl startPos;
+			Math::Coord2DDbl endPos;
 
 			static void __stdcall OnNetworkClicked(AnyType userObj);
 			static void __stdcall OnStartPosClicked(AnyType userObj);
 			static void __stdcall OnEndPosClicked(AnyType userObj);
 			static void __stdcall OnSearchClicked(AnyType userObj);
+			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+
+			UnsafeArray<UTF8Char> Coord2DDblToString(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl coord);
+			void UpdatePaths(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList);
 		public:
 			AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer);
 			virtual ~AVIRGISShortestPathForm();

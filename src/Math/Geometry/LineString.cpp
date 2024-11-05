@@ -738,6 +738,37 @@ void Math::Geometry::LineString::Reverse()
 	}
 }
 
+void Math::Geometry::LineString::GetNearEnd(Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> nearEndPt, OptOut<Double> nearEndZ) const
+{
+	Double dist1 = this->pointArr[0].CalcLengTo(coord);
+	Double dist2 = this->pointArr[this->nPoint - 1].CalcLengTo(coord);
+	UnsafeArray<Double> zArr;
+	if (dist1 < dist2)
+	{
+		nearEndPt.Set(this->pointArr[0]);
+		if (this->zArr.SetTo(zArr))
+		{
+			nearEndZ.Set(zArr[0]);
+		}
+		else
+		{
+			nearEndZ.Set(NAN);
+		}
+	}
+	else
+	{
+		nearEndPt.Set(this->pointArr[this->nPoint - 1]);
+		if (this->zArr.SetTo(zArr))
+		{
+			nearEndZ.Set(zArr[this->nPoint - 1]);
+		}
+		else
+		{
+			nearEndZ.Set(NAN);
+		}
+	}
+}
+
 UnsafeArrayOpt<Double> Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
 {
 	nPoint.Set(this->nPoint);

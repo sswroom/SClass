@@ -1,3 +1,6 @@
+-data.Timestamp.fromTicks support floating point ticks
+-data.Duration.fromTicks support floating point ticks
+
 1.6.18
 -Change geometry.LinearRing.getHIntersactsCenter to getIntersactsCenter
 -web.buildTable support StaticImage item
