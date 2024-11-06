@@ -94,10 +94,13 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 				}
 				me->navi->SetSelectedVectors(vecList);
 				me->UpdatePaths(lineList, propList);
+				me->spathLineList.Clear();
+				me->spathLineList.AddAll(lineList);
 			}
 			else
 			{
 				me->lvPaths->ClearItems();
+				me->spathLineList.Clear();
 			}
 		}
 		else
@@ -113,10 +116,13 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 				}
 				me->navi->SetSelectedVectors(vecList);
 				me->UpdatePaths(lineList, propList);
+				me->spathLineList.Clear();
+				me->spathLineList.AddAll(lineList);
 			}
 			else
 			{
 				me->lvPaths->ClearItems();
+				me->spathLineList.Clear();
 			}
 		}
 	}
@@ -144,6 +150,29 @@ Bool __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnMouseDown(AnyType userO
 		return true;
 	}
 	return false;
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnPathsSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISShortestPathForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISShortestPathForm>();
+	NN<Math::Geometry::LineString> line;
+	NN<Math::Geometry::Vector2D> vec;
+	if (me->lvPaths->GetSelectedItem().GetOpt<Math::Geometry::LineString>().SetTo(line))
+	{
+		NN<Math::CoordinateSystem> mapCsys = me->navi->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> pathCsys = me->spath.GetCoordinateSystem();
+		if (!pathCsys->Equals(mapCsys))
+		{
+			Math::CoordinateSystemConverter converter(pathCsys, mapCsys);
+			vec = line->Clone();
+			vec->Convert(converter);
+			me->navi->SetSelectedVector(vec);
+		}
+		else
+		{
+			me->navi->SetSelectedVector(line->Clone());
+		}
+	}
 }
 
 UnsafeArray<UTF8Char> SSWR::AVIRead::AVIRGISShortestPathForm::Coord2DDblToString(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl coord)
@@ -201,7 +230,7 @@ void SSWR::AVIRead::AVIRGISShortestPathForm::UpdatePaths(NN<Data::ArrayListNN<Ma
 		dist = line->Calc3DLength();
 		prop = propList->GetItem(i);
 		sptr = Text::StrDouble(sbuff, dist);
-		k = this->lvPaths->AddItem(CSTRP(sbuff, sptr), 0);
+		k = this->lvPaths->AddItem(CSTRP(sbuff, sptr), line);
 		if (i < dirList.GetCount())
 		{
 			sptr = Text::StrDouble(sbuff, dirList.GetItem(i));
@@ -276,6 +305,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->lvPaths->AddColumn(CSTR("CName"), 60);
 	this->lvPaths->AddColumn(CSTR("EName"), 100);
 	this->lvPaths->AddColumn(CSTR("Type"), 100);
+	this->lvPaths->HandleSelChg(OnPathsSelChg, this);
 
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
