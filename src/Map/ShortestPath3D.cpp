@@ -904,7 +904,7 @@ void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::Li
 				dir2 = Math::GeometryTool::CalcDir(nextPoints[0], nextPoints[1], Math::Unit::Angle::AU_DEGREE);
 				isReverse = false;
 			}
-			Double dir = dir1 - dir2;
+			Double dir = dir2 - dir1;
 			if (dir < 0)
 			{
 				dir += 360;
