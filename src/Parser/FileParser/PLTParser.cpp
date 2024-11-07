@@ -87,8 +87,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 				Double tval;
 				Data::DateTime dt(1899, 12, 30, 0, 0, 0, 0);
 				Map::GPSTrack::GPSRecord3 rec;
-				rec.pos.SetLat(Text::StrToDouble(tmpArr[0]));
-				rec.pos.SetLon(Text::StrToDouble(tmpArr[1]));
+				rec.pos.SetLat(Text::StrToDoubleOrNAN(tmpArr[0]));
+				rec.pos.SetLon(Text::StrToDoubleOrNAN(tmpArr[1]));
 				rec.heading = 0;
 				rec.nSateUsed = 0;
 				rec.nSateUsedGLO = 0;
@@ -101,8 +101,8 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 				rec.nSateViewBD = 0;
 				rec.speed = 0;
 				rec.valid = true;
-				rec.altitude = Text::StrToDouble(tmpArr[3]) / 3.2808333333333333333333333333333;
-				dval = Text::StrToDouble(tmpArr[4]);
+				rec.altitude = Text::StrToDoubleOrNAN(tmpArr[3]) / 3.2808333333333333333333333333333;
+				dval = Text::StrToDoubleOr(tmpArr[4], 0);
 				tval = dval - (Int32)dval;
 				dt.AddDay((Int32)dval);
 				dt.AddMS(Double2Int32(tval * 86400000));

@@ -363,12 +363,12 @@ Data::Timestamp DB::SortableDBReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double DB::SortableDBReader::GetDbl(UOSInt colIndex)
+Double DB::SortableDBReader::GetDblOrNAN(UOSInt colIndex)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item == 0)
 	{
-		return 0;
+		return NAN;
 	}
 	switch (item->GetItemType())
 	{
@@ -406,7 +406,7 @@ Double DB::SortableDBReader::GetDbl(UOSInt colIndex)
 	case Data::VariItem::ItemType::Vector:
 	case Data::VariItem::ItemType::UUID:
 	default:
-		return 0;
+		return NAN;
 	}
 }
 

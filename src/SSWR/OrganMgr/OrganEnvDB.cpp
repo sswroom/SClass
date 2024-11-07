@@ -181,8 +181,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile->fileType = r->GetInt32(1);
 			userFile->oriFileName = r->GetNewStrNN(2);
 			userFile->fileTime = r->GetTimestamp(3);
-			userFile->lat = r->GetDbl(4);
-			userFile->lon = r->GetDbl(5);
+			userFile->lat = r->GetDblOr(4, 0);
+			userFile->lon = r->GetDblOr(5, 0);
 			userFile->webuserId = r->GetInt32(6);
 			userFile->speciesId = r->GetInt32(7);
 			userFile->captureTime = r->GetTimestamp(8);
@@ -191,10 +191,10 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile->rotType = r->GetInt32(11);
 			userFile->camera = r->GetNewStr(12);
 			userFile->descript = r->GetNewStr(13);
-			userFile->cropLeft = r->GetDbl(14);
-			userFile->cropTop = r->GetDbl(15);
-			userFile->cropRight = r->GetDbl(16);
-			userFile->cropBottom = r->GetDbl(17);
+			userFile->cropLeft = r->GetDblOr(14, 0);
+			userFile->cropTop = r->GetDblOr(15, 0);
+			userFile->cropRight = r->GetDblOr(16, 0);
+			userFile->cropBottom = r->GetDblOr(17, 0);
 			userFile->location = r->GetNewStr(18);
 			userFile->locType = (LocType)r->GetInt32(19);
 			userFileList.Add(userFile);
@@ -268,10 +268,10 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			wfile->crcVal = (UInt32)r->GetInt32(2);
 			wfile->imgUrl = r->GetNewStrNN(3);
 			wfile->srcUrl = r->GetNewStrNN(4);
-			wfile->cropLeft = r->GetDbl(6);
-			wfile->cropTop = r->GetDbl(7);
-			wfile->cropRight = r->GetDbl(8);
-			wfile->cropBottom = r->GetDbl(9);
+			wfile->cropLeft = r->GetDblOr(6, 0);
+			wfile->cropTop = r->GetDblOr(7, 0);
+			wfile->cropRight = r->GetDblOr(8, 0);
+			wfile->cropBottom = r->GetDblOr(9, 0);
 			wfile->location = r->GetNewStrNN(10);
 			fileList.Add(wfile);
 		}
@@ -3221,7 +3221,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 			{
 				Bool found = false;
 				NN<Map::GPSTrack> gpsTrk = NN<Map::GPSTrack>::ConvertFrom(lyr);
-				UnsafeArray<Map::GPSTrack::GPSRecord3> recArr;
+				UnsafeArray<Map::GPSTrack::GPSRecordFull> recArr;
 				i = 0;
 				j = gpsTrk->GetTrackCnt();
 				while (i < j)

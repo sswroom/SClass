@@ -211,8 +211,8 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 	}
 	else if (i == 10)
 	{
-		easting = 0.5 + (Int32)(Text::StrToDouble(grid) * 0.00001);
-		northing = 0.5 + Text::StrToDouble(&grid[5]);
+		easting = 0.5 + (Int32)(Text::StrToDoubleOr(grid, 0) * 0.00001);
+		northing = 0.5 + Text::StrToDoubleOr(&grid[5], 0);
 	}
 	else
 	{

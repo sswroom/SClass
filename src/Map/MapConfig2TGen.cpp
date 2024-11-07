@@ -4165,14 +4165,14 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, Map::MapConfig2TG
 			Int32 isAlign;
 			lblType = Text::StrToInt32(strs[0].v);
 			label = strs[1];
-			scnX = Text::StrToDouble(strs[2].v);
-			scnY = Text::StrToDouble(strs[3].v);
-			minX = Text::StrToDouble(strs[4].v);
-			minY = Text::StrToDouble(strs[5].v);
-			maxX = Text::StrToDouble(strs[6].v);
-			maxY = Text::StrToDouble(strs[7].v);
-			scaleW = Text::StrToDouble(strs[8].v);
-			scaleH = Text::StrToDouble(strs[9].v);
+			scnX = Text::StrToDoubleOr(strs[2].v, 0);
+			scnY = Text::StrToDoubleOr(strs[3].v, 0);
+			minX = Text::StrToDoubleOr(strs[4].v, 0);
+			minY = Text::StrToDoubleOr(strs[5].v, 0);
+			maxX = Text::StrToDoubleOr(strs[6].v, 0);
+			maxY = Text::StrToDoubleOr(strs[7].v, 0);
+			scaleW = Text::StrToDoubleOr(strs[8].v, 0);
+			scaleH = Text::StrToDoubleOr(strs[9].v, 0);
 			fontStyle = Text::StrToInt32(strs[10].v);
 			isAlign = Text::StrToInt32(strs[11].v);
 			if (lblType == 1)
@@ -4211,14 +4211,14 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, Map::MapConfig2TG
 			label = Text::String::New(strs[1].ToCString());
 //			scnX = Text::StrToDouble(strs[2].v);
 //			scnY = Text::StrToDouble(strs[3].v);
-			minX = Text::StrToDouble(strs[4].v);
-			minY = Text::StrToDouble(strs[5].v);
-			maxX = Text::StrToDouble(strs[6].v);
-			maxY = Text::StrToDouble(strs[7].v);
+			minX = Text::StrToDoubleOr(strs[4].v, 0);
+			minY = Text::StrToDoubleOr(strs[5].v, 0);
+			maxX = Text::StrToDoubleOr(strs[6].v, 0);
+			maxY = Text::StrToDoubleOr(strs[7].v, 0);
 			nPoints = Text::StrToUInt32(strs[8].v);
 			ptCurr = Text::StrToUInt32(strs[9].v);
-			scaleN = Text::StrToDouble(strs[10].v);
-			scaleD = Text::StrToDouble(strs[11].v);
+			scaleN = Text::StrToDoubleOr(strs[10].v, 0);
+			scaleD = Text::StrToDoubleOr(strs[11].v, 0);
 			fontStyle = Text::StrToInt32(strs[12].v);
 			isAlign = Text::StrToInt32(strs[13].v);
 			//////////////////////////////////////////////////
@@ -4289,8 +4289,8 @@ void Map::MapConfig2TGen::LoadLabels(NN<Media::DrawImage> img, Map::MapConfig2TG
 						break;
 					}
 
-					currPt[0].x = Text::StrToDouble(strs[0].v);
-					currPt[0].y = Text::StrToDouble(strs[1].v);
+					currPt[0].x = Text::StrToDoubleOr(strs[0].v, 0);
+					currPt[0].y = Text::StrToDoubleOr(strs[1].v, 0);
 					currPt += 1;
 					i++;
 

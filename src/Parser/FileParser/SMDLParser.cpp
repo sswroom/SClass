@@ -19,13 +19,13 @@ public:
 	{
 	}
 
-	virtual UOSInt GetExtraCount(const UInt8 *buff, UOSInt buffSize)
+	virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 	{
 		UOSInt analogCnt = ReadUInt32(&buff[24]);
 		return 18 + 2 * analogCnt;
 	}
 
-	virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (extIndex < 18)
 		{
@@ -105,7 +105,7 @@ public:
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
@@ -330,5 +330,6 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 			break;
 		}
 	}
+	track->SortRecords();
 	return track;
 }

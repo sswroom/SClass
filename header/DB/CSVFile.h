@@ -67,7 +67,7 @@ namespace DB
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDbl(UOSInt colIndex);
+		virtual Double GetDblOrNAN(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);

@@ -63,7 +63,8 @@ namespace Text
 		UInt64 ToUInt64() const;
 		OSInt ToOSInt() const;
 		UOSInt ToUOSInt() const;
-		Double ToDouble() const;
+		Double ToDoubleOr(Double v) const;
+		Double ToDoubleOrNAN() const;
 		Bool ToUInt8(OutParam<UInt8> outVal) const;
 		Bool ToInt16(OutParam<Int16> outVal) const;
 		Bool ToUInt16(OutParam<UInt16> outVal) const;
@@ -452,9 +453,14 @@ template <typename T> UOSInt Text::StringBase<T>::ToUOSInt() const
 	return Text::StrToUOSInt(this->v);
 }
 
-template <typename T> Double Text::StringBase<T>::ToDouble() const
+template <typename T> Double Text::StringBase<T>::ToDoubleOr(Double v) const
 {
-	return Text::StrToDouble(this->v);
+	return Text::StrToDoubleOr(this->v, v);
+}
+
+template <typename T> Double Text::StringBase<T>::ToDoubleOrNAN() const
+{
+	return Text::StrToDoubleOrNAN(this->v);
 }
 
 template <typename T> Bool Text::StringBase<T>::ToUInt8(OutParam<UInt8> outVal) const

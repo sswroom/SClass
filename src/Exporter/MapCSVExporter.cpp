@@ -74,7 +74,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 	{
 		NN<Map::GPSTrack> track = NN<Map::GPSTrack>::ConvertFrom(layer);
-		UnsafeArray<Map::GPSTrack::GPSRecord3> rec;
+		UnsafeArray<Map::GPSTrack::GPSRecordFull> rec;
 		UOSInt recCnt;
 		Double v;
 		Int32 currInd = 1;

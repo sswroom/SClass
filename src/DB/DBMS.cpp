@@ -252,14 +252,14 @@ namespace DB
 			return Data::Timestamp(row[colIndex]->ToCString(), 0);
 		}
 
-		virtual Double GetDbl(UOSInt colIndex)
+		virtual Double GetDblOrNAN(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
-				return 0;
+				return NAN;
 			Text::String **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
-				return 0;
-			return row[colIndex]->ToDouble();
+				return NAN;
+			return row[colIndex]->ToDoubleOrNAN();
 		}
 
 		virtual Bool GetBool(UOSInt colIndex)
@@ -1488,7 +1488,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 			Double dVal;
 			if (val2->ToDouble(dVal))
 			{
-				dVal += Text::StrToDouble(sb.ToString());
+				dVal += sb.ToDoubleOr(0);
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
@@ -1535,7 +1535,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 			Double dVal;
 			if (val2->ToDouble(dVal))
 			{
-				dVal = Text::StrToDouble(sb.ToString()) - dVal;
+				dVal = sb.ToDoubleOr(0) - dVal;
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
@@ -1582,7 +1582,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 			Double dVal;
 			if (val2->ToDouble(dVal))
 			{
-				dVal = Text::StrToDouble(sb.ToString()) * dVal;
+				dVal = sb.ToDoubleOrNAN() * dVal;
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;
@@ -1629,7 +1629,7 @@ Text::String *DB::DBMS::Evals(InOutParam<UnsafeArray<const UTF8Char>> valPtr, NN
 			Double dVal;
 			if (val2->ToDouble(dVal))
 			{
-				dVal = Text::StrToDouble(sb.ToString()) / dVal;
+				dVal = sb.ToDoubleOrNAN() / dVal;
 				sb.ClearStr();
 				sb.AppendDouble(dVal);
 				Text::CStringNN nncolName;

@@ -72,13 +72,13 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<co
 								{
 									sb.ClearStr();
 									node3->GetInnerText(sb);
-									lat = Text::StrToDouble(sb.ToString());
+									lat = sb.ToDoubleOr(0);
 								}
 								else if (name->EqualsICase(UTF8STRC("longitude")))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(sb);
-									lon = Text::StrToDouble(sb.ToString());
+									lon = sb.ToDoubleOr(0);
 								}
 								else if (name->EqualsICase(UTF8STRC("url")))
 								{

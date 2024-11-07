@@ -60,7 +60,7 @@ Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, N
 				break;
 			case Data::VariItem::ItemType::F32:
 			case Data::VariItem::ItemType::F64:
-				item.SetF64(r->GetDbl(i));
+				item.SetF64(r->GetDblOrNAN(i));
 				Data::VariItem::SetPtr(ptr, field->itemType, item);
 				break;
 			case Data::VariItem::ItemType::I8:

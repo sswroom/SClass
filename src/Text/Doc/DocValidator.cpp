@@ -16,8 +16,8 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocValidator::GetItemType()
 	return Text::Doc::DocItem::DIT_VALIDATOR;
 }
 
-UOSInt Text::Doc::DocValidator::Add(Text::Doc::DocItem *item)
+UOSInt Text::Doc::DocValidator::Add(NN<Text::Doc::DocItem> item)
 {
-	DEL_CLASS(item);
+	item.Delete();
 	return (UOSInt)-1;
 }

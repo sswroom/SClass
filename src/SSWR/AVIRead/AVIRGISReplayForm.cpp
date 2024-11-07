@@ -23,7 +23,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 	Math::Coord2DDbl *latLon;
 	UOSInt recCnt;
 	UOSInt i;
-	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	UOSInt i = me->lbRecord->GetSelectedIndex();
 	UOSInt recCnt = 0;
-	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	if (i != INVALID_INDEX && me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
 	{
 		UTF8Char sbuff[64];
@@ -351,7 +351,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_MARK_COPY:
 		{
 			UOSInt recCnt;
-			UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+			UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 			if (this->startMark > this->endMark || !track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 			{
 				return;
@@ -402,7 +402,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
-	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	if (this->track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
 	{
 		Double dist = 0;

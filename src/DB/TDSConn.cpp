@@ -508,12 +508,12 @@ public:
 		}
 	}
 
-	virtual Double GetDbl(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		if (this->GetVariItem(colIndex, item))
 			return item.GetAsF64();
-		return 0;
+		return NAN;
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)

@@ -357,7 +357,7 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
 			case DB::DBUtil::CT_Decimal:
-				sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), r->GetDbl(i)), UTF8STRC("</string>"));
+				sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), r->GetDblOr(i, 0)), UTF8STRC("</string>"));
 				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			case DB::DBUtil::CT_Int16:
@@ -471,7 +471,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 				case DB::DBUtil::CT_Double:
 				case DB::DBUtil::CT_Float:
 				case DB::DBUtil::CT_Decimal:
-					ws->SetCellDouble(row, i, r->GetDbl(i));
+					ws->SetCellDouble(row, i, r->GetDblOr(i, 0));
 					break;
 				case DB::DBUtil::CT_Byte:
 				case DB::DBUtil::CT_Int16:
@@ -613,7 +613,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 					case DB::DBUtil::CT_Double:
 					case DB::DBUtil::CT_Float:
 					case DB::DBUtil::CT_Decimal:
-						sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetDbl(i)), UTF8STRC("</Data></Cell>"));
+						sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetDblOr(i, 0)), UTF8STRC("</Data></Cell>"));
 						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					case DB::DBUtil::CT_Byte:

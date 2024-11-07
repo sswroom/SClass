@@ -60,6 +60,8 @@ namespace Data
 			template <class T> static void PreSort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T> static void Sort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T> static void Sort(NN<Data::ArrayCollection<T>> list, NN<Data::Comparator<T>> comparator);
+			template <class T, class V> static void PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
+			template <class T, class V> static void SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }
@@ -171,5 +173,119 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(NN<Data::ArrayColl
 	UOSInt len;
 	UnsafeArray<T> arr = list->GetArr(len);
 	Sort(arr, comparator, 0, (OSInt)len - 1);
+}
+
+template <class T, class V> void Data::Sort::ArtificialQuickSort::PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt left, OSInt right)
+{
+	T temp = keyArr[left];
+	T temp2;
+	V v;
+	while (left < right)
+	{
+		temp = keyArr[left];
+		temp2 = keyArr[right];
+		if (temp > temp2)
+		{
+			keyArr[left] = temp2;
+			keyArr[right] = temp;
+			v = valArr[left];
+			valArr[left] = valArr[right];
+			valArr[right] = v;
+		}
+		left++;
+		right--;
+	}
+}
+
+template <class T, class V> void Data::Sort::ArtificialQuickSort::SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex)
+{
+#if _OSINT_SIZE == 16
+	OSInt levi[256];
+	OSInt desni[256];
+#else
+	UnsafeArray<OSInt> levi = MemAllocArr(OSInt, 65536);
+	UnsafeArray<OSInt> desni = &levi[32768];
+#endif
+	OSInt index;
+	OSInt i;
+	OSInt left;
+	OSInt right;
+	T meja;
+	V mejaV;
+	OSInt left1;
+	OSInt right1;
+	T temp;
+	V tempV;
+
+	PreSortKV(keyArr, valArr, firstIndex, lastIndex);
+
+	index = 0;
+	levi[index] = firstIndex;
+	desni[index] = lastIndex;
+
+	while ( index >= 0 )
+	{
+		left = levi[index];
+		right = desni[index];
+		i = right - left;
+		if (i <= 0)
+		{
+			index--;
+		}
+		else if (i <= 64)
+		{
+			Data::Sort::InsertionSort::SortBKV(keyArr, valArr, left, right);
+			index--;
+		}
+		else
+		{
+			meja = keyArr[ (left + right) >> 1 ];
+			mejaV = valArr[ (left + right) >> 1 ];
+			left1 = left;
+			right1 = right;
+			while (true)
+			{
+				while (keyArr[right1] >= meja)
+				{
+					if (--right1 < left1)
+						break;
+				}
+				while (keyArr[left1] < meja)
+				{
+					if (++left1 > right1)
+						break;
+				}
+				if (left1 > right1)
+					break;
+
+				temp = keyArr[right1];
+				tempV = valArr[right1];
+				keyArr[right1] = keyArr[left1];
+				valArr[right1--] = valArr[left1];
+				keyArr[left1] = temp;
+				valArr[left1++] = tempV;
+			}
+			if (left1 == left)
+			{
+				keyArr[(left + right) >> 1] = keyArr[left];
+				valArr[(left + right) >> 1] = valArr[left];
+				keyArr[left] = meja;
+				valArr[left] = mejaV;
+				levi[index] = left + 1;
+				desni[index] = right;
+			}
+			else
+			{
+				desni[index] = --left1;
+				right1++;
+				index++;
+				levi[index] = right1;
+				desni[index] = right;
+			}
+		}
+	}
+#if _OSINT_SIZE != 16
+	MemFreeArr(levi);
+#endif
 }
 #endif

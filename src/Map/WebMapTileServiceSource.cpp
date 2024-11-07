@@ -113,8 +113,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 					reader->ReadNodeText(sb);
 					if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 					{
-						layer->wgs84Bounds.min.x = sarr[0].ToDouble();
-						layer->wgs84Bounds.min.y = sarr[1].ToDouble();
+						layer->wgs84Bounds.min.x = sarr[0].ToDoubleOrNAN();
+						layer->wgs84Bounds.min.y = sarr[1].ToDoubleOrNAN();
 					}
 				}
 				else if (name->Equals(UTF8STRC("ows:UpperCorner")))
@@ -123,8 +123,8 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 					reader->ReadNodeText(sb);
 					if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 					{
-						layer->wgs84Bounds.max.x = sarr[0].ToDouble();
-						layer->wgs84Bounds.max.y = sarr[1].ToDouble();
+						layer->wgs84Bounds.max.x = sarr[0].ToDoubleOrNAN();
+						layer->wgs84Bounds.max.y = sarr[1].ToDoubleOrNAN();
 					}
 				}
 				else
@@ -438,7 +438,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 					reader->ReadNodeText(sb);
 					if (sb.GetLength() > 0)
 					{
-						scaleDenom = sb.ToDouble();
+						scaleDenom = sb.ToDoubleOr(0);
 					}
 				}
 				else if (name->Equals(UTF8STRC("TopLeftCorner")))
@@ -450,8 +450,8 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 						Text::PString sarr[3];
 						if (Text::StrSplitP(sarr, 3, sb, ' ') == 2)
 						{
-							leftPos = sarr[0].ToDouble();
-							topPos = sarr[1].ToDouble();
+							leftPos = sarr[0].ToDoubleOr(0);
+							topPos = sarr[1].ToDoubleOr(0);
 						}
 					}
 				}

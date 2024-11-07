@@ -126,15 +126,15 @@ public:
 		return Data::Timestamp(this->row[colIndex]->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
-	virtual Double GetDbl(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UOSInt colIndex)
 	{
 		if (this->row == 0)
-			return 0;
+			return NAN;
 		if (colIndex >= this->data->colList.GetCount())
-			return 0;
+			return NAN;
 		if (this->row[colIndex] == 0)
-			return 0;
-		return this->row[colIndex]->ToDouble();
+			return NAN;
+		return this->row[colIndex]->ToDoubleOrNAN();
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)

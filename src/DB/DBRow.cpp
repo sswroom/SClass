@@ -393,7 +393,7 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 				}
 				break;
 			case DT_DOUBLE:
-				this->SetFieldDouble(field, r->GetDbl(i));
+				this->SetFieldDouble(field, r->GetDblOrNAN(i));
 				break;
 			case DT_DATETIME:
 				this->SetFieldDate(field, r->GetTimestamp(i));

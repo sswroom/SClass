@@ -2298,30 +2298,6 @@ Bool Text::StrToDoubleW(UnsafeArray<const UTF32Char> str1, OutParam<Double> outV
 	return true;
 }
 
-Double Text::StrToDouble(UnsafeArray<const UTF8Char> str1)
-{
-	Double r;
-	if (Text::StrToDouble(str1, r))
-		return r;
-	return 0;
-}
-
-Double Text::StrToDoubleW(UnsafeArray<const UTF16Char> str1)
-{
-	Double r;
-	if (Text::StrToDoubleW(str1, r))
-		return r;
-	return 0;
-}
-
-Double Text::StrToDoubleW(UnsafeArray<const UTF32Char> str1)
-{
-	Double r;
-	if (Text::StrToDoubleW(str1, r))
-		return r;
-	return 0;
-}
-
 void Text::SBAppendF32(NN<Text::StringBuilderUTF> sb, Single v)
 {
 	UTF8Char sbuff[33];

@@ -199,10 +199,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 				wfile->imgUrl = r->GetNewStrBNN(3, sb);
 				wfile->srcUrl = r->GetNewStrBNN(4, sb);
 				wfile->prevUpdated = r->GetBool(5);
-				wfile->cropLeft = r->GetDbl(6);
-				wfile->cropTop = r->GetDbl(7);
-				wfile->cropRight = r->GetDbl(8);
-				wfile->cropBottom = r->GetDbl(9);
+				wfile->cropLeft = r->GetDblOr(6, 0);
+				wfile->cropTop = r->GetDblOr(7, 0);
+				wfile->cropRight = r->GetDblOr(8, 0);
+				wfile->cropBottom = r->GetDblOr(9, 0);
 				wfile->location = r->GetNewStrBNN(10, sb);
 				sp->wfiles.Put(wfile->id, wfile);
 			}
@@ -403,8 +403,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				userFile->fileType = (FileType)r->GetInt32(1);
 				userFile->oriFileName = r->GetNewStrBNN(2, sb);
 				userFile->fileTimeTicks = r->GetTimestamp(3).ToTicks();
-				userFile->lat = r->GetDbl(4);
-				userFile->lon = r->GetDbl(5);
+				userFile->lat = r->GetDblOr(4, 0);
+				userFile->lon = r->GetDblOr(5, 0);
 				userFile->webuserId = userId;
 				userFile->speciesId = r->GetInt32(7);
 				userFile->captureTimeTicks = r->GetTimestamp(8).ToTicks();
@@ -412,10 +412,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				userFile->crcVal = (UInt32)r->GetInt32(10);
 				userFile->rotType = r->GetInt32(11);
 				userFile->prevUpdated = r->GetInt32(12);
-				userFile->cropLeft = r->GetDbl(13);
-				userFile->cropTop = r->GetDbl(14);
-				userFile->cropRight = r->GetDbl(15);
-				userFile->cropBottom = r->GetDbl(16);
+				userFile->cropLeft = r->GetDblOr(13, 0);
+				userFile->cropTop = r->GetDblOr(14, 0);
+				userFile->cropRight = r->GetDblOr(15, 0);
+				userFile->cropBottom = r->GetDblOr(16, 0);
 				userFile->descript = r->GetNewStrB(17, sb);
 				userFile->location = r->GetNewStrB(18, sb);
 				userFile->camera = r->GetNewStrB(19, sb);
@@ -585,8 +585,8 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLocations()
 				loc->parentId = r->GetInt32(1);
 				loc->cname = r->GetNewStrB(2, sb);
 				loc->ename = r->GetNewStrB(3, sb);
-				loc->lat = r->GetDbl(4);
-				loc->lon = r->GetDbl(5);
+				loc->lat = r->GetDblOr(4, 0);
+				loc->lon = r->GetDblOr(5, 0);
 				loc->cateId = r->GetInt32(6);
 				loc->locType = r->GetInt32(7);
 				this->locMap.Put(id, loc);
@@ -3537,9 +3537,9 @@ UOSInt SSWR::OrganWeb::OrganWebEnv::PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage
 			peak->id = r->GetInt32(0);
 			peak->refId = r->GetNewStrNN(1);
 			peak->district = r->GetNewStrNN(2);
-			peak->mapX = r->GetDbl(3);
-			peak->mapY = r->GetDbl(4);
-			peak->markedHeight = r->GetDbl(5);
+			peak->mapX = r->GetDblOr(3, 0);
+			peak->mapY = r->GetDblOr(4, 0);
+			peak->markedHeight = r->GetDblOr(5, 0);
 			peak->csys = r->GetInt32(6);
 			peak->status = r->GetInt32(7);
 			peak->name = r->GetNewStr(8);

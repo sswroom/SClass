@@ -969,11 +969,11 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Ma
 		{
 			if (aname->EqualsICase(UTF8STRC("LAT")))
 			{
-				rec->pos.SetLat(avalue->ToDouble());
+				rec->pos.SetLat(avalue->ToDoubleOrNAN());
 			}
 			else if (aname->EqualsICase(UTF8STRC("LON")))
 			{
-				rec->pos.SetLon(avalue->ToDouble());
+				rec->pos.SetLon(avalue->ToDoubleOrNAN());
 			}
 		}
 		i++;
@@ -985,7 +985,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Ma
 		if (nodeText->EqualsICase(UTF8STRC("ELE")))
 		{
 			reader->ReadNodeText(sb);
-			rec->altitude = Text::StrToDouble(sb.ToString());
+			rec->altitude = sb.ToDoubleOrNAN();
 			sb.ClearStr();
 		}
 		else if (nodeText->EqualsICase(UTF8STRC("TIME")))
@@ -999,7 +999,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Ma
 		else if (nodeText->EqualsICase(UTF8STRC("SPEED")))
 		{
 			reader->ReadNodeText(sb);
-			rec->speed = Text::StrToDouble(sb.ToString()) * 3.6 / 1.852;
+			rec->speed = sb.ToDoubleOr(0) * 3.6 / 1.852;
 			sb.ClearStr();
 		}
 		else

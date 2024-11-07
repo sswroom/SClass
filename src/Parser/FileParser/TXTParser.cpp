@@ -186,7 +186,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					addFont = 2;
 					pfontName = sarr[3].ToCString();
-					fontSize = Text::StrToDouble(sarr[4].v);
+					fontSize = Text::StrToDoubleOr(sarr[4].v, 0);
 					bold = false;
 					fontColor = 0;
 					buffSize = 0;
@@ -440,9 +440,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				}
 				else if (i == 3)
 				{
-					ptX.Add(Text::StrToDouble(sarr[0].v));
-					ptY.Add(Text::StrToDouble(sarr[1].v));
-					ptZ.Add(Text::StrToDouble(sarr[2].v));
+					ptX.Add(Text::StrToDoubleOrNAN(sarr[0].v));
+					ptY.Add(Text::StrToDoubleOrNAN(sarr[1].v));
+					ptZ.Add(Text::StrToDoubleOrNAN(sarr[2].v));
 				}
 			}
 		}

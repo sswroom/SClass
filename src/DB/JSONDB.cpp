@@ -167,15 +167,15 @@ public:
 		return 0;
 	}
 
-	virtual Double GetDbl(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UOSInt colIndex)
 	{
 		NN<Text::JSONObject> obj;
 		if (!this->obj.SetTo(obj))
-			return 0;
+			return NAN;
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
-			return 0;
-		return obj->GetValueAsDouble(col->GetColName()->ToCString());
+			return NAN;
+		return obj->GetValueAsDoubleOrNAN(col->GetColName()->ToCString());
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)

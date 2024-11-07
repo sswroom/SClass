@@ -14,7 +14,7 @@ SSWR::SHPConv::ElevationFilter::~ElevationFilter()
 
 Bool SSWR::SHPConv::ElevationFilter::IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const
 {
-	Int32 v = Double2Int32(dbf->GetDbl(this->colIndex));
+	Int32 v = Double2Int32(dbf->GetDblOr(this->colIndex, 0));
 	return v != 0 && (v % this->value) == 0;
 }
 

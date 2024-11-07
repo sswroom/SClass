@@ -390,19 +390,19 @@ Optional<Math::Geometry::Vector2D> Map::OWSFeatureParser::ParseESRIFieldGeometry
 			if (i == 2)
 			{
 				vec.Delete();
-				NEW_CLASSNN(nnvec, Math::Geometry::Point(srid, sarr[0].ToDouble(), sarr[1].ToDouble()));
+				NEW_CLASSNN(nnvec, Math::Geometry::Point(srid, sarr[0].ToDoubleOrNAN(), sarr[1].ToDoubleOrNAN()));
 				vec = nnvec;
 			}
 			else if (i == 3)
 			{
 				vec.Delete();
-				NEW_CLASSNN(nnvec, Math::Geometry::PointZ(srid, sarr[0].ToDouble(), sarr[1].ToDouble(), sarr[2].ToDouble()));
+				NEW_CLASSNN(nnvec, Math::Geometry::PointZ(srid, sarr[0].ToDoubleOrNAN(), sarr[1].ToDoubleOrNAN(), sarr[2].ToDoubleOrNAN()));
 				vec = nnvec;
 			}
 			else if (i == 4)
 			{
 				vec.Delete();
-				NEW_CLASSNN(nnvec, Math::Geometry::PointZM(srid, sarr[0].ToDouble(), sarr[1].ToDouble(), sarr[2].ToDouble(), sarr[3].ToDouble()));
+				NEW_CLASSNN(nnvec, Math::Geometry::PointZM(srid, sarr[0].ToDoubleOrNAN(), sarr[1].ToDoubleOrNAN(), sarr[2].ToDoubleOrNAN(), sarr[3].ToDoubleOrNAN()));
 				vec = nnvec;
 			}
 		}

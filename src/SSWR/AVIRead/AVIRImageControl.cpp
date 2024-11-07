@@ -130,9 +130,9 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 				{
 					imgSett = MemAlloc(ImageSetting, 1);
 					imgSett->flags = Text::StrToInt32(sarr[1]);
-					imgSett->brightness = Text::StrToDouble(sarr[2]);
-					imgSett->contrast = Text::StrToDouble(sarr[3]);
-					imgSett->gamma = Text::StrToDouble(sarr[4]);
+					imgSett->brightness = Text::StrToDoubleOr(sarr[2], 0);
+					imgSett->contrast = Text::StrToDoubleOr(sarr[3], 0);
+					imgSett->gamma = Text::StrToDoubleOr(sarr[4], 1);
 					imgSett->cropEnabled = false;
 					imgSett->cropLeft = 0;
 					imgSett->cropTop = 0;
@@ -146,9 +146,9 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 				{
 					imgSett = MemAlloc(ImageSetting, 1);
 					imgSett->flags = Text::StrToInt32(sarr[1]);
-					imgSett->brightness = Text::StrToDouble(sarr[2]);
-					imgSett->contrast = Text::StrToDouble(sarr[3]);
-					imgSett->gamma = Text::StrToDouble(sarr[4]);
+					imgSett->brightness = Text::StrToDoubleOr(sarr[2], 0);
+					imgSett->contrast = Text::StrToDoubleOr(sarr[3], 0);
+					imgSett->gamma = Text::StrToDoubleOr(sarr[4], 1);
 					imgSett->cropEnabled = Text::StrToInt32(sarr[5]) != 0;
 					imgSett->cropLeft = Text::StrToInt32(sarr[6]);
 					imgSett->cropTop = Text::StrToInt32(sarr[7]);

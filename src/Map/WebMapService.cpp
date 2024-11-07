@@ -242,19 +242,19 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 						{
 							if (aname->Equals(UTF8STRC("minx")))
 							{
-								crs->bounds.min.x = avalue->ToDouble();
+								crs->bounds.min.x = avalue->ToDoubleOr(0);
 							}
 							else if (aname->Equals(UTF8STRC("miny")))
 							{
-								crs->bounds.min.y = avalue->ToDouble();
+								crs->bounds.min.y = avalue->ToDoubleOr(0);
 							}
 							else if (aname->Equals(UTF8STRC("maxx")))
 							{
-								crs->bounds.max.x = avalue->ToDouble();
+								crs->bounds.max.x = avalue->ToDoubleOr(0);
 							}
 							else if (aname->Equals(UTF8STRC("maxy")))
 							{
-								crs->bounds.max.y = avalue->ToDouble();
+								crs->bounds.max.y = avalue->ToDoubleOr(0);
 							}
 							else if (aname->Equals(UTF8STRC("CRS")))
 							{

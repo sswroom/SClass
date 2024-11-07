@@ -149,8 +149,8 @@ Bool IO::Device::GoProCameraControl::GetInfo(NN<Data::ArrayListStringNN> nameLis
 					nameList->Add(Text::String::New(UTF8STRC("Model")));
 					valueList->Add(NN<Text::JSONString>::ConvertFrom(jsBase2)->GetValue()->Clone());
 				}
-				Double modelNo = jsInfo->GetObjectDouble(CSTR("model_number"));
-				if (modelNo != 0)
+				Double modelNo = jsInfo->GetObjectDoubleOrNAN(CSTR("model_number"));
+				if (!Math::IsNAN(modelNo))
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Model Number")));
 					sb.ClearStr();

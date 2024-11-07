@@ -132,32 +132,32 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			if (colTypes[i] == DB::DBUtil::CT_UTF8Char || colTypes[i] == DB::DBUtil::CT_VarUTF8Char)
 			{
 				r->GetStr(i, sbuff, sizeof(sbuff));
-				writer->SetColumn(i, sbuff);
+				writer->SetColumnStr(i, sbuff);
 			}
 			else if (colTypes[i] == DB::DBUtil::CT_Int16)
 			{
-				writer->SetColumn(i, (Int16)r->GetInt32(i));
+				writer->SetColumnI16(i, (Int16)r->GetInt32(i));
 			}
 			else if (colTypes[i] == DB::DBUtil::CT_Int32)
 			{
-				writer->SetColumn(i, r->GetInt32(i));
+				writer->SetColumnI32(i, r->GetInt32(i));
 			}
 			else if (colTypes[i] == DB::DBUtil::CT_Int64)
 			{
-				writer->SetColumn(i, r->GetInt64(i));
+				writer->SetColumnI64(i, r->GetInt64(i));
 			}
 			else if (colTypes[i] == DB::DBUtil::CT_Double)
 			{
-				writer->SetColumn(i, r->GetDbl(i));
+				writer->SetColumnF64(i, r->GetDblOrNAN(i));
 			}
 			else if (colTypes[i] == DB::DBUtil::CT_DateTime)
 			{
-				writer->SetColumn(i, r->GetTimestamp(i));
+				writer->SetColumnTS(i, r->GetTimestamp(i));
 			}
 			else
 			{
 				r->GetStr(i, sbuff, sizeof(sbuff));
-				writer->SetColumn(i, sbuff);
+				writer->SetColumnStr(i, sbuff);
 			}
 		}
 		writer->WriteRecord();

@@ -154,9 +154,9 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 			else
 			{
 				Int32 roadRouteId = r->GetInt32((UOSInt)roadRouteIdCol);
-				Double location = r->GetDbl((UOSInt)locationCol);
+				Double location = r->GetDblOr((UOSInt)locationCol, 0);
 				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
-				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
+				Double maxWeight = r->GetDblOr((UOSInt)maxWeightCol, 0);
 				NN<RouteInfo> route;
 				NN<Math::Geometry::Point> pt;
 				Math::Coord2DDbl coord;

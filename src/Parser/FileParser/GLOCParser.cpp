@@ -47,12 +47,12 @@ public:
 	{
 	}
 
-	virtual UOSInt GetExtraCount(const UInt8 *buff, UOSInt buffSize)
+	virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 	{
 		return 24;
 	}
 
-	virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		switch (extIndex)
 		{
@@ -132,11 +132,11 @@ public:
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (buffSize != sizeof(ExtraInfo))
 			return false;
-		const ExtraInfo *extInfo = (const ExtraInfo*)buff;
+		UnsafeArray<const ExtraInfo> extInfo = UnsafeArray<const ExtraInfo>::ConvertFrom(buff);
 
 		switch (extIndex)
 		{
@@ -350,5 +350,6 @@ Optional<IO::ParsedObject> Parser::FileParser::GLOCParser::ParseFileHdr(NN<IO::S
 		track->SetExtraDataIndex(i, (UInt8*)&extInfo, sizeof(extInfo));
 		currPos += 128;
 	}
+	track->SortRecords();
 	return track;
 }

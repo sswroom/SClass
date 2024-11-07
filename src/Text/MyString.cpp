@@ -125,12 +125,6 @@ UTF32Char MyString_StrHexArrU32[] = {
 	'E','0','E','1','E','2','E','3','E','4','E','5','E','6','E','7','E','8','E','9','E','A','E','B','E','C','E','D','E','E','E','F',
 	'F','0','F','1','F','2','F','3','F','4','F','5','F','6','F','7','F','8','F','9','F','A','F','B','F','C','F','D','F','E','F','F'};
 
-UnsafeArray<UTF8Char> Text::StrConcat(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin)
-{
-	while ((*oriStr++ = *strToJoin++) != 0);
-	return oriStr - 1;
-}
-
 UnsafeArray<UTF8Char> Text::StrConcatS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize)
 {
 	if (buffSize <= 1)

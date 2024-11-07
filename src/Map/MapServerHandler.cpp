@@ -443,7 +443,7 @@ void Map::MapServerHandler::CheckObject(NN<Text::JSONBase> obj, Double x1, Doubl
 	}
 	if (minErr != 0)
 	{
-		Double err = jobj->GetObjectDouble(CSTR("geometricError"));
+		Double err = jobj->GetObjectDoubleOr(CSTR("geometricError"), 0);
 		if (err != 0 && err * 0.5 < minErr)
 		{
 			jobj->RemoveObject(CSTR("children"));
@@ -495,8 +495,8 @@ Bool Map::MapServerHandler::InSphereRange(NN<Text::JSONBase> sphere, Double x1, 
 	}
 	NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(sphere);
 	Math::Vector3 pos;
-	Double radius = arr->GetArrayDouble(3);
-	pos = this->wgs84->FromCartesianCoordDeg(Math::Vector3(arr->GetArrayDouble(0), arr->GetArrayDouble(1), arr->GetArrayDouble(2)));
+	Double radius = arr->GetArrayDoubleOr(3, 0);
+	pos = this->wgs84->FromCartesianCoordDeg(Math::Vector3(arr->GetArrayDoubleOr(0, 0), arr->GetArrayDoubleOr(1, 0), arr->GetArrayDoubleOr(2, 0)));
 	if (x1 <= pos.GetLon() && x2 >= pos.GetLon())
 	{
 	}

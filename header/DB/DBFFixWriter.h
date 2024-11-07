@@ -33,15 +33,15 @@ namespace DB
 		~DBFFixWriter();
 		void AddRecord(const UTF8Char **rowValues);
 
-		Bool SetColumn(UOSInt index, Data::DateTime *val);
-		Bool SetColumn(UOSInt index, const Data::Timestamp &val);
-		Bool SetColumn(UOSInt index, Double val);
-		Bool SetColumn(UOSInt index, Int16 val);
-		Bool SetColumn(UOSInt index, Int32 val);
-		Bool SetColumn(UOSInt index, Int64 val);
-		Bool SetColumn(UOSInt index, UInt32 val);
-		Bool SetColumn(UOSInt index, Bool val);
-		Bool SetColumn(UOSInt index, const UTF8Char *val);
+		Bool SetColumnDT(UOSInt index, NN<Data::DateTime> val);
+		Bool SetColumnTS(UOSInt index, const Data::Timestamp &val);
+		Bool SetColumnF64(UOSInt index, Double val);
+		Bool SetColumnI16(UOSInt index, Int16 val);
+		Bool SetColumnI32(UOSInt index, Int32 val);
+		Bool SetColumnI64(UOSInt index, Int64 val);
+		Bool SetColumnU32(UOSInt index, UInt32 val);
+		Bool SetColumnBool(UOSInt index, Bool val);
+		Bool SetColumnStr(UOSInt index, UnsafeArray<const UTF8Char> val);
 		void WriteRecord();
 	};
 }

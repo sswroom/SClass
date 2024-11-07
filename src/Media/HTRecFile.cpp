@@ -123,11 +123,11 @@ Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
 		}
 		else if (colIndex == 2)
 		{
-			return Double2Int32(GetDbl(colIndex));
+			return Double2Int32(GetDblOrNAN(colIndex));
 		}
 		else if (colIndex == 3)
 		{
-			return Double2Int32(GetDbl(colIndex));
+			return Double2Int32(GetDblOrNAN(colIndex));
 		}
 		else
 		{
@@ -283,11 +283,11 @@ UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, 
 		}
 		else if (colIndex == 2)
 		{
-			return Text::StrDoubleFmt(buff, GetDbl(colIndex), "0.0");
+			return Text::StrDoubleFmt(buff, GetDblOrNAN(colIndex), "0.0");
 		}
 		else if (colIndex == 3)
 		{
-			return Text::StrDoubleFmt(buff, GetDbl(colIndex), "0.0");
+			return Text::StrDoubleFmt(buff, GetDblOrNAN(colIndex), "0.0");
 		}
 		else
 		{
@@ -334,13 +334,13 @@ Data::Timestamp Media::HTRecFile::HTRecReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
+Double Media::HTRecFile::HTRecReader::GetDblOrNAN(UOSInt colIndex)
 {
 	UOSInt currRow = this->nextRow - 1;
 	if (this->setting)
 	{
 		if (colIndex != 1)
-			return 0;
+			return NAN;
 		if (currRow == 1)
 		{
 			return this->file->GetAddress();
@@ -374,19 +374,19 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 			return UOSInt2Double(this->file->GetRecCount());
 		}
 
-		return 0;
+		return NAN;
 	}
 	else
 	{
 		if (currRow >= this->recCount)
-			return 0;
+			return NAN;
 		if (colIndex == 0)
 		{
 			return UOSInt2Double(currRow + 1);
 		}
 		else if (colIndex == 1)
 		{
-			return 0;
+			return NAN;
 		}
 		else if (colIndex == 2)
 		{
@@ -402,7 +402,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 		}
 		else
 		{
-			return 0;
+			return NAN;
 		}
 	}
 }

@@ -213,16 +213,6 @@ Bool Text::JSONBase::GetValueAsInt64(Text::CStringNN path, OutParam<Int64> val)
 	return 0;
 }
 
-Double Text::JSONBase::GetValueAsDouble(Text::CStringNN path)
-{
-	NN<Text::JSONBase> json;
-	if (this->GetValue(path).SetTo(json))
-	{
-		return json->GetAsDouble();
-	}
-	return 0;
-}
-
 Bool Text::JSONBase::GetValueAsDouble(Text::CStringNN path, OutParam<Double> val)
 {
 	NN<Text::JSONBase> json;
@@ -368,7 +358,7 @@ Bool Text::JSONBase::GetAsInt64(OutParam<Int64> val)
 	return false;
 }
 
-Double Text::JSONBase::GetAsDouble()
+Double Text::JSONBase::GetAsDoubleOrNAN()
 {
 	switch (this->GetType())
 	{
@@ -381,13 +371,18 @@ Double Text::JSONBase::GetAsDouble()
 	case Text::JSONType::Number:
 		return ((Text::JSONNumber*)this)->GetValue();
 	case Text::JSONType::String:
-		return ((Text::JSONString*)this)->GetValue()->ToDouble();
+		return ((Text::JSONString*)this)->GetValue()->ToDoubleOrNAN();
 	case Text::JSONType::Array:
 	case Text::JSONType::Object:
 	case Text::JSONType::Null:
-		return 0;
+		return NAN;
 	}
-	return 0;
+	return NAN;
+}
+
+Double Text::JSONBase::GetAsDoubleOr(Double v)
+{
+	return Math::NANTo(this->GetAsDoubleOrNAN(), v);
 }
 
 Bool Text::JSONBase::GetAsDouble(OutParam<Double> val)
@@ -755,7 +750,7 @@ UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const U
 		else
 		{
 			*dptr = 0;
-			val.Set(Text::StrToDouble(sbuff));
+			val.Set(Text::StrToDoubleOrNAN(sbuff));
 			return jsonStr;
 		}
 		jsonStr++;
@@ -1492,14 +1487,24 @@ Optional<Text::String> Text::JSONObject::GetObjectNewString(Text::CStringNN name
 	return NN<Text::JSONString>::ConvertFrom(baseObj)->GetValue()->Clone();
 }
 
-Double Text::JSONObject::GetObjectDouble(Text::CStringNN name)
+Double Text::JSONObject::GetObjectDoubleOrNAN(Text::CStringNN name)
 {
 	NN<Text::JSONBase> baseObj;
 	if (!this->objVals.GetC(name).SetTo(baseObj))
 	{
 		return NAN;
 	}
-	return baseObj->GetAsDouble();
+	return baseObj->GetAsDoubleOrNAN();
+}
+
+Double Text::JSONObject::GetObjectDoubleOr(Text::CStringNN name, Double v)
+{
+	NN<Text::JSONBase> baseObj;
+	if (!this->objVals.GetC(name).SetTo(baseObj))
+	{
+		return v;
+	}
+	return baseObj->GetAsDoubleOr(v);
 }
 
 Int32 Text::JSONObject::GetObjectInt32(Text::CStringNN name)
@@ -1648,14 +1653,24 @@ Optional<Text::JSONObject> Text::JSONArray::GetArrayObject(UOSInt index)
 	return 0;
 }
 
-Double Text::JSONArray::GetArrayDouble(UOSInt index)
+Double Text::JSONArray::GetArrayDoubleOrNAN(UOSInt index)
 {
 	NN<Text::JSONBase> baseObj;
 	if (!this->arrVals.GetItem(index).SetTo(baseObj))
 	{
 		return NAN;
 	}
-	return baseObj->GetAsDouble();
+	return baseObj->GetAsDoubleOrNAN();
+}
+
+Double Text::JSONArray::GetArrayDoubleOr(UOSInt index, Double v)
+{
+	NN<Text::JSONBase> baseObj;
+	if (!this->arrVals.GetItem(index).SetTo(baseObj))
+	{
+		return v;
+	}
+	return baseObj->GetAsDoubleOr(v);
 }
 
 Optional<Text::String> Text::JSONArray::GetArrayString(UOSInt index)

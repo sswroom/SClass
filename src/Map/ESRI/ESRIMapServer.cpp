@@ -96,19 +96,19 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 					if (jobj->GetObjectValue(CSTR("initialExtent")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
 						NN<Text::JSONObject> ext = NN<Text::JSONObject>::ConvertFrom(o);
-						this->initBounds.min.x = ext->GetObjectDouble(CSTR("xmin"));
-						this->initBounds.min.y = ext->GetObjectDouble(CSTR("ymin"));
-						this->initBounds.max.x = ext->GetObjectDouble(CSTR("xmax"));
-						this->initBounds.max.y = ext->GetObjectDouble(CSTR("ymax"));
+						this->initBounds.min.x = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("xmin")), 0);
+						this->initBounds.min.y = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("ymin")), 0);
+						this->initBounds.max.x = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("xmax")), 0);
+						this->initBounds.max.y = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("ymax")), 0);
 						hasInit = true;
 					}
 					if (jobj->GetObjectValue(CSTR("fullExtent")).SetTo(o) && o->GetType() == Text::JSONType::Object)
 					{
 						NN<Text::JSONObject> ext = NN<Text::JSONObject>::ConvertFrom(o);
-						this->bounds.min.x = ext->GetObjectDouble(CSTR("xmin"));
-						this->bounds.min.y = ext->GetObjectDouble(CSTR("ymin"));
-						this->bounds.max.x = ext->GetObjectDouble(CSTR("xmax"));
-						this->bounds.max.y = ext->GetObjectDouble(CSTR("ymax"));
+						this->bounds.min.x = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("xmin")), 0);
+						this->bounds.min.y = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("ymin")), 0);
+						this->bounds.max.x = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("xmax")), 0);
+						this->bounds.max.y = Math::NANTo(ext->GetObjectDoubleOrNAN(CSTR("ymax")), 0);
 						if (!hasInit)
 						{
 							this->initBounds = this->bounds;
@@ -170,8 +170,8 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 						if (tinfo->GetObjectValue(CSTR("origin")).SetTo(v) && v->GetType() == Text::JSONType::Object)
 						{
 							NN<Text::JSONObject> origin = NN<Text::JSONObject>::ConvertFrom(v);
-							this->tileOrigin.x = origin->GetObjectDouble(CSTR("x"));
-							this->tileOrigin.y = origin->GetObjectDouble(CSTR("y"));
+							this->tileOrigin.x = Math::NANTo(origin->GetObjectDoubleOrNAN(CSTR("x")), 0);
+							this->tileOrigin.y = Math::NANTo(origin->GetObjectDoubleOrNAN(CSTR("y")), 0);
 						}
 						if (tinfo->GetObjectValue(CSTR("lods")).SetTo(v) && v->GetType() == Text::JSONType::Array)
 						{
@@ -183,8 +183,8 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::TCPClientFa
 								if (levs->GetArrayValue(i).SetTo(v) && v->GetType() == Text::JSONType::Object)
 								{
 									vobj = NN<Text::JSONObject>::ConvertFrom(v);
-									Double lev = vobj->GetObjectDouble(CSTR("resolution"));
-									if (lev != 0)
+									Double lev = vobj->GetObjectDoubleOrNAN(CSTR("resolution"));
+									if (!Math::IsNAN(lev))
 										this->tileLevels.Add(lev);
 								}
 								i++;
@@ -567,7 +567,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 						if (ring->GetArrayValue(k).SetTo(o) && o->GetType() == Text::JSONType::Array)
 						{
 							NN<Text::JSONArray> pt = NN<Text::JSONArray>::ConvertFrom(o);
-							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDouble(0), pt->GetArrayDouble(1)));
+							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDoubleOrNAN(0), pt->GetArrayDoubleOrNAN(1)));
 						}
 						k++;
 					}
@@ -608,7 +608,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 						if (path->GetArrayValue(k).SetTo(o) && o->GetType() == Text::JSONType::Array)
 						{
 							NN<Text::JSONArray> pt = NN<Text::JSONArray>::ConvertFrom(o);
-							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDouble(0), pt->GetArrayDouble(1)));
+							ptArr.Add(Math::Coord2DDbl(pt->GetArrayDoubleOrNAN(0), pt->GetArrayDoubleOrNAN(1)));
 						}
 						k++;
 					}
@@ -635,11 +635,11 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			Math::Geometry::Point *pt;
 			if (geometry->GetValue(CSTR("z")).SetTo(z) && z->GetType() == Text::JSONType::Number)
 			{
-				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x->GetAsDouble(), y->GetAsDouble(), z->GetAsDouble()));
+				NEW_CLASS(pt, Math::Geometry::PointZ(srid, x->GetAsDoubleOrNAN(), y->GetAsDoubleOrNAN(), z->GetAsDoubleOrNAN()));
 			}
 			else
 			{
-				NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(x->GetAsDouble(), y->GetAsDouble())));
+				NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(x->GetAsDoubleOrNAN(), y->GetAsDoubleOrNAN())));
 			}
 			return pt;
 		}

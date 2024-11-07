@@ -143,7 +143,7 @@ Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UOSInt
 				site->name = siteObj->GetObjectNewString(CSTR("name"));
 				site->accountId = siteObj->GetObjectInt32(CSTR("accountId"));
 				site->status = siteObj->GetObjectNewString(CSTR("status"));
-				site->peakPower_kWp = siteObj->GetObjectDouble(CSTR("peakPower"));
+				site->peakPower_kWp = siteObj->GetValueAsDoubleOrNAN(CSTR("peakPower"));
 				if (!siteObj->GetObjectString(CSTR("lastUpdateTime")).SetTo(s))
 					site->lastUpdateTime = 0;
 				else
@@ -224,12 +224,12 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 		overview->lastUpdateTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	else
 		overview->lastUpdateTime = 0;
-	overview->lifeTimeEnergy_Wh = json->GetValueAsDouble(CSTR("overview.lifeTimeData.energy"));
-	overview->lifeTimeRevenue = json->GetValueAsDouble(CSTR("overview.lifeTimeData.revenue"));
-	overview->yearlyEnergy_Wh = json->GetValueAsDouble(CSTR("overview.lastYearData.energy"));
-	overview->monthlyEnergy_Wh = json->GetValueAsDouble(CSTR("overview.lastMonthData.energy"));
-	overview->dailyEnergy_Wh = json->GetValueAsDouble(CSTR("overview.lastDayData.energy"));
-	overview->currentPower_W = json->GetValueAsDouble(CSTR("overview.currentPower.power"));
+	overview->lifeTimeEnergy_Wh = json->GetValueAsDoubleOrNAN(CSTR("overview.lifeTimeData.energy"));
+	overview->lifeTimeRevenue = json->GetValueAsDoubleOrNAN(CSTR("overview.lifeTimeData.revenue"));
+	overview->yearlyEnergy_Wh = json->GetValueAsDoubleOrNAN(CSTR("overview.lastYearData.energy"));
+	overview->monthlyEnergy_Wh = json->GetValueAsDoubleOrNAN(CSTR("overview.lastMonthData.energy"));
+	overview->dailyEnergy_Wh = json->GetValueAsDoubleOrNAN(CSTR("overview.lastDayData.energy"));
+	overview->currentPower_W = json->GetValueAsDoubleOrNAN(CSTR("overview.currentPower.power"));
 	json->EndUse();
 	return true;
 }
@@ -270,7 +270,7 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 					valueObj->GetValue(CSTR("value")).SetTo(valObj) &&
 					valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
 				{
-					values->Add(TimedValue(Data::Timestamp::FromStr(NN<Text::JSONString>::ConvertFrom(dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+					values->Add(TimedValue(Data::Timestamp::FromStr(NN<Text::JSONString>::ConvertFrom(dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDoubleOrNAN()));
 				}
 			}
 			i++;
@@ -315,7 +315,7 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 					valueObj->GetValue(CSTR("value")).SetTo(valObj) &&
 					valObj->GetType() != Text::JSONType::Null && dateObj->GetType() == Text::JSONType::String)
 				{
-					values->Add(TimedValue(Data::Timestamp::FromStr(NN<Text::JSONString>::ConvertFrom(dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDouble()));
+					values->Add(TimedValue(Data::Timestamp::FromStr(NN<Text::JSONString>::ConvertFrom(dateObj)->GetValue()->ToCString(), Data::DateTimeUtil::GetLocalTzQhr()), valObj->GetAsDoubleOrNAN()));
 				}
 			}
 			i++;

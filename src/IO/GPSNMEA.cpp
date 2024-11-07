@@ -49,7 +49,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 			record->nSateUsed = (UInt8)Text::StrToUInt32(sarr[7]);
 			if (record->valid)
 			{
-				record->altitude = Text::StrToDouble(sarr[9]);
+				record->altitude = Text::StrToDoubleOr(sarr[9], 0);
 			}
 		}
 		return ParseStatus::Handled;
@@ -190,11 +190,11 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 			Int32 t3;
 			Int32 deg;
 			Double ddeg;
-			record->speed = Text::StrToDouble(sarr[7]);
-			record->heading = Text::StrToDouble(sarr[8]);
+			record->speed = Text::StrToDoubleOr(sarr[7], 0);
+			record->heading = Text::StrToDoubleOr(sarr[8], 0);
 			record->valid = (sarr[2][0] == 'A');
 			d = Text::StrToInt32(sarr[9]);
-			t = Text::StrToDouble(sarr[1]);
+			t = Text::StrToDoubleOr(sarr[1], 0);
 			it = (Int32)t;
 			d2 = d / 100;
 			d3 = d2 / 100;
@@ -222,7 +222,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 
 			if ((sarr[4][0] == 'N' || sarr[4][0] == 'S') && (sarr[6][0] == 'E' || sarr[6][0] == 'W'))
 			{
-				ddeg = Text::StrToDouble(sarr[3]);
+				ddeg = Text::StrToDoubleOrNAN(sarr[3]);
 				deg = (Int32)(ddeg / 100);
 				ddeg = deg + (ddeg - deg * 100) / 60;
 				if (sarr[4][0] == 'S')
@@ -231,7 +231,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, 
 				}
 				record->pos.SetLat(ddeg);
 
-				ddeg = Text::StrToDouble(sarr[5]);
+				ddeg = Text::StrToDoubleOrNAN(sarr[5]);
 				deg = (Int32)(ddeg / 100);
 				ddeg = deg + (ddeg - deg * 100) / 60;
 				if (sarr[6][0] == 'W')

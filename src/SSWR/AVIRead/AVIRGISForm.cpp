@@ -1186,7 +1186,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						Text::StringBuilderUTF8 sb;
 						if (dlg.GetInputString(sb))
 						{
-							Double v = sb.ToDouble();
+							Double v = sb.ToDoubleOr(0);
 							if (v > 0)
 							{
 								((Map::GeoPackageLayer*)lyr.Ptr())->MultiplyCoordinates(v);

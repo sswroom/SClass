@@ -81,8 +81,8 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 				Math::Coord2DDbl maxCoord;
 				Math::Coord2DDbl minCoord;
 				Math::Coord2DDbl coord;
-				coord = Math::Coord2DDbl(bounds->GetArrayDouble(0), bounds->GetArrayDouble(1));
-				maxCoord = Math::Coord2DDbl(bounds->GetArrayDouble(2), bounds->GetArrayDouble(3));
+				coord = Math::Coord2DDbl(bounds->GetArrayDoubleOrNAN(0), bounds->GetArrayDoubleOrNAN(1));
+				maxCoord = Math::Coord2DDbl(bounds->GetArrayDoubleOrNAN(2), bounds->GetArrayDoubleOrNAN(3));
 				minCoord = coord.Min(maxCoord);
 				maxCoord = coord.Max(maxCoord);
 				NN<Map::OSM::OSMLocalTileMap> tileMap;

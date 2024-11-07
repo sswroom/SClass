@@ -342,7 +342,7 @@ void __stdcall UtilUI::ColorDialog::OnRedTChange(AnyType userObj)
 		me->radR->Select();
 	}
 	me->txtR->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -364,7 +364,7 @@ void __stdcall UtilUI::ColorDialog::OnGreenTChange(AnyType userObj)
 		me->radG->Select();
 	}
 	me->txtG->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -386,7 +386,7 @@ void __stdcall UtilUI::ColorDialog::OnBlueTChange(AnyType userObj)
 		me->radB->Select();
 	}
 	me->txtB->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -408,7 +408,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQYTChange(AnyType userObj)
 		me->radYIQY->Select();
 	}
 	me->txtYIQY->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -430,7 +430,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQITChange(AnyType userObj)
 		me->radYIQI->Select();
 	}
 	me->txtYIQI->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -452,7 +452,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQQTChange(AnyType userObj)
 		me->radYIQQ->Select();
 	}
 	me->txtYIQQ->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -474,7 +474,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVHTChange(AnyType userObj)
 		me->radHSVH->Select();
 	}
 	me->txtHSVH->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -496,7 +496,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVSTChange(AnyType userObj)
 		me->radHSVS->Select();
 	}
 	me->txtHSVS->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -518,7 +518,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVVTChange(AnyType userObj)
 		me->radHSVV->Select();
 	}
 	me->txtHSVV->GetText(sbuff);
-	me->mainZ = Text::StrToDouble(sbuff) / 255.0;
+	me->mainZ = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 	if (me->mainZ < 0)
 		me->mainZ = 0;
 	else if (me->mainZ > 1)
@@ -533,7 +533,7 @@ void __stdcall UtilUI::ColorDialog::OnAlphaChange(AnyType userObj)
 	UTF8Char sbuff[16];
 	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->txtAlpha->GetText(sbuff);
-	me->aVal = Text::StrToDouble(sbuff) / 255.0;
+	me->aVal = Text::StrToDoubleOr(sbuff, 0) / 255.0;
 }
 
 UInt32 __stdcall UtilUI::ColorDialog::GenThread(AnyType userObj)

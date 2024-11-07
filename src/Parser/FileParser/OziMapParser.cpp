@@ -124,8 +124,8 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					currPt = Text::StrToUInt32(tmpArr[1]) - 1;
 					if ((Int32)currPt >= 0 && currPt < nPts)
 					{
-						ptXY[(currPt << 2)] = Text::StrToDouble(tmpArr[2]);
-						ptXY[(currPt << 2) + 1] = Text::StrToDouble(tmpArr[3]);
+						ptXY[(currPt << 2)] = Text::StrToDoubleOrNAN(tmpArr[2]);
+						ptXY[(currPt << 2) + 1] = Text::StrToDoubleOrNAN(tmpArr[3]);
 						ptStatus[currPt] |= 1;
 					}
 				}
@@ -137,8 +137,8 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					currPt = Text::StrToUInt32(tmpArr[1]) - 1;
 					if ((Int32)currPt >= 0 && currPt <nPts)
 					{
-						ptXY[(currPt << 2) + 2] = Text::StrToDouble(tmpArr[2]);
-						ptXY[(currPt << 2) + 3] = Text::StrToDouble(tmpArr[3]);
+						ptXY[(currPt << 2) + 2] = Text::StrToDoubleOrNAN(tmpArr[2]);
+						ptXY[(currPt << 2) + 3] = Text::StrToDoubleOrNAN(tmpArr[3]);
 						ptStatus[currPt] |= 2;
 					}
 				}
@@ -147,8 +147,8 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 			{
 				if (Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
-					imgW = Text::StrToDouble(tmpArr[2]);
-					imgH = Text::StrToDouble(tmpArr[3]);
+					imgW = Text::StrToDoubleOrNAN(tmpArr[2]);
+					imgH = Text::StrToDoubleOrNAN(tmpArr[3]);
 				}
 			}
 		}

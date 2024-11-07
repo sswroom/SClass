@@ -197,7 +197,7 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 						log->macInt = iMAC;
 						log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
 						log->phyType = Text::StrToInt32(sarr[2].v);
-						log->freq = Text::StrToDouble(sarr[3].v);
+						log->freq = Text::StrToDoubleOrNAN(sarr[3].v);
 						if (i >= 7)
 						{
 							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();

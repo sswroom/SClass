@@ -172,6 +172,11 @@ namespace Math
 		return *(Double*)&v;
 	}
 
+	FORCEINLINE Double NANTo(Double srcV, Double toV)
+	{
+		return IsNAN(srcV)?toV:srcV;
+	}
+	
 	FORCEINLINE Bool NearlyEquals(Double val1, Double val2, Double diffRatio)
 	{
 		if (IsInfinity(val1))

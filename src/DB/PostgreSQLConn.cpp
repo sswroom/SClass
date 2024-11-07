@@ -180,7 +180,7 @@ public:
 		return item.GetAsDate();
 	}
 
-	virtual Double GetDbl(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UOSInt colIndex)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -340,11 +340,11 @@ public:
 			item->SetU8((UInt8)(PQgetvalue(this->res, this->currrow, (int)colIndex)[0]));
 			return true;
 		case 700: //float4
-			item->SetF32((Single)Text::StrToDoubleCh(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetF32((Single)Text::StrToDoubleOrNANCh(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 701: //float8
 		case 1700: //numeric
-			item->SetF64(Text::StrToDoubleCh(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetF64(Text::StrToDoubleOrNANCh(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 1082: //date
 			item->SetDate(Data::Date(Text::CStringNN::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex))));
@@ -526,7 +526,7 @@ public:
 				return false;
 			}
 			NN<Math::Geometry::Point> pt;
-			NEW_CLASSNN(pt, Math::Geometry::Point(0, sarr[0].ToDouble(), sarr[1].ToDouble()));
+			NEW_CLASSNN(pt, Math::Geometry::Point(0, sarr[0].ToDoubleOrNAN(), sarr[1].ToDoubleOrNAN()));
 			item->SetVectorDirect(pt);
 			return true;
 		}

@@ -186,7 +186,7 @@ void DB::DBFFixWriter::AddRecord(const UTF8Char **rowValues)
 	rowCnt++;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::DateTime *val)
+Bool DB::DBFFixWriter::SetColumnDT(UOSInt index, NN<Data::DateTime> val)
 {
 	UTF8Char sbuff[10];
 	UInt8 outBuff[10];
@@ -200,7 +200,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Data::DateTime *val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, const Data::Timestamp &val)
+Bool DB::DBFFixWriter::SetColumnTS(UOSInt index, const Data::Timestamp &val)
 {
 	UTF8Char sbuff[10];
 	UInt8 outBuff[10];
@@ -214,7 +214,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, const Data::Timestamp &val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Double val)
+Bool DB::DBFFixWriter::SetColumnF64(UOSInt index, Double val)
 {
 	if (index >= this->colCnt)
 		return false;
@@ -253,7 +253,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Double val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
+Bool DB::DBFFixWriter::SetColumnI16(UOSInt index, Int16 val)
 {
 	UTF8Char sbuff[12];
 	UnsafeArray<UTF8Char> sptr;
@@ -281,7 +281,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int16 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
+Bool DB::DBFFixWriter::SetColumnI32(UOSInt index, Int32 val)
 {
 	UTF8Char sbuff[12];
 	UnsafeArray<UTF8Char> sptr;
@@ -309,7 +309,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int32 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
+Bool DB::DBFFixWriter::SetColumnI64(UOSInt index, Int64 val)
 {
 	UTF8Char sbuff[24];
 	UnsafeArray<UTF8Char> sptr;
@@ -337,7 +337,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Int64 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, UInt32 val)
+Bool DB::DBFFixWriter::SetColumnU32(UOSInt index, UInt32 val)
 {
 	UTF8Char sbuff[24];
 	UnsafeArray<UTF8Char> sptr;
@@ -365,7 +365,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, UInt32 val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, Bool val)
+Bool DB::DBFFixWriter::SetColumnBool(UOSInt index, Bool val)
 {
 	if (index >= this->colCnt)
 		return false;
@@ -382,7 +382,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Bool val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, const UTF8Char *val)
+Bool DB::DBFFixWriter::SetColumnStr(UOSInt index, UnsafeArray<const UTF8Char> val)
 {
 	UInt8 buff[512];
 	if (index >= this->colCnt)

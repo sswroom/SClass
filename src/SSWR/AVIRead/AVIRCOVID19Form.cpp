@@ -196,7 +196,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 				sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff)).Or(sbuff);
 				country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				r->GetStr(colPopulation, sbuff, sizeof(sbuff));
-				country->population = Text::StrToDouble(sbuff);
+				country->population = Text::StrToDoubleOrNAN(sbuff);
 				this->countries.PutNN(country->isoCode, country);
 			}
 			t = r->GetTimestamp(colDate).ToTicks();

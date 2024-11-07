@@ -94,7 +94,7 @@ namespace Text
 		}
 	}
 
-	UnsafeArray<UTF8Char> StrConcat(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin);
+	FORCEINLINE UnsafeArray<UTF8Char> StrConcat(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin) { while ((*oriStr++ = *strToJoin++) != 0); return oriStr - 1; }
 	UnsafeArray<UTF8Char> StrConcatS(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize);
 	UnsafeArray<UTF8Char> StrConcatASCII(UnsafeArray<UTF8Char> oriStr, UnsafeArray<const Char> strToJoin);
 

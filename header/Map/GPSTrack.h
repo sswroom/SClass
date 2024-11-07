@@ -33,6 +33,12 @@ namespace Map
 			UInt8 nSateViewBD; //BeiDou
 		};
 
+		ASTRUCT GPSRecordFull : public GPSRecord3
+		{
+			UnsafeArrayOpt<const UInt8> extraData;
+			UOSInt extraDataSize;
+		};
+
 		typedef struct
 		{
 			Double maxLat;
@@ -41,9 +47,7 @@ namespace Map
 			Double minLon;
 			Optional<Text::String> name;
 			UOSInt nRecords;
-			UnsafeArray<GPSRecord3> records;
-			const UInt8 **extraData;
-			UOSInt *extraDataSize;
+			UnsafeArray<GPSRecordFull> records;
 			Bool trackUnsorted;
 		} TrackRecord;
 
@@ -52,9 +56,9 @@ namespace Map
 		public:
 			virtual ~GPSExtraParser() {};
 			
-			virtual UOSInt GetExtraCount(const UInt8 *buff, UOSInt buffSize) = 0;
-			virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual UOSInt GetExtraCount(UnsafeArray<const UInt8> buff, UOSInt buffSize) = 0;
+			virtual Bool GetExtraName(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool GetExtraValueStr(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb) = 0;
 		};
 	private:
 		UInt32 codePage;
@@ -70,19 +74,17 @@ namespace Map
 		Optional<Text::String> currTrackName;
 		Sync::Mutex recMut;
 		Data::ArrayListInt64 currTimes;
-		Data::ArrayListNN<GPSRecord3> currRecs;
-		Data::ArrayList<const UInt8 *> currExtraData;
-		Data::ArrayList<UOSInt> currExtraSize;
-		Data::ArrayList<TrackRecord*> currTracks;
+		Data::ArrayListNN<GPSRecordFull> currRecs;
+		Data::ArrayListNN<TrackRecord> currTracks;
 		Bool currUnsorted;
-		Map::GPSTrack::GPSRecord3 *tmpRecord;
-		GPSExtraParser *extraParser;
+		UnsafeArrayOpt<Map::GPSTrack::GPSRecordFull> tmpRecord;
+		Optional<GPSExtraParser> extraParser;
 
 		Sync::Mutex updMut;
 		Data::ArrayList<Data::CallbackStorage<Map::MapDrawLayer::UpdatedHandler>> updHdlrs;
 
 	public:
-		GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName);
+		GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Optional<Text::String> layerName);
 		GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName);
 		virtual ~GPSTrack();
 
@@ -124,17 +126,18 @@ namespace Map
 		Data::Timestamp GetTrackEndTime(UOSInt index);
 
 		UOSInt GetTrackCnt();
-		UnsafeArrayOpt<GPSRecord3> GetTrack(UOSInt index, OutParam<UOSInt> recordCnt);
+		UnsafeArrayOpt<GPSRecordFull> GetTrack(UOSInt index, OutParam<UOSInt> recordCnt);
 		Math::Coord2DDbl GetPosByTime(const Data::Timestamp &ts);
 		Math::Coord2DDbl GetPosByTime(NN<Data::DateTime> dt);
 		Math::Coord2DDbl GetPosByTicks(Int64 tiemTicks);
 
-		void SetExtraParser(GPSExtraParser *parser);
-		void SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize);
-		const UInt8 *GetExtraData(UOSInt trackIndex, UOSInt recIndex, OutParam<UOSInt> dataSize);
+		void SetExtraParser(Optional<GPSExtraParser> parser);
+		void SetExtraDataIndex(UOSInt recIndex, UnsafeArray<const UInt8> data, UOSInt dataSize);
+		UnsafeArrayOpt<const UInt8> GetExtraData(UOSInt trackIndex, UOSInt recIndex, OutParam<UOSInt> dataSize);
 		UOSInt GetExtraCount(UOSInt trackIndex, UOSInt recIndex);
 		Bool GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb);
 		Bool GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb);
+		void SortRecords();
 	};
 
 	class GPSTrackReader : public Map::MapLayerReader
@@ -151,7 +154,7 @@ namespace Map
 	private:
 		NN<Map::GPSTrack> gps;
 		OSInt currRow;
-		GPSTrack::GPSRecord3 *currRec;
+		GPSTrack::GPSRecordFull *currRec;
 	public:
 		GPSDataReader(NN<Map::GPSTrack> gps);
 		virtual ~GPSDataReader();
@@ -167,7 +170,7 @@ namespace Map
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
-		virtual Double GetDbl(UOSInt colIndex);
+		virtual Double GetDblOrNAN(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff);

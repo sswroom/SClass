@@ -623,19 +623,19 @@ Data::Timestamp DB::MySQLReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double DB::MySQLReader::GetDbl(UOSInt colIndex)
+Double DB::MySQLReader::GetDblOrNAN(UOSInt colIndex)
 {
 	if (this->row == 0)
-		return 0;
+		return NAN;
 	if (colIndex >= this->colCount)
-		return 0;
+		return NAN;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrToDoubleCh(((MYSQL_ROW)this->row)[colIndex]);
+		return Text::StrToDoubleOrNANCh(((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
-		return 0;
+		return NAN;
 	}
 }
 

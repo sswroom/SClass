@@ -189,25 +189,25 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(sb);
-										north = sb.ToDouble();
+										north = sb.ToDoubleOr(0);
 									}
 									else if (nodeName->Equals(UTF8STRC("south")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(sb);
-										south = sb.ToDouble();
+										south = sb.ToDoubleOr(0);
 									}
 									else if (nodeName->Equals(UTF8STRC("east")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(sb);
-										east = sb.ToDouble();
+										east = sb.ToDoubleOr(0);
 									}
 									else if (nodeName->Equals(UTF8STRC("west")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(sb);
-										west = sb.ToDouble();
+										west = sb.ToDoubleOr(0);
 									}
 									else
 									{
@@ -588,11 +588,11 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							{
 								if (nns->EqualsICase(UTF8STRC("X")))
 								{
-									minX = Text::String::OrEmpty(attr->value)->ToDouble();
+									minX = Text::String::OrEmpty(attr->value)->ToDoubleOr(0);
 								}
 								else if (nns->EqualsICase(UTF8STRC("Y")))
 								{
-									minY = Text::String::OrEmpty(attr->value)->ToDouble();
+									minY = Text::String::OrEmpty(attr->value)->ToDoubleOr(0);
 								}
 							}
 						}
@@ -608,11 +608,11 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							{
 								if (nns->EqualsICase(UTF8STRC("X")))
 								{
-									oX = Text::String::OrEmpty(attr->value)->ToDouble();
+									oX = Text::String::OrEmpty(attr->value)->ToDoubleOr(0);
 								}
 								else if (nns->EqualsICase(UTF8STRC("Y")))
 								{
-									oY = Text::String::OrEmpty(attr->value)->ToDouble();
+									oY = Text::String::OrEmpty(attr->value)->ToDoubleOr(0);
 								}
 							}
 						}
@@ -628,11 +628,11 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							{
 								if (nns->EqualsICase(UTF8STRC("X")))
 								{
-									sizeX = Text::String::OrEmpty(attr->value)->ToDouble();
+									sizeX = Text::String::OrEmpty(attr->value)->ToDoubleOr(0);
 								}
 								else if (nns->EqualsICase(UTF8STRC("Y")))
 								{
-									sizeY = Text::String::OrEmpty(attr->value)->ToDouble();
+									sizeY = Text::String::OrEmpty(attr->value)->ToDoubleOr(0);
 								}
 							}
 						}
@@ -642,8 +642,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 					{
 						sb.ClearStr();
 						reader->ReadNodeText(sb);
+						altitude = sb.ToDoubleOrNAN();
 						hasAltitude = true;
-						altitude = Text::StrToDouble(sb.ToString());
 					}
 					else
 					{
@@ -753,25 +753,25 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
-								maxY = Text::StrToDouble(sb.ToString());
+								maxY = sb.ToDoubleOr(0);
 							}
 							else if (nodeName->EqualsICase(UTF8STRC("SOUTH")))
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
-								minY = Text::StrToDouble(sb.ToString());
+								minY = sb.ToDoubleOr(0);
 							}
 							else if (nodeName->EqualsICase(UTF8STRC("EAST")))
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
-								maxX = Text::StrToDouble(sb.ToString());
+								maxX = sb.ToDoubleOr(0);
 							}
 							else if (nodeName->EqualsICase(UTF8STRC("WEST")))
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
-								minX = Text::StrToDouble(sb.ToString());
+								minX = sb.ToDoubleOr(0);
 							}
 							else
 							{
@@ -794,7 +794,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 						sb.ClearStr();
 						reader->ReadNodeText(sb);
 						hasAltitude = true;
-						altitude = Text::StrToDouble(sb.ToString());
+						altitude = sb.ToDoubleOrNAN();
 					}
 					else
 					{
@@ -947,8 +947,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 										s->ConcatTo(sbuff);
 										if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 										{
-											rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
-											rec.altitude = Text::StrToDouble(strs[2]);
+											rec.pos = Math::Coord2DDbl(Text::StrToDoubleOrNAN(strs[1]), Text::StrToDoubleOrNAN(strs[0]));
+											rec.altitude = Text::StrToDoubleOrNAN(strs[2]);
 											lyr->AddRecord(rec);
 										}
 									}
@@ -975,7 +975,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 								coordList.Clear();
 							}
 							UOSInt recCnt;
-							UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+							UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 							if (lyr->GetTrack(0, recCnt).SetTo(recs))
 							{
 								while (reader->NextElementName().SetTo(nodeName))
@@ -1009,7 +1009,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 																	reader->ReadNodeText(sb);
 																	if (j < recCnt)
 																	{
-																		recs[j].speed = Text::StrToDouble(sb.ToString());
+																		recs[j].speed = sb.ToDoubleOr(0);
 																	}
 																	j++;
 																}
@@ -1030,7 +1030,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 																	reader->ReadNodeText(sb);
 																	if (j < recCnt)
 																	{
-																		recs[j].heading = Text::StrToDouble(sb.ToString());
+																		recs[j].heading = sb.ToDoubleOr(0);
 																	}
 																	j++;
 																}
@@ -1051,7 +1051,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 																	reader->ReadNodeText(sb);
 																	if (j < recCnt)
 																	{
-																		recs[j].nSateUsed = (UInt8)Double2Int32(Text::StrToDouble(sb.ToString()));
+																		recs[j].nSateUsed = (UInt8)Double2Int32(sb.ToDoubleOr(0));
 																		recs[j].nSateUsedGPS = recs[j].nSateUsed;
 																	}
 																	j++;
@@ -1130,8 +1130,8 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 								s->ConcatTo(sbuff);
 								if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 								{
-									rec.pos = Math::Coord2DDbl(Text::StrToDouble(strs[1]), Text::StrToDouble(strs[0]));
-									rec.altitude = Text::StrToDouble(strs[2]);
+									rec.pos = Math::Coord2DDbl(Text::StrToDoubleOrNAN(strs[1]), Text::StrToDoubleOrNAN(strs[0]));
+									rec.altitude = Text::StrToDoubleOrNAN(strs[2]);
 									lyr->AddRecord(rec);
 								}
 							}
@@ -1227,9 +1227,9 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 						s->ConcatTo(sbuff);
 						if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 						{
-							rec.pos.x = Text::StrToDouble(strs[0]);
-							rec.pos.y = Text::StrToDouble(strs[1]);
-							rec.altitude = Text::StrToDouble(strs[2]);
+							rec.pos.x = Text::StrToDoubleOrNAN(strs[0]);
+							rec.pos.y = Text::StrToDoubleOrNAN(strs[1]);
+							rec.altitude = Text::StrToDoubleOrNAN(strs[2]);
 							lyr->AddRecord(rec);
 						}
 					}
@@ -1525,12 +1525,12 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 					i = Text::StrSplit(sarr, 4, sbuff, ',');
 					if (i == 3)
 					{
-						coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
-						altList.Add(Text::StrToDouble(sarr[2]));
+						coord.Add(Math::Coord2DDbl(Text::StrToDoubleOrNAN(sarr[0]), Text::StrToDoubleOrNAN(sarr[1])));
+						altList.Add(Text::StrToDoubleOrNAN(sarr[2]));
 					}
 					else if (i == 2)
 					{
-						coord.Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
+						coord.Add(Math::Coord2DDbl(Text::StrToDoubleOrNAN(sarr[0]), Text::StrToDoubleOrNAN(sarr[1])));
 					}
 				}
 				if (coord.GetCount() > 0)
@@ -1577,9 +1577,9 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				if (i == 3)
 				{
 					NN<Math::Geometry::PointZ> pt;
-					x = Text::StrToDouble(sarr[0]);
-					y = Text::StrToDouble(sarr[1]);
-					z = Text::StrToDouble(sarr[2]);
+					x = Text::StrToDoubleOrNAN(sarr[0]);
+					y = Text::StrToDoubleOrNAN(sarr[1]);
+					z = Text::StrToDoubleOrNAN(sarr[2]);
 					NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, z));
 					vec.Delete();
 					vec = Optional<Math::Geometry::Vector2D>(pt);
@@ -1587,8 +1587,8 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				else if (i == 2)
 				{
 					NN<Math::Geometry::PointZ> pt;
-					x = Text::StrToDouble(sarr[0]);
-					y = Text::StrToDouble(sarr[1]);
+					x = Text::StrToDoubleOrNAN(sarr[0]);
+					y = Text::StrToDoubleOrNAN(sarr[1]);
 					NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, 0));
 					vec.Delete();
 					vec = Optional<Math::Geometry::Vector2D>(pt);
@@ -1795,12 +1795,12 @@ void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayLis
 				i = Text::StrSplit(sarr, 4, sbuff, ',');
 				if (i == 3)
 				{
-					coordList->Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
-					altList->Add(Text::StrToDouble(sarr[2]));
+					coordList->Add(Math::Coord2DDbl(Text::StrToDoubleOrNAN(sarr[0]), Text::StrToDoubleOrNAN(sarr[1])));
+					altList->Add(Text::StrToDoubleOrNAN(sarr[2]));
 				}
 				else if (i == 2)
 				{
-					coordList->Add(Math::Coord2DDbl(Text::StrToDouble(sarr[0]), Text::StrToDouble(sarr[1])));
+					coordList->Add(Math::Coord2DDbl(Text::StrToDoubleOrNAN(sarr[0]), Text::StrToDoubleOrNAN(sarr[1])));
 				}
 			}
 		}

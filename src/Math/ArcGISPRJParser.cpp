@@ -162,11 +162,11 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 											prjBuff[i] = 0;
 											if (spIndex == 1)
 											{
-												a = Text::StrToDouble(&prjBuff[j]);
+												a = Text::StrToDoubleOr(&prjBuff[j], 0);
 											}
 											else if (spIndex == 2)
 											{
-												f_1 = Text::StrToDouble(&prjBuff[j]);
+												f_1 = Text::StrToDoubleOr(&prjBuff[j], 0);
 											}
 											spIndex++;
 										}
@@ -327,11 +327,11 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 	else if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("PROJCS[")))
 	{
 		Math::CoordinateSystem::CoordinateSystemType cst = Math::CoordinateSystem::CoordinateSystemType::Geographic;
-		Double falseEasting = -1;
-		Double falseNorthing = -1;
-		Double centralMeridian = -1;
-		Double scaleFactor = -1;
-		Double latitudeOfOrigin = -1;
+		Double falseEasting = NAN;
+		Double falseNorthing = NAN;
+		Double centralMeridian = NAN;
+		Double scaleFactor = NAN;
+		Double latitudeOfOrigin = NAN;
 		UOSInt nOfst;
 		UOSInt nLen;
 		UOSInt vOfst;
@@ -434,23 +434,23 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 							i++;
 							if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("False_Easting")))
 							{
-								falseEasting = Text::StrToDouble(&prjBuff[vOfst]);
+								falseEasting = Text::StrToDoubleOrNAN(&prjBuff[vOfst]);
 							}
 							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("False_Northing")))
 							{
-								falseNorthing = Text::StrToDouble(&prjBuff[vOfst]);
+								falseNorthing = Text::StrToDoubleOrNAN(&prjBuff[vOfst]);
 							}
 							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("Central_Meridian")))
 							{
-								centralMeridian = Text::StrToDouble(&prjBuff[vOfst]);
+								centralMeridian = Text::StrToDoubleOrNAN(&prjBuff[vOfst]);
 							}
 							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("Scale_Factor")))
 							{
-								scaleFactor = Text::StrToDouble(&prjBuff[vOfst]);
+								scaleFactor = Text::StrToDoubleOrNAN(&prjBuff[vOfst]);
 							}
 							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("Latitude_Of_Origin")))
 							{
-								latitudeOfOrigin = Text::StrToDouble(&prjBuff[vOfst]);
+								latitudeOfOrigin = Text::StrToDoubleOrNAN(&prjBuff[vOfst]);
 							}
 							else
 							{
@@ -594,7 +594,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			}
 		}
 		NN<Math::GeographicCoordinateSystem> nngcs;
-		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || falseEasting == -1 || falseNorthing == -1 || centralMeridian == -1 || scaleFactor == -1 || latitudeOfOrigin == -1 || !gcs.SetTo(nngcs))
+		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || Math::IsNAN(falseEasting) || Math::IsNAN(falseNorthing) || Math::IsNAN(centralMeridian) || Math::IsNAN(scaleFactor) || Math::IsNAN(latitudeOfOrigin) || !gcs.SetTo(nngcs))
 		{
 #if defined(VERBOSE)
 			printf("ArcGISPRJParser: Parameter missing in PROJCS\r\n");

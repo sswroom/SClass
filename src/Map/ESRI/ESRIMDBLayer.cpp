@@ -496,9 +496,9 @@ Data::Timestamp Map::ESRI::ESRIMDBReader::GetTimestamp(UOSInt colIndex)
 	return this->r->GetTimestamp((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-Double Map::ESRI::ESRIMDBReader::GetDbl(UOSInt colIndex)
+Double Map::ESRI::ESRIMDBReader::GetDblOrNAN(UOSInt colIndex)
 {
-	return this->r->GetDbl((colIndex > 0)?(colIndex + 1):colIndex);
+	return this->r->GetDblOrNAN((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
 Bool Map::ESRI::ESRIMDBReader::GetBool(UOSInt colIndex)

@@ -246,21 +246,21 @@ namespace Net
 			return Data::Timestamp(this->currRow[colIndex]->ToCString(), 0);
 		}
 
-		virtual Double GetDbl(UOSInt colIndex)
+		virtual Double GetDblOrNAN(UOSInt colIndex)
 		{
 			if (this->currRow == 0)
 			{
-				return 0;
+				return NAN;
 			}
 			if (colIndex >= this->colCount)
 			{
-				return 0;
+				return NAN;
 			}
 			if (this->currRow[colIndex] == 0)
 			{
-				return 0;
+				return NAN;
 			}
-			return Text::StrToDouble(this->currRow[colIndex]->v);
+			return Text::StrToDoubleOrNAN(this->currRow[colIndex]->v);
 		}
 
 		virtual Bool GetBool(UOSInt colIndex)
@@ -772,12 +772,12 @@ namespace Net
 			}
 		}
 
-		virtual Double GetDbl(UOSInt colIndex)
+		virtual Double GetDblOrNAN(UOSInt colIndex)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
-				return 0;
+				return NAN;
 			}
 			return item.GetAsF64();
 		}

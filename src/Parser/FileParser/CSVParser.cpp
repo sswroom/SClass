@@ -209,12 +209,12 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 				}
 				else
 				{
-					rec.recTime = startTime.AddSecondDbl(sarr[2].ToDouble()).inst;
+					rec.recTime = startTime.AddSecondDbl(sarr[2].ToDoubleOr(0)).inst;
 				}
-				rec.pos = Math::Coord2DDbl(sarr[4].ToDouble(), sarr[3].ToDouble());
+				rec.pos = Math::Coord2DDbl(sarr[4].ToDoubleOrNAN(), sarr[3].ToDoubleOrNAN());
 				rec.valid = true;
-				rec.altitude = sarr[7].ToDouble();
-				rec.speed = sarr[6].ToDouble();
+				rec.altitude = sarr[7].ToDoubleOr(0);
+				rec.speed = sarr[6].ToDoubleOr(0);
 				rec.heading = 0;
 				rec.nSateUsedGPS = 0;
 				rec.nSateViewGPS = 0;
@@ -266,7 +266,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 					dt.SetValue(CSTRP(sbuff2, sptr2));
 				}
 				rec.recTime = dt.ToInstant();
-				rec.pos = Math::Coord2DDbl(Text::StrToDouble(tmpArr2[lonCol].v), Text::StrToDouble(tmpArr2[latCol].v));
+				rec.pos = Math::Coord2DDbl(Text::StrToDoubleOrNAN(tmpArr2[lonCol].v), Text::StrToDoubleOrNAN(tmpArr2[latCol].v));
 				if (latDirCol != INVALID_INDEX)
 				{
 					if (tmpArr2[latDirCol].v[0] == 'S')
@@ -303,7 +303,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 					{
 						tmpArr2[altCol].TrimToLength(i);
 					}
-					rec.altitude = Text::StrToDouble(tmpArr2[altCol].v);
+					rec.altitude = Text::StrToDoubleOr(tmpArr2[altCol].v, 0);
 				}
 				else
 				{
@@ -316,7 +316,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 					{
 						tmpArr2[speedCol].TrimToLength(i);
 					}
-					rec.speed = Text::StrToDouble(tmpArr2[speedCol].v) / 1.852;
+					rec.speed = Text::StrToDoubleOr(tmpArr2[speedCol].v, 0) / 1.852;
 				}
 				else
 				{
@@ -324,7 +324,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 				}
 				if (headingCol != INVALID_INDEX)
 				{
-					rec.heading = Text::StrToDouble(tmpArr2[headingCol].v);
+					rec.heading = Text::StrToDoubleOr(tmpArr2[headingCol].v, 0);
 				}
 				else
 				{
@@ -391,7 +391,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
-				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
+				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDoubleOrNAN(tmpUArr2[lonCol]), Text::StrToDoubleOrNAN(tmpUArr2[latCol])));
 				lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpUArr2));
 			}
 		}

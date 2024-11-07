@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 			if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Double)
 			{
 				Data::ArrayList<Double> *dblVals = (Data::ArrayList<Double>*)colInfos[i].datas;
-				dblVals->Add(reader->GetDbl(colInfos[i].colIndex));
+				dblVals->Add(reader->GetDblOrNAN(colInfos[i].colIndex));
 			}
 			else if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Int32)
 			{

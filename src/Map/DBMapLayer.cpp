@@ -634,7 +634,7 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 		}
 		else
 		{
-			Math::Coord2DDbl pos = Math::Coord2DDbl(r->GetDbl(xCol), r->GetDbl(yCol));
+			Math::Coord2DDbl pos = Math::Coord2DDbl(r->GetDblOrNAN(xCol), r->GetDblOrNAN(yCol));
 			if (this->vecMap.GetCount() == 0)
 			{
 				this->min = pos;
@@ -651,7 +651,7 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 			}
 			else
 			{
-				NEW_CLASSNN(vec, Math::Geometry::PointZ(layerSrid, pos.x, pos.y, r->GetDbl(zCol)));
+				NEW_CLASSNN(vec, Math::Geometry::PointZ(layerSrid, pos.x, pos.y, r->GetDblOrNAN(zCol)));
 			}
 			if (this->vecMap.Put(id, vec).SetTo(vec))
 			{

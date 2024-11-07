@@ -468,9 +468,9 @@ Data::Timestamp Map::FileGDBLReader::GetTimestamp(UOSInt colIndex)
 	return this->r->GetTimestamp((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-Double Map::FileGDBLReader::GetDbl(UOSInt colIndex)
+Double Map::FileGDBLReader::GetDblOrNAN(UOSInt colIndex)
 {
-	return this->r->GetDbl((colIndex > 0)?(colIndex + 1):colIndex);
+	return this->r->GetDblOrNAN((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
 Bool Map::FileGDBLReader::GetBool(UOSInt colIndex)

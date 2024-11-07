@@ -149,18 +149,21 @@ UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType user
 					}
 					buff[recvSize + 14] = 0;
 					Text::StrTrim((Char*)&buff[recvSize + 7]);
-					Double weight = Text::StrToDouble(&buff[recvSize + 7]);
-					if (isNeg)
+					Double weight = Text::StrToDoubleOrNAN(&buff[recvSize + 7]);
+					if (!Math::IsNAN(weight))
 					{
-						weight = -weight;
-					}
+						if (isNeg)
+						{
+							weight = -weight;
+						}
 
-					me->currWeight = weight;
-					me->currWeightUnit = munit;
-					me->currWeightUpd = true;
-					
-					weight = Math::Unit::Mass::Convert(munit, Math::Unit::Mass::MU_GRAM, weight);
-					me->rlcHistory->AddSample(&weight);
+						me->currWeight = weight;
+						me->currWeightUnit = munit;
+						me->currWeightUpd = true;
+						
+						weight = Math::Unit::Mass::Convert(munit, Math::Unit::Mass::MU_GRAM, weight);
+						me->rlcHistory->AddSample(&weight);
+					}
 
 					recvSize += 18;
 				}

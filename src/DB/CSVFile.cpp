@@ -757,12 +757,13 @@ Data::Timestamp DB::CSVReader::GetTimestamp(UOSInt colIndex)
 	return 0;
 }
 
-Double DB::CSVReader::GetDbl(UOSInt colIndex)
+Double DB::CSVReader::GetDblOrNAN(UOSInt colIndex)
 {
 	UTF8Char buff[60];
+	buff[0] = 0;
 	this->GetStr(colIndex, buff, sizeof(buff));
 	Text::StrTrim(buff);
-	return Text::StrToDouble(buff);
+	return Text::StrToDoubleOrNAN(buff);
 }
 
 Bool DB::CSVReader::GetBool(UOSInt colIndex)

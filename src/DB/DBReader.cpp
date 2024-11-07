@@ -40,10 +40,10 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Decimal:
-		item->SetF64(this->GetDbl(colIndex));
+		item->SetF64(this->GetDblOrNAN(colIndex));
 		return true;
 	case DB::DBUtil::CT_Float:
-		item->SetF32((Single)this->GetDbl(colIndex));
+		item->SetF32((Single)this->GetDblOrNAN(colIndex));
 		return true;
 	case DB::DBUtil::CT_Bool:
 		item->SetBool(this->GetBool(colIndex));
@@ -167,10 +167,10 @@ NN<Data::VariObject> DB::DBReader::CreateVariObject()
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Decimal:
-				obj->SetItemF64(sbuff, this->GetDbl(i));
+				obj->SetItemF64(sbuff, this->GetDblOrNAN(i));
 				break;
 			case DB::DBUtil::CT_Float:
-				obj->SetItemF32(sbuff, (Single)this->GetDbl(i));
+				obj->SetItemF32(sbuff, (Single)this->GetDblOrNAN(i));
 				break;
 			case DB::DBUtil::CT_Bool:
 				obj->SetItemBool(sbuff, this->GetBool(i));

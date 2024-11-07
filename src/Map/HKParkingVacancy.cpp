@@ -130,8 +130,8 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 				parking->parkingStarttime = r->GetNewStr(colInd[10]);
 				parking->parkingEndtime = r->GetNewStr(colInd[11]);
 				parking->parkingContactNo = r->GetNewStr(colInd[12]);
-				parking->parkingLatitude = r->GetDbl(colInd[13]);
-				parking->parkingLongitude = r->GetDbl(colInd[14]);
+				parking->parkingLatitude = r->GetDblOrNAN(colInd[13]);
+				parking->parkingLongitude = r->GetDblOrNAN(colInd[14]);
 				parking->vacancy = -1;
 				parking->lastupdate = 0;
 				Math::Coord2DDbl coord = Math::Coord2DDbl(parking->parkingLongitude, parking->parkingLatitude);

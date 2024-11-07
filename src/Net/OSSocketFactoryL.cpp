@@ -813,7 +813,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 					if (Text::StrSplitWSP(sarr, 4, {linePtr, lineLen}) == 4)
 					{
 						ttl.Set(Text::StrToUInt32(&sarr[1].v[4]));
-						respTime_us.Set((UInt32)Double2Int32(Text::StrToDouble(&sarr[2].v[5]) * 1000.0));
+						respTime_us.Set((UInt32)Double2Int32(Text::StrToDoubleOr(&sarr[2].v[5], 0) * 1000.0));
 						return true;
 					}
 					else

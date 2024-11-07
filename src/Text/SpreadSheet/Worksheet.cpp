@@ -614,8 +614,11 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, Optiona
 		return false;
 	cell->cdt = CellDataType::Number;
 	OPTSTR_DEL(cell->cellValue);
-	sptr = Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::String::NewP(sbuff, sptr);
+	if (!Math::IsNAN(val))
+	{
+		sptr = Text::StrDouble(sbuff, val);
+		cell->cellValue = Text::String::NewP(sbuff, sptr);
+	}
 	if (style.NotNull()) cell->style = style;
 	return true;
 }

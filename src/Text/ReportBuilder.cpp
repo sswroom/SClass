@@ -623,7 +623,7 @@ NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 					{
 						if (this->colTypes[l] == CT_DOUBLE)
 						{
-							ws->SetCellDouble(k, l, cols[l].val->ToDouble());
+							ws->SetCellDouble(k, l, cols[l].val->ToDoubleOrNAN());
 						}
 						else if (this->colTypes[l] == CT_INT32)
 						{

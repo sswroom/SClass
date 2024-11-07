@@ -1341,14 +1341,14 @@ NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf,
 			{
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
-				output.AppendI32(Double2Int32(Text::StrToDouble(sbuff)));
+				output.AppendI32(Double2Int32(Text::StrToDoubleOrNAN(sbuff)));
 				output.Append(dbCols->GetItem(i));
 			}
 			else if (shpType == 3)
 			{
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
-				output.AppendI32(Double2Int32(Text::StrToDouble(sbuff)));
+				output.AppendI32(Double2Int32(Text::StrToDoubleOrNAN(sbuff)));
 				output.Append(dbCols->GetItem(i));
 			}
 			else

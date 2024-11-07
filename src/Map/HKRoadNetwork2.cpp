@@ -116,7 +116,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 			}
 			else
 			{
-				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
+				Double maxWeight = r->GetDblOr((UOSInt)maxWeightCol, 0);
 				if (maxWeight != 0)
 				{
 					Int32 vrId = r->GetInt32((UOSInt)vrIdCol);

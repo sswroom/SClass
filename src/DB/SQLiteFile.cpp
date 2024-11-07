@@ -569,7 +569,7 @@ Data::Date DB::SQLiteReader::GetDate(UOSInt colIndex)
 	return Data::Date(sb.ToCString());
 }
 
-Double DB::SQLiteReader::GetDbl(UOSInt colIndex)
+Double DB::SQLiteReader::GetDblOrNAN(UOSInt colIndex)
 {
 	return sqlite3_column_double((sqlite3_stmt*)this->hStmt, (int)colIndex);
 }

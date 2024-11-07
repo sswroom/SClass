@@ -156,13 +156,13 @@ Net::RSSItem::RSSItem(NN<Text::XMLNode> itemNode)
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
-				this->lat = sb.ToDouble();
+				this->lat = sb.ToDoubleOrNAN();
 			}
 			else if (name->EqualsICase(UTF8STRC("geo:long")))
 			{
 				sb.ClearStr();
 				node->GetInnerText(sb);
-				this->lon = sb.ToDouble();
+				this->lon = sb.ToDoubleOrNAN();
 			}
 			else if (name->EqualsICase(UTF8STRC("content")))
 			{
@@ -354,13 +354,13 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 		{
 			sb.ClearStr();
 			reader->ReadNodeText(sb);
-			this->lat = sb.ToDouble();
+			this->lat = sb.ToDoubleOrNAN();
 		}
 		else if (name->EqualsICase(UTF8STRC("geo:long")))
 		{
 			sb.ClearStr();
 			reader->ReadNodeText(sb);
-			this->lon = sb.ToDouble();
+			this->lon = sb.ToDoubleOrNAN();
 		}
 		else if (name->EqualsICase(UTF8STRC("content")))
 		{

@@ -43,10 +43,7 @@ namespace DB
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb) = 0;
 		Bool GetStrN(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex) = 0;
-		NN<Text::String> GetNewStrNN(UOSInt colIndex)
-		{
-			return Text::String::OrEmpty(GetNewStr(colIndex));
-		}
+		NN<Text::String> GetNewStrNN(UOSInt colIndex) { return Text::String::OrEmpty(GetNewStr(colIndex)); }
 		
 		Optional<Text::String> GetNewStrB(UOSInt colIndex, NN<Text::StringBuilderUTF8> tmpBuff)
 		{
@@ -67,10 +64,7 @@ namespace DB
 		}
 		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize) = 0;
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex) = 0;
-		virtual Data::Date GetDate(UOSInt colIndex)
-		{
-			return GetTimestamp(colIndex).ToDate();
-		}
+		virtual Data::Date GetDate(UOSInt colIndex) { return GetTimestamp(colIndex).ToDate(); }
 
 		DateErrType GetAsDateTime(UOSInt colIndex, NN<Data::DateTime> outVal)
 		{
@@ -82,13 +76,11 @@ namespace DB
 			outVal->SetValue(ts.inst, ts.tzQhr);
 			return DateErrType::Ok;
 		}
+		Int64 GetTicks(UOSInt colIndex) { return GetTimestamp(colIndex).ToTicks(); }
 
-		Int64 GetTicks(UOSInt colIndex)
-		{
-			return GetTimestamp(colIndex).ToTicks();
-		}
+		virtual Double GetDblOrNAN(UOSInt colIndex) = 0;
+		Double GetDblOr(UOSInt colIndex, Double v) { Double ret = this->GetDblOrNAN(colIndex); return Math::IsNAN(ret)?v:ret; }
 
-		virtual Double GetDbl(UOSInt colIndex) = 0;
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff) = 0;

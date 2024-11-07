@@ -50,7 +50,8 @@ namespace Text
 		Bool GetValueAsInt32(Text::CStringNN path, OutParam<Int32> val);
 		Int64 GetValueAsInt64(Text::CStringNN path);
 		Bool GetValueAsInt64(Text::CStringNN path, OutParam<Int64> val);
-		Double GetValueAsDouble(Text::CStringNN path);
+		Double GetValueAsDoubleOrNAN(Text::CStringNN path) { NN<Text::JSONBase> json; return this->GetValue(path).SetTo(json)?json->GetAsDoubleOrNAN():NAN; }
+		Double GetValueAsDoubleOr(Text::CStringNN path, Double v) { NN<Text::JSONBase> json; return this->GetValue(path).SetTo(json)?json->GetAsDoubleOrNAN():v; }
 		Bool GetValueAsDouble(Text::CStringNN path, OutParam<Double> val);
 		Bool GetValueAsBool(Text::CStringNN path);
 		Optional<Text::JSONArray> GetValueArray(Text::CStringNN path);
@@ -59,7 +60,8 @@ namespace Text
 		Bool GetAsInt32(OutParam<Int32> val);
 		Int64 GetAsInt64();
 		Bool GetAsInt64(OutParam<Int64> val);
-		Double GetAsDouble();
+		Double GetAsDoubleOrNAN();
+		Double GetAsDoubleOr(Double v);
 		Bool GetAsDouble(OutParam<Double> val);
 		Bool GetAsBool();
 
@@ -200,7 +202,8 @@ namespace Text
 		void GetObjectNames(NN<Data::ArrayListNN<Text::String>> names);
 		Optional<Text::String> GetObjectString(Text::CStringNN name);
 		Optional<Text::String> GetObjectNewString(Text::CStringNN name);
-		Double GetObjectDouble(Text::CStringNN name);
+		Double GetObjectDoubleOrNAN(Text::CStringNN name);
+		Double GetObjectDoubleOr(Text::CStringNN name, Double v);
 		Int32 GetObjectInt32(Text::CStringNN name);
 		Int64 GetObjectInt64(Text::CStringNN name);
 		Bool GetObjectBool(Text::CStringNN name);
@@ -227,7 +230,8 @@ namespace Text
 		JSONType GetArrayType(UOSInt index);
 		Optional<JSONBase> GetArrayValue(UOSInt index);
 		Optional<JSONObject> GetArrayObject(UOSInt index);
-		Double GetArrayDouble(UOSInt index);
+		Double GetArrayDoubleOrNAN(UOSInt index);
+		Double GetArrayDoubleOr(UOSInt index, Double v);
 		Optional<Text::String> GetArrayString(UOSInt index);
 		UOSInt GetArrayLength();
 		void RemoveArrayItem(UOSInt index);

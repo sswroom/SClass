@@ -696,17 +696,17 @@ Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(tval, 0, 0), 0);
 }
 
-Double DB::DBFReader::GetDbl(UOSInt colIndex)
+Double DB::DBFReader::GetDblOrNAN(UOSInt colIndex)
 {
 	if (!this->recordExist)
-		return 2;
+		return NAN;
 	if (colIndex >= this->colCnt)
-		return 0;
+		return NAN;
 	Char buff[30];
 	MemCopyNO(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	buff[this->cols[colIndex].colSize] = 0;
 	Text::StrRTrim(buff);
-	return Text::StrToDoubleCh(buff);
+	return Text::StrToDoubleOrNANCh(buff);
 }
 
 Bool DB::DBFReader::GetBool(UOSInt colIndex)

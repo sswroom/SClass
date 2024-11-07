@@ -80,7 +80,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			sb.ClearStr();
 			r->GetStr(2, sb);
 			discType->name = Text::StrCopyNew(sb.ToString()).Ptr();
-			discType->speed = r->GetDbl(3);
+			discType->speed = r->GetDblOrNAN(3);
 			sb.ClearStr();
 			r->GetStr(4, sb);
 			discType->dvdType = Text::StrCopyNew(sb.ToString()).Ptr();

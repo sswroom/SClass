@@ -1568,8 +1568,8 @@ Bool DB::ODBCReader::ReadNext()
 								this->conn->LogSQLError(this->hStmt);
 							}
 							sbuff[len] = 0;
-							*(Double*)&this->colDatas[i].dataVal = Text::StrToDouble(sbuff);
-							this->colDatas[i].isNull = false;
+							*(Double*)&this->colDatas[i].dataVal = Text::StrToDoubleOrNAN(sbuff);
+							this->colDatas[i].isNull = Math::IsNAN(*(Double*)&this->colDatas[i].dataVal);
 						}
 						else
 						{
@@ -2114,12 +2114,12 @@ Data::Timestamp DB::ODBCReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(0);
 }
 
-Double DB::ODBCReader::GetDbl(UOSInt colIndex)
+Double DB::ODBCReader::GetDblOrNAN(UOSInt colIndex)
 {
 	if (colIndex >= this->colCnt)
-		return 0;
+		return NAN;
 	if (this->colDatas[colIndex].isNull)
-		return 0;
+		return NAN;
 	switch (this->colDatas[colIndex].colType)
 	{
 	case DB::DBUtil::CT_UTF8Char:
@@ -2129,7 +2129,7 @@ Double DB::ODBCReader::GetDbl(UOSInt colIndex)
 	case DB::DBUtil::CT_VarUTF16Char:
 	case DB::DBUtil::CT_VarUTF32Char:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrToDouble(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return Text::StrToDoubleOrNAN(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
@@ -2149,15 +2149,15 @@ Double DB::ODBCReader::GetDbl(UOSInt colIndex)
 	case DB::DBUtil::CT_DateTimeTZ:
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_Date:
-		return 0;
+		return NAN;
 	case DB::DBUtil::CT_Vector:
 	case DB::DBUtil::CT_Binary:
-		return 0;
+		return NAN;
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return 0;
+		return NAN;
 	}
-	return 0;
+	return NAN;
 }
 
 Bool DB::ODBCReader::GetBool(UOSInt colIndex)

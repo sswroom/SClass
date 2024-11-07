@@ -3,6 +3,7 @@
 #ifndef SDEFS_INCLUDED
 #include "Stdafx.h"
 #endif
+#include "Math/Math.h"
 
 namespace Text
 {
@@ -37,10 +38,12 @@ namespace Text
 	FORCEINLINE Bool StrToDoubleCh(UnsafeArray<const Char> str, OutParam<Double> outVal) { return StrToDouble(UnsafeArray<const UTF8Char>::ConvertFrom(str), outVal); }
 	Bool StrToDoubleW(UnsafeArray<const UTF16Char> str, OutParam<Double> outVal);
 	Bool StrToDoubleW(UnsafeArray<const UTF32Char> str, OutParam<Double> outVal);
-	Double StrToDouble(UnsafeArray<const UTF8Char> str);
-	FORCEINLINE Double StrToDoubleCh(UnsafeArray<const Char> str) { return StrToDouble(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
-	Double StrToDoubleW(UnsafeArray<const UTF16Char> str);
-	Double StrToDoubleW(UnsafeArray<const UTF32Char> str);
+	FORCEINLINE Double StrToDoubleOr(UnsafeArray<const UTF8Char> str, Double v) { Double ret; return StrToDouble(str, ret)?ret:v; }
+	FORCEINLINE Double StrToDoubleOrNAN(UnsafeArray<const UTF8Char> str) { Double ret; return StrToDouble(str, ret)?ret:NAN; }
+	FORCEINLINE Double StrToDoubleOrCh(UnsafeArray<const Char> str, Double v) { return StrToDoubleOr(UnsafeArray<const UTF8Char>::ConvertFrom(str), v); }
+	FORCEINLINE Double StrToDoubleOrNANCh(UnsafeArray<const Char> str) { return StrToDoubleOrNAN(UnsafeArray<const UTF8Char>::ConvertFrom(str)); }
+	FORCEINLINE Double StrToDoubleOrW(UnsafeArray<const UTF16Char> str, Double v) { Double ret; return StrToDoubleW(str, ret)?ret:v;};
+	FORCEINLINE Double StrToDoubleOrW(UnsafeArray<const UTF32Char> str, Double v) { Double ret; return StrToDoubleW(str, ret)?ret:v;};
 
 	class StringBuilderUTF;
 	void SBAppendF32(NN<Text::StringBuilderUTF> sb, Single v);

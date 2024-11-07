@@ -49,9 +49,9 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 			setting.flags |= Map::MapEnv::SFLG_HIDESHAPE;
 		}
 		me->txtMinScale->GetText(sbuff);
-		setting.minScale = Text::StrToDouble(sbuff);
+		setting.minScale = Text::StrToDoubleOr(sbuff, 0);
 		me->txtMaxScale->GetText(sbuff);
-		setting.maxScale = Text::StrToDouble(sbuff);
+		setting.maxScale = Text::StrToDoubleOr(sbuff, 0);
 		if (me->txtPriority->GetText(sbuff).SetTo(sptr))
 			setting.priority = Text::StrToInt32(sbuff);
 		else

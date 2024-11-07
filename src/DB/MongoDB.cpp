@@ -309,9 +309,9 @@ Data::Timestamp DB::MongoDBReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(0);
 }
 
-Double DB::MongoDBReader::GetDbl(UOSInt colIndex)
+Double DB::MongoDBReader::GetDblOrNAN(UOSInt colIndex)
 {
-	return 0;
+	return NAN;
 }
 
 Bool DB::MongoDBReader::GetBool(UOSInt colIndex)

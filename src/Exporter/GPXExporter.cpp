@@ -69,7 +69,7 @@ Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	Data::DateTime dt;
 
 	Text::Encoding enc(this->codePage);

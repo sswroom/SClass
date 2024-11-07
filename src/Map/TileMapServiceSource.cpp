@@ -87,28 +87,28 @@ void Map::TileMapServiceSource::LoadXML()
 						aname = Text::String::OrEmpty(attr->name);
 						if (aname->Equals(UTF8STRC("minx")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.min.x = avalue->ToDouble();
+							this->bounds.min.x = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("minx = %lf\r\n", this->bounds.min.x);
 #endif
 						}
 						else if (aname->Equals(UTF8STRC("miny")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.min.y = avalue->ToDouble();
+							this->bounds.min.y = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("miny = %lf\r\n", this->bounds.min.y);
 #endif
 						}
 						else if (aname->Equals(UTF8STRC("maxx")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.max.x = avalue->ToDouble();
+							this->bounds.max.x = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("maxx = %lf\r\n", this->bounds.max.x);
 #endif
 						}
 						else if (aname->Equals(UTF8STRC("maxy")) && attr->value.SetTo(avalue))
 						{
-							this->bounds.max.y = avalue->ToDouble();
+							this->bounds.max.y = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("maxy = %lf\r\n", this->bounds.max.y);
 #endif
@@ -125,14 +125,14 @@ void Map::TileMapServiceSource::LoadXML()
 						aname = Text::String::OrEmpty(attr->name);
 						if (aname->Equals(UTF8STRC("x")) && attr->value.SetTo(avalue))
 						{
-							this->origin.x = avalue->ToDouble();
+							this->origin.x = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("originX = %lf\r\n", this->origin.x);
 #endif
 						}
 						else if (aname->Equals(UTF8STRC("y")) && attr->value.SetTo(avalue))
 						{
-							this->origin.y = avalue->ToDouble();
+							this->origin.y = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("originY = %lf\r\n", this->origin.y);
 #endif
@@ -149,14 +149,14 @@ void Map::TileMapServiceSource::LoadXML()
 						aname = Text::String::OrEmpty(attr->name);
 						if (aname->Equals(UTF8STRC("x")) && attr->value.SetTo(avalue))
 						{
-							this->origin.x = avalue->ToDouble();
+							this->origin.x = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("originX = %lf\r\n", this->origin.x);
 #endif
 						}
 						else if (aname->Equals(UTF8STRC("y")) && attr->value.SetTo(avalue))
 						{
-							this->origin.y = avalue->ToDouble();
+							this->origin.y = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 							printf("originY = %lf\r\n", this->origin.y);
 #endif
@@ -240,7 +240,7 @@ void Map::TileMapServiceSource::LoadXML()
 								}
 								else if (aname->Equals(UTF8STRC("units-per-pixel")) && attr->value.SetTo(avalue))
 								{
-									unitPerPixel = avalue->ToDouble();
+									unitPerPixel = avalue->ToDoubleOr(0);
 #if defined(VERBOSE)
 									printf("tileUnitPerPixel = %lf\r\n", unitPerPixel);
 #endif

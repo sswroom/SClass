@@ -1133,10 +1133,10 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
-				sql->AppendDbl(r->GetDbl(i));
+				sql->AppendNDbl(r->GetDblOrNAN(i));
 				break;
 			case DB::DBUtil::CT_Decimal:
-				sql->AppendDbl(r->GetDbl(i));
+				sql->AppendNDbl(r->GetDblOrNAN(i));
 				break;
 			case DB::DBUtil::CT_Vector:
 				vec = r->GetVector(i);

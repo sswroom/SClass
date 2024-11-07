@@ -583,17 +583,17 @@ Data::Timestamp Map::ESRI::FileGDBReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(0);
 }
 
-Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)
+Double Map::ESRI::FileGDBReader::GetDblOrNAN(UOSInt colIndex)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
-		return 0;
+		return NAN;
 	}
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
 	if (field == 0 || this->fieldNull[fieldIndex])
 	{
-		return 0;
+		return NAN;
 	}
 	switch (field->fieldType)
 	{
@@ -616,10 +616,10 @@ Double Map::ESRI::FileGDBReader::GetDbl(UOSInt colIndex)
 			Text::StringBuilderUTF8 sb;
 			UOSInt ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
-			return sb.ToDouble();
+			return sb.ToDoubleOrNAN();
 		}
 	}
-	return 0;
+	return NAN;
 }
 
 Bool Map::ESRI::FileGDBReader::GetBool(UOSInt colIndex)

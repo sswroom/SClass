@@ -78,7 +78,9 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 			id = r->GetInt32(0);
 			times[0] = r->GetInt32(3);
 			times[1] = r->GetInt32(2);
-			speed = r->GetDbl(4) / 1.852;
+			speed = r->GetDblOrNAN(4) / 1.852;
+			if (Math::IsNAN(speed))
+				speed = 0;
 			t = *(Int64*)times / 10000000LL - 11644473600LL;
 			rec = gpsLogMap.Get(id);
 			if (rec)
@@ -117,9 +119,9 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 		{
 			id = r->GetInt32(0);
 			gpsLogId = r->GetInt32(4);
-			lon = r->GetDbl(8);
-			lat = r->GetDbl(9);
-			alt = r->GetDbl(10);
+			lon = r->GetDblOrNAN(8);
+			lat = r->GetDblOrNAN(9);
+			alt = r->GetDblOrNAN(10);
 			rec = gpsLogMap.Get(gpsLogId);
 			if (rec == 0)
 			{

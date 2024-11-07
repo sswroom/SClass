@@ -8,7 +8,7 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
-Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reader, Text::CStringNN fileName)
+Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeTextNN()->EndsWith(UTF8STRC(":FeatureCollection")))
 		return 0;
@@ -25,7 +25,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> ccols;
 	UOSInt i;
-	Math::Geometry::Vector2D *newVec;
+	NN<Math::Geometry::Vector2D> newVec;
 	while (reader->NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->EndsWith(UTF8STRC(":featureMember")) || nodeText->EndsWith(UTF8STRC(":featureMembers")))
@@ -38,7 +38,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 				{
 					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1)).Ptr();
 				}
-				Math::Geometry::Vector2D *vec = 0;
+				Optional<Math::Geometry::Vector2D> vec = 0;
 				NN<Math::Geometry::Vector2D> nnvec;
 				while (reader->NextElementName().SetTo(nodeText))
 				{
@@ -49,9 +49,9 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 							layerType = Map::DRAW_LAYER_POINT3D;
 							while (!reader->NextElementName().IsNull())
 							{
-								if ((newVec = ParseGeometry(reader, env)) != 0)
+								if (ParseGeometry(reader, env).SetTo(newVec))
 								{
-									SDEL_CLASS(vec);
+									vec.Delete();
 									vec = newVec;
 								}
 							}
@@ -68,9 +68,9 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 							layerType = Map::DRAW_LAYER_POLYGON;
 							while (!reader->NextElementName().IsNull())
 							{
-								if ((newVec = ParseGeometry(reader, env)) != 0)
+								if (ParseGeometry(reader, env).SetTo(newVec))
 								{
-									SDEL_CLASS(vec);
+									vec.Delete();
 									vec = newVec;
 								}
 							}
@@ -83,9 +83,9 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 							layerType = Map::DRAW_LAYER_POLYLINE3D;
 							while (!reader->NextElementName().IsNull())
 							{
-								if ((newVec = ParseGeometry(reader, env)) != 0)
+								if (ParseGeometry(reader, env).SetTo(newVec))
 								{
-									SDEL_CLASS(vec);
+									vec.Delete();
 									vec = newVec;
 								}
 							}
@@ -98,9 +98,9 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 							layerType = Map::DRAW_LAYER_MIXED;
 							while (!reader->NextElementName().IsNull())
 							{
-								if ((newVec = ParseGeometry(reader, env)) != 0)
+								if (ParseGeometry(reader, env).SetTo(newVec))
 								{
-									SDEL_CLASS(vec);
+									vec.Delete();
 									vec = newVec;
 								}
 							}
@@ -133,7 +133,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 						}
 					}
 				}
-				if (nnvec.Set(vec))
+				if (vec.SetTo(nnvec))
 				{
 					if (lyr == 0)
 					{
@@ -155,7 +155,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 					}
 					else
 					{
-						DEL_CLASS(vec);
+						vec.Delete();
 					}
 				}
 
@@ -190,7 +190,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 	return lyr;
 }
 
-Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader, NN<ParseEnv> env)
+Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader, NN<ParseEnv> env)
 {
 	UnsafeArray<UTF8Char> sarr[4];
 	UnsafeArray<UTF8Char> sarr2[4];
@@ -245,8 +245,8 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 					{
 						break;
 					}
-					x = Text::StrToDouble(sarr[1]);
-					y = Text::StrToDouble(sarr[0]);
+					x = Text::StrToDoubleOrNAN(sarr[1]);
+					y = Text::StrToDoubleOrNAN(sarr[0]);
 					if (x > -90 && x < 90 && ((y >= 90 && y < 180) || (y > -180 && y <= -90)))
 					{
 						xPts.Add(y);
@@ -259,7 +259,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 					}
 					if (i < 3)
 						break;
-					zPts.Add(Text::StrToDouble(sarr[2]));
+					zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
 					if (i < 4)
 						break;
 				}
@@ -324,9 +324,9 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 													{
 														break;
 													}
-													xPts.Add(Text::StrToDouble(sarr[1]));
-													yPts.Add(Text::StrToDouble(sarr[0]));
-													zPts.Add(Text::StrToDouble(sarr[2]));
+													xPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
+													yPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
+													zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
 													if (i < 4)
 														break;
 												}
@@ -405,9 +405,9 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 					{
 						break;
 					}
-					xPts.Add(Text::StrToDouble(sarr[1]));
-					yPts.Add(Text::StrToDouble(sarr[0]));
-					zPts.Add(Text::StrToDouble(sarr[2]));
+					xPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
+					yPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
+					zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
 					if (i < 4)
 						break;
 				}
@@ -449,7 +449,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 			{
 				while (reader->NextElementName().SetTo(nodeName))
 				{
-					if (newVec.Set(ParseGeometry(reader, env)))
+					if (ParseGeometry(reader, env).SetTo(newVec))
 					{
 						if (newVec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polygon)
 						{
@@ -507,11 +507,11 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 									i = Text::StrSplit(sarr, 2, sarr[1], ' ');
 									if ((sarr2Cnt = Text::StrSplit(sarr2, 4, sarr[0], ',')) >= 2)
 									{
-										xPts.Add(Text::StrToDouble(sarr2[0]));
-										yPts.Add(Text::StrToDouble(sarr2[1]));
+										xPts.Add(Text::StrToDoubleOrNAN(sarr2[0]));
+										yPts.Add(Text::StrToDoubleOrNAN(sarr2[1]));
 										if (sarr2Cnt >= 3)
 										{
-											zPts.Add(Text::StrToDouble(sarr2[2]));
+											zPts.Add(Text::StrToDoubleOrNAN(sarr2[2]));
 										}
 									}
 									if (i != 2)
@@ -527,7 +527,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 								while (true)
 								{
 									i = Text::StrSplit(sarr, 2, sarr[1], ' ');
-									posList.Add(Text::StrToDouble(sarr[0]));
+									posList.Add(Text::StrToDoubleOrNAN(sarr[0]));
 									if (i != 2)
 										break;
 								}

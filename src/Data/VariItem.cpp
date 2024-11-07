@@ -36,9 +36,9 @@ Single Data::VariItem::GetAsF32() const
 	case ItemType::BOOL:
 		return (Single)(this->val.boolean?1:0);
 	case ItemType::Str:
-		return (Single)Text::StrToDouble(this->val.str->v);
+		return (Single)Text::StrToDoubleOrNAN(this->val.str->v);
 	case ItemType::CStr:
-		return (Single)Text::StrToDouble(this->val.cstr.v);
+		return (Single)Text::StrToDoubleOrNAN(this->val.cstr.v);
 	case ItemType::Timestamp:
 	case ItemType::Date:
 	case ItemType::ByteArr:
@@ -79,9 +79,9 @@ Double Data::VariItem::GetAsF64() const
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return Text::StrToDouble(this->val.str->v);
+		return Text::StrToDoubleOrNAN(this->val.str->v);
 	case ItemType::CStr:
-		return Text::CStringNN(this->val.cstr.v, this->val.cstr.leng).ToDouble();
+		return Text::CStringNN(this->val.cstr.v, this->val.cstr.leng).ToDoubleOrNAN();
 	case ItemType::Timestamp:
 	case ItemType::Date:
 	case ItemType::ByteArr:

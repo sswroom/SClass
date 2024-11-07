@@ -323,7 +323,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 						log->macInt = ReadMUInt64(buff);
 						log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
 						log->phyType = Text::StrToInt32(sarr[2].v);
-						log->freq = Text::StrToDouble(sarr[3].v);
+						log->freq = Text::StrToDoubleOr(sarr[3].v, 0);
 						if (i >= 7)
 						{
 							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();

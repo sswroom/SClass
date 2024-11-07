@@ -331,7 +331,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	NN<UserFileInfo> userFile;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	UnsafeArray<Map::GPSTrack::GPSRecord3> records;
+	UnsafeArray<Map::GPSTrack::GPSRecordFull> records;
 	Data::DateTime dt;
 	if (this->gpsTrk->GetTrack(0, j).SetTo(records))
 	{

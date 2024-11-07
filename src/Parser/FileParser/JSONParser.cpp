@@ -237,8 +237,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseJSON(NN<Text::JS
 				Math::Coord2DDbl maxCoord;
 				Math::Coord2DDbl minCoord;
 				Math::Coord2DDbl coord;
-				coord = Math::Coord2DDbl(bounds->GetArrayDouble(0), bounds->GetArrayDouble(1));
-				maxCoord = Math::Coord2DDbl(bounds->GetArrayDouble(2), bounds->GetArrayDouble(3));
+				coord = Math::Coord2DDbl(bounds->GetArrayDoubleOrNAN(0), bounds->GetArrayDoubleOrNAN(1));
+				maxCoord = Math::Coord2DDbl(bounds->GetArrayDoubleOrNAN(2), bounds->GetArrayDoubleOrNAN(3));
 				minCoord = coord.Min(maxCoord);
 				maxCoord = coord.Max(maxCoord);
 				NN<Map::OSM::OSMLocalTileMap> tileMap;
@@ -535,11 +535,11 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 												hasData = true;
 												partList.Add((UInt32)ptList.GetCount() >> 1);
 											}
-											ptList.Add(pt->GetArrayDouble(0));
-											ptList.Add(pt->GetArrayDouble(1));
+											ptList.Add(pt->GetArrayDoubleOrNAN(0));
+											ptList.Add(pt->GetArrayDoubleOrNAN(1));
 											if (nVal >= 3)
 											{
-												altList.Add(pt->GetArrayDouble(2));
+												altList.Add(pt->GetArrayDoubleOrNAN(2));
 											}
 										}
 									}
@@ -603,11 +603,11 @@ Optional<Math::Geometry::Vector2D> Parser::FileParser::JSONParser::ParseGeomJSON
 				Math::Geometry::Point *pt = 0;
 				if (coord->GetArrayLength() == 2)
 				{
-					NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(coord->GetArrayDouble(0), coord->GetArrayDouble(1))));
+					NEW_CLASS(pt, Math::Geometry::Point(srid, Math::Coord2DDbl(coord->GetArrayDoubleOrNAN(0), coord->GetArrayDoubleOrNAN(1))));
 				}
 				else if (coord->GetArrayLength() >= 3)
 				{
-					NEW_CLASS(pt, Math::Geometry::PointZ(srid, coord->GetArrayDouble(0), coord->GetArrayDouble(1), coord->GetArrayDouble(2)));
+					NEW_CLASS(pt, Math::Geometry::PointZ(srid, coord->GetArrayDoubleOrNAN(0), coord->GetArrayDoubleOrNAN(1), coord->GetArrayDoubleOrNAN(2)));
 				}
 				else
 				{

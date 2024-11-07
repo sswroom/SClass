@@ -771,8 +771,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 								break;
 							case DB::DBUtil::CT_Float:
 								{
-									Double v1 = r->GetDbl(i);
-									Double v2 = rowData[i]->ToDouble();
+									Double v1 = r->GetDblOrNAN(i);
+									Double v2 = rowData[i]->ToDoubleOrNAN();
 									if (!Math::NearlyEquals(v1, v2, 0.000001))
 									{
 										diff = true;
@@ -782,8 +782,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 							case DB::DBUtil::CT_Decimal:
 							case DB::DBUtil::CT_Double:
 								{
-									Double v1 = r->GetDbl(i);
-									Double v2 = rowData[i]->ToDouble();
+									Double v1 = r->GetDblOrNAN(i);
+									Double v2 = rowData[i]->ToDoubleOrNAN();
 									if (!Math::NearlyEqualsDbl(v1, v2))
 									{
 										diff = true;
@@ -1367,7 +1367,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_Float:
 									case DB::DBUtil::CT_Decimal:
 										{
-											Double v2 = rowData[i]->ToDouble();
+											Double v2 = rowData[i]->ToDoubleOrNAN();
 											if (diff)
 											{
 												sql.AppendCmdC(CSTR(", "));
@@ -1378,7 +1378,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 											}
 											sql.AppendCol(col->GetColName()->v);
 											sql.AppendCmdC(CSTR(" = "));
-											sql.AppendDbl(v2);
+											sql.AppendNDbl(v2);
 										}
 										break;
 									case DB::DBUtil::CT_UInt16:
@@ -1560,8 +1560,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							case DB::DBUtil::CT_Float:
 							case DB::DBUtil::CT_Decimal:
 								{
-									Double v1 = r->GetDbl(i);
-									Double v2 = rowData[i]->ToDouble();
+									Double v1 = r->GetDblOrNAN(i);
+									Double v2 = rowData[i]->ToDoubleOrNAN();
 									if (!Math::NearlyEqualsDbl(v1, v2))
 									{
 										if (diff)
@@ -1574,7 +1574,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										}
 										sql.AppendCol(col->GetColName()->v);
 										sql.AppendCmdC(CSTR(" = "));
-										sql.AppendDbl(v2);
+										sql.AppendNDbl(v2);
 									}
 								}
 								break;
@@ -1987,7 +1987,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> s
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
-		sql->AppendDbl(nns->ToDouble());
+		sql->AppendDbl(nns->ToDoubleOrNAN());
 		break;
 	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int16:

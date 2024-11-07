@@ -83,7 +83,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 		{
 			layerId = strs[1].ToInt32();
 			layerType = strs[0].ToInt32();
-			layerDist = strs[3].ToDouble();
+			layerDist = strs[3].ToDoubleOr(0);
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				NN<Map::MapSearchLayerInfo> lyr;
@@ -103,7 +103,7 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 		{
 			layerId = strs[1].ToInt32();
 			layerType = strs[0].ToInt32();
-			layerDist = strs[3].ToDouble();
+			layerDist = strs[3].ToDoubleOr(0);
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				NN<Map::MapSearchLayerInfo> lyr;

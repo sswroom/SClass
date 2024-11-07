@@ -1017,13 +1017,13 @@ Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
 	return 0;
 }
 
-Double Map::MapLayerReader::GetDbl(UOSInt colIndex)
+Double Map::MapLayerReader::GetDblOrNAN(UOSInt colIndex)
 {
 	if (colIndex <= 0)
-		return 0;
+		return NAN;
 	Text::StringBuilderUTF8 sb;
 	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return sb.ToDouble();
+	return sb.ToDoubleOrNAN();
 }
 
 Bool Map::MapLayerReader::GetBool(UOSInt colIndex)

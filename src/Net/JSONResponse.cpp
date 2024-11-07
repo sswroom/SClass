@@ -396,7 +396,7 @@ void Net::JSONResponse::AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool
 		}
 		else
 		{
-			field->AddValue(val->GetAsDouble());
+			field->AddValue(val->GetAsDoubleOrNAN());
 		}
 		i++;
 	}
@@ -607,7 +607,7 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 				sb->Append(linePrefix);
 				sb->Append(field->GetName());
 				sb->Append(CSTR(" = "));
-				sb->AppendDouble(this->json->GetValueAsDouble(field->GetName()));
+				sb->AppendDouble(this->json->GetValueAsDoubleOrNAN(field->GetName()));
 				sb->Append(CSTR("\r\n"));
 				break;
 			case Text::JSONType::String:

@@ -59,6 +59,11 @@ public:
 		return true;
 	}
 
+	T* operator->() const
+	{
+        return this->p;
+    }
+
 	Bool operator<(const UnsafeArray<T> p)
 	{
 		return this->p < p.p;

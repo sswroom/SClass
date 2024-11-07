@@ -3,7 +3,7 @@
 
 void Text::JSONUtil::ArrayGPSTrack(NN<JSONBuilder> json, NN<Map::GPSTrack> trk)
 {
-	UnsafeArray<Map::GPSTrack::GPSRecord3> recs;
+	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	UOSInt recordCnt;
 	UOSInt i = 0;
 	UOSInt j = trk->GetTrackCnt();

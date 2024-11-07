@@ -393,21 +393,21 @@ Data::Timestamp Math::TSPReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(0);
 }
 
-Double Math::TSPReader::GetDbl(UOSInt colIndex)
+Double Math::TSPReader::GetDblOrNAN(UOSInt colIndex)
 {
 	if (this->currRowPtr == 0)
-		return 0;
+		return NAN;
 	if (colIndex == 0)
 	{
 		return ReadInt32(&this->currRowPtr[56]);
 	}
 	else if (colIndex == 1)
 	{
-		return 0;
+		return NAN;
 	}
 	else if (colIndex == 2)
 	{
-		return 0;
+		return NAN;
 	}
 	else if (colIndex == 3)
 	{
@@ -448,12 +448,13 @@ Double Math::TSPReader::GetDbl(UOSInt colIndex)
 			return ReadDouble(&this->currRowPtr[80]);
 		}
 	}
-	return 0;
+	return NAN;
 }
 
 Bool Math::TSPReader::GetBool(UOSInt colIndex)
 {
-	return GetDbl(colIndex) != 0;
+	Double v = GetDblOrNAN(colIndex);
+	return !Math::IsNAN(v) && v != 0;
 }
 
 UOSInt Math::TSPReader::GetBinarySize(UOSInt colIndex)
@@ -646,26 +647,26 @@ OSInt Math::TSPHReader::GetRowChanged()
 
 Int32 Math::TSPHReader::GetInt32(UOSInt colIndex)
 {
-	return Double2Int32(GetDbl(colIndex));
+	return Double2Int32(GetDblOrNAN(colIndex));
 }
 
 Int64 Math::TSPHReader::GetInt64(UOSInt colIndex)
 {
-	return (Int64)GetDbl(colIndex);
+	return (Int64)GetDblOrNAN(colIndex);
 }
 
 UnsafeArrayOpt<WChar> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
 	if (this->currRow != 0)
 		return 0;
-	return Text::StrDoubleW(buff, GetDbl(colIndex));
+	return Text::StrDoubleW(buff, GetDblOrNAN(colIndex));
 }
 
 Bool Math::TSPHReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->currRow != 0)
 		return false;
-	Text::SBAppendF64(sb, GetDbl(colIndex));
+	Text::SBAppendF64(sb, GetDblOrNAN(colIndex));
 	return true;
 }
 
@@ -683,7 +684,7 @@ UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<U
 {
 	if (this->currRow != 0)
 		return 0;
-	return Text::StrDouble(buff, GetDbl(colIndex));
+	return Text::StrDouble(buff, GetDblOrNAN(colIndex));
 }
 
 Data::Timestamp Math::TSPHReader::GetTimestamp(UOSInt colIndex)
@@ -691,13 +692,13 @@ Data::Timestamp Math::TSPHReader::GetTimestamp(UOSInt colIndex)
 	return Data::Timestamp(0);
 }
 
-Double Math::TSPHReader::GetDbl(UOSInt colIndex)
+Double Math::TSPHReader::GetDblOrNAN(UOSInt colIndex)
 {
 	if (this->currRow != 0)
-		return 0;
+		return NAN;
 	if (colIndex >= 8)
 	{
-		return 0;
+		return NAN;
 	}
 	else
 	{
@@ -707,7 +708,8 @@ Double Math::TSPHReader::GetDbl(UOSInt colIndex)
 
 Bool Math::TSPHReader::GetBool(UOSInt colIndex)
 {
-	return GetDbl(colIndex) != 0;
+	Double v = GetDblOrNAN(colIndex);
+	return !Math::IsNAN(v) && v != 0;
 }
 
 UOSInt Math::TSPHReader::GetBinarySize(UOSInt colIndex)

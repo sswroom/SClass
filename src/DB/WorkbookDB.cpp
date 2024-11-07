@@ -127,15 +127,15 @@ public:
 		return Data::Timestamp::FromStr(cellValue->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	}
 
-	virtual Double GetDbl(UOSInt colIndex)
+	virtual Double GetDblOrNAN(UOSInt colIndex)
 	{
 		NN<const Text::SpreadSheet::Worksheet::CellData> cell;
 		NN<Text::String> cellValue;
 		if (!this->sheet->GetCellDataRead(this->currIndex, colIndex).SetTo(cell) || !cell->cellValue.SetTo(cellValue))
 		{
-			return 0;
+			return NAN;
 		}
-		return cellValue->ToDouble();
+		return cellValue->ToDoubleOrNAN();
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)

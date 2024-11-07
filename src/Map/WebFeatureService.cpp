@@ -190,8 +190,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 						if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 						{
 							hasTL = true;
-							wgs84Bounds.min.x = sarr[0].ToDouble();
-							wgs84Bounds.min.y = sarr[1].ToDouble();
+							wgs84Bounds.min.x = sarr[0].ToDoubleOr(0);
+							wgs84Bounds.min.y = sarr[1].ToDoubleOr(0);
 						}
 					}
 				}
@@ -203,8 +203,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 						if (Text::StrSplitP(sarr, 3, sb, ' ') >= 2)
 						{
 							hasBR = true;
-							wgs84Bounds.max.x = sarr[0].ToDouble();
-							wgs84Bounds.max.y = sarr[1].ToDouble();
+							wgs84Bounds.max.x = sarr[0].ToDoubleOr(0);
+							wgs84Bounds.max.y = sarr[1].ToDoubleOr(0);
 						}
 					}
 				}

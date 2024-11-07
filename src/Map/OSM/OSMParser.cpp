@@ -122,11 +122,11 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 				}
 				else if (aname->Equals(UTF8STRC("lat")) && attr->value.SetTo(avalue))
 				{
-					lat = avalue->ToDouble();
+					lat = avalue->ToDoubleOrNAN();
 				}
 				else if (aname->Equals(UTF8STRC("lon")) && attr->value.SetTo(avalue))
 				{
-					lon = avalue->ToDouble();
+					lon = avalue->ToDoubleOrNAN();
 				}
 			}
 			if (id != 0 && lat != 0 && lon != 0)
