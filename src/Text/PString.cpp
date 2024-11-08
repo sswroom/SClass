@@ -1,11 +1,6 @@
 #include "Stdafx.h"
 #include "Text/PString.h"
 
-void Text::PString::Trim()
-{
-	this->leng = (UOSInt)(Text::StrTrimC(this->v, this->leng) - this->v);
-}
-
 void Text::PString::Trim(UOSInt index)
 {
 	this->leng = (UOSInt)(Text::StrTrimC(this->v + index, this->leng - index) - this->v);

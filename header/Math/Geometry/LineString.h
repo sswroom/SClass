@@ -53,8 +53,8 @@ namespace Math
 			void Reverse();
 			void GetNearEnd(Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> nearEndPt, OptOut<Double> nearEndZ) const;
 
-			UnsafeArrayOpt<Double> GetZList(OutParam<UOSInt> nPoint) const;
-			UnsafeArrayOpt<Double> GetMList(OutParam<UOSInt> nPoint) const;
+			UnsafeArrayOpt<Double> GetZList(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->zArr; }
+			UnsafeArrayOpt<Double> GetMList(OutParam<UOSInt> nPoint) const { nPoint.Set(this->nPoint); return this->mArr; }
 			Optional<Math::Geometry::LineString> SplitByPoint(Math::Coord2DDbl pt);
 			OSInt GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPt, OptOut<Double> calZ, OptOut<Double> calM);
 

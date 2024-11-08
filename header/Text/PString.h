@@ -5,7 +5,8 @@ namespace Text
 {
 	struct PString : public StringBase<UTF8Char>
 	{
-		void Trim();
+		void Trim() { this->leng = (UOSInt)(Text::StrTrimC(this->v, this->leng) - this->v); }
+		void TrimSp() { this->leng = (UOSInt)(Text::StrTrimSpC(this->v, this->leng) - this->v); }
 		void Trim(UOSInt index);
 		void RTrim();
 		void TrimWSCRLF();

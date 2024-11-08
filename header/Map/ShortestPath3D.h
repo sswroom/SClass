@@ -93,8 +93,8 @@ namespace Map
 		Optional<Math::Geometry::LineString> lastEndHalfLine2;
 
 		static void FreeLineInfo(NN<LineInfo> lineInfo);
-		static void FreeAreaInfo(NN<AreaInfo> areaInfo);
-		static void FreeNodeInfo(NN<NodeInfo> nodeInfo);
+		static void FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }
+		static void FreeNodeInfo(NN<NodeInfo> nodeInfo) { nodeInfo.Delete(); }
 		static void AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo);
 		NN<AreaInfo> GetArea(Math::Coord2DDbl pos);
 		Optional<AreaInfo> GetExistingArea(OSInt areaX, OSInt areaY) const;

@@ -93,17 +93,6 @@ void Map::ShortestPath3D::FreeLineInfo(NN<LineInfo> lineInfo)
 	lineInfo.Delete();
 }
 
-void Map::ShortestPath3D::FreeAreaInfo(NN<AreaInfo> areaInfo)
-{
-	areaInfo->nodes.FreeAll(FreeNodeInfo);
-	areaInfo.Delete();
-}
-
-void Map::ShortestPath3D::FreeNodeInfo(NN<NodeInfo> nodeInfo)
-{
-	nodeInfo.Delete();
-}
-
 void Map::ShortestPath3D::AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo)
 {
 	UOSInt i = 0;

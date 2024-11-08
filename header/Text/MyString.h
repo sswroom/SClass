@@ -240,7 +240,11 @@ namespace Text
 	UnsafeArray<UTF8Char> StrRTrim(UnsafeArray<UTF8Char> str1);
 	UnsafeArray<UTF8Char> StrLTrim(UnsafeArray<UTF8Char> str1);
 	UnsafeArray<UTF8Char> StrTrim(UnsafeArray<UTF8Char> str1);
+	FORCEINLINE UnsafeArray<UTF8Char> StrRTrimC(UnsafeArray<UTF8Char> str1, UOSInt len) { if (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t')) { while (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t')) len--;  str1[len] = 0; } return str1 + len; }
 	UnsafeArray<UTF8Char> StrTrimC(UnsafeArray<UTF8Char> str1, UOSInt len);
+	FORCEINLINE UnsafeArray<UTF8Char> StrRTrimSpC(UnsafeArray<UTF8Char> str1, UOSInt len) { if (len > 0 && str1[len - 1] == ' ') { while (len > 0 && str1[len - 1] == ' ') len--;  str1[len] = 0; } return str1 + len; }
+	FORCEINLINE UnsafeArray<UTF8Char> StrLTrimSpC(UnsafeArray<UTF8Char> str1, UOSInt len) {	UnsafeArray<UTF8Char> sptr; if (str1[0] == ' ') { sptr = str1 + 1; while (sptr[0] == ' ') sptr++; len -= (UOSInt)(sptr - str1); MemCopyO(str1.Ptr(), sptr.Ptr(), len + 1); } return str1 + len; }
+	FORCEINLINE UnsafeArray<UTF8Char> StrTrimSpC(UnsafeArray<UTF8Char> str1, UOSInt len) { len = (UOSInt)(StrRTrimSpC(str1, len) - str1); return StrLTrimSpC(str1, len); }
 	UnsafeArray<UTF8Char> StrTrimWSCRLF(UnsafeArray<UTF8Char> str1);
 	UnsafeArray<UTF8Char> StrTrimWSCRLFC(UnsafeArray<UTF8Char> str1, UOSInt len);
 	UnsafeArray<UTF8Char> StrRemoveChar(UnsafeArray<UTF8Char> str1, UTF8Char c);

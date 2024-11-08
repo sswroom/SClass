@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/Path.h"
+#include "IO/StmData/BufferedStreamData.h"
 #include "Map/SHPData.h"
 #include "Math/ArcGISPRJParser.h"
 #include "Math/CoordinateSystemManager.h"
@@ -13,7 +14,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::SHPData::SHPData(UnsafeArray<const UInt8> shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -60,7 +61,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 
 	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));
 
-	if (ReadMInt32(shpHdr) != 9994 || ReadInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())
+	if (ReadMInt32(&shpHdr[0]) != 9994 || ReadInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())
 	{
 		valid = 0;
 	}
@@ -73,7 +74,10 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 		return;
 	}
 	this->isPoint = false;
-	this->shpData = data->GetPartialData(0, data->GetDataSize()).Ptr();
+	//this->shpData = data->GetPartialData(0, data->GetDataSize());
+	NEW_CLASSNN(data, IO::StmData::BufferedStreamData(data->GetPartialData(0, data->GetDataSize())));
+	this->shpData = data;
+
 	this->min.x = ReadDouble(&shpHdr[36]);
 	this->min.y = ReadDouble(&shpHdr[44]);
 	this->max.x = ReadDouble(&shpHdr[52]);
@@ -328,8 +332,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 	}
 	else
 	{
-		DEL_CLASS(this->shpData);
-		this->shpData = 0;
+		this->shpData.Delete();
 		return;
 	}
 
@@ -361,7 +364,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 Map::SHPData::~SHPData()
 {
 	SDEL_CLASS(this->dbf);
-	SDEL_CLASS(this->shpData);
+	this->shpData.Delete();
 	SDEL_CLASS(this->ptX);
 	SDEL_CLASS(this->ptY);
 	SDEL_CLASS(this->ptZ);
@@ -506,7 +509,7 @@ void Map::SHPData::ReleaseNameArr(Optional<NameArray> nameArr)
 Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
 	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id, strIndex);
-	sb->Trim();
+	sb->TrimSp();
 	return ret;
 }
 
@@ -555,6 +558,11 @@ Optional<Math::Geometry::Vector2D> Map::SHPData::GetNewVectorById(NN<GetObjectSe
 	NN<Map::SHPData::RecHdr> rec;
 	NN<Sync::Mutex> mut;
 	NN<Math::Geometry::Vector2D> vec;
+	NN<IO::StreamData> shpData;
+	if (!this->shpData.SetTo(shpData))
+	{
+		return 0;
+	}
 
 	UInt32 srid = this->csys->GetSRID();
 	if (this->layerType == Map::DRAW_LAYER_POINT)

@@ -5,21 +5,6 @@
 #include "Math/Geometry/Polyline.h"
 #include "Data/ArrayListDbl.h"
 
-Math::Geometry::Polyline::Polyline(UInt32 srid) : MultiGeometry<LineString>(srid)
-{
-	this->flags = 0;
-	this->color = 0;
-}
-
-Math::Geometry::Polyline::~Polyline()
-{
-}
-
-Math::Geometry::Vector2D::VectorType Math::Geometry::Polyline::GetVectorType() const
-{
-	return Math::Geometry::Vector2D::VectorType::Polyline;
-}
-
 NN<Math::Geometry::Vector2D> Math::Geometry::Polyline::Clone() const
 {
 	NN<Math::Geometry::Polyline> pl;
@@ -754,18 +739,3 @@ OSInt Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 	DEL_CLASS(outPoints);
 	return pg;
 }*/
-
-Bool Math::Geometry::Polyline::HasColor() const
-{
-	return (this->flags & 1) != 0;
-}
-
-UInt32 Math::Geometry::Polyline::GetColor() const
-{
-	return this->color;
-}
-void Math::Geometry::Polyline::SetColor(UInt32 color)
-{
-	this->color = color;
-	this->flags |= 1;
-}

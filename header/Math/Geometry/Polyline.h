@@ -13,10 +13,10 @@ namespace Math
 			Int32 flags;
 			UInt32 color;
 		public:
-			Polyline(UInt32 srid);
-			virtual ~Polyline();
+			Polyline(UInt32 srid) : MultiGeometry<LineString>(srid) { this->flags = 0; this->color = 0; }
+			virtual ~Polyline() {}
 
-			virtual VectorType GetVectorType() const;
+			virtual VectorType GetVectorType() const { return Math::Geometry::Vector2D::VectorType::Polyline; }
 			virtual NN<Math::Geometry::Vector2D> Clone() const;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
@@ -32,9 +32,9 @@ namespace Math
 			OSInt GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPt, OptOut<Double> calZ, OptOut<Double> calM);
 
 //			Optional<Math::Geometry::Polygon> CreatePolygonByDist(Double dist) const;
-			Bool HasColor() const;
-			UInt32 GetColor() const;
-			void SetColor(UInt32 color);
+			Bool HasColor() const { return (this->flags & 1) != 0; }
+			UInt32 GetColor() const { return this->color; }
+			void SetColor(UInt32 color) { this->color = color; this->flags |= 1; }
 		};
 	}
 }

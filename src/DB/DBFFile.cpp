@@ -5,6 +5,7 @@
 #include "DB/ColDef.h"
 #include "DB/DBFFile.h"
 #include "DB/TableDef.h"
+#include "IO/StmData/BufferedStreamData.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
@@ -20,7 +21,8 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 	UOSInt currColOfst;
 	UOSInt i;
 	UInt64 currOfst;
-	this->stmData = stmData->GetPartialData(0, stmData->GetDataSize());
+	NEW_CLASSNN(this->stmData, IO::StmData::BufferedStreamData(stmData->GetPartialData(0, stmData->GetDataSize())));
+//	this->stmData = stmData->GetPartialData(0, stmData->GetDataSize());
 //	NEW_CLASS(mut, Sync::Mutex());
 
 	this->cols = 0;

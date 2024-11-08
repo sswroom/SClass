@@ -2,16 +2,6 @@
 #include "MyMemory.h"
 #include "Math/Geometry/Vector2D.h"
 
-Math::Geometry::Vector2D::Vector2D(UInt32 srid)
-{
-	this->srid = srid;
-}
-
-Math::Geometry::Vector2D::~Vector2D()
-{
-
-}
-
 Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
 	if (this->InsideOrTouch(pt))
@@ -37,16 +27,6 @@ Bool Math::Geometry::Vector2D::Contains(NN<Math::Geometry::Vector2D> vec) const
 	return true;
 }
 
-UInt32 Math::Geometry::Vector2D::GetSRID() const
-{
-	return this->srid;
-}
-
-void Math::Geometry::Vector2D::SetSRID(UInt32 srid)
-{
-	this->srid = srid;
-}
-
 Math::Coord2DDbl Math::Geometry::Vector2D::GetCentroid() const
 {
 	Math::Coord2DDbl sum = Math::Coord2DDbl(0, 0);
@@ -62,11 +42,6 @@ Math::Coord2DDbl Math::Geometry::Vector2D::GetCentroid() const
 Math::Coord2DDbl Math::Geometry::Vector2D::GetDistanceCenter() const
 {
 	return GetCentroid();
-}
-
-Bool Math::Geometry::Vector2D::VectorTypeIsPoint(VectorType vecType)
-{
-	return vecType == VectorType::Point || vecType == VectorType::MultiPoint;
 }
 
 Text::CStringNN Math::Geometry::Vector2D::VectorTypeGetName(VectorType vecType)

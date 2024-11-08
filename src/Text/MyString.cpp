@@ -3369,10 +3369,7 @@ UnsafeArray<UTF8Char> Text::StrTrim(UnsafeArray<UTF8Char> str1)
 
 UnsafeArray<UTF8Char> Text::StrTrimC(UnsafeArray<UTF8Char> str1, UOSInt len)
 {
-	while (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t'))
-	{
-		str1[--len] = 0;
-	}
+	len = (UOSInt)(StrRTrimC(str1, len) - str1);
 	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
 	if (str1[0] == ' ' || str1[0] == '\t')

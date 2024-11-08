@@ -175,25 +175,6 @@ NN<Text::String> Text::String::NewCSVRec(UnsafeArray<const UTF8Char> str)
 	return s;
 }
 
-NN<Text::String> Text::String::NewEmpty()
-{
-	return emptyStr.Clone();
-}
-
-NN<Text::String> Text::String::OrEmpty(Optional<Text::String> s)
-{
-	NN<Text::String> ret;
-	if (s.SetTo(ret)) return ret;
-	return emptyStr.Clone();
-}
-
-Optional<Text::String> Text::String::CopyOrNull(Optional<Text::String> s)
-{
-	NN<Text::String> ret;
-	if (s.SetTo(ret)) return ret->Clone();
-	return 0;
-}
-
 void Text::String::Release()
 {
 #if defined(THREADSAFE)

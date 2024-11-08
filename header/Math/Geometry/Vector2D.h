@@ -45,8 +45,8 @@ namespace Math
 		protected:
 			UInt32 srid;
 		public:
-			Vector2D(UInt32 srid);
-			virtual ~Vector2D();
+			Vector2D(UInt32 srid) {	this->srid = srid; }
+			virtual ~Vector2D() {};
 
 			virtual VectorType GetVectorType() const = 0;
 			virtual Math::Coord2DDbl GetCenter() const = 0;
@@ -72,12 +72,12 @@ namespace Math
 			virtual Math::Coord2DDbl GetDisplayCenter() const = 0;
 			Bool Contains(NN<Math::Geometry::Vector2D> vec) const;
 
-			UInt32 GetSRID() const;
-			virtual void SetSRID(UInt32 srid);
+			UInt32 GetSRID() const { return this->srid; }
+			virtual void SetSRID(UInt32 srid) { this->srid = srid; }
 			Math::Coord2DDbl GetCentroid() const;
 			Math::Coord2DDbl GetDistanceCenter() const;
 
-			static Bool VectorTypeIsPoint(VectorType vecType);
+			static Bool VectorTypeIsPoint(VectorType vecType) { return vecType == VectorType::Point || vecType == VectorType::MultiPoint; }
 			static Text::CStringNN VectorTypeGetName(VectorType vecType);
 		};
 	}

@@ -121,18 +121,7 @@ Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
 NN<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 {
 	NN<Math::Geometry::LineString> pl;
-	UnsafeArray<Double> arr;
-	UnsafeArray<Double> plArr;
-	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, this->nPoint, this->zArr.NotNull(), this->mArr.NotNull()));
-	MemCopyAC(pl->pointArr.Ptr(), this->pointArr.Ptr(), sizeof(Math::Coord2DDbl) * nPoint);
-	if (this->zArr.SetTo(arr) && pl->zArr.SetTo(plArr))
-	{	
-		MemCopyAC(plArr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
-	}
-	if (this->mArr.SetTo(arr) && pl->mArr.SetTo(plArr))
-	{	
-		MemCopyAC(plArr.Ptr(), arr.Ptr(), sizeof(Double) * nPoint);
-	}
+	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, this->pointArr, this->nPoint, this->zArr, this->mArr));
 	return pl;
 }
 
@@ -767,18 +756,6 @@ void Math::Geometry::LineString::GetNearEnd(Math::Coord2DDbl coord, OutParam<Mat
 			nearEndZ.Set(NAN);
 		}
 	}
-}
-
-UnsafeArrayOpt<Double> Math::Geometry::LineString::GetZList(OutParam<UOSInt> nPoint) const
-{
-	nPoint.Set(this->nPoint);
-	return this->zArr;
-}
-
-UnsafeArrayOpt<Double> Math::Geometry::LineString::GetMList(OutParam<UOSInt> nPoint) const
-{
-	nPoint.Set(this->nPoint);
-	return this->mArr;
 }
 
 Optional<Math::Geometry::LineString> Math::Geometry::LineString::SplitByPoint(Math::Coord2DDbl pt)

@@ -224,19 +224,19 @@ namespace Data
 		return o;
 	}
 
-	template <class T> void ArrayListNN<T>::Insert(UOSInt Index, NN<T> Val)
+	template <class T> void ArrayListNN<T>::Insert(UOSInt index, NN<T> Val)
 	{
 		if (objCnt == this->capacity)
 		{
 			UnsafeArray<NN<T>> newArr = MemAllocArr(NN<T>, this->capacity * 2);
-			if (Index > 0)
+			if (index > 0)
 			{
-				newArr.CopyFromNO(this->arr, Index);
+				newArr.CopyFromNO(this->arr, index);
 			}
-			newArr[Index] = Val;
-			if (Index < this->objCnt)
+			newArr[index] = Val;
+			if (index < this->objCnt)
 			{
-				MemCopyNO(&newArr[Index + 1], &this->arr[Index], (this->objCnt - Index) * sizeof(NN<T>));
+				MemCopyNO(&newArr[index + 1], &this->arr[index], (this->objCnt - index) * sizeof(NN<T>));
 			}
 			this->capacity = this->capacity << 1;
 			MemFreeArr(arr);
@@ -245,12 +245,16 @@ namespace Data
 		else
 		{
 			UOSInt j = this->objCnt;
-			while (j > Index)
+			if (j > index)
+			{
+				MemCopyO(&this->arr[index + 1], &this->arr[index], (j - index) * sizeof(NN<T>));
+			}
+/*			while (j > index)
 			{
 				this->arr[j] = this->arr[j - 1];
 				j--;
-			}
-			arr[Index] = Val;
+			}*/
+			this->arr[index] = Val;
 		}
 		objCnt++;
 	}
