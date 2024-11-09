@@ -183,7 +183,7 @@ NN<Manage::ThreadContext> Manage::ThreadContextARM::Clone() const
 
 Bool Manage::ThreadContextARM::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
-	Manage::DasmARM::DasmARM_Regs *r = (Manage::DasmARM::DasmARM_Regs *)regs;
+	NN<Manage::DasmARM::DasmARM_Regs> r = NN<Manage::DasmARM::DasmARM_Regs>::ConvertFrom(regs);
 	r->R0 = ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
 	r->R1 = ((ucontext_t*)this->context)->uc_mcontext.arm_r1;
 	r->R2 = ((ucontext_t*)this->context)->uc_mcontext.arm_r2;
