@@ -716,7 +716,7 @@ Media::DDCReader::DDCReader(void *hMon)
 	}
 }
 
-Media::DDCReader::DDCReader(const UTF8Char *monitorId)
+Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 {
 	this->edid = 0;
 	this->edidSize = 0;
@@ -771,19 +771,16 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
+UInt8 *Media::DDCReader::GetEDID(OutParam<UOSInt> size)
 {
-	if (size)
-	{
-		*size = this->edidSize;
-	}
+	size.Set(this->edidSize);
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
+UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
 {
-	Media::DDCReader *reader;
-	NEW_CLASS(reader, Media::DDCReader((void*)0));
+	NN<Media::DDCReader> reader;
+	NEW_CLASSNN(reader, Media::DDCReader((void*)0));
 	readerList->Add(reader);
 	return 1;
 }
