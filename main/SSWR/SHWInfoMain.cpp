@@ -263,7 +263,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				Double temp;
 
-				if (!cpuInfo.GetCPUTemp(i, &temp))
+				if (!cpuInfo.GetCPUTemp(i, temp))
 					break;
 
 				sb.ClearStr();

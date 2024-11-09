@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 
 	Int32 flags1;
 	Int32 flags2;
-	cpu.GetFeatureFlags(&flags1, &flags2);
+	cpu.GetFeatureFlags(flags1, flags2);
 	i = 0;
 	while (i < 32)
 	{
@@ -202,28 +202,28 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> p
 		k = this->lvMain->AddItem(CSTR("CPU Name"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
-	if (cpu.GetCPURatio(&r))
+	if (cpu.GetCPURatio(r))
 	{
 		sb.ClearStr();
 		sb.AppendI32(r);
 		k = this->lvMain->AddItem(CSTR("Ratio"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
-	if (cpu.GetCPUTurboRatio(&r))
+	if (cpu.GetCPUTurboRatio(r))
 	{
 		sb.ClearStr();
 		sb.AppendI32(r);
 		k = this->lvMain->AddItem(CSTR("Turbo Ratio"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
-	if (cpu.GetCPUTCC(&t))
+	if (cpu.GetCPUTCC(t))
 	{
 		sb.ClearStr();
 		sb.AppendDouble(t);
 		k = this->lvMain->AddItem(CSTR("TCC"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
-	if (cpu.GetCPUTemp(0, &t))
+	if (cpu.GetCPUTemp(0, t))
 	{
 		sb.ClearStr();
 		sb.AppendDouble(t);

@@ -46,7 +46,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	console.WriteLine(sb.ToCString());
 
 	i = 0;
-	while (cpuInfo->GetCPUTemp(i, &temp))
+	while (cpuInfo->GetCPUTemp(i, temp))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Temp "));

@@ -33,12 +33,12 @@ namespace Manage
 		Bool GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 		Bool GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 		UOSInt GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList);
-		void GetFeatureFlags(Int32 *flag1, Int32 *flag2);
+		void GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> flag2);
 
 		UnsafeArrayOpt<UTF8Char> GetCPUName(UnsafeArray<UTF8Char> sbuff);
-		Bool GetCPURatio(Int32 *ratio);
-		Bool GetCPUTurboRatio(Int32 *ratio);
-		Bool GetCPUTCC(Double *temp);
+		Bool GetCPURatio(OutParam<Int32> ratio);
+		Bool GetCPUTurboRatio(OutParam<Int32> ratio);
+		Bool GetCPUTCC(OutParam<Double> temp);
 
 		static Text::CStringNN GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
 		static Text::CStringNN GetFeatureShortName(UOSInt index);

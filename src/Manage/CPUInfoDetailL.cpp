@@ -247,11 +247,11 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 	return 0;
 }
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
 {
 	Bool ret = false;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
 	Text::StringBuilderUTF8 sb;
 	{
@@ -260,14 +260,14 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		sb.ClearStr();
 		if (reader.ReadLine(sb, 512))
 		{
-			Double val = Text::StrToDouble(sb.ToString());
+			Double val = Text::StrToDoubleOr(sb.ToString(), 0);
 			if (val < 100 && val > 0)
 			{
-				*temp = val;
+				temp.Set(val);
 			}
 			else
 			{
-				*temp = val * 0.001;
+				temp.Set(val * 0.001);
 			}
 			ret = true;
 		}
@@ -284,11 +284,11 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		{
 			if (sb.ToString()[0] == '+')
 			{
-				*temp = Text::StrToDouble(sb.ToString() + 1);
+				temp.Set(Text::StrToDoubleOr(sb.ToString() + 1, 0));
 			}
 			else
 			{
-				*temp = Text::StrToDouble(sb.ToString());
+				temp.Set(Text::StrToDoubleOr(sb.ToString(), 0));
 			}
 			ret = true;
 		}

@@ -414,12 +414,12 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> 
 	return retCnt;
 }
 
-void Manage::CPUInfo::GetFeatureFlags(Int32 *flag1, Int32 *flag2)
+void Manage::CPUInfo::GetFeatureFlags(OutParam<Int32> flag1, OutParam<Int32> flag2)
 {
 	Int32 cpuInfo[4];
 	Core::X86Util_cpuid(cpuInfo, 1);
-	*flag1 = cpuInfo[3];
-	*flag2 = cpuInfo[2];
+	flag1.Set(cpuInfo[3]);
+	flag2.Set(cpuInfo[2]);
 }
 
 Manage::CPUInfo::~CPUInfo()
@@ -587,19 +587,19 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 	return 0;
 }
 
-Bool Manage::CPUInfo::GetCPURatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
 //	InfoData *info = (InfoData*)this->clsData;
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTurboRatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
 //	InfoData *info = (InfoData*)this->clsData;
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
+Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
 //	InfoData *info = (InfoData*)this->clsData;
 	return false;

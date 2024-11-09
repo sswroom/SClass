@@ -115,7 +115,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 }
 #else
 
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
 {
 //	InfoData *info = (InfoData*)this->clsData;
 	Text::CStringNN path;
@@ -145,7 +145,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 			if (sb.ToInt32(val))
 			{
 				succ = true;
-				*temp = val * 0.001;
+				temp.Set(val * 0.001);
 			}
 		}
 	}
