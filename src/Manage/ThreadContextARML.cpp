@@ -24,7 +24,7 @@ UOSInt Manage::ThreadContextARM::GetRegisterCnt() const
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const
+UnsafeArrayOpt<UTF8Char> Manage::ThreadContextARM::GetRegister(UOSInt index, UnsafeArray<UTF8Char> buff, UInt8 *regVal, UInt32 *regBitCount) const
 {
 	switch (index)
 	{
@@ -104,7 +104,7 @@ UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UI
 void Manage::ThreadContextARM::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 regBuff[16];
 	UInt32 bitCnt;
 	UOSInt i = 0;
@@ -113,7 +113,7 @@ void Manage::ThreadContextARM::ToString(NN<Text::StringBuilderUTF8> sb) const
 
 	while (i < j)
 	{
-		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
+		if (this->GetRegister(i, sbuff, regBuff, &bitCnt).SetTo(sptr))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
@@ -181,7 +181,7 @@ NN<Manage::ThreadContext> Manage::ThreadContextARM::Clone() const
 	return cont;
 }
 
-Bool Manage::ThreadContextARM::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
+Bool Manage::ThreadContextARM::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
 	Manage::DasmARM::DasmARM_Regs *r = (Manage::DasmARM::DasmARM_Regs *)regs;
 	r->R0 = ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
@@ -204,7 +204,7 @@ Bool Manage::ThreadContextARM::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 	return true;	
 }
 
-Manage::Dasm *Manage::ThreadContextARM::CreateDasm() const
+Optional<Manage::Dasm> Manage::ThreadContextARM::CreateDasm() const
 {
 	Manage::DasmARM *dasm;
 	NEW_CLASS(dasm, Manage::DasmARM());
