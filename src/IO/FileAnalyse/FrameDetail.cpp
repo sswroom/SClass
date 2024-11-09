@@ -8,7 +8,7 @@ void IO::FileAnalyse::FrameDetail::FreeFieldInfo(NN<FieldInfo> field)
 	MemFreeNN(field);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value, FieldType fieldType)
+void IO::FileAnalyse::FrameDetail::AddFieldInfo(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value, FieldType fieldType)
 {
 	NN<FieldInfo> field = MemAllocNN(FieldInfo);
 	field->ofst = ofst;
