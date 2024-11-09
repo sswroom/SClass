@@ -791,20 +791,20 @@ UnsafeArray<UTF16Char> Text::StrInt64(UnsafeArray<UTF16Char> oriStr, Int64 val)
 		while (val >= 0x100000000LL)
 		{
 			str -= 2;
-			WriteNInt32((UInt8*)str, ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(val % 100) * 2]));
+			WriteNInt32((UInt8*)&str[0], ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(val % 100) * 2]));
 			val = val / 100;
 		}
 		UInt32 i32val = (UInt32)val;
 		while (i32val >= 100)
 		{
 			str -= 2;
-			WriteNInt32((UInt8*)str, ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(i32val % 100) * 2]));
+			WriteNInt32((UInt8*)&str[0], ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(i32val % 100) * 2]));
 			i32val = i32val / 100;
 		}
 		if (i32val >= 10)
 		{
 			str -= 2;
-			WriteNInt32((UInt8*)str, ReadNInt32((const UInt8*)&MyString_StrDigit100U16[i32val * 2]));
+			WriteNInt32((UInt8*)&str[0], ReadNInt32((const UInt8*)&MyString_StrDigit100U16[i32val * 2]));
 		}
 		else
 		{
@@ -834,20 +834,20 @@ UnsafeArray<UTF16Char> Text::StrUInt64(UnsafeArray<UTF16Char> oriStr, UInt64 val
 		while (val >= 0x100000000LL)
 		{
 			str -= 2;
-			WriteNInt32((UInt8*)str, ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(val % 100) * 2]));
+			WriteNInt32((UInt8*)&str[0], ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(val % 100) * 2]));
 			val = val / 100;
 		}
 		UInt32 i32val = (UInt32)val;
 		while (i32val >= 100)
 		{
 			str -= 2;
-			WriteNInt32((UInt8*)str, ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(i32val % 100) * 2]));
+			WriteNInt32((UInt8*)&str[0], ReadNInt32((const UInt8*)&MyString_StrDigit100U16[(i32val % 100) * 2]));
 			i32val = i32val / 100;
 		}
 		if (i32val >= 10)
 		{
 			str -= 2;
-			WriteNInt32((UInt8*)str, ReadNInt32((const UInt8*)&MyString_StrDigit100U16[i32val * 2]));
+			WriteNInt32((UInt8*)&str[0], ReadNInt32((const UInt8*)&MyString_StrDigit100U16[i32val * 2]));
 		}
 		else
 		{
@@ -882,20 +882,20 @@ UnsafeArray<UTF32Char> Text::StrInt64(UnsafeArray<UTF32Char> oriStr, Int64 val)
 		while (val >= 0x100000000LL)
 		{
 			str -= 2;
-			WriteNInt64((UInt8*)str, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
+			WriteNInt64((UInt8*)&str[0], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
 			val = val / 100;
 		}
 		UInt32 i32val = (UInt32)val;
 		while (i32val >= 100)
 		{
 			str -= 2;
-			WriteNInt64((UInt8*)str, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(i32val % 100) * 2]));
+			WriteNInt64((UInt8*)&str[0], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(i32val % 100) * 2]));
 			i32val = i32val / 100;
 		}
 		if (i32val >= 10)
 		{
 			str -= 2;
-			WriteNInt64((UInt8*)str, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[i32val * 2]));
+			WriteNInt64((UInt8*)&str[0], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[i32val * 2]));
 		}
 		else
 		{
@@ -925,20 +925,20 @@ UnsafeArray<UTF32Char> Text::StrUInt64(UnsafeArray<UTF32Char> oriStr, UInt64 val
 		while (val >= 0x100000000LL)
 		{
 			str -= 2;
-			WriteNInt64((UInt8*)str, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
+			WriteNInt64((UInt8*)&str[0], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(val % 100) * 2]));
 			val = val / 100;
 		}
 		UInt32 i32val = (UInt32)val;
 		while (i32val >= 100)
 		{
 			str -= 2;
-			WriteNInt64((UInt8*)str, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(i32val % 100) * 2]));
+			WriteNInt64((UInt8*)&str[0], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[(i32val % 100) * 2]));
 			i32val = i32val / 100;
 		}
 		if (i32val >= 10)
 		{
 			str -= 2;
-			WriteNInt64((UInt8*)str, ReadNInt64((const UInt8*)&MyString_StrDigit100U32[i32val * 2]));
+			WriteNInt64((UInt8*)&str[0], ReadNInt64((const UInt8*)&MyString_StrDigit100U32[i32val * 2]));
 		}
 		else
 		{

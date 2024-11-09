@@ -718,6 +718,14 @@ Int32 JasyptTest()
 	return 0;
 }
 
+Int32 FirebaseTest()
+{
+	Text::CStringNN key = CSTR("");
+	Text::CStringNN userEmail = CSTR("");
+	Text::CStringNN password = CSTR("");
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt testType = 17;
@@ -759,6 +767,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return AWSEmailTest();
 	case 17:
 		return JasyptTest();
+	case 18:
+		return FirebaseTest();
 	default:
 		return 0;
 	}
