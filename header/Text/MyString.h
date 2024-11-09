@@ -476,7 +476,7 @@ Bool Text::StrStartsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeA
 #else
 	while (len2 >= 8)
 	{
-		if (ReadNUInt32(str1) != ReadNUInt32(str2))
+		if (ReadNUInt32(&str1[0]) != ReadNUInt32(&str2[0]))
 			return false;
 		if (ReadNUInt32(&str1[4]) != ReadNUInt32(&str2[4]))
 			return false;
