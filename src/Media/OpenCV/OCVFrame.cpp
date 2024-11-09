@@ -7,10 +7,10 @@
 #include "Media/OpenCV/OCVFrame.h"
 #include "Media/OpenCV/OCVInit.h"
 
-#include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <stdio.h>
 
-#include <opencv2/highgui.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 Media::OpenCV::OCVFrame::OCVFrame(void *frame)
 {

@@ -1066,8 +1066,13 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		info->color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		break;
+
 #if VERSION_FROM(57, 24, 1) //2016-06-27
+#if VERSION_FROM(57, 64, 102) //2016-06-27
 	case AVCOL_TRC_SMPTE2084: //BT2100
+#else
+	case AVCOL_TRC_SMPTEST2084:
+#endif
 		info->color.rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color.gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color.btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
@@ -1080,8 +1085,10 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.btransfer.Set(Media::CS::TRANT_HLG, 2.2);
 		break;
 #endif
-#if VERSION_FROM(57, 24, 1) //2016-06-27
+#if VERSION_FROM(57, 64, 102) //2016-06-27
 	case AVCOL_TRC_SMPTE428:
+#elif VERSION_FROM(57, 24, 1)
+	case AVCOL_TRC_SMPTEST428_1:
 #endif
 	case AVCOL_TRC_NB:
 		info->color.rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
@@ -1119,7 +1126,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT2020);
 		break;
 #if VERSION_FROM(57, 27, 2) //2016-10-02
-	case AVCOL_PRI_SMPTE428:
+	case AVCOL_PRI_SMPTEST428_1:
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
 #endif
@@ -1131,7 +1138,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 #endif
-#if VERSION_FROM(57, 28, 1) //2016-10-21
+#if VERSION_FROM(57, 64, 102) //2016-10-21
 	case AVCOL_PRI_JEDEC_P22:
 #endif
 	default:

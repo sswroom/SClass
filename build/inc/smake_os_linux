@@ -97,7 +97,9 @@ Media/PulseAudioRenderer.h:
 Media/SOXRFilter.h:
 @SOXRFilter.o
 Media/ZXingWriter.h:
-@ZXingWriter.o
+@?(NO_ZXING == 0)ZXingWriter.o
+@?(NO_ZXING > 0)ZXingWriter_Null.o
+
 Media/Decoder/FFMPEGDecoder.h:
 @FFMPEGDecoder.o
 Media/OpenCV/OCVFrame.h:

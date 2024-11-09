@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "Media/OpenCV/OCVNumPlateFinder.h"
-#include <opencv2/imgproc.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 //#define VERBOSE
 #if defined(VERBOSE)
-#include <opencv2/highgui.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #endif
 
 //https://circuitdigest.com/microcontroller-projects/license-plate-recognition-using-raspberry-pi-and-opencv
