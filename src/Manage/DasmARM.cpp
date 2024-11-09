@@ -29,7 +29,7 @@ Cond table
 1110	-
 */
 
-Bool DasmARM_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
+Bool DasmARM_IsEndFunc(UnsafeArray<const UTF8Char> funcName, UOSInt nameLen)
 {
 	if (Text::StrIndexOfC(funcName, nameLen, UTF8STRC("(exit+0)")) != INVALID_INDEX)
 	{
@@ -38,7 +38,7 @@ Bool DasmARM_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
 	return false;
 }
 
-UTF8Char *DasmARM_ParseReg32(Manage::DasmARM::DasmARM_Sess* sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
+UnsafeArray<UTF8Char> DasmARM_ParseReg32(NN<Manage::DasmARM::DasmARM_Sess> sess, UnsafeArray<UTF8Char> regName, Int32 regNo, UInt32 **regPtr)
 {
 	switch (regNo)
 	{
@@ -111,7 +111,7 @@ UInt32 DasmARM_ParseImmA32(UInt8 rot, UInt8 val)
 	}
 }
 
-UInt32 DasmARM_ParseImmShift(Manage::DasmARM::DasmARM_Sess *sess, UInt32 oriVal)
+UInt32 DasmARM_ParseImmShift(NN<Manage::DasmARM::DasmARM_Sess> sess, UInt32 oriVal)
 {
 	Int32 t = sess->codeBuff[0] & 0x60 >> 5;
 	Int32 v = ((sess->codeBuff[1] & 0xf) << 1) | ((sess->codeBuff[0] & 0x80) >> 7);
@@ -176,57 +176,57 @@ UInt32 DasmARM_ParseImmShift(Manage::DasmARM::DasmARM_Sess *sess, UInt32 oriVal)
 	return oriVal;
 }
 
-Bool DasmARM_00(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_00(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_01(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_01(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_02(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_02(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_03(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_03(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_04(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_04(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_05(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_05(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_06(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_06(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_07(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_07(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_08(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_08(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_09(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_09(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_0A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_0A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -243,14 +243,14 @@ Bool DasmARM_0A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_0B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_0B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -267,84 +267,84 @@ Bool DasmARM_0B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_0C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_0C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_0D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_0D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_0E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_0E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_0F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_0F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_10(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_10(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_11(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_11(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_12(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_12(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_13(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_13(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_14(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_14(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_15(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_15(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_16(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_16(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_17(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_17(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_18(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_18(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_19(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_19(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_1A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_1A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -361,14 +361,14 @@ Bool DasmARM_1A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_1B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_1B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -385,84 +385,84 @@ Bool DasmARM_1B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_1C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_1C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_1D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_1D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_1E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_1E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_1F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_1F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_20(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_20(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_21(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_21(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_22(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_22(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_23(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_23(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_24(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_24(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_25(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_25(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_26(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_26(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_27(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_27(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_28(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_28(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_29(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_29(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_2A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_2A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -479,14 +479,14 @@ Bool DasmARM_2A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_2B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_2B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -503,84 +503,84 @@ Bool DasmARM_2B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_2C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_2C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_2D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_2D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_2E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_2E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_2F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_2F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_30(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_30(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_31(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_31(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_32(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_32(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_33(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_33(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_34(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_34(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_35(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_35(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_36(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_36(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_37(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_37(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_38(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_38(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_39(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_39(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_3A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_3A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -597,14 +597,14 @@ Bool DasmARM_3A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_3B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_3B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -621,84 +621,84 @@ Bool DasmARM_3B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_3C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_3C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_3D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_3D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_3E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_3E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_3F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_3F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_40(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_40(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_41(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_41(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_42(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_42(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_43(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_43(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_44(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_44(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_45(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_45(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_46(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_46(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_47(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_47(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_48(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_48(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_49(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_49(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_4A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_4A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -715,14 +715,14 @@ Bool DasmARM_4A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_4B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_4B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -739,84 +739,84 @@ Bool DasmARM_4B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_4C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_4C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_4D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_4D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_4E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_4E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_4F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_4F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_50(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_50(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_51(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_51(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_52(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_52(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_53(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_53(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_54(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_54(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_55(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_55(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_56(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_56(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_57(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_57(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_58(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_58(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_59(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_59(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_5A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_5A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -833,14 +833,14 @@ Bool DasmARM_5A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_5B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_5B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -857,84 +857,84 @@ Bool DasmARM_5B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_5C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_5C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_5D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_5D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_5E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_5E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_5F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_5F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_60(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_60(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_61(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_61(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_62(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_62(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_63(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_63(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_64(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_64(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_65(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_65(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_66(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_66(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_67(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_67(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_68(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_68(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_69(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_69(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_6A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_6A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -951,14 +951,14 @@ Bool DasmARM_6A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_6B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_6B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -975,84 +975,84 @@ Bool DasmARM_6B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_6C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_6C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_6D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_6D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_6E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_6E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_6F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_6F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_70(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_70(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_71(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_71(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_72(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_72(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_73(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_73(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_74(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_74(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_75(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_75(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_76(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_76(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_77(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_77(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_78(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_78(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_79(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_79(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_7A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_7A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1069,14 +1069,14 @@ Bool DasmARM_7A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_7B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_7B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1093,44 +1093,44 @@ Bool DasmARM_7B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_7C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_7C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_7D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_7D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_7E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_7E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_7F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_7F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_80(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_80(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_81(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_81(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_82(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_82(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrs;
 	UInt32 *regPtrd;
@@ -1188,7 +1188,7 @@ Bool DasmARM_82(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_83(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_83(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrd;
 	Int32 val;
@@ -1213,12 +1213,12 @@ Bool DasmARM_83(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_84(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_84(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_85(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_85(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrs;
 	UInt32 *regPtrd;
@@ -1249,12 +1249,12 @@ Bool DasmARM_85(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_86(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_86(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_87(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_87(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrs;
 	UInt32 *regPtrs2;
@@ -1301,17 +1301,17 @@ Bool DasmARM_87(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_88(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_88(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_89(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_89(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_8A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_8A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1328,14 +1328,14 @@ Bool DasmARM_8A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_8B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_8B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1352,84 +1352,84 @@ Bool DasmARM_8B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_8C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_8C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_8D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_8D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_8E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_8E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_8F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_8F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_90(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_90(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_91(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_91(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_92(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_92(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_93(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_93(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_94(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_94(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_95(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_95(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_96(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_96(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_97(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_97(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_98(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_98(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_99(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_99(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_9A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_9A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1446,14 +1446,14 @@ Bool DasmARM_9A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_9B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_9B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1470,84 +1470,84 @@ Bool DasmARM_9B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_9C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_9C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_9D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_9D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_9E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_9E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_9F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_9F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_A9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_A9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_AA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_AA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1564,14 +1564,14 @@ Bool DasmARM_AA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_AB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_AB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1588,84 +1588,84 @@ Bool DasmARM_AB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_AC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_AC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_AD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_AD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_AE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_AE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_AF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_AF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_B9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_B9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_BA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_BA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1682,14 +1682,14 @@ Bool DasmARM_BA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_BB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_BB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1706,84 +1706,84 @@ Bool DasmARM_BB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_BC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_BC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_BD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_BD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_BE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_BE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_BF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_BF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_C9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_C9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_CA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_CA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1800,14 +1800,14 @@ Bool DasmARM_CA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_CB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_CB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1824,84 +1824,84 @@ Bool DasmARM_CB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_CC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_CC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_CD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_CD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_CE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_CE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_CF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_CF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_D9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_D9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_DA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_DA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1918,14 +1918,14 @@ Bool DasmARM_DA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_DB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_DB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -1942,34 +1942,34 @@ Bool DasmARM_DB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
-Bool DasmARM_DC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_DC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_DD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_DD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_DE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_DE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_DF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_DF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_E0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrd;
 	UInt32 *regPtrs1;
@@ -2025,14 +2025,14 @@ Bool DasmARM_E0(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrd;
 	UInt32 *regPtrs;
 	UInt32 *regPtrs2;
 	Int32 imm;
 	UInt8 t;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sess->regs.PC += 4;
 	switch (sess->codeBuff[2] & 0xf0)
 	{
@@ -2050,11 +2050,7 @@ Bool DasmARM_E1(Manage::DasmARM::DasmARM_Sess *sess)
 				if (sess->addrResol)
 				{
 					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-					sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, *regPtrs);
-					if (sess->sbuff == 0)
-					{
-						sess->sbuff = sptr;
-					}
+					sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, *regPtrs).Or(sess->sbuff);
 					if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 					{
 						sess->endType = Manage::DasmARM::ET_EXIT;
@@ -2319,7 +2315,7 @@ Bool DasmARM_E1(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrd;
 	UInt32 *regPtrs;
@@ -2545,7 +2541,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtr;
 	Int32 val;
@@ -2661,7 +2657,7 @@ Bool DasmARM_E3(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrd;
 	UInt32 *regPtrs;
@@ -2697,7 +2693,7 @@ Bool DasmARM_E4(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtrd;
 	UInt32 *regPtrs;
@@ -2748,17 +2744,17 @@ Bool DasmARM_E5(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_E7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_E8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	UInt32 *regPtr;
 	sess->regs.PC += 4;
@@ -2882,12 +2878,12 @@ Bool DasmARM_E8(Manage::DasmARM::DasmARM_Sess *sess)
 	return false;
 }
 
-Bool DasmARM_E9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_E9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_EA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_EA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
 	sess->regs.PC += 4;
@@ -2904,7 +2900,7 @@ Bool DasmARM_EA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 
@@ -2915,10 +2911,10 @@ Bool DasmARM_EA(Manage::DasmARM::DasmARM_Sess *sess)
 	return true;
 }
 
-Bool DasmARM_EB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_EB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	Int32 addr;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bl 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
@@ -2933,11 +2929,7 @@ Bool DasmARM_EB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
-		if (sess->sbuff == 0)
-		{
-			sess->sbuff = sptr;
-		}
+		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + (UInt32)addr + 4).Or(sess->sbuff);
 		if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM::ET_EXIT;
@@ -2949,1382 +2941,1382 @@ Bool DasmARM_EB(Manage::DasmARM::DasmARM_Sess *sess)
 	return true;
 }
 
-Bool DasmARM_EC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_EC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_ED(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_ED(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_EE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_EE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_EF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_EF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_F9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_F9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_FA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_FA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_FB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_FB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_FC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_FC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_FD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_FD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_FE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_FE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_FF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_FF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T00(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T00(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T01(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T01(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T02(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T02(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T03(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T03(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T04(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T04(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T05(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T05(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T06(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T06(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T07(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T07(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T08(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T08(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T09(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T09(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T0A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T0A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T0B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T0B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T0C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T0C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T0D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T0D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T0E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T0E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T0F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T0F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T10(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T10(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T11(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T11(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T12(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T12(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T13(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T13(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T14(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T14(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T15(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T15(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T16(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T16(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T17(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T17(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T18(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T18(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T19(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T19(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T1A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T1A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T1B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T1B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T1C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T1C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T1D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T1D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T1E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T1E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T1F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T1F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T20(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T20(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T21(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T21(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T22(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T22(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T23(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T23(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T24(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T24(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T25(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T25(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T26(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T26(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T27(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T27(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T28(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T28(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T29(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T29(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T2A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T2A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T2B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T2B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T2C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T2C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T2D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T2D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T2E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T2E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T2F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T2F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T30(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T30(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T31(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T31(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T32(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T32(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T33(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T33(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T34(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T34(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T35(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T35(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T36(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T36(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T37(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T37(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T38(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T38(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T39(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T39(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T3A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T3A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T3B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T3B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T3C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T3C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T3D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T3D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T3E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T3E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T3F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T3F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T40(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T40(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T41(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T41(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T42(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T42(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T43(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T43(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T44(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T44(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T45(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T45(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T46(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T46(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T47(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T47(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T48(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T48(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T49(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T49(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T4A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T4A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T4B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T4B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T4C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T4C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T4D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T4D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T4E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T4E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T4F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T4F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T50(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T50(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T51(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T51(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T52(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T52(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T53(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T53(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T54(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T54(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T55(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T55(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T56(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T56(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T57(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T57(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T58(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T58(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T59(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T59(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T5A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T5A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T5B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T5B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T5C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T5C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T5D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T5D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T5E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T5E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T5F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T5F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T60(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T60(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T61(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T61(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T62(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T62(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T63(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T63(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T64(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T64(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T65(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T65(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T66(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T66(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T67(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T67(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T68(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T68(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T69(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T69(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T6A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T6A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T6B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T6B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T6C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T6C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T6D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T6D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T6E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T6E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T6F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T6F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T70(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T70(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T71(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T71(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T72(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T72(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T73(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T73(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T74(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T74(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T75(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T75(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T76(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T76(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T77(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T77(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T78(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T78(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T79(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T79(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T7A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T7A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T7B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T7B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T7C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T7C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T7D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T7D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T7E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T7E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T7F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T7F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T80(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T80(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T81(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T81(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T82(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T82(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T83(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T83(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T84(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T84(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T85(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T85(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T86(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T86(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T87(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T87(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T88(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T88(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T89(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T89(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T8A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T8A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T8B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T8B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T8C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T8C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T8D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T8D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T8E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T8E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T8F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T8F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T90(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T90(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T91(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T91(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T92(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T92(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T93(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T93(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T94(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T94(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T95(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T95(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T96(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T96(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T97(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T97(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T98(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T98(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T99(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T99(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T9A(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T9A(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T9B(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T9B(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T9C(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T9C(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T9D(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T9D(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T9E(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T9E(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_T9F(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_T9F(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TA9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TA9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TAA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TAA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TAB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TAB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TAC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TAC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TAD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TAD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TAE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TAE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TAF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TAF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TB9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TB9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TBA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TBA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TBB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TBB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TBC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TBC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TBD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TBD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TBE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TBE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TBF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TBF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TC9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TC9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TCA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TCA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TCB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TCB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TCC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TCC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TCD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TCD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TCE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TCE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TCF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TCF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TD9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TD9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TDA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TDA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TDB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TDB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TDC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TDC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TDD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TDD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TDE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TDE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TDF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TDF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TE9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TE9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TEA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TEA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TEB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TEB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TEC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TEC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TED(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TED(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TEE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TEE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TEF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TEF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF0(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF0(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF1(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF1(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF2(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF2(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF3(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF3(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF4(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF4(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF5(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF5(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF6(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF6(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF7(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF7(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF8(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF8(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TF9(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TF9(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TFA(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TFA(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TFB(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TFB(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TFC(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TFC(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TFD(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TFD(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TFE(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TFE(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
 
-Bool DasmARM_TFF(Manage::DasmARM::DasmARM_Sess *sess)
+Bool DasmARM_TFF(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
 	return false;
 }
@@ -4877,7 +4869,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
-	MemCopyNO(&sess.regs, regs, sizeof(Manage::DasmARM::DasmARM_Regs));
+	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmARM::DasmARM_Regs));
 	sess.regs.PC = *currInst;
 	sess.regs.SP = *currStack;
 	sess.regs.LR = *currFrame;
@@ -4944,7 +4936,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 			}
 			else
 			{
-				ret = this->codesT[buff[1]](&sess);
+				ret = this->codesT[buff[1]](sess);
 			}
 		}
 		else
@@ -4955,7 +4947,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 			}
 			else
 			{
-				ret = this->codes[buff[3]](&sess);
+				ret = this->codes[buff[3]](sess);
 			}
 		}
 		if (!ret)
@@ -4993,7 +4985,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 				*currStack = sess.regs.SP;
 				*currFrame = sess.regs.LR;
 				*blockEnd = sess.regs.PC;
-				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM::DasmARM_Regs));
+				MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmARM::DasmARM_Regs));
 				return false;
 			}
 			sess.regs.PC = minAddr;
@@ -5005,7 +4997,7 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 			*currStack = sess.regs.SP;
 			*currFrame = sess.regs.LR;
 			*blockEnd = sess.regs.PC;
-			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM::DasmARM_Regs));
+			MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmARM::DasmARM_Regs));
 			return sess.endType != Manage::DasmARM::ET_EXIT;
 		}
 //		sess.lastStatus = sess.thisStatus;
