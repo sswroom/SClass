@@ -16,7 +16,7 @@ OSInt Media::CameraManager::GetDeviceCount()
 	return 1;
 }
 
-Media::IPhotoCapture *Media::CameraManager::CreateDevice(OSInt devId)
+Optional<Media::IPhotoCapture> Media::CameraManager::CreateDevice(OSInt devId)
 {
 	Media::IPhotoCapture *capture = 0;
 	if (devId == 0)
