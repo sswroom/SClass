@@ -57,7 +57,7 @@ IO::SystemInfo::~SystemInfo()
 	MemFree(this->clsData);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->clsData->platformName)
 	{
@@ -66,7 +66,7 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 	return 0;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->clsData->platformSN)
 	{
@@ -100,12 +100,12 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return IO::SystemInfo::CT_IOT_GATEWAY;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	return 0;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 }
 
