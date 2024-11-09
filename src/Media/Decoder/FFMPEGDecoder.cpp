@@ -613,7 +613,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<IVideoSource> sourceVideo) : Med
 	case FOURCC('M', 'J', 'P', 'G'):
 		codecId = AV_CODEC_ID_MJPEG;
 		break;
-#if VERSION_FROM(55, 0, 0) //not sure
+#if VERSION_FROM(57, 89, 100) //not sure
 	case FOURCC('a', 'v', '0', '1'):
 		codecId = AV_CODEC_ID_AV1;
 		break;
@@ -1066,19 +1066,21 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		info->color.btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		break;
-#if VERSION_FROM(56, 0, 0)
+#if VERSION_FROM(57, 24, 1) //2016-06-27
 	case AVCOL_TRC_SMPTE2084: //BT2100
 		info->color.rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color.gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		info->color.btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		break;
 #endif
-#if VERSION_FROM(56, 0, 0)
+#if VERSION_FROM(57, 22, 1) //2016-06-21
 	case AVCOL_TRC_ARIB_STD_B67:
 		info->color.rtransfer.Set(Media::CS::TRANT_HLG, 2.2);
 		info->color.gtransfer.Set(Media::CS::TRANT_HLG, 2.2);
 		info->color.btransfer.Set(Media::CS::TRANT_HLG, 2.2);
 		break;
+#endif
+#if VERSION_FROM(57, 24, 1) //2016-06-27
 	case AVCOL_TRC_SMPTE428:
 #endif
 	case AVCOL_TRC_NB:
@@ -1116,12 +1118,12 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	case AVCOL_PRI_BT2020:
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_BT2020);
 		break;
-#if VERSION_FROM(56, 0, 0)
+#if VERSION_FROM(57, 27, 2) //2016-10-02
 	case AVCOL_PRI_SMPTE428:
-#endif
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;
-#if VERSION_FROM(57, 22, 2)
+#endif
+#if VERSION_FROM(57, 22, 2) //2016-06-21
 	case AVCOL_PRI_SMPTE431:
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
@@ -1129,7 +1131,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_DCI_P3);
 		break;
 #endif
-#if VERSION_FROM(56, 0, 0)
+#if VERSION_FROM(57, 28, 1) //2016-10-21
 	case AVCOL_PRI_JEDEC_P22:
 #endif
 	default:
