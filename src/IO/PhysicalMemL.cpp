@@ -34,7 +34,7 @@ IO::PhysicalMem::PhysicalMem(OSInt addr, OSInt size)
 	}
 	else
 	{
-		Sync::Interlocked::Increment(&PhysicalMem_status->useCnt);
+		Sync::Interlocked::IncrementI32(PhysicalMem_status->useCnt);
 	}
 
 	ClassData *clsData = 0;
@@ -70,7 +70,7 @@ IO::PhysicalMem::~PhysicalMem()
 		MemFree(this->clsData);
 		this->clsData = 0;
 	}
-	if (Sync::Interlocked::Decrement(&PhysicalMem_status->useCnt) == 0)
+	if (Sync::Interlocked::DecrementI32(PhysicalMem_status->useCnt) == 0)
 	{
 		close(PhysicalMem_status->fd);
 		MemFree(PhysicalMem_status);
