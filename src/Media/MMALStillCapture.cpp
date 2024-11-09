@@ -51,7 +51,7 @@ void MMALStillCapture_BufferCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 	leng = buffer->length;
 	if (info->stm && !info->succ)
 	{
-		info->stm->Write(buffer->data, buffer->length);
+		info->stm->Write(Data::ByteArrayR(buffer->data, buffer->length));
 	}
 	mmal_buffer_header_mem_unlock(buffer);
 	mmal_buffer_header_release (buffer);
