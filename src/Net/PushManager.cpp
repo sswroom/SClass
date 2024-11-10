@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Net/GoogleFCM.h"
 #include "Net/PushManager.h"
+#include "Net/Google/GoogleFCM.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
@@ -131,13 +131,31 @@ void Net::PushManager::SaveData()
 	}
 }
 
-Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN fcmKey, NN<IO::LogTool> log)
+Optional<Text::String> Net::PushManager::GetAccessToken()
 {
-	this->clif = clif;
-	this->ssl = ssl;
-	this->fcmKey = Text::String::New(fcmKey);
+	NN<Net::Google::AccessTokenResponse> accessToken;
+	Data::Timestamp currTime = Data::Timestamp::Now();
+	if (this->accessToken.SetTo(accessToken) && currTime < this->accessTokenExpire)
+	{
+		return accessToken->GetAccessToken();
+	}
+	this->accessToken.Delete();
+	if (this->oauth2.GetServiceToken(this->serviceAccount, CSTR("https://www.googleapis.com/auth/firebase.messaging")).SetTo(accessToken))
+	{
+		this->accessToken = accessToken;
+		this->accessTokenExpire = Data::Timestamp::Now().AddSecond(accessToken->GetExpiresIn());
+		return accessToken->GetAccessToken();
+	}
+	return 0;
+}
+
+Net::PushManager::PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::Google::GoogleServiceAccount> serviceAccount, NN<IO::LogTool> log) : fcm(clif, ssl, serviceAccount->GetProjectId()->ToCString()), oauth2(clif, ssl)
+{
+	this->serviceAccount = serviceAccount;
 	this->log = log;
 	this->loading = false;
+	this->accessToken = 0;
+	this->accessTokenExpire = 0;
 	this->LoadData();
 }
 
@@ -160,7 +178,7 @@ Net::PushManager::~PushManager()
 		SDEL_STRING(dev->devModel);
 		MemFreeNN(dev);
 	}
-	this->fcmKey->Release();
+	this->accessToken.Delete();
 }
 
 Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
@@ -277,14 +295,22 @@ Bool Net::PushManager::Send(NN<Data::ArrayListStringNN> userNames, NN<Text::Stri
 	else
 	{
 		Bool ret = false;
-		Text::StringBuilderUTF8 sbResult;
-		it = tokenList.Iterator();
-		while (it.HasNext())
+		NN<Text::String> accessToken;
+		if (this->GetAccessToken().SetTo(accessToken))
 		{
-			sbResult.ClearStr();
-			sbResult.AppendC(UTF8STRC("Send Message result: "));
-			ret |= Net::GoogleFCM::SendMessage(this->clif, this->ssl, this->fcmKey->ToCString(), it.Next()->ToCString(), message->ToCString(), &sbResult);
-			this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
+			Text::StringBuilderUTF8 sbResult;
+			it = tokenList.Iterator();
+			while (it.HasNext())
+			{
+				sbResult.ClearStr();
+				sbResult.AppendC(UTF8STRC("Send Message result: "));
+				ret |= this->fcm.SendMessage(accessToken->ToCString(), it.Next()->ToCString(), message->ToCString(), sbResult);
+				this->log->LogMessage(sbResult.ToCString(), IO::LogHandler::LogLevel::Action);
+			}
+		}
+		else
+		{
+			this->log->LogMessage(CSTR("Send: Error in getting access token"), IO::LogHandler::LogLevel::Error);
 		}
 		tokenList.FreeAll();
 		return ret;

@@ -1334,7 +1334,6 @@ EthernetAnalyzer.o: ../../src/Net/EthernetAnalyzer.cpp
 EthernetWebHandler.o: ../../src/Net/EthernetWebHandler.cpp
 FTPClient.o: ../../src/Net/FTPClient.cpp
 FTPConn.o: ../../src/Net/FTPConn.cpp
-GoogleFCM.o: ../../src/Net/GoogleFCM.cpp
 GoogleQRCode.o: ../../src/Net/GoogleQRCode.cpp
 HKTrafficImage.o: ../../src/Net/HKTrafficImage.cpp
 HKOAPI.o: ../../src/Net/HKOAPI.cpp
@@ -1501,6 +1500,11 @@ POP3Server.o: ../../src/Net/Email/POP3Server.cpp
 SMTPClient.o: ../../src/Net/Email/SMTPClient.cpp
 SMTPConn.o: ../../src/Net/Email/SMTPConn.cpp
 SMTPServer.o: ../../src/Net/Email/SMTPServer.cpp
+GoogleFCM.o: ../../src/Net/Google/GoogleFCM.cpp
+GoogleFCMv1.o: ../../src/Net/Google/GoogleFCMv1.cpp
+GoogleIdentityToolkit.o: ../../src/Net/Google/GoogleIdentityToolkit.cpp
+GoogleOAuth2.o: ../../src/Net/Google/GoogleOAuth2.cpp
+GoogleServiceAccount.o: ../../src/Net/Google/GoogleServiceAccount.cpp
 NamesGeneral.o: ../../src/Net/Names/General.cpp
 NamesInformationFramework.o: ../../src/Net/Names/InformationFramework.cpp
 NamesPKCS1.o: ../../src/Net/Names/PKCS1.cpp

@@ -3126,8 +3126,6 @@ Net/FTPClient.h:
 @FTPClient.o
 Net/FTPConn.h:
 @FTPConn.o
-Net/GoogleFCM.h:
-@GoogleFCM.o
 Net/GoogleQRCode.h:
 @GoogleQRCode.o
 Net/HKOAPI.h:
@@ -3384,6 +3382,16 @@ Net/Email/SMTPConn.h:
 @SMTPConn.o
 Net/Email/SMTPServer.h:
 @SMTPServer.o
+Net/Google/GoogleFCM.h:
+@GoogleFCM.o
+Net/Google/GoogleFCMv1.h:
+@GoogleFCMv1.o
+Net/Google/GoogleIdentityToolkit.h:
+@GoogleIdentityToolkit.o
+Net/Google/GoogleOAuth2.h:
+@GoogleOAuth2.o
+Net/Google/GoogleServiceAccount.h:
+@GoogleServiceAccount.o
 Net/Names/General.h:
 @NamesGeneral.o
 Net/Names/InformationFramework.h:

@@ -1,6 +1,7 @@
 #ifndef _SM_NET_PUSHSERVER
 #define _SM_NET_PUSHSERVER
 #include "Net/PushManager.h"
+#include "Net/Google/GoogleServiceAccount.h"
 #include "Net/WebServer/WebListener.h"
 
 namespace Net
@@ -11,12 +12,12 @@ namespace Net
 	{
 	private:
 		NN<Net::TCPClientFactory> clif;
-		Net::WebServer::WebListener *listener;
+		Optional<Net::WebServer::WebListener> listener;
 		NN<PushServerHandler> webHdlr;
 		PushManager mgr;
 
 	public:
-		PushServer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, Text::CStringNN fcmKey, NN<IO::LogTool> log);
+		PushServer(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt16 port, NN<Net::Google::GoogleServiceAccount> serviceAccount, NN<IO::LogTool> log);
 		~PushServer();
 
 		Bool IsError();

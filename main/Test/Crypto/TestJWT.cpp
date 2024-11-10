@@ -39,48 +39,48 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	DEL_CLASS(jwt);
 	
-	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"), 0);
-	if (token == 0)
+	NN<Crypto::Token::JWToken> token;
+	if (!Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"), 0).SetTo(token))
 	{
 		ssl.Delete();
 		return 2;
 	}
 	if (!token->SignatureValid(ssl, UTF8STRC("your-256-bit-secret"), Crypto::Cert::X509Key::KeyType::Unknown))
 	{
-		DEL_CLASS(token);
+		token.Delete();
 		ssl.Delete();
 		return 3;
 	}
-	Data::StringMap<Text::String*> *result = token->ParsePayload(param, false, 0);
-	if (result == 0)
+	NN<Data::StringMap<Text::String*>> result;
+	if (!token->ParsePayload(param, false, 0).SetTo(result))
 	{
-		DEL_CLASS(token);
+		token.Delete();
 		ssl.Delete();
 		return 4;
 	}
 	if (!s.Set(result->Get(CSTR("name"))) || !s->Equals(UTF8STRC("John Doe")))
 	{
 		token->FreeResult(result);
-		DEL_CLASS(token);
+		token.Delete();
 		ssl.Delete();
 		return 5;
 	}
 	if (!param.GetSubject().SetTo(s) || !s->Equals(UTF8STRC("1234567890")))
 	{
 		token->FreeResult(result);
-		DEL_CLASS(token);
+		token.Delete();
 		ssl.Delete();
 		return 6;
 	}
 	if (param.GetIssuedAt() != 1516239022)
 	{
 		token->FreeResult(result);
-		DEL_CLASS(token);
+		token.Delete();
 		ssl.Delete();
 		return 7;
 	}
 	token->FreeResult(result);
-	DEL_CLASS(token);
+	token.Delete();
 
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 keyBuff[4096];
@@ -135,17 +135,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		if (key.SetTo(nnkey) && (nnkey->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA || nnkey->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSAPublic))
 		{
-			token = Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.NHVaYe26MbtOYhSKkoKYdFVomg4i8ZJd8_-RU8VNbftc4TSMb4bXP3l3YlNWACwyXPGffz5aXHc6lty1Y2t4SWRqGteragsVdZufDn5BlnJl9pdR_kdVFUsra2rWKEofkZeIC4yWytE58sMIihvo9H1ScmmVwBcQP6XETqYd0aSHp1gOa9RdUPDvoXQ5oqygTqVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9RiwrV7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ"), 0);
-			if (token)
+			if (Crypto::Token::JWToken::Parse(CSTR("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.NHVaYe26MbtOYhSKkoKYdFVomg4i8ZJd8_-RU8VNbftc4TSMb4bXP3l3YlNWACwyXPGffz5aXHc6lty1Y2t4SWRqGteragsVdZufDn5BlnJl9pdR_kdVFUsra2rWKEofkZeIC4yWytE58sMIihvo9H1ScmmVwBcQP6XETqYd0aSHp1gOa9RdUPDvoXQ5oqygTqVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9RiwrV7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ"), 0).SetTo(token))
 			{
 				if (!token->SignatureValid(ssl, nnkey->GetASN1Buff(), nnkey->GetASN1BuffSize(), nnkey->GetKeyType()))
 				{
-					DEL_CLASS(token);
+					token.Delete();
 					key.Delete();
 					ssl.Delete();
 					return 11;
 				}
-				DEL_CLASS(token);
+				token.Delete();
 			}
 		}
 		key.Delete();

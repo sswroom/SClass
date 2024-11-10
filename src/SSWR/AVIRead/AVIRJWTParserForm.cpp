@@ -10,18 +10,19 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sbJWT;
 	Text::StringBuilderUTF8 sbErr;
 	Bool succ = false;
+	NN<Crypto::Token::JWToken> token;
 	Int64 t;
 	me->txtJWT->GetText(sbJWT);
-	SDEL_CLASS(me->token);
-	me->token = Crypto::Token::JWToken::Parse(sbJWT.ToCString(), &sbErr);
+	me->token.Delete();
+	me->token = Crypto::Token::JWToken::Parse(sbJWT.ToCString(), sbErr);
 	me->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
-	if (me->token)
+	if (me->token.SetTo(token))
 	{
 		Crypto::Token::JWTParam param;
-		Data::StringMap<Text::String*> *result = me->token->ParsePayload(param, true, &sbErr);
-		if (result)
+		NN<Data::StringMap<Text::String*>> result;
+		if (token->ParsePayload(param, true, sbErr).SetTo(result))
 		{
-			me->verifyType = me->token->GetVerifyType(param);
+			me->verifyType = token->GetVerifyType(param);
 			succ = true;
 			me->txtParseStatus->SetText(CSTR("Success"));
 			me->txtVerifyStatus->SetText(CSTR("Not Verified"));
@@ -72,12 +73,12 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 				me->lvPayload->SetSubItem(i, 2, Text::String::OrEmpty(result->GetItem(i)));
 				i++;
 			}
-			me->token->FreeResult(result);
+			token->FreeResult(result);
 
 			if (me->verifyType == Crypto::Token::JWToken::VerifyType::Azure)
 			{
 				NN<Text::JSONBase> json;
-				if (!Text::JSONBase::ParseJSONStr(me->token->GetHeader()->ToCString()).SetTo(json))
+				if (!Text::JSONBase::ParseJSONStr(Text::String::OrEmpty(token->GetHeader())->ToCString()).SetTo(json))
 				{
 					me->txtVerifyStatus->SetText(CSTR("Cannot parse JWT header"));
 				}
@@ -93,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 						NN<Crypto::Cert::X509Key> key;
 						if (me->azure->CreateKey(kid->ToCString()).SetTo(key))
 						{
-							if (me->token->SignatureValid(me->ssl, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()))
+							if (token->SignatureValid(me->ssl, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()))
 							{
 								me->txtVerifyStatus->SetText(CSTR("Signature Valid"));
 							}
@@ -137,7 +138,7 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), false);
-	NEW_CLASS(this->azure, Net::AzureManager(this->core->GetTCPClientFactory(), this->ssl));
+	NEW_CLASSNN(this->azure, Net::AzureManager(this->core->GetTCPClientFactory(), this->ssl));
 	this->token = 0;
 	this->verifyType = Crypto::Token::JWToken::VerifyType::Unknown;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -226,8 +227,8 @@ SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientContro
 SSWR::AVIRead::AVIRJWTParserForm::~AVIRJWTParserForm()
 {
 	this->ssl.Delete();
-	SDEL_CLASS(this->token);
-	DEL_CLASS(this->azure);
+	this->token.Delete();
+	this->azure.Delete();
 }
 
 void SSWR::AVIRead::AVIRJWTParserForm::OnMonitorChanged()

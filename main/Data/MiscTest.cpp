@@ -26,6 +26,10 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/Email/AWSEmailClient.h"
 #include "Net/Email/SMTPClient.h"
+#include "Net/Google/GoogleFCMv1.h"
+#include "Net/Google/GoogleIdentityToolkit.h"
+#include "Net/Google/GoogleOAuth2.h"
+#include "Net/Google/GoogleServiceAccount.h"
 #include "Parser/FullParserList.h"
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
@@ -723,12 +727,67 @@ Int32 FirebaseTest()
 	Text::CStringNN key = CSTR("");
 	Text::CStringNN userEmail = CSTR("");
 	Text::CStringNN password = CSTR("");
+	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
+	{
+		Net::Google::GoogleIdentityToolkit identityToolkit(clif, ssl, key);
+		NN<Net::Google::VerifyPasswordResponse> resp;
+		if (identityToolkit.SignInWithPassword(userEmail, password).SetTo(resp))
+		{
+			printf("localId: %s\r\n", resp->GetLocalId()->v.Ptr());
+			printf("email: %s\r\n", resp->GetEmail()->v.Ptr());
+			printf("displayName: %s\r\n", resp->GetDisplayName()->v.Ptr());
+			printf("idToken: %s\r\n", resp->GetIdToken()->v.Ptr());
+			printf("registered: %s\r\n", resp->IsRegistered()?"true":"false");
+			printf("refreshToken: %s\r\n", resp->GetRefreshToken()->v.Ptr());
+			printf("expiresIn: %d\r\n", resp->GetExpiresIn());
+			resp.Delete();
+		}
+	}
+	ssl.Delete();
+	return 0;
+}
+
+Int32 FCMTest()
+{
+	Text::CStringNN serviceAccountPath = CSTR("/home/sswroom/Progs/Temp/20241110 CO FCM/caronline-tracker-13382-firebase-adminsdk-swypl-89cc45f7bc.json");
+	Text::CStringNN devToken = CSTR("fTnNCfesnGg:APA91bG1WyOkxtRyGmnRb6Fh6Ns5kt8Xzw6T0kbReayxBhgEASC9aCGLRsQ2Za1eji3d3jD1lBmnMeaJncnge56_SOccuUf4OjVZ9lCdVTF2QR4n1khDfk-6diLStTe4bYEloz0WWX8a");
+	Text::CStringNN message = CSTR("Message Test");
+	NN<Net::Google::GoogleServiceAccount> serviceAccount;
+	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
+	if (Net::Google::GoogleServiceAccount::FromFile(serviceAccountPath).SetTo(serviceAccount))
+	{
+		printf("Service Account loaded\r\n");
+		NN<Crypto::Token::JWToken> token;
+		if (serviceAccount->ToJWT(ssl, CSTR("https://www.googleapis.com/auth/firebase.messaging")).SetTo(token))
+		{
+			printf("Token generated\r\n");
+			token.Delete();
+		}
+		NN<Net::Google::AccessTokenResponse> accessToken;
+		Net::Google::GoogleOAuth2 oauth2(clif, ssl);
+		if (oauth2.GetServiceToken(serviceAccount, CSTR("https://www.googleapis.com/auth/firebase.messaging")).SetTo(accessToken))
+		{
+			printf("Access Token Received\r\n");
+			Net::Google::GoogleFCMv1 fcm(clif, ssl, serviceAccount->GetProjectId()->ToCString());
+			if (fcm.SendMessage(accessToken->GetAccessToken()->ToCString(), devToken, message, 0))
+			{
+				printf("Message sent\r\n");
+			}
+			accessToken.Delete();
+		}
+		serviceAccount.Delete();
+	}
+	ssl.Delete();
 	return 0;
 }
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 17;
+	UOSInt testType = 19;
 	switch (testType)
 	{
 	case 0:
@@ -769,6 +828,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return JasyptTest();
 	case 18:
 		return FirebaseTest();
+	case 19:
+		return FCMTest();
 	default:
 		return 0;
 	}

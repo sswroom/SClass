@@ -3,8 +3,9 @@
 #include "Data/ArrayListNN.h"
 #include "Data/FastStringMap.h"
 #include "IO/LogFile.h"
-#include "Net/SocketFactory.h"
-#include "Net/SSLEngine.h"
+#include "Net/Google/GoogleFCMv1.h"
+#include "Net/Google/GoogleOAuth2.h"
+#include "Net/Google/GoogleServiceAccount.h"
 #include "Sync/MutexUsage.h"
 
 namespace Net
@@ -36,9 +37,11 @@ namespace Net
 			Data::FastStringMapNN<DeviceInfo2> devMap;
 		};
 
-		NN<Net::TCPClientFactory> clif;
-		Optional<Net::SSLEngine> ssl;
-		NN<Text::String> fcmKey;
+		Net::Google::GoogleFCMv1 fcm;
+		Net::Google::GoogleOAuth2 oauth2;
+		NN<Net::Google::GoogleServiceAccount> serviceAccount;
+		Optional<Net::Google::AccessTokenResponse> accessToken;
+		Data::Timestamp accessTokenExpire;
 		NN<IO::LogTool> log;
 
 		Sync::Mutex dataMut;
@@ -49,8 +52,9 @@ namespace Net
 		NN<UserInfo> GetUser(Text::CStringNN userName);
 		void LoadData();
 		void SaveData();
+		Optional<Text::String> GetAccessToken();
 	public:
-		PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN fcmKey, NN<IO::LogTool> log);
+		PushManager(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::Google::GoogleServiceAccount> serviceAccount, NN<IO::LogTool> log);
 		~PushManager();
 
 		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);

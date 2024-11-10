@@ -35,7 +35,7 @@ namespace Crypto
 			Optional<Net::SSLEngine> ssl;
 			Algorithm alg;
 			Crypto::Cert::X509Key::KeyType keyType;
-			UInt8 *privateKey;
+			UnsafeArray<UInt8> privateKey;
 			UOSInt privateKeyLeng;
 			UInt8 hashVal[256];
 			UOSInt hashValSize;

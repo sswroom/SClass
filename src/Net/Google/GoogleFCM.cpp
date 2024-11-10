@@ -1,13 +1,13 @@
 #include "Stdafx.h"
-#include "Net/GoogleFCM.h"
 #include "Net/HTTPClient.h"
+#include "Net/Google/GoogleFCM.h"
 #include "Text/JSON.h"
 #include "Text/JSONBuilder.h"
 
-Bool Net::GoogleFCM::SendMessage(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiKey, Text::CStringNN devToken, Text::CStringNN message, Optional<Text::StringBuilderUTF8> sbResult)
+Bool Net::Google::GoogleFCM::SendMessage(Text::CStringNN devToken, Text::CStringNN message, Optional<Text::StringBuilderUTF8> sbResult)
 {
 	NN<Text::StringBuilderUTF8> sbRes;
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -18,7 +18,7 @@ Bool Net::GoogleFCM::SendMessage(NN<Net::TCPClientFactory> clif, Optional<Net::S
 	Text::StringBuilderUTF8 sb;
 	cli->AddContentType(CSTR("application/json"));
 	sb.AppendC(UTF8STRC("key="));
-	sb.Append(apiKey);
+	sb.Append(this->apiKey);
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -74,9 +74,9 @@ Bool Net::GoogleFCM::SendMessage(NN<Net::TCPClientFactory> clif, Optional<Net::S
 	return succ;
 }
 
-Bool Net::GoogleFCM::SendMessages(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN apiKey, NN<Data::ArrayListNN<Text::String>> devTokens, Text::CStringNN message, Optional<Text::StringBuilderUTF8> sbResult)
+Bool Net::Google::GoogleFCM::SendMessages(NN<Data::ArrayListNN<Text::String>> devTokens, Text::CStringNN message, Optional<Text::StringBuilderUTF8> sbResult)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	NN<Text::StringBuilderUTF8> sbRes;
 	if (cli->IsError())
 	{
@@ -94,7 +94,7 @@ Bool Net::GoogleFCM::SendMessages(NN<Net::TCPClientFactory> clif, Optional<Net::
 	Text::StringBuilderUTF8 sb;
 	cli->AddContentType(CSTR("application/json"));
 	sb.AppendC(UTF8STRC("key="));
-	sb.Append(apiKey);
+	sb.Append(this->apiKey);
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);

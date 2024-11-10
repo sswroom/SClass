@@ -14,14 +14,14 @@ Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm 
 	this->alg = alg;
 	this->keyType = keyType;
 	this->hashValSize = 0;
-	this->privateKey = MemAlloc(UInt8, privateKeyLeng);
-	MemCopyNO(this->privateKey, privateKey.Ptr(), privateKeyLeng);
+	this->privateKey = MemAllocArr(UInt8, privateKeyLeng);
+	MemCopyNO(this->privateKey.Ptr(), privateKey.Ptr(), privateKeyLeng);
 	this->privateKeyLeng = privateKeyLeng;
 }
 
 Crypto::Token::JWSignature::~JWSignature()
 {
-	MemFree(this->privateKey);
+	MemFreeArr(this->privateKey);
 }
 
 Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UOSInt buffSize)

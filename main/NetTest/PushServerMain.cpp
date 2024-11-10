@@ -19,7 +19,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return 1;
 	}
 	NN<Text::String> sPort;
-	NN<Text::String> fcmKey;
+	NN<Net::Google::GoogleServiceAccount> serviceAccount;
 	if (!cfg->GetValue(CSTR("Port")).SetTo(sPort))
 	{
 		cfg.Delete();
@@ -33,14 +33,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		console.WriteLine(CSTR("Error in parsing port number"));
 		return 3;
 	}
-	if (!cfg->GetValue(CSTR("FCMKey")).SetTo(fcmKey))
-	{
-		cfg.Delete();
-		console.WriteLine(CSTR("Config FCMKey missing"));
-		return 4;
-	}
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("serviceaccount.json"));
+	if (!Net::Google::GoogleServiceAccount::FromFile(CSTRP(sbuff, sptr)).SetTo(serviceAccount))
+	{
+		console.WriteLine(CSTR("Error loading serviceaccount.json"));
+		cfg.Delete();
+		return 4;
+	}
 	Net::OSSocketFactory sockf(true);
 	Net::TCPClientFactory clif(sockf);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, true);
@@ -51,7 +53,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
 	log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	{
-		Net::PushServer svr(clif, ssl, port, fcmKey->ToCString(), log);
+		Net::PushServer svr(clif, ssl, port, serviceAccount, log);
 		if (svr.IsError())
 		{
 			console.WriteLine(CSTR("Error in listening to port"));
@@ -62,6 +64,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			progCtrl->WaitForExit(progCtrl);
 		}
 	}
+	serviceAccount.Delete();
 	ssl.Delete();
 	cfg.Delete();
 	return 0;

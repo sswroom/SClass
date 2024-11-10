@@ -21,8 +21,8 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::AzureManager *azure;
-			Crypto::Token::JWToken *token;
+			NN<Net::AzureManager> azure;
+			Optional<Crypto::Token::JWToken> token;
 			Crypto::Token::JWToken::VerifyType verifyType;
 
 			NN<UI::GUITextBox> txtJWT;

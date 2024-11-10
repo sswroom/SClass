@@ -75,13 +75,13 @@ Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, Data::S
 			json.ObjectAddStr(CSTR("jti"), s);
 		}
 	}
-	Crypto::Token::JWToken *token = Crypto::Token::JWToken::Generate(alg, json.Build(), this->ssl, this->key, this->keyLeng, this->keyType);
-	if (token == 0)
+	NN<Crypto::Token::JWToken> token;
+	if (!Crypto::Token::JWToken::Generate(alg, json.Build(), this->ssl, this->key, this->keyLeng, this->keyType).SetTo(token))
 	{
 		return false;
 	}
 	token->ToString(sb);
-	DEL_CLASS(token);
+	token.Delete();
 	return true;
 }
 

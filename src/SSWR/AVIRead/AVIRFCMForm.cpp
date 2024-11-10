@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Net/GoogleFCM.h"
 #include "Net/SSLEngineFactory.h"
+#include "Net/Google/GoogleFCM.h"
 #include "SSWR/AVIRead/AVIRFCMForm.h"
 
 void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(AnyType userObj)
@@ -28,7 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(AnyType userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 sbStatus;
-	Net::GoogleFCM::SendMessage(me->core->GetTCPClientFactory(), me->ssl, sbAPIKey.ToCString(), sbDeviceToken.ToCString(), sbMessage.ToCString(), &sbStatus);
+	Net::Google::GoogleFCM fcm(me->core->GetTCPClientFactory(), me->ssl, sbAPIKey.ToCString());
+	fcm.SendMessage(sbDeviceToken.ToCString(), sbMessage.ToCString(), sbStatus);
 	me->txtStatus->SetText(sbStatus.ToCString());
 }
 
