@@ -751,8 +751,8 @@ Int32 FirebaseTest()
 
 Int32 FCMTest()
 {
-	Text::CStringNN serviceAccountPath = CSTR("/home/sswroom/Progs/Temp/20241110 CO FCM/caronline-tracker-13382-firebase-adminsdk-swypl-89cc45f7bc.json");
-	Text::CStringNN devToken = CSTR("fTnNCfesnGg:APA91bG1WyOkxtRyGmnRb6Fh6Ns5kt8Xzw6T0kbReayxBhgEASC9aCGLRsQ2Za1eji3d3jD1lBmnMeaJncnge56_SOccuUf4OjVZ9lCdVTF2QR4n1khDfk-6diLStTe4bYEloz0WWX8a");
+	Text::CStringNN serviceAccountPath = CSTR("");
+	Text::CStringNN devToken = CSTR("");
 	Text::CStringNN message = CSTR("Message Test");
 	NN<Net::Google::GoogleServiceAccount> serviceAccount;
 	Net::OSSocketFactory sockf(true);
