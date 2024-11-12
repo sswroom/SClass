@@ -100,22 +100,40 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"png\" ContentType=\"image/png\"/>"));
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>"));
 
+	NN<Text::SpreadSheet::Worksheet::RowData> row;
 	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> itSheet = workbook->Iterator();
 	i = 0;
 	while (itSheet.HasNext())
 	{
 		sheet = itSheet.Next();
-
+		UOSInt maxRow = sheet->GetCount();
+		UOSInt maxCol = 1;
+		k = 0;
+		while (k < maxRow)
+		{
+			if (sheet->GetItem(k).SetTo(row) && row->cells.GetCount() > maxCol)
+			{
+				maxCol = row->cells.GetCount();
+			}
+			k++;
+		}
 		Data::ArrayList<LinkInfo*> links;
 		LinkInfo *link;
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
-		sb.AppendC(UTF8STRC("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"));
+		sb.AppendC(UTF8STRC("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:x14=\"http://schemas.microsoft.com/office/spreadsheetml/2009/9/main\" xmlns:xr2=\"http://schemas.microsoft.com/office/spreadsheetml/2015/revision2\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">"));
 		sb.AppendC(UTF8STRC("<sheetPr filterMode=\"false\">"));
 		sb.AppendC(UTF8STRC("<pageSetUpPr fitToPage=\"false\"/>"));
 		sb.AppendC(UTF8STRC("</sheetPr>"));
-		sb.AppendC(UTF8STRC("<dimension ref=\"A1\"/>"));
+		sb.AppendC(UTF8STRC("<dimension ref=\"A1"));
+		if (maxRow > 1 || maxCol > 1)
+		{
+			sptr = Text::XLSUtil::GetCellID(sbuff, maxCol - 1, maxRow - 1);
+			sb.AppendUTF8Char(':');
+			sb.AppendP(sbuff, sptr);
+		}
+		sb.AppendC(UTF8STRC("\"/>"));
 		sb.AppendC(UTF8STRC("<sheetViews>"));
 		sb.AppendC(UTF8STRC("<sheetView showFormulas=\"false\" showGridLines=\"true\" showRowColHeaders=\"true\" showZeros=\"true\" rightToLeft=\"false\" tabSelected=\"true\" showOutlineSymbols=\"true\" defaultGridColor=\"true\" view=\"normal\" topLeftCell=\"A1\" colorId=\"64\" zoomScale=\""));
 		sb.AppendU32(sheet->GetZoom());
@@ -132,8 +150,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sb.AppendC(UTF8STRC("\" defaultRowHeight=\""));
 		sb.AppendDouble(sheet->GetDefRowHeightPt());
 		sb.AppendC(UTF8STRC("\" zeroHeight=\"false\" outlineLevelRow=\"0\" outlineLevelCol=\"0\"></sheetFormatPr>"));
-		sb.AppendC(UTF8STRC("<cols>"));
-
+		Bool found = false;
 		Double lastColWidth = -1;
 		UOSInt lastColIndex = INVALID_INDEX;
 
@@ -145,6 +162,11 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			{
 				if (lastColIndex != INVALID_INDEX)
 				{
+					if (!found)
+					{
+						found = true;
+						sb.AppendC(UTF8STRC("<cols>"));
+					}
 					sb.AppendC(UTF8STRC("<col min=\""));
 					sb.AppendUOSInt(lastColIndex + 1);
 					sb.AppendC(UTF8STRC("\" max=\""));
@@ -169,6 +191,11 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		}
 		if (lastColWidth >= 0)
 		{
+			if (!found)
+			{
+				found = true;
+				sb.AppendC(UTF8STRC("<cols>"));
+			}
 			sb.AppendC(UTF8STRC("<col min=\""));
 			sb.AppendUOSInt(lastColIndex + 1);
 			sb.AppendC(UTF8STRC("\" max=\""));
@@ -188,6 +215,11 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		}
 		if (l < sheet->GetMaxCol())
 		{
+			if (!found)
+			{
+				found = true;
+				sb.AppendC(UTF8STRC("<cols>"));
+			}
 			sb.AppendC(UTF8STRC("<col min=\""));
 			sb.AppendUOSInt(l + 1);
 			sb.AppendC(UTF8STRC("\" max=\""));
@@ -196,8 +228,10 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sb.AppendDouble(sheet->GetDefColWidthPt() / 5.25);
 			sb.AppendC(UTF8STRC("\" customWidth=\"false\" collapsed=\"false\" hidden=\"false\" outlineLevel=\"0\" style=\"0\"/>"));
 		}
-
-		sb.AppendC(UTF8STRC("</cols>"));
+		if (found)
+		{
+			sb.AppendC(UTF8STRC("</cols>"));
+		}
 		Data::ArrayList<Math::RectArea<UOSInt>> mergeList;
 		k = 0;
 		l = sheet->GetCount();
@@ -206,7 +240,6 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sb.AppendC(UTF8STRC("<sheetData>"));
 			while (k < l)
 			{
-				NN<Text::SpreadSheet::Worksheet::RowData> row;
 				if (sheet->GetItem(k).SetTo(row))
 				{
 					sb.AppendC(UTF8STRC("<row r=\""));
@@ -455,7 +488,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				NN<Text::SpreadSheet::OfficeChart> chart;
 				NN<Text::SpreadSheet::WorksheetDrawing> drawing = sheet->GetDrawingNoCheck(k);
 				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
+				sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 				sb.AppendC(UTF8STRC("<xdr:wsDr xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"));
 				switch (drawing->anchorType)
 				{
@@ -611,7 +644,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 
 					chartCnt++;
 					sb.ClearStr();
-					sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
+					sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 					sb.AppendC(UTF8STRC("<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"));
 					sb.AppendC(UTF8STRC("<c:chart>"));
 					if (chart->GetTitleText().SetTo(s))
@@ -779,7 +812,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 	sb.ClearStr();
-	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n"));
+	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 	sb.AppendC(UTF8STRC("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">"));
 	{
 		Data::StringUTF8Map<UOSInt> numFmtMap;
@@ -1031,7 +1064,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	if (sharedStrings.GetCount() > 0)
 	{
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n"));
+		sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 		sb.AppendC(UTF8STRC("<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\""));
 		sb.AppendUOSInt(sharedStrings.GetCount());
 		sb.AppendC(UTF8STRC("\" uniqueCount=\""));
@@ -1054,15 +1087,34 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 
 	sb.ClearStr();
+	sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
+	sb.Append(CSTR("<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"Office\">"));
+	sb.Append(CSTR("<a:themeElements><a:clrScheme name=\"LibreOffice\"><a:dk1><a:srgbClr val=\"000000\"/></a:dk1><a:lt1><a:srgbClr val=\"ffffff\"/></a:lt1><a:dk2><a:srgbClr val=\"000000\"/></a:dk2>"));
+	sb.Append(CSTR("<a:lt2><a:srgbClr val=\"ffffff\"/></a:lt2><a:accent1><a:srgbClr val=\"18a303\"/></a:accent1><a:accent2><a:srgbClr val=\"0369a3\"/></a:accent2>"));
+	sb.Append(CSTR("<a:accent3><a:srgbClr val=\"a33e03\"/></a:accent3><a:accent4><a:srgbClr val=\"8e03a3\"/></a:accent4><a:accent5><a:srgbClr val=\"c99c00\"/></a:accent5>"));
+	sb.Append(CSTR("<a:accent6><a:srgbClr val=\"c9211e\"/></a:accent6><a:hlink><a:srgbClr val=\"0000ee\"/></a:hlink><a:folHlink><a:srgbClr val=\"551a8b\"/></a:folHlink></a:clrScheme>"));
+	sb.Append(CSTR("<a:fontScheme name=\"Office\"><a:majorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>"));
+	sb.Append(CSTR("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:majorFont><a:minorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>"));
+	sb.Append(CSTR("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:minorFont></a:fontScheme><a:fmtScheme><a:fillStyleLst><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill>"));
+	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:fillStyleLst>"));
+	sb.Append(CSTR("<a:lnStyleLst><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">"));
+	sb.Append(CSTR("<a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln></a:lnStyleLst>"));
+	sb.Append(CSTR("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>"));
+	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>"));
+	zip->AddDir(CSTR("xl/theme/"), ts, ts, ts, 0);
+	zip->AddFile(CSTR("xl/theme/theme1.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+
+	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 	sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
 	i = 0;
 	k = workbook->GetCount();
 	while (i < k)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(i + 2);
+		sb.AppendUOSInt(i + 3);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet"));
 		sb.AppendUOSInt(i + 1);
 		sb.AppendC(UTF8STRC(".xml\"/>"));
@@ -1071,7 +1123,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	if (sharedStrings.GetCount() > 0)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(workbook->GetCount() + 2);
+		sb.AppendUOSInt(workbook->GetCount() + 3);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>"));
 	}
 	sb.AppendC(UTF8STRC("\n</Relationships>"));

@@ -84,23 +84,39 @@ export class XLSXExporter
 		sbContTypes.push("<Default Extension=\"png\" ContentType=\"image/png\"/>");
 		sbContTypes.push("<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>");
 	
+		let row;
 		i = 0;
 		j = workbook.getCount();
 		while (i < j)
 		{
 			sheet = workbook.getItem(i);
-	
+			let maxRow = sheet.getCount();
+			let maxCol = 1;
+			k = 0;
+			while (k < maxRow)
+			{
+				if ((row = sheet.getItem(k)) != null && row.cells.length > maxCol)
+				{
+					maxCol = row.cells.length;
+				}
+				k++;
+			}
 			/** @type {{row: number,col: number,cell: spreadsheet.CellData}[]} */
 			let links = [];
 			let link;
 	
 			sb = [];
 			sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-			sb.push("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
+			sb.push("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:x14=\"http://schemas.microsoft.com/office/spreadsheetml/2009/9/main\" xmlns:xr2=\"http://schemas.microsoft.com/office/spreadsheetml/2015/revision2\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">");
 			sb.push("<sheetPr filterMode=\"false\">");
 			sb.push("<pageSetUpPr fitToPage=\"false\"/>");
 			sb.push("</sheetPr>");
-			sb.push("<dimension ref=\"A1\"/>");
+			sb.push("<dimension ref=\"A1");
+			if (maxRow > 1 || maxCol > 1)
+			{
+				sb.push(':'+spreadsheet.XLSUtil.getCellID(maxCol - 1, maxRow - 1));
+			}
+			sb.push("\"/>");
 			sb.push("<sheetViews>");
 			sb.push("<sheetView showFormulas=\"false\" showGridLines=\"true\" showRowColHeaders=\"true\" showZeros=\"true\" rightToLeft=\"false\" tabSelected=\"true\" showOutlineSymbols=\"true\" defaultGridColor=\"true\" view=\"normal\" topLeftCell=\"A1\" colorId=\"64\" zoomScale=\"");
 			sb.push(""+sheet.getZoom());
@@ -117,7 +133,7 @@ export class XLSXExporter
 			sb.push("\" defaultRowHeight=\"");
 			sb.push(""+(sheet.getDefRowHeightPt()));
 			sb.push("\" zeroHeight=\"false\" outlineLevelRow=\"0\" outlineLevelCol=\"0\"></sheetFormatPr>");
-			sb.push("<cols>");
+			let found = false;
 	
 			let lastColWidth = -1;
 			let lastColIndex = -1;
@@ -130,6 +146,11 @@ export class XLSXExporter
 				{
 					if (lastColIndex != -1)
 					{
+						if (!found)
+						{
+							found = true;
+							sb.push("<cols>");
+						}
 						sb.push("<col min=\"");
 						sb.push(""+(lastColIndex + 10));
 						sb.push("\" max=\"");
@@ -154,6 +175,11 @@ export class XLSXExporter
 			}
 			if (lastColWidth >= 0)
 			{
+				if (!found)
+				{
+					found = true;
+					sb.push("<cols>");
+				}
 				sb.push("<col min=\"");
 				sb.push(""+(lastColIndex + 1));
 				sb.push("\" max=\"");
@@ -173,6 +199,11 @@ export class XLSXExporter
 			}
 			if (l < sheet.getMaxCol())
 			{
+				if (!found)
+				{
+					found = true;
+					sb.push("<cols>");
+				}
 				sb.push("<col min=\"");
 				sb.push(""+(l + 1));
 				sb.push("\" max=\"");
@@ -181,8 +212,10 @@ export class XLSXExporter
 				sb.push(""+(sheet.getDefColWidthPt() / 5.25));
 				sb.push("\" customWidth=\"false\" collapsed=\"false\" hidden=\"false\" outlineLevel=\"0\" style=\"0\"/>");
 			}
-	
-			sb.push("</cols>");
+			if (found)
+			{
+				sb.push("</cols>");
+			}
 
 			/** @type {math.RectArea[]} */
 			let mergeList = [];
@@ -193,7 +226,6 @@ export class XLSXExporter
 				sb.push("<sheetData>");
 				while (k < l)
 				{
-					let row;
 					if ((row = sheet.getItem(k)) != null)
 					{
 						sb.push("<row r=\"");
@@ -432,7 +464,7 @@ export class XLSXExporter
 					let chart;
 					let drawing = sheet.getDrawingNoCheck(k);
 					sb = [];
-					sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+					sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 					sb.push("<xdr:wsDr xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
 					switch (drawing.anchorType)
 					{
@@ -588,7 +620,7 @@ export class XLSXExporter
 	
 						chartCnt++;
 						sb = [];
-						sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+						sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 						sb.push("<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">");
 						sb.push("<c:chart>");
 						if ((s = chart.getTitleText()) != null)
@@ -754,7 +786,7 @@ export class XLSXExporter
 		sbContTypes.push("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 	
 		sb = [];
-		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
+		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		sb.push("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
 		{
 			/** @type {{ [x: string]: number; }} */
@@ -985,7 +1017,7 @@ export class XLSXExporter
 		if (sharedStrings.length > 0)
 		{
 			sb = [];
-			sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
+			sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 			sb.push("<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"");
 			sb.push(""+sharedStrings.length);
 			sb.push("\" uniqueCount=\"");
@@ -1007,8 +1039,27 @@ export class XLSXExporter
 		}
 	
 		sb = [];
+		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+		sb.push("<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"Office\">");
+		sb.push("<a:themeElements><a:clrScheme name=\"LibreOffice\"><a:dk1><a:srgbClr val=\"000000\"/></a:dk1><a:lt1><a:srgbClr val=\"ffffff\"/></a:lt1><a:dk2><a:srgbClr val=\"000000\"/></a:dk2>");
+		sb.push("<a:lt2><a:srgbClr val=\"ffffff\"/></a:lt2><a:accent1><a:srgbClr val=\"18a303\"/></a:accent1><a:accent2><a:srgbClr val=\"0369a3\"/></a:accent2>");
+		sb.push("<a:accent3><a:srgbClr val=\"a33e03\"/></a:accent3><a:accent4><a:srgbClr val=\"8e03a3\"/></a:accent4><a:accent5><a:srgbClr val=\"c99c00\"/></a:accent5>");
+		sb.push("<a:accent6><a:srgbClr val=\"c9211e\"/></a:accent6><a:hlink><a:srgbClr val=\"0000ee\"/></a:hlink><a:folHlink><a:srgbClr val=\"551a8b\"/></a:folHlink></a:clrScheme>");
+		sb.push("<a:fontScheme name=\"Office\"><a:majorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>");
+		sb.push("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:majorFont><a:minorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>");
+		sb.push("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:minorFont></a:fontScheme><a:fmtScheme><a:fillStyleLst><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill>");
+		sb.push("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:fillStyleLst>");
+		sb.push("<a:lnStyleLst><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">");
+		sb.push("<a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln></a:lnStyleLst>");
+		sb.push("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>");
+		sb.push("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>");
+		zipFile.addDir("xl/theme/", ts, ts, ts, 0);
+		zipFile.addFile("xl/theme/theme1.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+	
+		sb = [];
 		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.push("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+//		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>");
 		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
 		i = 0;
 		k = workbook.getCount();
