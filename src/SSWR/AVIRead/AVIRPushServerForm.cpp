@@ -6,30 +6,38 @@
 void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPushServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPushServerForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
-		DEL_CLASS(me->svr);
+		me->svr.Delete();
+		me->serviceAccount.Delete();
 		me->log.ClearHandlers();
 		me->svr = 0;
-		me->txtAPIKey->SetReadOnly(false);
+		me->txtServiceAccount->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
 	}
 	UInt16 port;
-	Text::StringBuilderUTF8 sbAPIKey;
-	me->txtPort->GetText(sbAPIKey);
-	if (!sbAPIKey.ToUInt16(port))
+	Text::StringBuilderUTF8 sbServiceAccount;
+	me->txtPort->GetText(sbServiceAccount);
+	if (!sbServiceAccount.ToUInt16(port))
 	{
 		me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("PushServer"), me);
 		return;
 	}
-	sbAPIKey.ClearStr();
-	me->txtAPIKey->GetText(sbAPIKey);
-	if (sbAPIKey.leng == 0)
+	sbServiceAccount.ClearStr();
+	me->txtServiceAccount->GetText(sbServiceAccount);
+	if (sbServiceAccount.leng == 0)
 	{
-		me->ui->ShowMsgOK(CSTR("API Key is empty"), CSTR("PushServer"), me);
+		me->ui->ShowMsgOK(CSTR("Service Account is empty"), CSTR("PushServer"), me);
 		return;
 	}
+	NN<Net::Google::GoogleServiceAccount> serviceAccount;
+	if (!Net::Google::GoogleServiceAccount::FromFile(sbServiceAccount.ToCString()).SetTo(serviceAccount))
+	{
+		me->ui->ShowMsgOK(CSTR("Error in reading service account file"), CSTR("PushServer"), me);
+		return;
+	}
+	me->serviceAccount = serviceAccount;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
@@ -37,16 +45,19 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));
 	me->log.AddFileLog(CSTRP(sbuff, sptr), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-	NEW_CLASS(me->svr, Net::PushServer(me->core->GetTCPClientFactory(), me->ssl, port, sbAPIKey.ToCString(), me->log));
-	if (me->svr->IsError())
+	NN<Net::PushServer> svr;
+	NEW_CLASSNN(svr, Net::PushServer(me->core->GetTCPClientFactory(), me->ssl, port, serviceAccount, me->log));
+	if (svr->IsError())
 	{
-		DEL_CLASS(me->svr);
+		svr.Delete();
 		me->svr = 0;
+		me->serviceAccount.Delete();
 		me->log.ClearHandlers();
 		me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("PushServer"), me);
 		return;
 	}
-	me->txtAPIKey->SetReadOnly(true);
+	me->svr = svr;
+	me->txtServiceAccount->SetReadOnly(true);
 	me->txtPort->SetReadOnly(true);
 }
 
@@ -58,16 +69,18 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
+	this->serviceAccount = 0;
+	this->svr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	this->txtPort = ui->NewTextBox(*this, CSTR("8000"));
 	this->txtPort->SetRect(104, 4, 600, 23, false);
-	this->lblAPIKey = ui->NewLabel(*this, CSTR("API Key"));
-	this->lblAPIKey->SetRect(4, 28, 100, 23, false);
-	this->txtAPIKey = ui->NewTextBox(*this, CSTR(""));
-	this->txtAPIKey->SetRect(104, 28, 300, 23, false);
+	this->lblServiceAccount = ui->NewLabel(*this, CSTR("Service Account"));
+	this->lblServiceAccount->SetRect(4, 28, 100, 23, false);
+	this->txtServiceAccount = ui->NewTextBox(*this, CSTR(""));
+	this->txtServiceAccount->SetRect(104, 28, 300, 23, false);
 	this->btnStart = ui->NewButton(*this, CSTR("Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
@@ -75,8 +88,9 @@ SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRPushServerForm::~AVIRPushServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->ssl.Delete();
+	this->serviceAccount.Delete();
 }
 
 void SSWR::AVIRead::AVIRPushServerForm::OnMonitorChanged()

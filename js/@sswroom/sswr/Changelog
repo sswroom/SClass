@@ -1,3 +1,5 @@
+-Enhance XLSXExporter
+
 1.6.19
 -data.Timestamp.fromTicks support floating point ticks
 -data.Duration.fromTicks support floating point ticks

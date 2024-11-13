@@ -31,6 +31,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 	Bool succ = false;
 	UInt64 fileLen;
 	Bool reqSSL = false;
+	UOSInt type = this->cboType->GetSelectedIndex();
 	if (fileName.StartsWith(UTF8STRC("http://")) || (reqSSL = fileName.StartsWith(UTF8STRC("https://"))))
 	{
 		Optional<Net::SSLEngine> ssl = 0;
@@ -46,6 +47,29 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 			{
 
 			}
+			else if (type == 1)
+			{
+				fileLen = cli->GetContentLength();
+				Data::ByteBuffer buff((UOSInt)fileLen);
+				UOSInt readSize;
+				UOSInt totalSize = 0;
+				while ((readSize = cli->Read(buff.SubArray(totalSize))) != 0)
+				{
+					totalSize += readSize;
+				}
+				if (totalSize == fileLen)
+				{
+					succ = Text::JSText::JSONWellFormat(buff.Arr(), (UOSInt)fileLen, 0, output);
+				}
+			}
+			else if (type == 2)
+			{
+				succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), cli, 0, output);
+			}
+			else if (type == 3)
+			{
+				succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), cli, 0, output);
+			}
 			else if (contType.Equals(UTF8STRC("application/xml")))
 			{
 				succ = Text::XMLReader::XMLWellFormat(this->core->GetEncFactory(), cli, 0, output);
@@ -59,7 +83,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 		cli.Delete();
 		ssl.Delete();
 	}
-	else if (fileName.EndsWithICase(UTF8STRC(".json")) || fileName.EndsWithICase(UTF8STRC(".geojson")))
+	else if (type == 1)
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
@@ -72,7 +96,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 			}
 		}
 	}
-	else if (fileName.EndsWithICase(UTF8STRC(".html")) || fileName.EndsWith(UTF8STRC(".htm")))
+	else if (type == 2)
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
@@ -81,7 +105,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 			succ = Text::HTMLUtil::HTMLWellFormat(this->core->GetEncFactory(), fs, 0, output);
 		}
 	}
-	else if (fileName.EndsWithICase(UTF8STRC(".xml")) || fileName.EndsWithICase(UTF8STRC(".gml")) || fileName.EndsWithICase(UTF8STRC(".kml")) || fileName.EndsWithICase(UTF8STRC(".svg")))
+	else if (type == 3)
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fileLen = fs.GetLength();
@@ -114,6 +138,23 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(AnyType userObj, Da
 {
 	NN<SSWR::AVIRead::AVIRWellFormatForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWellFormatForm>();
 	me->txtFile->SetText(files[0]->ToCString());
+	Text::CStringNN fileName = files[0]->ToCString();
+	if (fileName.EndsWithICase(UTF8STRC(".json")) || fileName.EndsWithICase(UTF8STRC(".geojson")))
+	{
+		me->cboType->SetSelectedIndex(1);
+	}
+	else if (fileName.EndsWithICase(UTF8STRC(".html")) || fileName.EndsWith(UTF8STRC(".htm")))
+	{
+		me->cboType->SetSelectedIndex(2);
+	}
+	else if (fileName.EndsWithICase(UTF8STRC(".xml")) || fileName.EndsWithICase(UTF8STRC(".gml")) || fileName.EndsWithICase(UTF8STRC(".kml")) || fileName.EndsWithICase(UTF8STRC(".svg")))
+	{
+		me->cboType->SetSelectedIndex(3);
+	}
+	else
+	{
+		me->cboType->SetSelectedIndex(0);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(AnyType userObj)
@@ -166,7 +207,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(Optional<UI::GUIClientCont
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlFile = ui->NewPanel(*this);
-	this->pnlFile->SetRect(0, 0, 100, 55, false);
+	this->pnlFile->SetRect(0, 0, 100, 79, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblFile = ui->NewLabel(this->pnlFile, CSTR("JS Text"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
@@ -175,11 +216,20 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(Optional<UI::GUIClientCont
 	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));
 	this->btnBrowse->SetRect(704, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
+	this->lblType = ui->NewLabel(this->pnlFile, CSTR("Type"));
+	this->lblType->SetRect(4, 28, 100, 23, false);
+	this->cboType = ui->NewComboBox(this->pnlFile, false);
+	this->cboType->SetRect(104, 28, 150, 23, false);
+	this->cboType->AddItem(CSTR("Unknown"), 0);
+	this->cboType->AddItem(CSTR("JSON"), 0);
+	this->cboType->AddItem(CSTR("HTML"), 0);
+	this->cboType->AddItem(CSTR("XML"), 0);
+	this->cboType->SetSelectedIndex(0);
 	this->btnParseToText = ui->NewButton(this->pnlFile, CSTR("To Text"));
-	this->btnParseToText->SetRect(104, 28, 75, 23, false);
+	this->btnParseToText->SetRect(104, 52, 75, 23, false);
 	this->btnParseToText->HandleButtonClick(OnParseToTextClicked, this);
 	this->btnParseToFile = ui->NewButton(this->pnlFile, CSTR("To File"));
-	this->btnParseToFile->SetRect(184, 28, 75, 23, false);
+	this->btnParseToFile->SetRect(184, 52, 75, 23, false);
 	this->btnParseToFile->HandleButtonClick(OnParseToFileClicked, this);
 	this->txtOutput = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);

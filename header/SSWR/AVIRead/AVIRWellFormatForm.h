@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRWELLFORMATFORM
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIPanel.h"
@@ -17,6 +18,8 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlFile;
 			NN<UI::GUILabel> lblFile;
 			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
 			NN<UI::GUIButton> btnBrowse;
 			NN<UI::GUIButton> btnParseToText;
 			NN<UI::GUIButton> btnParseToFile;

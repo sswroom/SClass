@@ -99,9 +99,319 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"png\" ContentType=\"image/png\"/>"));
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>"));
+	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 	NN<Text::SpreadSheet::Worksheet::RowData> row;
-	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> itSheet = workbook->Iterator();
+	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> itSheet;
+
+	sb.ClearStr();
+	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
+	sb.AppendC(UTF8STRC("<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"));
+	sb.AppendC(UTF8STRC("<fileVersion appName=\"AVIRead\"/>"));
+	sb.AppendC(UTF8STRC("<workbookPr backupFile=\"false\" showObjects=\"all\" date1904=\"false\"/>"));
+	sb.AppendC(UTF8STRC("<workbookProtection/>"));
+	sb.AppendC(UTF8STRC("<bookViews>"));
+	sb.AppendC(UTF8STRC("<workbookView showHorizontalScroll=\"true\" showVerticalScroll=\"true\" showSheetTabs=\"true\" xWindow=\"0\" yWindow=\"0\" windowWidth=\"16384\" windowHeight=\"8192\" tabRatio=\"500\" firstSheet=\"0\" activeTab=\"0\"/>"));
+	sb.AppendC(UTF8STRC("</bookViews>"));
+	sb.AppendC(UTF8STRC("<sheets>"));
+	itSheet = workbook->Iterator();
+	i = 0;
+	while (itSheet.HasNext())
+	{
+		sheet = itSheet.Next();
+		sb.AppendC(UTF8STRC("<sheet name="));
+		s = sheet->GetName();
+		s2 = Text::XML::ToNewAttrText(s->v);
+		sb.Append(s2);
+		s2->Release();
+		sb.AppendC(UTF8STRC(" sheetId=\""));
+		sb.AppendUOSInt(i + 1);
+		sb.AppendC(UTF8STRC("\" state=\"visible\" r:id=\"rId"));
+		sb.AppendUOSInt(i + 3);
+		sb.AppendC(UTF8STRC("\"/>"));
+		i++;
+	}
+	sb.AppendC(UTF8STRC("</sheets>"));
+	sb.AppendC(UTF8STRC("<calcPr iterateCount=\"100\" refMode=\"A1\" iterate=\"false\" iterateDelta=\"0.001\"/>"));
+	sb.AppendC(UTF8STRC("</workbook>"));
+	if (!dirXl)
+	{
+		zip->AddDir(CSTR("xl/"), ts, ts, ts, 0);
+		dirXl = true;
+	}
+	zip->AddFile(CSTR("xl/workbook.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>"));
+
+	sb.ClearStr();
+	sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
+	sb.Append(CSTR("<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"Office\">"));
+	sb.Append(CSTR("<a:themeElements><a:clrScheme name=\"LibreOffice\"><a:dk1><a:srgbClr val=\"000000\"/></a:dk1><a:lt1><a:srgbClr val=\"ffffff\"/></a:lt1><a:dk2><a:srgbClr val=\"000000\"/></a:dk2>"));
+	sb.Append(CSTR("<a:lt2><a:srgbClr val=\"ffffff\"/></a:lt2><a:accent1><a:srgbClr val=\"18a303\"/></a:accent1><a:accent2><a:srgbClr val=\"0369a3\"/></a:accent2>"));
+	sb.Append(CSTR("<a:accent3><a:srgbClr val=\"a33e03\"/></a:accent3><a:accent4><a:srgbClr val=\"8e03a3\"/></a:accent4><a:accent5><a:srgbClr val=\"c99c00\"/></a:accent5>"));
+	sb.Append(CSTR("<a:accent6><a:srgbClr val=\"c9211e\"/></a:accent6><a:hlink><a:srgbClr val=\"0000ee\"/></a:hlink><a:folHlink><a:srgbClr val=\"551a8b\"/></a:folHlink></a:clrScheme>"));
+	sb.Append(CSTR("<a:fontScheme name=\"Office\"><a:majorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>"));
+	sb.Append(CSTR("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:majorFont><a:minorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>"));
+	sb.Append(CSTR("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:minorFont></a:fontScheme><a:fmtScheme><a:fillStyleLst><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill>"));
+	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:fillStyleLst>"));
+	sb.Append(CSTR("<a:lnStyleLst><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">"));
+	sb.Append(CSTR("<a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln></a:lnStyleLst>"));
+	sb.Append(CSTR("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>"));
+	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>"));
+	zip->AddDir(CSTR("xl/theme/"), ts, ts, ts, 0);
+	zip->AddFile(CSTR("xl/theme/theme1.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	//sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/theme/theme1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.theme+xml\"/>"));
+
+	sb.ClearStr();
+	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
+	sb.AppendC(UTF8STRC("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">"));
+	{
+		Data::StringUTF8Map<UOSInt> numFmtMap;
+		Data::ArrayListArr<const UTF8Char> numFmts;
+		Data::ArrayList<BorderInfo*> borders;
+		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
+		borderNone.borderType = BorderType::None;
+		borderNone.borderColor = 0;
+		BorderInfo *border = MemAlloc(BorderInfo, 1);
+		border->left = borderNone;
+		border->top = borderNone;
+		border->right = borderNone;
+		border->bottom = borderNone;
+		borders.Add(border);
+
+		nncsptr = (const UTF8Char*)"General";
+		numFmtMap.Put(nncsptr, numFmts.GetCount());
+		numFmts.Add(nncsptr);
+
+		Data::ArrayIterator<NN<Text::SpreadSheet::CellStyle>> itStyle = workbook->StyleIterator();
+		i = 0;
+		while (itStyle.HasNext())
+		{
+			NN<Text::SpreadSheet::CellStyle> style = itStyle.Next();
+			NN<Text::String> optS;
+			if (!style->GetDataFormat().SetTo(optS))
+			{
+				nncsptr = U8STR("General");
+			}
+			else
+			{
+				nncsptr = UnsafeArray<const UTF8Char>(optS->v);
+			}
+			if (!numFmtMap.ContainsKey(nncsptr))
+			{
+				numFmtMap.Put(nncsptr, numFmts.GetCount());
+				numFmts.Add(nncsptr);
+			}
+			Bool borderFound = false;
+			k = borders.GetCount();
+			while (k-- > 0)
+			{
+				border = borders.GetItem(k);
+				if (border->left == style->GetBorderLeft() &&
+					border->top == style->GetBorderTop() &&
+					border->right == style->GetBorderRight() &&
+					border->bottom == style->GetBorderBottom())
+				{
+					borderFound = true;
+					break;
+				}
+			}
+			if (!borderFound)
+			{
+				border = MemAlloc(BorderInfo, 1);
+				border->left = style->GetBorderLeft();
+				border->top = style->GetBorderTop();
+				border->right = style->GetBorderRight();
+				border->bottom = style->GetBorderBottom();
+				borders.Add(border);
+			}
+		}
+		if (numFmts.GetCount() > 0)
+		{
+			sb.AppendC(UTF8STRC("<numFmts count=\""));
+			sb.AppendUOSInt(numFmts.GetCount());
+			sb.AppendC(UTF8STRC("\">"));
+			i = 0;
+			k = numFmts.GetCount();
+			while (i < k)
+			{
+				sb.AppendC(UTF8STRC("<numFmt numFmtId=\""));
+				sb.AppendUOSInt(i + 164);
+				sb.AppendC(UTF8STRC("\" formatCode="));
+				ToFormatCode(sbuff, numFmts.GetItemNoCheck(i));
+				s = Text::XML::ToNewAttrText(UARR(sbuff));
+				sb.Append(s);
+				s->Release();
+				sb.AppendC(UTF8STRC("/>"));
+				i++;
+			}
+			sb.AppendC(UTF8STRC("</numFmts>"));
+		}
+		if (workbook->GetFontCount() > 0)
+		{
+			sb.AppendC(UTF8STRC("<fonts count=\""));
+			sb.AppendUOSInt(workbook->GetFontCount());
+			sb.AppendC(UTF8STRC("\">"));
+			i = 0;
+			k = workbook->GetFontCount();
+			while (i < k)
+			{
+				NN<Text::SpreadSheet::WorkbookFont> font = workbook->GetFontNoCheckc(i);
+				sb.AppendC(UTF8STRC("<font>"));
+				if (font->GetSize() != 0)
+				{
+					sb.AppendC(UTF8STRC("<sz val=\""));
+					sb.AppendDouble(font->GetSize());
+					sb.AppendC(UTF8STRC("\"/>"));
+				}
+				if (font->GetName().SetTo(s))
+				{
+					sb.AppendC(UTF8STRC("<name val="));
+					s = Text::XML::ToNewAttrText(s->v);
+					sb.Append(s);
+					s->Release();
+					sb.AppendC(UTF8STRC("/>"));
+				}
+				switch (font->GetFamily())
+				{
+				case FontFamily::NA:
+					sb.AppendC(UTF8STRC("<family val=\"0\"/>"));
+					break;
+				case FontFamily::Roman:
+					sb.AppendC(UTF8STRC("<family val=\"1\"/>"));
+					break;
+				case FontFamily::Swiss:
+					sb.AppendC(UTF8STRC("<family val=\"2\"/>"));
+					break;
+				case FontFamily::Modern:
+					sb.AppendC(UTF8STRC("<family val=\"3\"/>"));
+					break;
+				case FontFamily::Script:
+					sb.AppendC(UTF8STRC("<family val=\"4\"/>"));
+					break;
+				case FontFamily::Decorative:
+					sb.AppendC(UTF8STRC("<family val=\"5\"/>"));
+					break;
+				}
+				sb.AppendC(UTF8STRC("</font>"));
+				i++;
+			}
+			sb.AppendC(UTF8STRC("</fonts>"));
+		}
+
+		sb.AppendC(UTF8STRC("<fills count=\"2\">"));
+		sb.AppendC(UTF8STRC("<fill>"));
+		sb.AppendC(UTF8STRC("<patternFill patternType=\"none\"/>"));
+		sb.AppendC(UTF8STRC("</fill>"));
+		sb.AppendC(UTF8STRC("<fill>"));
+		sb.AppendC(UTF8STRC("<patternFill patternType=\"gray125\"/>"));
+		sb.AppendC(UTF8STRC("</fill>"));
+		sb.AppendC(UTF8STRC("</fills>"));
+
+		i = 0;
+		k = borders.GetCount();
+		sb.AppendC(UTF8STRC("<borders count=\""));
+		sb.AppendUOSInt(k);
+		sb.AppendC(UTF8STRC("\">"));
+		while (i < k)
+		{
+			border = borders.GetItem(i);
+			sb.AppendC(UTF8STRC("<border diagonalUp=\"false\" diagonalDown=\"false\">"));
+			AppendBorder(sb, border->left, CSTR("left"));
+			AppendBorder(sb, border->right, CSTR("right"));
+			AppendBorder(sb, border->top, CSTR("top"));
+			AppendBorder(sb, border->bottom, CSTR("bottom"));
+			sb.AppendC(UTF8STRC("<diagonal/>"));
+			sb.AppendC(UTF8STRC("</border>"));
+			i++;
+		}
+		sb.AppendC(UTF8STRC("</borders>"));
+
+		sb.AppendC(UTF8STRC("<cellStyleXfs count=\"20\">"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">"));
+		sb.AppendC(UTF8STRC("<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>"));
+		sb.AppendC(UTF8STRC("<protection locked=\"true\" hidden=\"false\"/>"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"43\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"41\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"44\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"42\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("<xf numFmtId=\"9\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
+		sb.AppendC(UTF8STRC("</xf>"));
+		sb.AppendC(UTF8STRC("</cellStyleXfs>"));
+
+		if (workbook->GetStyleCount() > 0)
+		{
+			sb.AppendC(UTF8STRC("<cellXfs count=\""));
+			sb.AppendUOSInt(workbook->GetStyleCount());
+			sb.AppendC(UTF8STRC("\">"));
+			i = 0;
+			k = workbook->GetStyleCount();
+			while (i < k)
+			{
+				NN<Text::SpreadSheet::CellStyle> style;
+				if (workbook->GetStyle(i).SetTo(style))
+				{
+					AppendXF(sb, style, borders, workbook, numFmtMap);
+				}
+				i++;
+			}
+			sb.AppendC(UTF8STRC("</cellXfs>"));
+		}
+
+		sb.AppendC(UTF8STRC("<cellStyles count=\"6\">"));
+		sb.AppendC(UTF8STRC("<cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/>"));
+		sb.AppendC(UTF8STRC("<cellStyle name=\"Comma\" xfId=\"15\" builtinId=\"3\"/>"));
+		sb.AppendC(UTF8STRC("<cellStyle name=\"Comma [0]\" xfId=\"16\" builtinId=\"6\"/>"));
+		sb.AppendC(UTF8STRC("<cellStyle name=\"Currency\" xfId=\"17\" builtinId=\"4\"/>"));
+		sb.AppendC(UTF8STRC("<cellStyle name=\"Currency [0]\" xfId=\"18\" builtinId=\"7\"/>"));
+		sb.AppendC(UTF8STRC("<cellStyle name=\"Percent\" xfId=\"19\" builtinId=\"5\"/>"));
+		sb.AppendC(UTF8STRC("</cellStyles>"));
+
+		i = 0;
+		k = borders.GetCount();
+		while (i < k)
+		{
+			MemFree(borders.GetItem(i));
+			i++;
+		}
+	}
+	sb.AppendC(UTF8STRC("</styleSheet>"));
+	zip->AddFile(CSTR("xl/styles.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>"));
+
+	itSheet = workbook->Iterator();
 	i = 0;
 	while (itSheet.HasNext())
 	{
@@ -758,309 +1068,6 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		i++;
 	}
 
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
-	sb.AppendC(UTF8STRC("<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"));
-	sb.AppendC(UTF8STRC("<fileVersion appName=\"AVIRead\"/>"));
-	sb.AppendC(UTF8STRC("<workbookPr backupFile=\"false\" showObjects=\"all\" date1904=\"false\"/>"));
-	sb.AppendC(UTF8STRC("<workbookProtection/>"));
-	sb.AppendC(UTF8STRC("<bookViews>"));
-	sb.AppendC(UTF8STRC("<workbookView showHorizontalScroll=\"true\" showVerticalScroll=\"true\" showSheetTabs=\"true\" xWindow=\"0\" yWindow=\"0\" windowWidth=\"16384\" windowHeight=\"8192\" tabRatio=\"500\" firstSheet=\"0\" activeTab=\"0\"/>"));
-	sb.AppendC(UTF8STRC("</bookViews>"));
-	sb.AppendC(UTF8STRC("<sheets>"));
-	itSheet = workbook->Iterator();
-	i = 0;
-	while (itSheet.HasNext())
-	{
-		sheet = itSheet.Next();
-		sb.AppendC(UTF8STRC("<sheet name="));
-		s = sheet->GetName();
-		s2 = Text::XML::ToNewAttrText(s->v);
-		sb.Append(s2);
-		s2->Release();
-		sb.AppendC(UTF8STRC(" sheetId=\""));
-		sb.AppendUOSInt(i + 1);
-		sb.AppendC(UTF8STRC("\" state=\"visible\" r:id=\"rId"));
-		sb.AppendUOSInt(i + 2);
-		sb.AppendC(UTF8STRC("\"/>"));
-		i++;
-	}
-	sb.AppendC(UTF8STRC("</sheets>"));
-	sb.AppendC(UTF8STRC("<calcPr iterateCount=\"100\" refMode=\"A1\" iterate=\"false\" iterateDelta=\"0.001\"/>"));
-	sb.AppendC(UTF8STRC("</workbook>"));
-	if (!dirXl)
-	{
-		zip->AddDir(CSTR("xl/"), ts, ts, ts, 0);
-		dirXl = true;
-	}
-	zip->AddFile(CSTR("xl/workbook.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
-	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>"));
-
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
-	sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/>"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/>"));
-	sb.AppendC(UTF8STRC("\n</Relationships>"));
-	if (!dirRel)
-	{
-		zip->AddDir(CSTR("_rels/"), ts, ts, ts, 0);
-		dirRel = true;
-	}
-	zip->AddFile(CSTR("_rels/.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
-	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
-
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
-	sb.AppendC(UTF8STRC("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">"));
-	{
-		Data::StringUTF8Map<UOSInt> numFmtMap;
-		Data::ArrayListArr<const UTF8Char> numFmts;
-		Data::ArrayList<BorderInfo*> borders;
-		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
-		borderNone.borderType = BorderType::None;
-		borderNone.borderColor = 0;
-		BorderInfo *border = MemAlloc(BorderInfo, 1);
-		border->left = borderNone;
-		border->top = borderNone;
-		border->right = borderNone;
-		border->bottom = borderNone;
-		borders.Add(border);
-
-		nncsptr = (const UTF8Char*)"general";
-		numFmtMap.Put(nncsptr, numFmts.GetCount());
-		numFmts.Add(nncsptr);
-
-		Data::ArrayIterator<NN<Text::SpreadSheet::CellStyle>> itStyle = workbook->StyleIterator();
-		i = 0;
-		while (itStyle.HasNext())
-		{
-			NN<Text::SpreadSheet::CellStyle> style = itStyle.Next();
-			NN<Text::String> optS;
-			if (!style->GetDataFormat().SetTo(optS))
-			{
-				nncsptr = U8STR("general");
-			}
-			else
-			{
-				nncsptr = UnsafeArray<const UTF8Char>(optS->v);
-			}
-			if (!numFmtMap.ContainsKey(nncsptr))
-			{
-				numFmtMap.Put(nncsptr, numFmts.GetCount());
-				numFmts.Add(nncsptr);
-			}
-			Bool borderFound = false;
-			k = borders.GetCount();
-			while (k-- > 0)
-			{
-				border = borders.GetItem(k);
-				if (border->left == style->GetBorderLeft() &&
-					border->top == style->GetBorderTop() &&
-					border->right == style->GetBorderRight() &&
-					border->bottom == style->GetBorderBottom())
-				{
-					borderFound = true;
-					break;
-				}
-			}
-			if (!borderFound)
-			{
-				border = MemAlloc(BorderInfo, 1);
-				border->left = style->GetBorderLeft();
-				border->top = style->GetBorderTop();
-				border->right = style->GetBorderRight();
-				border->bottom = style->GetBorderBottom();
-				borders.Add(border);
-			}
-		}
-		if (numFmts.GetCount() > 0)
-		{
-			sb.AppendC(UTF8STRC("<numFmts count=\""));
-			sb.AppendUOSInt(numFmts.GetCount());
-			sb.AppendC(UTF8STRC("\">"));
-			i = 0;
-			k = numFmts.GetCount();
-			while (i < k)
-			{
-				sb.AppendC(UTF8STRC("<numFmt numFmtId=\""));
-				sb.AppendUOSInt(i + 164);
-				sb.AppendC(UTF8STRC("\" formatCode="));
-				ToFormatCode(sbuff, numFmts.GetItemNoCheck(i));
-				s = Text::XML::ToNewAttrText(UARR(sbuff));
-				sb.Append(s);
-				s->Release();
-				sb.AppendC(UTF8STRC("/>"));
-				i++;
-			}
-			sb.AppendC(UTF8STRC("</numFmts>"));
-		}
-		if (workbook->GetFontCount() > 0)
-		{
-			sb.AppendC(UTF8STRC("<fonts count=\""));
-			sb.AppendUOSInt(workbook->GetFontCount());
-			sb.AppendC(UTF8STRC("\">"));
-			i = 0;
-			k = workbook->GetFontCount();
-			while (i < k)
-			{
-				NN<Text::SpreadSheet::WorkbookFont> font = workbook->GetFontNoCheckc(i);
-				sb.AppendC(UTF8STRC("<font>"));
-				if (font->GetSize() != 0)
-				{
-					sb.AppendC(UTF8STRC("<sz val=\""));
-					sb.AppendDouble(font->GetSize());
-					sb.AppendC(UTF8STRC("\"/>"));
-				}
-				if (font->GetName().SetTo(s))
-				{
-					sb.AppendC(UTF8STRC("<name val="));
-					s = Text::XML::ToNewAttrText(s->v);
-					sb.Append(s);
-					s->Release();
-					sb.AppendC(UTF8STRC("/>"));
-				}
-				switch (font->GetFamily())
-				{
-				case FontFamily::NA:
-					sb.AppendC(UTF8STRC("<family val=\"0\"/>"));
-					break;
-				case FontFamily::Roman:
-					sb.AppendC(UTF8STRC("<family val=\"1\"/>"));
-					break;
-				case FontFamily::Swiss:
-					sb.AppendC(UTF8STRC("<family val=\"2\"/>"));
-					break;
-				case FontFamily::Modern:
-					sb.AppendC(UTF8STRC("<family val=\"3\"/>"));
-					break;
-				case FontFamily::Script:
-					sb.AppendC(UTF8STRC("<family val=\"4\"/>"));
-					break;
-				case FontFamily::Decorative:
-					sb.AppendC(UTF8STRC("<family val=\"5\"/>"));
-					break;
-				}
-				sb.AppendC(UTF8STRC("</font>"));
-				i++;
-			}
-			sb.AppendC(UTF8STRC("</fonts>"));
-		}
-
-		sb.AppendC(UTF8STRC("<fills count=\"2\">"));
-		sb.AppendC(UTF8STRC("<fill>"));
-		sb.AppendC(UTF8STRC("<patternFill patternType=\"none\"/>"));
-		sb.AppendC(UTF8STRC("</fill>"));
-		sb.AppendC(UTF8STRC("<fill>"));
-		sb.AppendC(UTF8STRC("<patternFill patternType=\"gray125\"/>"));
-		sb.AppendC(UTF8STRC("</fill>"));
-		sb.AppendC(UTF8STRC("</fills>"));
-
-		i = 0;
-		k = borders.GetCount();
-		sb.AppendC(UTF8STRC("<borders count=\""));
-		sb.AppendUOSInt(k);
-		sb.AppendC(UTF8STRC("\">"));
-		while (i < k)
-		{
-			border = borders.GetItem(i);
-			sb.AppendC(UTF8STRC("<border diagonalUp=\"false\" diagonalDown=\"false\">"));
-			AppendBorder(sb, border->left, CSTR("left"));
-			AppendBorder(sb, border->right, CSTR("right"));
-			AppendBorder(sb, border->top, CSTR("top"));
-			AppendBorder(sb, border->bottom, CSTR("bottom"));
-			sb.AppendC(UTF8STRC("<diagonal/>"));
-			sb.AppendC(UTF8STRC("</border>"));
-			i++;
-		}
-		sb.AppendC(UTF8STRC("</borders>"));
-
-		sb.AppendC(UTF8STRC("<cellStyleXfs count=\"20\">"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">"));
-		sb.AppendC(UTF8STRC("<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>"));
-		sb.AppendC(UTF8STRC("<protection locked=\"true\" hidden=\"false\"/>"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"43\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"41\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"44\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"42\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("<xf numFmtId=\"9\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">"));
-		sb.AppendC(UTF8STRC("</xf>"));
-		sb.AppendC(UTF8STRC("</cellStyleXfs>"));
-
-		if (workbook->GetStyleCount() > 0)
-		{
-			sb.AppendC(UTF8STRC("<cellXfs count=\""));
-			sb.AppendUOSInt(workbook->GetStyleCount());
-			sb.AppendC(UTF8STRC("\">"));
-			i = 0;
-			k = workbook->GetStyleCount();
-			while (i < k)
-			{
-				NN<Text::SpreadSheet::CellStyle> style;
-				if (workbook->GetStyle(i).SetTo(style))
-				{
-					AppendXF(sb, style, borders, workbook, numFmtMap);
-				}
-				i++;
-			}
-			sb.AppendC(UTF8STRC("</cellXfs>"));
-		}
-
-		sb.AppendC(UTF8STRC("<cellStyles count=\"6\">"));
-		sb.AppendC(UTF8STRC("<cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/>"));
-		sb.AppendC(UTF8STRC("<cellStyle name=\"Comma\" xfId=\"15\" builtinId=\"3\"/>"));
-		sb.AppendC(UTF8STRC("<cellStyle name=\"Comma [0]\" xfId=\"16\" builtinId=\"6\"/>"));
-		sb.AppendC(UTF8STRC("<cellStyle name=\"Currency\" xfId=\"17\" builtinId=\"4\"/>"));
-		sb.AppendC(UTF8STRC("<cellStyle name=\"Currency [0]\" xfId=\"18\" builtinId=\"7\"/>"));
-		sb.AppendC(UTF8STRC("<cellStyle name=\"Percent\" xfId=\"19\" builtinId=\"5\"/>"));
-		sb.AppendC(UTF8STRC("</cellStyles>"));
-
-		i = 0;
-		k = borders.GetCount();
-		while (i < k)
-		{
-			MemFree(borders.GetItem(i));
-			i++;
-		}
-	}
-	sb.AppendC(UTF8STRC("</styleSheet>"));
-	zip->AddFile(CSTR("xl/styles.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
-	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>"));
-
 	if (sharedStrings.GetCount() > 0)
 	{
 		sb.ClearStr();
@@ -1087,34 +1094,31 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 
 	sb.ClearStr();
-	sb.Append(CSTR("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
-	sb.Append(CSTR("<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"Office\">"));
-	sb.Append(CSTR("<a:themeElements><a:clrScheme name=\"LibreOffice\"><a:dk1><a:srgbClr val=\"000000\"/></a:dk1><a:lt1><a:srgbClr val=\"ffffff\"/></a:lt1><a:dk2><a:srgbClr val=\"000000\"/></a:dk2>"));
-	sb.Append(CSTR("<a:lt2><a:srgbClr val=\"ffffff\"/></a:lt2><a:accent1><a:srgbClr val=\"18a303\"/></a:accent1><a:accent2><a:srgbClr val=\"0369a3\"/></a:accent2>"));
-	sb.Append(CSTR("<a:accent3><a:srgbClr val=\"a33e03\"/></a:accent3><a:accent4><a:srgbClr val=\"8e03a3\"/></a:accent4><a:accent5><a:srgbClr val=\"c99c00\"/></a:accent5>"));
-	sb.Append(CSTR("<a:accent6><a:srgbClr val=\"c9211e\"/></a:accent6><a:hlink><a:srgbClr val=\"0000ee\"/></a:hlink><a:folHlink><a:srgbClr val=\"551a8b\"/></a:folHlink></a:clrScheme>"));
-	sb.Append(CSTR("<a:fontScheme name=\"Office\"><a:majorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>"));
-	sb.Append(CSTR("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:majorFont><a:minorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>"));
-	sb.Append(CSTR("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:minorFont></a:fontScheme><a:fmtScheme><a:fillStyleLst><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill>"));
-	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:fillStyleLst>"));
-	sb.Append(CSTR("<a:lnStyleLst><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">"));
-	sb.Append(CSTR("<a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln></a:lnStyleLst>"));
-	sb.Append(CSTR("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>"));
-	sb.Append(CSTR("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>"));
-	zip->AddDir(CSTR("xl/theme/"), ts, ts, ts, 0);
-	zip->AddFile(CSTR("xl/theme/theme1.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
+	sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/>"));
+	sb.AppendC(UTF8STRC("\n</Relationships>"));
+	if (!dirRel)
+	{
+		zip->AddDir(CSTR("_rels/"), ts, ts, ts, 0);
+		dirRel = true;
+	}
+	zip->AddFile(CSTR("_rels/.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
+	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 	sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
+	//sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
 	i = 0;
 	k = workbook->GetCount();
 	while (i < k)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(i + 3);
+		sb.AppendUOSInt(i + 2);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet"));
 		sb.AppendUOSInt(i + 1);
 		sb.AppendC(UTF8STRC(".xml\"/>"));
@@ -1123,7 +1127,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	if (sharedStrings.GetCount() > 0)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(workbook->GetCount() + 3);
+		sb.AppendUOSInt(workbook->GetCount() + 2);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>"));
 	}
 	sb.AppendC(UTF8STRC("\n</Relationships>"));
@@ -1133,23 +1137,22 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		zip->AddDir(CSTR("xl/_rels/"), ts, ts, ts, 0);
 	}
 	zip->AddFile(CSTR("xl/_rels/workbook.xml.rels"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
-	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"));
 	sb.AppendC(UTF8STRC("<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
-	sb.AppendC(UTF8STRC("<dcterms:created xsi:type=\"dcterms:W3CDTF\">"));
 	t = workbook->GetCreateTime();
 	if (t)
 	{
+		sb.AppendC(UTF8STRC("<dcterms:created xsi:type=\"dcterms:W3CDTF\">"));
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendUTF8Char('T');
 		sptr = t->ToString(sbuff, "HH:mm:ss");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendUTF8Char('Z');
+		sb.AppendC(UTF8STRC("</dcterms:created>"));
 	}
-	sb.AppendC(UTF8STRC("</dcterms:created>"));
 	sb.AppendC(UTF8STRC("<dc:creator>"));
 	if (workbook->GetAuthor().SetTo(nncsptr))
 	{
@@ -1185,18 +1188,18 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		s->Release();
 	}
 	sb.AppendC(UTF8STRC("</cp:lastModifiedBy>"));
-	sb.AppendC(UTF8STRC("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">"));
 	t = workbook->GetModifyTime();
 	if (t)
 	{
+		sb.AppendC(UTF8STRC("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">"));
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendUTF8Char('T');
 		sptr = t->ToString(sbuff, "HH:mm:ss");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendUTF8Char('Z');
+		sb.AppendC(UTF8STRC("</dcterms:modified>"));
 	}
-	sb.AppendC(UTF8STRC("</dcterms:modified>"));
 	sb.AppendC(UTF8STRC("<cp:revision>"));
 	sb.AppendU32(1);
 	sb.AppendC(UTF8STRC("</cp:revision>"));
@@ -1234,6 +1237,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sptr = dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("</Application>"));
+	sb.AppendC(UTF8STRC("<AppVersion>15.0000</AppVersion>"));
 	sb.AppendC(UTF8STRC("</Properties>"));
 	zip->AddFile(CSTR("docProps/app.xml"), sb.ToString(), sb.GetLength(), ts, ts, ts, Data::Compress::Inflate::CompressionLevel::BestCompression, 0);
 	sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/docProps/app.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.extended-properties+xml\"/>"));
@@ -1655,7 +1659,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	NN<Text::String> optS;
 	if (!style->GetDataFormat().SetTo(optS))
 	{
-		csptr = (const UTF8Char*)"general";
+		csptr = (const UTF8Char*)"General";
 	}
 	else
 	{

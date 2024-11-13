@@ -16,14 +16,15 @@ namespace SSWR
 		private:
 			NN<UI::GUILabel> lblPort;
 			NN<UI::GUITextBox> txtPort;
-			NN<UI::GUILabel> lblAPIKey;
-			NN<UI::GUITextBox> txtAPIKey;
+			NN<UI::GUILabel> lblServiceAccount;
+			NN<UI::GUITextBox> txtServiceAccount;
 			NN<UI::GUIButton> btnStart;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::PushServer *svr;
+			Optional<Net::PushServer> svr;
 			IO::LogTool log;
+			Optional<Net::Google::GoogleServiceAccount> serviceAccount;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 		public:

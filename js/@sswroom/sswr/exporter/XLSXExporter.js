@@ -83,8 +83,295 @@ export class XLSXExporter
 		sbContTypes.push("<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 		sbContTypes.push("<Default Extension=\"png\" ContentType=\"image/png\"/>");
 		sbContTypes.push("<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>");
+		sbContTypes.push("<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 	
 		let row;
+	
+		sb = [];
+		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+		sb.push("<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
+		sb.push("<fileVersion appName=\"AVIRead\"/>");
+		sb.push("<workbookPr backupFile=\"false\" showObjects=\"all\" date1904=\"false\"/>");
+		sb.push("<workbookProtection/>");
+		sb.push("<bookViews>");
+		sb.push("<workbookView showHorizontalScroll=\"true\" showVerticalScroll=\"true\" showSheetTabs=\"true\" xWindow=\"0\" yWindow=\"0\" windowWidth=\"16384\" windowHeight=\"8192\" tabRatio=\"500\" firstSheet=\"0\" activeTab=\"0\"/>");
+		sb.push("</bookViews>");
+		sb.push("<sheets>");
+		i = 0;
+		j = workbook.getCount();
+		while (i < j)
+		{
+			sheet = workbook.getItem(i);
+			sb.push("<sheet name=");
+			s = sheet.getName();
+			s2 = text.toAttrText(s);
+			sb.push(s2);
+			sb.push(" sheetId=\"");
+			sb.push(""+(i + 1));
+			sb.push("\" state=\"visible\" r:id=\"rId");
+			sb.push(""+(i + 3));
+			sb.push("\"/>");
+			i++;
+		}
+		sb.push("</sheets>");
+		sb.push("<calcPr iterateCount=\"100\" refMode=\"A1\" iterate=\"false\" iterateDelta=\"0.001\"/>");
+		sb.push("</workbook>");
+		if (!dirXl)
+		{
+			zipFile.addDir("xl/", ts, ts, ts, 0);
+			dirXl = true;
+		}
+		zipFile.addFile("xl/workbook.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+		sbContTypes.push("<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>");
+	
+		sb = [];
+		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+		sb.push("<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"Office\">");
+		sb.push("<a:themeElements><a:clrScheme name=\"LibreOffice\"><a:dk1><a:srgbClr val=\"000000\"/></a:dk1><a:lt1><a:srgbClr val=\"ffffff\"/></a:lt1><a:dk2><a:srgbClr val=\"000000\"/></a:dk2>");
+		sb.push("<a:lt2><a:srgbClr val=\"ffffff\"/></a:lt2><a:accent1><a:srgbClr val=\"18a303\"/></a:accent1><a:accent2><a:srgbClr val=\"0369a3\"/></a:accent2>");
+		sb.push("<a:accent3><a:srgbClr val=\"a33e03\"/></a:accent3><a:accent4><a:srgbClr val=\"8e03a3\"/></a:accent4><a:accent5><a:srgbClr val=\"c99c00\"/></a:accent5>");
+		sb.push("<a:accent6><a:srgbClr val=\"c9211e\"/></a:accent6><a:hlink><a:srgbClr val=\"0000ee\"/></a:hlink><a:folHlink><a:srgbClr val=\"551a8b\"/></a:folHlink></a:clrScheme>");
+		sb.push("<a:fontScheme name=\"Office\"><a:majorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>");
+		sb.push("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:majorFont><a:minorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>");
+		sb.push("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:minorFont></a:fontScheme><a:fmtScheme><a:fillStyleLst><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill>");
+		sb.push("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:fillStyleLst>");
+		sb.push("<a:lnStyleLst><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">");
+		sb.push("<a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln></a:lnStyleLst>");
+		sb.push("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>");
+		sb.push("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>");
+		zipFile.addDir("xl/theme/", ts, ts, ts, 0);
+		zipFile.addFile("xl/theme/theme1.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+		sbContTypes.push("<Override PartName=\"/xl/theme/theme1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.theme+xml\"/>");
+
+		sb = [];
+		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+		sb.push("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
+		{
+			/** @type {{ [x: string]: number; }} */
+			let numFmtMap = {};
+			/** @type {string[]} */
+			let numFmts = [];
+			let borders = [];
+			let borderNone = new spreadsheet.BorderStyle(0, spreadsheet.BorderType.None);
+			let border = {left: borderNone, top: borderNone, right: borderNone, bottom: borderNone};
+			borders.push(border);
+	
+			s = "General";
+			numFmtMap[s] = numFmts.length;;
+			numFmts.push(s);
+	
+			i = 0;
+			j = workbook.getStyleCount();
+			while (i < j)
+			{
+				let style = workbook.getStyle(i);
+				if (style == null)
+					throw new Error("Style is null");
+				if ((s = style.getDataFormat()) == null)
+				{
+					s = "General";
+				}
+				if (numFmtMap[s] === undefined)
+				{
+					numFmtMap[s] = numFmts.length;
+					numFmts.push(s);
+				}
+				let borderFound = false;
+				k = borders.length;
+				while (k-- > 0)
+				{
+					border = borders[k];
+					if (border.left.equals(style.getBorderLeft()) &&
+						border.top.equals(style.getBorderTop()) &&
+						border.right.equals(style.getBorderRight()) &&
+						border.bottom.equals(style.getBorderBottom()))
+					{
+						borderFound = true;
+						break;
+					}
+				}
+				if (!borderFound)
+				{
+					border = {left: style.getBorderLeft(), top: style.getBorderTop(), right: style.getBorderRight(), bottom: style.getBorderBottom()};
+					borders.push(border);
+				}
+				i++;
+			}
+			if (numFmts.length > 0)
+			{
+				sb.push("<numFmts count=\"");
+				sb.push(""+numFmts.length);
+				sb.push("\">");
+				i = 0;
+				k = numFmts.length;
+				while (i < k)
+				{
+					sb.push("<numFmt numFmtId=\"");
+					sb.push(""+(i + 164));
+					sb.push("\" formatCode=");
+					s = text.toAttrText(XLSXExporter.toFormatCode(numFmts[i]));
+					sb.push(s);
+					sb.push("/>");
+					i++;
+				}
+				sb.push("</numFmts>");
+			}
+			if (workbook.getFontCount() > 0)
+			{
+				sb.push("<fonts count=\"");
+				sb.push(""+workbook.getFontCount());
+				sb.push("\">");
+				i = 0;
+				k = workbook.getFontCount();
+				while (i < k)
+				{
+					let font = workbook.getFontNoCheck(i);
+					sb.push("<font>");
+					if (font.getSize() != 0)
+					{
+						sb.push("<sz val=\"");
+						sb.push(""+font.getSize());
+						sb.push("\"/>");
+					}
+					if ((s = font.getName()) != null)
+					{
+						sb.push("<name val=");
+						s = text.toAttrText(s);
+						sb.push(s);
+						sb.push("/>");
+					}
+					switch (font.getFamily())
+					{
+					case spreadsheet.FontFamily.NA:
+						sb.push("<family val=\"0\"/>");
+						break;
+					case spreadsheet.FontFamily.Roman:
+						sb.push("<family val=\"1\"/>");
+						break;
+					case spreadsheet.FontFamily.Swiss:
+						sb.push("<family val=\"2\"/>");
+						break;
+					case spreadsheet.FontFamily.Modern:
+						sb.push("<family val=\"3\"/>");
+						break;
+					case spreadsheet.FontFamily.Script:
+						sb.push("<family val=\"4\"/>");
+						break;
+					case spreadsheet.FontFamily.Decorative:
+						sb.push("<family val=\"5\"/>");
+						break;
+					}
+					sb.push("</font>");
+					i++;
+				}
+				sb.push("</fonts>");
+			}
+	
+			sb.push("<fills count=\"2\">");
+			sb.push("<fill>");
+			sb.push("<patternFill patternType=\"none\"/>");
+			sb.push("</fill>");
+			sb.push("<fill>");
+			sb.push("<patternFill patternType=\"gray125\"/>");
+			sb.push("</fill>");
+			sb.push("</fills>");
+	
+			i = 0;
+			k = borders.length;
+			sb.push("<borders count=\"");
+			sb.push(""+k);
+			sb.push("\">");
+			while (i < k)
+			{
+				border = borders[i];
+				sb.push("<border diagonalUp=\"false\" diagonalDown=\"false\">");
+				XLSXExporter.appendBorder(sb, border.left, "left");
+				XLSXExporter.appendBorder(sb, border.right, "right");
+				XLSXExporter.appendBorder(sb, border.top, "top");
+				XLSXExporter.appendBorder(sb, border.bottom, "bottom");
+				sb.push("<diagonal/>");
+				sb.push("</border>");
+				i++;
+			}
+			sb.push("</borders>");
+	
+			sb.push("<cellStyleXfs count=\"20\">");
+			sb.push("<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">");
+			sb.push("<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>");
+			sb.push("<protection locked=\"true\" hidden=\"false\"/>");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"43\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"41\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"44\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"42\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("<xf numFmtId=\"9\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+			sb.push("</xf>");
+			sb.push("</cellStyleXfs>");
+	
+			if (workbook.getStyleCount() > 0)
+			{
+				sb.push("<cellXfs count=\"");
+				sb.push(""+workbook.getStyleCount());
+				sb.push("\">");
+				i = 0;
+				k = workbook.getStyleCount();
+				while (i < k)
+				{
+					let style;
+					if ((style = workbook.getStyle(i)) != null)
+					{
+						XLSXExporter.appendXF(sb, style, borders, workbook, numFmtMap);
+					}
+					i++;
+				}
+				sb.push("</cellXfs>");
+			}
+	
+			sb.push("<cellStyles count=\"6\">");
+			sb.push("<cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/>");
+			sb.push("<cellStyle name=\"Comma\" xfId=\"15\" builtinId=\"3\"/>");
+			sb.push("<cellStyle name=\"Comma [0]\" xfId=\"16\" builtinId=\"6\"/>");
+			sb.push("<cellStyle name=\"Currency\" xfId=\"17\" builtinId=\"4\"/>");
+			sb.push("<cellStyle name=\"Currency [0]\" xfId=\"18\" builtinId=\"7\"/>");
+			sb.push("<cellStyle name=\"Percent\" xfId=\"19\" builtinId=\"5\"/>");
+			sb.push("</cellStyles>");
+		}
+		sb.push("</styleSheet>");
+		zipFile.addFile("xl/styles.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+		sbContTypes.push("<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>");
+	
 		i = 0;
 		j = workbook.getCount();
 		while (i < j)
@@ -732,288 +1019,7 @@ export class XLSXExporter
 			}
 			i++;
 		}
-	
-		sb = [];
-		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-		sb.push("<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
-		sb.push("<fileVersion appName=\"AVIRead\"/>");
-		sb.push("<workbookPr backupFile=\"false\" showObjects=\"all\" date1904=\"false\"/>");
-		sb.push("<workbookProtection/>");
-		sb.push("<bookViews>");
-		sb.push("<workbookView showHorizontalScroll=\"true\" showVerticalScroll=\"true\" showSheetTabs=\"true\" xWindow=\"0\" yWindow=\"0\" windowWidth=\"16384\" windowHeight=\"8192\" tabRatio=\"500\" firstSheet=\"0\" activeTab=\"0\"/>");
-		sb.push("</bookViews>");
-		sb.push("<sheets>");
-		i = 0;
-		j = workbook.getCount();
-		while (i < j)
-		{
-			sheet = workbook.getItem(i);
-			sb.push("<sheet name=");
-			s = sheet.getName();
-			s2 = text.toAttrText(s);
-			sb.push(s2);
-			sb.push(" sheetId=\"");
-			sb.push(""+(i + 1));
-			sb.push("\" state=\"visible\" r:id=\"rId");
-			sb.push(""+(i + 2));
-			sb.push("\"/>");
-			i++;
-		}
-		sb.push("</sheets>");
-		sb.push("<calcPr iterateCount=\"100\" refMode=\"A1\" iterate=\"false\" iterateDelta=\"0.001\"/>");
-		sb.push("</workbook>");
-		if (!dirXl)
-		{
-			zipFile.addDir("xl/", ts, ts, ts, 0);
-			dirXl = true;
-		}
-		zipFile.addFile("xl/workbook.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
-		sbContTypes.push("<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>");
-	
-		sb = [];
-		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		sb.push("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
-		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>");
-		sb.push("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/>");
-		sb.push("<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/>");
-		sb.push("\n</Relationships>");
-		if (!dirRel)
-		{
-			zipFile.addDir("_rels/", ts, ts, ts, 0);
-			dirRel = true;
-		}
-		zipFile.addFile("_rels/.rels", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
-		sbContTypes.push("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
-	
-		sb = [];
-		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-		sb.push("<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
-		{
-			/** @type {{ [x: string]: number; }} */
-			let numFmtMap = {};
-			/** @type {string[]} */
-			let numFmts = [];
-			let borders = [];
-			let borderNone = new spreadsheet.BorderStyle(0, spreadsheet.BorderType.None);
-			let border = {left: borderNone, top: borderNone, right: borderNone, bottom: borderNone};
-			borders.push(border);
-	
-			s = "general";
-			numFmtMap[s] = numFmts.length;;
-			numFmts.push(s);
-	
-			i = 0;
-			j = workbook.getStyleCount();
-			while (i < j)
-			{
-				let style = workbook.getStyle(i);
-				if (style == null)
-					throw new Error("Style is null");
-				if ((s = style.getDataFormat()) == null)
-				{
-					s = "general";
-				}
-				if (numFmtMap[s] === undefined)
-				{
-					numFmtMap[s] = numFmts.length;
-					numFmts.push(s);
-				}
-				let borderFound = false;
-				k = borders.length;
-				while (k-- > 0)
-				{
-					border = borders[k];
-					if (border.left.equals(style.getBorderLeft()) &&
-						border.top.equals(style.getBorderTop()) &&
-						border.right.equals(style.getBorderRight()) &&
-						border.bottom.equals(style.getBorderBottom()))
-					{
-						borderFound = true;
-						break;
-					}
-				}
-				if (!borderFound)
-				{
-					border = {left: style.getBorderLeft(), top: style.getBorderTop(), right: style.getBorderRight(), bottom: style.getBorderBottom()};
-					borders.push(border);
-				}
-				i++;
-			}
-			if (numFmts.length > 0)
-			{
-				sb.push("<numFmts count=\"");
-				sb.push(""+numFmts.length);
-				sb.push("\">");
-				i = 0;
-				k = numFmts.length;
-				while (i < k)
-				{
-					sb.push("<numFmt numFmtId=\"");
-					sb.push(""+(i + 164));
-					sb.push("\" formatCode=");
-					s = text.toAttrText(XLSXExporter.toFormatCode(numFmts[i]));
-					sb.push(s);
-					sb.push("/>");
-					i++;
-				}
-				sb.push("</numFmts>");
-			}
-			if (workbook.getFontCount() > 0)
-			{
-				sb.push("<fonts count=\"");
-				sb.push(""+workbook.getFontCount());
-				sb.push("\">");
-				i = 0;
-				k = workbook.getFontCount();
-				while (i < k)
-				{
-					let font = workbook.getFontNoCheck(i);
-					sb.push("<font>");
-					if (font.getSize() != 0)
-					{
-						sb.push("<sz val=\"");
-						sb.push(""+font.getSize());
-						sb.push("\"/>");
-					}
-					if ((s = font.getName()) != null)
-					{
-						sb.push("<name val=");
-						s = text.toAttrText(s);
-						sb.push(s);
-						sb.push("/>");
-					}
-					switch (font.getFamily())
-					{
-					case spreadsheet.FontFamily.NA:
-						sb.push("<family val=\"0\"/>");
-						break;
-					case spreadsheet.FontFamily.Roman:
-						sb.push("<family val=\"1\"/>");
-						break;
-					case spreadsheet.FontFamily.Swiss:
-						sb.push("<family val=\"2\"/>");
-						break;
-					case spreadsheet.FontFamily.Modern:
-						sb.push("<family val=\"3\"/>");
-						break;
-					case spreadsheet.FontFamily.Script:
-						sb.push("<family val=\"4\"/>");
-						break;
-					case spreadsheet.FontFamily.Decorative:
-						sb.push("<family val=\"5\"/>");
-						break;
-					}
-					sb.push("</font>");
-					i++;
-				}
-				sb.push("</fonts>");
-			}
-	
-			sb.push("<fills count=\"2\">");
-			sb.push("<fill>");
-			sb.push("<patternFill patternType=\"none\"/>");
-			sb.push("</fill>");
-			sb.push("<fill>");
-			sb.push("<patternFill patternType=\"gray125\"/>");
-			sb.push("</fill>");
-			sb.push("</fills>");
-	
-			i = 0;
-			k = borders.length;
-			sb.push("<borders count=\"");
-			sb.push(""+k);
-			sb.push("\">");
-			while (i < k)
-			{
-				border = borders[i];
-				sb.push("<border diagonalUp=\"false\" diagonalDown=\"false\">");
-				XLSXExporter.appendBorder(sb, border.left, "left");
-				XLSXExporter.appendBorder(sb, border.right, "right");
-				XLSXExporter.appendBorder(sb, border.top, "top");
-				XLSXExporter.appendBorder(sb, border.bottom, "bottom");
-				sb.push("<diagonal/>");
-				sb.push("</border>");
-				i++;
-			}
-			sb.push("</borders>");
-	
-			sb.push("<cellStyleXfs count=\"20\">");
-			sb.push("<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">");
-			sb.push("<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>");
-			sb.push("<protection locked=\"true\" hidden=\"false\"/>");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"43\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"41\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"44\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"42\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("<xf numFmtId=\"9\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
-			sb.push("</xf>");
-			sb.push("</cellStyleXfs>");
-	
-			if (workbook.getStyleCount() > 0)
-			{
-				sb.push("<cellXfs count=\"");
-				sb.push(""+workbook.getStyleCount());
-				sb.push("\">");
-				i = 0;
-				k = workbook.getStyleCount();
-				while (i < k)
-				{
-					let style;
-					if ((style = workbook.getStyle(i)) != null)
-					{
-						XLSXExporter.appendXF(sb, style, borders, workbook, numFmtMap);
-					}
-					i++;
-				}
-				sb.push("</cellXfs>");
-			}
-	
-			sb.push("<cellStyles count=\"6\">");
-			sb.push("<cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/>");
-			sb.push("<cellStyle name=\"Comma\" xfId=\"15\" builtinId=\"3\"/>");
-			sb.push("<cellStyle name=\"Comma [0]\" xfId=\"16\" builtinId=\"6\"/>");
-			sb.push("<cellStyle name=\"Currency\" xfId=\"17\" builtinId=\"4\"/>");
-			sb.push("<cellStyle name=\"Currency [0]\" xfId=\"18\" builtinId=\"7\"/>");
-			sb.push("<cellStyle name=\"Percent\" xfId=\"19\" builtinId=\"5\"/>");
-			sb.push("</cellStyles>");
-		}
-		sb.push("</styleSheet>");
-		zipFile.addFile("xl/styles.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
-		sbContTypes.push("<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>");
-	
+
 		if (sharedStrings.length > 0)
 		{
 			sb = [];
@@ -1037,36 +1043,33 @@ export class XLSXExporter
 			zipFile.addFile("xl/sharedStrings.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts,0);
 			sbContTypes.push("<Override PartName=\"/xl/sharedStrings.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml\"/>");
 		}
-	
-		sb = [];
-		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-		sb.push("<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"Office\">");
-		sb.push("<a:themeElements><a:clrScheme name=\"LibreOffice\"><a:dk1><a:srgbClr val=\"000000\"/></a:dk1><a:lt1><a:srgbClr val=\"ffffff\"/></a:lt1><a:dk2><a:srgbClr val=\"000000\"/></a:dk2>");
-		sb.push("<a:lt2><a:srgbClr val=\"ffffff\"/></a:lt2><a:accent1><a:srgbClr val=\"18a303\"/></a:accent1><a:accent2><a:srgbClr val=\"0369a3\"/></a:accent2>");
-		sb.push("<a:accent3><a:srgbClr val=\"a33e03\"/></a:accent3><a:accent4><a:srgbClr val=\"8e03a3\"/></a:accent4><a:accent5><a:srgbClr val=\"c99c00\"/></a:accent5>");
-		sb.push("<a:accent6><a:srgbClr val=\"c9211e\"/></a:accent6><a:hlink><a:srgbClr val=\"0000ee\"/></a:hlink><a:folHlink><a:srgbClr val=\"551a8b\"/></a:folHlink></a:clrScheme>");
-		sb.push("<a:fontScheme name=\"Office\"><a:majorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>");
-		sb.push("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:majorFont><a:minorFont><a:latin typeface=\"Arial\" pitchFamily=\"0\" charset=\"1\"/><a:ea typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/>");
-		sb.push("<a:cs typeface=\"DejaVu Sans\" pitchFamily=\"0\" charset=\"1\"/></a:minorFont></a:fontScheme><a:fmtScheme><a:fillStyleLst><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill>");
-		sb.push("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:fillStyleLst>");
-		sb.push("<a:lnStyleLst><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">");
-		sb.push("<a:prstDash val=\"solid\"/><a:miter/></a:ln><a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:prstDash val=\"solid\"/><a:miter/></a:ln></a:lnStyleLst>");
-		sb.push("<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst>");
-		sb.push("<a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill><a:solidFill><a:schemeClr val=\"phClr\"></a:schemeClr></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>");
-		zipFile.addDir("xl/theme/", ts, ts, ts, 0);
-		zipFile.addFile("xl/theme/theme1.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
-	
+
 		sb = [];
 		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.push("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
-//		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>");
-		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
+		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>");
+		sb.push("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties\" Target=\"docProps/core.xml\"/>");
+		sb.push("<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/>");
+		sb.push("\n</Relationships>");
+		if (!dirRel)
+		{
+			zipFile.addDir("_rels/", ts, ts, ts, 0);
+			dirRel = true;
+		}
+		zipFile.addFile("_rels/.rels", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
+		sbContTypes.push("<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
+
+		sb = [];
+		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		sb.push("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+		sb.push("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>");
+		sb.push("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
 		i = 0;
 		k = workbook.getCount();
 		while (i < k)
 		{
 			sb.push("<Relationship Id=\"rId");
-			sb.push(""+(i + 2));
+			sb.push(""+(i + 3));
 			sb.push("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet");
 			sb.push(""+(i + 1));
 			sb.push(".xml\"/>");
@@ -1075,7 +1078,7 @@ export class XLSXExporter
 		if (sharedStrings.length > 0)
 		{
 			sb.push("<Relationship Id=\"rId");
-			sb.push(""+(workbook.getCount() + 2));
+			sb.push(""+(workbook.getCount() + 3));
 			sb.push("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>");
 		}
 		sb.push("\n</Relationships>");
@@ -1085,21 +1088,20 @@ export class XLSXExporter
 			zipFile.addDir("xl/_rels/", ts, ts, ts, 0);
 		}
 		zipFile.addFile("xl/_rels/workbook.xml.rels", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
-		sbContTypes.push("<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
-	
+
 		sb = [];
 		sb.push("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		sb.push("<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
-		sb.push("<dcterms:created xsi:type=\"dcterms:W3CDTF\">");
 		t = workbook.getCreateTime();
 		if (t)
 		{
+			sb.push("<dcterms:created xsi:type=\"dcterms:W3CDTF\">");
 			sb.push(t.toString("yyyy-MM-dd"));
 			sb.push('T');
 			sb.push(t.toString("HH:mm:ss"));
 			sb.push('Z');
+			sb.push("</dcterms:created>");
 		}
-		sb.push("</dcterms:created>");
 		sb.push("<dc:creator>");
 		if ((s = workbook.getAuthor()) != null)
 		{
@@ -1131,16 +1133,16 @@ export class XLSXExporter
 			sb.push(s);
 		}
 		sb.push("</cp:lastModifiedBy>");
-		sb.push("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">");
 		t = workbook.getModifyTime();
 		if (t)
 		{
+			sb.push("<dcterms:modified xsi:type=\"dcterms:W3CDTF\">");
 			sb.push(t.toString("yyyy-MM-dd"));
 			sb.push('T');
 			sb.push(t.toString("HH:mm:ss"));
 			sb.push('Z');
+			sb.push("</dcterms:modified>");
 		}
-		sb.push("</dcterms:modified>");
 		sb.push("<cp:revision>");
 		sb.push(""+1);
 		sb.push("</cp:revision>");
@@ -1171,6 +1173,7 @@ export class XLSXExporter
 		sb.push("<Application>");
 		sb.push("AVIRead/1.0");
 		sb.push("</Application>");
+		sb.push("<AppVersion>15.0000</AppVersion>");
 		sb.push("</Properties>");
 		zipFile.addFile("docProps/app.xml", new TextEncoder().encode(sb.join("")), ts, ts, ts, 0);
 		sbContTypes.push("<Override PartName=\"/docProps/app.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.extended-properties+xml\"/>");

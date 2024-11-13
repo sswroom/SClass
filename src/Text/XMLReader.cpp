@@ -883,6 +883,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					NN<Text::String> nodeText;
 					NN<Text::String> s;
+					Optional<Text::String> opts;
 					if (!this->nodeText.SetTo(nodeText))
 					{
 						this->parseError = 20;
@@ -896,13 +897,16 @@ Bool Text::XMLReader::ReadNext()
 					}
 					if (this->pathList.GetLast().SetTo(s) && s->Equals(nodeText))
 					{
-						OPTSTR_DEL(this->pathList.Pop());
+						opts = this->pathList.Pop();
+						OPTSTR_DEL(opts);
 						return true;
 					}
 					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2).SetTo(s) && s->Equals(nodeText))
 					{
-						OPTSTR_DEL(this->pathList.Pop());
-						OPTSTR_DEL(this->pathList.Pop());
+						opts = this->pathList.Pop();
+						OPTSTR_DEL(opts);
+						opts = this->pathList.Pop();
+						OPTSTR_DEL(opts);
 						return true;
 					}
 					else
