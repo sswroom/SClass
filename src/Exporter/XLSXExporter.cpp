@@ -1111,14 +1111,14 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 	sb.AppendC(UTF8STRC("<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"));
-	//sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>"));
-	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme\" Target=\"theme/theme1.xml\"/>"));
+	sb.AppendC(UTF8STRC("<Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>"));
 	i = 0;
 	k = workbook->GetCount();
 	while (i < k)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(i + 2);
+		sb.AppendUOSInt(i + 3);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet"));
 		sb.AppendUOSInt(i + 1);
 		sb.AppendC(UTF8STRC(".xml\"/>"));
@@ -1127,7 +1127,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	if (sharedStrings.GetCount() > 0)
 	{
 		sb.AppendC(UTF8STRC("<Relationship Id=\"rId"));
-		sb.AppendUOSInt(workbook->GetCount() + 2);
+		sb.AppendUOSInt(workbook->GetCount() + 3);
 		sb.AppendC(UTF8STRC("\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>"));
 	}
 	sb.AppendC(UTF8STRC("\n</Relationships>"));
