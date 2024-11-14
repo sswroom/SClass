@@ -479,6 +479,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 		}
 	}
 	Int8 csvTZ = this->db->GetTzQhr();
+	DB::SQLType sqlType = this->GetDBSQLType();
+	Bool no3DGeometry = DB::DBUtil::IsNo3DGeometry(sqlType);
 	this->dataFileTz = csvTZ;
 	NN<DB::TableDef> table;;
 	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
@@ -839,7 +841,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 										}
 										else
 										{
-											if (!vec1->Equals(vec2, false, true))
+											if (!vec1->Equals(vec2, false, true, no3DGeometry))
 											{
 												diff = true;
 											}
@@ -983,6 +985,21 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		}
 	}
 	NN<DB::TableDef> table;
+	NN<DB::ColDef> col;
+	UInt32 srid = 0;
+	if (dataFile->GetTableDef(CSTR_NULL, sbTable.ToCString()).SetTo(table))
+	{
+		UOSInt i = table->GetColCnt();
+		while (i-- > 0)
+		{
+			if (table->GetCol(i).SetTo(col) && col->GetColType() == DB::DBUtil::CT_Vector)
+			{
+				srid = col->GetGeometrySRID();
+				break;
+			}
+		}
+		table.Delete();
+	}
 	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
@@ -992,7 +1009,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	Bool succ = true;
 	Bool intKey = false;
-	NN<DB::ColDef> col;
+	Bool no3DGeometry = DB::DBUtil::IsNo3DGeometry(this->GetDBSQLType());
 	Text::StringBuilderUTF8 sbId;
 	UOSInt keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUOSInt();
 	UOSInt keyDCol1;
@@ -1031,12 +1048,21 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			case DB::DBUtil::CT_Float:
 			case DB::DBUtil::CT_Decimal:
 			case DB::DBUtil::CT_Binary:
-			case DB::DBUtil::CT_Vector:
 			case DB::DBUtil::CT_UUID:
+				break;
+			case DB::DBUtil::CT_Vector:
+				if (srid == 0)
+				{
+					srid = col->GetGeometrySRID();
+				}
 				break;
 			}
 		}
 		i++;
+	}
+	if (srid == 0)
+	{
+		srid = SRID;
 	}
 	UOSInt k;
 	UOSInt srcCnt;
@@ -1237,7 +1263,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						}
 						else
 						{
-							AppendCol(sql, col, ops, this->dataFileTz);
+							AppendCol(sql, col, ops, this->dataFileTz, srid);
 						}
 						OPTSTR_DEL(ops);
 					}
@@ -1437,7 +1463,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									case DB::DBUtil::CT_Vector:
 										{
 											NN<Math::Geometry::Vector2D> vec2;;
-											Math::WKTReader reader(SRID);
+											Math::WKTReader reader(srid);
 											if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 											{
 											}
@@ -1649,14 +1675,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 									NN<Math::Geometry::Vector2D> vec2;
 									if (r->GetVector(i).SetTo(vec1))
 									{
-										vec1->SetSRID(col->GetGeometrySRID());
+										vec1->SetSRID(srid);
 										Math::WKTReader reader(vec1->GetSRID());
 										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 										{
 										}
 										else
 										{
-											if (!vec1->Equals(vec2, false, true))
+											if (!vec1->Equals(vec2, false, true, no3DGeometry))
 											{
 												if (diff)
 												{
@@ -1812,7 +1838,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 							{
 								if (colFound) sql.AppendCmdC(CSTR(", "));
 								colFound = true;
-								AppendCol(sql, col, rowData[i], this->dataFileTz);
+								AppendCol(sql, col, rowData[i], this->dataFileTz, srid);
 							}
 							i++;
 						}
@@ -1958,7 +1984,7 @@ void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(NN<SQLSession> sess)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr, UInt32 srid)
 {
 	NN<Text::String> nns;
 	if (!s.SetTo(nns))
@@ -2023,7 +2049,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> s
 		else
 		{
 			Optional<Math::Geometry::Vector2D> vec2;
-			Math::WKTReader reader(col->GetGeometrySRID());
+			Math::WKTReader reader((srid == 0)?col->GetGeometrySRID():srid);
 			vec2 = reader.ParseWKT(nns->v);
 			sql->AppendVector(vec2);
 			vec2.Delete();

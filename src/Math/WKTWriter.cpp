@@ -17,7 +17,7 @@ void Math::WKTWriter::SetLastError(Text::CStringNN lastError)
 	this->lastError = Text::String::New(lastError);
 }
 
-void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis)
+void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
 	UOSInt nPoint;
@@ -27,7 +27,7 @@ void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::
 	UnsafeArray<Double> nnzArr;
 	UnsafeArray<Double> nnmArr;
 	UOSInt i;
-	if (zArr.SetTo(nnzArr))
+	if (!no3D && zArr.SetTo(nnzArr))
 	{
 		if (mArr.SetTo(nnmArr))
 		{
@@ -80,7 +80,7 @@ void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::
 	}
 	else
 	{
-		if (mArr.SetTo(nnmArr))
+		if (!no3D && mArr.SetTo(nnmArr))
 		{
 			i = 0;
 			while (i < nPoint)
@@ -134,7 +134,7 @@ void Math::WKTWriter::AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polygon> pg, Bool reverseAxis)
+void Math::WKTWriter::AppendPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polygon> pg, Bool reverseAxis, Bool no3D)
 {
 	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 	Bool found = false;
@@ -143,13 +143,13 @@ void Math::WKTWriter::AppendPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geo
 	{
 		if (found)
 			sb->AppendUTF8Char(',');
-		AppendLineString(sb, it.Next(), reverseAxis);
+		AppendLineString(sb, it.Next(), reverseAxis, no3D);
 		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendPolyline(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polyline> pl, Bool reverseAxis)
+void Math::WKTWriter::AppendPolyline(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polyline> pl, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
 	Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
@@ -157,13 +157,13 @@ void Math::WKTWriter::AppendPolyline(NN<Text::StringBuilderUTF8> sb, NN<Math::Ge
 	while (it.HasNext())
 	{
 		if (found) sb->AppendUTF8Char(',');
-		AppendLineString(sb, it.Next(), reverseAxis);
+		AppendLineString(sb, it.Next(), reverseAxis, no3D);
 		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCompoundCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CompoundCurve> cc, Bool reverseAxis)
+void Math::WKTWriter::AppendCompoundCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CompoundCurve> cc, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
 	NN<Math::Geometry::LineString> pl;
@@ -177,13 +177,13 @@ void Math::WKTWriter::AppendCompoundCurve(NN<Text::StringBuilderUTF8> sb, NN<Mat
 		{
 			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
 		}
-		AppendLineString(sb, pl, reverseAxis);
+		AppendLineString(sb, pl, reverseAxis, no3D);
 		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendCurvePolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CurvePolygon> cpg, Bool reverseAxis)
+void Math::WKTWriter::AppendCurvePolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CurvePolygon> cpg, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
 	NN<Math::Geometry::Vector2D> geometry;
@@ -196,24 +196,24 @@ void Math::WKTWriter::AppendCurvePolygon(NN<Text::StringBuilderUTF8> sb, NN<Math
 		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
 		if (t == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis);
+			AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis, no3D);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::CircularString)
 		{
 			sb->AppendC(UTF8STRC("CIRCULARSTRING"));
-			AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis);
+			AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis, no3D);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
-			AppendCompoundCurve(sb, NN<Math::Geometry::CompoundCurve>::ConvertFrom(geometry), reverseAxis);
+			AppendCompoundCurve(sb, NN<Math::Geometry::CompoundCurve>::ConvertFrom(geometry), reverseAxis, no3D);
 		}
 		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendMultiPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis)
+void Math::WKTWriter::AppendMultiPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis, Bool no3D)
 {
 	Data::ArrayIterator<NN<Math::Geometry::Polygon>> it = mpg->Iterator();
 	Bool found = false;
@@ -221,13 +221,13 @@ void Math::WKTWriter::AppendMultiPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math
 	while (it.HasNext())
 	{
 		if (found) sb->AppendUTF8Char(',');
-		AppendPolygon(sb, it.Next(), reverseAxis);
+		AppendPolygon(sb, it.Next(), reverseAxis, no3D);
 		found = true;
 	}
 	sb->AppendUTF8Char(')');
 }
 
-void Math::WKTWriter::AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiSurface> ms, Bool reverseAxis)
+void Math::WKTWriter::AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiSurface> ms, Bool reverseAxis, Bool no3D)
 {
 	sb->AppendUTF8Char('(');
 	NN<Math::Geometry::Vector2D> geometry;
@@ -241,12 +241,12 @@ void Math::WKTWriter::AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math
 		if (t == Math::Geometry::Vector2D::VectorType::CurvePolygon)
 		{
 			sb->AppendC(UTF8STRC("CURVEPOLYGON"));
-			AppendCurvePolygon(sb, NN<Math::Geometry::CurvePolygon>::ConvertFrom(geometry), reverseAxis);
+			AppendCurvePolygon(sb, NN<Math::Geometry::CurvePolygon>::ConvertFrom(geometry), reverseAxis, no3D);
 		}
 		else if (t == Math::Geometry::Vector2D::VectorType::Polygon)
 		{
 			sb->AppendC(UTF8STRC("POLYGON"));
-			AppendPolygon(sb, NN<Math::Geometry::Polygon>::ConvertFrom(geometry), reverseAxis);
+			AppendPolygon(sb, NN<Math::Geometry::Polygon>::ConvertFrom(geometry), reverseAxis, no3D);
 		}
 		else
 		{
@@ -279,6 +279,7 @@ Math::WKTWriter::WKTWriter()
 {
 	this->lastError = 0;
 	this->reverseAxis = false;
+	this->no3D = false;
 }
 
 Math::WKTWriter::~WKTWriter()
@@ -348,35 +349,35 @@ Bool Math::WKTWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geom
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 		sb->AppendC(UTF8STRC("POLYGON"));
-		AppendPolygon(sb, NN<Math::Geometry::Polygon>::ConvertFrom(vec), this->reverseAxis);
+		AppendPolygon(sb, NN<Math::Geometry::Polygon>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		sb->AppendC(UTF8STRC("MULTILINESTRING"));
-		AppendPolyline(sb, NN<Math::Geometry::Polyline>::ConvertFrom(vec), this->reverseAxis);
+		AppendPolyline(sb, NN<Math::Geometry::Polyline>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
 		sb->AppendC(UTF8STRC("MULTIPOLYGON"));
-		AppendMultiPolygon(sb, NN<Math::Geometry::MultiPolygon>::ConvertFrom(vec), this->reverseAxis);
+		AppendMultiPolygon(sb, NN<Math::Geometry::MultiPolygon>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::LineString:
 		sb->AppendC(UTF8STRC("LINESTRING"));
-		AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(vec), this->reverseAxis);
+		AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 		sb->AppendC(UTF8STRC("CIRCULARSTRING"));
-		AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(vec), this->reverseAxis);
+		AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 		sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
-		AppendCompoundCurve(sb, NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec), this->reverseAxis);
+		AppendCompoundCurve(sb, NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 		sb->AppendC(UTF8STRC("CURVEPOLYGON"));
-		AppendCurvePolygon(sb, NN<Math::Geometry::CurvePolygon>::ConvertFrom(vec), this->reverseAxis);
+		AppendCurvePolygon(sb, NN<Math::Geometry::CurvePolygon>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::MultiSurface:
 		sb->AppendC(UTF8STRC("MULTISURFACE"));
-		AppendMultiSurface(sb, NN<Math::Geometry::MultiSurface>::ConvertFrom(vec), this->reverseAxis);
+		AppendMultiSurface(sb, NN<Math::Geometry::MultiSurface>::ConvertFrom(vec), this->reverseAxis, this->no3D);
 		return true;
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 		sb->AppendC(UTF8STRC("GEOMETRYCOLLECTION"));
@@ -405,9 +406,4 @@ Bool Math::WKTWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geom
 Optional<Text::String> Math::WKTWriter::GetLastError()
 {
 	return this->lastError;
-}
-
-void Math::WKTWriter::SetReverseAxis(Bool reverseAxis)
-{
-	this->reverseAxis = reverseAxis;
 }

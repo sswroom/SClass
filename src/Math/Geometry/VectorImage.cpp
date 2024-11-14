@@ -307,7 +307,7 @@ void Math::Geometry::VectorImage::Convert(NN<Math::CoordinateConverter> converte
 	}
 }
 
-Bool Math::Geometry::VectorImage::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::VectorImage::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetVectorType() != VectorType::Image)
 	{

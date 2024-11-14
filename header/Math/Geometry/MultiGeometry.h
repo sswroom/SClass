@@ -243,14 +243,14 @@ namespace Math
 				this->srid = converter->GetOutputSRID();
 			}
 
-			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
 					NN<T> geom;
 					if (!sameTypeOnly && this->geometries.GetCount() == 1 && this->geometries.GetItem(0).SetTo(geom))
 					{
-						return geom->Equals(vec, sameTypeOnly, nearlyVal);
+						return geom->Equals(vec, sameTypeOnly, nearlyVal, no3DGeometry);
 					}
 #if defined(VERBOSE)
 					printf("MultiGeometry: Vector type different\r\n");
@@ -270,7 +270,7 @@ namespace Math
 				UOSInt i = 0;
 				while (it.HasNext())
 				{
-					if (!obj->GetItem(i).SetTo(v) || !it.Next()->Equals(v, sameTypeOnly, nearlyVal))
+					if (!obj->GetItem(i).SetTo(v) || !it.Next()->Equals(v, sameTypeOnly, nearlyVal, no3DGeometry))
 						return false;
 					i++;
 				}

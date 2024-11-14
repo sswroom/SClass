@@ -2,8 +2,12 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Math/WKTReader.h"
+#include "Math/Geometry/CircularString.h"
+#include "Math/Geometry/CompoundCurve.h"
+#include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/LineString.h"
 #include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 #include "Math/Geometry/Polygon.h"
@@ -64,10 +68,499 @@ UnsafeArrayOpt<const UTF8Char> Math::WKTReader::NextDouble(UnsafeArray<const UTF
 	return 0;
 }
 
-void Math::WKTReader::SetLastError(const UTF8Char* lastError)
+void Math::WKTReader::SetLastError(UnsafeArrayOpt<const UTF8Char> lastError)
 {
 	SDEL_TEXT(this->lastError);
-	this->lastError = SCOPY_TEXT(lastError);
+	this->lastError = Text::StrSCopyNew(lastError);
+}
+
+Optional<Math::Geometry::Point> Math::WKTReader::ParsePoint(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	Double x;
+	Double y;
+	Double z;
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		return 0;
+	}
+	wkt++;
+	if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
+	{
+		return 0;
+	}
+	while (*++wkt == ' ');
+	if (!NextDouble(wkt, y).SetTo(wkt))
+	{
+		return 0;
+	}
+	if (wkt[0] == ')')
+	{
+		Math::Geometry::Point *pt;
+		NEW_CLASS(pt, Math::Geometry::Point(this->srid, x, y));
+		wktEnd.Set(wkt + 1);
+		return pt;
+	}
+	else if (wkt[0] != ' ')
+	{
+		return 0;
+	}
+	while (*++wkt == ' ');
+	if (!NextDouble(wkt, z).SetTo(wkt))
+	{
+		return 0;
+	}
+	if (wkt[0] == ')' && wkt[1] == 0)
+	{
+		Math::Geometry::PointZ *pt;
+		NEW_CLASS(pt, Math::Geometry::PointZ(this->srid, x, y, z));
+		wktEnd.Set(wkt + 1);
+		return pt;
+	}
+	return 0;
+}
+
+Optional<Math::Geometry::LineString> Math::WKTReader::ParseLineString(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd, Bool curve)
+{
+	Data::ArrayList<Double> ptList;
+	Data::ArrayList<Double> zList;
+	Double x;
+	Double y;
+	Double z;
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		return 0;
+	}
+	while (true)
+	{
+		while (*++wkt == ' ');
+		if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
+		{
+			return 0;
+		}
+		while (*++wkt == ' ');
+		if (!NextDouble(wkt, y).SetTo(wkt))
+		{
+			return 0;
+		}
+		while (*wkt == ' ')
+		{
+			while (*++wkt == ' ');
+			if (!NextDouble(wkt, z).SetTo(wkt))
+			{
+				return 0;
+			}
+			zList.Add(z);
+		}
+		ptList.Add(x);
+		ptList.Add(y);
+		if (*wkt == ')')
+		{
+			wkt++;
+			break;
+		}
+		else if (*wkt == ',')
+		{
+			continue;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	Math::Geometry::LineString *pl;
+	Bool hasM = false;
+	Bool hasZ = false;
+	if (zList.GetCount() == ptList.GetCount())
+	{
+		hasM = true;
+		hasZ = true;
+	}
+	else if (zList.GetCount() == (ptList.GetCount() >> 1))
+	{
+		hasZ = true;
+	}
+	if (curve)
+	{
+		NEW_CLASS(pl, Math::Geometry::CircularString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
+	}
+	else
+	{
+		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
+	}
+	UOSInt i;
+	UnsafeArray<Math::Coord2DDbl> ptArr = pl->GetPointList(i);
+	MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
+	UnsafeArray<Double> zArr;
+	UnsafeArray<Double> mArr;
+	if (hasM && pl->GetZList(i).SetTo(zArr) && pl->GetMList(i).SetTo(mArr))
+	{
+		while (i-- > 0)
+		{
+			zArr[i] = zList.GetItem(i << 1);
+			mArr[i] = zList.GetItem((i << 1) + 1);
+		}
+	}
+	else if (hasZ && pl->GetZList(i).SetTo(zArr))
+	{
+		while (i-- > 0)
+		{
+			zArr[i] = zList.GetItem(i);
+		}
+	}
+	wktEnd.Set(wkt);
+	return pl;
+}
+
+Optional<Math::Geometry::LinearRing> Math::WKTReader::ParseLinearRing(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	Data::ArrayList<Double> ptList;
+	Data::ArrayList<Double> zList;
+	Double x;
+	Double y;
+	Double z;
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		return 0;
+	}
+	while (true)
+	{
+		while (*++wkt == ' ');
+		if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
+		{
+			return 0;
+		}
+		while (*++wkt == ' ');
+		if (!NextDouble(wkt, y).SetTo(wkt))
+		{
+			return 0;
+		}
+		while (*wkt == ' ')
+		{
+			while (*++wkt == ' ');
+			if (!NextDouble(wkt, z).SetTo(wkt))
+			{
+				return 0;
+			}
+			zList.Add(z);
+		}
+		ptList.Add(x);
+		ptList.Add(y);
+		if (*wkt == ')')
+		{
+			wkt++;
+			break;
+		}
+		else if (*wkt == ',')
+		{
+			continue;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	Math::Geometry::LinearRing *lr;
+	Bool hasM = false;
+	Bool hasZ = false;
+	if (zList.GetCount() == ptList.GetCount())
+	{
+		hasM = true;
+		hasZ = true;
+	}
+	else if (zList.GetCount() == (ptList.GetCount() >> 1))
+	{
+		hasZ = true;
+	}
+	NEW_CLASS(lr, Math::Geometry::LinearRing(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
+	UOSInt i;
+	UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(i);
+	MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
+	UnsafeArray<Double> zArr;
+	UnsafeArray<Double> mArr;
+	if (hasM && lr->GetZList(i).SetTo(zArr) && lr->GetMList(i).SetTo(mArr))
+	{
+		while (i-- > 0)
+		{
+			zArr[i] = zList.GetItem(i << 1);
+			mArr[i] = zList.GetItem((i << 1) + 1);
+		}
+	}
+	else if (hasZ && lr->GetZList(i).SetTo(zArr))
+	{
+		while (i-- > 0)
+		{
+			zArr[i] = zList.GetItem(i);
+		}
+	}
+	wktEnd.Set(wkt);
+	return lr;
+}
+
+Optional<Math::Geometry::CompoundCurve> Math::WKTReader::ParseCompoundCurve(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	NN<Math::Geometry::CompoundCurve> cc;
+	NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		cc.Delete();
+		return 0;
+	}
+	while (true)
+	{
+		while (*++wkt == ' ');
+		if (Text::StrStartsWith(wkt, U8STR("CIRCULARSTRING")))
+		{
+			wkt += 14;
+			while (*wkt == ' ') wkt++;
+			NN<Math::Geometry::LineString> ls;
+			if (!this->ParseLineString(wkt, wkt, true).SetTo(ls))
+			{
+				cc.Delete();
+				return 0;
+			}
+			cc->AddGeometry(ls);
+		}
+		else
+		{
+			if (*wkt != '(')
+			{
+				cc.Delete();
+				return 0;
+			}
+			NN<Math::Geometry::LineString> ls;
+			if (!this->ParseLineString(wkt, wkt, false).SetTo(ls))
+			{
+				cc.Delete();
+				return 0;
+			}
+			cc->AddGeometry(ls);
+		}
+		if (*wkt == ')')
+		{
+			wktEnd.Set(wkt + 1);
+			return cc;
+		}
+		else if (wkt[0] != ',')
+		{
+			cc.Delete();
+			return 0;
+		}
+	}
+}
+
+Optional<Math::Geometry::Polygon> Math::WKTReader::ParsePolygon(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	NN<Math::Geometry::Polygon> pg;
+	NN<Math::Geometry::LinearRing> lr;
+	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		pg.Delete();
+		return 0;
+	}
+	while (true)
+	{
+		while (*++wkt == ' ');
+		if (*wkt != '(')
+		{
+			pg.Delete();
+			return 0;
+		}
+		if (!this->ParseLinearRing(wkt, wkt).SetTo(lr))
+		{
+			pg.Delete();
+			return 0;
+		}
+		pg->AddGeometry(lr);
+		if (*wkt == ')')
+		{
+			wktEnd.Set(wkt + 1);
+			return pg;
+		}
+		else if (wkt[0] != ',')
+		{
+			pg.Delete();
+			return 0;
+		}
+	}
+}
+
+Optional<Math::Geometry::CurvePolygon> Math::WKTReader::ParseCurvePolygon(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	NN<Math::Geometry::CurvePolygon> cpg;
+	NEW_CLASSNN(cpg, Math::Geometry::CurvePolygon(this->srid));
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		cpg.Delete();
+		return 0;
+	}
+	while (true)
+	{
+		while (*++wkt == ' ');
+		if (Text::StrStartsWith(wkt, U8STR("COMPOUNDCURVE")))
+		{
+			wkt += 13;
+			while (*wkt == ' ') wkt++;
+			NN<Math::Geometry::CompoundCurve> cc;
+			if (!this->ParseCompoundCurve(wkt, wkt).SetTo(cc))
+			{
+				cpg.Delete();
+				return 0;
+			}
+			cpg->AddGeometry(cc);
+		}
+		else
+		{
+			if (*wkt != '(')
+			{
+				cpg.Delete();
+				return 0;
+			}
+			NN<Math::Geometry::LinearRing> lr;
+			if (!this->ParseLinearRing(wkt, wkt).SetTo(lr))
+			{
+				cpg.Delete();
+				return 0;
+			}
+			cpg->AddGeometry(lr);
+		}
+		if (*wkt == ')')
+		{
+			wktEnd.Set(wkt + 1);
+			return cpg;
+		}
+		else if (wkt[0] != ',')
+		{
+			cpg.Delete();
+			return 0;
+		}
+	}
+}
+
+Optional<Math::Geometry::MultiPolygon> Math::WKTReader::ParseMultiPolygon(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	NN<Math::Geometry::MultiPolygon> mpg;
+	NN<Math::Geometry::Polygon> pg;
+	NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid));
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		mpg.Delete();
+		return 0;
+	}
+	while (true)
+	{
+		while (*++wkt == ' ');
+		if (*wkt != '(')
+		{
+			mpg.Delete();
+			return 0;
+		}
+		if (!this->ParsePolygon(wkt, wkt).SetTo(pg))
+		{
+			mpg.Delete();
+			return 0;
+		}
+		mpg->AddGeometry(pg);
+		if (*wkt == ')')
+		{
+			wktEnd.Set(wkt + 1);
+			return mpg;
+		}
+		else if (wkt[0] != ',')
+		{
+			mpg.Delete();
+			return 0;
+		}
+	}
+}
+
+Optional<Math::Geometry::MultiSurface> Math::WKTReader::ParseMultiSurface(UnsafeArray<const UTF8Char> wkt, OutParam<UnsafeArray<const UTF8Char>> wktEnd)
+{
+	NN<Math::Geometry::MultiSurface> ms;
+	NEW_CLASSNN(ms, Math::Geometry::MultiSurface(this->srid));
+	while (*wkt == ' ')
+	{
+		wkt++;
+	}
+	if (*wkt != '(')
+	{
+		ms.Delete();
+		return 0;
+	}
+	while (true)
+	{
+		Bool curve = false;
+		while (*++wkt == ' ');
+		if (Text::StrStartsWith(wkt, U8STR("CURVEPOLYGON")))
+		{
+			curve = true;
+			wkt += 12;
+			while (*wkt == ' ') wkt++;
+		}
+		if (*wkt != '(')
+		{
+			ms.Delete();
+			return 0;
+		}
+		if (curve)
+		{
+			NN<Math::Geometry::CurvePolygon> cpg;
+			if (!this->ParseCurvePolygon(wkt, wkt).SetTo(cpg))
+			{
+				ms.Delete();
+				return 0;
+			}
+			ms->AddGeometry(cpg);
+		}
+		else
+		{
+			NN<Math::Geometry::Polygon> pg;
+			if (!this->ParsePolygon(wkt, wkt).SetTo(pg))
+			{
+				ms.Delete();
+				return 0;
+			}
+			ms->AddGeometry(pg);
+		}
+		if (*wkt == ')')
+		{
+			wktEnd.Set(wkt + 1);
+			return ms;
+		}
+		else if (wkt[0] != ',')
+		{
+			ms.Delete();
+			return 0;
+		}
+	}
 }
 
 Math::WKTReader::WKTReader(UInt32 srid)
@@ -85,269 +578,36 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 {
 	if (Text::StrStartsWith(wkt, (const UTF8Char*)"POINT"))
 	{
-		Double x;
-		Double y;
-		Double z;
 		wkt += 5;
-		while (*wkt == ' ')
-		{
-			wkt++;
-		}
-		if (*wkt != '(')
-		{
+		NN<Math::Geometry::Point> vec;
+		if (!this->ParsePoint(wkt, wkt).SetTo(vec))
 			return 0;
-		}
-		wkt++;
-		if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
-		{
-			return 0;
-		}
-		while (*++wkt == ' ');
-		if (!NextDouble(wkt, y).SetTo(wkt))
-		{
-			return 0;
-		}
-		if (wkt[0] == ')' && wkt[1] == 0)
-		{
-			Math::Geometry::Point *pt;
-			NEW_CLASS(pt, Math::Geometry::Point(this->srid, x, y));
-			return pt;
-		}
-		else if (wkt[0] != ' ')
-		{
-			return 0;
-		}
-		while (*++wkt == ' ');
-		if (!NextDouble(wkt, z).SetTo(wkt))
-		{
-			return 0;
-		}
-		if (wkt[0] == ')' && wkt[1] == 0)
-		{
-			Math::Geometry::PointZ *pt;
-			NEW_CLASS(pt, Math::Geometry::PointZ(this->srid, x, y, z));
-			return pt;
-		}
+		if (wkt[0] == 0)
+			return vec;
+		vec.Delete();
 		return 0;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"LINESTRING"))
 	{
-		Data::ArrayList<Double> ptList;
-		Data::ArrayList<Double> zList;
-		Double x;
-		Double y;
-		Double z;
 		wkt += 10;
-		while (*wkt == ' ')
-		{
-			wkt++;
-		}
-		if (*wkt != '(')
-		{
+		NN<Math::Geometry::LineString> vec;
+		if (!this->ParseLineString(wkt, wkt, false).SetTo(vec))
 			return 0;
-		}
-		while (true)
-		{
-			while (*++wkt == ' ');
-			if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
-			{
-				return 0;
-			}
-			while (*++wkt == ' ');
-			if (!NextDouble(wkt, y).SetTo(wkt))
-			{
-				return 0;
-			}
-			while (*wkt == ' ')
-			{
-				while (*++wkt == ' ');
-				if (!NextDouble(wkt, z).SetTo(wkt))
-				{
-					return 0;
-				}
-				zList.Add(z);
-			}
-			ptList.Add(x);
-			ptList.Add(y);
-			if (*wkt == ')')
-			{
-				wkt++;
-				break;
-			}
-			else if (*wkt == ',')
-			{
-				continue;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-		Math::Geometry::LineString *pl;
-		Bool hasM = false;
-		Bool hasZ = false;
-		if (zList.GetCount() == ptList.GetCount())
-		{
-			hasM = true;
-			hasZ = true;
-		}
-		else if (zList.GetCount() == (ptList.GetCount() >> 1))
-		{
-			hasZ = true;
-		}
-		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
-		UOSInt i;
-		UnsafeArray<Math::Coord2DDbl> ptArr = pl->GetPointList(i);
-		MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
-		UnsafeArray<Double> zArr;
-		UnsafeArray<Double> mArr;
-		if (hasM && pl->GetZList(i).SetTo(zArr) && pl->GetMList(i).SetTo(mArr))
-		{
-			while (i-- > 0)
-			{
-				zArr[i] = zList.GetItem(i << 1);
-				mArr[i] = zList.GetItem((i << 1) + 1);
-			}
-		}
-		else if (hasZ && pl->GetZList(i).SetTo(zArr))
-		{
-			while (i-- > 0)
-			{
-				zArr[i] = zList.GetItem(i);
-			}
-		}
-		return pl;
+		if (wkt[0] == 0)
+			return vec;
+		vec.Delete();
+		return 0;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"POLYGON"))
 	{
-		Data::ArrayList<Double> ptList;
-		Data::ArrayList<Double> zList;
-		Data::ArrayList<UInt32> ptOfstList;
-		Double x;
-		Double y;
-		Double z;
 		wkt += 7;
-		while (*wkt == ' ')
-		{
-			wkt++;
-		}
-		if (*wkt != '(')
-		{
+		NN<Math::Geometry::Polygon> vec;
+		if (!this->ParsePolygon(wkt, wkt).SetTo(vec))
 			return 0;
-		}
-		while (true)
-		{
-			while (*++wkt == ' ');
-			if (*wkt != '(')
-			{
-				return 0;
-			}
-			ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
-			while (true)
-			{
-				while (*++wkt == ' ');
-				if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
-				{
-					return 0;
-				}
-				while (*++wkt == ' ');
-				if (!NextDouble(wkt, y).SetTo(wkt))
-				{
-					return 0;
-				}
-				while (*wkt == ' ')
-				{
-					while (*++wkt == ' ');
-					if (!NextDouble(wkt, z).SetTo(wkt))
-					{
-						return 0;
-					}
-					zList.Add(z);
-				}
-				ptList.Add(x);
-				ptList.Add(y);
-				if (*wkt == ')')
-				{
-					wkt++;
-					break;
-				}
-				else if (*wkt == ',')
-				{
-					continue;
-				}
-				else
-				{
-					return 0;
-				}
-			}
-			if (*wkt == ',')
-			{
-				continue;
-			}
-			else if (*wkt == ')')
-			{
-				wkt++;
-				break;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-		if (*wkt != 0)
-		{
-			return 0;
-		}
-		Math::Geometry::Polygon *pg;
-		NN<Math::Geometry::LinearRing> lr;
-		Bool hasM = false;
-		Bool hasZ = false;
-		if (zList.GetCount() == ptList.GetCount())
-		{
-			hasM = true;
-			hasZ = true;
-		}
-		else if (zList.GetCount() == (ptList.GetCount() >> 1))
-		{
-			hasZ = true;
-		}
-		NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
-		UOSInt i = 0;
-		UOSInt j = ptOfstList.GetCount();
-		UOSInt k = 0;
-		UOSInt l;
-		UOSInt m;
-		while (i < j)
-		{
-			i++;
-			if (i >= j)
-				l = ptList.GetCount();
-			else
-				l = ptOfstList.GetItem(i) << 1;
-			NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
-			UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(m);
-			MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
-			UnsafeArray<Double> zArr;
-			UnsafeArray<Double> mArr;
-			if (hasM && lr->GetZList(m).SetTo(zArr) && lr->GetMList(m).SetTo(mArr))
-			{
-				while (m-- > 0)
-				{
-					zArr[m] = zList.GetItem(((k >> 1) + m) << 1);
-					mArr[m] = zList.GetItem((((k >> 1) + m) << 1) + 1);
-				}
-			}
-			else if (hasZ && lr->GetZList(m).SetTo(zArr))
-			{
-				while (m-- > 0)
-				{
-					zArr[m] = zList.GetItem((k >> 1) + m);
-				}
-			}
-			pg->AddGeometry(lr);
-			k = l;
-		}
-		return pg;
+		if (wkt[0] == 0)
+			return vec;
+		vec.Delete();
+		return 0;
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"MULTILINESTRING"))
 	{
@@ -478,174 +738,25 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const U
 	}
 	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"MULTIPOLYGON"))
 	{
-		Math::Geometry::MultiPolygon *mpg = 0;
-		Data::ArrayList<Double> ptList;
-		Data::ArrayList<Double> zList;
-		Data::ArrayList<UInt32> ptOfstList;
-		Double x;
-		Double y;
-		Double z;
 		wkt += 12;
-		while (*wkt == ' ')
-		{
-			wkt++;
-		}
-		if (*wkt != '(')
-		{
+		NN<Math::Geometry::MultiPolygon> vec;
+		if (!this->ParseMultiPolygon(wkt, wkt).SetTo(vec))
 			return 0;
-		}
-		while (true)
-		{
-			while (*++wkt == ' ');
-			ptList.Clear();
-			zList.Clear();
-			ptOfstList.Clear();
-			if (*wkt != '(')
-			{
-				SDEL_CLASS(mpg);
-				return 0;
-			}
-			while (true)
-			{
-				while (*++wkt == ' ');
-				if (*wkt != '(')
-				{
-					SDEL_CLASS(mpg);
-					return 0;
-				}
-				ptOfstList.Add((UInt32)(ptList.GetCount() >> 1));
-				while (true)
-				{
-					while (*++wkt == ' ');
-					if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
-					{
-						SDEL_CLASS(mpg);
-						return 0;
-					}
-					while (*++wkt == ' ');
-					if (!NextDouble(wkt, y).SetTo(wkt))
-					{
-						SDEL_CLASS(mpg);
-						return 0;
-					}
-					while (*wkt == ' ')
-					{
-						while (*++wkt == ' ');
-						if (!NextDouble(wkt, z).SetTo(wkt))
-						{
-							SDEL_CLASS(mpg);
-							return 0;
-						}
-						zList.Add(z);
-					}
-					ptList.Add(x);
-					ptList.Add(y);
-					if (*wkt == ')')
-					{
-						wkt++;
-						break;
-					}
-					else if (*wkt == ',')
-					{
-						continue;
-					}
-					else
-					{
-						SDEL_CLASS(mpg);
-						return 0;
-					}
-				}
-				if (*wkt == ',')
-				{
-					continue;
-				}
-				else if (*wkt == ')')
-				{
-					wkt++;
-					break;
-				}
-				else
-				{
-					SDEL_CLASS(mpg);
-					return 0;
-				}
-			}
-			NN<Math::Geometry::Polygon> pg;
-			NN<Math::Geometry::LinearRing> lr;
-			Bool hasM = false;
-			Bool hasZ = false;
-			if (zList.GetCount() == ptList.GetCount())
-			{
-				hasM = true;
-				hasZ = true;
-			}
-			else if (zList.GetCount() == (ptList.GetCount() >> 1))
-			{
-				hasZ = true;
-			}
-			NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
-			UOSInt i = 0;
-			UOSInt j = ptOfstList.GetCount();
-			UOSInt k = 0;
-			UOSInt l;
-			UOSInt m;
-			while (i < j)
-			{
-				i++;
-				if (i >= j)
-					l = ptList.GetCount();
-				else
-					l = ptOfstList.GetItem(i) << 1;
-				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
-				UnsafeArray<Math::Coord2DDbl> ptArr = lr->GetPointList(m);
-				MemCopyNO(ptArr.Ptr(), ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
-				UnsafeArray<Double> zArr;
-				UnsafeArray<Double> mArr;
-				if (hasM && lr->GetZList(m).SetTo(zArr) && lr->GetMList(m).SetTo(mArr))
-				{
-					while (m-- > 0)
-					{
-						zArr[m] = zList.GetItem(((k >> 1) + m) << 1);
-						mArr[m] = zList.GetItem((((k >> 1) + m) << 1) + 1);
-					}
-				}
-				else if (hasZ && lr->GetZList(m).SetTo(zArr))
-				{
-					while (m-- > 0)
-					{
-						zArr[m] = zList.GetItem((k >> 1) + m);
-					}
-				}
-				pg->AddGeometry(lr);
-				k = l;
-			}
-			if (mpg == 0)
-			{
-				NEW_CLASS(mpg, Math::Geometry::MultiPolygon(this->srid));
-			}
-			mpg->AddGeometry(pg);
-
-			if (*wkt == ',')
-			{
-				continue;
-			}
-			else if (*wkt == ')')
-			{
-				wkt++;
-				break;
-			}
-			else
-			{
-				SDEL_CLASS(mpg);
-				return 0;
-			}
-		}
-		if (*wkt != 0)
-		{
-			SDEL_CLASS(mpg);
+		if (wkt[0] == 0)
+			return vec;
+		vec.Delete();
+		return 0;
+	}
+	else if (Text::StrStartsWith(wkt, (const UTF8Char*)"MULTISURFACE"))
+	{
+		wkt += 12;
+		NN<Math::Geometry::MultiSurface> vec;
+		if (!this->ParseMultiSurface(wkt, wkt).SetTo(vec))
 			return 0;
-		}
-		return mpg;
+		if (wkt[0] == 0)
+			return vec;
+		vec.Delete();
+		return 0;
 	}
 	return 0;
 }

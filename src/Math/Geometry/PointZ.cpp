@@ -49,20 +49,30 @@ void Math::Geometry::PointZ::Convert(NN<Math::CoordinateConverter> converter)
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::PointZ::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::PointZ::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
-	if (vec->GetVectorType() == VectorType::Point && vec->HasZ())
+	if (vec->GetVectorType() == VectorType::Point && (no3DGeometry || vec->HasZ()))
 	{
 		const Math::Geometry::PointZ *pt = (const Math::Geometry::PointZ*)vec.Ptr();
-		if (nearlyVal)
-			return this->pos.EqualsNearly(pt->pos) &&
-					Math::NearlyEqualsDbl(this->z, pt->z);
+		if (no3DGeometry)
+		{
+			if (nearlyVal)
+				return this->pos.EqualsNearly(pt->pos);
+			else
+				return this->pos == pt->pos;
+		}
 		else
-			return this->pos == pt->pos && this->z == pt->z;
+		{
+			if (nearlyVal)
+				return this->pos.EqualsNearly(pt->pos) &&
+						Math::NearlyEqualsDbl(this->z, pt->z);
+			else
+				return this->pos == pt->pos && this->z == pt->z;
+		}
 	}
 	else
 	{

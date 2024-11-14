@@ -19,6 +19,7 @@ void Math::Geometry::MultiSurface::AddGeometry(NN<Vector2D> geometry)
 	}
 	else
 	{
+		printf("Error: Adding %s to MultiSurface\r\n", Math::Geometry::Vector2D::VectorTypeGetName(geometry->GetVectorType()).v.Ptr());
 		geometry.Delete();
 	}
 }

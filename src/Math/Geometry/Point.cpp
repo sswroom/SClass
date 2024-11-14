@@ -74,13 +74,13 @@ void Math::Geometry::Point::Convert(NN<Math::CoordinateConverter> converter)
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::Point::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::Point::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
-	if (vec->GetVectorType() == VectorType::Point && !vec->HasZ())
+	if (vec->GetVectorType() == VectorType::Point && (no3DGeometry || !vec->HasZ()))
 	{
 		Math::Geometry::Point *pt = (Math::Geometry::Point*)vec.Ptr();
 		if (nearlyVal)

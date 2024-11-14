@@ -2155,7 +2155,7 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 			{
 				return false;
 			}
-			return val1->Equals(val2, true, false);
+			return val1->Equals(val2, true, false, false);
 		}
 	case ItemType::UUID:
 		{

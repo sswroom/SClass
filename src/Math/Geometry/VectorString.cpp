@@ -88,7 +88,7 @@ void Math::Geometry::VectorString::Convert(NN<Math::CoordinateConverter> convert
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::VectorString::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::VectorString::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetVectorType() != VectorType::String)
 	{

@@ -18,7 +18,7 @@ namespace Math
 			Double GetM() const;
 			virtual Bool HasM() const;
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const;
-			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
+			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const;
 		};
 	}
 }

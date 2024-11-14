@@ -22,6 +22,7 @@ void Math::Geometry::CurvePolygon::AddGeometry(NN<Vector2D> geometry)
 	}
 	else
 	{
+		printf("Error: Adding %s to CurvePolygon\r\n", Math::Geometry::Vector2D::VectorTypeGetName(t));
 		geometry.Delete();
 	}
 }

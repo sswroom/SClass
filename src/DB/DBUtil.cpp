@@ -1689,6 +1689,7 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 				writer.SetReverseAxis(true);
 			}
 		}
+		writer.SetNo3D(true);
 		Text::StringBuilderUTF8 sb;
 		if (writer.ToText(sb, nnvec))
 		{
@@ -1805,6 +1806,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 	{
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
+		writer.SetNo3D(true);
 		if (writer.ToText(sb, nnvec))
 		{
 			UOSInt ret = 21 + sb.GetLength();
@@ -2970,4 +2972,35 @@ UnsafeArray<UTF8Char> DB::DBUtil::Field2DBName(UnsafeArray<UTF8Char> dbNameBuff,
 Bool DB::DBUtil::HasSchema(SQLType sqlType)
 {
 	return (sqlType == SQLType::MSSQL || sqlType == SQLType::Oracle || sqlType == SQLType::PostgreSQL);
+}
+
+Bool DB::DBUtil::IsNo3DGeometry(SQLType sqlType)
+{
+	return sqlType == SQLType::MySQL;
+}
+
+Text::CStringNN DB::SQLTypeGetName(SQLType val)
+{
+	switch (val)
+	{
+	default:
+	case SQLType::Unknown:
+		return CSTR("Unknown");
+	case SQLType::MSSQL:
+		return CSTR("MSSQL");
+	case SQLType::MySQL:
+		return CSTR("MySQL");
+	case SQLType::Oracle:
+		return CSTR("Oracle");
+	case SQLType::Access:
+		return CSTR("Access");
+	case SQLType::SQLite:
+		return CSTR("SQLite");
+	case SQLType::WBEM:
+		return CSTR("WBEM");
+	case SQLType::MDBTools:
+		return CSTR("MDBTools");
+	case SQLType::PostgreSQL:
+		return CSTR("PostgreSQL");
+	}
 }

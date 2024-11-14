@@ -114,6 +114,7 @@ namespace SSWR
 			static Bool __stdcall OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(AnyType userObj);
 			static Bool __stdcall OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnTableResultDblClk(AnyType userObj, UOSInt index);
 			static void __stdcall OnMapSchemaSelChg(AnyType userObj);
 			static void __stdcall OnMapTableSelChg(AnyType userObj);
 			static Bool __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);

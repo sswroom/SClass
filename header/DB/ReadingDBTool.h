@@ -75,6 +75,7 @@ namespace DB
 		virtual void CloseReader(NN<DB::DBReader> r);
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
+		Bool IsNo3DGeometry() const;
 		Bool IsDataError(UnsafeArrayOpt<const UTF8Char> errCode);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb);
 		NN<DB::DBConn> GetDBConn();

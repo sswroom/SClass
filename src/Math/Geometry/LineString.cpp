@@ -384,13 +384,13 @@ void Math::Geometry::LineString::Convert(NN<Math::CoordinateConverter> converter
 	}
 }
 
-Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
 		return false;
 	}
-	if (vec->GetVectorType() == this->GetVectorType() && this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())
+	if (vec->GetVectorType() == this->GetVectorType() && (no3DGeometry || (this->HasZ() == vec->HasZ() && this->HasM() == vec->HasM())))
 	{
 		NN<Math::Geometry::LineString> pl = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 		UOSInt nPoint;
@@ -412,25 +412,28 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 					return false;
 				}
 			}
-			if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(valArr))
+			if (!no3DGeometry)
 			{
-				i = nPoint;
-				while (i-- > 0)
+				if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(valArr))
 				{
-					if (!Math::NearlyEqualsDbl(valArr[i], thisArr[i]))
+					i = nPoint;
+					while (i-- > 0)
 					{
-						return false;
+						if (!Math::NearlyEqualsDbl(valArr[i], thisArr[i]))
+						{
+							return false;
+						}
 					}
 				}
-			}
-			if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(valArr))
-			{
-				i = nPoint;
-				while (i-- > 0)
+				if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(valArr))
 				{
-					if (!Math::NearlyEqualsDbl(valArr[i], thisArr[i]))
+					i = nPoint;
+					while (i-- > 0)
 					{
-						return false;
+						if (!Math::NearlyEqualsDbl(valArr[i], thisArr[i]))
+						{
+							return false;
+						}
 					}
 				}
 			}
@@ -445,25 +448,28 @@ Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnl
 					return false;
 				}
 			}
-			if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(valArr))
+			if (!no3DGeometry)
 			{
-				i = nPoint;
-				while (i-- > 0)
+				if (this->zArr.SetTo(thisArr) && pl->zArr.SetTo(valArr))
 				{
-					if (valArr[i] != thisArr[i])
+					i = nPoint;
+					while (i-- > 0)
 					{
-						return false;
+						if (valArr[i] != thisArr[i])
+						{
+							return false;
+						}
 					}
 				}
-			}
-			if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(valArr))
-			{
-				i = nPoint;
-				while (i-- > 0)
+				if (this->mArr.SetTo(thisArr) && pl->mArr.SetTo(valArr))
 				{
-					if (valArr[i] != thisArr[i])
+					i = nPoint;
+					while (i-- > 0)
 					{
-						return false;
+						if (valArr[i] != thisArr[i])
+						{
+							return false;
+						}
 					}
 				}
 			}

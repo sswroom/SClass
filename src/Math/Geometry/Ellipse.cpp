@@ -79,7 +79,7 @@ void Math::Geometry::Ellipse::Convert(NN<Math::CoordinateConverter> converter)
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::Ellipse::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::Ellipse::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetVectorType() != VectorType::Ellipse)
 	{

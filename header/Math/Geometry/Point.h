@@ -26,7 +26,7 @@ namespace Math
 			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const;
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const;
 			virtual void Convert(NN<Math::CoordinateConverter> convert);
-			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
+			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const;
 			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);

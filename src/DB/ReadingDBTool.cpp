@@ -453,6 +453,11 @@ Bool DB::ReadingDBTool::IsAxisAware() const
 	return this->axisAware;
 }
 
+Bool DB::ReadingDBTool::IsNo3DGeometry() const
+{
+	return DB::DBUtil::IsNo3DGeometry(this->sqlType);
+}
+
 Bool DB::ReadingDBTool::IsDataError(UnsafeArrayOpt<const UTF8Char> errCode)
 {
 	UnsafeArray<const UTF8Char> nnerrCode;

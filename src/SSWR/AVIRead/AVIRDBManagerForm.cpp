@@ -156,6 +156,29 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj
 	return false;
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableResultDblClk(AnyType userObj, UOSInt index)
+{
+	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbCSV;
+	UOSInt i = 0;
+	UOSInt j = me->lvTableResult->GetColumnCnt();
+	while (i < j)
+	{
+		sb.ClearStr();
+		me->lvTableResult->GetSubItem(index, i, sb);
+		if (i > 0)
+		{
+			sbCSV.AppendUTF8Char(',');
+		}
+		UnsafeArray<const UTF8Char> s = Text::StrToNewCSVRec(UnsafeArray<const UTF8Char>(sb.v));
+		sbCSV.AppendSlow(s);
+		Text::StrDelNew(s);
+		i++;
+	}
+	UI::Clipboard::SetString(me->GetHandle(), sbCSV.ToCString());
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnMapSchemaSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
@@ -1370,6 +1393,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->lvTableResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTableResult->SetFullRowSelect(true);
 	this->lvTableResult->SetShowGrid(true);
+	this->lvTableResult->HandleDblClk(OnTableResultDblClk, this);
 
 	this->tpSQL = this->tcMain->AddTabPage(CSTR("SQL"));
 	this->pnlSQL = ui->NewPanel(this->tpSQL);

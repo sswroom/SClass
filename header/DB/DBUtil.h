@@ -125,9 +125,12 @@ namespace DB
 		static UnsafeArray<UTF8Char> Field2DBName(UnsafeArray<UTF8Char> dbNameBuff, Optional<Text::String> fieldName);
 		static UnsafeArray<UTF8Char> Field2DBName(UnsafeArray<UTF8Char> dbNameBuff, UnsafeArray<const UTF8Char> fieldName);
 		static Bool HasSchema(SQLType sqlType);
+		static Bool IsNo3DGeometry(SQLType sqlType);
 		template <class T> static Bool SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayListNN<T>> list, NN<Data::Class> cls);
 		template <typename T> static Bool Model2JSON(NN<Text::JSONBuilder> json, NN<T> obj);
 	};
+
+	Text::CStringNN SQLTypeGetName(SQLType val);
 }
 
 template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayListNN<T>> list, NN<Data::Class> cls)
