@@ -5200,7 +5200,7 @@ UnsafeArray<UTF16Char> Text::StrUTF32_UTF16(UnsafeArray<UTF16Char> oriStr, Unsaf
 	{
 		if (c >= 0x10000)
 		{
-			*oriStr++ = (UTF16Char)(0xd800 + (c >> 10));
+			*oriStr++ = (UTF16Char)(0xd800 + ((c - 0x10000) >> 10));
 			*oriStr++ = (UTF16Char)((c & 0x3ff) + 0xdc00);
 		}
 		else
@@ -5220,7 +5220,7 @@ UnsafeArray<UTF16Char> Text::StrUTF32_UTF16(UnsafeArray<UTF16Char> oriStr, Unsaf
 		c = *strToJoin++;
 		if (c >= 0x10000)
 		{
-			*oriStr++ = (UTF16Char)(0xd800 + (c >> 10));
+			*oriStr++ = (UTF16Char)(0xd800 + ((c - 0x10000) >> 10));
 			*oriStr++ = (UTF16Char)((c & 0x3ff) + 0xdc00);
 		}
 		else
@@ -5377,7 +5377,7 @@ UnsafeArray<UTF16Char> Text::StrWriteChar(UnsafeArray<UTF16Char> sptr, UTF32Char
 {
 	if (c >= 0x10000)
 	{
-		*sptr++ = (UTF16Char)(0xd800 + (c >> 10));
+		*sptr++ = (UTF16Char)(0xd800 + ((c - 0x10000) >> 10));
 		*sptr++ = (UTF16Char)((c & 0x3ff) + 0xdc00);
 	}
 	else
