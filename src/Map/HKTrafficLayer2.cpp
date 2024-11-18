@@ -21,16 +21,14 @@
 
 void Map::HKTrafficLayer2::SetSpeedMap(Int32 segmentId, Double speed, Bool valid)
 {
-	RoadInfo *road;
-	Math::Geometry::Vector2D *vec;
+	NN<RoadInfo> road;
+	NN<Math::Geometry::Vector2D> vec;
 	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap.Get(segmentId);
-	if (road == 0)
+	if (!this->roadMap.Get(segmentId).SetTo(road))
 	{
-		vec = this->vecMap.Get(segmentId);
-		if (vec)
+		if (this->vecMap.Get(segmentId).SetTo(vec))
 		{
-			road = MemAllocA(RoadInfo, 1);
+			road = MemAllocANN(RoadInfo);
 			road->segmentId = segmentId;
 			road->vec = vec;
 			road->speed = speed;
@@ -46,7 +44,7 @@ void Map::HKTrafficLayer2::SetSpeedMap(Int32 segmentId, Double speed, Bool valid
 	}
 }
 
-IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
+Optional<IO::Stream> Map::HKTrafficLayer2::OpenURLStream()
 {
 	if (this->url->StartsWithICase(UTF8STRC("FILE:///")))
 	{
@@ -95,14 +93,14 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 
 		if (status == 200)
 		{
-			return cli.Ptr();
+			return cli;
 		}
 		cli.Delete();
 		return 0;
 	}
 }
 
-Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<HKRoadNetwork2> rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
 {
 	this->clif = clif;
 	this->ssl = ssl;
@@ -142,7 +140,7 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<N
 				{
 					if (r->GetVector(shapeCol).SetTo(vec))
 					{
-						if (vec.Set(this->vecMap.Put(r->GetInt32(idCol), vec.Ptr())))
+						if (this->vecMap.Put(r->GetInt32(idCol), vec).SetTo(vec))
 						{
 							vec.Delete();
 						}
@@ -159,20 +157,20 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<N
 Map::HKTrafficLayer2::~HKTrafficLayer2()
 {
 	UOSInt i;
-	RoadInfo *road;
-	Math::Geometry::Vector2D *vec;
+	NN<RoadInfo> road;
+	NN<Math::Geometry::Vector2D> vec;
 	i = this->roadMap.GetCount();
 	while (i-- > 0)
 	{
-		road = this->roadMap.GetItem(i);
-		MemFreeA(road);
+		road = this->roadMap.GetItemNoCheck(i);
+		MemFreeANN(road);
 	}
 
 	i = this->vecMap.GetCount();
 	while (i-- > 0)
 	{
-		vec = this->vecMap.GetItem(i);
-		DEL_CLASS(vec);
+		vec = this->vecMap.GetItemNoCheck(i);
+		vec.Delete();
 	}
 	this->url->Release();
 }
@@ -185,10 +183,9 @@ void Map::HKTrafficLayer2::ReloadData()
 	}
 	UInt8 buff[2048];
 	UOSInt readSize;
-	IO::Stream *stm;
+	NN<IO::Stream> stm;
 //	printf("Reloading traffic data...");
-	stm = this->OpenURLStream();
-	if (stm)
+	if (this->OpenURLStream().SetTo(stm))
 	{
 		IO::MemoryStream mstm;
 		while (true)
@@ -265,7 +262,7 @@ void Map::HKTrafficLayer2::ReloadData()
 				reader.SkipElement();
 			}
 		}
-		DEL_CLASS(stm);
+		stm.Delete();
 //		printf("Loaded %d routes\r\n", (UInt32)this->roadMap.GetCount());
 	}
 	else
@@ -285,18 +282,15 @@ UOSInt Map::HKTrafficLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Op
 	UOSInt ret = 0;
 	UOSInt i;
 	UOSInt j;
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	Sync::MutexUsage mutUsage(this->roadMut);
 	i = 0;
 	j = this->roadMap.GetCount();
 	while (i < j)
 	{
-		road = this->roadMap.GetItem(i);
-		if (road->vec)
-		{
-			outArr->Add(road->segmentId);
-			ret++;
-		}
+		road = this->roadMap.GetItemNoCheck(i);
+		outArr->Add(road->segmentId);
+		ret++;
 		i++;
 	}
 	return ret;
@@ -310,7 +304,7 @@ UOSInt Map::HKTrafficLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, OptOut<Optional<NameArray>> nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	UOSInt i;
 	UOSInt j;
 	rect = rect.Reorder();
@@ -319,8 +313,8 @@ UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, 
 	j = this->roadMap.GetCount();
 	while (i < j)
 	{
-		road = this->roadMap.GetItem(i);
-		if (road->vec && rect.OverlapOrTouch(road->bounds))
+		road = this->roadMap.GetItemNoCheck(i);
+		if (rect.OverlapOrTouch(road->bounds))
 		{
 			outArr->Add(road->segmentId);
 			retCnt++;
@@ -391,11 +385,10 @@ void Map::HKTrafficLayer2::EndGetObject(NN<GetObjectSess> session)
 
 Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer2::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
-	RoadInfo *road;
+	NN<RoadInfo> road;
 	Math::Geometry::Vector2D *vec = 0;
 	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap.Get(id);
-	if (road && road->vec)
+	if (this->roadMap.Get(id).SetTo(road))
 	{
 		vec = road->vec->Clone().Ptr();
 		if (road->speed >= SPEEDHIGH)
