@@ -21,7 +21,7 @@ namespace Net
 	protected:
 		Optional<Net::SSLEngine> ssl;
 		Optional<Net::TCPClient> cli;
-		Text::String *cliHost;
+		Optional<Text::String> cliHost;
 		IO::MemoryStream reqMstm;
 		NN<Text::String> userAgent;
 		Data::ArrayListString reqHeaders;
@@ -32,7 +32,7 @@ namespace Net
 		Int32 contEnc;
 		UOSInt chunkSizeLeft;
 
-		UInt8 *dataBuff;
+		UnsafeArray<UInt8> dataBuff;
 		UOSInt buffSize;
 		UOSInt buffOfst;
 		Data::Duration timeout;

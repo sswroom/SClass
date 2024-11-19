@@ -22,8 +22,7 @@ Net::HTTPClient::HTTPClient(NN<Net::TCPClientFactory> clif, Bool kaConn) : IO::S
 	this->contLeng = 0;
 	this->respStatus = Net::WebStatus::SC_UNKNOWN;
 	this->url = Text::String::NewEmpty();
-	this->hasForm = false;
-	this->formSb = 0;
+	this->sbForm = 0;
 	this->hdrLen = 0;
 	this->totalUpload = 0;
 	this->totalDownload = 0;
@@ -35,7 +34,7 @@ Net::HTTPClient::HTTPClient(NN<Net::TCPClientFactory> clif, Bool kaConn) : IO::S
 Net::HTTPClient::~HTTPClient()
 {
 	this->headers.FreeAll();
-	SDEL_CLASS(this->formSb);
+	this->sbForm.Delete();
 	this->url->Release();
 	OPTSTR_DEL(this->forceHost);
 }
@@ -52,11 +51,10 @@ IO::StreamType Net::HTTPClient::GetStreamType() const
 
 Bool Net::HTTPClient::FormBegin()
 {
-	if (this->canWrite && !this->hasForm)
+	if (this->canWrite && this->sbForm.IsNull())
 	{
-		this->hasForm = true;
 		this->AddContentType(CSTR("application/x-www-form-urlencoded"));
-		NEW_CLASS(this->formSb, Text::StringBuilderUTF8());
+		NEW_CLASSOPT(this->sbForm, Text::StringBuilderUTF8());
 		return true;
 	}
 	return false;
@@ -64,24 +62,25 @@ Bool Net::HTTPClient::FormBegin()
 
 Bool Net::HTTPClient::FormAdd(Text::CStringNN name, Text::CString value)
 {
-	if (!this->hasForm)
+	NN<Text::StringBuilderUTF8> sbForm;
+	if (!this->sbForm.SetTo(sbForm))
 	{
 		return false;
 	}
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name.v);
-	if (this->formSb->GetLength() > 0)
+	if (sbForm->GetLength() > 0)
 	{
-		this->formSb->AppendUTF8Char('&');
+		sbForm->AppendUTF8Char('&');
 	}
-	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	this->formSb->AppendUTF8Char('=');
+	sbForm->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sbForm->AppendUTF8Char('=');
 	Text::CStringNN nnval;
 	if (value.SetTo(nnval))
 	{
 		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nnval.v);
-		this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sbForm->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return true;
 }

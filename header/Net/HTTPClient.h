@@ -25,8 +25,7 @@ namespace Net
 
 		Net::SocketUtil::AddressInfo svrAddr;
 		Bool canWrite;
-		Bool hasForm;
-		Text::StringBuilderUTF8 *formSb;
+		Optional<Text::StringBuilderUTF8> sbForm;
 
 		UInt64 contLeng;
 		Net::WebStatus::StatusCode respStatus;

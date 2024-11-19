@@ -121,7 +121,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 					this->totalDownload += i;
 					this->buffSize += i;
 				}
-				MemCopyO(this->dataBuff, &this->dataBuff[this->chunkSizeLeft], this->buffSize - this->chunkSizeLeft);
+				MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[this->chunkSizeLeft], this->buffSize - this->chunkSizeLeft);
 				this->buffSize -= this->chunkSizeLeft;
 				this->chunkSizeLeft = 0;
 			}
@@ -138,7 +138,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 				this->buffSize -= sizeOut;
 				if (this->buffSize > 0)
 				{
-					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut], this->buffSize);
+					MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[sizeOut], this->buffSize);
 				}
 				if (this->chunkSizeLeft < 2)
 				{
@@ -162,7 +162,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 				this->buffSize -= sizeOut;
 				if (this->buffSize > 0)
 				{
-					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut], this->buffSize);
+					MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[sizeOut], this->buffSize);
 				}
 				if (this->chunkSizeLeft < 2)
 				{
@@ -178,7 +178,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 		this->dataBuff[this->buffSize] = 0;
 		if (this->dataBuff[0] == '\r' && this->dataBuff[1] == '\n')
 		{
-			MemCopyO(this->dataBuff, &this->dataBuff[2], this->buffSize - 2);
+			MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[2], this->buffSize - 2);
 			buffSize -= 2;
 		}
 		if (buffSize <= 0 && this->cli.SetTo(cli))
@@ -239,7 +239,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 			this->dataBuff[this->buffSize] = 0;
 			if (this->dataBuff[0] == '\r' && this->dataBuff[1] == '\n')
 			{
-				MemCopyO(this->dataBuff, &this->dataBuff[2], this->buffSize - 2);
+				MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[2], this->buffSize - 2);
 				buffSize -= 2;
 			}
 		}
@@ -258,7 +258,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 			this->buffSize -= i;
 			if (this->buffSize)
 			{
-				MemCopyO(this->dataBuff, &this->dataBuff[i], this->buffSize);
+				MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[i], this->buffSize);
 			}
 			this->contLeng = 0;
 #ifdef SHOWDEBUG
@@ -320,7 +320,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 				this->buffSize -= sizeOut + i;
 				if (this->buffSize > 0)
 				{
-					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut + i], this->buffSize);
+					MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[sizeOut + i], this->buffSize);
 				}
 				if (this->chunkSizeLeft < 2)
 				{
@@ -344,7 +344,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 				this->buffSize -= sizeOut + i;
 				if (this->buffSize > 0)
 				{
-					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut + i], this->buffSize);
+					MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[sizeOut + i], this->buffSize);
 				}
 				if (this->chunkSizeLeft < 2)
 				{
@@ -398,7 +398,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 			buff.CopyFrom(0, Data::ByteArray(this->dataBuff, buff.GetSize()));
 			if (this->buffSize > buff.GetSize())
 			{
-				MemCopyO(this->dataBuff, &this->dataBuff[buff.GetSize()], this->buffSize - buff.GetSize());
+				MemCopyO(this->dataBuff.Ptr(), &this->dataBuff[buff.GetSize()], this->buffSize - buff.GetSize());
 			}
 			this->buffSize -= buff.GetSize();
 			this->contRead += buff.GetSize();
@@ -444,7 +444,6 @@ Net::HTTPMyClient::HTTPMyClient(NN<Net::TCPClientFactory> clif, Optional<Net::SS
 	this->cli = 0;
 	this->cliHost = 0;
 	this->writing = false;
-	this->dataBuff = 0;
 	this->buffSize = 0;
 	this->buffOfst = 0;
 	this->contEnc = 0;
@@ -466,12 +465,8 @@ Net::HTTPMyClient::~HTTPMyClient()
 		cli->ShutdownSend();
 		this->cli.Delete();
 	}
-	SDEL_STRING(this->cliHost);
-	if (this->dataBuff)
-	{
-		MemFree(this->dataBuff);
-		this->dataBuff = 0;
-	}
+	OPTSTR_DEL(this->cliHost);
+	MemFreeArr(this->dataBuff);
 	UOSInt i = this->reqHeaders.GetCount();
 	while (i-- > 0)
 	{
@@ -508,7 +503,7 @@ UOSInt Net::HTTPMyClient::Read(const Data::ByteArray &buff)
 
 UOSInt Net::HTTPMyClient::Write(Data::ByteArrayR buff)
 {
-	if (this->canWrite && !this->hasForm)
+	if (this->canWrite && this->sbForm.IsNull())
 	{
 		if (!writing)
 		{
@@ -674,9 +669,10 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 
 	this->clk.Start();
-	if (this->cliHost == 0)
+	NN<Text::String> cliHost;
+	if (!this->cliHost.SetTo(cliHost))
 	{
-		this->cliHost = Text::String::New(urltmp, urltmpLen).Ptr();
+		this->cliHost = cliHost = Text::String::New(urltmp, urltmpLen);
 
 		Double t1;
 		Net::SocketUtil::AddressInfo addr;
@@ -705,7 +701,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			if (secure && this->ssl.SetTo(ssl))
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = ssl->ClientConnect(this->cliHost->ToCString(), port, err, this->timeout);
+				this->cli = ssl->ClientConnect(cliHost->ToCString(), port, err, this->timeout);
 #if defined(SHOWDEBUG)
 				if (this->cli.IsNull())
 				{
@@ -757,7 +753,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		this->clif->GetSocketFactory()->SetLinger(soc, 0);
 		this->clif->GetSocketFactory()->SetNoDelay(soc, true);
 	}
-	else if (Text::StrEqualsC(this->cliHost->v, this->cliHost->leng, urltmp, urltmpLen) && this->cli.SetTo(cli))
+	else if (Text::StrEqualsC(cliHost->v, cliHost->leng, urltmp, urltmpLen) && this->cli.SetTo(cli))
 	{
 		if (this->buffSize > 0)
 		{
@@ -814,8 +810,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	i = ptr2.leng;
 	if ((i + 16) > BUFFSIZE)
 	{
-		MemFree(this->dataBuff);
-		this->dataBuff = MemAlloc(UInt8, (i + 16));
+		MemFreeArr(this->dataBuff);
+		this->dataBuff = MemAllocArr(UInt8, (i + 16));
 	}
 	switch (method)
 	{
@@ -889,7 +885,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" RTSP/1.0\r\n"));
 		break;
 	}
-	this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff)));
+	this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff.Ptr())));
 	this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, hostLen));
 #ifdef SHOWDEBUG
 	printf("Resquest Data: %s", dataBuff);
@@ -982,14 +978,14 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 #ifdef SHOWDEBUG
 		printf("End Request begin\r\n");
 #endif
-		if (this->hasForm)
+		NN<Text::StringBuilderUTF8> sbForm;
+		if (this->sbForm.SetTo(sbForm))
 		{
-			UOSInt len = this->formSb->GetLength();
+			UOSInt len = sbForm->GetLength();
 			this->AddContentLength(len);
-			this->hasForm = false;
-			this->Write(this->formSb->ToByteArray());
-			DEL_CLASS(this->formSb);
-			this->formSb = 0;
+			this->sbForm = 0;
+			this->Write(sbForm->ToByteArray());
+			sbForm.Delete();
 		}
 		this->canWrite = false;
 		this->writing = true;
@@ -1049,7 +1045,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		printf("Read buffSize = %d\r\n", (Int32)this->buffSize);
 #endif
 		this->dataBuff[this->buffSize] = 0;
-		if (Text::StrStartsWithC((UTF8Char*)this->dataBuff, this->buffSize, UTF8STRC("HTTP/")))
+		if (Text::StrStartsWithC(this->dataBuff, this->buffSize, UTF8STRC("HTTP/")))
 		{
 			UTF8Char buff[256];
 			UnsafeArray<UTF8Char> ptrs[3];
@@ -1058,7 +1054,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 			NN<Text::String> s;
 			UOSInt i;
 			i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"));
-			MemCopyNO(buff, this->dataBuff, i);
+			MemCopyNO(buff, this->dataBuff.Ptr(), i);
 			buff[i] = 0;
 #ifdef SHOWDEBUG
 			printf("Read HTTP response: %s\r\n", buff);
@@ -1155,16 +1151,16 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 				if (i == 0)
 				{
 					ptr = &ptr[1];
-					this->hdrLen += (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
-					this->buffSize -= (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
-					MemCopyO(this->dataBuff, ptr.Ptr(), this->buffSize);
+					this->hdrLen += (UOSInt)(ptr - this->dataBuff);
+					this->buffSize -= (UOSInt)(ptr - this->dataBuff);
+					MemCopyO(this->dataBuff.Ptr(), ptr.Ptr(), this->buffSize);
 
 					header = false;
 					break;
 				}
-				this->hdrLen += (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
+				this->hdrLen += (UOSInt)(ptr - this->dataBuff);
 				this->buffSize = (UOSInt)(ptrEnd - ptr);
-				MemCopyO(this->dataBuff, ptr.Ptr(), this->buffSize);
+				MemCopyO(this->dataBuff.Ptr(), ptr.Ptr(), this->buffSize);
 				i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 				if (i <= 0)
 				{
@@ -1182,7 +1178,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 					this->totalDownload += i;
 					this->buffSize += i;
 					this->dataBuff[this->buffSize] = 0;
-					ptr = (UTF8Char*)this->dataBuff;
+					ptr = this->dataBuff;
 					ptrEnd = &this->dataBuff[this->buffSize];
 				}
 			}
