@@ -892,7 +892,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff)));
 	this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, hostLen));
 #ifdef SHOWDEBUG
-	printf("Resquest Data: %s", dataBuff);
+	printf("Request Data: %s", dataBuff);
 	printf("Add Header: %s", host);
 #endif
 

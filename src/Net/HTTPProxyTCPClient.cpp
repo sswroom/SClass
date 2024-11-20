@@ -101,7 +101,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	this->Write(Data::ByteArrayR((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff)));
 	this->SetTimeout(4000);
 	respSize = this->Read(BYTEARR(reqBuff));
-	this->SetTimeout(-1);
+	this->SetTimeout(60000);
 
 #if defined(VERBOSE)
 	reqBuff[respSize] = 0;

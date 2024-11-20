@@ -482,9 +482,14 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 			i = Text::StrSplitP(ptrs, 6, {tmps, (UOSInt)(sptr - sbuff)}, ' ');
 			if (i >= 2)
 			{
-				Text::StrSplitP(ptrs2, 3, ptrs[1], ':');
-				Text::StrSplitP(ptrs3, 3, ptrs[0], '-');
-				return Data::Timestamp::FromTimeValue(ptrs3[2].ToInt32() + (Int32)((2000 / 100) * 100), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].ToCString()), (UInt8)Text::StrToInt32(ptrs3[0].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
+				if (Text::StrSplitP(ptrs2, 3, ptrs[1], ':') == 3 && Text::StrSplitP(ptrs3, 3, ptrs[0], '-') == 3)
+				{
+					return Data::Timestamp::FromTimeValue(ptrs3[2].ToInt32() + (Int32)((2000 / 100) * 100), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].ToCString()), (UInt8)Text::StrToInt32(ptrs3[0].v), (UInt8)Text::StrToInt32(ptrs2[0].v), (UInt8)Text::StrToInt32(ptrs2[1].v), (UInt8)Text::StrToInt32(ptrs2[2].v), 0, 0);
+				}
+				else
+				{
+					return 0;
+				}
 			}
 		}
 	}
