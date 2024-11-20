@@ -153,7 +153,7 @@ Optional<Map::HKTrafficLayer2> Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::T
 {
 	if (this->fgdb.NotNull())
 	{
-		return NEW_CLASS_D(Map::HKTrafficLayer2(clif, ssl, encFact, this));
+		return NEW_CLASS_D(Map::HKTrafficLayer2(clif, ssl, encFact, *this));
 	}
 	return 0;
 }

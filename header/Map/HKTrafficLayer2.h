@@ -18,7 +18,7 @@ namespace Map
 		{
 			Math::RectAreaDbl bounds;
 			Int32 segmentId;
-			Math::Geometry::Vector2D *vec;
+			NN<Math::Geometry::Vector2D> vec;
 			Double speed;
 			Bool valid;
 		};
@@ -30,13 +30,13 @@ namespace Map
 		Optional<Net::SSLEngine> ssl;
 		Optional<Text::EncodingFactory> encFact;
 		Sync::Mutex roadMut;
-		Data::FastMap<Int64, RoadInfo*> roadMap;
-		Data::FastMap<Int32, Math::Geometry::Vector2D*> vecMap;
+		Data::FastMapNN<Int64, RoadInfo> roadMap;
+		Data::FastMapNN<Int32, Math::Geometry::Vector2D> vecMap;
 
 		void SetSpeedMap(Int32 segmentId, Double speed, Bool valid);
-		IO::Stream *OpenURLStream();
+		Optional<IO::Stream> OpenURLStream();
 	public:
-		HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2);
+		HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<HKRoadNetwork2> rn2);
 		virtual ~HKTrafficLayer2();
 
 		void ReloadData();

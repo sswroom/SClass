@@ -519,7 +519,7 @@ UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff
 	return ret;
 }
 
-Bool Manage::CPUInfo::GetCPURatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPURatio(OutParam<Int32> ratio)
 {
 	InfoData *info = (InfoData*)this->clsData;
 	if (info->winRing0 == 0)
@@ -532,13 +532,13 @@ Bool Manage::CPUInfo::GetCPURatio(Int32 *ratio)
 		eax = 0;
 		info->Rdmsr(0xce, &eax, &edx);
 
-		*ratio = ((eax >> 8) & 0xFF);
+		ratio.Set((eax >> 8) & 0xFF);
 		return true;
 	}
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTurboRatio(Int32 *ratio)
+Bool Manage::CPUInfo::GetCPUTurboRatio(OutParam<Int32> ratio)
 {
 	InfoData *info = (InfoData*)this->clsData;
 	if (info->winRing0 == 0)
@@ -551,13 +551,13 @@ Bool Manage::CPUInfo::GetCPUTurboRatio(Int32 *ratio)
 		eax = 0;
 		info->Rdmsr(0x1ad, &eax, &edx);
 
-		*ratio = (eax & 0xFF);
+		ratio.Set(eax & 0xFF);
 		return true;
 	}
 	return false;
 }
 
-Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
+Bool Manage::CPUInfo::GetCPUTCC(OutParam<Double> temp)
 {
 	InfoData *info = (InfoData*)this->clsData;
 	if (info->winRing0 == 0)
@@ -569,7 +569,7 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 		UInt32 edx;
 		eax = 0;
 		info->Rdmsr(0x1a2, &eax, &edx);
-		*temp = (eax >> 16) & 0xff;
+		temp.Set((eax >> 16) & 0xff);
 		return true;
 	}
 

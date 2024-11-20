@@ -180,7 +180,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 
 UOSInt Net::HTTPOSClient::Write(Data::ByteArrayR buff)
 {
-	if (this->canWrite && !this->hasForm)
+	if (this->canWrite && this->sbForm.IsNull())
 	{
 		if (!this->writing)
 		{
@@ -462,14 +462,14 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 	else
 	{
 		Double t1;
-		if (this->hasForm)
+		NN<Text::StringBuilderUTF8> sbForm;
+		if (this->sbForm.SetTo(sbForm))
 		{
-			UOSInt len = this->formSb->GetLength();
+			UOSInt len = sbForm->GetLength();
 			this->AddContentLength(len);
-			this->hasForm = false;
-			this->Write(this->formSb->ToByteArray());
-			DEL_CLASS(this->formSb);
-			this->formSb = 0;
+			this->sbForm = 0;
+			this->Write(sbForm->ToByteArray());
+			sbForm.Delete();
 		}
 		this->canWrite = false;
 		this->writing = true;

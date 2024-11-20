@@ -102,8 +102,8 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 			i = url.leng;
 			if ((i + 16) > BUFFSIZE)
 			{
-				MemFree(this->dataBuff);
-				this->dataBuff = MemAlloc(UInt8, (i + 16));
+				MemFreeArr(this->dataBuff);
+				this->dataBuff = MemAllocArr(UInt8, (i + 16));
 			}
 			if (method == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
@@ -117,7 +117,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 			}
 			cptr = url.ConcatTo(cptr);
 			cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
-			cli->Write(Data::ByteArrayR((UInt8*)dataBuff, (UOSInt)(cptr - dataBuff)));
+			cli->Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - dataBuff)));
 			cli->Write(Data::ByteArrayR((UInt8*)host, (UOSInt)(hostEnd - host)));
 			return true;
 		}
