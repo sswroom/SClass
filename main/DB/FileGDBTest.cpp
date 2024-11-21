@@ -942,13 +942,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
-	NN<IO::DirectoryPackage> dir;
-	NEW_CLASSNN(dir, IO::DirectoryPackage(CSTR("~/Progs/Temp/E20210522_PLIS.gdb")));
-	Map::ESRI::FileGDBDir *fileGDB;
+	IO::DirectoryPackage dir(CSTR("~/Progs/Temp/E20210522_PLIS.gdb"));
 	Math::ArcGISPRJParser prjParser;
-	fileGDB = Map::ESRI::FileGDBDir::OpenDir(dir, prjParser);
-	dir.Delete();
-	if (fileGDB)
+	NN<Map::ESRI::FileGDBDir> fileGDB;
+	if (Map::ESRI::FileGDBDir::OpenDir(dir, prjParser).SetTo(fileGDB))
 	{
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<const UTF8Char*> colNames;
@@ -1071,7 +1068,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		cls.Delete();
 
-		DEL_CLASS(fileGDB);
+		fileGDB.Delete();
 	}
 	return 0;
 }

@@ -4,7 +4,7 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Map/ESRI/FileGDBTable.h"
 
-Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser)
+Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamData> gdbtableFD, Optional<IO::StreamData> gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser)
 {
 	this->tableName = Text::String::New(tableName);
 	this->gdbtableFD = gdbtableFD->GetPartialData(0, gdbtableFD->GetDataSize());
@@ -15,15 +15,16 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 	this->maxRowSize = 0;
 	this->prjParser = prjParser;
 
+	NN<IO::StreamData> nngdbtablxFD;
 	UInt8 hdrBuff[44];
-	if (gdbtablxFD && gdbtablxFD->GetRealData(0, 16, BYTEARR(hdrBuff)) == 16)
+	if (gdbtablxFD.SetTo(nngdbtablxFD) && nngdbtablxFD->GetRealData(0, 16, BYTEARR(hdrBuff)) == 16)
 	{
 		if (ReadUInt32(&hdrBuff[0]) == 3 && ReadUInt32(&hdrBuff[12]) == 5 && (ReadUInt32(&hdrBuff[4]) >= 1 && ReadUInt32(&hdrBuff[4]) <= 10))
 		{
 			this->indexCnt = ReadUInt32(&hdrBuff[8]);
-			if (gdbtablxFD->GetDataSize() >= 16 + this->indexCnt * 5)
+			if (nngdbtablxFD->GetDataSize() >= 16 + this->indexCnt * 5)
 			{
-				this->gdbtablxFD = gdbtablxFD->GetPartialData(0, gdbtablxFD->GetDataSize()).Ptr();
+				this->gdbtablxFD = nngdbtablxFD->GetPartialData(0, nngdbtablxFD->GetDataSize());
 			}
 		}
 	}
@@ -63,7 +64,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 Map::ESRI::FileGDBTable::~FileGDBTable()
 {
 	this->gdbtableFD.Delete();
-	SDEL_CLASS(this->gdbtablxFD);
+	this->gdbtablxFD.Delete();
 	this->tableName->Release();
 	NN<FileGDBTableInfo> tableInfo;
 	if (this->tableInfo.SetTo(tableInfo))
@@ -83,6 +84,11 @@ NN<Text::String> Map::ESRI::FileGDBTable::GetName() const
 	return this->tableName;
 }
 
+NN<Text::String> Map::ESRI::FileGDBTable::GetFileName() const
+{
+	return this->gdbtableFD->GetFullFileName();
+}
+
 Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayListStringNN> columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions)
 {
 	NN<FileGDBTableInfo> tableInfo;
@@ -93,7 +99,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBTable::OpenReader(Optional<Data::ArrayL
 	NN<Map::ESRI::FileGDBReader> reader;
 	NEW_CLASSNN(reader, Map::ESRI::FileGDBReader(this->gdbtableFD, this->dataOfst, tableInfo, columnNames, dataOfst, maxCnt, conditions, this->maxRowSize));
 	NN<IO::StreamData> fd;
-	if (fd.Set(this->gdbtablxFD))
+	if (this->gdbtablxFD.SetTo(fd))
 	{
 		reader->SetIndex(fd, this->indexCnt);
 	}

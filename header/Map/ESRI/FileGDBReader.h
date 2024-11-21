@@ -15,6 +15,7 @@ namespace Map
 		private:
 			NN<IO::StreamData> fd;
 			UInt64 currOfst;
+			UInt64 rowOfst;
 			NN<FileGDBTableInfo> tableInfo;
 			UOSInt rowSize;
 			Data::ByteBuffer rowData;
@@ -60,6 +61,7 @@ namespace Map
 			virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 			virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
+			virtual UInt64 GetRowFileOfst() const;
 
 			void SetIndex(NN<IO::StreamData> fd, UOSInt indexCnt);
 		};

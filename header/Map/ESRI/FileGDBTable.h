@@ -13,18 +13,19 @@ namespace Map
 		private:
 			NN<Text::String> tableName;
 			NN<IO::StreamData> gdbtableFD;
-			IO::StreamData *gdbtablxFD;
+			Optional<IO::StreamData> gdbtablxFD;
 			UOSInt indexCnt;
 			UInt64 dataOfst;
 			UInt32 maxRowSize;
 			Optional<FileGDBTableInfo> tableInfo;
 			NN<Math::ArcGISPRJParser> prjParser;
 		public:
-			FileGDBTable(Text::CStringNN tableName, NN<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser);
+			FileGDBTable(Text::CStringNN tableName, NN<IO::StreamData> gdbtableFD, Optional<IO::StreamData> gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser);
 			~FileGDBTable();
 
 			Bool IsError();
 			NN<Text::String> GetName() const;
+			NN<Text::String> GetFileName() const;
 			Optional<DB::DBReader> OpenReader(Optional<Data::ArrayListStringNN> columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> conditions);	
 		};
 	}

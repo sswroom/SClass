@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 		return 0;
 	}
 	NN<Map::ESRI::FileGDBDir> fgdb;
-	if (!fgdb.Set(Map::ESRI::FileGDBDir::OpenDir(pkg, prjParser)))
+	if (!Map::ESRI::FileGDBDir::OpenDir(pkg, prjParser).SetTo(fgdb))
 	{
 		SDEL_CLASS(relObj);
 		return 0;

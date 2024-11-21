@@ -12,9 +12,7 @@ namespace Map
 		class FileGDBDir : public DB::ReadingDB
 		{
 		private:
-			Data::ArrayList<FileGDBTable *> tables;
-
-			FileGDBTable *GetTable(Text::CStringNN name);
+			Data::ArrayListNN<FileGDBTable> tables;
 
 			FileGDBDir(NN<Text::String> sourceName);
 		public:
@@ -27,9 +25,10 @@ namespace Map
 			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
 
-			void AddTable(FileGDBTable *table);
+			void AddTable(NN<FileGDBTable> table);
+			Optional<FileGDBTable> GetTable(Text::CStringNN name) const;
 
-			static FileGDBDir *OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser);
+			static Optional<FileGDBDir> OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser);
 		};
 	}
 }

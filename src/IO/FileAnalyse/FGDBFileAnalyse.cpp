@@ -683,6 +683,216 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 								MemFree(parts);
 							}
 							break;
+						case 51:
+							if (tagData[ofst] == 0)
+							{
+								frame->AddUInt(ofst, 1, CSTR("Number of Points"), 0);
+								ofst++;
+							}
+							else
+							{
+								UInt64 nPoints;
+								UInt64 nParts;
+								UInt64 nCurves = 0;
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nPoints);
+								frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Points"), (UOSInt)nPoints);
+								ofst = ofst2;
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nParts);
+								frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Parts"), (UOSInt)nParts);
+								ofst = ofst2;
+								if (geometryType & 0x20000000)
+								{
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, nCurves);
+									frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of Curve"), (UOSInt)nCurves);
+									ofst = ofst2;
+								}
+								Double xMin;
+								Double yMin;
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
+								frame->AddUInt(ofst, ofst2 - ofst, CSTR("XMin_RAW"), (UOSInt)v);
+								frame->AddFloat(ofst, ofst2 - ofst, CSTR("XMin"), xMin = UOSInt2Double(v) / tableInfo->xyScale + tableInfo->xOrigin);
+								ofst = ofst2;
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
+								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMin_RAW"), (UOSInt)v);
+								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMin"), yMin = UOSInt2Double(v) / tableInfo->xyScale + tableInfo->yOrigin);
+								ofst = ofst2;
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
+								frame->AddUInt(ofst, ofst2 - ofst, CSTR("XMax_RAW"), (UOSInt)v);
+								frame->AddFloat(ofst, ofst2 - ofst, CSTR("XMax"), UOSInt2Double(v) / tableInfo->xyScale + xMin);
+								ofst = ofst2;
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, v);
+								frame->AddUInt(ofst, ofst2 - ofst, CSTR("YMax_RAW"), (UOSInt)v);
+								frame->AddFloat(ofst, ofst2 - ofst, CSTR("YMax"), UOSInt2Double(v) / tableInfo->xyScale + yMin);
+								ofst = ofst2;
+								UInt64 *parts = MemAlloc(UInt64, (UOSInt)nParts);
+								parts[nParts - 1] = nPoints;
+								UOSInt tmpI = 0;
+								while (tmpI < nParts - 1)
+								{
+									ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, parts[tmpI]);
+									frame->AddUInt(ofst, ofst2 - ofst, CSTR("Number of points in part"), (UOSInt)parts[tmpI]);
+									parts[nParts - 1] -= parts[tmpI];
+									ofst = ofst2;
+									tmpI++;
+								}
+								UOSInt tmpJ;
+								Int64 iv;
+								tmpI = 0;
+								while (tmpI < nParts)
+								{
+									OSInt dx = 0;
+									OSInt dy = 0;
+									OSInt dz = 0;
+									OSInt dm = 0;
+									tmpJ = (UOSInt)parts[tmpI];
+									while (tmpJ-- > 0)
+									{
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
+										frame->AddInt(ofst, ofst2 - ofst, CSTR("X_RAW"), (OSInt)iv);
+										dx += (OSInt)iv;
+										frame->AddFloat(ofst, ofst2 - ofst, CSTR("X"), OSInt2Double(dx) / tableInfo->xyScale + tableInfo->xOrigin);
+										ofst = ofst2;
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
+										frame->AddInt(ofst, ofst2 - ofst, CSTR("Y_RAW"), (OSInt)iv);
+										dy += (OSInt)iv;
+										frame->AddFloat(ofst, ofst2 - ofst, CSTR("Y"), OSInt2Double(dy) / tableInfo->xyScale + tableInfo->yOrigin);
+										ofst = ofst2;
+									}
+									if (geometryType & 0x80000000)
+									{
+										tmpJ = (UOSInt)parts[tmpI];
+										while (tmpJ-- > 0)
+										{
+											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
+											frame->AddInt(ofst, ofst2 - ofst, CSTR("Z_RAW"), (OSInt)iv);
+											dz += (OSInt)iv;
+											frame->AddFloat(ofst, ofst2 - ofst, CSTR("Z"), OSInt2Double(dz) / tableInfo->zScale + tableInfo->zOrigin);
+											ofst = ofst2;
+										}
+									}
+									if (geometryType & 0x40000000)
+									{
+										tmpJ = (UOSInt)parts[tmpI];
+										while (tmpJ-- > 0)
+										{
+											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
+											frame->AddInt(ofst, ofst2 - ofst, CSTR("M_RAW"), (OSInt)iv);
+											dm -= (OSInt)iv;
+											frame->AddFloat(ofst, ofst2 - ofst, CSTR("M"), OSInt2Double(dm) / tableInfo->mScale + tableInfo->mOrigin);
+											ofst = ofst2;
+										}
+									}
+									tmpI++;
+								}
+								if (nCurves > 0)
+								{
+									tmpI = 0;
+									while (tmpI < nCurves)
+									{
+										UInt32 bits;
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
+										frame->AddInt(ofst, ofst2 - ofst, CSTR("startPointIndex"), (OSInt)iv);
+										ofst = ofst2;
+										frame->AddInt(ofst, 1, CSTR("segmentType"), tagData[ofst]);
+										if (tagData[ofst] == 1) //esriSegmentArc
+										{
+											bits = ReadUInt32(&tagData[ofst + 17]);
+											if (bits & 0x40)
+											{
+												frame->AddFloat(ofst + 1, 8, CSTR("startAngle"), ReadDouble(&tagData[ofst + 1]));
+												frame->AddFloat(ofst + 9, 8, CSTR("centralAngle"), ReadDouble(&tagData[ofst + 9]));
+											}
+											else
+											{
+												frame->AddFloat(ofst + 1, 8, CSTR("centerPoint.x"), ReadDouble(&tagData[ofst + 1]));
+												frame->AddFloat(ofst + 9, 8, CSTR("centerPoint.y"), ReadDouble(&tagData[ofst + 9]));
+											}
+											frame->AddHex32(ofst + 17, CSTR("Bits"), bits);
+											frame->AddBit(ofst + 17, CSTR("IsEmpty"), (UInt8)(bits & 0xff), 0);
+											frame->AddBit(ofst + 17, CSTR("(reserved)"), (UInt8)(bits & 0xff), 1);
+											frame->AddBit(ofst + 17, CSTR("(reserved)"), (UInt8)(bits & 0xff), 2);
+											frame->AddBit(ofst + 17, CSTR("IsCCW"), (UInt8)(bits & 0xff), 3);
+											frame->AddBit(ofst + 17, CSTR("IsMinor"), (UInt8)(bits & 0xff), 4);
+											frame->AddBit(ofst + 17, CSTR("IsLine"), (UInt8)(bits & 0xff), 5);
+											frame->AddBit(ofst + 17, CSTR("IsPoint"), (UInt8)(bits & 0xff), 6);
+											frame->AddBit(ofst + 17, CSTR("DefinedIP"), (UInt8)(bits & 0xff), 7);
+											ofst += 21;
+										}
+										else if (tagData[ofst] == 2) //esriSegmentLine
+										{
+											// Should not exist
+											break;
+										}
+										else if (tagData[ofst] == 3) //esriSegmentSpiral
+										{
+											// Unknown
+											break;
+										}
+										else if (tagData[ofst] == 4) //esriSegmentBezier3Curve
+										{
+											frame->AddFloat(ofst + 1, 8, CSTR("centerPoint0.x"), ReadDouble(&tagData[ofst + 1]));
+											frame->AddFloat(ofst + 9, 8, CSTR("centerPoint0.y"), ReadDouble(&tagData[ofst + 9]));
+											frame->AddFloat(ofst + 17, 8, CSTR("centerPoint1.x"), ReadDouble(&tagData[ofst + 17]));
+											frame->AddFloat(ofst + 25, 8, CSTR("centerPoint1.y"), ReadDouble(&tagData[ofst + 25]));
+											ofst += 33;
+										}
+										else if (tagData[ofst] == 5) //esriSegmentEllipticArc
+										{
+											bits = ReadUInt32(&tagData[ofst + 41]);
+											if ((bits & 0x600) == 0)
+											{
+												frame->AddFloat(ofst + 1, 8, CSTR("center.x"), ReadDouble(&tagData[ofst + 1]));
+												frame->AddFloat(ofst + 9, 8, CSTR("center.y"), ReadDouble(&tagData[ofst + 9]));
+											}
+											else
+											{
+												frame->AddFloat(ofst + 1, 8, CSTR("fromVs"), ReadDouble(&tagData[ofst + 1]));
+												frame->AddFloat(ofst + 9, 8, CSTR("deltaVs"), ReadDouble(&tagData[ofst + 9]));
+											}
+											if ((bits & 0x640) == 0x40)
+											{
+												frame->AddFloat(ofst + 17, 8, CSTR("fromV"), ReadDouble(&tagData[ofst + 17]));
+											}
+											else
+											{
+												frame->AddFloat(ofst + 17, 8, CSTR("rotation"), ReadDouble(&tagData[ofst + 17]));
+											}
+											frame->AddFloat(ofst + 25, 8, CSTR("semiMajor"), ReadDouble(&tagData[ofst + 25]));
+											if ((bits & 0x640) == 0x40)
+											{
+												frame->AddFloat(ofst + 33, 8, CSTR("deltaV"), ReadDouble(&tagData[ofst + 33]));
+											}
+											else
+											{
+												frame->AddFloat(ofst + 33, 8, CSTR("minorMajorRatio"), ReadDouble(&tagData[ofst + 33]));
+											}
+											frame->AddHex32(ofst + 41, CSTR("Bits"), bits);
+											frame->AddBit(ofst + 41, CSTR("IsEmpty"), (UInt8)(bits & 0xff), 0);
+											frame->AddBit(ofst + 41, CSTR("(reserved)"), (UInt8)(bits & 0xff), 1);
+											frame->AddBit(ofst + 41, CSTR("(reserved)"), (UInt8)(bits & 0xff), 2);
+											frame->AddBit(ofst + 41, CSTR("(reserved)"), (UInt8)(bits & 0xff), 3);
+											frame->AddBit(ofst + 41, CSTR("(reserved)"), (UInt8)(bits & 0xff), 4);
+											frame->AddBit(ofst + 41, CSTR("(reserved)"), (UInt8)(bits & 0xff), 5);
+											frame->AddBit(ofst + 41, CSTR("IsLine"), (UInt8)(bits & 0xff), 6);
+											frame->AddBit(ofst + 41, CSTR("IsPoint"), (UInt8)(bits & 0xff), 7);
+											frame->AddBit(ofst + 42, CSTR("IsCircular"), (UInt8)((bits >> 8) & 0xff), 0);
+											frame->AddBit(ofst + 42, CSTR("CenterTo"), (UInt8)((bits >> 8) & 0xff), 1);
+											frame->AddBit(ofst + 42, CSTR("CenterFrom"), (UInt8)((bits >> 8) & 0xff), 2);
+											frame->AddBit(ofst + 42, CSTR("IsCCW"), (UInt8)((bits >> 8) & 0xff), 3);
+											frame->AddBit(ofst + 42, CSTR("IsMinor"), (UInt8)((bits >> 8) & 0xff), 4);
+											frame->AddBit(ofst + 42, CSTR("IsComplete"), (UInt8)((bits >> 8) & 0xff), 5);
+											ofst += 45;
+										}
+										else
+										{
+											break;
+										}
+										tmpI++;
+									}
+								}
+								MemFree(parts);
+							}
+							break;
 						}
 						ofst = endOfst;
 					}

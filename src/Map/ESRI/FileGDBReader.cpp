@@ -39,6 +39,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<F
 	this->indexNext = 0;
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->currOfst = ofst;
+	this->rowOfst = ofst;
 	this->tableInfo = Map::ESRI::FileGDBUtil::TableInfoClone(tableInfo);
 	this->rowSize = 0;
 	this->objectId = 0;
@@ -123,6 +124,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				{
 					return false;
 				}
+				this->rowOfst = this->currOfst;
 				Int32 size = ReadInt32(sizeBuff);
 				if (size < 0)
 				{
@@ -213,6 +215,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 		this->rowData.Delete();
 		return false;
 	}
+	this->rowOfst = this->currOfst;
 	this->currOfst += 4 + this->rowSize;
 	UOSInt rowOfst = (UOSInt)(this->tableInfo->nullableCnt + 7) >> 3;
 	UOSInt nullIndex = 0;
@@ -1516,8 +1519,12 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, OptOut
 		case 7:
 			return DB::DBUtil::CT_Vector;
 		case 8:
+			if (field->fieldSize == 0)
+				colSize.Set(1048576);
 			return DB::DBUtil::CT_Binary;
 		case 9:
+			if (field->fieldSize == 0)
+				colSize.Set(1048576);
 			return DB::DBUtil::CT_Binary;
 		case 10:
 			return DB::DBUtil::CT_UUID;
@@ -1551,11 +1558,23 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	{
 		colDef->SetColSize(0);
 	}
+	else if (colDef->GetColType() == DB::DBUtil::CT_Binary)
+	{
+		if (field->fieldSize == 0)
+		{
+			colDef->SetColSize(1048576);			
+		}		
+	}
 	colDef->SetNotNull((field->flags & 1) == 0);
 	colDef->SetPK(field->fieldType == 6);
 	if (field->fieldType == 6)
 	{
-		colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
+		Int64 startIndex = 1;
+		if (this->indexBuff.GetCount() > 0)
+		{
+			startIndex = (Int64)this->indexCnt + 1;
+		}
+		colDef->SetAutoInc(DB::ColDef::AutoIncType::Default, startIndex, 1);
 	}
 	else
 	{
@@ -1702,6 +1721,11 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		}
 	}
 	return true;
+}
+
+UInt64 Map::ESRI::FileGDBReader::GetRowFileOfst() const
+{
+	return this->rowOfst;
 }
 
 void Map::ESRI::FileGDBReader::SetIndex(NN<IO::StreamData> fd, UOSInt indexCnt)

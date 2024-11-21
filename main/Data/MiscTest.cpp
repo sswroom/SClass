@@ -4,6 +4,7 @@
 #include "DB/MSSQLConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/ConsoleLogHandler.h"
+#include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/FileUtil.h"
 #include "IO/MemoryStream.h"
@@ -14,6 +15,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
+#include "Map/ESRI/FileGDBDir.h"
 #include "Math/GeometryTool.h"
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
@@ -31,6 +33,7 @@
 #include "Net/Google/GoogleOAuth2.h"
 #include "Net/Google/GoogleServiceAccount.h"
 #include "Parser/FullParserList.h"
+#include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Sync/SimpleThread.h"
 #include "Text/CPPText.h"
 #include "Text/StringTool.h"
@@ -802,9 +805,74 @@ Int32 WKTParseTest()
 	return 0;
 }
 
+Int32 FGDBTest()
+{
+	Text::CStringNN fgdbPath = CSTR("/home/sswroom/ProgsHome/PROGS/StoneRoad/0_req/20241024 EMSD POC/20241009/iB1000.gdb");
+	/*
+	Building
+	BuiltStructurePolygon
+	Site
+	SubSite
+	HydroPolygon
+	LandCoverVector2
+	BMSslope
+	VerticalCutPolygon
+	TransportPolygon
+	UtilityPolygon
+	*/
+	Math::ArcGISPRJParser prjParser;
+	IO::DirectoryPackage dpkg(fgdbPath);
+	NN<Map::ESRI::FileGDBDir> fgdb;
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	UOSInt i;
+	UOSInt j;
+	if (Map::ESRI::FileGDBDir::OpenDir(dpkg, prjParser).SetTo(fgdb))
+	{
+		NN<Map::ESRI::FileGDBTable> table;
+		NN<DB::DBReader> r;
+		NN<Text::String> s;
+		if (fgdb->GetTable(CSTR("Building")).SetTo(table))
+		{
+			printf("File Name: %s\r\n", table->GetFileName()->v.Ptr());
+			if (table->OpenReader(0, 0, 0, 0, 0).SetTo(r))
+			{
+				while (r->ReadNext())
+				{
+					if (r->GetInt32(0) == 114)
+					{
+						printf("Row Ofst: 0x%llx\r\n", r->GetRowFileOfst());
+						i = 0;
+						j = r->ColCount();
+						while (i < j)
+						{
+							sbuff[0] = 0;
+							sptr = r->GetName(i, sbuff).Or(sbuff);
+							if (r->GetNewStr(i).SetTo(s))
+							{
+								printf("%s: %s\r\n", sbuff, s->v.Ptr());
+								s->Release();
+							}
+							else
+							{
+								printf("%s: <null>\r\n", sbuff);
+							}
+							i++;
+						}
+						break;
+					}
+				}
+				fgdb->CloseReader(r);
+			}
+		}
+		fgdb.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 20;
+	UOSInt testType = 21;
 	switch (testType)
 	{
 	case 0:
@@ -849,6 +917,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return FCMTest();
 	case 20:
 		return WKTParseTest();
+	case 21:
+		return FGDBTest();
 	default:
 		return 0;
 	}

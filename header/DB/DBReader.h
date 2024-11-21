@@ -105,6 +105,7 @@ namespace DB
 		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff) = 0;
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef) = 0;
+		virtual UInt64 GetRowFileOfst() const { return 0; }
 
 		NN<TableDef> GenTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		NN<Data::VariObject> CreateVariObject();

@@ -5,27 +5,13 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
-Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CStringNN name)
-{
-	UOSInt i = this->tables.GetCount();
-	while (i-- > 0)
-	{
-		FileGDBTable *table = this->tables.GetItem(i);
-		if (table->GetName()->EqualsICase(name.v, name.leng))
-		{
-			return table;
-		}
-	}
-	return 0;
-}
-
 Map::ESRI::FileGDBDir::FileGDBDir(NN<Text::String> sourceName) : DB::ReadingDB(sourceName)
 {
 }
 
 Map::ESRI::FileGDBDir::~FileGDBDir()
 {
-	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
+	this->tables.DeleteAll();
 }
 
 UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
@@ -34,7 +20,7 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data:
 	UOSInt j = this->tables.GetCount();
 	while (i < j)
 	{
-		names->Add(this->tables.GetItem(i)->GetName()->Clone());
+		names->Add(this->tables.GetItemNoCheck(i)->GetName()->Clone());
 		i++;
 	}
 	return j;
@@ -42,8 +28,8 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data:
 
 Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	FileGDBTable *table = this->GetTable(tableName);
-	if (table == 0)
+	NN<FileGDBTable> table;
+	if (!this->GetTable(tableName).SetTo(table))
 	{
 		return 0;
 	}
@@ -59,8 +45,8 @@ Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schem
 
 Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
-	FileGDBTable *table = this->GetTable(tableName);
-	if (table == 0)
+	NN<FileGDBTable> table;
+	if (!this->GetTable(tableName).SetTo(table))
 	{
 		return 0;
 	}
@@ -94,14 +80,28 @@ void Map::ESRI::FileGDBDir::Reconnect()
 {
 }
 
-void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
+void Map::ESRI::FileGDBDir::AddTable(NN<FileGDBTable> table)
 {
 	this->tables.Add(table);
 }
 
-Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser)
+Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringNN name) const
 {
-	FileGDBTable *table;
+	UOSInt i = this->tables.GetCount();
+	while (i-- > 0)
+	{
+		NN<FileGDBTable> table = this->tables.GetItemNoCheck(i);
+		if (table->GetName()->EqualsICase(name))
+		{
+			return table;
+		}
+	}
+	return 0;
+}
+
+Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser)
+{
+	NN<FileGDBTable> table;
 	IO::StreamData *indexFD = pkg->GetItemStmDataNew(CSTR("a00000001.gdbtablx")).OrNull();
 	NN<IO::StreamData> tableFD;;
 	if (!pkg->GetItemStmDataNew(CSTR("a00000001.gdbtable")).SetTo(tableFD))
@@ -109,18 +109,18 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, N
 		SDEL_CLASS(indexFD);
 		return 0;
 	}
-	NEW_CLASS(table, FileGDBTable(CSTR("GDB_SystemCatalog"), tableFD, indexFD, prjParser));
+	NEW_CLASSNN(table, FileGDBTable(CSTR("GDB_SystemCatalog"), tableFD, indexFD, prjParser));
 	tableFD.Delete();
 	SDEL_CLASS(indexFD);
 	if (table->IsError())
 	{
-		DEL_CLASS(table);
+		table.Delete();
 		return 0;
 	}
 	NN<FileGDBReader> reader;
 	if (!Optional<FileGDBReader>::ConvertFrom(table->OpenReader(0, 0, 0, CSTR_NULL, 0)).SetTo(reader))
 	{
-		DEL_CLASS(table);
+		table.Delete();
 		return 0;
 	}
 	FileGDBDir *dir;
@@ -137,7 +137,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, N
 		reader->GetStr(1, sb);
 		if (id > 1 && sb.GetLength() > 0 && fmt == 0)
 		{
-			FileGDBTable *innerTable;
+			NN<FileGDBTable> innerTable;
 			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
 			indexFD = pkg->GetItemStmDataNew(CSTRP(sbuff, sptr)).OrNull();
@@ -145,11 +145,11 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, N
 			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
 			if (pkg->GetItemStmDataNew(CSTRP(sbuff, sptr)).SetTo(tableFD))
 			{
-				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD, prjParser));
+				NEW_CLASSNN(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD, prjParser));
 				tableFD.Delete();
 				if (innerTable->IsError())
 				{
-					DEL_CLASS(innerTable);
+					innerTable.Delete();
 				}
 				else
 				{
