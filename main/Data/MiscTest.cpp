@@ -839,7 +839,7 @@ Int32 FGDBTest()
 			{
 				while (r->ReadNext())
 				{
-					if (r->GetInt32(0) == 114)
+					if (r->GetInt32(0) == 19)
 					{
 						printf("Row Ofst: 0x%llx\r\n", r->GetRowFileOfst());
 						i = 0;

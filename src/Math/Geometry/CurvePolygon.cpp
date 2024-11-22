@@ -16,7 +16,7 @@ Math::Geometry::CurvePolygon::~CurvePolygon()
 void Math::Geometry::CurvePolygon::AddGeometry(NN<Vector2D> geometry)
 {
 	VectorType t = geometry->GetVectorType();
-	if (t == VectorType::CircularString || t == VectorType::CompoundCurve || t == VectorType::LineString)
+	if (t == VectorType::CircularString || t == VectorType::CompoundCurve || t == VectorType::LineString || t == VectorType::LinearRing)
 	{
 		this->geometries.Add(geometry);
 	}
@@ -69,6 +69,10 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 			UnsafeArray<const Math::Coord2DDbl> ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, 0, 0));
 			pg->AddGeometry(lr);
+		}
+		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LinearRing)
+		{
+			pg->AddGeometry(NN<LinearRing>::ConvertFrom(vec->Clone()));
 		}
 		else
 		{

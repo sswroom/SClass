@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Math/GeometryTool.h"
 #include "Math/Geometry/CircularString.h"
 
 Math::Geometry::CircularString::CircularString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM) : LineString(srid, nPoint | 1, hasZ, hasM)
@@ -31,4 +32,27 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CircularString::Clone() const
 		MemCopyAC(plArr.Ptr(), thisArr.Ptr(), sizeof(Double) * nPoint);
 	}
 	return pl;
+}
+
+Optional<Math::Geometry::Vector2D> Math::Geometry::CircularString::ToSimpleShape() const
+{
+	if (this->nPoint > 2 && (this->nPoint & 1) != 0)
+	{
+		Data::ArrayListA<Math::Coord2DDbl> ptList;
+		UOSInt ret = 0;
+		UOSInt i = 2;
+		while (i < this->nPoint)
+		{
+			if (ret > 0)
+			{
+				ptList.RemoveAt(ptList.GetCount() - 1);
+				ret--;
+			}
+			ret += Math::GeometryTool::ArcToLine(this->pointArr[i - 2], pointArr[i - 1], pointArr[i], 2.5, ptList);
+		}
+		NN<Math::Geometry::LineString> ls;
+		NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
+		return ls;
+	}
+	return 0;
 }

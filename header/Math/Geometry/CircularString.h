@@ -14,6 +14,8 @@ namespace Math
 
 			virtual VectorType GetVectorType() const;
 			virtual NN<Math::Geometry::Vector2D> Clone() const;
+			virtual Bool HasCurve() const { return true; }
+			virtual Optional<Vector2D> ToSimpleShape() const;
 		};
 	}
 }

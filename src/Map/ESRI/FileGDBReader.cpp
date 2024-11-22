@@ -1051,13 +1051,15 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			if (geometryType & 0x20000000)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
-				printf("FileGDBReader: geometry has curves, may not fully support\r\n");
+				if (nCurves > 0)
+				{
+					printf("FileGDBReader: geometry has curves, may not fully support\r\n");
+				}
 			}
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
-			Math::Geometry::Polyline *pl;
 			srid = 0;
 			if (this->tableInfo->csys.SetTo(csys))
 			{
@@ -1065,15 +1067,14 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			}
 			UOSInt i;
 			UOSInt j;
-			UOSInt k;
-			NN<Math::Geometry::LineString> lineString;
-			UInt32 *ptOfstList;
+			UnsafeArray<UInt32> ptOfstList;
 			UnsafeArray<Math::Coord2DDbl> points;
-			UnsafeArray<Double> zArr;
-			UnsafeArray<Double> mArr;
-			NEW_CLASS(pl, Math::Geometry::Polyline(srid));
+			UnsafeArrayOpt<Double> zArr = 0;
+			UnsafeArrayOpt<Double> mArr = 0;
+
+			UnsafeArray<Double> nnArr;
 			//, (UOSInt)nParts, (UOSInt)nPoints, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0
-			ptOfstList = MemAlloc(UInt32, (UOSInt)nParts);
+			ptOfstList = MemAllocArr(UInt32, (UOSInt)nParts);
 			ptOfstList[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1084,68 +1085,69 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				ptOfstList[i] = ptOfst;
 				i++;
 			}
+			points = MemAllocAArr(Math::Coord2DDbl, (UOSInt)nPoints);
 			Int64 iv;
-			i = 0;
-			while (i < nParts)
+			OSInt dx = 0;
+			OSInt dy = 0;
+			OSInt dz = 0;
+			OSInt dm = 0;
+			j = 0;
+			while (j < nPoints)
 			{
-				if (i + 1 == nParts)
-				{
-					k = nPoints - ptOfstList[i];
-				}
-				else
-				{
-					k = ptOfstList[i + 1] - ptOfstList[i];
-				}
-				NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, k, (this->tableInfo->geometryFlags & 0x80) != 0, (this->tableInfo->geometryFlags & 0x40) != 0));
-				points = lineString->GetPointList(j);
-
-				OSInt dx = 0;
-				OSInt dy = 0;
-				OSInt dz = 0;
-				OSInt dm = 0;
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+				dx += (OSInt)iv;
+				x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+				dy += (OSInt)iv;
+				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+				points[j].x = x;
+				points[j].y = y;
+				j++;
+			}
+			if ((this->tableInfo->geometryFlags & 0x80))
+			{
+				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				zArr = nnArr;
 				j = 0;
-				while (j < k)
+				while (j < nPoints)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-					dx += (OSInt)iv;
-					x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-					dy += (OSInt)iv;
-					y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
-					points[j].x = x;
-					points[j].y = y;
+					dz += (OSInt)iv;
+					z = Int64_Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+					nnArr[j] = z;
 					j++;
 				}
-				if ((this->tableInfo->geometryFlags & 0x80) && lineString->GetZList(j).SetTo(zArr))
-				{
-					j = 0;
-					while (j < k)
-					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dz += (OSInt)iv;
-						z = Int64_Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-						zArr[j] = z;
-						j++;
-					}
-				}
-				if ((this->tableInfo->geometryFlags & 0x40) && lineString->GetMList(j).SetTo(mArr))
-				{
-					j = 0;
-					while (j < k)
-					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dm += (OSInt)iv;
-						m = Int64_Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
-						mArr[j] = m;
-						j++;
-					}
-				}
-				pl->AddGeometry(lineString);
-
-				i++;
 			}
-			MemFree(ptOfstList);
-			return pl;
+			if ((this->tableInfo->geometryFlags & 0x40))
+			{
+				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				mArr = nnArr;
+				j = 0;
+				while (j < nPoints)
+				{
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					dm += (OSInt)iv;
+					m = Int64_Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					nnArr[j] = m;
+					j++;
+				}
+			}
+			NN<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Polyline> pl;
+			NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
+			pl->AddFromPtOfst(ptOfstList, nParts, points, nPoints, zArr, mArr);
+			vec = pl;
+			if (zArr.SetTo(nnArr))
+			{
+				MemFreeArr(nnArr);
+			}
+			if (mArr.SetTo(nnArr))
+			{
+				MemFreeArr(nnArr);
+			}
+			MemFreeAArr(points);
+			MemFreeArr(ptOfstList);
+			return vec;
 		}
 		break;
 	case 51: //SHPT_GENERALPOLYGON
@@ -1163,32 +1165,28 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			if (geometryType & 0x20000000)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
-				printf("FileGDBReader: geometry has curves, may not fully support\r\n");
+				if (nCurves > 0)
+				{
+					printf("FileGDBReader: geometry has curves, may not fully support\r\n");
+				}
 			}
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
-			Math::Geometry::Polygon *pg;
 			srid = 0;
 			UOSInt i;
 			if (this->tableInfo->csys.SetTo(csys))
 			{
 				srid = csys->GetSRID();
 			}
-			UInt32 *parts;
-			Math::Coord2DDbl *points;
-			Double *zArr;
-			Double *mArr;
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
-			parts = MemAlloc(UInt32, (UOSInt)nParts);
-			points = MemAllocA(Math::Coord2DDbl, (UOSInt)nPoints);
-			zArr = 0;
-			mArr = 0;
-			if (geometryType & 0x80000000)
-				zArr = MemAlloc(Double, (UOSInt)nPoints);
-			if (geometryType & 0x40000000)
-				mArr = MemAlloc(Double, (UOSInt)nPoints);
+			UnsafeArray<UInt32> parts;
+			UnsafeArray<Math::Coord2DDbl> points;
+			UnsafeArrayOpt<Double> zArr = 0;
+			UnsafeArrayOpt<Double> mArr = 0;
+			UnsafeArray<Double> nnArr;
+			parts = MemAllocArr(UInt32, (UOSInt)nParts);
+			points = MemAllocAArr(Math::Coord2DDbl, (UOSInt)nPoints);
 			parts[0] = 0;
 			UInt32 ptOfst = 0;
 			i = 1;
@@ -1200,73 +1198,69 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				i++;
 			}
 			UOSInt j;
-			UOSInt k;
 			OSInt dx = 0;
 			OSInt dy = 0;
 			OSInt dz = 0;
 			OSInt dm = 0;
-			i = 0;
-			while (i < nParts)
+			Int64 iv;
+			j = 0;
+			while (j < nPoints)
 			{
-				Int64 iv;
-				j = parts[i];
-				if (i + 1 < nParts)
-				{
-					k = parts[i + 1];
-				}
-				else
-				{
-					k = (UOSInt)nPoints;
-				}
-				while (j < k)
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+				dx += (OSInt)iv;
+				x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+				dy += (OSInt)iv;
+				y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+				points[j].x = x;
+				points[j].y = y;
+				j++;
+			}
+			if (geometryType & 0x80000000)
+			{
+				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				zArr = nnArr;
+				j = 0;
+				while (j < nPoints)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-					dx += (OSInt)iv;
-					x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-					dy += (OSInt)iv;
-					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
-					points[j].x = x;
-					points[j].y = y;
+					dz += (OSInt)iv;
+					z = OSInt2Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+					nnArr[j] = z;
 					j++;
 				}
-				if (geometryType & 0x80000000)
-				{
-					j = parts[i];
-					while (j < k)
-					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dz += (OSInt)iv;
-						z = OSInt2Double(dz) / this->tableInfo->zScale + this->tableInfo->zOrigin;
-						zArr[j] = z;
-						j++;
-					}
-				}
-				if (geometryType & 0x40000000)
-				{
-					dm = 0;
-					j = parts[i];
-					while (j < k)
-					{
-						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
-						dm += (OSInt)iv;
-						m = OSInt2Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
-						mArr[j] = m;
-						j++;
-					}
-				}
-				i++;
 			}
-			pg->AddFromPtOfst(parts, nParts, points, nPoints, zArr, mArr);
-			if (mArr)
-				MemFree(mArr);
-			if (zArr)
-				MemFree(zArr);
-			MemFreeA(points);
-			MemFree(parts);
-			NN<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
-			DEL_CLASS(pg);
-			return mpg.Ptr();
+			if (geometryType & 0x40000000)
+			{
+				nnArr = MemAllocArr(Double, (UOSInt)nPoints);
+				mArr = nnArr;
+				j = 0;
+				while (j < nPoints)
+				{
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					dm += (OSInt)iv;
+					m = OSInt2Double(dm) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					nnArr[j] = m;
+					j++;
+				}
+			}
+			NN<Math::Geometry::Vector2D> vec;
+			{
+				Math::Geometry::Polygon pg(srid);
+				pg.AddFromPtOfst(parts, nParts, points, nPoints, zArr, mArr);
+				vec = pg.CreateMultiPolygon();
+			}
+			if (mArr.SetTo(nnArr))
+			{
+				MemFreeArr(nnArr);
+			}
+			if (zArr.SetTo(nnArr))
+			{
+				MemFreeArr(nnArr);
+			}
+			MemFreeAArr(points);
+			MemFreeArr(parts);
+			return vec;
 		}
 		break;
 	}

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/MultiSurface.h"
 
 Math::Geometry::MultiSurface::MultiSurface(UInt32 srid) : Math::Geometry::MultiGeometry<Math::Geometry::Vector2D>(srid)
@@ -37,6 +38,37 @@ NN<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::Clone() const
 	while (it.HasNext())
 	{
 		newObj->AddGeometry(it.Next()->Clone());
+	}
+	return newObj;
+}
+
+Optional<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::ToSimpleShape() const
+{
+	NN<Math::Geometry::MultiPolygon> newObj;
+	NEW_CLASSNN(newObj, Math::Geometry::MultiPolygon(this->srid));
+	Data::ArrayIterator<NN<Vector2D>> it = this->Iterator();
+	while (it.HasNext())
+	{
+		NN<Math::Geometry::Vector2D> vec;
+		if (it.Next()->ToSimpleShape().SetTo(vec))
+		{
+			if (vec->GetVectorType() == VectorType::Polygon)
+			{
+				newObj->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(vec));
+			}
+			else
+			{
+				printf("Error: MultiSurface SimpleShape is not polygon\r\n");
+				newObj.Delete();
+				return 0;
+			}
+		}
+		else
+		{
+			printf("Error: Error in MultiSurface converting to simple shape\r\n");
+			newObj.Delete();
+			return 0;
+		}
 	}
 	return newObj;
 }

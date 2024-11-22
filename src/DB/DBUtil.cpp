@@ -1691,18 +1691,46 @@ UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Option
 		}
 		writer.SetNo3D(true);
 		Text::StringBuilderUTF8 sb;
-		if (writer.ToText(sb, nnvec))
+		if (nnvec->HasCurve())
 		{
-			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
-			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
-			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
-			sqlstr = Text::StrUInt32(sqlstr, nnvec->GetSRID());
-			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
-			return sqlstr;
+			if (nnvec->ToSimpleShape().SetTo(nnvec))
+			{
+				if (writer.ToText(sb, nnvec))
+				{
+					sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
+					sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
+					sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
+					sqlstr = Text::StrUInt32(sqlstr, nnvec->GetSRID());
+					sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
+					nnvec.Delete();
+					return sqlstr;
+				}
+				else
+				{
+					nnvec.Delete();
+					return sqlstr;
+				}
+			}
+			else
+			{
+				return sqlstr;
+			}
 		}
 		else
 		{
-			return sqlstr;
+			if (writer.ToText(sb, nnvec))
+			{
+				sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("ST_GeomFromText('"));
+				sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
+				sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
+				sqlstr = Text::StrUInt32(sqlstr, nnvec->GetSRID());
+				sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
+				return sqlstr;
+			}
+			else
+			{
+				return sqlstr;
+			}
 		}
 	}
 	else if (sqlType == DB::SQLType::PostgreSQL)

@@ -41,7 +41,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::Clone() const
 	return newObj;
 }
 
-UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList)
+UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList) const
 {
 	UOSInt ret = 0;
 	NN<LineString> ls;
@@ -63,6 +63,7 @@ UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Co
 					ret--;
 				}
 				ret += Math::GeometryTool::ArcToLine(ptArr[i - 2], ptArr[i - 1], ptArr[i], 2.5, ptList);
+				i++;
 			}
 		}
 		else
@@ -80,4 +81,13 @@ UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Co
 		}
 	}
 	return ret;
+}
+
+Optional<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::ToSimpleShape() const
+{
+	Data::ArrayListA<Math::Coord2DDbl> ptList;
+	NN<Math::Geometry::LineString> ls;
+	this->GetDrawPoints(ptList);
+	NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
+	return ls;
 }

@@ -17,6 +17,8 @@ namespace Math
 			virtual NN<Vector2D> Clone() const;
 			virtual NN<Vector2D> CurveToLine() const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
+			virtual Bool HasCurve() const { return true; }
+			virtual Optional<Vector2D> ToSimpleShape() const { return CurveToLine(); }
 		};
 	}
 }
