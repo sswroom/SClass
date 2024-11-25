@@ -807,7 +807,7 @@ Int32 WKTParseTest()
 
 Int32 FGDBTest()
 {
-	Text::CStringNN fgdbPath = CSTR("/home/sswroom/ProgsHome/PROGS/StoneRoad/0_req/20241024 EMSD POC/20241009/iB1000.gdb");
+	Text::CStringNN fgdbPath = CSTR("");
 	/*
 	Building
 	BuiltStructurePolygon
@@ -839,7 +839,7 @@ Int32 FGDBTest()
 			{
 				while (r->ReadNext())
 				{
-					if (r->GetInt32(0) == 19)
+					if (r->GetInt32(0) == 78)
 					{
 						printf("Row Ofst: 0x%llx\r\n", r->GetRowFileOfst());
 						i = 0;

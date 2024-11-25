@@ -2355,6 +2355,8 @@ Map/WebMapService.h:
 @WebMapService.o
 Map/WebMapTileServiceSource.h:
 @WebMapTileServiceSource.o
+Map/ESRI/ESRICurve.h:
+@ESRICurve.o
 Map/ESRI/ESRIFeatureServer.h:
 @ESRIFeatureServer.o
 Map/ESRI/ESRIMapServer.h:

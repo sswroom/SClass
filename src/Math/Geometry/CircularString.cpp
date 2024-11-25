@@ -6,6 +6,10 @@ Math::Geometry::CircularString::CircularString(UInt32 srid, UOSInt nPoint, Bool 
 {
 }
 
+Math::Geometry::CircularString::CircularString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr) : LineString(srid, pointArr, nPoint, zArr, mArr)
+{
+}
+
 Math::Geometry::CircularString::~CircularString()
 {
 

@@ -1,0 +1,220 @@
+#include "Stdafx.h"
+#include "Map/ESRI/ESRICurve.h"
+#include "Math/Geometry/CircularString.h"
+#include "Math/Geometry/CompoundCurve.h"
+#include "Math/Geometry/CurvePolygon.h"
+#include "Math/Geometry/MultiPolygon.h"
+#include "Math/Geometry/MultiSurface.h"
+#include "Math/Geometry/Polygon.h"
+#include "Math/Geometry/Polyline.h"
+
+Map::ESRI::ESRICurve::ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UOSInt nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr)
+{
+	this->srid = srid;
+	this->ptList.AddAll(Data::DataArray<Math::Coord2DDbl>(ptArr, nPoint));
+	this->partList.AddAll(Data::DataArray<UInt32>(ptOfstList, nParts));
+	UnsafeArray<Double> nnArr;
+	if (zArr.SetTo(nnArr))
+	{
+		this->zList.AddAll(Data::DataArray<Double>(nnArr, nPoint));
+	}
+	if (mArr.SetTo(nnArr))
+	{
+		this->mList.AddAll(Data::DataArray<Double>(nnArr, nPoint));
+	}
+}
+
+Map::ESRI::ESRICurve::~ESRICurve()
+{
+	UOSInt i = this->arcList.GetCount();
+	while (i-- > 0)
+	{
+		MemFreeANN(this->arcList.GetItemNoCheck(i));
+	}
+}
+
+void Map::ESRI::ESRICurve::AddArc(UOSInt index, Math::Coord2DDbl center, UInt32 bits)
+{
+	NN<ArcInfo> arc;
+	arc = MemAllocANN(ArcInfo);
+	arc->type = 1;
+	arc->startIndex = index;
+	arc->center = center;
+	arc->bits = bits;
+	this->arcList.Add(arc);
+}
+
+NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToArea() const
+{
+	if (this->arcList.GetCount() > 0)
+	{
+		NN<Math::Geometry::MultiSurface> ms;
+		NN<Math::Geometry::CurvePolygon> cpg;
+		NN<Math::Geometry::CompoundCurve> cc;
+		NN<Math::Geometry::LineString> ls;
+		NEW_CLASSNN(ms, Math::Geometry::MultiSurface(this->srid));
+		NEW_CLASSNN(cpg, Math::Geometry::CurvePolygon(this->srid));
+		NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+		NN<ArcInfo> arc;
+		Math::Coord2DDbl curvePts[3];
+		UOSInt endPart;
+		UOSInt i = 0;
+		UOSInt currIndex = 0;
+		UOSInt partI = 1;
+		if (partI >= this->partList.GetCount())
+		{
+			endPart = this->ptList.GetCount();
+		}
+		else
+		{
+			endPart = this->partList.GetItem(partI);
+		}
+		while (i < this->arcList.GetCount())
+		{
+			arc = this->arcList.GetItemNoCheck(i);
+			while (arc->startIndex >= endPart)
+			{
+				if (currIndex + 1 < endPart)
+				{
+					if (cc->GetCount() == 0)
+					{
+						NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &this->ptList.Arr()[currIndex], endPart - currIndex, 0, 0));
+						cpg->AddGeometry(ls);
+						currIndex = endPart;
+					}
+					else
+					{
+						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &this->ptList.Arr()[currIndex], endPart - currIndex, 0, 0));
+						cc->AddGeometry(ls);
+						cpg->AddGeometry(cc);
+						currIndex = endPart;
+						NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+					}
+				}
+				else
+				{
+					currIndex = endPart;
+				}
+
+				partI++;
+				if (partI >= this->partList.GetCount())
+				{
+					endPart = this->ptList.GetCount();
+				}
+				else
+				{
+					endPart = this->partList.GetItem(partI);
+				}
+			}
+			if (arc->startIndex > currIndex)
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &this->ptList.Arr()[currIndex], arc->startIndex - currIndex + 1, 0, 0));
+				cc->AddGeometry(ls);
+			}
+			curvePts[0] = this->ptList.GetItem(arc->startIndex);
+			curvePts[1] = arc->center;
+			curvePts[2] = this->ptList.GetItem(arc->startIndex + 1);
+			NEW_CLASSNN(ls, Math::Geometry::CircularString(this->srid, curvePts, 3, 0, 0));
+			cc->AddGeometry(ls);
+			currIndex = arc->startIndex + 1;
+			i++;
+		}
+		while (partI < this->partList.GetCount())
+		{
+			if (cc->GetCount() == 0)
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &this->ptList.Arr()[currIndex], endPart - currIndex, 0, 0));
+				cpg->AddGeometry(ls);
+				currIndex = endPart;
+			}
+			else
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &this->ptList.Arr()[currIndex], endPart - currIndex, 0, 0));
+				cc->AddGeometry(ls);
+				cpg->AddGeometry(cc);
+				currIndex = endPart;
+				NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+			}
+
+			partI++;
+			if (partI >= this->partList.GetCount())
+			{
+				endPart = this->ptList.GetCount();
+			}
+			else
+			{
+				endPart = this->partList.GetItem(partI);
+			}
+		}
+		if (currIndex + 1 < this->ptList.GetCount())
+		{
+			if (cc->GetCount() == 0)
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &this->ptList.Arr()[currIndex], endPart - currIndex, 0, 0));
+				cpg->AddGeometry(ls);
+				currIndex = endPart;
+				cc.Delete();
+			}
+			else
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &this->ptList.Arr()[currIndex], endPart - currIndex, 0, 0));
+				cc->AddGeometry(ls);
+				cpg->AddGeometry(cc);
+				currIndex = endPart;
+			}
+		}
+		else
+		{
+			if (cc->GetCount() == 0)
+			{
+				cc.Delete();
+			}
+			else
+			{
+				cpg->AddGeometry(cc);
+			}
+		}
+		ms->AddGeometry(cpg);
+		return ms;
+	}
+	else
+	{
+		UnsafeArrayOpt<Double> zArr = 0;
+		UnsafeArrayOpt<Double> mArr = 0;
+		if (this->ptList.GetCount() == this->zList.GetCount())
+		{
+			zArr = this->zList.Arr();
+		}
+		if (this->ptList.GetCount() == this->mList.GetCount())
+		{
+			mArr = this->mList.Arr();
+		}
+		Math::Geometry::Polygon pg(this->srid);
+		pg.AddFromPtOfst(this->partList.Arr(), this->partList.GetCount(), this->ptList.Arr(), this->ptList.GetCount(), zArr, mArr);
+		return pg.CreateMultiPolygon();
+	}
+}
+
+NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToLine() const
+{
+	if (false)//this->arcList.GetCount() > 0)
+	{
+	}
+	else
+	{
+		UnsafeArrayOpt<Double> zArr = 0;
+		UnsafeArrayOpt<Double> mArr = 0;
+		if (this->ptList.GetCount() == this->zList.GetCount())
+		{
+			zArr = this->zList.Arr();
+		}
+		if (this->ptList.GetCount() == this->mList.GetCount())
+		{
+			mArr = this->mList.Arr();
+		}
+		NN<Math::Geometry::Polyline> pl;
+		NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid));
+		pl->AddFromPtOfst(this->partList.Arr(), this->partList.GetCount(), this->ptList.Arr(), this->ptList.GetCount(), zArr, mArr);
+		return pl;
+	}
+}

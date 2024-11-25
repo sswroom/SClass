@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 #include "DB/ColDef.h"
+#include "Map/ESRI/ESRICurve.h"
 #include "Map/ESRI/FileGDBReader.h"
 #include "Math/Math.h"
 #include "Math/WKTWriter.h"
@@ -1133,10 +1134,34 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				}
 			}
 			NN<Math::Geometry::Vector2D> vec;
-			NN<Math::Geometry::Polyline> pl;
-			NEW_CLASSNN(pl, Math::Geometry::Polyline(srid));
-			pl->AddFromPtOfst(ptOfstList, nParts, points, nPoints, zArr, mArr);
-			vec = pl;
+			Map::ESRI::ESRICurve curve(srid, ptOfstList, nParts, points, nPoints, zArr, mArr);
+			if (nCurves > 0)
+			{
+				UOSInt type;
+				i = 0;
+				while (i < nCurves)
+				{
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					type = this->rowData[ofst];
+					if (type == 1) //esriSegmentArc
+					{
+						curve.AddArc((UOSInt)iv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						ofst += 21;
+					}
+					else if (type == 5) //esriSegmentEllipticArc
+					{
+						printf("FGDB: EllipticArc is not supported\r\n");
+						break;
+					}
+					else
+					{
+						printf("FGDB: Unsupported curve type: %d\r\n", (UInt32)type);
+						break;
+					}
+					i++;
+				}
+			}
+			vec = curve.ToLine();
 			if (zArr.SetTo(nnArr))
 			{
 				MemFreeArr(nnArr);
@@ -1165,10 +1190,6 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			if (geometryType & 0x20000000)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
-				if (nCurves > 0)
-				{
-					printf("FileGDBReader: geometry has curves, may not fully support\r\n");
-				}
 			}
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
@@ -1245,11 +1266,34 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				}
 			}
 			NN<Math::Geometry::Vector2D> vec;
+			Map::ESRI::ESRICurve curve(srid, parts, nParts, points, nPoints, zArr, mArr);
+			if (nCurves > 0)
 			{
-				Math::Geometry::Polygon pg(srid);
-				pg.AddFromPtOfst(parts, nParts, points, nPoints, zArr, mArr);
-				vec = pg.CreateMultiPolygon();
+				UOSInt type;
+				i = 0;
+				while (i < nCurves)
+				{
+					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					type = this->rowData[ofst];
+					if (type == 1) //esriSegmentArc
+					{
+						curve.AddArc((UOSInt)iv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						ofst += 21;
+					}
+					else if (type == 5) //esriSegmentEllipticArc
+					{
+						printf("FGDB: EllipticArc is not supported\r\n");
+						break;
+					}
+					else
+					{
+						printf("FGDB: Unsupported curve type: %d\r\n", (UInt32)type);
+						break;
+					}
+					i++;
+				}
 			}
+			vec = curve.ToArea();
 			if (mArr.SetTo(nnArr))
 			{
 				MemFreeArr(nnArr);
