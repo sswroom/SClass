@@ -99,15 +99,30 @@ UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UT
 	}
 }
 
-Data::VariItem *DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::SQLType sqlType)
+Optional<Data::VariItem> DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::SQLType sqlType)
 {
 	NN<Data::VariItem> item;
+	Int32 i32;
+	Int64 i64;
+	Double dblVal;
 	if (val.leng > 1 && val.v[0] == '\'' && val.v[val.leng - 1] == '\'')
 	{
 		NN<Text::String> s = Text::String::New(val.v + 1, val.leng - 2);
 		item = Data::VariItem::NewStr(s);
 		s->Release();
-		return item.Ptr();
+		return item;
+	}
+	else if (val.ToInt32(i32))
+	{
+		return Data::VariItem::NewI32(i32);
+	}
+	else if (val.ToInt64(i64))
+	{
+		return Data::VariItem::NewI64(i64);
+	}
+	else if (val.ToDouble(dblVal))
+	{
+		return Data::VariItem::NewF64(dblVal);
 	}
 	return 0;
 }

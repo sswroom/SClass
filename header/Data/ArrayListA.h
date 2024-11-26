@@ -39,6 +39,7 @@ namespace Data
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
+		void InsertRange(UOSInt index, UOSInt cnt, UnsafeArray<const T> arr);
 		virtual UnsafeArray<T> GetArr(OutParam<UOSInt> arraySize) const;
 		virtual UnsafeArray<T> Arr() const;
 		T Pop();
@@ -287,10 +288,10 @@ namespace Data
 		MemCopyO(&this->arr[destIndex], &this->arr[srcIndex], count * sizeof(this->arr[0]));
 	}
 
-	template <class T> UOSInt ArrayListA<T>::GetRange(UnsafeArray<T> outArr, UOSInt Index, UOSInt cnt) const
+	template <class T> UOSInt ArrayListA<T>::GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const
 	{
-		UOSInt startIndex = Index;
-		UOSInt endIndex = Index + cnt;
+		UOSInt startIndex = index;
+		UOSInt endIndex = index + cnt;
 		if (endIndex > objCnt)
 		{
 			endIndex = objCnt;
@@ -305,10 +306,10 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UOSInt ArrayListA<T>::RemoveRange(UOSInt Index, UOSInt cnt)
+	template <class T> UOSInt ArrayListA<T>::RemoveRange(UOSInt index, UOSInt cnt)
 	{
-		UOSInt startIndex = Index;
-		UOSInt endIndex = Index + cnt;
+		UOSInt startIndex = index;
+		UOSInt endIndex = index + cnt;
 		if (endIndex > objCnt)
 		{
 			endIndex = objCnt;
@@ -331,6 +332,42 @@ namespace Data
 #endif
 		objCnt -= endIndex - startIndex;
 		return endIndex - startIndex;
+	}
+
+	template <class T> void ArrayListA<T>::InsertRange(UOSInt index, UOSInt cnt, UnsafeArray<const T> arr)
+	{
+		if (index > this->objCnt)
+		{
+			index = this->objCnt;
+		}
+		if (objCnt + cnt >= this->capacity)
+		{
+			while (objCnt + cnt >= this->capacity)
+			{
+				this->capacity = this->capacity << 1;
+			}
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity);
+			if (index > 0)
+			{
+				MemCopyNO(newArr.Ptr(), this->arr.Ptr(), index * sizeof(T));
+			}
+			MemCopyNO(&newArr[index], arr.Ptr(), cnt * sizeof(T));
+			if (objCnt > index)
+			{
+				MemCopyNO(&newArr[index + cnt], &this->arr[index], (objCnt - index) * sizeof(T));
+			}
+			MemFreeAArr(this->arr);
+			this->arr = newArr;
+		}
+		else
+		{
+			if (this->objCnt > index)
+			{
+				MemCopyO(&this->arr[index + cnt], &this->arr[index], (objCnt - index) * sizeof(T));
+			}
+			MemCopyNO(&this->arr[index], arr.Ptr(), cnt * sizeof(T));
+		}
+		this->objCnt += cnt;
 	}
 
 	template <class T> UnsafeArray<T> ArrayListA<T>::GetArr(OutParam<UOSInt> arraySize) const

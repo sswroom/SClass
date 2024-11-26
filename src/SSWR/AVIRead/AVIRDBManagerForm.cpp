@@ -156,6 +156,24 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(AnyType userObj
 	return false;
 }
 
+void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	me->UpdateFilter();
+}
+
+Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableFilterKeyDown(AnyType userObj, UInt32 osKey)
+{
+	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
+	UI::GUIControl::GUIKey key = OSKey2GUIKey(osKey);
+	if (key == UI::GUIControl::GK_ENTER)
+	{
+		me->UpdateFilter();
+		return true;
+	}
+	return false;
+}
+
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableResultDblClk(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRDBManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBManagerForm>();
@@ -693,6 +711,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 {
 	this->lvTable->ClearItems();
 	this->lvTableResult->ClearItems();
+	this->txtTableFilter->SetText(CSTR(""));
+	this->currCond.Delete();
 	NN<Text::String> nntableName;
 	NN<DB::ReadingDB> currDB;
 	if (!tableName.SetTo(nntableName) || !this->currDB.SetTo(currDB))
@@ -908,6 +928,55 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateSvrConnList()
 		}
 		NN<DB::ReadingDBTool>::ConvertFrom(currDB)->FreeConnectionInfo(conns);
 	}
+}
+
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateFilter()
+{
+	Optional<Text::String> tableName = this->lbTable->GetSelectedItemTextNew();
+	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
+
+	NN<Text::String> nntableName;
+	NN<DB::ReadingDB> currDB;
+	if (!tableName.SetTo(nntableName) || !this->currDB.SetTo(currDB))
+	{
+		OPTSTR_DEL(schemaName);
+		OPTSTR_DEL(tableName);
+		return;
+	}
+	DB::SQLType sqlType;
+	if (currDB->IsDBTool())
+	{
+		sqlType = NN<DB::ReadingDBTool>::ConvertFrom(currDB)->GetSQLType();
+	}
+	else
+	{
+		sqlType = DB::SQLType::MySQL;
+	}
+	NN<DB::DBReader> r;
+	Text::StringBuilderUTF8 sbFilter;
+	Optional<Data::QueryConditions> cond = 0;
+	this->txtTableFilter->GetText(sbFilter);
+	if (sbFilter.leng > 0)
+	{
+		cond = Data::QueryConditions::ParseStr(sbFilter.ToCString(), sqlType);
+		if (cond.IsNull())
+		{
+			OPTSTR_DEL(schemaName);
+			OPTSTR_DEL(tableName);
+			this->ui->ShowMsgOK(CSTR("Error in parsing Filter"), CSTR("DB Manager"), this);
+			return;
+		}
+	}
+	if (currDB->QueryTableData(OPTSTR_CSTR(schemaName), nntableName->ToCString(), 0, 0, MAX_ROW_CNT, CSTR_NULL, cond).SetTo(r))
+	{
+		this->currCond.Delete();
+		this->currCond = cond;
+		this->lvTableResult->ClearItems();
+		UpdateResult(r, this->lvTableResult);
+		currDB->CloseReader(r);
+	}
+	OPTSTR_DEL(schemaName);
+	OPTSTR_DEL(tableName);
 }
 
 void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<Text::String> fileName)
@@ -1376,6 +1445,19 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->lbTable->HandleSelectionChange(OnTableSelChg, this);
 	this->lbTable->HandleRightClicked(OnTableRClicked, this);
 	this->hspTable = ui->NewHSplitter(this->pnlTable, 3, false);
+	this->pnlTableFilter = ui->NewPanel(this->pnlTable);
+	this->pnlTableFilter->SetRect(0, 0, 100, 24, false);
+	this->pnlTableFilter->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->lblTableFilter = ui->NewLabel(this->pnlTableFilter, CSTR("Filter"));
+	this->lblTableFilter->SetRect(0, 0, 100, 23, false);
+	this->lblTableFilter->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->btnTableFilter = ui->NewButton(this->pnlTableFilter, CSTR("Filter"));
+	this->btnTableFilter->SetRect(0, 0, 75, 23, false);
+	this->btnTableFilter->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->btnTableFilter->HandleButtonClick(OnTableFilterClicked, this);
+	this->txtTableFilter = ui->NewTextBox(this->pnlTableFilter, CSTR(""));
+	this->txtTableFilter->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtTableFilter->HandleKeyDown(OnTableFilterKeyDown, this);
 	this->lvTable = ui->NewListView(this->pnlTable, UI::ListViewStyle::Table, 8);
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);

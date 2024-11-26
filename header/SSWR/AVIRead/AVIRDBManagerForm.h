@@ -46,6 +46,10 @@ namespace SSWR
 			NN<UI::GUIHSplitter> hspSchema;
 			NN<UI::GUIListBox> lbTable;
 			NN<UI::GUIHSplitter> hspTable;
+			NN<UI::GUIPanel> pnlTableFilter;
+			NN<UI::GUILabel> lblTableFilter;
+			NN<UI::GUIButton> btnTableFilter;
+			NN<UI::GUITextBox> txtTableFilter;
 			NN<UI::GUIListView> lvTable;
 			NN<UI::GUIVSplitter> vspTable;
 			NN<UI::GUIListView> lvTableResult;
@@ -114,6 +118,8 @@ namespace SSWR
 			static Bool __stdcall OnSchemaRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static void __stdcall OnTableSelChg(AnyType userObj);
 			static Bool __stdcall OnTableRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
+			static void __stdcall OnTableFilterClicked(AnyType userObj);
+			static Bool __stdcall OnTableFilterKeyDown(AnyType userObj, UInt32 osKey);
 			static void __stdcall OnTableResultDblClk(AnyType userObj, UOSInt index);
 			static void __stdcall OnMapSchemaSelChg(AnyType userObj);
 			static void __stdcall OnMapTableSelChg(AnyType userObj);
@@ -140,6 +146,7 @@ namespace SSWR
 			static void UpdateResult(NN<DB::DBReader> r, NN<UI::GUIListView> lv);
 			void UpdateVariableList();
 			void UpdateSvrConnList();
+			void UpdateFilter();
 			void RunSQLFile(NN<DB::ReadingDBTool> db, NN<Text::String> fileName);
 
 			Optional<Data::Class> CreateTableClass(Text::CString schemaName, Text::CStringNN tableName);

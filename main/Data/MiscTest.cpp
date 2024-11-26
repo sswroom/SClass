@@ -580,6 +580,10 @@ Int32 CurveToLine()
 	Math::Coord2DDbl pt2 = Math::Coord2DDbl(835744.47885, 818897.20205);
 	Math::Coord2DDbl pt3 = Math::Coord2DDbl(835789.34862, 818831.0624);
 
+//	Math::Coord2DDbl pt1 = Math::Coord2DDbl(821507.5140000004, 834004.4700000024);
+//	Math::Coord2DDbl pt2 = Math::Coord2DDbl(821507.5140000004, 833989.0700000024);
+//	Math::Coord2DDbl pt3 = Math::Coord2DDbl(821507.5140000004, 834004.4700000024);
+
 	Data::ArrayListA<Math::Coord2DDbl> pts;
 	Math::GeometryTool::ArcToLine(pt1, pt2, pt3, 2.5, pts);
 	/*
@@ -809,14 +813,14 @@ Int32 FGDBTest()
 {
 	Text::CStringNN fgdbPath = CSTR("");
 	/*
-	Building
+	-Building
 	BuiltStructurePolygon
 	Site
-	SubSite
-	HydroPolygon
+	-SubSite
+	-HydroPolygon
 	LandCoverVector2
-	BMSslope
-	VerticalCutPolygon
+	-BMSslope
+	-VerticalCutPolygon
 	TransportPolygon
 	UtilityPolygon
 	*/
@@ -832,14 +836,14 @@ Int32 FGDBTest()
 		NN<Map::ESRI::FileGDBTable> table;
 		NN<DB::DBReader> r;
 		NN<Text::String> s;
-		if (fgdb->GetTable(CSTR("Building")).SetTo(table))
+		if (fgdb->GetTable(CSTR("BuiltStructurePolygon")).SetTo(table))
 		{
 			printf("File Name: %s\r\n", table->GetFileName()->v.Ptr());
 			if (table->OpenReader(0, 0, 0, 0, 0).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
-					if (r->GetInt32(0) == 78)
+					if (r->GetInt32(0) == 124)
 					{
 						printf("Row Ofst: 0x%llx\r\n", r->GetRowFileOfst());
 						i = 0;

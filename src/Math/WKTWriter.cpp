@@ -194,7 +194,7 @@ void Math::WKTWriter::AppendCurvePolygon(NN<Text::StringBuilderUTF8> sb, NN<Math
 		if (found) sb->AppendUTF8Char(',');
 		geometry = it.Next();
 		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
-		if (t == Math::Geometry::Vector2D::VectorType::LineString)
+		if (t == Math::Geometry::Vector2D::VectorType::LineString || t == Math::Geometry::Vector2D::VectorType::LinearRing)
 		{
 			AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis, no3D);
 		}

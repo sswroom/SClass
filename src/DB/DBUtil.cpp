@@ -1835,17 +1835,44 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 		Math::WKTWriter writer;
 		Text::StringBuilderUTF8 sb;
 		writer.SetNo3D(true);
-		if (writer.ToText(sb, nnvec))
+		if (nnvec->HasCurve())
 		{
-			UOSInt ret = 21 + sb.GetLength();
-			sb.ClearStr();
-			sb.AppendU32(nnvec->GetSRID());
-			ret += sb.GetLength();
-			return ret;
+			if (nnvec->ToSimpleShape().SetTo(nnvec))
+			{
+				if (writer.ToText(sb, nnvec))
+				{
+					UOSInt ret = 21 + sb.GetLength();
+					sb.ClearStr();
+					sb.AppendU32(nnvec->GetSRID());
+					ret += sb.GetLength();
+					nnvec.Delete();
+					return ret;
+				}
+				else
+				{
+					nnvec.Delete();
+					return 0;
+				}
+			}
+			else
+			{
+				return 0;
+			}
 		}
 		else
 		{
-			return 0;
+			if (writer.ToText(sb, nnvec))
+			{
+				UOSInt ret = 21 + sb.GetLength();
+				sb.ClearStr();
+				sb.AppendU32(nnvec->GetSRID());
+				ret += sb.GetLength();
+				return ret;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	}
 	else if (sqlType == DB::SQLType::PostgreSQL)

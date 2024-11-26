@@ -9,6 +9,7 @@
 #include "DB/PostgreSQLConn.h"
 #include "DB/SQLiteFile.h"
 #include "DB/TDSConn.h"
+#include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
@@ -515,14 +516,26 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	}
 	else if (connStr.StartsWith(UTF8STRC("file:")))
 	{
+		Text::CStringNN fileName = connStr.Substring(5);
 		NN<Parser::ParserList> nnparsers;
 		if (parsers.SetTo(nnparsers))
 		{
-			IO::StmData::FileData fd(connStr.Substring(5), false);
 			NN<DB::ReadingDB> rdb;
-			if (Optional<DB::ReadingDB>::ConvertFrom(nnparsers->ParseFileType(fd, IO::ParserType::ReadingDB)).SetTo(rdb))
+			if (IO::Path::GetPathType(fileName) == IO::Path::PathType::Directory)
 			{
-				return rdb;
+				IO::DirectoryPackage dpkg(fileName);
+				if (Optional<DB::ReadingDB>::ConvertFrom(nnparsers->ParseObjectType(dpkg, IO::ParserType::ReadingDB)).SetTo(rdb))
+				{
+					return rdb;
+				}
+			}
+			else
+			{
+				IO::StmData::FileData fd(connStr.Substring(5), false);
+				if (Optional<DB::ReadingDB>::ConvertFrom(nnparsers->ParseFileType(fd, IO::ParserType::ReadingDB)).SetTo(rdb))
+				{
+					return rdb;
+				}
 			}
 		}
 	}

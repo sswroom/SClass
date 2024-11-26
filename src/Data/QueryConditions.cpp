@@ -1338,6 +1338,38 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32Equals(Text::CStringNN fie
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::Int32GE(Text::CStringNN fieldName, Int32 val)
+{
+	NN<Int32Condition> cond;
+	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::GreaterOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int32LE(Text::CStringNN fieldName, Int32 val)
+{
+	NN<Int32Condition> cond;
+	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::LessOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int32GT(Text::CStringNN fieldName, Int32 val)
+{
+	NN<Int32Condition> cond;
+	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::Greater));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int32LT(Text::CStringNN fieldName, Int32 val)
+{
+	NN<Int32Condition> cond;
+	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::Less));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::Int32In(Text::CStringNN fieldName, NN<Data::ArrayList<Int32>> vals)
 {
 	NN<Int32InCondition> cond;
@@ -1354,6 +1386,46 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64Equals(Text::CStringNN fie
 	return *this;
 }
 
+NN<Data::QueryConditions> Data::QueryConditions::Int64GE(Text::CStringNN fieldName, Int64 val)
+{
+	NN<Int64Condition> cond;
+	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::GreaterOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int64LE(Text::CStringNN fieldName, Int64 val)
+{
+	NN<Int64Condition> cond;
+	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::LessOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int64GT(Text::CStringNN fieldName, Int64 val)
+{
+	NN<Int64Condition> cond;
+	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::Greater));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::Int64LT(Text::CStringNN fieldName, Int64 val)
+{
+	NN<Int64Condition> cond;
+	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::Less));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::DoubleEquals(Text::CStringNN fieldName, Double val)
+{
+	NN<DoubleCondition> cond;
+	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::Equal));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
 NN<Data::QueryConditions> Data::QueryConditions::DoubleGE(Text::CStringNN fieldName, Double val)
 {
 	NN<DoubleCondition> cond;
@@ -1365,7 +1437,23 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleGE(Text::CStringNN fieldN
 NN<Data::QueryConditions> Data::QueryConditions::DoubleLE(Text::CStringNN fieldName, Double val)
 {
 	NN<DoubleCondition> cond;
-	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual));
+	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::LessOrEqual));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::DoubleGT(Text::CStringNN fieldName, Double val)
+{
+	NN<DoubleCondition> cond;
+	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::Greater));
+	this->conditionList.Add(cond);
+	return *this;
+}
+
+NN<Data::QueryConditions> Data::QueryConditions::DoubleLT(Text::CStringNN fieldName, Double val)
+{
+	NN<DoubleCondition> cond;
+	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::Less));
 	this->conditionList.Add(cond);
 	return *this;
 }
@@ -1513,7 +1601,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			while (true)
 			{
 				sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-				if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
+				if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
 				{
 					items.DeleteAll();
 					DEL_CLASS(cond);
@@ -1541,6 +1629,66 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 							vals.Add(item->GetItemValue().str->v);
 						}
 						cond->StrIn(sbField.ToCString(), vals);
+						items.DeleteAll();
+						break;
+					}
+					else if (itemType == Data::VariItem::ItemType::I32 || itemType == Data::VariItem::ItemType::I64 || itemType == Data::VariItem::ItemType::F64)
+					{
+						Data::ArrayList<Int32> i32List;
+						Data::ArrayList<Int64> i64List;
+						Data::ArrayList<Double> dblList;
+						Bool hasI64 = false;
+						Bool hasF64 = false;
+						Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
+						NN<Data::VariItem> item;
+						while (it.HasNext())
+						{
+							item = it.Next();
+							if (item->GetItemType() == Data::VariItem::ItemType::I32)
+							{
+								i32List.Add(item->GetAsI32());
+								i64List.Add(item->GetAsI32());
+								dblList.Add(item->GetAsF64());
+							}
+							else if (item->GetItemType() == Data::VariItem::ItemType::I64)
+							{
+								i32List.Add(item->GetAsI32());
+								i64List.Add(item->GetAsI64());
+								dblList.Add(item->GetAsF64());
+								hasI64 = true;
+							}
+							else if (item->GetItemType() == Data::VariItem::ItemType::F64)
+							{
+								i32List.Add(item->GetAsI32());
+								i64List.Add(item->GetAsI64());
+								dblList.Add(item->GetAsF64());
+								hasF64 = true;
+							}
+							else
+							{
+								items.DeleteAll();
+								DEL_CLASS(cond);
+								return 0;
+							}
+						}
+						if (hasF64)
+						{
+//							cond->DoubleIn(sbField.ToCString(), dblList);
+							items.DeleteAll();
+							DEL_CLASS(cond);
+							return 0;
+						}
+						else if (hasI64)
+						{
+//							cond->Int64In(sbField.ToCString(), i64List);
+							items.DeleteAll();
+							DEL_CLASS(cond);
+							return 0;
+						}
+						else
+						{
+							cond->Int32In(sbField.ToCString(), i32List);
+						}
 						items.DeleteAll();
 						break;
 					}
@@ -1577,7 +1725,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 				while (true)
 				{
 					sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-					if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
+					if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
 					{
 						items.DeleteAll();
 						DEL_CLASS(cond);
@@ -1635,7 +1783,7 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		else if (sb.Equals(UTF8STRC("=")))
 		{
 			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
-			if (!item.Set(DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType)))
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
 			{
 				DEL_CLASS(cond);
 				return 0;
@@ -1644,6 +1792,82 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 			if (itemType == Data::VariItem::ItemType::Str)
 			{
 				cond->StrEquals(sbField.ToCString(), item->GetItemValue().str->ToCString());
+			}
+			else if (itemType == Data::VariItem::ItemType::I32)
+			{
+				cond->Int32Equals(sbField.ToCString(), item->GetItemValue().i32);
+			}
+			else if (itemType == Data::VariItem::ItemType::I64)
+			{
+				cond->Int64Equals(sbField.ToCString(), item->GetItemValue().i64);
+			}
+			else if (itemType == Data::VariItem::ItemType::F64)
+			{
+				cond->DoubleEquals(sbField.ToCString(), item->GetItemValue().f64);
+			}
+			else
+			{
+				item.Delete();
+				DEL_CLASS(cond);
+				return 0;
+			}
+			item.Delete();
+		}
+		else if (sb.Equals(UTF8STRC(">")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			{
+				DEL_CLASS(cond);
+				return 0;
+			}
+			Data::VariItem::ItemType itemType = item->GetItemType();
+			if (itemType == Data::VariItem::ItemType::I32)
+			{
+				cond->Int32GT(sbField.ToCString(), item->GetItemValue().i32);
+			}
+			else if (itemType == Data::VariItem::ItemType::I64)
+			{
+				cond->Int64GT(sbField.ToCString(), item->GetItemValue().i64);
+			}
+			else if (itemType == Data::VariItem::ItemType::F64)
+			{
+				cond->DoubleGT(sbField.ToCString(), item->GetItemValue().f64);
+			}
+			else
+			{
+				item.Delete();
+				DEL_CLASS(cond);
+				return 0;
+			}
+			item.Delete();
+		}
+		else if (sb.Equals(UTF8STRC("<")))
+		{
+			sql = DB::SQL::SQLUtil::ParseNextWord(sql, sb, sqlType);
+			if (!DB::SQL::SQLUtil::ParseValue(sb.ToCString(), sqlType).SetTo(item))
+			{
+				DEL_CLASS(cond);
+				return 0;
+			}
+			Data::VariItem::ItemType itemType = item->GetItemType();
+			if (itemType == Data::VariItem::ItemType::I32)
+			{
+				cond->Int32LT(sbField.ToCString(), item->GetItemValue().i32);
+			}
+			else if (itemType == Data::VariItem::ItemType::I64)
+			{
+				cond->Int64LT(sbField.ToCString(), item->GetItemValue().i64);
+			}
+			else if (itemType == Data::VariItem::ItemType::F64)
+			{
+				cond->DoubleLT(sbField.ToCString(), item->GetItemValue().f64);
+			}
+			else
+			{
+				item.Delete();
+				DEL_CLASS(cond);
+				return 0;
 			}
 			item.Delete();
 		}
@@ -1656,6 +1880,9 @@ Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN 
 		if (sb.GetLength() == 0)
 		{
 			return cond;
+		}
+		else if (sb.EqualsICase(CSTR("AND")))
+		{
 		}
 		else
 		{

@@ -1072,7 +1072,126 @@ Double GeometryTool_SqrtFix(Double sqrtVal, Double addVal, Double targetVal)
 		return addVal - sqrtVal;
 }
 
-Math::Coord2DDbl GeometryTool_ArcNearest(Double x, Double y, Double h, Double k, Double r, UOSInt cnt)
+void Math::GeometryTool::ArcToLine(Math::Coord2DDbl center, Double radius, UOSInt nPoint, Double startAngleRad, Double endAngleRad, Bool clockwise, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+{
+	Double angleDiff;
+    if (clockwise) {
+		angleDiff = endAngleRad - startAngleRad;
+		if (angleDiff < 0)
+			angleDiff += 2 * Math::PI;
+    } else {
+		angleDiff = startAngleRad - endAngleRad;
+		if (angleDiff < 0)
+			angleDiff += 2 * Math::PI;
+    }
+	angleDiff /= UOSInt2Double(nPoint) - 1;
+	if (!clockwise)
+	{
+		angleDiff = -angleDiff;
+	}
+	Double currAngle = startAngleRad;
+	UOSInt i = 0;
+	while (i < nPoint)
+	{
+		ptOut->Add(Math::Coord2DDbl(radius * Math_Cos(currAngle), radius * Math_Sin(currAngle)) + center);
+		currAngle += angleDiff;
+		i++;
+	}
+}
+
+UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+{
+	Double eps = 1e-5;
+    Math::Coord2DDbl v1 = pt2 - pt3;
+    Double dist1 = Math_Sqrt(v1.x * v1.x + v1.y * v1.y);
+    v1 = v1 / dist1;
+    Math::Coord2DDbl v2 = pt2 - pt1;
+    Double dist2 = Math_Sqrt(v2.x * v2.x + v2.y * v2.y);
+    v2 = v2 / dist2;
+	Double det = v1.x * v2.y - v1.y * v2.x;
+	if (Math_Abs(det) < eps)
+	{
+		if (pt1 == pt3 && pt2 != pt1)
+		{
+			Math::Coord2DDbl c = (pt1 + pt2) * 0.5;
+			Double r = c.CalcLengTo(pt1);
+			UOSInt nPoints = (UOSInt)Double2Int32((2 * Math::PI * r) / minDist);
+			if (nPoints < 6)
+			{
+				nPoints = 6;
+			}
+			Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
+			Double a = Math_ArcTan2(pt1.x - c.x, pt1.y - c.y);
+			Double angle;
+			UOSInt i = 0;
+			while (i < nPoints)
+			{
+				angle = UOSInt2Double(i) * ratio + a;
+				ptOut->Add(c + Math::Coord2DDbl(r * Math_Cos(angle), r * Math_Sin(angle)));
+				i++;
+			}
+			ptOut->Add(pt1);
+			return nPoints + 1;
+		}
+		else
+		{
+			ptOut->Add(pt1);
+			ptOut->Add(pt2);
+			ptOut->Add(pt3);
+			return 3;
+		}
+	}
+	Math::Coord2DDbl mid1 = (pt2 + pt3) * 0.5;
+    Math::Coord2DDbl mid2 = (pt2 + pt1) * 0.5;
+
+    Double b1 = v1.x * mid1.x + v1.y * mid1.y;
+    Double b2 = v2.x * mid2.x + v2.y * mid2.y;
+
+    Double centerX =  v2.y / det * b1 - v1.y / det * b2;
+    Double centerY = -v2.x / det * b1 + v1.x / det * b2;
+
+    Math::Coord2DDbl center = Math::Coord2DDbl(centerX, centerY);
+    Double radius = Math_Sqrt((pt2.x-center.x)*(pt2.x-center.x) + (pt2.y-center.y)*(pt2.y-center.y));
+    Double startAngle = Math_ArcTan2(pt1.y - center.y, pt1.x - center.x);
+    Double movingAngle = Math_ArcTan2(pt2.y - center.y, pt2.x - center.x);
+    Double endAngle = Math_ArcTan2(pt3.y - center.y, pt3.x - center.x);
+	Double angleDiff;
+
+    Bool isClockwise;
+    if ((endAngle > startAngle && startAngle < movingAngle && movingAngle < endAngle) ||
+        (endAngle < startAngle && !(endAngle < movingAngle && movingAngle < startAngle))) {
+        isClockwise = true;
+		angleDiff = endAngle - startAngle;
+		if (angleDiff < 0)
+			angleDiff += 2 * Math::PI;
+    } else {
+        isClockwise = false;
+		angleDiff = startAngle - endAngle;
+		if (angleDiff < 0)
+			angleDiff += 2 * Math::PI;
+    }
+	Double leng = radius * angleDiff;
+	UOSInt pointCnt = (UOSInt)(leng / minDist);
+	if (pointCnt < 6)
+		pointCnt = 6;
+	angleDiff /= UOSInt2Double(pointCnt);
+	if (!isClockwise)
+	{
+		angleDiff = -angleDiff;
+	}
+	Double currAngle = startAngle;
+	UOSInt i = 0;
+	while (i < pointCnt)
+	{
+		ptOut->Add(Math::Coord2DDbl(radius * Math_Cos(currAngle), radius * Math_Sin(currAngle)) + center);
+		currAngle += angleDiff;
+		i++;
+	}
+	ptOut->Add(pt3);
+	return pointCnt + 1;
+}
+
+/*Math::Coord2DDbl GeometryTool_ArcNearest(Double x, Double y, Double h, Double k, Double r, UOSInt cnt)
 {
 	Double r2 = r * r;
 	Double thisX = x;
@@ -1103,40 +1222,88 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 	//(x1^2 - x3^2 + y1^2 - y3^2) * (y1 - y2) - (x1^2 - x2^2 + y1^2 - y2^2) * (y1 - y3) / (2 * (x1 - x3) * (y1 - y2) - 2 * (x1 - x2) * (y1 - y3)) = h
 	Math::Coord2DDbl d13 = pt1 - pt3;
 	Math::Coord2DDbl d12 = pt1 - pt2;
-	Double c1 = (pt1.x * pt1.x - pt3.x * pt3.x + pt1.y * pt1.y - pt3.y * pt3.y) * d12.y;
-	Double c2 = (pt1.x * pt1.x - pt2.x * pt2.x + pt1.y * pt1.y - pt2.y * pt2.y);
-	Double c2b = c2 * d13.y;
-	Double c3 = 2 * ((d13.x * d12.y) - (d12.x * d13.y));
-	Double h = c1 - c2b / c3;
-	Double k = (c2 - 2 * h * d12.x) / d12.y / 2;
-	Double r = Math_Sqrt((pt1.x - h) * (pt1.x - h) + (pt1.y - k) * (pt1.y - k));
-	Math::Coord2DDbl d23 = pt2 - pt3;
-
-	UOSInt initCnt = ptOut->GetCount();
-	ptOut->Add(pt1);
-	Double leng = Math_Sqrt(d12.x * d12.x + d12.y * d12.y);
-	UOSInt ptCnt = (UOSInt)Math_Fix(leng / minDist);
-	UOSInt i = 1;
-	Double di;
-	Double dcnt = UOSInt2Double(ptCnt);
-	while (i < ptCnt)
+	if (d13.IsZero() && !d12.IsZero())
 	{
-		di = UOSInt2Double(i);
-		ptOut->Add(GeometryTool_ArcNearest(pt1.x + (pt2.x - pt1.x) * di / dcnt, pt1.y + (pt2.y - pt1.y) * di / dcnt, h, k, r, 5));
-		i++;
+		Math::Coord2DDbl c = (pt1 + pt2) * 0.5;
+		Double r = c.CalcLengTo(pt1);
+		UOSInt nPoints = (UOSInt)Double2Int32((2 * Math::PI * r) / minDist);
+		if (nPoints < 6)
+		{
+			nPoints = 6;
+		}
+		Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
+		Double a = Math_ArcTan2(pt1.x - c.x, pt1.y - c.y);
+		Double angle;
+		UOSInt i = 0;
+		while (i < nPoints)
+		{
+			angle = UOSInt2Double(i) * ratio + a;
+			ptOut->Add(c + Math::Coord2DDbl(r * Math_Cos(angle), r * Math_Sin(angle)));
+			i++;
+		}
+		ptOut->Add(pt1);
+		return nPoints + 1;
 	}
-	ptOut->Add(pt2);
-	leng = Math_Sqrt(d23.x * d23.x + d23.y * d23.y);
-	ptCnt = (UOSInt)Math_Fix(leng / minDist);
-	dcnt = UOSInt2Double(ptCnt);
-	while (i < ptCnt)
+	else
 	{
-		di = UOSInt2Double(i);
-		ptOut->Add(GeometryTool_ArcNearest(pt2.x + (pt3.x - pt2.x) * di / dcnt, pt2.y + (pt3.y - pt2.y) * di / dcnt, h, k, r, 5));
+		Double c1 = (pt1.x * pt1.x - pt3.x * pt3.x + pt1.y * pt1.y - pt3.y * pt3.y) * d12.y;
+		Double c2 = (pt1.x * pt1.x - pt2.x * pt2.x + pt1.y * pt1.y - pt2.y * pt2.y);
+		Double c2b = c2 * d13.y;
+		Double c3 = 2 * ((d13.x * d12.y) - (d12.x * d13.y));
+		Double h = c1 - c2b / c3;
+		Double k = (c2 - 2 * h * d12.x) / d12.y / 2;
+		Double r = Math_Sqrt((pt1.x - h) * (pt1.x - h) + (pt1.y - k) * (pt1.y - k));
+		Math::Coord2DDbl d23 = pt2 - pt3;
+
+		UOSInt initCnt = ptOut->GetCount();
+		ptOut->Add(pt1);
+		Double leng = Math_Sqrt(d12.x * d12.x + d12.y * d12.y);
+		UOSInt ptCnt = (UOSInt)Math_Fix(leng / minDist);
+		UOSInt i = 1;
+		Double di;
+		Double dcnt = UOSInt2Double(ptCnt);
+		while (i < ptCnt)
+		{
+			di = UOSInt2Double(i);
+			ptOut->Add(GeometryTool_ArcNearest(pt1.x + (pt2.x - pt1.x) * di / dcnt, pt1.y + (pt2.y - pt1.y) * di / dcnt, h, k, r, 5));
+			i++;
+		}
+		ptOut->Add(pt2);
+		leng = Math_Sqrt(d23.x * d23.x + d23.y * d23.y);
+		ptCnt = (UOSInt)Math_Fix(leng / minDist);
+		dcnt = UOSInt2Double(ptCnt);
+		while (i < ptCnt)
+		{
+			di = UOSInt2Double(i);
+			ptOut->Add(GeometryTool_ArcNearest(pt2.x + (pt3.x - pt2.x) * di / dcnt, pt2.y + (pt3.y - pt2.y) * di / dcnt, h, k, r, 5));
+			i++;
+		}
+		ptOut->Add(pt3);
+		return ptOut->GetCount() - initCnt;
+	}
+}*/
+
+Math::Coord2DDbl GeometryTool_BezierCurvePoint(Math::Coord2DDbl pt0, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double t)
+{
+	Double invT = 1 - t;
+	Double invT2 = invT * invT;
+	Double t2 = t * t;
+    return pt0 * (invT2 * invT) + pt1 * (3 * t * invT2) + pt2 * (3 * invT * t2)  + pt3 * (t2 * t);
+}
+
+UOSInt Math::GeometryTool::BezierCurveToLine(Math::Coord2DDbl pt0, Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, UOSInt nPoints, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+{
+	Double tDiff = 1 / (Double)(nPoints - 1);
+	ptOut->Add(pt0);
+	Double t = tDiff;
+	UOSInt i = 2;
+	while (i < nPoints)
+	{
+		ptOut->Add(GeometryTool_BezierCurvePoint(pt0, pt1, pt2, pt3, t));
 		i++;
 	}
 	ptOut->Add(pt3);
-	return ptOut->GetCount() - initCnt;
+	return nPoints;
 }
 
 Double Math::GeometryTool::CalcDir(Math::Coord2DDbl startPt, Math::Coord2DDbl endPt, Math::Unit::Angle::AngleUnit aunit)

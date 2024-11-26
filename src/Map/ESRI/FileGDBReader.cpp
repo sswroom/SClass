@@ -1270,20 +1270,26 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			if (nCurves > 0)
 			{
 				UOSInt type;
+				UInt64 startIndex;
 				i = 0;
 				while (i < nCurves)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, startIndex);
 					type = this->rowData[ofst];
 					if (type == 1) //esriSegmentArc
 					{
-						curve.AddArc((UOSInt)iv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						curve.AddArc((UOSInt)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
 						ofst += 21;
+					}
+					else if (type == 4) //esriSegmentBezier3Curve
+					{
+						curve.AddBezier3Curve((UOSInt)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
+						ofst += 33;
 					}
 					else if (type == 5) //esriSegmentEllipticArc
 					{
-						printf("FGDB: EllipticArc is not supported\r\n");
-						break;
+						curve.AddEllipticArc((UOSInt)startIndex, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
+						ofst += 45;
 					}
 					else
 					{

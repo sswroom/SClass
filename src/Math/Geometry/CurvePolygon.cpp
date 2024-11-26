@@ -61,6 +61,10 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 		{
 			ptList.Clear();
 			NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
+			if (ptList.GetItem(ptList.GetCount() - 1) != ptList.GetItem(0))
+			{
+				ptList.Add(ptList.GetItem(0));
+			}
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
 			pg->AddGeometry(lr);
 		}

@@ -326,7 +326,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 						else
 							DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
 						UOSInt k = sql.ToCString().IndexOf(UTF8STRC(" values ("));
-						if (k == INVALID_INDEX)
+						if (true) //k == INVALID_INDEX)
 						{
 							if (destDBTool->ExecuteNonQuery(sql.ToCString()) != 1)
 							{
@@ -368,6 +368,11 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 									sb.ClearStr();
 									destDBTool->GetLastErrorMsg(sb);
 									me->lvData->SetSubItem(i, 2, sb.ToCString());
+									{
+										IO::FileStream fs(CSTR("CopyTableFail.sql"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+										sbInsert.Append(CSTR("\r\n"));
+										fs.Write(sbInsert.ToByteArray());
+									}
 									succ = false;
 									break;
 								}

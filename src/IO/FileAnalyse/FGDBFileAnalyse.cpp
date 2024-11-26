@@ -778,8 +778,9 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 									while (tmpI < nCurves)
 									{
 										UInt32 bits;
-										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, iv);
-										frame->AddInt(ofst, ofst2 - ofst, CSTR("startPointIndex"), (OSInt)iv);
+										UInt64 uv;
+										ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, uv);
+										frame->AddUInt(ofst, ofst2 - ofst, CSTR("startPointIndex"), uv);
 										ofst = ofst2;
 										frame->AddInt(ofst, 1, CSTR("segmentType"), tagData[ofst]);
 										if (tagData[ofst] == 1) //esriSegmentArc
