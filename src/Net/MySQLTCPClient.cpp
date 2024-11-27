@@ -2491,7 +2491,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaN
 	sb.AppendP(sbuff, sptr);
 	if (condition.SetTo(nncondition))
 	{
-		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
+		Data::ArrayListNN<Data::QueryConditions::BooleanObject> cliCond;
 		sb.AppendC(UTF8STRC(" where "));
 		nncondition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
 	}

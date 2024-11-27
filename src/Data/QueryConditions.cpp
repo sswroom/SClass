@@ -5,6 +5,402 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
+Data::QueryConditions::BooleanAnd::BooleanAnd()
+{
+}
+
+Data::QueryConditions::BooleanAnd::~BooleanAnd()
+{
+	this->andList.DeleteAll();
+}
+
+Bool Data::QueryConditions::BooleanAnd::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+{
+	UOSInt i = 0;
+	UOSInt j = this->andList.GetCount();
+	if (j == 0)
+		return false;
+	while (i < j)
+	{
+		if (!this->andList.GetItemNoCheck(i)->CanWhereClause(maxDBItem))
+			return false;
+		i++;
+	}
+	NN<BooleanObject> cond;
+	i = 0;
+	while (i < j)
+	{
+		if (i > 0)
+			sb->Append(CSTR(" and "));
+		cond = this->andList.GetItemNoCheck(i);
+		if (cond->GetType() == ObjectType::BooleanOr && NN<BooleanOr>::ConvertFrom(cond)->GetCount() > 1)
+		{
+			sb->AppendUTF8Char('(');
+			if (!cond->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+				return false;
+			sb->AppendUTF8Char(')');
+		}
+		else
+		{
+			if (!cond->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+				return false;
+		}
+		i++;
+	}
+	return true;
+}
+
+Bool Data::QueryConditions::BooleanAnd::ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const
+{
+	UOSInt i = 0;
+	UOSInt j = this->andList.GetCount();
+	if (j == 0)
+		return false;
+	NN<BooleanObject> cond;
+	Text::StringBuilderUTF8 sbTmp;
+	Bool found = false;
+	i = 0;
+	while (i < j)
+	{
+		cond = this->andList.GetItemNoCheck(i);
+		sbTmp.ClearStr();
+		if (!cond->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+		{
+			clientConditions->Add(cond);
+		}
+		else
+		{
+			if (found)
+				sb->Append(CSTR(" and "));
+			else
+				found = true;
+			if (cond->GetType() == ObjectType::BooleanOr && NN<BooleanOr>::ConvertFrom(cond)->GetCount() > 1)
+			{
+				sb->AppendUTF8Char('(');
+				sb->Append(sbTmp);
+				sb->AppendUTF8Char(')');
+			}
+			else
+			{
+				sb->Append(sbTmp);
+			}
+		}
+		i++;
+	}
+	return true;
+}
+
+Bool Data::QueryConditions::BooleanAnd::CanWhereClause(UOSInt maxDBItem) const
+{
+	UOSInt i = 0;
+	UOSInt j = this->andList.GetCount();
+	if (j == 0)
+		return false;
+	while (i < j)
+	{
+		if (!this->andList.GetItemNoCheck(i)->CanWhereClause(maxDBItem))
+			return false;
+		i++;
+	}
+	return true;
+}
+
+void Data::QueryConditions::BooleanAnd::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
+{
+	UOSInt i = 0;
+	UOSInt j = this->andList.GetCount();
+	while (i < j)
+	{
+		this->andList.GetItemNoCheck(i)->GetFieldList(fieldList);
+		i++;
+	}
+}
+
+Bool Data::QueryConditions::BooleanAnd::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
+{
+	UOSInt i = 0;
+	UOSInt j = this->andList.GetCount();
+	if (j == 0)
+		return false;
+	Bool v;
+	while (i < j)
+	{
+		if (!this->andList.GetItemNoCheck(i)->Eval(obj, v))
+			return false;
+		if (!v)
+		{
+			outVal.Set(false);
+			return true;
+		}
+		i++;
+	}
+	outVal.Set(true);
+	return true;
+}
+
+Bool Data::QueryConditions::BooleanAnd::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
+{
+	UOSInt i = 0;
+	UOSInt j = this->andList.GetCount();
+	if (j == 0)
+		return false;
+	Bool v;
+	while (i < j)
+	{
+		if (!this->andList.GetItemNoCheck(i)->Eval(getter, v))
+			return false;
+		if (!v)
+		{
+			outVal.Set(false);
+			return true;
+		}
+		i++;
+	}
+	outVal.Set(true);
+	return true;
+}
+
+UOSInt Data::QueryConditions::BooleanAnd::GetCount() const
+{
+	return this->andList.GetCount();
+}
+
+void Data::QueryConditions::BooleanAnd::AddAnd(NN<BooleanObject> obj)
+{
+	this->andList.Add(obj);
+}
+
+Data::QueryConditions::BooleanOr::BooleanOr()
+{
+}
+
+Data::QueryConditions::BooleanOr::~BooleanOr()
+{
+	this->orList.DeleteAll();
+}
+
+Bool Data::QueryConditions::BooleanOr::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
+{
+	NN<BooleanObject> obj;
+	UOSInt i = 0;
+	UOSInt j = this->orList.GetCount();
+	if (j == 0)
+		return false;
+	while (i < j)
+	{
+		obj = this->orList.GetItemNoCheck(i);
+		if (i > 0)
+		{
+			sb->Append(CSTR(" or "));
+		}
+		if (obj->GetType() == ObjectType::BooleanAnd && NN<BooleanAnd>::ConvertFrom(obj)->GetCount() > 1)
+		{
+			sb->AppendUTF8Char('(');
+			if (!obj->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+				return false;
+			sb->AppendUTF8Char(')');
+		}
+		else
+		{
+			if (!obj->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
+				return false;
+		}
+		i++;
+	}
+	return true;
+}
+
+Bool Data::QueryConditions::BooleanOr::CanWhereClause(UOSInt maxDBItem) const
+{
+	UOSInt i = this->orList.GetCount();
+	if (i == 0)
+		return false;
+	while (i-- > 0)
+	{
+		if (!this->orList.GetItemNoCheck(i)->CanWhereClause(maxDBItem))
+			return false;
+	}
+	return true;
+}
+
+void Data::QueryConditions::BooleanOr::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
+{
+	UOSInt i = this->orList.GetCount();
+	while (i-- > 0)
+	{
+		this->orList.GetItemNoCheck(i)->GetFieldList(fieldList);
+	}
+}
+
+Bool Data::QueryConditions::BooleanOr::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
+{
+	Bool v;
+	UOSInt i = 0;
+	UOSInt j = this->orList.GetCount();
+	if (j == 0)
+		return false;
+	while (i < j)
+	{
+		if (!this->orList.GetItemNoCheck(i)->Eval(obj, v))
+			return false;
+		if (v)
+		{
+			outVal.Set(true);
+			return true;
+		}
+		i++;
+	}
+	outVal.Set(false);
+	return true;
+}
+
+Bool Data::QueryConditions::BooleanOr::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
+{
+	Bool v;
+	UOSInt i = 0;
+	UOSInt j = this->orList.GetCount();
+	if (j == 0)
+		return false;
+	while (i < j)
+	{
+		if (!this->orList.GetItemNoCheck(i)->Eval(getter, v))
+			return false;
+		if (v)
+		{
+			outVal.Set(true);
+			return true;
+		}
+		i++;
+	}
+	outVal.Set(false);
+	return true;
+}
+
+UOSInt Data::QueryConditions::BooleanOr::GetCount() const
+{
+	return this->orList.GetCount();
+}
+
+void Data::QueryConditions::BooleanOr::AddOr(NN<BooleanObject> obj)
+{
+	this->orList.Add(obj);
+}
+
+Data::QueryConditions::NumberField::NumberField(Text::CStringNN fieldName)
+{
+	this->fieldName = Text::String::New(fieldName);
+}
+
+Data::QueryConditions::NumberField::NumberField(NN<Text::String> fieldName)
+{
+	this->fieldName = fieldName->Clone();
+}
+
+Data::QueryConditions::NumberField::~NumberField()
+{
+	this->fieldName->Release();
+}
+
+Data::QueryConditions::NumberType Data::QueryConditions::NumberField::GetNumberType(NN<Data::VariObject> obj) const
+{
+	NN<Data::VariItem> item;
+	if (obj->GetItem(this->fieldName->v).SetTo(item))
+	{
+		return ToNumberType(item);
+	}
+	else
+	{
+		return NumberType::Null;
+	}
+}
+
+Data::QueryConditions::NumberType Data::QueryConditions::NumberField::GetNumberType(NN<Data::ObjectGetter> getter) const
+{
+	NN<Data::VariItem> item = getter->GetNewItem(this->fieldName->ToCString());
+	NumberType t = ToNumberType(item);
+	item.Delete();
+	return t;
+}
+
+Bool Data::QueryConditions::NumberField::EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const
+{
+	NN<Data::VariItem> item;
+	if (obj->GetItem(this->fieldName->v).SetTo(item))
+	{
+		outVal.Set(item->GetAsI64());
+		return true;
+	}
+	else
+	{
+		outVal.Set(0);
+		return false;
+	}
+}
+
+Bool Data::QueryConditions::NumberField::EvalInt(NN<Data::ObjectGetter> getter, OutParam<Int64> outVal) const
+{
+	NN<Data::VariItem> item = getter->GetNewItem(this->fieldName->ToCString());
+	outVal.Set(item->GetAsI64());
+	item.Delete();
+	return true;
+}
+
+Bool Data::QueryConditions::NumberField::EvalDouble(NN<Data::VariObject> obj, OutParam<Double> outVal) const
+{
+	NN<Data::VariItem> item;
+	if (obj->GetItem(this->fieldName->v).SetTo(item))
+	{
+		outVal.Set(item->GetAsF64());
+		return true;
+	}
+	else
+	{
+		outVal.Set(0);
+		return false;
+	}
+}
+
+Bool Data::QueryConditions::NumberField::EvalDouble(NN<Data::ObjectGetter> getter, OutParam<Double> outVal) const
+{
+	NN<Data::VariItem> item = getter->GetNewItem(this->fieldName->ToCString());
+	outVal.Set(item->GetAsF64());
+	item.Delete();
+	return true;
+}
+
+Data::QueryConditions::NumberType Data::QueryConditions::NumberField::ToNumberType(NN<Data::VariItem> item)
+{
+	switch (item->GetItemType())
+	{
+	case Data::VariItem::ItemType::F32:
+	case Data::VariItem::ItemType::F64:
+		return NumberType::F64;
+	case Data::VariItem::ItemType::I8:
+	case Data::VariItem::ItemType::U8:
+	case Data::VariItem::ItemType::I16:
+	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::I32:
+	case Data::VariItem::ItemType::U32:
+	case Data::VariItem::ItemType::BOOL:
+	case Data::VariItem::ItemType::NI32:
+		return NumberType::I32;
+	case Data::VariItem::ItemType::I64:
+	case Data::VariItem::ItemType::U64:
+		return NumberType::I64;
+	case Data::VariItem::ItemType::CStr:
+	case Data::VariItem::ItemType::Date:
+	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::ByteArr:
+	case Data::VariItem::ItemType::Vector:
+	case Data::VariItem::ItemType::UUID:
+	case Data::VariItem::ItemType::Unknown:
+	case Data::VariItem::ItemType::Null:
+	case Data::VariItem::ItemType::Timestamp:
+	default:
+		return NumberType::Null;
+	}
+}
+
 Data::QueryConditions::FieldCondition::FieldCondition(Text::CStringNN fieldName)
 {
 	this->fieldName = Text::String::New(fieldName);
@@ -20,15 +416,16 @@ Data::QueryConditions::FieldCondition::~FieldCondition()
 	this->fieldName->Release();
 }
 
-Bool Data::QueryConditions::FieldCondition::IsValid(NN<Data::VariObject> obj)
+Bool Data::QueryConditions::FieldCondition::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
 	NN<Data::VariItem> item;
-	if (!item.Set(obj->GetItem(this->fieldName->v)))
+	if (!obj->GetItem(this->fieldName->v).SetTo(item))
 		return false;
-	return this->TestValid(item);
+	outVal.Set(this->TestValid(item));
+	return true;
 }
 
-Bool Data::QueryConditions::FieldCondition::IsValid(NN<Data::ObjectGetter> getter)
+Bool Data::QueryConditions::FieldCondition::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
 {
 	NN<Data::VariItem> item = getter->GetNewItem(this->fieldName->ToCString());
 	Bool ret = this->TestValid(item);
@@ -36,7 +433,7 @@ Bool Data::QueryConditions::FieldCondition::IsValid(NN<Data::ObjectGetter> gette
 	return ret;
 }
 
-void Data::QueryConditions::FieldCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList)
+void Data::QueryConditions::FieldCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
 	fieldList->Add(this->fieldName);
 }
@@ -51,12 +448,12 @@ Data::QueryConditions::TimeBetweenCondition::~TimeBetweenCondition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::TimeBetweenCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::TimeBetweenCondition::GetType() const
 {
-	return ConditionType::TimeBetween;
+	return ObjectType::TimeBetween;
 }
 
-Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -71,7 +468,12 @@ Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(NN<Text::StringB
 	return true;
 }
 
-Bool Data::QueryConditions::TimeBetweenCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::TimeBetweenCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::TimeBetweenCondition::TestValid(NN<Data::VariItem> item) const
 {
 	switch (item->GetItemType())
 	{
@@ -119,12 +521,12 @@ Data::QueryConditions::Int32Condition::~Int32Condition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::Int32Condition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::Int32Condition::GetType() const
 {
-	return ConditionType::INT32;
+	return ObjectType::INT32;
 }
 
-Bool Data::QueryConditions::Int32Condition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int32Condition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -135,7 +537,12 @@ Bool Data::QueryConditions::Int32Condition::ToWhereClause(NN<Text::StringBuilder
 	return true;
 }
 
-Bool Data::QueryConditions::Int32Condition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::Int32Condition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::Int32Condition::TestValid(NN<Data::VariItem> item) const
 {
 	Int64 iVal;
 	switch (item->GetItemType())
@@ -228,12 +635,12 @@ Data::QueryConditions::Int32InCondition::~Int32InCondition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::Int32InCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::Int32InCondition::GetType() const
 {
-	return ConditionType::Int32In;
+	return ObjectType::Int32In;
 }
 
-Bool Data::QueryConditions::Int32InCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int32InCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	if (this->vals.GetCount() > maxDBItem)
 	{
@@ -252,7 +659,12 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(NN<Text::StringBuild
 	}
 }
 
-Bool Data::QueryConditions::Int32InCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::Int32InCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return this->vals.GetCount() <= maxDBItem;
+}
+
+Bool Data::QueryConditions::Int32InCondition::TestValid(NN<Data::VariItem> item) const
 {
 	Int64 iVal;
 	switch (item->GetItemType())
@@ -322,12 +734,12 @@ Data::QueryConditions::Int64Condition::~Int64Condition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::Int64Condition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::Int64Condition::GetType() const
 {
-	return ConditionType::INT64;
+	return ObjectType::INT64;
 }
 
-Bool Data::QueryConditions::Int64Condition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int64Condition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -338,7 +750,12 @@ Bool Data::QueryConditions::Int64Condition::ToWhereClause(NN<Text::StringBuilder
 	return true;
 }
 
-Bool Data::QueryConditions::Int64Condition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::Int64Condition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::Int64Condition::TestValid(NN<Data::VariItem> item) const
 {
 	Int64 iVal;
 	switch (item->GetItemType())
@@ -432,12 +849,12 @@ Data::QueryConditions::DoubleCondition::~DoubleCondition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::DoubleCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::DoubleCondition::GetType() const
 {
-	return ConditionType::DOUBLE;
+	return ObjectType::DOUBLE;
 }
 
-Bool Data::QueryConditions::DoubleCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::DoubleCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -448,7 +865,12 @@ Bool Data::QueryConditions::DoubleCondition::ToWhereClause(NN<Text::StringBuilde
 	return true;
 }
 
-Bool Data::QueryConditions::DoubleCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::DoubleCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::DoubleCondition::TestValid(NN<Data::VariItem> item) const
 {
 	Double dVal;
 	switch (item->GetItemType())
@@ -539,12 +961,12 @@ Data::QueryConditions::StringInCondition::~StringInCondition()
 	}
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::StringInCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::StringInCondition::GetType() const
 {
-	return ConditionType::StringIn;
+	return ObjectType::StringIn;
 }
 
-Bool Data::QueryConditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	if (this->vals.GetCount() > maxDBItem || this->vals.GetCount() == 0)
 	{
@@ -606,7 +1028,12 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(NN<Text::StringBuil
 	}
 }
 
-Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::StringInCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return this->vals.GetCount() > 0 && this->vals.GetCount() <= maxDBItem;
+}
+
+Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item) const
 {
 	UnsafeArray<const UTF8Char> csptr;
 	UOSInt i;
@@ -680,12 +1107,12 @@ Data::QueryConditions::StringNotInCondition::~StringNotInCondition()
 	}
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::StringNotInCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::StringNotInCondition::GetType() const
 {
-	return ConditionType::StringNotIn;
+	return ObjectType::StringNotIn;
 }
 
-Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	if (this->vals.GetCount() > maxDBItem || this->vals.GetCount() == 0)
 	{
@@ -747,7 +1174,12 @@ Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NN<Text::StringB
 	}
 }
 
-Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::StringNotInCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return this->vals.GetCount() > 0 && this->vals.GetCount() <= maxDBItem;
+}
+
+Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> item) const
 {
 	UnsafeArray<const UTF8Char> csptr;
 	UOSInt i;
@@ -809,12 +1241,12 @@ Data::QueryConditions::StringContainsCondition::~StringContainsCondition()
 	this->val->Release();
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::StringContainsCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::StringContainsCondition::GetType() const
 {
-	return ConditionType::StringContains;
+	return ObjectType::StringContains;
 }
 
-Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr2;
@@ -841,7 +1273,12 @@ Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(NN<Text::Stri
 	return true;
 }
 
-Bool Data::QueryConditions::StringContainsCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::StringContainsCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::StringContainsCondition::TestValid(NN<Data::VariItem> item) const
 {
 	switch (item->GetItemType())
 	{
@@ -886,12 +1323,12 @@ Data::QueryConditions::StringEqualsCondition::~StringEqualsCondition()
 	this->val->Release();
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::StringEqualsCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::StringEqualsCondition::GetType() const
 {
-	return ConditionType::StringEquals;
+	return ObjectType::StringEquals;
 }
 
-Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr2;
@@ -914,7 +1351,12 @@ Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(NN<Text::String
 	return true;
 }
 
-Bool Data::QueryConditions::StringEqualsCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::StringEqualsCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::StringEqualsCondition::TestValid(NN<Data::VariItem> item) const
 {
 	switch (item->GetItemType())
 	{
@@ -958,12 +1400,12 @@ Data::QueryConditions::BooleanCondition::~BooleanCondition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::BooleanCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::BooleanCondition::GetType() const
 {
-	return ConditionType::Boolean;
+	return ObjectType::Boolean;
 }
 
-Bool Data::QueryConditions::BooleanCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::BooleanCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	if (!this->val)
 	{
@@ -976,7 +1418,12 @@ Bool Data::QueryConditions::BooleanCondition::ToWhereClause(NN<Text::StringBuild
 	return true;
 }
 
-Bool Data::QueryConditions::BooleanCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::BooleanCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::BooleanCondition::TestValid(NN<Data::VariItem> item) const
 {
 	Bool bVal;
 	switch (item->GetItemType())
@@ -1038,12 +1485,12 @@ Data::QueryConditions::NotNullCondition::~NotNullCondition()
 {
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::NotNullCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::NotNullCondition::GetType() const
 {
-	return ConditionType::NotNull;
+	return ObjectType::NotNull;
 }
 
-Bool Data::QueryConditions::NotNullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::NotNullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1053,7 +1500,12 @@ Bool Data::QueryConditions::NotNullCondition::ToWhereClause(NN<Text::StringBuild
 	return true;
 }
 
-Bool Data::QueryConditions::NotNullCondition::TestValid(NN<Data::VariItem> item)
+Bool Data::QueryConditions::NotNullCondition::CanWhereClause(UOSInt maxDBItem) const
+{
+	return true;
+}
+
+Bool Data::QueryConditions::NotNullCondition::TestValid(NN<Data::VariItem> item) const
 {
 	switch (item->GetItemType())
 	{
@@ -1094,14 +1546,14 @@ Data::QueryConditions::InnerCondition::~InnerCondition()
 	this->innerCond.Delete();
 }
 
-Data::QueryConditions::ConditionType Data::QueryConditions::InnerCondition::GetType()
+Data::QueryConditions::ObjectType Data::QueryConditions::InnerCondition::GetType() const
 {
-	return ConditionType::Inner;
+	return ObjectType::Inner;
 }
 
-Bool Data::QueryConditions::InnerCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::InnerCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const
 {
-	Data::ArrayListNN<Condition> clientConditions;
+	Data::ArrayListNN<BooleanObject> clientConditions;
 	Text::StringBuilderUTF8 sbTmp;
 	this->innerCond->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem, clientConditions);
 	if (clientConditions.GetCount() > 0)
@@ -1117,17 +1569,22 @@ Bool Data::QueryConditions::InnerCondition::ToWhereClause(NN<Text::StringBuilder
 	}
 }
 
-Bool Data::QueryConditions::InnerCondition::IsValid(NN<Data::VariObject> obj)
+Bool Data::QueryConditions::InnerCondition::CanWhereClause(UOSInt maxDBItem) const
 {
-	return this->innerCond->IsValid(obj);
+	return this->innerCond->CanWhereClause(maxDBItem);
 }
 
-Bool Data::QueryConditions::InnerCondition::IsValid(NN<Data::ObjectGetter> getter)
+Bool Data::QueryConditions::InnerCondition::Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const
 {
-	return this->innerCond->IsValid(getter);
+	return this->innerCond->IsValid(obj, outVal);
 }
 
-void Data::QueryConditions::InnerCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList)
+Bool Data::QueryConditions::InnerCondition::Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const
+{
+	return this->innerCond->IsValid(getter, outVal);
+}
+
+void Data::QueryConditions::InnerCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
 	this->innerCond->GetFieldList(fieldList);	
 }
@@ -1137,188 +1594,74 @@ NN<Data::QueryConditions> Data::QueryConditions::InnerCondition::GetConditions()
 	return this->innerCond;
 }
 
-Data::QueryConditions::OrCondition::OrCondition()
-{
-}
-
-Data::QueryConditions::OrCondition::~OrCondition()
-{
-}
-
-Data::QueryConditions::ConditionType Data::QueryConditions::OrCondition::GetType()
-{
-	return ConditionType::Or;
-}
-
-Bool Data::QueryConditions::OrCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
-{
-	sb->AppendC(UTF8STRC(" or "));
-	return true;
-}
-
-Bool Data::QueryConditions::OrCondition::IsValid(NN<Data::VariObject> obj)
-{
-	return true;
-}
-
-Bool Data::QueryConditions::OrCondition::IsValid(NN<Data::ObjectGetter> getter)
-{
-	return true;
-}
-
-void Data::QueryConditions::OrCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList)
-{
-}
-
 Data::QueryConditions::QueryConditions()
 {
+	NEW_CLASSNN(this->andCond, BooleanAnd());
+	this->cond = this->andCond;
+	this->orCond = 0;
 }
 
 Data::QueryConditions::~QueryConditions()
 {
-	this->conditionList.DeleteAll();
+	this->cond.Delete();
 }
 
-Bool Data::QueryConditions::IsValid(NN<Data::VariObject> obj)
+Bool Data::QueryConditions::IsValid(NN<Data::VariObject> obj, OutParam<Bool> outVal)
 {
-	return ObjectValid(obj, this->conditionList);
+	return this->cond->Eval(obj, outVal);
 }
 
-Bool Data::QueryConditions::IsValid(NN<Data::ObjectGetter> getter)
+Bool Data::QueryConditions::IsValid(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal)
 {
-	return ObjectValid(getter, this->conditionList);
+	return this->cond->Eval(getter, outVal);
 }
 
-Bool Data::QueryConditions::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<Condition>> clientConditions)
+Bool Data::QueryConditions::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions)
 {
-	Text::StringBuilderUTF8 sbTmp;
-	Bool hasOr = false;
-	Data::ArrayIterator<NN<Condition>> it = this->conditionList.Iterator();
-	NN<Condition> condition;
-	while (it.HasNext())
+	if (this->andCond.Ptr() == this->cond.Ptr())
 	{
-		condition = it.Next();
-		if (condition->GetType() == ConditionType::Or)
-		{
-			hasOr = true;
-			break;
-		}
-	}
-
-	if (hasOr)
-	{
-		UOSInt splitType = 1;
-		it = this->conditionList.Iterator();
-		while (it.HasNext())
-		{
-			condition = it.Next();
-			if (condition->GetType() == ConditionType::Or)
-			{
-				if (splitType != 0)
-				{
-
-				}
-				else
-				{
-					sb->AppendUTF8Char(')');
-					splitType = 2;
-				}
-			}
-			else
-			{
-				sbTmp.ClearStr();
-				if (!condition->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem))
-				{
-					clientConditions->Add(condition);
-				}
-				else
-				{
-					if (splitType == 2)
-					{
-						sb->AppendC(UTF8STRC(" or ("));
-						splitType = 0;
-					}
-					else if (splitType != 0)
-					{
-						sb->AppendUTF8Char('(');
-						splitType = 0;
-					}
-					else
-					{
-						sb->AppendC(UTF8STRC(" and "));
-					}
-					sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
-				}
-			}
-		}
-		if (splitType == 0)
-		{
-			sb->AppendUTF8Char(')');
-		}
+		return this->andCond->ToWhereClauseOrClient(sb, sqlType, tzQhr, maxDBItem, clientConditions);
 	}
 	else
 	{
-		Bool hasCond = false;
-		it = this->conditionList.Iterator();
-		while (it.HasNext())
+		if (!this->cond->ToWhereClause(sb, sqlType, tzQhr, maxDBItem))
 		{
-			condition = it.Next();
-			sbTmp.ClearStr();
-			if (!condition->ToWhereClause(sbTmp, sqlType, tzQhr, maxDBItem))
-			{
-				clientConditions->Add(condition);
-			}
-			else
-			{
-				if (hasCond)
-				{
-					sb->AppendC(UTF8STRC(" and "));
-				}
-				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
-				hasCond = true;
-			}
+			clientConditions->Add(this->cond);
 		}
+		return true;
 	}
-	return true;
 }
 
-UOSInt Data::QueryConditions::GetCount()
+Bool Data::QueryConditions::CanWhereClause(UOSInt maxDBItem) const
 {
-	return this->conditionList.GetCount();
+	return this->cond->CanWhereClause(maxDBItem);
 }
 
-Optional<Data::QueryConditions::Condition> Data::QueryConditions::GetItem(UOSInt index)
+void Data::QueryConditions::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const
 {
-	return this->conditionList.GetItem(index);
-}
-
-NN<Data::ArrayListNN<Data::QueryConditions::Condition>> Data::QueryConditions::GetList()
-{
-	return this->conditionList;
-}
-
-void Data::QueryConditions::GetFieldList(NN<Data::ArrayListStringNN> fieldList)
-{
-	Data::ArrayIterator<NN<Condition>> it = this->conditionList.Iterator();
-	while (it.HasNext())
-	{
-		it.Next()->GetFieldList(fieldList);
-	}
+	this->cond->GetFieldList(fieldList);
 }
 
 NN<Data::QueryConditions> Data::QueryConditions::TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2)
 {
 	NN<TimeBetweenCondition> cond;
 	NEW_CLASSNN(cond, TimeBetweenCondition(fieldName, t1, t2));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
 NN<Data::QueryConditions> Data::QueryConditions::Or()
 {
-	NN<OrCondition> cond;
-	NEW_CLASSNN(cond, OrCondition());
-	this->conditionList.Add(cond);
+	NN<BooleanOr> cond;
+	if (!this->orCond.SetTo(cond))
+	{
+		NEW_CLASSNN(cond, BooleanOr());
+		this->orCond = cond;
+		this->cond = cond;
+		cond->AddOr(this->andCond);
+	}
+	NEW_CLASSNN(this->andCond, BooleanAnd());
+	cond->AddOr(this->andCond);
 	return *this;
 }
 
@@ -1326,7 +1669,7 @@ NN<Data::QueryConditions> Data::QueryConditions::InnerCond(NN<QueryConditions> i
 {
 	NN<InnerCondition> cond;
 	NEW_CLASSNN(cond, InnerCondition(innerCond));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1334,7 +1677,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32Equals(Text::CStringNN fie
 {
 	NN<Int32Condition> cond;
 	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::Equal));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1342,7 +1685,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32GE(Text::CStringNN fieldNa
 {
 	NN<Int32Condition> cond;
 	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::GreaterOrEqual));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1350,7 +1693,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32LE(Text::CStringNN fieldNa
 {
 	NN<Int32Condition> cond;
 	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::LessOrEqual));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1358,7 +1701,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32GT(Text::CStringNN fieldNa
 {
 	NN<Int32Condition> cond;
 	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::Greater));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1366,7 +1709,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32LT(Text::CStringNN fieldNa
 {
 	NN<Int32Condition> cond;
 	NEW_CLASSNN(cond, Int32Condition(fieldName, val, CompareCondition::Less));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1374,7 +1717,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int32In(Text::CStringNN fieldNa
 {
 	NN<Int32InCondition> cond;
 	NEW_CLASSNN(cond, Int32InCondition(fieldName, vals));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1382,7 +1725,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64Equals(Text::CStringNN fie
 {
 	NN<Int64Condition> cond;
 	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::Equal));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1390,7 +1733,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64GE(Text::CStringNN fieldNa
 {
 	NN<Int64Condition> cond;
 	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::GreaterOrEqual));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1398,7 +1741,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64LE(Text::CStringNN fieldNa
 {
 	NN<Int64Condition> cond;
 	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::LessOrEqual));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1406,7 +1749,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64GT(Text::CStringNN fieldNa
 {
 	NN<Int64Condition> cond;
 	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::Greater));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1414,7 +1757,7 @@ NN<Data::QueryConditions> Data::QueryConditions::Int64LT(Text::CStringNN fieldNa
 {
 	NN<Int64Condition> cond;
 	NEW_CLASSNN(cond, Int64Condition(fieldName, val, CompareCondition::Less));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1422,7 +1765,7 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleEquals(Text::CStringNN fi
 {
 	NN<DoubleCondition> cond;
 	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::Equal));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1430,7 +1773,7 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleGE(Text::CStringNN fieldN
 {
 	NN<DoubleCondition> cond;
 	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1438,7 +1781,7 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleLE(Text::CStringNN fieldN
 {
 	NN<DoubleCondition> cond;
 	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::LessOrEqual));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1446,7 +1789,7 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleGT(Text::CStringNN fieldN
 {
 	NN<DoubleCondition> cond;
 	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::Greater));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1454,7 +1797,7 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleLT(Text::CStringNN fieldN
 {
 	NN<DoubleCondition> cond;
 	NEW_CLASSNN(cond, DoubleCondition(fieldName, val, CompareCondition::Less));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1462,7 +1805,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName
 {
 	NN<StringInCondition> cond;
 	NEW_CLASSNN(cond, StringInCondition(fieldName, vals));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1470,7 +1813,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrNotIn(Text::CStringNN fieldN
 {
 	NN<StringNotInCondition> cond;
 	NEW_CLASSNN(cond, StringNotInCondition(fieldName, vals));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1478,7 +1821,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrContains(Text::CStringNN fie
 {
 	NN<StringContainsCondition> cond;
 	NEW_CLASSNN(cond, StringContainsCondition(fieldName, val));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1486,7 +1829,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrEquals(Text::CStringNN field
 {
 	NN<StringEqualsCondition> cond;
 	NEW_CLASSNN(cond, StringEqualsCondition(fieldName, val));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1494,7 +1837,7 @@ NN<Data::QueryConditions> Data::QueryConditions::BoolEquals(Text::CStringNN fiel
 {
 	NN<BooleanCondition> cond;
 	NEW_CLASSNN(cond, BooleanCondition(fieldName, val));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1502,7 +1845,7 @@ NN<Data::QueryConditions> Data::QueryConditions::NotNull(Text::CStringNN fieldNa
 {
 	NN<NotNullCondition> cond;
 	NEW_CLASSNN(cond, NotNullCondition(fieldName));
-	this->conditionList.Add(cond);
+	this->andCond->AddAnd(cond);
 	return *this;
 }
 
@@ -1528,48 +1871,38 @@ Text::CStringNN Data::QueryConditions::CompareConditionGetStr(CompareCondition c
 	return CSTR("");
 }
 
-Bool Data::QueryConditions::ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<Condition>> conditionList)
+Bool Data::QueryConditions::ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<BooleanObject>> conditionList, OutParam<Bool> outVal)
 {
 	Bool ret = true;
-	NN<Condition> cond;
-	Data::ArrayIterator<NN<Condition>> it = conditionList->Iterator();
+	Bool v;
+	NN<BooleanObject> cond;
+	Data::ArrayIterator<NN<BooleanObject>> it = conditionList->Iterator();
 	while (it.HasNext())
 	{
 		cond = it.Next();
-		if (cond->GetType() == ConditionType::Or)
-		{
-			if (ret)
-				return true;
-			ret = true;
-		}
-		else
-		{
-			ret = ret && cond->IsValid(obj);
-		}
+		if (!cond->Eval(obj, v))
+			return false;
+		ret = ret && v;
 	}
-	return ret;
+	outVal.Set(ret);
+	return true;
 }
 
-Bool Data::QueryConditions::ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<Condition>> conditionList)
+Bool Data::QueryConditions::ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<BooleanObject>> conditionList, OutParam<Bool> outVal)
 {
 	Bool ret = true;
-	NN<Condition> cond;
-	Data::ArrayIterator<NN<Condition>> it = conditionList->Iterator();
+	Bool v;
+	NN<BooleanObject> cond;
+	Data::ArrayIterator<NN<BooleanObject>> it = conditionList->Iterator();
 	while (it.HasNext())
 	{
 		cond = it.Next();
-		if (cond->GetType() == ConditionType::Or)
-		{
-			if (ret)
-				return true;
-			ret = true;
-		}
-		else
-		{
-			ret = ret && cond->IsValid(getter);
-		}
+		if (!cond->Eval(getter, v))
+			return false;
+		ret = ret && v;
 	}
-	return ret;
+	outVal.Set(ret);
+	return true;
 }
 
 Optional<Data::QueryConditions> Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQLType sqlType)

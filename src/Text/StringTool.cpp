@@ -69,7 +69,7 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Rea
 	sb->AppendUTF8Char(']');
 }
 
-void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, NN<Data::List<Int32>> list, Text::CStringNN seperator)
+void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, NN<const Data::List<Int32>> list, Text::CStringNN seperator)
 {
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();

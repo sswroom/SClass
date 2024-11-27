@@ -14,7 +14,7 @@ namespace Data
 	class QueryConditions
 	{
 	public:
-		enum class ConditionType
+		enum class ObjectType
 		{
 			TimeBetween,
 			INT32,
@@ -27,23 +27,147 @@ namespace Data
 			Boolean,
 			NotNull,
 			Inner,
-			Or,
-			INT64
+			INT64,
+			BooleanAnd,
+			BooleanOr,
+			NumberField
 		};
 
-		class Condition
+		enum class DataType
+		{
+			Unknown,
+			Boolean,
+			Number,
+			String,
+			Time
+		};
+
+		enum class NumberType
+		{
+			F64,
+			I64,
+			I32,
+			Null
+		};
+
+		class ConditionObject
 		{
 		public:
-			virtual ~Condition(){};
+			virtual ~ConditionObject() {};
 
-			virtual ConditionType GetType() = 0;
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) = 0;
-			virtual Bool IsValid(NN<Data::VariObject> obj) = 0;
-			virtual Bool IsValid(NN<Data::ObjectGetter> getter) = 0;
-			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) = 0;
+			virtual ObjectType GetType() const = 0;
+			virtual DataType GetReturnType() const = 0;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const = 0;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const = 0;
+			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const = 0;
 		};
 
-		class FieldCondition : public Condition
+		class BooleanObject : public ConditionObject
+		{
+		public:
+			virtual ~BooleanObject() {};
+
+			virtual DataType GetReturnType() const { return DataType::Boolean; };
+			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const = 0;
+			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const = 0;
+		};
+
+		class NumberObject : public ConditionObject
+		{
+		public:
+			virtual ~NumberObject() {};
+
+			virtual DataType GetReturnType() const { return DataType::Number; };
+			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const = 0;
+			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const = 0;
+			virtual Bool EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const = 0;
+			virtual Bool EvalInt(NN<Data::ObjectGetter> getter, OutParam<Int64> outVal) const = 0;
+			virtual Bool EvalDouble(NN<Data::VariObject> obj, OutParam<Double> outVal) const = 0;
+			virtual Bool EvalDouble(NN<Data::ObjectGetter> getter, OutParam<Double> outVal) const = 0;
+		};
+
+		class StringObject : public ConditionObject
+		{
+		public:
+			virtual ~StringObject() {};
+
+			virtual DataType GetReturnType() const { return DataType::String; };
+			virtual Optional<Text::String> Eval(NN<Data::VariObject> obj) const = 0;
+			virtual Optional<Text::String> Eval(NN<Data::ObjectGetter> getter) const = 0;
+		};
+
+		class TimeObject : public ConditionObject
+		{
+		public:
+			virtual ~TimeObject() {};
+
+			virtual DataType GetReturnType() const { return DataType::Time; };
+			virtual Data::Timestamp Eval(NN<Data::VariObject> obj) const = 0;
+			virtual Data::Timestamp Eval(NN<Data::ObjectGetter> getter) const = 0;
+		};
+
+		class BooleanAnd : public BooleanObject
+		{
+		private:
+			Data::ArrayListNN<BooleanObject> andList;
+
+		public:
+			BooleanAnd();
+			virtual ~BooleanAnd();
+
+			virtual ObjectType GetType() const { return ObjectType::BooleanAnd; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			Bool ToWhereClauseOrClient(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
+			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+
+			UOSInt GetCount() const;
+			void AddAnd(NN<BooleanObject> obj);
+		};
+
+		class BooleanOr : public BooleanObject
+		{
+		private:
+			Data::ArrayListNN<BooleanObject> orList;
+
+		public:
+			BooleanOr();
+			virtual ~BooleanOr();
+
+			virtual ObjectType GetType() const { return ObjectType::BooleanOr; }
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
+			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
+			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+
+			UOSInt GetCount() const;
+			void AddOr(NN<BooleanObject> obj);
+		};
+
+		class NumberField : public NumberObject
+		{
+		private:
+			NN<Text::String> fieldName;
+		public:
+			NumberField(Text::CStringNN fieldName);
+			NumberField(NN<Text::String> fieldName);
+			virtual ~NumberField();
+
+			virtual ObjectType GetType() const { return ObjectType::NumberField; }
+			virtual NumberType GetNumberType(NN<Data::VariObject> obj) const;
+			virtual NumberType GetNumberType(NN<Data::ObjectGetter> getter) const;
+			virtual Bool EvalInt(NN<Data::VariObject> obj, OutParam<Int64> outVal) const;
+			virtual Bool EvalInt(NN<Data::ObjectGetter> getter, OutParam<Int64> outVal) const;
+			virtual Bool EvalDouble(NN<Data::VariObject> obj, OutParam<Double> outVal) const;
+			virtual Bool EvalDouble(NN<Data::ObjectGetter> getter, OutParam<Double> outVal) const;
+
+			static NumberType ToNumberType(NN<Data::VariItem> item);
+		};
+
+		class FieldCondition : public BooleanObject
 		{
 		protected:
 			NN<Text::String> fieldName;
@@ -52,11 +176,11 @@ namespace Data
 			FieldCondition(NN<Text::String> fieldName);
 			virtual ~FieldCondition();
 
-			virtual Bool IsValid(NN<Data::VariObject> obj);
-			virtual Bool IsValid(NN<Data::ObjectGetter> getter);
-			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList);
+			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
+			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 
-			virtual Bool TestValid(NN<Data::VariItem> item) = 0;
+			virtual Bool TestValid(NN<Data::VariItem> item) const = 0;
 		};
 
 		class TimeBetweenCondition : public FieldCondition
@@ -69,9 +193,10 @@ namespace Data
 			TimeBetweenCondition(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 			virtual ~TimeBetweenCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class Int32Condition : public FieldCondition
@@ -84,9 +209,10 @@ namespace Data
 			Int32Condition(Text::CStringNN fieldName, Int32 val, CompareCondition cond);
 			virtual ~Int32Condition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 
 			NN<Text::String> GetFieldName();
 			Int32 GetVal();
@@ -102,9 +228,10 @@ namespace Data
 			Int32InCondition(Text::CStringNN fieldName, NN<Data::ArrayList<Int32>> val);
 			virtual ~Int32InCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class Int64Condition : public FieldCondition
@@ -117,9 +244,10 @@ namespace Data
 			Int64Condition(Text::CStringNN fieldName, Int64 val, CompareCondition cond);
 			virtual ~Int64Condition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 
 			NN<Text::String> GetFieldName();
 			Int64 GetVal();
@@ -136,9 +264,10 @@ namespace Data
 			DoubleCondition(Text::CStringNN fieldName, Double val, CompareCondition cond);
 			virtual ~DoubleCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class StringInCondition : public FieldCondition
@@ -150,9 +279,10 @@ namespace Data
 			StringInCondition(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> val);
 			virtual ~StringInCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class StringNotInCondition : public FieldCondition
@@ -164,9 +294,10 @@ namespace Data
 			StringNotInCondition(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> val);
 			virtual ~StringNotInCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class StringContainsCondition : public FieldCondition
@@ -178,9 +309,10 @@ namespace Data
 			StringContainsCondition(Text::CStringNN fieldName, UnsafeArray<const UTF8Char> val);
 			virtual ~StringContainsCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class StringEqualsCondition : public FieldCondition
@@ -192,9 +324,10 @@ namespace Data
 			StringEqualsCondition(Text::CStringNN fieldName, Text::CStringNN val);
 			virtual ~StringEqualsCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class BooleanCondition : public FieldCondition
@@ -206,9 +339,10 @@ namespace Data
 			BooleanCondition(Text::CStringNN fieldName, Bool val);
 			virtual ~BooleanCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
 		class NotNullCondition : public FieldCondition
@@ -217,12 +351,13 @@ namespace Data
 			NotNullCondition(Text::CStringNN fieldName);
 			virtual ~NotNullCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool TestValid(NN<Data::VariItem> item);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool TestValid(NN<Data::VariItem> item) const;
 		};
 
-		class InnerCondition : public Condition
+		class InnerCondition : public BooleanObject
 		{
 		private:
 			NN<QueryConditions> innerCond;
@@ -231,41 +366,29 @@ namespace Data
 			InnerCondition(NN<QueryConditions> innerCond);
 			virtual ~InnerCondition();
 
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool IsValid(NN<Data::VariObject> obj);
-			virtual Bool IsValid(NN<Data::ObjectGetter> getter);
-			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList);
+			virtual ObjectType GetType() const;
+			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem) const;
+			virtual Bool CanWhereClause(UOSInt maxDBItem) const;
+			virtual Bool Eval(NN<Data::VariObject> obj, OutParam<Bool> outVal) const;
+			virtual Bool Eval(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal) const;
+			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 
 			NN<QueryConditions> GetConditions();
 		};
 
-		class OrCondition : public Condition
-		{
-		public:
-			OrCondition();
-			virtual ~OrCondition();
-
-			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem);
-			virtual Bool IsValid(NN<Data::VariObject> obj);
-			virtual Bool IsValid(NN<Data::ObjectGetter> getter);
-			virtual void GetFieldList(NN<Data::ArrayListStringNN> fieldList);
-		};
-
 	private:
-		Data::ArrayListNN<Condition> conditionList;
+		NN<BooleanObject> cond;
+		NN<BooleanAnd> andCond;
+		Optional<BooleanOr> orCond;
 	public:
 		QueryConditions();
 		~QueryConditions();
 
-		Bool IsValid(NN<Data::VariObject> obj);
-		Bool IsValid(NN<Data::ObjectGetter> getter);
-		Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<Condition>> clientConditions);
-		UOSInt GetCount();
-		Optional<Condition> GetItem(UOSInt index);
-		NN<Data::ArrayListNN<Condition>> GetList();
-		void GetFieldList(NN<Data::ArrayListStringNN> fieldList);
+		Bool IsValid(NN<Data::VariObject> obj, OutParam<Bool> outVal);
+		Bool IsValid(NN<Data::ObjectGetter> getter, OutParam<Bool> outVal);
+		Bool ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem, NN<Data::ArrayListNN<BooleanObject>> clientConditions);
+		Bool CanWhereClause(UOSInt maxDBItem) const;
+		void GetFieldList(NN<Data::ArrayListStringNN> fieldList) const;
 
 		NN<QueryConditions> TimeBetween(Text::CStringNN fieldName, const Data::Timestamp &t1, const Data::Timestamp &t2);
 		NN<QueryConditions> Or();
@@ -294,8 +417,8 @@ namespace Data
 		NN<QueryConditions> NotNull(Text::CStringNN fieldName);
 
 		static Text::CStringNN CompareConditionGetStr(CompareCondition cond);
-		static Bool ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<Condition>> conditionList);
-		static Bool ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<Condition>> conditionList);
+		static Bool ObjectValid(NN<Data::VariObject> obj, NN<Data::ArrayListNN<BooleanObject>> conditionList, OutParam<Bool> outVal);
+		static Bool ObjectValid(NN<Data::ObjectGetter> getter, NN<Data::ArrayListNN<BooleanObject>> conditionList, OutParam<Bool> outVal);
 		static Optional<QueryConditions> ParseStr(Text::CStringNN s, DB::SQLType sqlType);
 	};
 }

@@ -14,7 +14,7 @@ namespace DB
 		Data::ArrayListNN<Data::VariObject> objList;
 		Data::ArrayListNN<DB::ColDef> cols;
 
-		Data::VariItem *GetItem(UOSInt colIndex);
+		Optional<Data::VariItem> GetItem(UOSInt colIndex);
 	public:
 		SortableDBReader(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual ~SortableDBReader();

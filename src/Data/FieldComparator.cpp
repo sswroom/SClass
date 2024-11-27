@@ -89,76 +89,78 @@ Bool Data::FieldComparator::ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQ
 	return true;
 }
 
-OSInt Data::FieldComparator::Compare(VariItem *a, VariItem *b)
+OSInt Data::FieldComparator::Compare(Optional<VariItem> a, Optional<VariItem> b)
 {
+	NN<VariItem> nna;
+	NN<VariItem> nnb;
 	if (a == b)
 	{
 		return 0;
 	}
-	if (a == 0)
+	if (!a.SetTo(nna))
 	{
 		return -1;
 	}
-	if (b == 0)
+	if (!b.SetTo(nnb))
 	{
 		return 1;
 	}
-	if (a->GetItemType() == b->GetItemType())
+	if (nna->GetItemType() == nnb->GetItemType())
 	{
-		switch (a->GetItemType())
+		switch (nna->GetItemType())
 		{
 		case Data::VariItem::ItemType::Unknown:
 		case Data::VariItem::ItemType::Null:
 			return 0;
 		case Data::VariItem::ItemType::Str:
-			return Text::StrCompare(a->GetItemValue().str->v, b->GetItemValue().str->v);
+			return Text::StrCompare(nna->GetItemValue().str->v, nnb->GetItemValue().str->v);
 		case Data::VariItem::ItemType::CStr:
-			return Text::StrCompare(a->GetItemValue().cstr.v, b->GetItemValue().cstr.v);
+			return Text::StrCompare(nna->GetItemValue().cstr.v, nnb->GetItemValue().cstr.v);
 		case Data::VariItem::ItemType::Timestamp:
-			return a->GetItemValue().ts.CompareTo(b->GetItemValue().ts);
+			return nna->GetItemValue().ts.CompareTo(nnb->GetItemValue().ts);
 		case Data::VariItem::ItemType::Date:
-			return a->GetItemValue().date.CompareTo(b->GetItemValue().date);
+			return nna->GetItemValue().date.CompareTo(nnb->GetItemValue().date);
 		case Data::VariItem::ItemType::F32:
-			return Data::DataComparer::Compare(a->GetItemValue().f32, b->GetItemValue().f32);
+			return Data::DataComparer::Compare(nna->GetItemValue().f32, nnb->GetItemValue().f32);
 		case Data::VariItem::ItemType::F64:
-			return Data::DataComparer::Compare(a->GetItemValue().f64, b->GetItemValue().f64);
+			return Data::DataComparer::Compare(nna->GetItemValue().f64, nnb->GetItemValue().f64);
 		case Data::VariItem::ItemType::I8:
-			return Data::DataComparer::Compare(a->GetItemValue().i8, b->GetItemValue().i8);
+			return Data::DataComparer::Compare(nna->GetItemValue().i8, nnb->GetItemValue().i8);
 		case Data::VariItem::ItemType::U8:
-			return Data::DataComparer::Compare(a->GetItemValue().u8, b->GetItemValue().u8);
+			return Data::DataComparer::Compare(nna->GetItemValue().u8, nnb->GetItemValue().u8);
 		case Data::VariItem::ItemType::I16:
-			return Data::DataComparer::Compare(a->GetItemValue().i16, b->GetItemValue().i16);
+			return Data::DataComparer::Compare(nna->GetItemValue().i16, nnb->GetItemValue().i16);
 		case Data::VariItem::ItemType::U16:
-			return Data::DataComparer::Compare(a->GetItemValue().u16, b->GetItemValue().u16);
+			return Data::DataComparer::Compare(nna->GetItemValue().u16, nnb->GetItemValue().u16);
 		case Data::VariItem::ItemType::NI32:
 		case Data::VariItem::ItemType::I32:
-			return Data::DataComparer::Compare(a->GetItemValue().i32, b->GetItemValue().i32);
+			return Data::DataComparer::Compare(nna->GetItemValue().i32, nnb->GetItemValue().i32);
 		case Data::VariItem::ItemType::U32:
-			return Data::DataComparer::Compare(a->GetItemValue().u32, b->GetItemValue().u32);
+			return Data::DataComparer::Compare(nna->GetItemValue().u32, nnb->GetItemValue().u32);
 		case Data::VariItem::ItemType::I64:
-			return Data::DataComparer::Compare(a->GetItemValue().i64, b->GetItemValue().i64);
+			return Data::DataComparer::Compare(nna->GetItemValue().i64, nnb->GetItemValue().i64);
 		case Data::VariItem::ItemType::U64:
-			return Data::DataComparer::Compare(a->GetItemValue().u64, b->GetItemValue().u64);
+			return Data::DataComparer::Compare(nna->GetItemValue().u64, nnb->GetItemValue().u64);
 		case Data::VariItem::ItemType::BOOL:
-			return Data::DataComparer::Compare(a->GetItemValue().boolean, b->GetItemValue().boolean);
+			return Data::DataComparer::Compare(nna->GetItemValue().boolean, nnb->GetItemValue().boolean);
 		case Data::VariItem::ItemType::ByteArr:
 		{
-			Data::ReadonlyArray<UInt8> *arrA = a->GetItemValue().byteArr;
-			Data::ReadonlyArray<UInt8> *arrB = b->GetItemValue().byteArr;
+			Data::ReadonlyArray<UInt8> *arrA = nna->GetItemValue().byteArr;
+			Data::ReadonlyArray<UInt8> *arrB = nnb->GetItemValue().byteArr;
 			return Data::DataComparer::Compare(arrA->GetArray(), arrA->GetCount(), arrB->GetArray(), arrB->GetCount());
 		}
 		case Data::VariItem::ItemType::Vector:
-			return Data::DataComparer::Compare(a->GetItemValue().vector.Ptr(), b->GetItemValue().vector.Ptr());
+			return Data::DataComparer::Compare(nna->GetItemValue().vector.Ptr(), nnb->GetItemValue().vector.Ptr());
 		case Data::VariItem::ItemType::UUID:
-			return Data::DataComparer::Compare(a->GetItemValue().uuid.Ptr(), b->GetItemValue().uuid.Ptr());
+			return Data::DataComparer::Compare(nna->GetItemValue().uuid.Ptr(), nnb->GetItemValue().uuid.Ptr());
 		}
 		return 0;
 	}
-	else if (a->GetItemType() == Data::VariItem::ItemType::Null)
+	else if (nna->GetItemType() == Data::VariItem::ItemType::Null)
 	{
 		return -1;
 	}
-	else if (b->GetItemType() == Data::VariItem::ItemType::Null)
+	else if (nnb->GetItemType() == Data::VariItem::ItemType::Null)
 	{
 		return 1;
 	}
@@ -166,8 +168,8 @@ OSInt Data::FieldComparator::Compare(VariItem *a, VariItem *b)
 	{
 		Text::StringBuilderUTF8 sbA;
 		Text::StringBuilderUTF8 sbB;
-		a->ToString(sbA);
-		b->ToString(sbB);
+		nna->ToString(sbA);
+		nnb->ToString(sbB);
 		return Text::StrCompare(sbA.ToString(), sbB.ToString());
 	}
 }

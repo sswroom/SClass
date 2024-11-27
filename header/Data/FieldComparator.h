@@ -22,7 +22,7 @@ namespace Data
 		Bool IsValid();
 		Bool ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 
-		static OSInt Compare(VariItem *a, VariItem *b);
+		static OSInt Compare(Optional<VariItem> a, Optional<VariItem> b);
 	};
 }
 #endif

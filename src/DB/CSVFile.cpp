@@ -376,7 +376,8 @@ Bool DB::CSVReader::ReadNext()
 			}
 		}
 		NN<Data::QueryConditions> nncondition;
-		if (!this->condition.SetTo(nncondition) || nncondition->IsValid(*this))
+		Bool valid;
+		if (!this->condition.SetTo(nncondition) || !nncondition->IsValid(*this, valid) || valid)
 		{
 			this->nCol = nCol;
 			return true;

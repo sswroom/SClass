@@ -139,7 +139,8 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				{
 					return false;
 				}
-				if (conditions.SetTo(nncondition) && !nncondition->IsValid(*this))
+				Bool valid;
+				if (conditions.SetTo(nncondition) && nncondition->IsValid(*this, valid) && !valid)
 				{
 				}
 				else
@@ -191,7 +192,8 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				return false;
 			}
 			this->objectId++;
-			if (conditions.SetTo(nncondition) && !nncondition->IsValid(*this))
+			Bool valid;
+			if (conditions.SetTo(nncondition) && nncondition->IsValid(*this, valid) && !valid)
 			{
 			}
 			else

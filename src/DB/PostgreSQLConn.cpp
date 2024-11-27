@@ -1064,7 +1064,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 	NN<Data::QueryConditions> nncondition;
 	if (condition.SetTo(nncondition))
 	{
-		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
+		Data::ArrayListNN<Data::QueryConditions::BooleanObject> cliCond;
 		sb.AppendC(UTF8STRC(" where "));
 		nncondition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
 	}

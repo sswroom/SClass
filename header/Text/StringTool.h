@@ -20,7 +20,7 @@ namespace Text
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, NN<Data::NamedClass<T>> cls);
 		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, NN<Data::NamedClass<T>> cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen);
-		static void Int32Join(NN<Text::StringBuilderUTF8> sb, NN<Data::List<Int32>> list, Text::CStringNN seperator);
+		static void Int32Join(NN<Text::StringBuilderUTF8> sb, NN<const Data::List<Int32>> list, Text::CStringNN seperator);
 		static Bool IsNonASCII(UnsafeArray<const UTF8Char> s);
 		static Bool IsASCIIText(const Data::ByteArrayR &buff);
 		static Bool IsEmailAddress(UnsafeArray<const UTF8Char> s);
