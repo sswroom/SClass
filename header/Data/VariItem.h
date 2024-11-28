@@ -183,6 +183,7 @@ namespace Data
 		NN<VariItem> Clone() const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
+		static NN<VariItem> NewUnknown();
 		static NN<VariItem> NewNull();
 		static NN<VariItem> NewStrSlow(UnsafeArrayOpt<const UTF8Char> str);
 		static NN<VariItem> NewStr(Text::CString str);

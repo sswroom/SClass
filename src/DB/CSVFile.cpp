@@ -967,7 +967,7 @@ NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 		{
 			if (i >= this->nCol)
 			{
-				return Data::VariItem::NewNull();
+				return Data::VariItem::NewUnknown();
 			}
 			else
 			{
@@ -975,5 +975,5 @@ NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 			}
 		}
 	}
-	return Data::VariItem::NewNull();
+	return Data::VariItem::NewUnknown();
 }

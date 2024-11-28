@@ -1459,8 +1459,10 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	}
 	if (fieldIndex == INVALID_INDEX)
 	{
-		return Data::VariItem::NewNull();
+		return Data::VariItem::NewUnknown();
 	}
+	if (this->fieldNull[fieldIndex])
+		return Data::VariItem::NewNull();
 	UOSInt ofst;
 	UInt64 v;
 	switch (field->fieldType)
@@ -1514,7 +1516,7 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 			return Data::VariItem::NewUUID(&uuid);
 		}
 	}
-	return Data::VariItem::NewNull();
+	return Data::VariItem::NewUnknown();
 }
 
 Bool Map::ESRI::FileGDBReader::IsNull(UOSInt colIndex)

@@ -1426,6 +1426,13 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
+NN<Data::VariItem> Data::VariItem::NewUnknown()
+{
+	NN<Data::VariItem> item;
+	NEW_CLASSNN(item, Data::VariItem());
+	return item;
+}
+
 NN<Data::VariItem> Data::VariItem::NewNull()
 {
 	ItemValue ival;

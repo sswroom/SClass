@@ -746,7 +746,7 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(Math::Coord2DDbl posStart, Math:
 			if (endFound)
 				break;
 		}
-		else if (nodeInfo->pos == path2->line->endPos && nodeInfo->z == path2->line->endZ)
+		if (nodeInfo->pos == path2->line->endPos && nodeInfo->z == path2->line->endZ)
 		{
 			endFound = true;
 			if (startFound)
