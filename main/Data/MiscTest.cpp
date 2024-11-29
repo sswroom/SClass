@@ -811,7 +811,7 @@ Int32 WKTParseTest()
 
 Int32 FGDBTest()
 {
-	Text::CStringNN fgdbPath = CSTR("");
+	Text::CStringNN fgdbPath = CSTR("/home/sswroom/ProgsHome/PROGS/StoneRoad/0_req/20241024 EMSD POC/20241009/iB1000.gdb");
 	/*
 	-Building
 	BuiltStructurePolygon
@@ -836,14 +836,14 @@ Int32 FGDBTest()
 		NN<Map::ESRI::FileGDBTable> table;
 		NN<DB::DBReader> r;
 		NN<Text::String> s;
-		if (fgdb->GetTable(CSTR("BuiltStructurePolygon")).SetTo(table))
+		if (fgdb->GetTable(CSTR("Building")).SetTo(table))
 		{
 			printf("File Name: %s\r\n", table->GetFileName()->v.Ptr());
 			if (table->OpenReader(0, 0, 0, 0, 0).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
-					if (r->GetInt32(0) == 124)
+					if (r->GetInt32(0) == 12499)
 					{
 						printf("Row Ofst: 0x%llx\r\n", r->GetRowFileOfst());
 						i = 0;
@@ -870,6 +870,26 @@ Int32 FGDBTest()
 			}
 		}
 		fgdb.Delete();
+	}
+	return 0;
+}
+
+Int32 BezierCurveTest()
+{
+	Math::Coord2DDbl p0 = Math::Coord2DDbl(845172.9181900005, 821621.7819300014);
+	Math::Coord2DDbl p1 = Math::Coord2DDbl(845171.43902494, 821622.01600076);
+	Math::Coord2DDbl p2 = Math::Coord2DDbl(845170.00585973, 821622.37980569);
+	Math::Coord2DDbl p3 = Math::Coord2DDbl(845168.6187000004, 821622.8733400012);
+	Data::ArrayListA<Math::Coord2DDbl> linePts;
+	Math::GeometryTool::BezierCurveToLine(p0, p1, p2, p3, 10, linePts);
+	Math::Coord2DDbl pt;
+	UOSInt i = 0;
+	UOSInt j = linePts.GetCount();
+	while (i < j)
+	{
+		pt = linePts.GetItem(i);
+		printf("%lf, %lf\r\n", pt.x, pt.y);
+		i++;
 	}
 	return 0;
 }
@@ -923,6 +943,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return WKTParseTest();
 	case 21:
 		return FGDBTest();
+	case 22:
+		return BezierCurveTest();
 	default:
 		return 0;
 	}

@@ -41,6 +41,10 @@ void Map::ESRI::ESRICurve::AddArc(UOSInt index, Math::Coord2DDbl center, UInt32 
 		printf("ESRICurve: Arc index out of range: %d\r\n", (UInt32)index);
 		return;
 	}
+	if (center.x < 800000)
+	{
+		printf("Arc out of range: %d, %lf, %lf, %d\r\n", (UInt32)index, center.x, center.y, bits);
+	}
 	NN<ArcInfo> arc;
 	arc = MemAllocANN(ArcInfo);
 	arc->type = 1;
@@ -57,12 +61,16 @@ void Map::ESRI::ESRICurve::AddBezier3Curve(UOSInt index, Math::Coord2DDbl point1
 		printf("ESRICurve: Bezier3Curve index out of range: %d\r\n", (UInt32)index);
 		return;
 	}
+	if (point1.x < 800000 || point2.x < 800000)
+	{
+		printf("BezierArc out of range: %d, %lf, %lf, %lf, %lf\r\n", (UInt32)index, point1.x, point1.y, point2.x, point2.y);
+	}
 	NN<BezierCurveInfo> curve;
 	curve = MemAllocANN(BezierCurveInfo);
 	curve->type = 5;
 	curve->startIndex = index;
 	curve->point1 = point1;
-	curve->point1 = point2;
+	curve->point2 = point2;
 	this->curveList.Add(curve);
 }
 
@@ -166,9 +174,9 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToArea() const
 			}
 			else if (curve->type == 4)
 			{
-				NN<EllipticArcInfo> earc = NN<EllipticArcInfo>::ConvertFrom(curve);
-				ptList.Insert(earc->startIndex + indexOfst + 1, earc->center);
-				indexOfst += 1;
+				//NN<EllipticArcInfo> earc = NN<EllipticArcInfo>::ConvertFrom(curve);
+				//ptList.Insert(earc->startIndex + indexOfst + 1, earc->center);
+				//indexOfst += 1;
 			}
 			else //if (curve->type == 1)
 			{

@@ -1120,6 +1120,10 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 			{
 				nPoints = 6;
 			}
+			else if (nPoints > 20)
+			{
+				nPoints = 20;
+			}
 			Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
 			Double a = Math_ArcTan2(pt1.x - c.x, pt1.y - c.y);
 			Double angle;
@@ -1300,6 +1304,7 @@ UOSInt Math::GeometryTool::BezierCurveToLine(Math::Coord2DDbl pt0, Math::Coord2D
 	while (i < nPoints)
 	{
 		ptOut->Add(GeometryTool_BezierCurvePoint(pt0, pt1, pt2, pt3, t));
+		t += tDiff;
 		i++;
 	}
 	ptOut->Add(pt3);

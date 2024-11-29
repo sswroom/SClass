@@ -32,6 +32,11 @@ namespace Math
 			return (x >= min.x && x < max.x && y >= min.y && y < max.y);
 		}
 
+		Bool InsideOrTouch(Math::Coord2DDbl pt) const
+		{
+			return (pt.x >= min.x && pt.x <= max.x && pt.y >= min.y && pt.y <= max.y);
+		}
+
 		Math::Coord2DDbl GetMin() const
 		{
 			return this->min;

@@ -139,11 +139,22 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				{
 					return false;
 				}
-				Bool valid;
-				if (conditions.SetTo(nncondition) && nncondition->IsValid(*this, valid) && !valid)
+				Bool valid = true;
+				if (conditions.SetTo(nncondition))
 				{
+					this->rowData.ChangeSize(this->rowSize);
+					if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
+					{
+						this->rowData.Delete();
+						return false;
+					}
+
+					if (!nncondition->IsValid(*this, valid))
+					{
+						valid = true;
+					}
 				}
-				else
+				if (valid)
 				{
 					if (this->dataOfst == 0)
 					{
@@ -192,11 +203,22 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				return false;
 			}
 			this->objectId++;
-			Bool valid;
-			if (conditions.SetTo(nncondition) && nncondition->IsValid(*this, valid) && !valid)
+			Bool valid = true;
+			if (conditions.SetTo(nncondition))
 			{
+				this->rowData.ChangeSize(this->rowSize);
+				if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
+				{
+					this->rowData.Delete();
+					return false;
+				}
+
+				if (!nncondition->IsValid(*this, valid))
+				{
+					valid = true;
+				}
 			}
-			else
+			if (valid)
 			{
 				if (this->dataOfst == 0)
 				{
