@@ -40,31 +40,22 @@ NN<Math::Geometry::Vector2D> Math::Geometry::LinearRing::Clone() const
 
 Bool Math::Geometry::LinearRing::InsideOrTouch(Math::Coord2DDbl coord) const
 {
-	Double thisX;
-	Double thisY;
-	Double lastX;
-	Double lastY;
-	UOSInt j;
+	Math::Coord2DDbl thisPt;
+	Math::Coord2DDbl lastPt;
+	Math::Coord2DDbl diff;
 	UOSInt l;
 	Int32 leftCnt = 0;
 	Double tmpX;
 
 	l = this->nPoint;
-	lastX = this->pointArr[0].x;
-	lastY = this->pointArr[0].y;
+	lastPt = this->pointArr[0];
 	while (l-- > 0)
 	{
-		thisX = this->pointArr[l].x;
-		thisY = this->pointArr[l].y;
-		j = 0;
-		if (lastY > coord.y)
-			j += 1;
-		if (thisY > coord.y)
-			j += 1;
-
-		if (j == 1)
+		thisPt = this->pointArr[l];
+		if ((lastPt.y > coord.y) ^ (thisPt.y > coord.y))
 		{
-			tmpX = lastX - (lastX - thisX) * (lastY - coord.y) / (lastY - thisY);
+			diff = lastPt - thisPt;
+			tmpX = lastPt.x - diff.x * (lastPt.y - coord.y) / diff.y;
 			if (tmpX == coord.x)
 			{
 				return true;
@@ -72,20 +63,19 @@ Bool Math::Geometry::LinearRing::InsideOrTouch(Math::Coord2DDbl coord) const
 			else if (tmpX < coord.x)
 				leftCnt++;
 		}
-		else if (thisY == coord.y && lastY == coord.y)
+		else if (thisPt.y == coord.y)
 		{
-			if ((thisX >= coord.x && lastX <= coord.x) || (lastX >= coord.x && thisX <= coord.x))
+			if (thisPt.x == coord.x)
+			{
+				return true;
+			}
+			else if (lastPt.y == coord.y && ((thisPt.x >= coord.x && lastPt.x <= coord.x) || (lastPt.x >= coord.x && thisPt.x <= coord.x)))
 			{
 				return true;
 			}
 		}
-		else if (thisY == coord.y && thisX == coord.x)
-		{
-			return true;
-		}
 
-		lastX = thisX;
-		lastY = thisY;
+		lastPt = thisPt;
 	}
 
 	return (leftCnt & 1) != 0;

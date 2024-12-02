@@ -260,9 +260,13 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToArea() const
 		{
 			mArr = this->mList.Arr();
 		}
-		Math::Geometry::Polygon pg(this->srid);
-		pg.AddFromPtOfst(this->partList.Arr(), this->partList.GetCount(), this->ptList.Arr(), this->ptList.GetCount(), zArr, mArr);
-		return pg.CreateMultiPolygon();
+		NN<Math::Geometry::Polygon> pg;
+		NN<Math::Geometry::MultiPolygon> mpg;
+		NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
+		pg->AddFromPtOfst(this->partList.Arr(), this->partList.GetCount(), this->ptList.Arr(), this->ptList.GetCount(), zArr, mArr);
+		NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid));
+		mpg->AddGeometry(pg);
+		return mpg;
 	}
 }
 

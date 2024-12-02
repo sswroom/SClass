@@ -329,13 +329,10 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, O
 UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<Int64> val)
 {
 	Bool sign = (buff[ofst] & 0x40) != 0;
-	Int64 v = 0;
-	UOSInt i = 0;
-	Int64 currV;
-	currV = buff[ofst];
+	Int64 currV = buff[ofst];
+	Int64 v = currV & 0x3f;
+	UOSInt i = 6;
 	ofst++;
-	i = 6;
-	v = currV & 0x3f;
 	while (currV & 0x80)
 	{
 		currV = buff[ofst];

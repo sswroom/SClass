@@ -977,13 +977,13 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmax
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
-			Math::Geometry::Polygon *pg;
+			NN<Math::Geometry::Polygon> pg;
 			srid = 0;
 			if (this->tableInfo->csys.SetTo(csys))
 			{
 				srid = csys->GetSRID();
 			}
-			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
+			NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 			UOSInt i;
 			UInt32 *parts = MemAlloc(UInt32, (UOSInt)nParts);
 			Math::Coord2DDbl *points = MemAllocA(Math::Coord2DDbl, (UOSInt)nPoints);
@@ -1056,8 +1056,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				MemFree(zArr);
 			MemFreeA(points);
 			MemFree(parts);
-			NN<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
-			DEL_CLASS(pg);
+			NN<Math::Geometry::MultiPolygon> mpg;
+			NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(pg->GetSRID()));
+			mpg->AddGeometry(pg);
 			return mpg.Ptr();
 		}
 		break;
