@@ -2,7 +2,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
-#include "IO/FileAnalyse/FGDBFileAnalyse.h"
+#include "IO/FileAnalyse/FGDBTablxFileAnalyse.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Text/MyStringW.h"
@@ -12,18 +12,18 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::FGDBTablxFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NN<IO::FileAnalyse::FGDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FGDBFileAnalyse>();
+	NN<IO::FileAnalyse::FGDBTablxFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FGDBTablxFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
 	Int32 rowSize;
 	UInt8 tagHdr[15];
-	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
+	NN<IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo> tag;
 	Bool lastIsFree = false;
 
-	tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
+	tag = MemAllocNN(IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo);
 	tag->ofst = 0;
 	tag->size = 40;
 	tag->tagType = TagType::Header;
@@ -31,7 +31,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 
 	me->fd->GetRealData(40, 4, BYTEARR(tagHdr));
 	lastSize = ReadUInt32(tagHdr);
-	tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
+	tag = MemAllocNN(IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo);
 	tag->ofst = 40;
 	tag->size = lastSize + 4;
 	tag->tagType = TagType::Field;
@@ -81,7 +81,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 			{
 				break;
 			}
-			tag = MemAllocNN(IO::FileAnalyse::FGDBFileAnalyse::TagInfo);
+			tag = MemAllocNN(IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo);
 			tag->ofst = ofst;
 			tag->size = (UInt32)rowSize + 4;
 			tag->tagType = tagType;
@@ -91,14 +91,15 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> th
 	}
 }
 
-IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBFileAnalyse"))
+IO::FileAnalyse::FGDBTablxFileAnalyse::FGDBTablxFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBTablxFileAnalyse"))
 {
 	UInt8 buff[40];
 	this->fd = 0;
 	this->pauseParsing = false;
 	this->tableInfo = 0;
 	fd->GetRealData(0, 40, BYTEARR(buff));
-	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
+	////////////////////////////////////
+	if (true)//ReadUInt64(&buff[24]) != fd->GetDataSize())
 	{
 		return;
 	}
@@ -107,7 +108,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NN<IO::StreamData> fd) : threa
 	this->thread.Start();
 }
 
-IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
+IO::FileAnalyse::FGDBTablxFileAnalyse::~FGDBTablxFileAnalyse()
 {
 	this->thread.Stop();
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
@@ -120,19 +121,19 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 	this->tags.MemFreeAll();
 }
 
-Text::CStringNN IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
+Text::CStringNN IO::FileAnalyse::FGDBTablxFileAnalyse::GetFormatName()
 {
-	return CSTR("FGDB Table");
+	return CSTR("FGDB Tablx");
 }
 
-UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
+UOSInt IO::FileAnalyse::FGDBTablxFileAnalyse::GetFrameCount()
 {
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FGDBTablxFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
-	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
+	NN<IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
@@ -143,7 +144,7 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 	return true;
 }
 
-UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
+UOSInt IO::FileAnalyse::FGDBTablxFileAnalyse::GetFrameIndex(UInt64 ofst)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)this->tags.GetCount() - 1;
@@ -169,12 +170,12 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(UOSInt index)
+Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBTablxFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
-	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
+	NN<IO::FileAnalyse::FGDBTablxFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
 	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
@@ -925,22 +926,22 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 	return frame;
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::IsError()
+Bool IO::FileAnalyse::FGDBTablxFileAnalyse::IsError()
 {
 	return this->fd == 0;
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::IsParsing()
+Bool IO::FileAnalyse::FGDBTablxFileAnalyse::IsParsing()
 {
 	return this->thread.IsRunning();
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(Text::CStringNN outputFile)
+Bool IO::FileAnalyse::FGDBTablxFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 {
 	return false;
 }
 
-Text::CStringNN IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
+Text::CStringNN IO::FileAnalyse::FGDBTablxFileAnalyse::TagTypeGetName(TagType tagType)
 {
 	switch (tagType)
 	{

@@ -105,74 +105,47 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 {
 	NN<Data::QueryConditions> nncondition;
 	UInt8 sizeBuff[4];
-	this->rowData.Delete();
-	if (this->indexBuff.GetSize() > 0)
+	while (true)
 	{
-		while (true)
+		this->rowData.Delete();
+		if (this->indexBuff.GetSize() > 0)
 		{
-			if (this->indexNext >= this->indexCnt)
+			while (true)
 			{
-				return false;
-			}
+				if (this->indexNext >= this->indexCnt)
+				{
+					return false;
+				}
 
-			this->currOfst = ReadUInt32(&this->indexBuff[this->indexNext * 5 + 1]);
-			this->currOfst = (this->currOfst << 8) + this->indexBuff[this->indexNext * 5];
-			this->indexNext++;
-			this->objectId = (Int32)this->indexNext;
-			if (this->currOfst != 0)
-			{
-				if (this->fd->GetRealData(this->currOfst, 4, BYTEARR(sizeBuff)) != 4)
+				this->currOfst = ReadUInt32(&this->indexBuff[this->indexNext * 5 + 1]);
+				this->currOfst = (this->currOfst << 8) + this->indexBuff[this->indexNext * 5];
+				this->indexNext++;
+				this->objectId = (Int32)this->indexNext;
+				if (this->currOfst != 0)
 				{
-					return false;
-				}
-				this->rowOfst = this->currOfst;
-				Int32 size = ReadInt32(sizeBuff);
-				if (size < 0)
-				{
-					return false;
-				}
-				else
-				{
-					this->rowSize = (UInt32)size;
-				}
-				if (this->currOfst + 4 + this->rowSize > this->fd->GetDataSize())
-				{
-					return false;
-				}
-				Bool valid = true;
-				if (conditions.SetTo(nncondition))
-				{
-					this->rowData.ChangeSize(this->rowSize);
-					if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
+					if (this->fd->GetRealData(this->currOfst, 4, BYTEARR(sizeBuff)) != 4)
 					{
-						this->rowData.Delete();
 						return false;
 					}
-
-					if (!nncondition->IsValid(*this, valid))
+					this->rowOfst = this->currOfst;
+					Int32 size = ReadInt32(sizeBuff);
+					if (size < 0)
 					{
-						valid = true;
+						return false;
 					}
-				}
-				if (valid)
-				{
-					if (this->dataOfst == 0)
+					else
 					{
-						if (this->maxCnt == 0)
-						{
-							return false;
-						}
-						this->maxCnt--;
-						break;
+						this->rowSize = (UInt32)size;
 					}
-					this->dataOfst--;
+					if (this->currOfst + 4 + this->rowSize > this->fd->GetDataSize())
+					{
+						return false;
+					}
+					break;
 				}
 			}
 		}
-	}
-	else
-	{
-		while (true)
+		else
 		{
 			Bool lastIsFree = false;
 			while (true)
@@ -203,112 +176,104 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 				return false;
 			}
 			this->objectId++;
-			Bool valid = true;
-			if (conditions.SetTo(nncondition))
+		}
+		this->rowData.ChangeSize(this->rowSize);
+		if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
+		{
+			this->rowData.Delete();
+			return false;
+		}
+		this->rowOfst = this->currOfst;
+		this->currOfst += 4 + this->rowSize;
+		UOSInt rowOfst = (UOSInt)(this->tableInfo->nullableCnt + 7) >> 3;
+		UOSInt nullIndex = 0;
+		FileGDBFieldInfo *field;
+		UInt64 v;
+		UOSInt i = 0;
+		UOSInt j = this->tableInfo->fields->GetCount();
+		while (i < j)
+		{
+			field = this->tableInfo->fields->GetItem(i);
+			this->fieldNull[i] = false;
+			if (field->flags & 1)
 			{
-				this->rowData.ChangeSize(this->rowSize);
-				if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
-				{
-					this->rowData.Delete();
-					return false;
-				}
-
-				if (!nncondition->IsValid(*this, valid))
-				{
-					valid = true;
-				}
+				this->fieldNull[i] = ((this->rowData[(nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
+				nullIndex++;
 			}
-			if (valid)
+			this->fieldOfst[i] = (UInt32)rowOfst;
+			if (!this->fieldNull[i])
 			{
-				if (this->dataOfst == 0)
+				switch (field->fieldType)
 				{
-					if (this->maxCnt == 0)
+				case 0:
+					rowOfst += 2;
+					break;
+				case 1:
+					rowOfst += 4;
+					break;
+				case 2:
+					rowOfst += 4;
+					break;
+				case 3:
+					rowOfst += 8;
+					break;
+				case 4:
+					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
+					if (rowOfst + v > this->rowSize)
 					{
 						return false;
 					}
-					this->maxCnt--;
+					rowOfst += (UOSInt)v;
+					break;
+				case 5:
+					rowOfst += 8;
+					break;
+				case 6:
+					break;
+				case 7:
+					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
+					rowOfst += (UOSInt)v;
+					break;
+				case 8:
+					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
+					rowOfst += (UOSInt)v;
+					break;
+				case 9:
+					//////////////////////////////
+					break;
+				case 10:
+				case 11:
+					rowOfst += 16;
+					break;
+				case 12:
+					rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
+					rowOfst += (UOSInt)v;
 					break;
 				}
-				this->dataOfst--;
 			}
-			this->currOfst += 4 + this->rowSize;
+			i++;
 		}
-	}
-	this->rowData.ChangeSize(this->rowSize);
-	if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
-	{
-		this->rowData.Delete();
-		return false;
-	}
-	this->rowOfst = this->currOfst;
-	this->currOfst += 4 + this->rowSize;
-	UOSInt rowOfst = (UOSInt)(this->tableInfo->nullableCnt + 7) >> 3;
-	UOSInt nullIndex = 0;
-	FileGDBFieldInfo *field;
-	UInt64 v;
-	UOSInt i = 0;
-	UOSInt j = this->tableInfo->fields->GetCount();
-	while (i < j)
-	{
-		field = this->tableInfo->fields->GetItem(i);
-		this->fieldNull[i] = false;
-		if (field->flags & 1)
+		Bool valid = true;
+		if (conditions.SetTo(nncondition))
 		{
-			this->fieldNull[i] = ((this->rowData[(nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
-			nullIndex++;
-		}
-		this->fieldOfst[i] = (UInt32)rowOfst;
-		if (!this->fieldNull[i])
-		{
-			switch (field->fieldType)
+			if (!nncondition->IsValid(*this, valid))
 			{
-			case 0:
-				rowOfst += 2;
-				break;
-			case 1:
-				rowOfst += 4;
-				break;
-			case 2:
-				rowOfst += 4;
-				break;
-			case 3:
-				rowOfst += 8;
-				break;
-			case 4:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-				if (rowOfst + v > this->rowSize)
+				valid = true;
+			}
+		}
+		if (valid)
+		{
+			if (this->dataOfst == 0)
+			{
+				if (this->maxCnt == 0)
 				{
 					return false;
 				}
-				rowOfst += (UOSInt)v;
-				break;
-			case 5:
-				rowOfst += 8;
-				break;
-			case 6:
-				break;
-			case 7:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-				rowOfst += (UOSInt)v;
-				break;
-			case 8:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-				rowOfst += (UOSInt)v;
-				break;
-			case 9:
-				//////////////////////////////
-				break;
-			case 10:
-			case 11:
-				rowOfst += 16;
-				break;
-			case 12:
-				rowOfst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, rowOfst, v);
-				rowOfst += (UOSInt)v;
+				this->maxCnt--;
 				break;
 			}
+			this->dataOfst--;
 		}
-		i++;
 	}
 	return true;
 }
@@ -1163,20 +1128,26 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			if (nCurves > 0)
 			{
 				UOSInt type;
+				UInt64 uv;
 				i = 0;
 				while (i < nCurves)
 				{
-					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, iv);
+					ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, uv);
 					type = this->rowData[ofst];
 					if (type == 1) //esriSegmentArc
 					{
-						curve.AddArc((UOSInt)iv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
+						curve.AddArc((UOSInt)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadUInt32(&this->rowData[ofst + 17]));
 						ofst += 21;
+					}
+					else if (type == 4) //esriSegmentBezier3Curve
+					{
+						curve.AddBezier3Curve((UOSInt)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25])));
+						ofst += 33;
 					}
 					else if (type == 5) //esriSegmentEllipticArc
 					{
-						printf("FGDB: EllipticArc is not supported\r\n");
-						break;
+						curve.AddEllipticArc((UOSInt)uv, Math::Coord2DDbl(ReadDouble(&this->rowData[ofst + 1]), ReadDouble(&this->rowData[ofst + 9])), ReadDouble(&this->rowData[ofst + 17]), ReadDouble(&this->rowData[ofst + 25]), ReadDouble(&this->rowData[ofst + 33]), ReadUInt32(&this->rowData[ofst + 41]));
+						ofst += 45;
 					}
 					else
 					{
@@ -1502,9 +1473,7 @@ NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
-			return Data::VariItem::NewStr(sb.ToCString());
+			return Data::VariItem::NewStr(Text::CStringNN(&this->rowData[ofst], (UOSInt)v));
 		}
 	case 5:
 		{

@@ -578,7 +578,8 @@ Bool Data::QueryConditions::FieldCondition::Eval(NN<Data::ObjectGetter> getter, 
 	NN<Data::VariItem> item = getter->GetNewItem(this->fieldName->ToCString());
 	Bool ret = this->TestValid(item);
 	item.Delete();
-	return ret;
+	outVal.Set(ret);
+	return true;
 }
 
 void Data::QueryConditions::FieldCondition::GetFieldList(NN<Data::ArrayListStringNN> fieldList) const

@@ -811,7 +811,7 @@ Int32 WKTParseTest()
 
 Int32 FGDBTest()
 {
-	Text::CStringNN fgdbPath = CSTR("/home/sswroom/ProgsHome/PROGS/StoneRoad/0_req/20241024 EMSD POC/20241009/iB1000.gdb");
+	Text::CStringNN fgdbPath = CSTR("/home/sswroom/ProgsHome/PROGS/StoneRoad/0_req/20241118 EMSD POC/3DPN_P2.gdb");
 	/*
 	-Building
 	BuiltStructurePolygon
@@ -836,14 +836,14 @@ Int32 FGDBTest()
 		NN<Map::ESRI::FileGDBTable> table;
 		NN<DB::DBReader> r;
 		NN<Text::String> s;
-		if (fgdb->GetTable(CSTR("Building")).SetTo(table))
+		if (fgdb->GetTable(CSTR("PedestrianRoute")).SetTo(table))
 		{
 			printf("File Name: %s\r\n", table->GetFileName()->v.Ptr());
 			if (table->OpenReader(0, 0, 0, 0, 0).SetTo(r))
 			{
 				while (r->ReadNext())
 				{
-					if (r->GetInt32(0) == 12499)
+					if (r->GetInt32(0) == 1)
 					{
 						printf("Row Ofst: 0x%llx\r\n", r->GetRowFileOfst());
 						i = 0;

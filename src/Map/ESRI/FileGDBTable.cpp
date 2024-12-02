@@ -19,10 +19,11 @@ Map::ESRI::FileGDBTable::FileGDBTable(Text::CStringNN tableName, NN<IO::StreamDa
 	UInt8 hdrBuff[44];
 	if (gdbtablxFD.SetTo(nngdbtablxFD) && nngdbtablxFD->GetRealData(0, 16, BYTEARR(hdrBuff)) == 16)
 	{
-		if (ReadUInt32(&hdrBuff[0]) == 3 && ReadUInt32(&hdrBuff[12]) == 5 && (ReadUInt32(&hdrBuff[4]) >= 1 && ReadUInt32(&hdrBuff[4]) <= 10))
+		if (ReadUInt32(&hdrBuff[0]) == 3 && ReadUInt32(&hdrBuff[12]) == 5 && (ReadUInt32(&hdrBuff[4]) >= 1))
 		{
+			UInt32 n1024Blocks = ReadUInt32(&hdrBuff[4]);
 			this->indexCnt = ReadUInt32(&hdrBuff[8]);
-			if (nngdbtablxFD->GetDataSize() >= 16 + this->indexCnt * 5)
+			if (nngdbtablxFD->GetDataSize() >= 16 + n1024Blocks * 1024 && nngdbtablxFD->GetDataSize() >= this->indexCnt * 5)
 			{
 				this->gdbtablxFD = nngdbtablxFD->GetPartialData(0, nngdbtablxFD->GetDataSize());
 			}

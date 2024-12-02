@@ -9,6 +9,7 @@
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
 
+//https://stackoverflow.com/questions/41537950/converting-an-svg-arc-to-lines/41544540#41544540
 Map::ESRI::ESRICurve::ESRICurve(UInt32 srid, UnsafeArray<UInt32> ptOfstList, UOSInt nParts, UnsafeArray<Math::Coord2DDbl> ptArr, UOSInt nPoint, UnsafeArrayOpt<Double> zArr, UnsafeArrayOpt<Double> mArr)
 {
 	this->srid = srid;
