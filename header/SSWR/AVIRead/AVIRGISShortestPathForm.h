@@ -43,6 +43,7 @@ namespace SSWR
 			Math::Coord2DDbl startPos;
 			Math::Coord2DDbl endPos;
 			Data::ArrayListNN<Math::Geometry::LineString> spathLineList;
+			NN<Map::ShortestPath3D::PathSession> sess;
 
 			static void __stdcall OnNetworkClicked(AnyType userObj);
 			static void __stdcall OnStartPosClicked(AnyType userObj);

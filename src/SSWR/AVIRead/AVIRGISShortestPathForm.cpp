@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 		{
 			startPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, startPos);
 			endPos = Math::CoordinateSystem::Convert(mapCsys, pathCsys, endPos);
-			if (me->spath.GetShortestPathDetail(startPos, endPos, lineList, propList))
+			if (me->spath.GetShortestPathDetail(me->sess, startPos, endPos, lineList, propList))
 			{
 				Math::CoordinateSystemConverter converter(pathCsys, mapCsys);
 				i = 0;
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRGISShortestPathForm::OnSearchClicked(AnyType u
 		}
 		else
 		{
-			if (me->spath.GetShortestPathDetail(startPos, endPos, lineList, propList))
+			if (me->spath.GetShortestPathDetail(me->sess, startPos, endPos, lineList, propList))
 			{
 				i = 0;
 				j = lineList.GetCount();
@@ -257,6 +257,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	this->core = core;
 	this->navi = navi;
 	this->layer = layer;
+	this->sess = this->spath.CreateSession();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText(CSTR("Shortest Path"));
 	this->SetFont(0, 0, 8.25, false);
@@ -326,6 +327,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 
 SSWR::AVIRead::AVIRGISShortestPathForm::~AVIRGISShortestPathForm()
 {
+	this->spath.FreeSession(this->sess);
 }
 
 void SSWR::AVIRead::AVIRGISShortestPathForm::OnMonitorChanged()

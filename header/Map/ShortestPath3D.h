@@ -30,11 +30,6 @@ namespace Map
 			Double z;
 			Data::ArrayListNN<LineInfo> lines;
 			UInt32 networkId;
-			Double calcNodeDist;
-			Math::Coord2DDbl calcFrom;
-			Double calcFromZ;
-			NN<Math::Geometry::LineString> calcLine;
-			Data::DataArray<Optional<Text::String>> calcLineProp;
 		};
 
 		struct AreaInfo
@@ -50,6 +45,32 @@ namespace Map
 			Double dist;
 			NN<LineInfo> line;
 			NN<Math::Geometry::LineString> vec;
+		};
+
+		struct NodeSession
+		{
+			NN<NodeInfo> node;
+			Double calcNodeDist;
+			Math::Coord2DDbl calcFrom;
+			Double calcFromZ;
+			NN<Math::Geometry::LineString> calcLine;
+			Data::DataArray<Optional<Text::String>> calcLineProp;
+		};
+
+		struct AreaSession
+		{
+			OSInt x;
+			OSInt y;
+			Data::ArrayListNN<NodeSession> nodes;
+		};
+
+		struct PathSession
+		{
+			Optional<Math::Geometry::LineString> lastStartHalfLine1;
+			Optional<Math::Geometry::LineString> lastStartHalfLine2;
+			Optional<Math::Geometry::LineString> lastEndHalfLine1;
+			Optional<Math::Geometry::LineString> lastEndHalfLine2;
+			Data::ArrayListNN<AreaSession> areas;
 		};
 
 	private:
@@ -71,13 +92,13 @@ namespace Map
 			virtual OSInt Compare(NN<PathResult> a, NN<PathResult> b) const;
 		};
 
-		class NodeDistanceComparator : public Data::Comparator<NN<NodeInfo>>
+		class NodeDistanceComparator : public Data::Comparator<NN<NodeSession>>
 		{
 		public:
 			NodeDistanceComparator();
 			virtual ~NodeDistanceComparator();
 
-			virtual OSInt Compare(NN<NodeInfo> a, NN<NodeInfo> b) const;
+			virtual OSInt Compare(NN<NodeSession> a, NN<NodeSession> b) const;
 		};
 
 		NN<Math::CoordinateSystem> csys;
@@ -85,20 +106,22 @@ namespace Map
 		Data::ArrayListNN<LineInfo> lines;
 		Data::ArrayListNN<AreaInfo> areas;
 		UInt32 networkCnt;
-		Sync::Mutex mut;
 		Optional<DB::TableDef> propDef;
-		Optional<Math::Geometry::LineString> lastStartHalfLine1;
-		Optional<Math::Geometry::LineString> lastStartHalfLine2;
-		Optional<Math::Geometry::LineString> lastEndHalfLine1;
-		Optional<Math::Geometry::LineString> lastEndHalfLine2;
+		NN<NodeInfo> unknownNode;
 
 		static void FreeLineInfo(NN<LineInfo> lineInfo);
 		static void FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }
 		static void FreeNodeInfo(NN<NodeInfo> nodeInfo) { nodeInfo.Delete(); }
+		static void FreeNodeSess(NN<NodeSession> nodeSess) { nodeSess.Delete(); }
+		static void FreeAreaSess(NN<AreaSession> areaSess) { areaSess->nodes.FreeAll(FreeNodeSess); areaSess.Delete(); }
 		static void AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo);
 		NN<AreaInfo> GetArea(Math::Coord2DDbl pos);
+		Optional<AreaInfo> GetAreaOpt(Math::Coord2DDbl pos) const;
+		NN<AreaSession> GetAreaSess(NN<PathSession> sess, Math::Coord2DDbl pos) const;
 		Optional<AreaInfo> GetExistingArea(OSInt areaX, OSInt areaY) const;
 		NN<NodeInfo> GetNode(Math::Coord2DDbl pos, Double z);
+		NN<NodeInfo> GetNodeOrUnknown(Math::Coord2DDbl pos, Double z) const;
+		NN<NodeSession> GetNodeSess(NN<PathSession> sess, Math::Coord2DDbl pos, Double z) const;
 		void FillNetwork(NN<NodeInfo> nodeInfo, UInt32 networkId);
 		void AddVector(NN<Math::Geometry::Vector2D> vec, Data::DataArray<Optional<Text::String>> properties);
 	public:
@@ -110,8 +133,10 @@ namespace Map
 		void BuildNetwork();
 		void GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const;
 		void GetNearestPaths(NN<Data::ArrayListNN<PathResult>> paths, Math::Coord2DDbl pos) const;
-		Bool GetShortestPathDetail(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList);
-		Optional<Math::Geometry::LineString> GetShortestPath(Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd);
+		NN<PathSession> CreateSession() const;
+		void FreeSession(NN<PathSession> sess) const;
+		Bool GetShortestPathDetail(NN<PathSession> sess, Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList) const;
+		Optional<Math::Geometry::LineString> GetShortestPath(NN<PathSession> sess, Math::Coord2DDbl posStart, Math::Coord2DDbl posEnd) const;
 		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		Optional<DB::TableDef> GetPropDef() const;
 		UInt32 GetNetworkCnt() const;
