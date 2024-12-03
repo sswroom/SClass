@@ -21,17 +21,17 @@ namespace IO
 			virtual ~BufferedStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
-			virtual NN<Text::String> GetFullName();
-			virtual Text::CString GetShortName();
+			virtual NN<Text::String> GetFullName() const;
+			virtual Text::CString GetShortName() const;
 			virtual void SetFullName(Text::CStringNN fullName);
-			virtual UInt64 GetDataSize();
-			virtual UnsafeArrayOpt<const UInt8> GetPointer();
+			virtual UInt64 GetDataSize() const;
+			virtual UnsafeArrayOpt<const UInt8> GetPointer() const;
 
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
-			virtual Bool IsFullFile();
-			virtual NN<Text::String> GetFullFileName();
-			virtual Bool IsLoading();
-			virtual UOSInt GetSeekCount();
+			virtual Bool IsFullFile() const;
+			virtual NN<Text::String> GetFullFileName() const;
+			virtual Bool IsLoading() const;
+			virtual UOSInt GetSeekCount() const;
 		};
 	}
 }

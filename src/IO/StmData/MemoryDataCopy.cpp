@@ -63,7 +63,7 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, Da
 	return length;
 }
 
-NN<Text::String> IO::StmData::MemoryDataCopy::GetFullName()
+NN<Text::String> IO::StmData::MemoryDataCopy::GetFullName() const
 {
 	NN<Text::String> retStr;
 	if (this->stat->fullName.SetTo(retStr))
@@ -71,7 +71,7 @@ NN<Text::String> IO::StmData::MemoryDataCopy::GetFullName()
 	return Text::String::NewEmpty();
 }
 
-Text::CString IO::StmData::MemoryDataCopy::GetShortName()
+Text::CString IO::StmData::MemoryDataCopy::GetShortName() const
 {
 	NN<Text::String> fullName;
 	if (this->stat->fullName.SetTo(fullName))
@@ -92,12 +92,12 @@ void IO::StmData::MemoryDataCopy::SetFullName(Text::CStringNN fullName)
 	this->stat->fullName = Text::String::New(fullName);
 }
 
-UInt64 IO::StmData::MemoryDataCopy::GetDataSize()
+UInt64 IO::StmData::MemoryDataCopy::GetDataSize() const
 {
 	return this->dataLength;
 }
 
-UnsafeArrayOpt<const UInt8> IO::StmData::MemoryDataCopy::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::MemoryDataCopy::GetPointer() const
 {
 	return this->data;
 }
@@ -118,17 +118,17 @@ NN<IO::StreamData> IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UI
 	return data;
 }
 
-Bool IO::StmData::MemoryDataCopy::IsFullFile()
+Bool IO::StmData::MemoryDataCopy::IsFullFile() const
 {
 	return false;
 }
 
-Bool IO::StmData::MemoryDataCopy::IsLoading()
+Bool IO::StmData::MemoryDataCopy::IsLoading() const
 {
 	return false;
 }
 
-UOSInt IO::StmData::MemoryDataCopy::GetSeekCount()
+UOSInt IO::StmData::MemoryDataCopy::GetSeekCount() const
 {
 	return 0;
 }

@@ -35,12 +35,12 @@ UOSInt IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UOSInt length, Dat
 	return length;
 }
 
-NN<Text::String> IO::StmData::MemoryDataRef::GetFullName()
+NN<Text::String> IO::StmData::MemoryDataRef::GetFullName() const
 {
 	return Text::String::OrEmpty(this->name);
 }
 
-Text::CString IO::StmData::MemoryDataRef::GetShortName()
+Text::CString IO::StmData::MemoryDataRef::GetShortName() const
 {
 	NN<Text::String> name;
 	if (this->name.SetTo(name))
@@ -57,12 +57,12 @@ void IO::StmData::MemoryDataRef::SetFullName(Text::CStringNN fullName)
 	this->name = Text::String::New(fullName);
 }
 
-UInt64 IO::StmData::MemoryDataRef::GetDataSize()
+UInt64 IO::StmData::MemoryDataRef::GetDataSize() const
 {
 	return this->data.GetSize();
 }
 
-UnsafeArrayOpt<const UInt8> IO::StmData::MemoryDataRef::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::MemoryDataRef::GetPointer() const
 {
 	return this->data.Arr();
 }
@@ -88,17 +88,17 @@ NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UIn
 	return data;
 }
 
-Bool IO::StmData::MemoryDataRef::IsFullFile()
+Bool IO::StmData::MemoryDataRef::IsFullFile() const
 {
 	return false;
 }
 
-Bool IO::StmData::MemoryDataRef::IsLoading()
+Bool IO::StmData::MemoryDataRef::IsLoading() const
 {
 	return false;
 }
 
-UOSInt IO::StmData::MemoryDataRef::GetSeekCount()
+UOSInt IO::StmData::MemoryDataRef::GetSeekCount() const
 {
 	return 0;
 }

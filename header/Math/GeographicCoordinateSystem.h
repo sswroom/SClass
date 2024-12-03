@@ -27,10 +27,10 @@ namespace Math
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		NN<Math::EarthEllipsoid> GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
-		Text::CString GetDatumName() const;
-		NN<const DatumData1> GetDatum() const;
-		PrimemType GetPrimem() const;
-		UnitType GetUnit() const;
+		Text::CString GetDatumName() const { return Text::CString(this->datum.name, this->datum.nameLen); }
+		NN<const DatumData1> GetDatum() const { return this->datum; }
+		PrimemType GetPrimem() const { return this->primem; }
+		UnitType GetUnit() const { return this->unit; }
 
 		Math::Vector3 ToCartesianCoordRad(Math::Vector3 lonLatH) const;
 		Math::Vector3 FromCartesianCoordRad(Math::Vector3 coord) const;

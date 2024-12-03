@@ -24,15 +24,15 @@ namespace IO
 			virtual ~BlockStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
-			virtual NN<Text::String> GetFullName();
-			virtual Text::CString GetShortName();
-			virtual UInt64 GetDataSize();
-			virtual UnsafeArrayOpt<const UInt8> GetPointer();
+			virtual NN<Text::String> GetFullName() const;
+			virtual Text::CString GetShortName() const;
+			virtual UInt64 GetDataSize() const;
+			virtual UnsafeArrayOpt<const UInt8> GetPointer() const;
 
 			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
-			virtual Bool IsFullFile();
-			virtual Bool IsLoading();
-			virtual UOSInt GetSeekCount();
+			virtual Bool IsFullFile() const;
+			virtual Bool IsLoading() const;
+			virtual UOSInt GetSeekCount() const;
 
 			void Append(UInt64 ofst, UInt32 length);
 		};

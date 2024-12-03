@@ -86,26 +86,26 @@ UOSInt IO::StmData::FileViewData::GetRealData(UInt64 offset, UOSInt length, Data
 	return (UOSInt)(endOfst - startOfst);
 }
 
-UInt64 IO::StmData::FileViewData::GetDataSize()
+UInt64 IO::StmData::FileViewData::GetDataSize() const
 {
 	return dataLength;
 }
 
-Text::CString IO::StmData::FileViewData::GetShortName()
+Text::CString IO::StmData::FileViewData::GetShortName() const
 {
 	if (fdh == 0)
 		return CSTR_NULL;
 	return fdh->fileName;
 }
 
-NN<Text::String> IO::StmData::FileViewData::GetFullName()
+NN<Text::String> IO::StmData::FileViewData::GetFullName() const
 {
 	if (fdh == 0)
 		return Text::String::NewEmpty();
 	return fdh->fullName;
 }
 
-const UInt8 *IO::StmData::FileViewData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::FileViewData::GetPointer() const
 {
 	if (fdh == 0)
 		return 0;
@@ -119,17 +119,17 @@ NN<IO::StreamData> IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt
 	return data;
 }
 
-Bool IO::StmData::FileViewData::IsFullFile()
+Bool IO::StmData::FileViewData::IsFullFile() const
 {
 	return this->dataOffset == 0;
 }
 
-Bool IO::StmData::FileViewData::IsLoading()
+Bool IO::StmData::FileViewData::IsLoading() const
 {
 	return false;
 }
 
-UOSInt IO::StmData::FileViewData::GetSeekCount()
+UOSInt IO::StmData::FileViewData::GetSeekCount() const
 {
 	return 0;
 }

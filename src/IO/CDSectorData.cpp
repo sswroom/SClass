@@ -106,22 +106,22 @@ UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, Data::B
 	return retSize;
 }
 
-NN<Text::String> IO::CDSectorStreamData::GetFullName()
+NN<Text::String> IO::CDSectorStreamData::GetFullName() const
 {
 	return this->data->GetSourceNameObj();
 }
 
-Text::CString IO::CDSectorStreamData::GetShortName()
+Text::CString IO::CDSectorStreamData::GetShortName() const
 {
 	return this->data->GetSourceNameObj()->ToCString();
 }
 
-UInt64 IO::CDSectorStreamData::GetDataSize()
+UInt64 IO::CDSectorStreamData::GetDataSize() const
 {
 	return this->dataSize;
 }
 
-UnsafeArrayOpt<const UInt8> IO::CDSectorStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::CDSectorStreamData::GetPointer() const
 {
 	return 0;
 }
@@ -143,17 +143,17 @@ NN<IO::StreamData> IO::CDSectorStreamData::GetPartialData(UInt64 offset, UInt64 
 	return data;
 }
 
-Bool IO::CDSectorStreamData::IsFullFile()
+Bool IO::CDSectorStreamData::IsFullFile() const
 {
 	return false;
 }
 
-Bool IO::CDSectorStreamData::IsLoading()
+Bool IO::CDSectorStreamData::IsLoading() const
 {
 	return false;
 }
 
-UOSInt IO::CDSectorStreamData::GetSeekCount()
+UOSInt IO::CDSectorStreamData::GetSeekCount() const
 {
 	return 0;
 }

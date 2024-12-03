@@ -64,12 +64,12 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 	return length + ret;
 }
 
-NN<Text::String> IO::StmData::BufferedStreamData::GetFullName()
+NN<Text::String> IO::StmData::BufferedStreamData::GetFullName() const
 {
 	return this->stmData->GetFullName();
 }
 
-Text::CString IO::StmData::BufferedStreamData::GetShortName()
+Text::CString IO::StmData::BufferedStreamData::GetShortName() const
 {
 	return this->stmData->GetShortName();
 }
@@ -79,12 +79,12 @@ void IO::StmData::BufferedStreamData::SetFullName(Text::CStringNN fullName)
 	this->stmData->SetFullName(fullName);
 }
 
-UInt64 IO::StmData::BufferedStreamData::GetDataSize()
+UInt64 IO::StmData::BufferedStreamData::GetDataSize() const
 {
 	return this->stmData->GetDataSize();
 }
 
-UnsafeArrayOpt<const UInt8> IO::StmData::BufferedStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::BufferedStreamData::GetPointer() const
 {
 	return this->stmData->GetPointer();
 }
@@ -94,22 +94,22 @@ NN<IO::StreamData> IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset
 	return this->stmData->GetPartialData(offset, length);
 }
 
-Bool IO::StmData::BufferedStreamData::IsFullFile()
+Bool IO::StmData::BufferedStreamData::IsFullFile() const
 {
 	return this->stmData->IsFullFile();
 }
 
-NN<Text::String> IO::StmData::BufferedStreamData::GetFullFileName()
+NN<Text::String> IO::StmData::BufferedStreamData::GetFullFileName() const
 {
 	return this->stmData->GetFullFileName();
 }
 
-Bool IO::StmData::BufferedStreamData::IsLoading()
+Bool IO::StmData::BufferedStreamData::IsLoading() const
 {
 	return this->stmData->IsLoading();
 }
 
-UOSInt IO::StmData::BufferedStreamData::GetSeekCount()
+UOSInt IO::StmData::BufferedStreamData::GetSeekCount() const
 {
 	return this->stmData->GetSeekCount();
 }

@@ -19,18 +19,7 @@ Map::ShortestPath3D::LineComparator::~LineComparator()
 
 OSInt Map::ShortestPath3D::LineComparator::Compare(NN<LineInfo> a, NN<LineInfo> b) const
 {
-	if (a->index > b->index)
-	{
-		return 1;
-	}
-	else if (a->index < b->index)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
+	return (OSInt)a->index - (OSInt)b->index;
 }
 
 Map::ShortestPath3D::PathResultComparator::PathResultComparator()

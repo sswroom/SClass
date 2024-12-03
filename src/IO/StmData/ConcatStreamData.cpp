@@ -104,17 +104,17 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	return readTotal;
 }
 
-NN<Text::String> IO::StmData::ConcatStreamData::GetFullName()
+NN<Text::String> IO::StmData::ConcatStreamData::GetFullName() const
 {
 	return this->cdb->fileName;
 }
 
-Text::CString IO::StmData::ConcatStreamData::GetShortName()
+Text::CString IO::StmData::ConcatStreamData::GetShortName() const
 {
 	return this->cdb->fileName->ToCString();
 }
 
-UInt64 IO::StmData::ConcatStreamData::GetDataSize()
+UInt64 IO::StmData::ConcatStreamData::GetDataSize() const
 {
 	if (this->dataLength == (UOSInt)-1)
 	{
@@ -126,7 +126,7 @@ UInt64 IO::StmData::ConcatStreamData::GetDataSize()
 	}
 }
 
-UnsafeArrayOpt<const UInt8> IO::StmData::ConcatStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::ConcatStreamData::GetPointer() const
 {
 	return 0;
 }
@@ -157,17 +157,17 @@ NN<IO::StreamData> IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, 
 	}
 }
 
-Bool IO::StmData::ConcatStreamData::IsFullFile()
+Bool IO::StmData::ConcatStreamData::IsFullFile() const
 {
 	return false;
 }
 
-Bool IO::StmData::ConcatStreamData::IsLoading()
+Bool IO::StmData::ConcatStreamData::IsLoading() const
 {
 	return false;
 }
 
-UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
+UOSInt IO::StmData::ConcatStreamData::GetSeekCount() const
 {
 	UOSInt ret = 0;
 	NN<IO::StreamData> data;

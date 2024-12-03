@@ -313,7 +313,7 @@ UOSInt Net::HTTPData::GetRealData(UInt64 offset, UOSInt length, Data::ByteArray 
 	return byteRead;
 }
 
-UInt64 Net::HTTPData::GetDataSize()
+UInt64 Net::HTTPData::GetDataSize() const
 {
 	if (dataLength == (UOSInt)-1)
 	{
@@ -321,7 +321,7 @@ UInt64 Net::HTTPData::GetDataSize()
 		{
 			if (fdh->fileLength != 0 || !fdh->isLoading)
 			{
-				this->dataLength = fdh->fileLength;
+				((HTTPData*)this)->dataLength = fdh->fileLength;
 				break;
 			}
 			Sync::SimpleThread::Sleep(10);
@@ -330,14 +330,14 @@ UInt64 Net::HTTPData::GetDataSize()
 	return dataLength;
 }
 
-NN<Text::String> Net::HTTPData::GetFullName()
+NN<Text::String> Net::HTTPData::GetFullName() const
 {
 	if (fdh == 0)
 		return Text::String::NewEmpty();
 	return fdh->url;
 }
 
-Text::CString Net::HTTPData::GetShortName()
+Text::CString Net::HTTPData::GetShortName() const
 {
 	if (fdh == 0)
 		return CSTR_NULL;
@@ -365,7 +365,7 @@ void Net::HTTPData::SetFullName(Text::CStringNN fullName)
 	mutUsage.EndUse();
 }
 
-UnsafeArrayOpt<const UInt8> Net::HTTPData::GetPointer()
+UnsafeArrayOpt<const UInt8> Net::HTTPData::GetPointer() const
 {
 	return 0;
 }
@@ -377,19 +377,19 @@ NN<IO::StreamData> Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
 	return data;
 }
 
-Bool Net::HTTPData::IsFullFile()
+Bool Net::HTTPData::IsFullFile() const
 {
 	return this->dataOffset == 0;
 }
 
-Bool Net::HTTPData::IsLoading()
+Bool Net::HTTPData::IsLoading() const
 {
 	if (fdh == 0)
 		return false;
 	return fdh->isLoading;
 }
 
-UOSInt Net::HTTPData::GetSeekCount()
+UOSInt Net::HTTPData::GetSeekCount() const
 {
 	if (fdh == 0)
 		return 0;

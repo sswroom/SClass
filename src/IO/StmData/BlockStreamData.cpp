@@ -60,22 +60,22 @@ UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, D
 	return totalLength;
 }
 
-NN<Text::String> IO::StmData::BlockStreamData::GetFullName()
+NN<Text::String> IO::StmData::BlockStreamData::GetFullName() const
 {
 	return this->sd->GetFullName();
 }
 
-Text::CString IO::StmData::BlockStreamData::GetShortName()
+Text::CString IO::StmData::BlockStreamData::GetShortName() const
 {
 	return this->sd->GetShortName();
 }
 
-UInt64 IO::StmData::BlockStreamData::GetDataSize()
+UInt64 IO::StmData::BlockStreamData::GetDataSize() const
 {
 	return totalSize;
 }
 
-UnsafeArrayOpt<const UInt8> IO::StmData::BlockStreamData::GetPointer()
+UnsafeArrayOpt<const UInt8> IO::StmData::BlockStreamData::GetPointer() const
 {
 	return 0;
 }
@@ -128,17 +128,17 @@ NN<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, U
 	return data;
 }
 
-Bool IO::StmData::BlockStreamData::IsFullFile()
+Bool IO::StmData::BlockStreamData::IsFullFile() const
 {
 	return false;
 }
 
-Bool IO::StmData::BlockStreamData::IsLoading()
+Bool IO::StmData::BlockStreamData::IsLoading() const
 {
 	return this->sd->IsLoading();
 }
 
-UOSInt IO::StmData::BlockStreamData::GetSeekCount()
+UOSInt IO::StmData::BlockStreamData::GetSeekCount() const
 {
 	return this->sd->GetSeekCount();
 }

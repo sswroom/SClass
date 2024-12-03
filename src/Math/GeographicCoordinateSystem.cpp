@@ -111,26 +111,6 @@ void Math::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) 
 	DatumData1ToString(this->datum, sb);
 }
 
-Text::CString Math::GeographicCoordinateSystem::GetDatumName() const
-{
-	return Text::CString(this->datum.name, this->datum.nameLen);
-}
-
-NN<const Math::GeographicCoordinateSystem::DatumData1> Math::GeographicCoordinateSystem::GetDatum() const
-{
-	return this->datum;
-}
-
-Math::CoordinateSystem::PrimemType Math::GeographicCoordinateSystem::GetPrimem() const
-{
-	return this->primem;
-}
-
-Math::CoordinateSystem::UnitType Math::GeographicCoordinateSystem::GetUnit() const
-{
-	return this->unit;
-}
-
 Math::Vector3 Math::GeographicCoordinateSystem::ToCartesianCoordRad(Math::Vector3 lonLatH) const
 {
 	Math::Vector3 tmpPos = this->datum.spheroid.ellipsoid->ToCartesianCoordRad(lonLatH);
