@@ -38,6 +38,7 @@ namespace SSWR
 			UInt32 threadCurrCnt;
 			UInt32 connCnt;
 			UInt32 failCnt;
+			UInt64 totalSize;
 			Bool kaConn;
 			Bool enableGZip;
 			Double t;
@@ -72,6 +73,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtFailCnt;
 			NN<UI::GUILabel> lblTimeUsed;
 			NN<UI::GUITextBox> txtTimeUsed;
+			NN<UI::GUILabel> lblTotalSize;
+			NN<UI::GUITextBox> txtTotalSize;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnURLAddClicked(AnyType userObj);

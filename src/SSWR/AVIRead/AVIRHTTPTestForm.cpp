@@ -67,6 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
+	me->totalSize = 0;
 	me->threads = MemAlloc(Sync::Thread*, me->threadCnt);
 	me->clk.Start();
 	i = me->threadCnt;
@@ -117,7 +118,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> thread)
 {
 	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
-//	UInt8 buff[2048];
 	NN<Text::String> url;
 	Double timeDNS;
 	Double timeConn;
@@ -166,18 +166,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 				if (timeResp >= 0)
 				{
 					Sync::Interlocked::IncrementU32(me->connCnt);
-					if (timeResp > 0.5)
+					UInt64 totalSize = 0;
+					UOSInt readSize;
+					while ((readSize = cli->Read(BYTEARR(buff))) != 0)
 					{
-						if (timeConn > 0.5)
-						{
-							i = 0;
-						}
-						else
-						{
-							i = 0;
-						}
+						totalSize += readSize;
 					}
-					while (cli->Read(BYTEARR(buff)));
+					Sync::Interlocked::AddU64(me->totalSize, totalSize);
 				}
 				else
 				{
@@ -216,6 +211,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 				if (timeResp >= 0)
 				{
 					Sync::Interlocked::IncrementU32(me->connCnt);
+					UInt64 totalSize = 0;
+					UOSInt readSize;
+					while ((readSize = cli->Read(BYTEARR(buff))) != 0)
+					{
+						totalSize += readSize;
+					}
+					Sync::Interlocked::AddU64(me->totalSize, totalSize);
 				}
 				else
 				{
@@ -251,6 +253,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(AnyType userObj)
 	me->txtFailCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrDouble(sbuff, me->t);
 	me->txtTimeUsed->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt64(sbuff, me->totalSize);
+	me->txtTotalSize->SetText(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
@@ -326,6 +330,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->threadCurrCnt = 0;
 	this->connCnt = 0;
 	this->failCnt = 0;
+	this->totalSize = 0;
 	this->t = 0;
 	this->kaConn = false;
 	this->enableGZip = false;
@@ -334,7 +339,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
-	this->grpStatus->SetRect(0, 0, 100, 136, false);
+	this->grpStatus->SetRect(0, 0, 100, 160, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblConnLeftCnt = ui->NewLabel(this->grpStatus, CSTR("Conn Left"));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);
@@ -361,6 +366,11 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->txtTimeUsed = ui->NewTextBox(this->grpStatus, CSTR(""));
 	this->txtTimeUsed->SetRect(104, 100, 150, 23, false);
 	this->txtTimeUsed->SetReadOnly(true);
+	this->lblTotalSize = ui->NewLabel(this->grpStatus, CSTR("Total Size"));
+	this->lblTotalSize->SetRect(4, 124, 100, 23, false);
+	this->txtTotalSize = ui->NewTextBox(this->grpStatus, CSTR(""));
+	this->txtTotalSize->SetRect(104, 124, 150, 23, false);
+	this->txtTotalSize->SetReadOnly(true);
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
