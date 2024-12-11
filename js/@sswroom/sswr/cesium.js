@@ -1,8 +1,9 @@
 import * as data from "./data.js";
+import * as geometry from "./geometry.js";
 import * as kml from "./kml.js";
 import * as map from "./map.js";
 import * as math from "./math.js";
-import * as geometry from "./geometry.js";
+import * as text from "./text.js";
 
 export function screenToLatLon(viewer, x, y, ellipsoid)
 {
