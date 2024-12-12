@@ -3394,6 +3394,14 @@ Net/Google/GoogleOAuth2.h:
 @GoogleOAuth2.o
 Net/Google/GoogleServiceAccount.h:
 @GoogleServiceAccount.o
+Net/JMeter/JMeterCookieManager.h:
+@JMeterCookieManager.o
+Net/JMeter/JMeterElement.h:
+Net/JMeter/JMeterHTTPSamplerProxy.h:
+@JMeterHTTPSamplerProxy.o
+Net/JMeter/JMeterIteration.h:
+Net/JMeter/JMeterListener.h:
+Net/JMeter/JMeterStep.h:
 Net/Names/General.h:
 @NamesGeneral.o
 Net/Names/InformationFramework.h:

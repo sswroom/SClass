@@ -245,7 +245,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 		}
 		this->dataBuff[i] = 0;
 #ifdef SHOWDEBUG
-		printf("Chunk size %s\r\n", this->dataBuff);
+		printf("Chunk size %s\r\n", this->dataBuff.Ptr());
 #endif
 		j = Text::StrHex2UInt32C(this->dataBuff);
 		if (j == 0 && i == 1 && this->dataBuff[0] == '0')
@@ -888,7 +888,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff.Ptr())));
 	this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, hostLen));
 #ifdef SHOWDEBUG
-	printf("Request Data: %s", dataBuff);
+	printf("Request Data: %s", dataBuff.Ptr());
 	printf("Add Header: %s", host);
 #endif
 
@@ -1191,7 +1191,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		{
 #ifdef SHOWDEBUG
 			printf("No reply HTTP header\r\n");
-			printf("Reply: %s\r\n", (Char*)this->dataBuff);
+			printf("Reply: %s\r\n", (Char*)this->dataBuff.Ptr());
 #endif
 			this->respStatus = Net::WebStatus::SC_UNKNOWN;
 		}

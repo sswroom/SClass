@@ -1506,6 +1506,8 @@ GoogleFCMv1.o: ../../src/Net/Google/GoogleFCMv1.cpp
 GoogleIdentityToolkit.o: ../../src/Net/Google/GoogleIdentityToolkit.cpp
 GoogleOAuth2.o: ../../src/Net/Google/GoogleOAuth2.cpp
 GoogleServiceAccount.o: ../../src/Net/Google/GoogleServiceAccount.cpp
+JMeterCookieManager.o: ../../src/Net/JMeter/JMeterCookieManager.cpp
+JMeterHTTPSamplerProxy.o: ../../src/Net/JMeter/JMeterHTTPSamplerProxy.cpp
 NamesGeneral.o: ../../src/Net/Names/General.cpp
 NamesInformationFramework.o: ../../src/Net/Names/InformationFramework.cpp
 NamesPKCS1.o: ../../src/Net/Names/PKCS1.cpp

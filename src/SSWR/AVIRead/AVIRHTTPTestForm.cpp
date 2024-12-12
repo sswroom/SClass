@@ -2,6 +2,7 @@
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngineFactory.h"
+#include "Net/JMeter/JMeterHTTPSamplerProxy.h"
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -20,9 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 	}
 	me->StopThreads();
 	Text::StringBuilderUTF8 sb;
-	if (me->connURLs.GetCount() <= 0)
+	if (me->connSteps.GetCount() <= 0)
 	{
-		me->ui->ShowMsgOK(CSTR("Please enter at least 1 URL"), CSTR("Start"), me);
+		me->ui->ShowMsgOK(CSTR("Please enter at least 1 step"), CSTR("Start"), me);
 		return;
 	}
 	me->txtConcurrCnt->GetText(sb);
@@ -41,27 +42,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter valid Total Connection Count"), CSTR("Start"), me);
 		return;
 	}
-	me->kaConn = me->chkKAConn->IsChecked();
-	me->enableGZip = me->chkGZip->IsChecked();
-	if (me->cboMethod->GetSelectedIndex() == 1)
-	{
-		me->method = Net::WebUtil::RequestMethod::HTTP_POST;
-		sb.ClearStr();
-		me->txtPostSize->GetText(sb);
-		if (!sb.ToUInt32(me->postSize) || me->postSize <= 0)
-		{
-			me->threadCnt = 0;
-			me->connLeftCnt = 0;
-			me->ui->ShowMsgOK(CSTR("POST Size must be > 0"), CSTR("Start"), me);
-			return;
-		}
-	}
-	else
-	{
-		me->method = Net::WebUtil::RequestMethod::HTTP_GET;
-		me->postSize = 0;
-	}
-	
 	
 	UOSInt i;
 	me->connCnt = 0;
@@ -91,11 +71,43 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(AnyType userObj)
 		return;
 	}
 	me->txtURL->GetText(sb);
+	NN<Net::JMeter::JMeterHTTPSamplerProxy> httpRequest;
+	Net::WebUtil::RequestMethod method = (Net::WebUtil::RequestMethod)me->cboMethod->GetSelectedItem().GetOSInt();
 	if (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://")))
 	{
-		me->connURLs.Add(Text::String::New(sb.ToCString()));
-		me->lbURL->AddItem(sb.ToCString(), 0);
-		me->txtURL->SetText(CSTR(""));
+		NEW_CLASSNN(httpRequest, Net::JMeter::JMeterHTTPSamplerProxy(CSTR("HTTP Request"), method, sb.ToCString(), false, me->chkKAConn->IsChecked(), me->chkGZip->IsChecked()));
+		if (method == Net::WebUtil::RequestMethod::HTTP_POST)
+		{
+			Text::StringBuilderUTF8 sbData;
+			sb.ClearStr();
+			me->cboPostType->GetText(sb);
+			me->txtPostData->GetText(sbData);
+			if (sb.leng == 0)
+			{
+				me->ui->ShowMsgOK(CSTR("Please select post type"), CSTR("Add"), me);
+			}
+			else if (sbData.leng == 0)
+			{
+				me->ui->ShowMsgOK(CSTR("Please input post data"), CSTR("Add"), me);
+			}
+			else
+			{
+				httpRequest->SetPostContent(sb.ToCString(), sbData.ToByteArray());
+				me->connSteps.Add(httpRequest);
+				sb.ClearStr();
+				httpRequest->ToString(sb);
+				me->lbURL->AddItem(sb.ToCString(), 0);
+				me->txtURL->SetText(CSTR(""));
+			}
+		}
+		else
+		{
+			me->connSteps.Add(httpRequest);
+			sb.ClearStr();
+			httpRequest->ToString(sb);
+			me->lbURL->AddItem(sb.ToCString(), 0);
+			me->txtURL->SetText(CSTR(""));
+		}
 	}
 	else
 	{
@@ -112,123 +124,45 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("You cannot add URL while running"), CSTR("Add"), me);
 		return;
 	}
-	me->ClearURLs();
+	me->ClearSteps();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> thread)
 {
 	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
-	NN<Text::String> url;
-	Double timeDNS;
-	Double timeConn;
-	Double timeReq;
-	Double timeResp;
-	UInt8 buff[2048];
-	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
+	Data::ArrayListNN<Net::JMeter::JMeterStep> steps;
+	NN<Net::JMeter::JMeterStep> step;
 	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
-	if (me->kaConn)
+	steps.AddAll(me->connSteps);
+	while (!thread->IsStopping())
 	{
-		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, false);
-		while (!thread->IsStopping())
 		{
-			if (!me->GetNextURL().SetTo(url))
+			Sync::MutexUsage mutUsage(me->connMut);
+			if (me->connLeftCnt <= 0)
 				break;
-			if (cli->Connect(url->ToCString(), me->method, timeDNS, timeConn, false))
-			{
-				if (me->enableGZip)
-				{
-					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
-				}
-				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
-				if (me->method == Net::WebUtil::RequestMethod::HTTP_POST)
-				{
-					i = me->postSize;
-					sptr = Text::StrUOSInt(buff, i);
-					cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
-					while (i >= 2048)
-					{
-						j = cli->Write(Data::ByteArrayR(buff, 2048));
-						if (j <= 0)
-						{
-							break;
-						}
-						i -= j;
-					}
-					if (i > 0)
-					{
-						cli->Write(Data::ByteArrayR(buff, i));
-					}
-				}
-				cli->EndRequest(timeReq, timeResp);
-				if (timeResp >= 0)
-				{
-					Sync::Interlocked::IncrementU32(me->connCnt);
-					UInt64 totalSize = 0;
-					UOSInt readSize;
-					while ((readSize = cli->Read(BYTEARR(buff))) != 0)
-					{
-						totalSize += readSize;
-					}
-					Sync::Interlocked::AddU64(me->totalSize, totalSize);
-				}
-				else
-				{
-					Sync::Interlocked::IncrementU32(me->failCnt);
-				}
-				if (cli->IsError())
-				{
-					cli.Delete();
-					cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
-				}
-			}
-			else
-			{
-				cli.Delete();
-				cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
-				Sync::Interlocked::IncrementU32(me->failCnt);
-			}
+			me->connLeftCnt--;
 		}
-		cli.Delete();
-	}
-	else
-	{
-		while (!thread->IsStopping())
+		Net::JMeter::JMeterIteration iter(me->clif, me->ssl);
+		iter.AddListener(me->cookieManager);
+		Net::JMeter::JMeterResult result;
+		i = 0;
+		j = steps.GetCount();
+		while (i < j)
 		{
-			if (!me->GetNextURL().SetTo(url))
-				break;
-			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->clif, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
-			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, timeDNS, timeConn, false))
+			step = steps.GetItemNoCheck(i);
+			if (step->Step(iter, result))
 			{
-				if (me->enableGZip)
-				{
-					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
-				}
-				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
-				cli->EndRequest(timeReq, timeResp);
-				if (timeResp >= 0)
-				{
-					Sync::Interlocked::IncrementU32(me->connCnt);
-					UInt64 totalSize = 0;
-					UOSInt readSize;
-					while ((readSize = cli->Read(BYTEARR(buff))) != 0)
-					{
-						totalSize += readSize;
-					}
-					Sync::Interlocked::AddU64(me->totalSize, totalSize);
-				}
-				else
-				{
-					Sync::Interlocked::IncrementU32(me->failCnt);
-				}
+				Sync::Interlocked::IncrementU32(me->connCnt);
+				Sync::Interlocked::AddU64(me->totalSize, result.dataSize);
 			}
 			else
 			{
 				Sync::Interlocked::IncrementU32(me->failCnt);
 			}
-			cli.Delete();
+			i++;
 		}
 	}
 	cnt = Sync::Interlocked::DecrementU32(me->threadCurrCnt);
@@ -255,6 +189,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(AnyType userObj)
 	me->txtTimeUsed->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt64(sbuff, me->totalSize);
 	me->txtTotalSize->SetText(CSTRP(sbuff, sptr));
+	if (me->t <= 0 || me->connSteps.GetCount() == 0)
+	{
+		me->txtReqPerSec->SetText(CSTR("0"));
+		me->txtDataRate->SetText(CSTR("0"));
+	}
+	else
+	{
+		sptr = Text::StrDouble(sbuff, me->connCnt / me->t / (Double)me->connSteps.GetCount());
+		me->txtReqPerSec->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, (Double)me->totalSize / me->t);
+		me->txtDataRate->SetText(CSTRP(sbuff, sptr));
+	}
 }
 
 void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
@@ -285,37 +231,16 @@ void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 	}
 }
 
-void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
+void SSWR::AVIRead::AVIRHTTPTestForm::ClearSteps()
 {
-	UOSInt i;
-	i = this->connURLs.GetCount();
-	while (i-- > 0)
-	{
-		OPTSTR_DEL(this->connURLs.RemoveAt(i));
-	}
+	this->connSteps.DeleteAll();
 	if (this->children.GetCount() > 0)
 	{
 		this->lbURL->ClearItems();
 	}
 }
 
-Optional<Text::String> SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
-{
-	Optional<Text::String> url;
-	Sync::MutexUsage mutUsage(this->connMut);
-	if (this->connLeftCnt <= 0)
-	{
-		return 0;
-	}
-	url = this->connURLs.GetItem(this->connCurrIndex);
-	if ((++this->connCurrIndex) >= this->connURLs.GetCount())
-		this->connCurrIndex = 0;
-
-	this->connLeftCnt -= 1;
-	return url;
-}
-
-SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), cookieManager(CSTR("HTTP Cookie Manager"))
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Test"));
@@ -332,14 +257,10 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->failCnt = 0;
 	this->totalSize = 0;
 	this->t = 0;
-	this->kaConn = false;
-	this->enableGZip = false;
-	this->method = Net::WebUtil::RequestMethod::HTTP_GET;
-	this->postSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpStatus = ui->NewGroupBox(*this, CSTR("Status"));
-	this->grpStatus->SetRect(0, 0, 100, 160, false);
+	this->grpStatus->SetRect(0, 0, 100, 208, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblConnLeftCnt = ui->NewLabel(this->grpStatus, CSTR("Conn Left"));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);
@@ -371,9 +292,19 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->txtTotalSize = ui->NewTextBox(this->grpStatus, CSTR(""));
 	this->txtTotalSize->SetRect(104, 124, 150, 23, false);
 	this->txtTotalSize->SetReadOnly(true);
+	this->lblReqPerSec = ui->NewLabel(this->grpStatus, CSTR("Req/s"));
+	this->lblReqPerSec->SetRect(4, 148, 100, 23, false);
+	this->txtReqPerSec = ui->NewTextBox(this->grpStatus, CSTR(""));
+	this->txtReqPerSec->SetRect(104, 148, 150, 23, false);
+	this->txtReqPerSec->SetReadOnly(true);
+	this->lblDataRate = ui->NewLabel(this->grpStatus, CSTR("Data Rate(Byte/s)"));
+	this->lblDataRate->SetRect(4, 172, 100, 23, false);
+	this->txtDataRate = ui->NewTextBox(this->grpStatus, CSTR(""));
+	this->txtDataRate->SetRect(104, 172, 150, 23, false);
+	this->txtDataRate->SetReadOnly(true);
 
 	this->pnlRequest = ui->NewPanel(*this);
-	this->pnlRequest->SetRect(0, 0, 100, 127, false);
+	this->pnlRequest->SetRect(0, 0, 100, 80, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lblConcurrCnt = ui->NewLabel(this->pnlRequest, CSTR("Concurrent Count"));
 	this->lblConcurrCnt->SetRect(4, 4, 100, 23, false);
@@ -383,39 +314,41 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 	this->lblTotalConnCnt->SetRect(4, 28, 100, 23, false);
 	this->txtTotalConnCnt = ui->NewTextBox(this->pnlRequest, CSTR("100000"));
 	this->txtTotalConnCnt->SetRect(104, 28, 100, 23, false);
-	this->lblMethod = ui->NewLabel(this->pnlRequest, CSTR("Method"));
-	this->lblMethod->SetRect(4, 52, 100, 23, false);
-	this->cboMethod = ui->NewComboBox(this->pnlRequest, false);
-	this->cboMethod->SetRect(104, 52, 100, 23, false);
-	this->cboMethod->AddItem(CSTR("GET"), (void*)0);
-	this->cboMethod->AddItem(CSTR("POST"), (void*)1);
-	this->cboMethod->SetSelectedIndex(0);
-	this->lblPostSize = ui->NewLabel(this->pnlRequest, CSTR("POST Size"));
-	this->lblPostSize->SetRect(204, 52, 100, 23, false);
-	this->txtPostSize = ui->NewTextBox(this->pnlRequest, CSTR("1048576"));
-	this->txtPostSize->SetRect(304, 52, 100, 23, false);
-	this->chkKAConn = ui->NewCheckBox(this->pnlRequest, CSTR("KA Conn"), false);
-	this->chkKAConn->SetRect(104, 76, 100, 23, false);
-	this->chkGZip = ui->NewCheckBox(this->pnlRequest, CSTR("GZip"), true);
-	this->chkGZip->SetRect(204, 76, 100, 23, false);
 	this->btnStart = ui->NewButton(this->pnlRequest, CSTR("Start"));
-	this->btnStart->SetRect(104, 100, 75, 23, false);
+	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
 	this->grpURL = ui->NewGroupBox(*this, CSTR("URL"));
 	this->grpURL->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pnlURL = ui->NewPanel(this->grpURL);
-	this->pnlURL->SetRect(0, 0, 100, 23, false);
+	this->pnlURL->SetRect(0, 0, 100, 71, false);
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->pnlURLCtrl = ui->NewPanel(this->grpURL);
 	this->pnlURLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->btnURLAdd = ui->NewButton(this->pnlURL, CSTR("&Add"));
-	this->btnURLAdd->SetRect(0, 0, 75, 23, false);
-	this->btnURLAdd->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	this->btnURLAdd->HandleButtonClick(OnURLAddClicked, this);
+	this->cboMethod = ui->NewComboBox(this->pnlURL, false);
+	this->cboMethod->SetRect(4, 0, 100, 23, false);
+	this->cboMethod->AddItem(CSTR("GET"), (void*)(OSInt)Net::WebUtil::RequestMethod::HTTP_GET);
+	this->cboMethod->AddItem(CSTR("POST"), (void*)(OSInt)Net::WebUtil::RequestMethod::HTTP_POST);
+	this->cboMethod->SetSelectedIndex(0);
 	this->txtURL = ui->NewTextBox(this->pnlURL, CSTR(""));
-	this->txtURL->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtURL->SetRect(104, 0, 700, 23, false);
+	this->lblPostData = ui->NewLabel(this->pnlURL, CSTR("POST Data"));
+	this->lblPostData->SetRect(4, 24, 100, 23, false);
+	this->cboPostType = ui->NewComboBox(this->pnlURL, false);
+	this->cboPostType->SetRect(104, 24, 200, 23, false);
+	this->cboPostType->AddItem(CSTR("application/x-www-form-urlencoded"), 0);
+	this->cboPostType->SetSelectedIndex(0);
+	this->txtPostData = ui->NewTextBox(this->pnlURL, CSTR(""));
+	this->txtPostData->SetRect(304, 24, 500, 23, false);
+	this->chkKAConn = ui->NewCheckBox(this->pnlURL, CSTR("KA Conn"), false);
+	this->chkKAConn->SetRect(4, 48, 100, 23, false);
+	this->chkGZip = ui->NewCheckBox(this->pnlURL, CSTR("GZip"), false);
+	this->chkGZip->SetRect(104, 48, 100, 23, false);
+	this->btnURLAdd = ui->NewButton(this->pnlURL, CSTR("&Add"));
+	this->btnURLAdd->SetRect(204, 48, 75, 23, false);
+	this->btnURLAdd->HandleButtonClick(OnURLAddClicked, this);
+
 	this->btnURLClear = ui->NewButton(this->pnlURLCtrl, CSTR("&Clear"));
 	this->btnURLClear->SetRect(4, 4, 75, 23, false);
 	this->btnURLClear->HandleButtonClick(OnURLClearClicked, this);
@@ -430,7 +363,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl>
 SSWR::AVIRead::AVIRHTTPTestForm::~AVIRHTTPTestForm()
 {
 	this->StopThreads();
-	this->ClearURLs();
+	this->ClearSteps();
 	this->ssl.Delete();
 }
 

@@ -3,6 +3,8 @@
 #include "Data/ArrayListNN.h"
 #include "Manage/HiResClock.h"
 #include "Net/HTTPClient.h"
+#include "Net/JMeter/JMeterStep.h"
+#include "Net/JMeter/JMeterCookieManager.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Thread.h"
 #include "UI/GUIButton.h"
@@ -29,9 +31,7 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Sync::Thread **threads;
 			Sync::Mutex connMut;
-			Data::ArrayListStringNN connURLs;
-			Net::WebUtil::RequestMethod method;
-			UInt32 postSize;
+			Data::ArrayListNN<Net::JMeter::JMeterStep> connSteps;
 			UOSInt connCurrIndex;
 			UInt32 connLeftCnt;
 			UInt32 threadCnt;
@@ -39,15 +39,20 @@ namespace SSWR
 			UInt32 connCnt;
 			UInt32 failCnt;
 			UInt64 totalSize;
-			Bool kaConn;
-			Bool enableGZip;
 			Double t;
+			Net::JMeter::JMeterCookieManager cookieManager;
 
 			NN<UI::GUIGroupBox> grpURL;
 			NN<UI::GUIPanel> pnlURL;
 			NN<UI::GUIPanel> pnlURLCtrl;
 			NN<UI::GUIListBox> lbURL;
+			NN<UI::GUIComboBox> cboMethod;
 			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUILabel> lblPostData;
+			NN<UI::GUIComboBox> cboPostType;
+			NN<UI::GUITextBox> txtPostData;
+			NN<UI::GUICheckBox> chkKAConn;
+			NN<UI::GUICheckBox> chkGZip;
 			NN<UI::GUIButton> btnURLAdd;
 			NN<UI::GUIButton> btnURLClear;
 			NN<UI::GUIPanel> pnlRequest;
@@ -55,12 +60,6 @@ namespace SSWR
 			NN<UI::GUITextBox> txtConcurrCnt;
 			NN<UI::GUILabel> lblTotalConnCnt;
 			NN<UI::GUITextBox> txtTotalConnCnt;
-			NN<UI::GUILabel> lblMethod;
-			NN<UI::GUIComboBox> cboMethod;
-			NN<UI::GUILabel> lblPostSize;
-			NN<UI::GUITextBox> txtPostSize;
-			NN<UI::GUICheckBox> chkKAConn;
-			NN<UI::GUICheckBox> chkGZip;
 			NN<UI::GUIButton> btnStart;
 			NN<UI::GUIGroupBox> grpStatus;
 			NN<UI::GUILabel> lblConnLeftCnt;
@@ -75,6 +74,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtTimeUsed;
 			NN<UI::GUILabel> lblTotalSize;
 			NN<UI::GUITextBox> txtTotalSize;
+			NN<UI::GUILabel> lblReqPerSec;
+			NN<UI::GUITextBox> txtReqPerSec;
+			NN<UI::GUILabel> lblDataRate;
+			NN<UI::GUITextBox> txtDataRate;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnURLAddClicked(AnyType userObj);
@@ -82,8 +85,7 @@ namespace SSWR
 			static void __stdcall ProcessThread(NN<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void StopThreads();
-			void ClearURLs();
-			Optional<Text::String> GetNextURL();
+			void ClearSteps();
 		public:
 			AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPTestForm();

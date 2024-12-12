@@ -35,7 +35,7 @@ namespace SSWR
 				NN<Text::String> name;
 				NN<Text::String> value;
 				NN<Text::String> domain;
-				Text::String *path;
+				Optional<Text::String> path;
 				Int64 expireTime;
 				Bool secure;
 			} HTTPCookie;

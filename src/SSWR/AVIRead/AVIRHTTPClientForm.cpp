@@ -942,7 +942,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 				if (me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString()).SetTo(cookie))
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
-					if (s.Set(cookie->path))
+					if (cookie->path.SetTo(s))
 					{
 						me->lvCookie->SetSubItem(k, 1, s);
 					}
@@ -998,7 +998,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 		cookie->name->Release();
 		cookie->value->Release();
 		cookie->domain->Release();
-		SDEL_STRING(cookie->path);
+		OPTSTR_DEL(cookie->path);
 		MemFreeNN(cookie);
 	}
 	this->cookieList.Clear();
@@ -1102,19 +1102,20 @@ Optional<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> SSWR::AVIRead::AVIRHTTPC
 	{
 		NN<Text::String> cookieName = Text::String::New(cookieValue, (UOSInt)i);
 		NN<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
+		NN<Text::String> cpath;
 		Bool eq;
 		UOSInt j = this->cookieList.GetCount();
 		while (j-- > 0)
 		{
 			cookie = this->cookieList.GetItemNoCheck(j);
 			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName);
-			if (cookie->path == 0)
+			if (!cookie->path.SetTo(cpath))
 			{
 				eq = eq && (path[0] == 0);
 			}
 			else
 			{
-				eq = eq && cookie->path->Equals(path, (UOSInt)(pathEnd - path));
+				eq = eq && cpath->Equals(path, (UOSInt)(pathEnd - path));
 			}
 			if (eq)
 			{
@@ -1160,6 +1161,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UnsafeA
 	UOSInt len2;
 	UOSInt i;
 	UOSInt j;
+	NN<Text::String> cpath;
 	UnsafeArrayOpt<UTF8Char> cookiePtr = 0;
 	UnsafeArray<UTF8Char> nncookiePtr;
 	UnsafeArray<UTF8Char> pathPtr;
@@ -1190,7 +1192,7 @@ UnsafeArrayOpt<UTF8Char> SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UnsafeA
 		}
 		if (valid)
 		{
-			if (cookie->path == 0 || Text::StrStartsWithC(pathPtr, (UOSInt)(pathPtrEnd - pathPtr), cookie->path->v, cookie->path->leng))
+			if (!cookie->path.SetTo(cpath) || Text::StrStartsWithC(pathPtr, (UOSInt)(pathPtrEnd - pathPtr), cpath->v, cpath->leng))
 			{
 				if (!cookiePtr.SetTo(nncookiePtr))
 				{

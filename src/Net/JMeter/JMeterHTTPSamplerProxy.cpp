@@ -11,12 +11,12 @@ Bool Net::JMeter::JMeterHTTPSamplerProxy::Step(NN<JMeterIteration> iter, NN<JMet
 	Double timeResp;
 	UInt8 buff[2048];
 	Bool succ = false;
-	if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, timeDNS, timeConn, false))
+	if (cli->Connect(url->ToCString(), this->method, timeDNS, timeConn, false))
 	{
-		/*if (this->enableGZip)
+		if (this->enableGZip)
 		{
 			cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
-		}*/
+		}
 		if (this->useKeepalive)
 		{
 			cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
@@ -24,6 +24,15 @@ Bool Net::JMeter::JMeterHTTPSamplerProxy::Step(NN<JMeterIteration> iter, NN<JMet
 		else
 		{
 			cli->AddHeaderC(CSTR("Connection"), CSTR("close"));
+		}
+		iter->HTTPBegin(cli);
+		NN<Text::String> contType;
+		NN<Data::ByteBuffer> postData;
+		if (this->method == Net::WebUtil::RequestMethod::HTTP_POST && this->postType.SetTo(contType) && this->postData.SetTo(postData))
+		{
+			cli->AddContentType(contType->ToCString());
+			cli->AddContentLength(postData->GetSize());
+			cli->WriteCont(postData->Arr(), postData->GetSize());
 		}
 		cli->EndRequest(timeReq, timeResp);
 		if (timeResp >= 0)
@@ -37,6 +46,7 @@ Bool Net::JMeter::JMeterHTTPSamplerProxy::Step(NN<JMeterIteration> iter, NN<JMet
 			result->dataSize = totalSize;
 			succ = cli->GetRespStatus() == 200;
 		}
+		iter->HTTPEnd(cli, succ);
 	}
 	cli.Delete();
 	return succ;
