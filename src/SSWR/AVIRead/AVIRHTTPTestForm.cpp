@@ -48,6 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
 	me->totalSize = 0;
+	me->t = 0;
 	me->threads = MemAlloc(Sync::Thread*, me->threadCnt);
 	me->clk.Start();
 	i = me->threadCnt;

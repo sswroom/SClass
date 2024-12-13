@@ -15,6 +15,7 @@ namespace Map
 		{
 			UOSInt index;
 			NN<Math::Geometry::LineString> vec;
+			Math::RectAreaDbl rect;
 			Math::Coord2DDbl startPos;
 			Math::Coord2DDbl endPos;
 			Double startZ;
@@ -140,6 +141,7 @@ namespace Map
 		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		Optional<DB::TableDef> GetPropDef() const;
 		UInt32 GetNetworkCnt() const;
+		void GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList) const;
 
 		static void CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayList<Double>> dirList, NN<Data::ArrayList<Bool>> reverseList);
 	};

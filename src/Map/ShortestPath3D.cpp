@@ -474,6 +474,7 @@ void Map::ShortestPath3D::AddVector(NN<Math::Geometry::Vector2D> vec, Data::Data
 		lineInfo->index = this->lines.GetCount();
 		lineInfo->networkId = 0;
 		lineInfo->vec = ls;
+		lineInfo->rect = ls->GetBounds();
 		i = 0;
 		j = properties.GetCount();
 		lineInfo->properties = Data::DataArray<Optional<Text::String>>::Alloc(j);
@@ -1012,6 +1013,22 @@ Optional<DB::TableDef> Map::ShortestPath3D::GetPropDef() const
 UInt32 Map::ShortestPath3D::GetNetworkCnt() const
 {
 	return this->networkCnt;
+}
+
+void Map::ShortestPath3D::GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList) const
+{
+	NN<LineInfo> lineInfo;
+	UOSInt i = 0;
+	UOSInt j = this->lines.GetCount();
+	while (i < j)
+	{
+		lineInfo = this->lines.GetItemNoCheck(i);
+		if (lineInfo->rect.OverlapOrTouch(rect))
+		{
+			lineList->Add(lineInfo->vec);
+		}
+		i++;
+	}
 }
 
 void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayList<Double>> dirList, NN<Data::ArrayList<Bool>> reverseList)
