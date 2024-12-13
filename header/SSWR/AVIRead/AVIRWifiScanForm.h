@@ -20,6 +20,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN *wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
+			Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUIButton> btnScan;

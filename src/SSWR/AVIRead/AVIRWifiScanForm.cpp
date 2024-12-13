@@ -90,6 +90,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			imac = ReadMUInt64(id);
 
 			this->lvWifi->AddItem(ssid, bss);
+			this->bssList.Add(bss);
 			sptr = Text::StrUInt32(sbuff, bss->GetPHYId());
 			this->lvWifi->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
@@ -145,14 +146,11 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 
 void SSWR::AVIRead::AVIRWifiScanForm::WifiClear()
 {
-	NN<Net::WirelessLAN::BSSInfo> bss;
-	UOSInt i = this->lvWifi->GetCount();
-	while (i-- > 0)
+	this->bssList.DeleteAll();
+	if (this->children.GetCount() > 0)
 	{
-		bss = this->lvWifi->GetItem(i).GetNN<Net::WirelessLAN::BSSInfo>();
-		bss.Delete();
+		this->lvWifi->ClearItems();
 	}
-	this->lvWifi->ClearItems();
 }
 
 SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

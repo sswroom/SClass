@@ -139,7 +139,10 @@ void SSWR::AVIRead::AVIRBluetoothForm::ClearGUIDs()
 	if (this->currDev.SetTo(currDev))
 	{
 		currDev->FreeServices(this->guidList);
-		this->lbDevServices->ClearItems();
+		if (this->children.GetCount() > 0)
+		{
+			this->lbDevServices->ClearItems();
+		}
 	}
 }
 
