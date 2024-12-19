@@ -6,6 +6,8 @@ import * as math from "/js/@sswroom/sswr/math.js";
 import * as olayer2 from "/js/@sswroom/sswr/olayer2.js";
 import * as parser from "/js/@sswroom/sswr/parser.js";
 import * as web from "/js/@sswroom/sswr/web.js";
+import * as domtoimage from "/js/@sswroom/sswr/domtoimage/index.js";
+import { EasyPrint } from "/js/@sswroom/sswr/leaflet/EasyPrint.js";
 
 async function onFileDrop(file)
 {
@@ -40,6 +42,21 @@ function onBrowseClick()
 	inputElement.dispatchEvent(new MouseEvent("click")); 
 }
 
+let tileLayer;
+async function onCaptureClick()
+{
+//	let print = new EasyPrint(mapCtrl.mapObj, {tileLayer: tileLayer});
+//	print.printMap("A4Landscape", null);
+
+	let map = document.getElementById("map");
+	let svg = await domtoimage.toSvg(map, null);//{imagePlaceholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH6AMECQMVtyBSbwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAALSURBVAjXY2AAAgAABQAB4iYFmwAAAABJRU5ErkJggg=="});
+	web.openUrl(svg, "test.svg");
+
+//	let map = document.getElementById("map");
+//	let png = await domtoimage.toPng(map, null);//{imagePlaceholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH6AMECQMVtyBSbwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAALSURBVAjXY2AAAgAABQAB4iYFmwAAAABJRU5ErkJggg=="});
+//	web.openUrl(png);
+}
+
 let mapCtrl;
 if (window.L)
 {
@@ -70,7 +87,13 @@ if (mapCtrl instanceof map.MapControl)
 		maxZoom: 19
 	});
 	mapCtrl.addLayer(lyr);
+	tileLayer = lyr;
 	web.handleFileDrop(document.getElementById("map"), onFileDrop);
 }
 
 document.getElementById("btnBrowse").addEventListener("click", onBrowseClick);
+let btn = document.getElementById("btnCapture");
+if (btn)
+{
+	btn.addEventListener("click", onCaptureClick);
+}

@@ -1,4 +1,6 @@
 -Enhance XLSXExporter
+-Adding leaflet/EasyPrint.js
+-Adding domtoimage/index.js
 
 1.6.19
 -data.Timestamp.fromTicks support floating point ticks

@@ -223,6 +223,23 @@ export function openData(data, contentType, fileName)
 }
 
 /**
+ * @param {string} url
+ * @param {string|undefined} fileName
+ */
+export function openUrl(url, fileName)
+{
+	let ele = document.createElement("a");
+	ele.setAttribute('href', url);
+	if (fileName)
+		ele.setAttribute('download', fileName);
+	ele.style.display = 'none';
+
+	document.body.appendChild(ele);
+	ele.click();
+	document.body.removeChild(ele);
+}
+
+/**
  * @param {number} c
  */
 function hexColor(c)
