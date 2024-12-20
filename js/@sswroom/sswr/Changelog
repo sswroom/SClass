@@ -1,6 +1,10 @@
+-Added data.dataURI2Blob
+-Added EasyPrint.toSVG
+
+1.6.20
 -Enhance XLSXExporter
--Adding leaflet/EasyPrint.js
--Adding domtoimage/index.js
+-Added leaflet/EasyPrint.js
+-Added domtoimage/index.js
 
 1.6.19
 -data.Timestamp.fromTicks support floating point ticks

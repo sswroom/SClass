@@ -455,6 +455,33 @@ export function objectParseTS(o, items)
 	}
 }
 
+/**
+ * @param {string} dataURI
+ */
+export function dataURI2Blob(dataURI)
+{
+	let i = dataURI.indexOf(",");
+	let dsp = [dataURI.substring(0, i), dataURI.substring(i + 1)];
+	let types = dsp[0].split(':')[1].split(';');
+	let mimeString = types[0];
+	let ab;
+	if (types[1] == "base64")
+	{
+		let byteString = atob(dsp[1]);
+		ab = new ArrayBuffer(byteString.length);
+		let dw = new DataView(ab);
+		for(let i = 0; i < byteString.length; i++) {
+				dw.setUint8(i, byteString.charCodeAt(i));
+		}
+	}
+	else
+	{
+		let enc = new TextEncoder();
+		ab = enc.encode(dsp[1]);
+	}
+	return new Blob([ab], {type: mimeString});
+}
+
 export class DateValue
 {
 	constructor()

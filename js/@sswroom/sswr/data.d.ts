@@ -39,6 +39,7 @@ export function shl32(v: number, n: number): number;
 export function sar32(v: number, n: number): number;
 export function shr32(v: number, n: number): number;
 export function objectParseTS(o: object, items: string[]): void;
+export function dataURI2Blob(dataURI: string): Blob;
 
 export class DateValue
 {

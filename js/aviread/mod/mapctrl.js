@@ -48,9 +48,17 @@ async function onCaptureClick()
 //	let print = new EasyPrint(mapCtrl.mapObj, {tileLayer: tileLayer});
 //	print.printMap("A4Landscape", null);
 
-	let map = document.getElementById("map");
-	let svg = await domtoimage.toSvg(map, null);//{imagePlaceholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH6AMECQMVtyBSbwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAALSURBVAjXY2AAAgAABQAB4iYFmwAAAABJRU5ErkJggg=="});
-	web.openUrl(svg, "test.svg");
+//	let print = new EasyPrint(mapCtrl.mapObj, {tileLayer: tileLayer});
+//	let png = await print.toPNG(new math.Coord2D(640, 480));
+//	web.openData(png, png.type, "Test.png");
+
+	let print = new EasyPrint(mapCtrl.mapObj, {tileLayer: tileLayer});
+	let svg = await print.toSVG(new math.Coord2D(640, 480));
+	web.openData(svg, svg.type, "Test.svg");
+
+//	let map = document.getElementById("map");
+//	let svg = await domtoimage.toSvg(map, null);//{imagePlaceholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH6AMECQMVtyBSbwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAALSURBVAjXY2AAAgAABQAB4iYFmwAAAABJRU5ErkJggg=="});
+//	web.openUrl(svg, "test.svg");
 
 //	let map = document.getElementById("map");
 //	let png = await domtoimage.toPng(map, null);//{imagePlaceholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH6AMECQMVtyBSbwAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAALSURBVAjXY2AAAgAABQAB4iYFmwAAAABJRU5ErkJggg=="});
