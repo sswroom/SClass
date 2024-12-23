@@ -617,6 +617,30 @@ export function b64Dec(b64Str)
 	return dec.decode(b64.decodeBin(b64Str));
 }
 
+/**
+ * @param {string} url
+ */
+export function isDataURL(url)
+{
+	return url.startsWith("data:");
+}
+
+/**
+ * @param {string} s
+ */
+export function escapeXhtml(s)
+{
+	return s.replace(/#/g, '%23').replace(/\n/g, '%0A');
+}
+
+/**
+ * @param {string} svg
+ */
+export function svgStringToDataURI(svg)
+{
+	return 'data:image/svg+xml;charset=utf-8,' + svg;
+}
+
 export class TextBinEnc
 {
 	constructor(name)

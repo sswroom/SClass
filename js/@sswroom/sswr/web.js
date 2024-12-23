@@ -76,6 +76,11 @@ export const BrowserType = {
 	MiBrowser: "MiBrowser"
 }
 
+export const PaperOrientation = {
+	Landscape: "landscape",
+	Portrait: "portrait"
+}
+
 export function getRequestURLBase()
 {
 	let url = document.location.href;
@@ -1055,6 +1060,101 @@ export function getImgElement(id)
 	if (ele instanceof HTMLImageElement)
 		return ele;
 	throw new Error("Element with id \""+id+"\" is not an img");
+}
+
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @returns {Promise<Blob|null>}
+ */
+export async function canvasToBlob(canvas)
+{
+	if (canvas.toBlob)
+	{
+		return await new Promise(function (resolve) {
+			canvas.toBlob(resolve);
+		});
+	}
+	return data.dataURI2Blob(canvas.toDataURL());
+}
+
+/**
+ * @param {Element} node
+ * @param {string | number} width
+ * @param {string | number} height
+ */
+export function elementToSVGString(node, width, height)
+{
+	node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+	let xhtml = text.escapeXhtml(new XMLSerializer().serializeToString(node));
+	let foreignObject = '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>';
+	return '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' + foreignObject + '</svg>';
+}
+
+/**
+ * @param {string} imgDataURL
+ * @param {string} orientation
+ * @param {string | null | undefined} paperSize
+ * @param {{ pageBorderTopHTML?: string; pageBorderBottomHTML?: string; overlayHTML?: string; pageTitle?: string; }} options
+ */
+export function genPrintWindowHTML(imgDataURL, orientation, paperSize, options)
+{
+	let strs =  new Array();
+	strs.push("<html><head>");
+	if (options.pageTitle)
+	{
+		strs.push("<title>"+text.toHTMLText(options.pageTitle)+"</title>");
+	}
+	strs.push(`<style>@media print {
+				img { max-width: 98%!important; max-height: 98%!important; }
+				@page { size: ` + (paperSize?paperSize:'')+' '+ orientation + `;}}
+			</style>
+			<script>function step1(){
+			setTimeout('step2()', 10);}
+			function step2(){window.print();window.close()}
+			</script></head><body onload='step1()' style="margin: 0px;">`);
+	if (options.pageBorderTopHTML || options.pageBorderBottomHTML)
+	{
+		strs.push("<table border=\"0\" width=\"100%\" height=\"100%\">");
+		if (options.pageBorderTopHTML)
+		{
+			strs.push("<tr><td>"+options.pageBorderTopHTML+"</td></tr>");
+		}
+		strs.push(`<tr><td>`);
+		if (options.overlayHTML)
+			strs.push(options.overlayHTML);
+		strs.push(`<img src="` + imgDataURL + `" style="display:block; margin:auto;"></td></tr>`);
+		if (options.pageBorderBottomHTML)
+		{
+			strs.push("<tr><td>"+options.pageBorderBottomHTML+"</td></tr>");
+		}
+		strs.push("</table>");
+	}
+	else
+	{
+		if (options.overlayHTML)
+			strs.push(options.overlayHTML);
+		strs.push(`<img src="` + imgDataURL + `" style="display:block; margin:auto;">`);
+	}
+	strs.push(`</body></html>`);
+	return strs.join("");
+}
+
+/**
+ * @param {string} imgDataURL
+ * @param {string} orientation
+ * @param {string | null | undefined} paperSize
+ * @param {{ pageBorderTopHTML?: string; pageBorderBottomHTML?: string; overlayHTML?: string }} options
+ */
+export function printImageData(imgDataURL, orientation, paperSize, options)
+{
+	let page = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no,left=10, top=10, width=600, height=800, visible=none');
+	if (page == null)
+		return false;
+	let pageContent = genPrintWindowHTML(imgDataURL, orientation, paperSize, options);
+	page.document.body.innerHTML = ''
+	page.document.write(pageContent);
+	page.document.close();  
+	return true;
 }
 
 /**

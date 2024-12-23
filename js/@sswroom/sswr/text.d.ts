@@ -56,6 +56,9 @@ export function replaceAll(s: string, replaceFrom: string, replaceTo: string): s
 export function getEncList(): TextBinEnc[];
 export function b64Enc(s: string, cs?: Base64Charset): string;
 export function b64Dec(b64Str: string): string;
+export function isDataURL(url: string): boolean;
+export function escapeXhtml(s: string): string;
+export function svgStringToDataURI(svg: string): string;
 
 export class TextBinEnc
 {

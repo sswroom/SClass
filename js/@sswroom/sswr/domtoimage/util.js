@@ -43,44 +43,6 @@ export function mimeType(url) {
 
 /**
  * @param {string} url
- */
-export function isDataUrl(url) {
-	return url.search(/^(data:)/) !== -1;
-}
-
-/**
- * @param {HTMLCanvasElement} canvas
- */
-function toBlob(canvas) {
-	let binaryString = window.atob(canvas.toDataURL().split(',')[1]);
-	let length = binaryString.length;
-	let binaryArray = new Uint8Array(length);
-
-	for (let i = 0; i < length; i++)
-		binaryArray[i] = binaryString.charCodeAt(i);
-
-	return new Blob([binaryArray], {
-			type: 'image/png'
-		});
-}
-
-/**
- * @param {HTMLCanvasElement} canvas
- * @returns {Promise<Blob|null>}
- */
-export async function canvasToBlob(canvas) {
-	if (canvas.toBlob)
-	{
-		return await new Promise(function (resolve) {
-			canvas.toBlob(resolve);
-		});
-	}
-
-	return toBlob(canvas);
-}
-
-/**
- * @param {string} url
  * @param {string} baseUrl
  */
 export function resolveUrl(url, baseUrl) {
@@ -123,67 +85,6 @@ export function makeImage(uri) {
 }
 
 /**
- * @param {string} url
- * @param {{ cacheBust: boolean; imagePlaceholder?: string} | undefined} options
- */
-export async function getAndEncode(url, options) {
-	let TIMEOUT = 30000;
-	if(options && options.cacheBust) {
-		// Cache bypass so we dont have CORS issues with cached images
-		// Source: https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Bypassing_the_cache
-		url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
-	}
-	let placeholder;
-	if(options && options.imagePlaceholder) {
-		let split = options.imagePlaceholder.split(/,/);
-		if(split && split[1]) {
-			placeholder = split[1];
-		}
-	}
-	try
-	{
-		let req = await fetch(url, {signal: AbortSignal.timeout(TIMEOUT)});
-		/** @type {string} */
-		if (!req.ok)
-		{
-			if(placeholder) {
-				return placeholder;
-			} else {
-				console.error('cannot fetch resource: ' + url + ', status: ' + req.status);
-				return "";
-			}
-		}
-		let blob = await req.blob();
-		return await new Promise((resolve, reject) => {
-			let encoder = new FileReader();
-			encoder.onloadend = function () {
-				let content = encoder.result;
-				if (typeof content == 'string') resolve(content.split(/,/)[1]);
-				resolve(content);
-			};
-			encoder.readAsDataURL(blob);
-		});
-	}
-	catch (error)
-	{
-		if(placeholder) {
-			return placeholder;
-		} else {
-			console.error('timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url, error);
-			return "";
-		}
-	}
-}
-
-/**
- * @param {string} content
- * @param {string} type
- */
-export function dataAsUrl(content, type) {
-	return 'data:' + type + ';base64,' + content;
-}
-
-/**
  * @param {string} string
  */
 export function escape(string) {
@@ -211,13 +112,6 @@ export function asArray(arrayLike) {
 	let length = arrayLike.length;
 	for (let i = 0; i < length; i++) array.push(arrayLike[i]);
 	return array;
-}
-
-/**
- * @param {string} string
- */
-export function escapeXhtml(string) {
-	return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
 }
 
 /**

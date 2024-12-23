@@ -40,6 +40,8 @@ export function sar32(v: number, n: number): number;
 export function shr32(v: number, n: number): number;
 export function objectParseTS(o: object, items: string[]): void;
 export function dataURI2Blob(dataURI: string): Blob;
+export function blob2DataURL(blob: Blob): Promise<string|null>;
+export function fetchAsBlob(url: string, options?: {cacheBust: boolean; imagePlaceholder?: string}): Promise<Blob|null>;
 
 export class DateValue
 {

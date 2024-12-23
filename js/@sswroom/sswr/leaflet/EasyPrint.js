@@ -358,9 +358,9 @@ export class EasyPrint
 		this.mapContainer.style.width = pageSize.width + 'px';
 		this.mapContainer.style.height = (pageSize.height - pageBorderHeight) + 'px';
 		if (pageSize.width < pageSize.height) {
-			this.orientation = 'portrait';
+			this.orientation = web.PaperOrientation.Portrait;
 		} else {
-			this.orientation = 'landscape';
+			this.orientation = web.PaperOrientation.Landscape;
 		}
 		this.paperSize = pageSize.paperSize;
 		this._map.setView(this.originalState.center);
@@ -497,12 +497,12 @@ export class EasyPrint
 
 	/**
 	 * @param {string} img
-	 * @param {string} orientation
-	 * @param {any} paperSize
+	 * @param {web.PaperOrientation} orientation
+	 * @param {string | null} paperSize
 	 */
 	_sendToBrowserPrint(img, orientation, paperSize) {
 		this._page.resizeTo(600, 800); 
-		let pageContent = this._createNewWindow(img, orientation, this, paperSize)
+		let pageContent = web.genPrintWindowHTML(img, orientation, paperSize, this.options);
 		this._page.document.body.innerHTML = ''
 		this._page.document.write(pageContent);
 		this._page.document.close();  
@@ -587,50 +587,6 @@ export class EasyPrint
 			}
 			</style>
 		<div class="`+spinnerClass+`">Loading...</div></body></html>`;
-	}
-
-	/**
-	 * @param {string} img
-	 * @param {string} orientation
-	 * @param {this} plugin
-	 * @param {string|null} paperSize
-	 */
-	_createNewWindow(img, orientation, plugin, paperSize) {
-		let strs =  new Array();
-		strs.push(`<html><head>
-				<style>@media print {
-					img { max-width: 98%!important; max-height: 98%!important; }
-					@page { size: ` + (paperSize?paperSize:'')+' '+ orientation + `;}}
-				</style>
-				<script>function step1(){
-				setTimeout('step2()', 10);}
-				function step2(){window.print();window.close()}
-				</script></head><body onload='step1()' style="margin: 0px;">`);
-		if (plugin.options.pageBorderTopHTML || plugin.options.pageBorderBottomHTML)
-		{
-			strs.push("<table border=\"0\" width=\"100%\" height=\"100%\">");
-			if (plugin.options.pageBorderTopHTML)
-			{
-				strs.push("<tr><td>"+plugin.options.pageBorderTopHTML+"</td></tr>");
-			}
-			strs.push(`<tr><td>`);
-			if (plugin.options.overlayHTML)
-				strs.push(plugin.options.overlayHTML);
-			strs.push(`<img src="` + img + `" style="display:block; margin:auto;"></td></tr>`);
-			if (plugin.options.pageBorderBottomHTML)
-			{
-				strs.push("<tr><td>"+plugin.options.pageBorderBottomHTML+"</td></tr>");
-			}
-			strs.push("</table>");
-		}
-		else
-		{
-			if (plugin.options.overlayHTML)
-				strs.push(plugin.options.overlayHTML);
-			strs.push(`<img src="` + img + `" style="display:block; margin:auto;">`);
-		}
-		strs.push(`</body></html>`);
-		return strs.join("");
 	}
 
 	/**

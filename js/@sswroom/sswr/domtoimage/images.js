@@ -1,3 +1,5 @@
+import * as data from "../data.js";
+import * as text from "../text.js";
 import * as util from "./util.js";
 import * as inliner from "./inliner.js";
 
@@ -7,9 +9,9 @@ import * as inliner from "./inliner.js";
  * @returns {Promise<HTMLImageElement>}
  */
 async function inline(element, options) {
-	if (util.isDataUrl(element.src)) return element;
-	let data = await util.getAndEncode(element.src, options);
-	let dataUrl = util.dataAsUrl(data, util.mimeType(element.src));
+	if (text.isDataURL(element.src)) return element;
+	let blob = await data.fetchAsBlob(element.src, options);
+	let dataUrl = await data.blob2DataURL(blob);
 	return await new Promise(function (resolve, reject) {
 		element.onload = () => {resolve(element);};
 		element.onerror = reject;

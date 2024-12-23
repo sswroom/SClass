@@ -1,5 +1,14 @@
 -Added data.dataURI2Blob
 -Added EasyPrint.toSVG
+-Added data.blob2DataURL
+-Added data.fetchAsBlob
+-Added text.isDataURL
+-Added text.escapeXhtml
+-Added text.svgStringToDataURI
+-Added web.canvasToBlob
+-Added web.elementToSVGString
+-Added web.genPrintWindowHTML
+-Added web.printImageData
 
 1.6.20
 -Enhance XLSXExporter

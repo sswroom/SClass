@@ -1,3 +1,4 @@
+import * as data from "./data.js";
 import * as text from "./text.js";
 
 export const Weekday = {
@@ -480,6 +481,71 @@ export function dataURI2Blob(dataURI)
 		ab = enc.encode(dsp[1]);
 	}
 	return new Blob([ab], {type: mimeString});
+}
+
+/**
+ * @param {Blob} blob
+ */
+export function blob2DataURL(blob)
+{
+	return new Promise((resolve, reject) => {
+		let encoder = new FileReader();
+		encoder.onloadend = function () {
+			let content = encoder.result;
+			if (typeof content == 'string')
+				resolve(content);
+			else
+			{
+				console.error("Error in converting to dataURL", content);
+				resolve(null);
+			}
+		};
+		encoder.readAsDataURL(blob);
+	});
+}
+
+/**
+ * @param {string} url
+ * @param {{ cacheBust: boolean; imagePlaceholder: string; }} options
+ */
+export async function fetchAsBlob(url, options)
+{
+	let TIMEOUT = 30000;
+	if(options && options.cacheBust) {
+		// Cache bypass so we dont have CORS issues with cached images
+		// Source: https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Bypassing_the_cache
+		url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
+	}
+	let placeholder;
+	if(options && options.imagePlaceholder) {
+		if (text.isDataURL(options.imagePlaceholder))
+		{
+			placeholder = data.dataURI2Blob(options.imagePlaceholder);
+		}
+	}
+	try
+	{
+		let req = await fetch(url, {signal: AbortSignal.timeout(TIMEOUT)});
+		if (!req.ok)
+		{
+			if(placeholder) {
+				return placeholder;
+			} else {
+				console.error('Cannot fetch resource: ' + url + ', status: ' + req.status);
+				return null;
+			}
+		}
+		return await req.blob();
+	}
+	catch (error)
+	{
+		if(placeholder) {
+			return placeholder;
+		} else {
+			console.error('Timeout of ' + TIMEOUT + 'ms occured while fetching resource: ' + url, error);
+			return null;
+		}
+	}
 }
 
 export class DateValue

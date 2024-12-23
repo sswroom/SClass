@@ -1,3 +1,5 @@
+import * as data from "../data.js";
+import * as text from "../text.js";
 import * as util from "./util.js";
 
 let URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
@@ -19,7 +21,7 @@ function readUrls(string) {
 		result.push(match[1]);
 	}
 	return result.filter(function (url) {
-		return !util.isDataUrl(url);
+		return !text.isDataURL(url);
 	});
 }
 
@@ -34,24 +36,24 @@ function urlAsRegex(url) {
  * @param {string} string
  * @param {string} url
  * @param {string | null | undefined} baseUrl
- * @param {((url: string)=>string)|undefined} get
+ * @param {((url: string)=>Blob)|undefined} get
  * @param {{ cacheBust: boolean; imagePlaceholder?: string; } | undefined} options
  */
 async function inline(string, url, baseUrl, get, options) {
 	url = baseUrl ? util.resolveUrl(url, baseUrl) : url;
-	let data;
+	let blob;
 	if (get)
-		data = get(url);
+		blob = get(url);
 	else
-		data = await util.getAndEncode(url, options);
-	let dataUrl = util.dataAsUrl(data, util.mimeType(url));
+		blob = await data.fetchAsBlob(url, options);
+	let dataUrl = await data.blob2DataURL(blob);
 	return string.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
 }
 
 /**
  * @param {string} string
  * @param {string | null | undefined} baseUrl
- * @param {((url: string)=>string)|undefined} get
+ * @param {((url: string)=>Blob)|undefined} get
  * @param {{ cacheBust: boolean; imagePlaceholder?: string; } | undefined} options
  */
 export async function inlineAll(string, baseUrl, get, options) {

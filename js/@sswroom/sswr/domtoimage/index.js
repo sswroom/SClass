@@ -1,3 +1,5 @@
+import * as text from "../text.js";
+import * as web from "../web.js";
 import * as util from "./util.js";
 import * as images from "./images.js";
 import * as fontFaces from "./fontFaces.js";
@@ -74,7 +76,7 @@ export async function toPng(node, options) {
  * */
 export async function toJpeg(node, options) {
 	options = options || {};
-	let canvas = await draw(node, options);
+	let canvas = await draw(node, options || {});
 	return canvas.toDataURL('image/jpeg', options.quality || 1.0);
 }
 
@@ -84,7 +86,7 @@ export async function toJpeg(node, options) {
  * */
 export async function toBlob(node, options) {
 	let canvas = await draw(node, options || {});
-	return await util.canvasToBlob(canvas);
+	return await web.canvasToBlob(canvas);
 }
 
 /**
@@ -109,21 +111,27 @@ function copyOptions(options) {
 
 /**
  * @param {HTMLElement} domNode
- * @param {{filter?:(node: Node)=>boolean,bgcolor?:string,width?:number,height?:number,style?:{[n:string]:string},quality?:number,imagePlaceholder?:string,cacheBust?:boolean}|null|undefined} options
+ * @param {{filter?:(node: Node)=>boolean,bgcolor?:string,width?:number,height?:number,style?:{[n:string]:string},quality?:number,imagePlaceholder?:string,cacheBust?:boolean}} options
  */
 async function draw(domNode, options) {
 	let svgUrl = await toSvg(domNode, options);
 	let image = await util.makeImage(svgUrl);
-	await util.delay(100)();
 	let canvas = newCanvas(domNode, options);
 	let ctx = canvas.getContext('2d');
-	if (ctx) ctx.drawImage(image, 0, 0);
-	return canvas;
+	return await new Promise((resolve, reject) => {
+		setTimeout(() => {
+			if (ctx)
+			{
+				ctx.drawImage(image, 0, 0);	
+			}
+			resolve(canvas);
+		}, 1);
+	});
 }
 
 /**
  * @param {HTMLElement} domNode
- * @param {{filter?:(node: Node)=>boolean,bgcolor?:string,width?:number,height?:number,style?:{[n:string]:string},quality?:number,imagePlaceholder?:string,cacheBust?:boolean}|null|undefined} options
+ * @param {{filter?:(node: Node)=>boolean,bgcolor?:string,width?:number,height?:number,style?:{[n:string]:string},quality?:number,imagePlaceholder?:string,cacheBust?:boolean}} options
  */
 function newCanvas(domNode, options) {
 	let canvas = document.createElement('canvas');
@@ -131,9 +139,10 @@ function newCanvas(domNode, options) {
 	canvas.height = options.height || domNode.offsetHeight;
 
 	if (options.bgcolor) {
-		var ctx = canvas.getContext('2d');
+		let ctx = canvas.getContext('2d');
 		if (ctx != null)
 		{
+			ctx.globalAlpha = 1;
 			ctx.fillStyle = options.bgcolor;
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
@@ -320,9 +329,5 @@ async function inlineImages(node, implOptions) {
  * @param {string | number} height
  */
 function makeSvgDataUri(node, width, height) {
-	node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
-	let xhtml = util.escapeXhtml(new XMLSerializer().serializeToString(node));
-	let foreignObject = '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>';
-	let svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' + foreignObject + '</svg>';
-	return 'data:image/svg+xml;charset=utf-8,' + svg;
+	return text.svgStringToDataURI(web.elementToSVGString(node, width, height));
 }

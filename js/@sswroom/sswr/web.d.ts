@@ -12,6 +12,14 @@ declare class ImageInfo
 	height: number;
 }
 
+declare class PrintOptions
+{
+	pageBorderTopHTML?: string;
+	pageBorderBottomHTML?: string;
+	overlayHTML?: string;
+	pageTitle?: string;
+}
+
 export enum OSType
 {
 	Unknown,
@@ -88,6 +96,12 @@ export enum BrowserType
 	MiBrowser
 }
 
+export enum PaperOrientation
+{
+	Landscape,
+	Portrait
+}
+
 declare class BrowserInfo
 {
 	os: OSType;
@@ -118,6 +132,10 @@ export function getDivElement(id: string): HTMLDivElement;
 export function getSpanElement(id: string): HTMLSpanElement;
 export function getCanvasElement(id: string): HTMLCanvasElement;
 export function getImgElement(id: string): HTMLImageElement;
+export function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob|null>;
+export function elementToSVGString(node: Element, width: string | number, height: string | number): string;
+export function genPrintWindowHTML(imgDataURL: string, orientation: PaperOrientation, paperSize?: string, options: PrintOptions): string;
+export function printImageData(imgDataURL: string, orientation: PaperOrientation, paperSize?: string, options: PrintOptions): void;
 export function getBrowserInfo(): Promise<BrowserInfo>;
 export function parseUserAgent(userAgent: string): BrowserInfo;
 
