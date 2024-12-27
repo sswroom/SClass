@@ -1861,6 +1861,8 @@ IO/JavaClass.h:
 @JavaClass.o
 IO/JavaProperties.h:
 @JavaProperties.o
+IO/JMeterLog.h:
+@JMeterLog.o
 IO/LangFile.h:
 @LangFile.o
 IO/LNKFile.h:
@@ -4072,6 +4074,8 @@ SSWR/AVIRead/AVIRJasyptForm.h:
 @AVIRJasyptForm.o
 SSWR/AVIRead/AVIRJavaClassForm.h:
 @AVIRJavaClassForm.o
+SSWR/AVIRead/AVIRJMeterLogForm.h:
+@AVIRJMeterLogForm.o
 SSWR/AVIRead/AVIRJSTextForm.h:
 @AVIRJSTextForm.o
 SSWR/AVIRead/AVIRJTT808ServerForm.h:

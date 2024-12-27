@@ -452,6 +452,7 @@ IOPinCapture.o: ../../src/IO/IOPinCapture.cpp
 IOTool.o: ../../src/IO/IOTool.cpp
 JavaClass.o: ../../src/IO/JavaClass.cpp
 JavaProperties.o: ../../src/IO/JavaProperties.cpp
+JMeterLog.o: ../../src/IO/JMeterLog.cpp
 LangFile.o: ../../src/IO/LangFile.cpp
 LibraryL.o: ../../src/IO/LibraryL.cpp
 !-ldl
@@ -1860,6 +1861,7 @@ AVIRIPScanDetectorForm.o: ../../src/SSWR/AVIRead/AVIRIPScanDetectorForm.cpp
 AVIRIPScanForm.o: ../../src/SSWR/AVIRead/AVIRIPScanForm.cpp
 AVIRJasyptForm.o: ../../src/SSWR/AVIRead/AVIRJasyptForm.cpp
 AVIRJavaClassForm.o: ../../src/SSWR/AVIRead/AVIRJavaClassForm.cpp
+AVIRJMeterLogForm.o: ../../src/SSWR/AVIRead/AVIRJMeterLogForm.cpp
 AVIRJSTextForm.o: ../../src/SSWR/AVIRead/AVIRJSTextForm.cpp
 AVIRJTT808ServerForm.o: ../../src/SSWR/AVIRead/AVIRJTT808ServerForm.cpp
 AVIRJWTParserForm.o: ../../src/SSWR/AVIRead/AVIRJWTParserForm.cpp

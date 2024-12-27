@@ -131,6 +131,7 @@
 #include "SSWR/AVIRead/AVIRIPScanDetectorForm.h"
 #include "SSWR/AVIRead/AVIRIPScanForm.h"
 #include "SSWR/AVIRead/AVIRJasyptForm.h"
+#include "SSWR/AVIRead/AVIRJMeterLogForm.h"
 #include "SSWR/AVIRead/AVIRJSTextForm.h"
 #include "SSWR/AVIRead/AVIRJTT808ServerForm.h"
 #include "SSWR/AVIRead/AVIRJWTParserForm.h"
@@ -516,7 +517,8 @@ typedef enum
 	MNU_MSGRAPH_EMAIL,
 	MNU_HKID,
 	MNU_ENCRYPT_FILE,
-	MNU_SELENIUM_LOG
+	MNU_SELENIUM_LOG,
+	MNU_JMETER_LOG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -715,6 +717,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Log Extract"), MNU_LOGEXTRACT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timed File Copy"), MNU_TIMED_FILE_COPY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Selenium Log"), MNU_SELENIUM_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("JMeter Log"), MNU_JMETER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &CodePage"), MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2989,6 +2992,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRSeleniumLogForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSeleniumLogForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_JMETER_LOG:
+		{
+			NN<SSWR::AVIRead::AVIRJMeterLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJMeterLogForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
