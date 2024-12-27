@@ -1936,6 +1936,7 @@ AVIRSAMLTestForm.o: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
 AVIRSDCardForm.o: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 AVIRSectorForm.o: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
 AVIRSelCANForm.o: ../../src/SSWR/AVIRead/AVIRSelCANForm.cpp
+AVIRSeleniumLogForm.o: ../../src/SSWR/AVIRead/AVIRSeleniumLogForm.cpp
 AVIRSelIOPinForm.o: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
 AVIRSelPrinterForm.o: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp
 AVIRSelStreamForm.o: ../../src/SSWR/AVIRead/AVIRSelStreamForm.cpp

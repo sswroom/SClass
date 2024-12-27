@@ -4222,6 +4222,8 @@ SSWR/AVIRead/AVIRSectorForm.h:
 @AVIRSectorForm.o
 SSWR/AVIRead/AVIRSelCANForm.h:
 @AVIRSelCANForm.o
+SSWR/AVIRead/AVIRSeleniumLogForm.h:
+@AVIRSeleniumLogForm.o
 SSWR/AVIRead/AVIRSelIOPinForm.h:
 @AVIRSelIOPinForm.o
 SSWR/AVIRead/AVIRSelPrinterForm.h:
