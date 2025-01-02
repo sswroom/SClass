@@ -12,10 +12,9 @@ namespace Map
 	class FileGDBLayer : public Map::MapDrawLayer
 	{
 	private:
-		DB::SharedReadingDB *conn;
+		NN<DB::SharedReadingDB> conn;
 		Data::FastMap<Int32, Math::Geometry::Vector2D*> objects;
-		DB::ReadingDB *currDB;
-		DB::ReadingDB *lastDB;
+		Optional<DB::ReadingDB> lastDB;
 		Map::DrawLayerType layerType;
 		Data::ArrayListStringNN colNames;
 		Math::Coord2DDbl minPos;
@@ -27,7 +26,7 @@ namespace Map
 	private:
 		Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> ReadNameArr();
 	public:
-		FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser);
+		FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser);
 		virtual ~FileGDBLayer();
 
 		virtual DrawLayerType GetLayerType() const;

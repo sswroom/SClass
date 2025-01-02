@@ -91,10 +91,10 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 				UnsafeArray<UTF8Char> sptr;
 				Map::MapLayerCollection *layerColl;
 				NN<Map::FileGDBLayer> layer;
-				DB::SharedReadingDB *db;
+				NN<DB::SharedReadingDB> db;
 				UOSInt i;
 				UOSInt j;
-				NEW_CLASS(db, DB::SharedReadingDB(fgdb));
+				NEW_CLASSNN(db, DB::SharedReadingDB(fgdb));
 				sptr = pobj->GetSourceNameObj()->ConcatTo(sbuff);
 				i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 				NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));

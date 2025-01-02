@@ -9,9 +9,9 @@ Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> M
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage;
-	this->currDB = this->conn->UseDB(mutUsage).Ptr();
+	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	NN<DB::DBReader> r;
-	if (this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
+	if (currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
 	{
 		Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
 		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
@@ -43,26 +43,23 @@ Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> M
 			}
 			nameArr->Put(objId, names);
 		}
-		this->currDB->CloseReader(r);
+		currDB->CloseReader(r);
 		mutUsage.EndUse();
-		this->currDB = 0;
 		return nameArr;
 	}
 	else
 	{
 		mutUsage.EndUse();
-		this->currDB = 0;
 		return 0;
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::CreateWGS84Csys())
+Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
 	this->conn = conn;
 	this->tableName = Text::String::New(tableName);
-	this->currDB = 0;
 	this->lastDB = 0;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->minPos = Math::Coord2DDbl(0, 0);
@@ -72,9 +69,9 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 	UOSInt nameCol = 0;
 
 	Sync::MutexUsage mutUsage;
-	this->currDB = this->conn->UseDB(mutUsage).Ptr();
+	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
 	NN<DB::DBReader> r;
-	if (this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0).SetTo(r))
+	if (currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -157,10 +154,9 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 		{
 			MemFree(buff);
 		}
-		this->currDB->CloseReader(r);
+		currDB->CloseReader(r);
 	}
 	mutUsage.EndUse();
-	this->currDB = 0;
 }
 
 Map::FileGDBLayer::~FileGDBLayer()
@@ -356,42 +352,38 @@ Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaNam
 	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
-	this->currDB = currDB.Ptr();
-	this->lastDB = this->currDB;
+	this->lastDB = currDB;
 	NN<DB::DBReader> rdr;
-	if (this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
+	if (currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
 	{
 		Map::FileGDBLReader *r;
 		NEW_CLASS(r, Map::FileGDBLReader(currDB, rdr, mutUsage));
 		return r;
 	}
 	mutUsage.Delete();
-	this->currDB = 0;
 	return 0;
 }
 
 Optional<DB::TableDef> Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	Sync::MutexUsage mutUsage;
-	this->currDB = this->conn->UseDB(mutUsage).Ptr();
-	this->lastDB = this->currDB;
-	Optional<DB::TableDef> tab = this->currDB->GetTableDef(schemaName, tableName);
-	this->currDB = 0;
-	return tab;
+	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
+	this->lastDB = currDB;
+	return currDB->GetTableDef(schemaName, tableName);
 }
 
 void Map::FileGDBLayer::CloseReader(NN<DB::DBReader> r)
 {
 	NN<Map::FileGDBLReader> rdr = NN<Map::FileGDBLReader>::ConvertFrom(r);
 	rdr.Delete();
-	this->currDB = 0;
 }
 
 void Map::FileGDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
-	if (this->lastDB)
+	NN<DB::ReadingDB> lastDB;
+	if (this->lastDB.SetTo(lastDB))
 	{
-		this->lastDB->GetLastErrorMsg(str);
+		lastDB->GetLastErrorMsg(str);
 	}
 }
 

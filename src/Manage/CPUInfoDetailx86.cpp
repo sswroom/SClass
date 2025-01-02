@@ -77,7 +77,7 @@ Int32 Manage::CPUInfoDetail::GetTCC()
 }
 
 #if defined(WIN32) || defined(_WIN64)
-Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
+Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, OutParam<Double> temp)
 {
 	InfoData *info = (InfoData*)this->clsData;
 	if (info->winRing0 == 0)
@@ -105,7 +105,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 			else
 			{
 				Int32 t = (eax & 0x7f0000) >> 16;
-				*temp = tcc - t;
+				temp.Set(tcc - t);
 				return true;
 			}
 		}

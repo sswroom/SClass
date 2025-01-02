@@ -608,6 +608,7 @@ void Map::ShortestPath3D::AddLayer(NN<Map::MapDrawLayer> layer)
 		i++;
 	}
 	layer->EndGetObject(sess);
+	layer->ReleaseNameArr(nameArr);
 	MemFreeArr(properties);
 }
 

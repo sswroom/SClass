@@ -667,13 +667,13 @@ Data::Timestamp Win32::WMIReader::GetTimestamp(UOSInt colIndex)
 	return ret;
 }
 
-Double Win32::WMIReader::GetDbl(UOSInt colIndex)
+Double Win32::WMIReader::GetDblOrNAN(UOSInt colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
-		return 0;
+		return NAN;
 
-	Double ret = 0;
+	Double ret = NAN;
 	HRESULT hr;
 	VARIANT v;
 	CIMTYPE t;
@@ -724,7 +724,7 @@ Double Win32::WMIReader::GetDbl(UOSInt colIndex)
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					ret = Text::StrToDoubleW(bs);
+					ret = Text::StrToDoubleOrW(bs, NAN);
 				}
 				break;
 			case CIM_DATETIME:

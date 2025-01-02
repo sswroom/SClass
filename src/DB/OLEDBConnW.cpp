@@ -1499,17 +1499,17 @@ Data::Timestamp DB::OLEDBReader::GetTimestamp(UOSInt colIndex)
 	}
 }
 
-Double DB::OLEDBReader::GetDbl(UOSInt colIndex)
+Double DB::OLEDBReader::GetDblOrNAN(UOSInt colIndex)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
-		return 0;
+		return NAN;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
 	UInt8 *val = &data->dataBuff[data->dbBinding[colIndex].obValue];
 	if (*status == DBSTATUS_S_ISNULL)
 	{
-		return 0;
+		return NAN;
 	}
 	switch (data->dbColInfo[colIndex].wType)
 	{
@@ -1518,65 +1518,65 @@ Double DB::OLEDBReader::GetDbl(UOSInt colIndex)
 		{
 			return ReadInt16(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_I4:
 		if (*valLen == 4)
 		{
 			return ReadInt32(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
 			return ReadFloat(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
 			return ReadDouble(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_UI1:
 		if (*valLen == 1)
 		{
 			return val[0];
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_I1:
 		if (*valLen == 1)
 		{
 			return (Int8)val[0];
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_UI2:
 		if (*valLen == 2)
 		{
 			return ReadUInt16(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_UI4:
 		if (*valLen == 4)
 		{
 			return ReadUInt32(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_I8:
 		if (*valLen == 8)
 		{
 			return (Double)ReadInt64(val);
 		}
-		return 0;
+		return NAN;
 	case DBTYPE_UI8:
 		if (*valLen == 8)
 		{
 			return (Double)ReadUInt64(val);
 		}
-		return 0;
+		return NAN;
 	default:
-		return 0;
+		return NAN;
 	}
-	return 0;
+	return NAN;
 }
 
 Bool DB::OLEDBReader::GetBool(UOSInt colIndex)
