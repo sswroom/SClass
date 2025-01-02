@@ -7,6 +7,7 @@
 #include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiCurve.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/PointZ.h"
@@ -839,6 +840,66 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(UnsafeArray<const U
 			}
 			sizeUsed.Set(ofst);
 			return cpg;
+		}
+	case 11: //MultiCurve
+	case 1011: //MultiCurveZ
+	case 2011: //MultiCurveM
+	case 3011: //MultiCurveZM
+	case 0x8000000B:
+	case 0x4000000B:
+	case 0xC000000B:
+		if (wkbLen < ofst + 4)
+			return 0;
+		else
+		{
+			UInt32 nCurve = readUInt32(&wkb[ofst]);
+			ofst += 4;
+			UOSInt thisSize;
+			UOSInt i;
+			NN<Math::Geometry::Vector2D> vec;
+			Math::Geometry::MultiCurve *mc;
+/*			Bool hasZ;
+			Bool hasM;
+			if (geomType & 0xC0000000)
+			{
+				hasZ = (geomType & 0x80000000) != 0;
+				hasM = (geomType & 0x40000000) != 0;
+			}
+			else
+			{
+				UInt32 t = geomType / 1000;
+				hasZ = (t & 1) != 0;
+				hasM = (t & 2) != 0;
+			}*/
+			NEW_CLASS(mc, Math::Geometry::MultiCurve(srid));
+			i = 0;
+			while (i < nCurve)
+			{
+				if (!this->ParseWKB(&wkb[ofst], wkbLen - ofst, thisSize).SetTo(vec))
+				{
+					DEL_CLASS(mc);
+					return 0;
+				}
+				else
+				{
+					Math::Geometry::Vector2D::VectorType t = vec->GetVectorType();
+					if (t == Math::Geometry::Vector2D::VectorType::CompoundCurve)// || t == Math::Geometry::Vector2D::VectorType::Polygon)
+					{
+						mc->AddGeometry(vec);
+						ofst += thisSize;
+					}
+					else
+					{
+						printf("WKBMultiCurve: wrong type: %d\r\n", (Int32)vec->GetVectorType());
+						vec.Delete();
+						DEL_CLASS(mc);
+						return 0;
+					}
+				}
+				i++;
+			}
+			sizeUsed.Set(ofst);
+			return mc;
 		}
 	case 12: //MultiSurface
 	case 1012: //MultiSurfaceZ

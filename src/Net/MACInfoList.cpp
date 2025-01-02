@@ -197,6 +197,11 @@ void Net::MACInfoList::Load()
 						sarr[2].RemoveChars(1);
 						Text::CPPText::FromCPPString(sbName, sarr[2].v + 9);
 					}
+					else if (sarr[2].StartsWith(UTF8STRC("UTF8STRCPTR(")) && sarr[2].EndsWith(')'))
+					{
+						sarr[2].RemoveChars(1);
+						Text::CPPText::FromCPPString(sbName, sarr[2].v + 12);
+					}
 					else
 					{
 						Text::CPPText::FromCPPString(sbName, sarr[2].v);
@@ -243,7 +248,7 @@ Bool Net::MACInfoList::Store()
 			sb.AppendHex64(entry->rangeStart);
 			sb.AppendC(UTF8STRC("LL, 0x"));
 			sb.AppendHex64(entry->rangeEnd);
-			sb.AppendC(UTF8STRC("LL, UTF8STRC("));
+			sb.AppendC(UTF8STRC("LL, UTF8STRCPTR("));
 			Text::CPPText::ToCPPString(sb, entry->name);
 			sb.AppendC(UTF8STRC(")},"));
 			writer.WriteLine(sb.ToCString());

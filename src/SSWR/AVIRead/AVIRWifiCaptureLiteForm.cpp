@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	UOSInt ieLen;
 	NN<Net::WirelessLANIE> ie;
-	const UInt8 *ieBuff;
+	UnsafeArray<const UInt8> ieBuff;
 	dt.SetCurrTimeUTC();
 	NN<Net::WirelessLAN::Interface> wlanInterf;
 	if (me->wlanInterf.SetTo(wlanInterf))
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 								if (bss->GetIE(k).SetTo(ie))
 								{
 									ieBuff = ie->GetIEBuff();
-									MemCopyNO(&wifiLog->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+									MemCopyNO(&wifiLog->ieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
 									m += (UOSInt)ieBuff[1] + 2;
 								}
 								k++;
@@ -294,7 +294,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 								if (bss->GetIE(k).SetTo(ie))
 								{
 									ieBuff = ie->GetIEBuff();
-									MemCopyNO(&wifiLog->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+									MemCopyNO(&wifiLog->ieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
 									m += (UOSInt)ieBuff[1] + 2;
 								}
 								k++;

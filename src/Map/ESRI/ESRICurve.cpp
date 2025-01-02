@@ -4,6 +4,7 @@
 #include "Math/Geometry/CircularString.h"
 #include "Math/Geometry/CompoundCurve.h"
 #include "Math/Geometry/CurvePolygon.h"
+#include "Math/Geometry/MultiCurve.h"
 #include "Math/Geometry/MultiPolygon.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Polygon.h"
@@ -95,7 +96,7 @@ void Map::ESRI::ESRICurve::AddEllipticArc(UOSInt index, Math::Coord2DDbl center,
 	printf("ESRICurve: EllipticArc is not supported\r\n");
 }
 
-NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToArea() const
+NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const
 {
 	if (this->curveList.GetCount() > 0)
 	{
@@ -271,10 +272,156 @@ NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToArea() const
 	}
 }
 
-NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::ToLine() const
+NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolyline() const
 {
-	if (false)//this->arcList.GetCount() > 0)
+	if (this->curveList.GetCount() > 0)
 	{
+		Data::ArrayListA<Math::Coord2DDbl> ptList;
+		NN<Math::Geometry::MultiCurve> mc;
+		NN<Math::Geometry::CompoundCurve> cc;
+		NN<Math::Geometry::LineString> ls;
+		ptList.AddAll(this->ptList);
+		NEW_CLASSNN(mc, Math::Geometry::MultiCurve(this->srid));
+		NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+		NN<CurveInfo> curve;
+		Math::Coord2DDbl curvePts[3];
+		UOSInt indexOfst = 0;
+		UOSInt endPart;
+		UOSInt i = 0;
+		UOSInt currIndex = 0;
+		UOSInt partI = 1;
+		if (partI >= this->partList.GetCount())
+		{
+			endPart = ptList.GetCount() - indexOfst;
+		}
+		else
+		{
+			endPart = this->partList.GetItem(partI);
+		}
+		while (i < this->curveList.GetCount())
+		{
+			curve = this->curveList.GetItemNoCheck(i);
+			while (curve->startIndex >= endPart)
+			{
+				if (currIndex + 1 < endPart + indexOfst)
+				{
+					if (cc->GetCount() == 0)
+					{
+						NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+						mc->AddGeometry(ls);
+						currIndex = endPart + indexOfst;
+					}
+					else
+					{
+						NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+						cc->AddGeometry(ls);
+						mc->AddGeometry(cc);
+						currIndex = endPart + indexOfst;
+						NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+					}
+				}
+				else
+				{
+					currIndex = endPart + indexOfst;
+				}
+
+				partI++;
+				if (partI >= this->partList.GetCount())
+				{
+					endPart = ptList.GetCount() - indexOfst;
+				}
+				else
+				{
+					endPart = this->partList.GetItem(partI);
+				}
+			}
+			if (curve->startIndex + indexOfst > currIndex)
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], curve->startIndex + indexOfst - currIndex + 1, 0, 0));
+				cc->AddGeometry(ls);
+			}
+			if (curve->type == 5)
+			{
+				NN<BezierCurveInfo> bcurve = NN<BezierCurveInfo>::ConvertFrom(curve);
+				Data::ArrayListA<Math::Coord2DDbl> tmpPts;
+				Math::GeometryTool::BezierCurveToLine(ptList.GetItem(bcurve->startIndex + indexOfst), bcurve->point1, bcurve->point2, ptList.GetItem(bcurve->startIndex + indexOfst + 1), 10, tmpPts);
+				ptList.InsertRange(bcurve->startIndex + indexOfst + 1, tmpPts.GetCount() - 2, tmpPts.Arr() + 1);
+				indexOfst += tmpPts.GetCount() - 2;
+			}
+			else if (curve->type == 4)
+			{
+				//NN<EllipticArcInfo> earc = NN<EllipticArcInfo>::ConvertFrom(curve);
+				//ptList.Insert(earc->startIndex + indexOfst + 1, earc->center);
+				//indexOfst += 1;
+			}
+			else //if (curve->type == 1)
+			{
+				NN<ArcInfo> arc = NN<ArcInfo>::ConvertFrom(curve);
+				curvePts[0] = ptList.GetItem(arc->startIndex + indexOfst);
+				curvePts[1] = arc->center;
+				curvePts[2] = ptList.GetItem(arc->startIndex + indexOfst + 1);
+				NEW_CLASSNN(ls, Math::Geometry::CircularString(this->srid, curvePts, 3, 0, 0));
+				cc->AddGeometry(ls);
+				currIndex = arc->startIndex + indexOfst + 1;
+			}
+			i++;
+		}
+		while (partI < this->partList.GetCount())
+		{
+			if (cc->GetCount() == 0)
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				mc->AddGeometry(ls);
+				currIndex = endPart + indexOfst;
+			}
+			else
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				cc->AddGeometry(ls);
+				mc->AddGeometry(cc);
+				currIndex = endPart + indexOfst;
+				NEW_CLASSNN(cc, Math::Geometry::CompoundCurve(this->srid));
+			}
+
+			partI++;
+			if (partI >= this->partList.GetCount())
+			{
+				endPart = ptList.GetCount() - indexOfst;
+			}
+			else
+			{
+				endPart = this->partList.GetItem(partI);
+			}
+		}
+		if (currIndex + 1 < ptList.GetCount() - indexOfst)
+		{
+			if (cc->GetCount() == 0)
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LinearRing(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				mc->AddGeometry(ls);
+				currIndex = endPart + indexOfst;
+				cc.Delete();
+			}
+			else
+			{
+				NEW_CLASSNN(ls, Math::Geometry::LineString(this->srid, &ptList.Arr()[currIndex], endPart + indexOfst - currIndex, 0, 0));
+				cc->AddGeometry(ls);
+				mc->AddGeometry(cc);
+				currIndex = endPart + indexOfst;
+			}
+		}
+		else
+		{
+			if (cc->GetCount() == 0)
+			{
+				cc.Delete();
+			}
+			else
+			{
+				mc->AddGeometry(cc);
+			}
+		}
+		return mc;
 	}
 	else
 	{

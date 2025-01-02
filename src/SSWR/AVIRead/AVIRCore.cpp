@@ -174,7 +174,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 			csys = batchLyrs->GetItemNoCheck(0)->GetCoordinateSystem();
 			view = batchLyrs->GetItemNoCheck(0)->CreateMapView(Math::Size2DDbl(320, 240));
 			NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
-	}
+		}
 		else
 		{
 			csys = Math::CoordinateSystemManager::CreateWGS84Csys();

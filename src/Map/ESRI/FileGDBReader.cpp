@@ -1042,10 +1042,6 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			if (geometryType & 0x20000000)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, nCurves);
-				if (nCurves > 0)
-				{
-					printf("FileGDBReader: geometry has curves, may not fully support\r\n");
-				}
 			}
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //xmin
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymin
@@ -1157,7 +1153,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 					i++;
 				}
 			}
-			vec = curve.ToLine();
+			vec = curve.CreatePolyline();
 			if (zArr.SetTo(nnArr))
 			{
 				MemFreeArr(nnArr);
@@ -1295,7 +1291,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 					i++;
 				}
 			}
-			vec = curve.ToArea();
+			vec = curve.CreatePolygon();
 			if (mArr.SetTo(nnArr))
 			{
 				MemFreeArr(nnArr);

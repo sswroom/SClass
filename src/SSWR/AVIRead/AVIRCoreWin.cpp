@@ -57,6 +57,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			if (!this->batchLyrs.SetTo(batchLyrs))
 			{
 				NEW_CLASSNN(batchLyrs, Data::ArrayListNN<Map::MapDrawLayer>());
+				this->batchLyrs = batchLyrs;
 			}
 			batchLyrs->Add(NN<Map::MapDrawLayer>::ConvertFrom(pobj));
 		}
@@ -257,6 +258,12 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::Unknown:
 	default:
 		pobj.Delete();
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append(CSTR("No UI support this type of object: "));
+			sb.Append(IO::ParserTypeGetName(pt));
+			this->ui->ShowMsgOK(sb.ToCString(), CSTR("AVIRead"), 0);
+		}
 		break;
 	}
 }

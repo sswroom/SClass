@@ -2489,6 +2489,8 @@ Math/Geometry/LinearRing.h:
 @LinearRing.o
 Math/Geometry/LineString.h:
 @LineString.o
+Math/Geometry/MultiCurve.h:
+@MultiCurve.o
 Math/Geometry/MultiGeometry.h:
 Math/Geometry/MultiPolygon.h:
 @MultiPolygon.o

@@ -8,16 +8,16 @@ namespace Net
 	class WirelessLANIE
 	{
 	private:
-		UInt8 *ieBuff;
+		UnsafeArray<UInt8> ieBuff;
 
 	public:
-		WirelessLANIE(const UInt8 *ieBuff);
+		WirelessLANIE(UnsafeArray<const UInt8> ieBuff);
 		~WirelessLANIE();
 
-		const UInt8 *GetIEBuff();
+		UnsafeArray<const UInt8> GetIEBuff();
 
-		static void ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF8> sb);
-		static void GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum);
+		static void ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::StringBuilderUTF8> sb);
+		static void GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum);
 	};
 }
 #endif

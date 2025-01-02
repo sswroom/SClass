@@ -874,6 +874,7 @@ Ellipse.o: ../../src/Math/Geometry/Ellipse.cpp
 GeometryCollection.o: ../../src/Math/Geometry/GeometryCollection.cpp
 LinearRing.o: ../../src/Math/Geometry/LinearRing.cpp
 LineString.o: ../../src/Math/Geometry/LineString.cpp
+MultiCurve.o: ../../src/Math/Geometry/MultiCurve.cpp
 MultiPolygon.o: ../../src/Math/Geometry/MultiPolygon.cpp
 MultiSurface.o: ../../src/Math/Geometry/MultiSurface.cpp
 Point.o: ../../src/Math/Geometry/Point.cpp

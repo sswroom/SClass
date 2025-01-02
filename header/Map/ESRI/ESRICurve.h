@@ -53,8 +53,8 @@ namespace Map
 			void AddArc(UOSInt index, Math::Coord2DDbl center, UInt32 bits);
 			void AddBezier3Curve(UOSInt index, Math::Coord2DDbl point1, Math::Coord2DDbl point2);
 			void AddEllipticArc(UOSInt index, Math::Coord2DDbl center, Double rotation, Double semiMajor, Double minorMajorRatio, UInt32 bits);
-			NN<Math::Geometry::Vector2D> ToArea() const;
-			NN<Math::Geometry::Vector2D> ToLine() const;
+			NN<Math::Geometry::Vector2D> CreatePolygon() const;
+			NN<Math::Geometry::Vector2D> CreatePolyline() const;
 		};
 	}
 }

@@ -140,6 +140,12 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::TCPClientFactory> clif, Optional<N
 				{
 					if (r->GetVector(shapeCol).SetTo(vec))
 					{
+						NN<Math::Geometry::Vector2D> simpleVec;
+						if (vec->HasCurve() && vec->ToSimpleShape().SetTo(simpleVec))
+						{
+							vec.Delete();
+							vec = simpleVec;
+						}
 						if (this->vecMap.Put(r->GetInt32(idCol), vec).SetTo(vec))
 						{
 							vec.Delete();

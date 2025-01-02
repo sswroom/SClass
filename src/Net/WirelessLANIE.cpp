@@ -7,24 +7,24 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WirelessLANIE::WirelessLANIE(const UInt8 *ieBuff)
+Net::WirelessLANIE::WirelessLANIE(UnsafeArray<const UInt8> ieBuff)
 {
 	UOSInt size = (UOSInt)(ieBuff[1] + 2);
-	this->ieBuff = MemAlloc(UInt8, size);
-	MemCopyNO(this->ieBuff, ieBuff, size);
+	this->ieBuff = MemAllocArr(UInt8, size);
+	MemCopyNO(this->ieBuff.Ptr(), ieBuff.Ptr(), size);
 }
 
 Net::WirelessLANIE::~WirelessLANIE()
 {
-	MemFree(this->ieBuff);
+	MemFreeArr(this->ieBuff);
 }
 
-const UInt8 *Net::WirelessLANIE::GetIEBuff()
+UnsafeArray<const UInt8> Net::WirelessLANIE::GetIEBuff()
 {
 	return this->ieBuff;
 }
 
-void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF8> sb)
+void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 cmd = ieBuff[0];
 	UOSInt size = ieBuff[1];
@@ -1131,6 +1131,42 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 				i += 4 + itemSize; 
 			}
 		}
+		else if (v32 == 0x0050F211 && size == 8)
+		{
+			succ = true;
+			sb->AppendC(UTF8STRC(" (Network Cost)"));
+			sb->AppendC(UTF8STRC("\r\n\tCost Level = 0x"));
+			sb->AppendHex8(ieBuff[6]);
+			switch (ieBuff[6])
+			{
+			case 0:
+				sb->AppendC(UTF8STRC(" (Unknown)"));
+				break;
+			case 1:
+				sb->AppendC(UTF8STRC(" (Unrestricted)"));
+				break;
+			case 2:
+				sb->AppendC(UTF8STRC(" (Fixed)"));
+				break;
+			case 4:
+				sb->AppendC(UTF8STRC(" (Variable)"));
+				break;
+			}
+			sb->AppendC(UTF8STRC("\r\n\tRESERVED = 0x"));
+			sb->AppendHex8(ieBuff[7]);
+			sb->AppendC(UTF8STRC("\r\n\tCost Flags = 0x"));
+			sb->AppendHex8(ieBuff[8]);
+			sb->AppendC(UTF8STRC("\r\n\t\tOver Data Limit = "));
+			sb->AppendI32(ieBuff[8] & 1);
+			sb->AppendC(UTF8STRC("\r\n\t\tCongested = "));
+			sb->AppendI32((ieBuff[8] & 2) >> 1);
+			sb->AppendC(UTF8STRC("\r\n\t\tRoaming = "));
+			sb->AppendI32((ieBuff[8] & 4) >> 1);
+			sb->AppendC(UTF8STRC("\r\n\t\tApproaching Data Limit = "));
+			sb->AppendI32((ieBuff[8] & 8) >> 1);
+			sb->AppendC(UTF8STRC("\r\n\tRESERVED = 0x"));
+			sb->AppendHex8(ieBuff[9]);
+		}
 		if (!succ)
 		{
 			sb->AppendC(UTF8STRC("\r\n\tContent = "));
@@ -1138,14 +1174,16 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF
 		}
 		return;
 	}
-	sb->AppendC(UTF8STRC("IE "));
-	sb->AppendHexBuff(ieBuff, size + 2, 0, Text::LineBreakType::None);
+	sb->AppendC(UTF8STRC("Unknown IE ("));
+	sb->AppendHex8(cmd);
+	sb->AppendC(UTF8STRC(") - "));
+	sb->AppendHexBuff(ieBuff + 2, size, 0, Text::LineBreakType::None);
 }
 
-void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum)
+void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum)
 {
 	Text::StringBuilderUTF8 sb;
-	const UInt8 *endPtr = iebuff + ieLen;
+	UnsafeArray<const UInt8> endPtr = iebuff + ieLen;
 	while (iebuff + 2 < endPtr)
 	{
 		UInt8 cmd = iebuff[0];

@@ -449,7 +449,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 	UOSInt l;
 	UOSInt m;
 	UOSInt ieLen;
-	const UInt8 *ieBuff;
+	UnsafeArray<const UInt8> ieBuff;
 	NN<Net::WirelessLANIE> ie;
 	MemCopyNO(&buff[2], bss->GetMAC(), 6);
 	buff[0] = 0;
@@ -504,7 +504,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				if (bss->GetIE(k).SetTo(ie))
 				{
 					ieBuff = ie->GetIEBuff();
-					MemCopyNO(&log->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+					MemCopyNO(&log->ieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
 					m += (UOSInt)ieBuff[1] + 2;
 				}
 				k++;
@@ -617,7 +617,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				if (bss->GetIE(k).SetTo(ie))
 				{
 					ieBuff = ie->GetIEBuff();
-					MemCopyNO(&log->ieBuff[m], ieBuff, (UOSInt)ieBuff[1] + 2);
+					MemCopyNO(&log->ieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
 					m += (UOSInt)ieBuff[1] + 2;
 				}
 				k++;
