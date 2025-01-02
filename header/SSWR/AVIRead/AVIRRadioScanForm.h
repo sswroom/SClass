@@ -4,6 +4,7 @@
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListView.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -27,6 +28,9 @@ namespace SSWR
 			NN<UI::GUIListView> lvWiFi;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
+
+			static void __stdcall OnWiFiClicked(AnyType userObj);
+			void ToggleWiFi();
 		public:
 			AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRadioScanForm();

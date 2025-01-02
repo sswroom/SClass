@@ -4204,6 +4204,8 @@ SSWR/AVIRead/AVIRProxyServerForm.h:
 @AVIRProxyServerForm.o
 SSWR/AVIRead/AVIRPushServerForm.h:
 @AVIRPushServerForm.o
+SSWR/AVIRead/AVIRRadioScanForm.h:
+@AVIRRadioScanForm.o
 SSWR/AVIRead/AVIRRAWMonitorForm.h:
 @AVIRRAWMonitorForm.o
 SSWR/AVIRead/AVIRRegionalMapForm.h:

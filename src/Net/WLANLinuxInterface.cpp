@@ -485,6 +485,14 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 									bss.devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 									break;
 								case 0x1023: //Model
+									if (bss.devModel == 0)
+									{
+										sbTmp.ClearStr();
+										sbTmp.AppendC(&currItem[4], itemSize);
+										bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+									}
+									break;
+								case 0x1024: //Model Number
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
 									SDEL_STRING(bss.devModel);

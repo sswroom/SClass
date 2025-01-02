@@ -1927,6 +1927,7 @@ AVIRProgramLinksForm.o: ../../src/SSWR/AVIRead/AVIRProgramLinksForm.cpp
 AVIRProtoDecForm.o: ../../src/SSWR/AVIRead/AVIRProtoDecForm.cpp
 AVIRProxyServerForm.o: ../../src/SSWR/AVIRead/AVIRProxyServerForm.cpp
 AVIRPushServerForm.o: ../../src/SSWR/AVIRead/AVIRPushServerForm.cpp
+AVIRRadioScanForm.o: ../../src/SSWR/AVIRead/AVIRRadioScanForm.cpp
 AVIRRAWMonitorForm.o: ../../src/SSWR/AVIRead/AVIRRAWMonitorForm.cpp
 AVIRRegionalMapForm.o: ../../src/SSWR/AVIRead/AVIRRegionalMapForm.cpp
 AVIRRESTfulForm.o: ../../src/SSWR/AVIRead/AVIRRESTfulForm.cpp

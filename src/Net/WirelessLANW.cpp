@@ -122,6 +122,14 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
 							this->devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
 							break;
 						case 0x1023: //Model
+							if (this->devModel == 0)
+							{
+								sbTmp.ClearStr();
+								sbTmp.AppendC(&currItem[4], itemSize);
+								this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+							}
+							break;
+						case 0x1024: //Model Number
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
 							SDEL_STRING(this->devModel);

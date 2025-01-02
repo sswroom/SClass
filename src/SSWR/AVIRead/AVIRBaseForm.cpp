@@ -184,6 +184,7 @@
 #include "SSWR/AVIRead/AVIRProtoDecForm.h"
 #include "SSWR/AVIRead/AVIRProxyServerForm.h"
 #include "SSWR/AVIRead/AVIRPushServerForm.h"
+#include "SSWR/AVIRead/AVIRRadioScanForm.h"
 #include "SSWR/AVIRead/AVIRRAWMonitorForm.h"
 #include "SSWR/AVIRead/AVIRRegionalMapForm.h"
 #include "SSWR/AVIRead/AVIRRESTfulForm.h"
@@ -518,7 +519,8 @@ typedef enum
 	MNU_HKID,
 	MNU_ENCRYPT_FILE,
 	MNU_SELENIUM_LOG,
-	MNU_JMETER_LOG
+	MNU_JMETER_LOG,
+	MNU_RADIO_SCAN
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -893,6 +895,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
+	mnu->AddItem(CSTR("Radio Scan"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SMBIOS"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Capture Device"), MNU_CAP_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&WIA Device"), MNU_WIA_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2999,6 +3002,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRJMeterLogForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRJMeterLogForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_RADIO_SCAN:
+		{
+			NN<SSWR::AVIRead::AVIRRadioScanForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRadioScanForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;
