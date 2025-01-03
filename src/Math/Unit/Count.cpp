@@ -93,13 +93,17 @@ Double Math::Unit::Count::Convert(CountUnit fromUnit, CountUnit toUnit, Double f
 
 UnsafeArray<UTF8Char> Math::Unit::Count::WellFormat(UnsafeArray<UTF8Char> sbuff, Double val)
 {
+	return WellFormat(sbuff, val, "0.00");
+}
+
+UnsafeArray<UTF8Char> Math::Unit::Count::WellFormat(UnsafeArray<UTF8Char> sbuff, Double val, UnsafeArray<const Char> fmt)
+{
 	if (val == 0)
 	{
 		*sbuff++ = '0';
 		*sbuff = 0;
 		return sbuff;
 	}
-	const Char *fmt = "0.00";
 	Double lval = Math_Log10(val);
 	if (lval < 0)
 	{
@@ -152,23 +156,23 @@ UnsafeArray<UTF8Char> Math::Unit::Count::WellFormat(UnsafeArray<UTF8Char> sbuff,
 	{
 		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E6, fmt), UTF8STRC("M"));
 	}
-	else if (val < 12)
+	else if (lval < 12)
 	{
 		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E9, fmt), UTF8STRC("G"));
 	}
-	else if (val < 15)
+	else if (lval < 15)
 	{
 		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E12, fmt), UTF8STRC("T"));
 	}
-	else if (val < 18)
+	else if (lval < 18)
 	{
 		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E15, fmt), UTF8STRC("P"));
 	}
-	else if (val < 21)
+	else if (lval < 21)
 	{
 		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E18, fmt), UTF8STRC("E"));
 	}
-	else if (val < 24)
+	else if (lval < 24)
 	{
 		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, val / 1.0E21, fmt), UTF8STRC("Z"));
 	}

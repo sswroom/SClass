@@ -31,6 +31,7 @@ namespace Math
 			static Double GetConvertRatio(CountUnit fromUnit, CountUnit toUnit);
 			static Double Convert(CountUnit fromUnit, CountUnit toUnit, Double fromValue);
 			static UnsafeArray<UTF8Char> WellFormat(UnsafeArray<UTF8Char> sbuff, Double val);
+			static UnsafeArray<UTF8Char> WellFormat(UnsafeArray<UTF8Char> sbuff, Double val, UnsafeArray<const Char> fmt);
 			static UnsafeArray<UTF8Char> WellFormatBin(UnsafeArray<UTF8Char> sbuff, Double val);
 		};
 	}

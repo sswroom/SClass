@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRRADIOSCANFORM
 #define _SM_SSWR_AVIREAD_AVIRRADIOSCANFORM
+#include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -28,8 +29,16 @@ namespace SSWR
 			NN<UI::GUIListView> lvWiFi;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
+			Net::WirelessLAN wlan;
+			Optional<Net::WirelessLAN::Interface> wlanInterf;
+			OSInt wlanScan;
+			Int64 wlanLastTime;
+			Data::ArrayListNN<Net::WirelessLAN::BSSInfo> wlanBSSList;
 
+			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnWiFiClicked(AnyType userObj);
+			static void __stdcall OnWiFiSelChg(AnyType userObj);
+			static void __stdcall OnDashboardDblClk(AnyType userObj, UOSInt index);
 			void ToggleWiFi();
 		public:
 			AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

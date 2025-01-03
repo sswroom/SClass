@@ -47,7 +47,7 @@ namespace SSWR
 			} WifiLog;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::WirelessLAN *wlan;
+			Net::WirelessLAN wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
 			OSInt wlanScan;
 			Data::FastMapNN<UInt64, BSSStatus> bssMap;

@@ -3351,6 +3351,8 @@ Net/WiFiCapturer.h:
 @WiFiCapturer.o
 Net/WiFiLogFile.h:
 @WiFiLogFile.o
+Net/WiFiUtil.h:
+@WiFiUtil.o
 Net/WirelessLANIE.h:
 @WirelessLANIE.o
 Net/WOLClient.h:

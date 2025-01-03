@@ -1470,6 +1470,7 @@ WhoisHandler.o: ../../src/Net/WhoisHandler.cpp
 WhoisRecord.o: ../../src/Net/WhoisRecord.cpp
 WiFiCapturer.o: ../../src/Net/WiFiCapturer.cpp
 WiFiLogFile.o: ../../src/Net/WiFiLogFile.cpp
+WiFiUtil.o: ../../src/Net/WiFiUtil.cpp
 WinSSLClient.o: ../../src/Net/WinSSLClient.cpp
 WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 !-lsecur32

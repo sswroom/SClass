@@ -603,9 +603,8 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUI
 	this->core = core;
 	this->lastTimeTick = 0;
 	UOSInt i;
-	NEW_CLASS(this->wlan, Net::WirelessLAN());
 	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
-	this->wlan->GetInterfaces(interfList);
+	this->wlan.GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
 	i = interfList.GetCount();
 	while (i-- > 1)
@@ -672,7 +671,6 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUI
 SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 {
 	this->wlanInterf.Delete();
-	DEL_CLASS(this->wlan);
 	UOSInt i;
 	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus> bss;
 	i = this->bssMap.GetCount();

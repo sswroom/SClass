@@ -895,7 +895,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("GLB Viewer"), MNU_GLBVIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
-	mnu->AddItem(CSTR("Radio Scan"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Radio Scan"), MNU_RADIO_SCAN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SMBIOS"), MNU_SMBIOS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Capture Device"), MNU_CAP_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&WIA Device"), MNU_WIA_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
