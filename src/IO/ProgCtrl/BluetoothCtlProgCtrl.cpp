@@ -274,6 +274,12 @@ void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> t
 							printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
 						}
 					}
+					else if (sarr[0].StartsWith(UTF8STRC("SetDiscoveryFilter ")))
+					{
+					}
+					else if (sarr[0].StartsWith(UTF8STRC("hci0 type ")))
+					{
+					}
 					else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
 					{
 						if (!me->cmdReady)

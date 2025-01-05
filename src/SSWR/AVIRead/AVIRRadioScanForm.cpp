@@ -2,6 +2,7 @@
 #include "IO/Path.h"
 #include "Math/Unit/Count.h"
 #include "Net/MACInfo.h"
+#include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WiFiUtil.h"
 #include "SSWR/AVIRead/AVIRRadioScanForm.h"
@@ -73,21 +74,38 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			me->wlanLastTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		}
 	}
+
+	NN<IO::BTScanner> bt;
+	if (me->bt.SetTo(bt))
+	{
+		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+		if (me->btUpdated || (me->btMinTime != 0 && me->btMinTime + 60000 < currTime))
+		{
+			me->btUpdated = false;
+			UOSInt cnt = 0;
+			Int64 minTime;
+			Int64 minTime2;
+			me->lvBluetooth->ClearItems();
+			{
+				Sync::MutexUsage mutUsage;
+				cnt = me->AppendBTList(bt->GetPublicMap(mutUsage), currTime, minTime);
+				cnt += me->AppendBTList(bt->GetRandomMap(mutUsage), currTime, minTime2);
+			}
+			if (minTime == 0)
+				minTime = minTime2;
+			else if (minTime2 != 0 && minTime > minTime2)
+				minTime = minTime2;
+			me->btMinTime = minTime;
+			sptr = Text::StrUOSInt(sbuff, cnt);
+			me->lvDashboard->SetSubItem(1, 2, CSTRP(sbuff, sptr));
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnWiFiClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
 	me->ToggleWiFi();	
-}
-
-void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDashboardDblClk(AnyType userObj, UOSInt index)
-{
-	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
-	if (index == 0)
-	{
-		me->ToggleWiFi();
-	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnWiFiSelChg(AnyType userObj)
@@ -120,6 +138,31 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnWiFiSelChg(AnyType userObj)
 		}
 		me->txtWiFiDetail->SetText(sb.ToCString());
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnBluetoothClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	me->ToggleBT();
+}
+
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDashboardDblClk(AnyType userObj, UOSInt index)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	if (index == 0)
+	{
+		me->ToggleWiFi();
+	}
+	else if (index == 1)
+	{
+		me->ToggleBT();
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	me->btUpdated = true;
 }
 
 void SSWR::AVIRead::AVIRRadioScanForm::ToggleWiFi()
@@ -155,7 +198,119 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleWiFi()
 	}
 }
 
-SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
+void SSWR::AVIRead::AVIRRadioScanForm::ToggleBT()
+{
+	NN<IO::BTScanner> bt;
+	if (this->bt.SetTo(bt))
+	{
+		bt->ScanOff();
+		this->bt.Delete();
+		this->lvDashboard->SetSubItem(1, 1, CSTR("Idle"));
+		this->lvDashboard->SetSubItem(1, 2, CSTR("0"));
+		this->btnBluetooth->SetText(CSTR("Start"));
+		this->lvBluetooth->ClearItems();
+		this->btUpdated = false;
+		this->btMinTime = 0;
+	}
+	else
+	{
+		this->bt = IO::BTScanner::CreateScanner();
+		if (this->bt.SetTo(bt))
+		{
+			this->btUpdated = false;
+			this->btMinTime = 0;
+			bt->HandleRecordUpdate(OnDeviceUpdated, this);
+			bt->ScanOn();
+			this->lvDashboard->SetSubItem(1, 1, CSTR("Scanning"));
+			this->btnBluetooth->SetText(CSTR("Stop"));
+		}
+		else
+		{
+			this->ui->ShowMsgOK(CSTR("Bluetooth Interface not found"), CSTR("Radio Scan"), this);
+		}
+	}
+}
+
+UOSInt SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Int64 currTime, OutParam<Int64> minTime)
+{
+	Int64 mTime = 0;
+	UOSInt cnt = 0;
+	NN<IO::BTScanLog::ScanRecord3> rec;
+	Int64 expTime = currTime - 60000;
+	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> s;
+	UOSInt k;
+	UOSInt i = 0;
+	UOSInt j = devMap->GetCount();
+	while (i < j)
+	{
+		rec = devMap->GetItemNoCheck(i);
+		if (rec->lastSeenTime >= expTime)
+		{
+			sptr = Text::StrHexBytes(sbuff, rec->mac, 6, ':');
+			k = this->lvBluetooth->AddItem(CSTRP(sbuff, sptr), 0);
+			this->lvBluetooth->SetSubItem(k, 1, IO::BTScanLog::AddressTypeGetName(rec->addrType));
+			this->lvBluetooth->SetSubItem(k, 2, IO::BTScanLog::RadioTypeGetName(rec->radioType));
+			sptr = Text::StrInt32(sbuff, rec->rssi);
+			this->lvBluetooth->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+			sptr = Data::Timestamp(rec->lastSeenTime, Data::DateTimeUtil::GetLocalTzQhr()).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			this->lvBluetooth->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+			if (rec->name.SetTo(s))
+			{
+				this->lvBluetooth->SetSubItem(k, 5, s);
+			}
+			if (rec->addrType == IO::BTScanLog::AT_RANDOM)
+			{
+				switch (rec->mac[0] & 0xC0)
+				{
+				case 0x00:
+					this->lvBluetooth->SetSubItem(k, 6, CSTR("Non-resolvable Random"));
+					break;
+				case 0x40:
+					this->lvBluetooth->SetSubItem(k, 6, CSTR("Resolvable Random"));
+					break;
+				case 0xC0:
+					this->lvBluetooth->SetSubItem(k, 6, CSTR("Static Random"));
+					break;
+				default:
+					this->lvBluetooth->SetSubItem(k, 6, CSTR("-"));
+					break;
+				}
+			}
+			else
+			{
+				NN<const Net::MACInfo::MACEntry> mac = Net::MACInfo::GetMACInfo(rec->macInt);
+				this->lvBluetooth->SetSubItem(k, 6, {mac->name, mac->nameLen});
+			}
+			if (rec->company == 0)
+			{
+				this->lvBluetooth->SetSubItem(k, 7, CSTR("-"));
+			}
+			else
+			{
+				Text::CStringNN cstr;
+				if (Net::PacketAnalyzerBluetooth::CompanyGetName(rec->company).SetTo(cstr))
+				{
+					this->lvBluetooth->SetSubItem(k, 7, cstr);
+				}
+				else
+				{
+					this->lvBluetooth->SetSubItem(k, 7, CSTR("?"));
+				}
+			}
+			this->lvBluetooth->SetSubItem(k, 8, IO::BTScanLog::AdvTypeGetName(rec->advType));
+			if (mTime == 0 || mTime > rec->lastSeenTime)
+				mTime = rec->lastSeenTime;
+			cnt++;
+		}
+		i++;
+	}
+	minTime.Set(mTime);
+	return cnt;
+}
+
+SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Radio Scan"));
@@ -205,9 +360,36 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->lvDashboard->SetSubItem(0, 1, CSTR("Idle"));
 	this->lvDashboard->SetSubItem(0, 2, CSTR("0"));
 
+	this->tpBluetooth = this->tcMain->AddTabPage(CSTR("Bluetooth"));
+	this->pnlBluetooth = ui->NewPanel(this->tpBluetooth);
+	this->pnlBluetooth->SetRect(0, 0, 100, 31, false);
+	this->pnlBluetooth->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->btnBluetooth = ui->NewButton(this->pnlBluetooth, CSTR("Start"));
+	this->btnBluetooth->SetRect(4, 4, 75, 23, false);
+	this->btnBluetooth->HandleButtonClick(OnBluetoothClicked, this);
+	this->lvBluetooth = ui->NewListView(this->tpBluetooth, UI::ListViewStyle::Table, 9);
+	this->lvBluetooth->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvBluetooth->SetShowGrid(true);
+	this->lvBluetooth->SetFullRowSelect(true);
+	this->lvBluetooth->AddColumn(CSTR("MAC Address"), 120);
+	this->lvBluetooth->AddColumn(CSTR("AddrType"), 60);
+	this->lvBluetooth->AddColumn(CSTR("Type"), 50);
+	this->lvBluetooth->AddColumn(CSTR("RSSI"), 50);
+	this->lvBluetooth->AddColumn(CSTR("RecvTime"), 130);
+	this->lvBluetooth->AddColumn(CSTR("Name"), 150);
+	this->lvBluetooth->AddColumn(CSTR("Vendor"), 150);
+	this->lvBluetooth->AddColumn(CSTR("Company"), 150);
+	this->lvBluetooth->AddColumn(CSTR("AdvType"), 100);
+	this->lvDashboard->AddItem(CSTR("Bluetooth"), 0);
+	this->lvDashboard->SetSubItem(1, 1, CSTR("Idle"));
+	this->lvDashboard->SetSubItem(1, 2, CSTR("0"));
+
 	this->wlanInterf = 0;
 	this->wlanScan = 0;
 	this->wlanLastTime = 0;
+	this->bt = 0;
+	this->btUpdated = false;
+	this->btMinTime = 0;
 	this->AddTimer(500, OnTimerTick, this);
 }
 
@@ -215,6 +397,13 @@ SSWR::AVIRead::AVIRRadioScanForm::~AVIRRadioScanForm()
 {
 	this->wlanInterf.Delete();
 	this->wlanBSSList.DeleteAll();
+
+	NN<IO::BTScanner> bt;
+	if (this->bt.SetTo(bt))
+	{
+		bt->ScanOff();
+		this->bt.Delete();
+	}
 }
 
 void SSWR::AVIRead::AVIRRadioScanForm::OnMonitorChanged()
