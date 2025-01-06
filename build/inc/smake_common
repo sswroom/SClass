@@ -4497,6 +4497,8 @@ SSWR/OrganWeb/OrganWebPhotoController.h:
 @OrganWebPhotoController.o
 SSWR/OrganWeb/OrganWebPOIController.h:
 @OrganWebPOIController.o
+SSWR/OrganWeb/OrganWebSession.h:
+@OrganWebSession.o
 SSWR/SDNSProxy/SDNSProxyCore.h:
 @SDNSProxyCore.o
 SSWR/SDNSProxy/SDNSProxyWebHandler.h:

@@ -837,7 +837,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::TCPClientFactory> clif, Optiona
 		NN<SSWR::OrganWeb::OrganWebHandler> webHdlr;
 		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("web"));
-		NEW_CLASSNN(webHdlr, SSWR::OrganWeb::OrganWebHandler(this, this->scnSize, CSTRP(sbuff, sptr)));
+		NEW_CLASSNN(webHdlr, SSWR::OrganWeb::OrganWebHandler(*this, this->scnSize, CSTRP(sbuff, sptr)));
 		webHdlr->HandlePath(CSTR("/js"), this->nodeHdlr, false);
 		webHdlr->HandlePath(CSTR("/osm"), this->osmHdlr, false);
 

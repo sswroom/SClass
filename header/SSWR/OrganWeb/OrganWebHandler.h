@@ -19,15 +19,15 @@ namespace SSWR
 		class OrganWebHandler : public Net::WebServer::WebControllerHandler
 		{
 		private:
-			Net::WebServer::MemoryWebSessionManager *sessMgr;
-			SSWR::OrganWeb::OrganWebEnv *env;
+			NN<Net::WebServer::MemoryWebSessionManager> sessMgr;
+			NN<SSWR::OrganWeb::OrganWebEnv> env;
 			UInt32 scnSize;
 
 			static Bool __stdcall OnSessionDel(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
 			static Bool __stdcall OnSessionCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
 
 		public:
-			OrganWebHandler(OrganWebEnv *env, UInt32 scnSize, Text::CStringNN rootDir);
+			OrganWebHandler(NN<OrganWebEnv> env, UInt32 scnSize, Text::CStringNN rootDir);
 			virtual ~OrganWebHandler();
 		};
 	}

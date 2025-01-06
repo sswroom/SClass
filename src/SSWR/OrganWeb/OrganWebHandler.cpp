@@ -30,11 +30,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer
 }
 
 #define AddCtrl(class) NEW_CLASSNN(ctrl, class); this->AddController(ctrl);
-SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSize, Text::CStringNN rootDir) : WebControllerHandler(rootDir)
+SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(NN<OrganWebEnv> env, UInt32 scnSize, Text::CStringNN rootDir) : WebControllerHandler(rootDir)
 {
 	this->env = env;
 	this->scnSize = scnSize;
-	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/"), OnSessionDel, this, 30000, OnSessionCheck, this, CSTR("OrganSessId")));
+	NEW_CLASSNN(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/"), OnSessionDel, this, 30000, OnSessionCheck, this, CSTR("OrganSessId")));
 
 	NN<Net::WebServer::WebController> ctrl;
 	AddCtrl(OrganWebMainController(this->sessMgr, env, scnSize));
@@ -45,5 +45,5 @@ SSWR::OrganWeb::OrganWebHandler::OrganWebHandler(OrganWebEnv *env, UInt32 scnSiz
 
 SSWR::OrganWeb::OrganWebHandler::~OrganWebHandler()
 {
-	SDEL_CLASS(this->sessMgr);
+	this->sessMgr.Delete();
 }

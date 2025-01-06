@@ -981,7 +981,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 	}
 }
 
-SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize), csconvColor(Media::ColorProfile::CPT_SRGB)
+SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize), csconvColor(Media::ColorProfile::CPT_SRGB)
 {
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess().Ptr(), Media::AT_NO_ALPHA, 0, Media::PF_B8G8R8A8));

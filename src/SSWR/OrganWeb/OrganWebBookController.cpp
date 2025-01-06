@@ -119,7 +119,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		sb.Append(cate->chiName);
 		sb.AppendC(UTF8STRC(" - "));
 		sb.Append(book->title);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -287,7 +287,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		writer.Write(CSTR("\">"));
 		writer.Write(CSTR("Book List</a>"));
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -383,7 +383,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 		Text::UTF8Writer writer(mstm);
 		NN<Text::String> s;
 
-		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
+		me->WriteHeader(writer, cate->chiName->v, env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>New Book"));
 		writer.WriteLine(CSTR("</h1></center>"));
 
@@ -461,7 +461,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 		writer.Write(CSTR("\">"));
 		writer.Write(CSTR("Book List</a>"));
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -473,7 +473,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 	}
 }
 
-SSWR::OrganWeb::OrganWebBookController::OrganWebBookController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
+SSWR::OrganWeb::OrganWebBookController::OrganWebBookController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
 	this->AddService(CSTR("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
 	this->AddService(CSTR("/bookphoto.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookPhoto);

@@ -35,7 +35,7 @@ namespace SSWR
 			void ResponsePhotoWId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoWId);
 
 		public:
-			OrganWebPhotoController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize);
+			OrganWebPhotoController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize);
 			virtual ~OrganWebPhotoController();
 		};
 	}

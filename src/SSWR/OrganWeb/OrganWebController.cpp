@@ -25,7 +25,7 @@ UOSInt SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
 	}
 }
 
-Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<RequestEnv> env, Bool keepSess)
+Optional<Net::WebServer::IWebSession> SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<RequestEnv> env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
 	env->isMobile = false;

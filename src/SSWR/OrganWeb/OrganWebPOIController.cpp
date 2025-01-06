@@ -1752,7 +1752,7 @@ Bool SSWR::OrganWeb::OrganWebPOIController::ResponseJSON(NN<Net::WebServer::IWeb
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json);
 }
 
-SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
+SSWR::OrganWeb::OrganWebPOIController::OrganWebPOIController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
 	this->AddService(CSTR("/api/lang"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLang);
 	this->AddService(CSTR("/api/logininfo"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLoginInfo);

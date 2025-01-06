@@ -2072,6 +2072,7 @@ OrganWebHandler.o: ../../src/SSWR/OrganWeb/OrganWebHandler.cpp
 OrganWebMainController.o: ../../src/SSWR/OrganWeb/OrganWebMainController.cpp
 OrganWebPhotoController.o: ../../src/SSWR/OrganWeb/OrganWebPhotoController.cpp
 OrganWebPOIController.o: ../../src/SSWR/OrganWeb/OrganWebPOIController.cpp
+OrganWebSession.o: ../../src/SSWR/OrganWeb/OrganWebSession.cpp
 SDNSProxyCore.o: ../../src/SSWR/SDNSProxy/SDNSProxyCore.cpp
 SDNSProxyWebHandler.o: ../../src/SSWR/SDNSProxy/SDNSProxyWebHandler.cpp
 ElevationFilter.o: ../../src/SSWR/SHPConv/ElevationFilter.cpp

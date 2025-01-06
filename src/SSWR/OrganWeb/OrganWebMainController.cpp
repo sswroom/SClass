@@ -13,9 +13,9 @@
 #include "Media/MediaFile.h"
 #include "Media/PhotoInfo.h"
 #include "Net/MIME.h"
-#include "Net/WebServer/WebSessionUsage.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 #include "SSWR/OrganWeb/OrganWebMainController.h"
+#include "SSWR/OrganWeb/OrganWebSession.h"
 #include "Text/JSText.h"
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
@@ -27,7 +27,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 {
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
-	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, env, true));
+	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
 
 	Int32 id;
 	Int32 cateId;
@@ -75,7 +75,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					if (group->groups.GetCount() > 0)
 					{
 						env.pickObjType = POT_GROUP;
-						webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+						webSess.SetPickObjType(env.pickObjType);
 						env.pickObjs->Clear();
 						i = 0;
 						j = group->groups.GetCount();
@@ -88,7 +88,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					else if (group->species.GetCount() > 0)
 					{
 						env.pickObjType = POT_SPECIES;
-						webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+						webSess.SetPickObjType(env.pickObjType);
 						env.pickObjs->Clear();
 						i = 0;
 						j = group->species.GetCount();
@@ -104,7 +104,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					if (group->groups.GetCount() > 0)
 					{
 						env.pickObjType = POT_GROUP;
-						webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+						webSess.SetPickObjType(env.pickObjType);
 						env.pickObjs->Clear();
 						i = 0;
 						j = group->groups.GetCount();
@@ -124,7 +124,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 					else if (group->species.GetCount() > 0)
 					{
 						env.pickObjType = POT_SPECIES;
-						webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+						webSess.SetPickObjType(env.pickObjType);
 						env.pickObjs->Clear();
 						i = 0;
 						j = group->species.GetCount();
@@ -167,7 +167,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
@@ -193,7 +193,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
@@ -216,7 +216,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 					else if (env.pickObjType == POT_SPECIES && group->groups.GetCount() == 0)
@@ -236,7 +236,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
@@ -277,7 +277,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		writer.WriteLine(CSTR("</tr>"));
 		writer.WriteLine(CSTR("</table>"));
 
-		me->WriteLocator(mutUsage, &writer, group, cate);
+		me->WriteLocator(mutUsage, writer, group, cate);
 		writer.WriteLine(CSTR("<br/>"));
 		s = Text::XML::ToNewHTMLBodyText(group->descript->v);
 		writer.Write(s->ToCString());
@@ -779,7 +779,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 {
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
-	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, env, true));
+	OrganWebSession webSess(me->ParseRequestEnv(req, resp, env, true));
 
 	Int32 id;
 	Int32 cateId;
@@ -840,7 +840,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				if (action->Equals(UTF8STRC("pickall")))
 				{
 					env.pickObjType = POT_USERFILE;
-					webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+					webSess.SetPickObjType(env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
 					j = species->files.GetCount();
@@ -853,7 +853,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				else if (action->Equals(UTF8STRC("picksel")))
 				{
 					env.pickObjType = POT_USERFILE;
-					webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+					webSess.SetPickObjType(env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
 					j = species->files.GetCount();
@@ -895,7 +895,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
@@ -918,7 +918,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
@@ -947,7 +947,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						if (env.pickObjs->GetCount() == 0)
 						{
 							env.pickObjType = POT_UNKNOWN;
-							webSess.GetSess()->SetValueInt32(CSTR("PickObjType"), env.pickObjType);
+							webSess.SetPickObjType(env.pickObjType);
 						}
 					}
 				}
@@ -989,7 +989,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		sb.AppendC(species->chiName->v, species->chiName->leng);
 		sb.AppendC(UTF8STRC(" "));
 		sb.AppendC(species->engName->v, species->engName->leng);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
