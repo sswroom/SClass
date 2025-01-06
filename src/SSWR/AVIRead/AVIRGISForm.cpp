@@ -1476,9 +1476,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
-				IO::GPSNMEA *gps;
+				NN<IO::GPSNMEA> gps;
 				NN<Map::GPSTrack> trk;
-				NEW_CLASS(gps, IO::GPSNMEA(frm.GetStream(), true));
+				NEW_CLASSNN(gps, IO::GPSNMEA(frm.GetStream(), true));
 				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
@@ -1496,9 +1496,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
-				IO::GPSNMEA *gps;
+				NN<IO::GPSNMEA> gps;
 				NN<Map::GPSTrack> trk;
-				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
+				NEW_CLASSNN(gps, IO::Device::MTKGPSNMEA(frm.GetStream(), true));
 				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
 				NEW_CLASSNN(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));

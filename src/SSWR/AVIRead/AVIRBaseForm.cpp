@@ -1073,8 +1073,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<SSWR::AVIRead::AVIRGPSTrackerForm> gpsFrm;
-				IO::GPSNMEA *gps;
-				NEW_CLASS(gps, IO::GPSNMEA(dlg.GetStream(), true));
+				NN<IO::GPSNMEA> gps;
+				NEW_CLASSNN(gps, IO::GPSNMEA(dlg.GetStream(), true));
 				NEW_CLASSNN(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->core->ShowForm(gpsFrm);
 			}

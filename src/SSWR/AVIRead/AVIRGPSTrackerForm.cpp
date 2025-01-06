@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
-	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
+	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
 	if (mtk->QueryFirmware())
 	{
 		me->txtMTKRelease->SetText(mtk->GetFirmwareRel()->ToCString());
@@ -177,7 +177,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(AnyType u
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
-	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
+	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
 	if (me->mapNavi)
 	{
 		NN<Map::GPSTrack> gpsTrk;
@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
-	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
+	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to delete GPS log data?"), CSTR("MTK GPS Tracker"), me))
 	{
 		if (mtk->DelLogData())
@@ -214,7 +214,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKTestClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
-	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
+	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
 	mtk->GetLogFormat();
 }
 
@@ -223,7 +223,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(AnyTy
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to factory reset the device?"), CSTR("Question"), me))
 	{
-		IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
+		NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
 		mtk->FactoryReset();
 	}
 }
@@ -267,7 +267,7 @@ NN<UI::GUIButton> SSWR::AVIRead::AVIRGPSTrackerForm::NewDisplayOffButton(NN<UI::
 	return btn;
 }
 
-SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
+SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::ILocationService> locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPS Tracker"));
@@ -473,7 +473,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->tpNMEA = this->tcMain->AddTabPage(CSTR("NMEA"));
 	this->lbNMEA = ui->NewListBox(this->tpNMEA, false);
 	this->lbNMEA->SetDockType(UI::GUIControl::DOCK_FILL);
-	((IO::GPSNMEA*)this->locSvc)->HandleCommand(OnNMEALine, this);
+	NN<IO::GPSNMEA>::ConvertFrom(this->locSvc)->HandleCommand(OnNMEALine, this);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }
@@ -487,7 +487,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 	}
 	if (this->relLocSvc)
 	{
-		DEL_CLASS(this->locSvc);
+		this->locSvc.Delete();
 		this->relLocSvc = false;
 	}
 	this->wgs84.Delete();

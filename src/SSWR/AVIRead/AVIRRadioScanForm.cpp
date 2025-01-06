@@ -1,5 +1,8 @@
 #include "Stdafx.h"
+#include "IO/GPSNMEA.h"
 #include "IO/Path.h"
+#include "IO/SerialPortUtil.h"
+#include "IO/Device/MTKGPSNMEA.h"
 #include "Math/Unit/Count.h"
 #include "Net/MACInfo.h"
 #include "Net/PacketAnalyzerBluetooth.h"
@@ -100,6 +103,83 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			me->lvDashboard->SetSubItem(1, 2, CSTRP(sbuff, sptr));
 		}
 	}
+
+	if (me->gpsRecUpdated)
+	{
+		me->gpsLastUpdateTime = Data::DateTimeUtil::GetCurrTimeMillis();
+		Sync::MutexUsage mutUsage(me->gpsRecMut);
+		sptr = Data::Timestamp(me->gpsRecCurr.recTime, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->gpsRecCurr.pos.GetLat());
+		me->txtGPSLatitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->gpsRecCurr.pos.GetLon());
+		me->txtGPSLongitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->gpsRecCurr.altitude);
+		me->txtGPSAltitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->gpsRecCurr.speed);
+		me->txtGPSSpeed->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->gpsRecCurr.heading);
+		me->txtGPSHeading->SetText(CSTRP(sbuff, sptr));
+		if (me->gpsRecCurr.valid)
+			me->txtGPSValid->SetText(CSTR("Valid"));
+		else
+			me->txtGPSValid->SetText(CSTR("Invalid"));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateUsed);
+		me->txtGPSNSateUsed->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateUsedGPS);
+		me->txtGPSNSateUsedGPS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateUsedSBAS);
+		me->txtGPSNSateUsedSBAS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateUsedGLO);
+		me->txtGPSNSateUsedGLO->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateViewGPS);
+		me->txtGPSNSateViewGPS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateViewGLO);
+		me->txtGPSNSateViewGLO->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateViewGA);
+		me->txtGPSNSateViewGA->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateViewQZSS);
+		me->txtGPSNSateViewQZSS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->gpsRecCurr.nSateViewBD);
+		me->txtGPSNSateViewBD->SetText(CSTRP(sbuff, sptr));
+
+		me->lvGPSSatellite->ClearItems();
+		UOSInt actCnt = 0;
+		UOSInt i = 0;
+		while (i < me->gpsRecSateCnt)
+		{
+			me->lvGPSSatellite->AddItem(Map::ILocationService::SateTypeGetName(me->gpsRecSates[i].sateType), 0);
+			sptr = Text::StrUInt16(sbuff, me->gpsRecSates[i].prn);
+			me->lvGPSSatellite->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, me->gpsRecSates[i].elev);
+			me->lvGPSSatellite->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, me->gpsRecSates[i].azimuth);
+			me->lvGPSSatellite->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+			if (me->gpsRecSates[i].snr >= 0)
+			{
+				sptr = Text::StrInt16(sbuff, me->gpsRecSates[i].snr);
+				me->lvGPSSatellite->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+				actCnt++;
+			}
+			i++;
+		}
+		sptr = Text::StrUOSInt(sbuff, actCnt);
+		*sptr++ = '/';
+		sptr = Text::StrUOSInt(sptr, me->gpsRecSateCnt);
+		me->lvDashboard->SetSubItem(2, 2, CSTRP(sbuff, sptr));
+
+		me->gpsRecUpdated = false;
+	}
+	else
+	{
+		NN<Map::ILocationService> locSvc;
+		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+		if (me->locSvc.SetTo(locSvc) && (currTime - me->gpsLastUpdateTime) >= 20000)
+		{
+			me->gpsLastUpdateTime = currTime;
+			locSvc->ErrorRecover();
+		}
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnWiFiClicked(AnyType userObj)
@@ -157,12 +237,39 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDashboardDblClk(AnyType userO
 	{
 		me->ToggleBT();
 	}
+	else if (index == 2)
+	{
+		me->ToggleGPS();
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
 	me->btUpdated = true;
+}
+
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnGPSPortClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	me->cboGPSPort->ClearItems();
+	IO::SerialPortUtil::FillPortSelector(me->cboGPSPort, IO::Device::MTKGPSNMEA::GetMTKSerialPort());
+}
+
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnGPSClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	me->ToggleGPS();
+}
+
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnGPSLocationUpdated(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	Sync::MutexUsage mutUsage(me->gpsRecMut);
+	MemCopyNO(&me->gpsRecCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
+	me->gpsRecSateCnt = sates.GetCount();
+	MemCopyNO(me->gpsRecSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
+	me->gpsRecUpdated = true;
 }
 
 void SSWR::AVIRead::AVIRRadioScanForm::ToggleWiFi()
@@ -227,6 +334,44 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleBT()
 		else
 		{
 			this->ui->ShowMsgOK(CSTR("Bluetooth Interface not found"), CSTR("Radio Scan"), this);
+		}
+	}
+}
+
+void SSWR::AVIRead::AVIRRadioScanForm::ToggleGPS()
+{
+	if (this->locSvc.NotNull())
+	{
+		this->locSvc.Delete();
+		this->btnGPS->SetText(CSTR("Start"));
+		this->lvDashboard->SetSubItem(2, 1, CSTR("Idle"));
+		this->cboGPSPort->SetEnabled(true);
+		this->cboGPSBaudRate->SetEnabled(true);
+		this->cboGPSParity->SetEnabled(true);
+		this->chkGPSFlowControl->SetEnabled(true);
+		this->btnGPSPort->SetEnabled(true);
+	}
+	else
+	{
+		NN<IO::SerialPort> stm;
+		if (IO::SerialPortUtil::OpenSerialPort(this->cboGPSPort, this->cboGPSBaudRate, this->cboGPSParity, this->chkGPSFlowControl->IsChecked()).SetTo(stm))
+		{
+			NN<Map::ILocationService> locSvc;
+			NEW_CLASSNN(locSvc, IO::GPSNMEA(stm, true));
+			locSvc->RegisterLocationHandler(OnGPSLocationUpdated, this);
+			this->locSvc = locSvc;
+			this->gpsLastUpdateTime = Data::DateTimeUtil::GetCurrTimeMillis();
+			this->lvDashboard->SetSubItem(2, 1, CSTR("Scanning"));
+			this->btnGPS->SetText(CSTR("Stop"));
+			this->cboGPSPort->SetEnabled(false);
+			this->cboGPSBaudRate->SetEnabled(false);
+			this->cboGPSParity->SetEnabled(false);
+			this->chkGPSFlowControl->SetEnabled(false);
+			this->btnGPSPort->SetEnabled(false);
+		}
+		else
+		{
+			this->ui->ShowMsgOK(CSTR("Error in opening GPS Serial Port"), CSTR("Radio Scan"), this);
 		}
 	}
 }
@@ -384,12 +529,141 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->lvDashboard->SetSubItem(1, 1, CSTR("Idle"));
 	this->lvDashboard->SetSubItem(1, 2, CSTR("0"));
 
+	this->tpGPS = this->tcMain->AddTabPage(CSTR("GPS"));
+	this->pnlGPS = ui->NewPanel(this->tpGPS);
+	this->pnlGPS->SetRect(0, 0, 100, 127, false);
+	this->pnlGPS->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblGPSPort = ui->NewLabel(this->pnlGPS, CSTR("Port"));
+	this->lblGPSPort->SetRect(4, 4, 100, 23, false);
+	this->cboGPSPort = ui->NewComboBox(this->pnlGPS, false);
+	this->cboGPSPort->SetRect(104, 4, 150, 23, false);
+	IO::SerialPortUtil::FillPortSelector(this->cboGPSPort, IO::Device::MTKGPSNMEA::GetMTKSerialPort());
+	this->btnGPSPort = ui->NewButton(this->pnlGPS, CSTR("Refresh"));
+	this->btnGPSPort->SetRect(254, 4, 75, 23, false);
+	this->btnGPSPort->HandleButtonClick(OnGPSPortClicked, this);
+	this->lblGPSBaudRate = ui->NewLabel(this->pnlGPS, CSTR("Baud Rate"));
+	this->lblGPSBaudRate->SetRect(4, 28, 100, 23, false);
+	this->cboGPSBaudRate = ui->NewComboBox(this->pnlGPS, false);
+	this->cboGPSBaudRate->SetRect(104, 28, 100, 23, false);
+	IO::SerialPortUtil::FillBaudRateSelector(this->cboGPSBaudRate);
+	this->lblGPSParity = ui->NewLabel(this->pnlGPS, CSTR("Parity"));
+	this->lblGPSParity->SetRect(4, 52, 100, 23, false);
+	this->cboGPSParity = ui->NewComboBox(this->pnlGPS, false);
+	this->cboGPSParity->SetRect(104, 52, 100, 23, false);
+	IO::SerialPortUtil::FillParitySelector(this->cboGPSParity);
+	this->lblGPSFlowControl = ui->NewLabel(this->pnlGPS, CSTR("Flow Control"));
+	this->lblGPSFlowControl->SetRect(4, 76, 100, 23, false);
+	this->chkGPSFlowControl = ui->NewCheckBox(this->pnlGPS, CSTR("Enabled"), false);
+	this->chkGPSFlowControl->SetRect(104, 76, 100, 23, false);
+	this->btnGPS = ui->NewButton(this->pnlGPS, CSTR("Start"));
+	this->btnGPS->SetRect(104, 100, 75, 23, false);
+	this->btnGPS->HandleButtonClick(OnGPSClicked, this);
+	this->tcGPS = ui->NewTabControl(this->tpGPS);
+	this->tcGPS->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpGPSSatellite = this->tcGPS->AddTabPage(CSTR("Satellite"));
+	this->lvGPSSatellite = ui->NewListView(this->tpGPSSatellite, UI::ListViewStyle::Table, 5);
+	this->lvGPSSatellite->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvGPSSatellite->AddColumn(CSTR("Type"), 80);
+	this->lvGPSSatellite->AddColumn(CSTR("PRN"), 60);
+	this->lvGPSSatellite->AddColumn(CSTR("Elevation"), 60);
+	this->lvGPSSatellite->AddColumn(CSTR("Azimuth"), 60);
+	this->lvGPSSatellite->AddColumn(CSTR("SNR"), 60);
+	this->lvGPSSatellite->SetShowGrid(true);
+	this->lvGPSSatellite->SetFullRowSelect(true);
+	this->tpGPSLocation = this->tcGPS->AddTabPage(CSTR("Location"));
+	this->lblGPSTime = ui->NewLabel(this->tpGPSLocation, CSTR("GPS Time"));
+	this->lblGPSTime->SetRect(4, 4, 100, 23, false);
+	this->txtGPSTime = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSTime->SetReadOnly(true);
+	this->txtGPSTime->SetRect(104, 4, 200, 23, false);
+	this->lblGPSLatitude = ui->NewLabel(this->tpGPSLocation, CSTR("Latitude"));
+	this->lblGPSLatitude->SetRect(4, 28, 100, 23, false);
+	this->txtGPSLatitude = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSLatitude->SetReadOnly(true);
+	this->txtGPSLatitude->SetRect(104, 28, 120, 23, false);
+	this->lblGPSLongitude = ui->NewLabel(this->tpGPSLocation, CSTR("Longitude"));
+	this->lblGPSLongitude->SetRect(4, 52, 100, 23, false);
+	this->txtGPSLongitude = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSLongitude->SetReadOnly(true);
+	this->txtGPSLongitude->SetRect(104, 52, 120, 23, false);
+	this->lblGPSAltitude = ui->NewLabel(this->tpGPSLocation, CSTR("Altitude"));
+	this->lblGPSAltitude->SetRect(4, 76, 100, 23, false);
+	this->txtGPSAltitude = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSAltitude->SetReadOnly(true);
+	this->txtGPSAltitude->SetRect(104, 76, 100, 23, false);
+	this->lblGPSSpeed = ui->NewLabel(this->tpGPSLocation, CSTR("Speed(knot)"));
+	this->lblGPSSpeed->SetRect(4, 100, 100, 23, false);
+	this->txtGPSSpeed = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSSpeed->SetReadOnly(true);
+	this->txtGPSSpeed->SetRect(104, 100, 100, 23, false);
+	this->lblGPSHeading = ui->NewLabel(this->tpGPSLocation, CSTR("Heading"));
+	this->lblGPSHeading->SetRect(4, 124, 100, 23, false);
+	this->txtGPSHeading = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSHeading->SetReadOnly(true);
+	this->txtGPSHeading->SetRect(104, 124, 100, 23, false);
+	this->lblGPSValid = ui->NewLabel(this->tpGPSLocation, CSTR("Valid"));
+	this->lblGPSValid->SetRect(4, 148, 100, 23, false);
+	this->txtGPSValid = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSValid->SetReadOnly(true);
+	this->txtGPSValid->SetRect(104, 148, 100, 23, false);
+	this->lblGPSNSateUsed = ui->NewLabel(this->tpGPSLocation, CSTR("Sate Used"));
+	this->lblGPSNSateUsed->SetRect(4, 172, 100, 23, false);
+	this->txtGPSNSateUsed = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateUsed->SetReadOnly(true);
+	this->txtGPSNSateUsed->SetRect(104, 172, 100, 23, false);
+	this->lblGPSNSateUsedGPS = ui->NewLabel(this->tpGPSLocation, CSTR("GPS Used"));
+	this->lblGPSNSateUsedGPS->SetRect(4, 196, 100, 23, false);
+	this->txtGPSNSateUsedGPS = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateUsedGPS->SetReadOnly(true);
+	this->txtGPSNSateUsedGPS->SetRect(104, 196, 100, 23, false);
+	this->lblGPSNSateUsedSBAS = ui->NewLabel(this->tpGPSLocation, CSTR("SBAS Used"));
+	this->lblGPSNSateUsedSBAS->SetRect(4, 220, 100, 23, false);
+	this->txtGPSNSateUsedSBAS = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateUsedSBAS->SetReadOnly(true);
+	this->txtGPSNSateUsedSBAS->SetRect(104, 220, 100, 23, false);
+	this->lblGPSNSateUsedGLO = ui->NewLabel(this->tpGPSLocation, CSTR("GLO Used"));
+	this->lblGPSNSateUsedGLO->SetRect(4, 244, 100, 23, false);
+	this->txtGPSNSateUsedGLO = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateUsedGLO->SetReadOnly(true);
+	this->txtGPSNSateUsedGLO->SetRect(104, 244, 100, 23, false);
+	this->lblGPSNSateViewGPS = ui->NewLabel(this->tpGPSLocation, CSTR("GPS In-view"));
+	this->lblGPSNSateViewGPS->SetRect(4, 268, 100, 23, false);
+	this->txtGPSNSateViewGPS = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateViewGPS->SetReadOnly(true);
+	this->txtGPSNSateViewGPS->SetRect(104, 268, 100, 23, false);
+	this->lblGPSNSateViewGLO = ui->NewLabel(this->tpGPSLocation, CSTR("GLO In-view"));
+	this->lblGPSNSateViewGLO->SetRect(4, 292, 100, 23, false);
+	this->txtGPSNSateViewGLO = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateViewGLO->SetReadOnly(true);
+	this->txtGPSNSateViewGLO->SetRect(104, 292, 100, 23, false);
+	this->lblGPSNSateViewGA = ui->NewLabel(this->tpGPSLocation, CSTR("GA In-view"));
+	this->lblGPSNSateViewGA->SetRect(4, 316, 100, 23, false);
+	this->txtGPSNSateViewGA = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateViewGA->SetReadOnly(true);
+	this->txtGPSNSateViewGA->SetRect(104, 316, 100, 23, false);
+	this->lblGPSNSateViewQZSS = ui->NewLabel(this->tpGPSLocation, CSTR("QZSS In-view"));
+	this->lblGPSNSateViewQZSS->SetRect(4, 340, 100, 23, false);
+	this->txtGPSNSateViewQZSS = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateViewQZSS->SetReadOnly(true);
+	this->txtGPSNSateViewQZSS->SetRect(104, 340, 100, 23, false);
+	this->lblGPSNSateViewBD = ui->NewLabel(this->tpGPSLocation, CSTR("BD In-view"));
+	this->lblGPSNSateViewBD->SetRect(4, 364, 100, 23, false);
+	this->txtGPSNSateViewBD = ui->NewTextBox(this->tpGPSLocation, CSTR(""));
+	this->txtGPSNSateViewBD->SetReadOnly(true);
+	this->txtGPSNSateViewBD->SetRect(104, 364, 100, 23, false);
+	this->lvDashboard->AddItem(CSTR("GPS"), 0);
+	this->lvDashboard->SetSubItem(2, 1, CSTR("Idle"));
+	this->lvDashboard->SetSubItem(2, 2, CSTR("0/0"));
+
 	this->wlanInterf = 0;
 	this->wlanScan = 0;
 	this->wlanLastTime = 0;
 	this->bt = 0;
 	this->btUpdated = false;
 	this->btMinTime = 0;
+	this->locSvc = 0;
+	this->gpsRecUpdated = false;
+	this->gpsLastUpdateTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	this->AddTimer(500, OnTimerTick, this);
 }
 
@@ -404,6 +678,8 @@ SSWR::AVIRead::AVIRRadioScanForm::~AVIRRadioScanForm()
 		bt->ScanOff();
 		this->bt.Delete();
 	}
+
+	this->locSvc.Delete();
 }
 
 void SSWR::AVIRead::AVIRRadioScanForm::OnMonitorChanged()

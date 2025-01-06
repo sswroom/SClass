@@ -258,7 +258,10 @@ UOSInt IO::SerialPort::GetUSBPort()
 
 UOSInt IO::SerialPort::GetBTPort()
 {
-	return 0;
+	if (IO::Path::GetPathType(CSTR("/dev/rfcomm0")) == IO::Path::PathType::File)
+		return 97;
+	else
+		return 0;
 }
 
 UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum)

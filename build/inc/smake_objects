@@ -537,6 +537,7 @@ SensorUnknownWin.o: ../../src/IO/SensorUnknownWin.cpp
 SensorWin.o: ../../src/IO/SensorWin.cpp
 SerialPortL.o: ../../src/IO/SerialPortL.cpp
 SerialPortW.o: ../../src/IO/SerialPortW.cpp
+SerialPortUtil.o: ../../src/IO/SerialPortUtil.cpp
 ServiceInfo.o: ../../src/IO/ServiceInfo.cpp
 ServiceManagerL.o: ../../src/IO/ServiceManagerL.cpp
 ServiceManagerNull.o: ../../src/IO/ServiceManagerNull.cpp

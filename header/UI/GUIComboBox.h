@@ -3,10 +3,11 @@
 #include "Data/ArrayListStringNN.h"
 #include "Text/String.h"
 #include "UI/GUIClientControl.h"
+#include "UI/ItemSelector.h"
 
 namespace UI
 {
-	class GUIComboBox : public GUIControl
+	class GUIComboBox : public GUIControl, public ItemSelector
 	{
 	protected:
 		Data::ArrayList<UI::UIEvent> selChgHdlrs;

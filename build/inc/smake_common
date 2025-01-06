@@ -1940,6 +1940,8 @@ IO/SensorLocation.h:
 IO/SensorMagnetometer.h:
 IO/SensorOrientation.h:
 IO/SensorPressure.h:
+IO/SerialPortUtil.h:
+@SerialPortUtil.o
 IO/ServiceInfo.h:
 @ServiceInfo.o
 IO/SiLabDriver.h:
@@ -4875,6 +4877,7 @@ UI/GUIVideoBoxDDLQ.h:
 @GUIVideoBoxDDLQ.o
 UI/GUIVSplitter.h:
 @GUIVSplitter.o
+UI/ItemSelector.h:
 UI/ListBoxLogger.h:
 @ListBoxLogger.o
 UI/DObj/ButtonDObj.h:

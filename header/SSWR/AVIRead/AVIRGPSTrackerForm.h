@@ -24,7 +24,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Map::ILocationService *locSvc;
+			NN<Map::ILocationService> locSvc;
 			Bool relLocSvc;
 
 			Map::GPSTrack::GPSRecord3 recCurr;
@@ -148,7 +148,7 @@ namespace SSWR
 				MemFreeA(p);
 			}
 #endif
-			AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease);
+			AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::ILocationService> locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();
 
 			virtual void OnMonitorChanged();

@@ -70,5 +70,5 @@ namespace IO
 
 		Bool IsError() const;
 	};
-};
+}
 #endif
