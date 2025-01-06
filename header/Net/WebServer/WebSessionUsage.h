@@ -9,15 +9,15 @@ namespace Net
 		class WebSessionUsage
 		{
 		private:
-			Net::WebServer::IWebSession *sess;
+			Optional<Net::WebServer::IWebSession> sess;
 		public:
 			WebSessionUsage();
-			WebSessionUsage(Net::WebServer::IWebSession *sess);
+			WebSessionUsage(Optional<Net::WebServer::IWebSession> sess);
 			~WebSessionUsage();
 
-			void Use(Net::WebServer::IWebSession *sess);
+			void Use(Optional<Net::WebServer::IWebSession> sess);
 			void EndUse();
-			Net::WebServer::IWebSession *GetSess();
+			Optional<Net::WebServer::IWebSession> GetSess();
 		};
 	}
 }

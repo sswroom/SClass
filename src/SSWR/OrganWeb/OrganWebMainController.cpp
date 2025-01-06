@@ -256,7 +256,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -377,7 +377,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 			}
 			if (groups.GetCount() > 0)
 			{
-				me->WriteGroupTable(mutUsage, &writer, groups.GetValues(), env.scnWidth, !notAdmin, false);
+				me->WriteGroupTable(mutUsage, writer, groups.GetValues(), env.scnWidth, !notAdmin, false);
 				writer.WriteLine(CSTR("<hr/>"));
 				found = true;
 			}
@@ -392,7 +392,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 				sp = group->species.GetItemNoCheck(i);
 				species.PutNN(sp->sciName, sp);
 			}
-			me->WriteSpeciesTable(mutUsage, &writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin, !notAdmin);
+			me->WriteSpeciesTable(mutUsage, writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin, !notAdmin);
 			writer.WriteLine(CSTR("<hr/>"));
 			found = true;
 		}
@@ -417,7 +417,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
-			me->WritePickObjs(mutUsage, &writer, &env, sb.ToString(), false);
+			me->WritePickObjs(mutUsage, writer, env, sb.ToString(), false);
 		}
 
 		if (group->parentId == 0)
@@ -453,7 +453,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		}
 
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -661,7 +661,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 			sb.AppendC(UTF8STRC(" "));
 			sb.Append(nnmodGroup->engName);
 		}
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -763,7 +763,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 		writer.Write(CSTR("</a>"));
 		writer.WriteLine(CSTR("</td></tr>"));
 		writer.WriteLine(CSTR("</table></form>"));
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -1083,7 +1083,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			writer.WriteLine(CSTR("</table>"));
 		}
 		writer.WriteLine(CSTR("</td><td>"));
-		me->WriteLocator(mutUsage, &writer, group, cate);
+		me->WriteLocator(mutUsage, writer, group, cate);
 		writer.WriteLine(CSTR("</td></tr></table>"));
 		if (env.user.NotNull() || me->env->GroupIsPublic(mutUsage, group->id))
 		{
@@ -1527,7 +1527,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			sb.AppendI32(id);
 			sb.AppendC(UTF8STRC("&cateId="));
 			sb.AppendI32(cateId);
-			me->WritePickObjs(mutUsage, &writer, &env, sb.ToString(), true);
+			me->WritePickObjs(mutUsage, writer, env, sb.ToString(), true);
 		}
 
 		writer.WriteLine(CSTR("<br/>"));
@@ -1562,7 +1562,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			writer.WriteLine(CSTR("<input type=\"button\" value=\"Set Group Photo\" onclick=\"document.forms.userfiles.action.value='setphoto';document.forms.userfiles.submit();\"/>"));
 		}
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -1769,7 +1769,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 				sb.Append(nnspecies->engName);
 			}
 		}
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -1859,7 +1859,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 		}
 		writer.WriteLine(CSTR("</td></tr>"));
 		writer.WriteLine(CSTR("</table></form>"));
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -1923,14 +1923,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
 		s->Release();
 		writer.WriteLine(CSTR("</h1></center>"));
 
-		me->WriteLocator(mutUsage, &writer, group, cate);
+		me->WriteLocator(mutUsage, writer, group, cate);
 		writer.WriteLine(CSTR("<br/>"));
 		s = Text::XML::ToNewHTMLBodyText(group->descript->v);
 		writer.Write(s->ToCString());
@@ -1974,7 +1974,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 			species.Add(sp);
 			i++;
 		}
-		me->WriteSpeciesTable(mutUsage, &writer, species, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
+		me->WriteSpeciesTable(mutUsage, writer, species, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
 		writer.WriteLine(CSTR("<hr/>"));
 
 		if (imageOnly)
@@ -2059,7 +2059,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 		writer.Write(LangGetValue(lang, CSTR("Back")));
 		writer.Write(CSTR("</a>"));
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -2186,7 +2186,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				sb.Append(species->chiName);
 				sb.AppendC(UTF8STRC(" "));
 				sb.Append(species->engName);
-				me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+				me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 				writer.Write(CSTR("<center><h1>"));
 				s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 				writer.Write(s->ToCString());
@@ -2480,7 +2480,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				writer.WriteLine(CSTR("</table>"));
 				writer.WriteLine(CSTR("</center>"));
 
-				me->WriteFooter(&writer);
+				me->WriteFooter(writer);
 				mutUsage.EndUse();
 				ResponseMstm(req, resp, mstm, CSTR("text/html"));
 				return true;
@@ -2516,7 +2516,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				sb.Append(species->chiName);
 				sb.AppendC(UTF8STRC(" "));
 				sb.Append(species->engName);
-				me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+				me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 				writer.Write(CSTR("<center><h1>"));
 				s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 				writer.Write(s->ToCString());
@@ -2702,7 +2702,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				writer.WriteLine(CSTR("</table>"));
 				writer.WriteLine(CSTR("</center>"));
 
-				me->WriteFooter(&writer);
+				me->WriteFooter(writer);
 				mutUsage.EndUse();
 				ResponseMstm(req, resp, mstm, CSTR("text/html"));
 				return true;
@@ -2770,7 +2770,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					sb.Append(species->chiName);
 					sb.AppendC(UTF8STRC(" "));
 					sb.Append(species->engName);
-					me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+					me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 					writer.Write(CSTR("<center><h1>"));
 					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 					writer.Write(s->ToCString());
@@ -2867,7 +2867,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					writer.WriteLine(CSTR("</table>"));
 					writer.WriteLine(CSTR("</center>"));
 
-					me->WriteFooter(&writer);
+					me->WriteFooter(writer);
 					mutUsage.EndUse();
 					ResponseMstm(req, resp, mstm, CSTR("text/html"));
 
@@ -2921,7 +2921,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					sb.Append(species->chiName);
 					sb.AppendC(UTF8STRC(" "));
 					sb.Append(species->engName);
-					me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+					me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 					writer.Write(CSTR("<center><h1>"));
 					s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 					writer.Write(s->ToCString());
@@ -3065,7 +3065,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					writer.WriteLine(CSTR("</table>"));
 					writer.WriteLine(CSTR("</center>"));
 
-					me->WriteFooter(&writer);
+					me->WriteFooter(writer);
 					mutUsage.EndUse();
 					ResponseMstm(req, resp, mstm, CSTR("text/html"));
 
@@ -3134,7 +3134,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -3155,7 +3155,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 		writer.WriteLine(CSTR("</tr>"));
 		writer.WriteLine(CSTR("</table>"));
 
-		me->WriteLocator(mutUsage, &writer, group, cate);
+		me->WriteLocator(mutUsage, writer, group, cate);
 		writer.WriteLine(CSTR("<br/>"));
 		s = Text::XML::ToNewHTMLBodyText(group->descript->v);
 		writer.Write(s->ToCString());
@@ -3197,7 +3197,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 				if (speciesObjs.GetItem(i).SetTo(sp))
 					speciesList.Add(sp);
 			}
-			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
+			me->WriteSpeciesTable(mutUsage, writer, speciesList, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -3236,7 +3236,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 				if (groupObjs.GetItem(i).SetTo(group))
 					groupList.Add(group);
 			}
-			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user.SetTo(user) && user->userType == UserType::Admin);
+			me->WriteGroupTable(mutUsage, writer, groupList, env.scnWidth, false, env.user.SetTo(user) && user->userType == UserType::Admin);
 			if (groupList.GetLast().SetTo(group))
 			{
 				if (j > 0)
@@ -3274,7 +3274,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 		writer.Write(LangGetValue(lang, CSTR("Back")));
 		writer.Write(CSTR("</a>"));
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -3335,7 +3335,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -3356,7 +3356,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 		writer.WriteLine(CSTR("</tr>"));
 		writer.WriteLine(CSTR("</table>"));
 
-		me->WriteLocator(mutUsage, &writer, group, cate);
+		me->WriteLocator(mutUsage, writer, group, cate);
 		writer.WriteLine(CSTR("<br/>"));
 		s = Text::XML::ToNewHTMLBodyText(group->descript->v);
 		writer.Write(s->ToCString());
@@ -3395,7 +3395,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 				if (speciesObjs.GetItem(j).SetTo(sp))
 					speciesList.Add(sp);
 			}
-			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
+			me->WriteSpeciesTable(mutUsage, writer, speciesList, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -3450,7 +3450,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 		writer.Write(LangGetValue(lang, CSTR("Back")));
 		writer.Write(CSTR("</a>"));
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -3511,7 +3511,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 		sb.Append(group->chiName);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(group->engName);
-		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
+		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
 		writer.Write(s->ToCString());
@@ -3532,7 +3532,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 		writer.WriteLine(CSTR("</tr>"));
 		writer.WriteLine(CSTR("</table>"));
 
-		me->WriteLocator(mutUsage, &writer, group, cate);
+		me->WriteLocator(mutUsage, writer, group, cate);
 		writer.WriteLine(CSTR("<br/>"));
 		s = Text::XML::ToNewHTMLBodyText(group->descript->v);
 		writer.Write(s->ToCString());
@@ -3571,7 +3571,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 				if (groupObjs.GetItem(j).SetTo(group))
 					groupList.Add(group);
 			}
-			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user.SetTo(user) && user->userType == UserType::Admin);
+			me->WriteGroupTable(mutUsage, writer, groupList, env.scnWidth, false, env.user.SetTo(user) && user->userType == UserType::Admin);
 			if (groupList.GetLast().SetTo(group))
 			{
 				if (pageNo > 0)
@@ -3629,7 +3629,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 		writer.Write(LangGetValue(lang, CSTR("Back")));
 		writer.Write(CSTR("</a>"));
 
-		me->WriteFooter(&writer);
+		me->WriteFooter(writer);
 		mutUsage.EndUse();
 		ResponseMstm(req, resp, mstm, CSTR("text/html"));
 		return true;
@@ -3652,7 +3652,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NN<Net::WebServ
 	return true;
 }
 
-SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
+SSWR::OrganWeb::OrganWebMainController::OrganWebMainController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize)
 {
 	this->AddService(CSTR("/group.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroup);
 	this->AddService(CSTR("/group.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroup);

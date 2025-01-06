@@ -68,7 +68,7 @@ void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::IWebReq
 }
 
 
-void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, UnsafeArray<const UTF8Char> title, Bool isMobile)
+void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> title, Bool isMobile)
 {
 	NN<Text::String> s;
 	writer->WriteLine(CSTR("<HTML>"));
@@ -85,7 +85,7 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, Un
 	writer->WriteLine(CSTR("</title>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, Optional<WebUserInfo> user, UnsafeArrayOpt<const UTF8Char> onLoadFunc)
+void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(NN<IO::Writer> writer, Optional<WebUserInfo> user, UnsafeArrayOpt<const UTF8Char> onLoadFunc)
 {
 	NN<Text::String> s;
 	writer->WriteLine(CSTR("</HEAD>"));
@@ -111,19 +111,19 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, Op
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteHeader(IO::Writer *writer, UnsafeArray<const UTF8Char> title, Optional<WebUserInfo> user, Bool isMobile)
+void SSWR::OrganWeb::OrganWebController::WriteHeader(NN<IO::Writer> writer, UnsafeArray<const UTF8Char> title, Optional<WebUserInfo> user, Bool isMobile)
 {
 	this->WriteHeaderPart1(writer, title, isMobile);
 	this->WriteHeaderPart2(writer, user, 0);
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteFooter(IO::Writer *writer)
+void SSWR::OrganWeb::OrganWebController::WriteFooter(NN<IO::Writer> writer)
 {
 	writer->WriteLine(CSTR("</BODY>"));
 	writer->WriteLine(CSTR("</HTML>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mutUsage, NN<IO::Writer> writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
 {
 	NN<GroupTypeInfo> grpType;
 	NN<Text::String> s;
@@ -204,7 +204,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mut
 	writer->WriteLine(CSTR("</center>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NN<Sync::RWMutexUsage> mutUsage, NN<IO::Writer> writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListNN<GroupInfo> groupList;
@@ -247,7 +247,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NN<Sync::RWMutexUsage>
 	writer->WriteLine(sb.ToCString());
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
+void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> mutUsage, NN<IO::Writer> writer, NN<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
 	NN<GroupInfo> group;
 	NN<Text::String> s;
@@ -444,7 +444,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
+void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage> mutUsage, NN<IO::Writer> writer, NN<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
 	NN<SpeciesInfo> sp;
 	NN<Text::String> s;
@@ -668,7 +668,7 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, UnsafeArray<const UTF8Char> url, Bool allowMerge)
+void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, NN<IO::Writer> writer, NN<RequestEnv> env, UnsafeArray<const UTF8Char> url, Bool allowMerge)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -898,7 +898,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data::FastMapNN<Data::Timestamp, DataFileInfo> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks)
+void SSWR::OrganWeb::OrganWebController::WriteDataFiles(NN<IO::Writer> writer, NN<Data::FastMapNN<Data::Timestamp, DataFileInfo>> fileMap, Int64 startTimeTicks, Int64 endTimeTicks)
 {
 	OSInt startIndex;
 	OSInt endIndex;
@@ -948,7 +948,7 @@ Text::CStringNN SSWR::OrganWeb::OrganWebController::LangGetValue(Optional<IO::Co
 	return name;
 }
 
-SSWR::OrganWeb::OrganWebController::OrganWebController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize) : Net::WebServer::WebController(CSTR(""))
+SSWR::OrganWeb::OrganWebController::OrganWebController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : Net::WebServer::WebController(CSTR(""))
 {
 	this->sessMgr = sessMgr;
 	this->env = env;
