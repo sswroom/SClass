@@ -43,7 +43,7 @@ namespace DB
 //		UnsafeArray<UTF8Char> connStr;
 		UInt32 openFail;
 		Bool needRelease;
-		Text::String *currDBName;
+		Optional<Text::String> currDBName;
 
 		Optional<Text::String> logPrefix;
 

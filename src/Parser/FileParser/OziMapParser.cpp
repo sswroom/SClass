@@ -10,6 +10,7 @@
 #include "Math/PointMappingCoordinateSystem.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
+#include "Media/ImagePreviewTool.h"
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/OziMapParser.h"
 #include "Text/MyString.h"
@@ -197,7 +198,9 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 						csys->AddMappingPoint(ptXY[(currPt << 2) + 0], ptXY[(currPt << 2) + 1], ptXY[(currPt << 2) + 2], ptXY[(currPt << 2) + 3]);
 						currPt++;
 					}
-					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, true));
+					Data::ArrayListNN<Media::StaticImage> prevList;
+					Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
+					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, prevList));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
 					UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));

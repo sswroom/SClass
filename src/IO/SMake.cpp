@@ -723,7 +723,15 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 							it = prog->libs.Iterator();
 							while (it.HasNext())
 							{
-								libList->PutNN(it.Next(), 1);
+								NN<Text::String> lib = it.Next();
+								if (this->messageWriter)
+								{
+									tmpSb->ClearStr();
+									tmpSb->AppendC(UTF8STRC("Add lib "));
+									tmpSb->Append(lib);
+									this->messageWriter->WriteLine(tmpSb->ToCString());
+								}
+								libList->PutNN(lib, 1);
 							}
 						}
 					}
@@ -885,7 +893,17 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 		it = prog->libs.Iterator();
 		while (it.HasNext())
 		{
-			libList->PutNN(it.Next(), 1);
+			NN<Text::String> lib = it.Next();
+			if (this->messageWriter)
+			{
+				tmpSb->ClearStr();
+				tmpSb->AppendC(UTF8STRC("Add lib "));
+				tmpSb->Append(lib);
+				tmpSb->AppendC(UTF8STRC(" from "));
+				tmpSb->Append(prog->name);
+				this->messageWriter->WriteLine(tmpSb->ToCString());
+			}
+			libList->PutNN(lib, 1);
 		}
 		if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
 		{

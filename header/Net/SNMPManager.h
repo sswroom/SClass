@@ -41,7 +41,7 @@ namespace Net
 		} AgentInfo;
 		
 	private:
-		Net::SNMPClient *cli;
+		NN<Net::SNMPClient> cli;
 		Sync::Mutex agentMut;
 		Data::ArrayListNN<AgentInfo> agentList;
 		Data::FastMapNN<UInt32, AgentInfo> ipv4Agents;

@@ -12,7 +12,7 @@ namespace Media
 		{
 		public:
 			NN<Media::ImageList> imgList;
-			Data::ArrayListNN<Media::StaticImage> *prevList;
+			Optional<Data::ArrayListNN<Media::StaticImage>> prevList;
 			Sync::Mutex mut;
 			Int32 useCnt;
 
@@ -25,7 +25,7 @@ namespace Media
 
 		SharedImage(NN<ImageStatus> status);
 	public:
-		SharedImage(NN<Media::ImageList> imgList, Bool genPreview);
+		SharedImage(NN<Media::ImageList> imgList, Optional<Data::ArrayListNN<Media::StaticImage>> previewImages);
 		~SharedImage();
 
 		NN<SharedImage> Clone() const;

@@ -72,22 +72,19 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 					}
 				}
 
-				if (me->lastRSS)
-				{
-					DEL_CLASS(me->lastRSS);
-				}
+				me->lastRSS.Delete();
 				me->lastRSS = rss;
 			}
 		}
 
-		me->threadEvt->Wait(1000);
+		me->threadEvt.Wait(1000);
 	}
 	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return false;
 }
 
-Net::RSSReader::RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr, Data::Duration timeout, NN<IO::LogTool> log)
+Net::RSSReader::RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, NN<Net::RSSHandler> hdlr, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	this->url = Text::String::New(url);
 	this->timeout = timeout;
@@ -99,7 +96,6 @@ Net::RSSReader::RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, O
 	this->lastRSS = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->nextDT.SetCurrTimeUTC();
 	Sync::ThreadUtil::Create(RSSThread, this);
 	while (!this->threadRunning)
@@ -111,17 +107,12 @@ Net::RSSReader::RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, O
 Net::RSSReader::~RSSReader()
 {
 	this->threadToStop = true;
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	if (this->lastRSS)
-	{
-		DEL_CLASS(this->lastRSS);
-		this->lastRSS = 0;
-	}
-	DEL_CLASS(this->threadEvt);
+	this->lastRSS.Delete();
 	this->url->Release();
 
 	UOSInt i;

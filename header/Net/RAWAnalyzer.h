@@ -23,7 +23,7 @@ namespace Net
 		static UInt32 __stdcall RecvThread(AnyType obj);
 
 	public:
-		RAWAnalyzer(NN<Net::TCPClientFactory> clif, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType aType);
+		RAWAnalyzer(NN<Net::TCPClientFactory> clif, UInt16 infoPort, Optional<IO::Writer> errWriter, Net::EthernetAnalyzer::AnalyzeType aType);
 		~RAWAnalyzer();
 
 		Bool IsError();

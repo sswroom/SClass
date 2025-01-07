@@ -6,7 +6,6 @@
 #include "IO/Path.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "Parser/ParserList.h"
-#include "Parser/FileParser/XMLParser.h"
 #include "Parser/FileParser/ZIPParser.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
@@ -458,40 +457,6 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 		}
 	}
 
-	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
-	{
-		ui = pf->GetCount();
-		while (ui-- > 0)
-		{
-			if (pf->GetItemName(sbuff, ui).SetTo(sptr) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
-			{
-				NN<IO::StreamData> stmData;
-				Optional<IO::ParsedObject> pobj = 0;
-				NN<IO::ParsedObject> nnpobj;
-				if (pf->GetItemStmDataNew(ui).SetTo(stmData))
-				{
-					Parser::FileParser::XMLParser xmlParser;
-					xmlParser.SetParserList(this->parsers);
-					xmlParser.SetEncFactory(this->encFact);
-					xmlParser.SetWebBrowser(this->browser);
-					pobj = xmlParser.ParseFile(stmData, pf.Ptr(), IO::ParserType::MapLayer);
-					stmData.Delete();
-				}
-				if (pobj.SetTo(nnpobj))
-				{
-					if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
-					{
-						pf.Delete();
-						return nnpobj;
-					}
-					else
-					{
-						nnpobj.Delete();
-					}
-				}
-			}
-		}
-	}
 	NN<Parser::ParserList> parsers;
 	if (targetType != IO::ParserType::PackageFile && this->parsers.SetTo(parsers))
 	{

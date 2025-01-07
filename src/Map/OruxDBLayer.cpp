@@ -318,7 +318,7 @@ Optional<Math::Geometry::Vector2D> Map::OruxDBLayer::GetNewVectorById(NN<GetObje
 		Double n;
 		Double projY1;
 		Double projY2;
-		NEW_CLASSNN(shImg, Media::SharedImage(nnimgList, false));
+		NEW_CLASSNN(shImg, Media::SharedImage(nnimgList, 0));
 		x1 = lyr->mapMin.x + (lyr->mapMax.x - lyr->mapMin.x) * x / lyr->max.x;
 		projY1 = lyr->projYMax - (lyr->projYMax - lyr->projYMin) * y / lyr->max.y;
 		projY2 = projY1 - (lyr->projYMax - lyr->projYMin) / lyr->max.y;

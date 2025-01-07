@@ -139,5 +139,5 @@ namespace Media
 		void RGBUpdated(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		void YUVUpdated(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
 	};
-};
+}
 #endif

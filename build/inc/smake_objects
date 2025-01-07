@@ -998,6 +998,7 @@ ImageAlphaBlend.o: ../../src/Media/ImageAlphaBlend.cpp
 ImageCopy.o: ../../src/Media/ImageCopy.cpp
 ImageGenerator.o: ../../src/Media/ImageGenerator.cpp
 ImageList.o: ../../src/Media/ImageList.cpp
+ImagePreviewTool.o: ../../src/Media/ImagePreviewTool.cpp
 ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
 ImageUtil.o: ../../src/Media/ImageUtil.cpp
 IRealtimeVideoSource.o: ../../src/Media/IRealtimeVideoSource.cpp

@@ -42,7 +42,7 @@ namespace Net
 			typedef void (CALLBACKFUNC SAMLStrFunc)(AnyType userObj, Text::CStringNN msg);
 			typedef Bool (CALLBACKFUNC SAMLLoginFunc)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<const SAMLMessage> msg);
 		private:
-			WebStandardHandler *defHdlr;
+			Optional<WebStandardHandler> defHdlr;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::String> serverHost;
 			Optional<Text::String> metadataPath;
@@ -59,7 +59,7 @@ namespace Net
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
-			SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr);
+			SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr);
 			virtual ~SAMLHandler();
 
 			SAMLError GetInitError();

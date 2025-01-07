@@ -405,12 +405,12 @@ Net::HKOWeather::HKOWeather(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEng
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->clif, this->ssl, 10, this, 30000, log));
+	NEW_CLASSNN(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->clif, this->ssl, 10, *this, 30000, log));
 }
 
 Net::HKOWeather::~HKOWeather()
 {
-	DEL_CLASS(this->rss);
+	this->rss.Delete();
 }
 
 void Net::HKOWeather::ItemAdded(NN<Net::RSSItem> item)

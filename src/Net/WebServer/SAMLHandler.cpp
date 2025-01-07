@@ -152,14 +152,15 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 	{
 		return true;
 	}
-	if (this->defHdlr)
+	NN<Net::WebServer::WebStandardHandler> defHdlr;
+	if (this->defHdlr.SetTo(defHdlr))
 	{
-		return this->defHdlr->ProcessRequest(req, resp, subReq);
+		return defHdlr->ProcessRequest(req, resp, subReq);
 	}
 	return false;
 }
 
-Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
+Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr)
 {
 	Text::CStringNN nns;
 	this->defHdlr = defHdlr;

@@ -181,7 +181,7 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWe
 			dev = devList->GetItemNoCheck(i);
 			body->BeginTableRow();
 			body->AddTableData(dev->userName->ToCString());
-			body->AddTableData(STR_CSTR(dev->devModel).OrEmpty());
+			body->AddTableData(OPTSTR_CSTR(dev->devModel).OrEmpty());
 			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->subscribeAddr).Or(sbuff);
 			body->AddTableData(CSTRP(sbuff, sptr));
 			sptr = dev->lastSubscribeTime.ToString(sbuff);
