@@ -50,8 +50,8 @@ namespace Net
 
 		static void __stdcall OnPacketRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
 
-		static void SSDPServiceFree(NN<SSDPService> svc);
-		static void SSDPDeviceFree(NN<SSDPDevice> dev);
+		static void __stdcall SSDPServiceFree(NN<SSDPService> svc);
+		static void __stdcall SSDPDeviceFree(NN<SSDPDevice> dev);
 	public:
 		SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log);
 		~SSDPClient();
@@ -61,7 +61,7 @@ namespace Net
 		NN<const Data::ReadingListNN<SSDPDevice>> GetDevices(NN<Sync::MutexUsage> mutUsage) const;
 
 		static NN<SSDPRoot> SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm);
-		static void SSDPRootFree(NN<SSDPRoot> root);
+		static void __stdcall SSDPRootFree(NN<SSDPRoot> root);
 	};
 }
 #endif

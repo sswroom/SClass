@@ -576,7 +576,7 @@ Bool Net::SNMPUtil::ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen
 	return false;
 }
 
-void Net::SNMPUtil::FreeBindingItem(NN<BindingItem> item)
+void __stdcall Net::SNMPUtil::FreeBindingItem(NN<BindingItem> item)
 {
 	if (item->valBuff)
 	{

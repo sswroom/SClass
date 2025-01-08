@@ -9,11 +9,11 @@ namespace Net
 		class PKCS10
 		{
 		public:
-			static void AddCertificationRequestInfo(NN<ASN1Names> names, Text::CStringNN name);
-			static void CertificationRequestInfoCont(NN<ASN1Names> names);
-			static void AttributesCont(NN<ASN1Names> names);
-			static void CertificationRequest(NN<ASN1Names> names);
-			static void CertificationRequestCont(NN<ASN1Names> names);
+			static void __stdcall AddCertificationRequestInfo(NN<ASN1Names> names, Text::CStringNN name);
+			static void __stdcall CertificationRequestInfoCont(NN<ASN1Names> names);
+			static void __stdcall AttributesCont(NN<ASN1Names> names);
+			static void __stdcall CertificationRequest(NN<ASN1Names> names);
+			static void __stdcall CertificationRequestCont(NN<ASN1Names> names);
 		};
 	}
 }

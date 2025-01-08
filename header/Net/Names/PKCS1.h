@@ -9,13 +9,13 @@ namespace Net
 		class PKCS1
 		{
 		public:
-			static void RSAPublicKey(NN<ASN1Names> names);
-			static void RSAPublicKeyCont(NN<ASN1Names> names);
-			static void RSAPrivateKey(NN<ASN1Names> names);
-			static void RSAPrivateKeyCont(NN<ASN1Names> names);
-			static void OtherPrimeInfos(NN<ASN1Names> names);
-			static void AddDigestInfo(NN<ASN1Names> names, Text::CStringNN name);
-			static void DigestInfoCont(NN<ASN1Names> names);
+			static void __stdcall RSAPublicKey(NN<ASN1Names> names);
+			static void __stdcall RSAPublicKeyCont(NN<ASN1Names> names);
+			static void __stdcall RSAPrivateKey(NN<ASN1Names> names);
+			static void __stdcall RSAPrivateKeyCont(NN<ASN1Names> names);
+			static void __stdcall OtherPrimeInfos(NN<ASN1Names> names);
+			static void __stdcall AddDigestInfo(NN<ASN1Names> names, Text::CStringNN name);
+			static void __stdcall DigestInfoCont(NN<ASN1Names> names);
 		};
 	}
 }

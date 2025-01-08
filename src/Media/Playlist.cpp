@@ -14,7 +14,7 @@ void __stdcall Media::Playlist::OnPBEnd(AnyType userObj)
 	me->OpenItem(i);
 }
 
-void Media::Playlist::FreeEntry(NN<PlaylistEntry> ent)
+void __stdcall Media::Playlist::FreeEntry(NN<PlaylistEntry> ent)
 {
 	ent->title->Release();
 	OPTSTR_DEL(ent->artist);

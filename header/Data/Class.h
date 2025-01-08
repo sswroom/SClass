@@ -24,7 +24,7 @@ namespace Data
 		const void *refObj;
 		Data::ArrayListNN<FieldInfo> fields;
 
-		static void FreeFieldInfo(NN<FieldInfo> field);
+		static void __stdcall FreeFieldInfo(NN<FieldInfo> field);
 	public:
 		Class(const void *refObj);
 		virtual ~Class();

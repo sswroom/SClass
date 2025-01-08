@@ -226,7 +226,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 	}
 }
 
-void Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
+void __stdcall Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
 {
 	parking->parkId->Release();
 	OPTSTR_DEL(parking->parkingNameEn);

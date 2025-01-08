@@ -9,31 +9,31 @@ namespace Net
 		class PKCS12
 		{
 		public:
-			static void PFX(NN<ASN1Names> names);
-			static void PFXCont(NN<ASN1Names> names);
-			static void AddMacData(NN<ASN1Names> names, Text::CStringNN name);
-			static void MacDataCont(NN<ASN1Names> names);
-			static void AuthenticatedSafeContentInfoCont(NN<ASN1Names> names);
-			static void AuthenticatedSafeData(NN<ASN1Names> names);
-			static void AuthenticatedSafeEnvelopedData(NN<ASN1Names> names);
-			static void AuthenticatedSafeEncryptedData(NN<ASN1Names> names);
-			static void AuthenticatedSafe(NN<ASN1Names> names);
-			static void AuthSafeContentInfo(NN<ASN1Names> names);
-			static void AuthSafeContentInfoCont(NN<ASN1Names> names);
-			static void SafeContentsData(NN<ASN1Names> names);
-			static void SafeContents(NN<ASN1Names> names);
-			static void SafeContentsCont(NN<ASN1Names> names);
-			static void SafeBagCont(NN<ASN1Names> names);
-			static void CertBag(NN<ASN1Names> names);
-			static void CertBagCont(NN<ASN1Names> names);
-			static void X509Certificate(NN<ASN1Names> names);
-			static void SdsiCertificate(NN<ASN1Names> names);
-			static void CRLBag(NN<ASN1Names> names);
-			static void CRLBagCont(NN<ASN1Names> names);
-			static void X509CRL(NN<ASN1Names> names);
-			static void SecretBag(NN<ASN1Names> names);
-			static void SecretBagCont(NN<ASN1Names> names);
-			static void PKCS12Attributes(NN<ASN1Names> names);
+			static void __stdcall PFX(NN<ASN1Names> names);
+			static void __stdcall PFXCont(NN<ASN1Names> names);
+			static void __stdcall AddMacData(NN<ASN1Names> names, Text::CStringNN name);
+			static void __stdcall MacDataCont(NN<ASN1Names> names);
+			static void __stdcall AuthenticatedSafeContentInfoCont(NN<ASN1Names> names);
+			static void __stdcall AuthenticatedSafeData(NN<ASN1Names> names);
+			static void __stdcall AuthenticatedSafeEnvelopedData(NN<ASN1Names> names);
+			static void __stdcall AuthenticatedSafeEncryptedData(NN<ASN1Names> names);
+			static void __stdcall AuthenticatedSafe(NN<ASN1Names> names);
+			static void __stdcall AuthSafeContentInfo(NN<ASN1Names> names);
+			static void __stdcall AuthSafeContentInfoCont(NN<ASN1Names> names);
+			static void __stdcall SafeContentsData(NN<ASN1Names> names);
+			static void __stdcall SafeContents(NN<ASN1Names> names);
+			static void __stdcall SafeContentsCont(NN<ASN1Names> names);
+			static void __stdcall SafeBagCont(NN<ASN1Names> names);
+			static void __stdcall CertBag(NN<ASN1Names> names);
+			static void __stdcall CertBagCont(NN<ASN1Names> names);
+			static void __stdcall X509Certificate(NN<ASN1Names> names);
+			static void __stdcall SdsiCertificate(NN<ASN1Names> names);
+			static void __stdcall CRLBag(NN<ASN1Names> names);
+			static void __stdcall CRLBagCont(NN<ASN1Names> names);
+			static void __stdcall X509CRL(NN<ASN1Names> names);
+			static void __stdcall SecretBag(NN<ASN1Names> names);
+			static void __stdcall SecretBagCont(NN<ASN1Names> names);
+			static void __stdcall PKCS12Attributes(NN<ASN1Names> names);
 		};
 	}
 }

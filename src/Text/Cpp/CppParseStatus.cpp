@@ -2,7 +2,7 @@
 #include "Text/MyString.h"
 #include "Text/Cpp/CppParseStatus.h"
 
-void Text::Cpp::CppParseStatus::FreeDefineInfo(NN<Text::Cpp::CppParseStatus::DefineInfo> defInfo)
+void __stdcall Text::Cpp::CppParseStatus::FreeDefineInfo(NN<Text::Cpp::CppParseStatus::DefineInfo> defInfo)
 {
 	defInfo->defineName->Release();
 	OPTSTR_DEL(defInfo->defineVal);
@@ -10,7 +10,7 @@ void Text::Cpp::CppParseStatus::FreeDefineInfo(NN<Text::Cpp::CppParseStatus::Def
 	MemFreeNN(defInfo);
 }
 
-void Text::Cpp::CppParseStatus::FreeFileStatus(NN<FileParseStatus> fileStatus)
+void __stdcall Text::Cpp::CppParseStatus::FreeFileStatus(NN<FileParseStatus> fileStatus)
 {
 	fileStatus.Delete();
 }

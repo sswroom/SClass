@@ -9,7 +9,7 @@ namespace Net
 		class RFC8551
 		{
 		public:
-			static void SMIMEEncryptionKeyPreference(NN<ASN1Names> names); //RFC8551
+			static void __stdcall SMIMEEncryptionKeyPreference(NN<ASN1Names> names); //RFC8551
 		};
 	}
 }

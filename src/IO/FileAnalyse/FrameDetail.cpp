@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileAnalyse/FrameDetail.h"
 
-void IO::FileAnalyse::FrameDetail::FreeFieldInfo(NN<FieldInfo> field)
+void __stdcall IO::FileAnalyse::FrameDetail::FreeFieldInfo(NN<FieldInfo> field)
 {
 	field->name->Release();
 	field->value->Release();

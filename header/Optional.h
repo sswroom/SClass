@@ -5,7 +5,7 @@
 template <typename T> struct Optional
 {
 public:
-	typedef void (*FreeFunc)(NN<T> v);
+	typedef void (__stdcall *FreeFunc)(NN<T> v);
 private:
 	T *p;
 public:

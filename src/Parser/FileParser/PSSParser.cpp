@@ -97,7 +97,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		i = (hdr[13] & 7);
 		currOfst = 14 + i;
 	}
-	if (*(Int32*)&hdr[currOfst] != (Int32)0xbb010000)
+	if (*(Int32*)&hdr[(UOSInt)currOfst] != (Int32)0xbb010000)
 		return 0;
 
 	if (fd->GetFullFileName()->EndsWithICase(UTF8STRC("_1.vob")))
@@ -159,7 +159,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		formats[i]->formatId = 0;
 		audDelay[i] = 0;
 	}
-	i = ReadMUInt16(&hdr[currOfst + 4]);
+	i = ReadMUInt16(&hdr[(UOSInt)currOfst + 4]);
 	currOfst += 6 + i;
 	UInt8 buff[256];
 	while (true)

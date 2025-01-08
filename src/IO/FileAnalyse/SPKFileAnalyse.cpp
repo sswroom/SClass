@@ -114,7 +114,7 @@ void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	}
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack)
+void __stdcall IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack)
 {
 	SDEL_STRING(pack->fileName);
 	MemFreeNN(pack);

@@ -106,7 +106,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 	}
 }
 
-void Net::SSDPClient::SSDPServiceFree(NN<SSDPService> svc)
+void __stdcall Net::SSDPClient::SSDPServiceFree(NN<SSDPService> svc)
 {
 	OPTSTR_DEL(svc->location);
 	OPTSTR_DEL(svc->opt);
@@ -117,7 +117,7 @@ void Net::SSDPClient::SSDPServiceFree(NN<SSDPService> svc)
 	MemFreeNN(svc);
 }
 
-void Net::SSDPClient::SSDPDeviceFree(NN<SSDPDevice> dev)
+void __stdcall Net::SSDPClient::SSDPDeviceFree(NN<SSDPDevice> dev)
 {
 	dev->services.FreeAll(SSDPServiceFree);
 	dev.Delete();
@@ -251,7 +251,7 @@ NN<Net::SSDPClient::SSDPRoot> Net::SSDPClient::SSDPRootParse(Optional<Text::Enco
 	return root;
 }
 
-void Net::SSDPClient::SSDPRootFree(NN<SSDPRoot> root)
+void __stdcall Net::SSDPClient::SSDPRootFree(NN<SSDPRoot> root)
 {
 	SDEL_STRING(root->udn);
 	SDEL_STRING(root->friendlyName);

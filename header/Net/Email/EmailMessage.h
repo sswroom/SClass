@@ -65,8 +65,8 @@ namespace Net
 			Bool WriteContents(NN<IO::Stream> stm);
 			static UnsafeArray<UTF8Char> GenBoundary(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> data, UOSInt dataLen);
 			static void WriteB64Data(NN<IO::Stream> stm, UnsafeArray<const UInt8> data, UOSInt dataSize);
-			static void AttachmentFree(NN<Attachment> attachment);
-			static void EmailAddressFree(NN<EmailAddress> recipient);
+			static void __stdcall AttachmentFree(NN<Attachment> attachment);
+			static void __stdcall EmailAddressFree(NN<EmailAddress> recipient);
 			static NN<EmailAddress> EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr);
 		public:
 			EmailMessage();

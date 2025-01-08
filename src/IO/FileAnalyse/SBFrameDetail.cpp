@@ -17,7 +17,7 @@ void IO::FileAnalyse::SBFrameDetail::AddHeader(Text::CStringNN header)
 	sb->Append(header);
 }
 
-void IO::FileAnalyse::SBFrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value)
+void IO::FileAnalyse::SBFrameDetail::AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value)
 {
 	Text::CStringNN nnvalue;
 	sb->AppendC(UTF8STRC("\r\n"));
@@ -29,7 +29,7 @@ void IO::FileAnalyse::SBFrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CS
 	}
 }
 
-void IO::FileAnalyse::SBFrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value)
+void IO::FileAnalyse::SBFrameDetail::AddSubfield(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value)
 {
 	Text::CStringNN nnvalue;
 	sb->AppendC(UTF8STRC("\r\n-"));
@@ -41,18 +41,18 @@ void IO::FileAnalyse::SBFrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text:
 	}
 }
 
-void IO::FileAnalyse::SBFrameDetail::AddFieldSeperstor(UOSInt ofst, Text::CStringNN name)
+void IO::FileAnalyse::SBFrameDetail::AddFieldSeperstor(UInt64 ofst, Text::CStringNN name)
 {
 	sb->AppendC(UTF8STRC("\r\n\r\n"));
 	sb->Append(name);
 }
 
-void IO::FileAnalyse::SBFrameDetail::AddText(UOSInt ofst, Text::CStringNN name)
+void IO::FileAnalyse::SBFrameDetail::AddText(UInt64 ofst, Text::CStringNN name)
 {
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->Append(name);
 }
 
-void IO::FileAnalyse::SBFrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
+void IO::FileAnalyse::SBFrameDetail::AddSubframe(UInt64 ofst, UInt64 size)
 {
 }

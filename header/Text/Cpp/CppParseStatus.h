@@ -65,8 +65,8 @@ namespace Text
 			Data::ArrayListNN<FileParseStatus> statuses;
 			Data::ArrayListICaseString fileNames;
 
-			static void FreeDefineInfo(NN<DefineInfo> definfo);
-			static void FreeFileStatus(NN<FileParseStatus> fileStatus);
+			static void __stdcall FreeDefineInfo(NN<DefineInfo> definfo);
+			static void __stdcall FreeFileStatus(NN<FileParseStatus> fileStatus);
 		public:
 			CppParseStatus(NN<Text::String> rootFile);
 			CppParseStatus(Text::CStringNN rootFile);

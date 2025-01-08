@@ -48,9 +48,9 @@ namespace IO
 		Int64 minTime;
 		Int64 maxTime;
 
-		static void FreeGroup(NN<JMeterGroup> group);
-		static void FreeThread(NN<JMeterThread> thread);
-		static void FreeLog(NN<JMeterLogItem> log);
+		static void __stdcall FreeGroup(NN<JMeterGroup> group);
+		static void __stdcall FreeThread(NN<JMeterThread> thread);
+		static void __stdcall FreeLog(NN<JMeterLogItem> log);
 		NN<JMeterGroup> GetOrCreateGroup(Text::CStringNN label, Text::CStringNN url);
 		NN<Text::String> NewResponseCode(Text::CStringNN responseCode);
 		NN<JMeterThread> GetOrCreateThread(Text::CStringNN threadName);

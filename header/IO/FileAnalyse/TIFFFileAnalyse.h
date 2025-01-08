@@ -36,7 +36,7 @@ namespace IO
 			Sync::Thread thread;
 
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			static void FreePackInfo(NN<PackInfo> pack);
+			static void __stdcall FreePackInfo(NN<PackInfo> pack);
 		public:
 			TIFFFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~TIFFFileAnalyse();

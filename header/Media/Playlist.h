@@ -26,7 +26,7 @@ namespace Media
 		Bool playing;
 
 		static void __stdcall OnPBEnd(AnyType userObj);
-		static void FreeEntry(NN<PlaylistEntry> ent);
+		static void __stdcall FreeEntry(NN<PlaylistEntry> ent);
 	public:
 		Playlist(Text::CStringNN sourceName, NN<Parser::ParserList> parsers);
 		virtual ~Playlist();

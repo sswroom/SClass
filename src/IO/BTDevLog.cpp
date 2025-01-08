@@ -23,7 +23,7 @@ Bool IO::BTDevLog::IsDefaultName(NN<Text::String> name)
 	return false;
 }
 
-void IO::BTDevLog::FreeDev(NN<DevEntry> dev)
+void __stdcall IO::BTDevLog::FreeDev(NN<DevEntry> dev)
 {
 	OPTSTR_DEL(dev->name);
 	MemFreeNN(dev);

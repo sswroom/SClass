@@ -164,7 +164,7 @@ NN<Text::SpreadSheet::Worksheet::CellData> Text::SpreadSheet::Worksheet::CloneCe
 	return newCell;
 }
 
-void Text::SpreadSheet::Worksheet::FreeDrawing(NN<WorksheetDrawing> drawing)
+void __stdcall Text::SpreadSheet::Worksheet::FreeDrawing(NN<WorksheetDrawing> drawing)
 {
 	drawing->chart.Delete();
 	MemFreeNN(drawing);

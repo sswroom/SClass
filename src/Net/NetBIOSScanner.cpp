@@ -57,7 +57,7 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::Addres
 	}
 }
 
-void Net::NetBIOSScanner::FreeAnswer(NN<NameAnswer> ans)
+void __stdcall Net::NetBIOSScanner::FreeAnswer(NN<NameAnswer> ans)
 {
 	if (ans->names)
 	{

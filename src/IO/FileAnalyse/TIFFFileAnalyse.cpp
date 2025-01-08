@@ -74,7 +74,7 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NN<Sync::Thread> th
 	}
 }
 
-void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(NN<PackInfo> pack)
+void __stdcall IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 {
 	MemFreeNN(pack);
 }

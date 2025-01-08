@@ -37,7 +37,7 @@ namespace IO
 			void ParseV1Directory(UInt64 dirOfst, UInt64 dirSize);
 			void ParseV2Directory(UInt64 dirOfst, UInt64 dirSize);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			static void FreePackInfo(NN<PackInfo> pack);
+			static void __stdcall FreePackInfo(NN<PackInfo> pack);
 		public:
 			SPKFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~SPKFileAnalyse();

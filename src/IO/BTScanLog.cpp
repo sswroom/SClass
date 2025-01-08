@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/BTScanLog.h"
 
-void IO::BTScanLog::FreeDev(NN<DevEntry> dev)
+void __stdcall IO::BTScanLog::FreeDev(NN<DevEntry> dev)
 {
 	OPTSTR_DEL(dev->name);
 	dev->logs.Delete();

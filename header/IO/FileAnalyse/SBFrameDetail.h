@@ -16,11 +16,11 @@ namespace IO
 			virtual ~SBFrameDetail();
 
 			virtual void AddHeader(Text::CStringNN header);
-			virtual void AddField(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value);
-			virtual void AddSubfield(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value);
-			virtual void AddFieldSeperstor(UOSInt ofst, Text::CStringNN name);
-			virtual void AddText(UOSInt ofst, Text::CStringNN name);
-			virtual void AddSubframe(UOSInt ofst, UOSInt size);
+			virtual void AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);
+			virtual void AddSubfield(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);
+			virtual void AddFieldSeperstor(UInt64 ofst, Text::CStringNN name);
+			virtual void AddText(UInt64 ofst, Text::CStringNN name);
+			virtual void AddSubframe(UInt64 ofst, UInt64 size);
 		};
 	}
 }

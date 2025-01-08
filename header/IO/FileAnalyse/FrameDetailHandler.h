@@ -13,11 +13,11 @@ namespace IO
 			virtual ~FrameDetailHandler() {};
 
 			virtual void AddHeader(Text::CStringNN header) = 0;
-			virtual void AddField(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value) = 0;
-			virtual void AddSubfield(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value) = 0;
-			virtual void AddFieldSeperstor(UOSInt ofst, Text::CStringNN name) = 0;
-			virtual void AddText(UOSInt ofst, Text::CStringNN name) = 0;
-			virtual void AddSubframe(UOSInt ofst, UOSInt size) = 0;
+			virtual void AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value) = 0;
+			virtual void AddSubfield(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value) = 0;
+			virtual void AddFieldSeperstor(UInt64 ofst, Text::CStringNN name) = 0;
+			virtual void AddText(UInt64 ofst, Text::CStringNN name) = 0;
+			virtual void AddSubframe(UInt64 ofst, UInt64 size) = 0;
 
 			void AddBool(UOSInt frameOfst, Text::CStringNN name, UInt8 v);
 			void AddInt64(UOSInt frameOfst, Text::CStringNN name, Int64 v);

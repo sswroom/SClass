@@ -12,7 +12,7 @@ namespace Data
 	template <class T> class ArrayListNN : public ReadingListNN<T>, public ArrayCollection<NN<T>>
 	{
 	public:
-		typedef void (*FreeFunc)(NN<T> v);
+		typedef void (__stdcall *FreeFunc)(NN<T> v);
 	protected:
 		UnsafeArray<NN<T>> arr;
 		UOSInt objCnt;

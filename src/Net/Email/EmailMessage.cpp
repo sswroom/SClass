@@ -266,7 +266,7 @@ void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, UnsafeArray<cons
 	stm->Write(CSTRP(sbuff, sptr).ToByteArray());
 }
 
-void Net::Email::EmailMessage::AttachmentFree(NN<Attachment> attachment)
+void __stdcall Net::Email::EmailMessage::AttachmentFree(NN<Attachment> attachment)
 {
 	MemFree(attachment->content);
 	attachment->fileName->Release();
@@ -274,7 +274,7 @@ void Net::Email::EmailMessage::AttachmentFree(NN<Attachment> attachment)
 	MemFreeNN(attachment);
 }
 
-void Net::Email::EmailMessage::EmailAddressFree(NN<EmailAddress> addr)
+void __stdcall Net::Email::EmailMessage::EmailAddressFree(NN<EmailAddress> addr)
 {
 	NN<Text::String> s;
 	if (addr->name.SetTo(s))

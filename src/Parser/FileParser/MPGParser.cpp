@@ -59,7 +59,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 	{
 		Int32 i = (hdr[13] & 7);
 		Int64 currOfst = 14 + i;
-		if (ReadMInt32(&hdr[currOfst]) != 0x000001bb)
+		if (ReadMInt32(&hdr[(OSInt)currOfst]) != 0x000001bb)
 			return 0;
 
 		if (fd->GetFullName()->EndsWithICase(UTF8STRC("_1.vob")))
