@@ -1049,7 +1049,8 @@ NoGUIDrawEngine.o: ../../src/Media/NoGUIDrawEngine.cpp
 NullRenderer.o: ../../src/Media/NullRenderer.cpp
 NWASource.o: ../../src/Media/NWASource.cpp
 OCREngine.o: ../../src/Media/OCREngine.cpp
-!`$(PKG-CONFIG) --libs tesseract`
+!?(NO_LEPTONICA == 0)-lleptonica
+!-ltesseract
 OCREngine_Null.o: ../../src/Media/OCREngine_Null.cpp
 OpenSLESRenderer.o: ../../src/Media/OpenSLESRenderer.cpp
 PaperSize.o: ../../src/Media/PaperSize.cpp
