@@ -103,9 +103,10 @@ void UI::GTK::GTKButton::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nam
 	gtk_widget_reset_style(widget);
 #else
 	PangoFontDescription *font = pango_font_description_new();
-	if (name)
+	UnsafeArray<const UTF8Char> nnname;
+	if (name.SetTo(nnname))
 	{
-		pango_font_description_set_family(font, (const Char*)name);
+		pango_font_description_set_family(font, (const Char*)nnname.Ptr());
 	}
 	pango_font_description_set_absolute_size(font, fontHeightPt * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (isBold)

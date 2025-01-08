@@ -21,7 +21,7 @@ CSUFFIX :=
 ASMSUFFIX :=
 CLASS_OBJS :=
 LIBS :=
-LIBS += -rdynamic
+LIBS += -rdynamic -lrt
 #LIBS += -Wl,--gc-sections
 #LIBS += -Wl,--strip-all
 
