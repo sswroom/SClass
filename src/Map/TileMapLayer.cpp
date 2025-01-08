@@ -47,7 +47,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 				{
 					if (imgList.Set(stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false)))
 					{
-						NEW_CLASSNN(shimg, Media::SharedImage(imgList, false));
+						NEW_CLASSNN(shimg, Media::SharedImage(imgList, 0));
 						cimg->img = shimg;
 						cimg->isFinish = true;
 						
@@ -540,7 +540,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		cimg->level = level;
 		cimg->isFinish = true;
 		cimg->isCancel = false;
-		NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, false));
+		NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, 0));
 		cimg->img = shimg;
 
 		Sync::MutexUsage mutUsage(this->lastMut);

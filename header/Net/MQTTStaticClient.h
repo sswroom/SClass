@@ -16,18 +16,18 @@ namespace Net
 	{
 	private:
 		Sync::Mutex connMut;
-		Net::MQTTConn *conn;
+		Optional<Net::MQTTConn> conn;
 		UInt16 kaSeconds;
 		Sync::Thread kaThread;
 		UInt16 packetId;
 		Sync::Mutex packetIdMut;
-		IO::Writer *errLog;
+		Optional<IO::Writer> errLog;
 
 		NN<Text::String> clientId;
 		Sync::Mutex hdlrMut;
 		Data::ArrayList<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
 		Sync::Mutex topicMut;
-		Data::ArrayList<Text::String*> topicList;
+		Data::ArrayListNN<Text::String> topicList;
 
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
@@ -43,10 +43,10 @@ namespace Net
 		void Connect();
 		UInt16 GetNextPacketId();
 
-		void Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
+		void Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, Optional<IO::Writer> errLog);
 	public:
-		MQTTStaticClient(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
-		MQTTStaticClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog);
+		MQTTStaticClient(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, Optional<IO::Writer> errLog);
+		MQTTStaticClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, Optional<IO::Writer> errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();

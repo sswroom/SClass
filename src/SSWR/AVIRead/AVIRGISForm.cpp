@@ -20,6 +20,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/UTMGridConvertDbl.h"
 #include "Math/Geometry/VectorImage.h"
+#include "Media/ImagePreviewTool.h"
 #include "Media/SharedImage.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
@@ -231,7 +232,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - calcImgW * 0.5, OSInt2Double(mousePos.y) - calcImgH * 0.5));
 						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 					}
-					NEW_CLASSNN(simg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(nnpobj), true));
+					Data::ArrayListNN<Media::StaticImage> prevList;
+					Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList>::ConvertFrom(nnpobj), prevList, 640);
+					NEW_CLASSNN(simg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(nnpobj), prevList));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
 					simg.Delete();
 					lyr->AddVector(vimg, (Text::String**)0);

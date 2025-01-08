@@ -96,6 +96,7 @@ void Net::PushManager::SaveData()
 	{
 		Text::StringBuilderUTF8 sb;
 		NN<DeviceInfo2> dev;
+		NN<Text::String> devModel;
 		Text::UTF8Writer writer(fs);
 		Sync::MutexUsage mutUsage(this->dataMut);
 		UOSInt i = 0;
@@ -106,13 +107,13 @@ void Net::PushManager::SaveData()
 			sb.ClearStr();
 			sb.AppendI64(dev->lastSubscribeTime.ToTicks());
 			sb.AppendUTF8Char(',');
-			if (dev->devModel)
+			if (dev->devModel.SetTo(devModel))
 			{
-				if (dev->devModel->IndexOf(',') != INVALID_INDEX)
+				if (devModel->IndexOf(',') != INVALID_INDEX)
 				{
-					dev->devModel->Replace(',', '_');
+					devModel->Replace(',', '_');
 				}
-				sb.Append(dev->devModel);
+				sb.Append(devModel);
 			}
 			sb.AppendUTF8Char(',');
 			sb.Append(dev->token);
@@ -175,7 +176,7 @@ Net::PushManager::~PushManager()
 		NN<DeviceInfo2> dev = this->devMap.GetItemNoCheck(i);
 		dev->token->Release();
 		dev->userName->Release();
-		SDEL_STRING(dev->devModel);
+		OPTSTR_DEL(dev->devModel);
 		MemFreeNN(dev);
 	}
 	this->accessToken.Delete();
@@ -187,6 +188,7 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 	NN<DeviceInfo2> dev;
 	NN<UserInfo> user;
 	Text::CStringNN nndevModel;
+	NN<Text::String> sdevModel;
 	if (this->devMap.GetC(token).SetTo(dev))
 	{
 		if (dev->userName->Equals(userName.v, userName.leng))
@@ -195,14 +197,14 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 			dev->subscribeAddr = remoteAddr.Ptr()[0];
 			if (devModel.SetTo(nndevModel) && nndevModel.leng > 0)
 			{
-				if (dev->devModel == 0)
+				if (!dev->devModel.SetTo(sdevModel))
 				{
-					dev->devModel = Text::String::New(nndevModel).Ptr();
+					dev->devModel = Text::String::New(nndevModel);
 				}
-				else if (!dev->devModel->Equals(nndevModel.v, nndevModel.leng))
+				else if (!sdevModel->Equals(nndevModel))
 				{
-					SDEL_STRING(dev->devModel);
-					dev->devModel = Text::String::New(nndevModel).Ptr();
+					OPTSTR_DEL(dev->devModel);
+					dev->devModel = Text::String::New(nndevModel);
 				}
 			}
 			return true;
@@ -217,7 +219,6 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 	{
 		dev = MemAllocNN(DeviceInfo2);
 		dev->token = Text::String::New(token);
-		dev->userName = 0;
 		dev->devType = devType;
 		dev->subscribeAddr.addrType = Net::AddrType::Unknown;
 		dev->devModel = 0;
@@ -225,19 +226,19 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 		this->devMap.PutNN(dev->token, dev);
 	}
 	user = this->GetUser(userName);
-	dev->userName = user->userName->Clone().Ptr();
+	dev->userName = user->userName->Clone();
 	dev->lastSubscribeTime = Data::Timestamp::Now();
 	dev->subscribeAddr = remoteAddr.Ptr()[0];
 	if (devModel.SetTo(nndevModel) && nndevModel.leng > 0)
 	{
-		if (dev->devModel == 0)
+		if (!dev->devModel.SetTo(sdevModel))
 		{
-			dev->devModel = Text::String::New(nndevModel).Ptr();
+			dev->devModel = Text::String::New(nndevModel);
 		}
-		else if (!dev->devModel->Equals(nndevModel.v, nndevModel.leng))
+		else if (!sdevModel->Equals(nndevModel))
 		{
-			SDEL_STRING(dev->devModel);
-			dev->devModel = Text::String::New(nndevModel).Ptr();
+			OPTSTR_DEL(dev->devModel);
+			dev->devModel = Text::String::New(nndevModel);
 		}
 	}
 	user->devMap.PutNN(dev->token, dev);
@@ -259,7 +260,7 @@ Bool Net::PushManager::Unsubscribe(Text::CStringNN token)
 		}
 		dev->userName->Release();
 		dev->token->Release();
-		SDEL_STRING(dev->devModel);
+		OPTSTR_DEL(dev->devModel);
 		MemFreeNN(dev);
 		this->SaveData();
 		return true;

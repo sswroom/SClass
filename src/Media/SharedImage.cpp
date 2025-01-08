@@ -3,7 +3,6 @@
 #include "Math/Math.h"
 #include "Media/StaticImage.h"
 #include "Media/SharedImage.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/MutexUsage.h"
 
 Media::SharedImage::SharedImage(NN<Media::SharedImage::ImageStatus> status)
@@ -14,9 +13,8 @@ Media::SharedImage::SharedImage(NN<Media::SharedImage::ImageStatus> status)
 	mutUsage.EndUse();
 }
 
-Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Bool genPreview)
+Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Optional<Data::ArrayListNN<Media::StaticImage>> previewImages)
 {
-	NN<Media::StaticImage> img;
 	UOSInt imgCnt = imgList->GetCount();
 	NEW_CLASSNN(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
@@ -30,28 +28,13 @@ Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Bool genPreview)
 	{
 		imgList->ToStaticImage(i);
 	}
-	if (genPreview && imgCnt == 1)
+	NN<Data::ArrayListNN<Media::StaticImage>> nnpreviewImages;
+	if (previewImages.SetTo(nnpreviewImages) && nnpreviewImages->GetCount() > 0)
 	{
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img) && (img->info.dispSize.x >= 640 || img->info.dispSize.y >= 640))
-		{
-			UOSInt currWidth = img->info.dispSize.x;
-			UOSInt currHeight = img->info.dispSize.y;
-			NN<Media::StaticImage> simg;
-			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
-			img->To32bpp();
-			NEW_CLASS(this->imgStatus->prevList, Data::ArrayListNN<Media::StaticImage>());
-
-			while (currWidth >= 640 || currHeight >= 640)
-			{
-				currWidth >>= 1;
-				currHeight >>= 1;
-				resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
-				if (simg.Set(resizer.ProcessToNew(img)))
-				{
-					this->imgStatus->prevList->Add(simg);
-				}
-			}
-		}
+		NN<Data::ArrayListNN<Media::StaticImage>> prevList;
+		NEW_CLASSNN(prevList, Data::ArrayListNN<Media::StaticImage>());
+		this->imgStatus->prevList = prevList;
+		prevList->AddAll(nnpreviewImages);
 	}
 }
 
@@ -67,17 +50,11 @@ Media::SharedImage::~SharedImage()
 	if (toDelete)
 	{
 		this->imgStatus->imgList.Delete();
-		if (this->imgStatus->prevList)
+		NN<Data::ArrayListNN<Media::StaticImage>> nnprevList;
+		if (this->imgStatus->prevList.SetTo(nnprevList))
 		{
-			UOSInt i;
-			NN<Media::StaticImage> simg;
-			i = this->imgStatus->prevList->GetCount();
-			while (i-- > 0)
-			{
-				simg = this->imgStatus->prevList->GetItemNoCheck(i);
-				simg.Delete();
-			}
-			DEL_CLASS(this->imgStatus->prevList);
+			nnprevList->DeleteAll();
+			this->imgStatus->prevList.Delete();
 		}
 		this->imgStatus.Delete();
 	}
@@ -132,7 +109,8 @@ Optional<Media::StaticImage> Media::SharedImage::GetImage(OptOut<UInt32> imgTime
 
 Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const
 {
-	if (this->imgStatus->prevList == 0)
+	NN<Data::ArrayListNN<Media::StaticImage>> nnprevList;
+	if (!this->imgStatus->prevList.SetTo(nnprevList))
 	{
 		return this->GetImage(imgTimeMS);
 	}
@@ -140,10 +118,10 @@ Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Doub
 	UOSInt i;
 	Optional<Media::StaticImage> minImg = 0;
 	UOSInt minWidth = 0;
-	i = this->imgStatus->prevList->GetCount();
+	i = nnprevList->GetCount();
 	while (i-- > 0)
 	{
-		currImg = this->imgStatus->prevList->GetItemNoCheck(i);
+		currImg = nnprevList->GetItemNoCheck(i);
 		if (UOSInt2Double(currImg->info.dispSize.x) >= width && UOSInt2Double(currImg->info.dispSize.y) >= height)
 		{
 			if (minImg.IsNull() || minWidth > currImg->info.dispSize.x)

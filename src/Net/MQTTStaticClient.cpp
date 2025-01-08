@@ -12,17 +12,19 @@ void __stdcall Net::MQTTStaticClient::KAThread(NN<Sync::Thread> thread)
 	NN<Net::MQTTStaticClient> me = thread->GetUserObj().GetNN<Net::MQTTStaticClient>();
 	while (!thread->IsStopping())
 	{
+		NN<IO::Writer> errLog;
 		Sync::MutexUsage mutUsage(me->connMut);
-		if (me->conn)
+		NN<Net::MQTTConn> conn;
+		if (me->conn.SetTo(conn))
 		{
-			me->conn->ClearPackets();
-			me->conn->SendPing();
+			conn->ClearPackets();
+			conn->SendPing();
 			mutUsage.EndUse();
 		}
 		else
 		{
 			mutUsage.EndUse();
-			if (me->errLog) me->errLog->WriteLine(CSTR("MQTT: Reconnecting to server"));
+			if (me->errLog.SetTo(errLog)) errLog->WriteLine(CSTR("MQTT: Reconnecting to server"));
 			me->Connect();
 		}
 		thread->Wait((UOSInt)me->kaSeconds * 500);
@@ -37,22 +39,19 @@ void __stdcall Net::MQTTStaticClient::OnDisconnect(AnyType userObj)
 		return;
 	}
 	Sync::MutexUsage mutUsage(me->connMut);
-	if (me->conn)
-	{
-		DEL_CLASS(me->conn);
-		me->conn = 0;
-		//me->kaEvt->Set();
-	}
+	me->conn.Delete();
+	//me->kaEvt->Set();
 }
 
 void Net::MQTTStaticClient::Connect()
 {
 	NN<Text::String> host;
+	NN<IO::Writer> errLog;
 	if (!this->host.SetTo(host))
 	{
 		return;
 	}
-	Net::MQTTConn *conn;
+	NN<Net::MQTTConn> conn;
 	if (this->webSocket)
 	{
 		NN<Net::WebSocketClient> ws;
@@ -60,19 +59,19 @@ void Net::MQTTStaticClient::Connect()
 		if (ws->IsDown())
 		{
 			ws.Delete();
-			if (errLog) errLog->WriteLine(CSTR("MQTT: Error in initializing websocket"));
+			if (this->errLog.SetTo(errLog)) errLog->WriteLine(CSTR("MQTT: Error in initializing websocket"));
 			return;
 		}
-		NEW_CLASS(conn, Net::MQTTConn(ws, 0, 0));
+		NEW_CLASSNN(conn, Net::MQTTConn(ws, 0, 0));
 	}
 	else
 	{
-		NEW_CLASS(conn, Net::MQTTConn(this->clif, this->ssl, host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
+		NEW_CLASSNN(conn, Net::MQTTConn(this->clif, this->ssl, host->ToCString(), this->port, OnDisconnect, this, this->connTimeout));
 	}
 	if (conn->IsError())
 	{
-		if (errLog) errLog->WriteLine(CSTR("MQTT: Error in connecting to server"));
-		DEL_CLASS(conn);
+		if (this->errLog.SetTo(errLog)) errLog->WriteLine(CSTR("MQTT: Error in connecting to server"));
+		conn.Delete();
 		return;
 	}
 	this->packetId = 1;
@@ -95,23 +94,23 @@ void Net::MQTTStaticClient::Connect()
 	}
 	if (!succ)
 	{
-		DEL_CLASS(conn);
-		if (errLog) errLog->WriteLine(CSTR("MQTT: Error in sending connect packet"));
+		conn.Delete();
+		if (this->errLog.SetTo(errLog)) errLog->WriteLine(CSTR("MQTT: Error in sending connect packet"));
 	}
 	else
 	{
 		mutUsage.ReplaceMutex(this->connMut);
 		if (conn->IsError())
 		{
-			if (errLog) errLog->WriteLine(CSTR("MQTT: Connection is error"));
-			DEL_CLASS(conn);
+			if (this->errLog.SetTo(errLog)) errLog->WriteLine(CSTR("MQTT: Connection is error"));
+			conn.Delete();
 			return;
 		}
 		else
 		{
 			this->conn = conn;
 		}
-		Data::ArrayList<Text::String*> topicList;
+		Data::ArrayListNN<Text::String> topicList;
 		mutUsage.ReplaceMutex(this->topicMut);
 		topicList.AddAll(this->topicList);
 		mutUsage.EndUse();
@@ -121,15 +120,15 @@ void Net::MQTTStaticClient::Connect()
 		while (i < j)
 		{
 			mutUsage.ReplaceMutex(this->connMut);
-			if (this->conn == 0)
+			if (!this->conn.SetTo(conn))
 			{
 				mutUsage.EndUse();
 				break;
 			}
 			UInt16 packetId = GetNextPacketId();
-			if (this->conn->SendSubscribe(packetId, topicList.GetItem(i)->ToCString()))
+			if (conn->SendSubscribe(packetId, topicList.GetItemNoCheck(i)->ToCString()))
 			{
-				this->conn->WaitSubAck(packetId, 30000);
+				conn->WaitSubAck(packetId, 30000);
 			}
 			mutUsage.EndUse();
 
@@ -144,7 +143,7 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 	return this->packetId++;
 }
 
-void Net::MQTTStaticClient::Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog)
+void Net::MQTTStaticClient::Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, Optional<IO::Writer> errLog)
 {
 	this->kaSeconds = 30;
 	this->conn = 0;
@@ -167,12 +166,12 @@ void Net::MQTTStaticClient::Init(NN<Net::TCPClientFactory> clif, Net::MQTTConn::
 	this->webSocket = false;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NN<Net::TCPClientFactory> clif, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, Optional<IO::Writer> errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(clif, hdlr, userObj, errLog);
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
+Net::MQTTStaticClient::MQTTStaticClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, Optional<IO::Writer> errLog) : kaThread(KAThread, this, CSTR("MQTTStaticCliKA"))
 {
 	this->Init(clif, hdlr, userObj, errLog);
 	this->ssl = ssl;
@@ -191,9 +190,9 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 {
 	this->kaThread.Stop();
 	Sync::MutexUsage mutUsage(this->connMut);
-	SDEL_CLASS(this->conn);
+	this->conn.Delete();
 	mutUsage.EndUse();
-	LIST_FREE_STRING(&this->topicList);
+	NNLIST_FREE_STRING(&this->topicList);
 	OPTSTR_DEL(this->username);
 	OPTSTR_DEL(this->password);
 	OPTSTR_DEL(this->host);
@@ -207,7 +206,7 @@ Bool Net::MQTTStaticClient::IsStarted()
 
 Bool Net::MQTTStaticClient::ChannelFailure()
 {
-	return this->conn == 0;
+	return this->conn.IsNull();
 }
 
 void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj)
@@ -219,13 +218,14 @@ void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHd
 Bool Net::MQTTStaticClient::Subscribe(Text::CStringNN topic)
 {
 	Sync::MutexUsage mutUsage(this->topicMut);
-	this->topicList.Add(Text::String::New(topic).Ptr());
+	NN<Net::MQTTConn> conn;
+	this->topicList.Add(Text::String::New(topic));
 	mutUsage.ReplaceMutex(this->connMut);
-	if (this->conn == 0) return false;
+	if (!this->conn.SetTo(conn)) return false;
 	UInt16 packetId = GetNextPacketId();
-	if (this->conn->SendSubscribe(packetId, topic))
+	if (conn->SendSubscribe(packetId, topic))
 	{
-		if (this->conn->WaitSubAck(packetId, 30000) <= 2)
+		if (conn->WaitSubAck(packetId, 30000) <= 2)
 		{
 			return true;
 		}
@@ -236,6 +236,7 @@ Bool Net::MQTTStaticClient::Subscribe(Text::CStringNN topic)
 Bool Net::MQTTStaticClient::Publish(Text::CStringNN topic, Text::CStringNN message)
 {
 	Sync::MutexUsage mutUsage(this->connMut);
-	if (this->conn == 0) return false;
-	return this->conn->SendPublish(topic, message);
+	NN<Net::MQTTConn> conn;
+	if (!this->conn.SetTo(conn)) return false;
+	return conn->SendPublish(topic, message);
 }

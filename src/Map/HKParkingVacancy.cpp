@@ -256,7 +256,7 @@ Map::HKParkingVacancy::HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("ParkingPOI")));
 	imgList->AddImage(simg, 0);
 	NN<Media::SharedImage> shimg;
-	NEW_CLASSNN(shimg, Media::SharedImage(imgList, false));
+	NEW_CLASSNN(shimg, Media::SharedImage(imgList, 0));
 	this->SetIconStyle(shimg, 8, 8);
 	shimg.Delete();
 }

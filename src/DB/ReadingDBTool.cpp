@@ -350,7 +350,7 @@ UOSInt DB::ReadingDBTool::SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs
 DB::ReadingDBTool::~ReadingDBTool()
 {
 	OPTSTR_DEL(this->logPrefix);
-	SDEL_STRING(this->currDBName);
+	OPTSTR_DEL(this->currDBName);
 	if (this->needRelease)
 	{
 		db.Delete();
@@ -921,8 +921,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 			this->CloseReader(r);
 			if (rowChg >= -1)
 			{
-				SDEL_STRING(this->currDBName);
-				this->currDBName = Text::String::New(databaseName).Ptr();
+				OPTSTR_DEL(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
 				return true;
 			}
 			return false;
@@ -942,8 +942,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 			this->CloseReader(r);
 			if (rowChg >= -1)
 			{
-				SDEL_STRING(this->currDBName);
-				this->currDBName = Text::String::New(databaseName).Ptr();
+				OPTSTR_DEL(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
 				return true;
 			}
 			return false;
@@ -959,8 +959,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 		{
 			if (NN<DB::PostgreSQLConn>::ConvertFrom(this->db)->ChangeDatabase(databaseName))
 			{
-				SDEL_STRING(this->currDBName);
-				this->currDBName = Text::String::New(databaseName).Ptr();
+				OPTSTR_DEL(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
 				return true;
 			}
 			return false;
@@ -977,8 +977,8 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 			this->CloseReader(r);
 			if (rowChg >= -1)
 			{
-				SDEL_STRING(this->currDBName);
-				this->currDBName = Text::String::New(databaseName).Ptr();
+				OPTSTR_DEL(this->currDBName);
+				this->currDBName = Text::String::New(databaseName);
 				return true;
 			}
 			return false;

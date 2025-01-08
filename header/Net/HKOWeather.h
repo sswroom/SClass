@@ -177,7 +177,7 @@ namespace Net
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<Text::EncodingFactory> encFact;
-		Net::RSSReader *rss;
+		NN<Net::RSSReader> rss;
 		WeatherSignal currSignal;
 		NN<IO::LogTool> log;
 

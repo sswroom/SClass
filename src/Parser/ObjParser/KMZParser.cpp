@@ -3,11 +3,14 @@
 #include "IO/PackageFile.h"
 #include "Map/MapLayerCollection.h"
 #include "Parser/ParserList.h"
+#include "Parser/FileParser/XMLParser.h"
 #include "Parser/ObjParser/KMZParser.h"
 
 Parser::ObjParser::KMZParser::KMZParser()
 {
+	this->browser = 0;
 	this->parsers = 0;
+	this->encFact = 0;
 }
 
 Parser::ObjParser::KMZParser::~KMZParser()
@@ -19,9 +22,19 @@ Int32 Parser::ObjParser::KMZParser::GetName()
 	return *(Int32*)"KMZP";
 }
 
+void Parser::ObjParser::KMZParser::SetWebBrowser(Optional<Net::WebBrowser> browser)
+{
+	this->browser = browser;
+}
+
 void Parser::ObjParser::KMZParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
+}
+
+void Parser::ObjParser::KMZParser::SetEncFactory(Optional<Text::EncodingFactory> encFact)
+{
+	this->encFact = encFact;
 }
 
 void Parser::ObjParser::KMZParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
@@ -40,13 +53,48 @@ IO::ParserType Parser::ObjParser::KMZParser::GetParserType()
 Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<Parser::ParserList> parsers;
-	if (pobj->GetParserType() != IO::ParserType::PackageFile)
+	if (pobj->GetParserType() != IO::ParserType::PackageFile || (targetType != IO::ParserType::MapLayer && targetType != IO::ParserType::Unknown))
 		return 0;
 	if (!this->parsers.SetTo(parsers))
 		return 0;
-	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
+
+	NN<IO::PackageFile> pf = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
+	UOSInt ui = pf->GetCount();
+	while (ui-- > 0)
+	{
+		if (pf->GetItemName(sbuff, ui).SetTo(sptr) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
+		{
+			NN<IO::StreamData> stmData;
+			Optional<IO::ParsedObject> pobj = 0;
+			NN<IO::ParsedObject> nnpobj;
+			if (pf->GetItemStmDataNew(ui).SetTo(stmData))
+			{
+				Parser::FileParser::XMLParser xmlParser;
+				xmlParser.SetParserList(this->parsers);
+				xmlParser.SetEncFactory(this->encFact);
+				xmlParser.SetWebBrowser(this->browser);
+				pobj = xmlParser.ParseFile(stmData, pf, IO::ParserType::MapLayer);
+				stmData.Delete();
+			}
+			if (pobj.SetTo(nnpobj))
+			{
+				if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
+				{
+					return nnpobj;
+				}
+				else
+				{
+					nnpobj.Delete();
+				}
+			}
+		}
+	}
+
+/*	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
+	//UTF8Char sbuff[256];
+	//UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListNN<IO::ParsedObject> pobjList;
 	NN<IO::ParsedObject> pobj2;
 	UOSInt i;
@@ -116,5 +164,6 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 			i++;
 		}
 		return mapLyrColl;
-	}
+	}*/
+	return 0;
 }

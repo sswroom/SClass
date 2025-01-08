@@ -28,20 +28,20 @@ namespace Net
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		NN<IO::LogTool> log;
-		RSSHandler *hdlr;
+		NN<RSSHandler> hdlr;
 		Data::FastStringMapNN<RSSStatus> currRSSMaps;
 		Data::DateTime nextDT;
-		Net::RSS *lastRSS;
+		Optional<Net::RSS> lastRSS;
 		UInt32 refreshSecond;
 		Data::Duration timeout;
 
-		Sync::Event *threadEvt;
+		Sync::Event threadEvt;
 		Bool threadRunning;
 		Bool threadToStop;
 
 		static UInt32 __stdcall RSSThread(AnyType userObj);
 	public:
-		RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, RSSHandler *hdlr, Data::Duration timeout, NN<IO::LogTool> log);
+		RSSReader(Text::CStringNN url, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, NN<RSSHandler> hdlr, Data::Duration timeout, NN<IO::LogTool> log);
 		~RSSReader();
 
 		Bool IsError();

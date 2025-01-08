@@ -45,5 +45,5 @@ namespace Net
 		Bool SendPacket(UInt8 *buff, OSInt buffSize, Int32 cmdType, Int32 seqId);
 		Bool SendPacket(UInt8 *buff, OSInt buffSize);
 	};
-};
+}
 #endif

@@ -6,6 +6,7 @@
 #include "Map/WebImageLayer.h"
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ImageList.h"
+#include "Media/ImagePreviewTool.h"
 #include "Media/StaticImage.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/RWMutexUsage.h"
@@ -133,7 +134,9 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 				{
 					simg->MultiplyAlpha(stat->alpha);
 				}
-				NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
+				Data::ArrayListNN<Media::StaticImage> prevList;
+				Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
+				NEW_CLASS(stat->simg, Media::SharedImage(imgList, prevList));
 				Sync::RWMutexUsage loadedMutUsage(this->loadedMut, true);
 				this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
 				loadedMutUsage.EndUse();
@@ -191,7 +194,9 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 						{
 							simg->MultiplyAlpha(stat->alpha);
 						}
-						NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
+						Data::ArrayListNN<Media::StaticImage> prevList;
+						Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
+						NEW_CLASS(stat->simg, Media::SharedImage(imgList, prevList));
 						Sync::RWMutexUsage loadedMutUsage(me->loadedMut, true);
 						me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
 						loadedMutUsage.EndUse();

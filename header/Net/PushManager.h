@@ -22,10 +22,10 @@ namespace Net
 		struct DeviceInfo2
 		{
 			NN<Text::String> token;
-			Text::String *userName;
+			NN<Text::String> userName;
 			DeviceType devType;
 			Net::SocketUtil::AddressInfo subscribeAddr;
-			Text::String *devModel;
+			Optional<Text::String> devModel;
 			Data::Timestamp lastSubscribeTime;
 		};
 

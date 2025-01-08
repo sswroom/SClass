@@ -39,7 +39,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 					mutUsage.BeginUse();
 					if (me->dispId == thisId)
 					{
-						NEW_CLASS(me->dispImage, Media::SharedImage(imgList, false));
+						NEW_CLASS(me->dispImage, Media::SharedImage(imgList, 0));
 						me->dispImageURL = Text::String::New(sb.ToCString()).Ptr();
 						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
@@ -57,7 +57,7 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 						me->lastBounds = bounds;
 						me->lastSize = size;
 						me->lastDPI = dpi;
-						NEW_CLASS(me->lastImage, Media::SharedImage(imgList, false));
+						NEW_CLASS(me->lastImage, Media::SharedImage(imgList, 0));
 						me->lastImageURL = Text::String::New(sb.ToCString()).Ptr();
 						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();

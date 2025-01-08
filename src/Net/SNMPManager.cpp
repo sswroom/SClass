@@ -14,7 +14,7 @@ void Net::SNMPManager::FreeAllItems(NN<Data::ArrayListNN<Net::SNMPUtil::BindingI
 
 Net::SNMPManager::SNMPManager(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
-	NEW_CLASS(this->cli, Net::SNMPClient(sockf, log));
+	NEW_CLASSNN(this->cli, Net::SNMPClient(sockf, log));
 }
 
 Net::SNMPManager::~SNMPManager()
@@ -23,7 +23,7 @@ Net::SNMPManager::~SNMPManager()
 	UOSInt j;
 	NN<AgentInfo> agent;
 	NN<ReadingInfo> reading;
-	DEL_CLASS(this->cli);
+	this->cli.Delete();
 	i = this->agentList.GetCount();
 	while (i-- > 0)
 	{

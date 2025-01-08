@@ -2642,6 +2642,8 @@ Media/ImageGenerator.h:
 @ImageGenerator.o
 Media/ImageList.h:
 @ImageList.o
+Media/ImagePreviewTool.h:
+@ImagePreviewTool.o
 Media/ImageTo8Bit.h:
 @ImageTo8Bit.o
 @ImageTo8Bit_CPP.o

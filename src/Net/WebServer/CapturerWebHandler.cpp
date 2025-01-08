@@ -14,17 +14,18 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	Text::StringBuilderUTF8 sb;
+	NN<Net::WiFiCapturer> wifiCapture;
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
-	if (me->wifiCapture)
+	if (me->wifiCapture.SetTo(wifiCapture))
 	{
-		Data::Timestamp lastScanTime = me->wifiCapture->GetLastScanTime().ToLocalTime();
+		Data::Timestamp lastScanTime = wifiCapture->GetLastScanTime().ToLocalTime();
 		sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
 		sb.AppendTSNoZone(lastScanTime);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		Sync::MutexUsage mutUsage;
-		NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = me->wifiCapture->GetLogList(mutUsage);
+		NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = wifiCapture->GetLogList(mutUsage);
 		sb.AppendC(UTF8STRC("<a href=\"wifidet.html\">"));
 		sb.AppendC(UTF8STRC("Wifi Record count = "));
 		sb.AppendUOSInt(logList->GetCount());
@@ -43,18 +44,19 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 		sb.AppendUOSInt(j);
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
 	}
-	if (me->btCapture)
+	NN<IO::BTCapturer> btCapture;
+	if (me->btCapture.SetTo(btCapture))
 	{
 		Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		Sync::MutexUsage mutUsage;
 		NN<IO::BTScanLog::ScanRecord3> entry;
 		Data::ArrayListNN<IO::BTScanLog::ScanRecord3> logList;
-		logList.AddAll(me->btCapture->GetPublicList(mutUsage));
+		logList.AddAll(btCapture->GetPublicList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdetpub.html\">"));
 		sb.AppendC(UTF8STRC("BT Public count = "));
 		sb.AppendUOSInt(logList.GetCount());
 		sb.AppendC(UTF8STRC("</a><br/>\r\n"));
-		logList.AddAll(me->btCapture->GetRandomList(mutUsage));
+		logList.AddAll(btCapture->GetRandomList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdet.html\">"));
 		sb.AppendC(UTF8STRC("BT Total count = "));
 		sb.AppendUOSInt(logList.GetCount());
@@ -97,7 +99,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::
 Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
-	if (me->btCapture == 0)
+	NN<IO::BTCapturer> btCapture;
+	if (!me->btCapture.SetTo(btCapture))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
@@ -106,8 +109,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NN<Net::WebServ
 	Data::ArrayListNN<IO::BTScanLog::ScanRecord3> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList.AddAll(me->btCapture->GetPublicList(mutUsage));
-	entryList.AddAll(me->btCapture->GetRandomList(mutUsage));
+	entryList.AddAll(btCapture->GetPublicList(mutUsage));
+	entryList.AddAll(btCapture->GetRandomList(mutUsage));
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"refresh\" content=\"10\">\r\n"));
@@ -129,7 +132,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NN<Net::WebServ
 Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
-	if (me->btCapture == 0)
+	NN<IO::BTCapturer> btCapture;
+	if (!me->btCapture.SetTo(btCapture))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
@@ -138,8 +142,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServe
 	Data::ArrayListNN<IO::BTScanLog::ScanRecord3> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList.AddAll(me->btCapture->GetPublicList(mutUsage));
-	entryList.AddAll(me->btCapture->GetRandomList(mutUsage));
+	entryList.AddAll(btCapture->GetPublicList(mutUsage));
+	entryList.AddAll(btCapture->GetRandomList(mutUsage));
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
@@ -162,7 +166,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServe
 Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
-	if (me->btCapture == 0)
+	NN<IO::BTCapturer> btCapture;
+	if (!me->btCapture.SetTo(btCapture))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
@@ -171,7 +176,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebSe
 	NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList = me->btCapture->GetPublicList(mutUsage);
+	entryList = btCapture->GetPublicList(mutUsage);
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
@@ -193,7 +198,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebSe
 Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
-	if (me->wifiCapture == 0)
+	NN<Net::WiFiCapturer> wifiCapture;
+	if (!me->wifiCapture.SetTo(wifiCapture))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
@@ -202,13 +208,13 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NN<Net::WebSe
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList = me->wifiCapture->GetLogList(mutUsage);
+	entryList = wifiCapture->GetLogList(mutUsage);
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"refresh\" content=\"10\">\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("<h2>Current WiFi List</h2>\r\n"));
-	Data::Timestamp lastScanTime = me->wifiCapture->GetLastScanTime().ToLocalTime();
+	Data::Timestamp lastScanTime = wifiCapture->GetLastScanTime().ToLocalTime();
 	sb.AppendC(UTF8STRC("Wifi Last Scan Time = "));
 	sb.AppendTSNoZone(lastScanTime);
 	sb.AppendC(UTF8STRC("<br/>\r\n"));
@@ -227,7 +233,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NN<Net::WebSe
 Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
-	if (me->wifiCapture == 0)
+	NN<Net::WiFiCapturer> wifiCapture;
+	if (!me->wifiCapture.SetTo(wifiCapture))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
@@ -236,7 +243,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebSer
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 
 	Sync::MutexUsage mutUsage;
-	entryList = me->wifiCapture->GetLogList(mutUsage);
+	entryList = wifiCapture->GetLogList(mutUsage);
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
@@ -259,7 +266,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebSer
 Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
-	if (me->wifiCapture == 0)
+	NN<Net::WiFiCapturer> wifiCapture;
+	if (!me->wifiCapture.SetTo(wifiCapture))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
@@ -272,7 +280,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	Sync::MutexUsage mutUsage;
-	entryList = me->wifiCapture->GetLogList(mutUsage);
+	entryList = wifiCapture->GetLogList(mutUsage);
 	i = 0;
 	j = entryList->GetCount();
 	while (i < j)
@@ -594,7 +602,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTSc
 	}
 }
 
-Net::WebServer::CapturerWebHandler::CapturerWebHandler(Net::WiFiCapturer *wifiCapture, IO::BTCapturer *btCapture, IO::RadioSignalLogger *radioLogger)
+Net::WebServer::CapturerWebHandler::CapturerWebHandler(Optional<Net::WiFiCapturer> wifiCapture, Optional<IO::BTCapturer> btCapture, IO::RadioSignalLogger *radioLogger)
 {
 	this->wifiCapture = wifiCapture;
 	this->btCapture = btCapture;

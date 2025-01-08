@@ -1399,7 +1399,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 												img->MultiplyColor(style->iconColor);
 										}
 									}
-									NEW_CLASS(style->img, Media::SharedImage(imgList, false));
+									NEW_CLASS(style->img, Media::SharedImage(imgList, 0));
 								}
 								nnfd.Delete();
 							}
