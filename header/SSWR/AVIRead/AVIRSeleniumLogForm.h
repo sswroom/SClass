@@ -38,7 +38,7 @@ namespace SSWR
 			void OpenDir(Text::CStringNN dir);
 			void OpenPackage(NN<IO::PackageFile> pkg);
 			void ClearItems();
-			static void FreeItem(NN<LogItem> item);
+			static void __stdcall FreeItem(NN<LogItem> item);
 		public:
 			AVIRSeleniumLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSeleniumLogForm();

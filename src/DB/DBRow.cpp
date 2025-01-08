@@ -3,7 +3,7 @@
 #include "DB/DBRow.h"
 #include "Math/WKTWriter.h"
 
-void DB::DBRow::FreeField(NN<DB::DBRow::Field> field)
+void __stdcall DB::DBRow::FreeField(NN<DB::DBRow::Field> field)
 {
 	DataType dtype = GetDataType(field);
 	if (dtype == DT_STRING)

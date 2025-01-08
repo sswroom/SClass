@@ -46,7 +46,7 @@ Bool IO::GSMModemController::GetSMSFormat(OutParam<SMSFormat> smsFormat)
 	}
 }
 
-void IO::GSMModemController::FreeOperator(NN<Operator> oper)
+void __stdcall IO::GSMModemController::FreeOperator(NN<Operator> oper)
 {
 	oper->longName->Release();
 	oper->shortName->Release();
@@ -984,7 +984,7 @@ void IO::GSMModemController::SMSFreeMessages(NN<Data::ArrayListNN<SMSMessage>> m
 	msgList->FreeAll(SMSFreeMessage);
 }
 
-void IO::GSMModemController::SMSFreeMessage(NN<SMSMessage> msg)
+void __stdcall IO::GSMModemController::SMSFreeMessage(NN<SMSMessage> msg)
 {
 	MemFree(msg->pduMessage);
 	MemFreeNN(msg);
@@ -1390,7 +1390,7 @@ Bool IO::GSMModemController::PBReadAllEntries(NN<Data::ArrayListNN<PBEntry>> pho
 	return PBReadEntries(phoneList, startEntry, endEntry);
 }
 
-void IO::GSMModemController::PBFreeEntry(NN<PBEntry> entry)
+void __stdcall IO::GSMModemController::PBFreeEntry(NN<PBEntry> entry)
 {
 	entry->name->Release();
 	entry->number->Release();

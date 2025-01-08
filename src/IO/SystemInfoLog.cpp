@@ -2,14 +2,14 @@
 #include "IO/SystemInfoLog.h"
 #include "Text/MyString.h"
 
-void IO::SystemInfoLog::FreeServerRole(NN<ServerRole> serverRole)
+void __stdcall IO::SystemInfoLog::FreeServerRole(NN<ServerRole> serverRole)
 {
 	SDEL_TEXT(serverRole->name);
 	SDEL_TEXT(serverRole->data);
 	MemFreeNN(serverRole);
 }
 
-void IO::SystemInfoLog::FreeDeviceInfo(NN<DeviceInfo> deviceInfo)
+void __stdcall IO::SystemInfoLog::FreeDeviceInfo(NN<DeviceInfo> deviceInfo)
 {
 	deviceInfo->desc->Release();
 	deviceInfo->hwId->Release();
@@ -18,7 +18,7 @@ void IO::SystemInfoLog::FreeDeviceInfo(NN<DeviceInfo> deviceInfo)
 	MemFreeNN(deviceInfo);
 }
 
-void IO::SystemInfoLog::FreeDriverInfo(NN<DriverInfo> driverInfo)
+void __stdcall IO::SystemInfoLog::FreeDriverInfo(NN<DriverInfo> driverInfo)
 {
 	driverInfo->fileName->Release();
 	OPTSTR_DEL(driverInfo->creationDate);

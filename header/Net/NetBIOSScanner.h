@@ -35,7 +35,7 @@ namespace Net
 		Data::CallbackStorage<AnswerUpdated> hdlr;
 
 		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData);
-		static void FreeAnswer(NN<NameAnswer> ans);
+		static void __stdcall FreeAnswer(NN<NameAnswer> ans);
 	public:
 		NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 		~NetBIOSScanner();

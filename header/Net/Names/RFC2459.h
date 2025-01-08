@@ -9,9 +9,9 @@ namespace Net
 		class RFC2459
 		{
 		public:
-			static void AuthorityInfoAccessSyntax(NN<ASN1Names> names);
-			static void AuthorityInfoAccessSyntaxCont(NN<ASN1Names> names);
-			static void AccessDescriptionCont(NN<ASN1Names> names);
+			static void __stdcall AuthorityInfoAccessSyntax(NN<ASN1Names> names);
+			static void __stdcall AuthorityInfoAccessSyntaxCont(NN<ASN1Names> names);
+			static void __stdcall AccessDescriptionCont(NN<ASN1Names> names);
 		};
 	}
 }

@@ -639,7 +639,7 @@ void Net::DNSClient::FreeAnswers(NN<Data::ArrayListNN<RequestAnswer>> answers)
 	answers->FreeAll(FreeAnswer);
 }
 
-void Net::DNSClient::FreeAnswer(NN<RequestAnswer> ans)
+void __stdcall Net::DNSClient::FreeAnswer(NN<RequestAnswer> ans)
 {
 	ans->name->Release();;
 	SDEL_STRING(ans->rd);

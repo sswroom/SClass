@@ -16,7 +16,8 @@ DB/ODBCConn.h:
 DB/PostgreSQLConn.h:
 @PostgreSQLConn.o
 DB/TDSConn.h:
-@TDSConn.o
+@?(NO_TDS == 0)TDSConn.o
+@?(NO_TDS > 0)TDSConn_Null.o
 
 Exporter/HEIFExporter.h:
 @?(NO_HEIF == 0)HEIFExporter.o

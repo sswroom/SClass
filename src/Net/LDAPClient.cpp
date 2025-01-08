@@ -735,12 +735,12 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	return valid;
 }
 
-void Net::LDAPClient::SearchResultsFree(NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
+void __stdcall Net::LDAPClient::SearchResultsFree(NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
 {
 	results->FreeAll(SearchResObjectFree);
 }
 
-void Net::LDAPClient::SearchResObjectFree(NN<Net::LDAPClient::SearchResObject> obj)
+void __stdcall Net::LDAPClient::SearchResObjectFree(NN<Net::LDAPClient::SearchResObject> obj)
 {
 	obj->name->Release();
 	NN<Data::ArrayListNN<SearchResItem>> items;

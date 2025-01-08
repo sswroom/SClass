@@ -12,7 +12,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-void Media::ProfiledResizer::ReleaseProfile(NN<Media::ProfiledResizer::ResizeProfile> profile)
+void __stdcall Media::ProfiledResizer::ReleaseProfile(NN<Media::ProfiledResizer::ResizeProfile> profile)
 {
 	profile->profileName->Release();
 	profile->suffix->Release();

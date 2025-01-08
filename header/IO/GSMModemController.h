@@ -207,7 +207,7 @@ namespace IO
 		Bool SetSMSFormat(SMSFormat smsFormat);
 		Bool GetSMSFormat(OutParam<SMSFormat> smsFormat);
 
-		static void FreeOperator(NN<Operator> oper);
+		static void __stdcall FreeOperator(NN<Operator> oper);
 
 	public:
 		GSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);
@@ -254,7 +254,7 @@ namespace IO
 		// SMS Commands
 		Bool SMSListMessages(NN<Data::ArrayListNN<SMSMessage>> msgList, SMSStatus status);
 		void SMSFreeMessages(NN<Data::ArrayListNN<SMSMessage>> msgList);
-		static void SMSFreeMessage(NN<SMSMessage> msg);
+		static void __stdcall SMSFreeMessage(NN<SMSMessage> msg);
 		Bool SMSDeleteMessage(Int32 index);
 		Bool SMSSendMessage(NN<Text::SMSMessage> msg);
 		Bool SMSSetStorage(SMSStorage reading, SMSStorage writing, SMSStorage store);
@@ -269,7 +269,7 @@ namespace IO
 		Bool PBGetStorageStatus(OptOut<Int32> startEntry, OptOut<Int32> endEntry, OptOut<Int32> maxNumberLen, OptOut<Int32> maxTextLen);
 		Bool PBReadEntries(NN<Data::ArrayListNN<PBEntry>> phoneList, Int32 startEntry, Int32 endEntry);
 		Bool PBReadAllEntries(NN<Data::ArrayListNN<PBEntry>> phoneList);
-		static void PBFreeEntry(NN<PBEntry> entry);
+		static void __stdcall PBFreeEntry(NN<PBEntry> entry);
 		void PBFreeEntries(NN<Data::ArrayListNN<PBEntry>> phoneList);
 
 	public:

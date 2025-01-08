@@ -134,6 +134,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 #endif
 	heif_decoding_options_free(options);
 
+#if LIBHEIF_HAVE_VERSION(1, 4, 0)
 	if (simg)
 	{
 		heif_color_profile_type cpType = heif_image_handle_get_color_profile_type(imgHdlr);
@@ -351,8 +352,9 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		default:
 			break;
 		}
-
 	}
+#endif
+
 	heif_item_id metaIds[32];
 	int n = heif_image_handle_get_list_of_metadata_block_IDs(imgHdlr, 0, metaIds, 32);
 	if (simg && n > 0)
@@ -492,6 +494,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 			xmf.Set(0);
 			icc.Set(0);
 			exif.Set(0);
+#if LIBHEIF_HAVE_VERSION(1, 4, 0)
 			width.Set((UInt32)heif_image_handle_get_ispe_width(imgHdlr));
 			height.Set((UInt32)heif_image_handle_get_ispe_height(imgHdlr));
 
@@ -516,7 +519,10 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 			default:
 				break;
 			}
-
+#else
+			width.Set((UInt32)heif_image_handle_get_width(imgHdlr));
+			height.Set((UInt32)heif_image_handle_get_height(imgHdlr));
+#endif
 			heif_item_id metaIds[32];
 			int n = heif_image_handle_get_list_of_metadata_block_IDs(imgHdlr, 0, metaIds, 32);
 			if (n > 0)

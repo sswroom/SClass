@@ -80,7 +80,7 @@ namespace SSWR
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
 
-			static void FreeLayer(NN<LineLayer> lyr);
+			static void __stdcall FreeLayer(NN<LineLayer> lyr);
 		public:
 			AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineEditForm();

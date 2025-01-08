@@ -1272,9 +1272,9 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 		}
 		if (nextOfst > currOfst)
 		{
-			j = enc.CountWChars(&rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst));
+			j = enc.CountWChars(&rbuff[(UOSInt)(currOfst - startOfst)], (UOSInt)(nextOfst - currOfst));
 			line = MemAlloc(WChar, j + 1);
-			wptr = enc.WFromBytes(line, &rbuff[currOfst - startOfst], (UOSInt)(nextOfst - currOfst), 0);
+			wptr = enc.WFromBytes(line, &rbuff[(UOSInt)(currOfst - startOfst)], (UOSInt)(nextOfst - currOfst), 0);
 			Text::StrReplaceW(line, '\t', ' ');
 			if (wptr[-1] == 13)
 			{

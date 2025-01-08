@@ -46,7 +46,7 @@ namespace Net
 
 		static Text::CStringNN TypeGetName(UInt8 type);
 		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, OutParam<Int32> outVal);
-		static void FreeBindingItem(NN<BindingItem> item);
+		static void __stdcall FreeBindingItem(NN<BindingItem> item);
 		static Text::CStringNN ErrorStatusToString(ErrorStatus err);
 	};
 }

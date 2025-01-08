@@ -53,7 +53,7 @@ namespace Media
 		Media::Batch::BatchWatermarker *watermarker;
 		Media::Batch::BatchSaver *saver;
 
-		static void ReleaseProfile(NN<ResizeProfile> profile);
+		static void __stdcall ReleaseProfile(NN<ResizeProfile> profile);
 	public:
 		ProfiledResizer(NN<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NN<Media::DrawEngine> deng);
 		~ProfiledResizer();

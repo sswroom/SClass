@@ -9,7 +9,7 @@ namespace Data
 	template <class T> class SyncArrayListNN : public ReadingListNN<T>
 	{
 	public:
-		typedef void (*FreeFunc)(NN<T> v);
+		typedef void (__stdcall *FreeFunc)(NN<T> v);
 	private:
 		Data::ArrayListNN<T> arr;
 		Sync::Mutex mut;

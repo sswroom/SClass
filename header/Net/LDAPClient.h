@@ -78,8 +78,8 @@ namespace Net
 
 		Bool Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, UnsafeArrayOpt<const UTF8Char> filter, NN<Data::ArrayListNN<SearchResObject>> results);
 
-		static void SearchResultsFree(NN<Data::ArrayListNN<SearchResObject>> results);
-		static void SearchResObjectFree(NN<SearchResObject> obj);
+		static void __stdcall SearchResultsFree(NN<Data::ArrayListNN<SearchResObject>> results);
+		static void __stdcall SearchResObjectFree(NN<SearchResObject> obj);
 		static void SearchResDisplay(Text::CStringNN type, Text::CStringNN value, NN<Text::StringBuilderUTF8> sb);
 	};
 }

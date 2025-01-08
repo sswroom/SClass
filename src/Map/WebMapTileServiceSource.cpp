@@ -565,7 +565,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrix> Map::WebMapTileServiceSource:
 	return currSet->tiles.GetItem(level);
 }
 
-void Map::WebMapTileServiceSource::ReleaseLayer(NN<TileLayer> layer)
+void __stdcall Map::WebMapTileServiceSource::ReleaseLayer(NN<TileLayer> layer)
 {
 	OPTSTR_DEL(layer->id);
 	OPTSTR_DEL(layer->title);
@@ -576,13 +576,13 @@ void Map::WebMapTileServiceSource::ReleaseLayer(NN<TileLayer> layer)
 	layer.Delete();
 }
 
-void Map::WebMapTileServiceSource::ReleaseTileMatrix(NN<TileMatrix> tileMatrix)
+void __stdcall Map::WebMapTileServiceSource::ReleaseTileMatrix(NN<TileMatrix> tileMatrix)
 {
 	tileMatrix->id->Release();
 	MemFreeNN(tileMatrix);
 }
 
-void Map::WebMapTileServiceSource::ReleaseTileMatrixSet(NN<TileMatrixSet> set)
+void __stdcall Map::WebMapTileServiceSource::ReleaseTileMatrixSet(NN<TileMatrixSet> set)
 {
 	set->id->Release();
 	set->csys.Delete();
@@ -590,13 +590,13 @@ void Map::WebMapTileServiceSource::ReleaseTileMatrixSet(NN<TileMatrixSet> set)
 	set.Delete();
 }
 
-void Map::WebMapTileServiceSource::ReleaseTileMatrixDef(NN<TileMatrixDef> tileMatrix)
+void __stdcall Map::WebMapTileServiceSource::ReleaseTileMatrixDef(NN<TileMatrixDef> tileMatrix)
 {
 	tileMatrix->id->Release();
 	MemFreeNN(tileMatrix);
 }
 
-void Map::WebMapTileServiceSource::ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set)
+void __stdcall Map::WebMapTileServiceSource::ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set)
 {
 	set->id->Release();
 	set->csys.Delete();
@@ -604,7 +604,7 @@ void Map::WebMapTileServiceSource::ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> 
 	set.Delete();
 }
 
-void Map::WebMapTileServiceSource::ReleaseResourceURL(NN<ResourceURL> resourceURL)
+void __stdcall Map::WebMapTileServiceSource::ReleaseResourceURL(NN<ResourceURL> resourceURL)
 {
 	resourceURL->templateURL->Release();
 	resourceURL->format->Release();

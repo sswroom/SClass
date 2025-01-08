@@ -27,7 +27,7 @@ namespace IO
 			Sync::Thread thread;
 
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			static void FreePackInfo(NN<PackInfo> pack);
+			static void __stdcall FreePackInfo(NN<PackInfo> pack);
 
 			static UOSInt AppendExtension(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng);
 		public:

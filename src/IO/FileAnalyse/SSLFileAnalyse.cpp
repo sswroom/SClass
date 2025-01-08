@@ -38,7 +38,7 @@ void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NN<Sync::Thread> thr
 	}
 }
 
-void IO::FileAnalyse::SSLFileAnalyse::FreePackInfo(NN<PackInfo> pack)
+void __stdcall IO::FileAnalyse::SSLFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 {
 	MemFreeNN(pack);
 }

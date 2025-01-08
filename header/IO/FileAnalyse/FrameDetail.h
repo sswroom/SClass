@@ -38,7 +38,7 @@ namespace IO
 			Data::ArrayListStringNN headers;
 			Data::ArrayListNN<FieldInfo> fields;
 			
-			static void FreeFieldInfo(NN<FieldInfo> field);
+			static void __stdcall FreeFieldInfo(NN<FieldInfo> field);
 			void AddFieldInfo(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value, FieldType fieldType);
 		public:
 			FrameDetail(UInt64 ofst, UInt64 size);

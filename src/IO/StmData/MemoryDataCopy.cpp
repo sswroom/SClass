@@ -58,7 +58,7 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, Da
 	}
 	if (length > 0)
 	{
-		buffer.CopyFrom(Data::ByteArrayR(&this->data[offset], length));
+		buffer.CopyFrom(Data::ByteArrayR(&this->data[(UOSInt)offset], length));
 	}
 	return length;
 }
@@ -114,7 +114,7 @@ NN<IO::StreamData> IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UI
 	{
 		length = this->dataLength - offset;
 	}
-	NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[offset], (UOSInt)length));
+	NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, &this->data[(UOSInt)offset], (UOSInt)length));
 	return data;
 }
 

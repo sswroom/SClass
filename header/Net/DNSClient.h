@@ -60,7 +60,7 @@ namespace Net
 		static UOSInt ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers);
 		static NN<RequestAnswer> ParseAnswer(UnsafeArray<const UInt8> buff, UOSInt dataSize, InOutParam<UOSInt> index);
 		static void FreeAnswers(NN<Data::ArrayListNN<RequestAnswer>> answers);
-		static void FreeAnswer(NN<RequestAnswer> answer);
+		static void __stdcall FreeAnswer(NN<RequestAnswer> answer);
 		static UInt32 GetResponseTTL(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		static UOSInt SkipString(UnsafeArray<const UInt8> buff, UOSInt stringOfst, UOSInt endOfst);
 		static Text::CString TypeGetID(UInt16 type);

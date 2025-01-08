@@ -26,7 +26,7 @@ namespace IO
 		Data::FastMapNN<UInt64, DevEntry> randDevs;
 
 		static Bool IsDefaultName(NN<Text::String> name);
-		static void FreeDev(NN<DevEntry> dev);
+		static void __stdcall FreeDev(NN<DevEntry> dev);
 	public:
 		BTDevLog();
 		~BTDevLog();

@@ -88,7 +88,7 @@ namespace IO
 		Data::FastMapNN<UInt64, DevEntry> randDevs;
 		Data::ArrayListNN<LogEntry> logs;
 
-		static void FreeDev(NN<DevEntry> dev);
+		static void __stdcall FreeDev(NN<DevEntry> dev);
 	public:
 		BTScanLog(NN<Text::String> sourceName);
 		virtual ~BTScanLog();

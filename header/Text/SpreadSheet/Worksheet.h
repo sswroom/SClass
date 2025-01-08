@@ -92,7 +92,7 @@ namespace Text
 			void FreeCellData(NN<CellData> data);
 			NN<RowData> CloneRow(NN<RowData> row, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
 			NN<CellData> CloneCell(NN<CellData> cell, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
-			static void FreeDrawing(NN<WorksheetDrawing> drawing);
+			static void __stdcall FreeDrawing(NN<WorksheetDrawing> drawing);
 		public:
 			Worksheet(NotNullPtr<Text::String> name);
 			Worksheet(Text::CStringNN name);

@@ -12,6 +12,7 @@ Manage/CPUInfoDetail.h:
 @CPUInfoDetailx86.o
 Manage/Dasm.h:
 Manage/DasmARM.h:
+Manage/DasmARM64.h:
 Manage/DasmX86_32.h:
 @DasmX86_32.o
 Manage/DasmX86_64.h:

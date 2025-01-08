@@ -171,6 +171,7 @@ public:
 						printf("TDS: Error in binding datetime of column %d\r\n", (UInt32)i);
 					}
 					break;
+#if defined(SYBMSDATE)
 				case SYBMSDATE:
 				case SYBMSTIME:
 				case SYBMSDATETIME2:
@@ -181,6 +182,7 @@ public:
 						printf("TDS: Error in binding msdatetime2 of column %d\r\n", (UInt32)i);
 					}
 					break;
+#endif
 				case SYBUUID:
 					this->cols[i].buffSize = 0;
 					this->cols[i].buff = 0;
@@ -312,12 +314,16 @@ public:
 		case SYBFLT8:
 			sb->AppendDouble(ReadDouble(&this->cols[colIndex].buff[0]));
 			return true;
+#if defined(SYBMSDATE)
 		case SYBMSDATE:
 			sb->AppendDate(this->GetDate(colIndex));
 			return true;
-		case SYBDATETIME:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
+			sb->AppendTSNoZone(this->GetTimestamp(colIndex));
+			return true;
+#endif
+		case SYBDATETIME:
 			sb->AppendTSNoZone(this->GetTimestamp(colIndex));
 			return true;
 		case SYBGEOMETRY:
@@ -385,10 +391,12 @@ public:
 		case SYBFLT8:
 			sptr = Text::StrDouble(sbuff, ReadDouble(&this->cols[colIndex].buff[0]));
 			return Text::String::NewP(sbuff, sptr);
-		case SYBDATETIME:
+#if defined(SYBMSDATE)
 		case SYBMSDATE:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
+#endif
+		case SYBDATETIME:
 			sptr = this->GetTimestamp(colIndex).ToString(sbuff);
 			return Text::String::NewP(sbuff, sptr);
 		case SYBGEOMETRY:
@@ -452,10 +460,12 @@ public:
 		case SYBNUMERIC:
 		case SYBFLT8:
 			return Text::StrDouble(buff, ReadDouble(&this->cols[colIndex].buff[0]));
-		case SYBDATETIME:
+#if defined(SYBMSDATE)
 		case SYBMSDATE:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
+#endif
+		case SYBDATETIME:
 			return this->GetTimestamp(colIndex).ToString(buff);
 		case SYBUUID:
 		{
@@ -488,6 +498,7 @@ public:
 			t = (t % 300) * 10000000 / 3;
 			return Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr);
 		}
+#if defined(SYBMSDATE)
 		else if (this->cols[colIndex].type == SYBMSDATETIME2 || this->cols[colIndex].type == SYBMSDATE || this->cols[colIndex].type == SYBMSTIME || this->cols[colIndex].type == SYBMSDATETIMEOFFSET)
 		{
 			DBDATETIMEALL *t = (DBDATETIMEALL *)this->cols[colIndex].buff;
@@ -501,6 +512,7 @@ public:
 				tzQhr = this->tzQhr;
 			return Data::Timestamp(Data::TimeInstant(secs - tzQhr * 900, ns), tzQhr);
 		}
+#endif
 		else
 		{
 
@@ -626,6 +638,7 @@ public:
 			item->SetDate(Data::Timestamp(Data::TimeInstant(secs - this->tzQhr * 900, t), this->tzQhr));
 			return true;
 		}
+#if defined(SYBMSDATE)
 		case SYBMSDATE:
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
@@ -642,6 +655,7 @@ public:
 			item->SetDate(Data::Timestamp(Data::TimeInstant(secs - tzQhr * 900, ns), tzQhr));
 			return true;
 		}
+#endif
 		case SYBTEXT:
 		case SYBCHAR:
 		{
@@ -716,11 +730,13 @@ public:
 			return DB::DBUtil::ColType::CT_Int64;
 		case SYBDATETIME:
 			return DB::DBUtil::ColType::CT_DateTime;
+#if defined(SYBMSDATE)
 		case SYBMSDATE:
 			return DB::DBUtil::ColType::CT_Date;
 		case SYBMSTIME:
 		case SYBMSDATETIME2:
 			return DB::DBUtil::ColType::CT_DateTimeTZ;
+#endif
 		case SYBREAL:
 			return DB::DBUtil::ColType::CT_Float;
 		case SYBFLT8:

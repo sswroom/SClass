@@ -94,12 +94,12 @@ namespace Map
 		Optional<TileMatrixSet> ReadTileMatrixSetLink(NN<Text::XMLReader> reader);
 		Optional<TileMatrixDefSet> ReadTileMatrixSet(NN<Text::XMLReader> reader);
 		Optional<TileMatrix> GetTileMatrix(UOSInt level) const;
-		static void ReleaseLayer(NN<TileLayer> layer);
-		static void ReleaseTileMatrix(NN<TileMatrix> tileMatrix);
-		static void ReleaseTileMatrixSet(NN<TileMatrixSet> set);
-		static void ReleaseTileMatrixDef(NN<TileMatrixDef> tileMatrix);
-		static void ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set);
-		static void ReleaseResourceURL(NN<ResourceURL> resourceURL);
+		static void __stdcall ReleaseLayer(NN<TileLayer> layer);
+		static void __stdcall ReleaseTileMatrix(NN<TileMatrix> tileMatrix);
+		static void __stdcall ReleaseTileMatrixSet(NN<TileMatrixSet> set);
+		static void __stdcall ReleaseTileMatrixDef(NN<TileMatrixDef> tileMatrix);
+		static void __stdcall ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set);
+		static void __stdcall ReleaseResourceURL(NN<ResourceURL> resourceURL);
 	public:
 		WebMapTileServiceSource(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN wmtsURL);
 		virtual ~WebMapTileServiceSource();

@@ -8,7 +8,7 @@ namespace Data
 	template <class T, class V> class ListMapNN : public DataMapNN<T, V>, public ReadingListNN<V>
 	{
 	public:
-		typedef void (*FreeFunc)(NN<V> v);
+		typedef void (__stdcall *FreeFunc)(NN<V> v);
 	public:
 		virtual ~ListMapNN() {};
 

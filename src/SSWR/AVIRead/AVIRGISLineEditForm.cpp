@@ -267,7 +267,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::CancelClicked(AnyType userObj
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::FreeLayer(NN<LineLayer> lyr)
+void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::FreeLayer(NN<LineLayer> lyr)
 {
 	if (lyr->pattern)
 	{

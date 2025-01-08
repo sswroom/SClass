@@ -41,7 +41,7 @@ namespace Map
 
 		void LoadParkingInfo();
 		void LoadVacancy();
-		static void ParkingInfoFree(NN<ParkingInfo> parking);
+		static void __stdcall ParkingInfoFree(NN<ParkingInfo> parking);
 	public:
 		HKParkingVacancy(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		virtual ~HKParkingVacancy();

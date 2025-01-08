@@ -45,7 +45,7 @@ namespace DB
 		NN<TableDef> table;
 		Data::StringMapNN<Field> dataMap;
 
-		static void FreeField(NN<Field> field);
+		static void __stdcall FreeField(NN<Field> field);
 		static DataType GetDataType(NN<Field> field);
 
 		Bool SetFieldNull(NN<Field> field);

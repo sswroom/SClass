@@ -9,9 +9,9 @@ namespace Net
 		class General
 		{
 		public:
-			static void PBEParam(NN<ASN1Names> names);
-			static void ExtendedValidationCertificates(NN<ASN1Names> names); //GoDaddy
-			static void AttributeOutlookExpress(NN<ASN1Names> names);
+			static void __stdcall PBEParam(NN<ASN1Names> names);
+			static void __stdcall ExtendedValidationCertificates(NN<ASN1Names> names); //GoDaddy
+			static void __stdcall AttributeOutlookExpress(NN<ASN1Names> names);
 		};
 	}
 }

@@ -7,7 +7,7 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Data::Class::FreeFieldInfo(NN<FieldInfo> field)
+void __stdcall Data::Class::FreeFieldInfo(NN<FieldInfo> field)
 {
 	field->name->Release();
 	OPTSTR_DEL(field->typeName);

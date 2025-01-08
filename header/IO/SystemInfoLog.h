@@ -43,9 +43,9 @@ namespace IO
 		Data::ArrayListNN<DeviceInfo> deviceInfos;
 		Data::ArrayListNN<DriverInfo> driverInfos;
 
-		static void FreeServerRole(NN<ServerRole> serverRole);
-		static void FreeDeviceInfo(NN<DeviceInfo> deviceInfo);
-		static void FreeDriverInfo(NN<DriverInfo> driverInfo);
+		static void __stdcall FreeServerRole(NN<ServerRole> serverRole);
+		static void __stdcall FreeDeviceInfo(NN<DeviceInfo> deviceInfo);
+		static void __stdcall FreeDriverInfo(NN<DriverInfo> driverInfo);
 	public:
 		SystemInfoLog(Text::CStringNN sourceName);
 		virtual ~SystemInfoLog();

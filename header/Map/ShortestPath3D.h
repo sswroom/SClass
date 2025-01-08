@@ -110,11 +110,11 @@ namespace Map
 		Optional<DB::TableDef> propDef;
 		NN<NodeInfo> unknownNode;
 
-		static void FreeLineInfo(NN<LineInfo> lineInfo);
-		static void FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }
-		static void FreeNodeInfo(NN<NodeInfo> nodeInfo) { nodeInfo.Delete(); }
-		static void FreeNodeSess(NN<NodeSession> nodeSess) { nodeSess.Delete(); }
-		static void FreeAreaSess(NN<AreaSession> areaSess) { areaSess->nodes.FreeAll(FreeNodeSess); areaSess.Delete(); }
+		static void __stdcall FreeLineInfo(NN<LineInfo> lineInfo);
+		static void __stdcall FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }
+		static void __stdcall FreeNodeInfo(NN<NodeInfo> nodeInfo) { nodeInfo.Delete(); }
+		static void __stdcall FreeNodeSess(NN<NodeSession> nodeSess) { nodeSess.Delete(); }
+		static void __stdcall FreeAreaSess(NN<AreaSession> areaSess) { areaSess->nodes.FreeAll(FreeNodeSess); areaSess.Delete(); }
 		static void AddAreaLines(NN<Data::ArrayListNN<LineInfo>> lines, NN<AreaInfo> areaInfo);
 		NN<AreaInfo> GetArea(Math::Coord2DDbl pos);
 		Optional<AreaInfo> GetAreaOpt(Math::Coord2DDbl pos) const;

@@ -19,7 +19,7 @@ namespace Media
 		NumPlateResult hdlr;
 		AnyType hdlrObj;
 
-		static void NumPlateArea(AnyType userObj, NN<Media::OpenCV::OCVFrame> filteredFrame, UnsafeArray<Math::Coord2D<UOSInt>> rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
+		static void __stdcall NumPlateArea(AnyType userObj, NN<Media::OpenCV::OCVFrame> filteredFrame, UnsafeArray<Math::Coord2D<UOSInt>> rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
 		static NN<Media::StaticImage> CreatePlainImage(UnsafeArray<UInt8> sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, UnsafeArray<Math::Coord2D<UOSInt>> rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
 		static NN<Media::StaticImage> CreatePlainImage(UnsafeArray<UInt8> sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
 	public:
