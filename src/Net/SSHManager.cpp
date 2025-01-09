@@ -181,7 +181,7 @@ Text::CStringNN Net::SSHManager::ErrorGetName(Int32 errorCode)
 		return CSTR("Encrypt");
 	case LIBSSH2_ERROR_BAD_SOCKET:
 		return CSTR("Bad Socket");
-	case LIBSSH2_ERROR_KNOWN_HOSTS:
+	case -46: //LIBSSH2_ERROR_KNOWN_HOSTS:
 		return CSTR("Known Hosts");
 	case -47: //LIBSSH2_ERROR_CHANNEL_WINDOW_FULL:
 		return CSTR("Channel Window Full");

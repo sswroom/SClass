@@ -2,6 +2,7 @@
 # NO_MINIZ := 1
 # NO_HEIF := 1
 # NO_SSH2 := 1
+# NO_WEBP := 1
 # NO_OPENJP2 := 1
 # NO_ZXING := 1
 # NO_TDS := 1

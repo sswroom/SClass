@@ -85,7 +85,7 @@ gboolean GUIDDrawControl_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointe
 		}
 		me->OnMouseDown(Math::Coord2D<OSInt>(Double2OSInt(evt->x), Double2OSInt(evt->y)), btn);
 	}
-	else if (evt->type == GDK_DOUBLE_BUTTON_PRESS)
+	else if (evt->type == GDK_2BUTTON_PRESS)
 	{
 		UI::GUIControl::MouseButton btn;
 		switch (evt->button)

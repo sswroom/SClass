@@ -23,7 +23,8 @@ Exporter/HEIFExporter.h:
 @?(NO_HEIF == 0)HEIFExporter.o
 @?(NO_HEIF > 0)HEIFExporter_Null.o
 Exporter/WebPExporter.h:
-@WebPExporter.o
+@?(NO_WEBP == 0)WebPExporter.o
+@?(NO_WEBP > 0)WebPExporter_Null.o
 
 IO/BTController.h:
 @BTControllerL.o
@@ -139,7 +140,8 @@ Parser/FileParser/JP2Parser.h:
 @?(NO_OPENJP2 == 0)JP2Parser.o
 @?(NO_OPENJP2 > 0)JP2Parser_Null.o
 Parser/FileParser/WebPParser.h:
-@WebPParser.o
+@?(NO_WEBP == 0)WebPParser.o
+@?(NO_WEBP > 0)WebPParser_Null.o
 
 Sync/SimpleThread.h:
 @SimpleThreadU.o
