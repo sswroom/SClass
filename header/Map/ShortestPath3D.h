@@ -142,6 +142,7 @@ namespace Map
 		Optional<DB::TableDef> GetPropDef() const;
 		UInt32 GetNetworkCnt() const;
 		void GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList) const;
+		void ClearData(NN<Math::CoordinateSystem> csys, Double searchDist);
 
 		static void CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayList<Double>> dirList, NN<Data::ArrayList<Bool>> reverseList);
 	};

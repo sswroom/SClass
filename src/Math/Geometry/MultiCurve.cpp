@@ -14,7 +14,7 @@ Math::Geometry::MultiCurve::~MultiCurve()
 void Math::Geometry::MultiCurve::AddGeometry(NN<Vector2D> geometry)
 {
 	VectorType t = geometry->GetVectorType();
-	if (t == VectorType::CompoundCurve)// || t == VectorType::LineString)
+	if (t == VectorType::CompoundCurve || t == VectorType::LineString)
 	{
 		this->geometries.Add(geometry);
 	}

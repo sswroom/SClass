@@ -1,5 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBDIR
 #define _SM_MAP_ESRI_FILEGDBDIR
+#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "DB/ReadingDB.h"
 #include "IO/PackageFile.h"
 #include "Map/ESRI/FileGDBTable.h"
@@ -12,9 +14,13 @@ namespace Map
 		class FileGDBDir : public DB::ReadingDB
 		{
 		private:
-			Data::ArrayListNN<FileGDBTable> tables;
+			NN<IO::PackageFile> pkg;
+			Data::FastStringMap<Int32> tableMap;
+			Data::FastStringMapNN<FileGDBTable> tables;
+			Data::ArrayListStringNN tableNames;
+			NN<Math::ArcGISPRJParser> prjParser;
 
-			FileGDBDir(NN<Text::String> sourceName);
+			FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser);
 		public:
 			virtual ~FileGDBDir();
 
@@ -24,11 +30,11 @@ namespace Map
 			virtual void CloseReader(NN<DB::DBReader> r);
 			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
+			Bool IsError() const;
 
-			void AddTable(NN<FileGDBTable> table);
-			Optional<FileGDBTable> GetTable(Text::CStringNN name) const;
+			Optional<FileGDBTable> GetTable(Text::CStringNN name);
 
-			static Optional<FileGDBDir> OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser);
+			static Optional<FileGDBDir> OpenDir(NN<IO::PackageFile> pkg);
 		};
 	}
 }

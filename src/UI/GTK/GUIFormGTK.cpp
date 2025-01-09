@@ -275,7 +275,11 @@ void UI::GUIForm::MakeForeground()
 
 void UI::GUIForm::Close()
 {
+#if GDK_VERSION_CUR_STABLE >= G_ENCODE_VERSION (3, 10)
 	gtk_window_close((GtkWindow*)this->hwnd);
+#else
+	gtk_widget_destroy((GtkWidget*)this->hwnd);
+#endif
 	UOSInt i;
 	i = this->closeHandlers.GetCount();
 	while (i-- > 0)

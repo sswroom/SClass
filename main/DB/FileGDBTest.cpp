@@ -943,9 +943,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
 	IO::DirectoryPackage dir(CSTR("~/Progs/Temp/E20210522_PLIS.gdb"));
-	Math::ArcGISPRJParser prjParser;
 	NN<Map::ESRI::FileGDBDir> fileGDB;
-	if (Map::ESRI::FileGDBDir::OpenDir(dir, prjParser).SetTo(fileGDB))
+	if (Map::ESRI::FileGDBDir::OpenDir(dir).SetTo(fileGDB))
 	{
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayList<const UTF8Char*> colNames;

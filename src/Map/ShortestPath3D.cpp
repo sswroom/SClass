@@ -1032,6 +1032,17 @@ void Map::ShortestPath3D::GetLines(Math::RectAreaDbl rect, NN<Data::ArrayListNN<
 	}
 }
 
+void Map::ShortestPath3D::ClearData(NN<Math::CoordinateSystem> csys, Double searchDist)
+{
+	this->propDef.Delete();
+	this->areas.FreeAll(FreeAreaInfo);
+	this->lines.FreeAll(FreeLineInfo);
+	this->networkCnt = 0;
+	this->searchDist = searchDist;
+	this->csys.Delete();
+	this->csys = csys;
+}
+
 void Map::ShortestPath3D::CalcDirReverse(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayList<Double>> dirList, NN<Data::ArrayList<Bool>> reverseList)
 {
 	NN<Math::Geometry::LineString> ls;

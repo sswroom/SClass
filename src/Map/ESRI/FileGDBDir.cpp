@@ -5,22 +5,52 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
-Map::ESRI::FileGDBDir::FileGDBDir(NN<Text::String> sourceName) : DB::ReadingDB(sourceName)
+Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser) : DB::ReadingDB(pkg->GetSourceNameObj())
 {
+	this->pkg = pkg->Clone();
+	this->prjParser = prjParser;
+	NN<FileGDBReader> reader;
+	if (!Optional<FileGDBReader>::ConvertFrom(systemCatalog->OpenReader(0, 0, 0, CSTR_NULL, 0)).SetTo(reader))
+	{
+		systemCatalog.Delete();
+		return;
+	}
+	this->tableMap.PutNN(systemCatalog->GetName(), 1);
+	this->tables.PutNN(systemCatalog->GetName(), systemCatalog);
+	this->tableNames.Add(systemCatalog->GetName()->Clone());
+	NN<Text::String> s;
+	Text::StringBuilderUTF8 sb;
+	while (reader->ReadNext())
+	{
+		Int32 id = reader->GetInt32(0);
+		Int32 fmt = reader->GetInt32(2);
+		sb.ClearStr();
+		reader->GetStr(1, sb);
+		if (id > 1 && sb.GetLength() > 0 && fmt == 0)
+		{
+			s = Text::String::New(sb.ToCString());
+			this->tableNames.Add(s);
+			this->tableMap.PutNN(s, id);
+		}
+	}
+	reader.Delete();
 }
 
 Map::ESRI::FileGDBDir::~FileGDBDir()
 {
 	this->tables.DeleteAll();
+	this->prjParser.Delete();
+	this->pkg.Delete();
+	this->tableNames.FreeAll();
 }
 
 UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	UOSInt i = 0;
-	UOSInt j = this->tables.GetCount();
+	UOSInt j = this->tableNames.GetCount();
 	while (i < j)
 	{
-		names->Add(this->tables.GetItemNoCheck(i)->GetName()->Clone());
+		names->Add(this->tableNames.GetItemNoCheck(i)->Clone());
 		i++;
 	}
 	return j;
@@ -80,85 +110,79 @@ void Map::ESRI::FileGDBDir::Reconnect()
 {
 }
 
-void Map::ESRI::FileGDBDir::AddTable(NN<FileGDBTable> table)
+Bool Map::ESRI::FileGDBDir::IsError() const
 {
-	this->tables.Add(table);
+	return this->tableMap.GetCount() == 0;
 }
 
-Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringNN name) const
+Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringNN name)
 {
-	UOSInt i = this->tables.GetCount();
-	while (i-- > 0)
+	Int32 id = this->tableMap.GetC(name);
+	if (id == 0)
 	{
-		NN<FileGDBTable> table = this->tables.GetItemNoCheck(i);
-		if (table->GetName()->EqualsICase(name))
+		return 0;
+	}
+	NN<FileGDBTable> table;
+	if (this->tables.GetC(name).SetTo(table))
+	{
+		return table;
+	}
+	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
+	Optional<IO::StreamData> indexFD;
+	NN<IO::StreamData> tableFD;
+	NN<FileGDBTable> innerTable;
+	sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
+	sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	indexFD = this->pkg->GetItemStmDataNew(CSTRP(sbuff, sptr));
+	sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
+	sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
+	if (pkg->GetItemStmDataNew(CSTRP(sbuff, sptr)).SetTo(tableFD))
+	{
+		NEW_CLASSNN(innerTable, FileGDBTable(name, tableFD, indexFD, prjParser));
+		tableFD.Delete();
+		if (innerTable->IsError())
 		{
-			return table;
+			innerTable.Delete();
+		}
+		else
+		{
+			indexFD.Delete();
+			this->tables.PutNN(innerTable->GetName(), innerTable);
+			return innerTable;
 		}
 	}
+	indexFD.Delete();
 	return 0;
 }
 
-Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser)
+Optional<Map::ESRI::FileGDBDir> Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg)
 {
 	NN<FileGDBTable> table;
 	IO::StreamData *indexFD = pkg->GetItemStmDataNew(CSTR("a00000001.gdbtablx")).OrNull();
-	NN<IO::StreamData> tableFD;;
+	NN<IO::StreamData> tableFD;
 	if (!pkg->GetItemStmDataNew(CSTR("a00000001.gdbtable")).SetTo(tableFD))
 	{
 		SDEL_CLASS(indexFD);
 		return 0;
 	}
+	NN<Math::ArcGISPRJParser> prjParser;
+	NEW_CLASSNN(prjParser, Math::ArcGISPRJParser());
 	NEW_CLASSNN(table, FileGDBTable(CSTR("GDB_SystemCatalog"), tableFD, indexFD, prjParser));
 	tableFD.Delete();
 	SDEL_CLASS(indexFD);
 	if (table->IsError())
 	{
 		table.Delete();
+		prjParser.Delete();
 		return 0;
 	}
-	NN<FileGDBReader> reader;
-	if (!Optional<FileGDBReader>::ConvertFrom(table->OpenReader(0, 0, 0, CSTR_NULL, 0)).SetTo(reader))
+	NN<FileGDBDir> dir;
+	NEW_CLASSNN(dir, FileGDBDir(pkg, table, prjParser));
+	if (dir->IsError())
 	{
-		table.Delete();
+		dir.Delete();
 		return 0;
 	}
-	FileGDBDir *dir;
-	NEW_CLASS(dir, FileGDBDir(pkg->GetSourceNameObj()));
-	dir->AddTable(table);
-	UTF8Char sbuff[128];
-	UnsafeArray<UTF8Char> sptr;
-	Text::StringBuilderUTF8 sb;
-	while (reader->ReadNext())
-	{
-		Int32 id = reader->GetInt32(0);
-		Int32 fmt = reader->GetInt32(2);
-		sb.ClearStr();
-		reader->GetStr(1, sb);
-		if (id > 1 && sb.GetLength() > 0 && fmt == 0)
-		{
-			NN<FileGDBTable> innerTable;
-			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtablx"));
-			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			indexFD = pkg->GetItemStmDataNew(CSTRP(sbuff, sptr)).OrNull();
-			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
-			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
-			if (pkg->GetItemStmDataNew(CSTRP(sbuff, sptr)).SetTo(tableFD))
-			{
-				NEW_CLASSNN(innerTable, FileGDBTable(sb.ToCString(), tableFD, indexFD, prjParser));
-				tableFD.Delete();
-				if (innerTable->IsError())
-				{
-					innerTable.Delete();
-				}
-				else
-				{
-					dir->AddTable(innerTable);
-				}
-			}
-			SDEL_CLASS(indexFD);
-		}
-	}
-	reader.Delete();
 	return dir;
 }

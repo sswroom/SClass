@@ -824,14 +824,13 @@ Int32 FGDBTest()
 	TransportPolygon
 	UtilityPolygon
 	*/
-	Math::ArcGISPRJParser prjParser;
 	IO::DirectoryPackage dpkg(fgdbPath);
 	NN<Map::ESRI::FileGDBDir> fgdb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
-	if (Map::ESRI::FileGDBDir::OpenDir(dpkg, prjParser).SetTo(fgdb))
+	if (Map::ESRI::FileGDBDir::OpenDir(dpkg).SetTo(fgdb))
 	{
 		NN<Map::ESRI::FileGDBTable> table;
 		NN<DB::DBReader> r;

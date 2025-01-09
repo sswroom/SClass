@@ -257,6 +257,35 @@ void Math::WKTWriter::AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math
 	sb->AppendUTF8Char(')');
 }
 
+void Math::WKTWriter::AppendMultiCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiCurve> mc, Bool reverseAxis, Bool no3D)
+{
+	sb->AppendUTF8Char('(');
+	NN<Math::Geometry::Vector2D> geometry;
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = mc->Iterator();
+	Bool found = false;
+	while (it.HasNext())
+	{
+		if (found) sb->AppendUTF8Char(',');
+		geometry = it.Next();
+		Math::Geometry::Vector2D::VectorType t = geometry->GetVectorType();
+		if (t == Math::Geometry::Vector2D::VectorType::CompoundCurve)
+		{
+			sb->AppendC(UTF8STRC("COMPOUNDCURVE"));
+			AppendCompoundCurve(sb, NN<Math::Geometry::CompoundCurve>::ConvertFrom(geometry), reverseAxis, no3D);
+		}
+		else if (t == Math::Geometry::Vector2D::VectorType::LineString)
+		{
+			AppendLineString(sb, NN<Math::Geometry::LineString>::ConvertFrom(geometry), reverseAxis, no3D);
+		}
+		else
+		{
+			printf("Unknown type in multisurface: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(t).v.Ptr());
+		}
+		found = true;
+	}
+	sb->AppendUTF8Char(')');
+}
+
 Bool Math::WKTWriter::AppendGeometryCollection(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::GeometryCollection> geoColl)
 {
 	sb->AppendUTF8Char('(');
@@ -382,8 +411,11 @@ Bool Math::WKTWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geom
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 		sb->AppendC(UTF8STRC("GEOMETRYCOLLECTION"));
 		return AppendGeometryCollection(sb, NN<Math::Geometry::GeometryCollection>::ConvertFrom(vec));
-	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::MultiCurve:
+		sb->AppendC(UTF8STRC("MULTICURVE"));
+		AppendMultiCurve(sb, NN<Math::Geometry::MultiCurve>::ConvertFrom(vec), this->reverseAxis, this->no3D);
+		return true;
+	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::Curve:
 	case Math::Geometry::Vector2D::VectorType::Surface:
 	case Math::Geometry::Vector2D::VectorType::PolyhedralSurface:

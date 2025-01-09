@@ -15,6 +15,7 @@ namespace Data
 		virtual T GetKey(UOSInt index) const = 0;
 		void PutAll(NN<const ListMapNN<T,V>> map);
 		void FreeAll(FreeFunc freeFunc);
+		void DeleteAll();
 	};
 
 	template <class T, class V> void ListMapNN<T, V>::PutAll(NN<const ListMapNN<T,V>> map)
@@ -44,6 +45,15 @@ namespace Data
 		this->Clear();
 	}
 
+	template <class T, class V> void ListMapNN<T, V>::DeleteAll()
+	{
+		UOSInt i = this->GetCount();
+		while (i-- > 0)
+		{
+			this->GetItemNoCheck(i).Delete();
+		}
+		this->Clear();
+	}
 }
 
 #endif

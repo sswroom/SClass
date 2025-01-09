@@ -5,6 +5,7 @@
 #include "Math/Geometry/CurvePolygon.h"
 #include "Math/Geometry/GeometryCollection.h"
 #include "Math/Geometry/LineString.h"
+#include "Math/Geometry/MultiCurve.h"
 #include "Math/Geometry/MultiSurface.h"
 #include "Math/Geometry/Polygon.h"
 #include "Math/Geometry/Polyline.h"
@@ -26,6 +27,7 @@ namespace Math
 		static void AppendCurvePolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CurvePolygon> cpg, Bool reverseAxis, Bool no3D);
 		static void AppendMultiPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis, Bool no3D);
 		static void AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiSurface> ms, Bool reverseAxis, Bool no3D);
+		static void AppendMultiCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiCurve> mc, Bool reverseAxis, Bool no3D);
 		Bool AppendGeometryCollection(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::GeometryCollection> geoColl);
 	public:
 		WKTWriter();
