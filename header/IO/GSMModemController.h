@@ -158,7 +158,7 @@ namespace IO
 			Int32 index;
 			SMSStatus status;
 			UOSInt pduLeng;
-			UInt8 *pduMessage;
+			UnsafeArray<UInt8> pduMessage;
 		} SMSMessage;
 
 		typedef struct

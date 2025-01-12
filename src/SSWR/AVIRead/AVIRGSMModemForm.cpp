@@ -23,6 +23,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 	Bool init = false;
 	IO::GSMModemController::BER ber;
 	NN<IO::ATCommandChannel> channel;
+	NN<Text::String> s;
 
 	nextSignalTime = Data::Timestamp::UtcNow();
 	me->running = true;
@@ -32,15 +33,16 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 		if (!init)
 		{
 			init = true;
-			SDEL_STRING(me->initModemManu);
-			SDEL_STRING(me->initModemModel);
-			SDEL_STRING(me->initModemVer);
-			SDEL_STRING(me->initIMEI);
-			SDEL_STRING(me->huaweiICCID);
+			OPTSTR_DEL(me->initModemManu);
+			OPTSTR_DEL(me->initModemModel);
+			OPTSTR_DEL(me->initModemVer);
+			OPTSTR_DEL(me->initIMEI);
+			OPTSTR_DEL(me->huaweiICCID);
 			if (me->modem->GSMGetManufacturer(sbuff).SetTo(sptr))
 			{
-				me->initModemManu = Text::String::NewP(sbuff, sptr).Ptr();
-				if (me->initModemManu->StartsWith(UTF8STRC("Huawei")) && channel.Set(me->channel))
+				s = Text::String::NewP(sbuff, sptr);
+				me->initModemManu = s;
+				if (s->StartsWith(UTF8STRC("Huawei")) && me->channel.SetTo(channel))
 				{
 					IO::HuaweiGSMModemController *huawei;
 					IO::GSMModemController *oldModem;
@@ -49,7 +51,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 					oldModem = me->modem;
 					me->modem = huawei;
 					DEL_CLASS(oldModem);
-					me->huawei->HuaweiGetCardMode(&me->huaweiSIMType);
+					me->huawei->HuaweiGetCardMode(me->huaweiSIMType);
 				}
 			}
 			if (me->modem->GSMGetModelIdent(sbuff).SetTo(sptr))
@@ -64,8 +66,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 
 			if (me->modem->GSMGetTECharset(sbuff).SetTo(sptr))
 			{
-				SDEL_STRING(me->cfgTECharset);
-				me->cfgTECharset = Text::String::NewP(sbuff, sptr).Ptr();
+				OPTSTR_DEL(me->cfgTECharset);
+				me->cfgTECharset = Text::String::NewP(sbuff, sptr);
 				me->cfgTECharsetUpd = true;
 			}
 		}
@@ -74,8 +76,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 			me->simChanged = false;
 			if (me->modem->GSMGetIMSI(sbuff).SetTo(sptr))
 			{
-				SDEL_STRING(me->simIMSI);
-				me->simIMSI = Text::String::NewP(sbuff, sptr).Ptr();
+				OPTSTR_DEL(me->simIMSI);
+				me->simIMSI = Text::String::NewP(sbuff, sptr);
 			}
 			me->simInfoUpdated = true;
 		}
@@ -86,8 +88,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 			me->operNextTime = me->operNextTime.AddSecond(30);
 			if (me->modem->GSMGetCurrPLMN(sbuff).SetTo(sptr))
 			{
-				SDEL_STRING(me->operName);
-				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				OPTSTR_DEL(me->operName);
+				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				me->operUpdated = true;
 			}
 			if (me->modem->GSMGetRegisterNetwork(me->regNetN, me->regNetStat, me->regNetLAC, me->regNetCI, me->regNetACT))
@@ -96,13 +98,15 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 			}
 			if (me->huawei)
 			{
-				me->huaweiSysInfoUpdated = me->huawei->HuaweiGetSysInfoEx(&me->huaweiSysInfoSrvStatus,
-					&me->huaweiSysInfoSrvDomain,
-					&me->huaweiSysInfoRoamStatus,
-					&me->huaweiSysInfoSIMState,
-					&me->huaweiSysInfoLockState,
-					&me->huaweiSysInfoSysMode,
-					&me->huaweiSysInfoSubMode);
+				me->huaweiSysInfoUpdated = me->huawei->HuaweiGetSysInfoEx(me->huaweiSysInfoSrvStatus,
+					me->huaweiSysInfoSrvDomain,
+					me->huaweiSysInfoRoamStatus,
+					me->huaweiSysInfoSIMState,
+					me->huaweiSysInfoLockState,
+					me->huaweiSysInfoSysMode,
+					me->huaweiSysInfoSubMode);
+				IO::HuaweiGSMModemController::FreeVersionInfo(me->huaweiVersion);
+				me->huaweiVersionUpdated = me->huawei->HuaweiGetVersion(me->huaweiVersion);
 			}
 		}
 		if (currTime >= nextSignalTime)
@@ -111,7 +115,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(AnyType userObj)
 			me->modem->GSMGetSignalQuality(me->signalQuality, ber);
 			if (me->huawei)
 			{
-				me->huaweiCSQUpdated = me->huawei->HuaweiGetSignalStrength(&me->huaweiCSQ);
+				me->huaweiCSQUpdated = me->huawei->HuaweiGetSignalStrength(me->huaweiCSQ);
 			}
 			me->signalUpdated = true;
 		}
@@ -126,32 +130,33 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 	Double values[5];
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> s;
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 
 	if (me->initStrs)
 	{
 		me->initStrs = false;
-		if (me->initModemManu)
+		if (me->initModemManu.SetTo(s))
 		{
-			me->txtModemManu->SetText(me->initModemManu->ToCString());
+			me->txtModemManu->SetText(s->ToCString());
 		}
-		if (me->initModemModel)
+		if (me->initModemModel.SetTo(s))
 		{
-			me->txtModemModel->SetText(me->initModemModel->ToCString());
+			me->txtModemModel->SetText(s->ToCString());
 		}
-		if (me->initModemVer)
+		if (me->initModemVer.SetTo(s))
 		{
-			me->txtModemVer->SetText(me->initModemVer->ToCString());
+			me->txtModemVer->SetText(s->ToCString());
 		}
-		if (me->initIMEI)
+		if (me->initIMEI.SetTo(s))
 		{
-			me->txtModemIMEI->SetText(me->initIMEI->ToCString());
+			me->txtModemIMEI->SetText(s->ToCString());
 		}
 		if (me->huawei)
 		{
-			if (me->huaweiICCID)
+			if (me->huaweiICCID.SetTo(s))
 			{
-				me->txtHuaweiICCID->SetText(me->huaweiICCID->ToCString());
+				me->txtHuaweiICCID->SetText(s->ToCString());
 			}
 			me->txtHuaweiSIMType->SetText(IO::HuaweiGSMModemController::SIMCardTypeGetName(me->huaweiSIMType));
 		}
@@ -161,16 +166,16 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 		me->simInfoUpdated = false;
 		me->txtIMSI->SetText(Text::String::OrEmpty(me->simIMSI)->ToCString());
 	}
-	if (me->cfgTECharsetUpd)
+	if (me->cfgTECharsetUpd && me->cfgTECharset.SetTo(s))
 	{
 		me->cfgTECharsetUpd = false;
-		me->txtTECharset->SetText(me->cfgTECharset->ToCString());
+		me->txtTECharset->SetText(s->ToCString());
 	}
 
-	if (me->operUpdated)
+	if (me->operUpdated && me->operName.SetTo(s))
 	{
 		me->operUpdated = false;
-		me->txtOperator->SetText(me->operName->ToCString());
+		me->txtOperator->SetText(s->ToCString());
 	}
 
 	if (me->regNetUpdated)
@@ -305,6 +310,18 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 			me->lblHuaweiCSQ4->SetText(CSTR("-"));
 			me->txtHuaweiCSQ4->SetText(CSTR(""));
 		}
+	}
+
+	if (me->huaweiVersionUpdated)
+	{
+		me->huaweiVersionUpdated = false;
+		if (me->huaweiVersion.biosDateTime.SetTo(s)) me->txtHuaweiBDT->SetText(s->ToCString());
+		if (me->huaweiVersion.exts.SetTo(s)) me->txtHuaweiEXTS->SetText(s->ToCString());
+		if (me->huaweiVersion.extd.SetTo(s)) me->txtHuaweiEXTD->SetText(s->ToCString());
+		if (me->huaweiVersion.exth.SetTo(s)) me->txtHuaweiEXTH->SetText(s->ToCString());
+		if (me->huaweiVersion.extu.SetTo(s)) me->txtHuaweiEXTU->SetText(s->ToCString());
+		if (me->huaweiVersion.cfg.SetTo(s)) me->txtHuaweiCFG->SetText(s->ToCString());
+		if (me->huaweiVersion.ini.SetTo(s)) me->txtHuaweiINI->SetText(s->ToCString());
 	}
 }
 
@@ -507,7 +524,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnLogSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port == 0)
+	NN<IO::ATCommandChannel> channel;
+	if (me->port == 0 || !me->channel.SetTo(channel))
 	{
 		return;
 	}
@@ -516,7 +534,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(AnyType userO
 	if (sb.StartsWith(UTF8STRC("AT")))
 	{
 		Data::ArrayListStringNN ret;
-		if (me->channel->SendATCommand(ret, sb.ToString(), sb.GetLength(), 3000))
+		if (channel->SendATCommand(ret, sb.ToString(), sb.GetLength(), 3000))
 		{
 			sb.Append(CSTR("\r\n"));
 			sb.AppendJoin(ret.Iterator(), CSTR("\r\n"));
@@ -969,12 +987,13 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NN<IO::Stream> stm, Bool update
 
 void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 {
-	if (this->port)
+	NN<IO::ATCommandChannel> channel;
+	if (this->port && this->channel.SetTo(channel))
 	{
 		this->toStop = true;
 		this->modemEvt.Set();
 		this->port->Close();
-		this->channel->Close();
+		channel->Close();
 		while (this->running)
 		{
 			Sync::SimpleThread::Sleep(10);
@@ -983,10 +1002,9 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 		this->modem->SMSFreeMessages(this->msgList);
 
 		DEL_CLASS(this->modem);
-		DEL_CLASS(this->channel);
+		this->channel.Delete();
 		DEL_CLASS(this->port);
 		this->modem = 0;
-		this->channel = 0;
 		this->port = 0;
 		this->huawei = 0;
 
@@ -1043,6 +1061,14 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->regNetStat = IO::GSMModemController::RegisterStatus::NotRegistered;
 	this->regNetACT = IO::GSMModemController::AccessTech::GSM;
 	this->operNextTime = Data::Timestamp::UtcNow();
+	this->huaweiVersion.biosDateTime = 0;
+	this->huaweiVersion.exts = 0;
+	this->huaweiVersion.extd = 0;
+	this->huaweiVersion.exth = 0;
+	this->huaweiVersion.exts = 0;
+	this->huaweiVersion.cfg = 0;
+	this->huaweiVersion.ini = 0;
+	this->huaweiVersionUpdated = false;
 
 	this->pnlDevice = ui->NewPanel(*this);
 	this->pnlDevice->SetRect(0, 0, 100, 48, false);
@@ -1389,6 +1415,43 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	this->txtHuaweiDHCPMaxTXbps = ui->NewTextBox(this->grpHuaweiDHCP, CSTR(""));
 	this->txtHuaweiDHCPMaxTXbps->SetRect(100, 192, 150, 23, false);
 	this->txtHuaweiDHCPMaxTXbps->SetReadOnly(true);
+	this->grpHuaweiVersion = ui->NewGroupBox(this->tpHuawei, CSTR("Version"));
+	this->grpHuaweiVersion->SetRect(280, 248, 300, 200, false);
+	this->lblHuaweiBDT = ui->NewLabel(this->grpHuaweiVersion, CSTR("BIOS DateTime"));
+	this->lblHuaweiBDT->SetRect(0, 0, 100, 23, false);
+	this->txtHuaweiBDT = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiBDT->SetRect(100, 0, 150, 23, false);
+	this->txtHuaweiBDT->SetReadOnly(true);
+	this->lblHuaweiEXTS = ui->NewLabel(this->grpHuaweiVersion, CSTR("EXTS"));
+	this->lblHuaweiEXTS->SetRect(0, 24, 100, 23, false);
+	this->txtHuaweiEXTS = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiEXTS->SetRect(100, 24, 150, 23, false);
+	this->txtHuaweiEXTS->SetReadOnly(true);
+	this->lblHuaweiEXTD = ui->NewLabel(this->grpHuaweiVersion, CSTR("EXTD"));
+	this->lblHuaweiEXTD->SetRect(0, 48, 100, 23, false);
+	this->txtHuaweiEXTD = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiEXTD->SetRect(100, 48, 200, 23, false);
+	this->txtHuaweiEXTD->SetReadOnly(true);
+	this->lblHuaweiEXTH = ui->NewLabel(this->grpHuaweiVersion, CSTR("EXTH"));
+	this->lblHuaweiEXTH->SetRect(0, 72, 100, 23, false);
+	this->txtHuaweiEXTH = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiEXTH->SetRect(100, 72, 200, 23, false);
+	this->txtHuaweiEXTH->SetReadOnly(true);
+	this->lblHuaweiEXTU = ui->NewLabel(this->grpHuaweiVersion, CSTR("EXTV"));
+	this->lblHuaweiEXTU->SetRect(0, 96, 100, 23, false);
+	this->txtHuaweiEXTU = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiEXTU->SetRect(100, 96, 150, 23, false);
+	this->txtHuaweiEXTU->SetReadOnly(true);
+	this->lblHuaweiCFG = ui->NewLabel(this->grpHuaweiVersion, CSTR("CFG"));
+	this->lblHuaweiCFG->SetRect(0, 120, 100, 23, false);
+	this->txtHuaweiCFG = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiCFG->SetRect(100, 120, 150, 23, false);
+	this->txtHuaweiCFG->SetReadOnly(true);
+	this->lblHuaweiINI = ui->NewLabel(this->grpHuaweiVersion, CSTR("INI"));
+	this->lblHuaweiINI->SetRect(0, 144, 100, 23, false);
+	this->txtHuaweiINI = ui->NewTextBox(this->grpHuaweiVersion, CSTR(""));
+	this->txtHuaweiINI->SetRect(100, 144, 200, 23, false);
+	this->txtHuaweiINI->SetReadOnly(true);
 
 	this->toStop = false;
 	this->running = false;
@@ -1431,14 +1494,15 @@ SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 	this->logger.Delete();
 	this->CloseStream(false);
 
-	SDEL_STRING(this->operName);
-	SDEL_STRING(this->initModemManu);
-	SDEL_STRING(this->initModemModel);
-	SDEL_STRING(this->initModemVer);
-	SDEL_STRING(this->initIMEI);
-	SDEL_STRING(this->huaweiICCID);
-	SDEL_STRING(this->simIMSI);
-	SDEL_STRING(this->cfgTECharset);
+	OPTSTR_DEL(this->operName);
+	OPTSTR_DEL(this->initModemManu);
+	OPTSTR_DEL(this->initModemModel);
+	OPTSTR_DEL(this->initModemVer);
+	OPTSTR_DEL(this->initIMEI);
+	OPTSTR_DEL(this->huaweiICCID);
+	OPTSTR_DEL(this->simIMSI);
+	OPTSTR_DEL(this->cfgTECharset);
+	IO::HuaweiGSMModemController::FreeVersionInfo(this->huaweiVersion);
 }
 
 void SSWR::AVIRead::AVIRGSMModemForm::OnMonitorChanged()

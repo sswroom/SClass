@@ -125,16 +125,28 @@ namespace IO
 				UInt32 lteRSRQ;
 			};
 		};
+
+		struct VersionInfo
+		{
+			Optional<Text::String> biosDateTime;
+			Optional<Text::String> exts;
+			Optional<Text::String> extd;
+			Optional<Text::String> exth;
+			Optional<Text::String> extu;
+			Optional<Text::String> cfg;
+			Optional<Text::String> ini;
+		};
 	public:
 		HuaweiGSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);
 		virtual ~HuaweiGSMModemController();
 
 		//Huawei Proprietary: Mobile Termination Control and Status Interface
 		UnsafeArrayOpt<UTF8Char> HuaweiGetICCID(UnsafeArray<UTF8Char> iccid); //AT^ICCID
-		Bool HuaweiGetCardMode(SIMCardType *simType); //AT^CARDMODE
-		Bool HuaweiGetSysInfoEx(ServiceStatus *srvStatus, ServiceDomain *srvDomain, Bool *roamStatus, SIMState *simState, Bool *lockState, SysMode *sysMode, SubMode *subMode); //AT^SYSINFOEX
-		Bool HuaweiGetSignalStrength(SignalStrengthInfo *csq); //AT^HCSQ
+		Bool HuaweiGetCardMode(OutParam<SIMCardType> simType); //AT^CARDMODE
+		Bool HuaweiGetSysInfoEx(OutParam<ServiceStatus> srvStatus, OutParam<ServiceDomain> srvDomain, OutParam<Bool> roamStatus, OutParam<SIMState> simState, OutParam<Bool> lockState, OutParam<SysMode> sysMode, OutParam<SubMode> subMode); //AT^SYSINFOEX
+		Bool HuaweiGetSignalStrength(NN<SignalStrengthInfo> csq); //AT^HCSQ
 		Bool HuaweiGetDHCP(OutParam<UInt32> clientIP, OutParam<UInt32> netmask, OutParam<UInt32> gateway, OutParam<UInt32> dhcp, OutParam<UInt32> priDNS, OutParam<UInt32> secDNS, OutParam<UInt64> maxRXbps, OutParam<UInt64> maxTXbps); //AT^DHCP
+		Bool HuaweiGetVersion(NN<VersionInfo> version);
 
 		static UnsafeArray<UTF8Char> RSSIGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rssi);
 		static Double RSSIGetdBm(UInt32 rssi);
@@ -154,6 +166,7 @@ namespace IO
 		static Text::CStringNN SIMStateGetName(SIMState simState);
 		static Text::CStringNN SysModeGetName(SysMode sysMode);
 		static Text::CStringNN SubModeGetName(SubMode submode);
+		static void FreeVersionInfo(NN<VersionInfo> version);
 	};
 }
 #endif

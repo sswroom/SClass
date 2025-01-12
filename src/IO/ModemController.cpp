@@ -69,7 +69,7 @@ UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommand(UnsafeArray<UTF8
 	}
 }
 
-Bool IO::ModemController::SendStringCommand(Data::ArrayListStringNN *resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
+Bool IO::ModemController::SendStringCommand(NN<Data::ArrayListStringNN> resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);

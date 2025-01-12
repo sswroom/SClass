@@ -25,13 +25,13 @@ UnsafeArrayOpt<UTF8Char> IO::HuaweiGSMModemController::HuaweiGetICCID(UnsafeArra
 	return 0;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetCardMode(SIMCardType *simType)
+Bool IO::HuaweiGSMModemController::HuaweiGetCardMode(OutParam<SIMCardType> simType)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^CARDMODE"), 3000).SetTo(sptr))
 	{
-		*simType = SIMCardType::NoCard;
+		simType.Set(SIMCardType::NoCard);
 		return false;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^CARDMODE:")))
@@ -39,14 +39,14 @@ Bool IO::HuaweiGSMModemController::HuaweiGetCardMode(SIMCardType *simType)
 		sptr = &sbuff[10];
 		while (*sptr == ' ')
 			sptr++;
-		*simType = (SIMCardType)Text::StrToInt32(sptr);
+		simType.Set((SIMCardType)Text::StrToInt32(sptr));
 		return true;
 	}
-	*simType = SIMCardType::NoCard;
+	simType.Set(SIMCardType::NoCard);
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(ServiceStatus *srvStatus, ServiceDomain *srvDomain, Bool *roamStatus, SIMState *simState, Bool *lockState, SysMode *sysMode, SubMode *subMode)
+Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(OutParam<ServiceStatus> srvStatus, OutParam<ServiceDomain> srvDomain, OutParam<Bool> roamStatus, OutParam<SIMState> simState, OutParam<Bool> lockState, OutParam<SysMode> sysMode, OutParam<SubMode> subMode)
 {
 	Text::PString sarr[9];
 	UTF8Char sbuff[256];
@@ -62,13 +62,13 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(ServiceStatus *srvStatus, 
 			sptr2++;
 		if (Text::StrSplitP(sarr, 9, Text::PString(sptr2, (UOSInt)(sptr - sptr2)), ',') == 9)
 		{
-			*srvStatus = (ServiceStatus)sarr[0].ToInt32();
-			*srvDomain = (ServiceDomain)sarr[1].ToInt32();
-			*roamStatus = sarr[2].ToInt32() != 0;
-			*simState = (SIMState)sarr[3].ToInt32();
-			*lockState = sarr[4].ToInt32() != 0;
-			*sysMode = (SysMode)sarr[5].ToInt32();
-			*subMode = (SubMode)sarr[7].ToInt32();
+			srvStatus.Set((ServiceStatus)sarr[0].ToInt32());
+			srvDomain.Set((ServiceDomain)sarr[1].ToInt32());
+			roamStatus.Set(sarr[2].ToInt32() != 0);
+			simState.Set((SIMState)sarr[3].ToInt32());
+			lockState.Set(sarr[4].ToInt32() != 0);
+			sysMode.Set((SysMode)sarr[5].ToInt32());
+			subMode.Set((SubMode)sarr[7].ToInt32());
 			return true;
 		}
 		else
@@ -79,7 +79,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(ServiceStatus *srvStatus, 
 	return false;
 }
 
-Bool IO::HuaweiGSMModemController::HuaweiGetSignalStrength(SignalStrengthInfo *csq)
+Bool IO::HuaweiGSMModemController::HuaweiGetSignalStrength(NN<SignalStrengthInfo> csq)
 {
 	Text::PString sarr[9];
 	UOSInt sarrCnt;
@@ -209,6 +209,72 @@ Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutP
 		}
 	}
 	return false;
+}
+
+Bool IO::HuaweiGSMModemController::HuaweiGetVersion(NN<VersionInfo> version)
+{
+	Data::ArrayListStringNN retStrs;
+	if (!this->SendStringCommand(retStrs, UTF8STRC("AT^VERSION?"), 3000))
+	{
+		return false;
+	}
+	version->biosDateTime = 0;
+	version->cfg = 0;
+	version->extd = 0;
+	version->exth = 0;
+	version->exts = 0;
+	version->extu = 0;
+	version->ini = 0;
+	NN<Text::String> s;
+	Text::CStringNN type;
+	UOSInt i = 0;
+	UOSInt j = retStrs.GetCount();
+	while (i < j)
+	{
+		s = retStrs.GetItemNoCheck(i);
+		if (s->StartsWith(CSTR("^VERSION:")))
+		{
+			type = s->ToCString().Substring(9);
+			if (type.StartsWith(CSTR("BDT:")))
+			{
+				OPTSTR_DEL(version->biosDateTime);
+				version->biosDateTime = Text::String::New(type.Substring(4));
+			}
+			else if (type.StartsWith(CSTR("EXTS:")))
+			{
+				OPTSTR_DEL(version->exts);
+				version->exts = Text::String::New(type.Substring(5));
+			}
+			else if (type.StartsWith(CSTR("EXTD:")))
+			{
+				OPTSTR_DEL(version->extd);
+				version->extd = Text::String::New(type.Substring(5));
+			}
+			else if (type.StartsWith(CSTR("EXTU:")))
+			{
+				OPTSTR_DEL(version->extu);
+				version->extu = Text::String::New(type.Substring(5));
+			}
+			else if (type.StartsWith(CSTR("EXTH:")))
+			{
+				OPTSTR_DEL(version->exth);
+				version->exth = Text::String::New(type.Substring(5));
+			}
+			else if (type.StartsWith(CSTR("CFG:")))
+			{
+				OPTSTR_DEL(version->cfg);
+				version->cfg = Text::String::New(type.Substring(4));
+			}
+			else if (type.StartsWith(CSTR("INI:")))
+			{
+				OPTSTR_DEL(version->ini);
+				version->ini = Text::String::New(type.Substring(4));
+			}
+		}
+		i++;
+	}
+	retStrs.FreeAll();
+	return true;
 }
 
 UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSSIGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rssi)
@@ -535,4 +601,15 @@ Text::CStringNN IO::HuaweiGSMModemController::SubModeGetName(SubMode submode)
 	default:
 		return CSTR("Unknown");
 	}
+}
+
+void IO::HuaweiGSMModemController::FreeVersionInfo(NN<VersionInfo> version)
+{
+	OPTSTR_DEL(version->biosDateTime);
+	OPTSTR_DEL(version->exts);
+	OPTSTR_DEL(version->extd);
+	OPTSTR_DEL(version->exth);
+	OPTSTR_DEL(version->extu);
+	OPTSTR_DEL(version->cfg);
+	OPTSTR_DEL(version->ini);
 }

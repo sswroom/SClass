@@ -936,7 +936,7 @@ Bool IO::GSMModemController::SMSListMessages(NN<Data::ArrayListNN<IO::GSMModemCo
 							lastIndex = msg->index = Text::StrToInt32(sbuffs[0]);
 							msg->status = (SMSStatus)Text::StrToInt32(sbuffs[1]);
 							msg->pduLeng = (strLen >> 1);
-							msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
+							msg->pduMessage = MemAllocArr(UInt8, strLen >> 1);
 							Text::StrHex2Bytes(val2->v, msg->pduMessage);
 							msgList->Add(msg);
 						}
@@ -951,7 +951,7 @@ Bool IO::GSMModemController::SMSListMessages(NN<Data::ArrayListNN<IO::GSMModemCo
 							msg->index = lastIndex + 1;
 							msg->status = (SMSStatus)0;
 							msg->pduLeng = (strLen >> 1);
-							msg->pduMessage = MemAlloc(UInt8, strLen >> 1);
+							msg->pduMessage = MemAllocArr(UInt8, strLen >> 1);
 							Text::StrHex2Bytes(val->v, msg->pduMessage);
 							msgList->Add(msg);
 						}
@@ -986,7 +986,7 @@ void IO::GSMModemController::SMSFreeMessages(NN<Data::ArrayListNN<SMSMessage>> m
 
 void __stdcall IO::GSMModemController::SMSFreeMessage(NN<SMSMessage> msg)
 {
-	MemFree(msg->pduMessage);
+	MemFreeArr(msg->pduMessage);
 	MemFreeNN(msg);
 }
 

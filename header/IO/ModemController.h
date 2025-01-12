@@ -31,7 +31,7 @@ namespace IO
 		Bool IsCmdSucceed();
 
 		UnsafeArrayOpt<UTF8Char> SendStringCommand(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
-		Bool SendStringCommand(Data::ArrayListStringNN *resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
+		Bool SendStringCommand(NN<Data::ArrayListStringNN> resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
 		UnsafeArrayOpt<UTF8Char> SendStringCommandDirect(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
 		Bool SendStringListCommand(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 		Bool SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);

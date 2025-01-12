@@ -9,6 +9,121 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/WiFiUtil.h"
 #include "SSWR/AVIRead/AVIRRadioScanForm.h"
+#include "Sync/SimpleThread.h"
+#include "Sync/ThreadUtil.h"
+
+UInt32 __stdcall SSWR::AVIRead::AVIRRadioScanForm::CellularThread(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
+	Data::Timestamp currTime;
+	Data::Timestamp nextSignalTime;
+	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
+	Bool init = false;
+	IO::GSMModemController::BER ber;
+	NN<IO::ATCommandChannel> channel;
+	NN<IO::GSMModemController> modem;
+	NN<IO::HuaweiGSMModemController> huawei;
+	NN<Text::String> s;
+
+	nextSignalTime = Data::Timestamp::UtcNow();
+	me->cellularRunning = true;
+	if (me->cellularModem.SetTo(modem))
+	{
+		while (!me->cellularToStop)
+		{
+			if (!init)
+			{
+				init = true;
+				OPTSTR_DEL(me->cellularModemManu);
+				OPTSTR_DEL(me->cellularModemModel);
+				OPTSTR_DEL(me->cellularModemVer);
+				OPTSTR_DEL(me->cellularIMEI);
+				OPTSTR_DEL(me->cellularHuaweiICCID);
+				if (modem->GSMGetManufacturer(sbuff).SetTo(sptr))
+				{
+					s = Text::String::NewP(sbuff, sptr);
+					me->cellularModemManu = s;
+					if (s->StartsWith(UTF8STRC("Huawei")) && me->cellularChannel.SetTo(channel))
+					{
+						NN<IO::GSMModemController> oldModem;
+						NEW_CLASSNN(huawei, IO::HuaweiGSMModemController(channel, false));
+						me->cellularHuawei = huawei;
+						oldModem = modem;
+						me->cellularModem = huawei;
+						oldModem.Delete();
+//						huawei->HuaweiGetCardMode(&me->huaweiSIMType);
+					}
+				}
+				if (modem->GSMGetModelIdent(sbuff).SetTo(sptr))
+					me->cellularModemModel = Text::String::NewP(sbuff, sptr);
+				if (modem->GSMGetModemVer(sbuff).SetTo(sptr))
+					me->cellularModemVer = Text::String::NewP(sbuff, sptr);
+				if (modem->GSMGetIMEI(sbuff).SetTo(sptr))
+					me->cellularIMEI = Text::String::NewP(sbuff, sptr);
+				if (me->cellularHuawei.SetTo(huawei) && huawei->HuaweiGetICCID(sbuff).SetTo(sptr))
+					me->cellularHuaweiICCID = Text::String::NewP(sbuff, sptr);
+				me->cellularInitStrs = true;
+
+				if (modem->GSMGetTECharset(sbuff).SetTo(sptr))
+				{
+					OPTSTR_DEL(me->cellularTECharset);
+					me->cellularTECharset = Text::String::NewP(sbuff, sptr);
+					me->cellularTECharsetUpd = true;
+				}
+			}
+			if (me->cellularSIMChanged)
+			{
+				me->cellularSIMChanged = false;
+				if (modem->GSMGetIMSI(sbuff).SetTo(sptr))
+				{
+					OPTSTR_DEL(me->cellularIMSI);
+					me->cellularIMSI = Text::String::NewP(sbuff, sptr);
+				}
+				me->cellularSIMInfoUpdated = true;
+			}
+
+			currTime = Data::Timestamp::UtcNow();
+			if (currTime >= me->cellularOperNextTime)
+			{
+				me->cellularOperNextTime = me->cellularOperNextTime.AddSecond(30);
+				if (modem->GSMGetCurrPLMN(sbuff).SetTo(sptr))
+				{
+					OPTSTR_DEL(me->cellularOperName);
+					me->cellularOperName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+					me->cellularOperUpdated = true;
+				}
+				if (modem->GSMGetRegisterNetwork(me->cellularRegNetN, me->cellularRegNetStat, me->cellularRegNetLAC, me->cellularRegNetCI, me->cellularRegNetACT))
+				{
+					me->cellularRegNetUpdated = true;
+				}
+/*				if (me->huawei)
+				{
+					me->huaweiSysInfoUpdated = me->huawei->HuaweiGetSysInfoEx(&me->huaweiSysInfoSrvStatus,
+						&me->huaweiSysInfoSrvDomain,
+						&me->huaweiSysInfoRoamStatus,
+						&me->huaweiSysInfoSIMState,
+						&me->huaweiSysInfoLockState,
+						&me->huaweiSysInfoSysMode,
+						&me->huaweiSysInfoSubMode);
+				}*/
+			}
+			if (currTime >= nextSignalTime)
+			{
+				nextSignalTime = nextSignalTime.AddSecond(10);
+				modem->GSMGetSignalQuality(me->cellularSignalQuality, ber);
+/*				if (me->huawei)
+				{
+					me->huaweiCSQUpdated = me->huawei->HuaweiGetSignalStrength(&me->huaweiCSQ);
+				}*/
+				me->cellularSignalUpdated = true;
+			}
+			me->cellularEvt.Wait(1000);
+		}
+	}
+	me->cellularRunning = false;
+	return 0;
+}
 
 void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 {
@@ -20,8 +135,9 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 	Int64 currTime;
 	UInt8 id[8];
 	UInt64 imac;
-	UTF8Char sbuff[128];
+	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> s;
 	if (me->wlanInterf.SetTo(wlanInterf))
 	{
 		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -179,6 +295,82 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 			me->gnssLastUpdateTime = currTime;
 			locSvc->ErrorRecover();
 		}
+	}
+
+	if (me->cellularInitStrs)
+	{
+		me->cellularInitStrs = false;
+		if (me->cellularModemManu.SetTo(s))
+		{
+			me->txtCellularManu->SetText(s->ToCString());
+		}
+		if (me->cellularModemModel.SetTo(s))
+		{
+			me->txtCellularModel->SetText(s->ToCString());
+		}
+		if (me->cellularModemVer.SetTo(s))
+		{
+			me->txtCellularVer->SetText(s->ToCString());
+		}
+		if (me->cellularIMEI.SetTo(s))
+		{
+			me->txtCellularIMEI->SetText(s->ToCString());
+		}
+/*		if (me->cellularHuawei.NotNull())
+		{
+			if (me->cellularHuaweiICCID.SetTo(s))
+			{
+				me->txtCellularHuaweiICCID->SetText(s->ToCString());
+			}
+			me->txtCellularHuaweiSIMType->SetText(IO::HuaweiGSMModemController::SIMCardTypeGetName(me->cellularHuaweiSIMType));
+		}*/
+	}
+	if (me->cellularSIMInfoUpdated)
+	{
+		me->cellularSIMInfoUpdated = false;
+		me->txtCellularIMSI->SetText(Text::String::OrEmpty(me->cellularIMSI)->ToCString());
+	}
+	if (me->cellularTECharsetUpd && me->cellularTECharset.SetTo(s))
+	{
+		me->cellularTECharsetUpd = false;
+		me->txtCellularTECharset->SetText(s->ToCString());
+	}
+
+	if (me->cellularOperUpdated && me->cellularOperName.SetTo(s))
+	{
+		me->cellularOperUpdated = false;
+		me->txtCellularOperator->SetText(s->ToCString());
+	}
+
+	if (me->cellularRegNetUpdated)
+	{
+		me->cellularRegNetUpdated = false;
+		me->txtCellularRegStatus->SetText(IO::GSMModemController::RegisterStatusGetName(me->cellularRegNetStat));
+		if (me->cellularRegNetN == IO::GSMModemController::NetworkResult::Enable_w_Location)
+		{
+			sptr = Text::StrUInt16(sbuff, me->cellularRegNetLAC);
+			me->txtCellularLAC->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, me->cellularRegNetCI);
+			me->txtCellularCI->SetText(CSTRP(sbuff, sptr));
+			me->txtCellularACT->SetText(IO::GSMModemController::AccessTechGetName(me->cellularRegNetACT));
+		}
+	}
+/*	if (me->huaweiSysInfoUpdated)
+	{
+		me->huaweiSysInfoUpdated = false;
+		me->txtHuaweiSrvStatus->SetText(IO::HuaweiGSMModemController::ServiceStatusGetName(me->huaweiSysInfoSrvStatus));
+		me->txtHuaweiSrvDomain->SetText(IO::HuaweiGSMModemController::ServiceDomainGetName(me->huaweiSysInfoSrvDomain));
+		me->txtHuaweiRoamStatus->SetText(me->huaweiSysInfoRoamStatus?CSTR("Roaming"):CSTR("Not Roaming"));
+		me->txtHuaweiSIMState->SetText(IO::HuaweiGSMModemController::SIMStateGetName(me->huaweiSysInfoSIMState));
+		me->txtHuaweiLockState->SetText(me->huaweiSysInfoLockState?CSTR("Locked"):CSTR("Not locked"));
+		me->txtHuaweiSysMode->SetText(IO::HuaweiGSMModemController::SysModeGetName(me->huaweiSysInfoSysMode));
+		me->txtHuaweiSubMode->SetText(IO::HuaweiGSMModemController::SubModeGetName(me->huaweiSysInfoSubMode));
+	}*/
+	if (me->cellularSignalUpdated)
+	{
+		me->cellularSignalUpdated = false;
+		sptr = IO::GSMModemController::RSSIGetName(sbuff, me->cellularSignalQuality);
+		me->txtCellularSignalQuality->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -395,38 +587,50 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleGNSS()
 
 void SSWR::AVIRead::AVIRRadioScanForm::ToggleCellular()
 {
-	if (false)//this->locSvc.NotNull())
+	NN<IO::GSMModemController> modem;
+	if (this->CloseCellular())
 	{
-		this->locSvc.Delete();
-		this->btnGNSS->SetText(CSTR("Start"));
-		this->lvDashboard->SetSubItem(2, 1, CSTR("Idle"));
-		this->cboGNSSPort->SetEnabled(true);
-		this->cboGNSSBaudRate->SetEnabled(true);
-		this->cboGNSSParity->SetEnabled(true);
-		this->chkGNSSFlowControl->SetEnabled(true);
-		this->btnGNSSPort->SetEnabled(true);
+		this->btnCellular->SetText(CSTR("Start"));
+		this->lvDashboard->SetSubItem(3, 1, CSTR("Idle"));
+		this->cboCellularPort->SetEnabled(true);
+		this->cboCellularBaudRate->SetEnabled(true);
+		this->cboCellularParity->SetEnabled(true);
+		this->chkCellularFlowControl->SetEnabled(true);
+		this->btnCellularPort->SetEnabled(true);
 	}
 	else
 	{
 		NN<IO::SerialPort> stm;
-		if (IO::SerialPortUtil::OpenSerialPort(this->cboGNSSPort, this->cboGNSSBaudRate, this->cboGNSSParity, this->chkGNSSFlowControl->IsChecked()).SetTo(stm))
+		if (IO::SerialPortUtil::OpenSerialPort(this->cboCellularPort, this->cboCellularBaudRate, this->cboCellularParity, this->chkCellularFlowControl->IsChecked()).SetTo(stm))
 		{
-			NN<Map::ILocationService> locSvc;
-			NEW_CLASSNN(locSvc, IO::GPSNMEA(stm, true));
-			locSvc->RegisterLocationHandler(OnGNSSLocationUpdated, this);
-			this->locSvc = locSvc;
-			this->gnssLastUpdateTime = Data::DateTimeUtil::GetCurrTimeMillis();
-			this->lvDashboard->SetSubItem(2, 1, CSTR("Scanning"));
-			this->btnGNSS->SetText(CSTR("Stop"));
-			this->cboGNSSPort->SetEnabled(false);
-			this->cboGNSSBaudRate->SetEnabled(false);
-			this->cboGNSSParity->SetEnabled(false);
-			this->chkGNSSFlowControl->SetEnabled(false);
-			this->btnGNSSPort->SetEnabled(false);
+			this->cellularPort = stm;
+
+			NN<IO::ATCommandChannel> channel;
+			NEW_CLASSNN(channel, IO::ATCommandChannel(stm, false));
+			this->cellularChannel = channel;
+			NEW_CLASSNN(modem, IO::GSMModemController(channel, false));
+			this->cellularModem = modem;
+
+			this->cellularSIMChanged = true;
+			this->cellularToStop = false;
+			this->cellularRunning = false;
+			Sync::ThreadUtil::Create(CellularThread, this);
+			while (!this->cellularRunning)
+			{
+				Sync::SimpleThread::Sleep(10);
+			}
+
+			this->lvDashboard->SetSubItem(3, 1, CSTR("Scanning"));
+			this->btnCellular->SetText(CSTR("Stop"));
+			this->cboCellularPort->SetEnabled(false);
+			this->cboCellularBaudRate->SetEnabled(false);
+			this->cboCellularParity->SetEnabled(false);
+			this->chkCellularFlowControl->SetEnabled(false);
+			this->btnCellularPort->SetEnabled(false);
 		}
 		else
 		{
-			this->ui->ShowMsgOK(CSTR("Error in opening GPS Serial Port"), CSTR("Radio Scan"), this);
+			this->ui->ShowMsgOK(CSTR("Error in opening Cellular Serial Port"), CSTR("Radio Scan"), this);
 		}
 	}
 
@@ -509,6 +713,33 @@ UOSInt SSWR::AVIRead::AVIRRadioScanForm::AppendBTList(NN<Data::FastMapNN<UInt64,
 	}
 	minTime.Set(mTime);
 	return cnt;
+}
+
+Bool SSWR::AVIRead::AVIRRadioScanForm::CloseCellular()
+{
+	NN<IO::Stream> port;
+	NN<IO::ATCommandChannel> channel;
+	NN<IO::GSMModemController> modem;
+	if (this->cellularPort.SetTo(port) && this->cellularChannel.SetTo(channel) && this->cellularModem.SetTo(modem))
+	{
+		this->cellularToStop = true;
+		this->cellularEvt.Set();
+		port->Close();
+		channel->Close();
+		while (this->cellularRunning)
+		{
+			Sync::SimpleThread::Sleep(10);
+		}
+
+//		modem->SMSFreeMessages(this->msgList);
+
+		this->cellularModem.Delete();
+		this->cellularChannel.Delete();
+		this->cellularPort.Delete();
+		this->cellularHuawei = 0;
+		return true;
+	}
+	return false;
 }
 
 SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
@@ -803,7 +1034,6 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->txtCellularSignalQuality = ui->NewTextBox(this->tpCellularInfo, CSTR(""));
 	this->txtCellularSignalQuality->SetReadOnly(true);
 	this->txtCellularSignalQuality->SetRect(104, 268, 150, 23, false);
-
 	this->lvDashboard->AddItem(CSTR("Cellular"), 0);
 	this->lvDashboard->SetSubItem(3, 1, CSTR("Idle"));
 	this->lvDashboard->SetSubItem(3, 2, CSTR("0"));
@@ -817,6 +1047,35 @@ SSWR::AVIRead::AVIRRadioScanForm::AVIRRadioScanForm(Optional<UI::GUIClientContro
 	this->locSvc = 0;
 	this->gnssRecUpdated = false;
 	this->gnssLastUpdateTime = Data::DateTimeUtil::GetCurrTimeMillis();
+	this->cellularPort = 0;
+	this->cellularChannel = 0;
+	this->cellularModem = 0;
+	this->cellularHuawei = 0;
+	this->cellularToStop = false;
+	this->cellularRunning = false;
+	this->cellularInitStrs = false;
+	this->cellularModemManu = 0;
+	this->cellularModemModel = 0;
+	this->cellularModemVer = 0;
+	this->cellularIMEI = 0;
+	this->cellularHuaweiICCID = 0;
+	this->cellularTECharsetUpd = false;
+	this->cellularTECharset = 0;
+	this->cellularSIMChanged = false;
+	this->cellularSIMInfoUpdated = false;
+	this->cellularIMSI = 0;
+	this->cellularRegNetUpdated = false;
+	this->cellularRegNetN = IO::GSMModemController::NetworkResult::Disable;
+	this->cellularRegNetStat = IO::GSMModemController::RegisterStatus::Unknown;
+	this->cellularRegNetLAC = 0;
+	this->cellularRegNetCI = 0;
+	this->cellularRegNetACT = IO::GSMModemController::AccessTech::GSM;
+	this->cellularSignalUpdated = false;
+	this->cellularSignalQuality = IO::GSMModemController::RSSI::RSSI_UNKNOWN;
+	this->cellularOperUpdated = false;
+	this->cellularOperName = 0;
+	this->cellularOperNextTime = Data::Timestamp::UtcNow();
+
 	this->AddTimer(500, OnTimerTick, this);
 }
 
@@ -833,6 +1092,15 @@ SSWR::AVIRead::AVIRRadioScanForm::~AVIRRadioScanForm()
 	}
 
 	this->locSvc.Delete();
+	this->CloseCellular();
+	OPTSTR_DEL(this->cellularOperName);
+	OPTSTR_DEL(this->cellularModemManu);
+	OPTSTR_DEL(this->cellularModemModel);
+	OPTSTR_DEL(this->cellularModemVer);
+	OPTSTR_DEL(this->cellularIMEI);
+	OPTSTR_DEL(this->cellularHuaweiICCID);
+	OPTSTR_DEL(this->cellularIMSI);
+	OPTSTR_DEL(this->cellularTECharset);
 }
 
 void SSWR::AVIRead::AVIRRadioScanForm::OnMonitorChanged()

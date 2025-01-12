@@ -27,7 +27,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::GSMModemController *modem;
 			IO::HuaweiGSMModemController *huawei;
-			IO::ATCommandChannel *channel;
+			Optional<IO::ATCommandChannel> channel;
 			IO::Stream *port;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
@@ -163,13 +163,28 @@ namespace SSWR
 			NN<UI::GUITextBox> txtHuaweiDHCPMaxRXbps;
 			NN<UI::GUILabel> lblHuaweiDHCPMaxTXbps;
 			NN<UI::GUITextBox> txtHuaweiDHCPMaxTXbps;
+			NN<UI::GUIGroupBox> grpHuaweiVersion;
+			NN<UI::GUILabel> lblHuaweiBDT;
+			NN<UI::GUITextBox> txtHuaweiBDT;
+			NN<UI::GUILabel> lblHuaweiEXTS;
+			NN<UI::GUITextBox> txtHuaweiEXTS;
+			NN<UI::GUILabel> lblHuaweiEXTD;
+			NN<UI::GUITextBox> txtHuaweiEXTD;
+			NN<UI::GUILabel> lblHuaweiEXTH;
+			NN<UI::GUITextBox> txtHuaweiEXTH;
+			NN<UI::GUILabel> lblHuaweiEXTU;
+			NN<UI::GUITextBox> txtHuaweiEXTU;
+			NN<UI::GUILabel> lblHuaweiCFG;
+			NN<UI::GUITextBox> txtHuaweiCFG;
+			NN<UI::GUILabel> lblHuaweiINI;
+			NN<UI::GUITextBox> txtHuaweiINI;
 
 			Bool initStrs;
-			Text::String *initModemManu;
-			Text::String *initModemModel;
-			Text::String *initModemVer;
-			Text::String *initIMEI;
-			Text::String *huaweiICCID;
+			Optional<Text::String> initModemManu;
+			Optional<Text::String> initModemModel;
+			Optional<Text::String> initModemVer;
+			Optional<Text::String> initIMEI;
+			Optional<Text::String> huaweiICCID;
 			Bool huaweiSysInfoUpdated;
 			IO::HuaweiGSMModemController::ServiceStatus huaweiSysInfoSrvStatus;
 			IO::HuaweiGSMModemController::ServiceDomain huaweiSysInfoSrvDomain;
@@ -183,9 +198,9 @@ namespace SSWR
 			IO::HuaweiGSMModemController::SignalStrengthInfo huaweiCSQ;
 			Bool simChanged;
 			Bool simInfoUpdated;
-			Text::String *simIMSI;
+			Optional<Text::String> simIMSI;
 			Bool cfgTECharsetUpd;
-			Text::String *cfgTECharset;
+			Optional<Text::String> cfgTECharset;
 			Bool regNetUpdated;
 			IO::GSMModemController::NetworkResult regNetN;
 			IO::GSMModemController::RegisterStatus regNetStat;
@@ -193,11 +208,13 @@ namespace SSWR
 			UInt32 regNetCI;
 			IO::GSMModemController::AccessTech regNetACT;
 			Data::ArrayListNN<IO::GSMModemController::SMSMessage> msgList;
+			IO::HuaweiGSMModemController::VersionInfo huaweiVersion;
+			Bool huaweiVersionUpdated;
 
 			Bool signalUpdated;
 			IO::GSMModemController::RSSI signalQuality;
 			Bool operUpdated;
-			Text::String *operName;
+			Optional<Text::String> operName;
 			Data::Timestamp operNextTime;
 
 			Bool toStop;

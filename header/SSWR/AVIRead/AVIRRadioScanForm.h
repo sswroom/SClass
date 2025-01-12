@@ -1,6 +1,9 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRRADIOSCANFORM
 #define _SM_SSWR_AVIREAD_AVIRRADIOSCANFORM
+#include "IO/ATCommandChannel.h"
 #include "IO/BTScanner.h"
+#include "IO/GSMModemController.h"
+#include "IO/HuaweiGSMModemController.h"
 #include "Map/ILocationService.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -144,6 +147,37 @@ namespace SSWR
 			Map::ILocationService::SateStatus gnssRecSates[32];
 			Int64 gnssLastUpdateTime;
 
+			Sync::Event cellularEvt;
+			Optional<IO::Stream> cellularPort;
+			Optional<IO::ATCommandChannel> cellularChannel;
+			Optional<IO::GSMModemController> cellularModem;
+			Optional<IO::HuaweiGSMModemController> cellularHuawei;
+			Bool cellularToStop;
+			Bool cellularRunning;
+			Bool cellularInitStrs;
+			Optional<Text::String> cellularModemManu;
+			Optional<Text::String> cellularModemModel;
+			Optional<Text::String> cellularModemVer;
+			Optional<Text::String> cellularIMEI;
+			Optional<Text::String> cellularHuaweiICCID;
+			Bool cellularTECharsetUpd;
+			Optional<Text::String> cellularTECharset;
+			Bool cellularSIMChanged;
+			Bool cellularSIMInfoUpdated;
+			Optional<Text::String> cellularIMSI;
+			Bool cellularRegNetUpdated;
+			IO::GSMModemController::NetworkResult cellularRegNetN;
+			IO::GSMModemController::RegisterStatus cellularRegNetStat;
+			UInt16 cellularRegNetLAC;
+			UInt32 cellularRegNetCI;
+			IO::GSMModemController::AccessTech cellularRegNetACT;
+			Bool cellularSignalUpdated;
+			IO::GSMModemController::RSSI cellularSignalQuality;
+			Bool cellularOperUpdated;
+			Optional<Text::String> cellularOperName;
+			Data::Timestamp cellularOperNextTime;
+
+			static UInt32 __stdcall CellularThread(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnWiFiClicked(AnyType userObj);
 			static void __stdcall OnWiFiSelChg(AnyType userObj);
@@ -160,6 +194,7 @@ namespace SSWR
 			void ToggleGNSS();
 			void ToggleCellular();
 			UOSInt AppendBTList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Int64 currTime, OutParam<Int64> minTime);
+			Bool CloseCellular();
 		public:
 			AVIRRadioScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRadioScanForm();
