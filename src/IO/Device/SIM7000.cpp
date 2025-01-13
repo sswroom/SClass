@@ -392,7 +392,7 @@ UnsafeArrayOpt<UTF8Char> IO::Device::SIM7000::NetGetIFAddr(UnsafeArray<UTF8Char>
 Bool IO::Device::SIM7000::NetGetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
 {
 	Data::ArrayListStringNN resList;
-	if (this->SendStringCommand(&resList, UTF8STRC("AT+CDNSCFG?"), 3000))
+	if (this->SendStringCommand(resList, UTF8STRC("AT+CDNSCFG?"), 3000))
 	{
 		UOSInt i = 0;
 		UOSInt j = resList.GetCount();
