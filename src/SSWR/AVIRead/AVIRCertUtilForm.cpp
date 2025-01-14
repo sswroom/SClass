@@ -191,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(AnyType userObj
 	NN<Crypto::Cert::X509Key> key;
 	if (me->key.SetTo(key))
 	{
-		me->core->SaveData(me.Ptr(), key, L"CertUtilSaveKey");
+		me->core->SaveData(me, key, L"CertUtilSaveKey");
 	}
 }
 

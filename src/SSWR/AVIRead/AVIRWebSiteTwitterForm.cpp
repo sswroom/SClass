@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUICl
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	//const UnsafeArray<UTF8Char> userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), 0));
+	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), 0));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUICl
 
 SSWR::AVIRead::AVIRWebSiteTwitterForm::~AVIRWebSiteTwitterForm()
 {
-	DEL_CLASS(this->ctrl);
+	this->ctrl.Delete();
 	this->ssl.Delete();
 }
 

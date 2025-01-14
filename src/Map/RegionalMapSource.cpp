@@ -339,8 +339,8 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	}
 	case MapType::ESRIMap:
 	{
-		Map::ESRI::ESRIMapServer *esriMap;
-		NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(map->url, map->urlLen), clif, ssl, map->mapTypeParam != 0));
+		NN<Map::ESRI::ESRIMapServer> esriMap;
+		NEW_CLASSNN(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(map->url, map->urlLen), clif, ssl, map->mapTypeParam != 0));
 		if (map->mapTypeParam != 0)
 		{
 			esriMap->SetSRID((UInt32)map->mapTypeParam);
@@ -350,12 +350,12 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 	}
 	case MapType::WMS:
 	{
-		Map::WebMapService *wms;
-		NEW_CLASS(wms, Map::WebMapService(clif, ssl, encFact, Text::CStringNN(map->url, map->urlLen), Map::WebMapService::Version::ANY, envCSys));
+		NN<Map::WebMapService> wms;
+		NEW_CLASSNN(wms, Map::WebMapService(clif, ssl, encFact, Text::CStringNN(map->url, map->urlLen), Map::WebMapService::Version::ANY, envCSys));
 		if (wms->IsError())
 		{
 			printf("RegionalMapSource: Error in loading wms layer\r\n");
-			DEL_CLASS(wms);
+			wms.Delete();
 			return 0;
 		}
 		NEW_CLASS(layer, Map::DrawMapServiceLayer(wms));

@@ -1078,7 +1078,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SAVEAS:
 		{
-			this->core->SaveData(this, this->packFile, L"PackageSave");
+			this->core->SaveData(*this, this->packFile, L"PackageSave");
 		}
 		break;
 	case MNU_OPEN_HEX_VIEWER:

@@ -10,7 +10,7 @@
 void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		me->StopStream();
 	}
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(AnyType u
 	{
 		IO::StreamType st;
 		me->stm = me->core->OpenStream(st, me, 9600, false);
-		if (me->stm)
+		if (me->stm.NotNull())
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
@@ -109,77 +109,81 @@ UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType user
 	UInt8 buff[512];
 	UOSInt recvSize;
 	UOSInt buffSize = 0;
+	NN<IO::Stream> stm;
 	me->threadRunning = true;
-	while (!me->threadToStop)
+	if (me->stm.SetTo(stm))
 	{
-		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 128));
-		if (recvSize <= 0)
+		while (!me->threadToStop)
 		{
-			me->remoteClosed = true;
-		}
-		else
-		{
-			buffSize += recvSize;
-			recvSize = 0;
-			while (recvSize < buffSize - 17)
+			recvSize = stm->Read(Data::ByteArray(&buff[buffSize], 128));
+			if (recvSize <= 0)
 			{
-				if (buff[recvSize + 16] == 13 && buff[recvSize + 17] == 10 && buff[recvSize + 2] == ',' && buff[recvSize + 5] == ',')
+				me->remoteClosed = true;
+			}
+			else
+			{
+				buffSize += recvSize;
+				recvSize = 0;
+				while (recvSize < buffSize - 17)
 				{
-					Bool isNeg = buff[recvSize + 6] == '-';
-					Math::Unit::Mass::MassUnit munit = Math::Unit::Mass::MU_KILOGRAM;
-					if (buff[recvSize + 14] == ' ' && buff[recvSize + 15] == 'g')
+					if (buff[recvSize + 16] == 13 && buff[recvSize + 17] == 10 && buff[recvSize + 2] == ',' && buff[recvSize + 5] == ',')
 					{
-						munit = Math::Unit::Mass::MU_GRAM;
-					}
-					else if (buff[recvSize + 14] == 'k' && buff[recvSize + 15] == 'g')
-					{
-						munit = Math::Unit::Mass::MU_KILOGRAM;
-					}
-					else if (buff[recvSize + 14] == 'l' && buff[recvSize + 15] == 'b')
-					{
-						munit = Math::Unit::Mass::MU_POUND;
-					}
-					else if (buff[recvSize + 14] == 'o' && buff[recvSize + 15] == 'z')
-					{
-						munit = Math::Unit::Mass::MU_OZ;
+						Bool isNeg = buff[recvSize + 6] == '-';
+						Math::Unit::Mass::MassUnit munit = Math::Unit::Mass::MU_KILOGRAM;
+						if (buff[recvSize + 14] == ' ' && buff[recvSize + 15] == 'g')
+						{
+							munit = Math::Unit::Mass::MU_GRAM;
+						}
+						else if (buff[recvSize + 14] == 'k' && buff[recvSize + 15] == 'g')
+						{
+							munit = Math::Unit::Mass::MU_KILOGRAM;
+						}
+						else if (buff[recvSize + 14] == 'l' && buff[recvSize + 15] == 'b')
+						{
+							munit = Math::Unit::Mass::MU_POUND;
+						}
+						else if (buff[recvSize + 14] == 'o' && buff[recvSize + 15] == 'z')
+						{
+							munit = Math::Unit::Mass::MU_OZ;
+						}
+						else
+						{
+							munit = Math::Unit::Mass::MU_KILOGRAM;
+						}
+						buff[recvSize + 14] = 0;
+						Text::StrTrim((Char*)&buff[recvSize + 7]);
+						Double weight = Text::StrToDoubleOrNAN(&buff[recvSize + 7]);
+						if (!Math::IsNAN(weight))
+						{
+							if (isNeg)
+							{
+								weight = -weight;
+							}
+
+							me->currWeight = weight;
+							me->currWeightUnit = munit;
+							me->currWeightUpd = true;
+							
+							weight = Math::Unit::Mass::Convert(munit, Math::Unit::Mass::MU_GRAM, weight);
+							me->rlcHistory->AddSample(&weight);
+						}
+
+						recvSize += 18;
 					}
 					else
 					{
-						munit = Math::Unit::Mass::MU_KILOGRAM;
+						recvSize++;
 					}
-					buff[recvSize + 14] = 0;
-					Text::StrTrim((Char*)&buff[recvSize + 7]);
-					Double weight = Text::StrToDoubleOrNAN(&buff[recvSize + 7]);
-					if (!Math::IsNAN(weight))
-					{
-						if (isNeg)
-						{
-							weight = -weight;
-						}
-
-						me->currWeight = weight;
-						me->currWeightUnit = munit;
-						me->currWeightUpd = true;
-						
-						weight = Math::Unit::Mass::Convert(munit, Math::Unit::Mass::MU_GRAM, weight);
-						me->rlcHistory->AddSample(&weight);
-					}
-
-					recvSize += 18;
 				}
-				else
+				if (recvSize >= buffSize)
 				{
-					recvSize++;
+					buffSize = 0;
 				}
-			}
-			if (recvSize >= buffSize)
-			{
-				buffSize = 0;
-			}
-			else if (recvSize > 0)
-			{
-				MemCopyO(buff, &buff[recvSize], buffSize - recvSize);
-				buffSize -= recvSize;
+				else if (recvSize > 0)
+				{
+					MemCopyO(buff, &buff[recvSize], buffSize - recvSize);
+					buffSize -= recvSize;
+				}
 			}
 		}
 	}
@@ -189,16 +193,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType user
 
 void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 {
-	if (this->stm)
+	NN<IO::Stream> stm;
+	if (this->stm.SetTo(stm))
 	{
-		this->stm->Close();
+		stm->Close();
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 		this->threadToStop = false;
-		DEL_CLASS(this->stm);
+		stm.Delete();
 		this->stm = 0;
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));

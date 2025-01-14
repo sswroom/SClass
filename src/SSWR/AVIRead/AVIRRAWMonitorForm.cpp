@@ -257,17 +257,18 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(AnyType userObj
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	me->currPingIP = (PingIPInfo*)me->lbPingIP->GetSelectedItem().p;
 	me->pingIPContUpdated = false;
-	if (me->currPingIP)
+	NN<PingIPInfo> currPingIP;
+	if (me->currPingIP.SetTo(currPingIP))
 	{
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
-		sptr = Text::StrInt64(sbuff, me->currPingIP->count);
+		sptr = Text::StrInt64(sbuff, currPingIP->count);
 		me->txtPingIPCount->SetText(CSTRP(sbuff, sptr));
-		me->txtPingIPName->SetText(me->currPingIP->name->ToCString());
-		me->txtPingIPCountry->SetText(me->currPingIP->country->ToCString());
+		me->txtPingIPName->SetText(currPingIP->name->ToCString());
+		me->txtPingIPCountry->SetText(currPingIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
-		NN<Net::WhoisRecord> rec = me->whois.RequestIP(me->currPingIP->ip);
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(currPingIP->ip);
 		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		me->txtPingIPWhois->SetText(sb.ToCString());
 	}
@@ -544,10 +545,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	if (me->pingIPContUpdated)
+	NN<PingIPInfo> currPingIP;
+	if (me->pingIPContUpdated && me->currPingIP.SetTo(currPingIP))
 	{
 		me->pingIPContUpdated = false;
-		sptr = Text::StrInt64(sbuff, me->currPingIP->count);
+		sptr = Text::StrInt64(sbuff, currPingIP->count);
 		me->txtPingIPCount->SetText(CSTRP(sbuff, sptr));
 	}
 	if (me->pingIPListUpdated)
@@ -565,7 +567,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			pingIPInfo = me->pingIPMap.GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pingIPInfo->ip);
 			me->lbPingIP->AddItem(CSTRP(sbuff, sptr), pingIPInfo);
-			if (pingIPInfo.Ptr() == me->currPingIP)
+			if (pingIPInfo.Ptr() == me->currPingIP.OrNull())
 			{
 				me->lbPingIP->SetSelectedIndex(i);
 			}

@@ -41,7 +41,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblVideoName;
 			NN<UI::GUITextBox> txtVideoName;
 
-			Net::WebSite::WebSite48IdolControl *ctrl;
+			NN<Net::WebSite::WebSite48IdolControl> ctrl;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 

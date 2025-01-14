@@ -24,7 +24,7 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUILabel> lblConfig;
 			NN<UI::GUIComboBox> cboConfig;
-			UI::GUITreeView *tvMain;
+			NN<UI::GUITreeView> tvMain;
 			NN<UI::GUIHSplitter> hspMain;
 			NN<UI::GUITextBox> txtMessage;
 

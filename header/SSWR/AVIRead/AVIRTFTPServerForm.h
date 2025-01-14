@@ -21,7 +21,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::TFTPServer *svr;
+			Optional<Net::TFTPServer> svr;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 

@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::PDFDocument *doc;
+			NN<Media::PDFDocument> doc;
 
 			NN<UI::GUIListBox> lbObject;
 			NN<UI::GUIHSplitter> hspMain;
@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnObjectSelChg(AnyType userObj);
 			static void __stdcall OnObjectDblClk(AnyType userObj);
 		public:
-			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc);
+			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::PDFDocument> doc);
 			virtual ~AVIRPDFObjectForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

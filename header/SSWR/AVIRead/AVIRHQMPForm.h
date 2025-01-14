@@ -45,7 +45,7 @@ namespace SSWR
 			NN<Media::ImageFilter::BWImgFilter> bwFilter;
 			NN<Media::ImageFilter::BGImgFilter> bgFilter;
 
-			UI::GUIVideoBoxDD *vbox;
+			NN<UI::GUIVideoBoxDD> vbox;
 			NN<UI::GUIMainMenu> mnu;
 			NN<UI::GUIMenu> mnuChapters;
 

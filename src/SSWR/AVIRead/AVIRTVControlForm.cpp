@@ -7,12 +7,14 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	NN<IO::Stream> port;
-	if (me->port.SetTo(port))
+	UnsafeArray<CommandInfo> cmdInfos;
+	if (me->port.SetTo(port) && me->cmdInfos.SetTo(cmdInfos))
 	{
 		port->Close();
 		me->tvCtrl.Delete();
 		me->port.Delete();
-		MemFree(me->cmdInfos);
+		MemFreeNN(cmdInfos);
+		me->cmdInfos = 0;
 
 		me->cboPort->SetEnabled(true);
 		me->cboTVType->SetEnabled(true);
@@ -65,12 +67,12 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 	tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
 	i = 0;
 	j = cmdList.GetCount();
-	me->cmdInfos = MemAlloc(CommandInfo, j);
+	me->cmdInfos = cmdInfos = MemAllocArr(CommandInfo, j);
 	while (i < j)
 	{
-		me->cmdInfos[i].cmdType = cmdList.GetItem(i);
-		me->cmdInfos[i].cmdFmt = cmdFormats.GetItem(i);
-		me->cboCommand->AddItem(IO::TVControl::GetCommandName(cmdList.GetItem(i)), &me->cmdInfos[i]);
+		cmdInfos[i].cmdType = cmdList.GetItem(i);
+		cmdInfos[i].cmdFmt = cmdFormats.GetItem(i);
+		me->cboCommand->AddItem(IO::TVControl::GetCommandName(cmdList.GetItem(i)), &cmdInfos[i]);
 		i++;
 	}
 	if (j > 0)
@@ -290,12 +292,14 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 SSWR::AVIRead::AVIRTVControlForm::~AVIRTVControlForm()
 {
 	NN<IO::Stream> port;
-	if (this->port.SetTo(port))
+	UnsafeArray<CommandInfo> cmdInfos;
+	if (this->port.SetTo(port) && this->cmdInfos.SetTo(cmdInfos))
 	{
 		port->Close();
 		this->tvCtrl.Delete();
 		this->port.Delete();
-		MemFree(this->cmdInfos);
+		MemFreeArr(cmdInfos);
+		this->cmdInfos = 0;
 	}
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();

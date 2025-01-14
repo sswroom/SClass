@@ -38,7 +38,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLogs;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::FileStream *currFile;
+			Optional<IO::FileStream> currFile;
 			Optional<IO::ProtoDec::IProtocolDecoder> currDec;
 			IO::ProtoDec::ProtoDecList decList;
 			Data::ArrayListNN<ProtocolItem> itemList;

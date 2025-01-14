@@ -21,7 +21,7 @@ namespace Media
 
 		Data::ArrayListNN<PlaylistEntry> entries;
 		NN<Parser::ParserList> parsers;
-		Media::IMediaPlayer *player;
+		Optional<Media::IMediaPlayer> player;
 		Optional<Media::MediaFile> currFile;
 		Bool playing;
 
@@ -44,7 +44,7 @@ namespace Media
 		Data::Duration GetTimeStart(UOSInt index) const;
 		Data::Duration GetTimeEnd(UOSInt index) const;
 
-		void SetPlayer(Media::IMediaPlayer *player);
+		void SetPlayer(Optional<Media::IMediaPlayer> player);
 		Bool OpenItem(UOSInt index);
 		
 		virtual Bool IsPlaying();

@@ -23,7 +23,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnBLUT;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::ICCProfile *icc;
+			Optional<Media::ICCProfile> icc;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnRLUTClicked(AnyType userObj);

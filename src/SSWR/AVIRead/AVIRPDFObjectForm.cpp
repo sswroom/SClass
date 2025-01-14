@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::PDFDocument> doc) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("PDF Objects"));
 	this->SetFont(0, 0, 8.25, false);
@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRPDFObjectForm::~AVIRPDFObjectForm()
 {
-	DEL_CLASS(this->doc);
+	this->doc.Delete();
 }
 
 void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)

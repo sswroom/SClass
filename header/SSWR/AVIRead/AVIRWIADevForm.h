@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::WIAManager *wiaMgr;
+			NN<Media::WIAManager> wiaMgr;
 
 			NN<UI::GUILabel> lblDevice;
 			NN<UI::GUIListBox> lbDevice;

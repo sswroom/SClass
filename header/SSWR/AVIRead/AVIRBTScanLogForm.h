@@ -26,8 +26,8 @@ namespace SSWR
 			NN<UI::GUILabel> lblInfo;
 			NN<UI::GUIListView> lvContent;
 
-			IO::BTScanLog *btLog;
-			Net::MACInfoList *macList;
+			NN<IO::BTScanLog> btLog;
+			Net::MACInfoList macList;
 
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall OnStoreClicked(AnyType userObj);
@@ -38,7 +38,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog);
+			AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::BTScanLog> btLog);
 			virtual ~AVIRBTScanLogForm();
 
 			virtual void OnMonitorChanged();

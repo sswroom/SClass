@@ -8,7 +8,6 @@ extern "C"
 	// Binary Search for larger arr
 	void InsertionSort_SortBInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
 	void InsertionSort_SortBStr(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
-	void InsertionSort_SortBCmpO(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
 
 	// Sequencial Search for small arr
 	void InsertionSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
@@ -34,6 +33,7 @@ namespace Data
 		public:
 			template <class T> static void SortB(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T, class V> static void SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
+			static void SortBCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }

@@ -39,7 +39,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpDisplay;
 			NN<UI::GUIPictureBoxSimple> pbsDisplay;
 
-			IO::Stream *stm;
+			Optional<IO::Stream> stm;
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool remoteClosed;

@@ -6,7 +6,8 @@ namespace Data
 	class IComparable
 	{
 	public:
-		virtual OSInt CompareTo(Data::IComparable *obj) const = 0;
+		virtual ~IComparable() {};
+		virtual OSInt CompareTo(NN<Data::IComparable> obj) const = 0;
 	};
 }
 #endif

@@ -752,15 +752,15 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
+		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
+		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
+		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
 	}
 
 	this->vbox->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -908,7 +908,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 		if (this->listener == 0)
 		{
 			NN<Media::MediaPlayerWebInterface> hdlr;
-			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(this, true));
+			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(*this, true));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), 0, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())
 			{
@@ -970,7 +970,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			sb.AppendTSNoZone(Data::Timestamp::UtcNow());
 			sb.AppendC(UTF8STRC(" b"));
 			debug.WriteLine(sb.ToCString());
-			if (this->player->GetVideoSize(&vSize.x, &vSize.y))
+			if (this->player->GetVideoSize(vSize.x, vSize.y))
 			{
 				Math::Size2D<UOSInt> sz1;
 				Math::Size2D<UOSInt> sz2;

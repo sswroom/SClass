@@ -10,12 +10,12 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(VideoFileInfo *file1, VideoFileInfo *file2)
+OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(NN<VideoFileInfo> file1, NN<VideoFileInfo> file2)
 {
 	return Text::StrCompare(file1->fileName->v, file2->fileName->v);
 }
 
-Media::MediaPlayerWebInterface::MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease)
+Media::MediaPlayerWebInterface::MediaPlayerWebInterface(NN<Media::MediaPlayerInterface> iface, Bool autoRelease)
 {
 	this->iface = iface;
 	this->autoRelease = autoRelease;
@@ -83,14 +83,14 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
 		{
-			Data::ArrayList<VideoFileInfo *> fileList;
-			VideoFileInfo *vfile;
+			Data::ArrayListNN<VideoFileInfo> fileList;
+			NN<VideoFileInfo> vfile;
 
 			while (IO::Path::FindNextFile(sptr, sess, 0, pt, fileSize).SetTo(sptr2))
 			{
 				if (pt == IO::Path::PathType::File)
 				{
-					vfile = MemAlloc(VideoFileInfo, 1);
+					vfile = MemAllocNN(VideoFileInfo);
 					vfile->fileName = Text::String::New(sptr, (UOSInt)(sptr2 - sptr));
 					vfile->fileSize = fileSize;
 					fileList.Add(vfile);
@@ -98,13 +98,13 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 			}
 			IO::Path::FindFileClose(sess);
 
-			Data::Sort::ArtificialQuickSortFunc<VideoFileInfo*>::Sort(fileList, VideoFileCompare);
+			Data::Sort::ArtificialQuickSortFunc<NN<VideoFileInfo>>::Sort(fileList, VideoFileCompare);
 
 			i = 0;
 			j = fileList.GetCount();
 			while (i < j)
 			{
-				vfile = fileList.GetItem(i);
+				vfile = fileList.GetItemNoCheck(i);
 
 				writer.Write(CSTR("<tr><td>"));
 				writer.Write(CSTR("<a href=\"/browse?fname="));
@@ -128,7 +128,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 				writer.WriteLine(CSTR("</td></tr>"));
 
 				vfile->fileName->Release();
-				MemFree(vfile);
+				MemFreeNN(vfile);
 				i++;
 			}
 		}
@@ -240,12 +240,14 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 		writer.WriteLine(CSTR("<a href=\"/nextchap\">Next Chapter</a>"));
 		writer.WriteLine(CSTR("<a href=\"/avofstdec\">A/V Offset Decrease</a>"));
 		writer.WriteLine(CSTR("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
+		NN<Media::VideoRenderer> vrenderer;
+		if (this->iface->GetVideoRenderer().SetTo(vrenderer))
 		{
 			Text::StringBuilderUTF8 sb;
 			Media::VideoRenderer::RendererStatus2 status;
 
 			writer.WriteLine(CSTR("<hr/>"));
-			this->iface->GetVideoRenderer()->GetStatus(status);
+			vrenderer->GetStatus(status);
 			sb.AppendC(UTF8STRC("Curr Time: "));
 			sb.AppendDur(status.currTime);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));

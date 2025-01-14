@@ -15,7 +15,7 @@ namespace Media
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		NN<Media::ColorManager> colorMgr;
 		NN<Media::ColorManagerSess> colorSess;
-		Media::ConsoleVideoRenderer *renderer;
+		NN<Media::ConsoleVideoRenderer> renderer;
 
 		virtual void OnMediaOpened();
 	public:

@@ -22,7 +22,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnRequestPage;
 			NN<UI::GUIListView> lvItems;
 
-			Net::WebSite::WebSiteTwitterControl *ctrl;
+			NN<Net::WebSite::WebSiteTwitterControl> ctrl;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 

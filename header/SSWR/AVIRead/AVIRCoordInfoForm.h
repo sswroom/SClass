@@ -32,7 +32,7 @@ namespace SSWR
 			static void __stdcall OnSRIDPrevClicked(AnyType userObj);
 			static void __stdcall OnSRIDNextClicked(AnyType userObj);
 
-			void ShowInfo(const Math::CoordinateSystemManager::SpatialRefInfo *srinfo);
+			void ShowInfo(Optional<const Math::CoordinateSystemManager::SpatialRefInfo> srinfo);
 		public:
 			AVIRCoordInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCoordInfoForm();

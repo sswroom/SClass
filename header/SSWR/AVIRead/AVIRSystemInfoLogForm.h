@@ -37,10 +37,10 @@ namespace SSWR
 			NN<UI::GUIListView> lvDrivers;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::SystemInfoLog *sysInfo;
+			NN<IO::SystemInfoLog> sysInfo;
 
 		public:
-			AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo);
+			AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SystemInfoLog> sysInfo);
 			virtual ~AVIRSystemInfoLogForm();
 
 			virtual void OnMonitorChanged();

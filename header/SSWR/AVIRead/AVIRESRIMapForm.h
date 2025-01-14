@@ -39,7 +39,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSRID;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
-			Map::ESRI::ESRIMapServer *esriMap;
+			Optional<Map::ESRI::ESRIMapServer> esriMap;
 
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
@@ -50,7 +50,7 @@ namespace SSWR
 			virtual ~AVIRESRIMapForm();
 
 			virtual void OnMonitorChanged();
-			Map::ESRI::ESRIMapServer *GetSelectedMap();
+			Optional<Map::ESRI::ESRIMapServer> GetSelectedMap();
 		};
 	}
 }

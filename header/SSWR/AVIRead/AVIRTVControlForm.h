@@ -32,7 +32,7 @@ namespace SSWR
 			Optional<IO::TVControl> tvCtrl;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			CommandInfo *cmdInfos;
+			UnsafeArrayOpt<CommandInfo> cmdInfos;
 
 			NN<UI::GUIPanel> pnlPort;
 			NN<UI::GUILabel> lblTVType;

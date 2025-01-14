@@ -35,7 +35,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnPage;
 			NN<UI::GUIListBox> lbImageURL;
 
-			Net::WebSite::WebSiteInstagramControl *ctrl;
+			NN<Net::WebSite::WebSiteInstagramControl> ctrl;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 

@@ -193,7 +193,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 	this->lblConfig->SetRect(100, 0, 100, 23, false);
 	this->cboConfig = ui->NewComboBox(this->pnlCtrl, false);
 	this->cboConfig->SetRect(200, 0, 200, 23, false);
-	NEW_CLASS(this->tvMain, UI::GUITreeView(ui, *this));
+	NEW_CLASSNN(this->tvMain, UI::GUITreeView(ui, *this));
 	this->tvMain->SetRect(0, 0, 200, 23, false);
 	this->tvMain->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->tvMain->SetHasLines(true);

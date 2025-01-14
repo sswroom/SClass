@@ -681,7 +681,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_IMAGE_SAVE:
-		this->core->SaveData(this, this->imgList, L"SaveImage");
+		this->core->SaveData(*this, this->imgList, L"SaveImage");
 		break;
 	case MNU_IMAGE_ENLARGE:
 		this->allowEnlarge = !this->allowEnlarge;

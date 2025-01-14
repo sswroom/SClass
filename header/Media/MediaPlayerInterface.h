@@ -30,7 +30,7 @@ namespace Media
 		void CloseFile();
 
 		Optional<Media::MediaFile> GetOpenedFile();
-		Media::VideoRenderer *GetVideoRenderer();
+		Optional<Media::VideoRenderer> GetVideoRenderer();
 
 		void PBStart();
 		void PBStop();

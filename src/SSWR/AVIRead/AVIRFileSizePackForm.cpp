@@ -33,9 +33,9 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetSize() const
 	return this->fileSize;
 }
 
-OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(Data::IComparable *obj) const
+OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(NN<Data::IComparable> obj) const
 {
-	UInt64 size = ((MyFile*)obj)->fileSize;
+	UInt64 size = NN<MyFile>::ConvertFrom(obj)->fileSize;
 	if (this->fileSize > size)
 		return -1;
 	else if (this->fileSize < size)
@@ -177,8 +177,8 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		IO::Path::FindFileClose(sess);
 
 		UOSInt arrSize;
-		Data::IComparable **arr = (Data::IComparable**)this->fileList.GetArr(arrSize).Ptr();
-		ArtificialQuickSort_SortCmpO(arr, 0, (OSInt)arrSize - 1);
+		UnsafeArray<NN<Data::IComparable>> arr = (NN<Data::IComparable>*)this->fileList.GetArr(arrSize).Ptr();
+		Data::Sort::ArtificialQuickSort::SortCmpO(arr, 0, (OSInt)arrSize - 1);
 		i = 0;
 		while (i < arrSize)
 		{

@@ -10,8 +10,12 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, Data::ArrayListNN<ExeB16Addr> *parts, Data::ArrayListInt32 *partInd, NN<ExeB16Addr> startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, NN<Data::ArrayListNN<ExeB16Addr>> parts, NN<Data::ArrayListInt32> partInd, NN<ExeB16Addr> startAddr, NN<Manage::DasmX86_16> dasm, UOSInt codeSize)
 {
+	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
+	if (!this->codesList.SetTo(codesList))
+		return;
+
 	UTF8Char buff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt buffSize;
@@ -84,7 +88,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 			if (found)
 				break;
 			NEW_CLASSNN(codes, Data::ArrayListStringNN());
-			this->codesList->Add(codes);
+			codesList->Add(codes);
 			startAddr = MemAllocNN(ExeB16Addr);
 			startAddr->segm = sess->regs.CS;
 			startAddr->addr = sess->regs.IP;
@@ -103,11 +107,11 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_S
 void SSWR::AVIRead::AVIRExeForm::InitSess16()
 {
 	Manage::DasmX86_16::DasmX86_16_Regs regs;
-	Manage::DasmX86_16 *dasm;
+	NN<Manage::DasmX86_16> dasm;
 	NN<Manage::DasmX86_16::DasmX86_16_Sess> sess;
 	NN<Data::ArrayListStringNN> codes;
-	Data::ArrayListNN<ExeB16Addr> *parts;
-	Data::ArrayListInt32 *partInd;
+	NN<Data::ArrayListNN<ExeB16Addr>> parts;
+	NN<Data::ArrayListInt32> partInd;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	NN<ExeB16Addr> eaddr;
@@ -116,13 +120,15 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	UOSInt j;
 	Data::ArrayListUInt32 *funcCalls;
 	Data::ArrayListUInt32 *nfuncCalls;
+	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
 
 	this->exeFile->GetDOSInitRegs(&regs);
-	NEW_CLASS(parts, Data::ArrayListNN<ExeB16Addr>());
-	NEW_CLASS(partInd, Data::ArrayListInt32());
-	NEW_CLASS(this->codesList, Data::ArrayListNN<Data::ArrayListStringNN>());
+	NEW_CLASSNN(parts, Data::ArrayListNN<ExeB16Addr>());
+	NEW_CLASSNN(partInd, Data::ArrayListInt32());
+	NEW_CLASSNN(codesList, Data::ArrayListNN<Data::ArrayListStringNN>());
+	this->codesList = codesList;
 	NEW_CLASSNN(codes, Data::ArrayListStringNN());
-	this->codesList->Add(codes);
+	codesList->Add(codes);
 	eaddr = MemAllocNN(ExeB16Addr);
 	eaddr->segm = regs.CS;
 	eaddr->addr = eaddr->endAddr = regs.IP;
@@ -131,9 +137,9 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	
 	parts->Insert(partInd->SortedInsert((eaddr->segm << 16) | eaddr->addr), eaddr);
 	
-	NEW_CLASS(dasm, Manage::DasmX86_16());
-	NEW_CLASS(funcCalls, ::Data::ArrayListUInt32());
-	NEW_CLASS(nfuncCalls, ::Data::ArrayListUInt32());
+	NEW_CLASSNN(dasm, Manage::DasmX86_16());
+	NEW_CLASS(funcCalls, Data::ArrayListUInt32());
+	NEW_CLASS(nfuncCalls, Data::ArrayListUInt32());
 	sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
 	this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
 	nfuncCalls->AddAll(sess->callAddrs);
@@ -154,7 +160,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 			sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
 			sess->regs.IP = (::UInt16)faddr;
 			NEW_CLASSNN(codes, Data::ArrayListStringNN());
-			this->codesList->Add(codes);
+			codesList->Add(codes);
 			eaddr = MemAllocNN(ExeB16Addr);
 			eaddr->segm = sess->regs.CS;
 			eaddr->addr = eaddr->endAddr = sess->regs.IP;
@@ -172,8 +178,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	}
 	DEL_CLASS(funcCalls);
 	DEL_CLASS(nfuncCalls);
-	DEL_CLASS(dasm);
-	DEL_CLASS(partInd);
+	dasm.Delete();
+	partInd.Delete();
 	this->parts = parts;
 
 	Optional<ExeB16Addr> lastAddr = 0;
@@ -305,7 +311,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::EXEFile> exeFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -417,25 +423,27 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 {
 	UOSInt j;
 	UOSInt i;
-	DEL_CLASS(this->exeFile);
-	if (this->parts)
+	NN<Data::ArrayListNN<ExeB16Addr>> parts;
+	NN<Data::ArrayListNN<Data::ArrayListStringNN>> codesList;
+	this->exeFile.Delete();
+	if (this->parts.SetTo(parts))
 	{
 		NN<ExeB16Addr> addr;
-		i = this->parts->GetCount();
+		i = parts->GetCount();
 		while (i-- > 0)
 		{
-			addr = this->parts->GetItemNoCheck(i);
+			addr = parts->GetItemNoCheck(i);
 			MemFreeNN(addr);
 		}
-		DEL_CLASS(this->parts);
+		this->parts.Delete();
 	}
-	if (this->codesList)
+	if (this->codesList.SetTo(codesList))
 	{
 		NN<Data::ArrayListStringNN> codes;
-		i = this->codesList->GetCount();
+		i = codesList->GetCount();
 		while (i-- > 0)
 		{
-			codes = this->codesList->GetItemNoCheck(i);
+			codes = codesList->GetItemNoCheck(i);
 			j = codes->GetCount();
 			while (j-- > 0)
 			{
@@ -443,7 +451,7 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 			}
 			codes.Delete();
 		}
-		DEL_CLASS(this->codesList);
+		this->codesList.Delete();
 	}
 }
 

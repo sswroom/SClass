@@ -310,7 +310,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_IMAGE_SAVE:
 		if (this->imgList.SetTo(imgList))
 		{
-			this->core->SaveData(this, imgList, L"SaveImage");
+			this->core->SaveData(*this, imgList, L"SaveImage");
 		}
 		break;
 	case MNU_IMAGE_RENAME:

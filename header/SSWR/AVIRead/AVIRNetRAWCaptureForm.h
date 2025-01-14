@@ -17,7 +17,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Net::RAWCapture *capture;
+			Optional<Net::RAWCapture> capture;
 			UInt64 currCnt;
 			UInt64 currDataSize;
 

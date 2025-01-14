@@ -6,9 +6,10 @@
 void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
-	if (me->scanner)
+	NN<Net::TCPPortScanner> scanner;
+	if (me->scanner.NotNull())
 	{
-		SDEL_CLASS(me->scanner);
+		me->scanner.Delete();
 		me->txtIP->SetReadOnly(false);
 		me->txtThreadCnt->SetReadOnly(false);
 		me->txtMaxPort->SetReadOnly(false);
@@ -34,8 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(AnyType userOb
 		me->txtIP->GetText(sb);
 		if (me->sockf->DNSResolveIP(sb.ToCString(), addr))
 		{
-			NEW_CLASS(me->scanner, Net::TCPPortScanner(me->sockf, threadCnt, OnPortUpdated, me));
-			me->scanner->Start(&addr, maxPort);
+			NEW_CLASSNN(scanner, Net::TCPPortScanner(me->sockf, threadCnt, OnPortUpdated, me));
+			me->scanner = scanner;
+			scanner->Start(&addr, maxPort);
 			me->txtIP->SetReadOnly(true);
 			me->txtThreadCnt->SetReadOnly(true);
 			me->txtMaxPort->SetReadOnly(true);
@@ -46,7 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
-	if (me->scanner)
+	NN<Net::TCPPortScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
 		if (me->listUpdated)
 		{
@@ -58,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 			UInt16 port;
 			Text::CStringNN cstr;
 			me->listUpdated = false;
-			me->scanner->GetAvailablePorts(&portList);
+			scanner->GetAvailablePorts(&portList);
 			me->lvPort->ClearItems();
 			i = 0;
 			j = portList.GetCount();
@@ -75,9 +78,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 			}
 		}
 
-		if (me->scanner->IsFinished())
+		if (scanner->IsFinished())
 		{
-			SDEL_CLASS(me->scanner);
+			me->scanner.Delete();
 			me->txtIP->SetReadOnly(false);
 			me->txtThreadCnt->SetReadOnly(false);
 			me->txtMaxPort->SetReadOnly(false);
@@ -132,7 +135,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRTCPPortScanForm::~AVIRTCPPortScanForm()
 {
-	SDEL_CLASS(this->scanner);
+	this->scanner.Delete();
 }
 
 void SSWR::AVIRead::AVIRTCPPortScanForm::OnMonitorChanged()

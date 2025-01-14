@@ -32,12 +32,12 @@ namespace SSWR
 			NN<UI::GUIListView> lvValues;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::LUT *lut;
+			NN<Media::LUT> lut;
 
 			static void __stdcall OnChannelChg(AnyType userObj);
 			void UpdateValues();
 		public:
-			AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut);
+			AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::LUT> lut);
 			virtual ~AVIRLUTForm();
 
 			virtual void OnMonitorChanged();

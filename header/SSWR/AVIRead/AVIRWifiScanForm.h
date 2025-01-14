@@ -18,7 +18,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::WirelessLAN *wlan;
+			Net::WirelessLAN wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
 			Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
 

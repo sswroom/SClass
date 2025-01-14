@@ -162,7 +162,7 @@ Optional<Media::MediaFile> Media::MediaPlayerInterface::GetOpenedFile()
 	return this->currFile;
 }
 
-Media::VideoRenderer *Media::MediaPlayerInterface::GetVideoRenderer()
+Optional<Media::VideoRenderer> Media::MediaPlayerInterface::GetVideoRenderer()
 {
 	if (this->player == 0)
 		return 0;
@@ -215,14 +215,20 @@ void Media::MediaPlayerInterface::PBNextChapter()
 
 void Media::MediaPlayerInterface::PBDecAVOfst()
 {
-	VideoRenderer *vrenderer = this->player->GetVideoRenderer();
-	vrenderer->SetAVOfst(vrenderer->GetAVOfst() - 10);
+	NN<VideoRenderer> vrenderer;
+	if (this->player->GetVideoRenderer().SetTo(vrenderer))
+	{
+		vrenderer->SetAVOfst(vrenderer->GetAVOfst() - 10);
+	}
 }
 
 void Media::MediaPlayerInterface::PBIncAVOfst()
 {
-	VideoRenderer *vrenderer = this->player->GetVideoRenderer();
-	vrenderer->SetAVOfst(vrenderer->GetAVOfst() + 10);
+	NN<VideoRenderer> vrenderer;
+	if (this->player->GetVideoRenderer().SetTo(vrenderer))
+	{
+		vrenderer->SetAVOfst(vrenderer->GetAVOfst() + 10);
+	}
 }
 
 void Media::MediaPlayerInterface::PBJumpOfst(Int32 ofst)

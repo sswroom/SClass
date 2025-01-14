@@ -33,9 +33,9 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboColorPrimaries;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::ConsoleMediaPlayer *player;
+			NN<Media::ConsoleMediaPlayer> player;
 			NN<Media::MediaPlayerWebInterface> webIface;
-			Net::WebServer::WebListener *listener;
+			Optional<Net::WebServer::WebListener> listener;
 			Bool videoOpening;
 
 			static void __stdcall OnStopClicked(AnyType userObj);

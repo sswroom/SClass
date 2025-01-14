@@ -8,9 +8,10 @@
 void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTFTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPServerForm>();
-	if (me->svr)
+	NN<Net::TFTPServer> svr;
+	if (me->svr.NotNull())
 	{
-		DEL_CLASS(me->svr);
+		me->svr.Delete();
 		me->txtFilePath->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
@@ -32,13 +33,14 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(AnyType userObj)
 	{
 		return;
 	}
-	NEW_CLASS(me->svr, Net::TFTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
-	if (me->svr->IsError())
+	NEW_CLASSNN(svr, Net::TFTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
+	if (svr->IsError())
 	{
-		SDEL_CLASS(me->svr);
+		svr.Delete();
 	}
 	else
 	{
+		me->svr = svr;
 		me->txtFilePath->SetReadOnly(true);
 		me->txtPort->SetReadOnly(true);
 	}
@@ -108,7 +110,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRTFTPServerForm::~AVIRTFTPServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }

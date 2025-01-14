@@ -33,11 +33,11 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDecompile;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::JavaClass *clsFile;
+			NN<IO::JavaClass> clsFile;
 
 			static void __stdcall OnMethodsSelChg(AnyType userObj);
 		public:
-			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile);
+			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::JavaClass> clsFile);
 			virtual ~AVIRJavaClassForm();
 
 			virtual void OnMonitorChanged();

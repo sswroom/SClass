@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(AnyType userObj
 	me->txtMethods->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::JavaClass> clsFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->SetFont(0, 0, 8.25, false);
@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRJavaClassForm::~AVIRJavaClassForm()
 {
-	DEL_CLASS(this->clsFile);
+	this->clsFile.Delete();
 }
 
 void SSWR::AVIRead::AVIRJavaClassForm::OnMonitorChanged()

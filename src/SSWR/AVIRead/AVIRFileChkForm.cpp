@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_FILE_SAVE:
-		this->core->SaveData(this, this->fileChk, L"SaveFileChk");
+		this->core->SaveData(*this, this->fileChk, L"SaveFileChk");
 		break;
 	case MNU_FILE_VALIDATE:
 		{

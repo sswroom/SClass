@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
-	if (me->macList->Store())
+	if (me->macList.Store())
 	{
 		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		else
 		{
-			if (this->macList->GetEntry(log->macInt).SetTo(entry))
+			if (this->macList.GetEntry(log->macInt).SetTo(entry))
 			{
 				this->lvContent->SetSubItem(l, 4, {entry->name, entry->nameLen});
 			}
@@ -193,19 +193,18 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 void SSWR::AVIRead::AVIRBTScanLogForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendUOSInt(this->macList->GetCount());
+	sb.AppendUOSInt(this->macList.GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::BTScanLog> btLog) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Bluetooth Scan Log"));
 
 	this->core = core;
 	this->btLog = btLog;
-	NEW_CLASS(this->macList, Net::MACInfoList());
 
 	this->pnlControl = ui->NewPanel(*this);
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
@@ -242,8 +241,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRBTScanLogForm::~AVIRBTScanLogForm()
 {
-	DEL_CLASS(this->btLog);
-	DEL_CLASS(this->macList);
+	this->btLog.Delete();
 }
 
 void SSWR::AVIRead::AVIRBTScanLogForm::OnMonitorChanged()

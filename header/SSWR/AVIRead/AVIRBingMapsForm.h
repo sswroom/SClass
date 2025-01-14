@@ -23,7 +23,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblImagerySet;
 			NN<UI::GUIComboBox> cboImagerySet;
 			NN<UI::GUIButton> btnOK;
-			Map::TileMap *tileMap;
+			Optional<Map::TileMap> tileMap;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
@@ -32,7 +32,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::TileMap *GetTileMap();
+			Optional<Map::TileMap> GetTileMap();
 		};
 	}
 }

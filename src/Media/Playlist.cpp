@@ -32,10 +32,11 @@ Media::Playlist::Playlist(Text::CStringNN sourceName, NN<Parser::ParserList> par
 
 Media::Playlist::~Playlist()
 {
-	if (this->player)
+	NN<Media::IMediaPlayer> player;
+	if (this->player.SetTo(player))
 	{
-		this->player->LoadMedia(0);
-		this->player->SetEndHandler(0, 0);
+		player->LoadMedia(0);
+		player->SetEndHandler(0, 0);
 		this->player = 0;
 	}
 	this->currFile.Delete();
@@ -203,27 +204,29 @@ Data::Duration Media::Playlist::GetTimeEnd(UOSInt index) const
 	return ent->timeEnd;
 }
 
-void Media::Playlist::SetPlayer(Media::IMediaPlayer *player)
+void Media::Playlist::SetPlayer(Optional<Media::IMediaPlayer> player)
 {
-	if (this->player)
+	NN<Media::IMediaPlayer> nnplayer;
+	if (this->player.SetTo(nnplayer))
 	{
-		this->player->SetEndHandler(0, 0);
+		nnplayer->SetEndHandler(0, 0);
 		this->player = 0;
 	}
 	this->player = player;
-	if (this->player)
+	if (this->player.SetTo(nnplayer))
 	{
-		this->player->SetEndHandler(OnPBEnd, this);
+		nnplayer->SetEndHandler(OnPBEnd, this);
 	}
 }
 
 Bool Media::Playlist::OpenItem(UOSInt index)
 {
 	NN<PlaylistEntry> ent;
-	if (!this->entries.GetItem(index).SetTo(ent) || this->player == 0)
+	NN<Media::IMediaPlayer> player;
+	if (!this->entries.GetItem(index).SetTo(ent) || !this->player.SetTo(player))
 		return false;
 
-	this->player->LoadMedia(0);
+	player->LoadMedia(0);
 	this->currFile.Delete();
 	{
 		IO::StmData::FileData fd(ent->fileName, false);
@@ -236,11 +239,11 @@ Bool Media::Playlist::OpenItem(UOSInt index)
 	
 	currFile->TrimFile((UInt32)ent->timeStart.GetTotalMS(), (Int32)ent->timeEnd.GetTotalMS());
 
-	if (!this->player->LoadMedia(this->currFile))
+	if (!player->LoadMedia(this->currFile))
 		return false;
 	if (this->playing)
 	{
-		return this->player->StartPlayback();
+		return player->StartPlayback();
 	}
 	else
 	{
@@ -260,9 +263,10 @@ Bool Media::Playlist::StartPlayback()
 		OnPBEnd(this);
 	}
 
-	if (this->player)
+	NN<Media::IMediaPlayer> player;
+	if (this->player.SetTo(player))
 	{
-		this->playing = this->player->StartPlayback();
+		this->playing = player->StartPlayback();
 		return this->playing;
 	}
 	return false;
@@ -271,9 +275,10 @@ Bool Media::Playlist::StartPlayback()
 Bool Media::Playlist::StopPlayback()
 {
 	this->playing = false;
-	if (this->player)
+	NN<Media::IMediaPlayer> player;
+	if (this->player.SetTo(player))
 	{
-		this->player->StopPlayback();
+		player->StopPlayback();
 		return true;
 	}
 	return false;
@@ -281,7 +286,7 @@ Bool Media::Playlist::StopPlayback()
 
 Bool Media::Playlist::PrevChapter()
 {
-	if (this->player == 0)
+	if (this->player.IsNull())
 	{
 		return false;
 	}
@@ -291,7 +296,7 @@ Bool Media::Playlist::PrevChapter()
 
 Bool Media::Playlist::NextChapter()
 {
-	if (this->player == 0)
+	if (this->player.IsNull())
 	{
 		return false;
 	}
@@ -301,9 +306,10 @@ Bool Media::Playlist::NextChapter()
 
 Data::Duration Media::Playlist::GetCurrTime()
 {
-	if (this->player == 0)
+	NN<Media::IMediaPlayer> player;
+	if (!this->player.SetTo(player))
 	{
 		return 0;
 	}
-	return this->player->GetCurrTime();
+	return player->GetCurrTime();
 }

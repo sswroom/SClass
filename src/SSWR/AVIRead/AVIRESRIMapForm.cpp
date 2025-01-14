@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRESRIMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::ESRI::ESRIMapServer *SSWR::AVIRead::AVIRESRIMapForm::GetSelectedMap()
+Optional<Map::ESRI::ESRIMapServer> SSWR::AVIRead::AVIRESRIMapForm::GetSelectedMap()
 {
 	return this->esriMap;
 }

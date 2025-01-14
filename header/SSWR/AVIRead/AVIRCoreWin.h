@@ -13,7 +13,7 @@ namespace SSWR
 			virtual ~AVIRCoreWin();
 
 			virtual void OpenObject(NN<IO::ParsedObject> pobj);
-			virtual void SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName);
+			virtual void SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName);
 			virtual Optional<Media::Printer> SelectPrinter(Optional<UI::GUIForm> frm);
 		};
 	}

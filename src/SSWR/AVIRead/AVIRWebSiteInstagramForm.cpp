@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	Text::CStringNN userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NN<Text::String> ua = Text::String::New(userAgent);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), ua.Ptr()));
+	NEW_CLASSNN(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetTCPClientFactory(), this->ssl, core->GetEncFactory(), ua.Ptr()));
 	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 
 SSWR::AVIRead::AVIRWebSiteInstagramForm::~AVIRWebSiteInstagramForm()
 {
-	DEL_CLASS(this->ctrl);
+	this->ctrl.Delete();
 	this->ssl.Delete();
 }
 

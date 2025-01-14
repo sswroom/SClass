@@ -39,8 +39,8 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 					mutUsage.BeginUse();
 					if (me->dispId == thisId)
 					{
-						NEW_CLASS(me->dispImage, Media::SharedImage(imgList, 0));
-						me->dispImageURL = Text::String::New(sb.ToCString()).Ptr();
+						NEW_CLASSOPT(me->dispImage, Media::SharedImage(imgList, 0));
+						me->dispImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
@@ -51,14 +51,14 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 					}
 					else
 					{
-						SDEL_CLASS(me->lastImage);
-						SDEL_STRING(me->lastImageURL);
+						me->lastImage.Delete();
+						OPTSTR_DEL(me->lastImageURL);
 						me->lastId = thisId;
 						me->lastBounds = bounds;
 						me->lastSize = size;
 						me->lastDPI = dpi;
-						NEW_CLASS(me->lastImage, Media::SharedImage(imgList, 0));
-						me->lastImageURL = Text::String::New(sb.ToCString()).Ptr();
+						NEW_CLASSOPT(me->lastImage, Media::SharedImage(imgList, 0));
+						me->lastImageURL = Text::String::New(sb.ToCString());
 						mutUsage.ReplaceMutex(me->updMut);
 						UOSInt i = me->updHdlrs.GetCount();
 						while (i-- > 0)
@@ -78,10 +78,10 @@ UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 
 void Map::DrawMapServiceLayer::ClearDisp()
 {
-	if (this->dispImage)
+	if (this->dispImage.NotNull())
 	{
-		SDEL_CLASS(this->lastImage);
-		SDEL_STRING(this->lastImageURL);
+		this->lastImage.Delete();
+		OPTSTR_DEL(this->lastImageURL);
 		this->lastBounds = this->dispBounds;
 		this->lastSize = this->dispSize;
 		this->lastDPI = this->dispDPI;
@@ -93,7 +93,7 @@ void Map::DrawMapServiceLayer::ClearDisp()
 	}
 }
 
-Map::DrawMapServiceLayer::DrawMapServiceLayer(Map::DrawMapService *mapService) : Map::MapDrawLayer(mapService->GetName(), 0, 0, mapService->GetCoordinateSystem()->Clone())
+Map::DrawMapServiceLayer::DrawMapServiceLayer(NN<Map::DrawMapService> mapService) : Map::MapDrawLayer(mapService->GetName(), 0, 0, mapService->GetCoordinateSystem()->Clone())
 {
 	this->mapService = mapService;
 	this->dispBounds = mapService->GetInitBounds();
@@ -131,9 +131,9 @@ Map::DrawMapServiceLayer::~DrawMapServiceLayer()
 		Sync::SimpleThread::Sleep(1);
 	}
 	this->ClearDisp();
-	SDEL_CLASS(this->lastImage);
-	SDEL_STRING(this->lastImageURL);
-	DEL_CLASS(this->mapService);
+	this->lastImage.Delete();
+	OPTSTR_DEL(this->lastImageURL);
+	this->mapService.Delete();
 }
 
 void Map::DrawMapServiceLayer::SetCurrScale(Double scale)
@@ -167,12 +167,12 @@ UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outA
 	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispBounds == rect)
 	{
-		if (this->dispImage)
+		if (this->dispImage.NotNull())
 		{
 			outArr->Add(this->dispId);
 			return 1;
 		}
-		else if (this->lastImage)
+		else if (this->lastImage.NotNull())
 		{
 			outArr->Add(this->lastId);
 			return 1;
@@ -187,7 +187,7 @@ UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outA
 		this->ClearDisp();
 		this->dispBounds = rect;
 		this->dispId++;
-		if (this->lastImage)
+		if (this->lastImage.NotNull())
 		{
 			outArr->Add(this->lastId);
 			return 1;
@@ -299,16 +299,16 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	NN<Media::SharedImage> shimg;
-	if (this->dispId == id && shimg.Set(this->dispImage))
+	if (this->dispId == id && this->dispImage.SetTo(shimg))
 	{
-		Math::Geometry::Vector2D *vec;
-		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
+		NN<Math::Geometry::Vector2D> vec;
+		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->dispBounds.min, this->dispBounds.max, false, this->dispImageURL, 0, 0));
 		return vec;
 	}
-	else if (this->lastId == id && shimg.Set(this->lastImage))
+	else if (this->lastId == id && this->lastImage.SetTo(shimg))
 	{
-		Math::Geometry::Vector2D *vec;
-		NEW_CLASS(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
+		NN<Math::Geometry::Vector2D> vec;
+		NEW_CLASSNN(vec, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, this->lastBounds.min, this->lastBounds.max, false, this->lastImageURL, 0, 0));
 		return vec;
 	}
 	return 0;
@@ -348,10 +348,9 @@ void Map::DrawMapServiceLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHan
 			this->updHdlrs.RemoveAt(i);
 		}
 	}
-	mutUsage.EndUse();
 }
 
-Map::DrawMapService *Map::DrawMapServiceLayer::GetDrawMapService()
+NN<Map::DrawMapService> Map::DrawMapServiceLayer::GetDrawMapService()
 {
 	return this->mapService;
 }

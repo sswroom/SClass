@@ -24,7 +24,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
 			Net::SocketUtil::AddressInfo targetAddr;
-			IO::LogTool *log;
+			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 
 			NN<UI::GUIPanel> pnlRequest;

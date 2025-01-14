@@ -7,7 +7,7 @@
 #include "Map/ESRI/ESRITileMap.h"
 #include "Text/MyString.h"
 
-Map::ESRI::ESRITileMap::ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CStringNN cacheDir)
+Map::ESRI::ESRITileMap::ESRITileMap(NN<Map::ESRI::ESRIMapServer> esriMap, Bool toRelease, Text::CStringNN cacheDir)
 {
 	this->esriMap = esriMap;
 	this->toRelease = toRelease;
@@ -22,8 +22,7 @@ Map::ESRI::ESRITileMap::~ESRITileMap()
 	this->cacheDir->Release();
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->esriMap);
-		this->esriMap = 0;
+		this->esriMap.Delete();
 		this->toRelease = false;
 	}
 }

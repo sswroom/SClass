@@ -34,7 +34,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Map::WebMapService *wms;
+			Optional<Map::WebMapService> wms;
 			NN<Math::CoordinateSystem> envCsys;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
@@ -50,7 +50,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			void SetURL(Text::CStringNN url);
-			Map::DrawMapService *GetDrawMapService();
+			Optional<Map::DrawMapService> GetDrawMapService();
 		};
 	}
 }

@@ -20,10 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 	Text::StringBuilderUTF8 sb;
 	UInt32 minLeng;
 	UInt32 maxLeng;
-	if (me->bforce)
+	if (me->bforce.NotNull())
 	{
-		DEL_CLASS(me->bforce);
-		me->bforce = 0;
+		me->bforce.Delete();
 		me->txtStatus->SetText(CSTR("Stopped"));
 		return;
 	}
@@ -83,22 +82,23 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (me->bforce)
+	NN<Crypto::Hash::BruteForceAttack> bforce;
+	if (me->bforce.SetTo(bforce))
 	{
-		if (me->bforce->IsProcessing())
+		if (bforce->IsProcessing())
 		{
-			UInt64 thisCnt = me->bforce->GetTestCnt();
+			UInt64 thisCnt = bforce->GetTestCnt();
 			Int64 thisTime = Data::DateTimeUtil::GetCurrTimeMillis();
 			
 			sptr = Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), (Int64)(thisCnt - me->lastCnt) * 1000 / (thisTime - me->lastTime)), UTF8STRC(", key="));
-			sptr = me->bforce->GetCurrKey(sptr).Or(sptr);
+			sptr = bforce->GetCurrKey(sptr).Or(sptr);
 			me->lastCnt = thisCnt;
 			me->lastTime = thisTime;
 			me->txtStatus->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			if (me->bforce->GetResult(Text::StrConcatC(sbuff, UTF8STRC("Pwd="))).SetTo(sptr))
+			if (bforce->GetResult(Text::StrConcatC(sbuff, UTF8STRC("Pwd="))).SetTo(sptr))
 			{
 				me->txtStatus->SetText(CSTRP(sbuff, sptr));
 			}
@@ -106,8 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 			{
 				me->txtStatus->SetText(CSTR("Finished, pwd not found"));
 			}
-			DEL_CLASS(me->bforce);
-			me->bforce = 0;			
+			me->bforce.Delete();
 		}
 	}
 }
@@ -191,7 +190,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRBruteForceForm::~AVIRBruteForceForm()
 {
-	SDEL_CLASS(this->bforce);
+	this->bforce.Delete();
 }
 
 void SSWR::AVIRead::AVIRBruteForceForm::OnMonitorChanged()

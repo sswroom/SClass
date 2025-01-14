@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	}
 }
 
-SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::LUT> lut) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -222,7 +222,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, N
 
 SSWR::AVIRead::AVIRLUTForm::~AVIRLUTForm()
 {
-	DEL_CLASS(this->lut);
+	this->lut.Delete();
 }
 
 void SSWR::AVIRead::AVIRLUTForm::OnMonitorChanged()

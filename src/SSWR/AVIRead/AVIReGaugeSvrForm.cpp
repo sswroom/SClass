@@ -9,12 +9,12 @@
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->dirHdlr);
-		SDEL_CLASS(me->log);
-		SDEL_CLASS(me->logger);
+		me->svr.Delete();
+		me->dirHdlr.Delete();
+		me->log.Delete();
+		me->logger.Delete();
 		me->txtPort->SetReadOnly(false);
 	}
 	else
@@ -28,25 +28,29 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 		if (port > 0 && port <= 65535)
 		{
 			NN<Net::WebServer::EGaugeHandler> dirHdlr;
+			NN<Net::WebServer::WebListener> svr;
 			NEW_CLASSNN(dirHdlr, Net::WebServer::EGaugeHandler());
 			dirHdlr->HandleEGaugeData(OnEGaugeData, me);
-			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
-			if (me->svr->IsError())
+			NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+			if (svr->IsError())
 			{
 				valid = false;
-				SDEL_CLASS(me->svr);
+				svr.Delete();
 				dirHdlr.Delete();
 			}
 			else
 			{
-				me->dirHdlr = dirHdlr.Ptr();
-				NEW_CLASS(me->log, IO::LogTool());
-				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
+				NN<IO::LogTool> log;
 				NN<UI::ListBoxLogger> logger;
+				me->svr = svr;
+				me->dirHdlr = dirHdlr;
+				NEW_CLASSNN(log, IO::LogTool());
+				svr->SetAccessLog(log, IO::LogHandler::LogLevel::Raw);
+				me->log = log;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->logger = logger.Ptr();
-				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
-				if (!me->svr->Start())
+				me->logger = logger;
+				log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
+				if (!svr->Start())
 				{
 					valid = false;
 				}
@@ -59,10 +63,10 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 		}
 		else
 		{
-			SDEL_CLASS(me->svr);
-			SDEL_CLASS(me->dirHdlr);
-			SDEL_CLASS(me->log);
-			SDEL_CLASS(me->logger);
+			me->svr.Delete();
+			me->dirHdlr.Delete();
+			me->log.Delete();
+			me->logger.Delete();
 		}
 	}
 }
@@ -82,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(AnyType userObj)
 	{
 		Sync::MutexUsage mutUsage(me->reqMut);
 		me->reqUpdated = false;
-		me->txtReqText->SetText(me->reqLast->ToCString());
+		me->txtReqText->SetText(Text::String::OrEmpty(me->reqLast)->ToCString());
 	}
 }
 
@@ -90,11 +94,8 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(AnyType userObj, U
 {
 	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	Sync::MutexUsage mutUsage(me->reqMut);
-	if (me->reqLast)
-	{
-		me->reqLast->Release();
-	}
-	me->reqLast = Text::String::New(data, dataSize).Ptr();
+	OPTSTR_DEL(me->reqLast);
+	me->reqLast = Text::String::New(data, dataSize);
 	me->reqUpdated = true;
 }
 
@@ -142,15 +143,11 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIReGaugeSvrForm::~AVIReGaugeSvrForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->dirHdlr);
-	if (this->reqLast)
-	{
-		this->reqLast->Release();
-		this->reqLast = 0;
-	}
-	SDEL_CLASS(this->log);
-	SDEL_CLASS(this->logger);
+	this->svr.Delete();
+	this->dirHdlr.Delete();
+	OPTSTR_DEL(this->reqLast);
+	this->log.Delete();
+	this->logger.Delete();
 }
 
 void SSWR::AVIRead::AVIReGaugeSvrForm::OnMonitorChanged()

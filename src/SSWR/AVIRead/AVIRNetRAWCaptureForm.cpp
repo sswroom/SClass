@@ -43,10 +43,10 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
-	if (me->capture)
+	NN<Net::RAWCapture> capture;
+	if (me->capture.NotNull())
 	{
-		DEL_CLASS(me->capture);
-		me->capture = 0;
+		me->capture.Delete();
 		me->cboIP->SetEnabled(true);
 		me->cboFormat->SetEnabled(true);
 		me->cboType->SetEnabled(true);
@@ -60,15 +60,15 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType user
 	me->txtFileName->GetText(sb);
 	if (ip && sb.GetLength() > 0)
 	{
-		NEW_CLASS(me->capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToCString(), CSTR("AVIRead")));
-		if (me->capture->IsError())
+		NEW_CLASSNN(capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToCString(), CSTR("AVIRead")));
+		if (capture->IsError())
 		{
-			DEL_CLASS(me->capture);
-			me->capture = 0;
+			capture.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in creating socket"), CSTR("RAW Capture"), me);
 		}
 		else
 		{
+			me->capture = capture;
 			me->cboIP->SetEnabled(false);
 			me->cboFormat->SetEnabled(false);
 			me->cboType->SetEnabled(false);
@@ -82,9 +82,10 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(AnyType userObj
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	UInt64 val;
-	if (me->capture)
+	NN<Net::RAWCapture> capture;
+	if (me->capture.SetTo(capture))
 	{
-		val = me->capture->GetPacketCnt();
+		val = capture->GetPacketCnt();
 		if (val != me->currCnt)
 		{
 			me->currCnt = val;
@@ -92,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(AnyType userObj
 			me->txtPacketCnt->SetText(CSTRP(sbuff, sptr));
 		}
 
-		val = me->capture->GetDataSize();
+		val = capture->GetDataSize();
 		if (val != me->currDataSize)
 		{
 			me->currDataSize = val;
@@ -205,7 +206,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClie
 
 SSWR::AVIRead::AVIRNetRAWCaptureForm::~AVIRNetRAWCaptureForm()
 {
-	SDEL_CLASS(this->capture);
+	this->capture.Delete();
 }
 
 void SSWR::AVIRead::AVIRNetRAWCaptureForm::OnMonitorChanged()

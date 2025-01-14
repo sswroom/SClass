@@ -65,7 +65,7 @@ namespace SSWR
 			Data::FastMapNN<UInt32, PingIPInfo> pingIPMap;
 			Bool pingIPListUpdated;
 			Bool pingIPContUpdated;
-			PingIPInfo *currPingIP;
+			Optional<PingIPInfo> currPingIP;
 			Data::FastMapNN<UInt32, IPTranInfo> ipTranMap;
 			UOSInt ipTranCnt;
 			UOSInt tcp4synLastIndex;

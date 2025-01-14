@@ -28,7 +28,7 @@ namespace SSWR
 			typedef struct
 			{
 				NN<Text::String> topic;
-				UTF8Char *currValue;
+				UnsafeArray<UTF8Char> currValue;
 				UOSInt currValueLen;
 				Bool updated;
 				UOSInt recvCnt;
@@ -40,7 +40,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::MQTTConn *client;
+			Optional<Net::MQTTConn> client;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			Sync::Mutex topicMut;

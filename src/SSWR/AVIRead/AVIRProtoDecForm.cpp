@@ -10,12 +10,13 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	NN<ProtocolItem> item;
 	NN<IO::ProtoDec::IProtocolDecoder> currDec;
-	if (me->lvLogs->GetSelectedItem().GetOpt<ProtocolItem>().SetTo(item) && me->currFile && me->currDec.SetTo(currDec))
+	NN<IO::FileStream> currFile;
+	if (me->lvLogs->GetSelectedItem().GetOpt<ProtocolItem>().SetTo(item) && me->currFile.SetTo(currFile) && me->currDec.SetTo(currDec))
 	{
 		Text::StringBuilderUTF8 sb;
 		Data::ByteBuffer buff(item->size);
-		me->currFile->SeekFromBeginning(item->fileOfst);
-		me->currFile->Read(buff);
+		currFile->SeekFromBeginning(item->fileOfst);
+		currFile->Read(buff);
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC("\r\n\r\n"));
 		currDec->GetProtocolDetail(buff.Arr().Ptr(), item->size, sb);
@@ -50,18 +51,20 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
 	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::FileStream> currFile;
 	me->txtFile->GetText(sb);
 	if (sb.GetLength() > 0 && me->cboDecoder->GetSelectedItem().GetOpt<IO::ProtoDec::IProtocolDecoder>().SetTo(protoDec))
 	{
 		me->ClearList();
-		SDEL_CLASS(me->currFile);
-		NEW_CLASS(me->currFile, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-		if (me->currFile->IsError())
+		me->currFile.Delete();
+		NEW_CLASSNN(currFile, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+		if (currFile->IsError())
 		{
-			DEL_CLASS(me->currFile);
+			currFile.Delete();;
 			me->ui->ShowMsgOK(CSTR("Error in opening the file"), CSTR("Protocol Decoder"), me);
 			return;
 		}
+		me->currFile = currFile;
 		me->currDec = protoDec;
 		UOSInt buffSize;
 		UOSInt readSize;
@@ -71,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 		fileOfst = 0;
 		while (true)
 		{
-			readSize = me->currFile->Read(buff.SubArray(buffSize));
+			readSize = currFile->Read(buff.SubArray(buffSize));
 			if (readSize == 0)
 				break;
 			buffSize += readSize;
@@ -185,7 +188,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 SSWR::AVIRead::AVIRProtoDecForm::~AVIRProtoDecForm()
 {
 	this->ClearList();
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 }
 
 void SSWR::AVIRead::AVIRProtoDecForm::OnMonitorChanged()

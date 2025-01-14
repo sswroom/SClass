@@ -16,13 +16,13 @@ namespace SSWR
 			NN<UI::GUIMainMenu> mnuMain;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::LogFile *logFile;
+			NN<IO::LogFile> logFile;
 			IO::LogHandler::LogLevel logLevel;
 
 			void UpdateLogMessages();
 			static void __stdcall OnLogsDblClk(AnyType userObj, UOSInt itemIndex);
 		public:
-			AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
+			AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::LogFile> logFile);
 			virtual ~AVIRLogFileForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

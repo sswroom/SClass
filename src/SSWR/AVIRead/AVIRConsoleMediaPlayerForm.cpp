@@ -69,22 +69,25 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(AnyTyp
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	if (!me->videoOpening)
-		me->player->GetVideoRenderer()->SetSrcYUVType((Media::ColorProfile::YUVType)me->cboYUVType->GetSelectedItem().GetOSInt());
+	NN<Media::VideoRenderer> vrenderer;
+	if (!me->videoOpening && me->player->GetVideoRenderer().SetTo(vrenderer))
+		vrenderer->SetSrcYUVType((Media::ColorProfile::YUVType)me->cboYUVType->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	if (!me->videoOpening)
-		me->player->GetVideoRenderer()->SetSrcRGBType((Media::CS::TransferType)me->cboRGBTrans->GetSelectedItem().GetOSInt());
+	NN<Media::VideoRenderer> vrenderer;
+	if (!me->videoOpening && me->player->GetVideoRenderer().SetTo(vrenderer))
+		vrenderer->SetSrcRGBType((Media::CS::TransferType)me->cboRGBTrans->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
-	if (!me->videoOpening)
-		me->player->GetVideoRenderer()->SetSrcPrimaries((Media::ColorProfile::ColorType)me->cboColorPrimaries->GetSelectedItem().GetOSInt());
+	NN<Media::VideoRenderer> vrenderer;
+	if (!me->videoOpening && me->player->GetVideoRenderer().SetTo(vrenderer))
+		vrenderer->SetSrcPrimaries((Media::ColorProfile::ColorType)me->cboColorPrimaries->GetSelectedItem().GetOSInt());
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddYUVType(Media::ColorProfile::YUVType yuvType)
@@ -105,37 +108,41 @@ void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AddColorPrimaries(Media::ColorPr
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::UpdateColorDisp()
 {
 	Media::VideoRenderer::RendererStatus2 status;
+	NN<Media::VideoRenderer> vrenderer;
 	this->videoOpening = true;
-	this->player->GetVideoRenderer()->GetStatus(status);
-	UOSInt i;
-	i = this->cboYUVType->GetCount();
-	while (i-- > 0)
+	if (this->player->GetVideoRenderer().SetTo(vrenderer))
 	{
-		if (this->cboYUVType->GetItem(i) == (void*)status.srcYUVType)
+		vrenderer->GetStatus(status);
+		UOSInt i;
+		i = this->cboYUVType->GetCount();
+		while (i-- > 0)
 		{
-			this->cboYUVType->SetSelectedIndex(i);
-			break;
+			if (this->cboYUVType->GetItem(i) == (void*)status.srcYUVType)
+			{
+				this->cboYUVType->SetSelectedIndex(i);
+				break;
+			}
 		}
-	}
 
-	Media::CS::TransferType tranType = status.color.rtransfer.GetTranType();
-	i = this->cboRGBTrans->GetCount();
-	while (i-- > 0)
-	{
-		if (this->cboRGBTrans->GetItem(i) == (void*)tranType)
+		Media::CS::TransferType tranType = status.color.rtransfer.GetTranType();
+		i = this->cboRGBTrans->GetCount();
+		while (i-- > 0)
 		{
-			this->cboRGBTrans->SetSelectedIndex(i);
-			break;
+			if (this->cboRGBTrans->GetItem(i) == (void*)tranType)
+			{
+				this->cboRGBTrans->SetSelectedIndex(i);
+				break;
+			}
 		}
-	}
 
-	i = this->cboColorPrimaries->GetCount();
-	while (i-- > 0)
-	{
-		if (this->cboColorPrimaries->GetItem(i) == (void*)status.color.primaries.colorType)
+		i = this->cboColorPrimaries->GetCount();
+		while (i-- > 0)
 		{
-			this->cboColorPrimaries->SetSelectedIndex(i);
-			break;
+			if (this->cboColorPrimaries->GetItem(i) == (void*)status.color.primaries.colorType)
+			{
+				this->cboColorPrimaries->SetSelectedIndex(i);
+				break;
+			}
 		}
 	}
 	this->videoOpening = false;
@@ -147,6 +154,7 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 	Bool succ = false;
 	UInt64 len = fs.GetLength();
 	Bool changed = false;
+	NN<Media::VideoRenderer> vrenderer;
 	if (len > 4 && len <= 16384)
 	{
 		Data::ByteBuffer buff((UOSInt)len);
@@ -158,14 +166,20 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 				Media::CS::TransferParam param;
 				if (icc->GetRedTransferParam(param))
 				{
-					this->player->GetVideoRenderer()->SetSrcRGBTransfer(param);
-					changed = true;
+					if (this->player->GetVideoRenderer().SetTo(vrenderer))
+					{
+						vrenderer->SetSrcRGBTransfer(param);
+						changed = true;
+					}
 				}
 				Media::ColorProfile::ColorPrimaries primaries;
 				if (icc->GetColorPrimaries(primaries))
 				{
-					this->player->GetVideoRenderer()->SetSrcPrimaries(primaries);
-					changed = true;
+					if (this->player->GetVideoRenderer().SetTo(vrenderer))
+					{
+						vrenderer->SetSrcPrimaries(primaries);
+						changed = true;
+					}
 				}
 				icc.Delete();
 				succ = true;
@@ -187,7 +201,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 	this->core = core;
 	this->listener = 0;
 	this->videoOpening = false;
-	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
+	NEW_CLASSNN(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lblPort = ui->NewLabel(*this, CSTR("Control Port"));
@@ -301,15 +315,16 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 	NEW_CLASSNN(this->webIface, Media::MediaPlayerWebInterface(this->player, false));
 	while (port < 8090)
 	{
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), 0, this->webIface, port, 10, 1, 2, CSTR("ConsoleMediaPlayer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-		if (this->listener->IsError())
+		NN<Net::WebServer::WebListener> listener;
+		NEW_CLASSNN(listener, Net::WebServer::WebListener(this->core->GetTCPClientFactory(), 0, this->webIface, port, 10, 1, 2, CSTR("ConsoleMediaPlayer/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+		if (listener->IsError())
 		{
-			DEL_CLASS(this->listener);
-			this->listener = 0;
+			listener.Delete();
 			port++;
 		}
 		else
 		{
+			this->listener = listener;
 			sptr = Text::StrUInt16(sbuff, port);
 			this->txtPort->SetText(CSTRP(sbuff, sptr));
 			break;
@@ -320,9 +335,9 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<U
 
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::~AVIRConsoleMediaPlayerForm()
 {
-	SDEL_CLASS(this->listener);
+	this->listener.Delete();
 	this->webIface.Delete();
-	DEL_CLASS(this->player);
+	this->player.Delete();
 }
 
 void SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnMonitorChanged()

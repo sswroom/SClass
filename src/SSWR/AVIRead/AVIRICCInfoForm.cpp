@@ -39,10 +39,11 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data:
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
-	if (me->icc)
+	NN<Media::ICCProfile> icc;
+	if (me->icc.SetTo(icc))
 	{
 		NN<Media::LUT> lut;
-		if (me->icc->CreateRLUT().SetTo(lut))
+		if (icc->CreateRLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -52,10 +53,11 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
-	if (me->icc)
+	NN<Media::ICCProfile> icc;
+	if (me->icc.SetTo(icc))
 	{
 		NN<Media::LUT> lut;
-		if (me->icc->CreateGLUT().SetTo(lut))
+		if (icc->CreateGLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -65,10 +67,11 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
-	if (me->icc)
+	NN<Media::ICCProfile> icc;
+	if (me->icc.SetTo(icc))
 	{
 		NN<Media::LUT> lut;
-		if (me->icc->CreateBLUT().SetTo(lut))
+		if (icc->CreateBLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
 		}
@@ -110,7 +113,7 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRICCInfoForm::~AVIRICCInfoForm()
 {
-	SDEL_CLASS(this->icc);
+	this->icc.Delete();
 }
 
 void SSWR::AVIRead::AVIRICCInfoForm::OnMonitorChanged()
@@ -120,7 +123,7 @@ void SSWR::AVIRead::AVIRICCInfoForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(NN<Media::ICCProfile> icc, Text::CStringNN fileName)
 {
-	SDEL_CLASS(this->icc);
+	this->icc.Delete();
 
 	Media::ColorProfile color;
 	Text::StringBuilderUTF8 sb;
@@ -146,7 +149,7 @@ void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(NN<Media::ICCProfile> icc, Te
 		sb.AppendC(UTF8STRC(", y = "));
 		sb.AppendDouble(color.primaries.w.y);
 	}
-	this->icc = icc.Ptr();
+	this->icc = icc;
 	this->txtInfo->SetText(sb.ToCString());
 	this->txtFileName->SetText(fileName);
 }

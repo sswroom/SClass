@@ -6,9 +6,11 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWMSURL->GetText(sb);
-	SDEL_CLASS(me->wms);
-	NEW_CLASS(me->wms, Map::WebMapService(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)me->cboWMSVersion->GetSelectedItem().GetOSInt(), me->envCsys));
-	if (me->wms->IsError())
+	me->wms.Delete();
+	NN<Map::WebMapService> wms;
+	NEW_CLASSNN(wms, Map::WebMapService(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString(), (Map::WebMapService::Version)me->cboWMSVersion->GetSelectedItem().GetOSInt(), me->envCsys));
+	me->wms = wms;
+	if (wms->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
 	}
@@ -18,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 		Data::ArrayListStringNN nameList;
 		UOSInt selIndex;
 		UOSInt i = 0;
-		UOSInt j = me->wms->GetLayerNames(nameList);
+		UOSInt j = wms->GetLayerNames(nameList);
 		me->cboLayer->ClearItems();
 		while (i < j)
 		{
@@ -32,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wms->GetMapImageTypeNames(nameList);
+		j = wms->GetMapImageTypeNames(nameList);
 		selIndex = 0;
 		me->cboMapImageType->ClearItems();
 		while (i < j)
@@ -49,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wms->GetInfoTypeNames(nameList);
+		j = wms->GetInfoTypeNames(nameList);
 		me->cboInfoType->ClearItems();
 		while (i < j)
 		{
@@ -58,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 		}
 		if (j > 0)
 		{
-			me->cboInfoType->SetSelectedIndex(me->wms->GetInfoType());
+			me->cboInfoType->SetSelectedIndex(wms->GetInfoType());
 		}
 
 	}
@@ -67,7 +69,8 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
-	if (me->wms && !me->wms->IsError())
+	NN<Map::WebMapService> wms;
+	if (me->wms.SetTo(wms) && !wms->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -76,13 +79,14 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnOKClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
-	if (me->wms && !me->wms->IsError())
+	NN<Map::WebMapService> wms;
+	if (me->wms.SetTo(wms) && !wms->IsError())
 	{
-		me->wms->SetLayer(me->cboLayer->GetSelectedIndex());
+		wms->SetLayer(me->cboLayer->GetSelectedIndex());
 		me->cboLayerCRS->ClearItems();
 		Data::ArrayListNN<Text::String> nameList;
 		UOSInt i = 0;
-		UOSInt j = me->wms->GetLayerCRSNames(nameList);
+		UOSInt j = wms->GetLayerCRSNames(nameList);
 		while (i < j)
 		{
 			me->cboLayerCRS->AddItem(nameList.GetItemNoCheck(i), 0);
@@ -90,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 		}
 		if (j > 0)
 		{
-			me->cboLayerCRS->SetSelectedIndex(me->wms->GetLayerCRS());
+			me->cboLayerCRS->SetSelectedIndex(wms->GetLayerCRS());
 		}
 	}
 }
@@ -98,27 +102,30 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerCRSSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
-	if (me->wms && !me->wms->IsError())
+	NN<Map::WebMapService> wms;
+	if (me->wms.SetTo(wms) && !wms->IsError())
 	{
-		me->wms->SetLayerCRS(me->cboLayerCRS->GetSelectedIndex());
+		wms->SetLayerCRS(me->cboLayerCRS->GetSelectedIndex());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnMapImageTypeSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
-	if (me->wms && !me->wms->IsError())
+	NN<Map::WebMapService> wms;
+	if (me->wms.SetTo(wms) && !wms->IsError())
 	{
-		me->wms->SetMapImageType(me->cboMapImageType->GetSelectedIndex());
+		wms->SetMapImageType(me->cboMapImageType->GetSelectedIndex());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnInfoTypeSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
-	if (me->wms && !me->wms->IsError())
+	NN<Map::WebMapService> wms;
+	if (me->wms.SetTo(wms) && !wms->IsError())
 	{
-		me->wms->SetInfoType(me->cboInfoType->GetSelectedIndex());
+		wms->SetInfoType(me->cboInfoType->GetSelectedIndex());
 	}
 }
 
@@ -181,7 +188,7 @@ SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, N
 
 SSWR::AVIRead::AVIRWMSForm::~AVIRWMSForm()
 {
-	SDEL_CLASS(this->wms);
+	this->wms.Delete();
 }
 
 void SSWR::AVIRead::AVIRWMSForm::OnMonitorChanged()
@@ -195,9 +202,9 @@ void SSWR::AVIRead::AVIRWMSForm::SetURL(Text::CStringNN url)
 	OnLoadClicked(this);
 }
 
-Map::DrawMapService *SSWR::AVIRead::AVIRWMSForm::GetDrawMapService()
+Optional<Map::DrawMapService> SSWR::AVIRead::AVIRWMSForm::GetDrawMapService()
 {
-	Map::DrawMapService *mapService = this->wms;
+	Optional<Map::DrawMapService> mapService = this->wms;
 	this->wms = 0;
 	return mapService;
 }

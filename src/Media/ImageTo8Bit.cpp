@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/IComparable.h"
 #include "Data/ArrayListCmp.h"
-#include "Data/Sort/ArtificialQuickSortC.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "Media/ImageTo8Bit.h"
 
 extern "C"
@@ -31,9 +31,9 @@ namespace Media
 
 		}
 
-		virtual OSInt CompareTo(Data::IComparable *obj) const
+		virtual OSInt CompareTo(NN<Data::IComparable> obj) const
 		{
-			UOSInt cnt = ((Media::ColorStat*)obj)->count;
+			UOSInt cnt = NN<Media::ColorStat>::ConvertFrom(obj)->count;
 			if (cnt > count)
 			{
 				return 1;
@@ -64,8 +64,8 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 	UnsafeArray<UInt8> ptr2;
 	Data::ArrayListCmp *currArr;
 	Data::ArrayListCmp *cArr;
-	Media::ColorStat *cs;
-	Media::ColorStat *cs2;
+	NN<Media::ColorStat> cs;
+	NN<Media::ColorStat> cs2;
 	UOSInt colorCnt = 0;
 
 	i = 256;
@@ -92,7 +92,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			k = currArr->GetCount();
 			while (k-- > 0)
 			{
-				cs = (Media::ColorStat*) currArr->GetItem(k);
+				cs = NN<Media::ColorStat>::ConvertFrom(currArr->GetItemNoCheck(k));
 				if (cs->color == *(Int32*)&currPtr[0])
 				{
 					l = 1;
@@ -102,7 +102,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			}
 			if (l == 0)
 			{
-				NEW_CLASS(cs, ColorStat());
+				NEW_CLASSNN(cs, ColorStat());
 				cs->color = *(Int32*)&currPtr[0];
 				cs->count = 1;
 				currArr->Add(cs);
@@ -133,12 +133,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			currArr = arr[i];
 			if (currArr)
 			{
-				j = currArr->GetCount();
-				while (j-- > 0)
-				{
-					cs = (ColorStat*)currArr->GetItem(i);
-					DEL_CLASS(cs);
-				}
+				currArr->DeleteAll();
 				DEL_CLASS(currArr);
 			}
 		}
@@ -250,8 +245,8 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			}
 		}
 		UOSInt arrSize;
-		Data::IComparable **cmpArr = cArr->GetArr(arrSize).Ptr();
-		ArtificialQuickSort_SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
+		UnsafeArray<NN<Data::IComparable>> cmpArr = cArr->GetArr(arrSize);
+		Data::Sort::ArtificialQuickSort::SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
 
 		Int32 *cols = (Int32*)palette;
 		if (cArr->GetCount() > 256)
@@ -263,7 +258,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			i = 256;
 			while (i-- > 0)
 			{
-				cs = (ColorStat*)cArr->GetItem(i);
+				cs = NN<ColorStat>::ConvertFrom(cArr->GetItemNoCheck(i));
 				cs->index = i;
 				cols[i] = cs->color;
 			}
@@ -273,14 +268,14 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			i = cArr->GetCount();
 			while (i-- > 0)
 			{
-				cs = (ColorStat*)cArr->GetItem(i);
+				cs = NN<ColorStat>::ConvertFrom(cArr->GetItemNoCheck(i));
 				minDiff = 64;
 				minIndex = 0;
 				l = 0;
 				k = 0;
 				while (k < j)
 				{
-					cs2 = (ColorStat*)cArr->GetItem(k);
+					cs2 = NN<ColorStat>::ConvertFrom(cArr->GetItemNoCheck(k));
 					if ((currDiff = ImageTo8Bit_CalDiff(cs2->color, cs->color)) < 64)
 					{
 						l = 1;
@@ -302,7 +297,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 					k = cArr->GetCount();
 					while (--k > i)
 					{
-						cs2 = (ColorStat*)cArr->GetItem(k);
+						cs2 = NN<ColorStat>::ConvertFrom(cArr->GetItemNoCheck(k));
 						if ((currDiff = ImageTo8Bit_CalDiff(cs2->color, cs->color)) < 64)
 						{
 							l = 1;
@@ -335,7 +330,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			i = cArr->GetCount();
 			while (i-- > 0)
 			{
-				cs = (ColorStat*)cArr->GetItem(i);
+				cs = NN<ColorStat>::ConvertFrom(cArr->GetItemNoCheck(i));
 				cols[i] = cs->color;
 				cs->index = i;
 			}
@@ -356,7 +351,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 				k = currArr->GetCount();
 				while (k-- > 0)
 				{
-					cs = (ColorStat*)currArr->GetItem(k);
+					cs = NN<ColorStat>::ConvertFrom(currArr->GetItemNoCheck(k));
 					if (cs->color == *(Int32*)&currPtr[0])
 					{
 						l = 1;
@@ -384,12 +379,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 				DEL_CLASS(currArr);
 			}
 		}
-		i = cArr->GetCount();
-		while (i-- > 0)
-		{
-			cs = (ColorStat*)cArr->RemoveAt(i);
-			DEL_CLASS(cs);
-		}
+		cArr->DeleteAll();
 		DEL_CLASS(cArr);
 	}
 }

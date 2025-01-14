@@ -12,7 +12,7 @@ namespace Media
 	{
 	private:
 		Media::AudioDevice *audioDev;
-		Media::VideoRenderer *vrenderer;
+		Optional<Media::VideoRenderer> vrenderer;
 		Media::Decoder::VideoDecoderFinder vdecoders;
 		Media::Decoder::AudioDecoderFinder adecoders;
 		Media::RefClock clk;
@@ -42,7 +42,7 @@ namespace Media
 		void ReleaseAudio();
 		Bool SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 syncTime);
 	public:
-		MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDevice *audioDev);
+		MediaPlayer(NN<Media::VideoRenderer> vrenderer, Media::AudioDevice *audioDev);
 		virtual ~MediaPlayer();
 
 		virtual void SetEndHandler(PBEndHandler hdlr, AnyType userObj);
@@ -58,10 +58,10 @@ namespace Media
 		virtual Data::Duration GetCurrTime();
 
 		virtual Bool GotoChapter(UOSInt chapter);
-		virtual Bool GetVideoSize(UOSInt *w, UOSInt *h);
+		virtual Bool GetVideoSize(OutParam<UOSInt> w, OutParam<UOSInt> h);
 		virtual void DetectCrop();
 
-		Media::VideoRenderer *GetVideoRenderer();
+		Optional<Media::VideoRenderer> GetVideoRenderer();
 		void Close();
 	};
 }

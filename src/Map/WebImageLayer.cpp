@@ -24,9 +24,9 @@ Map::WebImageLayer::ImageStat::~ImageStat()
 
 }
 
-OSInt Map::WebImageLayer::ImageStat::CompareTo(Data::IComparable *obj) const
+OSInt Map::WebImageLayer::ImageStat::CompareTo(NN<Data::IComparable> obj) const
 {
-	Map::WebImageLayer::ImageStat *stat = (Map::WebImageLayer::ImageStat*)obj;
+	NN<Map::WebImageLayer::ImageStat> stat = NN<Map::WebImageLayer::ImageStat>::ConvertFrom(obj);
 	if (this->zIndex > stat->zIndex)
 	{
 		return 1;
@@ -376,7 +376,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptO
 	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArr(retCnt).Ptr();
-	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
+	Data::Sort::ArtificialQuickSort::SortCmpO((NN<Data::IComparable>*)imgArr, 0, (OSInt)retCnt - 1);
 
 	i = 0;
 	while (i < retCnt)
@@ -458,7 +458,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Op
 	loadedMutUsage.EndUse();
 
 	imgArr = imgList.GetArr(retCnt).Ptr();
-	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
+	Data::Sort::ArtificialQuickSort::SortCmpO((NN<Data::IComparable>*)imgArr, 0, (OSInt)retCnt - 1);
 
 	i = 0;
 	while (i < retCnt)

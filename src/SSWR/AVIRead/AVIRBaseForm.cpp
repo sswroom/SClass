@@ -1124,11 +1124,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ESRI_MAP:
 		{
 			SSWR::AVIRead::AVIRESRIMapForm dlg(0, this->ui, this->core, this->ssl);
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<Map::ESRI::ESRIMapServer> esriMap;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.GetSelectedMap().SetTo(esriMap))
 			{
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
 				UInt8 crcVal[4];
-				Map::ESRI::ESRIMapServer *esriMap = dlg.GetSelectedMap();
 				if (esriMap->HasTile())
 				{
 					NN<Map::ESRI::ESRITileMap> map;
@@ -2720,9 +2720,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_WMS:
 		{
 			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, Math::CoordinateSystemManager::CreateWGS84Csys());
-			if (frm.ShowDialog(this))
+			NN<Map::DrawMapService> mapService;
+			if (frm.ShowDialog(this) && frm.GetDrawMapService().SetTo(mapService))
 			{
-				Map::DrawMapService *mapService = frm.GetDrawMapService();
 				NN<Map::DrawMapServiceLayer> layer;
 				NEW_CLASSNN(layer, Map::DrawMapServiceLayer(mapService));
 				this->core->OpenObject(layer);
@@ -2772,7 +2772,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
-				if (tile.Set(frm.GetTileMap()))
+				if (frm.GetTileMap().SetTo(tile))
 				{
 					NN<Map::TileMapLayer> layer;
 					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));

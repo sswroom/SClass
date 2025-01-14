@@ -15,10 +15,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDesc;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Math::CoordinateSystem *csys;
+			NN<Math::CoordinateSystem> csys;
 
 		public:
-			AVIRCoordSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
+			AVIRCoordSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Math::CoordinateSystem> csys);
 			virtual ~AVIRCoordSysForm();
 
 			virtual void OnMonitorChanged();

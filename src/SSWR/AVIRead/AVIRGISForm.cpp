@@ -861,7 +861,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_SAVE:
-		this->core->SaveData(this, this->env, L"SaveMapEnv");
+		this->core->SaveData(*this, this->env, L"SaveMapEnv");
 		break;
 	case MNU_COPY_LATLON:
 		sbuff[0] = 0;
@@ -1106,7 +1106,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<Map::MapEnv::LayerItem> lyr;
 			if (ind->itemType == Map::MapEnv::IT_LAYER && Optional<Map::MapEnv::LayerItem>::ConvertFrom(ind->item).SetTo(lyr))
 			{
-				this->core->SaveData(this, lyr->layer, L"SaveMapLayer");
+				this->core->SaveData(*this, lyr->layer, L"SaveMapLayer");
 			}
 		}
 		break;
@@ -1720,9 +1720,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_WMS:
 		{
 			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<Map::DrawMapService> mapService;
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetDrawMapService().SetTo(mapService))
 			{
-				Map::DrawMapService *mapService = frm.GetDrawMapService();
 				NN<Map::DrawMapServiceLayer> layer;
 				NEW_CLASSNN(layer, Map::DrawMapServiceLayer(mapService));
 				this->AddLayer(layer);
@@ -1745,11 +1745,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_ESRI_MAP:
 		{
 			SSWR::AVIRead::AVIRESRIMapForm frm(0, this->ui, this->core, this->ssl);
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<Map::ESRI::ESRIMapServer> esriMap;
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetSelectedMap().SetTo(esriMap))
 			{
 				Crypto::Hash::CRC32R crc(Crypto::Hash::CRC32::GetPolynormialIEEE());
 				UInt8 crcVal[4];
-				Map::ESRI::ESRIMapServer *esriMap = frm.GetSelectedMap();
 				NN<Map::MapDrawLayer> mapLyr;
 				if (esriMap->HasTile())
 				{
@@ -1790,10 +1790,10 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_HK_GEODATA_WMS:
 		{
 			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, this->env->GetCoordinateSystem());
+			NN<Map::DrawMapService> mapService;
 			frm.SetURL(CSTR("https://geodata.gov.hk/geoserver/geodatastore/wms"));
-			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
+			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetDrawMapService().SetTo(mapService))
 			{
-				Map::DrawMapService *mapService = frm.GetDrawMapService();
 				NN<Map::DrawMapServiceLayer> layer;
 				NEW_CLASSNN(layer, Map::DrawMapServiceLayer(mapService));
 				this->AddLayer(layer);

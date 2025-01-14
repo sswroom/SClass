@@ -1591,6 +1591,7 @@ Data/Sort/BubbleSort.h:
 Data/Sort/ByteCountingSort.h:
 @ByteCountingSort_CPP.o
 Data/Sort/InsertionSort.h:
+@InsertionSort.o
 @InsertionSort_CPP.o
 Data/Sort/InsertionSortCmp.h:
 Data/Sort/PigeonholeSort.h:

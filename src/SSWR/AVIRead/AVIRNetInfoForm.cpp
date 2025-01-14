@@ -488,10 +488,10 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFIIFs()
 	UOSInt i;
 	UOSInt j;
 	NN<Net::WirelessLAN::Interface> interf;
-	if (!this->wlan->IsError())
+	if (!this->wlan.IsError())
 	{
 		this->ReleaseWIFIIFs();
-		this->wlan->GetInterfaces(this->wlanIfs);
+		this->wlan.GetInterfaces(this->wlanIfs);
 		this->lbWIFIIFs->ClearItems();
 		i = 0;
 		j = this->wlanIfs.GetCount();
@@ -701,7 +701,6 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 	this->SetText(CSTR("Network Info"));
 
 	this->core = core;
-	NEW_CLASS(this->wlan, Net::WirelessLAN());
 	this->wlanScanCnt = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -1040,7 +1039,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> p
 	this->lvPortInfo->AddColumn(CSTR("SID"), 100);
 	this->lvPortInfo->SetFullRowSelect(true);
 
-	if (!this->wlan->IsError())
+	if (!this->wlan.IsError())
 	{
 		this->tpWIFIInfo = this->tcMain->AddTabPage(CSTR("Wireless"));
 		this->lbWIFIIFs = ui->NewListBox(this->tpWIFIInfo, false);
@@ -1088,7 +1087,6 @@ SSWR::AVIRead::AVIRNetInfoForm::~AVIRNetInfoForm()
 {
 	this->ReleaseConns();
 	this->ReleaseWIFIIFs();
-	DEL_CLASS(this->wlan);
 }
 
 void SSWR::AVIRead::AVIRNetInfoForm::OnMonitorChanged()

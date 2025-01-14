@@ -22,17 +22,15 @@ namespace SSWR
 			NN<UI::GUIListView> lvPlaylist;
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUIHSplitter> hsplit;
-			UI::GUIVideoBoxDD *vbdMain;
-			UI::GUIMainMenu *mnu;
+			NN<UI::GUIVideoBoxDD> vbdMain;
 			NN<UI::GUIButton> btnStart;
 			NN<UI::GUIButton> btnEnd;
 			NN<UI::GUIButton> btnFS;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::Playlist *playlist;
-			Media::MediaPlayer *player;
-			const WChar *currFileName;
+			NN<Media::Playlist> playlist;
+			NN<Media::MediaPlayer> player;
 		private:
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex);
@@ -41,7 +39,7 @@ namespace SSWR
 			static void __stdcall OnFSClicked(AnyType userObj);
 			void UpdatePlaylist();
 		public:
-			AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
+			AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::Playlist> playlist);
 			virtual ~AVIRPlaylistForm();
 		
 			virtual void EventMenuClicked(UInt16 cmdId);

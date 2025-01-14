@@ -13,7 +13,7 @@ namespace Map
 	class DrawMapServiceLayer : public Map::MapDrawLayer
 	{
 	private:
-		Map::DrawMapService *mapService;
+		NN<Map::DrawMapService> mapService;
 
 		Bool threadToStop;
 		Bool threadRunning;
@@ -24,14 +24,14 @@ namespace Map
 		Math::Size2DDbl dispSize;
 		Double dispDPI;
 		Int64 dispId;
-		Media::SharedImage *dispImage;
-		Text::String *dispImageURL;
+		Optional<Media::SharedImage> dispImage;
+		Optional<Text::String> dispImageURL;
 		Math::RectAreaDbl lastBounds;
 		Math::Size2DDbl lastSize;
 		Double lastDPI;
 		Int64 lastId;
-		Media::SharedImage *lastImage;
-		Text::String *lastImageURL;
+		Optional<Media::SharedImage> lastImage;
+		Optional<Text::String> lastImageURL;
 
 		Sync::Mutex updMut;
 		Data::ArrayList<Data::CallbackStorage<UpdatedHandler>> updHdlrs;
@@ -39,7 +39,7 @@ namespace Map
 		static UInt32 __stdcall TaskThread(AnyType userObj);
 		void ClearDisp();
 	public:
-		DrawMapServiceLayer(Map::DrawMapService *mapService);
+		DrawMapServiceLayer(NN<Map::DrawMapService> mapService);
 		virtual ~DrawMapServiceLayer();
 
 		virtual void SetCurrScale(Double scale);
@@ -71,7 +71,7 @@ namespace Map
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
-		Map::DrawMapService *GetDrawMapService();
+		NN<Map::DrawMapService> GetDrawMapService();
 	};
 }
 #endif

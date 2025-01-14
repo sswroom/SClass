@@ -16,12 +16,12 @@ namespace Media
 		};
 
 	private:
-		Media::MediaPlayerInterface *iface;
+		NN<Media::MediaPlayerInterface> iface;
 		Bool autoRelease;
 
-		static OSInt __stdcall VideoFileCompare(VideoFileInfo *file1, VideoFileInfo *file2);
+		static OSInt __stdcall VideoFileCompare(NN<VideoFileInfo> file1, NN<VideoFileInfo> file2);
 	public:
-		MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease);
+		MediaPlayerWebInterface(NN<Media::MediaPlayerInterface> iface, Bool autoRelease);
 		virtual ~MediaPlayerWebInterface();
 
 		void BrowseRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);

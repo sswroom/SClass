@@ -62,6 +62,8 @@ namespace Data
 			template <class T> static void Sort(NN<Data::ArrayCollection<T>> list, NN<Data::Comparator<T>> comparator);
 			template <class T, class V> static void PreSortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
 			template <class T, class V> static void SortKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
+			static void PreSortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }

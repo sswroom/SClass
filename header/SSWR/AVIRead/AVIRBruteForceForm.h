@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Crypto::Hash::BruteForceAttack *bforce;
+			Optional<Crypto::Hash::BruteForceAttack> bforce;
 			UInt64 lastCnt;
 			Int64 lastTime;
 
@@ -45,6 +45,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

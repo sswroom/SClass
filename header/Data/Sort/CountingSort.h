@@ -18,6 +18,6 @@ namespace Data
 
 			void SortInt32(const Int32 *inputArr, Int32 *outputArr, OSInt firstIndex, OSInt lastIndex);
 		};
-	};
-};
+	}
+}
 #endif

@@ -807,7 +807,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_SAVE:
-		this->core->SaveData(this, this->asn1, L"ASN1Data");
+		this->core->SaveData(*this, this->asn1, L"ASN1Data");
 		break;
 	case MNU_VIEW_HEX:
 	{

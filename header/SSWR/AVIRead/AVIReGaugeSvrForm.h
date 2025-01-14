@@ -23,12 +23,12 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::WebServer::WebListener *svr;
-			IO::LogTool *log;
-			Net::WebServer::EGaugeHandler *dirHdlr;
-			UI::ListBoxLogger *logger;
+			Optional<Net::WebServer::WebListener> svr;
+			Optional<IO::LogTool> log;
+			Optional<Net::WebServer::EGaugeHandler> dirHdlr;
+			Optional<UI::ListBoxLogger> logger;
 			Sync::Mutex reqMut;
-			Text::String *reqLast;
+			Optional<Text::String> reqLast;
 			Bool reqUpdated;
 
 			NN<UI::GUITabControl> tcMain;

@@ -110,23 +110,6 @@ extern "C" void ArtificialQuickSort_PreSortStr(UTF8Char **arr, OSInt left, OSInt
 	}
 }
 
-extern "C" void ArtificialQuickSort_PreSortCmpO(Data::IComparable **arr, OSInt left, OSInt right)
-{
-	Data::IComparable *temp = 0;
-
-	while (left < right)
-	{
-		if (arr[left]->CompareTo(arr[right]) > 0)
-		{
-			temp = arr[left];
-			arr[left] = arr[right];
-			arr[right] = temp;
-		}
-		left++;
-		right--;
-	}
-}
-
 extern "C" void ArtificialQuickSort_PreSortInt32Inv(Int32 *arr, OSInt left, OSInt right)
 {
 	Int32 temp = 0;
@@ -666,90 +649,6 @@ extern "C" void ArtificialQuickSort_SortStr(UTF8Char **arr, OSInt firstIndex, OS
 						break;
 				}
 				while ( Text::StrCompare(arr[left1], meja) < 0 )
-				{
-					if (++left1 > right1)
-						break;
-				}
-				if (left1 > right1)
-					break;
-
-				temp = arr[right1];
-				arr[right1--] = arr[left1];
-				arr[left1++] = temp;
-			}
-			if (left1 == left)
-			{
-				arr[(left + right) >> 1] = arr[left];
-				arr[left] = meja;
-				levi[index] = left + 1;
-				desni[index] = right;
-			}
-			else
-			{
-				desni[index] = --left1;
-				right1++;
-				index++;
-				levi[index] = right1;
-				desni[index] = right;
-			}
-		}
-	}
-#if _OSINT_SIZE != 16
-	MemFree(levi);
-#endif
-}
-
-extern "C" void ArtificialQuickSort_SortCmpO(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex)
-{
-#if _OSINT_SIZE == 16
-	OSInt levi[256];
-	OSInt desni[256];
-#else
-	OSInt *levi = MemAlloc(OSInt, 65536);
-	OSInt *desni = &levi[32768];
-#endif
-	OSInt index;
-	OSInt i;
-	OSInt left;
-	OSInt right;
-	Data::IComparable *meja;
-	OSInt left1;
-	OSInt right1;
-	Data::IComparable *temp;
-
-	ArtificialQuickSort_PreSortCmpO(arr, firstIndex, lastIndex);
-
-	index = 0;
-	levi[index] = firstIndex;
-	desni[index] = lastIndex;
-
-	while ( index >= 0 )
-	{
-		left = levi[index];
-		right = desni[index];
-		i = right - left;
-		if (i <= 0)
-		{
-			index--;
-		}
-		else if (i <= 64)
-		{
-			InsertionSort_SortBCmpO(arr, left, right);
-			index--;
-		}
-		else
-		{
-			meja = arr[ (left + right) >> 1 ];
-			left1 = left;
-			right1 = right;
-			while (true)
-			{
-				while ( arr[right1]->CompareTo(meja) >= 0 )
-				{
-					if (--right1 < left1)
-						break;
-				}
-				while ( arr[left1]->CompareTo(meja) < 0 )
 				{
 					if (++left1 > right1)
 						break;

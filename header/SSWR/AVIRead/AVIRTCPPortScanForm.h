@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Net::TCPPortScanner *scanner;
+			Optional<Net::TCPPortScanner> scanner;
 			Bool listUpdated;
 
 			NN<UI::GUIPanel> pnlControl;
@@ -41,6 +41,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

@@ -47,11 +47,11 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(AnyType userObj)
 				sb.AppendDouble(t2 * 1000);
 				sb.AppendC(UTF8STRC("ms, ttl = "));
 				sb.AppendU32(ttl);
-				me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+				me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			}
 			else
 			{
-				me->log->LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
+				me->log.LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
 			}
 		}
 	}
@@ -80,14 +80,14 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(AnyType userObj)
 			sb.AppendDouble(t2 * 1000);
 			sb.AppendC(UTF8STRC("ms, ttl = "));
 			sb.AppendU32(ttl);
-			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+			me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(t);
 		}
 		else
 		{
 			t[0] = 1000;
 			t[1] = 1000;
-			me->log->LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
+			me->log.LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(t);
 		}
 	}
@@ -101,7 +101,6 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	this->targetAddr.addrType = Net::AddrType::Unknown;
-	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);
@@ -128,14 +127,14 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> p
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->SetDefaultButton(this->btnPing);
 	this->AddTimer(1000, OnTimerTick, this);
 }
 
 SSWR::AVIRead::AVIRNetPingForm::~AVIRNetPingForm()
 {
-	DEL_CLASS(this->log);
+	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }
 

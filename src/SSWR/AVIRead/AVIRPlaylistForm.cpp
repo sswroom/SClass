@@ -99,7 +99,7 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 	}
 }
 
-SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::Playlist> playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Playlist Form"));
@@ -107,7 +107,6 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->playlist = playlist;
-	this->currFileName = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lvPlaylist = ui->NewListView(*this, UI::ListViewStyle::Table, 2);
@@ -129,21 +128,21 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl>
 	this->btnFS = ui->NewButton(this->pnlCtrl, CSTR("&Full Screen"));
 	this->btnFS->SetRect(176, 16, 75, 23, false);
 	this->btnFS->HandleButtonClick(OnFSClicked, this);
-	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
+	NEW_CLASSNN(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->vbdMain->SetUserFSMode(UI::GUIDDrawControl::SM_VFS);
 
 	this->HandleDropFiles(OnFileDrop, this);
 	this->UpdatePlaylist();
 
-	NEW_CLASS(this->player, Media::MediaPlayer(this->vbdMain, this->core->GetAudioDevice()));
+	NEW_CLASSNN(this->player, Media::MediaPlayer(this->vbdMain, this->core->GetAudioDevice()));
 	this->playlist->SetPlayer(this->player);
 }
 
 SSWR::AVIRead::AVIRPlaylistForm::~AVIRPlaylistForm()
 {
-	DEL_CLASS(this->playlist);
-	DEL_CLASS(this->player);
+	this->playlist.Delete();
+	this->player.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

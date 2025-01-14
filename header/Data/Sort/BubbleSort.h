@@ -11,7 +11,6 @@ extern "C"
 	void BubbleSort_SortSingle(Single *arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrW(WChar **arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrC(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
-	void BubbleSort_SortCmpO(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
 
 	void BubbleSort_SortInt32Inv(Int32 *arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortUInt32Inv(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
@@ -20,6 +19,18 @@ extern "C"
 	void BubbleSort_SortSingleInv(Single *arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrWInv(WChar **arr, OSInt firstIndex, OSInt lastIndex);
 	void BubbleSort_SortStrInv(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
-	void BubbleSort_SortCmpOInv(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex);
+}
+
+namespace Data
+{
+	namespace Sort
+	{
+		class BubbleSort
+		{
+		public:
+			static void SortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortCmpOInv(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
+		};
+	}
 }
 #endif

@@ -159,9 +159,8 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("Wifi Scan"));
 
 	this->core = core;
-	NEW_CLASS(this->wlan, Net::WirelessLAN());
 	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
-	this->wlan->GetInterfaces(interfList);
+	this->wlan.GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
 	UOSInt i = interfList.GetCount();
 	while (i-- > 1)
@@ -220,7 +219,6 @@ SSWR::AVIRead::AVIRWifiScanForm::~AVIRWifiScanForm()
 {
 	this->WifiClear();
 	this->wlanInterf.Delete();
-	DEL_CLASS(this->wlan);
 }
 
 void SSWR::AVIRead::AVIRWifiScanForm::OnMonitorChanged()

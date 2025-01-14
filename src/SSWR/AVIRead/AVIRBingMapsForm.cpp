@@ -67,7 +67,7 @@ void SSWR::AVIRead::AVIRBingMapsForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::TileMap *SSWR::AVIRead::AVIRBingMapsForm::GetTileMap()
+Optional<Map::TileMap> SSWR::AVIRead::AVIRBingMapsForm::GetTileMap()
 {
 	return this->tileMap;
 }

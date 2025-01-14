@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(Optional<UI::GUIClientControl> par
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	NEW_CLASS(this->wiaMgr, Media::WIAManager());
+	NEW_CLASSNN(this->wiaMgr, Media::WIAManager());
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRWIADevForm::~AVIRWIADevForm()
 {
-	DEL_CLASS(this->wiaMgr);
+	this->wiaMgr.Delete();
 }
 
 void SSWR::AVIRead::AVIRWIADevForm::OnMonitorChanged()

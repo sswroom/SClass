@@ -15,14 +15,14 @@ namespace Map
 		{
 		private:
 			NN<Text::String> cacheDir;
-			Map::ESRI::ESRIMapServer *esriMap;
+			NN<Map::ESRI::ESRIMapServer> esriMap;
 			Bool toRelease;
 			Math::RectAreaDbl dispBounds;
 			Math::Size2DDbl dispSize;
 			Double dispDPI;
 
 		public:
-			ESRITileMap(Map::ESRI::ESRIMapServer *esriMap, Bool toRelease, Text::CStringNN cacheDir);
+			ESRITileMap(NN<Map::ESRI::ESRIMapServer> esriMap, Bool toRelease, Text::CStringNN cacheDir);
 			virtual ~ESRITileMap();
 
 			virtual Text::CStringNN GetName() const;

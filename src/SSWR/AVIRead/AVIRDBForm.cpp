@@ -756,7 +756,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	switch (cmdId)
 	{
 	case MNU_FILE_SAVE:
-		this->core->SaveData(this, this->db, L"DBSave");
+		this->core->SaveData(*this, this->db, L"DBSave");
 		break;
 	case MNU_CHART_LINE:
 		if (this->lbTable->GetSelectedItemText(sbuff).SetTo(sptr))
