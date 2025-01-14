@@ -15,31 +15,36 @@
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->devStm)
+	if (me->devStm.NotNull())
 	{
 		me->StopStream(true);
 	}
 	else
 	{
 		IO::StreamType st;
-		me->devStm = me->core->OpenStream(st, me, 0, false);
-		if (me->devStm)
+		NN<IO::Stream> devStm;
+		NN<IO::DataCaptureStream> stm;
+		NN<IO::MODBUSMaster> modbus;
+		if (me->core->OpenStream(st, me, 0, false).SetTo(devStm))
 		{
+			me->devStm = devStm;
 			me->recvBuff.Clear();
 			me->recvUpdated = true;
 			me->sendBuff.Clear();
 			me->sendUpdated = true;
 			me->log.LogMessage(CSTR("Stream Started"), IO::LogHandler::LogLevel::Action);
-			NEW_CLASS(me->stm, IO::DataCaptureStream(me->devStm, OnDataRecv, OnDataSend, me));
+			NEW_CLASSNN(stm, IO::DataCaptureStream(devStm, OnDataRecv, OnDataSend, me));
+			me->stm = stm;
 			if (me->radMODBUSTCP->IsSelected())
 			{
-				NEW_CLASS(me->modbus, IO::MODBUSTCPMaster(me->stm));
+				NEW_CLASSNN(modbus, IO::MODBUSTCPMaster(stm));
 			}
 			else
 			{
-				NEW_CLASS(me->modbus, IO::MODBUSRTUMaster(me->stm));
+				NEW_CLASSNN(modbus, IO::MODBUSRTUMaster(stm));
 			}
-			NEW_CLASS(me->modbusCtrl, IO::MODBUSController(me->modbus));
+			me->modbus = modbus;
+			NEW_CLASSOPT(me->modbusCtrl, IO::MODBUSController(modbus));
 			me->txtTimeout->SetText(CSTR("200"));
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
@@ -50,7 +55,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
@@ -67,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(AnyType userO
 		{
 			me->txtU8Value->SetText(CSTR("RegAddr"));
 		}
-		if (me->modbusCtrl->ReadRegisterU8(devAddr, regAddr, &val))
+		if (modbusCtrl->ReadRegisterU8(devAddr, regAddr, val))
 		{
 			sb.ClearStr();
 			sb.AppendU16(val);
@@ -83,7 +89,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
@@ -100,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(AnyType user
 		{
 			me->txtU16Value->SetText(CSTR("RegAddr"));
 		}
-		if (me->modbusCtrl->ReadRegisterU16(devAddr, regAddr, &val))
+		if (modbusCtrl->ReadRegisterU16(devAddr, regAddr, val))
 		{
 			sb.ClearStr();
 			sb.AppendU16(val);
@@ -116,7 +123,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
@@ -133,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(AnyType user
 		{
 			me->txtI32Value->SetText(CSTR("RegAddr"));
 		}
-		if (me->modbusCtrl->ReadRegisterI32(devAddr, regAddr, &val))
+		if (modbusCtrl->ReadRegisterI32(devAddr, regAddr, val))
 		{
 			sb.ClearStr();
 			sb.AppendI32(val);
@@ -149,7 +157,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
@@ -166,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(AnyType user
 		{
 			me->txtF32Value->SetText(CSTR("RegAddr"));
 		}
-		if (me->modbusCtrl->ReadRegisterF32(devAddr, regAddr, &val))
+		if (modbusCtrl->ReadRegisterF32(devAddr, regAddr, val))
 		{
 			sb.ClearStr();
 			Text::SBAppendF32(sb, val);
@@ -182,7 +191,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
@@ -198,7 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(AnyType us
 		{
 			me->txtSetU8Value->SetText(CSTR("RegAddr"));
 		}
-		if (me->modbusCtrl->WriteRegisterBool(devAddr, regAddr, false))
+		if (modbusCtrl->WriteRegisterBool(devAddr, regAddr, false))
 		{
 			me->txtSetU8Value->SetText(CSTR("Success"));
 		}
@@ -212,7 +222,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt8 devAddr;
@@ -228,7 +239,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(AnyType u
 		{
 			me->txtSetU8Value->SetText(CSTR("RegAddr"));
 		}
-		if (me->modbusCtrl->WriteRegisterBool(devAddr, regAddr, true))
+		if (modbusCtrl->WriteRegisterBool(devAddr, regAddr, true))
 		{
 			me->txtSetU8Value->SetText(CSTR("Success"));
 		}
@@ -242,7 +253,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(AnyType u
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		UInt8 devAddr;
 		Text::StringBuilderUTF8 sb;
@@ -279,7 +290,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnDeviceAddClicked(AnyType u
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->modbusCtrl == 0)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (!me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		me->ui->ShowMsgOK(CSTR("You must open the stream first"), CSTR("MODBUS Master"), me);
 	}
@@ -290,7 +302,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(AnyType use
 		UInt32 timeout;
 		if (sb.ToUInt32(timeout))
 		{
-			me->modbusCtrl->SetTimeout(timeout);
+			modbusCtrl->SetTimeout(timeout);
 		}
 		else
 		{
@@ -302,7 +314,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimeoutClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
-	if (me->stm)
+	NN<IO::MODBUSController> modbusCtrl;
+	if (me->modbusCtrl.SetTo(modbusCtrl))
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
@@ -319,7 +332,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 			switch (entry->dt)
 			{
 			case IO::MODBUSController::DT_F32:
-				if (me->modbusCtrl->ReadRegisterF32(entry->devAddr, entry->regAddr, &f32Val))
+				if (modbusCtrl->ReadRegisterF32(entry->devAddr, entry->regAddr, f32Val))
 				{
 					sptr = Text::StrDouble(sbuff, f32Val / (Double)entry->denorm);
 				}
@@ -329,7 +342,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 				}
 				break;
 			case IO::MODBUSController::DT_I32:
-				if (me->modbusCtrl->ReadRegisterI32(entry->devAddr, entry->regAddr, &i32Val))
+				if (modbusCtrl->ReadRegisterI32(entry->devAddr, entry->regAddr, i32Val))
 				{
 					if (entry->denorm == 1)
 					{
@@ -350,7 +363,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 				}
 				break;
 			case IO::MODBUSController::DT_U16:
-				if (me->modbusCtrl->ReadRegisterU16(entry->devAddr, entry->regAddr, &u16Val))
+				if (modbusCtrl->ReadRegisterU16(entry->devAddr, entry->regAddr, u16Val))
 				{
 					if (entry->denorm == 1)
 					{
@@ -371,7 +384,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 				}
 				break;
 			case IO::MODBUSController::DT_IU32:
-				if (me->modbusCtrl->ReadRegisterII32(entry->devAddr, entry->regAddr, &i32Val))
+				if (modbusCtrl->ReadRegisterII32(entry->devAddr, entry->regAddr, i32Val))
 				{
 					if (entry->denorm == 1)
 					{
@@ -392,7 +405,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 				}
 				break;
 			case IO::MODBUSController::DT_IU16:
-				if (me->modbusCtrl->ReadRegisterIU16(entry->devAddr, entry->regAddr, &u16Val))
+				if (modbusCtrl->ReadRegisterIU16(entry->devAddr, entry->regAddr, u16Val))
 				{
 					if (entry->denorm == 1)
 					{
@@ -413,7 +426,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 				}
 				break;
 			case IO::MODBUSController::DT_OS16:
-				if (me->modbusCtrl->ReadRegisterU16(entry->devAddr, entry->regAddr, &u16Val))
+				if (modbusCtrl->ReadRegisterU16(entry->devAddr, entry->regAddr, u16Val))
 				{
 					if (u16Val & 0x8000)
 					{
@@ -442,7 +455,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 				}
 				break;
 			case IO::MODBUSController::DT_U8:
-				if (me->modbusCtrl->ReadRegisterU8(entry->devAddr, entry->regAddr, &u8Val))
+				if (modbusCtrl->ReadRegisterU8(entry->devAddr, entry->regAddr, u8Val))
 				{
 					sptr = Text::StrUInt16(sbuff, u8Val);
 				}
@@ -534,14 +547,12 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(AnyType userOb
 
 void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream(Bool clearUI)
 {
-	if (this->stm)
+	if (this->stm.NotNull())
 	{
-		DEL_CLASS(this->modbusCtrl);
-		DEL_CLASS(this->modbus);
-		DEL_CLASS(this->stm);
-		DEL_CLASS(this->devStm);
-		this->stm = 0;
-		this->devStm = 0;
+		this->modbusCtrl.Delete();
+		this->modbus.Delete();
+		this->stm.Delete();
+		this->devStm.Delete();
 		if (clearUI)
 		{
 			this->txtStream->SetText(CSTR("-"));
@@ -558,6 +569,8 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 	this->core = core;
 	this->devStm = 0;
 	this->stm = 0;
+	this->modbus = 0;
+	this->modbusCtrl = 0;
 	this->recvUpdated = false;
 	this->sendUpdated = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

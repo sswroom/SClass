@@ -11,14 +11,14 @@ namespace UI
 		typedef void (CALLBACKFUNC NumberInputEvent)(AnyType userObj, UOSInt x, UOSInt y, UInt8 num);
 
 	private:
-		Game::Sudoku::SudokuBoard *board;
+		NN<Game::Sudoku::SudokuBoard> board;
 		UOSInt selX;
 		UOSInt selY;
 		Data::ArrayList<NumberInputEvent> numInputHdlr;
 		Data::ArrayList<AnyType> numInputObj;
 
 	public:
-		GUISudokuViewer(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board);
+		GUISudokuViewer(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Game::Sudoku::SudokuBoard> board);
 		virtual ~GUISudokuViewer();
 
 		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);

@@ -120,13 +120,13 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 	return 0;
 }
 
-IO::MODBUSTCPMaster::MODBUSTCPMaster(IO::Stream *stm)
+IO::MODBUSTCPMaster::MODBUSTCPMaster(NN<IO::Stream> stm)
 {
 	this->stm = stm;
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->tranId = 0;
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::ThreadUtil::Create(ThreadProc, this);
 		while (!this->threadRunning)
@@ -139,7 +139,7 @@ IO::MODBUSTCPMaster::MODBUSTCPMaster(IO::Stream *stm)
 IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 {
 	UOSInt i;
-	if (this->stm)
+	//if (this->stm)
 	{
 		this->threadToStop = true;
 		this->stm->Close();
@@ -170,7 +170,7 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	buff[7] = 1;
 	WriteMInt16(&buff[8], coilAddr);
 	WriteMInt16(&buff[10], coilCnt);
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -180,7 +180,6 @@ Bool IO::MODBUSTCPMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }
@@ -198,7 +197,7 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	buff[7] = 2;
 	WriteMInt16(&buff[8], inputAddr);
 	WriteMInt16(&buff[10], inputCnt);
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -208,7 +207,6 @@ Bool IO::MODBUSTCPMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }
@@ -226,7 +224,7 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	buff[7] = 3;
 	WriteMInt16(&buff[8], regAddr);
 	WriteMInt16(&buff[10], regCnt);
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -236,7 +234,6 @@ Bool IO::MODBUSTCPMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }
@@ -254,7 +251,7 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	buff[7] = 4;
 	WriteMInt16(&buff[8], regAddr);
 	WriteMInt16(&buff[10], regCnt);
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -264,7 +261,6 @@ Bool IO::MODBUSTCPMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }
@@ -289,7 +285,7 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 	{
 		WriteMInt16(&buff[10], 0);
 	}	
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -299,7 +295,6 @@ Bool IO::MODBUSTCPMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }
@@ -317,7 +312,7 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	buff[7] = 6;
 	WriteMInt16(&buff[8], regAddr);
 	WriteMInt16(&buff[10], val);
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -327,12 +322,11 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 12));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }
 
-Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UInt8 *val)
+Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UnsafeArray<UInt8> val)
 {
 	UInt8 buff[256];
 	WriteMInt16(buff, this->tranId);
@@ -347,8 +341,8 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	WriteMInt16(&buff[8], regAddr);
 	WriteMInt16(&buff[10], cnt);
 	buff[12] = (UInt8)(cnt << 1);
-	MemCopyNO(&buff[13], val, (UOSInt)cnt * 2);
-	if (this->stm)
+	MemCopyNO(&buff[13], val.Ptr(), (UOSInt)cnt * 2);
+	//if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -358,7 +352,6 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 		}
 		this->stm->Write(Data::ByteArrayR(buff, (UOSInt)cnt * 2 + 13));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
 	return true;
 }

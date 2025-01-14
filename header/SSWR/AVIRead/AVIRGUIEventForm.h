@@ -22,7 +22,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::LogTool *log;
+			NN<IO::LogTool> log;
 			NN<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnLogSelChg(AnyType userObj);

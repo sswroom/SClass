@@ -21,7 +21,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::SolarEdgeAPI *seAPI;
+			Optional<Net::SolarEdgeAPI> seAPI;
 			Data::ArrayListNN<Net::SolarEdgeAPI::Site> siteList;
 			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> siteEnergyList;
 			Data::ArrayList<Net::SolarEdgeAPI::TimedValue> sitePowerList;

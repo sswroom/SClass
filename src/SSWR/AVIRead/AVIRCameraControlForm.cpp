@@ -131,8 +131,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 			{
 				mstm.SeekFromBeginning(0);
 				NN<Map::GPSTrack> trk = IO::GPSNMEA::NMEA2Track(mstm, Text::CStringNN(file->fileName2, file->fileNameLen));
-				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
-				if (frm)
+				NN<SSWR::AVIRead::AVIRGISForm> frm;
+				if (me->core->GetGISForm().SetTo(frm))
 				{
 					frm->AddLayer(trk);
 				}

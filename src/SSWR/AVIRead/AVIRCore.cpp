@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(AnyType userObj, NN<UI::GUIFo
 {
 	NN<SSWR::AVIRead::AVIRCore> me = userObj.GetNN<SSWR::AVIRead::AVIRCore>();
 	me->frms.RemoveAt(me->frms.IndexOf(frm));
-	if (me->gisForm == frm.Ptr())
+	if (me->gisForm.OrNull() == frm.Ptr())
 	{
 		me->gisForm = 0;
 	}
@@ -54,18 +54,23 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
-	NEW_CLASS(this->browser, Net::WebBrowser(clif, this->ssl, CSTRP(sbuff, sptr)));
+	NEW_CLASSNN(this->browser, Net::WebBrowser(clif, this->ssl, CSTRP(sbuff, sptr)));
 	NEW_CLASS(this->gpioCtrl, IO::GPIOControl());
 	if (this->gpioCtrl->IsError())
 	{
 		DEL_CLASS(this->gpioCtrl);
 		this->gpioCtrl = 0;
 	}
-	NEW_CLASS(this->siLabDriver, IO::SiLabDriver());
-	if (this->siLabDriver->IsError())
+	NN<IO::SiLabDriver> siLabDriver;
+	NEW_CLASSNN(siLabDriver, IO::SiLabDriver());
+	if (siLabDriver->IsError())
 	{
-		DEL_CLASS(this->siLabDriver);
+		siLabDriver.Delete();
 		this->siLabDriver = 0;
+	}
+	else
+	{
+		this->siLabDriver = siLabDriver;
 	}
 	this->parsers->SetEncFactory(&this->encFact);
 	this->parsers->SetMapManager(&this->mapMgr);
@@ -106,14 +111,14 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	UOSInt i;
 	this->CloseAllForm();
 	this->parsers.Delete();
-	DEL_CLASS(this->browser);
+	this->browser.Delete();
 	this->ssl.Delete();
 	this->clif.Delete();
 	this->sockf.Delete();
 	this->eng.Delete();
 	this->ui->SetMonitorMgr(0);
 	SDEL_CLASS(this->gpioCtrl);
-	SDEL_CLASS(this->siLabDriver);
+	this->siLabDriver.Delete();
 	i = this->audDevList.GetCount();
 	while (i-- > 0)
 	{
@@ -121,7 +126,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	}
 }
 
-void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
+void SSWR::AVIRead::AVIRCore::OpenGSMModem(Optional<IO::Stream> modemPort)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> frm;
 	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, *this, modemPort));
@@ -129,9 +134,9 @@ void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 	frm->Show();
 }
 
-IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
+Optional<IO::Stream> SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
 {
-	IO::Stream *retStm = 0;
+	Optional<IO::Stream> retStm = 0;
 	SSWR::AVIRead::AVIRSelStreamForm frm(0, this->ui, *this, allowReadOnly, this->ssl, this->GetLog());
 	if (defBaudRate != 0)
 	{
@@ -139,13 +144,13 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> st, Optio
 	}
 	if (frm.ShowDialog(ownerFrm) == UI::GUIForm::DR_OK)
 	{
-		retStm = frm.GetStream().Ptr();
+		retStm = frm.GetStream();
 		st.Set(frm.GetStreamType());
 	}
 	return retStm;
 }
 
-void SSWR::AVIRead::AVIRCore::OpenHex(NN<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+void SSWR::AVIRead::AVIRCore::OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
 {
 	NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
 	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
@@ -252,12 +257,12 @@ NN<Text::EncodingFactory> SSWR::AVIRead::AVIRCore::GetEncFactory()
 	return this->encFact;
 }
 
-IO::SiLabDriver *SSWR::AVIRead::AVIRCore::GetSiLabDriver()
+Optional<IO::SiLabDriver> SSWR::AVIRead::AVIRCore::GetSiLabDriver()
 {
 	return this->siLabDriver;
 }
 
-Net::WebBrowser *SSWR::AVIRead::AVIRCore::GetWebBrowser()
+NN<Net::WebBrowser> SSWR::AVIRead::AVIRCore::GetWebBrowser()
 {
 	return this->browser;
 }
@@ -559,12 +564,12 @@ void SSWR::AVIRead::AVIRCore::CloseAllForm()
 	}
 }
 
-void SSWR::AVIRead::AVIRCore::SetGISForm(SSWR::AVIRead::AVIRGISForm *frm)
+void SSWR::AVIRead::AVIRCore::SetGISForm(Optional<SSWR::AVIRead::AVIRGISForm> frm)
 {
 	this->gisForm = frm;
 }
 
-SSWR::AVIRead::AVIRGISForm *SSWR::AVIRead::AVIRCore::GetGISForm()
+Optional<SSWR::AVIRead::AVIRGISForm> SSWR::AVIRead::AVIRCore::GetGISForm()
 {
 	return this->gisForm;
 }

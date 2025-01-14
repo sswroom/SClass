@@ -21,7 +21,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::NTPServer *svr;
+			Optional<Net::NTPServer> svr;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 
@@ -48,6 +48,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
+	}
 }
 #endif

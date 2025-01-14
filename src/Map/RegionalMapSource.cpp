@@ -272,13 +272,13 @@ Map::RegionalMapSource::MapInfo Map::RegionalMapSource::maps[] = {
 		UTF8STRCPTR("Street posting box locations and collection time")},
 };
 
-const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSInt *cnt)
+UnsafeArray<const Map::RegionalMapSource::MapInfo> Map::RegionalMapSource::GetMapInfos(OutParam<UOSInt> cnt)
 {
-	*cnt = sizeof(maps) / sizeof(maps[0]);
+	cnt.Set(sizeof(maps) / sizeof(maps[0]));
 	return maps;
 }
 
-Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys)
+Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, NN<Math::CoordinateSystem> envCSys)
 {
 	Map::MapDrawLayer *layer;
 	switch (map->mapType)

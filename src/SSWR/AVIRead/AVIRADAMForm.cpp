@@ -5,7 +5,7 @@
 void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		me->StopStream(true);
 	}
@@ -20,18 +20,20 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 		}
 		IO::StreamType st;
 		NN<IO::Stream> stm;
-		if (stm.Set(me->core->OpenStream(st, me, 0, false)))
+		if (me->core->OpenStream(st, me, 0, false).SetTo(stm))
 		{
-			me->stm = stm.Ptr();
+			me->stm = stm;
 			UTF8Char sbuff[64];
 			UnsafeArray<UTF8Char> sptr;
-			NEW_CLASS(me->channel, IO::AdvantechASCIIChannel(stm, true));
+			NN<IO::AdvantechASCIIChannel> channel;
+			NEW_CLASSNN(channel, IO::AdvantechASCIIChannel(stm, true));
+			me->channel = channel;
 			me->channelModule = 0;
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
 			me->txtAddress->SetReadOnly(true);
 
-			if (me->channel->GetModuleName(sbuff, me->channelAddr).SetTo(sptr))
+			if (channel->GetModuleName(sbuff, me->channelAddr).SetTo(sptr))
 			{
 				me->txtModuleName->SetText(CSTRP(sbuff, sptr));
 				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("4050")))
@@ -48,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 				me->txtModuleName->SetText(CSTR("-"));
 			}
 
-			if (me->channel->GetFirmwareVer(sbuff, me->channelAddr).SetTo(sptr))
+			if (channel->GetFirmwareVer(sbuff, me->channelAddr).SetTo(sptr))
 			{
 				me->txtFirmware->SetText(CSTRP(sbuff, sptr));
 			}
@@ -58,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 			}
 
 			IO::AdvantechASCIIChannel::ADAMConfig cfg;
-			if (me->channel->GetConfigStatus(me->channelAddr, cfg))
+			if (channel->GetConfigStatus(me->channelAddr, cfg))
 			{
 				sptr = Text::StrUInt16(sbuff, cfg.addr);
 				me->txtDevAddress->SetText(CSTRP(sbuff, sptr));
@@ -92,58 +94,61 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;		
 	UOSInt i;
+	NN<IO::AdvantechASCIIChannel> channel;
 	me->lvData->ClearItems();
-	if (me->channelModule == 4050)
+	if (me->channel.SetTo(channel))
 	{
-		UInt16 inputs;
-		UInt16 outputs;
-		if (me->channel->ADAM4050GetIOStatus(me->channelAddr, outputs, inputs))
+		if (me->channelModule == 4050)
 		{
-			i = me->lvData->AddItem(CSTR("Inputs"), 0);
-			sptr = Text::StrHexVal16(sbuff, inputs);
-			me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			i = me->lvData->AddItem(CSTR("Outputs"), 0);
-			sptr = Text::StrHexVal16(sbuff, outputs);
-			me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			UInt16 inputs;
+			UInt16 outputs;
+			if (channel->ADAM4050GetIOStatus(me->channelAddr, outputs, inputs))
+			{
+				i = me->lvData->AddItem(CSTR("Inputs"), 0);
+				sptr = Text::StrHexVal16(sbuff, inputs);
+				me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+				i = me->lvData->AddItem(CSTR("Outputs"), 0);
+				sptr = Text::StrHexVal16(sbuff, outputs);
+				me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				i = me->lvData->AddItem(CSTR("Inputs"), 0);
+				me->lvData->SetSubItem(i, 1, CSTR("-"));
+				i = me->lvData->AddItem(CSTR("Outputs"), 0);
+				me->lvData->SetSubItem(i, 1, CSTR("-"));
+			}
 		}
-		else
+		else if (me->channelModule == 4051)
 		{
-			i = me->lvData->AddItem(CSTR("Inputs"), 0);
-			me->lvData->SetSubItem(i, 1, CSTR("-"));
-			i = me->lvData->AddItem(CSTR("Outputs"), 0);
-			me->lvData->SetSubItem(i, 1, CSTR("-"));
-		}
-	}
-	else if (me->channelModule == 4051)
-	{
-		UInt16 inputs;
-		UInt16 outputs;
-		if (me->channel->ADAM4051GetIOStatus(me->channelAddr, outputs, inputs))
-		{
-			i = me->lvData->AddItem(CSTR("Inputs"), 0);
-			sptr = Text::StrHexVal16(sbuff, inputs);
-			me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-			i = me->lvData->AddItem(CSTR("Outputs"), 0);
-			sptr = Text::StrHexVal16(sbuff, outputs);
-			me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
-		}
-		else
-		{
-			i = me->lvData->AddItem(CSTR("Inputs"), 0);
-			me->lvData->SetSubItem(i, 1, CSTR("-"));
-			i = me->lvData->AddItem(CSTR("Outputs"), 0);
-			me->lvData->SetSubItem(i, 1, CSTR("-"));
+			UInt16 inputs;
+			UInt16 outputs;
+			if (channel->ADAM4051GetIOStatus(me->channelAddr, outputs, inputs))
+			{
+				i = me->lvData->AddItem(CSTR("Inputs"), 0);
+				sptr = Text::StrHexVal16(sbuff, inputs);
+				me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+				i = me->lvData->AddItem(CSTR("Outputs"), 0);
+				sptr = Text::StrHexVal16(sbuff, outputs);
+				me->lvData->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			}
+			else
+			{
+				i = me->lvData->AddItem(CSTR("Inputs"), 0);
+				me->lvData->SetSubItem(i, 1, CSTR("-"));
+				i = me->lvData->AddItem(CSTR("Outputs"), 0);
+				me->lvData->SetSubItem(i, 1, CSTR("-"));
+			}
 		}
 	}
 }
 
 void SSWR::AVIRead::AVIRADAMForm::StopStream(Bool clearUI)
 {
-	if (this->stm)
+	if (this->stm.NotNull())
 	{
-		DEL_CLASS(this->channel);
+		this->channel.Delete();
 		this->stm = 0;
-		this->channel = 0;
 		this->channelModule = 0;
 		if (clearUI)
 		{

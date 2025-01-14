@@ -34,7 +34,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpItems;
 			NN<UI::GUIListView> lvItems;
 
-			Net::RSS *rss;
+			Optional<Net::RSS> rss;
 			Data::ArrayListStringNN rssList;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;

@@ -163,6 +163,7 @@
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "SSWR/AVIRead/AVIRNetPingForm.h"
 #include "SSWR/AVIRead/AVIRNetRAWCaptureForm.h"
+#include "SSWR/AVIRead/AVIRNetworkBandwidthForm.h"
 #include "SSWR/AVIRead/AVIRNTPClientForm.h"
 #include "SSWR/AVIRead/AVIRNTPServerForm.h"
 #include "SSWR/AVIRead/AVIROCRForm.h"
@@ -520,7 +521,8 @@ typedef enum
 	MNU_ENCRYPT_FILE,
 	MNU_SELENIUM_LOG,
 	MNU_JMETER_LOG,
-	MNU_RADIO_SCAN
+	MNU_RADIO_SCAN,
+	MNU_NETWORK_BANDWIDTH
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -741,6 +743,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Ping Monitor"), MNU_PINGMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RAW Monitor"), MNU_RAWMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RAW Capture"), MNU_NETRAWCAPTURE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Network Bandwidth"), MNU_NETWORK_BANDWIDTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HTTP"));
 	mnu2->AddItem(CSTR("HTTP Server"), MNU_HTTP_SVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3009,6 +3012,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRRadioScanForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRRadioScanForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_NETWORK_BANDWIDTH:
+		{
+			NN<SSWR::AVIRead::AVIRNetworkBandwidthForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetworkBandwidthForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

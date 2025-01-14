@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	NEW_CLASS(this->scanner, Net::ICMPScanner(core->GetSocketFactory()));
+	NEW_CLASSNN(this->scanner, Net::ICMPScanner(core->GetSocketFactory()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlControl = ui->NewPanel(*this);
@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRIPScanForm::~AVIRIPScanForm()
 {
-	DEL_CLASS(this->scanner);
+	this->scanner.Delete();
 }
 
 void SSWR::AVIRead::AVIRIPScanForm::OnMonitorChanged()

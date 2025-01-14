@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::MQTTConn *client;
+			Optional<Net::MQTTConn> client;
 			IO::LogTool log;
 			Optional<Crypto::Cert::X509Cert> cliCert;
 			Optional<Crypto::Cert::X509File> cliKey;

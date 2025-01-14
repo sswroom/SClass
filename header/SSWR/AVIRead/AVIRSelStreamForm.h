@@ -27,7 +27,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::LogTool> log;
-			IO::SiLabDriver *siLabDriver;
+			Optional<IO::SiLabDriver> siLabDriver;
 			Optional<Net::SSLEngine> ssl;
 			IO::DeviceManager devMgr;
 			Data::ArrayListNN<IO::DeviceInfo> devList;

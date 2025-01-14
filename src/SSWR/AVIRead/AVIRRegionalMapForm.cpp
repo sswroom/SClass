@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(Optional<UI::GUIClientCo
 
 	UOSInt i = 0;
 	UOSInt j;
-	const Map::RegionalMapSource::MapInfo *maps = Map::RegionalMapSource::GetMapInfos(&j);
+	UnsafeArray<const Map::RegionalMapSource::MapInfo> maps = Map::RegionalMapSource::GetMapInfos(j);
 	while (i < j)
 	{
 		this->lvMaps->AddItem(Text::CStringNN(maps[i].name, maps[i].nameLen), (void*)&maps[i]);

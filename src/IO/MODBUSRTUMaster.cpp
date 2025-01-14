@@ -127,36 +127,35 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 	return 0;
 }
 
-void IO::MODBUSRTUMaster::CalcCRC(UInt8 *rtu, UOSInt rtuSize)
+void IO::MODBUSRTUMaster::CalcCRC(UnsafeArray<UInt8> rtu, UOSInt rtuSize)
 {
 	UInt8 crcTmp[2];
 	Sync::MutexUsage mutUsage(this->crcMut);
-	this->crc->Clear();
-	this->crc->Calc(rtu, rtuSize - 2);
-	this->crc->GetValue(crcTmp);
+	this->crc.Clear();
+	this->crc.Calc(rtu, rtuSize - 2);
+	this->crc.GetValue(crcTmp);
 	mutUsage.EndUse();
 	rtu[rtuSize - 2] = (UInt8)~crcTmp[1];
 	rtu[rtuSize - 1] = (UInt8)~crcTmp[0];
 }
 
-Bool IO::MODBUSRTUMaster::IsCRCValid(UInt8 *rtu, UOSInt rtuSize)
+Bool IO::MODBUSRTUMaster::IsCRCValid(UnsafeArray<UInt8> rtu, UOSInt rtuSize)
 {
 	UInt8 crcTmp[2];
 	Sync::MutexUsage mutUsage(this->crcMut);
-	this->crc->Clear();
-	this->crc->Calc(rtu, rtuSize - 2);
-	this->crc->GetValue(crcTmp);
+	this->crc.Clear();
+	this->crc.Calc(rtu, rtuSize - 2);
+	this->crc.GetValue(crcTmp);
 	mutUsage.EndUse();
 	return rtu[rtuSize - 2] == (UInt8)~crcTmp[1] && rtu[rtuSize - 1] == (UInt8)~crcTmp[0];
 }
 
-IO::MODBUSRTUMaster::MODBUSRTUMaster(IO::Stream *stm)
+IO::MODBUSRTUMaster::MODBUSRTUMaster(NN<IO::Stream> stm) : crc(Crypto::Hash::CRC16::GetPolynomialANSI())
 {
 	this->stm = stm;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->crc, Crypto::Hash::CRC16R(Crypto::Hash::CRC16::GetPolynomialANSI()));
-	if (this->stm)
+	//if (this->stm)
 	{
 		Sync::ThreadUtil::Create(ThreadProc, this);
 		while (!this->threadRunning)
@@ -169,7 +168,7 @@ IO::MODBUSRTUMaster::MODBUSRTUMaster(IO::Stream *stm)
 IO::MODBUSRTUMaster::~MODBUSRTUMaster()
 {
 	UOSInt i;
-	if (this->stm)
+	//if (this->stm)
 	{
 		this->threadToStop = true;
 		this->stm->Close();
@@ -185,7 +184,6 @@ IO::MODBUSRTUMaster::~MODBUSRTUMaster()
 		cb = this->cbMap.GetItemNoCheck(i);
 		MemFreeNN(cb);
 	}
-	DEL_CLASS(this->crc);
 }
 
 Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilCnt)
@@ -196,7 +194,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	WriteMInt16(&buff[2], coilAddr);
 	WriteMInt16(&buff[4], coilCnt);
 	this->CalcCRC(buff, 8);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -206,14 +204,13 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 
@@ -225,7 +222,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	WriteMInt16(&buff[2], inputAddr);
 	WriteMInt16(&buff[4], inputCnt);
 	this->CalcCRC(buff, 8);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -235,14 +232,13 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 
@@ -254,7 +250,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	WriteMInt16(&buff[2], regAddr);
 	WriteMInt16(&buff[4], regCnt);
 	this->CalcCRC(buff, 8);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -264,14 +260,13 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 
@@ -283,7 +278,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	WriteMInt16(&buff[2], regAddr);
 	WriteMInt16(&buff[4], regCnt);
 	this->CalcCRC(buff, 8);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -293,14 +288,13 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 
@@ -319,7 +313,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		WriteMInt16(&buff[4], 0);
 	}	
 	this->CalcCRC(buff, 8);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -329,14 +323,13 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 		}
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 
@@ -348,7 +341,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	WriteMInt16(&buff[2], regAddr);
 	WriteMInt16(&buff[4], val);
 	this->CalcCRC(buff, 8);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -362,18 +355,17 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 
 		this->stm->Write(Data::ByteArrayR(buff, 8));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 
-Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UInt8 *val)
+Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UnsafeArray<UInt8> val)
 {
 	UInt8 buff[256];
 	buff[0] = devAddr;
@@ -381,9 +373,9 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	WriteMInt16(&buff[2], regAddr);
 	WriteMUInt16(&buff[4], cnt);
 	buff[6] = (UInt8)(cnt << 1);
-	MemCopyNO(&buff[7], val, (UOSInt)cnt * 2);
+	MemCopyNO(&buff[7], val.Ptr(), (UOSInt)cnt * 2);
 	this->CalcCRC(buff, (UOSInt)cnt * 2 + 9);
-	if (this->stm)
+//	if (this->stm)
 	{
 		Sync::MutexUsage mutUsage(this->stmMut);
 		Double t = this->clk.GetTimeDiff();
@@ -397,14 +389,13 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 
 		this->stm->Write(Data::ByteArrayR(buff, (UOSInt)cnt * 2 + 9));
 		this->clk.Start();
-		mutUsage.EndUse();
 	}
-	else
+/*	else
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, (UOSInt)cnt * 2 + 9, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToPtr());
-	}
+	}*/
 	return true;
 }
 

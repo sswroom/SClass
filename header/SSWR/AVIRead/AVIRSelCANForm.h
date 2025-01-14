@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::CANHandler> hdlr;
-			IO::CANListener *listener;
+			Optional<IO::CANListener> listener;
 			Optional<Net::SSLEngine> ssl;
 
 			NN<UI::GUITabControl> tcMain;
@@ -37,7 +37,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			IO::CANListener *GetListener() const;
+			Optional<IO::CANListener> GetListener() const;
 		};
 	}
 }

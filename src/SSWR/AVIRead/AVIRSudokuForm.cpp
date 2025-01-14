@@ -22,8 +22,8 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->board, Game::Sudoku::SudokuBoard());
-	NEW_CLASS(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), board));
+	NEW_CLASSNN(this->board, Game::Sudoku::SudokuBoard());
+	NEW_CLASSNN(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), board));
 	this->svMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->svMain->HandleNumberInput(EventNumInput, this);
 	NN<UI::GUIMenu> mnu;
@@ -38,7 +38,7 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRSudokuForm::~AVIRSudokuForm()
 {
-	DEL_CLASS(this->board);
+	this->board.Delete();
 }
 
 void SSWR::AVIRead::AVIRSudokuForm::EventMenuClicked(UInt16 cmdId)

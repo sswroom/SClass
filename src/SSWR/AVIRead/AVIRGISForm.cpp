@@ -554,7 +554,7 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(NN<IO::ParsedObject> pobj)
 
 void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString customName)
 {
-	Net::WebBrowser *browser = this->core->GetWebBrowser();
+	NN<Net::WebBrowser> browser = this->core->GetWebBrowser();
 	NN<IO::StreamData> fd;
 	Text::CStringNN nncustomeName;
 	if (browser->GetData(url, false, 0).SetTo(fd))
@@ -1634,7 +1634,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_GPS_SIMULATOR:
 		{
 			NN<UI::GUIForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, this));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, *this));
 			this->SetCtrlForm(frm, 0);
 		}
 		break;

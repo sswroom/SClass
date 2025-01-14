@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::SiLabDriver *siLabDriver;
+			Optional<IO::SiLabDriver> siLabDriver;
 
 			NN<UI::GUIGroupBox> grpStream;
 			NN<UI::GUILabel> lblStream;
@@ -28,7 +28,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblDataSize;
 			NN<UI::GUITextBox> txtDataSize;
 
-			IO::Stream *stm;
+			Optional<IO::Stream> stm;
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool remoteClosed;

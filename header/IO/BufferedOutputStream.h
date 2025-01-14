@@ -8,7 +8,7 @@ namespace IO
 	{
 	private:
 		NN<IO::Stream> outStm;
-		UInt8 *cacheBuff;
+		UnsafeArray<UInt8> cacheBuff;
 		UOSInt cacheBuffSize;
 		UOSInt cacheSize;
 		UInt64 totalWrite;

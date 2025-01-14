@@ -41,11 +41,11 @@ namespace SSWR
 			NN<Parser::ParserList> parsers;
 			Map::MapManager mapMgr;
 			Media::ColorManager colorMgr;
-			IO::SiLabDriver *siLabDriver;
+			Optional<IO::SiLabDriver> siLabDriver;
 			NN<Net::SocketFactory> sockf;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
-			Net::WebBrowser *browser;
+			NN<Net::WebBrowser> browser;
 			Text::EncodingFactory encFact;
 			NN<Media::DrawEngine> eng;
 			NN<UI::GUICore> ui;
@@ -61,7 +61,7 @@ namespace SSWR
 			Bool forwardedUI;
 
 			Data::ArrayListNN<UI::GUIForm> frms;
-			SSWR::AVIRead::AVIRGISForm *gisForm;
+			Optional<SSWR::AVIRead::AVIRGISForm> gisForm;
 
 			Bool batchLoad;
 			Optional<Data::ArrayListNN<Map::MapDrawLayer>> batchLyrs;
@@ -78,9 +78,9 @@ namespace SSWR
 			virtual void SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName) = 0;
 			virtual Optional<Media::Printer> SelectPrinter(Optional<UI::GUIForm> frm) = 0;
 
-			void OpenGSMModem(IO::Stream *modemPort);
-			IO::Stream *OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
-			void OpenHex(NN<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+			void OpenGSMModem(Optional<IO::Stream> modemPort);
+			Optional<IO::Stream> OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
+			void OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse);
 
 			void BeginLoad();
 			void EndLoad();
@@ -94,8 +94,8 @@ namespace SSWR
 			NN<Net::TCPClientFactory> GetTCPClientFactory();
 			NN<Media::DrawEngine> GetDrawEngine();
 			NN<Text::EncodingFactory> GetEncFactory();
-			IO::SiLabDriver *GetSiLabDriver();
-			Net::WebBrowser *GetWebBrowser();
+			Optional<IO::SiLabDriver> GetSiLabDriver();
+			NN<Net::WebBrowser> GetWebBrowser();
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
 			IO::GPIOControl *GetGPIOControl();
 			Media::AudioDevice *GetAudioDevice();
@@ -120,8 +120,8 @@ namespace SSWR
 			Bool GenFontPreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NN<Media::ColorConv> colorConv);
 			void ShowForm(NN<UI::GUIForm> frm);
 			void CloseAllForm();
-			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
-			SSWR::AVIRead::AVIRGISForm *GetGISForm();
+			void SetGISForm(Optional<SSWR::AVIRead::AVIRGISForm> frm);
+			Optional<SSWR::AVIRead::AVIRGISForm> GetGISForm();
 
 			static Text::CStringNN IOPinTypeGetName(IOPinType iopt);
 		};

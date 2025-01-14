@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		me->StopStream(true);
 	}
@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(AnyType userOb
 	{
 		IO::StreamType st;
 		me->stm = me->core->OpenStream(st, me, 0, false);
-		if (me->stm)
+		if (me->stm.NotNull())
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
@@ -42,7 +42,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
-	if (me->stm)
+	NN<IO::Stream> stm;
+	if (me->stm.SetTo(stm))
 	{
 		Text::StringBuilderUTF8 sb;
 		UOSInt size;
@@ -65,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 			}
 			if (sb.GetLength() > 0)
 			{
-				me->stm->Write(sb.ToByteArray());
+				stm->Write(sb.ToByteArray());
 				me->sendBuff.Write(sb.ToByteArray());
 				me->UpdateSendDisp();
 			}
@@ -92,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 			case 3:
 				break;
 			}
-			me->stm->Write(Data::ByteArrayR(buff, size));
+			stm->Write(Data::ByteArrayR(buff, size));
 			me->sendBuff.Write(Data::ByteArrayR(buff, size));
 			MemFree(buff);
 			me->UpdateSendDisp();
@@ -132,20 +133,24 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
+	NN<IO::Stream> stm;
 	me->threadRunning = true;
-	while (!me->threadToStop)
+	if (me->stm.SetTo(stm))
 	{
-		recvSize = me->stm->Read(BYTEARR(buff));
-		if (recvSize <= 0)
+		while (!me->threadToStop)
 		{
-			me->remoteClosed = true;
-		}
-		else
-		{
-			Sync::MutexUsage mutUsage(me->recvMut);
-			me->recvBuff.Write(Data::ByteArrayR(buff, recvSize));
-			mutUsage.EndUse();
-			me->recvUpdated = true;
+			recvSize = stm->Read(BYTEARR(buff));
+			if (recvSize <= 0)
+			{
+				me->remoteClosed = true;
+			}
+			else
+			{
+				Sync::MutexUsage mutUsage(me->recvMut);
+				me->recvBuff.Write(Data::ByteArrayR(buff, recvSize));
+				mutUsage.EndUse();
+				me->recvUpdated = true;
+			}
 		}
 	}
 	me->threadRunning = false;
@@ -154,16 +159,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(AnyType userObj)
 
 void SSWR::AVIRead::AVIRStreamTermForm::StopStream(Bool clearUI)
 {
-	if (this->stm)
+	NN<IO::Stream> stm;
+	if (this->stm.SetTo(stm))
 	{
-		this->stm->Close();
+		stm->Close();
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 		this->threadToStop = false;
-		DEL_CLASS(this->stm);
+		stm.Delete();
 		this->stm = 0;
 		if (clearUI)
 		{

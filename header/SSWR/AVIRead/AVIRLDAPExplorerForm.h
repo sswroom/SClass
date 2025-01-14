@@ -21,7 +21,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::LDAPClient *cli;
+			Optional<Net::LDAPClient> cli;
 			Data::ArrayListNN<Net::LDAPClient::SearchResObject> dispResults;
 			UOSInt rootLev;
 

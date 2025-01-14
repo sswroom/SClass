@@ -7,7 +7,7 @@ IO::BufferedOutputStream::BufferedOutputStream(NN<IO::Stream> outStm, UOSInt buf
 {
 	this->outStm = outStm;
 	this->cacheBuffSize = buffSize;
-	this->cacheBuff = MemAlloc(UInt8, buffSize);
+	this->cacheBuff = MemAllocArr(UInt8, buffSize);
 	this->cacheSize = 0;
 	this->totalWrite = 0;
 }
@@ -18,8 +18,7 @@ IO::BufferedOutputStream::~BufferedOutputStream()
 	{
 		this->outStm->Write(Data::ByteArrayR(this->cacheBuff, this->cacheSize));
 	}
-	MemFree(this->cacheBuff);
-	this->cacheBuff = 0;
+	MemFreeArr(this->cacheBuff);
 }
 
 Bool IO::BufferedOutputStream::IsDown() const
@@ -65,7 +64,7 @@ UOSInt IO::BufferedOutputStream::Write(Data::ByteArrayR buff)
 	}
 	else if (writeSize < this->cacheBuffSize)
 	{
-		MemCopyO(this->cacheBuff, &this->cacheBuff[writeSize], this->cacheBuffSize - writeSize);
+		MemCopyO(this->cacheBuff.Ptr(), &this->cacheBuff[writeSize], this->cacheBuffSize - writeSize);
 		this->cacheSize = this->cacheBuffSize - writeSize;
 		if (this->cacheBuffSize - this->cacheSize < buff.GetSize())
 		{
@@ -109,7 +108,7 @@ UOSInt IO::BufferedOutputStream::Write(Data::ByteArrayR buff)
 	}
 	else
 	{
-		MemCopyNO(this->cacheBuff, buff.Arr().Ptr(), buff.GetSize());
+		MemCopyNO(this->cacheBuff.Ptr(), buff.Arr().Ptr(), buff.GetSize());
 		this->cacheSize += buff.GetSize();
 		ret += buff.GetSize();
 		return ret;

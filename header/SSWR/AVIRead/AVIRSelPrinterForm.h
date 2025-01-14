@@ -16,7 +16,7 @@ namespace SSWR
 		public:
 			Optional<Media::Printer> printer;
 		private:
-			Media::Printer *currPrinter;
+			Optional<Media::Printer> currPrinter;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<UI::GUILabel> lblPrinter;
 			NN<UI::GUIComboBox> cboPrinter;

@@ -22,7 +22,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::SiLabDriver *siLabDriver;
+			Optional<IO::SiLabDriver> siLabDriver;
 
 			NN<UI::GUIGroupBox> grpStream1;
 			NN<UI::GUIPanel> pnlStream1;
@@ -42,8 +42,8 @@ namespace SSWR
 			NN<UI::GUIRealtimeLineChart> rlcStream2;
 
 			Sync::Mutex mut1;
-			IO::Stream *stm1;
-			IO::FileStream *stmLog1;
+			Optional<IO::Stream> stm1;
+			Optional<IO::FileStream> stmLog1;
 			Bool thread1Running;
 			Bool thread1ToStop;
 			Bool remoteClosed1;
@@ -51,8 +51,8 @@ namespace SSWR
 			UInt64 stm1LastSize;
 
 			Sync::Mutex mut2;
-			IO::Stream *stm2;
-			IO::FileStream *stmLog2;
+			Optional<IO::Stream> stm2;
+			Optional<IO::FileStream> stmLog2;
 			Bool thread2Running;
 			Bool thread2ToStop;
 			Bool remoteClosed2;

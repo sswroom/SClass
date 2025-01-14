@@ -19,7 +19,7 @@ namespace IO
 		virtual Bool ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 regCnt) = 0;
 		virtual Bool WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh) = 0;
 		virtual Bool WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UInt16 val) = 0;
-		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UInt8 *val) = 0;
+		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UnsafeArray<UInt8> val) = 0;
 
 		virtual void HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj) = 0;
 	};

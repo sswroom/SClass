@@ -8,9 +8,10 @@
 void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, UnsafeArray<const UInt8> result, UOSInt resultSize)
 {
 	NN<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
-	if (me->reqResult && funcCode == me->reqFuncCode && resultSize == me->reqResultSize)
+	UnsafeArray<UInt8> reqResult;
+	if (me->reqResult.SetTo(reqResult) && funcCode == me->reqFuncCode && resultSize == me->reqResultSize)
 	{
-		MemCopyNO(me->reqResult, result.Ptr(), resultSize);
+		MemCopyNO(reqResult.Ptr(), result.Ptr(), resultSize);
 		me->reqHasResult = true;
 		me->cbEvt.Set();
 	}
@@ -19,14 +20,14 @@ void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode,
 void __stdcall IO::MODBUSController::SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
 {
 	NN<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
-	if (me->reqResult && funcCode == me->reqFuncCode && me->reqSetStartAddr == startAddr)
+	if (me->reqResult.NotNull() && funcCode == me->reqFuncCode && me->reqSetStartAddr == startAddr)
 	{
 		me->reqHasResult = true;
 		me->cbEvt.Set();
 	}
 }
 
-Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize)
+Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UnsafeArray<UInt8> resBuff, UInt16 resSize)
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -133,7 +134,7 @@ Bool IO::MODBUSController::ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *re
 	}
 }
 
-Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *regBuff, UInt16 regSize)
+Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UnsafeArray<UInt8> regBuff, UInt16 regSize)
 {
 	Bool succ;
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -211,7 +212,7 @@ Bool IO::MODBUSController::WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *r
 	}
 }
 
-IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
+IO::MODBUSController::MODBUSController(NN<IO::MODBUSMaster> modbus)
 {
 	this->modbus = modbus;
 	this->timeout = 200;
@@ -234,67 +235,73 @@ void IO::MODBUSController::SetTimeout(Data::Duration timeout)
 	this->timeout = timeout;
 }
 
-Bool IO::MODBUSController::ReadRegisterI32(UInt8 devAddr, UInt32 regAddr, Int32 *outVal)
+Bool IO::MODBUSController::ReadRegisterI32(UInt8 devAddr, UInt32 regAddr, OutParam<Int32> outVal)
 {
 	UInt8 resBuff[4];
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 4);
 	if (succ)
 	{
-		*outVal = ReadMInt32(resBuff);
+		outVal.Set(ReadMInt32(resBuff));
 	}
 	return succ;
 }
 
-Bool IO::MODBUSController::ReadRegisterII32(UInt8 devAddr, UInt32 regAddr, Int32 *outVal)
+Bool IO::MODBUSController::ReadRegisterII32(UInt8 devAddr, UInt32 regAddr, OutParam<Int32> outVal)
 {
 	UInt8 resBuff[4];
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 4);
 	if (succ)
 	{
-		*outVal = ReadInt32(resBuff);
+		outVal.Set(ReadInt32(resBuff));
 	}
 	return succ;
 }
 
-Bool IO::MODBUSController::ReadRegisterF32(UInt8 devAddr, UInt32 regAddr, Single *outVal)
+Bool IO::MODBUSController::ReadRegisterF32(UInt8 devAddr, UInt32 regAddr, OutParam<Single> outVal)
 {
 	UInt8 resBuff[4];
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 4);
 	if (succ)
 	{
-		*outVal = ReadMFloat(resBuff);
+		outVal.Set(ReadMFloat(resBuff));
 	}
 	return succ;
 }
 
-Bool IO::MODBUSController::ReadRegisterU16(UInt8 devAddr, UInt32 regAddr, UInt16 *outVal)
+Bool IO::MODBUSController::ReadRegisterU16(UInt8 devAddr, UInt32 regAddr, OutParam<UInt16> outVal)
 {
 	UInt8 resBuff[2];
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 2);
 	if (succ)
 	{
-		*outVal = ReadMUInt16(resBuff);
+		outVal.Set(ReadMUInt16(resBuff));
 	}
 	return succ;
 }
 
-Bool IO::MODBUSController::ReadRegisterIU16(UInt8 devAddr, UInt32 regAddr, UInt16 *outVal)
+Bool IO::MODBUSController::ReadRegisterIU16(UInt8 devAddr, UInt32 regAddr, OutParam<UInt16> outVal)
 {
 	UInt8 resBuff[2];
 	Bool succ = this->ReadRegister(devAddr, regAddr, resBuff, 2);
 	if (succ)
 	{
-		*outVal = ReadUInt16(resBuff);
+		outVal.Set(ReadUInt16(resBuff));
 	}
 	return succ;
 }
 
-Bool IO::MODBUSController::ReadRegisterU8(UInt8 devAddr, UInt32 regAddr, UInt8 *outVal)
+Bool IO::MODBUSController::ReadRegisterU8(UInt8 devAddr, UInt32 regAddr, OutParam<UInt8> outVal)
 {
-	return this->ReadRegister(devAddr, regAddr, outVal, 1);
+	UInt8 tmpBuff;
+	Bool succ = this->ReadRegister(devAddr, regAddr, &tmpBuff, 1);
+	if (succ)
+	{
+		outVal.Set(tmpBuff);
+	}
+	return succ;
 }
 
-Bool IO::MODBUSController::ReadRegisterU8Arr(UInt8 devAddr, UInt32 regAddr, UInt8 *outVal, UInt16 valCnt)
+Bool IO::MODBUSController::ReadRegisterU8Arr(UInt8 devAddr, UInt32 regAddr, UnsafeArray<UInt8> outVal, UInt16 valCnt)
 {
 	return this->ReadRegister(devAddr, regAddr, outVal, valCnt);
 }

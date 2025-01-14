@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 	me->txtURL->GetText(sb);
 	me->lvInfo->ClearItems();
 	me->lvItems->ClearItems();
-	SDEL_CLASS(me->rss);
+	me->rss.Delete();
 	if (sb.GetLength() > 8)
 	{
 		UOSInt i;
@@ -247,7 +247,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 	{
 		OPTSTR_DEL(this->rssList.GetItem(i));
 	}
-	SDEL_CLASS(this->rss);
+	this->rss.Delete();
 	this->ssl.Delete();
 }
 

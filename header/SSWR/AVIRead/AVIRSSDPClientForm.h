@@ -18,7 +18,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
-			Net::SSDPClient *ssdp;
+			NN<Net::SSDPClient> ssdp;
 			Data::FastStringMapNN<Net::SSDPClient::SSDPRoot> rootMap;
 
 			NN<UI::GUIListBox> lbDevice;

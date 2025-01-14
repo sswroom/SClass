@@ -173,7 +173,8 @@ AnyType UI::GTK::GTKComboBox::RemoveItem(UOSInt index)
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)
 		return 0;
-	OPTSTR_DEL(this->itemTexts.RemoveAt(index));
+	Optional<Text::String> s = this->itemTexts.RemoveAt(index);
+	OPTSTR_DEL(s);
 	AnyType item = this->items.RemoveAt(index);
 	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, (gint)index);
 	return item;
@@ -184,7 +185,7 @@ void UI::GTK::GTKComboBox::ClearItems()
 	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
-		OPTSTR_DEL(this->itemTexts.GetItem(i));
+		this->itemTexts.GetItemNoCheck(i)->Release();
 	}
 	this->itemTexts.Clear();
 	this->items.Clear();

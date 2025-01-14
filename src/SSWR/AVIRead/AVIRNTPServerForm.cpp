@@ -8,9 +8,11 @@
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
-	if (me->svr)
+	NN<Net::NTPServer> svr;
+	if (me->svr.SetTo(svr))
 	{
-		DEL_CLASS(me->svr);
+		svr.Delete();
+		me->svr = 0;
 		me->txtTimeServer->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
 		return;
@@ -35,13 +37,14 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Cannot resolve the time server"), CSTR("Resolve"), me);
 		return;
 	}
-	NEW_CLASS(me->svr, Net::NTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
-	if (me->svr->IsError())
+	NEW_CLASSNN(svr, Net::NTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
+	if (svr->IsError())
 	{
-		SDEL_CLASS(me->svr);
+		svr.Delete();
 	}
 	else
 	{
+		me->svr = svr;
 		me->txtTimeServer->SetReadOnly(true);
 		me->txtPort->SetReadOnly(true);
 	}
@@ -101,7 +104,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRNTPServerForm::~AVIRNTPServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }

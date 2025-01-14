@@ -19,8 +19,8 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<UI::ListBoxLogger> logger;
-			IO::LogTool *log;
-			Net::IPScanDetector *ipScanDetect;
+			NN<IO::LogTool> log;
+			NN<Net::IPScanDetector> ipScanDetect;
 
 			static void __stdcall OnIPScanEvent(UnsafeArray<const UInt8> hwAddr, AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);

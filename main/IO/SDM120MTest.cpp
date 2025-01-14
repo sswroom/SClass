@@ -10,7 +10,7 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	IO::SerialPort *port;
+	NN<IO::SerialPort> port;
 	IO::Device::SDM120M *sdm120m;
 	Double dval;
 	Int32 ival;
@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StrToUInt8(argv[3], addr);
 	}
 
-	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
+	NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		printf("Error in opeining serial port\r\n");
@@ -128,6 +128,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		DEL_CLASS(sdm120m);
 	}
-	DEL_CLASS(port);
+	port.Delete();
 	return 0;
 }

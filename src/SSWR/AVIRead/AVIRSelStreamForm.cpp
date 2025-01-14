@@ -50,6 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 		break;
 	case IO::StreamType::USBxpress:
 		{
+			NN<IO::SiLabDriver> siLabDriver;
 			UInt32 baudRate;
 			Text::StringBuilderUTF8 sb;
 			me->txtSLBaudRate->GetText(sb);
@@ -58,7 +59,9 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				me->ui->ShowMsgOK(CSTR("Please input baud rate"), CSTR("Error"), me);
 				return;
 			}
-			me->stm = me->siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUOSInt(), baudRate);
+			me->stm = 0;
+			if (me->siLabDriver.SetTo(siLabDriver))
+				me->stm = siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUOSInt(), baudRate);
 			if (me->stm.NotNull())
 			{
 				me->stmType = st;
@@ -429,7 +432,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	this->cboStreamType = ui->NewComboBox(this->pnlStreamType, false);
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
 	this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::SerialPort), (void*)IO::StreamType::SerialPort);
-	if (this->siLabDriver)
+	if (this->siLabDriver.NotNull())
 	{
 		this->cboStreamType->AddItem(IO::StreamTypeGetName(IO::StreamType::USBxpress), (void*)IO::StreamType::USBxpress);
 	}
@@ -480,7 +483,8 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	this->cboParity->AddItem(CSTR("Even"), (void*)(OSInt)IO::SerialPort::PARITY_EVEN);
 	this->cboParity->SetSelectedIndex(0);
 
-	if (this->siLabDriver)
+	NN<IO::SiLabDriver> siLabDriver;
+	if (this->siLabDriver.SetTo(siLabDriver))
 	{
 		this->tpSiLabPort = this->tcConfig->AddTabPage(CSTR("SiLab"));
 		this->pnlSLInfo = ui->NewPanel(this->tpSiLabPort);
@@ -520,7 +524,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 		UInt16 ver3;
 		UInt16 ver4;
 
-		if (this->siLabDriver->GetDLLVersion(&ver1, &ver2, &ver3, &ver4))
+		if (siLabDriver->GetDLLVersion(&ver1, &ver2, &ver3, &ver4))
 		{
 			sb.ClearStr();
 			sb.AppendU32(ver1);
@@ -532,7 +536,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 			sb.AppendU32(ver4);
 			this->txtDLLVer->SetText(sb.ToCString());
 		}
-		if (this->siLabDriver->GetDriverVersion(&ver1, &ver2, &ver3, &ver4))
+		if (siLabDriver->GetDriverVersion(&ver1, &ver2, &ver3, &ver4))
 		{
 			sb.ClearStr();
 			sb.AppendU32(ver1);
@@ -546,7 +550,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 		}
 
 		j = 0;
-		j = this->siLabDriver->GetNumDevices();
+		j = siLabDriver->GetNumDevices();
 		i = 0;
 		while (i < j)
 		{
@@ -554,21 +558,21 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 			sptr = Text::StrUOSInt(sbuff, i);
 			k = this->lvSLPort->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)i);
 			v = 0;
-			if (this->siLabDriver->GetDeviceVID((UInt32)i, &v))
+			if (siLabDriver->GetDeviceVID((UInt32)i, &v))
 			{
 				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			}
-			if (this->siLabDriver->GetDevicePID((UInt32)i, &v))
+			if (siLabDriver->GetDevicePID((UInt32)i, &v))
 			{
 				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
 				this->lvSLPort->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			}
-			if (this->siLabDriver->GetDeviceSN((UInt32)i, sbuff).SetTo(sptr))
+			if (siLabDriver->GetDeviceSN((UInt32)i, sbuff).SetTo(sptr))
 			{
 				this->lvSLPort->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			}
-			if (this->siLabDriver->GetDeviceDesc((UInt32)i, sbuff).SetTo(sptr))
+			if (siLabDriver->GetDeviceDesc((UInt32)i, sbuff).SetTo(sptr))
 			{
 				this->lvSLPort->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			}

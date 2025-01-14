@@ -27,7 +27,7 @@ namespace SSWR
 			
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::SNMPTrapMonitor *mon;
+			NN<Net::SNMPTrapMonitor> mon;
 			Sync::Mutex packetMut;
 			Data::ArrayListNN<SNMPPacket> packetList;
 

@@ -57,10 +57,10 @@ namespace SSWR
 			} MODBUSEntry;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::DataCaptureStream *stm;
-			IO::Stream *devStm;
-			IO::MODBUSMaster *modbus;
-			IO::MODBUSController *modbusCtrl;
+			Optional<IO::DataCaptureStream> stm;
+			Optional<IO::Stream> devStm;
+			Optional<IO::MODBUSMaster> modbus;
+			Optional<IO::MODBUSController> modbusCtrl;
 			Data::ArrayListNN<MODBUSEntry> entryList;
 			Sync::Mutex recvMut;
 			Data::CircularByteBuff recvBuff;

@@ -10,7 +10,7 @@
 void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		me->StopStream();
 	}
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(AnyType use
 	{
 		IO::StreamType st;
 		me->stm = me->core->OpenStream(st, me, 0, false);
-		if (me->stm)
+		if (me->stm.NotNull())
 		{
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
@@ -43,12 +43,13 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
+	NN<IO::Stream> stm;
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;
 		me->StopStream();
 	}
-	if (me->stm)
+	if (me->stm.SetTo(stm))
 	{
 		UInt8 buff[11];
 		Data::DateTime dt;
@@ -62,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 			buff[1] = 'l';
 			WriteInt64(&buff[2], currTime);
 			buff[10] = buff[0] ^ buff[1] ^ buff[2] ^ buff[3] ^ buff[4] ^ buff[5] ^ buff[6] ^ buff[7] ^ buff[8] ^ buff[9];
-			me->stm->Write(Data::ByteArrayR(buff, 11));
+			stm->Write(Data::ByteArrayR(buff, 11));
 			me->sentCnt++;
 		}
 	}
@@ -93,13 +94,15 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(AnyType userOb
 	UOSInt i;
 	UInt8 chk;
 	Double diff;
+	NN<IO::Stream> stm;
+	me->threadRunning = true;
+	if (me->stm.SetTo(stm))
 	{
-		me->threadRunning = true;
 		Data::DateTime dt;
 		Text::StringBuilderUTF8 sb;
 		while (!me->threadToStop)
 		{
-			recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 2048));
+			recvSize = stm->Read(Data::ByteArray(&buff[buffSize], 2048));
 			if (recvSize <= 0)
 			{
 				me->remoteClosed = true;
@@ -152,16 +155,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(AnyType userOb
 
 void SSWR::AVIRead::AVIRStreamLatencyForm::StopStream()
 {
-	if (this->stm)
+	NN<IO::Stream> stm;
+	if (this->stm.SetTo(stm))
 	{
-		this->stm->Close();
+		stm->Close();
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 		this->threadToStop = false;
-		DEL_CLASS(this->stm);
+		stm.Delete();
 		this->stm = 0;
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));
@@ -184,7 +188,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 	this->recvCnt = 0;
 	this->dispSent = 0;
 	this->dispRecv = 0;
-	NEW_CLASS(this->log, IO::LogTool());
+	NEW_CLASSNN(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpStream = ui->NewGroupBox(*this, CSTR("Stream"));
@@ -256,7 +260,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 SSWR::AVIRead::AVIRStreamLatencyForm::~AVIRStreamLatencyForm()
 {
 	StopStream();
-	DEL_CLASS(this->log);
+	this->log.Delete();
 	this->logger.Delete();
 }
 

@@ -198,7 +198,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUI
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NEW_CLASS(this->mon, Net::SNMPTrapMonitor(this->core->GetSocketFactory(), OnSNMPTrapPacket, this, this->core->GetLog()));
+	NEW_CLASSNN(this->mon, Net::SNMPTrapMonitor(this->core->GetSocketFactory(), OnSNMPTrapPacket, this, this->core->GetLog()));
 	if (this->mon->IsError())
 	{
 		this->ui->ShowMsgOK(CSTR("Error in starting SNMP Trap Monitor"), CSTR("Error"), this);
@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUI
 
 SSWR::AVIRead::AVIRSNMPTrapMonitorForm::~AVIRSNMPTrapMonitorForm()
 {
-	DEL_CLASS(this->mon);
+	this->mon.Delete();
 	NN<SNMPPacket> packet;
 	UOSInt i = this->packetList.GetCount();
 	while (i-- > 0)

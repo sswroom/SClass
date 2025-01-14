@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 	if (i == INVALID_INDEX)
 		return;
 	sptr = me->cboImage->GetItemText(sbuff, i).Or(sbuff);
-	Net::WebBrowser *browser = me->core->GetWebBrowser();
+	NN<Net::WebBrowser> browser = me->core->GetWebBrowser();
 	NN<IO::StreamData> fd;
 	if (browser->GetData(CSTRP(sbuff, sptr), false, sbuff).SetTo(fd))
 	{

@@ -21,20 +21,20 @@ namespace IO
 		} AddrResultCb;
 		
 	private:
-		IO::Stream *stm;
+		NN<IO::Stream> stm;
 		Bool threadRunning;
 		Bool threadToStop;
 		Manage::HiResClock clk;
 		Sync::Mutex stmMut;
-		Crypto::Hash::CRC16R *crc;
+		Crypto::Hash::CRC16R crc;
 		Sync::Mutex crcMut;
 		Data::FastMapNN<Int32, AddrResultCb> cbMap;
 
 		static UInt32 __stdcall ThreadProc(AnyType userObj);
-		void CalcCRC(UInt8 *rtu, UOSInt rtuSize); // size include CRC
-		Bool IsCRCValid(UInt8 *rtu, UOSInt rtuSize);
+		void CalcCRC(UnsafeArray<UInt8> rtu, UOSInt rtuSize); // size include CRC
+		Bool IsCRCValid(UnsafeArray<UInt8> rtu, UOSInt rtuSize);
 	public:
-		MODBUSRTUMaster(IO::Stream *stm);
+		MODBUSRTUMaster(NN<IO::Stream> stm);
 		virtual ~MODBUSRTUMaster();
 
 		virtual Bool ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilCnt); //Output
@@ -43,7 +43,7 @@ namespace IO
 		virtual Bool ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 regCnt);
 		virtual Bool WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh);
 		virtual Bool WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UInt16 val);
-		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UInt8 *val);
+		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UnsafeArray<UInt8> val);
 
 		virtual void HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj);
 	};

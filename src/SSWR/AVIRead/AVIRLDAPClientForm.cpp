@@ -5,10 +5,11 @@
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
-	if (me->cli)
+	NN<Net::LDAPClient> cli;
+	if (me->cli.SetTo(cli))
 	{
-		me->cli->Unbind();
-		DEL_CLASS(me->cli);
+		cli->Unbind();
+		cli.Delete();
 		me->cli = 0;
 		me->btnConnect->SetText(CSTR("Connect"));
 		return;
@@ -35,18 +36,18 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 		me->ui->ShowMsgOK(CSTR("Please enter valid Port number"), CSTR("LDAP Client"), me);
 		return;
 	}
-	NEW_CLASS(me->cli, Net::LDAPClient(sockf, addr, port, 15000));
-	if (me->cli->IsError())
+	NEW_CLASSNN(cli, Net::LDAPClient(sockf, addr, port, 15000));
+	if (cli->IsError())
 	{
-		DEL_CLASS(me->cli);
-		me->cli = 0;
+		cli.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in connecting to LDAP Server"), CSTR("LDAP Client"), me);
 		return;
 	}
+	me->cli = cli;
 	Bool succ = false;
 	if (me->cboAuthType->GetSelectedIndex() == 0)
 	{
-		succ = me->cli->Bind(CSTR_NULL, CSTR_NULL);
+		succ = cli->Bind(CSTR_NULL, CSTR_NULL);
 	}
 	else if (me->cboAuthType->GetSelectedIndex() == 1)
 	{
@@ -54,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 		sb.ClearStr();
 		me->txtUserDN->GetText(sb);
 		me->txtPassword->GetText(sb2);
-		succ = me->cli->Bind(sb.ToCString(), sb2.ToCString());
+		succ = cli->Bind(sb.ToCString(), sb2.ToCString());
 	}
 	if (succ)
 	{
@@ -62,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 	}
 	else
 	{
-		DEL_CLASS(me->cli);
+		cli.Delete();
 		me->cli = 0;
 		me->ui->ShowMsgOK(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Client"), me);
 		return;
@@ -72,7 +73,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
-	if (me->cli == 0)
+	NN<Net::LDAPClient> cli;
+	if (!me->cli.SetTo(cli))
 	{
 		return;
 	}
@@ -81,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 	Data::ArrayListNN<Net::LDAPClient::SearchResObject> results;
 	me->txtSearchBase->GetText(sb);
 	me->txtSearchFilter->GetText(sb2);
-	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetOSInt(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetOSInt(), 0, 0, false, sb2.ToString(), results))
+	if (!cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetOSInt(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetOSInt(), 0, 0, false, sb2.ToString(), results))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
 	}
@@ -224,7 +226,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRLDAPClientForm::~AVIRLDAPClientForm()
 {
-	SDEL_CLASS(this->cli);
+	this->cli.Delete();
 	Net::LDAPClient::SearchResultsFree(this->dispResults);
 }
 

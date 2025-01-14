@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		me->StopStream();
 	}
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(AnyType userOb
 	{
 		IO::StreamType st;
 		me->stm = me->core->OpenStream(st, me, 0, false);
-		if (me->stm)
+		if (me->stm.NotNull())
 		{
 			me->txtStream->SetText(IO::StreamTypeGetName(st));
 			me->btnStream->SetText(CSTR("&Close"));
@@ -58,19 +58,23 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
+	NN<IO::Stream> stm;
 	me->threadRunning = true;
-	while (!me->threadToStop)
+	if (me->stm.SetTo(stm))
 	{
-		recvSize = me->stm->Read(BYTEARR(buff));
-		if (recvSize <= 0)
+		while (!me->threadToStop)
 		{
-			me->remoteClosed = true;
-		}
-		else
-		{
-			me->recvCount += recvSize;
-			me->recvUpdated = true;
-			me->stm->Write(Data::ByteArrayR(buff, recvSize));
+			recvSize = stm->Read(BYTEARR(buff));
+			if (recvSize <= 0)
+			{
+				me->remoteClosed = true;
+			}
+			else
+			{
+				me->recvCount += recvSize;
+				me->recvUpdated = true;
+				stm->Write(Data::ByteArrayR(buff, recvSize));
+			}
 		}
 	}
 	me->threadRunning = false;
@@ -79,16 +83,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(AnyType userObj)
 
 void SSWR::AVIRead::AVIRStreamEchoForm::StopStream()
 {
-	if (this->stm)
+	NN<IO::Stream> stm;
+	if (this->stm.SetTo(stm))
 	{
-		this->stm->Close();
+		stm->Close();
 		this->threadToStop = true;
 		while (this->threadRunning)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 		this->threadToStop = false;
-		DEL_CLASS(this->stm);
+		stm.Delete();
 		this->stm = 0;
 		this->txtStream->SetText(CSTR("-"));
 		this->btnStream->SetText(CSTR("&Open"));

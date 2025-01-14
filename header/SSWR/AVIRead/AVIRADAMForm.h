@@ -20,8 +20,8 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::Stream *stm;
-			IO::AdvantechASCIIChannel *channel;
+			Optional<IO::Stream> stm;
+			Optional<IO::AdvantechASCIIChannel> channel;
 			UInt8 channelAddr;
 			UInt32 channelModule;
 

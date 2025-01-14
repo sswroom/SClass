@@ -32,7 +32,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("GUI Event"));
 	
 	this->core = core;
-	NEW_CLASS(this->log, IO::LogTool());
+	NEW_CLASSNN(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlMain = ui->NewPanel(*this);
@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRGUIEventForm::~AVIRGUIEventForm()
 {
-	DEL_CLASS(this->log);
+	this->log.Delete();
 	this->logger.Delete();
 }
 

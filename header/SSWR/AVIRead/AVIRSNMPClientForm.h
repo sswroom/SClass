@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::SNMPClient *cli;
+			NN<Net::SNMPClient> cli;
 
 			NN<UI::GUIPanel> pnlRequest;
 			NN<UI::GUILabel> lblAgent;

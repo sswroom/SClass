@@ -467,7 +467,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 	{
 		IO::StreamType st;
 		NN<IO::Stream> stm;
-		if (stm.Set(me->core->OpenStream(st, me, 0, true)))
+		if (me->core->OpenStream(st, me, 0, true).SetTo(stm))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(stm->GetSourceNameObj());

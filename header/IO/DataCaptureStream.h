@@ -10,13 +10,13 @@ namespace IO
 	public:
 		typedef void (CALLBACKFUNC DataHandler)(AnyType userObj, Data::ByteArrayR dataBuff);
 	private:
-		IO::Stream *stm;
+		NN<IO::Stream> stm;
 		DataHandler recvHdlr;
 		DataHandler sendHdlr;
 		AnyType hdlrObj;
 
 	public:
-		DataCaptureStream(IO::Stream *srcStream, DataHandler recvHdlr, DataHandler sendHdlr, AnyType hdlrObj);
+		DataCaptureStream(NN<IO::Stream> srcStream, DataHandler recvHdlr, DataHandler sendHdlr, AnyType hdlrObj);
 		virtual ~DataCaptureStream();
 
 		virtual Bool IsDown() const;

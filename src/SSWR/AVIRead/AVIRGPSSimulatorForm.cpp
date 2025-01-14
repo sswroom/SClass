@@ -46,15 +46,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj,
 void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
-		DEL_CLASS(me->stm);
-		me->stm = 0;
+		me->stm.Delete();
 		me->txtStreamType->SetText(CSTR("-"));
 	}
 	IO::StreamType st;
-	IO::Stream *stm = me->core->OpenStream(st, me, 0, false);
-	if (stm)
+	NN<IO::Stream> stm;
+	if (me->core->OpenStream(st, me, 0, false).SetTo(stm))
 	{
 		me->stm = stm;
 		me->txtStreamType->SetText(IO::StreamTypeGetName(st));
@@ -82,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (me->stm)
+	if (me->stm.NotNull())
 	{
 		if (me->points.GetCount() > 0)
 		{
@@ -121,6 +120,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double dir, Double speed, Bool isValid)
 {
+	NN<IO::Stream> stm;
+	if (!this->stm.SetTo(stm))
+	{
+		return;
+	}
 	Char buff[256];
 	UnsafeArray<Char> cptr;
 	Data::DateTime dt;
@@ -153,20 +157,20 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double 
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
 
 	cptr = Text::StrConcat(buff, "$GPGSA,A,3,,,,,,,,,,,,,1.5,1.5,1.5");
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
 
 
 	cptr = Text::StrConcat(buff, "$GPGSV,1,1,0");
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
 
 	cptr = Text::StrConcat(buff, "$GPRMC,");
 	cptr = dt.ToString(cptr, "HHmmss.fff");
@@ -191,7 +195,7 @@ void SSWR::AVIRead::AVIRGPSSimulatorForm::GenRecord(Math::Coord2DDbl pt, Double 
 	cptr = GenCheck(cptr, buff);
 	*cptr++ = 13;
 	*cptr++ = 10;
-	this->stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
+	stm->Write(Data::ByteArrayR((UInt8*)buff, (UOSInt)(cptr - buff)));
 }
 
 UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenLat(UnsafeArray<Char> ptr, Double lat)
@@ -266,7 +270,7 @@ UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(UnsafeArray<Char
 	return Text::StrHexByteCh(ptr, (UInt8)c);
 }
 
-SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)
+SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi) : UI::GUIForm(parent, 480, 480, ui)
 {
 	this->core = core;
 	this->navi = navi;
@@ -320,7 +324,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRGPSSimulatorForm::~AVIRGPSSimulatorForm()
 {
-	SDEL_CLASS(this->stm);
+	this->stm.Delete();
 	this->wgs84.Delete();
 	this->navi->HideMarker();
 	this->navi->UnhandleMapMouse(this);

@@ -36,9 +36,9 @@ namespace SSWR
 			NN<UI::GUIListBox> lbPoints;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 			NN<Math::GeographicCoordinateSystem> wgs84;
-			IO::Stream *stm;
+			Optional<IO::Stream> stm;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 			Math::Coord2DDbl currPos;
 			Double speed;
@@ -52,7 +52,7 @@ namespace SSWR
 			UnsafeArray<Char> GenLon(UnsafeArray<Char> ptr, Double lon);
 			UnsafeArray<Char> GenCheck(UnsafeArray<Char> ptr, UnsafeArray<Char> start);
 		public:
-			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi);
 			virtual ~AVIRGPSSimulatorForm();
 
 			virtual void OnMonitorChanged();

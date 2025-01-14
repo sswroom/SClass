@@ -42,7 +42,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			NN<IO::Stream> stm;
-			IO::SNBDongle *snb;
+			NN<IO::SNBDongle> snb;
 			IO::LogTool log;
 			Bool dongleUpdated;
 

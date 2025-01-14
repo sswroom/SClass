@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::SiLabDriver *siLabDriver;
+			Optional<IO::SiLabDriver> siLabDriver;
 
 			NN<UI::GUIGroupBox> grpStream;
 			NN<UI::GUILabel> lblStream;
@@ -49,8 +49,8 @@ namespace SSWR
 			NN<UI::GUILabel> lblRecvCnt;
 			NN<UI::GUITextBox> txtRecvCnt;
 
-			IO::Stream *stm;
-			IO::LogTool *log;
+			Optional<IO::Stream> stm;
+			NN<IO::LogTool> log;
 			NN<UI::ListBoxLogger> logger;
 			Bool threadRunning;
 			Bool threadToStop;

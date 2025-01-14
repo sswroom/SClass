@@ -28,7 +28,7 @@ namespace SSWR
 			IO::GSMModemController *modem;
 			IO::HuaweiGSMModemController *huawei;
 			Optional<IO::ATCommandChannel> channel;
-			IO::Stream *port;
+			Optional<IO::Stream> port;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 
@@ -249,7 +249,7 @@ namespace SSWR
 			void InitStream(NN<IO::Stream> stm, Bool updateSerial);
 			void CloseStream(Bool updateUI);
 		public:
-			AVIRGSMModemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::Stream *port);
+			AVIRGSMModemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<IO::Stream> port);
 			virtual ~AVIRGSMModemForm();
 
 			virtual void OnMonitorChanged();

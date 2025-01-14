@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCancelClicked(AnyTyp
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::ProgramLinkManager *progMgr) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ProgramLinkManager> progMgr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Program Links Create"));
 	this->SetFont(0, 0, 8.25, false);

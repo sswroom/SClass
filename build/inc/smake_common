@@ -4163,6 +4163,8 @@ SSWR/AVIRead/AVIRNetPingForm.h:
 @AVIRNetPingForm.o
 SSWR/AVIRead/AVIRNetRAWCaptureForm.h:
 @AVIRNetRAWCaptureForm.o
+SSWR/AVIRead/AVIRNetworkBandwidthForm.h:
+@AVIRNetworkBandwidthForm.o
 SSWR/AVIRead/AVIRNTPClientForm.h:
 @AVIRNTPClientForm.o
 SSWR/AVIRead/AVIRNTPServerForm.h:

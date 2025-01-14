@@ -6,9 +6,10 @@
 void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
-	if (me->listener)
+	NN<IO::CANListener> listener;
+	if (me->listener.SetTo(listener))
 	{
-		DEL_CLASS(me->listener);
+		listener.Delete();
 		me->listener = 0;
 		me->txtCANBus->SetText(CSTR(""));
 		me->btnCANBus->SetText(CSTR("Open"));
@@ -16,11 +17,11 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(AnyType userObj)
 	else
 	{
 		SSWR::AVIRead::AVIRSelCANForm dlg(0, me->ui, me->core, me->ssl, me->c9r.GetCANHandler());
-		if (dlg.ShowDialog(me) == DR_OK)
+		if (dlg.ShowDialog(me) == DR_OK && dlg.GetListener().SetTo(listener))
 		{
-			me->listener = dlg.GetListener();
+			me->listener = listener;
 			Text::StringBuilderUTF8 sb;
-			me->listener->ToString(sb);
+			listener->ToString(sb);
 			me->txtCANBus->SetText(sb.ToCString());
 			me->btnCANBus->SetText(CSTR("Close"));
 		}
@@ -212,7 +213,7 @@ SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRBYDC9RForm::~AVIRBYDC9RForm()
 {
-	SDEL_CLASS(this->listener);
+	this->listener.Delete();
 	this->ssl.Delete();
 }
 

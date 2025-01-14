@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
-	if (me->stm1)
+	if (me->stm1.NotNull())
 	{
 		me->StopStream1();
 	}
@@ -17,11 +17,11 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(AnyType userO
 		IO::StreamType st;
 		me->stm1 = me->core->OpenStream(st, me, 0, true);
 
-		if (me->stm1)
+		if (me->stm1.NotNull())
 		{
 			if (me->chkStreamLog1->IsChecked())
 			{
-				NEW_CLASS(me->stmLog1, IO::FileStream(CSTR("Stm1Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASSOPT(me->stmLog1, IO::FileStream(CSTR("Stm1Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
 			me->txtStream1->SetText(IO::StreamTypeGetName(st));
 			me->btnStream1->SetText(CSTR("&Close"));
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
-	if (me->stm2)
+	if (me->stm2.NotNull())
 	{
 		me->StopStream2();
 	}
@@ -50,11 +50,11 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(AnyType userO
 		IO::StreamType st;
 		me->stm2 = me->core->OpenStream(st, me, 0, true);
 
-		if (me->stm2)
+		if (me->stm2.NotNull())
 		{
 			if (me->chkStreamLog2->IsChecked())
 			{
-				NEW_CLASS(me->stmLog2, IO::FileStream(CSTR("Stm2Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASSOPT(me->stmLog2, IO::FileStream(CSTR("Stm2Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
 			me->txtStream2->SetText(IO::StreamTypeGetName(st));
 			me->btnStream2->SetText(CSTR("&Close"));
@@ -99,27 +99,33 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(AnyType userOb
 	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
+	NN<IO::Stream> stm1;
+	NN<IO::Stream> stm2;
+	NN<IO::FileStream> stmLog1;
 	me->thread1Running = true;
-	while (!me->thread1ToStop)
+	if (me->stm1.SetTo(stm1))
 	{
-		recvSize = me->stm1->Read(BYTEARR(buff));
-		if (recvSize == 0)
+		while (!me->thread1ToStop)
 		{
-			me->remoteClosed1 = true;
-		}
-		else
-		{
-			if (me->stmLog1)
+			recvSize = stm1->Read(BYTEARR(buff));
+			if (recvSize == 0)
 			{
-				me->stmLog1->Write(Data::ByteArrayR(buff, recvSize));
+				me->remoteClosed1 = true;
 			}
-			Sync::MutexUsage mutUsage(me->mut2);
-			if (me->stm2)
+			else
 			{
-				me->stm2->Write(Data::ByteArrayR(buff, recvSize));
+				if (me->stmLog1.SetTo(stmLog1))
+				{
+					stmLog1->Write(Data::ByteArrayR(buff, recvSize));
+				}
+				Sync::MutexUsage mutUsage(me->mut2);
+				if (me->stm2.SetTo(stm2))
+				{
+					stm2->Write(Data::ByteArrayR(buff, recvSize));
+				}
+				mutUsage.EndUse();
+				me->stm1DataSize += recvSize;
 			}
-			mutUsage.EndUse();
-			me->stm1DataSize += recvSize;
 		}
 	}
 	me->thread1Running = false;
@@ -131,27 +137,33 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(AnyType userOb
 	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
+	NN<IO::Stream> stm1;
+	NN<IO::Stream> stm2;
+	NN<IO::FileStream> stmLog2;
 	me->thread2Running = true;
-	while (!me->thread2ToStop)
+	if (me->stm2.SetTo(stm2))
 	{
-		recvSize = me->stm2->Read(BYTEARR(buff));
-		if (recvSize == 0)
+		while (!me->thread2ToStop)
 		{
-			me->remoteClosed2 = true;
-		}
-		else
-		{
-			if (me->stmLog2)
+			recvSize = stm2->Read(BYTEARR(buff));
+			if (recvSize == 0)
 			{
-				me->stmLog2->Write(Data::ByteArrayR(buff, recvSize));
+				me->remoteClosed2 = true;
 			}
-			Sync::MutexUsage mutUsage(me->mut1);
-			if (me->stm1)
+			else
 			{
-				me->stm1->Write(Data::ByteArrayR(buff, recvSize));
+				if (me->stmLog2.SetTo(stmLog2))
+				{
+					stmLog2->Write(Data::ByteArrayR(buff, recvSize));
+				}
+				Sync::MutexUsage mutUsage(me->mut1);
+				if (me->stm1.SetTo(stm1))
+				{
+					stm1->Write(Data::ByteArrayR(buff, recvSize));
+				}
+				mutUsage.EndUse();
+				me->stm2DataSize += recvSize;
 			}
-			mutUsage.EndUse();
-			me->stm2DataSize += recvSize;
 		}
 	}
 	me->thread2Running = false;
@@ -160,19 +172,20 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(AnyType userOb
 
 void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 {
-	if (this->stm1)
+	NN<IO::Stream> stm1;
+	if (this->stm1.SetTo(stm1))
 	{
 		this->thread1ToStop = true;
 		Sync::MutexUsage mutUsage(this->mut1);
-		this->stm1->Close();
+		stm1->Close();
 		while (this->thread1Running)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 		this->thread1ToStop = false;
-		DEL_CLASS(this->stm1);
+		stm1.Delete();
 		this->stm1 = 0;
-		SDEL_CLASS(this->stmLog1);
+		this->stmLog1.Delete();
 		mutUsage.EndUse();
 		this->txtStream1->SetText(CSTR("-"));
 		this->btnStream1->SetText(CSTR("&Open"));
@@ -182,19 +195,20 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 
 void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 {
-	if (this->stm2)
+	NN<IO::Stream> stm2;
+	if (this->stm2.SetTo(stm2))
 	{
 		this->thread2ToStop = true;
 		Sync::MutexUsage mutUsage(this->mut2);
-		this->stm2->Close();
+		stm2->Close();
 		while (this->thread2Running)
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
 		this->thread2ToStop = false;
-		DEL_CLASS(this->stm2);
+		stm2.Delete();
 		this->stm2 = 0;
-		SDEL_CLASS(this->stmLog2);
+		this->stmLog2.Delete();
 		mutUsage.EndUse();
 		this->txtStream2->SetText(CSTR("-"));
 		this->btnStream2->SetText(CSTR("&Open"));

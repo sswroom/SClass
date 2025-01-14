@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientCont
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NEW_CLASS(this->cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
+	NEW_CLASSNN(this->cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
 	if (this->cli->IsError())
 	{
 		this->ui->ShowMsgOK(CSTR("Error in starting SNMP Client"), CSTR("Error"), this);
@@ -144,7 +144,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRSNMPClientForm::~AVIRSNMPClientForm()
 {
-	DEL_CLASS(this->cli);
+	this->cli.Delete();
 }
 
 void SSWR::AVIRead::AVIRSNMPClientForm::OnMonitorChanged()

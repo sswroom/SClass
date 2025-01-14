@@ -12,11 +12,11 @@ namespace SSWR
 		class AVIRSudokuForm : public UI::GUIForm
 		{
 		private:
-			UI::GUISudokuViewer *svMain;
+			NN<UI::GUISudokuViewer> svMain;
 			NN<UI::GUIMainMenu> mnuMain;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Game::Sudoku::SudokuBoard *board;
+			NN<Game::Sudoku::SudokuBoard> board;
 
 			static void __stdcall EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num);
 		public:

@@ -10,7 +10,7 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	IO::SerialPort *port;
+	NN<IO::SerialPort> port;
 	IO::Device::SHT20 *sht20;
 	UInt32 portNum = 33;
 	UInt32 baudRate = 9600;
@@ -27,7 +27,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StrToUInt8(argv[3], addr);
 	}
 
-	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
+	NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		printf("Error in opeining serial port\r\n");
@@ -79,6 +79,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		DEL_CLASS(sht20);
 	}
-	DEL_CLASS(port);
+	port.Delete();
 	return 0;
 }

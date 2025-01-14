@@ -328,7 +328,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPhoneRClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port)
+	if (me->port.NotNull())
 	{
 		me->LoadPhoneBook();
 	}
@@ -337,7 +337,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPhoneRClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSRClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port)
+	if (me->port.NotNull())
 	{
 		me->LoadSMS();
 	}
@@ -393,7 +393,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSDeleteClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port == 0)
+	if (me->port.IsNull())
 	{
 		return;
 	}
@@ -491,7 +491,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceSerialClk(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceOtherClk(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port)
+	if (me->port.NotNull())
 	{
 		me->CloseStream(true);
 	}
@@ -499,7 +499,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnDeviceOtherClk(AnyType userObj
 	{
 		IO::StreamType st;
 		NN<IO::Stream> port;
-		if (port.Set(me->core->OpenStream(st, me, 115200, false)))
+		if (me->core->OpenStream(st, me, 115200, false).SetTo(port))
 		{
 			me->InitStream(port, true);
 		}
@@ -525,7 +525,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
 	NN<IO::ATCommandChannel> channel;
-	if (me->port == 0 || !me->channel.SetTo(channel))
+	if (me->port.IsNull() || !me->channel.SetTo(channel))
 	{
 		return;
 	}
@@ -560,7 +560,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnATCommandKeyDown(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextLoadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port == 0)
+	if (me->port.IsNull())
 	{
 		return;
 	}
@@ -570,7 +570,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextLoadClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPAttachClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port == 0)
+	if (me->port.IsNull())
 	{
 		return;
 	}
@@ -587,7 +587,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPAttachClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPDetachClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port == 0)
+	if (me->port.IsNull())
 	{
 		return;
 	}
@@ -604,7 +604,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPDetachClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPDPContextSetClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGSMModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGSMModemForm>();
-	if (me->port == 0)
+	if (me->port.IsNull())
 	{
 		return;
 	}
@@ -946,13 +946,13 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPDPContext()
 
 void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NN<IO::Stream> stm, Bool updateSerial)
 {
-	if (this->port == 0)
+	if (this->port.IsNull())
 	{
-		this->port = stm.Ptr();
-		this->txtDeviceStatus->SetText(IO::StreamTypeGetName(this->port->GetStreamType()));
-		if (updateSerial && this->port->GetStreamType() == IO::StreamType::SerialPort)
+		this->port = stm;
+		this->txtDeviceStatus->SetText(IO::StreamTypeGetName(stm->GetStreamType()));
+		if (updateSerial && stm->GetStreamType() == IO::StreamType::SerialPort)
 		{
-			IO::SerialPort *port = (IO::SerialPort*)this->port;
+			NN<IO::SerialPort> port = NN<IO::SerialPort>::ConvertFrom(stm);
 			UOSInt portNum = port->GetPortNum();
 			UOSInt i = this->cboDeviceSerial->GetCount();
 			while (i-- > 0)
@@ -988,11 +988,12 @@ void SSWR::AVIRead::AVIRGSMModemForm::InitStream(NN<IO::Stream> stm, Bool update
 void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 {
 	NN<IO::ATCommandChannel> channel;
-	if (this->port && this->channel.SetTo(channel))
+	NN<IO::Stream> port;
+	if (this->port.SetTo(port) && this->channel.SetTo(channel))
 	{
 		this->toStop = true;
 		this->modemEvt.Set();
-		this->port->Close();
+		port->Close();
 		channel->Close();
 		while (this->running)
 		{
@@ -1003,7 +1004,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 
 		DEL_CLASS(this->modem);
 		this->channel.Delete();
-		DEL_CLASS(this->port);
+		port.Delete();
 		this->modem = 0;
 		this->port = 0;
 		this->huawei = 0;
@@ -1018,7 +1019,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::CloseStream(Bool updateUI)
 	}
 }
 
-SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("GSM Modem"));
 	this->SetFont(0, 0, 8.25, false);
@@ -1482,7 +1483,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(Optional<UI::GUIClientControl>
 	}
 
 	NN<IO::Stream> nnPort;
-	if (nnPort.Set(port))
+	if (port.SetTo(nnPort))
 	{
 		this->InitStream(nnPort, true);
 	}

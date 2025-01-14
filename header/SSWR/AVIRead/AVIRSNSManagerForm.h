@@ -32,7 +32,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpCurrItems;
 			NN<UI::GUIListView> lvCurrItems;
 
-			Net::SNS::SNSManager *mgr;
+			NN<Net::SNS::SNSManager> mgr;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 

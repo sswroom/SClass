@@ -1905,6 +1905,7 @@ AVIRNetBIOSScannerForm.o: ../../src/SSWR/AVIRead/AVIRNetBIOSScannerForm.cpp
 AVIRNetInfoForm.o: ../../src/SSWR/AVIRead/AVIRNetInfoForm.cpp
 AVIRNetPingForm.o: ../../src/SSWR/AVIRead/AVIRNetPingForm.cpp
 AVIRNetRAWCaptureForm.o: ../../src/SSWR/AVIRead/AVIRNetRAWCaptureForm.cpp
+AVIRNetworkBandwidthForm.o: ../../src/SSWR/AVIRead/AVIRNetworkBandwidthForm.cpp
 AVIRNTPClientForm.o: ../../src/SSWR/AVIRead/AVIRNTPClientForm.cpp
 AVIRNTPServerForm.o: ../../src/SSWR/AVIRead/AVIRNTPServerForm.cpp
 AVIROCRForm.o: ../../src/SSWR/AVIRead/AVIROCRForm.cpp

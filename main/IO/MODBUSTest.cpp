@@ -29,8 +29,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	modbus->ReadInputs(0x1, 0, 1);
 	printf("Correct: 01 02 00 00 00 01 B9 CA\r\n");*/
 
-	IO::SerialPort *port;
-	NEW_CLASS(port, IO::SerialPort(33, 2400, IO::SerialPort::PARITY_NONE, false));
+	NN<IO::SerialPort> port;
+	NEW_CLASSNN(port, IO::SerialPort(33, 2400, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		printf("Error in opeining serial port\r\n");
@@ -49,6 +49,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		DEL_CLASS(modbus);
 	}
-	DEL_CLASS(port);
+	port.Delete();
 	return 0;
 }

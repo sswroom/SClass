@@ -30,7 +30,7 @@ SSWR::AVIRead::AVIRIPScanDetectorForm::AVIRIPScanDetectorForm(Optional<UI::GUICl
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->log, IO::LogTool());
+	NEW_CLASSNN(this->log, IO::LogTool());
 	
 	this->txtLog = ui->NewTextBox(*this, CSTR(""));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
@@ -42,7 +42,7 @@ SSWR::AVIRead::AVIRIPScanDetectorForm::AVIRIPScanDetectorForm(Optional<UI::GUICl
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, true));
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	NEW_CLASS(this->ipScanDetect, Net::IPScanDetector(this->core->GetSocketFactory(), OnIPScanEvent, this, 2));
+	NEW_CLASSNN(this->ipScanDetect, Net::IPScanDetector(this->core->GetSocketFactory(), OnIPScanEvent, this, 2));
 	if (this->ipScanDetect->IsError())
 	{
 		this->log->LogMessage(CSTR("Error in monitoring to IP Scan"), IO::LogHandler::LogLevel::Error);
@@ -51,8 +51,8 @@ SSWR::AVIRead::AVIRIPScanDetectorForm::AVIRIPScanDetectorForm(Optional<UI::GUICl
 
 SSWR::AVIRead::AVIRIPScanDetectorForm::~AVIRIPScanDetectorForm()
 {
-	DEL_CLASS(this->ipScanDetect);
-	DEL_CLASS(this->log);
+	this->ipScanDetect.Delete();
+	this->log.Delete();
 }
 
 void SSWR::AVIRead::AVIRIPScanDetectorForm::OnMonitorChanged()

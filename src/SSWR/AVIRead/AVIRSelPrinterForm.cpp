@@ -4,9 +4,10 @@
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
-	if (me->currPrinter)
+	NN<Media::Printer> currPrinter;
+	if (me->currPrinter.SetTo(currPrinter))
 	{
-		me->currPrinter->ShowPrintSettings(0);
+		currPrinter->ShowPrintSettings(0);
 	}
 }
 
@@ -15,14 +16,18 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(AnyType userObj)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
+	NN<Media::Printer> currPrinter;
 	if (me->cboPrinter->GetSelectedItemText(sbuff).SetTo(sptr))
 	{
-		SDEL_CLASS(me->currPrinter);
-		NEW_CLASS(me->currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
-		if (me->currPrinter->IsError())
+		me->currPrinter.Delete();
+		NEW_CLASSNN(currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
+		if (currPrinter->IsError())
 		{
-			DEL_CLASS(me->currPrinter);
-			me->currPrinter = 0;
+			currPrinter.Delete();
+		}
+		else
+		{
+			me->currPrinter = currPrinter;
 		}
 	}
 }
@@ -30,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
-	if (me->currPrinter)
+	if (me->currPrinter.NotNull())
 	{
 		me->printer = me->currPrinter;
 		me->currPrinter = 0;
@@ -83,11 +88,15 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientCont
 		sbuff[0] = 0;
 		sptr = Media::Printer::GetPrinterName(sbuff, i).Or(sbuff);
 		this->cboPrinter->SetSelectedIndex(0);
-		NEW_CLASS(this->currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
-		if (this->currPrinter->IsError())
+		NN<Media::Printer> currPrinter;
+		NEW_CLASSNN(currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
+		if (currPrinter->IsError())
 		{
-			DEL_CLASS(this->currPrinter);
-			this->currPrinter = 0;
+			currPrinter.Delete();
+		}
+		else
+		{
+			this->currPrinter = currPrinter;
 		}
 	}
 
@@ -103,7 +112,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRSelPrinterForm::~AVIRSelPrinterForm()
 {
-	SDEL_CLASS(this->currPrinter);
+	this->currPrinter.Delete();
 }
 
 void SSWR::AVIRead::AVIRSelPrinterForm::OnMonitorChanged()

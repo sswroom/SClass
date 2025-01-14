@@ -91,7 +91,7 @@ void SSWR::AVIRead::AVIRSelCANForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-IO::CANListener *SSWR::AVIRead::AVIRSelCANForm::GetListener() const
+Optional<IO::CANListener> SSWR::AVIRead::AVIRSelCANForm::GetListener() const
 {
 	return this->listener;
 }

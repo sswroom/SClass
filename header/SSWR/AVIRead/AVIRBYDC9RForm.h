@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::Device::BYDC9R c9r;
-			IO::CANListener *listener;
+			Optional<IO::CANListener> listener;
 			Optional<Net::SSLEngine> ssl;
 
 			NN<UI::GUIGroupBox> grpCANBus;

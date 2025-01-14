@@ -20,7 +20,7 @@ namespace IO
 		} AddrResultCb;
 		
 	private:
-		IO::Stream *stm;
+		NN<IO::Stream> stm;
 		UInt16 tranId;
 		Bool threadRunning;
 		Bool threadToStop;
@@ -30,7 +30,7 @@ namespace IO
 
 		static UInt32 __stdcall ThreadProc(AnyType userObj);
 	public:
-		MODBUSTCPMaster(IO::Stream *stm);
+		MODBUSTCPMaster(NN<IO::Stream> stm);
 		virtual ~MODBUSTCPMaster();
 
 		virtual Bool ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilCnt); //Output
@@ -39,7 +39,7 @@ namespace IO
 		virtual Bool ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 regCnt);
 		virtual Bool WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh);
 		virtual Bool WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UInt16 val);
-		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UInt8 *val);
+		virtual Bool WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UInt16 cnt, UnsafeArray<UInt8> val);
 
 		virtual void HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj);
 	};

@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Net::ICMPScanner *scanner;
+			NN<Net::ICMPScanner> scanner;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblIP;
