@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrHexVal32(&sbuff[i + 1], crc.CalcDirect(sb.v, sb.leng));
-	NEW_CLASS(me->tileMap, Map::CustomTileMap(sb.ToCString(), CSTRP(sbuff, sptr), (UInt32)minLevel, (UInt32)maxLevel, me->core->GetTCPClientFactory(), me->ssl));
+	NEW_CLASSOPT(me->tileMap, Map::CustomTileMap(sb.ToCString(), CSTRP(sbuff, sptr), (UInt32)minLevel, (UInt32)maxLevel, me->core->GetTCPClientFactory(), me->ssl));
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -98,7 +98,7 @@ void SSWR::AVIRead::AVIRCustomTileMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::TileMap *SSWR::AVIRead::AVIRCustomTileMapForm::GetTileMap()
+Optional<Map::TileMap> SSWR::AVIRead::AVIRCustomTileMapForm::GetTileMap()
 {
 	return this->tileMap;
 }

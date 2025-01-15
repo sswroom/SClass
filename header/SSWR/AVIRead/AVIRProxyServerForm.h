@@ -22,7 +22,7 @@ namespace SSWR
 			NN<Net::SocketFactory> sockf;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			Net::ProxyServer *svr;
+			Optional<Net::ProxyServer> svr;
 
 			NN<UI::GUIPanel> pnlRequest;
 			NN<UI::GUILabel> lblPort;

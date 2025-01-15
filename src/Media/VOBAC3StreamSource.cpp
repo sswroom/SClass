@@ -75,7 +75,7 @@ Data::Duration Media::VOBAC3StreamSource::SeekToTime(Data::Duration time)
 	return t;
 }
 
-Bool Media::VOBAC3StreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VOBAC3StreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	//////////////////////////////////
 	return false;
@@ -86,7 +86,7 @@ void Media::VOBAC3StreamSource::GetFormat(NN<Media::AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::VOBAC3StreamSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::VOBAC3StreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->pbEvt = evt;
 	return this->pbc->StartAudio();
@@ -278,14 +278,15 @@ void Media::VOBAC3StreamSource::SetStreamTime(Data::Duration time)
 
 void Media::VOBAC3StreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 {
+	NN<Sync::Event> pbEvt;
 	UOSInt buffWriten;
 	if (buff[0] > 0)
 	{
-		if (this->pbEvt)
+		if (this->pbEvt.NotNull())
 		{
 			while (true)
 			{
-				if (this->pbEvt == 0 || !this->pbc->IsRunning())
+				if (this->pbEvt.IsNull() || !this->pbc->IsRunning())
 					break;
 			
 				Sync::MutexUsage mutUsage(this->buffMut);
@@ -310,8 +311,8 @@ void Media::VOBAC3StreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 						MemCopyNO(this->dataBuff, &buff[3 + this->buffSize - this->buffEnd], buffSize - 3 - (this->buffSize - this->buffEnd));
 						this->buffEnd = this->buffEnd + buffSize - 3 - this->buffSize;
 					}
-					if (this->pbEvt)
-						this->pbEvt->Set();
+					if (this->pbEvt.SetTo(pbEvt))
+						pbEvt->Set();
 					mutUsage.EndUse();
 					break;
 				}

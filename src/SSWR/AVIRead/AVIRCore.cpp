@@ -55,11 +55,16 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, true);
 	NEW_CLASSNN(this->browser, Net::WebBrowser(clif, this->ssl, CSTRP(sbuff, sptr)));
-	NEW_CLASS(this->gpioCtrl, IO::GPIOControl());
-	if (this->gpioCtrl->IsError())
+	NN<IO::GPIOControl> gpioCtrl;
+	NEW_CLASSNN(gpioCtrl, IO::GPIOControl());
+	if (gpioCtrl->IsError())
 	{
-		DEL_CLASS(this->gpioCtrl);
+		gpioCtrl.Delete();
 		this->gpioCtrl = 0;
+	}
+	else
+	{
+		this->gpioCtrl = gpioCtrl;
 	}
 	NN<IO::SiLabDriver> siLabDriver;
 	NEW_CLASSNN(siLabDriver, IO::SiLabDriver());
@@ -72,12 +77,12 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	{
 		this->siLabDriver = siLabDriver;
 	}
-	this->parsers->SetEncFactory(&this->encFact);
-	this->parsers->SetMapManager(&this->mapMgr);
+	this->parsers->SetEncFactory(this->encFact);
+	this->parsers->SetMapManager(this->mapMgr);
 	this->parsers->SetWebBrowser(this->browser);
 	this->parsers->SetTCPClientFactory(this->clif);
 	this->parsers->SetSSLEngine(this->ssl);
-	this->parsers->SetLogTool(&this->log);
+	this->parsers->SetLogTool(this->log);
 	this->batchLyrs = 0;
 	this->batchLoad = false;
 	this->gisForm = 0;
@@ -117,7 +122,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 	this->sockf.Delete();
 	this->eng.Delete();
 	this->ui->SetMonitorMgr(0);
-	SDEL_CLASS(this->gpioCtrl);
+	this->gpioCtrl.Delete();
 	this->siLabDriver.Delete();
 	i = this->audDevList.GetCount();
 	while (i-- > 0)
@@ -267,12 +272,12 @@ NN<Net::WebBrowser> SSWR::AVIRead::AVIRCore::GetWebBrowser()
 	return this->browser;
 }
 
-IO::VirtualIOPinMgr *SSWR::AVIRead::AVIRCore::GetVirtualIOPinMgr()
+NN<IO::VirtualIOPinMgr> SSWR::AVIRead::AVIRCore::GetVirtualIOPinMgr()
 {
-	return &this->vioPinMgr;
+	return this->vioPinMgr;
 }
 
-IO::GPIOControl *SSWR::AVIRead::AVIRCore::GetGPIOControl()
+Optional<IO::GPIOControl> SSWR::AVIRead::AVIRCore::GetGPIOControl()
 {
 	return this->gpioCtrl;
 }
@@ -405,7 +410,7 @@ Int32 SSWR::AVIRead::AVIRCore::GetAudioAPIType()
 	return this->audAPIType;
 }
 
-Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *audSrc)
+Optional<Media::IAudioRenderer> SSWR::AVIRead::AVIRCore::BindAudio(Optional<Media::IAudioSource> audSrc)
 {
 	return this->audDevice.BindAudio(audSrc);
 }

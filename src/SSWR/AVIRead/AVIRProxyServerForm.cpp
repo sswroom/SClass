@@ -6,7 +6,8 @@
 void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
-	if (me->svr == 0)
+	NN<Net::ProxyServer> svr;
+	if (!me->svr.SetTo(svr))
 	{
 		Text::StringBuilderUTF8 sb;
 		me->txtPort->GetText(sb);
@@ -16,21 +17,21 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(AnyType userOb
 			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Start"), me);
 			return;
 		}
-		NEW_CLASS(me->svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log, true));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log, true));
+		if (svr->IsError())
 		{
-			DEL_CLASS(me->svr);
-			me->svr = 0;
+			svr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in starting proxy server. Maybe port is in use."), CSTR("Start"), me);
 		}
 		else
 		{
+			me->svr = svr;
 			me->txtPort->SetReadOnly(true);
 		}
 	}
 	else
 	{
-		DEL_CLASS(me->svr);
+		svr.Delete();
 		me->svr = 0;
 		me->txtPort->SetReadOnly(false);
 	}
@@ -83,7 +84,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRProxyServerForm::~AVIRProxyServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }

@@ -21,7 +21,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtStatus;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::Email::EmailValidator *validator;
+			NN<Net::Email::EmailValidator> validator;
 
 			static void __stdcall OnValidateClicked(AnyType userObj);
 		public:

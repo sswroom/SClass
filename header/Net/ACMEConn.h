@@ -38,8 +38,8 @@ namespace Net
 		{
 			ACMEStatus status;
 			Int64 expires;
-			Text::String *orderURL;
-			Data::ArrayListStringNN *authURLs;
+			Optional<Text::String> orderURL;
+			Optional<Data::ArrayListStringNN> authURLs;
 			Optional<Text::String> finalizeURL;
 			Text::String *certificateURL;
 		};
@@ -57,22 +57,22 @@ namespace Net
 		Optional<Crypto::Cert::X509Key> key;
 		NN<Text::String> serverHost;
 		UInt16 port;
-		Text::String *urlNewNonce;
-		Text::String *urlNewAccount;
-		Text::String *urlNewOrder;
-		Text::String *urlNewAuthz;
-		Text::String *urlRevokeCert;
-		Text::String *urlKeyChange;
-		Text::String *urlTermOfService;
-		Text::String *urlWebsite;
-		Text::String *nonce;
-		Text::String *accountId;
+		Optional<Text::String> urlNewNonce;
+		Optional<Text::String> urlNewAccount;
+		Optional<Text::String> urlNewOrder;
+		Optional<Text::String> urlNewAuthz;
+		Optional<Text::String> urlRevokeCert;
+		Optional<Text::String> urlKeyChange;
+		Optional<Text::String> urlTermOfService;
+		Optional<Text::String> urlWebsite;
+		Optional<Text::String> nonce;
+		Optional<Text::String> accountId;
 
 		static Optional<Text::String> JWK(NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg);
-		static Text::String *ProtectedJWK(Text::String *nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId);
+		static Optional<Text::String> ProtectedJWK(NN<Text::String> nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Optional<Text::String> accountId);
 		static NN<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CStringNN protStr, Text::CStringNN data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb);
-		Net::HTTPClient *ACMEPost(NN<Text::String> url, Text::CStringNN data);
+		Optional<Net::HTTPClient> ACMEPost(NN<Text::String> url, Text::CStringNN data);
 		Optional<Order> OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		Optional<Challenge> ChallengeJSON(NN<Text::JSONBase> json);
 		Optional<Challenge> ChallengeParse(UnsafeArray<const UInt8> buff, UOSInt buffSize);
@@ -81,9 +81,9 @@ namespace Net
 		~ACMEConn();
 
 		Bool IsError();
-		Text::String *GetTermOfService();
-		Text::String *GetWebsite();
-		Text::String *GetAccountId();
+		Optional<Text::String> GetTermOfService();
+		Optional<Text::String> GetWebsite();
+		Optional<Text::String> GetAccountId();
 
 		Bool NewNonce();
 		Bool AccountNew();
@@ -91,8 +91,8 @@ namespace Net
 
 		Optional<Order> OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen); //comma seperated
 		Optional<Challenge> OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
-		Order *OrderGetStatus(UnsafeArray<const UTF8Char> orderURL);
-		Order *OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, Crypto::Cert::X509CertReq *csr);
+		Optional<Order> OrderGetStatus(UnsafeArray<const UTF8Char> orderURL);
+		Optional<Order> OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, NN<Crypto::Cert::X509CertReq> csr);
 		void OrderFree(NN<Order> order);
 
 		Optional<Challenge> ChallengeBegin(NN<Text::String> challURL);
@@ -100,7 +100,7 @@ namespace Net
 		void ChallengeFree(NN<Challenge> chall);
 
 		Bool NewKey();
-		Bool SetKey(Crypto::Cert::X509Key *key);
+		Bool SetKey(NN<Crypto::Cert::X509Key> key);
 		Bool LoadKey(Text::CStringNN fileName);
 		Bool SaveKey(Text::CStringNN fileName);
 

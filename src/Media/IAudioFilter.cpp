@@ -34,7 +34,7 @@ Data::Duration Media::IAudioFilter::SeekToTime(Data::Duration time)
 	return this->sourceAudio->SeekToTime(time);
 }
 
-Bool Media::IAudioFilter::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::IAudioFilter::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return this->sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 }
@@ -44,7 +44,7 @@ void Media::IAudioFilter::GetFormat(NN<AudioFormat> format)
 	this->sourceAudio->GetFormat(format);
 }
 
-Bool Media::IAudioFilter::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::IAudioFilter::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->sourceAudio->Start(evt, blkSize);
 	return true;

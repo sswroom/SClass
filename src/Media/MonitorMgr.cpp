@@ -75,8 +75,8 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 		{
 			Media::DDCReader reader(hMonitor);
 			UOSInt size;
-			UInt8 *edid = reader.GetEDID(size);
-			if (edid)
+			UnsafeArray<UInt8> edid;
+			if (reader.GetEDID(size).SetTo(edid))
 			{
 				Media::EDID::EDIDInfo info;
 				if (Media::EDID::Parse(edid, info))

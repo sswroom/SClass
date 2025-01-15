@@ -22,6 +22,7 @@ UOSInt Media::AACFrameSource::ReadBlock(Data::ByteArray blk)
 	if (this->blocks[this->readBlock].length > blk.GetSize())
 		return 0;
 
+	NN<Sync::Event> readEvt;
 	UInt32 thisSize = this->blocks[this->readBlock].length;
 	blk[0] = 0xff;
 	blk[1] = 0xf9;
@@ -37,8 +38,8 @@ UOSInt Media::AACFrameSource::ReadBlock(Data::ByteArray blk)
 	blk[6] |= 0; // number_of_raw_data_blocks_in_frame
 	UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk.SubArray(7));
 	this->readBlock++;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return readSize + 7;
 }
 

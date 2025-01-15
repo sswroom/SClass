@@ -9,7 +9,7 @@ namespace Media
 		class ADecoderBase : public IAudioSource
 		{
 		protected:
-			Media::IAudioSource *sourceAudio;
+			Optional<Media::IAudioSource> sourceAudio;
 		public:
 			ADecoderBase();
 			virtual ~ADecoderBase();
@@ -19,7 +19,7 @@ namespace Media
 			virtual Data::Duration GetStreamTime();
 			virtual Data::Duration GetCurrTime();
 			virtual Bool IsEnd();
-			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
+			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 		};
 	}
 }

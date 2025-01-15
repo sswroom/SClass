@@ -65,7 +65,7 @@ void SSWR::AVIRead::AVIROLEDBForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-DB::DBConn *SSWR::AVIRead::AVIROLEDBForm::GetDBConn()
+Optional<DB::DBConn> SSWR::AVIRead::AVIROLEDBForm::GetDBConn()
 {
 	return this->conn;
 }

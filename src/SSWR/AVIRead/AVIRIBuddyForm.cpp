@@ -5,17 +5,19 @@
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeadChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
 		me->currHead = (IO::Device::IBuddy::IBuddyHeadEffect)(OSInt)me->lbHead->GetSelectedItem().p;
-		me->currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
+		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeartChanged(AnyType userObj, Bool newState)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
 		if (newState)
 		{
@@ -25,14 +27,15 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeartChanged(AnyType userObj, Bo
 		{
 			me->currHeart = IO::Device::IBuddy::IBHRE_OFF;
 		}
-		me->currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
+		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnLeftDown(AnyType userObj, Bool isDown)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
 		if (isDown)
 		{
@@ -42,14 +45,15 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnLeftDown(AnyType userObj, Bo
 		{
 			me->currTurn = IO::Device::IBuddy::IBBE_OFF;
 		}
-		me->currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
+		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnRightDown(AnyType userObj, Bool isDown)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
 		if (isDown)
 		{
@@ -59,14 +63,15 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnRightDown(AnyType userObj, B
 		{
 			me->currTurn = IO::Device::IBuddy::IBBE_OFF;
 		}
-		me->currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
+		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingUpDown(AnyType userObj, Bool isDown)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
 		if (isDown)
 		{
@@ -76,14 +81,15 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingUpDown(AnyType userObj, Bool
 		{
 			me->currWing = IO::Device::IBuddy::IBWE_OFF;
 		}
-		me->currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
+		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingDownDown(AnyType userObj, Bool isDown)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
 		if (isDown)
 		{
@@ -93,16 +99,17 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingDownDown(AnyType userObj, Bo
 		{
 			me->currWing = IO::Device::IBuddy::IBWE_OFF;
 		}
-		me->currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
+		currBuddy->PlayEffect(me->currTurn, me->currHead, me->currHeart, me->currWing);
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
-	if (me->currBuddy)
+	NN<IO::Device::IBuddy> currBuddy;
+	if (me->currBuddy.SetTo(currBuddy))
 	{
-		me->currBuddy->PlayEffect(IO::Device::IBuddy::IBBE_OFF, IO::Device::IBuddy::IBHDE_OFF, IO::Device::IBuddy::IBHRE_OFF, IO::Device::IBuddy::IBWE_OFF);
+		currBuddy->PlayEffect(IO::Device::IBuddy::IBBE_OFF, IO::Device::IBuddy::IBHDE_OFF, IO::Device::IBuddy::IBHRE_OFF, IO::Device::IBuddy::IBWE_OFF);
 	}
 	me->currBuddy = 0;
 	me->lbHead->SetSelectedIndex(0);
@@ -111,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(AnyType userObj)
 	me->currHeart = IO::Device::IBuddy::IBHRE_OFF;
 	me->currTurn = IO::Device::IBuddy::IBBE_OFF;
 	me->currWing = IO::Device::IBuddy::IBWE_OFF;
-	me->currBuddy = (IO::Device::IBuddy*)me->lbDevice->GetSelectedItem().p;
+	me->currBuddy = me->lbDevice->GetSelectedItem().GetOpt<IO::Device::IBuddy>();
 }
 
 SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)

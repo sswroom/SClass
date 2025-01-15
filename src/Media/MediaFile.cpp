@@ -93,12 +93,12 @@ Bool Media::MediaFile::TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd)
 		syncTime = this->syncTime.GetItem(i);
 		if (trimTimeEnd == -1)
 		{
-			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)trimTimeEnd, &syncTime);
+			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)trimTimeEnd, syncTime);
 			this->syncTime.SetItem(i, syncTime);
 		}
 		else
 		{
-			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)(trimTimeEnd + syncTime), &syncTime);
+			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)(trimTimeEnd + syncTime), syncTime);
 			this->syncTime.SetItem(i, syncTime);
 		}
 	}

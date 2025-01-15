@@ -102,7 +102,7 @@ void Media::AudioConcatSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AudioConcatSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AudioConcatSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }
@@ -130,7 +130,7 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 			{
 				if (this->stmList.GetItem(this->currStm).SetTo(audSrc2))
 				{
-					if (this->currStm != stmIndex && this->readEvt)
+					if (this->currStm != stmIndex && this->readEvt.NotNull())
 					{
 						audSrc2->Stop();
 						this->currStm = stmIndex;
@@ -159,7 +159,7 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 
 	if (this->stmList.GetItem(this->currStm).SetTo(audSrc2))
 	{
-		if (this->currStm != stmIndex && this->readEvt && this->stmList.GetItem(stmIndex).SetTo(audSrc1))
+		if (this->currStm != stmIndex && this->readEvt.NotNull() && this->stmList.GetItem(stmIndex).SetTo(audSrc1))
 		{
 			audSrc2->Stop();
 			this->currStm = stmIndex;
@@ -172,10 +172,10 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 	return stmTotal;
 }
 
-Bool Media::AudioConcatSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::AudioConcatSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Media::IAudioSource> audSrc;
-	if (this->readEvt && this->currStm > 0 && this->stmList.GetItem(this->currStm).SetTo(audSrc))
+	if (this->readEvt.NotNull() && this->currStm > 0 && this->stmList.GetItem(this->currStm).SetTo(audSrc))
 	{
 		audSrc->Stop();
 	}
@@ -195,7 +195,7 @@ Bool Media::AudioConcatSource::Start(Sync::Event *evt, UOSInt blkSize)
 void Media::AudioConcatSource::Stop()
 {
 	NN<Media::IAudioSource> audSrc;
-	if (this->readEvt && this->stmList.GetItem(this->currStm).SetTo(audSrc))
+	if (this->readEvt.NotNull() && this->stmList.GetItem(this->currStm).SetTo(audSrc))
 	{
 		audSrc->Stop();
 	}
@@ -214,7 +214,7 @@ UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 	{
 		return 0;
 	}
-	if (this->readEvt)
+	if (this->readEvt.NotNull())
 	{
 		audSrc->Stop();
 		this->currStm++;

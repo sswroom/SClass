@@ -15,7 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
 	NN<Net::SSLEngine> ssl;
-	if (me->svr || !me->ssl.SetTo(ssl))
+	NN<Net::WebServer::WebListener> svr;
+	if (me->svr.NotNull() || !me->ssl.SetTo(ssl))
 	{
 		return;
 	}
@@ -101,16 +102,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 		IO::BuildTime::GetBuildTime(dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, me, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), false, Net::WebServer::KeepAlive::Default, false));
+		if (svr->IsError())
 		{
 			valid = false;
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("HTTP Client Cert Test"), me);
 		}
 		else
 		{
-			if (!me->svr->Start())
+			me->svr = svr;
+			if (!svr->Start())
 			{
 				valid = false;
 				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Client Cert Test"), me);
@@ -126,20 +128,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 	}
 	else
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->log);
+		me->svr.Delete();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
-	if (me->svr == 0)
+	if (me->svr.IsNull())
 	{
 		return;
 	}
-	SDEL_CLASS(me->svr);
-	SDEL_CLASS(me->log);
+	me->svr.Delete();
 	me->txtPort->SetReadOnly(false);
 	me->btnSSLCert->SetEnabled(true);
 	me->txtClientCA->SetReadOnly(false);
@@ -186,7 +186,6 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<U
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;
-	this->log = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpParam = ui->NewGroupBox(*this, CSTR("Parameters"));
@@ -217,8 +216,7 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<U
 
 SSWR::AVIRead::AVIRHTTPClientCertTestForm::~AVIRHTTPClientCertTestForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->log);
+	this->svr.Delete();
 	this->ssl.Delete();
 	this->sslCert.Delete();
 	this->sslKey.Delete();

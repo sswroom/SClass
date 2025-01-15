@@ -223,7 +223,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUI
 
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
-	NEW_CLASS(resizer, Media::ProfiledResizer(this->core->GetParserList(), this->colorSess.Ptr(), this->core->GetDrawEngine()));
+	NEW_CLASSNN(resizer, Media::ProfiledResizer(this->core->GetParserList(), this->colorSess.Ptr(), this->core->GetDrawEngine()));
 //	resizer->AddProfile(L"Facebook", L"fb", 960, 960, Media::ProfiledResizer::OT_JPEGQUALITY, 100);
 //	resizer->AddProfile(L"HKWildlife", L"m", 800, 800, Media::ProfiledResizer::OT_JPEGSIZE, 27);
 	resizer->LoadProfile(CSTR(""));
@@ -326,7 +326,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUI
 
 SSWR::AVIRead::AVIRProfiledResizerForm::~AVIRProfiledResizerForm()
 {
-	DEL_CLASS(resizer);
+	this->resizer.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

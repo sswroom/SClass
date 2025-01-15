@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(sb);
-	me->fileName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	me->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	me->parserType = (IO::ParserType)me->cboType->GetSelectedItem().GetUOSInt();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIROpenFileForm::~AVIROpenFileForm()
 {
-	SDEL_STRING(this->fileName);
+	OPTSTR_DEL(this->fileName);
 }
 
 void SSWR::AVIRead::AVIROpenFileForm::OnMonitorChanged()

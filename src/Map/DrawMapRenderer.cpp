@@ -1360,7 +1360,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 								{
 									UOSInt fs = denv->layerFont.GetCount();
-									NN<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NN<Media::DrawFont> f = denv->img->NewFontPt(Text::String::OrEmpty(layer.fontName)->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
@@ -1393,7 +1393,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 								{
 									UOSInt fs = denv->layerFont.GetCount();
-									NN<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NN<Media::DrawFont> f = denv->img->NewFontPt(Text::String::OrEmpty(layer.fontName)->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
@@ -1455,7 +1455,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 								{
 									UOSInt fs = denv->layerFont.GetCount();
-									NN<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NN<Media::DrawFont> f = denv->img->NewFontPt(Text::String::OrEmpty(layer.fontName)->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
@@ -1503,7 +1503,7 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 								{
 									UOSInt fs = denv->layerFont.GetCount();
-									NN<Media::DrawFont> f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+									NN<Media::DrawFont> f = denv->img->NewFontPt(Text::String::OrEmpty(layer.fontName)->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);

@@ -8,9 +8,10 @@
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
-	if (me->svr)
+	NN<Net::LogServer> svr;
+	if (me->svr.SetTo(svr))
 	{
-		DEL_CLASS(me->svr);
+		svr.Delete();
 		me->svr = 0;
 		me->txtPort->SetReadOnly(false);
 	}
@@ -25,24 +26,25 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("LogSvr"));
-			NEW_CLASS(me->svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), me->log, false, false));
-			if (me->svr->IsError())
+			NEW_CLASSNN(svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), me->log, false, false));
+			if (svr->IsError())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in listening the port"), CSTR("Error"), me);
-				DEL_CLASS(me->svr);
-				me->svr = 0;
+				svr.Delete();
 			}
 			else
 			{
-				me->svr->HandleClientLog(OnClientLog, me);
-				if (me->svr->Start())
+
+				svr->HandleClientLog(OnClientLog, me);
+				me->svr = svr;
+				if (svr->Start())
 				{
 					me->txtPort->SetReadOnly(true);
 				}
 				else
 				{
 					me->ui->ShowMsgOK(CSTR("Error in starting LogServer"), CSTR("Error"), me);
-					DEL_CLASS(me->svr);
+					svr.Delete();
 					me->svr = 0;
 				}
 			}
@@ -174,7 +176,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRLogServerForm::~AVIRLogServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 
 	NN<IPLog> ipLog;
 	UOSInt i = this->ipMap.GetCount();

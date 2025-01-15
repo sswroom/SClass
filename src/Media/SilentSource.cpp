@@ -58,7 +58,7 @@ Data::Duration Media::SilentSource::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(this->currSample, this->format.frequency);
 }
 
-Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	Data::Duration streamTime = GetStreamTime();
 	if (trimTimeEnd == (UInt32)-1)
@@ -70,10 +70,7 @@ Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 		streamTime = (Int32)(trimTimeEnd - trimTimeStart);
 	}
 	this->sampleCnt = streamTime.MultiplyU64(this->format.frequency);
-	if (syncTime)
-	{
-		*syncTime = 0;
-	}
+	syncTime.Set(0);
 	return true;
 }
 
@@ -82,11 +79,12 @@ void Media::SilentSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::SilentSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::SilentSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
+	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return true;
 }
 
@@ -98,6 +96,7 @@ void Media::SilentSource::Stop()
 
 UOSInt Media::SilentSource::ReadBlock(Data::ByteArray blk)
 {
+	NN<Sync::Event> readEvt;
 	UOSInt readSize = blk.GetSize() - (blk.GetSize() % this->format.align);
 	UOSInt i = 0;
 	UInt64 endOfst;
@@ -153,8 +152,8 @@ UOSInt Media::SilentSource::ReadBlock(Data::ByteArray blk)
 	}
 	this->readOfst += readSize;
 	this->currSample += readSize / this->format.align;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return readSize;
 }
 

@@ -58,7 +58,7 @@ namespace Map
 			UInt32 fillStyle;
 			FontType fontType;
 			UOSInt fontStyle;
-			Text::String *fontName;
+			Optional<Text::String> fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
 			Double maxScale;

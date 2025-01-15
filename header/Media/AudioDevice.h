@@ -1,7 +1,6 @@
 #ifndef _SM_MEDIA_AUDIODEVICE
 #define _SM_MEDIA_AUDIODEVICE
-
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Media/IAudioRenderer.h"
 
 namespace Media
@@ -17,8 +16,8 @@ namespace Media
 			AT_ALSA = 8
 		} APIType;
 	private:
-		Data::ArrayList<Media::IAudioRenderer*> rendererList;
-		Media::IAudioRenderer *currRenderer;
+		Data::ArrayListNN<Media::IAudioRenderer> rendererList;
+		Optional<Media::IAudioRenderer> currRenderer;
 
 	public:
 		static UOSInt GetDeviceCount();
@@ -31,7 +30,7 @@ namespace Media
 		Bool AddDevice(Text::CStringNN devName);
 		void ClearDevices();
 
-		Media::IAudioRenderer *BindAudio(Media::IAudioSource *audsrc);
+		Optional<Media::IAudioRenderer> BindAudio(Optional<Media::IAudioSource> audsrc);
 	};
 }
 #endif

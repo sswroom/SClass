@@ -5,11 +5,13 @@
 void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
+	NN<Map::WebMapTileServiceSource> wmts;
 	Text::StringBuilderUTF8 sb;
 	me->txtWMTSURL->GetText(sb);
-	SDEL_CLASS(me->wmts);
-	NEW_CLASS(me->wmts, Map::WebMapTileServiceSource(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
-	if (me->wmts->IsError())
+	me->wmts.Delete();
+	NEW_CLASSNN(wmts, Map::WebMapTileServiceSource(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
+	me->wmts = wmts;
+	if (wmts->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
 	}
@@ -18,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 		me->txtStatus->SetText(CSTR("Success"));
 		Data::ArrayListNN<Text::String> nameList;
 		UOSInt i = 0;
-		UOSInt j = me->wmts->GetLayerNames(nameList);
+		UOSInt j = wmts->GetLayerNames(nameList);
 		me->cboLayer->ClearItems();
 		while (i < j)
 		{
@@ -35,7 +37,8 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLoadClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
-	if (me->wmts && !me->wmts->IsError())
+	NN<Map::WebMapTileServiceSource> wmts;
+	if (me->wmts.SetTo(wmts) && !wmts->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -44,12 +47,13 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnOKClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
-	if (me->wmts && !me->wmts->IsError())
+	NN<Map::WebMapTileServiceSource> wmts;
+	if (me->wmts.SetTo(wmts) && !wmts->IsError())
 	{
-		me->wmts->SetLayer(me->cboLayer->GetSelectedIndex());
+		wmts->SetLayer(me->cboLayer->GetSelectedIndex());
 		Data::ArrayListStringNN nameList;
 		UOSInt i = 0;
-		UOSInt j = me->wmts->GetMatrixSetNames(nameList);
+		UOSInt j = wmts->GetMatrixSetNames(nameList);
 		me->cboMatrixSet->ClearItems();
 		while (i < j)
 		{
@@ -63,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wmts->GetResourceTileTypeNames(nameList);
+		j = wmts->GetResourceTileTypeNames(nameList);
 		me->cboResourceTileType->ClearItems();
 		while (i < j)
 		{
@@ -77,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 
 		nameList.Clear();
 		i = 0;
-		j = me->wmts->GetResourceInfoTypeNames(nameList);
+		j = wmts->GetResourceInfoTypeNames(nameList);
 		me->cboResourceInfoType->ClearItems();
 		while (i < j)
 		{
@@ -86,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 		}
 		if (j > 0)
 		{
-			me->cboResourceInfoType->SetSelectedIndex(me->wmts->GetResourceInfoType());
+			me->cboResourceInfoType->SetSelectedIndex(wmts->GetResourceInfoType());
 		}
 	}
 }
@@ -94,27 +98,30 @@ void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnLayerSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnMatrixSetSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
-	if (me->wmts && !me->wmts->IsError())
+	NN<Map::WebMapTileServiceSource> wmts;
+	if (me->wmts.SetTo(wmts) && !wmts->IsError())
 	{
-		me->wmts->SetMatrixSet(me->cboMatrixSet->GetSelectedIndex());
+		wmts->SetMatrixSet(me->cboMatrixSet->GetSelectedIndex());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceTileTypeSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
-	if (me->wmts && !me->wmts->IsError())
+	NN<Map::WebMapTileServiceSource> wmts;
+	if (me->wmts.SetTo(wmts) && !wmts->IsError())
 	{
-		me->wmts->SetResourceTileType(me->cboResourceTileType->GetSelectedIndex());
+		wmts->SetResourceTileType(me->cboResourceTileType->GetSelectedIndex());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRWMTSForm::OnResourceInfoTypeSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWMTSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMTSForm>();
-	if (me->wmts && !me->wmts->IsError())
+	NN<Map::WebMapTileServiceSource> wmts;
+	if (me->wmts.SetTo(wmts) && !wmts->IsError())
 	{
-		me->wmts->SetResourceInfoType(me->cboResourceInfoType->GetSelectedIndex());
+		wmts->SetResourceInfoType(me->cboResourceInfoType->GetSelectedIndex());
 	}
 }
 
@@ -167,7 +174,7 @@ SSWR::AVIRead::AVIRWMTSForm::AVIRWMTSForm(Optional<UI::GUIClientControl> parent,
 
 SSWR::AVIRead::AVIRWMTSForm::~AVIRWMTSForm()
 {
-	SDEL_CLASS(this->wmts);
+	this->wmts.Delete();
 }
 
 void SSWR::AVIRead::AVIRWMTSForm::OnMonitorChanged()
@@ -175,9 +182,9 @@ void SSWR::AVIRead::AVIRWMTSForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::TileMap *SSWR::AVIRead::AVIRWMTSForm::GetTileMap()
+Optional<Map::TileMap> SSWR::AVIRead::AVIRWMTSForm::GetTileMap()
 {
-	Map::TileMap *tile = this->wmts;
+	Optional<Map::TileMap> tile = this->wmts;
 	this->wmts = 0;
 	return tile;
 }

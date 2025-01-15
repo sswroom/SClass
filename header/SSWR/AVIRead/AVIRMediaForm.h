@@ -37,7 +37,7 @@ namespace SSWR
 
 			Media::Decoder::AudioDecoderFinder *adecoders;
 			Media::Decoder::VideoDecoderFinder *decoders;
-			Media::IAudioRenderer *audRenderer;
+			Optional<Media::IAudioRenderer> audRenderer;
 			Media::RefClock *clk;
 			Media::IAudioSource *activeAudio;
 			Media::IVideoSource *activeVideo;

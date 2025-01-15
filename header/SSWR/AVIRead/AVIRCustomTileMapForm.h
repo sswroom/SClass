@@ -25,7 +25,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblMaxLevel;
 			NN<UI::GUITextBox> txtMaxLevel;
 			NN<UI::GUIButton> btnOK;
-			Map::TileMap *tileMap;
+			Optional<Map::TileMap> tileMap;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
@@ -34,7 +34,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::TileMap *GetTileMap();
+			Optional<Map::TileMap> GetTileMap();
 		};
 	}
 }

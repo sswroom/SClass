@@ -8,7 +8,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnTypeSelChg(AnyType userObj, Bool newState)
 {
 	NN<SSWR::AVIRead::AVIRGISDistanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISDistanceForm>();
-	me->ptList->Clear();
+	me->ptList.Clear();
 	me->pathDist = 0;
 	me->lastMapPos = Math::Coord2DDbl(0, 0);
 }
@@ -32,8 +32,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseDown(AnyType userOb
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
 		if (me->radTypePath->IsSelected())
 		{
-			me->ptList->Add(mapPt.x);
-			me->ptList->Add(mapPt.y);
+			me->ptList.Add(mapPt.x);
+			me->ptList.Add(mapPt.y);
 			if (me->lastMapPos.x != 0 || me->lastMapPos.y != 0)
 			{
 				me->pathDist += me->csys->CalSurfaceDistance(mapPt, me->lastMapPos, Math::Unit::Distance::DU_METER);
@@ -86,14 +86,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(AnyType userOb
 			UnsafeArray<Math::Coord2DDbl> pts;
 			UOSInt i;
 			UOSInt j;
-			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList->GetCount() >> 1) + 1, false, false));
+			NEW_CLASS(pl, Math::Geometry::LineString(me->csys->GetSRID(), (me->ptList.GetCount() >> 1) + 1, false, false));
 			pts = pl->GetPointList(j);
 			i = 0;
-			j = me->ptList->GetCount() >> 1;
+			j = me->ptList.GetCount() >> 1;
 			while (i < j)
 			{
-				pts[i].x = me->ptList->GetItem((i << 1));
-				pts[i].y = me->ptList->GetItem((i << 1) + 1);
+				pts[i].x = me->ptList.GetItem((i << 1));
+				pts[i].y = me->ptList.GetItem((i << 1) + 1);
 				i++;
 			}
 			pts[j] = mapPt;
@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRGISDistanceForm::UpdateDistDisp()
 	this->txtDistance->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;
@@ -129,7 +129,6 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientCo
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetAlwaysOnTop(true);
-	NEW_CLASS(this->ptList, Data::ArrayList<Double>());
 	this->pathDist = 0;
 	this->dispDist = 0;
 	this->lastMapPos = {0, 0};
@@ -179,7 +178,6 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRGISDistanceForm::~AVIRGISDistanceForm()
 {
-	DEL_CLASS(this->ptList);
 	this->csys.Delete();
 	this->navi->UnhandleMapMouse(this);
 }

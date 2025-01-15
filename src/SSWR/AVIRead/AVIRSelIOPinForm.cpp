@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 			return;
 		}
 		NN<IO::GPIOControl> gpioPin;
-		if (!gpioPin.Set(me->gpioPin))
+		if (!me->gpioPin.SetTo(gpioPin))
 		{
 			me->ui->ShowMsgOK(CSTR("System does not have GPIO"), CSTR("Select GPIO"), me);
 			return;
@@ -133,10 +133,11 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl>
 	this->cboVirtualPin->SetRect(108, 8, 100, 23, false);
 
 	Int32 currPort;
-	if (this->gpioPin)
+	NN<IO::GPIOControl> gpioPin;
+	if (this->gpioPin.SetTo(gpioPin))
 	{
 		i = 0;
-		j = this->gpioPin->GetPinCount();
+		j = gpioPin->GetPinCount();
 		while (i < j)
 		{
 			currPort = (Int32)i;

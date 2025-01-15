@@ -18,8 +18,8 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 			NN<Media::StaticImage> img;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 			{
-				SDEL_CLASS(me->currImg);
-				me->currImg = img.Ptr();
+				me->currImg.Delete();
+				me->currImg = img;
 				imgList->RemoveImage(0, false);
 				imgList.Delete();
 				me->pbImg->SetImage(img, false);
@@ -51,13 +51,14 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NN<Text:
 	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	if (boundary.GetArea() >= 1000)
+	NN<Media::StaticImage> currImg;
+	if (boundary.GetArea() >= 1000 && me->currImg.SetTo(currImg))
 	{
 		NN<ResultInfo> res = MemAllocNN(ResultInfo);
 		res->result = txt->Clone();
 		res->confidence = confidence;
 		res->area = boundary;
-		res->resImg = me->currImg->CreateSubImage(boundary);
+		res->resImg = currImg->CreateSubImage(boundary);
 		me->results.Add(res);
 		UOSInt i = me->lvText->AddItem(res->result, res.Ptr());
 		sptr = Text::StrOSInt(sbuff, boundary.GetArea());
@@ -119,7 +120,7 @@ SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, N
 SSWR::AVIRead::AVIROCRForm::~AVIROCRForm()
 {
 	this->ClearResults();
-	SDEL_CLASS(this->currImg);
+	this->currImg.Delete();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

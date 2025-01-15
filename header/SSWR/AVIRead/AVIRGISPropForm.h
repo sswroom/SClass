@@ -61,7 +61,7 @@ namespace SSWR
 			UInt32 fillStyle;
 			Map::MapEnv::FontType fontType;
 			UOSInt fontStyle;
-			Text::String *fontName;
+			Optional<Text::String> fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
 			UOSInt imgIndex;
@@ -78,10 +78,6 @@ namespace SSWR
 			static Bool __stdcall OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn);
 			static void __stdcall OnFontModifyClicked(AnyType userObj);
 			static void __stdcall OnFontStyleClicked(AnyType userObj);
-/*
-			System::Void LayerPropForm_Load(System::Object *  sender, System::EventArgs *  e);
-			System::Void LayerPropForm_Closed(System::Object *  sender, System::EventArgs *  e);
-*/
 
 		public:
 			AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index);

@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/SizedOverlayDObj.h"
 
-UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer) : DirectObject(tl)
+UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizer8_C8> resizer) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
@@ -36,7 +36,7 @@ UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::C
 		}
 		this->startTime = 0;
 		this->lastFrameNum = -1;
-		NEW_CLASS(this->clk, Manage::HiResClock());
+		NEW_CLASSOPT(this->clk, Manage::HiResClock());
 	}
 }
 
@@ -49,19 +49,20 @@ UI::DObj::SizedOverlayDObj::~SizedOverlayDObj()
 	{
 		this->imgList.Delete();
 	}
-	SDEL_CLASS(this->dispImg);
-	SDEL_CLASS(this->clk);
+	this->dispImg.Delete();
+	this->clk.Delete();
 }
 
 Bool UI::DObj::SizedOverlayDObj::IsChanged()
 {
 	Sync::MutexUsage mutUsage(this->imgMut);
 	NN<Media::ImageList> imgList;
-	if (this->imgList.SetTo(imgList))
+	NN<Manage::HiResClock> clk;
+	if (this->imgList.SetTo(imgList) && this->clk.SetTo(clk))
 	{
 		if (imgList->GetCount() <= 1)
 			return false;
-		if (this->dispImg == 0)
+		if (this->dispImg.IsNull())
 			return true;
 		Double t = clk->GetTimeDiff();
 		OSInt i = Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
@@ -84,7 +85,8 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Sync::MutexUsage imgMutUsage(this->imgMut);
 	NN<Media::ImageList> imgList;
-	if (this->imgList.SetTo(imgList))
+	NN<Manage::HiResClock> clk;
+	if (this->imgList.SetTo(imgList) && this->clk.SetTo(clk))
 	{
 		UOSInt frameNum;
 		if (imgList->GetCount() <= 1)
@@ -103,9 +105,9 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		}
 		Sync::MutexUsage mutUsage(this->dispMut);
 		NN<Media::StaticImage> img;
-		if (this->dispImg == 0 || this->dispFrameNum != frameNum)
+		if (this->dispImg.IsNull() || this->dispFrameNum != frameNum)
 		{
-			SDEL_CLASS(this->dispImg);
+			this->dispImg.Delete();
 			imgList->ToStaticImage(frameNum);
 			this->dispFrameNum = frameNum;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(frameNum, 0)).SetTo(img))
@@ -114,9 +116,9 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 				this->resizer->SetTargetSize(this->size);
 				this->dispImg = this->resizer->ProcessToNew(img);
-				if (this->dispImg)
+				if (this->dispImg.SetTo(img))
 				{
-					this->drawOfst = (this->size - this->dispImg->info.dispSize).ToDouble() * 0.5;
+					this->drawOfst = (this->size - img->info.dispSize).ToDouble() * 0.5;
 				}
 			}
 			else
@@ -124,7 +126,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 				this->dispImg = 0;
 			}
 		}
-		if (img.Set(this->dispImg))
+		if (this->dispImg.SetTo(img))
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();
 			dimg->DrawImagePt2(img, tl + this->drawOfst);
@@ -161,10 +163,10 @@ void UI::DObj::SizedOverlayDObj::SetSize(Math::Size2D<UOSInt> size)
 {
 	this->size = size;
 	Sync::MutexUsage mutUsage(this->dispMut);
-	SDEL_CLASS(this->dispImg);	
+	this->dispImg.Delete();	
 }
 
-void UI::DObj::SizedOverlayDObj::SetImage(Text::CStringNN fileName, Parser::ParserList *parsers)
+void UI::DObj::SizedOverlayDObj::SetImage(Text::CStringNN fileName, NN<Parser::ParserList> parsers)
 {
 	Optional<Media::ImageList> imgList;
 	{

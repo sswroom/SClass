@@ -38,26 +38,29 @@ void Media::Decoder::ACMDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
 		this->acmOupBuffLeft = 0;
-		return this->sourceAudio->SeekToTime(time);
+		return sourceAudio->SeekToTime(time);
 	}
 	return 0;
 }
 
-Bool Media::Decoder::ACMDecoder::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
+	NN<Sync::Event> readEvt;
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
 		this->acmOupBuffLeft = 0;
-		this->sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(0, blkSize);
 		this->readEvt = evt;
 
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return true;
 	}
 	return false;
@@ -65,9 +68,10 @@ Bool Media::Decoder::ACMDecoder::Start(Sync::Event *evt, UOSInt blkSize)
 
 void Media::Decoder::ACMDecoder::Stop()
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Stop();
+		sourceAudio->Stop();
 	}
 	this->readEvt = 0;
 }

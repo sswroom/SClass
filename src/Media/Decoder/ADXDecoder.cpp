@@ -38,10 +38,11 @@ Media::Decoder::ADXDecoder::~ADXDecoder()
 
 void Media::Decoder::ADXDecoder::GetFormat(NN<AudioFormat> format)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(fmt);
+		sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;
@@ -56,29 +57,32 @@ void Media::Decoder::ADXDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::ADXDecoder::SeekToTime(Data::Duration time)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		adxSample1[0] = 0;
 		adxSample1[1] = 0;
 		adxSample2[0] = 0;
 		adxSample2[1] = 0;
-		return this->sourceAudio->SeekToTime(time);
+		return sourceAudio->SeekToTime(time);
 	}
 	return 0;
 }
 
-Bool Media::Decoder::ADXDecoder::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::Decoder::ADXDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
+	NN<Sync::Event> readEvt;
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(0, blkSize);
 		this->readEvt = evt;
 		adxSample1[0] = 0;
 		adxSample1[1] = 0;
 		adxSample2[0] = 0;
 		adxSample2[1] = 0;
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return true;
 	}
 	return false;
@@ -86,21 +90,28 @@ Bool Media::Decoder::ADXDecoder::Start(Sync::Event *evt, UOSInt blkSize)
 
 void Media::Decoder::ADXDecoder::Stop()
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Stop();
+		sourceAudio->Stop();
 	}
 	this->readEvt = 0;
 }
 
 UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 {
+	NN<Sync::Event> readEvt;
 	UOSInt blkSize = blk.GetSize();
 	UOSInt outSize;
 	UOSInt readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
-	if (this->nChannels == 1)
+	NN<Media::IAudioSource> sourceAudio;
+	if (!this->sourceAudio.SetTo(sourceAudio))
+	{
+		return 0;
+	}
+	else if (this->nChannels == 1)
 	{
 		blkSize = blkSize >> 6;
 		readSize = blkSize * 18;
@@ -108,7 +119,7 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 		{
 			readBuff.ChangeSize(readSize);
 		}
-		readSize = this->sourceAudio->ReadBlock(readBuff.WithSize(readSize));
+		readSize = sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 		blkSize = readSize / 18;
 		outSize = blkSize << 6;
 
@@ -120,8 +131,8 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 			src += 18;
 			dest += 64;
 		}
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return outSize;
 	}
 	else if (this->nChannels == 2)
@@ -133,7 +144,7 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 		{
 			readBuff.ChangeSize(readSize);
 		}
-		readSize = this->sourceAudio->ReadBlock(readBuff.WithSize(readSize));
+		readSize = sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 		blkSize = readSize / 36;
 		outSize = blkSize << 7;
 
@@ -146,8 +157,8 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 			src += 36;
 			dest += 128;
 		}
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return outSize;
 	}
 	else

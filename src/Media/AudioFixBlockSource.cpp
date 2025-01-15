@@ -49,17 +49,18 @@ void Media::AudioFixBlockSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AudioFixBlockSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AudioFixBlockSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	//////////////////////////////////////////
 	return false;
 }
 
-Bool Media::AudioFixBlockSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::AudioFixBlockSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
+	NN<Sync::Event> nnevt;
 	this->readEvt = evt;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(nnevt))
+		nnevt->Set();
 	return true;
 }
 
@@ -75,8 +76,9 @@ UOSInt Media::AudioFixBlockSource::ReadBlock(Data::ByteArray blk)
 	UOSInt readSize = blk.GetSize() / blkSize;
 	readSize = this->data->GetRealData(this->readOfst, readSize * blkSize, blk);
 	this->readOfst += readSize;
-	if (this->readEvt)
-		this->readEvt->Set();
+	NN<Sync::Event> readEvt;
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return readSize;
 }
 

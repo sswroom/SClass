@@ -18,7 +18,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::NetBIOSScanner *netbios;
+			NN<Net::NetBIOSScanner> netbios;
 			Bool tableUpdated;
 
 			NN<UI::GUIPanel> pnlControl;

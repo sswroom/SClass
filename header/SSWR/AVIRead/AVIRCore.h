@@ -57,7 +57,7 @@ namespace SSWR
 			Int32 audAPIType;
 			Media::MonitorMgr monMgr;
 			IO::VirtualIOPinMgr vioPinMgr;
-			IO::GPIOControl *gpioCtrl;
+			Optional<IO::GPIOControl> gpioCtrl;
 			Bool forwardedUI;
 
 			Data::ArrayListNN<UI::GUIForm> frms;
@@ -96,8 +96,8 @@ namespace SSWR
 			NN<Text::EncodingFactory> GetEncFactory();
 			Optional<IO::SiLabDriver> GetSiLabDriver();
 			NN<Net::WebBrowser> GetWebBrowser();
-			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
-			IO::GPIOControl *GetGPIOControl();
+			NN<IO::VirtualIOPinMgr> GetVirtualIOPinMgr();
+			Optional<IO::GPIOControl> GetGPIOControl();
 			Media::AudioDevice *GetAudioDevice();
 
 			UInt32 GetCurrCodePage();
@@ -112,7 +112,7 @@ namespace SSWR
 			void SetAudioDeviceList(Data::ArrayListStringNN *audDevList);
 			Data::ArrayListStringNN *GetAudioDeviceList();
 			Int32 GetAudioAPIType();
-			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
+			Optional<Media::IAudioRenderer> BindAudio(Optional<Media::IAudioSource> audSrc);
 
 			Bool GenLinePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NN<Media::ColorConv> colorConv);
 			Bool GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt lineStyle, NN<Media::ColorConv> colorConv);

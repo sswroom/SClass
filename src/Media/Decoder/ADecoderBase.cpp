@@ -12,42 +12,48 @@ Media::Decoder::ADecoderBase::~ADecoderBase()
 
 UnsafeArrayOpt<UTF8Char> Media::Decoder::ADecoderBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	if (this->sourceAudio)
-        return this->sourceAudio->GetSourceName(buff);
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
+        return sourceAudio->GetSourceName(buff);
 	return 0;
 }
 
 Bool Media::Decoder::ADecoderBase::CanSeek()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->CanSeek();
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
+		return sourceAudio->CanSeek();
 	return false;
 }
 
 Data::Duration Media::Decoder::ADecoderBase::GetStreamTime()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->GetStreamTime();
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
+		return sourceAudio->GetStreamTime();
 	return 0;
 }
 
 Data::Duration Media::Decoder::ADecoderBase::GetCurrTime()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->GetCurrTime();
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
+		return sourceAudio->GetCurrTime();
 	return 0;
 }
 
 Bool Media::Decoder::ADecoderBase::IsEnd()
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->IsEnd();
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
+		return sourceAudio->IsEnd();
 	return true;
 }
 
-Bool Media::Decoder::ADecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::Decoder::ADecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
-	if (this->sourceAudio)
-		return this->sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
+		return sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 	return false;
 }

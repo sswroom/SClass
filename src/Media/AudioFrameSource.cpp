@@ -99,7 +99,7 @@ Data::Duration Media::AudioFrameSource::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(this->blocks[this->readBlock].sampleOffset, this->format.frequency);
 }
 
-Bool Media::AudioFrameSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AudioFrameSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	///////////////////////////////////
 	return false;
@@ -115,11 +115,12 @@ void Media::AudioFrameSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AudioFrameSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::AudioFrameSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
+	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return true;
 }
 
@@ -170,8 +171,9 @@ UOSInt Media::AudioFrameSource::ReadBlock(Data::ByteArray blk)
 		UOSInt readSize = this->data->GetRealData(this->blocks[this->readBlock].offset, this->blocks[this->readBlock].length, blk);
 		this->readBlock++;
 		this->readBlockOfst = 0;
-		if (this->readEvt)
-			this->readEvt->Set();
+		NN<Sync::Event> evt;
+		if (this->readEvt.SetTo(evt))
+			evt->Set();
 		return readSize;
 	}
 }

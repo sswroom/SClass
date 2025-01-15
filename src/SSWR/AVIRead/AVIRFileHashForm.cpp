@@ -204,6 +204,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 	UInt8 hashBuff[64];
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::FileCheck> fchk;
 	if (this->fileListChg)
 	{
 		UOSInt i;
@@ -233,15 +234,15 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 			else if (status->status == 2)
 			{
 				this->lvTasks->SetSubItem(k, 1, CSTR("Finished"));
-				if (status->fchk)
+				if (status->fchk.SetTo(fchk))
 				{
 					k = 0;
-					l = status->fchk->GetCount();
+					l = fchk->GetCount();
 					while (k < l)
 					{
-						m = this->lvFiles->AddItem(Text::String::OrEmpty(status->fchk->GetEntryName(k)), 0);
-						status->fchk->GetEntryHash(k, hashBuff);
-						sptr = Text::StrHexBytes(sbuff, hashBuff, status->fchk->GetHashSize(), 0);
+						m = this->lvFiles->AddItem(Text::String::OrEmpty(fchk->GetEntryName(k)), 0);
+						fchk->GetEntryHash(k, hashBuff);
+						sptr = Text::StrHexBytes(sbuff, hashBuff, fchk->GetHashSize(), 0);
 						this->lvFiles->SetSubItem(m, 1, CSTRP(sbuff, sptr));
 						k++;
 					}
@@ -372,7 +373,7 @@ SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 	{
 		status = this->fileList.GetItemNoCheck(i);
 		status->fileName->Release();
-		SDEL_CLASS(status->fchk);
+		status->fchk.Delete();
 		MemFreeNN(status);
 	}
 	OPTSTR_DEL(this->progName);

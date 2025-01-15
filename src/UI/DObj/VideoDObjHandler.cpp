@@ -25,8 +25,12 @@ void __stdcall UI::DObj::VideoDObjHandler::OnTimerTick(AnyType userObj)
 void __stdcall UI::DObj::VideoDObjHandler::OnPBEnd(AnyType userObj)
 {
 	NN<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
-	me->player->SeekTo(0);
-	me->player->StartPlayback();
+	NN<Media::MediaPlayer> player;
+	if (me->player.SetTo(player))
+	{
+		player->SeekTo(0);
+		player->StartPlayback();
+	}
 }
 
 void UI::DObj::VideoDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
@@ -70,12 +74,12 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surfa
 	}
 }
 
-UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess, surfaceMgr, 4, 4)
+UI::DObj::VideoDObjHandler::VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Parser::ParserList> parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess, surfaceMgr, 4, 4)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler init: w = %d, h = %d\r\n", (UInt32)videoSize.x, (UInt32)videoSize.y);
 #endif
-	this->parsers = this->parsers;
+	this->parsers = parsers;
 	this->videoTL = videoTL;
 	this->videoSize = videoSize;
 	this->ownerFrm = ownerFrm;
@@ -93,20 +97,23 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NN<Media::Dr
 #if defined(VERBOSE)
 		printf("VideoDObjHandler Media file parsed\r\n");
 #endif
-		NEW_CLASS(this->player, Media::MediaPlayer(this, 0));
-		this->player->LoadMedia(this->mf);
-		this->player->StartPlayback();
-		this->player->SetEndHandler(OnPBEnd, this);
+		NN<Media::MediaPlayer> player;
+		NEW_CLASSNN(player, Media::MediaPlayer(*this, 0));
+		this->player = player;
+		player->LoadMedia(this->mf);
+		player->StartPlayback();
+		player->SetEndHandler(OnPBEnd, this);
 	}
 	this->tmr = this->ownerFrm->AddTimer(100, OnTimerTick, this);
 }
 
 UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 {
-	if (this->player)
+	NN<Media::MediaPlayer> player;
+	if (this->player.SetTo(player))
 	{
-		this->player->StopPlayback();
-		DEL_CLASS(this->player);
+		player->StopPlayback();
+		player.Delete();
 	}
 	this->ownerFrm->RemoveTimer(this->tmr);
 	NN<Media::DrawImage> img;

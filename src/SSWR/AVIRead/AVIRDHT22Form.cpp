@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(Optional<UI::GUIClientControl> paren
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;
-	NEW_CLASS(this->dht22, IO::Device::DHT22(this->pin));
+	NEW_CLASSNN(this->dht22, IO::Device::DHT22(this->pin));
 	sptr = this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("DHT22 - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	this->SetNoResize(true);
@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(Optional<UI::GUIClientControl> paren
 
 SSWR::AVIRead::AVIRDHT22Form::~AVIRDHT22Form()
 {
-	DEL_CLASS(this->dht22);
+	this->dht22.Delete();
 	this->pin.Delete();
 }
 

@@ -55,9 +55,9 @@ namespace SSWR
 			Int32 cmdMax;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::CodeScanner *scanner;
+			Optional<IO::CodeScanner> scanner;
 			Sync::Mutex codeMut;
-			Text::String *newCode;
+			Optional<Text::String> newCode;
 			Bool codeUpdate;
 
 			static void __stdcall OnPortClicked(AnyType userObj);
@@ -76,6 +76,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

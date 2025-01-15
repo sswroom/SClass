@@ -41,7 +41,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnRAW;
 
 			Optional<Crypto::Cert::X509File> currCerts;
-			UInt8 *packetBuff;
+			UnsafeArrayOpt<UInt8> packetBuff;
 			UOSInt packetSize;
 
 		private:

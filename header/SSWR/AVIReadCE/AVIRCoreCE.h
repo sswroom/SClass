@@ -20,7 +20,6 @@ namespace SSWR
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm);
 			virtual IO::Stream *OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
 		};
-
-	};
-};
+	}
+}
 #endif

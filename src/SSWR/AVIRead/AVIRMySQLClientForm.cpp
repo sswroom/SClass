@@ -10,9 +10,10 @@
 void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
-	if (me->cli)
+	NN<Net::MySQLTCPClient> cli;
+	if (me->cli.SetTo(cli))
 	{
-		DEL_CLASS(me->cli);
+		cli.Delete();
 		me->cli = 0;
 		me->txtHost->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
@@ -81,18 +82,18 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 	}
 	
 	me->cliConnected = false;
-	NEW_CLASS(me->cli, Net::MySQLTCPClient(me->core->GetTCPClientFactory(), addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
-	if (me->cli->IsError())
+	NEW_CLASSNN(cli, Net::MySQLTCPClient(me->core->GetTCPClientFactory(), addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
+	if (cli->IsError())
 	{
 		sbUser.ClearStr();
 		sbUser.AppendC(UTF8STRC("Error in connecting to server: "));
-		me->cli->GetLastErrorMsg(sbUser);
-		DEL_CLASS(me->cli);
-		me->cli = 0;
+		cli->GetLastErrorMsg(sbUser);
+		cli.Delete();
 		me->ui->ShowMsgOK(sbUser.ToCString(), CSTR("MySQL Client"), me);
 	}
 	else
 	{
+		me->cli = cli;
 		me->txtHost->SetReadOnly(true);
 		me->txtPort->SetReadOnly(true);
 		me->txtUserName->SetReadOnly(true);
@@ -104,7 +105,8 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
-	if (me->cli == 0)
+	NN<Net::MySQLTCPClient> cli;
+	if (!me->cli.SetTo(cli))
 	{
 		return;
 	}
@@ -115,15 +117,15 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(AnyType userOb
 		return;
 	}
 	NN<DB::DBReader> reader;
-	if (me->cli->ExecuteReader(sb.ToCString()).SetTo(reader))
+	if (cli->ExecuteReader(sb.ToCString()).SetTo(reader))
 	{
 		me->UpdateResult(reader);
-		me->cli->CloseReader(reader);
+		cli->CloseReader(reader);
 	}
 	else
 	{
 		sb.ClearStr();
-		me->cli->GetLastErrorMsg(sb);
+		cli->GetLastErrorMsg(sb);
 		me->txtQueryStatus->SetText(sb.ToCString());
 	}
 }
@@ -136,30 +138,31 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 	UInt8 buff[48];
 	UOSInt i;
 	NN<Text::String> s;
-	if (me->cli)
+	NN<Net::MySQLTCPClient> cli;
+	if (me->cli.SetTo(cli))
 	{
-		if (!me->cliConnected && me->cli->ServerInfoRecv())
+		if (!me->cliConnected && cli->ServerInfoRecv())
 		{
 			me->cliConnected = true;
-			s = Text::String::OrEmpty(me->cli->GetServerVer());
+			s = Text::String::OrEmpty(cli->GetServerVer());
 			me->txtServerVer->SetText(s->ToCString());
-			sptr = Text::StrUInt32(sbuff, me->cli->GetConnId());
+			sptr = Text::StrUInt32(sbuff, cli->GetConnId());
 			me->txtConnId->SetText(CSTRP(sbuff, sptr));
-			i = me->cli->GetAuthPluginData(buff);
+			i = cli->GetAuthPluginData(buff);
 			sptr = Text::StrHexBytes(sbuff, buff, i, ' ');
 			me->txtAuthPluginData->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), me->cli->GetServerCap());
+			sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), cli->GetServerCap());
 			me->txtServerCap->SetText(CSTRP(sbuff, sptr));
-			sptr = Text::StrUInt16(sbuff, me->cli->GetServerCS());
+			sptr = Text::StrUInt16(sbuff, cli->GetServerCS());
 			me->txtServerCS->SetText(CSTRP(sbuff, sptr));
 			me->txtStatus->SetText(CSTR("Connected"));
 		}
-		if (me->cli->IsError())
+		if (cli->IsError())
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Disconnected: "));
-			me->cli->GetLastErrorMsg(sb);
-			DEL_CLASS(me->cli);
+			cli->GetLastErrorMsg(sb);
+			cli.Delete();
 			me->cli = 0;
 			me->txtHost->SetReadOnly(false);
 			me->txtPort->SetReadOnly(false);
@@ -354,11 +357,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRMySQLClientForm::~AVIRMySQLClientForm()
 {
-	if (this->cli)
-	{
-		DEL_CLASS(this->cli);
-		this->cli = 0;
-	}
+	this->cli.Delete();
 }
 
 void SSWR::AVIRead::AVIRMySQLClientForm::OnMonitorChanged()

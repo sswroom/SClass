@@ -23,7 +23,7 @@ namespace SSWR
 			struct SQLSession
 			{
 				UOSInt mode;
-				IO::Stream *stm;
+				Optional<IO::Stream> stm;
 				UOSInt totalCnt;
 				Data::Timestamp startTime;
 				Data::Timestamp lastUpdateTime;

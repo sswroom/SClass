@@ -5,11 +5,13 @@
 void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
+	NN<Map::TileMapServiceSource> tms;
 	Text::StringBuilderUTF8 sb;
 	me->txtTMSURL->GetText(sb);
-	SDEL_CLASS(me->tms);
-	NEW_CLASS(me->tms, Map::TileMapServiceSource(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
-	if (me->tms->IsError())
+	me->tms.Delete();
+	NEW_CLASSNN(tms, Map::TileMapServiceSource(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()));
+	me->tms = tms;
+	if (tms->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
 	}
@@ -22,7 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRTMSForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
-	if (me->tms && !me->tms->IsError())
+	NN<Map::TileMapServiceSource> tms;
+	if (me->tms.SetTo(tms) && !tms->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -57,7 +60,7 @@ SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(Optional<UI::GUIClientControl> parent, N
 
 SSWR::AVIRead::AVIRTMSForm::~AVIRTMSForm()
 {
-	SDEL_CLASS(this->tms);
+	this->tms.Delete();
 }
 
 void SSWR::AVIRead::AVIRTMSForm::OnMonitorChanged()
@@ -65,9 +68,9 @@ void SSWR::AVIRead::AVIRTMSForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::TileMap *SSWR::AVIRead::AVIRTMSForm::GetTileMap()
+Optional<Map::TileMap> SSWR::AVIRead::AVIRTMSForm::GetTileMap()
 {
-	Map::TileMap *tile = this->tms;
+	Optional<Map::TileMap> tile = this->tms;
 	this->tms = 0;
 	return tile;
 }

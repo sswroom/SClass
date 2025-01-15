@@ -23,14 +23,14 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
 		public:
-			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, IMapNavigator *navi);
+			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi);
 			virtual ~AVIRGISEditVectorForm();
 
 			virtual void OnMonitorChanged();

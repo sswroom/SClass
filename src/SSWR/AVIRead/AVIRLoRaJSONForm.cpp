@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 	}
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	switch (buff[0] >> 5)
 	{
@@ -100,14 +100,14 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (buffSize < 7)
 	{
 		return;
 	}
 	sb->AppendC(UTF8STRC("DevAddr = 0x"));
-	sb->AppendHex32(ReadUInt32(buff));
+	sb->AppendHex32(ReadUInt32(&buff[0]));
 	sb->AppendC(UTF8STRC("\r\nADR = "));
 	sb->AppendUOSInt(((UOSInt)buff[4] & 0x80) >> 7);
 	sb->AppendC(UTF8STRC("\r\nACK = "));

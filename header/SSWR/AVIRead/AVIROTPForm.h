@@ -21,7 +21,7 @@ namespace SSWR
 			typedef struct
 			{
 				NN<Text::String> name;
-				Crypto::OTP *otp;
+				NN<Crypto::OTP> otp;
 				UInt64 lastCounter;
 			} EntryInfo;
 			

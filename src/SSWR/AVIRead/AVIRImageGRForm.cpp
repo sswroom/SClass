@@ -216,7 +216,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> p
 	this->srcImg = srcImg;
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;
-	NEW_CLASS(this->grFilter, Media::GRFilter());
+	NEW_CLASSNN(this->grFilter, Media::GRFilter());
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
 	NN<Media::StaticImage> img;
 	if (this->srcPrevImg.SetTo(img))
@@ -297,7 +297,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRImageGRForm::~AVIRImageGRForm()
 {
-	DEL_CLASS(this->grFilter);
+	this->grFilter.Delete();
 	this->srcPrevImg.Delete();
 	this->destPrevImg.Delete();
 }

@@ -57,7 +57,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::ProfiledResizer *resizer;
+			NN<Media::ProfiledResizer> resizer;
 
 			static void __stdcall OnChgClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

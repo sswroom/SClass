@@ -30,7 +30,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUI
 	this->txtMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMain->SetReadOnly(true);
 
-	NEW_CLASS(this->clipboard, UI::Clipboard(this->hwnd));
+	NEW_CLASSNN(this->clipboard, UI::Clipboard(this->hwnd));
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUI
 
 SSWR::AVIRead::AVIRClipboardViewerForm::~AVIRClipboardViewerForm()
 {
-	DEL_CLASS(this->clipboard);
+	this->clipboard.Delete();
 }
 
 void SSWR::AVIRead::AVIRClipboardViewerForm::OnMonitorChanged()

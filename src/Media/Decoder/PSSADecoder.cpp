@@ -34,7 +34,7 @@ Media::Decoder::PSSADecoder::PSSADecoder(NN<Media::IAudioSource> sourceAudio)
 		return;
 	}
 	this->sourceAudio = sourceAudio.Ptr();
-	this->readBuffSize = this->sourceAudio->GetMinBlockSize();
+	this->readBuffSize = sourceAudio->GetMinBlockSize();
 	this->readBuff.ChangeSize(this->readBuffSize);
 }
 
@@ -44,10 +44,11 @@ Media::Decoder::PSSADecoder::~PSSADecoder()
 
 void Media::Decoder::PSSADecoder::GetFormat(NN<AudioFormat> format)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(fmt);
+		sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;
@@ -66,30 +67,33 @@ void Media::Decoder::PSSADecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::PSSADecoder::SeekToTime(Data::Duration time)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		adxSample1[0] = 0;
 		adxSample1[1] = 0;
 		adxSample2[0] = 0;
 		adxSample2[1] = 0;
 		this->buffSize = 0;
-		return this->sourceAudio->SeekToTime(time);
+		return sourceAudio->SeekToTime(time);
 	}
 	return 0;
 }
 
-Bool Media::Decoder::PSSADecoder::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::Decoder::PSSADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
+	NN<Sync::Event> readEvt;
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(0, blkSize);
 		this->readEvt = evt;
 		adxSample1[0] = 0;
 		adxSample1[1] = 0;
 		adxSample2[0] = 0;
 		adxSample2[1] = 0;
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return true;
 	}
 	return false;
@@ -97,21 +101,28 @@ Bool Media::Decoder::PSSADecoder::Start(Sync::Event *evt, UOSInt blkSize)
 
 void Media::Decoder::PSSADecoder::Stop()
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Stop();
+		sourceAudio->Stop();
 	}
 	this->readEvt = 0;
 }
 
 UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 {
+	NN<Sync::Event> readEvt;
 	UOSInt blkSize = buff.GetSize();
 	UOSInt outSize = 0;
 	UOSInt readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
-	if (this->nChannels == 1)
+	NN<Media::IAudioSource> sourceAudio;
+	if (!this->sourceAudio.SetTo(sourceAudio))
+	{
+		return 0;
+	}
+	else if (this->nChannels == 1)
 	{
 		blkSize = blkSize / 56;
 		src = this->readBuff;
@@ -133,7 +144,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 				{
 					this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 				}
-				readSize = this->sourceAudio->ReadBlock(readBuff.SubArray(buffSize, this->readBuffSize));
+				readSize = sourceAudio->ReadBlock(readBuff.SubArray(buffSize, this->readBuffSize));
 				if (readSize <= 0)
 					break;
 				this->buffSize += readSize;
@@ -144,8 +155,8 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 		{
 			this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 		}
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return outSize;
 	}
 	else if (this->nChannels == 2)
@@ -182,7 +193,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 				{
 					this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 				}
-				readSize = this->sourceAudio->ReadBlock(readBuff.SubArray(buffSize, this->readBuffSize));
+				readSize = sourceAudio->ReadBlock(readBuff.SubArray(buffSize, this->readBuffSize));
 				if (readSize <= 0)
 					break;
 				this->buffSize += readSize;
@@ -193,8 +204,8 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 		{
 			this->readBuff.CopyFrom(src.WithSize(this->buffSize));
 		}
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return outSize;
 	}
 	else

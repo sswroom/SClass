@@ -568,7 +568,7 @@ Bool Media::M2VStreamSource::IsRealTimeSrc()
 	return this->pbc->IsRealTimeSrc();
 }
 
-Bool Media::M2VStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::M2VStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	///////////////////////////////////////////
 	return false;

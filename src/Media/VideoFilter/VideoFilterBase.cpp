@@ -171,7 +171,7 @@ Bool Media::VideoFilter::VideoFilterBase::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	if (this->srcVideo)
 	{

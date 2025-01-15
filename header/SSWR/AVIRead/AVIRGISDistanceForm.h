@@ -29,10 +29,10 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboDistanceUnit;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 			NN<Math::CoordinateSystem> csys;
 
-			Data::ArrayList<Double> *ptList;
+			Data::ArrayList<Double> ptList;
 			Math::Coord2DDbl lastMapPos;
 			Double pathDist;
 			Double dispDist;
@@ -46,7 +46,7 @@ namespace SSWR
 			void UpdateDistDisp();
 
 		public:
-			AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi);
 			virtual ~AVIRGISDistanceForm();
 
 			virtual void OnMonitorChanged();

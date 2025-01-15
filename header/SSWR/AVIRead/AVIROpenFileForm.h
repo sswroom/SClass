@@ -22,7 +22,7 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboType;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
-			Text::String *fileName;
+			Optional<Text::String> fileName;
 			IO::ParserType parserType;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::ParserType t;

@@ -20,8 +20,8 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			SSWR::SMonitor::SMonitorRedir *redir;
-			Net::SNMPManager *mgr;
+			NN<SSWR::SMonitor::SMonitorRedir> redir;
+			NN<Net::SNMPManager> mgr;
 			Int64 lastUpdateTime;
 
 			NN<UI::GUIPanel> pnlControl;

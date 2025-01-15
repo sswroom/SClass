@@ -36,20 +36,21 @@ void Media::MediaPlayer::PlayTime(Data::Duration time)
 	}
 	Bool found = false;
 	NN<Media::VideoRenderer> vrenderer;
-	if (this->arenderer)
+	NN<Media::IAudioRenderer> arenderer;
+	if (this->arenderer.SetTo(arenderer))
 	{
-		this->arenderer->AudioInit(&this->clk);
-		this->arenderer->SetEndNotify(OnAudioEnd, this);
+		arenderer->AudioInit(&this->clk);
+		arenderer->SetEndNotify(OnAudioEnd, this);
 	}
 	if (this->vrenderer.SetTo(vrenderer))
 	{
 		vrenderer->VideoInit(&this->clk);
 		vrenderer->SetEndNotify(OnVideoEnd, this);
 	}
-	if (this->arenderer)
+	if (this->arenderer.SetTo(arenderer))
 	{
 		this->audioPlaying = true;
-		this->arenderer->Start();
+		arenderer->Start();
 #if defined(VERBOSE)
 		printf("MediaPlayer: audio started\r\n");
 #endif
@@ -153,7 +154,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 s
 		return false;
 	}
 	NN<Media::VideoRenderer> vrenderer;
-	if (this->arenderer)
+	if (this->arenderer.NotNull())
 	{
 		if (this->vrenderer.SetTo(vrenderer)) vrenderer->SetTimeDelay(syncTime);
 		this->currAStm = asrc.Ptr();
@@ -164,7 +165,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 s
 		this->currADecoder = this->adecoders.DecodeAudio(asrc);
 		if (this->currADecoder)
 		{
-			if ((this->arenderer = this->audioDev->BindAudio(this->currADecoder)) != 0)
+			if ((this->arenderer = this->audioDev->BindAudio(this->currADecoder)).NotNull())
 			{
 				if (this->vrenderer.SetTo(vrenderer)) vrenderer->SetTimeDelay(syncTime);
 				this->currAStm = asrc.Ptr();
@@ -214,9 +215,10 @@ void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, AnyType userObj)
 
 Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 {
+	NN<Media::IAudioRenderer> arenderer;
 	Bool videoFound;
 	this->currFile = file;
-	if (this->arenderer) this->arenderer->Stop();
+	if (this->arenderer.SetTo(arenderer)) arenderer->Stop();
 	NN<Media::VideoRenderer> vrenderer;
 	if (this->vrenderer.SetTo(vrenderer))
 	{
@@ -262,7 +264,7 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 				this->clk.Stop();
 			}
 		}
-		else if (mt == Media::MEDIA_TYPE_AUDIO && this->arenderer == 0)
+		else if (mt == Media::MEDIA_TYPE_AUDIO && this->arenderer.IsNull())
 		{
 			this->SwitchAudioSource(NN<Media::IAudioSource>::ConvertFrom(msrc), syncTime);
 		}
@@ -271,7 +273,7 @@ Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 	vrenderer->SetHasAudio(this->arenderer != 0);
 	this->currTime = 0;
 
-	return videoFound || this->arenderer;
+	return videoFound || this->arenderer.NotNull();
 }
 
 Bool Media::MediaPlayer::StartPlayback()
@@ -286,14 +288,15 @@ Bool Media::MediaPlayer::StartPlayback()
 Bool Media::MediaPlayer::StopPlayback()
 {
 	this->playing = false;
+	NN<Media::IAudioRenderer> arenderer;
 	NN<Media::VideoRenderer> vrenderer;
 	if (this->vrenderer.SetTo(vrenderer))
 	{
 		vrenderer->StopPlay();
 	}
-	if (this->arenderer)
+	if (this->arenderer.SetTo(arenderer))
 	{
-		this->arenderer->Stop();
+		arenderer->Stop();
 	}
 	this->videoPlaying = false;
 	this->audioPlaying = false;
@@ -349,7 +352,8 @@ Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 
 Bool Media::MediaPlayer::IsPlaying()
 {
-	if (this->arenderer && this->arenderer->IsPlaying())
+	NN<Media::IAudioRenderer> arenderer;
+	if (this->arenderer.SetTo(arenderer) && arenderer->IsPlaying())
 	{
 		return true;
 	}

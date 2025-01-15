@@ -72,7 +72,7 @@ Bool Net::RTPVSource::IsRealTimeSrc()
 	return true;
 }
 
-Bool Net::RTPVSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPVSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }

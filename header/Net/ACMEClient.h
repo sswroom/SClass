@@ -16,9 +16,9 @@ namespace Net
 		~ACMEClient();
 
 		Bool IsError();
-		Text::String *GetTermOfService();
-		Text::String *GetWebsite();
-		Text::String *GetAccountId();
+		Optional<Text::String> GetTermOfService();
+		Optional<Text::String> GetWebsite();
+		Optional<Text::String> GetAccountId();
 		NN<Net::ACMEConn> GetConn();
 	};
 }

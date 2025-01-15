@@ -17,7 +17,7 @@ namespace Media
 		Media::Decoder::AudioDecoderFinder adecoders;
 		Media::RefClock clk;
 
-		Media::IAudioRenderer *arenderer;
+		Optional<Media::IAudioRenderer> arenderer;
 		Media::IAudioSource *currADecoder;
 		Optional<Media::MediaFile> currFile;
 		Media::IAudioSource *currAStm;

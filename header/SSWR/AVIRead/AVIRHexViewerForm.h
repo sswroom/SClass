@@ -23,7 +23,7 @@ namespace SSWR
 
 			NN<UI::GUIMainMenu> mnuMain;
 
-			UI::GUIHexFileView *hexView;
+			NN<UI::GUIHexFileView> hexView;
 			NN<UI::GUITabControl> tcMain;
 			
 			NN<UI::GUITabPage> tpValues;

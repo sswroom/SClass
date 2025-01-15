@@ -51,7 +51,7 @@ namespace Net
 		virtual Bool CanSeek();
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool IsRealTimeSrc();
-		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
 		virtual UOSInt GetDataSeekCount();
 

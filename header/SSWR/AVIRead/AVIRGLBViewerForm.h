@@ -25,7 +25,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblJSON;
 			NN<UI::GUITextBox> txtJSON;
 			NN<UI::GUILabel> lblBinBuff;
-			UI::GUIHexFileView *hfvBinBuff;
+			NN<UI::GUIHexFileView> hfvBinBuff;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> filesles);
 			Bool LoadFile(NN<Text::String> fileName);

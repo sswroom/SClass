@@ -29,7 +29,7 @@ namespace SSWR
 			Media::OCREngine ocr;
 			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<ResultInfo> results;
-			Media::StaticImage *currImg;
+			Optional<Media::StaticImage> currImg;
 
 			NN<UI::GUIPanel> pnlResult;
 			NN<UI::GUIPictureBoxSimple> pbResult;

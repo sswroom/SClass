@@ -22,7 +22,7 @@ namespace SSWR
 			UInt64 lastRecvSize;
 			UInt64 lastSendSize;
 			Manage::HiResClock clk;
-			Net::TCPClient *cli;
+			Optional<Net::TCPClient> cli;
 			Sync::Mutex cliMut;
 			Bool connected;
 

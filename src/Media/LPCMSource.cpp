@@ -84,7 +84,7 @@ Data::Duration Media::LPCMSource::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(this->readOfst, bytesPerSec);
 }
 
-Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (trimTimeEnd == (UInt32)-1)
@@ -95,17 +95,11 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 			NN<IO::StreamData> newData = this->data->GetPartialData(ofst, this->data->GetDataSize() - ofst);
 			DEL_CLASS(this->data);
 			this->data = newData.Ptr();
-			if (syncTime)
-			{
-				*syncTime = 0;
-			}
+			syncTime.Set(0);
 		}
 		else
 		{
-			if (syncTime)
-			{
-				*syncTime = (Int32)trimTimeStart;
-			}
+			syncTime.Set((Int32)trimTimeStart);
 		}
 	}
 	else
@@ -120,20 +114,14 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 			NN<IO::StreamData> newData = this->data->GetPartialData(ofst1, ofst2 - ofst1);
 			DEL_CLASS(this->data);
 			this->data = newData.Ptr();
-			if (syncTime)
-			{
-				*syncTime = 0;
-			}
+			syncTime.Set(0);
 		}
 		else
 		{
 			NN<IO::StreamData> newData = this->data->GetPartialData(0, ofst2);
 			DEL_CLASS(this->data);
 			this->data = newData.Ptr();
-			if (syncTime)
-			{
-				*syncTime = (Int32)trimTimeStart;
-			}
+			syncTime.Set((Int32)trimTimeStart);
 		}
 	}
 	return true;
@@ -144,11 +132,12 @@ void Media::LPCMSource::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::LPCMSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::LPCMSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
+	NN<Sync::Event> readEvt;
 	this->readEvt = evt;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return true;
 }
 
@@ -160,6 +149,7 @@ void Media::LPCMSource::Stop()
 
 UOSInt Media::LPCMSource::ReadBlock(Data::ByteArray buff)
 {
+	NN<Sync::Event> readEvt;
 	UOSInt readSize = 0;
 #ifndef HAS_ASM32
 	UOSInt i;
@@ -388,8 +378,8 @@ rblk2_24_2exit:
 		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
 	}
 	this->readOfst += readSize;
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return readSize;
 }
 

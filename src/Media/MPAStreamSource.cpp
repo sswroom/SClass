@@ -159,7 +159,7 @@ Data::Duration Media::MPAStreamSource::SeekToTime(Data::Duration time)
 	return t;
 }
 
-Bool Media::MPAStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::MPAStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	/////////////////////////////////
 	return false;
@@ -170,7 +170,7 @@ void Media::MPAStreamSource::GetFormat(NN<Media::AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::MPAStreamSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::MPAStreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->pbEvt = evt;
 	this->streamStarted = true;
@@ -408,11 +408,12 @@ void Media::MPAStreamSource::SetStreamTime(Data::Duration time)
 void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 {
 	UOSInt buffWriten;
-	if (this->pbEvt)
+	NN<Sync::Event> evt;
+	if (this->pbEvt.NotNull())
 	{
 		while (true)
 		{
-			if (this->pbEvt == 0 || !this->pbc->IsRunning())
+			if (this->pbEvt.IsNull() || !this->pbc->IsRunning())
 				break;
 		
 			Sync::MutexUsage mutUsage(this->buffMut);
@@ -437,8 +438,8 @@ void Media::MPAStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 					MemCopyNO(this->dataBuff, &buff[this->buffSize - this->buffEnd], buffSize - (this->buffSize - this->buffEnd));
 					this->buffEnd = this->buffEnd + buffSize - this->buffSize;
 				}
-				if (this->pbEvt)
-					this->pbEvt->Set();
+				if (this->pbEvt.SetTo(evt))
+					evt->Set();
 				mutUsage.EndUse();
 				break;
 			}

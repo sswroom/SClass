@@ -696,8 +696,8 @@ void Media::MonitorColorManager::SetEDIDProfile()
 	{
 		Media::DDCReader ddc(s->v);
 		UOSInt edidSize;
-		UInt8 *edid = ddc.GetEDID(edidSize);
-		if (edid)
+		UnsafeArray<UInt8> edid;
+		if (ddc.GetEDID(edidSize).SetTo(edid))
 		{
 			Media::EDID::EDIDInfo info;
 			if (Media::EDID::Parse(edid, info))

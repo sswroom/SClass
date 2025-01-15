@@ -15,8 +15,8 @@ namespace Media
 		virtual ~IAudioRenderer() {};
 
 		virtual Bool IsError() = 0;
-		virtual Bool BindAudio(Media::IAudioSource *audsrc) = 0;
-		virtual void AudioInit(Media::RefClock *clk) = 0;
+		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc) = 0;
+		virtual void AudioInit(Optional<Media::RefClock> clk) = 0;
 		virtual void Start() = 0;
 		virtual void Stop() = 0;
 		virtual Bool IsPlaying() = 0;

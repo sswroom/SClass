@@ -25,7 +25,7 @@ namespace SSWR
 			Bool isDown;
 			Math::Coord2D<OSInt> downPt;
 
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnRandomClicked(AnyType userObj);
 
 		public:
-			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi);
 			virtual ~AVIRGISRandomLocForm();
 
 			virtual void OnMonitorChanged();

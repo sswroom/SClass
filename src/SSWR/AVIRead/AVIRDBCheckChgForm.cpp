@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 		
 		{
 			IO::FileStream fs(dlg->GetFileName()->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-			sess.stm = &fs;
+			sess.stm = fs;
 			succ = me->GenerateSQL(sqlType, axisAware, sess);
 		}
 		Double t = Data::Timestamp::UtcNow().DiffSecDbl(sess.startTime);
@@ -1875,14 +1875,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSession> sess)
 {
-		NN<DB::DBConn> db;
-	if (sess->mode == 0)
+	NN<DB::DBConn> db;
+	NN<IO::Stream> stm;
+	if (sess->mode == 0 && sess->stm.SetTo(stm))
 	{
-		if (sess->stm->Write(sql.ToByteArray()) != sql.leng)
+		if (stm->Write(sql.ToByteArray()) != sql.leng)
 		{
 			return false;
 		}
-		if (sess->stm->Write(CSTR(";\r\n").ToByteArray()) != 3)
+		if (stm->Write(CSTR(";\r\n").ToByteArray()) != 3)
 		{
 			return false;
 		}

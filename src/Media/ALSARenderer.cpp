@@ -80,22 +80,25 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 	UOSInt minLeng;
 	Data::Duration thisT;
 	Data::Duration lastT;
+	NN<Media::RefClock> clk;
+	NN<Media::IAudioSource> audsrc;
 
+	if (me->clk.SetTo(clk) && me->audsrc.SetTo(audsrc))
 	{
 		Sync::Event evt;
-		me->audsrc->GetFormat(af);
+		audsrc->GetFormat(af);
 		if (me->buffTime)
 		{
 			readBuffLeng = (me->buffTime * af.frequency / 1000) * af.align;
 		}
 		i = 4;
-		audStartTime = me->audsrc->GetCurrTime();
-		minLeng = me->audsrc->GetMinBlockSize();
+		audStartTime = audsrc->GetCurrTime();
+		minLeng = audsrc->GetMinBlockSize();
 		if (minLeng > readBuffLeng)
 			readBuffLeng = minLeng;
 
-		me->clk->Start(audStartTime);
-		me->audsrc->Start(&evt, readBuffLeng);
+		clk->Start(audStartTime);
+		audsrc->Start(&evt, readBuffLeng);
 
 		if (me->dataConv)
 		{
@@ -155,7 +158,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 		{
 			if (me->dataConv)
 			{
-				readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
+				readSize = audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
 				if (af.bitpersample == me->dataBits && af.formatId == 1)
 				{
 					buffSize[i] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[i]);
@@ -171,7 +174,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 			}
 			else
 			{
-				buffSize[i] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[i], outBuffLeng), af);
+				buffSize[i] = audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[i], outBuffLeng), af);
 			}
 			outSize[i] = 0;
 	//		dataExist[i] = true;
@@ -218,7 +221,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 					if (buffSize[nextBlock] == 0)
 					{
 						thread->BeginStop();
-						me->audsrc->Stop();
+						audsrc->Stop();
 						break;
 					}
 					if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
@@ -232,7 +235,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 
 						if (me->dataConv)
 						{
-							readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
+							readSize = audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
 							if (af.bitpersample == me->dataBits && af.formatId == 1)
 							{
 								buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
@@ -248,7 +251,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 						}
 						else
 						{
-							buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), af);
+							buffSize[nextBlock] = audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), af);
 						}
 						outSize[nextBlock] = 0;
 		//				dataExist[nextBlock] = true;
@@ -273,11 +276,11 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 			//			waveOutReset((HWAVEOUT)me->hwo);
 			//			waveOutRestart((HWAVEOUT)me->hwo);
 						lastT = thisT = GetCurrTime(me->hand);
-						refStart = thisT - me->audsrc->GetCurrTime();
+						refStart = thisT - audsrc->GetCurrTime();
 					}
 					else
 					{
-						me->clk->Start(thisT - refStart);
+						clk->Start(thisT - refStart);
 						lastT = thisT;
 					}
 				}
@@ -296,7 +299,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 				if (buffSize[nextBlock] == 0)
 				{
 					thread->BeginStop();
-					me->audsrc->Stop();
+					audsrc->Stop();
 					break;
 				}
 				snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
@@ -305,7 +308,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 
 				if (me->dataConv)
 				{
-					readSize = me->audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
+					readSize = audsrc->ReadBlockLPCM(Data::ByteArray(readBuff, readBuffLeng), af);
 					if (af.bitpersample == me->dataBits && af.formatId == 1)
 					{
 						buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
@@ -321,7 +324,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 				}
 				else
 				{
-					buffSize[nextBlock] = me->audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), af);
+					buffSize[nextBlock] = audsrc->ReadBlockLPCM(Data::ByteArray(outBuff[nextBlock], outBuffLeng), af);
 				}
 				outSize[nextBlock] = 0;
 	//				dataExist[nextBlock] = true;
@@ -368,7 +371,7 @@ Data::Duration Media::ALSARenderer::GetCurrTime(void *hand)
 	return ret;
 }
 
-Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
+Bool Media::ALSARenderer::SetHWParams(NN<Media::IAudioSource> audsrc, void *h)
 {
 	snd_pcm_hw_params_t *params;
 	snd_pcm_t *hand = (snd_pcm_t*)h;
@@ -627,7 +630,7 @@ Media::ALSARenderer::ALSARenderer(UnsafeArrayOpt<const UTF8Char> devName) : thre
 
 Media::ALSARenderer::~ALSARenderer()
 {
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		BindAudio(0);
 	}
@@ -639,22 +642,22 @@ Bool Media::ALSARenderer::IsError()
 	return false;
 }
 
-Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::ALSARenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (this->thread.IsRunning())
 	{
 		Stop();
 	}
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		snd_pcm_close((snd_pcm_t*)this->hand);
 		this->audsrc = 0;
-		SDEL_CLASS(this->resampler);
+		this->resampler.Delete();
 		this->hand = 0;
 	}
 	NN<Media::IAudioSource> asrc;
-	if (!asrc.Set(audsrc))
+	if (!audsrc.SetTo(asrc))
 		return false;
 
 	asrc->GetFormat(fmt);
@@ -737,7 +740,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 			return false;
 		}
 	}
-	if (!this->SetHWParams(audsrc, hand))
+	if (!this->SetHWParams(asrc, hand))
 	{
 		snd_pcm_close(hand);
 		return false;
@@ -779,7 +782,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	this->hand = hand;
 	if (this->resampleFreq != 0)
 	{
-		NEW_CLASS(this->resampler, Media::SOXRFilter(asrc, this->resampleFreq));
+		NEW_CLASSOPT(this->resampler, Media::SOXRFilter(asrc, this->resampleFreq));
 		this->audsrc = this->resampler;
 	}
 	else
@@ -789,11 +792,11 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 	return true;
 }
 
-void Media::ALSARenderer::AudioInit(Media::RefClock *clk)
+void Media::ALSARenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (this->thread.IsRunning())
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->clk = clk;
 }
@@ -802,7 +805,7 @@ void Media::ALSARenderer::Start()
 {
 	if (this->thread.IsRunning())
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->thread.Start();
 }
@@ -812,9 +815,10 @@ void Media::ALSARenderer::Stop()
 	if (!this->thread.IsRunning())
 		return;
 	this->thread.BeginStop();
-	if (this->audsrc)
+	NN<Media::IAudioSource> audsrc;
+	if (this->audsrc.SetTo(audsrc))
 	{
-		this->audsrc->Stop();
+		audsrc->Stop();
 	}
 	this->thread.WaitForEnd();
 }
@@ -919,9 +923,10 @@ void Media::ALSARenderer::SetDeviceVolume(Int32 volume)
 
 void Media::ALSARenderer::SetBufferTime(UInt32 ms)
 {
+	NN<Media::IAudioSource> audsrc;
 	this->buffTime = ms;
-	if (!this->thread.IsRunning() && this->hand && this->audsrc)
+	if (!this->thread.IsRunning() && this->hand && this->audsrc.SetTo(audsrc))
 	{
-		this->SetHWParams(this->audsrc, this->hand);
+		this->SetHWParams(audsrc, this->hand);
 	}
 }

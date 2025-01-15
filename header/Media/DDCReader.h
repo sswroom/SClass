@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_DDCREADER
 #define _SM_MEDIA_DDCREADER
+#include "AnyType.h"
 #include "Data/ArrayListNN.h"
 
 namespace Media
@@ -7,17 +8,17 @@ namespace Media
 	class DDCReader
 	{
 	private:
-		void *hMon;
-		UInt8 *edid;
+		AnyType hMon;
+		UnsafeArrayOpt<UInt8> edid;
 		UOSInt edidSize;
 
 	public:
-		DDCReader(void *hMon);
+		DDCReader(AnyType hMon);
 		DDCReader(UnsafeArray<const UTF8Char> monitorId);
-		DDCReader(UInt8 *edid, UOSInt edidSize);
+		DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize);
 		~DDCReader();
 
-		UInt8 *GetEDID(OutParam<UOSInt> size);
+		UnsafeArrayOpt<UInt8> GetEDID(OutParam<UOSInt> size);
 
 		static UOSInt CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList);
 	};

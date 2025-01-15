@@ -35,7 +35,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
 
-			Net::LoRaGateway *lora;
+			Optional<Net::LoRaGateway> lora;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 

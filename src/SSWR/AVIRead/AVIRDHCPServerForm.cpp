@@ -10,9 +10,10 @@
 void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
-	if (me->svr)
+	NN<Net::DHCPServer> svr;
+	if (me->svr.SetTo(svr))
 	{
-		DEL_CLASS(me->svr);
+		svr.Delete();
 		me->svr = 0;
 		me->cboIP->SetEnabled(true);
 		me->txtSubnet->SetReadOnly(false);
@@ -115,15 +116,15 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 			dnsList.Add(tmpIP);
 		}
 
-		NEW_CLASS(me->svr, Net::DHCPServer(me->sockf, ifIp, subnet, firstIP, devCount, gateway, dnsList, me->core->GetLog()));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::DHCPServer(me->sockf, ifIp, subnet, firstIP, devCount, gateway, dnsList, me->core->GetLog()));
+		if (svr->IsError())
 		{
-			DEL_CLASS(me->svr);
-			me->svr = 0;
+			svr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
 		}
 		else
 		{
+			me->svr = svr;
 			me->cboIP->SetEnabled(false);
 			me->txtSubnet->SetReadOnly(true);
 			me->txtFirstIP->SetReadOnly(true);
@@ -138,7 +139,8 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
-	if (me->svr)
+	NN<Net::DHCPServer> svr;
+	if (me->svr.SetTo(svr))
 	{
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
@@ -149,8 +151,8 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		NN<const Net::MACInfo::MACEntry> macInfo;
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage;
-		me->svr->UseStatus(mutUsage);
-		NN<const Data::ReadingListNN<Net::DHCPServer::DeviceStatus>> dhcpList = me->svr->StatusGetList();
+		svr->UseStatus(mutUsage);
+		NN<const Data::ReadingListNN<Net::DHCPServer::DeviceStatus>> dhcpList = svr->StatusGetList();
 		if (dhcpList->GetCount() != me->lvDevices->GetCount())
 		{
 			Optional<Net::DHCPServer::DeviceStatus> currSel = me->lvDevices->GetSelectedItem().GetOpt<Net::DHCPServer::DeviceStatus>();
@@ -189,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-				dt.AddSecond((OSInt)me->svr->GetIPLeaseTime());
+				dt.AddSecond((OSInt)svr->GetIPLeaseTime());
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				me->lvDevices->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 				if (s.Set(dhcp->hostName))
@@ -297,7 +299,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRDHCPServerForm::~AVIRDHCPServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 }
 
 void SSWR::AVIRead::AVIRDHCPServerForm::OnMonitorChanged()

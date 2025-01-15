@@ -25,7 +25,7 @@ namespace SSWR
 			{
 				NN<Text::String> fileName;
 				Int32 status;
-				IO::FileCheck *fchk;
+				Optional<IO::FileCheck> fchk;
 			} FileStatus;
 
 		private:

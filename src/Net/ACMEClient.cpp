@@ -38,17 +38,17 @@ Bool Net::ACMEClient::IsError()
 	return this->acme->IsError() || !this->keyReady || !this->accReady;
 }
 
-Text::String *Net::ACMEClient::GetTermOfService()
+Optional<Text::String> Net::ACMEClient::GetTermOfService()
 {
 	return this->acme->GetTermOfService();
 }
 
-Text::String *Net::ACMEClient::GetWebsite()
+Optional<Text::String> Net::ACMEClient::GetWebsite()
 {
 	return this->acme->GetWebsite();
 }
 
-Text::String *Net::ACMEClient::GetAccountId()
+Optional<Text::String> Net::ACMEClient::GetAccountId()
 {
 	return this->acme->GetAccountId();
 }

@@ -78,7 +78,7 @@ Data::Duration Media::WaveInSource::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::WaveInSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::WaveInSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }
@@ -93,7 +93,7 @@ void Media::WaveInSource::GetFormat(NN<AudioFormat> format)
 	format->align = (UInt32)this->nChannels * this->nbits >> 3;
 }
 
-Bool Media::WaveInSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::WaveInSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->evt = evt;
 	return false;

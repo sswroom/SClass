@@ -69,6 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		return;
 	}
 	UOSInt mode = me->cboMode->GetSelectedIndex();
+	UnsafeArray<UInt8> nnpacketBuff;
 	UInt8 packetBuff[16384];
 	UOSInt retSize;
 	UOSInt readSize;
@@ -171,12 +172,12 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 			me->currCerts.Delete();
 			Text::StringBuilderUTF8 sb;
 			Net::SSLUtil::ParseResponse(&packetBuff[8], retSize - 8, sb, me->currCerts);
-			if (me->packetBuff)
+			if (me->packetBuff.SetTo(nnpacketBuff))
 			{
-				MemFree(me->packetBuff);
+				MemFreeArr(nnpacketBuff);
 			}
-			me->packetBuff = MemAlloc(UInt8, retSize - 8);
-			MemCopyNO(me->packetBuff, &packetBuff[8], retSize - 8);
+			me->packetBuff = nnpacketBuff = MemAllocArr(UInt8, retSize - 8);
+			MemCopyNO(nnpacketBuff.Ptr(), &packetBuff[8], retSize - 8);
 			me->packetSize = retSize - 8;
 			me->txtStatus->SetText(sb.ToCString());
 			NN<Crypto::Cert::X509File> cert;
@@ -221,12 +222,12 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		me->currCerts.Delete();
 		Text::StringBuilderUTF8 sb;
 		Net::SSLUtil::ParseResponse(packetBuff, retSize, sb, me->currCerts);
-		if (me->packetBuff)
+		if (me->packetBuff.SetTo(nnpacketBuff))
 		{
-			MemFree(me->packetBuff);
+			MemFreeArr(nnpacketBuff);
 		}
-		me->packetBuff = MemAlloc(UInt8, retSize);
-		MemCopyNO(me->packetBuff, packetBuff, retSize);
+		me->packetBuff = nnpacketBuff = MemAllocArr(UInt8, retSize);
+		MemCopyNO(nnpacketBuff.Ptr(), packetBuff, retSize);
 		me->packetSize = retSize;
 		me->txtStatus->SetText(sb.ToCString());
 		NN<Crypto::Cert::X509File> cert;
@@ -253,9 +254,10 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
-	if (me->packetBuff && me->packetSize > 0)
+	UnsafeArray<UInt8> packetBuff;
+	if (me->packetBuff.SetTo(packetBuff) && me->packetSize > 0)
 	{
-		IO::StmData::MemoryDataCopy md(Data::ByteArrayR(me->packetBuff, me->packetSize));
+		IO::StmData::MemoryDataCopy md(Data::ByteArrayR(packetBuff, me->packetSize));
 		IO::FileAnalyse::SSLFileAnalyse *fileAnalyse;
 		NEW_CLASS(fileAnalyse, IO::FileAnalyse::SSLFileAnalyse(md));
 		me->core->OpenHex(md, fileAnalyse);
@@ -323,11 +325,12 @@ SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRSSLInfoForm::~AVIRSSLInfoForm()
 {
+	UnsafeArray<UInt8> packetBuff;
 	this->ssl.Delete();
 	this->currCerts.Delete();
-	if (this->packetBuff)
+	if (this->packetBuff.SetTo(packetBuff))
 	{
-		MemFree(this->packetBuff);
+		MemFreeArr(packetBuff);
 	}
 }
 

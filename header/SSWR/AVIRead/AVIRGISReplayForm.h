@@ -33,7 +33,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtNSateUsed;
 			NN<UI::GUITextBox> txtEndMark;
 			NN<UI::GUITextBox> txtStartMark;
-			UI::GUIPopupMenu *mnuRecord;
+			NN<UI::GUIPopupMenu> mnuRecord;
 			NN<UI::GUITextBox> txtAddress;
 			NN<UI::GUILabel> lblAddress;
 			NN<UI::GUIComboBox> cboName;
@@ -42,10 +42,10 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::GPSTrack> track;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 			UOSInt startMark;
 			UOSInt endMark;
-			Text::String **names;
+			UnsafeArrayOpt<Optional<Text::String>> names;
 			UOSInt namesCnt;
 			Bool threadRunning;
 			Bool threadToStop;
@@ -59,7 +59,7 @@ namespace SSWR
 			void FreeNames();
 
 		public:
-			AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, IMapNavigator *navi);
+			AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, NN<IMapNavigator> navi);
 			virtual ~AVIRGISReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

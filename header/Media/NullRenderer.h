@@ -9,12 +9,12 @@ namespace Media
 	class NullRenderer : public IAudioRenderer
 	{
 	private:
-		Media::IAudioSource *audsrc;
+		Optional<Media::IAudioSource> audsrc;
 		Bool playing;
 		Bool threadInit;
 		Bool stopPlay;
-		Sync::Event *playEvt;
-		Media::RefClock *clk;
+		Sync::Event playEvt;
+		Optional<Media::RefClock> clk;
 		Data::CallbackStorage<EndNotifier> endHdlr;
 		UInt32 buffTime;
 		UInt64 sampleCnt;
@@ -25,8 +25,8 @@ namespace Media
 		virtual ~NullRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();

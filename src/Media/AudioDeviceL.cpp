@@ -49,14 +49,14 @@ Media::AudioDevice::~AudioDevice()
 
 Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
-	Media::IAudioRenderer *renderer;
+	NN<Media::IAudioRenderer> renderer;
 	Bool ret = false;
 	if (devName.StartsWith(UTF8STRC("ALSA: ")))
 	{
-		NEW_CLASS(renderer, Media::ALSARenderer(devName.v + 6));
+		NEW_CLASSNN(renderer, Media::ALSARenderer(devName.v + 6));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
@@ -82,50 +82,41 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 
 void Media::AudioDevice::ClearDevices()
 {
-	UOSInt i;
-	Media::IAudioRenderer *renderer;
-
 	BindAudio(0);
-	i = this->rendererList.GetCount();
-	while (i-- > 0)
-	{
-		renderer = this->rendererList.GetItem(i);
-		DEL_CLASS(renderer);
-	}
-	this->rendererList.Clear();
+	this->rendererList.DeleteAll();
 }
 
-Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc)
+Optional<Media::IAudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	UOSInt i;
 	UOSInt j;
-	Media::IAudioRenderer *renderer;
+	NN<Media::IAudioRenderer> renderer;
+	NN<Media::IAudioSource> nnaudsrc;
 	if (this->rendererList.GetCount() == 0)
 	{
-		NEW_CLASS(renderer, Media::ALSARenderer(0));
+		NEW_CLASSNN(renderer, Media::ALSARenderer(0));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
 			this->rendererList.Add(renderer);
 		}
-		renderer = 0;
 	}
-	if (this->currRenderer)
+	if (this->currRenderer.SetTo(renderer))
 	{
-		this->currRenderer->BindAudio(0);
+		renderer->BindAudio(0);
 		this->currRenderer = 0;
 	}
-	if (audsrc == 0)
+	if (!audsrc.SetTo(nnaudsrc))
 		return 0;
 	i = 0;
 	j = this->rendererList.GetCount();
 	while (i < j)
 	{
-		renderer = this->rendererList.GetItem(i);
-		if (renderer->BindAudio(audsrc))
+		renderer = this->rendererList.GetItemNoCheck(i);
+		if (renderer->BindAudio(nnaudsrc))
 		{
 			if (renderer->IsError())
 			{

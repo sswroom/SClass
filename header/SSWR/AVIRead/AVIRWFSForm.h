@@ -27,7 +27,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Map::WebFeatureService *wfs;
+			Optional<Map::WebFeatureService> wfs;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);

@@ -969,7 +969,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<UI::GUIMapTreeView::ItemIndex> ind = item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>();
 			NN<UI::GUIForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISGroupQueryForm(0, this->ui, this->core, this, this->env, Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISGroupQueryForm(0, this->ui, this->core, *this, this->env, Optional<Map::MapEnv::GroupItem>::ConvertFrom(ind->item)));
 			this->SetCtrlForm(frm, item);
 		}
 		break;
@@ -1161,12 +1161,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NN<UI::GUIForm> frm;
 					if (lyrType == Map::DRAW_LAYER_IMAGE)
 					{
-						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), this));
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditImageForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
 						this->SetCtrlForm(frm, item);
 					}
 					else if (lyrType == Map::DRAW_LAYER_MIXED || lyrType == Map::DRAW_LAYER_POLYGON)
 					{
-						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), this));
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
 						this->SetCtrlForm(frm, item);
 					}
 				}
@@ -1218,7 +1218,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<UI::GUIForm> frm;
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 				{
-					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, NN<Map::GPSTrack>::ConvertFrom(lyr), this));
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, NN<Map::GPSTrack>::ConvertFrom(lyr), *this));
 					this->SetCtrlForm(frm, item);
 				}
 				else
@@ -1383,7 +1383,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				NN<UI::GUIForm> frm;
 				NN<Map::MapDrawLayer> lyr = litem->layer;
-				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, this));
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISQueryForm(0, this->ui, this->core, lyr, *this));
 				this->SetCtrlForm(frm, item);
 			}
 		}
@@ -1639,7 +1639,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_DISTANCE:
-		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, this));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISDistanceForm(0, this->ui, this->core, *this));
 		this->AddSubForm(frm);
 		break;
 	case MNU_HKTD_TRAFFIC:
@@ -1669,7 +1669,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_RANDOMLOC:
-		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, this));
+		NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, *this));
 		this->AddSubForm(frm);
 		break;
 	case MNU_HK_WASTELESS:
@@ -1693,7 +1693,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::TileMap> tileMap;
-				if (tileMap.Set(frm.GetTileMap()))
+				if (frm.GetTileMap().SetTo(tileMap))
 				{
 					NN<Map::TileMapLayer> layer;
 					NEW_CLASSNN(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));
@@ -1708,7 +1708,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::TileMap> tileMap;
-				if (tileMap.Set(frm.GetTileMap()))
+				if (frm.GetTileMap().SetTo(tileMap))
 				{
 					NN<Map::TileMapLayer> layer;
 					NEW_CLASSNN(layer, Map::TileMapLayer(tileMap, this->core->GetParserList()));

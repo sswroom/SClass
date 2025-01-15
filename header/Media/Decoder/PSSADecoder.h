@@ -18,7 +18,7 @@ namespace Media
 			Data::ByteBuffer readBuff;
 			UOSInt readBuffSize;
 			UOSInt buffSize;
-			Sync::Event *readEvt;
+			Optional<Sync::Event> readEvt;
 		public:
 			PSSADecoder(NN<IAudioSource> sourceAudio);
 			virtual ~PSSADecoder();
@@ -26,7 +26,7 @@ namespace Media
 			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
 			virtual void Stop();
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 			virtual UOSInt GetMinBlockSize();

@@ -93,7 +93,7 @@ void SSWR::AVIRead::AVIRPostgreSQLForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-DB::DBConn *SSWR::AVIRead::AVIRPostgreSQLForm::GetDBConn()
+Optional<DB::DBConn> SSWR::AVIRead::AVIRPostgreSQLForm::GetDBConn()
 {
 	return this->conn;
 }

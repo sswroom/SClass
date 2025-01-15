@@ -19,42 +19,47 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(AnyType obj)
 	UOSInt minLeng;
 	UOSInt readSize;
 	Bool needNotify = false;
+	NN<Media::IAudioSource> audsrc;
+	NN<Media::RefClock> clk;
 
 	me->playing = true;
 	me->threadInit = true;
-	me->audsrc->GetFormat(af);
-	if (me->buffTime)
+	if (me->audsrc.SetTo(audsrc))
 	{
-		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
-	}
-	audStartTime = me->audsrc->GetCurrTime();
-	minLeng = me->audsrc->GetMinBlockSize();
-	if (minLeng > buffLeng)
-		buffLeng = minLeng;
-
-	Data::ByteBuffer tmpBuff(buffLeng);
-
-	if (me->clk)
-	{
-		me->clk->Start(audStartTime);
-	}
-	me->audsrc->Start(me->playEvt, buffLeng);
-
-	while (!me->stopPlay)
-	{
-		readSize = me->audsrc->ReadBlockLPCM(tmpBuff, af);
-		if (readSize == 0)
+		audsrc->GetFormat(af);
+		if (me->buffTime)
 		{
-			if (me->audsrc->IsEnd())
-			{
-				needNotify = true;
-				break;
-			}
-			me->playEvt->Wait(1000);
+			buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
 		}
-		else
+		audStartTime = audsrc->GetCurrTime();
+		minLeng = audsrc->GetMinBlockSize();
+		if (minLeng > buffLeng)
+			buffLeng = minLeng;
+
+		Data::ByteBuffer tmpBuff(buffLeng);
+
+		if (me->clk.SetTo(clk))
 		{
-			me->sampleCnt += readSize / af.align;
+			clk->Start(audStartTime);
+		}
+		audsrc->Start(me->playEvt, buffLeng);
+
+		while (!me->stopPlay)
+		{
+			readSize = audsrc->ReadBlockLPCM(tmpBuff, af);
+			if (readSize == 0)
+			{
+				if (audsrc->IsEnd())
+				{
+					needNotify = true;
+					break;
+				}
+				me->playEvt.Wait(1000);
+			}
+			else
+			{
+				me->sampleCnt += readSize / af.align;
+			}
 		}
 	}
 
@@ -82,7 +87,7 @@ Media::NullRenderer::NullRenderer()
 
 Media::NullRenderer::~NullRenderer()
 {
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		BindAudio(0);
 	}
@@ -93,37 +98,33 @@ Bool Media::NullRenderer::IsError()
 	return false;
 }
 
-Bool Media::NullRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::NullRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (playing)
 	{
 		Stop();
 	}
-	if (this->audsrc)
-	{
-		this->audsrc = 0;
-		DEL_CLASS(playEvt);
-	}
-	if (audsrc == 0)
+	this->audsrc = 0;
+	NN<Media::IAudioSource> nnaudsrc;
+	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
-	audsrc->GetFormat(fmt);
+	nnaudsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != 3)
 	{
 		return false;
 	}
 
-	this->audsrc = audsrc;
-	NEW_CLASS(this->playEvt, Sync::Event());
+	this->audsrc = nnaudsrc;
 	return true;
 }
 
-void Media::NullRenderer::AudioInit(Media::RefClock *clk)
+void Media::NullRenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->clk = clk;
 }
@@ -132,7 +133,7 @@ void Media::NullRenderer::Start()
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	threadInit = false;
 	stopPlay = false;
@@ -148,10 +149,11 @@ void Media::NullRenderer::Stop()
 	stopPlay = true;
 	if (!playing)
 		return;
-	playEvt->Set();
-	if (this->audsrc)
+	this->playEvt.Set();
+	NN<Media::IAudioSource> audsrc;
+	if (this->audsrc.SetTo(audsrc))
 	{
-		this->audsrc->Stop();
+		audsrc->Stop();
 	}
 	while (playing)
 	{

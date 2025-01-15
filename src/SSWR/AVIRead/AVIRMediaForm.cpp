@@ -157,8 +157,8 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::IAudioSource> audio,
 
 	this->vbdMain->SetTimeDelay(timeDelay);
 
-	this->audRenderer = this->core->BindAudio(audio.Ptr());
-	if (this->audRenderer)
+	this->audRenderer = this->core->BindAudio(audio);
+	if (this->audRenderer.NotNull())
 	{
 		this->activeAudio = audio.Ptr();
 		return;
@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::IAudioSource> audio,
 	if (this->currADecoder)
 	{
 		this->audRenderer = this->core->BindAudio(this->currADecoder);
-		if (this->audRenderer)
+		if (this->audRenderer.NotNull())
 		{
 			this->activeAudio = audio.Ptr();
 			return;
@@ -260,6 +260,7 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTim
 
 void SSWR::AVIRead::AVIRMediaForm::PBStart(Data::Duration startTime)
 {
+	NN<Media::IAudioRenderer> audRenderer;
 	if (this->currDecoder)
 	{
 		this->currDecoder->SeekToTime(startTime);
@@ -280,26 +281,28 @@ void SSWR::AVIRead::AVIRMediaForm::PBStart(Data::Duration startTime)
 	else
 	{
 	}
-	if (this->audRenderer) this->audRenderer->AudioInit(this->clk);
+	if (this->audRenderer.SetTo(audRenderer)) audRenderer->AudioInit(this->clk);
 	this->vbdMain->VideoInit(this->clk);
-	if (this->audRenderer) this->audRenderer->Start();
+	if (this->audRenderer.SetTo(audRenderer)) audRenderer->Start();
 	this->vbdMain->VideoStart();
 	this->playing = true;
 }
 
 void SSWR::AVIRead::AVIRMediaForm::PBStop()
 {
+	NN<Media::IAudioRenderer> audRenderer;
 	this->vbdMain->StopPlay();
-	if (this->audRenderer) this->audRenderer->Stop();
+	if (this->audRenderer.SetTo(audRenderer)) audRenderer->Stop();
 }
 
 Bool SSWR::AVIRead::AVIRMediaForm::PBIsPlaying()
 {
+	NN<Media::IAudioRenderer> audRenderer;
 	if (!this->playing)
 	{
 		return false;
 	}
-	if (this->audRenderer && this->audRenderer->IsPlaying())
+	if (this->audRenderer.SetTo(audRenderer) && audRenderer->IsPlaying())
 		return true;
 	if (this->activeVideo && this->activeVideo->IsRunning())
 		return true;
@@ -398,7 +401,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 
 	this->mnuAudio.Delete();
 	this->mnuVideo.Delete();
-	if (this->audRenderer)
+	if (this->audRenderer.NotNull())
 	{
 		this->core->BindAudio(0);
 	}

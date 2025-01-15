@@ -41,7 +41,7 @@ namespace SSWR
 			Media::ANPR anpr;
 			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<ResultInfo> results;
-			Media::StaticImage *currImg;
+			Optional<Media::StaticImage> currImg;
 			ActionType selectMode;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 

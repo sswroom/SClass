@@ -334,14 +334,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NN<Media::DDCReader> reader;
 		Media::DDCReader::CreateDDCReaders(readerList);
 		UOSInt edidSize;
-		UInt8 *edid;
+		UnsafeArray<UInt8> edid;
 		i = 0;
 		j = readerList.GetCount();
 		while (i < j)
 		{
 			reader = readerList.GetItemNoCheck(i);
-			edid = reader->GetEDID(edidSize);
-			if (edid)
+			if (reader->GetEDID(edidSize).SetTo(edid))
 			{
 				Media::EDID::EDIDInfo edidInfo;
 				if (Media::EDID::Parse(edid, edidInfo))

@@ -13,10 +13,11 @@
 
 void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 {
-	if (this->edid)
+	UnsafeArray<UInt8> edid;
+	if (this->edid.SetTo(edid))
 	{
 		Media::EDID::EDIDInfo info;
-		if (Media::EDID::Parse(this->edid, info))
+		if (Media::EDID::Parse(edid, info))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Vendor Name: "));
@@ -97,7 +98,8 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
-	if (me->edid == 0)
+	UnsafeArray<UInt8> edid;
+	if (!me->edid.SetTo(edid))
 	{
 		return;
 	}
@@ -105,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	Media::EDID::EDIDInfo info;
 
-	if (Media::EDID::Parse(me->edid, info))
+	if (Media::EDID::Parse(edid, info))
 	{
 		sptr = Text::StrConcat(sbuff, info.vendorName);
 		*sptr++ = '_';
@@ -122,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-			fs.Write(Data::ByteArrayR(me->edid, me->edidSize));
+			fs.Write(Data::ByteArrayR(edid, me->edidSize));
 		}
 		dlg.Delete();
 	}
@@ -131,11 +133,12 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
-	if (me->edid == 0)
+	UnsafeArray<UInt8> edid;
+	if (!me->edid.SetTo(edid))
 	{
 		return;
 	}
-	IO::StmData::MemoryDataCopy fd(me->edid, me->edidSize);
+	IO::StmData::MemoryDataCopy fd(edid, me->edidSize);
 	me->core->OpenHex(fd, 0);
 }
 
@@ -146,6 +149,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Da
 	UOSInt i;
 	UOSInt fileCnt = fileNames.GetCount();
 	Bool found = false;
+	UnsafeArray<UInt8> edid;
 	i = 0;
 	while (i < fileCnt)
 	{
@@ -158,14 +162,14 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Da
 				fs.Read(fileCont);
 				if (fileCont[0] == 0 && fileCont[1] == 0xff && fileCont[2] == 0xff && fileCont[3] == 0xff && fileCont[4] == 0xff && fileCont[5] == 0xff && fileCont[6] == 0xff && fileCont[7] == 0)
 				{
-					if (me->edid)
+					if (me->edid.SetTo(edid))
 					{
-						MemFree(me->edid);
+						MemFreeArr(edid);
 						me->edid = 0;
 					}
-					me->edid = MemAlloc(UInt8, fileSize);
+					me->edid = edid = MemAllocArr(UInt8, fileSize);
 					me->edidSize = fileSize;
-					MemCopyNO(me->edid, fileCont.Arr().Ptr(), fileSize);
+					MemCopyNO(edid.Ptr(), fileCont.Arr().Ptr(), fileSize);
 					found = true;
 				}
 			}
@@ -208,9 +212,10 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIREDIDViewerForm::~AVIREDIDViewerForm()
 {
-	if (this->edid)
+	UnsafeArray<UInt8> edid;
+	if (this->edid.SetTo(edid))
 	{
-		MemFree(this->edid);
+		MemFreeArr(edid);
 		this->edid = 0;
 	}
 }
@@ -218,25 +223,24 @@ SSWR::AVIRead::AVIREDIDViewerForm::~AVIREDIDViewerForm()
 void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 {
 	UOSInt edidSize;
-	UInt8 *edid;
+	UnsafeArray<UInt8> edid;
+	UnsafeArray<UInt8> edidSrc;
 	MonitorHandle *hMon = this->GetHMonitor();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	if (this->edid)
+	if (this->edid.SetTo(edid))
 	{
-		MemFree(this->edid);
+		MemFreeArr(edid);
 		this->edid = 0;
 	}
 
 	{
 		Media::DDCReader reader(hMon);
-		edid = reader.GetEDID(edidSize);
-
-		if (edid)
+		if (reader.GetEDID(edidSize).SetTo(edidSrc))
 		{
 			this->edidSize = edidSize;
-			this->edid = MemAlloc(UInt8, edidSize);
-			MemCopyNO(this->edid, edid, edidSize);
+			this->edid = edid = MemAllocArr(UInt8, edidSize);
+			MemCopyNO(edid.Ptr(), edidSrc.Ptr(), edidSize);
 		}
 	}
 	this->UpdateEDIDDisp();

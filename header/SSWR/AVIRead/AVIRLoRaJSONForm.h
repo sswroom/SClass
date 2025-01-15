@@ -32,8 +32,8 @@ namespace SSWR
 
 		private:
 			static void __stdcall OnJSONParseClick(AnyType userObj);
-			static void PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize);
-			static void MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool downLink, const UInt8 *buff, UOSInt buffSize);
+			static void PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+			static void MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool downLink, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
 			AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLoRaJSONForm();

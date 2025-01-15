@@ -13,6 +13,7 @@
 void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<Net::TCPClient> cli;
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -20,9 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(AnyType userObj)
 	{
 		me->connected = false;
 		Sync::MutexUsage mutUsage(me->cliMut);
-		if (me->cli)
+		if (me->cli.SetTo(cli))
 		{
-			me->cli->Close();
+			cli->Close();
 		}
 		mutUsage.EndUse();
 		me->txtHost->SetReadOnly(false);
@@ -48,11 +49,10 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Port is out of range"), CSTR("Error"), me);
 		return;
 	}
-	Net::TCPClient *cli;
-	NEW_CLASS(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, 10000));
+	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), addr, port, 10000));
 	if (cli->IsConnectError())
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in connect to server"), CSTR("Error"), me);
 		return;
 	}
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	if (me->connected)
 	{
-		if (me->cli == 0)
+		if (me->cli.IsNull())
 		{
 			me->connected = false;
 			me->txtHost->SetReadOnly(false);
@@ -113,6 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(AnyType userObj)
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<Net::TCPClient> cli;
 	UInt8 *sendBuff;
 	UOSInt sendSize;
 	UOSInt sendBuffSize = SENDBUFFSIZE;
@@ -122,9 +123,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 	while (!me->toStop)
 	{
 		Sync::MutexUsage mutUsage(me->cliMut);
-		if (me->cli)
+		if (me->cli.SetTo(cli))
 		{
-			sendSize = me->cli->Write(Data::ByteArrayR(sendBuff, sendBuffSize));
+			sendSize = cli->Write(Data::ByteArrayR(sendBuff, sendBuffSize));
 			mutUsage.EndUse();
 			if (sendSize > 0)
 			{
@@ -150,6 +151,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<Net::TCPClient> cli;
 	UOSInt recvSize;
 	me->recvRunning = true;
 	me->mainEvt.Set();
@@ -157,9 +159,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 		Data::ByteBuffer recvBuff(RECVBUFFSIZE);
 		while (!me->toStop)
 		{
-			if (me->cli)
+			if (me->cli.SetTo(cli))
 			{
-				recvSize = me->cli->Read(recvBuff);
+				recvSize = cli->Read(recvBuff);
 				if (recvSize > 0)
 				{
 					Sync::Interlocked::AddU64(me->recvSize, recvSize);
@@ -167,7 +169,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 				else
 				{
 					Sync::MutexUsage mutUsage(me->cliMut);
-					DEL_CLASS(me->cli);
+					me->cli.Delete();
 					me->cli = 0;
 					mutUsage.EndUse();
 					me->recvEvt.Wait(1000);
@@ -237,9 +239,10 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRTCPSpdCliForm::~AVIRTCPSpdCliForm()
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Close();
+		cli->Close();
 	}
 	this->toStop = true;
 	while (this->recvRunning || this->procRunning)

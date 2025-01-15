@@ -408,7 +408,7 @@ Bool Net::RTPH264Handler::IsRealTimeSrc()
 	return true;
 }
 
-Bool Net::RTPH264Handler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPH264Handler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }

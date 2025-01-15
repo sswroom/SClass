@@ -47,7 +47,7 @@ Data::Duration Media::VOBLPCMStreamSource::SeekToTime(Data::Duration time)
 	return t;
 }
 
-Bool Media::VOBLPCMStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VOBLPCMStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	////////////////////////////////////////////////
 	return false;
@@ -58,7 +58,7 @@ void Media::VOBLPCMStreamSource::GetFormat(NN<Media::AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::VOBLPCMStreamSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::VOBLPCMStreamSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->pbEvt = evt;
 	return this->pbc->StartAudio();
@@ -75,6 +75,7 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
 	UOSInt buffWriten;
 	UOSInt byteCopied = 0;
 	UOSInt v;
+	NN<Sync::Event> pbEvt;
 	if (fmt.bitpersample == 24)
 	{
 		v = blk.GetSize() % (this->fmt.align << 1);
@@ -131,9 +132,9 @@ UOSInt Media::VOBLPCMStreamSource::ReadBlock(Data::ByteArray blk)
 			this->buffStart += blk.GetSize();
 			byteCopied += blk.GetSize();
 		}
-		if (this->buffStart != this->buffEnd && this->pbEvt)
+		if (this->buffStart != this->buffEnd && this->pbEvt.SetTo(pbEvt))
 		{
-			this->pbEvt->Set();
+			pbEvt->Set();
 		}
 	}
 	else
@@ -235,13 +236,14 @@ void Media::VOBLPCMStreamSource::SetStreamTime(Data::Duration time)
 void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 {
 	UOSInt buffWriten;
+	NN<Sync::Event> pbEvt;
 //	if (buff[0] > 0)
 //	{
-		if (this->pbEvt)
+		if (this->pbEvt.NotNull())
 		{
 			while (true)
 			{
-				if (this->pbEvt == 0 || !this->pbc->IsRunning())
+				if (this->pbEvt.IsNull() || !this->pbc->IsRunning())
 					break;
 			
 				Sync::MutexUsage mutUsage(this->buffMut);
@@ -266,8 +268,8 @@ void Media::VOBLPCMStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 						MemCopyNO(this->dataBuff, &buff[6 + this->buffSize - this->buffEnd], buffSize - 6 - (this->buffSize - this->buffEnd));
 						this->buffEnd = this->buffEnd + buffSize - 6 - this->buffSize;
 					}
-					if (this->pbEvt)
-						this->pbEvt->Set();
+					if (this->pbEvt.SetTo(pbEvt))
+						pbEvt->Set();
 					mutUsage.EndUse();
 					break;
 				}

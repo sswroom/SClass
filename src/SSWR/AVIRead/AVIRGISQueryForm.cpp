@@ -87,7 +87,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 			{
 				me->lvInfo->SetSubItem(i, 1, CSTR(""));
 			}
-			SDEL_CLASS(me->currVec);
+			me->currVec.Delete();
 			me->navi->SetSelectedVector(0);
 		}
 		else
@@ -151,18 +151,19 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	if (me->currVec)
+	NN<Math::Geometry::Vector2D> currVec;
+	if (me->currVec.SetTo(currVec))
 	{
 		NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl nearPos = mapPos;
-		me->currVec->CalBoundarySqrDistance(mapPos, nearPos);
+		currVec->CalBoundarySqrDistance(mapPos, nearPos);
 		Double d = csys->CalSurfaceDistance(mapPos, nearPos, Math::Unit::Distance::DU_METER);
 		UTF8Char sbuff[64];
 		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrDouble(sbuff, d);
 		me->txtDist->SetText(CSTRP(sbuff, sptr));
-		if (me->currVec->InsideOrTouch(mapPos))
+		if (currVec->InsideOrTouch(mapPos))
 		{
 			me->txtInside->SetText(CSTR("Inside"));
 		}
@@ -180,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(AnyType userOb
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	NN<Math::Geometry::Vector2D> vec;
 	NN<Math::VectorTextWriter> writer;
-	if (vec.Set(me->currVec) && me->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
+	if (me->currVec.SetTo(vec) && me->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
 	{
 		Text::StringBuilderUTF8 sb;
 		writer->ToText(sb, vec);
@@ -237,8 +238,8 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	NN<Math::Geometry::Vector2D> vec;
 	if (!this->queryVecList.GetItem(index).SetTo(vec) || !this->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
 		return;
-	SDEL_CLASS(this->currVec);
-	this->currVec = vec->Clone().Ptr();
+	this->currVec.Delete();
+	this->currVec = vec->Clone();
 
 	this->queryVecOriList.GetItem(index).SetTo(vec);
 	UTF8Char sbuff[64];
@@ -313,7 +314,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -423,7 +424,7 @@ SSWR::AVIRead::AVIRGISQueryForm::~AVIRGISQueryForm()
 {
 	this->ClearQueryResults();
 	this->navi->UnhandleMapMouse(this);
-	SDEL_CLASS(this->currVec);
+	this->currVec.Delete();
 }
 
 void SSWR::AVIRead::AVIRGISQueryForm::OnMonitorChanged()

@@ -14,11 +14,11 @@ namespace Media
 		virtual Bool CanSeek() = 0;
 		virtual Data::Duration GetStreamTime() = 0;
 		virtual Data::Duration SeekToTime(Data::Duration time) = 0;
-		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime) = 0;
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime) = 0;
 
 		virtual void GetFormat(NN<AudioFormat> format) = 0;
 
-		virtual Bool Start(Sync::Event *evt, UOSInt blkSize) = 0;
+		virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize) = 0;
 		virtual void Stop() = 0;
 		virtual UOSInt ReadBlock(Data::ByteArray blk) = 0; //ret actual block size
 		virtual UOSInt GetMinBlockSize() = 0;

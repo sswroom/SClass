@@ -34,9 +34,9 @@ namespace SSWR
 			NN<UI::GUIVSplitter> vspFile;
 			NN<UI::GUIListView> lvContent;
 
-			Net::WiFiLogFile *wifiLogFile;
-			Net::MACInfoList *macList;
-			Text::String *filterText;
+			NN<Net::WiFiLogFile> wifiLogFile;
+			NN<Net::MACInfoList> macList;
+			Optional<Text::String> filterText;
 
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall OnStoreClicked(AnyType userObj);

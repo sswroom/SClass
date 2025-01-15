@@ -4,7 +4,8 @@
 void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
-	if (me->colsCbo == 0 || me->dbTable->GetColCnt() != me->colInd->GetCount() || me->colInd->GetCount() == 0)
+	UnsafeArray<NN<UI::GUIComboBox>> colsCbo;
+	if (!me->colsCbo.SetTo(colsCbo) || me->dbTable->GetColCnt() != me->colInd->GetCount() || me->colInd->GetCount() == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Database is not valid"), CSTR("DB Assign Column"), me);
 		return;
@@ -13,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 	UOSInt j = me->dbTable->GetColCnt();
 	while (i < j)
 	{
-		if (me->colsCbo[i]->GetSelectedItem() == (void*)-2)
+		if (colsCbo[i]->GetSelectedItem() == (void*)-2)
 		{
 			NN<DB::ColDef> col;
 			Text::StringBuilderUTF8 sb;
@@ -35,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 	i = 0;
 	while (i < j)
 	{
-		me->colInd->SetItem(i, me->colsCbo[i]->GetSelectedItem().GetUOSInt());
+		me->colInd->SetItem(i, colsCbo[i]->GetSelectedItem().GetUOSInt());
 		i++;
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -89,7 +90,8 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 	NN<UI::GUILabel> lbl;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	this->colsCbo = MemAlloc(NN<UI::GUIComboBox>, j);
+	UnsafeArray<NN<UI::GUIComboBox>> colsCbo;
+	this->colsCbo = colsCbo = MemAllocArr(NN<UI::GUIComboBox>, j);
 	while (i < j)
 	{
 		if (dbTable->GetCol(i).SetTo(col))
@@ -97,10 +99,10 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 			lbl = ui->NewLabel(this->pnlColumns, col->GetColName()->ToCString());
 			lbl->SetRect(0, UOSInt2Double(i * 24), 100, 23, false);
 		}
-		this->colsCbo[i] = ui->NewComboBox(this->pnlColumns, false);
-		this->colsCbo[i]->SetRect(100, UOSInt2Double(i * 24), 100, 23, false);
-		this->colsCbo[i]->AddItem(CSTR("Unknown"), (void*)-2);
-		this->colsCbo[i]->AddItem(CSTR("Ignore"), (void*)-1);
+		colsCbo[i] = ui->NewComboBox(this->pnlColumns, false);
+		colsCbo[i]->SetRect(100, UOSInt2Double(i * 24), 100, 23, false);
+		colsCbo[i]->AddItem(CSTR("Unknown"), (void*)-2);
+		colsCbo[i]->AddItem(CSTR("Ignore"), (void*)-1);
 
 		i++;
 	}
@@ -116,7 +118,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 				i = 0;
 				while (i < j)
 				{
-					this->colsCbo[i]->AddItem(CSTRP(sbuff, sptr), (void*)k);
+					colsCbo[i]->AddItem(CSTRP(sbuff, sptr), (void*)k);
 					i++;
 				}
 			}
@@ -127,7 +129,7 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 		i = 0;
 		while (i < j)
 		{
-			this->colsCbo[i]->SetSelectedIndex(this->colInd->GetItem(i) + 2);
+			colsCbo[i]->SetSelectedIndex(this->colInd->GetItem(i) + 2);
 			i++;
 		}
 	}
@@ -135,9 +137,10 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 
 SSWR::AVIRead::AVIRDBAssignColumnForm::~AVIRDBAssignColumnForm()
 {
-	if (this->colsCbo)
+	UnsafeArray<NN<UI::GUIComboBox>> colsCbo;
+	if (this->colsCbo.SetTo(colsCbo))
 	{
-		MemFree(this->colsCbo);
+		MemFreeArr(colsCbo);
 		this->colsCbo = 0;
 	}
 }

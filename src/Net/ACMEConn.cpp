@@ -58,7 +58,7 @@ Optional<Text::String> Net::ACMEConn::JWK(NN<Crypto::Cert::X509Key> key, OutPara
 	}
 }
 
-Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId)
+Optional<Text::String> Net::ACMEConn::ProtectedJWK(NN<Text::String> nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Optional<Text::String> accountId)
 {
 	NN<Text::String> jwk;
 	Crypto::Token::JWSignature::Algorithm palg;
@@ -74,10 +74,11 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NN<Text::String> 
 	sb.Append(nonce);
 	sb.AppendC(UTF8STRC("\",\"url\":\""));
 	sb.Append(url);
-	if (accountId)
+	NN<Text::String> s;
+	if (accountId.SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("\",\"kid\":\""));
-		sb.Append(accountId);
+		sb.Append(s);
 		sb.AppendUTF8Char('\"');
 	}
 	else
@@ -87,7 +88,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NN<Text::String> 
 	}
 	jwk->Release();
 	sb.AppendC(UTF8STRC("}"));
-	return Text::String::New(sb.ToCString()).Ptr();
+	return Text::String::New(sb.ToCString());
 }
 
 NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CStringNN protStr, Text::CStringNN data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg)
@@ -134,17 +135,17 @@ Bool Net::ACMEConn::KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilde
 	return true;
 }
 
-Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN data)
+Optional<Net::HTTPClient> Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN data)
 {
 	NN<Crypto::Cert::X509Key> key;
-	if (this->nonce == 0 || !this->key.SetTo(key))
+	NN<Text::String> nonce;
+	if (!this->nonce.SetTo(nonce) || !this->key.SetTo(key))
 	{
 		return 0;
 	}
-	Text::String *protStr;
+	NN<Text::String> protStr;
 	Crypto::Token::JWSignature::Algorithm alg;
-	protStr = ProtectedJWK(this->nonce, url, key, alg, this->accountId);
-	if (protStr == 0)
+	if (!ProtectedJWK(nonce, url, key, alg, this->accountId).SetTo(protStr))
 	{
 		return 0;
 	}
@@ -162,10 +163,10 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN d
 	cli->GetRespStatus();
 	if (cli->GetRespHeader(CSTR("Replay-Nonce"), sb))
 	{
-		SDEL_STRING(this->nonce);
-		this->nonce = Text::String::New(sb.ToCString()).Ptr();
+		OPTSTR_DEL(this->nonce);
+		this->nonce = Text::String::New(sb.ToCString());
 	}
-	return cli.Ptr();
+	return cli;
 }
 
 Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8> buff, UOSInt buffSize)
@@ -192,14 +193,16 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderParse(UnsafeArray<const UInt8
 			if (o->GetObjectValue(CSTR("authorizations")).SetTo(auth) && auth->GetType() == Text::JSONType::Array)
 			{
 				NN<Text::JSONArray> authArr = NN<Text::JSONArray>::ConvertFrom(auth);
-				NEW_CLASS(order->authURLs, Data::ArrayListStringNN());
+				NN<Data::ArrayListStringNN> authURLs;
+				NEW_CLASSNN(authURLs, Data::ArrayListStringNN());
+				order->authURLs = authURLs;
 				UOSInt i = 0;
 				UOSInt j = authArr->GetArrayLength();
 				while (i < j)
 				{
 					if (authArr->GetArrayValue(i).SetTo(auth) && auth->GetType() == Text::JSONType::String)
 					{
-						order->authURLs->Add(NN<Text::JSONString>::ConvertFrom(auth)->GetValue()->Clone());
+						authURLs->Add(NN<Text::JSONString>::ConvertFrom(auth)->GetValue()->Clone());
 					}
 					i++;
 				}
@@ -345,54 +348,55 @@ Net::ACMEConn::~ACMEConn()
 {
 	this->ssl.Delete();
 	this->serverHost->Release();
-	SDEL_STRING(this->urlNewNonce);
-	SDEL_STRING(this->urlNewAccount);
-	SDEL_STRING(this->urlNewOrder);
-	SDEL_STRING(this->urlNewAuthz);
-	SDEL_STRING(this->urlRevokeCert);
-	SDEL_STRING(this->urlKeyChange);
-	SDEL_STRING(this->urlTermOfService);
-	SDEL_STRING(this->urlWebsite);
-	SDEL_STRING(this->nonce);
-	SDEL_STRING(this->accountId);
+	OPTSTR_DEL(this->urlNewNonce);
+	OPTSTR_DEL(this->urlNewAccount);
+	OPTSTR_DEL(this->urlNewOrder);
+	OPTSTR_DEL(this->urlNewAuthz);
+	OPTSTR_DEL(this->urlRevokeCert);
+	OPTSTR_DEL(this->urlKeyChange);
+	OPTSTR_DEL(this->urlTermOfService);
+	OPTSTR_DEL(this->urlWebsite);
+	OPTSTR_DEL(this->nonce);
+	OPTSTR_DEL(this->accountId);
 	this->key.Delete();
 }
 
 Bool Net::ACMEConn::IsError()
 {
-	if (this->urlNewNonce == 0 ||
-		this->urlNewAccount == 0 ||
-		this->urlNewOrder == 0 ||
-		this->urlRevokeCert == 0 ||
-		this->urlKeyChange == 0)
+	if (this->urlNewNonce.IsNull() ||
+		this->urlNewAccount.IsNull() ||
+		this->urlNewOrder.IsNull() ||
+		this->urlRevokeCert.IsNull() ||
+		this->urlKeyChange.IsNull())
 	{
 		return true;
 	}
 	return false;
 }
 
-Text::String *Net::ACMEConn::GetTermOfService()
+Optional<Text::String> Net::ACMEConn::GetTermOfService()
 {
 	return this->urlTermOfService;
 }
 
-Text::String *Net::ACMEConn::GetWebsite()
+Optional<Text::String> Net::ACMEConn::GetWebsite()
 {
 	return this->urlWebsite;
 }
 
-Text::String *Net::ACMEConn::GetAccountId()
+Optional<Text::String> Net::ACMEConn::GetAccountId()
 {
 	return this->accountId;
 }
 
 Bool Net::ACMEConn::NewNonce()
 {
-	if (this->urlNewNonce == 0)
+	NN<Text::String> urlNewNonce;
+	if (!this->urlNewNonce.SetTo(urlNewNonce))
 	{
 		return false;
 	}
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -404,8 +408,8 @@ Bool Net::ACMEConn::NewNonce()
 		Text::StringBuilderUTF8 sb;
 		if (cli->GetRespHeader(CSTR("Replay-Nonce"), sb))
 		{
-			SDEL_STRING(this->nonce);
-			this->nonce = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+			OPTSTR_DEL(this->nonce);
+			this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
 			succ = true;
 		}
 	}
@@ -416,12 +420,12 @@ Bool Net::ACMEConn::NewNonce()
 Bool Net::ACMEConn::AccountNew()
 {
 	NN<Text::String> url;
-	if (!url.Set(this->urlNewAccount))
+	if (!this->urlNewAccount.SetTo(url))
 	{
 		return false;
 	}
-	Net::HTTPClient *cli = this->ACMEPost(url, CSTR("{\"onlyReturnExisting\":true}"));
-	if (cli == 0)
+	NN<Net::HTTPClient> cli;
+	if (!this->ACMEPost(url, CSTR("{\"onlyReturnExisting\":true}")).SetTo(cli))
 	{
 		return false;
 	}
@@ -430,7 +434,7 @@ Bool Net::ACMEConn::AccountNew()
 	{
 		IO::MemoryStream mstm;
 		cli->ReadToEnd(mstm, 4096);
-		DEL_CLASS(cli);
+		cli.Delete();
 		UOSInt buffSize;
 		UnsafeArray<UInt8> buff = mstm.GetBuff(buffSize);
 		NN<Text::JSONBase> base;
@@ -445,19 +449,18 @@ Bool Net::ACMEConn::AccountNew()
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("{\"termsOfServiceAgreed\":true"));
 					sb.AppendUTF8Char('}');
-					cli = this->ACMEPost(url, sb.ToCString());
-					if (cli)
+					if (this->ACMEPost(url, sb.ToCString()).SetTo(cli))
 					{
 						mstm.Clear();
 						cli->ReadToEnd(mstm, 4096);
 						sb.ClearStr();
 						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(CSTR("Location"), sb))
 						{
-							SDEL_STRING(this->accountId);
-							this->accountId = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							OPTSTR_DEL(this->accountId);
+							this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
 							succ = true;
 						}
-						DEL_CLASS(cli);
+						cli.Delete();
 					}
 				}
 			}
@@ -466,7 +469,7 @@ Bool Net::ACMEConn::AccountNew()
 	}
 	else
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		succ = false;
 	}
 
@@ -476,12 +479,12 @@ Bool Net::ACMEConn::AccountNew()
 Bool Net::ACMEConn::AccountRetr()
 {
 	NN<Text::String> url;
-	if (!url.Set(this->urlNewAccount))
+	if (!this->urlNewAccount.SetTo(url))
 	{
 		return false;
 	}
-	Net::HTTPClient *cli = this->ACMEPost(url, CSTR("{\"onlyReturnExisting\":true}"));
-	if (cli == 0)
+	NN<Net::HTTPClient> cli;
+	if (!this->ACMEPost(url, CSTR("{\"onlyReturnExisting\":true}")).SetTo(cli))
 	{
 		return false;
 	}
@@ -491,15 +494,15 @@ Bool Net::ACMEConn::AccountRetr()
 		Text::StringBuilderUTF8 sb;
 		if (cli->GetRespHeader(CSTR("Location"), sb))
 		{
-			SDEL_STRING(this->accountId);
-			this->accountId = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+			OPTSTR_DEL(this->accountId);
+			this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
 			succ = true;
 		}
-		DEL_CLASS(cli);
+		cli.Delete();
 	}
 	else
 	{
-		DEL_CLASS(cli);
+		cli.Delete();
 		succ = false;
 	}
 	return succ;
@@ -508,7 +511,7 @@ Bool Net::ACMEConn::AccountRetr()
 Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Char> domainNames, UOSInt namesLen)
 {
 	NN<Text::String> url;
-	if (!url.Set(this->urlNewOrder))
+	if (!this->urlNewOrder.SetTo(url))
 	{
 		return 0;
 	}
@@ -542,41 +545,45 @@ Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderNew(UnsafeArray<const UTF8Cha
 	}
 	sb.AppendC(UTF8STRC("]}"));
 
-	Net::HTTPClient *cli = this->ACMEPost(url, sb.ToCString());
-	if (cli->GetRespStatus() == 201)
+	NN<Net::HTTPClient> cli;
+	if (this->ACMEPost(url, sb.ToCString()).SetTo(cli))
 	{
-		Text::StringBuilderUTF8 sb;
-		IO::MemoryStream mstm;
-		cli->ReadToEnd(mstm, 2048);
-		cli->GetRespHeader(CSTR("Location"), sb);
-		DEL_CLASS(cli);
-
-		UnsafeArray<const UInt8> replyBuff = mstm.GetBuff(i);
-		NN<Order> order;
-		if (this->OrderParse(replyBuff, i).SetTo(order))
+		if (cli->GetRespStatus() == 201)
 		{
-			if (sb.GetLength() > 0)
-				order->orderURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-			return order;
+			Text::StringBuilderUTF8 sb;
+			IO::MemoryStream mstm;
+			cli->ReadToEnd(mstm, 2048);
+			cli->GetRespHeader(CSTR("Location"), sb);
+			cli.Delete();
+
+			UnsafeArray<const UInt8> replyBuff = mstm.GetBuff(i);
+			NN<Order> order;
+			if (this->OrderParse(replyBuff, i).SetTo(order))
+			{
+				if (sb.GetLength() > 0)
+					order->orderURL = Text::String::New(sb.ToString(), sb.GetLength());
+				return order;
+			}
+			return 0;
 		}
-		return 0;
+		else
+		{
+			cli.Delete();
+			return 0;
+		}
 	}
-	else
-	{
-		DEL_CLASS(cli);
-		return 0;
-	}
+	return 0;
 }
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType)
 {
-	Net::HTTPClient *cli = this->ACMEPost(authorizeURL, CSTR(""));
-	if (cli)
+	NN<Net::HTTPClient> cli;
+	if (this->ACMEPost(authorizeURL, CSTR("")).SetTo(cli))
 	{
 		cli->GetRespStatus();
 		IO::MemoryStream mstm;
 		cli->ReadToEnd(mstm, 2048);
-		DEL_CLASS(cli);
+		cli.Delete();
 
 		Text::CStringNN sAuthType;
 		if (!AuthorizeTypeGetName(authType).SetTo(sAuthType) || Text::StrEqualsICaseC(sAuthType.v, sAuthType.leng, UTF8STRC("UNKNOWN")))
@@ -623,23 +630,24 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::OrderAuthorize(NN<Text::String
 	return 0;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderGetStatus(UnsafeArray<const UTF8Char> orderURL)
+Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderGetStatus(UnsafeArray<const UTF8Char> orderURL)
 {
 	return 0;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, Crypto::Cert::X509CertReq *csr)
+Optional<Net::ACMEConn::Order> Net::ACMEConn::OrderFinalize(UnsafeArray<const UTF8Char> finalizeURL, NN<Crypto::Cert::X509CertReq> csr)
 {
 	return 0;
 }
 
 void Net::ACMEConn::OrderFree(NN<Order> order)
 {
-	SDEL_STRING(order->orderURL);
-	if (order->authURLs)
+	OPTSTR_DEL(order->orderURL);
+	NN<Data::ArrayListStringNN> authURLs;
+	if (order->authURLs.SetTo(authURLs))
 	{
-		order->authURLs->FreeAll();
-		DEL_CLASS(order->authURLs);
+		authURLs->FreeAll();
+		authURLs.Delete();
 	}
 	OPTSTR_DEL(order->finalizeURL);
 	SDEL_STRING(order->certificateURL);
@@ -648,21 +656,21 @@ void Net::ACMEConn::OrderFree(NN<Order> order)
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeBegin(NN<Text::String> challURL)
 {
-	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR("{}"));
-	if (cli)
+	NN<Net::HTTPClient> cli;
+	if (this->ACMEPost(challURL, CSTR("{}")).SetTo(cli))
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
 			IO::MemoryStream mstm;
 			cli->ReadToEnd(mstm, 2048);
-			DEL_CLASS(cli);
+			cli.Delete();
 			UOSInt i;
 			UnsafeArray<const UInt8> buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
 		else
 		{
-			DEL_CLASS(cli);
+			cli.Delete();
 			return 0;
 		}
 	}
@@ -671,21 +679,21 @@ Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeBegin(NN<Text::String
 
 Optional<Net::ACMEConn::Challenge> Net::ACMEConn::ChallengeGetStatus(NN<Text::String> challURL)
 {
-	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR(""));
-	if (cli)
+	NN<Net::HTTPClient> cli;
+	if (this->ACMEPost(challURL, CSTR("")).SetTo(cli))
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
 			IO::MemoryStream mstm;
 			cli->ReadToEnd(mstm, 2048);
-			DEL_CLASS(cli);
+			cli.Delete();
 			UOSInt i;
 			UnsafeArray<const UInt8> buff = mstm.GetBuff(i);
 			return ChallengeParse(buff, i);
 		}
 		else
 		{
-			DEL_CLASS(cli);
+			cli.Delete();
 			return 0;
 		}
 	}
@@ -715,9 +723,9 @@ Bool Net::ACMEConn::NewKey()
 	return false;
 }
 
-Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
+Bool Net::ACMEConn::SetKey(NN<Crypto::Cert::X509Key> key)
 {
-	if (key && key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
+	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
 		this->key.Delete();
 		this->key =	NN<Crypto::Cert::X509Key>::ConvertFrom(key->Clone());

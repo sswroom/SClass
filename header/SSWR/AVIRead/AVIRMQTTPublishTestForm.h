@@ -19,15 +19,15 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::MQTTConn *client;
+			Optional<Net::MQTTConn> client;
 			IO::LogTool log;
 			Optional<Crypto::Cert::X509Cert> cliCert;
 			Optional<Crypto::Cert::X509File> cliKey;
 			UInt64 totalCount;
 			UInt64 dispCount;
 			Data::Timestamp lastDispTime;
-			Text::String *connTopic;
-			Text::String *connContent;
+			Optional<Text::String> connTopic;
+			Optional<Text::String> connContent;
 			Bool threadRunning;
 			Bool threadToStop;
 

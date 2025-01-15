@@ -198,13 +198,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj,
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<Text::String> fontName;
 	SSWR::AVIRead::AVIRGISFontForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Math::Size2D<UOSInt> sz;
 		me->fontType = Map::MapEnv::FontType::LayerStyle;
-		SDEL_STRING(me->fontName);
-		me->fontName = frm.GetFontName()->Clone().Ptr();
+		OPTSTR_DEL(me->fontName);
+		me->fontName = fontName = frm.GetFontName()->Clone();
 		me->fontSizePt = frm.GetFontSizePt();
 		me->fontColor = frm.GetFontColor();
 		me->imgFont.Delete();
@@ -214,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-			me->core->GenFontPreview(dimg, me->eng, me->fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
+			me->core->GenFontPreview(dimg, me->eng, fontName->ToCString(), me->fontSizePt, me->fontColor, me->colorConv);
 			me->imgFont = dimg->ToStaticImage();
 			me->pbFontStyle->SetImage(me->imgFont);
 			me->eng->DeleteImage(dimg);
@@ -407,7 +408,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 			}
 			else if (setting.fontType == Map::MapEnv::FontType::LayerStyle)
 			{
-				this->core->GenFontPreview(dimg, this->eng, setting.fontName->ToCString(), setting.fontSizePt, setting.fontColor, this->colorConv);
+				this->core->GenFontPreview(dimg, this->eng, Text::String::OrEmpty(setting.fontName)->ToCString(), setting.fontSizePt, setting.fontColor, this->colorConv);
 			}
 			this->imgFont = dimg->ToStaticImage();
 			this->pbFontStyle->SetImage(this->imgFont);
@@ -418,9 +419,10 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		this->fillStyle = setting.fillStyle;
 		this->fontType = setting.fontType;
 		this->fontStyle = setting.fontStyle;
-		if (setting.fontName)
+		NN<Text::String> s;
+		if (setting.fontName.SetTo(s))
 		{
-			this->fontName = setting.fontName->Clone().Ptr();
+			this->fontName = s->Clone();
 		}
 		else
 		{
@@ -508,7 +510,7 @@ SSWR::AVIRead::AVIRGISPropForm::~AVIRGISPropForm()
 {
 	this->imgLine.Delete();
 	this->imgFont.Delete();
-	SDEL_STRING(this->fontName);
+	OPTSTR_DEL(this->fontName);
 	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
@@ -564,7 +566,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::IColorHandl
 		}
 		else if (this->fontType == Map::MapEnv::FontType::LayerStyle)
 		{
-			this->core->GenFontPreview(dimg, this->eng, this->fontName->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);
+			this->core->GenFontPreview(dimg, this->eng, Text::String::OrEmpty(this->fontName)->ToCString(), this->fontSizePt, this->fontColor, this->colorConv);
 		}
 		this->imgFont = dimg->ToStaticImage();
 		this->pbFontStyle->SetImage(this->imgFont);

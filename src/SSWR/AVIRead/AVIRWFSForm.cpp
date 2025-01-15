@@ -4,11 +4,13 @@
 void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
+	NN<Map::WebFeatureService> wfs;
 	Text::StringBuilderUTF8 sb;
 	me->txtWFSURL->GetText(sb);
-	SDEL_CLASS(me->wfs);
-	NEW_CLASS(me->wfs, Map::WebFeatureService(me->core->GetTCPClientFactory(), 0, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)me->cboWFSVersion->GetSelectedItem().GetOSInt()));
-	if (me->wfs->IsError())
+	me->wfs.Delete();
+	NEW_CLASSNN(wfs, Map::WebFeatureService(me->core->GetTCPClientFactory(), 0, me->core->GetEncFactory(), sb.ToCString(), (Map::WebFeatureService::Version)me->cboWFSVersion->GetSelectedItem().GetOSInt()));
+	me->wfs = wfs;
+	if (wfs->IsError())
 	{
 		me->txtStatus->SetText(CSTR("Error"));
 	}
@@ -17,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 		me->txtStatus->SetText(CSTR("Success"));
 		Data::ArrayListStringNN nameList;
 		UOSInt i = 0;
-		UOSInt j = me->wfs->GetFeatureNames(&nameList);
+		UOSInt j = wfs->GetFeatureNames(&nameList);
 		me->cboFeature->ClearItems();
 		while (i < j)
 		{
@@ -34,7 +36,8 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWFSForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
-	if (me->wfs && !me->wfs->IsError())
+	NN<Map::WebFeatureService> wfs;
+	if (me->wfs.SetTo(wfs) && !wfs->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -43,9 +46,10 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnOKClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWFSForm::OnFeatureSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
-	if (me->wfs && !me->wfs->IsError())
+	NN<Map::WebFeatureService> wfs;
+	if (me->wfs.SetTo(wfs) && !wfs->IsError())
 	{
-		me->wfs->SetFeature(me->cboFeature->GetSelectedIndex());
+		wfs->SetFeature(me->cboFeature->GetSelectedIndex());
 	}
 }
 
@@ -91,7 +95,7 @@ SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(Optional<UI::GUIClientControl> parent, N
 
 SSWR::AVIRead::AVIRWFSForm::~AVIRWFSForm()
 {
-	SDEL_CLASS(this->wfs);
+	this->wfs.Delete();
 }
 
 void SSWR::AVIRead::AVIRWFSForm::OnMonitorChanged()
@@ -101,5 +105,8 @@ void SSWR::AVIRead::AVIRWFSForm::OnMonitorChanged()
 
 Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRWFSForm::LoadLayer()
 {
-	return this->wfs->LoadAsLayer();
+	NN<Map::WebFeatureService> wfs;
+	if (this->wfs.SetTo(wfs))
+		return wfs->LoadAsLayer();
+	return 0;
 }

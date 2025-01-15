@@ -14,9 +14,10 @@ SSWR::AVIRead::AVIRLoraGWSimForm::PredefData SSWR::AVIRead::AVIRLoraGWSimForm::p
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
-	if (me->lora)
+	NN<Net::LoRaGateway> lora;
+	if (me->lora.SetTo(lora))
 	{
-		DEL_CLASS(me->lora);
+		lora.Delete();
 		me->lora = 0;
 		me->txtGatewayEUI->SetReadOnly(false);
 		me->txtServerIP->SetReadOnly(false);
@@ -49,13 +50,14 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Error in parsing Gateway EUI"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
-		NEW_CLASS(me->lora, Net::LoRaGateway(me->sockf, svrAddr, svrPort, gatewayEUI, me->log));
-		if (me->lora->IsError())
+		NEW_CLASSNN(lora, Net::LoRaGateway(me->sockf, svrAddr, svrPort, gatewayEUI, me->log));
+		if (lora->IsError())
 		{
-			DEL_CLASS(me->lora);
+			lora.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in Listening to UDP"), CSTR("LoRa Gateway Simulator"), me);
 			return;
 		}
+		me->lora = lora;
 		me->txtGatewayEUI->SetReadOnly(true);
 		me->txtServerIP->SetReadOnly(true);
 		me->txtServerPort->SetReadOnly(true);
@@ -81,7 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
-	if (me->lora == 0)
+	NN<Net::LoRaGateway> lora;
+	if (!me->lora.SetTo(lora))
 	{
 		return;
 	}
@@ -161,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userO
 	sb.ClearStr();
 	Net::LoRaGWUtil::GenRxpkJSON(sb, 923400000, 2, 0, 4, rssi, lsnr, payload, payloadLen);
 
-	if (!me->lora->SendPushData(sb.ToString(), sb.GetLength()))
+	if (!lora->SendPushData(sb.ToString(), sb.GetLength()))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in sending UL data"), CSTR("LoRa Gateway Simulator"), me);
 	}
@@ -284,7 +287,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRLoraGWSimForm::~AVIRLoraGWSimForm()
 {
-	SDEL_CLASS(this->lora);
+	this->lora.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }

@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Net::DHCPServer *svr;
+			Optional<Net::DHCPServer> svr;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblIP;
@@ -47,6 +47,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

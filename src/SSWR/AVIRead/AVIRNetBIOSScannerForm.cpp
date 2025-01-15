@@ -156,7 +156,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	this->lvEntries->AddColumn(CSTR("Flags"), 80);
 
 	NN<Net::SocketFactory> sockf = this->core->GetSocketFactory();
-	NEW_CLASS(this->netbios, Net::NetBIOSScanner(sockf, this->core->GetLog()));
+	NEW_CLASSNN(this->netbios, Net::NetBIOSScanner(sockf, this->core->GetLog()));
 	if (this->netbios->IsError())
 	{
 		this->ui->ShowMsgOK(CSTR("Error in starting NetBIOS Scanner"), CSTR("NetBIOS Scanner"), this);
@@ -194,7 +194,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 
 SSWR::AVIRead::AVIRNetBIOSScannerForm::~AVIRNetBIOSScannerForm()
 {
-	DEL_CLASS(this->netbios);
+	this->netbios.Delete();
 }
 
 void SSWR::AVIRead::AVIRNetBIOSScannerForm::OnMonitorChanged()

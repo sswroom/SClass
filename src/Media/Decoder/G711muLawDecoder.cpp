@@ -29,10 +29,11 @@ Media::Decoder::G711muLawDecoder::~G711muLawDecoder()
 
 void Media::Decoder::G711muLawDecoder::GetFormat(NN<AudioFormat> format)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(fmt);
+		sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;
@@ -61,21 +62,24 @@ void Media::Decoder::G711muLawDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::G711muLawDecoder::SeekToTime(Data::Duration time)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		return this->sourceAudio->SeekToTime(time);
+		return sourceAudio->SeekToTime(time);
 	}
 	return 0;
 }
 
-Bool Media::Decoder::G711muLawDecoder::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::Decoder::G711muLawDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
+	NN<Sync::Event> readEvt;
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Start(0, blkSize >> 1);
+		sourceAudio->Start(0, blkSize >> 1);
 		this->readEvt = evt;
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return true;
 	}
 	return false;
@@ -83,15 +87,17 @@ Bool Media::Decoder::G711muLawDecoder::Start(Sync::Event *evt, UOSInt blkSize)
 
 void Media::Decoder::G711muLawDecoder::Stop()
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Stop();
+		sourceAudio->Stop();
 	}
 	this->readEvt = 0;
 }
 
 UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 {
+	NN<Sync::Event> readEvt;
 	static Int16 table[] = {
     -32124, -31100, -30076, -29052, -28028, -27004, -25980, -24956,
     -23932, -22908, -21884, -20860, -19836, -18812, -17788, -16764,
@@ -126,10 +132,11 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
        120,    112,    104,     96,     88,     80,     72,     64,
         56,     48,     40,     32,     24,     16,      8,      0};
 
-	if (this->align == 0 || this->sourceAudio == 0)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->align == 0 || !this->sourceAudio.SetTo(sourceAudio))
 	{
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return 0;
 	}
 	blk = blk.WithSize(blk.GetSize() / this->align * this->align);
@@ -137,7 +144,7 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 	UOSInt sofst = blk.GetSize() >> 1;
 	UOSInt dofst = 0;
 	UOSInt cnt;
-	readSize = this->sourceAudio->ReadBlock(blk.SubArray(sofst, sofst));
+	readSize = sourceAudio->ReadBlock(blk.SubArray(sofst, sofst));
 	cnt = readSize;
 	while (cnt-- > 0)
 	{
@@ -146,8 +153,8 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
 		sofst++;
 	}
 
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return readSize << 1;
 }
 

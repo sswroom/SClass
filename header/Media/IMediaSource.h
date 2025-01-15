@@ -23,7 +23,7 @@ namespace Media
 		virtual Data::Duration GetStreamTime() = 0;
 		virtual Bool CanSeek() = 0;
 		virtual Data::Duration SeekToTime(Data::Duration time) = 0;
-		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime) = 0;
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime) = 0;
 
 		virtual MediaType GetMediaType() = 0;
 	};

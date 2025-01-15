@@ -977,7 +977,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
-				if (db.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(db))
 				{
 					this->core->OpenObject(db);
 				}
@@ -990,7 +990,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
-				if (db.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(db))
 				{
 					this->core->OpenObject(db);
 				}
@@ -2576,7 +2576,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
-				if (db.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(db))
 					this->core->OpenObject(db);
 			}
 		}
@@ -2622,7 +2622,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<DB::DBConn> db;
-				if (db.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(db))
 					this->core->OpenObject(db);
 			}
 		}
@@ -2689,7 +2689,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
-				if (tile.Set(frm.GetTileMap()))
+				if (frm.GetTileMap().SetTo(tile))
 				{
 					NN<Map::TileMapLayer> layer;
 					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
@@ -2711,7 +2711,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
-				if (tile.Set(frm.GetTileMap()))
+				if (frm.GetTileMap().SetTo(tile))
 				{
 					NN<Map::TileMapLayer> layer;
 					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));
@@ -2748,7 +2748,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this))
 			{
 				NN<Map::TileMap> tile;
-				if (tile.Set(frm.GetTileMap()))
+				if (frm.GetTileMap().SetTo(tile))
 				{
 					NN<Map::TileMapLayer> layer;
 					NEW_CLASSNN(layer, Map::TileMapLayer(tile, this->core->GetParserList()));

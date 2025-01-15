@@ -9,9 +9,11 @@
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
-		SDEL_CLASS(me->scanner);
+		scanner.Delete();
+		me->scanner = 0;
 		me->txtPort->SetText(CSTR(""));
 		me->btnPort->SetText(CSTR("Open"));
 		me->txtMode->SetText(CSTR(""));
@@ -25,13 +27,14 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(AnyType userObj)
 			UOSInt i = me->cboDevType->GetSelectedIndex();
 			if (i == 0)
 			{
-				NEW_CLASS(me->scanner, IO::Device::DensoWaveQB30(stm));
+				NEW_CLASSNN(scanner, IO::Device::DensoWaveQB30(stm));
 			}
 			else
 			{
-				NEW_CLASS(me->scanner, IO::Device::DensoWaveQK30U(stm));
+				NEW_CLASSNN(scanner, IO::Device::DensoWaveQK30U(stm));
 			}
-			me->scanner->HandleCodeScanned(OnCodeScanned, me);
+			me->scanner = scanner;
+			scanner->HandleCodeScanned(OnCodeScanned, me);
 
 			me->txtPort->SetText(stm->GetSourceNameObj()->ToCString());
 			me->btnPort->SetText(CSTR("Close"));
@@ -44,9 +47,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeScanClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
-		me->scanner->SetCurrMode(IO::CodeScanner::MT_SCAN);
+		scanner->SetCurrMode(IO::CodeScanner::MT_SCAN);
 		me->txtMode->SetText(CSTR("Scan"));
 		me->tpSetting->SetEnabled(false);
 	}
@@ -55,22 +59,23 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeScanClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
-		me->scanner->SetCurrMode(IO::CodeScanner::MT_SETTING);
+		scanner->SetCurrMode(IO::CodeScanner::MT_SETTING);
 		me->txtMode->SetText(CSTR("Setting"));
 		me->tpSetting->SetEnabled(true);
 
 		Data::ArrayList<IO::CodeScanner::DeviceCommand> cmdList;
 		UOSInt i;
 		UOSInt j;
-		me->scanner->GetCommandList(&cmdList);
+		scanner->GetCommandList(&cmdList);
 		me->cboSetCmd->ClearItems();
 		i = 0;
 		j = cmdList.GetCount();
 		while (i < j)
 		{
-			me->cboSetCmd->AddItem(me->scanner->GetCommandName(cmdList.GetItem(i)).OrEmpty(), (void*)(OSInt)cmdList.GetItem(i));
+			me->cboSetCmd->AddItem(scanner->GetCommandName(cmdList.GetItem(i)).OrEmpty(), (void*)(OSInt)cmdList.GetItem(i));
 			i++;
 		}
 		if (j > 0)
@@ -83,9 +88,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeIdleClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
-		me->scanner->SetCurrMode(IO::CodeScanner::MT_IDLE);
+		scanner->SetCurrMode(IO::CodeScanner::MT_IDLE);
 		me->txtMode->SetText(CSTR("Idle"));
 		me->tpSetting->SetEnabled(false);
 	}
@@ -94,9 +100,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeIdleClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnResetClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
-		if (me->scanner->SoftReset())
+		if (scanner->SoftReset())
 		{
 			me->txtMode->SetText(CSTR("Idle"));
 			me->tpSetting->SetEnabled(false);
@@ -107,9 +114,10 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnResetClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnDefaultClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
-		if (me->scanner->ResetDefault())
+		if (scanner->ResetDefault())
 		{
 			me->txtMode->SetText(CSTR("Idle"));
 			me->tpSetting->SetEnabled(false);
@@ -120,14 +128,15 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnDefaultClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
 		UOSInt i = me->cboSetCmd->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
 			IO::CodeScanner::DeviceCommand dcmd = (IO::CodeScanner::DeviceCommand)me->cboSetCmd->GetItem(i).GetOSInt();
 			me->cmdCurr = dcmd;
-			me->cmdType = me->scanner->GetCommandParamType(dcmd, &me->cmdMin, &me->cmdMax);
+			me->cmdType = scanner->GetCommandParamType(dcmd, &me->cmdMin, &me->cmdMax);
 			if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
 			{
 				me->cboSetParam->SetEnabled(false);
@@ -144,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 				i = me->cmdMin;
 				while (i <= me->cmdMax)
 				{
-					me->cboSetParam->AddItem(me->scanner->GetCommandParamName(dcmd, i).OrEmpty(), (void*)(OSInt)i); 
+					me->cboSetParam->AddItem(scanner->GetCommandParamName(dcmd, i).OrEmpty(), (void*)(OSInt)i); 
 					i++;
 				}
 			}
@@ -169,13 +178,14 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
-	if (me->scanner)
+	NN<IO::CodeScanner> scanner;
+	if (me->scanner.SetTo(scanner))
 	{
 		UTF8Char sbuff[12];
 		UnsafeArray<UTF8Char> sptr;
 		if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
 		{
-			Int32 val = me->scanner->GetCommand(me->cmdCurr);
+			Int32 val = scanner->GetCommand(me->cmdCurr);
 			if (val == -1)
 			{
 				me->txtSetCmd->SetText(CSTR("Failed"));
@@ -188,14 +198,14 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 		}
 		else if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND_NAME)
 		{
-			Int32 val = me->scanner->GetCommand(me->cmdCurr);
+			Int32 val = scanner->GetCommand(me->cmdCurr);
 			if (val == -1)
 			{
 				me->txtSetCmd->SetText(CSTR("Failed"));
 			}
 			else
 			{
-				me->txtSetCmd->SetText(me->scanner->GetCommandParamName(me->cmdCurr, val).OrEmpty());
+				me->txtSetCmd->SetText(scanner->GetCommandParamName(me->cmdCurr, val).OrEmpty());
 			}
 		}
 		else if (me->cmdType == IO::CodeScanner::CT_SELECT_COMMAND)
@@ -205,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 			if (i != INVALID_INDEX)
 			{
 				val = (Int32)me->cboSetParam->GetItem(i).GetOSInt();
-				if (me->scanner->SetCommand(me->cmdCurr, val))
+				if (scanner->SetCommand(me->cmdCurr, val))
 				{
 					me->txtSetCmd->SetText(CSTR("Success"));
 				}
@@ -228,7 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(AnyType userObj)
 			{
 				if (val >= me->cmdMin && val <= me->cmdMax)
 				{
-					if (me->scanner->SetCommand(me->cmdCurr, val))
+					if (scanner->SetCommand(me->cmdCurr, val))
 					{
 						me->txtSetCmd->SetText(CSTR("Success"));
 					}
@@ -254,8 +264,8 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(AnyType userObj, Tex
 {
 	NN<SSWR::AVIRead::AVIRDWQB30Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDWQB30Form>();
 	Sync::MutexUsage mutUsage(me->codeMut);
-	SDEL_STRING(me->newCode);
-	me->newCode = Text::String::New(code).Ptr();
+	OPTSTR_DEL(me->newCode);
+	me->newCode = Text::String::New(code);
 	me->codeUpdate = true;
 }
 
@@ -267,11 +277,11 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(AnyType userObj)
 		me->codeUpdate = false;
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage(me->codeMut);
-		if (s.Set(me->newCode))
+		if (me->newCode.SetTo(s))
 		{
 			me->txtScan->SetText(s->ToCString());
 			me->lbScan->AddItem(s, 0);
-			me->newCode->Release();
+			s->Release();
 			me->newCode = 0;
 		}
 	}
@@ -372,8 +382,8 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRDWQB30Form::~AVIRDWQB30Form()
 {
-	SDEL_CLASS(this->scanner);
-	SDEL_STRING(this->newCode);
+	this->scanner.Delete();
+	OPTSTR_DEL(this->newCode);
 }
 
 void SSWR::AVIRead::AVIRDWQB30Form::OnMonitorChanged()

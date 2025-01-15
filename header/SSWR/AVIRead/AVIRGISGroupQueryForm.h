@@ -18,7 +18,7 @@ namespace SSWR
 			NN<UI::GUIListView> lvInfo;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 			NN<Map::MapEnv> env;
 			Optional<Map::MapEnv::GroupItem> group;
 			Math::Coord2D<OSInt> downPos;
@@ -26,7 +26,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 		public:
-			AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group);
+			AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group);
 			virtual ~AVIRGISGroupQueryForm();
 
 			virtual void OnMonitorChanged();

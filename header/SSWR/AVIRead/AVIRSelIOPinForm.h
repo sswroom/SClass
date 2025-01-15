@@ -21,8 +21,8 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore::IOPinType ioPinType;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::VirtualIOPinMgr *vioPinMgr;
-			IO::GPIOControl *gpioPin;
+			NN<IO::VirtualIOPinMgr> vioPinMgr;
+			Optional<IO::GPIOControl> gpioPin;
 
 			NN<UI::GUIPanel> pnlPinType;
 			NN<UI::GUILabel> lblPinType;

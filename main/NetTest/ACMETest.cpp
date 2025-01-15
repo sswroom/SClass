@@ -25,14 +25,15 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Net::ACMEConn::Order> order;
 	if (conn->OrderNew(domain.v, domain.leng).SetTo(order))
 	{
-		if (order->authURLs)
+		NN<Data::ArrayListStringNN> authURLs;
+		if (order->authURLs.SetTo(authURLs))
 		{
 			UOSInt i = 0;
-			UOSInt j = order->authURLs->GetCount();
+			UOSInt j = authURLs->GetCount();
 			while (i < j)
 			{
 				NN<Net::ACMEConn::Challenge> chall;
-				if (conn->OrderAuthorize(Text::String::OrEmpty(order->authURLs->GetItem(i)), Net::ACMEConn::AuthorizeType::TLS_ALPN_01).SetTo(chall))
+				if (conn->OrderAuthorize(Text::String::OrEmpty(authURLs->GetItem(i)), Net::ACMEConn::AuthorizeType::TLS_ALPN_01).SetTo(chall))
 				{
 					Optional<Net::ACMEConn::Challenge> challStatus = conn->ChallengeBegin(chall->url);
 					NN<Net::ACMEConn::Challenge> nnchallStatus;

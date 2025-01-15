@@ -19,18 +19,18 @@ namespace UI
 			Optional<Media::ImageList> imgList;
 			Bool noRelease;
 			OSInt frameDelay;
-			Manage::HiResClock *clk;
+			Optional<Manage::HiResClock> clk;
 			Double startTime;
 			OSInt lastFrameNum;
 			Math::Size2D<UOSInt> size;
-			Media::Resizer::LanczosResizer8_C8 *resizer;
+			NN<Media::Resizer::LanczosResizer8_C8> resizer;
 			Sync::Mutex dispMut;
-			Media::StaticImage *dispImg;
+			Optional<Media::StaticImage> dispImg;
 			UOSInt dispFrameNum;
 			Math::Coord2DDbl drawOfst;
 
 		public:
-			SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer);
+			SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizer8_C8> resizer);
 			virtual ~SizedOverlayDObj();
 
 			virtual Bool IsChanged();
@@ -44,7 +44,7 @@ namespace UI
 
 			void SetFrameDelay(OSInt frameDelay);
 			void SetSize(Math::Size2D<UOSInt> size);
-			void SetImage(Text::CStringNN fileName, Parser::ParserList *parsers);
+			void SetImage(Text::CStringNN fileName, NN<Parser::ParserList> parsers);
 		};
 	}
 }

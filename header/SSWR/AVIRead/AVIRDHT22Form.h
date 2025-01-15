@@ -29,7 +29,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::IOPin> pin;
-			IO::Device::DHT22 *dht22;
+			NN<IO::Device::DHT22> dht22;
 
 			static void __stdcall OnReadClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);

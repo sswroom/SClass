@@ -5,9 +5,10 @@
 void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRACMEClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRACMEClientForm>();
-	if (me->client)
+	NN<Net::ACMEClient> client;
+	if (me->client.SetTo(client))
 	{
-		DEL_CLASS(me->client);
+		client.Delete();
 		me->client = 0;
 		me->txtHost->SetReadOnly(false);
 		me->txtKeyFile->SetReadOnly(false);
@@ -39,18 +40,18 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Please enter key file"), CSTR("ACME Client"), me);
 		return;
 	}
-	NEW_CLASS(me->client, Net::ACMEClient(me->clif, sb.ToCString(), port, sbKey.ToCString()));
-	if (me->client->IsError())
+	NEW_CLASSNN(client, Net::ACMEClient(me->clif, sb.ToCString(), port, sbKey.ToCString()));
+	if (client->IsError())
 	{
 		me->ui->ShowMsgOK(CSTR("Server does not have valid response"), CSTR("ACME Client"), me);
-		DEL_CLASS(me->client);
-		me->client = 0;
+		client.Delete();
 		return;
 	}
 	me->txtHost->SetReadOnly(true);
 	me->txtKeyFile->SetReadOnly(true);
-	Text::String *s = me->client->GetTermOfService();
-	if (s)
+	me->client = client;
+	NN<Text::String> s;
+	if (client->GetTermOfService().SetTo(s))
 	{
 		me->txtTermOfService->SetText(s->ToCString());
 	}
@@ -58,8 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 	{
 		me->txtTermOfService->SetText(CSTR(""));
 	}
-	s = me->client->GetWebsite();
-	if (s)
+	if (client->GetWebsite().SetTo(s))
 	{
 		me->txtWebsite->SetText(s->ToCString());
 	}
@@ -67,8 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 	{
 		me->txtWebsite->SetText(CSTR(""));
 	}
-	s = me->client->GetAccountId();
-	if (s)
+	if (client->GetAccountId().SetTo(s))
 	{
 		me->txtAccount->SetText(s->ToCString());
 	}
@@ -123,7 +122,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRACMEClientForm::~AVIRACMEClientForm()
 {
-	SDEL_CLASS(this->client);
+	this->client.Delete();
 }
 
 void SSWR::AVIRead::AVIRACMEClientForm::OnMonitorChanged()

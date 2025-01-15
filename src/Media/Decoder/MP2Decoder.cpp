@@ -538,9 +538,9 @@ Media::Decoder::MP2Decoder::MP2Decoder(NN<Media::IAudioSource> sourceAudio)
         return;
     }
     this->nChannel = fmt.nChannels;
-	this->sourceAudio = sourceAudio.Ptr();
+	this->sourceAudio = sourceAudio;
 	this->context = MemAlloc(kjmp2_context_t, 1);
-	this->blkSize = this->sourceAudio->GetMinBlockSize();
+	this->blkSize = sourceAudio->GetMinBlockSize();
 	kjmp2_init((kjmp2_context_t*)this->context);
 }
 
@@ -554,10 +554,11 @@ Media::Decoder::MP2Decoder::~MP2Decoder()
 
 void Media::Decoder::MP2Decoder::GetFormat(NN<AudioFormat> format)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
-		this->sourceAudio->GetFormat(fmt);
+		sourceAudio->GetFormat(fmt);
 		format->formatId = 1;
 		format->bitpersample = 16;
 		format->frequency = fmt.frequency;
@@ -573,21 +574,24 @@ void Media::Decoder::MP2Decoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::MP2Decoder::SeekToTime(Data::Duration time)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		return this->sourceAudio->SeekToTime(time);
+		return sourceAudio->SeekToTime(time);
 	}
 	return 0;
 }
 
-Bool Media::Decoder::MP2Decoder::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::Decoder::MP2Decoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
+	NN<Sync::Event> readEvt;
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(0, blkSize);
 		this->readEvt = evt;
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return true;
 	}
 	return false;
@@ -595,16 +599,18 @@ Bool Media::Decoder::MP2Decoder::Start(Sync::Event *evt, UOSInt blkSize)
 
 void Media::Decoder::MP2Decoder::Stop()
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Stop();
+		sourceAudio->Stop();
 	}
 	this->readEvt = 0;
 }
 
 UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 {
-	if (this->sourceAudio == 0)
+	NN<Media::IAudioSource> sourceAudio;
+	if (!this->sourceAudio.SetTo(sourceAudio))
 		return 0;
 	UInt8 srcBuff[1440];
 	UOSInt nBlk = blk.GetSize() / 4608;
@@ -612,7 +618,7 @@ UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 	UOSInt outSize = 0;
 	while (nBlk-- > 0)
 	{
-		readSize = this->sourceAudio->ReadBlock(BYTEARR(srcBuff).WithSize(this->blkSize));
+		readSize = sourceAudio->ReadBlock(BYTEARR(srcBuff).WithSize(this->blkSize));
 		this->totalReadSize += readSize;
 		if (readSize == 0)
 		{
@@ -622,7 +628,7 @@ UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 		{
 			Media::AudioFormat fmt;
 			UOSInt size;
-			this->sourceAudio->GetFormat(fmt);
+			sourceAudio->GetFormat(fmt);
 			size = readSize * 8 * fmt.frequency / fmt.bitRate * fmt.nChannels;
 			blk.Clear(0, size);
 			blk += size;

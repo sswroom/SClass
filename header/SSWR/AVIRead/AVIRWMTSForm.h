@@ -32,7 +32,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Map::WebMapTileServiceSource *wmts;
+			Optional<Map::WebMapTileServiceSource> wmts;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
@@ -46,7 +46,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::TileMap *GetTileMap();
+			Optional<Map::TileMap> GetTileMap();
 		};
 	}
 }

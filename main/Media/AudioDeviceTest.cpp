@@ -12,14 +12,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::AudioDevice *dev;
 	NN<Media::SilentSource> audSrc;
 	Media::AudioFilter::AudioSweepFilter *sweepFilter;
-	Media::IAudioRenderer *renderer;
+	NN<Media::IAudioRenderer> renderer;
 	NEW_CLASS(dev, Media::AudioDevice());
 	NEW_CLASSNN(audSrc, Media::SilentSource(48000, 2, 16, CSTR("Silent"), 0));
 	NEW_CLASS(sweepFilter, Media::AudioFilter::AudioSweepFilter(audSrc));
 	sweepFilter->SetVolume(0.3);
 	sweepFilter->StartSweep(10, 24000, 10);
-	renderer = dev->BindAudio(sweepFilter);
-	if (renderer)
+	if (dev->BindAudio(sweepFilter).SetTo(renderer))
 	{
 		Media::RefClock *clk;
 		NEW_CLASS(clk, Media::RefClock());

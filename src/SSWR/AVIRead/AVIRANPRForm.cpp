@@ -20,8 +20,8 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 			NN<Media::StaticImage> img;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 			{
-				SDEL_CLASS(me->currImg);
-				me->currImg = img.Ptr();
+				me->currImg.Delete();
+				me->currImg = img;
 				imgList->RemoveImage(0, false);
 				imgList.Delete();
 				me->pbImg->SetImage(img, false);
@@ -86,7 +86,7 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coo
 {
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	NN<Media::StaticImage> img;
-	if (!img.Set(me->currImg))
+	if (!me->currImg.SetTo(img))
 		return false;
 	if (me->selectMode == ActionType::Corners)
 	{
@@ -202,7 +202,7 @@ SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent,
 SSWR::AVIRead::AVIRANPRForm::~AVIRANPRForm()
 {
 	this->ClearResults();
-	SDEL_CLASS(this->currImg);
+	this->currImg.Delete();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

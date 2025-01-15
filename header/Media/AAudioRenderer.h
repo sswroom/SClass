@@ -34,12 +34,12 @@ namespace Media
 		virtual ~AAudioRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual void AudioInit(NN<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();
-		virtual void SetEndNotify(EndNotifier endHdlr, void *endHdlrObj);
+		virtual void SetEndNotify(EndNotifier endHdlr, AnyType endHdlrObj);
 		virtual void SetBufferTime(Int32 ms);
 
 		virtual Int32 GetDeviceVolume();

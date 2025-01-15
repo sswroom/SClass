@@ -127,10 +127,10 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFilterClicked(AnyType us
 	NN<SSWR::AVIRead::AVIRWiFiLogManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWiFiLogManagerForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFilter->GetText(sb);
-	SDEL_STRING(me->filterText);
+	OPTSTR_DEL(me->filterText);
 	if (sb.GetLength() > 0)
 	{
-		me->filterText = Text::String::New(sb.ToCString()).Ptr();
+		me->filterText = Text::String::New(sb.ToCString());
 	}
 	me->LogUIUpdate();
 }
@@ -174,7 +174,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		{
 			valid = false;
 		}
-		else if (filterText.Set(this->filterText))
+		else if (this->filterText.SetTo(filterText))
 		{
 			valid = false;
 			if (log->ssid->IndexOfICase(filterText) != INVALID_INDEX)
@@ -322,8 +322,8 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(Optional<UI::GUICl
 	this->SetText(CSTR("WiFi Log Manager"));
 
 	this->core = core;
-	NEW_CLASS(this->wifiLogFile, Net::WiFiLogFile());
-	NEW_CLASS(this->macList, Net::MACInfoList());
+	NEW_CLASSNN(this->wifiLogFile, Net::WiFiLogFile());
+	NEW_CLASSNN(this->macList, Net::MACInfoList());
 	this->filterText = 0;
 
 	this->pnlControl = ui->NewPanel(*this);
@@ -390,9 +390,9 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(Optional<UI::GUICl
 
 SSWR::AVIRead::AVIRWiFiLogManagerForm::~AVIRWiFiLogManagerForm()
 {
-	DEL_CLASS(this->wifiLogFile);
-	DEL_CLASS(this->macList);
-	SDEL_STRING(this->filterText);
+	this->wifiLogFile.Delete();
+	this->macList.Delete();
+	OPTSTR_DEL(this->filterText);
 }
 
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::OnMonitorChanged()

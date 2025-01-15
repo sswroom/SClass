@@ -15,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			UI::Clipboard *clipboard;
+			NN<UI::Clipboard> clipboard;
 
 			NN<UI::GUIListBox> lbType;
 			NN<UI::GUIHSplitter> hspMain;

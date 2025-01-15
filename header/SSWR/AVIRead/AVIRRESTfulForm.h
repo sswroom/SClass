@@ -29,10 +29,10 @@ namespace SSWR
 			Net::WebServer::RESTfulHandler *restHdlr;
 			IO::LogTool log;
 			UI::ListBoxLogger *logger;
-			DB::DBConn *dbConn;
-			DB::DBTool *db;
+			Optional<DB::DBConn> dbConn;
+			Optional<DB::DBTool> db;
 			DB::DBCache *dbCache;
-			DB::DBModel *dbModel;
+			Optional<DB::DBModel> dbModel;
 
 			NN<UI::GUITabControl> tcMain;
 

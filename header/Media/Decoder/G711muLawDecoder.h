@@ -13,7 +13,7 @@ namespace Media
 
 			UInt8 *readBuff;
 			UOSInt readBuffSize;
-			Sync::Event *readEvt;
+			Optional<Sync::Event> readEvt;
 		public:
 			G711muLawDecoder(NN<IAudioSource> sourceAudio);
 			virtual ~G711muLawDecoder();
@@ -21,7 +21,7 @@ namespace Media
 			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
 			virtual void Stop();
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 			virtual UOSInt GetMinBlockSize();

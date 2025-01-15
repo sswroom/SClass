@@ -147,7 +147,7 @@ namespace SSWR
 			Math::FFTCalc fft;
 			Media::IAudioSource *audSrc;
 			Int32 audRenderType;
-			Media::IAudioRenderer *audRender;
+			Optional<Media::IAudioRenderer> audRender;
 			Media::RefClock clk;
 			NN<Media::DrawEngine> eng;
 			Media::DrawImage *sampleImg;
@@ -160,17 +160,17 @@ namespace SSWR
 			Sync::Mutex dtmfMut;
 			Text::StringBuilderUTF8 dtmfSb;
 
-			Media::AudioFilter::AudioLevelMeter *audioLevel;
-			Media::AudioFilter::AudioCaptureFilter *audioCapture;
-			Media::AudioFilter::AudioSampleRipper *audioRipper;
-			Media::AudioFilter::DynamicVolBooster *volBooster;
-			Media::AudioFilter::DTMFGenerator *dtmfGen;
-			Media::AudioFilter::DTMFDecoder *dtmfDec;
-			Media::AudioFilter::AudioSweepFilter *sweepFilter;
-			Media::AudioFilter::FileMixFilter *fileMix;
-			Media::AudioFilter::SoundGenerator *sndGen;
-			Media::AudioFilter::ToneGenerator *toneGen;
-			Media::AudioFilter::AudioAmplifier *audioAmp;
+			Optional<Media::AudioFilter::AudioLevelMeter> audioLevel;
+			Optional<Media::AudioFilter::AudioCaptureFilter> audioCapture;
+			Optional<Media::AudioFilter::AudioSampleRipper> audioRipper;
+			Optional<Media::AudioFilter::DynamicVolBooster> volBooster;
+			Optional<Media::AudioFilter::DTMFGenerator> dtmfGen;
+			Optional<Media::AudioFilter::DTMFDecoder> dtmfDec;
+			Optional<Media::AudioFilter::AudioSweepFilter> sweepFilter;
+			Optional<Media::AudioFilter::FileMixFilter> fileMix;
+			Optional<Media::AudioFilter::SoundGenerator> sndGen;
+			Optional<Media::AudioFilter::ToneGenerator> toneGen;
+			Optional<Media::AudioFilter::AudioAmplifier> audioAmp;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnVolBoostChg(AnyType userObj, Bool newState);

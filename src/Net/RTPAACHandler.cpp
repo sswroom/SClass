@@ -63,6 +63,7 @@ Net::RTPAACHandler::~RTPAACHandler()
 
 void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 seqNum, UInt32 ts)
 {
+	NN<Sync::Event> evt;
 	UInt32 headerSize = ReadMUInt16(&buff[0]);
 	if (headerSize & 7)
 	{
@@ -120,9 +121,9 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 	}
 	mutUsage.EndUse();
 
-	if (this->evt)
+	if (this->evt.SetTo(evt))
 	{
-		this->evt->Set();
+		evt->Set();
 	}
 	if (this->dataEvt)
 	{
@@ -216,7 +217,7 @@ Data::Duration Net::RTPAACHandler::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Net::RTPAACHandler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPAACHandler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }
@@ -236,7 +237,7 @@ void Net::RTPAACHandler::GetFormat(NN<Media::AudioFormat> format)
 	format->bitRate = 128000;
 }
 
-Bool Net::RTPAACHandler::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Net::RTPAACHandler::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->evt = evt;
 	if (this->dataEvt)

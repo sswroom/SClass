@@ -27,7 +27,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			DB::DBConn *conn;
+			Optional<DB::DBConn> conn;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -37,7 +37,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			DB::DBConn *GetDBConn();
+			Optional<DB::DBConn> GetDBConn();
 		};
 	}
 }

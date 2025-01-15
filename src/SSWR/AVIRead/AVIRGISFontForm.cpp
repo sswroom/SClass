@@ -80,7 +80,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 	}
 }
 
-SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Optional<Text::String> fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->eng = eng;
@@ -90,9 +90,10 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> p
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
-	if (fontName)
+	NN<Text::String> s;
+	if (fontName.SetTo(s))
 	{
-		this->fontName = fontName->Clone();
+		this->fontName = s->Clone();
 	}
 	else
 	{

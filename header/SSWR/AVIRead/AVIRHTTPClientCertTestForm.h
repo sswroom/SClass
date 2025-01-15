@@ -17,8 +17,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::WebServer::WebListener *svr;
-			IO::LogTool *log;
+			Optional<Net::WebServer::WebListener> svr;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;

@@ -1708,7 +1708,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRODBCDSNForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (conn.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(conn))
 					this->ConnAdd(conn);
 			}
 		}
@@ -1718,7 +1718,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRODBCStrForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (conn.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(conn))
 					this->ConnAdd(conn);
 			}
 		}
@@ -1728,7 +1728,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRMySQLConnForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (conn.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(conn))
 					this->ConnAdd(conn);
 			}
 		}
@@ -1748,7 +1748,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRAccessConnForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (conn.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(conn))
 					this->ConnAdd(conn);
 			}
 		}
@@ -1758,7 +1758,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRPostgreSQLForm dlg(0, this->ui, this->core);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				if (conn.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(conn))
 					this->ConnAdd(conn);
 			}
 		}

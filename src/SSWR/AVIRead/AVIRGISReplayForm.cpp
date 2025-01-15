@@ -26,9 +26,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<Optional<Text::String>> names;
 
 	me->threadRunning = true;
-	if (me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
+	if (me->names.SetTo(names) && me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
 	{
 		latLon = MemAllocA(Math::Coord2DDbl, recCnt);
 		i = 0;
@@ -42,7 +43,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 		{
 			if (me->navi->ResolveAddress(sbuff, latLon[i]).SetTo(sptr))
 			{
-				me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
+				names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			i++;
 		}
@@ -66,6 +67,8 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 	UOSInt i = me->lbRecord->GetSelectedIndex();
 	UOSInt recCnt = 0;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
+	UnsafeArray<Optional<Text::String>> names;
+	NN<Text::String> s;
 	if (i != INVALID_INDEX && me->track->GetTrack(me->currTrackId, recCnt).SetTo(recs))
 	{
 		UTF8Char sbuff[64];
@@ -92,15 +95,15 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 		me->txtNSateView->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrInt32(sbuff, recs[i].nSateUsed);
 		me->txtNSateUsed->SetText(CSTRP(sbuff, sptr));
-		if (me->names != 0)
+		if (me->names.SetTo(names))
 		{
-			if (me->names[i] == 0)
+			if (!names[i].SetTo(s))
 			{
 				me->txtAddress->SetText(CSTR("Loading..."));
 			}
 			else
 			{
-				me->txtAddress->SetText(me->names[i]->ToCString());
+				me->txtAddress->SetText(s->ToCString());
 			}
 		}
 		UOSInt j;
@@ -154,23 +157,24 @@ Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(AnyType userOb
 
 void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 {
-	if (names)
+	UnsafeArray<Optional<Text::String>> names;
+	NN<Text::String> s;
+	if (this->names.SetTo(names))
 	{
 		UOSInt i = namesCnt;
 		while (i-- > 0)
 		{
-			if (names[i])
+			if (names[i].SetTo(s))
 			{
-				names[i]->Release();
-				names[i] = 0;
+				s->Release();
 			}
 		}
-		MemFree(names);
-		names = 0;
+		MemFreeArr(names);
+		this->names = 0;
 	}
 }
 
-SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
+SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, NN<IMapNavigator> navi) : UI::GUIForm(parent, 416, 560, ui)
 {
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -288,7 +292,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	this->lvExtra->AddColumn(CSTR("Name"), 100);
 	this->lvExtra->AddColumn(CSTR("Value"), 128);
 
-	NEW_CLASS(this->mnuRecord, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuRecord, UI::GUIPopupMenu());
 	this->mnuRecord->AddItem(CSTR("Mark &Start"), MNU_MARK_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
 	this->mnuRecord->AddItem(CSTR("Mark &End"), MNU_MARK_END, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_E);
 	this->mnuRecord->AddSeperator();
@@ -322,7 +326,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 SSWR::AVIRead::AVIRGISReplayForm::~AVIRGISReplayForm()
 {
 	this->StopThread();
-	DEL_CLASS(this->mnuRecord);
+	this->mnuRecord.Delete();
 	FreeNames();
 }
 
@@ -401,6 +405,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
+	UnsafeArray<Optional<Text::String>> names;
 	UOSInt recCnt = 0;
 	UnsafeArray<Map::GPSTrack::GPSRecordFull> recs;
 	if (this->track->GetTrack(this->currTrackId, recCnt).SetTo(recs))
@@ -447,10 +452,10 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 				this->lblAddress->SetVisible(true);
 				this->txtAddress->SetVisible(true);
 				FreeNames();
-				this->names = MemAlloc(Text::String*, this->namesCnt = recCnt);
+				this->names = names = MemAllocArr(Optional<Text::String>, this->namesCnt = recCnt);
 				while (recCnt-- > 0)
 				{
-					this->names[recCnt] = 0;
+					names[recCnt] = 0;
 				}
 				this->threadToStop = false;
 				this->threadRunning = false;

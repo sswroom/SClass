@@ -731,7 +731,7 @@ void Map::MapEnv::RemoveItem(Optional<Map::MapEnv::GroupItem> group, UOSInt inde
 			{
 				lyr->layer.Delete();
 			}
-			SDEL_STRING(lyr->fontName);
+			OPTSTR_DEL(lyr->fontName);
 			MemFreeNN(lyr);
 		}
 		else if (nnitem->itemType == Map::MapEnv::IT_GROUP)
@@ -918,6 +918,7 @@ Bool Map::MapEnv::SetLayerProp(NN<Map::MapEnv::LayerItem> setting, Optional<Map:
 	Optional<Map::MapEnv::MapItem> item;
 	NN<MapItem> nnitem;
 	NN<GroupItem> nngroup;
+	NN<Text::String> s;
 	if (group.SetTo(nngroup))
 	{
 		item = nngroup->subitems.GetItem(index);
@@ -941,10 +942,10 @@ Bool Map::MapEnv::SetLayerProp(NN<Map::MapEnv::LayerItem> setting, Optional<Map:
 			lyr->fontStyle = setting->fontStyle;
 			if (lyr->fontName != setting->fontName)
 			{
-				SDEL_STRING(lyr->fontName);
-				if (setting->fontName)
+				OPTSTR_DEL(lyr->fontName);
+				if (setting->fontName.SetTo(s))
 				{
-					lyr->fontName = setting->fontName->Clone().Ptr();
+					lyr->fontName = s->Clone();
 				}
 			}
 			lyr->fontSizePt = setting->fontSizePt;

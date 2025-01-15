@@ -110,7 +110,7 @@ Bool Media::Decoder::VDecoderBase::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::Decoder::VDecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::Decoder::VDecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);

@@ -15,9 +15,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType us
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->dbCache);
-		SDEL_CLASS(me->dbModel);
-		SDEL_CLASS(me->db);
-		SDEL_CLASS(me->dbConn);
+		me->dbModel.Delete();
+		me->db.Delete();
+		me->dbConn.Delete();
 		me->dbConn = frm.GetDBConn();
 		me->InitDB();
 	}
@@ -30,9 +30,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType 
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		SDEL_CLASS(me->dbCache);
-		SDEL_CLASS(me->dbModel);
-		SDEL_CLASS(me->db);
-		SDEL_CLASS(me->dbConn);
+		me->dbModel.Delete();
+		me->db.Delete();
+		me->dbConn.Delete();
 		me->dbConn = frm.GetDBConn();
 		me->InitDB();
 	}
@@ -45,7 +45,8 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 	{
 		return;
 	}
-	if (me->dbConn == 0)
+	NN<DB::DBModel> dbModel;
+	if (me->dbConn.IsNull() || !me->dbModel.SetTo(dbModel))
 	{
 		me->ui->ShowMsgOK(CSTR("No database is connected"), CSTR("RESTful Server"), me);
 		return;
@@ -95,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			me->dbModel->GetTableNames(tableNames);
+			dbModel->GetTableNames(tableNames);
 			i = 0;
 			j = tableNames.GetCount();
 			while (i < j)
@@ -174,15 +175,15 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 	NN<DB::DBTool> db;
 	NN<DB::DBModel> dbModel;
 	NN<DB::DBConn> dbConn;
-	if (dbConn.Set(this->dbConn))
+	if (this->dbConn.SetTo(dbConn))
 	{
 		Text::StringBuilderUTF8 sb;
 		dbConn->GetConnName(sb);
 		NEW_CLASSNN(db, DB::DBTool(dbConn, false, this->log, CSTR("DB: ")));
 		NEW_CLASSNN(dbModel, DB::DBModel());
-		this->db = db.Ptr();
-		this->dbModel = dbModel.Ptr();
-		this->dbModel->LoadDatabase(db, CSTR_NULL, CSTR_NULL);
+		this->db = db;
+		this->dbModel = dbModel;
+		dbModel->LoadDatabase(db, CSTR_NULL, CSTR_NULL);
 		NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
 		this->txtDatabase->SetText(sb.ToCString());
 	}
@@ -276,9 +277,9 @@ SSWR::AVIRead::AVIRRESTfulForm::~AVIRRESTfulForm()
 	SDEL_CLASS(this->svr);
 	SDEL_CLASS(this->restHdlr);
 	SDEL_CLASS(this->dbCache);
-	SDEL_CLASS(this->dbModel);
-	SDEL_CLASS(this->db);
-	SDEL_CLASS(this->dbConn);
+	this->dbModel.Delete();
+	this->db.Delete();
+	this->dbConn.Delete();
 	NN<UI::ListBoxLogger> logger;
 	if (logger.Set(this->logger))
 	{

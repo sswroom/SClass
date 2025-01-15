@@ -22,7 +22,8 @@
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
-	if (me->client)
+	NN<Net::MQTTConn> client;
+	if (me->client.NotNull())
 	{
 		me->ServerStop();
 		me->txtHost->SetReadOnly(false);
@@ -96,20 +97,20 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 				me->ui->ShowMsgOK(CSTR("Error in initializing websocket"), CSTR("Error"), me);
 				return;
 			}
-			NEW_CLASS(me->client, Net::MQTTConn(ws, 0, 0));
+			NEW_CLASSNN(client, Net::MQTTConn(ws, 0, 0));
 		}
 		else
 		{
-			NEW_CLASS(me->client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 10000));
+			NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), useSSL?ssl:0, sb.ToCString(), port, 0, 0, 10000));
 		}
-		if (me->client->IsError())
+		if (client->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in connecting to server"), CSTR("Error"), me);
-			DEL_CLASS(me->client);
-			me->client = 0;
+			client.Delete();
 			return;
 		}
-		me->client->HandlePublishMessage(OnPublishMessage, me);
+		me->client = client;
+		client->HandlePublishMessage(OnPublishMessage, me);
 
 		Text::CString username = CSTR_NULL;
 		Text::CString password = CSTR_NULL;
@@ -132,20 +133,20 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("sswrMQTT/"));
 		sb.AppendI64(dt.ToTicks());
-		Bool succ = me->client->SendConnect(4, 30, sb.ToCString(), username, password);
+		Bool succ = client->SendConnect(4, 30, sb.ToCString(), username, password);
 		SDEL_TEXT(username.v);
 		SDEL_TEXT(password.v);
 		if (succ)
 		{
-			succ = (me->client->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
+			succ = (client->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
 		}
 
 		me->totalCount = 0;
 
 		if (succ)
 		{
-			me->connContent = Text::String::New(sbContent.ToCString()).Ptr();
-			me->connTopic = Text::String::New(sbTopic.ToCString()).Ptr();
+			me->connContent = Text::String::New(sbContent.ToCString());
+			me->connTopic = Text::String::New(sbTopic.ToCString());
 			me->txtHost->SetReadOnly(true);
 			me->txtPort->SetReadOnly(true);
 			me->txtUsername->SetReadOnly(true);
@@ -156,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 			me->txtContent->SetReadOnly(true);
 			me->lblStatus->SetText(CSTR("Connected"));
 			me->btnStart->SetText(CSTR("Stop"));
-			Sync::ThreadUtil::Create(SendThread, me.Ptr());
+			Sync::ThreadUtil::Create(SendThread, me);
 			while (!me->threadRunning)
 			{
 				Sync::SimpleThread::Sleep(1);
@@ -164,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		}
 		else
 		{
-			DEL_CLASS(me->client);
+			client.Delete();
 			me->client = 0;
 			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
@@ -251,9 +252,10 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(AnyType u
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
-	if (me->client)
+	NN<Net::MQTTConn> client;
+	if (me->client.SetTo(client))
 	{
-		if (me->client->IsError())
+		if (client->IsError())
 		{
 			me->ServerStop();
 			me->txtHost->SetReadOnly(false);
@@ -269,8 +271,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(AnyType u
 		}
 		else
 		{
-			me->client->ClearPackets();
-			me->client->SendPing();
+			client->ClearPackets();
+			client->SendPing();
 		}
 	}
 }
@@ -281,10 +283,10 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(AnyType userO
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-
-	if (me->client)
+	NN<Net::MQTTConn> client;
+	if (me->client.SetTo(client))
 	{
-		if (me->client->IsError())
+		if (client->IsError())
 		{
 			me->ServerStop();
 			me->txtHost->SetReadOnly(false);
@@ -300,7 +302,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(AnyType userO
 		}
 		else
 		{
-			sptr = Text::StrUInt64(Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Up: ")), me->client->GetTotalUpload()), UTF8STRC(", Dn: ")), me->client->GetTotalDownload());
+			sptr = Text::StrUInt64(Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Up: ")), client->GetTotalUpload()), UTF8STRC(", Dn: ")), client->GetTotalDownload());
 			me->lblStatus->SetText(CSTRP(sbuff, sptr));
 		}
 	}
@@ -335,12 +337,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(AnyType 
 UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<Net::MQTTConn> client;
 	me->threadRunning = true;
-	while (!me->threadToStop)
+	if (me->client.SetTo(client))
 	{
-		if (me->client->SendPublish(me->connTopic->ToCString(), me->connContent->ToCString()))
+		while (!me->threadToStop)
 		{
-			Sync::Interlocked::IncrementU64(me->totalCount);
+			if (client->SendPublish(Text::String::OrEmpty(me->connTopic)->ToCString(), Text::String::OrEmpty(me->connContent)->ToCString()))
+			{
+				Sync::Interlocked::IncrementU64(me->totalCount);
+			}
 		}
 	}
 	me->threadRunning = false;
@@ -349,7 +355,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(AnyType user
 
 void SSWR::AVIRead::AVIRMQTTPublishTestForm::ServerStop()
 {
-	if (this->client)
+	NN<Net::MQTTConn> client;
+	if (this->client.SetTo(client))
 	{
 		this->threadToStop = true;
 		while (this->threadRunning)
@@ -357,10 +364,10 @@ void SSWR::AVIRead::AVIRMQTTPublishTestForm::ServerStop()
 			Sync::SimpleThread::Sleep(1);
 		}
 		this->threadToStop = false;
-		DEL_CLASS(this->client);
+		client.Delete();
 		this->client = 0;
-		SDEL_STRING(this->connTopic);
-		SDEL_STRING(this->connContent);
+		OPTSTR_DEL(this->connTopic);
+		OPTSTR_DEL(this->connContent);
 	}
 }
 

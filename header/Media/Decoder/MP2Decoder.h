@@ -14,7 +14,7 @@ namespace Media
 			UOSInt blkSize;
 			UInt64 totalReadSize;
 
-			Sync::Event *readEvt;
+			Optional<Sync::Event> readEvt;
 		public:
 			MP2Decoder(NN<IAudioSource> sourceAudio);
 			virtual ~MP2Decoder();
@@ -22,7 +22,7 @@ namespace Media
 			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
 			virtual void Stop();
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 			virtual UOSInt GetMinBlockSize();

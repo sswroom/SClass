@@ -19,7 +19,7 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlButtons;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
-			NN<UI::GUIComboBox> *colsCbo;
+			UnsafeArrayOpt<NN<UI::GUIComboBox>> colsCbo;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Data::ArrayList<UOSInt>> colInd;

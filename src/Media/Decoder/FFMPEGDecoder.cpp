@@ -1313,7 +1313,7 @@ private:
 	UOSInt readBlockSize;
 	Bool seeked;
 
-	Sync::Event *readEvt;
+	Optional<Sync::Event> readEvt;
 
 	OSInt GetChannelCnt()
 	{
@@ -1537,26 +1537,29 @@ public:
 
 	virtual Data::Duration SeekToTime(Data::Duration time)
 	{
-		if (this->sourceAudio)
+		NN<Media::IAudioSource> sourceAudio;
+		if (this->sourceAudio.SetTo(sourceAudio))
 		{
 			this->seeked = true;
 			this->frameBuffSize = 0;
-			return this->sourceAudio->SeekToTime(time);
+			return sourceAudio->SeekToTime(time);
 		}
 		return 0;
 	}
 
-	virtual Bool Start(Sync::Event *evt, UOSInt blkSize)
+	virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize)
 	{
-		if (this->sourceAudio)
+		NN<Sync::Event> nnevt;
+		NN<Media::IAudioSource> sourceAudio;
+		if (this->sourceAudio.SetTo(sourceAudio))
 		{
 			this->seeked = true;
 			this->frameBuffSize = 0;
-			this->sourceAudio->Start(0, blkSize);
+			sourceAudio->Start(0, blkSize);
 			this->readEvt = evt;
 
-			if (this->readEvt)
-				this->readEvt->Set();
+			if (this->readEvt.SetTo(nnevt))
+				nnevt->Set();
 			return true;
 		}
 		return false;
@@ -1564,9 +1567,10 @@ public:
 
 	virtual void Stop()
 	{
-		if (this->sourceAudio)
+		NN<Media::IAudioSource> sourceAudio;
+		if (this->sourceAudio.SetTo(sourceAudio))
 		{
-			this->sourceAudio->Stop();
+			sourceAudio->Stop();
 		}
 		this->readEvt = 0;
 	}
@@ -1577,7 +1581,9 @@ public:
 		UOSInt i;
 	    AVPacket avpkt;
 		Int32 ret;
-		if (this->decFmt == 0 || !this->inited)
+		NN<Media::IAudioSource> sourceAudio;
+		NN<Sync::Event> readEvt;
+		if (this->decFmt == 0 || !this->inited || !this->sourceAudio.SetTo(sourceAudio))
 		{
 			return 0;
 		}
@@ -1616,25 +1622,25 @@ public:
 					{
 						MemCopyO(this->frameBuff, &this->frameBuff[blk.GetSize()], this->frameBuffSize - blk.GetSize());
 						this->frameBuffSize -= blk.GetSize();
-						if (this->readEvt)
-							this->readEvt->Set();
+						if (this->readEvt.SetTo(readEvt))
+							readEvt->Set();
 						return outSize;
 					}
 					else
 					{
 						this->frameBuffSize = 0;
-						if (this->readEvt)
-							this->readEvt->Set();
+						if (this->readEvt.SetTo(readEvt))
+							readEvt->Set();
 						return outSize;
 					}
 				}
 			}
 
-			UOSInt srcSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->readBuff, this->readBlockSize));
+			UOSInt srcSize = sourceAudio->ReadBlock(Data::ByteArray(this->readBuff, this->readBlockSize));
 			if (srcSize == 0)
 			{
-				if (this->readEvt)
-					this->readEvt->Set();
+				if (this->readEvt.SetTo(readEvt))
+					readEvt->Set();
 				return outSize;
 			}
 			avpkt.data = this->readBuff;
@@ -1654,8 +1660,8 @@ public:
 				ret = FFMPEGDecoder_avcodec_decode_audio4(this->ctx, this->frame, &gotFrame, &avpkt);
 				if (ret < 0)
 				{
-					if (this->readEvt)
-						this->readEvt->Set();
+					if (this->readEvt.SetTo(readEvt))
+						readEvt->Set();
 					return outSize;
 				}
 				else
@@ -1900,8 +1906,8 @@ public:
 				}
 			}*/
 		}
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		//FFMPEGDecoder_av_packet_unref(&avpkt);
 		return outSize;
 	}

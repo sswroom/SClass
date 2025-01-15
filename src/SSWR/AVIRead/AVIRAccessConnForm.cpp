@@ -31,18 +31,20 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter file name"), CSTR("Access Conn"), me);
 		return;
 	}
-	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, 0, 0));
-	if (((DB::MDBFileConn*)me->conn)->GetConnError() == DB::ODBCConn::CE_NONE)
+	NN<DB::MDBFileConn> conn;
+	NEW_CLASSNN(conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, 0, 0));
+	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
+		me->conn = conn;
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 	else
 	{
 		sbFileName.ClearStr();
 		sbFileName.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
-		me->conn->GetLastErrorMsg(sbFileName);
+		conn->GetLastErrorMsg(sbFileName);
 		me->ui->ShowMsgOK(sbFileName.ToCString(), CSTR("Access Conn"), me);
-		DEL_CLASS(me->conn);
+		conn.Delete();
 	}
 }
 
@@ -89,7 +91,7 @@ void SSWR::AVIRead::AVIRAccessConnForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-DB::DBConn *SSWR::AVIRead::AVIRAccessConnForm::GetDBConn()
+Optional<DB::DBConn> SSWR::AVIRead::AVIRAccessConnForm::GetDBConn()
 {
 	return this->conn;
 }

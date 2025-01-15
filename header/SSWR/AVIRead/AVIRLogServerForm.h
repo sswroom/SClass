@@ -26,7 +26,7 @@ namespace SSWR
 			};
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::LogServer *svr;
+			Optional<Net::LogServer> svr;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblPort;

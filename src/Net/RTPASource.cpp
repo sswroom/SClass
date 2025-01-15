@@ -33,7 +33,7 @@ Data::Duration Net::RTPASource::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Net::RTPASource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Net::RTPASource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }
@@ -43,7 +43,7 @@ void Net::RTPASource::GetFormat(NN<Media::AudioFormat> format)
 	return this->hdlr->GetFormat(format);
 }
 
-Bool Net::RTPASource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Net::RTPASource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->hdlr->Start(evt, blkSize);
 	this->ch->StartPlay();

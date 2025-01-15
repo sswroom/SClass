@@ -67,12 +67,12 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 	entry->name = Text::String::New(sbName.ToCString());
 	if (type == 0)
 	{
-		NEW_CLASS(entry->otp, Crypto::HOTP(buff, keySize, 1));
+		NEW_CLASSNN(entry->otp, Crypto::HOTP(buff, keySize, 1));
 		entry->lastCounter = entry->otp->GetCounter();
 	}
 	else
 	{
-		NEW_CLASS(entry->otp, Crypto::TOTP(buff, keySize));
+		NEW_CLASSNN(entry->otp, Crypto::TOTP(buff, keySize));
 		entry->lastCounter = 0;
 	}
 	me->entryList.Add(entry);
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIROTPForm::~AVIROTPForm()
 	{
 		entry = this->entryList.GetItemNoCheck(i);
 		entry->name->Release();
-		DEL_CLASS(entry->otp);
+		entry->otp.Delete();
 		MemFreeNN(entry);
 	}
 }

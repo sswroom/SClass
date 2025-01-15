@@ -17,14 +17,14 @@ namespace UI
 			Math::Coord2D<OSInt> videoTL;
 			Math::Size2D<UOSInt> videoSize;
 
-			UI::GUIForm *ownerFrm;
+			NN<UI::GUIForm> ownerFrm;
 			NN<UI::GUITimer> tmr;
 			NN<Text::String> videoFileName;
 			Sync::Mutex frameMut;
 			Optional<Media::DrawImage> frameImg;
-			Parser::ParserList *parsers;
+			NN<Parser::ParserList> parsers;
 			Optional<Media::MediaFile> mf;
-			Media::MediaPlayer *player;
+			Optional<Media::MediaPlayer> player;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnPBEnd(AnyType userObj);
@@ -35,7 +35,7 @@ namespace UI
 			virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage);
 			virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 		public:
-			VideoDObjHandler(UI::GUIForm *ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
+			VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Parser::ParserList> parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
 			virtual ~VideoDObjHandler();
 
 			void UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize);

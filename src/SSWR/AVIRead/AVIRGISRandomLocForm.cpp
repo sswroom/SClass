@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(AnyType user
 	}
 }
 
-SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 240, 72, ui)
+SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi) : UI::GUIForm(parent, 240, 72, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

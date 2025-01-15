@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnDevicesDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
-			UOSInt UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex);
+			UOSInt UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, NN<Data::FastMap<UInt64, UInt32>> statusMap, UOSInt baseIndex);
 		public:
 			AVIRBluetoothCtlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothCtlForm();
