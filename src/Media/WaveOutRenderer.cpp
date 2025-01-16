@@ -113,110 +113,114 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 	Data::Duration lastT;
 	Int32 stmEnd;
 	Bool needNotify = false;
+	NN<Media::IAudioSource> audsrc;
+	NN<Media::RefClock> clk;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	NEW_CLASS(evt, Sync::Event());
 
 	me->playing = true;
 	me->threadInit = true;
-	me->audsrc->GetFormat(af);
-	if (me->buffTime)
+	if (me->audsrc.SetTo(audsrc))
 	{
-		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
-	}
-	i = 4;
-	MemClear(&hdrs[0], sizeof(WAVEHDR) * 4);
-	audStartTime = me->audsrc->GetCurrTime();
-	minLeng = me->audsrc->GetMinBlockSize();
-	if (minLeng > buffLeng)
-		buffLeng = minLeng;
-
-	me->clk->Start(audStartTime);
-	me->audsrc->Start(evt, buffLeng);
-
-	waveOutRestart((HWAVEOUT)me->hwo);
-	waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-	lastT = thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
-	refStart = thisT - audStartTime;
-	stmEnd = 0;
-
-	while (i-- > 0)
-	{
-		hdrs[i].dwBufferLength = (DWORD)buffLeng;
-		hdrs[i].lpData = MemAlloc(CHAR, buffLeng);
-		hdrs[i].dwUser = i;
-		me->buffEmpty[i] = false;
-		hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), af);
-
-		waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
-		waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
-	}
-
-	while (!me->stopPlay)
-	{
+		audsrc->GetFormat(af);
+		if (me->buffTime)
+		{
+			buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
+		}
 		i = 4;
+		MemClear(&hdrs[0], sizeof(WAVEHDR) * 4);
+		audStartTime = audsrc->GetCurrTime();
+		minLeng = audsrc->GetMinBlockSize();
+		if (minLeng > buffLeng)
+			buffLeng = minLeng;
+
+		if (me->clk.SetTo(clk)) clk->Start(audStartTime);
+		audsrc->Start(evt, buffLeng);
+
+		waveOutRestart((HWAVEOUT)me->hwo);
+		waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
+		lastT = thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
+		refStart = thisT - audStartTime;
+		stmEnd = 0;
+
 		while (i-- > 0)
 		{
-			if (me->buffEmpty[i])
+			hdrs[i].dwBufferLength = (DWORD)buffLeng;
+			hdrs[i].lpData = MemAlloc(CHAR, buffLeng);
+			hdrs[i].dwUser = i;
+			me->buffEmpty[i] = false;
+			hdrs[i].dwBufferLength = (DWORD)audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), af);
+
+			waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+			waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+		}
+
+		while (!me->stopPlay)
+		{
+			i = 4;
+			while (i-- > 0)
 			{
-				me->buffEmpty[i] = false;
-				if (stmEnd == 4)
+				if (me->buffEmpty[i])
 				{
-					me->stopPlay = true;
-					me->audsrc->Stop();
-					needNotify = true;
-					break;
-				}
-				else if (stmEnd > 0)
-				{
-					stmEnd++;
-					hdrs[i].dwBufferLength = (DWORD)buffLeng;
-					MemClear(hdrs[i].lpData, buffLeng);
-				}
-				else
-				{
-					hdrs[i].dwBufferLength = (DWORD)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), af);
-					if (hdrs[i].dwBufferLength == 0)
+					me->buffEmpty[i] = false;
+					if (stmEnd == 4)
 					{
+						me->stopPlay = true;
+						audsrc->Stop();
+						needNotify = true;
+						break;
+					}
+					else if (stmEnd > 0)
+					{
+						stmEnd++;
 						hdrs[i].dwBufferLength = (DWORD)buffLeng;
 						MemClear(hdrs[i].lpData, buffLeng);
-						stmEnd = 1;
+					}
+					else
+					{
+						hdrs[i].dwBufferLength = (DWORD)audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)hdrs[i].lpData, buffLeng), af);
+						if (hdrs[i].dwBufferLength == 0)
+						{
+							hdrs[i].dwBufferLength = (DWORD)buffLeng;
+							MemClear(hdrs[i].lpData, buffLeng);
+							stmEnd = 1;
+						}
+					}
+
+					waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+					waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
+
+					waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
+					thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
+					if (lastT > thisT)
+					{
+						waveOutReset((HWAVEOUT)me->hwo);
+						waveOutRestart((HWAVEOUT)me->hwo);
+						waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
+						lastT = thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
+						refStart = thisT - audsrc->GetCurrTime();
+					}
+					else
+					{
+						if (me->clk.SetTo(clk)) clk->Start(thisT - refStart);
+						lastT = thisT;
 					}
 				}
 
-				waveOutPrepareHeader((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
-				waveOutWrite((HWAVEOUT)me->hwo, &hdrs[i], sizeof(WAVEHDR));
-
-				waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-				thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
-				if (lastT > thisT)
-				{
-					waveOutReset((HWAVEOUT)me->hwo);
-					waveOutRestart((HWAVEOUT)me->hwo);
-					waveOutGetPosition((HWAVEOUT)me->hwo, &mmt, sizeof(mmt));
-					lastT = thisT = Media::WaveOutRenderer::GetDurFromTime(&mmt, af);
-					refStart = thisT - me->audsrc->GetCurrTime();
-				}
-				else
-				{
-					me->clk->Start(thisT - refStart);
-					lastT = thisT;
-				}
 			}
 
+			me->playEvt->Wait();
 		}
 
-		me->playEvt->Wait();
+		waveOutPause((HWAVEOUT)me->hwo);
+		waveOutReset((HWAVEOUT)me->hwo);
+		i = 4;
+		while (i-- > 0)
+		{
+			MemFree(hdrs[i].lpData);
+		}
 	}
-
-	waveOutPause((HWAVEOUT)me->hwo);
-	waveOutReset((HWAVEOUT)me->hwo);
-	i = 4;
-	while (i-- > 0)
-	{
-		MemFree(hdrs[i].lpData);
-	}
-
 	DEL_CLASS(evt);
 	me->playing = false;
 
@@ -336,7 +340,7 @@ Media::WaveOutRenderer::WaveOutRenderer(Int32 devId)
 
 Media::WaveOutRenderer::~WaveOutRenderer()
 {
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		BindAudio(0);
 	}
@@ -347,25 +351,26 @@ Bool Media::WaveOutRenderer::IsError()
 	return false;
 }
 
-Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::WaveOutRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	HWAVEOUT hwo;
 	Media::AudioFormat fmt;
+	NN<Media::IAudioSource> nnaudsrc;
 	if (playing)
 	{
 		Stop();
 	}
-	if (this->audsrc)
+	if (this->audsrc.NotNull())
 	{
 		waveOutClose((HWAVEOUT)this->hwo);
 		this->audsrc = 0;
 		this->hwo = 0;
 		DEL_CLASS(playEvt);
 	}
-	if (audsrc == 0)
+	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
-	audsrc->GetFormat(fmt);
+	nnaudsrc->GetFormat(fmt);
 	if (fmt.formatId != 1 && fmt.formatId != WAVE_FORMAT_IEEE_FLOAT)
 	{
 		return false;
@@ -448,11 +453,11 @@ Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 	}
 }
 
-void Media::WaveOutRenderer::AudioInit(Media::RefClock *clk)
+void Media::WaveOutRenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->clk = clk;
 }
@@ -461,7 +466,7 @@ void Media::WaveOutRenderer::Start()
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	threadInit = false;
 	stopPlay = false;
@@ -474,13 +479,14 @@ void Media::WaveOutRenderer::Start()
 
 void Media::WaveOutRenderer::Stop()
 {
+	NN<Media::IAudioSource> audsrc;
 	stopPlay = true;
 	if (!playing)
 		return;
 	playEvt->Set();
-	if (this->audsrc)
+	if (this->audsrc.SetTo(audsrc))
 	{
-		this->audsrc->Stop();
+		audsrc->Stop();
 	}
 	while (playing)
 	{

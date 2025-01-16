@@ -75,14 +75,15 @@ void Media::WaveInSource::OpenAudio()
 void __stdcall Media::WaveInSource::AudioBlock(void *hwi, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2)
 {
 	Media::WaveInSource *me = (Media::WaveInSource*)dwInstance;
+	NN<Sync::Event> evt;
 	if (me->started)
 	{
 		if (uMsg == WIM_DATA)
 		{
 			WAVEHDR *hdr = (WAVEHDR*)dwParam1;
 			hdr->dwUser = me->nextId++;
-			if (me->evt)
-				me->evt->Set();
+			if (me->evt.SetTo(evt))
+				evt->Set();
 			me->dataEvt->Set();
 		}
 	}
@@ -182,7 +183,7 @@ Data::Duration Media::WaveInSource::SeekToTime(Data::Duration time)
 	return 0;
 }
 
-Bool Media::WaveInSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::WaveInSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	return false;
 }
@@ -197,7 +198,7 @@ void Media::WaveInSource::GetFormat(NN<AudioFormat> format)
 	format->align = this->nChannels * (UInt32)this->nbits >> 3;
 }
 
-Bool Media::WaveInSource::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::WaveInSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	Stop();
 	UOSInt bSize = blkSize / (this->nChannels * (UOSInt)this->nbits >> 3);

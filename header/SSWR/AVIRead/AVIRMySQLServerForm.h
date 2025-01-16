@@ -21,8 +21,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::MySQLServer *svr;
-			DB::DBMS *dbms;
+			Optional<Net::MySQLServer> svr;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 

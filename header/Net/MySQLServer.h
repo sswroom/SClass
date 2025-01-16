@@ -24,9 +24,9 @@ namespace Net
 	private:
 		NN<Net::SocketFactory> sockf;
 		NN<IO::LogTool> log;
-		Net::TCPServer *svr;
-		DB::DBMS *dbms;
-		Net::TCPClientMgr *cliMgr;
+		Optional<Net::TCPServer> svr;
+		NN<DB::DBMS> dbms;
+		NN<Net::TCPClientMgr> cliMgr;
 		Int32 connId;
 		Sync::Mutex randMut;
 		Data::RandomMT19937 rand;
@@ -39,7 +39,7 @@ namespace Net
 		static void __stdcall OnClientConn(NN<Socket> s, AnyType userObj);
 		
 	public:
-		MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart);
+		MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NN<DB::DBMS> dbms, Bool autoStart);
 		~MySQLServer();
 
 		Bool Start();

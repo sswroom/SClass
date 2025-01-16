@@ -65,26 +65,26 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 			sptr = sbuff;
 			if (mtype == Media::MEDIA_TYPE_VIDEO)
 			{
-				if (this->activeVideo == 0)
+				if (this->activeVideo.IsNull())
 				{
 					SetActiveVideo(NN<Media::IVideoSource>::ConvertFrom(medSource));
 				}
-				if (this->activeVideo == medSource.Ptr())
+				if (this->activeVideo.OrNull() == medSource.Ptr())
 					*sptr++ = '*';
 				Text::StrConcatC(sptr, UTF8STRC("(V)"));
 			}
 			else if (mtype == Media::MEDIA_TYPE_AUDIO)
 			{
-				if (this->activeAudio == 0)
+				if (this->activeAudio.IsNull())
 				{
 					SetActiveAudio(NN<Media::IAudioSource>::ConvertFrom(medSource), syncTime);
 				}
-				if (this->activeAudio == medSource.Ptr())
+				if (this->activeAudio.OrNull() == medSource.Ptr())
 					*sptr++ = '*';
 				Text::StrConcatC(sptr, UTF8STRC("(A)"));
 			}
 			sptr = medSource->GetSourceName(sptr).Or(sptr);
-			this->lbFiles->AddItem(CSTRP(sbuff, sptr), medSource.Ptr());
+			this->lbFiles->AddItem(CSTRP(sbuff, sptr), medSource);
 		}
 		i++;
 	}
@@ -144,7 +144,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NN<Media::IVideoSource> video)
 	else
 	{
 		this->activeVideo = video.Ptr();
-		this->vbdMain->SetVideo(this->activeVideo);
+		this->vbdMain->SetVideo(this->activeVideo.OrNull());
 		this->clk->Stop();
 	}
 }
@@ -204,13 +204,13 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Mat
 void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
-	Media::IMediaSource *mediaSrc = (Media::IMediaSource*)me->lbFiles->GetSelectedItem().p;
-	if (mediaSrc == 0)
+	NN<Media::IMediaSource> mediaSrc;
+	if (!me->lbFiles->GetSelectedItem().GetOpt<Media::IMediaSource>().SetTo(mediaSrc))
 	{
 	}
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 	{
-		Media::IAudioSource *audSrc = (Media::IAudioSource*)mediaSrc;
+		NN<Media::IAudioSource> audSrc = NN<Media::IAudioSource>::ConvertFrom(mediaSrc);
 		SSWR::AVIRead::AVIRAudioViewerForm frm(0, me->ui, me->core, audSrc);
 		frm.ShowDialog(me);
 	}
@@ -261,22 +261,24 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTim
 void SSWR::AVIRead::AVIRMediaForm::PBStart(Data::Duration startTime)
 {
 	NN<Media::IAudioRenderer> audRenderer;
+	NN<Media::IVideoSource> activeVideo;
+	NN<Media::IAudioSource> activeAudio;
 	if (this->currDecoder)
 	{
 		this->currDecoder->SeekToTime(startTime);
 	}
-	else if (this->activeVideo)
+	else if (this->activeVideo.SetTo(activeVideo))
 	{
-		this->activeVideo->SeekToTime(startTime);
+		activeVideo->SeekToTime(startTime);
 	}
 
 	if (this->currADecoder)
 	{
 		startTime = this->currADecoder->SeekToTime(startTime);
 	}
-	else if (this->activeAudio)
+	else if (this->activeAudio.SetTo(activeAudio))
 	{
-		startTime = this->activeAudio->SeekToTime(startTime);
+		startTime = activeAudio->SeekToTime(startTime);
 	}
 	else
 	{
@@ -298,13 +300,14 @@ void SSWR::AVIRead::AVIRMediaForm::PBStop()
 Bool SSWR::AVIRead::AVIRMediaForm::PBIsPlaying()
 {
 	NN<Media::IAudioRenderer> audRenderer;
+	NN<Media::IVideoSource> activeVideo;
 	if (!this->playing)
 	{
 		return false;
 	}
 	if (this->audRenderer.SetTo(audRenderer) && audRenderer->IsPlaying())
 		return true;
-	if (this->activeVideo && this->activeVideo->IsRunning())
+	if (this->activeVideo.SetTo(activeVideo) && activeVideo->IsRunning())
 		return true;
 	this->playing = false;
 	return false;
@@ -336,7 +339,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
+	NEW_CLASSNN(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NN<UI::GUIMenu> mnu;
@@ -412,6 +415,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 
 void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 {
+	NN<Media::IVideoSource> activeVideo;
 	Data::Duration currTime;
 	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
@@ -498,7 +502,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_VIDEO_ORISIZE:
-		if (this->activeVideo)
+		if (this->activeVideo.SetTo(activeVideo))
 		{
 			Media::FrameInfo info;
 			Math::Size2D<UOSInt> sz1;
@@ -516,9 +520,9 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				this->activeVideo->GetVideoInfo(info, tmpV, tmpV, sz1.x);
+				activeVideo->GetVideoInfo(info, tmpV, tmpV, sz1.x);
 			}
-			this->activeVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+			activeVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 			if (this->vbdMain->IsFullScreen())
 			{
 				this->vbdMain->SwitchFullScreen(false, false);

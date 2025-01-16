@@ -8,8 +8,9 @@
 #include <setupapi.h>
 
 
-Media::DDCReader::DDCReader(void *hMon)
+Media::DDCReader::DDCReader(AnyType hMon)
 {
+	UnsafeArray<UInt8> edid;
 	this->edid = 0;
 	this->edidSize = 0;
 	this->hMon = hMon;
@@ -18,7 +19,7 @@ Media::DDCReader::DDCReader(void *hMon)
 
 	MONITORINFOEXW monInfo;
 	monInfo.cbSize = sizeof(monInfo);
-	if (!GetMonitorInfoW((HMONITOR)hMon, &monInfo))
+	if (!GetMonitorInfoW((HMONITOR)hMon.p, &monInfo))
 	{
 		return;
 	}
@@ -91,15 +92,15 @@ Media::DDCReader::DDCReader(void *hMon)
 												(monVID[2] == 0x40 + (edidData[9] & 0x1f)))
 											{
 												this->edidSize = edidSize;
-												this->edid = MemAlloc(UInt8, edidSize);
-												MemCopyNO(this->edid, edidData, edidSize);
+												this->edid = edid = MemAllocArr(UInt8, edidSize);
+												MemCopyNO(edid.Ptr(), edidData, edidSize);
 											}
 											break;
 										}
 										j++;
 									}
 									RegCloseKey(hDevRegKey);
-									if (this->edid != 0)
+									if (this->edid.NotNull())
 									{
 										break;
 									}
@@ -126,6 +127,7 @@ Media::DDCReader::DDCReader(void *hMon)
 
 Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 {
+	UnsafeArray<UInt8> edid;
 	this->edid = 0;
 	this->edidSize = 0;
 	this->hMon = 0;
@@ -150,7 +152,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 		ddMon.cb = sizeof(ddMon);
 		DWORD devMon = 0;
 		
-		while ((this->edid == 0) && EnumDisplayDevicesW(dd.DeviceName, devMon, &ddMon, 0))
+		while (!this->edid.SetTo(edid) && EnumDisplayDevicesW(dd.DeviceName, devMon, &ddMon, 0))
 		{
 			if (ddMon.StateFlags & DISPLAY_DEVICE_ACTIVE && !(ddMon.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER))
 			{
@@ -202,15 +204,15 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 												(monVID[2] == 0x40 + (edidData[9] & 0x1f)))
 											{
 												this->edidSize = edidSize;
-												this->edid = MemAlloc(UInt8, edidSize);
-												MemCopyNO(this->edid, edidData, edidSize);
+												this->edid = edid = MemAllocArr(UInt8, edidSize);
+												MemCopyNO(edid.Ptr(), edidData, edidSize);
 											}
 											break;
 										}
 										j++;
 									}
 									RegCloseKey(hDevRegKey);
-									if (this->edid != 0)
+									if (this->edid.NotNull())
 									{
 										break;
 									}
@@ -235,24 +237,26 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
     }
 }
 
-Media::DDCReader::DDCReader(UInt8 *edid, UOSInt edidSize)
+Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize)
 {
-	this->edid = MemAlloc(UInt8, edidSize);
+	UnsafeArray<UInt8> nnedid;
+	this->edid = nnedid = MemAllocArr(UInt8, edidSize);
 	this->edidSize = edidSize;
 	this->hMon = 0;
-	MemCopyNO(this->edid, edid, edidSize);
+	MemCopyNO(nnedid.Ptr(), edid.Ptr(), edidSize);
 }
 
 Media::DDCReader::~DDCReader()
 {
-	if (this->edid)
+	UnsafeArray<UInt8> nnedid;
+	if (this->edid.SetTo(nnedid))
 	{
-		MemFree(this->edid);
+		MemFreeArr(nnedid);
 		this->edid = 0;
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(OutParam<UOSInt> size)
+UnsafeArrayOpt<UInt8> Media::DDCReader::GetEDID(OutParam<UOSInt> size)
 {
 	size.Set(this->edidSize);
 	return this->edid;

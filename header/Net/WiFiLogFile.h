@@ -15,14 +15,14 @@ namespace Net
 			NN<Text::String> ssid;
 			Int32 phyType;
 			Double freq;
-			Text::String *manuf;
-			Text::String *model;
-			Text::String *serialNum;
+			Optional<Text::String> manuf;
+			Optional<Text::String> model;
+			Optional<Text::String> serialNum;
 			Optional<Text::String> country;
 			UInt8 ouis[3][3];
 			UInt64 neighbour[20];
 			UInt32 ieLen;
-			UInt8 *ieBuff;
+			UnsafeArrayOpt<UInt8> ieBuff;
 			Data::Timestamp lastScanTime;
 			Double lastRSSI;
 		} LogFileEntry;

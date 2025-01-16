@@ -301,7 +301,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 	me->procThread.Notify();
 	if (sbuffPtr.SetTo(sbuff)) MemFreeArr(sbuff);
-	while (me->procThread.IsRunning() && me->reqURL && !me->respChanged)
+	while (me->procThread.IsRunning() && me->reqURL.NotNull() && !me->respChanged)
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
@@ -310,7 +310,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	if (me->respData == 0)
+	if (me->respData.IsNull())
 	{
 		return;
 	}
@@ -360,15 +360,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 		{
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Sync::MutexUsage mutUsage(me->respMut);
-			if (me->respData)
+			NN<IO::MemoryStream> respData;
+			if (me->respData.SetTo(respData))
 			{
 				UOSInt buffSize;
 				UOSInt writeSize;
-				UnsafeArray<UInt8> buff = me->respData->GetBuff(buffSize);
+				UnsafeArray<UInt8> buff = respData->GetBuff(buffSize);
 				writeSize = fs.Write(Data::ByteArrayR(buff, buffSize));
 				succ = (writeSize == buffSize);
 			}
-			mutUsage.EndUse();
 		}
 		if (!succ)
 		{
@@ -381,18 +381,20 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<IO::MemoryStream> respData;
 	Sync::MutexUsage mutUsage(me->respMut);
-	if (me->respData)
+	if (me->respData.SetTo(respData))
 	{
 		UOSInt buffSize;
-		UnsafeArray<UInt8> buff = me->respData->GetBuff(buffSize);
+		UnsafeArray<UInt8> buff = respData->GetBuff(buffSize);
 		NN<Text::IMIMEObj> mimeObj;
 		{
 			IO::StmData::MemoryDataRef md(buff, buffSize);
 			Text::CStringNN contType;
-			if (me->respContType)
+			NN<Text::String> respContType;
+			if (me->respContType.SetTo(respContType))
 			{
-				contType = me->respContType->ToCString();
+				contType = respContType->ToCString();
 			}
 			else
 			{
@@ -404,7 +406,6 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 			}
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userObj)
@@ -545,14 +546,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread> thread)
 {
 	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	Text::String *currURL;
+	NN<Text::String> currURL;
 	UnsafeArrayOpt<const UTF8Char> currBody;
 	UnsafeArray<const UTF8Char> nncurrBody;
 	UOSInt currBodyLen;
-	Text::String *currBodyType;
-	Text::String *currUserName;
-	Text::String *currPassword;
-	Text::String *currHeaders;
+	NN<Text::String> currBodyType;
+	Optional<Text::String> currUserName;
+	Optional<Text::String> currPassword;
+	Optional<Text::String> currHeaders;
+	NN<Text::String> s;
+	NN<Text::String> s2;
 	Bool currAllowComp;
 	Net::WebUtil::RequestMethod currMeth;
 	Bool currOSClient;
@@ -563,12 +566,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!thread->IsStopping())
 	{
-		if (me->reqURL && !me->respChanged)
+		if (me->reqURL.SetTo(currURL) && me->reqBodyType.SetTo(currBodyType) && !me->respChanged)
 		{
-			currURL = me->reqURL;
 			currBody = me->reqBody;
 			currBodyLen = me->reqBodyLen;
-			currBodyType = me->reqBodyType;
 			currMeth = me->reqMeth;
 			currUserName = me->reqUserName;
 			currPassword = me->reqPassword;
@@ -619,10 +620,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 					cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
 				}
 				
-				if (currHeaders)
+				if (currHeaders.SetTo(s))
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append(currHeaders);
+					sb.Append(s);
 					Text::PString sarr[2];
 					Text::PString sarr2[2];
 					sarr[1] = sb;
@@ -662,7 +663,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				me->respULSize = cli->GetTotalUpload();
 				me->respDLSize = cli->GetTotalDownload();
 				me->respStatus = cli->GetRespStatus();
-				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
+				if (me->respStatus == 401 && currUserName.SetTo(s) && currPassword.SetTo(s2))
 				{
 					cli.Delete();
 					cli = Net::HTTPClient::CreateClient(me->core->GetTCPClientFactory(), me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
@@ -672,7 +673,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 						mstm->Clear();
 						cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 						cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
-						i = (UOSInt)(currPassword->ConcatTo(Text::StrConcatC(currUserName->ConcatTo(buff), UTF8STRC(":"))) - buff);
+						i = (UOSInt)(s2->ConcatTo(Text::StrConcatC(s->ConcatTo(buff), UTF8STRC(":"))) - buff);
 						Text::StringBuilderUTF8 sbAuth;
 						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
@@ -691,10 +692,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 							cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
 							cli->Write(Data::ByteArrayR(nncurrBody, currBodyLen));
 						}
-						if (currHeaders)
+						if (currHeaders.SetTo(s))
 						{
 							Text::StringBuilderUTF8 sb;
-							sb.Append(currHeaders);
+							sb.Append(s);
 							Text::PString sarr[2];
 							Text::PString sarr2[2];
 							sarr[1] = sb;
@@ -778,13 +779,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				}
 				me->respSvrAddr = cli->GetSvrAddr().Ptr()[0];
 				Sync::MutexUsage respMutUsage(me->respMut);
-				SDEL_STRING(me->respReqURL)
-				SDEL_STRING(me->respContType);
-				SDEL_CLASS(me->respData);
-				me->respReqURL = currURL->Clone().Ptr();
+				OPTSTR_DEL(me->respReqURL)
+				OPTSTR_DEL(me->respContType);
+				me->respData.Delete();
+				me->respReqURL = currURL->Clone();
 				me->respContType = contType;
 				me->respData = mstm;
-				SDEL_STRING(me->respCertText);
+				OPTSTR_DEL(me->respCertText);
 				me->respCert.Delete();
 				NN<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs;
 				if (cli->GetServerCerts().SetTo(certs))
@@ -812,11 +813,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				me->respDLSize = 0;
 				me->respStatus = 0;
 				Sync::MutexUsage mutUsage(me->respMut);
-				SDEL_STRING(me->respReqURL)
-				SDEL_CLASS(me->respData);
-				SDEL_STRING(me->respContType);
-				me->respReqURL = currURL->Clone().Ptr();
-				SDEL_STRING(me->respCertText);
+				OPTSTR_DEL(me->respReqURL)
+				me->respData.Delete();
+				OPTSTR_DEL(me->respContType);
+				me->respReqURL = currURL->Clone();
+				OPTSTR_DEL(me->respCertText);
 				me->respCert.Delete();
 			}
 
@@ -829,10 +830,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				MemFreeArr(nncurrBody);
 				currBody = 0;
 			}
-			SDEL_STRING(currBodyType);
-			SDEL_STRING(currUserName);
-			SDEL_STRING(currPassword);
-			SDEL_STRING(currHeaders);
+			currBodyType->Release();
+			OPTSTR_DEL(currUserName);
+			OPTSTR_DEL(currPassword);
+			OPTSTR_DEL(currHeaders);
 		}
 		else
 		{
@@ -840,9 +841,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 		}
 	}
 	MemFreeArr(sbuff);
-	SDEL_STRING(me->reqURL);
+	OPTSTR_DEL(me->reqURL);
 	SDEL_TEXT(me->reqBody);
-	SDEL_STRING(me->reqBodyType);
+	OPTSTR_DEL(me->reqBodyType);
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
@@ -854,9 +855,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
+	NN<IO::MemoryStream> respData;
 	if (me->respChanged)
 	{
-		me->txtReqURL->SetText(me->respReqURL->ToCString());
+		me->txtReqURL->SetText(Text::String::OrEmpty(me->respReqURL)->ToCString());
 		if (!Net::SocketUtil::GetAddrName(sbuff, me->respSvrAddr).SetTo(sptr))
 		{
 			me->txtSvrIP->SetText(CSTR(""));
@@ -918,9 +920,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 		me->txtRespULSize->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt64(sbuff, me->respTransfSize);
 		me->txtRespTransfSize->SetText(CSTRP(sbuff, sptr));
-		if (me->respData)
+		if (me->respData.SetTo(respData))
 		{
-			sptr = Text::StrUInt64(sbuff, me->respData->GetLength());
+			sptr = Text::StrUInt64(sbuff, respData->GetLength());
 			me->txtRespContSize->SetText(CSTRP(sbuff, sptr));
 		}
 		else
@@ -939,7 +941,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 			if (hdr->StartsWithICase(UTF8STRC("Set-Cookie: ")))
 			{
 				NN<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
-				if (me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString()).SetTo(cookie))
+				if (me->SetCookie(hdr->ToCString().Substring(12), Text::String::OrEmpty(me->respReqURL)->ToCString()).SetTo(cookie))
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
 					if (cookie->path.SetTo(s))
@@ -953,14 +955,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 			me->lvHeaders->AddItem(hdr, 0);
 			i++;
 		}
-		if (me->respCertText)
-		{
-			me->txtCert->SetText(me->respCertText->ToCString());
-		}
-		else
-		{
-			me->txtCert->SetText(CSTR(""));
-		}
+		me->txtCert->SetText(Text::String::OrEmpty(me->respCertText)->ToCString());
 		me->btnCert->SetEnabled(me->respCert != 0);
 		me->respChanged = false;
 		me->tcMain->SetSelectedIndex(1);
@@ -1446,10 +1441,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	this->ClearParams();
 	this->ClearCookie();
 	this->ClearFiles();
-	SDEL_STRING(this->respReqURL);
-	SDEL_STRING(this->respContType);
-	SDEL_CLASS(this->respData);
-	SDEL_STRING(this->respCertText);
+	OPTSTR_DEL(this->respReqURL);
+	OPTSTR_DEL(this->respContType);
+	this->respData.Delete();
+	OPTSTR_DEL(this->respCertText);
 	this->respCert.Delete();
 	this->cliCert.Delete();
 	this->cliKey.Delete();

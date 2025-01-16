@@ -64,6 +64,7 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 		UInt64 iMAC;
 		Text::UTF8Reader reader(fs);
 		NN<Text::String> s;
+		UnsafeArray<UInt8> wieBuff;
 		sb.ClearStr();
 		buff[0] = 0;
 		buff[1] = 0;
@@ -85,20 +86,20 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 					{
 						if (i >= 7)
 						{
-							if ((log->manuf == 0 || log->manuf->v[0] == 0) && sarr[4].v[0] != 0)
+							if ((!log->manuf.SetTo(s) || s->v[0] == 0) && sarr[4].v[0] != 0)
 							{
-								SDEL_STRING(log->manuf);
-								log->manuf = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();
+								OPTSTR_DEL(log->manuf);
+								log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
 							}
-							if ((log->model == 0 || log->model->v[0] == 0) && sarr[5].v[0] != 0)
+							if ((!log->model.SetTo(s) || s->v[0] == 0) && sarr[5].v[0] != 0)
 							{
-								SDEL_STRING(log->model);
-								log->model = Text::String::New(sarr[5].v, sarr[5].leng).Ptr();
+								OPTSTR_DEL(log->model);
+								log->model = Text::String::New(sarr[5].v, sarr[5].leng);
 							}
-							if ((log->serialNum == 0 || log->serialNum->v[0] == 0) && sarr[6].v[0] != 0)
+							if ((!log->serialNum.SetTo(s) || s->v[0] == 0) && sarr[6].v[0] != 0)
 							{
-								SDEL_STRING(log->serialNum);
-								log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng).Ptr();
+								OPTSTR_DEL(log->serialNum);
+								log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
 							}
 						}
 						if (i >= 9)
@@ -173,12 +174,12 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 							if (ieLen > log->ieLen)
 							{
 								log->ieLen = ieLen;
-								if (log->ieBuff)
+								if (log->ieBuff.SetTo(wieBuff))
 								{
-									MemFree(log->ieBuff);
+									MemFreeArr(wieBuff);
 								}
-								log->ieBuff = MemAlloc(UInt8, log->ieLen);
-								Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
+								log->ieBuff = wieBuff = MemAllocArr(UInt8, log->ieLen);
+								Text::StrHex2Bytes(sarr[10].v, wieBuff);
 							}
 						}
 					}
@@ -252,8 +253,8 @@ void Net::WiFiLogFile::LoadFile(Text::CStringNN fileName)
 							log->ieLen = (UInt32)(sarr[10].leng >> 1);
 							if (log->ieLen > 0)
 							{
-								log->ieBuff = MemAlloc(UInt8, log->ieLen);
-								Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
+								log->ieBuff = wieBuff = MemAllocArr(UInt8, log->ieLen);
+								Text::StrHex2Bytes(sarr[10].v, wieBuff);
 							}
 							else
 							{
@@ -282,6 +283,7 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 	UOSInt j;
 	UOSInt k;
 	NN<Net::WiFiLogFile::LogFileEntry> log;
+	UnsafeArray<UInt8> wieBuff;
 	Bool succ = false;
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	{
@@ -302,20 +304,11 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendDouble(log->freq);
 			sb.AppendC(UTF8STRC("\t"));
-			if (log->manuf)
-			{
-				sb.Append(log->manuf);
-			}
+			sb.AppendOpt(log->manuf);
 			sb.AppendC(UTF8STRC("\t"));
-			if (log->model)
-			{
-				sb.Append(log->model);
-			}
+			sb.AppendOpt(log->model);
 			sb.AppendC(UTF8STRC("\t"));
-			if (log->serialNum)
-			{
-				sb.Append(log->serialNum);
-			}
+			sb.AppendOpt(log->serialNum);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LineBreakType::None);
 			sb.AppendUTF8Char(',');
@@ -340,9 +333,9 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 				k++;
 			}
 			sb.AppendUTF8Char('\t');
-			if (log->ieLen > 0)
+			if (log->ieLen > 0 && log->ieBuff.SetTo(wieBuff))
 			{
-				sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LineBreakType::None);
+				sb.AppendHexBuff(wieBuff, log->ieLen, 0, Text::LineBreakType::None);
 			}
 			if (!writer.WriteLine(sb.ToCString()))
 			{
@@ -357,18 +350,19 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 void Net::WiFiLogFile::Clear()
 {
 	UOSInt i = this->logList.GetCount();
+	UnsafeArray<UInt8> wieBuff;
 	NN<Net::WiFiLogFile::LogFileEntry> log;
 	while (i-- > 0)
 	{
 		log = this->logList.GetItemNoCheck(i);
 		log->ssid->Release();
-		SDEL_STRING(log->manuf);
-		SDEL_STRING(log->model);
-		SDEL_STRING(log->serialNum);
+		OPTSTR_DEL(log->manuf);
+		OPTSTR_DEL(log->model);
+		OPTSTR_DEL(log->serialNum);
 		OPTSTR_DEL(log->country);
-		if (log->ieBuff)
+		if (log->ieBuff.SetTo(wieBuff))
 		{
-			MemFree(log->ieBuff);
+			MemFreeArr(wieBuff);
 		}
 		MemFreeNN(log);
 	}
@@ -450,15 +444,18 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 	UOSInt m;
 	UOSInt ieLen;
 	UnsafeArray<const UInt8> ieBuff;
+	UnsafeArray<UInt8> wieBuff;
 	NN<Net::WirelessLANIE> ie;
-	MemCopyNO(&buff[2], bss->GetMAC(), 6);
+	NN<Text::String> s;
+	MemCopyNO(&buff[2], bss->GetMAC().Ptr(), 6);
 	buff[0] = 0;
 	buff[1] = 0;
 	imac = ReadMUInt64(buff);
 	NN<Net::WiFiLogFile::LogFileEntry> log;
-	const UInt8 *oui1 = bss->GetChipsetOUI(0);
-	const UInt8 *oui2 = bss->GetChipsetOUI(1);
-	const UInt8 *oui3 = bss->GetChipsetOUI(2);
+	const UInt8 tmpOUI[] = {0, 0, 0};
+	UnsafeArray<const UInt8> oui1 = bss->GetChipsetOUI(0).Or(tmpOUI);
+	UnsafeArray<const UInt8> oui2 = bss->GetChipsetOUI(1).Or(tmpOUI);
+	UnsafeArray<const UInt8> oui3 = bss->GetChipsetOUI(2).Or(tmpOUI);
 	ieLen = 0;
 	k = bss->GetIECount();
 	while (k-- > 0)
@@ -478,9 +475,9 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 		log->ssid = bss->GetSSID()->Clone();
 		log->phyType = bss->GetPHYType();
 		log->freq = bss->GetFreq();
-		log->manuf = SCOPY_STRING(bss->GetManuf());
-		log->model =  SCOPY_STRING(bss->GetModel());
-		log->serialNum =  SCOPY_STRING(bss->GetSN());
+		log->manuf = Text::String::CopyOrNull(bss->GetManuf());
+		log->model =  Text::String::CopyOrNull(bss->GetModel());
+		log->serialNum =  Text::String::CopyOrNull(bss->GetSN());
 		log->country =  Text::String::NewOrNullSlow(bss->GetCountry());
 		log->lastRSSI = bss->GetRSSI();
 		log->ouis[0][0] = oui1[0];
@@ -495,7 +492,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 		log->ieLen = (UInt32)ieLen;
 		if (ieLen > 0)
 		{
-			log->ieBuff = MemAlloc(UInt8, ieLen);
+			log->ieBuff = wieBuff = MemAllocArr(UInt8, ieLen);
 			k = 0;
 			l = bss->GetIECount();
 			m = 0;
@@ -504,7 +501,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				if (bss->GetIE(k).SetTo(ie))
 				{
 					ieBuff = ie->GetIEBuff();
-					MemCopyNO(&log->ieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
+					MemCopyNO(&wieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
 					m += (UOSInt)ieBuff[1] + 2;
 				}
 				k++;
@@ -523,25 +520,25 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 		OSInt sk = this->GetIndex(imac);
 		if (sk >= 0)
 		{
-			if (log->manuf == 0 && bss->GetManuf())
+			if (log->manuf.IsNull() && bss->GetManuf().SetTo(s))
 			{
-				log->manuf = bss->GetManuf()->Clone().Ptr();
+				log->manuf = s->Clone();
 			}
-			if (log->model == 0 && bss->GetModel())
+			if (log->model.IsNull() && bss->GetModel().SetTo(s))
 			{
-				log->model = bss->GetModel()->Clone().Ptr();
+				log->model = s->Clone();
 			}
-			if (log->serialNum == 0 && bss->GetSN())
+			if (log->serialNum.IsNull() && bss->GetSN().SetTo(s))
 			{
-				log->serialNum = bss->GetSN()->Clone().Ptr();
+				log->serialNum = s->Clone();
 			}
-			if (log->country.IsNull() && bss->GetCountry())
+			if (log->country.IsNull() && bss->GetCountry().SetTo(ieBuff))
 			{
-				log->country = Text::String::NewNotNullSlow(bss->GetCountry());
+				log->country = Text::String::NewNotNullSlow(ieBuff);
 			}
 		}
 		UOSInt l;
-		const UInt8 *oui;
+		UnsafeArray<const UInt8> oui;
 		oui = oui1;
 		if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 		{
@@ -604,11 +601,11 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 
 		if (ieLen > log->ieLen)
 		{
-			if (log->ieBuff)
+			if (log->ieBuff.SetTo(wieBuff))
 			{
-				MemFree(log->ieBuff);
+				MemFreeArr(wieBuff);
 			}
-			log->ieBuff = MemAlloc(UInt8, ieLen);
+			log->ieBuff = wieBuff = MemAllocArr(UInt8, ieLen);
 			k = 0;
 			l = bss->GetIECount();
 			m = 0;
@@ -617,7 +614,7 @@ NN<Net::WiFiLogFile::LogFileEntry> Net::WiFiLogFile::AddBSSInfo(NN<Net::Wireless
 				if (bss->GetIE(k).SetTo(ie))
 				{
 					ieBuff = ie->GetIEBuff();
-					MemCopyNO(&log->ieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
+					MemCopyNO(&wieBuff[m], ieBuff.Ptr(), (UOSInt)ieBuff[1] + 2);
 					m += (UOSInt)ieBuff[1] + 2;
 				}
 				k++;

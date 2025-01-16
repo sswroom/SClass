@@ -824,42 +824,41 @@ void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 }
 
 
-Net::MySQLServer::MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
+Net::MySQLServer::MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NN<DB::DBMS> dbms, Bool autoStart) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
 {
 	this->sockf = sockf;
 	this->dbms = dbms;
 	this->log = dbms->GetLogTool();
 	this->connId = 0;
 
-	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, bindAddr, port, this->log, OnClientConn, this, CSTR("MySQL: "), autoStart));
-	if (this->svr->IsV4Error())
+	NN<Net::TCPServer> svr;
+	NEW_CLASSNN(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
+	NEW_CLASSNN(svr, Net::TCPServer(this->sockf, bindAddr, port, this->log, OnClientConn, this, CSTR("MySQL: "), autoStart));
+	if (svr->IsV4Error())
 	{
-		DEL_CLASS(this->svr);
+		svr.Delete();
 		this->svr = 0;
-		DEL_CLASS(this->cliMgr);
-		this->cliMgr = 0;
+	}
+	else
+	{
+		this->svr = svr;
 	}
 }
 
 Net::MySQLServer::~MySQLServer()
 {
-	if (this->svr)
-	{
-		DEL_CLASS(this->svr);
-		DEL_CLASS(this->cliMgr);
-		this->svr = 0;
-		this->cliMgr = 0;
-	}
-	DEL_CLASS(this->dbms);
+	this->svr.Delete();
+	this->cliMgr.Delete();
+	this->dbms.Delete();
 }
 
 Bool Net::MySQLServer::Start()
 {
-	return this->svr != 0 && this->svr->Start();
+	NN<Net::TCPServer> svr;
+	return this->svr.SetTo(svr) && svr->Start();
 }
 
 Bool Net::MySQLServer::IsError()
 {
-	return this->svr == 0;
+	return this->svr.IsNull();
 }

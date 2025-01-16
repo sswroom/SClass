@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 			me->lvDevices->SetSubItem(i, 2, {macEntry->name, macEntry->nameLen});
 			sptr = Text::StrInt32(sbuff, entry->rssi);
 			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-			if (s.Set(entry->remark))
+			if (entry->remark.SetTo(s))
 			{
 				me->lvDevices->SetSubItem(i, 4, s);
 			}
@@ -161,7 +161,7 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 	{
 		entry = this->dataMap.GetItemNoCheck(i);
 		OPTSTR_DEL(entry->name);
-		SDEL_STRING(entry->remark);
+		OPTSTR_DEL(entry->remark);
 		MemFreeNN(entry);
 	}
 	this->dataMap.Clear();

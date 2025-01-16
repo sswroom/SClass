@@ -24,10 +24,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 	UInt8 id[8];
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UInt8> country;
+	NN<IO::MotionDetectorAccelerometer> motion;
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Text::StringBuilderUTF8 sb;
+	NN<IO::Writer> captureWriter;
 	IO::PowerInfo::PowerStatus power;
 	if (IO::PowerInfo::GetPowerStatus(&power))
 	{
@@ -35,13 +38,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 		{
 			sptr = Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
 			me->txtBattery->SetText(CSTRP(sbuff, sptr));
-			if (power.batteryPercent <= 15 && me->captureWriter)
+			if (power.batteryPercent <= 15 && me->captureWriter.NotNull())
 			{
 				Sync::MutexUsage mutUsage(me->captureMut);
-				DEL_CLASS(me->captureWriter);
-				DEL_CLASS(me->captureFS);
-				me->captureWriter = 0;
-				me->captureFS = 0;
+				me->captureWriter.Delete();
+				me->captureFS.Delete();
 				mutUsage.EndUse();
 				me->btnGPS->SetEnabled(true);
 			}
@@ -55,20 +56,20 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 	{
 		me->txtBattery->SetText(CSTR("Cannot read battery status"));
 	}
-	if (me->motion)
+	if (me->motion.SetTo(motion))
 	{
-		me->motion->UpdateStatus();
-		if (me->motion->IsMovving())
+		motion->UpdateStatus();
+		if (motion->IsMovving())
 		{
 			me->txtMotion->SetText(CSTR("Moving"));
 			Sync::MutexUsage mutUsage(me->captureMut);
-			if (me->captureWriter && me->lastMotion != 1)
+			if (me->captureWriter.SetTo(captureWriter) && me->lastMotion != 1)
 			{
 				me->lastMotion = 1;
 				sb.ClearStr();
 				sb.AppendTSNoZone(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Moving"));
-				me->captureWriter->WriteLine(sb.ToCString());
+				captureWriter->WriteLine(sb.ToCString());
 			}
 			mutUsage.EndUse();
 		}
@@ -76,13 +77,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 		{
 			me->txtMotion->SetText(CSTR("Stopped"));
 			Sync::MutexUsage mutUsage(me->captureMut);
-			if (me->captureWriter && me->lastMotion != 0)
+			if (me->captureWriter.SetTo(captureWriter) && me->lastMotion != 0)
 			{
 				me->lastMotion = 0;
 				sb.ClearStr();
 				sb.AppendTSNoZone(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Stopped"));
-				me->captureWriter->WriteLine(sb.ToCString());
+				captureWriter->WriteLine(sb.ToCString());
 			}
 			mutUsage.EndUse();
 		}
@@ -116,7 +117,6 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 			if (me->wlanScan-- <= 0)
 			{
 				NN<Text::String> s;
-				Text::String *str;
 				NN<Text::String> ssid;
 				Bool bssListUpd = false;
 				Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				maxIMAC = 0;
 				maxRSSI = -128;
 				Sync::MutexUsage mutUsage(me->captureMut);
-				if (me->captureWriter)
+				if (me->captureWriter.SetTo(captureWriter))
 				{
 					sb.ClearStr();
 					sb.AppendTSNoZone(ts);
@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						sb.AppendDouble(bss->GetFreq() / 1000000.0);
 						i++;
 					}
-					me->captureWriter->WriteLine(sb.ToCString());
+					captureWriter->WriteLine(sb.ToCString());
 					me->ui->UseDevice(true, false);
 				}
 				mutUsage.EndUse();
@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				{
 					bss = bssList.GetItemNoCheck(i);
 					ssid = bss->GetSSID();
-					MemCopyNO(&id[2], bss->GetMAC(), 6);
+					MemCopyNO(&id[2], bss->GetMAC().Ptr(), 6);
 					id[0] = 0;
 					id[1] = 0;
 					imac = ReadMUInt64(id);
@@ -181,11 +181,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					me->lvCurrWifi->SetSubItem(k, 7, CSTRP(sbuff, sptr));
 					sptr = Text::StrDouble(sbuff, bss->GetFreq());
 					me->lvCurrWifi->SetSubItem(k, 8, CSTRP(sbuff, sptr));
-					if (s.Set(bss->GetManuf()))
+					if (bss->GetManuf().SetTo(s))
 						me->lvCurrWifi->SetSubItem(k, 9, s);
-					if (s.Set(bss->GetModel()))
+					if (bss->GetModel().SetTo(s))
 						me->lvCurrWifi->SetSubItem(k, 10, s);
-					if (s.Set(bss->GetSN()))
+					if (bss->GetSN().SetTo(s))
 						me->lvCurrWifi->SetSubItem(k, 11, s);
 					if (maxRSSI < bss->GetRSSI())
 					{
@@ -194,9 +194,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					}
 
 					NN<SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog> wifiLog;
-					const UInt8 *oui1 = bss->GetChipsetOUI(0);
-					const UInt8 *oui2 = bss->GetChipsetOUI(1);
-					const UInt8 *oui3 = bss->GetChipsetOUI(2);
+					const UInt8 tmpOUI[] = {0, 0, 0};
+					UnsafeArray<const UInt8> oui1 = bss->GetChipsetOUI(0).Or(tmpOUI);
+					UnsafeArray<const UInt8> oui2 = bss->GetChipsetOUI(1).Or(tmpOUI);
+					UnsafeArray<const UInt8> oui3 = bss->GetChipsetOUI(2).Or(tmpOUI);
 					if (!me->wifiLogMap.Get(imac).SetTo(wifiLog))
 					{
 						wifiLog = MemAllocNN(SSWR::AVIRead::AVIRWifiCaptureForm::WifiLog);
@@ -204,12 +205,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						wifiLog->ssid = ssid->Clone();
 						wifiLog->phyType = bss->GetPHYType();
 						wifiLog->freq = bss->GetFreq();
-						str = bss->GetManuf();
-						wifiLog->manuf = SCOPY_STRING(str);
-						str = bss->GetModel();
-						wifiLog->model = SCOPY_STRING(str);
-						str = bss->GetSN();
-						wifiLog->serialNum = SCOPY_STRING(str);
+						wifiLog->manuf = Text::String::CopyOrNull(bss->GetManuf());
+						wifiLog->model = Text::String::CopyOrNull(bss->GetModel());
+						wifiLog->serialNum = Text::String::CopyOrNull(bss->GetSN());
 						wifiLog->country = Text::String::NewOrNullSlow(bss->GetCountry());
 						wifiLog->ouis[0][0] = oui1[0];
 						wifiLog->ouis[0][1] = oui1[1];
@@ -231,11 +229,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						me->lvLogWifi->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 						sptr = Text::StrDouble(sbuff, wifiLog->freq);
 						me->lvLogWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
-						if (s.Set(wifiLog->manuf))
+						if (wifiLog->manuf.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 5, s);
-						if (s.Set(wifiLog->model))
+						if (wifiLog->model.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 6, s);
-						if (s.Set(wifiLog->serialNum))
+						if (wifiLog->serialNum.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 7, s);
 						if (wifiLog->country.SetTo(s))
 							me->lvLogWifi->SetSubItem(k, 8, s);
@@ -258,32 +256,29 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					else
 					{
 						k = (UOSInt)me->wifiLogMap.GetIndex(imac);
-						if (wifiLog->manuf == 0 && bss->GetManuf())
+						if (wifiLog->manuf.IsNull() && bss->GetManuf().SetTo(s))
 						{
-							s = bss->GetManuf()->Clone();
-							wifiLog->manuf = s.Ptr();
+							wifiLog->manuf = s->Clone();
 							me->lvLogWifi->SetSubItem(k, 5, s);
 						}
-						if (wifiLog->model == 0 && bss->GetModel())
+						if (wifiLog->model.IsNull() && bss->GetModel().SetTo(s))
 						{
-							s = bss->GetModel()->Clone();
-							wifiLog->model = s.Ptr();
+							wifiLog->model = s->Clone();
 							me->lvLogWifi->SetSubItem(k, 6, s);
 						}
-						if (wifiLog->serialNum == 0 && bss->GetSN())
+						if (wifiLog->serialNum.IsNull() && bss->GetSN().SetTo(s))
 						{
-							s = bss->GetSN()->Clone();
-							wifiLog->serialNum = s.Ptr();
+							wifiLog->serialNum = s->Clone();
 							me->lvLogWifi->SetSubItem(k, 7, s);
 						}
-						if (wifiLog->country.IsNull() && bss->GetCountry())
+						if (wifiLog->country.IsNull() && bss->GetCountry().SetTo(country))
 						{
-							s = Text::String::NewNotNullSlow(bss->GetCountry());
+							s = Text::String::NewNotNullSlow(country);
 							wifiLog->country = s;
 							me->lvLogWifi->SetSubItem(k, 8, s);
 						}
 						OSInt l;
-						const UInt8 *oui;
+						UnsafeArray<const UInt8> oui;
 						oui = oui1;
 						if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 						{
@@ -376,7 +371,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 					{
 						bss = bssList.GetItemNoCheck(i);
 						ssid = bss->GetSSID();
-						MemCopyNO(&id[2], bss->GetMAC(), 6);
+						MemCopyNO(&id[2], bss->GetMAC().Ptr(), 6);
 						id[0] = 0;
 						id[1] = 0;
 						imac = ReadMUInt64(id);
@@ -452,12 +447,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
-	if (me->locSvc)
+	NN<Map::ILocationService> locSvc;
+	if (me->locSvc.SetTo(locSvc))
 	{
-		me->locSvc->UnregisterLocationHandler(OnGPSData, me);
+		locSvc->UnregisterLocationHandler(OnGPSData, me);
 		if (me->locSvcRel)
 		{
-			DEL_CLASS(me->locSvc);
+			locSvc.Delete();
 		}
 		me->locSvc = 0;
 		me->locSvcRel = false;
@@ -473,8 +469,9 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 			sb.Append(stm->GetSourceNameObj());
 			me->txtGPS->SetText(sb.ToCString());
 			me->locSvcRel = true;
-			NEW_CLASS(me->locSvc, IO::GPSNMEA(stm, true));
-			me->locSvc->RegisterLocationHandler(OnGPSData, me);
+			NEW_CLASSNN(locSvc, IO::GPSNMEA(stm, true));
+			me->locSvc = locSvc;
+			locSvc->RegisterLocationHandler(OnGPSData, me);
 		}
 	}
 }
@@ -482,11 +479,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
-	if (me->captureWriter)
+	if (me->captureWriter.NotNull())
 	{
 		Sync::MutexUsage mutUsage(me->captureMut);
-		DEL_CLASS(me->captureWriter);
-		DEL_CLASS(me->captureFS);
+		me->captureWriter.Delete();
+		me->captureFS.Delete();
 		me->captureWriter = 0;
 		me->captureFS = 0;
 		mutUsage.EndUse();
@@ -494,12 +491,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 	}
 	else
 	{
-		if (me->motion == 0)
+		if (me->motion.IsNull())
 		{
 			me->ui->ShowMsgOK(CSTR("Accelerator not found"), CSTR("Error"), me);
 			return;
 		}
-		else if (me->locSvc == 0)
+		else if (me->locSvc.IsNull())
 		{
 			me->ui->ShowMsgOK(CSTR("GPS not connected"), CSTR("Error"), me);
 			return;
@@ -524,16 +521,16 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 		Sync::MutexUsage mutUsage(me->captureMut);
 		NN<IO::FileStream> fs;
 		NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		me->captureFS = fs.Ptr();
-		if (me->captureFS->IsError())
+		me->captureFS = fs;
+		if (fs->IsError())
 		{
-			DEL_CLASS(me->captureFS);
+			fs.Delete();
 			me->captureFS = 0;
 			isError = true;
 		}
 		else
 		{
-			NEW_CLASS(me->captureWriter, Text::UTF8Writer(fs));
+			NEW_CLASSOPT(me->captureWriter, Text::UTF8Writer(fs));
 			me->lastMotion = -1;
 			me->currActive = true;
 			isError = false;
@@ -596,20 +593,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(AnyType 
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(wifiLog->freq);
 				sb.AppendC(UTF8STRC("\t"));
-				if (wifiLog->manuf)
-				{
-					sb.Append(wifiLog->manuf);
-				}
+				sb.AppendOpt(wifiLog->manuf);
 				sb.AppendC(UTF8STRC("\t"));
-				if (wifiLog->model)
-				{
-					sb.Append(wifiLog->model);
-				}
+				sb.AppendOpt(wifiLog->model);
 				sb.AppendC(UTF8STRC("\t"));
-				if (wifiLog->serialNum)
-				{
-					sb.Append(wifiLog->serialNum);
-				}
+				sb.AppendOpt(wifiLog->serialNum);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
 				sb.AppendUTF8Char(',');
@@ -743,10 +731,11 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<IO::Writer> captureWriter;
 	if (me->currActive || record->valid != 0)
 	{
 		Sync::MutexUsage mutUsage(me->captureMut);
-		if (me->captureWriter)
+		if (me->captureWriter.SetTo(captureWriter))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendTSNoZone(Data::Timestamp::UtcNow());
@@ -764,7 +753,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NN
 				sb.AppendC(UTF8STRC(","));
 				sb.AppendDouble(record->altitude);
 			}
-			me->captureWriter->WriteLine(sb.ToCString());
+			captureWriter->WriteLine(sb.ToCString());
 		}
 		mutUsage.EndUse();
 	}
@@ -804,13 +793,13 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 			NN<IO::SensorAccelerometer> acc;
 			if (this->sensorMgr.CreateSensor(i).SetTo(sensor) && sensor->GetSensorAccelerator().SetTo(acc))
 			{
-				NEW_CLASS(this->motion, IO::MotionDetectorAccelerometer(acc, true));
+				NEW_CLASSOPT(this->motion, IO::MotionDetectorAccelerometer(acc, true));
 				break;
 			}
 		}
 		i++;
 	}
-	NEW_CLASS(this->wlan, Net::WirelessLAN());
+	NEW_CLASSNN(this->wlan, Net::WirelessLAN());
 	Data::ArrayListNN<Net::WirelessLAN::Interface> interfList;
 	this->wlan->GetInterfaces(interfList);
 	this->wlanInterf = interfList.GetItem(0);
@@ -936,24 +925,22 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 {
-	SDEL_CLASS(this->motion);
+	NN<Map::ILocationService> locSvc;
+	this->motion.Delete();
 	this->wlanInterf.Delete();
-	if (this->locSvc)
+	if (this->locSvc.SetTo(locSvc))
 	{
-		this->locSvc->UnregisterLocationHandler(OnGPSData, this);
+		locSvc->UnregisterLocationHandler(OnGPSData, this);
 		if (this->locSvcRel)
 		{
-			DEL_CLASS(this->locSvc);
+			locSvc.Delete();
 		}
 		this->locSvc = 0;
 		this->locSvcRel = false;
 	}
-	if (this->captureWriter)
-	{
-		SDEL_CLASS(this->captureWriter);
-		SDEL_CLASS(this->captureFS);
-	}
-	DEL_CLASS(this->wlan);
+	this->captureWriter.Delete();
+	this->captureFS.Delete();
+	this->wlan.Delete();
 	UOSInt i;
 	NN<BSSStatus> bss;
 	i = this->bssMap.GetCount();
@@ -970,9 +957,9 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 	{
 		wifiLog = this->wifiLogMap.GetItemNoCheck(i);
 		wifiLog->ssid->Release();
-		SDEL_STRING(wifiLog->manuf);
-		SDEL_STRING(wifiLog->model);
-		SDEL_STRING(wifiLog->serialNum);
+		OPTSTR_DEL(wifiLog->manuf);
+		OPTSTR_DEL(wifiLog->model);
+		OPTSTR_DEL(wifiLog->serialNum);
 		OPTSTR_DEL(wifiLog->country);
 		MemFreeNN(wifiLog);
 	}

@@ -19,7 +19,7 @@ namespace SSWR
 			Data::ArrayListNN<Crypto::Cert::X509Cert> cliCACerts;
 			Optional<Crypto::Cert::X509Cert> cliCert;
 			Optional<Crypto::Cert::X509File> cliKey;
-			Crypto::Cert::X509File *svrCert;
+			Optional<Crypto::Cert::X509File> svrCert;
 
 			NN<UI::GUILabel> lblURL;
 			NN<UI::GUITextBox> txtURL;

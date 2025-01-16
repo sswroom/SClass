@@ -50,19 +50,20 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 		return;
 	}
 	
+	UnsafeArray<NN<Sync::Thread>> threads;
 	UOSInt i;
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
-	me->threads = MemAlloc(Sync::Thread*, me->threadCnt);
+	me->threads = threads = MemAllocArr(NN<Sync::Thread>, me->threadCnt);
 	i = me->threadCnt;
 	while (i-- > 0)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("AVIRTCPTest"));
 		sb.AppendUOSInt(i);
-		NEW_CLASS(me->threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
-		me->threads[i]->Start();
+		NEW_CLASSNN(threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
+		threads[i]->Start();
 	}
 }
 
@@ -132,26 +133,27 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 {
-	if (this->threadCurrCnt > 0)
+	UnsafeArray<NN<Sync::Thread>> threads;
+	if (this->threads.SetTo(threads))
 	{
+		if (this->threadCurrCnt > 0)
+		{
+			UOSInt i = this->threadCnt;
+			while (i-- > 0)
+			{
+				threads[i]->BeginStop();
+			}
+			while (this->threadCurrCnt > 0)
+			{
+				Sync::SimpleThread::Sleep(10);
+			}
+		}
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threads[i]->BeginStop();
+			threads[i].Delete();
 		}
-		while (this->threadCurrCnt > 0)
-		{
-			Sync::SimpleThread::Sleep(10);
-		}
-	}
-	if (this->threads)
-	{
-		UOSInt i = this->threadCnt;
-		while (i-- > 0)
-		{
-			DEL_CLASS(this->threads[i]);
-		}
-		MemFree(this->threads);
+		MemFreeArr(threads);
 		this->threads = 0;
 		this->threadCnt = 0;
 	}

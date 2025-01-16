@@ -10,6 +10,7 @@
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(UnsafeArray<const UInt8> hwAddr, UInt32 ipAddr, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
+	NN<Sync::Event> reqEvt;
 	if (me->requested)
 	{
 		UInt32 reqIP = ReadNUInt32(me->targetAddr.addr);
@@ -24,9 +25,9 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(UnsafeArray<const UI
 			sb.AppendC(UTF8STRC("ms"));
 			me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(&t);
-			if (me->reqEvt)
+			if (me->reqEvt.SetTo(reqEvt))
 			{
-				me->reqEvt->Set();
+				reqEvt->Set();
 			}
 		}
 	}
@@ -35,9 +36,11 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(UnsafeArray<const UI
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
-	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
+	NN<Net::ARPHandler> arpHdlr;
+	if (me->arpHdlr.SetTo(arpHdlr) && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
-		SDEL_CLASS(me->arpHdlr);
+		arpHdlr.Delete();
+		me->arpHdlr = 0;
 		me->targetAddr.addrType = Net::AddrType::Unknown;
 		me->chkRepeat->SetEnabled(true);
 		me->txtTarget->SetReadOnly(false);
@@ -59,14 +62,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Error, no adapter is selected"), CSTR("Error"), me);
 			return;
 		}
-		NEW_CLASS(me->arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName->v, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
-		if (me->arpHdlr->IsError())
+		NEW_CLASSNN(arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName->v, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
+		if (arpHdlr->IsError())
 		{
-			DEL_CLASS(me->arpHdlr);
-			me->arpHdlr = 0;
+			arpHdlr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to ARP data"), CSTR("ARP Ping"), me);
 			return;
 		}
+		me->arpHdlr = arpHdlr;
 
 		me->targetAddr = addr;
 		if (me->chkRepeat->IsChecked())
@@ -77,13 +80,15 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 		}
 		else
 		{
-			NEW_CLASS(me->reqEvt, Sync::Event(true));
+			NN<Sync::Event> reqEvt;
+			NEW_CLASSNN(reqEvt, Sync::Event(true));
+			me->reqEvt = reqEvt;
 			me->requested = true;
 			me->clk.Start();
-			if (me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr)))
+			if (arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr)))
 			{
-				me->reqEvt->Wait(1000);
-				DEL_CLASS(me->arpHdlr);
+				reqEvt->Wait(1000);
+				arpHdlr.Delete();
 				me->arpHdlr = 0;
 				if (me->requested)
 				{
@@ -92,12 +97,12 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 			}
 			else
 			{
-				DEL_CLASS(me->arpHdlr);
+				arpHdlr.Delete();
 				me->arpHdlr = 0;
 				me->log.LogMessage(CSTR("Ping: Cannot send request to target"), IO::LogHandler::LogLevel::Command);
 			}
-			DEL_CLASS(me->reqEvt);
 			me->reqEvt = 0;
+			reqEvt.Delete();
 		}
 	}
 }
@@ -105,7 +110,8 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
-	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
+	NN<Net::ARPHandler> arpHdlr;
+	if (me->arpHdlr.SetTo(arpHdlr) && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		Double t;
 		if (me->requested)
@@ -115,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(AnyType userObj)
 		}
 		me->requested = true;
 		me->clk.Start();
-		me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr));
+		arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr));
 	}
 }
 
@@ -205,7 +211,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRARPPingForm::~AVIRARPPingForm()
 {
-	SDEL_CLASS(this->arpHdlr);
+	this->arpHdlr.Delete();
 	UOSInt i;
 	NN<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
 	i = this->adapters.GetCount();

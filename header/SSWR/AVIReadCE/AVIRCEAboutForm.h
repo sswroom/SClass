@@ -12,11 +12,11 @@ namespace SSWR
 		private:
 			NN<UI::GUIButton> btn;
 
-			static void __stdcall OKClicked(void *userObj);
+			static void __stdcall OKClicked(AnyType userObj);
 		public:
 			AVIRCEAboutForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui);
 			virtual ~AVIRCEAboutForm();
 		};
-	};
-};
+	}
+}
 #endif

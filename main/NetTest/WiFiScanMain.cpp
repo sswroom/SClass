@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		UOSInt maxModelLen;
 		UOSInt maxSNLen;
 		UInt8 buff[8];
-		const UInt8 *macPtr;
+		UnsafeArray<const UInt8> macPtr;
 		NN<Text::String> s;
 		Data::ArrayListNN<Net::WirelessLAN::Interface> interfaces;
 		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
@@ -67,21 +67,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					if (thisLen > maxSSIDLen)
 						maxSSIDLen = thisLen;
 
-					if (s.Set(bss->GetManuf()))
+					if (bss->GetManuf().SetTo(s))
 					{
 						thisLen = s->leng;
 						if (thisLen > maxManuLen)
 							maxManuLen = thisLen;
 					}
 						
-					if (s.Set(bss->GetModel()))
+					if (bss->GetModel().SetTo(s))
 					{
 						thisLen = s->leng;
 						if (thisLen > maxModelLen)
 							maxModelLen = thisLen;
 					}
 
-					if (s.Set(bss->GetSN()))
+					if (bss->GetSN().SetTo(s))
 					{
 						thisLen = s->leng;
 						if (thisLen > maxSNLen)
@@ -109,7 +109,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendUTF8Char('\t');
 					sb.AppendDouble(bss->GetFreq());
 					sb.AppendUTF8Char('\t');
-					if (s.Set(bss->GetManuf()))
+					if (bss->GetManuf().SetTo(s))
 					{
 						sb.Append(s);
 						thisLen = s->leng;
@@ -123,7 +123,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sb.AppendChar(' ', maxManuLen - thisLen);
 					}
 					sb.AppendUTF8Char('\t');
-					if (s.Set(bss->GetModel()))
+					if (bss->GetModel().SetTo(s))
 					{
 						sb.Append(s);
 						thisLen = s->leng;
@@ -137,7 +137,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sb.AppendChar(' ', maxModelLen - thisLen);
 					}
 					sb.AppendUTF8Char('\t');
-					if (s.Set(bss->GetSN()))
+					if (bss->GetSN().SetTo(s))
 					{
 						sb.Append(s);
 						thisLen = s->leng;

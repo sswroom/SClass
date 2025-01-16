@@ -14,12 +14,11 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
-	if (me->svr)
+	NN<Net::TCPServer> svr;
+	if (me->svr.NotNull())
 	{
-		DEL_CLASS(me->svr);
-		DEL_CLASS(me->cliMgr);
-		me->svr = 0;
-		me->cliMgr = 0;
+		me->svr.Delete();
+		me->cliMgr.Delete();
 		me->txtPort->SetReadOnly(false);
 		me->btnStart->SetText(CSTR("Start"));
 		return;
@@ -38,18 +37,17 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(AnyType userObj)
 	me->echo = me->chkEcho->IsChecked();
 	if (!me->chkMultiThread->IsChecked())
 	{
-		NEW_CLASS(me->cliMgr, Net::TCPClientMgr(60, OnClientEvent, OnClientData, me, 4, OnClientTimeout));
+		NEW_CLASSOPT(me->cliMgr, Net::TCPClientMgr(60, OnClientEvent, OnClientData, me, 4, OnClientTimeout));
 	}
-	NEW_CLASS(me->svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR_NULL, true));
-	if (me->svr->IsV4Error())
+	NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR_NULL, true));
+	if (svr->IsV4Error())
 	{
-		DEL_CLASS(me->svr);
-		SDEL_CLASS(me->cliMgr);
-		me->svr = 0;
-		me->cliMgr = 0;
+		svr.Delete();
+		me->cliMgr.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 		return;
 	}
+	me->svr = svr;
 	me->txtPort->SetReadOnly(true);
 	me->btnStart->SetText(CSTR("Stop"));
 }
@@ -60,9 +58,10 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(NN<Socket> s, AnyT
 	NN<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
 	cli->SetNoDelay(true);
-	if (me->cliMgr)
+	NN<Net::TCPClientMgr> cliMgr;
+	if (me->cliMgr.SetTo(cliMgr))
 	{
-		me->cliMgr->AddClient(cli, 0);
+		cliMgr->AddClient(cli, 0);
 	}
 	else
 	{
@@ -138,16 +137,8 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRTCPSpdSvrForm::~AVIRTCPSpdSvrForm()
 {
-	if (this->svr)
-	{
-		DEL_CLASS(this->svr);
-		this->svr = 0;
-	}
-	if (this->cliMgr)
-	{
-		DEL_CLASS(this->cliMgr);
-		this->cliMgr = 0;
-	}
+	this->svr.Delete();
+	this->cliMgr.Delete();
 }
 
 void SSWR::AVIRead::AVIRTCPSpdSvrForm::OnMonitorChanged()

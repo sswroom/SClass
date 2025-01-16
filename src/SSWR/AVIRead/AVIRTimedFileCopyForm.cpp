@@ -79,13 +79,13 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType user
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			me->CopyToZip(&zip, sbuff, sptr, sptr, dt1, dt2, true);
+			me->CopyToZip(zip, sbuff, sptr, sptr, dt1, dt2, true);
 		}
 	}
 	dlg.Delete();
 }
 
-Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, UnsafeArray<const UTF8Char> buffStart, UnsafeArray<const UTF8Char> pathBase, UnsafeArray<UTF8Char> pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir)
+Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(NN<IO::ZIPMTBuilder> zip, UnsafeArray<const UTF8Char> buffStart, UnsafeArray<const UTF8Char> pathBase, UnsafeArray<UTF8Char> pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir)
 {
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::Path::FindFileSession> sess;

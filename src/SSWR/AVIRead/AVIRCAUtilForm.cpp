@@ -312,7 +312,6 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(Optional<UI::GUIClientControl> par
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	NEW_CLASS(this->sanList, Data::ArrayList<const UTF8Char*>());
 	this->caCert = 0;
 	this->key = 0;
 	this->csr = 0;
@@ -393,8 +392,6 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRCAUtilForm::~AVIRCAUtilForm()
 {
-	LIST_FREE_FUNC(this->sanList, Text::StrDelNew);
-	DEL_CLASS(this->sanList);
 	this->caCert.Delete();
 	this->key.Delete();
 	this->csr.Delete();

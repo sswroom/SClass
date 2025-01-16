@@ -80,17 +80,17 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sbErr;
 	cli.SendMessage(false, CSTR("UTF-8"), sbContType.ToCString(), sbSubject.ToCString(), sbContent.ToCString(), sbTo.ToCString(), sbCC.ToCString(), sbBCC.ToCString(), &sbErr);
 	me->txtResponseStatus->SetText(sbErr.ToCString());
-	SDEL_CLASS(me->svrCert);
+	me->svrCert.Delete();
 	NN<Crypto::Cert::X509File> cert;
 	if (cli.GetServerCertChain().SetTo(cert))
 	{
-		me->svrCert = (Crypto::Cert::X509File*)cert->Clone().Ptr();
+		me->svrCert = cert = NN<Crypto::Cert::X509File>::ConvertFrom(cert->Clone());
 		sbErr.ClearStr();
-		if (me->svrCert->GetFileType() == Crypto::Cert::X509File::FileType::Cert && ((Crypto::Cert::X509Cert*)me->svrCert)->GetSubjectCN(sbErr))
+		if (cert->GetFileType() == Crypto::Cert::X509File::FileType::Cert && NN<Crypto::Cert::X509Cert>::ConvertFrom(cert)->GetSubjectCN(sbErr))
 		{
 			me->txtServerCert->SetText(sbErr.ToCString());
 		}
-		else if (me->svrCert->GetFileType() == Crypto::Cert::X509File::FileType::FileList && ((Crypto::Cert::X509FileList*)me->svrCert)->GetCertName(0, sbErr))
+		else if (cert->GetFileType() == Crypto::Cert::X509File::FileType::FileList && NN<Crypto::Cert::X509FileList>::ConvertFrom(cert)->GetCertName(0, sbErr))
 		{
 			me->txtServerCert->SetText(sbErr.ToCString());
 		}
@@ -108,9 +108,10 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnServerCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
-	if (me->svrCert)
+	NN<Crypto::Cert::X509File> svrCert;
+	if (me->svrCert.SetTo(svrCert))
 	{
-		me->core->OpenObject(me->svrCert->Clone());
+		me->core->OpenObject(svrCert->Clone());
 	}
 }
 
@@ -196,7 +197,7 @@ SSWR::AVIRead::AVIRGCISClientForm::~AVIRGCISClientForm()
 	this->ClearCliCACerts();
 	this->cliCert.Delete();
 	this->cliKey.Delete();
-	SDEL_CLASS(this->svrCert);
+	this->svrCert.Delete();
 }
 
 void SSWR::AVIRead::AVIRGCISClientForm::OnMonitorChanged()

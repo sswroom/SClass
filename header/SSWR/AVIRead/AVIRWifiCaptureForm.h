@@ -40,9 +40,9 @@ namespace SSWR
 				NN<Text::String> ssid;
 				Int32 phyType;
 				Double freq;
-				Text::String *manuf;
-				Text::String *model;
-				Text::String *serialNum;
+				Optional<Text::String> manuf;
+				Optional<Text::String> model;
+				Optional<Text::String> serialNum;
 				Optional<Text::String> country;
 				UInt8 ouis[3][3];
 				UInt64 neighbour[20];
@@ -50,8 +50,8 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::SensorManager sensorMgr;
-			IO::MotionDetectorAccelerometer *motion;
-			Net::WirelessLAN *wlan;
+			Optional<IO::MotionDetectorAccelerometer> motion;
+			NN<Net::WirelessLAN> wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
 			UOSInt wlanScan;
 			Data::FastMapNN<UInt64, BSSStatus> bssMap;
@@ -62,10 +62,10 @@ namespace SSWR
 			Math::Coord2DDbl currPos;
 			Double currAlt;
 			Bool currActive;
-			Map::ILocationService *locSvc;
+			Optional<Map::ILocationService> locSvc;
 			Bool locSvcRel;
-			IO::FileStream *captureFS;
-			IO::Writer *captureWriter;
+			Optional<IO::FileStream> captureFS;
+			Optional<IO::Writer> captureWriter;
 			Sync::Mutex captureMut;
 			Int64 lastTimeTick;
 

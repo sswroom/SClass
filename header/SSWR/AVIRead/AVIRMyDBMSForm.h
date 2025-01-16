@@ -21,8 +21,8 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::MySQLServer *svr;
-			IO::LogTool *log;
+			Optional<Net::MySQLServer> svr;
+			NN<IO::LogTool> log;
 			NN<UI::ListBoxLogger> logger;
 
 			NN<UI::GUIPanel> pnlCtrl;
@@ -46,10 +46,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 
 		private:
-			static void __stdcall OnStartClicked(void *userObj);
-			static void __stdcall OnUserAddClicked(void *userObj);
-			static void __stdcall OnLogSel(void *userObj);
-			static void __stdcall OnTimerTick(void *userObj);
+			static void __stdcall OnStartClicked(AnyType userObj);
+			static void __stdcall OnUserAddClicked(AnyType userObj);
+			static void __stdcall OnLogSel(AnyType userObj);
+			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
 			AVIRMyDBMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMyDBMSForm();

@@ -19,8 +19,8 @@ namespace SSWR
 		private:
 			Bool echo;
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
+			Optional<Net::TCPServer> svr;
+			Optional<Net::TCPClientMgr> cliMgr;
 			IO::LogTool log;
 
 			NN<UI::GUILabel> lblPort;

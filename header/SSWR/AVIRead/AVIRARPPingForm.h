@@ -35,11 +35,11 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Net::ARPHandler *arpHdlr;
+			Optional<Net::ARPHandler> arpHdlr;
 			Net::SocketUtil::AddressInfo targetAddr;
 			Manage::HiResClock clk;
 			Bool requested;
-			Sync::Event *reqEvt;
+			Optional<Sync::Event> reqEvt;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			Data::ArrayListNN<AdapterInfo> adapters;

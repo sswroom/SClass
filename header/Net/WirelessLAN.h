@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WIRELESSLAN
 #define _SM_NET_WIRELESSLAN
+#include "AnyType.h"
 #include "Data/ArrayListNN.h"
 #include "IO/Library.h"
 #include "Net/WirelessLANIE.h"
@@ -9,11 +10,10 @@
 
 namespace Net
 {
-	class 	WirelessLAN
+	class WirelessLAN
 	{
-
 	private:
-		void *clsData;
+		AnyType clsData;
 	public:
 		typedef enum
 		{
@@ -57,28 +57,28 @@ namespace Net
 			Double rssi;
 			UInt32 linkQuality;
 			Double freq; //Hz
-			Text::String *devManuf;
-			Text::String *devModel;
-			Text::String *devSN;
+			Optional<Text::String> devManuf;
+			Optional<Text::String> devModel;
+			Optional<Text::String> devSN;
 			UTF8Char devCountry[3];
 			UInt8 chipsetOUIs[WLAN_OUI_CNT][3];
 			Data::ArrayListNN<Net::WirelessLANIE> ieList;
 		public:
-			BSSInfo(Text::CStringNN ssid, const void *bssEntry);
+			BSSInfo(Text::CStringNN ssid, AnyType bssEntry);
 			~BSSInfo();
 			NN<Text::String> GetSSID() const;
 			UInt32 GetPHYId();
-			const UInt8 *GetMAC();
+			UnsafeArray<const UInt8> GetMAC();
 			BSSType GetBSSType();
 			Int32 GetPHYType();
 			Double GetRSSI();
 			UInt32 GetLinkQuality();
 			Double GetFreq();
-			Text::String *GetManuf();
-			Text::String *GetModel();
-			Text::String *GetSN();
-			const UTF8Char *GetCountry();
-			const UInt8 *GetChipsetOUI(OSInt index);
+			Optional<Text::String> GetManuf();
+			Optional<Text::String> GetModel();
+			Optional<Text::String> GetSN();
+			UnsafeArrayOpt<const UTF8Char> GetCountry();
+			UnsafeArrayOpt<const UInt8> GetChipsetOUI(OSInt index);
 			UOSInt GetIECount();
 			Optional<Net::WirelessLANIE> GetIE(UOSInt index);
 		};

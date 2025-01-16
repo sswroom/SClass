@@ -17,7 +17,7 @@ namespace SSWR
 			NN<Map::MapEnv> env;
 			UOSInt currFontStyle;
 
-			UI::GUIPopupMenu *mnuLayers;
+			Optional<UI::GUIPopupMenu> mnuLayers;
 
 		private:
 			static void __stdcall OnResized(AnyType userObj);
@@ -32,7 +32,7 @@ namespace SSWR
 			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
-			void SetPopupMenu(UI::GUIPopupMenu *mnuLayers);
+			void SetPopupMenu(Optional<UI::GUIPopupMenu> mnuLayers);
 
 			void UpdateFontStyles();
 			UOSInt GetSelectedFontStyle();

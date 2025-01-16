@@ -6,7 +6,7 @@
 #include "DB/ColDef.h"
 #include "Map/LayerTools.h"
 
-Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDrawLayer>> layers, Text::String *lyrName)
+Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDrawLayer>> layers, Optional<Text::String> lyrName)
 {
 	UOSInt layerCnt = layers->GetCount();
 	UOSInt i;

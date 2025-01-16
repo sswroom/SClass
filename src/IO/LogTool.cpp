@@ -104,7 +104,7 @@ void IO::LogTool::AddLogHandler(NN<LogHandler> hdlr, IO::LogHandler::LogLevel lo
 		this->levArr.Add(logLev);
 	}
 
-	UTF8Char buff[256];
+	UTF8Char buff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	Data::Timestamp ts = Data::Timestamp::Now();

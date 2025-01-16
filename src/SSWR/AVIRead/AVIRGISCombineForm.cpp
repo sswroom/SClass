@@ -125,11 +125,11 @@ void SSWR::AVIRead::AVIRGISCombineForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::MapDrawLayer *SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
+Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
 {
-	Map::VectorLayer *layer = 0;
+	Optional<Map::VectorLayer> layer = 0;
 	NN<Text::String> s = Text::String::New(UTF8STRC("CombinedLayer"));
-	layer = Map::LayerTools::CombineLayers(this->selLayers, s.Ptr());
+	layer = Map::LayerTools::CombineLayers(this->selLayers, s);
 	s->Release();
 	return layer;
 }

@@ -177,7 +177,7 @@ Bool Media::AVIUtl::AUIVideo::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::AVIUtl::AUIVideo::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AVIUtl::AUIVideo::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	/////////////////////////////////////////
 	return false;

@@ -15,7 +15,7 @@ namespace Media
 			NN<Media::AudioFormat> format;
 			UOSInt nSamples;
 			UOSInt currSample;
-			Sync::Event *playEvt;
+			Optional<Sync::Event> playEvt;
 
 		public:
 			AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UOSInt nSamples);
@@ -25,11 +25,11 @@ namespace Media
 			virtual Bool CanSeek();
 			virtual Data::Duration GetStreamTime();
 			virtual Data::Duration SeekToTime(Data::Duration time);
-			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
+			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
 			virtual void GetFormat(NN<AudioFormat> format);
 
-			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
+			virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize);
 			virtual void Stop();
 			virtual UOSInt ReadBlock(Data::ByteArray blk);
 			virtual UOSInt GetMinBlockSize();

@@ -9,10 +9,9 @@
 void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMySQLServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLServerForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
-		DEL_CLASS(me->svr);
-		me->svr = 0;
+		me->svr.Delete();
 		me->txtPort->SetReadOnly(false);
 		return;
 	}
@@ -28,15 +27,18 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(AnyType userOb
 		return;
 	}
 	sb.ClearStr();
-	NEW_CLASS(me->dbms, DB::DBMS(MYSQLVERSION, me->log));
-	NEW_CLASS(me->svr, Net::MySQLServer(me->core->GetSocketFactory(), 0, port, me->dbms, true));
-	if (me->svr->IsError())
+	NN<DB::DBMS> dbms;
+	NN<Net::MySQLServer> svr;
+	NEW_CLASSNN(dbms, DB::DBMS(MYSQLVERSION, me->log));
+	NEW_CLASSNN(svr, Net::MySQLServer(me->core->GetSocketFactory(), 0, port, dbms, true));
+	if (svr->IsError())
 	{
-		SDEL_CLASS(me->svr);
+		svr.Delete();
 	}
 	else
 	{
-		me->dbms->UserAdd(1, CSTR("root"), CSTR("12345678"), CSTR("*"));
+		me->svr = svr;
+		dbms->UserAdd(1, CSTR("root"), CSTR("12345678"), CSTR("*"));
 		me->txtPort->SetReadOnly(true);
 	}
 }
@@ -117,7 +119,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRMySQLServerForm::~AVIRMySQLServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }

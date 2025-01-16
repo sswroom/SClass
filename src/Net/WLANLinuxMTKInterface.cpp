@@ -21,9 +21,9 @@ typedef struct
 	Double rssi;
 	UInt32 linkQuality;
 	Double freq; //Hz
-	Text::String *devManuf;
-	Text::String *devModel;
-	Text::String *devSN;
+	Optional<Text::String> devManuf;
+	Optional<Text::String> devModel;
+	Optional<Text::String> devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
 	Data::ArrayListNN<Net::WirelessLANIE> ieList;

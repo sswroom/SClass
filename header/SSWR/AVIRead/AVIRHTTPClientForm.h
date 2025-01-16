@@ -121,13 +121,13 @@ namespace SSWR
 
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
-			Text::String *reqURL;
+			Optional<Text::String> reqURL;
 			UnsafeArrayOpt<const UTF8Char> reqBody;
 			UOSInt reqBodyLen;
-			Text::String *reqBodyType;
-			Text::String *reqUserName;
-			Text::String *reqPassword;
-			Text::String *reqHeaders;
+			Optional<Text::String> reqBodyType;
+			Optional<Text::String> reqUserName;
+			Optional<Text::String> reqPassword;
+			Optional<Text::String> reqHeaders;
 			Net::WebUtil::RequestMethod reqMeth;
 			Bool reqOSClient;
 			Bool reqAllowComp;
@@ -148,12 +148,12 @@ namespace SSWR
 			UInt64 respDLSize;
 			UInt64 respULSize;
 			Int32 respStatus;
-			Text::String *respReqURL;
+			Optional<Text::String> respReqURL;
 			Data::ArrayListStringNN respHeaders;
 			Sync::Mutex respMut;
-			Text::String *respContType;
-			IO::MemoryStream *respData;
-			Text::String *respCertText;
+			Optional<Text::String> respContType;
+			Optional<IO::MemoryStream> respData;
+			Optional<Text::String> respCertText;
 			Optional<Crypto::Cert::X509File> respCert;
 			Data::ArrayListNN<ParamValue> params;
 			Data::ArrayListNN<HTTPCookie> cookieList;

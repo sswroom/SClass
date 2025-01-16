@@ -60,9 +60,9 @@ typedef struct
 	Double rssi;
 	UInt32 linkQuality;
 	Double freq; //Hz
-	Text::String *devManuf;
-	Text::String *devModel;
-	Text::String *devSN;
+	Optional<Text::String> devManuf;
+	Optional<Text::String> devModel;
+	Optional<Text::String> devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
 	Data::ArrayListNN<Net::WirelessLANIE> ieList;
@@ -110,9 +110,9 @@ NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 	return this->ssid;
 }
 
-Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
+Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 {
-	BSSEntry *bss = (BSSEntry*)bssEntry;
+	NN<BSSEntry> bss = bssEntry.GetNN<BSSEntry>();
 	this->ssid = Text::String::New(ssid);
 	this->phyId = bss->phyId;
 	MemCopyNO(this->mac, bss->mac, 6);
@@ -121,9 +121,9 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
 	this->rssi = bss->rssi;
 	this->linkQuality = bss->linkQuality;
 	this->freq = bss->freq;
-	this->devManuf = SCOPY_STRING(bss->devManuf);
-	this->devModel = SCOPY_STRING(bss->devModel);
-	this->devSN = SCOPY_STRING(bss->devSN);
+	this->devManuf = Text::String::CopyOrNull(bss->devManuf);
+	this->devModel = Text::String::CopyOrNull(bss->devModel);
+	this->devSN = Text::String::CopyOrNull(bss->devSN);
 	Text::StrConcat(this->devCountry, bss->country);
 	OSInt i = 0;
 	while (i < WLAN_OUI_CNT)
@@ -141,9 +141,9 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
 	this->ieList.DeleteAll();
 	this->ssid->Release();
-	SDEL_STRING(this->devManuf);
-	SDEL_STRING(this->devModel);
-	SDEL_STRING(this->devSN);
+	OPTSTR_DEL(this->devManuf);
+	OPTSTR_DEL(this->devModel);
+	OPTSTR_DEL(this->devSN);
 }
 
 NN<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
@@ -156,7 +156,7 @@ UInt32 Net::WirelessLAN::BSSInfo::GetPHYId()
 	return this->phyId;
 }
 
-const UInt8 *Net::WirelessLAN::BSSInfo::GetMAC()
+UnsafeArray<const UInt8> Net::WirelessLAN::BSSInfo::GetMAC()
 {
 	return this->mac;
 }
@@ -186,22 +186,22 @@ Double Net::WirelessLAN::BSSInfo::GetFreq()
 	return this->freq;
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetManuf()
+Optional<Text::String> Net::WirelessLAN::BSSInfo::GetManuf()
 {
 	return this->devManuf;
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetModel()
+Optional<Text::String> Net::WirelessLAN::BSSInfo::GetModel()
 {
 	return this->devModel;
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetSN()
+Optional<Text::String> Net::WirelessLAN::BSSInfo::GetSN()
 {
 	return this->devSN;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetCountry()
+UnsafeArrayOpt<const UTF8Char> Net::WirelessLAN::BSSInfo::GetCountry()
 {
 	if (this->devCountry[0])
 		return this->devCountry;
@@ -209,7 +209,7 @@ const UTF8Char *Net::WirelessLAN::BSSInfo::GetCountry()
 		return 0;
 }
 
-const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
+UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 {
 	if (index < 0 || index >= WLAN_OUI_CNT)
 	{
@@ -245,7 +245,7 @@ NN<Text::String> Net::WirelessLAN::Interface::GetName() const
 
 Net::WirelessLAN::WirelessLAN()
 {
-	WirelessLANData *thisData = MemAlloc(WirelessLANData, 1);
+	NN<WirelessLANData> thisData = MemAllocNN(WirelessLANData);
 	NEW_CLASS(thisData->mut, Sync::Mutex());
 	thisData->fd = socket(AF_INET, SOCK_DGRAM, 0) + 1;
 	this->clsData = thisData;
@@ -253,24 +253,24 @@ Net::WirelessLAN::WirelessLAN()
 
 Net::WirelessLAN::~WirelessLAN()
 {
-	WirelessLANData *thisData = (WirelessLANData*)this->clsData;
+	NN<WirelessLANData> thisData = this->clsData.GetNN<WirelessLANData>();
 	if (thisData->fd != 0)
 	{
 		close(-1 + thisData->fd);
 	}
 	DEL_CLASS(thisData->mut);
-	MemFree(thisData);
+	MemFreeNN(thisData);
 }
 
 Bool Net::WirelessLAN::IsError()
 {
-	WirelessLANData *thisData = (WirelessLANData*)this->clsData;
+	NN<WirelessLANData> thisData = this->clsData.GetNN<WirelessLANData>();
 	return thisData->fd == 0;
 }
 
 UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
-	WirelessLANData *thisData = (WirelessLANData*)this->clsData;
+	NN<WirelessLANData> thisData = this->clsData.GetNN<WirelessLANData>();
 	UOSInt ret = 0;
 	NN<Net::WirelessLAN::Interface> interf;
 /*	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

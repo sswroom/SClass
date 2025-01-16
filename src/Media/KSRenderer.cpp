@@ -64,154 +64,160 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 	Sync::Event *evt;
 //	HRESULT hr;
 	UOSInt buffLeng = 8192;
+	NN<Media::IAudioSource> audsrc;
+	NN<Sync::Event> playEvt;
+	NN<Media::RefClock> clk;
 
 //	pFilter = (CKsAudRenFilter*)me->pFilter;
 	pPin = (CKsAudRenPin*)me->pPin;
 
 	me->threadInit = true;
-	me->audsrc->GetFormat(af);
-	audStartTime = me->audsrc->GetCurrTime();
-	if (me->buffTime)
+	if (me->audsrc.SetTo(audsrc) && me->playEvt.SetTo(playEvt))
 	{
-		buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
-		if (buffLeng > 8192)
-			buffLeng = 8192;
-	}
-
-	NEW_CLASS(evt, Sync::Event(true));
-	me->clk->Start(audStartTime);
-	me->playing = true;
-	me->audsrc->Start(evt, buffLeng);
-
-	UOSInt cPackets = (af.bitRate >> 17) + 1;
-	UOSInt buffEndCnt = 0;
-	DATA_PACKET *Packets = MemAlloc(DATA_PACKET, cPackets);
-	HANDLE *hEventPool = MemAlloc(HANDLE, cPackets + 1);
-	UInt8 *pcmBuffer = MemAlloc(UInt8, buffLeng * cPackets);
-	MemClear(&Packets[0], sizeof(DATA_PACKET) * cPackets);
-
-	i = 0;
-	while (i < cPackets)
-	{
-        hEventPool[i] = CreateEvent(NULL, TRUE, TRUE, NULL);	// NO autoreset!
-
-        Packets[i].Signal.hEvent = hEventPool[i];
-        Packets[i].Header.Data = &pcmBuffer[buffLeng * i];
-        Packets[i].Header.FrameExtent = (ULONG)buffLeng;
-        Packets[i].Header.DataUsed = (ULONG)buffLeng;  // if we were capturing, we would init this to 0
-        Packets[i].Header.Size = sizeof(Packets[i].Header);
-        Packets[i].Header.PresentationTime.Numerator = 1;
-        Packets[i].Header.PresentationTime.Denominator = 1;
-		i++;
-	}
-
-	KSAUDIO_POSITION pos;
-    pPin->SetState(KSSTATE_PAUSE);
-    pPin->SetState(KSSTATE_RUN);
-
-	UOSInt blkReadSize = buffLeng - (buffLeng % af.align);
-	UInt64 skipSize = 0;
-	UInt64 initSize = 0;
-	i = 0;
-	while (i < cPackets)
-	{
-		Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
-		if (Packets[i].Header.DataUsed == 0)
+		audsrc->GetFormat(af);
+		audStartTime = audsrc->GetCurrTime();
+		if (me->buffTime)
 		{
-			me->playEvt->Wait(500);
-			Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
-		}
-		ResetEvent(Packets[i].Signal.hEvent);
-
-		pPin->WriteData(&Packets[i].Header, &Packets[i].Signal);
-		initSize += Packets[i].Header.DataUsed;
-		i++;
-	}
-	hEventPool[cPackets] = (HANDLE)me->playEvt->GetHandle();
-
-	Bool firstWait = true;
-	while (!me->stopPlay)
-	{
-		i = cPackets;
-		if (pPin->GetPosition(&pos) == 0)
-		{
-			me->clk->Start(audStartTime + (UInt32)((pos.PlayOffset + skipSize) * 8000 / af.bitRate));
+			buffLeng = (me->buffTime * af.frequency / 1000) * af.align;
+			if (buffLeng > 8192)
+				buffLeng = 8192;
 		}
 
-		i = WaitForMultipleObjects((UInt32)cPackets + 1, hEventPool, FALSE, 1000);
-		if (i == WAIT_TIMEOUT)
+		NEW_CLASS(evt, Sync::Event(true));
+		if (me->clk.SetTo(clk)) clk->Start(audStartTime);
+		me->playing = true;
+		audsrc->Start(evt, buffLeng);
+
+		UOSInt cPackets = (af.bitRate >> 17) + 1;
+		UOSInt buffEndCnt = 0;
+		DATA_PACKET *Packets = MemAlloc(DATA_PACKET, cPackets);
+		HANDLE *hEventPool = MemAlloc(HANDLE, cPackets + 1);
+		UInt8 *pcmBuffer = MemAlloc(UInt8, buffLeng * cPackets);
+		MemClear(&Packets[0], sizeof(DATA_PACKET) * cPackets);
+
+		i = 0;
+		while (i < cPackets)
 		{
-			if (firstWait)
+			hEventPool[i] = CreateEvent(NULL, TRUE, TRUE, NULL);	// NO autoreset!
+
+			Packets[i].Signal.hEvent = hEventPool[i];
+			Packets[i].Header.Data = &pcmBuffer[buffLeng * i];
+			Packets[i].Header.FrameExtent = (ULONG)buffLeng;
+			Packets[i].Header.DataUsed = (ULONG)buffLeng;  // if we were capturing, we would init this to 0
+			Packets[i].Header.Size = sizeof(Packets[i].Header);
+			Packets[i].Header.PresentationTime.Numerator = 1;
+			Packets[i].Header.PresentationTime.Denominator = 1;
+			i++;
+		}
+
+		KSAUDIO_POSITION pos;
+		pPin->SetState(KSSTATE_PAUSE);
+		pPin->SetState(KSSTATE_RUN);
+
+		UOSInt blkReadSize = buffLeng - (buffLeng % af.align);
+		UInt64 skipSize = 0;
+		UInt64 initSize = 0;
+		i = 0;
+		while (i < cPackets)
+		{
+			Packets[i].Header.DataUsed = (ULONG)audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
+			if (Packets[i].Header.DataUsed == 0)
 			{
-				pPin->SetState(KSSTATE_PAUSE);
-				i = cPackets;
-				while (i-- > 0)
-				{
-					SetEvent(hEventPool[i]);
-				}
-
-				if (pPin->GetPosition(&pos) == 0)
-				{
-					skipSize = initSize - pos.WriteOffset;
-				}
-				pPin->SetState(KSSTATE_STOP);
-				pPin->SetState(KSSTATE_PAUSE);
-				pPin->SetState(KSSTATE_RUN);
-				firstWait = false;
+				playEvt->Wait(500);
+				Packets[i].Header.DataUsed = (ULONG)audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
 			}
-			else
+			ResetEvent(Packets[i].Signal.hEvent);
+
+			pPin->WriteData(&Packets[i].Header, &Packets[i].Signal);
+			initSize += Packets[i].Header.DataUsed;
+			i++;
+		}
+		hEventPool[cPackets] = (HANDLE)playEvt->GetHandle();
+
+		Bool firstWait = true;
+		while (!me->stopPlay)
+		{
+			i = cPackets;
+			if (pPin->GetPosition(&pos) == 0)
 			{
-				break;
+				if (me->clk.SetTo(clk)) clk->Start(audStartTime + (UInt32)((pos.PlayOffset + skipSize) * 8000 / af.bitRate));
 			}
-		}
-		else if (i == WAIT_FAILED)
-		{
-		}
-		else
-		{
-			firstWait = false;
-			i -= WAIT_OBJECT_0;
-			if (i < cPackets)
+
+			i = WaitForMultipleObjects((UInt32)cPackets + 1, hEventPool, FALSE, 1000);
+			if (i == WAIT_TIMEOUT)
 			{
-				Packets[i].Header.FrameExtent = (ULONG)buffLeng;
-				Packets[i].Header.DataUsed = (ULONG)me->audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
-				if (Packets[i].Header.DataUsed == 0)
+				if (firstWait)
 				{
-					buffEndCnt++;
-					if (buffEndCnt >= cPackets)
-						break;
+					pPin->SetState(KSSTATE_PAUSE);
+					i = cPackets;
+					while (i-- > 0)
+					{
+						SetEvent(hEventPool[i]);
+					}
+
+					if (pPin->GetPosition(&pos) == 0)
+					{
+						skipSize = initSize - pos.WriteOffset;
+					}
+					pPin->SetState(KSSTATE_STOP);
+					pPin->SetState(KSSTATE_PAUSE);
+					pPin->SetState(KSSTATE_RUN);
+					firstWait = false;
 				}
 				else
 				{
-					buffEndCnt = 0;
-
-					MemClear(&Packets[i].Signal, sizeof(Packets[i].Signal));
-					if (Packets[i].Header.DataUsed < (ULONG)buffLeng)
+					break;
+				}
+			}
+			else if (i == WAIT_FAILED)
+			{
+			}
+			else
+			{
+				firstWait = false;
+				i -= WAIT_OBJECT_0;
+				if (i < cPackets)
+				{
+					Packets[i].Header.FrameExtent = (ULONG)buffLeng;
+					Packets[i].Header.DataUsed = (ULONG)audsrc->ReadBlockLPCM(Data::ByteArray((UInt8*)Packets[i].Header.Data, blkReadSize), af);
+					if (Packets[i].Header.DataUsed == 0)
 					{
-						MemClear(&((UInt8*)Packets[i].Header.Data)[Packets[i].Header.DataUsed], buffLeng - Packets[i].Header.DataUsed);
+						buffEndCnt++;
+						if (buffEndCnt >= cPackets)
+							break;
 					}
-					ResetEvent(Packets[i].Signal.hEvent = hEventPool[i]);
+					else
+					{
+						buffEndCnt = 0;
 
-					pPin->WriteData(&Packets[i].Header, &Packets[i].Signal);
+						MemClear(&Packets[i].Signal, sizeof(Packets[i].Signal));
+						if (Packets[i].Header.DataUsed < (ULONG)buffLeng)
+						{
+							MemClear(&((UInt8*)Packets[i].Header.Data)[Packets[i].Header.DataUsed], buffLeng - Packets[i].Header.DataUsed);
+						}
+						ResetEvent(Packets[i].Signal.hEvent = hEventPool[i]);
+
+						pPin->WriteData(&Packets[i].Header, &Packets[i].Signal);
+					}
 				}
 			}
 		}
-	}
 
-	me->audsrc->Stop();
-	DEL_CLASS(evt);
-    pPin->SetState(KSSTATE_PAUSE);
-    pPin->SetState(KSSTATE_STOP);
-	i = cPackets;
-	while (i-- > 0)
-	{
-		CloseHandle(Packets[i].Signal.hEvent);
-	}
-	MemFree(pcmBuffer);
-	MemFree(Packets);
-	MemFree(hEventPool);
+		audsrc->Stop();
+		DEL_CLASS(evt);
+		pPin->SetState(KSSTATE_PAUSE);
+		pPin->SetState(KSSTATE_STOP);
+		i = cPackets;
+		while (i-- > 0)
+		{
+			CloseHandle(Packets[i].Signal.hEvent);
+		}
+		MemFree(pcmBuffer);
+		MemFree(Packets);
+		MemFree(hEventPool);
 
-	me->playing = false;
+		me->playing = false;
+	}
 	if (me->endHdlr)
 	{
 		me->endHdlr(me->endHdlrObj);
@@ -320,10 +326,11 @@ Bool Media::KSRenderer::IsError()
 	return this->pFilter == 0;
 }
 
-Bool Media::KSRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::KSRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	CKsAudRenFilter *pFilter;
 	CKsAudRenPin *pPin;
+	NN<Media::IAudioSource> nnaudsrc;
 	pFilter = (CKsAudRenFilter*)this->pFilter;
 	this->Stop();
 	this->audsrc = 0;
@@ -335,11 +342,11 @@ Bool Media::KSRenderer::BindAudio(Media::IAudioSource *audsrc)
 		delete pPin;
 		this->pPin = 0;
 	}
-	SDEL_CLASS(this->playEvt);
-	if (audsrc == 0 || this->pFilter == 0)
+	this->playEvt.Delete();
+	if (!audsrc.SetTo(nnaudsrc) || this->pFilter == 0)
 		return false;
 	Media::AudioFormat fmt;
-	audsrc->GetFormat(fmt);
+	nnaudsrc->GetFormat(fmt);
 
 	if (fmt.formatId != 1)
 	{
@@ -353,7 +360,7 @@ Bool Media::KSRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (this->pPin != 0)
 	{
 		this->audsrc = audsrc;
-		NEW_CLASS(this->playEvt, Sync::Event(true));
+		NEW_CLASSOPT(this->playEvt, Sync::Event(true));
 		return true;
 	}
 	else
@@ -362,11 +369,11 @@ Bool Media::KSRenderer::BindAudio(Media::IAudioSource *audsrc)
 	}
 }
 
-void Media::KSRenderer::AudioInit(Media::RefClock *clk)
+void Media::KSRenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (this->playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->clk = clk;
 }
@@ -375,7 +382,7 @@ void Media::KSRenderer::Start()
 {
 	if (playing)
 		return;
-	if (this->audsrc == 0)
+	if (this->audsrc.IsNull())
 		return;
 	this->threadInit = false;
 	this->stopPlay = false;
@@ -388,13 +395,15 @@ void Media::KSRenderer::Start()
 
 void Media::KSRenderer::Stop()
 {
+	NN<Sync::Event> playEvt;
+	NN<Media::IAudioSource> audsrc;
 	this->stopPlay = true;
 	if (!this->playing)
 		return;
-	this->playEvt->Set();
-	if (this->audsrc)
+	if (this->playEvt.SetTo(playEvt)) playEvt->Set();
+	if (this->audsrc.SetTo(audsrc))
 	{
-		this->audsrc->Stop();
+		audsrc->Stop();
 	}
 	while (playing)
 	{

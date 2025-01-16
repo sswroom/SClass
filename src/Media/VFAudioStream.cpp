@@ -71,7 +71,7 @@ Data::Duration Media::VFAudioStream::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(currSample, this->fmt.frequency);
 }
 
-Bool Media::VFAudioStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VFAudioStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	////////////////////////////////////////////
 	return false;
@@ -82,7 +82,7 @@ void Media::VFAudioStream::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->fmt);
 }
 
-Bool Media::VFAudioStream::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::VFAudioStream::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	this->readEvt = evt;
 	this->currSample = 0;
@@ -97,6 +97,7 @@ void Media::VFAudioStream::Stop()
 UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 {
 	VF_PluginFunc *funcs = (VF_PluginFunc*)mfile->plugin->funcs;
+	NN<Sync::Event> readEvt;
 	UOSInt sampleCnt = blk.GetSize() / this->fmt.nChannels / ((UOSInt)this->fmt.bitpersample >> 3);
 	if (sampleCnt + this->currSample > this->sampleCnt)
 	{
@@ -104,8 +105,8 @@ UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 	}
 	if (sampleCnt <= 0)
 	{
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return 0;
 	}
 	UOSInt readSize = sampleCnt * this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);
@@ -120,8 +121,8 @@ UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 	this->currSample += rd.dwReadedSampleCount;
 	readSize = rd.dwReadedSampleCount * this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);
 
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return readSize;
 }
 

@@ -1123,7 +1123,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 				{
 					NN<Map::MapDrawLayer> newLyr;
-					if (newLyr.Set(frm.GetCombinedLayer()))
+					if (frm.GetCombinedLayer().SetTo(newLyr))
 					{
 						this->env->AddLayer(0, newLyr, true);
 						newLyr->AddUpdatedHandler(OnMapLayerUpdated, this);

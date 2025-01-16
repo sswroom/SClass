@@ -76,15 +76,15 @@ Media::AudioDevice::~AudioDevice()
 
 Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
-	Media::IAudioRenderer *renderer;
+	NN<Media::IAudioRenderer> renderer;
 	Bool ret = false;
 #ifndef _WIN32_WCE
 	if (devName.StartsWith(UTF8STRC("KS: ")))
 	{
-		NEW_CLASS(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName.v + 4)));
+		NEW_CLASSNN(renderer, Media::KSRenderer(Media::KSRenderer::GetDeviceId(devName.v + 4)));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
@@ -95,10 +95,10 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 #endif
 	if (devName.StartsWith(UTF8STRC("ASIO: ")))
 	{
-		NEW_CLASS(renderer, Media::ASIOOutRenderer(devName.v + 6));
+		NEW_CLASSNN(renderer, Media::ASIOOutRenderer(devName.v + 6));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
@@ -108,10 +108,10 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 	}
 	else if (devName.StartsWith(UTF8STRC("WO: ")))
 	{
-		NEW_CLASS(renderer, Media::WaveOutRenderer(devName.v + 4));
+		NEW_CLASSNN(renderer, Media::WaveOutRenderer(devName.v + 4));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
@@ -124,49 +124,39 @@ Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 
 void Media::AudioDevice::ClearDevices()
 {
-	UOSInt i;
-	Media::IAudioRenderer *renderer;
-
 	BindAudio(0);
-	i = this->rendererList.GetCount();
-	while (i-- > 0)
-	{
-		renderer = this->rendererList.GetItem(i);
-		DEL_CLASS(renderer);
-	}
-	this->rendererList.Clear();
+	this->rendererList.DeleteAll();
 }
 
-Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc)
+Optional<Media::IAudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	UOSInt i;
 	UOSInt j;
-	Media::IAudioRenderer *renderer;
+	NN<Media::IAudioRenderer> renderer;
 	if (this->rendererList.GetCount() == 0)
 	{
-		NEW_CLASS(renderer, Media::WaveOutRenderer(0));
+		NEW_CLASSNN(renderer, Media::WaveOutRenderer(0));
 		if (renderer->IsError())
 		{
-			DEL_CLASS(renderer);
+			renderer.Delete();
 		}
 		else
 		{
 			this->rendererList.Add(renderer);
 		}
-		renderer = 0;
 	}
-	if (this->currRenderer)
+	if (this->currRenderer.SetTo(renderer))
 	{
-		this->currRenderer->BindAudio(0);
+		renderer->BindAudio(0);
 		this->currRenderer = 0;
 	}
-	if (audsrc == 0)
+	if (audsrc.IsNull())
 		return 0;
 	i = 0;
 	j = this->rendererList.GetCount();
 	while (i < j)
 	{
-		renderer = this->rendererList.GetItem(i);
+		renderer = this->rendererList.GetItemNoCheck(i);
 		if (renderer->BindAudio(audsrc))
 		{
 			if (renderer->IsError())

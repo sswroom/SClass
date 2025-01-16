@@ -277,6 +277,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 	UOSInt j;
 	UOSInt k;
 	Text::StringBuilderUTF8 sb;
+	UnsafeArray<UInt8> ieBuff;
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	Sync::MutexUsage mutUsage;
@@ -294,14 +295,11 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 		sb.AppendUTF8Char('\t');
 		sb.AppendDouble(entry->freq);
 		sb.AppendUTF8Char('\t');
-		if (entry->manuf)
-			sb.Append(entry->manuf);
+		sb.AppendOpt(entry->manuf);
 		sb.AppendUTF8Char('\t');
-		if (entry->model)
-			sb.Append(entry->model);
+		sb.AppendOpt(entry->model);
 		sb.AppendUTF8Char('\t');
-		if (entry->serialNum)
-			sb.Append(entry->serialNum);
+		sb.AppendOpt(entry->serialNum);
 		sb.AppendUTF8Char('\t');
 		sb.AppendHexBuff(entry->ouis[0], 3, 0, Text::LineBreakType::None);
 		sb.AppendUTF8Char(',');
@@ -324,9 +322,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebS
 			k++;
 		}
 		sb.AppendC(UTF8STRC("\t"));
-		if (entry->ieLen > 0)
+		if (entry->ieLen > 0 && entry->ieBuff.SetTo(ieBuff))
 		{
-			sb.AppendHexBuff(entry->ieBuff, entry->ieLen, 0, Text::LineBreakType::None);
+			sb.AppendHexBuff(ieBuff, entry->ieLen, 0, Text::LineBreakType::None);
 		}
 		sb.AppendC(UTF8STRC("\r\n"));
 		i++;
@@ -397,11 +395,11 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderU
 			sb->AppendC(UTF8STRC("</td><td>"));
 			Text::SBAppendF64(sb, entry->freq);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			if (entry->manuf) sb->Append(entry->manuf);
+			sb->AppendOpt(entry->manuf);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			if (entry->model) sb->Append(entry->model);
+			sb->AppendOpt(entry->model);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			if (entry->serialNum) sb->Append(entry->serialNum);
+			sb->AppendOpt(entry->serialNum);
 			sb->AppendC(UTF8STRC("</td></tr>\r\n"));
 		}
 		i++;

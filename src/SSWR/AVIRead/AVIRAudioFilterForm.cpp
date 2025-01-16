@@ -24,7 +24,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRAudioFilterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioFilterForm>();
-	if (me->audSrc == 0)
+	if (me->audSrc.IsNull())
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt32 buffSize;
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 		}
 		if (me->radInputSilent->IsSelected())
 		{
-			NEW_CLASS(me->audSrc, Media::SilentSource(frequency, nChannel, bitCount, CSTR("Silent"), (UInt64)-1));
+			NEW_CLASSOPT(me->audSrc, Media::SilentSource(frequency, nChannel, bitCount, CSTR("Silent"), (UInt64)-1));
 		}
 		else if (me->radInputWaveIn->IsSelected())
 		{
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 		}
 		NN<Media::IAudioRenderer> audRender;
 		NN<Media::IAudioSource> audSrc;
-		if (audSrc.Set(me->audSrc))
+		if (me->audSrc.SetTo(audSrc))
 		{
 			NN<Media::AudioFilter::AudioAmplifier> audioAmp;
 			NN<Media::AudioFilter::DTMFGenerator> dtmfGen;
@@ -195,7 +195,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 				me->fileMix.Delete();
 				me->dtmfGen.Delete();
 				me->audioAmp.Delete();
-				DEL_CLASS(me->audSrc);
+				me->audSrc.Delete();
 				MemFree(me->sampleBuff);
 				me->audSrc = 0;
 				me->sampleBuff = 0;
@@ -715,12 +715,12 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 						i++;
 					}
 				}
-				me->pbsSample->SetImageDImg(img.Ptr());
-				if (dimg.Set(me->sampleImg))
+				me->pbsSample->SetImageDImg(img);
+				if (me->sampleImg.SetTo(dimg))
 				{
 					me->eng->DeleteImage(dimg);
 				}
-				me->sampleImg = img.Ptr();
+				me->sampleImg = img;
 			}
 
 			sz = me->pbsFFT->GetSizeP();
@@ -799,12 +799,12 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 				}
 				MemFree(data);
 
-				me->pbsFFT->SetImageDImg(img.Ptr());
-				if (dimg.Set(me->fftImg))
+				me->pbsFFT->SetImageDImg(img);
+				if (me->fftImg.SetTo(dimg))
 				{
 					me->eng->DeleteImage(dimg);
 				}
-				me->fftImg = img.Ptr();
+				me->fftImg = img;
 			}
 		}
 	}
@@ -976,7 +976,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnAmplifierVolChg(AnyType use
 
 void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 {
-	if (this->audSrc)
+	if (this->audSrc.NotNull())
 	{
 		if (this->audRenderType == 1)
 		{
@@ -987,7 +987,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 			this->core->BindAudio(0);
 			this->audRender = 0;
 		}
-		DEL_CLASS(this->audSrc);
+		this->audSrc.Delete();
 		this->audioAmp.Delete();
 		this->audioLevel.Delete();
 		this->audioRipper.Delete();
@@ -998,7 +998,6 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 		this->volBooster.Delete();
 		this->audioCapture.Delete();
 		MemFree(this->sampleBuff);
-		this->audSrc = 0;
 		this->sampleBuff = 0;
 	}
 }
@@ -1279,12 +1278,12 @@ SSWR::AVIRead::AVIRAudioFilterForm::~AVIRAudioFilterForm()
 {
 	this->StopAudio();
 	NN<Media::DrawImage> img;
-	if (img.Set(this->sampleImg))
+	if (this->sampleImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->sampleImg = 0;
 	}
-	if (img.Set(this->fftImg))
+	if (this->fftImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->fftImg = 0;

@@ -16,11 +16,11 @@ namespace Media
 		Bool bufferCreated;
 		Bool playing;
 		Bool toStop;
-		Media::RefClock *clk;
+		Optional<Media::RefClock> clk;
 		Int32 debug;
 		Bool threadInit;
 
-		Media::IAudioSource *audSrc;
+		Optional<Media::IAudioSource> audSrc;
 		Int32 bufferIndex;
 		Int64 bufferOfst;
 		Bool bufferFilled;
@@ -46,8 +46,8 @@ namespace Media
 		virtual ~ASIOOutRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();

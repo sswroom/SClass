@@ -186,6 +186,9 @@ namespace SSWR
 
 			NN<UI::GUITabPage> tpTCP4SYN;
 			NN<UI::GUIListView> lvTCP4SYN;
+
+			NN<UI::GUITabPage> tpBandwidth;
+			NN<UI::GUIListView> lvBandwidth;
 			
 			NN<UI::GUITabPage> tpLog;
 			NN<UI::GUITextBox> txtLog;

@@ -23,7 +23,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Sync::Thread **threads;
+			UnsafeArrayOpt<NN<Sync::Thread>> threads;
 			UInt32 svrIP;
 			UInt16 svrPort;
 			Sync::Mutex connMut;

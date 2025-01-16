@@ -43,10 +43,13 @@ void Media::Decoder::ACMDecoder::FreeACM()
 
 void Media::Decoder::ACMDecoder::InitACM()
 {
+	NN<Media::IAudioSource> sourceAudio;
 	UInt32 i;
 	Media::AudioFormat format;
 	WAVEFORMATEX *fmt;
 	WAVEFORMATEX *acmFmt;
+	if (!this->sourceAudio.SetTo(sourceAudio))
+		return;
 	sourceAudio->GetFormat(format);
 	fmt = (WAVEFORMATEX*)MAlloc(18 + format.extraSize);
 	fmt->wFormatTag = (WORD)format.formatId;
@@ -96,7 +99,7 @@ void Media::Decoder::ACMDecoder::InitACM()
 		return;
 	}
 
-	this->acmInpBuffSize = this->sourceAudio->GetMinBlockSize();
+	this->acmInpBuffSize = sourceAudio->GetMinBlockSize();
 	if (this->acmInpBuffSize < fmt->nAvgBytesPerSec)
 	{
 		this->acmInpBuffSize = fmt->nAvgBytesPerSec;
@@ -171,7 +174,7 @@ Media::Decoder::ACMDecoder::ACMDecoder(NN<Media::IAudioSource> sourceAudio)
 	this->acmInpBuff = 0;
 	this->acmOupBuff = 0;
 	this->seeked = true;
-	this->sourceAudio = sourceAudio.Ptr();
+	this->sourceAudio = sourceAudio;
 	this->srcFormatTag = 0;
 	InitACM();
 }
@@ -196,26 +199,29 @@ void Media::Decoder::ACMDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
 		this->acmOupBuffLeft = 0;
-		return this->sourceAudio->SeekToTime(time);
+		return sourceAudio->SeekToTime(time);
 	}
 	return 0;
 }
 
-Bool Media::Decoder::ACMDecoder::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	if (this->sourceAudio)
+	NN<Sync::Event> readEvt;
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
 		this->acmOupBuffLeft = 0;
-		this->sourceAudio->Start(0, blkSize);
+		sourceAudio->Start(0, blkSize);
 		this->readEvt = evt;
 
-		if (this->readEvt)
-			this->readEvt->Set();
+		if (this->readEvt.SetTo(readEvt))
+			readEvt->Set();
 		return true;
 	}
 	return false;
@@ -223,9 +229,10 @@ Bool Media::Decoder::ACMDecoder::Start(Sync::Event *evt, UOSInt blkSize)
 
 void Media::Decoder::ACMDecoder::Stop()
 {
-	if (this->sourceAudio)
+	NN<Media::IAudioSource> sourceAudio;
+	if (this->sourceAudio.SetTo(sourceAudio))
 	{
-		this->sourceAudio->Stop();
+		sourceAudio->Stop();
 	}
 	this->readEvt = 0;
 }
@@ -233,8 +240,12 @@ void Media::Decoder::ACMDecoder::Stop()
 UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 {
 	ACMSTREAMHEADER *acmsh = (ACMSTREAMHEADER*)this->acmsh;
+	NN<Media::IAudioSource> sourceAudio;
+	NN<Sync::Event> readEvt;
 	UOSInt outSize = 0;
 	UOSInt i;
+	if (!this->sourceAudio.SetTo(sourceAudio))
+		return 0;
 	if (this->decFmt->align == 0)
 	{
 		if (this->decFmt->frequency == 0)
@@ -269,26 +280,26 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 				{
 					MemCopyO(this->acmOupBuff, &this->acmOupBuff[buff.GetSize()], this->acmOupBuffLeft - buff.GetSize());
 					this->acmOupBuffLeft -= buff.GetSize();
-					if (this->readEvt)
-						this->readEvt->Set();
+					if (this->readEvt.SetTo(readEvt))
+						readEvt->Set();
 					return outSize;
 				}
 				else
 				{
 					this->acmOupBuffLeft = 0;
-					if (this->readEvt)
-						this->readEvt->Set();
+					if (this->readEvt.SetTo(readEvt))
+						readEvt->Set();
 					return outSize;
 				}
 			}
 		}
 
 		acmsh->cbDstLengthUsed = 0;
-		UOSInt srcSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->acmInpBuff, this->acmInpBuffSize));
+		UOSInt srcSize = sourceAudio->ReadBlock(Data::ByteArray(this->acmInpBuff, this->acmInpBuffSize));
 		if (srcSize == 0)
 		{
-			if (this->readEvt)
-				this->readEvt->Set();
+			if (this->readEvt.SetTo(readEvt))
+				readEvt->Set();
 			return outSize;
 		}
 		acmsh->cbSrcLength = (UInt32)srcSize;
@@ -305,8 +316,8 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 		MMRESULT ret;
 		if ((ret = acmStreamConvert((HACMSTREAM)hAcmStream, acmsh, convFlag)) != 0)
 		{
-			if (this->readEvt)
-				this->readEvt->Set();
+			if (this->readEvt.SetTo(readEvt))
+				readEvt->Set();
 			return outSize;
 		}
 		if (acmsh->cbDstLengthUsed > 0)
@@ -315,8 +326,8 @@ UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 		}
 		this->acmOupBuffLeft = acmsh->cbDstLengthUsed;
 	}
-	if (this->readEvt)
-		this->readEvt->Set();
+	if (this->readEvt.SetTo(readEvt))
+		readEvt->Set();
 	return outSize;
 }
 

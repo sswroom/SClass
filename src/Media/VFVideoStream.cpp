@@ -222,7 +222,7 @@ Bool Media::VFVideoStream::IsRealTimeSrc()
 	return false;
 }
 
-Bool Media::VFVideoStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::VFVideoStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	////////////////////////////////////////////
 	return false;

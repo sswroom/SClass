@@ -9,7 +9,7 @@ namespace Media
 	class WaveOutRenderer : public IAudioRenderer
 	{
 	private:
-		Media::IAudioSource *audsrc;
+		Optional<Media::IAudioSource> audsrc;
 		OSInt devId;
 		Bool playing;
 		Bool threadInit;
@@ -17,7 +17,7 @@ namespace Media
 		Bool buffEmpty[4];
 		void *hwo;
 		Sync::Event *playEvt;
-		Media::RefClock *clk;
+		Optional<Media::RefClock> clk;
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;
 
@@ -36,8 +36,8 @@ namespace Media
 		virtual ~WaveOutRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();

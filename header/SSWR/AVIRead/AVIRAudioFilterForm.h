@@ -145,13 +145,13 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Math::FFTCalc fft;
-			Media::IAudioSource *audSrc;
+			Optional<Media::IAudioSource> audSrc;
 			Int32 audRenderType;
 			Optional<Media::IAudioRenderer> audRender;
 			Media::RefClock clk;
 			NN<Media::DrawEngine> eng;
-			Media::DrawImage *sampleImg;
-			Media::DrawImage *fftImg;
+			Optional<Media::DrawImage> sampleImg;
+			Optional<Media::DrawImage> fftImg;
 			UInt8 *sampleBuff;
 			UInt16 nChannels;
 			UInt16 bitCount;

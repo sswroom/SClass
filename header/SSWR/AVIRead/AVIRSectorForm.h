@@ -19,7 +19,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::ISectorData> data;
 
-			UInt8 *sectorData;
+			UnsafeArray<UInt8> sectorData;
 			UOSInt sectorSize;
 
 			static void __stdcall OnParseClicked(AnyType userObj);

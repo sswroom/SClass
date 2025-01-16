@@ -100,7 +100,8 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentSelChg(AnyType us
 {
 	NN<SSWR::AVIRead::AVIRWiFiLogManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWiFiLogManagerForm>();
 	NN<const Net::WiFiLogFile::LogFileEntry> log;
-	if (!me->lvContent->GetSelectedItem().GetOpt<const Net::WiFiLogFile::LogFileEntry>().SetTo(log) || log->ieLen <= 0)
+	UnsafeArray<UInt8> ieBuff;
+	if (!me->lvContent->GetSelectedItem().GetOpt<const Net::WiFiLogFile::LogFileEntry>().SetTo(log) || log->ieLen <= 0 || !log->ieBuff.SetTo(ieBuff))
 	{
 		me->txtFileIE->SetText(CSTR(""));
 		return;
@@ -109,9 +110,9 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentSelChg(AnyType us
 	UOSInt i = 0;
 	while (i < log->ieLen)
 	{
-		Net::WirelessLANIE::ToString(&log->ieBuff[i], sb);
+		Net::WirelessLANIE::ToString(&ieBuff[i], sb);
 		sb.AppendC(UTF8STRC("\r\n"));
-		i += (UOSInt)log->ieBuff[i + 1] + 2;
+		i += (UOSInt)ieBuff[i + 1] + 2;
 	}
 	me->txtFileIE->SetText(sb.ToCString());
 }
@@ -160,6 +161,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	UOSInt cnt;
 	UOSInt recCnt = 0;
 	Bool valid;
+	UnsafeArray<UInt8> ieBuff;
 	NN<Text::String> s;
 	NN<Text::String> filterText;
 	this->lvContent->ClearItems();
@@ -181,7 +183,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			{
 				valid = true;
 			}
-			else if (log->manuf && log->manuf->IndexOfICase(filterText) != INVALID_INDEX)
+			else if (log->manuf.SetTo(s) && s->IndexOfICase(filterText) != INVALID_INDEX)
 			{
 				valid = true;
 			}
@@ -232,25 +234,28 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			this->lvContent->SetSubItem(l, 3, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, log->freq);
 			this->lvContent->SetSubItem(l, 4, CSTRP(sbuff, sptr));
-			Text::String *manuf = 0;
-			Text::String *model = 0;
-			Text::String *serialNum = 0;
-			Net::WirelessLANIE::GetWPSInfo(log->ieBuff, log->ieLen, &manuf, &model, &serialNum);
-			if (manuf)
-				this->lvContent->SetSubItem(l, 5, manuf->ToCString());
-			else if (log->manuf)
-				this->lvContent->SetSubItem(l, 5, log->manuf->ToCString());
-			if (model)
-				this->lvContent->SetSubItem(l, 6, model->ToCString());
-			else if (log->model)
-				this->lvContent->SetSubItem(l, 6, log->model->ToCString());
-			if (serialNum)
-				this->lvContent->SetSubItem(l, 7, serialNum->ToCString());
-			else if (log->serialNum)
-				this->lvContent->SetSubItem(l, 7, log->serialNum->ToCString());
-			SDEL_STRING(manuf);
-			SDEL_STRING(model);
-			SDEL_STRING(serialNum);
+			if (log->ieBuff.SetTo(ieBuff))
+			{
+				Optional<Text::String> manuf = 0;
+				Optional<Text::String> model = 0;
+				Optional<Text::String> serialNum = 0;
+				Net::WirelessLANIE::GetWPSInfo(ieBuff, log->ieLen, manuf, model, serialNum);
+				if (manuf.SetTo(s))
+					this->lvContent->SetSubItem(l, 5, s->ToCString());
+				else if (log->manuf.SetTo(s))
+					this->lvContent->SetSubItem(l, 5, s->ToCString());
+				if (model.SetTo(s))
+					this->lvContent->SetSubItem(l, 6, s->ToCString());
+				else if (log->model.SetTo(s))
+					this->lvContent->SetSubItem(l, 6, s->ToCString());
+				if (serialNum.SetTo(s))
+					this->lvContent->SetSubItem(l, 7, s->ToCString());
+				else if (log->serialNum.SetTo(s))
+					this->lvContent->SetSubItem(l, 7, s->ToCString());
+				OPTSTR_DEL(manuf);
+				OPTSTR_DEL(model);
+				OPTSTR_DEL(serialNum);
+			}
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
 			{
 				NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);

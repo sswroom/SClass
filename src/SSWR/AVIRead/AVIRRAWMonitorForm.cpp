@@ -422,7 +422,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(AnyType user
 		j = target->addrList.GetCount();
 		while (i < j)
 		{
-			if (s.Set(target->addrList.GetItem(i)))
+			if (target->addrList.GetItem(i).SetTo(s))
 				me->lbDNSTargetDomain->AddItem(s, 0);
 			i++;
 		}
@@ -822,12 +822,149 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			me->lvTCP4SYN->AddItem(CSTRP(sbuff, sptr), 0);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, syn.srcAddr);
 			me->lvTCP4SYN->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			if (me->analyzer->DNSTargetGetName(syn.srcAddr).SetTo(s))
+				me->lvTCP4SYN->SetSubItem(i, 2, s);
 			sptr = Text::StrUInt16(sbuff, syn.srcPort);
-			me->lvTCP4SYN->SetSubItem(i, 2, CSTRP(sbuff, sptr));
-			sptr = Net::SocketUtil::GetIPv4Name(sbuff, syn.destAddr);
 			me->lvTCP4SYN->SetSubItem(i, 3, CSTRP(sbuff, sptr));
-			sptr = Text::StrUInt16(sbuff, syn.destPort);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, syn.destAddr);
 			me->lvTCP4SYN->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+			if (me->analyzer->DNSTargetGetName(syn.destAddr).SetTo(s))
+				me->lvTCP4SYN->SetSubItem(i, 5, s);
+			sptr = Text::StrUInt16(sbuff, syn.destPort);
+			me->lvTCP4SYN->SetSubItem(i, 6, CSTRP(sbuff, sptr));
+			i++;
+		}
+	}
+	{
+		Int64 dispTime = Data::DateTimeUtil::GetCurrTimeMillis() / 1000 - 1;
+		Sync::MutexUsage mutUsage;
+		NN<Data::FastMapNN<UInt32, Net::EthernetAnalyzer::BandwidthStat>> statMap = me->analyzer->BandwidthGetAll(mutUsage);
+		NN<Net::EthernetAnalyzer::BandwidthStat> stat;
+		UInt32 ip;
+		UOSInt i = 0;
+		UOSInt j = me->lvBandwidth->GetCount();
+		while (i < j)
+		{
+			stat = me->lvBandwidth->GetItem(i).GetNN<Net::EthernetAnalyzer::BandwidthStat>();
+			if (stat == statMap->GetItemNoCheck(i))
+			{
+/*				if ((stat->displayFlags & 1) == 0)
+				{
+#if IS_BYTEORDER_LE
+					ip = BSWAPU32(stat->ip);
+#else
+					ip = stat->ip;
+#endif
+					if (me->analyzer->DNSTargetGetName(ip).SetTo(s))
+					{
+						stat->displayFlags |= 1;
+						me->lvBandwidth->SetSubItem(i, 1, s);
+					}
+				}*/
+				if (dispTime <= stat->displayTime)
+				{
+				}
+				else if (stat->displayTime > stat->currStat.time)
+				{
+				}
+				else if (dispTime > stat->currStat.time)
+				{
+					stat->displayTime = dispTime;
+					me->lvBandwidth->SetSubItem(i, 2, CSTR("0"));
+					me->lvBandwidth->SetSubItem(i, 3, CSTR("0"));
+					me->lvBandwidth->SetSubItem(i, 4, CSTR("0"));
+					me->lvBandwidth->SetSubItem(i, 5, CSTR("0"));
+				}
+				else if (dispTime == stat->lastStat.time)
+				{
+					stat->displayTime = dispTime;
+					sptr = Text::StrUInt64(sbuff, stat->lastStat.recvBytes);
+					me->lvBandwidth->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+					sptr = Text::StrUOSInt(sbuff, stat->lastStat.recvCnt);
+					me->lvBandwidth->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+					sptr = Text::StrUInt64(sbuff, stat->lastStat.sendBytes);
+					me->lvBandwidth->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+					sptr = Text::StrUOSInt(sbuff, stat->lastStat.sendCnt);
+					me->lvBandwidth->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+				}
+				else if (dispTime == stat->currStat.time)
+				{
+					stat->displayTime = dispTime;
+					sptr = Text::StrUInt64(sbuff, stat->currStat.recvBytes);
+					me->lvBandwidth->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+					sptr = Text::StrUOSInt(sbuff, stat->currStat.recvCnt);
+					me->lvBandwidth->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+					sptr = Text::StrUInt64(sbuff, stat->currStat.sendBytes);
+					me->lvBandwidth->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+					sptr = Text::StrUOSInt(sbuff, stat->currStat.sendCnt);
+					me->lvBandwidth->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+				}
+				else if (stat->displayTime == stat->lastStat.time)
+				{
+					stat->displayTime = dispTime;
+					me->lvBandwidth->SetSubItem(i, 2, CSTR("0"));
+					me->lvBandwidth->SetSubItem(i, 3, CSTR("0"));
+					me->lvBandwidth->SetSubItem(i, 4, CSTR("0"));
+					me->lvBandwidth->SetSubItem(i, 5, CSTR("0"));
+				}
+				else
+				{
+				}
+			}
+			else
+			{
+				stat = statMap->GetItemNoCheck(i);
+#if IS_BYTEORDER_LE
+				ip = BSWAPU32(stat->ip);
+#else
+				ip = stat->ip;
+#endif
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+				me->lvBandwidth->InsertItem(i, CSTRP(sbuff, sptr), stat);
+				j++;
+				stat->displayTime = stat->lastStat.time;
+				if (me->analyzer->DNSTargetGetName(ip).SetTo(s))
+				{
+					stat->displayFlags |= 1;
+					me->lvBandwidth->SetSubItem(i, 1, s);
+				}
+				sptr = Text::StrUInt64(sbuff, stat->lastStat.recvBytes);
+				me->lvBandwidth->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+				sptr = Text::StrUOSInt(sbuff, stat->lastStat.recvCnt);
+				me->lvBandwidth->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, stat->lastStat.sendBytes);
+				me->lvBandwidth->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+				sptr = Text::StrUOSInt(sbuff, stat->lastStat.sendCnt);
+				me->lvBandwidth->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+			}
+			i++;
+		}
+		i = j;
+		j = statMap->GetCount();
+		while (i < j)
+		{
+			stat = statMap->GetItemNoCheck(i);
+#if IS_BYTEORDER_LE
+			ip = BSWAPU32(stat->ip);
+#else
+			ip = stat->ip;
+#endif
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+			me->lvBandwidth->InsertItem(i, CSTRP(sbuff, sptr), stat);
+			stat->displayTime = stat->lastStat.time;
+			if (me->analyzer->DNSTargetGetName(ip).SetTo(s))
+			{
+				stat->displayFlags |= 1;
+				me->lvBandwidth->SetSubItem(i, 1, s);
+			}
+			sptr = Text::StrUInt64(sbuff, stat->lastStat.recvBytes);
+			me->lvBandwidth->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+			sptr = Text::StrUOSInt(sbuff, stat->lastStat.recvCnt);
+			me->lvBandwidth->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, stat->lastStat.sendBytes);
+			me->lvBandwidth->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrUOSInt(sbuff, stat->lastStat.sendCnt);
+			me->lvBandwidth->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 			i++;
 		}
 	}
@@ -1489,15 +1626,29 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->txtPingIPWhois->SetReadOnly(true);
 
 	this->tpTCP4SYN = this->tcMain->AddTabPage(CSTR("TCPv4 SYN"));
-	this->lvTCP4SYN = ui->NewListView(this->tpTCP4SYN, UI::ListViewStyle::Table, 5);
+	this->lvTCP4SYN = ui->NewListView(this->tpTCP4SYN, UI::ListViewStyle::Table, 7);
 	this->lvTCP4SYN->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTCP4SYN->SetFullRowSelect(true);
 	this->lvTCP4SYN->SetShowGrid(true);
 	this->lvTCP4SYN->AddColumn(CSTR("Time"), 180);
 	this->lvTCP4SYN->AddColumn(CSTR("Source IP"), 100);
+	this->lvTCP4SYN->AddColumn(CSTR("Source Name"), 150);
 	this->lvTCP4SYN->AddColumn(CSTR("Port"), 50);
 	this->lvTCP4SYN->AddColumn(CSTR("Dest IP"), 100);
+	this->lvTCP4SYN->AddColumn(CSTR("Dest Name"), 150);
 	this->lvTCP4SYN->AddColumn(CSTR("Port"), 50);
+
+	this->tpBandwidth = this->tcMain->AddTabPage(CSTR("Bandwidth"));
+	this->lvBandwidth = ui->NewListView(this->tpBandwidth, UI::ListViewStyle::Table, 6);
+	this->lvBandwidth->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvBandwidth->SetFullRowSelect(true);
+	this->lvBandwidth->SetShowGrid(true);
+	this->lvBandwidth->AddColumn(CSTR("IP"), 100);
+	this->lvBandwidth->AddColumn(CSTR("Name"), 150);
+	this->lvBandwidth->AddColumn(CSTR("Recv Rate"), 100);
+	this->lvBandwidth->AddColumn(CSTR("Recv Cnt"), 50);
+	this->lvBandwidth->AddColumn(CSTR("Send Rate"), 100);
+	this->lvBandwidth->AddColumn(CSTR("Send Cnt"), 50);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	this->txtLog = ui->NewTextBox(this->tpLog, CSTR(""));

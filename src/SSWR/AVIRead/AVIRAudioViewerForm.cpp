@@ -45,12 +45,12 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 			gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
 			gimg->DelFont(f);
 			gimg->DelBrush(b);
-			this->pbsSample->SetImageDImg(gimg.Ptr());
-			if (img.Set(this->sampleImg))
+			this->pbsSample->SetImageDImg(gimg);
+			if (this->sampleImg.SetTo(img))
 			{
 				this->eng->DeleteImage(img);
 			}
-			this->sampleImg = gimg.Ptr();
+			this->sampleImg = gimg;
 		}
 	}
 	else
@@ -114,12 +114,12 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 				gimg->DelPen(p);
 			}
 
-			this->pbsSample->SetImageDImg(gimg.Ptr());
-			if (img.Set(this->sampleImg))
+			this->pbsSample->SetImageDImg(gimg);
+			if (this->sampleImg.SetTo(img))
 			{
 				this->eng->DeleteImage(img);
 			}
-			this->sampleImg = gimg.Ptr();
+			this->sampleImg = gimg;
 		}
 	}
 	this->UpdateFreqImage();
@@ -146,12 +146,12 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			gimg->DrawString(Math::Coord2DDbl(0, 0), CSTR("Format not supported"), f, b);
 			gimg->DelFont(f);
 			gimg->DelBrush(b);
-			this->pbsSample->SetImageDImg(gimg.Ptr());
-			if (img.Set(this->fftImg))
+			this->pbsSample->SetImageDImg(gimg);
+			if (this->fftImg.SetTo(img))
 			{
 				this->eng->DeleteImage(img);
 			}
-			this->fftImg = gimg.Ptr();
+			this->fftImg = gimg;
 		}
 	}
 	else
@@ -175,12 +175,12 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 			gimg->DelBrush(b);
 
-			Double *freqData;
-			freqData = MemAlloc(Double, FFTSAMPLE);
+			UnsafeArray<Double> freqData;
+			freqData = MemAllocArr(Double, FFTSAMPLE);
 			i = 0;
 			while (i < this->format.nChannels)
 			{
-				Math::FFT::ForwardBits(buff.Arr().Ptr() + i * (UOSInt)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
+				Math::FFT::ForwardBits(buff.Arr() + i * (UOSInt)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
 				if (i == 0)
 				{
@@ -222,19 +222,19 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 				gimg->DelPen(p);
 				i++;
 			}
-			MemFree(freqData);
+			MemFreeArr(freqData);
 
-			this->pbsFreq->SetImageDImg(gimg.Ptr());
-			if (img.Set(this->fftImg))
+			this->pbsFreq->SetImageDImg(gimg);
+			if (this->fftImg.SetTo(img))
 			{
 				this->eng->DeleteImage(img);
 			}
-			this->fftImg = gimg.Ptr();
+			this->fftImg = gimg;
 		}
 	}
 }
 
-SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::IAudioSource> audSrc) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -283,11 +283,11 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 SSWR::AVIRead::AVIRAudioViewerForm::~AVIRAudioViewerForm()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->sampleImg))
+	if (this->sampleImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 	}
-	if (img.Set(this->fftImg))
+	if (this->fftImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 	}

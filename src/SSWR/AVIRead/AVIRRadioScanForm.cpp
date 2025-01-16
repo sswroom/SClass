@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 				{
 					bss = me->wlanBSSList.GetItemNoCheck(i);
 					ssid = bss->GetSSID();
-					MemCopyNO(&id[2], bss->GetMAC(), 6);
+					MemCopyNO(&id[2], bss->GetMAC().Ptr(), 6);
 					id[0] = 0;
 					id[1] = 0;
 					imac = ReadMUInt64(id);
@@ -174,11 +174,11 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 					me->lvWiFi->SetSubItem(k, 4, ssid);
 					NN<const Net::MACInfo::MACEntry> entry = Net::MACInfo::GetMACInfo(imac);
 					me->lvWiFi->SetSubItem(k, 5, {entry->name, entry->nameLen});
-					if (s.Set(bss->GetManuf()))
+					if (bss->GetManuf().SetTo(s))
 						me->lvWiFi->SetSubItem(k, 6, s);
-					if (s.Set(bss->GetModel()))
+					if (bss->GetModel().SetTo(s))
 						me->lvWiFi->SetSubItem(k, 7, s);
-					if (s.Set(bss->GetSN()))
+					if (bss->GetSN().SetTo(s))
 						me->lvWiFi->SetSubItem(k, 8, s);
 
 					i++;

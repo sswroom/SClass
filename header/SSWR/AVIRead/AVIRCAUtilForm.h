@@ -18,7 +18,6 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Data::ArrayList<const UTF8Char*> *sanList;
 			Optional<Crypto::Cert::X509Cert> caCert;
 			Optional<Crypto::Cert::X509Key> key;
 			Optional<Crypto::Cert::X509CertReq> csr;

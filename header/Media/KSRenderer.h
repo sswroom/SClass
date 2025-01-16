@@ -15,10 +15,10 @@ namespace Media
 
 		Bool playing;
 		Bool stopPlay;
-		Media::RefClock *clk;
+		Optional<Media::RefClock> clk;
 		Bool threadInit;
-		Sync::Event *playEvt;
-		Media::IAudioSource *audsrc;
+		Optional<Sync::Event> playEvt;
+		Optional<Media::IAudioSource> audsrc;
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;
 
@@ -35,8 +35,8 @@ namespace Media
 		virtual ~KSRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
-		virtual void AudioInit(Media::RefClock *clk);
+		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();
 		virtual Bool IsPlaying();

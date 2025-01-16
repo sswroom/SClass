@@ -42,7 +42,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::MapDrawLayer *GetCombinedLayer();
+			Optional<Map::MapDrawLayer> GetCombinedLayer();
 		};
 	}
 }

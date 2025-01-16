@@ -761,7 +761,8 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CHART_LINE:
 		if (this->lbTable->GetSelectedItemText(sbuff).SetTo(sptr))
 		{
-			Data::Chart *chart = 0;
+			Optional<Data::Chart> chart = 0;
+			NN<Data::Chart> nnchart;
 			{
 				Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
@@ -771,10 +772,10 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 					chart = frm.GetChart();
 				}
 			}
-			if (chart)
+			if (chart.SetTo(nnchart))
 			{
 				NN<SSWR::AVIRead::AVIRChartForm> chartFrm;
-				NEW_CLASSNN(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, chart));
+				NEW_CLASSNN(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, nnchart));
 				this->core->ShowForm(chartFrm);
 			}
 		}

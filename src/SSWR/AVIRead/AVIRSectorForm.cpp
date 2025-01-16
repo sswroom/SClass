@@ -31,12 +31,12 @@ SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(Optional<UI::GUIClientControl> par
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 
 	this->sectorSize = this->data->GetBytesPerSector();
-	this->sectorData = MemAlloc(UInt8, this->sectorSize);
+	this->sectorData = MemAllocArr(UInt8, this->sectorSize);
 }
 
 SSWR::AVIRead::AVIRSectorForm::~AVIRSectorForm()
 {
-	MemFree(this->sectorData);
+	MemFreeArr(this->sectorData);
 	this->data.Delete();
 }
 

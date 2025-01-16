@@ -4,7 +4,7 @@
 #include "Math/FFT.h"
 #include "Math/Math.h"
 
-Bool Math::FFT::Forward(Double *complexData, UOSInt sampleCount)
+Bool Math::FFT::Forward(UnsafeArray<Double> complexData, UOSInt sampleCount)
 {
 	if (sampleCount == 1)
 		return true;
@@ -93,7 +93,7 @@ fftflop2:
 	return true;
 }
 
-void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType wtype)
+void Math::FFT::ApplyWindow(UnsafeArray<Double> complexData, UOSInt sampleCount, WindowType wtype)
 {
 	Double pi2;
 	Double a0;
@@ -230,7 +230,7 @@ void Math::FFT::ApplyWindow(Double *complexData, UOSInt sampleCount, WindowType 
 	}
 }
 
-Bool Math::FFT::Forward(ComplexNumber *data, UOSInt sampleCount)
+Bool Math::FFT::Forward(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
 {
 	if (sampleCount == 1)
 		return true;
@@ -274,17 +274,17 @@ Bool Math::FFT::Forward(ComplexNumber *data, UOSInt sampleCount)
 	return true;
 }
 
-Bool Math::FFT::Inverse(ComplexNumber *data, UOSInt sampleCount)
+Bool Math::FFT::Inverse(UnsafeArray<ComplexNumber> data, UOSInt sampleCount)
 {
 	return false;
 }
 
-Bool Math::FFT::ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, UOSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify)
+Bool Math::FFT::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, UOSInt sampleCount, UOSInt sampleAvg, UOSInt nBitPerSample, UOSInt nChannels, WindowType wtype, Double magnify)
 {
 	UOSInt sampleAdd = nChannels * nBitPerSample >> 3;
 	UOSInt i;
 	UOSInt j;
-	UInt8 *currSamples;
+	UnsafeArray<UInt8> currSamples;
 	Double *temp = MemAllocA(Double, sampleCount * 2);
 	Double *tmpFreq = MemAlloc(Double, sampleCount);
 	Double f;
@@ -308,7 +308,7 @@ Bool Math::FFT::ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, UO
 			j = 0;
 			while (j < sampleCount)
 			{
-				temp[j * 2] = ReadInt24(currSamples) * magnify;
+				temp[j * 2] = ReadInt24(&currSamples[0]) * magnify;
 				temp[j * 2 + 1] = 0;
 				currSamples += sampleAdd;
 
@@ -321,7 +321,7 @@ Bool Math::FFT::ForwardBits(UInt8 *samples, Double *freq, UOSInt sampleCount, UO
 			j = 0;
 			while (j < sampleCount)
 			{
-				temp[j * 2] = ReadInt16(currSamples) * magnify;
+				temp[j * 2] = ReadInt16(&currSamples[0]) * magnify;
 				temp[j * 2 + 1] = 0;
 				currSamples += sampleAdd;
 

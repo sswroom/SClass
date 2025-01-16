@@ -21,9 +21,9 @@ typedef struct
 	Double rssi;
 	UInt32 linkQuality;
 	Double freq; //Hz
-	Text::String *devManuf;
-	Text::String *devModel;
-	Text::String *devSN;
+	Optional<Text::String> devManuf;
+	Optional<Text::String> devModel;
+	Optional<Text::String> devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
 	Data::ArrayListNN<Net::WirelessLANIE> ieList;
@@ -271,9 +271,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				{
 					NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 					bssList->Add(bssInfo);
-					SDEL_STRING(bss.devManuf);
-					SDEL_STRING(bss.devModel);
-					SDEL_STRING(bss.devSN);
+					OPTSTR_DEL(bss.devManuf);
+					OPTSTR_DEL(bss.devModel);
+					OPTSTR_DEL(bss.devSN);
 				}
 				retVal++;
 				bss.bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
@@ -304,9 +304,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 				{
 					NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 					bssList->Add(bssInfo);
-					SDEL_STRING(bss.devManuf);
-					SDEL_STRING(bss.devModel);
-					SDEL_STRING(bss.devSN);
+					OPTSTR_DEL(bss.devManuf);
+					OPTSTR_DEL(bss.devModel);
+					OPTSTR_DEL(bss.devSN);
 				}
 				retVal++;
 				bss.bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
@@ -481,28 +481,28 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 								case 0x1021: //Manu
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
-									SDEL_STRING(bss.devManuf);
-									bss.devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+									OPTSTR_DEL(bss.devManuf);
+									bss.devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									break;
 								case 0x1023: //Model
-									if (bss.devModel == 0)
+									if (bss.devModel.IsNull())
 									{
 										sbTmp.ClearStr();
 										sbTmp.AppendC(&currItem[4], itemSize);
-										bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+										bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									}
 									break;
 								case 0x1024: //Model Number
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
-									SDEL_STRING(bss.devModel);
-									bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+									OPTSTR_DEL(bss.devModel);
+									bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									break;
 								case 0x1042: //Serial
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
-									SDEL_STRING(bss.devSN);
-									bss.devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+									OPTSTR_DEL(bss.devSN);
+									bss.devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									break;
 								}
 								currItem += itemSize + 4; 
@@ -545,9 +545,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	{
 		NEW_CLASSNN(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 		bssList->Add(bssInfo);
-		SDEL_STRING(bss.devManuf);
-		SDEL_STRING(bss.devModel);
-		SDEL_STRING(bss.devSN);
+		OPTSTR_DEL(bss.devManuf);
+		OPTSTR_DEL(bss.devModel);
+		OPTSTR_DEL(bss.devSN);
 		bss.ieList.Clear();
 	}
 	

@@ -173,7 +173,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		target = this->dnsTargetMap.GetItemNoCheck(i);
-		LIST_FREE_STRING(&target->addrList);
+		target->addrList.FreeAll();
 		target.Delete();
 	}
 
@@ -200,6 +200,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		dhcp.Delete();
 	}
 	this->mdnsList.FreeAll(Net::DNSClient::FreeAnswer);
+	this->bandwidthMap.MemFreeAll();
 }
 
 IO::ParserType Net::EthernetAnalyzer::GetParserType() const
@@ -358,6 +359,20 @@ UOSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 	return this->dnsTargetMap.GetCount();
 }
 
+Optional<Text::String> Net::EthernetAnalyzer::DNSTargetGetName(UInt32 ip) const
+{
+	Sync::MutexUsage mutUsage(this->dnsTargetMut);
+	NN<DNSTargetInfo> target;
+#if IS_BYTEORDER_LE
+	ip = BSWAPU32(ip);
+#endif
+	if (this->dnsTargetMap.Get(ip).SetTo(target))
+	{
+		return target->currName;
+	}
+	return 0;
+}
+
 UOSInt Net::EthernetAnalyzer::MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList)
 {
 	Sync::MutexUsage mutUsage(this->mdnsMut);
@@ -404,6 +419,12 @@ UOSInt Net::EthernetAnalyzer::TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> sy
 	Sync::MutexUsage mutUsage(this->tcp4synMut);
 	thisIndex.Set(this->tcp4synList.GetPutIndex());
 	return this->tcp4synList.GetItems(synList);
+}
+
+NN<Data::FastMapNN<UInt32, Net::EthernetAnalyzer::BandwidthStat>> Net::EthernetAnalyzer::BandwidthGetAll(NN<Sync::MutexUsage> mutUsage)
+{
+	mutUsage->ReplaceMutex(this->bandwidthMut);
+	return this->bandwidthMap;
 }
 
 Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize)
@@ -760,6 +781,48 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 			}
 			mac->ipv4DestCnt++;
 			mutUsage.EndUse();
+		}
+
+		{
+			UInt32 sortIP;
+			Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis() / 1000;
+			NN<BandwidthStat> stat;
+			Sync::MutexUsage mutUsage(this->bandwidthMut);
+			sortIP = ReadMUInt32(&packet[12]);
+			if (!this->bandwidthMap.Get(sortIP).SetTo(stat))
+			{
+				stat = BandwidthStatCreate(sortIP, currTime);
+				this->bandwidthMap.Put(sortIP, stat);
+			}
+			if (stat->currStat.time != currTime)
+			{
+				stat->lastStat = stat->currStat;
+				stat->currStat.time = currTime;
+				stat->currStat.recvBytes = 0;
+				stat->currStat.recvCnt = 0;
+				stat->currStat.sendBytes = 0;
+				stat->currStat.sendCnt = 0;
+			}
+			stat->currStat.recvBytes += packetSize + 14;
+			stat->currStat.recvCnt++;
+
+			sortIP = ReadMUInt32(&packet[16]);
+			if (!this->bandwidthMap.Get(sortIP).SetTo(stat))
+			{
+				stat = BandwidthStatCreate(sortIP, currTime);
+				this->bandwidthMap.Put(sortIP, stat);
+			}
+			if (stat->currStat.time != currTime)
+			{
+				stat->lastStat = stat->currStat;
+				stat->currStat.time = currTime;
+				stat->currStat.recvBytes = 0;
+				stat->currStat.recvCnt = 0;
+				stat->currStat.sendBytes = 0;
+				stat->currStat.sendCnt = 0;
+			}
+			stat->currStat.sendBytes += packetSize + 14;
+			stat->currStat.sendCnt++;
 		}
 
 		NN<IPTranStatus> ip;
@@ -1137,9 +1200,14 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 												}
 												Sync::MutexUsage mutUsage(dnsTarget->mut);
 												dnsTargetMutUsage.EndUse();
-												if (dnsTarget->addrList.SortedIndexOf(answer->name.Ptr()) < 0)
+												OSInt si;
+												if ((si = dnsTarget->addrList.SortedIndexOf(answer->name)) < 0)
 												{
-													dnsTarget->addrList.SortedInsert(answer->name->Clone().Ptr());
+													dnsTarget->addrList.SortedInsert(dnsTarget->currName = answer->name->Clone());
+												}
+												else
+												{
+													dnsTarget->currName = dnsTarget->addrList.GetItemNoCheck((UOSInt)si);
 												}
 												j = i;
 												while (j-- > 0)
@@ -1147,13 +1215,16 @@ Bool Net::EthernetAnalyzer::PacketIPv4(UnsafeArray<const UInt8> packet, UOSInt p
 													answer = answers.GetItemNoCheck(j);
 													if (answer->recType == 5)
 													{
-														if (dnsTarget->addrList.SortedIndexOf(answer->name.Ptr()) < 0)
+														if ((si = dnsTarget->addrList.SortedIndexOf(answer->name)) < 0)
 														{
-															dnsTarget->addrList.SortedInsert(answer->name->Clone().Ptr());
+															dnsTarget->addrList.SortedInsert(dnsTarget->currName = answer->name->Clone());
+														}
+														else
+														{
+															dnsTarget->currName = dnsTarget->addrList.GetItemNoCheck((UOSInt)si);
 														}
 													}
 												}
-												mutUsage.EndUse();
 											}
 										}													
 									}
@@ -1848,4 +1919,24 @@ Net::EthernetAnalyzer::AnalyzeType Net::EthernetAnalyzer::GetAnalyzeType()
 void Net::EthernetAnalyzer::HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj)
 {
 	this->pingv4ReqHdlr = {pingv4Hdlr, userObj};
+}
+
+NN<Net::EthernetAnalyzer::BandwidthStat> Net::EthernetAnalyzer::BandwidthStatCreate(UInt32 sortIP, Int64 time)
+{
+	NN<BandwidthStat> stat;
+	stat = MemAllocNN(BandwidthStat);
+	stat->ip = sortIP;
+	stat->displayFlags = 0;
+	stat->displayTime = 0;
+	stat->lastStat.time = time - 1;
+	stat->lastStat.recvBytes = 0;
+	stat->lastStat.recvCnt = 0;
+	stat->lastStat.sendBytes = 0;
+	stat->lastStat.sendCnt = 0;
+	stat->currStat.time = time;
+	stat->currStat.recvBytes = 0;
+	stat->currStat.recvCnt = 0;
+	stat->currStat.sendBytes = 0;
+	stat->currStat.sendCnt = 0;
+	return stat;
 }

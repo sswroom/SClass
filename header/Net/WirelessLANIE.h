@@ -17,7 +17,7 @@ namespace Net
 		UnsafeArray<const UInt8> GetIEBuff();
 
 		static void ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::StringBuilderUTF8> sb);
-		static void GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum);
+		static void GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, OutParam<Optional<Text::String>> manuf, OutParam<Optional<Text::String>> model, OutParam<Optional<Text::String>> serialNum);
 	};
 }
 #endif

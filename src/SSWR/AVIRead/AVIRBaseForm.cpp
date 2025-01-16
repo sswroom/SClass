@@ -1904,7 +1904,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this))
 			{
 				NN<DB::DBConn> db;
-				if (db.Set(dlg.GetDBConn()))
+				if (dlg.GetDBConn().SetTo(db))
 					this->core->OpenObject(db);
 			}
 #endif

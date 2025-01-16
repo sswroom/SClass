@@ -6,9 +6,9 @@
 #include "Text/StringBuilderUTF8.h"
 #define MYSQLVERSION CSTR("AVIRead-1.0")
 
-void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(AnyType userObj)
 {
-	SSWR::AVIRead::AVIRMyDBMSForm *me = (SSWR::AVIRead::AVIRMyDBMSForm*)userObj;
+	NN<SSWR::AVIRead::AVIRMyDBMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMyDBMSForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -39,21 +39,21 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnUserAddClicked(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnUserAddClicked(AnyType userObj)
 {
 
 }
 
-void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnLogSel(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnLogSel(AnyType userObj)
 {
 	NN<Text::String> t;
-	SSWR::AVIRead::AVIRMyDBMSForm *me = (SSWR::AVIRead::AVIRMyDBMSForm*)userObj;
+	NN<SSWR::AVIRead::AVIRMyDBMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMyDBMSForm>();
 	t = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(t->ToCString());
 	t->Release();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnTimerTick(void *userObj)
+void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnTimerTick(AnyType userObj)
 {
 //	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
 }
@@ -64,10 +64,9 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 	this->SetText(CSTR("My DBMS"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
-	this->log = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASSNN(this->pnlCtrl = ui->NewPanel(*this));
+	this->pnlCtrl = ui->NewPanel(*this);
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
@@ -77,15 +76,15 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 	this->btnStart = ui->NewButton(this->pnlCtrl, CSTR("Start"));
 	this->btnStart->SetRect(184, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->tcMain = ui->NewTabControl(*this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
-	NEW_CLASS(this->lbUser = ui->NewListBox(this->tpUser, false));
+	this->lbUser = ui->NewListBox(this->tpUser, false);
 	this->lbUser->SetRect(0, 0, 100, 23, false);
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->hspUser = ui->NewHSplitter(this->tpUser, 3, false);
-	NEW_CLASSNN(this->pnlUser = ui->NewPanel(this->tpUser));
+	this->pnlUser = ui->NewPanel(this->tpUser);
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lblUserName = ui->NewLabel(this->pnlUser, CSTR("User Name"));
 	this->lblUserName->SetRect(8, 8, 100, 23, false);
@@ -105,12 +104,12 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASSNN(this->lbLog = ui->NewListBox(this->tpLog, false));
+	this->lbLog = ui->NewListBox(this->tpLog, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSel, this);
 
 	this->AddTimer(1000, OnTimerTick, this);
-	NEW_CLASS(this->log, IO::LogTool());
+	NEW_CLASSNN(this->log, IO::LogTool());
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 300, true));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Command);
@@ -119,7 +118,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> par
 SSWR::AVIRead::AVIRMyDBMSForm::~AVIRMyDBMSForm()
 {
 	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->log);
+	this->log.Delete();
 	this->logger.Delete();
 }
 

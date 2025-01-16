@@ -24,7 +24,7 @@ namespace SSWR
 			NN<UI::GUIListBox> lbFiles;
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUIHSplitter> hsplit;
-			UI::GUIVideoBoxDD *vbdMain;
+			NN<UI::GUIVideoBoxDD> vbdMain;
 			NN<UI::GUIMainMenu> mnu;
 			NN<UI::GUIMenu> mnuChapters;
 			NN<UI::GUIPopupMenu> mnuAudio;
@@ -39,8 +39,8 @@ namespace SSWR
 			Media::Decoder::VideoDecoderFinder *decoders;
 			Optional<Media::IAudioRenderer> audRenderer;
 			Media::RefClock *clk;
-			Media::IAudioSource *activeAudio;
-			Media::IVideoSource *activeVideo;
+			Optional<Media::IAudioSource> activeAudio;
+			Optional<Media::IVideoSource> activeVideo;
 			Media::IAudioSource *currADecoder;
 			Media::IVideoSource *currDecoder;
 			Media::ChapterInfo *currChapters;

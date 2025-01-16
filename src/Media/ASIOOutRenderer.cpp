@@ -385,179 +385,63 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 	UInt32 i;
 	UInt32 j;
 	UInt32 k;
+	NN<Media::IAudioSource> audSrc;
+	NN<Media::RefClock> clk;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	ASIOBufferInfo *buffInfos = (ASIOBufferInfo *)me->bufferInfos;
 	me->threadInit = true;
-	me->audSrc->GetFormat(fmt);
-	me->bufferIndex = 0;
-	me->bufferOfst = 0;
-	me->bufferFilled = true;
-	me->bufferEvt->Set();
+	if (me->audSrc.SetTo(audSrc))
+	{
+		audSrc->GetFormat(fmt);
+		me->bufferIndex = 0;
+		me->bufferOfst = 0;
+		me->bufferFilled = true;
+		me->bufferEvt->Set();
 
-	if (me->sampleTypes[0] == ASIOSTInt16LSB)
-	{
-		nSamples = me->bufferSize >> 1;
-	}
-	else if (me->sampleTypes[0] == ASIOSTInt24LSB)
-	{
-		if (me->bufferSize % 3)
+		if (me->sampleTypes[0] == ASIOSTInt16LSB)
 		{
-			nSamples = me->bufferSize / 3 + 1;
+			nSamples = me->bufferSize >> 1;
+		}
+		else if (me->sampleTypes[0] == ASIOSTInt24LSB)
+		{
+			if (me->bufferSize % 3)
+			{
+				nSamples = me->bufferSize / 3 + 1;
+			}
+			else
+			{
+				nSamples = me->bufferSize / 3;
+			}
+		}
+		else if (me->sampleTypes[0] == ASIOSTInt32LSB)
+		{
+			nSamples = me->bufferSize >> 2;
 		}
 		else
 		{
-			nSamples = me->bufferSize / 3;
+			me->playing = false;
+			if (me->endHdlr)
+			{
+				me->endHdlr(me->endHdlrObj);
+			}
+			return 0;
 		}
-	}
-	else if (me->sampleTypes[0] == ASIOSTInt32LSB)
-	{
-		nSamples = me->bufferSize >> 2;
-	}
-	else
-	{
-		me->playing = false;
-		if (me->endHdlr)
-		{
-			me->endHdlr(me->endHdlrObj);
-		}
-		return 0;
-	}
-	nSamples = me->bufferSize;
-	NEW_CLASS(evt, Sync::Event());
-	blkAlign = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
-	sampleBuff = MemAlloc(UInt8, nSamples * blkAlign);
-	audStartTime = me->audSrc->GetCurrTime();
-	me->audSrc->Start(evt, nSamples * blkAlign);
+		nSamples = me->bufferSize;
+		NEW_CLASS(evt, Sync::Event());
+		blkAlign = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
+		sampleBuff = MemAlloc(UInt8, nSamples * blkAlign);
+		audStartTime = audSrc->GetCurrTime();
+		audSrc->Start(evt, nSamples * blkAlign);
 
-	me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), fmt);
-	asio->start();
-	while (!me->toStop)
-	{
-		if (!me->bufferFilled)
+		audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), fmt);
+		asio->start();
+		while (!me->toStop)
 		{
-			me->clk->Start(audStartTime + Data::Duration::FromRatioU64(me->bufferOfst, fmt.frequency));
-			if (me->sampleTypes[0] == ASIOSTInt16LSB)
+			if (!me->bufferFilled)
 			{
-				if (fmt.bitpersample == 16)
-				{
-					Int16 *srcPtr = (Int16*)sampleBuff;
-					Int16 *destPtr;
-					ch = fmt.nChannels;
-					while (ch-- > 0)
-					{
-						destPtr = (Int16*)buffInfos[ch].buffers[me->bufferIndex];
-						i = 0;
-						j = ch;
-						while (i < nSamples)
-						{
-							destPtr[i] = srcPtr[j];
-							i++;
-							j += fmt.nChannels;
-						}
-					}
-				}
-				else if (fmt.bitpersample == 24 || fmt.bitpersample == 32)
-				{
-					k = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
-					UInt8 *srcPtr = (UInt8*)sampleBuff;
-					Int16 *destPtr;
-					ch = fmt.nChannels;
-					while (ch-- > 0)
-					{
-						destPtr = (Int16*)buffInfos[ch].buffers[me->bufferIndex];
-						i = 0;
-						j = ((ch + 1) * fmt.bitpersample >> 3) - 2;
-						while (i < nSamples)
-						{
-							destPtr[i] = *(Int16*)&srcPtr[j];
-							i += 1;
-							j += k;
-						}
-					}
-				}
-				me->bufferFilled = true;
-				asio->outputReady();
-			}
-			else if (me->sampleTypes[0] == ASIOSTInt24LSB)
-			{
-				if (fmt.bitpersample == 16)
-				{
-					Int16 *srcPtr = (Int16*)sampleBuff;
-					UInt8 *destPtr;
-					ch = fmt.nChannels;
-					while (ch-- > 0)
-					{
-						destPtr = (UInt8*)buffInfos[ch].buffers[me->bufferIndex];
-						i = 0;
-						j = ch;
-						k = 0;
-						while (i < nSamples)
-						{
-							*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j];
-							*(UInt8*)&destPtr[k] = (UInt8)((*(Int16*)&srcPtr[j]) >> 8);
-							i += 1;
-							j += fmt.nChannels;
-							k += 3;
-						}
-					}
-				}
-				else if (fmt.bitpersample == 24)
-				{
-					UInt8 *srcPtr = (UInt8*)sampleBuff;
-					UInt8 *destPtr;
-					ch = fmt.nChannels;
-					while (ch-- > 0)
-					{
-						destPtr = (UInt8*)buffInfos[ch].buffers[me->bufferIndex];
-						i = 0;
-						j = ch * 3;
-						k = 0;
-						while (i < nSamples)
-						{
-							*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j + 1];
-							*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j];
-							i += 1;
-							j += (UInt32)fmt.nChannels * 3;
-							k += 3;
-						}
-					}
-				}
-				else if (fmt.bitpersample == 32)
-				{
-					UInt8 *srcPtr = (UInt8*)sampleBuff;
-					UInt8 *destPtr;
-					ch = fmt.nChannels;
-					while (ch-- > 0)
-					{
-						destPtr = (UInt8*)buffInfos[ch].buffers[me->bufferIndex];
-						i = 0;
-						j = ch << 2;
-						k = 0;
-						while (i < nSamples)
-						{
-							*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j + 2];
-							*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j + 1];
-							i += 1;
-							j += (UInt32)fmt.nChannels << 2;
-							k += 3;
-						}
-					}
-				}
-				me->bufferFilled = true;
-				asio->outputReady();
-			}
-			else if (me->sampleTypes[0] == ASIOSTInt32LSB)
-			{
-				if (me->debug & 1)
-				{
-					ch = fmt.nChannels;
-					while (ch-- > 0)
-					{
-						ZeroMemory(buffInfos[ch].buffers[me->bufferIndex], nSamples << 2);
-					}
-				}
-				else
+				if (me->clk.SetTo(clk)) clk->Start(audStartTime + Data::Duration::FromRatioU64(me->bufferOfst, fmt.frequency));
+				if (me->sampleTypes[0] == ASIOSTInt16LSB)
 				{
 					if (fmt.bitpersample == 16)
 					{
@@ -569,14 +453,56 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 							destPtr = (Int16*)buffInfos[ch].buffers[me->bufferIndex];
 							i = 0;
 							j = ch;
+							while (i < nSamples)
+							{
+								destPtr[i] = srcPtr[j];
+								i++;
+								j += fmt.nChannels;
+							}
+						}
+					}
+					else if (fmt.bitpersample == 24 || fmt.bitpersample == 32)
+					{
+						k = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
+						UInt8 *srcPtr = (UInt8*)sampleBuff;
+						Int16 *destPtr;
+						ch = fmt.nChannels;
+						while (ch-- > 0)
+						{
+							destPtr = (Int16*)buffInfos[ch].buffers[me->bufferIndex];
+							i = 0;
+							j = ((ch + 1) * fmt.bitpersample >> 3) - 2;
+							while (i < nSamples)
+							{
+								destPtr[i] = *(Int16*)&srcPtr[j];
+								i += 1;
+								j += k;
+							}
+						}
+					}
+					me->bufferFilled = true;
+					asio->outputReady();
+				}
+				else if (me->sampleTypes[0] == ASIOSTInt24LSB)
+				{
+					if (fmt.bitpersample == 16)
+					{
+						Int16 *srcPtr = (Int16*)sampleBuff;
+						UInt8 *destPtr;
+						ch = fmt.nChannels;
+						while (ch-- > 0)
+						{
+							destPtr = (UInt8*)buffInfos[ch].buffers[me->bufferIndex];
+							i = 0;
+							j = ch;
 							k = 0;
 							while (i < nSamples)
 							{
-								destPtr[k + 1] = srcPtr[j];
-								destPtr[k] = srcPtr[j];
+								*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j];
+								*(UInt8*)&destPtr[k] = (UInt8)((*(Int16*)&srcPtr[j]) >> 8);
 								i += 1;
 								j += fmt.nChannels;
-								k += 2;
+								k += 3;
 							}
 						}
 					}
@@ -593,46 +519,125 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 							k = 0;
 							while (i < nSamples)
 							{
-								*(Int16*)&destPtr[k + 2] = *(Int16*)&srcPtr[j + 1];
-								*(UInt8*)&destPtr[k + 1] = *(UInt8*)&srcPtr[j];
-								*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j + 2];
+								*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j + 1];
+								*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j];
 								i += 1;
 								j += (UInt32)fmt.nChannels * 3;
-								k += 4;
+								k += 3;
 							}
 						}
 					}
 					else if (fmt.bitpersample == 32)
 					{
-						Int32 *srcPtr = (Int32*)sampleBuff;
-						Int32 *destPtr;
+						UInt8 *srcPtr = (UInt8*)sampleBuff;
+						UInt8 *destPtr;
 						ch = fmt.nChannels;
 						while (ch-- > 0)
 						{
-							destPtr = (Int32*)buffInfos[ch].buffers[me->bufferIndex];
+							destPtr = (UInt8*)buffInfos[ch].buffers[me->bufferIndex];
 							i = 0;
-							j = ch;
+							j = ch << 2;
+							k = 0;
 							while (i < nSamples)
 							{
-								destPtr[i] = srcPtr[j];
+								*(Int16*)&destPtr[k + 1] = *(Int16*)&srcPtr[j + 2];
+								*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j + 1];
 								i += 1;
-								j += fmt.nChannels;
+								j += (UInt32)fmt.nChannels << 2;
+								k += 3;
 							}
 						}
 					}
+					me->bufferFilled = true;
+					asio->outputReady();
 				}
-				me->bufferFilled = true;
-				asio->outputReady();
+				else if (me->sampleTypes[0] == ASIOSTInt32LSB)
+				{
+					if (me->debug & 1)
+					{
+						ch = fmt.nChannels;
+						while (ch-- > 0)
+						{
+							ZeroMemory(buffInfos[ch].buffers[me->bufferIndex], nSamples << 2);
+						}
+					}
+					else
+					{
+						if (fmt.bitpersample == 16)
+						{
+							Int16 *srcPtr = (Int16*)sampleBuff;
+							Int16 *destPtr;
+							ch = fmt.nChannels;
+							while (ch-- > 0)
+							{
+								destPtr = (Int16*)buffInfos[ch].buffers[me->bufferIndex];
+								i = 0;
+								j = ch;
+								k = 0;
+								while (i < nSamples)
+								{
+									destPtr[k + 1] = srcPtr[j];
+									destPtr[k] = srcPtr[j];
+									i += 1;
+									j += fmt.nChannels;
+									k += 2;
+								}
+							}
+						}
+						else if (fmt.bitpersample == 24)
+						{
+							UInt8 *srcPtr = (UInt8*)sampleBuff;
+							UInt8 *destPtr;
+							ch = fmt.nChannels;
+							while (ch-- > 0)
+							{
+								destPtr = (UInt8*)buffInfos[ch].buffers[me->bufferIndex];
+								i = 0;
+								j = ch * 3;
+								k = 0;
+								while (i < nSamples)
+								{
+									*(Int16*)&destPtr[k + 2] = *(Int16*)&srcPtr[j + 1];
+									*(UInt8*)&destPtr[k + 1] = *(UInt8*)&srcPtr[j];
+									*(UInt8*)&destPtr[k] = *(UInt8*)&srcPtr[j + 2];
+									i += 1;
+									j += (UInt32)fmt.nChannels * 3;
+									k += 4;
+								}
+							}
+						}
+						else if (fmt.bitpersample == 32)
+						{
+							Int32 *srcPtr = (Int32*)sampleBuff;
+							Int32 *destPtr;
+							ch = fmt.nChannels;
+							while (ch-- > 0)
+							{
+								destPtr = (Int32*)buffInfos[ch].buffers[me->bufferIndex];
+								i = 0;
+								j = ch;
+								while (i < nSamples)
+								{
+									destPtr[i] = srcPtr[j];
+									i += 1;
+									j += fmt.nChannels;
+								}
+							}
+						}
+					}
+					me->bufferFilled = true;
+					asio->outputReady();
+				}
+				if (audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), fmt) == 0)
+					break;
 			}
-			if (me->audSrc->ReadBlockLPCM(Data::ByteArray(sampleBuff, nSamples * blkAlign), fmt) == 0)
-				break;
+			me->bufferEvt->Wait();
 		}
-		me->bufferEvt->Wait();
+		asio->stop();
+		MemFree(sampleBuff);
+		DEL_CLASS(evt);
+		me->playing = false;
 	}
-	asio->stop();
-	MemFree(sampleBuff);
-	DEL_CLASS(evt);
-	me->playing = false;
 	if (me->endHdlr)
 	{
 		me->endHdlr(me->endHdlrObj);
@@ -800,9 +805,10 @@ Bool Media::ASIOOutRenderer::IsError()
 	return this->asiodrv == 0;
 }
 
-Bool Media::ASIOOutRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::ASIOOutRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 {
 	Media::AudioFormat format;
+	NN<Media::IAudioSource> nnaudsrc;
 	IASIO *asio = (IASIO*)asiodrv;
 	if (asiodrv == 0)
 		return false;
@@ -815,10 +821,10 @@ Bool Media::ASIOOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 		MemFree(this->sampleTypes);
 		bufferCreated = false;
 	}
-	if (audsrc == 0)
+	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
-	audsrc->GetFormat(format);
+	nnaudsrc->GetFormat(format);
 	if (format.formatId != 1)
 	{
 		return false;
@@ -896,11 +902,11 @@ Bool Media::ASIOOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 	}
 }
 
-void Media::ASIOOutRenderer::AudioInit(Media::RefClock *clk)
+void Media::ASIOOutRenderer::AudioInit(Optional<Media::RefClock> clk)
 {
 	if (playing)
 		return;
-	if (this->audSrc == 0)
+	if (this->audSrc.IsNull())
 		return;
 	this->clk = clk;
 }

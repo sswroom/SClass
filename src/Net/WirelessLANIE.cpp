@@ -1180,8 +1180,12 @@ void Net::WirelessLANIE::ToString(UnsafeArray<const UInt8> ieBuff, NN<Text::Stri
 	sb->AppendHexBuff(ieBuff + 2, size, 0, Text::LineBreakType::None);
 }
 
-void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum)
+void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLen, OutParam<Optional<Text::String>> manuf, OutParam<Optional<Text::String>> model, OutParam<Optional<Text::String>> serialNum)
 {
+	Optional<Text::String> outManuf = 0;
+	Optional<Text::String> outModel = 0;
+	Optional<Text::String> outSerialNum = 0;
+	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UnsafeArray<const UInt8> endPtr = iebuff + ieLen;
 	while (iebuff + 2 < endPtr)
@@ -1214,69 +1218,68 @@ void Net::WirelessLANIE::GetWPSInfo(UnsafeArray<const UInt8> iebuff, UOSInt ieLe
 					case 0x1011: //Device Name
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
-						if (*model != 0 && (*model)->Equals(UTF8STRC("WAP")))
+						if (outModel.SetTo(s) && s->Equals(UTF8STRC("WAP")))
 						{
-							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							s->Release();
+							model.Set(outModel = Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						break;
 					case 0x1021: //Manufacture
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
-						SDEL_STRING(*manuf);
+						OPTSTR_DEL(outManuf);
 						if (sb.Equals(UTF8STRC("NETGEAR, Inc.")))
 						{
-							*manuf = Text::String::New(UTF8STRC("Netgear")).Ptr();
+							manuf.Set(outManuf = Text::String::New(UTF8STRC("Netgear")));
 						}
 						else if (sb.Equals(UTF8STRC("NTGR")))
 						{
-							*manuf = Text::String::New(UTF8STRC("Netgear")).Ptr();
+							manuf.Set(outManuf = Text::String::New(UTF8STRC("Netgear")));
 						}
 						else if (sb.Equals(UTF8STRC("ASUSTeK Computer Inc.")))
 						{
-							*manuf = Text::String::New(UTF8STRC("ASUS")).Ptr();
+							manuf.Set(outManuf = Text::String::New(UTF8STRC("ASUS")));
 						}
 						else if (sb.Equals(UTF8STRC("ASUSTek Computer Inc.")))
 						{
-							*manuf = Text::String::New(UTF8STRC("ASUS")).Ptr();
+							manuf.Set(outManuf = Text::String::New(UTF8STRC("ASUS")));
 						}
 						else
 						{
-							sb.Equals(UTF8STRC("ASUSTeK Computer Inc."));
-							*manuf = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							manuf.Set(outManuf = Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						break;
 					case 0x1023: //Model
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
-						if (*manuf != 0 && (*manuf)->Equals(UTF8STRC("ASUS")))
+						if (outManuf.SetTo(s) && s->Equals(UTF8STRC("ASUS")))
 						{
 						}
 						else
 						{
-							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							OPTSTR_DEL(outModel);
+							model.Set(outModel = Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						break;
 					case 0x1024: //Model Number
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
-						if (*manuf != 0 && (*manuf)->Equals(UTF8STRC("ASUS")))
+						if (outManuf.SetTo(s) && s->Equals(UTF8STRC("ASUS")))
 						{
-							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							OPTSTR_DEL(outModel);
+							model.Set(outModel = Text::String::New(sb.ToString(), sb.GetLength()));
 						}
-						else if (*model != 0 && (*model)->Equals(UTF8STRC("NETGEAR Wireless Access Point")))
+						else if (outModel.SetTo(s) && s->Equals(UTF8STRC("NETGEAR Wireless Access Point")))
 						{
-							SDEL_STRING(*model);
-							*model = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+							OPTSTR_DEL(outModel);
+							model.Set(outModel = Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						break;
 					case 0x1042: //Serial
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
-						SDEL_STRING(*serialNum);
-						*serialNum = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+						OPTSTR_DEL(outSerialNum);
+						serialNum.Set(outSerialNum = Text::String::New(sb.ToString(), sb.GetLength()));
 						break;
 					}
 					i += 4 + itemSize; 

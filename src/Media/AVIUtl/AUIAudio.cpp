@@ -47,7 +47,7 @@ Data::Duration Media::AVIUtl::AUIAudio::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(this->currSample, this->format->frequency);
 }
 
-Bool Media::AVIUtl::AUIAudio::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime)
+Bool Media::AVIUtl::AUIAudio::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
 	//////////////////////////////////////
 	return false;
@@ -58,11 +58,12 @@ void Media::AVIUtl::AUIAudio::GetFormat(NN<AudioFormat> format)
 	format->FromAudioFormat(this->format);
 }
 
-Bool Media::AVIUtl::AUIAudio::Start(Sync::Event *evt, UOSInt blkSize)
+Bool Media::AVIUtl::AUIAudio::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
+	NN<Sync::Event> playEvt;
 	this->playEvt = evt;
-	if (this->playEvt)
-		this->playEvt->Set();
+	if (this->playEvt.SetTo(playEvt))
+		playEvt->Set();
 	return true;
 }
 
@@ -73,11 +74,12 @@ void Media::AVIUtl::AUIAudio::Stop()
 
 UOSInt Media::AVIUtl::AUIAudio::ReadBlock(Data::ByteArray blk)
 {
+	NN<Sync::Event> playEvt;
 	UOSInt nSample = blk.GetSize() / this->format->align;
 	UOSInt readCnt = this->plugin->GetAudioData(this->input->hand, this->currSample, nSample, blk.Arr().Ptr());
 	this->currSample += readCnt;
-	if (this->playEvt)
-		this->playEvt->Set();
+	if (this->playEvt.SetTo(playEvt))
+		playEvt->Set();
 	return readCnt * this->format->align;
 }
 

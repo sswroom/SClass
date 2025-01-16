@@ -638,10 +638,9 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(NN<EthernetWebHandler> me, 
 				{
 					sb.AppendC(UTF8STRC("<br/>\r\n"));
 				}
-				sb.Append(target->addrList.GetItem(i));
+				sb.Append(target->addrList.GetItemNoCheck(i));
 				i++;
 			}
-			mutUsage.EndUse();
 		}
 
 		sb.AppendC(UTF8STRC("</td></tr></table>\r\n"));

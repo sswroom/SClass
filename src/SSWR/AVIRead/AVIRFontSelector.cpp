@@ -100,6 +100,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NN<Media::DrawImage> img)
 
 void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
+	NN<UI::GUIPopupMenu> mnuLayers;
 	OSInt i = scrollY + (pos.y / Double2Int32(80 * this->GetHDPI() / this->GetDDPI()));
 	if (i >= (OSInt)this->env->GetFontStyleCount())
 	{
@@ -113,9 +114,9 @@ void SSWR::AVIRead::AVIRFontSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 			this->EventSelChg();
 			this->Redraw();
 		}
-		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers)
+		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers.SetTo(mnuLayers))
 		{
-			this->mnuLayers->ShowMenu(*this, this->GetScreenPosP() + pos);
+			mnuLayers->ShowMenu(*this, this->GetScreenPosP() + pos);
 		}
 	}
 }
@@ -356,7 +357,7 @@ void SSWR::AVIRead::AVIRFontSelector::RGBParamChanged(NN<const Media::IColorHand
 	this->Redraw();
 }
 
-void SSWR::AVIRead::AVIRFontSelector::SetPopupMenu(UI::GUIPopupMenu *mnuLayers)
+void SSWR::AVIRead::AVIRFontSelector::SetPopupMenu(Optional<UI::GUIPopupMenu> mnuLayers)
 {
 	this->mnuLayers = mnuLayers;
 }

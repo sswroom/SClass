@@ -2,6 +2,7 @@
 #define _SM_NET_ETHERNETANALYZER
 #include "AnyType.h"
 #include "Data/ArrayListStringNN.h"
+#include "Data/ArrayListICaseStringNN.h"
 #include "Data/CallbackStorage.h"
 #include "Data/FastMap.h"
 #include "Data/FixedCircularBuff.h"
@@ -98,7 +99,8 @@ namespace Net
 		{
 			UInt32 ip;
 			Sync::Mutex mut;
-			Data::ArrayListICaseString addrList;
+			NN<Text::String> currName;
+			Data::ArrayListICaseStringNN addrList;
 		};
 
 		struct IPLogInfo
@@ -154,6 +156,24 @@ namespace Net
 				return this->reqTime == info.reqTime;
 			}
 		};
+
+		struct TimeBandwidth
+		{
+			Int64 time;
+			UOSInt recvCnt;
+			UInt64 recvBytes;
+			UOSInt sendCnt;
+			UInt64 sendBytes;
+		};
+
+		struct BandwidthStat
+		{
+			UInt32 ip;
+			Int32 displayFlags;
+			Int64 displayTime;
+			TimeBandwidth currStat;
+			TimeBandwidth lastStat;
+		};
 		
 	private:
 		AnalyzeType atype;
@@ -179,6 +199,8 @@ namespace Net
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> mdnsList;
 		Sync::Mutex tcp4synMut;
 		Data::FixedCircularBuff<TCP4SYNInfo> tcp4synList;
+		Sync::Mutex bandwidthMut;
+		Data::FastMapNN<UInt32, BandwidthStat> bandwidthMap;
 
 		Data::CallbackStorage<Pingv4Handler> pingv4ReqHdlr;
 
@@ -219,6 +241,7 @@ namespace Net
 		Bool DNSReqOthGetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
 		UOSInt DNSTargetGetList(NN<Data::ArrayListNN<DNSTargetInfo>> targetList); //no need release
 		UOSInt DNSTargetGetCount();
+		Optional<Text::String> DNSTargetGetName(UInt32 ip) const;
 		UOSInt MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList); //no need release
 		UOSInt MDNSGetCount();
 		void UseDHCP(NN<Sync::MutexUsage> mutUsage);
@@ -228,6 +251,7 @@ namespace Net
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
 		UOSInt TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
+		NN<Data::FastMapNN<UInt32, BandwidthStat>> BandwidthGetAll(NN<Sync::MutexUsage> mutUsage);
 
 		Bool PacketData(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
@@ -240,6 +264,8 @@ namespace Net
 
 		AnalyzeType GetAnalyzeType();
 		void HandlePingv4Request(Pingv4Handler pingv4Hdlr, AnyType userObj);
+
+		static NN<BandwidthStat> BandwidthStatCreate(UInt32 sortIP, Int64 time);
 	};
 }
 #endif

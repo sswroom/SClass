@@ -36,14 +36,14 @@ namespace SSWR
 				NN<Text::String> ssid;
 				Int32 phyType;
 				Double freq;
-				Text::String *manuf;
-				Text::String *model;
-				Text::String *serialNum;
+				Optional<Text::String> manuf;
+				Optional<Text::String> model;
+				Optional<Text::String> serialNum;
 				Optional<Text::String> country;
 				UInt8 ouis[3][3];
 				UInt64 neighbour[20];
 				UOSInt ieLen;
-				UInt8 *ieBuff;
+				UnsafeArrayOpt<UInt8> ieBuff;
 			} WifiLog;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;

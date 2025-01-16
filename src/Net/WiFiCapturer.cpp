@@ -20,7 +20,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NN<Sync::Thread> thread)
 	OSInt si;
 	UInt64 imac;
 	UInt8 mac[8];
-	const UInt8 *macPtr;
+	UnsafeArray<const UInt8> macPtr;
 	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
@@ -85,7 +85,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NN<Sync::Thread> thread)
 						{
 							bss = bssList.GetItemNoCheck(i);
 		//					ssid = bss->GetSSID();
-							MemCopyNO(&mac[2], bss->GetMAC(), 6);
+							MemCopyNO(&mac[2], bss->GetMAC().Ptr(), 6);
 							mac[0] = 0;
 							mac[1] = 0;
 							imac = ReadMUInt64(mac);

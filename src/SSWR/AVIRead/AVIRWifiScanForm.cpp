@@ -48,6 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(AnyType userObj)
 void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 {
 	this->WifiClear();
+	const UInt8 tmpOUI[] = {0, 0, 0};
 	NN<Net::WirelessLAN::Interface> wlanInterf;
 	if (this->wlanInterf.SetTo(wlanInterf))
 	{
@@ -57,7 +58,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		UInt64 imac;
 		Manage::HiResClock clk;
 		NN<Text::String> s;
-		const UTF8Char *csptr;
+		UnsafeArray<const UTF8Char> csptr;
 		NN<Text::String> ssid;
 		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
 		NN<Net::WirelessLAN::BSSInfo> bss;
@@ -84,7 +85,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		{
 			bss = bssList.GetItemNoCheck(i);
 			ssid = bss->GetSSID();
-			MemCopyNO(&id[2], bss->GetMAC(), 6);
+			MemCopyNO(&id[2], bss->GetMAC().Ptr(), 6);
 			id[0] = 0;
 			id[1] = 0;
 			imac = ReadMUInt64(id);
@@ -107,32 +108,32 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			this->lvWifi->SetSubItem(i, 7, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, bss->GetFreq());
 			this->lvWifi->SetSubItem(i, 8, CSTRP(sbuff, sptr));
-			const UInt8 *oui;
-			if ((csptr = bss->GetCountry()) != 0)
+			UnsafeArray<const UInt8> oui;
+			if (bss->GetCountry().SetTo(csptr))
 				this->lvWifi->SetSubItem(i, 9, Text::CStringNN::FromPtr(csptr));
-			oui = bss->GetChipsetOUI(0);
+			oui = bss->GetChipsetOUI(0).Or(tmpOUI);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 			{
 				entry = Net::MACInfo::GetMACInfoOUI(oui);
 				this->lvWifi->SetSubItem(i, 10, {entry->name, entry->nameLen});
 			}
-			oui = bss->GetChipsetOUI(1);
+			oui = bss->GetChipsetOUI(1).Or(tmpOUI);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 			{
 				entry = Net::MACInfo::GetMACInfoOUI(oui);
 				this->lvWifi->SetSubItem(i, 11, {entry->name, entry->nameLen});
 			}
-			oui = bss->GetChipsetOUI(2);
+			oui = bss->GetChipsetOUI(2).Or(tmpOUI);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 			{
 				entry = Net::MACInfo::GetMACInfoOUI(oui);
 				this->lvWifi->SetSubItem(i, 12, {entry->name, entry->nameLen});
 			}
-			if (s.Set(bss->GetManuf()))
+			if (bss->GetManuf().SetTo(s))
 				this->lvWifi->SetSubItem(i, 13, s);
-			if (s.Set(bss->GetModel()))
+			if (bss->GetModel().SetTo(s))
 				this->lvWifi->SetSubItem(i, 14, s);
-			if (s.Set(bss->GetSN()))
+			if (bss->GetSN().SetTo(s))
 				this->lvWifi->SetSubItem(i, 15, s);
 
 			i++;
