@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Data::ArrayListStringNN *sanList;
+			Data::ArrayListStringNN sanList;
 			Optional<Crypto::Cert::X509Key> key;
 
 			NN<UI::GUILabel> lblKey;
@@ -68,7 +68,7 @@ namespace SSWR
 			static void __stdcall OnCSRGenerateClicked(AnyType userObj);
 			static void __stdcall OnSelfSignedCertClicked(AnyType userObj);
 
-			Bool GetNames(Crypto::Cert::CertNames *names);
+			Bool GetNames(NN<Crypto::Cert::CertNames> names);
 			void DisplayKeyDetail();
 			void DisplayNames(NN<Crypto::Cert::CertNames> names);
 			void DisplayExtensions(NN<Crypto::Cert::CertExtensions> exts);

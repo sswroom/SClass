@@ -8,11 +8,17 @@
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	UnsafeArray<DB::DBUtil::ColType> strTypes;
 	OSInt xCol;
 	UOSInt i;
 	UOSInt j;
 	Data::DateTime dt;
-	if (me->yCols->GetCount() == 0)
+	if (!me->strTypes.SetTo(strTypes))
+	{
+		me->ui->ShowMsgOK(CSTR("Error in reading database data"), CSTR("Error"), me);
+		return;
+	}
+	if (me->yCols.GetCount() == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please add a data column first"), CSTR("Error"), me);
 		return;
@@ -32,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Error in getting database data"), CSTR("Error"), me);
 		return;
 	}
-	colCount = me->yCols->GetCount() + 1;
+	colCount = me->yCols.GetCount() + 1;
 	colInfos = MemAlloc(ColInfo, colCount);
 	i = colCount;
 	while (i-- > 0)
@@ -43,17 +49,17 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 		}
 		else
 		{
-			colInfos[i].colIndex = me->yCols->GetItem(i - 1);
+			colInfos[i].colIndex = me->yCols.GetItem(i - 1);
 		}
 		NEW_CLASSNN(colInfos[i].colDef, DB::ColDef(CSTR("")));
 
-		if (me->strTypes[colInfos[i].colIndex] == DB::DBUtil::CT_Unknown)
+		if (strTypes[colInfos[i].colIndex] == DB::DBUtil::CT_Unknown)
 		{
 			reader->GetColDef(colInfos[i].colIndex, colInfos[i].colDef);
 		}
 		else
 		{
-			colInfos[i].colDef->SetColType(me->strTypes[colInfos[i].colIndex]);
+			colInfos[i].colDef->SetColType(strTypes[colInfos[i].colIndex]);
 		}
 		if (colInfos[i].colDef->GetColType() == DB::DBUtil::CT_Double)
 		{
@@ -223,7 +229,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 		colInfos[i].colDef.Delete();
 	}
 	MemFree(colInfos);
-	if (me->chart)
+	if (me->chart.NotNull())
 	{
 		me->SetDialogResult(DR_OK);
 	}
@@ -251,17 +257,18 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 	sbuff[0] = 0;
 	sptr = me->cboYAxis->GetItemText(sbuff, i).Or(sbuff);
 	me->lbYAxis->AddItem(CSTRP(sbuff, sptr), (void*)col);
-	me->yCols->Add((UInt32)col);
+	me->yCols.Add((UInt32)col);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	UnsafeArray<DB::DBUtil::ColType> strTypes;
 	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
-	if (selInd != INVALID_INDEX)
+	if (selInd != INVALID_INDEX && me->strTypes.SetTo(strTypes))
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
-		me->strTypes[colInd] = DB::DBUtil::CT_Double;
+		strTypes[colInd] = DB::DBUtil::CT_Double;
 		NN<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
 		me->cboYAxis->AddItem(s, (void*)colInd);
@@ -273,11 +280,12 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	UnsafeArray<DB::DBUtil::ColType> strTypes;
 	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
-	if (selInd != INVALID_INDEX)
+	if (selInd != INVALID_INDEX && me->strTypes.SetTo(strTypes))
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
-		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
+		strTypes[colInd] = DB::DBUtil::CT_Int32;
 		NN<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
 		me->cboYAxis->AddItem(s, (void*)colInd);
@@ -286,7 +294,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType u
 	}
 }
 
-SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CStringNN tableName) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Line Chart"));
 	this->SetFont(0, 0, 8.25, false);
@@ -296,7 +304,6 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 	this->strTypes = 0;
 	this->tableName = Text::String::New(tableName);
 	this->schemaName = Text::String::NewOrNull(schemaName);
-	NEW_CLASS(this->yCols, Data::ArrayList<UInt32>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlStrCols = ui->NewPanel(*this);
@@ -351,10 +358,11 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 	{
 		this->cboXAxis->AddItem(CSTR("Auto Number"), (void*)-1);
 		this->cboXAxis->SetSelectedIndex(0);
+		UnsafeArray<DB::DBUtil::ColType> strTypes;
 		UOSInt i;
 		UOSInt j = reader->ColCount();
 		DB::ColDef colDef(CSTR(""));
-		this->strTypes = MemAlloc(DB::DBUtil::ColType, j);
+		this->strTypes = strTypes = MemAllocArr(DB::DBUtil::ColType, j);
 		i = 0;
 		while (i < j)
 		{
@@ -382,7 +390,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 			{
 				this->lbStrCols->AddItem(colDef.GetColName(), (void*)i);
 			}
-			this->strTypes[i] = DB::DBUtil::CT_Unknown;
+			strTypes[i] = DB::DBUtil::CT_Unknown;
 			i++;
 		}
 		this->db->CloseReader(reader);
@@ -391,16 +399,16 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRLineChartForm::~AVIRLineChartForm()
 {
-	DEL_CLASS(this->yCols);
+	UnsafeArray<DB::DBUtil::ColType> strTypes;
 	this->tableName->Release();
 	OPTSTR_DEL(this->schemaName);
-	if (this->strTypes)
+	if (this->strTypes.SetTo(strTypes))
 	{
-		MemFree(this->strTypes);
+		MemFreeArr(strTypes);
 	}
 }
 
-Data::Chart *SSWR::AVIRead::AVIRLineChartForm::GetChart()
+Optional<Data::Chart> SSWR::AVIRead::AVIRLineChartForm::GetChart()
 {
 	return this->chart;
 }

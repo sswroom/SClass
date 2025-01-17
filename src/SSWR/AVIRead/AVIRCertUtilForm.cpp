@@ -202,7 +202,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(AnyType userObj)
 	me->txtSAN->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
-		me->sanList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+		me->sanList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		me->txtSAN->SetText(CSTR(""));
 		me->lbSAN->AddItem(sb.ToCString(), 0);
 	}
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	me->sanList->FreeAll();
+	me->sanList.FreeAll();
 	me->lbSAN->ClearItems();
 }
 
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 	}
 	Crypto::Cert::CertNames names;
 	MemClear(&names, sizeof(names));
-	if (!me->GetNames(&names))
+	if (!me->GetNames(names))
 	{
 		return;
 	}
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	Crypto::Cert::X509CertReq *csr;
 	NN<Crypto::Cert::X509CertReq> nncsr;
-	if (me->sanList->GetCount() > 0 || ext.caCert || ext.digitalSign)
+	if (me->sanList.GetCount() > 0 || ext.caCert || ext.digitalSign)
 	{
 		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, &ext);
 	}
@@ -287,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 	}
 	Crypto::Cert::CertNames names;
 	MemClear(&names, sizeof(names));
-	if (!me->GetNames(&names))
+	if (!me->GetNames(names))
 	{
 		return;
 	}
@@ -312,7 +312,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 	Crypto::Cert::CertNames::FreeNames(names);
 }
 
-Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
+Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(NN<Crypto::Cert::CertNames> names)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtCountryName->GetText(sb);
@@ -425,7 +425,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NN<Crypto::Cert::CertExt
 		while (it.HasNext())
 		{
 			s = it.Next()->Clone();
-			this->sanList->Add(s);
+			this->sanList.Add(s);
 			this->lbSAN->AddItem(s, 0);
 		}
 	}
@@ -433,7 +433,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NN<Crypto::Cert::CertExt
 
 void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 {
-	this->sanList->FreeAll();
+	this->sanList.FreeAll();
 	this->lbSAN->ClearItems();
 }
 
@@ -444,7 +444,6 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
-	NEW_CLASS(this->sanList, Data::ArrayListStringNN());
 	this->key = 0;
 
 	this->lblKey = ui->NewLabel(*this, CSTR("Key"));
@@ -539,8 +538,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRCertUtilForm::~AVIRCertUtilForm()
 {
-	this->sanList->FreeAll();
-	DEL_CLASS(this->sanList);
+	this->sanList.FreeAll();
 	this->key.Delete();
 	this->ssl.Delete();
 }

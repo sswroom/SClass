@@ -152,7 +152,7 @@ namespace SSWR
 			NN<Media::DrawEngine> eng;
 			Optional<Media::DrawImage> sampleImg;
 			Optional<Media::DrawImage> fftImg;
-			UInt8 *sampleBuff;
+			UnsafeArrayOpt<UInt8> sampleBuff;
 			UInt16 nChannels;
 			UInt16 bitCount;
 

@@ -90,17 +90,20 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
+	NN<Text::String> folderPath;
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr2End;
 	UnsafeArray<UTF8Char> sptr3;
 	UnsafeArray<UTF8Char> sarr[11];
+	if (!this->folderPath.SetTo(folderPath))
+		return;
 	NN<IO::Path::FindFileSession> sess;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 
-	sptr = this->folderPath->ConcatTo(sbuff);
-	sptr2 = this->folderPath->ConcatTo(sbuff2);
+	sptr = folderPath->ConcatTo(sbuff);
+	sptr2 = folderPath->ConcatTo(sbuff2);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
@@ -113,7 +116,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	UOSInt colCnt;
 	NN<const Data::ArrayList<ImageSetting*>> imgSettList;
 	ImageSetting *imgSett;
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	NN<Parser::ParserList> parsers;
 	Data::ICaseStringUTF8Map<ImageSetting*> imgSettMap;
 	sptr3 = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
@@ -208,7 +211,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						}
 						nnimgList.Delete();
 
-						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
+						status = MemAllocNN(SSWR::AVIRead::AVIRImageControl::ImageStatus);
 						status->filePath = Text::String::NewP(sbuff, sptr3);
 						status->cacheFile = Text::String::NewP(sbuff2, sptr2End);
 						status->fileName = status->filePath->ToCString().Substring((UOSInt)(sptr - sbuff));
@@ -232,7 +235,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						status->previewImg = 0;
 						status->previewImg2 = 0;
 						Sync::MutexUsage imgMutUsage(this->imgMut);
-						this->imgMap.Put(status->fileName.v, status);
+						this->imgMap.PutC(status->fileName, status);
 						this->imgMapUpdated = true;
 						imgMutUsage.EndUse();
 					}
@@ -265,29 +268,29 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	if (this->folderPath == 0)
+	NN<Text::String> folderPath;
+	if (!this->folderPath.SetTo(folderPath))
 		return;
 
-	sptr = this->folderPath->ConcatTo(sbuff);
+	sptr = folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Output"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 
-	ImageStatus *status;
+	NN<ImageStatus> status;
 	NN<Media::StaticImage> img;
 	Exporter::TIFFExporter tifExporter;
 	Exporter::GUIJPGExporter jpgExporter;
 	while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3)
 	{
 		Sync::MutexUsage mutUsage(this->exportMut);
-		status = (ImageStatus*)this->exportList.Get();
-		mutUsage.EndUse();
-		if (status == 0)
+		if (!this->exportList.Get().GetOpt<ImageStatus>().SetTo(status))
 			break;
+		mutUsage.EndUse();
 
-		if (this->LoadImage(status->fileName.v).SetTo(img))
+		if (this->LoadImage(status->fileName).SetTo(img))
 		{
 			this->ApplySetting(img, img, status->setting);
 			sptr2 = status->fileName.ConcatTo(sptr);
@@ -318,7 +321,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			}
 			ioMutUsage.EndUse();
 		}
-		MemFree(status);
+		MemFreeNN(status);
 
 		UOSInt currCnt;
 		mutUsage.BeginUse();
@@ -351,11 +354,11 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	IO::Path::PathType pt;
 	NN<Media::DrawImage> img;
 	UOSInt i;
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
-	if (this->folderPath == 0)
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
+	NN<Text::String> folderPath;
+	if (!this->folderPath.SetTo(folderPath))
 		return;
-	sptr = this->folderPath->ConcatTo(sbuff);
+	sptr = folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Cache"));
@@ -375,11 +378,10 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	sptr[-1] = 0;
 	IO::Path::RemoveDirectory(sbuff);
 	Sync::MutexUsage mutUsage(this->imgMut);
-	imgList = this->imgMap.GetValues();
-	i = imgList->GetCount();
+	i = this->imgMap.GetCount();
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		status->filePath->Release();
 		status->cacheFile->Release();
 		if (status->previewImg.SetTo(img))
@@ -390,15 +392,14 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 		{
 			this->deng->DeleteImage(img);
 		}
-		MemFree(status);
+		MemFreeNN(status);
 	}
 	Sync::MutexUsage expMutUsage(this->exportMut);
 	while (true)
 	{
-		status = (SSWR::AVIRead::AVIRImageControl::ImageStatus*)this->exportList.Get();
-		if (status == 0)
+		if (!this->exportList.Get().GetOpt<ImageStatus>().SetTo(status))
 			break;
-		MemFree(status);
+		MemFreeNN(status);
 	}
 	expMutUsage.EndUse();
 	this->imgMap.Clear();
@@ -440,10 +441,11 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(NN<Text::StringBuilderUTF8> 
 	return true;
 }
 
-Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt)
+UnsafeArrayOpt<Double> SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<Double> gammaParam;
 	NN<SSWR::AVIRead::AVIRImageControl::CameraCorr> camera;
 	Sync::MutexUsage mutUsage(this->cameraMut);
 	if (this->cameraMap.Get(cameraName).SetTo(camera))
@@ -481,8 +483,8 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraNa
 		if (gammaVals.GetCount() > 0)
 		{
 			camera->gammaCnt = (UInt32)gammaVals.GetCount();
-			camera->gammaParam = MemAlloc(Double, camera->gammaCnt);
-			MemCopyNO(camera->gammaParam, gammaVals.Arr().Ptr(), sizeof(Double) * camera->gammaCnt);
+			camera->gammaParam = gammaParam = MemAllocArr(Double, camera->gammaCnt);
+			MemCopyNO(gammaParam.Ptr(), gammaVals.Arr().Ptr(), sizeof(Double) * camera->gammaCnt);
 		}
 	}
 
@@ -491,7 +493,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraNa
 	return camera->gammaParam;
 }
 
-SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine()), filter(core->GetColorMgr())
+SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIForm> frm, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine()), filter(core->GetColorMgr())
 {
 	this->core = core;
 	this->folderPath = 0;
@@ -503,7 +505,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUI
 	this->keyObj = 0;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, destColor, colorSess.Ptr(), Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, destColor, colorSess, Media::AT_NO_ALPHA));
 	this->imgMapUpdated = true;
 	this->imgUpdated = false;
 	this->previewSize = 160;
@@ -534,18 +536,19 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 	UOSInt i;
 	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRImageControl::CameraCorr>> cameraList = this->cameraMap.GetValues();
 	NN<CameraCorr> camera;
+	UnsafeArray<Double> gammaParam;
 	i = cameraList->GetCount();
 	while (i-- > 0)
 	{
 		camera = cameraList->GetItemNoCheck(i);
-		if (camera->gammaParam)
+		if (camera->gammaParam.SetTo(gammaParam))
 		{
-			MemFree(camera->gammaParam);
+			MemFreeArr(gammaParam);
 		}
 		MemFreeNN(camera);
 	}
 
-	DEL_CLASS(this->dispResizer);
+	this->dispResizer.Delete();
 	this->colorSess->RemoveHandler(*this);
 }
 
@@ -565,30 +568,26 @@ void SSWR::AVIRead::AVIRImageControl::YUVParamChanged(NN<const Media::IColorHand
 
 void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *>> imgList;
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	UOSInt i;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	NN<Media::DrawImage> img;
-	imgList = this->imgMap.GetValues();
-	i = imgList->GetCount();
+	i = this->imgMap.GetCount();
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 			status->previewImg2 = 0;
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 {
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus *>> imgList;
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	UOSInt i;
 	NN<Media::DrawImage> img;
 
@@ -605,18 +604,16 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 	}
 
 	Sync::MutexUsage mutUsage(this->imgMut);
-	imgList = this->imgMap.GetValues();
-	i = imgList->GetCount();
+	i = this->imgMap.GetCount();
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 			status->previewImg2 = 0;
 		}
 	}
-	mutUsage.EndUse();
 }
 
 void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
@@ -625,8 +622,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> barr[5];
 	NN<Media::DrawImage> img;
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	UOSInt i;
 	UOSInt j;
 	UOSInt scnW = dimg->GetWidth();
@@ -647,21 +643,20 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 	UInt32 scrPos = (UInt32)Double2Int32(UOSInt2Double(this->GetVScrollPos()) * hdpi / ddpi);
 
 	Sync::MutexUsage mutUsage(this->imgMut);
-	imgList = this->imgMap.GetValues();
-	i = imgList->GetCount();
+	i = this->imgMap.GetCount();
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		status->setting.flags &= ~8;
 	}
 	i = this->GetVScrollPos() / (20 + 12 + 12 + this->previewSize);
 	j = (UInt32)Double2Int32(UOSInt2Double(this->GetVScrollPos()) + UOSInt2Double(scnH) * ddpi / hdpi) / (20 + 12 + 12 + this->previewSize);
 
-	if (imgList->GetCount() > 0)
+	if (this->imgMap.GetCount() > 0)
 	{
-		if (j >= imgList->GetCount())
+		if (j >= this->imgMap.GetCount())
 		{
-			j = imgList->GetCount() - 1;
+			j = this->imgMap.GetCount() - 1;
 		}
 		f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xff000000);
@@ -669,7 +664,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 		NN<Media::DrawImage> previewImg;
 		while (i <= j)
 		{
-			status = imgList->GetItem(i);
+			status = this->imgMap.GetItemNoCheck(i);
 			status->setting.flags |= 8;
 			if (!status->previewImg.SetTo(previewImg))
 			{
@@ -713,10 +708,10 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 		dimg->DelFont(f);
 	}
 
-	i = imgList->GetCount();
+	i = this->imgMap.GetCount();
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		if ((status->setting.flags & 8) == 0)
 		{
 			if (status->previewImg.SetTo(img))
@@ -753,22 +748,23 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 		if (keys & UI::GUICustomDrawVScroll::KBTN_CONTROL)
 		{
 			Sync::MutexUsage mutUsage(this->imgMut);
-			SSWR::AVIRead::AVIRImageControl::ImageStatus *status = this->imgMap.GetValues()->GetItem((UOSInt)clickIndex);
-			status->setting.flags ^= 1;
-			mutUsage.EndUse();
-			this->Redraw();
-			this->currSel = clickIndex;
+			NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
+			if (this->imgMap.GetItem((UOSInt)clickIndex).SetTo(status))
+			{
+				status->setting.flags ^= 1;
+				mutUsage.EndUse();
+				this->Redraw();
+				this->currSel = clickIndex;
+			}
 		}
 		else if (keys & UI::GUICustomDrawVScroll::KBTN_SHIFT)
 		{
-			NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
-			SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+			NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 			Sync::MutexUsage mutUsage(this->imgMut);
-			imgList = this->imgMap.GetValues();
-			i = imgList->GetCount();
+			i = this->imgMap.GetCount();
 			while (i-- > 0)
 			{
-				status = imgList->GetItem(i);
+				status = this->imgMap.GetItemNoCheck(i);
 				status->setting.flags &= ~1;
 			}
 			if (this->currSel > clickIndex)
@@ -781,13 +777,13 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 				i = this->currSel;
 				j = clickIndex;
 			}
-			if (j >= imgList->GetCount())
+			if (j >= this->imgMap.GetCount())
 			{
-				j = imgList->GetCount() - 1;
+				j = this->imgMap.GetCount() - 1;
 			}
 			while (i <= j)
 			{
-				status = imgList->GetItem(i);
+				status = this->imgMap.GetItemNoCheck(i);
 				status->setting.flags |= 1;
 				i++;
 			}
@@ -796,32 +792,32 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 		}
 		else
 		{
-			NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
-			SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+			NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
+			Optional<SSWR::AVIRead::AVIRImageControl::ImageStatus> clkStatus;
 			Sync::MutexUsage mutUsage(this->imgMut);
-			imgList = this->imgMap.GetValues();
-			i = imgList->GetCount();
+			i = this->imgMap.GetCount();
 			while (i-- > 0)
 			{
-				status = imgList->GetItem(i);
+				status = this->imgMap.GetItemNoCheck(i);
 				status->setting.flags &= ~1;
 			}
-			status = imgList->GetItem((UOSInt)clickIndex);
-			if (status)
+			clkStatus = 0;
+			if (this->imgMap.GetItem((UOSInt)clickIndex).SetTo(status))
 			{
 				status->setting.flags |= 1;
 				this->currSel = clickIndex;
+				clkStatus = status;
 			}
 			mutUsage.EndUse();
 			this->Redraw();
-			if (this->dispImg != status)
+			if (this->dispImg != clkStatus)
 			{
-				this->dispImg = status;
+				this->dispImg = clkStatus;
 				if (this->dispHdlr)
 				{
-					if (status)
+					if (clkStatus.SetTo(status))
 					{
-						this->dispHdlr(this->dispHdlrObj, status->fileName, &status->setting);
+						this->dispHdlr(this->dispHdlrObj, status->fileName, status->setting);
 					}
 					else
 					{
@@ -852,9 +848,10 @@ void SSWR::AVIRead::AVIRImageControl::OnKeyDown(UInt32 keyCode)
 
 void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 {
+	NN<Text::String> sfolderPath;
 	Bool loading = this->IsLoadingDir();
 	ThreadCancelTasks();
-	if (this->folderPath)
+	if (this->folderPath.SetTo(sfolderPath))
 	{
 		if (!loading)
 		{
@@ -862,15 +859,14 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 		}
 		Sync::MutexUsage mutUsage(this->folderMut);
 		this->EndFolder();
-		this->folderPath->Release();
+		sfolderPath->Release();
 		this->folderPath = 0;
-		mutUsage.EndUse();
 	}
 	Text::CStringNN nnfolderPath;
 	if (folderPath.SetTo(nnfolderPath) && nnfolderPath.leng > 0)
 	{
 		Sync::MutexUsage mutUsage(this->folderMut);
-		this->folderPath = Text::String::New(nnfolderPath).Ptr();
+		this->folderPath = Text::String::New(nnfolderPath);
 		this->folderChanged = true;
 		mutUsage.EndUse();
 
@@ -885,7 +881,7 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 	this->dispImg = 0;
 }
 
-Text::String *SSWR::AVIRead::AVIRImageControl::GetFolder()
+Optional<Text::String> SSWR::AVIRead::AVIRImageControl::GetFolder()
 {
 	return this->folderPath;
 }
@@ -894,17 +890,17 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*>> imgList;
 	UOSInt i;
 	UOSInt j;
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	if (this->folderPath == 0)
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
+	NN<Text::String> folderPath;
+	if (!this->folderPath.SetTo(folderPath))
 	{
 		return false;
 	}
 
 	Text::StringBuilderUTF8 sb;
-	sptr = this->folderPath->ConcatTo(sbuff);
+	sptr = folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
@@ -917,12 +913,11 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	Text::UTF8Writer writer(fs);
 	writer.WriteSignature();
 	Sync::MutexUsage mutUsage(this->imgMut);
-	imgList = this->imgMap.GetValues();
 	i = 0;
-	j = imgList->GetCount();
+	j = this->imgMap.GetCount();
 	while (i < j)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.Append(status->fileName);
 		sb.AppendC(UTF8STRC("\t"));
@@ -936,7 +931,6 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		writer.WriteLine(sb.ToCString());
 		i++;
 	}
-	mutUsage.EndUse();
 	return true;
 }
 
@@ -952,17 +946,16 @@ void SSWR::AVIRead::AVIRImageControl::SetProgressHandler(ProgressUpdated hdlr, A
 	this->progHdlrObj = userObj;
 }
 
-Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(UnsafeArray<const UTF8Char> fileName)
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(Text::CStringNN fileName)
 {
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	Optional<Media::StaticImage> outImg = 0;
 	Optional<Media::ImageList> imgList = 0;
 	NN<Media::ImageList> nnimgList;
 	NN<Media::RasterImage> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
-	status = this->imgMap.Get(fileName);
-	if (status)
+	if (this->imgMap.GetC(fileName).SetTo(status))
 	{
 		Sync::MutexUsage ioMutUsage(this->ioMut);
 		IO::StmData::FileData fd(status->filePath, false);
@@ -987,17 +980,16 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(UnsafeAr
 	return outImg;
 }
 
-Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(UnsafeArray<const UTF8Char> fileName)
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(Text::CStringNN fileName)
 {
-	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
+	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	Optional<Media::StaticImage> outImg = 0;
 	Optional<Media::ImageList> imgList = 0;
 	NN<Media::ImageList> nnimgList;
 	NN<Media::RasterImage> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
-	status = this->imgMap.Get(fileName);
-	if (status)
+	if (this->imgMap.GetC(fileName).SetTo(status))
 	{
 		Sync::MutexUsage ioMutUsage(this->ioMut);
 		IO::StmData::FileData fd(status->filePath, false);
@@ -1019,7 +1011,7 @@ Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(Unsaf
 
 void SSWR::AVIRead::AVIRImageControl::ApplySetting(NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<SSWR::AVIRead::AVIRImageControl::ImageSetting> setting)
 {
-	Double *gammaParam;
+	UnsafeArrayOpt<Double> gammaParam;
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
 	NN<Media::EXIFData> exif;
@@ -1039,7 +1031,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(NN<Media::StaticImage> srcImg
 	this->filter.ProcessImage(srcImg->data, destImg->data, srcImg->info.dispSize.x, srcImg->info.dispSize.y, (srcImg->info.storeSize.x * (srcImg->info.storeBPP >> 3)), (destImg->info.storeSize.x * (srcImg->info.storeBPP >> 3)), false);
 }
 
-void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageControl::ImageStatus *img)
+void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> img)
 {
 	NN<Media::DrawImage> srcImg;
 	NN<Media::DrawImage> destImg;
@@ -1059,7 +1051,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 		return;
 	UInt8 *tmpBuff = MemAllocA(UInt8, sHeight * (UOSInt)sbpl);
 
-	Double *gammaParam;
+	UnsafeArrayOpt<Double> gammaParam;
 	UInt32 gammaCnt;
 	Text::StringBuilderUTF8 sb;
 	NN<Media::EXIFData> exif;
@@ -1083,18 +1075,16 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	destImg->GetImgBitsEnd(true);
 }
 
-void SSWR::AVIRead::AVIRImageControl::UpdateImgSetting(SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
+void SSWR::AVIRead::AVIRImageControl::UpdateImgSetting(NN<SSWR::AVIRead::AVIRImageControl::ImageSetting> setting)
 {
-	NN<const Data::ArrayList<ImageStatus*>> imgList;
-	ImageStatus *status;
+	NN<ImageStatus> status;
 	UOSInt i;
 	Bool chg = false;
 	Sync::MutexUsage mutUsage(this->imgMut);
-	imgList = this->imgMap.GetValues();
-	i = imgList->GetCount();
+	i = this->imgMap.GetCount();
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		if (status->setting.flags & 1)
 		{
 			if (status->setting.brightness != setting->brightness || status->setting.contrast != setting->contrast || status->setting.gamma != setting->gamma || (status->setting.flags & 240) != setting->flags)
@@ -1130,23 +1120,21 @@ void SSWR::AVIRead::AVIRImageControl::SetExportFormat(ExportFormat fmt)
 
 UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 {
-	ImageStatus *status;
-	ImageStatus *status2;
-	NN<const Data::ArrayList<ImageStatus*>> imgList;
+	NN<ImageStatus> status;
+	NN<ImageStatus> status2;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->imgMut);
-	imgList = this->imgMap.GetValues();
-	j = imgList->GetCount();
+	j = this->imgMap.GetCount();
 	i = 0;
 	while (i < j)
 	{
-		status = imgList->GetItem(i);
+		status = this->imgMap.GetItemNoCheck(i);
 		if (status->setting.flags & 1)
 		{
-			status2 = MemAlloc(ImageStatus, 1);
-			*status2 = *status;
+			status2 = MemAllocNN(ImageStatus);
+			status2.CopyFrom(status);
 			Sync::MutexUsage exportMutUsage(this->exportMut);
 			this->exportList.Put(status2);
 			exportMutUsage.EndUse();
@@ -1168,23 +1156,19 @@ UOSInt SSWR::AVIRead::AVIRImageControl::ExportSelected()
 
 void SSWR::AVIRead::AVIRImageControl::MoveUp()
 {
-	NN<Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList;
-	NN<const Data::ArrayList<ImageStatus *>> imgList;
-	ImageStatus *status;
+	NN<ImageStatus> status;
 	OSInt i;
 	UOSInt j;
-	if (this->folderPath == 0)
+	if (this->folderPath.IsNull())
 		return;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
-	nameList = this->imgMap.GetKeys();
-	imgList = this->imgMap.GetValues();
-	if (this->dispImg)
+	if (this->dispImg.SetTo(status))
 	{
-		i = nameList->SortedIndexOf(this->dispImg->fileName.v);
+		i = this->imgMap.IndexOfC(status->fileName);
 		if (i == -1)
 		{
-			i = (OSInt)nameList->GetCount() - 1;
+			i = (OSInt)this->imgMap.GetCount() - 1;
 		}
 		else if (i == 0)
 		{
@@ -1196,13 +1180,13 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	}
 	else
 	{
-		i = (OSInt)nameList->GetCount() - 1;
+		i = (OSInt)this->imgMap.GetCount() - 1;
 	}
 	this->currSel = (UOSInt)i;
-	j = imgList->GetCount();
+	j = this->imgMap.GetCount();
 	while (j-- > 0)
 	{
-		status = imgList->GetItem(j);
+		status = this->imgMap.GetItemNoCheck(j);
 		status->setting.flags &= ~1;
 	}
 
@@ -1216,11 +1200,11 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	}
 	else
 	{
-		this->dispImg = this->imgMap.GetValues()->GetItem((UOSInt)i);
-		this->dispImg->setting.flags |= 1;
+		this->dispImg = status = this->imgMap.GetItemNoCheck((UOSInt)i);
+		status->setting.flags |= 1;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, this->dispImg->fileName, &this->dispImg->setting);
+			this->dispHdlr(this->dispHdlrObj, status->fileName, &status->setting);
 		}
 	}
 	mutUsage.EndUse();
@@ -1234,25 +1218,21 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 
 void SSWR::AVIRead::AVIRImageControl::MoveDown()
 {
-	NN<Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>> nameList;
-	NN<const Data::ArrayList<ImageStatus *>> imgList;
-	ImageStatus *status;
+	NN<ImageStatus> status;
 	OSInt i;
 	UOSInt j;
-	if (this->folderPath == 0)
+	if (this->folderPath.IsNull())
 		return;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
-	nameList = this->imgMap.GetKeys();
-	imgList = this->imgMap.GetValues();
-	if (this->dispImg)
+	if (this->dispImg.SetTo(status))
 	{
-		i = nameList->SortedIndexOf(this->dispImg->fileName.v);
+		i = this->imgMap.IndexOfC(status->fileName);
 		if (i == -1)
 		{
 			i = 0;
 		}
-		else if ((UOSInt)i >= nameList->GetCount() - 1)
+		else if ((UOSInt)(i + 1) >= this->imgMap.GetCount())
 		{
 		}
 		else
@@ -1265,10 +1245,10 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 		i = 0;
 	}
 	this->currSel = (UOSInt)i;
-	j = imgList->GetCount();
+	j = this->imgMap.GetCount();
 	while (j-- > 0)
 	{
-		status = imgList->GetItem(j);
+		status = this->imgMap.GetItemNoCheck(j);
 		status->setting.flags &= ~1;
 	}
 
@@ -1282,11 +1262,11 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	}
 	else
 	{
-		this->dispImg = this->imgMap.GetValues()->GetItem((UOSInt)i);
-		this->dispImg->setting.flags |= 1;
+		this->dispImg = status = this->imgMap.GetItemNoCheck((UOSInt)i);
+		status->setting.flags |= 1;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, this->dispImg->fileName, this->dispImg->setting);
+			this->dispHdlr(this->dispHdlrObj, status->fileName, status->setting);
 		}
 	}
 	mutUsage.EndUse();
@@ -1301,12 +1281,11 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 void SSWR::AVIRead::AVIRImageControl::SelectAll()
 {
 	Sync::MutexUsage mutUsage(this->imgMut);
-	NN<const Data::ArrayList<ImageStatus*>> imgList = this->imgMap.GetValues();
-	UOSInt i = imgList->GetCount();
-	ImageStatus *status;
+	UOSInt i = this->imgMap.GetCount();
+	NN<ImageStatus> status;
 	while (i-- > 0)
 	{
-		status = imgList->GetItem(i);;
+		status = this->imgMap.GetItemNoCheck(i);;
 		status->setting.flags |= 1;
 	}
 	mutUsage.EndUse();

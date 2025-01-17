@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/FastStringMap.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "SSWR/AVIRead/AVIRDBGenEnumForm.h"
 #include "Text/JSText.h"

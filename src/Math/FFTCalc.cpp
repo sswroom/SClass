@@ -162,30 +162,30 @@ Math::FFTCalc::FFTCalc(UOSInt sampleCount, WindowType wtype)
 {
 	this->sampleCount = sampleCount;
 	this->wtype = wtype;
-	this->sampleWindow = MemAllocA(Double, sampleCount);
-	this->sampleTemp = MemAllocA(Double, sampleCount << 1);
+	this->sampleWindow = MemAllocAArr(Double, sampleCount);
+	this->sampleTemp = MemAllocAArr(Double, sampleCount << 1);
 	this->BuildSampleWin();
 }
 
 Math::FFTCalc::~FFTCalc()
 {
-	MemFreeA(this->sampleWindow);
-	MemFreeA(this->sampleTemp);
+	MemFreeAArr(this->sampleWindow);
+	MemFreeAArr(this->sampleTemp);
 }
 
-Bool Math::FFTCalc::ForwardBits(UInt8 *samples, Double *freq, SampleType sampleType, UOSInt nChannels, Double magnify)
+Bool Math::FFTCalc::ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, SampleType sampleType, UOSInt nChannels, Double magnify)
 {
 	if (sampleType == Math::FFTCalc::ST_I24)
 	{
-		FFTCalc_ApplyWindowI24(this->sampleTemp, samples, this->sampleWindow, this->sampleCount, nChannels * 3, magnify / 8388608.0);
+		FFTCalc_ApplyWindowI24(this->sampleTemp.Ptr(), samples.Ptr(), this->sampleWindow.Ptr(), this->sampleCount, nChannels * 3, magnify / 8388608.0);
 	}
 	else if (sampleType == Math::FFTCalc::ST_I16)
 	{
-		FFTCalc_ApplyWindowI16(this->sampleTemp, samples, this->sampleWindow, this->sampleCount, nChannels * 2, magnify / 32768.0);
+		FFTCalc_ApplyWindowI16(this->sampleTemp.Ptr(), samples.Ptr(), this->sampleWindow.Ptr(), this->sampleCount, nChannels * 2, magnify / 32768.0);
 	}
 
-	FFTCalc_Forward(this->sampleTemp, this->sampleCount);
+	FFTCalc_Forward(this->sampleTemp.Ptr(), this->sampleCount);
 
-	FFTCalc_FFT2Freq(freq, this->sampleTemp, this->sampleCount);
+	FFTCalc_FFT2Freq(freq.Ptr(), this->sampleTemp.Ptr(), this->sampleCount);
 	return true;
 }

@@ -20,9 +20,9 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *name;
+				UnsafeArray<const UTF8Char> name;
 				UOSInt nameLen;
-				const UTF8Char *url;
+				UnsafeArray<const UTF8Char> url;
 				UOSInt urlLen;
 			} MapServer;
 		private:

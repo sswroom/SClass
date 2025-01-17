@@ -23,7 +23,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 
 			NN<Media::StaticImage> srcImg;
-			Media::StaticImage *outImg;
+			Optional<Media::StaticImage> outImg;
 
 			NN<UI::GUILabel> lblOriW;
 			NN<UI::GUITextBox> txtOriW;

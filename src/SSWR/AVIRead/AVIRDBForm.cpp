@@ -17,7 +17,7 @@
 #include "UI/Clipboard.h"
 #include "UI/GUIFileDialog.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include "IO/ConsoleLogHandler.h"
 #endif
@@ -73,9 +73,10 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 	NN<DB::TableDef> nntabDef;
 	Optional<DB::DBReader> tmpr;
 	NN<DB::DBReader> r;
-	if (me->dbt)
+	NN<DB::ReadingDBTool> dbt;
+	if (me->dbt.SetTo(dbt))
 	{
-		tabDef = me->dbt->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+		tabDef = dbt->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
 		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	}
@@ -157,20 +158,21 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRDBForm::OnSQLClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBForm>();
+	NN<DB::ReadingDBTool> dbt;
 	Text::StringBuilderUTF8 sb;
 	me->txtSQL->GetText(sb);
-	if (sb.GetLength() > 0)
+	if (sb.GetLength() > 0 && me->dbt.SetTo(dbt))
 	{
 		NN<DB::DBReader> r;
-		if (me->dbt->ExecuteReader(sb.ToCString()).SetTo(r))
+		if (dbt->ExecuteReader(sb.ToCString()).SetTo(r))
 		{
 			me->UpdateResult(r);
-			me->dbt->CloseReader(r);
+			dbt->CloseReader(r);
 		}
 		else
 		{
 			sb.ClearStr();
-			me->dbt->GetLastErrorMsg(sb);
+			dbt->GetLastErrorMsg(sb);
 			me->ui->ShowMsgOK(sb.ToCString(), CSTR("Database"), me);
 		}
 	}
@@ -555,15 +557,15 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 	if (db->IsFullConn())
 	{
 #if defined(VERBOSE)
-		IO::ConsoleWriter *console;
-		IO::ConsoleLogHandler *logHdlr;
-		NEW_CLASS(console, IO::ConsoleWriter());
-		NEW_CLASS(logHdlr, IO::ConsoleLogHandler(console));
+		NN<IO::ConsoleWriter> console;
+		NN<IO::ConsoleLogHandler> logHdlr;
+		NEW_CLASSNN(console, IO::ConsoleWriter());
+		NEW_CLASSNN(logHdlr, IO::ConsoleLogHandler(console));
 		this->log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 		this->logHdlr = logHdlr;
 		this->debugWriter = console;
 #endif
-		NEW_CLASS(this->dbt, DB::ReadingDBTool(NN<DB::DBConn>::ConvertFrom(this->db), needRelease, this->log, CSTR("DB: ")));
+		NEW_CLASSOPT(this->dbt, DB::ReadingDBTool(NN<DB::DBConn>::ConvertFrom(this->db), needRelease, this->log, CSTR("DB: ")));
 	}
 
 	this->tcDB = ui->NewTabControl(*this);
@@ -598,7 +600,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 	this->lvTable->AddColumn(CSTR("Default Val"), 100);
 	this->lvTable->AddColumn(CSTR("Attribute"), 100);
 
-	if (this->dbt)
+	if (this->dbt.NotNull())
 	{
 		this->tpSQL = this->tcDB->AddTabPage(CSTR("SQL"));
 		this->pnlSQLCtrl = ui->NewPanel(this->tpSQL);
@@ -642,7 +644,8 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 	mnu->AddItem(CSTR("&Generate Enum"), MNU_COLUMN_GEN_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
 	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	if (this->dbt && this->dbt->GetDatabaseNames(this->dbNames) > 0)
+	NN<DB::ReadingDBTool> dbt;
+	if (this->dbt.SetTo(dbt) && dbt->GetDatabaseNames(this->dbNames) > 0)
 	{
 		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
 		Data::ArrayIterator<NN<Text::String>> it = this->dbNames.Iterator();
@@ -661,35 +664,38 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<
 
 SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 {
-	if (this->dbt)
+	NN<DB::ReadingDBTool> dbt;
+	if (this->dbt.SetTo(dbt))
 	{
-		this->dbt->ReleaseDatabaseNames(this->dbNames);
-		DEL_CLASS(this->dbt);
+		dbt->ReleaseDatabaseNames(this->dbNames);
+		dbt.Delete();
+		this->dbt = 0;
 	}
 	else if (this->needRelease)
 	{
 		this->db.Delete();
 	}
-	SDEL_CLASS(this->currCond);
+	this->currCond.Delete();
 	NN<IO::LogHandler> logHdlr;
-	if (logHdlr.Set(this->logHdlr))
+	if (this->logHdlr.SetTo(logHdlr))
 	{
 		this->log.RemoveLogHandler(logHdlr);	
-		SDEL_CLASS(this->logHdlr);
+		this->logHdlr.Delete();
 	}
-	SDEL_CLASS(this->debugWriter);
+	this->debugWriter.Delete();
 }
 
 void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 {
+	NN<DB::ReadingDBTool> dbt;
 	Data::ArrayListStringNN schemaNames;
 	UOSInt i;
 	UOSInt j;
 
 	this->lbSchema->ClearItems();
-	if (this->dbt)
+	if (this->dbt.SetTo(dbt))
 	{
-		this->dbt->QuerySchemaNames(schemaNames);
+		dbt->QuerySchemaNames(schemaNames);
 	}
 	else
 	{
@@ -713,6 +719,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateSchemas()
 
 void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
+	NN<DB::ReadingDBTool> dbt;
 	Text::StringBuilderUTF8 sb;
 	Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
 	Data::ArrayListStringNN tableNames;
@@ -720,9 +727,9 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	UOSInt j;
 
 	this->lbTable->ClearItems();
-	if (this->dbt)
+	if (this->dbt.SetTo(dbt))
 	{
-		this->dbt->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
+		dbt->QueryTableNames(OPTSTR_CSTR(schemaName), tableNames);
 	}
 	else
 	{
@@ -745,9 +752,10 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<DB::ReadingDBTool> dbt;
 	if (cmdId >= MNU_DATABASE_START)
 	{
-		if (this->dbt->ChangeDatabase(Text::String::OrEmpty(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START))->ToCString()))
+		if (this->dbt.SetTo(dbt) && dbt->ChangeDatabase(Text::String::OrEmpty(this->dbNames.GetItem((UOSInt)cmdId - MNU_DATABASE_START))->ToCString()))
 		{
 			this->UpdateTables();
 		}
@@ -765,7 +773,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			NN<Data::Chart> nnchart;
 			{
 				Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db.Ptr(), OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
+				SSWR::AVIRead::AVIRLineChartForm frm(0, this->ui, this->core, this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 				OPTSTR_DEL(schemaName);
 				if (frm.ShowDialog(this) == DR_OK)
 				{

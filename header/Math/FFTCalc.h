@@ -26,15 +26,15 @@ namespace Math
 	private:
 		UOSInt sampleCount;
 		WindowType wtype;
-		Double *sampleWindow;
-		Double *sampleTemp;
+		UnsafeArray<Double> sampleWindow;
+		UnsafeArray<Double> sampleTemp;
 
 		void BuildSampleWin();
 	public:
 		FFTCalc(UOSInt sampleCount, WindowType wtype);
 		~FFTCalc();
 
-		Bool ForwardBits(UInt8 *samples, Double *freq, SampleType sampleType, UOSInt nChannels, Double magnify);
+		Bool ForwardBits(UnsafeArray<UInt8> samples, UnsafeArray<Double> freq, SampleType sampleType, UOSInt nChannels, Double magnify);
 	};
 }
 #endif

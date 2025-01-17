@@ -113,6 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 		}
 		NN<Media::IAudioRenderer> audRender;
 		NN<Media::IAudioSource> audSrc;
+		UnsafeArray<UInt8> sampleBuff;
 		if (me->audSrc.SetTo(audSrc))
 		{
 			NN<Media::AudioFilter::AudioAmplifier> audioAmp;
@@ -147,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 			me->audioCapture = audioCapture;
 			me->bitCount = bitCount;
 			me->nChannels = nChannel;
-			me->sampleBuff = MemAlloc(UInt8, (FFTSAMPLE + FFTAVG - 1) * (UOSInt)me->nChannels * (UOSInt)(me->bitCount >> 3));
+			me->sampleBuff = sampleBuff = MemAllocArr(UInt8, (FFTSAMPLE + FFTAVG - 1) * (UOSInt)me->nChannels * (UOSInt)(me->bitCount >> 3));
 			volBooster->SetEnabled(me->chkVolBoost->IsChecked());
 			volBooster->SetBGLevel(Math_Pow(10, OSInt2Double((OSInt)me->tbVolBoostBG->GetPos() - 192) / 20.0));
 			dtmfGen->SetVolume(Math_Pow(10, OSInt2Double((OSInt)me->tbDTMFVol->GetPos() - 960) / 20.0));
@@ -196,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(AnyType userOb
 				me->dtmfGen.Delete();
 				me->audioAmp.Delete();
 				me->audSrc.Delete();
-				MemFree(me->sampleBuff);
+				MemFreeArr(sampleBuff);
 				me->audSrc = 0;
 				me->sampleBuff = 0;
 			}
@@ -601,7 +602,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 		me->rlcVolLevel->AddSample(v);
 	}
 	NN<Media::AudioFilter::AudioSampleRipper> audioRipper;
-	if (me->audioRipper.SetTo(audioRipper))
+	UnsafeArray<UInt8> sampleBuff;
+	if (me->audioRipper.SetTo(audioRipper) && me->sampleBuff.SetTo(sampleBuff))
 	{
 		if (audioRipper->IsChanged())
 		{
@@ -618,7 +620,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 			NN<Media::DrawImage> dimg;
 			NN<Media::DrawBrush> b;
 			NN<Media::DrawPen> p;
-			audioRipper->GetSamples(me->sampleBuff);
+			audioRipper->GetSamples(sampleBuff);
 			sz = me->pbsSample->GetSizeP();
 			if (sz.x <= 0 || sz.y <= 0)
 			{
@@ -658,7 +660,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 						while (j < FFTSAMPLE)
 						{
 							thisX = UOSInt2Double(j * sz.x) / (Double)(FFTSAMPLE - 1);
-							thisY = (ReadInt16(&me->sampleBuff[k]) + 32768.0) * UOSInt2Double(sz.y) / 65536.0;
+							thisY = (ReadInt16(&sampleBuff[k]) + 32768.0) * UOSInt2Double(sz.y) / 65536.0;
 							if (lastX >= 0)
 							{
 								img->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -701,7 +703,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 						while (j < FFTSAMPLE)
 						{
 							thisX = UOSInt2Double(j * sz.x) / (Double)(FFTSAMPLE - 1);
-							thisY = UOSInt2Double(me->sampleBuff[k] * sz.y) / 256.0;
+							thisY = UOSInt2Double(sampleBuff[k] * sz.y) / 256.0;
 							if (lastX >= 0)
 							{
 								img->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -754,7 +756,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 					}
 					if (!err)
 					{
-						me->fft.ForwardBits(me->sampleBuff + ((UOSInt)(me->bitCount >> 3) * i), data, st, me->nChannels, 1.0);
+						me->fft.ForwardBits(sampleBuff + ((UOSInt)(me->bitCount >> 3) * i), data, st, me->nChannels, 1.0);
 					}
 					if (i == 0)
 					{
@@ -976,6 +978,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnAmplifierVolChg(AnyType use
 
 void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 {
+	UnsafeArray<UInt8> sampleBuff;
 	if (this->audSrc.NotNull())
 	{
 		if (this->audRenderType == 1)
@@ -997,7 +1000,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 		this->fileMix.Delete();
 		this->volBooster.Delete();
 		this->audioCapture.Delete();
-		MemFree(this->sampleBuff);
+		if (this->sampleBuff.SetTo(sampleBuff)) MemFreeArr(sampleBuff);
 		this->sampleBuff = 0;
 	}
 }

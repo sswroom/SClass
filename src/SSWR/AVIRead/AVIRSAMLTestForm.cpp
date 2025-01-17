@@ -102,10 +102,12 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
-	if (me->svr)
+		NN<Net::WebServer::SAMLHandler> samlHdlr;
+		NN<Net::WebServer::WebListener> svr;
+	if (me->svr.NotNull())
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->samlHdlr);
+		me->svr.Delete();
+		me->samlHdlr.Delete();
 		me->txtPort->SetReadOnly(false);
 		me->btnSSLCert->SetEnabled(true);
 		me->txtHost->SetReadOnly(false);
@@ -221,7 +223,6 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		}
 		cfg.ssoPath = sbSSOPath.ToCString();
 
-		NN<Net::WebServer::SAMLHandler> samlHdlr;
 		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl, 0));
 		if (samlHdlr->GetInitError() != Net::WebServer::SAMLError::None)
 		{
@@ -234,29 +235,30 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		}
 		samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
 		samlHdlr->HandleLoginRequest(OnLoginRequest, me);
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
+		if (svr->IsError())
 		{
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			samlHdlr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("SAML Test"), me);
 			valid = false;
 		}
-		else if (!me->svr->Start())
+		else if (!svr->Start())
 		{
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			samlHdlr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("SAML Test"), me);
 			valid = false;
 		}
 		else
 		{
-			me->samlHdlr = samlHdlr.Ptr();
-			me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
+			me->samlHdlr = samlHdlr;
+			me->svr = svr;
+			svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
 		}
 	}
 
-	if (valid)
+	if (valid && me->samlHdlr.SetTo(samlHdlr))
 	{
 		me->txtPort->SetReadOnly(true);
 		me->btnSSLCert->SetEnabled(false);
@@ -269,19 +271,19 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		me->btnStart->SetText(CSTR("Stop"));
 
 		sb.ClearStr();
-		me->samlHdlr->GetLogoutURL(sb);
+		samlHdlr->GetLogoutURL(sb);
 		me->txtLogoutURL->SetText(sb.ToCString());
 		sb.ClearStr();
-		me->samlHdlr->GetMetadataURL(sb);
+		samlHdlr->GetMetadataURL(sb);
 		me->txtMetadataURL->SetText(sb.ToCString());
 		sb.ClearStr();
-		me->samlHdlr->GetSSOURL(sb);
+		samlHdlr->GetSSOURL(sb);
 		me->txtSSOURL->SetText(sb.ToCString());
 	}
 	else
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->samlHdlr);
+		me->svr.Delete();
+		me->samlHdlr.Delete();
 	}
 }
 
@@ -289,12 +291,13 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Sync::MutexUsage mutUsage(me->respMut);
-	if (me->respNew)
+	NN<Text::String> respNew;
+	if (me->respNew.SetTo(respNew))
 	{
-		me->txtSAMLResp->SetText(me->respNew->ToCString());
+		me->txtSAMLResp->SetText(respNew->ToCString());
 		Text::StringBuilderUTF8 sb;
 		{
-			IO::MemoryReadingStream mstm(me->respNew->v, me->respNew->leng);
+			IO::MemoryReadingStream mstm(respNew->v, respNew->leng);
 			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb);
 		}
 		me->txtSAMLRespWF->SetText(sb.ToCString());
@@ -306,7 +309,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 			NN<Net::SSLEngine> ssl;
 			if (me->ssl.SetTo(ssl))
 			{
-				if (Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, me->respNew->ToCString(), sb))
+				if (Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, respNew->ToCString(), sb))
 				{
 					IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 					Text::StringBuilderUTF8 sb2;
@@ -325,7 +328,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 			key.Delete();
 		}
 
-		me->respNew->Release();
+		respNew->Release();
 		me->respNew = 0;
 	}
 }
@@ -334,15 +337,16 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(AnyType userObj, 
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Sync::MutexUsage mutUsage(me->respMut);
-	SDEL_STRING(me->respNew);
-	me->respNew = Text::String::New(msg).Ptr();
+	OPTSTR_DEL(me->respNew);
+	me->respNew = Text::String::New(msg);
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
 	Text::StringBuilderUTF8 sb;
-	Text::String *decMsg = 0;
+	Optional<Text::String> decMsg = 0;
+	NN<Text::String> nndecMsg;
 	NN<Crypto::Cert::X509Key> key;
 	if (me->CreateSAMLKey().SetTo(key))
 	{
@@ -352,7 +356,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 			IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 			Text::StringBuilderUTF8 sb2;
 			Text::XMLReader::XMLWellFormat(me->core->GetEncFactory(), mstm, 0, sb2);
-			decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString()).Ptr();
+			decMsg = Text::XML::ToNewHTMLTextXMLColor(sb2.ToString());
 		}
 		key.Delete();
 	}
@@ -364,12 +368,12 @@ Bool __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnLoginRequest(AnyType userObj, 
 	NN<Text::String> msgContent = Text::XML::ToNewHTMLTextXMLColor(sb.ToString());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("<html><head><title>SAML Message</title></head><body>"));
-	if (decMsg)
+	if (decMsg.SetTo(nndecMsg))
 	{
 		sb.AppendC(UTF8STRC("<h1>Decrypted Content</h1>"));
-		sb.Append(decMsg);
+		sb.Append(nndecMsg);
 		sb.AppendC(UTF8STRC("<hr/>"));
-		decMsg->Release();
+		nndecMsg->Release();
 	}
 	sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
 	sb.Append(msgContent);
@@ -390,10 +394,11 @@ void SSWR::AVIRead::AVIRSAMLTestForm::ClearCACerts()
 
 Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRSAMLTestForm::CreateSAMLKey()
 {
-	if (this->samlHdlr == 0)
+	NN<Net::WebServer::SAMLHandler> samlHdlr;
+	if (!this->samlHdlr.SetTo(samlHdlr))
 		return 0;
 	NN<Crypto::Cert::X509PrivKey> key;
-	if (this->samlHdlr->GetKey().SetTo(key))
+	if (samlHdlr->GetKey().SetTo(key))
 		return key->CreateKey();
 	return 0;
 }
@@ -501,15 +506,15 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRSAMLTestForm::~AVIRSAMLTestForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->samlHdlr);
+	this->svr.Delete();
+	this->samlHdlr.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 	this->ssl.Delete();
 	this->sslCert.Delete();
 	this->sslKey.Delete();
 	this->ClearCACerts();
-	SDEL_STRING(this->respNew);
+	OPTSTR_DEL(this->respNew);
 }
 
 void SSWR::AVIRead::AVIRSAMLTestForm::OnMonitorChanged()

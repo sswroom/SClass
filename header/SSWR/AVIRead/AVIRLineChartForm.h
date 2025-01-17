@@ -43,12 +43,12 @@ namespace SSWR
 			NN<UI::GUIButton> btnCancel;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			DB::ReadingDB *db;
-			Data::Chart *chart;
-			Data::ArrayList<UInt32> *yCols;
+			NN<DB::ReadingDB> db;
+			Optional<Data::Chart> chart;
+			Data::ArrayList<UInt32> yCols;
 			NN<Text::String> tableName;
 			Optional<Text::String> schemaName;
-			DB::DBUtil::ColType *strTypes;
+			UnsafeArrayOpt<DB::DBUtil::ColType> strTypes;
 
 			static void __stdcall OnPlotClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -56,12 +56,12 @@ namespace SSWR
 			static void __stdcall OnStrColsDblClicked(AnyType userObj);
 			static void __stdcall OnStrColsInt32Clicked(AnyType userObj);
 		public:
-			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CStringNN tableName);
+			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName);
 			virtual ~AVIRLineChartForm();
 
 			virtual void OnMonitorChanged();
 
-			Data::Chart *GetChart();
+			Optional<Data::Chart> GetChart();
 		};
 	}
 }

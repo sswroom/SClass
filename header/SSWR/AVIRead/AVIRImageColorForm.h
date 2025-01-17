@@ -22,7 +22,7 @@ namespace SSWR
 			Optional<Media::StaticImage> srcPrevImg;
 			Optional<Media::StaticImage> destPrevImg;
 			NN<UI::GUIPictureBoxDD> previewCtrl;
-			Media::RGBColorFilter *rgbFilter;
+			NN<Media::RGBColorFilter> rgbFilter;
 			Double currBVal;
 			Double currCVal;
 			Double currGVal;

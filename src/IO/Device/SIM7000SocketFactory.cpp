@@ -30,7 +30,7 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(AnyType userObj, 
 void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 {
 	UOSInt i = 8;
-	DataPacket *packet;
+	NN<DataPacket> packet;
 	while (i-- > 0)
 	{
 		switch (this->status[i].state)
@@ -48,9 +48,9 @@ void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 				this->modem->NetCloseSocket(i);
 				this->status[i].state = SocketState::Empty;
 				Sync::MutexUsage mutUsage(this->status[i].dataMut);
-				while ((packet = (DataPacket*)this->status[i].dataList.Get()) != 0)
+				while (this->status[i].dataList.Get().GetOpt<DataPacket>().SetTo(packet))
 				{
-					MemFree(packet);
+					MemFreeNN(packet);
 				}
 				mutUsage.EndUse();
 			}
@@ -225,7 +225,7 @@ Optional<Socket> IO::Device::SIM7000SocketFactory::CreateRAWSocket()
 void IO::Device::SIM7000SocketFactory::DestroySocket(NN<Socket> socket)
 {
 	UOSInt i = (UOSInt)socket.Ptr() - 1;
-	DataPacket *packet;
+	NN<DataPacket> packet;
 	if (i >= 8)
 	{
 		return;
@@ -245,9 +245,9 @@ void IO::Device::SIM7000SocketFactory::DestroySocket(NN<Socket> socket)
 			this->modem->NetCloseSocket(i);
 			this->status[i].state = SocketState::Empty;
 			Sync::MutexUsage mutUsage(this->status[i].dataMut);
-			while ((packet = (DataPacket*)this->status[i].dataList.Get()) != 0)
+			while (this->status[i].dataList.Get().GetOpt<DataPacket>().SetTo(packet))
 			{
-				MemFree(packet);
+				MemFreeNN(packet);
 			}
 			mutUsage.EndUse();
 		}
@@ -399,16 +399,15 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UnsafeArr
 	{
 		return false;
 	}
-	DataPacket *packet;
+	NN<DataPacket> packet;
 	while (this->status[i].state == SocketState::UDP_Opened)
 	{
 		if (this->status[i].dataList.GetCount() > 0)
 		{
 			Sync::MutexUsage mutUsage(this->status[i].dataMut);
-			packet = (DataPacket*)this->status[i].dataList.Get();
-			mutUsage.EndUse();
-			if (packet)
+			if (this->status[i].dataList.Get().GetOpt<DataPacket>().SetTo(packet))
 			{
+				mutUsage.EndUse();
 				Net::SocketUtil::SetAddrInfoV4(addr, packet->remoteIP);
 				port.Set(packet->remotePort);
 				if (buffSize >= packet->dataSize)
@@ -420,7 +419,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(NN<Socket> socket, UnsafeArr
 				{
 					MemCopyNO(buff.Ptr(), packet->data, buffSize);
 				}
-				MemFree(packet);
+				MemFreeNN(packet);
 				return buffSize;
 			}
 		}

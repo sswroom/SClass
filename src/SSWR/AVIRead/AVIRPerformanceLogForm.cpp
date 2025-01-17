@@ -15,7 +15,7 @@
 void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
-	if (me->testBuff)
+	if (me->testBuff.NotNull())
 	{
 		me->Stop();
 		me->btnStart->SetText(CSTR("Start"));
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
-	if (me->testBuff)
+	if (me->testBuff.NotNull())
 	{
 		if (Data::Timestamp::UtcNow().DiffMS(me->testTime) >= 600000)
 		{
@@ -44,45 +44,46 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(AnyType userOb
 
 Bool SSWR::AVIRead::AVIRPerformanceLogForm::Start()
 {
-	if (this->testBuff)
+	if (this->testBuff.NotNull())
 		return false;
 
 	NN<IO::FileStream> fs;
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("Performance.log"), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
-	this->logStream = fs.Ptr();
-	if (this->logStream->IsError())
+	this->logStream = fs;
+	if (fs->IsError())
 	{
-		DEL_CLASS(this->logStream);
+		fs.Delete();
 		this->logStream = 0;
 		return false;
 	}
-	NEW_CLASS(this->writer, Text::UTF8Writer(fs));
-	this->testBuff = MemAllocA(UInt8, TEST_SIZE);
+	NEW_CLASSOPT(this->writer, Text::UTF8Writer(fs));
+	this->testBuff = MemAllocAArr(UInt8, TEST_SIZE);
 	this->TestSpeed();
 	return true;
 }
 
 void SSWR::AVIRead::AVIRPerformanceLogForm::Stop()
 {
-	if (this->testBuff)
+	UnsafeArray<UInt8> testBuff;
+	if (this->testBuff.SetTo(testBuff))
 	{
-		DEL_CLASS(this->writer);
-		this->writer = 0;
-		DEL_CLASS(this->logStream);
-		this->logStream = 0;
-		MemFreeA(this->testBuff);
+		this->writer.Delete();
+		this->logStream.Delete();
+		MemFreeAArr(testBuff);
 		this->testBuff = 0;
 	}
 }
 
 void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 {
-	if (this->testBuff == 0)
+	UnsafeArray<UInt8> testBuff;
+	NN<IO::Writer> writer;
+	if (!this->testBuff.SetTo(testBuff) || !this->writer.SetTo(writer))
 		return;
 	Double t;
 	Double spd;
 	Manage::HiResClock clk;
-	Benchmark_MemWriteTest(this->testBuff, this->testBuff, TEST_SIZE, LOOP_CNT);
+	Benchmark_MemWriteTest(testBuff.Ptr(), testBuff.Ptr(), TEST_SIZE, LOOP_CNT);
 	t = clk.GetTimeDiff();
 	this->testTime = Data::Timestamp::UtcNow();
 	Text::StringBuilderUTF8 sb;
@@ -90,7 +91,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	sb.AppendTSNoZone(this->testTime);
 	sb.AppendC(UTF8STRC("\t"));
 	sb.AppendDouble(spd);
-	this->writer->WriteLine(sb.ToCString());
+	writer->WriteLine(sb.ToCString());
 	this->rlcWRate->AddSample(&spd);
 	sb.ClearStr();
 	sb.AppendDouble(spd);

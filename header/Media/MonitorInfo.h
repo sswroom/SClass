@@ -18,7 +18,7 @@ namespace Media
 		Optional<Text::String> monId;
 
 	public:
-		MonitorInfo(MonitorHandle *hMonitor);
+		MonitorInfo(Optional<MonitorHandle> hMonitor);
 		~MonitorInfo();
 
 		NN<Text::String> GetName() const;

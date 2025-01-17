@@ -47,10 +47,10 @@ namespace SSWR
 			NN<UI::GUILabel> lblHDRLevV;
 			
 			NN<Media::ColorManagerSess> colorSess;
-			Media::Resizer::LanczosResizer8_C8 *resizer;
+			NN<Media::Resizer::LanczosResizer8_C8> resizer;
 			Optional<Media::StaticImage> dispImage;
-			Media::StaticImage *previewImage;
-			Media::StaticImage *filteredImage;
+			Optional<Media::StaticImage> previewImage;
+			Optional<Media::StaticImage> filteredImage;
 			Bool initPos;
 			UOSInt selCnt;
 

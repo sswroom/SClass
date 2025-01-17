@@ -25,8 +25,8 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::GSMModemController *modem;
-			IO::HuaweiGSMModemController *huawei;
+			Optional<IO::GSMModemController> modem;
+			Optional<IO::HuaweiGSMModemController> huawei;
 			Optional<IO::ATCommandChannel> channel;
 			Optional<IO::Stream> port;
 			IO::LogTool log;

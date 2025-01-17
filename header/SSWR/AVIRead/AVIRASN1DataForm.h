@@ -47,13 +47,13 @@ namespace SSWR
 			NN<UI::GUITextBox> txtVerifyStatus;
 
 //			NN<UI::GUITabPage> tpSignature;
-/*			NN<UI::GUILabel> lblSignatureHash;
-			NN<UI::GUIComboBox> cboSignatureHash;
-			NN<UI::GUILabel> lblSignaturePayloadFile;
-			NN<UI::GUITextBox> txtSignaturePayloadFile;
-			NN<UI::GUIButton> btnSignature;
-			NN<UI::GUILabel> lblSiguatureValue;
-			NN<UI::GUITextBox> txtSignatureValue;*/
+//			NN<UI::GUILabel> lblSignatureHash;
+//			NN<UI::GUIComboBox> cboSignatureHash;
+//			NN<UI::GUILabel> lblSignaturePayloadFile;
+//			NN<UI::GUITextBox> txtSignaturePayloadFile;
+//			NN<UI::GUIButton> btnSignature;
+//			NN<UI::GUILabel> lblSiguatureValue;
+//			NN<UI::GUITextBox> txtSignatureValue;
 
 			NN<UI::GUITabPage> tpEncrypt;
 			NN<UI::GUILabel> lblEncryptInputType;
@@ -77,7 +77,7 @@ namespace SSWR
 			static void __stdcall OnEncryptEncryptClicked(AnyType userObj);
 			static void __stdcall OnEncryptDecryptClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
-			UOSInt ParseSignature(Text::PString *s, UInt8 *sign);
+			UOSInt ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> sign);
 			Optional<Crypto::Cert::X509Key> GetNewKey();
 		public:
 			AVIRASN1DataForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Net::ASN1Data> asn1);

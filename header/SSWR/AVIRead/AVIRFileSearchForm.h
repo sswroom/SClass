@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnFilesDblClk(AnyType userObj, UOSInt itemIndex);
 
 			void ClearFiles();
-			void FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, const UInt8 *searchBuff, UOSInt searchLen);
+			void FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, UnsafeArray<const UInt8> searchBuff, UOSInt searchLen);
 		public:
 			AVIRFileSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileSearchForm();

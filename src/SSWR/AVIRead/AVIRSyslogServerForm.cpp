@@ -8,9 +8,10 @@
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSyslogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSyslogServerForm>();
-	if (me->svr)
+	NN<Net::SyslogServer> svr;
+	if (me->svr.SetTo(svr))
 	{
-		DEL_CLASS(me->svr);
+		svr.Delete();
 		me->svr = 0;
 		me->txtPort->SetReadOnly(false);
 	}
@@ -25,16 +26,16 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(AnyType userObj
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("LogSvr"));
-			NEW_CLASS(me->svr, Net::SyslogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), me->core->GetLog(), false));
-			if (me->svr->IsError())
+			NEW_CLASSNN(svr, Net::SyslogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), me->core->GetLog(), false));
+			if (svr->IsError())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in listening the port"), CSTR("Error"), me);
-				DEL_CLASS(me->svr);
-				me->svr = 0;
+				svr.Delete();
 			}
 			else
 			{
-				me->svr->HandleClientLog(OnClientLog, me);
+				me->svr = svr;
+				svr->HandleClientLog(OnClientLog, me);
 				me->txtPort->SetReadOnly(true);
 			}
 		}
@@ -65,21 +66,21 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(AnyType userObj,
 {
 	NN<SSWR::AVIRead::AVIRSyslogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSyslogServerForm>();
 	NN<IPLog> ipLog;
+	NN<Text::String> s;
 	Sync::MutexUsage mutUsage(me->ipMut);
 	if (!me->ipMap.Get(ip).SetTo(ipLog))
 	{
-		ipLog = MemAllocNN(IPLog);
+		NEW_CLASSNN(ipLog, IPLog());
 		ipLog->ip = ip;
-		NEW_CLASS(ipLog->logMessage, Data::ArrayListStringNN());
 		me->ipMap.Put(ip, ipLog);
 		me->ipListUpd = true;
 	}
 
-	while (ipLog->logMessage->GetCount() >= 100)
+	while (ipLog->logMessage.GetCount() >= 100)
 	{
-		OPTSTR_DEL(ipLog->logMessage->RemoveAt(0));
+		if (ipLog->logMessage.RemoveAt(0).SetTo(s)) s->Release();
 	}
-	ipLog->logMessage->Add(Text::String::New(message));
+	ipLog->logMessage.Add(Text::String::New(message));
 	if (me->currIP == ip)
 	{
 		me->msgListUpd = true;
@@ -115,10 +116,10 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(AnyType userObj)
 		me->lbLog->ClearItems();
 		if (me->ipMap.Get(me->currIP).SetTo(ipLog))
 		{
-			i = ipLog->logMessage->GetCount();
+			i = ipLog->logMessage.GetCount();
 			while (i-- > 0)
 			{
-				me->lbLog->AddItem(Text::String::OrEmpty(ipLog->logMessage->GetItem(i)), 0);
+				me->lbLog->AddItem(ipLog->logMessage.GetItemNoCheck(i), 0);
 			}
 		}
 		mutUsage.EndUse();
@@ -165,21 +166,15 @@ SSWR::AVIRead::AVIRSyslogServerForm::AVIRSyslogServerForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 {
-	SDEL_CLASS(this->svr);
+	this->svr.Delete();
 
 	NN<IPLog> ipLog;
 	UOSInt i = this->ipMap.GetCount();
-	UOSInt j;
 	while (i-- > 0)
 	{
 		ipLog = this->ipMap.GetItemNoCheck(i);
-		j = ipLog->logMessage->GetCount();
-		while (j-- > 0)
-		{
-			OPTSTR_DEL(ipLog->logMessage->GetItem(j));
-		}
-		DEL_CLASS(ipLog->logMessage);
-		MemFreeNN(ipLog);
+		ipLog->logMessage.FreeAll();
+		ipLog.Delete();
 	}
 }
 

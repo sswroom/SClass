@@ -18,7 +18,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 	Math::RectAreaDbl bounds;
 	NN<Media::ImageList> imgList;
 	NN<Media::SharedImage> shimg;
-	CachedImage *cimg;
+	NN<CachedImage> cimg;
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -34,10 +34,9 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 			while (!stat->toStop)
 			{
 				Sync::MutexUsage mutUsage(stat->me->taskMut);
-				cimg = (CachedImage*)stat->me->taskQueued.Get();
-				mutUsage.EndUse();
-				if (cimg == 0)
+				if (!stat->me->taskQueued.Get().GetOpt<CachedImage>().SetTo(cimg))
 					break;
+				mutUsage.EndUse();
 
 				if (cimg->isCancel)
 				{

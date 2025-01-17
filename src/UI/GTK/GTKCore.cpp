@@ -73,7 +73,7 @@ NN<Media::DrawEngine> UI::GTK::GTKCore::CreateDrawEngine()
 	return deng;
 };
 
-Double UI::GTK::GTKCore::GetMagnifyRatio(MonitorHandle *hMonitor)
+Double UI::GTK::GTKCore::GetMagnifyRatio(Optional<MonitorHandle> hMonitor)
 {
 	Double v = gdk_screen_get_resolution(gdk_screen_get_default()) / 96.0;
 	if (v <= 0)
@@ -166,25 +166,21 @@ Math::Coord2D<OSInt> UI::GTK::GTKCore::GetCursorPos()
 #endif
 }
 
-void UI::GTK::GTKCore::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
+void UI::GTK::GTKCore::SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot)
 {
 }
 
-void UI::GTK::GTKCore::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
+void UI::GTK::GTKCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi)
 {
 	if (this->monMgr)
 	{
-		if (hdpi)
-			*hdpi = this->monMgr->GetMonitorHDPI(hMonitor);
-		if (ddpi)
-			*ddpi = this->monMgr->GetMonitorDDPI(hMonitor);
+		hdpi.Set(this->monMgr->GetMonitorHDPI(hMonitor));
+		ddpi.Set(this->monMgr->GetMonitorDDPI(hMonitor));
 	}
 	else
 	{
-		if (hdpi)
-			*hdpi = 96.0;
-		if (ddpi)
-			*ddpi = 96.0;
+		hdpi.Set(96.0);
+		ddpi.Set(96.0);
 	}
 }
 

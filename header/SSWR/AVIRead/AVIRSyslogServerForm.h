@@ -23,11 +23,11 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 ip;
-				Data::ArrayListStringNN *logMessage;
+				Data::ArrayListStringNN logMessage;
 			} IPLog;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::SyslogServer *svr;
+			Optional<Net::SyslogServer> svr;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblPort;

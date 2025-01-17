@@ -20,10 +20,10 @@ namespace SSWR
 			struct ConvertSess
 			{
 				Sync::Mutex mut;
-				IO::FileExporter *exporter;
+				NN<IO::FileExporter> exporter;
 				Int32 quality;
 				Bool succ;
-				Text::String *errMsg;
+				Optional<Text::String> errMsg;
 			};
 
 			enum class ThreadStatus
@@ -36,13 +36,13 @@ namespace SSWR
 			struct ThreadState
 			{
 				ThreadStatus status;
-				AVIRImageBatchConvForm *me;
-				Sync::Event *evt;
-				ConvertSess *sess;
+				NN<AVIRImageBatchConvForm> me;
+				NN<Sync::Event> evt;
+				NN<ConvertSess> sess;
 				Bool hasData;
 				Bool toStop;
-				Text::String *srcFile;
-				Text::String *destFile;
+				NN<Text::String> srcFile;
+				NN<Text::String> destFile;
 			};
 			
 		private:
@@ -59,7 +59,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSubdir;
 			NN<UI::GUIButton> btnConvert;
 			UOSInt nThreads;
-			ThreadState *threadStates;
+			UnsafeArrayOpt<ThreadState> threadStates;
 			Bool threadToStop;
 			Sync::Event threadEvt;
 
@@ -69,8 +69,8 @@ namespace SSWR
 
 			void StartThreads();
 			void StopThreads();
-			void MTConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
-			void ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
+			void MTConvertFile(NN<ConvertSess> sess, Text::CStringNN srcFile, Text::CStringNN destFile);
+			void ConvertFile(NN<ConvertSess> sess, Text::CStringNN srcFile, Text::CStringNN destFile);
 		public:
 			AVIRImageBatchConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageBatchConvForm();

@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_MONITORMGR
 #define _SM_MEDIA_MONITORMGR
 #include "Handles.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Sync/Mutex.h"
 
 namespace Media
@@ -16,16 +16,16 @@ namespace Media
 		} MonitorSetting;
 	private:
 		Sync::Mutex monMut;
-		Data::FastStringMap<MonitorSetting*> monMap;
+		Data::FastStringMapNN<MonitorSetting> monMap;
 
 	public:
 		MonitorMgr();
 		~MonitorMgr();
 
-		Double GetMonitorHDPI(MonitorHandle *hMonitor);
-		void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
-		Double GetMonitorDDPI(MonitorHandle *hMonitor);
-		void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
+		Double GetMonitorHDPI(Optional<MonitorHandle> hMonitor);
+		void SetMonitorHDPI(Optional<MonitorHandle> hMonitor, Double monitorHDPI);
+		Double GetMonitorDDPI(Optional<MonitorHandle> hMonitor);
+		void SetMonitorDDPI(Optional<MonitorHandle> hMonitor, Double monitorDDPI);
 	};
 }
 #endif

@@ -54,7 +54,7 @@ namespace SSWR
 				Data::Duration totalDurComp;
 				Double slowestSpeedUncomp;
 				Double slowestSpeedComp;
-				Text::StringBuilderUTF8 *sbError;
+				NN<Text::StringBuilderUTF8> sbError;
 			};
 		private:
 			NN<UI::GUITabControl> tcMain;
@@ -90,7 +90,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::PackageFile> packFile;
-			IO::PackageFile *rootPackFile;
+			Optional<IO::PackageFile> rootPackFile;
 			Bool packNeedDelete;
 			Optional<Text::String> initSel;
 

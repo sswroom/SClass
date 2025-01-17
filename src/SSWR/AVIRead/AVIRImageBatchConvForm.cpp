@@ -65,12 +65,12 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 	Text::CStringNN ext;
 	if (me->radFormatWebP->IsSelected())
 	{
-		NEW_CLASS(csess.exporter, Exporter::WebPExporter());
+		NEW_CLASSNN(csess.exporter, Exporter::WebPExporter());
 		ext = CSTR("webp");
 	}
 	else
 	{
-		NEW_CLASS(csess.exporter, Exporter::GUIJPGExporter());
+		NEW_CLASSNN(csess.exporter, Exporter::GUIJPGExporter());
 		ext = CSTR("jpg");
 	}
 	IO::Path::PathType pt;
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 			{
 				Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 				sptr2End = IO::Path::ReplaceExt(sptr2, ext.v, ext.leng);
-				me->MTConvertFile(&csess, CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2End));
+				me->MTConvertFile(csess, CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2End));
 			}
 			if (!csess.succ)
 			{
@@ -105,11 +105,12 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 		IO::Path::FindFileClose(sess);
 		me->StopThreads();
 	}
-	DEL_CLASS(csess.exporter);
-	if (csess.errMsg)
+	csess.exporter.Delete();
+	NN<Text::String> errMsg;
+	if (csess.errMsg.SetTo(errMsg))
 	{
-		me->ui->ShowMsgOK(csess.errMsg->ToCString(), CSTR("Image Batch Convert"), me);
-		csess.errMsg->Release();
+		me->ui->ShowMsgOK(errMsg->ToCString(), CSTR("Image Batch Convert"), me);
+		errMsg->Release();
 		csess.errMsg = 0;
 	}
 }
@@ -119,15 +120,15 @@ UInt32 __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::ThreadFunc(AnyType userO
 	NN<ThreadState> state = userObj.GetNN<ThreadState>();
 	{
 		Sync::Event evt;
-		state->evt = &evt;
+		state->evt = evt;
 		state->status = ThreadStatus::Idle;
 		state->me->threadEvt.Set();
 		while (!state->me->threadToStop || state->hasData)
 		{
 			if (state->hasData)
 			{
-				Text::String *srcFile;
-				Text::String *destFile;
+				NN<Text::String> srcFile;
+				NN<Text::String> destFile;
 				state->status = ThreadStatus::Processing;
 				state->hasData = false;
 				srcFile = state->srcFile;
@@ -149,26 +150,28 @@ UInt32 __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::ThreadFunc(AnyType userO
 
 void SSWR::AVIRead::AVIRImageBatchConvForm::StartThreads()
 {
-	if (this->threadStates)
+	UnsafeArray<ThreadState> threadStates;
+	if (this->threadStates.NotNull())
 	{
 		return;
 	}
 	this->threadToStop = false;
 	this->nThreads = Sync::ThreadUtil::GetThreadCnt();
-	this->threadStates = MemAlloc(ThreadState, this->nThreads);
+	this->threadStates = threadStates = MemAllocArr(ThreadState, this->nThreads);
 	UOSInt i = this->nThreads;
 	while (i-- > 0)
 	{
-		this->threadStates[i].status = ThreadStatus::NotStarted;
-		this->threadStates[i].hasData = false;
-		this->threadStates[i].me = this;
-		Sync::ThreadUtil::Create(ThreadFunc, &this->threadStates[i]);
+		threadStates[i].status = ThreadStatus::NotStarted;
+		threadStates[i].hasData = false;
+		threadStates[i].me = *this;
+		Sync::ThreadUtil::Create(ThreadFunc, &threadStates[i]);
 	}
 }
 
 void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 {
-	if (this->threadStates == 0)
+	UnsafeArray<ThreadState> threadStates;
+	if (!this->threadStates.SetTo(threadStates))
 	{
 		return;
 	}
@@ -176,7 +179,9 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 	UOSInt i = this->nThreads;
 	while (i-- > 0)
 	{
-		this->threadStates[i].evt->Set();
+		while (threadStates[i].status == ThreadStatus::NotStarted)
+			Sync::ThreadUtil::SleepDur(10);
+		threadStates[i].evt->Set();
 	}
 	Bool found;
 	while (true)
@@ -185,7 +190,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 		i = this->nThreads;
 		while (i-- > 0)
 		{
-			if (this->threadStates[i].status != ThreadStatus::Stopped)
+			if (threadStates[i].status != ThreadStatus::Stopped)
 			{
 				found = true;
 				break;
@@ -197,29 +202,35 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::StopThreads()
 		}
 		this->threadEvt.Wait(1000);
 	}
-	MemFree(this->threadStates);
+	MemFreeArr(threadStates);
 	this->threadStates = 0;
 }
 
-void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
+void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(NN<ConvertSess> sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
-	if (this->threadStates == 0)
+	UnsafeArray<ThreadState> threadStates;
+	if (!this->threadStates.SetTo(threadStates))
 	{
 		this->StartThreads();
+		if (!this->threadStates.SetTo(threadStates))
+		{
+			return;
+		}
 	}
+
 	Bool found = false;
 	while (true)
 	{
 		UOSInt i = this->nThreads;
 		while (i-- > 0)
 		{
-			if (this->threadStates[i].status == ThreadStatus::Idle && !this->threadStates[i].hasData)
+			if (threadStates[i].status == ThreadStatus::Idle && !threadStates[i].hasData)
 			{
-				this->threadStates[i].sess = sess;
-				this->threadStates[i].srcFile = Text::String::New(srcFile).Ptr();
-				this->threadStates[i].destFile = Text::String::New(destFile).Ptr();
-				this->threadStates[i].hasData = true;
-				this->threadStates[i].evt->Set();
+				threadStates[i].sess = sess;
+				threadStates[i].srcFile = Text::String::New(srcFile);
+				threadStates[i].destFile = Text::String::New(destFile);
+				threadStates[i].hasData = true;
+				threadStates[i].evt->Set();
 				found = true;
 				break;
 			}
@@ -230,7 +241,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Tex
 	}
 }
 
-void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
+void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(NN<ConvertSess> sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
 	Optional<Media::ImageList> imgList;
 	NN<Media::ImageList> nnimgList;
@@ -256,8 +267,8 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 				sb.Append(destFile);
 				Sync::MutexUsage mutUsage(sess->mut);
 				sess->succ = false;
-				SDEL_STRING(sess->errMsg);
-				sess->errMsg = Text::String::New(sb.ToCString()).Ptr();
+				OPTSTR_DEL(sess->errMsg);
+				sess->errMsg = Text::String::New(sb.ToCString());
 			}
 		}
 
@@ -274,8 +285,8 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 		sb.Append(srcFile);
 		Sync::MutexUsage mutUsage(sess->mut);
 		sess->succ = false;
-		SDEL_STRING(sess->errMsg);
-		sess->errMsg = Text::String::New(sb.ToCString()).Ptr();
+		OPTSTR_DEL(sess->errMsg);
+		sess->errMsg = Text::String::New(sb.ToCString());
 	}
 }
 

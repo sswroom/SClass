@@ -193,8 +193,8 @@ namespace SSWR
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> v6ansList;
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> othansList;
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> v4sansList;
-			Net::DNSProxy::TargetInfo *currTarget;
-			Net::DNSProxy *proxy;
+			Optional<Net::DNSProxy::TargetInfo> currTarget;
+			NN<Net::DNSProxy> proxy;
 			Net::WhoisHandler whois;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
@@ -228,7 +228,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			Bool IsError();
-			void SetDNSList(Data::ArrayList<UInt32> *dnsList);
+			void SetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
 			void SetDisableV6(Bool disableV6);
 			void AddBlacklist(Text::CStringNN blackList);
 		};

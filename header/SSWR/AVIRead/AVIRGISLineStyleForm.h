@@ -27,7 +27,7 @@ namespace SSWR
 			Bool changed;
 
 			NN<UI::GUIGroupBox> grpStyle;
-			SSWR::AVIRead::AVIRLineSelector *lineSelector;
+			NN<SSWR::AVIRead::AVIRLineSelector> lineSelector;
 			NN<UI::GUIPanel> pnlStyle;
 			NN<UI::GUIPanel> pnlButtons;
 
@@ -38,7 +38,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
-			UI::GUIPopupMenu *mnuLayer;
+			NN<UI::GUIPopupMenu> mnuLayer;
 
 			static void __stdcall LineSelChanged(AnyType userObj);
 			static void __stdcall AddStyleClicked(AnyType userObj);

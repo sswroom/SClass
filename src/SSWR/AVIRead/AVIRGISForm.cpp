@@ -1648,7 +1648,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::MapDrawLayer> layer;
-				if (layer.Set(frm.GetMapLayer()))
+				if (frm.GetMapLayer().SetTo(layer))
 				{
 					this->AddLayer(layer);
 				}

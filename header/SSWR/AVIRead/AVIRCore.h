@@ -84,11 +84,11 @@ namespace SSWR
 
 			void BeginLoad();
 			void EndLoad();
-			Bool LoadData(NN<IO::StreamData> data, IO::PackageFile *pkgFile);
-			Bool LoadDataType(NN<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			Bool LoadData(NN<IO::StreamData> data, Optional<IO::PackageFile> pkgFile);
+			Bool LoadDataType(NN<IO::StreamData> data, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 
 			NN<Parser::ParserList> GetParserList();
-			Map::MapManager *GetMapManager();
+			NN<Map::MapManager> GetMapManager();
 			NN<Media::ColorManager> GetColorMgr();
 			NN<Net::SocketFactory> GetSocketFactory();
 			NN<Net::TCPClientFactory> GetTCPClientFactory();
@@ -98,19 +98,19 @@ namespace SSWR
 			NN<Net::WebBrowser> GetWebBrowser();
 			NN<IO::VirtualIOPinMgr> GetVirtualIOPinMgr();
 			Optional<IO::GPIOControl> GetGPIOControl();
-			Media::AudioDevice *GetAudioDevice();
+			NN<Media::AudioDevice> GetAudioDevice();
 
 			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
 			NN<IO::LogTool> GetLog();
-			Double GetMonitorHDPI(MonitorHandle *hMonitor);
-			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
-			Double GetMonitorDDPI(MonitorHandle *hMonitor);
-			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
+			Double GetMonitorHDPI(Optional<MonitorHandle> hMonitor);
+			void SetMonitorHDPI(Optional<MonitorHandle> hMonitor, Double monitorHDPI);
+			Double GetMonitorDDPI(Optional<MonitorHandle> hMonitor);
+			void SetMonitorDDPI(Optional<MonitorHandle> hMonitor, Double monitorDDPI);
 			NN<Media::MonitorMgr> GetMonitorMgr();
 			
-			void SetAudioDeviceList(Data::ArrayListStringNN *audDevList);
-			Data::ArrayListStringNN *GetAudioDeviceList();
+			void SetAudioDeviceList(Optional<Data::ArrayListStringNN> audDevList);
+			NN<Data::ArrayListStringNN> GetAudioDeviceList();
 			Int32 GetAudioAPIType();
 			Optional<Media::IAudioRenderer> BindAudio(Optional<Media::IAudioSource> audSrc);
 

@@ -23,9 +23,9 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::Writer *writer;
-			IO::FileStream *logStream;
-			UInt8 *testBuff;
+			Optional<IO::Writer> writer;
+			Optional<IO::FileStream> logStream;
+			UnsafeArrayOpt<UInt8> testBuff;
 			Data::Timestamp testTime;
 
 			NN<UI::GUIPanel> pnlCtrl;

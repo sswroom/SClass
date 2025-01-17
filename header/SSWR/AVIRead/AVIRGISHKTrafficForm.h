@@ -22,7 +22,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
-			Map::MapDrawLayer *lyr;
+			Optional<Map::MapDrawLayer> lyr;
 
 			static void __stdcall OnRoadCenterlineClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
@@ -33,7 +33,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::MapDrawLayer *GetMapLayer();
+			Optional<Map::MapDrawLayer> GetMapLayer();
 		};
 	}
 }

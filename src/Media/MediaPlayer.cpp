@@ -141,15 +141,17 @@ void __stdcall Media::MediaPlayer::VideoCropImage(AnyType userObj, Data::Duratio
 
 void Media::MediaPlayer::ReleaseAudio()
 {
-	if (this->audioDev) this->audioDev->BindAudio(0);
+	NN<Media::AudioDevice> audioDev;
+	if (this->audioDev.SetTo(audioDev)) audioDev->BindAudio(0);
 	this->arenderer = 0;
 	SDEL_CLASS(this->currADecoder);
 }
 
 Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 syncTime)
 {
+	NN<Media::AudioDevice> audioDev;
 	Bool ret = false;
-	if (this->audioDev == 0)
+	if (!this->audioDev.SetTo(audioDev))
 	{
 		return false;
 	}
@@ -165,7 +167,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 s
 		this->currADecoder = this->adecoders.DecodeAudio(asrc);
 		if (this->currADecoder)
 		{
-			if ((this->arenderer = this->audioDev->BindAudio(this->currADecoder)).NotNull())
+			if ((this->arenderer = audioDev->BindAudio(this->currADecoder)).NotNull())
 			{
 				if (this->vrenderer.SetTo(vrenderer)) vrenderer->SetTimeDelay(syncTime);
 				this->currAStm = asrc.Ptr();
@@ -180,7 +182,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 s
 	return ret;
 }
 
-Media::MediaPlayer::MediaPlayer(NN<Media::VideoRenderer> vrenderer, Media::AudioDevice *audioDev)
+Media::MediaPlayer::MediaPlayer(NN<Media::VideoRenderer> vrenderer, Optional<Media::AudioDevice> audioDev)
 {
 	this->audioDev = audioDev;
 	this->vrenderer = vrenderer;

@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClient
 	this->pnlStyle = ui->NewPanel(this->grpStyle);
 	this->pnlStyle->SetRect(0, 0, 456, 32, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lineSelector, SSWR::AVIRead::AVIRLineSelector(ui, this->grpStyle, this->core, this->env, this->lineStyle, this->colorSess));
+	NEW_CLASSNN(this->lineSelector, SSWR::AVIRead::AVIRLineSelector(ui, this->grpStyle, this->core, this->env, this->lineStyle, this->colorSess));
 	this->lineSelector->SetRect(0, 0, 456, 120, false);
 	this->lineSelector->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lineSelector->HandleSelChg(LineSelChanged, this);
@@ -118,14 +118,14 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(Optional<UI::GUIClient
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	NEW_CLASS(this->mnuLayer, UI::GUIPopupMenu());
+	NEW_CLASSNN(this->mnuLayer, UI::GUIPopupMenu());
 	this->mnuLayer->AddItem(CSTR("&Set as default"), MNU_SET_DEFAULT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->lineSelector->SetPopupMenu(this->mnuLayer);
 }
 
 SSWR::AVIRead::AVIRGISLineStyleForm::~AVIRGISLineStyleForm()
 {
-	DEL_CLASS(this->mnuLayer);
+	this->mnuLayer.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

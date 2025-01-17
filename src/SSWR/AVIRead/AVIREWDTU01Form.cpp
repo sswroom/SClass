@@ -86,9 +86,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
-	if (me->cli)
+	if (me->cli.NotNull())
 	{
-		SDEL_CLASS(me->cli);
+		me->cli.Delete();
 		return;
 	}
 	Text::StringBuilderUTF8 sbHost;
@@ -107,14 +107,16 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Invalid port number"), CSTR("EqasyWay EW-DTU01"), me);
 		return;
 	}
-	NEW_CLASS(me->cli, Net::MQTTStaticClient(me->core->GetTCPClientFactory(), 0, sbHost.ToCString(), port, CSTR_NULL, CSTR_NULL, false, OnMQTTMessage, me, 30, 0));
-	if (me->cli->ChannelFailure())
+	NN<Net::MQTTStaticClient> cli;
+	NEW_CLASSNN(cli, Net::MQTTStaticClient(me->core->GetTCPClientFactory(), 0, sbHost.ToCString(), port, CSTR_NULL, CSTR_NULL, false, OnMQTTMessage, me, 30, 0));
+	if (cli->ChannelFailure())
 	{
 		me->ui->ShowMsgOK(CSTR("Error in connecting to MQTT server"), CSTR("EasyWay EW-DTU01"), me);
-		SDEL_CLASS(me->cli);
+		cli.Delete();
 		return;
 	}
-	me->cli->Subscribe(CSTR("/+/connect_packet/adv_publish"));
+	me->cli = cli;
+	cli->Subscribe(CSTR("/+/connect_packet/adv_publish"));
 }
 
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
@@ -207,7 +209,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIREWDTU01Form::~AVIREWDTU01Form()
 {
-	SDEL_CLASS(this->cli);
+	this->cli.Delete();
 	this->DataClear();
 }
 

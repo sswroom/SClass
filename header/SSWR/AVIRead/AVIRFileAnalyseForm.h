@@ -37,7 +37,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnTrimPadding;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::FileAnalyse::IFileAnalyse *file;
+			Optional<IO::FileAnalyse::IFileAnalyse> file;
 			UOSInt lastPackCount;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

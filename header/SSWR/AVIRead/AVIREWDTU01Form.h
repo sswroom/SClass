@@ -38,7 +38,7 @@ namespace SSWR
 			NN<UI::GUIListView> lvDevices;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::MQTTStaticClient *cli;
+			Optional<Net::MQTTStaticClient> cli;
 			Sync::Mutex dataMut;
 			Bool dataChg;
 			Data::FastMapNN<UInt64, DeviceEntry> dataMap;

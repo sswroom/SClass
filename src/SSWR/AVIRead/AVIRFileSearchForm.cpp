@@ -98,7 +98,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::ClearFiles()
 	this->fileList.Clear();
 }
 
-void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, const UInt8 *searchBuff, UOSInt searchLen)
+void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UnsafeArray<UTF8Char> dir, UnsafeArray<UTF8Char> dirEnd, UnsafeArray<const UInt8> searchBuff, UOSInt searchLen)
 {
 	UnsafeArray<UTF8Char> sptr;
 	if (dirEnd[-1] != IO::Path::PATH_SEPERATOR)

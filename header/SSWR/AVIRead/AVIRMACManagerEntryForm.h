@@ -26,9 +26,9 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
-			static OSInt __stdcall MACCompare(Net::MACInfo::MACEntry *obj1, Net::MACInfo::MACEntry *obj2);
+			static OSInt __stdcall MACCompare(NN<Net::MACInfo::MACEntry> obj1, NN<Net::MACInfo::MACEntry> obj2);
 		public:
-			AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name);
+			AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, UnsafeArray<const UInt8> mac, Text::CString name);
 			virtual ~AVIRMACManagerEntryForm();
 
 			virtual void OnMonitorChanged();

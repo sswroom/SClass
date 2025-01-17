@@ -48,7 +48,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				Double *gammaParam;
+				UnsafeArrayOpt<Double> gammaParam;
 				UInt32 gammaCnt;
 			} CameraCorr;
 
@@ -59,21 +59,21 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::Resizer::LanczosResizer8_C8 *dispResizer;
+			NN<Media::Resizer::LanczosResizer8_C8> dispResizer;
 
 			Sync::Mutex ioMut;
 			Sync::Mutex folderMut;
-			Text::String *folderPath;
+			Optional<Text::String> folderPath;
 			Bool folderChanged;
 			Sync::Event folderThreadEvt;
 			Sync::Event folderCtrlEvt;
 			Sync::Mutex imgMut;
-			Data::ICaseStringUTF8Map<ImageStatus*> imgMap;
+			Data::FastStringMapNN<ImageStatus> imgMap;
 			Bool imgMapUpdated;
 			Bool imgUpdated;
 			UInt32 previewSize;
 			UOSInt currSel;
-			ImageStatus *dispImg;
+			Optional<ImageStatus> dispImg;
 			Bool dispImgChg;
 			Sync::Mutex filterMut;
 			Media::RGBColorFilter filter;
@@ -103,9 +103,9 @@ namespace SSWR
 			void ThreadCancelTasks();
 			void EndFolder();
 			Bool GetCameraName(NN<Text::StringBuilderUTF8> sb, NN<Media::EXIFData> exif);
-			Double *GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt);
+			UnsafeArrayOpt<Double> GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt);
 		public:
-			AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, NN<Media::ColorManagerSess> colorSess);
+			AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIForm> frm, NN<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRImageControl();
 
 			virtual Text::CStringNN GetObjectClass() const;
@@ -121,15 +121,15 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 			void SetFolder(Text::CString folderPath);
-			Text::String *GetFolder();
+			Optional<Text::String> GetFolder();
 			Bool SaveSetting();
 			void SetDispImageHandler(DispImageChanged hdlr, AnyType userObj);
 			void SetProgressHandler(ProgressUpdated hdlr, AnyType userObj);
-			Optional<Media::StaticImage> LoadImage(UnsafeArray<const UTF8Char> fileName);
-			Optional<Media::StaticImage> LoadOriImage(UnsafeArray<const UTF8Char> fileName);
+			Optional<Media::StaticImage> LoadImage(Text::CStringNN fileName);
+			Optional<Media::StaticImage> LoadOriImage(Text::CStringNN fileName);
 			void ApplySetting(NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<ImageSetting> setting);
-			void UpdateImgPreview(ImageStatus *img);
-			void UpdateImgSetting(ImageSetting *setting);
+			void UpdateImgPreview(NN<ImageStatus> img);
+			void UpdateImgSetting(NN<ImageSetting> setting);
 			Bool IsLoadingDir();
 			void SetExportFormat(ExportFormat fmt);
 			UOSInt ExportSelected();

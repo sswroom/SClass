@@ -7,6 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnLogClicked(AnyType use
 {
 	NN<SSWR::AVIRead::AVIRNetworkBandwidthForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetworkBandwidthForm>();
 	NN<IO::Stream> stm;
+	NN<IO::Stream> stm2;
 	if (me->stm.SetTo(stm))
 	{
 		me->stm.Delete();
@@ -20,7 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRNetworkBandwidthForm::OnLogClicked(AnyType use
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
 	NEW_CLASSNN(stm, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	me->fs = stm;
-	NEW_CLASSOPT(me->stm, IO::BufferedOutputStream(stm, 16384));
+	NEW_CLASSNN(stm2, IO::BufferedOutputStream(stm, 16384));
+	me->stm = stm2;
+	stm2->Write(CSTR("IP,Time,RecvCnt,RecvBytes,SendCnt,SendBytes\r\n").ToByteArray());
 	me->txtLog->SetText(CSTRP(sbuff, sptr));
 }
 

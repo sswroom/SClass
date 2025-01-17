@@ -13,7 +13,7 @@ namespace Media
 			UInt32 nChannel;
 			UInt32 bitCount;
 			UInt32 soundBuffLeng;
-			UInt8 *soundBuff;
+			UnsafeArrayOpt<UInt8> soundBuff;
 			UInt32 soundBuffOfst;
 			Sync::Mutex mut;
 			Bool changed;
@@ -27,7 +27,7 @@ namespace Media
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool IsChanged();
-			Bool GetSamples(UInt8 *samples);
+			Bool GetSamples(UnsafeArray<UInt8> samples);
 		};
 	}
 }

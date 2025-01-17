@@ -7,10 +7,14 @@
 
 void Media::AudioFilter::AudioSampleRipper::ResetStatus()
 {
-	Sync::MutexUsage mutUsage(this->mut);
-	MemClear(this->soundBuff, this->soundBuffLeng);
-	this->soundBuffOfst = 0;
-	this->changed = true;
+	UnsafeArray<UInt8> soundBuff;
+	if (this->soundBuff.SetTo(soundBuff))
+	{
+		Sync::MutexUsage mutUsage(this->mut);
+		MemClear(soundBuff.Ptr(), this->soundBuffLeng);
+		this->soundBuffOfst = 0;
+		this->changed = true;
+	}
 }
 
 Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(NN<Media::IAudioSource> sourceAudio, UInt32 sampleCount) : Media::IAudioFilter(sourceAudio)
@@ -31,9 +35,10 @@ Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(NN<Media::IAudioSource>
 
 Media::AudioFilter::AudioSampleRipper::~AudioSampleRipper()
 {
-	if (this->soundBuff)
+	UnsafeArray<UInt8> soundBuff;
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		MemFree(this->soundBuff);
+		MemFreeArr(soundBuff);
 		this->soundBuff = 0;
 	}
 }
@@ -47,24 +52,27 @@ Data::Duration Media::AudioFilter::AudioSampleRipper::SeekToTime(Data::Duration 
 UOSInt Media::AudioFilter::AudioSampleRipper::ReadBlock(Data::ByteArray blk)
 {
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
+	UnsafeArray<UInt8> soundBuff;
 	UOSInt thisSize;
 	UOSInt sizeLeft;
-	Sync::MutexUsage mutUsage(this->mut);
-	sizeLeft = readSize;
-	while (sizeLeft > 0)
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		thisSize = sizeLeft;
-		if (thisSize + this->soundBuffOfst > this->soundBuffLeng)
+		Sync::MutexUsage mutUsage(this->mut);
+		sizeLeft = readSize;
+		while (sizeLeft > 0)
 		{
-			thisSize = this->soundBuffLeng - this->soundBuffOfst;
+			thisSize = sizeLeft;
+			if (thisSize + this->soundBuffOfst > this->soundBuffLeng)
+			{
+				thisSize = this->soundBuffLeng - this->soundBuffOfst;
+			}
+			MemCopyNO(&soundBuff[this->soundBuffOfst], blk.Arr().Ptr(), thisSize);
+			this->soundBuffOfst = (UInt32)(this->soundBuffOfst + thisSize) % this->soundBuffLeng;
+			sizeLeft -= thisSize;
+			blk += thisSize;
 		}
-		MemCopyNO(&this->soundBuff[this->soundBuffOfst], blk.Arr().Ptr(), thisSize);
-		this->soundBuffOfst = (UInt32)(this->soundBuffOfst + thisSize) % this->soundBuffLeng;
-		sizeLeft -= thisSize;
-		blk += thisSize;
+		this->changed = true;
 	}
-	this->changed = true;
-	mutUsage.EndUse();
 	return readSize;
 }
 
@@ -78,15 +86,20 @@ Bool Media::AudioFilter::AudioSampleRipper::IsChanged()
 	return false;
 }
 
-Bool Media::AudioFilter::AudioSampleRipper::GetSamples(UInt8 *samples)
+Bool Media::AudioFilter::AudioSampleRipper::GetSamples(UnsafeArray<UInt8> samples)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	MemCopyNO(samples, &this->soundBuff[this->soundBuffOfst], this->soundBuffLeng - this->soundBuffOfst);
-	samples += this->soundBuffLeng - this->soundBuffOfst;
-	if (this->soundBuffOfst > 0)
+	UnsafeArray<UInt8> soundBuff;
+	if (this->soundBuff.SetTo(soundBuff))
 	{
-		MemCopyNO(samples, this->soundBuff, this->soundBuffOfst);
+		MemCopyNO(samples.Ptr(), &soundBuff[this->soundBuffOfst], this->soundBuffLeng - this->soundBuffOfst);
+		samples += this->soundBuffLeng - this->soundBuffOfst;
+		if (this->soundBuffOfst > 0)
+		{
+			MemCopyNO(samples.Ptr(), soundBuff.Ptr(), this->soundBuffOfst);
+		}
+		mutUsage.EndUse();
+		return true;
 	}
-	mutUsage.EndUse();
-	return true;
+	return false;
 }

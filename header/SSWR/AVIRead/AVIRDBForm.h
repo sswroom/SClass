@@ -45,12 +45,12 @@ namespace SSWR
 			Data::ArrayListStringNN dbNames;
 			NN<DB::ReadingDB> db;
 			Bool needRelease;
-			DB::ReadingDBTool *dbt;
+			Optional<DB::ReadingDBTool> dbt;
 			IO::LogTool log;
-			Data::QueryConditions *currCond;
+			Optional<Data::QueryConditions> currCond;
 
-			IO::Writer *debugWriter;
-			IO::LogHandler *logHdlr;
+			Optional<IO::Writer> debugWriter;
+			Optional<IO::LogHandler> logHdlr;
 
 			static void __stdcall OnSchemaSelChg(AnyType userObj);
 			static void __stdcall OnTableSelChg(AnyType userObj);

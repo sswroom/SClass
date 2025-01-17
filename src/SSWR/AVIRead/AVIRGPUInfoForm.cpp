@@ -51,7 +51,7 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> p
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
-	NEW_CLASS(this->gpuMgr, IO::GPUManager());
+	NEW_CLASSNN(this->gpuMgr, IO::GPUManager());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lbGPU = ui->NewListBox(*this, false);
@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRGPUInfoForm::~AVIRGPUInfoForm()
 {
-	DEL_CLASS(this->gpuMgr);
+	this->gpuMgr.Delete();
 }
 
 void SSWR::AVIRead::AVIRGPUInfoForm::OnMonitorChanged()

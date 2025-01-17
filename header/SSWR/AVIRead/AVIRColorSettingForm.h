@@ -26,8 +26,8 @@ namespace SSWR
 			NN<Media::ColorManager> colorMgr;
 			NN<Media::MonitorColorManager> monColor;
 			Bool normalClose;
-			Text::String *monFileName;
-			MonitorHandle *hMon;
+			Optional<Text::String> monFileName;
+			Optional<MonitorHandle> hMon;
 
 			NN<UI::GUIPanel> pnlMonitor;
 			NN<UI::GUILabel> lblMonitor;
@@ -170,7 +170,7 @@ namespace SSWR
 			static void __stdcall OnYUVDefSMPTE240MChg(AnyType userObj, Bool checked);
 			
 		public:
-			AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, MonitorHandle *hMon);
+			AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<MonitorHandle> hMon);
 			virtual ~AVIRColorSettingForm();
 
 			virtual void OnMonitorChanged();

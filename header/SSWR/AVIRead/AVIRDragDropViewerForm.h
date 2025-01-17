@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRDRAGDROPVIEWERFORM
 #define _SM_SSWR_AVIREAD_AVIRDRAGDROPVIEWERFORM
+#include "Data/FastStringMapNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -14,7 +15,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::StringUTF8Map<const UTF8Char *> *dropMap;
+			Data::FastStringMapNN<Text::String> dropMap;
 
 			NN<UI::GUIListBox> lbType;
 			NN<UI::GUIHSplitter> hspMain;

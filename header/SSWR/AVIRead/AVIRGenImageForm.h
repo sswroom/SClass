@@ -25,7 +25,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnGenerate;
 			NN<UI::GUIButton> btnCancel;
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::ImageGen::ImageGenMgr *imgGenMgr;
+			NN<Media::ImageGen::ImageGenMgr> imgGenMgr;
 
 			static void __stdcall GenerateClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
@@ -35,6 +35,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

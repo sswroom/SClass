@@ -199,7 +199,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadData(NN<IO::StreamData> data, IO::PackageFile *pkgFile)
+Bool SSWR::AVIRead::AVIRCore::LoadData(NN<IO::StreamData> data, Optional<IO::PackageFile> pkgFile)
 {
 	NN<IO::ParsedObject> pobj;
 	if (this->parsers->ParseFile(data, pkgFile).SetTo(pobj))
@@ -213,7 +213,7 @@ Bool SSWR::AVIRead::AVIRCore::LoadData(NN<IO::StreamData> data, IO::PackageFile 
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadDataType(NN<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Bool SSWR::AVIRead::AVIRCore::LoadDataType(NN<IO::StreamData> data, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<IO::ParsedObject> pobj;
 	if (this->parsers->ParseFile(data, pkgFile, targetType).SetTo(pobj))
@@ -232,9 +232,9 @@ NN<Parser::ParserList> SSWR::AVIRead::AVIRCore::GetParserList()
 	return this->parsers;
 }
 
-Map::MapManager *SSWR::AVIRead::AVIRCore::GetMapManager()
+NN<Map::MapManager> SSWR::AVIRead::AVIRCore::GetMapManager()
 {
-	return &this->mapMgr;
+	return this->mapMgr;
 }
 
 NN<Media::ColorManager> SSWR::AVIRead::AVIRCore::GetColorMgr()
@@ -282,9 +282,9 @@ Optional<IO::GPIOControl> SSWR::AVIRead::AVIRCore::GetGPIOControl()
 	return this->gpioCtrl;
 }
 
-Media::AudioDevice *SSWR::AVIRead::AVIRCore::GetAudioDevice()
+NN<Media::AudioDevice> SSWR::AVIRead::AVIRCore::GetAudioDevice()
 {
-	return &this->audDevice;
+	return this->audDevice;
 }
 
 UInt32 SSWR::AVIRead::AVIRCore::GetCurrCodePage()
@@ -306,7 +306,7 @@ NN<IO::LogTool> SSWR::AVIRead::AVIRCore::GetLog()
 	return this->log;
 }
 
-Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)
+Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(Optional<MonitorHandle> hMonitor)
 {
 	if (this->forwardedUI)
 	{
@@ -318,7 +318,7 @@ Double SSWR::AVIRead::AVIRCore::GetMonitorHDPI(MonitorHandle *hMonitor)
 	}
 }
 
-void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
+void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(Optional<MonitorHandle> hMonitor, Double monitorHDPI)
 {
 	if (!this->forwardedUI)
 	{
@@ -326,7 +326,7 @@ void SSWR::AVIRead::AVIRCore::SetMonitorHDPI(MonitorHandle *hMonitor, Double mon
 	}
 }
 
-Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(MonitorHandle *hMonitor)
+Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(Optional<MonitorHandle> hMonitor)
 {
 	if (this->forwardedUI)
 	{
@@ -338,7 +338,7 @@ Double SSWR::AVIRead::AVIRCore::GetMonitorDDPI(MonitorHandle *hMonitor)
 	}
 }
 
-void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI)
+void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(Optional<MonitorHandle> hMonitor, Double monitorDDPI)
 {
 	if (!this->forwardedUI)
 	{
@@ -351,8 +351,9 @@ NN<Media::MonitorMgr> SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 	return this->monMgr;
 }
 
-void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devList)
+void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Optional<Data::ArrayListStringNN> devList)
 {
+	NN<Data::ArrayListStringNN> nndevList;
 	WChar wbuff[32];
 	UOSInt i;
 	i = this->audDevList.GetCount();
@@ -364,13 +365,13 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devLis
 	NN<IO::Registry> reg;
 	if (IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead").SetTo(reg))
 	{
-		if (devList == 0)
+		if (!devList.SetTo(nndevList))
 		{
 			reg->DelValue(L"AudioDevice0");
 		}
 		else
 		{
-			Data::ArrayIterator<NN<Text::String>> it = devList->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = nndevList->Iterator();
 			i = 0;
 			while (it.HasNext())
 			{
@@ -386,9 +387,9 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devLis
 		IO::Registry::CloseRegistry(reg);
 	}
 	this->audDevice.ClearDevices();
-	if (devList)
+	if (devList.SetTo(nndevList))
 	{
-		Data::ArrayIterator<NN<Text::String>> it = devList->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = nndevList->Iterator();
 		NN<Text::String> s;
 		while (it.HasNext())
 		{
@@ -400,9 +401,9 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devLis
 	}
 }
 
-Data::ArrayListStringNN *SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
+NN<Data::ArrayListStringNN> SSWR::AVIRead::AVIRCore::GetAudioDeviceList()
 {
-	return &this->audDevList;
+	return this->audDevList;
 }
 
 Int32 SSWR::AVIRead::AVIRCore::GetAudioAPIType()

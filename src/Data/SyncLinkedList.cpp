@@ -11,13 +11,14 @@ Data::SyncLinkedList::SyncLinkedList()
 
 Data::SyncLinkedList::~SyncLinkedList()
 {
-	Data::LinkedListItem *item;
-	Data::LinkedListItem *item2;
+	Optional<Data::LinkedListItem> item;
+	Optional<Data::LinkedListItem> item2;
+	NN<Data::LinkedListItem> nnitem;
 	item = this->firstItem;
-	while (item)
+	while (item.SetTo(nnitem))
 	{
-		item2 = item->nextItem;
-		MemFree(item);
+		item2 = nnitem->nextItem;
+		MemFreeNN(nnitem);
 		item = item2;
 	}
 	this->lastItem = 0;
@@ -26,62 +27,65 @@ Data::SyncLinkedList::~SyncLinkedList()
 
 Bool Data::SyncLinkedList::HasItems()
 {
-	return this->firstItem != 0;
+	return this->firstItem.NotNull();
 }
 
-void Data::SyncLinkedList::Put(void *item)
+void Data::SyncLinkedList::Put(AnyType item)
 {
+	NN<Data::LinkedListItem> nnitem;
+	NN<Data::LinkedListItem> lastItem;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->lastItem)
+	if (this->lastItem.SetTo(nnitem))
 	{
-		this->lastItem->nextItem = MemAlloc(Data::LinkedListItem, 1);
-		this->lastItem = this->lastItem->nextItem;
+		nnitem->nextItem = lastItem = MemAllocNN(Data::LinkedListItem);
+		this->lastItem = lastItem;
 	}
 	else
 	{
-		this->firstItem = this->lastItem = MemAlloc(Data::LinkedListItem, 1);
+		this->firstItem = this->lastItem = lastItem = MemAllocNN(Data::LinkedListItem);
 	}
-	this->lastItem->item = item;
-	this->lastItem->nextItem = 0;
+	lastItem->item = item;
+	lastItem->nextItem = 0;
 }
 
-void *Data::SyncLinkedList::Get()
+AnyType Data::SyncLinkedList::Get()
 {
-	Data::LinkedListItem *item;
-	void *obj = 0;
+	NN<Data::LinkedListItem> item;
+	AnyType obj = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->firstItem)
+	if (this->firstItem.SetTo(item))
 	{
-		item = this->firstItem;
-		if ((this->firstItem = item->nextItem) == 0)
+		if ((this->firstItem = item->nextItem).IsNull())
 		{
 			this->lastItem = 0;
 		}
 		mutUsage.EndUse();
 		obj = item->item;
-		MemFree(item);
+		MemFreeNN(item);
 	}
 	return obj;
 }
 
-void *Data::SyncLinkedList::GetNoRemove()
+AnyType Data::SyncLinkedList::GetNoRemove()
 {
-	void *obj = 0;
+	NN<Data::LinkedListItem> item;
+	AnyType obj = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->firstItem)
+	if (this->firstItem.SetTo(item))
 	{
-		obj = this->firstItem->item;
+		obj = item->item;
 	}
 	return obj;
 }
 
-void *Data::SyncLinkedList::GetLastNoRemove()
+AnyType Data::SyncLinkedList::GetLastNoRemove()
 {
-	void *obj = 0;
+	NN<Data::LinkedListItem> item;
+	AnyType obj = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->lastItem)
+	if (this->lastItem.SetTo(item))
 	{
-		obj = this->lastItem->item;
+		obj = item->item;
 	}
 	return obj;
 }
@@ -90,29 +94,30 @@ UOSInt Data::SyncLinkedList::GetCount()
 {
 	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	Data::LinkedListItem *item = this->firstItem;
-	while (item)
+	Optional<Data::LinkedListItem> item = this->firstItem;
+	NN<LinkedListItem> nnitem;
+	while (item.SetTo(nnitem))
 	{
 		cnt++;
-		item = item->nextItem;
+		item = nnitem->nextItem;
 	}
 	return cnt;
 }
 
-UOSInt Data::SyncLinkedList::IndexOf(void *item)
+UOSInt Data::SyncLinkedList::IndexOf(AnyType item)
 {
 	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
-	Data::LinkedListItem *llItem = this->firstItem;
-	while (llItem)
+	Optional<Data::LinkedListItem> llItem = this->firstItem;
+	NN<LinkedListItem> nnitem;
+	while (llItem.SetTo(nnitem))
 	{
-		if (llItem->item == item)
+		if (nnitem->item == item)
 		{
-			mutUsage.EndUse();
 			return cnt;
 		}
 		cnt++;
-		llItem = llItem->nextItem;
+		llItem = nnitem->nextItem;
 	}
 	return INVALID_INDEX;
 }

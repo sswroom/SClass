@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include <gtk/gtk.h>
 
-Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
+Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 {
-	OSInt monNum = ((OSInt)hMonitor) - 1;
+	OSInt monNum = ((OSInt)hMonitor.OrNull()) - 1;
 	GdkRectangle rect;
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
@@ -18,7 +18,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
 	GdkDisplay *display = gdk_display_get_default();
 	GdkMonitor *mon;
-	if (hMonitor == 0)
+	if (hMonitor.IsNull())
 	{
 		if (display)
 		{
@@ -48,7 +48,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 	}
 #else
 	GdkScreen *scn = gdk_screen_get_default();
-	if (hMonitor == 0)
+	if (hMonitor.IsNull())
 	{
 		monNum = gdk_screen_get_primary_monitor(scn); 
 	}

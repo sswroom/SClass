@@ -749,10 +749,11 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NN<IO::PackageFile> packFile
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
+	NN<IO::PackageFile> rootPackFile;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Package Form - "));
-	if (this->rootPackFile && packFile.Ptr() != this->rootPackFile)
+	if (this->rootPackFile.SetTo(rootPackFile) && packFile != rootPackFile)
 	{
-		sptr = this->rootPackFile->GetSourceNameObj()->ConcatTo(sptr);
+		sptr = rootPackFile->GetSourceNameObj()->ConcatTo(sptr);
 		*sptr++ = '/';
 	}
 	sptr = packFile->GetSourceNameObj()->ConcatTo(sptr);
@@ -856,7 +857,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	}
 	else
 	{
-		this->rootPackFile = packFile.Ptr();
+		this->rootPackFile = packFile;
 		this->packNeedDelete = false;
 	}
 	this->statusChg = false;
@@ -1007,7 +1008,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	{
 		this->packFile.Delete();
 	}
-	SDEL_CLASS(this->rootPackFile);
+	this->rootPackFile.Delete();
 	this->fileNames.FreeAll();
 	OPTSTR_DEL(this->statusFile);
 	this->mnuPopup.Delete();
@@ -1244,7 +1245,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			sess.totalDurComp = 0;
 			sess.slowestSpeedUncomp = 0;
 			sess.slowestSpeedComp = 0;
-			sess.sbError = &sbError;
+			sess.sbError = sbError;
 			Data::Timestamp startTime = Data::Timestamp::Now();
 			TestPackage(reader, sess, this->packFile);
 			Data::Timestamp endTime = Data::Timestamp::Now();

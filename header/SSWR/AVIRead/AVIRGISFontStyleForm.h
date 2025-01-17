@@ -35,7 +35,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnAddStyle;
 			NN<UI::GUIButton> btnRemoveStyle;
 			NN<UI::GUIButton> btnEditStyle;
-			SSWR::AVIRead::AVIRFontSelector *fsFonts;
+			NN<SSWR::AVIRead::AVIRFontSelector> fsFonts;
 
 			static void __stdcall AddStyleClicked(AnyType userObj);
 			static void __stdcall RemoveStyleClicked(AnyType userObj);

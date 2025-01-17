@@ -50,13 +50,13 @@ namespace SSWR
 			NN<Net::TCPClientFactory> clif;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			Net::WebServer::WebListener *listener;
-			Net::EthernetWebHandler *webHdlr;
-			Net::SocketMonitor *socMon;
+			Optional<Net::WebServer::WebListener> listener;
+			Optional<Net::EthernetWebHandler> webHdlr;
+			Optional<Net::SocketMonitor> socMon;
 			NN<Net::EthernetAnalyzer> analyzer;
 			Net::WhoisHandler whois;
 			Sync::Mutex plogMut;
-			IO::PacketLogWriter *plogWriter;
+			Optional<IO::PacketLogWriter> plogWriter;
 			Int32 linkType;
 			UInt32 adapterIP;
 			Bool adapterChanged;

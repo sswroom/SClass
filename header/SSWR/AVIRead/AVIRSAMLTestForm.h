@@ -24,15 +24,15 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::WebServer::SAMLHandler *samlHdlr;
-			Net::WebServer::WebListener *svr;
+			Optional<Net::WebServer::SAMLHandler> samlHdlr;
+			Optional<Net::WebServer::WebListener> svr;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			Sync::Mutex respMut;
-			Text::String *respNew;
+			Optional<Text::String> respNew;
 
 			NN<UI::GUITabControl> tcMain;
 

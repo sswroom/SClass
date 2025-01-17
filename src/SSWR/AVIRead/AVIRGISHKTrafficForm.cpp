@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRGISHKTrafficForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::MapDrawLayer *SSWR::AVIRead::AVIRGISHKTrafficForm::GetMapLayer()
+Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRGISHKTrafficForm::GetMapLayer()
 {
 	return this->lyr;
 }

@@ -18,25 +18,24 @@ Media::MonitorMgr::MonitorMgr()
 Media::MonitorMgr::~MonitorMgr()
 {
 	UOSInt i;
-	MonitorSetting *mon;
+	NN<MonitorSetting> mon;
 	i = this->monMap.GetCount();
 	while (i-- > 0)
 	{
-		mon = this->monMap.GetItem(i);
-		MemFree(mon);
+		mon = this->monMap.GetItemNoCheck(i);
+		MemFreeNN(mon);
 	}
 }
 
-Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
+Double Media::MonitorMgr::GetMonitorHDPI(Optional<MonitorHandle> hMonitor)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	NN<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
-	MonitorSetting *mon;
+	NN<MonitorSetting> mon;
 	Double hdpi;
 	Double ddpi;
 	Sync::MutexUsage mutUsage(this->monMut);
-	mon = this->monMap.GetNN(monName);
-	if (mon)
+	if (this->monMap.GetNN(monName).SetTo(mon))
 	{
 		hdpi = mon->hdpi;
 	}
@@ -142,7 +141,7 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 			}
 		}
 
-		mon = MemAlloc(MonitorSetting, 1);
+		mon = MemAllocNN(MonitorSetting);
 		mon->hdpi = hdpi;
 		mon->ddpi = ddpi;
 		this->monMap.PutNN(monName, mon);
@@ -151,22 +150,21 @@ Double Media::MonitorMgr::GetMonitorHDPI(MonitorHandle *hMonitor)
 	return hdpi;
 }
 
-void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI)
+void Media::MonitorMgr::SetMonitorHDPI(Optional<MonitorHandle> hMonitor, Double monitorHDPI)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	NN<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
 	Optional<Text::String> monDesc = monInfo.GetDesc();
 	NN<Text::String> nnmonDesc;
-	MonitorSetting *mon;
+	NN<MonitorSetting> mon;
 	Sync::MutexUsage mutUsage(this->monMut);
-	mon = this->monMap.GetNN(monName);
-	if (mon)
+	if (this->monMap.GetNN(monName).SetTo(mon))
 	{
 		mon->hdpi = monitorHDPI;
 	}
 	else
 	{
-		mon = MemAlloc(MonitorSetting, 1);
+		mon = MemAllocNN(MonitorSetting);
 		mon->hdpi = monitorHDPI;
 		mon->ddpi = 96.0;
 		this->monMap.PutNN(monName, mon);
@@ -198,15 +196,14 @@ void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHD
 	}
 }
 
-Double Media::MonitorMgr::GetMonitorDDPI(MonitorHandle *hMonitor)
+Double Media::MonitorMgr::GetMonitorDDPI(Optional<MonitorHandle> hMonitor)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	NN<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
-	MonitorSetting *mon;
+	NN<MonitorSetting> mon;
 	Double ddpi;
 	Sync::MutexUsage mutUsage(this->monMut);
-	mon = this->monMap.GetNN(monName);
-	if (mon)
+	if (this->monMap.GetNN(monName).SetTo(mon))
 	{
 		ddpi = mon->ddpi;
 		mutUsage.EndUse();
@@ -216,8 +213,7 @@ Double Media::MonitorMgr::GetMonitorDDPI(MonitorHandle *hMonitor)
 		mutUsage.EndUse();
 		GetMonitorHDPI(hMonitor);
 		mutUsage.BeginUse();
-		mon = this->monMap.GetNN(monName);
-		if (mon)
+		if (this->monMap.GetNN(monName).SetTo(mon))
 		{
 			ddpi = mon->ddpi;
 			mutUsage.EndUse();
@@ -231,22 +227,21 @@ Double Media::MonitorMgr::GetMonitorDDPI(MonitorHandle *hMonitor)
 	return ddpi;
 }
 
-void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI)
+void Media::MonitorMgr::SetMonitorDDPI(Optional<MonitorHandle> hMonitor, Double monitorDDPI)
 {
 	Media::MonitorInfo monInfo(hMonitor);
 	NN<Text::String> monName = Text::String::OrEmpty(monInfo.GetMonitorID());
 	Optional<Text::String> monDesc = monInfo.GetDesc();
 	NN<Text::String> nnmonDesc;
-	MonitorSetting *mon;
+	NN<MonitorSetting> mon;
 	Sync::MutexUsage mutUsage(this->monMut);
-	mon = this->monMap.GetNN(monName);
-	if (mon)
+	if (this->monMap.GetNN(monName).SetTo(mon))
 	{
 		mon->ddpi = monitorDDPI;
 	}
 	else
 	{
-		mon = MemAlloc(MonitorSetting, 1);
+		mon = MemAllocNN(MonitorSetting);
 		mon->hdpi = 96.0;
 		mon->ddpi = monitorDDPI;
 		this->monMap.PutNN(monName, mon);

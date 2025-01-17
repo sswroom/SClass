@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 {
 	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	NN<UI::GUIFontDialog> dlg;
-	if (me->currFontName == 0)
+	if (me->currFontName.IsNull())
 	{
 		dlg = me->ui->NewFontDialog(CSTR_NULL, 0, me->isBold, false);
 	}
@@ -19,11 +19,11 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 	NN<Text::String> s;
 	if (dlg->ShowDialog(me->hwnd) && dlg->GetFontName().SetTo(s))
 	{
-		SDEL_STRING(me->currFontName);
-		me->currFontName = s->Clone().Ptr();
+		OPTSTR_DEL(me->currFontName);
+		me->currFontName = s->Clone();
 		me->currFontSizePt = dlg->GetFontSizePt();
 		me->isBold = dlg->IsBold();
-		me->txtFontName->SetText(me->currFontName->ToCString());
+		me->txtFontName->SetText(s->ToCString());
 		me->UpdateFontPreview();
 	}
 	dlg.Delete();
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(AnyType userObj)
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> currFontName;
-	if (me->fontStyle < 0 || !currFontName.Set(me->currFontName))
+	if (me->fontStyle < 0 || !me->currFontName.SetTo(currFontName))
 		return;
 	if (me->txtStyleName->GetText(sbuff).SetTo(sptr) && sbuff[0] != 0)
 	{
@@ -114,6 +114,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	NN<Media::DrawImage> dimg;
 	NN<Media::DrawFont> f;
 	NN<Media::DrawBrush> b;
+	NN<Text::String> currFontName;
 	usz = this->pbFontPreview->GetSizeP();
 	if (this->eng->CreateImage32(usz, Media::AT_NO_ALPHA).SetTo(dimg))
 	{
@@ -129,9 +130,9 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
 		dimg->DelBrush(b);
 
-		if (this->currFontName)
+		if (this->currFontName.SetTo(currFontName))
 		{
-			f = dimg->NewFontPt(this->currFontName->ToCString(), this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
+			f = dimg->NewFontPt(currFontName->ToCString(), this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
 			sz = dimg->GetTextSize(f, CSTRP(sbuff, sptr));
 			if (this->currBuffSize > 0)
 			{
@@ -166,11 +167,11 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	{
 		this->txtStyleName->SetText(CSTR(""));
 	}
-	SDEL_STRING(this->currFontName);
+	OPTSTR_DEL(this->currFontName);
 	if (env->GetFontStyle(this->fontStyle, fontName, this->currFontSizePt, this->isBold, this->currColor, this->currBuffSize, this->currBuffColor))
 	{
-		this->currFontName = fontName->Clone().Ptr();
-		this->txtFontName->SetText(this->currFontName->ToCString());
+		this->currFontName = fontName->Clone();
+		this->txtFontName->SetText(fontName->ToCString());
 	}
 	else
 	{
@@ -195,7 +196,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 	this->colorSess->AddHandler(*this);
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
+	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcProfile, destProfile, this->colorSess.Ptr()));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText(CSTR("Edit Font Style"));
@@ -250,8 +251,8 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientCo
 SSWR::AVIRead::AVIRGISFontEditForm::~AVIRGISFontEditForm()
 {
 	this->previewImage.Delete();
-	SDEL_STRING(this->currFontName);
-	DEL_CLASS(this->colorConv);
+	OPTSTR_DEL(this->currFontName);
+	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);

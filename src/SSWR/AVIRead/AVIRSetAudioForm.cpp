@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(Optional<UI::GUIClientControl>
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayListStringNN *audDevList = this->core->GetAudioDeviceList();
+	NN<Data::ArrayListStringNN> audDevList = this->core->GetAudioDeviceList();
 	Optional<Text::String> devName = audDevList->GetItem(0);
 	NN<Text::String> s;
 	Bool found = false;

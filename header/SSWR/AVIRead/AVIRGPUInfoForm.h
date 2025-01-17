@@ -19,7 +19,7 @@ namespace SSWR
 			NN<UI::GUIListView> lvMain;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::GPUManager *gpuMgr;
+			NN<IO::GPUManager> gpuMgr;
 
 			static void __stdcall OnGPUSelChange(AnyType userObj);
 		public:
@@ -28,6 +28,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

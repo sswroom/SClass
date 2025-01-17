@@ -50,7 +50,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					if (i <= 1)
 						break;
 				}
-				frm->SetDNSList(&dnsList);
+				frm->SetDNSList(dnsList);
 			}
 
 			if (cfg->GetValue(CSTR("DisableV6")).SetTo(s) && s->ToInt32(v))

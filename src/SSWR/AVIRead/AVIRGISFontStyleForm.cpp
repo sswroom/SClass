@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClient
 	this->btnEditStyle->SetRect(181, 8, 88, 23, false);
 	this->btnEditStyle->HandleButtonClick(EditStyleClicked, this);
 
-	NEW_CLASS(this->fsFonts, SSWR::AVIRead::AVIRFontSelector(ui, this->grpStyle, this->core, this->env, fontStyle, this->colorSess));
+	NEW_CLASSNN(this->fsFonts, SSWR::AVIRead::AVIRFontSelector(ui, this->grpStyle, this->core, this->env, fontStyle, this->colorSess));
 	this->fsFonts->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->fsFonts->HandleSelChg(FontsSelectedChg, this);
 

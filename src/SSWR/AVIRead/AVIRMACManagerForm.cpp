@@ -83,7 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
 	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
-	if (!me->lvContent->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry>().SetTo(log) || log->ieLen <= 0)
+	UnsafeArray<UInt8> ieBuff;
+	if (!me->lvContent->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry>().SetTo(log) || log->ieLen <= 0 || !log->ieBuff.SetTo(ieBuff))
 	{
 		me->txtFileIE->SetText(CSTR(""));
 		return;
@@ -92,9 +93,9 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(AnyType userOb
 	UOSInt i = 0;
 	while (i < log->ieLen)
 	{
-		Net::WirelessLANIE::ToString(&log->ieBuff[i], sb);
+		Net::WirelessLANIE::ToString(&ieBuff[i], sb);
 		sb.AppendC(UTF8STRC("\r\n"));
-		i += (UOSInt)log->ieBuff[i + 1] + 2;
+		i += (UOSInt)ieBuff[i + 1] + 2;
 	}
 	me->txtFileIE->SetText(sb.ToCString());
 }
@@ -283,6 +284,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UInt8> ieBuff;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
@@ -326,9 +328,9 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 						log->freq = Text::StrToDoubleOr(sarr[3].v, 0);
 						if (i >= 7)
 						{
-							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng).Ptr();
-							log->model = Text::String::New(sarr[5].v, sarr[5].leng).Ptr();
-							log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng).Ptr();
+							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
+							log->model = Text::String::New(sarr[5].v, sarr[5].leng);
+							log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
 						}
 						else
 						{
@@ -345,7 +347,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 						}
 						if (i >= 9)
 						{
-							log->country = Text::String::New(sarr[8].v, sarr[8].leng).Ptr();
+							log->country = Text::String::New(sarr[8].v, sarr[8].leng);
 							j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
 							{
@@ -376,10 +378,10 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 						if (i >= 11)
 						{
 							log->ieLen = (UInt32)(sarr[10].leng >> 1);
-							if (log->ieLen > 0)
+							if (log->ieLen > 0 && log->ieBuff.SetTo(ieBuff))
 							{
 								log->ieBuff = MemAlloc(UInt8, log->ieLen);
-								Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
+								Text::StrHex2Bytes(sarr[10].v, ieBuff);
 							}
 							else
 							{
@@ -427,11 +429,11 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 			this->lvContent->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			sptr = Text::StrDouble(sbuff, log->freq);
 			this->lvContent->SetSubItem(i, 4, CSTRP(sbuff, sptr));
-			if (s.Set(log->manuf))
+			if (log->manuf.SetTo(s))
 				this->lvContent->SetSubItem(i, 5, s);
-			if (s.Set(log->model))
+			if (log->model.SetTo(s))
 				this->lvContent->SetSubItem(i, 6, s);
-			if (s.Set(log->serialNum))
+			if (log->serialNum.SetTo(s))
 				this->lvContent->SetSubItem(i, 7, s);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
 			{
@@ -448,7 +450,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 				pentry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
 				this->lvContent->SetSubItem(i, 10, {pentry->name, pentry->nameLen});
 			}
-			if (s.Set(log->country))
+			if (log->country.SetTo(s))
 				this->lvContent->SetSubItem(i, 11, s);
 			i++;
 		}
@@ -458,19 +460,20 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 {
+	UnsafeArray<UInt8> ieBuff;
 	UOSInt i = this->logList.GetCount();
 	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 	while (i-- > 0)
 	{
 		log = this->logList.GetItemNoCheck(i);
 		log->ssid->Release();
-		SDEL_STRING(log->manuf);
-		SDEL_STRING(log->model);
-		SDEL_STRING(log->serialNum);
-		SDEL_STRING(log->country);
-		if (log->ieBuff)
+		OPTSTR_DEL(log->manuf);
+		OPTSTR_DEL(log->model);
+		OPTSTR_DEL(log->serialNum);
+		OPTSTR_DEL(log->country);
+		if (log->ieBuff.SetTo(ieBuff))
 		{
-			MemFree(log->ieBuff);
+			MemFreeArr(ieBuff);
 		}
 		MemFreeNN(log);
 	}

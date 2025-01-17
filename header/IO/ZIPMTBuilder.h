@@ -46,8 +46,8 @@ namespace IO
 		Data::SyncLinkedList taskList;
 
 		static void __stdcall ThreadProc(NN<Sync::Thread> thread);
-		static void FreeTask(FileTask *task);
-		void AddTask(FileTask *task);
+		static void FreeTask(NN<FileTask> task);
+		void AddTask(NN<FileTask> task);
 	public:
 		ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os);
 		~ZIPMTBuilder();

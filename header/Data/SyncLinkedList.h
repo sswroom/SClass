@@ -1,33 +1,34 @@
 #ifndef _SM_DATA_SYNCLINKEDLIST
 #define _SM_DATA_SYNCLINKEDLIST
+#include "AnyType.h"
 #include "Sync/Mutex.h"
 
 namespace Data
 {
 	struct LinkedListItem
 	{
-		void *item;
-		LinkedListItem *nextItem;
+		AnyType item;
+		Optional<LinkedListItem> nextItem;
 	};
 
 	class SyncLinkedList
 	{
 	protected:
 		Sync::Mutex mut;
-		LinkedListItem *firstItem;
-		LinkedListItem *lastItem;
+		Optional<LinkedListItem> firstItem;
+		Optional<LinkedListItem> lastItem;
 
 	public:
 		SyncLinkedList();
 		~SyncLinkedList();
 
 		Bool HasItems();
-		void Put(void *item);
-		void *Get();
-		void *GetNoRemove();
-		void *GetLastNoRemove();
+		void Put(AnyType item);
+		AnyType Get();
+		AnyType GetNoRemove();
+		AnyType GetLastNoRemove();
 		UOSInt GetCount();
-		UOSInt IndexOf(void *item);
+		UOSInt IndexOf(AnyType item);
 	};
 }
 

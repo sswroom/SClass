@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 	UOSInt signLen = 128;
 	Text::StringBuilderUTF8 sb;
 	me->txtVerifySignature->GetText(sb);
-	signLen = me->ParseSignature(&sb, signBuff);
+	signLen = me->ParseSignature(sb, signBuff);
 	if (signLen == 0)
 	{
 		return;
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 	UOSInt decLen = 0;
 	Text::StringBuilderUTF8 sb;
 	me->txtVerifySignature->GetText(sb);
-	signLen = me->ParseSignature(&sb, signBuff);
+	signLen = me->ParseSignature(sb, signBuff);
 	if (signLen == 0)
 	{
 		return;
@@ -388,7 +388,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(AnyType userObj, Data
 //	}
 }
 
-UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *signBuff)
+UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> signBuff)
 {
 	UInt8 fileCont[346];
 	UOSInt signLen = 0;

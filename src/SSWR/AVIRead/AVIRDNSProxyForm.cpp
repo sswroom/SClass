@@ -1092,7 +1092,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(Optional<UI::GUIClientControl>
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
-	NEW_CLASS(this->proxy, Net::DNSProxy(this->core->GetSocketFactory(), true, this->log));
+	NEW_CLASSNN(this->proxy, Net::DNSProxy(this->core->GetSocketFactory(), true, this->log));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
 	this->AddTimer(1000, OnTimerTick, this);
 	UInt32 svrIP = this->proxy->GetServerIP();
@@ -1107,7 +1107,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::~AVIRDNSProxyForm()
 	UOSInt i;
 	UOSInt j;
 	NN<ClientInfo> cli;
-	DEL_CLASS(this->proxy);
+	this->proxy.Delete();
 	Net::DNSClient::FreeAnswers(this->v4ansList);
 	Net::DNSClient::FreeAnswers(this->v6ansList);
 	Net::DNSClient::FreeAnswers(this->othansList);
@@ -1137,7 +1137,7 @@ Bool SSWR::AVIRead::AVIRDNSProxyForm::IsError()
 	return this->proxy->IsError();
 }
 
-void SSWR::AVIRead::AVIRDNSProxyForm::SetDNSList(Data::ArrayList<UInt32> *dnsList)
+void SSWR::AVIRead::AVIRDNSProxyForm::SetDNSList(NN<Data::ArrayList<UInt32>> dnsList)
 {
 	UOSInt i;
 	UOSInt j;

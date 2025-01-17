@@ -18,10 +18,9 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
-	Text::String *path;
-	path = me->icMain->GetFolder();
+	NN<Text::String> path;
 	NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
-	if (path)
+	if (me->icMain->GetFolder().SetTo(path))
 	{
 		dlg->SetFolder(path->ToCString());
 	}
@@ -40,17 +39,17 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 	if (!fileName.SetTo(nnfileName) || nnfileName.leng == 0 || !setting.SetTo(nnsetting))
 	{
 		me->dispImage.Delete();
-		SDEL_CLASS(me->previewImage);
-		SDEL_CLASS(me->filteredImage);
+		me->previewImage.Delete();
+		me->filteredImage.Delete();
 		me->pbMain->SetImage(0, false);
 	}
 	else
 	{
-		Optional<Media::StaticImage> img = me->icMain->LoadImage(nnfileName.v);
+		Optional<Media::StaticImage> img = me->icMain->LoadImage(nnfileName);
 		me->pbMain->SetImage(0, false);
 		me->dispImage.Delete();
-		SDEL_CLASS(me->previewImage);
-		SDEL_CLASS(me->filteredImage);
+		me->previewImage.Delete();
+		me->filteredImage.Delete();
 		me->dispImage = img;
 		NN<Media::StaticImage> simg;
 		if (img.SetTo(simg))
@@ -60,7 +59,10 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 			me->resizer->SetTargetSize(sz);
 			me->resizer->SetDestProfile(simg->info.color);
 			me->previewImage = me->resizer->ProcessToNew(simg);
-			me->filteredImage = me->previewImage->CreateStaticImage().Ptr();
+			if (me->previewImage.SetTo(simg))
+			{
+				me->filteredImage = simg->CreateStaticImage();
+			}
 			me->initPos = true;
 			me->hsbBright->SetPos((UOSInt)Double2OSInt(nnsetting->brightness * 1000));
 			me->hsbContr->SetPos((UOSInt)Double2OSInt(nnsetting->contrast * 100));
@@ -98,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UO
 		setting.contrast = cvalue * 0.01;
 		setting.gamma = gvalue * 0.01;
 		setting.flags = (Int32)(hdrLev << 4);
-		me->icMain->UpdateImgSetting(&setting);
+		me->icMain->UpdateImgSetting(setting);
 		me->UpdatePreview();
 	}
 }
@@ -218,15 +220,15 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 	this->lblFolder->SetText(folder->ToCString());
 	this->pbMain->SetImage(0, false);
 	this->dispImage.Delete();
-	SDEL_CLASS(this->previewImage);
-	SDEL_CLASS(this->filteredImage);
+	this->previewImage.Delete();
+	this->filteredImage.Delete();
 }
 
 void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 {
 	NN<Media::StaticImage> filteredImage;
 	NN<Media::StaticImage> previewImage;
-	if (filteredImage.Set(this->filteredImage) && previewImage.Set(this->previewImage))
+	if (this->filteredImage.SetTo(filteredImage) && this->previewImage.SetTo(previewImage))
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
 
@@ -254,7 +256,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 	this->initPos = false;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -270,7 +272,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 	this->prgMain = ui->NewProgressBar(this->pnlCtrl, 1);
 	this->prgMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASSNN(this->icMain, SSWR::AVIRead::AVIRImageControl(ui, *this, this->core, this, this->colorSess));
+	NEW_CLASSNN(this->icMain, SSWR::AVIRead::AVIRImageControl(ui, *this, this->core, *this, this->colorSess));
 	this->icMain->SetRect(0, 0, 200, 100, false);
 	this->icMain->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->icMain->SetDispImageHandler(OnImageChanged, this);
@@ -348,9 +350,9 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRImageBatchForm::~AVIRImageBatchForm()
 {
 	this->dispImage.Delete();
-	SDEL_CLASS(this->previewImage);
-	SDEL_CLASS(this->filteredImage);
-	DEL_CLASS(this->resizer);
+	this->previewImage.Delete();
+	this->filteredImage.Delete();
+	this->resizer.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }

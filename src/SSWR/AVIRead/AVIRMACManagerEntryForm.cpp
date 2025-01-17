@@ -31,12 +31,12 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(AnyType u
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(Net::MACInfo::MACEntry *obj1, Net::MACInfo::MACEntry *obj2)
+OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(NN<Net::MACInfo::MACEntry> obj1, NN<Net::MACInfo::MACEntry> obj2)
 {
 	return Text::StrCompareFastC(obj1->name, obj1->nameLen, obj2->name, obj2->nameLen);
 }
 
-SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
+SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, UnsafeArray<const UInt8> mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MAC Entry"));
@@ -67,31 +67,32 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUI
 	UOSInt i;
 	UOSInt j;
 	UnsafeArray<Net::MACInfo::MACEntry> macList = Net::MACInfo::GetMACEntryList(i);
-	Net::MACInfo::MACEntry **macListSort = MemAlloc(Net::MACInfo::MACEntry*, i);
-	Net::MACInfo::MACEntry *lastMAC;
+	UnsafeArray<NN<Net::MACInfo::MACEntry>> macListSort = MemAllocArr(NN<Net::MACInfo::MACEntry>, i);
+	Optional<Net::MACInfo::MACEntry> lastMAC;
+	NN<Net::MACInfo::MACEntry> macEnt;
 	j = 0;
 	while (i-- > 0)
 	{
 		if (macList[i].nameLen > 0)
 		{
-			macListSort[j++] = &macList[i];;
+			macListSort[j++] = macList[i];
 		}
 	}
-	Data::Sort::ArtificialQuickSortFunc<Net::MACInfo::MACEntry*>::Sort(macListSort, MACCompare, 0, (OSInt)j - 1);
+	Data::Sort::ArtificialQuickSortFunc<NN<Net::MACInfo::MACEntry>>::Sort(macListSort, MACCompare, 0, (OSInt)j - 1);
 	this->cboName->BeginUpdate();
 	lastMAC = 0;
 	i = 0;
 	while (i < j)
 	{
-		if (lastMAC == 0 || !Text::StrEqualsC(macListSort[i]->name, macListSort[i]->nameLen, lastMAC->name, lastMAC->nameLen))
+		if (!lastMAC.SetTo(macEnt) || !Text::StrEqualsC(macListSort[i]->name, macListSort[i]->nameLen, macEnt->name, macEnt->nameLen))
 		{
-			lastMAC = macListSort[i];
-			this->cboName->AddItem({lastMAC->name, lastMAC->nameLen}, 0);
+			lastMAC = macEnt = macListSort[i];
+			this->cboName->AddItem({macEnt->name, macEnt->nameLen}, 0);
 		}
 		i++;
 	}
 	this->cboName->EndUpdate();
-	MemFree(macListSort);
+	MemFreeArr(macListSort);
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexBytes(sbuff, mac, 6, ':');

@@ -11,7 +11,7 @@ namespace Media
 	class MediaPlayer : public Media::IMediaPlayer
 	{
 	private:
-		Media::AudioDevice *audioDev;
+		Optional<Media::AudioDevice> audioDev;
 		Optional<Media::VideoRenderer> vrenderer;
 		Media::Decoder::VideoDecoderFinder vdecoders;
 		Media::Decoder::AudioDecoderFinder adecoders;
@@ -42,7 +42,7 @@ namespace Media
 		void ReleaseAudio();
 		Bool SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 syncTime);
 	public:
-		MediaPlayer(NN<Media::VideoRenderer> vrenderer, Media::AudioDevice *audioDev);
+		MediaPlayer(NN<Media::VideoRenderer> vrenderer, Optional<Media::AudioDevice> audioDev);
 		virtual ~MediaPlayer();
 
 		virtual void SetEndHandler(PBEndHandler hdlr, AnyType userObj);

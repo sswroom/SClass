@@ -20,13 +20,13 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::ColorConv *colorConv;
+			NN<Media::ColorConv> colorConv;
 			NN<Map::MapEnv> env;
 			UOSInt fontStyle;
 			Bool changed;
 			NN<Media::DrawEngine> eng;
 
-			Text::String *currFontName;
+			Optional<Text::String> currFontName;
 			Double currFontSizePt;
 			UInt32 currColor;
 			UOSInt currBuffSize;

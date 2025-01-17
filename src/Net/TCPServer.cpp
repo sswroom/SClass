@@ -290,7 +290,7 @@ UInt32 __stdcall Net::TCPServer::WorkerThread(AnyType o)
 		while (svr->socs.HasItems())
 		{
 			NN<Socket> s;
-			if (s.Set((Socket*)svr->socs.Get()))
+			if (svr->socs.Get().GetOpt<Socket>().SetTo(s))
 			{
 				str = Text::StrConcatC(buff, UTF8STRC("Client connected: "));
 				str = svr->socf->GetRemoteName(str, s).Or(str);

@@ -20,9 +20,8 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr2;
 	NN<IO::Path::FindFileSession> sess;
 	Data::DateTime currTime;
-	Data::StringUTF8Map<LogGroup*> logGrps;
-	NN<const Data::ArrayList<LogGroup*>> logGrpList;
-	LogGroup *logGrp;
+	Data::FastStringMapNN<LogGroup> logGrps;
+	NN<LogGroup> logGrp;
 	UOSInt i;
 	UOSInt j;
 	Bool succ;
@@ -63,15 +62,13 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 					logTime = Text::StrToInt32(&sbuff2[logNameSize]);
 					if (logTime > 200000 && logTime < currTime.GetYear() * 100 + currTime.GetMonth())
 					{
-						logGrp = logGrps.Get(sbuff2);
-						if (logGrp == 0)
+						if (!logGrps.GetC(Text::CStringNN(sbuff2, logNameSize + 6)).SetTo(logGrp))
 						{
-							logGrp = MemAlloc(LogGroup, 1);
-							logGrp->logName = Text::StrCopyNew(sbuff2).Ptr();
-							NEW_CLASS(logGrp->fileNames, Data::ArrayListStringNN());
-							logGrps.Put(sbuff2, logGrp);
+							NEW_CLASSNN(logGrp, LogGroup());
+							logGrp->logName = Text::String::New(sbuff2, logNameSize + 6);
+							logGrps.Put(logGrp->logName, logGrp);
 						}
-						logGrp->fileNames->Add(Text::String::NewP(sbuff, filePathEnd));
+						logGrp->fileNames.Add(Text::String::NewP(sbuff, filePathEnd));
 					}
 				}
 			}
@@ -79,19 +76,18 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 		IO::Path::FindFileClose(sess);
 	}
 
-	logGrpList = logGrps.GetValues();
 	i = 0;
-	j = logGrpList->GetCount();
+	j = logGrps.GetCount();
 	while (i < j)
 	{
-		logGrp = logGrpList->GetItem(i);
+		logGrp = logGrps.GetItemNoCheck(i);
 		succ = true;
-		filePathEnd = Text::StrConcatC(Text::StrConcat(filePath, logGrp->logName), UTF8STRC(".zip"));
+		filePathEnd = Text::StrConcatC(logGrp->logName->ConcatTo(filePath), UTF8STRC(".zip"));
 
 		{
 			IO::FileStream fs(CSTRP(sbuff, filePathEnd), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			IO::ZIPMTBuilder zip(fs, IO::ZIPOS::UNIX);
-			Data::ArrayIterator<NN<Text::String>> it = logGrp->fileNames->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = logGrp->fileNames.Iterator();
 			while (succ && it.HasNext())
 			{
 				NN<Text::String> s = it.Next();
@@ -107,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 
 		if (succ)
 		{
-			Data::ArrayIterator<NN<Text::String>> it = logGrp->fileNames->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = logGrp->fileNames.Iterator();
 			while (it.HasNext())
 			{
 				NN<Text::String> s = it.Next();
@@ -126,11 +122,10 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 		else
 		{
 			IO::Path::DeleteFile(sbuff);
-			logGrp->fileNames->FreeAll();
+			logGrp->fileNames.FreeAll();
 		}
-		Text::StrDelNew(logGrp->logName);
-		DEL_CLASS(logGrp->fileNames);
-		MemFree(logGrp);
+		logGrp->logName->Release();
+		logGrp.Delete();
 
 		i++;
 	}

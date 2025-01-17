@@ -56,8 +56,8 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(AnyType 
 			NN<Text::String> s = dlg->GetFileName();
 			if (me->monColor->SetMonProfileFile(s))
 			{
-				SDEL_STRING(me->monFileName);
-				me->monFileName = s->Clone().Ptr();
+				OPTSTR_DEL(me->monFileName);
+				me->monFileName = s->Clone();
 
 				NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 				me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));
@@ -458,7 +458,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVDefSMPTE240MChg(AnyType
 	}
 }
 
-SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, MonitorHandle *hMon) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<MonitorHandle> hMon) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Monitor Color Setting"));
 	this->SetFont(0, 0, 8.25, false);
@@ -873,7 +873,7 @@ SSWR::AVIRead::AVIRColorSettingForm::~AVIRColorSettingForm()
 	{
 		this->monColor->Load();
 	}
-	SDEL_STRING(this->monFileName);
+	OPTSTR_DEL(this->monFileName);
 }
 
 void SSWR::AVIRead::AVIRColorSettingForm::OnMonitorChanged()

@@ -71,10 +71,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(AnyType userData, Un
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	{
+		NN<IO::PacketLogWriter> plogWriter;
 		Sync::MutexUsage mutUsage(me->plogMut);
-		if (me->plogWriter)
+		if (me->plogWriter.SetTo(plogWriter))
 		{
-			me->plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
+			plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
 		}
 	}
 	me->analyzer->PacketEthernet(rawData, packetSize);
@@ -84,10 +85,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, U
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	{
+		NN<IO::PacketLogWriter> plogWriter;
 		Sync::MutexUsage mutUsage(me->plogMut);
-		if (me->plogWriter)
+		if (me->plogWriter.SetTo(plogWriter))
 		{
-			me->plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
+			plogWriter->WritePacket(Data::ByteArrayR(rawData, packetSize));
 		}
 	}
 	me->analyzer->PacketIPv4(rawData, packetSize, 0, 0);
@@ -96,12 +98,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPv4Data(AnyType userData, U
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
-	if (me->listener)
+	if (me->listener.NotNull())
 	{
-		DEL_CLASS(me->listener);
-		DEL_CLASS(me->webHdlr);
-		me->listener = 0;
-		me->webHdlr = 0;
+		me->listener.Delete();
+		me->webHdlr.Delete();
 		me->txtInfo->SetReadOnly(false);
 		return;
 	}
@@ -114,30 +114,29 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(AnyType userObj)
 		return;
 	}
 	NN<Net::EthernetWebHandler> webHdlr;
+	NN<Net::WebServer::WebListener> listener;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-	if (me->listener->IsError())
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("RAWMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	if (listener->IsError())
 	{
-		DEL_CLASS(me->listener);
+		listener.Delete();
 		webHdlr.Delete();
-		me->listener = 0;
-		me->webHdlr = 0;
 		me->ui->ShowMsgOK(CSTR("Error in listening to info port"), CSTR("RAW Monitor"), me);
 		return;
 	}
-	me->webHdlr = webHdlr.Ptr();
+	me->webHdlr = webHdlr;
+	me->listener = listener;
 	me->txtInfo->SetReadOnly(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
-	if (me->socMon)
+	if (me->socMon.NotNull())
 	{
-		DEL_CLASS(me->socMon);
-		me->socMon = 0;
+		me->socMon.Delete();
 		me->cboIP->SetEnabled(true);
-		OnPLogClicked(me.Ptr());
+		OnPLogClicked(me);
 		return;
 	}
 
@@ -149,13 +148,13 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj
 		if (me->clif->GetSocketFactory()->CreateRAWSocket().SetTo(soc))
 		{
 			me->linkType = 1;
-			NEW_CLASS(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
+			NEW_CLASSOPT(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else if (me->clif->GetSocketFactory()->CreateRAWIPv4Socket(ip).SetTo(soc))
 		{
 			me->linkType = 101;
-			NEW_CLASS(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnIPv4Data, me, 3));
+			NEW_CLASSOPT(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnIPv4Data, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else
@@ -172,16 +171,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(AnyType userObj)
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
-	if (me->plogWriter)
+	if (me->plogWriter.NotNull())
 	{
 		Sync::MutexUsage mutUsage(me->plogMut);
-		DEL_CLASS(me->plogWriter);
-		me->plogWriter = 0;
+		me->plogWriter.Delete();
 		me->txtPLog->SetText(CSTR(""));
 		me->btnPLog->SetText(CSTR("Begin Log"));
 		return;
 	}
-	if (me->socMon == 0)
+	if (me->socMon.IsNull())
 	{
 		return;
 	}
@@ -189,24 +187,25 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(AnyType userObj)
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RAW"));
 	sptr2 = sptr - 3;
 	sptr = Text::StrInt64(sptr, Data::DateTimeUtil::GetCurrTimeMillis());
+	NN<IO::PacketLogWriter> plogWriter;
 	Sync::MutexUsage mutUsage(me->plogMut);
 	if (me->cboPLog->GetSelectedIndex() == 1)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".pcapng"));
-		NEW_CLASS(me->plogWriter, IO::PcapngWriter(CSTRP(sbuff, sptr), me->linkType, CSTR("AVIRead")));
+		NEW_CLASSNN(plogWriter, IO::PcapngWriter(CSTRP(sbuff, sptr), me->linkType, CSTR("AVIRead")));
 	}
 	else
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".pcap"));
-		NEW_CLASS(me->plogWriter, IO::PcapWriter(CSTRP(sbuff, sptr), me->linkType));
+		NEW_CLASSNN(plogWriter, IO::PcapWriter(CSTRP(sbuff, sptr), me->linkType));
 	}
-	if (me->plogWriter->IsError())
+	if (plogWriter->IsError())
 	{
-		DEL_CLASS(me->plogWriter);
-		me->plogWriter = 0;
+		plogWriter.Delete();
 	}
 	else
 	{
+		me->plogWriter = plogWriter;
 		me->txtPLog->SetText(CSTRP(sptr2, sptr));
 		me->btnPLog->SetText(CSTR("End Log"));
 	}
@@ -969,7 +968,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		}
 	}
 
-	if (me->socMon || me->dataUpdated)
+	if (me->socMon.NotNull() || me->dataUpdated)
 	{
 		NN<IPTranInfo> currSel;
 		UOSInt i;
@@ -1701,17 +1700,15 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 {
-	SDEL_CLASS(this->socMon);
-	if (this->listener)
+	this->socMon.Delete();
+	if (this->listener.NotNull())
 	{
-		DEL_CLASS(this->listener);
-		DEL_CLASS(this->webHdlr);
-		this->listener = 0;
-		this->webHdlr = 0;
+		this->listener.Delete();
+		this->webHdlr.Delete();
 	}
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	SDEL_CLASS(this->plogWriter);
+	this->plogWriter.Delete();
 
 	NN<PingIPInfo> pingIPInfo;
 	UOSInt i;

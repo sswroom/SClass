@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientCont
 	this->srcImg = srcImg;
 	this->destImg = destImg;
 	this->previewCtrl = previewCtrl;
-	NEW_CLASS(this->rgbFilter, Media::RGBColorFilter(this->core->GetColorMgr()));
+	NEW_CLASSNN(this->rgbFilter, Media::RGBColorFilter(this->core->GetColorMgr()));
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
 	NN<Media::StaticImage> img;
 	if (this->srcPrevImg.SetTo(img))
@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRImageColorForm::~AVIRImageColorForm()
 {
-	DEL_CLASS(this->rgbFilter);
+	this->rgbFilter.Delete();
 	this->srcPrevImg.Delete();
 	this->destPrevImg.Delete();
 }

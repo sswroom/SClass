@@ -149,12 +149,12 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	return ret;
 }
 
-Media::DDCReader::DDCReader(AnyType hMon)
+Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 {
 	this->edid = 0;
 	this->edidSize = 0;
 	this->hMon = hMon;
-	this->edid = DDCReader_GetMonitorEDID(hMon.p, &edidSize);	
+	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
 }
 
 Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
@@ -162,7 +162,7 @@ Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 	this->edid = 0;
 	this->edidSize = 0;
 	this->hMon = 0;
-	this->edid = DDCReader_GetMonitorEDID(hMon.p, &edidSize);	
+	this->edid = DDCReader_GetMonitorEDID(hMon.OrNull(), &edidSize);	
 }
 
 Media::DDCReader::DDCReader(UnsafeArray<UInt8> edid, UOSInt edidSize)

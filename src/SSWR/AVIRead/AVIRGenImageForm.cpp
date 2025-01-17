@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl>
 
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(this->imgGenMgr, Media::ImageGen::ImageGenMgr());
+	NEW_CLASSNN(this->imgGenMgr, Media::ImageGen::ImageGenMgr());
 	i = 0;
 	j = this->imgGenMgr->GetCount();
 	while (i < j)
@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRGenImageForm::~AVIRGenImageForm()
 {
-	DEL_CLASS(this->imgGenMgr);
+	this->imgGenMgr.Delete();
 }
 
 void SSWR::AVIRead::AVIRGenImageForm::OnMonitorChanged()

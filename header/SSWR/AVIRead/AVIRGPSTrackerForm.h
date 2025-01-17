@@ -28,12 +28,12 @@ namespace SSWR
 			Bool relLocSvc;
 
 			Map::GPSTrack::GPSRecord3 recCurr;
-			Map::GPSTrack *gpsTrk;
+			Optional<Map::GPSTrack> gpsTrk;
 			Sync::Mutex recMut;
 			Bool recUpdated;
 			UOSInt recSateCnt;
 			Map::ILocationService::SateStatus recSates[32];
-			SSWR::AVIRead::IMapNavigator *mapNavi;
+			Optional<SSWR::AVIRead::IMapNavigator> mapNavi;
 			NN<Math::GeographicCoordinateSystem> wgs84;
 			Math::Coord2DDbl lastPos;
 			Double dist;
@@ -44,7 +44,7 @@ namespace SSWR
 			Bool dispIsOff;
 
 			Sync::Mutex nmeaMut;
-			Text::String **nmeaBuff;
+			UnsafeArray<Optional<Text::String>> nmeaBuff;
 			UOSInt nmeaIndex;
 			Bool nmeaUpdated;
 
@@ -154,8 +154,8 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			virtual void OnFocus();
 
-			void SetGPSTrack(Map::GPSTrack *gpsTrk);
-			void SetMapNavigator(SSWR::AVIRead::IMapNavigator *mapNavi);
+			void SetGPSTrack(Optional<Map::GPSTrack> gpsTrk);
+			void SetMapNavigator(Optional<SSWR::AVIRead::IMapNavigator> mapNavi);
 
 			void DispOffFocusLost();
 		};

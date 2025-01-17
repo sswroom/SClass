@@ -8,31 +8,22 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(AnyType userO
 	NN<Text::String> s;
 	if (me->lbType->GetSelectedItemTextNew().SetTo(s))
 	{
-		const UTF8Char *msg = me->dropMap->Get(s->v.Ptr());
-		s->Release();
-		if (msg)
+		NN<Text::String> msg;
+		if (me->dropMap.Get(s).SetTo(msg))
 		{
-			me->txtMain->SetText({msg, Text::StrCharCnt(msg)});
+			me->txtMain->SetText(msg->ToCString());
 		}
 		else
 		{
 			me->txtMain->SetText(CSTR(""));
 		}
+		s->Release();
 	}
 }
 
 void SSWR::AVIRead::AVIRDragDropViewerForm::ClearDrops()
 {
-	NN<const Data::ArrayList<const UTF8Char*>> dropList = this->dropMap->GetValues();
-	UOSInt i;
-	const UTF8Char *dropMsg;
-	i = dropList->GetCount();
-	while (i-- > 0)
-	{
-		dropMsg = dropList->GetItem(i);
-		Text::StrDelNew(dropMsg);
-	}
-	this->dropMap->Clear();
+	NNLIST_FREE_STRING(&this->dropMap);
 }
 
 SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -42,7 +33,6 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUICl
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->dropMap, Data::StringUTF8Map<const UTF8Char*>());
 
 	this->lbType = ui->NewListBox(*this, false);
 	this->lbType->SetRect(0, 0, 200, 23, false);
@@ -78,7 +68,6 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUICl
 SSWR::AVIRead::AVIRDragDropViewerForm::~AVIRDragDropViewerForm()
 {
 	ClearDrops();
-	DEL_CLASS(this->dropMap);
 }
 
 void SSWR::AVIRead::AVIRDragDropViewerForm::OnMonitorChanged()
@@ -108,11 +97,11 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(NN<UI::GUIDropData> data, O
 		sb.ClearStr();
 		if (data->GetDataText(csptr, sb))
 		{
-			this->dropMap->Put(csptr, Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr());
+			this->dropMap.PutC(Text::CStringNN::FromPtr(csptr), Text::String::New(sb.ToCString()));
 		}
 		else
 		{
-			this->dropMap->Put(csptr, Text::StrCopyNewC(UTF8STRC("Cannot get data")).Ptr());
+			this->dropMap.PutC(Text::CStringNN::FromPtr(csptr), Text::String::New(UTF8STRC("Cannot get data")));
 		}
 		this->lbType->AddItem({csptr, Text::StrCharCnt(csptr)}, 0);
 		i++;

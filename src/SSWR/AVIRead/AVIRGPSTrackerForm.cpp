@@ -12,14 +12,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, N
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Double dist;
+	NN<Map::GPSTrack> gpsTrk;
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
 	me->recSateCnt = sates.GetCount();
 	MemCopyNO(me->recSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
 	me->recUpdated = true;
-	if (me->gpsTrk && record->valid)
+	if (me->gpsTrk.SetTo(gpsTrk) && record->valid)
 	{
-		me->gpsTrk->AddRecord(record);
+		gpsTrk->AddRecord(record);
 	}
 	if (record->valid)
 	{
@@ -39,6 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Data::DateTime dt;
+	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
 
 	if (me->locSvc->IsDown() != me->lastDown)
 	{
@@ -115,12 +117,12 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 
 
 		me->recUpdated = false;
-		if (me->mapNavi && me->recCurr.valid)
+		if (me->mapNavi.SetTo(mapNavi) && me->recCurr.valid)
 		{
-			me->mapNavi->ShowMarkerDir(me->recCurr.pos, me->recCurr.heading, Math::Unit::Angle::AU_DEGREE);
-			if (me->chkAutoPan->IsChecked() && !me->mapNavi->InMap(me->recCurr.pos))
+			mapNavi->ShowMarkerDir(me->recCurr.pos, me->recCurr.heading, Math::Unit::Angle::AU_DEGREE);
+			if (me->chkAutoPan->IsChecked() && !mapNavi->InMap(me->recCurr.pos))
 			{
-				me->mapNavi->PanToMap(me->recCurr.pos);
+				mapNavi->PanToMap(me->recCurr.pos);
 			}
 		}
 		mutUsage.EndUse();
@@ -143,18 +145,19 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 	{
 		Sync::MutexUsage nmeaMutUsage(me->nmeaMut);
 		me->nmeaUpdated = false;
+		NN<Text::String> s;
 		UOSInt i = me->nmeaIndex;
 		me->lbNMEA->ClearItems();
-		if (me->nmeaBuff[i])
+		if (me->nmeaBuff[i].SetTo(s))
 		{
-			me->lbNMEA->AddItem(me->nmeaBuff[i]->ToCString(), 0);
+			me->lbNMEA->AddItem(s->ToCString(), 0);
 		}
 		i = (i + 1) & (NMEAMAXSIZE - 1);
 		while (i != me->nmeaIndex)
 		{
-			if (me->nmeaBuff[i])
+			if (me->nmeaBuff[i].SetTo(s))
 			{
-				me->lbNMEA->AddItem(me->nmeaBuff[i]->ToCString(), 0);
+				me->lbNMEA->AddItem(s->ToCString(), 0);
 			}
 			i = (i + 1) & (NMEAMAXSIZE - 1);
 		}
@@ -178,13 +181,14 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyTyp
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
-	if (me->mapNavi)
+	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	if (me->mapNavi.SetTo(mapNavi))
 	{
 		NN<Map::GPSTrack> gpsTrk;
 		NEW_CLASSNN(gpsTrk, Map::GPSTrack(CSTR("MTK_GPS"), true, 0, CSTR_NULL));
 		if (mtk->ParseLog(gpsTrk))
 		{
-			me->mapNavi->AddLayer(gpsTrk);
+			mapNavi->AddLayer(gpsTrk);
 		}
 		else
 		{
@@ -248,8 +252,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(AnyType userObj, Un
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Sync::MutexUsage mutUsage(me->nmeaMut);
-	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
-	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen).Ptr();
+	OPTSTR_DEL(me->nmeaBuff[me->nmeaIndex]);
+	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen);
 	me->nmeaIndex = (me->nmeaIndex + 1) & (NMEAMAXSIZE - 1);
 	me->nmeaUpdated = true;
 }
@@ -284,8 +288,8 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->lastDown = true;
 	this->nmeaIndex = 0;
 	this->nmeaUpdated = false;
-	this->nmeaBuff = MemAlloc(Text::String*, NMEAMAXSIZE);
-	MemClear(this->nmeaBuff, NMEAMAXSIZE * sizeof(Text::String*));
+	this->nmeaBuff = MemAllocArr(Optional<Text::String>, NMEAMAXSIZE);
+	MemClear(this->nmeaBuff.Ptr(), NMEAMAXSIZE * sizeof(Optional<Text::String>));
 	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
@@ -481,9 +485,10 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 {
 	this->locSvc->UnregisterLocationHandler(OnGPSUpdate, this);
-	if (this->mapNavi)
+	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	if (this->mapNavi.SetTo(mapNavi))
 	{
-		this->mapNavi->HideMarker();
+		mapNavi->HideMarker();
 	}
 	if (this->relLocSvc)
 	{
@@ -494,9 +499,9 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 	UOSInt i = NMEAMAXSIZE;
 	while (i-- > 0)
 	{
-		SDEL_STRING(this->nmeaBuff[i]);
+		OPTSTR_DEL(this->nmeaBuff[i]);
 	}
-	MemFree(this->nmeaBuff);
+	MemFreeArr(this->nmeaBuff);
 }
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::OnMonitorChanged()
@@ -506,34 +511,36 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::OnFocus()
 {
-	if (this->dispIsOff)
+	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	if (this->dispIsOff && this->mapNavi.SetTo(mapNavi))
 	{
 		this->dispIsOff = false;
-		this->mapNavi->ResumeUpdate();
+		mapNavi->ResumeUpdate();
 	}
 }
 
-void SSWR::AVIRead::AVIRGPSTrackerForm::SetGPSTrack(Map::GPSTrack *gpsTrk)
+void SSWR::AVIRead::AVIRGPSTrackerForm::SetGPSTrack(Optional<Map::GPSTrack> gpsTrk)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	this->gpsTrk = gpsTrk;
-	mutUsage.EndUse();
 }
 
-void SSWR::AVIRead::AVIRGPSTrackerForm::SetMapNavigator(SSWR::AVIRead::IMapNavigator *mapNavi)
+void SSWR::AVIRead::AVIRGPSTrackerForm::SetMapNavigator(Optional<SSWR::AVIRead::IMapNavigator> mapNavi)
 {
-	if (this->mapNavi)
+	NN<SSWR::AVIRead::IMapNavigator> nnmapNavi;
+	if (this->mapNavi.SetTo(nnmapNavi))
 	{
-		this->mapNavi->HideMarker();
+		nnmapNavi->HideMarker();
 	}
 	this->mapNavi = mapNavi;
-	if (this->mapNavi)
+	if (this->mapNavi.NotNull())
 	{
 	}
 }
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::DispOffFocusLost()
 {
+	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
 	if (this->dispOffClk)
 	{
 		Data::DateTime dt;
@@ -541,9 +548,9 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::DispOffFocusLost()
 		if ((dt.ToTicks() - this->dispOffTime) < 1000)
 		{
 			this->dispOffClk = false;
-			if (this->mapNavi)
+			if (this->mapNavi.SetTo(mapNavi))
 			{
-				this->mapNavi->PauseUpdate();
+				mapNavi->PauseUpdate();
 				this->dispIsOff = true;
 			}
 		}

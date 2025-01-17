@@ -38,13 +38,18 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(AnyType 
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
+	NN<IO::FileAnalyse::IFileAnalyse> file;
+	if (!me->file.SetTo(file))
+	{
+		return;
+	}
 	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
 	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	me->txtFile->GetText(sb);
 	dlg->SetFileName(sb.ToCString());
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		if (me->file->TrimPadding(dlg->GetFileName()->ToCString()))
+		if (file->TrimPadding(dlg->GetFileName()->ToCString()))
 		{
 		}
 		else
@@ -60,9 +65,10 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	if (me->file)
+	NN<IO::FileAnalyse::IFileAnalyse> file;
+	if (me->file.SetTo(file))
 	{
-		UOSInt currCnt = me->file->GetFrameCount();
+		UOSInt currCnt = file->GetFrameCount();
 		OSInt i;
 		OSInt j;
 		if (currCnt != me->lastPackCount)
@@ -118,6 +124,12 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<IO::FileAnalyse::IFileAnalyse> file;
+	if (!me->file.SetTo(file))
+	{
+		me->lbPackItems->ClearItems();
+		return;
+	}
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -127,14 +139,14 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType use
 		return;
 	i = i * PER_PAGE;
 	j = i + PER_PAGE;
-	if (j > me->file->GetFrameCount())
+	if (j > file->GetFrameCount())
 	{
-		j = me->file->GetFrameCount();
+		j = file->GetFrameCount();
 	}
 	while (i < j)
 	{
 		sb.ClearStr();
-		me->file->GetFrameName(i, sb);
+		file->GetFrameName(i, sb);
 		me->lbPackItems->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
@@ -143,6 +155,12 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType use
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<IO::FileAnalyse::IFileAnalyse> file;
+	if (!me->file.SetTo(file))
+	{
+		me->txtPack->SetText(CSTR(""));
+		return;
+	}
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = (UOSInt)me->lbPackItems->GetSelectedIndex();
 	if (i == (UOSInt)-1)
@@ -152,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType use
 	}
 	i = (UOSInt)me->lbPackItems->GetItem(i).p;
 	sb.ClearStr();
-	me->file->GetFrameDetail(i, sb);
+	file->GetFrameDetail(i, sb);
 	me->txtPack->SetText(sb.ToCString());
 }
 
@@ -162,8 +180,8 @@ Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CStringNN fileName)
 	IO::StmData::FileData fd(fileName, false);
 	if (IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd).SetTo(file))
 	{
-		SDEL_CLASS(this->file);
-		this->file = file.Ptr();
+		this->file.Delete();
+		this->file = file;
 		this->txtFile->SetText(fileName);
 		this->lastPackCount = 0;
 		this->lbPackList->ClearItems();
@@ -224,7 +242,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRFileAnalyseForm::~AVIRFileAnalyseForm()
 {
-	SDEL_CLASS(this->file);
+	this->file.Delete();
 }
 
 void SSWR::AVIRead::AVIRFileAnalyseForm::OnMonitorChanged()
