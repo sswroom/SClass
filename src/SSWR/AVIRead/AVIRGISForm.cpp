@@ -1305,7 +1305,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<Map::MapDrawLayer> lyr = litem->layer;
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 				{
-					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, NN<Map::TileMapLayer>::ConvertFrom(lyr), this));
+					NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISTileDownloadForm(0, this->ui, this->core, NN<Map::TileMapLayer>::ConvertFrom(lyr), *this));
 					this->SetCtrlForm(frm, item);
 				}
 			}

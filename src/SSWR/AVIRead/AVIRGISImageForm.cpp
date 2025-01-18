@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("&Cancel"));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));
+	NEW_CLASSNN(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));
 	this->plIcons->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->plIcons->HandleDblClk(OnOKClick, this);
 
@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->imgIndex = imgIndex;
 	this->env = env;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 	this->parsers = core->GetParserList();
 	this->UpdateImages();
 	this->plIcons->SetSelectedIndex(imgIndex);
@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRGISImageForm::~AVIRGISImageForm()
 {
-	DEL_CLASS(resizer);
+	this->resizer.Delete();
 }
 
 void SSWR::AVIRead::AVIRGISImageForm::OnMonitorChanged()

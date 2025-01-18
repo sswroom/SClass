@@ -1556,7 +1556,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 		{
 			UInt32 color;
 			Double thick;
-			UInt8 *pattern;
+			UnsafeArrayOpt<UInt8> pattern;
 			UOSInt npattern;
 			Bool found;
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern);
@@ -1612,7 +1612,7 @@ void Map::DrawMapRenderer::DrawShapes(NN<Map::DrawMapRenderer::DrawEnv> denv, NN
 		{
 			UInt32 color;
 			Double thick;
-			UInt8 *pattern;
+			UnsafeArrayOpt<UInt8> pattern;
 			UOSInt npattern;
 			Bool found;
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern);

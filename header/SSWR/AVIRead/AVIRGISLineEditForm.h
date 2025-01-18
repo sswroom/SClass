@@ -24,7 +24,7 @@ namespace SSWR
 			{
 				UInt32 color;
 				Double thick;
-				UInt8 *pattern;
+				UnsafeArrayOpt<UInt8> pattern;
 				UOSInt nPattern;
 			} LineLayer;
 

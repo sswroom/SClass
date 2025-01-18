@@ -4,7 +4,8 @@
 void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPIOStatusForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPIOStatusForm>();
-	if (me->states)
+	UnsafeArray<PinState> states;
+	if (me->states.SetTo(states))
 	{
 		Bool isHigh;
 		UOSInt pinMode;
@@ -14,15 +15,15 @@ void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(AnyType userObj)
 		{
 			pinMode = me->ctrl->GetPinMode(i);
 			isHigh = me->ctrl->IsPinHigh(i);
-			if (me->states[i].pinMode != pinMode)
+			if (states[i].pinMode != pinMode)
 			{
 				me->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, pinMode));
-				me->states[i].pinMode = pinMode;
+				states[i].pinMode = pinMode;
 			}
-			if (me->states[i].isHigh != isHigh)
+			if (states[i].isHigh != isHigh)
 			{
 				me->lvStatus->SetSubItem(i, 2, (isHigh?CSTR("1"):CSTR("0")));
-				me->states[i].isHigh = isHigh;
+				states[i].isHigh = isHigh;
 			}
 			i++;
 		}
@@ -36,7 +37,7 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientCont
 
 	this->core = core;
 	this->states = 0;
-	NEW_CLASS(this->ctrl, IO::GPIOControl());
+	NEW_CLASSNN(this->ctrl, IO::GPIOControl());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lvStatus = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
@@ -50,20 +51,21 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientCont
 	if (!this->ctrl->IsError())
 	{
 		UTF8Char sbuff[32];
+		UnsafeArray<PinState> states;
 		UnsafeArray<UTF8Char> sptr;
 		UnsafeArray<UTF8Char> sptr2;
 		UOSInt i = 0;
 		UOSInt j = this->ctrl->GetPinCount();
-		this->states = MemAlloc(SSWR::AVIRead::AVIRGPIOStatusForm::PinState, j);
+		this->states = states = MemAllocArr(SSWR::AVIRead::AVIRGPIOStatusForm::PinState, j);
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Pin "));
 		while (i < j)
 		{
 			sptr2 = Text::StrUOSInt(sptr, i);
 			this->lvStatus->AddItem(CSTRP(sbuff, sptr2), 0);
-			this->states[i].pinMode = this->ctrl->GetPinMode(i);
-			this->states[i].isHigh = this->ctrl->IsPinHigh(i);
-			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, this->states[i].pinMode));
-			this->lvStatus->SetSubItem(i, 2, (this->states[i].isHigh?CSTR("1"):CSTR("0")));
+			states[i].pinMode = this->ctrl->GetPinMode(i);
+			states[i].isHigh = this->ctrl->IsPinHigh(i);
+			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, states[i].pinMode));
+			this->lvStatus->SetSubItem(i, 2, (states[i].isHigh?CSTR("1"):CSTR("0")));
 			i++;
 		}
 	}
@@ -73,10 +75,11 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRGPIOStatusForm::~AVIRGPIOStatusForm()
 {
-	DEL_CLASS(this->ctrl);
-	if (this->states)
+	UnsafeArray<PinState> states;
+	this->ctrl.Delete();
+	if (this->states.SetTo(states))
 	{
-		MemFree(this->states);
+		MemFreeArr(states);
 		this->states = 0;
 	}
 }

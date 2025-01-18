@@ -13,14 +13,14 @@ namespace Media
 		Data::Duration storeTime;
 		Optional<Media::MediaFile> currFile;
 	protected:
-		Media::MediaPlayer *player;
-		Media::IPBControl *currPBC;
+		Optional<Media::MediaPlayer> player;
+		Optional<Media::IPBControl> currPBC;
 
 	protected:
 		virtual void OnMediaOpened();
 		virtual void OnMediaClosed();
 
-		void SetPlayer(Media::MediaPlayer *player);
+		void SetPlayer(Optional<Media::MediaPlayer> player);
 	public:
 		MediaPlayerInterface(NN<Parser::ParserList> parsers);
 		virtual ~MediaPlayerInterface();

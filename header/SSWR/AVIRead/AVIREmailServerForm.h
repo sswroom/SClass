@@ -69,8 +69,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtLog;
 			NN<UI::GUIListBox> lbLog;
 
-			Net::Email::SMTPServer *smtpSvr;
-			Net::Email::POP3Server *pop3Svr;
+			Optional<Net::Email::SMTPServer> smtpSvr;
+			Optional<Net::Email::POP3Server> pop3Svr;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			NN<Net::TCPClientFactory> clif;
@@ -87,14 +87,14 @@ namespace SSWR
 			Optional<Crypto::Cert::X509Cert> gcisSSLCert;
 			Optional<Crypto::Cert::X509File> gcisSSLKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> gcisCACerts;
-			Net::WebServer::WebListener *gcisListener;
-			Net::WebServer::GCISNotifyHandler *gcisHdlr;
+			Optional<Net::WebServer::WebListener> gcisListener;
+			Optional<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 
 			Sync::Mutex userMut;
 			Data::FastStringMap<UOSInt> userMap;
 			Data::ArrayListStringNN userList;
 
-			Net::Email::EmailStore *store;
+			NN<Net::Email::EmailStore> store;
 			UOSInt totalSize;
 			UOSInt recvSize;
 			Bool mailChanged;
@@ -125,10 +125,10 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			virtual Bool Login(Text::CStringNN user, Text::CStringNN pwd, OutParam<Int32> userId);
-			virtual UOSInt GetMessageStat(Int32 userId, UOSInt *size);
-			virtual Bool GetUnreadList(Int32 userId, Data::ArrayList<UInt32> *unreadList);
-			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info);
-			virtual Bool GetMessageContent(Int32 userId, UInt32 msgId, IO::Stream *stm);
+			virtual UOSInt GetMessageStat(Int32 userId, OutParam<UOSInt> size);
+			virtual Bool GetUnreadList(Int32 userId, NN<Data::ArrayList<UInt32>> unreadList);
+			virtual Bool GetMessageInfo(Int32 userId, UInt32 msgId, NN<MessageInfo> info);
+			virtual Bool GetMessageContent(Int32 userId, UInt32 msgId, NN<IO::Stream> stm);
 			virtual RemoveStatus RemoveMessage(Int32 userId, UInt32 msgId);
 		};
 	}

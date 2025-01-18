@@ -34,13 +34,13 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::Playlist *playlist;
-			Media::ChapterInfo *currChapInfo;
+			Optional<Media::Playlist> playlist;
+			Optional<Media::ChapterInfo> currChapInfo;
 			Int32 uOfst;
 			Int32 vOfst;
 			QualityMode qMode;
 			Bool pbEnd;
-			Net::WebServer::WebListener *listener;
+			Optional<Net::WebServer::WebListener> listener;
 
 			NN<Media::ImageFilter::BWImgFilter> bwFilter;
 			NN<Media::ImageFilter::BGImgFilter> bgFilter;
@@ -49,7 +49,7 @@ namespace SSWR
 			NN<UI::GUIMainMenu> mnu;
 			NN<UI::GUIMenu> mnuChapters;
 
-			UI::GUIForm *dbgFrm;
+			Optional<UI::GUIForm> dbgFrm;
 			NN<UI::GUITextBox> txtDebug;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

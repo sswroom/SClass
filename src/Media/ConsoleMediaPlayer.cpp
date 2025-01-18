@@ -24,9 +24,10 @@ Media::ConsoleMediaPlayer::ConsoleMediaPlayer(NN<Media::MonitorMgr> monMgr, NN<M
 
 Media::ConsoleMediaPlayer::~ConsoleMediaPlayer()
 {
-	if (this->player)
+	NN<Media::MediaPlayer> player;
+	if (this->player.SetTo(player))
 	{
-		this->player->Close();
+		player->Close();
 	}
 	this->renderer.Delete();
 	this->colorMgr->DeleteSess(this->colorSess);
@@ -35,7 +36,7 @@ Media::ConsoleMediaPlayer::~ConsoleMediaPlayer()
 
 Bool Media::ConsoleMediaPlayer::IsError()
 {
-	return this->player == 0;
+	return this->player.IsNull();
 }
 
 void Media::ConsoleMediaPlayer::SetRotateType(Media::RotateType rotateType)

@@ -13,6 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 	UOSInt j;
 	UOSInt cnt = me->exporter->GetParamCnt();
 	IO::FileExporter::ParamInfo pi;
+	NN<UI::GUIControl> ctrl;
 	Int32 val;
 	i = 0;
 	while (i < cnt)
@@ -21,7 +22,13 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 
 		if (pi.paramType == IO::FileExporter::ParamType::INT32)
 		{
-			me->ctrls[i]->GetText(sbuff);
+			if (!me->ctrls[i].SetTo(ctrl))
+			{
+				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" not found"));
+				me->ui->ShowMsgOK(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
+				return;
+			}
+			ctrl->GetText(sbuff);
 			val = Text::StrToInt32(sbuff);
 			if (!me->exporter->SetParamInt32(me->param, i, val))
 			{
@@ -35,7 +42,13 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
-			j = ((UI::GUIComboBox *)me->ctrls[i])->GetSelectedIndex();
+			if (!me->ctrls[i].SetTo(ctrl))
+			{
+				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" not found"));
+				me->ui->ShowMsgOK(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
+				return;
+			}
+			j = NN<UI::GUIComboBox>::ConvertFrom(ctrl)->GetSelectedIndex();
 			if (!me->exporter->SetParamSel(me->param, i, j))
 			{
 				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" out of range"));
@@ -71,7 +84,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 	IO::FileExporter::ParamInfo pi;
 
 	SetSize(298, (Int32)(88 + cnt * 24));
-	this->ctrls = MemAlloc(UI::GUIControl*, this->ctrlsCnt = cnt);
+	this->ctrls = MemAllocArr(Optional<UI::GUIControl>, this->ctrlsCnt = cnt);
 
 	i = 0;
 	while (i < cnt)
@@ -87,10 +100,11 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 			sptr = Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
 			txt = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
 			txt->SetRect(140, (Int32)i * 24, 120, 23, false);
-			this->ctrls[i] = txt.Ptr();
+			this->ctrls[i] = txt;
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::STRINGUTF8)
 		{
+			this->ctrls[i] = 0;
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
@@ -106,7 +120,11 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 			}
 			cbo->SetRect(140, (Int32)(i * 24), 120, 23, false);
 			cbo->SetSelectedIndex((UOSInt)this->exporter->GetParamSel(this->param, i));
-			this->ctrls[i] = cbo.Ptr();
+			this->ctrls[i] = cbo;
+		}
+		else
+		{
+			this->ctrls[i] = 0;
 		}
 		i++;
 	}
@@ -126,7 +144,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRExportParamForm::~AVIRExportParamForm()
 {
-	MemFree(this->ctrls);
+	MemFreeArr(this->ctrls);
 }
 
 void SSWR::AVIRead::AVIRExportParamForm::OnMonitorChanged()

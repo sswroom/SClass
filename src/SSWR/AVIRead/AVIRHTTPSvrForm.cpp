@@ -13,14 +13,14 @@
 SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 {
 	this->logCnt = logCnt;
-	this->entries = MemAlloc(LogEntry, this->logCnt);
+	this->entries = MemAllocArr(LogEntry, this->logCnt);
 	this->currEnt = 0;
 	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
 		this->entries[i].reqTime = 0;
-		NEW_CLASS(this->entries[i].headerName, Data::ArrayListStringNN());
-		NEW_CLASS(this->entries[i].headerVal, Data::ArrayListStringNN());
+		NEW_CLASSNN(this->entries[i].headerName, Data::ArrayListStringNN());
+		NEW_CLASSNN(this->entries[i].headerVal, Data::ArrayListStringNN());
 		this->entries[i].reqURI = 0;
 		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
 		this->entries[i].cliPort = 0;
@@ -32,13 +32,13 @@ SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
-		SDEL_STRING(this->entries[i].reqURI);
+		OPTSTR_DEL(this->entries[i].reqURI);
 		this->entries[i].headerName->FreeAll();
 		this->entries[i].headerVal->FreeAll();
-		DEL_CLASS(this->entries[i].headerName);
-		DEL_CLASS(this->entries[i].headerVal);
+		this->entries[i].headerName.Delete();
+		this->entries[i].headerVal.Delete();
 	}
-	MemFree(this->entries);
+	MemFreeArr(this->entries);
 }
 
 void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NN<Net::WebServer::IWebRequest> req)
@@ -53,8 +53,8 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NN<Net::WebServer::IWebRequest> req)
 	{
 		this->currEnt = 0;
 	}
-	SDEL_STRING(this->entries[i].reqURI);
-	this->entries[i].reqURI = req->GetRequestURI()->Clone().Ptr();
+	OPTSTR_DEL(this->entries[i].reqURI);
+	this->entries[i].reqURI = req->GetRequestURI()->Clone();
 	this->entries[i].cliAddr = req->GetClientAddr().Ptr()[0];
 	this->entries[i].cliPort = req->GetClientPort();
 	this->entries[i].reqTime = dt.ToTicks();
@@ -126,7 +126,7 @@ NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> SSWR::AVIRead::AVIRHTTPLog::GetEntry(UO
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
 		return;
 	}
@@ -178,18 +178,20 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
 		NN<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
+		NN<Net::WebServer::WebListener> svr;
 		NEW_CLASSNN(dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetOSInt(), false));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetOSInt(), false));
+		if (svr->IsError())
 		{
 			valid = false;
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			dirHdlr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("HTTP Server"), me);
 		}
 		else
 		{
-			me->dirHdlr = dirHdlr.Ptr();
+			me->svr = svr;
+			me->dirHdlr = dirHdlr;
 			sb.ClearStr();
 			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
@@ -200,32 +202,34 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 
 			if (!me->chkSkipLog->IsChecked())
 			{
-				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
-				me->svr->SetRequestLog(me->reqLog);
+				NN<IO::LogTool> log;
+				NEW_CLASSNN(log, IO::LogTool());
+				me->log = log;
+				log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+				svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
+				svr->SetRequestLog(me->reqLog);
 				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->logger = logger.Ptr();
-				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
+				me->logger = logger;
+				log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
 			if (me->chkSPKPackageFile->IsChecked())
 			{
-				me->dirHdlr->ExpandPackageFiles(me->core->GetParserList(), CSTR("*.spk"));
+				dirHdlr->ExpandPackageFiles(me->core->GetParserList(), CSTR("*.spk"));
 			}
 			if (me->chkZIPPackageFile->IsChecked())
 			{
-				me->dirHdlr->ExpandPackageFiles(me->core->GetParserList(), CSTR("*.zip"));
+				dirHdlr->ExpandPackageFiles(me->core->GetParserList(), CSTR("*.zip"));
 			}
 			if (me->chkCrossOrigin->IsChecked())
 			{
-				me->dirHdlr->SetAllowOrigin(CSTR("*"));
+				dirHdlr->SetAllowOrigin(CSTR("*"));
 			}
 			if (me->chkDownloadCnt->IsChecked())
 			{
-				me->dirHdlr->EnableStats();
+				dirHdlr->EnableStats();
 			}
-			if (!me->svr->Start())
+			if (!svr->Start())
 			{
 				valid = false;
 				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Server"), me);
@@ -235,7 +239,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 				if (port == 0)
 				{
 					sb.ClearStr();
-					sb.AppendU16(me->svr->GetListenPort());
+					sb.AppendU16(svr->GetListenPort());
 					me->txtPort->SetText(sb.ToCString());
 				}
 			}
@@ -267,24 +271,24 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 	}
 	else
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->dirHdlr);
-		SDEL_CLASS(me->log);
-		SDEL_CLASS(me->logger);
+		me->svr.Delete();
+		me->dirHdlr.Delete();
+		me->log.Delete();
+		me->logger.Delete();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
-	if (me->svr == 0)
+	if (me->svr.IsNull())
 	{
 		return;
 	}
-	SDEL_CLASS(me->svr);
-	SDEL_CLASS(me->dirHdlr);
-	SDEL_CLASS(me->log);
-	SDEL_CLASS(me->logger);
+	me->svr.Delete();
+	me->dirHdlr.Delete();
+	me->log.Delete();
+	me->logger.Delete();
 	me->txtPort->SetReadOnly(false);
 	me->txtDocDir->SetReadOnly(false);
 	me->txtLogDir->SetReadOnly(false);
@@ -318,10 +322,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 	UOSInt j;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	if (me->svr)
+	NN<Net::WebServer::WebListener> svr;
+	if (me->svr.SetTo(svr))
 	{
 		Net::WebServer::WebListener::SERVER_STATUS status;
-		me->svr->GetStatus(status);
+		svr->GetStatus(status);
 
 		if (me->lastStatus.currConn != status.currConn)
 		{
@@ -409,7 +414,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
-	sb.Append(log->reqURI);
+	sb.AppendOpt(log->reqURI);
 	sb.AppendC(UTF8STRC("\r\n\r\nHeaders:"));
 	i = 0;
 	j = log->headerName->GetCount();
@@ -472,7 +477,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 	this->lastStatus.reqCnt = 0;
 	this->lastStatus.totalRead = 0;
 	this->lastStatus.totalWrite = 0;
-	NEW_CLASS(this->reqLog, SSWR::AVIRead::AVIRHTTPLog(100));
+	NEW_CLASSNN(this->reqLog, SSWR::AVIRead::AVIRHTTPLog(100));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -629,11 +634,11 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRHTTPSvrForm::~AVIRHTTPSvrForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->dirHdlr);
-	SDEL_CLASS(this->log);
-	SDEL_CLASS(this->logger);
-	SDEL_CLASS(this->reqLog);
+	this->svr.Delete();
+	this->dirHdlr.Delete();
+	this->log.Delete();
+	this->logger.Delete();
+	this->reqLog.Delete();
 	this->ssl.Delete();
 	this->sslCert.Delete();
 	this->sslKey.Delete();

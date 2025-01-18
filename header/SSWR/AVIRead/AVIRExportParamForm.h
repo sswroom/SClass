@@ -19,7 +19,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<IO::FileExporter::ParamData> param;
 			NN<IO::FileExporter> exporter;
-			UI::GUIControl **ctrls;
+			UnsafeArray<Optional<UI::GUIControl>> ctrls;
 			UOSInt ctrlsCnt;
 
 		private:

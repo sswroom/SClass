@@ -237,7 +237,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(AnyType us
 	sptr = Net::SocketUtil::GetAddrName(sbuff, log->cliAddr, log->cliPort).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
-	sb.Append(log->reqURI);
+	sb.AppendOpt(log->reqURI);
 	sb.AppendC(UTF8STRC("\r\n\r\nHeaders:"));
 	i = 0;
 	j = log->headerName->GetCount();

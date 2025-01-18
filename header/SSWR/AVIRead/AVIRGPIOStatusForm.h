@@ -22,8 +22,8 @@ namespace SSWR
 			NN<UI::GUIListView> lvStatus;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::GPIOControl *ctrl;
-			PinState *states;
+			NN<IO::GPIOControl> ctrl;
+			UnsafeArrayOpt<PinState> states;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
@@ -32,6 +32,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

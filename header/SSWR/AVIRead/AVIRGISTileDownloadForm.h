@@ -19,12 +19,12 @@ namespace SSWR
 		private:
 			struct ThreadStat
 			{
-				AVIRGISTileDownloadForm *me;
-				Sync::Event *threadEvt;
+				NN<AVIRGISTileDownloadForm> me;
+				NN<Sync::Event> threadEvt;
 				Int32 threadStat; //0 = not running, 1 = idle, 2 = has task, 3 = toStop
 				UOSInt lyrId;
 				Math::Coord2D<Int32> imageId;
-				Map::TileMapWriter *writer;
+				Optional<Map::TileMapWriter> writer;
 				NN<Map::TileMap> tileMap;
 			};
 		private:
@@ -56,10 +56,10 @@ namespace SSWR
 			Sync::Event mainEvt;
 			Bool stopDownload;
 			UOSInt threadCnt;
-			ThreadStat *threadStat;
+			UnsafeArray<ThreadStat> threadStat;
 
 			NN<Map::TileMapLayer> lyr;
-			IMapNavigator *navi;
+			NN<IMapNavigator> navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -76,7 +76,7 @@ namespace SSWR
 			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
 			static UInt32 __stdcall ProcThread(AnyType userObj);
 		public:
-			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, IMapNavigator *navi);
+			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<IMapNavigator> navi);
 			virtual ~AVIRGISTileDownloadForm();
 
 			virtual void OnMonitorChanged();

@@ -239,7 +239,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		{
 			UOSInt mailCnt;
 			UOSInt mailSize;
-			mailCnt = this->mailCtrl->GetMessageStat(cliStatus->userId, &mailSize);
+			mailCnt = this->mailCtrl->GetMessageStat(cliStatus->userId, mailSize);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendUOSInt(mailCnt);
 			sb.AppendC(UTF8STRC(" "));
@@ -259,7 +259,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			UOSInt i;
 			UOSInt j;
 			UInt32 id;
-			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
+			if (this->mailCtrl->GetUnreadList(cliStatus->userId, unreadList))
 			{
 				Text::StringBuilderUTF8 sb;
 				Net::Email::MailController::MessageInfo info;
@@ -269,7 +269,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 				while (i < j)
 				{
 					id = unreadList.GetItem(i);
-					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, &info))
+					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, info))
 					{
 						sb.AppendU32(id + 1);
 						sb.AppendC(UTF8STRC(" "));
@@ -304,7 +304,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			else
 			{
 				Net::Email::MailController::MessageInfo info;
-				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, &info))
+				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, info))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendU32(msgIndex);
@@ -336,7 +336,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			else
 			{
 				IO::MemoryStream mstm;
-				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, &mstm))
+				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, mstm))
 				{
 					WriteMessage(cli, true, CSTR("Content follows"));
 					UOSInt buffSize;
@@ -383,7 +383,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			else
 			{
 				IO::MemoryStream mstm;
-				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, &mstm))
+				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, mstm))
 				{
 					WriteMessage(cli, true, CSTR("Content follows"));
 					Text::StringBuilderUTF8 sb;
@@ -469,7 +469,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			UOSInt i;
 			UOSInt j;
 			UInt32 id;
-			if (this->mailCtrl->GetUnreadList(cliStatus->userId, &unreadList))
+			if (this->mailCtrl->GetUnreadList(cliStatus->userId, unreadList))
 			{
 				Text::StringBuilderUTF8 sb;
 				Net::Email::MailController::MessageInfo info;
@@ -479,7 +479,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 				while (i < j)
 				{
 					id = unreadList.GetItem(i);
-					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, &info))
+					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, info))
 					{
 						sb.AppendU32(id + 1);
 						sb.AppendC(UTF8STRC(" "));
@@ -514,7 +514,7 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 			else
 			{
 				Net::Email::MailController::MessageInfo info;
-				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, &info))
+				if (this->mailCtrl->GetMessageInfo(cliStatus->userId, msgIndex - 1, info))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendU32(msgIndex);

@@ -457,7 +457,7 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<M
 	UInt32 color;
 	UOSInt layerId = 0;
 	Double thick;
-	UInt8 *pattern;
+	UnsafeArrayOpt<UInt8> pattern;
 	UOSInt npattern;
 
 	while (env->GetLineStyleLayer(lineStyle, layerId++, color, thick, pattern, npattern))

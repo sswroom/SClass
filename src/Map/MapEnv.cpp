@@ -270,7 +270,7 @@ UnsafeArrayOpt<UTF8Char> Map::MapEnv::GetLineStyleName(UOSInt index, UnsafeArray
 	}
 }
 
-Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern)
+Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, UnsafeArrayOpt<const UInt8> pattern, UOSInt npattern)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles.GetCount();
@@ -280,15 +280,17 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, co
 	}
 	NN<Map::MapEnv::LineStyleLayer> layer;
 	NN<Map::MapEnv::LineStyle> style;
+	UnsafeArray<const UInt8> nnpattern;
+	UnsafeArray<UInt8> lpattern;
 	style = this->lineStyles.GetItemNoCheck(index);
 	layer = MemAllocNN(Map::MapEnv::LineStyleLayer);
 	layer->color = color;
 	layer->thick = thick;
-	if (npattern)
+	if (npattern && pattern.SetTo(nnpattern))
 	{
-		layer->pattern = MemAlloc(UInt8, npattern);
+		layer->pattern = lpattern = MemAllocArr(UInt8, npattern);
 		layer->npattern = npattern;
-		MemCopyNO(layer->pattern, pattern, npattern);
+		MemCopyNO(lpattern.Ptr(), nnpattern.Ptr(), npattern);
 	}
 	else
 	{
@@ -299,7 +301,7 @@ Bool Map::MapEnv::AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, co
 	return true;
 }
 
-Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern)
+Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, Double thick, UnsafeArrayOpt<const UInt8> pattern, UOSInt npattern)
 {
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
@@ -308,23 +310,25 @@ Bool Map::MapEnv::ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, 
 	}
 	NN<Map::MapEnv::LineStyleLayer> layer;
 	NN<Map::MapEnv::LineStyle> style;
+	UnsafeArray<const UInt8> nnpattern;
+	UnsafeArray<UInt8> lpattern;
 	style = this->lineStyles.GetItemNoCheck(index);
 	if (style->layers.GetCount() <= layerId)
 	{
 		return false;
 	}
 	layer = style->layers.GetItemNoCheck(layerId);
-	if (layer->pattern)
+	if (layer->pattern.SetTo(lpattern))
 	{
-		MemFree(layer->pattern);
+		MemFreeArr(lpattern);
 	}
 	layer->color = color;
 	layer->thick = thick;
-	if (npattern)
+	if (npattern && pattern.SetTo(nnpattern))
 	{
-		layer->pattern = MemAlloc(UInt8, npattern);
+		layer->pattern = lpattern = MemAllocArr(UInt8, npattern);
 		layer->npattern = npattern;
-		MemCopyNO(layer->pattern, pattern, npattern);
+		MemCopyNO(lpattern.Ptr(), nnpattern.Ptr(), npattern);
 	}
 	else
 	{
@@ -344,14 +348,15 @@ Bool Map::MapEnv::RemoveLineStyleLayer(UOSInt index, UOSInt layerId)
 	}
 	NN<Map::MapEnv::LineStyleLayer> layer;
 	NN<Map::MapEnv::LineStyle> style;
+	UnsafeArray<UInt8> lpattern;
 	style = this->lineStyles.GetItemNoCheck(index);
 	if (!style->layers.RemoveAt(layerId).SetTo(layer))
 	{
 		return false;
 	}
-	if (layer->pattern)
+	if (layer->pattern.SetTo(lpattern))
 	{
-		MemFree(layer->pattern);
+		MemFreeArr(lpattern);
 	}
 	MemFreeNN(layer);
 	return true;
@@ -366,14 +371,15 @@ Bool Map::MapEnv::RemoveLineStyle(UOSInt index)
 		return false;
 	}
 	NN<Map::MapEnv::LineStyleLayer> layer;
+	UnsafeArray<UInt8> lpattern;
 	UOSInt i;
 	i = style->layers.GetCount();
 	while (i-- > 0)
 	{
 		layer = style->layers.GetItemNoCheck(i);
-		if (layer->pattern)
+		if (layer->pattern.SetTo(lpattern))
 		{
-			MemFree(layer->pattern);
+			MemFreeArr(lpattern);
 		}
 		MemFreeNN(layer);
 	}
@@ -387,7 +393,7 @@ UOSInt Map::MapEnv::GetLineStyleCount() const
 	return this->lineStyles.GetCount();
 }
 
-Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<Double> thick, OutParam<UInt8*> pattern, OutParam<UOSInt> npattern) const
+Bool Map::MapEnv::GetLineStyleLayer(UOSInt index, UOSInt layerId, OutParam<UInt32> color, OutParam<Double> thick, OutParam<UnsafeArrayOpt<UInt8>> pattern, OutParam<UOSInt> npattern) const
 {
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)

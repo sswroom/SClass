@@ -27,21 +27,21 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::MediaPlayer *player;
+			NN<Media::MediaPlayer> player;
 			Optional<Media::MediaFile> currFile;
-			Media::Playlist *playlist;
-			Media::IPBControl *currPBC;
-			Media::ChapterInfo *currChapInfo;
+			Optional<Media::Playlist> playlist;
+			NN<Media::IPBControl> currPBC;
+			Optional<Media::ChapterInfo> currChapInfo;
 			Int32 uOfst;
 			Int32 vOfst;
 			Data::Duration storeTime;
 			QualityMode qMode;
 
-			UI::GUIVideoBoxDD *vbox;
+			NN<UI::GUIVideoBoxDD> vbox;
 			NN<UI::GUIMainMenu> mnu;
 			NN<UI::GUIMenu> mnuChapters;
 
-			UI::GUIForm *dbgFrm;
+			Optional<UI::GUIForm> dbgFrm;
 			NN<UI::GUITextBox> txtDebug;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

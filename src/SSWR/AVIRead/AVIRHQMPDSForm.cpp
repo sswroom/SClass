@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::
 void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
-	if (me->dbgFrm)
+	if (me->dbgFrm.NotNull())
 	{
 		Text::StringBuilderUTF8 sb;
 		Media::VideoRenderer::RendererStatus2 dbg;
@@ -280,6 +280,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CStringNN fileName, IO::Parse
 
 Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 {
+	NN<Media::ChapterInfo> currChapInfo;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
@@ -287,7 +288,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 
 	this->player->LoadMedia(0);
 	this->currFile.Delete();
-	SDEL_CLASS(this->playlist);
+	this->playlist.Delete();
 	this->currFile = mf;
 	sptr = mf->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3DS - ")));
 	this->SetText(CSTRP(sbuff, sptr));
@@ -301,9 +302,9 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 
 	this->currChapInfo = mf->GetChapterInfo();
 	this->mnuChapters->ClearItems();
-	if (this->currChapInfo)
+	if (this->currChapInfo.SetTo(currChapInfo))
 	{
-		i = this->currChapInfo->GetChapterCnt();
+		i = currChapInfo->GetChapterCnt();
 		if (i > 0)
 		{
 			j = 0;
@@ -316,7 +317,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(NN<Media::MediaFile> mf)
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-				sptr = Text::String::OrEmpty(this->currChapInfo->GetChapterName(j))->ConcatTo(sptr);
+				sptr = Text::String::OrEmpty(currChapInfo->GetChapterName(j))->ConcatTo(sptr);
 				this->mnuChapters->AddItem(CSTRP(sbuff, sptr), (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
@@ -343,7 +344,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 	this->player->LoadMedia(0);
 	this->storeTime = -1;
 	this->currFile.Delete();
-	SDEL_CLASS(this->playlist);
+	this->playlist.Delete();
 	this->currPBC = this->player;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
@@ -524,15 +525,15 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
+		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_UQ)
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
+		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 6, 2));
 	}
 	else
 	{
-		NEW_CLASS(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
+		NEW_CLASSNN(this->vbox, UI::GUIVideoBoxDDLQ(ui, *this, this->colorSess, 6, 2));
 	}
 
 	this->vbox->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -541,7 +542,7 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 	this->uOfst = 0;
 	this->vOfst = 0;
 
-	NEW_CLASS(this->player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
+	NEW_CLASSNN(this->player, Media::MediaPlayer(this->vbox, this->core->GetAudioDevice()));
 	this->currFile = 0;
 	CloseFile();
 
@@ -552,9 +553,10 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 SSWR::AVIRead::AVIRHQMPDSForm::~AVIRHQMPDSForm()
 {
 	this->CloseFile();
-	DEL_CLASS(this->player);
-	if (this->dbgFrm)
-		this->dbgFrm->Close();
+	this->player.Delete();
+	NN<UI::GUIForm> dbgFrm;
+	if (this->dbgFrm.SetTo(dbgFrm))
+		dbgFrm->Close();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 	this->ssl.Delete();
@@ -562,12 +564,13 @@ SSWR::AVIRead::AVIRHQMPDSForm::~AVIRHQMPDSForm()
 
 void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 {
+	NN<Media::Playlist> playlist;
 	Data::Duration currTime;
 	OSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
 		i = cmdId - MNU_PB_CHAPTERS;
-		if (this->currChapInfo)
+		if (this->currChapInfo.NotNull())
 		{
 			this->player->GotoChapter(i);
 		}
@@ -631,10 +634,10 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->currPBC->StopPlayback();
-				SDEL_CLASS(this->playlist);
-				this->playlist = dlg.GetPlaylist();
-				this->playlist->SetPlayer(this->player);
-				this->currPBC = this->playlist;
+				this->playlist.Delete();
+				this->playlist = playlist = dlg.GetPlaylist();
+				playlist->SetPlayer(this->player);
+				this->currPBC = playlist;
 			}
 		}
 		break;
@@ -652,18 +655,18 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_FILE_INFO:
-		if (this->dbgFrm == 0)
+		if (this->dbgFrm.IsNull())
 		{
 			NN<UI::GUIForm> frm;
 			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 360, ui));
-			this->dbgFrm = frm.Ptr();
+			this->dbgFrm = frm;
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
-			this->dbgFrm->SetFont(0, 0, 8.25, false);
-			this->dbgFrm->SetText(CSTR("Info"));
-			this->dbgFrm->Show();
-			this->dbgFrm->HandleFormClosed(OnDebugClosed, this);
+			frm->SetFont(0, 0, 8.25, false);
+			frm->SetText(CSTR("Info"));
+			frm->Show();
+			frm->HandleFormClosed(OnDebugClosed, this);
 		}
 		break;
 	case MNU_FILE_CLOSE:
@@ -735,7 +738,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_VIDEO_ORISIZE:
 		{
 			Math::Size2D<UOSInt> vSize;
-			if (this->player->GetVideoSize(&vSize.x, &vSize.y))
+			if (this->player->GetVideoSize(vSize.x, vSize.y))
 			{
 				Math::Size2D<UOSInt> size1;
 				Math::Size2D<UOSInt> size2;

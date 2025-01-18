@@ -11,9 +11,9 @@ void Media::MediaPlayerInterface::OnMediaClosed()
 {
 }
 
-void Media::MediaPlayerInterface::SetPlayer(Media::MediaPlayer *player)
+void Media::MediaPlayerInterface::SetPlayer(Optional<Media::MediaPlayer> player)
 {
-	SDEL_CLASS(this->player);
+	this->player.Delete();
 	this->player = player;
 	this->currPBC = player;
 }
@@ -30,7 +30,7 @@ Media::MediaPlayerInterface::MediaPlayerInterface(NN<Parser::ParserList> parsers
 Media::MediaPlayerInterface::~MediaPlayerInterface()
 {
 	this->CloseFile();
-	SDEL_CLASS(this->player);
+	this->player.Delete();
 }
 
 Bool Media::MediaPlayerInterface::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
@@ -49,6 +49,11 @@ Bool Media::MediaPlayerInterface::OpenFile(Text::CStringNN fileName, IO::ParserT
 
 Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 {
+	NN<Media::MediaPlayer> player;
+	if (!this->player.SetTo(player))
+	{
+		return false;
+	}
 	UTF8Char sbuff[1024];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
@@ -137,7 +142,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 	}
 	
 	this->currFile = mf;
-	this->player->LoadMedia(mf);
+	player->LoadMedia(mf);
 	this->currPBC = this->player;
 	this->storeTime = (UInt32)-1;
 	this->OnMediaOpened();
@@ -146,10 +151,11 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 
 void Media::MediaPlayerInterface::CloseFile()
 {
-	if (this->player && this->currFile.NotNull())
+	NN<Media::MediaPlayer> player;
+	if (this->player.SetTo(player) && this->currFile.NotNull())
 	{
-		this->player->StopPlayback();
-		this->player->LoadMedia(0);
+		player->StopPlayback();
+		player->LoadMedia(0);
 	}
 	this->storeTime = (UInt32)-1;
 	this->currFile.Delete();
@@ -164,19 +170,22 @@ Optional<Media::MediaFile> Media::MediaPlayerInterface::GetOpenedFile()
 
 Optional<Media::VideoRenderer> Media::MediaPlayerInterface::GetVideoRenderer()
 {
-	if (this->player == 0)
+	NN<Media::MediaPlayer> player;
+	if (!this->player.SetTo(player))
 		return 0;
-	return this->player->GetVideoRenderer();
+	return player->GetVideoRenderer();
 }
 
 void Media::MediaPlayerInterface::PBStart()
 {
-	if (!this->player->IsPlaying())
+	NN<Media::MediaPlayer> player;
+	NN<Media::IPBControl> currPBC;
+	if (this->player.SetTo(player) && this->currPBC.SetTo(currPBC) && !player->IsPlaying())
 	{
-		this->currPBC->StartPlayback();
+		currPBC->StartPlayback();
 		if (!this->storeTime.IsInfinity())
 		{
-			this->player->SeekTo(this->storeTime);
+			player->SeekTo(this->storeTime);
 			this->storeTime = Data::Duration::Infinity();
 		}
 	}
@@ -184,39 +193,51 @@ void Media::MediaPlayerInterface::PBStart()
 
 void Media::MediaPlayerInterface::PBStop()
 {
-	this->currPBC->StopPlayback();
-	this->storeTime = Data::Duration::Infinity();
+	NN<Media::IPBControl> currPBC;
+	if (this->currPBC.SetTo(currPBC))
+	{
+		currPBC->StopPlayback();
+		this->storeTime = Data::Duration::Infinity();
+	}
 }
 
 void Media::MediaPlayerInterface::PBPause()
 {
-	if (this->player->IsPlaying())
+	NN<Media::MediaPlayer> player;
+	NN<Media::IPBControl> currPBC;
+	if (this->player.SetTo(player) && this->currPBC.SetTo(currPBC))
 	{
-		this->storeTime = this->player->GetCurrTime();
-		this->currPBC->StopPlayback();
-	}
-	else if (!this->storeTime.IsInfinity())
-	{
-		this->currPBC->StartPlayback();
-		this->player->SeekTo(this->storeTime);
-		this->storeTime = (UInt32)-1;
+		if (player->IsPlaying())
+		{
+			this->storeTime = player->GetCurrTime();
+			currPBC->StopPlayback();
+		}
+		else if (!this->storeTime.IsInfinity())
+		{
+			currPBC->StartPlayback();
+			player->SeekTo(this->storeTime);
+			this->storeTime = (UInt32)-1;
+		}
 	}
 }
 
 void Media::MediaPlayerInterface::PBPrevChapter()
 {
-	this->currPBC->PrevChapter();
+	NN<Media::IPBControl> currPBC;
+	if (this->currPBC.SetTo(currPBC)) currPBC->PrevChapter();
 }
 
 void Media::MediaPlayerInterface::PBNextChapter()
 {
-	this->currPBC->NextChapter();
+	NN<Media::IPBControl> currPBC;
+	if (this->currPBC.SetTo(currPBC)) currPBC->NextChapter();
 }
 
 void Media::MediaPlayerInterface::PBDecAVOfst()
 {
+	NN<Media::MediaPlayer> player;
 	NN<VideoRenderer> vrenderer;
-	if (this->player->GetVideoRenderer().SetTo(vrenderer))
+	if (this->player.SetTo(player) && player->GetVideoRenderer().SetTo(vrenderer))
 	{
 		vrenderer->SetAVOfst(vrenderer->GetAVOfst() - 10);
 	}
@@ -224,8 +245,9 @@ void Media::MediaPlayerInterface::PBDecAVOfst()
 
 void Media::MediaPlayerInterface::PBIncAVOfst()
 {
+	NN<Media::MediaPlayer> player;
 	NN<VideoRenderer> vrenderer;
-	if (this->player->GetVideoRenderer().SetTo(vrenderer))
+	if (this->player.SetTo(player) && player->GetVideoRenderer().SetTo(vrenderer))
 	{
 		vrenderer->SetAVOfst(vrenderer->GetAVOfst() + 10);
 	}
@@ -233,22 +255,24 @@ void Media::MediaPlayerInterface::PBIncAVOfst()
 
 void Media::MediaPlayerInterface::PBJumpOfst(Int32 ofst)
 {
+	NN<Media::MediaPlayer> player;
 	Data::Duration targetTime;
-	if (this->player->IsPlaying())
+	if (this->player.SetTo(player) && player->IsPlaying())
 	{
-		targetTime = this->player->GetCurrTime() + ofst;
+		targetTime = player->GetCurrTime() + ofst;
 		if (targetTime.IsNegative())
 		{
 			targetTime = 0;
 		}
-		this->player->SeekTo(targetTime);
+		player->SeekTo(targetTime);
 	}
 }
 
 void Media::MediaPlayerInterface::PBJumpToTime(UInt32 time)
 {
-	if (this->player->IsPlaying())
+	NN<Media::MediaPlayer> player;
+	if (this->player.SetTo(player) && player->IsPlaying())
 	{
-		this->player->SeekTo(time);
+		player->SeekTo(time);
 	}
 }

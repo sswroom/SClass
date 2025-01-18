@@ -113,17 +113,18 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(AnyType userO
 		me->hsbAlpha->SetPos((currLayer->color >> 24) & 255);
 		sptr = Text::StrDouble(sbuff, currLayer->thick);
 		me->txtThick->SetText(CSTRP(sbuff, sptr));
-		if (currLayer->nPattern == 0)
+		UnsafeArray<UInt8> pattern;
+		if (currLayer->nPattern == 0 || !currLayer->pattern.SetTo(pattern))
 		{
 			me->txtPattern->SetText(CSTR(""));
 		}
 		else
 		{
-			sptr = Text::StrUInt16(sbuff, currLayer->pattern[0]);
+			sptr = Text::StrUInt16(sbuff, pattern[0]);
 			i = 1;
 			while (i < currLayer->nPattern)
 			{
-				sptr = Text::StrUInt16(Text::StrConcatC(sptr, UTF8STRC(",")), currLayer->pattern[i]);
+				sptr = Text::StrUInt16(Text::StrConcatC(sptr, UTF8STRC(",")), pattern[i]);
 				i++;
 			}
 			me->txtPattern->SetText(CSTRP(sbuff, sptr));
@@ -197,15 +198,16 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userOb
 	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt npattern;
 	NN<LineLayer> currLayer;
+	UnsafeArray<UInt8> pattern;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sarr[32];
 	if (!me->currLayer.SetTo(currLayer))
 		return;
 	sbuff[0] = 0;
 	me->txtPattern->GetText(sbuff);
-	if (currLayer->pattern)
+	if (currLayer->pattern.SetTo(pattern))
 	{
-		MemFree(currLayer->pattern);
+		MemFreeArr(pattern);
 	}
 	if (sbuff[0] == 0)
 	{
@@ -218,13 +220,13 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userOb
 		UOSInt i;
 		npattern = Text::StrSplit(sarr, 32, sbuff, ',');
 		i = npattern;
-		currLayer->pattern = MemAlloc(UInt8, npattern);
+		currLayer->pattern = pattern = MemAllocArr(UInt8, npattern);
 		currLayer->nPattern = npattern;
 		while (i-- > 0)
 		{
-			currLayer->pattern[i] = (UInt8)Text::StrToUInt32(sarr[i]);
-			if (currLayer->pattern[i] <= 0)
-				currLayer->pattern[i] = 1;
+			pattern[i] = (UInt8)Text::StrToUInt32(sarr[i]);
+			if (pattern[i] <= 0)
+				pattern[i] = 1;
 		}
 		me->UpdatePreview();
 	}
@@ -269,9 +271,10 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::CancelClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::FreeLayer(NN<LineLayer> lyr)
 {
-	if (lyr->pattern)
+	UnsafeArray<UInt8> pattern;
+	if (lyr->pattern.SetTo(pattern))
 	{
-		MemFree(lyr->pattern);
+		MemFreeArr(pattern);
 	}
 	MemFreeNN(lyr);
 }
@@ -380,18 +383,20 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	{
 		UInt32 color;
 		Double thick;
-		UInt8 *pattern = 0;
+		UnsafeArrayOpt<UInt8> pattern = 0;
+		UnsafeArray<UInt8> nnpattern;
+		UnsafeArray<UInt8> lpattern;
 		UOSInt npattern;
 		this->env->GetLineStyleLayer(this->lineStyle, i, color, thick, pattern, npattern);
 
 		lyr = MemAllocNN(LineLayer);
 		lyr->color = color;
 		lyr->thick = thick;
-		if (pattern)
+		if (pattern.SetTo(nnpattern))
 		{
-			lyr->pattern = MemAlloc(UInt8, npattern);
+			lyr->pattern = lpattern = MemAllocArr(UInt8, npattern);
 			lyr->nPattern = npattern;
-			MemCopyNO(lyr->pattern, pattern, npattern);
+			MemCopyNO(lpattern.Ptr(), nnpattern.Ptr(), npattern);
 		}
 		else
 		{

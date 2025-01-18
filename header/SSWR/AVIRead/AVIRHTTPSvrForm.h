@@ -30,13 +30,13 @@ namespace SSWR
 				Int64 reqTime;
 				Net::SocketUtil::AddressInfo cliAddr;
 				UInt16 cliPort;
-				Text::String *reqURI;
-				Data::ArrayListStringNN *headerName;
-				Data::ArrayListStringNN *headerVal;
+				Optional<Text::String> reqURI;
+				NN<Data::ArrayListStringNN> headerName;
+				NN<Data::ArrayListStringNN> headerVal;
 			} LogEntry;
 		private:
 			UOSInt logCnt;
-			LogEntry *entries;
+			UnsafeArray<LogEntry> entries;
 			UOSInt currEnt;
 			Sync::Mutex entMut;
 
@@ -56,12 +56,12 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::WebServer::WebListener *svr;
-			IO::LogTool *log;
-			Net::WebServer::HTTPDirectoryHandler *dirHdlr;
-			UI::ListBoxLogger *logger;
+			Optional<Net::WebServer::WebListener> svr;
+			Optional<IO::LogTool> log;
+			Optional<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
+			Optional<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
-			AVIRHTTPLog *reqLog;
+			NN<AVIRHTTPLog> reqLog;
 			UOSInt lastAccessIndex;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;

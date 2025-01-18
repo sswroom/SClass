@@ -17,14 +17,14 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::Resizer::LanczosResizer8_C8 *resizer;
+			NN<Media::Resizer::LanczosResizer8_C8> resizer;
 			NN<Map::MapEnv> env;
 			NN<Parser::ParserList> parsers;
 			UOSInt imgIndex;
 
 			NN<UI::GUILabel> lbl;
 			NN<UI::GUIPanel> pnlButtons;
-			UI::GUIPictureList *plIcons;
+			NN<UI::GUIPictureList> plIcons;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 

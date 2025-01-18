@@ -206,7 +206,8 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			UInt32 color;
 			Double thick;
 			UOSInt npattern;
-			UInt8 *pattern;
+			UnsafeArrayOpt<UInt8> pattern;
+			UnsafeArray<UInt8> nnpattern;
 
 			env->GetLineStyleLayer(i, k, color, thick, pattern, npattern);
 			WriteUInt32(&buff[0], color);
@@ -216,9 +217,9 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			stm->Write(Data::ByteArrayR(buff, 12));
 			stmPos += 12;
 
-			if (npattern > 0)
+			if (npattern > 0 && pattern.SetTo(nnpattern))
 			{
-				stm->Write(Data::ByteArrayR(pattern, npattern));
+				stm->Write(Data::ByteArrayR(nnpattern, npattern));
 				stmPos = (UInt32)(stmPos + npattern);
 			}
 

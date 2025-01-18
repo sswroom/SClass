@@ -373,9 +373,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 					}
 					if (fd->GetRealData(0, (UOSInt)fileSize, fileBuff) == fileSize)
 					{
-						if (stat->writer)
+						NN<Map::TileMapWriter> writer;
+						if (stat->writer.SetTo(writer))
 						{
-							stat->writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UOSInt)fileSize), it);
+							writer->AddImage(stat->lyrId, stat->imageId.x, stat->imageId.y, fileBuff.SubArray(0, (UOSInt)fileSize), it);
 						}
 					}
 					DEL_CLASS(fd);
@@ -398,7 +399,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 	return 0;
 }
 
-SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 216, ui)
+SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 360, 216, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -473,12 +474,12 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUI
 	{
 		this->threadCnt = 1;
 	}
-	this->threadStat = MemAlloc(ThreadStat, this->threadCnt);
+	this->threadStat = MemAllocArr(ThreadStat, this->threadCnt);
 	i = 0;
 	while (i < this->threadCnt)
 	{
-		this->threadStat[i].me = this;
-		NEW_CLASS(this->threadStat[i].threadEvt, Sync::Event(true));
+		this->threadStat[i].me = *this;
+		NEW_CLASSNN(this->threadStat[i].threadEvt, Sync::Event(true));
 		this->threadStat[i].threadStat = 0;
 		this->threadStat[i].lyrId = 0;
 		this->threadStat[i].imageId = 0;
@@ -537,9 +538,9 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::~AVIRGISTileDownloadForm()
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->threadStat[i].threadEvt);
+		this->threadStat[i].threadEvt.Delete();
 	}
-	MemFree(this->threadStat);
+	MemFreeArr(this->threadStat);
 }
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::OnMonitorChanged()

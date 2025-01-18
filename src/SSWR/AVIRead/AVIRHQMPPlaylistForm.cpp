@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnOKClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnCancelClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
-	SDEL_CLASS(me->playlist);
+	me->playlist.Delete();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 	}
 }
 
-SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Media::Playlist> playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Create Playlist"));
@@ -202,9 +202,9 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClient
 
 	this->HandleDropFiles(OnFileDrop, this);
 
-	NEW_CLASS(this->playlist, Media::Playlist(CSTR("HQMP"), this->core->GetParserList()));
+	NEW_CLASSNN(this->playlist, Media::Playlist(CSTR("HQMP"), this->core->GetParserList()));
 	NN<Media::Playlist> nnplaylist;
-	if (nnplaylist.Set(playlist))
+	if (playlist.SetTo(nnplaylist))
 	{
 		this->playlist->AppendPlaylist(nnplaylist);
 	}
@@ -222,7 +222,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Media::Playlist *SSWR::AVIRead::AVIRHQMPPlaylistForm::GetPlaylist()
+NN<Media::Playlist> SSWR::AVIRead::AVIRHQMPPlaylistForm::GetPlaylist()
 {
 	return this->playlist;
 }
