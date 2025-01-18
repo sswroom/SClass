@@ -91,11 +91,11 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Sync::Mutex cliMut;
-			Net::TCPClient *cli;
+			Optional<Net::TCPClient> cli;
 			IO::ProtoHdlr::ProtoGPSDevInfoHandler protoHdlr;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
+			Sync::Event threadEvt;
 			Bool dispConn;
 
 			Sync::Mutex alertMut;
@@ -114,9 +114,9 @@ namespace SSWR
 			Sync::Mutex devContMut;
 			Data::ArrayListStringNN devConts;
 			UOSInt devContACnt;
-			DevAlert *devContAlerts;
+			UnsafeArrayOpt<DevAlert> devContAlerts;
 			UOSInt devContGCnt;
-			DevGuard *devContGuards;
+			UnsafeArrayOpt<DevGuard> devContGuards;
 
 			Bool alertContUpd;
 			Sync::Mutex alertContMut;

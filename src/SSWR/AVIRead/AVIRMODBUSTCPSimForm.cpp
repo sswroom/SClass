@@ -9,9 +9,10 @@
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
-	if (me->listener)
+	NN<Net::MODBUSTCPListener> listener;
+	if (me->listener.SetTo(listener))
 	{
-		DEL_CLASS(me->listener);
+		listener.Delete();
 		me->listener = 0;
 		me->btnListen->SetText(CSTR("Listen"));
 		me->txtPort->SetReadOnly(false);
@@ -28,16 +29,16 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType user
 			me->ui->ShowMsgOK(CSTR("Error in parsing port number"), CSTR("MODBUS TCP Simulator"), me);
 			return;
 		}
-		NEW_CLASS(me->listener, Net::MODBUSTCPListener(me->core->GetSocketFactory(), port, me->log, true));
-		if (me->listener->IsError())
+		NEW_CLASSNN(listener, Net::MODBUSTCPListener(me->core->GetSocketFactory(), port, me->log, true));
+		if (listener->IsError())
 		{
-			DEL_CLASS(me->listener);
-			me->listener = 0;
+			listener.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("MODBUS TCP Simulator"), me);
 			return;
 		}
 		else
 		{
+			me->listener = listener;
 			me->btnListen->SetText(CSTR("Stop"));
 			me->txtPort->SetReadOnly(true);
 			me->UpdateDevList();
@@ -49,9 +50,10 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType user
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	DeviceType devType = (DeviceType)me->cboDevType->GetSelectedItem().GetOSInt();
+	NN<Net::MODBUSTCPListener> listener;
 	Text::StringBuilderUTF8 sb;
 	UInt8 addr;
-	if (me->listener == 0)
+	if (!me->listener.SetTo(listener))
 		return;
 	me->txtAddr->GetText(sb);
 	if (sb.ToUInt8(addr))
@@ -61,27 +63,27 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType user
 		{
 		case DeviceType::Print:
 			NEW_CLASSNN(dev, IO::PrintMODBUSDevSim());
-			me->listener->AddDevice(addr, dev);
+			listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED516:
 			NEW_CLASSNN(dev, IO::ED516Sim());
-			me->listener->AddDevice(addr, dev);
+			listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED527:
 			NEW_CLASSNN(dev, IO::ED527Sim());
-			me->listener->AddDevice(addr, dev);
+			listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED538:
 			NEW_CLASSNN(dev, IO::ED538Sim());
-			me->listener->AddDevice(addr, dev);
+			listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED588:
 			NEW_CLASSNN(dev, IO::ED588Sim());
-			me->listener->AddDevice(addr, dev);
+			listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		}
@@ -95,14 +97,15 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
-	if (me->listener)
+	NN<Net::MODBUSTCPListener> listener;
+	if (me->listener.SetTo(listener))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt32 delay;
 		me->txtDelay->GetText(sb);
 		if (sb.ToUInt32(delay))
 		{
-			me->listener->SetDelay(delay);
+			listener->SetDelay(delay);
 		}
 	}
 }
@@ -110,18 +113,19 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<IO::MODBUSDevSim> currDev;
 	me->currDev = (IO::MODBUSDevSim*)me->lbDevice->GetSelectedItem().p;
 	me->lvDeviceValues->ClearItems();
-	if (me->currDev)
+	if (me->currDev.SetTo(currDev))
 	{
 		Text::StringBuilderUTF8 sb;
 		UOSInt i = 0;
-		UOSInt j = me->currDev->GetValueCount();
+		UOSInt j = currDev->GetValueCount();
 		while (i < j)
 		{
-			me->lvDeviceValues->AddItem(me->currDev->GetValueName(i).OrEmpty(), 0);
+			me->lvDeviceValues->AddItem(currDev->GetValueName(i).OrEmpty(), 0);
 			sb.ClearStr();
-			me->currDev->GetValue(i, sb);
+			currDev->GetValue(i, sb);
 			me->lvDeviceValues->SetSubItem(i, 1, sb.ToCString());
 			i++;
 		}
@@ -131,9 +135,10 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceValuesDblClk(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
-	if (me->currDev && index != INVALID_INDEX)
+	NN<IO::MODBUSDevSim> currDev;
+	if (me->currDev.SetTo(currDev) && index != INVALID_INDEX)
 	{
-		me->currDev->ToggleValue(index);	
+		currDev->ToggleValue(index);	
 		me->UpdateDevValues();
 	}
 }
@@ -146,17 +151,18 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevList()
 {
+	NN<Net::MODBUSTCPListener> listener;
 	this->lbDevice->ClearItems();
-	if (this->listener)
+	if (this->listener.SetTo(listener))
 	{
 		Text::StringBuilderUTF8 sb;
 		UOSInt i = 0;
-		UOSInt j = this->listener->GetDeviceCount();
+		UOSInt j = listener->GetDeviceCount();
 		while (i < j)
 		{
-			NN<IO::MODBUSDevSim> dev = this->listener->GetDeviceNoCheck(i);
+			NN<IO::MODBUSDevSim> dev = listener->GetDeviceNoCheck(i);
 			sb.ClearStr();
-			sb.AppendU32(this->listener->GetDeviceAddr(i));
+			sb.AppendU32(listener->GetDeviceAddr(i));
 			sb.AppendC(UTF8STRC(", "));
 			sb.Append(dev->GetName());
 			this->lbDevice->AddItem(sb.ToCString(), dev);
@@ -170,15 +176,16 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevList()
 
 void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevValues()
 {
-	if (this->currDev)
+	NN<IO::MODBUSDevSim> currDev;
+	if (this->currDev.SetTo(currDev))
 	{
 		Text::StringBuilderUTF8 sb;
 		UOSInt i = 0;
-		UOSInt j = this->currDev->GetValueCount();
+		UOSInt j = currDev->GetValueCount();
 		while (i < j)
 		{
 			sb.ClearStr();
-			this->currDev->GetValue(i, sb);
+			currDev->GetValue(i, sb);
 			this->lvDeviceValues->SetSubItem(i, 1, sb.ToCString());
 			i++;
 		}
@@ -246,7 +253,7 @@ SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRMODBUSTCPSimForm::~AVIRMODBUSTCPSimForm()
 {
-	SDEL_CLASS(this->listener);
+	this->listener.Delete();
 }
 
 void SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnMonitorChanged()

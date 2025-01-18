@@ -155,7 +155,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				}
 
 				writer->WriteLine(dasm32->GetHeader(true));
-				retVal = dasm32->Disasm32(writer, addrResol.Ptr(), &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
+				retVal = dasm32->Disasm32(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
 				if (!retVal)
 				{
 					break;
@@ -277,7 +277,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				}
 
 				writer->WriteLine(dasm64->GetHeader(true));
-				retVal = dasm64->Disasm64(writer, addrResol.Ptr(), &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
+				retVal = dasm64->Disasm64(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
 				if (!retVal)
 				{
 					break;

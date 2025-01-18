@@ -13,7 +13,7 @@
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
 		return;
 	}
@@ -49,18 +49,20 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	}
 	if (port > 0 && port < 65535)
 	{
+		NN<Net::WebServer::WebListener> svr;
 		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
 		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		if (svr->IsError())
 		{
 			valid = false;
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			fwdHdlr.Delete();
 		}
 		else
 		{
-			me->fwdHdlr = fwdHdlr.Ptr();
+			me->fwdHdlr = fwdHdlr;
+			me->svr = svr;
 			sb.ClearStr();
 			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
@@ -71,16 +73,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 
 			if (!me->chkSkipLog->IsChecked())
 			{
-				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
-				me->svr->SetRequestLog(me->reqLog);
+				NN<IO::LogTool> log;
+				NEW_CLASSNN(log, IO::LogTool());
+				log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+				svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
+				svr->SetRequestLog(me->reqLog);
 				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->logger = logger.Ptr();
-				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
+				me->logger = logger;
+				me->log = log;
+				log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
-			if (!me->svr->Start())
+			if (!svr->Start())
 			{
 				valid = false;
 			}
@@ -100,24 +104,24 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	}
 	else
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->fwdHdlr);
-		SDEL_CLASS(me->log);
-		SDEL_CLASS(me->logger);
+		me->svr.Delete();
+		me->fwdHdlr.Delete();
+		me->log.Delete();
+		me->logger.Delete();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
-	if (me->svr == 0)
+	if (me->svr.IsNull())
 	{
 		return;
 	}
-	SDEL_CLASS(me->svr);
-	SDEL_CLASS(me->fwdHdlr);
-	SDEL_CLASS(me->log);
-	SDEL_CLASS(me->logger);
+	me->svr.Delete();
+	me->fwdHdlr.Delete();
+	me->log.Delete();
+	me->logger.Delete();
 	me->txtPort->SetReadOnly(false);
 	me->txtFwdURL->SetReadOnly(false);
 	me->txtLogDir->SetReadOnly(false);
@@ -146,10 +150,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(AnyType userO
 	UOSInt j;
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	if (me->svr)
+	NN<Net::WebServer::WebListener> svr;
+	if (me->svr.SetTo(svr))
 	{
 		Net::WebServer::WebListener::SERVER_STATUS status;
-		me->svr->GetStatus(status);
+		svr->GetStatus(status);
 
 		if (me->lastStatus.currConn != status.currConn)
 		{
@@ -305,7 +310,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUI
 	this->lastStatus.reqCnt = 0;
 	this->lastStatus.totalRead = 0;
 	this->lastStatus.totalWrite = 0;
-	NEW_CLASS(this->reqLog, SSWR::AVIRead::AVIRHTTPLog(100));
+	NEW_CLASSNN(this->reqLog, SSWR::AVIRead::AVIRHTTPLog(100));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -430,11 +435,11 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUI
 
 SSWR::AVIRead::AVIRHTTPLoadBalanceForm::~AVIRHTTPLoadBalanceForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->fwdHdlr);
-	SDEL_CLASS(this->log);
-	SDEL_CLASS(this->logger);
-	SDEL_CLASS(this->reqLog);
+	this->svr.Delete();
+	this->fwdHdlr.Delete();
+	this->log.Delete();
+	this->logger.Delete();
+	this->reqLog.Delete();
 	this->ssl.Delete();
 	this->sslCert.Delete();
 	this->sslKey.Delete();

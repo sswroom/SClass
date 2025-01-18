@@ -115,7 +115,8 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 		{
 			fcc = *(UInt32*)"YV12";
 		}
-		if (Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, color, yuvType, this->colorSess).SetTo(csconv))
+		NN<Media::IVideoSource> video;
+		if (this->video.SetTo(video) && Media::CS::CSConverter::NewConverter(fcc, info->storeBPP, info->pf, info->color, 0, 32, Media::PF_B8G8R8A8, color, yuvType, this->colorSess).SetTo(csconv))
 		{
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
@@ -124,7 +125,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 			NEW_CLASSNN(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
 			csconv->ConvertV2(&vsrcBuff, simg->data, info->dispSize.x, info->dispSize.y, info->storeSize.x, info->storeSize.y, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data.Ptr(), info->dispSize.x, info->dispSize.y, simg->GetDataBpl(), 0xff);
-			sptr = this->video->GetSourceName(sbuff).Or(sbuff);
+			sptr = video->GetSourceName(sbuff).Or(sbuff);
 			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			sptr = &sbuff[i + 1];
 			Data::DateTime dt;
@@ -936,8 +937,9 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 			}
 			me->dispEvt.Wait(100);
 		}
+		NN<Media::RefClock> dispClk;
 		me->dispMut.LockRead();
-		me->dispClk->Start(frameTime.AddMS(-me->timeDelay - me->avOfst));
+		if (me->dispClk.SetTo(dispClk)) dispClk->Start(frameTime.AddMS(-me->timeDelay - me->avOfst));
 		me->dispMut.UnlockRead();
 	}
 	if (frameType == Media::FT_DISCARD)
@@ -1235,10 +1237,14 @@ void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameCha
 	UOSInt frameSize;
 	if (fc == Media::IVideoSource::FC_PAR)
 	{
+		NN<Media::IVideoSource> video;
 		me->VideoBeginProc();
-		me->video->GetVideoInfo(me->videoInfo, frameRateNorm, frameRateDenorm, frameSize);
-		me->frameRateNorm = frameRateNorm;
-		me->frameRateDenorm = frameRateDenorm;
+		if (me->video.SetTo(video))
+		{
+			video->GetVideoInfo(me->videoInfo, frameRateNorm, frameRateDenorm, frameSize);
+			me->frameRateNorm = frameRateNorm;
+			me->frameRateDenorm = frameRateDenorm;
+		}
 		me->VideoEndProc();
 	}
 	else if (fc == Media::IVideoSource::FC_ENDPLAY)
@@ -1343,20 +1349,21 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(AnyType userObj)
 
 			Data::Duration currTime = 0;
 			Bool toSkip = false;
+			NN<Media::RefClock> dispClk;
 
 			tstat->me->dispMut.LockRead();
-			if (tstat->me->dispClk)
+			if (tstat->me->dispClk.SetTo(dispClk))
 			{
-				if (!tstat->me->dispClk->Running() || buff->discontTime)
+				if (!dispClk->Running() || buff->discontTime)
 				{
-					tstat->me->dispClk->Start(buff->frameTime.AddMS(-tstat->me->timeDelay - tstat->me->avOfst));
+					dispClk->Start(buff->frameTime.AddMS(-tstat->me->timeDelay - tstat->me->avOfst));
 					currTime = buff->frameTime;
 				}
 				else
 				{
 					Int32 procDelay = tstat->me->CalProcDelay();
 					Int32 dispDelay = tstat->me->CalDispDelay();
-					currTime = tstat->me->dispClk->GetCurrTime().AddMS(tstat->me->timeDelay + tstat->me->avOfst + procDelay + dispDelay + PREPROCTIME);
+					currTime = dispClk->GetCurrTime().AddMS(tstat->me->timeDelay + tstat->me->avOfst + procDelay + dispDelay + PREPROCTIME);
 					if (buff->flags & Media::IVideoSource::FF_FORCEDISP)
 					{
 					}
@@ -1433,6 +1440,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 	UOSInt lastH = 0;
 	Bool toClear;
 	UOSInt minIndex = 0;
+	NN<Media::RefClock> dispClk;
 	me->dispRunning = true;
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	while (!me->dispToStop)
@@ -1487,14 +1495,14 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 			if (found)
 			{
 				me->dispMut.LockRead();
-				if (me->dispClk)
+				if (me->dispClk.SetTo(dispClk))
 				{
 					if (me->buffs[minIndex].isOutputReady)
 					{
 						Data::Duration t;
 //						Int32 dispDelay = me->CalDispDelay();
 						Bool skipFrame = false;;
-						t = me->dispClk->GetCurrTime().AddMS(me->timeDelay + me->avOfst);
+						t = dispClk->GetCurrTime().AddMS(me->timeDelay + me->avOfst);
 						if (found2 && (me->buffs[minIndex].flags & Media::IVideoSource::FF_FORCEDISP) == 0)
 						{
 							if (t > minTime2.AddMS(17) && ((me->buffs[minIndex].flags & Media::IVideoSource::FF_REALTIME) == 0 || me->hasAudio))
@@ -1538,7 +1546,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 								{
 									dispJitter = 1000 / (Int32)me->refRate;
 								}
-								while ((t = me->dispClk->GetCurrTime().AddMS(me->timeDelay + me->avOfst + dispJitter)) < frameTime)
+								while ((t = dispClk->GetCurrTime().AddMS(me->timeDelay + me->avOfst + dispJitter)) < frameTime)
 								{
 									if ((frameTime - t).GetTotalMS() > 3000 && me->videoDelay.GetTotalMS() > -3000)
 										break;
@@ -1547,7 +1555,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 										break;
 								}
 							}
-							Data::Duration startTime = me->dispClk->GetCurrTime();
+							Data::Duration startTime = dispClk->GetCurrTime();
 							me->videoDelay = (startTime - frameTime);
 							me->dispMut.UnlockRead();
 							clk.Start();
@@ -1994,8 +2002,9 @@ Media::VideoRenderer::~VideoRenderer()
 }
 
 
-void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
+void Media::VideoRenderer::SetVideo(Optional<Media::IVideoSource> video)
 {
+	NN<Media::IVideoSource> nnvideo;
 	UOSInt i;
 	UnsafeArray<UInt8> srcBuff;
 	///////////////////////////////////////
@@ -2006,15 +2015,15 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 
 	this->VideoBeginLoad();
 	this->avOfst = 0;
-	if (this->video)
+	if (this->video.NotNull())
 	{
 		this->uvOfst.Stop();
 	}
 
 	this->video = video;
-	if (this->video)
+	if (this->video.SetTo(nnvideo))
 	{
-		this->ivtc.SetSourceVideo(this->video);
+		this->ivtc.SetSourceVideo(nnvideo);
 		this->autoCrop.SetSourceVideo(&this->ivtc);
 		this->uvOfst.SetSourceVideo(&this->autoCrop);
 	}
@@ -2037,13 +2046,13 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 	this->VideoEndLoad();
 
 	this->procThisCount = 0;
-	if (this->video)
+	if (this->video.SetTo(nnvideo))
 	{
 		Media::FrameInfo info;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
 		UOSInt frameSize;
- 		if (!this->video->GetVideoInfo(info, frameRateNorm, frameRateDenorm, frameSize))
+ 		if (!nnvideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, frameSize))
 		{
 			this->video = 0;
 			this->ivtc.SetSourceVideo(0);
@@ -2090,11 +2099,11 @@ void Media::VideoRenderer::SetTimeDelay(Int32 timeDelay)
 	this->timeDelay = timeDelay;
 }
 
-void Media::VideoRenderer::VideoInit(Media::RefClock *clk)
+void Media::VideoRenderer::VideoInit(NN<Media::RefClock> clk)
 {
 	if (this->tstats[0].csconv.NotNull() && !this->playing)
 	{
-		if (this->video)
+		if (this->video.NotNull())
 		{
 			this->dispClk = clk;
 			//this->video->Init(OnVideoFrame, OnVideoChange, this);
@@ -2109,7 +2118,7 @@ void Media::VideoRenderer::VideoStart()
 	if (this->tstats[0].csconv.NotNull() && !this->playing)
 	{
 		this->ClearBuff();
-		if (this->video)
+		if (this->video.NotNull())
 		{
 			if (this->uvOfst.Start())
 			{
@@ -2122,7 +2131,7 @@ void Media::VideoRenderer::VideoStart()
 
 void Media::VideoRenderer::StopPlay()
 {
-	if (this->video)
+	if (this->video.NotNull())
 	{
 		this->playing = false;
 		this->uvOfst.Stop();
@@ -2137,13 +2146,14 @@ void Media::VideoRenderer::StopPlay()
 
 void Media::VideoRenderer::UpdateCrop()
 {
+	NN<Media::IVideoSource> video;
 	UOSInt cropLeft;
 	UOSInt cropTop;
 	UOSInt cropRight;
 	UOSInt cropBottom;
-	if (this->video == 0)
+	if (!this->video.SetTo(video))
 		return;
-	this->video->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+	video->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 	this->cropLeft = cropLeft;
 	this->cropTop = cropTop;
 	this->cropRight = cropRight;
@@ -2348,10 +2358,12 @@ void Media::VideoRenderer::Snapshot()
 
 void Media::VideoRenderer::GetStatus(NN<RendererStatus2> status)
 {
+	NN<Media::RefClock> dispClk;
+	NN<Media::IVideoSource> video;
 	this->dispMut.LockRead();
-	if (this->dispClk && this->dispClk->Running())
+	if (this->dispClk.SetTo(dispClk) && dispClk->Running())
 	{
-		status->currTime = this->dispClk->GetCurrTime();
+		status->currTime = dispClk->GetCurrTime();
 	}
 	else
 	{
@@ -2375,17 +2387,17 @@ void Media::VideoRenderer::GetStatus(NN<RendererStatus2> status)
 	status->rotateType = this->GetRotateType();
 	status->srcSize = this->videoInfo.dispSize;
 	status->dispSize = this->outputSize;
-	if (this->video)
+	if (this->video.SetTo(video))
 	{
-		status->decoderName = this->video->GetFilterName();
+		status->decoderName = video->GetFilterName();
 	}
 	else
 	{
 		status->decoderName = CSTR_NULL;
 	}
-	if (this->video)
+	if (this->video.SetTo(video))
 	{
-		status->seekCnt = this->video->GetDataSeekCount();
+		status->seekCnt = video->GetDataSeekCount();
 	}
 	else
 	{

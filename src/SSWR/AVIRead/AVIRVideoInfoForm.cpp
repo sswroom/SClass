@@ -157,10 +157,13 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	NN<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus> status;
 	NN<Media::IMediaSource> msrc;
 	
-	Sync::Event *evt;
+	NN<Media::IAudioSource> adecoder;
+	NN<Media::NullRenderer> renderer;
+	NN<Media::IVideoSource> vdecoder;
+	NN<Sync::Event> evt;
 	Media::Decoder::VideoDecoderFinder *vdecoders;
 	Media::Decoder::AudioDecoderFinder *adecoders;
-	NEW_CLASS(evt, Sync::Event(true));
+	NEW_CLASSNN(evt, Sync::Event(true));
 	NEW_CLASS(vdecoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASS(adecoders, Media::Decoder::AudioDecoderFinder());
 	Bool isEnd;
@@ -183,9 +186,9 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
 			status->vdecoder = vdecoders->DecodeVideo(NN<Media::IVideoSource>::ConvertFrom(msrc));
-			if (status->vdecoder)
+			if (status->vdecoder.SetTo(vdecoder))
 			{
-				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
+				vdecoder->Init(OnVideoFrame, OnVideoChange, status);
 			}
 			else
 			{
@@ -195,12 +198,13 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
 			status->adecoder = adecoders->DecodeAudio(NN<Media::IAudioSource>::ConvertFrom(msrc));
-			if (status->adecoder)
+			if (status->adecoder.SetTo(adecoder))
 			{
-				NEW_CLASS(status->renderer, Media::NullRenderer());
-				status->renderer->BindAudio(status->adecoder);
-				status->renderer->SetEndNotify(OnAudioEnd, status);
-				status->renderer->AudioInit(0);
+				NEW_CLASSNN(renderer, Media::NullRenderer());
+				status->renderer = renderer;
+				renderer->BindAudio(adecoder);
+				renderer->SetEndNotify(OnAudioEnd, status);
+				renderer->AudioInit(0);
 			}
 			else
 			{
@@ -215,13 +219,13 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	while (i-- > 0)
 	{
 		status = me->decStatus.GetItemNoCheck(i);
-		if (status->vdecoder)
+		if (status->vdecoder.SetTo(vdecoder))
 		{
-			status->vdecoder->Start();
+			vdecoder->Start();
 		}
-		if (status->adecoder)
+		if (status->adecoder.SetTo(adecoder) && status->renderer.SetTo(renderer))
 		{
-			status->renderer->Start();
+			renderer->Start();
 		}
 	}
 	isEnd = false;
@@ -245,17 +249,17 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	while (i-- > 0)
 	{
 		status = me->decStatus.GetItemNoCheck(i);
-		if (status->renderer)
+		if (status->renderer.SetTo(renderer))
 		{
-			status->sampleCnt = status->renderer->GetSampleCnt();
+			status->sampleCnt = renderer->GetSampleCnt();
 		}
-		SDEL_CLASS(status->renderer);
-		SDEL_CLASS(status->vdecoder);
-		SDEL_CLASS(status->adecoder);
+		status->renderer.Delete();
+		status->vdecoder.Delete();
+		status->adecoder.Delete();
 	}
 	DEL_CLASS(adecoders);
 	DEL_CLASS(vdecoders);
-	DEL_CLASS(evt);
+	evt.Delete();
 
 	me->lblDecode->SetText(CSTR("End Decoding"));
 }

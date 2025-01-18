@@ -9,7 +9,8 @@ extern "C"
 
 void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	if (this->enabled && frameStruct == Media::IVideoSource::FS_I)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->enabled && this->srcVideo.SetTo(srcVideo) && frameStruct == Media::IVideoSource::FS_I)
 	{
 		if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 		{
@@ -18,7 +19,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameT
 			UOSInt oriCropRight;
 			UOSInt oriCropBottom;
 
-			this->srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
+			srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
 			if (this->hasCrop && oriCropLeft == 0 && oriCropTop == 0 && oriCropRight == 0 && oriCropBottom == 0)
 			{
 			}
@@ -62,7 +63,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(Data::Duration frameT
 			}
 			if (oriCropLeft != crops[0] || oriCropRight != crops[2] || oriCropTop != crops[1] || oriCropBottom != crops[3])
 			{
-				this->srcVideo->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
+				srcVideo->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 				this->hasCrop = true;
 				if ((crops[0] + crops[1] + crops[2] + crops[3]) <= w)
 				{
@@ -109,8 +110,9 @@ void Media::VideoFilter::AutoCropFilter::SetEnabled(Bool enabled)
 
 void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
+	NN<Media::IVideoSource> srcVideo;
 	Bool cropValid = true;
-	if (this->srcVideo == 0)
+	if (!this->srcVideo.SetTo(srcVideo))
 	{
 		cropLeft.Set(0);
 		cropTop.Set(0);
@@ -123,7 +125,7 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(OutParam<UOSInt> cropLeft
 	UOSInt oriCropTop;
 	UOSInt oriCropRight;
 	UOSInt oriCropBottom;
-	this->srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
+	srcVideo->GetBorderCrop(oriCropLeft, oriCropTop, oriCropRight, oriCropBottom);
 	if (!this->hasCrop || !this->enabled)
 	{
 		cropValid = false;

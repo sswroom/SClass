@@ -26,7 +26,7 @@ namespace SSWR
 			typedef struct
 			{
 				NN<Text::String> topic;
-				UInt8 *message;
+				UnsafeArray<UInt8> message;
 				UOSInt msgSize;
 				Bool updated;
 				Int64 updateTime;
@@ -38,7 +38,7 @@ namespace SSWR
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
-			Net::MQTTBroker *broker;
+			Optional<Net::MQTTBroker> broker;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			Data::StringMapNN<TopicStatus> topicMap;

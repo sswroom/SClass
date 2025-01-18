@@ -15,7 +15,7 @@ typedef struct
 void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
 		me->ServerStop();
 		me->txtPort->SetReadOnly(false);
@@ -35,10 +35,14 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(AnyType userO
 		}
 		else
 		{
-			NEW_CLASS(me->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, me, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
-			NEW_CLASS(me->svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR("TCP: "), true));
-			if (me->svr->IsV4Error())
+			NN<Net::TCPServer> svr;
+			NEW_CLASSOPT(me->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, me, Sync::ThreadUtil::GetThreadCnt(), OnClientTimeout));
+			NEW_CLASSNN(svr, Net::TCPServer(me->core->GetSocketFactory(), 0, port, me->log, OnClientConn, me, CSTR("TCP: "), true));
+			me->svr = svr;
+			if (svr->IsV4Error())
 			{
+				me->svr.Delete();
+				me->cliMgr.Delete();
 				me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
 			}
 			else
@@ -113,24 +117,30 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(NN<Net::TCPC
 void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
+	NN<Net::TCPClientMgr> cliMgr;
 	NN<Net::TCPClient> cli;
-	ClientData *data;
-	NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
-	data = MemAlloc(ClientData, 1);
-	data->buffSize = 0;
-	data->seqId = 0;
-	data->cliData = me->protoHdlr->CreateStreamData(cli);
-	me->cliMgr->AddClient(cli, data);
+	if (me->cliMgr.SetTo(cliMgr))
+	{
+		ClientData *data;
+		NEW_CLASSNN(cli, Net::TCPClient(me->core->GetSocketFactory(), s));
+		data = MemAlloc(ClientData, 1);
+		data->buffSize = 0;
+		data->seqId = 0;
+		data->cliData = me->protoHdlr->CreateStreamData(cli);
+		cliMgr->AddClient(cli, data);
+	}
+	else
+	{
+		me->core->GetSocketFactory()->DestroySocket(s);
+	}
 }
 
 void SSWR::AVIRead::AVIRJTT808ServerForm::ServerStop()
 {
-	if (this->svr)
+	if (this->svr.NotNull())
 	{
-		DEL_CLASS(this->svr);
-		DEL_CLASS(this->cliMgr);
-		this->svr = 0;
-		this->cliMgr = 0;
+		this->svr.Delete();
+		this->cliMgr.Delete();
 	}
 }
 
@@ -163,7 +173,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(Optional<UI::GUIClient
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoJTT808Handler(*this, 0));
+	NEW_CLASSNN(this->protoHdlr, IO::ProtoHdlr::ProtoJTT808Handler(*this, 0));
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 100, false));
 	this->logger->SetTimeFormat("yyyy-MM-dd HH:mm:ss.fff");
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
@@ -176,7 +186,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::~AVIRJTT808ServerForm()
 	this->ServerStop();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	DEL_CLASS(this->protoHdlr);
+	this->protoHdlr.Delete();
 }
 
 void SSWR::AVIRead::AVIRJTT808ServerForm::OnMonitorChanged()

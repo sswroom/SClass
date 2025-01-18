@@ -2070,9 +2070,10 @@ void Media::VideoFilter::IVTCFilter::SetEnabled(Bool enabled)
 
 void Media::VideoFilter::IVTCFilter::Stop()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		this->srcVideo->Stop();
+		srcVideo->Stop();
 		while (this->ivtcTStatus == 2)
 		{
 			this->mainEvt.Wait(100);

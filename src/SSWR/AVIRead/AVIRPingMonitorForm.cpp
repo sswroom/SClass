@@ -69,12 +69,10 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, U
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
-	if (me->listener)
+	if (me->listener.NotNull())
 	{
-		DEL_CLASS(me->listener);
-		DEL_CLASS(me->webHdlr);
-		me->listener = 0;
-		me->webHdlr = 0;
+		me->listener.Delete();
+		me->webHdlr.Delete();
 		me->txtInfo->SetReadOnly(false);
 		return;
 	}
@@ -87,28 +85,27 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj
 		return;
 	}
 	NN<Net::EthernetWebHandler> webHdlr;
+	NN<Net::WebServer::WebListener> listener;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
-	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-	if (me->listener->IsError())
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->clif, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	if (listener->IsError())
 	{
-		DEL_CLASS(me->listener);
+		listener.Delete();
 		webHdlr.Delete();
-		me->listener = 0;
-		me->webHdlr = 0;
 		me->ui->ShowMsgOK(CSTR("Error in listening to info port"), CSTR("Ping Monitor"), me);
 		return;
 	}
-	me->webHdlr = webHdlr.Ptr();
+	me->listener = listener;
+	me->webHdlr = webHdlr;
 	me->txtInfo->SetReadOnly(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
-	if (me->socMon)
+	if (me->socMon.NotNull())
 	{
-		DEL_CLASS(me->socMon);
-		me->socMon = 0;
+		me->socMon.Delete();
 		me->cboIP->SetEnabled(true);
 		return;
 	}
@@ -119,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userOb
 		NN<Socket> soc;
 		if (me->clif->GetSocketFactory()->CreateICMPIPv4Socket(ip).SetTo(soc))
 		{
-			NEW_CLASS(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
+			NEW_CLASSOPT(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else
@@ -146,17 +143,18 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	me->currIP = (IPInfo*)me->lbIP->GetSelectedItem().p;
 	me->ipContUpdated = false;
-	if (me->currIP)
+	NN<IPInfo> currIP;
+	if (me->currIP.SetTo(currIP))
 	{
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
-		sptr = Text::StrInt64(sbuff, me->currIP->count);
+		sptr = Text::StrInt64(sbuff, currIP->count);
 		me->txtIPCount->SetText(CSTRP(sbuff, sptr));
-		me->txtIPName->SetText(me->currIP->name->ToCString());
-		me->txtIPCountry->SetText(me->currIP->country->ToCString());
+		me->txtIPName->SetText(currIP->name->ToCString());
+		me->txtIPCountry->SetText(currIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
-		NN<Net::WhoisRecord> rec = me->whois.RequestIP(me->currIP->ip);
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(currIP->ip);
 		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		me->txtIPWhois->SetText(sb.ToCString());
 	}
@@ -177,8 +175,12 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 	if (me->ipContUpdated)
 	{
 		me->ipContUpdated = false;
-		sptr = Text::StrInt64(sbuff, me->currIP->count);
-		me->txtIPCount->SetText(CSTRP(sbuff, sptr));
+		NN<IPInfo> currIP;
+		if (me->currIP.SetTo(currIP))
+		{
+			sptr = Text::StrInt64(sbuff, currIP->count);
+			me->txtIPCount->SetText(CSTRP(sbuff, sptr));
+		}
 	}
 	if (me->ipListUpdated)
 	{
@@ -195,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 			ipInfo = me->ipMap.GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ip);
 			me->lbIP->AddItem(CSTRP(sbuff, sptr), ipInfo);
-			if (ipInfo.Ptr() == me->currIP)
+			if (ipInfo.Ptr() == me->currIP.OrNull())
 			{
 				me->lbIP->SetSelectedIndex(i);
 			}
@@ -321,14 +323,9 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 {
-	SDEL_CLASS(this->socMon);
-	if (this->listener)
-	{
-		DEL_CLASS(this->listener);
-		DEL_CLASS(this->webHdlr);
-		this->listener = 0;
-		this->webHdlr = 0;
-	}
+	this->socMon.Delete();
+	this->listener.Delete();
+	this->webHdlr.Delete();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 

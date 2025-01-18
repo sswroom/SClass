@@ -815,6 +815,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(NN<Manage::DasmX86_32::DasmX86_32_Sess> 
 	Manage::DasmX86_32::DasmX86_32_Sess tmpSess;
 	Data::ArrayListUInt32 callAddrs;
 	Data::ArrayListUInt32 jmpAddrs;
+	NN<Manage::AddressResolver> addrResol;
 	UTF8Char sbuff[256];
 	Text::StringBuilderUTF8 sb;
 	OSInt instCnt = 0;
@@ -883,8 +884,11 @@ Int32 __stdcall DasmX86_32_GetFuncStack(NN<Manage::DasmX86_32::DasmX86_32_Sess> 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Func Buff 0x"));
 			sb.AppendHex32(funcAddr);
-			sb.AppendC(UTF8STRC(" "));
-			tmpSess.addrResol->ResolveNameSB(sb, funcAddr);
+			if (tmpSess.addrResol.SetTo(addrResol))
+			{
+				sb.AppendC(UTF8STRC(" "));
+				addrResol->ResolveNameSB(sb, funcAddr);
+			}
 			console.WriteLine(sb.ToCString());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, tmpSess.regs.EIP - funcAddr);
 			if (buffSize > 0)
@@ -6763,11 +6767,12 @@ Bool __stdcall DasmX86_32_e8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 			sess->regs.ESP += (UInt32)stackCnt;
 		}
 	}
-	if (sess->addrResol)
+	NN<Manage::AddressResolver> addrResol;
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 		sptr = sess->sbuff;
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 		if (DasmX86_32_IsEndFunc(sptr))
 		{
 			sess->endType = Manage::DasmX86_32::ET_EXIT;
@@ -7241,12 +7246,13 @@ Bool __stdcall DasmX86_32_ff(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 				sess->regs.ESP += (UInt32)stackCnt;
 			}
 		}
-		if (sess->addrResol)
+		NN<Manage::AddressResolver> addrResol;
+		if (sess->addrResol.SetTo(addrResol))
 		{
 			UnsafeArray<UTF8Char> sptr;
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 			sptr = sess->sbuff;
-			sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, memVal).Or(sess->sbuff);
+			sess->sbuff = addrResol->ResolveName(sess->sbuff, memVal).Or(sess->sbuff);
 			if (DasmX86_32_IsEndFunc(sptr))
 			{
 				sess->endType = Manage::DasmX86_32::ET_EXIT;
@@ -19182,7 +19188,7 @@ Text::CStringNN Manage::DasmX86_32::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19297,7 +19303,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::IMemoryReader> memReader)
 {
 	UTF8Char sbuff[256];
 	UInt32 initIP = *currEip;
@@ -19388,7 +19394,7 @@ void Manage::DasmX86_32::FreeRegs(NN<Dasm_Regs> regs) const
 	MemFreeNN(regs);
 }
 
-NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader)
+NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::IMemoryReader> memReader)
 {
 	NN<DasmX86_32_Sess> sess;
 	sess = MemAllocNN(DasmX86_32_Sess);

@@ -12,9 +12,10 @@
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
-	if (me->autoReply)
+	NN<Net::UDPServer> udp;
+	if (me->autoReply && me->udp.SetTo(udp))
 	{
-		me->udp->SendTo(addr, port, data.Arr(), data.GetSize());
+		udp->SendTo(addr, port, data.Arr(), data.GetSize());
 	}
 	Sync::MutexUsage mutUsage(me->mut);
 	me->recvCnt++;
@@ -31,9 +32,10 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnAutoReplyChanged(AnyType userOb
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
-	if (me->udp)
+	NN<Net::UDPServer> udp;
+	if (me->udp.SetTo(udp))
 	{
-		DEL_CLASS(me->udp);
+		udp.Delete();
 		me->udp = 0;
 		me->txtServerPort->SetReadOnly(false);
 	}
@@ -46,15 +48,15 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(AnyType userObj)
 		sb.ToUInt16(port);
 		if (port > 0)
 		{
-			NEW_CLASS(me->udp, Net::UDPServer(me->sockf, 0, port, CSTR_NULL, OnUDPPacket, me, me->core->GetLog(), CSTR_NULL, 5, false));
-			if (me->udp->IsError())
+			NEW_CLASSNN(udp, Net::UDPServer(me->sockf, 0, port, CSTR_NULL, OnUDPPacket, me, me->core->GetLog(), CSTR_NULL, 5, false));
+			if (udp->IsError())
 			{
-				DEL_CLASS(me->udp);
-				me->udp = 0;
+				udp.Delete();
 			}
 			else
 			{
-				me->udp->SetBuffSize(10240);
+				udp->SetBuffSize(10240);
+				me->udp = udp;
 				me->txtServerPort->SetReadOnly(true);
 			}
 		}
@@ -68,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(AnyType userObj)
 	UInt16 port;
 	UInt32 cnt;
 	Text::StringBuilderUTF8 sb;
-	if (me->udp == 0)
+	if (me->udp.IsNull())
 	{
 		me->ui->ShowMsgOK(CSTR("You should start server first"), CSTR("UDP Test"), me);
 		return;
@@ -169,6 +171,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 	UInt8 buff[32];
 	UOSInt i;
 	Net::SocketUtil::AddressInfo destAddr;
+	NN<Net::UDPServer> udp;
 	UInt16 destPort;
 	t->status = 1;
 	t->me->mainEvt.Set();
@@ -182,16 +185,23 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 			destPort = t->destPort;
 			t->status = 2;
 			t->taskType = 0;
-			while (i-- > 0)
+			if (t->me->udp.SetTo(udp))
 			{
-				if (t->me->udp->SendTo(destAddr, destPort, buff, 32))
+				while (i-- > 0)
 				{
-					t->sentSuccCnt++;
+					if (udp->SendTo(destAddr, destPort, buff, 32))
+					{
+						t->sentSuccCnt++;
+					}
+					else
+					{
+						t->sentFailCnt++;
+					}
 				}
-				else
-				{
-					t->sentFailCnt++;
-				}
+			}
+			else
+			{
+				t->sentFailCnt += i;
 			}
 			t->status = 1;
 		}
@@ -298,14 +308,14 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> p
 
 	UOSInt i;
 	this->threadCnt = Sync::ThreadUtil::GetThreadCnt();
-	this->threads = MemAlloc(ThreadStatus, this->threadCnt);
+	this->threads = MemAllocArr(ThreadStatus, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
 		this->threads[i].destAddr.addrType = Net::AddrType::Unknown;
 		this->threads[i].destPort = 0;
-		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
-		this->threads[i].me = this;
+		NEW_CLASSNN(this->threads[i].evt, Sync::Event(true));
+		this->threads[i].me = *this;
 		this->threads[i].reqCnt = 0;
 		this->threads[i].status = 0;
 		this->threads[i].taskType = 0;
@@ -368,16 +378,13 @@ SSWR::AVIRead::AVIRUDPTestForm::~AVIRUDPTestForm()
 			this->mainEvt.Wait(100);
 		}
 	}
-	if (this->udp)
-	{
-		SDEL_CLASS(this->udp);
-	}
+	this->udp.Delete();
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		DEL_CLASS(this->threads[i].evt);
+		this->threads[i].evt.Delete();
 	}
-	MemFree(this->threads);
+	MemFreeArr(this->threads);
 }
 
 void SSWR::AVIRead::AVIRUDPTestForm::OnMonitorChanged()

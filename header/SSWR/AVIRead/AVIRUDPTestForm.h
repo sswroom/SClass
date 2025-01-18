@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				AVIRUDPTestForm *me;
+				NN<AVIRUDPTestForm> me;
 				UOSInt reqCnt;
 				Net::SocketUtil::AddressInfo destAddr;
 				UInt16 destPort;
@@ -28,12 +28,12 @@ namespace SSWR
 				Int32 taskType; //0 = idle, 1 = sending, 2 = toExit;
 				UInt64 sentSuccCnt;
 				UInt64 sentFailCnt;
-				Sync::Event *evt;
+				NN<Sync::Event> evt;
 			} ThreadStatus;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
-			Net::UDPServer *udp;
+			Optional<Net::UDPServer> udp;
 			Bool autoReply;
 			Sync::Mutex mut;
 			UInt64 recvCnt;
@@ -45,7 +45,7 @@ namespace SSWR
 			Data::DateTime lastTime;
 
 			UOSInt threadCnt;
-			ThreadStatus *threads;
+			UnsafeArray<ThreadStatus> threads;
 			Sync::Event mainEvt;
 
 			NN<UI::GUIGroupBox> grpServer;

@@ -28,12 +28,12 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::WebServer::WebListener *svr;
-			IO::LogTool *log;
-			Net::WebServer::HTTPForwardHandler *fwdHdlr;
-			UI::ListBoxLogger *logger;
+			Optional<Net::WebServer::WebListener> svr;
+			Optional<IO::LogTool> log;
+			Optional<Net::WebServer::HTTPForwardHandler> fwdHdlr;
+			Optional<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
-			AVIRHTTPLog *reqLog;
+			NN<AVIRHTTPLog> reqLog;
 			UOSInt lastAccessIndex;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;

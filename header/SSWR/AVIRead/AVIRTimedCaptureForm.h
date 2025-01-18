@@ -34,20 +34,20 @@ namespace SSWR
 			} CaptureFormat;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::VideoCaptureMgr *captureMgr;
+			NN<Media::VideoCaptureMgr> captureMgr;
 			Optional<Media::IVideoCapture> currCapture;
 			Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devInfoList;
 			Data::ArrayListNN<CaptureFormat> currFormats;
 			Media::FrameInfo videoInfo;
 			Optional<Media::CS::CSConverter> csConv;
-			Exporter::GUIJPGExporter *exporter;
+			NN<Exporter::GUIJPGExporter> exporter;
 			Bool isStarted;
 			Int32 jpgQuality;
 			UInt32 interval;
 			Data::Duration lastSaveTime;
 			UInt32 frameCnt;
 			UInt32 saveCnt;
-			Media::TimedImageList *timedImageList;
+			Optional<Media::TimedImageList> timedImageList;
 
 			NN<UI::GUIListBox> lbDevice;
 			NN<UI::GUIHSplitter> hspMain;

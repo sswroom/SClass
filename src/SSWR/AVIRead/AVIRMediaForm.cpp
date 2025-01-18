@@ -96,10 +96,11 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
+	NN<Media::ChapterInfo> currChapters;
 	this->mnuChapters->ClearItems();
-	if (this->currChapters)
+	if (this->currChapters.SetTo(currChapters))
 	{
-		i = this->currChapters->GetChapterCnt();
+		i = currChapters->GetChapterCnt();
 		if (i > 0)
 		{
 			j = 0;
@@ -112,7 +113,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-				sptr = Text::String::OrEmpty(this->currChapters->GetChapterName(j))->ConcatTo(sptr);
+				sptr = Text::String::OrEmpty(currChapters->GetChapterName(j))->ConcatTo(sptr);
 				this->mnuChapters->AddItem(CSTRP(sbuff, sptr), (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
@@ -133,12 +134,13 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 
 void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NN<Media::IVideoSource> video)
 {
-	SDEL_CLASS(this->currDecoder);
+	NN<Media::IVideoSource> currDecoder;
+	this->currDecoder.Delete();
 	this->currDecoder = this->decoders->DecodeVideo(video);
-	if (this->currDecoder)
+	if (this->currDecoder.SetTo(currDecoder))
 	{
-		this->activeVideo = video.Ptr();
-		this->vbdMain->SetVideo(this->currDecoder);
+		this->activeVideo = video;
+		this->vbdMain->SetVideo(currDecoder);
 		this->clk->Stop();
 	}
 	else
@@ -152,7 +154,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NN<Media::IVideoSource> video)
 void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::IAudioSource> audio, Int32 timeDelay)
 {
 	this->core->BindAudio(0);
-	SDEL_CLASS(this->currADecoder);
+	this->currADecoder.Delete();
 	this->activeAudio = 0;
 
 	this->vbdMain->SetTimeDelay(timeDelay);
@@ -160,21 +162,21 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::IAudioSource> audio,
 	this->audRenderer = this->core->BindAudio(audio);
 	if (this->audRenderer.NotNull())
 	{
-		this->activeAudio = audio.Ptr();
+		this->activeAudio = audio;
 		return;
 	}
 	this->currADecoder = this->adecoders->DecodeAudio(audio);
-	if (this->currADecoder)
+	if (this->currADecoder.NotNull())
 	{
 		this->audRenderer = this->core->BindAudio(this->currADecoder);
 		if (this->audRenderer.NotNull())
 		{
-			this->activeAudio = audio.Ptr();
+			this->activeAudio = audio;
 			return;
 		}
 		else
 		{
-			SDEL_CLASS(this->currADecoder);
+			this->currADecoder.Delete();
 		}
 	}
 }
@@ -183,12 +185,13 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Mat
 {
 	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	me->popMedia = (Media::IMediaSource*)me->lbFiles->GetSelectedItem().p;
-	if (me->popMedia == 0)
+	NN<Media::IMediaSource> popMedia;
+	if (!me->popMedia.SetTo(popMedia))
 	{
 	}
 	else
 	{
-		Media::MediaType mediaType = me->popMedia->GetMediaType();
+		Media::MediaType mediaType = popMedia->GetMediaType();
 		if (mediaType == Media::MEDIA_TYPE_VIDEO)
 		{
 			me->mnuVideo->ShowMenu(me->lbFiles, scnPos);
@@ -219,6 +222,12 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img)
 {
 	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
+	NN<Media::IVideoSource> currDecoder;
+	if (!me->currDecoder.SetTo(currDecoder))
+	{
+		img.Delete();
+		return;
+	}
 	UOSInt w = img->info.dispSize.x;
 	UOSInt h = img->info.dispSize.y;
 	UnsafeArray<UInt8> yptr = img->data;
@@ -244,7 +253,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Dat
 
 	MediaPlayer_VideoCropImageY(yptr.Ptr(), w, h, ySplit, crops);
 	img.Delete();
-	me->currDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
+	currDecoder->SetBorderCrop(crops[0], crops[1], crops[2], crops[3]);
 	me->vbdMain->UpdateCrop();
 }
 
@@ -263,18 +272,20 @@ void SSWR::AVIRead::AVIRMediaForm::PBStart(Data::Duration startTime)
 	NN<Media::IAudioRenderer> audRenderer;
 	NN<Media::IVideoSource> activeVideo;
 	NN<Media::IAudioSource> activeAudio;
-	if (this->currDecoder)
+	NN<Media::IVideoSource> currDecoder;
+	NN<Media::IAudioSource> currADecoder;
+	if (this->currDecoder.SetTo(currDecoder))
 	{
-		this->currDecoder->SeekToTime(startTime);
+		currDecoder->SeekToTime(startTime);
 	}
 	else if (this->activeVideo.SetTo(activeVideo))
 	{
 		activeVideo->SeekToTime(startTime);
 	}
 
-	if (this->currADecoder)
+	if (this->currADecoder.SetTo(currADecoder))
 	{
-		startTime = this->currADecoder->SeekToTime(startTime);
+		startTime = currADecoder->SeekToTime(startTime);
 	}
 	else if (this->activeAudio.SetTo(activeAudio))
 	{
@@ -382,9 +393,9 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 
 	this->currDecoder = 0;
 	this->currADecoder = 0;
-	NEW_CLASS(this->adecoders, Media::Decoder::AudioDecoderFinder());
-	NEW_CLASS(this->decoders, Media::Decoder::VideoDecoderFinder());
-	NEW_CLASS(this->clk, Media::RefClock());
+	NEW_CLASSNN(this->adecoders, Media::Decoder::AudioDecoderFinder());
+	NEW_CLASSNN(this->decoders, Media::Decoder::VideoDecoderFinder());
+	NEW_CLASSNN(this->clk, Media::RefClock());
 
 	this->UpdateStreamList();
 	this->UpdateChapters();
@@ -395,12 +406,12 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 	this->PBStop();
 	this->vbdMain->SetVideo(0);
 
-	SDEL_CLASS(this->currDecoder);
-	SDEL_CLASS(this->currADecoder);
-	DEL_CLASS(this->decoders);
-	DEL_CLASS(this->adecoders);
+	this->currDecoder.Delete();
+	this->currADecoder.Delete();
+	this->decoders.Delete();
+	this->adecoders.Delete();
 	this->files.DeleteAll();
-	DEL_CLASS(this->clk);
+	this->clk.Delete();
 
 	this->mnuAudio.Delete();
 	this->mnuVideo.Delete();
@@ -416,6 +427,9 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 {
 	NN<Media::IVideoSource> activeVideo;
+	NN<Media::ChapterInfo> currChapters;
+	NN<Media::IVideoSource> currDecoder;
+	NN<Media::IVideoSource> video;
 	Data::Duration currTime;
 	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
@@ -425,9 +439,9 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		{
 			PBStop();
 		}
-		if (this->currChapters)
+		if (this->currChapters.SetTo(currChapters))
 		{
-			this->PBStart(this->currChapters->GetChapterTime(i));
+			this->PBStart(currChapters->GetChapterTime(i));
 			this->pbLastChapter = i;
 		}
 		return;
@@ -466,10 +480,10 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_PB_CHAP_PREV:
-		if (this->PBIsPlaying() && this->currChapters)
+		if (this->PBIsPlaying() && this->currChapters.SetTo(currChapters))
 		{
 			currTime = this->clk->GetCurrTime();
-			i = this->currChapters->GetChapterIndex(currTime);
+			i = currChapters->GetChapterIndex(currTime);
 			if (i + 1 == this->pbLastChapter)
 			{
 				i++;
@@ -480,23 +494,23 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				i = 0;
 			}
 			this->PBStop();
-			this->PBStart(this->currChapters->GetChapterTime(i));
+			this->PBStart(currChapters->GetChapterTime(i));
 			this->pbLastChapter = i;
 		}
 		break;
 	case MNU_PB_CHAP_NEXT:
-		if (this->PBIsPlaying() && this->currChapters)
+		if (this->PBIsPlaying() && this->currChapters.SetTo(currChapters))
 		{
 			currTime = this->clk->GetCurrTime();
-			i = this->currChapters->GetChapterIndex(currTime);
+			i = currChapters->GetChapterIndex(currTime);
 			if (i + 1 == this->pbLastChapter)
 			{
 				i++;
 			}
-			if (i < this->currChapters->GetChapterCnt() - 1)
+			if (i < currChapters->GetChapterCnt() - 1)
 			{
 				this->PBStop();
-				this->PBStart(this->currChapters->GetChapterTime(i + 1));
+				this->PBStart(currChapters->GetChapterTime(i + 1));
 				this->pbLastChapter = i + 1;
 			}
 		}
@@ -514,9 +528,9 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			Math::Size2D<UOSInt> vSize;
 			UInt32 tmpV;
 
-			if (this->currDecoder)
+			if (this->currDecoder.SetTo(currDecoder))
 			{
-				this->currDecoder->GetVideoInfo(info, tmpV, tmpV, sz1.x);
+				currDecoder->GetVideoInfo(info, tmpV, tmpV, sz1.x);
 			}
 			else
 			{
@@ -553,9 +567,9 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		this->vbdMain->SwitchFullScreen(!this->vbdMain->IsFullScreen(), true);
 		break;
 	case MNU_VIDEO_CROP:
-		if (this->currDecoder)
+		if (this->currDecoder.SetTo(currDecoder))
 		{
-			this->currDecoder->CaptureImage(VideoCropImage, this);
+			currDecoder->CaptureImage(VideoCropImage, this);
 		}
 		break;
 	case MNU_VIDEO_DEINT_AUTO:
@@ -580,16 +594,15 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_POPV_REMOVE:
 		break;
 	case MNU_POPV_SAVE_TIMECODE:
+		if (Optional<Media::IVideoSource>::ConvertFrom(this->popMedia).SetTo(video))
 		{
 			NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"SaveTimecode", true);
 			dlg->AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
 			if (dlg->ShowDialog(this->hwnd))
 			{
-				Media::IVideoSource *video;
 				UTF8Char sbuff[40];
 				UnsafeArray<UTF8Char> sptr;
 				UOSInt j;
-				video = (Media::IVideoSource*)this->popMedia;
 				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
 				writer.WriteLine(CSTR("# timecode format v2"));
@@ -621,7 +634,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			Double t;
 			clk.Start();
 			NN<Media::DrawImage> img;
-			if (audio.Set((Media::IAudioSource*)this->popMedia) && Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0).SetTo(img))
+			if (Optional<Media::IAudioSource>::ConvertFrom(this->popMedia).SetTo(audio) && Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0).SetTo(img))
 			{
 				t = clk.GetTimeDiff();
 				Text::StringBuilderUTF8 sb;

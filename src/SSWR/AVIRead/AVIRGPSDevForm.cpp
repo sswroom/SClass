@@ -22,14 +22,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(AnyType userObj)
 		me->threadRunning = true;
 		while (!me->threadToStop)
 		{
-			if (cli.Set(me->cli))
+			if (me->cli.SetTo(cli))
 			{
 				readSize = cli->Read(recvBuff.SubArray(recvBuffSize));
 
 				if (readSize == 0)
 				{
 					Sync::MutexUsage mutUsage(me->cliMut);
-					SDEL_CLASS(me->cli);
+					me->cli.Delete();
 					mutUsage.EndUse();
 					recvBuffSize = 0;
 				}
@@ -53,7 +53,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(AnyType userObj)
 			}
 			else
 			{
-				me->threadEvt->Wait(1000);
+				me->threadEvt.Wait(1000);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
-	if (me->cli)
+	if (me->cli.NotNull())
 	{
 		me->ToStop();
 	}
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(AnyType userObj)
 				me->txtHost->SetReadOnly(true);
 				me->txtPort->SetReadOnly(true);
 				me->cli = cli;
-				me->threadEvt->Set();
+				me->threadEvt.Set();
 			}
 		}
 	}
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(AnyType userObj)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	if (me->cli == 0 && me->dispConn)
+	if (me->cli.IsNull() && me->dispConn)
 	{
 		me->dispConn = false;
 		me->txtHost->SetReadOnly(false);
@@ -211,6 +211,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(AnyType userObj)
 		}
 		mutUsage.EndUse();
 	}
+	UnsafeArray<DevAlert> devContAlerts;
+	UnsafeArray<DevGuard> devContGuards;
 	if (me->devContUpd)
 	{
 		Data::DateTime dt;
@@ -226,54 +228,59 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(AnyType userObj)
 			i += 2;
 		}
 		me->lvDevAlert->ClearItems();
-		dt.ToUTCTime();
-		i = 0;
-		j = me->devContACnt;
-		while (i < j)
+		if (me->devContAlerts.SetTo(devContAlerts))
 		{
-			sptr = Text::StrInt32(sbuff, me->devContAlerts[i].alertId);
-			k = me->lvDevAlert->AddItem(CSTRP(sbuff, sptr), 0);
-			me->lvDevAlert->SetSubItem(k, 1, me->devContAlerts[i].isAlerting?CSTR("1"):CSTR("0"));
-			me->lvDevAlert->SetSubItem(k, 2, me->devContAlerts[i].isAlerted?CSTR("1"):CSTR("0"));
-			me->lvDevAlert->SetSubItem(k, 3, me->devContAlerts[i].isFirst?CSTR("1"):CSTR("0"));
-			dt.SetTicks(me->devContAlerts[i].beginTimeTick);
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevAlert->SetSubItem(k, 4, CSTRP(sbuff, sptr));
-			dt.SetTicks(me->devContAlerts[i].lastTimeTick);
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevAlert->SetSubItem(k, 5, CSTRP(sbuff, sptr));
-			i++;
+			dt.ToUTCTime();
+			i = 0;
+			j = me->devContACnt;
+			while (i < j)
+			{
+				sptr = Text::StrInt32(sbuff, devContAlerts[i].alertId);
+				k = me->lvDevAlert->AddItem(CSTRP(sbuff, sptr), 0);
+				me->lvDevAlert->SetSubItem(k, 1, devContAlerts[i].isAlerting?CSTR("1"):CSTR("0"));
+				me->lvDevAlert->SetSubItem(k, 2, devContAlerts[i].isAlerted?CSTR("1"):CSTR("0"));
+				me->lvDevAlert->SetSubItem(k, 3, devContAlerts[i].isFirst?CSTR("1"):CSTR("0"));
+				dt.SetTicks(devContAlerts[i].beginTimeTick);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvDevAlert->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+				dt.SetTicks(devContAlerts[i].lastTimeTick);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvDevAlert->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+				i++;
+			}
 		}
 		me->lvDevGuard->ClearItems();
-		i = 0;
-		j = me->devContGCnt;
-		while (i < j)
+		if (me->devContGuards.SetTo(devContGuards))
 		{
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].userId);
-			k = me->lvDevGuard->AddItem(CSTRP(sbuff, sptr), 0);
-			me->lvDevGuard->SetSubItem(k, 1, me->devContGuards[i].found?CSTR("1"):CSTR("0"));
-			sptr = Text::StrDouble(sbuff, me->devContGuards[i].alarmLat);
-			me->lvDevGuard->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-			sptr = Text::StrDouble(sbuff, me->devContGuards[i].alarmLon);
-			me->lvDevGuard->SetSubItem(k, 3, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmType);
-			me->lvDevGuard->SetSubItem(k, 4, CSTRP(sbuff, sptr));
-			dt.SetTicks(me->devContGuards[i].alarmStartTicks);
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevGuard->SetSubItem(k, 5, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus);
-			me->lvDevGuard->SetSubItem(k, 6, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus2);
-			me->lvDevGuard->SetSubItem(k, 7, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus3);
-			me->lvDevGuard->SetSubItem(k, 8, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus4);
-			me->lvDevGuard->SetSubItem(k, 9, CSTRP(sbuff, sptr));
-			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus5);
-			me->lvDevGuard->SetSubItem(k, 10, CSTRP(sbuff, sptr));
-			i++;
+			i = 0;
+			j = me->devContGCnt;
+			while (i < j)
+			{
+				sptr = Text::StrInt32(sbuff, devContGuards[i].userId);
+				k = me->lvDevGuard->AddItem(CSTRP(sbuff, sptr), 0);
+				me->lvDevGuard->SetSubItem(k, 1, devContGuards[i].found?CSTR("1"):CSTR("0"));
+				sptr = Text::StrDouble(sbuff, devContGuards[i].alarmLat);
+				me->lvDevGuard->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+				sptr = Text::StrDouble(sbuff, devContGuards[i].alarmLon);
+				me->lvDevGuard->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, devContGuards[i].alarmType);
+				me->lvDevGuard->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+				dt.SetTicks(devContGuards[i].alarmStartTicks);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvDevGuard->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, devContGuards[i].alarmStatus);
+				me->lvDevGuard->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, devContGuards[i].alarmStatus2);
+				me->lvDevGuard->SetSubItem(k, 7, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, devContGuards[i].alarmStatus3);
+				me->lvDevGuard->SetSubItem(k, 8, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, devContGuards[i].alarmStatus4);
+				me->lvDevGuard->SetSubItem(k, 9, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, devContGuards[i].alarmStatus5);
+				me->lvDevGuard->SetSubItem(k, 10, CSTRP(sbuff, sptr));
+				i++;
+			}
 		}
-		mutUsage.EndUse();
 	}
 	if (me->alertContUpd)
 	{
@@ -326,11 +333,12 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(AnyType userObj)
 void SSWR::AVIRead::AVIRGPSDevForm::ToStop()
 {
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Close();
+		cli->Close();
 		mutUsage.EndUse();
-		while (this->cli)
+		while (this->cli.NotNull())
 		{
 			Sync::SimpleThread::Sleep(10);
 		}
@@ -345,15 +353,17 @@ void SSWR::AVIRead::AVIRGPSDevForm::ClearDevConts()
 {
 	Sync::MutexUsage mutUsage(this->devContMut);
 	this->devConts.FreeAll();
-	if (this->devContAlerts)
+	UnsafeArray<DevAlert> devContAlerts;
+	if (this->devContAlerts.SetTo(devContAlerts))
 	{
-		MemFree(this->devContAlerts);
+		MemFreeArr(devContAlerts);
 		this->devContAlerts = 0;
 	}
 	this->devContACnt = 0;
-	if (this->devContGuards)
+	UnsafeArray<DevGuard> devContGuards;
+	if (this->devContGuards.SetTo(devContGuards))
 	{
-		MemFree(this->devContGuards);
+		MemFreeArr(devContGuards);
 		this->devContGuards = 0;
 	}
 	this->devContGCnt = 0;
@@ -378,9 +388,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlerts()
 	UInt8 buff[12];
 	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 0, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
+		cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -389,9 +400,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevices()
 	UInt8 buff[12];
 	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 2, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
+		cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -400,9 +412,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUsers()
 	UInt8 buff[12];
 	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 4, 0, buff, 0, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
+		cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -411,9 +424,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetDevice(Int64 devId)
 	UInt8 buff[20];
 	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 6, 0, (UInt8*)&devId, 8, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
+		cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -422,9 +436,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetAlert(Int32 alertId)
 	UInt8 buff[20];
 	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 8, 0, (UInt8*)&alertId, 4, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
+		cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -433,9 +448,10 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 	UInt8 buff[20];
 	UOSInt cmdSize = this->protoHdlr.BuildPacket(buff, 10, 0, (UInt8*)&userId, 4, 0);
 	Sync::MutexUsage mutUsage(this->cliMut);
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->Write(Data::ByteArrayR(buff, cmdSize));
+		cli->Write(Data::ByteArrayR(buff, cmdSize));
 	}
 }
 
@@ -583,7 +599,6 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(Optional<UI::GUIClientControl> par
 	this->dispConn = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	Sync::ThreadUtil::Create(ClientThread, this);
 	while (!this->threadRunning)
 	{
@@ -596,12 +611,11 @@ SSWR::AVIRead::AVIRGPSDevForm::~AVIRGPSDevForm()
 {
 	this->threadToStop = true;
 	ToStop();
-	this->threadEvt->Set();
+	this->threadEvt.Set();
 	while (this->threadRunning)
 	{
 		Sync::SimpleThread::Sleep(10);
 	}
-	DEL_CLASS(this->threadEvt);
 
 	this->ClearDevConts();
 	this->ClearAlertConts();
@@ -765,18 +779,19 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 					j = ReadUInt16(&cmd[i]);
 					if (i + j * 24 + 2 <= cmdSize)
 					{
+						UnsafeArray<DevAlert> devContAlerts;
 						this->devContACnt = j;
-						this->devContAlerts = MemAlloc(DevAlert, j);
+						this->devContAlerts = devContAlerts = MemAllocArr(DevAlert, j);
 						i += 2;
 						k = 0;
 						while (k < j)
 						{
-							this->devContAlerts[k].alertId = ReadInt32(&cmd[i]);
-							this->devContAlerts[k].isAlerting = (cmd[i + 4] != 0);
-							this->devContAlerts[k].isAlerted = (cmd[i + 5] != 0);
-							this->devContAlerts[k].isFirst = (cmd[i + 6] != 0);
-							this->devContAlerts[k].beginTimeTick = ReadInt64(&cmd[i + 8]);
-							this->devContAlerts[k].lastTimeTick = ReadInt64(&cmd[i + 16]);
+							devContAlerts[k].alertId = ReadInt32(&cmd[i]);
+							devContAlerts[k].isAlerting = (cmd[i + 4] != 0);
+							devContAlerts[k].isAlerted = (cmd[i + 5] != 0);
+							devContAlerts[k].isFirst = (cmd[i + 6] != 0);
+							devContAlerts[k].beginTimeTick = ReadInt64(&cmd[i + 8]);
+							devContAlerts[k].lastTimeTick = ReadInt64(&cmd[i + 16]);
 							i += 24;
 							k++;
 						}
@@ -792,23 +807,24 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 					j = ReadUInt16(&cmd[i]);
 					if (i + j * 56 + 2 <= cmdSize)
 					{
+						UnsafeArray<DevGuard> devContGuards;
 						this->devContGCnt = j;
-						this->devContGuards = MemAlloc(DevGuard, j);
+						this->devContGuards = devContGuards = MemAllocArr(DevGuard, j);
 						i += 2;
 						k = 0;
 						while (k < j)
 						{
-							this->devContGuards[k].userId = ReadInt32(&cmd[i]);
-							this->devContGuards[k].alarmType = ReadInt32(&cmd[i + 4]);
-							this->devContGuards[k].alarmLat = ReadDouble(&cmd[i + 8]);
-							this->devContGuards[k].alarmLon = ReadDouble(&cmd[i + 16]);
-							this->devContGuards[k].alarmStartTicks = ReadInt64(&cmd[i + 24]);
-							this->devContGuards[k].found = (cmd[i + 32] != 0);
-							this->devContGuards[k].alarmStatus = ReadInt32(&cmd[i + 36]);
-							this->devContGuards[k].alarmStatus2 = ReadInt32(&cmd[i + 40]);
-							this->devContGuards[k].alarmStatus3 = ReadInt32(&cmd[i + 44]);
-							this->devContGuards[k].alarmStatus4 = ReadInt32(&cmd[i + 48]);
-							this->devContGuards[k].alarmStatus5 = ReadInt32(&cmd[i + 52]);
+							devContGuards[k].userId = ReadInt32(&cmd[i]);
+							devContGuards[k].alarmType = ReadInt32(&cmd[i + 4]);
+							devContGuards[k].alarmLat = ReadDouble(&cmd[i + 8]);
+							devContGuards[k].alarmLon = ReadDouble(&cmd[i + 16]);
+							devContGuards[k].alarmStartTicks = ReadInt64(&cmd[i + 24]);
+							devContGuards[k].found = (cmd[i + 32] != 0);
+							devContGuards[k].alarmStatus = ReadInt32(&cmd[i + 36]);
+							devContGuards[k].alarmStatus2 = ReadInt32(&cmd[i + 40]);
+							devContGuards[k].alarmStatus3 = ReadInt32(&cmd[i + 44]);
+							devContGuards[k].alarmStatus4 = ReadInt32(&cmd[i + 48]);
+							devContGuards[k].alarmStatus5 = ReadInt32(&cmd[i + 52]);
 							i += 56;
 							k++;
 						}
@@ -820,7 +836,6 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmOb
 				}
 
 				this->devContUpd = true;
-				mutUsage.EndUse();
 			}
 		}
 		break;

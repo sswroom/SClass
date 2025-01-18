@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType us
 	SSWR::AVIRead::AVIRMySQLConnForm frm(0, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->dbCache);
+		me->dbCache.Delete();
 		me->dbModel.Delete();
 		me->db.Delete();
 		me->dbConn.Delete();
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType 
 	SSWR::AVIRead::AVIRODBCDSNForm frm(0, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->dbCache);
+		me->dbCache.Delete();
 		me->dbModel.Delete();
 		me->db.Delete();
 		me->dbConn.Delete();
@@ -41,12 +41,13 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
 		return;
 	}
 	NN<DB::DBModel> dbModel;
-	if (me->dbConn.IsNull() || !me->dbModel.SetTo(dbModel))
+	NN<DB::DBCache> dbCache;
+	if (me->dbConn.IsNull() || !me->dbModel.SetTo(dbModel) || !me->dbCache.SetTo(dbCache))
 	{
 		me->ui->ShowMsgOK(CSTR("No database is connected"), CSTR("RESTful Server"), me);
 		return;
@@ -57,19 +58,21 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 	me->txtPort->GetText(sb);
 	if (sb.ToUInt16(port) && port > 0 && port <= 65535)
 	{
+		NN<Net::WebServer::WebListener> svr;
 		NN<Net::WebServer::RESTfulHandler> restHdlr;
-		NEW_CLASSNN(restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, restHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
-		if (me->svr->IsError())
+		NEW_CLASSNN(restHdlr, Net::WebServer::RESTfulHandler(dbCache));
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), 0, restHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		if (svr->IsError())
 		{
 			valid = false;
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			restHdlr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("RESTful Server"), me);
 		}
 		else
 		{
-			me->restHdlr = restHdlr.Ptr();
+			me->restHdlr = restHdlr;
+			me->svr = svr;
 			sb.ClearStr();
 			me->txtLogDir->GetText(sb);
 			if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
@@ -81,10 +84,10 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			if (!me->chkSkipLog->IsChecked())
 			{
 				me->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
-				me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
+				svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
 				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
-				me->logger = logger.Ptr();
+				me->logger = logger;
 				me->log.AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
 			}
 
@@ -103,12 +106,12 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			{
 				tableName = tableNames.GetItem(i).OrEmpty();
 				k = me->lvTable->AddItem(tableName, 0);
-				sptr = Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
+				sptr = Text::StrOSInt(sbuff, dbCache->GetRowCount(tableName));
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
 			
-			if (!me->svr->Start())
+			if (!svr->Start())
 			{
 				valid = false;
 				me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("RESTful Server"), me);
@@ -127,13 +130,13 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 		}
 		else
 		{
-			SDEL_CLASS(me->svr);
-			SDEL_CLASS(me->restHdlr);
+			me->svr.Delete();
+			me->restHdlr.Delete();
 			NN<UI::ListBoxLogger> logger;
-			if (logger.Set(me->logger))
+			if (me->logger.SetTo(logger))
 			{
 				me->log.RemoveLogHandler(logger);
-				SDEL_CLASS(me->logger);
+				me->logger.Delete();
 			}
 		}
 	}
@@ -146,13 +149,13 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
-	if (me->svr == 0)
+	if (me->svr.IsNull())
 	{
 		return;
 	}
-	SDEL_CLASS(me->svr);
-	SDEL_CLASS(me->restHdlr);
-	SDEL_CLASS(me->logger);
+	me->svr.Delete();
+	me->restHdlr.Delete();
+	me->logger.Delete();
 	me->txtPort->SetReadOnly(false);
 	me->txtLogDir->SetReadOnly(false);
 	me->chkAllowProxy->SetEnabled(true);
@@ -184,7 +187,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 		this->db = db;
 		this->dbModel = dbModel;
 		dbModel->LoadDatabase(db, CSTR_NULL, CSTR_NULL);
-		NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
+		NEW_CLASSOPT(this->dbCache, DB::DBCache(dbModel, db));
 		this->txtDatabase->SetText(sb.ToCString());
 	}
 }
@@ -274,17 +277,17 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRRESTfulForm::~AVIRRESTfulForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->restHdlr);
-	SDEL_CLASS(this->dbCache);
+	this->svr.Delete();
+	this->restHdlr.Delete();
+	this->dbCache.Delete();
 	this->dbModel.Delete();
 	this->db.Delete();
 	this->dbConn.Delete();
 	NN<UI::ListBoxLogger> logger;
-	if (logger.Set(this->logger))
+	if (this->logger.SetTo(logger))
 	{
 		this->log.RemoveLogHandler(logger);
-		SDEL_CLASS(this->logger);
+		this->logger.Delete();
 	}
 }
 

@@ -29,7 +29,7 @@ namespace SSWR
 			Manage::HiResClock clk;
 			NN<Net::TCPClientFactory> clif;
 			Optional<Net::SSLEngine> ssl;
-			Sync::Thread **threads;
+			UnsafeArrayOpt<NN<Sync::Thread>> threads;
 			Sync::Mutex connMut;
 			Data::ArrayListNN<Net::JMeter::JMeterStep> connSteps;
 			UOSInt connCurrIndex;

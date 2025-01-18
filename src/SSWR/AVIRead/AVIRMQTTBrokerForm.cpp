@@ -12,7 +12,7 @@
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
-	if (me->broker)
+	if (me->broker.NotNull())
 	{
 		me->ServerStop();
 		me->txtPort->SetReadOnly(false);
@@ -53,18 +53,19 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 				ssl = me->ssl;
 				nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
 			}
-			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetTCPClientFactory(), ssl, port, me->log, true, false));
-			if (me->broker->IsError())
+			NN<Net::MQTTBroker> broker;
+			NEW_CLASSNN(broker, Net::MQTTBroker(me->core->GetTCPClientFactory(), ssl, port, me->log, true, false));
+			if (broker->IsError())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in initing server"), CSTR("Error"), me);
-				DEL_CLASS(me->broker);
-				me->broker = 0;
+				broker.Delete();
 			}
 			else
 			{
+				me->broker = broker;
 				me->totalCount = 0;
-				me->broker->HandleTopicUpdate(OnTopicUpdate, me);
-				if (me->broker->Start())
+				broker->HandleTopicUpdate(OnTopicUpdate, me);
+				if (broker->Start())
 				{
 					me->txtPort->SetReadOnly(true);
 					me->btnStart->SetText(CSTR("Stop"));
@@ -72,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 				else
 				{
 					me->ui->ShowMsgOK(CSTR("Error in starting server"), CSTR("Error"), me);
-					DEL_CLASS(me->broker);
+					broker.Delete();
 					me->broker = 0;
 				}
 			}
@@ -83,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
-	if (me->broker)
+	if (me->broker.NotNull())
 	{
 		me->ui->ShowMsgOK(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
 		return;
@@ -201,11 +202,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 	{
 		if (topicSt->msgSize != msgSize)
 		{
-			MemFree(topicSt->message);
-			topicSt->message = MemAlloc(UInt8, msgSize);
+			MemFreeArr(topicSt->message);
+			topicSt->message = MemAllocArr(UInt8, msgSize);
 			topicSt->msgSize = msgSize;
 		}
-		MemCopyNO(topicSt->message, message.Ptr(), msgSize);
+		MemCopyNO(topicSt->message.Ptr(), message.Ptr(), msgSize);
 		topicSt->updated = true;
 		topicSt->updateTime = dt.ToTicks();
 	}
@@ -213,10 +214,10 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 	{
 		topicSt = MemAllocNN(SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus);
 		topicSt->topic = Text::String::New(topic);
-		topicSt->message = MemAlloc(UInt8, msgSize);
+		topicSt->message = MemAllocArr(UInt8, msgSize);
 		topicSt->msgSize = msgSize;
 		topicSt->updated = true;
-		MemCopyNO(topicSt->message, message.Ptr(), msgSize);
+		MemCopyNO(topicSt->message.Ptr(), message.Ptr(), msgSize);
 		topicSt->updateTime = dt.ToTicks();
 		me->topicMap.Put(topic, topicSt);
 		me->topicListUpdated = true;
@@ -225,11 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::ServerStop()
 {
-	if (this->broker)
-	{
-		DEL_CLASS(this->broker);
-		this->broker = 0;
-	}
+	this->broker.Delete();
 }
 
 void SSWR::AVIRead::AVIRMQTTBrokerForm::ClearCACerts()
@@ -320,7 +317,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	{
 		topic = topicList->GetItemNoCheck(i);
 		topic->topic->Release();
-		MemFree(topic->message);
+		MemFreeArr(topic->message);
 		MemFreeNN(topic);
 	}
 	this->ssl.Delete();

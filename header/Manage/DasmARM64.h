@@ -75,8 +75,8 @@ namespace Manage
 			EndType endType;
 			UInt8 *codeBuff;
 			
-			Manage::AddressResolver *addrResol;
-			Manage::IMemoryReader *memReader;
+			Optional<Manage::AddressResolver> addrResol;
+			NN<Manage::IMemoryReader> memReader;
 
 			void **codeHdlrs;
 			UTF8Char *outSPtr;
@@ -91,7 +91,7 @@ namespace Manage
 		virtual ~DasmARM64();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs); // true = succ
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 

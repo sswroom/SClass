@@ -24,10 +24,10 @@ namespace SSWR
 				UInt64 sampleCnt;
 				Data::Duration lastSampleTime;
 				Bool isEnd;
-				Media::IAudioSource *adecoder;
-				Media::NullRenderer *renderer;
-				Media::IVideoSource *vdecoder;
-				Sync::Event *evt;
+				Optional<Media::IAudioSource> adecoder;
+				Optional<Media::NullRenderer> renderer;
+				Optional<Media::IVideoSource> vdecoder;
+				NN<Sync::Event> evt;
 			} DecodeStatus;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;

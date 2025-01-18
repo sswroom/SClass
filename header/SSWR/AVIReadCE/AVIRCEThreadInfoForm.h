@@ -49,13 +49,13 @@ namespace SSWR
 
 			Data::ArrayListStringNN stacks;
 			Data::ArrayListStringNN stacksMem;
-			Manage::Process *proc;
-			Manage::SymbolResolver *symbol;
+			NN<Manage::Process> proc;
+			Optional<Manage::SymbolResolver> symbol;
 
-			static void __stdcall OnMyStackChg(void *userObj);
-			static void __stdcall OnMyStackDblClk(void *userObj, UOSInt index);
+			static void __stdcall OnMyStackChg(AnyType userObj);
+			static void __stdcall OnMyStackDblClk(AnyType userObj, UOSInt index);
 		public:
-			AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
+			AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Manage::Process> proc, Optional<Manage::SymbolResolver> symbol, Int32 threadId);
 			virtual ~AVIRCEThreadInfoForm();
 		};
 	}

@@ -28,7 +28,7 @@ namespace SSWR
 			{
 				Int64 recvTime;
 				UInt32 buffSize;
-				UInt8 *buff;
+				UnsafeArrayOpt<UInt8> buff;
 				Net::SocketUtil::AddressInfo addr;
 				UInt16 port;
 			} PacketInfo;
@@ -67,11 +67,11 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			Net::UDPServer *svr;
+			Optional<Net::UDPServer> svr;
 
 			Bool packetsChg;
 			OSInt packetCurr;
-			PacketInfo *packets;
+			UnsafeArray<PacketInfo> packets;
 			Sync::Mutex packetMut;
 
 			static void __stdcall OnStartClicked(AnyType userObj);

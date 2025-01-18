@@ -114,7 +114,7 @@ namespace Media
 		} ThreadStat;
 	protected:
 		NN<Media::ColorManagerSess> colorSess;
-		Media::IVideoSource *video;
+		Optional<Media::IVideoSource> video;
 		Media::FrameInfo videoInfo;
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		UInt32 frameRateNorm;
@@ -143,7 +143,7 @@ namespace Media
 		Bool dispRunning;
 		Bool dispForceUpdate;
 		Sync::RWMutex dispMut;
-		Media::RefClock *dispClk;
+		Optional<Media::RefClock> dispClk;
 
 		Sync::RWMutex procMut;
 		Int32 procThisCount;
@@ -229,10 +229,10 @@ namespace Media
 		VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();
 
-		void SetVideo(Media::IVideoSource *video);
+		void SetVideo(Optional<Media::IVideoSource> video);
 		void SetHasAudio(Bool hasAudio);
 		void SetTimeDelay(Int32 timeDelay);
-		void VideoInit(Media::RefClock *clk);
+		void VideoInit(NN<Media::RefClock> clk);
 		void VideoStart();
 		void StopPlay();
 		void UpdateCrop();

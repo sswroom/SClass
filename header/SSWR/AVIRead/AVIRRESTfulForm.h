@@ -25,13 +25,13 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::WebServer::WebListener *svr;
-			Net::WebServer::RESTfulHandler *restHdlr;
+			Optional<Net::WebServer::WebListener> svr;
+			Optional<Net::WebServer::RESTfulHandler> restHdlr;
 			IO::LogTool log;
-			UI::ListBoxLogger *logger;
+			Optional<UI::ListBoxLogger> logger;
 			Optional<DB::DBConn> dbConn;
 			Optional<DB::DBTool> db;
-			DB::DBCache *dbCache;
+			Optional<DB::DBCache> dbCache;
 			Optional<DB::DBModel> dbModel;
 
 			NN<UI::GUITabControl> tcMain;

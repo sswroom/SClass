@@ -73,7 +73,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(NN<Text::JSONBuilder> json, Te
 	json->ObjectEnd();
 }
 
-Net::WebServer::RESTfulHandler::RESTfulHandler(DB::DBCache *dbCache)
+Net::WebServer::RESTfulHandler::RESTfulHandler(NN<DB::DBCache> dbCache)
 {
 	this->dbCache = dbCache;
 	this->noLinks = false;

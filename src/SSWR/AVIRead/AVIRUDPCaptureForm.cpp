@@ -7,10 +7,9 @@
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
-		DEL_CLASS(me->svr);
-		me->svr = 0;
+		me->svr.Delete();
 		me->txtPort->SetReadOnly(false);
 		me->lbMulticastCurr->ClearItems();
 	}
@@ -29,15 +28,16 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj
 			me->ui->ShowMsgOK(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
-		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
-		if (me->svr->IsError())
+		NN<Net::UDPServer> svr;
+		NEW_CLASSNN(svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
+		if (svr->IsError())
 		{
-			DEL_CLASS(me->svr);
-			me->svr = 0;
+			svr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to the port"), CSTR("Error"), me);
 			return;
 		}
-		me->svr->AddMulticastIP(Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250")));
+		me->svr = svr;
+		svr->AddMulticastIP(Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250")));
 		me->txtPort->SetReadOnly(true);
 		me->lbMulticastCurr->ClearItems();
 	}
@@ -104,6 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
+		UnsafeArray<UInt8> pbuff;
 		Data::DateTime dt;
 		i = (UOSInt)me->lbData->GetItem(i).p;
 		Sync::MutexUsage mutUsage(me->packetMut);
@@ -118,7 +119,10 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 		sb.AppendC(UTF8STRC(":"));
 		sb.AppendU32(me->packets[i].port);
 		sb.AppendC(UTF8STRC("\r\nData:\r\n"));
-		sb.AppendHexBuff(me->packets[i].buff, me->packets[i].buffSize, ' ', Text::LineBreakType::CRLF);
+		if (me->packets[i].buff.SetTo(pbuff))
+		{
+			sb.AppendHexBuff(pbuff, me->packets[i].buffSize, ' ', Text::LineBreakType::CRLF);
+		}
 		mutUsage.EndUse();
 		me->txtData->SetText(sb.ToCString());
 	}
@@ -127,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 		return;
 	UTF8Char sbuff[16];
 	UnsafeArray<UTF8Char> sptr;
@@ -142,16 +146,17 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj,
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	UnsafeArray<UInt8> pbuff;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Sync::MutexUsage mutUsage(me->packetMut);
-	if (me->packets[me->packetCurr].buff)
+	if (me->packets[me->packetCurr].buff.SetTo(pbuff))
 	{
-		MemFree(me->packets[me->packetCurr].buff);
+		MemFreeArr(pbuff);
 	}
-	me->packets[me->packetCurr].buff = MemAlloc(UInt8, data.GetSize());
+	me->packets[me->packetCurr].buff = pbuff = MemAllocArr(UInt8, data.GetSize());
 	me->packets[me->packetCurr].buffSize = (UInt32)data.GetSize();
-	MemCopyNO(me->packets[me->packetCurr].buff, data.Arr().Ptr(), data.GetSize());
+	MemCopyNO(pbuff.Ptr(), data.Arr().Ptr(), data.GetSize());
 	me->packets[me->packetCurr].addr = addr.Ptr()[0];
 	me->packets[me->packetCurr].port = port;
 	me->packets[me->packetCurr].recvTime = dt.ToTicks();
@@ -163,14 +168,15 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NN<const Net::Sock
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
-	if (me->svr)
+	NN<Net::UDPServer> svr;
+	if (me->svr.SetTo(svr))
 	{
 		Text::StringBuilderUTF8 sb;
 		me->txtMulticastCurr->GetText(sb);
 		UInt32 ip = Net::SocketUtil::GetIPAddr(sb.ToCString());
 		if (ip != 0)
 		{
-			me->svr->AddMulticastIP(ip);
+			svr->AddMulticastIP(ip);
 			me->lbMulticastCurr->AddItem(sb.ToCString(), 0);
 		}
 	}
@@ -309,16 +315,17 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRUDPCaptureForm::~AVIRUDPCaptureForm()
 {
 	OSInt i;
-	SDEL_CLASS(this->svr);
+	UnsafeArray<UInt8> pbuff;
+	this->svr.Delete();
 	i = PACKETCOUNT;
 	while (i-- > 0)
 	{
-		if (this->packets[i].buff)
+		if (this->packets[i].buff.SetTo(pbuff))
 		{
-			MemFree(this->packets[i].buff);
+			MemFreeArr(pbuff);
 		}
 	}
-	MemFree(this->packets);
+	MemFreeArr(this->packets);
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 }

@@ -22,9 +22,9 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Net::WebServer::WebListener *svr;
-			Net::WebServer::HTTPForwardHandler *fwdHdlr;
-			IO::LogTool *fwdLog;
+			Optional<Net::WebServer::WebListener> svr;
+			Optional<Net::WebServer::HTTPForwardHandler> fwdHdlr;
+			Optional<IO::LogTool> fwdLog;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;

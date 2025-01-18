@@ -95,8 +95,8 @@ namespace SSWR
 			Data::ArrayListNN<ProcessInfo> procList;
 
 			UInt32 currProc;
-			Manage::Process *currProcObj;
-			Manage::SymbolResolver *currProcRes;
+			Optional<Manage::Process> currProcObj;
+			Optional<Manage::SymbolResolver> currProcRes;
 			Manage::HiResClock clk;
 			Data::Timestamp lastUserTime;
 			Data::Timestamp lastKernelTime;

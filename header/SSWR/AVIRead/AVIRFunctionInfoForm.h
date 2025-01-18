@@ -19,7 +19,7 @@ namespace SSWR
 
 			static void __stdcall OnMyStackDblClk(AnyType userObj, UOSInt index);
 		public:
-			AVIRFunctionInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, Int64 funcAddr);
+			AVIRFunctionInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Manage::Process> proc, Optional<Manage::SymbolResolver> symbol, Int64 funcAddr);
 			virtual ~AVIRFunctionInfoForm();
 
 			virtual void OnMonitorChanged();

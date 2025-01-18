@@ -48,8 +48,8 @@ namespace SSWR
 			NN<Net::SocketFactory> sockf;
 			Bool threadRunning;
 			Bool threadToStop;
-			Sync::Event *threadEvt;
-			Text::String *reqURL;
+			NN<Sync::Event> threadEvt;
+			Optional<Text::String> reqURL;
 			UInt32 proxyIP;
 			UInt16 proxyPort;
 

@@ -43,13 +43,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 		return;
 	}
 	
+	UnsafeArray<NN<Sync::Thread>> threads;
 	UOSInt i;
 	me->connCnt = 0;
 	me->failCnt = 0;
 	me->threadCurrCnt = 0;
 	me->totalSize = 0;
 	me->t = 0;
-	me->threads = MemAlloc(Sync::Thread*, me->threadCnt);
+	me->threads = threads = MemAllocArr(NN<Sync::Thread>, me->threadCnt);
 	me->clk.Start();
 	i = me->threadCnt;
 	while (i-- > 0)
@@ -57,8 +58,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("HTTPTest"));
 		sb.AppendUOSInt(i);
-		NEW_CLASS(me->threads[i], Sync::Thread(ProcessThread, me.Ptr(), sb.ToCString()));
-		me->threads[i]->Start();
+		NEW_CLASSNN(threads[i], Sync::Thread(ProcessThread, me, sb.ToCString()));
+		threads[i]->Start();
 	}
 }
 
@@ -206,27 +207,28 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
 {
-	if (this->threadCurrCnt > 0)
+	UnsafeArray<NN<Sync::Thread>> threads;
+	if (this->threads.SetTo(threads))
 	{
+		if (this->threadCurrCnt > 0)
+		{
+			UOSInt i = this->threadCnt;
+			while (i-- > 0)
+			{
+				threads[i]->BeginStop();
+			}
+			i = this->threadCnt;
+			while (i-- > 0)
+			{
+				threads[i]->WaitForEnd();
+			}
+		}
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->threads[i]->BeginStop();
+			threads[i].Delete();
 		}
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			this->threads[i]->WaitForEnd();
-		}
-	}
-	if (this->threads)
-	{
-		UOSInt i = this->threadCnt;
-		while (i-- > 0)
-		{
-			DEL_CLASS(this->threads[i]);
-		}
-		MemFree(this->threads);
+		MemFreeArr(threads);
 		this->threads = 0;
 		this->threadCnt = 0;
 	}

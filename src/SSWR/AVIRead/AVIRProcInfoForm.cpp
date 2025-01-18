@@ -16,8 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	ProcessInfo *procInfo = (ProcessInfo*)me->lbDetail->GetSelectedItem().p;
-	SDEL_CLASS(me->currProcRes);
-	SDEL_CLASS(me->currProcObj);
+	me->currProcRes.Delete();
+	me->currProcObj.Delete();
 	if (procInfo == 0)
 	{
 		me->txtDetProcId->SetText(CSTR(""));
@@ -41,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 		me->currProc = procInfo->procId;
 		NN<Manage::Process> procObj;
 		NEW_CLASSNN(procObj, Manage::Process(procInfo->procId, false));
-		me->currProcObj = procObj.Ptr();
-		NEW_CLASS(me->currProcRes, Manage::SymbolResolver(procObj));
+		me->currProcObj = procObj;
+		NEW_CLASSOPT(me->currProcRes, Manage::SymbolResolver(procObj));
 		Manage::Process proc(procInfo->procId, false);
 		sb.AppendU32(procInfo->procId);
 		me->txtDetProcId->SetText(sb.ToCString());
@@ -246,9 +246,14 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
-	UInt32 threadId = (UInt32)me->lvDetThread->GetItem(index).GetUOSInt();
-	SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId);
-	frm.ShowDialog(me);
+	NN<Manage::Process> currProcObj;
+	NN<Manage::SymbolResolver> currProcRes;
+	if (me->currProcObj.SetTo(currProcObj) && me->currProcRes.SetTo(currProcRes))
+	{
+		UInt32 threadId = (UInt32)me->lvDetThread->GetItem(index).GetUOSInt();
+		SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, currProcObj, currProcRes, threadId);
+		frm.ShowDialog(me);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapRefClicked(AnyType userObj)
@@ -360,6 +365,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		UOSInt k;
 		UOSInt l;
 		UInt64 addr;
+		NN<Manage::SymbolResolver> currProcRes;
 
 		proc.GetThreads(threadList);
 		this->lvDetThread->ClearItems();
@@ -378,9 +384,9 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 			sptr = Text::StrHexVal64(sbuff, addr);
 			this->lvDetThread->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 
-			if (this->currProcRes)
+			if (this->currProcRes.SetTo(currProcRes))
 			{
-				if (this->currProcRes->ResolveName(sbuff, addr).SetTo(sptr))
+				if (currProcRes->ResolveName(sbuff, addr).SetTo(sptr))
 				{
 					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 					this->lvDetThread->SetSubItem(k, 3, CSTRP(&sbuff[l + 1], sptr));
@@ -740,8 +746,8 @@ SSWR::AVIRead::AVIRProcInfoForm::~AVIRProcInfoForm()
 		procInfo->procName->Release();
 		MemFreeNN(procInfo);
 	}
-	SDEL_CLASS(this->currProcRes);
-	SDEL_CLASS(this->currProcObj);
+	this->currProcRes.Delete();
+	this->currProcObj.Delete();
 }
 
 void SSWR::AVIRead::AVIRProcInfoForm::OnMonitorChanged()

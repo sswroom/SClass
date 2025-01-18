@@ -9,7 +9,7 @@ namespace Media
 		class VideoFilterBase : public Media::IVideoSource
 		{
 		protected:
-			Media::IVideoSource *srcVideo;
+			Optional<Media::IVideoSource> srcVideo;
 			Media::FrameInfo videoInfo;
 			FrameCallback videoCb;
 			FrameChangeCallback fcCb;
@@ -21,10 +21,10 @@ namespace Media
 			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
 			virtual void OnFrameChange(Media::IVideoSource::FrameChange fc);
 		public:
-			VideoFilterBase(Media::IVideoSource *srcVideo);
+			VideoFilterBase(Optional<Media::IVideoSource> srcVideo);
 			virtual ~VideoFilterBase();
 
-			virtual void SetSourceVideo(Media::IVideoSource *srcVideo);
+			virtual void SetSourceVideo(Optional<Media::IVideoSource> srcVideo);
 
 			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 

@@ -39,12 +39,12 @@ void Media::MediaPlayer::PlayTime(Data::Duration time)
 	NN<Media::IAudioRenderer> arenderer;
 	if (this->arenderer.SetTo(arenderer))
 	{
-		arenderer->AudioInit(&this->clk);
+		arenderer->AudioInit(this->clk);
 		arenderer->SetEndNotify(OnAudioEnd, this);
 	}
 	if (this->vrenderer.SetTo(vrenderer))
 	{
-		vrenderer->VideoInit(&this->clk);
+		vrenderer->VideoInit(this->clk);
 		vrenderer->SetEndNotify(OnVideoEnd, this);
 	}
 	if (this->arenderer.SetTo(arenderer))

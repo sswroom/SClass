@@ -15,8 +15,8 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnProcSelChg(AnyType userObj
 {
 	NN<SSWR::AVIReadCE::AVIRCEProcInfoForm> me = userObj.GetNN<SSWR::AVIReadCE::AVIRCEProcInfoForm>();
 	NN<ProcessInfo> procInfo;
-	SDEL_CLASS(me->currProcRes);
-	SDEL_CLASS(me->currProcObj);
+	me->currProcRes.Delete();
+	me->currProcObj.Delete();
 	if (!me->lbDetail->GetSelectedItem().GetOpt<ProcessInfo>().SetTo(procInfo))
 	{
 		me->txtDetProcId->SetText(CSTR(""));
@@ -37,8 +37,8 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnProcSelChg(AnyType userObj
 		NN<Manage::Process> procress;
 
 		NEW_CLASSNN(procress, Manage::Process(procInfo->procId, false));
-		me->currProcObj = procress.Ptr();
-		NEW_CLASS(me->currProcRes, Manage::SymbolResolver(procress));
+		me->currProcObj = procress;
+		NEW_CLASSOPT(me->currProcRes, Manage::SymbolResolver(procress));
 		Manage::Process proc(procInfo->procId, false);
 		sb.AppendI32((Int32)procInfo->procId);
 		me->txtDetProcId->SetText(sb.ToCString());
@@ -67,9 +67,9 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIReadCE::AVIRCEProcInfoForm> me = userObj.GetNN<SSWR::AVIReadCE::AVIRCEProcInfoForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[12];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<ProcessInfo> procInfo;
 	Manage::Process::ProcessInfo proc;
 	OSInt i;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnTimerTick(AnyType userObj)
 			procInfo->found = false;
 		}
 
-		while ((sptr = Manage::Process::FindProcessNext(sbuff, sess, &proc)) != 0)
+		while (Manage::Process::FindProcessNext(sbuff, sess, &proc).SetTo(sptr))
 		{
 			i = me->procIds.SortedIndexOf(proc.processId);
 			if (i >= 0)
@@ -221,9 +221,13 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnDetThreadRefClicked(AnyTyp
 void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnDetThreadDblClicked(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIReadCE::AVIRCEProcInfoForm> me = userObj.GetNN<SSWR::AVIReadCE::AVIRCEProcInfoForm>();
-	Int32 threadId = (Int32)me->lvDetThread->GetItem(index).GetOSInt();
-	SSWR::AVIReadCE::AVIRCEThreadInfoForm frm(0, me->ui, me->currProcObj, me->currProcRes, threadId);
-	frm.ShowDialog(me);
+	NN<Manage::Process> currProcObj;
+	if (me->currProcObj.SetTo(currProcObj))
+	{
+		Int32 threadId = (Int32)me->lvDetThread->GetItem(index).GetOSInt();
+		SSWR::AVIReadCE::AVIRCEThreadInfoForm frm(0, me->ui, currProcObj, me->currProcRes, threadId);
+		frm.ShowDialog(me);
+	}
 }
 
 void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnDetHeapRefClicked(AnyType userObj)
@@ -251,7 +255,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcModules()
 		Data::ArrayListNN<Manage::ModuleInfo> modList;
 		NN<Manage::ModuleInfo> module;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -291,12 +295,13 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcThreads()
 		Data::ArrayListNN<Manage::ThreadInfo> threadList;
 		NN<Manage::ThreadInfo> t;
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
 		Int64 addr;
+		NN<Manage::SymbolResolver> currProcRes;
 
 		proc.GetThreads(threadList);
 		this->lvDetThread->ClearItems();
@@ -311,9 +316,10 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcThreads()
 			sptr = Text::StrHexVal64(sbuff, addr);
 			this->lvDetThread->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 
-			if (this->currProcRes)
+			if (this->currProcRes.SetTo(currProcRes))
 			{
-				sptr = this->currProcRes->ResolveName(sbuff, addr);
+				sbuff[0] = 0;
+				sptr = currProcRes->ResolveName(sbuff, addr).Or(sbuff);
 				l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 				this->lvDetThread->SetSubItem(k, 2, CSTRP(&sbuff[l + 1], sptr));
 			}
@@ -335,7 +341,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcHeaps()
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListUInt32 heapList;
 		UTF8Char sbuff[20];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 
@@ -370,7 +376,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 		Data::ArrayListNN<Manage::Process::HeapInfo> heapList;
 		NN<Manage::Process::HeapInfo> heap;
 		UTF8Char sbuff[20];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -578,6 +584,6 @@ SSWR::AVIReadCE::AVIRCEProcInfoForm::~AVIRCEProcInfoForm()
 		procInfo->procName->Release();
 		MemFreeNN(procInfo);
 	}
-	SDEL_CLASS(this->currProcRes);
-	SDEL_CLASS(this->currProcObj);
+	this->currProcRes.Delete();
+	this->currProcObj.Delete();
 }

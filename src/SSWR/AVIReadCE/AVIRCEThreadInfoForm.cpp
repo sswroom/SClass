@@ -8,9 +8,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringBuilderWriter.h"
 
-void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(void *userObj)
+void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(AnyType userObj)
 {
-	SSWR::AVIReadCE::AVIRCEThreadInfoForm *me = (SSWR::AVIReadCE::AVIRCEThreadInfoForm*)userObj;
+	NN<SSWR::AVIReadCE::AVIRCEThreadInfoForm> me = userObj.GetNN<SSWR::AVIReadCE::AVIRCEThreadInfoForm>();
 	OSInt i = me->lbMyStack->GetSelectedIndex();
 	NN<Text::String> s;
 	Optional<Text::String> st = me->stacks.GetItem(i);
@@ -60,9 +60,9 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(void *userObj
 	}
 }
 
-void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *userObj, UOSInt index)
+void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(AnyType userObj, UOSInt index)
 {
-	SSWR::AVIReadCE::AVIRCEThreadInfoForm *me = (SSWR::AVIReadCE::AVIRCEThreadInfoForm*)userObj;
+	NN<SSWR::AVIReadCE::AVIRCEThreadInfoForm> me = userObj.GetNN<SSWR::AVIReadCE::AVIRCEThreadInfoForm>();
 	UTF8Char sbuff[18];
 	UOSInt i;
 	Int64 funcOfst;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 	}
 }
 
-SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Manage::Process> proc, Optional<Manage::SymbolResolver> symbol, Int32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Thread Info"));
@@ -92,7 +92,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->proc = proc;
 	this->symbol = symbol;
 
-	NEW_CLASS(this->tcMain = ui->NewTabControl(*this));
+	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
@@ -115,33 +115,33 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
 	this->txtStartName->SetReadOnly(true);
 
-	NEW_CLASS(this->lvContext = ui->NewListView(this->tpContext, UI::ListViewStyle::Table, 2));
+	this->lvContext = ui->NewListView(this->tpContext, UI::ListViewStyle::Table, 2);
 	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContext->SetFullRowSelect(true);
 	this->lvContext->SetShowGrid(true);
 	this->lvContext->AddColumn(CSTR("Name"), 100);
 	this->lvContext->AddColumn(CSTR("Value"), 300);
 
-	NEW_CLASS(this->lvStack = ui->NewListView(this->tpStack, UI::ListViewStyle::Table, 2));
+	this->lvStack = ui->NewListView(this->tpStack, UI::ListViewStyle::Table, 2);
 	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStack->SetFullRowSelect(true);
 	this->lvStack->SetShowGrid(true);
 	this->lvStack->AddColumn(CSTR("Address"), 120);
 	this->lvStack->AddColumn(CSTR("Name"), 500);
 
-	NEW_CLASS(this->lbMyStack = ui->NewListBox(this->tpMyStack, false));
+	this->lbMyStack = ui->NewListBox(this->tpMyStack, false);
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
 	this->lbMyStack->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbMyStack->HandleSelectionChange(OnMyStackChg, this);
 	this->hspMyStack = ui->NewHSplitter(this->tpMyStack, 3, false);
-	NEW_CLASSNN(this->pnlMyStack = ui->NewPanel(this->tpMyStack));
+	this->pnlMyStack = ui->NewPanel(this->tpMyStack);
 	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMyStackMem = ui->NewTextBox(this->pnlMyStack, CSTR(""), true);
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);
 	this->vspMyStack = ui->NewVSplitter(this->pnlMyStack, 3, false);
-	NEW_CLASS(this->lvMyStack = ui->NewListView(this->pnlMyStack, UI::ListViewStyle::Table, 10));
+	this->lvMyStack = ui->NewListView(this->pnlMyStack, UI::ListViewStyle::Table, 10);
 	this->lvMyStack->SetShowGrid(true);
 	this->lvMyStack->SetFullRowSelect(true);
 	this->lvMyStack->AddColumn(CSTR("Esp"), 70);
@@ -160,10 +160,11 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	Manage::ThreadInfo *thread;
 	Manage::ThreadContext *context;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt64 startAddr;
 	UOSInt i;
 	UOSInt j;
+	NN<Manage::SymbolResolver> nnsymbol;
 	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
 
 	startAddr = thread->GetStartAddress();
@@ -171,9 +172,13 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 	this->txtThreadId->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(CSTRP(sbuff, sptr));
-	sptr = symbol->ResolveName(sbuff, startAddr);
-	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-	this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
+	if (symbol.SetTo(nnsymbol))
+	{
+		sbuff[0] = 0;
+		sptr = nnsymbol->ResolveName(sbuff, startAddr).Or(sbuff);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+		this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
+	}
 
 	if (thread->IsCurrThread())
 	{
@@ -192,9 +197,13 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			currAddr = tracer->GetCurrentAddr();
 			sptr = Text::StrHexVal64(sbuff, currAddr);
 			i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
-			sptr = symbol->ResolveName(sbuff, currAddr);
-			j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-			this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
+			if (symbol.SetTo(nnsymbol))
+			{
+				sbuff[0] = 0;
+				sptr = nnsymbol->ResolveName(sbuff, currAddr).Or(sbuff);
+				j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+				this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
+			}
 			if (!tracer->GoToNextLevel())
 				break;
 			if (++callLev > 50)
@@ -232,10 +241,14 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 					break;
 				sb.ClearStr();
 				sb.AppendHex32(eip);
-				sb.AppendC(UTF8STRC(" "));
-				sptr = symbol->ResolveName(sbuff, eip);
-				i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-				sb.AppendP(&sbuff[i + 1], sptr);
+				if (symbol.SetTo(nnsymbol))
+				{
+					sb.AppendC(UTF8STRC(" "));
+					sbuff[0] = 0;
+					sptr = nnsymbol->ResolveName(sbuff, eip).Or(sbuff);
+					i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+					sb.AppendP(&sbuff[i + 1], sptr);
+				}
 				i = this->lbMyStack->AddItem(sb.ToCString(), 0);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("EIP = 0x"));
@@ -263,8 +276,8 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 				sb.ClearStr();
 				Text::StringBuilderWriter writer(sb);
 				Manage::DasmX86_32::Dasm_Regs regs;
-				((Manage::ThreadContextX86_32*)context)->GetRegs(&regs);
-				ret = dasm->Disasm32(writer, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, &regs, proc, true);
+				((Manage::ThreadContextX86_32*)context)->GetRegs(regs);
+				ret = dasm->Disasm32(writer, symbol, &eip, &esp, &ebp, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, proc, true);
 				this->stacks.Add(Text::String::New(sb.ToCString()));
 				if (!ret)
 					break;
@@ -283,7 +296,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 		{
 			UInt8 buff[16];
 			UTF8Char sbuff[64];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UInt32 bitCnt;
 			UOSInt i;
 			UOSInt j;
@@ -292,7 +305,8 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClie
 			j = context->GetRegisterCnt();
 			while (i < j)
 			{
-				sptr = context->GetRegister(i, sbuff, buff, &bitCnt);
+				sbuff[0] = 0;
+				sptr = context->GetRegister(i, sbuff, buff, &bitCnt).Or(sbuff);
 				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0, 0);
 				if (bitCnt == 8)
 				{

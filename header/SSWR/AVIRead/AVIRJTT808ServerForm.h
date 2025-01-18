@@ -25,9 +25,9 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
-			Net::TCPServer *svr;
-			Net::TCPClientMgr *cliMgr;
-			IO::ProtoHdlr::ProtoJTT808Handler *protoHdlr;
+			Optional<Net::TCPServer> svr;
+			Optional<Net::TCPClientMgr> cliMgr;
+			NN<IO::ProtoHdlr::ProtoJTT808Handler> protoHdlr;
 			NN<UI::ListBoxLogger> logger;
 
 			NN<UI::GUITabControl> tcMain;

@@ -1050,6 +1050,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(NN<Manage::DasmX86_64::DasmX86_64_Sess> 
 	Manage::DasmX86_64::DasmX86_64_Sess tmpSess;
 	Data::ArrayListUInt64 callAddrs;
 	Data::ArrayListUInt64 jmpAddrs;
+	NN<Manage::AddressResolver> addrResol;
 	UTF8Char sbuff[256];
 	Text::StringBuilderUTF8 sb;
 	OSInt instCnt = 0;
@@ -1118,8 +1119,11 @@ Int32 __stdcall DasmX86_64_GetFuncStack(NN<Manage::DasmX86_64::DasmX86_64_Sess> 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Func Buff 0x"));
 			sb.AppendHex64(funcAddr);
-			sb.AppendC(UTF8STRC(" "));
-			tmpSess.addrResol->ResolveNameSB(sb, funcAddr);
+			if (tmpSess.addrResol.SetTo(addrResol))
+			{
+				sb.AppendC(UTF8STRC(" "));
+				addrResol->ResolveNameSB(sb, funcAddr);
+			}
 			console.WriteLine(sb.ToCString());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, (UOSInt)(tmpSess.regs.rip - funcAddr));
 			if (buffSize > 0)
@@ -6901,10 +6905,11 @@ Bool __stdcall DasmX86_64_e8(NN<Manage::DasmX86_64::DasmX86_64_Sess> sess)
 			sess->regs.rsp += (UInt32)stackCnt;
 		}
 	}
-	if (sess->addrResol)
+	NN<Manage::AddressResolver> addrResol;
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		if (!sess->addrResol->ResolveName(sptr = sess->sbuff, addr).SetTo(sess->sbuff))
+		if (!addrResol->ResolveName(sptr = sess->sbuff, addr).SetTo(sess->sbuff))
 		{
 			sess->sbuff = sptr;
 		}
@@ -7383,11 +7388,12 @@ Bool __stdcall DasmX86_64_ff(NN<Manage::DasmX86_64::DasmX86_64_Sess> sess)
 				sess->regs.rsp += (UInt32)stackCnt;
 			}
 		}
-		if (sess->addrResol)
+		NN<Manage::AddressResolver> addrResol;
+		if (sess->addrResol.SetTo(addrResol))
 		{
 			UnsafeArray<UTF8Char> sptr;
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-			if (!sess->addrResol->ResolveName(sptr = sess->sbuff, memVal).SetTo(sess->sbuff))
+			if (!addrResol->ResolveName(sptr = sess->sbuff, memVal).SetTo(sess->sbuff))
 			{
 				sess->sbuff = sptr;
 			}
@@ -19441,7 +19447,7 @@ Text::CStringNN Manage::DasmX86_64::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmX86_64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_64::Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_64_Sess sess;
@@ -19572,7 +19578,7 @@ Bool Manage::DasmX86_64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver
 	}
 }
 
-Bool Manage::DasmX86_64::Disasm64In(NN<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_64::Disasm64In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::IMemoryReader> memReader)
 {
 	UTF8Char sbuff[256];
 	UInt64 initIP = *currRip;
@@ -19674,7 +19680,7 @@ void Manage::DasmX86_64::FreeRegs(NN<Dasm_Regs> regs) const
 	MemFreeNN(regs);
 }
 
-NN<Manage::DasmX86_64::DasmX86_64_Sess> Manage::DasmX86_64::StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader)
+NN<Manage::DasmX86_64::DasmX86_64_Sess> Manage::DasmX86_64::StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::IMemoryReader> memReader)
 {
 	NN<DasmX86_64_Sess> sess;
 	sess = MemAllocNN(DasmX86_64_Sess);

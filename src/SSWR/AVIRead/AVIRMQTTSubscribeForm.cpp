@@ -13,7 +13,7 @@
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
-	if (me->client)
+	if (me->client.NotNull())
 	{
 		me->ServerStop();
 		me->txtHost->SetReadOnly(false);
@@ -46,15 +46,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 			return;
 		}
 
-		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetTCPClientFactory(), 0, sb.ToCString(), (UInt16)port, 0, 0, 30000));
-		if (me->client->IsError())
+		NN<Net::MQTTConn> client;
+		NEW_CLASSNN(client, Net::MQTTConn(me->core->GetTCPClientFactory(), 0, sb.ToCString(), (UInt16)port, 0, 0, 30000));
+		if (client->IsError())
 		{
 			me->ui->ShowMsgOK(CSTR("Error in connecting to server"), CSTR("Error"), me);
-			DEL_CLASS(me->client);
-			me->client = 0;
+			client.Delete();
 			return;
 		}
-		me->client->HandlePublishMessage(OnPublishMessage, me);
+		me->client = client;
+		client->HandlePublishMessage(OnPublishMessage, me);
 
 		Text::CString username = CSTR_NULL;
 		Text::CString password = CSTR_NULL;
@@ -77,12 +78,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("sswrMQTT/"));
 		sb.AppendI64(dt.ToTicks());
-		Bool succ = me->client->SendConnect(4, 30, sb.ToCString(), username, password);
+		Bool succ = client->SendConnect(4, 30, sb.ToCString(), username, password);
 		SDEL_TEXT(username.v);
 		SDEL_TEXT(password.v);
 		if (succ)
 		{
-			Net::MQTTConn::ConnectStatus status = me->client->WaitConnAck(30000);
+			Net::MQTTConn::ConnectStatus status = client->WaitConnAck(30000);
 			succ = (status == Net::MQTTConn::CS_ACCEPTED);
 		}
 		
@@ -96,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 		}
 		else
 		{
-			DEL_CLASS(me->client);
+			client.Delete();
 			me->client = 0;
 			me->ui->ShowMsgOK(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
@@ -107,15 +108,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
-	if (me->client)
+	NN<Net::MQTTConn> client;
+	if (me->client.SetTo(client))
 	{
 		Text::StringBuilderUTF8 sb;
 		me->txtSTopic->GetText(sb);
 		if (sb.GetLength() > 0)
 		{
-			if (me->client->SendSubscribe(1, sb.ToCString()))
+			if (client->SendSubscribe(1, sb.ToCString()))
 			{
-				if (me->client->WaitSubAck(1, 30000) <= 2)
+				if (client->WaitSubAck(1, 30000) <= 2)
 				{
 					me->txtSTopic->SetText(CSTR(""));
 					me->lbSTopic->AddItem(sb.ToCString(), 0);
@@ -146,7 +148,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTopicSelChg(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
-	if (me->client)
+	NN<Net::MQTTConn> client;
+	if (me->client.SetTo(client))
 	{
 		Text::StringBuilderUTF8 sbTopic;
 		Text::StringBuilderUTF8 sbMsg;
@@ -154,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType us
 		me->txtPublishMessage->GetText(sbMsg);
 		if (sbTopic.GetLength() > 0 && sbMsg.GetLength() > 0)
 		{
-			if (me->client->SendPublish(sbTopic.ToCString(), sbMsg.ToCString()))
+			if (client->SendPublish(sbTopic.ToCString(), sbMsg.ToCString()))
 			{
 				me->txtPublishMessage->SetText(CSTR(""));
 			}
@@ -165,9 +168,10 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
-	if (me->client)
+	NN<Net::MQTTConn> client;
+	if (me->client.SetTo(client))
 	{
-		if (me->client->IsError())
+		if (client->IsError())
 		{
 			me->ServerStop();
 			me->txtHost->SetReadOnly(false);
@@ -177,8 +181,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(AnyType use
 		}
 		else
 		{
-			me->client->ClearPackets();
-			me->client->SendPing();
+			client->ClearPackets();
+			client->SendPing();
 		}
 	}
 }
@@ -268,7 +272,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 	{
 		topicSt = MemAllocNN(TopicStatus);
 		topicSt->topic = Text::String::New(topic);
-		topicSt->currValue = MemAlloc(UTF8Char, message.GetSize() + 1);
+		topicSt->currValue = MemAllocArr(UTF8Char, message.GetSize() + 1);
 		Text::StrConcatC(topicSt->currValue, message.Arr(), message.GetSize());
 		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
@@ -279,8 +283,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 	}
 	else
 	{
-		MemFree(topicSt->currValue);
-		topicSt->currValue = MemAlloc(UTF8Char, message.GetSize() + 1);
+		MemFreeArr(topicSt->currValue);
+		topicSt->currValue = MemAllocArr(UTF8Char, message.GetSize() + 1);
 		Text::StrConcatC(topicSt->currValue, message.Arr(), message.GetSize());	
 		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
@@ -384,11 +388,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 
 void SSWR::AVIRead::AVIRMQTTSubscribeForm::ServerStop()
 {
-	if (this->client)
-	{
-		DEL_CLASS(this->client);
-		this->client = 0;
-	}
+	this->client.Delete();
 }
 
 SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -496,7 +496,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	{
 		topicSt = topicList->GetItemNoCheck(i);
 		topicSt->topic->Release();
-		MemFree(topicSt->currValue);
+		MemFreeArr(topicSt->currValue);
 		MemFreeNN(topicSt);
 	}
 	this->log.RemoveLogHandler(this->logger);

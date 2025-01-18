@@ -41,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType 
 
 	me->proxyIP = ip;
 	me->proxyPort = port;
-	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
 	me->threadEvt->Set();
-	while (me->threadRunning && me->reqURL)
+	while (me->threadRunning && me->reqURL.NotNull())
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType 
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
-	Text::String *currURL;
+	NN<Text::String> currURL;
 	NN<Net::HTTPClient> cli;
 	UInt8 buff[4096];
 	UnsafeArray<UTF8Char> sbuff;
@@ -63,9 +63,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!me->threadToStop)
 	{
-		if (me->reqURL && !me->respChanged)
+		if (me->reqURL.SetTo(currURL) && !me->respChanged)
 		{
-			currURL = me->reqURL;
 			me->reqURL = 0;
 
 			NEW_CLASSNN(cli, Net::HTTPProxyClient(me->core->GetTCPClientFactory(), false, me->proxyIP, me->proxyPort));
@@ -95,7 +94,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 		me->threadEvt->Wait(1000);
 	}
 	MemFreeArr(sbuff);
-	SDEL_STRING(me->reqURL);
+	OPTSTR_DEL(me->reqURL);
 	me->threadToStop = false;
 	me->threadRunning = false;
 	return 0;
@@ -192,7 +191,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->reqURL = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true));
+	NEW_CLASSNN(this->threadEvt, Sync::Event(true));
 
 	this->pnlRequest = ui->NewPanel(*this);
 	this->pnlRequest->SetRect(0, 0, 100, 79, false);
@@ -267,7 +266,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::~AVIRHTTPProxyClientForm()
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
-	DEL_CLASS(this->threadEvt);
+	this->threadEvt.Delete();
 	this->ClearHeaders();
 }
 

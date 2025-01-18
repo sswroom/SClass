@@ -11,7 +11,7 @@
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
-	if (me->svr)
+	if (me->svr.NotNull())
 	{
 		return;
 	}
@@ -49,30 +49,34 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 	if (port > 0 && port < 65535)
 	{
 		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
+		NN<Net::WebServer::WebListener> svr;
 		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetTCPClientFactory(), me->ssl, sb.ToCString(), Net::WebServer::HTTPForwardHandler::ForwardType::Transparent));
-		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), false, me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
-		if (me->svr->IsError())
+		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), false, me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
+		if (svr->IsError())
 		{
 			valid = false;
-			SDEL_CLASS(me->svr);
+			svr.Delete();
 			fwdHdlr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in listening to port"), CSTR("HTTP Forwarder"), me);
 		}
 		else
 		{
-			me->fwdHdlr = fwdHdlr.Ptr();
+			me->fwdHdlr = fwdHdlr;
+			me->svr = svr;
 			if (me->chkLog->IsChecked())
 			{
-				NEW_CLASS(me->fwdLog, IO::LogTool());
+				NN<IO::LogTool> fwdLog;
+				NEW_CLASSNN(fwdLog, IO::LogTool());
+				me->fwdLog = fwdLog;
 				Text::CStringNN logPath;
 				if (IO::Path::PATH_SEPERATOR == '/')
 					logPath = CSTR("log/fwd");
 				else
 					logPath = CSTR("log\\fwd");
-				me->fwdLog->AddFileLog(logPath, IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, 0, 0);
-				me->fwdHdlr->SetLog(me->fwdLog, me->chkLogContent->IsChecked());
+				fwdLog->AddFileLog(logPath, IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, 0, 0);
+				fwdHdlr->SetLog(fwdLog, me->chkLogContent->IsChecked());
 			}
-			if (!me->svr->Start())
+			if (!svr->Start())
 			{
 				valid = false;
 				me->ui->ShowMsgOK(CSTR("Error in starting HTTP Server"), CSTR("HTTP Forwarder"), me);
@@ -90,22 +94,22 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 	}
 	else
 	{
-		SDEL_CLASS(me->svr);
-		SDEL_CLASS(me->fwdHdlr);
-		SDEL_CLASS(me->fwdLog);
+		me->svr.Delete();
+		me->fwdHdlr.Delete();
+		me->fwdLog.Delete();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
-	if (me->svr == 0)
+	if (me->svr.IsNull())
 	{
 		return;
 	}
-	SDEL_CLASS(me->svr);
-	SDEL_CLASS(me->fwdHdlr);
-	SDEL_CLASS(me->fwdLog);
+	me->svr.Delete();
+	me->fwdHdlr.Delete();
+	me->fwdLog.Delete();
 	me->txtPort->SetReadOnly(false);
 	me->txtFwdURL->SetReadOnly(false);
 	me->chkAllowKA->SetEnabled(true);
@@ -196,9 +200,9 @@ SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(Optional<UI::GUIClie
 
 SSWR::AVIRead::AVIRHTTPForwarderForm::~AVIRHTTPForwarderForm()
 {
-	SDEL_CLASS(this->svr);
-	SDEL_CLASS(this->fwdHdlr);
-	SDEL_CLASS(this->fwdLog);
+	this->svr.Delete();
+	this->fwdHdlr.Delete();
+	this->fwdLog.Delete();
 	this->ssl.Delete();
 	this->sslCert.Delete();
 	this->sslKey.Delete();

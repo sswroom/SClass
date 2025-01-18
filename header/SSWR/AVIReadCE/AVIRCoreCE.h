@@ -9,16 +9,14 @@ namespace SSWR
 		class AVIRCoreCE : public SSWR::AVIRead::AVIRCore
 		{
 		public:
-			AVIRCoreCE(UI::GUICore *ui);
+			AVIRCoreCE(NN<UI::GUICore> ui);
 			virtual ~AVIRCoreCE();
 
 			virtual void BeginLoad();
 			virtual void EndLoad();
-			virtual void OpenObject(IO::ParsedObject *pobj);
-			virtual void SaveData(UI::GUIForm *ownerForm, IO::ParsedObject *pobj, const WChar *dialogName);
-			virtual void OpenGSMModem(IO::Stream *modemPort);
-			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm);
-			virtual IO::Stream *OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
+			virtual void OpenObject(NN<IO::ParsedObject> pobj);
+			virtual void SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName);
+			virtual Optional<Media::Printer> SelectPrinter(Optional<UI::GUIForm> frm);
 		};
 	}
 }

@@ -53,14 +53,14 @@ namespace SSWR
 
 			Data::ArrayListArr<const UTF8Char> stacks;
 			Data::ArrayListArr<const UTF8Char> stacksMem;
-			Manage::Process *proc;
-			Manage::SymbolResolver *symbol;
+			NN<Manage::Process> proc;
+			NN<Manage::SymbolResolver> symbol;
 			Manage::ThreadContext::ContextType contextType;
 
 			static void __stdcall OnMyStackChg(AnyType userObj);
 			static void __stdcall OnMyStackDblClk(AnyType userObj, UOSInt index);
 		public:
-			AVIRThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId);
+			AVIRThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Manage::Process> proc, NN<Manage::SymbolResolver> symbol, UInt32 threadId);
 			virtual ~AVIRThreadInfoForm();
 
 			virtual void OnMonitorChanged();

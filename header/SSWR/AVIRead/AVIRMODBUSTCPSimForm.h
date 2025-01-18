@@ -32,9 +32,9 @@ namespace SSWR
 			};
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Net::MODBUSTCPListener *listener;
+			Optional<Net::MODBUSTCPListener> listener;
 			IO::LogTool log;
-			IO::MODBUSDevSim *currDev;
+			Optional<IO::MODBUSDevSim> currDev;
 
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUILabel> lblPort;

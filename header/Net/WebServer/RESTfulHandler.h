@@ -12,13 +12,13 @@ namespace Net
 		class RESTfulHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			DB::DBCache *dbCache;
+			NN<DB::DBCache> dbCache;
 			Bool noLinks;
 
 			void BuildJSON(NN<Text::JSONBuilder> json, NN<DB::DBRow> row);
 			void AppendVector(NN<Text::JSONBuilder> json, Text::CStringNN name, NN<Math::Geometry::Vector2D> vec);
 		public:
-			RESTfulHandler(DB::DBCache *dbCache);
+			RESTfulHandler(NN<DB::DBCache> dbCache);
 			virtual ~RESTfulHandler();
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);

@@ -3,16 +3,15 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/ModemController.h"
-#include "IO/StmData/MemoryData2.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "Media/GDIEngine.h"
 #include "SSWR/AVIReadCE/AVIRCoreCE.h"
-#include "UI/FileDialog.h"
-#include "UI/MessageDialog.h"
+#include "UI/GUIFileDialog.h"
 #include "UI/GUIForm.h"
 
-SSWR::AVIReadCE::AVIRCoreCE::AVIRCoreCE(UI::GUICore *ui) : SSWR::AVIRead::AVIRCore(ui)
+SSWR::AVIReadCE::AVIRCoreCE::AVIRCoreCE(NN<UI::GUICore> ui) : SSWR::AVIRead::AVIRCore(ui)
 {
-	NEW_CLASS(this->eng, Media::GDIEngine());
+	this->eng = ui->CreateDrawEngine();
 }
 
 SSWR::AVIReadCE::AVIRCoreCE::~AVIRCoreCE()
@@ -27,15 +26,14 @@ void SSWR::AVIReadCE::AVIRCoreCE::BeginLoad()
 void SSWR::AVIReadCE::AVIRCoreCE::EndLoad()
 {
 	this->batchLoad = false;
-	if (this->batchLyrs)
+	if (this->batchLyrs.NotNull())
 	{
 /*		AVIRead::AVIRGISForm *gisForm;
 		Map::MapEnv *env;
 		NEW_CLASS(env, Map::MapEnv(L"Untitled", 0xffc0c0ff, this->batchLyrs->GetItem(0)->GetCoordinateSystem()->Clone()));
 		NEW_CLASS(gisForm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, env));
 		gisForm->AddLayers(this->batchLyrs);*/
-		DEL_CLASS(this->batchLyrs);
-		this->batchLyrs = 0;
+		this->batchLyrs.Delete();
 //		InitForm(gisForm);
 	}
 }
@@ -181,55 +179,53 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 	}
 }
 
-void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObject *pobj, const WChar *dialogName)
+void SSWR::AVIReadCE::AVIRCoreCE::SaveData(NN<UI::GUIForm> ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	Data::ArrayList<IO::FileExporter*> exp;
-	this->exporters.GetSupportedExporters(&exp, pobj);
+	Data::ArrayListNN<IO::FileExporter> exp;
+	this->exporters.GetSupportedExporters(exp, pobj);
 	if (exp.GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
+		ui->ShowMsgOK(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
 	}
 	else
 	{
-		Data::ArrayList<IO::FileExporter*> exp2;
-		IO::FileExporter *fileExp;
+		Data::ArrayListNN<IO::FileExporter> exp2;
+		NN<IO::FileExporter> fileExp;
 		UTF8Char sbuff1[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UTF8Char sbuff2[256];
 		Text::StringBuilderUTF8 sb;
 
-		UI::FileDialog sfd(L"SSWR", L"AVIRead", dialogName, true);
+		NN<UI::GUIFileDialog> sfd = ui->NewFileDialog(L"SSWR", L"AVIRead", dialogName, true);
 		i = 0;
 		j = exp.GetCount();
 		while (i < j)
 		{
-			fileExp = exp.GetItem(i);
+			fileExp = exp.GetItemNoCheck(i);
 			k = 0;
 			while (fileExp->GetOutputName(k, sbuff1, sbuff2))
 			{
-				sfd.AddFilter(sbuff2, sbuff1);
+				sfd->AddFilter(Text::CStringNN::FromPtr(sbuff2), Text::CStringNN::FromPtr(sbuff1));
 				exp2.Add(fileExp);
 				k++;
 			}
 			i++;
 		}
-		if ((sptr = pobj->GetSourceName(sbuff1)) != 0)
+		sptr = pobj->GetSourceName(sbuff1);
+		if ((i = Text::StrLastIndexOfCharC(sbuff1, (UOSInt)(sptr - sbuff1), '.')) != INVALID_INDEX)
 		{
-			if ((i = Text::StrLastIndexOfCharC(sbuff1, (UOSInt)(sptr - sbuff1), '.')) != INVALID_INDEX)
-			{
-				sbuff1[i] = 0;
-				sptr = &sbuff1[i];
-			}
-			sfd.SetFileName(CSTRP(sbuff1, sptr));
+			sbuff1[i] = 0;
+			sptr = &sbuff1[i];
 		}
-		if (sfd.ShowDialog(ownerForm->GetHandle()))
+		sfd->SetFileName(CSTRP(sbuff1, sptr));
+		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{
-			IO::FileStream *fs;
+			NN<IO::FileStream> fs;
 			IO::FileExporter::SupportType suppType;
-			fileExp = exp2.GetItem(sfd.GetFilterIndex());
+			fileExp = exp2.GetItemNoCheck(sfd->GetFilterIndex());
 			suppType = fileExp->IsObjectSupported(pobj);
 			if (fileExp->GetParamCnt() > 0)
 			{
@@ -268,39 +264,27 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 			{
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
-					if (!fileExp->ExportFile(0, sfd.GetFileName()->ToCString(), pobj, 0))
+					if (!fileExp->ExportFile(0, sfd->GetFileName()->ToCString(), pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
+						ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 				}
 				else
 				{
-					NEW_CLASS(fs, IO::FileStream(sfd.GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!fileExp->ExportFile(fs, sfd.GetFileName()->ToCString(), pobj, 0))
+					NEW_CLASSNN(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
+						ui->ShowMsgOK(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
-					DEL_CLASS(fs);
+					fs.Delete();
 				}
 			}
 		}
+		sfd.Delete();
 	}
 }
 
-void SSWR::AVIReadCE::AVIRCoreCE::OpenGSMModem(IO::Stream *modemPort)
-{
-//	SSWR::AVIRead::AVIRGSMModemForm *frm;
-	IO::ModemController *modem;
-	IO::ATCommandChannel *channel;
-/*	NEW_CLASS(channel, IO::ATCommandChannel(modemPort));
-	NEW_CLASS(modem, IO::ModemController(channel));
-
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRGSMModemForm(ui->GetHInst(), 0, ui, this, modem, channel, modemPort));
-	InitForm(frm);
-	frm->Show();*/
-}
-
-Media::Printer *SSWR::AVIReadCE::AVIRCoreCE::SelectPrinter(UI::GUIForm *frm)
+Optional<Media::Printer> SSWR::AVIReadCE::AVIRCoreCE::SelectPrinter(Optional<UI::GUIForm> frm)
 {
 	Media::Printer *printer = 0;
 /*	SSWR::AVIRead::AVIRSelPrinterForm selFrm(this->ui->GetHInst(), 0, this->ui, this);
@@ -309,11 +293,4 @@ Media::Printer *SSWR::AVIReadCE::AVIRCoreCE::SelectPrinter(UI::GUIForm *frm)
 		printer = selFrm.printer;
 	}*/
 	return printer;
-}
-
-IO::Stream *SSWR::AVIReadCE::AVIRCoreCE::OpenStream(StreamType *st, UI::GUIForm *ownerFrm, Int32 defBaudRate, Bool allowReadOnly)
-{
-	IO::Stream *retStm = 0;
-
-	return retStm;
 }

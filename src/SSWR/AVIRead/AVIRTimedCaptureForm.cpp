@@ -170,13 +170,14 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 
 			sb.ClearStr();
 			me->txtFileName->GetText(sb);
-			NEW_CLASS(me->timedImageList, Media::TimedImageList(sb.ToCString()));
-			if (me->timedImageList->IsError())
+			NN<Media::TimedImageList> timedImageList;
+			NEW_CLASSNN(timedImageList, Media::TimedImageList(sb.ToCString()));
+			if (timedImageList->IsError())
 			{
-				DEL_CLASS(me->timedImageList);
-				me->timedImageList = 0;
+				timedImageList.Delete();
 				return;
 			}
+			me->timedImageList = timedImageList;
 			
 			UInt32 norm;
 			UInt32 denorm;
@@ -189,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			me->csConv = Media::CS::CSConverter::NewConverter(cfmt->fourcc, cfmt->bpp, me->videoInfo.pf, me->videoInfo.color, 0, 32, Media::PF_B8G8R8A8, dProfile, Media::ColorProfile::YUVT_UNKNOWN, 0);
 			if (me->csConv.IsNull() == 0)
 			{
-				DEL_CLASS(me->timedImageList);
+				timedImageList.Delete();
 				me->timedImageList = 0;
 				return;
 			}
@@ -206,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			else
 			{
 				me->csConv.Delete();
-				DEL_CLASS(me->timedImageList);
+				timedImageList.Delete();
 				me->timedImageList = 0;
 			}
 		}
@@ -229,7 +230,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
 	NN<Media::CS::CSConverter> csConv;
-	if (me->lastSaveTime + me->interval <= frameTime && me->csConv.SetTo(csConv))
+	NN<Media::TimedImageList> timedImageList;
+	if (me->lastSaveTime + me->interval <= frameTime && me->csConv.SetTo(csConv) && me->timedImageList.SetTo(timedImageList))
 	{
 		NN<Media::ImageList> imgList;
 		NN<Media::StaticImage> simg;
@@ -250,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 			IO::MemoryStream mstm;
 			me->exporter->ExportFile(mstm, CSTR("Temp"), imgList, param);
 			imgBuff = mstm.GetBuff(imgSize);
-			me->timedImageList->AddImage(dt.ToTicks(), imgBuff, imgSize, Media::TimedImageList::IF_JPG);
+			timedImageList->AddImage(dt.ToTicks(), imgBuff, imgSize, Media::TimedImageList::IF_JPG);
 		}
 		me->exporter->DeleteParam(param);
 		imgList.Delete();
@@ -272,7 +274,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
 		if (this->currCapture.SetTo(currCapture))
 			currCapture->Stop();
 		this->csConv.Delete();
-		SDEL_CLASS(this->timedImageList);
+		this->timedImageList.Delete();
 		this->isStarted = false;
 	}
 }
@@ -293,7 +295,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->isStarted = false;
 	this->frameCnt = 0;
 	this->saveCnt = 0;
-	NEW_CLASS(this->exporter, Exporter::GUIJPGExporter());
+	NEW_CLASSNN(this->exporter, Exporter::GUIJPGExporter());
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lbDevice = ui->NewListBox(*this, false);
@@ -341,7 +343,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->txtSaveCnt->SetReadOnly(true);
 	this->txtSaveCnt->SetRect(104, 28, 100, 23, false);
 
-	NEW_CLASS(this->captureMgr, Media::VideoCaptureMgr());
+	NEW_CLASSNN(this->captureMgr, Media::VideoCaptureMgr());
 	this->currCapture = 0;
 	this->captureMgr->GetDeviceList(this->devInfoList);
 	UOSInt cnt = this->devInfoList.GetCount();
@@ -368,8 +370,8 @@ SSWR::AVIRead::AVIRTimedCaptureForm::~AVIRTimedCaptureForm()
 	this->currCapture.Delete();
 	this->ReleaseFormats();
 	this->captureMgr->FreeDeviceList(this->devInfoList);
-	DEL_CLASS(this->exporter);
-	DEL_CLASS(this->captureMgr);
+	this->exporter.Delete();
+	this->captureMgr.Delete();
 }
 
 void SSWR::AVIRead::AVIRTimedCaptureForm::OnMonitorChanged()

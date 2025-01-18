@@ -102,8 +102,8 @@ namespace Manage
 			UInt8 vex[3];
 			Int32 segmId;
 			
-			Manage::AddressResolver *addrResol;
-			Manage::IMemoryReader *memReader;
+			Optional<Manage::AddressResolver> addrResol;
+			NN<Manage::IMemoryReader> memReader;
 
 			UInt64 stabesp;
 			void **codes;
@@ -126,12 +126,12 @@ namespace Manage
 		virtual ~DasmX86_64();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		Bool Disasm64In(NN<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
+		virtual Bool Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs); // true = succ
+		Bool Disasm64In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::IMemoryReader> memReader); // true = succ
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		NN<DasmX86_64_Sess> StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader);
+		NN<DasmX86_64_Sess> StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::IMemoryReader> memReader);
 		void EndDasm(NN<DasmX86_64_Sess> sess);
 		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_64_Sess> sess, UnsafeArray<UTF8Char> buff);
 		OSInt SessGetCodeOffset(NN<DasmX86_64_Sess> sess);

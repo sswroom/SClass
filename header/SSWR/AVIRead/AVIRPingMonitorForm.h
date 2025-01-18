@@ -40,16 +40,16 @@ namespace SSWR
 			NN<Net::TCPClientFactory> clif;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			Net::WebServer::WebListener *listener;
-			Net::EthernetWebHandler *webHdlr;
-			Net::SocketMonitor *socMon;
+			Optional<Net::WebServer::WebListener> listener;
+			Optional<Net::EthernetWebHandler> webHdlr;
+			Optional<Net::SocketMonitor> socMon;
 			Net::WhoisHandler whois;
 			Net::EthernetAnalyzer analyzer;
 			Sync::Mutex ipMut;
 			Data::FastMapNN<UInt32, IPInfo> ipMap;
 			Bool ipListUpdated;
 			Bool ipContUpdated;
-			IPInfo *currIP;
+			Optional<IPInfo> currIP;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblInfo;

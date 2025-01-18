@@ -22,8 +22,9 @@ void Media::VideoFilter::VideoFilterBase::OnFrameChange(Media::IVideoSource::Fra
 {
 }
 
-Media::VideoFilter::VideoFilterBase::VideoFilterBase(Media::IVideoSource *srcVideo)
+Media::VideoFilter::VideoFilterBase::VideoFilterBase(Optional<Media::IVideoSource> srcVideo)
 {
+	NN<Media::IVideoSource> nnsrcVideo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
@@ -32,9 +33,9 @@ Media::VideoFilter::VideoFilterBase::VideoFilterBase(Media::IVideoSource *srcVid
 	this->videoCb = 0;
 	this->userData = 0;
 
-	if (this->srcVideo)
+	if (this->srcVideo.SetTo(nnsrcVideo))
 	{
-		this->srcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
+		nnsrcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	}
 }
 
@@ -42,15 +43,16 @@ Media::VideoFilter::VideoFilterBase::~VideoFilterBase()
 {
 }
 
-void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Media::IVideoSource *srcVideo)
+void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Optional<Media::IVideoSource> srcVideo)
 {
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
+	NN<Media::IVideoSource> nnsrcVideo;
 	this->srcVideo = srcVideo;
-	if (this->srcVideo)
+	if (this->srcVideo.SetTo(nnsrcVideo))
 	{
-		this->srcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
+		nnsrcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	}
 	this->OnFrameChange(Media::IVideoSource::FC_SRCCHG);
 	if (this->fcCb)
@@ -61,21 +63,24 @@ void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Media::IVideoSource *sr
 
 UnsafeArrayOpt<UTF8Char> Media::VideoFilter::VideoFilterBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	if (this->srcVideo)
-		return this->srcVideo->GetSourceName(buff);
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
+		return srcVideo->GetSourceName(buff);
 	return 0;
 }
 
 void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
-	if (this->srcVideo)
-		this->srcVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
+		srcVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
 void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
-	if (this->srcVideo)
-		this->srcVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
+		srcVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 	else
 	{
 		cropLeft.Set(0);
@@ -87,9 +92,10 @@ void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLef
 
 Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		Bool succ = this->srcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
+		Bool succ = srcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 		if (succ)
 		{
 			info->Set(this->videoInfo);
@@ -101,9 +107,10 @@ Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info
 
 Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		this->srcVideo->Init(OnVideoFrame, OnVideoChange, this);
+		srcVideo->Init(OnVideoFrame, OnVideoChange, this);
 	}
 	this->videoCb = cb;
 	this->fcCb = fcCb;
@@ -113,114 +120,127 @@ Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCall
 
 Bool Media::VideoFilter::VideoFilterBase::Start()
 {
-	if (this->srcVideo)
-		return this->srcVideo->Start();
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
+		return srcVideo->Start();
 	return false;
 }
 
 void Media::VideoFilter::VideoFilterBase::Stop()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		this->srcVideo->Stop();
+		srcVideo->Stop();
 	}
 }
 
 Bool Media::VideoFilter::VideoFilterBase::IsRunning()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->IsRunning();
+		return srcVideo->IsRunning();
 	}
 	return false;
 }
 
 Data::Duration Media::VideoFilter::VideoFilterBase::GetStreamTime()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->GetStreamTime();
+		return srcVideo->GetStreamTime();
 	}
 	return 0;
 }
 
 Bool Media::VideoFilter::VideoFilterBase::CanSeek()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->CanSeek();
+		return srcVideo->CanSeek();
 	}
 	return false;
 }
 
 Data::Duration Media::VideoFilter::VideoFilterBase::SeekToTime(Data::Duration time)
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->SeekToTime(time);
+		return srcVideo->SeekToTime(time);
 	}
 	return false;
 }
 
 Bool Media::VideoFilter::VideoFilterBase::IsRealTimeSrc()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->IsRealTimeSrc();
+		return srcVideo->IsRealTimeSrc();
 	}
 	return false;
 }
 
 Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
+		return srcVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 	}
 	return false;
 }
 
 UOSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->GetDataSeekCount();
+		return srcVideo->GetDataSeekCount();
 	}
 	return 0;
 }
 
 Bool Media::VideoFilter::VideoFilterBase::HasFrameCount()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->HasFrameCount();
+		return srcVideo->HasFrameCount();
 	}
 	return false;
 }
 
 UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->GetFrameCount();
+		return srcVideo->GetFrameCount();
 	}
 	return 0;
 }
 
 Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameIndex)
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		return this->srcVideo->GetFrameTime(frameIndex);
+		return srcVideo->GetFrameTime(frameIndex);
 	}
 	return 0;
 }
 
 void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	if (this->srcVideo)
+	NN<Media::IVideoSource> srcVideo;
+	if (this->srcVideo.SetTo(srcVideo))
 	{
-		this->srcVideo->EnumFrameInfos(cb, userData);
+		srcVideo->EnumFrameInfos(cb, userData);
 	}
 }
 

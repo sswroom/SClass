@@ -33,17 +33,17 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<Media::MediaFile> files;
-			Media::IMediaSource *popMedia;
+			Optional<Media::IMediaSource> popMedia;
 
-			Media::Decoder::AudioDecoderFinder *adecoders;
-			Media::Decoder::VideoDecoderFinder *decoders;
+			NN<Media::Decoder::AudioDecoderFinder> adecoders;
+			NN<Media::Decoder::VideoDecoderFinder> decoders;
 			Optional<Media::IAudioRenderer> audRenderer;
-			Media::RefClock *clk;
+			NN<Media::RefClock> clk;
 			Optional<Media::IAudioSource> activeAudio;
 			Optional<Media::IVideoSource> activeVideo;
-			Media::IAudioSource *currADecoder;
-			Media::IVideoSource *currDecoder;
-			Media::ChapterInfo *currChapters;
+			Optional<Media::IAudioSource> currADecoder;
+			Optional<Media::IVideoSource> currDecoder;
+			Optional<Media::ChapterInfo> currChapters;
 
 			Bool playing;
 			UOSInt pbLastChapter;

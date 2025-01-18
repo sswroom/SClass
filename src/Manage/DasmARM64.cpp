@@ -444,15 +444,16 @@ Bool __stdcall DasmARM64_13(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 
 Bool __stdcall DasmARM64_14(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 {
+	NN<Manage::AddressResolver> addrResol;
 	UInt32 code = ReadUInt32(sess->codeBuff);
 	Int32 imm26 = DasmARM64_ExtractSigned(code, 0, 26);
 	UInt64 addr = (UInt64)((Int64)sess->regs.PC + (imm26 * 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("b "));
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.PC = addr;
@@ -971,11 +972,12 @@ Bool __stdcall DasmARM64_54(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 		}
 		UInt64 addr = (UInt64)((Int64)sess->regs.PC + (ofst * 4));
 		sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
-		if (sess->addrResol)
+		NN<Manage::AddressResolver> addrResol;
+		if (sess->addrResol.SetTo(addrResol))
 		{
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 			UnsafeArray<UTF8Char> sptr = sess->sbuff;
-			sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
+			sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 			if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 			{
 				sess->endType = Manage::DasmARM64::ET_EXIT;
@@ -1351,14 +1353,15 @@ Bool __stdcall DasmARM64_90(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 	Int32 imm = (DasmARM64_ExtractSigned(code, 5, 19) << 2) | (Int32)((code >> 29) & 3);
 	UInt64 addr = (UInt64)(((Int64)sess->regs.PC & ~0xfffLL) + imm);
 	UInt64 *xd;
+	NN<Manage::AddressResolver> addrResol;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adrp "));
 	sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, rd, &xd);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 	}
 	*xd = addr;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
@@ -1420,6 +1423,7 @@ Bool __stdcall DasmARM64_94(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 {
 	UInt32 code = ReadUInt32(sess->codeBuff);
 	Int32 imm26 = (Int32)code & 0x3FFFFFF;
+	NN<Manage::AddressResolver> addrResol;
 	if (imm26 & 0x2000000)
 	{
 		imm26 = -0x2000000 + (imm26 & 0x1FFFFFF);
@@ -1427,12 +1431,12 @@ Bool __stdcall DasmARM64_94(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 	UInt64 addr = (UInt64)((Int64)sess->regs.PC + (imm26 * 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bl "));
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		UnsafeArray<UTF8Char> sptr;
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 		sptr = sess->sbuff;
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 		if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM64::ET_EXIT;
@@ -1706,15 +1710,16 @@ Bool __stdcall DasmARM64_B5(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 	UInt32 rt = code & 0x1F;
 	Int32 imm19 = (Int32)((code >> 5) & 0x7FFFF);
 	UInt64* xt;
+	NN<Manage::AddressResolver> addrResol;
 	UInt64 addr = (UInt64)((Int64)sess->regs.PC + (imm19 * 4));
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cbnz "));
 	sess->sbuff = DasmARM64_ParseReg64(sess, sess->sbuff, rt, &xt);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 	sess->sbuff = Text::StrHexVal64(sess->sbuff, addr);
-	if (sess->addrResol)
+	if (sess->addrResol.SetTo(addrResol))
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
+		sess->sbuff = addrResol->ResolveName(sess->sbuff, addr).Or(sess->sbuff);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.PC += 4;
@@ -2541,7 +2546,7 @@ Text::CStringNN Manage::DasmARM64::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
