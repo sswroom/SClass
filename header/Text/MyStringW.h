@@ -80,8 +80,8 @@ namespace Text
 	UnsafeArray<UTF16Char> StrHexByte(UnsafeArray<UTF16Char> oriStr, UInt8 val);
 	UnsafeArray<UTF32Char> StrHexByte(UnsafeArray<UTF32Char> oriStr, UInt8 val);
 
-	UnsafeArray<UTF16Char> StrHexBytes(UnsafeArray<UTF16Char> oriStr, UnsafeArray<const UInt8> buff, OSInt buffSize, UTF16Char seperator);
-	UnsafeArray<UTF32Char> StrHexBytes(UnsafeArray<UTF32Char> oriStr, UnsafeArray<const UInt8> buff, OSInt buffSize, UTF32Char seperator);
+	UnsafeArray<UTF16Char> StrHexBytes(UnsafeArray<UTF16Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF16Char seperator);
+	UnsafeArray<UTF32Char> StrHexBytes(UnsafeArray<UTF32Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF32Char seperator);
 	Int64 StrHex2Int64WC(UnsafeArray<const UTF16Char> str);
 	Int64 StrHex2Int64WC(UnsafeArray<const UTF32Char> str);
 	Int32 StrHex2Int32WC(UnsafeArray<const UTF16Char> str);

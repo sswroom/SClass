@@ -17,7 +17,7 @@ namespace Media
 	private:
 		Sync::ParallelTask ptask;
 
-		static void TaskFunc(AnyType userObj);
+		static void __stdcall TaskFunc(AnyType userObj);
 	public:
 		LRGBLimiter();
 		~LRGBLimiter();

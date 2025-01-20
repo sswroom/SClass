@@ -8,7 +8,7 @@
 #include <setupapi.h>
 
 
-Media::DDCReader::DDCReader(AnyType hMon)
+Media::DDCReader::DDCReader(Optional<MonitorHandle> hMon)
 {
 	UnsafeArray<UInt8> edid;
 	this->edid = 0;
@@ -19,7 +19,7 @@ Media::DDCReader::DDCReader(AnyType hMon)
 
 	MONITORINFOEXW monInfo;
 	monInfo.cbSize = sizeof(monInfo);
-	if (!GetMonitorInfoW((HMONITOR)hMon.p, &monInfo))
+	if (!GetMonitorInfoW((HMONITOR)hMon.OrNull(), &monInfo))
 	{
 		return;
 	}

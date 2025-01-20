@@ -37,10 +37,10 @@ NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 	return this->ssid;
 }
 
-Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
+Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, AnyType bssEntry)
 {
 	OSInt i;
-	WLAN_BSS_ENTRY *bss = (WLAN_BSS_ENTRY*)bssEntry;
+	NN<WLAN_BSS_ENTRY> bss = bssEntry.GetNN<WLAN_BSS_ENTRY>();
 	this->ssid = Text::String::New(ssid);
 	this->phyId = bss->uPhyId;
 	memcpy(this->mac, bss->dot11Bssid, 6);
@@ -61,7 +61,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
 		this->chipsetOUIs[i][2] = 0;
 		i++;
 	}
-	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry;
+	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry.GetOSInt();
 	const UInt8 *ptrEnd = ptrCurr + bss->ulIeSize;
 	NN<Net::WirelessLANIE> ie;
 	Text::StringBuilderUTF8 sbTmp;
@@ -118,28 +118,28 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CStringNN ssid, const void *bssEntry)
 						case 0x1021: //Manu
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
-							SDEL_STRING(this->devManuf);
-							this->devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+							OPTSTR_DEL(this->devManuf);
+							this->devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							break;
 						case 0x1023: //Model
-							if (this->devModel == 0)
+							if (this->devModel.IsNull())
 							{
 								sbTmp.ClearStr();
 								sbTmp.AppendC(&currItem[4], itemSize);
-								this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+								this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							}
 							break;
 						case 0x1024: //Model Number
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
-							SDEL_STRING(this->devModel);
-							this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+							OPTSTR_DEL(this->devModel);
+							this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							break;
 						case 0x1042: //Serial
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
-							SDEL_STRING(this->devSN);
-							this->devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength()).Ptr();
+							OPTSTR_DEL(this->devSN);
+							this->devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							break;
 						}
 						currItem += itemSize + 4; 
@@ -183,9 +183,9 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 		ie.Delete();
 	}
 	this->ssid->Release();
-	SDEL_STRING(this->devManuf);
-	SDEL_STRING(this->devModel);
-	SDEL_STRING(this->devSN);
+	OPTSTR_DEL(this->devManuf);
+	OPTSTR_DEL(this->devModel);
+	OPTSTR_DEL(this->devSN);
 }
 
 NN<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
@@ -198,7 +198,7 @@ UInt32 Net::WirelessLAN::BSSInfo::GetPHYId()
 	return this->phyId;
 }
 
-const UInt8 *Net::WirelessLAN::BSSInfo::GetMAC()
+UnsafeArray<const UInt8> Net::WirelessLAN::BSSInfo::GetMAC()
 {
 	return this->mac;
 }
@@ -228,22 +228,22 @@ Double Net::WirelessLAN::BSSInfo::GetFreq()
 	return this->freq;
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetManuf()
+Optional<Text::String> Net::WirelessLAN::BSSInfo::GetManuf()
 {
 	return this->devManuf;
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetModel()
+Optional<Text::String> Net::WirelessLAN::BSSInfo::GetModel()
 {
 	return this->devModel;
 }
 
-Text::String *Net::WirelessLAN::BSSInfo::GetSN()
+Optional<Text::String> Net::WirelessLAN::BSSInfo::GetSN()
 {
 	return this->devSN;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetCountry()
+UnsafeArrayOpt<const UTF8Char> Net::WirelessLAN::BSSInfo::GetCountry()
 {
 	if (this->devCountry[0])
 		return this->devCountry;
@@ -251,7 +251,7 @@ const UTF8Char *Net::WirelessLAN::BSSInfo::GetCountry()
 		return 0;
 }
 
-const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
+UnsafeArrayOpt<const UInt8> Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 {
 	if (index < 0 || index >= WLAN_OUI_CNT)
 		return 0;
@@ -293,19 +293,19 @@ Net::WirelessLAN::WirelessLAN()
 
 Net::WirelessLAN::~WirelessLAN()
 {
-	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
-	DEL_CLASS(core);
+	NN<Net::WLANWindowsCore> core = this->clsData.GetNN<Net::WLANWindowsCore>();
+	core.Delete();
 }
 
 Bool Net::WirelessLAN::IsError()
 {
-	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
+	NN<Net::WLANWindowsCore> core = this->clsData.GetNN<Net::WLANWindowsCore>();
 	return core->IsError();
 }
 
 UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
-	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
+	NN<Net::WLANWindowsCore> core = this->clsData.GetNN<Net::WLANWindowsCore>();
 	WLAN_INTERFACE_INFO_LIST *list;
 	UOSInt retVal = 0;
 	if (ERROR_SUCCESS == core->EnumInterfaces(0, (void**)&list))
@@ -318,7 +318,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::In
 		{
 			NN<Net::WirelessLAN::Interface> interf;
 			NN<Text::String> s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
-			NEW_CLASSNN(interf, Net::WLANWindowsInterface(s.Ptr(), &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
+			NEW_CLASSNN(interf, Net::WLANWindowsInterface(s.Ptr(), &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core.Ptr()));
 			s->Release();
 			outArr->Add(interf);
 			retVal++;

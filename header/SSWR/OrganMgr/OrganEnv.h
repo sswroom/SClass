@@ -281,12 +281,12 @@ namespace SSWR
 			virtual Bool AddDataFile(Text::CStringNN fileName) = 0;
 			NN<Data::ArrayListNN<DataFileInfo>> GetDataFiles();
 			virtual Bool DelDataFile(NN<DataFileInfo> dataFile) = 0;
-			static void ReleaseDataFile(NN<DataFileInfo> dataFile);
+			static void __stdcall ReleaseDataFile(NN<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos) = 0;
 			virtual Optional<Map::GPSTrack> OpenGPSTrack(NN<DataFileInfo> dataFile) = 0;
 
-			static void ReleaseSpecies(NN<SpeciesInfo> species);
-			static void ReleaseUserFile(NN<UserFileInfo> userFile);
+			static void __stdcall ReleaseSpecies(NN<SpeciesInfo> species);
+			static void __stdcall ReleaseUserFile(NN<UserFileInfo> userFile);
 			virtual void UpdateUserFileCrop(NN<UserFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom) = 0;
 			virtual void UpdateUserFileRot(NN<UserFileInfo> userFile, Int32 rotType) = 0;
 			virtual Bool UpdateUserFilePos(NN<UserFileInfo> userFile, const Data::Timestamp &captureTime, Double lat, Double lon) = 0;
@@ -330,7 +330,7 @@ namespace SSWR
 			void SetCurrCategory(NN<Category> currCate);
 		protected:
 			virtual void LoadGroupTypes() = 0;
-			static void FreeCategory(NN<Category> cate);
+			static void __stdcall FreeCategory(NN<Category> cate);
 			Optional<Media::EXIFData> ParseJPGExif(Text::CStringNN fileName);
 			Optional<Media::EXIFData> ParseTIFExif(Text::CStringNN fileName);
 

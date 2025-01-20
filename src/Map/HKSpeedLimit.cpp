@@ -7,7 +7,7 @@
 #define LATLONMUL 40
 #include <stdio.h>
 
-void Map::HKSpeedLimit::FreeRoute(NN<RouteInfo> route)
+void __stdcall Map::HKSpeedLimit::FreeRoute(NN<RouteInfo> route)
 {
 	route->vecOri.Delete();
 	route.Delete();

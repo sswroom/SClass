@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/MQTTFailoverClient.h"
 
-void Net::MQTTFailoverClient::FreeClient(NN<ClientInfo> cliInfo)
+void __stdcall Net::MQTTFailoverClient::FreeClient(NN<ClientInfo> cliInfo)
 {
 	MemFreeNN(cliInfo);
 }

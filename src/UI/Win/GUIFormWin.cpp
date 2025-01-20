@@ -457,7 +457,7 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 		HMONITOR hMon = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
 		if (hMon)
 		{
-			this->ui->GetMonitorDPIs((MonitorHandle*)hMon, &this->hdpi, &this->ddpi);
+			this->ui->GetMonitorDPIs((MonitorHandle*)hMon, this->hdpi, this->ddpi);
 			initW = initW * this->hdpi / this->ddpi;
 			initH = initH * this->hdpi / this->ddpi;
 #if defined(_WIN32_WCE)

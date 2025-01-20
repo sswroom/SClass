@@ -9,14 +9,14 @@
 #define GetMonitorInfoW GetMonitorInfo
 #endif
 
-Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
+Media::MonitorInfo::MonitorInfo(Optional<MonitorHandle> hMonitor)
 {
 	WChar wbuff[512];
 	UnsafeArray<WChar> sarr[3];
 	UOSInt i;
 	MONITORINFOEXW info;
 	info.cbSize = sizeof(info);
-	if (GetMonitorInfoW((HMONITOR)hMonitor, &info))
+	if (GetMonitorInfoW((HMONITOR)hMonitor.OrNull(), &info))
 	{
 #if defined(_WIN32_WCE)
 		this->name = Text::String::NewNotNull(info.szDevice);

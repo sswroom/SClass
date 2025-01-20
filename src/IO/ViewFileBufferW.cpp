@@ -41,7 +41,7 @@ IO::ViewFileBuffer::~ViewFileBuffer()
 	}
 }
 
-UInt8 *IO::ViewFileBuffer::GetPointer()
+UnsafeArrayOpt<UInt8> IO::ViewFileBuffer::GetPointer()
 {
 	if (fileHandle == 0 || mapHandle == 0)
 	{
@@ -69,9 +69,10 @@ UInt64 IO::ViewFileBuffer::GetLength()
 
 void IO::ViewFileBuffer::FreePointer()
 {
-	if (this->filePtr)
+	UnsafeArray<UInt8> filePtr;
+	if (this->filePtr.SetTo(filePtr))
 	{
-		UnmapViewOfFile(this->filePtr);
+		UnmapViewOfFile(this->filePtr.Ptr());
 		this->filePtr = 0;
 	}
 }

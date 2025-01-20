@@ -337,14 +337,14 @@ NN<Data::ArrayListNN<SSWR::OrganMgr::DataFileInfo>> SSWR::OrganMgr::OrganEnv::Ge
 	return this->dataFiles;
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(NN<DataFileInfo> dataFile)
+void __stdcall SSWR::OrganMgr::OrganEnv::ReleaseDataFile(NN<DataFileInfo> dataFile)
 {
 	dataFile->oriFileName->Release();
 	dataFile->fileName->Release();
 	MemFreeNN(dataFile);
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(NN<SpeciesInfo> species)
+void __stdcall SSWR::OrganMgr::OrganEnv::ReleaseSpecies(NN<SpeciesInfo> species)
 {
 	UOSInt i;
 	UOSInt j;
@@ -363,7 +363,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(NN<SpeciesInfo> species)
 	species.Delete();
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(NN<UserFileInfo> userFile)
+void __stdcall SSWR::OrganMgr::OrganEnv::ReleaseUserFile(NN<UserFileInfo> userFile)
 {
 	userFile->oriFileName->Release();
 	userFile->dataFileName->Release();
@@ -592,7 +592,7 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(NN<Category> currCate)
 }
 
 
-void SSWR::OrganMgr::OrganEnv::FreeCategory(NN<Category> cate)
+void __stdcall SSWR::OrganMgr::OrganEnv::FreeCategory(NN<Category> cate)
 {
 	cate->chiName->Release();
 	cate->dirName->Release();

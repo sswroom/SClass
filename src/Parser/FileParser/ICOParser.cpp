@@ -265,7 +265,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::St
 				}
 				maskPtr = sptr + ((OSInt)imgWidth * 3 + imgByteAdd) * (OSInt)imgHeight;
 
-				if ((OSInt)thisSize != (imgWidth * 3 + (OSInt)imgByteAdd + maskByteSize + maskByteAdd) * (OSInt)imgHeight + 40)
+				if ((OSInt)thisSize != ((OSInt)imgWidth * 3 + (OSInt)imgByteAdd + maskByteSize + maskByteAdd) * (OSInt)imgHeight + 40)
 				{
 					DEL_CLASS(imgList);
 					return 0;

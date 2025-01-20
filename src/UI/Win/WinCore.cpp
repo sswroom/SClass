@@ -117,7 +117,7 @@ NN<Media::DrawEngine> UI::Win::WinCore::CreateDrawEngine()
 
 typedef HRESULT (WINAPI *GetDpiForMonitorFunc)(HMONITOR hmonitor, OSInt dpiType, UINT *dpiX, UINT *dpiY);
 
-Double UI::Win::WinCore::GetMagnifyRatio(MonitorHandle *hMonitor)
+Double UI::Win::WinCore::GetMagnifyRatio(Optional<MonitorHandle> hMonitor)
 {
 	Double osdpi = 0;
 	IO::Library lib((const UTF8Char*)"Shcore.dll");
@@ -128,7 +128,7 @@ Double UI::Win::WinCore::GetMagnifyRatio(MonitorHandle *hMonitor)
 		{
 			UINT xdpi;
 			UINT ydpi;
-			if (GetDpiForMonitorF((HMONITOR)hMonitor, 0, &xdpi, &ydpi) == 0)
+			if (GetDpiForMonitorF((HMONITOR)hMonitor.OrNull(), 0, &xdpi, &ydpi) == 0)
 			{
 				osdpi = xdpi;
 			}
@@ -215,7 +215,7 @@ Math::Coord2D<OSInt> UI::Win::WinCore::GetCursorPos()
 
 typedef BOOL (WINAPI* SETAUTOROTATION)(BOOL bEnable);
 
-void UI::Win::WinCore::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
+void UI::Win::WinCore::SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot)
 {
 	IO::Library lib((const UTF8Char*)"user32.dll");
 	SETAUTOROTATION SetAutoRotation = (SETAUTOROTATION)lib.GetFuncNum(2507);
@@ -225,21 +225,17 @@ void UI::Win::WinCore::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation
 	}
 }
 
-void UI::Win::WinCore::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
+void UI::Win::WinCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi)
 {
 	if (this->monMgr)
 	{
-		if (hdpi)
-			*hdpi = this->monMgr->GetMonitorHDPI(hMonitor);
-		if (ddpi)
-			*ddpi = this->monMgr->GetMonitorDDPI(hMonitor);
+		hdpi.Set(this->monMgr->GetMonitorHDPI(hMonitor));
+		ddpi.Set(this->monMgr->GetMonitorDDPI(hMonitor));
 	}
 	else
 	{
-		if (hdpi)
-			*hdpi = 96.0;
-		if (ddpi)
-			*ddpi = 96.0;
+		hdpi.Set(96.0);
+		ddpi.Set(96.0);
 	}
 }
 

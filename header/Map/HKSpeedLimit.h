@@ -24,7 +24,7 @@ namespace Map
 		Math::RectAreaDbl bounds;
 		Data::FastMapNN<Int64, Data::ArrayList<Int32>> indexMap;
 
-		static void FreeRoute(NN<RouteInfo> route);
+		static void __stdcall FreeRoute(NN<RouteInfo> route);
 		void FreeIndex();
 		void BuildIndex();
 		void AppendRouteIds(NN<Data::ArrayList<Int32>> routeList, Int32 x, Int32 y);

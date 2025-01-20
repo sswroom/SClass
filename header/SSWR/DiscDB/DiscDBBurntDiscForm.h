@@ -95,7 +95,7 @@ namespace SSWR
 
 			void BurntFileUpdateVideo(NN<BurntFile> file);
 			NN<BurntFile> BurntFileNew(Text::CStringNN fileName, Text::CStringNN relPath, UInt64 fileSize);
-			static void BurntFileFree(NN<BurntFile> file);
+			static void __stdcall BurntFileFree(NN<BurntFile> file);
 
 			MovieCols *MovieColsNew(Text::CStringNN fileName); //
 			static void MovieColsFree(MovieCols *anime);

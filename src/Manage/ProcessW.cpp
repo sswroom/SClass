@@ -1212,10 +1212,10 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	return 0;
 }
 
-UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
+UOSInt Manage::Process::ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UOSInt reqSize)
 {
 	SIZE_T size;
-	if (ReadProcessMemory(this->handle, (void*)addr, buff, reqSize, &size))
+	if (ReadProcessMemory(this->handle, (void*)addr, buff.Ptr(), reqSize, &size))
 	{
 		return size;
 	}

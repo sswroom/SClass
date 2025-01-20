@@ -1345,7 +1345,7 @@ UnsafeArray<UTF32Char> Text::StrHexByte(UnsafeArray<UTF32Char> oriStr, UInt8 val
 	return &oriStr[2];
 }
 
-UnsafeArray<UTF16Char> Text::StrHexBytes(UnsafeArray<UTF16Char> oriStr, UnsafeArray<const UInt8> buff, OSInt buffSize, UTF16Char seperator)
+UnsafeArray<UTF16Char> Text::StrHexBytes(UnsafeArray<UTF16Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF16Char seperator)
 {
 	if (seperator == 0)
 	{
@@ -1366,7 +1366,7 @@ UnsafeArray<UTF16Char> Text::StrHexBytes(UnsafeArray<UTF16Char> oriStr, UnsafeAr
 	return oriStr;
 }
 
-UnsafeArray<UTF32Char> Text::StrHexBytes(UnsafeArray<UTF32Char> oriStr, UnsafeArray<const UInt8> buff, OSInt buffSize, UTF32Char seperator)
+UnsafeArray<UTF32Char> Text::StrHexBytes(UnsafeArray<UTF32Char> oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF32Char seperator)
 {
 	if (seperator == 0)
 	{

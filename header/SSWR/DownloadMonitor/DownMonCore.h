@@ -89,7 +89,7 @@ namespace SSWR
 			void SetFileEndHandler(FileEndHandler hdlr, void *userObj);
 			Text::String *GetListFile();
 
-			static void FileFree(NN<FileInfo> file);
+			static void __stdcall FileFree(NN<FileInfo> file);
 			Bool FileAdd(Int32 id, Int32 webType, NN<Text::String> dbName);
 			Optional<FileInfo> FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage);
 			Int32 FileGetByName(Text::CStringNN fileName, OutParam<Int32> webType);
