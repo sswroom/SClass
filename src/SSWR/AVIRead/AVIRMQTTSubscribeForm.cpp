@@ -268,7 +268,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 	dt.SetCurrTimeUTC();
 	NN<TopicStatus> topicSt;
 	Sync::MutexUsage mutUsage(me->topicMut);
-	if (!me->topicMap.Get(topic).SetTo(topicSt))
+	if (!me->topicMap.GetC(topic).SetTo(topicSt))
 	{
 		topicSt = MemAllocNN(TopicStatus);
 		topicSt->topic = Text::String::New(topic);
@@ -278,7 +278,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
-		me->topicMap.Put(topic, topicSt);
+		me->topicMap.PutC(topic, topicSt);
 		me->topicListChanged = true;
 	}
 	else

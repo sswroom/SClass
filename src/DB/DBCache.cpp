@@ -9,7 +9,7 @@ Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(Text::CStringNN table
 {
 	NN<DB::DBCache::TableInfo> table;
 	Sync::MutexUsage mutUsage(this->tableMut);
-	if (this->tableMap.Get(tableName).SetTo(table))
+	if (this->tableMap.GetC(tableName).SetTo(table))
 		return table;
 	mutUsage.EndUse();
 	NN<DB::TableDef> def;

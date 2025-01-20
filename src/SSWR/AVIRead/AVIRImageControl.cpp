@@ -448,7 +448,7 @@ UnsafeArrayOpt<Double> SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CSt
 	UnsafeArray<Double> gammaParam;
 	NN<SSWR::AVIRead::AVIRImageControl::CameraCorr> camera;
 	Sync::MutexUsage mutUsage(this->cameraMut);
-	if (this->cameraMap.Get(cameraName).SetTo(camera))
+	if (this->cameraMap.GetC(cameraName).SetTo(camera))
 	{
 		mutUsage.EndUse();
 		gammaCnt.Set(camera->gammaCnt);
@@ -457,7 +457,7 @@ UnsafeArrayOpt<Double> SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CSt
 	camera = MemAllocNN(SSWR::AVIRead::AVIRImageControl::CameraCorr);
 	camera->gammaCnt = 0;
 	camera->gammaParam = 0;
-	this->cameraMap.Put(cameraName, camera);
+	this->cameraMap.PutC(cameraName, camera);
 
 	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, cameraName);

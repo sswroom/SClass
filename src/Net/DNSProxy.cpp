@@ -34,7 +34,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 	if (reqType == 1)
 	{
 		Sync::MutexUsage reqv4MutUsage(me->reqv4Mut);
-		if (me->reqv4Map.Get(reqName).SetTo(req))
+		if (me->reqv4Map.GetC(reqName).SetTo(req))
 		{
 			reqv4MutUsage.EndUse();
 			if (req->status == NS_CUSTOM)
@@ -80,7 +80,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 			req->recSize = 0;
 			req->reqTime = currTime.AddMS(-REQTIMEOUT - REQTIMEOUT);
 			Sync::MutexUsage mutUsage(req->mut);
-			me->reqv4Map.Put(reqName, req);
+			me->reqv4Map.PutC(reqName, req);
 			me->reqv4Updated = true;
 			reqv4MutUsage.EndUse();
 
@@ -183,7 +183,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 	else if (reqType == 28)
 	{
 		Sync::MutexUsage reqv6MutUsage(me->reqv6Mut);
-		if (me->reqv6Map.Get(reqName).SetTo(req))
+		if (me->reqv6Map.GetC(reqName).SetTo(req))
 		{
 			reqv6MutUsage.EndUse();
 			if (req->status == NS_CUSTOM)
@@ -229,7 +229,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 			req->recSize = 0;
 			req->reqTime = currTime.AddMS(-REQTIMEOUT - REQTIMEOUT);
 			Sync::MutexUsage mutUsage(req->mut);
-			me->reqv6Map.Put(reqName, req);
+			me->reqv6Map.PutC(reqName, req);
 			me->reqv6Updated = true;
 			reqv6MutUsage.EndUse();
 
@@ -259,7 +259,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 	else
 	{
 		Sync::MutexUsage reqothMutUsage(me->reqothMut);
-		if (me->reqothMap.Get(reqName).SetTo(req))
+		if (me->reqothMap.GetC(reqName).SetTo(req))
 		{
 			reqothMutUsage.EndUse();
 			Sync::MutexUsage mutUsage(req->mut);
@@ -292,7 +292,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(AnyType userObj, Text::CStringNN reqN
 			req->recSize = 0;
 			req->reqTime = currTime.AddMS(-REQTIMEOUT - REQTIMEOUT);
 			Sync::MutexUsage mutUsage(req->mut);
-			me->reqothMap.Put(reqName, req);
+			me->reqothMap.PutC(reqName, req);
 			me->reqothUpdated = true;
 			reqothMutUsage.EndUse();
 
@@ -816,7 +816,7 @@ Bool Net::DNSProxy::GetRequestInfov4(Text::CStringNN req, NN<Data::ArrayListNN<N
 {
 	NN<RequestResult> result;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
-	if (this->reqv4Map.Get(req).SetTo(result))
+	if (this->reqv4Map.GetC(req).SetTo(result))
 	{
 		mutUsage.EndUse();
 		Sync::MutexUsage mutUsage(result->mut);
@@ -835,7 +835,7 @@ Bool Net::DNSProxy::GetRequestInfov6(Text::CStringNN req, NN<Data::ArrayListNN<N
 {
 	NN<RequestResult> result;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
-	if (this->reqv6Map.Get(req).SetTo(result))
+	if (this->reqv6Map.GetC(req).SetTo(result))
 	{
 		mutUsage.EndUse();
 		Sync::MutexUsage mutUsage(result->mut);
@@ -854,7 +854,7 @@ Bool Net::DNSProxy::GetRequestInfoOth(Text::CStringNN req, NN<Data::ArrayListNN<
 {
 	NN<RequestResult> result;
 	Sync::MutexUsage mutUsage(this->reqothMut);
-	if (this->reqothMap.Get(req).SetTo(result))
+	if (this->reqothMap.GetC(req).SetTo(result))
 	{
 		mutUsage.EndUse();
 		Sync::MutexUsage mutUsage(result->mut);
@@ -972,14 +972,14 @@ void Net::DNSProxy::SetCustomAnswer(Text::CStringNN name, NN<const Net::SocketUt
 		NN<RequestResult> req;
 		Sync::MutexUsage reqv4MutUsage(this->reqv4Mut);
 		Sync::MutexUsage mutUsage;
-		if (!this->reqv4Map.Get(name).SetTo(req))
+		if (!this->reqv4Map.GetC(name).SetTo(req))
 		{
 			NEW_CLASSNN(req, RequestResult());
 			req->status = NS_CUSTOM;
 			req->recSize = 0;
 			req->reqTime = 0;
 			mutUsage.ReplaceMutex(req->mut);
-			this->reqv4Map.Put(name, req);
+			this->reqv4Map.PutC(name, req);
 			this->reqv4Updated = true;
 			reqv4MutUsage.EndUse();
 		}
@@ -999,14 +999,14 @@ void Net::DNSProxy::SetCustomAnswer(Text::CStringNN name, NN<const Net::SocketUt
 		NN<RequestResult> req;
 		Sync::MutexUsage reqv6MutUsage(this->reqv6Mut);
 		Sync::MutexUsage mutUsage;
-		if (!this->reqv6Map.Get(name).SetTo(req))
+		if (!this->reqv6Map.GetC(name).SetTo(req))
 		{
 			NEW_CLASSNN(req, RequestResult());
 			req->status = NS_CUSTOM;
 			req->recSize = 0;
 			req->reqTime = 0;
 			mutUsage.ReplaceMutex(req->mut);
-			this->reqv6Map.Put(name, req);
+			this->reqv6Map.PutC(name, req);
 			this->reqv6Updated = true;
 			reqv6MutUsage.EndUse();
 		}

@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	if (!me->lvFiles->GetSelectedItem().GetOpt<IO::CameraControl::FileInfo>().SetTo(file))
 		return;
 	NN<Media::ImageList> previewImg;
-	if (me->previewMap.Get(Text::CStringNN(file->fileName2, file->fileNameLen)).SetTo(previewImg))
+	if (me->previewMap.GetC(Text::CStringNN(file->fileName2, file->fileNameLen)).SetTo(previewImg))
 	{
 		me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage(0, 0)));
 		return;
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(previewImg))
 		{
 			previewImg->ToStaticImage(0);
-			me->previewMap.Put(Text::CStringNN(file->fileName2, file->fileNameLen), previewImg);
+			me->previewMap.PutC(Text::CStringNN(file->fileName2, file->fileNameLen), previewImg);
 			me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage(0, 0)));
 		}
 	}

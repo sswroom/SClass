@@ -320,13 +320,13 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, UnsafeArray<const UTF8Char> strVal, UOSInt strLen, UInt32 fileOfst)
 {
 	NN<MEVStrRecord> strRec;
-	if (!strArr->Get({strVal, strLen}).SetTo(strRec))
+	if (!strArr->GetC({strVal, strLen}).SetTo(strRec))
 	{
 		NEW_CLASSNN(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)strLen;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
 		MemCopyNO(strRec->strBytes, strVal.Ptr(), strRec->byteSize);
-		strArr->Put({strVal, strLen}, strRec);
+		strArr->PutC({strVal, strLen}, strRec);
 	}
 	strRec->ofstList.Add(fileOfst);
 	return strRec->byteSize;

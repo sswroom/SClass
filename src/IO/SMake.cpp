@@ -65,7 +65,7 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 		{
 			sptr = Text::StrConcatC(sbuff, &val.v[i + 2], (UOSInt)j - 2);
 			i += j + 1;
-			if (this->cfgMap.Get(CSTRP(sbuff, sptr)).SetTo(cfg))
+			if (this->cfgMap.GetC(CSTRP(sbuff, sptr)).SetTo(cfg))
 			{
 				sb->Append(cfg->value);
 			}
@@ -245,7 +245,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			{
 				Text::CStringNN ccfg = str1.ToCString();
 				NN<IO::SMake::ConfigItem> cfg;
-				if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
+				if (this->cfgMap.GetC(str1.ToCString()).SetTo(cfg))
 				{
 					ccfg = cfg->value->ToCString();
 				}
@@ -266,7 +266,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		}
 		else if (sb.StartsWith(UTF8STRC("export ")))
 		{
-			if (this->cfgMap.Get({sb.ToString() + 7, sb.GetLength() - 7}).SetTo(cfg))
+			if (this->cfgMap.GetC({sb.ToString() + 7, sb.GetLength() - 7}).SetTo(cfg))
 			{
 				Manage::EnvironmentVar env;
 				env.SetValue(cfg->name->ToCString(), cfg->value->ToCString());
@@ -276,7 +276,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		{
 			str2 = sb.SubstrTrim(i + 2);
 			str1 = sb.SubstrTrim(0, i);
-			if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
+			if (this->cfgMap.GetC(str1.ToCString()).SetTo(cfg))
 			{
 				if (cfg->value->leng > 0)
 				{
@@ -311,7 +311,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			{
 				str1 = sb.SubstrTrim(0, i);
 				str2 = sb.SubstrTrim(i + 2);
-				if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
+				if (this->cfgMap.GetC(str1.ToCString()).SetTo(cfg))
 				{
 					cfg->value->Release();
 					sb2.ClearStr();
@@ -490,7 +490,7 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 				}
 				else
 				{
-					if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
+					if (this->cfgMap.GetC(str1.ToCString()).SetTo(cfg))
 					{
 						val1 = cfg->value->ToInt32();
 					}
@@ -501,7 +501,7 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 				}
 				else
 				{
-					if (this->cfgMap.Get(str3.ToCString()).SetTo(cfg))
+					if (this->cfgMap.GetC(str3.ToCString()).SetTo(cfg))
 					{
 						val2 = cfg->value->ToInt32();
 					}
@@ -754,7 +754,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 	NN<Text::StringBuilderUTF8> tmpSb)
 {
 	NN<IO::SMake::ConfigItem> cfg;
-	if (!this->cfgMap.Get(CSTR("INCLUDEPATH")).SetTo(cfg))
+	if (!this->cfgMap.GetC(CSTR("INCLUDEPATH")).SetTo(cfg))
 	{
 		this->SetErrorMsg(CSTR("INCLUDEPATH config not found"));
 		return false;
@@ -975,7 +975,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 	}
 
 	NN<IO::SMake::ConfigItem> cfg;
-	if (this->cfgMap.Get(CSTR("DEPS")).SetTo(cfg))
+	if (this->cfgMap.GetC(CSTR("DEPS")).SetTo(cfg))
 	{
 		if (!this->progMap.GetNN(cfg->value).SetTo(subProg))
 		{
@@ -1067,7 +1067,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
 	{
 		NN<IO::SMake::ConfigItem> testCfg;
-		if (this->cfgMap.Get(CSTR("ENABLE_TEST")).SetTo(testCfg) && testCfg->value->Equals(UTF8STRC("1")))
+		if (this->cfgMap.GetC(CSTR("ENABLE_TEST")).SetTo(testCfg) && testCfg->value->Equals(UTF8STRC("1")))
 		{
 			enableTest = true;
 		}
@@ -1106,23 +1106,23 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 	NN<IO::SMake::ConfigItem> cppCfg;
 	NN<IO::SMake::ConfigItem> ccCfg;
 	NN<IO::SMake::ConfigItem> asmCfg;
-	Optional<IO::SMake::ConfigItem> asmflagsCfg = this->cfgMap.Get(CSTR("ASMFLAGS"));
-	Optional<IO::SMake::ConfigItem> cflagsCfg = this->cfgMap.Get(CSTR("CFLAGS"));
-	Optional<IO::SMake::ConfigItem> cppflagsCfg = this->cfgMap.Get(CSTR("CPPFLAGS"));
-	Optional<IO::SMake::ConfigItem> libsCfg = this->cfgMap.Get(CSTR("LIBS"));
+	Optional<IO::SMake::ConfigItem> asmflagsCfg = this->cfgMap.GetC(CSTR("ASMFLAGS"));
+	Optional<IO::SMake::ConfigItem> cflagsCfg = this->cfgMap.GetC(CSTR("CFLAGS"));
+	Optional<IO::SMake::ConfigItem> cppflagsCfg = this->cfgMap.GetC(CSTR("CPPFLAGS"));
+	Optional<IO::SMake::ConfigItem> libsCfg = this->cfgMap.GetC(CSTR("LIBS"));
 	Data::Timestamp dt1;
 	Data::Timestamp dt2;
-	if (!this->cfgMap.Get(CSTR("CXX")).SetTo(cppCfg))
+	if (!this->cfgMap.GetC(CSTR("CXX")).SetTo(cppCfg))
 	{
 		this->SetErrorMsg(CSTR("CXX config not found"));
 		return false;
 	}
-	if (!this->cfgMap.Get(CSTR("CC")).SetTo(ccCfg))
+	if (!this->cfgMap.GetC(CSTR("CC")).SetTo(ccCfg))
 	{
 		this->SetErrorMsg(CSTR("CC config not found"));
 		return false;
 	}
-	if (!this->cfgMap.Get(CSTR("ASM")).SetTo(asmCfg))
+	if (!this->cfgMap.GetC(CSTR("ASM")).SetTo(asmCfg))
 	{
 		this->SetErrorMsg(CSTR("ASM config not found"));
 		return false;
@@ -1401,7 +1401,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 		return false;
 	}
 
-	Optional<IO::SMake::ConfigItem> postfixItem = this->cfgMap.Get(CSTR("OUTPOSTFIX"));
+	Optional<IO::SMake::ConfigItem> postfixItem = this->cfgMap.GetC(CSTR("OUTPOSTFIX"));
 	sb.ClearStr();
 	sb.Append(this->basePath);
 	sb.AppendC(UTF8STRC("bin"));

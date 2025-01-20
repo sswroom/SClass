@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRIMAGECONTROL
 #define _SM_SSWR_AVIREAD_AVIRIMAGECONTROL
 #include "Data/ICaseStringUTF8Map.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMapNN.h"
 #include "Data/SyncLinkedList.h"
 #include "Media/RGBColorFilter.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
@@ -68,7 +68,7 @@ namespace SSWR
 			Sync::Event folderThreadEvt;
 			Sync::Event folderCtrlEvt;
 			Sync::Mutex imgMut;
-			Data::FastStringMapNN<ImageStatus> imgMap;
+			Data::StringMapNN<ImageStatus> imgMap;
 			Bool imgMapUpdated;
 			Bool imgUpdated;
 			UInt32 previewSize;

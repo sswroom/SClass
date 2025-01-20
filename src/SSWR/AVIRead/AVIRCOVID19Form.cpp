@@ -189,7 +189,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 		while (r->ReadNext())
 		{
 			sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff)).Or(sbuff);
-			if (!this->countries.Get(CSTRP(sbuff, sptr)).SetTo(country))
+			if (!this->countries.GetC(CSTRP(sbuff, sptr)).SetTo(country))
 			{
 				NEW_CLASSNN(country, SSWR::AVIRead::AVIRCOVID19Form::CountryInfo());
 				country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));

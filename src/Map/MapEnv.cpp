@@ -1120,7 +1120,7 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Media::StaticImage> simg;
 	NN<ImageInfo> imgInfo;
-	if (this->images.Get(fileName).SetTo(imgInfo))
+	if (this->images.GetC(fileName).SetTo(imgInfo))
 	{
 		return (OSInt)imgInfo->index;
 	}
@@ -1152,7 +1152,7 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 			{
 				imgInfo->cnt = 1;
 			}
-			this->images.Put(fileName, imgInfo);
+			this->images.PutC(fileName, imgInfo);
 			this->imgList.Add(imgInfo);
 			return (OSInt)imgInfo->index;
 		}
@@ -1170,7 +1170,7 @@ UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Media::ImageList> imgL
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Media::StaticImage> simg;
 	NN<ImageInfo> imgInfo;
-	if (this->images.Get(fileName).SetTo(imgInfo))
+	if (this->images.GetC(fileName).SetTo(imgInfo))
 	{
 		imgList.Delete();
 		return imgInfo->index;

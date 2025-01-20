@@ -273,7 +273,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CStringNN req, NN<Data::ArrayL
 {
 	NN<Net::EthernetAnalyzer::DNSRequestResult> result;
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
-	if (this->dnsReqv4Map.Get(req).SetTo(result))
+	if (this->dnsReqv4Map.GetC(req).SetTo(result))
 	{
 		mutUsage.EndUse();
 		Sync::MutexUsage mutUsage(result->mut);
@@ -303,7 +303,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CStringNN req, NN<Data::ArrayL
 {
 	NN<Net::EthernetAnalyzer::DNSRequestResult> result;
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
-	if (this->dnsReqv6Map.Get(req).SetTo(result))
+	if (this->dnsReqv6Map.GetC(req).SetTo(result))
 	{
 		mutUsage.EndUse();
 		Sync::MutexUsage mutUsage(result->mut);
@@ -333,7 +333,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CStringNN req, NN<Data::Array
 {
 	NN<Net::EthernetAnalyzer::DNSRequestResult> result;
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
-	if (this->dnsReqOthMap.Get(req).SetTo(result))
+	if (this->dnsReqOthMap.GetC(req).SetTo(result))
 	{
 		mutUsage.EndUse();
 		Sync::MutexUsage mutUsage(result->mut);

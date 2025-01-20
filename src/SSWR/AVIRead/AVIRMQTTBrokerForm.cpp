@@ -198,7 +198,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 	dt.SetCurrTimeUTC();
 	Sync::Interlocked::IncrementU64(me->totalCount);
 	Sync::MutexUsage mutUsage(me->topicMut);
-	if (me->topicMap.Get(topic).SetTo(topicSt))
+	if (me->topicMap.GetC(topic).SetTo(topicSt))
 	{
 		if (topicSt->msgSize != msgSize)
 		{
@@ -219,7 +219,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 		topicSt->updated = true;
 		MemCopyNO(topicSt->message.Ptr(), message.Ptr(), msgSize);
 		topicSt->updateTime = dt.ToTicks();
-		me->topicMap.Put(topic, topicSt);
+		me->topicMap.PutC(topic, topicSt);
 		me->topicListUpdated = true;
 	}
 }

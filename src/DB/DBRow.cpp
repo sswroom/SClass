@@ -414,7 +414,7 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 DB::ColDef *DB::DBRow::GetFieldType(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (this->dataMap.Get(fieldName).SetTo(field))
+	if (this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return field->def;
 	}
@@ -427,7 +427,7 @@ DB::ColDef *DB::DBRow::GetFieldType(Text::CStringNN fieldName) const
 DB::DBRow::DataType DB::DBRow::GetFieldDataType(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (this->dataMap.Get(fieldName).SetTo(field))
+	if (this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return this->GetDataType(field);
 	}
@@ -437,7 +437,7 @@ DB::DBRow::DataType DB::DBRow::GetFieldDataType(Text::CStringNN fieldName) const
 Bool DB::DBRow::SetValueNull(Text::CStringNN fieldName)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -447,7 +447,7 @@ Bool DB::DBRow::SetValueNull(Text::CStringNN fieldName)
 Bool DB::DBRow::SetValueStr(Text::CStringNN fieldName, UnsafeArrayOpt<const UTF8Char> strValue)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -457,7 +457,7 @@ Bool DB::DBRow::SetValueStr(Text::CStringNN fieldName, UnsafeArrayOpt<const UTF8
 Bool DB::DBRow::SetValueInt64(Text::CStringNN fieldName, Int64 intValue)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -467,7 +467,7 @@ Bool DB::DBRow::SetValueInt64(Text::CStringNN fieldName, Int64 intValue)
 Bool DB::DBRow::SetValueDouble(Text::CStringNN fieldName, Double dblValue)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -477,7 +477,7 @@ Bool DB::DBRow::SetValueDouble(Text::CStringNN fieldName, Double dblValue)
 Bool DB::DBRow::SetValueDate(Text::CStringNN fieldName, const Data::Timestamp &ts)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -487,7 +487,7 @@ Bool DB::DBRow::SetValueDate(Text::CStringNN fieldName, const Data::Timestamp &t
 Bool DB::DBRow::SetValueVector(Text::CStringNN fieldName, Math::Geometry::Vector2D *vec)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -497,7 +497,7 @@ Bool DB::DBRow::SetValueVector(Text::CStringNN fieldName, Math::Geometry::Vector
 Bool DB::DBRow::SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UOSInt buffSize)
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return false;
 	}
@@ -507,7 +507,7 @@ Bool DB::DBRow::SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UOS
 Bool DB::DBRow::IsNull(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return true;
 	}
@@ -517,7 +517,7 @@ Bool DB::DBRow::IsNull(Text::CStringNN fieldName) const
 UnsafeArrayOpt<const UTF8Char> DB::DBRow::GetValueStr(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return 0;
 	}
@@ -527,7 +527,7 @@ UnsafeArrayOpt<const UTF8Char> DB::DBRow::GetValueStr(Text::CStringNN fieldName)
 Int64 DB::DBRow::GetValueInt64(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return 0;
 	}
@@ -537,7 +537,7 @@ Int64 DB::DBRow::GetValueInt64(Text::CStringNN fieldName) const
 Double DB::DBRow::GetValueDouble(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return 0;
 	}
@@ -547,7 +547,7 @@ Double DB::DBRow::GetValueDouble(Text::CStringNN fieldName) const
 Data::Timestamp DB::DBRow::GetValueDate(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return Data::Timestamp(0);
 	}
@@ -557,7 +557,7 @@ Data::Timestamp DB::DBRow::GetValueDate(Text::CStringNN fieldName) const
 Math::Geometry::Vector2D *DB::DBRow::GetValueVector(Text::CStringNN fieldName) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return 0;
 	}
@@ -567,7 +567,7 @@ Math::Geometry::Vector2D *DB::DBRow::GetValueVector(Text::CStringNN fieldName) c
 const UInt8 *DB::DBRow::GetValueBinary(Text::CStringNN fieldName, UOSInt *buffSize) const
 {
 	NN<DB::DBRow::Field> field;
-	if (!this->dataMap.Get(fieldName).SetTo(field))
+	if (!this->dataMap.GetC(fieldName).SetTo(field))
 	{
 		return 0;
 	}
@@ -715,7 +715,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 	while (it.HasNext())
 	{
 		col = it.Next();
-		if (this->dataMap.Get(col->GetColName()->ToCString()).SetTo(field))
+		if (this->dataMap.GetC(col->GetColName()->ToCString()).SetTo(field))
 		{
 			if (found)
 				sb->AppendC(UTF8STRC(", "));

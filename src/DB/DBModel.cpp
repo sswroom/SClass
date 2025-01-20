@@ -40,9 +40,9 @@ Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CS
 			}
 			tableName = table->GetTableName();
 			sb.Append(tableName);
-			this->tableMap.Put(sb.ToCString(), table);
+			this->tableMap.PutC(sb.ToCString(), table);
 			j = tableName->IndexOf('.');
-			this->tableMap.Put(tableName->ToCString().Substring(j + 1), table);
+			this->tableMap.PutC(tableName->ToCString().Substring(j + 1), table);
 		}
 	}
 	tableNames.FreeAll();
@@ -51,7 +51,7 @@ Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CS
 
 Optional<DB::TableDef> DB::DBModel::GetTable(Text::CStringNN tableName)
 {
-	return this->tableMap.Get(tableName);
+	return this->tableMap.GetC(tableName);
 }
 
 UOSInt DB::DBModel::GetTableNames(NN<Data::ArrayList<Text::CString>> tableNames)

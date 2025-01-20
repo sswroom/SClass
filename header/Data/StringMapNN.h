@@ -16,16 +16,18 @@ namespace Data
 
 		virtual Optional<T> Put(Text::String *key, NN<T> val);
 		Optional<T> PutNN(NN<Text::String> key, NN<T> val);
-		Optional<T> Put(Text::CStringNN key, NN<T> val);
+		Optional<T> PutC(Text::CStringNN key, NN<T> val);
 		virtual Optional<T> Get(Text::String *key) const;
 		Optional<T> GetNN(NN<Text::String> key) const;
-		Optional<T> Get(Text::CStringNN key) const;
+		Optional<T> GetC(Text::CStringNN key) const;
 		virtual Optional<T> Remove(Text::String *key);
 		Optional<T> RemoveNN(NN<Text::String> key);
-		Optional<T> Remove(Text::CStringNN key);
+		Optional<T> RemoveC(Text::CStringNN key);
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual void Clear();
 		virtual NN<StringMapNN<T>> Clone() const;
+		OSInt IndexOf(NN<Text::String> s) const;
+		OSInt IndexOfC(Text::CStringNN s) const;
 	};
 
 
@@ -93,7 +95,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::Put(Text::CStringNN key, NN<T> val)
+	template <class T> Optional<T> StringMapNN<T>::PutC(Text::CStringNN key, NN<T> val)
 	{
 		OSInt i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -139,7 +141,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::Get(Text::CStringNN key) const
+	template <class T> Optional<T> StringMapNN<T>::GetC(Text::CStringNN key) const
 	{
 		OSInt i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -183,7 +185,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::Remove(Text::CStringNN key)
+	template <class T> Optional<T> StringMapNN<T>::RemoveC(Text::CStringNN key)
 	{
 		OSInt i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -219,6 +221,39 @@ namespace Data
 		NN<StringMapNN<T>> ret;
 		NEW_CLASSNN(ret, StringMapNN<T>(*this));
 		return ret;
+	}
+
+	template <class T> OSInt StringMapNN<T>::IndexOf(NN<Text::String> s) const
+	{
+		return this->IndexOfC(s->ToCString());
+	}
+
+	template <class T> OSInt StringMapNN<T>::IndexOfC(Text::CStringNN s) const
+	{
+		OSInt i;
+		OSInt j;
+		OSInt k;
+		OSInt l;
+		i = 0;
+		j = (OSInt)this->vals.GetCount() - 1;
+		while (i <= j)
+		{
+			k = (i + j) >> 1;
+			l = this->keys->GetItem((UOSInt)k)->CompareTo(s);
+			if (l > 0)
+			{
+				j = k - 1;
+			}
+			else if (l < 0)
+			{
+				i = k + 1;
+			}
+			else
+			{
+				return k;
+			}
+		}
+		return ~i;
 	}
 }
 

@@ -1163,7 +1163,7 @@ Bool DB::DBMS::SysVarSet(NN<DB::DBMS::SessionInfo> sess, Bool isGlobal, Text::CS
 Bool DB::DBMS::UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varName)
 {
 	NN<Text::String> val;
-	if (sess->userVars.Get(varName).SetTo(val))
+	if (sess->userVars.GetC(varName).SetTo(val))
 	{
 		sb->Append(val);
 		return true;
@@ -1190,12 +1190,12 @@ Bool DB::DBMS::UserVarSet(NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varNam
 	NN<Text::String> nnval;
 	if (val.SetTo(nnval))
 	{
-		if (sess->userVars.Put(varName, nnval->Clone()).SetTo(nnval))
+		if (sess->userVars.PutC(varName, nnval->Clone()).SetTo(nnval))
 			nnval->Release();
 	}
 	else
 	{
-		if (sess->userVars.Remove(varName).SetTo(nnval))
+		if (sess->userVars.RemoveC(varName).SetTo(nnval))
 			nnval->Release();
 	}
 	return true;

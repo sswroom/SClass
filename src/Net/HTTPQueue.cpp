@@ -26,7 +26,7 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 	while (true)
 	{
 		Sync::MutexUsage mutUsage(this->statusMut);
-		if (this->statusMap.Get(CSTRP(sbuff, sptr)).SetTo(status))
+		if (this->statusMap.GetC(CSTRP(sbuff, sptr)).SetTo(status))
 		{
 			if (status->req1 == 0)
 			{
@@ -48,7 +48,7 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 			status->req2 = 0;
 			cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, url, method, noShutdown);
 			status->req1 = cli.Ptr();
-			this->statusMap.Put(CSTRP(sbuff, sptr), status);
+			this->statusMap.PutC(CSTRP(sbuff, sptr), status);
 			found = true;
 		}
 		mutUsage.EndUse();
@@ -68,7 +68,7 @@ void Net::HTTPQueue::EndRequest(NN<Net::HTTPClient> cli)
 	sptr = Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
 
 	Sync::MutexUsage mutUsage(this->statusMut);
-	if (this->statusMap.Get(CSTRP(sbuff, sptr)).SetTo(status))
+	if (this->statusMap.GetC(CSTRP(sbuff, sptr)).SetTo(status))
 	{
 		if (status->req1 == cli.Ptr())
 		{
@@ -82,7 +82,7 @@ void Net::HTTPQueue::EndRequest(NN<Net::HTTPClient> cli)
 		if (status->req1 == 0 && status->req2 == 0)
 		{
 			MemFreeNN(status);
-			this->statusMap.Remove(CSTRP(sbuff, sptr));
+			this->statusMap.RemoveC(CSTRP(sbuff, sptr));
 		}
 		this->statusEvt.Set();
 	}

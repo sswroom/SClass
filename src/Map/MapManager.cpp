@@ -23,7 +23,7 @@ Map::MapManager::~MapManager()
 Optional<Map::MapDrawLayer> Map::MapManager::LoadLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Map::MapEnv> env)
 {
 	NN<Map::MapManager::MapLayerInfo> info;
-	if (this->layerArr.Get(fileName).SetTo(info))
+	if (this->layerArr.GetC(fileName).SetTo(info))
 	{
 		if (info->envList.IndexOf(env) == INVALID_INDEX)
 		{
@@ -47,7 +47,7 @@ Optional<Map::MapDrawLayer> Map::MapManager::LoadLayer(Text::CStringNN fileName,
 	NEW_CLASSNN(info, Map::MapManager::MapLayerInfo());
 	info->layer = lyr;
 	info->envList.Add(env);
-	this->layerArr.Put(fileName, info);
+	this->layerArr.PutC(fileName, info);
 	return lyr;
 }
 

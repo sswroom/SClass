@@ -402,7 +402,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType use
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
 	Sync::MutexUsage mutUsage(me->topicMut);
-	if (!me->topicMap.Get(topic).SetTo(topicSt))
+	if (!me->topicMap.GetC(topic).SetTo(topicSt))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("New Topic: "));
