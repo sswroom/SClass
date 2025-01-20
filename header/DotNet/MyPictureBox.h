@@ -1,7 +1,7 @@
 #ifndef _SM_DOTNET_MYPICTUREBOX
 #define _SM_DOTNET_MYPICTUREBOX
 #include "Media/IVideoRenderer.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/StaticImage.h"
 #include "DotNet/DNColorManager.h"
@@ -17,7 +17,7 @@ namespace DotNet
 		Media::Image *currImage;
 		UInt8 *imgBuff;
 		Media::CS::CSConverter *csconv;
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 		DotNet::DNColorManager *dnColorMgr;
 
 		void *hwnd;
@@ -45,8 +45,8 @@ namespace DotNet
 
 		void SetImage(Media::Image *currImage);
 
-		void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-		void RGBParamChanged(const Media::IColorHandler::RGBPARAM *rgbParam);
+		void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+		void RGBParamChanged(const Media::ColorHandler::RGBPARAM *rgbParam);
 		void SetAllowEnlarge(Bool allowEnlarge);
 	};
 };

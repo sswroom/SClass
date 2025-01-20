@@ -17,7 +17,7 @@ UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 
 	Media::ColorProfile rgbColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, rgbColor, rgbColor, 0, Media::AT_NO_ALPHA));
-	this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(iconSize);
 }
 

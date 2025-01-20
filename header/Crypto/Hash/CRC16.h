@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_HASH_CRC16
 #define _SM_CRYPTO_HASH_CRC16
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 extern "C"
 {
@@ -12,7 +12,7 @@ namespace Crypto
 {
 	namespace Hash
 	{
-		class CRC16 : public IHash
+		class CRC16 : public HashAlgorithm
 		{
 		private:
 			UInt16 *crctab;
@@ -26,7 +26,7 @@ namespace Crypto
 			virtual ~CRC16();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
-			virtual NN<IHash> Clone() const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;

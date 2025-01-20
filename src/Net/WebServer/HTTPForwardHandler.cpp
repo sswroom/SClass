@@ -5,7 +5,7 @@
 #include "Text/CPPText.h"
 #include "Text/StringBuilderUTF8.h"
 
-Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NN<Net::WebServer::IWebRequest> req)
+Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NN<Net::WebServer::WebRequest> req)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt i = this->nextURL;
@@ -34,7 +34,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 	OPTSTR_DEL(this->forceHost);
 }
 
-Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	NN<IO::LogTool> log;
 	UInt8 buff[2048];

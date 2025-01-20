@@ -615,7 +615,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			NN<Media::IVideoCapture> capture;
+			NN<Media::VideoCapturer> capture;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				UTF8Char sbuff[256];

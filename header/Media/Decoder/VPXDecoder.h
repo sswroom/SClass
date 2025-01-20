@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DECODER_VPXDECODER
 #define _SM_MEDIA_DECODER_VPXDECODER
 #include "Data/ArrayListInt32.h"
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 #include "Media/Decoder/VDecoderBase.h"
 
 namespace Media
@@ -13,9 +13,9 @@ namespace Media
 		private:
 			void *clsData;
 
-			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VPXDecoder(IVideoSource *sourceVideo);
+			VPXDecoder(VideoSource *sourceVideo);
 			virtual ~VPXDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
@@ -29,7 +29,7 @@ namespace Media
 			virtual UInt32 GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, void *userData);
 
-			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
+			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);
 
 			Bool IsError();
 

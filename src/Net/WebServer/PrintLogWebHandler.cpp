@@ -3,7 +3,7 @@
 #include "Net/WebServer/PrintLogWebResponse.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(NN<Net::WebServer::IWebHandler> hdlr, NN<IO::Writer> writer)
+Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(NN<Net::WebServer::WebHandler> hdlr, NN<IO::Writer> writer)
 {
 	this->hdlr = hdlr;
 	this->writer = writer;
@@ -14,7 +14,7 @@ Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
 	this->hdlr.Delete();
 }
 
-void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWebResponse> resp)
+void Net::WebServer::PrintLogWebHandler::DoWebRequest(NN<WebRequest> req, NN<WebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -26,7 +26,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWeb
 	sb.AppendUTF8Char(' ');
 	sb.Append(req->GetRequestURI());
 	sb.AppendUTF8Char(' ');
-	sb.Append(Net::WebServer::IWebRequest::RequestProtocolGetName(req->GetProtocol()));
+	sb.Append(Net::WebServer::WebRequest::RequestProtocolGetName(req->GetProtocol()));
 	this->writer->WriteLine(sb.ToCString());
 	Data::ArrayListStringNN headers;
 	req->GetHeaderNames(headers);
@@ -44,5 +44,5 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWeb
 	}
 	this->writer->WriteLine(CSTRP(sbuff, sptr));
 	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, CSTRP(sbuff, sptr));
-	this->hdlr->WebRequest(req, plResp);
+	this->hdlr->DoWebRequest(req, plResp);
 }

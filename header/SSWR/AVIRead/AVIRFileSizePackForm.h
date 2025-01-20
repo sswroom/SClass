@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRFileSizePackForm : public UI::GUIForm
 		{
 		private:
-			class MyFile : public Data::IComparable
+			class MyFile : public Data::Comparable
 			{
 			private:
 				NN<Text::String> fileName;
@@ -29,7 +29,7 @@ namespace SSWR
 				Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 				NN<Text::String> GetName() const;
 				UInt64 GetSize() const;
-				virtual OSInt CompareTo(NN<Data::IComparable> obj) const;
+				virtual OSInt CompareTo(NN<Data::Comparable> obj) const;
 			};
 
 		private:

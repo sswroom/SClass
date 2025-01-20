@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/Sort/QuickBubbleSort.h"
 #include "Data/Sort/BubbleSort.h"
 
@@ -260,13 +260,13 @@ void Data::Sort::QuickBubbleSort::Sort(UnsafeArray<Single> arr, OSInt firstIndex
 	}
 }
 
-void Data::Sort::QuickBubbleSort::Sort(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::Sort(Data::Comparable **arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
-	Data::IComparable *pivot;
-	Data::IComparable *tmp;
-	Data::IComparable **tmparr;
+	Data::Comparable *pivot;
+	Data::Comparable *tmp;
+	Data::Comparable **tmparr;
 
 	while (hi > lo)
 	{
@@ -644,13 +644,13 @@ void Data::Sort::QuickBubbleSort::SortInv(UnsafeArray<Single> arr, OSInt firstIn
 	}
 }
 
-void Data::Sort::QuickBubbleSort::SortInv(Data::IComparable **arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::QuickBubbleSort::SortInv(Data::Comparable **arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt lo = firstIndex;
 	OSInt hi = lastIndex;
-	Data::IComparable *pivot;
-	Data::IComparable *tmp;
-	Data::IComparable **tmparr;
+	Data::Comparable *pivot;
+	Data::Comparable *tmp;
+	Data::Comparable **tmparr;
 
 	while (hi > lo)
 	{

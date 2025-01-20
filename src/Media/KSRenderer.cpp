@@ -64,7 +64,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(AnyType obj)
 	Sync::Event *evt;
 //	HRESULT hr;
 	UOSInt buffLeng = 8192;
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	NN<Sync::Event> playEvt;
 	NN<Media::RefClock> clk;
 
@@ -326,11 +326,11 @@ Bool Media::KSRenderer::IsError()
 	return this->pFilter == 0;
 }
 
-Bool Media::KSRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
+Bool Media::KSRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	CKsAudRenFilter *pFilter;
 	CKsAudRenPin *pPin;
-	NN<Media::IAudioSource> nnaudsrc;
+	NN<Media::AudioSource> nnaudsrc;
 	pFilter = (CKsAudRenFilter*)this->pFilter;
 	this->Stop();
 	this->audsrc = 0;
@@ -396,7 +396,7 @@ void Media::KSRenderer::Start()
 void Media::KSRenderer::Stop()
 {
 	NN<Sync::Event> playEvt;
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	this->stopPlay = true;
 	if (!this->playing)
 		return;

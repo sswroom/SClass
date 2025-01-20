@@ -12,9 +12,9 @@ namespace Media
 			Int32 uOfst;
 			Int32 vOfst;
 
-			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			UVOffsetFilter(Media::IVideoSource *srcVideo);
+			UVOffsetFilter(Media::VideoSource *srcVideo);
 			virtual ~UVOffsetFilter();
 
 			virtual Text::CStringNN GetFilterName();

@@ -21,9 +21,9 @@ namespace Net
 			RESTfulHandler(NN<DB::DBCache> dbCache);
 			virtual ~RESTfulHandler();
 
-			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
-			static DB::PageRequest *ParsePageReq(NN<Net::WebServer::IWebRequest> req);
+			static DB::PageRequest *ParsePageReq(NN<Net::WebServer::WebRequest> req);
 		};
 	}
 }

@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	NN<ProtocolItem> item;
-	NN<IO::ProtoDec::IProtocolDecoder> currDec;
+	NN<IO::ProtoDec::ProtocolDecoder> currDec;
 	NN<IO::FileStream> currFile;
 	if (me->lvLogs->GetSelectedItem().GetOpt<ProtocolItem>().SetTo(item) && me->currFile.SetTo(currFile) && me->currDec.SetTo(currDec))
 	{
@@ -50,10 +50,10 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
-	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::ProtoDec::ProtocolDecoder> protoDec;
 	NN<IO::FileStream> currFile;
 	me->txtFile->GetText(sb);
-	if (sb.GetLength() > 0 && me->cboDecoder->GetSelectedItem().GetOpt<IO::ProtoDec::IProtocolDecoder>().SetTo(protoDec))
+	if (sb.GetLength() > 0 && me->cboDecoder->GetSelectedItem().GetOpt<IO::ProtoDec::ProtocolDecoder>().SetTo(protoDec))
 	{
 		me->ClearList();
 		me->currFile.Delete();
@@ -170,7 +170,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 
 	UOSInt i;
 	UOSInt j;
-	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::ProtoDec::ProtocolDecoder> protoDec;
 	i = 0;
 	j = this->decList.GetCount();
 	while (i < j)

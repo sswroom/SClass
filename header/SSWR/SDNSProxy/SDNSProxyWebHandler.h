@@ -17,7 +17,7 @@ namespace SSWR
 		class SDNSProxyWebHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			typedef Bool (CALLBACKFUNC RequestHandler)(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			typedef Bool (CALLBACKFUNC RequestHandler)(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		private:
 			NN<Net::DNSProxy> proxy;
 			NN<IO::LogTool> log;
@@ -25,21 +25,21 @@ namespace SSWR
 			NN<IO::CyclicLogBuffer> logBuff;
 			SDNSProxyCore *core;
 
-			static Bool __stdcall StatusReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall ReqV4Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall ReqV6Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall ReqOthReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall TargetReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall BlacklistReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall LogReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall ClientReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall ReqPerMinReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall StatusReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall ReqV4Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall ReqV6Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall ReqOthReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall TargetReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall BlacklistReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall LogReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall ClientReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			static Bool __stdcall ReqPerMinReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 
 			static void AppendHeader(NN<Text::StringBuilderUTF8> sbOut);
 			static void AppendMenu(NN<Text::StringBuilderUTF8> sbOut);
 			static void AppendFooter(NN<Text::StringBuilderUTF8> sbOut);
 
-			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
 		public:
 			SDNSProxyWebHandler(NN<Net::DNSProxy> proxy, NN<IO::LogTool> log, SDNSProxyCore *core);

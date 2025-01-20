@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GUIPICTURELIST
 #define _SM_UI_GUIPICTURELIST
 #include "Media/CS/CSConverter.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ColorManager.h"
 #include "Media/DrawEngine.h"
 #include "Media/StaticImage.h"
@@ -17,7 +17,7 @@ namespace UI
 		static Int32 useCnt;
 		Data::ArrayListNN<Media::DrawImage> imgList;
 		UOSInt selectedIndex;
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 		Math::Size2D<UOSInt> iconSize;
 		Bool hasBorder;
 

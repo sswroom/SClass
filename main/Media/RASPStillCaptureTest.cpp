@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::MMALStillCapture capture;
 	if (capture.DeviceBegin())
 	{
-		Media::IPhotoCapture::PhotoFormat pf;
+		Media::PhotoCapturer::PhotoFormat pf;
 		Sync::SimpleThread::Sleep(5000);
 		{
 			IO::FileStream fs(CSTR("Capture.jpg"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);

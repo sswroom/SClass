@@ -1,10 +1,10 @@
 #ifndef _SM_MEDIA_VIDEOSOURCEBASE
 #define _SM_MEDIA_VIDEOSOURCEBASE
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 
 namespace Media
 {
-	class VideoSourceBase : public Media::IVideoSource
+	class VideoSourceBase : public Media::VideoSource
 	{
 	protected:
 		UOSInt cropLeft;

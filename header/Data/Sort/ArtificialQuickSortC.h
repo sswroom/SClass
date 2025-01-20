@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_SORT_ARTIFICIALQUICKSORTC
 #define _SM_DATA_SORT_ARTIFICIALQUICKSORTC
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 //http://www.critticall.com/ArtificialSort.html
 

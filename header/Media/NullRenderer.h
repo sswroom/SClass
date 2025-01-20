@@ -2,14 +2,14 @@
 #define _SM_MEDIA_NULLRENDERER
 #include "AnyType.h"
 #include "Data/CallbackStorage.h"
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 
 namespace Media
 {
-	class NullRenderer : public IAudioRenderer
+	class NullRenderer : public AudioRenderer
 	{
 	private:
-		Optional<Media::IAudioSource> audsrc;
+		Optional<Media::AudioSource> audsrc;
 		Bool playing;
 		Bool threadInit;
 		Bool stopPlay;
@@ -25,7 +25,7 @@ namespace Media
 		virtual ~NullRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
 		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();

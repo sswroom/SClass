@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_SORT_BUBBLESORT
 #define _SM_DATA_SORT_BUBBLESORT
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 extern "C"
 {
@@ -28,8 +28,8 @@ namespace Data
 		class BubbleSort
 		{
 		public:
-			static void SortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
-			static void SortCmpOInv(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortCmpOInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }

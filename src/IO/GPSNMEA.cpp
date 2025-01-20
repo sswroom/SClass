@@ -374,9 +374,9 @@ void IO::GPSNMEA::ErrorRecover()
 	this->stm->Recover();
 }
 
-Map::ILocationService::ServiceType IO::GPSNMEA::GetServiceType()
+Map::LocationService::ServiceType IO::GPSNMEA::GetServiceType()
 {
-	return Map::ILocationService::ST_NMEA;
+	return Map::LocationService::ST_NMEA;
 }
 
 void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, AnyType userObj)

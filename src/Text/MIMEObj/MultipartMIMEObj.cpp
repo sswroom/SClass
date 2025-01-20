@@ -90,8 +90,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	Text::String *contType = hdrMap.GetC(CSTR("Content-Type"));
 	if (contType)
 	{
-		Optional<Text::IMIMEObj> obj = 0;
-		NN<Text::IMIMEObj> nnobj;
+		Optional<Text::MIMEObject> obj = 0;
+		NN<Text::MIMEObject> nnobj;
 		Text::String *tenc = hdrMap.GetC(CSTR("Content-Transfer-Encoding"));
 		if (tenc)
 		{
@@ -102,7 +102,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				j = b64.DecodeBin(Text::CStringNN(&buff[lineStart], buffSize - lineStart), tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
+				obj = Text::MIMEObject::ParseFromData(mdata, contType->ToCString());
 				MemFree(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("quoted-printable")))
@@ -112,13 +112,13 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				j = qpenc.DecodeBin(Text::CStringNN(&buff[lineStart], buffSize - lineStart), tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
+				obj = Text::MIMEObject::ParseFromData(mdata, contType->ToCString());
 				MemFree(tmpBuff);
 			}
 			else if (tenc->Equals(UTF8STRC("7bit")))
 			{
 				IO::StmData::MemoryDataRef mdata(&buff[lineStart], buffSize - lineStart);
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
+				obj = Text::MIMEObject::ParseFromData(mdata, contType->ToCString());
 			}
 			else
 			{
@@ -129,7 +129,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		else
 		{
 			IO::StmData::MemoryDataRef mdata(&buff[lineStart], buffSize - lineStart);
-			obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
+			obj = Text::MIMEObject::ParseFromData(mdata, contType->ToCString());
 		}
 
 		if (obj.SetTo(nnobj))
@@ -157,21 +157,21 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NN<Text::String> contentType, Optional<Text::String> defMsg, NN<Text::String> boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NN<Text::String> contentType, Optional<Text::String> defMsg, NN<Text::String> boundary) : Text::MIMEObject(CSTR("multipart/mixed"))
 {
 	this->contentType = contentType->Clone();
 	this->defMsg = Text::String::CopyOrNull(defMsg);
 	this->boundary = boundary->Clone();
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary) : Text::MIMEObject(CSTR("multipart/mixed"))
 {
 	this->contentType = Text::String::New(contentType);
 	this->defMsg = Text::String::NewOrNull(defMsg);
 	this->boundary = Text::String::New(boundary);
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg) : Text::MIMEObject(CSTR("multipart/mixed"))
 {
 	Text::StringBuilderUTF8 sbc;
 	Data::DateTime dt;
@@ -246,7 +246,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	return ret;
 }
 
-NN<Text::IMIMEObj> Text::MIMEObj::MultipartMIMEObj::Clone() const
+NN<Text::MIMEObject> Text::MIMEObj::MultipartMIMEObj::Clone() const
 {
 	NN<MIMEMessage> part;
 	NN<Text::MIMEObj::MultipartMIMEObj> obj;
@@ -269,7 +269,7 @@ Optional<Text::String> Text::MIMEObj::MultipartMIMEObj::GetDefMsg() const
 	return this->defMsg;
 }
 
-UOSInt Text::MIMEObj::MultipartMIMEObj::AddPart(NN<Text::IMIMEObj> obj)
+UOSInt Text::MIMEObj::MultipartMIMEObj::AddPart(NN<Text::MIMEObject> obj)
 {
 	NN<MIMEMessage> part;
 	NEW_CLASSNN(part, MIMEMessage(obj));
@@ -293,7 +293,7 @@ Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(UOSInt partIndex, Text::CStr
 	return true;
 }
 
-Optional<Text::IMIMEObj> Text::MIMEObj::MultipartMIMEObj::GetPartContent(UOSInt partIndex) const
+Optional<Text::MIMEObject> Text::MIMEObj::MultipartMIMEObj::GetPartContent(UOSInt partIndex) const
 {
 	NN<MIMEMessage> part;
 	if (!this->parts.GetItem(partIndex).SetTo(part))

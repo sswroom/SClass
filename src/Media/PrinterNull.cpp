@@ -39,12 +39,12 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, NN<Media::DrawEngine> eng)
+Media::PrintDocument *Media::Printer::StartPrint(PrintHandler *hdlr, NN<Media::DrawEngine> eng)
 {
 	return 0;
 }
 
-void Media::Printer::EndPrint(IPrintDocument *doc)
+void Media::Printer::EndPrint(PrintDocument *doc)
 {
 }
 

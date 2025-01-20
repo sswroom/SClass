@@ -113,7 +113,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(frameNum, 0)).SetTo(img))
 			{
 				img->To32bpp();
-				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 				this->resizer->SetTargetSize(this->size);
 				this->dispImg = this->resizer->ProcessToNew(img);
 				if (this->dispImg.SetTo(img))

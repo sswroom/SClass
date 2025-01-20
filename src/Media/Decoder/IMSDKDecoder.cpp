@@ -127,7 +127,7 @@ private:
 		return currSurface;
 	}
 
-	virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+	virtual void ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 	{
 		SurfaceInfo *currSurface = 0;
 		mfxStatus status;
@@ -136,7 +136,7 @@ private:
 
 		mfxSyncPoint syncp;
 
-		if (flags & Media::IVideoSource::FF_DISCONTTIME)
+		if (flags & Media::VideoSource::FF_DISCONTTIME)
 		{
 			this->seeked = true;
 			this->seekTime = frameTime;
@@ -190,7 +190,7 @@ private:
 					Bool isKey = false;
 					FrameStruct outFrameStruct;
 					Media::FrameType outFrameType;
-					Media::IVideoSource::FrameFlag outFlags;
+					Media::VideoSource::FrameFlag outFlags;
 					Media::YCOffset outYCOfst;
 					if (outSurface->Data.ExtParam && outSurface->Data.ExtParam[0]->BufferId == MFX_EXTBUFF_DECODED_FRAME_INFO)
 					{
@@ -199,22 +199,22 @@ private:
 						default:
 						case MFX_FRAMETYPE_I:
 						case MFX_FRAMETYPE_xI:
-							outFrameStruct = Media::IVideoSource::FS_I;
+							outFrameStruct = Media::VideoSource::FS_I;
 							isKey = true;
 							break;
 						case MFX_FRAMETYPE_P:
 						case MFX_FRAMETYPE_xP:
-							outFrameStruct = Media::IVideoSource::FS_P;
+							outFrameStruct = Media::VideoSource::FS_P;
 							break;
 						case MFX_FRAMETYPE_B:
 						case MFX_FRAMETYPE_xB:
-							outFrameStruct = Media::IVideoSource::FS_B;
+							outFrameStruct = Media::VideoSource::FS_B;
 							break;
 						}
 					}
 					else
 					{
-						outFrameStruct = Media::IVideoSource::FS_I;
+						outFrameStruct = Media::VideoSource::FS_I;
 					}
 					if (this->par.mfx.FrameInfo.PicStruct == MFX_PICSTRUCT_UNKNOWN)
 					{
@@ -243,7 +243,7 @@ private:
 					{
 						outFrameType = Media::FT_INTERLACED_BFF;
 					}
-					outFlags = Media::IVideoSource::FF_NONE;
+					outFlags = Media::VideoSource::FF_NONE;
 					outYCOfst = ycOfst;
 					Bool skip = false;
 					if (this->seeked)
@@ -253,7 +253,7 @@ private:
 							if ((outFrameTime >= this->seekTime) && (outFrameTime < this->seekTime + 1000))
 							{
 								this->lastFrameTime = outFrameTime;
-								outFlags = (Media::IVideoSource::FrameFlag)(outFlags | Media::IVideoSource::FF_DISCONTTIME);
+								outFlags = (Media::VideoSource::FrameFlag)(outFlags | Media::VideoSource::FF_DISCONTTIME);
 								this->seeked = false;
 							}
 							else
@@ -297,7 +297,7 @@ private:
 	}
 
 public:
-	IMSDKDecoder(Media::IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+	IMSDKDecoder(Media::VideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 	{
 		mfxStatus status;
 		this->inited = false;
@@ -537,13 +537,13 @@ public:
 		return this->sourceVideo->EnumFrameInfos(cb, userData);
 	}
 
-	virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc)
+	virtual void OnFrameChanged(Media::VideoSource::FrameChange fc)
 	{
-		if (fc == Media::IVideoSource::FC_PAR)
+		if (fc == Media::VideoSource::FC_PAR)
 		{
 //			this->frameChg = true;
 		}
-		else if (fc == Media::IVideoSource::FC_ENDPLAY)
+		else if (fc == Media::VideoSource::FC_ENDPLAY)
 		{
 			mfxStatus status;
 			SurfaceInfo *currSurface;
@@ -589,7 +589,7 @@ public:
 						UInt32 outFrameNum = this->lastFrameNum++;
 						FrameStruct outFrameStruct;
 						Media::FrameType outFrameType;
-						Media::IVideoSource::FrameFlag outFlags;
+						Media::VideoSource::FrameFlag outFlags;
 						Media::YCOffset outYCOfst;
 						if (outSurface->Data.ExtParam && outSurface->Data.ExtParam[0]->BufferId == MFX_EXTBUFF_DECODED_FRAME_INFO)
 						{
@@ -598,21 +598,21 @@ public:
 							default:
 							case MFX_FRAMETYPE_I:
 							case MFX_FRAMETYPE_xI:
-								outFrameStruct = Media::IVideoSource::FS_I;
+								outFrameStruct = Media::VideoSource::FS_I;
 								break;
 							case MFX_FRAMETYPE_P:
 							case MFX_FRAMETYPE_xP:
-								outFrameStruct = Media::IVideoSource::FS_P;
+								outFrameStruct = Media::VideoSource::FS_P;
 								break;
 							case MFX_FRAMETYPE_B:
 							case MFX_FRAMETYPE_xB:
-								outFrameStruct = Media::IVideoSource::FS_B;
+								outFrameStruct = Media::VideoSource::FS_B;
 								break;
 							}
 						}
 						else
 						{
-							outFrameStruct = Media::IVideoSource::FS_I;
+							outFrameStruct = Media::VideoSource::FS_I;
 						}
 						if (this->par.mfx.FrameInfo.PicStruct == MFX_PICSTRUCT_UNKNOWN)
 						{
@@ -641,7 +641,7 @@ public:
 						{
 							outFrameType = Media::FT_INTERLACED_BFF;
 						}
-						outFlags = Media::IVideoSource::FF_NONE;
+						outFlags = Media::VideoSource::FF_NONE;
 						outYCOfst = Media::YCOFST_C_CENTER_LEFT;
 						this->frameCb(outFrameTime, outFrameNum, &outSurface->Data.Y, this->decFrameSize, outFrameStruct, this->frameCbData, outFrameType, outFlags, outYCOfst);
 					}
@@ -662,7 +662,7 @@ public:
 	}
 };
 
-Media::IVideoSource *__stdcall IMSDKDecoder_DecodeVideo(Media::IVideoSource *video)
+Media::VideoSource *__stdcall IMSDKDecoder_DecodeVideo(Media::VideoSource *video)
 {
 	IMSDKDecoder *decoder;
 	Media::FrameInfo frameInfo;

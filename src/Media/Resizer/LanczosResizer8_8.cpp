@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/LanczosFilter.h"
 #include "Math/Math.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/Resizer/LanczosResizer8_8.h"
 #include "Sync/Event.h"
 #include "Sync/ThreadUtil.h"
@@ -1253,7 +1253,7 @@ void Media::Resizer::LanczosResizer8_8::DestoryVert()
 	vsSize = 0;
 }
 
-Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::IImgResizer(Media::AT_NO_ALPHA)
+Media::Resizer::LanczosResizer8_8::LanczosResizer8_8(Int32 nTap) : Media::ImageResizer(Media::AT_NO_ALPHA)
 {
 //	SYSTEM_INFO sysInfo;
 	Int32 i;

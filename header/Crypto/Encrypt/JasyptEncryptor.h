@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_ENCRYPT_JASYPTENCRYPTOR
 #define _SM_CRYPTO_ENCRYPT_JASYPTENCRYPTOR
-#include "Crypto/Encrypt/ICrypto.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Encrypt/Encryption.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Data/ByteBuffer.h"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/ConfigFile.h"
@@ -46,7 +46,7 @@ namespace Crypto
 			UnsafeArray<const UInt8> DecGetSalt(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> salt);
 			UnsafeArray<const UInt8> DecGetIV(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> iv);
 			UOSInt GetEncKey(UnsafeArray<const UInt8> salt, UnsafeArray<UInt8> key);
-			NN<Crypto::Encrypt::ICrypto> CreateCrypto(UnsafeArray<const UInt8> iv, UnsafeArray<const UInt8> keyBuff);
+			NN<Crypto::Encrypt::Encryption> CreateCrypto(UnsafeArray<const UInt8> iv, UnsafeArray<const UInt8> keyBuff);
 
 		public:
 			JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, Data::ByteArrayR key);

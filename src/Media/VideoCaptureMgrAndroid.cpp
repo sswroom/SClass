@@ -76,7 +76,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> de
 	}
 }
 
-Optional<Media::IVideoCapture> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
+Optional<Media::VideoCapturer> Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (devType == 0)

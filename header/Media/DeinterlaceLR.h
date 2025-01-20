@@ -1,12 +1,12 @@
 #ifndef _SM_MEDIA_DEINTERLACELR
 #define _SM_MEDIA_DEINTERLACELR
 #include "AnyType.h"
-#include "Media/IDeinterlacer.h"
+#include "Media/Deinterlacer.h"
 #include "Sync/Event.h"
 
 namespace Media
 {
-	class DeinterlaceLR : public Media::IDeinterlacer
+	class DeinterlaceLR : public Media::Deinterlacer
 	{
 	private:
 		typedef struct
@@ -15,9 +15,9 @@ namespace Media
 			Sync::Event *evtMain;
 			Int32 status; //0 = not running, 1 = idling, 2 = resizing, 3 = finish, 4 = to exit
 
-			UInt8 *inPt;
-			UInt8 *inPtCurr;
-			UInt8 *outPt;
+			UnsafeArray<UInt8> inPt;
+			UnsafeArray<UInt8> inPtCurr;
+			UnsafeArray<UInt8> outPt;
 			UOSInt width;
 			UOSInt height;
 			UOSInt tap;
@@ -46,7 +46,7 @@ namespace Media
 
 
 		static Double lanczos3_weight(Double phase);
-		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, UOSInt indexSep, Double offsetCorr);
+		static void SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<DIPARAMETER> out, UOSInt indexSep, Double offsetCorr);
 
 		static UInt32 __stdcall ProcThread(AnyType obj);
 	public:
@@ -54,7 +54,7 @@ namespace Media
 		virtual ~DeinterlaceLR();
 
 		virtual void Reinit(UOSInt fieldCnt, UOSInt fieldSep);
-		virtual void Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep);
+		virtual void Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UOSInt width, OSInt dstep);
 	};
 }
 #endif

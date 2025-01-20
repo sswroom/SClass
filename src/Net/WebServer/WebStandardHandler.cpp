@@ -8,7 +8,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
-Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.v[0] != '/')
 		return false;
@@ -64,7 +64,7 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebReques
 	return false;
 }
 
-void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	resp->AddDefHeaders(req);
 	NN<Text::String> s;
@@ -78,7 +78,7 @@ void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::I
 	}
 }
 
-Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
+Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, OSInt cacheAge, Text::CStringNN json)
 {
 	Text::CStringNN mime = CSTR("application/json");
 	this->AddResponseHeaders(req, resp);
@@ -87,7 +87,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::IWeb
 	return Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, json);
 }
 
-Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options)
+Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, UOSInt maxAge, Text::CStringNN options)
 {
 	Text::StringBuilderUTF8 sb;
 	if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Method")) && !this->allowOrigin.IsNull())
@@ -141,7 +141,7 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	OPTSTR_DEL(this->upgradeInsecureURL);
 }
 
-void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::WebStandardHandler::DoWebRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	NN<Text::String> reqURL = req->GetRequestURI();
 	NN<Text::String> s;
@@ -169,7 +169,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebReque
 	if (!this->ProcessRequest(req, resp, CSTRP(sbuff, sptr)))
 	{
 		resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
-		if (req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
+		if (req->GetProtocol() == Net::WebServer::WebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::WebRequest::RequestProtocol::HTTP1_1)
 		{
 			resp->AddDefHeaders(req);
 
@@ -191,7 +191,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebReque
 	}
 }
 
-Bool Net::WebServer::WebStandardHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebStandardHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	return DoRequest(req, resp, subReq);
 }

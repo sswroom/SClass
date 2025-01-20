@@ -20,7 +20,7 @@
 #include "Math/Math.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/StaticImage.h"
 #include "Media/ImageList.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
@@ -2418,7 +2418,7 @@ Optional<Map::MapDrawLayer> Map::MapConfig2TGen::GetDrawLayer(Text::CStringNN na
 	return cip;
 }
 
-void Map::MapConfig2TGen::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NN<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
+void Map::MapConfig2TGen::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NN<Media::DrawEngine> eng, Media::ImageResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
 	NN<Media::DrawImage> lyrImg;
 	if (!lyrs->img.SetTo(lyrImg))
@@ -4833,7 +4833,7 @@ Optional<Media::DrawPen> Map::MapConfig2TGen::CreatePen(NN<Media::DrawImage> img
 	return 0;
 }
 
-WChar *Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, Text::CString dbOutput, DrawParam *params)
+WChar *Map::MapConfig2TGen::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::ImageResizer *resizer, Text::CString dbOutput, DrawParam *params)
 {
 //	Manage::HiResClock clk;
 	UInt32 index;

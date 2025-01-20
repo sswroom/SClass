@@ -83,7 +83,7 @@ UInt32 __stdcall TestThread(AnyType userObj)
 	return 0;
 }
 
-Double HashTestSpeed(NN<Crypto::Hash::IHash> hash)
+Double HashTestSpeed(NN<Crypto::Hash::HashAlgorithm> hash)
 {
 	UInt8 hashVal[64];
 	UInt8 *testBlock = MemAllocA(UInt8, 1048576);	
@@ -783,7 +783,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #endif
 
 #if defined(TEST_HASH)
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
@@ -1565,7 +1565,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			Media::IImgResizer *resizer;
+			Media::ImageResizer *resizer;
 			UOSInt cnt;
 
 			sb.ClearStr();

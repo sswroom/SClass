@@ -18,7 +18,7 @@ Text::CStringNN IO::ProtoDec::JTT808ProtocolDecoder::GetName() const
 	return CSTR("JTT808");
 }
 
-UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	UInt8 proto[1024];
 	UOSInt i;
@@ -166,7 +166,7 @@ UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, Any
 	return buffSize;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 proto[1024];
 	UOSInt protoSize;
@@ -334,12 +334,12 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt 
 	return true;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::IsValid(UInt8 *buff, UOSInt buffSize)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::IsValid(UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	return buff[0] == 0x7e;
 }
 
-UOSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UInt8 *buff, const UInt8 *proto, UOSInt protoSize)
+UOSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UnsafeArray<UInt8> buff, UnsafeArray<const UInt8> proto, UOSInt protoSize)
 {
 	UOSInt retSize = protoSize - 2;
 	if (proto[0] != 0x7e || proto[protoSize - 1] != 0x7e)
@@ -370,7 +370,7 @@ UOSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UInt8 *buff, const UInt8 *pro
 	return retSize;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(const UTF8Char *loc, UOSInt locSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(UnsafeArray<const UTF8Char> loc, UOSInt locSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 uVal;
 	UOSInt i;

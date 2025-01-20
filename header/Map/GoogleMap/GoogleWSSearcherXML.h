@@ -4,14 +4,14 @@
 #include "Net/SocketFactory.h"
 #include "Data/DateTime.h"
 #include "Sync/Mutex.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 #include "Text/EncodingFactory.h"
 
 namespace Map
 {
 	namespace GoogleMap
 	{
-		class GoogleWSSearcherXML : public Map::IReverseGeocoder
+		class GoogleWSSearcherXML : public Map::ReverseGeocoder
 		{
 		private:
 			NN<Net::SocketFactory> sockf;

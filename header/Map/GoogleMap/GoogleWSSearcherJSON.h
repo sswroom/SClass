@@ -2,7 +2,7 @@
 #define _SM_MAP_GOOGLEMAP_GOOGLEWSSEARCHERJSON
 #include "Data/DateTime.h"
 #include "IO/Writer.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 #include "Net/SSLEngine.h"
 #include "Net/TCPClientFactory.h"
 #include "Sync/Mutex.h"
@@ -12,7 +12,7 @@ namespace Map
 {
 	namespace GoogleMap
 	{
-		class GoogleWSSearcherJSON : public Map::IReverseGeocoder
+		class GoogleWSSearcherJSON : public Map::ReverseGeocoder
 		{
 		private:
 			NN<Net::TCPClientFactory> clif;

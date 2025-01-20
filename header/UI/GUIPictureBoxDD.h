@@ -5,7 +5,7 @@
 #include "Math/Coord2D.h"
 #include "Math/RectArea.h"
 #include "Media/ColorManager.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/StaticImage.h"
 #include "Media/CS/CSConverter.h"
 #include "Parser/ParserList.h"
@@ -13,7 +13,7 @@
 
 namespace UI
 {
-	class GUIPictureBoxDD : public GUIDDrawControl, public Media::IColorHandler
+	class GUIPictureBoxDD : public GUIDDrawControl, public Media::ColorHandler
 	{
 	public:
 		typedef void (CALLBACKFUNC DrawHandler32)(AnyType userObj, UnsafeArray<UInt8> imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
@@ -32,7 +32,7 @@ namespace UI
 		NN<Media::ColorManagerSess> colorSess;
 		Optional<Media::RasterImage> currImage;
 		Math::Size2D<UOSInt> currImageSize;
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 		UInt8 *imgBuff;
 		Bool allowEnlarge;
 		Double zoomScale;
@@ -74,8 +74,8 @@ namespace UI
 		void EnableLRGBLimit(Bool enable);
 		void SetImage(Optional<Media::RasterImage> currImage, Bool sameImg);
 
-		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 		void SetAllowEnlarge(Bool allowEnlarge);
 
 		virtual void OnSurfaceCreated();

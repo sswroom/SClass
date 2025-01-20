@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::VOBLPCMStreamSource::VOBLPCMStreamSource(NN<Media::IStreamControl> pbc, NN<const Media::AudioFormat> fmt)
+Media::VOBLPCMStreamSource::VOBLPCMStreamSource(NN<Media::MediaStreamControl> pbc, NN<const Media::AudioFormat> fmt)
 {
 	this->pbc = pbc;
 	this->fmt.FromAudioFormat(fmt);

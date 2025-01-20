@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 
-IO::ProtoHdlr::ProtoJMVL01Handler::ProtoJMVL01Handler(NN<IO::IProtocolHandler::DataListener> listener, UInt64 devId) : crc(Crypto::Hash::CRC16::GetPolynomialCCITT())
+IO::ProtoHdlr::ProtoJMVL01Handler::ProtoJMVL01Handler(NN<IO::ProtocolHandler::DataListener> listener, UInt64 devId) : crc(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->listener = listener;
 	this->devId = devId;

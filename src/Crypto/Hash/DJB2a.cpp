@@ -22,7 +22,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::DJB2a::GetName(UnsafeArray<UTF8Char> sbuff) 
 	return Text::StrConcatC(sbuff, UTF8STRC("DJB2a"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::DJB2a::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::DJB2a::Clone() const
 {
 	NN<Crypto::Hash::DJB2a> djb2;
 	NEW_CLASSNN(djb2, Crypto::Hash::DJB2a());

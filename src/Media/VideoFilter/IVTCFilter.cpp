@@ -15,9 +15,9 @@ extern "C"
 	void IVTCFilter_CalcFieldP(UInt8 *framePtr, UOSInt w, UOSInt h, UInt32 *fieldStats);
 }
 
-void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	if (flags & Media::IVideoSource::FF_DISCONTTIME)
+	if (flags & Media::VideoSource::FF_DISCONTTIME)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		if (this->enabled)
@@ -123,7 +123,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 						frameType = Media::FT_INTERLACED_TFF;
 						if (this->fieldIsDiscont)
 						{
-							flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
+							flags = (Media::VideoSource::FrameFlag)(flags | Media::VideoSource::FF_DISCONTTIME);
 						}
 						this->fieldExist = false;
 						mutUsage.EndUse();
@@ -250,7 +250,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 						frameType = Media::FT_INTERLACED_BFF;
 						if (this->fieldIsDiscont)
 						{
-							flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
+							flags = (Media::VideoSource::FrameFlag)(flags | Media::VideoSource::FF_DISCONTTIME);
 						}
 						this->fieldExist = false;
 						mutUsage.EndUse();
@@ -326,7 +326,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 					this->fieldTime = frameTime;
 					this->fieldNum = frameNum;
 					this->fieldDataSize = dataSize;
-					this->fieldIsDiscont = (flags & Media::IVideoSource::FF_DISCONTTIME);
+					this->fieldIsDiscont = (flags & Media::VideoSource::FF_DISCONTTIME);
 					mutUsage.EndUse();
 					return;
 				}
@@ -344,7 +344,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 					this->fieldTime = frameTime;
 					this->fieldNum = frameNum;
 					this->fieldDataSize = dataSize;
-					this->fieldIsDiscont = (flags & Media::IVideoSource::FF_DISCONTTIME);
+					this->fieldIsDiscont = (flags & Media::VideoSource::FF_DISCONTTIME);
 					mutUsage.EndUse();
 					return;
 				}
@@ -362,7 +362,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 					this->fieldTime = frameTime;
 					this->fieldNum = frameNum;
 					this->fieldDataSize = dataSize;
-					this->fieldIsDiscont = (flags & Media::IVideoSource::FF_DISCONTTIME);
+					this->fieldIsDiscont = (flags & Media::VideoSource::FF_DISCONTTIME);
 					mutUsage.EndUse();
 					return;
 				}
@@ -373,9 +373,9 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(Data::Duration frameTime,
 	do_IVTC(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
 }
 
-void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::IVideoSource::FrameChange fc)
+void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::VideoSource::FrameChange fc)
 {
-	if (fc == Media::IVideoSource::FC_ENDPLAY || fc == Media::IVideoSource::FC_SRCCHG)
+	if (fc == Media::VideoSource::FC_ENDPLAY || fc == Media::VideoSource::FC_SRCCHG)
 	{
 		while (this->ivtcTStatus == 2)
 		{
@@ -384,7 +384,7 @@ void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::IVideoSource::FrameCha
 	}
 }
 
-void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->enabled)
@@ -1216,7 +1216,7 @@ void Media::VideoFilter::IVTCFilter::ClearIVTC()
 	this->fieldExist = false;
 }
 
-void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UInt8> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UInt8> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->ivtcTFrameTime = frameTime;
 	this->ivtcTFrameNum = frameNum;
@@ -1251,9 +1251,9 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(AnyType userObj)
 				Data::Duration frameTime = me->ivtcTFrameTime;
 				UInt32 frameNum = me->ivtcTFrameNum;
 				UOSInt dataSize = me->ivtcTDataSize;
-				Media::IVideoSource::FrameStruct frameStruct = me->ivtcTFrameStruct;
+				Media::VideoSource::FrameStruct frameStruct = me->ivtcTFrameStruct;
 				Media::FrameType frameType = me->ivtcTFrameType;
-				Media::IVideoSource::FrameFlag flags = me->ivtcTFlags;
+				Media::VideoSource::FrameFlag flags = me->ivtcTFlags;
 				Media::YCOffset ycOfst = me->ivtcTYCOfst;
 
 				me->ivtcTStatus = 2;
@@ -1945,7 +1945,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStatP(NN<FieldStat> fieldStat, Uns
 	}
 }
 
-Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Media::VideoFilter::VideoFilterBase(srcVideo)
+Media::VideoFilter::IVTCFilter::IVTCFilter(Media::VideoSource *srcVideo) : Media::VideoFilter::VideoFilterBase(srcVideo)
 {
 	UOSInt i;
 	Bool found;
@@ -2070,7 +2070,7 @@ void Media::VideoFilter::IVTCFilter::SetEnabled(Bool enabled)
 
 void Media::VideoFilter::IVTCFilter::Stop()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		srcVideo->Stop();

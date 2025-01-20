@@ -17,7 +17,7 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength()).Ptr();
 }
 
-Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj(CSTR("text/html"))
+Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage) : Text::MIMEObject(CSTR("text/html"))
 {
 	this->contType = 0;
 	this->codePage = codePage;
@@ -48,7 +48,7 @@ UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	return stm->Write(Data::ByteArrayR(this->textBuff, this->buffSize));
 }
 
-NN<Text::IMIMEObj> Text::MIMEObj::HTMLMIMEObj::Clone() const
+NN<Text::MIMEObject> Text::MIMEObj::HTMLMIMEObj::Clone() const
 {
 	NN<Text::MIMEObj::HTMLMIMEObj> txt;
 	NEW_CLASSNN(txt, Text::MIMEObj::HTMLMIMEObj(this->textBuff, this->buffSize, this->codePage));

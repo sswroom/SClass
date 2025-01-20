@@ -424,7 +424,7 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 		SDEL_CLASS(this->fd);
 		this->frame.Delete();
 		this->fd = fd.Ptr();
-		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd);
+		this->analyse = IO::FileAnalyse::FileAnalyser::AnalyseFile(fd);
 		this->fileSize = this->fd->GetDataSize();
 		this->currOfst = 0;
 		this->SetScrollVRange(0, (UOSInt)(this->fileSize >> 4));
@@ -434,21 +434,21 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 	return true;
 }
 
-Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
+Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::FileAnalyser> fileAnalyse)
 {
 	this->analyse.Delete();
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
 	this->frame.Delete();
 	this->fd = data.Ptr();
-	NN<IO::FileAnalyse::IFileAnalyse> nnfileAnalyse;
+	NN<IO::FileAnalyse::FileAnalyser> nnfileAnalyse;
 	if (fileAnalyse.SetTo(nnfileAnalyse))
 	{
 		this->analyse = nnfileAnalyse;
 	}
 	else
 	{
-		this->analyse = IO::FileAnalyse::IFileAnalyse::AnalyseFile(data);
+		this->analyse = IO::FileAnalyse::FileAnalyser::AnalyseFile(data);
 	}
 	this->fileSize = this->fd->GetDataSize();
 	this->currOfst = 0;
@@ -511,7 +511,7 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	{
 		return;
 	}
-	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->analyse.SetTo(analyse))
 	{
@@ -580,7 +580,7 @@ void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, AnyType hdlrObj)
 
 Text::CString UI::GUIHexFileView::GetAnalyzerName()
 {
-	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	if (this->analyse.SetTo(analyse))
 	{
 		return analyse->GetFormatName();
@@ -590,7 +590,7 @@ Text::CString UI::GUIHexFileView::GetAnalyzerName()
 
 Bool UI::GUIHexFileView::GetFrameName(NN<Text::StringBuilderUTF8> sb)
 {
-	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	if (!this->analyse.SetTo(analyse))
 	{
 		return false;
@@ -605,7 +605,7 @@ Bool UI::GUIHexFileView::GetFrameName(NN<Text::StringBuilderUTF8> sb)
 
 UOSInt UI::GUIHexFileView::GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList)
 {
-	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->frame.SetTo(frame) && this->analyse.SetTo(analyse))
 	{
@@ -653,7 +653,7 @@ UOSInt UI::GUIHexFileView::GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnaly
 
 Bool UI::GUIHexFileView::GoToNextUnkField()
 {
-	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FileAnalyser> analyse;
 	if (!this->analyse.SetTo(analyse))
 	{
 		return false;

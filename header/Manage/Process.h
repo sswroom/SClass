@@ -4,7 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "Manage/HandleType.h"
-#include "Manage/IMemoryReader.h"
+#include "Manage/MemoryReader.h"
 #include "Manage/ModuleInfo.h"
 #include "Manage/ThreadInfo.h"
 #include "Text/CString.h"
@@ -12,7 +12,7 @@
 
 namespace Manage
 {
-	class Process : public Manage::IMemoryReader
+	class Process : public Manage::MemoryReader
 	{
 	public:
 		struct FindProcSess;
@@ -115,7 +115,7 @@ namespace Manage
 		virtual UInt16 ReadMemUInt16(UInt64 addr);
 		virtual UInt32 ReadMemUInt32(UInt64 addr);
 		virtual UInt64 ReadMemUInt64(UInt64 addr);
-		virtual UOSInt ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize);
+		virtual UOSInt ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UOSInt reqSize);
 	public:
 		typedef struct
 		{

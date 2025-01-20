@@ -4,7 +4,7 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;
@@ -68,7 +68,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebSe
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;
@@ -299,7 +299,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;

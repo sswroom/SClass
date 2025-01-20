@@ -1,13 +1,13 @@
 #ifndef _SM_MEDIA_AVIUTL_AUIAUDIO
 #define _SM_MEDIA_AVIUTL_AUIAUDIO
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 #include "Media/AVIUtl/AUIPlugin.h"
 
 namespace Media
 {
 	namespace AVIUtl
 	{
-		class AUIAudio : public Media::IAudioSource
+		class AUIAudio : public Media::AudioSource
 		{
 		private:
 			NN<Media::AVIUtl::AUIPlugin> plugin;

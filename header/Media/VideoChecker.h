@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_VIDEOCHECKER
 #define _SM_MEDIA_VIDEOCHECKER
-#include "Media/IAudioSource.h"
-#include "Media/IVideoSource.h"
+#include "Media/AudioSource.h"
+#include "Media/VideoSource.h"
 #include "Media/MediaFile.h"
 #include "Media/NullRenderer.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
@@ -18,9 +18,9 @@ namespace Media
 			UInt64 sampleCnt;
 			Data::Duration lastSampleTime;
 			Bool isEnd;
-			Media::IAudioSource *adecoder;
+			Media::AudioSource *adecoder;
 			Media::NullRenderer *renderer;
-			Media::IVideoSource *vdecoder;
+			Media::VideoSource *vdecoder;
 			NN<Sync::Event> evt;
 		} DecodeStatus;
 	private:
@@ -29,8 +29,8 @@ namespace Media
 		Bool allowTimeSkip;
 		Sync::Event evt;
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoChange(Media::VideoSource::FrameChange frChg, AnyType userData);
 		static void __stdcall OnAudioEnd(AnyType userData);
 	public:
 		VideoChecker(Bool allowTimeSkip);

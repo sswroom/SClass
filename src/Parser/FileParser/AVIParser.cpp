@@ -655,7 +655,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 			audioList->Add(new AudioStream((WAVEFORMATEX*)strl[i].strf, dsList, audsName, audDelay));*/
 			/////////////////////////////////
 			audsName->Release();
-			NN<Media::IMediaSource> src;
+			NN<Media::MediaSource> src;
 			if (src.Set(audsData))
 			{
 				mf->AddSource(src, audDelay);

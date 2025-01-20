@@ -79,7 +79,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
-			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, (Media::IVideoSource::FrameFlag)(this->firstFrame?Media::IVideoSource::FF_DISCONTTIME:0), Media::YCOFST_C_CENTER_LEFT);
+			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::VideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, (Media::VideoSource::FrameFlag)(this->firstFrame?Media::VideoSource::FF_DISCONTTIME:0), Media::YCOFST_C_CENTER_LEFT);
 			this->firstFrame = false;
 		}
 		break;
@@ -100,7 +100,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
-			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_I, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, Media::VideoSource::FS_I, this->cbData, Media::FT_NON_INTERLACE, Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 		}
 		break;
 	case 24: //STAP-A
@@ -142,7 +142,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 		frameBuff = this->mstm.GetBuff(frameSize);
 		if (this->cb)
 		{
-			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?Media::IVideoSource::FS_I:Media::IVideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+			this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?Media::VideoSource::FS_I:Media::VideoSource::FS_P, this->cbData, Media::FT_NON_INTERLACE, Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 		}
 		break;
 	case 28: //FU-A
@@ -185,7 +185,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 				frameBuff = this->mstm.GetBuff(frameSize);
 				if (this->cb)
 				{
-					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?(Media::IVideoSource::FF_DISCONTTIME):Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::VideoSource::FS_I):(Media::VideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?(Media::VideoSource::FF_DISCONTTIME):Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 					if (this->isKey)
 					{
 						this->firstFrame = false;
@@ -233,7 +233,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 				frameBuff = this->mstm.GetBuff(frameSize);
 				if (this->cb)
 				{
-					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+					this->cb(ts / 90, this->frameNum++, &frameBuff, frameSize, this->isKey?(Media::VideoSource::FS_I):(Media::VideoSource::FS_P), this->cbData, Media::FT_NON_INTERLACE, (this->isKey && this->firstFrame)?Media::VideoSource::FF_DISCONTTIME:Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 					if (this->isKey)
 						this->firstFrame = false;
 				}

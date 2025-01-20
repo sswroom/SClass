@@ -553,7 +553,7 @@ Double Media::Deinterlace8::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DI8PARAMETER *out, UOSInt indexSep, Double offsetCorr)
+void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<DI8PARAMETER> out, UOSInt indexSep, Double offsetCorr)
 {
 	UInt32 i,j;
 	Int32 n;
@@ -625,21 +625,21 @@ UInt32 __stdcall Media::Deinterlace8::ProcThread(AnyType obj)
 
 		if (stat->status == 2)
 		{
-			Deinterlace8_VerticalFilter(stat->inPt, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			Deinterlace8_VerticalFilter(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 5)
 		{
 //			Deinterlace8_VerticalFilter(stat->inPt, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
-			Deinterlace8_VerticalFilterOdd(stat->inPt, stat->inPtCurr, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			Deinterlace8_VerticalFilterOdd(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 6)
 		{
 //			Deinterlace8_VerticalFilter(stat->inPt, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
-			Deinterlace8_VerticalFilterEven(stat->inPt, stat->inPtCurr, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			Deinterlace8_VerticalFilterEven(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
@@ -752,13 +752,13 @@ void Media::Deinterlace8::Reinit(UOSInt fieldCnt, UOSInt fieldSep)
 		this->evenParam.weight = 0;
 		this->evenParam.index = 0;
 	}
-	Media::Deinterlace8::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, &oddParam, fieldSep, 0.25);
-	Media::Deinterlace8::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, &evenParam, fieldSep, -0.25);
+	Media::Deinterlace8::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, oddParam, fieldSep, 0.25);
+	Media::Deinterlace8::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, evenParam, fieldSep, -0.25);
 	this->fieldCnt = fieldCnt;
 	this->fieldSep = fieldSep;
 }
 
-void Media::Deinterlace8::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep)
+void Media::Deinterlace8::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UOSInt width, OSInt dstep)
 {
 	if (!bottomField)
 	{

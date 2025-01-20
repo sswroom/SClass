@@ -43,7 +43,7 @@ void Media::Decoder::ACMDecoder::FreeACM()
 
 void Media::Decoder::ACMDecoder::InitACM()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	UInt32 i;
 	Media::AudioFormat format;
 	WAVEFORMATEX *fmt;
@@ -165,7 +165,7 @@ void Media::Decoder::ACMDecoder::InitACM()
 	}
 }
 
-Media::Decoder::ACMDecoder::ACMDecoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::ACMDecoder::ACMDecoder(NN<Media::AudioSource> sourceAudio)
 {
 	this->hAcmStream = 0;
 	this->acmFmt = 0;
@@ -199,7 +199,7 @@ void Media::Decoder::ACMDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
@@ -212,7 +212,7 @@ Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
@@ -229,7 +229,7 @@ Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize
 
 void Media::Decoder::ACMDecoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();
@@ -240,7 +240,7 @@ void Media::Decoder::ACMDecoder::Stop()
 UOSInt Media::Decoder::ACMDecoder::ReadBlock(Data::ByteArray buff)
 {
 	ACMSTREAMHEADER *acmsh = (ACMSTREAMHEADER*)this->acmsh;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	NN<Sync::Event> readEvt;
 	UOSInt outSize = 0;
 	UOSInt i;

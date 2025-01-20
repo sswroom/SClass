@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_TXTFILEANALYSE
 #include "Data/ArrayListUInt64.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
@@ -11,7 +11,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class TXTFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class TXTFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			IO::StreamData *fd;

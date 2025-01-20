@@ -17,16 +17,16 @@ namespace Media
 	private:
 		Optional<Text::String> profileName;
 
-		Media::IColorHandler::YUVPARAM yuv;
-		Media::IColorHandler::RGBPARAM2 rgb;
+		Media::ColorHandler::YUVPARAM yuv;
+		Media::ColorHandler::RGBPARAM2 rgb;
 		Optional<Text::String> monProfileFile;
 		Bool color10Bit;
 
 		Data::ArrayListNN<Media::ColorManagerSess> sessList;
 		Sync::Mutex sessMut;
 	public:
-		static void SetDefaultYUV(NN<Media::IColorHandler::YUVPARAM> yuv);
-		static void SetDefaultRGB(NN<Media::IColorHandler::RGBPARAM2> rgb);
+		static void SetDefaultYUV(NN<Media::ColorHandler::YUVPARAM> yuv);
+		static void SetDefaultRGB(NN<Media::ColorHandler::RGBPARAM2> rgb);
 
 	public:
 		MonitorColorManager(Optional<Text::String> profileName);
@@ -37,8 +37,8 @@ namespace Media
 		Bool Load();
 		Bool Save();
 		void SetDefault();
-		NN<const Media::IColorHandler::YUVPARAM> GetYUVParam();
-		NN<const Media::IColorHandler::RGBPARAM2> GetRGBParam();
+		NN<const Media::ColorHandler::YUVPARAM> GetYUVParam();
+		NN<const Media::ColorHandler::RGBPARAM2> GetRGBParam();
 
 		void SetMonVBright(Double newVal);
 		void SetMonPBright(Double newVal);
@@ -118,17 +118,17 @@ namespace Media
 		NN<ColorManager> colorMgr;
 		NN<MonitorColorManager> monColor;
 		Sync::RWMutex mut;
-		Data::ArrayListNN<Media::IColorHandler> hdlrs;
+		Data::ArrayListNN<Media::ColorHandler> hdlrs;
 		Sync::Mutex hdlrMut;
 
 	public:
 		ColorManagerSess(NN<ColorManager> colorMgr, NN<MonitorColorManager> monColor);
 		virtual ~ColorManagerSess();
 
-		virtual void AddHandler(NN<Media::IColorHandler> hdlr);
-		virtual void RemoveHandler(NN<Media::IColorHandler> hdlr);
-		NN<const Media::IColorHandler::YUVPARAM> GetYUVParam();
-		virtual NN<const Media::IColorHandler::RGBPARAM2> GetRGBParam();
+		virtual void AddHandler(NN<Media::ColorHandler> hdlr);
+		virtual void RemoveHandler(NN<Media::ColorHandler> hdlr);
+		NN<const Media::ColorHandler::YUVPARAM> GetYUVParam();
+		virtual NN<const Media::ColorHandler::RGBPARAM2> GetRGBParam();
 		virtual NN<Media::ColorProfile> GetDefVProfile();
 		virtual NN<Media::ColorProfile> GetDefPProfile();
 		Media::ColorProfile::YUVType GetDefYUVType();
@@ -136,8 +136,8 @@ namespace Media
 
 		void ChangeMonitor(MonitorHandle *hMon);
 
-		void RGBUpdated(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
-		void YUVUpdated(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+		void RGBUpdated(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
+		void YUVUpdated(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 	};
 }
 #endif

@@ -30,7 +30,7 @@ namespace SSWR
 			NN<Media::MediaPlayer> player;
 			Optional<Media::MediaFile> currFile;
 			Optional<Media::Playlist> playlist;
-			NN<Media::IPBControl> currPBC;
+			NN<Media::PBControl> currPBC;
 			Optional<Media::ChapterInfo> currChapInfo;
 			Int32 uOfst;
 			Int32 vOfst;

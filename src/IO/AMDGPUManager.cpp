@@ -240,7 +240,7 @@ UOSInt IO::AMDGPUManager::GetGPUCount()
 	return this->adapterList->GetCount();
 }
 
-Optional<IO::IGPUControl> IO::AMDGPUManager::CreateGPUControl(UOSInt index)
+Optional<IO::GPUControl> IO::AMDGPUManager::CreateGPUControl(UOSInt index)
 {
 	IO::AMDGPUControl *gpuCtrl;
 	if (this->adapterList == 0)
@@ -248,7 +248,7 @@ Optional<IO::IGPUControl> IO::AMDGPUManager::CreateGPUControl(UOSInt index)
 	AdapterInfo *adapter = (AdapterInfo*)this->adapterList->GetItem(index);
 	if (adapter == 0)
 		return 0;
-	NEW_CLASS(gpuCtrl, IO::AMDGPUControl(this, adapter));
+	NEW_CLASS(gpuCtrl, IO::AMDGPUControl(*this, adapter));
 	return gpuCtrl;
 }
 

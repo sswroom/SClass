@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_COMPRESS_DEFLATESTREAM
 #define _SM_DATA_COMPRESS_DEFLATESTREAM
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "IO/Stream.h"
 
 namespace Data
@@ -20,7 +20,7 @@ namespace Data
 			struct ClassData;
 			ClassData *clsData;
 		public:
-			DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader);
+			DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::HashAlgorithm *hash, CompLevel level, Bool hasHeader);
 			virtual ~DeflateStream();
 
 			virtual Bool IsDown() const;

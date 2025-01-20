@@ -9,14 +9,14 @@
 
 #define BUFFSIZE 4096
 
-Text::MIMEObj::MIMEMessage::MIMEMessage() : Text::IMIMEObj(CSTR("message/rfc822"))
+Text::MIMEObj::MIMEMessage::MIMEMessage() : Text::MIMEObject(CSTR("message/rfc822"))
 {
 	this->content = 0;
 	this->transferData = 0;
 	this->transferSize = 0;
 }
 
-Text::MIMEObj::MIMEMessage::MIMEMessage(Optional<Text::IMIMEObj> content) : Text::IMIMEObj(CSTR("message/rfc822"))
+Text::MIMEObj::MIMEMessage::MIMEMessage(Optional<Text::MIMEObject> content) : Text::MIMEObject(CSTR("message/rfc822"))
 {
 	this->content = content;
 	this->transferData = 0;
@@ -58,7 +58,7 @@ UOSInt Text::MIMEObj::MIMEMessage::WriteStream(NN<IO::Stream> stm) const
 	UOSInt i;
 	UOSInt j;
 	NN<Text::String> s;
-	NN<IMIMEObj> content;
+	NN<MIMEObject> content;
 	Text::StringBuilderUTF8 sbc;
 	i = 0;
 	j = this->headerName.GetCount();
@@ -87,10 +87,10 @@ UOSInt Text::MIMEObj::MIMEMessage::WriteStream(NN<IO::Stream> stm) const
 	return i;
 }
 
-NN<Text::IMIMEObj> Text::MIMEObj::MIMEMessage::Clone() const
+NN<Text::MIMEObject> Text::MIMEObj::MIMEMessage::Clone() const
 {
 	NN<Text::MIMEObj::MIMEMessage> msg;
-	NN<IMIMEObj> content;
+	NN<MIMEObject> content;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASSNN(msg, Text::MIMEObj::MIMEMessage());
@@ -111,13 +111,13 @@ NN<Text::IMIMEObj> Text::MIMEObj::MIMEMessage::Clone() const
 	return msg;
 }
 
-void Text::MIMEObj::MIMEMessage::SetContent(Optional<Text::IMIMEObj> content)
+void Text::MIMEObj::MIMEMessage::SetContent(Optional<Text::MIMEObject> content)
 {
 	this->content.Delete();
 	this->content = content;
 }
 
-Optional<Text::IMIMEObj> Text::MIMEObj::MIMEMessage::GetContent() const
+Optional<Text::MIMEObject> Text::MIMEObj::MIMEMessage::GetContent() const
 {
 	return this->content;
 }
@@ -339,8 +339,8 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NN<IO::StreamData> fd)
 		{
 			NN<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 			Optional<Text::String> contType = this->GetHeader(UTF8STRC("Content-Type"));
-			NN<Text::IMIMEObj> obj;
-			if (Text::IMIMEObj::ParseFromData(data, contType.SetTo(s)?s->ToCString():CSTR("application/octet-stream")).SetTo(obj))
+			NN<Text::MIMEObject> obj;
+			if (Text::MIMEObject::ParseFromData(data, contType.SetTo(s)?s->ToCString():CSTR("application/octet-stream")).SetTo(obj))
 			{
 				this->SetContent(obj);
 			}
@@ -351,8 +351,8 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NN<IO::StreamData> fd)
 	{
 		NN<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 		Optional<Text::String> contType = this->GetHeader(UTF8STRC("Content-Type"));
-		NN<Text::IMIMEObj> obj;
-		if (Text::IMIMEObj::ParseFromData(data, contType.SetTo(s)?s->ToCString():CSTR("application/octet-stream")).SetTo(obj))
+		NN<Text::MIMEObject> obj;
+		if (Text::MIMEObject::ParseFromData(data, contType.SetTo(s)?s->ToCString():CSTR("application/octet-stream")).SetTo(obj))
 		{
 			this->SetContent(obj);
 		}

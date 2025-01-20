@@ -23,7 +23,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::SHA224::GetName(UnsafeArray<UTF8Char> sbuff)
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-224"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::SHA224::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::SHA224::Clone() const
 {
 	NN<Crypto::Hash::SHA224> sha224;
 	NEW_CLASSNN(sha224, Crypto::Hash::SHA224());

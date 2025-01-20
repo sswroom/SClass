@@ -26,7 +26,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 	IO::ConsoleWriter console;
 	Media::ImageGen::RingsImageGen imgGen;
-	Media::IImgResizer *resizer;
+	Media::ImageResizer *resizer;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	Manage::HiResClock clk;
 	resizer->SetTargetSize(Math::Size2D<UOSInt>(dWidth, dHeight));
-	resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+	resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 
 	if (Optional<Media::StaticImage>::ConvertFrom(imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight))).SetTo(simg))
 	{

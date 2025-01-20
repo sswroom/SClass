@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/Decoder/XADecoder.h"
 
-Media::Decoder::XADecoder::XADecoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::XADecoder::XADecoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -36,7 +36,7 @@ Media::Decoder::XADecoder::~XADecoder()
 
 void Media::Decoder::XADecoder::GetFormat(NN<AudioFormat> format)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
@@ -60,7 +60,7 @@ void Media::Decoder::XADecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::XADecoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		adxSample1[0] = 0;
@@ -75,7 +75,7 @@ Data::Duration Media::Decoder::XADecoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::XADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Start(0, blkSize);
@@ -93,7 +93,7 @@ Bool Media::Decoder::XADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 
 void Media::Decoder::XADecoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();
@@ -108,7 +108,7 @@ UOSInt Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
 	Data::ByteArray src;
 	Data::ByteArray dest;
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (!this->sourceAudio.SetTo(sourceAudio))
 		return 0;
 

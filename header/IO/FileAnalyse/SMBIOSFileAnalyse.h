@@ -1,14 +1,14 @@
 #ifndef _SM_IO_FILEANALYSE_SMBIOSFILEANALYSE
 #define _SM_IO_FILEANALYSE_SMBIOSFILEANALYSE
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
 	namespace FileAnalyse
 	{
-		class SMBIOSFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class SMBIOSFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			typedef struct

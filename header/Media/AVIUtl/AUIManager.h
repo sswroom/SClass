@@ -3,7 +3,7 @@
 #include "Data/ArrayListNN.h"
 #include "IO/FileSelector.h"
 #include "Media/AVIUtl/AUIPlugin.h"
-#include "Media/IMediaSource.h"
+#include "Media/MediaSource.h"
 #include "Sync/Mutex.h"
 
 namespace Media
@@ -18,7 +18,7 @@ namespace Media
 		public:
 			AUIManager();
 			~AUIManager();
-			UOSInt LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
+			UOSInt LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
 			void PrepareSelector(NN<IO::FileSelector> selector);
 		};
 	}

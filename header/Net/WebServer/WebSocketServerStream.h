@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSOCKETSERVERSTREAM
 #define _SM_NET_WEBSERVER_WEBSOCKETSERVERSTREAM
 #include "IO/StreamHandler.h"
-#include "Net/WebServer/IWebResponse.h"
+#include "Net/WebServer/WebResponse.h"
 #include "Sync/Mutex.h"
 
 namespace Net
@@ -12,7 +12,7 @@ namespace Net
 		{
 		private:
 			Sync::Mutex sendMut;
-			NN<Net::WebServer::IWebResponse> resp;
+			NN<Net::WebServer::WebResponse> resp;
 			IO::StreamHandler *stmHdlr;
 			AnyType stmData;
 
@@ -23,7 +23,7 @@ namespace Net
 			Bool SendPacket(UInt8 opcode, Data::ByteArrayR buff);
 			void NextPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
-			WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::IWebResponse> resp);
+			WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::WebResponse> resp);
 			virtual ~WebSocketServerStream();
 
 			virtual Bool IsDown() const;

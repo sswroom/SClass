@@ -1,19 +1,19 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOMQTTHANDLER
 #define _SM_IO_PROTOHDLR_PROTOMQTTHANDLER
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoMQTTHandler : public IO::IProtocolHandler
+		class ProtoMQTTHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoMQTTHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoMQTTHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoMQTTHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

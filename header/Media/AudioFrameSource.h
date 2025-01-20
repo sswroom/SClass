@@ -1,12 +1,12 @@
 #ifndef _SM_MEDIA_AUDIOFRAMESOURCE
 #define _SM_MEDIA_AUDIOFRAMESOURCE
 #include "IO/StreamData.h"
-#include "Media/IAudioFrameSource.h"
+#include "Media/AudioSource.h"
 #include "Sync/Event.h"
 
 namespace Media
 {
-	class AudioFrameSource : public IAudioFrameSource
+	class AudioFrameSource : public AudioSource
 	{
 	private:
 		typedef struct

@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_HASH_RIPEMD128
 #define _SM_CRYPTO_HASH_RIPEMD128
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace Crypto
 {
 	namespace Hash
 	{
-		class RIPEMD128 : public IHash
+		class RIPEMD128 : public HashAlgorithm
 		{
 		private:
 			UInt64 msgLeng;
@@ -22,7 +22,7 @@ namespace Crypto
 			virtual ~RIPEMD128();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
-			virtual NN<IHash> Clone() const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const; //16 bytes

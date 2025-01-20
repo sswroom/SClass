@@ -25,28 +25,28 @@ Map::MapLayerData::MapLayerData(Text::CStringNN filePath)
 	this->blkFile = 0;
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cip"));
-	NEW_CLASS(this->cipFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->cipFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->cipFile = this->cipFileObj->GetPointer();
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cix"));
-	NEW_CLASS(this->cixFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->cixFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->cixFile = this->cixFileObj->GetPointer();
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".ciu"));
-	NEW_CLASS(this->ciuFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->ciuFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->ciuFile = this->ciuFileObj->GetPointer();
 
 	sptrEnd = Text::StrConcatC(str, UTF8STRC(".blk"));
-	NEW_CLASS(this->blkFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
+	NEW_CLASSNN(this->blkFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->blkFile = this->blkFileObj->GetPointer();
 }
 
 Map::MapLayerData::~MapLayerData()
 {
-	DEL_CLASS(this->cipFileObj);
-	DEL_CLASS(this->cixFileObj);
-	DEL_CLASS(this->ciuFileObj);
-	DEL_CLASS(this->blkFileObj);
+	this->cipFileObj.Delete();
+	this->cixFileObj.Delete();
+	this->ciuFileObj.Delete();
+	this->blkFileObj.Delete();
 }
 
 Bool Map::MapLayerData::IsError() const
@@ -65,13 +65,17 @@ Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Int32 j;
 	Int32 k;
 	Int32 l;
-	Int32 *sfile = (Int32*)this->ciuFile;
+	UnsafeArray<UInt8> ciuFile;
+	UnsafeArray<UInt8> cixFile;
+	UnsafeArray<UInt8> cipFile;
+	UnsafeArray<Int32> sfile;
 	Int32 *databuff;
 	UInt8 *strRec;
 	Int32 *hdr;
 	Int32 ofst;
-	if (this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0)
+	if (!this->cixFile.SetTo(cixFile) || !this->ciuFile.SetTo(ciuFile) || !this->cipFile.SetTo(cipFile) || this->blkFile == 0)
 		return false;
+	sfile = UnsafeArray<Int32>::ConvertFrom(ciuFile);
 	blkCnt = *sfile++;
 	blkScale = *sfile++;
 	blkx = (Int32)(mapPos.x / blkScale);
@@ -128,7 +132,7 @@ Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 			ofst = databuff[3];
 			while (l-- > 0)
 			{
-				strRec = &this->ciuFile[ofst];
+				strRec = &ciuFile[ofst];
 				if (strRec[4] == 0)
 				{
 					ofst += 5;
@@ -136,10 +140,10 @@ Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 				}
 				ofst += 5 + strRec[4];
 
-				hdr = (Int32*)&this->cixFile[((*(Int32*)strRec) << 3) + 4];
+				hdr = (Int32*)&cixFile[((*(Int32*)strRec) << 3) + 4];
 				if (hdr[0] == *(Int32*)strRec)
 				{
-					Int32 *pfile = (Int32*)&this->cipFile[hdr[1]];
+					Int32 *pfile = (Int32*)&cipFile[hdr[1]];
 					Int32 nParts = pfile[1];
 					Int32 *parts = &pfile[2];
 					Int32 numPoints;
@@ -229,7 +233,10 @@ Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Int32 blky1;
 	Int32 blkx2;
 	Int32 blky2;
-	Int32 *sfile = (Int32*)this->ciuFile;
+	UnsafeArray<UInt8> ciuFile;
+	UnsafeArray<UInt8> cixFile;
+	UnsafeArray<UInt8> cipFile;
+	UnsafeArray<Int32> sfile;
 	Int32 *databuff;
 	UInt8 *strRec;
 	Int32 ofst;
@@ -237,8 +244,9 @@ Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Int32 j;
 	Int32 k = 0;
 
-	if (this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0)
-		return 0;
+	if (!this->cixFile.SetTo(cixFile) || !this->ciuFile.SetTo(ciuFile) || !this->cipFile.SetTo(cipFile) || this->blkFile == 0)
+		return false;
+	sfile = UnsafeArray<Int32>::ConvertFrom(ciuFile);
 	blkCnt = *sfile++;
 	blkScale = *sfile++;
 	blkx = (Int32)(mapPos.x / blkScale);
@@ -294,7 +302,7 @@ Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 				Int32 *pBuff;
 				Int32 *parts;
 				Int32 *points;
-				strRec = &this->ciuFile[ofst];
+				strRec = &ciuFile[ofst];
 
 				if (strRec[4] == 0)
 				{
@@ -303,8 +311,8 @@ Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 				}
 				ofst += 5 + strRec[4];
 
-				databuff = (Int32*)&this->cixFile[((*(UInt32*)strRec) << 3) + 4];
-				pBuff = (Int32*)&this->cipFile[databuff[1]];
+				databuff = (Int32*)&cixFile[((*(UInt32*)strRec) << 3) + 4];
+				pBuff = (Int32*)&cipFile[databuff[1]];
 				nParts = pBuff[1];
 				parts = &pBuff[2];
 				nPoints = parts[nParts];

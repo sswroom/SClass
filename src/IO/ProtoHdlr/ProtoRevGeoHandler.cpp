@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoRevGeoHandler.h"
 
-IO::ProtoHdlr::ProtoRevGeoHandler::ProtoRevGeoHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoRevGeoHandler::ProtoRevGeoHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 	NN<Crypto::Hash::CRC32R> crc;

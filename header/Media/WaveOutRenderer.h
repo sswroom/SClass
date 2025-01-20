@@ -2,14 +2,14 @@
 #ifndef _SM_MEDIA_WAVEOUTRENDERER
 #define _SM_MEDIA_WAVEOUTRENDERER
 
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 
 namespace Media
 {
-	class WaveOutRenderer : public IAudioRenderer
+	class WaveOutRenderer : public AudioRenderer
 	{
 	private:
-		Optional<Media::IAudioSource> audsrc;
+		Optional<Media::AudioSource> audsrc;
 		OSInt devId;
 		Bool playing;
 		Bool threadInit;
@@ -36,7 +36,7 @@ namespace Media
 		virtual ~WaveOutRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
 		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();

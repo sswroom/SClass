@@ -63,9 +63,9 @@ void Core::CoreAddOnExitFunc(SimpleFunc func)
 	Core_onExitFuncs->Add(func);
 }
 
-Media::IVideoSource *Core::DecodeVideo(NN<Media::IVideoSource> video)
+Media::VideoSource *Core::DecodeVideo(NN<Media::VideoSource> video)
 {
-	Media::IVideoSource *decoder = 0;
+	Media::VideoSource *decoder = 0;
 	if (Core_decVFuncs == 0)
 		return 0;
 	UOSInt i = 0;
@@ -78,9 +78,9 @@ Media::IVideoSource *Core::DecodeVideo(NN<Media::IVideoSource> video)
 	return decoder;
 }
 
-Media::IAudioSource *Core::DecodeAudio(NN<Media::IAudioSource> audio)
+Media::AudioSource *Core::DecodeAudio(NN<Media::AudioSource> audio)
 {
-	Media::IAudioSource *decoder = 0;
+	Media::AudioSource *decoder = 0;
 	if (Core_decAFuncs == 0)
 		return 0;
 	UOSInt i = 0;

@@ -7,7 +7,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 testBlock[32];
 	UInt8 hashVal[32];
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 
 	if (!Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType::CRC32C).SetTo(hash))
 	{

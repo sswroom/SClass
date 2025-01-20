@@ -28,7 +28,7 @@ namespace Media
 			void FreeACM();
 			void InitACM();
 		public:
-			ACMDecoder(NN<IAudioSource> sourceAudio);
+			ACMDecoder(NN<AudioSource> sourceAudio);
 			virtual ~ACMDecoder();
 
 			virtual void GetFormat(NN<AudioFormat> format);

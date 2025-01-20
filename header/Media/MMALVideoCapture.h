@@ -1,12 +1,12 @@
 #ifndef _SM_MEDIA_MMALVIDEOCAPTURE
 #define _SM_MEDIA_MMALVIDEOCAPTURE
 #include "Data/ArrayList.h"
-#include "Media/IVideoCapture.h"
+#include "Media/VideoCapturer.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
-	class MMALVideoCapture : public Media::IVideoCapture
+	class MMALVideoCapture : public Media::VideoCapturer
 	{
 	private:
 		void *classData;

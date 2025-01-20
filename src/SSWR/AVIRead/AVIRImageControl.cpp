@@ -562,11 +562,11 @@ OSInt SSWR::AVIRead::AVIRImageControl::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void SSWR::AVIRead::AVIRImageControl::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRImageControl::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	NN<SSWR::AVIRead::AVIRImageControl::ImageStatus> status;
 	UOSInt i;

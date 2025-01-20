@@ -17,10 +17,10 @@ Media::Decoder::AudioDecoderFinder::~AudioDecoderFinder()
 {
 }
 
-Media::IAudioSource *Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<Media::IAudioSource> asrc)
+Media::AudioSource *Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<Media::AudioSource> asrc)
 {
 	AudioFormat afmt;
-	Media::IAudioSource *decoder;
+	Media::AudioSource *decoder;
 	asrc->GetFormat(afmt);
 	switch (afmt.formatId)
 	{

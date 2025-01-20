@@ -25,7 +25,7 @@ UOSInt SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
 	}
 }
 
-Optional<Net::WebServer::IWebSession> SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<RequestEnv> env, Bool keepSess)
+Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<RequestEnv> env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
 	env->isMobile = false;
@@ -36,7 +36,7 @@ Optional<Net::WebServer::IWebSession> SSWR::OrganWeb::OrganWebController::ParseR
 		env->isMobile = true;
 		env->scnWidth = 1024;
 	}
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (this->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		Data::DateTime *t;
@@ -59,7 +59,7 @@ Optional<Net::WebServer::IWebSession> SSWR::OrganWeb::OrganWebController::ParseR
 	return 0;
 }
 
-void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType)
+void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType)
 {
 	resp->AddDefHeaders(req);
 	resp->AddContentType(contType);

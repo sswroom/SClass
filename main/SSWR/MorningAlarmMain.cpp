@@ -16,8 +16,8 @@
 #include "IO/StmData/FileData.h"
 
 #include "Media/AudioDevice.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 #include "Media/MediaFile.h"
 #include "Media/RefClock.h"
 #include "Media/ClockSpeechCh.h"
@@ -37,7 +37,7 @@
 
 #define NTPHOST CSTR("stdtime.gov.hk")
 
-Optional<Media::IAudioRenderer> audOut;
+Optional<Media::AudioRenderer> audOut;
 NN<Data::DateTime> startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 NN<IO::ConsoleWriter> console;
@@ -65,7 +65,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	Net::HKOWeather::WeatherSignal currSignal;
 	Net::HKOWeather::WeatherSignal nextSignal;
 	Bool typhoonStop = false;
-	NN<Media::IAudioRenderer> audRenderer;
+	NN<Media::AudioRenderer> audRenderer;
 	if (!audOut.SetTo(audRenderer))
 		return;
 
@@ -192,7 +192,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 			}
 			file = stmList.GetItemNoCheck(currStm);
 
-			if (audRenderer->BindAudio((Media::IAudioSource*)file->GetStream(0, 0).OrNull()))
+			if (audRenderer->BindAudio((Media::AudioSource*)file->GetStream(0, 0).OrNull()))
 			{
 				audRenderer->AudioInit(clk);
 				audRenderer->Start();
@@ -210,7 +210,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 		if (!thread->IsStopping())
 		{
 			currDt.SetCurrTime();
-			Media::IAudioSource *astm = Media::ClockSpeechCh::GetSpeech(currDt);
+			Media::AudioSource *astm = Media::ClockSpeechCh::GetSpeech(currDt);
 			if (audRenderer->BindAudio(astm))
 			{
 				audRenderer->AudioInit(clk);
@@ -275,7 +275,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		MemFreeArr(sel);
 
 		audOut = Media::AudioDevice::CreateRenderer(audioDevice->ToCString());
-		NN<Media::IAudioRenderer> audRenderer;
+		NN<Media::AudioRenderer> audRenderer;
 		if (audOut.SetTo(audRenderer))
 		{
 			Int32 vol = audRenderer->GetDeviceVolume();

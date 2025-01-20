@@ -19,7 +19,7 @@ Crypto::Hash::BSDChkSum::~BSDChkSum()
 {
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::BSDChkSum::Clone()
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::BSDChkSum::Clone()
 {
 	Crypto::Hash::BSDChkSum *bsdchksum;
 	NEW_CLASS(bsdchksum, Crypto::Hash::BSDChkSum(this));

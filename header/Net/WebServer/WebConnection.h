@@ -3,9 +3,9 @@
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "Net/SSLEngine.h"
-#include "Net/WebServer/IWebHandler.h"
+#include "Net/WebServer/WebHandler.h"
 #include "Net/WebServer/WebListener.h"
-#include "Net/WebServer/WebRequest.h"
+#include "Net/WebServer/WebServerRequest.h"
 #include "Net/WebServer/WebServerBase.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
@@ -14,7 +14,7 @@ namespace Net
 {
 	namespace WebServer
 	{
-		class WebConnection : public IWebResponse
+		class WebConnection : public WebResponse
 		{
 		public:
 			typedef void (CALLBACKFUNC SendLogger)(AnyType userObj, UOSInt buffSize);
@@ -24,12 +24,12 @@ namespace Net
 			NN<Net::TCPClient> cli;
 			IO::BufferedOutputStream *cstm;
 			NN<Net::WebServer::WebListener> svr;
-			NN<Net::WebServer::IWebHandler> hdlr;
+			NN<Net::WebServer::WebHandler> hdlr;
 			ProtocolHandler *protoHdlr;
 			UInt8 *dataBuff;
 			UOSInt dataBuffSize;
 			UOSInt buffSize;
-			Net::WebServer::WebRequest *currReq;
+			Net::WebServer::WebServerRequest *currReq;
 			KeepAlive keepAlive;
 			Sync::Mutex procMut;
 
@@ -53,7 +53,7 @@ namespace Net
 
 			UOSInt SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
-			WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
+			WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<WebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const Data::ByteArrayR &buff);
@@ -64,7 +64,7 @@ namespace Net
 			Optional<Text::String> GetRequestURL();
 
 		private:
-			void SendHeaders(IWebRequest::RequestProtocol protocol);
+			void SendHeaders(WebRequest::RequestProtocol protocol);
 			void ProcessResponse();
 
 		public:
@@ -72,7 +72,7 @@ namespace Net
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
 			virtual Bool AddHeader(Text::CStringNN name, Text::CStringNN value);
-			virtual Bool AddDefHeaders(NN<Net::WebServer::IWebRequest> req);
+			virtual Bool AddDefHeaders(NN<Net::WebServer::WebRequest> req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj);

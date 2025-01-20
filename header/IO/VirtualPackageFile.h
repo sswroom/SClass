@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILE
 #define _SM_IO_VIRTUALPACKAGEFILE
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Data/ArrayListNN.h"
 #include "Data/FastMap.h"
 #include "Data/FastStringMap.h"

@@ -4,7 +4,7 @@
 #include "Map/MapRenderer.h"
 #include "Media/DrawEngine.h"
 #include "Media/StaticImage.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ColorManager.h"
 #include "Map/TileMap.h"
 #include "Map/MapView.h"
@@ -41,7 +41,7 @@ namespace Map
 		NN<Media::DrawEngine> eng;
 		Map::TileMap *map;
 		Parser::ParserList *parsers;
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 		Media::ColorProfile srcColor;
 		Media::ColorProfile outputColor;
 

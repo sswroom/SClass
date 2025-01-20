@@ -15,7 +15,7 @@ namespace Media
 			Media::CS::TransferType currRGBType;
 			Bool invert;
 
-			Media::IColorHandler::RGBPARAM2 rgbParam;
+			Media::ColorHandler::RGBPARAM2 rgbParam;
 			UInt8 *rgbTable;
 			Bool rgbUpdated;
 		private:

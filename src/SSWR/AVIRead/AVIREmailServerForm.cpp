@@ -284,7 +284,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType us
 	cli->GetRemoteAddr(remoteAddr);
 	me->store->NewEmail(id, remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
-	NN<Text::IMIMEObj> content;
+	NN<Text::MIMEObject> content;
 	if (mail->GetContent().SetTo(content))
 	{
 		IO::MemoryStream mstm;

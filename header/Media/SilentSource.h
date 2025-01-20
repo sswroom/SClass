@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_SILENTSOURCE
 #define _SM_MEDIA_SILENTSOURCE
 #include "IO/StreamData.h"
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
-	class SilentSource : public IAudioSource
+	class SilentSource : public AudioSource
 	{
 	protected:
 		AudioFormat format;

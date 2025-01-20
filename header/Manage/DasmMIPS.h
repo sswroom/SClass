@@ -79,7 +79,7 @@ namespace Manage
 			EndType endType;
 			
 			Manage::AddressResolver *addrResol;
-			Manage::IMemoryReader *memReader;
+			Manage::MemoryReader *memReader;
 
 			void **codeHdlrs;
 			void **code_0Hdlrs;
@@ -96,7 +96,7 @@ namespace Manage
 		virtual ~DasmMIPS();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs);
-		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::MemoryReader *memReader, Bool fullRegs); // true = succ
 		virtual NN<Dasm_Regs> CreateRegs();
 		virtual void FreeRegs(NN<Dasm_Regs> regs);
 

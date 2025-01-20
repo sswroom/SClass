@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_UCS2TEXTBINENC
 #define _SM_TEXT_TEXTBINENC_UCS2TEXTBINENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class UCS2TextBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class UCS2TextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			UCS2TextBinEnc();

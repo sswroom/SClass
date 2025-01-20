@@ -20,7 +20,7 @@ namespace Media
 			UOSInt buffSize;
 			Optional<Sync::Event> readEvt;
 		public:
-			PSSADecoder(NN<IAudioSource> sourceAudio);
+			PSSADecoder(NN<AudioSource> sourceAudio);
 			virtual ~PSSADecoder();
 
 			virtual void GetFormat(NN<AudioFormat> format);

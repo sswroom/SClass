@@ -4,7 +4,7 @@
 #include "IO/ProgressHandler.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorMgr.h"
-#include "SSWR/SHPConv/IMapEng.h"
+#include "SSWR/SHPConv/SHPConvEng.h"
 #include "SSWR/SHPConv/MapFilter.h"
 #include "Text/HKSCSFix.h"
 #include "UI/GUIButton.h"
@@ -18,7 +18,7 @@ namespace SSWR
 {
 	namespace SHPConv
 	{
-		class SHPConvMainForm : public UI::GUIForm, public IO::ProgressHandler, public SSWR::SHPConv::IMapEng
+		class SHPConvMainForm : public UI::GUIForm, public IO::ProgressHandler, public SSWR::SHPConv::SHPConvEng
 		{
 		public:
 			typedef struct

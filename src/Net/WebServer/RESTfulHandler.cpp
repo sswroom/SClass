@@ -83,7 +83,7 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 {
 }
 
-Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -280,7 +280,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::IWebReque
 	return false;
 }
 
-DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer::IWebRequest> req)
+DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer::WebRequest> req)
 {
 	UInt32 pageNum = 0;
 	UInt32 pageSize = 20;
@@ -304,7 +304,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer:
 		sarr[1] = sb;
 		while (true)
 		{
-			i = Text::StrSplitP(sarr, 2, sarr[1], Net::WebServer::IWebRequest::PARAM_SEPERATOR);
+			i = Text::StrSplitP(sarr, 2, sarr[1], Net::WebServer::WebRequest::PARAM_SEPERATOR);
 			j = Text::StrIndexOfChar(sarr[0].v, ',');
 			desc = false;
 			if (j != INVALID_INDEX)

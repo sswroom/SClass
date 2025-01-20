@@ -21,7 +21,7 @@
 
 Text::TextBinEnc::TextBinEncList::TextBinEncList()
 {
-	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<Text::TextBinEnc::TextBinEnc> enc;
 	NEW_CLASSNN(enc, Text::TextBinEnc::Base64Enc());
 	this->encList.Add(enc);
 	NEW_CLASSNN(enc, Text::TextBinEnc::ANSITextBinEnc());
@@ -63,7 +63,7 @@ Text::TextBinEnc::TextBinEncList::~TextBinEncList()
 	this->encList.DeleteAll();
 }
 
-NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> Text::TextBinEnc::TextBinEncList::GetEncList()
+NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> Text::TextBinEnc::TextBinEncList::GetEncList()
 {
 	return this->encList;
 }

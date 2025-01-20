@@ -347,11 +347,11 @@ SSWR::AVIRead::AVIRFontSelector::~AVIRFontSelector()
 	this->colorSess->RemoveHandler(*this);
 }
 
-void SSWR::AVIRead::AVIRFontSelector::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRFontSelector::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRFontSelector::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRFontSelector::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->Redraw();

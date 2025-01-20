@@ -35,7 +35,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::St
 {
 	if (!fd->IsFullFile())
 		return 0;
-	Data::ArrayListNN<Media::IMediaSource> mediaArr;
+	Data::ArrayListNN<Media::MediaSource> mediaArr;
 	if (auiMgr->LoadFile(fd->GetFullFileName()->v, mediaArr) > 0)
 	{
 		Media::MediaFile *file;

@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_LNKFILEANALYSE
 #include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"
 #include "Sync/Thread.h"
 #include "Text/CString.h"
@@ -12,7 +12,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class LNKFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class LNKFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			enum class TagType

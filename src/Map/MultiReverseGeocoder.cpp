@@ -15,7 +15,7 @@ Map::MultiReverseGeocoder::~MultiReverseGeocoder()
 	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		Map::IReverseGeocoder *revGeo;
+		Map::ReverseGeocoder *revGeo;
 		revGeo = revGeos.RemoveAt(i);
 		DEL_CLASS(revGeo);
 	}
@@ -75,7 +75,7 @@ UTF8Char *Map::MultiReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, 
 	}
 }
 
-void Map::MultiReverseGeocoder::AddReverseGeocoder(Map::IReverseGeocoder *revGeo)
+void Map::MultiReverseGeocoder::AddReverseGeocoder(Map::ReverseGeocoder *revGeo)
 {
 	this->revGeos.Add(revGeo);
 }

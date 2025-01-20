@@ -1,15 +1,13 @@
 #include "Stdafx.h"
-#include <windows.h>
-#include <math.h>
 #include "MyMemory.h"
+#include "Media/FrameInfo.h"
+#include "Media/ImageResizer.h"
+#include "Media/StaticImage.h"
+#include "Media/NearestRotate.h"
 #include "Sync/Event.h"
-#include "Media\IImgResizer.h"
-#include "Media\FrameInfo.h"
-#include "Media\StaticImage.h"
-#include "Media\IImgRotate.h"
-#include "Media\NearestRotate.h"
+#include "Sync/ThreadUtil.h"
 
-void Media::NearestRotate::RotateTask(NROT_THREADSTAT *stat)
+void Media::NearestRotate::RotateTask(NN<NROT_THREADSTAT> stat)
 {
 	Int32 destWidth = stat->destWidth;
 	Int32 destHeight = stat->destEndY;
@@ -28,8 +26,8 @@ void Media::NearestRotate::RotateTask(NROT_THREADSTAT *stat)
 	Single srcWidth = stat->srcWidth;
 	Single srcHeight = stat->srcHeight;
 	Int32 srcIWidth = stat->srcIWidth;
-	Int32 *pBits = stat->pBits;
-	Int32 *sBits = stat->sBits;
+	UnsafeArray<Int32> pBits = stat->pBits;
+	UnsafeArray<Int32> sBits = stat->sBits;
 
 	while (i < destHeight)
 	{
@@ -55,14 +53,14 @@ void Media::NearestRotate::RotateTask(NROT_THREADSTAT *stat)
 	}
 }
 
-UInt32 Media::NearestRotate::WorkerThread(void *obj)
+UInt32 Media::NearestRotate::WorkerThread(AnyType obj)
 {
-	Media::NearestRotate *rot = (Media::NearestRotate*)obj;
+	NN<Media::NearestRotate> rot = obj.GetNN<Media::NearestRotate>();
 	Int32 threadId = rot->currId;
-	NROT_THREADSTAT *stat = &rot->stats[threadId];
+	NN<NROT_THREADSTAT> stat = rot->stats[threadId];
 
 	stat->status = 1;
-	rot->evtMain->Set();
+	rot->evtMain.Set();
 	while (true)
 	{
 		stat->evt->Wait();
@@ -74,11 +72,11 @@ UInt32 Media::NearestRotate::WorkerThread(void *obj)
 		{
 			Media::NearestRotate::RotateTask(stat);
 			stat->status = 4;
-			rot->evtMain->Set();
+			rot->evtMain.Set();
 		}
 	}
 	stat->status = 0;
-	rot->evtMain->Set();
+	rot->evtMain.Set();
 	return 0;
 }
 
@@ -86,25 +84,19 @@ UInt32 Media::NearestRotate::WorkerThread(void *obj)
 Media::NearestRotate::NearestRotate()
 {
 	Int32 i;
-	SYSTEM_INFO sysInfo;
+	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 
-	GetSystemInfo(&sysInfo);
-	nThread = sysInfo.dwNumberOfProcessors;
-	if (nThread <= 0)
-		nThread = 1;
-
-	NEW_CLASS(evtMain, Sync::Event(L"Media.NearestRotate.evtMain"));
-	stats = MemAlloc(Media::NROT_THREADSTAT, nThread);
+	stats = MemAllocArr(Media::NROT_THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
 		NEW_CLASS(stats[i].evt, Sync::Event(L"Media.NearestRotate.stats.evt"));
 		stats[i].status = 0;
 		currId = i;
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)WorkerThread, this, 0, 0);
+		Sync::ThreadUtil::Create(WorkerThread, this);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			evtMain.Wait();
 		}
 	}
 
@@ -137,29 +129,28 @@ Media::NearestRotate::~NearestRotate()
 		if (exited)
 			break;
 
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 	i = nThread;
 	while (i-- > 0)
 	{
 		DEL_CLASS(stats[i].evt);
 	}
-	DEL_CLASS(evtMain);
-	MemFree(stats);
+	MemFreeArr(stats);
 }
 
-Media::Image *Media::NearestRotate::Rotate(Media::Image *srcImg, Single centerX, Single centerY, Single angleRad, Bool keepCoord, Bool keepSize)
+Optional<Media::RasterImage> Media::NearestRotate::Rotate(NN<Media::RasterImage> srcImg, Single centerX, Single centerY, Single angleRad, Bool keepCoord, Bool keepSize)
 {
-	Media::StaticImage *simg = srcImg->CreateStaticImage();
+	NN<Media::StaticImage> simg = srcImg->CreateStaticImage();
 	if (!simg->To32bpp())
 	{
-		DEL_CLASS(simg);
+		simg.Delete();
 		return 0;
 	}
 
 	Media::StaticImage *destImg;
-	Single srcWidth = (Single)simg->info->width;
-	Single srcHeight = (Single)simg->info->height;
+	Single srcWidth = (Single)simg->info.dispSize.x;
+	Single srcHeight = (Single)simg->info.dispSize.y;
 	Int32 destWidth;
 	Int32 destHeight;
 
@@ -241,23 +232,23 @@ Media::Image *Media::NearestRotate::Rotate(Media::Image *srcImg, Single centerX,
 	}
 	if (keepSize)
 	{
-		destWidth = simg->info->width;
-		destHeight = simg->info->height;
+		destWidth = simg->info.dispSize.x;
+		destHeight = simg->info.dispSize.y;
 	}
 
-	NEW_CLASS(destImg, Media::StaticImage(destWidth, destHeight, 0, 32, 0, simg->info->rgbType, simg->info->yuvType, simg->info->rgbGamma, simg->info->atype));
-	Int32 *pBits = (Int32*)destImg->data;
-	Int32 *sBits = (Int32*)simg->data;
+	NEW_CLASS(destImg, Media::StaticImage(Math::Size2D<UOSInt>(destWidth, destHeight), 0, 32, simg->info.pf, destWidth * destHeight * 4, simg->info.color, simg->info.yuvType, simg->info.atype, simg->info.ycOfst));
+	UnsafeArray<Int32> pBits = UnsafeArray<Int32>::ConvertFrom(destImg->data);
+	UnsafeArray<Int32> sBits = UnsafeArray<Int32>::ConvertFrom(simg->data);
 	Int32 lastHeight = destHeight;
 	Int32 thisHeight;
-	Int32 i;
+	UOSInt i;
 	i = this->nThread;
 	while (i-- > 0)
 	{
-		thisHeight = MulDiv(destHeight, i, this->nThread);
+		thisHeight = MulDivUOS(destHeight, i, this->nThread);
 		stats[i].srcWidth = srcWidth;
 		stats[i].srcHeight = srcHeight;
-		stats[i].srcIWidth = simg->info->width;
+		stats[i].srcIWidth = simg->info.dispSize.x;
 		stats[i].destWidth = destWidth;
 		stats[i].destStartY = thisHeight;
 		stats[i].destEndY = lastHeight;
@@ -287,7 +278,7 @@ Media::Image *Media::NearestRotate::Rotate(Media::Image *srcImg, Single centerX,
 		}
 		if (fin)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 
 /*	Int32 i;

@@ -82,7 +82,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CStringNN msg);
-			static Bool __stdcall OnLoginRequest(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg);
+			static Bool __stdcall OnLoginRequest(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg);
 			void ClearCACerts();
 			Optional<Crypto::Cert::X509Key> CreateSAMLKey();
 		public:

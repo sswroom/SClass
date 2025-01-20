@@ -119,7 +119,7 @@ NN<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::Clone() const
 	return plugin;
 }
 
-UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
+UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
 {
 	INPUT_HANDLE hand;
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
@@ -136,7 +136,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, NN<Data::ArrayLi
 	NEW_CLASSNN(frameInfo, Media::FrameInfo());
 	NEW_CLASSNN(audioFormat, Media::AudioFormat());
 
-	NN<Media::IMediaSource> media;
+	NN<Media::MediaSource> media;
 
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;

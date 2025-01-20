@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/CDXAData.h"
 
-IO::CDXAData::CDXAData(NN<IO::StreamData> data, UInt64 ofst, UInt64 dataSize) : IO::ISectorData(data->GetFullName())
+IO::CDXAData::CDXAData(NN<IO::StreamData> data, UInt64 ofst, UInt64 dataSize) : IO::SectorData(data->GetFullName())
 {
 	this->data = data->GetPartialData(ofst, dataSize);
 }
@@ -27,9 +27,9 @@ Bool IO::CDXAData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff)
 	return this->data->GetRealData(sectorNum * 2352LL, 2352, sectorBuff) == 2352;
 }
 
-NN<IO::ISectorData> IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
+NN<IO::SectorData> IO::CDXAData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
-	NN<IO::ISectorData> data;
+	NN<IO::SectorData> data;
 	NEW_CLASSNN(data, IO::CDXAData(this->data, startSector * 2352, sectorCount * 2352));
 	return data;
 }

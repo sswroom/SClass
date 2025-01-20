@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_CAMERAMANAGER
 #define _SM_MEDIA_CAMERAMANAGER
-#include "Media/IPhotoCapture.h"
+#include "Media/PhotoCapturer.h"
 
 namespace Media
 {
@@ -13,7 +13,7 @@ namespace Media
 		~CameraManager();
 
 		OSInt GetDeviceCount();
-		Optional<Media::IPhotoCapture> CreateDevice(OSInt devId);
+		Optional<Media::PhotoCapturer> CreateDevice(OSInt devId);
 	};
 }
 #endif

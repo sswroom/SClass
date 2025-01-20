@@ -58,9 +58,9 @@ UnsafeArray<UTF8Char> Crypto::Hash::AESCMAC::GetName(UnsafeArray<UTF8Char> sbuff
 	return Text::StrConcatC(sbuff, UTF8STRC("AES-CMAC"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::AESCMAC::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::AESCMAC::Clone() const
 {
-	NN<Crypto::Hash::IHash> ret;
+	NN<Crypto::Hash::HashAlgorithm> ret;
 	NEW_CLASSNN(ret, Crypto::Hash::AESCMAC(this->key));
 	return ret;
 }

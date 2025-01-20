@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::VOBAC3StreamSource::VOBAC3StreamSource(NN<Media::IStreamControl> pbc)
+Media::VOBAC3StreamSource::VOBAC3StreamSource(NN<Media::MediaStreamControl> pbc)
 {
 	this->pbc = pbc;
 	this->fmt.formatId = 0x2000;

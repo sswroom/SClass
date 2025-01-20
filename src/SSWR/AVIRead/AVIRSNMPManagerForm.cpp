@@ -267,7 +267,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(AnyType us
 void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NN<Data::ArrayListNN<Net::SNMPManager::AgentInfo>> agentList)
 {
 	NN<Net::SNMPManager::AgentInfo> agent;
-	SSWR::SMonitor::ISMonitorCore::DevRecord2 devRec;
+	SSWR::SMonitor::SMonitorCore::DevRecord2 devRec;
 	Int64 cliId;
 	UOSInt i = agentList->GetCount();
 	while (i-- > 0)

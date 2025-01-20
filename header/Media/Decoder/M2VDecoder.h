@@ -13,9 +13,9 @@ namespace Media
 			Double par;
 			Bool discTime;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			M2VDecoder(NN<IVideoSource> sourceVideo, Bool toRelease);
+			M2VDecoder(NN<VideoSource> sourceVideo, Bool toRelease);
 			virtual ~M2VDecoder();
 
 			virtual Text::CStringNN GetFilterName();

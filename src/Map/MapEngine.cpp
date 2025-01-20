@@ -9,7 +9,7 @@
 //#include <memory.h>
 
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/Sort/QuickBubbleSort.h"
 #include "Sync/Event.h"
 #include "IO/Stream.h"

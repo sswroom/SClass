@@ -874,7 +874,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (this->core->SelectPrinter(this).SetTo(printer))
 			{
 				this->printer = printer;
-				NN<Media::IPrintDocument> doc;
+				NN<Media::PrintDocument> doc;
 				if (!printer->StartPrint(*this, this->core->GetDrawEngine()).SetTo(doc))
 				{
 					printer.Delete();
@@ -2142,7 +2142,7 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(NN<Media::IPrintDocument> doc)
+Bool SSWR::AVIRead::AVIRGISForm::BeginPrint(NN<Media::PrintDocument> doc)
 {
 	doc->SetDocName(this->env->GetSourceNameObj().Ptr());
 	return true;
@@ -2160,7 +2160,7 @@ Bool SSWR::AVIRead::AVIRGISForm::PrintPage(NN<Media::DrawImage> printPage)
 	return false;
 }
 
-Bool SSWR::AVIRead::AVIRGISForm::EndPrint(NN<Media::IPrintDocument> doc)
+Bool SSWR::AVIRead::AVIRGISForm::EndPrint(NN<Media::PrintDocument> doc)
 {
 	this->printer.Delete();
 	return true;

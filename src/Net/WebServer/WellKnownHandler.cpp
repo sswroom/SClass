@@ -3,7 +3,7 @@
 #include "Net/WebServer/WellKnownHandler.h"
 #include "Sync/MutexUsage.h"
 
-Bool Net::WebServer::WellKnownHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WellKnownHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.StartsWith(UTF8STRC("/acme-challenge/")))
 	{
@@ -19,7 +19,7 @@ Bool Net::WebServer::WellKnownHandler::ProcessRequest(NN<Net::WebServer::IWebReq
 	return WebServiceHandler::ProcessRequest(req, resp, subReq);
 }
 
-Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::WebServer::WellKnownHandler> me = NN<Net::WebServer::WellKnownHandler>::ConvertFrom(svc);
 	NN<Text::String> t;

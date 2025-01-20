@@ -1,13 +1,13 @@
 #ifndef _SM_MEDIA_PLAYLIST
 #define _SM_MEDIA_PLAYLIST
 #include "IO/ParsedObject.h"
-#include "Media/IMediaPlayer.h"
 #include "Media/MediaFile.h"
+#include "Media/MediaPlayer.h"
 #include "Parser/ParserList.h"
 
 namespace Media
 {
-	class Playlist : public IO::ParsedObject, public Media::IPBControl
+	class Playlist : public IO::ParsedObject, public Media::PBControl
 	{
 	private:
 		typedef struct
@@ -21,7 +21,7 @@ namespace Media
 
 		Data::ArrayListNN<PlaylistEntry> entries;
 		NN<Parser::ParserList> parsers;
-		Optional<Media::IMediaPlayer> player;
+		Optional<Media::MediaPlayer> player;
 		Optional<Media::MediaFile> currFile;
 		Bool playing;
 
@@ -44,7 +44,7 @@ namespace Media
 		Data::Duration GetTimeStart(UOSInt index) const;
 		Data::Duration GetTimeEnd(UOSInt index) const;
 
-		void SetPlayer(Optional<Media::IMediaPlayer> player);
+		void SetPlayer(Optional<Media::MediaPlayer> player);
 		Bool OpenItem(UOSInt index);
 		
 		virtual Bool IsPlaying();

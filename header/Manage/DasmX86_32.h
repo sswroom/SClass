@@ -2,7 +2,7 @@
 #define _SM_MANAGE_DASMX86_32
 #include "Data/ArrayListUInt32.h"
 #include "Manage/AddressResolver.h"
-#include "Manage/IMemoryReader.h"
+#include "Manage/MemoryReader.h"
 #include "Manage/ThreadContextX86_32.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -37,7 +37,7 @@ namespace Manage
 			Int32 segmId;
 			
 			Optional<Manage::AddressResolver> addrResol;
-			NN<Manage::IMemoryReader> memReader;
+			NN<Manage::MemoryReader> memReader;
 
 			UInt32 stabesp;
 			void **codes;
@@ -60,12 +60,12 @@ namespace Manage
 		virtual ~DasmX86_32();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs); // true = succ
-		Bool Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::IMemoryReader> memReader); // true = succ
+		virtual Bool Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs); // true = succ
+		Bool Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::MemoryReader> memReader); // true = succ
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		NN<DasmX86_32_Sess> StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::IMemoryReader> memReader);
+		NN<DasmX86_32_Sess> StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::MemoryReader> memReader);
 		void EndDasm(NN<DasmX86_32_Sess> sess);
 		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_32_Sess> sess, UnsafeArray<UTF8Char> buff);
 		OSInt SessGetCodeOffset(NN<DasmX86_32_Sess> sess);

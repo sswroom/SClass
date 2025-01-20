@@ -1,22 +1,22 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOGPSDEVINFOHANDLER
 #define _SM_IO_PROTOHDLR_PROTOGPSDEVINFOHANDLER
 #include "Crypto/Hash/CRC32R.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoGPSDevInfoHandler : public IO::IProtocolHandler
+		class ProtoGPSDevInfoHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
 
 		public:
-			ProtoGPSDevInfoHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoGPSDevInfoHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoGPSDevInfoHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

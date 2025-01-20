@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_ENCRYPT_AES128GCM
 #define _SM_CRYPTO_ENCRYPT_AES128GCM
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 
 namespace Crypto
 {
 	namespace Encrypt
 	{
-		class AES128GCM : public ICrypto
+		class AES128GCM : public Encryption
 		{
 		private:
 			UInt8 key[16];

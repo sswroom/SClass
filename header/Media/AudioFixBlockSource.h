@@ -2,12 +2,12 @@
 #define _SM_MEDIA_AUDIOFIXBLOCKSOURCE
 #include "Sync/Event.h"
 #include "IO/StreamData.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
-	class AudioFixBlockSource : public IAudioSource
+	class AudioFixBlockSource : public AudioSource
 	{
 	private:
 		Media::AudioFormat format;

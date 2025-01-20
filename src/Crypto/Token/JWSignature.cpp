@@ -26,7 +26,7 @@ Crypto::Token::JWSignature::~JWSignature()
 
 Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	Crypto::Hash::IHash *hash;
+	Crypto::Hash::HashAlgorithm *hash;
 	switch (alg)
 	{
 	case Algorithm::HS256:
@@ -91,7 +91,7 @@ Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UOSInt 
 
 Bool Crypto::Token::JWSignature::VerifyHash(UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UInt8> signature, UOSInt signatureSize)
 {
-	Crypto::Hash::IHash *hash;
+	Crypto::Hash::HashAlgorithm *hash;
 	switch (alg)
 	{
 	case Algorithm::HS256:

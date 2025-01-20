@@ -19,7 +19,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::ExcelHash::GetName(UnsafeArray<UTF8Char> sbu
 	return Text::StrConcatC(sbuff, UTF8STRC("Excel Hash"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::ExcelHash::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::ExcelHash::Clone() const
 {
 	NN<Crypto::Hash::ExcelHash> hash;
 	NEW_CLASSNN(hash, Crypto::Hash::ExcelHash());

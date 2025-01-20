@@ -72,7 +72,7 @@ Media::VFPManager::VFPManager()
 
 }
 
-UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
+UOSInt Media::VFPManager::LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr)
 {
 	Char *cFile;
 	Text::Encoding enc;

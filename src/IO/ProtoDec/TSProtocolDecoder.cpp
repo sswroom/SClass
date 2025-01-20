@@ -8,12 +8,12 @@
 
 IO::ProtoDec::TSProtocolDecoder::TSProtocolDecoder()
 {
-	this->protoBuff = MemAlloc(UInt8, 4096);
+	this->protoBuff = MemAllocArr(UInt8, 4096);
 }
 
 IO::ProtoDec::TSProtocolDecoder::~TSProtocolDecoder()
 {
-	MemFree(this->protoBuff);
+	MemFreeArr(this->protoBuff);
 }
 
 Text::CStringNN IO::ProtoDec::TSProtocolDecoder::GetName() const
@@ -21,7 +21,7 @@ Text::CStringNN IO::ProtoDec::TSProtocolDecoder::GetName() const
 	return CSTR("TS");
 }
 
-UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType userObj, UInt64 fileOfst, UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	UOSInt i;
 	UOSInt j;
@@ -329,7 +329,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, AnyType
 	return j;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UnsafeArray<UInt8> buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	if (buffSize < 10)
 		return false;
@@ -826,7 +826,7 @@ Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buff
 	return true;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::IsValid(UInt8 *buff, UOSInt buffSize)
+Bool IO::ProtoDec::TSProtocolDecoder::IsValid(UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	return buff[0] == 'T' && buff[1] == 's';
 }

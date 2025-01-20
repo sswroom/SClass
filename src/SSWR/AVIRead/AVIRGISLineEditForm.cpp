@@ -463,11 +463,11 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	}
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISLineEditForm::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	NN<LineLayer> currLayer;
 	if (this->currLayer.SetTo(currLayer))

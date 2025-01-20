@@ -11,7 +11,7 @@ typedef struct
 	UInt8 *packetBuff;
 } ClientData;
 
-IO::ProtoHdlr::ProtoMQTTHandler::ProtoMQTTHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoMQTTHandler::ProtoMQTTHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

@@ -3,7 +3,7 @@
 #include "Manage/HiResClock.h"
 #include "Math/LanczosFilter.h"
 #include "Math/Math.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageCopyC.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 #include "Sync/Event.h"
@@ -890,7 +890,7 @@ void Media::Resizer::LanczosResizerH8_8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTap, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType)
+Media::Resizer::LanczosResizerH8_8::LanczosResizerH8_8(UOSInt hnTap, UOSInt vnTap, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

@@ -15,7 +15,7 @@
 #include "Text/JSText.h"
 #include "Text/XML.h"
 
-Bool __stdcall Map::MapServerHandler::GetLayersFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::GetLayersFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	Text::StringBuilderUTF8 sb;
@@ -42,7 +42,7 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NN<Net::WebServer::IWebReque
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	NN<Text::String> name;
@@ -247,7 +247,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 	}
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	NN<Text::String> file;
@@ -359,7 +359,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequ
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
 	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	NN<Text::String> file;

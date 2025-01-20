@@ -1,6 +1,6 @@
 #ifndef _SM_IO_CRYPTOSTREAM
 #define _SM_IO_CRYPTOSTREAM
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 #include "IO/Stream.h"
 
 namespace IO
@@ -8,7 +8,7 @@ namespace IO
 	class CryptoStream : public Stream
 	{
 	protected:
-		Crypto::Encrypt::ICrypto *crypto;
+		Crypto::Encrypt::Encryption *crypto;
 		IO::Stream *stm;
 		void *encParam;
 		UInt8 *encBuff;
@@ -20,7 +20,7 @@ namespace IO
 
 
 	public:
-		CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::ICrypto *crypto, void *encParam);
+		CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::Encryption *crypto, void *encParam);
 		virtual ~CryptoStream();
 
 		virtual OSInt Read(UInt8 *buff, OSInt size);

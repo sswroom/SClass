@@ -5,7 +5,7 @@
 #include "Sync/Event.h"
 #include "Text/MyString.h"
 #include "IO/StreamData.h"
-#include "Media/IMediaSource.h"
+#include "Media/MediaSource.h"
 #include "Media/MediaFile.h"
 
 Media::MediaFile::MediaFile(NN<Text::String> name) : IO::ParsedObject(name)
@@ -23,7 +23,7 @@ Media::MediaFile::MediaFile(Text::CStringNN name) : IO::ParsedObject(name)
 Media::MediaFile::~MediaFile()
 {
 	UOSInt i = this->sources.GetCount();
-	NN<Media::IMediaSource> src;
+	NN<Media::MediaSource> src;
 	while (i-- > 0)
 	{
 		if (this->keepSources.GetItem(i) == 0)
@@ -43,7 +43,7 @@ IO::ParserType Media::MediaFile::GetParserType() const
 	return IO::ParserType::MediaFile;
 }
 
-UOSInt Media::MediaFile::AddSource(NN<Media::IMediaSource> src, Int32 syncTime)
+UOSInt Media::MediaFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
 	UOSInt ret = this->sources.Add(src);
 	this->syncTime.Add(syncTime);
@@ -51,7 +51,7 @@ UOSInt Media::MediaFile::AddSource(NN<Media::IMediaSource> src, Int32 syncTime)
 	return ret;
 }
 
-Optional<Media::IMediaSource> Media::MediaFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
+Optional<Media::MediaSource> Media::MediaFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
 	syncTime.Set(this->syncTime.GetItem(index));
 	return this->sources.GetItem(index);
@@ -86,7 +86,7 @@ Bool Media::MediaFile::TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd)
 		return true;
 	Int32 syncTime;
 	UOSInt i = this->sources.GetCount();
-	NN<Media::IMediaSource> src;
+	NN<Media::MediaSource> src;
 	while (i-- > 0)
 	{
 		src = this->sources.GetItemNoCheck(i);

@@ -3,7 +3,7 @@
 #include "Crypto/Hash/BcryptValidator.h"
 #include "Crypto/Hash/BruteForceAttack.h"
 #include "Crypto/Hash/HashCreator.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "SSWR/AVIRead/AVIRBruteForceForm.h"
 #include "Text/MyString.h"
 
@@ -16,7 +16,7 @@ CB8E9D52EB0C2DFB39B5D82A5315E433
 void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	Text::StringBuilderUTF8 sb;
 	UInt32 minLeng;
 	UInt32 maxLeng;
@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 	this->cboHashType = ui->NewComboBox(*this, false);
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
 
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	currHash = Crypto::Hash::HashType::First;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{

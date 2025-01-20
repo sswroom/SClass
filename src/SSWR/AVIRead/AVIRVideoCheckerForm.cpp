@@ -2,7 +2,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Manage/HiResClock.h"
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 #include "Media/MediaFile.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"

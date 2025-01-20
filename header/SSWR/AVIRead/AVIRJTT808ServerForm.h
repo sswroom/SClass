@@ -20,7 +20,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRJTT808ServerForm : public UI::GUIForm, public IO::IProtocolHandler::DataListener
+		class AVIRJTT808ServerForm : public UI::GUIForm, public IO::ProtocolHandler::DataListener
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;

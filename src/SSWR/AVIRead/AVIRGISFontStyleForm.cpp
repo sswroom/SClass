@@ -136,11 +136,11 @@ void SSWR::AVIRead::AVIRGISFontStyleForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISFontStyleForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISFontStyleForm::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISFontStyleForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISFontStyleForm::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 }
 

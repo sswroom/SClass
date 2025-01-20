@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "Sync/Event.h"
 #include "Text/MyString.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 #include "Media/VideoCapSource.h"
 
 #include <windows.h>

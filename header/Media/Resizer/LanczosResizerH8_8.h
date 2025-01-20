@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_RESIZER_LANCZOSRESIZERH8_8
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZERH8_8
 #include "AnyType.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/ParallelTask.h"
@@ -10,7 +10,7 @@ namespace Media
 {
 	namespace Resizer
 	{
-		class LanczosResizerH8_8 : public Media::IImgResizer
+		class LanczosResizerH8_8 : public Media::ImageResizer
 		{
 		private:
 			typedef struct

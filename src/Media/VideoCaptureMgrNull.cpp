@@ -20,7 +20,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devLi
 {
 }
 
-Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
+Media::VideoCapturer *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
 	return 0;
 }

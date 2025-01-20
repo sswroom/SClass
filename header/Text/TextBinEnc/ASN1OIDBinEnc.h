@@ -1,13 +1,13 @@
 #ifndef _SM_TEXT_TEXTBINENC_ASN1OIDBINENC
 #define _SM_TEXT_TEXTBINENC_ASN1OIDBINENC
 #include "Text/CString.h"
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class ASN1OIDBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class ASN1OIDBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			ASN1OIDBinEnc();

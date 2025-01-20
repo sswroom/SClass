@@ -3,7 +3,7 @@
 #include "Exporter/GIFExporter.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"

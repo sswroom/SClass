@@ -6,7 +6,7 @@
 #include "Media/Decoder/MP2GDecoder.h"
 #include "Sync/SimpleThread.h"
 
-void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	UOSInt endSize = dataSize - 4;
@@ -30,7 +30,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 				this->par = info.par2;
 				if (this->fcCb)
 				{
-					this->fcCb(Media::IVideoSource::FC_PAR, this->frameCbData);
+					this->fcCb(Media::VideoSource::FC_PAR, this->frameCbData);
 				}
 			}
 		}
@@ -48,8 +48,8 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 	Data::Duration outFrameTime;
 	Media::FrameType outFrameType;
-	Media::IVideoSource::FrameFlag outFrameFlag;
-	Media::IVideoSource::FrameStruct outFrameStruct;
+	Media::VideoSource::FrameFlag outFrameFlag;
+	Media::VideoSource::FrameStruct outFrameStruct;
 	UInt32 outFieldOfst;
 	Bool outRFF;
 	Data::Duration ftime;
@@ -92,7 +92,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	{
 		ycOfst = Media::YCOFST_C_CENTER_CENTER;
 	}
-	frameStruct = Media::IVideoSource::FS_I;
+	frameStruct = Media::VideoSource::FS_I;
 	startOfst = 0;
 	fieldOfst = 0;
 	while (true)
@@ -113,7 +113,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}*/
 		if (ftype == Media::FT_MERGED_TF || ftype == Media::FT_MERGED_BF)
 		{
-			if (frameStruct == Media::IVideoSource::FS_B)
+			if (frameStruct == Media::VideoSource::FS_B)
 			{
 				this->hasBFrame = true;
 				outFrameTime = frameTime;
@@ -154,7 +154,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		}
 		else
 		{
-			if (frameStruct == Media::IVideoSource::FS_B)
+			if (frameStruct == Media::VideoSource::FS_B)
 			{
 				this->hasBFrame = true;
 				outFrameTime = frameTime;
@@ -194,17 +194,17 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 			}
 		}
 		this->lastFieldOfst = fieldOfst;
-		if ((outFrameFlag & Media::IVideoSource::FF_DISCONTTIME) && outFieldOfst <= 1)
+		if ((outFrameFlag & Media::VideoSource::FF_DISCONTTIME) && outFieldOfst <= 1)
 		{
-			outFrameFlag = (Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_BFRAMEPROC);
+			outFrameFlag = (Media::VideoSource::FrameFlag)(Media::VideoSource::FF_DISCONTTIME | Media::VideoSource::FF_BFRAMEPROC);
 		}
 		else
 		{
-			outFrameFlag = Media::IVideoSource::FF_BFRAMEPROC;
+			outFrameFlag = Media::VideoSource::FF_BFRAMEPROC;
 		}
 		if (outRFF)
 		{
-			outFrameFlag = (Media::IVideoSource::FrameFlag)(outFrameFlag | Media::IVideoSource::FF_RFF);
+			outFrameFlag = (Media::VideoSource::FrameFlag)(outFrameFlag | Media::VideoSource::FF_RFF);
 		}
 
 		if (outRFF)
@@ -278,15 +278,15 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 
 			if (frameProp.pictureCodingType == 'P')
 			{
-				frameStruct = Media::IVideoSource::FS_P;
+				frameStruct = Media::VideoSource::FS_P;
 			}
 			else if (frameProp.pictureCodingType == 'B')
 			{
-				frameStruct = Media::IVideoSource::FS_B;
+				frameStruct = Media::VideoSource::FS_B;
 			}
 			else
 			{
-				frameStruct = Media::IVideoSource::FS_I;
+				frameStruct = Media::VideoSource::FS_I;
 			}
 			lastRFF = frameProp.rff;
 		}
@@ -306,20 +306,20 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	}
 	else
 	{
-		if ((outFrameFlag & Media::IVideoSource::FF_DISCONTTIME) && endSize <= 1)
+		if ((outFrameFlag & Media::VideoSource::FF_DISCONTTIME) && endSize <= 1)
 		{
-			outFrameFlag = (Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_BFRAMEPROC);
+			outFrameFlag = (Media::VideoSource::FrameFlag)(Media::VideoSource::FF_DISCONTTIME | Media::VideoSource::FF_BFRAMEPROC);
 		}
 		else
 		{
-			outFrameFlag = Media::IVideoSource::FF_BFRAMEPROC;
+			outFrameFlag = Media::VideoSource::FF_BFRAMEPROC;
 		}
 		UnsafeArray<UInt8> imgPtr = &imgData[0][startOfst];
 		this->frameCb(ftime, frameNum, &imgPtr, endOfst - startOfst, outFrameStruct, this->frameCbData, outFrameType, outFrameFlag, ycOfst);
 	}
 }
 
-Media::Decoder::MP2GDecoder::MP2GDecoder(NN<IVideoSource> sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
+Media::Decoder::MP2GDecoder::MP2GDecoder(NN<VideoSource> sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;
@@ -338,8 +338,8 @@ Media::Decoder::MP2GDecoder::MP2GDecoder(NN<IVideoSource> sourceVideo, Bool toRe
 	this->hasBFrame = false;
 	this->lastFrameTime = 0;
 	this->lastFrameType = Media::FT_NON_INTERLACE;
-	this->lastFrameFlags = Media::IVideoSource::FF_NONE;
-	this->lastFrameStruct = Media::IVideoSource::FS_I;
+	this->lastFrameFlags = Media::VideoSource::FF_NONE;
+	this->lastFrameStruct = Media::VideoSource::FS_I;
 	this->lastFieldOfst = 0;
 	this->lastRFF = false;
 }

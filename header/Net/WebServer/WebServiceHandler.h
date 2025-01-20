@@ -11,7 +11,7 @@ namespace Net
 		class WebServiceHandler : public Net::WebServer::HTTPDirectoryHandler
 		{
 		public:
-			typedef Bool (CALLBACKFUNC ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
+			typedef Bool (CALLBACKFUNC ServiceFunc)(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		private:
 			typedef struct
 			{
@@ -22,7 +22,7 @@ namespace Net
 			Data::FastStringMapNN<ServiceInfo> services;
 
 		protected:
-			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebServiceHandler();
 			WebServiceHandler(Text::CStringNN rootDir);

@@ -1,13 +1,13 @@
 #ifndef _SM_CRYPTO_ENCRYPT_XORENC
 #define _SM_CRYPTO_ENCRYPT_XORENC
 
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 
 namespace Crypto
 {
 	namespace Encrypt
 	{
-		class XOREnc : public Crypto::Encrypt::ICrypto
+		class XOREnc : public Crypto::Encrypt::Encryption
 		{
 		public:
 			XOREnc();

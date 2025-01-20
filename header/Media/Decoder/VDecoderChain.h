@@ -10,16 +10,16 @@ namespace Media
 		class VDecoderChain : public VDecoderBase
 		{
 		private:
-			Data::ArrayList<Media::IVideoSource *> srcFilters;
+			Data::ArrayList<Media::VideoSource *> srcFilters;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VDecoderChain(NN<IVideoSource> sourceVideo);
+			VDecoderChain(NN<VideoSource> sourceVideo);
 			virtual ~VDecoderChain();
 
 			virtual Text::CStringNN GetFilterName();
 
-			void AddDecoder(NN<Media::IVideoSource> decoder);
+			void AddDecoder(NN<Media::VideoSource> decoder);
 			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 
 			virtual Bool HasFrameCount();

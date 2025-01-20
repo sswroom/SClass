@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_HASH_HASHCALC
 #define _SM_CRYPTO_HASH_HASHCALC
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Sync/Mutex.h"
 #include "Text/CString.h"
 
@@ -11,11 +11,11 @@ namespace Crypto
 		class HashCalc
 		{
 		private:
-			NN<Crypto::Hash::IHash> hash;
+			NN<Crypto::Hash::HashAlgorithm> hash;
 			Sync::Mutex mut;
 
 		public:
-			HashCalc(NN<Crypto::Hash::IHash> hash); //hash will be released
+			HashCalc(NN<Crypto::Hash::HashAlgorithm> hash); //hash will be released
 			~HashCalc();
 
 			void Calc(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal);

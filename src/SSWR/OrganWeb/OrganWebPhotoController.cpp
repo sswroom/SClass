@@ -11,7 +11,7 @@
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "Text/UTF8Reader.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebPhotoController> me = NN<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
@@ -50,7 +50,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NN<Net::WebServ
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebPhotoController> me = NN<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
@@ -105,7 +105,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
 	NN<SSWR::OrganWeb::OrganWebPhotoController> me = NN<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
@@ -115,7 +115,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NN<Net::WebSe
 	return true;
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Optional<WebUserInfo> user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
 {
 	NN<CategoryInfo> cate;
 	NN<SpeciesInfo> sp;
@@ -284,7 +284,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 					{
 						this->lrgbLimiter.LimitImageLRGB(lrimgnn->data, lrimgnn->info.dispSize.x, lrimgnn->info.dispSize.y);
 						Sync::MutexUsage mutUsage(this->resizerMut);
-						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+						resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 						dimg = resizerLR->ProcessToNew(lrimgnn);
 						mutUsage.EndUse();
@@ -431,7 +431,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Optional<WebUserInfo> reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
 {
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
@@ -558,7 +558,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
 						Sync::MutexUsage mutUsage(this->resizerMut);
-						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+						resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 						Double x1 = userFile->cropLeft;
 						Double y1 = userFile->cropTop;
@@ -590,7 +590,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					else
 					{
 						Sync::MutexUsage mutUsage(this->resizerMut);
-						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+						resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 						dimg = resizerLR->ProcessToNew(lrimgnn);
 						mutUsage.EndUse();
@@ -756,7 +756,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Optional<WebUserInfo> reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
 {
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
@@ -863,7 +863,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
 							Sync::MutexUsage mutUsage(this->resizerMut);
-							resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+							resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 							resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 							Double x1 = wfile->cropLeft;
 							Double y1 = wfile->cropTop;
@@ -895,7 +895,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 						else
 						{
 							Sync::MutexUsage mutUsage(this->resizerMut);
-							resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+							resizerLR->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 							resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
 							dimg = resizerLR->ProcessToNew(lrimgnn);
 							mutUsage.EndUse();

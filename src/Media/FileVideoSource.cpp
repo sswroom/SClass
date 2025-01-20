@@ -127,9 +127,9 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 						frameBuff2 = me->outputFrames[nextIndex].frameBuff;
 						me->outputFrames[nextIndex].frameBuff = frameBuff;
 						me->outputFrames[nextIndex].frameSize = frameSize;
-						me->outputFrames[nextIndex].frameStruct = me->frameIsKey.GetItem(frameNum)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P);
+						me->outputFrames[nextIndex].frameStruct = me->frameIsKey.GetItem(frameNum)?(Media::VideoSource::FS_I):(Media::VideoSource::FS_P);
 						me->outputFrames[nextIndex].fType = ftype;
-						me->outputFrames[nextIndex].flags = (frameNum != lastFrameNum + 1)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE;
+						me->outputFrames[nextIndex].flags = (frameNum != lastFrameNum + 1)?Media::VideoSource::FF_DISCONTTIME:Media::VideoSource::FF_NONE;
 						me->outputFrames[nextIndex].ycOfst = Media::YCOFST_C_CENTER_LEFT;
 						mutUsage.BeginUse();
 						me->outputCount++;
@@ -156,7 +156,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 	me->mainEvt.Set();
 	if (needNotify)
 	{
-		me->fcCb(Media::IVideoSource::FC_ENDPLAY, me->playCbData);
+		me->fcCb(Media::VideoSource::FC_ENDPLAY, me->playCbData);
 	}
 	return 1003;
 }
@@ -509,12 +509,12 @@ void Media::FileVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userDa
 			{
 				ftype = this->frameInfo.ftype;
 			}
-			if (!cb(frameTime, i, (UInt32)frameSize, this->frameIsKey.GetItem(i)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), ftype, userData, Media::YCOFST_C_TOP_LEFT))
+			if (!cb(frameTime, i, (UInt32)frameSize, this->frameIsKey.GetItem(i)?(Media::VideoSource::FS_I):(Media::VideoSource::FS_P), ftype, userData, Media::YCOFST_C_TOP_LEFT))
 				break;
 		}
 		else
 		{
-			if (!cb(lastFrameTime, i, 0, Media::IVideoSource::FS_N, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_TOP_LEFT))
+			if (!cb(lastFrameTime, i, 0, Media::VideoSource::FS_N, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_TOP_LEFT))
 			{
 				break;
 			}

@@ -3,7 +3,7 @@
 
 #include "Manage/HiResClock.h"
 #include "Media/H264Parser.h"
-#include "Media/IRealtimeVideoSource.h"
+#include "Media/RealtimeVideoSource.h"
 #include "Math/Math.h"
 
 #include "Media/DShow/DShowInit.h"
@@ -39,8 +39,8 @@ namespace Media
 			UInt32 frameHeight;
 			UInt32 frameSize;
 			Manage::HiResClock *clk;
-			Media::IRealtimeVideoSource::FrameCallback cb;
-			Media::IRealtimeVideoSource::FrameChangeCallback fcCb;
+			Media::RealtimeVideoSource::FrameCallback cb;
+			Media::RealtimeVideoSource::FrameChangeCallback fcCb;
 			AnyType ud;
 
 		public:
@@ -171,7 +171,7 @@ namespace Media
 						frameSize = this->frameWidth * this->frameHeight * this->frameMul >> 3;
 					}
 					Media::FrameType ftype = Media::FT_NON_INTERLACE;
-					Media::IVideoSource::FrameStruct fs = Media::IVideoSource::FS_I;
+					Media::VideoSource::FrameStruct fs = Media::VideoSource::FS_I;
 					AM_MEDIA_TYPE *mediaType;
 					if (sample->GetMediaType(&mediaType) == S_OK)
 					{
@@ -226,12 +226,12 @@ namespace Media
 								}
 								else if ((dataPtr[i + 4] & 0x1f) == 5) //idr
 								{
-									fs = Media::IVideoSource::FS_I;
+									fs = Media::VideoSource::FS_I;
 									break;
 								}
 								else if ((dataPtr[i + 4] & 0x1f) == 1)
 								{
-									fs = Media::IVideoSource::FS_P;
+									fs = Media::VideoSource::FS_P;
 									break;
 								}
 								else
@@ -258,7 +258,7 @@ namespace Media
 						t = (Int32)(t1 / 10);
 					}
 					UnsafeArray<UInt8> dataArr = dataPtr;
-					cb((UInt32)t, this->frameNum++, &dataArr, frameSize, fs, ud, ftype, (sample->IsDiscontinuity() == S_OK)?((Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_DISCONTTIME | Media::IVideoSource::FF_REALTIME)):(Media::IVideoSource::FF_REALTIME), Media::YCOFST_C_CENTER_LEFT);
+					cb((UInt32)t, this->frameNum++, &dataArr, frameSize, fs, ud, ftype, (sample->IsDiscontinuity() == S_OK)?((Media::VideoSource::FrameFlag)(Media::VideoSource::FF_DISCONTTIME | Media::VideoSource::FF_REALTIME)):(Media::VideoSource::FF_REALTIME), Media::YCOFST_C_CENTER_LEFT);
 					return S_OK;
 				}
 				else
@@ -275,7 +275,7 @@ namespace Media
 				this->preferBPP = bpp;
 			}
 
-			void SetFrameCallback(Media::IRealtimeVideoSource::FrameCallback cb, Media::IRealtimeVideoSource::FrameChangeCallback fcCb, AnyType ud)
+			void SetFrameCallback(Media::RealtimeVideoSource::FrameCallback cb, Media::RealtimeVideoSource::FrameChangeCallback fcCb, AnyType ud)
 			{
 				this->cb = cb;
 				this->fcCb = fcCb;

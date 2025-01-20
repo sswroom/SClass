@@ -10,7 +10,7 @@
 
 namespace Media
 {
-	class IImgResizer;
+	class ImageResizer;
 
 	class StaticImage : public RasterImage
 	{
@@ -40,7 +40,7 @@ namespace Media
 		Bool FillColor(UInt32 color);
 		Bool MultiplyAlpha(Double alpha);
 		Bool MultiplyColor(UInt32 color);
-		Bool Resize(Media::IImgResizer *resizer, Math::Size2D<UOSInt> newSize);
+		Bool Resize(Media::ImageResizer *resizer, Math::Size2D<UOSInt> newSize);
 		Bool RotateImage(RotateType rtype);
 		Double CalcPSNR(NN<Media::StaticImage> simg) const;
 		Double CalcAvgContrast(UOSInt *bgPxCnt) const;

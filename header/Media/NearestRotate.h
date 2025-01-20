@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_NEARESTROTATE
 #define _SM_MEDIA_NEARESTROTATE
-#include "Media/IImgRotate.h"
+#include "Media/ImageRotater.h"
 
 namespace Media
 {
@@ -20,27 +20,27 @@ namespace Media
 		Single centerY;
 		Single sinAngle;
 		Single cosAngle;
-		Int32 *sBits;
-		Int32 *pBits;
+		UnsafeArray<Int32> sBits;
+		UnsafeArray<Int32> pBits;
 	} NROT_THREADSTAT;
 
-	class NearestRotate : public IImgRotate
+	class NearestRotate : public ImageRotater
 	{
 	private:
 		Int32 currId;
-		Sync::Event *evtMain;
-		NROT_THREADSTAT *stats;
-		Int32 nThread;
+		Sync::Event evtMain;
+		UnsafeArray<NROT_THREADSTAT> stats;
+		UOSInt nThread;
 
-		static void RotateTask(NROT_THREADSTAT *stat);
-		static UInt32 WorkerThread(void *obj);
+		static void RotateTask(NN<NROT_THREADSTAT> stat);
+		static UInt32 WorkerThread(AnyType obj);
 
 	public:
 		NearestRotate();
 		virtual ~NearestRotate();
 
-		virtual Media::Image *Rotate(Media::Image *srcImg, Single centerX, Single centerY, Single angleRad, Bool keepCoord, Bool keepSize);
+		virtual Optional<Media::RasterImage> Rotate(NN<Media::RasterImage> srcImg, Single centerX, Single centerY, Single angleRad, Bool keepCoord, Bool keepSize);
 	};
-};
+}
 
 #endif

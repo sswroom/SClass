@@ -2,14 +2,14 @@
 #define _SM_TEXT_DOC_TEXTDOCUMENT
 #include "Data/ArrayList.h"
 #include "IO/ParsedObject.h"
-#include "Media/IPrintDocument.h"
+#include "Media/PrintDocument.h"
 #include "Text/Doc/DocSection.h"
 
 namespace Text
 {
 	namespace Doc
 	{
-		class TextDocument : public IO::ParsedObject, public Data::ReadingListNN<DocSection>, public Media::IPrintHandler
+		class TextDocument : public IO::ParsedObject, public Data::ReadingListNN<DocSection>, public Media::PrintHandler
 		{
 		private:
 			typedef enum
@@ -62,9 +62,9 @@ namespace Text
 			virtual NN<DocSection> GetItemNoCheck(UOSInt Index) const;
 			virtual Optional<DocSection> GetItem(UOSInt Index) const;
 
-			virtual Bool BeginPrint(NN<Media::IPrintDocument> doc);
+			virtual Bool BeginPrint(NN<Media::PrintDocument> doc);
 			virtual Bool PrintPage(NN<Media::DrawImage> printPage); 
-			virtual Bool EndPrint(NN<Media::IPrintDocument> doc);
+			virtual Bool EndPrint(NN<Media::PrintDocument> doc);
 		};
 	}
 }

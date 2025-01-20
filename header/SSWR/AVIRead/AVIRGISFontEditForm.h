@@ -15,7 +15,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRGISFontEditForm : public UI::GUIForm, public Media::IColorHandler
+		class AVIRGISFontEditForm : public UI::GUIForm, public Media::ColorHandler
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -65,8 +65,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

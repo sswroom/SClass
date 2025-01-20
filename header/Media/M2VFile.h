@@ -3,12 +3,12 @@
 #include "AnyType.h"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
-#include "Media/IStreamControl.h"
+#include "Media/MediaStreamControl.h"
 #include "Media/MediaFile.h"
 namespace Media
 {
 	class M2VStreamSource;
-	class M2VFile : public Media::MediaFile, public Media::IStreamControl
+	class M2VFile : public Media::MediaFile, public Media::MediaStreamControl
 	{
 	private:
 		NN<IO::StreamData> stmData;
@@ -28,8 +28,8 @@ namespace Media
 		M2VFile(NN<IO::StreamData> stmData);
 		virtual ~M2VFile();
 		
-		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);
-		virtual Media::IMediaSource *GetStream(UOSInt index, Int32 *syncTime);
+		virtual UOSInt AddSource(Media::MediaSource *src, Int32 syncTime);
+		virtual Media::MediaSource *GetStream(UOSInt index, Int32 *syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
 		virtual UnsafeArrayOpt<UTF8Char> GetMediaName(UnsafeArray<UTF8Char> buff);

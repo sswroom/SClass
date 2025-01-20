@@ -4,7 +4,7 @@
 #include "Text/MIMEObj/MIMEMessage.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSInt buffSize, Text::CStringNN contentType) : Text::IMIMEObj(contentType)
+Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSInt buffSize, Text::CStringNN contentType) : Text::MIMEObject(contentType)
 {
 	this->buffSize = buffSize;
 	this->dataBuff = MemAllocArr(UInt8, buffSize);
@@ -60,7 +60,7 @@ UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	return stm->Write(Data::ByteArrayR(this->dataBuff, this->buffSize));
 }
 
-NN<Text::IMIMEObj> Text::MIMEObj::UnknownMIMEObj::Clone() const
+NN<Text::MIMEObject> Text::MIMEObj::UnknownMIMEObj::Clone() const
 {
 	NN<Text::MIMEObj::UnknownMIMEObj> newObj;
 	NEW_CLASSNN(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->ToCString()));

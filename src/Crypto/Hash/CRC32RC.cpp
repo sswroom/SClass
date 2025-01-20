@@ -33,7 +33,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::CRC32RC::GetName(UnsafeArray<UTF8Char> sbuff
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC-32C"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::CRC32RC::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::CRC32RC::Clone() const
 {
 	NN<Crypto::Hash::CRC32RC> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32RC());

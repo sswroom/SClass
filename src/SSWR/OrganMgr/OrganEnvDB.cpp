@@ -1831,10 +1831,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				if (pobj->GetParserType() == IO::ParserType::MediaFile)
 				{
 					NN<Media::MediaFile> mediaFile = NN<Media::MediaFile>::ConvertFrom(pobj);
-					NN<Media::IMediaSource> msrc;
+					NN<Media::MediaSource> msrc;
 					if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 					{
-						graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, NN<Media::IAudioSource>::ConvertFrom(msrc), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+						graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, NN<Media::AudioSource>::ConvertFrom(msrc), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
 						if (graphImg.NotNull())
 						{
 							valid = true;
@@ -5201,7 +5201,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 							if (simg->info.dispSize.x > 1920 || simg->info.dispSize.y > 1920)
 							{
 								resizer.SetTargetSize(Math::Size2D<UOSInt>(1920, 1920));
-								resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
+								resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_KEEPAR);
 								if (newImg.Set(resizer.ProcessToNew(simg)))
 								{
 									nnimgList->ReplaceImage(0, newImg);

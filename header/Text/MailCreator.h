@@ -14,13 +14,13 @@ namespace Text
 		Text::String *subject;
 		Text::StringBuilderUTF8 toVals;
 		Text::StringBuilderUTF8 ccVals;
-		Optional<Text::IMIMEObj> content;
-		Data::ArrayListNN<Text::IMIMEObj> attachObj;
+		Optional<Text::MIMEObject> content;
+		Data::ArrayListNN<Text::MIMEObject> attachObj;
 		Data::ArrayListStringNN attachName;
 
 		void AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CStringNN s);
 		void AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *s);
-		static Optional<Text::IMIMEObj> ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath);
+		static Optional<Text::MIMEObject> ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath);
 	public:
 		MailCreator();
 		~MailCreator();

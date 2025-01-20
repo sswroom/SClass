@@ -8,7 +8,7 @@ namespace UI
 	{
 	protected:
 		virtual void ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
-		virtual NN<Media::IImgResizer> CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance);
+		virtual NN<Media::ImageResizer> CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance);
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 	public:

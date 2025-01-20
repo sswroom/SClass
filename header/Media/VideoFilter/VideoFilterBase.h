@@ -1,30 +1,30 @@
 #ifndef _SM_MEDIA_VIDEOFILTER_VIDEOFILTERBASE
 #define _SM_MEDIA_VIDEOFILTER_VIDEOFILTERBASE
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 
 namespace Media
 {
 	namespace VideoFilter
 	{
-		class VideoFilterBase : public Media::IVideoSource
+		class VideoFilterBase : public Media::VideoSource
 		{
 		protected:
-			Optional<Media::IVideoSource> srcVideo;
+			Optional<Media::VideoSource> srcVideo;
 			Media::FrameInfo videoInfo;
 			FrameCallback videoCb;
 			FrameChangeCallback fcCb;
 			AnyType userData;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::VideoSource::FrameChange fc, AnyType userData);
 
-			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
-			virtual void OnFrameChange(Media::IVideoSource::FrameChange fc);
+			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
+			virtual void OnFrameChange(Media::VideoSource::FrameChange fc);
 		public:
-			VideoFilterBase(Optional<Media::IVideoSource> srcVideo);
+			VideoFilterBase(Optional<Media::VideoSource> srcVideo);
 			virtual ~VideoFilterBase();
 
-			virtual void SetSourceVideo(Optional<Media::IVideoSource> srcVideo);
+			virtual void SetSourceVideo(Optional<Media::VideoSource> srcVideo);
 
 			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 

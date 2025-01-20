@@ -11,7 +11,7 @@
 IO::ConsoleWriter *console;
 IO::LogTool *logger;
 
-void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+void __stdcall OnForwardRequest(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;

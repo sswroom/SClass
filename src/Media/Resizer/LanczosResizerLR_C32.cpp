@@ -1072,7 +1072,7 @@ void Media::Resizer::LanczosResizerLR_C32::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::IImgResizer(srcAlphaType), destColor(destColor)
+Media::Resizer::LanczosResizerLR_C32::LanczosResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::ImageResizer(srcAlphaType), destColor(destColor)
 {
 	this->hnTap = hnTap << 1;
 	this->vnTap = vnTap << 1;
@@ -1283,11 +1283,11 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(UnsafeArray<const UInt8> src, 
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::Resizer::LanczosResizerLR_C32::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::Resizer::LanczosResizerLR_C32::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::Resizer::LanczosResizerLR_C32::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	this->rgbChanged = true;
 }

@@ -2,13 +2,13 @@
 #ifndef _SM_TEXT_TEXTENC_FORMENCODING
 #define _SM_TEXT_TEXTENC_FORMENCODING
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class FormEncoding : public Text::TextBinEnc::ITextBinEnc
+		class FormEncoding : public Text::TextBinEnc::TextBinEnc
 		{
 		private:
 			static UInt8 URIAllow[];

@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_JMVL01FILEANALYSE
 #include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Thread.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
@@ -11,7 +11,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class JMVL01FileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class JMVL01FileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			typedef struct

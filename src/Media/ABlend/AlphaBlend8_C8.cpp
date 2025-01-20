@@ -333,11 +333,11 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt d
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	NN<Data::ArrayListNN<LUTInfo>> lutList;
 	if (this->lutList.SetTo(lutList))

@@ -1625,7 +1625,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 							Media::StaticImage *nimg;
 							img->To32bpp();
 							me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
-							me->mapResizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+							me->mapResizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 							nimg = me->mapResizer->ProcessToNew(img);
 							imgList.Delete();
 							me->mapCurrFile = ufile.Ptr();

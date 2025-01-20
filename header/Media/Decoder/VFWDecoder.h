@@ -2,7 +2,7 @@
 #define _SM_MEDIA_DECODER_VFWDECODER
 #include "Data/ArrayListUInt32.h"
 #include "Data/CallbackStorage.h"
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 #include "Media/Decoder/VDecoderBase.h"
 //require vfw32.lib
 
@@ -47,7 +47,7 @@ namespace Media
 //			UInt32 lastFrameNum;
 //			UInt32 lastFrameTime;
 //			Media::FrameType lastFrameType;
-//			Media::IVideoSource::FrameFlag lastFrameFlags;
+//			Media::VideoSource::FrameFlag lastFrameFlags;
 			Media::YCOffset lastYCOfst;
 
 			Int32 bCnt;
@@ -59,9 +59,9 @@ namespace Media
 
 			static Bool GetFCCHandlers(UInt32 fourcc, Data::ArrayListUInt32 *fccHdlrs, Data::ArrayListUInt32 *outFccs, EncodingType *encType);
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VFWDecoder(NN<IVideoSource> sourceAudio);
+			VFWDecoder(NN<VideoSource> sourceAudio);
 			virtual ~VFWDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
@@ -75,7 +75,7 @@ namespace Media
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
+			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);
 		};
 	}
 }

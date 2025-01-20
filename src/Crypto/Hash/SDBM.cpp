@@ -22,7 +22,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::SDBM::GetName(UnsafeArray<UTF8Char> sbuff) c
 	return Text::StrConcatC(sbuff, UTF8STRC("SDBM"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::SDBM::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::SDBM::Clone() const
 {
 	NN<Crypto::Hash::SDBM> sdbm;
 	NEW_CLASSNN(sdbm, Crypto::Hash::SDBM());

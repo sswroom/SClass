@@ -3,7 +3,7 @@
 #include "Crypto/PBKDF2.h"
 #include "Data/ByteTool.h"
 
-UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, NN<Crypto::Hash::IHash> hashFunc, UnsafeArray<UInt8> outBuff)
+UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, NN<Crypto::Hash::HashAlgorithm> hashFunc, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 tmpBuff[64];
 	UOSInt resSize = hashFunc->GetResultSize();
@@ -26,7 +26,7 @@ UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt i
 	return resSize;
 }
 
-UOSInt Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, NN<Crypto::Hash::IHash> hashFunc, UnsafeArray<UInt8> outBuff)
+UOSInt Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, NN<Crypto::Hash::HashAlgorithm> hashFunc, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 blockBuff[64];
 	UOSInt retLen = dkLen;

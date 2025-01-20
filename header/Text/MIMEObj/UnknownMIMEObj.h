@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_MIMEOBJ_UNKNOWNMIMEOBJ
 #define _SM_TEXT_MIMEOBJ_UNKNOWNMIMEOBJ
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 
 namespace Text
 {
 	namespace MIMEObj
 	{
-		class UnknownMIMEObj : public Text::IMIMEObj
+		class UnknownMIMEObj : public Text::MIMEObject
 		{
 		private:
 			UnsafeArray<UInt8> dataBuff;
@@ -20,7 +20,7 @@ namespace Text
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
-			virtual NN<IMIMEObj> Clone() const;
+			virtual NN<MIMEObject> Clone() const;
 
 			UnsafeArray<const UInt8> GetRAWData(OutParam<UOSInt> dataSize) const;
 		};

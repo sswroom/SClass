@@ -54,7 +54,7 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
 	esStep = 0;
 }
 
-Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::IDeintResizer(srcAlphaType)
+Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::DeinterlacingResizer(srcAlphaType)
 {
 	this->osSize = 0;
 	this->odSize = 0;
@@ -79,7 +79,7 @@ Media::Resizer::DeintResizerLR_C32::~DeintResizerLR_C32()
 	DestoryVertE();
 }
 
-void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::DeintType dType, UnsafeArray<UInt8> src, UOSInt sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown)
+void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::DeinterlacingResizer::DeintType dType, UnsafeArray<UInt8> src, UOSInt sbpl, Double swidth, Double sheight, UnsafeArray<UInt8> dest, UOSInt dbpl, UOSInt dwidth, UOSInt dheight, Bool upsideDown)
 {
 	LRHPARAMETER prm;
 	Double w;
@@ -125,7 +125,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 		dstep = (OSInt)dbpl;
 	}
 
-	if (dType == Media::IDeintResizer::DT_TOP_FIELD)
+	if (dType == Media::DeinterlacingResizer::DT_TOP_FIELD)
 	{
 		if (swidth != UOSInt2Double(dwidth))
 		{
@@ -173,7 +173,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				this->oFilter = vFilter;
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else
@@ -200,11 +200,11 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 				this->oFilter = vFilter;
 			}
-			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 	}
-	else if (dType == Media::IDeintResizer::DT_BOTTOM_FIELD)
+	else if (dType == Media::DeinterlacingResizer::DT_BOTTOM_FIELD)
 	{
 		if (swidth != UOSInt2Double(dwidth))
 		{
@@ -252,7 +252,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				this->eFilter = vFilter;
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else
@@ -279,7 +279,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 				this->eFilter = vFilter;
 			}
-			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 	}
@@ -331,7 +331,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				this->vFilter = vFilter;
 			}
 			
-			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else if (swidth != UOSInt2Double(dwidth))
@@ -358,7 +358,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				this->hFilter = hFilter;
 			}
 
-			action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else if (sheight != UOSInt2Double(dheight))
@@ -385,13 +385,13 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 				vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
 				this->vFilter = vFilter;
 			}
-			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoVerticalFilter(src, dest, (UInt32)siWidth, (UInt32)siHeight, dheight, vFilter, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
 		else
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			action->DoCollapse(src, dest, (UInt32)siWidth, dheight, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
+			action->DoCollapse(src, dest, (UInt32)siWidth, dheight, sstep, dstep, this->Media::ImageResizer::srcAlphaType);
 			mutUsage.EndUse();
 
 		}

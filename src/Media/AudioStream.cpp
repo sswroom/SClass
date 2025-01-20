@@ -4,7 +4,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Sync/Mutex.h"
-#include "Media/IAudioFilter.h"
+#include "Media/AudioFilter.h"
 #include "Media/AudioStream.h"
 #include "IO/StreamData.h"
 #include "IO/StmData/FileData.h"
@@ -25,7 +25,7 @@ AudioStream::AudioStream(WAVEFORMATEX *fmt, Data::ArrayList<IO::StreamData*>* dL
 		MemCopy(audioSource->format, fmt, i);
 	}
 	audioSource->dataList = dList;
-	NEW_CLASS(audioSource->filterList, Data::ArrayList<IAudioFilter*>());
+	NEW_CLASS(audioSource->filterList, Data::ArrayList<AudioFilter*>());
 	audioSource->audioDelay = audDelay;
 
 	if (name == 0)
@@ -97,7 +97,7 @@ WAVEFORMATEX *AudioStream::getFormat()
   	if (audioSource->filterList->GetCount() == 0)
 		return audioSource->format;
 	else
-		return ((IAudioFilter*)audioSource->filterList->GetItem(audioSource->filterList->GetCount() - 1))->getOutputFormat();
+		return ((AudioFilter*)audioSource->filterList->GetItem(audioSource->filterList->GetCount() - 1))->getOutputFormat();
 }
 
 __int64 AudioStream::GetVBRPos(__int64 decOfst)
@@ -156,7 +156,7 @@ __int64 AudioStream::getDataLength()
 	if (audioSource->filterList->GetCount() == 0)
 		return length;
 	else
-		return length * ((IAudioFilter*)audioSource->filterList->GetItem(audioSource->filterList->GetCount() - 1))->getOutputFormat()->nAvgBytesPerSec / audioSource->format->nAvgBytesPerSec;
+		return length * ((AudioFilter*)audioSource->filterList->GetItem(audioSource->filterList->GetCount() - 1))->getOutputFormat()->nAvgBytesPerSec / audioSource->format->nAvgBytesPerSec;
 }
 
 char *AudioStream::getName()
@@ -225,7 +225,7 @@ long _stdcall AudioStream::AudioCallback(Int32 filterNo, UINT msg, Int32 userDat
 	AudioStream *as = (AudioStream*)userData;
 	__int64 size;
 	long i;
-	IAudioFilter *filter;
+	AudioFilter *filter;
 	switch (msg)
 	{
 	case IAFM_GETDATA:
@@ -238,7 +238,7 @@ long _stdcall AudioStream::AudioCallback(Int32 filterNo, UINT msg, Int32 userDat
 		i = -1;
 		while (++i < filterNo)
 		{
-			filter = (IAudioFilter*)as->audioSource->filterList->GetItem(i);
+			filter = (AudioFilter*)as->audioSource->filterList->GetItem(i);
 			size = size * filter->getOutputFormat()->nAvgBytesPerSec / filter->getSourceFormat()->nAvgBytesPerSec;
 		}
 		*(__int64*)msgData1 = size;
@@ -288,13 +288,13 @@ Int32 AudioStream::removeLastFilter()
 {
 	if (audioSource->filterList->GetCount())
 	{
-		delete ((IAudioFilter*)audioSource->filterList->RemoveAt(audioSource->filterList->GetCount() - 1));
+		delete ((AudioFilter*)audioSource->filterList->RemoveAt(audioSource->filterList->GetCount() - 1));
 		return 0;
 	}
 	return 1;
 }
 
-Int32 AudioStream::addFilter(IAudioFilter *filter)
+Int32 AudioStream::addFilter(AudioFilter *filter)
 {
 	if (filter->hasError())
 	{
@@ -309,7 +309,7 @@ Int64 AudioStream::getOffset()
 {
 	if (audioSource->filterList->GetCount())
 	{
-		return ((IAudioFilter*)audioSource->filterList->GetItem(audioSource->filterList->GetCount() - 1))->getOffset();
+		return ((AudioFilter*)audioSource->filterList->GetItem(audioSource->filterList->GetCount() - 1))->getOffset();
 	}
 	return 0;
 }

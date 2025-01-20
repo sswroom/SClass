@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Text/MyString.h"
 
 extern "C" void InsertionSort_SortBInt32(Int32 *arr, OSInt left, OSInt right)

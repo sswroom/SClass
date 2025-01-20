@@ -1,20 +1,20 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOJTT808HANDLER
 #define _SM_IO_PROTOHDLR_PROTOJTT808HANDLER
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoJTT808Handler : public IO::IProtocolHandler
+		class ProtoJTT808Handler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			UInt64 devId;
 
 		public:
-			ProtoJTT808Handler(NN<IO::IProtocolHandler::DataListener> listener, UInt64 devId);
+			ProtoJTT808Handler(NN<IO::ProtocolHandler::DataListener> listener, UInt64 devId);
 			virtual ~ProtoJTT808Handler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

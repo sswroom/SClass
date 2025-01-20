@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Net/IRTPPLHandler.h"
+#include "Net/RTPPayloadHandler.h"
 #include "Net/RTPSvrChannel.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
@@ -67,7 +67,7 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 		}
 
 
-		Net::IRTPPLHandler *plHdlr = me->payloadMap->Get(me->packBuff[minIndex].payloadType);
+		Net::RTPPayloadHandler *plHdlr = me->payloadMap->Get(me->packBuff[minIndex].payloadType);
 		if (plHdlr)
 		{
 			plHdlr->MediaDataReceived(me->packBuff[minIndex].buff, me->packBuff[minIndex].dataSize, me->packBuff[minIndex].seqNum, me->packBuff[minIndex].ts);

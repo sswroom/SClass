@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_SORT_COUNTINGSORT
 #define _SM_DATA_SORT_COUNTINGSORT
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 namespace Data
 {

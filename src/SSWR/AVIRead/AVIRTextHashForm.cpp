@@ -21,8 +21,8 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		me->cboHashType->Focus();
 		return;
 	}
-	NN<Text::TextBinEnc::ITextBinEnc> srcEnc;
-	if (!me->cboEncrypt->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(srcEnc))
+	NN<Text::TextBinEnc::TextBinEnc> srcEnc;
+	if (!me->cboEncrypt->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>().SetTo(srcEnc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
 		return;
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 	UOSInt buffSize = srcEnc->CalcBinSize(sb.ToCString());
 	if (buffSize > 0)
 	{
-		NN<Crypto::Hash::IHash> hash;
+		NN<Crypto::Hash::HashAlgorithm> hash;
 		UInt8 *decBuff = MemAlloc(UInt8, buffSize);
 		if (srcEnc->DecodeBin(sb.ToCString(), decBuff) != buffSize)
 		{
@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	UOSInt i;
 	UOSInt j;
@@ -105,8 +105,8 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 		}
 		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
-	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
-	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::TextBinEnc> enc;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)

@@ -3,7 +3,7 @@
 #include <math.h>
 #include "MyMemory.h"
 #include "Sync/Event.h"
-#include "Media\IImgResizer.h"
+#include "Media\ImageResizer.h"
 #include "Media\FrameInfo.h"
 #include "Media\StaticImage.h"
 #include "Media\DrawTool.h"

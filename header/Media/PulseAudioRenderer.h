@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_PULSEAUDIORENDERER
 #define _SM_MEDIA_PULSEAUDIORENDERER
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 #include "Sync/Thread.h"
 
 namespace Media
 {
-	class PulseAudioRenderer : public IAudioRenderer
+	class PulseAudioRenderer : public AudioRenderer
 	{
 	public:
 		struct DeviceInfo
@@ -17,8 +17,8 @@ namespace Media
 			UOSInt devNo;
 		};
 	private:
-		Media::IAudioSource *audsrc;
-		Media::IAudioSource *resampler;
+		Media::AudioSource *audsrc;
+		Media::AudioSource *resampler;
 		UInt32 resampleFreq;
 		Optional<Text::String> devName;
 		void *hand;
@@ -47,7 +47,7 @@ namespace Media
 		virtual ~PulseAudioRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
+		virtual Bool BindAudio(Media::AudioSource *audsrc);
 		virtual void AudioInit(Media::RefClock *clk);
 		virtual void Start();
 		virtual void Stop();

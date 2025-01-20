@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(AnyType user
 		Media::ColorProfile::CommonProfileType cpt = (Media::ColorProfile::CommonProfileType)me->cboMonProfile->GetSelectedItem().GetOSInt();
 		if (cpt == Media::ColorProfile::CPT_FILE)
 		{
-			NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+			NN<const Media::ColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 			me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));
 			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile.GetPrimariesRead()->colorType));
 			sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetRTranParamRead()->GetGamma());
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(AnyType user
 		else
 		{
 			me->monColor->SetMonProfileType(cpt);
-			NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+			NN<const Media::ColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 			me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));
 			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile.GetPrimariesRead()->colorType));
 			sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetRTranParamRead()->GetGamma());
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(AnyType 
 				OPTSTR_DEL(me->monFileName);
 				me->monFileName = s->Clone();
 
-				NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+				NN<const Media::ColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 				me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));
 				me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile.GetPrimariesRead()->colorType));
 				sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetRTranParamRead()->GetGamma());
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonCustomClicked(AnyType u
 			frm.ShowDialog(me);
 		}
 
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+		NN<const Media::ColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 		me->txtMonTran->SetText(Media::CS::TransferTypeGetName(rgbParam->monProfile.GetRTranParamRead()->GetTranType()));
 		me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile.GetPrimariesRead()->colorType));
 		sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetRTranParamRead()->GetGamma());
@@ -485,8 +485,8 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NN<const Media::IColorHandler::RGBPARAM2> rgbParam;
-	NN<const Media::IColorHandler::YUVPARAM> yuvParam;
+	NN<const Media::ColorHandler::RGBPARAM2> rgbParam;
+	NN<const Media::ColorHandler::YUVPARAM> yuvParam;
 	rgbParam = this->monColor->GetRGBParam();
 	yuvParam = this->monColor->GetYUVParam();
 

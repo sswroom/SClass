@@ -30,14 +30,14 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
 	{
 		Media::Resizer::LanczosResizer8_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
-		resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+		resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 		resizer.SetTargetSize(outSize);
 		me->outImg = resizer.ProcessToNew(me->srcImg);
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
 		Media::Resizer::LanczosResizer16_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
-		resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+		resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 		resizer.SetTargetSize(outSize);
 		me->outImg = resizer.ProcessToNew(me->srcImg);
 	}

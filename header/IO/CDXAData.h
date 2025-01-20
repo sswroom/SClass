@@ -1,11 +1,11 @@
 #ifndef _SM_IO_CDXADATA
 #define _SM_IO_CDXADATA
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "IO/StreamData.h"
 
 namespace IO
 {
-	class CDXAData : public IO::ISectorData
+	class CDXAData : public IO::SectorData
 	{
 	private:
 		NN<IO::StreamData> data;
@@ -17,7 +17,7 @@ namespace IO
 		virtual UInt64 GetSectorCount() const;
 		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff);
-		virtual NN<ISectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
+		virtual NN<SectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
  		virtual NN<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const;
 		virtual UOSInt GetSeekCount() const;
 	};

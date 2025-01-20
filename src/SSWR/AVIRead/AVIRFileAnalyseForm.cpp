@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "SSWR/AVIRead/AVIRFileAnalyseForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTool", false);
-	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
+	IO::FileAnalyse::FileAnalyser::AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->OpenFile(dlg->GetFileName()->ToCString());
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(AnyType 
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
-	NN<IO::FileAnalyse::IFileAnalyse> file;
+	NN<IO::FileAnalyse::FileAnalyser> file;
 	if (!me->file.SetTo(file))
 	{
 		return;
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
-	NN<IO::FileAnalyse::IFileAnalyse> file;
+	NN<IO::FileAnalyse::FileAnalyser> file;
 	if (me->file.SetTo(file))
 	{
 		UOSInt currCnt = file->GetFrameCount();
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
-	NN<IO::FileAnalyse::IFileAnalyse> file;
+	NN<IO::FileAnalyse::FileAnalyser> file;
 	if (!me->file.SetTo(file))
 	{
 		me->lbPackItems->ClearItems();
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType use
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
-	NN<IO::FileAnalyse::IFileAnalyse> file;
+	NN<IO::FileAnalyse::FileAnalyser> file;
 	if (!me->file.SetTo(file))
 	{
 		me->txtPack->SetText(CSTR(""));
@@ -176,9 +176,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType use
 
 Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CStringNN fileName)
 {
-	NN<IO::FileAnalyse::IFileAnalyse> file;
+	NN<IO::FileAnalyse::FileAnalyser> file;
 	IO::StmData::FileData fd(fileName, false);
-	if (IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd).SetTo(file))
+	if (IO::FileAnalyse::FileAnalyser::AnalyseFile(fd).SetTo(file))
 	{
 		this->file.Delete();
 		this->file = file;

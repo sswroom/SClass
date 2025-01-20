@@ -11,11 +11,11 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt8 *decBuff;
 	UOSInt buffSize;
-	NN<Text::TextBinEnc::ITextBinEnc> srcEnc;
-	Optional<Text::TextBinEnc::ITextBinEnc> destEnc = me->cboDest->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>();
-	NN<Text::TextBinEnc::ITextBinEnc> nndestEnc;
+	NN<Text::TextBinEnc::TextBinEnc> srcEnc;
+	Optional<Text::TextBinEnc::TextBinEnc> destEnc = me->cboDest->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>();
+	NN<Text::TextBinEnc::TextBinEnc> nndestEnc;
 	me->txtSrc->GetText(sb);
-	if (!me->cboSrc->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(srcEnc))
+	if (!me->cboSrc->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>().SetTo(srcEnc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
 	}
@@ -104,8 +104,8 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> p
 	this->txtDest->SetReadOnly(true);
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
-	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::TextBinEnc> enc;
 	UOSInt i;
 	UOSInt j;
 	i = 0;

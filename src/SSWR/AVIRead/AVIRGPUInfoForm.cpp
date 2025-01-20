@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPUInfoForm>();
-	IO::IGPUControl *gpu = (IO::IGPUControl*)me->lbGPU->GetSelectedItem().p;
+	IO::GPUControl *gpu = (IO::GPUControl*)me->lbGPU->GetSelectedItem().p;
 	if (gpu == 0)
 	{
 		me->lvMain->ClearItems();
@@ -18,25 +18,25 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(AnyType userObj)
 		Double val;
 		UOSInt i;
 		me->lvMain->ClearItems();
-		if (gpu->GetTemperature(&val))
+		if (gpu->GetTemperature(val))
 		{
 			Text::StrDoubleW(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Temperature"), 0);
 			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
-		if (gpu->GetCoreClock(&val))
+		if (gpu->GetCoreClock(val))
 		{
 			Text::StrDoubleW(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Core Clock (MHz)"), 0);
 			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
-		if (gpu->GetMemoryClock(&val))
+		if (gpu->GetMemoryClock(val))
 		{
 			Text::StrDoubleW(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Memory Clock (MHz)"), 0);
 			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
-		if (gpu->GetVoltage(&val))
+		if (gpu->GetVoltage(val))
 		{
 			Text::StrDoubleW(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Core Voltage (V)"), 0);
@@ -68,15 +68,14 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> p
 
 	UOSInt i;
 	UOSInt j;
-	NN<IO::IGPUControl> gpu;
+	NN<IO::GPUControl> gpu;
 	i = 0;
 	j = this->gpuMgr->GetGPUCount();
 	while (i < j)
 	{
 		if (this->gpuMgr->GetGPUControl(i).SetTo(gpu))
 		{
-			const UTF8Char *name = gpu->GetName();
-			this->lbGPU->AddItem({name, Text::StrCharCnt(name)}, gpu);
+			this->lbGPU->AddItem(gpu->GetName(), gpu);
 		}
 		i++;
 	}

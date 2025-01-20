@@ -3,16 +3,16 @@
 #include "AnyType.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/FastMap.h"
-#include "Media/IAudioSource.h"
-#include "Media/IMediaSource.h"
-#include "Media/IVideoSource.h"
-#include "Net/IRTPController.h"
+#include "Media/AudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/VideoSource.h"
+#include "Net/RTPController.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
 
 namespace Net
 {
-	class IRTPPLHandler;
+	class RTPPayloadHandler;
 
 	class RTPCliChannel
 	{
@@ -37,7 +37,7 @@ namespace Net
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
-			Data::FastMap<Int32, Net::IRTPPLHandler *> payloadMap;
+			Data::FastMap<Int32, Net::RTPPayloadHandler *> payloadMap;
 			Media::MediaType mediaType;
 			NN<Net::SocketFactory> sockf;
 
@@ -48,7 +48,7 @@ namespace Net
 			PacketBuff *packBuff; 
 			UOSInt packCnt;
 
-			Net::IRTPController *playCtrl;
+			Net::RTPController *playCtrl;
 
 			Bool playing;
 			Bool playToStop;
@@ -65,7 +65,7 @@ namespace Net
 
 	private:
 		void SetControlURL(Text::CStringNN url);
-		void SetPlayControl(Net::IRTPController *playCtrl);
+		void SetPlayControl(Net::RTPController *playCtrl);
 
 		RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);
 		RTPCliChannel(RTPCliChannel *ch);
@@ -77,10 +77,10 @@ namespace Net
 		Text::String *GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
-		Optional<Media::IVideoSource> GetVideo(UOSInt index);
-		Optional<Media::IAudioSource> GetAudio(UOSInt index);
-		Optional<Media::IVideoSource> CreateShadowVideo(UOSInt index);
-		Optional<Media::IAudioSource> CreateShadowAudio(UOSInt index);
+		Optional<Media::VideoSource> GetVideo(UOSInt index);
+		Optional<Media::AudioSource> GetAudio(UOSInt index);
+		Optional<Media::VideoSource> CreateShadowVideo(UOSInt index);
+		Optional<Media::AudioSource> CreateShadowAudio(UOSInt index);
 
 		AnyType GetUserData();
 		void SetUserData(AnyType userData);
@@ -92,7 +92,7 @@ namespace Net
 		Bool MapPayloadType(Int32 payloadType, Text::CStringNN typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, UnsafeArray<const UTF8Char> format);
 
-		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log);
+		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::RTPController *playCtrl, NN<IO::LogTool> log);
 	};
 }
 #endif

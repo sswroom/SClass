@@ -1,7 +1,7 @@
 #ifndef _SM_IO_AMDGPUMANAGER
 #define _SM_IO_AMDGPUMANAGER
 #include "Data/ArrayList.h"
-#include "IO/IGPUControl.h"
+#include "IO/GPUControl.h"
 #include "IO/Library.h"
 
 namespace IO
@@ -19,7 +19,7 @@ namespace IO
 		~AMDGPUManager();
 
 		UOSInt GetGPUCount();
-		Optional<IO::IGPUControl> CreateGPUControl(UOSInt index);
+		Optional<IO::GPUControl> CreateGPUControl(UOSInt index);
 
 		int Overdrive_Caps(int iAdapterIndex, int *iSupported, int *iEnabled, int *iVersion);
 		int Overdrive5_ThermalDevices_Enum(int iAdapterIndex, int iThermalControllerIndex, void *lpThermalControllerInfo);

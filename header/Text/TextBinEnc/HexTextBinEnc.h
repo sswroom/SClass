@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_HEXTEXTBINENC
 #define _SM_TEXT_TEXTBINENC_HEXTEXTBINENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class HexTextBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class HexTextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			HexTextBinEnc();

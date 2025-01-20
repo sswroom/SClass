@@ -6,7 +6,7 @@
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Encrypt/RSACipher.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Data/ArrayListNN.h"
 #include "Net/SSLClient.h"
 #include "Net/TCPClientFactory.h"

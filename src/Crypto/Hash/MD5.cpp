@@ -26,7 +26,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::MD5::GetName(UnsafeArray<UTF8Char> sbuff) co
 	return Text::StrConcatC(sbuff, UTF8STRC("MD5"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::MD5::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::MD5::Clone() const
 {
 	NN<Crypto::Hash::MD5> md5;
 	NEW_CLASSNN(md5, Crypto::Hash::MD5());

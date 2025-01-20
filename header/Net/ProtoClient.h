@@ -1,6 +1,6 @@
 #ifndef _SM_NET_PROTOCLIENT
 #define _SM_NET_PROTOCLIENT
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -24,7 +24,7 @@ namespace Net
 		Sync::Mutex cliMut;
 		Net::SocketUtil::AddressInfo cliAddr;
 		UInt16 cliPort;
-		IO::IProtocolHandler *proto;
+		IO::ProtocolHandler *proto;
 		IProtoClientHandler *cliHdlr;
 
 		Bool threadRunning;
@@ -35,7 +35,7 @@ namespace Net
 
 		static UInt32 __stdcall ProtoThread(void *userObj);
 	public:
-		ProtoClient(NN<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, IProtoClientHandler *cliHdlr);
+		ProtoClient(NN<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::ProtocolHandler *proto, IProtoClientHandler *cliHdlr);
 		~ProtoClient();
 
 		void Start();

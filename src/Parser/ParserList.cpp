@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ByteBuffer.h"
 #include "IO/StreamData.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/FrameInfo.h"
 #include "Media/RasterImage.h"
 #include "Parser/ParserList.h"

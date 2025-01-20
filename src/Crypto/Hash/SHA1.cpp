@@ -25,7 +25,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::SHA1::GetName(UnsafeArray<UTF8Char> sbuff) c
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-1"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::SHA1::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::SHA1::Clone() const
 {
 	NN<Crypto::Hash::SHA1> sha1;
 	NEW_CLASSNN(sha1, Crypto::Hash::SHA1());

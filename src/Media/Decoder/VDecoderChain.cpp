@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderChain.h"
 
-void Media::Decoder::VDecoderChain::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VDecoderChain::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->frameCb(frameTime, frameNum, imgData, dataSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 }
 
-Media::Decoder::VDecoderChain::VDecoderChain(NN<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VDecoderChain::VDecoderChain(NN<VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 }
 
@@ -20,7 +20,7 @@ Media::Decoder::VDecoderChain::~VDecoderChain()
 	UOSInt i = this->srcFilters.GetCount();
 	while (i-- > 0)
 	{
-		Media::IVideoSource *video = this->srcFilters.GetItem(i);
+		Media::VideoSource *video = this->srcFilters.GetItem(i);
 		DEL_CLASS(video);
 	}
 }
@@ -34,7 +34,7 @@ Text::CStringNN Media::Decoder::VDecoderChain::GetFilterName()
 	return CSTR("VDecoderChain");
 }
 
-void Media::Decoder::VDecoderChain::AddDecoder(NN<Media::IVideoSource> decoder)
+void Media::Decoder::VDecoderChain::AddDecoder(NN<Media::VideoSource> decoder)
 {
 	this->srcFilters.Add(decoder.Ptr());
 }

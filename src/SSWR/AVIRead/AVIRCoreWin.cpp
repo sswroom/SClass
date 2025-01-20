@@ -150,7 +150,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::SectorData:
 		{
 			NN<SSWR::AVIRead::AVIRSectorForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSectorForm(0, this->ui, *this, NN<IO::ISectorData>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSectorForm(0, this->ui, *this, NN<IO::SectorData>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::MIMEObject:
 		{
 			NN<SSWR::AVIRead::AVIRMIMEViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, this->ui, *this, NN<Text::IMIMEObj>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, this->ui, *this, NN<Text::MIMEObject>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

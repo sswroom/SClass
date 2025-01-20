@@ -1,17 +1,17 @@
 #ifndef _SM_MEDIA_VOBAC3STREAMSOURCE
 #define _SM_MEDIA_VOBAC3STREAMSOURCE
-#include "Media/IMediaStream.h"
-#include "Media/IStreamControl.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaStream.h"
+#include "Media/MediaStreamControl.h"
+#include "Media/AudioSource.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
 namespace Media
 {
-	class VOBAC3StreamSource : public Media::IAudioSource, public Media::IMediaStream
+	class VOBAC3StreamSource : public Media::AudioSource, public Media::MediaStream
 	{
 	private:
-		NN<Media::IStreamControl> pbc;
+		NN<Media::MediaStreamControl> pbc;
 		Media::AudioFormat fmt;
 		Optional<Sync::Event> pbEvt;
 
@@ -26,7 +26,7 @@ namespace Media
 
 
 	public:
-		VOBAC3StreamSource(NN<Media::IStreamControl> pbc);
+		VOBAC3StreamSource(NN<Media::MediaStreamControl> pbc);
 		virtual ~VOBAC3StreamSource();
 
 		Bool ParseHeader(UnsafeArray<UInt8> buff, UOSInt buffSize);

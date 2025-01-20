@@ -64,8 +64,8 @@ void Media::CS::CSYUV_RGB8HQ::SetupYUV14_RGB13()
 		Double Kc3;
 		Double Kc4;
 
-		Media::IColorHandler::YUVType yuvType;
-		if (this->yuvType == Media::IColorHandler::YUVT_UNKNOWN)
+		Media::ColorHandler::YUVType yuvType;
+		if (this->yuvType == Media::ColorHandler::YUVT_UNKNOWN)
 		{
 			yuvType = this->yuvParam.Type;
 		}

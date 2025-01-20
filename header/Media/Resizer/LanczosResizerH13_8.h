@@ -6,7 +6,7 @@ namespace Media
 {
 	namespace Resizer
 	{
-		class LanczosResizerH13_8 : public Media::IImgResizer
+		class LanczosResizerH13_8 : public Media::ImageResizer
 		{
 		private:
 			typedef struct

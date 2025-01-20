@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 #include "Crypto/Encrypt/QuotedPrintable.h"
 
 extern Char STRHEXARR[];

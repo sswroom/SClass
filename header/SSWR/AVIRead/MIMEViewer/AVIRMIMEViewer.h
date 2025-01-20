@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_MIMEVIEWER_AVIRMIMEVIEWER
 #define _SM_SSWR_AVIREAD_MIMEVIEWER_AVIRMIMEVIEWER
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "UI/GUIClientControl.h"
 
 namespace SSWR
@@ -17,10 +17,10 @@ namespace SSWR
 				NN<UI::GUIClientControl> ctrl;
 
 			public:
-				AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, NN<Text::IMIMEObj> obj);
+				AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, NN<Text::MIMEObject> obj);
 				virtual ~AVIRMIMEViewer();
 
-				static Optional<AVIRMIMEViewer> CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj);
+				static Optional<AVIRMIMEViewer> CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObject> obj);
 			};
 		}
 	}

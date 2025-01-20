@@ -57,7 +57,7 @@ UInt8 *Media::Decoder::RHVCDecoder::AppendNAL(UInt8 *outBuff, const UInt8 *srcBu
 	return outBuff;
 }
 
-void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 
@@ -66,7 +66,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	UOSInt imgSize;
 	Bool frameFound = false;
 
-	if (flags & Media::IVideoSource::FF_DISCONTTIME)
+	if (flags & Media::VideoSource::FF_DISCONTTIME)
 	{
 		this->discontTime = true;
 		this->frameSize = 0;
@@ -138,18 +138,18 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	}
 	else
 	{
-		if (this->discontTime && frameStruct != Media::IVideoSource::FS_I)
+		if (this->discontTime && frameStruct != Media::VideoSource::FS_I)
 		{
 		}
 		else
 		{
 			if (this->discontTime)
 			{
-				flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
+				flags = (Media::VideoSource::FrameFlag)(flags | Media::VideoSource::FF_DISCONTTIME);
 			}
 			else
 			{
-				flags = (Media::IVideoSource::FrameFlag)(flags & ~Media::IVideoSource::FF_DISCONTTIME);
+				flags = (Media::VideoSource::FrameFlag)(flags & ~Media::VideoSource::FF_DISCONTTIME);
 			}
 			this->discontTime = false;
 			this->frameCb(frameTime, frameNum, &this->frameBuff, (UOSInt)(frameBuff - this->frameBuff), frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
@@ -159,7 +159,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	mutUsage.EndUse();
 }
 
-Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::RHVCDecoder::RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;

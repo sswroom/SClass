@@ -1,11 +1,11 @@
 #ifndef _SM_NET_RTPAUDIOSESSION
 #define _SM_NET_RTPAUDIOSESSION
 #include "Net/UDPServer.h"
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Net
 {
-	class RTPAudioSession : public Media::IAudioSource
+	class RTPAudioSession : public Media::AudioSource
 	{
 	public:
 		typedef enum
@@ -32,7 +32,7 @@ namespace Net
 
 		Bool outRunning;
 		Bool outToStop;
-		Media::IAudioSource *outAudio;
+		Media::AudioSource *outAudio;
 		Net::SocketUtil::AddressInfo outAddr;
 		UInt32 outPort;
 		Int32 outSSRC;
@@ -46,7 +46,7 @@ namespace Net
 
 		Bool IsError();
 		void SetAudioFormat(RTPAudioFormat afmt, Int32 frequency);
-		Bool StartSend(Media::IAudioSource *audSrc, UInt32 destIP, UInt16 destPort, Int32 outSSRC);
+		Bool StartSend(Media::AudioSource *audSrc, UInt32 destIP, UInt16 destPort, Int32 outSSRC);
 		void StopSend();
 
 		virtual UTF8Char *GetName(UTF8Char *buff);

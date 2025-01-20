@@ -1,26 +1,27 @@
 #ifndef _SM_IO_AMDGPUCONTROL
 #define _SM_IO_AMGGPUCONTROL
+#include "AnyType.h"
 #include "IO/AMDGPUManager.h"
 
 namespace IO
 {
-	class AMDGPUControl : public IO::IGPUControl
+	class AMDGPUControl : public IO::GPUControl
 	{
 	private:
-		IO::AMDGPUManager *gpuMgr;
-		void *adapter;
+		NN<IO::AMDGPUManager> gpuMgr;
+		AnyType adapter;
 		OSInt odrivever;
-		const UTF8Char *name;
+		NN<Text::String> name;
 
 	public:
-		AMDGPUControl(IO::AMDGPUManager *gpuMgr, void *adapter);
+		AMDGPUControl(NN<IO::AMDGPUManager> gpuMgr, AnyType adapter);
 		virtual ~AMDGPUControl();
 
-		virtual const UTF8Char *GetName();
-		virtual Bool GetTemperature(Double *temp);
-		virtual Bool GetCoreClock(Double *mhz);
-		virtual Bool GetMemoryClock(Double *mhz);
-		virtual Bool GetVoltage(Double *volt);
+		virtual NN<Text::String> GetName();
+		virtual Bool GetTemperature(OutParam<Double> temp);
+		virtual Bool GetCoreClock(OutParam<Double> mhz);
+		virtual Bool GetMemoryClock(OutParam<Double> mhz);
+		virtual Bool GetVoltage(OutParam<Double> volt);
 	};
 };
 #endif

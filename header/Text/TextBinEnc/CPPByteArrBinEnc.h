@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_CPPBYTEARRBINENC
 #define _SM_TEXT_TEXTBINENC_CPPBYTEARRBINENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class CPPByteArrBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class CPPByteArrBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			CPPByteArrBinEnc();

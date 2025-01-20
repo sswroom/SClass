@@ -1,13 +1,13 @@
 #ifndef _SM_TEXT_TEXTENC_PUNYCODE
 #define _SM_TEXT_TEXTENC_PUNYCODE
 #include "Text/CString.h"
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class Punycode : public Text::TextBinEnc::ITextBinEnc
+		class Punycode : public Text::TextBinEnc::TextBinEnc
 		{
 		private:
 			static UOSInt Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime);

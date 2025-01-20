@@ -12,10 +12,10 @@ namespace Media
 			Bool hasCrop;
 			Bool enabled;
 
-			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			virtual void OnFrameChange(Media::IVideoSource::FrameChange fc);
+			virtual void ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void OnFrameChange(Media::VideoSource::FrameChange fc);
 		public:
-			AutoCropFilter(Media::IVideoSource *srcVideo);
+			AutoCropFilter(Media::VideoSource *srcVideo);
 			virtual ~AutoCropFilter();
 
 			virtual Text::CStringNN GetFilterName();

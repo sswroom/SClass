@@ -2,8 +2,8 @@
 #include "MyMemory.h"
 #include "IO/WSConfigFile.h"
 #include "Media/ALSARenderer.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 #include "Media/LPCMConverter.h"
 #include "Media/RefClock.h"
 #include "Media/SOXRFilter.h"
@@ -81,7 +81,7 @@ void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 	Data::Duration thisT;
 	Data::Duration lastT;
 	NN<Media::RefClock> clk;
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 
 	if (me->clk.SetTo(clk) && me->audsrc.SetTo(audsrc))
 	{
@@ -371,7 +371,7 @@ Data::Duration Media::ALSARenderer::GetCurrTime(void *hand)
 	return ret;
 }
 
-Bool Media::ALSARenderer::SetHWParams(NN<Media::IAudioSource> audsrc, void *h)
+Bool Media::ALSARenderer::SetHWParams(NN<Media::AudioSource> audsrc, void *h)
 {
 	snd_pcm_hw_params_t *params;
 	snd_pcm_t *hand = (snd_pcm_t*)h;
@@ -642,7 +642,7 @@ Bool Media::ALSARenderer::IsError()
 	return false;
 }
 
-Bool Media::ALSARenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
+Bool Media::ALSARenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (this->thread.IsRunning())
@@ -656,7 +656,7 @@ Bool Media::ALSARenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 		this->resampler.Delete();
 		this->hand = 0;
 	}
-	NN<Media::IAudioSource> asrc;
+	NN<Media::AudioSource> asrc;
 	if (!audsrc.SetTo(asrc))
 		return false;
 
@@ -815,7 +815,7 @@ void Media::ALSARenderer::Stop()
 	if (!this->thread.IsRunning())
 		return;
 	this->thread.BeginStop();
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	if (this->audsrc.SetTo(audsrc))
 	{
 		audsrc->Stop();
@@ -923,7 +923,7 @@ void Media::ALSARenderer::SetDeviceVolume(Int32 volume)
 
 void Media::ALSARenderer::SetBufferTime(UInt32 ms)
 {
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	this->buffTime = ms;
 	if (!this->thread.IsRunning() && this->hand && this->audsrc.SetTo(audsrc))
 	{

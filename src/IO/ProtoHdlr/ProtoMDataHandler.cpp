@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoMDataHandler.h"
 
-IO::ProtoHdlr::ProtoMDataHandler::ProtoMDataHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoMDataHandler::ProtoMDataHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 	NN<Crypto::Hash::CRC32R> crc;

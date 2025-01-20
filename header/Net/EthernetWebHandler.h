@@ -9,7 +9,7 @@ namespace Net
 	class EthernetWebHandler : public Net::WebServer::WebStandardHandler
 	{
 	private:
-		typedef Bool (CALLBACKFUNC RequestHandler)(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		typedef Bool (CALLBACKFUNC RequestHandler)(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 
 	private:
 		NN<Net::EthernetAnalyzer> analyzer;
@@ -19,18 +19,18 @@ namespace Net
 		void AppendMenu(NN<Text::StringBuilderUTF8> sbOut);
 		static void AppendFooter(NN<Text::StringBuilderUTF8> sbOut);
 
-		static Bool __stdcall DeviceReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall IPTransferReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSReqv4Req(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSReqv6Req(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSReqOthReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSTargetReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSClientReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DHCPReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall IPLogReq(NN<EthernetWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DeviceReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall IPTransferReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall DNSReqv4Req(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall DNSReqv6Req(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall DNSReqOthReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall DNSTargetReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall DNSClientReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall DHCPReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		static Bool __stdcall IPLogReq(NN<EthernetWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 
 	private:
-		virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+		virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
 	public:
 		EthernetWebHandler(NN<Net::EthernetAnalyzer> analyzer);

@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_INTEGERMSBENC
 #define _SM_TEXT_TEXTBINENC_INTEGERMSBENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class IntegerMSBEnc : public Text::TextBinEnc::ITextBinEnc
+		class IntegerMSBEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			IntegerMSBEnc();

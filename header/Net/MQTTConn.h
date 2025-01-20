@@ -13,7 +13,7 @@
 
 namespace Net
 {
-	class MQTTConn : public IO::IProtocolHandler::DataListener
+	class MQTTConn : public IO::ProtocolHandler::DataListener
 	{
 	public:
 		typedef enum

@@ -19,8 +19,8 @@ namespace UI
 			NN<UI::GUITimer> tmr;
 			NN<Text::String> videoFileName;
 			Media::Decoder::VideoDecoderFinder vdecoders;
-			Media::IVideoSource *decoder;
-			Media::IImgResizer *resizer;
+			Media::VideoSource *decoder;
+			Media::ImageResizer *resizer;
 			Sync::Mutex frameMut;
 			Optional<Media::DrawImage> frameImg;
 

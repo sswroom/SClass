@@ -1,26 +1,26 @@
 #ifndef _SM_MEDIA_DECODER_VDECODERBASE
 #define _SM_MEDIA_DECODER_VDECODERBASE
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 
 namespace Media
 {
 	namespace Decoder
 	{
-		class VDecoderBase : public IVideoSource
+		class VDecoderBase : public VideoSource
 		{
 		protected:
-			Media::IVideoSource *sourceVideo;
+			Media::VideoSource *sourceVideo;
 			FrameCallback frameCb;
 			FrameChangeCallback fcCb;
 			AnyType frameCbData;
 			Bool started;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::VideoSource::FrameChange fc, AnyType userData);
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
 		public:
-			VDecoderBase(NN<IVideoSource> sourceVideo);
+			VDecoderBase(NN<VideoSource> sourceVideo);
 			virtual ~VDecoderBase();
 
 			virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
@@ -45,7 +45,7 @@ namespace Media
 
 			virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype);
 			virtual UInt8 *GetProp(Int32 propName, UInt32 *size);
-			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
+			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);
 		};
 	}
 }

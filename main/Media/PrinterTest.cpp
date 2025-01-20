@@ -7,7 +7,7 @@
 
 #define PRINTERNAME CSTR("PDF")
 
-class PrintObj : public Media::IPrintHandler
+class PrintObj : public Media::PrintHandler
 {
 public:
 	PrintObj()
@@ -18,7 +18,7 @@ public:
 	{
 	}
 
-	virtual Bool BeginPrint(NN<Media::IPrintDocument> doc)
+	virtual Bool BeginPrint(NN<Media::PrintDocument> doc)
 	{
 		doc->SetDocName(CSTR("PrinterTest"));
 		return true;
@@ -33,7 +33,7 @@ public:
 		printPage->DelFont(font);
 		return false;
 	}
-	virtual Bool EndPrint(NN<Media::IPrintDocument> doc)
+	virtual Bool EndPrint(NN<Media::PrintDocument> doc)
 	{
 		return true;
 	}
@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UnsafeArray<UTF8Char> sptr;
 	NN<Media::DrawEngine> eng;
 	Media::Printer *printer;
-	NN<Media::IPrintDocument> doc;
+	NN<Media::PrintDocument> doc;
 	NN<PrintObj> prtobj;
 
 	NEW_CLASS(console, IO::ConsoleWriter());

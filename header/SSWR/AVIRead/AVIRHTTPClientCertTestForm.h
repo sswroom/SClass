@@ -12,7 +12,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRHTTPClientCertTestForm : public UI::GUIForm, public Net::WebServer::IWebHandler
+		class AVIRHTTPClientCertTestForm : public UI::GUIForm, public Net::WebServer::WebHandler
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -44,7 +44,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			virtual void DoWebRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 			virtual void Release();
 		};
 	}

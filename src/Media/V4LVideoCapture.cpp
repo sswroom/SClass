@@ -59,7 +59,7 @@ void __stdcall Media::V4LVideoCapture::PlayThread(NN<Sync::Thread> thread)
 				}
 				else if (me->cb)
 				{
-					me->cb((UInt32)Double2Int32(t * 1000), frameNum, UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>((UInt8**)&buf.m.userptr)), buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
+					me->cb((UInt32)Double2Int32(t * 1000), frameNum, UnsafeArray<UnsafeArray<UInt8>>::ConvertFrom(UnsafeArray<UInt8*>((UInt8**)&buf.m.userptr)), buf.bytesused, Media::VideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::VideoSource::FF_REALTIME, me->frameInfo.ycOfst);
 				}
 				frameNum++;
 				ioctl(me->fd, VIDIOC_QBUF, &buf);
@@ -571,7 +571,7 @@ UnsafeArrayOpt<UTF8Char> Media::V4LVideoCaptureMgr::GetDeviceName(UnsafeArray<UT
 	return buff;
 }
 
-NN<Media::IVideoCapture> Media::V4LVideoCaptureMgr::CreateDevice(UOSInt devId)
+NN<Media::VideoCapturer> Media::V4LVideoCaptureMgr::CreateDevice(UOSInt devId)
 {
 	NN<Media::V4LVideoCapture> capture;
 	NEW_CLASSNN(capture, Media::V4LVideoCapture(devId));

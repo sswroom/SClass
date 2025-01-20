@@ -3,7 +3,7 @@
 #include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Data/CallbackStorage.h"
-#include "Map/ILocationService.h"
+#include "Map/LocationService.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"
@@ -11,7 +11,7 @@
 
 namespace IO
 {
-	class GPSNMEA : public Map::ILocationService
+	class GPSNMEA : public Map::LocationService
 	{
 	public:
 		typedef void (CALLBACKFUNC CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);

@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 #include "Media/NullRenderer.h"
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
@@ -19,7 +19,7 @@ UInt32 __stdcall Media::NullRenderer::PlayThread(AnyType obj)
 	UOSInt minLeng;
 	UOSInt readSize;
 	Bool needNotify = false;
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	NN<Media::RefClock> clk;
 
 	me->playing = true;
@@ -98,7 +98,7 @@ Bool Media::NullRenderer::IsError()
 	return false;
 }
 
-Bool Media::NullRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
+Bool Media::NullRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	Media::AudioFormat fmt;
 	if (playing)
@@ -106,7 +106,7 @@ Bool Media::NullRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
 		Stop();
 	}
 	this->audsrc = 0;
-	NN<Media::IAudioSource> nnaudsrc;
+	NN<Media::AudioSource> nnaudsrc;
 	if (!audsrc.SetTo(nnaudsrc))
 		return false;
 
@@ -150,7 +150,7 @@ void Media::NullRenderer::Stop()
 	if (!playing)
 		return;
 	this->playEvt.Set();
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	if (this->audsrc.SetTo(audsrc))
 	{
 		audsrc->Stop();

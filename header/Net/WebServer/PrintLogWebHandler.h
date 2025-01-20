@@ -1,23 +1,23 @@
 #ifndef _SM_NET_WEBSERVER_PRINTLOGWEBHANDLER
 #define _SM_NET_WEBSERVER_PRINTLOGWEBHANDLER
 #include "IO/Writer.h"
-#include "Net/WebServer/IWebHandler.h"
+#include "Net/WebServer/WebHandler.h"
 
 namespace Net
 {
 	namespace WebServer
 	{
-		class PrintLogWebHandler : public Net::WebServer::IWebHandler
+		class PrintLogWebHandler : public Net::WebServer::WebHandler
 		{
 		private:
-			NN<Net::WebServer::IWebHandler> hdlr;
+			NN<Net::WebServer::WebHandler> hdlr;
 			NN<IO::Writer> writer;
 
 		public:
-			PrintLogWebHandler(NN<Net::WebServer::IWebHandler> hdlr, NN<IO::Writer> writer);
+			PrintLogWebHandler(NN<Net::WebServer::WebHandler> hdlr, NN<IO::Writer> writer);
 			virtual ~PrintLogWebHandler();
 
-			virtual void WebRequest(NN<IWebRequest> req, NN<IWebResponse> resp);
+			virtual void DoWebRequest(NN<WebRequest> req, NN<WebResponse> resp);
 		};
 	}
 }

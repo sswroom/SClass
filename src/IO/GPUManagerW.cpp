@@ -7,15 +7,15 @@
 struct IO::GPUManager::ClassData
 {
 	IO::AMDGPUManager *amdGPUMgr;
-	Data::ArrayListNN<IO::IGPUControl> *gpuList;
+	Data::ArrayListNN<IO::GPUControl> *gpuList;
 };
 
 IO::GPUManager::GPUManager()
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	NEW_CLASS(clsData->amdGPUMgr, IO::AMDGPUManager());
-	NEW_CLASS(clsData->gpuList, Data::ArrayListNN<IO::IGPUControl>());
-	NN<IO::IGPUControl> ctrl;
+	NEW_CLASS(clsData->gpuList, Data::ArrayListNN<IO::GPUControl>());
+	NN<IO::GPUControl> ctrl;
 	this->clsData = clsData;
 	UOSInt i;
 	UOSInt j;
@@ -31,7 +31,7 @@ IO::GPUManager::GPUManager()
 
 IO::GPUManager::~GPUManager()
 {
-	NN<IO::IGPUControl> gpu;
+	NN<IO::GPUControl> gpu;
 	UOSInt i;
 	i = this->clsData->gpuList->GetCount();
 	while (i-- > 0)
@@ -49,7 +49,7 @@ UOSInt IO::GPUManager::GetGPUCount()
 	return this->clsData->gpuList->GetCount();
 }
 
-Optional<IO::IGPUControl> IO::GPUManager::GetGPUControl(UOSInt index)
+Optional<IO::GPUControl> IO::GPUManager::GetGPUControl(UOSInt index)
 {
 	return this->clsData->gpuList->GetItem(index);
 }

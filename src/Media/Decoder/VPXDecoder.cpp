@@ -16,11 +16,11 @@ typedef struct
 	vpx_codec_ctx_t codec;
 } ClassData;
 
-void Media::Decoder::VPXDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VPXDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 }
 
-Media::Decoder::VPXDecoder::VPXDecoder(IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VPXDecoder::VPXDecoder(VideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -96,7 +96,7 @@ void Media::Decoder::VPXDecoder::EnumFrameInfos(FrameInfoCallback cb, void *user
 {
 }
 
-void Media::Decoder::VPXDecoder::OnFrameChanged(Media::IVideoSource::FrameChange fc)
+void Media::Decoder::VPXDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)
 {
 }
 
@@ -106,7 +106,7 @@ Bool Media::Decoder::VPXDecoder::IsError()
 	return !data->inited;
 }
 
-Media::IVideoSource *__stdcall VPXDecoder_DecodeVideo(Media::IVideoSource *sourceVideo)
+Media::VideoSource *__stdcall VPXDecoder_DecodeVideo(Media::VideoSource *sourceVideo)
 {
 	Media::Decoder::VPXDecoder *decoder;
 	Media::FrameInfo frameInfo;

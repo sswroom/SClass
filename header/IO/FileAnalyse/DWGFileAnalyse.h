@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_DWGFILEANALYSE
 #include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"
 #include "Sync/Thread.h"
 #include "Text/CString.h"
@@ -12,7 +12,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class DWGFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class DWGFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		public:
 			enum class PackType

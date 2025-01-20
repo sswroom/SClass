@@ -29,7 +29,7 @@ Media::AudioConcatSource::~AudioConcatSource()
 	}
 }
 
-Bool Media::AudioConcatSource::AppendAudio(NN<Media::IAudioSource> audio)
+Bool Media::AudioConcatSource::AppendAudio(NN<Media::AudioSource> audio)
 {
 	if (!audio->CanSeek())
 		return false;
@@ -79,7 +79,7 @@ Bool Media::AudioConcatSource::AppendSilent(UInt32 time)
 
 UnsafeArrayOpt<UTF8Char> Media::AudioConcatSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	NN<Media::IAudioSource> audSrc;
+	NN<Media::AudioSource> audSrc;
 	if (this->stmList.GetItem(0).SetTo(audSrc))
 	{
 		return audSrc->GetSourceName(buff);
@@ -111,8 +111,8 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 {
 	Data::Duration stmTotal;
 	Data::Duration stmTime = 0;
-	NN<Media::IAudioSource> audSrc1;
-	NN<Media::IAudioSource> audSrc2;
+	NN<Media::AudioSource> audSrc1;
+	NN<Media::AudioSource> audSrc2;
 	UOSInt stmIndex;
 	UOSInt stmCnt;
 	stmTotal = 0;
@@ -174,7 +174,7 @@ Data::Duration Media::AudioConcatSource::SeekToTime(Data::Duration time)
 
 Bool Media::AudioConcatSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
-	NN<Media::IAudioSource> audSrc;
+	NN<Media::AudioSource> audSrc;
 	if (this->readEvt.NotNull() && this->currStm > 0 && this->stmList.GetItem(this->currStm).SetTo(audSrc))
 	{
 		audSrc->Stop();
@@ -194,7 +194,7 @@ Bool Media::AudioConcatSource::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 
 void Media::AudioConcatSource::Stop()
 {
-	NN<Media::IAudioSource> audSrc;
+	NN<Media::AudioSource> audSrc;
 	if (this->readEvt.NotNull() && this->stmList.GetItem(this->currStm).SetTo(audSrc))
 	{
 		audSrc->Stop();
@@ -204,7 +204,7 @@ void Media::AudioConcatSource::Stop()
 
 UOSInt Media::AudioConcatSource::ReadBlock(Data::ByteArray blk)
 {
-	NN<Media::IAudioSource> audSrc;
+	NN<Media::AudioSource> audSrc;
 	if (!this->stmList.GetItem(this->currStm).SetTo(audSrc))
 		return 0;
 	UOSInt readSize = audSrc->ReadBlock(blk);
@@ -235,7 +235,7 @@ Data::Duration Media::AudioConcatSource::GetCurrTime()
 {
 	Data::Duration totalTime = 0;
 	UOSInt i = this->currStm;
-	NN<Media::IAudioSource> astm;
+	NN<Media::AudioSource> astm;
 	if (this->stmList.GetItem(i).SetTo(astm))
 	{
 		totalTime = astm->GetCurrTime();
@@ -259,7 +259,7 @@ Bool Media::AudioConcatSource::IsEnd()
 {
 	if (this->currStm + 1 >= this->stmList.GetCount())
 	{
-		NN<Media::IAudioSource> audioSrc;
+		NN<Media::AudioSource> audioSrc;
 		if (!this->stmList.GetItem(this->currStm).SetTo(audioSrc) || audioSrc->IsEnd())
 		{
 			return true;

@@ -11,11 +11,11 @@
 #include "Media/H264Parser.h"
 #include "IO/DebugWriter.h"
 
-void Media::Decoder::DSVDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::DSVDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 *imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 }
 
-Media::Decoder::DSVDecoder::DSVDecoder(Media::IVideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::DSVDecoder::DSVDecoder(Media::VideoSource *sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	IGraphBuilder *pGraph = NULL;
 	HRESULT hr =  CoCreateInstance(CLSID_FilterGraph, NULL, CLSCTX_INPROC_SERVER, IID_IGraphBuilder, (void **)&pGraph);
@@ -113,12 +113,12 @@ void Media::Decoder::DSVDecoder::EnumFrameInfos(FrameInfoCallback cb, void *user
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-void Media::Decoder::DSVDecoder::OnFrameChanged(Media::IVideoSource::FrameChange fc)
+void Media::Decoder::DSVDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)
 {
-	if (fc == Media::IVideoSource::FC_PAR)
+	if (fc == Media::VideoSource::FC_PAR)
 	{
 	}
-	else if (fc == Media::IVideoSource::FC_ENDPLAY)
+	else if (fc == Media::VideoSource::FC_ENDPLAY)
 	{
 	}
 }

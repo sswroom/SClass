@@ -561,7 +561,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 	}
 }
 
-void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 	NN<Media::RasterImage> img;
 	NN<Media::CS::CSConverter> csconv;
@@ -617,7 +617,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARA
 	}
 }
 
-void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	NN<Media::CS::CSConverter> csconv;
 	NN<Media::RasterImage> img;

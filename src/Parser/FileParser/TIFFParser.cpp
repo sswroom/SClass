@@ -17,7 +17,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/FrameInfo.h"
 #include "Media/ICCProfile.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/StaticImage.h"

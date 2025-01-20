@@ -14,9 +14,9 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	return Media::OpenSLESRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("OpenSLES: ")), devNo);
 }
 
-Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
+Media::AudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
 {
-	Media::IAudioRenderer *renderer = 0;
+	Media::AudioRenderer *renderer = 0;
 	if (devName.StartsWith(UTF8STRC("OpenSLES: ")))
 	{
 		NEW_CLASS(renderer, Media::OpenSLESRenderer(devName.v + 10));
@@ -32,7 +32,7 @@ Media::AudioDevice::AudioDevice()
 Media::AudioDevice::~AudioDevice()
 {
 	OSInt i;
-	Media::IAudioRenderer *renderer;
+	Media::AudioRenderer *renderer;
 
 	BindAudio(0);
 	i = this->rendererList.GetCount();
@@ -45,7 +45,7 @@ Media::AudioDevice::~AudioDevice()
 
 Bool Media::AudioDevice::AddDevice(Text::CString devName)
 {
-	Media::IAudioRenderer *renderer;
+	Media::AudioRenderer *renderer;
 	Bool ret = false;
 	if (devName.StartsWith(UTF8STRC("OpenSLES: ")))
 	{
@@ -64,11 +64,11 @@ Bool Media::AudioDevice::AddDevice(Text::CString devName)
 }
 
 
-Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc)
+Media::AudioRenderer *Media::AudioDevice::BindAudio(Media::AudioSource *audsrc)
 {
 	OSInt i;
 	OSInt j;
-	Media::IAudioRenderer *renderer;
+	Media::AudioRenderer *renderer;
 	if (this->rendererList.GetCount() == 0)
 	{
 		NEW_CLASS(renderer, Media::OpenSLESRenderer(0));

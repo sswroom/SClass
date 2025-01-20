@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(An
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
-	NN<Media::IVideoCapture> capture;
+	NN<Media::VideoCapturer> capture;
 	me->player->CloseFile();
 	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 	{

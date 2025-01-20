@@ -1,17 +1,17 @@
 #ifndef _SM_MEDIA_MPASTREAMSOURCE
 #define _SM_MEDIA_MPASTREAMSOURCE
-#include "Media/IMediaStream.h"
-#include "Media/IStreamControl.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaStream.h"
+#include "Media/MediaStreamControl.h"
+#include "Media/AudioSource.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
 namespace Media
 {
-	class MPAStreamSource : public Media::IAudioSource, public Media::IMediaStream
+	class MPAStreamSource : public Media::AudioSource, public Media::MediaStream
 	{
 	private:
-		NN<Media::IStreamControl> pbc;
+		NN<Media::MediaStreamControl> pbc;
 		Media::AudioFormat fmt;
 		Optional<Sync::Event> pbEvt;
 
@@ -27,7 +27,7 @@ namespace Media
 
 
 	public:
-		MPAStreamSource(NN<Media::IStreamControl> pbc);
+		MPAStreamSource(NN<Media::MediaStreamControl> pbc);
 		virtual ~MPAStreamSource();
 
 		Bool ParseHeader(UInt8 *buff, UOSInt buffSize);

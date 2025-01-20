@@ -1,17 +1,17 @@
 #ifndef _SM_MEDIA_VOBLPCMSTREAMSOURCE
 #define _SM_MEDIA_VOBLPCMSTREAMSOURCE
-#include "Media/IMediaStream.h"
-#include "Media/IStreamControl.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaStream.h"
+#include "Media/MediaStreamControl.h"
+#include "Media/AudioSource.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
 namespace Media
 {
-	class VOBLPCMStreamSource : public Media::IAudioSource, public Media::IMediaStream
+	class VOBLPCMStreamSource : public Media::AudioSource, public Media::MediaStream
 	{
 	private:
-		NN<Media::IStreamControl> pbc;
+		NN<Media::MediaStreamControl> pbc;
 		Media::AudioFormat fmt;
 		Optional<Sync::Event> pbEvt;
 
@@ -24,7 +24,7 @@ namespace Media
 
 
 	public:
-		VOBLPCMStreamSource(NN<Media::IStreamControl> pbc, NN<const Media::AudioFormat> fmt);
+		VOBLPCMStreamSource(NN<Media::MediaStreamControl> pbc, NN<const Media::AudioFormat> fmt);
 		virtual ~VOBLPCMStreamSource();
 
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);

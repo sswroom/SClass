@@ -1,12 +1,12 @@
 #ifndef _SM_NET_RTPASOURCE
 #define _SM_NET_RTPASOURCE
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 #include "Net/RTPCliChannel.h"
 #include "Net/RTPAPLHandler.h"
 
 namespace Net
 {
-	class RTPASource : public Media::IAudioSource
+	class RTPASource : public Media::AudioSource
 	{
 	private:
 		NN<Net::RTPCliChannel> ch;

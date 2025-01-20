@@ -84,15 +84,15 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *
 	}
 }
 
-Optional<Text::IMIMEObj> Text::MailCreator::ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath)
+Optional<Text::MIMEObject> Text::MailCreator::ParseContentHTML(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt32 codePage, Text::CStringNN htmlPath)
 {
 	UOSInt j;
 	UOSInt endOfst = buffSize - 6;
 	UOSInt i;
 	UOSInt k;
 	UOSInt l;
-	Data::ArrayListNN<Text::IMIMEObj> imgs;
-	NN<Text::IMIMEObj> obj;
+	Data::ArrayListNN<Text::MIMEObject> imgs;
+	NN<Text::MIMEObject> obj;
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -151,7 +151,7 @@ Optional<Text::IMIMEObj> Text::MailCreator::ParseContentHTML(UnsafeArray<const U
 					if (!found)
 					{
 						*sptr = 0;
-						if (Text::IMIMEObj::ParseFromFile(CSTRP(sbuff, sptr)).SetTo(obj))
+						if (Text::MIMEObject::ParseFromFile(CSTRP(sbuff, sptr)).SetTo(obj))
 						{
 							imgs.Add(obj);
 							sbc.AppendC((const UTF8Char*)&buff[j], i - j);
@@ -220,7 +220,7 @@ Text::MailCreator::MailCreator()
 Text::MailCreator::~MailCreator()
 {
 	UOSInt i;
-	NN<Text::IMIMEObj> obj;
+	NN<Text::MIMEObject> obj;
 
 	SDEL_STRING(this->from);
 	SDEL_STRING(this->replyTo);
@@ -416,7 +416,7 @@ void Text::MailCreator::SetSubject(NN<Text::String> subj)
 
 void Text::MailCreator::SetContentHTML(const WChar *content, Text::CStringNN htmlPath)
 {
-	NN<Text::IMIMEObj> obj;
+	NN<Text::MIMEObject> obj;
 	UOSInt strLen = Text::StrCharCnt(content);
 	UOSInt buffSize = Text::StrWChar_UTF8CntC(content, strLen);
 	UInt8 *buff = MemAlloc(UInt8, buffSize + 1);
@@ -431,7 +431,7 @@ void Text::MailCreator::SetContentHTML(const WChar *content, Text::CStringNN htm
 
 void Text::MailCreator::SetContentHTML(NN<Text::String> content, Text::CStringNN htmlPath)
 {
-	NN<Text::IMIMEObj> obj;
+	NN<Text::MIMEObject> obj;
 	if (ParseContentHTML(content->v, content->leng, 65001, htmlPath).SetTo(obj))
 	{
 		this->content.Delete();
@@ -457,7 +457,7 @@ void Text::MailCreator::SetContentText(NN<Text::String> content)
 
 Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 {
-	NN<Text::IMIMEObj> obj;
+	NN<Text::MIMEObject> obj;
 	UOSInt buffSize;
 	UInt8 *buff;
 	{
@@ -483,8 +483,8 @@ Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 
 void Text::MailCreator::AddAttachment(Text::CStringNN fileName)
 {
-	NN<Text::IMIMEObj> obj;
-	if (Text::IMIMEObj::ParseFromFile(fileName).SetTo(obj))
+	NN<Text::MIMEObject> obj;
+	if (Text::MIMEObject::ParseFromFile(fileName).SetTo(obj))
 	{
 		this->attachObj.Add(obj);
 		this->attachName.Add(Text::String::New(fileName));
@@ -518,7 +518,7 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 	if (this->attachName.GetCount() > 0)
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
-		NN<Text::IMIMEObj> obj;
+		NN<Text::MIMEObject> obj;
 		Text::StringBuilderUTF8 sbc;
 		Text::CStringNN contType;
 		UOSInt i;
@@ -566,7 +566,7 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 	}
 	else
 	{
-		NN<Text::IMIMEObj> content;
+		NN<Text::MIMEObject> content;
 		if (this->content.SetTo(content))
 		{
 			Text::CStringNN contType = content->GetContentType();

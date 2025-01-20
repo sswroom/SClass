@@ -4,7 +4,7 @@
 #include "Data/DateTime.h"
 #include "IO/StreamData.h"
 #include "Text/EncodingFactory.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/MIMEObj/MIMEMessage.h"
@@ -35,7 +35,7 @@ namespace Text
 			virtual ~MailMessage();
 
 			virtual Text::CStringNN GetClassName() const;
-			virtual NN<IMIMEObj> Clone() const;
+			virtual NN<MIMEObject> Clone() const;
 
 			Bool GetDate(Data::DateTime *dt) const;
 			UnsafeArrayOpt<UTF8Char> GetFromAddr(UnsafeArray<UTF8Char> sbuff) const;
@@ -45,10 +45,10 @@ namespace Text
 			void FreeRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const;
 
 			Optional<Text::MIMEObj::TextMIMEObj> GetContentText() const;
-			Optional<Text::IMIMEObj> GetContentMajor() const;
-			Optional<Text::IMIMEObj> GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const;
+			Optional<Text::MIMEObject> GetContentMajor() const;
+			Optional<Text::MIMEObject> GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const;
 			
-			Optional<Text::IMIMEObj> GetRAWContent() const;
+			Optional<Text::MIMEObject> GetRAWContent() const;
 
 			static Optional<MailMessage> ParseFile(NN<IO::StreamData> fd);
 

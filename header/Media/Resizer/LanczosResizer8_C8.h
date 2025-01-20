@@ -2,7 +2,7 @@
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZER8_C8
 #include "AnyType.h"
 #include "Media/ColorManager.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/ParallelTask.h"
@@ -11,7 +11,7 @@ namespace Media
 {
 	namespace Resizer
 	{
-		class LanczosResizer8_C8 : public Media::IImgResizer, public Media::IColorHandler
+		class LanczosResizer8_C8 : public Media::ImageResizer, public Media::ColorHandler
 		{
 		private:
 			enum class FuncType
@@ -111,8 +111,8 @@ namespace Media
 
 			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
 			virtual Bool Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg);
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 			void SetSrcProfile(NN<const Media::ColorProfile> srcProfile);
 			void SetDestProfile(NN<const Media::ColorProfile> destProfile);
 			Media::AlphaType GetDestAlphaType();

@@ -16,7 +16,7 @@ namespace Media
 
 			Optional<Sync::Event> readEvt;
 		public:
-			MP2Decoder(NN<IAudioSource> sourceAudio);
+			MP2Decoder(NN<AudioSource> sourceAudio);
 			virtual ~MP2Decoder();
 
 			virtual void GetFormat(NN<AudioFormat> format);

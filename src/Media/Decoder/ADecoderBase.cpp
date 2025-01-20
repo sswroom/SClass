@@ -12,7 +12,7 @@ Media::Decoder::ADecoderBase::~ADecoderBase()
 
 UnsafeArrayOpt<UTF8Char> Media::Decoder::ADecoderBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
         return sourceAudio->GetSourceName(buff);
 	return 0;
@@ -20,7 +20,7 @@ UnsafeArrayOpt<UTF8Char> Media::Decoder::ADecoderBase::GetSourceName(UnsafeArray
 
 Bool Media::Decoder::ADecoderBase::CanSeek()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 		return sourceAudio->CanSeek();
 	return false;
@@ -28,7 +28,7 @@ Bool Media::Decoder::ADecoderBase::CanSeek()
 
 Data::Duration Media::Decoder::ADecoderBase::GetStreamTime()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 		return sourceAudio->GetStreamTime();
 	return 0;
@@ -36,7 +36,7 @@ Data::Duration Media::Decoder::ADecoderBase::GetStreamTime()
 
 Data::Duration Media::Decoder::ADecoderBase::GetCurrTime()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 		return sourceAudio->GetCurrTime();
 	return 0;
@@ -44,7 +44,7 @@ Data::Duration Media::Decoder::ADecoderBase::GetCurrTime()
 
 Bool Media::Decoder::ADecoderBase::IsEnd()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 		return sourceAudio->IsEnd();
 	return true;
@@ -52,7 +52,7 @@ Bool Media::Decoder::ADecoderBase::IsEnd()
 
 Bool Media::Decoder::ADecoderBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 		return sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 	return false;

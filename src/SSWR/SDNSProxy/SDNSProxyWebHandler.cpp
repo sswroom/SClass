@@ -7,7 +7,7 @@
 
 #define LOGSIZE 300
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	UTF8Char sbuff[128];
@@ -62,7 +62,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(NN<SSWR::SDNSProx
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	AppendHeader(sbOut);
@@ -164,7 +164,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(NN<SSWR::SDNSProxy
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	AppendHeader(sbOut);
@@ -265,7 +265,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(NN<SSWR::SDNSProxy
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	AppendHeader(sbOut);
@@ -366,7 +366,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(NN<SSWR::SDNSProx
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	AppendHeader(sbOut);
@@ -445,7 +445,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(NN<SSWR::SDNSProx
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
@@ -477,7 +477,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(NN<SSWR::SDNSP
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	AppendHeader(sbOut);
@@ -495,7 +495,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(NN<SSWR::SDNSProxy::
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sbOut;
 	AppendHeader(sbOut);
@@ -584,7 +584,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(NN<SSWR::SDNSProx
 	return true;
 }
 
-Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(NN<SSWR::SDNSProxy::SDNSProxyWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr = Text::StrUOSInt(sbuff, me->core->GetRequestPerMin());
@@ -621,7 +621,7 @@ void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(NN<Text::StringBuilderUT
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
 
-Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{

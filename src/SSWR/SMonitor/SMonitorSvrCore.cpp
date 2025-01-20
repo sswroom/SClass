@@ -187,7 +187,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::CheckThread(NN<Sync::Thread> thr
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userData.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devInfo;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devInfo;
 	if (data.GetSize() >= 6 && data[0] == 'S' && data[1] == 'm')
 	{
 		UInt8 calcVal[2];
@@ -1740,7 +1740,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(NN<DeviceInfo> dev, Int64 kaT
 
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NN<Text::String> devName)
 {
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	if (!this->DeviceGet(cliId).SetTo(dev))
 		return false;
 	if (devName->leng == 0)
@@ -1776,7 +1776,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, NN<Text::String
 
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, NN<Text::String> platformName)
 {
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	if (!this->DeviceGet(cliId).SetTo(dev))
 		return false;
 	if (platformName->leng == 0)
@@ -1811,7 +1811,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, NN<Text::St
 
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NN<Text::String> cpuName)
 {
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	if (!this->DeviceGet(cliId).SetTo(dev))
 		return false;
 	if (cpuName->leng == 0)
@@ -1846,7 +1846,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, NN<Text::Str
 
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, UnsafeArray<const UTF8Char> readingName)
 {
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	if (!this->DeviceGet(cliId).SetTo(dev))
 		return false;
 	UnsafeArray<const UTF8Char> nns;
@@ -1910,7 +1910,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 
 Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 version)
 {
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	if (!this->DeviceGet(cliId).SetTo(dev))
 		return false;
 	if (version <= dev->version)
@@ -1936,7 +1936,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 	return succ;
 }
 
-Optional<SSWR::SMonitor::ISMonitorCore::DeviceInfo> SSWR::SMonitor::SMonitorSvrCore::DeviceGet(Int64 cliId)
+Optional<SSWR::SMonitor::SMonitorCore::DeviceInfo> SSWR::SMonitor::SMonitorSvrCore::DeviceGet(Int64 cliId)
 {
 	Sync::RWMutexUsage mutUsage(this->devMut, false);
 	return this->devMap.Get(cliId);
@@ -2297,10 +2297,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, UnsafeArray<
 	return succ;
 }
 
-Optional<SSWR::SMonitor::ISMonitorCore::LoginInfo> SSWR::SMonitor::SMonitorSvrCore::UserLogin(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password)
+Optional<SSWR::SMonitor::SMonitorCore::LoginInfo> SSWR::SMonitor::SMonitorSvrCore::UserLogin(UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password)
 {
 	WebUser *user;
-	NN<SSWR::SMonitor::ISMonitorCore::LoginInfo> login;
+	NN<SSWR::SMonitor::SMonitorCore::LoginInfo> login;
 	Sync::RWMutexUsage mutUsage(this->userMut, false);
 	user = this->userNameMap.Get(userName);
 	if (user)
@@ -2321,7 +2321,7 @@ Optional<SSWR::SMonitor::ISMonitorCore::LoginInfo> SSWR::SMonitor::SMonitorSvrCo
 		}
 		if (eq)
 		{
-			login = MemAllocNN(SSWR::SMonitor::ISMonitorCore::LoginInfo);
+			login = MemAllocNN(SSWR::SMonitor::SMonitorCore::LoginInfo);
 			login->userId = user->userId;
 			login->loginId = -1;
 			login->userType = user->userType;
@@ -2447,7 +2447,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::UserGetList(NN<Data::ArrayListNN<WebUser
 	return userList->GetCount() - ret;
 }
 
-Optional<SSWR::SMonitor::ISMonitorCore::WebUser> SSWR::SMonitor::SMonitorSvrCore::UserGet(Int32 userId)
+Optional<SSWR::SMonitor::SMonitorCore::WebUser> SSWR::SMonitor::SMonitorSvrCore::UserGet(Int32 userId)
 {
 	Sync::RWMutexUsage mutUsage(this->userMut, false);
 	return this->userMap.Get(userId);
@@ -2550,7 +2550,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::SendCapturePhoto(Int64 cliId)
 	return succ;
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::LogRequest(NN<Net::WebServer::IWebRequest> req)
+void SSWR::SMonitor::SMonitorSvrCore::LogRequest(NN<Net::WebServer::WebRequest> req)
 {
 	NN<Text::String> s;
 	if (req->GetSHeader(CSTR("User-Agent")).SetTo(s))

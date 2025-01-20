@@ -1,21 +1,21 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOSYNCHANDLER
 #define _SM_IO_PROTOHDLR_PROTOSYNCHANDLER
 #include "Crypto/Hash/CRC32RIEEE.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoSyncHandler : public IO::IProtocolHandler
+		class ProtoSyncHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			Crypto::Hash::CRC32RIEEE crc;
 
 		public:
-			ProtoSyncHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoSyncHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoSyncHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

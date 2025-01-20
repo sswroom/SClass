@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_CPPTEXTBINENC
 #define _SM_TEXT_TEXTBINENC_CPPTEXTBINENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class CPPTextBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class CPPTextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			CPPTextBinEnc();

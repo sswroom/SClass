@@ -85,11 +85,11 @@ FNV1.o: ../../src/Crypto/Hash/FNV1.cpp
 FNV1_CPP.o: ../../src/Crypto/Hash/FNV1_CPP.cpp
 FNV1a.o: ../../src/Crypto/Hash/FNV1a.cpp
 FNV1a_CPP.o: ../../src/Crypto/Hash/FNV1a_CPP.cpp
+HashAlgorithm.o: ../../src/Crypto/Hash/HashAlgorithm.cpp
 HashCalc.o: ../../src/Crypto/Hash/HashCalc.cpp
 HashCreator.o: ../../src/Crypto/Hash/HashCreator.cpp
 HashStream.o: ../../src/Crypto/Hash/HashStream.cpp
 HMAC.o: ../../src/Crypto/Hash/HMAC.cpp
-IHash.o: ../../src/Crypto/Hash/IHash.cpp
 MD5.o: ../../src/Crypto/Hash/MD5.cpp
 RIPEMD128.o: ../../src/Crypto/Hash/RIPEMD128.cpp
 RIPEMD128_CPP.o: ../../src/Crypto/Hash/RIPEMD128_CPP.cpp
@@ -642,10 +642,10 @@ EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EDIDFileAnalyse.o: ../../src/IO/FileAnalyse/EDIDFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FGDBFileAnalyse.o: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
+FileAnalyser.o: ../../src/IO/FileAnalyse/FileAnalyser.cpp
 FLVFileAnalyse.o: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
 FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp
-IFileAnalyse.o: ../../src/IO/FileAnalyse/IFileAnalyse.cpp
 JPGFileAnalyse.o: ../../src/IO/FileAnalyse/JPGFileAnalyse.cpp
 JMVL01FileAnalyse.o: ../../src/IO/FileAnalyse/JMVL01FileAnalyse.cpp
 LNKFileAnalyse.o: ../../src/IO/FileAnalyse/LNKFileAnalyse.cpp
@@ -751,13 +751,13 @@ ThreadInfoL.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 ThreadInfoW.o: ../../src/Manage/ThreadInfoW.cpp
 
-AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
-AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
 BingMapsTile.o: ../../src/Map/BingMapsTile.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
 CustomTileMap.o: ../../src/Map/CustomTileMap.cpp
+DBAssistedReverseGeocoder.o: ../../src/Map/DBAssistedReverseGeocoder.cpp
+DBAssistedReverseGeocoderPL.o: ../../src/Map/DBAssistedReverseGeocoderPL.cpp
 DBMapLayer.o: ../../src/Map/DBMapLayer.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 DrawMapServiceLayer.o: ../../src/Map/DrawMapServiceLayer.cpp
@@ -772,14 +772,14 @@ HKSpeedLimit.o: ../../src/Map/HKSpeedLimit.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
 HKTrafficLayer2.o: ../../src/Map/HKTrafficLayer2.cpp
-ILocationService.o: ../../src/Map/ILocationService.cpp
-MapDrawLayer.o: ../../src/Map/MapDrawLayer.cpp
-MapDrawUtil.o: ../../src/Map/MapDrawUtil.cpp
 KMLXML.o: ../../src/Map/KMLXML.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp
+LocationService.o: ../../src/Map/LocationService.cpp
 MapConfig2.o: ../../src/Map/MapConfig2.cpp
 MapConfig2TGen.o: ../../src/Map/MapConfig2TGen.cpp
+MapDrawLayer.o: ../../src/Map/MapDrawLayer.cpp
+MapDrawUtil.o: ../../src/Map/MapDrawUtil.cpp
 MapEnv.o: ../../src/Map/MapEnv.cpp
 MapLayerCollection.o: ../../src/Map/MapLayerCollection.cpp
 MapLayerData.o: ../../src/Map/MapLayerData.cpp
@@ -925,9 +925,11 @@ AudioDeviceAndroid.o: ../../src/Media/AudioDeviceAndroid.cpp
 AudioDeviceL.o: ../../src/Media/AudioDeviceL.cpp
 AudioDeviceNull.o: ../../src/Media/AudioDeviceNull.cpp
 AudioDeviceW.o: ../../src/Media/AudioDeviceW.cpp
+AudioFilter.o: ../../src/Media/AudioFilter.cpp
 AudioFixBlockSource.o: ../../src/Media/AudioFixBlockSource.cpp
 AudioFormat.o: ../../src/Media/AudioFormat.cpp
 AudioFrameSource.o: ../../src/Media/AudioFrameSource.cpp
+AudioSource.o: ../../src/Media/AudioSource.cpp
 AudioUtil.o: ../../src/Media/AudioUtil.cpp
 BitmapUtil.o: ../../src/Media/BitmapUtil.cpp
 CameraManagerNul.o: ../../src/Media/CameraManagerNul.cpp
@@ -958,6 +960,7 @@ DDrawManager.o: ../../src/Media/DDrawManager.cpp
 DDrawSurface.o: ../../src/Media/DDrawSurface.cpp
 Deinterlace8.o: ../../src/Media/Deinterlace8.cpp
 DeinterlaceLR.o: ../../src/Media/DeinterlaceLR.cpp
+DeinterlacingResizer.o: ../../src/Media/DeinterlacingResizer.cpp
 DrawEngine.o: ../../src/Media/DrawEngine.cpp
 DrawEngineFactoryGTK.o: ../../src/Media/DrawEngineFactoryGTK.cpp
 DrawEngineFactorySEng.o: ../../src/Media/DrawEngineFactorySEng.cpp
@@ -990,20 +993,15 @@ GTKDrawEngineNoGDK.o: ../../src/Media/GTKDrawEngine.cpp
 H264Parser.o: ../../src/Media/H264Parser.cpp
 H265Parser.o: ../../src/Media/H265Parser.cpp
 HTRecFile.o: ../../src/Media/HTRecFile.cpp
-IAudioFilter.o: ../../src/Media/IAudioFilter.cpp
-IAudioSource.o: ../../src/Media/IAudioSource.cpp
 ICCProfile.o: ../../src/Media/ICCProfile.cpp
-IDeintResizer.o: ../../src/Media/IDeintResizer.cpp
-IImgResizer.o: ../../src/Media/IImgResizer.cpp
 ImageAlphaBlend.o: ../../src/Media/ImageAlphaBlend.cpp
 ImageCopy.o: ../../src/Media/ImageCopy.cpp
 ImageGenerator.o: ../../src/Media/ImageGenerator.cpp
 ImageList.o: ../../src/Media/ImageList.cpp
 ImagePreviewTool.o: ../../src/Media/ImagePreviewTool.cpp
+ImageResizer.o: ../../src/Media/ImageResizer.cpp
 ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
 ImageUtil.o: ../../src/Media/ImageUtil.cpp
-IRealtimeVideoSource.o: ../../src/Media/IRealtimeVideoSource.cpp
-IVideoSource.o: ../../src/Media/IVideoSource.cpp
 JPEGFile.o: ../../src/Media/JPEGFile.cpp
 KSRenderer.o: ../../src/Media/KSRenderer.cpp
 $-I ../../ThirdParty/KSSample
@@ -1070,6 +1068,7 @@ PrinterW.o: ../../src/Media/PrinterW.cpp
 !-lcomdlg32
 ProfiledResizer.o: ../../src/Media/ProfiledResizer.cpp
 RasterImage.o: ../../src/Media/RasterImage.cpp
+RealtimeVideoSource.o: ../../src/Media/RealtimeVideoSource.cpp
 RefClock.o: ../../src/Media/RefClock.cpp
 RGBColorFilter.o: ../../src/Media/RGBColorFilter.cpp
 RGBLUTGen.o: ../../src/Media/RGBLUTGen.cpp
@@ -1098,6 +1097,7 @@ VideoCaptureMgrNull.o: ../../src/Media/VideoCaptureMgrNull.cpp
 VideoCaptureMgrW.o: ../../src/Media/VideoCaptureMgrW.cpp
 VideoChecker.o: ../../src/Media/VideoChecker.cpp
 VideoRenderer.o: ../../src/Media/VideoRenderer.cpp
+VideoSource.o: ../../src/Media/VideoSource.cpp
 VideoSourceBase.o: ../../src/Media/VideoSourceBase.cpp
 VOBAC3StreamSource.o: ../../src/Media/VOBAC3StreamSource.cpp
 VOBLPCMStreamSource.o: ../../src/Media/VOBLPCMStreamSource.cpp
@@ -1113,18 +1113,18 @@ $@($(PKG-CONFIG) --atleast-version 2.0.0 zxing) -std=c++17
 ZXingWriter_Null.o: ../../src/Media/ZXingWriter_Null.cpp
 AlphaBlend8_8.o: ../../src/Media/ABlend/AlphaBlend8_8.cpp
 AlphaBlend8_C8.o: ../../src/Media/ABlend/AlphaBlend8_C8.cpp
-AudioAmplifier.o: ../../src/Media/AudioFilter/AudioAmplifier.cpp
-AudioCaptureFilter.o: ../../src/Media/AudioFilter/AudioCaptureFilter.cpp
-AudioLevelMeter.o: ../../src/Media/AudioFilter/AudioLevelMeter.cpp
-AudioSampleRipper.o: ../../src/Media/AudioFilter/AudioSampleRipper.cpp
-AudioSweepFilter.o: ../../src/Media/AudioFilter/AudioSweepFilter.cpp
-DTMFDecoder.o: ../../src/Media/AudioFilter/DTMFDecoder.cpp
-DTMFGenerator.o: ../../src/Media/AudioFilter/DTMFGenerator.cpp
-DynamicVolBooster.o: ../../src/Media/AudioFilter/DynamicVolBooster.cpp
-FileMixFilter.o: ../../src/Media/AudioFilter/FileMixFilter.cpp
-SoundGenerator.o: ../../src/Media/AudioFilter/SoundGenerator.cpp
-BellSoundGen.o: ../../src/Media/AudioFilter/SoundGen/BellSoundGen.cpp
-ISoundGen.o: ../../src/Media/AudioFilter/SoundGen/ISoundGen.cpp
+AudioAmplifier.o: ../../src/Media/AFilter/AudioAmplifier.cpp
+AudioCaptureFilter.o: ../../src/Media/AFilter/AudioCaptureFilter.cpp
+AudioLevelMeter.o: ../../src/Media/AFilter/AudioLevelMeter.cpp
+AudioSampleRipper.o: ../../src/Media/AFilter/AudioSampleRipper.cpp
+AudioSweepFilter.o: ../../src/Media/AFilter/AudioSweepFilter.cpp
+DTMFDecoder.o: ../../src/Media/AFilter/DTMFDecoder.cpp
+DTMFGenerator.o: ../../src/Media/AFilter/DTMFGenerator.cpp
+DynamicVolBooster.o: ../../src/Media/AFilter/DynamicVolBooster.cpp
+FileMixFilter.o: ../../src/Media/AFilter/FileMixFilter.cpp
+SoundGenerator.o: ../../src/Media/AFilter/SoundGenerator.cpp
+BellSoundGen.o: ../../src/Media/AFilter/SoundGen/BellSoundGen.cpp
+SoundTypeGen.o: ../../src/Media/AFilter/SoundGen/SoundTypeGen.cpp
 AUIAudio.o: ../../src/Media/AVIUtl/AUIAudio.cpp
 AUIManager.o: ../../src/Media/AVIUtl/AUIManager.cpp
 AUIPlugin.o: ../../src/Media/AVIUtl/AUIPlugin.cpp
@@ -1249,8 +1249,6 @@ $-I ../../ThirdParty/baseclasses
 $-fpermissive
 !-lole32
 !-loleaut32
-BGImgFilter.o: ../../src/Media/ImageFilter/BGImgFilter.cpp
-BWImgFilter.o: ../../src/Media/ImageFilter/BWImgFilter.cpp
 ColorImageGen.o: ../../src/Media/ImageGen/ColorImageGen.cpp
 GammaImageGen.o: ../../src/Media/ImageGen/GammaImageGen.cpp
 Gamma64ImageGen.o: ../../src/Media/ImageGen/Gamma64ImageGen.cpp
@@ -1258,6 +1256,8 @@ Gradian32ImageGen.o: ../../src/Media/ImageGen/Gradian32ImageGen.cpp
 ImageGenMgr.o: ../../src/Media/ImageGen/ImageGenMgr.cpp
 LinesImageGen.o: ../../src/Media/ImageGen/LinesImageGen.cpp
 RingsImageGen.o: ../../src/Media/ImageGen/RingsImageGen.cpp
+BGImgFilter.o: ../../src/Media/ImgFilter/BGImgFilter.cpp
+BWImgFilter.o: ../../src/Media/ImgFilter/BWImgFilter.cpp
 JasperBand.o: ../../src/Media/Jasper/JasperBand.cpp
 JasperReport.o: ../../src/Media/Jasper/JasperReport.cpp
 JasperReportElement.o: ../../src/Media/Jasper/JasperReportElement.cpp
@@ -1539,9 +1539,6 @@ GCISNotifyHandler.o: ../../src/Net/WebServer/GCISNotifyHandler.cpp
 HTTPDirectoryHandler.o: ../../src/Net/WebServer/HTTPDirectoryHandler.cpp
 HTTPForwardHandler.o: ../../src/Net/WebServer/HTTPForwardHandler.cpp
 HTTPServerUtil.o: ../../src/Net/WebServer/HTTPServerUtil.cpp
-IWebRequest.o: ../../src/Net/WebServer/IWebRequest.cpp
-IWebResponse.o: ../../src/Net/WebServer/IWebResponse.cpp
-IWebSessionManager.o: ../../src/Net/WebServer/IWebSessionManager.cpp
 MemoryWebSession.o: ../../src/Net/WebServer/MemoryWebSession.cpp
 MemoryWebSessionManager.o: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
 MODBUSDevSimHandler.o: ../../src/Net/WebServer/MODBUSDevSimHandler.cpp
@@ -1557,7 +1554,10 @@ WebController.o: ../../src/Net/WebServer/WebController.cpp
 WebControllerHandler.o: ../../src/Net/WebServer/WebControllerHandler.cpp
 WebListener.o: ../../src/Net/WebServer/WebListener.cpp
 WebRequest.o: ../../src/Net/WebServer/WebRequest.cpp
+WebResponse.o: ../../src/Net/WebServer/WebResponse.cpp
+WebServerRequest.o: ../../src/Net/WebServer/WebServerRequest.cpp
 WebServiceHandler.o: ../../src/Net/WebServer/WebServiceHandler.cpp
+WebSessionManager.o: ../../src/Net/WebServer/WebSessionManager.cpp
 WebSessionUsage.o: ../../src/Net/WebServer/WebSessionUsage.cpp
 WebSocketHandler.o: ../../src/Net/WebServer/WebSocketHandler.cpp
 WebSocketServerStream.o: ../../src/Net/WebServer/WebSocketServerStream.cpp
@@ -2127,7 +2127,6 @@ Encoding.o: ../../src/Text/Encoding.cpp
 EncodingFactory.o: ../../src/Text/EncodingFactory.cpp
 HKSCSFix.o: ../../src/Text/HKSCSFix.cpp
 HTMLUtil.o: ../../src/Text/HTMLUtil.cpp
-IMIMEObj.o: ../../src/Text/IMIMEObj.cpp
 JavaText.o: ../../src/Text/JavaText.cpp
 JSON.o: ../../src/Text/JSON.cpp
 JSONBuilder.o: ../../src/Text/JSONBuilder.cpp
@@ -2136,6 +2135,7 @@ JSText.o: ../../src/Text/JSText.cpp
 Locale.o: ../../src/Text/Locale.cpp
 MailBase64Stream.o: ../../src/Text/MailBase64Stream.cpp
 MailCreator.o: ../../src/Text/MailCreator.cpp
+MIMEObject.o: ../../src/Text/MIMEObject.cpp
 MyString.o: ../../src/Text/MyString.cpp
 MyStringFloat.o: ../../src/Text/MyStringFloat.cpp
 MyStringW.o: ../../src/Text/MyStringW.cpp

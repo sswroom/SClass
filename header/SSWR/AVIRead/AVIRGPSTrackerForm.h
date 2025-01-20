@@ -24,7 +24,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Map::ILocationService> locSvc;
+			NN<Map::LocationService> locSvc;
 			Bool relLocSvc;
 
 			Map::GPSTrack::GPSRecord3 recCurr;
@@ -32,7 +32,7 @@ namespace SSWR
 			Sync::Mutex recMut;
 			Bool recUpdated;
 			UOSInt recSateCnt;
-			Map::ILocationService::SateStatus recSates[32];
+			Map::LocationService::SateStatus recSates[32];
 			Optional<SSWR::AVIRead::IMapNavigator> mapNavi;
 			NN<Math::GeographicCoordinateSystem> wgs84;
 			Math::Coord2DDbl lastPos;
@@ -124,7 +124,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpNMEA;
 			NN<UI::GUIListBox> lbNMEA;
 
-			static void __stdcall OnGPSUpdate(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
+			static void __stdcall OnGPSUpdate(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnMTKFirmwareClicked(AnyType userObj);
 			static void __stdcall OnMTKLogDownloadClicked(AnyType userObj);
@@ -148,7 +148,7 @@ namespace SSWR
 				MemFreeA(p);
 			}
 #endif
-			AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::ILocationService> locSvc, Bool toRelease);
+			AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::LocationService> locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();
 
 			virtual void OnMonitorChanged();

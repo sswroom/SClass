@@ -1,7 +1,7 @@
 #ifndef _SM_UI_GUIPICTUREBOX
 #define _SM_UI_GUIPICTUREBOX
 #include "Media/DrawEngine.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/StaticImage.h"
 #include "UI/GUIControl.h"
 
@@ -10,7 +10,7 @@ namespace UI
 	class GUIPictureBox : public GUIControl
 	{
 	protected:
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 		Optional<Media::StaticImage> currImage;
 		Bool hasBorder;
 		Bool allowResize;

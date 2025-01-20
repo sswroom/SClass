@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "MyMemory.h"
 #include "Media/FrameInfo.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/RasterImage.h"
 #include "Media/StaticImage.h"
 #include "Media/ImageWin.h"
@@ -38,7 +38,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 		imgBuff = MemAlloc(Char, bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight * 3);
 		GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, imgBuff, &bmi, 0);
 
-		NEW_CLASS(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::IColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_NO_ALPHA));
+		NEW_CLASS(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::ColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_NO_ALPHA));
 
 		i = bmi.bmiHeader.biHeight;
 		lineDiff = bmi.bmiHeader.biWidth * 3;
@@ -61,7 +61,7 @@ Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 		imgBuff = MemAlloc(Char, bmi.bmiHeader.biWidth * bmi.bmiHeader.biHeight * 3);
 		GetDIBits(hdc, hbmp, 0, bmi.bmiHeader.biHeight, imgBuff, &bmi, 0);
 
-		NEW_CLASS(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::IColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_ALPHA));
+		NEW_CLASS(img, Media::StaticImage(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight, 0, 24, 0, Media::CS::TRANodeType::Unknown, Media::ColorHandler::YUVT_UNKNOWN, 2.2, Media::AT_ALPHA));
 
 		i = bmi.bmiHeader.biHeight;
 		lineDiff = bmi.bmiHeader.biWidth * 3;

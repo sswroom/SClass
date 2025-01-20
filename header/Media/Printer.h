@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_PRINTER
 #define _SM_MEDIA_PRINTER
 #include "Media/DrawEngine.h"
-#include "Media/IPrintDocument.h"
+#include "Media/PrintDocument.h"
 
 namespace Media
 {
@@ -26,8 +26,8 @@ namespace Media
 		
 		Bool IsError();
 		Bool ShowPrintSettings(void *hWnd);
-		Optional<IPrintDocument> StartPrint(NN<IPrintHandler> hdlr, NN<Media::DrawEngine> eng);
-		void EndPrint(NN<IPrintDocument> doc);
+		Optional<PrintDocument> StartPrint(NN<PrintHandler> hdlr, NN<Media::DrawEngine> eng);
+		void EndPrint(NN<PrintDocument> doc);
 	};
 }
 #endif

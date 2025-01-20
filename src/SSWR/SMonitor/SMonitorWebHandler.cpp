@@ -16,13 +16,13 @@
 #include "Text/XML.h"
 #include "Text/UTF8Writer.h"
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(NN<Net::WebServer::IWebSession> sess, AnyType userObj)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessDeleted(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
 	return false;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
 	Data::DateTime dt;
@@ -35,12 +35,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(NN<Net::WebServer
 	return false;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	return resp->RedirectURL(req, CSTR("/monitor/index"), -2);
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -83,7 +83,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 	}
 	else
 	{
-		Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
+		Net::WebServer::WebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
@@ -123,8 +123,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 			}
 		}
 
-		Data::ArrayListNN<ISMonitorCore::DeviceInfo> devList;
-		NN<ISMonitorCore::DeviceInfo> dev;
+		Data::ArrayListNN<SMonitorCore::DeviceInfo> devList;
+		NN<SMonitorCore::DeviceInfo> dev;
 		Data::DateTime dt;
 		me->core->UserGetDevices(userId, userType, devList);
 		UOSInt i;
@@ -281,12 +281,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(NN<SSWR::SMonitor::S
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	UnsafeArrayOpt<const UTF8Char> msg = 0;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -303,7 +303,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 		{
 			if (s2->v[0])
 			{
-				NN<SSWR::SMonitor::ISMonitorCore::LoginInfo> login;
+				NN<SSWR::SMonitor::SMonitorCore::LoginInfo> login;
 				if (me->core->UserLogin(s2->v, s3->v).SetTo(login))
 				{
 					sess = me->sessMgr->CreateSession(req, resp);
@@ -358,9 +358,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(NN<SSWR::SMonitor::S
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		sess->EndUse();
@@ -369,7 +369,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(NN<SSWR::SMonitor::
 	return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -379,7 +379,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 	UnsafeArray<const UTF8Char> nns;
 	NN<Text::String> s;
 	Int64 devId;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
@@ -401,8 +401,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 	me->WriteMenu(writer, sess);
 	writer->WriteLine(CSTR("</td><td>"));
 
-	Data::ArrayListNN<ISMonitorCore::DeviceInfo> devList;
-	NN<ISMonitorCore::DeviceInfo> dev;
+	Data::ArrayListNN<SMonitorCore::DeviceInfo> devList;
+	NN<SMonitorCore::DeviceInfo> dev;
 	Data::DateTime dt;
 	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), devList);
 	UOSInt i;
@@ -538,7 +538,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(NN<SSWR::SMonitor::
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -546,7 +546,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
@@ -562,7 +562,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 		sess->EndUse();
 		return resp->RedirectURL(req, CSTR("/monitor/device"), 0);
 	}
-	NN<ISMonitorCore::DeviceInfo> dev;
+	NN<SMonitorCore::DeviceInfo> dev;
 	if (!me->core->UserHasDevice(sess->GetValueInt32(CSTR("UserId")), sess->GetValueInt32(CSTR("UserType")), cliId) || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		sess->EndUse();
@@ -657,7 +657,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(NN<SSWR::SMonit
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -667,8 +667,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 	UnsafeArray<const UTF8Char> nns;
 	UOSInt i;
 	UOSInt j;
-	NN<ISMonitorCore::DeviceInfo> dev;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<SMonitorCore::DeviceInfo> dev;
+	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
@@ -798,7 +798,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(NN<SSWR::SMo
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
@@ -808,8 +808,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 	UnsafeArray<const UTF8Char> nns;
 	UOSInt i;
 	UOSInt j;
-	NN<ISMonitorCore::DeviceInfo> dev;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<SMonitorCore::DeviceInfo> dev;
+	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
@@ -922,7 +922,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(NN<SSWR::SM
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	NN<Text::String> s;
 	Int64 cliId = 0;
@@ -932,7 +932,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 	Int32 readingId = 0;
 	Int32 readingType = 0;
 	Bool valid = true;
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 
 	if (!req->GetQueryValue(CSTR("id")).SetTo(s))
 	{
@@ -976,7 +976,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		return true;
 	}
 
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		userId = sess->GetValueInt32(CSTR("UserId"));
@@ -1067,7 +1067,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 		{
 			Data::ArrayListInt64 dateList;
 			Data::ArrayListDbl valList;
-			NN<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec;
+			NN<SSWR::SMonitor::SMonitorCore::DevRecord2> rec;
 			if (readingType == SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY && readingTypeD == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 			{
 				UOSInt treadingIndex = (UOSInt)-1;
@@ -1461,7 +1461,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(NN<SSWR::
 	}
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	Int32 userId = 0;
@@ -1471,7 +1471,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
-	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
+	Net::WebServer::WebSession *sess = me->sessMgr->GetSession(req, resp).OrNull();
 	if (sess)
 	{
 		userId = sess->GetValueInt32(CSTR("UserId"));
@@ -1482,8 +1482,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devList;
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devList;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	IO::MemoryStream mstm;
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
@@ -1579,7 +1579,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(NN<SSWR::SM
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	NN<Text::String> s;
 	Int64 cliId = 0;
@@ -1631,21 +1631,21 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 		return true;
 	}
 
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		userId = sess->GetValueInt32(CSTR("UserId"));
 		userType = sess->GetValueInt32(CSTR("UserType"));
 		sess->EndUse();
 	}
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	if (!me->core->UserHasDevice(userId, userType, cliId) || !me->core->DeviceGet(cliId).SetTo(dev))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
 
-	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::DevRecord2> recList;
+	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::DevRecord2> recList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -1690,7 +1690,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 			UnsafeArray<UTF8Char> sptr;
 			Data::ArrayListInt64 dateList;
 			Data::ArrayListDbl valList;
-			NN<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec;
+			NN<SSWR::SMonitor::SMonitorCore::DevRecord2> rec;
 			me->core->DeviceQueryRec(cliId, startTime, startTime + 86400000, recList);
 			i = 0;
 			j = recList.GetCount();
@@ -1807,12 +1807,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(NN<SSWR:
 	}
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	Text::CString msg = CSTR_NULL;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
@@ -1892,14 +1892,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(NN<SSWR::SMon
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
@@ -1910,8 +1910,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
 	}
 
-	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::WebUser> userList;
-	NN<SSWR::SMonitor::ISMonitorCore::WebUser> user;
+	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::WebUser> userList;
+	NN<SSWR::SMonitor::SMonitorCore::WebUser> user;
 	UOSInt i;
 	UOSInt j;
 	me->core->UserGetList(userList);
@@ -1960,12 +1960,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(NN<SSWR::SMonitor::S
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (!me->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		return resp->RedirectURL(req, CSTR("/monitor/index"), 0);
@@ -2023,15 +2023,15 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(NN<SSWR::SMonitor:
 	return true;
 }
 
-Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonitor::SMonitorWebHandler> me, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::UTF8Writer *writer;
 	UnsafeArray<UInt8> buff;
 	UOSInt buffSize;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
-	NN<Net::WebServer::IWebSession> sess;
-	NN<SSWR::SMonitor::ISMonitorCore::WebUser> user;
+	NN<Net::WebServer::WebSession> sess;
+	NN<SSWR::SMonitor::SMonitorCore::WebUser> user;
 	Int32 userId;
 	UOSInt i;
 	UOSInt j;
@@ -2090,8 +2090,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(NN<SSWR::SMonit
 		}
 	}
 
-	Data::ArrayListNN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> devList;
-	NN<SSWR::SMonitor::ISMonitorCore::DeviceInfo> dev;
+	Data::ArrayListNN<SSWR::SMonitor::SMonitorCore::DeviceInfo> devList;
+	NN<SSWR::SMonitor::SMonitorCore::DeviceInfo> dev;
 	me->core->UserGetDevices(sess->GetValueInt32(CSTR("UserId")), 1, devList);
 
 	IO::MemoryStream mstm;
@@ -2175,10 +2175,10 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderEnd(IO::Writer *wr
 	writer->WriteLine(CSTR("</head>"));
 }
 
-void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer, Optional<Net::WebServer::IWebSession> sess)
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer, Optional<Net::WebServer::WebSession> sess)
 {
 	Int32 userType = 0;
-	NN<Net::WebServer::IWebSession> nnsess;
+	NN<Net::WebServer::WebSession> nnsess;
 	if (sess.SetTo(nnsess))
 	{
 		nnsess->SetValueInt64(CSTR("LastSessTime"), Data::DateTimeUtil::GetCurrTimeMillis());
@@ -2269,7 +2269,7 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *write
 	jsTxt->Release();
 }
 
-Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{
@@ -2284,7 +2284,7 @@ Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(NN<Net::WebServer::IWebR
 	return true;
 }
 
-SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::ISMonitorCore *core)
+SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::SMonitorCore *core)
 {
 	this->core = core;
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());

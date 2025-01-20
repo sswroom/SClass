@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_ENCRYPT_BLOCKCIPHER
 #define _SM_CRYPTO_ENCRYPT_BLOCKCIPHER
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 #include "Text/CString.h"
 
 namespace Crypto
@@ -24,7 +24,7 @@ namespace Crypto
 			PKCS7
 		};
 
-		class BlockCipher : public ICrypto
+		class BlockCipher : public Encryption
 		{
 		protected:
 			UnsafeArray<UInt8> iv;

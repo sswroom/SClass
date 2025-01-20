@@ -173,7 +173,7 @@ typedef struct
 	Bool discTime;
 	Media::FrameType frameType;
 	UInt32 frameNum;
-	Media::IVideoSource::FrameStruct frameStruct;
+	Media::VideoSource::FrameStruct frameStruct;
 } FFMPEGFrameInfo;
 
 struct Media::Decoder::FFMPEGDecoder::ClassData
@@ -207,7 +207,7 @@ struct Media::Decoder::FFMPEGDecoder::ClassData
 #endif
 };
 
-void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	ClassData *data = this->clsData;
     AVPacket avpkt;
@@ -218,13 +218,13 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		UTF8Char fType = '?';
 		switch (frameStruct)
 		{
-		case Media::IVideoSource::FS_I:
+		case Media::VideoSource::FS_I:
 			fType = 'I';
 			break;
-		case Media::IVideoSource::FS_P:
+		case Media::VideoSource::FS_P:
 			fType = 'P';
 			break;
-		case Media::IVideoSource::FS_B:
+		case Media::VideoSource::FS_B:
 			fType = 'B';
 			break;
 		}
@@ -238,11 +238,11 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		data->dbgWriter->WriteLine(sb.ToCString());
 	}
 #endif
-	if (frameStruct != Media::IVideoSource::FS_N)
+	if (frameStruct != Media::VideoSource::FS_N)
 	{
 		data->frames[data->frameIndexE].frameTime = frameTime;
-		data->frames[data->frameIndexE].isKey = (frameStruct == Media::IVideoSource::FS_I);
-		data->frames[data->frameIndexE].discTime = (flags & Media::IVideoSource::FF_DISCONTTIME) != 0;
+		data->frames[data->frameIndexE].isKey = (frameStruct == Media::VideoSource::FS_I);
+		data->frames[data->frameIndexE].discTime = (flags & Media::VideoSource::FF_DISCONTTIME) != 0;
 		data->frames[data->frameIndexE].frameType = frameType;
 		data->frames[data->frameIndexE].frameNum = frameNum;
 		data->frames[data->frameIndexE].frameStruct = frameStruct;
@@ -266,7 +266,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 	avpkt.size = (int)dataSize;
 	avpkt.dts = (Int64)frameTime.MultiplyU64(90000);
 	avpkt.pts = (Int64)frameTime.MultiplyU64(90000);
-	if (flags & Media::IVideoSource::FF_DISCONTTIME)
+	if (flags & Media::VideoSource::FF_DISCONTTIME)
 	{
 		data->seeked = true;
 		data->seekTime = frameTime;
@@ -286,9 +286,9 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 	{
 		Data::Duration outFrameTime = Data::Duration::FromRatioU64((UInt64)data->frame->pts, 90000);
 		UInt32 outFrameNum = frameNum;
-		Media::IVideoSource::FrameStruct outFrameStruct;
+		Media::VideoSource::FrameStruct outFrameStruct;
 		Media::FrameType outFrameType;
-		Media::IVideoSource::FrameFlag outFlags;
+		Media::VideoSource::FrameFlag outFlags;
 		Media::YCOffset outYCOfst = ycOfst;
 		switch (data->frame->pict_type)
 		{
@@ -299,15 +299,15 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		case AV_PICTURE_TYPE_NONE:
 #endif
 		default:
-			outFrameStruct = Media::IVideoSource::FS_I;
+			outFrameStruct = Media::VideoSource::FS_I;
 			break;
 		case AV_PICTURE_TYPE_P:
 		case AV_PICTURE_TYPE_SP:
-			outFrameStruct = Media::IVideoSource::FS_P;
+			outFrameStruct = Media::VideoSource::FS_P;
 			break;
 		case AV_PICTURE_TYPE_B:
 		case AV_PICTURE_TYPE_BI:
-			outFrameStruct = Media::IVideoSource::FS_B;
+			outFrameStruct = Media::VideoSource::FS_B;
 			break;
 		}
 		if (AVFRAME_IS_INTERLACE(data->frame))
@@ -325,7 +325,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		{
 			outFrameType = Media::FT_NON_INTERLACE;
 		}
-		outFlags = (Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_BFRAMEPROC | (flags & Media::IVideoSource::FF_REALTIME));
+		outFlags = (Media::VideoSource::FrameFlag)(Media::VideoSource::FF_BFRAMEPROC | (flags & Media::VideoSource::FF_REALTIME));
 		UnsafeArray<UnsafeArray<UInt8>> outFrameBuff = &data->frameBuff;
 
 		UInt8 *frameTempBuff = 0;
@@ -388,7 +388,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		{
 			if (AVFRAME_IS_KEY_FRAME(data->frame) && data->seekTime <= outFrameTime && data->seekTime.AddMS(50) >= outFrameTime)
 			{
-				outFlags = (Media::IVideoSource::FrameFlag)(outFlags | Media::IVideoSource::FF_DISCONTTIME);
+				outFlags = (Media::VideoSource::FrameFlag)(outFlags | Media::VideoSource::FF_DISCONTTIME);
 				data->seeked = false;
 			}
 			else
@@ -402,7 +402,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		}
 		if (!skip)
 		{
-			if (AVFRAME_IS_KEY_FRAME(data->frame) || outFrameStruct == Media::IVideoSource::FS_I)
+			if (AVFRAME_IS_KEY_FRAME(data->frame) || outFrameStruct == Media::VideoSource::FS_I)
 			{
 				while (data->frameIndexS != data->frameIndexE)
 				{
@@ -472,14 +472,14 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 			{
 				if (data->frameIndexS != data->frameIndexE)
 				{
-					if (data->frames[data->frameIndexS].isKey && outFrameTime != data->frames[data->frameIndexS].frameTime && outFrameStruct != Media::IVideoSource::FS_B)
+					if (data->frames[data->frameIndexS].isKey && outFrameTime != data->frames[data->frameIndexS].frameTime && outFrameStruct != Media::VideoSource::FS_B)
 					{
 						outFrameTime = data->lastFrameTime;
 						skip = true;
 					}
 					else
 					{
-						if (data->frames[data->frameIndexS].isKey && outFrameStruct == Media::IVideoSource::FS_B)
+						if (data->frames[data->frameIndexS].isKey && outFrameStruct == Media::VideoSource::FS_B)
 						{
 							data->isOpenGOP = true;
 						}
@@ -531,7 +531,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 
 }
 
-Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -1189,13 +1189,13 @@ void Media::Decoder::FFMPEGDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-void Media::Decoder::FFMPEGDecoder::OnFrameChanged(Media::IVideoSource::FrameChange fc)
+void Media::Decoder::FFMPEGDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)
 {
-	if (fc == Media::IVideoSource::FC_PAR)
+	if (fc == Media::VideoSource::FC_PAR)
 	{
 //		this->frameChg = true;
 	}
-	else if (fc == Media::IVideoSource::FC_ENDPLAY)
+	else if (fc == Media::VideoSource::FC_ENDPLAY)
 	{
 	}
 }
@@ -1206,7 +1206,7 @@ Bool Media::Decoder::FFMPEGDecoder::IsError()
 	return !data->inited || data->frameSize == 0;
 }
 
-Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NN<Media::IVideoSource> sourceVideo)
+Media::VideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NN<Media::VideoSource> sourceVideo)
 {
 	NN<Media::Decoder::FFMPEGDecoder> decoder;
 	Media::FrameInfo frameInfo;
@@ -1325,7 +1325,7 @@ private:
 	}
 
 public:
-	FFMPEGADecoder(NN<IAudioSource> sourceAudio)
+	FFMPEGADecoder(NN<AudioSource> sourceAudio)
 	{
 		Media::AudioFormat fmt;
 		Int32 ret;
@@ -1537,7 +1537,7 @@ public:
 
 	virtual Data::Duration SeekToTime(Data::Duration time)
 	{
-		NN<Media::IAudioSource> sourceAudio;
+		NN<Media::AudioSource> sourceAudio;
 		if (this->sourceAudio.SetTo(sourceAudio))
 		{
 			this->seeked = true;
@@ -1550,7 +1550,7 @@ public:
 	virtual Bool Start(Optional<Sync::Event> evt, UOSInt blkSize)
 	{
 		NN<Sync::Event> nnevt;
-		NN<Media::IAudioSource> sourceAudio;
+		NN<Media::AudioSource> sourceAudio;
 		if (this->sourceAudio.SetTo(sourceAudio))
 		{
 			this->seeked = true;
@@ -1567,7 +1567,7 @@ public:
 
 	virtual void Stop()
 	{
-		NN<Media::IAudioSource> sourceAudio;
+		NN<Media::AudioSource> sourceAudio;
 		if (this->sourceAudio.SetTo(sourceAudio))
 		{
 			sourceAudio->Stop();
@@ -1581,7 +1581,7 @@ public:
 		UOSInt i;
 	    AVPacket avpkt;
 		Int32 ret;
-		NN<Media::IAudioSource> sourceAudio;
+		NN<Media::AudioSource> sourceAudio;
 		NN<Sync::Event> readEvt;
 		if (this->decFmt == 0 || !this->inited || !this->sourceAudio.SetTo(sourceAudio))
 		{
@@ -1925,7 +1925,7 @@ public:
 
 
 
-Media::IAudioSource *__stdcall FFMPEGDecoder_DecodeAudio(NN<Media::IAudioSource> sourceAudio)
+Media::AudioSource *__stdcall FFMPEGDecoder_DecodeAudio(NN<Media::AudioSource> sourceAudio)
 {
 	FFMPEGADecoder *decoder;
 	NEW_CLASS(decoder, FFMPEGADecoder(sourceAudio));

@@ -19,7 +19,7 @@
 #include "Math/GeometryTool.h"
 #include "Media/DrawEngine.h"
 #include "Media/FrameInfo.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/StaticImage.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
@@ -2279,7 +2279,7 @@ Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, 
 	return cip;
 }
 
-void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NN<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
+void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NN<Media::DrawEngine> eng, Media::ImageResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
 	NN<Media::DrawImage> lyrImg;
 	if (!lyrs->img.SetTo(lyrImg))
@@ -4383,7 +4383,7 @@ Optional<Media::DrawPen> Map::MapConfig2::CreatePen(NN<Media::DrawImage> img, UI
 	return 0;
 }
 
-UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, UnsafeArrayOpt<UTF8Char> slowLayer, Double *slowTime)
+UnsafeArrayOpt<UTF8Char> Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::ImageResizer *resizer, UnsafeArrayOpt<UTF8Char> slowLayer, Double *slowTime)
 {
 	//Manage::HiResClock clk;
 	UnsafeArrayOpt<UTF8Char> retPtr = 0;

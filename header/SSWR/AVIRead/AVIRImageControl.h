@@ -14,7 +14,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRImageControl : public UI::GUICustomDrawVScroll, public Media::IColorHandler
+		class AVIRImageControl : public UI::GUICustomDrawVScroll, public Media::ColorHandler
 		{
 		public:
 			typedef enum
@@ -111,8 +111,8 @@ namespace SSWR
 			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 
 			virtual void SetDPI(Double hdpi, Double ddpi);
 

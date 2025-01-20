@@ -1,14 +1,14 @@
 #ifndef _SM_MEDIA_OPENSLESRENDERER
 #define _SM_MEDIA_OPENSLESRENDERER
 
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 
 namespace Media
 {
-	class OpenSLESRenderer : public IAudioRenderer
+	class OpenSLESRenderer : public AudioRenderer
 	{
 	private:
-		Media::IAudioSource *audsrc;
+		Media::AudioSource *audsrc;
 		const UTF8Char *devName;
 		Bool playing;
 		Bool threadInit;
@@ -34,7 +34,7 @@ namespace Media
 		virtual ~OpenSLESRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Media::IAudioSource *audsrc);
+		virtual Bool BindAudio(Media::AudioSource *audsrc);
 		virtual void AudioInit(Media::RefClock *clk);
 		virtual void Start();
 		virtual void Stop();

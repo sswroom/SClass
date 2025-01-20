@@ -7,7 +7,7 @@
 #include "Math/Unit/Distance.h"
 #include "Media/FrameInfo.h"
 #include "Media/ICCProfile.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/ParserList.h"

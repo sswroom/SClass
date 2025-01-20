@@ -11,12 +11,12 @@
 
 namespace Media
 {
-	class GDIPrintDocument : public Media::IPrintDocument
+	class GDPrintDocument : public Media::PrintDocument
 	{
 	private:
 		void *hdcPrinter;
 		UInt8 *devMode;
-		NN<IPrintHandler> hdlr;
+		NN<PrintHandler> hdlr;
 		Media::GDIEngine *eng;
 		Optional<Text::String> docName;
 		Bool started;
@@ -27,8 +27,8 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		GDIPrintDocument(NN<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NN<IPrintHandler> hdlr);
-		virtual ~GDIPrintDocument();
+		GDPrintDocument(NN<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NN<PrintHandler> hdlr);
+		virtual ~GDPrintDocument();
 
 		Bool IsError();
 
@@ -41,9 +41,9 @@ namespace Media
 	};
 }
 
-UInt32 __stdcall Media::GDIPrintDocument::PrintThread(AnyType userObj)
+UInt32 __stdcall Media::GDPrintDocument::PrintThread(AnyType userObj)
 {
-	NN<Media::GDIPrintDocument> me = userObj.GetNN<Media::GDIPrintDocument>();
+	NN<Media::GDPrintDocument> me = userObj.GetNN<Media::GDPrintDocument>();
 	NN<Media::GDIImage> img;
 	Bool hasMorePage;
 	DEVMODEW *devMode = (DEVMODEW*)me->devMode;
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::GDIPrintDocument::GDIPrintDocument(NN<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NN<IPrintHandler> hdlr)
+Media::GDPrintDocument::GDPrintDocument(NN<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NN<PrintHandler> hdlr)
 {
 	this->devMode = devMode;
 	this->eng = eng;
@@ -110,7 +110,7 @@ Media::GDIPrintDocument::GDIPrintDocument(NN<Text::String> printerName, UInt8 *d
 	this->paperHeight = devM->dmPaperLength * 0.1;
 }
 
-Media::GDIPrintDocument::~GDIPrintDocument()
+Media::GDPrintDocument::~GDPrintDocument()
 {
 	WaitForEnd();
 	if (this->hdcPrinter)
@@ -121,35 +121,35 @@ Media::GDIPrintDocument::~GDIPrintDocument()
 	OPTSTR_DEL(this->docName);
 }
 
-Bool Media::GDIPrintDocument::IsError()
+Bool Media::GDPrintDocument::IsError()
 {
 	return this->hdcPrinter == 0;
 }
 
-void Media::GDIPrintDocument::SetDocName(Optional<Text::String> docName)
+void Media::GDPrintDocument::SetDocName(Optional<Text::String> docName)
 {
 	OPTSTR_DEL(this->docName);
 	this->docName = Text::String::CopyOrNull(docName);
 }
 
-void Media::GDIPrintDocument::SetDocName(Text::CString docName)
+void Media::GDPrintDocument::SetDocName(Text::CString docName)
 {
 	OPTSTR_DEL(this->docName);
 	this->docName = Text::String::NewOrNull(docName);
 }
 
-void Media::GDIPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)
+void Media::GDPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)
 {
 	this->paperWidth = width;
 	this->paperHeight = height;
 }
 
-void Media::GDIPrintDocument::SetNextPageOrientation(PageOrientation po)
+void Media::GDPrintDocument::SetNextPageOrientation(PageOrientation po)
 {
 	this->po = po;
 }
 
-void Media::GDIPrintDocument::Start()
+void Media::GDPrintDocument::Start()
 {
 	if (this->hdcPrinter == 0)
 		return;
@@ -196,7 +196,7 @@ void Media::GDIPrintDocument::Start()
 	}
 }
 
-void Media::GDIPrintDocument::WaitForEnd()
+void Media::GDPrintDocument::WaitForEnd()
 {
 	if (this->hdcPrinter == 0)
 		return;
@@ -381,12 +381,12 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return IDOK == lReturn;
 }
 
-Optional<Media::IPrintDocument> Media::Printer::StartPrint(NN<Media::IPrintHandler> hdlr, NN<Media::DrawEngine> eng)
+Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<Media::PrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
-	Media::GDIPrintDocument *doc;
+	Media::GDPrintDocument *doc;
 	if (this->devMode == 0)
 		return 0;
-	NEW_CLASS(doc, Media::GDIPrintDocument(this->printerName, this->devMode, (Media::GDIEngine*)eng.Ptr(), hdlr));
+	NEW_CLASS(doc, Media::GDPrintDocument(this->printerName, this->devMode, (Media::GDIEngine*)eng.Ptr(), hdlr));
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);
@@ -396,7 +396,7 @@ Optional<Media::IPrintDocument> Media::Printer::StartPrint(NN<Media::IPrintHandl
 	return doc;
 }
 
-void Media::Printer::EndPrint(NN<Media::IPrintDocument> doc)
+void Media::Printer::EndPrint(NN<Media::PrintDocument> doc)
 {
 	doc.Delete();
 }

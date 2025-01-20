@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSECTORFORM
 #define _SM_SSWR_AVIREAD_AVIRSECTORFORM
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIPanel.h"
@@ -17,14 +17,14 @@ namespace SSWR
 			NN<UI::GUIButton> btnParse;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IO::ISectorData> data;
+			NN<IO::SectorData> data;
 
 			UnsafeArray<UInt8> sectorData;
 			UOSInt sectorSize;
 
 			static void __stdcall OnParseClicked(AnyType userObj);
 		public:
-			AVIRSectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ISectorData> data);
+			AVIRSectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SectorData> data);
 			virtual ~AVIRSectorForm();
 
 			virtual void OnMonitorChanged();

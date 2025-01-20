@@ -17,7 +17,7 @@ namespace Media
 			Data::ByteBuffer readBuff;
 			Optional<Sync::Event> readEvt;
 		public:
-			XADecoder(NN<IAudioSource> sourceAudio);
+			XADecoder(NN<AudioSource> sourceAudio);
 			virtual ~XADecoder();
 
 			virtual void GetFormat(NN<AudioFormat> format);

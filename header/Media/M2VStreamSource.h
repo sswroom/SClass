@@ -3,8 +3,8 @@
 #include "AnyType.h"
 #include "Data/CallbackStorage.h"
 #include "IO/Writer.h"
-#include "Media/IMediaStream.h"
-#include "Media/IStreamControl.h"
+#include "Media/MediaStream.h"
+#include "Media/MediaStreamControl.h"
 #include "Media/VideoSourceBase.h"
 #include "Sync/Mutex.h"
 
@@ -15,7 +15,7 @@ namespace IO
 
 namespace Media
 {
-	class M2VStreamSource : public Media::VideoSourceBase, public Media::IMediaStream
+	class M2VStreamSource : public Media::VideoSourceBase, public Media::MediaStream
 	{
 	private:
 		typedef struct
@@ -27,7 +27,7 @@ namespace Media
 			UOSInt frameNum;
 		} FrameBuff;
 
-		NN<Media::IStreamControl> pbc;
+		NN<Media::MediaStreamControl> pbc;
 		FrameCallback frameCb;
 		FrameChangeCallback fcCb;
 		AnyType frameCbData;
@@ -73,7 +73,7 @@ namespace Media
 		void ClearPlayBuff();
 		static UInt32 __stdcall PlayThread(AnyType userObj);
 	public:
-		M2VStreamSource(NN<Media::IStreamControl> pbc);
+		M2VStreamSource(NN<Media::MediaStreamControl> pbc);
 		virtual ~M2VStreamSource();
 
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);

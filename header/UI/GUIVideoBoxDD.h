@@ -8,7 +8,7 @@
 
 namespace UI
 {
-	class GUIVideoBoxDD : public GUIDDrawControl, public Media::IColorHandler, public Media::VideoRenderer
+	class GUIVideoBoxDD : public GUIDDrawControl, public Media::ColorHandler, public Media::VideoRenderer
 	{
 	public:
 		typedef enum
@@ -45,8 +45,8 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
-		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 
 		virtual void OnMonitorChanged();
 

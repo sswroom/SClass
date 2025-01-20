@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/HMAC.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Crypto/Hash/SHA256.h"
 #include "Crypto/Hash/SHA384.h"
 #include "Crypto/Hash/SHA512.h"

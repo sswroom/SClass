@@ -1,12 +1,12 @@
 #ifndef _SM_MEDIA_MEDIAPLAYERWEBINTERFACE
 #define _SM_MEDIA_MEDIAPLAYERWEBINTERFACE
 #include "Media/MediaPlayerInterface.h"
-#include "Net/WebServer/IWebHandler.h"
+#include "Net/WebServer/WebHandler.h"
 #include "Text/String.h"
 
 namespace Media
 {
-	class MediaPlayerWebInterface : public Net::WebServer::IWebHandler
+	class MediaPlayerWebInterface : public Net::WebServer::WebHandler
 	{
 	private:
 		struct VideoFileInfo
@@ -24,8 +24,8 @@ namespace Media
 		MediaPlayerWebInterface(NN<Media::MediaPlayerInterface> iface, Bool autoRelease);
 		virtual ~MediaPlayerWebInterface();
 
-		void BrowseRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-		virtual void WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		void BrowseRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		virtual void DoWebRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		virtual void Release();
 	};
 }

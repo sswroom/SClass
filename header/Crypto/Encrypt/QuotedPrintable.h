@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_ENCRYPT_QUOTEDPRINTABLE
 #define _SM_CRYPTO_ENCRYPT_QUOTEDPRINTABLE
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 
 namespace Crypto
 {
 	namespace Encrypt
 	{
-		class QuotedPrintable : public Crypto::Encrypt::ICrypto
+		class QuotedPrintable : public Crypto::Encrypt::Encryption
 		{
 		public:
 			QuotedPrintable();

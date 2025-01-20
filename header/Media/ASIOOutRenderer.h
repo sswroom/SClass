@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_ASIOOUTRENDERER
 #define _SM_MEDIA_ASIOOUTRENDERER
 #include "Sync/Event.h"
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 
 namespace Media
 {
-	class ASIOOutRenderer : public IAudioRenderer
+	class ASIOOutRenderer : public AudioRenderer
 	{
 	private:
 		void *asiodrv;
@@ -20,7 +20,7 @@ namespace Media
 		Int32 debug;
 		Bool threadInit;
 
-		Optional<Media::IAudioSource> audSrc;
+		Optional<Media::AudioSource> audSrc;
 		Int32 bufferIndex;
 		Int64 bufferOfst;
 		Bool bufferFilled;
@@ -46,7 +46,7 @@ namespace Media
 		virtual ~ASIOOutRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
 		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();

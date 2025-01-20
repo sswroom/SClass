@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "Media/Decoder/VP09Decoder.h"
 
-void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	UOSInt nextFrameNum = 0;
 	VP9FrameInfo *frInfo = this->frameList.GetItem(this->frameList.GetCount() - 1);
@@ -86,8 +86,8 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	if (dblFrame)
 	{
 		UnsafeArray<UInt8> imgPtr = &imgData[0][fr1];
-		this->frameCb(frameTime, frameNum, &imgData[0], fr1, Media::IVideoSource::FS_N, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
-		flags = (Media::IVideoSource::FrameFlag)(flags & ~Media::IVideoSource::FF_DISCONTTIME);
+		this->frameCb(frameTime, frameNum, &imgData[0], fr1, Media::VideoSource::FS_N, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
+		flags = (Media::VideoSource::FrameFlag)(flags & ~Media::VideoSource::FF_DISCONTTIME);
 		this->frameCb(frameTime, frameNum, &imgPtr, fr2, frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
 	}
 	else
@@ -96,7 +96,7 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	}
 }
 
-Media::Decoder::VP09Decoder::VP09Decoder(NN<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VP09Decoder::VP09Decoder(NN<VideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->finfoMode = false;
 }

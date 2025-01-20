@@ -28,7 +28,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::Adler32::GetName(UnsafeArray<UTF8Char> sbuff
 	return Text::StrConcatC(sbuff, UTF8STRC("Adler-32"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::Adler32::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::Adler32::Clone() const
 {
 	NN<Crypto::Hash::Adler32> adler32;
 	NEW_CLASSNN(adler32, Crypto::Hash::Adler32(this));

@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
 #include "SSWR/AVIRead/AVIRVideoInfoForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 
@@ -18,10 +18,10 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration fra
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoChange(Media::VideoSource::FrameChange frChg, AnyType userData)
 {
 	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
-	if (frChg == Media::IVideoSource::FC_ENDPLAY)
+	if (frChg == Media::VideoSource::FC_ENDPLAY)
 	{
 		status->isEnd = true;
 		status->evt->Set();
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 		return;
 	}
 	Int32 syncTime;
-	NN<Media::IMediaSource> mediaSrc;
+	NN<Media::MediaSource> mediaSrc;
 	if (!currFile->GetStream((UOSInt)i, syncTime).SetTo(mediaSrc))
 	{
 		me->txtStream->SetText(CSTR(""));
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 	sb.AppendC(UTF8STRC("\r\n"));
 	if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 	{
-		NN<Media::IVideoSource> videoSrc = NN<Media::IVideoSource>::ConvertFrom(mediaSrc);
+		NN<Media::VideoSource> videoSrc = NN<Media::VideoSource>::ConvertFrom(mediaSrc);
 		Media::FrameInfo frameInfo;
 		UInt32 rateNorm;
 		UInt32 rateDenorm;
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 	{
 		Media::AudioFormat fmt;
-		NN<Media::IAudioSource> audioSrc = NN<Media::IAudioSource>::ConvertFrom(mediaSrc);
+		NN<Media::AudioSource> audioSrc = NN<Media::AudioSource>::ConvertFrom(mediaSrc);
 		sb.AppendC(UTF8STRC("Media Type = Audio\r\n"));
 		sb.AppendC(UTF8STRC("Sample Count = "));
 		sb.AppendI64(audioSrc->GetSampleCount());
@@ -155,11 +155,11 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		return;
 	}
 	NN<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus> status;
-	NN<Media::IMediaSource> msrc;
+	NN<Media::MediaSource> msrc;
 	
-	NN<Media::IAudioSource> adecoder;
+	NN<Media::AudioSource> adecoder;
 	NN<Media::NullRenderer> renderer;
-	NN<Media::IVideoSource> vdecoder;
+	NN<Media::VideoSource> vdecoder;
 	NN<Sync::Event> evt;
 	Media::Decoder::VideoDecoderFinder *vdecoders;
 	Media::Decoder::AudioDecoderFinder *adecoders;
@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			status->vdecoder = vdecoders->DecodeVideo(NN<Media::IVideoSource>::ConvertFrom(msrc));
+			status->vdecoder = vdecoders->DecodeVideo(NN<Media::VideoSource>::ConvertFrom(msrc));
 			if (status->vdecoder.SetTo(vdecoder))
 			{
 				vdecoder->Init(OnVideoFrame, OnVideoChange, status);
@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		}
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			status->adecoder = adecoders->DecodeAudio(NN<Media::IAudioSource>::ConvertFrom(msrc));
+			status->adecoder = adecoders->DecodeAudio(NN<Media::AudioSource>::ConvertFrom(msrc));
 			if (status->adecoder.SetTo(adecoder))
 			{
 				NEW_CLASSNN(renderer, Media::NullRenderer());
@@ -281,7 +281,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 	UOSInt i;
 	Int32 syncTime;
 	Text::StringBuilderUTF8 sb;
-	NN<Media::IMediaSource> mediaSrc;
+	NN<Media::MediaSource> mediaSrc;
 	i = 0;
 	while (true)
 	{

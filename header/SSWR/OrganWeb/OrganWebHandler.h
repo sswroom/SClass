@@ -23,8 +23,8 @@ namespace SSWR
 			NN<SSWR::OrganWeb::OrganWebEnv> env;
 			UInt32 scnSize;
 
-			static Bool __stdcall OnSessionDel(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
-			static Bool __stdcall OnSessionCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
+			static Bool __stdcall OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj);
+			static Bool __stdcall OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj);
 
 		public:
 			OrganWebHandler(NN<OrganWebEnv> env, UInt32 scnSize, Text::CStringNN rootDir);

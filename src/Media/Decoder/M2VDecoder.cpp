@@ -6,7 +6,7 @@
 #include "Media/Decoder/M2VDecoder.h"
 #include "Sync/ThreadUtil.h"
 
-void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 srch;
 	WriteMInt32((UInt8*)&srch, 0x00000100);
@@ -25,7 +25,7 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 				this->par = info.par2;
 				if (this->fcCb)
 				{
-					this->fcCb(Media::IVideoSource::FC_PAR, this->frameCbData);
+					this->fcCb(Media::VideoSource::FC_PAR, this->frameCbData);
 				}
 			}
 		}
@@ -46,15 +46,15 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	{
 		if (frameProp.pictureCodingType == 'I')
 		{
-			frameStruct = Media::IVideoSource::FS_I;
+			frameStruct = Media::VideoSource::FS_I;
 		}
 		else if (frameProp.pictureCodingType == 'P')
 		{
-			frameStruct = Media::IVideoSource::FS_P;
+			frameStruct = Media::VideoSource::FS_P;
 		}
 		else if (frameProp.pictureCodingType == 'B')
 		{
-			frameStruct = Media::IVideoSource::FS_B;
+			frameStruct = Media::VideoSource::FS_B;
 		}
 		ycOfst = Media::YCOFST_C_CENTER_LEFT;
 		if (frameProp.pictureStruct == Media::MPEGVideoParser::PS_TOPFIELD)
@@ -84,18 +84,18 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	else
 	{
 		ycOfst = Media::YCOFST_C_CENTER_CENTER;
-		frameStruct = Media::IVideoSource::FS_I;
+		frameStruct = Media::VideoSource::FS_I;
 	}
-	if (flags & Media::IVideoSource::FF_DISCONTTIME)
+	if (flags & Media::VideoSource::FF_DISCONTTIME)
 	{
 		this->discTime = true;
 	}
 	if (this->discTime)
 	{
-		if (frameStruct == Media::IVideoSource::FS_I)
+		if (frameStruct == Media::VideoSource::FS_I)
 		{
 			this->discTime = false;
-			flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
+			flags = (Media::VideoSource::FrameFlag)(flags | Media::VideoSource::FF_DISCONTTIME);
 		}
 		else
 		{
@@ -105,7 +105,7 @@ void Media::Decoder::M2VDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	this->frameCb(frameTime, frameNum, &imgData[0], dataSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 }
 
-Media::Decoder::M2VDecoder::M2VDecoder(NN<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::M2VDecoder::M2VDecoder(NN<VideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;

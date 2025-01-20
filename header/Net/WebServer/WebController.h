@@ -2,8 +2,8 @@
 #define _SM_NET_WEBSERVER_WEBCONTROLLER
 #include "Data/FastMap.h"
 #include "Data/FastStringMapNN.h"
-#include "Net/WebServer/IWebRequest.h"
-#include "Net/WebServer/IWebResponse.h"
+#include "Net/WebServer/WebRequest.h"
+#include "Net/WebServer/WebResponse.h"
 
 namespace Net
 {
@@ -12,7 +12,7 @@ namespace Net
 		class WebController
 		{
 		public:
-			typedef Bool (CALLBACKFUNC ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebController> me);
+			typedef Bool (CALLBACKFUNC ServiceFunc)(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebController> me);
 		private:
 			typedef struct
 			{
@@ -27,7 +27,7 @@ namespace Net
 			WebController(Text::CStringNN svcPath);
 			virtual ~WebController();
 
-			Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 			void AddService(Text::CStringNN svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func);
 		};
 	}

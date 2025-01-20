@@ -521,7 +521,7 @@ unsigned long kjmp2_decode_frame(
 }
 
 
-Media::Decoder::MP2Decoder::MP2Decoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::MP2Decoder::MP2Decoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -554,7 +554,7 @@ Media::Decoder::MP2Decoder::~MP2Decoder()
 
 void Media::Decoder::MP2Decoder::GetFormat(NN<AudioFormat> format)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
@@ -574,7 +574,7 @@ void Media::Decoder::MP2Decoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::MP2Decoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		return sourceAudio->SeekToTime(time);
@@ -585,7 +585,7 @@ Data::Duration Media::Decoder::MP2Decoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::MP2Decoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Start(0, blkSize);
@@ -599,7 +599,7 @@ Bool Media::Decoder::MP2Decoder::Start(Optional<Sync::Event> evt, UOSInt blkSize
 
 void Media::Decoder::MP2Decoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();
@@ -609,7 +609,7 @@ void Media::Decoder::MP2Decoder::Stop()
 
 UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (!this->sourceAudio.SetTo(sourceAudio))
 		return 0;
 	UInt8 srcBuff[1440];

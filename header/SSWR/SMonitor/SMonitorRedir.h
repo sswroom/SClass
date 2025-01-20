@@ -2,7 +2,7 @@
 #define _SM_SSWR_SMONITOR_SMONITORREDIR
 #include "Crypto/Hash/CRC16.h"
 #include "Net/UDPServer.h"
-#include "SSWR/SMonitor/ISMonitorCore.h"
+#include "SSWR/SMonitor/SMonitorCore.h"
 #include "Sync/Mutex.h"
 
 namespace SSWR
@@ -32,7 +32,7 @@ namespace SSWR
 
 			Bool IsError();
 
-			Bool SendDevReading(Int64 cliId, NN<const SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, Int32 reportInterval, Int32 kaInterval);
+			Bool SendDevReading(Int64 cliId, NN<const SSWR::SMonitor::SMonitorCore::DevRecord2> rec, Int32 reportInterval, Int32 kaInterval);
 			Bool SendDevName(Int64 cliId, UnsafeArray<const UTF8Char> name, UOSInt nameLen);
 			Bool SendDevPlatform(Int64 cliId, UnsafeArray<const UTF8Char> platform, UOSInt nameLen);
 			Bool SendDevCPUName(Int64 cliId, UnsafeArray<const UTF8Char> cpuName, UOSInt nameLen);

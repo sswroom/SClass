@@ -96,7 +96,7 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 			{
 				this->resizer->SetTargetWidth(iScnX2 - iScnX);
 				this->resizer->SetTargetHeight(iScnY2 - iScnY);
-				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 				Media::StaticImage *newImg = this->resizer->ProcessToNew(cimg->img);
 				if (newImg)
 				{
@@ -157,7 +157,7 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 
 				this->resizer->SetTargetWidth(iScnX2 - iScnX);
 				this->resizer->SetTargetHeight(iScnY2 - iScnY);
-				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 				Media::StaticImage *newImg = this->resizer->ProcessToNewPartial(cimg->img, cimgX, cimgY, cimgX2, cimgY2);
 				if (newImg)
 				{

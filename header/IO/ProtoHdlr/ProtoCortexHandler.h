@@ -1,18 +1,18 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOCORTEXHANDLER
 #define _SM_IO_PROTOHDLR_PROTOCORTEXHANDLER
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoCortexHandler : public IO::IProtocolHandler
+		class ProtoCortexHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoCortexHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoCortexHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoCortexHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

@@ -16,7 +16,7 @@ namespace Media
 			Media::ColorProfile destProfile;
 			Bool invert;
 
-			Media::IColorHandler::RGBPARAM2 rgbParam;
+			Media::ColorHandler::RGBPARAM2 rgbParam;
 			UInt8 *srcPal;
 			UInt8 *destPal;
 			UInt8 *rgbTable;

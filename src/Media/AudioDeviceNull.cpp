@@ -13,9 +13,9 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	return 0;
 }
 
-Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
+Media::AudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
 {
-	Media::IAudioRenderer *renderer = 0;
+	Media::AudioRenderer *renderer = 0;
 	return renderer;
 }
 
@@ -31,7 +31,7 @@ Media::AudioDevice::~AudioDevice()
 
 Bool Media::AudioDevice::AddDevice(Text::CString devName)
 {
-	Media::IAudioRenderer *renderer;
+	Media::AudioRenderer *renderer;
 	Bool ret = false;
 	return ret;
 }
@@ -39,7 +39,7 @@ Bool Media::AudioDevice::AddDevice(Text::CString devName)
 void Media::AudioDevice::ClearDevices()
 {
 	UOSInt i;
-	Media::IAudioRenderer *renderer;
+	Media::AudioRenderer *renderer;
 
 	BindAudio(0);
 	i = this->rendererList.GetCount();
@@ -51,11 +51,11 @@ void Media::AudioDevice::ClearDevices()
 	this->rendererList.Clear();
 }
 
-Media::IAudioRenderer *Media::AudioDevice::BindAudio(Media::IAudioSource *audsrc)
+Media::AudioRenderer *Media::AudioDevice::BindAudio(Media::AudioSource *audsrc)
 {
 	OSInt i;
 	OSInt j;
-	Media::IAudioRenderer *renderer;
+	Media::AudioRenderer *renderer;
 	if (this->rendererList.GetCount() == 0)
 	{
 		renderer = 0;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDate.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/Sort/QuickBubbleSort.h"
 #include <stdlib.h>
 

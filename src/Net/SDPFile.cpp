@@ -308,7 +308,7 @@ void Net::SDPFile::SetReqUserAgent(Text::CString userAgent)
 	this->reqUserAgent = Text::String::NewOrNull(userAgent);
 }
 
-void Net::SDPFile::AddBuildMedia(Net::ISDPMedia *media)
+void Net::SDPFile::AddBuildMedia(Net::SDPMedia *media)
 {
 	this->sessMedia.Add(media);
 }
@@ -410,7 +410,7 @@ Bool Net::SDPFile::BuildBuff()
 	j = this->sessMedia.GetCount();
 	while (i < j)
 	{
-		Net::ISDPMedia *media = this->sessMedia.GetItem(i);
+		Net::SDPMedia *media = this->sessMedia.GetItem(i);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("m="));
 		if (media->GetSDPMediaType() == Media::MEDIA_TYPE_VIDEO)
@@ -440,7 +440,7 @@ Bool Net::SDPFile::BuildBuff()
 		l = media->GetSDPDataCount();
 		while (k < l)
 		{
-			Net::ISDPData *data = media->GetSDPData(k);
+			Net::SDPData *data = media->GetSDPData(k);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=rtpmap:"));
 			sb.AppendU16(data->GetSDPDataPort());

@@ -31,7 +31,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 			}
 			else
 			{
-				me->frameCb(frameTime, frameNum++, &frameBuff, frameSize, Media::IVideoSource::FS_I, me->frameCbObj, ft, (me->seeked)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+				me->frameCb(frameTime, frameNum++, &frameBuff, frameSize, Media::VideoSource::FS_I, me->frameCbObj, ft, (me->seeked)?Media::VideoSource::FF_DISCONTTIME:Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 				me->seeked = false;
 			}
 		}
@@ -260,7 +260,7 @@ void Media::VFVideoStream::EnumFrameInfos(FrameInfoCallback cb, AnyType userData
 	i = 0;
 	while (i < this->frameCnt)
 	{
-		if (!cb(MulDivU32(i, this->frameRateScale * 1000, this->frameRate), i, dataSize, Media::IVideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
+		if (!cb(MulDivU32(i, this->frameRateScale * 1000, this->frameRate), i, dataSize, Media::VideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
 		{
 			break;
 		}

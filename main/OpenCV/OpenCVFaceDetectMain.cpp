@@ -91,10 +91,10 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 	lastCnt = thisCnt;
 }
 
-Optional<Media::IVideoCapture> OpenCapture(UOSInt defIndex)
+Optional<Media::VideoCapturer> OpenCapture(UOSInt defIndex)
 {
-	Optional<Media::IVideoCapture> capture = 0;
-	NN<Media::IVideoCapture> nncapture;
+	Optional<Media::VideoCapturer> capture = 0;
+	NN<Media::VideoCapturer> nncapture;
 	Media::VideoCaptureMgr *videoCap;
 	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 	UOSInt i;
@@ -104,8 +104,8 @@ Optional<Media::IVideoCapture> OpenCapture(UOSInt defIndex)
 	videoCap->GetDeviceList(devList);
 	if (devList.GetCount())
 	{
-		Media::IVideoCapture::VideoFormat *formats;
-		formats = MemAlloc(Media::IVideoCapture::VideoFormat, 512);
+		Media::VideoCapturer::VideoFormat *formats;
+		formats = MemAlloc(Media::VideoCapturer::VideoFormat, 512);
 		i = 0;
 		j = 512;
 		while (i < j)
@@ -160,7 +160,7 @@ Optional<Media::IVideoCapture> OpenCapture(UOSInt defIndex)
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NN<Media::IVideoCapture> capture;
+	NN<Media::VideoCapturer> capture;
 	IO::ConsoleWriter *console;
 	UOSInt defIndex;
 	lastCnt = 0;

@@ -7,8 +7,8 @@
 #include "Media/Playlist.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
-#include "Media/ImageFilter/BGImgFilter.h"
-#include "Media/ImageFilter/BWImgFilter.h"
+#include "Media/ImgFilter/BGImgFilter.h"
+#include "Media/ImgFilter/BWImgFilter.h"
 #include "Net/SSLEngine.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -42,8 +42,8 @@ namespace SSWR
 			Bool pbEnd;
 			Optional<Net::WebServer::WebListener> listener;
 
-			NN<Media::ImageFilter::BWImgFilter> bwFilter;
-			NN<Media::ImageFilter::BGImgFilter> bgFilter;
+			NN<Media::ImgFilter::BWImgFilter> bwFilter;
+			NN<Media::ImgFilter::BGImgFilter> bgFilter;
 
 			NN<UI::GUIVideoBoxDD> vbox;
 			NN<UI::GUIMainMenu> mnu;

@@ -4,7 +4,7 @@
 #include "Map/MapConfigBase.h"
 #include "Map/MapLayerData.h"
 #include "Map/MapScheduler.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Parser/ParserList.h"
 #include "Text/String.h"
 
@@ -66,7 +66,7 @@ namespace Map
 		static void GetCharsSize(NN<Media::DrawImage> img, Math::Coord2DDbl *size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
 		static UInt32 ToColor(UnsafeArray<const UTF8Char> str);
 		static Optional<Map::MapDrawLayer> GetDrawLayer(Text::CStringNN name, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<IO::Writer> errWriter);
-		static void DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, NN<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
+		static void DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, NN<Media::DrawEngine> eng, Media::ImageResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
 		static void DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UOSInt maxLabels, UOSInt *labelCnt, Bool *isLayerEmpty);
 		static UOSInt NewLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority);
 		static Bool AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CStringNN label, UOSInt nPoints, UnsafeArray<Math::Coord2DDbl> points, Int32 priority, Int32 recType, UInt32 fntStyle, UInt32 flag, NN<Map::MapView> view, Double xOfst, Double yOfst);
@@ -81,7 +81,7 @@ namespace Map
 
 		Bool IsError();
 		Optional<Media::DrawPen> CreatePen(NN<Media::DrawImage> img, UInt32 lineStyle, UOSInt lineLayer);
-		WChar *DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, Text::CString dbOutput, DrawParam *params);
+		WChar *DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::ImageResizer *resizer, Text::CString dbOutput, DrawParam *params);
 
 		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);

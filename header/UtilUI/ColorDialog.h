@@ -14,7 +14,7 @@
 
 namespace UtilUI
 {
-	class ColorDialog : public UI::GUIForm, public Media::IColorHandler
+	class ColorDialog : public UI::GUIForm, public Media::ColorHandler
 	{
 	private:
 		typedef struct
@@ -163,8 +163,8 @@ namespace UtilUI
 		virtual void OnMonitorChanged();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
 
-		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 	};
 }
 #endif

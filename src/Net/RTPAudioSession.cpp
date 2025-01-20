@@ -141,7 +141,7 @@ void Net::RTPAudioSession::SetAudioFormat(Net::RTPAudioSession::RTPAudioFormat a
 	}
 }
 
-Bool Net::RTPAudioSession::StartSend(Media::IAudioSource *audSrc, UInt32 destIP, UInt16 destPort, Int32 outSSRC)
+Bool Net::RTPAudioSession::StartSend(Media::AudioSource *audSrc, UInt32 destIP, UInt16 destPort, Int32 outSSRC)
 {
 	if (this->outRunning)
 	{

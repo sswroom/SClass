@@ -3,14 +3,14 @@
 #include "MyMemory.h"
 #include "IO/CDSectorData.h"
 
-IO::CDSectorData::CDSectorData(NN<IO::ISectorData> data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount) : IO::ISectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
+IO::CDSectorData::CDSectorData(NN<IO::SectorData> data, UOSInt userOfst, UOSInt userDataSize, UInt64 startSector, UInt64 sectorCount) : IO::SectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data->GetPartialData(startSector, sectorCount);
 	this->userOfst = userOfst;
 	this->userDataSize = userDataSize;
 }
 
-IO::CDSectorData::CDSectorData(NN<IO::ISectorData> data, UOSInt userOfst, UOSInt userDataSize) : IO::ISectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
+IO::CDSectorData::CDSectorData(NN<IO::SectorData> data, UOSInt userOfst, UOSInt userDataSize) : IO::SectorData(data->GetSourceNameObj()), sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data->GetPartialData(0, data->GetSectorCount());
 	this->userOfst = userOfst;
@@ -40,9 +40,9 @@ Bool IO::CDSectorData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff)
 	return true;
 }
 
-NN<IO::ISectorData> IO::CDSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
+NN<IO::SectorData> IO::CDSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
-	NN<IO::ISectorData> data;
+	NN<IO::SectorData> data;
 	NEW_CLASSNN(data, IO::CDSectorData(this->data, this->userOfst, this->userDataSize, startSector, sectorCount));
 	return data;
 }
@@ -64,7 +64,7 @@ UOSInt IO::CDSectorData::GetSeekCount() const
 	return this->data->GetSeekCount();
 }
 
-IO::CDSectorStreamData::CDSectorStreamData(NN<IO::ISectorData> data, UOSInt sectorOfst, UInt64 dataSize) : sectorBuff(data->GetBytesPerSector())
+IO::CDSectorStreamData::CDSectorStreamData(NN<IO::SectorData> data, UOSInt sectorOfst, UInt64 dataSize) : sectorBuff(data->GetBytesPerSector())
 {
 	this->data = data;
 	this->sectorOfst = sectorOfst;

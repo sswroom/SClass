@@ -114,7 +114,7 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(AnyType userObj, UOSInt b
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
+Net::WebServer::WebListener::WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<WebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart)
 {
 	this->hdlr = hdlr;
 	UOSInt i = mgrCnt;
@@ -211,13 +211,13 @@ void Net::WebServer::WebListener::SetAccessLog(Optional<IO::LogTool> accLog, IO:
 	this->accLogLev = accLogLev;
 }
 
-void Net::WebServer::WebListener::SetRequestLog(Optional<Net::WebServer::IReqLogger> reqLog)
+void Net::WebServer::WebListener::SetRequestLog(Optional<Net::WebServer::WebRequestLogger> reqLog)
 {
 	Sync::MutexUsage mutUsage(this->accLogMut);
 	this->reqLog = reqLog;
 }
 
-void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Double time)
+void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Double time)
 {
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
@@ -225,7 +225,7 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 	Interlocked_IncrementU32(&this->status.reqCnt);
 	Sync::MutexUsage accLogMutUsage(this->accLogMut);
 	NN<IO::LogTool> accLog;
-	NN<Net::WebServer::IReqLogger> reqLog;
+	NN<Net::WebServer::WebRequestLogger> reqLog;
 	if (this->reqLog.SetTo(reqLog))
 	{
 		reqLog->LogRequest(req);
@@ -276,11 +276,11 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 	}
 }
 
-void Net::WebServer::WebListener::LogMessageC(Optional<Net::WebServer::IWebRequest> req, Text::CStringNN msg)
+void Net::WebServer::WebListener::LogMessageC(Optional<Net::WebServer::WebRequest> req, Text::CStringNN msg)
 {
 	UTF8Char sbuff[32];
 	NN<IO::LogTool> accLog;
-	NN<Net::WebServer::IWebRequest> nnreq;
+	NN<Net::WebServer::WebRequest> nnreq;
 	Sync::MutexUsage mutUsage(this->accLogMut);
 	if (this->accLog.SetTo(accLog))
 	{

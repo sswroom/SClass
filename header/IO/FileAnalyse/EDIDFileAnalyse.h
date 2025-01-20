@@ -1,13 +1,13 @@
 #ifndef _SM_IO_FILEANALYSE_EDIDFILEANALYSE
 #define _SM_IO_FILEANALYSE_EDIDFILEANALYSE
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 
 namespace IO
 {
 	namespace FileAnalyse
 	{
-		class EDIDFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class EDIDFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			UOSInt blockCnt;

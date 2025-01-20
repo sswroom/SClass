@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/WSConfigFile.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 #include "Media/LPCMConverter.h"
 #include "Media/PulseAudioRenderer.h"
 #include "Media/RefClock.h"
@@ -461,7 +461,7 @@ Bool Media::PulseAudioRenderer::IsError()
 	return false;
 }
 
-Bool Media::PulseAudioRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::PulseAudioRenderer::BindAudio(Media::AudioSource *audsrc)
 {
 	Media::AudioFormat fmt;
 	if (this->thread.IsRunning())

@@ -2,34 +2,34 @@
 #define _SM_TEXT_MIMEOBJ_MIMEMESSAGE
 #include "Data/ArrayListStringNN.h"
 #include "IO/StreamData.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "Text/String.h"
 
 namespace Text
 {
 	namespace MIMEObj
 	{
-		class MIMEMessage : public Text::IMIMEObj
+		class MIMEMessage : public Text::MIMEObject
 		{
 		protected:
 			Data::ArrayListStringNN headerName;
 			Data::ArrayListStringNN headerValue;
-			Optional<Text::IMIMEObj> content;
+			Optional<Text::MIMEObject> content;
 			UInt8 *transferData;
 			UOSInt transferSize;
 
 		public:
 			MIMEMessage();
-			MIMEMessage(Optional<Text::IMIMEObj> content);
+			MIMEMessage(Optional<Text::MIMEObject> content);
 			virtual ~MIMEMessage();
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
-			virtual NN<IMIMEObj> Clone() const;
+			virtual NN<MIMEObject> Clone() const;
 
-			void SetContent(Optional<Text::IMIMEObj> content);
-			Optional<Text::IMIMEObj> GetContent() const;
+			void SetContent(Optional<Text::MIMEObject> content);
+			Optional<Text::MIMEObject> GetContent() const;
 			void SetTransferData(const UInt8 *data, UOSInt dataSize);
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);

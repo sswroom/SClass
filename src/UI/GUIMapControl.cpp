@@ -615,11 +615,11 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUIMapControl::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void UI::GUIMapControl::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void UI::GUIMapControl::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void UI::GUIMapControl::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	this->renderer->ColorUpdated();
 	this->SetBGColor(this->bgColor);

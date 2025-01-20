@@ -234,7 +234,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	}
 }
 
-SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::IAudioSource> audSrc) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::AudioSource> audSrc) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

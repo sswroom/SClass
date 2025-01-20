@@ -117,16 +117,16 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 	}
 	if (this->finfoMode)
 	{
-		Media::IVideoSource::FrameStruct fs;
+		Media::VideoSource::FrameStruct fs;
 		Media::FrameType ft;
 		if (ret)
 		{
 			if (prop.pictureCodingType == 'I')
-				fs = Media::IVideoSource::FS_I;
+				fs = Media::VideoSource::FS_I;
 			else if (prop.pictureCodingType == 'B')
-				fs = Media::IVideoSource::FS_B;
+				fs = Media::VideoSource::FS_B;
 			else
-				fs = Media::IVideoSource::FS_P;
+				fs = Media::VideoSource::FS_P;
 			if (prop.progressive)
 				ft = Media::FT_NON_INTERLACE;
 			else if (prop.pictureStruct == Media::MPEGVideoParser::PS_TOPFIELD)
@@ -140,7 +140,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 		}
 		else
 		{
-			fs = Media::IVideoSource::FS_P;
+			fs = Media::VideoSource::FS_P;
 			ft = Media::FT_NON_INTERLACE;
 		}
 		this->finfoCb.func(this->thisFrameTime + fieldAdd, this->frameNum, frameSize, fs, ft, this->finfoCb.userObj, Media::YCOFST_C_CENTER_LEFT);
@@ -285,7 +285,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 							me->par = info.par2;
 							if (me->fcCb)
 							{
-								me->fcCb(Media::IVideoSource::FC_PAR, me->frameCbData);
+								me->fcCb(Media::VideoSource::FC_PAR, me->frameCbData);
 							}
 						}
 						me->bitRate = bitRate;
@@ -343,16 +343,16 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 				}
 			}
 			ret = Media::MPEGVideoParser::GetFrameProp(&me->playBuff[me->playBuffStart].frame[pictureStart], me->playBuff[me->playBuffStart].frameSize - pictureStart, prop);
-			Media::IVideoSource::FrameStruct fs;
+			Media::VideoSource::FrameStruct fs;
 			Media::FrameType ft;
 			if (ret)
 			{
 				if (prop.pictureCodingType == 'I')
-					fs = Media::IVideoSource::FS_I;
+					fs = Media::VideoSource::FS_I;
 				else if (prop.pictureCodingType == 'B')
-					fs = Media::IVideoSource::FS_B;
+					fs = Media::VideoSource::FS_B;
 				else
-					fs = Media::IVideoSource::FS_P;
+					fs = Media::VideoSource::FS_P;
 				if (prop.progressive)
 					ft = Media::FT_NON_INTERLACE;
 				else if (prop.pictureStruct == Media::MPEGVideoParser::PS_TOPFIELD)
@@ -366,7 +366,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 			}
 			else
 			{
-				fs = Media::IVideoSource::FS_P;
+				fs = Media::VideoSource::FS_P;
 				ft = Media::FT_NON_INTERLACE;
 			}
 
@@ -391,7 +391,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 				me->debugLog->WriteLine(sb.ToCString());
 			}
 #endif
-			me->frameCb(frameTime, frameNum, &frameBuff, frameSize, fs, me->frameCbData, ft, (frameNum == 0)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+			me->frameCb(frameTime, frameNum, &frameBuff, frameSize, fs, me->frameCbData, ft, (frameNum == 0)?Media::VideoSource::FF_DISCONTTIME:Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 			MemFreeArr(frameBuff);
 
 		}
@@ -402,13 +402,13 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 	{
 		if (me->fcCb)
 		{
-			me->fcCb(Media::IVideoSource::FC_ENDPLAY, me->frameCbData);
+			me->fcCb(Media::VideoSource::FC_ENDPLAY, me->frameCbData);
 		}
 	}
 	return 1001;
 }
 
-Media::M2VStreamSource::M2VStreamSource(NN<Media::IStreamControl> pbc)
+Media::M2VStreamSource::M2VStreamSource(NN<Media::MediaStreamControl> pbc)
 {
 	this->info.Clear();
 	this->pbc = pbc;

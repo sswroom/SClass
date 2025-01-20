@@ -1,19 +1,19 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOLSHANDLER
 #define _SM_IO_PROTOHDLR_PROTOLSHANDLER
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoLSHandler : public IO::IProtocolHandler
+		class ProtoLSHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoLSHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoLSHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoLSHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Encoder/G711muLawEncoder.h"
 
-Media::Encoder::G711muLawEncoder::G711muLawEncoder(Media::IAudioSource *sourceAudio)
+Media::Encoder::G711muLawEncoder::G711muLawEncoder(Media::AudioSource *sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;

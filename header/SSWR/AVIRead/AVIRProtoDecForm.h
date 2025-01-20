@@ -39,7 +39,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<IO::FileStream> currFile;
-			Optional<IO::ProtoDec::IProtocolDecoder> currDec;
+			Optional<IO::ProtoDec::ProtocolDecoder> currDec;
 			IO::ProtoDec::ProtoDecList decList;
 			Data::ArrayListNN<ProtocolItem> itemList;
 

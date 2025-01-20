@@ -1,15 +1,15 @@
 #include "Stdafx.h"
 #include "Data/Sort/InsertionSort.h"
 
-void Data::Sort::InsertionSort::SortBCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt left, OSInt right)
+void Data::Sort::InsertionSort::SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt left, OSInt right)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	OSInt l;
-	NN<Data::IComparable> temp;
-	NN<Data::IComparable> temp1;
-	NN<Data::IComparable> temp2;
+	NN<Data::Comparable> temp;
+	NN<Data::Comparable> temp1;
+	NN<Data::Comparable> temp2;
 	temp1 = arr[left];
 	i = left + 1;
 	while (i <= right)

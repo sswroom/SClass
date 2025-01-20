@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_MDBFILEANALYSE
 #include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Thread.h"
 #include "Text/CString.h"
 #include "Text/StringBuilder.h"
@@ -11,7 +11,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class MDBFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class MDBFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			typedef struct

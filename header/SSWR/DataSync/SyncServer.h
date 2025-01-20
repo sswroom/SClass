@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_DATASYNC_SYNCSERVER
 #define _SM_SSWR_DATASYNC_SYNCSERVER
 #include "Data/FastMapNN.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
 #include "SSWR/DataSync/SyncClient.h"
@@ -12,7 +12,7 @@ namespace SSWR
 {
 	namespace DataSync
 	{
-		class SyncServer : public IO::IProtocolHandler::DataListener
+		class SyncServer : public IO::ProtocolHandler::DataListener
 		{
 		public:
 			struct ServerInfo

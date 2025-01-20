@@ -1,13 +1,13 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOTRAMWAYV1HANDLER
 #define _SM_IO_PROTOHDLR_PROTOTRAMWAYV1HANDLER
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoTramwayV1Handler : public IO::IProtocolHandler
+		class ProtoTramwayV1Handler : public IO::ProtocolHandler
 		{
 		private:
 			typedef struct
@@ -16,10 +16,10 @@ namespace IO
 				UOSInt buffSize;
 			} ProtocolStatus;
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoTramwayV1Handler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoTramwayV1Handler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoTramwayV1Handler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

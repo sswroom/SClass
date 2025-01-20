@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/Compress/DeflateStream.h"
 
-Data::Compress::DeflateStream::DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
+Data::Compress::DeflateStream::DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::HashAlgorithm *hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
 {
 }
 

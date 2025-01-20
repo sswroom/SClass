@@ -1,7 +1,7 @@
 #ifndef _SM_MATH_SHORTESTPATH
 #define _SM_MATH_SHORTESTPATH
 #include "Data/ArrayListNN.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 namespace Math
 {
@@ -15,7 +15,7 @@ namespace Math
 			virtual NN<Data::ArrayListNN<PathNode>> GetNeighbourNodes() = 0;
 		};
 
-		class Path : public Data::IComparable
+		class Path : public Data::Comparable
 		{
 		public:
 			double totalDistance;
@@ -26,7 +26,7 @@ namespace Math
 			virtual ~Path();
 			NN<Path> Clone() const;
 			Bool AddNode(NN<PathNode> node, Double distance);
-			virtual OSInt CompareTo(Data::IComparable *obj) const;
+			virtual OSInt CompareTo(Data::Comparable *obj) const;
 		};
 
 	public:

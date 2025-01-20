@@ -34,11 +34,11 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-class PrintTest : public Media::IPrintHandler
+class PrintTest : public Media::PrintHandler
 {
 private:
 	OSInt pageId;
-	Optional<Media::IPrintDocument> doc;
+	Optional<Media::PrintDocument> doc;
 
 public:
 	PrintTest()
@@ -51,13 +51,13 @@ public:
 	{
 	}
 
-	virtual Bool BeginPrint(NN<Media::IPrintDocument> doc)
+	virtual Bool BeginPrint(NN<Media::PrintDocument> doc)
 	{
 		Media::PaperSize psize(Media::PaperSize::PT_A4);
 		this->pageId = 0;
 		this->doc = doc;
 		doc->SetDocName(CSTR("PrintTest"));
-		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
+		doc->SetNextPageOrientation(Media::PrintDocument::PageOrientation::Portrait);
 		doc->SetNextPagePaperSizeMM(psize.GetWidthMM(), psize.GetHeightMM());
 		return true;
 	}
@@ -72,11 +72,11 @@ public:
 		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi), p, 0);
 		printPage->DelPen(p);
 
-		NN<Media::IPrintDocument> doc;
+		NN<Media::PrintDocument> doc;
 		if (this->pageId == 0 && this->doc.SetTo(doc))
 		{
 			this->pageId = 1;
-			doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
+			doc->SetNextPageOrientation(Media::PrintDocument::PageOrientation::Landscape);
 			return true;
 		}
 		else
@@ -85,7 +85,7 @@ public:
 		}
 	}
 
-	virtual Bool EndPrint(NN<Media::IPrintDocument> doc)
+	virtual Bool EndPrint(NN<Media::PrintDocument> doc)
 	{
 		return true;
 	}
@@ -585,7 +585,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				{
 					NN<PrintTest> test;
 					NEW_CLASSNN(test, PrintTest());
-					NN<Media::IPrintDocument> doc;
+					NN<Media::PrintDocument> doc;
 					if (printer->StartPrint(test, deng).SetTo(doc))
 					{
 						printer->EndPrint(doc);
@@ -609,8 +609,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Media::VideoCaptureMgr *videoMgr;
 		Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 		NN<Media::VideoCaptureMgr::DeviceInfo> dev;
-		NN<Media::IVideoCapture> capture;
-		Media::IVideoCapture::VideoFormat fmts[512];
+		NN<Media::VideoCapturer> capture;
+		Media::VideoCapturer::VideoFormat fmts[512];
 		Char fmtName[5];
 		console->WriteLine();
 		writer->WriteLine();

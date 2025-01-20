@@ -9,7 +9,7 @@
 
 #define ALLONE 1
 
-void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 	Bool found = false;
@@ -20,7 +20,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	UOSInt imgSize;
 	Bool frameFound = false;
 
-	if (flags & Media::IVideoSource::FF_DISCONTTIME)
+	if (flags & Media::VideoSource::FF_DISCONTTIME)
 	{
 		this->discontTime = true;
 		this->frameSize = 0;
@@ -148,7 +148,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		{
 			if (frameFound)
 			{
-				if (this->discontTime && frameStruct != Media::IVideoSource::FS_I)
+				if (this->discontTime && frameStruct != Media::VideoSource::FS_I)
 				{
 					this->frameSize = 0;
 				}
@@ -156,11 +156,11 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 				{
 					if (this->discontTime)
 					{
-						flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
+						flags = (Media::VideoSource::FrameFlag)(flags | Media::VideoSource::FF_DISCONTTIME);
 					}
 					else
 					{
-						flags = (Media::IVideoSource::FrameFlag)(flags & ~Media::IVideoSource::FF_DISCONTTIME);
+						flags = (Media::VideoSource::FrameFlag)(flags & ~Media::VideoSource::FF_DISCONTTIME);
 					}
 					this->discontTime = false;
 					this->frameCb(frameTime, frameNum, &this->frameBuff, this->frameSize, frameStruct, this->frameCbData, frameType, flags, Media::YCOFST_C_CENTER_LEFT);
@@ -190,34 +190,34 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 				switch (v)
 				{
 				case 0:
-					frameStruct = Media::IVideoSource::FS_P;
+					frameStruct = Media::VideoSource::FS_P;
 					break;
 				case 1:
-					frameStruct = Media::IVideoSource::FS_B;
+					frameStruct = Media::VideoSource::FS_B;
 					break;
 				case 2:
-					frameStruct = Media::IVideoSource::FS_I;
+					frameStruct = Media::VideoSource::FS_I;
 					break;
 				case 3:
-					frameStruct = Media::IVideoSource::FS_P;
+					frameStruct = Media::VideoSource::FS_P;
 					break;
 				case 4:
-					frameStruct = Media::IVideoSource::FS_I;
+					frameStruct = Media::VideoSource::FS_I;
 					break;
 				case 5:
-					frameStruct = Media::IVideoSource::FS_P;
+					frameStruct = Media::VideoSource::FS_P;
 					break;
 				case 6:
-					frameStruct = Media::IVideoSource::FS_B;
+					frameStruct = Media::VideoSource::FS_B;
 					break;
 				case 7:
-					frameStruct = Media::IVideoSource::FS_I;
+					frameStruct = Media::VideoSource::FS_I;
 					break;
 				case 8:
-					frameStruct = Media::IVideoSource::FS_P;
+					frameStruct = Media::VideoSource::FS_P;
 					break;
 				case 9:
-					frameStruct = Media::IVideoSource::FS_I;
+					frameStruct = Media::VideoSource::FS_I;
 					break;
 				}
 			}
@@ -307,7 +307,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	}
 	else
 	{
-		if (this->discontTime && frameStruct != Media::IVideoSource::FS_I)
+		if (this->discontTime && frameStruct != Media::VideoSource::FS_I)
 		{
 			this->frameSize = 0;
 		}
@@ -315,11 +315,11 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 		{
 			if (this->discontTime)
 			{
-				flags = (Media::IVideoSource::FrameFlag)(flags | Media::IVideoSource::FF_DISCONTTIME);
+				flags = (Media::VideoSource::FrameFlag)(flags | Media::VideoSource::FF_DISCONTTIME);
 			}
 			else
 			{
-				flags = (Media::IVideoSource::FrameFlag)(flags & ~Media::IVideoSource::FF_DISCONTTIME);
+				flags = (Media::VideoSource::FrameFlag)(flags & ~Media::VideoSource::FF_DISCONTTIME);
 			}
 			this->discontTime = false;
 			if (frameNum == 0x24)
@@ -333,7 +333,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	mutUsage.EndUse();
 }
 
-Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::RAVCDecoder::RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRelease, Bool skipHeader) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;

@@ -264,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 		UOSInt i = 0;
 		while (i < me->gnssRecSateCnt)
 		{
-			me->lvGNSSSatellite->AddItem(Map::ILocationService::SateTypeGetName(me->gnssRecSates[i].sateType), 0);
+			me->lvGNSSSatellite->AddItem(Map::LocationService::SateTypeGetName(me->gnssRecSates[i].sateType), 0);
 			sptr = Text::StrUInt16(sbuff, me->gnssRecSates[i].prn);
 			me->lvGNSSSatellite->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt16(sbuff, me->gnssRecSates[i].elev);
@@ -288,7 +288,7 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnTimerTick(AnyType userObj)
 	}
 	else
 	{
-		NN<Map::ILocationService> locSvc;
+		NN<Map::LocationService> locSvc;
 		currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		if (me->locSvc.SetTo(locSvc) && (currTime - me->gnssLastUpdateTime) >= 20000)
 		{
@@ -458,13 +458,13 @@ void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnGNSSClicked(AnyType userObj)
 	me->ToggleGNSS();
 }
 
-void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnGNSSLocationUpdated(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRRadioScanForm::OnGNSSLocationUpdated(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates)
 {
 	NN<SSWR::AVIRead::AVIRRadioScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRadioScanForm>();
 	Sync::MutexUsage mutUsage(me->gnssRecMut);
 	MemCopyNO(&me->gnssRecCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
 	me->gnssRecSateCnt = sates.GetCount();
-	MemCopyNO(me->gnssRecSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
+	MemCopyNO(me->gnssRecSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::LocationService::SateStatus));
 	me->gnssRecUpdated = true;
 }
 
@@ -565,7 +565,7 @@ void SSWR::AVIRead::AVIRRadioScanForm::ToggleGNSS()
 		NN<IO::SerialPort> stm;
 		if (IO::SerialPortUtil::OpenSerialPort(this->cboGNSSPort, this->cboGNSSBaudRate, this->cboGNSSParity, this->chkGNSSFlowControl->IsChecked()).SetTo(stm))
 		{
-			NN<Map::ILocationService> locSvc;
+			NN<Map::LocationService> locSvc;
 			NEW_CLASSNN(locSvc, IO::GPSNMEA(stm, true));
 			locSvc->RegisterLocationHandler(OnGNSSLocationUpdated, this);
 			this->locSvc = locSvc;

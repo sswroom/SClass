@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_UTF8LCASETEXTBINENC
 #define _SM_TEXT_TEXTBINENC_UTF8LCASETEXTBINENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class UTF8LCaseTextBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class UTF8LCaseTextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			UTF8LCaseTextBinEnc();

@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	NN<Media::MediaPlayer> player;
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	if (me->dbgFrm.NotNull())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -774,9 +774,9 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 	this->uOfst = 0;
 	this->vOfst = 0;
 
-	NEW_CLASSNN(this->bgFilter, Media::ImageFilter::BGImgFilter());
+	NEW_CLASSNN(this->bgFilter, Media::ImgFilter::BGImgFilter());
 	this->vbox->AddImgFilter(this->bgFilter);
-	NEW_CLASSNN(this->bwFilter, Media::ImageFilter::BWImgFilter(false));
+	NEW_CLASSNN(this->bwFilter, Media::ImgFilter::BWImgFilter(false));
 	this->vbox->AddImgFilter(this->bwFilter);
 
 	NN<Media::MediaPlayer> player;
@@ -804,7 +804,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 {
 	NN<Media::MediaPlayer> player;
 	NN<Media::Playlist> playlist;
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	UOSInt i;
 	if (cmdId >= MNU_PB_CHAPTERS)
 	{
@@ -854,7 +854,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			NN<Media::IVideoCapture> capture;
+			NN<Media::VideoCapturer> capture;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				UTF8Char sbuff[256];

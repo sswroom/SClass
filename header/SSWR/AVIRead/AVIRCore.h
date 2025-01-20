@@ -6,7 +6,7 @@
 #include "IO/LogTool.h"
 #include "IO/SiLabDriver.h"
 #include "IO/VirtualIOPinMgr.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Map/MapManager.h"
 #include "Media/AudioDevice.h"
 #include "Media/ColorConv.h"
@@ -80,7 +80,7 @@ namespace SSWR
 
 			void OpenGSMModem(Optional<IO::Stream> modemPort);
 			Optional<IO::Stream> OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
-			void OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse);
+			void OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::FileAnalyser> fileAnalyse);
 
 			void BeginLoad();
 			void EndLoad();
@@ -112,7 +112,7 @@ namespace SSWR
 			void SetAudioDeviceList(Optional<Data::ArrayListStringNN> audDevList);
 			NN<Data::ArrayListStringNN> GetAudioDeviceList();
 			Int32 GetAudioAPIType();
-			Optional<Media::IAudioRenderer> BindAudio(Optional<Media::IAudioSource> audSrc);
+			Optional<Media::AudioRenderer> BindAudio(Optional<Media::AudioSource> audSrc);
 
 			Bool GenLinePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NN<Media::ColorConv> colorConv);
 			Bool GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt lineStyle, NN<Media::ColorConv> colorConv);

@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_OBJPARSER_ISO9660PARSER
 #define _SM_PARSER_OBJPARSER_ISO9660PARSER
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "IO/ObjectParser.h"
 #include "IO/VirtualPackageFile.h"
 
@@ -19,8 +19,8 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 
-			NN<IO::PackageFile> ParseVol(NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage);
-			void ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UnsafeArray<UTF8Char> fileNameBuff, UnsafeArray<UTF8Char> fileNameEnd, UInt32 codePage);
+			NN<IO::PackageFile> ParseVol(NN<IO::SectorData> sectorData, UInt32 sectorNum, UInt32 codePage);
+			void ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::SectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UnsafeArray<UTF8Char> fileNameBuff, UnsafeArray<UTF8Char> fileNameEnd, UInt32 codePage);
 		};
 	}
 }

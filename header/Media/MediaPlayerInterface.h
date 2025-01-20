@@ -14,7 +14,7 @@ namespace Media
 		Optional<Media::MediaFile> currFile;
 	protected:
 		Optional<Media::MediaPlayer> player;
-		Optional<Media::IPBControl> currPBC;
+		Optional<Media::PBControl> currPBC;
 
 	protected:
 		virtual void OnMediaOpened();

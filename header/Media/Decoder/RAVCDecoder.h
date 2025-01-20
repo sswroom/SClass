@@ -30,11 +30,11 @@ namespace Media
 			Bool skipHeader;
 
 			Bool finfoMode;
-			Data::CallbackStorage<Media::IVideoSource::FrameInfoCallback> finfoCb;
+			Data::CallbackStorage<Media::VideoSource::FrameInfoCallback> finfoCb;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader);
+			RAVCDecoder(NN<VideoSource> sourceVideo, Bool toRelease, Bool skipHeader);
 			virtual ~RAVCDecoder();
 
 			virtual Text::CStringNN GetFilterName();

@@ -8,13 +8,12 @@
 
 IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 {
-	IO::FileStream *file;
-
-	NEW_CLASS(file, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	this->fileSize = file->GetLength();
+	IO::FileStream file(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	UnsafeArray<UInt8> filePtr;
+	this->fileSize = file.GetLength();
 	if (this->fileSize > 0)
 	{
-		this->filePtr = MemAlloc(UInt8, (UOSInt)this->fileSize);
+		this->filePtr = filePtr = MemAllocArr(UInt8, (UOSInt)this->fileSize);
 
 #if defined(WIN32) || defined(__CYGWIN__)
 		HANDLE hProc;
@@ -23,7 +22,7 @@ IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 		BOOL res;
 		UInt32 err;
 		hProc = GetCurrentProcess();
-		if (VirtualLock(filePtr, (SIZE_T)fileSize) == 0)
+		if (VirtualLock(filePtr.Ptr(), (SIZE_T)fileSize) == 0)
 		{
 			err = GetLastError();
 			if (err == ERROR_WORKING_SET_QUOTA)
@@ -45,7 +44,7 @@ IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 					{
 						err = GetLastError();
 					}
-					res = VirtualLock(filePtr, (SIZE_T)fileSize);
+					res = VirtualLock(filePtr.Ptr(), (SIZE_T)fileSize);
 					if (res == 0)
 					{
 						err = GetLastError();
@@ -54,28 +53,28 @@ IO::MemFileBuffer::MemFileBuffer(Text::CStringNN fileName)
 			}
 		}
 #endif
-		file->SeekFromBeginning(0);
-		file->Read(Data::ByteArray(this->filePtr, (UOSInt)fileSize));
+		file.SeekFromBeginning(0);
+		file.Read(Data::ByteArray(filePtr, (UOSInt)fileSize));
 	}
 	else
 	{
 		this->filePtr = 0;
 	}
-	DEL_CLASS(file);
 }
 
 IO::MemFileBuffer::~MemFileBuffer()
 {
-	if (filePtr)
+	UnsafeArray<UInt8> nnfilePtr;
+	if (filePtr.SetTo(nnfilePtr))
 	{
 #if defined(WIN32) || defined(__CYGWIN__)
-		VirtualUnlock(filePtr, (SIZE_T)fileSize);
+		VirtualUnlock(nnfilePtr.Ptr(), (SIZE_T)fileSize);
 #endif
-		MemFree(filePtr);
+		MemFreeArr(filePtr);
 	}
 }
 
-UInt8 *IO::MemFileBuffer::GetPointer()
+UnsafeArrayOpt<UInt8> IO::MemFileBuffer::GetPointer()
 {
 	return filePtr;
 }

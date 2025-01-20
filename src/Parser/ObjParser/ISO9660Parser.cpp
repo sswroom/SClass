@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
 #include "IO/CDSectorData.h"
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "IO/Path.h"
 #include "IO/VirtualPackageFileFast.h"
 #include "Parser/ObjParser/ISO9660Parser.h"
@@ -38,15 +38,15 @@ IO::ParserType Parser::ObjParser::ISO9660Parser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
-	NN<IO::ISectorData> data;
-	IO::ISectorData *cdData;
+	NN<IO::SectorData> data;
+	IO::SectorData *cdData;
 	UInt8 sector[2048];
 	UOSInt sectorSize;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return 0;
 
 	cdData = 0;
-	data = NN<IO::ISectorData>::ConvertFrom(pobj);
+	data = NN<IO::SectorData>::ConvertFrom(pobj);
 	sectorSize = data->GetBytesPerSector();
 	if (sectorSize == 2048)
 	{
@@ -101,7 +101,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::
 	return pf;
 }
 
-NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage)
+NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::SectorData> sectorData, UInt32 sectorNum, UInt32 codePage)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -181,7 +181,7 @@ NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::ISectorDat
 	return pkgFile;
 }
 
-void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UnsafeArray<UTF8Char> fileName, UnsafeArray<UTF8Char> fileNameEnd, UInt32 codePage)
+void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::SectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UnsafeArray<UTF8Char> fileName, UnsafeArray<UTF8Char> fileNameEnd, UInt32 codePage)
 {
 	Data::ByteBuffer dataBuff(recSize + 2048);
 	Data::ByteArray recBuff = dataBuff.SubArray(2048);

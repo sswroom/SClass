@@ -447,7 +447,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
-	NN<Map::ILocationService> locSvc;
+	NN<Map::LocationService> locSvc;
 	if (me->locSvc.SetTo(locSvc))
 	{
 		locSvc->UnregisterLocationHandler(OnGPSData, me);
@@ -728,7 +728,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(AnyType userObj
 	return true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates)
 {
 	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	NN<IO::Writer> captureWriter;
@@ -925,7 +925,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 {
-	NN<Map::ILocationService> locSvc;
+	NN<Map::LocationService> locSvc;
 	this->motion.Delete();
 	this->wlanInterf.Delete();
 	if (this->locSvc.SetTo(locSvc))

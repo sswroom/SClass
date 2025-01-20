@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_MIMEVIEWER_AVIRUNKNOWNVIEWER
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEViewer.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "UI/GUILabel.h"
 
 namespace SSWR
@@ -16,10 +16,10 @@ namespace SSWR
 			private:
 				NN<UI::GUILabel> lblMessage;
 
-				NN<Text::IMIMEObj> obj;
+				NN<Text::MIMEObject> obj;
 
 			public:
-				AVIRUnknownViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj);
+				AVIRUnknownViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObject> obj);
 				virtual ~AVIRUnknownViewer();
 			};
 		}

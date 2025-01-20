@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DECODER_AUDIODECODERFINDER
 #define _SM_MEDIA_DECODER_AUDIODECODERFINDER
 
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
@@ -13,7 +13,7 @@ namespace Media
 			AudioDecoderFinder();
 			~AudioDecoderFinder();
 
-			Media::IAudioSource *DecodeAudio(NN<Media::IAudioSource> audio);
+			Media::AudioSource *DecodeAudio(NN<Media::AudioSource> audio);
 		};
 	}
 }

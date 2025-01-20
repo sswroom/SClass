@@ -3,13 +3,13 @@
 #include "AnyType.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 
 namespace Media
 {
 	namespace Resizer
 	{
-		class LanczosResizer8_8 : public Media::IImgResizer
+		class LanczosResizer8_8 : public Media::ImageResizer
 		{
 		private:
 			typedef struct

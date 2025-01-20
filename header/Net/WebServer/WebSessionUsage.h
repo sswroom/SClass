@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBSESSIONUSAGE
 #define _SM_NET_WEBSERVER_WEBSESSIONUSAGE
-#include "Net/WebServer/IWebSession.h"
+#include "Net/WebServer/WebSession.h"
 
 namespace Net
 {
@@ -9,15 +9,15 @@ namespace Net
 		class WebSessionUsage
 		{
 		private:
-			Optional<Net::WebServer::IWebSession> sess;
+			Optional<Net::WebServer::WebSession> sess;
 		public:
 			WebSessionUsage();
-			WebSessionUsage(Optional<Net::WebServer::IWebSession> sess);
+			WebSessionUsage(Optional<Net::WebServer::WebSession> sess);
 			~WebSessionUsage();
 
-			void Use(Optional<Net::WebServer::IWebSession> sess);
+			void Use(Optional<Net::WebServer::WebSession> sess);
 			void EndUse();
-			Optional<Net::WebServer::IWebSession> GetSess();
+			Optional<Net::WebServer::WebSession> GetSess();
 		};
 	}
 }

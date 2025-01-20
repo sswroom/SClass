@@ -1,11 +1,11 @@
 #ifndef _SM_NET_RTPAPLHANDLER
 #define _SM_NET_RTPAPLHANDLER
-#include "Media/IAudioSource.h"
-#include "Net/IRTPPLHandler.h"
+#include "Media/AudioSource.h"
+#include "Net/RTPPayloadHandler.h"
 
 namespace Net
 {
-	class RTPAPLHandler : public Media::IAudioSource, public IRTPPLHandler 
+	class RTPAPLHandler : public Media::AudioSource, public RTPPayloadHandler 
 	{
 	};
 };

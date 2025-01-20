@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Media/IAudioSource.h"
-#include "Media/IMediaSource.h"
+#include "Media/AudioSource.h"
+#include "Media/MediaSource.h"
 #include "Media/RefClock.h"
 #include "Media/WaveOutRenderer.h"
 #include "Sync/Event.h"
@@ -113,7 +113,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 	Data::Duration lastT;
 	Int32 stmEnd;
 	Bool needNotify = false;
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	NN<Media::RefClock> clk;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
@@ -351,11 +351,11 @@ Bool Media::WaveOutRenderer::IsError()
 	return false;
 }
 
-Bool Media::WaveOutRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
+Bool Media::WaveOutRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	HWAVEOUT hwo;
 	Media::AudioFormat fmt;
-	NN<Media::IAudioSource> nnaudsrc;
+	NN<Media::AudioSource> nnaudsrc;
 	if (playing)
 	{
 		Stop();
@@ -479,7 +479,7 @@ void Media::WaveOutRenderer::Start()
 
 void Media::WaveOutRenderer::Stop()
 {
-	NN<Media::IAudioSource> audsrc;
+	NN<Media::AudioSource> audsrc;
 	stopPlay = true;
 	if (!playing)
 		return;

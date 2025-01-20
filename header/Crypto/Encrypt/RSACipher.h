@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_ENCRYPT_RSACIPHER
 #define _SM_CRYPTO_ENCRYPT_RSACIPHER
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Text/CString.h"
 
 namespace Crypto

@@ -4,7 +4,7 @@
 #include "Data/ArrayListStrUTF8.h"
 #include "Data/ArrayListStringNN.h"
 #include "IO/Stream.h"
-#include "Net/ISDPMedia.h"
+#include "Net/SDPMedia.h"
 
 namespace Net
 {
@@ -33,7 +33,7 @@ namespace Net
 
 		Data::ArrayListStringNN sessDesc;
 		Data::ArrayList<Int32> sessDescType;
-		Data::ArrayList<Net::ISDPMedia *> sessMedia;
+		Data::ArrayList<Net::SDPMedia *> sessMedia;
 
 		Data::ArrayListNN<Data::ArrayListStrUTF8> mediaList;
 
@@ -59,7 +59,7 @@ namespace Net
 		void SetSessControl(Text::CString sessControl);
 		void SetReqUserAgent(Text::CString userAgent);
 
-		void AddBuildMedia(Net::ISDPMedia *media);
+		void AddBuildMedia(Net::SDPMedia *media);
 		Bool BuildBuff();
 
 		Bool WriteToStream(NN<IO::Stream> stm);

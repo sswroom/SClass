@@ -8,7 +8,7 @@
 
 #define NMEAMAXSIZE 128
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates)
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Double dist;
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, N
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
 	me->recSateCnt = sates.GetCount();
-	MemCopyNO(me->recSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
+	MemCopyNO(me->recSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::LocationService::SateStatus));
 	me->recUpdated = true;
 	if (me->gpsTrk.SetTo(gpsTrk) && record->valid)
 	{
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 		UOSInt i = 0;
 		while (i < me->recSateCnt)
 		{
-			me->lvSate->AddItem(Map::ILocationService::SateTypeGetName(me->recSates[i].sateType), 0);
+			me->lvSate->AddItem(Map::LocationService::SateTypeGetName(me->recSates[i].sateType), 0);
 			sptr = Text::StrUInt16(sbuff, me->recSates[i].prn);
 			me->lvSate->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			sptr = Text::StrUInt16(sbuff, me->recSates[i].elev);
@@ -271,7 +271,7 @@ NN<UI::GUIButton> SSWR::AVIRead::AVIRGPSTrackerForm::NewDisplayOffButton(NN<UI::
 	return btn;
 }
 
-SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::ILocationService> locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
+SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::LocationService> locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPS Tracker"));
@@ -420,7 +420,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->lbAlert = ui->NewListBox(this->tpAlertView, false);
 	this->lbAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	if (this->locSvc->GetServiceType() == Map::ILocationService::ST_MTK)
+	if (this->locSvc->GetServiceType() == Map::LocationService::ST_MTK)
 	{
 		this->tpMTK = this->tcMain->AddTabPage(CSTR("MTK"));
 		this->grpMTKFirmware = ui->NewGroupBox(this->tpMTK, CSTR("Firmware"));

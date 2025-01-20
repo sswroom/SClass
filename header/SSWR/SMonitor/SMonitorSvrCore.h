@@ -14,7 +14,7 @@
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Parser/ParserList.h"
-#include "SSWR/SMonitor/ISMonitorCore.h"
+#include "SSWR/SMonitor/SMonitorCore.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"
 #include "Sync/Thread.h"
@@ -23,7 +23,7 @@ namespace SSWR
 {
 	namespace SMonitor
 	{
-		class SMonitorSvrCore : public IO::IProtocolHandler::DataListener, public SSWR::SMonitor::ISMonitorCore, public Net::WebServer::IReqLogger
+		class SMonitorSvrCore : public IO::ProtocolHandler::DataListener, public SSWR::SMonitor::SMonitorCore, public Net::WebServer::WebRequestLogger
 		{
 		private:
 			typedef struct
@@ -140,7 +140,7 @@ namespace SSWR
 
 			virtual Bool SendCapturePhoto(Int64 cliId);
 
-			virtual void LogRequest(NN<Net::WebServer::IWebRequest> req);
+			virtual void LogRequest(NN<Net::WebServer::WebRequest> req);
 
 			void UserAgentLog(UnsafeArray<const UTF8Char> userAgent, UOSInt len);
 			void UserAgentStore();

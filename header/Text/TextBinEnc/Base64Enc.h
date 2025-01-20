@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_BASE64ENC
 #define _SM_TEXT_TEXTBINENC_BASE64ENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class Base64Enc : public Text::TextBinEnc::ITextBinEnc
+		class Base64Enc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			enum class Charset

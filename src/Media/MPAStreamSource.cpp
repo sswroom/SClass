@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::MPAStreamSource::MPAStreamSource(NN<Media::IStreamControl> pbc)
+Media::MPAStreamSource::MPAStreamSource(NN<Media::MediaStreamControl> pbc)
 {
 	this->pbc = pbc;
 	this->fmt.formatId = 0;

@@ -18,9 +18,9 @@ namespace Media
 			UInt32 frameNum;
 			UnsafeArray<UInt8> frameBuff;
 			UOSInt frameSize;
-			Media::IVideoSource::FrameStruct frameStruct;
+			Media::VideoSource::FrameStruct frameStruct;
 			Media::FrameType fType;
-			Media::IVideoSource::FrameFlag flags;
+			Media::VideoSource::FrameFlag flags;
 			Media::YCOffset ycOfst;
 		} OutputFrameInfo;
 	private:

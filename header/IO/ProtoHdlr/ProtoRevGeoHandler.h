@@ -1,21 +1,21 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOREVGEOHANDLER
 #define _SM_IO_PROTOHDLR_PROTOREVGEOHANDLER
 #include "Crypto/Hash/HashCalc.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoRevGeoHandler : public IO::IProtocolHandler
+		class ProtoRevGeoHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			NN<Crypto::Hash::HashCalc> crc;
 
 		public:
-			ProtoRevGeoHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoRevGeoHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoRevGeoHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

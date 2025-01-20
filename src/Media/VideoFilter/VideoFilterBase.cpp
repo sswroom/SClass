@@ -2,13 +2,13 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/VideoFilterBase.h"
 
-void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->ProcessVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, userData, frameType, flags, ycOfst);
 }
 
-void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
+void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoChange(Media::VideoSource::FrameChange fc, AnyType userData)
 {
 	NN<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->OnFrameChange(fc);
@@ -18,13 +18,13 @@ void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoChange(Media::IVideoS
 	}
 }
 
-void Media::VideoFilter::VideoFilterBase::OnFrameChange(Media::IVideoSource::FrameChange fc)
+void Media::VideoFilter::VideoFilterBase::OnFrameChange(Media::VideoSource::FrameChange fc)
 {
 }
 
-Media::VideoFilter::VideoFilterBase::VideoFilterBase(Optional<Media::IVideoSource> srcVideo)
+Media::VideoFilter::VideoFilterBase::VideoFilterBase(Optional<Media::VideoSource> srcVideo)
 {
-	NN<Media::IVideoSource> nnsrcVideo;
+	NN<Media::VideoSource> nnsrcVideo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
@@ -43,27 +43,27 @@ Media::VideoFilter::VideoFilterBase::~VideoFilterBase()
 {
 }
 
-void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Optional<Media::IVideoSource> srcVideo)
+void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Optional<Media::VideoSource> srcVideo)
 {
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
-	NN<Media::IVideoSource> nnsrcVideo;
+	NN<Media::VideoSource> nnsrcVideo;
 	this->srcVideo = srcVideo;
 	if (this->srcVideo.SetTo(nnsrcVideo))
 	{
 		nnsrcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 	}
-	this->OnFrameChange(Media::IVideoSource::FC_SRCCHG);
+	this->OnFrameChange(Media::VideoSource::FC_SRCCHG);
 	if (this->fcCb)
 	{
-		this->fcCb(Media::IVideoSource::FC_SRCCHG, this->userData);
+		this->fcCb(Media::VideoSource::FC_SRCCHG, this->userData);
 	}
 }
 
 UnsafeArrayOpt<UTF8Char> Media::VideoFilter::VideoFilterBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 		return srcVideo->GetSourceName(buff);
 	return 0;
@@ -71,14 +71,14 @@ UnsafeArrayOpt<UTF8Char> Media::VideoFilter::VideoFilterBase::GetSourceName(Unsa
 
 void Media::VideoFilter::VideoFilterBase::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 		srcVideo->SetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
 void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 		srcVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 	else
@@ -92,7 +92,7 @@ void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLef
 
 Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		Bool succ = srcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
@@ -107,7 +107,7 @@ Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info
 
 Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		srcVideo->Init(OnVideoFrame, OnVideoChange, this);
@@ -120,7 +120,7 @@ Bool Media::VideoFilter::VideoFilterBase::Init(FrameCallback cb, FrameChangeCall
 
 Bool Media::VideoFilter::VideoFilterBase::Start()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 		return srcVideo->Start();
 	return false;
@@ -128,7 +128,7 @@ Bool Media::VideoFilter::VideoFilterBase::Start()
 
 void Media::VideoFilter::VideoFilterBase::Stop()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		srcVideo->Stop();
@@ -137,7 +137,7 @@ void Media::VideoFilter::VideoFilterBase::Stop()
 
 Bool Media::VideoFilter::VideoFilterBase::IsRunning()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->IsRunning();
@@ -147,7 +147,7 @@ Bool Media::VideoFilter::VideoFilterBase::IsRunning()
 
 Data::Duration Media::VideoFilter::VideoFilterBase::GetStreamTime()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->GetStreamTime();
@@ -157,7 +157,7 @@ Data::Duration Media::VideoFilter::VideoFilterBase::GetStreamTime()
 
 Bool Media::VideoFilter::VideoFilterBase::CanSeek()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->CanSeek();
@@ -167,7 +167,7 @@ Bool Media::VideoFilter::VideoFilterBase::CanSeek()
 
 Data::Duration Media::VideoFilter::VideoFilterBase::SeekToTime(Data::Duration time)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->SeekToTime(time);
@@ -177,7 +177,7 @@ Data::Duration Media::VideoFilter::VideoFilterBase::SeekToTime(Data::Duration ti
 
 Bool Media::VideoFilter::VideoFilterBase::IsRealTimeSrc()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->IsRealTimeSrc();
@@ -187,7 +187,7 @@ Bool Media::VideoFilter::VideoFilterBase::IsRealTimeSrc()
 
 Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
@@ -197,7 +197,7 @@ Bool Media::VideoFilter::VideoFilterBase::TrimStream(UInt32 trimTimeStart, UInt3
 
 UOSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->GetDataSeekCount();
@@ -207,7 +207,7 @@ UOSInt Media::VideoFilter::VideoFilterBase::GetDataSeekCount()
 
 Bool Media::VideoFilter::VideoFilterBase::HasFrameCount()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->HasFrameCount();
@@ -217,7 +217,7 @@ Bool Media::VideoFilter::VideoFilterBase::HasFrameCount()
 
 UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->GetFrameCount();
@@ -227,7 +227,7 @@ UOSInt Media::VideoFilter::VideoFilterBase::GetFrameCount()
 
 Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameIndex)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		return srcVideo->GetFrameTime(frameIndex);
@@ -237,7 +237,7 @@ Data::Duration Media::VideoFilter::VideoFilterBase::GetFrameTime(UOSInt frameInd
 
 void Media::VideoFilter::VideoFilterBase::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
 {
-	NN<Media::IVideoSource> srcVideo;
+	NN<Media::VideoSource> srcVideo;
 	if (this->srcVideo.SetTo(srcVideo))
 	{
 		srcVideo->EnumFrameInfos(cb, userData);

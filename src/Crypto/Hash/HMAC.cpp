@@ -3,7 +3,7 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::IHash> hash, UnsafeArray<const UInt8> key, UOSInt keySize)
+Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const UInt8> key, UOSInt keySize)
 {
 	this->hashInner = hash->Clone();
 	this->hashOuter = hash->Clone();
@@ -48,9 +48,9 @@ UnsafeArray<UTF8Char> Crypto::Hash::HMAC::GetName(UnsafeArray<UTF8Char> sbuff) c
 	return this->hashInner->GetName(Text::StrConcatC(sbuff, UTF8STRC("HMAC-")));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::HMAC::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::HMAC::Clone() const
 {
-	NN<Crypto::Hash::IHash> hmac;
+	NN<Crypto::Hash::HashAlgorithm> hmac;
 	NEW_CLASSNN(hmac, Crypto::Hash::HMAC(this->hashInner, key, keySize));
 	return hmac;
 }

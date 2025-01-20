@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTENC_URIENCODING
 #define _SM_TEXT_TEXTENC_URIENCODING
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class URIEncoding : public Text::TextBinEnc::ITextBinEnc
+		class URIEncoding : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			static UnsafeArray<UTF8Char> URIEncode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri);

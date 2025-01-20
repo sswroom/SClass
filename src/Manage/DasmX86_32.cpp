@@ -19188,7 +19188,7 @@ Text::CStringNN Manage::DasmX86_32::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19303,7 +19303,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Optional<Manage::Addres
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::IMemoryReader> memReader)
+Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Optional<Manage::AddressResolver> addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::MemoryReader> memReader)
 {
 	UTF8Char sbuff[256];
 	UInt32 initIP = *currEip;
@@ -19394,7 +19394,7 @@ void Manage::DasmX86_32::FreeRegs(NN<Dasm_Regs> regs) const
 	MemFreeNN(regs);
 }
 
-NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::IMemoryReader> memReader)
+NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Optional<Manage::AddressResolver> addrResol, void *addr, NN<Manage::MemoryReader> memReader)
 {
 	NN<DasmX86_32_Sess> sess;
 	sess = MemAllocNN(DasmX86_32_Sess);

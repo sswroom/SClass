@@ -12,7 +12,7 @@
 
 namespace UI
 {
-	class GUIMapControl : public GUICustomDraw, public Media::IColorHandler
+	class GUIMapControl : public GUICustomDraw, public Media::ColorHandler
 	{
 	public:
 		typedef void (CALLBACKFUNC MapUpdatedHandler)(AnyType userObj, Math::Coord2DDbl center, Double drawTime);
@@ -86,8 +86,8 @@ namespace UI
 
 		virtual void OnSizeChanged(Bool updateScn);
 
-		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 
 		virtual void SetDPI(Double hdpi, Double ddpi);
 

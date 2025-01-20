@@ -2,7 +2,6 @@
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
-#include "Media/IMediaPlayer.h"
 #include "SSWR/AVIRead/AVIRHQMPPlaylistForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"

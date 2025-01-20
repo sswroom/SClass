@@ -59,12 +59,12 @@ Media::M2VFile::~M2VFile()
 	this->stmData.Delete();
 }
 
-UOSInt Media::M2VFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
+UOSInt Media::M2VFile::AddSource(Media::MediaSource *src, Int32 syncTime)
 {
 	return (UOSInt)-1;
 }
 
-Media::IMediaSource *Media::M2VFile::GetStream(UOSInt index, Int32 *syncTime)
+Media::MediaSource *Media::M2VFile::GetStream(UOSInt index, Int32 *syncTime)
 {
 	if (index != 0)
 		return 0;

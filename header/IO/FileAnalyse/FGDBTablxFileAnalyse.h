@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_FGDBTABLXFILEANALYSE
 #include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Sync/Mutex.h"
 #include "Sync/Thread.h"
@@ -13,7 +13,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class FGDBTablxFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class FGDBTablxFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			enum class TagType

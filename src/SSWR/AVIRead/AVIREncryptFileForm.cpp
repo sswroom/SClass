@@ -10,7 +10,7 @@
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
 #include "UI/GUIComboBoxUtil.h"
 
-Optional<Crypto::Encrypt::ICrypto> SSWR::AVIRead::AVIREncryptFileForm::InitCrypto()
+Optional<Crypto::Encrypt::Encryption> SSWR::AVIRead::AVIREncryptFileForm::InitCrypto()
 {
 	UOSInt keySize;
 	UOSInt algType = this->cboAlgorithm->GetSelectedIndex();
@@ -36,7 +36,7 @@ Optional<Crypto::Encrypt::ICrypto> SSWR::AVIRead::AVIREncryptFileForm::InitCrypt
 		this->ui->ShowMsgOK(CSTR("Key cannot be empty"), CSTR("Encrypt File"), this);
 		return 0;
 	}
-	NN<Text::TextBinEnc::ITextBinEnc> enc = GetTextEncType(this->cboKeyType);
+	NN<Text::TextBinEnc::TextBinEnc> enc = GetTextEncType(this->cboKeyType);
 	UOSInt buffSize = enc->CalcBinSize(sb.ToCString());
 	if (buffSize == 0)
 	{
@@ -109,7 +109,7 @@ UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitInput(UOSInt block
 	return input;
 }
 
-UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encrypt::ICrypto> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UOSInt> buffSize, UOSInt blockSize, Bool enc)
+UnsafeArrayOpt<UInt8> SSWR::AVIRead::AVIREncryptFileForm::InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UOSInt> buffSize, UOSInt blockSize, Bool enc)
 {
 	UInt8 tmpbuff[256];
 	UOSInt ivType = this->cboIV->GetSelectedIndex();
@@ -256,7 +256,7 @@ void SSWR::AVIRead::AVIREncryptFileForm::SetInputFile(Text::CStringNN file)
 void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnEncryptClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREncryptFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptFileForm>();
-	NN<Crypto::Encrypt::ICrypto> crypto;
+	NN<Crypto::Encrypt::Encryption> crypto;
 	if (me->InitCrypto().SetTo(crypto))
 	{
 		UOSInt buffSize;
@@ -278,7 +278,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnEncryptClicked(AnyType user
 void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnDecryptClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREncryptFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptFileForm>();
-	NN<Crypto::Encrypt::ICrypto> crypto;
+	NN<Crypto::Encrypt::Encryption> crypto;
 	if (me->InitCrypto().SetTo(crypto))
 	{
 		UOSInt buffSize;
@@ -306,9 +306,9 @@ void __stdcall SSWR::AVIRead::AVIREncryptFileForm::OnFilesDrop(AnyType userObj, 
 	}
 }
 
-NN<Text::TextBinEnc::ITextBinEnc> SSWR::AVIRead::AVIREncryptFileForm::GetTextEncType(NN<UI::GUIComboBox> cbo)
+NN<Text::TextBinEnc::TextBinEnc> SSWR::AVIRead::AVIREncryptFileForm::GetTextEncType(NN<UI::GUIComboBox> cbo)
 {
-	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<Text::TextBinEnc::TextBinEnc> enc;
 	switch (cbo->GetSelectedIndex())
 	{
 	case 0:

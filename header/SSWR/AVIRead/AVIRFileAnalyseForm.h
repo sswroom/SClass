@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRFILEANALYSEFORM
 #define _SM_SSWR_AVIREAD_AVIRFILEANALYSEFORM
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -37,7 +37,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnTrimPadding;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Optional<IO::FileAnalyse::IFileAnalyse> file;
+			Optional<IO::FileAnalyse::FileAnalyser> file;
 			UOSInt lastPackCount;
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

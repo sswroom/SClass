@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DECODER_VIDEODECODERFINDER
 #define _SM_MEDIA_DECODER_VIDEODECODERFINDER
 
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 
 namespace Media
 {
@@ -13,7 +13,7 @@ namespace Media
 			VideoDecoderFinder();
 			~VideoDecoderFinder();
 
-			Media::IVideoSource *DecodeVideo(NN<Media::IVideoSource> video);
+			Media::VideoSource *DecodeVideo(NN<Media::VideoSource> video);
 		};
 	}
 }

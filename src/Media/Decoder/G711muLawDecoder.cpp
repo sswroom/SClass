@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Decoder/G711muLawDecoder.h"
 
-Media::Decoder::G711muLawDecoder::G711muLawDecoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::G711muLawDecoder::G711muLawDecoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -29,7 +29,7 @@ Media::Decoder::G711muLawDecoder::~G711muLawDecoder()
 
 void Media::Decoder::G711muLawDecoder::GetFormat(NN<AudioFormat> format)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
@@ -62,7 +62,7 @@ void Media::Decoder::G711muLawDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::G711muLawDecoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		return sourceAudio->SeekToTime(time);
@@ -73,7 +73,7 @@ Data::Duration Media::Decoder::G711muLawDecoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::G711muLawDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Start(0, blkSize >> 1);
@@ -87,7 +87,7 @@ Bool Media::Decoder::G711muLawDecoder::Start(Optional<Sync::Event> evt, UOSInt b
 
 void Media::Decoder::G711muLawDecoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();
@@ -132,7 +132,7 @@ UOSInt Media::Decoder::G711muLawDecoder::ReadBlock(Data::ByteArray blk)
        120,    112,    104,     96,     88,     80,     72,     64,
         56,     48,     40,     32,     24,     16,      8,      0};
 
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->align == 0 || !this->sourceAudio.SetTo(sourceAudio))
 	{
 		if (this->readEvt.SetTo(readEvt))

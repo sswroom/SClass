@@ -2546,7 +2546,7 @@ Text::CStringNN Manage::DasmARM64::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs)
+Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];

@@ -2,7 +2,7 @@
 #define _SM_MEDIA_VFPMANAGER
 #include "Data/ArrayListNN.h"
 #include "IO/FileSelector.h"
-#include "Media/IMediaSource.h"
+#include "Media/MediaSource.h"
 #include "Sync/Mutex.h"
 
 namespace Media
@@ -35,7 +35,7 @@ namespace Media
 		Int32 useCnt;
 	public:
 		VFPManager();
-		UOSInt LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
+		UOSInt LoadFile(UnsafeArray<const UTF8Char> fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
 		void Release();
 		void PrepareSelector(NN<IO::FileSelector> selector);
 

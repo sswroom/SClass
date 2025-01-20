@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_VIDEORENDERER
 #define _SM_MEDIA_VIDEORENDERER
-#include "Media/IDeinterlacer.h"
-#include "Media/IDeintResizer.h"
-#include "Media/IImgFilter.h"
-#include "Media/IImgResizer.h"
+#include "Media/Deinterlacer.h"
+#include "Media/DeinterlacingResizer.h"
+#include "Media/ImageFilter.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageCopy.h"
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 #include "Media/MonitorSurfaceMgr.h"
 #include "Media/RefClock.h"
 #include "Media/CS/CSConverter.h"
@@ -86,15 +86,15 @@ namespace Media
 			UInt32 destBitDepth;
 			Media::FrameType frameType;
 			Media::YCOffset ycOfst;
-			Media::IVideoSource::FrameFlag flags;
+			Media::VideoSource::FrameFlag flags;
 		} VideoBuff;
 
 		typedef struct
 		{
 			Int32 status; //0 = not running, 1 = idle
 			Int32 procType;
-			Media::IImgResizer *resizer;
-			Media::IDeintResizer *dresizer;
+			Media::ImageResizer *resizer;
+			Media::DeinterlacingResizer *dresizer;
 			UInt32 resizerBitDepth;
 			Bool resizer10Bit;
 			Optional<Media::CS::CSConverter> csconv;
@@ -102,7 +102,7 @@ namespace Media
 			UOSInt lrSize;
 			UInt8 *diBuff;
 			UOSInt diSize;
-			Media::IDeinterlacer *deint;
+			Media::Deinterlacer *deint;
 			VideoRenderer *me;
 			Bool srcChanged;
 			Double hTime;
@@ -114,7 +114,7 @@ namespace Media
 		} ThreadStat;
 	protected:
 		NN<Media::ColorManagerSess> colorSess;
-		Optional<Media::IVideoSource> video;
+		Optional<Media::VideoSource> video;
 		Media::FrameInfo videoInfo;
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		UInt32 frameRateNorm;
@@ -190,7 +190,7 @@ namespace Media
 		Media::VideoFilter::IVTCFilter ivtc;
 		Media::VideoFilter::UVOffsetFilter uvOfst;
 		Media::VideoFilter::AutoCropFilter autoCrop;
-		Data::ArrayListNN<Media::IImgFilter> imgFilters;
+		Data::ArrayListNN<Media::ImageFilter> imgFilters;
 
 		Int32 picCnt;
 		EndNotifier endHdlr;
@@ -199,12 +199,12 @@ namespace Media
 		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 
 		virtual void ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
-		virtual NN<Media::IImgResizer> CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance);
+		virtual NN<Media::ImageResizer> CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance);
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 
-		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
+		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+		static void __stdcall OnVideoChange(Media::VideoSource::FrameChange fc, AnyType userData);
 
 		static UInt32 __stdcall ProcessThread(AnyType userObj);
 		static UInt32 __stdcall DisplayThread(AnyType userObj);
@@ -229,7 +229,7 @@ namespace Media
 		VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();
 
-		void SetVideo(Optional<Media::IVideoSource> video);
+		void SetVideo(Optional<Media::VideoSource> video);
 		void SetHasAudio(Bool hasAudio);
 		void SetTimeDelay(Int32 timeDelay);
 		void VideoInit(NN<Media::RefClock> clk);
@@ -259,7 +259,7 @@ namespace Media
 		virtual void SetRotateType(Media::RotateType rotateType) = 0;
 		virtual Media::RotateType GetRotateType() const = 0;
 
-		void AddImgFilter(NN<Media::IImgFilter> imgFilter);
+		void AddImgFilter(NN<Media::ImageFilter> imgFilter);
 		void Snapshot();
 		void GetStatus(NN<RendererStatus2> status);
 		NN<Media::MonitorSurfaceMgr> GetSurfaceMgr();

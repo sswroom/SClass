@@ -27,7 +27,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 				Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
 				Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
 				resizer.SetTargetSize(scnSize);
-				resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
+				resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_KEEPAR);
 				NN<Media::StaticImage> srimg;
 				if (srimg.Set(resizer.ProcessToNew(simg)))
 				{

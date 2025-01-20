@@ -1,14 +1,14 @@
 #ifndef _SM_MEDIA_AAUDIORENDERER
 #define _SM_MEDIA_AAUDIORENDERER
 
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 
 namespace Media
 {
-	class AAudioRenderer : public IAudioRenderer
+	class AAudioRenderer : public AudioRenderer
 	{
 	private:
-		Media::IAudioSource *audsrc;
+		Media::AudioSource *audsrc;
 		const UTF8Char *devName;
 		Bool playing;
 		Bool threadInit;
@@ -34,7 +34,7 @@ namespace Media
 		virtual ~AAudioRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
 		virtual void AudioInit(NN<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();

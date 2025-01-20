@@ -1,14 +1,14 @@
 #ifndef _SM_NET_WEBSERVER_MEMORYWEBSESSION
 #define _SM_NET_WEBSERVER_MEMORYWEBSESSION
 #include "Data/FastStringMap.h"
-#include "Net/WebServer/IWebSession.h"
+#include "Net/WebServer/WebSession.h"
 #include "Sync/Mutex.h"
 
 namespace Net
 {
 	namespace WebServer
 	{
-		class MemoryWebSession : public Net::WebServer::IWebSession
+		class MemoryWebSession : public Net::WebServer::WebSession
 		{
 		private:
 			Net::BrowserInfo::BrowserType browser;

@@ -104,7 +104,7 @@ ctlop2:
 				t2 = clk->GetTimeDiff();
 				t1 = t2 - t1;
 
-				me->captureCb((UInt32)Double2Int32(clk->GetTimeDiff() * 1000), frameNum, &me->scnABuff, sizeNeeded, Media::IVideoSource::FS_I, me->captureCbData, Media::FT_NON_INTERLACE, (frameNum == 0)?Media::IVideoSource::FF_FORCEDISP:0, Media::YCOFST_C_CENTER_LEFT);
+				me->captureCb((UInt32)Double2Int32(clk->GetTimeDiff() * 1000), frameNum, &me->scnABuff, sizeNeeded, Media::VideoSource::FS_I, me->captureCbData, Media::FT_NON_INTERLACE, (frameNum == 0)?Media::VideoSource::FF_FORCEDISP:0, Media::YCOFST_C_CENTER_LEFT);
 				frameNum++;
 			}
 			else

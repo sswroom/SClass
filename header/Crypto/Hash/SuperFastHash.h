@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_HASH_SUPERFASTHASH
 #define _SM_CRYPTO_HASH_SUPERFASTHASH
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace Crypto
 {
 	namespace Hash
 	{
-		class SuperFastHash : public IHash
+		class SuperFastHash : public HashAlgorithm
 		{
 		private:
 			UInt32 currVal;
@@ -16,7 +16,7 @@ namespace Crypto
 			virtual ~SuperFastHash();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
-			virtual NN<IHash> Clone() const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;

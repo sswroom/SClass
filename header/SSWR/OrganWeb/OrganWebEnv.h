@@ -170,7 +170,7 @@ namespace SSWR
 			Bool PeakUpdateStatus(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status);
 			void PeakFreeAll(NN<Data::ArrayListNN<PeakInfo>> peaks);
 
-			Optional<IO::ConfigFile> LangGet(NN<Net::WebServer::IWebRequest> req);
+			Optional<IO::ConfigFile> LangGet(NN<Net::WebServer::WebRequest> req);
 		};
 	}
 }

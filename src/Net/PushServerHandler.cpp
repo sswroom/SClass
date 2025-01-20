@@ -3,7 +3,7 @@
 #include "Text/Builder/HTMLDocumentBuilder.h"
 #include "Text/JSONBuilder.h"
 
-Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
@@ -21,7 +21,7 @@ Bool __stdcall Net::PushServerHandler::SendHandler(NN<Net::WebServer::IWebReques
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
@@ -52,7 +52,7 @@ Bool __stdcall Net::PushServerHandler::SendBatchHandler(NN<Net::WebServer::IWebR
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
@@ -114,7 +114,7 @@ Bool __stdcall Net::PushServerHandler::SubscribeHandler(NN<Net::WebServer::IWebR
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	UOSInt dataLen;
@@ -137,7 +137,7 @@ Bool __stdcall Net::PushServerHandler::UnsubscribeHandler(NN<Net::WebServer::IWe
 	return true;
 }
 
-Bool __stdcall Net::PushServerHandler::UsersHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::PushServerHandler::UsersHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
@@ -155,7 +155,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(NN<Net::WebServer::IWebReque
 	return me->ResponseJSONStr(req, resp, 0, json.Build());
 }
 
-Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
+Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
 	NN<Net::PushServerHandler> me = NN<Net::PushServerHandler>::ConvertFrom(svc);
 	Text::Builder::HTMLDocumentBuilder builder(Text::Builder::HTMLDocumentBuilder::DocType::HTML5, CSTR("Devices"));

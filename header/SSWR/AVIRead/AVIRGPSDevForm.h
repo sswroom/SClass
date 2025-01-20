@@ -18,7 +18,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRGPSDevForm : public UI::GUIForm, public IO::IProtocolHandler::DataListener
+		class AVIRGPSDevForm : public UI::GUIForm, public IO::ProtocolHandler::DataListener
 		{
 		private:
 			typedef struct

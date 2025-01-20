@@ -36,7 +36,7 @@ typedef enum
 void __stdcall AVIRPackageForm_TestHandler(Data::ByteArrayR buff, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm::ReadSession> sess = userData.GetNN<SSWR::AVIRead::AVIRPackageForm::ReadSession>();
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	if (sess->hash.SetTo(hash))
 	{
 		hash->Calc(buff.Arr(), buff.GetSize());
@@ -533,7 +533,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 			sess->fileCnt++;
 			if (pack->GetItemStmDataNew(i).SetTo(stmData))
 			{
-				NN<Crypto::Hash::IHash> hash;
+				NN<Crypto::Hash::HashAlgorithm> hash;
 				storeSize = pack->GetItemStoreSize(i);
 				fileSize = stmData->GetDataSize();
 				sess->fileReadSize = 0;
@@ -1105,7 +1105,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					{
 						NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
 						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
-						frm->SetData(fd, IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd));
+						frm->SetData(fd, IO::FileAnalyse::FileAnalyser::AnalyseFile(fd));
 						fd.Delete();
 						this->core->ShowForm(frm);
 					}

@@ -23,7 +23,7 @@ UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 //	Int64 scr_ext;
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
-	NN<Media::IMediaStream> mstm;
+	NN<Media::MediaStream> mstm;
 	Int32 lastFrameTime = 0;
 
 	me->playStarted = true;
@@ -563,7 +563,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 				{
 					if (this->readBuff[j + 10 + stmHdrSize] > 0)
 					{
-						NN<Media::IMediaStream> mstm;
+						NN<Media::MediaStream> mstm;
 						if (!this->dataStms.Get(stmType).SetTo(mstm))
 						{
 							Media::AudioFormat fmt;
@@ -682,7 +682,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 
 
 				Int32 stmId = this->readBuff[3] & 0x1f;
-				NN<Media::IMediaStream> mstm;
+				NN<Media::MediaStream> mstm;
 				if (!this->dataStms.Get(stmId).SetTo(mstm))
 				{
 					UInt32 v = ReadMUInt32(&this->readBuff[j]);
@@ -811,12 +811,12 @@ Media::MPGFile::~MPGFile()
 	this->stmData.Delete();
 }
 
-UOSInt Media::MPGFile::AddSource(NN<Media::IMediaSource> src, Int32 syncTime)
+UOSInt Media::MPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
 	return (UOSInt)-1;
 }
 
-Optional<Media::IMediaSource> Media::MPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
+Optional<Media::MediaSource> Media::MPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
 	syncTime.Set(0);
 	if (index == 0)

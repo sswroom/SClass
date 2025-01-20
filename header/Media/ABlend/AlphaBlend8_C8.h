@@ -12,7 +12,7 @@ namespace Media
 {
 	namespace ABlend
 	{
-		class AlphaBlend8_C8 : public Media::ImageAlphaBlend, public Media::IColorHandler
+		class AlphaBlend8_C8 : public Media::ImageAlphaBlend, public Media::ColorHandler
 		{
 		private:
 			typedef struct
@@ -59,8 +59,8 @@ namespace Media
 			virtual void Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType);
 			virtual void PremulAlpha(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);
 
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DECODER_FFMPEGDECODER
 #define _SM_MEDIA_DECODER_FFMPEGDECODER
 #include "Data/ArrayListInt32.h"
-#include "Media/IVideoSource.h"
+#include "Media/VideoSource.h"
 #include "Media/Decoder/VDecoderBase.h"
 
 namespace Media
@@ -17,9 +17,9 @@ namespace Media
 			Bool endProcessing;
 			Data::Duration lastFrameTime;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			FFMPEGDecoder(NN<IVideoSource> sourceVideo);
+			FFMPEGDecoder(NN<VideoSource> sourceVideo);
 			virtual ~FFMPEGDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
@@ -33,7 +33,7 @@ namespace Media
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-			virtual void OnFrameChanged(Media::IVideoSource::FrameChange fc);
+			virtual void OnFrameChanged(Media::VideoSource::FrameChange fc);
 
 			Bool IsError();
 

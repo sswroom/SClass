@@ -89,18 +89,18 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUI
 	return true;
 }
 
-void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	this->lastYCOfst = ycOfst;
-	Media::IVideoSource::FrameFlag bFlags = (Media::IVideoSource::FrameFlag)((flags & (Media::IVideoSource::FF_REALTIME)) | Media::IVideoSource::FF_BFRAMEPROC);
+	Media::VideoSource::FrameFlag bFlags = (Media::VideoSource::FrameFlag)((flags & (Media::VideoSource::FF_REALTIME)) | Media::VideoSource::FF_BFRAMEPROC);
 
 	((BITMAPINFOHEADER*)this->bmihSrc)->biSizeImage = (DWORD)dataSize;
-	if (ICDecompress((HIC)this->hic, (frameStruct != Media::IVideoSource::FS_I)?ICDECOMPRESS_NOTKEYFRAME:0, (BITMAPINFOHEADER*)this->bmihSrc, imgData[0].Ptr(), (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff.Ptr()) == ICERR_OK)
+	if (ICDecompress((HIC)this->hic, (frameStruct != Media::VideoSource::FS_I)?ICDECOMPRESS_NOTKEYFRAME:0, (BITMAPINFOHEADER*)this->bmihSrc, imgData[0].Ptr(), (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff.Ptr()) == ICERR_OK)
 	{
 		if (((BITMAPINFOHEADER*)this->bmihDest)->biCompression != 0)
 		{
 			OSInt i;
-			if (flags & Media::IVideoSource::FF_DISCONTTIME)
+			if (flags & Media::VideoSource::FF_DISCONTTIME)
 			{
 				this->bDiscard = this->bCnt;
 			}
@@ -117,7 +117,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			{
 				if (bCnt == 0)
 				{
-					if (frameStruct == Media::IVideoSource::FS_B)
+					if (frameStruct == Media::VideoSource::FS_B)
 					{
 						this->bBuff[this->bCnt].frameTime = frameTime;
 						this->bBuff[this->bCnt].frameNum = frameNum;
@@ -185,7 +185,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 			this->hic = ICOpen(ICTYPE_VIDEO, this->sourceFCC, ICMODE_DECOMPRESS);
 			ret = ICDecompressQuery((HIC)this->hic, (BITMAPINFOHEADER*)this->bmihSrc, 0);
 			ret = ICDecompressBegin((HIC)this->hic, (BITMAPINFOHEADER*)this->bmihSrc, (BITMAPINFOHEADER*)this->bmihDest);
-			ret = ICDecompress((HIC)this->hic, (frameStruct != Media::IVideoSource::FS_I)?ICDECOMPRESS_NOTKEYFRAME:0, (BITMAPINFOHEADER*)this->bmihSrc, imgData, (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff);*/
+			ret = ICDecompress((HIC)this->hic, (frameStruct != Media::VideoSource::FS_I)?ICDECOMPRESS_NOTKEYFRAME:0, (BITMAPINFOHEADER*)this->bmihSrc, imgData, (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff);*/
 		}
 	}
 	else
@@ -194,7 +194,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	}
 }
 
-Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->sourceVideo = 0;
 	this->frameRateNorm = 0;
@@ -221,7 +221,7 @@ Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Me
 	this->lastFrameNum = 0;
 	this->lastFrameTime = 0;
 	this->lastFrameType = Media::FT_NON_INTERLACE;
-	this->lastFrameFlags = Media::IVideoSource::FF_DISCONTTIME;*/
+	this->lastFrameFlags = Media::VideoSource::FF_DISCONTTIME;*/
 
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
@@ -493,20 +493,20 @@ void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType us
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-void Media::Decoder::VFWDecoder::OnFrameChanged(Media::IVideoSource::FrameChange fc)
+void Media::Decoder::VFWDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)
 {
-	if (fc == Media::IVideoSource::FC_PAR)
+	if (fc == Media::VideoSource::FC_PAR)
 	{
 		this->frameChg = true;
 	}
-	else if (fc == Media::IVideoSource::FC_ENDPLAY)
+	else if (fc == Media::VideoSource::FC_ENDPLAY)
 	{
 /*		if (this->hasBFrame)
 		{
 			((BITMAPINFOHEADER*)this->bmihSrc)->biSizeImage = 0;
 			if (ICDecompress((HIC)this->hic, ICDECOMPRESS_NOTKEYFRAME, (BITMAPINFOHEADER*)this->bmihSrc, 0, (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff) == ICERR_OK)
 			{
-				this->frameCb(this->lastFrameTime, this->lastFrameNum, this->frameBuff, this->maxFrameSize, Media::IVideoSource::FS_N, this->frameCbData, this->lastFrameType, this->lastFrameFlags, this->lastYCOfst);
+				this->frameCb(this->lastFrameTime, this->lastFrameNum, this->frameBuff, this->maxFrameSize, Media::VideoSource::FS_N, this->frameCbData, this->lastFrameType, this->lastFrameFlags, this->lastYCOfst);
 			}
 		}*/
 		if (this->bCnt > 0)
@@ -519,7 +519,7 @@ void Media::Decoder::VFWDecoder::OnFrameChanged(Media::IVideoSource::FrameChange
 			{
 				if (ICDecompress((HIC)this->hic, ICDECOMPRESS_NOTKEYFRAME, (BITMAPINFOHEADER*)this->bmihSrc, 0, (BITMAPINFOHEADER*)this->bmihDest, this->frameBuff.Ptr()) == ICERR_OK)
 				{
-					this->frameCb(this->bBuff[i].frameTime, this->bBuff[i].frameNum, &this->frameBuff, this->maxFrameSize, Media::IVideoSource::FS_N, this->frameCbData, this->bBuff[i].frameType, Media::IVideoSource::FF_BFRAMEPROC, this->lastYCOfst);
+					this->frameCb(this->bBuff[i].frameTime, this->bBuff[i].frameNum, &this->frameBuff, this->maxFrameSize, Media::VideoSource::FS_N, this->frameCbData, this->bBuff[i].frameType, Media::VideoSource::FF_BFRAMEPROC, this->lastYCOfst);
 				}
 				i++;
 			}

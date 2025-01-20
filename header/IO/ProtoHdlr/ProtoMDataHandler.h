@@ -1,21 +1,21 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOMDATAHANDLER
 #define _SM_IO_PROTOHDLR_PROTOMDATAHANDLER
 #include "Crypto/Hash/HashCalc.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoMDataHandler : public IO::IProtocolHandler
+		class ProtoMDataHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			NN<Crypto::Hash::HashCalc> crc;
 
 		public:
-			ProtoMDataHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoMDataHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoMDataHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

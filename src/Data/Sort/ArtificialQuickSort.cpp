@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Data/Sort/BubbleSort.h"
 #include "Data/Sort/InsertionSort.h"
@@ -760,9 +760,9 @@ void ArtificialQuickSort(int array[], int nor) {
 */
 
 
-void Data::Sort::ArtificialQuickSort::PreSortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt left, OSInt right)
+void Data::Sort::ArtificialQuickSort::PreSortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt left, OSInt right)
 {
-	NN<Data::IComparable> temp;
+	NN<Data::Comparable> temp;
 
 	while (left < right)
 	{
@@ -777,7 +777,7 @@ void Data::Sort::ArtificialQuickSort::PreSortCmpO(UnsafeArray<NN<Data::IComparab
 	}
 }
 
-void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
 {
 #if _OSINT_SIZE == 16
 	OSInt levi[256];
@@ -790,10 +790,10 @@ void Data::Sort::ArtificialQuickSort::SortCmpO(UnsafeArray<NN<Data::IComparable>
 	OSInt i;
 	OSInt left;
 	OSInt right;
-	NN<Data::IComparable> meja;
+	NN<Data::Comparable> meja;
 	OSInt left1;
 	OSInt right1;
-	NN<Data::IComparable> temp;
+	NN<Data::Comparable> temp;
 
 	PreSortCmpO(arr, firstIndex, lastIndex);
 

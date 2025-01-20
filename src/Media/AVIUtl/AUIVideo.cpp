@@ -32,7 +32,7 @@ UInt32 __stdcall Media::AVIUtl::AUIVideo::PlayThread(AnyType userObj)
 			else
 			{
 				buffSize = me->plugin->GetVideoFrame(me->input->hand, thisFrameNum, frameBuff);
-				me->playCb(MulDivU32(thisFrameNum, 1000 * me->frameRateDenorm, me->frameRateNorm), thisFrameNum, &frameBuff, (UInt32)buffSize, me->plugin->IsVideoKeyFrame(me->input->hand, thisFrameNum)?(Media::IVideoSource::FS_I):(Media::IVideoSource::FS_P), me->playCbData, Media::FT_INTERLACED_TFF, (thisFrameNum != lastFrameNum + 1)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
+				me->playCb(MulDivU32(thisFrameNum, 1000 * me->frameRateDenorm, me->frameRateNorm), thisFrameNum, &frameBuff, (UInt32)buffSize, me->plugin->IsVideoKeyFrame(me->input->hand, thisFrameNum)?(Media::VideoSource::FS_I):(Media::VideoSource::FS_P), me->playCbData, Media::FT_INTERLACED_TFF, (thisFrameNum != lastFrameNum + 1)?Media::VideoSource::FF_DISCONTTIME:Media::VideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
 				lastFrameNum = thisFrameNum;
 			}
 		}
@@ -210,7 +210,7 @@ void Media::AVIUtl::AUIVideo::EnumFrameInfos(FrameInfoCallback cb, AnyType userD
 	i = 0;
 	while (i < this->frameCnt)
 	{
-		if (!cb(MulDivU32(i, this->frameRateDenorm * 1000, this->frameRateNorm), i, dataSize, Media::IVideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
+		if (!cb(MulDivU32(i, this->frameRateDenorm * 1000, this->frameRateNorm), i, dataSize, Media::VideoSource::FS_I, Media::FT_NON_INTERLACE, userData, Media::YCOFST_C_CENTER_LEFT))
 		{
 			break;
 		}

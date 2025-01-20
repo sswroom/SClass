@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_ENCRYPT_FORMENCODE
 #define _SM_CRYPTO_ENCRYPT_FORMENCODE
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 
 namespace Crypto
 {
 	namespace Encrypt
 	{
-		class FormEncode : public Crypto::Encrypt::ICrypto
+		class FormEncode : public Crypto::Encrypt::Encryption
 		{
 		private:
 			static UInt8 URIAllow[256];

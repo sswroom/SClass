@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Text/MyString.h"
 
 extern "C" void BubbleSort_SortInt32(Int32 *arr, OSInt firstIndex, OSInt lastIndex)
@@ -202,7 +202,7 @@ extern "C" void BubbleSort_SortStrC(Char **arr, OSInt firstIndex, OSInt lastInde
 	}
 }
 
-/*extern "C" void BubbleSort_SortCmp(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+/*extern "C" void BubbleSort_SortCmp(void **arr, Data::Comparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt j = lastIndex - firstIndex;
 	OSInt i;
@@ -372,7 +372,7 @@ extern "C" void BubbleSort_SortStrCInv(Char **arr, OSInt firstIndex, OSInt lastI
 	}
 }
 
-/*extern "C" void BubbleSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+/*extern "C" void BubbleSort_SortCmpInv(void **arr, Data::Comparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt j = lastIndex - firstIndex;
 	OSInt i;

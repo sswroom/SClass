@@ -63,7 +63,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 	this->CloseFile();
 	Bool hasAudio = false;
 	Bool hasVideo = false;
-	NN<Media::IMediaSource> msrc;
+	NN<Media::MediaSource> msrc;
 	Media::MediaType mt;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
@@ -179,7 +179,7 @@ Optional<Media::VideoRenderer> Media::MediaPlayerInterface::GetVideoRenderer()
 void Media::MediaPlayerInterface::PBStart()
 {
 	NN<Media::MediaPlayer> player;
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	if (this->player.SetTo(player) && this->currPBC.SetTo(currPBC) && !player->IsPlaying())
 	{
 		currPBC->StartPlayback();
@@ -193,7 +193,7 @@ void Media::MediaPlayerInterface::PBStart()
 
 void Media::MediaPlayerInterface::PBStop()
 {
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	if (this->currPBC.SetTo(currPBC))
 	{
 		currPBC->StopPlayback();
@@ -204,7 +204,7 @@ void Media::MediaPlayerInterface::PBStop()
 void Media::MediaPlayerInterface::PBPause()
 {
 	NN<Media::MediaPlayer> player;
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	if (this->player.SetTo(player) && this->currPBC.SetTo(currPBC))
 	{
 		if (player->IsPlaying())
@@ -223,13 +223,13 @@ void Media::MediaPlayerInterface::PBPause()
 
 void Media::MediaPlayerInterface::PBPrevChapter()
 {
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	if (this->currPBC.SetTo(currPBC)) currPBC->PrevChapter();
 }
 
 void Media::MediaPlayerInterface::PBNextChapter()
 {
-	NN<Media::IPBControl> currPBC;
+	NN<Media::PBControl> currPBC;
 	if (this->currPBC.SetTo(currPBC)) currPBC->NextChapter();
 }
 

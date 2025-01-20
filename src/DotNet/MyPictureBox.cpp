@@ -293,7 +293,7 @@ void DotNet::MyPictureBox::SetImage(Media::Image *currImage)
 	}
 }
 
-void DotNet::MyPictureBox::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void DotNet::MyPictureBox::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 	if (this->currImage && this->csconv)
 	{
@@ -313,7 +313,7 @@ void DotNet::MyPictureBox::YUVParamChanged(NN<const Media::IColorHandler::YUVPAR
 	}
 }
 
-void DotNet::MyPictureBox::RGBParamChanged(const Media::IColorHandler::RGBPARAM *rgbParam)
+void DotNet::MyPictureBox::RGBParamChanged(const Media::ColorHandler::RGBPARAM *rgbParam)
 {
 	if (this->currImage && this->csconv)
 	{

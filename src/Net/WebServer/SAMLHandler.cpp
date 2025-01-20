@@ -20,7 +20,7 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 	this->signKey.Delete();
 }
 
-Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

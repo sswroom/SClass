@@ -7,7 +7,7 @@ Net::WebServer::WebSessionUsage::WebSessionUsage()
 	this->sess = 0;
 }
 
-Net::WebServer::WebSessionUsage::WebSessionUsage(Optional<Net::WebServer::IWebSession> sess)
+Net::WebServer::WebSessionUsage::WebSessionUsage(Optional<Net::WebServer::WebSession> sess)
 {
 	this->sess = 0;
 	this->Use(sess);
@@ -18,7 +18,7 @@ Net::WebServer::WebSessionUsage::~WebSessionUsage()
 	this->EndUse();
 }
 
-void Net::WebServer::WebSessionUsage::Use(Optional<Net::WebServer::IWebSession> sess)
+void Net::WebServer::WebSessionUsage::Use(Optional<Net::WebServer::WebSession> sess)
 {
 	this->EndUse();
 	this->sess = sess;
@@ -26,7 +26,7 @@ void Net::WebServer::WebSessionUsage::Use(Optional<Net::WebServer::IWebSession> 
 
 void Net::WebServer::WebSessionUsage::EndUse()
 {
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (this->sess.SetTo(sess))
 	{
 		sess->EndUse();
@@ -34,7 +34,7 @@ void Net::WebServer::WebSessionUsage::EndUse()
 	}
 }
 
-Optional<Net::WebServer::IWebSession> Net::WebServer::WebSessionUsage::GetSess()
+Optional<Net::WebServer::WebSession> Net::WebServer::WebSessionUsage::GetSess()
 {
 	return this->sess;
 }

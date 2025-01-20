@@ -1,19 +1,19 @@
 #ifndef _SM_IO_PROTOHDLR_PROTORODBINHANDLER
 #define _SM_IO_PROTOHDLR_PROTORODBINHANDLER
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoRodBinHandler : public IO::IProtocolHandler
+		class ProtoRodBinHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 
 		public:
-			ProtoRodBinHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoRodBinHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoRodBinHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

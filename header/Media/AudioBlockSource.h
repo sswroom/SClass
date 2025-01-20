@@ -2,12 +2,12 @@
 #define _SM_MEDIA_AUDIOBLOCKSOURCE
 #include "Sync/Event.h"
 #include "IO/StreamData.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
-	class AudioBlockSource : public IAudioSource
+	class AudioBlockSource : public AudioSource
 	{
 	private:
 		typedef struct

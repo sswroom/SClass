@@ -47,7 +47,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::CRC32R::GetName(UnsafeArray<UTF8Char> sbuff)
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (32-bit Reversed)"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::CRC32R::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::CRC32R::Clone() const
 {
 	NN<Crypto::Hash::CRC32R> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32R(*this));

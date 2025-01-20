@@ -9,7 +9,7 @@
 
 typedef struct
 {
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	UInt64 readSize;
 	UInt64 fileSize;
 	Optional<IO::ProgressHandler> progress;
@@ -19,7 +19,7 @@ Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto:
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	IO::FileCheck *fchk;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
@@ -139,7 +139,7 @@ void __stdcall IO::FileCheck::CheckData(Data::ByteArrayR buff, AnyType userData)
 	}
 }
 
-Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::IHash> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::HashAlgorithm> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UnsafeArray<UTF8Char> sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UnsafeArray<UTF8Char> sptr2;
@@ -227,7 +227,7 @@ Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8
 IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	if (!Crypto::Hash::HashCreator::CreateHash(chkType).SetTo(hash))
 	{
 		this->hashSize = 4;
@@ -246,7 +246,7 @@ IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) 
 IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	if (!Crypto::Hash::HashCreator::CreateHash(chkType).SetTo(hash))
 	{
 		this->hashSize = 4;
@@ -316,7 +316,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptrEnd;
 	UOSInt i;
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	NN<IO::Writer> writer;
 
 	NN<Text::String> fileName;

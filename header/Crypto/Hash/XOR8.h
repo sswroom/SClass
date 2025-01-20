@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_HASH_XOR8
 #define _SM_CRYPTO_HASH_XOR8
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace Crypto
 {
 	namespace Hash
 	{
-		class XOR8 : public IHash
+		class XOR8 : public HashAlgorithm
 		{
 		private:
 			UInt8 val;
@@ -18,7 +18,7 @@ namespace Crypto
 			virtual ~XOR8();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
-			virtual NN<IHash> Clone() const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;

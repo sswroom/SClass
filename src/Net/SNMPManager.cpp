@@ -908,7 +908,7 @@ UOSInt Net::SNMPManager::AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, 
 	return ret;
 }
 
-void Net::SNMPManager::Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, OutParam<Int64> cliId)
+void Net::SNMPManager::Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor::SMonitorCore::DevRecord2> rec, OutParam<Int64> cliId)
 {
 	cliId.Set(Agent2CliId(agent));
 
@@ -924,7 +924,7 @@ void Net::SNMPManager::Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor
 	rec->nOutput = 0;
 	rec->profileId = 5;
 	rec->digitalVals = 0;
-	MemClear(rec->readings, sizeof(SSWR::SMonitor::ISMonitorCore::ReadingInfo) * SMONITORCORE_DEVREADINGCNT);
+	MemClear(rec->readings, sizeof(SSWR::SMonitor::SMonitorCore::ReadingInfo) * SMONITORCORE_DEVREADINGCNT);
 	UOSInt i = 0;
 	UOSInt j = agent->readingList.GetCount();
 	while (i < j)

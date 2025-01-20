@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"

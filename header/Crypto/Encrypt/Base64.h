@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_ENCRYPT_BASE64
 #define _SM_CRYPTO_ENCRYPT_BASE64
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 
 namespace Crypto
 {
 	namespace Encrypt
 	{
-		class Base64 : public ::Crypto::Encrypt::ICrypto
+		class Base64 : public ::Crypto::Encrypt::Encryption
 		{
 		public:
 			Base64();

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/CryptoStream.h"
 
-IO::CryptoStream::CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::ICrypto *crypto, void *encParam) : IO::Stream(srcStream->GetSourceNameObj())
+IO::CryptoStream::CryptoStream(IO::Stream *srcStream, Crypto::Encrypt::Encryption *crypto, void *encParam) : IO::Stream(srcStream->GetSourceNameObj())
 {
 	this->stm = srcStream;
 	this->crypto = crypto;

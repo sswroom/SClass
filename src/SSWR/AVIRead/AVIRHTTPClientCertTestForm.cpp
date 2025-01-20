@@ -228,7 +228,7 @@ void SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRHTTPClientCertTestForm::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+void SSWR::AVIRead::AVIRHTTPClientCertTestForm::DoWebRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<Crypto::Cert::X509Cert> cert;

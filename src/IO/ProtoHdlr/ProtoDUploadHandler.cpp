@@ -5,7 +5,7 @@
 #include "IO/ProtoHdlr/ProtoDUploadHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 	NN<Crypto::Hash::CRC32R> crc;

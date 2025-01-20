@@ -44,9 +44,9 @@ UnsafeArrayOpt<UTF8Char> Media::AudioDevice::GetDeviceName(UnsafeArray<UTF8Char>
 	return 0;
 }
 
-Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
+Optional<Media::AudioRenderer> Media::AudioDevice::CreateRenderer(Text::CStringNN devName)
 {
-Media::IAudioRenderer *renderer = 0;
+Media::AudioRenderer *renderer = 0;
 #ifndef _WIN32_WCE
 	if (devName.StartsWith(UTF8STRC("KS: ")))
 	{
@@ -76,7 +76,7 @@ Media::AudioDevice::~AudioDevice()
 
 Bool Media::AudioDevice::AddDevice(Text::CStringNN devName)
 {
-	NN<Media::IAudioRenderer> renderer;
+	NN<Media::AudioRenderer> renderer;
 	Bool ret = false;
 #ifndef _WIN32_WCE
 	if (devName.StartsWith(UTF8STRC("KS: ")))
@@ -128,11 +128,11 @@ void Media::AudioDevice::ClearDevices()
 	this->rendererList.DeleteAll();
 }
 
-Optional<Media::IAudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::IAudioSource> audsrc)
+Optional<Media::AudioRenderer> Media::AudioDevice::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	UOSInt i;
 	UOSInt j;
-	NN<Media::IAudioRenderer> renderer;
+	NN<Media::AudioRenderer> renderer;
 	if (this->rendererList.GetCount() == 0)
 	{
 		NEW_CLASSNN(renderer, Media::WaveOutRenderer(0));

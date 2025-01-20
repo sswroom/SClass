@@ -6,7 +6,7 @@
 
 namespace Net
 {
-	class IRTPPLHandler;
+	class RTPPayloadHandler;
 
 	class RTPSvrChannel
 	{

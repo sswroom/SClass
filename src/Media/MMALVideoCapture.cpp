@@ -25,8 +25,8 @@ typedef struct
 	Bool photoMode;
 	Bool isRunning;
 
-	Media::IVideoSource::FrameCallback cb;
-	Media::IVideoSource::FrameChangeCallback fcCb;
+	Media::VideoSource::FrameCallback cb;
+	Media::VideoSource::FrameChangeCallback fcCb;
 	void *userData;
 
 	Int32 currFourcc;
@@ -45,7 +45,7 @@ void MMALVideoCapture_FrameCB(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 	{
 		UInt32 t = Double2Int32(info->clk->GetTimeDiff() * 1000);
 		mmal_buffer_header_mem_lock(buffer);
-		info->cb(t, info->frameNum, &buffer->data, buffer->length, Media::IVideoSource::FS_I, info->userData, Media::FT_NON_INTERLACE, Media::IVideoSource::FF_REALTIME, Media::YCOFST_C_CENTER_LEFT);
+		info->cb(t, info->frameNum, &buffer->data, buffer->length, Media::VideoSource::FS_I, info->userData, Media::FT_NON_INTERLACE, Media::VideoSource::FF_REALTIME, Media::YCOFST_C_CENTER_LEFT);
 		mmal_buffer_header_mem_unlock(buffer);
 	}
 	mmal_buffer_header_release (buffer);

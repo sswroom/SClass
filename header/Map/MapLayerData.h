@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_MAPLAYERDATA
 #define _SM_MAP_MAPLAYERDATA
-#include "IO/IFileBuffer.h"
+#include "IO/FileBuffer.h"
 #include "Map/MapSearchLayer.h"
 #include "Text/CString.h"
 
@@ -9,14 +9,14 @@ namespace Map
 	class MapLayerData : public Map::MapSearchLayer
 	{
 	public:
-		UInt8 *cipFile;
-		UInt8 *cixFile;
-		UInt8 *ciuFile;
-		UInt8 *blkFile;
-		IO::IFileBuffer *cipFileObj;
-		IO::IFileBuffer *cixFileObj;
-		IO::IFileBuffer *ciuFileObj;
-		IO::IFileBuffer *blkFileObj;
+		UnsafeArrayOpt<UInt8> cipFile;
+		UnsafeArrayOpt<UInt8> cixFile;
+		UnsafeArrayOpt<UInt8> ciuFile;
+		UnsafeArrayOpt<UInt8> blkFile;
+		NN<IO::FileBuffer> cipFileObj;
+		NN<IO::FileBuffer> cixFileObj;
+		NN<IO::FileBuffer> ciuFileObj;
+		NN<IO::FileBuffer> blkFileObj;
 	public:
 		MapLayerData(Text::CStringNN filePath);
 		virtual ~MapLayerData();

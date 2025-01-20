@@ -1,45 +1,44 @@
 #ifndef _SM_MEDIA_REALTIMEVIDEOSOURCE
 #define _SM_MEDIA_REALTIMEVIDEOSOURCE
-#include "Media/IVideoSource.h"
-#include "Media/IRealtimeVideoSource.h"
-#include "Sync/Mutex.h"
+#include "AnyType.h"
+#include "Media/VideoSource.h"
 
 namespace Media
 {
-	class RealtimeVideoSource : public IVideoSource
+	class RealtimeVideoSource : public VideoSource
 	{
-	private:
-		Media::IRealtimeVideoSource *capSrc;
-		Sync::Mutex frameMut;
-		UInt8 *frameBuff;
-		Int32 frameSize;
-		UInt32 frameTime;
-		UInt32 frameNum;
-		Media::FrameType frameType;
-		Int32 lastFrameTime;
-		UOSInt maxFrameSize;
-		Media::FrameInfo frameInfo;
-		UInt32 frameRateNorm;
-		UInt32 frameRateDenorm;
-		Bool started;
-
-	private:
-		static void __stdcall FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+	protected:
+		UOSInt cropLeft;
+		UOSInt cropTop;
+		UOSInt cropRight;
+		UOSInt cropBottom;
 	public:
-		RealtimeVideoSource(Media::IRealtimeVideoSource *capSrc);
+		RealtimeVideoSource();
 		virtual ~RealtimeVideoSource();
 
-		virtual UTF8Char *GetName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff) = 0;
 
-		virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *rateNorm, UInt32 *rateDenorm, UOSInt *maxFrameSize);
-		virtual Bool Start();
-		virtual void Stop();
+		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
+		virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom);
+
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
+		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData) = 0;
+		virtual Bool Start() = 0; //true = succeed
+		virtual void Stop() = 0;
+		virtual Bool IsVideoCapture();
+
 		virtual Data::Duration GetStreamTime();
 		virtual Bool CanSeek();
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool IsRealTimeSrc();
+		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime);
 
-		virtual OSInt ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype); //ret 0 = no more frames
+		virtual Bool HasFrameCount();
+		virtual UOSInt GetFrameCount();
+		virtual Data::Duration GetFrameTime(UOSInt frameIndex);
+		virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
+
+		virtual UOSInt ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype); //ret 0 = no more frames
 	};
 }
 #endif

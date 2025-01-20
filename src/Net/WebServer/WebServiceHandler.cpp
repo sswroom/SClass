@@ -15,7 +15,7 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 	}
 }
 
-Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	Optional<Net::WebServer::WebServiceHandler::ServiceInfo> service;
 	NN<Net::WebServer::WebServiceHandler::ServiceInfo> nnservice;

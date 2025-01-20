@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_BASE32ENC
 #define _SM_TEXT_TEXTBINENC_BASE32ENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class Base32Enc : public Text::TextBinEnc::ITextBinEnc
+		class Base32Enc : public Text::TextBinEnc::TextBinEnc
 		{
 		private:
 			static const UInt8 decArr[];

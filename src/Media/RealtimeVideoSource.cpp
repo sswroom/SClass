@@ -1,81 +1,42 @@
 #include "Stdafx.h"
-#include "MyMemory.h"
 #include "Media/RealtimeVideoSource.h"
-#include "Sync/MutexUsage.h"
-#include "Sync/ThreadUtil.h"
 
-void __stdcall Media::RealtimeVideoSource::FrameCB(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+Media::RealtimeVideoSource::RealtimeVideoSource()
 {
-	Media::RealtimeVideoSource *me = (Media::RealtimeVideoSource*)userData;
-	Sync::MutexUsage mutUsage(me->frameMut);
-	me->frameTime = frameTime;
-	me->frameNum = frameNum;
-	MemCopyNO(me->frameBuff, imgData[0], dataSize);
-	me->frameSize = dataSize;
-	me->frameType = frameType;
-}
-
-Media::RealtimeVideoSource::RealtimeVideoSource(Media::IRealtimeVideoSource *capSrc)
-{
-	this->capSrc = capSrc;
-	capSrc->GetVideoInfo(&this->frameInfo, &this->frameRateNorm, &this->frameRateDenorm, &this->maxFrameSize);
-	this->frameBuff = MemAlloc(UInt8, this->maxFrameSize);
-	this->frameSize = 0;
-	this->started = false;
-	this->frameTime = -1;
-	this->frameType = Media::FT_NON_INTERLACE;
-	this->lastFrameTime = -1;
+	this->cropLeft = 0;
+	this->cropTop = 0;
+	this->cropRight = 0;
+	this->cropBottom = 0;
 }
 
 Media::RealtimeVideoSource::~RealtimeVideoSource()
 {
-	this->Stop();
-	if (this->capSrc)
-	{
-		DEL_CLASS(this->capSrc);
-	}
-	if (this->frameBuff)
-	{
-		MemFree(this->frameBuff);
-	}
 }
 
-UTF8Char *Media::RealtimeVideoSource::GetName(UTF8Char *buff)
+void Media::RealtimeVideoSource::SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom)
 {
-	return this->capSrc->GetSourceName(buff);
+	this->cropLeft = cropLeft;
+	this->cropTop = cropTop;
+	this->cropRight = cropRight;
+	this->cropBottom = cropBottom;
 }
 
-Bool Media::RealtimeVideoSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *rateNorm, UInt32 *rateDenorm, UOSInt *maxFrameSize)
+void Media::RealtimeVideoSource::GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom)
 {
-	return this->capSrc->GetVideoInfo(info, rateNorm, rateDenorm, maxFrameSize);
+	cropLeft.Set(this->cropLeft);
+	cropTop.Set(this->cropTop);
+	cropRight.Set(this->cropRight);
+	cropBottom.Set(this->cropBottom);
 }
 
-void Media::RealtimeVideoSource::Start()
+Bool Media::RealtimeVideoSource::IsVideoCapture()
 {
-	if (started)
-		return;
-	this->lastFrameTime = -1;
-	this->frameType = Media::FT_NON_INTERLACE;
-	this->frameTime = -1;
-	this->started = true;
-	this->capSrc->Init(FrameCB, 0, this);
-	if (!this->capSrc->Start())
-	{
-		this->started = false;
-	}
+	return false;
 }
 
-void Media::RealtimeVideoSource::Stop()
+Data::Duration Media::RealtimeVideoSource::GetStreamTime()
 {
-	if (!started)
-		return;
-	this->started = false;
-	this->capSrc->Stop();
-}
-
-Int32 Media::RealtimeVideoSource::GetStreamTime()
-{
-	return -1;
+	return Data::Duration::Infinity();
 }
 
 Bool Media::RealtimeVideoSource::CanSeek()
@@ -83,9 +44,9 @@ Bool Media::RealtimeVideoSource::CanSeek()
 	return false;
 }
 
-Int32 Media::RealtimeVideoSource::SeekToTime(Int32 time)
+Data::Duration Media::RealtimeVideoSource::SeekToTime(Data::Duration time)
 {
-	return -1;
+	return 0;
 }
 
 Bool Media::RealtimeVideoSource::IsRealTimeSrc()
@@ -93,24 +54,32 @@ Bool Media::RealtimeVideoSource::IsRealTimeSrc()
 	return true;
 }
 
-OSInt Media::RealtimeVideoSource::ReadNextFrame(UInt8 *frameBuff, Int32 *frameTime, Media::FrameType *ftype)
+Bool Media::RealtimeVideoSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
-	if (!started)
-		return 0;
-	while (this->frameTime == this->lastFrameTime && started)
-	{
-		Sync::SimpleThread::Sleep(10);
-	}
-	if (!started)
-	{
-		return 0;
-	}
-	OSInt frameSize;
-	Sync::MutexUsage mutUsage(this->frameMut);
-	frameSize = this->frameSize;
-	this->lastFrameTime = this->frameTime;
-	MemCopyNO(frameBuff, this->frameBuff, frameSize);
-	*frameTime = this->frameTime;
-	*ftype = this->frameType;
-	return frameSize;
+	return false;
+}
+
+Bool Media::RealtimeVideoSource::HasFrameCount()
+{
+	return false;
+}
+
+UOSInt Media::RealtimeVideoSource::GetFrameCount()
+{
+	return 0;
+}
+
+Data::Duration Media::RealtimeVideoSource::GetFrameTime(UOSInt frameIndex)
+{
+	return 0;
+}
+
+void Media::RealtimeVideoSource::EnumFrameInfos(FrameInfoCallback cb, AnyType userData)
+{
+}
+
+UOSInt Media::RealtimeVideoSource::ReadNextFrame(UnsafeArray<UInt8> frameBuff, OutParam<UInt32> frameTime, OutParam<Media::FrameType> ftype)
+{
+	///////////////////////////////////////
+	return 0;
 }

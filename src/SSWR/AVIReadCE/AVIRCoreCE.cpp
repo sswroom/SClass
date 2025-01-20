@@ -157,7 +157,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 	case IO::ParserType::SectorData:
 		{
 			SSWR::AVIRead::AVIRSectorForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRSectorForm(this->ui->GetHInst(), 0, this->ui, this, (IO::ISectorData *)pobj));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRSectorForm(this->ui->GetHInst(), 0, this->ui, this, (IO::SectorData *)pobj));
 			InitForm(frm);
 			frm->Show();
 		}

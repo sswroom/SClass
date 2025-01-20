@@ -4,7 +4,7 @@
 #include "IO/FileSelector.h"
 #include "Media/AudioFormat.h"
 #include "Media/FrameInfo.h"
-#include "Media/IMediaSource.h"
+#include "Media/MediaSource.h"
 
 namespace Media
 {
@@ -36,7 +36,7 @@ namespace Media
 			~AUIPlugin();
 
 			NN<AUIPlugin> Clone() const;
-			UOSInt LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
+			UOSInt LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::MediaSource>> outArr);
 
 			Bool CloseInput(void *hand);
 			Bool GetInputVideoInfo(void *hand, NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt);

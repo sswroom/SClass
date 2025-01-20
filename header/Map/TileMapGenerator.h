@@ -17,7 +17,7 @@ namespace Map
 		Data::ArrayListInt64 dbGenList;
 		Sync::Mutex dbMut;
 		Sync::Event dbEvt;
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 
 	private:
 		void InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale);

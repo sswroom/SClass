@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListDbl.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 Data::ArrayListDbl::ArrayListDbl() : Data::SortableArrayListNative<Double>()
 {

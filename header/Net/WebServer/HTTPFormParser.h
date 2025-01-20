@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_HTTPFORMPARSER
 #define _SM_NET_WEBSERVER_HTTPFORMPARSER
 #include "Data/ArrayListStrUTF8.h"
-#include "Net/WebServer/IWebRequest.h"
+#include "Net/WebServer/WebRequest.h"
 
 namespace Net
 {
@@ -13,7 +13,7 @@ namespace Net
 			Data::ArrayListStrUTF8 *strNames;
 			Data::ArrayListStrUTF8 *strValues;
 		public:
-			HTTPFormParser(Net::WebServer::IWebRequest *req, Int32 codePage);
+			HTTPFormParser(Net::WebServer::WebRequest *req, Int32 codePage);
 			~HTTPFormParser();
 
 			UOSInt GetStrCount() const;

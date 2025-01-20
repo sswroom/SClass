@@ -2220,7 +2220,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 			{
 				img->To32bpp();
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
-				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 				NN<Media::StaticImage> newImg;
 				if (newImg.Set(this->resizer->ProcessToNew(img)))
 				{
@@ -2282,7 +2282,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				}
 
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
-				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
+				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 				img->To32bpp();
 				NN<Media::StaticImage> newImg;
 				if (cimgPt.x < cimgPt2.x && cimgPt.y < cimgPt2.y)

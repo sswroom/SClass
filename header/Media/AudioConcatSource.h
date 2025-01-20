@@ -1,15 +1,15 @@
 #ifndef _SM_MEDIA_AUDIOCONCATSOURCE
 #define _SM_MEDIA_AUDIOCONCATSOURCE
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 #include "Data/ArrayListNN.h"
 
 namespace Media
 {
-	class AudioConcatSource : public Media::IAudioSource
+	class AudioConcatSource : public Media::AudioSource
 	{
 	private:
 		Media::AudioFormat format;
-		Data::ArrayListNN<Media::IAudioSource> stmList;
+		Data::ArrayListNN<Media::AudioSource> stmList;
 
 		Data::Duration stmTime;
 		Bool canSeek;
@@ -23,7 +23,7 @@ namespace Media
 		AudioConcatSource();
 		virtual ~AudioConcatSource();
 
-		Bool AppendAudio(NN<Media::IAudioSource> audio);
+		Bool AppendAudio(NN<Media::AudioSource> audio);
 		Bool AppendSilent(UInt32 time);
 
 		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);

@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509Key.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/SSLEngine.h"
 

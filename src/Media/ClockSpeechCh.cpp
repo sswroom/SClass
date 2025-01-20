@@ -17,14 +17,14 @@ void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Par
 	if (pobj->GetParserType() == IO::ParserType::MediaFile)
 	{
 		NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
-		NN<Media::IMediaSource> msrc;
+		NN<Media::MediaSource> msrc;
 		Int32 syncTime;
 		UOSInt i = 0;
 		while (file->GetStream(i++, syncTime).SetTo(msrc))
 		{
 			if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 			{
-				NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
+				NN<Media::AudioSource> asrc = NN<Media::AudioSource>::ConvertFrom(msrc);
 				if (source->AppendAudio(asrc))
 				{
 					file->KeepStream(i - 1, true);
@@ -40,7 +40,7 @@ void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Par
 	}
 }
 
-Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(NN<Data::DateTime> time)
+Media::AudioSource *Media::ClockSpeechCh::GetSpeech(NN<Data::DateTime> time)
 {
 	Int32 hour = time->GetHour();
 	Int32 minute = time->GetMinute();

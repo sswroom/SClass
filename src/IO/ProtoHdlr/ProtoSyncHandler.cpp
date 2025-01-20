@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoSyncHandler.h"
 
-IO::ProtoHdlr::ProtoSyncHandler::ProtoSyncHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoSyncHandler::ProtoSyncHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

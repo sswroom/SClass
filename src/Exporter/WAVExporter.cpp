@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 #include "Media/MediaFile.h"
 #include "Exporter/WAVExporter.h"
 
@@ -28,7 +28,7 @@ IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0) != 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	NN<Media::IMediaSource> stm;
+	NN<Media::MediaSource> stm;
 	if (!file->GetStream(0, 0).SetTo(stm))
 		return IO::FileExporter::SupportType::NotSupported;
 	if (stm->GetMediaType() != Media::MEDIA_TYPE_AUDIO)
@@ -62,13 +62,13 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0) != 0)
 		return false;
-	NN<Media::IMediaSource> src;
+	NN<Media::MediaSource> src;
 	if (!file->GetStream(0, 0).SetTo(src))
 		return false;
 	if (src->GetMediaType() != Media::MEDIA_TYPE_AUDIO)
 		return false;
 
-	NN<Media::IAudioSource> audio = NN<Media::IAudioSource>::ConvertFrom(src);
+	NN<Media::AudioSource> audio = NN<Media::AudioSource>::ConvertFrom(src);
 	Media::AudioFormat format;
 	audio->GetFormat(format);
 	UInt64 fileSize = 0;

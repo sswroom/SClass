@@ -1,8 +1,8 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRENCRYPTMSGFORM
 #define _SM_SSWR_AVIREAD_AVIRENCRYPTMSGFORM
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -40,13 +40,13 @@ namespace SSWR
 			NN<UI::GUILabel> lblOutputMsg;
 			NN<UI::GUITextBox> txtOutputMsg;
 
-			Optional<Crypto::Encrypt::ICrypto> InitCrypto();
+			Optional<Crypto::Encrypt::Encryption> InitCrypto();
 			UnsafeArrayOpt<UInt8> InitInput(UOSInt blockSize, OutParam<UOSInt> dataSize);
-			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::ICrypto> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UOSInt> buffSize, UOSInt blockSize, Bool enc);
+			UnsafeArrayOpt<UInt8> InitIV(NN<Crypto::Encrypt::Encryption> crypto, UnsafeArray<UInt8> dataBuff, InOutParam<UOSInt> buffSize, UOSInt blockSize, Bool enc);
 			void ShowOutput(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			static void __stdcall OnEncryptClicked(AnyType userObj);
 			static void __stdcall OnDecryptClicked(AnyType userObj);
-			static NN<Text::TextBinEnc::ITextBinEnc> GetTextEncType(NN<UI::GUIComboBox> cbo);
+			static NN<Text::TextBinEnc::TextBinEnc> GetTextEncType(NN<UI::GUIComboBox> cbo);
 			static void AddTextEncType(NN<UI::GUIComboBox> cbo);
 		public:
 			AVIREncryptMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/ArrayListCmp.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Media/ImageTo8Bit.h"
@@ -12,7 +12,7 @@ extern "C"
 
 namespace Media
 {
-	class ColorStat : public Data::IComparable
+	class ColorStat : public Data::Comparable
 	{
 	public:
 		Int32 color;
@@ -31,7 +31,7 @@ namespace Media
 
 		}
 
-		virtual OSInt CompareTo(NN<Data::IComparable> obj) const
+		virtual OSInt CompareTo(NN<Data::Comparable> obj) const
 		{
 			UOSInt cnt = NN<Media::ColorStat>::ConvertFrom(obj)->count;
 			if (cnt > count)
@@ -245,7 +245,7 @@ void Media::ImageTo8Bit::From32bpp(UnsafeArray<UInt8> src, UnsafeArray<UInt8> de
 			}
 		}
 		UOSInt arrSize;
-		UnsafeArray<NN<Data::IComparable>> cmpArr = cArr->GetArr(arrSize);
+		UnsafeArray<NN<Data::Comparable>> cmpArr = cArr->GetArr(arrSize);
 		Data::Sort::ArtificialQuickSort::SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
 
 		Int32 *cols = (Int32*)palette;

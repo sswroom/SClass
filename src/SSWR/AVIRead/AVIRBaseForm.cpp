@@ -1018,7 +1018,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CAP_DEV:
 		{
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			NN<Media::IVideoCapture> capture;
+			NN<Media::VideoCapturer> capture;
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				NN<Media::MediaFile> mf;

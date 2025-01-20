@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_SORT_BITONICSORT
 #define _SM_DATA_SORT_BITONICSORT
 #include "AnyType.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/SyncArrayList.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"

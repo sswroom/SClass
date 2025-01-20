@@ -3,14 +3,14 @@
 #include "Data/Sort/BubbleSort.h"
 
 
-void Data::Sort::BubbleSort::SortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BubbleSort::SortCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt j = lastIndex - firstIndex;
 	OSInt i;
-	UnsafeArray<NN<Data::IComparable>> b;
+	UnsafeArray<NN<Data::Comparable>> b;
 	Bool finished = false;
-	NN<Data::IComparable> v1;
-	NN<Data::IComparable> v2;
+	NN<Data::Comparable> v1;
+	NN<Data::Comparable> v2;
 	arr += firstIndex;
 	while (j-- > 0)
 	{
@@ -37,14 +37,14 @@ void Data::Sort::BubbleSort::SortCmpO(UnsafeArray<NN<Data::IComparable>> arr, OS
 	}
 }
 
-void Data::Sort::BubbleSort::SortCmpOInv(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::BubbleSort::SortCmpOInv(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt j = lastIndex - firstIndex;
 	OSInt i;
-	UnsafeArray<NN<Data::IComparable>> b;
+	UnsafeArray<NN<Data::Comparable>> b;
 	Bool finished = false;
-	NN<Data::IComparable> v1;
-	NN<Data::IComparable> v2;
+	NN<Data::Comparable> v1;
+	NN<Data::Comparable> v2;
 	arr += firstIndex;
 	while (j-- > 0)
 	{

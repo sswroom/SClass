@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_QUOTEDPRINTABLEENC
 #define _SM_TEXT_TEXTBINENC_QUOTEDPRINTABLEENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class QuotedPrintableEnc : public Text::TextBinEnc::ITextBinEnc
+		class QuotedPrintableEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			QuotedPrintableEnc();

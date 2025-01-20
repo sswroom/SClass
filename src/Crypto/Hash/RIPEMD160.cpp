@@ -24,7 +24,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::RIPEMD160::GetName(UnsafeArray<UTF8Char> sbu
 	return Text::StrConcatC(sbuff, UTF8STRC("RIPEMD-160"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::RIPEMD160::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::RIPEMD160::Clone() const
 {
 	NN<Crypto::Hash::RIPEMD160> rmd160;
 	NEW_CLASSNN(rmd160, Crypto::Hash::RIPEMD160());

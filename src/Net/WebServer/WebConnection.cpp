@@ -42,7 +42,7 @@ UOSInt Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UO
 	return buffSize;
 }
 
-Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<WebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::WebResponse(CSTR("WebConnection"))
 {
 	this->clif = clif;
 	this->ssl = ssl;
@@ -187,7 +187,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 					{
 						if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("RTSP/1.0")))
 						{
-							Net::WebServer::IWebRequest::RequestProtocol reqProto = Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0;
+							Net::WebServer::WebRequest::RequestProtocol reqProto = Net::WebServer::WebRequest::RequestProtocol::RTSP1_0;
 							this->respHeaders.ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -204,7 +204,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].ToCString());
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebServerRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -221,18 +221,18 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 						}
 						else
 						{
-							Net::WebServer::IWebRequest::RequestProtocol reqProto;
+							Net::WebServer::WebRequest::RequestProtocol reqProto;
 							if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/1.1")))
 							{
-								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1;
+								reqProto = Net::WebServer::WebRequest::RequestProtocol::HTTP1_1;
 							}
 							else if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/1.0")))
 							{
-								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0;
+								reqProto = Net::WebServer::WebRequest::RequestProtocol::HTTP1_0;
 							}
 /*							else if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("HTTP/2")))
 							{
-								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;
+								reqProto = Net::WebServer::WebRequest::RequestProtocol::HTTP2_0;
 							}*/
 							else
 							{
@@ -263,7 +263,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].ToCString());
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebServerRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -387,17 +387,17 @@ Optional<Text::String> Net::WebServer::WebConnection::GetRequestURL()
 	return 0;
 }
 
-void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::RequestProtocol protocol)
+void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::WebRequest::RequestProtocol protocol)
 {
 	UInt8 *buff;
 	UnsafeArray<UTF8Char> sptr;
 	buff = MemAlloc(UInt8, 256 + (this->respHeaders.GetLength() * 3));
 	sptr = (UTF8Char*)buff;
-	if (protocol == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
+	if (protocol == Net::WebServer::WebRequest::RequestProtocol::HTTP1_0)
 	{
 		sptr = Text::StrConcatNE(sptr, UTF8STRC("HTTP/1.0 "));
 	}
-	else if (protocol == Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0)
+	else if (protocol == Net::WebServer::WebRequest::RequestProtocol::RTSP1_0)
 	{
 		sptr = Text::StrConcatNE(sptr, UTF8STRC("RTSP/1.0 "));
 	}
@@ -432,7 +432,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respStatus = Net::WebStatus::SC_OK;
 	this->respDataEnd = false;
 	this->respHeaders.ClearStr();
-	NN<Net::WebServer::WebRequest> currReq;
+	NN<Net::WebServer::WebServerRequest> currReq;
 	if (currReq.Set(this->currReq))
 	{
 
@@ -659,7 +659,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			Double t;
 			clk.Start();
 
-			this->hdlr->WebRequest(currReq, *this);
+			this->hdlr->DoWebRequest(currReq, *this);
 			if (!this->respHeaderSent)
 			{
 				this->SendHeaders(currReq->GetProtocol());
@@ -691,7 +691,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				{
 					this->cli->ShutdownSend();
 				}
-				else if (currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
+				else if (currReq->GetProtocol() == Net::WebServer::WebRequest::RequestProtocol::HTTP1_0)
 				{
 					NN<Text::String> connHdr;
 					if (currReq->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("keep-alive")))
@@ -763,7 +763,7 @@ Bool Net::WebServer::WebConnection::AddHeader(Text::CStringNN name, Text::CStrin
 	return true;
 }
 
-Bool Net::WebServer::WebConnection::AddDefHeaders(NN<Net::WebServer::IWebRequest> req)
+Bool Net::WebServer::WebConnection::AddDefHeaders(NN<Net::WebServer::WebRequest> req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -858,7 +858,7 @@ Bool Net::WebServer::WebConnection::SwitchProtocol(ProtocolHandler *protoHdlr)
 		}
 		else
 		{
-			SendHeaders(Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1);
+			SendHeaders(Net::WebServer::WebRequest::RequestProtocol::HTTP1_1);
 		}
 	}
 	if (this->respDataEnd)
@@ -901,7 +901,7 @@ UOSInt Net::WebServer::WebConnection::Write(Data::ByteArrayR buff)
 		}
 		else
 		{
-			SendHeaders(Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1);
+			SendHeaders(Net::WebServer::WebRequest::RequestProtocol::HTTP1_1);
 		}
 	}
 	if (this->respDataEnd)
@@ -967,7 +967,7 @@ void Net::WebServer::WebConnection::Close()
 		}
 		else
 		{
-			SendHeaders(Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1);
+			SendHeaders(Net::WebServer::WebRequest::RequestProtocol::HTTP1_1);
 		}
 	}
 	if (!this->respDataEnd && this->respTranEnc == 1)

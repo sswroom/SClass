@@ -6,7 +6,7 @@
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
-	NN<Media::IVideoCapture> currCapture;
+	NN<Media::VideoCapturer> currCapture;
 	if (!me->currCapture.SetTo(currCapture))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		me->currCapture = 0;
 	}
 	me->cboFormat->ClearItems();
-	NN<Media::IVideoCapture> currCapture;
+	NN<Media::VideoCapturer> currCapture;
 	if (me->currCapture.SetTo(currCapture))
 	{
 		Data::ArrayListUInt32 supportedCS;
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
-		Media::IVideoCapture::VideoFormat fmts[80];
+		Media::VideoCapturer::VideoFormat fmts[80];
 		NN<SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat> cfmt;
 		UOSInt bestSize = 0;
 		UInt32 bestFmt = 0;

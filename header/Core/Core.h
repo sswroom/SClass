@@ -4,8 +4,8 @@
 
 namespace Media
 {
-	class IAudioSource;
-	class IVideoSource;
+	class AudioSource;
+	class VideoSource;
 };
 namespace UI
 {
@@ -26,8 +26,8 @@ namespace Core
 
 		static Optional<UI::GUICore> CreateGUICore(NN<IProgControl> progCtrl);
 	};
-	typedef Media::IVideoSource *(CALLBACKFUNC DecodeVideoFunc)(NN<Media::IVideoSource> video);
-	typedef Media::IAudioSource *(CALLBACKFUNC DecodeAudioFunc)(NN<Media::IAudioSource> audio);
+	typedef Media::VideoSource *(CALLBACKFUNC DecodeVideoFunc)(NN<Media::VideoSource> video);
+	typedef Media::AudioSource *(CALLBACKFUNC DecodeAudioFunc)(NN<Media::AudioSource> audio);
 	typedef void (CALLBACKFUNC SimpleFunc)();
 
 	void CoreStart();
@@ -35,7 +35,7 @@ namespace Core
 	void CoreAddVideoDecFunc(DecodeVideoFunc func);
 	void CoreAddAudioDecFunc(DecodeAudioFunc func);
 	void CoreAddOnExitFunc(SimpleFunc func);
-	Media::IVideoSource *DecodeVideo(NN<Media::IVideoSource> video);
-	Media::IAudioSource *DecodeAudio(NN<Media::IAudioSource> audio);
+	Media::VideoSource *DecodeVideo(NN<Media::VideoSource> video);
+	Media::AudioSource *DecodeAudio(NN<Media::AudioSource> audio);
 }
 #endif

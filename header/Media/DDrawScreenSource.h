@@ -1,10 +1,10 @@
 #ifndef _SM_MEDIA_DDRAWSCREENSOURCE
 #define _SM_MEDIA_DDRAWSCREENSOURCE
-#include "Media/IRealtimeVideoSource.h"
+#include "Media/RealtimeVideoSource.h"
 
 namespace Media
 {
-	class DDrawScreenSource : public Media::IRealtimeVideoSource
+	class DDrawScreenSource : public Media::RealtimeVideoSource
 	{
 	private:
 		Bool captureRunning;

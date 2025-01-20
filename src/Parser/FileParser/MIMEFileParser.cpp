@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "Text/MyString.h"
 #include "Text/MIMEObj/MailMessage.h"
 #include "Parser/FileParser/MIMEFileParser.h"

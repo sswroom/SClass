@@ -66,7 +66,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType us
 	return 0;
 }
 
-Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWebRequest> req)
+Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::WebRequest> req)
 {
 	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
@@ -97,7 +97,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWeb
 	return sessId;
 }
 
-Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CStringNN path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
+Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CStringNN path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName) : Net::WebServer::WebSessionManager(delHdlr, delHdlrObj)
 {
 	this->path = Text::String::New(path);
 	Text::CStringNN nncookieName;
@@ -139,7 +139,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 	this->cookieName->Release();
 }
 
-Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::GetSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::GetSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Int64 sessId = this->GetSessId(req);
 	if (sessId == 0)
@@ -152,16 +152,16 @@ Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::G
 			sess->EndUse();
 			return 0;
 		}
-		return NN<Net::WebServer::IWebSession>(sess);
+		return NN<Net::WebServer::WebSession>(sess);
 	}
 	return 0;
 }
 
-NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (this->GetSession(req, resp).SetTo(sess))
 		return sess;
 	Int64 sessId = this->GenSessId(req);
@@ -177,7 +177,7 @@ NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateS
 	return sess;
 }
 
-void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Int64 sessId = GetSessId(req);
 	OSInt i;
@@ -205,7 +205,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::I
 	}
 }
 
-Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::IWebRequest> req)
+Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::WebRequest> req)
 {
 	Data::DateTime dt;
 	UInt8 buff[8];
@@ -231,7 +231,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::IWeb
 	return dt.ToTicks() + *(Int64*)buff;
 }
 
-NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId)
+NN<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId)
 {
 	OSInt si;
 	NN<Net::WebServer::MemoryWebSession> sess;
@@ -252,9 +252,9 @@ NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateS
 	return sess;
 }
 
-Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::GetSession(Int64 sessId)
+Optional<Net::WebServer::WebSession> Net::WebServer::MemoryWebSessionManager::GetSession(Int64 sessId)
 {
-	Optional<Net::WebServer::IWebSession> sess;
+	Optional<Net::WebServer::WebSession> sess;
 	OSInt i;
 	sess = 0;
 	Sync::MutexUsage mutUsage(this->mut);

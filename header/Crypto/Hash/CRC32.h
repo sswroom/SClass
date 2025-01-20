@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_HASH_CRC32
 #define _SM_CRYPTO_HASH_CRC32
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace Crypto
 {
 	namespace Hash
 	{
-		class CRC32 : public IHash
+		class CRC32 : public HashAlgorithm
 		{
 		private:
 			UnsafeArray<UInt32> crctab;
@@ -21,7 +21,7 @@ namespace Crypto
 			virtual ~CRC32();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
-			virtual NN<IHash> Clone() const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;

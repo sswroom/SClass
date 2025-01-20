@@ -194,13 +194,13 @@ void Media::CS::CSYUV_LRGB::UpdateTable()
 	}
 }
 
-void Media::CS::CSYUV_LRGB::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv)
+void Media::CS::CSYUV_LRGB::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuv)
 {
 	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV_LRGB::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
+void Media::CS::CSYUV_LRGB::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgb)
 {
 	NN<Media::ColorProfile> srcColor;
 	NN<Media::ColorManagerSess> nncolorSess;

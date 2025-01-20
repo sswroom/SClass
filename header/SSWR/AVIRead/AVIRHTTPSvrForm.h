@@ -22,7 +22,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRHTTPLog : public Net::WebServer::IReqLogger
+		class AVIRHTTPLog : public Net::WebServer::WebRequestLogger
 		{
 		public:
 			typedef struct
@@ -44,7 +44,7 @@ namespace SSWR
 			AVIRHTTPLog(UOSInt logCnt);
 			virtual ~AVIRHTTPLog();
 
-			virtual void LogRequest(NN<Net::WebServer::IWebRequest> req);
+			virtual void LogRequest(NN<Net::WebServer::WebRequest> req);
 			UOSInt GetNextIndex();
 			void Use(NN<Sync::MutexUsage> mutUsage);
 			void GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayList<UOSInt>> logIndex);

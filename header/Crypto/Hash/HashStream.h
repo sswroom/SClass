@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_HASH_HASHSTREAM
 #define _SM_CRYPTO_HASH_HASHSTREAM
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "IO/Stream.h"
 
 namespace Crypto
@@ -10,11 +10,11 @@ namespace Crypto
 		class HashStream : public IO::Stream
 		{
 		private:
-			NN<Crypto::Hash::IHash> hash;
+			NN<Crypto::Hash::HashAlgorithm> hash;
 			NN<IO::Stream> srcStm;
 
 		public:
-			HashStream(NN<IO::Stream> srcStm, NN<Crypto::Hash::IHash> hash);
+			HashStream(NN<IO::Stream> srcStm, NN<Crypto::Hash::HashAlgorithm> hash);
 			virtual ~HashStream();
 
 			virtual Bool IsDown() const;

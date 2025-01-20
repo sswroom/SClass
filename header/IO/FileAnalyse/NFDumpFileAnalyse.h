@@ -3,7 +3,7 @@
 #include "Data/FastMap.h"
 #include "Data/SyncArrayListNN.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -11,7 +11,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class NFDumpFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class NFDumpFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			typedef struct

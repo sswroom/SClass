@@ -2,17 +2,17 @@
 #define _SM_SSWR_AVIREAD_AVIRAUDIOFILTERFORM
 #include "Math/FFTCalc.h"
 #include "Media/WaveInSource.h"
-#include "Media/AudioFilter/AudioAmplifier.h"
-#include "Media/AudioFilter/AudioCaptureFilter.h"
-#include "Media/AudioFilter/AudioLevelMeter.h"
-#include "Media/AudioFilter/AudioSampleRipper.h"
-#include "Media/AudioFilter/AudioSweepFilter.h"
-#include "Media/AudioFilter/DTMFDecoder.h"
-#include "Media/AudioFilter/DTMFGenerator.h"
-#include "Media/AudioFilter/DynamicVolBooster.h"
-#include "Media/AudioFilter/FileMixFilter.h"
-#include "Media/AudioFilter/SoundGenerator.h"
-#include "Media/AudioFilter/ToneGenerator.h"
+#include "Media/AFilter/AudioAmplifier.h"
+#include "Media/AFilter/AudioCaptureFilter.h"
+#include "Media/AFilter/AudioLevelMeter.h"
+#include "Media/AFilter/AudioSampleRipper.h"
+#include "Media/AFilter/AudioSweepFilter.h"
+#include "Media/AFilter/DTMFDecoder.h"
+#include "Media/AFilter/DTMFGenerator.h"
+#include "Media/AFilter/DynamicVolBooster.h"
+#include "Media/AFilter/FileMixFilter.h"
+#include "Media/AFilter/SoundGenerator.h"
+#include "Media/AFilter/ToneGenerator.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUIButton.h"
@@ -145,9 +145,9 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Math::FFTCalc fft;
-			Optional<Media::IAudioSource> audSrc;
+			Optional<Media::AudioSource> audSrc;
 			Int32 audRenderType;
-			Optional<Media::IAudioRenderer> audRender;
+			Optional<Media::AudioRenderer> audRender;
 			Media::RefClock clk;
 			NN<Media::DrawEngine> eng;
 			Optional<Media::DrawImage> sampleImg;
@@ -160,17 +160,17 @@ namespace SSWR
 			Sync::Mutex dtmfMut;
 			Text::StringBuilderUTF8 dtmfSb;
 
-			Optional<Media::AudioFilter::AudioLevelMeter> audioLevel;
-			Optional<Media::AudioFilter::AudioCaptureFilter> audioCapture;
-			Optional<Media::AudioFilter::AudioSampleRipper> audioRipper;
-			Optional<Media::AudioFilter::DynamicVolBooster> volBooster;
-			Optional<Media::AudioFilter::DTMFGenerator> dtmfGen;
-			Optional<Media::AudioFilter::DTMFDecoder> dtmfDec;
-			Optional<Media::AudioFilter::AudioSweepFilter> sweepFilter;
-			Optional<Media::AudioFilter::FileMixFilter> fileMix;
-			Optional<Media::AudioFilter::SoundGenerator> sndGen;
-			Optional<Media::AudioFilter::ToneGenerator> toneGen;
-			Optional<Media::AudioFilter::AudioAmplifier> audioAmp;
+			Optional<Media::AFilter::AudioLevelMeter> audioLevel;
+			Optional<Media::AFilter::AudioCaptureFilter> audioCapture;
+			Optional<Media::AFilter::AudioSampleRipper> audioRipper;
+			Optional<Media::AFilter::DynamicVolBooster> volBooster;
+			Optional<Media::AFilter::DTMFGenerator> dtmfGen;
+			Optional<Media::AFilter::DTMFDecoder> dtmfDec;
+			Optional<Media::AFilter::AudioSweepFilter> sweepFilter;
+			Optional<Media::AFilter::FileMixFilter> fileMix;
+			Optional<Media::AFilter::SoundGenerator> sndGen;
+			Optional<Media::AFilter::ToneGenerator> toneGen;
+			Optional<Media::AFilter::AudioAmplifier> audioAmp;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnVolBoostChg(AnyType userObj, Bool newState);

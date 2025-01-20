@@ -2,12 +2,12 @@
 #define _SM_MAP_REVGEODIR
 #include "Data/ArrayListNN.h"
 #include "IO/Writer.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 #include "Map/RevGeoCfg.h"
 
 namespace Map
 {
-	class RevGeoDir : public Map::IReverseGeocoder
+	class RevGeoDir : public Map::ReverseGeocoder
 	{
 	private:
 		typedef struct

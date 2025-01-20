@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRHASHTESTFORM
 #define _SM_SSWR_AVIREAD_AVIRHASHTESTFORM
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
@@ -35,7 +35,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 
-			static Double __stdcall HashTestSpeed(NN<Crypto::Hash::IHash> hash);
+			static Double __stdcall HashTestSpeed(NN<Crypto::Hash::HashAlgorithm> hash);
 			static void __stdcall OnCompareClicked(AnyType userObj);
 			static void __stdcall OnSpeedClicked(AnyType userObj);
 		public:

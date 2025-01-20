@@ -14,7 +14,7 @@
 
 namespace Net
 {
-	class MQTTBroker : public IO::IProtocolHandler::DataListener, public IO::StreamHandler
+	class MQTTBroker : public IO::ProtocolHandler::DataListener, public IO::StreamHandler
 	{
 	public:
 		struct Listener

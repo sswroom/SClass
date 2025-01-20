@@ -7,7 +7,7 @@ SSWR::OrganWeb::OrganWebSession::OrganWebSession()
 	this->sess = 0;
 }
 
-SSWR::OrganWeb::OrganWebSession::OrganWebSession(Optional<Net::WebServer::IWebSession> sess)
+SSWR::OrganWeb::OrganWebSession::OrganWebSession(Optional<Net::WebServer::WebSession> sess)
 {
 	this->sess = 0;
 	this->Use(sess);
@@ -18,7 +18,7 @@ SSWR::OrganWeb::OrganWebSession::~OrganWebSession()
 	this->EndUse();
 }
 
-void SSWR::OrganWeb::OrganWebSession::Use(Optional<Net::WebServer::IWebSession> sess)
+void SSWR::OrganWeb::OrganWebSession::Use(Optional<Net::WebServer::WebSession> sess)
 {
 	this->EndUse();
 	this->sess = sess;
@@ -26,7 +26,7 @@ void SSWR::OrganWeb::OrganWebSession::Use(Optional<Net::WebServer::IWebSession> 
 
 void SSWR::OrganWeb::OrganWebSession::EndUse()
 {
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (this->sess.SetTo(sess))
 	{
 		sess->EndUse();
@@ -34,14 +34,14 @@ void SSWR::OrganWeb::OrganWebSession::EndUse()
 	}
 }
 
-Optional<Net::WebServer::IWebSession> SSWR::OrganWeb::OrganWebSession::GetSess()
+Optional<Net::WebServer::WebSession> SSWR::OrganWeb::OrganWebSession::GetSess()
 {
 	return this->sess;
 }
 
 void SSWR::OrganWeb::OrganWebSession::SetPickObjType(Int32 pickObjType)
 {
-	NN<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::WebSession> sess;
 	if (this->sess.SetTo(sess))
 	{
 		sess->SetValueInt32(CSTR("PickObjType"), pickObjType);

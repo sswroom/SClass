@@ -6,8 +6,8 @@
 #include "Net/SSLEngine.h"
 #include "Net/TCPServer.h"
 #include "Net/TCPClientMgr.h"
-#include "Net/WebServer/IReqLogger.h"
-#include "Net/WebServer/IWebHandler.h"
+#include "Net/WebServer/WebRequestLogger.h"
+#include "Net/WebServer/WebHandler.h"
 #include "Net/WebServer/WebServerBase.h"
 
 namespace Net
@@ -30,7 +30,7 @@ namespace Net
 
 			typedef void (CALLBACKFUNC TimeoutHandler)(AnyType userObj, Optional<Text::String> url);
 		private:
-			NN<IWebHandler> hdlr;
+			NN<WebHandler> hdlr;
 			NN<Net::TCPServer> svr;
 			Data::ArrayListNN<Net::TCPClientMgr> cliMgrs;
 			UOSInt nextCli;
@@ -46,7 +46,7 @@ namespace Net
 			Sync::Mutex accLogMut;
 			Optional<IO::LogTool> accLog;
 			IO::LogHandler::LogLevel accLogLev;
-			Optional<IReqLogger> reqLog;
+			Optional<WebRequestLogger> reqLog;
 
 			TimeoutHandler timeoutHdlr;
 			AnyType timeoutObj;
@@ -65,7 +65,7 @@ namespace Net
 
 			static void __stdcall OnDataSent(AnyType userObj, UOSInt buffSize);
 		public:
-			WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
+			WebListener(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, NN<WebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
 			~WebListener();
 
 			Bool Start();
@@ -74,9 +74,9 @@ namespace Net
 			UInt16 GetListenPort();
 			void SetClientLog(Text::CStringNN logFile);
 			void SetAccessLog(Optional<IO::LogTool> accLog, IO::LogHandler::LogLevel accLogLev);
-			void SetRequestLog(Optional<IReqLogger> reqLog);
-			void LogAccess(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Double time);
-			void LogMessageC(Optional<Net::WebServer::IWebRequest> req, Text::CStringNN msg);
+			void SetRequestLog(Optional<WebRequestLogger> reqLog);
+			void LogAccess(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Double time);
+			void LogMessageC(Optional<Net::WebServer::WebRequest> req, Text::CStringNN msg);
 			void AddProxyConn(NN<Net::WebServer::WebConnection> conn, NN<Net::TCPClient> proxyCli);
 			void HandleTimeout(TimeoutHandler hdlr, AnyType userObj);
 

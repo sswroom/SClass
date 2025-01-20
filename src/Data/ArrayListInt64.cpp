@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListInt64.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 Data::ArrayListInt64::ArrayListInt64() : Data::SortableArrayListNative<Int64>()
 {

@@ -94,7 +94,7 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncCount(DirectoryEntry *obj1, Dire
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NN<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NN<Net::WebServer::WebResponse> resp)
 {
 	switch (this->ctype)
 	{
@@ -121,7 +121,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NN<Net::WebServer::IWe
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile)
+void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile)
 {
 	if (!this->allowBrowsing)
 	{
@@ -252,7 +252,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 	return ;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem)
+Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -507,7 +507,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::FileValid(Text::CStringNN subReq)
 	return true;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{
@@ -516,7 +516,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NN<Net::WebServer::IWe
 	return this->DoFileRequest(req, resp, subReq);
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	UInt8 buff[2048];
 	Text::StringBuilderUTF8 sb;
@@ -531,7 +531,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 	NN<Sync::RWMutex> packageMut;
 	UOSInt i;
 	Bool dirPath;
-	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
+	if (req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_1)
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
 	}

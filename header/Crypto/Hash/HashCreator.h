@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_HASH_HASHCREATOR
 #define _SM_CRYPTO_HASH_HASHCREATOR
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 namespace Crypto
 {
 	namespace Hash
@@ -8,7 +8,7 @@ namespace Crypto
 		class HashCreator
 		{
 		public:
-			static Optional<IHash> CreateHash(Crypto::Hash::HashType hashType);
+			static Optional<HashAlgorithm> CreateHash(Crypto::Hash::HashType hashType);
 		};
 	}
 }

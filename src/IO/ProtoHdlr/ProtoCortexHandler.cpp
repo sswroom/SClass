@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoCortexHandler.h"
 
-IO::ProtoHdlr::ProtoCortexHandler::ProtoCortexHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoCortexHandler::ProtoCortexHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

@@ -18,7 +18,7 @@
 #include <windows.h>
 #endif
 
-void Media::MonitorColorManager::SetDefaultYUV(NN<Media::IColorHandler::YUVPARAM> yuv)
+void Media::MonitorColorManager::SetDefaultYUV(NN<Media::ColorHandler::YUVPARAM> yuv)
 {
 	yuv->Brightness = 1;
 	yuv->Contrast = 1;
@@ -36,7 +36,7 @@ void Media::MonitorColorManager::SetDefaultYUV(NN<Media::IColorHandler::YUVPARAM
 	yuv->BMul = 1;
 }
 
-void Media::MonitorColorManager::SetDefaultRGB(NN<Media::IColorHandler::RGBPARAM2> rgb)
+void Media::MonitorColorManager::SetDefaultRGB(NN<Media::ColorHandler::RGBPARAM2> rgb)
 {
 	rgb->MonRBright = 1;
 	rgb->MonRContr = 1;
@@ -333,12 +333,12 @@ void Media::MonitorColorManager::SetDefault()
 	}
 }
 
-NN<const Media::IColorHandler::YUVPARAM> Media::MonitorColorManager::GetYUVParam()
+NN<const Media::ColorHandler::YUVPARAM> Media::MonitorColorManager::GetYUVParam()
 {
 	return this->yuv;
 }
 
-NN<const Media::IColorHandler::RGBPARAM2> Media::MonitorColorManager::GetRGBParam()
+NN<const Media::ColorHandler::RGBPARAM2> Media::MonitorColorManager::GetRGBParam()
 {
 	return this->rgb;
 }
@@ -926,13 +926,13 @@ Media::ColorManagerSess::~ColorManagerSess()
 	this->monColor->RemoveSess(*this);
 }
 
-void Media::ColorManagerSess::AddHandler(NN<Media::IColorHandler> hdlr)
+void Media::ColorManagerSess::AddHandler(NN<Media::ColorHandler> hdlr)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrs.Add(hdlr);
 }
 
-void Media::ColorManagerSess::RemoveHandler(NN<Media::IColorHandler> hdlr)
+void Media::ColorManagerSess::RemoveHandler(NN<Media::ColorHandler> hdlr)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt index = this->hdlrs.IndexOf(hdlr);
@@ -942,13 +942,13 @@ void Media::ColorManagerSess::RemoveHandler(NN<Media::IColorHandler> hdlr)
 	}
 }
 
-NN<const Media::IColorHandler::YUVPARAM> Media::ColorManagerSess::GetYUVParam()
+NN<const Media::ColorHandler::YUVPARAM> Media::ColorManagerSess::GetYUVParam()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetYUVParam();
 }
 
-NN<const Media::IColorHandler::RGBPARAM2> Media::ColorManagerSess::GetRGBParam()
+NN<const Media::ColorHandler::RGBPARAM2> Media::ColorManagerSess::GetRGBParam()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetRGBParam();
@@ -994,20 +994,20 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 	this->YUVUpdated(this->GetYUVParam());
 }
 
-void Media::ColorManagerSess::RGBUpdated(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::ColorManagerSess::RGBUpdated(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	Data::ArrayIterator<NN<Media::IColorHandler>> it = this->hdlrs.Iterator();
+	Data::ArrayIterator<NN<Media::ColorHandler>> it = this->hdlrs.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->RGBParamChanged(rgbParam);
 	}
 }
 
-void Media::ColorManagerSess::YUVUpdated(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::ColorManagerSess::YUVUpdated(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	Data::ArrayIterator<NN<Media::IColorHandler>> it = this->hdlrs.Iterator();
+	Data::ArrayIterator<NN<Media::ColorHandler>> it = this->hdlrs.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->YUVParamChanged(yuvParam);

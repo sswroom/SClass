@@ -24,9 +24,9 @@ namespace SSWR
 				UInt64 sampleCnt;
 				Data::Duration lastSampleTime;
 				Bool isEnd;
-				Optional<Media::IAudioSource> adecoder;
+				Optional<Media::AudioSource> adecoder;
 				Optional<Media::NullRenderer> renderer;
-				Optional<Media::IVideoSource> vdecoder;
+				Optional<Media::VideoSource> vdecoder;
 				NN<Sync::Event> evt;
 			} DecodeStatus;
 		private:
@@ -43,8 +43,8 @@ namespace SSWR
 			NN<UI::GUIHSplitter> hspStream;
 			NN<UI::GUITextBox> txtStream;
 
-			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
-			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
+			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			static void __stdcall OnVideoChange(Media::VideoSource::FrameChange frChg, AnyType userData);
 			static void __stdcall OnAudioEnd(AnyType userData);
 			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnStreamChg(AnyType userObj);

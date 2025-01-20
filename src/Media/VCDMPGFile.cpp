@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "Media/M2VStreamSource.h"
 #include "Media/MPAStreamSource.h"
 #include "Media/MPEGVideoParser.h"
@@ -21,7 +21,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 //	Int32 muxRate;
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
-	NN<Media::IMediaStream> mstm;
+	NN<Media::MediaStream> mstm;
 	Int32 lastFrameTime = 0;
 
 	me->playStarted = true;
@@ -230,7 +230,7 @@ Bool Media::VCDMPGFile::StopPlay()
 	return true;
 }
 
-Media::VCDMPGFile::VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
+Media::VCDMPGFile::VCDMPGFile(NN<IO::SectorData> data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
 {
 	this->data = data->GetPartialData(startSector, endSector - startSector);
 	this->readOfst = 0;
@@ -320,7 +320,7 @@ Media::VCDMPGFile::VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt
 					}
 
 					Int32 stmId = this->readBuff[currOfst + 3] & 0x1f;
-					NN<Media::IMediaStream> mstm;
+					NN<Media::MediaStream> mstm;
 					if (!this->dataStms.Get(stmId).SetTo(mstm))
 					{
 //						Int32 v = ReadMInt32(&this->readBuff[j]);
@@ -414,7 +414,7 @@ Media::VCDMPGFile::~VCDMPGFile()
 	{
 		this->StopPlay();
 	}
-	NN<Media::IMediaStream> stm;
+	NN<Media::MediaStream> stm;
 	UOSInt i;
 	i = this->dataStms.GetCount();
 	while (i-- > 0)
@@ -426,12 +426,12 @@ Media::VCDMPGFile::~VCDMPGFile()
 	this->data.Delete();
 }
 
-UOSInt Media::VCDMPGFile::AddSource(NN<Media::IMediaSource> src, Int32 syncTime)
+UOSInt Media::VCDMPGFile::AddSource(NN<Media::MediaSource> src, Int32 syncTime)
 {
 	return (UOSInt)-1;
 }
 
-Optional<Media::IMediaSource> Media::VCDMPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
+Optional<Media::MediaSource> Media::VCDMPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
 	if (index > this->audStms.GetCount())
 		return 0;

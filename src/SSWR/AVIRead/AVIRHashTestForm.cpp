@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRHashTestForm.h"
 #include "Text/MyStringFloat.h"
 
-Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(NN<Crypto::Hash::IHash> hash)
+Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(NN<Crypto::Hash::HashAlgorithm> hash)
 {
 	Manage::HiResClock clk;
 	UInt8 hashVal[64];
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
 	UOSInt j;
 	Double speed;
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	me->lvCompare->ClearItems();
 	while (i <= Crypto::Hash::HashType::Last)
 	{
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		NN<Crypto::Hash::IHash> hash;
+		NN<Crypto::Hash::HashAlgorithm> hash;
 		if (Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboAlgorithm->GetItem(i).GetOSInt()).SetTo(hash))
 		{
 			sptr = Text::StrDouble(sbuff, HashTestSpeed(hash));
@@ -116,7 +116,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl>
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	while (i <= Crypto::Hash::HashType::Last)
 	{
 		if (Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i).SetTo(hash))

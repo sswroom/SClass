@@ -2,7 +2,7 @@
 #define _SM_UI_GUIHEXFILEVIEW
 #include "AnyType.h"
 #include "Data/CallbackStorage.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "IO/StmData/FileData.h"
 #include "UI/GUITextView.h"
 
@@ -15,7 +15,7 @@ namespace UI
 	private:
 		IO::FileStream *fs;
 		IO::StreamData *fd;
-		Optional<IO::FileAnalyse::IFileAnalyse> analyse;
+		Optional<IO::FileAnalyse::FileAnalyser> analyse;
 		Optional<IO::FileAnalyse::FrameDetail> frame;
 		UInt64 fileSize;
 		UInt64 currOfst;
@@ -46,7 +46,7 @@ namespace UI
 		virtual void UpdateCaretPos();
 
 		Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
-		Bool LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse);
+		Bool LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::FileAnalyser> fileAnalyse);
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();

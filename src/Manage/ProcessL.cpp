@@ -936,11 +936,11 @@ UInt64 Manage::Process::ReadMemUInt64(UInt64 addr)
 	return 0;
 }
 
-UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
+UOSInt Manage::Process::ReadMemory(UInt64 addr, UnsafeArray<UInt8> buff, UOSInt reqSize)
 {
 	struct iovec srcInfo;
 	struct iovec destInfo;
-	destInfo.iov_base = buff;
+	destInfo.iov_base = buff.Ptr();
 	destInfo.iov_len = reqSize;
 	srcInfo.iov_base = (void*)(UOSInt)addr;
 	srcInfo.iov_len = reqSize;

@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "Data/ArrayListNN.h"
 #include "IO/ParsedObject.h"
-#include "Text/SpreadSheet/IStyleCtrl.h"
+#include "Text/SpreadSheet/SpreadSheetStyleCtrl.h"
 #include "Text/SpreadSheet/WorkbookFont.h"
 #include "Text/SpreadSheet/Worksheet.h"
 
@@ -11,7 +11,7 @@ namespace Text
 {
 	namespace SpreadSheet
 	{
-		class Workbook : public IO::ParsedObject, public Text::SpreadSheet::IStyleCtrl
+		class Workbook : public IO::ParsedObject, public Text::SpreadSheet::SpreadSheetStyleCtrl
 		{
 		private:
 			UnsafeArrayOpt<const UTF8Char> author;

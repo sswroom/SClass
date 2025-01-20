@@ -7957,7 +7957,7 @@ Text::CStringNN Manage::DasmX86_16::GetHeader(Bool fullRegs) const
 	return CSTR("EAX\tEDX\tECX\tEBX");
 }
 
-Bool Manage::DasmX86_16::Disasm16(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::IMemoryReader> memReader, Bool fullRegs)
+Bool Manage::DasmX86_16::Disasm16(NN<IO::Writer> writer, Optional<Manage::AddressResolver> addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, NN<Manage::MemoryReader> memReader, Bool fullRegs)
 {
 	return false;
 }

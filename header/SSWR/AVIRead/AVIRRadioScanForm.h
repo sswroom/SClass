@@ -4,7 +4,7 @@
 #include "IO/BTScanner.h"
 #include "IO/GSMModemController.h"
 #include "IO/HuaweiGSMModemController.h"
-#include "Map/ILocationService.h"
+#include "Map/LocationService.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -139,12 +139,12 @@ namespace SSWR
 			Bool btUpdated;
 			Int64 btMinTime;
 
-			Optional<Map::ILocationService> locSvc;
+			Optional<Map::LocationService> locSvc;
 			Map::GPSTrack::GPSRecord3 gnssRecCurr;
 			Sync::Mutex gnssRecMut;
 			Bool gnssRecUpdated;
 			UOSInt gnssRecSateCnt;
-			Map::ILocationService::SateStatus gnssRecSates[32];
+			Map::LocationService::SateStatus gnssRecSates[32];
 			Int64 gnssLastUpdateTime;
 
 			Sync::Event cellularEvt;
@@ -186,7 +186,7 @@ namespace SSWR
 			static void __stdcall OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj);
 			static void __stdcall OnGNSSPortClicked(AnyType userObj);
 			static void __stdcall OnGNSSClicked(AnyType userObj);
-			static void __stdcall OnGNSSLocationUpdated(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
+			static void __stdcall OnGNSSLocationUpdated(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::LocationService::SateStatus> sates);
 			static void __stdcall OnCellularPortClicked(AnyType userObj);
 			static void __stdcall OnCellularClicked(AnyType userObj);
 			void ToggleWiFi();

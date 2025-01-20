@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_RADIX64ENC
 #define _SM_TEXT_TEXTBINENC_RADIX64ENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class Radix64Enc : public Text::TextBinEnc::ITextBinEnc
+		class Radix64Enc : public Text::TextBinEnc::TextBinEnc
 		{
 		private:
 			UInt8 decArr[256];

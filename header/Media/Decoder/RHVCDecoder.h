@@ -29,13 +29,13 @@ namespace Media
 			Bool discontTime;
 
 			Bool finfoMode;
-			Data::CallbackStorage<Media::IVideoSource::FrameInfoCallback> finfoCb;
+			Data::CallbackStorage<Media::VideoSource::FrameInfoCallback> finfoCb;
 
 			static UOSInt CalcNALSize(const UInt8 *buff, UOSInt buffSize);
 			static UInt8 *AppendNAL(UInt8 *outBuff, const UInt8 *srcBuff, UOSInt srcBuffSize);
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease);
+			RHVCDecoder(NN<VideoSource> sourceVideo, Bool toRelease);
 			virtual ~RHVCDecoder();
 
 			virtual Text::CStringNN GetFilterName();

@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_UTF16BETEXTBINENC
 #define _SM_TEXT_TEXTBINENC_UTF16BETEXTBINENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class UTF16BETextBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class UTF16BETextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			UTF16BETextBinEnc();

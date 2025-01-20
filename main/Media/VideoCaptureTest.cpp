@@ -19,11 +19,11 @@ static Optional<Media::CS::CSConverter> converter;
 Int32 frameCnt;
 IO::ConsoleWriter *console;
 
-void __stdcall FrameChangeHdlr(Media::IVideoSource::FrameChange frChg, AnyType userData)
+void __stdcall FrameChangeHdlr(Media::VideoSource::FrameChange frChg, AnyType userData)
 {
 }
 
-void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	Int32 fnum = frameCnt;
 	if (fnum == 1)
@@ -126,7 +126,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		while (devNo < cnt)
 		{
 			devInfo = devList.GetItemNoCheck(devNo);
-			NN<Media::IVideoCapture> capture;
+			NN<Media::VideoCapturer> capture;
 			succ = false;
 			
 			if (mgr->CreateDevice(devInfo->devType, devInfo->devId).SetTo(capture))
@@ -143,7 +143,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				UInt32 frameRateNorm;
 				UInt32 frameRateDenorm;
 				UOSInt frameMaxSize;
-				Media::IVideoCapture::VideoFormat *formats;
+				Media::VideoCapturer::VideoFormat *formats;
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 
 				console->WriteLine();
@@ -154,7 +154,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				console->WriteLine(sb.ToCString());
 
 				console->WriteLine(CSTR("Supported Formats:"));
-				formats = MemAlloc(Media::IVideoCapture::VideoFormat, 128);
+				formats = MemAlloc(Media::VideoCapturer::VideoFormat, 128);
 				i = 0;
 				j = 128;
 				while (i < j)

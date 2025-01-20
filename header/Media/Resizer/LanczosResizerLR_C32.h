@@ -2,7 +2,7 @@
 #define _SM_MEDIA_RESIZER_LANCZOSRESIZERLR_C32
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ColorManager.h"
 #include "Media/Resizer/LanczosResizerLR_C32Action.h"
 
@@ -10,7 +10,7 @@ namespace Media
 {
 	namespace Resizer
 	{
-		class LanczosResizerLR_C32 : public Media::IImgResizer, public Media::IColorHandler
+		class LanczosResizerLR_C32 : public Media::ImageResizer, public Media::ColorHandler
 		{
 		protected:
 			typedef struct
@@ -66,8 +66,8 @@ namespace Media
 			virtual ~LanczosResizerLR_C32();
 
 			virtual void Resize(UnsafeArray<const UInt8> src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UnsafeArray<UInt8> dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
 			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);

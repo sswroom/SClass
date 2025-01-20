@@ -13,7 +13,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UnsafeArray<UInt8> destBuff, UO
 			return 0;
 		}
 		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA1;
-		NN<Crypto::Hash::IHash> hash;
+		NN<Crypto::Hash::HashAlgorithm> hash;
 		if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
 			return 0;
 		UOSInt hLen = hash->GetResultSize();
@@ -77,7 +77,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UnsafeArray<UInt8> destBuff, Un
 		{
 			return 0;
 		}
-		NN<Crypto::Hash::IHash> hash;
+		NN<Crypto::Hash::HashAlgorithm> hash;
 		UOSInt i;
 		UOSInt hLen;
 		UInt8 decBuff[256];
@@ -131,7 +131,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UnsafeArray<UInt8> destBuff, Un
 
 Bool Crypto::Encrypt::RSACipher::MGF1(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
 {
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
 	{
 		return false;

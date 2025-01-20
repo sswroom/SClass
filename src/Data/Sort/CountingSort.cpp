@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Data/Sort/CountingSort.h"
 
 Data::Sort::CountingSort::CountingSort(Int32 minVal, Int32 maxVal)

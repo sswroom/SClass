@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_SORT_PIGEONHOLESORT
 #define _SM_DATA_SORT_PIGEONHOLESORT
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 namespace Data
 {

@@ -62,9 +62,9 @@ namespace Net
 			Sync::RWMutex *packageMut;
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
-			void AddCacheHeader(NN<Net::WebServer::IWebResponse> resp);
-			void ResponsePackageFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile);
-			Bool ResponsePackageFileItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem);
+			void AddCacheHeader(NN<Net::WebServer::WebResponse> resp);
+			void ResponsePackageFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile);
+			Bool ResponsePackageFileItem(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem);
 
 			void StatLoad(NN<StatInfo> stat);
 			void StatSave(NN<StatInfo> stat);
@@ -76,9 +76,9 @@ namespace Net
 		protected:
 			virtual Bool FileValid(Text::CStringNN subReq);
 		public:
-			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
-			Bool DoFileRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			Bool DoFileRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 			Optional<IO::PackageFile> GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease);
 
 			void SetRootDir(NN<Text::String> rootDir);

@@ -9,12 +9,12 @@
 void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
-	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<Text::TextBinEnc::TextBinEnc> enc;
 	Text::StringBuilderUTF8 sbText;
 	Text::StringBuilderUTF8 sbDir;
 	UInt8 dataBuff[256];
 	UOSInt dataSize;
-	if (!me->cboEncoding->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(enc))
+	if (!me->cboEncoding->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>().SetTo(enc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select an encoding first"), CSTR("File Search"), me);
 		return;
@@ -195,8 +195,8 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientCont
 	this->lblEncoding->SetRect(4, 28, 100, 23, false);
 	this->cboEncoding = ui->NewComboBox(this->pnlControl, false);
 	this->cboEncoding->SetRect(104, 28, 200, 23, false);
-	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
-	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::TextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::TextBinEnc> enc;
 	UOSInt i;
 	UOSInt j;
 	i = 0;

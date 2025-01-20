@@ -398,13 +398,13 @@ void Media::CS::CSYUV10_RGB8::Release()
 	this->fbFunc.Delete();
 }
 
-void Media::CS::CSYUV10_RGB8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv)
+void Media::CS::CSYUV10_RGB8::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuv)
 {
 	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV10_RGB8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
+void Media::CS::CSYUV10_RGB8::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgb)
 {
 	NN<const Media::ColorProfile> srcColor;
 	NN<const Media::ColorProfile> destColor;

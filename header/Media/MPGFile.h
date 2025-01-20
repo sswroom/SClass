@@ -4,14 +4,14 @@
 #include "Data/ByteBuffer.h"
 #include "Data/FastMapNN.h"
 #include "IO/StreamData.h"
-#include "Media/IAudioSource.h"
-#include "Media/IMediaStream.h"
-#include "Media/IStreamControl.h"
+#include "Media/AudioSource.h"
+#include "Media/MediaStream.h"
+#include "Media/MediaStreamControl.h"
 #include "Media/MediaFile.h"
 namespace Media
 {
 	class M2VStreamSource;
-	class MPGFile : public Media::MediaFile, public Media::IStreamControl
+	class MPGFile : public Media::MediaFile, public Media::MediaStreamControl
 	{
 	private:
 		NN<IO::StreamData> stmData;
@@ -21,8 +21,8 @@ namespace Media
 		UInt64 fleng;
 		Data::Duration startTime;
 		Media::M2VStreamSource *vstm;
-		Data::FastMapNN<Int32, Media::IMediaStream> dataStms;
-		Data::ArrayListNN<Media::IAudioSource> audStms;
+		Data::FastMapNN<Int32, Media::MediaStream> dataStms;
+		Data::ArrayListNN<Media::AudioSource> audStms;
 		Int32 mpgVer;
 
 		Int32 playing;
@@ -38,8 +38,8 @@ namespace Media
 		MPGFile(NN<IO::StreamData> stmData);
 		virtual ~MPGFile();
 		
-		virtual UOSInt AddSource(NN<Media::IMediaSource> src, Int32 syncTime);
-		virtual Optional<Media::IMediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
+		virtual UOSInt AddSource(NN<Media::MediaSource> src, Int32 syncTime);
+		virtual Optional<Media::MediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
 		virtual UnsafeArrayOpt<UTF8Char> GetMediaName(UnsafeArray<UTF8Char> buff);

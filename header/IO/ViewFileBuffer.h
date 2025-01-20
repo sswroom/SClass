@@ -1,13 +1,13 @@
 #ifndef _SM_IO_VIEWFILEBUFFER
 #define _SM_IO_VIEWFILEBUFFER
-#include "IO/IFileBuffer.h"
+#include "IO/FileBuffer.h"
 
 namespace IO
 {
-	class ViewFileBuffer : public IO::IFileBuffer
+	class ViewFileBuffer : public IO::FileBuffer
 	{
 	private:
-		UInt8 *filePtr;
+		UnsafeArrayOpt<UInt8> filePtr;
 		void *fileHandle;
 		void *mapHandle;
 
@@ -15,7 +15,7 @@ namespace IO
 		ViewFileBuffer(const UTF8Char *fileName);
 		virtual ~ViewFileBuffer();
 
-		virtual UInt8 *GetPointer();
+		virtual UnsafeArrayOpt<UInt8> GetPointer();
 		virtual UInt64 GetLength();
 
 	private:

@@ -5,7 +5,7 @@
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::IWebSession> sess, AnyType userObj)
+Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 	Data::DateTime *t;
 	Data::ArrayListInt32 *pickObjs;
@@ -16,7 +16,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::
 	return false;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj)
+Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer::WebSession> sess, AnyType userObj)
 {
 	NN<Data::DateTime> t;
 	Data::DateTime currTime;

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageTo8Bit.h"
 #include "Media/ImageUtil.h"
 #include "Media/StaticImage.h"
@@ -977,7 +977,7 @@ Bool Media::StaticImage::MultiplyColor(UInt32 color)
 	return false;
 }
 
-Bool Media::StaticImage::Resize(Media::IImgResizer *resizer, Math::Size2D<UOSInt> newSize)
+Bool Media::StaticImage::Resize(Media::ImageResizer *resizer, Math::Size2D<UOSInt> newSize)
 {
 	if (this->info.fourcc != 0)
 		return false;

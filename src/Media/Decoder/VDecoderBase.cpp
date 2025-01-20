@@ -2,20 +2,20 @@
 #include "MyMemory.h"
 #include "Media/Decoder/VDecoderBase.h"
 
-void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->ProcVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
 }
 
-void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
+void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::VideoSource::FrameChange fc, AnyType userData)
 {
 	NN<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->OnFrameChanged(fc);
 	me->fcCb(fc, me->frameCbData);
 }
 
-Media::Decoder::VDecoderBase::VDecoderBase(NN<IVideoSource> sourceVideo)
+Media::Decoder::VDecoderBase::VDecoderBase(NN<VideoSource> sourceVideo)
 {
 	this->sourceVideo = sourceVideo.Ptr();
 	this->fcCb = 0;
@@ -131,7 +131,7 @@ UOSInt Media::Decoder::VDecoderBase::ReadNextFrame(UnsafeArray<UInt8> frameBuff,
 
 UInt8 *Media::Decoder::VDecoderBase::GetProp(Int32 propName, UInt32 *size)
 {
-	UInt8 *ret = Media::IVideoSource::GetProp(propName, size);
+	UInt8 *ret = Media::VideoSource::GetProp(propName, size);
 	if (ret)
 		return ret;
 	if (this->sourceVideo)
@@ -141,6 +141,6 @@ UInt8 *Media::Decoder::VDecoderBase::GetProp(Int32 propName, UInt32 *size)
 	return 0;
 }
 
-void Media::Decoder::VDecoderBase::OnFrameChanged(Media::IVideoSource::FrameChange fc)
+void Media::Decoder::VDecoderBase::OnFrameChanged(Media::VideoSource::FrameChange fc)
 {
 }

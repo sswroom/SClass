@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_WAVEINSOURCE
 #define _SM_MEDIA_WAVEINSOURCE
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 //need Winmm.lib
 
 namespace Media
 {
-	class WaveInSource : public IAudioSource
+	class WaveInSource : public AudioSource
 	{
 	private:
 		void *hWaveIn;

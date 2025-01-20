@@ -687,7 +687,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	}
 	Media::MediaFile *file;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
-	NN<Media::IVideoSource> nnvstm;
+	NN<Media::VideoSource> nnvstm;
 	if (nnvstm.Set(vstm))
 	{
 		NN<Media::Decoder::MP2GDecoder> mp2g;
@@ -703,7 +703,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		{
 			if (formats[i]->formatId == 1)
 			{
-				NN<Media::IAudioSource> as;
+				NN<Media::AudioSource> as;
 				NEW_CLASSNN(as, Media::LPCMSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
 				stmFD.Delete();
@@ -740,14 +740,14 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			}
 			else if (formats[i]->formatId == 0x2080)
 			{
-				NN<Media::IAudioSource> as;
+				NN<Media::AudioSource> as;
 				NEW_CLASSNN(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
 				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x2081)
 			{
-				NN<Media::IAudioSource> as;
+				NN<Media::AudioSource> as;
 				NEW_CLASSNN(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
 				stmFD.Delete();

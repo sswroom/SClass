@@ -17,7 +17,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRGISLineEditForm : public UI::GUIForm, public Media::IColorHandler
+		class AVIRGISLineEditForm : public UI::GUIForm, public Media::ColorHandler
 		{
 		private:
 			typedef struct
@@ -86,8 +86,8 @@ namespace SSWR
 			virtual ~AVIRGISLineEditForm();
 
 			virtual void OnMonitorChanged();
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

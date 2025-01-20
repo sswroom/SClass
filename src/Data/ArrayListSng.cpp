@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListSng.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include <stdlib.h>
 
 Data::ArrayListSng::ArrayListSng() : Data::SortableArrayListNative<Single>()

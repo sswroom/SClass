@@ -4,13 +4,13 @@
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/ProtoHdlr/ProtoRevGeoHandler.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 #include "Net/TCPServerController.h"
 #include "Sync/Mutex.h"
 
 namespace Map
 {
-	class ReverseGeocoderServer : public Map::IReverseGeocoder, public Net::TCPServerController::TCPServerHandler, public IO::ProtoHdlr::ProtoRevGeoHandler::DataListener
+	class ReverseGeocoderServer : public Map::ReverseGeocoder, public Net::TCPServerController::TCPServerHandler, public IO::ProtoHdlr::ProtoRevGeoHandler::DataListener
 	{
 	private:
 		typedef struct

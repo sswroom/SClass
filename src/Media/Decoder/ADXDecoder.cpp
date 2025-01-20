@@ -5,7 +5,7 @@
 
 #define BASEVOLUME 0x4000 //0x4000
 
-Media::Decoder::ADXDecoder::ADXDecoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::ADXDecoder::ADXDecoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -38,7 +38,7 @@ Media::Decoder::ADXDecoder::~ADXDecoder()
 
 void Media::Decoder::ADXDecoder::GetFormat(NN<AudioFormat> format)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
@@ -57,7 +57,7 @@ void Media::Decoder::ADXDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::ADXDecoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		adxSample1[0] = 0;
@@ -72,7 +72,7 @@ Data::Duration Media::Decoder::ADXDecoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::ADXDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Start(0, blkSize);
@@ -90,7 +90,7 @@ Bool Media::Decoder::ADXDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize
 
 void Media::Decoder::ADXDecoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();
@@ -106,7 +106,7 @@ UOSInt Media::Decoder::ADXDecoder::ReadBlock(Data::ByteArray blk)
 	UOSInt readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (!this->sourceAudio.SetTo(sourceAudio))
 	{
 		return 0;

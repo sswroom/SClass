@@ -1,7 +1,7 @@
 #ifndef _SM_NET_RTSPCLIENT
 #define _SM_NET_RTSPCLIENT
 #include "AnyType.h"
-#include "Net/IRTPController.h"
+#include "Net/RTPController.h"
 #include "Net/RTPCliChannel.h"
 #include "Net/SDPFile.h"
 #include "Net/TCPClientFactory.h"
@@ -10,7 +10,7 @@
 
 namespace Net
 {
-	class RTSPClient : public IRTPController
+	class RTSPClient : public RTPController
 	{
 	private:
 		struct ClientData
@@ -68,7 +68,7 @@ namespace Net
 		virtual Bool StopPlay(NN<Net::RTPCliChannel> rtpChannel);
 		virtual Bool Deinit(NN<Net::RTPCliChannel> rtpChannel);
 
-		virtual Net::IRTPController *Clone() const;
+		virtual Net::RTPController *Clone() const;
 	};
 }
 #endif

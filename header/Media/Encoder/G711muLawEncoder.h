@@ -1,21 +1,21 @@
 #ifndef _SM_MEDIA_ENCODER_G711MULAWENCODER
 #define _SM_MEDIA_ENCODER_G711MULAWENCODER
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
 	namespace Encoder
 	{
-		class G711muLawEncoder : public IAudioSource
+		class G711muLawEncoder : public AudioSource
 		{
 		private:
-			Media::IAudioSource *sourceAudio;
+			Media::AudioSource *sourceAudio;
 			Int32 align;
 
 			UInt8 *readBuff;
 			OSInt readBuffSize;
 		public:
-			G711muLawEncoder(IAudioSource *sourceAudio);
+			G711muLawEncoder(AudioSource *sourceAudio);
 			virtual ~G711muLawEncoder();
 
 			virtual WChar *GetName(WChar *buff);

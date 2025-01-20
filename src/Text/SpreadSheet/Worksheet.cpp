@@ -2,7 +2,7 @@
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "Text/SpreadSheet/IStyleCtrl.h"
+#include "Text/SpreadSheet/SpreadSheetStyleCtrl.h"
 #include "Text/SpreadSheet/Worksheet.h"
 
 using namespace Text::SpreadSheet;
@@ -101,7 +101,7 @@ void Text::SpreadSheet::Worksheet::FreeCellData(NN<Text::SpreadSheet::Worksheet:
 	MemFreeNN(data);
 }
 
-NN<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CloneRow(NN<RowData> row, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl)
+NN<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CloneRow(NN<RowData> row, NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl)
 {
 	NN<RowData> newRow;
 	NN<CellData> cell;
@@ -131,7 +131,7 @@ NN<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CloneRow
 	return newRow;
 }
 
-NN<Text::SpreadSheet::Worksheet::CellData> Text::SpreadSheet::Worksheet::CloneCell(NN<CellData> cell, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl)
+NN<Text::SpreadSheet::Worksheet::CellData> Text::SpreadSheet::Worksheet::CloneCell(NN<CellData> cell, NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl)
 {
 	NN<CellData> newCell;
 	newCell = MemAllocNN(CellData);
@@ -222,7 +222,7 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 	this->drawings.FreeAll(FreeDrawing);
 }
 
-NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl)
 {
 	UOSInt i;
 	UOSInt j;
@@ -445,7 +445,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Optional
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, HAlignment hAlign)
+Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, NN<SpreadSheetStyleCtrl> wb, HAlignment hAlign)
 {
 	NN<CellData> cell;
 	if (!GetCellData(row, col, false).SetTo(cell))
@@ -472,7 +472,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, NN
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, UInt32 color, BorderType borderType)
+Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<SpreadSheetStyleCtrl> wb, UInt32 color, BorderType borderType)
 {
 	NN<CellData> cell;
 	if (!GetCellData(row, col, true).SetTo(cell))

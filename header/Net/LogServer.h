@@ -12,7 +12,7 @@
 
 namespace Net
 {
-	class LogServer : public IO::IProtocolHandler::DataListener
+	class LogServer : public IO::ProtocolHandler::DataListener
 	{
 	public:
 		typedef struct

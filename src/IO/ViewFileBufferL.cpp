@@ -37,7 +37,7 @@ IO::ViewFileBuffer::~ViewFileBuffer()
 	}
 }
 
-UInt8 *IO::ViewFileBuffer::GetPointer()
+UnsafeArrayOpt<UInt8> IO::ViewFileBuffer::GetPointer()
 {
 	if ((OSInt)this->fileHandle < 0 || (OSInt)this->mapHandle < 0)
 	{

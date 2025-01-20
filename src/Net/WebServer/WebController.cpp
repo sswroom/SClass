@@ -21,7 +21,7 @@ Net::WebServer::WebController::~WebController()
 	this->svcPath->Release();
 }
 
-Bool Net::WebServer::WebController::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebController::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	Optional<ServiceInfo> service;
 	NN<ServiceInfo> nnservice;

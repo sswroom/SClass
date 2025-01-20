@@ -1,13 +1,13 @@
 #ifndef _SM_CRYPTO_HASH_AESCMAC
 #define _SM_CRYPTO_HASH_AESCMAC
 #include "Crypto/Encrypt/AES128.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace Crypto
 {
 	namespace Hash
 	{
-		class AESCMAC : public IHash
+		class AESCMAC : public HashAlgorithm
 		{
 		private:
 			UInt8 key[16];
@@ -25,7 +25,7 @@ namespace Crypto
 			virtual ~AESCMAC();
 
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
-			virtual NN<IHash> Clone() const;
+			virtual NN<HashAlgorithm> Clone() const;
 			virtual void Clear();
 			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;

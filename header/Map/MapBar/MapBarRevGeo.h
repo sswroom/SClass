@@ -2,14 +2,14 @@
 #define _SM_MAP_MAPBAR_MAPBARREVGEO
 #include "IO/Writer.h"
 #include "Net/SocketFactory.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 #include "Map/MapBar/MapBarAdjuster.h"
 
 namespace Map
 {
 	namespace MapBar
 	{
-		class MapBarRevGeo : public Map::IReverseGeocoder
+		class MapBarRevGeo : public Map::ReverseGeocoder
 		{
 		private:
 			NN<Net::SocketFactory> sockf;

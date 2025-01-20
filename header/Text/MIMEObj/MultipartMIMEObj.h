@@ -2,14 +2,14 @@
 #define _SM_TEXT_MIMEOBJ_MULTIPARTMIMEOBJ
 #include "Data/ArrayList.h"
 #include "IO/StreamData.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "Text/MIMEObj/MIMEMessage.h"
 
 namespace Text
 {
 	namespace MIMEObj
 	{
-		class MultipartMIMEObj : public Text::IMIMEObj
+		class MultipartMIMEObj : public Text::MIMEObject
 		{
 		private:
 			NN<Text::String> contentType;
@@ -27,13 +27,13 @@ namespace Text
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
-			virtual NN<IMIMEObj> Clone() const;
+			virtual NN<MIMEObject> Clone() const;
 
 			Optional<Text::String> GetDefMsg() const;
-			UOSInt AddPart(NN<Text::IMIMEObj> obj);
+			UOSInt AddPart(NN<Text::MIMEObject> obj);
 			void SetPartTransferData(UOSInt partIndex, const UInt8 *data, UOSInt dataSize);
 			Bool AddPartHeader(UOSInt partIndex, Text::CStringNN name, Text::CStringNN value);
-			Optional<Text::IMIMEObj> GetPartContent(UOSInt partIndex) const;
+			Optional<Text::MIMEObject> GetPartContent(UOSInt partIndex) const;
 			Optional<MIMEMessage> GetPart(UOSInt partIndex) const;
 			UOSInt GetPartCount() const;
 

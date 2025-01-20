@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_SORT_BYTECOUNTINGSORT
 #define _SM_DATA_SORT_BYTECOUNTINGSORT
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 extern "C"
 {

@@ -7,7 +7,7 @@
 #include "IO/ParsedObject.h"
 #include "IO/ProgressHandler.h"
 #include "IO/Writer.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace IO
 {
@@ -24,7 +24,7 @@ namespace IO
 		static Optional<FileCheck> CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError);
 	private:
 		static void __stdcall CheckData(Data::ByteArrayR data, AnyType userData);
-		static Bool CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::IHash> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError); //true = error
+		static Bool CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::HashAlgorithm> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError); //true = error
 
 	public:
 		FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType);

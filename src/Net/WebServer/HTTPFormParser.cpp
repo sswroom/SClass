@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req, Int32 codePage)
+Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::WebRequest *req, Int32 codePage)
 {
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(this->strNames, Data::ArrayListStrUTF8());

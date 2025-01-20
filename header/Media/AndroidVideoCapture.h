@@ -1,12 +1,12 @@
 #ifndef _SM_MEDIA_ANDROIDVIDEOCAPTURE
 #define _SM_MEDIA_ANDROIDVIDEOCAPTURE
 #include "Data/ArrayList.h"
-#include "Media/IVideoCapture.h"
+#include "Media/VideoCapturer.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
-	class AndroidVideoCapture : public Media::IVideoCapture
+	class AndroidVideoCapture : public Media::VideoCapturer
 	{
 	private:
 		void *cameraMgr;
@@ -58,7 +58,7 @@ namespace Media
 		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
 		UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devId);
 
-		Optional<Media::IVideoCapture> CreateDevice(UOSInt devId);
+		Optional<Media::VideoCapturer> CreateDevice(UOSInt devId);
 	};
 }
 #endif

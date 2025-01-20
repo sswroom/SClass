@@ -12,7 +12,7 @@ namespace SSWR
 {
 	namespace DataSync
 	{
-		class SyncClient : public IO::IProtocolHandler::DataListener
+		class SyncClient : public IO::ProtocolHandler::DataListener
 		{
 		private:
 			NN<Net::SocketFactory> sockf;

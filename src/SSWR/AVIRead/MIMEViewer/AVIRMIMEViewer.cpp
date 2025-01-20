@@ -10,7 +10,7 @@
 #include "SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, NN<Text::IMIMEObj> obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, NN<Text::MIMEObject> obj)
 {
 	this->core = core;
 	this->ctrl = ctrl;
@@ -20,7 +20,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::~AVIRMIMEViewer()
 {
 }
 
-Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj)
+Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObject> obj)
 {
 	NN<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
 	Text::CStringNN clsName = obj->GetClassName();

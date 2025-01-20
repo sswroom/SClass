@@ -42,7 +42,7 @@
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
-class ProtoListener : public IO::IProtocolHandler::DataListener
+class ProtoListener : public IO::ProtocolHandler::DataListener
 {
 public:
 	virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, UnsafeArray<const UInt8> cmd, UOSInt cmdSize)

@@ -4,7 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "Data/CallbackStorage.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Map/MapDrawLayer.h"
 #include "Media/SharedImage.h"
 #include "Net/WebBrowser.h"
@@ -17,7 +17,7 @@ namespace Map
 	class WebImageLayer : public Map::MapDrawLayer
 	{
 	private:
-		class ImageStat : public Data::IComparable
+		class ImageStat : public Data::Comparable
 		{
 		public:
 			Int32 id;
@@ -41,7 +41,7 @@ namespace Map
 
 		public:
 			virtual ~ImageStat();
-			virtual OSInt CompareTo(NN<Data::IComparable> obj) const;
+			virtual OSInt CompareTo(NN<Data::Comparable> obj) const;
 		};
 	private:
 		NN<Net::WebBrowser> browser;

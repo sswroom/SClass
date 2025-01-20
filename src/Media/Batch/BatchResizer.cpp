@@ -5,7 +5,7 @@
 #include "Sync/Event.h"
 #include "Sync/MutexUsage.h"
 
-Media::Batch::BatchResizer::BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchResizer::BatchResizer(Media::ImageResizer *resizer, Media::Batch::BatchHandler *hdlr)
 {
 	this->resizer = resizer;
 	this->hdlr = hdlr;

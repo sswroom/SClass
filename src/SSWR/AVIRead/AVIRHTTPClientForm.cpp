@@ -14,7 +14,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "Text/JSONBuilder.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -387,7 +387,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 	{
 		UOSInt buffSize;
 		UnsafeArray<UInt8> buff = respData->GetBuff(buffSize);
-		NN<Text::IMIMEObj> mimeObj;
+		NN<Text::MIMEObject> mimeObj;
 		{
 			IO::StmData::MemoryDataRef md(buff, buffSize);
 			Text::CStringNN contType;
@@ -400,7 +400,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 			{
 				contType = CSTR("application/octet-stream");
 			}
-			if (Text::IMIMEObj::ParseFromData(md, contType).SetTo(mimeObj))
+			if (Text::MIMEObject::ParseFromData(md, contType).SetTo(mimeObj))
 			{
 				me->core->OpenObject(mimeObj);
 			}

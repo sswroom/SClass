@@ -36,7 +36,7 @@ Double Media::DeinterlaceLR::lanczos3_weight(Double phase)
 	return ret;
 }
 
-void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, DIPARAMETER *out, UOSInt indexSep, Double offsetCorr)
+void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOSInt result_length, NN<DIPARAMETER> out, UOSInt indexSep, Double offsetCorr)
 {
 	UInt32 i,j;
 	Int32 n;
@@ -111,19 +111,19 @@ UInt32 __stdcall Media::DeinterlaceLR::ProcThread(AnyType obj)
 
 		if (stat->status == 2)
 		{
-			DeinterlaceLR_VerticalFilter(stat->inPt, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			DeinterlaceLR_VerticalFilter(stat->inPt.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 5)
 		{
-			DeinterlaceLR_VerticalFilterOdd(stat->inPt, stat->inPtCurr, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			DeinterlaceLR_VerticalFilterOdd(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
 		else if (stat->status == 6)
 		{
-			DeinterlaceLR_VerticalFilterEven(stat->inPt, stat->inPtCurr, stat->outPt, stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
+			DeinterlaceLR_VerticalFilterEven(stat->inPt.Ptr(), stat->inPtCurr.Ptr(), stat->outPt.Ptr(), stat->width, stat->height, stat->tap, stat->index, stat->weight, stat->sstep, stat->dstep);
 			stat->status = 3;
 			stat->evtMain->Set();
 		}
@@ -236,13 +236,13 @@ void Media::DeinterlaceLR::Reinit(UOSInt fieldCnt, UOSInt fieldSep)
 		this->evenParam.weight = 0;
 		this->evenParam.index = 0;
 	}
-	Media::DeinterlaceLR::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, &oddParam, fieldSep, 0.25);
-	Media::DeinterlaceLR::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, &evenParam, fieldSep, -0.25);
+	Media::DeinterlaceLR::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, oddParam, fieldSep, 0.25);
+	Media::DeinterlaceLR::SetupInterpolationParameter(fieldCnt, fieldCnt << 1, evenParam, fieldSep, -0.25);
 	this->fieldCnt = fieldCnt;
 	this->fieldSep = fieldSep;
 }
 
-void Media::DeinterlaceLR::Deinterlace(UInt8 *src, UInt8 *dest, Bool bottomField, UOSInt width, OSInt dstep)
+void Media::DeinterlaceLR::Deinterlace(UnsafeArray<UInt8> src, UnsafeArray<UInt8> dest, Bool bottomField, UOSInt width, OSInt dstep)
 {
 	if (!bottomField)
 	{

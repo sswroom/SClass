@@ -11,7 +11,7 @@ void Media::Decoder::ACMDecoder::InitACM()
 {
 }
 
-Media::Decoder::ACMDecoder::ACMDecoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::ACMDecoder::ACMDecoder(NN<Media::AudioSource> sourceAudio)
 {
 	this->sourceAudio = 0;
 	this->hAcmStream = 0;
@@ -38,7 +38,7 @@ void Media::Decoder::ACMDecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
@@ -51,7 +51,7 @@ Data::Duration Media::Decoder::ACMDecoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		this->seeked = true;
@@ -68,7 +68,7 @@ Bool Media::Decoder::ACMDecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize
 
 void Media::Decoder::ACMDecoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();

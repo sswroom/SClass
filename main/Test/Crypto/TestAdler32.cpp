@@ -7,7 +7,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 testBlock[32];
 	UInt8 hashVal[32];
-	Crypto::Hash::IHash *hash;
+	Crypto::Hash::HashAlgorithm *hash;
 
 	NEW_CLASS(hash, Crypto::Hash::Adler32());
 

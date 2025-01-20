@@ -1,13 +1,13 @@
 #ifndef _SM_TEXT_TEXTBINENC_CODEPAGETEXTBINENC
 #define _SM_TEXT_TEXTBINENC_CODEPAGETEXTBINENC
 #include "Text/Encoding.h"
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class CodePageTextBinEnc : public Text::TextBinEnc::ITextBinEnc
+		class CodePageTextBinEnc : public Text::TextBinEnc::TextBinEnc
 		{
 		private:
 			Text::Encoding *enc;

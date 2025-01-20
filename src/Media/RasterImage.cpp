@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/FrameInfo.h"
 #include "Media/RasterImage.h"
 #include "Media/StaticImage.h"

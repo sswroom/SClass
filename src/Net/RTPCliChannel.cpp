@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "IO/Console.h"
-#include "Net/IRTPPLHandler.h"
+#include "Net/RTPPayloadHandler.h"
 #include "Net/RTPASource.h"
 #include "Net/RTPCliChannel.h"
 #include "Net/RTPH264Handler.h"
@@ -90,7 +90,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressI
 		}
 
 
-		Net::IRTPPLHandler *plHdlr = chData->payloadMap.Get(chData->packBuff[minIndex].payloadType);
+		Net::RTPPayloadHandler *plHdlr = chData->payloadMap.Get(chData->packBuff[minIndex].payloadType);
 		if (plHdlr)
 		{
 			plHdlr->MediaDataReceived(chData->packBuff[minIndex].buff, chData->packBuff[minIndex].dataSize, chData->packBuff[minIndex].seqNum, chData->packBuff[minIndex].ts);
@@ -310,7 +310,7 @@ void Net::RTPCliChannel::SetControlURL(Text::CStringNN url)
 	this->chData->controlURL = Text::String::New(url).Ptr();
 }
 
-void Net::RTPCliChannel::SetPlayControl(Net::IRTPController *playCtrl)
+void Net::RTPCliChannel::SetPlayControl(Net::RTPController *playCtrl)
 {
 	this->chData->playCtrl = playCtrl;
 }
@@ -370,7 +370,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 	if (--this->chData->useCnt == 0)
 	{
 		UOSInt i;
-		Net::IRTPPLHandler *plHdlr;
+		Net::RTPPayloadHandler *plHdlr;
 		this->StopPlay();
 
 		DEL_CLASS(this->chData->rtpUDP);
@@ -427,21 +427,21 @@ void Net::RTPCliChannel::SetMediaType(Media::MediaType mediaType)
 	this->chData->mediaType = mediaType;
 }
 
-Optional<Media::IVideoSource> Net::RTPCliChannel::GetVideo(UOSInt index)
+Optional<Media::VideoSource> Net::RTPCliChannel::GetVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
 	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
 }
 
-Optional<Media::IAudioSource> Net::RTPCliChannel::GetAudio(UOSInt index)
+Optional<Media::AudioSource> Net::RTPCliChannel::GetAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
 	return 0;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
 }
 
-Optional<Media::IVideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
+Optional<Media::VideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
@@ -457,7 +457,7 @@ Optional<Media::IVideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index
 	return vSrc;
 }
 
-Optional<Media::IAudioSource> Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
+Optional<Media::AudioSource> Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
@@ -517,7 +517,7 @@ Bool Net::RTPCliChannel::IsRunning()
 
 Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CStringNN typ, UInt32 freq, UInt32 nChannel)
 {
-	Net::IRTPPLHandler *hdlr;
+	Net::RTPPayloadHandler *hdlr;
 	if (this->chData->payloadMap.Get(payloadType))
 	{
 		return false;
@@ -555,7 +555,7 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CStringNN typ, 
 
 Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, UnsafeArray<const UTF8Char> format)
 {
-	Net::IRTPPLHandler *plHdlr = this->chData->payloadMap.Get(payloadType);
+	Net::RTPPayloadHandler *plHdlr = this->chData->payloadMap.Get(payloadType);
 	if (plHdlr)
 	{
 		plHdlr->SetFormat(format);
@@ -564,7 +564,7 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, UnsafeArray<const U
 	return false;
 }
 
-NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log)
+NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, NN<Data::ArrayListStrUTF8> sdpDesc, Text::CStringNN ctrlURL, Net::RTPController *playCtrl, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

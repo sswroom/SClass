@@ -1,13 +1,13 @@
 #ifndef _SM_MEDIA_V4LVIDEOCAPTURE
 #define _SM_MEDIA_V4LVIDEOCAPTURE
 #include "Data/ArrayList.h"
-#include "Media/IVideoCapture.h"
+#include "Media/VideoCapturer.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
-	class V4LVideoCapture : public Media::IVideoCapture
+	class V4LVideoCapture : public Media::VideoCapturer
 	{
 	private:
 		Int32 fd;
@@ -53,7 +53,7 @@ namespace Media
 		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
 		UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devId);
 
-		NN<Media::IVideoCapture> CreateDevice(UOSInt devId);
+		NN<Media::VideoCapturer> CreateDevice(UOSInt devId);
 	};
 }
 #endif

@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_LPCMSOURCE
 #define _SM_MEDIA_LPCMSOURCE
 #include "IO/StreamData.h"
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
-	class LPCMSource : public IAudioSource
+	class LPCMSource : public AudioSource
 	{
 	protected:
 		AudioFormat format;

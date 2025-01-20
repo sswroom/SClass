@@ -23,10 +23,10 @@
 
 namespace Media
 {
-	class CUPSPrintDocument : public Media::IPrintDocument
+	class CUPSPrintDocument : public Media::PrintDocument
 	{
 	private:
-		NN<IPrintHandler> hdlr;
+		NN<PrintHandler> hdlr;
 		NN<Media::GTKDrawEngine> eng;
 		Optional<Text::String> docName;
 		Bool started;
@@ -37,7 +37,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		CUPSPrintDocument(NN<Text::String> printerName, NN<Media::GTKDrawEngine> eng, NN<IPrintHandler> hdlr);
+		CUPSPrintDocument(NN<Text::String> printerName, NN<Media::GTKDrawEngine> eng, NN<PrintHandler> hdlr);
 		virtual ~CUPSPrintDocument();
 
 		Bool IsError();
@@ -139,7 +139,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::CUPSPrintDocument::CUPSPrintDocument(NN<Text::String> printerName, NN<Media::GTKDrawEngine> eng, NN<IPrintHandler> hdlr)
+Media::CUPSPrintDocument::CUPSPrintDocument(NN<Text::String> printerName, NN<Media::GTKDrawEngine> eng, NN<PrintHandler> hdlr)
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
@@ -259,7 +259,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Optional<Media::IPrintDocument> Media::Printer::StartPrint(NN<IPrintHandler> hdlr, NN<Media::DrawEngine> eng)
+Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<PrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
 	Media::CUPSPrintDocument *doc;
 	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, NN<Media::GTKDrawEngine>::ConvertFrom(eng), hdlr));
@@ -272,7 +272,7 @@ Optional<Media::IPrintDocument> Media::Printer::StartPrint(NN<IPrintHandler> hdl
 	return doc;
 }
 
-void Media::Printer::EndPrint(NN<IPrintDocument> doc)
+void Media::Printer::EndPrint(NN<PrintDocument> doc)
 {
 	doc.Delete();
 }

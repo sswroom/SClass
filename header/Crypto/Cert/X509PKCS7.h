@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_CERT_X509PKCS7
 #define _SM_CRYPTO_CERT_X509PKCS7
 #include "Crypto/Cert/X509File.h"
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/HashAlgorithm.h"
 
 namespace Crypto
 {

@@ -18,7 +18,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength()).Ptr();
 }
 
-Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj(CSTR("text/plain"))
+Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage) : Text::MIMEObject(CSTR("text/plain"))
 {
 	this->contType = 0;
 	this->codePage = codePage;
@@ -28,7 +28,7 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSIn
 	this->BuildContentType();
 }
 
-Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, UInt32 codePage) : Text::IMIMEObj(CSTR("text/plain"))
+Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, UInt32 codePage) : Text::MIMEObject(CSTR("text/plain"))
 {
 	Text::Encoding enc(codePage);
 	UOSInt strLen;
@@ -62,7 +62,7 @@ UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	return stm->Write(Data::ByteArrayR(this->textBuff, this->buffSize));
 }
 
-NN<Text::IMIMEObj> Text::MIMEObj::TextMIMEObj::Clone() const
+NN<Text::MIMEObject> Text::MIMEObj::TextMIMEObj::Clone() const
 {
 	NN<Text::MIMEObj::TextMIMEObj> txt;
 	NEW_CLASSNN(txt, Text::MIMEObj::TextMIMEObj(this->textBuff, this->buffSize, this->codePage));

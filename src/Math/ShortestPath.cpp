@@ -37,7 +37,7 @@ Bool Math::ShortestPath::Path::AddNode(NN<Math::ShortestPath::PathNode> node, Do
 	return true;
 }
 
-OSInt Math::ShortestPath::Path::CompareTo(Data::IComparable *obj) const
+OSInt Math::ShortestPath::Path::CompareTo(Data::Comparable *obj) const
 {
 	Math::ShortestPath::Path *path2 = (Math::ShortestPath::Path*)obj;
 	if (this->totalDistance > path2->totalDistance)

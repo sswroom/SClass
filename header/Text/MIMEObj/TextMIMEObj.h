@@ -1,13 +1,13 @@
 #ifndef _SM_TEXT_MIMEOBJ_TEXTMIMEOBJ
 #define _SM_TEXT_MIMEOBJ_TEXTMIMEOBJ
-#include "Text/IMIMEObj.h"
+#include "Text/MIMEObject.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
 	namespace MIMEObj
 	{
-		class TextMIMEObj : public Text::IMIMEObj
+		class TextMIMEObj : public Text::MIMEObject
 		{
 		private:
 			UInt8 *textBuff;
@@ -24,7 +24,7 @@ namespace Text
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
 			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
-			virtual NN<IMIMEObj> Clone() const;
+			virtual NN<MIMEObject> Clone() const;
 
 			void GetText(NN<Text::StringBuilderUTF8> sb) const;
 			UInt32 GetCodePage() const;

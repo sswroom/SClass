@@ -2,13 +2,13 @@
 #define _SM_MEDIA_RESIZER_NEARESTNEIGHBOURRESIZER64_64
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 
 namespace Media
 {
 	namespace Resizer
 	{
-		class NearestNeighbourResizer64_64 : public Media::IImgResizer
+		class NearestNeighbourResizer64_64 : public Media::ImageResizer
 		{
 		private:
 			OSInt lastsbpl;

@@ -22,7 +22,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::SuperFastHash::GetName(UnsafeArray<UTF8Char>
 	return Text::StrConcatC(sbuff, UTF8STRC("SuperFastHash"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::SuperFastHash::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::SuperFastHash::Clone() const
 {
 	NN<Crypto::Hash::SuperFastHash> sfh;
 	NEW_CLASSNN(sfh, Crypto::Hash::SuperFastHash(this->currVal));

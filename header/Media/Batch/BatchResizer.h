@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_BATCH_BATCHRESIZER
 #define _SM_MEDIA_BATCH_BATCHRESIZER
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/Batch/BatchSaver.h"
 #include "Sync/Mutex.h"
 #include "Parser/ParserList.h"
@@ -20,13 +20,13 @@ namespace Media
 				NN<Text::String> targetId;
 			} TargetParam;
 		private:
-			Media::IImgResizer *resizer;
+			Media::ImageResizer *resizer;
 			Media::Batch::BatchHandler *hdlr;
 			Data::ArrayList<TargetParam*> targetParam;
 			Sync::Mutex resizeMut;
 
 		public:
-			BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr);
+			BatchResizer(Media::ImageResizer *resizer, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchResizer();
 			
 			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NN<Text::String> targetId);

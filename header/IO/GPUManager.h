@@ -1,6 +1,6 @@
 #ifndef _SM_IO_GPUMANAGER
 #define _SM_IO_GPUMANAGER
-#include "IO/IGPUControl.h"
+#include "IO/GPUControl.h"
 
 namespace IO
 {
@@ -16,7 +16,7 @@ namespace IO
 		~GPUManager();
 
 		UOSInt GetGPUCount();
-		Optional<IO::IGPUControl> GetGPUControl(UOSInt index);
+		Optional<IO::GPUControl> GetGPUControl(UOSInt index);
 	};
 }
 #endif

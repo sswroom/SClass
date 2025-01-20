@@ -22,13 +22,13 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 		me->currCapture = 0;
 	}
 	me->cboFormat->ClearItems();
-	NN<Media::IVideoCapture> currCapture;
+	NN<Media::VideoCapturer> currCapture;
 	if (me->currCapture.SetTo(currCapture))
 	{
 		Data::ArrayListUInt32 supportedCS;
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
-		Media::IVideoCapture::VideoFormat fmts[80];
+		Media::VideoCapturer::VideoFormat fmts[80];
 		NN<CaptureFormat> cfmt;
 		UOSInt bestSize = 0;
 		UInt32 bestFmt = 0;
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 	else
 	{
 		NN<CaptureFormat> cfmt;
-		NN<Media::IVideoCapture> currCapture;
+		NN<Media::VideoCapturer> currCapture;
 		if (me->cboFormat->GetSelectedItem().GetOpt<CaptureFormat>().SetTo(cfmt) && me->currCapture.SetTo(currCapture))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 	me->txtSaveCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
+void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoChange(Media::VideoSource::FrameChange frChg, AnyType userData)
 {
 //	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 }
@@ -270,7 +270,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
 {
 	if (this->isStarted)
 	{
-		NN<Media::IVideoCapture> currCapture;
+		NN<Media::VideoCapturer> currCapture;
 		if (this->currCapture.SetTo(currCapture))
 			currCapture->Stop();
 		this->csConv.Delete();

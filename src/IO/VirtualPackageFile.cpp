@@ -490,7 +490,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 	else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 	{
 		NN<Data::Compress::Decompressor> decomp;
-		NN<Crypto::Hash::IHash> hash;
+		NN<Crypto::Hash::HashAlgorithm> hash;
 		NN<IO::StreamData> fd;
 		if (!Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod).SetTo(decomp))
 			return 0;
@@ -858,7 +858,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool
 				return false;
 
 			NN<Data::Compress::Decompressor> decomp;
-			NN<Crypto::Hash::IHash> hash;
+			NN<Crypto::Hash::HashAlgorithm> hash;
 			NN<IO::StreamData> fd;
 			if (!Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod).SetTo(decomp))
 				return false;

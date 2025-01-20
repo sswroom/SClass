@@ -20,9 +20,9 @@ namespace Media
 			Data::ArrayList<VP9FrameInfo*> frameList;
 			Bool finfoMode;
 
-			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
+			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VP09Decoder(NN<IVideoSource> sourceVideo, Bool toRelease);
+			VP09Decoder(NN<VideoSource> sourceVideo, Bool toRelease);
 			virtual ~VP09Decoder();
 
 			virtual Text::CStringNN GetFilterName();

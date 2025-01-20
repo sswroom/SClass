@@ -51,9 +51,9 @@ IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
 	SDEL_STRING(this->sdkVer);
 }
 
-Map::ILocationService::ServiceType IO::Device::MTKGPSNMEA::GetServiceType()
+Map::LocationService::ServiceType IO::Device::MTKGPSNMEA::GetServiceType()
 {
-	return Map::ILocationService::ST_MTK;
+	return Map::LocationService::ST_MTK;
 }
 
 void IO::Device::MTKGPSNMEA::HotStart()

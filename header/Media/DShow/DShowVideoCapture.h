@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_DSHOW_DSHOWVIDEOCAPTURE
 #define _SM_MEDIA_DSHOW_DSHOWVIDEOCAPTURE
 #include "Media/FrameInfo.h"
-#include "Media/IVideoCapture.h"
+#include "Media/VideoCapturer.h"
 //#include "Media/IRealTimeVideoSource.h"
 
 #if defined(__GNUC__)
@@ -22,7 +22,7 @@ namespace Media
 	{
 		class DShowVideoFilter;
 
-		class DShowVideoCapture : public Media::IVideoCapture
+		class DShowVideoCapture : public Media::VideoCapturer
 		{
 		private:
 			IBaseFilter *baseFilter;

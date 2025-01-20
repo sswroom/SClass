@@ -9,7 +9,7 @@
 #include "IO/MemoryStream.h"
 #include "IO/StreamDataStream.h"
 #include "Media/FrameInfo.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/GIFParser.h"

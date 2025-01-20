@@ -5,7 +5,7 @@
 
 #define BASEVOLUME 0x4000 //0x4000
 
-Media::Decoder::PSSADecoder::PSSADecoder(NN<Media::IAudioSource> sourceAudio)
+Media::Decoder::PSSADecoder::PSSADecoder(NN<Media::AudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -44,7 +44,7 @@ Media::Decoder::PSSADecoder::~PSSADecoder()
 
 void Media::Decoder::PSSADecoder::GetFormat(NN<AudioFormat> format)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		Media::AudioFormat fmt;
@@ -67,7 +67,7 @@ void Media::Decoder::PSSADecoder::GetFormat(NN<AudioFormat> format)
 
 Data::Duration Media::Decoder::PSSADecoder::SeekToTime(Data::Duration time)
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		adxSample1[0] = 0;
@@ -83,7 +83,7 @@ Data::Duration Media::Decoder::PSSADecoder::SeekToTime(Data::Duration time)
 Bool Media::Decoder::PSSADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSize)
 {
 	NN<Sync::Event> readEvt;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Start(0, blkSize);
@@ -101,7 +101,7 @@ Bool Media::Decoder::PSSADecoder::Start(Optional<Sync::Event> evt, UOSInt blkSiz
 
 void Media::Decoder::PSSADecoder::Stop()
 {
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (this->sourceAudio.SetTo(sourceAudio))
 	{
 		sourceAudio->Stop();
@@ -117,7 +117,7 @@ UOSInt Media::Decoder::PSSADecoder::ReadBlock(Data::ByteArray buff)
 	UOSInt readSize;
 	Data::ByteArray src;
 	Data::ByteArray dest;
-	NN<Media::IAudioSource> sourceAudio;
+	NN<Media::AudioSource> sourceAudio;
 	if (!this->sourceAudio.SetTo(sourceAudio))
 	{
 		return 0;

@@ -3,24 +3,24 @@
 #include "AnyType.h"
 #include "Data/ByteBuffer.h"
 #include "Data/FastMapNN.h"
-#include "IO/ISectorData.h"
-#include "Media/IAudioSource.h"
+#include "IO/SectorData.h"
+#include "Media/AudioSource.h"
 #include "Media/M2VStreamSource.h"
 #include "Media/MediaFile.h"
 
 namespace Media
 {
-	class VCDMPGFile : public Media::MediaFile, public Media::IStreamControl
+	class VCDMPGFile : public Media::MediaFile, public Media::MediaStreamControl
 	{
 	private:
-		NN<IO::ISectorData> data;
+		NN<IO::SectorData> data;
 		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 fleng;
 		Data::Duration startTime;
 		Media::M2VStreamSource *vstm;
-		Data::FastMapNN<Int32, Media::IMediaStream> dataStms;
-		Data::ArrayListNN<Media::IAudioSource> audStms;
+		Data::FastMapNN<Int32, Media::MediaStream> dataStms;
+		Data::ArrayListNN<Media::AudioSource> audStms;
 
 		Int32 playing;
 		Bool playStarted;
@@ -31,11 +31,11 @@ namespace Media
 		Bool StartPlay();
 		Bool StopPlay();
 	public:
-		VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt64 endSector);
+		VCDMPGFile(NN<IO::SectorData> data, UInt64 startSector, UInt64 endSector);
 		virtual ~VCDMPGFile();
 		
-		virtual UOSInt AddSource(NN<Media::IMediaSource> src, Int32 syncTime);
-		virtual Optional<Media::IMediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
+		virtual UOSInt AddSource(NN<Media::MediaSource> src, Int32 syncTime);
+		virtual Optional<Media::MediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
 		virtual UnsafeArrayOpt<UTF8Char> GetMediaName(UnsafeArray<UTF8Char> buff);

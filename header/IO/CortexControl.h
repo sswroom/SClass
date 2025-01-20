@@ -1,7 +1,7 @@
 #ifndef _SM_IO_CORTEXCONTROL
 #define _SM_IO_CORTEXCONTROL
 #include "AnyType.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "IO/SerialPort.h"
 #include "IO/Writer.h"
 #include "IO/ProtoHdlr/ProtoCortexHandler.h"
@@ -9,7 +9,7 @@
 
 namespace IO
 {
-	class CortexControl : public IO::IProtocolHandler::DataListener
+	class CortexControl : public IO::ProtocolHandler::DataListener
 	{
 	private:
 		NN<IO::SerialPort> stm;

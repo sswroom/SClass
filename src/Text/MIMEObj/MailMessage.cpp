@@ -21,7 +21,7 @@ Text::CStringNN Text::MIMEObj::MailMessage::GetClassName() const
 	return CSTR("MailMessage");
 }
 
-NN<Text::IMIMEObj> Text::MIMEObj::MailMessage::Clone() const
+NN<Text::MIMEObject> Text::MIMEObj::MailMessage::Clone() const
 {
 	NN<Text::MIMEObj::MailMessage> msg;
 	UOSInt i;
@@ -39,7 +39,7 @@ NN<Text::IMIMEObj> Text::MIMEObj::MailMessage::Clone() const
 		}
 		i++;
 	}
-	NN<IMIMEObj> content;
+	NN<MIMEObject> content;
 	if (this->content.SetTo(content))
 	{
 		msg->SetContent(content->Clone());
@@ -109,7 +109,7 @@ void Text::MIMEObj::MailMessage::FreeRecpList(NN<Data::ArrayListNN<MailAddress>>
 
 Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText() const
 {
-	NN<IMIMEObj> content;
+	NN<MIMEObject> content;
 	if (!this->content.SetTo(content))
 		return 0;
 	Text::CStringNN clsName = content->GetClassName();
@@ -121,7 +121,7 @@ Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText(
 		if (contType.StartsWith(UTF8STRC("multipart/mixed")))
 		{
 			NN<Text::MIMEObj::MultipartMIMEObj> mpart = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content);
-			NN<Text::IMIMEObj> obj;
+			NN<Text::MIMEObject> obj;
 			if (mpart->GetPartContent(0).SetTo(obj))
 			{
 				if (clsName.Equals(UTF8STRC("TextMIMEObj")))
@@ -134,12 +134,12 @@ Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText(
 	return 0;
 }
 
-Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetContentMajor() const
+Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetContentMajor() const
 {
-	NN<IMIMEObj> content;
+	NN<MIMEObject> content;
 	if (!this->content.SetTo(content))
 		return 0;
-	Optional<Text::IMIMEObj> obj = content;
+	Optional<Text::MIMEObject> obj = content;
 	Text::CStringNN contType = content->GetContentType();
 	Text::CStringNN clsName = content->GetClassName();
 	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")) && contType.StartsWith(UTF8STRC("multipart/mixed")))
@@ -168,7 +168,7 @@ Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetContentMajor() const
 	return 0;
 }
 
-Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const
+Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -178,7 +178,7 @@ Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, 
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::MIMEObj::MIMEMessage> part;
-	NN<IMIMEObj> content;
+	NN<MIMEObject> content;
 	if (!this->content.SetTo(content))
 		return 0;
 	if (content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
@@ -241,7 +241,7 @@ Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, 
 	return 0;
 }
 
-Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetRAWContent() const
+Optional<Text::MIMEObject> Text::MIMEObj::MailMessage::GetRAWContent() const
 {
 	return this->content;
 }

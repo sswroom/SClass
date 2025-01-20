@@ -19,7 +19,7 @@ namespace Net
 				Transparent
 			};
 
-			typedef void (CALLBACKFUNC ReqHandler)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			typedef void (CALLBACKFUNC ReqHandler)(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		private:
 			Data::ArrayListStringNN forwardAddrs;
 			Data::ArrayListStringNN injHeaders;
@@ -34,12 +34,12 @@ namespace Net
 			Optional<IO::LogTool> log;
 			Bool logContent;
 
-			virtual Optional<Text::String> GetNextURL(NN<Net::WebServer::IWebRequest> req);
+			virtual Optional<Text::String> GetNextURL(NN<Net::WebServer::WebRequest> req);
 		public:
 			HTTPForwardHandler(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType);
 			virtual ~HTTPForwardHandler();
 
-			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
 			void AddForwardURL(Text::CStringNN url);
 			void AddInjectHeader(NN<Text::String> header);

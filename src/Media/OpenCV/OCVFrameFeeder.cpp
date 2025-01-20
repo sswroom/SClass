@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/Path.h"
-#include "Media/IRealtimeVideoSource.h"
-#include "Media/IVideoCapture.h"
+#include "Media/RealtimeVideoSource.h"
+#include "Media/VideoCapturer.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
 #include "Media/OpenCV/OCVFrameFeeder.h"
@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 	NN<Media::OpenCV::OCVFrame> frame;
@@ -29,12 +29,12 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, 
 	}
 }
 
-void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
+void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::VideoSource::FrameChange frChg, AnyType userData)
 {
 //	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 }
 
-Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NN<Media::IVideoSource> src)
+Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NN<Media::VideoSource> src)
 {
 	this->frameInput = frameInput;
 	this->src = src;
@@ -74,11 +74,11 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 	}
 	if (this->src->IsRealTimeSrc())
 	{
-		Media::IRealtimeVideoSource *realtimeVideo = (Media::IRealtimeVideoSource*)src.Ptr();
+		Media::RealtimeVideoSource *realtimeVideo = (Media::RealtimeVideoSource*)src.Ptr();
 		if (realtimeVideo->IsVideoCapture())
 		{
-			Media::IVideoCapture *capture = (Media::IVideoCapture*)realtimeVideo;
-			Media::IVideoCapture::VideoFormat *formats;
+			Media::VideoCapturer *capture = (Media::VideoCapturer*)realtimeVideo;
+			Media::VideoCapturer::VideoFormat *formats;
 			UOSInt thisSize;
 			UOSInt maxSize = 0;
 			UOSInt maxWidth = 0;
@@ -87,7 +87,7 @@ Bool Media::OpenCV::OCVFrameFeeder::Start()
 			UInt32 maxBpp = 0;
 			UInt32 maxRateNumer = 0;
 			UInt32 maxRateDenom = 0;
-			formats = MemAlloc(Media::IVideoCapture::VideoFormat, 512);
+			formats = MemAlloc(Media::VideoCapturer::VideoFormat, 512);
 			i = 0;
 			j = 512;
 			while (i < j)

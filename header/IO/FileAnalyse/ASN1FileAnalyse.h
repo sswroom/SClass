@@ -1,13 +1,13 @@
 #ifndef _SM_IO_FILEANALYSE_ASN1FILEANALYSE
 #define _SM_IO_FILEANALYSE_ASN1FILEANALYSE
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Net/ASN1Names.h"
 
 namespace IO
 {
 	namespace FileAnalyse
 	{
-		class ASN1FileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class ASN1FileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			NN<IO::StreamData> fd;

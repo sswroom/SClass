@@ -2,7 +2,7 @@
 #define _SM_NET_SNMPMANAGER
 #include "Data/FastMapNN.h"
 #include "Net/SNMPClient.h"
-#include "SSWR/SMonitor/ISMonitorCore.h"
+#include "SSWR/SMonitor/SMonitorCore.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"
 
 namespace Net
@@ -58,7 +58,7 @@ namespace Net
 		Optional<AgentInfo> AddAgent(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community);
 		UOSInt AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, NN<Data::ArrayListNN<AgentInfo>> agentList, Bool scanIP);
 
-		static void Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, OutParam<Int64> cliId);
+		static void Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor::SMonitorCore::DevRecord2> rec, OutParam<Int64> cliId);
 		static Int64 Agent2CliId(NN<const AgentInfo> agent);
 	};
 }

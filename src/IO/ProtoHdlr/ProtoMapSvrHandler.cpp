@@ -22,7 +22,7 @@ UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(UnsafeArray<const UInt8> buff
 	return ChkDigit1 | (((Int32)ChkDigit2) << 8);
 }
 
-IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(NN<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(NN<IO::ProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }

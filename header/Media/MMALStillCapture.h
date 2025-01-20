@@ -2,11 +2,11 @@
 #define _SM_MEDIA_MMALSTILLCAPTURE
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
-#include "Media/IPhotoCapture.h"
+#include "Media/PhotoCapturer.h"
 
 namespace Media
 {
-	class MMALStillCapture : public Media::IPhotoCapture
+	class MMALStillCapture : public Media::PhotoCapturer
 	{
 	private:
 		void *classData;
@@ -17,7 +17,7 @@ namespace Media
 
 		virtual Bool DeviceBegin();
 		virtual void DeviceEnd();
-		virtual Bool CapturePhoto(Media::IPhotoCapture::PhotoFormat *fmt, IO::Stream *stm);
+		virtual Bool CapturePhoto(Media::PhotoCapturer::PhotoFormat *fmt, IO::Stream *stm);
 	};
 }
 #endif

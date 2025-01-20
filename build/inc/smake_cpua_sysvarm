@@ -76,8 +76,8 @@ CSYUV444P10LEP_RGB32C_CPP.o: ../../src/Media/CS/CSYUV444P10LEP_RGB32C_CPP.cpp
 CSYUY2_LRGBC_CPP.o: ../../src/Media/CS/CSYUY2_LRGBC_CPP.cpp
 CSYUY2_RGB8_CPP.o: ../../src/Media/CS/CSYUY2_RGB8_CPP.cpp
 CSYVU9_RGB8_CPP.o: ../../src/Media/CS/CSYVU9_RGB8_CPP.cpp
-BGImgFilter_CPP.o: ../../src/Media/ImageFilter/BGImgFilter_cpp.cpp
-BWImgFilter_CPP.o: ../../src/Media/ImageFilter/BWImgFilter_cpp.cpp
+BGImgFilter_CPP.o: ../../src/Media/ImgFilter/BGImgFilter_cpp.cpp
+BWImgFilter_CPP.o: ../../src/Media/ImgFilter/BWImgFilter_cpp.cpp
 NearestNeighbourResizer32_32_CPP.o: ../../src/Media/Resizer/NearestNeighbourResizer32_32_CPP.cpp
 NearestNeighbourResizer64_64_CPP.o: ../../src/Media/Resizer/NearestNeighbourResizer64_64_CPP.cpp
 LanczosResizer8_C8_CPP.o: ../../src/Media/Resizer/LanczosResizer8_C8_CPP.cpp

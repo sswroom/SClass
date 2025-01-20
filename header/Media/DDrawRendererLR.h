@@ -7,7 +7,7 @@
 #include "Sync/Mutex.h"
 #include "Media/FrameInfo.h"
 #include "Media/CS/CSConverter.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/DeinterlaceLR.h"
 #include "Media/RefClock.h"
 #include "Media/ColorManager.h"
@@ -44,7 +44,7 @@ namespace Media
 		void *hwnd;
 		Media::FrameInfo info;
 		Media::CS::CSConverter *csconv;
-		Media::IImgResizer *resizer;
+		Media::ImageResizer *resizer;
 		Media::DeinterlaceLR *deinterlace;
 		Media::RefClock *clk;
 		Media::ColorManager *colorMgr;

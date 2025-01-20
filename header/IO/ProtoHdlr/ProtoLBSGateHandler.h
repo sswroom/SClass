@@ -1,22 +1,22 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOLBSGATEHANDLER
 #define _SM_IO_PROTOHDLR_PROTOLBSGATEHANDLER
 #include "Crypto/Hash/CRC32R.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoLBSGateHandler : public IO::IProtocolHandler
+		class ProtoLBSGateHandler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
 
 		public:
-			ProtoLBSGateHandler(NN<IO::IProtocolHandler::DataListener> listener);
+			ProtoLBSGateHandler(NN<IO::ProtocolHandler::DataListener> listener);
 			virtual ~ProtoLBSGateHandler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

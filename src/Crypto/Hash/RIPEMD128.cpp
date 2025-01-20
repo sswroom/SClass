@@ -24,7 +24,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::RIPEMD128::GetName(UnsafeArray<UTF8Char> sbu
 	return Text::StrConcatC(sbuff, UTF8STRC("RIPEMD-128"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::RIPEMD128::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::RIPEMD128::Clone() const
 {
 	NN<Crypto::Hash::RIPEMD128> rmd128;
 	NEW_CLASSNN(rmd128, Crypto::Hash::RIPEMD128());

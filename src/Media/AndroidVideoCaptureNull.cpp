@@ -29,7 +29,7 @@ UTF8Char *Media::AndroidVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt de
 	return 0;
 }
 
-Media::IVideoCapture *Media::AndroidVideoCaptureMgr::CreateDevice(UOSInt devId)
+Media::VideoCapturer *Media::AndroidVideoCaptureMgr::CreateDevice(UOSInt devId)
 {
 	return 0;
 }

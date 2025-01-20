@@ -385,7 +385,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 	UInt32 i;
 	UInt32 j;
 	UInt32 k;
-	NN<Media::IAudioSource> audSrc;
+	NN<Media::AudioSource> audSrc;
 	NN<Media::RefClock> clk;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
@@ -805,10 +805,10 @@ Bool Media::ASIOOutRenderer::IsError()
 	return this->asiodrv == 0;
 }
 
-Bool Media::ASIOOutRenderer::BindAudio(Optional<Media::IAudioSource> audsrc)
+Bool Media::ASIOOutRenderer::BindAudio(Optional<Media::AudioSource> audsrc)
 {
 	Media::AudioFormat format;
-	NN<Media::IAudioSource> nnaudsrc;
+	NN<Media::AudioSource> nnaudsrc;
 	IASIO *asio = (IASIO*)asiodrv;
 	if (asiodrv == 0)
 		return false;

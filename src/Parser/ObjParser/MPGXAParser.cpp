@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "Media/VCDMPGFile.h"
 #include "Parser/ObjParser/MPGXAParser.h"
 
@@ -33,10 +33,10 @@ IO::ParserType Parser::ObjParser::MPGXAParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::ObjParser::MPGXAParser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
-	NN<IO::ISectorData> data;
+	NN<IO::SectorData> data;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return 0;
-	data = NN<IO::ISectorData>::ConvertFrom(pobj);
+	data = NN<IO::SectorData>::ConvertFrom(pobj);
 	if (data->GetBytesPerSector() != 2352)
 		return 0;
 

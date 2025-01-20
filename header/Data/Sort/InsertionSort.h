@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_SORT_INSERTIONSORT
 #define _SM_DATA_SORT_INSERTIONSORT
 #include "Data/Comparator.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 
 extern "C"
 {
@@ -33,7 +33,7 @@ namespace Data
 		public:
 			template <class T> static void SortB(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T, class V> static void SortBKV(UnsafeArray<T> keyArr, UnsafeArray<V> valArr, OSInt firstIndex, OSInt lastIndex);
-			static void SortBCmpO(UnsafeArray<NN<Data::IComparable>> arr, OSInt firstIndex, OSInt lastIndex);
+			static void SortBCmpO(UnsafeArray<NN<Data::Comparable>> arr, OSInt firstIndex, OSInt lastIndex);
 		};
 	}
 }

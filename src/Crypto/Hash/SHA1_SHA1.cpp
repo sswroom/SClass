@@ -23,9 +23,9 @@ UnsafeArray<UTF8Char> Crypto::Hash::SHA1_SHA1::GetName(UnsafeArray<UTF8Char> sbu
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA1_SHA1 (MySQL)"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::SHA1_SHA1::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::SHA1_SHA1::Clone() const
 {
-	NN<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	NEW_CLASSNN(hash, Crypto::Hash::SHA1_SHA1(this->sha1));
 	return hash;
 }

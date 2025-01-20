@@ -119,7 +119,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 	Int32 vTrackDelay = 0;
 	Int32 vTrackSkip = 0;
 	Media::MediaFile *file;
-	NN<Media::IMediaSource> src;
+	NN<Media::MediaSource> src;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
 	i = 8;
 	while (i < size)
@@ -195,7 +195,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 	return file;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale)
+Media::MediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -204,7 +204,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamDa
 	Int32 sampleSkip = 0;
 	Int32 delay = 0;
 	UInt32 mediaTimeScale = mvTimeScale;
-	Media::IMediaSource *src = 0;
+	Media::MediaSource *src = 0;
 	i = 8;
 	while (i < size)
 	{
@@ -279,14 +279,14 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamDa
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, UInt32 *timeScaleOut)
+Media::MediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, UInt32 *timeScaleOut)
 {
 	UInt32 i;
 	UInt8 hdr[8];
 	UInt8 buff[256];
 	UInt32 atomSize;
 	UInt32 timeScale = *timeScaleOut;
-	Media::IMediaSource *src = 0;
+	Media::MediaSource *src = 0;
 	Media::MediaType mtyp = Media::MEDIA_TYPE_UNKNOWN;
 	i = 8;
 	while (i < size)
@@ -353,13 +353,13 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamDa
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
+Media::MediaSource *Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
 //	UInt8 buff[256];
 	UInt32 atomSize;
-	Media::IMediaSource *src = 0;
+	Media::MediaSource *src = 0;
 	i = 8;
 	while (i < size)
 	{
@@ -399,7 +399,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::StreamDa
 	return src;
 }
 
-Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
+Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -407,7 +407,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDa
 	Data::ByteBuffer dataBuff2(0);
 	Data::ByteArray buff = BYTEARR(dataBuff);
 	UInt32 atomSize;
-	Media::IMediaSource *src = 0;
+	Media::MediaSource *src = 0;
 	Media::AudioFormat afmt;
 	Media::FrameInfo frInfo;
 //	Int32 frameCnt = 0;
@@ -1119,7 +1119,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDa
 	{
 		if (afmt.formatId != 0 && stszOfst != 0 && stcOfst != 0 && ttsOfst != 0 && stcoOfst != 0)
 		{
-			Media::IAudioFrameSource *asrc = 0;
+			Media::AudioFrameSource *asrc = 0;
 //			Int32 ntts;
 			Int32 nstc;
 //			Int32 nstco;

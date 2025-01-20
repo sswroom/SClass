@@ -16,7 +16,7 @@ struct Media::SOXRFilter::ClassData
 	UInt8 *outFloatBuff;
 };
 
-Media::SOXRFilter::SOXRFilter(NN<Media::IAudioSource> sourceAudio, UInt32 targetFreq) : Media::IAudioFilter(sourceAudio)
+Media::SOXRFilter::SOXRFilter(NN<Media::AudioSource> sourceAudio, UInt32 targetFreq) : Media::AudioFilter(sourceAudio)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->targetFreq = targetFreq;

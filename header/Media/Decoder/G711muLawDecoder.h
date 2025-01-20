@@ -15,7 +15,7 @@ namespace Media
 			UOSInt readBuffSize;
 			Optional<Sync::Event> readEvt;
 		public:
-			G711muLawDecoder(NN<IAudioSource> sourceAudio);
+			G711muLawDecoder(NN<AudioSource> sourceAudio);
 			virtual ~G711muLawDecoder();
 
 			virtual void GetFormat(NN<AudioFormat> format);

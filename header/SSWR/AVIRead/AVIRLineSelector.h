@@ -9,7 +9,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRLineSelector : public UI::GUICustomDrawVScroll, public Media::IColorHandler
+		class AVIRLineSelector : public UI::GUICustomDrawVScroll, public Media::ColorHandler
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -30,8 +30,8 @@ namespace SSWR
 			AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt initLineStyle, NN<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRLineSelector();
 
-			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
 
 			void SetPopupMenu(Optional<UI::GUIPopupMenu> mnuLayers);
 

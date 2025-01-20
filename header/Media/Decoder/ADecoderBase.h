@@ -1,15 +1,15 @@
 #ifndef _SM_MEDIA_DECODER_ADECODERBASE
 #define _SM_MEDIA_DECODER_ADECODERBASE
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
 	namespace Decoder
 	{
-		class ADecoderBase : public IAudioSource
+		class ADecoderBase : public AudioSource
 		{
 		protected:
-			Optional<Media::IAudioSource> sourceAudio;
+			Optional<Media::AudioSource> sourceAudio;
 		public:
 			ADecoderBase();
 			virtual ~ADecoderBase();

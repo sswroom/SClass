@@ -1,11 +1,11 @@
 #ifndef _SM_MEDIA_VFAUDIOSTREAM
 #define _SM_MEDIA_VFAUDIOSTREAM
 #include "Media/VFPManager.h"
-#include "Media/IAudioSource.h"
+#include "Media/AudioSource.h"
 
 namespace Media
 {
-	class VFAudioStream : public IAudioSource
+	class VFAudioStream : public AudioSource
 	{
 	private:
 		NN<Media::VFMediaFile> mfile;

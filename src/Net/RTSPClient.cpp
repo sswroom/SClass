@@ -431,8 +431,8 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::TCPClientFactory> clif, Text
 		Media::MediaFile *mediaFile;
 		NEW_CLASS(mediaFile, Media::MediaFile(url));
 		Data::ArrayListNN<Net::RTPCliChannel> chList;
-		NN<Media::IVideoSource> vid;
-		NN<Media::IAudioSource> aud;
+		NN<Media::VideoSource> vid;
+		NN<Media::AudioSource> aud;
 		i = 0;
 		j = sdp->GetMediaCount();
 		while (i < j)
@@ -601,7 +601,7 @@ Bool Net::RTSPClient::Deinit(NN<Net::RTPCliChannel> rtpChannel)
 	return true;
 }
 
-Net::IRTPController *Net::RTSPClient::Clone() const
+Net::RTPController *Net::RTSPClient::Clone() const
 {
 	Net::RTSPClient *cli;
 	NEW_CLASS(cli, Net::RTSPClient(this));

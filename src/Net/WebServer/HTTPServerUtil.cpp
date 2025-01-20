@@ -82,7 +82,7 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CStringNN umime)
 	return false;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NN<IO::Stream> fs)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NN<IO::Stream> fs)
 {
 	UOSInt i;
 	UOSInt j;
@@ -189,7 +189,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 	return succ;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, UnsafeArray<const UInt8> buff)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, UInt64 contLeng, UnsafeArray<const UInt8> buff)
 {
 	UOSInt i;
 	UOSInt j;
@@ -272,12 +272,12 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 	return succ;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, Text::CStringNN cont)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN mime, Text::CStringNN cont)
 {
 	return SendContent(req, resp, mime, cont.leng, cont.v);
 }
 
-Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN fileName, OSInt cacheAge)
+Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN fileName, OSInt cacheAge)
 {
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime t;

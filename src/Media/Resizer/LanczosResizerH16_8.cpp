@@ -4,7 +4,7 @@
 #include <windows.h>
 #include "Sync/Event.h"
 #include "MyMemory.h"
-#include "Media/IImgResizer.h"
+#include "Media/ImageResizer.h"
 #include "Media/Resizer/LanczosResizerH16_8.h"
 
 #define PI 3.141592653589793

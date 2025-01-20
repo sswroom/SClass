@@ -30,7 +30,7 @@ Media::ColorManager *DotNet::DNColorManager::GetColorMgr()
 
 void DotNet::DNColorManager::RGBUpdated()
 {
-	const Media::IColorHandler::RGBPARAM *rgb = this->colorMgr->GetRGBParam();
+	const Media::ColorHandler::RGBPARAM *rgb = this->colorMgr->GetRGBParam();
 	System::Int32 i = this->hdlrs->Count;
 	while (i-- > 0)
 	{
@@ -40,7 +40,7 @@ void DotNet::DNColorManager::RGBUpdated()
 
 void DotNet::DNColorManager::YUVUpdated()
 {
-	NN<const Media::IColorHandler::YUVPARAM> yuv = this->colorMgr->GetYUVParam();
+	NN<const Media::ColorHandler::YUVPARAM> yuv = this->colorMgr->GetYUVParam();
 	System::Int32 i = this->hdlrs->Count;
 	while (i-- > 0)
 	{

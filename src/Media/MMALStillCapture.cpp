@@ -283,7 +283,7 @@ void Media::MMALStillCapture::DeviceEnd()
 	}
 }
 
-Bool Media::MMALStillCapture::CapturePhoto(Media::IPhotoCapture::PhotoFormat *fmt, IO::Stream *stm)
+Bool Media::MMALStillCapture::CapturePhoto(Media::PhotoCapturer::PhotoFormat *fmt, IO::Stream *stm)
 {
 	MMALInfo *info =  (MMALInfo*)this->classData;
 	if (info->connection == 0)

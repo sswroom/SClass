@@ -3,7 +3,7 @@
 #include "IO/EXEFile.h"
 #include "IO/FileCheck.h"
 #include "IO/FileStream.h"
-#include "IO/ISectorData.h"
+#include "IO/SectorData.h"
 #include "IO/MemoryStream.h"
 #include "IO/ModemController.h"
 #include "IO/Path.h"
@@ -155,7 +155,7 @@ Optional<IO::Stream> SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> 
 	return retStm;
 }
 
-void SSWR::AVIRead::AVIRCore::OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
+void SSWR::AVIRead::AVIRCore::OpenHex(NN<IO::StreamData> fd, Optional<IO::FileAnalyse::FileAnalyser> fileAnalyse)
 {
 	NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
 	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
@@ -411,7 +411,7 @@ Int32 SSWR::AVIRead::AVIRCore::GetAudioAPIType()
 	return this->audAPIType;
 }
 
-Optional<Media::IAudioRenderer> SSWR::AVIRead::AVIRCore::BindAudio(Optional<Media::IAudioSource> audSrc)
+Optional<Media::AudioRenderer> SSWR::AVIRead::AVIRCore::BindAudio(Optional<Media::AudioSource> audSrc)
 {
 	return this->audDevice.BindAudio(audSrc);
 }

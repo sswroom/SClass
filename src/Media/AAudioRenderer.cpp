@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Media/AAudioRenderer.h"
-#include "Media/IMediaSource.h"
-#include "Media/IAudioSource.h"
+#include "Media/MediaSource.h"
+#include "Media/AudioSource.h"
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
 #include "Sync/ThreadUtil.h"
@@ -301,7 +301,7 @@ Bool Media::AAudioRenderer::IsError()
 	return clsData->builder == 0;
 }
 
-Bool Media::AAudioRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::AAudioRenderer::BindAudio(Media::AudioSource *audsrc)
 {
 	Media::AudioFormat fmt;
 	if (playing)

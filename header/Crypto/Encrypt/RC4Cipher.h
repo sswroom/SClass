@@ -1,12 +1,12 @@
 #ifndef _SM_CRYPTO_ENCRYPT_RC4CIPHER
 #define _SM_CRYPTO_ENCRYPT_RC4CIPHER
-#include "Crypto/Encrypt/ICrypto.h"
+#include "Crypto/Encrypt/Encryption.h"
 
 namespace Crypto
 {
 	namespace Encrypt
 	{
-		class RC4Cipher : public ICrypto
+		class RC4Cipher : public Encryption
 		{
 		private:
 			UInt8 s[256];

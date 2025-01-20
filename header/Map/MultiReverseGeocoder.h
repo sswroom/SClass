@@ -3,14 +3,14 @@
 #include "Data/ArrayList.h"
 #include "IO/Writer.h"
 #include "Sync/Mutex.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 
 namespace Map
 {
-	class MultiReverseGeocoder : public Map::IReverseGeocoder
+	class MultiReverseGeocoder : public Map::ReverseGeocoder
 	{
 	private:
-		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
+		Data::ArrayList<Map::ReverseGeocoder *> revGeos;
 		UOSInt nextCoder;
 		IO::Writer *errWriter;
 		Sync::Mutex mut;
@@ -20,7 +20,7 @@ namespace Map
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
+		void AddReverseGeocoder(Map::ReverseGeocoder *revGeo);
 	};
 }
 #endif

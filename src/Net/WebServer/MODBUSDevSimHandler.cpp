@@ -4,7 +4,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/XML.h"
 
-Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.Equals(UTF8STRC("/device")))
 	{

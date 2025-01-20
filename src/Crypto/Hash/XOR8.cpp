@@ -21,7 +21,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::XOR8::GetName(UnsafeArray<UTF8Char> sbuff) c
 	return Text::StrConcatC(sbuff, UTF8STRC("XOR8"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::XOR8::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::XOR8::Clone() const
 {
 	NN<Crypto::Hash::XOR8> xor8;
 	NEW_CLASSNN(xor8, Crypto::Hash::XOR8(*this));

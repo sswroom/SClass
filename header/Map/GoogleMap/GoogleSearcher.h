@@ -2,7 +2,7 @@
 #define _SM_MAP_GOOGLEMAP_GOOGLESEARCHER
 #include "Data/DateTime.h"
 #include "IO/Writer.h"
-#include "Map/IReverseGeocoder.h"
+#include "Map/ReverseGeocoder.h"
 #include "Net/SSLEngine.h"
 #include "Net/TCPClientFactory.h"
 #include "Sync/Mutex.h"
@@ -11,7 +11,7 @@ namespace Map
 {
 	namespace GoogleMap
 	{
-		class GoogleSearcher : public Map::IReverseGeocoder
+		class GoogleSearcher : public Map::ReverseGeocoder
 		{
 		private:
 			Optional<Text::String> gooKey;

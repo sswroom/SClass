@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Media/IAudioSource.h"
-#include "Media/IMediaSource.h"
+#include "Media/AudioSource.h"
+#include "Media/MediaSource.h"
 #include "Media/OpenSLESRenderer.h"
 #include "Media/RefClock.h"
 #include "Sync/Event.h"
@@ -293,7 +293,7 @@ Bool Media::OpenSLESRenderer::IsError()
 	return clsData->builder == 0;
 }
 
-Bool Media::OpenSLESRenderer::BindAudio(Media::IAudioSource *audsrc)
+Bool Media::OpenSLESRenderer::BindAudio(Media::AudioSource *audsrc)
 {
 	Media::AudioFormat fmt;
 	if (playing)

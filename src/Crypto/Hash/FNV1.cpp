@@ -22,7 +22,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::FNV1::GetName(UnsafeArray<UTF8Char> sbuff) c
 	return Text::StrConcatC(sbuff, UTF8STRC("FNV1"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::FNV1::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::FNV1::Clone() const
 {
 	NN<Crypto::Hash::FNV1> fnv1;
 	NEW_CLASSNN(fnv1, Crypto::Hash::FNV1());

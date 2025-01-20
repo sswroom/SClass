@@ -17,7 +17,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 	UInt8 hashBuff[64];
 	UOSInt i;
 	UOSInt j;
-	NN<Text::IMIMEObj> subObj;
+	NN<Text::MIMEObject> subObj;
 	NN<Text::MIMEObj::MIMEMessage> part;
 	this->obj = obj;
 
@@ -49,7 +49,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 					{
 						NN<Crypto::Cert::X509PKCS7> pkcs7 = NN<Crypto::Cert::X509PKCS7>::ConvertFrom(x509);
 						Crypto::Hash::HashType hashType = pkcs7->GetDigestType();
-						NN<Crypto::Hash::IHash> hash;
+						NN<Crypto::Hash::HashAlgorithm> hash;
 						if (!pkcs7->GetMessageDigest(dataSize).SetTo(data))
 						{
 							this->txtSignState->SetText(CSTR("Message Digest not found"));

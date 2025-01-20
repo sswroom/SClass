@@ -14,7 +14,7 @@ Net::WebServer::WebSocketHandler::~WebSocketHandler()
 
 }
 
-Bool Net::WebServer::WebSocketHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebSocketHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
 	NN<Text::String> upgrade;
 	NN<Text::String> conn;

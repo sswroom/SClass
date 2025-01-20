@@ -3,7 +3,7 @@
 #include "Stdafx.h"
 #include "Data/DateTimeUtil.h"
 #include "Data/Duration.h"
-#include "Data/IComparable.h"
+#include "Data/Comparable.h"
 #include "Text/PString.h"
 
 #define DATETIME_TICK_PER_SECOND 1000
@@ -13,7 +13,7 @@
 namespace Data
 {
 	class Timestamp;
-	class DateTime// : public Data::IComparable
+	class DateTime// : public Data::Comparable
 	{
 	private:
 		enum class TimeType

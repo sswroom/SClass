@@ -19,9 +19,9 @@ Media::Decoder::VideoDecoderFinder::~VideoDecoderFinder()
 {
 }
 
-Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::IVideoSource> vsrc)
+Media::VideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::VideoSource> vsrc)
 {
-	NN<Media::IVideoSource> decoder;
+	NN<Media::VideoSource> decoder;
 	Media::FrameInfo frameInfo;
 	Media::FrameInfo decFrameInfo;
 	UInt32 frameRateNorm;

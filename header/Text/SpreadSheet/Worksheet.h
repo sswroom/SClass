@@ -7,7 +7,7 @@
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/SpreadSheet/CellStyle.h"
-#include "Text/SpreadSheet/IStyleCtrl.h"
+#include "Text/SpreadSheet/SpreadSheetStyleCtrl.h"
 #include "Text/SpreadSheet/OfficeChart.h"
 
 namespace Text
@@ -90,15 +90,15 @@ namespace Text
 			Optional<CellData> GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
 			void FreeRowData(NN<RowData> data);
 			void FreeCellData(NN<CellData> data);
-			NN<RowData> CloneRow(NN<RowData> row, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
-			NN<CellData> CloneCell(NN<CellData> cell, NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
+			NN<RowData> CloneRow(NN<RowData> row, NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl);
+			NN<CellData> CloneCell(NN<CellData> cell, NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl);
 			static void __stdcall FreeDrawing(NN<WorksheetDrawing> drawing);
 		public:
 			Worksheet(NotNullPtr<Text::String> name);
 			Worksheet(Text::CStringNN name);
 			~Worksheet();
 
-			NotNullPtr<Worksheet> Clone(NN<const IStyleCtrl> srcCtrl, NN<IStyleCtrl> newCtrl);
+			NotNullPtr<Worksheet> Clone(NN<const SpreadSheetStyleCtrl> srcCtrl, NN<SpreadSheetStyleCtrl> newCtrl);
 
 			void SetOptions(UInt16 options);
 			UInt16 GetOptions();
@@ -136,8 +136,8 @@ namespace Text
 			Bool SetCellInt64(UOSInt row, UOSInt col, Int64 val);
 			Bool SetCellEmpty(UOSInt row, UOSInt col);
 			Bool SetCellStyle(UOSInt row, UOSInt col, Optional<CellStyle> style);
-			Bool SetCellStyleHAlign(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, HAlignment hAlign);
-			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, UInt32 color, BorderType borderType);
+			Bool SetCellStyleHAlign(UOSInt row, UOSInt col, NN<SpreadSheetStyleCtrl> wb, HAlignment hAlign);
+			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<SpreadSheetStyleCtrl> wb, UInt32 color, BorderType borderType);
 			Bool SetCellURL(UOSInt row, UOSInt col, Optional<Text::String> url);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
 			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val);

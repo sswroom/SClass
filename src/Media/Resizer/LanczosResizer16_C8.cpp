@@ -449,7 +449,7 @@ void Media::Resizer::LanczosResizer16_C8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
+Media::Resizer::LanczosResizer16_C8::LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::ImageResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
 	if (this->nThread > 6)
@@ -757,11 +757,11 @@ Bool Media::Resizer::LanczosResizer16_C8::Resize(NN<const Media::StaticImage> sr
 	}
 }
 
-void Media::Resizer::LanczosResizer16_C8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::Resizer::LanczosResizer16_C8::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::Resizer::LanczosResizer16_C8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::Resizer::LanczosResizer16_C8::RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam)
 {
 	this->rgbChanged = true;
 }

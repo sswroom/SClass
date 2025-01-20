@@ -152,7 +152,7 @@ Optional<Text::Doc::DocSection> Text::Doc::TextDocument::GetItem(UOSInt index) c
 	return this->items.GetItem(index);
 }
 
-Bool Text::Doc::TextDocument::BeginPrint(NN<Media::IPrintDocument> doc)
+Bool Text::Doc::TextDocument::BeginPrint(NN<Media::PrintDocument> doc)
 {
 	NN<Text::Doc::DocSection> section;
 	Media::PaperSize *paper;
@@ -163,7 +163,7 @@ Bool Text::Doc::TextDocument::BeginPrint(NN<Media::IPrintDocument> doc)
 	section = this->items.GetItemNoCheck(0);
 	NEW_CLASS(paper, Media::PaperSize(section->GetPaperType()));
 	doc->SetNextPagePaperSizeMM(paper->GetWidthMM(), paper->GetHeightMM());
-	doc->SetNextPageOrientation(section->IsLandscape()?Media::IPrintDocument::PageOrientation::Landscape:Media::IPrintDocument::PageOrientation::Portrait);
+	doc->SetNextPageOrientation(section->IsLandscape()?Media::PrintDocument::PageOrientation::Landscape:Media::PrintDocument::PageOrientation::Portrait);
 	DEL_CLASS(paper);
 	return true;
 }
@@ -174,7 +174,7 @@ Bool Text::Doc::TextDocument::PrintPage(NN<Media::DrawImage> printPage)
 	return false;
 }
 
-Bool Text::Doc::TextDocument::EndPrint(NN<Media::IPrintDocument> doc)
+Bool Text::Doc::TextDocument::EndPrint(NN<Media::PrintDocument> doc)
 {
 	/////////////////////////
 	return true;

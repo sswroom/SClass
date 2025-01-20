@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/VideoFilter/UVOffsetFilter.h"
 
-void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 	{
@@ -96,7 +96,7 @@ void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(Data::Duration frameT
 	}
 }
 
-Media::VideoFilter::UVOffsetFilter::UVOffsetFilter(Media::IVideoSource *srcVideo) : Media::VideoFilter::VideoFilterBase(srcVideo)
+Media::VideoFilter::UVOffsetFilter::UVOffsetFilter(Media::VideoSource *srcVideo) : Media::VideoFilter::VideoFilterBase(srcVideo)
 {
 	this->uOfst = 0;
 	this->vOfst = 0;

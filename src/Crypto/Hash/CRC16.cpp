@@ -33,7 +33,7 @@ UnsafeArray<UTF8Char> Crypto::Hash::CRC16::GetName(UnsafeArray<UTF8Char> sbuff) 
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (16-bit)"));
 }
 
-NN<Crypto::Hash::IHash> Crypto::Hash::CRC16::Clone() const
+NN<Crypto::Hash::HashAlgorithm> Crypto::Hash::CRC16::Clone() const
 {
 	NN<Crypto::Hash::CRC16> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC16(this->polynomial));

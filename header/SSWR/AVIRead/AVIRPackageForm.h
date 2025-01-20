@@ -40,7 +40,7 @@ namespace SSWR
 		public:
 			struct ReadSession
 			{
-				Optional<Crypto::Hash::IHash> hash;
+				Optional<Crypto::Hash::HashAlgorithm> hash;
 				Crypto::Hash::HashType currHash;
 				UInt64 fileReadSize;
 				UOSInt fileCnt;

@@ -10,15 +10,15 @@
 #define AMDVENDORID             (1002)
 #define ADL_WARNING_NO_DATA      -100
 
-IO::AMDGPUControl::AMDGPUControl(IO::AMDGPUManager *gpuMgr, void *adapter)
+IO::AMDGPUControl::AMDGPUControl(NN<IO::AMDGPUManager> gpuMgr, AnyType adapter)
 {
-	AdapterInfo *adapt = (AdapterInfo*)adapter;
+	NN<AdapterInfo> adapt = adapter.GetNN<AdapterInfo>();
 	this->gpuMgr = gpuMgr;
 	this->adapter = adapter;
 	this->odrivever = 0;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendSlow((const UTF8Char*)adapt->strAdapterName);
-	this->name = Text::StrCopyNew(sb.ToString()).Ptr();
+	this->name = Text::String::New(sb.ToCString());
 
 	int iOverdriveSupported;
 	int iOverdriveEnabled;
@@ -34,17 +34,17 @@ IO::AMDGPUControl::AMDGPUControl(IO::AMDGPUManager *gpuMgr, void *adapter)
 
 IO::AMDGPUControl::~AMDGPUControl()
 {
-	if (this->name) Text::StrDelNew(this->name);
+	this->name->Release();
 }
 
-const UTF8Char *IO::AMDGPUControl::GetName()
+NN<Text::String> IO::AMDGPUControl::GetName()
 {
 	return this->name;
 }
 
-Bool IO::AMDGPUControl::GetTemperature(Double *temp)
+Bool IO::AMDGPUControl::GetTemperature(OutParam<Double> temp)
 {
-	AdapterInfo *adapter = (AdapterInfo*)this->adapter;
+	NN<AdapterInfo> adapter = this->adapter.GetNN<AdapterInfo>();
 	if (this->odrivever == 5)
 	{
 		ADLThermalControllerInfo termalControllerInfo;
@@ -68,7 +68,7 @@ Bool IO::AMDGPUControl::GetTemperature(Double *temp)
 					return false;
 				}
 
-				*temp = adlTemperature.iTemperature * 0.001;
+				temp.Set(adlTemperature.iTemperature * 0.001);
 				return true;
 			}
 			i++;
@@ -86,22 +86,22 @@ Bool IO::AMDGPUControl::GetTemperature(Double *temp)
 		int iTemp;
 		if (this->gpuMgr->Overdrive6_Temperature_Get(adapter->iAdapterIndex, &iTemp) != ADL_OK)
 			return false;
-		*temp = iTemp * 0.001;
+		temp.Set(iTemp * 0.001);
 		return true;
 	}
 	return false;
 }
 
-Bool IO::AMDGPUControl::GetCoreClock(Double *mhz)
+Bool IO::AMDGPUControl::GetCoreClock(OutParam<Double> mhz)
 {
-	AdapterInfo *adapter = (AdapterInfo*)this->adapter;
+	NN<AdapterInfo> adapter = this->adapter.GetNN<AdapterInfo>();
 	if (this->odrivever == 5)
 	{
 		ADLPMActivity activity;
 		activity.iSize = sizeof(ADLPMActivity);
 		if (this->gpuMgr->Overdrive5_CurrentActivity_Get(adapter->iAdapterIndex, &activity) == ADL_OK)
 		{
-			*mhz = activity.iEngineClock * 0.01;
+			mhz.Set(activity.iEngineClock * 0.01);
 			return true;
 		}
 	}
@@ -110,23 +110,23 @@ Bool IO::AMDGPUControl::GetCoreClock(Double *mhz)
 		ADLOD6CurrentStatus currentStatus;
 		if (this->gpuMgr->Overdrive6_CurrentStatus_Get(adapter->iAdapterIndex, &currentStatus) == ADL_OK)
 		{
-			*mhz = currentStatus.iEngineClock * 0.01;
+			mhz.Set(currentStatus.iEngineClock * 0.01);
 			return true;
 		}
 	}
 	return false;
 }
 
-Bool IO::AMDGPUControl::GetMemoryClock(Double *mhz)
+Bool IO::AMDGPUControl::GetMemoryClock(OutParam<Double> mhz)
 {
-	AdapterInfo *adapter = (AdapterInfo*)this->adapter;
+	NN<AdapterInfo> adapter = this->adapter.GetNN<AdapterInfo>();
 	if (this->odrivever == 5)
 	{
 		ADLPMActivity activity;
 		activity.iSize = sizeof(ADLPMActivity);
 		if (this->gpuMgr->Overdrive5_CurrentActivity_Get(adapter->iAdapterIndex, &activity) == ADL_OK)
 		{
-			*mhz = activity.iMemoryClock * 0.01;
+			mhz.Set(activity.iMemoryClock * 0.01);
 			return true;
 		}
 	}
@@ -135,23 +135,23 @@ Bool IO::AMDGPUControl::GetMemoryClock(Double *mhz)
 		ADLOD6CurrentStatus currentStatus;
 		if (this->gpuMgr->Overdrive6_CurrentStatus_Get(adapter->iAdapterIndex, &currentStatus) == ADL_OK)
 		{
-			*mhz = currentStatus.iMemoryClock * 0.01;
+			mhz.Set(currentStatus.iMemoryClock * 0.01);
 			return true;
 		}
 	}
 	return false;
 }
 
-Bool IO::AMDGPUControl::GetVoltage(Double *volt)
+Bool IO::AMDGPUControl::GetVoltage(OutParam<Double> volt)
 {
-	AdapterInfo *adapter = (AdapterInfo*)this->adapter;
+	NN<AdapterInfo> adapter = this->adapter.GetNN<AdapterInfo>();
 	if (this->odrivever == 5)
 	{
 		ADLPMActivity activity;
 		activity.iSize = sizeof(ADLPMActivity);
 		if (this->gpuMgr->Overdrive5_CurrentActivity_Get(adapter->iAdapterIndex, &activity) == ADL_OK)
 		{
-			*volt = activity.iVddc * 0.001;
+			volt.Set(activity.iVddc * 0.001);
 			return true;
 		}
 	}

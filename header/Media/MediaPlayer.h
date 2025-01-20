@@ -1,15 +1,18 @@
 #ifndef _SM_MEDIA_MEDIAPLAYER
 #define _SM_MEDIA_MEDIAPLAYER
 #include "Media/AudioDevice.h"
-#include "Media/IMediaPlayer.h"
+#include "Media/PBControl.h"
+#include "Media/MediaFile.h"
 #include "Media/VideoRenderer.h"
 #include "Media/Decoder/AudioDecoderFinder.h"
 #include "Media/Decoder/VideoDecoderFinder.h"
 
 namespace Media
 {
-	class MediaPlayer : public Media::IMediaPlayer
+	class MediaPlayer : public Media::PBControl
 	{
+	public:
+		typedef void (CALLBACKFUNC PBEndHandler)(AnyType userObj);
 	private:
 		Optional<Media::AudioDevice> audioDev;
 		Optional<Media::VideoRenderer> vrenderer;
@@ -17,12 +20,12 @@ namespace Media
 		Media::Decoder::AudioDecoderFinder adecoders;
 		Media::RefClock clk;
 
-		Optional<Media::IAudioRenderer> arenderer;
-		Media::IAudioSource *currADecoder;
+		Optional<Media::AudioRenderer> arenderer;
+		Media::AudioSource *currADecoder;
 		Optional<Media::MediaFile> currFile;
-		Media::IAudioSource *currAStm;
-		Media::IVideoSource *currVDecoder;
-		Media::IVideoSource *currVStm;
+		Media::AudioSource *currAStm;
+		Media::VideoSource *currVDecoder;
+		Media::VideoSource *currVStm;
 		Media::ChapterInfo *currChapInfo;
 
 		Bool playing;
@@ -40,7 +43,7 @@ namespace Media
 		static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
 
 		void ReleaseAudio();
-		Bool SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 syncTime);
+		Bool SwitchAudioSource(NN<Media::AudioSource> asrc, Int32 syncTime);
 	public:
 		MediaPlayer(NN<Media::VideoRenderer> vrenderer, Optional<Media::AudioDevice> audioDev);
 		virtual ~MediaPlayer();

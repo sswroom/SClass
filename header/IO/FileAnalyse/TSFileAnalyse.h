@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_TSFILEANALYSE
 #include "Data/ArrayList.h"
 #include "IO/StreamData.h"
-#include "IO/FileAnalyse/IFileAnalyse.h"
+#include "IO/FileAnalyse/FileAnalyser.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -10,7 +10,7 @@ namespace IO
 {
 	namespace FileAnalyse
 	{
-		class TSFileAnalyse : public IO::FileAnalyse::IFileAnalyse
+		class TSFileAnalyse : public IO::FileAnalyse::FileAnalyser
 		{
 		private:
 			IO::StreamData *fd;

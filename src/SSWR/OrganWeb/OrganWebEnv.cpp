@@ -2516,10 +2516,10 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 				if (pobj->GetParserType() == IO::ParserType::MediaFile)
 				{
 					NN<Media::MediaFile> mediaFile = NN<Media::MediaFile>::ConvertFrom(pobj);
-					NN<Media::IMediaSource> msrc;
+					NN<Media::MediaSource> msrc;
 					if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 					{
-						graphImg = Media::FrequencyGraph::CreateGraph(this->eng, NN<Media::IAudioSource>::ConvertFrom(msrc), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+						graphImg = Media::FrequencyGraph::CreateGraph(this->eng, NN<Media::AudioSource>::ConvertFrom(msrc), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
 						if (graphImg.NotNull())
 						{
 							valid = true;
@@ -3585,7 +3585,7 @@ void SSWR::OrganWeb::OrganWebEnv::PeakFreeAll(NN<Data::ArrayListNN<PeakInfo>> pe
 	peaks->Clear();
 }
 
-Optional<IO::ConfigFile> SSWR::OrganWeb::OrganWebEnv::LangGet(NN<Net::WebServer::IWebRequest> req)
+Optional<IO::ConfigFile> SSWR::OrganWeb::OrganWebEnv::LangGet(NN<Net::WebServer::WebRequest> req)
 {
 	Text::StringBuilderUTF8 sb;
 	NN<IO::ConfigFile> lang;

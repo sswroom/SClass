@@ -1,22 +1,22 @@
 #ifndef _SM_IO_PROTOHDLR_PROTOJMVL01HANDLER
 #define _SM_IO_PROTOHDLR_PROTOJMVL01HANDLER
 #include "Crypto/Hash/CRC16R.h"
-#include "IO/IProtocolHandler.h"
+#include "IO/ProtocolHandler.h"
 #include "Sync/Mutex.h"
 
 namespace IO
 {
 	namespace ProtoHdlr
 	{
-		class ProtoJMVL01Handler : public IO::IProtocolHandler
+		class ProtoJMVL01Handler : public IO::ProtocolHandler
 		{
 		private:
-			NN<IO::IProtocolHandler::DataListener> listener;
+			NN<IO::ProtocolHandler::DataListener> listener;
 			UInt64 devId;
 			Crypto::Hash::CRC16R crc;
 
 		public:
-			ProtoJMVL01Handler(NN<IO::IProtocolHandler::DataListener> listener, UInt64 devId);
+			ProtoJMVL01Handler(NN<IO::ProtocolHandler::DataListener> listener, UInt64 devId);
 			virtual ~ProtoJMVL01Handler();
 
 			virtual AnyType CreateStreamData(NN<IO::Stream> stm);

@@ -3,17 +3,17 @@
 #include "Data/ArrayList.h"
 #include "IO/ParsedObject.h"
 #include "Math/Unit/Distance.h"
-#include "Media/IPrintDocument.h"
+#include "Media/PrintDocument.h"
 #include "Media/VectorGraph.h"
 
 namespace Media
 {
-	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Media::VectorGraph*>, public Media::IPrintHandler
+	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Media::VectorGraph*>, public Media::PrintHandler
 	{
 	private:
 		UOSInt currGraph;
 		Data::ArrayList<Media::VectorGraph*> *items;
-		Optional<Media::IPrintDocument> currDoc;
+		Optional<Media::PrintDocument> currDoc;
 		NN<Media::DrawEngine> refEng;
 		UInt32 srid;
 
@@ -52,9 +52,9 @@ namespace Media
 		virtual UOSInt GetCount() const;
 		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
 
-		virtual Bool BeginPrint(NN<IPrintDocument> doc);
+		virtual Bool BeginPrint(NN<PrintDocument> doc);
 		virtual Bool PrintPage(NN<Media::DrawImage> printPage); //return has more pages 
-		virtual Bool EndPrint(NN<IPrintDocument> doc);
+		virtual Bool EndPrint(NN<PrintDocument> doc);
 
 		virtual IO::ParserType GetParserType() const;
 	};

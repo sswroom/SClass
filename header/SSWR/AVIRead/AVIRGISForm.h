@@ -21,7 +21,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::IMapNavigator, public Media::IPrintHandler
+		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::IMapNavigator, public Media::PrintHandler
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -137,9 +137,9 @@ namespace SSWR
 
 			void UpdateTimeRange();
 
-			virtual Bool BeginPrint(NN<Media::IPrintDocument> doc);
+			virtual Bool BeginPrint(NN<Media::PrintDocument> doc);
 			virtual Bool PrintPage(NN<Media::DrawImage> printPage);
-			virtual Bool EndPrint(NN<Media::IPrintDocument> doc);
+			virtual Bool EndPrint(NN<Media::PrintDocument> doc);
 		};
 	}
 }

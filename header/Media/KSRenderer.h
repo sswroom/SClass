@@ -2,11 +2,11 @@
 #ifndef _SM_MEDIA_KSRENDERER
 #define _SM_MEDIA_KSRENDERER
 #include "Sync/Event.h"
-#include "Media/IAudioRenderer.h"
+#include "Media/AudioRenderer.h"
 
 namespace Media
 {
-	class KSRenderer : public IAudioRenderer
+	class KSRenderer : public AudioRenderer
 	{
 	private:
 		void *pFilter;
@@ -18,7 +18,7 @@ namespace Media
 		Optional<Media::RefClock> clk;
 		Bool threadInit;
 		Optional<Sync::Event> playEvt;
-		Optional<Media::IAudioSource> audsrc;
+		Optional<Media::AudioSource> audsrc;
 		EndNotifier endHdlr;
 		AnyType endHdlrObj;
 
@@ -35,7 +35,7 @@ namespace Media
 		virtual ~KSRenderer();
 
 		virtual Bool IsError();
-		virtual Bool BindAudio(Optional<Media::IAudioSource> audsrc);
+		virtual Bool BindAudio(Optional<Media::AudioSource> audsrc);
 		virtual void AudioInit(Optional<Media::RefClock> clk);
 		virtual void Start();
 		virtual void Stop();

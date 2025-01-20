@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTBINENC_ASCII85ENC
 #define _SM_TEXT_TEXTBINENC_ASCII85ENC
-#include "Text/TextBinEnc/ITextBinEnc.h"
+#include "Text/TextBinEnc/TextBinEnc.h"
 
 namespace Text
 {
 	namespace TextBinEnc
 	{
-		class ASCII85Enc : public Text::TextBinEnc::ITextBinEnc
+		class ASCII85Enc : public Text::TextBinEnc::TextBinEnc
 		{
 		public:
 			ASCII85Enc();

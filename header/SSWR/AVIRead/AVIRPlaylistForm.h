@@ -1,6 +1,5 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRPLAYLISTFORM
 #define _SM_SSWR_AVIREAD_AVIRPLAYLISTFORM
-#include "Media/IMediaPlayer.h"
 #include "Media/MediaPlayer.h"
 #include "Media/Playlist.h"
 #include "SSWR/AVIRead/AVIRCore.h"

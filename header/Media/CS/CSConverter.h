@@ -9,7 +9,7 @@ namespace Media
 {
 	namespace CS
 	{
-		class CSConverter : public Media::IColorHandler
+		class CSConverter : public Media::ColorHandler
 		{
 		protected:
 			Optional<Media::ColorManagerSess> colorSess;

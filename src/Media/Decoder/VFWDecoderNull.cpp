@@ -15,12 +15,12 @@ Bool Media::Decoder::VFWDecoder::GetFCCHandlers(UInt32 fourcc, Data::ArrayListUI
 	return true;
 }
 
-void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
+void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UnsafeArray<UnsafeArray<UInt8>> imgData, UOSInt dataSize, Media::VideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::VideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 
 }
 
-Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::VideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->sourceVideo = 0;
 	this->frameRateNorm = 0;
@@ -110,13 +110,13 @@ void Media::Decoder::VFWDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType us
 	return this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-void Media::Decoder::VFWDecoder::OnFrameChanged(Media::IVideoSource::FrameChange fc)
+void Media::Decoder::VFWDecoder::OnFrameChanged(Media::VideoSource::FrameChange fc)
 {
-	if (fc == Media::IVideoSource::FC_PAR)
+	if (fc == Media::VideoSource::FC_PAR)
 	{
 		this->frameChg = true;
 	}
-	else if (fc == Media::IVideoSource::FC_ENDPLAY)
+	else if (fc == Media::VideoSource::FC_ENDPLAY)
 	{
 	}
 }
