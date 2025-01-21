@@ -142,10 +142,10 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = nnsrcImg->info.color.GetRAWICC();
-				if (iccBuff)
+				UnsafeArray<const UInt8> iccBuff;
+				if (nnsrcImg->info.color.GetRAWICC().SetTo(iccBuff))
 				{
-					UOSInt iccLeng = ReadMUInt32(iccBuff);
+					UOSInt iccLeng = ReadMUInt32(&iccBuff[0]);
 					UInt8 iccHdr[18];
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;

@@ -95,12 +95,12 @@ Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt palSize = 0;
 	if (img->info.storeBPP <= 8)
 		palSize = (UOSInt)4 << img->info.storeBPP;
-	const UInt8 *rawICC = img->info.color.GetRAWICC();
 	UOSInt iccSize = 0;
-	if (rawICC)
+	UnsafeArray<const UInt8> rawICC;
+	if (img->info.color.GetRAWICC().SetTo(rawICC))
 	{
 		hdrSize = 124;
-		iccSize = ReadMUInt32(rawICC);
+		iccSize = ReadMUInt32(&rawICC[0]);
 		WriteInt32(&buff[70], ReadInt32((const UInt8*)"DEBM")); //bV5CSType = PROFILE_EMBEDDED
 		WriteInt32(&buff[74], 0);
 		WriteInt32(&buff[78], 0);

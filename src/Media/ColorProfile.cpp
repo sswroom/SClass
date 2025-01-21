@@ -522,9 +522,10 @@ Media::ColorProfile::ColorProfile(const ColorProfile &profile)
 
 Media::ColorProfile::~ColorProfile()
 {
-	if (this->rawICC)
+	UnsafeArray<const UInt8> rawICC;
+	if (this->rawICC.SetTo(rawICC))
 	{
-		MemFree((UInt8*)this->rawICC);
+		MemFreeArr(rawICC);
 		this->rawICC = 0;
 	}
 }
@@ -824,10 +825,11 @@ void Media::ColorProfile::ToString(NN<Text::StringBuilderUTF8> sb) const
 	Text::SBAppendF64(sb, primaries->w.y);
 	sb->AppendC(UTF8STRC("\r\n"));
 
-	if (this->rawICC)
+	UnsafeArray<const UInt8> rawICC;
+	if (this->rawICC.SetTo(rawICC))
 	{
 		NN<Media::ICCProfile> icc;
-		if (Media::ICCProfile::Parse(Data::ByteArrayR(rawICC, ReadMUInt32(this->rawICC))).SetTo(icc))
+		if (Media::ICCProfile::Parse(Data::ByteArrayR(rawICC, ReadMUInt32(&rawICC[0]))).SetTo(icc))
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("ICC Profile:\r\n"));
@@ -837,23 +839,24 @@ void Media::ColorProfile::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-void Media::ColorProfile::SetRAWICC(const UInt8 *iccData)
+void Media::ColorProfile::SetRAWICC(UnsafeArrayOpt<const UInt8> iccData)
 {
-	if (this->rawICC)
+	UnsafeArray<const UInt8> icc;
+	if (this->rawICC.SetTo(icc))
 	{
-		MemFree((UInt8*)this->rawICC);
+		MemFreeArr(icc);
 		this->rawICC = 0;
 	}
-	if (iccData)
+	if (iccData.SetTo(icc))
 	{
-		UOSInt leng = ReadMUInt32(iccData);
-		UInt8 *newICC = MemAlloc(UInt8, leng);
-		MemCopyNO(newICC, iccData, leng);
-		this->rawICC = newICC;
+		UOSInt leng = ReadMUInt32(&icc[0]);
+		UnsafeArray<UInt8> newICC = MemAllocArr(UInt8, leng);
+		MemCopyNO(newICC.Ptr(), icc.Ptr(), leng);
+		this->rawICC = UnsafeArray<const UInt8>(newICC);
 	}
 }
 
-const UInt8 *Media::ColorProfile::GetRAWICC() const
+UnsafeArrayOpt<const UInt8> Media::ColorProfile::GetRAWICC() const
 {
 	return this->rawICC;
 }
@@ -1021,45 +1024,45 @@ Text::CStringNN Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType 
 	}
 }
 
-void Media::ColorProfile::GetYUVConstants(YUVType yuvType, Double *Kr, Double *Kb)
+void Media::ColorProfile::GetYUVConstants(YUVType yuvType, OutParam<Double> Kr, OutParam<Double> Kb)
 {
 	switch (yuvType & Media::ColorProfile::YUVT_MASK)
 	{
 	case Media::ColorProfile::YUVT_UNKNOWN:
 	case Media::ColorProfile::YUVT_BT601:
 	default:
-		*Kr = 0.2985;
-		*Kb = 0.1135;
+		Kr.Set(0.2985);
+		Kb.Set(0.1135);
 		break;
 	case Media::ColorProfile::YUVT_BT709:
-		*Kr = 0.2126;
-		*Kb = 0.0722;
+		Kr.Set(0.2126);
+		Kb.Set(0.0722);
 		break;
 	case Media::ColorProfile::YUVT_FCC:
-		*Kr = 0.30;
-		*Kb = 0.11;
+		Kr.Set(0.30);
+		Kb.Set(0.11);
 		break;
 	case Media::ColorProfile::YUVT_BT470BG:
-		*Kr = 0.299;
-		*Kb = 0.114;
+		Kr.Set(0.299);
+		Kb.Set(0.114);
 		break;
 	case Media::ColorProfile::YUVT_SMPTE170M:
-		*Kr = 0.299;
-		*Kb = 0.114;
+		Kr.Set(0.299);
+		Kb.Set(0.114);
 		break;
 	case Media::ColorProfile::YUVT_SMPTE240M:
-		*Kr = 0.212;
-		*Kb = 0.087;
+		Kr.Set(0.212);
+		Kb.Set(0.087);
 		break;
 	case Media::ColorProfile::YUVT_BT2020:
-		*Kr = 0.2627;
-		*Kb = 0.0593;
+		Kr.Set(0.2627);
+		Kb.Set(0.0593);
 		break;
 	}
 }
 
 
-void Media::ColorProfile::YUV2RGB(YUVType yuvType, Double y, Double u, Double v, Double *r, Double *g, Double *b)
+void Media::ColorProfile::YUV2RGB(YUVType yuvType, Double y, Double u, Double v, OutParam<Double> r, OutParam<Double> g, OutParam<Double> b)
 {
 	Double Kr;
 	Double Kb;
@@ -1068,18 +1071,18 @@ void Media::ColorProfile::YUV2RGB(YUVType yuvType, Double y, Double u, Double v,
 	Double Kc2;
 	Double Kc3;
 	Double Kc4;
-	GetYUVConstants(yuvType, &Kr, &Kb);
+	GetYUVConstants(yuvType, Kr, Kb);
 	Kg = 1 - Kr - Kb;
 	Kc1 = (1 - Kr) / 0.5;
 	Kc2 = -(2 * Kr - 2 * Kr * Kr) / Kg;
 	Kc3 = -(2 * Kb - 2 * Kb * Kb) / Kg;
 	Kc4 = (1 - Kb) / 0.5;
-	*r = y + Kc1 * v;
-	*g = y + Kc2 * u + Kc3 * v;
-	*b = y + Kc4 * u;
+	r.Set(y + Kc1 * v);
+	g.Set(y + Kc2 * u + Kc3 * v);
+	b.Set(y + Kc4 * u);
 }
 
-void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB)
+void Media::ColorProfile::RGB2RGB(NN<Media::ColorProfile> srcColor, NN<Media::ColorProfile> destColor, Double srcR, Double srcG, Double srcB, OutParam<Double> destR, OutParam<Double> destG, OutParam<Double> destB)
 {
 	NN<Media::CS::TransferFunc> func1r;
 	NN<Media::CS::TransferFunc> func1g;
@@ -1105,9 +1108,9 @@ void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorPro
 	v1 = func1r->InverseTransfer(srcR);
 	v2 = func1g->InverseTransfer(srcG);
 	v3 = func1b->InverseTransfer(srcB);
-	*destR = func2r->ForwardTransfer(mat.vec[0].val[0] * v1 + mat.vec[0].val[1] * v2 + mat.vec[0].val[2] * v3);
-	*destG = func2g->ForwardTransfer(mat.vec[1].val[0] * v1 + mat.vec[1].val[1] * v2 + mat.vec[1].val[2] * v3);
-	*destB = func2b->ForwardTransfer(mat.vec[2].val[0] * v1 + mat.vec[2].val[1] * v2 + mat.vec[2].val[2] * v3);
+	destR.Set(func2r->ForwardTransfer(mat.vec[0].val[0] * v1 + mat.vec[0].val[1] * v2 + mat.vec[0].val[2] * v3));
+	destG.Set(func2g->ForwardTransfer(mat.vec[1].val[0] * v1 + mat.vec[1].val[1] * v2 + mat.vec[1].val[2] * v3));
+	destB.Set(func2b->ForwardTransfer(mat.vec[2].val[0] * v1 + mat.vec[2].val[1] * v2 + mat.vec[2].val[2] * v3));
 	func1r.Delete();
 	func1g.Delete();
 	func1b.Delete();

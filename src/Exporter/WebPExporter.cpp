@@ -147,11 +147,11 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		data.bytes = vp8;
 		data.size = vp8len;
 		WebPMuxSetImage(mux, &data, 0);
-		const UInt8 *icc = img->info.color.GetRAWICC();
-		if (icc)
+		UnsafeArray<const UInt8> icc;
+		if (img->info.color.GetRAWICC().SetTo(icc))
 		{
-			data.bytes = icc;
-			data.size = (size_t)ReadMUInt32(icc);
+			data.bytes = icc.Ptr();
+			data.size = (size_t)ReadMUInt32(&icc[0]);
 			WebPMuxSetChunk(mux, "ICCP", &data, 0);
 		}
 		NN<Media::EXIFData> exif;

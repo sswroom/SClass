@@ -440,7 +440,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Optional<Media::RasterImage> oriImg)
 {
 	NN<Media::RasterImage> nnimg;
-	if (oriImg.SetTo(nnimg) && (!nnimg->exif.IsNull() || nnimg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	if (oriImg.SetTo(nnimg) && (!nnimg->exif.IsNull() || nnimg->info.color.GetRAWICC().NotNull()) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -459,10 +459,10 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = nnimg->info.color.GetRAWICC();
-				if (iccBuff)
+				UnsafeArray<const UInt8> iccBuff;
+				if (nnimg->info.color.GetRAWICC().SetTo(iccBuff))
 				{
-					UOSInt iccLeng = ReadMUInt32(iccBuff);
+					UOSInt iccLeng = ReadMUInt32(&iccBuff[0]);
 					UInt8 iccHdr[18];
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;

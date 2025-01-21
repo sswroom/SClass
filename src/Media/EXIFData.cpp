@@ -1742,7 +1742,7 @@ void Media::EXIFData::AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff)
 	}
 }
 
-void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff)
+void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, UnsafeArray<const UInt8> buff)
 {
 	NN<EXIFItem> item = MemAllocNN(EXIFItem);
 	item->id = id;
@@ -1750,7 +1750,7 @@ void Media::EXIFData::AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff)
 	item->cnt = cnt;
 	item->value = 0;
 	item->dataBuff = MemAlloc(UInt8, cnt);
-	MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), buff, cnt);
+	MemCopyNO(item->dataBuff.GetOpt<UInt8>().OrNull(), buff.Ptr(), cnt);
 
 	if (this->exifMap.Put(id, item).SetTo(item))
 	{

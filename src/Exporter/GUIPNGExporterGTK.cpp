@@ -69,7 +69,6 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		if (srcImg.SetTo(nnimg) && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
 		{
 			UInt8 tmpBuff[64];
-			const UInt8 *iccBuff = nnimg->info.color.GetRAWICC();
 			UInt32 chunkSize;
 			Int32 chunkType;
 			UOSInt i;
@@ -102,9 +101,10 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				else if (chunkType == ReadInt32("IDAT"))
 				{
 					Crypto::Hash::CRC32R crc;
-					if (iccBuff)
+					UnsafeArray<const UInt8> iccBuff;
+					if (nnimg->info.color.GetRAWICC().SetTo(iccBuff))
 					{
-						UInt32 iccSize = ReadMUInt32(iccBuff);
+						UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
 						UInt8 *chunkBuff = MemAlloc(UInt8, iccSize + 32);
 						WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 						Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));

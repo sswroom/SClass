@@ -32,8 +32,8 @@ namespace Data
 			virtual Bool Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff);
 			virtual Bool Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData);
 
-			static UOSInt TestCompress(const UInt8 *srcBuff, UOSInt srcBuffSize, Bool hasHeader);
-			static UOSInt Compress(const UInt8 *srcBuff, UOSInt srcBuffSize, UInt8 *destBuff, Bool hasHeader, CompressionLevel level);
+			static UOSInt TestCompress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, Bool hasHeader);
+			static UOSInt Compress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level);
 		};
 	}
 }

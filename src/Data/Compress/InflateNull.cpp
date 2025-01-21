@@ -22,12 +22,12 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 	return false;
 }
 
-UOSInt Data::Compress::Inflate::TestCompress(const UInt8 *srcBuff, UOSInt srcBuffSize, Bool hasHeader)
+UOSInt Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, Bool hasHeader)
 {
 	return 0;
 }
 
-UOSInt Data::Compress::Inflate::Compress(const UInt8 *srcBuff, UOSInt srcBuffSize, UInt8 *destBuff, Bool hasHeader, CompressionLevel level)
+UOSInt Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level)
 {
 	return 0;
 }

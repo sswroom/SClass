@@ -685,10 +685,10 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sibuff[0] = 2;
 		newExif->AddUInt16(296, 1, sibuff); //ResolutionUnit
 		newExif->Remove(317); //Predictor
-		const UInt8 *rawICC = img->info.color.GetRAWICC();
-		if (rawICC)
+		UnsafeArray<const UInt8> rawICC;
+		if (img->info.color.GetRAWICC().SetTo(rawICC))
 		{
-			newExif->AddOther(34675, ReadMUInt32(rawICC), rawICC);
+			newExif->AddOther(34675, ReadMUInt32(&rawICC[0]), rawICC);
 		}
 		else
 		{

@@ -100,7 +100,7 @@ namespace Media
 		void AddInt32(UInt32 id, UInt64 cnt, const Int32 *buff);
 		void AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff);
 		void AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff);
-		void AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff);
+		void AddOther(UInt32 id, UInt64 cnt, UnsafeArray<const UInt8> buff);
 		void AddSubEXIF(UInt32 id, NN<Media::EXIFData> exif);
 		void AddDouble(UInt32 id, UInt64 cnt, const Double *buff);
 		void AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff);

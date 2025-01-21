@@ -164,7 +164,7 @@ namespace Media
 		Media::CS::TransferParam gtransfer;
 		Media::CS::TransferParam btransfer;
 		Media::ColorProfile::ColorPrimaries primaries;
-		const UInt8 *rawICC;
+		UnsafeArrayOpt<const UInt8> rawICC;
 
 	public:
 		ColorProfile();
@@ -189,15 +189,15 @@ namespace Media
 		NN<const Media::ColorProfile::ColorPrimaries> GetPrimariesRead() const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-		void SetRAWICC(const UInt8 *iccData);
-		const UInt8 *GetRAWICC() const;
+		void SetRAWICC(UnsafeArrayOpt<const UInt8> iccData);
+		UnsafeArrayOpt<const UInt8> GetRAWICC() const;
 
 		static Text::CStringNN YUVTypeGetName(YUVType yuvType);
 		static Text::CStringNN ColorTypeGetName(ColorType colorType);
 		static Text::CStringNN CommonProfileTypeGetName(CommonProfileType cpt);
-		static void GetYUVConstants(YUVType yuvType, Double *kr, Double *kb);
-		static void YUV2RGB(YUVType yuvType, Double y, Double u, Double v, Double *r, Double *g, Double *b);
-		static void RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB);
+		static void GetYUVConstants(YUVType yuvType, OutParam<Double> kr, OutParam<Double> kb);
+		static void YUV2RGB(YUVType yuvType, Double y, Double u, Double v, OutParam<Double> r, OutParam<Double> g, OutParam<Double> b);
+		static void RGB2RGB(NN<Media::ColorProfile> srcColor, NN<Media::ColorProfile> destColor, Double srcR, Double srcG, Double srcB, OutParam<Double> destR, OutParam<Double> destG, OutParam<Double> destB);
 		static void GetConvMatrix(NN<Math::Matrix3> mat, NN<const ColorProfile::ColorPrimaries> srcColor, NN<const ColorProfile::ColorPrimaries> destColor);
 	};
 }

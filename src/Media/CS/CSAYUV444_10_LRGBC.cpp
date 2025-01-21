@@ -131,7 +131,7 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupYUV_RGB13()
 	{
 		yuvType = (Media::ColorProfile::YUVType)(this->yuvType & Media::ColorProfile::YUVT_MASK);
 	}
-	Media::ColorProfile::GetYUVConstants(yuvType, &Kr, &Kb);
+	Media::ColorProfile::GetYUVConstants(yuvType, Kr, Kb);
 	Kg = 1 - Kr - Kb;
 	Kc1 = (1 - Kr) / 0.5;
 	Kc2 = -(2 * Kr - 2 * Kr * Kr) / Kg;

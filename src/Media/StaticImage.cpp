@@ -701,7 +701,7 @@ Bool Media::StaticImage::ToW8()
 				WriteUInt32(&this->pal[i * 4], c);
 				i++;
 			}
-			Media::ColorProfile::GetYUVConstants(this->info.yuvType, &kr, &kb);
+			Media::ColorProfile::GetYUVConstants(this->info.yuvType, kr, kb);
 			kg = 1 - kr - kb;
 			dptr = buff;
 			sptr = this->data;
@@ -739,7 +739,7 @@ Bool Media::StaticImage::ToW8()
 				WriteUInt32(&this->pal[i * 4], c);
 				i++;
 			}
-			Media::ColorProfile::GetYUVConstants(this->info.yuvType, &kr, &kb);
+			Media::ColorProfile::GetYUVConstants(this->info.yuvType, kr, kb);
 			kg = 1 - kr - kb;
 			dptr = buff;
 			sptr = this->data;
@@ -778,7 +778,7 @@ Bool Media::StaticImage::ToW8()
 				i++;
 			}
 			#define SET_DATA_BYTE 	( 	  	pdata,n,val) 		   (*(l_uint8 *)((l_uintptr_t)((l_uint8 *)(pdata) + (n)) ^ 3) = (val))
-			Media::ColorProfile::GetYUVConstants(this->info.yuvType, &kr, &kb);
+			Media::ColorProfile::GetYUVConstants(this->info.yuvType, kr, kb);
 			kg = 1 - kr - kb;
 			dptr = buff;
 			sptr = this->data;

@@ -1546,10 +1546,10 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	crc.GetValue(&hdr[29]);
 	stm->Write(Data::ByteArrayR(hdr, 33));
 
-	const UInt8 *iccBuff = img->info.color.GetRAWICC();
-	if (iccBuff)
+	UnsafeArray<const UInt8> iccBuff;
+	if (img->info.color.GetRAWICC().SetTo(iccBuff))
 	{
-		UInt32 iccSize = ReadMUInt32(iccBuff);
+		UInt32 iccSize = ReadMUInt32(&iccBuff[0]);
 		tmpBuff = MemAlloc(UInt8, iccSize + 35 + 11);
 		*(Int32*)&tmpBuff[4] = *(Int32*)"iCCP";
 		Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));

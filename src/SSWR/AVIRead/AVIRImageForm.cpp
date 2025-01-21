@@ -554,11 +554,11 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(AnyType userObj)
 	NN<Media::RasterImage> currImg;
 	if (me->currImg.SetTo(currImg))
 	{
-		const UInt8 *iccBuff = currImg->info.color.rawICC;
-		if (iccBuff)
+		UnsafeArray<const UInt8> iccBuff;
+		if (currImg->info.color.rawICC.SetTo(iccBuff))
 		{
 			NN<Media::ICCProfile> icc;
-			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff))).SetTo(icc))
+			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(&iccBuff[0]))).SetTo(icc))
 			{
 				NN<SSWR::AVIRead::AVIRICCInfoForm> frm;
 				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
@@ -581,7 +581,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 		sb.AppendC(UTF8STRC("\r\n"));
 		this->imgList->ToValueString(sb);
 		this->txtInfo->SetText(sb.ToCString());
-		if (currImg->info.color.GetRAWICC())
+		if (currImg->info.color.GetRAWICC().NotNull())
 		{
 			this->btnInfoICC->SetEnabled(true);
 		}
