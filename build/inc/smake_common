@@ -82,6 +82,7 @@ console:
 @RSATest
 @X509Test
 @DateTimeTest
+@InflateTest
 @MiscTest
 @SortSpeed
 @CSVFileTest
@@ -282,6 +283,9 @@ X509Test:
 #Data
 DateTimeTest:
 @DateTimeTest.o
+@ConsoleStartup.o
+InflateTest:
+@InflateTest.o
 @ConsoleStartup.o
 MiscTest:
 @MiscTest.o
@@ -1002,6 +1006,7 @@ RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
 RSATest.o: ../../main/CryptoTest/RSATest.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
+InflateTest.o: ../../main/Data/InflateTest.cpp
 MiscTest.o: ../../main/Data/MiscTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 CSVFileTest.o: ../../main/DB/CSVFileTest.cpp
@@ -1560,6 +1565,8 @@ Data/Compress/DeflateStream.h:
 Data/Compress/Inflate.h:
 @?(NO_MINIZ == 0)InflateMiniz.o
 @?(NO_MINIZ > 0)InflateZlib.o
+Data/Compress/Inflater.h:
+@Inflater.o
 Data/Compress/InflateStream.h:
 @?(NO_MINIZ == 0)InflateStreamMiniz.o
 @?(NO_MINIZ > 0)InflateStreamZlib.o

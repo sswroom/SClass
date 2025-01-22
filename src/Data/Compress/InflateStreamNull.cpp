@@ -26,7 +26,7 @@ UOSInt Data::Compress::InflateStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Data::Compress::InflateStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::InflateStream::Write(Data::ByteArrayR buff)
 {
 	return 0;
 }
@@ -47,5 +47,5 @@ Bool Data::Compress::InflateStream::Recover()
 
 IO::StreamType Data::Compress::InflateStream::GetStreamType() const
 {
-	return IO::StreamType::Inflate;
+	return IO::StreamType::InflateStream;
 }

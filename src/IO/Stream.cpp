@@ -146,8 +146,8 @@ Text::CStringNN IO::StreamTypeGetName(StreamType st)
 		return CSTR("FTP Client");
 	case StreamType::StreamData:
 		return CSTR("StreamData");
-	case StreamType::Deflate:
-		return CSTR("Deflate");
+	case StreamType::DeflateStream:
+		return CSTR("DeflateStream");
 	case StreamType::HTTPClient:
 		return CSTR("HTTP Client");
 	case StreamType::TCPBoardcast:
@@ -164,8 +164,8 @@ Text::CStringNN IO::StreamTypeGetName(StreamType st)
 		return CSTR("WebConnection");
 	case StreamType::Hash:
 		return CSTR("Hash");
-	case StreamType::Inflate:
-		return CSTR("Inflate");
+	case StreamType::InflateStream:
+		return CSTR("InflateStream");
 	case StreamType::WriteCache:
 		return CSTR("WriteCache");
 	case StreamType::LZWEnc:
@@ -186,6 +186,8 @@ Text::CStringNN IO::StreamTypeGetName(StreamType st)
 		return CSTR("FileView");
 	case StreamType::SSHTCPChannel:
 		return CSTR("SSHTCPChannel");
+	case StreamType::Inflater:
+		return CSTR("Inflater");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

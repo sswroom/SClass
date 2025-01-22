@@ -164,6 +164,7 @@ $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 InflateNull.o: ../../src/Data/Compress/InflateNull.cpp
 InflateZlib.o: ../../src/Data/Compress/InflateZlib.cpp
 !-lz
+Inflater.o: ../../src/Data/Compress/Inflater.cpp
 InflateStreamMiniz.o: ../../src/Data/Compress/InflateStreamMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 InflateStreamNull.o: ../../src/Data/Compress/InflateStreamNull.cpp

@@ -129,5 +129,5 @@ Bool Data::Compress::InflateStream::Recover()
 
 IO::StreamType Data::Compress::InflateStream::GetStreamType() const
 {
-	return IO::StreamType::Inflate;
+	return IO::StreamType::InflateStream;
 }

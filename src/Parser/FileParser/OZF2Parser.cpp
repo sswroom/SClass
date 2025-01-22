@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 #include "IO/FileStream.h"
 #include "IO/StreamData.h"
 #include "Media/FrameInfo.h"
@@ -87,7 +87,6 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 
 	Data::ByteBuffer imgBuff(4096);
 	Data::ByteBuffer srcBuff(8192);
-	Data::Compress::Inflate inf(false);
 	Data::ByteBuffer scaleTable((scaleCnt + 1) * 4);
 	fd->GetRealData(ReadUInt32(tmpBuff), scaleCnt * 4, scaleTable);
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));
@@ -127,7 +126,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 						fd->GetRealData(thisOfst, nextOfst - thisOfst, srcBuff);
 						if (srcBuff[0] == 0x78 && srcBuff[1] == 0xda)
 						{
-							inf.Decompress(imgBuff, decSize, srcBuff.SubArray(0, nextOfst - thisOfst));
+							Data::Compress::Inflater::DecompressDirect(imgBuff, decSize, srcBuff.SubArray(0, nextOfst - thisOfst), false);
 							if (decSize == 4096)
 							{
 								imgX1 = (OSInt)currX << 6;

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/MemoryDataRef.h"
@@ -550,7 +550,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 	UnsafeArrayOpt<const UTF8Char> currBody;
 	UnsafeArray<const UTF8Char> nncurrBody;
 	UOSInt currBodyLen;
-	NN<Text::String> currBodyType;
+	Optional<Text::String> currBodyType;
 	Optional<Text::String> currUserName;
 	Optional<Text::String> currPassword;
 	Optional<Text::String> currHeaders;
@@ -566,9 +566,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 	sbuff = MemAllocArr(UTF8Char, 65536);
 	while (!thread->IsStopping())
 	{
-		if (me->reqURL.SetTo(currURL) && me->reqBodyType.SetTo(currBodyType) && !me->respChanged)
+		if (me->reqURL.SetTo(currURL) && !me->respChanged)
 		{
 			currBody = me->reqBody;
+			currBodyType = me->reqBodyType;
 			currBodyLen = me->reqBodyLen;
 			currMeth = me->reqMeth;
 			currUserName = me->reqUserName;
@@ -642,11 +643,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 					}
 				}
 
-				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody.SetTo(nncurrBody))
+				NN<Text::String> nncurrBodyType;
+				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody.SetTo(nncurrBody) && currBodyType.SetTo(nncurrBodyType))
 				{
 					sptr = Text::StrUOSInt(sbuff, currBodyLen);
 					cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
-					cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
+					cli->AddHeaderC(CSTR("Content-Type"), nncurrBodyType->ToCString());
 					cli->Write(Data::ByteArrayR(nncurrBody, currBodyLen));
 				}
 
@@ -685,11 +687,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 							cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
 						}
 
-						if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody.SetTo(nncurrBody))
+						if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody.SetTo(nncurrBody) && currBodyType.SetTo(nncurrBodyType))
 						{
 							sptr = Text::StrUOSInt(sbuff, currBodyLen);
 							cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
-							cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
+							cli->AddHeaderC(CSTR("Content-Type"), nncurrBodyType->ToCString());
 							cli->Write(Data::ByteArrayR(nncurrBody, currBodyLen));
 						}
 						if (currHeaders.SetTo(s))
@@ -761,11 +763,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 						if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 						{
 							NN<IO::MemoryStream> mstm2;
-							Data::Compress::Inflate inflate(false);
-							i = 10;
-							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
 							NEW_CLASSNN(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
-							if (inflate.Decompress(mstm2, mdata))
+							Data::Compress::Inflater inflate(mstm2, false);
+							i = 10;
+//							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
+							if (inflate.Write(Data::ByteArrayR(&respData[i], respSize - i - 8)) == respSize - i - 8)
 							{
 								DEL_CLASS(mstm);
 								mstm = mstm2.Ptr();
@@ -830,7 +832,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				MemFreeArr(nncurrBody);
 				currBody = 0;
 			}
-			currBodyType->Release();
+			OPTSTR_DEL(currBodyType);
 			OPTSTR_DEL(currUserName);
 			OPTSTR_DEL(currPassword);
 			OPTSTR_DEL(currHeaders);

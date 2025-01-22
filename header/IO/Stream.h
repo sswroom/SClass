@@ -24,7 +24,7 @@ namespace IO
 		BufferedOutput,
 		FTPClient,
 		StreamData,
-		Deflate,
+		DeflateStream,
 		HTTPClient,
 		TCPBoardcast,
 		BufferedInput,
@@ -33,7 +33,7 @@ namespace IO
 		LZWDec,
 		WebConnection,
 		Hash,
-		Inflate,
+		InflateStream,
 		WriteCache,
 		LZWEnc,
 		RS232GPIO,
@@ -43,7 +43,8 @@ namespace IO
 		WebSocket,
 		Null,
 		FileView,
-		SSHTCPChannel
+		SSHTCPChannel,
+		Inflater
 	};
 	struct StreamReadReq;
 	struct StreamWriteReq;

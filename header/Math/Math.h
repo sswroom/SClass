@@ -41,6 +41,8 @@ Double Math_MyPow(Double x, Double y);
 #define Math_ArcTanh(val) (0.5 * Math_Ln((1 + val) / (1 - val)))
 #define Math_Fix(val) floor(val)
 #define Math_Round(val) ((val) >= 0 ? ((Int32)((val) + 0.5)) : ((Int32)((val) - 0.5)))
+#define Math_Min(val1, val2) ((val1) < (val2))?(val1):(val2)
+#define Math_Max(val1, val2) ((val1) > (val2))?(val1):(val2)
 
 FORCEINLINE Double Math_Sqr(Double v)
 {

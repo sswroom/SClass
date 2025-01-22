@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 #include "IO/MemoryStream.h"
 #include "IO/FileAnalyse/PNGFileAnalyse.h"
 #include "Media/ICCProfile.h"
@@ -239,9 +239,10 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
 			NN<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
-			Data::Compress::Inflate comp(false);
+
 			IO::MemoryStream mstm;
-			if (!comp.Decompress(mstm, stmData))
+			Data::Compress::Inflater istm(mstm, false);
+			if (istm.WriteFromData(stmData, 16384))
 			{
 				NN<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(mstm.GetArray()).SetTo(icc))
@@ -251,6 +252,18 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 					icc.Delete();
 				}
 			}
+
+/*			Data::Compress::Inflate comp(false);
+			if (!comp.Decompress(mstm, stmData))
+			{
+				NN<Media::ICCProfile> icc;
+				if (Media::ICCProfile::Parse(mstm.GetArray()).SetTo(icc))
+				{
+					sb->AppendC(UTF8STRC("\r\n\r\n"));
+					icc->ToString(sb);
+					icc.Delete();
+				}
+			}*/
 			stmData.Delete();
 		}
 	}

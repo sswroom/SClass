@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/ByteTool.h"
-#include "Data/Compress/InflateStream.h"
+#include "Data/Compress/Inflater.h"
 #include "IO/MemoryStream.h"
 #include "IO/WriteCacheStream.h"
 #include "Media/ICCProfile.h"
@@ -2592,7 +2592,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 //	UInt8 filterMeth;
 	UInt8 interlaceMeth = 0;
 	Optional<IO::MemoryStream> mstm = 0;
-	Optional<Data::Compress::InflateStream> cstm = 0;
+	Optional<Data::Compress::Inflater> cstm = 0;
 	IO::WriteCacheStream *wcstm = 0;
 	UOSInt imgSize = 0;
 	UInt32 imgDelay = 0;
@@ -2727,7 +2727,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				if (chunkData[i] == 0)
 				{
 					IO::MemoryStream mstm;
-					Data::Compress::InflateStream cstm(mstm, false);
+					Data::Compress::Inflater cstm(mstm, false);
 					if (cstm.Write(Data::ByteArrayR(&chunkData[i + 3], size - i - 7)) == (size - i - 7))
 					{
 						Data::ByteArray iccBuff = mstm.GetArray();
@@ -2844,11 +2844,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(nnmstm, IO::MemoryStream());
 						}
 						mstm = nnmstm;
-						NN<Data::Compress::InflateStream> nncstm;
-						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
+						NN<Data::Compress::Inflater> nncstm;
+						NEW_CLASSNN(nncstm, Data::Compress::Inflater(nnmstm, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(chunkData.WithSize(size));
+						wcstm->Write(chunkData.WithSize(size) + 2);
 					}
 					else
 					{
@@ -2900,11 +2900,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 							NEW_CLASSNN(nnmstm, IO::MemoryStream());
 						}
 						mstm = nnmstm;
-						NN<Data::Compress::InflateStream> nncstm;
-						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
+						NN<Data::Compress::Inflater> nncstm;
+						NEW_CLASSNN(nncstm, Data::Compress::Inflater(nnmstm, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(Data::ByteArrayR(&chunkData[4], size - 4));
+						wcstm->Write(Data::ByteArrayR(&chunkData[6], size - 6));
 					}
 					else
 					{

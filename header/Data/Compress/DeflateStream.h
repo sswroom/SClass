@@ -18,9 +18,9 @@ namespace Data
 			};
 		private:
 			struct ClassData;
-			ClassData *clsData;
+			NN<ClassData> clsData;
 		public:
-			DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::HashAlgorithm *hash, CompLevel level, Bool hasHeader);
+			DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Optional<Crypto::Hash::HashAlgorithm> hash, CompLevel level, Bool hasHeader);
 			virtual ~DeflateStream();
 
 			virtual Bool IsDown() const;

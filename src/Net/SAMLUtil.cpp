@@ -5,7 +5,7 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "Net/SAMLUtil.h"
 #include "Text/TextBinEnc/Base64Enc.h"
-#include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 
 UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
@@ -327,10 +327,9 @@ Bool Net::SAMLUtil::DecodeRequest(Text::CStringNN requestB64, NN<Text::StringBui
 		return false;
 	UInt8 *decBuff = MemAlloc(UInt8, decSize);
 	b64.DecodeBin(requestB64, decBuff);
-	Data::Compress::Inflate inf(false);
 	IO::MemoryStream mstm;
-	IO::StmData::MemoryDataRef fd(decBuff, decSize);
-	Bool succ = inf.Decompress(mstm, fd);
+	Data::Compress::Inflater inf(mstm, false);
+	Bool succ = inf.Write(Data::ByteArrayR(decBuff, decSize)) == decSize;
 	MemFree(decBuff);
 	if (succ)
 	{

@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Data/Compress/InflateStream.h"
+#include "Data/Compress/Inflater.h"
 #include "IO/FileStream.h"
 #include "Media/PDFObject.h"
 
@@ -157,7 +157,7 @@ Bool Media::PDFObject::SaveStream(NN<IO::Stream> stm)
 		NN<Text::String> filter;
 		if (this->GetFilter().SetTo(filter) && filter->Equals(UTF8STRC("FlateDecode")))
 		{
-			Data::Compress::InflateStream infStm(stm, true);
+			Data::Compress::Inflater infStm(stm, true);
 			return infStm.WriteFromData(fd, 1048576);
 		}
 		else

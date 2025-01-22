@@ -9,14 +9,14 @@ struct Data::Compress::DeflateStream::ClassData
 {
 	NN<IO::Stream> srcStm;
 	UInt64 srcLeng;
-	Crypto::Hash::HashAlgorithm *hash;
+	Optional<Crypto::Hash::HashAlgorithm> hash;
 	mz_stream stm;
 	UInt8 buff[BUFFSIZE];
 };
 
-Data::Compress::DeflateStream::DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::HashAlgorithm *hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
+Data::Compress::DeflateStream::DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Optional<Crypto::Hash::HashAlgorithm> hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
 {
-	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData = MemAllocNN(ClassData);
 	this->clsData->srcStm = srcStm;
 	this->clsData->srcLeng = srcLeng;
 	this->clsData->hash = hash;
@@ -45,7 +45,7 @@ Data::Compress::DeflateStream::DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLe
 Data::Compress::DeflateStream::~DeflateStream()
 {
 	mz_deflateEnd(&this->clsData->stm);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 Bool Data::Compress::DeflateStream::IsDown() const
@@ -55,6 +55,7 @@ Bool Data::Compress::DeflateStream::IsDown() const
 
 UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 {
+	NN<Crypto::Hash::HashAlgorithm> hash;
 	UOSInt initSize = buff.GetSize();
 	int ret;
 	this->clsData->stm.next_out = buff.Arr().Ptr();
@@ -72,9 +73,9 @@ UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 					readSize = (UOSInt)this->clsData->srcLeng;
 				}
 				readSize = this->clsData->srcStm->Read(Data::ByteArray(this->clsData->buff, readSize));
-				if (readSize > 0 && this->clsData->hash)
+				if (readSize > 0 && this->clsData->hash.SetTo(hash))
 				{
-					this->clsData->hash->Calc(this->clsData->buff, readSize);
+					hash->Calc(this->clsData->buff, readSize);
 				}
 				this->clsData->srcLeng -= readSize;
 				this->clsData->stm.avail_in = (unsigned int)readSize;
@@ -124,5 +125,5 @@ Bool Data::Compress::DeflateStream::Recover()
 
 IO::StreamType Data::Compress::DeflateStream::GetStreamType() const
 {
-	return IO::StreamType::Deflate;
+	return IO::StreamType::DeflateStream;
 }

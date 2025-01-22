@@ -4,7 +4,7 @@
 #include "Data/ByteOrderLSB.h"
 #include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
-#include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 #include "Data/Compress/PackBits.h"
 #include "Data/Compress/LZWDecompressor.h"
 #include "IO/FileStream.h"
@@ -529,12 +529,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 				else if (compression == 8)
 				{
-					Data::Compress::Inflate inflate(false);
 					if (nStrip == 1)
 					{
 						Data::ByteBuffer compImgData(stripLeng);
 						lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-						inflate.Decompress(imgData, destSize, compImgData.SubArray(0, lengLeft));
+						Data::Compress::Inflater::DecompressDirect(imgData, destSize, compImgData.SubArray(0, lengLeft), false);
 					}
 					else
 					{
@@ -555,7 +554,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							//imgData += stripLengs[i];
 
 							lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-							inflate.Decompress(imgData, destSize, compImgData.SubArray(0, lengLeft));
+							Data::Compress::Inflater::DecompressDirect(imgData, destSize, compImgData.SubArray(0, lengLeft), false);
 							imgData = imgData.SubArray(destSize);
 
 							i++;

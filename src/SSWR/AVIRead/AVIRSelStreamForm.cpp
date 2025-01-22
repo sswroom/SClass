@@ -325,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::BufferedOutput:
 	case IO::StreamType::FTPClient:
 	case IO::StreamType::StreamData:
-	case IO::StreamType::Deflate:
+	case IO::StreamType::DeflateStream:
 	case IO::StreamType::HTTPClient:
 	case IO::StreamType::TCPBoardcast:
 	case IO::StreamType::BufferedInput:
@@ -334,7 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::LZWDec:
 	case IO::StreamType::WebConnection:
 	case IO::StreamType::Hash:
-	case IO::StreamType::Inflate:
+	case IO::StreamType::InflateStream:
 	case IO::StreamType::WriteCache:
 	case IO::StreamType::LZWEnc:
 	case IO::StreamType::RS232GPIO:
@@ -344,6 +344,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::Null:
 	case IO::StreamType::FileView:
 	case IO::StreamType::SSHTCPChannel:
+	case IO::StreamType::Inflater:
 		break;
 	}
 }
