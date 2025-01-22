@@ -17,6 +17,7 @@ HAS_INT64
 HAS_DOUBLE
 HAS_INTRIN
 IS_BYTEORDER_LE
+MEMORY_UNALIGNED
 
 ASTRUCT
 */
@@ -631,6 +632,12 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #else
 #define U16STR(s) ((const UTF16Char*)(L ## s))
 #endif
+#endif
+
+#if defined(CPU_X86_32) || defined(CPU_X86_64) || defined(CPU_ARM64) || (defined(CPU_ARM) && defined(__ARM_FEATURE_UNALIGNED)) || (defined(_MSC_VER) && !defined(WIN32_WCE))
+#define MEMORY_UNALIGNED 1
+#else
+#define MEMORY_UNALIGNED 0
 #endif
 
 #define CALLBACKFUNC __stdcall *

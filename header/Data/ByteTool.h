@@ -2,7 +2,7 @@
 #define _SM_DATA_BYTETOOL
 #include "MyMemory.h"
 
-#if defined(CPU_X86_32) || defined(CPU_X86_64) || defined(CPU_ARM64) || (defined(CPU_ARM) && defined(__ARM_FEATURE_UNALIGNED)) || (defined(_MSC_VER) && !defined(WIN32_WCE))
+#if MEMORY_UNALIGNED
 
 #define ReadNInt16(uint8Ptr) (*(Int16*)uint8Ptr)
 #define ReadNUInt16(uint8Ptr) (*(UInt16*)uint8Ptr)

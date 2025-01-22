@@ -13,7 +13,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 *buff2;
-	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/Hiking20240804.gpx");
+	Text::CStringNN fileName = CSTR("/mnt/raid2_3/GPS/RAW/Hiking20250111.gpx");
 	IO::MemoryStream oriStm;
 	IO::MemoryStream srcStm;
 	IO::ConsoleWriter console;

@@ -4,11 +4,6 @@
 #include "Data/ByteTool.h"
 #include "Text/MyString.h"
 
-extern "C"
-{
-	UInt32 Adler32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 abVal);
-}
-
 Crypto::Hash::Adler32::Adler32(const Adler32 *adler32)
 {
 	this->abVal = adler32->abVal;
