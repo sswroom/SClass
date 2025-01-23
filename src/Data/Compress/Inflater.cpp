@@ -739,6 +739,7 @@ Data::Compress::InflateResult Data::Compress::Inflater::Inflate(Bool isEnd)
 Data::Compress::Inflater::Inflater(NN<IO::Stream> decStm, Bool hasHeader) : Stream(CSTR("Inflater"))
 {
 	this->decStm = decStm;
+	this->lastRes = InflateResult::Ok;
 
 	NN<InflateState> pDecomp = MemAllocNN(InflateState);
 	this->state = pDecomp;
@@ -771,7 +772,7 @@ UOSInt Data::Compress::Inflater::Write(Data::ByteArrayR buff)
 	this->avail_in = buff.GetSize();
 	while (true || this->avail_in > 0)
 	{
-		InflateResult res = this->Inflate(false);
+		InflateResult res = this->lastRes = this->Inflate(false);
 		if (this->avail_in == 0 || (OSInt)res < 0)
 		{
 //			error = true;
@@ -799,6 +800,11 @@ Bool Data::Compress::Inflater::Recover()
 IO::StreamType Data::Compress::Inflater::GetStreamType() const
 {
 	return IO::StreamType::Inflater;
+}
+
+Bool Data::Compress::Inflater::IsEnd() const
+{
+	return this->lastRes == InflateResult::StreamEnd;
 }
 
 Bool Data::Compress::Inflater::DecompressDirect(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff, Bool hasHeader)

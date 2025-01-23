@@ -161,6 +161,7 @@ console:
 @ADFSTest
 @ARPScan
 @ARPTest
+@BandwidthLogger
 @HTTPForwardLog
 @HTTPForwardTest
 @HTTPServerTest
@@ -561,6 +562,9 @@ ARPScan:
 @ConsoleStartup.o
 ARPTest:
 @ARPTest.o
+@ConsoleStartup.o
+BandwidthLogger:
+@BandwidthLoggerMain.o
 @ConsoleStartup.o
 HTTPForwardLog:
 @HTTPForwardLog.o
@@ -1093,6 +1097,7 @@ ACMETest.o: ../../main/NetTest/ACMETest.cpp
 ADFSTest.o: ../../main/NetTest/ADFSTest.cpp
 ARPScanMain.o: ../../main/NetTest/ARPScanMain.cpp
 ARPTest.o: ../../main/NetTest/ARPTest.cpp
+BandwidthLoggerMain.o: ../../main/NetTest/BandwidthLoggerMain.cpp
 HTTPForwardLog.o: ../../main/NetTest/HTTPForwardLog.cpp
 HTTPForwardTest.o: ../../main/NetTest/HTTPForwardTest.cpp
 HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
@@ -1560,6 +1565,8 @@ Data/VariObject.h:
 Data/Compress/Decompressor.h:
 @Decompressor.o
 Data/Compress/DeflateStream.h:
+Data/Compress/Deflater.h:
+@Deflater.o
 @?(NO_MINIZ == 0)DeflateStreamMiniz.o
 @?(NO_MINIZ > 0)DeflateStreamZlib.o
 Data/Compress/Inflate.h:
@@ -3119,6 +3126,8 @@ Net/ASN1Util.h:
 @ASN1Util.o
 Net/AzureManager.h:
 @AzureManager.o
+Net/BandwidthLogger.h:
+@BandwidthLogger.o
 Net/BrowserInfo.h:
 @BrowserInfo.o
 Net/ConnectionInfo.h:

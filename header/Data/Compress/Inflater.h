@@ -41,6 +41,7 @@ namespace Data
 			NN<InflateState> state;
 			UnsafeArray<const UInt8> next_in;
 			UOSInt avail_in;
+			InflateResult lastRes;
 
     		static void ClearTree(NN<InflateDecompressor> r);
 		    static InflateStatus Decompress(NN<InflateDecompressor> r, UnsafeArray<const UInt8> pIn_buf_next, InOutParam<UOSInt> pIn_buf_size, UnsafeArray<UInt8> pOut_buf_start, UnsafeArray<UInt8> pOut_buf_next, InOutParam<UOSInt> pOut_buf_size, const UInt32 decomp_flags);
@@ -57,6 +58,8 @@ namespace Data
 			virtual void Close();
 			virtual Bool Recover();
 			virtual IO::StreamType GetStreamType() const;
+
+			Bool IsEnd() const;
 
 			static Bool DecompressDirect(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff, Bool hasHeader);
 		};

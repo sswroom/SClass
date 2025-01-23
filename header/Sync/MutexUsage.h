@@ -48,7 +48,15 @@ namespace Sync
 
 		void ReplaceMutex(NN<const Sync::Mutex> mut)
 		{
-			this->EndUse();
+			if (this->used)
+			{
+				if (this->mut == mut.Ptr())
+					return;
+				if (this->mut)
+				{
+					this->mut->Unlock();
+				}
+			}
 			this->mut = mut.Ptr();
 			this->mut->Lock();
 			this->used = true;

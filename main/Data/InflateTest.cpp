@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
+#include "Data/Compress/Deflater.h"
 #include "Data/Compress/DeflateStream.h"
 #include "Data/Compress/Inflate.h"
 #include "Data/Compress/Inflater.h"
@@ -16,6 +17,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN fileName = CSTR("/mnt/raid2_3/GPS/RAW/Hiking20250111.gpx");
 	IO::MemoryStream oriStm;
 	IO::MemoryStream srcStm;
+	UInt8 *srcBuff;
+	UOSInt srcSize2 = 0;
 	IO::ConsoleWriter console;
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -30,14 +33,30 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Data::Compress::DeflateStream dstm(oriStm, oriStm.GetLength(), 0, Data::Compress::DeflateStream::CompLevel::MaxCompression, true);
 		dstm.ReadToEnd(srcStm, 65536);
 	}
+	{
+		srcBuff = MemAlloc(UInt8, (UOSInt)oriStm.GetLength());
+		if (Data::Compress::Deflater::CompressDirect(Data::ByteArray(srcBuff, (UOSInt)oriStm.GetLength()), srcSize2, oriStm.GetArray(), Data::Compress::Deflater::CompLevel::BestCompression, true))
+		{
+			console.WriteLine(CSTR("Deflater CompressDirect success"));
+		}
+		else
+		{
+			console.WriteLine(CSTR("Deflater CompressDirect failed"));
+		}
+		MemFree(srcBuff);
+	}
 	printf("srcSize = %d\r\n", (UInt32)srcStm.GetLength());
+	printf("srcSize2 = %d\r\n", (UInt32)srcSize2);
 	UOSInt buffSize2;
 	IO::MemoryStream mstm1((UOSInt)oriStm.GetLength());
 	IO::MemoryStream mstm2((UOSInt)oriStm.GetLength());
 	IO::MemoryStream mstm3((UOSInt)oriStm.GetLength());
 	{
 		Data::Compress::InflateStream istm(mstm1, true);
-		istm.Write(srcStm.GetArray());
+		if (istm.Write(srcStm.GetArray()) == srcStm.GetLength())
+		{
+			console.WriteLine(CSTR("InflateStream decompress completed"));
+		}
 	}
 	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), mstm1.GetBuff(), (UOSInt)mstm1.GetLength()))
 	{
@@ -51,7 +70,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	{
 		Data::Compress::Inflater istm(mstm2, true);
-		istm.Write(srcStm.GetArray());
+		if (istm.Write(srcStm.GetArray()) == srcStm.GetLength() && istm.IsEnd())
+		{
+			console.WriteLine(CSTR("Inflater decompress completed"));
+		}
 	}
 	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), mstm2.GetBuff(), (UOSInt)mstm2.GetLength()))
 	{
@@ -65,7 +87,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		Data::Compress::Inflate inf(true);
 		IO::StmData::MemoryDataRef mfd(srcStm.GetArray());
-		inf.Decompress(mstm3, mfd);
+		if (inf.Decompress(mstm3, mfd))
+		{
+			console.WriteLine(CSTR("Inflate decompress completed"));
+		}
 	}
 	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), mstm3.GetBuff(), (UOSInt)mstm3.GetLength()))
 	{
@@ -78,7 +103,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	buff2 = MemAlloc(UInt8, (UOSInt)oriStm.GetLength() * 2);
 	{
-		Data::Compress::Inflater::DecompressDirect(Data::ByteArray(buff2, (UOSInt)oriStm.GetLength() * 2), buffSize2, srcStm.GetArray(), true);
+		if (Data::Compress::Inflater::DecompressDirect(Data::ByteArray(buff2, (UOSInt)oriStm.GetLength() * 2), buffSize2, srcStm.GetArray(), true))
+		{
+			console.WriteLine(CSTR("Inflater decompressDirect completed"));
+		}
 	}
 	if (Text::StrEqualsC(oriStm.GetBuff(), (UOSInt)oriStm.GetLength(), buff2, buffSize2))
 	{

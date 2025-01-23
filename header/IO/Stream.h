@@ -44,7 +44,8 @@ namespace IO
 		Null,
 		FileView,
 		SSHTCPChannel,
-		Inflater
+		Inflater,
+		Deflater
 	};
 	struct StreamReadReq;
 	struct StreamWriteReq;

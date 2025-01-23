@@ -188,6 +188,8 @@ Text::CStringNN IO::StreamTypeGetName(StreamType st)
 		return CSTR("SSHTCPChannel");
 	case StreamType::Inflater:
 		return CSTR("Inflater");
+	case StreamType::Deflater:
+		return CSTR("Deflater");
 	case StreamType::Unknown:
 	default:
 		return CSTR("Unknown");

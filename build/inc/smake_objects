@@ -154,6 +154,7 @@ UUID.o: ../../src/Data/UUID.cpp
 VariItem.o: ../../src/Data/VariItem.cpp
 VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
+Deflater.o: ../../src/Data/Compress/Deflater.cpp
 DeflateStreamMiniz.o: ../../src/Data/Compress/DeflateStreamMiniz.cpp
 $-I ../../ThirdParty/miniz -I ../../ThirdParty/miniz/_build
 DeflateStreamNull.o: ../../src/Data/Compress/DeflateStreamNull.cpp
@@ -1330,6 +1331,7 @@ ASN1PDUBuilder.o: ../../src/Net/ASN1PDUBuilder.cpp
 ASN1UnknownData.o: ../../src/Net/ASN1UnknownData.cpp
 ASN1Util.o: ../../src/Net/ASN1Util.cpp
 AzureManager.o: ../../src/Net/AzureManager.cpp
+BandwidthLogger.o: ../../src/Net/BandwidthLogger.cpp
 BrowserInfo.o: ../../src/Net/BrowserInfo.cpp
 ConnectionInfo.o: ../../src/Net/ConnectionInfo.cpp
 DHCPServer.o: ../../src/Net/DHCPServer.cpp

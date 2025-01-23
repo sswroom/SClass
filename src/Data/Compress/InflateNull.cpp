@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
 #include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 
 Data::Compress::Inflate::Inflate(Bool hasHeader)
 {
@@ -14,12 +15,13 @@ Data::Compress::Inflate::~Inflate()
 
 Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
-	return false;
+	return Data::Compress::Inflater::DecompressDirect(destBuff,  outDestBuffSize, srcBuff, this->hasHeader);
 }
 
 Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData)
 {
-	return false;
+	Data::Compress::Inflater inf(destStm, this->hasHeader);
+	return inf.WriteFromData(srcData, 1048576) && inf.IsEnd();
 }
 
 UOSInt Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, Bool hasHeader)

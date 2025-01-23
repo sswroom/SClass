@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Data/Comparator.h"
 #include "Data/SyncArrayList.h"
-#include "Data/Compress/Inflate.h"
+#include "Data/Compress/Inflater.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
@@ -144,11 +144,11 @@ private:
 					if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 					{
 						NN<IO::MemoryStream> mstm2;
-						Data::Compress::Inflate inflate(false);
+						NEW_CLASSNN(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
+						Data::Compress::Inflater inflate(mstm2, false);
 						thisRead = 10;
 						IO::StmData::MemoryDataRef mdata(&respData[thisRead], respSize - thisRead - 8);
-						NEW_CLASSNN(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4])));
-						if (inflate.Decompress(mstm2, mdata))
+						if (inflate.Write(Data::ByteArrayR(&respData[thisRead], respSize - thisRead - 8)) == (respSize - thisRead - 8) && inflate.IsEnd())
 						{
 							DEL_CLASS(mstm);
 							mstm = mstm2.Ptr();
