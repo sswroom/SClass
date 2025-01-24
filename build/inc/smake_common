@@ -3811,6 +3811,8 @@ SSWR/AVIRead/AVIRAudioFilterForm.h:
 @AVIRAudioFilterForm.o
 SSWR/AVIRead/AVIRAudioViewerForm.h:
 @AVIRAudioViewerForm.o
+SSWR/AVIRead/AVIRBandwidthLogForm.h:
+@AVIRBandwidthLogForm.o
 SSWR/AVIRead/AVIRBaseForm.h:
 @AVIRBaseForm.o
 SSWR/AVIRead/AVIRBatchRenameForm.h:

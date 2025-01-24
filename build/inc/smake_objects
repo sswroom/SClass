@@ -1724,6 +1724,7 @@ AVIRASN1OIDForm.o: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
 AVIRASN1ParseForm.o: ../../src/SSWR/AVIRead/AVIRASN1ParseForm.cpp
 AVIRAudioFilterForm.o: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 AVIRAudioViewerForm.o: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
+AVIRBandwidthLogForm.o: ../../src/SSWR/AVIRead/AVIRBandwidthLogForm.cpp
 AVIRBaseForm.o: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
 AVIRBatchRenameForm.o: ../../src/SSWR/AVIRead/AVIRBatchRenameForm.cpp
 AVIRBCryptForm.o: ../../src/SSWR/AVIRead/AVIRBCryptForm.cpp

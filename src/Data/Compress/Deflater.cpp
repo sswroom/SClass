@@ -3,24 +3,24 @@
 #include "Data/Compress/Deflater.h"
 #include <assert.h>
 
-#define MZ_CLEAR_ARR(obj) memset((obj), 0, sizeof(obj))
-#define MZ_ADLER32_INIT (1)
-#define MZ_ASSERT(x) assert(x)
+#define DEFLATER_CLEAR_ARR(obj) memset((obj), 0, sizeof(obj))
+#define DEFLATER_ADLER32_INIT (1)
+#define DEFLATER_ASSERT(x) assert(x)
 
 #ifdef _MSC_VER
-#define MZ_MACRO_END while (0, 0)
+#define DEFLATER_MACRO_END while (0, 0)
 #else
-#define MZ_MACRO_END while (0)
+#define DEFLATER_MACRO_END while (0)
 #endif
 
-#define TDEFL_MAX_SUPPORTED_HUFF_CODESIZE 32
+#define DEFLATER_MAX_SUPPORTED_HUFF_CODESIZE 32
 
 #define TDEFL_PUT_BITS(b, l)                                       \
     do                                                             \
     {                                                              \
         UInt32 bits = b;                                          \
         UInt32 len = l;                                           \
-        MZ_ASSERT(bits <= ((1U << len) - 1U));                     \
+        DEFLATER_ASSERT(bits <= ((1U << len) - 1U));                     \
         d->m_bit_buffer |= (bits << d->m_bits_in);                 \
         d->m_bits_in += len;                                       \
         while (d->m_bits_in >= 8)                                  \
@@ -31,7 +31,7 @@
             d->m_bits_in -= 8;                                     \
         }                                                          \
     }                                                              \
-    MZ_MACRO_END
+    DEFLATER_MACRO_END
 
 #define TDEFL_RLE_PREV_CODE_SIZE()                                                                                       \
     {                                                                                                                    \
@@ -92,33 +92,33 @@ enum
 };
 
 /* TDEFL_OUT_BUF_SIZE MUST be large enough to hold a single entire compressed output block (using static/fixed Huffman codes). */
-#if TDEFL_LESS_MEMORY
+#if DEFLATER_LESS_MEMORY
     enum
     {
-        TDEFL_LZ_CODE_BUF_SIZE = 24 * 1024,
-        TDEFL_OUT_BUF_SIZE = (TDEFL_LZ_CODE_BUF_SIZE * 13) / 10,
-        TDEFL_MAX_HUFF_SYMBOLS = 288,
-        TDEFL_LZ_HASH_BITS = 12,
-        TDEFL_LEVEL1_HASH_SIZE_MASK = 4095,
-        TDEFL_LZ_HASH_SHIFT = (TDEFL_LZ_HASH_BITS + 2) / 3,
-        TDEFL_LZ_HASH_SIZE = 1 << TDEFL_LZ_HASH_BITS
+        DEFLATER_LZ_CODE_BUF_SIZE = 24 * 1024,
+        DEFLATER_OUT_BUF_SIZE = (DEFLATER_LZ_CODE_BUF_SIZE * 13) / 10,
+        DEFLATER_MAX_HUFF_SYMBOLS = 288,
+        DEFLATER_LZ_HASH_BITS = 12,
+        DEFLATER_LEVEL1_HASH_SIZE_MASK = 4095,
+        DEFLATER_LZ_HASH_SHIFT = (DEFLATER_LZ_HASH_BITS + 2) / 3,
+        DEFLATER_LZ_HASH_SIZE = 1 << DEFLATER_LZ_HASH_BITS
     };
 #else
 enum
 {
-    TDEFL_LZ_CODE_BUF_SIZE = 64 * 1024,
-    TDEFL_OUT_BUF_SIZE = (UInt32)((TDEFL_LZ_CODE_BUF_SIZE * 13) / 10),
-    TDEFL_MAX_HUFF_SYMBOLS = 288,
-    TDEFL_LZ_HASH_BITS = 15,
-    TDEFL_LEVEL1_HASH_SIZE_MASK = 4095,
-    TDEFL_LZ_HASH_SHIFT = (TDEFL_LZ_HASH_BITS + 2) / 3,
-    TDEFL_LZ_HASH_SIZE = 1 << TDEFL_LZ_HASH_BITS
+    DEFLATER_LZ_CODE_BUF_SIZE = 64 * 1024,
+    DEFLATER_OUT_BUF_SIZE = (UInt32)((DEFLATER_LZ_CODE_BUF_SIZE * 13) / 10),
+    DEFLATER_MAX_HUFF_SYMBOLS = 288,
+    DEFLATER_LZ_HASH_BITS = 15,
+    DEFLATER_LEVEL1_HASH_SIZE_MASK = 4095,
+    DEFLATER_LZ_HASH_SHIFT = (DEFLATER_LZ_HASH_BITS + 2) / 3,
+    DEFLATER_LZ_HASH_SIZE = 1 << DEFLATER_LZ_HASH_BITS
 };
 #endif
 
 enum
 {
-	TDEFL_HUFFMAN_ONLY = 0,
+	DEFLATER_HUFFMAN_ONLY = 0,
 	TDEFL_DEFAULT_MAX_PROBES = 128,
 	TDEFL_MAX_PROBES_MASK = 0xFFF
 };
@@ -151,13 +151,13 @@ struct Data::Compress::DeflateCompressor
 	const UInt8 *m_pSrc;
 	UOSInt m_src_buf_left, m_out_buf_ofs;
 	UInt8 m_dict[TDEFL_LZ_DICT_SIZE + TDEFL_MAX_MATCH_LEN - 1];
-	UInt16 m_huff_count[TDEFL_MAX_HUFF_TABLES][TDEFL_MAX_HUFF_SYMBOLS];
-	UInt16 m_huff_codes[TDEFL_MAX_HUFF_TABLES][TDEFL_MAX_HUFF_SYMBOLS];
-	UInt8 m_huff_code_sizes[TDEFL_MAX_HUFF_TABLES][TDEFL_MAX_HUFF_SYMBOLS];
-	UInt8 m_lz_code_buf[TDEFL_LZ_CODE_BUF_SIZE];
+	UInt16 m_huff_count[TDEFL_MAX_HUFF_TABLES][DEFLATER_MAX_HUFF_SYMBOLS];
+	UInt16 m_huff_codes[TDEFL_MAX_HUFF_TABLES][DEFLATER_MAX_HUFF_SYMBOLS];
+	UInt8 m_huff_code_sizes[TDEFL_MAX_HUFF_TABLES][DEFLATER_MAX_HUFF_SYMBOLS];
+	UInt8 m_lz_code_buf[DEFLATER_LZ_CODE_BUF_SIZE];
 	UInt16 m_next[TDEFL_LZ_DICT_SIZE];
-	UInt16 m_hash[TDEFL_LZ_HASH_SIZE];
-	UInt8 m_output_buf[TDEFL_OUT_BUF_SIZE];
+	UInt16 m_hash[DEFLATER_LZ_HASH_SIZE];
+	UInt8 m_output_buf[DEFLATER_OUT_BUF_SIZE];
 };
 
 struct Data::Compress::Deflater::SymFreq
@@ -245,7 +245,7 @@ void Data::Compress::Deflater::DeflateInit(NN<DeflateCompressor> d, UInt32 flags
 	d->m_greedy_parsing = (flags & TDEFL_GREEDY_PARSING_FLAG) != 0;
 	d->m_max_probes[1] = 1 + (((flags & 0xFFF) >> 2) + 2) / 3;
 	if (!(flags & TDEFL_NONDETERMINISTIC_PARSING_FLAG))
-		MZ_CLEAR_ARR(d->m_hash);
+		DEFLATER_CLEAR_ARR(d->m_hash);
 	d->m_lookahead_pos = d->m_lookahead_size = d->m_dict_size = d->m_total_lz_bytes = d->m_lz_code_buf_dict_pos = d->m_bits_in = 0;
 	d->m_output_flush_ofs = d->m_output_flush_remaining = d->m_finished = d->m_block_index = d->m_bit_buffer = d->m_wants_to_finish = 0;
 	d->m_pLZ_code_buf = d->m_lz_code_buf + 1;
@@ -266,7 +266,7 @@ void Data::Compress::Deflater::DeflateInit(NN<DeflateCompressor> d, UInt32 flags
 	d->m_src_buf_left = 0;
 	d->m_out_buf_ofs = 0;
 	if (!(flags & TDEFL_NONDETERMINISTIC_PARSING_FLAG))
-		MZ_CLEAR_ARR(d->m_dict);
+		DEFLATER_CLEAR_ARR(d->m_dict);
 	memset(&d->m_huff_count[0][0], 0, sizeof(d->m_huff_count[0][0]) * TDEFL_MAX_HUFF_SYMBOLS_0);
 	memset(&d->m_huff_count[1][0], 0, sizeof(d->m_huff_count[1][0]) * TDEFL_MAX_HUFF_SYMBOLS_1);
 }
@@ -290,7 +290,7 @@ void Data::Compress::Deflater::FindMatch(NN<DeflateCompressor> d, UInt32 lookahe
 	UInt32 num_probes_left = d->m_max_probes[match_len >= 32];
 	const UInt16 *s = (const UInt16 *)(d->m_dict + pos), *p, *q;
 	UInt16 c01 = ReadUInt16(&d->m_dict[pos + match_len - 1]), s01 = ReadUInt16((UInt8*)s);
-	MZ_ASSERT(max_match_len <= TDEFL_MAX_MATCH_LEN);
+	DEFLATER_ASSERT(max_match_len <= TDEFL_MAX_MATCH_LEN);
 	if (max_match_len <= match_len)
 		return;
 	for (;;)
@@ -341,7 +341,7 @@ void Data::Compress::Deflater::RecordMatch(NN<DeflateCompressor> d, UInt32 match
 {
 	UInt32 s0, s1;
 
-	MZ_ASSERT((match_len >= TDEFL_MIN_MATCH_LEN) && (match_dist >= 1) && (match_dist <= TDEFL_LZ_DICT_SIZE));
+	DEFLATER_ASSERT((match_len >= TDEFL_MIN_MATCH_LEN) && (match_dist >= 1) && (match_dist <= TDEFL_LZ_DICT_SIZE));
 
 	d->m_total_lz_bytes += match_len;
 
@@ -369,7 +369,7 @@ Data::Compress::Deflater::SymFreq *Data::Compress::Deflater::RadixSortSyms(UInt3
 {
 	UInt32 total_passes = 2, pass_shift, pass, i, hist[256 * 2];
 	SymFreq *pCur_syms = pSyms0, *pNew_syms = pSyms1;
-	MZ_CLEAR_ARR(hist);
+	DEFLATER_CLEAR_ARR(hist);
 	for (i = 0; i < num_syms; i++)
 	{
 		UInt32 freq = pSyms0[i].m_key;
@@ -459,7 +459,7 @@ void Data::Compress::Deflater::HuffmanEnforceMaxCodeSize(Int32 *pNum_codes, Int3
 	UInt32 total = 0;
 	if (code_list_len <= 1)
 		return;
-	for (i = max_code_size + 1; i <= TDEFL_MAX_SUPPORTED_HUFF_CODESIZE; i++)
+	for (i = max_code_size + 1; i <= DEFLATER_MAX_SUPPORTED_HUFF_CODESIZE; i++)
 		pNum_codes[max_code_size] += pNum_codes[i];
 	for (i = max_code_size; i > 0; i--)
 		total += (((UInt32)pNum_codes[i]) << (max_code_size - i));
@@ -479,9 +479,9 @@ void Data::Compress::Deflater::HuffmanEnforceMaxCodeSize(Int32 *pNum_codes, Int3
 
 void Data::Compress::Deflater::OptimizeHuffmanTable(NN<DeflateCompressor> d, Int32 table_num, Int32 table_len, Int32 code_size_limit, Bool static_table)
 {
-	Int32 i, j, l, num_codes[1 + TDEFL_MAX_SUPPORTED_HUFF_CODESIZE];
-	UInt32 next_code[TDEFL_MAX_SUPPORTED_HUFF_CODESIZE + 1];
-	MZ_CLEAR_ARR(num_codes);
+	Int32 i, j, l, num_codes[1 + DEFLATER_MAX_SUPPORTED_HUFF_CODESIZE];
+	UInt32 next_code[DEFLATER_MAX_SUPPORTED_HUFF_CODESIZE + 1];
+	DEFLATER_CLEAR_ARR(num_codes);
 	if (static_table)
 	{
 		for (i = 0; i < table_len; i++)
@@ -489,7 +489,7 @@ void Data::Compress::Deflater::OptimizeHuffmanTable(NN<DeflateCompressor> d, Int
 	}
 	else
 	{
-		SymFreq syms0[TDEFL_MAX_HUFF_SYMBOLS], syms1[TDEFL_MAX_HUFF_SYMBOLS], *pSyms;
+		SymFreq syms0[DEFLATER_MAX_HUFF_SYMBOLS], syms1[DEFLATER_MAX_HUFF_SYMBOLS], *pSyms;
 		Int32 num_used_syms = 0;
 		const UInt16 *pSym_count = &d->m_huff_count[table_num][0];
 		for (i = 0; i < table_len; i++)
@@ -507,8 +507,8 @@ void Data::Compress::Deflater::OptimizeHuffmanTable(NN<DeflateCompressor> d, Int
 
 		HuffmanEnforceMaxCodeSize(num_codes, num_used_syms, code_size_limit);
 
-		MZ_CLEAR_ARR(d->m_huff_code_sizes[table_num]);
-		MZ_CLEAR_ARR(d->m_huff_codes[table_num]);
+		DEFLATER_CLEAR_ARR(d->m_huff_code_sizes[table_num]);
+		DEFLATER_CLEAR_ARR(d->m_huff_codes[table_num]);
 		for (i = 1, j = num_used_syms; i <= code_size_limit; i++)
 			for (l = num_codes[i]; l > 0; l--)
 				d->m_huff_code_sizes[table_num][pSyms[--j].m_sym_index] = (UInt8)(i);
@@ -610,7 +610,7 @@ void Data::Compress::Deflater::StartDynamicBlock(NN<DeflateCompressor> d)
 	for (packed_code_sizes_index = 0; packed_code_sizes_index < num_packed_code_sizes;)
 	{
 		UInt32 code = packed_code_sizes[packed_code_sizes_index++];
-		MZ_ASSERT(code < TDEFL_MAX_HUFF_SYMBOLS_2);
+		DEFLATER_ASSERT(code < TDEFL_MAX_HUFF_SYMBOLS_2);
 		TDEFL_PUT_BITS(d->m_huff_codes[2][code], d->m_huff_code_sizes[2][code]);
 		if (code >= 16)
 			TDEFL_PUT_BITS(packed_code_sizes[packed_code_sizes_index++], "\02\03\07"[code - 16]);
@@ -667,7 +667,7 @@ Bool Data::Compress::Deflater::CompressLzCodes(NN<DeflateCompressor> d)
 			UInt32 match_dist = (pLZ_codes[1] | (pLZ_codes[2] << 8));
 			pLZ_codes += 3;
 
-			MZ_ASSERT(d->m_huff_code_sizes[0][s_tdefl_len_sym[match_len]]);
+			DEFLATER_ASSERT(d->m_huff_code_sizes[0][s_tdefl_len_sym[match_len]]);
 			TDEFL_PUT_BITS_FAST(d->m_huff_codes[0][s_tdefl_len_sym[match_len]], d->m_huff_code_sizes[0][s_tdefl_len_sym[match_len]]);
 			TDEFL_PUT_BITS_FAST(match_len & mz_bitmasks[s_tdefl_len_extra[match_len]], s_tdefl_len_extra[match_len]);
 
@@ -679,28 +679,28 @@ Bool Data::Compress::Deflater::CompressLzCodes(NN<DeflateCompressor> d)
 			sym = (match_dist < 512) ? s0 : s1;
 			num_extra_bits = (match_dist < 512) ? n0 : n1;
 
-			MZ_ASSERT(d->m_huff_code_sizes[1][sym]);
+			DEFLATER_ASSERT(d->m_huff_code_sizes[1][sym]);
 			TDEFL_PUT_BITS_FAST(d->m_huff_codes[1][sym], d->m_huff_code_sizes[1][sym]);
 			TDEFL_PUT_BITS_FAST(match_dist & mz_bitmasks[num_extra_bits], num_extra_bits);
 		}
 		else
 		{
 			UInt32 lit = *pLZ_codes++;
-			MZ_ASSERT(d->m_huff_code_sizes[0][lit]);
+			DEFLATER_ASSERT(d->m_huff_code_sizes[0][lit]);
 			TDEFL_PUT_BITS_FAST(d->m_huff_codes[0][lit], d->m_huff_code_sizes[0][lit]);
 
 			if (((flags & 2) == 0) && (pLZ_codes < pLZ_code_buf_end))
 			{
 				flags >>= 1;
 				lit = *pLZ_codes++;
-				MZ_ASSERT(d->m_huff_code_sizes[0][lit]);
+				DEFLATER_ASSERT(d->m_huff_code_sizes[0][lit]);
 				TDEFL_PUT_BITS_FAST(d->m_huff_codes[0][lit], d->m_huff_code_sizes[0][lit]);
 
 				if (((flags & 2) == 0) && (pLZ_codes < pLZ_code_buf_end))
 				{
 					flags >>= 1;
 					lit = *pLZ_codes++;
-					MZ_ASSERT(d->m_huff_code_sizes[0][lit]);
+					DEFLATER_ASSERT(d->m_huff_code_sizes[0][lit]);
 					TDEFL_PUT_BITS_FAST(d->m_huff_codes[0][lit], d->m_huff_code_sizes[0][lit]);
 				}
 			}
@@ -756,7 +756,7 @@ Bool Data::Compress::Deflater::CompressNormal(NN<DeflateCompressor> d)
 		if ((d->m_lookahead_size + d->m_dict_size) >= (TDEFL_MIN_MATCH_LEN - 1))
 		{
 			UInt32 dst_pos = (d->m_lookahead_pos + d->m_lookahead_size) & TDEFL_LZ_DICT_SIZE_MASK, ins_pos = d->m_lookahead_pos + d->m_lookahead_size - 2;
-			UInt32 hash = (d->m_dict[ins_pos & TDEFL_LZ_DICT_SIZE_MASK] << TDEFL_LZ_HASH_SHIFT) ^ d->m_dict[(ins_pos + 1) & TDEFL_LZ_DICT_SIZE_MASK];
+			UInt32 hash = (d->m_dict[ins_pos & TDEFL_LZ_DICT_SIZE_MASK] << DEFLATER_LZ_HASH_SHIFT) ^ d->m_dict[(ins_pos + 1) & TDEFL_LZ_DICT_SIZE_MASK];
 			UInt32 num_bytes_to_process = (UInt32)Math_Min(src_buf_left, TDEFL_MAX_MATCH_LEN - d->m_lookahead_size);
 			const UInt8 *pSrc_end = pSrc ? pSrc + num_bytes_to_process : 0;
 			src_buf_left -= num_bytes_to_process;
@@ -767,7 +767,7 @@ Bool Data::Compress::Deflater::CompressNormal(NN<DeflateCompressor> d)
 				d->m_dict[dst_pos] = c;
 				if (dst_pos < (TDEFL_MAX_MATCH_LEN - 1))
 					d->m_dict[TDEFL_LZ_DICT_SIZE + dst_pos] = c;
-				hash = ((hash << TDEFL_LZ_HASH_SHIFT) ^ c) & (TDEFL_LZ_HASH_SIZE - 1);
+				hash = ((hash << DEFLATER_LZ_HASH_SHIFT) ^ c) & (DEFLATER_LZ_HASH_SIZE - 1);
 				d->m_next[ins_pos & TDEFL_LZ_DICT_SIZE_MASK] = d->m_hash[hash];
 				d->m_hash[hash] = (UInt16)(ins_pos);
 				dst_pos = (dst_pos + 1) & TDEFL_LZ_DICT_SIZE_MASK;
@@ -787,7 +787,7 @@ Bool Data::Compress::Deflater::CompressNormal(NN<DeflateCompressor> d)
 				if ((++d->m_lookahead_size + d->m_dict_size) >= TDEFL_MIN_MATCH_LEN)
 				{
 					UInt32 ins_pos = d->m_lookahead_pos + (d->m_lookahead_size - 1) - 2;
-					UInt32 hash = ((d->m_dict[ins_pos & TDEFL_LZ_DICT_SIZE_MASK] << (TDEFL_LZ_HASH_SHIFT * 2)) ^ (d->m_dict[(ins_pos + 1) & TDEFL_LZ_DICT_SIZE_MASK] << TDEFL_LZ_HASH_SHIFT) ^ c) & (TDEFL_LZ_HASH_SIZE - 1);
+					UInt32 hash = ((d->m_dict[ins_pos & TDEFL_LZ_DICT_SIZE_MASK] << (DEFLATER_LZ_HASH_SHIFT * 2)) ^ (d->m_dict[(ins_pos + 1) & TDEFL_LZ_DICT_SIZE_MASK] << DEFLATER_LZ_HASH_SHIFT) ^ c) & (DEFLATER_LZ_HASH_SIZE - 1);
 					d->m_next[ins_pos & TDEFL_LZ_DICT_SIZE_MASK] = d->m_hash[hash];
 					d->m_hash[hash] = (UInt16)(ins_pos);
 				}
@@ -868,11 +868,11 @@ Bool Data::Compress::Deflater::CompressNormal(NN<DeflateCompressor> d)
 		}
 		/* Move the lookahead forward by len_to_move bytes. */
 		d->m_lookahead_pos += len_to_move;
-		MZ_ASSERT(d->m_lookahead_size >= len_to_move);
+		DEFLATER_ASSERT(d->m_lookahead_size >= len_to_move);
 		d->m_lookahead_size -= len_to_move;
 		d->m_dict_size = Math_Min(d->m_dict_size + len_to_move, (UInt32)TDEFL_LZ_DICT_SIZE);
 		/* Check if it's time to flush the current LZ codes to the internal output buffer. */
-		if ((d->m_pLZ_code_buf > &d->m_lz_code_buf[TDEFL_LZ_CODE_BUF_SIZE - 8]) ||
+		if ((d->m_pLZ_code_buf > &d->m_lz_code_buf[DEFLATER_LZ_CODE_BUF_SIZE - 8]) ||
 			((d->m_total_lz_bytes > 31 * 1024) && (((((UInt32)(d->m_pLZ_code_buf - d->m_lz_code_buf) * 115) >> 7) >= d->m_total_lz_bytes) || (d->m_flags & TDEFL_FORCE_ALL_RAW_BLOCKS))))
 		{
 			Int32 n;
@@ -915,12 +915,12 @@ Int32 Data::Compress::Deflater::FlushBlock(NN<DeflateCompressor> d, DeflateFlush
 	UInt8 *pSaved_output_buf;
 	Bool comp_block_succeeded = false;
 	Int32 n, use_raw_block = ((d->m_flags & TDEFL_FORCE_ALL_RAW_BLOCKS) != 0) && (d->m_lookahead_pos - d->m_lz_code_buf_dict_pos) <= d->m_dict_size;
-	UInt8 *pOutput_buf_start = ((*d->m_pOut_buf_size - d->m_out_buf_ofs) >= TDEFL_OUT_BUF_SIZE) ? ((UInt8 *)d->m_pOut_buf + d->m_out_buf_ofs) : d->m_output_buf;
+	UInt8 *pOutput_buf_start = ((*d->m_pOut_buf_size - d->m_out_buf_ofs) >= DEFLATER_OUT_BUF_SIZE) ? ((UInt8 *)d->m_pOut_buf + d->m_out_buf_ofs) : d->m_output_buf;
 
 	d->m_pOutput_buf = pOutput_buf_start;
-	d->m_pOutput_buf_end = d->m_pOutput_buf + TDEFL_OUT_BUF_SIZE - 16;
+	d->m_pOutput_buf_end = d->m_pOutput_buf + DEFLATER_OUT_BUF_SIZE - 16;
 
-	MZ_ASSERT(!d->m_output_flush_remaining);
+	DEFLATER_ASSERT(!d->m_output_flush_remaining);
 	d->m_output_flush_ofs = 0;
 	d->m_output_flush_remaining = 0;
 
@@ -1024,7 +1024,7 @@ Int32 Data::Compress::Deflater::FlushBlock(NN<DeflateCompressor> d, DeflateFlush
 		}
 	}
 
-	MZ_ASSERT(d->m_pOutput_buf < d->m_pOutput_buf_end);
+	DEFLATER_ASSERT(d->m_pOutput_buf < d->m_pOutput_buf_end);
 
 	memset(&d->m_huff_count[0][0], 0, sizeof(d->m_huff_count[0][0]) * TDEFL_MAX_HUFF_SYMBOLS_0);
 	memset(&d->m_huff_count[1][0], 0, sizeof(d->m_huff_count[1][0]) * TDEFL_MAX_HUFF_SYMBOLS_1);
@@ -1108,8 +1108,8 @@ Data::Compress::DeflateStatus Data::Compress::Deflater::Compress(NN<DeflateCompr
 		d->m_finished = (flush == DeflateFlush::Finish);
 		if (flush == DeflateFlush::FullFlush)
 		{
-			MZ_CLEAR_ARR(d->m_hash);
-			MZ_CLEAR_ARR(d->m_next);
+			DEFLATER_CLEAR_ARR(d->m_hash);
+			DEFLATER_CLEAR_ARR(d->m_next);
 			d->m_dict_size = 0;
 		}
 	}
@@ -1175,7 +1175,7 @@ Data::Compress::Deflater::Deflater(NN<IO::Stream> srcStm, CompLevel level, Bool 
 {
 	UInt32 comp_flags = TDEFL_COMPUTE_ADLER32 | CreateCompFlagsFromParams(level, hasHeader, CompStrategy::DefaultStrategy);
 
-	this->adler = MZ_ADLER32_INIT;
+	this->adler = DEFLATER_ADLER32_INIT;
 	this->msg = 0;
 	this->reserved = 0;
 	this->total_in = 0;

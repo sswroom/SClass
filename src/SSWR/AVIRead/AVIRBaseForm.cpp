@@ -40,6 +40,7 @@
 #include "SSWR/AVIRead/AVIRASN1OIDForm.h"
 #include "SSWR/AVIRead/AVIRASN1ParseForm.h"
 #include "SSWR/AVIRead/AVIRAudioFilterForm.h"
+#include "SSWR/AVIRead/AVIRBandwidthLogForm.h"
 #include "SSWR/AVIRead/AVIRBaseForm.h"
 #include "SSWR/AVIRead/AVIRBatchRenameForm.h"
 #include "SSWR/AVIRead/AVIRBCryptForm.h"
@@ -522,7 +523,8 @@ typedef enum
 	MNU_SELENIUM_LOG,
 	MNU_JMETER_LOG,
 	MNU_RADIO_SCAN,
-	MNU_NETWORK_BANDWIDTH
+	MNU_NETWORK_BANDWIDTH,
+	MNU_BANDWIDTH_LOG_ANALYST
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -743,7 +745,9 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Ping Monitor"), MNU_PINGMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RAW Monitor"), MNU_RAWMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RAW Capture"), MNU_NETRAWCAPTURE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Network Bandwidth"), MNU_NETWORK_BANDWIDTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Network Bandwidth"));
+	mnu2->AddItem(CSTR("Bandwidth Logger"), MNU_NETWORK_BANDWIDTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Bandwidth Log Analyst"), MNU_BANDWIDTH_LOG_ANALYST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HTTP"));
 	mnu2->AddItem(CSTR("HTTP Server"), MNU_HTTP_SVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3019,6 +3023,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRNetworkBandwidthForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRNetworkBandwidthForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_BANDWIDTH_LOG_ANALYST:
+		{
+			NN<SSWR::AVIRead::AVIRBandwidthLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBandwidthLogForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

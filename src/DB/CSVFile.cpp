@@ -131,6 +131,7 @@ Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::
 			tab->AddCol(col);
 			i++;
 		}
+		this->CloseReader(r);
 		return tab;
 	}
 	return 0;
