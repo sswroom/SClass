@@ -36,7 +36,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (ReadMUInt32(hashVal) != 0x0E2E1FE1)
 	{
 		DEL_CLASS(hash);
-		return 1;
+		return 2;
 	}
 
 	i = 32;
@@ -50,7 +50,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (ReadMUInt32(hashVal) != 0x2AC001F1)
 	{
 		DEL_CLASS(hash);
-		return 1;
+		return 3;
 	}
 
 	hash->Clear();
@@ -59,7 +59,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (ReadMUInt32(hashVal) != 0x28CF01F1)
 	{
 		DEL_CLASS(hash);
-		return 1;
+		return 4;
 	}
 
 	DEL_CLASS(hash);

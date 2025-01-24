@@ -345,6 +345,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 	case IO::StreamType::FileView:
 	case IO::StreamType::SSHTCPChannel:
 	case IO::StreamType::Inflater:
+	case IO::StreamType::Deflater:
 		break;
 	}
 }

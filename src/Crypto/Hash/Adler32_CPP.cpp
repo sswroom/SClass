@@ -31,6 +31,7 @@ extern "C" UInt32 Adler32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 abVal)
 	while (i-- > 0)
 	{
 		a = (a + *buff++);
+		b += a;
 	}
 	buffSize -= l;
 	a %= 65521;

@@ -1564,9 +1564,9 @@ Data/VariObject.h:
 @VariObject.o
 Data/Compress/Decompressor.h:
 @Decompressor.o
-Data/Compress/DeflateStream.h:
 Data/Compress/Deflater.h:
 @Deflater.o
+Data/Compress/DeflateStream.h:
 @?(NO_MINIZ == 0)DeflateStreamMiniz.o
 @?(NO_MINIZ > 0)DeflateStreamZlib.o
 Data/Compress/Inflate.h:
