@@ -22,17 +22,14 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 	UOSInt i;
 	UInt64 currOfst;
 	NEW_CLASSNN(this->stmData, IO::StmData::BufferedStreamData(stmData->GetPartialData(0, stmData->GetDataSize())));
-//	this->stmData = stmData->GetPartialData(0, stmData->GetDataSize());
-//	NEW_CLASS(mut, Sync::Mutex());
 
-	this->cols = 0;
 	this->colCnt = 0;
 	this->stmData->GetRealData(0, 32, BYTEARR(buff));
 	refPos = ReadUInt16(&buff[8]);
 	rowSize = ReadUInt32(&buff[10]);
 	colCnt = (UOSInt)(ReadUInt16(&buff[8]) >> 5) - 1;
 	rowCnt = ReadUInt32(&buff[4]);
-	cols = MemAlloc(DBFCol, colCnt);
+	this->cols = MemAllocArr(DBFCol, colCnt);
 	
 	currOfst = 32;
 	currColOfst = 1;
@@ -64,17 +61,12 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 
 DB::DBFFile::~DBFFile()
 {
-//	DEL_CLASS(mut);
-	if (cols)
+	UOSInt i = colCnt;
+	while (i-- > 0)
 	{
-		UOSInt i = colCnt;
-		while (i-- > 0)
-		{
-			this->cols[i].name->Release();
-		}
-		MemFree(cols);
-		this->cols = 0;
+		this->cols[i].name->Release();
 	}
+	MemFreeArr(this->cols);
 	this->name->Release();
 	this->stmData.Delete();
 }
@@ -89,10 +81,10 @@ UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	if (cols)
+	if (this->colCnt > 0)
 	{
 		NN<DB::DBFReader> r;
-		NEW_CLASSNN(r, DB::DBFReader(this, this->colCnt, this->cols, this->rowSize, &this->enc));
+		NEW_CLASSNN(r, DB::DBFReader(*this, this->colCnt, this->cols, this->rowSize, this->enc));
 		return r;
 	}
 	else
@@ -136,7 +128,7 @@ void DB::DBFFile::Reconnect()
 
 Bool DB::DBFFile::IsError()
 {
-	return this->cols == 0;
+	return this->colCnt == 0;
 }
 
 UInt32 DB::DBFFile::GetCodePage()
@@ -326,7 +318,7 @@ Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	return true;
 }
 
-Bool DB::DBFFile::ReadRowData(UOSInt row, UInt8 *recordBuff)
+Bool DB::DBFFile::ReadRowData(UOSInt row, UnsafeArray<UInt8> recordBuff)
 {
 	return this->rowSize == this->stmData->GetRealData(this->refPos + this->rowSize * row, this->rowSize, Data::ByteArray(recordBuff, this->rowSize));
 }
@@ -533,7 +525,7 @@ UInt8 DB::DBFFile::GetLangDriver(UInt32 codePage)
 	}
 }
 
-DB::DBFReader::DBFReader(DB::DBFFile *dbf, UOSInt colCnt, DB::DBFFile::DBFCol *cols, UOSInt rowSize, Text::Encoding *enc)
+DB::DBFReader::DBFReader(NN<DB::DBFFile> dbf, UOSInt colCnt, UnsafeArray<DB::DBFFile::DBFCol> cols, UOSInt rowSize, NN<Text::Encoding> enc)
 {
 	this->dbf = dbf;
 	this->enc = enc;
@@ -543,12 +535,12 @@ DB::DBFReader::DBFReader(DB::DBFFile *dbf, UOSInt colCnt, DB::DBFFile::DBFCol *c
 	this->rowSize = rowSize;
 	this->currIndex = -1;
 	this->recordExist = false;
-	this->recordData = MemAlloc(UInt8, this->rowSize);
+	this->recordData = MemAllocArr(UInt8, this->rowSize);
 }
 
 DB::DBFReader::~DBFReader()
 {
-	MemFree(this->recordData);
+	MemFreeArr(this->recordData);
 }
 
 Bool DB::DBFReader::ReadNext()

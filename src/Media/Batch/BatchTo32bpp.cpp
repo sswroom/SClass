@@ -3,7 +3,7 @@
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchTo32bpp.h"
 
-Media::Batch::BatchTo32bpp::BatchTo32bpp(Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchTo32bpp::BatchTo32bpp(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
@@ -13,7 +13,7 @@ Media::Batch::BatchTo32bpp::~BatchTo32bpp()
 }
 
 
-void Media::Batch::BatchTo32bpp::SetHandler(Media::Batch::BatchHandler *hdlr)
+void Media::Batch::BatchTo32bpp::SetHandler(Optional<Media::Batch::BatchHandler> hdlr)
 {
 	this->hdlr = hdlr;
 }
@@ -34,6 +34,7 @@ void Media::Batch::BatchTo32bpp::ImageOutput(NN<Media::ImageList> imgList, Text:
 		j++;
 	}
 
-	if (this->hdlr)
-		this->hdlr->ImageOutput(imgList, fileId, subId);
+	NN<BatchHandler> hdlr;
+	if (this->hdlr.SetTo(hdlr))
+		hdlr->ImageOutput(imgList, fileId, subId);
 }

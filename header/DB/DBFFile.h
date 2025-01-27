@@ -23,15 +23,13 @@ namespace DB
 		} DBFCol;
 
 	private:
-		//IO::SeekableStream *stm;
 		NN<IO::StreamData> stmData;
 		Text::Encoding enc;
-//		Sync::Mutex *mut;
 		UInt64 refPos;
 		UInt32 rowSize;
 		UOSInt colCnt;
 		UOSInt rowCnt;
-		DBFCol *cols;
+		UnsafeArray<DBFCol> cols;
 		NN<Text::String> name;
 
 	public:
@@ -57,7 +55,7 @@ namespace DB
 		UnsafeArrayOpt<UTF8Char> GetColumnName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 		DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
-		Bool ReadRowData(UOSInt row, UInt8 *recordBuff);
+		Bool ReadRowData(UOSInt row, UnsafeArray<UInt8> recordBuff);
 
 		static Int32 GetCodePage(UInt8 langDriver);
 		static UInt8 GetLangDriver(UInt32 codePage);
@@ -66,17 +64,17 @@ namespace DB
 	class DBFReader : public DB::DBReader
 	{
 	private:
-		DB::DBFFile *dbf;
+		NN<DB::DBFFile> dbf;
 		UOSInt rowCnt;
 		OSInt currIndex;
 		Bool recordExist;
-		UInt8 *recordData;
+		UnsafeArray<UInt8> recordData;
 		UOSInt colCnt;
-		DB::DBFFile::DBFCol *cols;
+		UnsafeArray<DB::DBFFile::DBFCol> cols;
 		UOSInt rowSize;
-		Text::Encoding *enc;
+		NN<Text::Encoding> enc;
 	public:
-		DBFReader(DB::DBFFile *dbf, UOSInt colCnt, DB::DBFFile::DBFCol *cols, UOSInt rowSize, Text::Encoding *enc);
+		DBFReader(NN<DB::DBFFile> dbf, UOSInt colCnt, UnsafeArray<DB::DBFFile::DBFCol> cols, UOSInt rowSize, NN<Text::Encoding> enc);
 		virtual ~DBFReader();
 
 		virtual Bool ReadNext();

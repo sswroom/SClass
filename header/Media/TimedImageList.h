@@ -23,7 +23,7 @@ namespace Media
 			UInt64 fileSize;
 		} ImageInfo;
 
-		IO::FileStream *fs;
+		Optional<IO::FileStream> fs;
 		IO::MemoryStream indexStm;
 		UInt64 currFileOfst;
 		Int32 flags;

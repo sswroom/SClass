@@ -9,16 +9,16 @@ namespace Media
 		class BatchTo32bpp : public BatchHandler
 		{
 		private:
-			Media::Batch::BatchHandler *hdlr;
+			Optional<Media::Batch::BatchHandler> hdlr;
 
 		public:
-			BatchTo32bpp(Media::Batch::BatchHandler *hdlr);
+			BatchTo32bpp(Optional<Media::Batch::BatchHandler> hdlr);
 			virtual ~BatchTo32bpp();
 			
-			void SetHandler(Media::Batch::BatchHandler *hdlr);
+			void SetHandler(Optional<Media::Batch::BatchHandler> hdlr);
 		private:
 			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};
-	};
-};
+	}
+}
 #endif
