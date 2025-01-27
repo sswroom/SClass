@@ -773,7 +773,7 @@ UOSInt Data::Compress::Inflater::Write(Data::ByteArrayR buff)
 	while (true || this->avail_in > 0)
 	{
 		InflateResult res = this->lastRes = this->Inflate(false);
-		if (this->avail_in == 0 || (OSInt)res < 0)
+		if (res == InflateResult::StreamEnd || this->avail_in == 0 || (OSInt)res < 0)
 		{
 //			error = true;
 			break;
