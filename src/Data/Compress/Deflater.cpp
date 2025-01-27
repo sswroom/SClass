@@ -1279,7 +1279,6 @@ Bool Data::Compress::Deflater::CompressDirect(Data::ByteArray destBuff, OutParam
 	DeflateStatus defl_status;
 	in_bytes = srcBuff.GetCount();
 	out_bytes = destBuff.GetCount();
-	UOSInt totalSize = 0;
 
 	while (true)
 	{
@@ -1291,16 +1290,16 @@ Bool Data::Compress::Deflater::CompressDirect(Data::ByteArray destBuff, OutParam
 		}
 		if (defl_status != DeflateStatus::Okay)
 		{
-			printf("Status: %d, %d, %d\r\n", defl_status, in_bytes, out_bytes);
-			printf("%d, %d, %d\r\n", state.m_out_buf_ofs, state.m_src_buf_left, state.m_prev_return_status);
+			printf("Status: %d, %d, %d\r\n", (UInt32)defl_status, (UInt32)in_bytes, (UInt32)out_bytes);
+			printf("%d, %d, %d\r\n", (UInt32)state.m_out_buf_ofs, (UInt32)state.m_src_buf_left, (UInt32)state.m_prev_return_status);
 			return false;
 		}
 		if (in_bytes == 0 && out_bytes == 0 && srcBuff.GetCount() == 0)
 		{
-			printf("Size 0: %d, %d, %d\r\n", defl_status, in_bytes, out_bytes);
+			printf("Size 0: %d, %d, %d\r\n", (UInt32)defl_status, (UInt32)in_bytes, (UInt32)out_bytes);
 			return false;
 		}
-		printf("Status: %d, %d, %d\r\n", defl_status, in_bytes, out_bytes);
+		printf("Status: %d, %d, %d\r\n", (UInt32)defl_status, (UInt32)in_bytes, (UInt32)out_bytes);
 		srcBuff += in_bytes;
 		destBuff += out_bytes;
 		in_bytes = srcBuff.GetCount();
