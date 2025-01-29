@@ -522,6 +522,9 @@ SDCardInfo.o: ../../src/IO/SDCardInfo.cpp
 SDCardMgrL.o: ../../src/IO/SDCardMgrL.cpp
 SDCardMgrNull.o: ../../src/IO/SDCardMgrNull.cpp
 SDCardMgrW.o: ../../src/IO/SDCardMgrW.cpp
+SeleniumIDE.o: ../../src/IO/SeleniumIDE.cpp
+SeleniumIDERunner.o: ../../src/IO/SeleniumIDERunner.cpp
+$-I ../../ThirdParty/webdriverxx/include
 Sensor.o: ../../src/IO/Sensor.cpp
 SensorAccelerometerAndroid.o: ../../src/IO/SensorAccelerometerAndroid.cpp
 SensorAccelerometerW.o: ../../src/IO/SensorAccelerometerW.cpp
@@ -1949,6 +1952,7 @@ AVIRSAMLTestForm.o: ../../src/SSWR/AVIRead/AVIRSAMLTestForm.cpp
 AVIRSDCardForm.o: ../../src/SSWR/AVIRead/AVIRSDCardForm.cpp
 AVIRSectorForm.o: ../../src/SSWR/AVIRead/AVIRSectorForm.cpp
 AVIRSelCANForm.o: ../../src/SSWR/AVIRead/AVIRSelCANForm.cpp
+AVIRSeleniumIDEForm.o: ../../src/SSWR/AVIRead/AVIRSeleniumIDEForm.cpp
 AVIRSeleniumLogForm.o: ../../src/SSWR/AVIRead/AVIRSeleniumLogForm.cpp
 AVIRSelIOPinForm.o: ../../src/SSWR/AVIRead/AVIRSelIOPinForm.cpp
 AVIRSelPrinterForm.o: ../../src/SSWR/AVIRead/AVIRSelPrinterForm.cpp

@@ -37,8 +37,9 @@ namespace IO
 		SystemInfoLog,
 		JasperReport,
 		PDFDocument,
+		SeleniumIDE,
 
-		LastType = PDFDocument
+		LastType = SeleniumIDE
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);

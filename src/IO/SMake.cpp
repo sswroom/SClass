@@ -563,6 +563,8 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	Text::CStringNN sourceFile,
+	Text::CString sourceRefPath,
+	NN<Data::ArrayListUInt64> objParsedProgs,
 	NN<Text::StringBuilderUTF8> tmpSb)
 {
 	Bool skipCheck = false;
@@ -656,15 +658,40 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 					{
 						if (!this->progMap.GetC(str1.ToCString()).SetTo(prog))
 						{
+							Text::CStringNN nnsrc;
+							Text::PString currPath = str1;
+							UOSInt j;
 							Text::StringBuilderUTF8 sb2;
-							sb2.Append(str1);
-							sb2.AppendC(UTF8STRC(" not found in "));
-							sb2.Append(sourceFile);
-							this->SetErrorMsg(sb2.ToCString());
-							return false;
+							if (!sourceRefPath.SetTo(nnsrc) || (j = nnsrc.LastIndexOf('/')) == INVALID_INDEX)
+							{
+								sb2.Append(str1);
+								sb2.AppendC(UTF8STRC(" not found in "));
+								sb2.Append(sourceFile);
+								this->SetErrorMsg(sb2.ToCString());
+								return false;
+							}
+							sb2.AppendC(nnsrc.v, j + 1);
+							while (currPath.StartsWith(CSTR("../")) && sb2.EndsWith('/'))
+							{
+								sb2.RemoveChars(1);
+								j = sb2.LastIndexOf('/');
+								sb2.TrimToLength(j + 1);
+								currPath = currPath.Substring(3);
+							}
+							sb2.Append(currPath);
+							if (!this->progMap.GetC(sb2.ToCString()).SetTo(prog))
+							{
+								sb2.ClearStr();
+								sb2.Append(str1);
+								sb2.AppendC(UTF8STRC(" not found in "));
+								sb2.Append(sourceFile);
+								this->SetErrorMsg(sb2.ToCString());
+								return false;
+							}
 						}
-						else
+						if (objParsedProgs->SortedIndexOf((UOSInt)prog.Ptr()) < 0)
 						{
+							objParsedProgs->SortedInsert((UOSInt)prog.Ptr());
 							NN<Text::String> debugObj;
 							procList->PutNN(prog->name, 1);
 
@@ -679,7 +706,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 #if defined(VERBOSE)
 							printf("Parsing header \"%s\" in source %s\r\n", prog->name->v, sourceFile.v);
 #endif
-							if (!this->ParseHeader(objList, libList, procList, headerList, thisTime, prog->name, sourceFile, tmpSb))
+							if (!this->ParseHeader(objList, libList, procList, headerList, thisTime, prog->name, sourceFile, objParsedProgs, tmpSb))
 							{
 								return false;
 							}
@@ -714,7 +741,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 									{
 										return false;
 									}
-/*									if (thisTime > lastTime)
+	/*									if (thisTime > lastTime)
 									{
 										lastTime = thisTime;
 									}*/
@@ -751,6 +778,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 	OutParam<Int64> latestTime,
 	NN<Text::String> headerFile,
 	Text::CStringNN sourceFile,
+	NN<Data::ArrayListUInt64> objParsedProgs,
 	NN<Text::StringBuilderUTF8> tmpSb)
 {
 	NN<IO::SMake::ConfigItem> cfg;
@@ -782,7 +810,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 			{
 				nnheaderList->SortedInsert(headerFile);
 			}
-			if (this->ParseSource(objList, libList, procList, headerList, thisTime, CSTRP(sbuff, sptr), tmpSb))
+			if (this->ParseSource(objList, libList, procList, headerList, thisTime, CSTRP(sbuff, sptr), headerFile->ToCString(), objParsedProgs, tmpSb))
 			{
 #if defined(VERBOSE)
 				tmpSb->ClearStr();
@@ -821,7 +849,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 		{
 			nnheaderList->SortedInsert(headerFile);
 		}
-		if (this->ParseSource(objList, libList, procList, headerList, thisTime, CSTRP(sbuff, sptr), tmpSb))
+		if (this->ParseSource(objList, libList, procList, headerList, thisTime, CSTRP(sbuff, sptr), headerFile->ToCString(), objParsedProgs, tmpSb))
 		{
 #if defined(VERBOSE)
 			tmpSb->ClearStr();
@@ -916,8 +944,9 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 		NN<Text::String> s;
 		if (s.Set(prog->srcFile))
 		{
+			Data::ArrayListUInt64 objParsedProgs;
 			Int64 thisTime;
-			if (!this->ParseSource(objList, libList, procList, headerList, thisTime, s->ToCString(), tmpSb))
+			if (!this->ParseSource(objList, libList, procList, headerList, thisTime, s->ToCString(), 0, objParsedProgs, tmpSb))
 			{
 				return false;
 			}
@@ -974,6 +1003,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 		return true;
 	}
 
+	Data::ArrayListUInt64 objParsedProgs;
 	NN<IO::SMake::ConfigItem> cfg;
 	if (this->cfgMap.GetC(CSTR("DEPS")).SetTo(cfg))
 	{
@@ -986,7 +1016,8 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 			return false;
 		}
 		objList->PutNN(cfg->value, 1);
-		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, subProg->srcFile->ToCString(), tmpSb))
+		objParsedProgs.Clear();
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, subProg->srcFile->ToCString(), 0, objParsedProgs, tmpSb))
 		{
 			return false;
 		}
@@ -1006,7 +1037,8 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 			this->SetErrorMsg(tmpSb->ToCString());
 			return false;
 		}
-		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, subProg->srcFile->ToCString(), tmpSb))
+		objParsedProgs.Clear();
+		if (!this->ParseSource(objList, libList, procList, headerList, thisTime, subProg->srcFile->ToCString(), 0, objParsedProgs, tmpSb))
 		{
 			return false;
 		}

@@ -27,6 +27,7 @@
 #include "SSWR/AVIRead/AVIRPDFObjectForm.h"
 #include "SSWR/AVIRead/AVIRPlaylistForm.h"
 #include "SSWR/AVIRead/AVIRSectorForm.h"
+#include "SSWR/AVIRead/AVIRSeleniumIDEForm.h"
 #include "SSWR/AVIRead/AVIRSelPrinterForm.h"
 #include "SSWR/AVIRead/AVIRSMakeForm.h"
 #include "SSWR/AVIRead/AVIRSystemInfoLogForm.h"
@@ -247,6 +248,14 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		{
 			NN<SSWR::AVIRead::AVIRPDFObjectForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRPDFObjectForm(0, this->ui, *this, NN<Media::PDFDocument>::ConvertFrom(pobj)));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
+	case IO::ParserType::SeleniumIDE:
+		{
+			NN<SSWR::AVIRead::AVIRSeleniumIDEForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSeleniumIDEForm(0, this->ui, *this, NN<IO::SeleniumIDE>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

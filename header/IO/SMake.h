@@ -5,6 +5,7 @@
 #include "Data/ArrayListNN.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListUInt64.h"
 #include "Data/FastStringMap.h"
 #include "Data/FastStringMapNN.h"
 #include "Data/StringMapNN.h"
@@ -67,8 +68,8 @@ namespace IO
 		Bool LoadConfigFile(Text::CStringNN cfgFile);
 
 		Text::PString ParseCond(Text::PString str1, OutParam<Bool> valid);
-		Bool ParseSource(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseHeader(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> headerFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseSource(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, Text::CString sourceRefPath, NN<Data::ArrayListUInt64> objParsedProgs, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseHeader(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> headerFile, Text::CStringNN sourceFile, NN<Data::ArrayListUInt64> objParsedProgs, NN<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
 		Bool ParseProgInternal(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> tmpSb);
 

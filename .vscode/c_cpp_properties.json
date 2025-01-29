@@ -8,6 +8,7 @@
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
                 "${workspaceFolder}/../SClass/ThirdParty/KSSample",
                 "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "${workspaceFolder}/../SClass/ThirdParty/webdriverxx/include",
                 "/usr/include/**",
                 "/usr/lib/x86_64-linux-gnu/**",
                 "/usr/lib/jvm/java-17-openjdk-amd64/include",

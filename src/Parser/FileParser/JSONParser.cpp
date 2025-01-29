@@ -3,6 +3,7 @@
 #include "Data/ArrayListA.h"
 #include "Data/ByteTool.h"
 #include "DB/JSONDB.h"
+#include "IO/SeleniumIDE.h"
 #include "Map/DBMapLayer.h"
 #include "Map/TileMapLayer.h"
 #include "Map/VectorLayer.h"
@@ -44,6 +45,10 @@ void Parser::FileParser::JSONParser::PrepareSelector(NN<IO::FileSelector> select
 	{
 		selector->AddFilter(CSTR("*.GeoJSON"), CSTR("GeoJSON File"));
 	}
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::SeleniumIDE)
+	{
+		selector->AddFilter(CSTR("*.side"), CSTR("Selenium IDE File"));
+	}
 }
 
 IO::ParserType Parser::FileParser::JSONParser::GetParserType()
@@ -54,12 +59,16 @@ IO::ParserType Parser::FileParser::JSONParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	Text::CStringNN fileName = fd->GetShortName().OrEmpty();
-	Bool valid = false;
+	UOSInt fileType = 0;
 	if (fileName.EndsWithICase(UTF8STRC(".geojson")) || fileName.EndsWithICase(UTF8STRC(".json")))
 	{
-		valid = true;
+		fileType = 1;
 	}
-	if (!valid)
+	else if (fileName.EndsWithICase(UTF8STRC(".side")))
+	{
+		fileType = 2;
+	}
+	if (fileType == 0)
 		return 0;
 	UInt64 fileOfst;
 	if (hdr[0] == '{' || hdr[0] == '[')
@@ -87,12 +96,19 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::S
 		return 0;
 	}
 
-	pobj = ParseJSON(nnfileJSON, fd->GetFullName(), fd->GetShortName().OrEmpty(), targetType, pkgFile, this->parsers);
+	if (fileType == 2 && nnfileJSON->GetType() == Text::JSONType::Object)
+	{
+		NEW_CLASSOPT(pobj, IO::SeleniumIDE(fd->GetFullName(), NN<Text::JSONObject>::ConvertFrom(nnfileJSON)));
+	}
+	else
+	{
+		pobj = ParseGeoJSON(nnfileJSON, fd->GetFullName(), fd->GetShortName().OrEmpty(), targetType, pkgFile, this->parsers);
+	}
 	nnfileJSON->EndUse();
 	return pobj;
 }
 
-Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseJSON(NN<Text::JSONBase> fileJSON, NN<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
+Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text::JSONBase> fileJSON, NN<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;

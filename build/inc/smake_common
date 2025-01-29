@@ -14,6 +14,7 @@ INCLUDEPATH +=:../../ThirdParty/miniz
 INCLUDEPATH +=:../../ThirdParty/miniz/_build
 INCLUDEPATH +=:../../ThirdParty/sqlite3
 INCLUDEPATH +=:../../ThirdParty/adl
+INCLUDEPATH +=:../../ThirdParty/webdriverxx/include
 
 mcu:
 @MCU_Console
@@ -1949,6 +1950,10 @@ IO/SDCardInfo.h:
 @SDCardInfo.o
 IO/SectorData.h:
 IO/SeekableStream.h:
+IO/SeleniumIDE.h:
+@SeleniumIDE.o
+IO/SeleniumIDERunner.h:
+@SeleniumIDERunner.o
 IO/Sensor.h:
 @Sensor.o
 IO/SensorAccelerometer.h:
@@ -4257,6 +4262,8 @@ SSWR/AVIRead/AVIRSectorForm.h:
 @AVIRSectorForm.o
 SSWR/AVIRead/AVIRSelCANForm.h:
 @AVIRSelCANForm.o
+SSWR/AVIRead/AVIRSeleniumIDEForm.h:
+@AVIRSeleniumIDEForm.o
 SSWR/AVIRead/AVIRSeleniumLogForm.h:
 @AVIRSeleniumLogForm.o
 SSWR/AVIRead/AVIRSelIOPinForm.h:
@@ -5104,6 +5111,51 @@ UtilUI/TextSearchForm.h:
 @TextSearchForm.o
 UtilUI/TextViewerForm.h:
 @TextViewerForm.o
+
+webdriverxx.h:
+webdriverxx/by.h:
+webdriverxx/capabilities.h:
+webdriverxx/client.h:
+webdriverxx/client.inl:
+webdriverxx/conversions.h:
+webdriverxx/element.h:
+webdriverxx/element.inl:
+webdriverxx/errors.h:
+webdriverxx/js_args.h:
+webdriverxx/keys.h:
+webdriverxx/picojson.h:
+webdriverxx/relativeby.h:
+webdriverxx/response_status_code.h:
+webdriverxx/session.h:
+webdriverxx/session.inl:
+webdriverxx/types.h:
+webdriverxx/wait.h:
+webdriverxx/wait_match.h:
+webdriverxx/webdriver.h:
+webdriverxx/window.h:
+webdriverxx/browsers/chrome.h:
+webdriverxx/browsers/edge.h:
+webdriverxx/browsers/firefox.h:
+webdriverxx/browsers/ie.h:
+webdriverxx/browsers/opera.h:
+webdriverxx/browsers/phantom.h:
+webdriverxx/browsers/safari.h:
+webdriverxx/detail/error_handling.h:
+webdriverxx/detail/factories.h:
+webdriverxx/detail/factories_impl.h:
+webdriverxx/detail/finder.h:
+webdriverxx/detail/finder.inl:
+webdriverxx/detail/http_client.h:
+webdriverxx/detail/http_connection.h:
+webdriverxx/detail/http_request.h:
+webdriverxx/detail/keyboard.h:
+webdriverxx/detail/meta_tools.h:
+webdriverxx/detail/resource.h:
+webdriverxx/detail/shared.h:
+webdriverxx/detail/time.h:
+webdriverxx/detail/to_string.h:
+webdriverxx/detail/types.h:
+webdriverxx/utils/picobase64.h:
 
 include ../inc/smake_objects
 include ../../../*/SMake.cfg

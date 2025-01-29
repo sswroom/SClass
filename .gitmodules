@@ -13,3 +13,6 @@
 [submodule "js/leaflet-rotate"]
 	path = js/leaflet-rotate
 	url = https://github.com/sswroom/leaflet-rotate
+[submodule "ThirdParty/webdriverxx"]
+	path = ThirdParty/webdriverxx
+	url = https://github.com/GermanAizek/webdriverxx.git

@@ -62,6 +62,8 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 		return CSTR("JasperReport");
 	case ParserType::PDFDocument:
 		return CSTR("PDFDocument");
+	case ParserType::SeleniumIDE:
+		return CSTR("SeleniumIDE");
 	case ParserType::Unknown:
 	default:
 		return CSTR("Unknwon");

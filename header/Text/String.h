@@ -64,6 +64,7 @@ namespace Text
 		static NN<String> NewEmpty() { return emptyStr.Clone(); }
 		static NN<String> OrEmpty(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret; return emptyStr.Clone(); }
 		static Optional<String> CopyOrNull(Optional<Text::String> s) { NN<Text::String> ret; if (s.SetTo(ret)) return ret->Clone(); return 0; }
+		static Text::CStringNN ToCStringOr(Optional<Text::String> s, Text::CStringNN cstr) { NN<Text::String> nns; if (s.SetTo(nns)) return nns->ToCString(); else return cstr; }
 		void Release();
 		NN<String> Clone() const;
 
