@@ -3,11 +3,15 @@
 #include "IO/SeleniumIDE.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
 #include "UI/GUIListView.h"
 #include "UI/GUIPanel.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -17,8 +21,17 @@ namespace SSWR
 		class AVIRSeleniumIDEForm : public UI::GUIForm
 		{
 		private:
+			struct RunStepStatus
+			{
+				Data::Timestamp ts;
+				UOSInt index;
+				Data::Duration dur;
+			};
+
+		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IO::SeleniumIDE> side;
+			Data::ArrayListNN<RunStepStatus> statusList;
 
 			NN<UI::GUIPanel> pnlSIDE;
 			NN<UI::GUILabel> lblSIDEName;
@@ -29,7 +42,11 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSIDEURL;
 			NN<UI::GUIListBox> lbTest;
 			NN<UI::GUIPanel> pnlTestCtrl;
+			NN<UI::GUICheckBox> chkTestMobile;
+			NN<UI::GUIComboBox> cboTestMobile;
 			NN<UI::GUIButton> btnTestRun;
+			NN<UI::GUITabControl> tcTest;
+			NN<UI::GUITabPage> tpCommand;
 			NN<UI::GUIPanel> pnlCommand;
 			NN<UI::GUIListView> lvCommand;
 			NN<UI::GUILabel> lblCommand;
@@ -40,11 +57,15 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCommandValue;
 			NN<UI::GUILabel> lblCommandComment;
 			NN<UI::GUITextBox> txtCommandComment;
+			NN<UI::GUITabPage> tpRunLog;
+			NN<UI::GUIListView> lvRunLog;
 
 			static void __stdcall OnCommandSelChg(AnyType userObj);
 			static void __stdcall OnTestSelChg(AnyType userObj);
 			static void __stdcall OnTestRunClicked(AnyType userObj);
+			static void __stdcall OnStepStatus(AnyType userObj, UOSInt index, Data::Duration dur);
 			void DisplayTest();
+			void DisplayStatus();
 		public:
 			AVIRSeleniumIDEForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SeleniumIDE> side);
 			virtual ~AVIRSeleniumIDEForm();

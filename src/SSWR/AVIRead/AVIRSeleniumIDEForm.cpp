@@ -34,16 +34,45 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 	NN<IO::SeleniumTest> test;
 	if (me->lbTest->GetSelectedItem().GetOpt<IO::SeleniumTest>().SetTo(test))
 	{
-		IO::SeleniumIDERunner runner;
-		if (runner.Run(test))
+		me->statusList.MemFreeAll();
+		Text::StringBuilderUTF8 sb;
+		Text::CString mobile = 0;
+		if (me->chkTestMobile->IsChecked())
 		{
+			me->cboTestMobile->GetText(sb);
+			mobile = sb.ToCString();
+		}
+		IO::SeleniumIDERunner::GPSPosition location;
+		location.latitude = 22.4;
+		location.longitude = 114.2;
+		location.accuracy = 4.5;
+		IO::SeleniumIDERunner runner;
+		if (runner.Run(test, mobile, location, OnStepStatus, me))
+		{
+			me->DisplayStatus();
 			me->ui->ShowMsgOK(CSTR("Test Run successfully"), CSTR("Selenium IDE"), me);
 		}
 		else
 		{
-			me->ui->ShowMsgOK(CSTR("Test Run failed"), CSTR("Selenium IDE"), me);
+			me->DisplayStatus();
+			Text::StringBuilderUTF8 sb;
+			sb.Append(CSTR("Test Run failed: Error Index = "));
+			sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
+			sb.Append(CSTR("\r\n"));
+			sb.AppendOpt(runner.GetLastErrorMsg());
+			me->ui->ShowMsgOK(sb.ToCString(), CSTR("Selenium IDE"), me);
 		}
 	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnStepStatus(AnyType userObj, UOSInt index, Data::Duration dur)
+{
+	NN<SSWR::AVIRead::AVIRSeleniumIDEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSeleniumIDEForm>();
+	NN<RunStepStatus> status = MemAllocNN(RunStepStatus);
+	status->ts = Data::Timestamp::Now();
+	status->index = index;
+	status->dur = dur;
+	me->statusList.Add(status);
 }
 
 void SSWR::AVIRead::AVIRSeleniumIDEForm::DisplayTest()
@@ -52,17 +81,42 @@ void SSWR::AVIRead::AVIRSeleniumIDEForm::DisplayTest()
 	this->lvCommand->ClearItems();
 	if (this->lbTest->GetSelectedItem().GetOpt<IO::SeleniumTest>().SetTo(test))
 	{
+		UTF8Char sbuff[32];
+		UnsafeArray<UTF8Char> sptr;
 		NN<IO::SeleniumCommand> command;
 		NN<Text::String> s;
 		UOSInt i = 0;
 		UOSInt j;
 		while (test->GetCommand(i).SetTo(command))
 		{
-			j = this->lvCommand->AddItem(Text::String::OrEmpty(command->GetCommand()), command);
-			if (command->GetTarget().SetTo(s)) this->lvCommand->SetSubItem(j, 1, s);
-			if (command->GetValue().SetTo(s)) this->lvCommand->SetSubItem(j, 2, s);
+			sptr = Text::StrUOSInt(sbuff, i);
+			j = this->lvCommand->AddItem(CSTRP(sbuff, sptr), command);
+			if (command->GetCommand().SetTo(s)) this->lvCommand->SetSubItem(j, 1, s);
+			if (command->GetTarget().SetTo(s)) this->lvCommand->SetSubItem(j, 2, s);
+			if (command->GetValue().SetTo(s)) this->lvCommand->SetSubItem(j, 3, s);
 			i++;
 		}
+	}
+}
+
+void SSWR::AVIRead::AVIRSeleniumIDEForm::DisplayStatus()
+{
+	this->lvRunLog->ClearItems();
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	NN<RunStepStatus> status;
+	UOSInt i = 0;
+	UOSInt j = this->statusList.GetCount();
+	while (i < j)
+	{
+		status = this->statusList.GetItemNoCheck(i);
+		sptr = status->ts.ToStringNoZone(sbuff);
+		this->lvRunLog->AddItem(CSTRP(sbuff, sptr), 0);
+		sptr = Text::StrUOSInt(sbuff, status->index);
+		this->lvRunLog->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, status->dur.GetTotalSec());
+		this->lvRunLog->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+		i++;
 	}
 }
 
@@ -99,16 +153,26 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->pnlTestCtrl = ui->NewPanel(*this);
 	this->pnlTestCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlTestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->chkTestMobile = ui->NewCheckBox(this->pnlTestCtrl, CSTR("Mobile"), false);
+	this->chkTestMobile->SetRect(4, 4, 100, 23, false);
+	this->cboTestMobile = ui->NewComboBox(this->pnlTestCtrl, true);
+	this->cboTestMobile->SetRect(104, 4, 150, 23, false);
+	IO::SeleniumIDERunner::FillMobileItemSelector(this->cboTestMobile);
+	this->cboTestMobile->SetText(CSTR("iPhone 14 Pro Max"));
 	this->btnTestRun = ui->NewButton(this->pnlTestCtrl, CSTR("Run Test"));
-	this->btnTestRun->SetRect(4, 4, 75, 23, false);
+	this->btnTestRun->SetRect(254, 4, 75, 23, false);
 	this->btnTestRun->HandleButtonClick(OnTestRunClicked, this);
-	this->pnlCommand = ui->NewPanel(*this);
+	this->tcTest = ui->NewTabControl(*this);
+	this->tcTest->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpCommand = this->tcTest->AddTabPage(CSTR("Commands"));
+	this->pnlCommand = ui->NewPanel(this->tpCommand);
 	this->pnlCommand->SetRect(0, 0, 100, 103, false);
 	this->pnlCommand->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->lvCommand = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
+	this->lvCommand = ui->NewListView(this->tpCommand, UI::ListViewStyle::Table, 4);
 	this->lvCommand->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCommand->SetShowGrid(true);
 	this->lvCommand->SetFullRowSelect(true);
+	this->lvCommand->AddColumn(CSTR("Index"), 30);
 	this->lvCommand->AddColumn(CSTR("Command"), 120);
 	this->lvCommand->AddColumn(CSTR("Target"), 300);
 	this->lvCommand->AddColumn(CSTR("Value"), 120);
@@ -133,6 +197,14 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->txtCommandComment = ui->NewTextBox(this->pnlCommand, CSTR(""));
 	this->txtCommandComment->SetRect(104, 76, 400, 23, false);
 	this->txtCommandComment->SetReadOnly(true);
+	this->tpRunLog = this->tcTest->AddTabPage(CSTR("Run Log"));
+	this->lvRunLog = ui->NewListView(this->tpRunLog, UI::ListViewStyle::Table, 3);
+	this->lvRunLog->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvRunLog->SetShowGrid(true);
+	this->lvRunLog->SetFullRowSelect(true);
+	this->lvRunLog->AddColumn(CSTR("Time"), 150);
+	this->lvRunLog->AddColumn(CSTR("Index"), 120);
+	this->lvRunLog->AddColumn(CSTR("Duration"), 100);
 
 	NN<IO::SeleniumTest> test;
 	UOSInt i = 0;
@@ -151,6 +223,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 SSWR::AVIRead::AVIRSeleniumIDEForm::~AVIRSeleniumIDEForm()
 {
 	this->side.Delete();
+	this->statusList.MemFreeAll();
 }
 
 void SSWR::AVIRead::AVIRSeleniumIDEForm::OnMonitorChanged()
