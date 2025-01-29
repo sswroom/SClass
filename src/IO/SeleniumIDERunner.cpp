@@ -3,6 +3,15 @@
 #include "IO/SeleniumIDERunner.h"
 #include "Sync/ThreadUtil.h"
 
+webdriverxx::By SeleniumIDERunner_ParseBy(Text::CStringNN target)
+{
+	if (target.StartsWith(CSTR("xpath=")))
+	{
+		return webdriverxx::ByXPath((const Char*)target.Substring(6).v.Ptr());
+	}
+	throw webdriverxx::WebDriverException(std::string("Unknown Target: ") + (const Char*)target.v.Ptr());
+}
+
 IO::SeleniumIDERunner::SeleniumIDERunner()
 {
 }
@@ -25,10 +34,11 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test)
 	{
 		webdriverxx::ChromeOptions options;
 		webdriverxx::Chrome chrome;
-		options.SetSpecCompliantProtocol(false);
+//		options.SetSpecCompliantProtocol(false);
+		options.SetArgs({"start-maximized"});
 		chrome.SetChromeOptions(options);
-		chrome.SetJavascriptEnabled(true);
-		webdriverxx::WebDriver driver = webdriverxx::Start(chrome);
+//		chrome.SetJavascriptEnabled(true);
+		webdriverxx::WebDriver driver = webdriverxx::Start(chrome, "http://localhost:4444/wd/hub");
 		currIndex = 0;
 		while (test->GetCommand(currIndex).SetTo(command))
 		{
@@ -67,7 +77,17 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test)
 //				sb.AppendUTF8Char(')');
 //				driver.Execute((const Char*)sb.v.Ptr());
 //				driver.GetCurrentWindow().Maximize();
-				driver.GetCurrentWindow().SetSize(webdriverxx::Size(Text::StrToInt32(sbuff), Text::StrToInt32(&sbuff[i + 1])));
+//				driver.GetCurrentWindow().SetSize(webdriverxx::Size(Text::StrToInt32(sbuff), Text::StrToInt32(&sbuff[i + 1])));
+//				driver.GetCurrentWindow().SetRect(webdriverxx::Rect(0, 0, Text::StrToInt32(sbuff), Text::StrToInt32(&sbuff[i + 1])));
+			}
+			else if (s->Equals(CSTR("waitForElementVisible")))
+			{
+				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
+				webdriverxx::Element ele = driver.FindElement(by);
+				auto element_is_displayed = [&]{
+					return ele.IsDisplayed();
+				};
+				webdriverxx::WaitUntil(element_is_displayed);
 			}
 			else
 			{
