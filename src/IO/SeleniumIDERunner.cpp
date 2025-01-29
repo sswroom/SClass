@@ -25,8 +25,9 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test)
 	{
 		webdriverxx::ChromeOptions options;
 		webdriverxx::Chrome chrome;
-//		options = options.SetSpecCompliantProtocol(false);
+		options.SetSpecCompliantProtocol(false);
 		chrome.SetChromeOptions(options);
+		chrome.SetJavascriptEnabled(true);
 		webdriverxx::WebDriver driver = webdriverxx::Start(chrome);
 		currIndex = 0;
 		while (test->GetCommand(currIndex).SetTo(command))
@@ -57,16 +58,16 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test)
 					driver.DeleteSession();
 					return false;
 				}
-				sbuff[i] = 0;
-				sb.ClearStr();
-				sb.Append(CSTR("window.resizeTo("));
-				sb.AppendC(sbuff, i);
-				sb.AppendUTF8Char(',');
-				sb.AppendP(&sbuff[i + 1], sptr);
-				sb.AppendUTF8Char(')');
-				driver.Execute((const Char*)sb.v.Ptr());
+//				sbuff[i] = 0;
+//				sb.ClearStr();
+//				sb.Append(CSTR("window.resizeTo("));
+//				sb.AppendC(sbuff, i);
+//				sb.AppendUTF8Char(',');
+//				sb.AppendP(&sbuff[i + 1], sptr);
+//				sb.AppendUTF8Char(')');
+//				driver.Execute((const Char*)sb.v.Ptr());
 //				driver.GetCurrentWindow().Maximize();
-				//driver.GetCurrentWindow().SetSize(webdriverxx::Size(Text::StrToInt32(sbuff), Text::StrToInt32(&sbuff[i + 1])));
+				driver.GetCurrentWindow().SetSize(webdriverxx::Size(Text::StrToInt32(sbuff), Text::StrToInt32(&sbuff[i + 1])));
 			}
 			else
 			{

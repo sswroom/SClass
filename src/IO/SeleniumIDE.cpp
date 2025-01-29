@@ -41,7 +41,14 @@ IO::SeleniumCommand::~SeleniumCommand()
 	OPTSTR_DEL(this->command);
 	OPTSTR_DEL(this->target);
 	OPTSTR_DEL(this->value);
-	this->targets.MemFreeAll();
+	this->targets.FreeAll(SeleniumTargetFree);
+}
+
+void __stdcall IO::SeleniumCommand::SeleniumTargetFree(NN<SeleniumTarget> target)
+{
+	target->name->Release();
+	target->value->Release();
+	MemFreeNN(target);
 }
 
 IO::SeleniumTest::SeleniumTest(NN<Text::JSONObject> test)

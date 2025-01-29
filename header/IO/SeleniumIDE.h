@@ -32,6 +32,7 @@ namespace IO
 		Optional<Text::String> GetTarget() const { return this->target; }
 		Optional<Text::String> GetValue() const { return this->value; }
 		Optional<SeleniumTarget> GetTargetItem(UOSInt index) const { return this->targets.GetItem(index); }
+		static void __stdcall SeleniumTargetFree(NN<SeleniumTarget> target);
 	};
 
 	class SeleniumTest
