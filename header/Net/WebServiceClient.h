@@ -39,5 +39,5 @@ namespace Net
 		Bool Request(RequestType rt);
 		const UTF8Char *GetResponseVal();
 	};
-};
+}
 #endif
