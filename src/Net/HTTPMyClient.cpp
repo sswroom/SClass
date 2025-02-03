@@ -15,7 +15,7 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 
 //#define LOGREPLY
-//#define SHOWDEBUG
+#define SHOWDEBUG
 //#define DEBUGSPEED
 #if defined(SHOWDEBUG) || defined(DEBUGSPEED)
 #include <stdio.h>
@@ -757,6 +757,9 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	{
 		if (this->buffSize > 0)
 		{
+#ifdef SHOWDEBUG
+			printf("Connect: buffSize = %d\r\n", (Int32)this->buffSize);
+#endif
 			this->contRead += this->buffSize;
 			this->buffSize = 0;
 		}
@@ -770,7 +773,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			size = cli->Read(Data::ByteArray(this->dataBuff, size));
 			this->totalDownload += size;
 #ifdef SHOWDEBUG
-			printf("Read from remote(5), size = %d\r\n", (Int32)size);
+			printf("Read from remote(5), size = %d, contLeng = %d, contRead = %d\r\n", (Int32)size, (Int32)this->contLeng, (Int32)this->contRead);
 #endif
 			if (size == 0)
 			{
@@ -987,10 +990,13 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 			this->Write(sbForm->ToByteArray());
 			sbForm.Delete();
 		}
+		if (!this->writing)
+		{
+			this->reqMstm.Write(Data::ByteArrayR((UInt8*)"\r\n", 2));
+		}
 		this->canWrite = false;
 		this->writing = true;
 
-		this->reqMstm.Write(Data::ByteArrayR((UInt8*)"\r\n", 2));
 		UOSInt reqSize;
 		UOSInt writeSize = 0;
 		UOSInt currSize = 0;
@@ -1100,9 +1106,10 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 #endif
 					this->headers.Add(s);
 
-					if (s->StartsWithICase(UTF8STRC("Transfer-Encoding: ")))
+					if (s->StartsWithICase(UTF8STRC("Transfer-Encoding:")))
 					{
-						if (Text::StrStartsWithC(&s->v[19], s->leng - 19, UTF8STRC("chunked")))
+						s->leng = (UOSInt)(Text::StrTrimC(&s->v[18], s->leng - 18) - s->v);
+						if (Text::StrStartsWithC(&s->v[18], s->leng - 18, UTF8STRC("chunked")))
 						{
 							this->contEnc = 1;
 							this->chunkSizeLeft = 0;
@@ -1110,18 +1117,18 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 					}
 					else if (s->StartsWithICase(UTF8STRC("Content-")))
 					{
-						if (s->StartsWithICase(8, UTF8STRC("Length: ")))
+						if (s->StartsWithICase(8, UTF8STRC("Length:")))
 						{
-							s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
-							Text::StrToUInt64S(&s->v[16], this->contLeng, 0);
+							s->leng = (UOSInt)(Text::StrTrimC(&s->v[15], s->leng - 15) - s->v);
+							Text::StrToUInt64S(&s->v[15], this->contLeng, 0);
 						}
 						else if (s->StartsWithICase(8, UTF8STRC("Type: text/event-stream")))
 						{
 							eventStream = true;
 						}
-						else if (s->StartsWithICase(8, UTF8STRC("Disposition: ")))
+						else if (s->StartsWithICase(8, UTF8STRC("Disposition:")))
 						{
-							UOSInt i = s->IndexOf(UTF8STRC("filename="), 21);
+							UOSInt i = s->IndexOf(UTF8STRC("filename="), 20);
 							if (i >= 0)
 							{
 								if (s->v[i + 9] == '"')

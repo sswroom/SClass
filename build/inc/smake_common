@@ -3264,6 +3264,8 @@ Net/RAWAnalyzer.h:
 @RAWAnalyzer.o
 Net/RAWCapture.h:
 @RAWCapture.o
+Net/RESTResource.h:
+@RESTResource.o
 Net/RSS.h:
 @RSS.o
 Net/RSSReader.h:
@@ -3359,6 +3361,8 @@ Net/UserAgentDB.h:
 @UserAgentDB.o
 Net/WebBrowser.h:
 @WebBrowser.o
+Net/WebDriver.h:
+@WebDriver.o
 Net/WebSocketClient.h:
 @WebSocketClient.o
 Net/WebStatus.h:

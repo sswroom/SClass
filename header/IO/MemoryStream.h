@@ -2,6 +2,7 @@
 #define _SM_IO_MEMORYSTREAM
 #include "Data/ByteBuffer.h"
 #include "IO/SeekableStream.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -19,6 +20,7 @@ namespace IO
 		UnsafeArray<UInt8> GetBuff();
 		UnsafeArray<UInt8> GetBuff(OutParam<UOSInt> buffSize);
 		Data::ByteArray GetArray() const;
+		Text::CStringNN ToCString();
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);

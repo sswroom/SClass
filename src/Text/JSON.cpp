@@ -1328,7 +1328,7 @@ void Text::JSONObject::ToString(NN<Text::StringBuilderUTF8> sb)
 	this->ToJSONString(sb);
 }
 
-void Text::JSONObject::SetObjectValue(Text::CStringNN name, Optional<Text::JSONBase> val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectValue(Text::CStringNN name, Optional<Text::JSONBase> val)
 {
 	NN<Text::JSONBase> nnobj;
 	if (val.SetTo(nnobj))
@@ -1341,9 +1341,20 @@ void Text::JSONObject::SetObjectValue(Text::CStringNN name, Optional<Text::JSONB
 	}
 	if (val.SetTo(nnobj))
 		this->objVals.PutC(name, nnobj);
+	return *this;
 }
 
-void Text::JSONObject::SetObjectInt32(Text::CStringNN name, Int32 val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectValueAndRelease(Text::CStringNN name, NN<Text::JSONBase> val)
+{
+	NN<Text::JSONBase> nnobj;
+	if (this->objVals.PutC(name, val).SetTo(nnobj))
+	{
+		nnobj->EndUse();
+	}
+	return *this;
+}
+
+NN<Text::JSONObject> Text::JSONObject::SetObjectInt32(Text::CStringNN name, Int32 val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1353,9 +1364,10 @@ void Text::JSONObject::SetObjectInt32(Text::CStringNN name, Int32 val)
 	NN<Text::JSONInt32> ival;
 	NEW_CLASSNN(ival, Text::JSONInt32(val));
 	this->objVals.PutC(name, ival);
+	return *this;
 }
 
-void Text::JSONObject::SetObjectInt64(Text::CStringNN name, Int64 val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectInt64(Text::CStringNN name, Int64 val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1365,9 +1377,10 @@ void Text::JSONObject::SetObjectInt64(Text::CStringNN name, Int64 val)
 	NN<Text::JSONInt64> ival;
 	NEW_CLASSNN(ival, Text::JSONInt64(val));
 	this->objVals.PutC(name, ival);
+	return *this;
 }
 
-void Text::JSONObject::SetObjectDouble(Text::CStringNN name, Double val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectDouble(Text::CStringNN name, Double val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1377,9 +1390,10 @@ void Text::JSONObject::SetObjectDouble(Text::CStringNN name, Double val)
 	NN<Text::JSONNumber> ival;
 	NEW_CLASSNN(ival, Text::JSONNumber(val));
 	this->objVals.PutC(name, ival);
+	return *this;
 }
 
-void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CStringNN val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CStringNN val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1389,9 +1403,10 @@ void Text::JSONObject::SetObjectString(Text::CStringNN name, Text::CStringNN val
 	NN<Text::JSONString> ival;
 	NEW_CLASSNN(ival, Text::JSONString(val));
 	this->objVals.PutC(name, ival);
+	return *this;
 }
 
-void Text::JSONObject::SetObjectString(Text::CStringNN name, Optional<Text::String> val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectString(Text::CStringNN name, Optional<Text::String> val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1411,9 +1426,10 @@ void Text::JSONObject::SetObjectString(Text::CStringNN name, Optional<Text::Stri
 		NEW_CLASSNN(ival, Text::JSONNull());
 		this->objVals.PutC(name, ival);
 	}
+	return *this;
 }
 
-void Text::JSONObject::SetObjectString(Text::CStringNN name, NN<Text::String> val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectString(Text::CStringNN name, NN<Text::String> val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1423,9 +1439,10 @@ void Text::JSONObject::SetObjectString(Text::CStringNN name, NN<Text::String> va
 	NN<Text::JSONString> ival;
 	NEW_CLASSNN(ival, Text::JSONString(val));
 	this->objVals.PutC(name, ival);
+	return *this;
 }
 
-void Text::JSONObject::SetObjectBool(Text::CStringNN name, Bool val)
+NN<Text::JSONObject> Text::JSONObject::SetObjectBool(Text::CStringNN name, Bool val)
 {
 	NN<Text::JSONBase> obj;
 	if (this->objVals.GetC(name).SetTo(obj))
@@ -1435,6 +1452,7 @@ void Text::JSONObject::SetObjectBool(Text::CStringNN name, Bool val)
 	NN<Text::JSONBool> ival;
 	NEW_CLASSNN(ival, Text::JSONBool(val));
 	this->objVals.PutC(name, ival);
+	return *this;
 }
 
 Optional<Text::JSONBase> Text::JSONObject::GetObjectValue(Text::CStringNN name)
@@ -1527,6 +1545,16 @@ Int64 Text::JSONObject::GetObjectInt64(Text::CStringNN name)
 	return baseObj->GetAsInt64();
 }
 
+Bool Text::JSONObject::GetObjectInt64(Text::CStringNN name, OutParam<Int64> v)
+{
+	NN<Text::JSONBase> baseObj;
+	if (!this->objVals.GetC(name).SetTo(baseObj))
+	{
+		return false;
+	}
+	return baseObj->GetAsInt64(v);
+}
+
 Bool Text::JSONObject::GetObjectBool(Text::CStringNN name)
 {
 	NN<Text::JSONBase> baseObj;
@@ -1537,6 +1565,17 @@ Bool Text::JSONObject::GetObjectBool(Text::CStringNN name)
 	return baseObj->GetAsBool();
 }
 
+Bool Text::JSONObject::GetObjectBool(Text::CStringNN name, OutParam<Bool> v)
+{
+	NN<Text::JSONBase> baseObj;
+	if (!this->objVals.GetC(name).SetTo(baseObj))
+	{
+		return false;
+	}
+	v.Set(baseObj->GetAsBool());
+	return true;
+}
+
 void Text::JSONObject::RemoveObject(Text::CStringNN name)
 {
 	NN<Text::JSONBase> baseObj;
@@ -1544,6 +1583,13 @@ void Text::JSONObject::RemoveObject(Text::CStringNN name)
 	{
 		baseObj->EndUse();
 	}
+}
+
+NN<Text::JSONObject> Text::JSONObject::New()
+{
+	NN<Text::JSONObject> ret;
+	NEW_CLASSNN(ret, Text::JSONObject());
+	return ret;
 }
 
 Text::JSONArray::JSONArray()
@@ -1632,6 +1678,14 @@ void Text::JSONArray::AddArrayValue(Optional<Text::JSONBase> val)
 	this->arrVals.Add(val);
 }
 
+NN<Text::JSONArray> Text::JSONArray::AddArrayString(Text::CStringNN val)
+{
+	NN<Text::JSONString> str;
+	NEW_CLASSNN(str, Text::JSONString(val));
+	this->arrVals.Add(str);
+	return *this;
+}
+
 Text::JSONType Text::JSONArray::GetArrayType(UOSInt index)
 {
 	NN<Text::JSONBase> o;
@@ -1695,6 +1749,13 @@ void Text::JSONArray::RemoveArrayItem(UOSInt index)
 	{
 		baseObj->EndUse();
 	}
+}
+
+NN<Text::JSONArray> Text::JSONArray::New()
+{
+	NN<Text::JSONArray> ret;
+	NEW_CLASSNN(ret, Text::JSONArray());
+	return ret;
 }
 
 Text::JSONNull::JSONNull()

@@ -188,14 +188,15 @@ namespace Text
 		virtual Bool Equals(Text::CStringNN s);
 		virtual Bool Identical(NN<JSONBase> obj);
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
-		void SetObjectValue(Text::CStringNN name, Optional<JSONBase> val);
-		void SetObjectInt32(Text::CStringNN name, Int32 val);
-		void SetObjectInt64(Text::CStringNN name, Int64 val);
-		void SetObjectDouble(Text::CStringNN name, Double val);
-		void SetObjectString(Text::CStringNN name, Text::CStringNN val);
-		void SetObjectString(Text::CStringNN name, Optional<Text::String> val);
-		void SetObjectString(Text::CStringNN name, NN<Text::String> val);
-		void SetObjectBool(Text::CStringNN name, Bool val);
+		NN<JSONObject> SetObjectValue(Text::CStringNN name, Optional<JSONBase> val);
+		NN<JSONObject> SetObjectValueAndRelease(Text::CStringNN name, NN<JSONBase> val);
+		NN<JSONObject> SetObjectInt32(Text::CStringNN name, Int32 val);
+		NN<JSONObject> SetObjectInt64(Text::CStringNN name, Int64 val);
+		NN<JSONObject> SetObjectDouble(Text::CStringNN name, Double val);
+		NN<JSONObject> SetObjectString(Text::CStringNN name, Text::CStringNN val);
+		NN<JSONObject> SetObjectString(Text::CStringNN name, Optional<Text::String> val);
+		NN<JSONObject> SetObjectString(Text::CStringNN name, NN<Text::String> val);
+		NN<JSONObject> SetObjectBool(Text::CStringNN name, Bool val);
 		Optional<JSONBase> GetObjectValue(Text::CStringNN name);
 		Optional<JSONArray> GetObjectArray(Text::CStringNN name);
 		Optional<JSONObject> GetObjectObject(Text::CStringNN name);
@@ -206,8 +207,11 @@ namespace Text
 		Double GetObjectDoubleOr(Text::CStringNN name, Double v);
 		Int32 GetObjectInt32(Text::CStringNN name);
 		Int64 GetObjectInt64(Text::CStringNN name);
+		Bool GetObjectInt64(Text::CStringNN name, OutParam<Int64> v);
 		Bool GetObjectBool(Text::CStringNN name);
+		Bool GetObjectBool(Text::CStringNN name, OutParam<Bool> v);
 		void RemoveObject(Text::CStringNN name);
+		static NN<Text::JSONObject> New();
 	};
 
 	class JSONArray : public JSONBase
@@ -227,6 +231,7 @@ namespace Text
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		void SetArrayValue(UOSInt index, Optional<Text::JSONBase> val);
 		void AddArrayValue(Optional<Text::JSONBase> val);
+		NN<JSONArray> AddArrayString(Text::CStringNN val);
 		JSONType GetArrayType(UOSInt index);
 		Optional<JSONBase> GetArrayValue(UOSInt index);
 		Optional<JSONObject> GetArrayObject(UOSInt index);
@@ -235,6 +240,8 @@ namespace Text
 		Optional<Text::String> GetArrayString(UOSInt index);
 		UOSInt GetArrayLength();
 		void RemoveArrayItem(UOSInt index);
+
+		static NN<JSONArray> New();
 	};
 
 	class JSONNull : public JSONBase

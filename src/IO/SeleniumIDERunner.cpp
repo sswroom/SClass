@@ -1,46 +1,43 @@
 #include "Stdafx.h"
-#include "webdriverxx.h"
 #include "IO/SeleniumIDERunner.h"
+#include "Net/WebDriver.h"
 #include "Sync/ThreadUtil.h"
 
 enum class CondType
 {
 	Times
 };
-webdriverxx::By SeleniumIDERunner_ParseBy(Text::CStringNN target)
+
+Bool IO::SeleniumIDERunner::ErrorSess(NN<Net::WebDriverSession> sess, UOSInt currIndex)
 {
-	if (target.StartsWith(CSTR("xpath=")))
+	OPTSTR_DEL(this->lastErrorMsg);
+	this->lastErrorIndex = currIndex;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("Response Code: "));
+	sb.AppendUOSInt((UOSInt)sess->GetLastErrorCode());
+	sb.Append(CSTR("\r\nError: "));
+	sb.AppendOpt(sess->GetLastError());
+	sb.Append(CSTR("\r\nMessage: "));
+	sb.AppendOpt(sess->GetLastErrorMessage());
+	NN<Text::String> s;
+	if (sess->GetLastErrorStacktrace().SetTo(s))
 	{
-		return webdriverxx::ByXPath((const Char*)target.Substring(6).v.Ptr());
+		sb.Append(CSTR("\r\nStacktrace: "));
+		sb.Append(s);
 	}
-	else if (target.StartsWith(CSTR("css=")))
-	{
-		return webdriverxx::ByCss((const Char*)target.Substring(4).v.Ptr());
-	}
-	else if (target.StartsWith(CSTR("id=")))
-	{
-		return webdriverxx::ById((const Char*)target.Substring(3).v.Ptr());
-	}
-	else if (target.StartsWith(CSTR("linkText=")))
-	{
-		return webdriverxx::ByLinkText((const Char*)target.Substring(9).v.Ptr());
-	}
-	throw webdriverxx::WebDriverException(std::string("Unknown Target: ") + (const Char*)target.v.Ptr());
+	this->lastErrorMsg = Text::String::New(sb.ToCString());
+	return false;
 }
 
-webdriverxx::Element SeleniumIDERunner_WaitForElement(webdriverxx::WebDriver &driver, webdriverxx::By &by, UInt32 dur)
+IO::SeleniumIDERunner::SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 port)
 {
-	auto elementFinder = [&]{
-		return driver.FindElement(by);
-	};
-	return webdriverxx::WaitForValue(elementFinder, dur);
-}
-
-IO::SeleniumIDERunner::SeleniumIDERunner()
-{
+	this->clif = clif;
 	this->lastErrorIndex = INVALID_INDEX;
 	this->lastErrorMsg = 0;
-	this->url = Text::String::New(UTF8STRC("http://localhost:4444/wd/hub"));
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("http://localhost:"));
+	sb.AppendU16(port);
+	this->url = Text::String::New(sb.ToCString());
 }
 
 IO::SeleniumIDERunner::~SeleniumIDERunner()
@@ -51,10 +48,24 @@ IO::SeleniumIDERunner::~SeleniumIDERunner()
 
 Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj)
 {
-	UOSInt currIndex = INVALID_INDEX;
+	Text::CStringNN cstr;
+	NN<Net::WebDriverChromeOptions> browser;
+	NN<Net::WebDriverTimeouts> timeouts;
+	NEW_CLASSNN(browser, Net::WebDriverChromeOptions());
+	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
+	if (mobileDevice.SetTo(cstr))
+		browser->SetMobileDeviceName(cstr);
+	browser->SetPageLoadStrategy(CSTR("normal"));
+	//browser->SetPlatformName(CSTR("ANY"));
+	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	Net::WebDriverStartSession param(browser);
+	NN<Net::WebDriverSession> sess;
+	NN<GPSPosition> nnlocation;
+	Bool succ = false;
+	UOSInt currIndex;
+	UOSInt i;
 	NN<IO::SeleniumCommand> command;
 	NN<Text::String> s;
-	UOSInt i;
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
 	struct {
@@ -63,73 +74,63 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 		UOSInt param;
 	} cond[16];
 	UOSInt condCnt = 0;
-	NN<GPSPosition> nnlocation;
-	try
+	Net::WebDriver driver(this->clif, 0, this->url->ToCString());
+	if (driver.NewSession(param).SetTo(sess))
 	{
-		webdriverxx::ChromeOptions options;
-		webdriverxx::Chrome chrome;
-		webdriverxx::Timeouts to;
-		Text::CStringNN nnmobileDevice;
-		if (mobileDevice.SetTo(nnmobileDevice))
-		{
-			webdriverxx::chrome::MobileEmulation me;
-			me.SetDeviceName((const Char*)nnmobileDevice.v.Ptr());
-			options.SetMobileEmulation(me);
-		}
-		to.SetImplicitTimeout(5000);
-		options.SetArgs({"start-maximized"});
-		chrome.SetChromeOptions(options);
-		chrome.SetTimeouts(to);
-		webdriverxx::WebDriver driver = webdriverxx::Start(chrome, (const Char*)this->url->v.Ptr());
 		if (location.SetTo(nnlocation))
 		{
-			driver.ExecuteCdpCommand("Emulation.setGeolocationOverride", webdriverxx::JsonObject()
-			.Set("latitude", nnlocation->latitude)
-			.Set("longitude", nnlocation->longitude)
-			.Set("accuracy", nnlocation->accuracy));
+			sess->ExecuteCdpCommand(CSTR("Emulation.setGeolocationOverride"), Text::JSONObject::New()
+				->SetObjectDouble(CSTR("latitude"), nnlocation->latitude)
+				->SetObjectDouble(CSTR("longitude"), nnlocation->longitude)
+				->SetObjectDouble(CSTR("accuracy"), nnlocation->accuracy));
 		}
+
 		Data::Timestamp lastTime = Data::Timestamp::UtcNow();
 		Data::Timestamp thisTime;
 		Bool skip = false;
 		currIndex = 0;
-		while (test->GetCommand(currIndex).SetTo(command))
+		succ = true;
+		while (succ && test->GetCommand(currIndex).SetTo(command))
 		{
 			if (!command->GetCommand().SetTo(s))
 			{
 				OPTSTR_DEL(this->lastErrorMsg);
 				this->lastErrorMsg = Text::String::New(UTF8STRC("Unknown command"));
 				this->lastErrorIndex = currIndex;
-				return false;
+				succ = false;
 			}
-			if (s->Equals(CSTR("end")))
+			else if (s->Equals(CSTR("end")))
 			{
 				if (condCnt == 0)
 				{
 					OPTSTR_DEL(this->lastErrorMsg);
 					this->lastErrorMsg = Text::String::New(UTF8STRC("End found without condition"));
 					this->lastErrorIndex = currIndex;
-					return false;
-				}
-				condCnt--;
-				if (cond[condCnt].type == CondType::Times)
-				{
-					cond[condCnt].param--;
-					if (cond[condCnt].param > 0)
-					{
-						currIndex = cond[condCnt].index;
-						condCnt++;
-					}
-					else
-					{
-						skip = false;
-					}
+					succ = false;
 				}
 				else
 				{
-					OPTSTR_DEL(this->lastErrorMsg);
-					this->lastErrorMsg = Text::String::New(UTF8STRC("Unknown condition"));
-					this->lastErrorIndex = currIndex;
-					return false;
+					condCnt--;
+					if (cond[condCnt].type == CondType::Times)
+					{
+						cond[condCnt].param--;
+						if (cond[condCnt].param > 0)
+						{
+							currIndex = cond[condCnt].index;
+							condCnt++;
+						}
+						else
+						{
+							skip = false;
+						}
+					}
+					else
+					{
+						OPTSTR_DEL(this->lastErrorMsg);
+						this->lastErrorMsg = Text::String::New(UTF8STRC("Unknown condition"));
+						this->lastErrorIndex = currIndex;
+						succ = false;
+					}
 				}
 			}
 			else if (skip)
@@ -138,7 +139,11 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 			}
 			else if (s->Equals(CSTR("open")))
 			{
-				driver.Navigate((const Char*)Text::String::OrEmpty(command->GetTarget())->v.Ptr());
+				if (!sess->NavigateTo(Text::String::OrEmpty(command->GetTarget())->ToCString()))
+				{
+					succ = this->ErrorSess(sess, currIndex);
+				}
+				
 			}
 			else if (s->Equals(CSTR("setWindowSize")))
 			{
@@ -147,85 +152,232 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					OPTSTR_DEL(this->lastErrorMsg);
 					this->lastErrorMsg = Text::String::New(UTF8STRC("setWindowsSize invalid target"));
 					this->lastErrorIndex = currIndex;
-					return false;
+					succ = false;
 				}
-				sptr = s->ConcatTo(sbuff);
-				i = s->IndexOf('x');
-				if (i == INVALID_INDEX)
+				else
 				{
-					OPTSTR_DEL(this->lastErrorMsg);
-					Text::StringBuilderUTF8 sb;
-					sb.Append(CSTR("setWindowsSize invalid target: "));
-					sb.Append(s);
-					this->lastErrorMsg = Text::String::New(sb.ToCString());
-					this->lastErrorIndex = currIndex;
-					return false;
+					sptr = s->ConcatTo(sbuff);
+					i = s->IndexOf('x');
+					if (i == INVALID_INDEX)
+					{
+						OPTSTR_DEL(this->lastErrorMsg);
+						Text::StringBuilderUTF8 sb;
+						sb.Append(CSTR("setWindowsSize invalid target: "));
+						sb.Append(s);
+						this->lastErrorMsg = Text::String::New(sb.ToCString());
+						this->lastErrorIndex = currIndex;
+						succ = false;
+					}
+					else
+					{
+						sbuff[i] = 0;
+						if (!sess->SetWindowRect(Math::RectArea<Int64>(0, 0, Text::StrToInt64(sbuff), Text::StrToInt64(&sbuff[i + 1]))))
+						{
+							succ = this->ErrorSess(sess, currIndex);
+						}
+					}
 				}
-				sbuff[i] = 0;
-				driver.GetWindow().SetRect(webdriverxx::Rect(0, 0, Text::StrToInt32(sbuff), Text::StrToInt32(&sbuff[i + 1])));
 			}
 			else if (s->Equals(CSTR("waitForElementVisible")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				webdriverxx::Element ele = driver.FindElement(by);
-				auto element_is_displayed = [&]{
-					return ele.IsDisplayed();
-				};
-				webdriverxx::Duration dur = 5000;
-				if (command->GetValue().SetTo(s))
-					s->ToUInt32(dur);
-				webdriverxx::WaitUntil(element_is_displayed, dur);
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorSess(sess, currIndex);
+					}
+					else
+					{
+						auto element_is_displayed = [&]{
+							return sess->IsElementDisplayed(eleId->ToCString());
+						};
+						UInt32 v = 5000;
+						if (command->GetValue().SetTo(s))
+						{
+							s->ToUInt32(v);
+						}
+						if (!sess->WaitUntil(element_is_displayed, v))
+						{
+							succ = this->ErrorSess(sess, currIndex);
+						}
+						eleId->Release();
+					}
+					by.Delete();
+				}
 			}
 			else if (s->Equals(CSTR("waitForElementNotVisible")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				webdriverxx::Element ele = driver.FindElement(by);
-				auto element_is_displayed = [&]{
-					return !ele.IsDisplayed();
-				};
-				webdriverxx::Duration dur = 5000;
-				if (command->GetValue().SetTo(s))
-					s->ToUInt32(dur);
-				webdriverxx::WaitUntil(element_is_displayed, dur);
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorSess(sess, currIndex);
+					}
+					else
+					{
+						auto element_is_displayed = [&]{
+							return !sess->IsElementDisplayed(eleId->ToCString());
+						};
+						UInt32 v = 5000;
+						if (command->GetValue().SetTo(s))
+						{
+							s->ToUInt32(v);
+						}
+						if (!sess->WaitUntil(element_is_displayed, v))
+						{
+							succ = this->ErrorSess(sess, currIndex);
+						}
+						eleId->Release();
+					}
+					by.Delete();
+				}
 			}
 			else if (s->Equals(CSTR("waitForElementPresent")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				UInt32 dur = 5000;
-				if (command->GetValue().SetTo(s))
-					s->ToUInt32(dur);
-				SeleniumIDERunner_WaitForElement(driver, by, dur);
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					Int64 dur = 5000;
+					if (command->GetValue().SetTo(s))
+						s->ToInt64(dur);
+					Data::Timestamp startTime = Data::Timestamp::UtcNow();
+					NN<Text::String> eleId;
+					while (true)
+					{
+						if (sess->FindElement(by).SetTo(eleId))
+						{
+							eleId->Release();
+							break;
+						}
+						else if (Data::Timestamp::UtcNow().DiffMS(startTime) > dur)
+						{
+							succ = this->ErrorSess(sess, currIndex);
+							break;
+						}
+						Sync::ThreadUtil::SleepDur(50);
+					}
+					by.Delete();
+				}
 			}
 			else if (s->Equals(CSTR("executeScript")))
 			{
-				driver.Execute((const Char*)Text::String::OrEmpty(command->GetTarget())->v.Ptr());
+				succ = sess->ExecuteScript(Text::String::OrEmpty(command->GetTarget())->ToCString());
 			}
 			else if (s->Equals(CSTR("click")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				webdriverxx::Element ele = driver.FindElement(by);
-				ele.Click();
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorSess(sess, currIndex);
+					}
+					else
+					{
+						if (!sess->ElementClick(eleId->ToCString()))
+						{
+							succ = this->ErrorSess(sess, currIndex);
+						}
+						eleId->Release();
+					}
+					by.Delete();
+				}
 			}
 			else if (s->Equals(CSTR("type")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				webdriverxx::Element ele = driver.FindElement(by);
-				ele.Clear();
-				if (command->GetValue().SetTo(s) && s->leng > 0)
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
 				{
-					ele.SendKeys((const Char*)s->v.Ptr());
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorSess(sess, currIndex);
+					}
+					else
+					{
+						if (!sess->ElementClear(eleId->ToCString()))
+						{
+							succ = this->ErrorSess(sess, currIndex);
+						}
+						if (succ && command->GetValue().SetTo(s) && s->leng > 0)
+						{
+							if (!sess->ElementSendKeys(eleId->ToCString(), s->ToCString()))
+							{
+								succ = this->ErrorSess(sess, currIndex);
+							}
+						}
+						eleId->Release();
+					}
+					by.Delete();
 				}
 			}
 			else if (s->Equals(CSTR("mouseOver")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				webdriverxx::Element ele = driver.FindElement(by);
-//				driver.MoveToCenterOf(ele);
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorSess(sess, currIndex);
+					}
+					else
+					{
+//						sess->MoveToCenterOf(eleId);
+						eleId->Release();
+					}
+					by.Delete();
+				}
 			}
 			else if (s->Equals(CSTR("mouseOut")))
 			{
-				webdriverxx::By by = SeleniumIDERunner_ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString());
-				webdriverxx::Element ele = driver.FindElement(by);
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorSess(sess, currIndex);
+					}
+					else
+					{
+						eleId->Release();
+					}
+					by.Delete();
+				}
 			}
 			else if (s->Equals(CSTR("pause")))
 			{
@@ -235,9 +387,12 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					OPTSTR_DEL(this->lastErrorMsg);
 					this->lastErrorMsg = Text::String::New(UTF8STRC("pause invalid target"));
 					this->lastErrorIndex = currIndex;
-					return false;
+					succ = false;
 				}
-				Sync::ThreadUtil::SleepDur(dur);
+				else
+				{
+					Sync::ThreadUtil::SleepDur(dur);
+				}
 			}
 			else if (s->Equals(CSTR("times")))
 			{
@@ -255,46 +410,42 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 				sb.Append(s);
 				this->lastErrorMsg = Text::String::New(sb.ToCString());
 				this->lastErrorIndex = currIndex;
-				return false;
+				succ = false;
 			}
-			if (statusHdlr != 0)
+			if (succ && statusHdlr != 0)
 			{
 				thisTime = Data::Timestamp::UtcNow();
 				statusHdlr(userObj, currIndex, thisTime - lastTime);
 				lastTime = thisTime;
 			}
+			//Sync::ThreadUtil::SleepDur(1000);
 			currIndex++;
 		}
-		return true;
+
+		sess.Delete();
 	}
-	catch (webdriverxx::WebDriverException &ex)
+	return succ;
+}
+
+Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UOSInt currIndex)
+{
+	NN<Net::WebDriverBy> ret;
+	if (Net::WebDriver::ParseBy(by).SetTo(ret))
 	{
-		Text::CStringNN cmd = CSTR("init");
-		if (test->GetCommand(currIndex).SetTo(command) && command->GetCommand().SetTo(s))
-		{
-			cmd = s->ToCString();
-		}
+		return ret;
+	}
+	else
+	{
 		OPTSTR_DEL(this->lastErrorMsg);
 		Text::StringBuilderUTF8 sb;
-		sb.Append(CSTR("Exception occurred on command "));
-		sb.Append(cmd);
-		sb.Append(CSTR(": "));
-		sb.AppendSlow((const UTF8Char*)ex.what());
+		sb.Append(CSTR("Unknown target: "));
+		sb.Append(by);
 		this->lastErrorMsg = Text::String::New(sb.ToCString());
 		this->lastErrorIndex = currIndex;
-		return false;
+		return 0;
 	}
 }
 
 void IO::SeleniumIDERunner::FillMobileItemSelector(NN<UI::ItemSelector> selector)
 {
-	auto curr = webdriverxx::chrome::device::deviceList.begin();
-	auto end = webdriverxx::chrome::device::deviceList.end();
-	while (curr != end)
-	{
-		std::string s = *curr;
-		Text::CStringNN cs = Text::CStringNN((const UTF8Char*)s.c_str(), s.length());
-		selector->AddItem(cs, 0);
-		curr++;
-	}
 }

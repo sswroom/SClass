@@ -524,6 +524,7 @@ SDCardMgrNull.o: ../../src/IO/SDCardMgrNull.cpp
 SDCardMgrW.o: ../../src/IO/SDCardMgrW.cpp
 SeleniumIDE.o: ../../src/IO/SeleniumIDE.cpp
 SeleniumIDERunner.o: ../../src/IO/SeleniumIDERunner.cpp
+SeleniumIDERunnerTP.o: ../../src/IO/SeleniumIDERunnerTP.cpp
 $-I ../../ThirdParty/webdriverxx/include
 Sensor.o: ../../src/IO/Sensor.cpp
 SensorAccelerometerAndroid.o: ../../src/IO/SensorAccelerometerAndroid.cpp
@@ -1413,6 +1414,7 @@ PushServer.o: ../../src/Net/PushServer.cpp
 PushServerHandler.o: ../../src/Net/PushServerHandler.cpp
 RAWAnalyzer.o: ../../src/Net/RAWAnalyzer.cpp
 RAWCapture.o: ../../src/Net/RAWCapture.cpp
+RESTResource.o: ../../src/Net/RESTResource.cpp
 RSS.o: ../../src/Net/RSS.cpp
 RSSReader.o: ../../src/Net/RSSReader.cpp
 RTPAACHandler.o: ../../src/Net/RTPAACHandler.cpp
@@ -1470,6 +1472,7 @@ UDPServerStream.o: ../../src/Net/UDPServerStream.cpp
 URL.o: ../../src/Net/URL.cpp
 UserAgentDB.o: ../../src/Net/UserAgentDB.cpp
 WebBrowser.o: ../../src/Net/WebBrowser.cpp
+WebDriver.o: ../../src/Net/WebDriver.cpp
 WebSocketClient.o: ../../src/Net/WebSocketClient.cpp
 WebStatus.o: ../../src/Net/WebStatus.cpp
 WebUtil.o: ../../src/Net/WebUtil.cpp

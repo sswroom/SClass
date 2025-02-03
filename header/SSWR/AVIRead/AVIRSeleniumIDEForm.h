@@ -42,6 +42,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSIDEURL;
 			NN<UI::GUIListBox> lbTest;
 			NN<UI::GUIPanel> pnlTestCtrl;
+			NN<UI::GUILabel> lblTestPort;
+			NN<UI::GUITextBox> txtTestPort;
 			NN<UI::GUICheckBox> chkTestMobile;
 			NN<UI::GUIComboBox> cboTestMobile;
 			NN<UI::GUIButton> btnTestRun;

@@ -32,13 +32,22 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 {
 	NN<SSWR::AVIRead::AVIRSeleniumIDEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSeleniumIDEForm>();
 	NN<IO::SeleniumTest> test;
+	Text::StringBuilderUTF8 sb;
+	UInt16 port;
 	if (me->lbTest->GetSelectedItem().GetOpt<IO::SeleniumTest>().SetTo(test))
 	{
+		me->txtTestPort->GetText(sb);
+		if (!sb.ToUInt16(port))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Selenium IDE"), me);
+			me->txtTestPort->Focus();
+			return ;
+		}
 		me->statusList.MemFreeAll();
-		Text::StringBuilderUTF8 sb;
 		Text::CString mobile = 0;
 		if (me->chkTestMobile->IsChecked())
 		{
+			sb.ClearStr();
 			me->cboTestMobile->GetText(sb);
 			mobile = sb.ToCString();
 		}
@@ -46,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		location.latitude = 22.4;
 		location.longitude = 114.2;
 		location.accuracy = 4.5;
-		IO::SeleniumIDERunner runner;
+		IO::SeleniumIDERunner runner(me->core->GetTCPClientFactory(), port);
 		if (runner.Run(test, mobile, location, OnStepStatus, me))
 		{
 			me->DisplayStatus();
@@ -151,16 +160,20 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->lbTest->SetRect(0, 0, 150, 23, false);
 	this->lbTest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->pnlTestCtrl = ui->NewPanel(*this);
-	this->pnlTestCtrl->SetRect(0, 0, 100, 31, false);
+	this->pnlTestCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlTestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblTestPort = ui->NewLabel(this->pnlTestCtrl, CSTR("Port"));
+	this->lblTestPort->SetRect(4, 4, 100, 23, false);
+	this->txtTestPort = ui->NewTextBox(this->pnlTestCtrl, CSTR("4444"));
+	this->txtTestPort->SetRect(104, 4, 60, 23, false);
 	this->chkTestMobile = ui->NewCheckBox(this->pnlTestCtrl, CSTR("Mobile"), false);
-	this->chkTestMobile->SetRect(4, 4, 100, 23, false);
+	this->chkTestMobile->SetRect(4, 28, 100, 23, false);
 	this->cboTestMobile = ui->NewComboBox(this->pnlTestCtrl, true);
-	this->cboTestMobile->SetRect(104, 4, 150, 23, false);
+	this->cboTestMobile->SetRect(104, 28, 150, 23, false);
 	IO::SeleniumIDERunner::FillMobileItemSelector(this->cboTestMobile);
 	this->cboTestMobile->SetText(CSTR("iPhone 14 Pro Max"));
 	this->btnTestRun = ui->NewButton(this->pnlTestCtrl, CSTR("Run Test"));
-	this->btnTestRun->SetRect(254, 4, 75, 23, false);
+	this->btnTestRun->SetRect(254, 28, 75, 23, false);
 	this->btnTestRun->HandleButtonClick(OnTestRunClicked, this);
 	this->tcTest = ui->NewTabControl(*this);
 	this->tcTest->SetDockType(UI::GUIControl::DOCK_FILL);

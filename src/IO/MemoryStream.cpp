@@ -52,6 +52,27 @@ Data::ByteArray IO::MemoryStream::GetArray() const
 	return this->buff.SubArray(0, currSize);
 }
 
+Text::CStringNN IO::MemoryStream::ToCString()
+{
+	if (this->currSize < this->buff.GetSize())
+	{
+		this->buff[this->currSize] = 0;
+	}
+	else
+	{
+		UOSInt newCapacity = this->buff.GetSize() << 1;
+		if (newCapacity > MAX_CAPACITY)
+		{
+			newCapacity = MAX_CAPACITY;
+		}
+		Data::ByteBuffer newBuff(newCapacity);
+		newBuff.CopyFrom(0, this->buff.SubArray(0, this->currSize));
+		this->buff.ReplaceBy(newBuff);
+		this->buff[this->currSize] = 0;
+	}
+	return Text::CStringNN(this->buff.Arr(), this->currSize);
+}
+
 Bool IO::MemoryStream::IsDown() const
 {
 	return false;
