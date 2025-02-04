@@ -8,25 +8,121 @@ enum class CondType
 	Times
 };
 
-Bool IO::SeleniumIDERunner::ErrorSess(NN<Net::WebDriverSession> sess, UOSInt currIndex)
+Bool IO::SeleniumIDERunner::ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex)
 {
 	OPTSTR_DEL(this->lastErrorMsg);
 	this->lastErrorIndex = currIndex;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("Response Code: "));
-	sb.AppendUOSInt((UOSInt)sess->GetLastErrorCode());
+	sb.AppendUOSInt((UOSInt)cli->GetLastErrorCode());
 	sb.Append(CSTR("\r\nError: "));
-	sb.AppendOpt(sess->GetLastError());
+	sb.AppendOpt(cli->GetLastError());
 	sb.Append(CSTR("\r\nMessage: "));
-	sb.AppendOpt(sess->GetLastErrorMessage());
+	sb.AppendOpt(cli->GetLastErrorMessage());
 	NN<Text::String> s;
-	if (sess->GetLastErrorStacktrace().SetTo(s))
+	if (cli->GetLastErrorStacktrace().SetTo(s))
 	{
 		sb.Append(CSTR("\r\nStacktrace: "));
 		sb.Append(s);
 	}
 	this->lastErrorMsg = Text::String::New(sb.ToCString());
 	return false;
+}
+
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateChromeOptions(Text::CString mobileDevice)
+{
+	Text::CStringNN cstr;
+	NN<Net::WebDriverChromeOptions> browser;
+	NN<Net::WebDriverTimeouts> timeouts;
+	NEW_CLASSNN(browser, Net::WebDriverChromeOptions());
+	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
+	if (mobileDevice.SetTo(cstr))
+		browser->SetMobileDeviceName(cstr);
+	browser->SetPageLoadStrategy(CSTR("normal"));
+	//browser->SetPlatformName(CSTR("ANY"));
+	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	return browser;
+}
+
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateMSEdgeOptions(Text::CString mobileDevice)
+{
+	Text::CStringNN cstr;
+	NN<Net::WebDriverMSEdgeOptions> browser;
+	NN<Net::WebDriverTimeouts> timeouts;
+	NEW_CLASSNN(browser, Net::WebDriverMSEdgeOptions());
+	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
+	if (mobileDevice.SetTo(cstr))
+		browser->SetMobileDeviceName(cstr);
+	browser->SetPageLoadStrategy(CSTR("normal"));
+	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	return browser;
+}
+
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateFirefoxOptions(Text::CString mobileDevice)
+{
+	NN<Net::WebDriverFirefoxOptions> browser;
+	NN<Net::WebDriverTimeouts> timeouts;
+	NEW_CLASSNN(browser, Net::WebDriverFirefoxOptions());
+	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
+	browser->SetPageLoadStrategy(CSTR("normal"));
+	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	return browser;
+}
+
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateWebKitGTKOptions(Text::CString mobileDevice)
+{
+	NN<Net::WebDriverWebKitGTKOptions> browser;
+	NN<Net::WebDriverTimeouts> timeouts;
+	NEW_CLASSNN(browser, Net::WebDriverWebKitGTKOptions());
+	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
+	browser->SetPageLoadStrategy(CSTR("normal"));
+	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	return browser;
+}
+
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateOtherOptions(Text::CStringNN browserName)
+{
+	Text::CStringNN cstr;
+	NN<Net::WebDriverW3CBrowserOptions> browser;
+	NN<Net::WebDriverTimeouts> timeouts;
+	NEW_CLASSNN(browser, Net::WebDriverW3CBrowserOptions(browserName));
+	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
+	browser->SetPageLoadStrategy(CSTR("normal"));
+	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	return browser;
+}
+
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice)
+{
+	switch (browserType)
+	{
+	case BrowserType::Chrome:
+	default:
+		return CreateChromeOptions(mobileDevice);
+	case BrowserType::MSEdge:
+		return CreateMSEdgeOptions(mobileDevice);
+		break;
+	case BrowserType::Firefox:
+		return CreateFirefoxOptions(mobileDevice);
+	case BrowserType::HtmlUnit:
+		return CreateOtherOptions(CSTR("htmlunit"));
+	case BrowserType::InternetExplorer:
+		return CreateOtherOptions(CSTR("internet explorer"));
+	case BrowserType::IPad:
+		return CreateOtherOptions(CSTR("iPad"));
+	case BrowserType::IPhone:
+		return CreateOtherOptions(CSTR("iPhone"));
+	case BrowserType::Opera:
+		return CreateOtherOptions(CSTR("opera"));
+	case BrowserType::Safari:
+		return CreateOtherOptions(CSTR("safari"));
+	case BrowserType::WebKitGTK:
+		return CreateWebKitGTKOptions(mobileDevice);
+	case BrowserType::Mock:
+		return CreateOtherOptions(CSTR("mock"));
+	case BrowserType::PhantomJS:
+		return CreateOtherOptions(CSTR("phantomjs"));
+	}
 }
 
 IO::SeleniumIDERunner::SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 port)
@@ -46,18 +142,9 @@ IO::SeleniumIDERunner::~SeleniumIDERunner()
 	this->url->Release();
 }
 
-Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj)
+Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj)
 {
-	Text::CStringNN cstr;
-	NN<Net::WebDriverChromeOptions> browser;
-	NN<Net::WebDriverTimeouts> timeouts;
-	NEW_CLASSNN(browser, Net::WebDriverChromeOptions());
-	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
-	if (mobileDevice.SetTo(cstr))
-		browser->SetMobileDeviceName(cstr);
-	browser->SetPageLoadStrategy(CSTR("normal"));
-	//browser->SetPlatformName(CSTR("ANY"));
-	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	NN<Net::WebDriverBrowserOptions> browser = CreateBrowserOptions(browserType, mobileDevice);
 	Net::WebDriverStartSession param(browser);
 	NN<Net::WebDriverSession> sess;
 	NN<GPSPosition> nnlocation;
@@ -141,7 +228,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 			{
 				if (!sess->NavigateTo(Text::String::OrEmpty(command->GetTarget())->ToCString()))
 				{
-					succ = this->ErrorSess(sess, currIndex);
+					succ = this->ErrorClient(sess, currIndex);
 				}
 				
 			}
@@ -173,7 +260,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 						sbuff[i] = 0;
 						if (!sess->SetWindowRect(Math::RectArea<Int64>(0, 0, Text::StrToInt64(sbuff), Text::StrToInt64(&sbuff[i + 1]))))
 						{
-							succ = this->ErrorSess(sess, currIndex);
+							succ = this->ErrorClient(sess, currIndex);
 						}
 					}
 				}
@@ -190,7 +277,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					NN<Text::String> eleId;
 					if (!sess->FindElement(by).SetTo(eleId))
 					{
-						succ = this->ErrorSess(sess, currIndex);
+						succ = this->ErrorClient(sess, currIndex);
 					}
 					else
 					{
@@ -204,7 +291,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 						}
 						if (!sess->WaitUntil(element_is_displayed, v))
 						{
-							succ = this->ErrorSess(sess, currIndex);
+							succ = this->ErrorClient(sess, currIndex);
 						}
 						eleId->Release();
 					}
@@ -223,7 +310,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					NN<Text::String> eleId;
 					if (!sess->FindElement(by).SetTo(eleId))
 					{
-						succ = this->ErrorSess(sess, currIndex);
+						succ = this->ErrorClient(sess, currIndex);
 					}
 					else
 					{
@@ -237,7 +324,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 						}
 						if (!sess->WaitUntil(element_is_displayed, v))
 						{
-							succ = this->ErrorSess(sess, currIndex);
+							succ = this->ErrorClient(sess, currIndex);
 						}
 						eleId->Release();
 					}
@@ -267,7 +354,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 						}
 						else if (Data::Timestamp::UtcNow().DiffMS(startTime) > dur)
 						{
-							succ = this->ErrorSess(sess, currIndex);
+							succ = this->ErrorClient(sess, currIndex);
 							break;
 						}
 						Sync::ThreadUtil::SleepDur(50);
@@ -291,13 +378,13 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					NN<Text::String> eleId;
 					if (!sess->FindElement(by).SetTo(eleId))
 					{
-						succ = this->ErrorSess(sess, currIndex);
+						succ = this->ErrorClient(sess, currIndex);
 					}
 					else
 					{
 						if (!sess->ElementClick(eleId->ToCString()))
 						{
-							succ = this->ErrorSess(sess, currIndex);
+							succ = this->ErrorClient(sess, currIndex);
 						}
 						eleId->Release();
 					}
@@ -316,19 +403,19 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					NN<Text::String> eleId;
 					if (!sess->FindElement(by).SetTo(eleId))
 					{
-						succ = this->ErrorSess(sess, currIndex);
+						succ = this->ErrorClient(sess, currIndex);
 					}
 					else
 					{
 						if (!sess->ElementClear(eleId->ToCString()))
 						{
-							succ = this->ErrorSess(sess, currIndex);
+							succ = this->ErrorClient(sess, currIndex);
 						}
 						if (succ && command->GetValue().SetTo(s) && s->leng > 0)
 						{
 							if (!sess->ElementSendKeys(eleId->ToCString(), s->ToCString()))
 							{
-								succ = this->ErrorSess(sess, currIndex);
+								succ = this->ErrorClient(sess, currIndex);
 							}
 						}
 						eleId->Release();
@@ -348,7 +435,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					NN<Text::String> eleId;
 					if (!sess->FindElement(by).SetTo(eleId))
 					{
-						succ = this->ErrorSess(sess, currIndex);
+						succ = this->ErrorClient(sess, currIndex);
 					}
 					else
 					{
@@ -370,7 +457,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 					NN<Text::String> eleId;
 					if (!sess->FindElement(by).SetTo(eleId))
 					{
-						succ = this->ErrorSess(sess, currIndex);
+						succ = this->ErrorClient(sess, currIndex);
 					}
 					else
 					{
@@ -424,6 +511,10 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, Text::CString mobileDevic
 
 		sess.Delete();
 	}
+	else
+	{
+		this->ErrorClient(driver, INVALID_INDEX);
+	}
 	return succ;
 }
 
@@ -448,4 +539,96 @@ Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UO
 
 void IO::SeleniumIDERunner::FillMobileItemSelector(NN<UI::ItemSelector> selector)
 {
+	selector->AddItem(CSTR("BlackBerry Z30"), 0);
+	selector->AddItem(CSTR("Blackberry PlayBook"), 0);
+	selector->AddItem(CSTR("Galaxy Note 3"), 0);
+	selector->AddItem(CSTR("Galaxy Note II"), 0);
+	selector->AddItem(CSTR("Galaxy S III"), 0);
+	selector->AddItem(CSTR("Galaxy S8"), 0);
+	selector->AddItem(CSTR("Galaxy S9+"), 0);
+	selector->AddItem(CSTR("Galaxy Tab S4"), 0);
+	selector->AddItem(CSTR("Kindle Fire HDX"), 0);
+	selector->AddItem(CSTR("LG Optimus L70"), 0);
+	selector->AddItem(CSTR("Laptop with HiDPI screen"), 0);
+	selector->AddItem(CSTR("Laptop with MDPI screen"), 0);
+	selector->AddItem(CSTR("Laptop with touch"), 0);
+	selector->AddItem(CSTR("Microsoft Lumia 550"), 0);
+	selector->AddItem(CSTR("Microsoft Lumia 950"), 0);
+	selector->AddItem(CSTR("Moto G Power"), 0);
+	selector->AddItem(CSTR("Moto G4"), 0);
+	selector->AddItem(CSTR("Nexus 10"), 0);
+	selector->AddItem(CSTR("Nexus 4"), 0);
+	selector->AddItem(CSTR("Nexus 5"), 0);
+	selector->AddItem(CSTR("Nexus 5X"), 0);
+	selector->AddItem(CSTR("Nexus 6"), 0);
+	selector->AddItem(CSTR("Nexus 6P"), 0);
+	selector->AddItem(CSTR("Nexus 7"), 0);
+	selector->AddItem(CSTR("Nokia Lumia 520"), 0);
+	selector->AddItem(CSTR("Nokia N9"), 0);
+	selector->AddItem(CSTR("Pixel 3"), 0);
+	selector->AddItem(CSTR("Pixel 4"), 0);
+	selector->AddItem(CSTR("JioPhone 2"), 0);
+	selector->AddItem(CSTR("iPhone SE"), 0);
+	selector->AddItem(CSTR("iPhone XR"), 0);
+	selector->AddItem(CSTR("iPhone 12 Pro"), 0);
+	selector->AddItem(CSTR("iPhone 14 Pro Max"), 0);
+	selector->AddItem(CSTR("Pixel 3 XL"), 0);
+	selector->AddItem(CSTR("Pixel 7"), 0);
+	selector->AddItem(CSTR("Samsung Galaxy S8+"), 0);
+	selector->AddItem(CSTR("Samsung Galaxy S20 Ultra"), 0);
+	selector->AddItem(CSTR("iPad Mini"), 0);
+	selector->AddItem(CSTR("iPad Air"), 0);
+	selector->AddItem(CSTR("iPad Pro"), 0);
+	selector->AddItem(CSTR("Surface Pro 7"), 0);
+	selector->AddItem(CSTR("Surface Duo"), 0);
+	selector->AddItem(CSTR("Galaxy Z Fold 5"), 0);
+	selector->AddItem(CSTR("Asus Zenbook Fold"), 0);
+	selector->AddItem(CSTR("Samsung Galaxy A51/71"), 0);
+	selector->AddItem(CSTR("Nest Hub"), 0);
+	selector->AddItem(CSTR("Nest Hub Max"), 0);
+	selector->AddItem(CSTR("Galaxy S5"), 0);
+	selector->AddItem(CSTR("Pixel 2"), 0);
+	selector->AddItem(CSTR("Pixel 2 XL"), 0);
+	selector->AddItem(CSTR("iPhone 4"), 0);
+	selector->AddItem(CSTR("iPhone 5/SE"), 0);
+	selector->AddItem(CSTR("iPhone 6/7/8"), 0);
+	selector->AddItem(CSTR("iPhone 6/7/8 Plus"), 0);
+	selector->AddItem(CSTR("iPhone X"), 0);
+	selector->AddItem(CSTR("iPad"), 0);
+	selector->AddItem(CSTR("iPad Pro"), 0);
+	selector->AddItem(CSTR("Galaxy Fold"), 0);
+	selector->AddItem(CSTR("Facebook on Android"), 0);
+}
+
+Text::CStringNN IO::SeleniumIDERunner::BrowserTypeGetName(BrowserType val)
+{
+	switch (val)
+	{
+	case BrowserType::Chrome:
+		return CSTR("Chrome");
+	case BrowserType::MSEdge:
+		return CSTR("MSEdge");
+	case BrowserType::Firefox:
+		return CSTR("Firefox");
+	case BrowserType::HtmlUnit:
+		return CSTR("HtmlUnit");
+	case BrowserType::InternetExplorer:
+		return CSTR("InternetExplorer");
+	case BrowserType::IPad:
+		return CSTR("IPad");
+	case BrowserType::IPhone:
+		return CSTR("IPhone");
+	case BrowserType::Opera:
+		return CSTR("Opera");
+	case BrowserType::Safari:
+		return CSTR("Safari");
+	case BrowserType::WebKitGTK:
+		return CSTR("WebKitGTK");
+	case BrowserType::Mock:
+		return CSTR("Mock");
+	case BrowserType::PhantomJS:
+		return CSTR("PhantomJS");
+	default:
+		return CSTR("Unknown");
+	}
 }

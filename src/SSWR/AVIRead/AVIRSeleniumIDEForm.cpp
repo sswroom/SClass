@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/SeleniumIDERunner.h"
 #include "SSWR/AVIRead/AVIRSeleniumIDEForm.h"
+#include "UI/GUIComboBoxUtil.h"
 
 void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnCommandSelChg(AnyType userObj)
 {
@@ -56,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		location.longitude = 114.2;
 		location.accuracy = 4.5;
 		IO::SeleniumIDERunner runner(me->core->GetTCPClientFactory(), port);
-		if (runner.Run(test, mobile, location, OnStepStatus, me))
+		if (runner.Run(test, (IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, location, OnStepStatus, me))
 		{
 			me->DisplayStatus();
 			me->ui->ShowMsgOK(CSTR("Test Run successfully"), CSTR("Selenium IDE"), me);
@@ -160,20 +161,37 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->lbTest->SetRect(0, 0, 150, 23, false);
 	this->lbTest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->pnlTestCtrl = ui->NewPanel(*this);
-	this->pnlTestCtrl->SetRect(0, 0, 100, 55, false);
+	this->pnlTestCtrl->SetRect(0, 0, 100, 79, false);
 	this->pnlTestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblTestPort = ui->NewLabel(this->pnlTestCtrl, CSTR("Port"));
 	this->lblTestPort->SetRect(4, 4, 100, 23, false);
 	this->txtTestPort = ui->NewTextBox(this->pnlTestCtrl, CSTR("4444"));
 	this->txtTestPort->SetRect(104, 4, 60, 23, false);
+	this->lblTestBrowser = ui->NewLabel(this->pnlTestCtrl, CSTR("Browser"));
+	this->lblTestBrowser->SetRect(4, 28, 100, 23, false);
+	this->cboTestBrowser = ui->NewComboBox(this->pnlTestCtrl, false);
+	this->cboTestBrowser->SetRect(104, 28, 150, 23, false);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, Chrome);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, MSEdge);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, Firefox);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, HtmlUnit);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, InternetExplorer);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, IPad);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, IPhone);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, Opera);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, Safari);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, WebKitGTK);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, Mock);
+	CBOADDENUM(this->cboTestBrowser, IO::SeleniumIDERunner::BrowserType, PhantomJS);
+	this->cboTestBrowser->SetSelectedIndex(0);
 	this->chkTestMobile = ui->NewCheckBox(this->pnlTestCtrl, CSTR("Mobile"), false);
-	this->chkTestMobile->SetRect(4, 28, 100, 23, false);
+	this->chkTestMobile->SetRect(4, 52, 100, 23, false);
 	this->cboTestMobile = ui->NewComboBox(this->pnlTestCtrl, true);
-	this->cboTestMobile->SetRect(104, 28, 150, 23, false);
+	this->cboTestMobile->SetRect(104, 52, 150, 23, false);
 	IO::SeleniumIDERunner::FillMobileItemSelector(this->cboTestMobile);
 	this->cboTestMobile->SetText(CSTR("iPhone 14 Pro Max"));
 	this->btnTestRun = ui->NewButton(this->pnlTestCtrl, CSTR("Run Test"));
-	this->btnTestRun->SetRect(254, 28, 75, 23, false);
+	this->btnTestRun->SetRect(254, 52, 75, 23, false);
 	this->btnTestRun->HandleButtonClick(OnTestRunClicked, this);
 	this->tcTest = ui->NewTabControl(*this);
 	this->tcTest->SetDockType(UI::GUIControl::DOCK_FILL);

@@ -1,10 +1,7 @@
 #include "Stdafx.h"
-#include "IO/FileStream.h"
 #include "Net/WebDriver.h"
 
 //https://www.w3.org/TR/webdriver2/
-
-//#define LOG_RESPONSE 1
 
 void Net::WebDriverParam::WriteParam(NN<Net::HTTPClient> cli) const
 {
@@ -108,6 +105,21 @@ Optional<Net::WebDriverTimeouts> Net::WebDriverTimeouts::Parse(NN<Text::JSONObje
 	return timeouts;
 }
 
+void Net::WebDriverBrowserOptions::BuildW3CJSON(NN<Text::JSONBuilder> builder) const
+{
+	NN<Text::String> s;
+	NN<WebDriverTimeouts> timeouts;
+	builder->ObjectAddStr(CSTR("browserName"), this->browserName);
+	if (this->pageLoadStrategy.SetTo(s)) builder->ObjectAddStr(CSTR("pageLoadStrategy"), s);
+	if (this->platformName.SetTo(s)) builder->ObjectAddStr(CSTR("platformName"), s);
+	if (this->timeouts.SetTo(timeouts))
+	{
+		builder->ObjectBeginObject(CSTR("timeouts"));
+		timeouts->BuildJSON(builder);
+		builder->ObjectEnd();
+	}
+}
+
 Net::WebDriverBrowserOptions::WebDriverBrowserOptions(Text::CStringNN browserName)
 {
 	this->browserName = Text::String::New(browserName);
@@ -169,8 +181,7 @@ void Net::WebDriverChromeOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
-	NN<WebDriverTimeouts> timeouts;
-	builder->ObjectAddStr(CSTR("browserName"), this->browserName);
+	this->BuildW3CJSON(builder);
 	if (this->args.GetCount() > 0 || this->mobileDeviceName.NotNull())
 	{
 		builder->ObjectBeginObject(CSTR("goog:chromeOptions"));
@@ -194,14 +205,148 @@ void Net::WebDriverChromeOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
 		}
 		builder->ObjectEnd();
 	}
-	if (this->pageLoadStrategy.SetTo(s)) builder->ObjectAddStr(CSTR("pageLoadStrategy"), s);
-	if (this->platformName.SetTo(s)) builder->ObjectAddStr(CSTR("platformName"), s);
-	if (this->timeouts.SetTo(timeouts))
+}
+
+Net::WebDriverMSEdgeOptions::WebDriverMSEdgeOptions() : WebDriverBrowserOptions(CSTR("MicrosoftEdge"))
+{
+	this->mobileDeviceName = 0;
+}
+
+Net::WebDriverMSEdgeOptions::~WebDriverMSEdgeOptions()
+{
+	this->args.FreeAll();
+	OPTSTR_DEL(this->mobileDeviceName);
+}
+
+void Net::WebDriverMSEdgeOptions::AddArgs(Text::CStringNN arg)
+{
+	this->args.Add(Text::String::New(arg));
+}
+
+void Net::WebDriverMSEdgeOptions::SetMobileDeviceName(Text::CStringNN mobileDeviceName)
+{
+	OPTSTR_DEL(this->mobileDeviceName);
+	this->mobileDeviceName = Text::String::New(mobileDeviceName);
+}
+
+void Net::WebDriverMSEdgeOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
+{
+	NN<Text::String> s;
+	UOSInt i;
+	UOSInt j;
+	this->BuildW3CJSON(builder);
+	if (this->args.GetCount() > 0 || this->mobileDeviceName.NotNull())
 	{
-		builder->ObjectBeginObject(CSTR("timeouts"));
-		timeouts->BuildJSON(builder);
+		builder->ObjectBeginObject(CSTR("ms:edgeOptions"));
+		if (this->args.GetCount() > 0)
+		{
+			builder->ObjectBeginArray(CSTR("args"));
+			i = 0;
+			j = this->args.GetCount();
+			while (i < j)
+			{
+				builder->ArrayAddStr(this->args.GetItemNoCheck(i));
+				i++;
+			}
+			builder->ArrayEnd();
+		}
+		if (this->mobileDeviceName.SetTo(s))
+		{
+			builder->ObjectBeginObject(CSTR("mobileEmulation"));
+			builder->ObjectAddStr(CSTR("deviceName"), s);
+			builder->ObjectEnd();
+		}
 		builder->ObjectEnd();
 	}
+}
+
+Net::WebDriverFirefoxOptions::WebDriverFirefoxOptions() : WebDriverBrowserOptions(CSTR("firefox"))
+{
+}
+
+Net::WebDriverFirefoxOptions::~WebDriverFirefoxOptions()
+{
+	this->args.FreeAll();
+}
+
+void Net::WebDriverFirefoxOptions::AddArgs(Text::CStringNN arg)
+{
+	this->args.Add(Text::String::New(arg));
+}
+
+void Net::WebDriverFirefoxOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
+{
+	UOSInt i;
+	UOSInt j;
+	this->BuildW3CJSON(builder);
+	if (this->args.GetCount() > 0)
+	{
+		builder->ObjectBeginObject(CSTR("moz:firefoxOptions"));
+		if (this->args.GetCount() > 0)
+		{
+			builder->ObjectBeginArray(CSTR("args"));
+			i = 0;
+			j = this->args.GetCount();
+			while (i < j)
+			{
+				builder->ArrayAddStr(this->args.GetItemNoCheck(i));
+				i++;
+			}
+			builder->ArrayEnd();
+		}
+		builder->ObjectEnd();
+	}
+}
+
+Net::WebDriverWebKitGTKOptions::WebDriverWebKitGTKOptions() : WebDriverBrowserOptions(CSTR("MiniBrowser"))
+{
+}
+
+Net::WebDriverWebKitGTKOptions::~WebDriverWebKitGTKOptions()
+{
+	this->args.FreeAll();
+}
+
+void Net::WebDriverWebKitGTKOptions::AddArgs(Text::CStringNN arg)
+{
+	this->args.Add(Text::String::New(arg));
+}
+
+void Net::WebDriverWebKitGTKOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
+{
+	UOSInt i;
+	UOSInt j;
+	this->BuildW3CJSON(builder);
+	if (this->args.GetCount() > 0)
+	{
+		builder->ObjectBeginObject(CSTR("webkitgtk:browserOptions"));
+		if (this->args.GetCount() > 0)
+		{
+			builder->ObjectBeginArray(CSTR("args"));
+			i = 0;
+			j = this->args.GetCount();
+			while (i < j)
+			{
+				builder->ArrayAddStr(this->args.GetItemNoCheck(i));
+				i++;
+			}
+			builder->ArrayEnd();
+		}
+		builder->ObjectEnd();
+	}
+}
+
+Net::WebDriverW3CBrowserOptions::WebDriverW3CBrowserOptions(Text::CStringNN browserName) : WebDriverBrowserOptions(browserName)
+{
+}
+
+Net::WebDriverW3CBrowserOptions::~WebDriverW3CBrowserOptions()
+{
+}
+
+void Net::WebDriverW3CBrowserOptions::BuildJSON(NN<Text::JSONBuilder> builder) const
+{
+	this->BuildW3CJSON(builder);
 }
 
 Net::WebDriverCapabilities::WebDriverCapabilities(NN<WebDriverBrowserOptions> browser)
@@ -301,7 +446,7 @@ void Net::WebDriverStartSession::BuildJSON(NN<Text::JSONBuilder> builder) const
 	builder->ObjectEnd();
 }
 
-Optional<Text::JSONBase> Net::WebDriverSession::ParseResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param)
+Optional<Text::JSONBase> Net::WebDriverClient::ParseResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param)
 {
 	NN<Text::JSONObject> obj;
 	NN<Text::JSONBase> objBase;
@@ -364,7 +509,7 @@ Optional<Text::JSONBase> Net::WebDriverSession::ParseResponse(Net::WebStatus::St
 	return 0;
 }
 
-void Net::WebDriverSession::ErrorInvalidResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param)
+void Net::WebDriverClient::ErrorInvalidResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param)
 {
 	this->lastErrorCode = code;
 	OPTSTR_DEL(this->lastError);
@@ -387,7 +532,7 @@ void Net::WebDriverSession::ErrorInvalidResponse(Net::WebStatus::StatusCode code
 	this->lastErrorMessage = Text::String::New(sb.ToCString());
 }
 
-void Net::WebDriverSession::ErrorInvalidValue(NN<Text::JSONBase> json, Text::CStringNN command, Optional<WebDriverParam> param)
+void Net::WebDriverClient::ErrorInvalidValue(NN<Text::JSONBase> json, Text::CStringNN command, Optional<WebDriverParam> param)
 {
 	this->lastErrorCode = Net::WebStatus::SC_OK;
 	OPTSTR_DEL(this->lastError);
@@ -410,7 +555,7 @@ void Net::WebDriverSession::ErrorInvalidValue(NN<Text::JSONBase> json, Text::CSt
 	this->lastErrorMessage = Text::String::New(sb.ToCString());
 }
 
-Bool Net::WebDriverSession::ResponseExists(Optional<Text::JSONBase> value)
+Bool Net::WebDriverClient::ResponseExists(Optional<Text::JSONBase> value)
 {
 	NN<Text::JSONBase> json;
 	if (value.SetTo(json))
@@ -421,7 +566,7 @@ Bool Net::WebDriverSession::ResponseExists(Optional<Text::JSONBase> value)
 	return false;
 }
 
-Optional<Text::String> Net::WebDriverSession::ResponseString(Optional<Text::JSONBase> value, Text::CStringNN command, Optional<WebDriverParam> param)
+Optional<Text::String> Net::WebDriverClient::ResponseString(Optional<Text::JSONBase> value, Text::CStringNN command, Optional<WebDriverParam> param)
 {
 	NN<Text::JSONBase> json;
 	if (value.SetTo(json))
@@ -441,7 +586,7 @@ Optional<Text::String> Net::WebDriverSession::ResponseString(Optional<Text::JSON
 	return 0;
 }
 
-Bool Net::WebDriverSession::ResponseBool(Optional<Text::JSONBase> value, OutParam<Bool> outVal, Text::CStringNN command, Optional<WebDriverParam> param)
+Bool Net::WebDriverClient::ResponseBool(Optional<Text::JSONBase> value, OutParam<Bool> outVal, Text::CStringNN command, Optional<WebDriverParam> param)
 {
 	NN<Text::JSONBase> json;
 	if (value.SetTo(json))
@@ -453,31 +598,40 @@ Bool Net::WebDriverSession::ResponseBool(Optional<Text::JSONBase> value, OutPara
 	return false;
 }
 
-Optional<Text::JSONBase> Net::WebDriverSession::DoGet(Text::CStringNN command)
+Optional<Text::JSONBase> Net::WebDriverClient::DoGet(Text::CStringNN command)
 {
 	IO::MemoryStream mstm;
 	return ParseResponse(this->resource->Get(command, mstm), mstm, command, 0);
 }
 
-Optional<Text::JSONBase> Net::WebDriverSession::DoPost(Text::CStringNN command, NN<WebDriverParam> param)
+Optional<Text::JSONBase> Net::WebDriverClient::DoPost(Text::CStringNN command, NN<WebDriverParam> param)
 {
 	IO::MemoryStream mstm;
 	return ParseResponse(this->resource->Post(command, param, mstm), mstm, command, param);
 }
 
-Optional<Text::JSONBase> Net::WebDriverSession::DoPut(Text::CStringNN command, NN<WebDriverParam> param)
+Optional<Text::JSONBase> Net::WebDriverClient::DoPut(Text::CStringNN command, NN<WebDriverParam> param)
 {
 	IO::MemoryStream mstm;
 	return ParseResponse(this->resource->Put(command, param, mstm), mstm, command, param);
 }
 
-Optional<Text::JSONBase> Net::WebDriverSession::DoDelete(Text::CStringNN command, Optional<WebDriverParam> param)
+Optional<Text::JSONBase> Net::WebDriverClient::DoDelete(Text::CStringNN command, Optional<WebDriverParam> param)
 {
 	IO::MemoryStream mstm;
 	return ParseResponse(this->resource->Delete(command, param, mstm), mstm, command, param);
 }
 
-Net::WebDriverSession::WebDriverSession(NN<Net::RESTResource> resource)
+Net::WebDriverClient::WebDriverClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
+{
+	NEW_CLASSNN(this->resource, Net::RESTResource(clif, ssl, url));
+	this->lastErrorCode = Net::WebStatus::SC_UNKNOWN;
+	this->lastError = 0;
+	this->lastErrorMessage = 0;
+	this->lastErrorStacktrace = 0;
+}
+
+Net::WebDriverClient::WebDriverClient(NN<Net::RESTResource> resource)
 {
 	this->resource = resource;
 	this->lastErrorCode = Net::WebStatus::SC_UNKNOWN;
@@ -486,14 +640,21 @@ Net::WebDriverSession::WebDriverSession(NN<Net::RESTResource> resource)
 	this->lastErrorStacktrace = 0;
 }
 
-Net::WebDriverSession::~WebDriverSession()
+Net::WebDriverClient::~WebDriverClient()
 {
-	IO::MemoryStream mstm;
-	this->resource->Delete(CSTR(""), 0, mstm);
 	this->resource.Delete();
 	OPTSTR_DEL(this->lastError);
 	OPTSTR_DEL(this->lastErrorMessage);
 	OPTSTR_DEL(this->lastErrorStacktrace);
+}
+
+Net::WebDriverSession::WebDriverSession(NN<Net::RESTResource> resource) : WebDriverClient(resource)
+{
+}
+
+Net::WebDriverSession::~WebDriverSession()
+{
+	this->ResponseExists(this->DoDelete(CSTR(""), 0));
 }
 
 Optional<Net::WebDriverTimeouts> Net::WebDriverSession::GetTimeouts()
@@ -743,7 +904,7 @@ Bool Net::WebDriverSession::ElementSendKeys(Text::CStringNN elementId, Text::CSt
 {
 	WebDriverJSONParam param(Text::JSONObject::New()
 		->SetObjectString(CSTR("text"), keys)
-		->SetObjectValue(CSTR("value"), Text::JSONArray::New()->AddArrayString(keys)));
+		->SetObjectValueAndRelease(CSTR("value"), Text::JSONArray::New()->AddArrayString(keys)));
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("element/"));
 	sb.Append(elementId);
@@ -757,9 +918,9 @@ Bool Net::WebDriverSession::ExecuteScript(Text::CStringNN script)
 	return ResponseExists(this->DoPost(CSTR("execute/sync"), param));
 }
 
-Net::WebDriver::WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url) : resource(clif, ssl, url)
+Net::WebDriver::WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url) : WebDriverClient(clif, ssl, url)
 {
-	this->resource.SetTimeout(5000);
+	this->SetTimeout(5000);
 	this->ready = false;
 	this->message = 0;
 	this->UpdateStatus();
@@ -773,25 +934,16 @@ Net::WebDriver::~WebDriver()
 
 Bool Net::WebDriver::UpdateStatus()
 {
-	IO::MemoryStream mstm;
-	Net::WebStatus::StatusCode code = this->resource.Get(CSTR("status"), mstm);
-	NN<Text::JSONObject> obj;
-#if defined(LOG_RESPONSE)
-	if (code == Net::WebStatus::SC_OK)
-	{
-		IO::FileStream fs(CSTR("status.json"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write(mstm.GetArray());
-	}
-#endif
-	if (code == Net::WebStatus::SC_OK && ParseJSON(mstm).SetTo(obj))
+	NN<Text::JSONBase> obj;
+	if (this->DoGet(CSTR("status")).SetTo(obj))
 	{
 		NN<WebDriverNode> node;
 		OPTSTR_DEL(this->message);
 		this->nodes.DeleteAll();
-		this->ready = obj->GetValueAsBool(CSTR("value.ready"));
-		this->message = obj->GetValueNewString(CSTR("value.message"));
+		this->ready = obj->GetValueAsBool(CSTR("ready"));
+		this->message = obj->GetValueNewString(CSTR("message"));
 		NN<Text::JSONArray> nodesArr;
-		if (obj->GetValueArray(CSTR("value.nodes")).SetTo(nodesArr))
+		if (obj->GetValueArray(CSTR("nodes")).SetTo(nodesArr))
 		{
 			NN<Text::JSONObject> nodeObj;
 			UOSInt i = 0;
@@ -814,26 +966,17 @@ Bool Net::WebDriver::UpdateStatus()
 
 Optional<Net::WebDriverSession> Net::WebDriver::NewSession(NN<WebDriverStartSession> param)
 {
-	IO::MemoryStream mstm;
-	Net::WebStatus::StatusCode code = this->resource.Post(CSTR("session"), param, mstm);
-#if defined(LOG_RESPONSE)
-	if (code == Net::WebStatus::SC_OK)
-	{
-		IO::FileStream fs(CSTR("session.json"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		fs.Write(mstm.GetArray());
-	}
-#endif
-	NN<Text::JSONObject> response;
-	if (code == Net::WebStatus::SC_OK && ParseJSON(mstm).SetTo(response))
+	NN<Text::JSONBase> response;
+	if (this->DoPost(CSTR("session"), param).SetTo(response))
 	{
 		NN<Text::String> sessId;
-		if (response->GetValueString(CSTR("value.sessionId")).SetTo(sessId))
+		if (response->GetValueString(CSTR("sessionId")).SetTo(sessId))
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(CSTR("session/"));
 			sb.Append(sessId);
 			NN<WebDriverSession> sess;
-			NEW_CLASSNN(sess, WebDriverSession(this->resource.CreateSubResource(sb.ToCString())));
+			NEW_CLASSNN(sess, WebDriverSession(this->CreateSubResource(sb.ToCString())));
 			response->EndUse();
 			return sess;
 		}

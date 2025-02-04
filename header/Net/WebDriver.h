@@ -131,6 +131,7 @@ namespace Net
 		Optional<Text::String> platformName;
 		Optional<WebDriverTimeouts> timeouts;
 
+		void BuildW3CJSON(NN<Text::JSONBuilder> builder) const;
 		WebDriverBrowserOptions(Text::CStringNN browserName);
 	public:
 		virtual ~WebDriverBrowserOptions();
@@ -145,13 +146,66 @@ namespace Net
 	private:
 		Data::ArrayListStringNN args;
 		Optional<Text::String> mobileDeviceName;
-		
+
 	public:
 		WebDriverChromeOptions();
 		virtual ~WebDriverChromeOptions();
 
 		void AddArgs(Text::CStringNN arg);
 		void SetMobileDeviceName(Text::CStringNN mobileDeviceName);
+
+		virtual void BuildJSON(NN<Text::JSONBuilder> builder) const;
+	};
+
+	class WebDriverMSEdgeOptions : public WebDriverBrowserOptions
+	{
+	private:
+		Data::ArrayListStringNN args;
+		Optional<Text::String> mobileDeviceName;
+
+	public:
+		WebDriverMSEdgeOptions();
+		virtual ~WebDriverMSEdgeOptions();
+
+		void AddArgs(Text::CStringNN arg);
+		void SetMobileDeviceName(Text::CStringNN mobileDeviceName);
+
+		virtual void BuildJSON(NN<Text::JSONBuilder> builder) const;
+	};
+
+	class WebDriverFirefoxOptions : public WebDriverBrowserOptions
+	{
+	private:
+		Data::ArrayListStringNN args;
+
+	public:
+		WebDriverFirefoxOptions();
+		virtual ~WebDriverFirefoxOptions();
+
+		void AddArgs(Text::CStringNN arg);
+
+		virtual void BuildJSON(NN<Text::JSONBuilder> builder) const;
+	};
+
+	class WebDriverWebKitGTKOptions : public WebDriverBrowserOptions
+	{
+	private:
+		Data::ArrayListStringNN args;
+
+	public:
+		WebDriverWebKitGTKOptions();
+		virtual ~WebDriverWebKitGTKOptions();
+
+		void AddArgs(Text::CStringNN arg);
+
+		virtual void BuildJSON(NN<Text::JSONBuilder> builder) const;
+	};
+
+	class WebDriverW3CBrowserOptions : public WebDriverBrowserOptions
+	{
+	public:
+		WebDriverW3CBrowserOptions(Text::CStringNN browserName);
+		virtual ~WebDriverW3CBrowserOptions();
 
 		virtual void BuildJSON(NN<Text::JSONBuilder> builder) const;
 	};
@@ -180,15 +234,16 @@ namespace Net
 		virtual void BuildJSON(NN<Text::JSONBuilder> builder) const;
 	};
 
-	class WebDriverSession
+	class WebDriverClient
 	{
-	public:
+	private:
 		NN<Net::RESTResource> resource;
 		Net::WebStatus::StatusCode lastErrorCode;
 		Optional<Text::String> lastError;
 		Optional<Text::String> lastErrorMessage;
 		Optional<Text::String> lastErrorStacktrace;
 
+	protected:
 		Optional<Text::JSONBase> ParseResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param);
 		void ErrorInvalidResponse(Net::WebStatus::StatusCode code, NN<IO::MemoryStream> mstm, Text::CStringNN command, Optional<WebDriverParam> param);
 		void ErrorInvalidValue(NN<Text::JSONBase> json, Text::CStringNN command, Optional<WebDriverParam> param);
@@ -199,9 +254,25 @@ namespace Net
 		Optional<Text::JSONBase> DoPost(Text::CStringNN command, NN<WebDriverParam> param);
 		Optional<Text::JSONBase> DoPut(Text::CStringNN command, NN<WebDriverParam> param);
 		Optional<Text::JSONBase> DoDelete(Text::CStringNN command, Optional<WebDriverParam> param);
+
+		WebDriverClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url);
+		WebDriverClient(NN<Net::RESTResource> resource);
+	public:
+		virtual ~WebDriverClient();
+
+		void SetTimeout(Data::Duration dur) { this->resource->SetTimeout(dur); }
+		NN<Net::RESTResource> CreateSubResource(Text::CStringNN subPath) { return this->resource->CreateSubResource(subPath); }
+		Net::WebStatus::StatusCode GetLastErrorCode() const { return this->lastErrorCode; }
+		Optional<Text::String> GetLastError() const { return this->lastError; }
+		Optional<Text::String> GetLastErrorMessage() const { return this->lastErrorMessage; }
+		Optional<Text::String> GetLastErrorStacktrace() const { return this->lastErrorStacktrace; }
+	};
+
+	class WebDriverSession : public WebDriverClient
+	{
 	public:
 		WebDriverSession(NN<Net::RESTResource> resource);
-		~WebDriverSession();
+		virtual ~WebDriverSession();
 
 		Optional<WebDriverTimeouts> GetTimeouts();
 		Bool SetTimeouts(NN<WebDriverTimeouts> timeouts);
@@ -239,11 +310,6 @@ namespace Net
 		Bool ElementSendKeys(Text::CStringNN elementId, Text::CStringNN keys);
 		Bool ExecuteScript(Text::CStringNN elementId);
 
-		Net::WebStatus::StatusCode GetLastErrorCode() const { return this->lastErrorCode; }
-		Optional<Text::String> GetLastError() const { return this->lastError; }
-		Optional<Text::String> GetLastErrorMessage() const { return this->lastErrorMessage; }
-		Optional<Text::String> GetLastErrorStacktrace() const { return this->lastErrorStacktrace; }
-
 		template<typename Getter> Bool WaitUntil(Getter getter, Data::Duration dur)
 		{
 			Data::Timestamp startTime = Data::Timestamp::UtcNow();
@@ -254,10 +320,9 @@ namespace Net
 		}
 	};
 
-	class WebDriver
+	class WebDriver : public WebDriverClient
 	{
 	public:
-		Net::RESTResource resource;
 		Bool ready;
 		Optional<Text::String> message;
 		Data::ArrayListNN<WebDriverNode> nodes;

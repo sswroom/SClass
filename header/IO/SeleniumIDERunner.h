@@ -17,6 +17,22 @@ namespace IO
 			Double accuracy;
 		};
 
+		enum class BrowserType
+		{
+			Chrome,
+			MSEdge,
+			Firefox,
+			HtmlUnit,
+			InternetExplorer,
+			IPad,
+			IPhone,
+			Opera,
+			Safari,
+			WebKitGTK,
+			Mock,
+			PhantomJS
+		};
+
 		typedef void (__stdcall *StepStatusHandler)(AnyType userObj, UOSInt cmdIndex, Data::Duration dur);
 	private:
 		NN<Net::TCPClientFactory> clif;
@@ -24,17 +40,24 @@ namespace IO
 		Optional<Text::String> lastErrorMsg;
 		NN<Text::String> url;
 
-		Bool ErrorSess(NN<Net::WebDriverSession> sess, UOSInt currIndex);
+		Bool ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex);
+		static NN<Net::WebDriverBrowserOptions> CreateChromeOptions(Text::CString mobileDevice);
+		static NN<Net::WebDriverBrowserOptions> CreateMSEdgeOptions(Text::CString mobileDevice);
+		static NN<Net::WebDriverBrowserOptions> CreateFirefoxOptions(Text::CString mobileDevice);
+		static NN<Net::WebDriverBrowserOptions> CreateWebKitGTKOptions(Text::CString mobileDevice);
+		static NN<Net::WebDriverBrowserOptions> CreateOtherOptions(Text::CStringNN browserName);
+		static NN<Net::WebDriverBrowserOptions> CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice);
 	public:
 		SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 port);
 		~SeleniumIDERunner();
 
-		Bool Run(NN<SeleniumTest> test, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj);
+		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj);
 		void SetURL(Text::CStringNN url) { this->url->Release(); this->url = Text::String::New(url); }
 		Optional<Text::String> GetLastErrorMsg() const { return this->lastErrorMsg; }
 		UOSInt GetLastErrorIndex() const { return this->lastErrorIndex; }
 		Optional<Net::WebDriverBy> ParseBy(Text::CStringNN by, UOSInt currIndex);
 		static void FillMobileItemSelector(NN<UI::ItemSelector> selector);
+		static Text::CStringNN BrowserTypeGetName(BrowserType browserType);
 	};
 }
 #endif
