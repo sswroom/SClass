@@ -476,6 +476,7 @@ MODBUSTCPMaster.o: ../../src/IO/MODBUSTCPMaster.cpp
 ModemController.o: ../../src/IO/ModemController.cpp
 MotionDetectorAccelerometer.o: ../../src/IO/MotionDetectorAccelerometer.cpp
 MTFileLog.o: ../../src/IO/MTFileLog.cpp
+MTStream.o: ../../src/IO/MTStream.cpp
 NullIOPin.o: ../../src/IO/NullIOPin.cpp
 NullStream.o: ../../src/IO/NullStream.cpp
 NullWriter.o: ../../src/IO/NullWriter.cpp

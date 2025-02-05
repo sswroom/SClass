@@ -121,6 +121,7 @@ console:
 @SerialTerminal
 @ServiceTest
 @SHT20Test
+@SIDERunner
 @SIM7000Test
 @StackTraceTest
 @SystemInfoTest
@@ -405,6 +406,9 @@ ServiceTest:
 @ConsoleStartup.o
 SHT20Test:
 @SHT20Test.o
+@ConsoleStartup.o
+SIDERunner:
+@SIDERunnerMain.o
 @ConsoleStartup.o
 SIM7000Test:
 @SIM7000Test.o
@@ -1049,6 +1053,7 @@ SerialResetMain.o: ../../main/IO/SerialResetMain.cpp
 SerialTerminalMain.o: ../../main/IO/SerialTerminalMain.cpp
 ServiceTest.o: ../../main/IO/ServiceTest.cpp
 SHT20Test.o: ../../main/IO/SHT20Test.cpp
+SIDERunnerMain.o: ../../main/IO/SIDERunnerMain.cpp
 SIM7000Test.o: ../../main/IO/SIM7000Test.cpp
 StackTraceTest.o: ../../main/IO/StackTraceTest.cpp
 SystemInfoTest.o: ../../main/IO/SystemInfoTest.cpp
@@ -1914,6 +1919,8 @@ IO/MotionDetectorAccelerometer.h:
 @MotionDetectorAccelerometer.o
 IO/MTFileLog.h:
 @MTFileLog.o
+IO/MTStream.h:
+@MTStream.o
 IO/NullIOPin.h:
 @NullIOPin.o
 IO/NullStream.h:

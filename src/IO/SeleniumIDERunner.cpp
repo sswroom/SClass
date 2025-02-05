@@ -82,7 +82,6 @@ NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateWebKitGTKOptions(T
 
 NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateOtherOptions(Text::CStringNN browserName)
 {
-	Text::CStringNN cstr;
 	NN<Net::WebDriverW3CBrowserOptions> browser;
 	NN<Net::WebDriverTimeouts> timeouts;
 	NEW_CLASSNN(browser, Net::WebDriverW3CBrowserOptions(browserName));
