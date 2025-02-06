@@ -33,6 +33,7 @@ namespace Data
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff) const;
 		NN<UUID> Clone() const;
 		Bool Equals(NN<UUID> uuid) const;
+		void GenerateV4();
 	};
 }
 #endif

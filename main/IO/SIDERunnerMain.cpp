@@ -222,6 +222,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendUTF8Char('.');
 					sb.AppendI64(Data::DateTimeUtil::GetCurrTimeMillis());
 					sb.Append(CSTR(".csv"));
+					console.Write(CSTR("Running "));
+					console.WriteLine(s.Substring(i + 1));
 					IO::FileStream logFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal);
 					IO::MTStream logStm(logFS, 1048576);
 					logStm.Write(CSTR("Time,TestId,Step,Duration\r\n").ToByteArray());

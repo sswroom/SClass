@@ -21,7 +21,6 @@ void __stdcall IO::MTStream::OutputThread(NN<Sync::Thread> thread)
 				me->cacheBuff2 = tmpBuff;
 				me->cacheSize = 0;
 			}
-			printf("Writing %d bytes\r\n", (UInt32)size);
 			me->outStm->Write(Data::ByteArrayR(tmpBuff, size));
 		}
 		thread->Wait(1000);
@@ -76,7 +75,6 @@ UOSInt IO::MTStream::Write(Data::ByteArrayR buff)
 	{
 		MemCopyNO(&this->cacheBuff1[this->cacheSize], buff.Arr().Ptr(), buff.GetSize());
 		this->cacheSize += buff.GetSize();
-		printf("Adding %d bytes to cache, total %d bytes\r\n", (UInt32)buff.GetSize(), (UInt32)this->cacheSize);
 		this->thread.Notify();
 		return buff.GetSize();
 	}

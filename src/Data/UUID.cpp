@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Data/RandomMT19937.h"
 #include "Data/UUID.h"
 
 Data::UUID::UUID()
@@ -198,4 +199,23 @@ Bool Data::UUID::Equals(NN<UUID> uuid) const
 		}
 	}
 	return true;
+}
+
+void Data::UUID::GenerateV4()
+{
+	Data::RandomMT19937 rand((UInt32)Data::DateTimeUtil::GetCurrTimeMillis());
+	UOSInt j;
+	UOSInt i = 0;
+	while (i < 16)
+	{
+		j = (Data::Timestamp::UtcNow().inst.nanosec / 1000) & 3;
+		while (j-- > 0)
+		{
+			rand.NextInt32();
+		}
+		this->data[i] = (UInt8)rand.NextInt32();
+		i++;
+	}
+	this->data[7] = (UInt8)(0x40 | (this->data[7] & 0xf));
+	this->data[8] = (UInt8)(0x80 | (this->data[8] & 0x3f));
 }
