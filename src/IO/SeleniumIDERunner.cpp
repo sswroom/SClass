@@ -133,6 +133,7 @@ IO::SeleniumIDERunner::SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 
 	sb.Append(CSTR("http://localhost:"));
 	sb.AppendU16(port);
 	this->url = Text::String::New(sb.ToCString());
+	this->noPause = false;
 }
 
 IO::SeleniumIDERunner::~SeleniumIDERunner()
@@ -473,6 +474,129 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 					by.Delete();
 				}
 			}
+			else if (s->Equals(CSTR("sendKeys")))
+			{
+				NN<Net::WebDriverBy> by;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorClient(sess, currIndex);
+					}
+					else
+					{
+						if (succ && command->GetValue().SetTo(s) && s->leng > 0)
+						{
+							Text::CStringNN cs = s->ToCString();
+							Text::StringBuilderUTF8 sb;
+							UOSInt index;
+							while (true)
+							{
+								index = cs.IndexOf(CSTR("${KEY_"));
+								if (index == INVALID_INDEX)
+								{
+									sb.Append(cs);
+									break;
+								}
+								sb.AppendC(cs.v, index);
+								cs = cs.Substring(index + 6);
+
+#define CHECK_KEY(code, name)	else if (cs.StartsWith(CSTR(name "}"))) \
+								{ \
+									sb.Append(CSTR(code)); \
+									cs = cs.Substring(index + U8STRLEN(name) + 1); \
+								}
+
+								if (cs.StartsWith(CSTR("NULL}")))
+								{
+									sb.Append(CSTR("\uE000"));
+									cs = cs.Substring(index + 5);
+								}
+								CHECK_KEY("\uE001", "CANCEL")
+								CHECK_KEY("\uE002", "HELP")
+								CHECK_KEY("\uE003", "BACK_SPACE")
+								CHECK_KEY("\uE004", "TAB")
+								CHECK_KEY("\uE005", "CLEAR")
+								CHECK_KEY("\uE006", "RETURN")
+								CHECK_KEY("\uE007", "ENTER")
+								CHECK_KEY("\uE008", "SHIFT")
+								CHECK_KEY("\uE009", "CONTROL")
+								CHECK_KEY("\uE00A", "ALT")
+								CHECK_KEY("\uE00B", "PAUSE")
+								CHECK_KEY("\uE00C", "ESCAPE")
+								CHECK_KEY("\uE00D", "SPACE")
+								CHECK_KEY("\uE00E", "PAGE_UP")
+								CHECK_KEY("\uE00F", "PAGE_DOWN")
+								CHECK_KEY("\uE010", "END")
+								CHECK_KEY("\uE011", "HOME")
+								CHECK_KEY("\uE012", "ARROW_LEFT")
+								CHECK_KEY("\uE012", "LEFT")
+								CHECK_KEY("\uE013", "ARROW_UP")
+								CHECK_KEY("\uE013", "UP")
+								CHECK_KEY("\uE014", "ARROW_RIGHT")
+								CHECK_KEY("\uE014", "RIGHT")
+								CHECK_KEY("\uE015", "ARROW_DOWN")
+								CHECK_KEY("\uE015", "DOWN")
+								CHECK_KEY("\uE016", "INSERT")
+								CHECK_KEY("\uE017", "DELETE")
+								CHECK_KEY("\uE018", "SEMICOLON")
+								CHECK_KEY("\uE019", "EQUALS")
+								CHECK_KEY("\uE01A", "NUMPAD0")
+								CHECK_KEY("\uE01B", "NUMPAD1")
+								CHECK_KEY("\uE01C", "NUMPAD2")
+								CHECK_KEY("\uE01D", "NUMPAD3")
+								CHECK_KEY("\uE01E", "NUMPAD4")
+								CHECK_KEY("\uE01F", "NUMPAD5")
+								CHECK_KEY("\uE020", "NUMPAD6")
+								CHECK_KEY("\uE021", "NUMPAD7")
+								CHECK_KEY("\uE022", "NUMPAD8")
+								CHECK_KEY("\uE023", "NUMPAD9")
+								CHECK_KEY("\uE024", "MULTIPLY")
+								CHECK_KEY("\uE025", "ADD")
+								CHECK_KEY("\uE026", "SEPARATOR")
+								CHECK_KEY("\uE027", "SUBTRACT")
+								CHECK_KEY("\uE028", "DECIMAL")
+								CHECK_KEY("\uE029", "DIVIDE")
+								CHECK_KEY("\uE031", "F1")
+								CHECK_KEY("\uE032", "F2")
+								CHECK_KEY("\uE033", "F3")
+								CHECK_KEY("\uE034", "F4")
+								CHECK_KEY("\uE035", "F5")
+								CHECK_KEY("\uE036", "F6")
+								CHECK_KEY("\uE037", "F7")
+								CHECK_KEY("\uE038", "F8")
+								CHECK_KEY("\uE039", "F9")
+								CHECK_KEY("\uE03A", "F10")
+								CHECK_KEY("\uE03B", "F11")
+								CHECK_KEY("\uE03C", "F12")
+								CHECK_KEY("\uE03D", "COMMAND")
+								CHECK_KEY("\uE03D", "META")
+								else
+								{
+									sb.Append(CSTR("${KEY_"));
+									index = cs.IndexOf('}');
+									if (index != INVALID_INDEX)
+									{
+										sb.AppendC(cs.v, index + 1);
+										cs = cs.Substring(index + 1);
+									}
+								}
+							}
+							if (!sess->ElementSendKeys(eleId->ToCString(), sb.ToCString()))
+							{
+								succ = this->ErrorClient(sess, currIndex);
+							}
+						}
+						eleId->Release();
+					}
+					by.Delete();
+				}
+			}
 			else if (s->Equals(CSTR("mouseOver")))
 			{
 				NN<Net::WebDriverBy> by;
@@ -526,7 +650,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 					this->lastErrorIndex = currIndex;
 					succ = false;
 				}
-				else
+				else if (!this->noPause)
 				{
 					Data::Timestamp startTime = Data::Timestamp::UtcNow();
 					Data::Timestamp currTime;

@@ -5,6 +5,7 @@
 #include "IO/MTStream.h"
 #include "IO/Path.h"
 #include "IO/SeleniumIDERunner.h"
+#include "Manage/ExceptionRecorder.h"
 #include "Net/OSSocketFactory.h"
 #include "Parser/FileParser/JSONParser.h"
 
@@ -19,6 +20,7 @@ void PrintHelp(NN<IO::ConsoleWriter> console)
 	console->WriteLine(CSTR("  --browser [browser]   Browser Type of the WebDriver: Chrome(Default), MSEdge, Firefox, HtmlUnit, InternetExplorer,"));
 	console->WriteLine(CSTR("                          iPad, iPhone, Opera, Safari, WebKitGTK, Mock, or PhantomJS"));
 	console->WriteLine(CSTR("  --log-path [logDir]   Log path for log file, default is ./log"));
+	console->WriteLine(CSTR("  --no-pause [bool]     Whether skip pause commands, default is false"));
 }
 
 void __stdcall OnTestStep(AnyType userObj, UOSInt cmdIndex, Data::Duration dur)
@@ -38,6 +40,7 @@ void __stdcall OnTestStep(AnyType userObj, UOSInt cmdIndex, Data::Duration dur)
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
+	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	IO::ConsoleWriter console;
 	UOSInt cmdCnt;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
@@ -50,6 +53,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN logPath = CSTR("log");
 	Text::CString sideFile = 0;
 	Text::CStringNN s;
+	Bool noPause = false;
 	UOSInt i;
 	Bool hasError = false;
 	i = 1;
@@ -130,6 +134,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				logPath = param;
 			}
+			else if (cmd.Equals(CSTR("--no-pause")))
+			{
+				if (param.Equals(CSTR("false")))
+				{
+					noPause = false;
+				}
+				else if (param.Equals(CSTR("true")))
+				{
+					noPause = true;
+				}
+				else
+				{
+					noPause = (param.ToInt32() != 0);
+				}
+			}
 			else
 			{
 				hasError = true;
@@ -202,6 +221,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				{
 					runner.SetURL(s);
 				}
+				if (noPause)
+				{
+					runner.SetNoPause(noPause);
+				}
 				NN<IO::SeleniumTest> test;
 				if (side.GetTest(0).IsNull())
 				{
@@ -234,7 +257,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						if (!runner.Run(test, browser, mobile, 0, url, OnTestStep, &logStm))
 						{
 							sb.ClearStr();
-							sb.Append(CSTR("Error occurs while running the test in step "));
+							sb.Append(CSTR("Error occurs while running the test ("));
+							sb.AppendOpt(test->GetName());
+							sb.Append(CSTR(") in step "));
 							sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
 							console.WriteLine(sb.ToCString());
 							console.Write(CSTR("Error Message: "));
@@ -242,6 +267,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						}
 						testIndex++;
 					}
+					console.Write(CSTR("End Running "));
+					console.WriteLine(s.Substring(i + 1));
 				}
 			}
 			MemFreeArr(fileBuff);
