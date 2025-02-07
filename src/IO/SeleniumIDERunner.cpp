@@ -141,7 +141,7 @@ IO::SeleniumIDERunner::~SeleniumIDERunner()
 	this->url->Release();
 }
 
-Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj)
+Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj)
 {
 	NN<Net::WebDriverBrowserOptions> browser = CreateBrowserOptions(browserType, mobileDevice);
 	Net::WebDriverStartSession param(browser);
@@ -225,11 +225,22 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 			}
 			else if (s->Equals(CSTR("open")))
 			{
-				if (!sess->NavigateTo(Text::String::OrEmpty(command->GetTarget())->ToCString()))
+				Text::CStringNN tmpURL = Text::String::OrEmpty(command->GetTarget())->ToCString();
+				if (tmpURL.StartsWith(CSTR("http://")) || tmpURL.StartsWith(CSTR("https://")))
+				{
+					succ = sess->NavigateTo(tmpURL);
+				}
+				else
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.Append(url);
+					sb.Append(tmpURL);
+					succ = sess->NavigateTo(sb.ToCString());
+				}
+				if (!succ)
 				{
 					succ = this->ErrorClient(sess, currIndex);
 				}
-				
 			}
 			else if (s->Equals(CSTR("setWindowSize")))
 			{
@@ -365,6 +376,46 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 			{
 				succ = sess->ExecuteScript(Text::String::OrEmpty(command->GetTarget())->ToCString());
 			}
+			else if (s->Equals(CSTR("select")))
+			{
+				NN<Net::WebDriverBy> by;
+				NN<Net::WebDriverBy> byOption;
+				if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+				{
+					succ = false;
+				}
+				else if (!this->ParseOptionLocator(Text::String::OrEmpty(command->GetValue())->ToCString(), currIndex).SetTo(byOption))
+				{
+					succ = false;
+					by.Delete();
+				}
+				else
+				{
+					NN<Text::String> eleId;
+					NN<Text::String> optionId;
+					if (!sess->FindElement(by).SetTo(eleId))
+					{
+						succ = this->ErrorClient(sess, currIndex);
+					}
+					else if (!sess->FindElementFromElement(eleId->ToCString(), byOption).SetTo(optionId))
+					{
+						succ = this->ErrorClient(sess, currIndex);
+						eleId->Release();
+					}
+					else
+					{
+						if (!sess->ElementClick(optionId->ToCString()))
+						{
+							succ = this->ErrorClient(sess, currIndex);
+						}
+						eleId->Release();
+						optionId->Release();
+					}
+					by.Delete();
+					byOption.Delete();
+				}
+
+			}
 			else if (s->Equals(CSTR("click")))
 			{
 				NN<Net::WebDriverBy> by;
@@ -477,7 +528,29 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 				}
 				else
 				{
-					Sync::ThreadUtil::SleepDur(dur);
+					Data::Timestamp startTime = Data::Timestamp::UtcNow();
+					Data::Timestamp currTime;
+					NN<Text::String> s;
+					Int64 currDur;
+					while (true)
+					{
+						if (Data::Timestamp::UtcNow().DiffMS(startTime) >= dur)
+							break;
+						if (!sess->GetWindowHandle().SetTo(s))
+						{
+							succ = this->ErrorClient(sess, currIndex);
+							break;
+						}
+						s->Release();
+						currTime = Data::Timestamp::UtcNow();
+						currDur = currTime.DiffMS(startTime);
+						if (currDur >= dur)
+							break;
+						currDur = dur - currDur;
+						if (currDur > 1000)
+							currDur = 1000;
+						Sync::ThreadUtil::SleepDur(currDur);
+					}
 				}
 			}
 			else if (s->Equals(CSTR("times")))
@@ -534,6 +607,46 @@ Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseBy(Text::CStringNN by, UO
 		this->lastErrorIndex = currIndex;
 		return 0;
 	}
+}
+
+Optional<Net::WebDriverBy> IO::SeleniumIDERunner::ParseOptionLocator(Text::CStringNN locator, UOSInt currIndex)
+{
+	Optional<Net::WebDriverBy> ret = 0;
+	if (locator.StartsWith(CSTR("id=")))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("*[id=\""));
+		sb.Append(locator.Substring(3));
+		sb.Append(CSTR("\"]"));
+		NEW_CLASSOPT(ret, Net::WebDriverBy(CSTR("css selector"), sb.ToCString()));
+	}
+	else if (locator.StartsWith(CSTR("value=")))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("*[value=\""));
+		sb.Append(locator.Substring(6));
+		sb.Append(CSTR("\"]"));
+		NEW_CLASSOPT(ret, Net::WebDriverBy(CSTR("css selector"), sb.ToCString()));
+	}
+	else if (locator.StartsWith(CSTR("label=")))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR(".//option[. = '"));
+		sb.Append(locator.Substring(6));
+		sb.Append(CSTR("']"));
+		NEW_CLASSOPT(ret, Net::WebDriverBy(CSTR("xpath"), sb.ToCString()));
+	}
+	else
+	{
+		OPTSTR_DEL(this->lastErrorMsg);
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("Unknown option locator(value): "));
+		sb.Append(locator);
+		this->lastErrorMsg = Text::String::New(sb.ToCString());
+		this->lastErrorIndex = currIndex;
+		return 0;
+	}
+	return ret;
 }
 
 void IO::SeleniumIDERunner::FillMobileItemSelector(NN<UI::ItemSelector> selector)

@@ -209,6 +209,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 				else
 				{
+					Text::CStringNN url = Text::String::OrEmpty(side.GetURL())->ToCString();
 					Text::StringBuilderUTF8 sb;
 					sb.Append(logPath);
 					IO::Path::CreateDirectory(sb.ToCString());
@@ -230,7 +231,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					testIndex = 0;
 					while (side.GetTest(testIndex).SetTo(test))
 					{
-						if (!runner.Run(test, browser, mobile, 0, OnTestStep, &logStm))
+						if (!runner.Run(test, browser, mobile, 0, url, OnTestStep, &logStm))
 						{
 							sb.ClearStr();
 							sb.Append(CSTR("Error occurs while running the test in step "));

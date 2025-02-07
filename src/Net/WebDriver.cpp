@@ -716,6 +716,16 @@ Bool Net::WebDriverSession::Refresh()
 	return ResponseExists(this->DoPost(CSTR("refresh"), param));
 }
 
+Optional<Text::String> Net::WebDriverSession::GetTitle()
+{
+	return ResponseString(this->DoGet(CSTR("title")), CSTR("title"), 0);
+}
+
+Optional<Text::String> Net::WebDriverSession::GetWindowHandle()
+{
+	return ResponseString(this->DoGet(CSTR("window")), CSTR("window"), 0);
+}
+
 Bool Net::WebDriverSession::GetWindowRect(OutParam<Math::RectArea<Int64>> rect)
 {
 	Bool ret = false;
@@ -808,7 +818,7 @@ Bool Net::WebDriverSession::FindElements(NN<WebDriverBy> by, NN<Data::ArrayListS
 	NN<Text::JSONBase> obj;
 	NN<Text::JSONArray> valueObj;
 	NN<Text::String> s;
-	if (this->DoPost(CSTR("element"), by).SetTo(obj))
+	if (this->DoPost(CSTR("elements"), by).SetTo(obj))
 	{
 		if (obj->GetType() == Text::JSONType::Array)
 		{
@@ -827,7 +837,73 @@ Bool Net::WebDriverSession::FindElements(NN<WebDriverBy> by, NN<Data::ArrayListS
 		}
 		else
 		{
-			this->ErrorInvalidValue(obj, CSTR("element"), by);
+			this->ErrorInvalidValue(obj, CSTR("elements"), by);
+		}
+		obj->EndUse();
+	}
+	return ret;
+}
+
+Optional<Text::String> Net::WebDriverSession::FindElementFromElement(Text::CStringNN elementId, NN<WebDriverBy> by)
+{
+	Optional<Text::String> ret = 0;
+	NN<Text::JSONBase> obj;
+	NN<Text::JSONObject> valueObj;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("element/"));
+	sb.Append(elementId);
+	sb.Append(CSTR("/element"));
+	if (this->DoPost(sb.ToCString(), by).SetTo(obj))
+	{
+		if (obj->GetType() == Text::JSONType::Object)
+		{
+			valueObj = NN<Text::JSONObject>::ConvertFrom(obj);
+			Data::ArrayListStringNN names;
+			valueObj->GetObjectNames(names);
+			if (names.GetCount() > 0)
+			{
+				ret = valueObj->GetObjectNewString(names.GetItemNoCheck(0)->ToCString());
+			}
+		}
+		obj->EndUse();
+		if (ret.IsNull())
+		{
+			this->ErrorInvalidValue(obj, sb.ToCString(), by);
+		}
+	}
+	return ret;
+}
+
+Bool Net::WebDriverSession::FindElementsFromElement(Text::CStringNN elementId, NN<WebDriverBy> by, NN<Data::ArrayListStringNN> ids)
+{
+	Bool ret = false;
+	NN<Text::JSONBase> obj;
+	NN<Text::JSONArray> valueObj;
+	NN<Text::String> s;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("element/"));
+	sb.Append(elementId);
+	sb.Append(CSTR("/elements"));
+	if (this->DoPost(sb.ToCString(), by).SetTo(obj))
+	{
+		if (obj->GetType() == Text::JSONType::Array)
+		{
+			valueObj = NN<Text::JSONArray>::ConvertFrom(obj);
+			UOSInt i = 0;
+			UOSInt j = valueObj->GetArrayLength();
+			while (i < j)
+			{
+				if (valueObj->GetArrayString(i).SetTo(s))
+				{
+					ids->Add(s->Clone());
+				}
+				i++;
+			}
+			ret = true;
+		}
+		else
+		{
+			this->ErrorInvalidValue(obj, sb.ToCString(), by);
 		}
 		obj->EndUse();
 	}

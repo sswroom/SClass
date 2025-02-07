@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		location.longitude = 114.2;
 		location.accuracy = 4.5;
 		IO::SeleniumIDERunner runner(me->core->GetTCPClientFactory(), port);
-		if (runner.Run(test, (IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, location, OnStepStatus, me))
+		if (runner.Run(test, (IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, location, Text::String::OrEmpty(me->side->GetURL())->ToCString(), OnStepStatus, me))
 		{
 			me->DisplayStatus();
 			me->ui->ShowMsgOK(CSTR("Test Run successfully"), CSTR("Selenium IDE"), me);

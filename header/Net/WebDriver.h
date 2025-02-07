@@ -282,8 +282,8 @@ namespace Net
 		Bool Back();
 		Bool Forward();
 		Bool Refresh();
-		//Optional<Text::String> GetTitle();
-		//Optional<Text::String> GetWindowHandle();
+		Optional<Text::String> GetTitle();
+		Optional<Text::String> GetWindowHandle();
 		//Bool CloseWindow();
 		//Bool SwitchToWindow(Text::CStringNN handle);
 		//Bool GetWindowHandles(NN<Data::ArrayListStringNN> handles);
@@ -299,6 +299,8 @@ namespace Net
 		//Optional<Text::String> GetElementShadowRoot(Text::CStringNN elementId);
 		Optional<Text::String> FindElement(NN<WebDriverBy> by);
 		Bool FindElements(NN<WebDriverBy> by, NN<Data::ArrayListStringNN> ids);
+		Optional<Text::String> FindElementFromElement(Text::CStringNN elementId, NN<WebDriverBy> by);
+		Bool FindElementsFromElement(Text::CStringNN elementId, NN<WebDriverBy> by, NN<Data::ArrayListStringNN> ids);
 		Bool IsElementDisplayed(Text::CStringNN elementId, OutParam<Bool> displayed);
 		Bool IsElementDisplayed(Text::CStringNN elementId);
 		Bool IsElementSelected(Text::CStringNN elementId, OutParam<Bool> selected);

@@ -51,11 +51,12 @@ namespace IO
 		SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 port);
 		~SeleniumIDERunner();
 
-		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, StepStatusHandler statusHdlr, AnyType userObj);
+		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj);
 		void SetURL(Text::CStringNN url) { this->url->Release(); this->url = Text::String::New(url); }
 		Optional<Text::String> GetLastErrorMsg() const { return this->lastErrorMsg; }
 		UOSInt GetLastErrorIndex() const { return this->lastErrorIndex; }
 		Optional<Net::WebDriverBy> ParseBy(Text::CStringNN by, UOSInt currIndex);
+		Optional<Net::WebDriverBy> ParseOptionLocator(Text::CStringNN locator, UOSInt currIndex);
 		static void FillMobileItemSelector(NN<UI::ItemSelector> selector);
 		static Text::CStringNN BrowserTypeGetName(BrowserType browserType);
 	};
