@@ -42,17 +42,19 @@ namespace IO
 		Bool noPause;
 
 		Bool ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex);
-		static NN<Net::WebDriverBrowserOptions> CreateChromeOptions(Text::CString mobileDevice);
-		static NN<Net::WebDriverBrowserOptions> CreateMSEdgeOptions(Text::CString mobileDevice);
-		static NN<Net::WebDriverBrowserOptions> CreateFirefoxOptions(Text::CString mobileDevice);
-		static NN<Net::WebDriverBrowserOptions> CreateWebKitGTKOptions(Text::CString mobileDevice);
+		static NN<Net::WebDriverBrowserOptions> CreateChromeOptions(Text::CString mobileDevice, Bool headless);
+		static NN<Net::WebDriverBrowserOptions> CreateMSEdgeOptions(Text::CString mobileDevice, Bool headless);
+		static NN<Net::WebDriverBrowserOptions> CreateFirefoxOptions(Text::CString mobileDevice, Bool headless);
+		static NN<Net::WebDriverBrowserOptions> CreateWebKitGTKOptions(Text::CString mobileDevice, Bool headless);
 		static NN<Net::WebDriverBrowserOptions> CreateOtherOptions(Text::CStringNN browserName);
-		static NN<Net::WebDriverBrowserOptions> CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice);
+		static NN<Net::WebDriverBrowserOptions> CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice, Bool headless);
 	public:
 		SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 port);
 		~SeleniumIDERunner();
 
-		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj);
+		Optional<Net::WebDriverSession> BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless);
+		Bool RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, StepStatusHandler statusHdlr, AnyType userObj);
+		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless, StepStatusHandler statusHdlr, AnyType userObj);
 		void SetURL(Text::CStringNN url) { this->url->Release(); this->url = Text::String::New(url); }
 		void SetNoPause(Bool noPause) { this->noPause = noPause; }
 		Optional<Text::String> GetLastErrorMsg() const { return this->lastErrorMsg; }

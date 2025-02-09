@@ -6,6 +6,7 @@
 #include "IO/Path.h"
 #include "IO/SeleniumIDERunner.h"
 #include "Manage/ExceptionRecorder.h"
+#include "Manage/Process.h"
 #include "Net/OSSocketFactory.h"
 #include "Parser/FileParser/JSONParser.h"
 
@@ -21,6 +22,7 @@ void PrintHelp(NN<IO::ConsoleWriter> console)
 	console->WriteLine(CSTR("                          iPad, iPhone, Opera, Safari, WebKitGTK, Mock, or PhantomJS"));
 	console->WriteLine(CSTR("  --log-path [logDir]   Log path for log file, default is ./log"));
 	console->WriteLine(CSTR("  --no-pause [bool]     Whether skip pause commands, default is false"));
+	console->WriteLine(CSTR("  --headless [bool]     Whether running at headless mode if supported, default is false"));
 }
 
 void __stdcall OnTestStep(AnyType userObj, UOSInt cmdIndex, Data::Duration dur)
@@ -53,6 +55,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN logPath = CSTR("log");
 	Text::CString sideFile = 0;
 	Text::CStringNN s;
+	Bool headless = false;
 	Bool noPause = false;
 	UOSInt i;
 	Bool hasError = false;
@@ -147,6 +150,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				else
 				{
 					noPause = (param.ToInt32() != 0);
+				}
+			}
+			else if (cmd.Equals(CSTR("--headless")))
+			{
+				if (param.Equals(CSTR("false")))
+				{
+					headless = false;
+				}
+				else if (param.Equals(CSTR("true")))
+				{
+					headless = true;
+				}
+				else
+				{
+					headless = (param.ToInt32() != 0);
 				}
 			}
 			else
@@ -245,16 +263,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.Append(s.Substring(i + 1));
 					sb.AppendUTF8Char('.');
 					sb.AppendI64(Data::DateTimeUtil::GetCurrTimeMillis());
+					sb.AppendUTF8Char('.');
+					sb.AppendUOSInt(Manage::Process::GetCurrProcId());
 					sb.Append(CSTR(".csv"));
-					console.Write(CSTR("Running "));
-					console.WriteLine(s.Substring(i + 1));
 					IO::FileStream logFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal);
 					IO::MTStream logStm(logFS, 1048576);
 					logStm.Write(CSTR("Time,TestId,Step,Duration\r\n").ToByteArray());
+
+					sb.ClearStr();
+					sb.Append(CSTR("Running "));
+					sb.Append(s.Substring(i + 1));
+					console.WriteLine(sb.ToCString());
 					testIndex = 0;
 					while (side.GetTest(testIndex).SetTo(test))
 					{
-						if (!runner.Run(test, browser, mobile, 0, url, OnTestStep, &logStm))
+						if (!runner.Run(test, browser, mobile, 0, url, headless, OnTestStep, &logStm))
 						{
 							sb.ClearStr();
 							sb.Append(CSTR("Error occurs while running the test ("));
@@ -262,13 +285,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 							sb.Append(CSTR(") in step "));
 							sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
 							console.WriteLine(sb.ToCString());
-							console.Write(CSTR("Error Message: "));
-							console.WriteLine(Text::String::OrEmpty(runner.GetLastErrorMsg())->ToCString());
+							sb.ClearStr();
+							sb.Append(CSTR("Error Message: "));
+							sb.AppendOpt(runner.GetLastErrorMsg());
+							console.WriteLine(sb.ToCString());
 						}
 						testIndex++;
 					}
-					console.Write(CSTR("End Running "));
-					console.WriteLine(s.Substring(i + 1));
+					sb.ClearStr();
+					sb.Append(CSTR("End Running "));
+					sb.Append(s.Substring(i + 1));
+					console.WriteLine(sb.ToCString());
 				}
 			}
 			MemFreeArr(fileBuff);
