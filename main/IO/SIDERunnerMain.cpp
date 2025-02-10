@@ -251,7 +251,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				else
 				{
 					Text::CStringNN url = Text::String::OrEmpty(side.GetURL())->ToCString();
+					NN<Net::WebDriverSession> sess;
+					NN<IO::MemoryStream> screenMstm;
 					Text::StringBuilderUTF8 sb;
+					Int64 startTime = Data::DateTimeUtil::GetCurrTimeMillis();
+					UOSInt procId = Manage::Process::GetCurrProcId();
 					sb.Append(logPath);
 					IO::Path::CreateDirectory(sb.ToCString());
 					if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
@@ -262,9 +266,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					i = s.LastIndexOf(IO::Path::PATH_SEPERATOR);
 					sb.Append(s.Substring(i + 1));
 					sb.AppendUTF8Char('.');
-					sb.AppendI64(Data::DateTimeUtil::GetCurrTimeMillis());
+					sb.AppendI64(startTime);
 					sb.AppendUTF8Char('.');
-					sb.AppendUOSInt(Manage::Process::GetCurrProcId());
+					sb.AppendUOSInt(procId);
 					sb.Append(CSTR(".csv"));
 					IO::FileStream logFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal);
 					IO::MTStream logStm(logFS, 1048576);
@@ -277,18 +281,90 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					testIndex = 0;
 					while (side.GetTest(testIndex).SetTo(test))
 					{
-						if (!runner.Run(test, browser, mobile, 0, url, headless, OnTestStep, &logStm))
+						if (runner.BeginTest(browser, mobile, 0, url, headless).SetTo(sess))
 						{
+							if (!runner.RunTest(sess, test, url, OnTestStep, &logStm))
+							{
+								sb.ClearStr();
+								sb.Append(logPath);
+								if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+								{
+									sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+								}
+								sb.Append(s.Substring(i + 1));
+								sb.AppendUTF8Char('.');
+								sb.AppendI64(startTime);
+								sb.AppendUTF8Char('.');
+								sb.AppendUOSInt(procId);
+								sb.Append(CSTR(".err"));
+								IO::FileStream errFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+
+								sb.ClearStr();
+								sb.Append(CSTR("Error occurs while running the test ("));
+								sb.AppendOpt(test->GetName());
+								sb.Append(CSTR(") in step "));
+								sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
+								sb.Append(CSTR("\r\n"));
+								console.Write(sb.ToCString());
+								errFS.Write(sb.ToByteArray());
+								sb.ClearStr();
+								sb.Append(CSTR("Error Message: "));
+								sb.AppendOpt(runner.GetLastErrorMsg());
+								sb.Append(CSTR("\r\n"));
+								console.Write(sb.ToCString());
+								errFS.Write(sb.ToByteArray());
+
+								if (sess->TakeScreenshot().SetTo(screenMstm))
+								{
+									sb.ClearStr();
+									sb.Append(logPath);
+									if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+									{
+										sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+									}
+									sb.Append(s.Substring(i + 1));
+									sb.AppendUTF8Char('.');
+									sb.AppendI64(startTime);
+									sb.AppendUTF8Char('.');
+									sb.AppendUOSInt(procId);
+									sb.Append(CSTR(".png"));
+									IO::FileStream screenFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+									screenFS.Write(screenMstm->GetArray());
+									screenMstm.Delete();
+								}
+							}
+							sess.Delete();
+						}
+						else
+						{
+							sb.ClearStr();
+							sb.Append(logPath);
+							if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+							{
+								sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+							}
+							sb.Append(s.Substring(i + 1));
+							sb.AppendUTF8Char('.');
+							sb.AppendI64(startTime);
+							sb.AppendUTF8Char('.');
+							sb.AppendUOSInt(procId);
+							sb.Append(CSTR(".err"));
+							IO::FileStream errFS(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+
 							sb.ClearStr();
 							sb.Append(CSTR("Error occurs while running the test ("));
 							sb.AppendOpt(test->GetName());
 							sb.Append(CSTR(") in step "));
 							sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
-							console.WriteLine(sb.ToCString());
+							sb.Append(CSTR("\r\n"));
+							console.Write(sb.ToCString());
+							errFS.Write(sb.ToByteArray());
 							sb.ClearStr();
 							sb.Append(CSTR("Error Message: "));
 							sb.AppendOpt(runner.GetLastErrorMsg());
-							console.WriteLine(sb.ToCString());
+							sb.Append(CSTR("\r\n"));
+							console.Write(sb.ToCString());
+							errFS.Write(sb.ToByteArray());
 						}
 						testIndex++;
 					}

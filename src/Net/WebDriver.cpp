@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Net/WebDriver.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
 //https://www.w3.org/TR/webdriver2/
 
@@ -992,6 +993,25 @@ Bool Net::WebDriverSession::ExecuteScript(Text::CStringNN script)
 {
 	Net::WebDriverJSONParam param(Text::JSONObject::New()->SetObjectString(CSTR("script"), script)->SetObjectValueAndRelease(CSTR("args"), Text::JSONArray::New()));
 	return ResponseExists(this->DoPost(CSTR("execute/sync"), param));
+}
+
+Optional<IO::MemoryStream> Net::WebDriverSession::TakeScreenshot()
+{
+	NN<Text::String> b64;
+	if (!ResponseString(this->DoGet(CSTR("screenshot")), CSTR("screenshot"), 0).SetTo(b64))
+	{
+		return 0;
+	}
+	Text::TextBinEnc::Base64Enc b64Enc;
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, b64->leng);
+	UOSInt buffLen;
+	buffLen = b64Enc.DecodeBin(b64->ToCString(), tmpBuff);
+	NN<IO::MemoryStream> mstm;
+	NEW_CLASSNN(mstm, IO::MemoryStream(buffLen));
+	mstm->Write(Data::ByteArrayR(tmpBuff, buffLen));
+	MemFreeArr(tmpBuff);
+	b64->Release();
+	return mstm;
 }
 
 Net::WebDriver::WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url) : WebDriverClient(clif, ssl, url)

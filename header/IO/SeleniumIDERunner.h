@@ -38,7 +38,7 @@ namespace IO
 		NN<Net::TCPClientFactory> clif;
 		UOSInt lastErrorIndex;
 		Optional<Text::String> lastErrorMsg;
-		NN<Text::String> url;
+		NN<Text::String> webdriverURL;
 		Bool noPause;
 
 		Bool ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex);
@@ -53,9 +53,9 @@ namespace IO
 		~SeleniumIDERunner();
 
 		Optional<Net::WebDriverSession> BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless);
-		Bool RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, StepStatusHandler statusHdlr, AnyType userObj);
+		Bool RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj);
 		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless, StepStatusHandler statusHdlr, AnyType userObj);
-		void SetURL(Text::CStringNN url) { this->url->Release(); this->url = Text::String::New(url); }
+		void SetURL(Text::CStringNN url) { this->webdriverURL->Release(); this->webdriverURL = Text::String::New(url); }
 		void SetNoPause(Bool noPause) { this->noPause = noPause; }
 		Optional<Text::String> GetLastErrorMsg() const { return this->lastErrorMsg; }
 		UOSInt GetLastErrorIndex() const { return this->lastErrorIndex; }

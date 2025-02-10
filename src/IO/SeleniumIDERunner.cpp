@@ -136,14 +136,14 @@ IO::SeleniumIDERunner::SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("http://localhost:"));
 	sb.AppendU16(port);
-	this->url = Text::String::New(sb.ToCString());
+	this->webdriverURL = Text::String::New(sb.ToCString());
 	this->noPause = false;
 }
 
 IO::SeleniumIDERunner::~SeleniumIDERunner()
 {
 	OPTSTR_DEL(this->lastErrorMsg);
-	this->url->Release();
+	this->webdriverURL->Release();
 }
 
 Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless)
@@ -152,7 +152,7 @@ Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType bro
 	Net::WebDriverStartSession param(browser);
 	NN<Net::WebDriverSession> sess;
 	NN<GPSPosition> nnlocation;
-	Net::WebDriver driver(this->clif, 0, this->url->ToCString());
+	Net::WebDriver driver(this->clif, 0, this->webdriverURL->ToCString());
 	if (driver.NewSession(param).SetTo(sess))
 	{
 		if (location.SetTo(nnlocation))
@@ -171,7 +171,7 @@ Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType bro
 	return 0;
 }
 
-Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, StepStatusHandler statusHdlr, AnyType userObj)
+Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -727,7 +727,7 @@ Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, 
 	NN<Net::WebDriverSession> sess;
 	if (this->BeginTest(browserType, mobileDevice, location, url, headless).SetTo(sess))
 	{
-		succ = this->RunTest(sess, test, statusHdlr, userObj);
+		succ = this->RunTest(sess, test, url, statusHdlr, userObj);
 		sess.Delete();
 	}
 	return succ;

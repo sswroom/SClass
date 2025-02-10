@@ -311,6 +311,7 @@ namespace Net
 		Bool ElementClear(Text::CStringNN elementId);
 		Bool ElementSendKeys(Text::CStringNN elementId, Text::CStringNN keys);
 		Bool ExecuteScript(Text::CStringNN elementId);
+		Optional<IO::MemoryStream> TakeScreenshot();
 
 		template<typename Getter> Bool WaitUntil(Getter getter, Data::Duration dur)
 		{
