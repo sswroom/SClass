@@ -37,7 +37,7 @@ DB::CSVFile::CSVFile(Text::CStringNN fileName, UInt32 codePage) : DB::ReadingDB(
 DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
 {
 	this->fileName = stm->GetSourceNameObj()->Clone();
-	this->stm = stm.Ptr();
+	this->stm = stm;
 	this->releaseStm = false;
 	this->codePage = codePage;
 	this->noHeader = false;
@@ -47,7 +47,7 @@ DB::CSVFile::CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage) : DB::ReadingD
 DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd->GetFullName())
 {
 	this->fileName = fd->GetFullName()->Clone();
-	NEW_CLASS(this->stm, IO::StreamDataStream(fd));
+	NEW_CLASSOPT(this->stm, IO::StreamDataStream(fd));
 	this->releaseStm = true;
 	this->codePage = codePage;
 	this->noHeader = false;
@@ -57,9 +57,9 @@ DB::CSVFile::CSVFile(NN<IO::StreamData> fd, UInt32 codePage) : DB::ReadingDB(fd-
 DB::CSVFile::~CSVFile()
 {
 	this->fileName->Release();
-	if (this->stm && this->releaseStm)
+	if (this->stm.NotNull() && this->releaseStm)
 	{
-		DEL_CLASS(this->stm);
+		this->stm.Delete();
 	}
 }
 
@@ -73,12 +73,12 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 
 Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
-	NN<IO::Stream> stm;
-	if (stm.Set(this->stm))
+	NN<IO::SeekableStream> stm;
+	if (this->stm.SetTo(stm))
 	{
 		NN<IO::Reader> rdr;
 		DB::CSVReader *r;
-		this->stm->SeekFromBeginning(0);
+		stm->SeekFromBeginning(0);
 		if (codePage == 65001)
 		{
 			NEW_CLASSNN(rdr, Text::UTF8Reader(stm));

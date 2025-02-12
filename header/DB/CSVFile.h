@@ -13,7 +13,7 @@ namespace DB
 	{
 	private:
 		NN<Text::String> fileName;
-		IO::SeekableStream *stm;
+		Optional<IO::SeekableStream> stm;
 		Bool releaseStm;
 		UInt32 codePage;
 		Bool noHeader;

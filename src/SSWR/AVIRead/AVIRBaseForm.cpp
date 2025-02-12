@@ -204,6 +204,7 @@
 #include "SSWR/AVIRead/AVIRSetDNSForm.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
+#include "SSWR/AVIRead/AVIRSIDERunnerLogForm.h"
 #include "SSWR/AVIRead/AVIRSMBIOSForm.h"
 #include "SSWR/AVIRead/AVIRSMTPClientForm.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
@@ -524,7 +525,8 @@ typedef enum
 	MNU_JMETER_LOG,
 	MNU_RADIO_SCAN,
 	MNU_NETWORK_BANDWIDTH,
-	MNU_BANDWIDTH_LOG_ANALYST
+	MNU_BANDWIDTH_LOG_ANALYST,
+	MNU_SIDERUNNER_LOG
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -723,6 +725,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Log Extract"), MNU_LOGEXTRACT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timed File Copy"), MNU_TIMED_FILE_COPY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Selenium Log"), MNU_SELENIUM_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("SIDERunner Log"), MNU_SIDERUNNER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("JMeter Log"), MNU_JMETER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
@@ -3030,6 +3033,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRBandwidthLogForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRBandwidthLogForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SIDERUNNER_LOG:
+		{
+			NN<SSWR::AVIRead::AVIRSIDERunnerLogForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSIDERunnerLogForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

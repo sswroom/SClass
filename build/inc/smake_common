@@ -4295,6 +4295,8 @@ SSWR/AVIRead/AVIRSetDPIForm.h:
 @AVIRSetDPIForm.o
 SSWR/AVIRead/AVIRSetLocationSvcForm.h:
 @AVIRSetLocationSvcForm.o
+SSWR/AVIRead/AVIRSIDERunnerLogForm.h:
+@AVIRSIDERunnerLogForm.o
 SSWR/AVIRead/AVIRSMakeForm.h:
 @AVIRSMakeForm.o
 SSWR/AVIRead/AVIRSMBIOSForm.h:
