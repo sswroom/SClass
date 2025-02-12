@@ -387,6 +387,46 @@ Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumT
 				by.Delete();
 			}
 		}
+		else if (s->Equals(CSTR("waitForElementNotPresent")))
+		{
+			NN<Net::WebDriverBy> by;
+			if (!this->ParseBy(Text::String::OrEmpty(command->GetTarget())->ToCString(), currIndex).SetTo(by))
+			{
+				succ = false;
+			}
+			else
+			{
+				Int64 dur = 5000;
+				if (command->GetValue().SetTo(s))
+					s->ToInt64(dur);
+				Data::Timestamp startTime = Data::Timestamp::UtcNow();
+				NN<Text::String> eleId;
+				while (true)
+				{
+					if (sess->FindElement(by).SetTo(eleId))
+					{
+						eleId->Release();
+						if (Data::Timestamp::UtcNow().DiffMS(startTime) > dur)
+						{
+							OPTSTR_DEL(this->lastErrorMsg);
+							this->lastErrorIndex = currIndex;
+							Text::StringBuilderUTF8 sb;
+							sb.Append(CSTR("Error: Element presents on searching for "));
+							sb.AppendOpt(command->GetTarget());
+							this->lastErrorMsg = Text::String::New(sb.ToCString());
+							succ = false;
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+					Sync::ThreadUtil::SleepDur(50);
+				}
+				by.Delete();
+			}
+		}
 		else if (s->Equals(CSTR("executeScript")))
 		{
 			succ = sess->ExecuteScript(Text::String::OrEmpty(command->GetTarget())->ToCString());
