@@ -97,7 +97,11 @@ void FFMPEGDecoder_avcodec_register_all()
 #define FFMPEGDecoder_avcodec_free_context av_free
 #endif
 #define FFMPEGDecoder_avcodec_open2 avcodec_open2
+#if VERSION_FROM(60, 39, 100)
+#define FFMPEGDecoder_avcodec_close(a)
+#else
 #define FFMPEGDecoder_avcodec_close avcodec_close
+#endif
 #define FFMPEGDecoder_av_packet_unref av_packet_unref
 #if VERSION_FROM(55, 0, 0) // not sure
 static int FFMPEGDecoder_avcodec_decode_audio4(AVCodecContext *avctx, AVFrame *frame, int *got_frame_ptr, const AVPacket *avpkt)
@@ -990,6 +994,11 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 	case AVCOL_SPC_CHROMA_DERIVED_CL:
 	case AVCOL_SPC_CHROMA_DERIVED_NCL:
 	case AVCOL_SPC_ICTCP:
+#endif
+#if UTIL_VERSION_FROM(59, 13, 100)
+	case AVCOL_SPC_IPT_C2:
+    case AVCOL_SPC_YCGCO_RE:
+    case AVCOL_SPC_YCGCO_RO:
 #endif
 	case AVCOL_SPC_NB:
 		info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
