@@ -2,26 +2,26 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
-#include "Media/AudioFilter/ToneGenerator.h"
+#include "Media/AFilter/ToneGenerator.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::ToneGenerator::ToneGenerator(NN<AudioSource> sourceAudio) : Media::AudioFilter(sourceAudio)
+Media::AFilter::ToneGenerator::ToneGenerator(NN<AudioSource> sourceAudio) : Media::AudioFilter(sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
 	this->instType = IT_SINCWAVE;
 	sourceAudio->GetFormat(this->format);
 }
 
-Media::AudioFilter::ToneGenerator::~ToneGenerator()
+Media::AFilter::ToneGenerator::~ToneGenerator()
 {
 }
 
-void Media::AudioFilter::ToneGenerator::GetFormat(NN<AudioFormat> format)
+void Media::AFilter::ToneGenerator::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }
 
-UOSInt Media::AudioFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
+UOSInt Media::AFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
 {
 	UOSInt readSize = this->sourceAudio->ReadBlock(buff);
 
@@ -34,12 +34,12 @@ UOSInt Media::AudioFilter::ToneGenerator::ReadBlock(Data::ByteArray buff)
 	return readSize;
 }
 
-/*Bool Media::AudioFilter::ToneGenerator::GenTones(Int32 signalTime, Int32 breakTime, Double vol, const WChar *tones)
+/*Bool Media::AFilter::ToneGenerator::GenTones(Int32 signalTime, Int32 breakTime, Double vol, const WChar *tones)
 {
 	return true;
 }*/
 
-Double Media::AudioFilter::ToneGenerator::GetToneFreq(ToneType tone)
+Double Media::AFilter::ToneGenerator::GetToneFreq(ToneType tone)
 {
 	Int32 v;
 	switch (tone)
@@ -231,7 +231,7 @@ Double Media::AudioFilter::ToneGenerator::GetToneFreq(ToneType tone)
 	return 440.0 * Math_Pow(2, v / 12.0);
 }
 
-Text::CString Media::AudioFilter::ToneGenerator::GetToneName(ToneType tone)
+Text::CString Media::AFilter::ToneGenerator::GetToneName(ToneType tone)
 {
 	switch (tone)
 	{

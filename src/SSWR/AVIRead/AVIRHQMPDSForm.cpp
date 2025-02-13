@@ -368,7 +368,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetTCPClientFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->qMode = qMode;
@@ -593,7 +593,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				else
 				{
 					NN<IO::ParsedObject> pobj;
-					if (!Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl, 15000, this->core->GetLog()).SetTo(pobj))
+					if (!Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetTCPClientFactory(), this->ssl, 15000, this->core->GetLog()).SetTo(pobj))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}

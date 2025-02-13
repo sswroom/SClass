@@ -78,7 +78,7 @@ void Math::Geometry::PieArea::Convert(NN<Math::CoordinateConverter> converter)
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::PieArea::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::PieArea::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal, Bool no3DGeometry) const
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
 		return false;
@@ -126,6 +126,21 @@ void Math::Geometry::PieArea::MultiplyCoordinatesXY(Double v)
 UOSInt Math::Geometry::PieArea::GetPointCount() const
 {
 	return 3;
+}
+
+Bool Math::Geometry::PieArea::HasArea() const
+{
+	return true;
+}
+
+UOSInt Math::Geometry::PieArea::CalcHIntersacts(Double y, NN<Data::ArrayList<Double>> xList) const
+{
+	return 0;
+}
+
+Math::Coord2DDbl Math::Geometry::PieArea::GetDisplayCenter() const
+{
+	return this->GetCenter();
 }
 
 Double Math::Geometry::PieArea::GetCX() const

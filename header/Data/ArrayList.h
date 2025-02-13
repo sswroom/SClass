@@ -193,10 +193,10 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UOSInt ArrayList<T>::RemoveRange(UOSInt Index, UOSInt cnt)
+	template <class T> UOSInt ArrayList<T>::RemoveRange(UOSInt index, UOSInt cnt)
 	{
-		UOSInt startIndex = Index;
-		UOSInt endIndex = Index + cnt;
+		UOSInt startIndex = index;
+		UOSInt endIndex = index + cnt;
 		if (endIndex > this->objCnt)
 		{
 			endIndex = this->objCnt;
@@ -208,7 +208,7 @@ namespace Data
 			return 0;
 		}
 #if defined(_MSC_VER)
-		MemCopyO(&arr[startIndex], &arr[endIndex], sizeof(T) * (this->objCnt - endIndex));
+		MemCopyO(&this->arr[startIndex], &this->arr[endIndex], sizeof(T) * (this->objCnt - endIndex));
 #else
 		UOSInt i = startIndex;
 		UOSInt j = endIndex;

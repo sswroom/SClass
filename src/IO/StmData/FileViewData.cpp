@@ -22,7 +22,7 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 		dataLength = fdh->fileLength = file->GetLength();
 		fdh->currentOffset = 0;
 		fdh->objectCnt = 1;
-		fdh->fptr = (UInt8*)file->GetPointer();
+		fdh->fptr = (UInt8*)file->GetPointer().Ptr();
 		dataOffset = 0;
 		const UTF8Char* name2;
 		const UTF8Char *name;
