@@ -87,13 +87,24 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 					sb.ClearStr();
 					sb.AppendTS(Data::Timestamp(currTime * 1000, Data::DateTimeUtil::GetLocalTzQhr()), "HH:mm:ss");
 					sb.AppendUTF8Char(',');
-					if (i < j && (item = ipItem->items.GetItemNoCheck(i))->time == currTime)
+					if (i < j && (item = ipItem->items.GetItemNoCheck(i))->time <= currTime)
 					{
-						sb.AppendU64(item->recvBytes);
+						UInt64 recvBytes = item->recvBytes;
+						UInt64 sendBytes = item->sendBytes;
+						while (item->time < currTime && i + 1 < j)
+						{
+							item = ipItem->items.GetItemNoCheck(i + 1);
+							if (item->time > currTime)
+								break;
+							i++;
+							recvBytes += item->recvBytes;
+							sendBytes += item->sendBytes;
+						}
+						sb.AppendU64(recvBytes);
 						sb.AppendUTF8Char(',');
-						sb.AppendU64(item->sendBytes);
+						sb.AppendU64(sendBytes);
 						sb.AppendUTF8Char(',');
-						sb.AppendDouble(UInt64_Double(item->recvBytes + item->sendBytes) * 0.000008);
+						sb.AppendDouble(UInt64_Double(recvBytes + sendBytes) * 0.000008);
 						sb.AppendUTF8Char(',');
 						i++;
 					}
@@ -314,6 +325,14 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadJMeterLog(Text::CStringNN fileName
 				else if (logContent.StartsWith(CSTR("INFO o.a.j.t.JMeterThread: Thread is done: ")))
 				{
 					threadName = logContent.Substring(43);
+					if (threadMap.RemoveC(threadName).SetTo(log))
+					{
+						log->endTime = ts.ToTicks();
+					}
+				}
+				else if (logContent.StartsWith(CSTR("INFO o.a.j.t.JMeterThread: Thread finished: ")))
+				{
+					threadName = logContent.Substring(44);
 					if (threadMap.RemoveC(threadName).SetTo(log))
 					{
 						log->endTime = ts.ToTicks();
