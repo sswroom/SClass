@@ -261,7 +261,7 @@ void SSWR::AVIRead::AVIRJMeterLogForm::OpenFile(Text::CStringNN fileName)
 
 SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText(CSTR("JMeter Log"));
+	this->SetText(CSTR("JMeter Results"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -271,7 +271,7 @@ SSWR::AVIRead::AVIRJMeterLogForm::AVIRJMeterLogForm(Optional<UI::GUIClientContro
 	this->pnlFile = ui->NewPanel(*this);
 	this->pnlFile->SetRect(0, 0, 100, 80, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->lblLogFile = ui->NewLabel(this->pnlFile, CSTR("Log File"));
+	this->lblLogFile = ui->NewLabel(this->pnlFile, CSTR("Results File"));
 	this->lblLogFile->SetRect(4, 4, 100, 23, false);
 	this->txtLogFile = ui->NewTextBox(this->pnlFile, CSTR(""));
 	this->txtLogFile->SetRect(104, 4, 700, 23, false);

@@ -724,9 +724,11 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu->AddItem(CSTR("Log Backup"), MNU_LOG_BACKUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Log Extract"), MNU_LOGEXTRACT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Timed File Copy"), MNU_TIMED_FILE_COPY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("Selenium Log"), MNU_SELENIUM_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("SIDERunner Log"), MNU_SIDERUNNER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(CSTR("JMeter Log"), MNU_JMETER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Log Analyse"));
+	mnu2->AddItem(CSTR("Selenium Log"), MNU_SELENIUM_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SIDERunner Log"), MNU_SIDERUNNER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("JMeter Results"), MNU_JMETER_LOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Bandwidth Log Analyst"), MNU_BANDWIDTH_LOG_ANALYST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &CodePage"), MNU_SET_CODEPAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -748,9 +750,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Ping Monitor"), MNU_PINGMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("RAW Monitor"), MNU_RAWMONITOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("RAW Capture"), MNU_NETRAWCAPTURE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu(CSTR("Network Bandwidth"));
-	mnu2->AddItem(CSTR("Bandwidth Logger"), MNU_NETWORK_BANDWIDTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem(CSTR("Bandwidth Log Analyst"), MNU_BANDWIDTH_LOG_ANALYST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Bandwidth Logger"), MNU_NETWORK_BANDWIDTH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(CSTR("HTTP"));
 	mnu2->AddItem(CSTR("HTTP Server"), MNU_HTTP_SVR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);

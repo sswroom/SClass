@@ -15,8 +15,8 @@ namespace SSWR
 	{
 		class AVIRBandwidthLogForm : public UI::GUIForm
 		{
-		private:
-			struct JMeterThread
+		public:
+			struct ThreadStatus
 			{
 				NN<Text::String> name;
 				Int64 startTime;
@@ -43,33 +43,38 @@ namespace SSWR
 			NN<UI::GUITextBox> txtBandwidthLog;
 			NN<UI::GUILabel> lblJMeterLog;
 			NN<UI::GUITextBox> txtJMeterLog;
+			NN<UI::GUILabel> lblSIDELog;
+			NN<UI::GUITextBox> txtSIDELog;
 
 			NN<UI::GUIGroupBox> grpDetail;
 			NN<UI::GUILabel> lblStartTime;
 			NN<UI::GUITextBox> txtStartTime;
 			NN<UI::GUILabel> lblEndTime;
 			NN<UI::GUITextBox> txtEndTime;
-			NN<UI::GUILabel> lblJMeterThreads;
-			NN<UI::GUITextBox> txtJMeterThreads;
-			NN<UI::GUIButton> btnJMeterExport;
+			NN<UI::GUILabel> lblThreadsCount;
+			NN<UI::GUITextBox> txtThreadsCount;
+			NN<UI::GUIButton> btnThreadsExport;
 			NN<UI::GUILabel> lblIP;
 			NN<UI::GUIComboBox> cboIP;
 			NN<UI::GUIButton> btnExport;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayListNN<JMeterThread> jmeterList;
+			Data::ArrayListNN<ThreadStatus> jmeterThreadList;
+			Data::ArrayListNN<ThreadStatus> sideThreadList;
 			Data::StringMapNN<BandwidthIP> bandwidthMap;
 			Int64 startTime;
 			Int64 endTime;
 
-			static void __stdcall JMeterThreadFree(NN<JMeterThread> thread);
+			static void __stdcall ThreadStatusFree(NN<ThreadStatus> thread);
 			static void __stdcall DropFilesHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnExportClicked(AnyType userObj);
-			static void __stdcall OnJMeterExportClicked(AnyType userObj);
+			static void __stdcall OnThreadsExportClicked(AnyType userObj);
 			void LoadBandwidthLog(Text::CStringNN fileName);
 			void LoadJMeterLog(Text::CStringNN fileName);
+			void LoadSIDELog(Text::CStringNN filePath);
 			void ClearBandwidthLog();
 			void ClearJMeterLog();
+			void ClearSIDELog();
 		public:
 			AVIRBandwidthLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBandwidthLogForm();

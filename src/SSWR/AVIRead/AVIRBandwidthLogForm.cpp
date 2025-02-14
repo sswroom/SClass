@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Data/Comparator.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/CSVFile.h"
 #include "DB/TableDef.h"
 #include "IO/BufferedOutputStream.h"
@@ -8,7 +10,23 @@
 #include "Text/UTF8Reader.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::JMeterThreadFree(NN<JMeterThread> thread)
+class AVIRBandwidthLogFormComparator : public Data::Comparator<NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus>>
+{
+public:
+	AVIRBandwidthLogFormComparator(){}
+	virtual ~AVIRBandwidthLogFormComparator(){}
+
+	virtual OSInt Compare(NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus> a, NN<SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatus> b) const
+	{
+		if (a->startTime > b->startTime)
+			return 1;
+		else if (a->startTime < b->startTime)
+			return -1;
+		return 0;
+	}
+};
+
+void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::ThreadStatusFree(NN<ThreadStatus> thread)
 {
 	thread->name->Release();
 	MemFreeNN(thread);
@@ -25,7 +43,11 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::DropFilesHandler(AnyType use
 	{
 		file = files[i];
 		k = file->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		if (file->Substring(k + 1).StartsWith(CSTR("jmeter")) && file->Substring(k + 1).IndexOf(CSTR(".log")) != INVALID_INDEX)
+		if (IO::Path::GetPathType(file->ToCString()) == IO::Path::PathType::Directory)
+		{
+			me->LoadSIDELog(file->ToCString());
+		}
+		else if (file->Substring(k + 1).StartsWith(CSTR("jmeter")) && file->Substring(k + 1).IndexOf(CSTR(".log")) != INVALID_INDEX)
 		{
 			me->LoadJMeterLog(file->ToCString());
 		}
@@ -59,25 +81,33 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 			else
 			{
 				NN<BandwidthItem> item;
-				Data::ArrayListNN<JMeterThread> threads;
+				Data::ArrayListNN<ThreadStatus> allThreads;
+				Data::ArrayListNN<ThreadStatus> threads;
 				IO::BufferedOutputStream stm(fs, 8192);
 				stm.Write(CSTR("Time,RecvBytes,SendBytes,Mbps,Concurr\r\n").ToByteArray());
 				Text::StringBuilderUTF8 sb;
 				Int64 currTime = me->startTime;
 				Int64 endTime = me->endTime;
-				NN<JMeterThread> thread;
-				UOSInt jmeterI = 0;
-				UOSInt jmeterJ = me->jmeterList.GetCount();
-				while (jmeterI < jmeterJ)
+				NN<ThreadStatus> thread;
+				UOSInt threadI;
+				UOSInt threadJ;
+				allThreads.AddAll(me->jmeterThreadList);
+				allThreads.AddAll(me->sideThreadList);
+				AVIRBandwidthLogFormComparator comparator;
+				Data::Sort::ArtificialQuickSort::Sort<NN<ThreadStatus>>(allThreads, comparator);
+
+				threadI = 0;
+				threadJ = allThreads.GetCount();
+				while (threadI < threadJ)
 				{
-					thread = me->jmeterList.GetItemNoCheck(jmeterI);
+					thread = allThreads.GetItemNoCheck(threadI);
 					if ((thread->startTime / 1000) >= currTime)
 					{
 						break;
 					}
 					if ((thread->endTime / 1000) >= currTime)
 						threads.Add(thread);
-					jmeterI++;
+					threadI++;
 				}
 				UOSInt k;
 				UOSInt i = 0;
@@ -121,15 +151,15 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 							threads.RemoveAt(k);
 						}
 					}
-					while (jmeterI < jmeterJ)
+					while (threadI < threadJ)
 					{
-						thread = me->jmeterList.GetItemNoCheck(jmeterI);
+						thread = allThreads.GetItemNoCheck(threadI);
 						if ((thread->startTime / 1000) > currTime)
 						{
 							break;
 						}
 						threads.Add(thread);
-						jmeterI++;
+						threadI++;
 					}
 					sb.AppendUOSInt(threads.GetCount());
 					sb.Append(CSTR("\r\n"));
@@ -142,13 +172,13 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnExportClicked(AnyType user
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnJMeterExportClicked(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnThreadsExportClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBandwidthLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBandwidthLogForm>();
-	if (me->jmeterList.GetCount() > 0)
+	if (me->jmeterThreadList.GetCount() > 0 || me->sideThreadList.GetCount() > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BandwidthLogJMeter", true);
+		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BandwidthLogThreads", true);
 		me->txtJMeterLog->GetText(sb);
 		sb.Append(CSTR(".csv"));
 		dlg->SetFileName(sb.ToCString());
@@ -162,15 +192,34 @@ void __stdcall SSWR::AVIRead::AVIRBandwidthLogForm::OnJMeterExportClicked(AnyTyp
 			}
 			else
 			{
-				NN<JMeterThread> thread;
+				NN<ThreadStatus> thread;
 				IO::BufferedOutputStream stm(fs, 8192);
 				stm.Write(CSTR("Name,Start Time,End Time,Dur(second)\r\n").ToByteArray());
 				NN<Text::String> s;
 				UOSInt i = 0;
-				UOSInt j = me->jmeterList.GetCount();
+				UOSInt j = me->jmeterThreadList.GetCount();
 				while (i < j)
 				{
-					thread = me->jmeterList.GetItemNoCheck(i);
+					thread = me->jmeterThreadList.GetItemNoCheck(i);
+					sb.ClearStr();
+					s = Text::String::NewCSVRec(thread->name->v);
+					sb.Append(s);
+					s->Release();
+					sb.AppendUTF8Char(',');
+					sb.AppendTS(Data::Timestamp(thread->startTime, Data::DateTimeUtil::GetLocalTzQhr()), "HH:mm:ss.fff");
+					sb.AppendUTF8Char(',');
+					sb.AppendTS(Data::Timestamp(thread->endTime, Data::DateTimeUtil::GetLocalTzQhr()), "HH:mm:ss.fff");
+					sb.AppendUTF8Char(',');
+					sb.AppendDouble(Int64_Double(thread->endTime - thread->startTime) * 0.001);
+					sb.Append(CSTR("\r\n"));
+					stm.Write(sb.ToByteArray());
+					i++;
+				}
+				i = 0;
+				j = me->sideThreadList.GetCount();
+				while (i < j)
+				{
+					thread = me->sideThreadList.GetItemNoCheck(i);
 					sb.ClearStr();
 					s = Text::String::NewCSVRec(thread->name->v);
 					sb.Append(s);
@@ -287,13 +336,13 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadBandwidthLog(Text::CStringNN fileN
 
 void SSWR::AVIRead::AVIRBandwidthLogForm::LoadJMeterLog(Text::CStringNN fileName)
 {
-	Data::ArrayListNN<JMeterThread> logList;
-	Data::FastStringMapNN<JMeterThread> threadMap;
+	Data::ArrayListNN<ThreadStatus> logList;
+	Data::FastStringMapNN<ThreadStatus> threadMap;
 	Text::StringBuilderUTF8 sb;
 	Text::CStringNN logContent;
 	Text::CStringNN threadName;
 	Data::Timestamp ts;
-	NN<JMeterThread> log;
+	NN<ThreadStatus> log;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
@@ -314,7 +363,7 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadJMeterLog(Text::CStringNN fileName
 					}
 					else
 					{
-						log = MemAllocNN(JMeterThread);
+						log = MemAllocNN(ThreadStatus);
 						log->name = Text::String::New(threadName);
 						log->startTime = ts.ToTicks();
 						log->endTime = 0;
@@ -347,10 +396,93 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::LoadJMeterLog(Text::CStringNN fileName
 	{
 		this->ClearJMeterLog();
 		this->txtJMeterLog->SetText(fileName);
-		this->jmeterList.AddAll(logList);
+		this->jmeterThreadList.AddAll(logList);
 		sb.ClearStr();
-		sb.AppendUOSInt(logList.GetCount());
-		this->txtJMeterThreads->SetText(sb.ToCString());
+		sb.AppendUOSInt(logList.GetCount() + this->sideThreadList.GetCount());
+		this->txtThreadsCount->SetText(sb.ToCString());
+	}
+}
+
+void SSWR::AVIRead::AVIRBandwidthLogForm::LoadSIDELog(Text::CStringNN filePath)
+{
+	Data::ArrayListNN<ThreadStatus> logList;
+	Text::StringBuilderUTF8 sb;
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UTF8Char sbuff2[512];
+	UnsafeArray<UTF8Char> sptr3;
+	NN<IO::Path::FindFileSession> sess;
+	IO::Path::PathType pt;
+	NN<DB::DBReader> r;
+	Data::Timestamp startTime;
+	Data::Timestamp endTime;
+	Data::Timestamp currTime;
+	NN<ThreadStatus> thread;
+	Double dur;
+	sptr = filePath.ConcatTo(sbuff);
+	if (filePath.leng > 0 && sptr[-1] != IO::Path::PATH_SEPERATOR)
+	{
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+	}
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.csv"));
+	if (IO::Path::FindFile(CSTRP(sbuff, sptr2)).SetTo(sess))
+	{
+		while (IO::Path::FindNextFile(sptr, sess, 0, pt, 0).SetTo(sptr2) && pt == IO::Path::PathType::File)
+		{
+			DB::CSVFile csv(CSTRP(sbuff, sptr2), 65001);
+			if (csv.QueryTableData(0, CSTR(""), 0, 0, 0, 0, 0).SetTo(r))
+			{
+				startTime = 0;
+				endTime = 0;
+				Bool valid = true;
+				if (!r->GetName(0, sbuff2).SetTo(sptr3) || !CSTRP(sbuff2, sptr3).Equals(CSTR("Time"))) valid = false;
+				if (!r->GetName(1, sbuff2).SetTo(sptr3) || !CSTRP(sbuff2, sptr3).Equals(CSTR("TestId"))) valid = false;
+				if (!r->GetName(2, sbuff2).SetTo(sptr3) || !CSTRP(sbuff2, sptr3).Equals(CSTR("Step"))) valid = false;
+				if (!r->GetName(3, sbuff2).SetTo(sptr3) || !CSTRP(sbuff2, sptr3).Equals(CSTR("Duration"))) valid = false;
+				if (valid)
+				{
+					while (r->ReadNext())
+					{
+						currTime = r->GetTimestamp(0);
+						dur = r->GetDblOrNAN(3);
+						if (!currTime.IsNull() && !Math::IsNAN(dur))
+						{
+							if (startTime.IsNull())
+							{
+								startTime = currTime;
+								endTime = startTime.AddSecondDbl(dur);
+							}
+							else
+							{
+								if (startTime > currTime) startTime = currTime;
+								if (endTime.DiffSecDbl(currTime) < dur) endTime = currTime.AddSecondDbl(dur);
+							}
+						}
+					}
+				}
+				csv.CloseReader(r);
+				if (!startTime.IsNull())
+				{
+					thread = MemAllocNN(ThreadStatus);
+					thread->name = Text::String::NewP(sptr, sptr2);
+					thread->startTime = startTime.ToTicks();
+					thread->endTime = endTime.ToTicks();
+					logList.Add(thread);
+				}
+			}
+		}
+		IO::Path::FindFileClose(sess);
+	}
+
+	if (logList.GetCount() > 0)
+	{
+		this->ClearSIDELog();
+		this->txtSIDELog->SetText(filePath);
+		this->sideThreadList.AddAll(logList);
+		sb.ClearStr();
+		sb.AppendUOSInt(logList.GetCount() + this->jmeterThreadList.GetCount());
+		this->txtThreadsCount->SetText(sb.ToCString());
 	}
 }
 
@@ -372,7 +504,12 @@ void SSWR::AVIRead::AVIRBandwidthLogForm::ClearBandwidthLog()
 
 void SSWR::AVIRead::AVIRBandwidthLogForm::ClearJMeterLog()
 {
-	this->jmeterList.FreeAll(JMeterThreadFree);
+	this->jmeterThreadList.FreeAll(ThreadStatusFree);
+}
+
+void SSWR::AVIRead::AVIRBandwidthLogForm::ClearSIDELog()
+{
+	this->sideThreadList.FreeAll(ThreadStatusFree);
 }
 
 SSWR::AVIRead::AVIRBandwidthLogForm::AVIRBandwidthLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -386,7 +523,7 @@ SSWR::AVIRead::AVIRBandwidthLogForm::AVIRBandwidthLogForm(Optional<UI::GUIClient
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpFile = ui->NewGroupBox(*this, CSTR("File"));
-	this->grpFile->SetRect(0, 0, 100, 63, false);
+	this->grpFile->SetRect(0, 0, 100, 91, false);
 	this->grpFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblBandwidthLog = ui->NewLabel(this->grpFile, CSTR("Bandwidth Log"));
 	this->lblBandwidthLog->SetRect(0, 0, 100, 23, false);
@@ -398,6 +535,11 @@ SSWR::AVIRead::AVIRBandwidthLogForm::AVIRBandwidthLogForm(Optional<UI::GUIClient
 	this->txtJMeterLog = ui->NewTextBox(this->grpFile, CSTR(""));
 	this->txtJMeterLog->SetRect(100, 24, 700, 23, false);
 	this->txtJMeterLog->SetReadOnly(true);
+	this->lblSIDELog = ui->NewLabel(this->grpFile, CSTR("SIDERunner Log"));
+	this->lblSIDELog->SetRect(0, 48, 100, 23, false);
+	this->txtSIDELog = ui->NewTextBox(this->grpFile, CSTR(""));
+	this->txtSIDELog->SetRect(100, 48, 700, 23, false);
+	this->txtSIDELog->SetReadOnly(true);
 
 	this->grpDetail = ui->NewGroupBox(*this, CSTR("Detail"));
 	this->grpDetail->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -411,14 +553,14 @@ SSWR::AVIRead::AVIRBandwidthLogForm::AVIRBandwidthLogForm(Optional<UI::GUIClient
 	this->txtEndTime = ui->NewTextBox(this->grpDetail, CSTR(""));
 	this->txtEndTime->SetRect(100, 24, 150, 23, false);
 	this->txtEndTime->SetReadOnly(true);
-	this->lblJMeterThreads = ui->NewLabel(this->grpDetail, CSTR("JMeter Threads"));
-	this->lblJMeterThreads->SetRect(0, 48, 100, 23, false);
-	this->txtJMeterThreads = ui->NewTextBox(this->grpDetail, CSTR(""));
-	this->txtJMeterThreads->SetRect(100, 48, 150, 23, false);
-	this->txtJMeterThreads->SetReadOnly(true);
-	this->btnJMeterExport = ui->NewButton(this->grpDetail, CSTR("Thread"));
-	this->btnJMeterExport->SetRect(250, 48, 75, 23, false);
-	this->btnJMeterExport->HandleButtonClick(OnJMeterExportClicked, this);
+	this->lblThreadsCount = ui->NewLabel(this->grpDetail, CSTR("Threads Count"));
+	this->lblThreadsCount->SetRect(0, 48, 100, 23, false);
+	this->txtThreadsCount = ui->NewTextBox(this->grpDetail, CSTR(""));
+	this->txtThreadsCount->SetRect(100, 48, 150, 23, false);
+	this->txtThreadsCount->SetReadOnly(true);
+	this->btnThreadsExport = ui->NewButton(this->grpDetail, CSTR("Save"));
+	this->btnThreadsExport->SetRect(250, 48, 75, 23, false);
+	this->btnThreadsExport->HandleButtonClick(OnThreadsExportClicked, this);
 	this->lblIP = ui->NewLabel(this->grpDetail, CSTR("IP"));
 	this->lblIP->SetRect(0, 72, 100, 23, false);
 	this->cboIP = ui->NewComboBox(this->grpDetail, false);
@@ -434,6 +576,7 @@ SSWR::AVIRead::AVIRBandwidthLogForm::~AVIRBandwidthLogForm()
 {
 	this->ClearBandwidthLog();
 	this->ClearJMeterLog();
+	this->ClearSIDELog();
 }
 
 void SSWR::AVIRead::AVIRBandwidthLogForm::OnMonitorChanged()
