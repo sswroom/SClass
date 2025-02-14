@@ -1,6 +1,6 @@
 AR:=ar
-CC:=clang++
-CC2:=clang
+CC:=aarch64-w64-mingw32-clang++
+CC2:=aarch64-w64-mingw32-clang
 ASM:=nasm
 LD:=ld
 STRIP:=strip
