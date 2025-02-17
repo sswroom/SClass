@@ -5202,7 +5202,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 							{
 								resizer.SetTargetSize(Math::Size2D<UOSInt>(1920, 1920));
 								resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_KEEPAR);
-								if (newImg.Set(resizer.ProcessToNew(simg)))
+								if (resizer.ProcessToNew(simg).SetTo(newImg))
 								{
 									nnimgList->ReplaceImage(0, newImg);
 								}

@@ -1308,7 +1308,7 @@ Bool Media::Resizer::LanczosResizerLR_C32::IsSupported(NN<const Media::FrameInfo
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Optional<Media::StaticImage> Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;

@@ -28,19 +28,16 @@ Media::LPCMSource::LPCMSource(Text::CStringNN name)
 
 void Media::LPCMSource::SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format)
 {
-	if (this->data)
-	{
-		DEL_CLASS(this->data);
-	}
+	this->data.Delete();
 	this->format.FromAudioFormat(format);
 
-	this->data = fd->GetPartialData(ofst, length).Ptr();
+	this->data = fd->GetPartialData(ofst, length);
 }
 
 Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format, NN<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
-	this->data = fd->GetPartialData(ofst, length).Ptr();
+	this->data = fd->GetPartialData(ofst, length);
 	this->name = name->Clone();
 	this->readEvt = 0;
 	this->readOfst = 0;
@@ -49,7 +46,7 @@ Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length,
 Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format, Text::CStringNN name)
 {
 	this->format.FromAudioFormat(format);
-	this->data = fd->GetPartialData(ofst, length).Ptr();
+	this->data = fd->GetPartialData(ofst, length);
 	this->name = Text::String::New(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
@@ -57,7 +54,7 @@ Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length,
 
 Media::LPCMSource::~LPCMSource()
 {
-	DEL_CLASS(this->data);
+	this->data.Delete();
 	this->name->Release();
 }
 
@@ -73,7 +70,15 @@ Bool Media::LPCMSource::CanSeek()
 
 Data::Duration Media::LPCMSource::GetStreamTime()
 {
-	return Data::Duration::FromRatioU64(this->data->GetDataSize(), (this->format.nChannels * (UInt32)this->format.bitpersample >> 3) * this->format.frequency);
+	NN<IO::StreamData> data;
+	if (this->data.SetTo(data))
+	{
+		return Data::Duration::FromRatioU64(data->GetDataSize(), (this->format.nChannels * (UInt32)this->format.bitpersample >> 3) * this->format.frequency);
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 Data::Duration Media::LPCMSource::SeekToTime(Data::Duration time)
@@ -86,15 +91,18 @@ Data::Duration Media::LPCMSource::SeekToTime(Data::Duration time)
 
 Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, OptOut<Int32> syncTime)
 {
+	NN<IO::StreamData> data;
+	if (!this->data.SetTo(data))
+		return false;
 	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (trimTimeEnd == (UInt32)-1)
 	{
 		if (trimTimeStart >= 0)
 		{
 			UInt64 ofst = trimTimeStart * (UInt64)this->format.frequency / 1000 * blk;
-			NN<IO::StreamData> newData = this->data->GetPartialData(ofst, this->data->GetDataSize() - ofst);
-			DEL_CLASS(this->data);
-			this->data = newData.Ptr();
+			NN<IO::StreamData> newData = data->GetPartialData(ofst, data->GetDataSize() - ofst);
+			this->data.Delete();
+			this->data = newData;
 			syncTime.Set(0);
 		}
 		else
@@ -106,21 +114,21 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Opt
 	{
 		UInt64 ofst1 = trimTimeStart * (UInt64)this->format.frequency / 1000 * blk;
 		UInt64 ofst2 = trimTimeEnd * (UInt64)this->format.frequency / 1000 * blk;
-		UInt64 dataSize = this->data->GetDataSize();
+		UInt64 dataSize = data->GetDataSize();
 		if (ofst2 > dataSize)
 			ofst2 = dataSize;
 		if (trimTimeStart >= 0)
 		{
-			NN<IO::StreamData> newData = this->data->GetPartialData(ofst1, ofst2 - ofst1);
-			DEL_CLASS(this->data);
-			this->data = newData.Ptr();
+			NN<IO::StreamData> newData = data->GetPartialData(ofst1, ofst2 - ofst1);
+			this->data.Delete();
+			this->data = newData;
 			syncTime.Set(0);
 		}
 		else
 		{
-			NN<IO::StreamData> newData = this->data->GetPartialData(0, ofst2);
-			DEL_CLASS(this->data);
-			this->data = newData.Ptr();
+			NN<IO::StreamData> newData = data->GetPartialData(0, ofst2);
+			this->data.Delete();
+			this->data = newData;
 			syncTime.Set((Int32)trimTimeStart);
 		}
 	}
@@ -149,6 +157,9 @@ void Media::LPCMSource::Stop()
 
 UOSInt Media::LPCMSource::ReadBlock(Data::ByteArray buff)
 {
+	NN<IO::StreamData> data;
+	if (!this->data.SetTo(data))
+		return 0;
 	NN<Sync::Event> readEvt;
 	UOSInt readSize = 0;
 #ifndef HAS_ASM32
@@ -158,7 +169,7 @@ UOSInt Media::LPCMSource::ReadBlock(Data::ByteArray buff)
 	{
 		UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 		readSize = buff.GetSize() / blk;
-		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
+		readSize = data->GetRealData(this->readOfst, readSize * blk, buff);
 		if (this->format.bitpersample == 16)
 		{
 #ifdef HAS_ASM32
@@ -234,7 +245,7 @@ rblk1_24exit:
 		{
 			UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 			readSize = buff.GetSize() / blk;
-			readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
+			readSize = data->GetRealData(this->readOfst, readSize * blk, buff);
 #ifdef HAS_ASM32
 			_asm
 			{
@@ -270,7 +281,7 @@ rblk2_16exit:
 			{
 				UInt32 blk = 12;//(this->format.nChannels * this->format.bitpersample >> 3);
 				readSize = buff.GetSize() / blk;
-				readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
+				readSize = data->GetRealData(this->readOfst, readSize * blk, buff);
 #ifdef HAS_ASM32
 				_asm
 				{
@@ -348,7 +359,7 @@ rblk2_24_2exit:
 			Data::ByteArray tmpPtr2;
 			UOSInt cnt;
 			UOSInt cnt2;
-			readSize = this->data->GetRealData(this->readOfst, readSize * blk, tmpBuff);
+			readSize = data->GetRealData(this->readOfst, readSize * blk, tmpBuff);
 			UOSInt sizeLeft = readSize;
 			tmpPtr = tmpBuff;
 			while (sizeLeft >= blk)
@@ -375,7 +386,7 @@ rblk2_24_2exit:
 	{
 		UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 		readSize = buff.GetSize() / blk;
-		readSize = this->data->GetRealData(this->readOfst, readSize * blk, buff);
+		readSize = data->GetRealData(this->readOfst, readSize * blk, buff);
 	}
 	this->readOfst += readSize;
 	if (this->readEvt.SetTo(readEvt))
@@ -395,7 +406,10 @@ Data::Duration Media::LPCMSource::GetCurrTime()
 
 Bool Media::LPCMSource::IsEnd()
 {
-	return this->readOfst >= this->data->GetDataSize();
+	NN<IO::StreamData> data;
+	if (this->data.SetTo(data))
+		return this->readOfst >= data->GetDataSize();
+	return true;
 }
 
 Bool Media::LPCMSource::SupportSampleRead()
@@ -405,13 +419,16 @@ Bool Media::LPCMSource::SupportSampleRead()
 
 UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data::ByteArray buff)
 {
+	NN<IO::StreamData> data;
+	if (!this->data.SetTo(data))
+		return 0;
 	UOSInt blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (sampleOfst < 0)
 	{
 		if (sampleOfst + sampleCount > 0)
 		{
 			buff.Clear(0, (UOSInt)-(Int64)sampleOfst * blk);
-			return (UOSInt)((this->data->GetRealData(0, (UOSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
+			return (UOSInt)((data->GetRealData(0, (UOSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
 		}
 		else
 		{
@@ -421,12 +438,15 @@ UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, Data
 	}
 	else
 	{
-		return this->data->GetRealData(sampleOfst * blk, sampleCount * blk, buff) / blk;
+		return data->GetRealData(sampleOfst * blk, sampleCount * blk, buff) / blk;
 	}
 }
 
 Int64 Media::LPCMSource::GetSampleCount()
 {
+	NN<IO::StreamData> data;
+	if (!this->data.SetTo(data))
+		return 0;
 	UInt32 blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
-	return (Int64)this->data->GetDataSize() / blk;
+	return (Int64)data->GetDataSize() / blk;
 }

@@ -2,6 +2,11 @@
 #include "MyMemory.h"
 #include "IO/PackageFile.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 IO::PackageFile::PackageFile(NN<Text::String> fileName) : IO::ParsedObject(fileName)
 {
 }
@@ -27,6 +32,9 @@ Optional<IO::StreamData> IO::PackageFile::GetItemStmDataNew(Text::CStringNN name
 	{
 		return 0;
 	}
+#if defined(VERBOSE)
+	printf("PackageFile: Found item %s in index %d\r\n", name.v.Ptr(), (UInt32)index);
+#endif
 	return this->GetItemStmDataNew(index);
 }
 

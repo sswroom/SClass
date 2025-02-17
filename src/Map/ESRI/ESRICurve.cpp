@@ -93,7 +93,7 @@ void Map::ESRI::ESRICurve::AddEllipticArc(UOSInt index, Math::Coord2DDbl center,
 	curve->minorMajorRatio = minorMajorRatio;
 	curve->bits = bits;
 	this->curveList.Add(curve);
-	printf("ESRICurve: EllipticArc is not supported\r\n");
+//	printf("ESRICurve: EllipticArc is not supported\r\n");
 }
 
 NN<Math::Geometry::Vector2D> Map::ESRI::ESRICurve::CreatePolygon() const

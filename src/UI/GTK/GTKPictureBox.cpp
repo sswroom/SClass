@@ -86,18 +86,14 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 		g_object_unref(this->pixbuf);
 		this->pixbuf = 0;
 	}
-	if (this->tmpImage)
-	{
-		DEL_CLASS(this->tmpImage);
-		this->tmpImage = 0;
-	}
+	this->tmpImage.Delete();
 	NN<Media::StaticImage> img;
 	if (this->currImage.SetTo(img))
 	{
 		if (this->allowResize)
 		{
-			Media::StaticImage *tmpImage = resizer->ProcessToNew(img);
-			if (tmpImage)
+			NN<Media::StaticImage> tmpImage;
+			if (resizer->ProcessToNew(img).SetTo(tmpImage))
 			{
 				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data.Ptr(), GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(OSInt)tmpImage->info.dispSize.x, (int)(OSInt)tmpImage->info.dispSize.y, (int)(OSInt)tmpImage->info.storeSize.x << 2, 0, 0);
 				guchar *pixels = gdk_pixbuf_get_pixels(buf);
@@ -152,11 +148,7 @@ UI::GTK::GTKPictureBox::~GTKPictureBox()
 		g_object_unref(this->pixbuf);
 		this->pixbuf = 0;
 	}
-	if (this->tmpImage)
-	{
-		DEL_CLASS(this->tmpImage);
-		this->tmpImage = 0;
-	}
+	this->tmpImage.Delete();
 }
 
 OSInt UI::GTK::GTKPictureBox::OnNotify(UInt32 code, void *lParam)

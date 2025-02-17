@@ -20,15 +20,16 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 
 	this->env = 0;
 	NEW_CLASSNN(this->sockf, Net::OSSocketFactory(true));
+	NEW_CLASSNN(this->clif, Net::TCPClientFactory(this->sockf));
 
-	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	if (cfg == 0)
+	NN<IO::ConfigFile> cfg;
+	if (!IO::IniFile::ParseProgConfig(0).SetTo(cfg))
 	{
 		ui->ShowMsgOK(CSTR("Error in loading config file"), CSTR("Error"), this);
 		return;
 	}
 
-	DB::DBTool *db;
+	Optional<DB::DBTool> db;
 	Int32 scnSize = 0;
 	NN<Text::String> s;
 	if (cfg->GetValue(CSTR("ScreenSize")).SetTo(s))
@@ -45,11 +46,11 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 	}
 	else if (cfg->GetValue(CSTR("MySQLServer")).SetTo(s))
 	{
-		db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, cfg->GetValue(CSTR("MySQLDB")), cfg->GetValue(CSTR("MySQLUID")), cfg->GetValue(CSTR("MySQLPwd")), this->log, CSTR("DB: "));
+		db = Net::MySQLTCPClient::CreateDBTool(this->clif, s, cfg->GetValue(CSTR("MySQLDB")), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLUID"))), Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLPwd"))), this->log, CSTR("DB: "));
 	}
 	else
 	{
-		db = DB::ODBCConn::CreateDBTool(cfg->GetValue(CSTR("DBDSN")), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), this->log, CSTR("DB: "));
+		db = DB::ODBCConn::CreateDBTool(Text::String::OrEmpty(cfg->GetValue(CSTR("DBDSN"))), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), this->log, CSTR("DB: "));
 	}
 	UInt16 port = 0;
 	UInt16 sslPort = 0;
@@ -58,7 +59,7 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 		s->ToUInt16(port);
 	}
 	NEW_CLASS(this->env, OrganWebEnv(this->sockf, 0, this->log, db, cfg->GetValue(CSTR("ImageDir")), port, 0, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), 0, eng, cfg->GetValue(CSTR("OSMCacheOath"))->ToCString()));
-	DEL_CLASS(cfg);
+	cfg.Delete();
 
 	this->btnReload = ui->NewButton(*this, CSTR("&Reload"));
 	this->btnReload->SetRect(40, 16, 75, 23, false);
@@ -72,6 +73,7 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 SSWR::OrganMgr::OrganWebForm::~OrganWebForm()
 {
 	SDEL_CLASS(this->env);
+	this->clif.Delete();
 	this->sockf.Delete();
 }
 

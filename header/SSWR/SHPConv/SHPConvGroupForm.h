@@ -17,7 +17,7 @@ namespace SSWR
 			NN<UI::GUIListBox> lbGroup;
 			NN<UI::GUIButton> btnOk;
 			NN<UI::GUIButton> btnCancel;
-			Media::MonitorMgr *monMgr;
+			NN<Media::MonitorMgr> monMgr;
 
 			static void __stdcall OnOkClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
@@ -31,6 +31,6 @@ namespace SSWR
 			void SetCurrGroup(UOSInt currGroup);
 			UOSInt GetCurrGroup();
 		};
-	};
-};
+	}
+}
 #endif

@@ -53,6 +53,9 @@ Data::Duration Media::NWASource::SeekToTime(Data::Duration time)
 
 UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 {
+	NN<IO::StreamData> data;
+	if (!this->data.SetTo(data))
+		return 0;
 	UInt32 byps = (this->format.bitpersample / 8);
 	UInt32 retSize = 0;
 	while (buff.GetSize() > 0)
@@ -81,7 +84,7 @@ UOSInt Media::NWASource::ReadBlock(Data::ByteArray buff)
 			}
 		}
 		
-		this->data->GetRealData(this->blockOfsts[this->currBlock], compBlockSize, Data::ByteArray(this->blockBuff, this->blockSize * (this->format.bitpersample / 8) * 2));
+		data->GetRealData(this->blockOfsts[this->currBlock], compBlockSize, Data::ByteArray(this->blockBuff, this->blockSize * (this->format.bitpersample / 8) * 2));
 		this->currBlock++;
 		Int32 d[2];
 		UInt32 currOfst = 0;

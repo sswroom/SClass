@@ -29,7 +29,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 				resizer.SetTargetSize(scnSize);
 				resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_KEEPAR);
 				NN<Media::StaticImage> srimg;
-				if (srimg.Set(resizer.ProcessToNew(simg)))
+				if (resizer.ProcessToNew(simg).SetTo(srimg))
 				{
 					simg.Delete();
 					this->bmpBuff = this->deng->ConvImage(srimg);

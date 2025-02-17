@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANWEBFORM
 #define _SM_SSWR_ORGANMGR_ORGANWEBFORM
 #include "Net/SocketFactory.h"
+#include "Net/TCPClientFactory.h"
 #include "SSWR/OrganMgr/OrganEnv.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -15,6 +16,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnReload;
 
 			NN<Net::SocketFactory> sockf;
+			NN<Net::TCPClientFactory> clif;
 			IO::LogTool log;
 			OrganEnv *env;
 			

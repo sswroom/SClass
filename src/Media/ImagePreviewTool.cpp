@@ -19,7 +19,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 			currWidth >>= 1;
 			currHeight >>= 1;
 			resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
-			if (simg.Set(resizer.ProcessToNew(img)))
+			if (resizer.ProcessToNew(img).SetTo(simg))
 			{
 				prevImgs->Add(simg);
 			}

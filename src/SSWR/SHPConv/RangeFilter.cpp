@@ -38,9 +38,9 @@ UnsafeArray<UTF8Char> SSWR::SHPConv::RangeFilter::ToString(UnsafeArray<UTF8Char>
 	}
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::RangeFilter::Clone() const
+NN<SSWR::SHPConv::MapFilter> SSWR::SHPConv::RangeFilter::Clone() const
 {
-	MapFilter *filter;
-	NEW_CLASS(filter, RangeFilter(this->left, this->top, this->right, this->bottom, this->compareType));
+	NN<MapFilter> filter;
+	NEW_CLASSNN(filter, RangeFilter(this->left, this->top, this->right, this->bottom, this->compareType));
 	return filter;
 }

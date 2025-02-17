@@ -1014,29 +1014,29 @@ Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame
 	return true;
 }
 
-void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, NN<Data::DateTime> dt)
+void Media::ICCProfile::ReadDateTimeNumber(UnsafeArray<const UInt8> buff, NN<Data::DateTime> dt)
 {
 	dt->SetValue(ReadMUInt16(&buff[0]), (UInt8)ReadMUInt16(&buff[2]), (UInt8)ReadMUInt16(&buff[4]), (UInt8)ReadMUInt16(&buff[6]), (UInt8)ReadMUInt16(&buff[8]), (UInt8)ReadMUInt16(&buff[10]), 0);
 }
 
-Media::ICCProfile::CIEXYZ Media::ICCProfile::ReadXYZNumber(const UInt8 *buff)
+Media::ICCProfile::CIEXYZ Media::ICCProfile::ReadXYZNumber(UnsafeArray<const UInt8> buff)
 {
 	return CIEXYZ(ReadS15Fixed16Number(&buff[0]), ReadS15Fixed16Number(&buff[4]), ReadS15Fixed16Number(&buff[8]));
 }
 
-Double Media::ICCProfile::ReadS15Fixed16Number(const UInt8 *buff)
+Double Media::ICCProfile::ReadS15Fixed16Number(UnsafeArray<const UInt8> buff)
 {
-	return ReadMInt32(buff) / 65536.0;
+	return ReadMInt32(&buff[0]) / 65536.0;
 }
 
-Double Media::ICCProfile::ReadU16Fixed16Number(const UInt8 *buff)
+Double Media::ICCProfile::ReadU16Fixed16Number(UnsafeArray<const UInt8> buff)
 {
-	return ((UInt32)ReadMInt32(buff)) / 65536.0;
+	return ((UInt32)ReadMInt32(&buff[0])) / 65536.0;
 }
 
-Double Media::ICCProfile::ReadU8Fixed8Number(const UInt8 *buff)
+Double Media::ICCProfile::ReadU8Fixed8Number(UnsafeArray<const UInt8> buff)
 {
-	return ((UInt16)ReadMInt16(buff)) / 256.0;
+	return ((UInt16)ReadMInt16(&buff[0])) / 256.0;
 }
 
 Text::CStringNN Media::ICCProfile::GetNameCMMType(Int32 val)
@@ -1391,9 +1391,9 @@ void Media::ICCProfile::GetDispCIEXYZ(NN<Text::StringBuilderUTF8> sb, const CIEX
 	}
 }
 
-void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UnsafeArray<UInt8> buff, UInt32 leng)
 {
-	Int32 typ = ReadMInt32(buff);
+	Int32 typ = ReadMInt32(&buff[0]);
 	Int32 nCh;
 	Int32 val;
 	UTF8Char sbuff[256];
@@ -1635,7 +1635,7 @@ void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *bu
 	}
 }
 
-Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, UInt16 *curveColors, OutParam<Double> gamma)
+Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, UnsafeArray<UInt16> curveColors, OutParam<Double> gamma)
 {
 	Media::CS::TransferType trans[] = {Media::CS::TRANT_sRGB, Media::CS::TRANT_BT709, Media::CS::TRANT_GAMMA, Media::CS::TRANT_LINEAR, Media::CS::TRANT_SMPTE240};
 	UOSInt tranCnt = sizeof(trans) / sizeof(trans[0]);
@@ -1646,7 +1646,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 	}
 	else if (colorCount == 1)
 	{
-		gamma.Set(ReadU8Fixed8Number((UInt8*)curveColors));
+		gamma.Set(ReadU8Fixed8Number((UInt8*)&curveColors[0]));
 		return Media::CS::TRANT_GAMMA;
 	}
 
@@ -1711,12 +1711,12 @@ Optional<Media::ICCProfile> Media::ICCProfile::NewSRGBProfile()
 	return Parse(Data::ByteArrayR(srgbICC, sizeof(srgbICC)));
 }
 
-const UInt8 *Media::ICCProfile::GetSRGBICCData()
+UnsafeArray<const UInt8> Media::ICCProfile::GetSRGBICCData()
 {
 	return srgbICC;
 }
 
-void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff)
+void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> xyzBuff)
 {
 	Text::StringBuilderUTF8 sb;
 	GetDispCIEXYZ(sb, ReadXYZNumber(xyzBuff));
@@ -1724,9 +1724,9 @@ void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler
 }
 
 
-void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> buff, UInt32 leng)
 {
-	UInt32 typ = ReadMUInt32(buff);
+	UInt32 typ = ReadMUInt32(&buff[0]);
 	Int32 nCh;
 	Int32 val;
 	UTF8Char sbuff[256];

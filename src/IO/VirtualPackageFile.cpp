@@ -17,6 +17,11 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 void IO::VirtualPackageFile::ReusePackFileItem(NN<IO::PackFileItem> item)
 {
 	SDEL_CLASS(item->fullFd);
@@ -476,6 +481,9 @@ UInt64 IO::VirtualPackageFile::GetPItemDataOfst(NN<const PackFileItem> itemObj) 
 
 Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const PackFileItem> item) const
 {
+#if defined(VERBOSE)
+	printf("VirtualPackageFile: Getting StmData from %s\r\n", item->name->v.Ptr());
+#endif
 	if (item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 	{
 		NN<IO::StreamData> data;
@@ -493,12 +501,23 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		NN<Crypto::Hash::HashAlgorithm> hash;
 		NN<IO::StreamData> fd;
 		if (!Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod).SetTo(decomp))
+		{
+#if defined(VERBOSE)
+			printf("VirtualPackageFile: Error in creating decompressor\r\n");
+#endif
 			return 0;
+		}
 		if (!Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod).SetTo(hash))
 		{
+#if defined(VERBOSE)
+			printf("VirtualPackageFile: Error in creating hash\r\n");
+#endif
 			decomp.Delete();
 			return 0;
 		}
+#if defined(VERBOSE)
+		printf("VirtualPackageFile: Data pos %llx, size = %llx\r\n", GetPItemDataOfst(item), item->dataLength);
+#endif
 		fd = item->fullFd->GetPartialData(GetPItemDataOfst(item), item->dataLength);
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
@@ -527,6 +546,13 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 			{
 				if (chkResult[i] != item->compInfo->checkBytes[i])
 				{
+#if defined(VERBOSE)
+					Text::StringBuilderUTF8 sbTmp;
+					sbTmp.AppendHexBuff(Data::ByteArrayR(chkResult, resSize), 0, Text::LineBreakType::None);
+					sbTmp.Append(CSTR(" != "));
+					sbTmp.AppendHexBuff(Data::ByteArrayR(item->compInfo->checkBytes, resSize), 0, Text::LineBreakType::None);
+					printf("VirtualPackageFile: Hash not match, fileSize = %lld, %s\r\n", fs.GetPosition(), sbTmp.v.Ptr());
+#endif
 					diff = true;
 					break;
 				}
@@ -719,6 +745,9 @@ UInt64 IO::VirtualPackageFile::GetItemSize(UOSInt index) const
 
 UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 {
+#if defined(VERBOSE)
+	printf("VirtualPackageFile: Searching for itemIndex: %s\r\n", name.v.Ptr());
+#endif
 	UOSInt i;
 	NN<IO::PackFileItem> item;
 	NN<IO::ParsedObject> pobj;
@@ -731,9 +760,12 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 			return i;
 		if (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
-			Text::CStringNN shName = item->fullFd->GetShortName().OrEmpty();
+			Text::CStringNN shName = item->name->ToCString();
 			if (shName.EqualsICase(name))
 				return i;
+#if defined(VERBOSE)
+			printf("VirtualPackageFile: StmData not match: %s != %s\r\n", shName.v.Ptr(), name.v.Ptr());
+#endif
 		}
 		else if (item->itemType == IO::PackFileItem::PackItemType::ParsedObject)
 		{

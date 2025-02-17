@@ -18,7 +18,7 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(Optional<UI::GUIClientControl>
 	this->SetText(CSTR("Group"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lblGroup = ui->NewLabel(*this, CSTR("Groups"));
@@ -38,7 +38,7 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(Optional<UI::GUIClientControl>
 
 SSWR::SHPConv::SHPConvGroupForm::~SHPConvGroupForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvGroupForm::OnMonitorChanged()

@@ -112,7 +112,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 					error = true;
 					break;
 				}
-				if (ret == Z_STREAM_END)
+				if (ret == Z_STREAM_END && srcOfst >= srcLen && strm.avail_in == 0)
 				{
 					break;
 				}

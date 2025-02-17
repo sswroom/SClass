@@ -62,7 +62,7 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 	UOSInt k;
 	TargetParam *param;
 	NN<Media::StaticImage> newImg;
-	Media::StaticImage *rImg;
+	Optional<Media::StaticImage> rImg;
 	Bool succ;
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
@@ -99,7 +99,7 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 					rImg = resizer->ProcessToNew(newImg);
 				}
 
-				if (!newImg.Set(rImg))
+				if (!rImg.SetTo(newImg))
 				{
 					succ = false;
 					break;

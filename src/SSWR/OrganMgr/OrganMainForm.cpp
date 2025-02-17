@@ -1622,7 +1622,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 						NN<Media::StaticImage> img;
 						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 						{
-							Media::StaticImage *nimg;
+							Optional<Media::StaticImage> nimg;
 							img->To32bpp();
 							me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
 							me->mapResizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
@@ -1630,7 +1630,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 							imgList.Delete();
 							me->mapCurrFile = ufile.Ptr();
 							me->mapCurrImage = me->env->GetDrawEngine()->ConvImageOrNull(nimg);
-							SDEL_CLASS(nimg);
+							nimg.Delete();
 						}
 						me->mcMap->Redraw();
 					}

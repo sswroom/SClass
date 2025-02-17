@@ -62,11 +62,11 @@ namespace Media
 		static Optional<ICCProfile> Parse(Data::ByteArrayR buff);
 		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 
-		static void ReadDateTimeNumber(const UInt8 *buff, NN<Data::DateTime> dt);
-		static CIEXYZ ReadXYZNumber(const UInt8 *buff);
-		static Double ReadS15Fixed16Number(const UInt8 *buff);
-		static Double ReadU16Fixed16Number(const UInt8 *buff);
-		static Double ReadU8Fixed8Number(const UInt8 *buff);
+		static void ReadDateTimeNumber(UnsafeArray<const UInt8> buff, NN<Data::DateTime> dt);
+		static CIEXYZ ReadXYZNumber(UnsafeArray<const UInt8> buff);
+		static Double ReadS15Fixed16Number(UnsafeArray<const UInt8> buff);
+		static Double ReadU16Fixed16Number(UnsafeArray<const UInt8> buff);
+		static Double ReadU8Fixed8Number(UnsafeArray<const UInt8> buff);
 
 		static Text::CStringNN GetNameCMMType(Int32 val);
 		static Text::CStringNN GetNameProfileClass(Int32 val);
@@ -79,16 +79,16 @@ namespace Media
 		static Text::CStringNN GetNameStandardIlluminent(Int32 val);
 
 		static void GetDispCIEXYZ(NN<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz);
-		static void GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
+		static void GetDispTagType(NN<Text::StringBuilderUTF8> sb, UnsafeArray<UInt8> buff, UInt32 leng);
 
-		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, OutParam<Double> gamma);
+		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UnsafeArray<UInt16> curveColors, OutParam<Double> gamma);
 		static UnsafeArray<UTF8Char> GetProfilePath(UnsafeArray<UTF8Char> sbuff);
 
 		static Optional<ICCProfile> NewSRGBProfile();
-		static const UInt8 *GetSRGBICCData();
+		static UnsafeArray<const UInt8> GetSRGBICCData();
 
-		static void FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff);
-		static void FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng);
+		static void FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> xyzBuff);
+		static void FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, UnsafeArray<const UInt8> buff, UInt32 leng);
 	};
 }
 #endif

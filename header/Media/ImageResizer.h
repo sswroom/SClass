@@ -26,8 +26,8 @@ namespace Media
 		virtual Bool Resize(NN<const Media::StaticImage> srcImage, NN<Media::StaticImage> destImage) { return false;};
 
 		virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo) = 0;
-		virtual Media::StaticImage *ProcessToNew(NN<const Media::RasterImage> srcImage);
-		virtual Media::StaticImage *ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR) = 0;
+		virtual Optional<Media::StaticImage> ProcessToNew(NN<const Media::RasterImage> srcImage);
+		virtual Optional<Media::StaticImage> ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR) = 0;
 		void SetTargetSize(Math::Size2D<UOSInt> targetSize);
 		void SetResizeAspectRatio(ResizeAspectRatio rar);
 		void SetSrcAlphaType(Media::AlphaType alphaType);

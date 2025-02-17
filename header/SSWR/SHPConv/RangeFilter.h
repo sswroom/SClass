@@ -21,7 +21,7 @@ namespace SSWR
 
 			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const;
 			virtual UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;
-			virtual MapFilter *Clone() const;
+			virtual NN<MapFilter> Clone() const;
 		};
 	}
 }

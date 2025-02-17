@@ -167,7 +167,7 @@ void UI::GUIPictureList::Add(NN<Media::RasterImage> img)
 	NN<Media::StaticImage> simg = img->CreateStaticImage();
 	NN<Media::StaticImage> nsimg;
 	NN<Media::DrawImage> dimg;
-	if (nsimg.Set(this->resizer->ProcessToNew(simg)))
+	if (this->resizer->ProcessToNew(simg).SetTo(nsimg))
 	{
 		if (this->deng->ConvImage(nsimg).SetTo(dimg))
 		{

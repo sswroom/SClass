@@ -122,7 +122,7 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(NN<const Media::F
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Optional<Media::StaticImage> Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;

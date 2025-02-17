@@ -27,9 +27,9 @@ UnsafeArray<UTF8Char> SSWR::SHPConv::ElevationFilter::ToString(UnsafeArray<UTF8C
 	return buff;
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::ElevationFilter::Clone() const
+NN<SSWR::SHPConv::MapFilter> SSWR::SHPConv::ElevationFilter::Clone() const
 {
-	MapFilter *filter;
-	NEW_CLASS(filter, ElevationFilter(this->colIndex, this->value));
+	NN<MapFilter> filter;
+	NEW_CLASSNN(filter, ElevationFilter(this->colIndex, this->value));
 	return filter;
 }

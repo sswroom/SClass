@@ -66,7 +66,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			imgList->ToStaticImage(0);
 			NN<Media::StaticImage> simg;
-			Media::StaticImage *newImg;
+			Optional<Media::StaticImage> newImg;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
 				Media::Resizer::LanczosResizer8_C8 resizer(4, 4, simg->info.color, simg->info.color, 0, simg->info.atype);
@@ -79,7 +79,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				newImg = 0;
 			}
 			imgList.Delete();
-			if (simg.Set(newImg))
+			if (newImg.SetTo(simg))
 			{
 				Exporter::GUIJPGExporter exporter;
 				NEW_CLASSNN(imgList, Media::ImageList(destFile));

@@ -13,7 +13,7 @@ namespace UI
 			GdkPixbuf *pixbuf;
 			GtkWidget *gtkImage;
 			GtkWidget *eventBox;
-			Media::StaticImage *tmpImage;
+			Optional<Media::StaticImage> tmpImage;
 
 			static gboolean SignalButtonPress(GtkWidget *widget, GdkEvent  *event, gpointer user_data);
 			static gboolean SignalButtonRelease(GtkWidget *widget, GdkEvent  *event, gpointer user_data);

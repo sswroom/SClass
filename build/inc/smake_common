@@ -1576,7 +1576,7 @@ Data/Compress/DeflateStream.h:
 @?(NO_MINIZ == 0)DeflateStreamMiniz.o
 @?(NO_MINIZ > 0)DeflateStreamZlib.o
 Data/Compress/Inflate.h:
-@?(NO_MINIZ == 0)InflateMiniz.o
+@?(NO_MINIZ == 0)InflateNull.o
 @?(NO_MINIZ > 0)InflateZlib.o
 Data/Compress/Inflater.h:
 @Inflater.o

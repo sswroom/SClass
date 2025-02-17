@@ -198,7 +198,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						NN<Media::StaticImage> simg2;
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
-						if (simg2.Set(resizer.ProcessToNew(simg)))
+						if (resizer.ProcessToNew(simg).SetTo(simg2))
 						{
 							Media::ImageList imgList(CSTRP(sptr2, sptr2End));
 							imgList.AddImage(simg2, 0);

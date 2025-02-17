@@ -9,7 +9,7 @@ namespace Media
 	{
 	protected:
 		AudioFormat format;
-		IO::StreamData *data;
+		Optional<IO::StreamData> data;
 		NN<Text::String> name;
 
 		UInt64 readOfst;

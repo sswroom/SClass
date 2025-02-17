@@ -5,6 +5,11 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 Map::ESRI::FileGDBDir::FileGDBDir(NN<IO::PackageFile> pkg, NN<FileGDBTable> systemCatalog, NN<Math::ArcGISPRJParser> prjParser) : DB::ReadingDB(pkg->GetSourceNameObj())
 {
 	this->pkg = pkg->Clone();
@@ -61,6 +66,9 @@ Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schem
 	NN<FileGDBTable> table;
 	if (!this->GetTable(tableName).SetTo(table))
 	{
+#if defined(VERBOSE)
+		printf("FileGDBDir: QueryTableData failed in getting table: %s\r\n", tableName.v.Ptr());
+#endif
 		return 0;
 	}
 	if (ordering.leng == 0)
@@ -144,6 +152,9 @@ Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringN
 		if (innerTable->IsError())
 		{
 			innerTable.Delete();
+#if defined(VERBOSE)
+			printf("FileGDBTable: Table %s has error\r\n", sbuff);
+#endif
 		}
 		else
 		{
@@ -152,6 +163,12 @@ Optional<Map::ESRI::FileGDBTable> Map::ESRI::FileGDBDir::GetTable(Text::CStringN
 			return innerTable;
 		}
 	}
+#if defined(VERBOSE)
+	else
+	{
+		printf("FileGDBTable: Cannot get item %s in package file\r\n", sbuff);
+	}
+#endif
 	indexFD.Delete();
 	return 0;
 }

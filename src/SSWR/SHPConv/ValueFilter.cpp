@@ -59,9 +59,9 @@ UnsafeArray<UTF8Char> SSWR::SHPConv::ValueFilter::ToString(UnsafeArray<UTF8Char>
 	}
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::ValueFilter::Clone() const
+NN<SSWR::SHPConv::MapFilter> SSWR::SHPConv::ValueFilter::Clone() const
 {
-	MapFilter *filter;
-	NEW_CLASS(filter, ValueFilter(this->colIndex, this->value->ToCString(), this->compareType));
+	NN<MapFilter> filter;
+	NEW_CLASSNN(filter, ValueFilter(this->colIndex, this->value->ToCString(), this->compareType));
 	return filter;
 }
