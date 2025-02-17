@@ -73,6 +73,7 @@ namespace Net
 		Data::ArrayIterator<NN<Text::String>> RespHeaderIterator() const;
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
+		void GetContentFileName(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLastModified(NN<Data::DateTime> dt);
 		Bool GetLastModified(OutParam<Data::Timestamp> ts);
 		Bool GetServerDate(NN<Data::DateTime> dt);

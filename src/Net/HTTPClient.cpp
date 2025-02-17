@@ -222,6 +222,49 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 	return 0;
 }
 
+void Net::HTTPClient::GetContentFileName(NN<Text::StringBuilderUTF8> sb)
+{
+	this->EndRequest(0, 0);
+	UOSInt i;
+	Text::CStringNN hdr;
+	if (this->GetRespHeader(CSTR("Content-Disposition")).SetTo(hdr))
+	{
+		i = hdr.IndexOf(CSTR("filename=\""));
+		if (i != INVALID_INDEX)
+		{
+			hdr = hdr.Substring(i + 10);
+			i = hdr.IndexOf('\"');
+			if (i != INVALID_INDEX)
+			{
+				sb->AppendC(hdr.v, i);
+			}
+			else
+			{
+				sb->Append(hdr);
+			}
+			return;
+		}
+	}
+	i = this->url->LastIndexOf('/');
+	if (i == INVALID_INDEX || i < 8)
+	{
+		sb->Append(CSTR("index.html"));
+	}
+	else
+	{
+		Text::CStringNN url = this->url->ToCString().Substring(i + 1);
+		i = url.IndexOf('?');
+		if (i == INVALID_INDEX)
+		{
+			sb->Append(url);
+		}
+		else
+		{
+			sb->AppendC(url.v, i);
+		}
+	}
+}
+
 Bool Net::HTTPClient::GetLastModified(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];

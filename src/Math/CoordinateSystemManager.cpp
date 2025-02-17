@@ -788,6 +788,18 @@ NN<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateWGS84C
 
 }
 
+NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl coord)
+{
+	if (coord.x >= 793241 && coord.x <= 870617.61 && coord.y >= 799018.15 && coord.y < 848909.8)
+	{
+		return SRCreateCSysOrDef(2326);
+	}
+	else
+	{
+		return CreateWGS84Csys();
+	}
+}
+
 Text::CStringNN Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)
 {
 	switch (gcst)

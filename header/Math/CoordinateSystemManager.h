@@ -194,6 +194,7 @@ namespace Math
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> geoName);
 		static NN<Math::GeographicCoordinateSystem> CreateWGS84Csys();
+		static NN<Math::CoordinateSystem> CreateCsysByCoord(Math::Coord2DDbl coord);
 
 		static Text::CStringNN GeoCoordSysTypeGetName(GeoCoordSysType gcst);
 		static Text::CString ProjCoordSysTypeGetName(ProjCoordSysType pcst);

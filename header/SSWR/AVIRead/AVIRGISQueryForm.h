@@ -75,6 +75,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnShapeFmtChanged(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
+			static void __stdcall OnInfoDblClk(AnyType userObj, UOSInt index);
 
 			void ShowLayerNames();
 			void ClearQueryResults();

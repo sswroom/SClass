@@ -1,10 +1,14 @@
 #include "Stdafx.h"
+#include "IO/FileStream.h"
 #include "Math/CoordinateSystemConverter.h"
 #include "Math/GeometryTool.h"
 #include "Math/Geometry/Ellipse.h"
+#include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRGISQueryForm.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "UI/GUIFileDialog.h"
 
 Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
@@ -199,6 +203,71 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UOSInt index)
+{
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	UOSInt selIndex = me->cboObj->GetSelectedIndex();
+	if (selIndex != INVALID_INDEX)
+	{
+		UOSInt j;
+		UOSInt k;
+		Optional<Text::String> value = 0;
+		if (me->layerNames)
+		{
+			j = me->lyr->GetColumnCnt();
+			k = selIndex * j;
+			if (index < j)
+			{
+				value = me->queryValueList.GetItem(index + k);
+			}
+		}
+		else
+		{
+			j = me->queryValueOfstList.GetItem(selIndex);
+			k = me->queryValueOfstList.GetItem(selIndex + 1);
+			if (k == 0)
+				k = me->queryNameList.GetCount();
+			if (index < (k - j))
+			{
+				value = me->queryValueList.GetItem(j + index);
+			}
+		}
+		NN<Text::String> s;
+		if (value.SetTo(s))
+		{
+			if (s->StartsWith(CSTR("http://")) || s->StartsWith(CSTR("https://")))
+			{
+				NN<Net::TCPClientFactory> clif = me->core->GetTCPClientFactory();
+				Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
+				NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+				IO::MemoryStream mstm;
+				if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+				{
+					UInt64 len = cli->ReadToEnd(mstm, 65536);
+					if (len > 0)
+					{
+						Text::StringBuilderUTF8 sb;
+						cli->GetContentFileName(sb);
+						NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISQueryInfoDownload", true);
+						dlg->SetFileName(sb.ToCString());
+						if (dlg->ShowDialog(me->GetHandle()))
+						{
+							IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							if (fs.Write(mstm.GetArray()) != mstm.GetLength())
+							{
+								me->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("GIS Query"), me);
+							}
+						}
+						dlg.Delete();
+					}
+				}
+				cli.Delete();
+				ssl.Delete();
+			}
+		}
+	}
+}
+
 void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 {
 	this->lvInfo->ClearItems();
@@ -344,6 +413,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->lvInfo->AddColumn(CSTR("Value"), 300);
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->SetFullRowSelect(true);
+	this->lvInfo->HandleDblClk(OnInfoDblClk, this);
 
 	this->tpShape = this->tcMain->AddTabPage(CSTR("Shape"));
 	this->pnlShape = ui->NewPanel(this->tpShape);
