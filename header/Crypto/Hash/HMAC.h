@@ -11,11 +11,11 @@ namespace Crypto
 		private:
 			NN<Crypto::Hash::HashAlgorithm> hashInner;
 			NN<Crypto::Hash::HashAlgorithm> hashOuter;
-			UInt8 *key;
+			UnsafeArray<UInt8> key;
 			UOSInt keySize;
 
-			UInt8 *iPad;
-			UInt8 *oPad;
+			UnsafeArray<UInt8> iPad;
+			UnsafeArray<UInt8> oPad;
 			UOSInt padSize;
 
 		public:

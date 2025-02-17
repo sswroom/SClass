@@ -5,7 +5,7 @@ namespace Data
 	class BinTool
 	{
 	public:
-		static Bool Equals(UInt8 *buff1, UInt8 *buff2, UOSInt len);
+		static Bool Equals(UnsafeArray<const UInt8> buff1, UnsafeArray<const UInt8> buff2, UOSInt len);
 	};
 }
 #endif

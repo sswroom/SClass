@@ -1001,6 +1001,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
     case AVCOL_SPC_YCGCO_RO:
 #endif
 	case AVCOL_SPC_NB:
+		printf("Unsuported yuv color: %d\r\n", (UInt32)data->yuvColor);
 		info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		break;
 	}
@@ -1099,6 +1100,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 #elif VERSION_FROM(57, 24, 1)
 	case AVCOL_TRC_SMPTEST428_1:
 #endif
+		printf("Unsupported Transfer function: %d\r\n", (UInt32)data->colorTrc);
 	case AVCOL_TRC_NB:
 		info->color.rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
 		info->color.gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
@@ -1150,6 +1152,7 @@ Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutP
 #if VERSION_FROM(57, 64, 102) //2016-10-21
 	case AVCOL_PRI_JEDEC_P22:
 #endif
+		printf("Unsupported color primaries: %d\r\n", (UInt32)data->colorPrimaries);
 	default:
 		info->color.primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
 		break;

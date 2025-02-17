@@ -7,15 +7,15 @@ Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::HashAlgorithm> hash, UnsafeArray<const
 {
 	this->hashInner = hash->Clone();
 	this->hashOuter = hash->Clone();
-	this->key = MemAlloc(UInt8, keySize);
+	this->key = MemAllocArr(UInt8, keySize);
 	this->keySize = keySize;
-	MemCopyNO(this->key, key.Ptr(), keySize);
+	MemCopyNO(this->key.Ptr(), key.Ptr(), keySize);
 
 	this->padSize = hash->GetBlockSize();
 	if (this->padSize < keySize)
 		this->padSize = keySize;
-	this->iPad = MemAlloc(UInt8, this->padSize);
-	this->oPad = MemAlloc(UInt8, this->padSize);
+	this->iPad = MemAllocArr(UInt8, this->padSize);
+	this->oPad = MemAllocArr(UInt8, this->padSize);
 	UOSInt i = this->padSize;
 	while (i-- > 0)
 	{
@@ -38,9 +38,9 @@ Crypto::Hash::HMAC::~HMAC()
 {
 	this->hashInner.Delete();
 	this->hashOuter.Delete();
-	MemFree(this->key);
-	MemFree(this->iPad);
-	MemFree(this->oPad);
+	MemFreeArr(this->key);
+	MemFreeArr(this->iPad);
+	MemFreeArr(this->oPad);
 }
 
 UnsafeArray<UTF8Char> Crypto::Hash::HMAC::GetName(UnsafeArray<UTF8Char> sbuff) const

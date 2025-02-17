@@ -21,8 +21,8 @@ namespace Data
 		virtual Single GetFloat24(UnsafeArray<const UInt8> pVal) const;
 		virtual Single GetFloat32(UnsafeArray<const UInt8> pVal) const;
 		virtual Double GetFloat64(UnsafeArray<const UInt8> pVal) const;
-		virtual void SetInt32(UInt8 *pVal, Int32 v) const;
-		virtual void SetInt16(UInt8 *pVal, Int16 v) const;
+		virtual void SetInt32(UnsafeArray<UInt8> pVal, Int32 v) const;
+		virtual void SetInt16(UnsafeArray<UInt8> pVal, Int16 v) const;
 	};
 }
 #endif

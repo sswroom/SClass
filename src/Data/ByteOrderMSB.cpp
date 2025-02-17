@@ -69,12 +69,12 @@ Double Data::ByteOrderMSB::GetFloat64(UnsafeArray<const UInt8> pVal) const
 	return ReadMDouble(pVal.Ptr());
 }
 
-void Data::ByteOrderMSB::SetInt32(UInt8 *pVal, Int32 v) const
+void Data::ByteOrderMSB::SetInt32(UnsafeArray<UInt8> pVal, Int32 v) const
 {
-	WriteMInt32(pVal, v);
+	WriteMInt32(&pVal[0], v);
 }
 
-void Data::ByteOrderMSB::SetInt16(UInt8 *pVal, Int16 v) const
+void Data::ByteOrderMSB::SetInt16(UnsafeArray<UInt8> pVal, Int16 v) const
 {
-	WriteMInt16(pVal, v);
+	WriteMInt16(&pVal[0], v);
 }

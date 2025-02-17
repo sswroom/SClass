@@ -7,7 +7,7 @@ namespace Data
 	class CircularByteBuff
 	{
 	private:
-		UInt8 *buff;
+		UnsafeArray<UInt8> buff;
 		UOSInt buffSize;
 		UOSInt indexBegin;
 		UOSInt indexEnd;
@@ -18,7 +18,7 @@ namespace Data
 
 		void Clear();
 		void AppendBytes(UnsafeArray<const UInt8> buff, UOSInt buffSize);
-		UOSInt GetBytes(UInt8 *buff);
+		UOSInt GetBytes(UnsafeArray<UInt8> buff);
 		void ToString(NN<Text::StringBuilderUTF8> sb);
 	};
 }

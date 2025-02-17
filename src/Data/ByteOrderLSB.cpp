@@ -69,12 +69,12 @@ Double Data::ByteOrderLSB::GetFloat64(UnsafeArray<const UInt8> pVal) const
 	return ReadDouble(pVal.Ptr());
 }
 
-void Data::ByteOrderLSB::SetInt32(UInt8 *pVal, Int32 v) const
+void Data::ByteOrderLSB::SetInt32(UnsafeArray<UInt8> pVal, Int32 v) const
 {
-	WriteInt32(pVal, v);
+	WriteInt32(&pVal[0], v);
 }
 
-void Data::ByteOrderLSB::SetInt16(UInt8 *pVal, Int16 v) const
+void Data::ByteOrderLSB::SetInt16(UnsafeArray<UInt8> pVal, Int16 v) const
 {
-	WriteInt16(pVal, v);
+	WriteInt16(&pVal[0], v);
 }

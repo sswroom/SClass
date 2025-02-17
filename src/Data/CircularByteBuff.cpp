@@ -4,14 +4,14 @@
 Data::CircularByteBuff::CircularByteBuff(UOSInt maxSize)
 {
 	this->buffSize = maxSize + 1;
-	this->buff = MemAlloc(UInt8, this->buffSize);
+	this->buff = MemAllocArr(UInt8, this->buffSize);
 	this->indexBegin = 0;
 	this->indexEnd = 0;
 }
 
 Data::CircularByteBuff::~CircularByteBuff()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 void Data::CircularByteBuff::Clear()
@@ -24,7 +24,7 @@ void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt b
 {
 	if (buffSize >= this->buffSize - 1)
 	{
-		MemCopyNO(this->buff, &buff[buffSize - this->buffSize + 1], this->buffSize - 1);
+		MemCopyNO(this->buff.Ptr(), &buff[buffSize - this->buffSize + 1], this->buffSize - 1);
 		this->indexBegin = 0;
 		this->indexEnd = this->buffSize - 1;
 	}
@@ -43,7 +43,7 @@ void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt b
 			this->indexEnd = 0;
 			if (buffSize > 0)
 			{
-				MemCopyNO(this->buff, buff.Ptr(), buffSize);
+				MemCopyNO(this->buff.Ptr(), buff.Ptr(), buffSize);
 				this->indexEnd = buffSize;
 			}
 			if (this->indexEnd >= this->indexBegin)
@@ -71,7 +71,7 @@ void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt b
 			this->indexEnd = 0;
 			if (buffSize > 0)
 			{
-				MemCopyNO(this->buff, buff.Ptr(), buffSize);
+				MemCopyNO(this->buff.Ptr(), buff.Ptr(), buffSize);
 				this->indexEnd = buffSize;
 			}
 		}
@@ -83,19 +83,19 @@ void Data::CircularByteBuff::AppendBytes(UnsafeArray<const UInt8> buff, UOSInt b
 	}
 }
 
-UOSInt Data::CircularByteBuff::GetBytes(UInt8 *buff)
+UOSInt Data::CircularByteBuff::GetBytes(UnsafeArray<UInt8> buff)
 {
 	if (this->indexBegin <= this->indexEnd)
 	{
-		MemCopyNO(buff, &this->buff[this->indexBegin], this->indexEnd - this->indexBegin);
+		MemCopyNO(buff.Ptr(), &this->buff[this->indexBegin], this->indexEnd - this->indexBegin);
 		return this->indexEnd - this->indexBegin;
 	}
 	else
 	{
-		MemCopyNO(buff, &this->buff[this->indexBegin], this->buffSize - this->indexBegin);
+		MemCopyNO(buff.Ptr(), &this->buff[this->indexBegin], this->buffSize - this->indexBegin);
 		if (this->indexEnd > 0)
 		{
-			MemCopyNO(&buff[this->buffSize - this->indexBegin], this->buff, this->indexEnd);
+			MemCopyNO(&buff[this->buffSize - this->indexBegin], this->buff.Ptr(), this->indexEnd);
 		}
 		return this->indexEnd + this->buffSize - this->indexBegin;
 	}
