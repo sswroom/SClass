@@ -1247,7 +1247,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(item->GetItemObj().GetNN<UI::GUIMapTreeView::ItemIndex>()->item).SetTo(litem))
 			{
 				NN<Map::MapDrawLayer> lyr = litem->layer;
-				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
+				Math::RectAreaDbl bounds;
+				if (!lyr->GetBounds(bounds)) bounds = Math::RectAreaDbl(0, 0, 0, 0);
+				AVIRGISCSysForm frm(0, this->ui, this->core, bounds, lyr->GetCoordinateSystem());
 				frm.SetText(CSTR("Assign Coordinate System"));
 				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetCSys().SetTo(csys))
 				{
@@ -1268,7 +1270,9 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_VECTOR_LAYER)
 				{
 					NN<Map::VectorLayer> vec = NN<Map::VectorLayer>::ConvertFrom(lyr);
-					AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
+					Math::RectAreaDbl bounds;
+					if (!lyr->GetBounds(bounds)) bounds = Math::RectAreaDbl(0, 0, 0, 0);
+					AVIRGISCSysForm frm(0, this->ui, this->core, bounds, lyr->GetCoordinateSystem());
 					frm.SetText(CSTR("Convert Coordinate System"));
 					if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetCSys().SetTo(csys))
 					{

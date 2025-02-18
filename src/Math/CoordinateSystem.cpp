@@ -339,6 +339,8 @@ Text::CStringNN Math::CoordinateSystem::CoordinateSystemTypeGetName(CoordinateSy
 		return CSTR("Point Mapping");
 	case CoordinateSystemType::GausskrugerProjected:
 		return CSTR("Gauss-Kruger");
+	case CoordinateSystemType::CassiniSoldner:
+		return CSTR("Cassini_Soldner");
 	default:
 		return CSTR("Unknown");
 	}

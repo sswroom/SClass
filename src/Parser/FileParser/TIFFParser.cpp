@@ -1532,7 +1532,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			NN<Math::CoordinateSystem> csys;
 			if (srid == 0)
 			{
-				csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+				csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+				srid = csys->GetSRID();
 			}
 			else
 			{

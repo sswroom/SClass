@@ -28,7 +28,8 @@ namespace Math
 			MercatorProjected,
 			Mercator1SPProjected,
 			PointMapping,
-			GausskrugerProjected
+			GausskrugerProjected,
+			CassiniSoldner
 		};
 
 		typedef enum
@@ -39,6 +40,7 @@ namespace Math
 		typedef enum
 		{
 			UT_METRE = 9001,
+			UT_CLARKE_FOOT = 9005,
 			UT_DEGREE = 9122
 		} UnitType;
 

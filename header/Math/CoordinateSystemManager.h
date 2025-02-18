@@ -24,6 +24,7 @@ namespace Math
 		typedef enum
 		{
 			PCST_HK80,
+			PCST_HK63,
 			PCST_UK_NATIONAL_GRID,
 			PCST_IRISH_NATIONAL_GRID,
 			PCST_MACAU_GRID,
@@ -140,6 +141,7 @@ namespace Math
 			Double centralMeridian;
 			Double latitudeOfOrigin;
 			Double scaleFactor;
+			CoordinateSystem::UnitType unitType;
 			const Char *geoName;
 		} ProjectedCSysInfo;
 

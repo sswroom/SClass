@@ -174,7 +174,17 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), Math::CoordinateSystemManager::CreateWGS84Csys(), 0));
+			NN<Math::CoordinateSystem> csys;
+			if (srid == 0)
+			{
+				csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+				srid = csys->GetSRID();
+			}
+			else
+			{
+				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
+			}
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));
@@ -245,7 +255,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 					Map::VectorLayer *lyr;
 					NN<Math::Geometry::VectorImage> vimg;
 					NN<Media::SharedImage> simg;
-					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord, yCoord));
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
 					Data::ArrayListNN<Media::StaticImage> prevList;

@@ -49,8 +49,11 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(AnyType userObj)
 	me->radProj->Select();
 }
 
-SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Math::CoordinateSystem> csys) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::RectAreaDbl bounds, Optional<Math::CoordinateSystem> csys) : UI::GUIForm(parent, 640, 480, ui)
 {
+	UTF8Char sbuff[32];
+	UnsafeArray<UTF8Char> sptr;
+
 	this->SetText(CSTR("Coordinate System"));
 	this->SetFont(0, 0, 8.25, false);
 
@@ -59,6 +62,31 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 	this->oriCSys = csys;
 	this->outCSys = 0;
 
+	this->pnlBounds = ui->NewPanel(*this);
+	this->pnlBounds->SetRect(0, 0, 100, 51, false);
+	this->pnlBounds->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblBounds = ui->NewLabel(this->pnlBounds, CSTR("Bounds"));
+	this->lblBounds->SetRect(4, 4, 100, 23, false);
+	this->lblMin = ui->NewLabel(this->pnlBounds, CSTR("Min"));
+	this->lblMin->SetRect(104, 4, 100, 23, false);
+	sptr = Text::StrDouble(sbuff, bounds.min.x);
+	this->txtMinX = ui->NewTextBox(this->pnlBounds, CSTRP(sbuff, sptr));
+	this->txtMinX->SetRect(204, 4, 100, 23, false);
+	this->txtMinX->SetReadOnly(true);
+	sptr = Text::StrDouble(sbuff, bounds.min.y);
+	this->txtMinY = ui->NewTextBox(this->pnlBounds, CSTRP(sbuff, sptr));
+	this->txtMinY->SetRect(304, 4, 100, 23, false);
+	this->txtMinY->SetReadOnly(true);
+	this->lblMax = ui->NewLabel(this->pnlBounds, CSTR("Max"));
+	this->lblMax->SetRect(104, 28, 100, 23, false);
+	sptr = Text::StrDouble(sbuff, bounds.max.x);
+	this->txtMaxX = ui->NewTextBox(this->pnlBounds, CSTRP(sbuff, sptr));
+	this->txtMaxX->SetRect(204, 28, 100, 23, false);
+	this->txtMaxX->SetReadOnly(true);
+	sptr = Text::StrDouble(sbuff, bounds.max.y);
+	this->txtMaxY = ui->NewTextBox(this->pnlBounds, CSTRP(sbuff, sptr));
+	this->txtMaxY->SetRect(304, 28, 100, 23, false);
+	this->txtMaxY->SetReadOnly(true);
 	this->txtCurrCSys = ui->NewTextBox(*this, CSTR(""), true);
 	this->txtCurrCSys->SetRect(0, 0, 100, 240, false);
 	this->txtCurrCSys->SetDockType(UI::GUIControl::DOCK_TOP);

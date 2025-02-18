@@ -21,6 +21,14 @@ namespace SSWR
 			Optional<Math::CoordinateSystem> oriCSys;
 			Optional<Math::CoordinateSystem> outCSys;
 
+			NN<UI::GUIPanel> pnlBounds;
+			NN<UI::GUILabel> lblBounds;
+			NN<UI::GUILabel> lblMin;
+			NN<UI::GUITextBox> txtMinX;
+			NN<UI::GUITextBox> txtMinY;
+			NN<UI::GUILabel> lblMax;
+			NN<UI::GUITextBox> txtMaxX;
+			NN<UI::GUITextBox> txtMaxY;
 			NN<UI::GUITextBox> txtCurrCSys;
 			NN<UI::GUIPanel> pnlSel;
 			NN<UI::GUIRadioButton> radGeo;
@@ -36,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnGeoSelChg(AnyType userObj);
 			static void __stdcall OnProjSelChg(AnyType userObj);
 		public:
-			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Math::CoordinateSystem> csys);
+			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::RectAreaDbl bounds, Optional<Math::CoordinateSystem> csys);
 			virtual ~AVIRGISCSysForm();
 
 			virtual void OnMonitorChanged();

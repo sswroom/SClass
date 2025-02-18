@@ -39,6 +39,11 @@ UnsafeArray<UTF8Char> Math::SRESRIWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buf
 		buff = WriteNextLine(buff, lev, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"Degree\",0.017453292519943295]"));
 		return buff;
+	case Math::CoordinateSystem::UT_CLARKE_FOOT:
+		*buff++ = ',';
+		buff = WriteNextLine(buff, lev, lbt);
+		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"Clarke's foot\",0.3047972654]"));
+		return buff;
 	case Math::CoordinateSystem::UT_METRE:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);

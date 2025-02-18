@@ -44,15 +44,18 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 				{
 					if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
 					{
-						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D)
+						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POINT)
 						{
-							layerType = Map::DRAW_LAYER_POINT3D;
 							while (!reader->NextElementName().IsNull())
 							{
 								if (ParseGeometry(reader, env).SetTo(newVec))
 								{
 									vec.Delete();
 									vec = newVec;
+									if (newVec->HasZ())
+										layerType = Map::DRAW_LAYER_POINT3D;
+									else
+										layerType = Map::DRAW_LAYER_POINT;
 								}
 							}
 						}
@@ -78,15 +81,18 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 					}
 					else if (nodeText->Equals(UTF8STRC("gml:curveProperty")))
 					{
-						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D)
+						if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYLINE)
 						{
-							layerType = Map::DRAW_LAYER_POLYLINE3D;
 							while (!reader->NextElementName().IsNull())
 							{
 								if (ParseGeometry(reader, env).SetTo(newVec))
 								{
 									vec.Delete();
 									vec = newVec;
+									if (newVec->HasZ())
+										layerType = Map::DRAW_LAYER_POLYLINE3D;
+									else
+										layerType = Map::DRAW_LAYER_POLYLINE;
 								}
 							}
 						}
@@ -228,7 +234,6 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 		Double y;
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
-		Data::ArrayListDbl zPts;
 		Math::Geometry::Point *pt;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
@@ -237,45 +242,82 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 			{
 				sb.ClearStr();
 				reader->ReadNodeText(sb);
-				sarr[3] = sb.v;
-				while (true)
+				if (dimension == 2)
 				{
-					i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-					if (i < 2)
+					sarr[2] = sb.v;
+					while (true)
 					{
-						break;
+						i = Text::StrSplit(sarr, 3, sarr[2], ' ');
+						if (i < 2)
+						{
+							break;
+						}
+						x = Text::StrToDoubleOrNAN(sarr[1]);
+						y = Text::StrToDoubleOrNAN(sarr[0]);
+						if (x > -90 && x < 90 && ((y >= 90 && y < 180) || (y > -180 && y <= -90)))
+						{
+							xPts.Add(y);
+							yPts.Add(x);
+						}
+						else
+						{
+							xPts.Add(x);
+							yPts.Add(y);
+						}
+						if (i < 3)
+							break;
 					}
-					x = Text::StrToDoubleOrNAN(sarr[1]);
-					y = Text::StrToDoubleOrNAN(sarr[0]);
-					if (x > -90 && x < 90 && ((y >= 90 && y < 180) || (y > -180 && y <= -90)))
-					{
-						xPts.Add(y);
-						yPts.Add(x);
-					}
-					else
-					{
-						xPts.Add(x);
-						yPts.Add(y);
-					}
-					if (i < 3)
-						break;
-					zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
-					if (i < 4)
-						break;
-				}
 
-				if (xPts.GetCount() == 1)
-				{
-					if (zPts.GetCount() == 1)
-					{
-						NEW_CLASS(pt, Math::Geometry::PointZ(env->srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
-					}
-					else
+					if (xPts.GetCount() == 1)
 					{
 						NEW_CLASS(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
+						SDEL_CLASS(vec);
+						vec = pt;
 					}
-					SDEL_CLASS(vec);
-					vec = pt;
+				}
+				else
+				{
+					Data::ArrayListDbl zPts;
+					sarr[3] = sb.v;
+					while (true)
+					{
+						i = Text::StrSplit(sarr, 4, sarr[3], ' ');
+						if (i < 2)
+						{
+							break;
+						}
+						x = Text::StrToDoubleOrNAN(sarr[1]);
+						y = Text::StrToDoubleOrNAN(sarr[0]);
+						if (x > -90 && x < 90 && ((y >= 90 && y < 180) || (y > -180 && y <= -90)))
+						{
+							xPts.Add(y);
+							yPts.Add(x);
+						}
+						else
+						{
+							xPts.Add(x);
+							yPts.Add(y);
+						}
+						if (i < 3)
+							break;
+						zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
+						if (i < 4)
+							break;
+					}
+
+					if (xPts.GetCount() == 1)
+					{
+						if (zPts.GetCount() == 1)
+						{
+							NEW_CLASS(pt, Math::Geometry::PointZ(env->srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
+						}
+						else
+						{
+							NEW_CLASS(pt, Math::Geometry::Point(env->srid, xPts.GetItem(0), yPts.GetItem(0)));
+						}
+						SDEL_CLASS(vec);
+						vec = pt;
+					}
 				}
 			}
 			else
@@ -316,31 +358,62 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 											{
 												sb.ClearStr();
 												reader->ReadNodeText(sb);
-												sarr[3] = sb.v;
-												while (true)
+												if (dimension == 2)
 												{
-													i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-													if (i < 3)
+													sarr[2] = sb.v;
+													while (true)
 													{
-														break;
+														i = Text::StrSplit(sarr, 3, sarr[2], ' ');
+														if (i < 2)
+														{
+															break;
+														}
+														xPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
+														yPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
+														if (i < 3)
+															break;
 													}
-													xPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
-													yPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
-													zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
-													if (i < 4)
-														break;
-												}
 
-												if (xPts.GetCount() > 0)
-												{
-													NEW_CLASSNN(lr, Math::Geometry::LinearRing(env->srid, xPts.GetCount(), false, false));
-													ptList = lr->GetPointList(i);
-													while (i-- > 0)
+													if (xPts.GetCount() > 0)
 													{
-														ptList[i].x = xPts.GetItem(i);
-														ptList[i].y = yPts.GetItem(i);
+														NEW_CLASSNN(lr, Math::Geometry::LinearRing(env->srid, xPts.GetCount(), false, false));
+														ptList = lr->GetPointList(i);
+														while (i-- > 0)
+														{
+															ptList[i].x = xPts.GetItem(i);
+															ptList[i].y = yPts.GetItem(i);
+														}
+														pg->AddGeometry(lr);
 													}
-													pg->AddGeometry(lr);
+												}
+												else
+												{
+													sarr[3] = sb.v;
+													while (true)
+													{
+														i = Text::StrSplit(sarr, 4, sarr[3], ' ');
+														if (i < 3)
+														{
+															break;
+														}
+														xPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
+														yPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
+														zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
+														if (i < 4)
+															break;
+													}
+
+													if (xPts.GetCount() > 0)
+													{
+														NEW_CLASSNN(lr, Math::Geometry::LinearRing(env->srid, xPts.GetCount(), false, false));
+														ptList = lr->GetPointList(i);
+														while (i-- > 0)
+														{
+															ptList[i].x = xPts.GetItem(i);
+															ptList[i].y = yPts.GetItem(i);
+														}
+														pg->AddGeometry(lr);
+													}
 												}
 											}
 											else
@@ -386,10 +459,8 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 	{
 		Data::ArrayListDbl xPts;
 		Data::ArrayListDbl yPts;
-		Data::ArrayListDbl zPts;
 		Math::Geometry::LineString *pl;
 		UnsafeArray<Math::Coord2DDbl> ptList;
-		UnsafeArray<Double> hList;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
 		{
@@ -397,39 +468,72 @@ Optional<Math::Geometry::Vector2D> Map::GMLXML::ParseGeometry(NN<Text::XMLReader
 			{
 				sb.ClearStr();
 				reader->ReadNodeText(sb);
-				sarr[3] = sb.v;
-				while (true)
+				if (dimension == 2)
 				{
-					i = Text::StrSplit(sarr, 4, sarr[3], ' ');
-					if (i < 3)
+					sarr[2] = sb.v;
+					while (true)
 					{
-						break;
+						i = Text::StrSplit(sarr, 3, sarr[2], ' ');
+						if (i < 2)
+						{
+							break;
+						}
+						xPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
+						yPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
+						if (i < 3)
+							break;
 					}
-					xPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
-					yPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
-					zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
-					if (i < 4)
-						break;
-				}
 
-				if (xPts.GetCount() > 0)
-				{
-					NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
-					ptList = pl->GetPointList(i);
-					if (pl->GetZList(i).SetTo(hList))
+					if (xPts.GetCount() > 0)
 					{
+						NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), false, false));
+						ptList = pl->GetPointList(i);
 						while (i-- > 0)
 						{
-							hList[i] = zPts.GetItem(i);
-							ptList[i].x = xPts.GetItem(i);
-							ptList[i].y = yPts.GetItem(i);
+							ptList[i] = Math::Coord2DDbl(yPts.GetItem(i), xPts.GetItem(i));
 						}
 						SDEL_CLASS(vec);
 						vec = pl;
 					}
-					else
+				}
+				else
+				{
+					UnsafeArray<Double> hList;
+					Data::ArrayListDbl zPts;
+					sarr[3] = sb.v;
+					while (true)
 					{
-						DEL_CLASS(pl);
+						i = Text::StrSplit(sarr, 4, sarr[3], ' ');
+						if (i < 3)
+						{
+							break;
+						}
+						xPts.Add(Text::StrToDoubleOrNAN(sarr[0]));
+						yPts.Add(Text::StrToDoubleOrNAN(sarr[1]));
+						zPts.Add(Text::StrToDoubleOrNAN(sarr[2]));
+						if (i < 4)
+							break;
+					}
+
+					if (xPts.GetCount() > 0)
+					{
+						NEW_CLASS(pl, Math::Geometry::LineString(env->srid, xPts.GetCount(), true, false));
+						ptList = pl->GetPointList(i);
+						if (pl->GetZList(i).SetTo(hList))
+						{
+							while (i-- > 0)
+							{
+								hList[i] = zPts.GetItem(i);
+								ptList[i].y = xPts.GetItem(i);
+								ptList[i].x = yPts.GetItem(i);
+							}
+							SDEL_CLASS(vec);
+							vec = pl;
+						}
+						else
+						{
+							DEL_CLASS(pl);
+						}
 					}
 				}
 			}

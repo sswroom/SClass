@@ -52,6 +52,14 @@ UnsafeArray<UTF8Char> Math::SROGCWKTWriter::WriteUnit(UnsafeArray<UTF8Char> buff
 		*buff++ = ']';
 		*buff = 0;
 		return buff;
+	case Math::CoordinateSystem::UT_CLARKE_FOOT:
+		*buff++ = ',';
+		buff = WriteNextLine(buff, lev, lbt);
+		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"Clarke's foot\",0.3047972654"));
+		buff = this->WriteSRID(buff, unit, lev + 1, lbt);
+		*buff++ = ']';
+		*buff = 0;
+		return buff;
 	case Math::CoordinateSystem::UT_METRE:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
