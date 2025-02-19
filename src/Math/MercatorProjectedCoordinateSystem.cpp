@@ -112,21 +112,3 @@ Math::Coord2DDbl Math::MercatorProjectedCoordinateSystem::FromGeographicCoordina
 	return Math::Coord2DDbl(this->falseEasting + ser4 * dlon + ser5 * dlon * dlon2 + ser6 * dlon * dlon4,
 		ser1 + ser2 * dlon2 + ser3 * dlon4 + ser3a * dlon4 * dlon2);
 }
-
-Double Math::MercatorProjectedCoordinateSystem::CalcM(Double rLat) const
-{
-	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
-	Double a = ellipsoid->GetSemiMajorAxis();
-	Double b = ellipsoid->GetSemiMinorAxis();
-	Double n = (a - b) / (a + b);
-	Double n2 = n * n;
-	Double n3 = n2 * n;
-	Double rLat0 = this->rlatitudeOfOrigin;
-	Double m;
-	m = (1 + n + 1.25 * n2 + 1.25 * n3) * (rLat - rLat0);
-	m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math_Sin(rLat - rLat0) * Math_Cos(rLat + rLat0);
-	m = m + (1.875 * n2 + 1.875 * n3) * Math_Sin(2 * (rLat - rLat0)) * Math_Cos(2 * (rLat + rLat0));
-	m = m - 35 / 24 * n3 * Math_Sin(3 * (rLat - rLat0)) * Math_Cos(3 * (rLat + rLat0));
-	m = m * b * this->scaleFactor;
-	return m;
-}

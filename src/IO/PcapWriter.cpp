@@ -2,7 +2,7 @@
 #include "IO/PcapWriter.h"
 #include "Sync/MutexUsage.h"
 
-IO::PcapWriter::PcapWriter(Text::CStringNN fileName, Int32 linkType) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal)
+IO::PcapWriter::PcapWriter(Text::CStringNN fileName, IO::PacketAnalyse::LinkType linkType) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal)
 {
 	UInt8 buff[24];
 	WriteUInt32(&buff[0], 0xa1b2c3d4); //magic number
@@ -11,7 +11,7 @@ IO::PcapWriter::PcapWriter(Text::CStringNN fileName, Int32 linkType) : fs(fileNa
 	WriteInt32(&buff[8], 0); //thiszone
 	WriteInt32(&buff[12], 0); //sigfigs
 	WriteInt32(&buff[16], 65536); //snaplen
-	WriteInt32(&buff[20], linkType); //network
+	WriteInt32(&buff[20], (Int32)linkType); //network
 	this->fs.Write(Data::ByteArrayR(buff, 24));
 }
 

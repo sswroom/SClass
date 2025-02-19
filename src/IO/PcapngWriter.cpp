@@ -4,7 +4,7 @@
 #include "IO/SystemInfo.h"
 #include "Sync/MutexUsage.h"
 
-IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::CStringNN appName) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal)
+IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, IO::PacketAnalyse::LinkType linkType, Text::CStringNN appName) : fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal)
 {
 	UInt8 buff[256];
 	IO::SystemInfo sysInfo;
@@ -77,7 +77,7 @@ IO::PcapngWriter::PcapngWriter(Text::CStringNN fileName, Int32 linkType, Text::C
 
 	WriteInt32(&buff[0], 1); //Block Type = IDB
 	WriteInt32(&buff[4], 0); //Block Size
-	WriteInt32(&buff[8], linkType); //Link Type + Reserved
+	WriteInt32(&buff[8], (Int32)linkType); //Link Type + Reserved
 	WriteInt32(&buff[12], 65536); //snap len
 	WriteInt16(&buff[16], 2);
 	WriteInt16(&buff[18], 3);

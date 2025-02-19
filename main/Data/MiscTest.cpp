@@ -16,6 +16,7 @@
 #include "Manage/Process.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
 #include "Map/ESRI/FileGDBDir.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/GeometryTool.h"
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
@@ -893,9 +894,23 @@ Int32 BezierCurveTest()
 	return 0;
 }
 
+Int32 CSysTest()
+{
+	NN<Math::CoordinateSystem> csys;
+	if (Math::CoordinateSystemManager::SRCreateCSys(3407).SetTo(csys))
+	{
+		NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
+		Math::Coord2DDbl newPos = Math::CoordinateSystem::Convert(csys, wgs84, Math::Coord2DDbl(116194.35, 72762.37));
+		printf("%lf, %lf\r\n", newPos.x, newPos.y);
+		wgs84.Delete();
+		csys.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 21;
+	UOSInt testType = 23;
 	switch (testType)
 	{
 	case 0:
@@ -944,6 +959,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return FGDBTest();
 	case 22:
 		return BezierCurveTest();
+	case 23:
+		return CSysTest();
 	default:
 		return 0;
 	}

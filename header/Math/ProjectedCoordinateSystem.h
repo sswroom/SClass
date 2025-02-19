@@ -26,6 +26,8 @@ namespace Math
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const;
 		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		Math::Unit::Distance::DistanceUnit GetDistanceUnit() const;
+		Double GetDistanceRatio() const;
 
 		NN<Math::GeographicCoordinateSystem> GetGeographicCoordinateSystem() const { return this->gcs; }
 		virtual Math::Coord2DDbl ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const = 0;
@@ -33,6 +35,7 @@ namespace Math
 		Math::Coord2DDbl ToGeographicCoordinateDeg(Math::Coord2DDbl projPos) const { return ToGeographicCoordinateRad(projPos) * (180 / Math::PI); }
 		Math::Coord2DDbl FromGeographicCoordinateDeg(Math::Coord2DDbl geoPos) const { return FromGeographicCoordinateRad(geoPos * (Math::PI / 180.0)); }
 		Bool SameProjection(NN<const Math::ProjectedCoordinateSystem> csys) const;
+		Double CalcM(Double rLat) const;
 
 		Double GetLatitudeOfOriginDegree() const { return this->rlatitudeOfOrigin * 180 / Math::PI; }
 		Double GetCentralMeridianDegree() const { return this->rcentralMeridian * 180 / Math::PI; }

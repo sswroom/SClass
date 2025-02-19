@@ -16,7 +16,6 @@ namespace Math
 
 		virtual Math::Coord2DDbl ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const;
 		virtual Math::Coord2DDbl FromGeographicCoordinateRad(Math::Coord2DDbl geoPos) const;
-		Double CalcM(Double rLat) const;
 	};
 }
 #endif

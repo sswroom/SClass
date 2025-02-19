@@ -147,13 +147,13 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj
 		
 		if (me->clif->GetSocketFactory()->CreateRAWSocket().SetTo(soc))
 		{
-			me->linkType = 1;
+			me->linkType = IO::PacketAnalyse::LinkType::Ethernet;
 			NEW_CLASSOPT(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
 		else if (me->clif->GetSocketFactory()->CreateRAWIPv4Socket(ip).SetTo(soc))
 		{
-			me->linkType = 101;
+			me->linkType = IO::PacketAnalyse::LinkType::Linux;
 			NEW_CLASSOPT(me->socMon, Net::SocketMonitor(me->clif->GetSocketFactory(), soc, OnIPv4Data, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
@@ -1296,7 +1296,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->adapterChanged = false;
 	this->dataUpdated = true;
 	this->plogWriter = 0;
-	this->linkType = 1;
+	this->linkType = IO::PacketAnalyse::LinkType::Ethernet;
 	if (!analyzer.SetTo(this->analyzer))
 	{
 		NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));

@@ -40,9 +40,10 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1
 	Math::Coord2DDbl diff = pos2 - pos1;
 	diff = diff * diff;
 	Double d = Math_Sqrt(diff.x + diff.y);
-	if (unit != Math::Unit::Distance::DU_METER)
+	Math::Unit::Distance::DistanceUnit thisUnit = this->GetDistanceUnit();
+	if (unit != thisUnit)
 	{
-		d = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, unit, d);
+		d = Math::Unit::Distance::Convert(thisUnit, unit, d);
 	}
 	return d;
 }
@@ -133,6 +134,33 @@ void Math::ProjectedCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) c
 	this->gcs->ToString(sb);
 }
 
+Math::Unit::Distance::DistanceUnit Math::ProjectedCoordinateSystem::GetDistanceUnit() const
+{
+	switch (this->unit)
+	{
+		default:
+		case UT_DEGREE:
+		case UT_METRE:
+			return Math::Unit::Distance::DU_METER;
+		case UT_CLARKE_FOOT:
+			return Math::Unit::Distance::DU_CLARKE_FOOT;
+	}
+}
+
+Double Math::ProjectedCoordinateSystem::GetDistanceRatio() const
+{
+	switch (this->unit)
+	{
+		case UT_DEGREE:
+			return 0.0174532925199433;
+		default:
+		case UT_METRE:
+			return 1;
+		case UT_CLARKE_FOOT:
+			return 0.3047972654;
+	}
+}
+
 Bool Math::ProjectedCoordinateSystem::SameProjection(NN<const Math::ProjectedCoordinateSystem> csys) const
 {
 	if (this->falseEasting != csys->falseEasting)
@@ -146,4 +174,22 @@ Bool Math::ProjectedCoordinateSystem::SameProjection(NN<const Math::ProjectedCoo
 	if (this->scaleFactor != csys->scaleFactor)
 		return false;
 	return this->gcs->Equals(csys->gcs);
+}
+
+Double Math::ProjectedCoordinateSystem::CalcM(Double rLat) const
+{
+	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
+	Double a = ellipsoid->GetSemiMajorAxis();
+	Double b = ellipsoid->GetSemiMinorAxis();
+	Double n = (a - b) / (a + b);
+	Double n2 = n * n;
+	Double n3 = n2 * n;
+	Double rLat0 = this->rlatitudeOfOrigin;
+	Double m;
+	m = (1 + n + 1.25 * n2 + 1.25 * n3) * (rLat - rLat0);
+	m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math_Sin(rLat - rLat0) * Math_Cos(rLat + rLat0);
+	m = m + (1.875 * n2 + 1.875 * n3) * Math_Sin(2 * (rLat - rLat0)) * Math_Cos(2 * (rLat + rLat0));
+	m = m - 35 / 24 * n3 * Math_Sin(3 * (rLat - rLat0)) * Math_Cos(3 * (rLat + rLat0));
+	m = m * b * this->scaleFactor;
+	return m;
 }

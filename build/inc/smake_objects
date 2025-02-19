@@ -846,6 +846,7 @@ OSMTileMap.o: ../../src/Map/OSM/OSMTileMap.cpp
 ArcGISCSys.o: ../../src/Math/ArcGISCSys.cpp
 ArcGISPRJParser.o: ../../src/Math/ArcGISPRJParser.cpp
 BigIntLSB.o: ../../src/Math/BigIntLSB.cpp
+CassiniSoldnerCoordinateSystem.o: ../../src/Math/CassiniSoldnerCoordinateSystem.cpp
 CesiumEntityWriter.o: ../../src/Math/CesiumEntityWriter.cpp
 ComplexNumber.o: ../../src/Math/ComplexNumber.cpp
 CoordinateSystem.o: ../../src/Math/CoordinateSystem.cpp

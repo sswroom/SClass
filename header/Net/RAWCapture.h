@@ -1,6 +1,7 @@
 #ifndef _SM_NET_RAWCAPTURE
 #define _SM_NET_RAWCAPTURE
 #include "IO/FileSelector.h"
+#include "IO/PacketAnalyse.h"
 #include "IO/PacketLogWriter.h"
 #include "IO/Stream.h"
 #include "Net/SocketMonitor.h"
@@ -49,7 +50,7 @@ namespace Net
 		UInt64 GetDataSize();
 
 		static Text::CStringNN CaptureTypeGetName(CaptureType type);
-		static Int32 CaptureTypeGetLinkType(CaptureType type);
+		static IO::PacketAnalyse::LinkType CaptureTypeGetLinkType(CaptureType type);
 		static Text::CStringNN FileFormatGetName(FileFormat format);
 		static Text::CStringNN FileFormatGetExt(FileFormat format);
 		static void AddFilters(NN<IO::FileSelector> selector);

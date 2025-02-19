@@ -7,8 +7,9 @@
 #include "Data/FastMap.h"
 #include "Data/FixedCircularBuff.h"
 #include "Data/ICaseStringMapNN.h"
-#include "IO/Writer.h"
+#include "IO/PacketAnalyse.h"
 #include "IO/ParsedObject.h"
+#include "IO/Writer.h"
 #include "Net/DNSClient.h"
 #include "Sync/MutexUsage.h"
 #include "Text/String.h"
@@ -253,7 +254,7 @@ namespace Net
 		UOSInt TCP4SYNGetList(NN<Data::ArrayList<TCP4SYNInfo>> synList, OptOut<UOSInt> thisIndex) const;
 		NN<Data::FastMapNN<UInt32, BandwidthStat>> BandwidthGetAll(NN<Sync::MutexUsage> mutUsage);
 
-		Bool PacketData(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
+		Bool PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketNull(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketEthernet(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid
 		Bool PacketLinux(UnsafeArray<const UInt8> packet, UOSInt packetSize); //Return valid

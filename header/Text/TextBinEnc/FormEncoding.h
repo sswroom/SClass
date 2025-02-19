@@ -14,6 +14,7 @@ namespace Text
 			static UInt8 URIAllow[];
 		public:
 			static void FormEncode(NN<Text::StringBuilderUTF8> sb, Text::CStringNN uri);
+			static void FormDecode(NN<Text::StringBuilderUTF8> sb, Text::CStringNN uri);
 			static UnsafeArray<UTF8Char> FormEncode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri);
 			static UnsafeArray<UTF8Char> FormDecode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri);
 			

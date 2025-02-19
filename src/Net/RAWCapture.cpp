@@ -111,20 +111,20 @@ Text::CStringNN Net::RAWCapture::CaptureTypeGetName(CaptureType type)
 	return CSTR("Unknown");
 }
 
-Int32 Net::RAWCapture::CaptureTypeGetLinkType(CaptureType type)
+IO::PacketAnalyse::LinkType Net::RAWCapture::CaptureTypeGetLinkType(CaptureType type)
 {
 	switch (type)
 	{
 	case CT_RAW:
-		return 1;
+		return IO::PacketAnalyse::LinkType::Ethernet;
 	case CT_IPV4:
-		return 101;
+		return IO::PacketAnalyse::LinkType::Linux;
 	case CT_UDPV4:
-		return 101;
+		return IO::PacketAnalyse::LinkType::Linux;
 	case CT_ICMPV4:
-		return 101;
+		return IO::PacketAnalyse::LinkType::Linux;
 	}
-	return 0;
+	return IO::PacketAnalyse::LinkType::Null;
 }
 
 Text::CStringNN Net::RAWCapture::FileFormatGetName(FileFormat format)

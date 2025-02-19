@@ -13,6 +13,7 @@
 #include "Text/EncodingFactory.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
 Net::HTTPClient::HTTPClient(NN<Net::TCPClientFactory> clif, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
@@ -236,11 +237,11 @@ void Net::HTTPClient::GetContentFileName(NN<Text::StringBuilderUTF8> sb)
 			i = hdr.IndexOf('\"');
 			if (i != INVALID_INDEX)
 			{
-				sb->AppendC(hdr.v, i);
+				Text::TextBinEnc::FormEncoding::FormDecode(sb, Text::CStringNN(hdr.v, i));
 			}
 			else
 			{
-				sb->Append(hdr);
+				Text::TextBinEnc::FormEncoding::FormDecode(sb, hdr);
 			}
 			return;
 		}
@@ -256,11 +257,11 @@ void Net::HTTPClient::GetContentFileName(NN<Text::StringBuilderUTF8> sb)
 		i = url.IndexOf('?');
 		if (i == INVALID_INDEX)
 		{
-			sb->Append(url);
+			Text::TextBinEnc::FormEncoding::FormDecode(sb, url);
 		}
 		else
 		{
-			sb->AppendC(url.v, i);
+			Text::TextBinEnc::FormEncoding::FormDecode(sb, Text::CStringNN(url.v, i));
 		}
 	}
 }

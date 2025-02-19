@@ -1931,6 +1931,7 @@ IO/OneWireGPIO.h:
 @OneWireGPIO.o
 IO/PackageFile.h:
 @PackageFile.o
+IO/PacketAnalyse.h:
 IO/PacketLogWriter.h:
 IO/ParsedObject.h:
 @ParsedObject.o
@@ -2431,6 +2432,8 @@ Math/ArcGISPRJParser.h:
 @ArcGISPRJParser.o
 Math/BigIntLSB.h:
 @BigIntLSB.o
+Math/CassiniSoldnerCoordinateSystem.h:
+@CassiniSoldnerCoordinateSystem.o
 Math/CesiumEntityWriter.h:
 @CesiumEntityWriter.o
 Math/ComplexNumber.h:

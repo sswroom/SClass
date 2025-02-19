@@ -427,16 +427,18 @@ NN<Data::FastMapNN<UInt32, Net::EthernetAnalyzer::BandwidthStat>> Net::EthernetA
 	return this->bandwidthMap;
 }
 
-Bool Net::EthernetAnalyzer::PacketData(UInt32 linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize)
+Bool Net::EthernetAnalyzer::PacketData(IO::PacketAnalyse::LinkType linkType, UnsafeArray<const UInt8> packet, UOSInt packetSize)
 {
 	switch (linkType)
 	{
-	case 0:
+	case IO::PacketAnalyse::LinkType::Null:
 		return PacketNull(packet, packetSize);
-	case 1:
+	case IO::PacketAnalyse::LinkType::Ethernet:
 		return PacketEthernet(packet, packetSize);
-	case 113:
+	case IO::PacketAnalyse::LinkType::Linux:
 		return PacketLinux(packet, packetSize);
+	case IO::PacketAnalyse::LinkType::Bluetooth:
+		break;
 	}
 	return false;
 }

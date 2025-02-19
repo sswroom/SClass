@@ -143,7 +143,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 					{
 						break;
 					}
-					analyzer->PacketData(linkType, &packetBuff[28], inclLen);
+					analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, &packetBuff[28], inclLen);
 				}
 			}
 
@@ -246,7 +246,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO:
 					{
 						break;
 					}
-					analyzer->PacketData(linkType, &packetBuff[28], inclLen);
+					analyzer->PacketData((IO::PacketAnalyse::LinkType)linkType, &packetBuff[28], inclLen);
 				}
 			}
 

@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileStream.h"
-#include "Math/Math.h"
+#include "Math/CassiniSoldnerCoordinateSystem.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/GeographicCoordinateSystem.h"
+#include "Math/Math.h"
 #include "Math/MercatorProjectedCoordinateSystem.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
 #include "Text/Encoding.h"
@@ -470,7 +471,7 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::SRCreat
 	UTF8Char sbuff[32];
 	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
-	if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::CassiniSoldner)
+	if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 	{
 		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, Text::CStringNN(projcs->projName, projcs->projNameLen), projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
@@ -478,6 +479,11 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::SRCreat
 	else if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
 		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, Text::CStringNN(projcs->projName, projcs->projNameLen), projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		return csys;
+	}
+	else if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::CassiniSoldner)
+	{
+		NEW_CLASS(csys, Math::CassiniSoldnerCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, Text::CStringNN(projcs->projName, projcs->projNameLen), projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	gcsys.Delete();
@@ -674,7 +680,7 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 	}
 	else if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::CassiniSoldner)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->projName, coord->projNameLen), coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, coord->unitType));
+		NEW_CLASS(csys, Math::CassiniSoldnerCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->projName, coord->projNameLen), coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, coord->unitType));
 	}
 	return csys;
 }

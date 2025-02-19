@@ -34,9 +34,10 @@ namespace Math
 				DU_POINT,
 				DU_PIXEL,
 				DU_TWIP,
+				DU_CLARKE_FOOT,
 
 				DU_FIRST = DU_METER,
-				DU_LAST = DU_TWIP
+				DU_LAST = DU_CLARKE_FOOT
 			} DistanceUnit;
 		public:
 			static Double GetUnitRatio(DistanceUnit unit);

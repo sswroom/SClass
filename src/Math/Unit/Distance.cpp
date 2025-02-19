@@ -52,6 +52,8 @@ Double Math::Unit::Distance::GetUnitRatio(DistanceUnit unit)
 		return 0.0254 / 96.0;
 	case DU_TWIP:
 		return 0.0254 / 1440.0;
+	case DU_CLARKE_FOOT:
+		return 0.3047972654;
 	}
 	return 1;
 }
@@ -106,6 +108,8 @@ Text::CStringNN Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
 		return CSTR("px");
 	case DU_TWIP:
 		return CSTR("twip");
+	case DU_CLARKE_FOOT:
+		return CSTR("ft(Cla)");
 	}
 	return CSTR("");
 }
@@ -160,6 +164,8 @@ Text::CStringNN Math::Unit::Distance::GetUnitName(DistanceUnit unit)
 		return CSTR("Pixel");
 	case DU_TWIP:
 		return CSTR("Twentieth of an inch point");
+	case DU_CLARKE_FOOT:
+		return CSTR("Clarke's Foot");
 	}
 	return CSTR("");
 }

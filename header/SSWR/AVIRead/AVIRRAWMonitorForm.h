@@ -57,7 +57,7 @@ namespace SSWR
 			Net::WhoisHandler whois;
 			Sync::Mutex plogMut;
 			Optional<IO::PacketLogWriter> plogWriter;
-			Int32 linkType;
+			IO::PacketAnalyse::LinkType linkType;
 			UInt32 adapterIP;
 			Bool adapterChanged;
 			Bool dataUpdated;

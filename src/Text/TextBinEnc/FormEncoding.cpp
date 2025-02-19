@@ -49,6 +49,79 @@ void Text::TextBinEnc::FormEncoding::FormEncode(NN<Text::StringBuilderUTF8> sb, 
 	}
 }
 
+void Text::TextBinEnc::FormEncoding::FormDecode(NN<Text::StringBuilderUTF8> sb, Text::CStringNN uri)
+{
+	UInt8 v;
+	UOSInt uriLen = uri.leng;
+	UnsafeArray<const UTF8Char> uriPtr = uri.v;
+	UTF8Char c;
+	while (uriLen-- > 0)
+	{
+		c = *uriPtr++;
+		if (c == '+')
+		{
+			sb->AppendUTF8Char(' ');
+		}
+		else if (c == '%')
+		{
+			if (uriLen < 2)
+			{
+				sb->AppendUTF8Char(c);
+			}
+			else
+			{
+				c = *uriPtr++;
+				uriLen--;
+				if (c >= 0x30 && c <= 0x39)
+				{
+					v = (UInt8)(c - 0x30);
+				}
+				else if (c >= 0x41 && c <= 0x46)
+				{
+					v = (UInt8)(c - 0x37);
+				}
+				else if (c >= 0x61 && c <= 0x66)
+				{
+					v = (UInt8)(c - 0x57);
+				}
+				else
+				{
+					sb->AppendUTF8Char('%');
+					sb->AppendUTF8Char(c);
+					c = 0;
+				}
+				if (c)
+				{
+					c = *uriPtr++;
+					uriLen--;
+					if (c >= 0x30 && c <= 0x39)
+					{
+						sb->AppendUTF8Char((UInt8)((v << 4) + (c - 0x30)));
+					}
+					else if (c >= 0x41 && c <= 0x46)
+					{
+						sb->AppendUTF8Char((UInt8)((v << 4) + (c - 0x37)));
+					}
+					else if (c >= 0x61 && c <= 0x66)
+					{
+						sb->AppendUTF8Char((UInt8)((v << 4) + (c - 0x57)));
+					}
+					else
+					{
+						sb->AppendUTF8Char('%');
+						sb->AppendUTF8Char(uriPtr[-2]);
+						sb->AppendUTF8Char(c);
+					}
+				}
+			}
+		}
+		else
+		{
+			sb->AppendUTF8Char(c);
+		}
+	}
+}
+
 UnsafeArray<UTF8Char> Text::TextBinEnc::FormEncoding::FormEncode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri)
 {
 	UnsafeArray<const UTF8Char> src;
