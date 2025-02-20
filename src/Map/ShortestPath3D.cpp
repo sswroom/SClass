@@ -639,6 +639,7 @@ void Map::ShortestPath3D::BuildNetwork()
 		i++;
 	}
 	this->networkCnt = networkId;
+	this->lastUpdated = Data::DateTimeUtil::GetCurrTimeMillis();
 }
 
 void Map::ShortestPath3D::GetNetworkLines(NN<Data::ArrayListNN<Math::Geometry::LineString>> lines, UInt32 networkId) const
@@ -729,6 +730,11 @@ Bool Map::ShortestPath3D::GetShortestPathDetail(NN<PathSession> sess, Math::Coor
 	sess->lastStartHalfLine2.Delete();
 	sess->lastEndHalfLine1.Delete();
 	sess->lastEndHalfLine2.Delete();
+	if (sess->lastUpdated != this->lastUpdated)
+	{
+		sess->lastUpdated = this->lastUpdated;
+		sess->areas.FreeAll(FreeAreaSess);
+	}
 	Data::ArrayListNN<PathResult> paths1;
 	Data::ArrayListNN<PathResult> paths2;
 	NN<PathResult> path1;

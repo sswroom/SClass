@@ -8,7 +8,9 @@
 #include "Data/Compress/PackBits.h"
 #include "Data/Compress/LZWDecompressor.h"
 #include "IO/FileStream.h"
+#include "IO/PackageFile.h"
 #include "IO/StreamData.h"
+#include "IO/StreamDataStream.h"
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
@@ -1551,22 +1553,70 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			return lyr;
 		}
 
-		if (fd->IsFullFile())
+		UTF8Char fileNameBuff[1024];
+		UnsafeArray<UTF8Char> sptr;
+		NN<IO::PackageFile> nnpkgFile;
+		NN<IO::StreamData> pkgFd;
+		Bool valid = false;
+		Double xPxSize = 0;
+		Double rotY = 0;
+		Double rotX = 0;
+		Double yPxSize = 0;
+		Double xCoord = 0;
+		Double yCoord = 0;
+		if (pkgFile.SetTo(nnpkgFile))
 		{
-			UTF8Char fileNameBuff[1024];
-			UnsafeArray<UTF8Char> sptr;
+			fd->GetShortName().OrEmpty().ConcatTo(fileNameBuff);
+			sptr = IO::Path::ReplaceExt(UARR(fileNameBuff), UTF8STRC("tfw"));
+			if (nnpkgFile->GetItemStmDataNew(CSTRP(fileNameBuff, sptr)).SetTo(pkgFd))
+			{
+				Text::StringBuilderUTF8 sb;
+				valid = true;
+				{
+					IO::StreamDataStream fs(pkgFd);
+					IO::StreamReader reader(fs, 0);
+					sb.ClearStr();
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), xPxSize))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), rotY))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), rotX))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), yPxSize))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), xCoord))
+					{
+						valid = false;
+					}
+					sb.ClearStr();
+					if (!reader.ReadLine(sb, 1024) || !Text::StrToDouble(sb.ToString(), yCoord))
+					{
+						valid = false;
+					}
+				}
+				pkgFd.Delete();
+			}
+		}
+		if (!valid && fd->IsFullFile())
+		{
 			fd->GetFullFileName()->ConcatTo(fileNameBuff);
 			sptr = IO::Path::ReplaceExt(UARR(fileNameBuff), UTF8STRC("tfw"));
 			if (IO::Path::GetPathType(CSTRP(fileNameBuff, sptr)) == IO::Path::PathType::File)
 			{
 				Text::StringBuilderUTF8 sb;
-				Bool valid = true;
-				Double xPxSize;
-				Double rotY;
-				Double rotX;
-				Double yPxSize;
-				Double xCoord;
-				Double yCoord;
+				valid = true;
 				{
 					IO::FileStream fs(CSTRP(fileNameBuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 					IO::StreamReader reader(fs, 0);
@@ -1601,27 +1651,26 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						valid = false;
 					}
 				}
-
-				if (valid && rotX == 0 && rotY == 0)
-				{
-					Map::VectorLayer *lyr;
-					NN<Math::Geometry::VectorImage> vimg;
-					NN<Media::SharedImage> simg;
-					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord, yCoord));
-					
-					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
-					img->To32bpp();
-					Data::ArrayListNN<Media::StaticImage> prevList;
-					Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
-					NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));
-					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
-					lyr->AddVector(vimg, (Text::String**)0);
-					simg.Delete();
-					
-					bo.Delete();
-					return lyr;
-				}
 			}
+		}
+		if (valid && rotX == 0 && rotY == 0)
+		{
+			Map::VectorLayer *lyr;
+			NN<Math::Geometry::VectorImage> vimg;
+			NN<Media::SharedImage> simg;
+			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
+			
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
+			img->To32bpp();
+			Data::ArrayListNN<Media::StaticImage> prevList;
+			Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
+			NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));
+			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
+			lyr->AddVector(vimg, (Text::String**)0);
+			simg.Delete();
+			
+			bo.Delete();
+			return lyr;
 		}
 	}
 	bo.Delete();

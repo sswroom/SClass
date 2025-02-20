@@ -283,6 +283,8 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 					if (extraHdr == 0x5455)
 					{
 						dt.SetUnixTimestamp(ReadUInt32(&buff[extraStart + 5]));
+						if (extraData >= 13) accTime = Data::Timestamp::FromEpochSec(ReadUInt32(&buff[extraStart + 9]), Data::DateTimeUtil::GetLocalTzQhr());
+						if (extraData >= 17) accTime = Data::Timestamp::FromEpochSec(ReadUInt32(&buff[extraStart + 13]), Data::DateTimeUtil::GetLocalTzQhr());
 					}
 					else if (extraHdr == 1)
 					{
@@ -564,13 +566,15 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 				}
 				else if (extraTag == 0x5455)
 				{
-					modTime = Data::Timestamp(ReadUInt32(&extraBuff[j + 5]), Data::DateTimeUtil::GetLocalTzQhr());
+					modTime = Data::Timestamp::FromEpochSec(ReadUInt32(&extraBuff[j + 5]), Data::DateTimeUtil::GetLocalTzQhr());
+					if (extraSize >= 13) accTime = Data::Timestamp::FromEpochSec(ReadUInt32(&extraBuff[j + 9]), Data::DateTimeUtil::GetLocalTzQhr());
+					if (extraSize >= 17) createTime = Data::Timestamp::FromEpochSec(ReadUInt32(&extraBuff[j + 13]), Data::DateTimeUtil::GetLocalTzQhr());
 				}
 				else if (extraTag == 10 && extraSize >= 32 && ReadUInt16(&extraBuff[j + 8]) == 1)
 				{
 					modTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 12], Data::DateTimeUtil::GetLocalTzQhr());
 					accTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
-					createTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 20], Data::DateTimeUtil::GetLocalTzQhr());
+					createTime = Data::Timestamp::FromFILETIME(&extraBuff[j + 28], Data::DateTimeUtil::GetLocalTzQhr());
 				}
 				j += 4 + (UOSInt)extraSize;
 			}

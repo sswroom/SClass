@@ -813,8 +813,13 @@ NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateCsysByCoord(Math
 	{
 		return SRCreateCSysOrDef(2326);
 	}
+	else if (coord.x >= -180 && coord.x <= 180 && coord.y >= -90 && coord.y <= 90)
+	{
+		return CreateWGS84Csys();
+	}
 	else
 	{
+		printf("CoordinateSystemManager: CreateCsysByCoord unknown position: %lf, %lf\r\n", coord.x, coord.y);
 		return CreateWGS84Csys();
 	}
 }

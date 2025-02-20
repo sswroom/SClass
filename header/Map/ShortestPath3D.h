@@ -72,6 +72,7 @@ namespace Map
 			Optional<Math::Geometry::LineString> lastEndHalfLine1;
 			Optional<Math::Geometry::LineString> lastEndHalfLine2;
 			Data::ArrayListNN<AreaSession> areas;
+			Int64 lastUpdated;
 		};
 
 	private:
@@ -109,6 +110,7 @@ namespace Map
 		UInt32 networkCnt;
 		Optional<DB::TableDef> propDef;
 		NN<NodeInfo> unknownNode;
+		Int64 lastUpdated;
 
 		static void __stdcall FreeLineInfo(NN<LineInfo> lineInfo);
 		static void __stdcall FreeAreaInfo(NN<AreaInfo> areaInfo) { areaInfo->nodes.FreeAll(FreeNodeInfo); areaInfo.Delete(); }

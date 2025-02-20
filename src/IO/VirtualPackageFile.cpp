@@ -490,7 +490,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		data = item->fullFd->GetPartialData(GetPItemDataOfst(item), item->dataLength);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->sourceName);
-		sb.AppendC(UTF8STRC("\\"));
+		sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 		sb.Append(item->name);
 		data->SetFullName(sb.ToCString());
 		return data;
@@ -573,7 +573,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 			Text::StringBuilderUTF8 sb;
 			NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
 			sb.Append(this->sourceName);
-			sb.AppendC(UTF8STRC("\\"));
+			sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
 			sb.Append(item->name);
 			fd->SetFullName(sb.ToCString());
 			return fd;

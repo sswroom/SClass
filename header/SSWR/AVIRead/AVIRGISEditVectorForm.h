@@ -1,8 +1,10 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISEDITVECTORFORM
 #define _SM_SSWR_AVIREAD_AVIRGISEDITVECTORFORM
+#include "Data/ArrayListA.h"
 #include "Map/VectorLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/IMapNavigator.h"
+#include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -20,7 +22,17 @@ namespace SSWR
 		{
 		private:
 			NN<UI::GUIListBox> lbObjects;
+			NN<UI::GUIHSplitter> hspObjects;
+			NN<UI::GUIPanel> pnlObjects;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblNPoints;
+			NN<UI::GUITextBox> txtNPoints;
+			NN<UI::GUIButton> btnEnd;
+			NN<UI::GUIButton> btnBack;
 
+			Data::ArrayListA<Math::Coord2DDbl> points;
+			UOSInt status;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
 			NN<IMapNavigator> navi;
@@ -29,6 +41,8 @@ namespace SSWR
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
+			static void __stdcall OnEndClicked(AnyType userObj);
+			static void __stdcall OnBackClicked(AnyType userObj);
 		public:
 			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi);
 			virtual ~AVIRGISEditVectorForm();

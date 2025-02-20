@@ -123,6 +123,7 @@
 #include "Parser/ObjParser/KMZParser.h"
 #include "Parser/ObjParser/MPGXAParser.h"
 #include "Parser/ObjParser/OSMMapParser.h"
+#include "Parser/ObjParser/PKGTIFFParser.h"
 
 Parser::FullParserList::FullParserList() : Parser::ParserList()
 {
@@ -381,6 +382,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(oparser, Parser::ObjParser::KMZParser());
 	this->AddObjectParser(oparser);
 	NEW_CLASSNN(oparser, Parser::ObjParser::OSMMapParser());
+	this->AddObjectParser(oparser);
+	NEW_CLASSNN(oparser, Parser::ObjParser::PKGTIFFParser());
 	this->AddObjectParser(oparser);
 
 	this->SetArcGISPRJParser(&this->prjParser);

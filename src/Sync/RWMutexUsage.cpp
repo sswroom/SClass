@@ -64,7 +64,7 @@ void Sync::RWMutexUsage::ReplaceMutex(NN<const Sync::RWMutex> mut, Bool writing)
 		this->mut = mut.Ptr();
 		this->BeginUse(writing);
 	}
-	else if (this->mut != mut.Ptr() || (writing != this->writing))
+	else if (this->mut != mut.Ptr() || (!this->writing && writing))
 	{
 		this->EndUse();
 		this->mut = mut.Ptr();

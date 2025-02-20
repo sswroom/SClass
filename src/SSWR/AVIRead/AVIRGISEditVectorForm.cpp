@@ -42,6 +42,16 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType use
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnEndClicked(AnyType userObj)
+{
+
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnBackClicked(AnyType userObj)
+{
+
+}
+
 SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
@@ -49,14 +59,35 @@ SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClie
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = lyr;
 	this->navi = navi;
+	this->status = 0;
 	sb.AppendC(UTF8STRC("Edit Vector - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
 	this->lbObjects = ui->NewListBox(*this, false);
-	this->lbObjects->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbObjects->SetRect(0, 0, 150, 23, false);
+	this->lbObjects->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbObjects->HandleDoubleClicked(OnObjectsDblClk, this);
+	this->hspObjects = ui->NewHSplitter(*this, 3, false);
+	this->pnlObjects = ui->NewPanel(*this);
+	this->pnlObjects->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lblStatus = ui->NewLabel(this->pnlObjects, CSTR("Status"));
+	this->lblStatus->SetRect(4, 4, 100, 23, false);
+	this->txtStatus = ui->NewTextBox(this->pnlObjects, CSTR("View"));
+	this->txtStatus->SetReadOnly(true);
+	this->txtStatus->SetRect(104, 4, 150, 23, false);
+	this->lblNPoints = ui->NewLabel(this->pnlObjects, CSTR("Num Points"));
+	this->lblNPoints->SetRect(4, 28, 100, 23, false);
+	this->txtNPoints = ui->NewTextBox(this->pnlObjects, CSTR("0"));
+	this->txtNPoints->SetReadOnly(true);
+	this->txtNPoints->SetRect(104, 28, 150, 23, false);
+	this->btnEnd = ui->NewButton(this->pnlObjects, CSTR("End"));
+	this->btnEnd->SetRect(4, 52, 75, 23, false);
+	this->btnEnd->HandleButtonClick(OnEndClicked, this);
+	this->btnBack = ui->NewButton(this->pnlObjects, CSTR("Back"));
+	this->btnBack->SetRect(84, 52, 75, 23, false);
+	this->btnBack->HandleButtonClick(OnBackClicked, this);
 
 	UOSInt nameCol = lyr->GetNameCol();
 	Int64 objId;

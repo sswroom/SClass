@@ -475,6 +475,9 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 	{
 		extraLen = tagSize - extraStart;
 	}
+	UTF8Char sbuff[128];
+	UnsafeArray<UTF8Char> sptr;
+	UInt64 t;
 	UInt16 extraTag;
 	UInt16 extraSize;
 	UOSInt j = 0;
@@ -522,9 +525,15 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 				k += 4;
 				if (ntfsTag == 1 && ntfsSize == 24)
 				{
-					frame->AddUInt64(k, CSTR("File last modification time"), ReadUInt64(&tagData[k]));
-					frame->AddUInt64(k + 8, CSTR("File last access time"), ReadUInt64(&tagData[k + 8]));
-					frame->AddUInt64(k + 16, CSTR("File creation time"), ReadUInt64(&tagData[k + 16]));
+					t = ReadUInt64(&tagData[k]);
+					sptr = Data::Timestamp::FromFILETIME(&t, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+					frame->AddUInt64Name(k, 8, CSTR("File last modification time"), t, CSTRP(sbuff, sptr));
+					t = ReadUInt64(&tagData[k + 8]);
+					sptr = Data::Timestamp::FromFILETIME(&t, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+					frame->AddUInt64Name(k + 8, 8, CSTR("File last access time"), t, CSTRP(sbuff, sptr));
+					t = ReadUInt64(&tagData[k + 16]);
+					sptr = Data::Timestamp::FromFILETIME(&t, Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+					frame->AddUInt64Name(k + 16, 8, CSTR("File creation time"), t, CSTRP(sbuff, sptr));
 				}
 				k += ntfsSize;
 			}
@@ -532,8 +541,26 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDet
 		else if (extraTag == 0x5455)
 		{
 			k = extraStart + j + 4;
+			l = k + extraSize;
 			frame->AddUInt(k, 1, CSTR("Flags"), tagData[k]);
-			frame->AddUInt64(k + 1, CSTR("File last modification time"), ReadUInt64(&tagData[k + 1]));
+			if (k + 5 <= l)
+			{
+				t = ReadUInt64(&tagData[k + 1]);
+				sptr = Data::Timestamp::FromEpochSec(ReadUInt32(&tagData[k + 1]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+				frame->AddUIntName(k + 1, 4, CSTR("File last modification time"), ReadUInt32(&tagData[k + 1]), CSTRP(sbuff, sptr));
+			}
+			if (k + 9 <= l)
+			{
+				t = ReadUInt64(&tagData[k + 5]);
+				sptr = Data::Timestamp::FromEpochSec(ReadUInt32(&tagData[k + 5]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+				frame->AddUIntName(k + 5, 4, CSTR("File last access time"), ReadUInt32(&tagData[k + 5]), CSTRP(sbuff, sptr));
+			}
+			if (k + 13 <= l)
+			{
+				t = ReadUInt64(&tagData[k + 9]);
+				sptr = Data::Timestamp::FromEpochSec(ReadUInt32(&tagData[k + 9]), Data::DateTimeUtil::GetLocalTzQhr()).ToStringNoZone(sbuff);
+				frame->AddUIntName(k + 9, 4, CSTR("File creation time"), ReadUInt32(&tagData[k + 9]), CSTRP(sbuff, sptr));
+			}
 		}
 		else if (extraTag == 0x7875)
 		{
@@ -665,6 +692,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 	UInt16 extraLen;
 	UInt16 commentLen;
 	UInt32 ofst;
+	Data::Timestamp ts;
 	UOSInt i;
 	Data::ByteBuffer tagData(tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
@@ -675,8 +703,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		frame->AddUInt(4, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[4]));
 		frame->AddHex16(6, CSTR("General purpose bit flag"), ReadUInt16(&tagData[6]));
 		frame->AddUIntName(8, 2, CSTR("Compression method"), ReadUInt16(&tagData[8]), GetCompName(ReadUInt16(&tagData[8])));
-		frame->AddUInt(10, 2, CSTR("File last modification time"), ReadUInt16(&tagData[10]));
-		frame->AddUInt(12, 2, CSTR("File last modification date"), ReadUInt16(&tagData[12]));
+		ts = Data::Timestamp::FromMSDOSTime(ReadUInt16(&tagData[12]), ReadUInt16(&tagData[10]), Data::DateTimeUtil::GetLocalTzQhr());
+		sptr = ts.ToString(sbuff, "HH:mm:ss");
+		frame->AddUIntName(10, 2, CSTR("File last modification time"), ReadUInt16(&tagData[10]), CSTRP(sbuff, sptr));
+		sptr = ts.ToString(sbuff, "yyyy-MM-dd");
+		frame->AddUIntName(12, 2, CSTR("File last modification date"), ReadUInt16(&tagData[12]), CSTRP(sbuff, sptr));
 		frame->AddHex32(14, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[14]));
 		frame->AddUInt(18, 4, CSTR("Compressed size"), compSize = ReadUInt32(&tagData[18]));
 		frame->AddUInt(22, 4, CSTR("Uncompressed size"), uncompSize = ReadUInt32(&tagData[22]));
@@ -694,8 +725,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 		frame->AddUInt(6, 2, CSTR("Version needed to extract"), ReadUInt16(&tagData[6]));
 		frame->AddHex16(8, CSTR("General purpose bit flag"), ReadUInt16(&tagData[8]));
 		frame->AddUIntName(10, 2, CSTR("Compression method"), ReadUInt16(&tagData[10]), GetCompName(ReadUInt16(&tagData[10])));
-		frame->AddUInt(12, 2, CSTR("File last modification time"), ReadUInt16(&tagData[12]));
-		frame->AddUInt(14, 2, CSTR("File last modification date"), ReadUInt16(&tagData[14]));
+		ts = Data::Timestamp::FromMSDOSTime(ReadUInt16(&tagData[14]), ReadUInt16(&tagData[12]), Data::DateTimeUtil::GetLocalTzQhr());
+		sptr = ts.ToString(sbuff, "HH:mm:ss");
+		frame->AddUIntName(12, 2, CSTR("File last modification time"), ReadUInt16(&tagData[12]), CSTRP(sbuff, sptr));
+		sptr = ts.ToString(sbuff, "yyyy-MM-dd");
+		frame->AddUIntName(14, 2, CSTR("File last modification date"), ReadUInt16(&tagData[14]), CSTRP(sbuff, sptr));
 		frame->AddHex32(16, CSTR("CRC-32 of uncompressed data"), ReadUInt32(&tagData[16]));
 		compSize = ReadUInt32(&tagData[20]);
 		if (compSize == 0xffffffff)
