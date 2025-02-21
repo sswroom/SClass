@@ -908,9 +908,54 @@ Int32 CSysTest()
 	return 0;
 }
 
+Int32 ClamAVTest()
+{
+	Text::CStringNN fileName = CSTR("");
+	UnsafeArray<UInt8> fileBuff;
+	UInt64 fileLength;
+	UTF8Char sbuff[2048];
+	UOSInt readSize;
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	fileLength = fs.GetLength();
+	if (fileLength == 0 || fileLength > 10485760 || fs.IsError())
+	{
+		printf("File is not valid\r\n");
+	}
+	else
+	{
+		fileBuff = MemAllocArr(UInt8, (UOSInt)fileLength + 5);
+		if (fs.Read(Data::ByteArray(fileBuff + 4, (UOSInt)fileLength)) == fileLength)
+		{
+			Net::OSSocketFactory sockf(false);
+			Net::TCPClient cli(sockf, CSTR("localhost"), 3310, 8000);
+			if (cli.IsConnectError())
+			{
+				printf("Connect error\r\n");
+			}
+			else
+			{
+				WriteMUInt32(&fileBuff[0], (UInt32)fileLength);
+				WriteMUInt32(&fileBuff[(UOSInt)fileLength + 4], 0);
+				cli.SetTimeout(50000);
+				cli.Write(CSTR("zINSTREAM\0").ToByteArray());
+				cli.WriteCont(fileBuff, (UOSInt)fileLength + 8);
+				readSize = cli.Read(Data::ByteArray(sbuff, 2047));
+				sbuff[readSize] = 0;
+				printf("Reply: %s\r\n", sbuff);
+			}
+		}
+		else
+		{
+			printf("Error in reading file\r\n");
+		}
+		MemFreeArr(fileBuff);
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 23;
+	UOSInt testType = 24;
 	switch (testType)
 	{
 	case 0:
@@ -961,6 +1006,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return BezierCurveTest();
 	case 23:
 		return CSysTest();
+	case 24:
+		return ClamAVTest();
 	default:
 		return 0;
 	}
