@@ -1820,6 +1820,52 @@ void SSWR::AVIRead::AVIRGISForm::OnFocus()
 	this->ResumeUpdate();
 }
 
+void SSWR::AVIRead::AVIRGISForm::AddLayerFromFile(Text::CStringNN fileName)
+{
+	IO::Path::PathType pathType = IO::Path::GetPathType(fileName);
+	NN<Parser::ParserList> parsers = this->core->GetParserList();
+	Optional<IO::ParsedObject> pobj = 0;
+	NN<IO::ParsedObject> nnpobj;
+	if (pathType == IO::Path::PathType::File)
+	{
+		IO::StmData::FileData fd(fileName, false);
+		pobj = parsers->ParseFile(fd);
+	}
+	else if (pathType == IO::Path::PathType::Directory)
+	{
+		IO::DirectoryPackage dpkg(fileName);
+		pobj = parsers->ParseObject(dpkg);
+	}
+	if (pobj.SetTo(nnpobj))
+	{
+		IO::ParserType pt = nnpobj->GetParserType();
+		if (pt == IO::ParserType::MapLayer)
+		{
+			this->AddLayer(NN<Map::MapDrawLayer>::ConvertFrom(nnpobj));
+		}
+		else if (pt == IO::ParserType::MapEnv)
+		{
+			////////////////////////////
+			pobj.Delete();
+		}
+		else if (pt == IO::ParserType::ImageList)
+		{
+			pobj.Delete();
+		}
+		else
+		{
+			if (this->ParseObject(nnpobj))
+			{
+				pobj.Delete();
+			}
+			else
+			{
+				pobj.Delete();
+			}
+		}
+	}
+}
+
 void SSWR::AVIRead::AVIRGISForm::AddLayer(NN<Map::MapDrawLayer> layer)
 {
 	layer->AddUpdatedHandler(OnMapLayerUpdated, this);

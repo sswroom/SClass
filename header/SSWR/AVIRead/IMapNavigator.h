@@ -20,6 +20,7 @@ namespace SSWR
 			virtual void ShowMarker(Math::Coord2DDbl pos) = 0;
 			virtual void ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit) = 0;
 			virtual void HideMarker() = 0;
+			virtual void AddLayerFromFile(Text::CStringNN fileName) = 0;
 			virtual void AddLayer(NN<Map::MapDrawLayer> layer) = 0;
 			virtual void SetSelectedVector(Optional<Math::Geometry::Vector2D> vec) = 0;
 			virtual void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList) = 0;

@@ -257,6 +257,10 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UO
 							{
 								me->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("GIS Query"), me);
 							}
+							else
+							{
+								me->navi->AddLayerFromFile(dlg->GetFileName()->ToCString());
+							}
 						}
 						dlg.Delete();
 					}
