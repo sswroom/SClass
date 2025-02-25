@@ -24,7 +24,9 @@ namespace Media
 				ImgCopy,
 				HFilterPA,
 				ExpandPA,
-				ImgCopyPA
+				ImgCopyPA,
+				HFilterP8,
+				HFilterP8PA
 			};
 
 			typedef struct
@@ -80,6 +82,8 @@ namespace Media
 			OSInt buffH;
 			UInt8 *buffPtr;
 
+			Media::PixelFormat srcPF;
+			UnsafeArrayOpt<const UInt8> srcPal;
 			Media::ColorProfile srcProfile;
 			Media::ColorProfile destProfile;
 			Optional<Media::ColorManagerSess> colorSess;
@@ -101,6 +105,7 @@ namespace Media
 			void mt_copy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep);
 
 			void UpdateRGBTable();
+			void UpdatePalTable();
 
 			static void __stdcall DoTask(AnyType obj);
 			void DestoryHori();
@@ -116,6 +121,7 @@ namespace Media
 			void SetSrcProfile(NN<const Media::ColorProfile> srcProfile);
 			void SetDestProfile(NN<const Media::ColorProfile> destProfile);
 			Media::AlphaType GetDestAlphaType();
+			void SetSrcPixelFormat(Media::PixelFormat srcPF, UnsafeArrayOpt<const UInt8> srcPal);
 			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);
 			virtual Optional<Media::StaticImage> ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};

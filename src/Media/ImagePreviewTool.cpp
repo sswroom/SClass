@@ -12,13 +12,23 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 		UOSInt currHeight = img->info.dispSize.y;
 		NN<Media::StaticImage> simg;
 		Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
-		img->To32bpp();
+		Media::PixelFormat pf = img->info.pf;
+		if (resizer.IsSupported(img->info))
+		{
+			resizer.SetSrcPixelFormat(pf, img->pal);
+		}
+		else
+		{
+			printf("ImagePreviewTool: PixelFormat not supported: %s\r\n", Media::PixelFormatGetName(pf).v.Ptr());
+			img->To32bpp();
+		}
 
 		while (currWidth >= maxSize || currHeight >= maxSize)
 		{
 			currWidth >>= 1;
 			currHeight >>= 1;
 			resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
+			img->info.pf;
 			if (resizer.ProcessToNew(img).SetTo(simg))
 			{
 				prevImgs->Add(simg);

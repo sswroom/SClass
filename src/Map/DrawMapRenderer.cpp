@@ -692,7 +692,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 		//	labels[i].shapeType = 0;
 			if (denv->labels[i].layerType == Map::DRAW_LAYER_POINT || denv->labels[i].layerType == Map::DRAW_LAYER_POINT3D)
 			{
-				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				dscnPos = denv->view->MapXYToScnXY(denv->labels[i].pos);
 				scnPt = dscnPos;
 
@@ -991,7 +991,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 					denv->labels[i].scaleW = 0;
 					denv->labels[i].scaleH = 0;
 				}
-				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
+				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
 				if (OSInt2Double(diff.x) < szThis.x && OSInt2Double(diff.y) < szThis.y)
 				{
 					rect.min = scnPt - (szThis * 0.5);
@@ -1121,7 +1121,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 								denv->labels[i].scaleW = 0;
 								denv->labels[i].scaleH = 0;
 							}
-							GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
+							GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
 						}
 					}
 
@@ -1153,7 +1153,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 							if ((denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								DrawCharsLA(denv, denv->labels[i].label->ToCString(), ptPtr, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
+								DrawCharsLA(denv, denv->labels[i].label->ToCString(), ptPtr, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
 
 								denv->objBounds[currPt] = realBounds;
 								currPt++;
@@ -1161,7 +1161,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 							else if ((denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE) != 0)
 							{
 								Math::RectAreaDbl realBounds;
-								DrawCharsL(denv, denv->labels[i].label->ToCString(), ptPtr, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, &realBounds);
+								DrawCharsL(denv, denv->labels[i].label->ToCString(), ptPtr, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
 
 								denv->objBounds[currPt] = realBounds;
 								currPt++;
@@ -1184,7 +1184,7 @@ void Map::DrawMapRenderer::DrawLabels(NN<Map::DrawMapRenderer::DrawEnv> denv)
 			}
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYGON)
 			{
-				GetCharsSize(denv, &szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				dscnPos = denv->view->MapXYToScnXY(denv->labels[i].pos);
 				scnPt = dscnPos;
 
@@ -2218,7 +2218,14 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 			Math::Size2DDbl drawSize = scnBR - scnTL;
 			if (dimgW > drawSize.x || dimgH > drawSize.y)
 			{
-				img->To32bpp();
+				if (!this->resizer->IsSupported(img->info))
+				{
+					img->To32bpp();
+				}
+				else
+				{
+					this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
+				}
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
 				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 				NN<Media::StaticImage> newImg;
@@ -2283,7 +2290,14 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
 				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
-				img->To32bpp();
+				if (!this->resizer->IsSupported(img->info))
+				{
+					img->To32bpp();
+				}
+				else
+				{
+					this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
+				}
 				NN<Media::StaticImage> newImg;
 				if (cimgPt.x < cimgPt2.x && cimgPt.y < cimgPt2.y)
 				{
@@ -2309,7 +2323,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 	}
 }
 
-void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, Math::Coord2DDbl *size, Text::CStringNN label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
+void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Math::Size2DDbl szTmp;
 	UOSInt buffSize;
@@ -2318,8 +2332,7 @@ void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, Math::Coord2DDbl *size
 	{
 		if (!denv->layerFont.GetItem(fontStyle).SetTo(df))
 		{
-			size->x = 0;
-			size->y = 0;
+			size.Set(Math::Coord2DDbl(0, 0));
 			return;
 		}
 		buffSize = 0;
@@ -2328,8 +2341,7 @@ void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, Math::Coord2DDbl *size
 	{
 		if (!df.Set(denv->fontStyles[fontStyle].font))
 		{
-			size->x = 0;
-			size->y = 0;
+			size.Set(Math::Coord2DDbl(0, 0));
 			return;
 		}
 		buffSize = denv->fontStyles[fontStyle].buffSize;
@@ -2338,9 +2350,7 @@ void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, Math::Coord2DDbl *size
 
 	if (scaleH == 0)
 	{
-		size->x = (szTmp.x + UOSInt2Double(buffSize << 1));
-		size->y = (szTmp.y + UOSInt2Double(buffSize << 1));
-
+		size.Set(szTmp + UOSInt2Double(buffSize << 1));
 		return;
 	}
 
@@ -2389,8 +2399,7 @@ void Map::DrawMapRenderer::GetCharsSize(NN<DrawEnv> denv, Math::Coord2DDbl *size
 	if (pt[6] < minX) minX = pt[6];
 	if (pt[7] > maxY) maxY = pt[7];
 	if (pt[7] < minY) minY = pt[7];
-	size->x = maxX - minX;
-	size->y = maxY - minY;
+	size.Set(Math::Coord2DDbl(maxX - minX, maxY - minY));
 }
 
 void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Math::Coord2DDbl scnPos, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
@@ -2600,7 +2609,7 @@ void Map::DrawMapRenderer::DrawChars(NN<DrawEnv> denv, Text::CStringNN str1, Mat
 	}
 }
 
-void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
+void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2D<Int32>> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds)
 {
 	UTF8Char sbuff[256];
 	str1.ConcatTo(sbuff);
@@ -3127,11 +3136,10 @@ void Map::DrawMapRenderer::DrawCharsL(NN<Map::DrawMapRenderer::DrawEnv> denv, Te
 		szLast.x = szThis.x;
 	}
 
-	realBounds->min = min;
-	realBounds->max = max;
+	realBounds.Set(Math::RectAreaDbl(min, max));
 }
 
-void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Math::RectAreaDbl *realBounds)
+void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, UnsafeArray<Math::Coord2DDbl> mapPts, UnsafeArray<Math::Coord2D<Int32>> scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, OutParam<Math::RectAreaDbl> realBounds)
 {
 	UTF8Char sbuff[256];
 	UOSInt lblSize = str1.leng;
@@ -3692,8 +3700,7 @@ void Map::DrawMapRenderer::DrawCharsLA(NN<DrawEnv> denv, Text::CStringNN str1, U
 		szLast = szThis;
 	}
 
-	realBounds->min = min;
-	realBounds->max = max;
+	realBounds.Set(Math::RectAreaDbl(min, max));
 }
 
 Map::DrawMapRenderer::DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, NN<const Media::ColorProfile> color, Optional<Media::ColorManagerSess> colorSess, DrawType drawType)
@@ -3705,14 +3712,14 @@ Map::DrawMapRenderer::DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv>
 	this->lastLayerEmpty = true;
 	this->drawType = drawType;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, this->color, colorSess, Media::AT_NO_ALPHA));
-	NEW_CLASS(this->colorConv, Media::ColorConv(srcColor, this->color, colorSess));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, this->color, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcColor, this->color, colorSess));
 }
 
 Map::DrawMapRenderer::~DrawMapRenderer()
 {
-	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->colorConv);
+	this->resizer.Delete();
+	this->colorConv.Delete();
 }
 
 void Map::DrawMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS)

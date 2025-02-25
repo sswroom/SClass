@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileStream.h"
+#include "IO/PackageFile.h"
 #include "IO/Path.h"
 #include "IO/StreamDataStream.h"
 #include "IO/StreamReader.h"
@@ -284,7 +285,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Math::CoordinateSystem> csys;
 			if (srid == 0)
 			{
-				csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
+				csys = Math::CoordinateSystemManager::CreateCsysByCoord((min + max) * 0.5);
 				srid = csys->GetSRID();
 			}
 			else

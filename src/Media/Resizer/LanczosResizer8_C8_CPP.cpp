@@ -634,3 +634,262 @@ extern "C" void LanczosResizer8_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, OSInt w
 	}
 }
 
+extern "C" void LanczosResizer8_C8_horizontal_filterp8(UInt8 *inPt, UInt8 *outPt,OSInt width, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+{
+	OSInt i;
+	OSInt j;
+	UInt8 *currIn;
+	UInt8 *tmpPtr;
+	OSInt *currIndex;
+	Int16 *currWeight;
+	Int16x8 tmpVal1;
+	Int16x8 tmpVal2;
+
+	if ((width & 1) != 0)
+	{
+		Int16x4 cvals;
+		Int16x8 cvals2;
+		Int32x4 cvals2b;
+		dstep -= width << 3;
+		tap >>= 1;
+
+		while (height-- != 0)
+		{
+			currIn = inPt;
+			tmpPtr = tmpbuff;
+			i = swidth;
+			if (i & 1)
+			{
+				cvals = PLoadInt16x4(&rgbTable[currIn[0] * 8 + 270336]);
+				PStoreInt16x4(tmpPtr, cvals);
+				currIn += 1;
+				tmpPtr += 8;
+			}
+			i >>= 1;
+			if (i != 0)
+			{
+				while (i-- != 0)
+				{
+					cvals2 = PMLoadInt16x4(&rgbTable[currIn[1] * 8 + 270336], &rgbTable[currIn[0] * 8 + 270336]);
+					PStoreInt16x8(tmpPtr, cvals2);
+					currIn += 2;
+					tmpPtr += 16;
+				}
+			}
+
+			currIndex = index;
+			currWeight = (Int16*)weight;
+			i = width;
+			while (i-- != 0)
+			{
+				cvals2b = PInt32x4Clear();
+				j = tap;
+				while (j-- != 0)
+				{
+					cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[0]]), PLoadInt16x4(&tmpbuff[currIndex[1]])), PLoadInt16x8A(currWeight)));
+					currWeight += 8;
+					currIndex += 2;
+				}
+				PStoreInt16x4(outPt, PSARSDW4(cvals2b, 14));
+				outPt += 8;
+			}
+
+			outPt += dstep;
+			inPt += sstep;
+		}
+	}
+	else if (tap == 6)
+	{
+		Int16x4 cvals;
+		Int16x8 cvals2;
+		Int32x4 cvals2b;
+		dstep -= width << 3;
+
+		while (height-- != 0)
+		{
+			currIn = inPt;
+			tmpPtr = tmpbuff;
+			i = swidth;
+			if (i & 1)
+			{
+				cvals = PLoadInt16x4(&rgbTable[currIn[0] * 8 + 270336]);
+				PStoreInt16x4(tmpPtr, cvals);
+				currIn += 1;
+				tmpPtr += 8;
+			}
+			i >>= 1;
+			if (i != 0)
+			{
+				while (i-- != 0)
+				{
+					cvals2 = PMLoadInt16x4(&rgbTable[currIn[1] * 8 + 270336], &rgbTable[currIn[0] * 8 + 270336]);
+					PStoreInt16x8(tmpPtr, cvals2);
+					currIn += 2;
+					tmpPtr += 16;
+				}
+			}
+
+			currIndex = index;
+			currWeight = (Int16*)weight;
+			i = width;
+			while (i-- != 0)
+			{
+				cvals2b = PInt32x4Clear();
+				tmpVal1 = PLoadInt16x8(&tmpbuff[currIndex[0]]);
+				tmpVal2 = PLoadInt16x8(&tmpbuff[currIndex[1]]);
+				cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKLWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[0])));
+				cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKHWW8(tmpVal1, tmpVal2), PLoadInt16x8A(&currWeight[8])));
+				cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[2]]), PLoadInt16x4(&tmpbuff[currIndex[2] + 8])), PLoadInt16x8A(&currWeight[16])));
+				currWeight += 24;
+				currIndex += 3;
+				PStoreInt16x4(outPt, PSARSDW4(cvals2b, 14));
+				outPt += 8;
+			}
+			outPt += dstep;
+			inPt += sstep;
+		}
+	}
+	else if (swidth & 1)
+	{
+		Int16x4 cvals;
+		Int32x4 cvals2;
+		dstep -= width << 3;
+		tap >>= 1;
+
+		while (height-- != 0)
+		{
+			currIn = inPt;
+			tmpPtr = tmpbuff;
+			i = swidth;
+			while (i-- != 0)
+			{
+				cvals = PLoadInt16x4(&rgbTable[currIn[0] * 8 + 270336]);
+				PStoreInt16x4(tmpPtr, cvals);
+				currIn += 1;
+				tmpPtr += 8;
+			}
+
+			currIndex = index;
+			currWeight = (Int16*)weight;
+			i = width;
+			while (i-- > 0)
+			{
+				cvals2 = PInt32x4Clear();
+				j = tap;
+				while (j-- > 0)
+				{
+					cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[0]]), PLoadInt16x4(&tmpbuff[currIndex[1]])), PLoadInt16x8A(currWeight)));
+					currWeight += 8;
+					currIndex += 2;
+				}
+				PStoreInt16x4(outPt, PSARSDW4(cvals2, 14));
+				outPt += 8;
+			}
+
+			outPt += dstep;
+			inPt += sstep;
+		}
+	}
+	else
+	{
+		Int16x8 cvals;
+		Int32x4 cvals2;
+		Int32x4 cvals2b;
+		dstep -= width << 3;
+		swidth >>= 1;
+		width >>= 1;
+		tap >>= 1;
+
+		while (height-- != 0)
+		{
+			currIn = inPt;
+			tmpPtr = tmpbuff;
+			i = swidth;
+			while (i-- != 0)
+			{
+				cvals = PMLoadInt16x4(&rgbTable[currIn[1] * 8 + 270336], &rgbTable[currIn[0] * 8 + 270336]);
+				PStoreInt16x8A(tmpPtr, cvals);
+				currIn += 2;
+				tmpPtr += 16;
+			}
+
+			currIndex = index;
+			currWeight = (Int16*)weight;
+			i = width;
+			while (i-- != 0)
+			{
+				cvals2 = PInt32x4Clear();
+				cvals2b = PInt32x4Clear();
+				j = tap;
+				while (j-- != 0)
+				{
+					cvals2 = PADDD4(cvals2, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[0]]), PLoadInt16x4(&tmpbuff[currIndex[1]])), PLoadInt16x8A(currWeight)));
+					currWeight += 8;
+					currIndex += 2;
+				}
+
+				j = tap;
+				while (j-- != 0)
+				{
+					cvals2b = PADDD4(cvals2b, PMADDWD(PUNPCKWW4(PLoadInt16x4(&tmpbuff[currIndex[0]]), PLoadInt16x4(&tmpbuff[currIndex[1]])), PLoadInt16x8A(currWeight)));
+					currWeight += 8;
+					currIndex += 2;
+				}
+				PStoreInt16x8A(outPt, PMergeSARDW4(cvals2, cvals2b, 14));
+				outPt += 16;
+			}
+
+			outPt += dstep;
+			inPt += sstep;
+		}
+	}
+}
+
+extern "C" void LanczosResizer8_C8_expandp8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+{
+	OSInt i;
+	Int16x4 cvals;
+	sstep -= width;
+	dstep -= width << 3;
+
+	while (height-- > 0)
+	{
+		i = width;
+		while (i-- > 0)
+		{
+			cvals = PLoadInt16x4(&rgbTable[270336 + inPt[0] * 8]);
+			PStoreInt16x4(outPt, cvals);
+			inPt += 1;
+			outPt += 8;
+		}
+		inPt += sstep;
+		outPt += dstep;
+	}
+}
+
+extern "C" void LanczosResizer8_C8_imgcopyp8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+{
+	OSInt i;
+	Int16x4 cvals;
+	UInt16x4 cvals2;
+	sstep -= width;
+	dstep -= width << 2;
+
+	while (height-- > 0)
+	{
+		i = width;
+		while (i-- > 0)
+		{
+			cvals = PLoadInt16x4(&rgbTable[270336 + inPt[0] * 8]);
+			cvals2 = PCONVI16x4_U(cvals);
+			outPt[0] = rgbTable[PEXTUW4(cvals2, 0) + 0];
+			outPt[1] = rgbTable[PEXTUW4(cvals2, 1) + 65536];
+			outPt[2] = rgbTable[PEXTUW4(cvals2, 2) + 131072];
+			outPt[3] = inPt[3];
+			inPt += 1;
+			outPt += 4;
+		}
+		inPt += sstep;
+		outPt += dstep;
+	}
+}

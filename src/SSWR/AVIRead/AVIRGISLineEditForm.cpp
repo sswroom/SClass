@@ -141,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(AnyType userObj)
 	{
 		me->thickChging = true;
 		me->txtThick->GetText(sbuff);
-		currLayer->thick = Text::StrToUInt32(sbuff);
+		currLayer->thick = Text::StrToDoubleOr(sbuff, 0);
 		if (currLayer->thick < 0)
 			currLayer->thick = 0;
 		if (currLayer->thick >= 0 && currLayer->thick <= 20)

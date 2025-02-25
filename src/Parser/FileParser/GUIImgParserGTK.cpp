@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteBuffer.h"
+#include "Data/ByteOrderLSB.h"
+#include "Data/ByteOrderMSB.h"
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/PackageFile.h"
@@ -154,6 +156,32 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 				if (isImage == 2)
 				{
 					Media::JPEGFile::ParseJPEGHeader(fd, img, nnimgList, this->parsers);
+				}
+				else if (isImage == 4 && img->exif.IsNull())
+				{
+					NN<Data::ByteOrder> bo;
+					UInt64 nextOfst;
+				
+					if (*(Int16*)&data[0] == *(Int16*)"MM")
+					{
+						NEW_CLASSNN(bo, Data::ByteOrderMSB());
+					}
+					else
+					{
+						NEW_CLASSNN(bo, Data::ByteOrderLSB());
+					}
+					UInt16 fmt = bo->GetUInt16(data.Arr() + 2);
+					if (fmt == 42)
+					{
+						nextOfst = bo->GetUInt32(data.Arr() + 4);
+						img->exif = Media::EXIFData::ParseIFD(&data[nextOfst], data.GetSize() - nextOfst, bo, nextOfst, Media::EXIFData::EM_STANDARD, data.Ptr());
+					}
+					else if (fmt == 43 && bo->GetUInt16(data.Arr() + 4) == 8 && bo->GetUInt16(data.Arr() + 6) == 0) //BigTIFF
+					{
+						nextOfst = bo->GetUInt64(data.Arr() + 8);
+						//img->exif = Media::EXIFData::ParseIFD64(&data[nextOfst], data.GetSize() - nextOfst, bo, nextOfst, Media::EXIFData::EM_STANDARD, 0);
+					}
+					bo.Delete();
 				}
 			}
 			g_object_unref(pixBuf);
@@ -311,7 +339,6 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
-			img->To32bpp();
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(nnimgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, prevList));

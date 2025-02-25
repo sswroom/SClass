@@ -20,7 +20,7 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NN<Sync::Thread> th
 	UInt16 fmt = me->bo->GetUInt16(&buff[2]);
 	if (fmt == 42)
 	{
-		UOSInt nextOfst = me->bo->GetUInt16(&buff[4]);
+		UOSInt nextOfst = me->bo->GetUInt32(&buff[4]);
 		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 8;
@@ -29,15 +29,32 @@ void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NN<Sync::Thread> th
 		if (nextOfst > 8)
 		{
 			pack = MemAllocNN(PackInfo);
-			pack->fileOfst = 16;
-			pack->packSize = nextOfst - 16;
+			pack->fileOfst = 8;
+			pack->packSize = nextOfst - 8;
 			pack->packType = PT_RESERVED;
 			me->packs.Add(pack);
+		}
+		UInt64 thisOfst;
+		while (nextOfst != 0)
+		{
+			UInt64 nTags;
+			me->fd->GetRealData(nextOfst, 2, BYTEARR(buff));
+			nTags = me->bo->GetUInt16(&buff[0]);
+			pack = MemAllocNN(PackInfo);
+			pack->fileOfst = nextOfst;
+			pack->packSize = nTags * 12 + 6;
+			pack->packType = PT_IFD;
+			me->packs.Add(pack);
+			me->fd->GetRealData(nextOfst + nTags * 12 + 2, 4, BYTEARR(buff));
+			thisOfst = nextOfst + nTags * 12 + 2;
+			nextOfst = me->bo->GetUInt32(&buff[0]);
+			if (nextOfst < thisOfst)
+				break;
 		}
 	}
 	else if (fmt == 43 && me->bo->GetUInt16(&buff[4]) == 8 && me->bo->GetUInt16(&buff[6]) == 0) //BigTIFF
 	{
-		UInt64 nextOfst = me->bo->GetUInt16(&buff[8]);
+		UInt64 nextOfst = me->bo->GetUInt64(&buff[8]);
 		pack = MemAllocNN(PackInfo);
 		pack->fileOfst = 0;
 		pack->packSize = 16;
@@ -221,9 +238,16 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 		UOSInt verNum = this->bo->GetUInt16(&packBuff[2]);
 		frame->AddStrC(0, 2, CSTR("Byte Order"), &packBuff[0]);
 		frame->AddUInt(2, 2, CSTR("Version Number"), verNum);
-		frame->AddUInt(4, 2, CSTR("Bytesize of offsets"), this->bo->GetUInt16(&packBuff[4]));
-		frame->AddUInt(6, 2, CSTR("Reserved"), this->bo->GetUInt16(&packBuff[6]));
-		frame->AddUInt64(8, CSTR("Offset to first IFD"), this->bo->GetUInt64(&packBuff[8]));
+		if (verNum == 42)
+		{
+			frame->AddUInt(4, 4, CSTR("Offset to first IFD"), this->bo->GetUInt32(&packBuff[4]));
+		}
+		else
+		{
+			frame->AddUInt(4, 2, CSTR("Bytesize of offsets"), this->bo->GetUInt16(&packBuff[4]));
+			frame->AddUInt(6, 2, CSTR("Reserved"), this->bo->GetUInt16(&packBuff[6]));
+			frame->AddUInt64(8, CSTR("Offset to first IFD"), this->bo->GetUInt64(&packBuff[8]));
+		}
 	}
 	else if (pack->packType == PT_RESERVED)
 	{
@@ -251,6 +275,27 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 			ofst += 20;
 		}
 		frame->AddUInt64(ofst, CSTR("Offset to next IFD"), this->bo->GetUInt64(&packBuff[ofst]));
+	}
+	else if (pack->packType == PT_IFD)
+	{
+		Data::ByteBuffer packBuff(pack->packSize);
+		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
+		UInt32 tagCnt = this->bo->GetUInt16(packBuff.Arr());
+		frame->AddUInt(0, 2, CSTR("Number of tags in IFD"), tagCnt);
+		UOSInt i = 0;
+		UOSInt ofst = 2;
+		while (i < tagCnt)
+		{
+			UInt16 dataType = this->bo->GetUInt16(&packBuff[ofst + 2]);
+			UInt16 tag = this->bo->GetUInt16(&packBuff[ofst]);
+			frame->AddUIntName(ofst, 2, CSTR("Tag Id"), tag, Media::EXIFData::GetEXIFName(Media::EXIFData::EM_STANDARD, tag));
+			frame->AddUIntName(ofst + 2, 2, CSTR("Data Type"), dataType, Media::EXIFData::GetFieldTypeName(dataType));
+			frame->AddUInt(ofst + 4, 4, CSTR("Number of values"), this->bo->GetUInt32(&packBuff[ofst + 4]));
+			frame->AddUInt(ofst + 8, 4, CSTR("Offset to tag data"), this->bo->GetUInt32(&packBuff[ofst + 8]));
+			i++;
+			ofst += 12;
+		}
+		frame->AddUInt(ofst, 4, CSTR("Offset to next IFD"), this->bo->GetUInt32(&packBuff[ofst]));
 	}
 	return frame;
 }

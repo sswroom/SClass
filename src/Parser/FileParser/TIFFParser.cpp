@@ -19,9 +19,10 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/FrameInfo.h"
 #include "Media/ICCProfile.h"
-#include "Media/ImageResizer.h"
+#include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
+#include "Media/ImageResizer.h"
 #include "Media/StaticImage.h"
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/TIFFParser.h"
@@ -133,6 +134,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		UInt32 photometricInterpretation = 0;
 		UInt32 planarConfiguration = 1;
 		UInt32 sampleFormat = 1;
+		Bool tileMode = false;
+		UInt32 tileWidth = 0;
+		UInt32 tileHeight = 0;
 		UInt64 nStrip = 0;
 		UInt32 stripOfst = 0;
 		UInt32 stripLeng = 0;
@@ -160,89 +164,225 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		storeBPP = bpp;
 		NN<Media::EXIFData::EXIFItem> item;
 		Media::PixelFormat pf = Media::PixelFormatGetDef(0, bpp);
-		if (!nnexif->GetExifItem(0x111).SetTo(item))
+		if (nnexif->GetExifItem(0x111).SetTo(item))
 		{
-			valid = false;
-		}
-		else if (item->cnt == 1)
-		{
-			if (item->type == Media::EXIFData::ET_UINT16)
+			if (item->cnt == 1)
 			{
-				stripOfst = (UInt16)item->value;
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					stripOfst = (UInt16)item->value;
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripOfst = (UInt32)item->value;
+				}
+				else
+				{
+					valid = false;
+				}
 			}
-			else if (item->type == Media::EXIFData::ET_UINT32)
+			else
 			{
-				stripOfst = (UInt32)item->value;
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					UInt16 *val = nnexif->GetExifUInt16(0x111);
+					stripOfsts = MemAlloc(UInt32, item->cnt);
+					j = item->cnt;
+					while (j-- > 0)
+					{
+						stripOfsts[j] = val[j];
+					}
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripOfsts = MemAlloc(UInt32, item->cnt);
+					MemCopyNO(stripOfsts, nnexif->GetExifUInt32(0x111), item->cnt * sizeof(UInt32));
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+			if (!nnexif->GetExifItem(0x117).SetTo(item))
+			{
+				valid = false;
+			}
+			else if (item->cnt == 1)
+			{
+				nStrip = 1;
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					stripLeng = (UInt16)item->value;
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripLeng = (UInt32)item->value;
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+			else
+			{
+				nStrip = item->cnt;
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					UInt16 *val = nnexif->GetExifUInt16(0x117);
+					stripLengs = MemAlloc(UInt32, item->cnt);
+					j = item->cnt;
+					while (j-- > 0)
+					{
+						stripLengs[j] = val[j];
+					}
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripLengs = MemAlloc(UInt32, item->cnt);
+					MemCopyNO(stripLengs, nnexif->GetExifUInt32(0x117), item->cnt * sizeof(UInt32));
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+		}
+		else if (nnexif->GetExifItem(0x144).SetTo(item))
+		{
+			tileMode = true;
+			if (item->cnt == 1)
+			{
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					stripOfst = (UInt16)item->value;
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripOfst = (UInt32)item->value;
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+			else
+			{
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					UInt16 *val = nnexif->GetExifUInt16(0x144);
+					stripOfsts = MemAlloc(UInt32, item->cnt);
+					j = item->cnt;
+					while (j-- > 0)
+					{
+						stripOfsts[j] = val[j];
+					}
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripOfsts = MemAlloc(UInt32, item->cnt);
+					MemCopyNO(stripOfsts, nnexif->GetExifUInt32(0x144), item->cnt * sizeof(UInt32));
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+
+			if (!nnexif->GetExifItem(0x142).SetTo(item))
+			{
+				valid = false;
+			}
+			else if (item->cnt == 1)
+			{
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					tileWidth = (UInt16)item->value;
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					tileWidth = (UInt32)item->value;
+				}
+				else
+				{
+					valid = false;
+				}
 			}
 			else
 			{
 				valid = false;
+			}
+
+			if (!nnexif->GetExifItem(0x143).SetTo(item))
+			{
+				valid = false;
+			}
+			else if (item->cnt == 1)
+			{
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					tileHeight = (UInt16)item->value;
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					tileHeight = (UInt32)item->value;
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+			else
+			{
+				valid = false;
+			}
+
+			if (!nnexif->GetExifItem(0x145).SetTo(item))
+			{
+				valid = false;
+			}
+			else if (item->cnt == 1)
+			{
+				nStrip = 1;
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					stripLeng = (UInt16)item->value;
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripLeng = (UInt32)item->value;
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+			else
+			{
+				nStrip = item->cnt;
+				if (item->type == Media::EXIFData::ET_UINT16)
+				{
+					UInt16 *val = nnexif->GetExifUInt16(0x145);
+					stripLengs = MemAlloc(UInt32, item->cnt);
+					j = item->cnt;
+					while (j-- > 0)
+					{
+						stripLengs[j] = val[j];
+					}
+				}
+				else if (item->type == Media::EXIFData::ET_UINT32)
+				{
+					stripLengs = MemAlloc(UInt32, item->cnt);
+					MemCopyNO(stripLengs, nnexif->GetExifUInt32(0x145), item->cnt * sizeof(UInt32));
+				}
+				else
+				{
+					valid = false;
+				}
 			}
 		}
 		else
 		{
-			if (item->type == Media::EXIFData::ET_UINT16)
-			{
-				UInt16 *val = nnexif->GetExifUInt16(0x111);
-				stripOfsts = MemAlloc(UInt32, item->cnt);
-				j = item->cnt;
-				while (j-- > 0)
-				{
-					stripOfsts[j] = val[j];
-				}
-			}
-			else if (item->type == Media::EXIFData::ET_UINT32)
-			{
-				stripOfsts = MemAlloc(UInt32, item->cnt);
-				MemCopyNO(stripOfsts, nnexif->GetExifUInt32(0x111), item->cnt * sizeof(UInt32));
-			}
-			else
-			{
-				valid = false;
-			}
-		}
-		if (!nnexif->GetExifItem(0x117).SetTo(item))
-		{
 			valid = false;
-		}
-		else if (item->cnt == 1)
-		{
-			nStrip = 1;
-			if (item->type == Media::EXIFData::ET_UINT16)
-			{
-				stripLeng = (UInt16)item->value;
-			}
-			else if (item->type == Media::EXIFData::ET_UINT32)
-			{
-				stripLeng = (UInt32)item->value;
-			}
-			else
-			{
-				valid = false;
-			}
-		}
-		else
-		{
-			nStrip = item->cnt;
-			if (item->type == Media::EXIFData::ET_UINT16)
-			{
-				UInt16 *val = nnexif->GetExifUInt16(0x111);
-				stripLengs = MemAlloc(UInt32, item->cnt);
-				j = item->cnt;
-				while (j-- > 0)
-				{
-					stripLengs[j] = val[j];
-				}
-			}
-			else if (item->type == Media::EXIFData::ET_UINT32)
-			{
-				stripLengs = MemAlloc(UInt32, item->cnt);
-				MemCopyNO(stripLengs, nnexif->GetExifUInt32(0x117), item->cnt * sizeof(UInt32));
-			}
-			else
-			{
-				valid = false;
-			}
 		}
 
 		if (compression == 1) // no compression
@@ -569,6 +709,46 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				if (nStrip == 1)
 				{
 					fd->GetRealData(stripOfst, stripLeng, imgData);
+				}
+				else if (tileMode)
+				{
+					UOSInt x;
+					UOSInt y;
+					UnsafeArray<UInt8> tileBuff = MemAllocArr(UInt8, stripLengs[0]);
+					UOSInt bpl = img->GetDataBpl();
+					UOSInt copySize = (tileWidth * storeBPP >> 3);
+					UOSInt copyHeight = tileHeight;
+					if (copyHeight > imgHeight)
+					{
+						copyHeight = imgHeight;
+					}
+					x = 0;
+					y = 0;
+					i = 0;
+					while (i < nStrip)
+					{
+						fd->GetRealData(stripOfsts[i], stripLengs[i], Data::ByteArray(tileBuff, stripLengs[i]));
+						if (x + tileWidth > imgWidth)
+						{
+							ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], (imgWidth - x) * storeBPP >> 3, copyHeight, (OSInt)copySize, (OSInt)bpl);
+						}
+						else
+						{
+							ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], copySize, copyHeight, (OSInt)copySize, (OSInt)bpl);
+						}
+						x += tileWidth;
+						if (x >= imgWidth)
+						{
+							y += tileHeight;
+							x = 0;
+							if (imgHeight - y < tileHeight)
+							{
+								copyHeight = imgHeight - y;
+							}
+						}
+						i++;
+					}
+					MemFreeArr(tileBuff);
 				}
 				else
 				{
@@ -1542,7 +1722,6 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
-			img->To32bpp();
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));
@@ -1661,7 +1840,6 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl(xCoord + xPxSize * UOSInt2Double(img->info.dispSize.x) * 0.5, yCoord + yPxSize * UOSInt2Double(img->info.dispSize.y) * 0.5));
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
-			img->To32bpp();
 			Data::ArrayListNN<Media::StaticImage> prevList;
 			Media::ImagePreviewTool::CreatePreviews(imgList, prevList, 640);
 			NEW_CLASSNN(simg, Media::SharedImage(imgList, prevList));
