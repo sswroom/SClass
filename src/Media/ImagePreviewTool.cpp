@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerW8_8.h"
 
 Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Data::ArrayListNN<Media::StaticImage>> prevImgs, UOSInt maxSize)
 {
@@ -11,27 +12,45 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 		UOSInt currWidth = img->info.dispSize.x;
 		UOSInt currHeight = img->info.dispSize.y;
 		NN<Media::StaticImage> simg;
-		Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 		Media::PixelFormat pf = img->info.pf;
-		if (resizer.IsSupported(img->info))
+		if (pf == Media::PF_PAL_W8)
 		{
-			resizer.SetSrcPixelFormat(pf, img->pal);
+			Media::Resizer::LanczosResizerW8_8 resizer(3, 3, img->info.color, img->info.color, 0);
+			while (currWidth >= maxSize || currHeight >= maxSize)
+			{
+				currWidth >>= 1;
+				currHeight >>= 1;
+				resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
+				img->info.pf;
+				if (resizer.ProcessToNew(img).SetTo(simg))
+				{
+					prevImgs->Add(simg);
+				}
+			}
 		}
 		else
 		{
-			printf("ImagePreviewTool: PixelFormat not supported: %s\r\n", Media::PixelFormatGetName(pf).v.Ptr());
-			img->To32bpp();
-		}
-
-		while (currWidth >= maxSize || currHeight >= maxSize)
-		{
-			currWidth >>= 1;
-			currHeight >>= 1;
-			resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
-			img->info.pf;
-			if (resizer.ProcessToNew(img).SetTo(simg))
+			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
+			if (resizer.IsSupported(img->info))
 			{
-				prevImgs->Add(simg);
+				resizer.SetSrcPixelFormat(pf, img->pal);
+			}
+			else
+			{
+				printf("ImagePreviewTool: PixelFormat not supported: %s\r\n", Media::PixelFormatGetName(pf).v.Ptr());
+				img->To32bpp();
+			}
+	
+			while (currWidth >= maxSize || currHeight >= maxSize)
+			{
+				currWidth >>= 1;
+				currHeight >>= 1;
+				resizer.SetTargetSize(Math::Size2D<UOSInt>(currWidth, currHeight));
+				img->info.pf;
+				if (resizer.ProcessToNew(img).SetTo(simg))
+				{
+					prevImgs->Add(simg);
+				}
 			}
 		}
 		return true;

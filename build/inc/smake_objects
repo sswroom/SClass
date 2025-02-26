@@ -1316,6 +1316,8 @@ LanczosResizerLR_C32.o: ../../src/Media/Resizer/LanczosResizerLR_C32.cpp
 LanczosResizerLR_C32_8.o: ../../src/Media/Resizer/LanczosResizerLR_C32_8.cpp
 LanczosResizerLR_C32_10.o: ../../src/Media/Resizer/LanczosResizerLR_C32_10.cpp
 LanczosResizerLR_C32_CPU.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU.cpp
+LanczosResizerW8_8.o: ../../src/Media/Resizer/LanczosResizerW8_8.cpp
+LanczosResizerW8_8_CPP.o: ../../src/Media/Resizer/LanczosResizerW8_8_CPP.cpp
 NearestNeighbourResizer32_32.o: ../../src/Media/Resizer/NearestNeighbourResizer32_32.cpp
 NearestNeighbourResizer64_64.o: ../../src/Media/Resizer/NearestNeighbourResizer64_64.cpp
 AutoCropFilter.o: ../../src/Media/VideoFilter/AutoCropFilter.cpp

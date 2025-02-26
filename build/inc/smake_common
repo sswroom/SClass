@@ -3100,6 +3100,9 @@ Media/Resizer/LanczosResizerLR_C32_CPU.h:
 @LanczosResizerLR_C32_CPU.o
 @LanczosResizerLR_C32_CPU_CPP.o
 Media/Resizer/LanczosResizerLR_C32Action.h:
+Media/Resizer/LanczosResizerW8_8.h:
+@LanczosResizerW8_8.o
+@LanczosResizerW8_8_CPP.o
 Media/Resizer/NearestNeighbourResizer32_32.h:
 @NearestNeighbourResizer32_32.o
 @NearestNeighbourResizer32_32_CPP.o
