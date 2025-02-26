@@ -2218,6 +2218,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 			Math::Size2DDbl drawSize = scnBR - scnTL;
 			if (dimgW > drawSize.x || dimgH > drawSize.y)
 			{
+				img->PalTo8bpp();
 				if (!this->resizer->IsSupported(img->info))
 				{
 					img->To32bpp();
@@ -2290,6 +2291,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
 				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
+				img->PalTo8bpp();
 				if (!this->resizer->IsSupported(img->info))
 				{
 					img->To32bpp();

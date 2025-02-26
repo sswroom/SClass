@@ -56,7 +56,7 @@ void Parser::ObjParser::PKGTIFFParser::ParsePackage(NN<IO::PackageFile> pkg, NN<
 	while (i < j)
 	{
 		pot = pkg->GetItemType(i);
-		if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+		if (pot == IO::PackageFile::PackObjectType::PackageFileType && j == 1)
 		{
 			if (pkg->GetItemPack(i, needRelease).SetTo(subPkg))
 			{

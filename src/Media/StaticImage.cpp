@@ -901,6 +901,468 @@ Bool Media::StaticImage::ToPal8()
 	return false;
 }
 
+Bool Media::StaticImage::PalTo8bpp()
+{
+	if (this->info.fourcc != 0)
+		return false;
+
+	UInt8 *buff;
+	UInt8 *pal;
+	UOSInt i;
+	UOSInt j;
+	UOSInt sadd;
+	UInt8 b;
+	UInt8 c;
+	UnsafeArray<UInt8> oriPal;
+	UnsafeArray<UInt8> srcData;
+	UnsafeArray<UInt8> destData;
+	if (this->info.pf == Media::PF_PAL_1)
+	{
+		oriPal = this->pal;
+		srcData = this->data;
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		pal = MemAlloc(UInt8, 1024);
+		destData = buff;
+		WriteNInt32(&pal[0], ReadNInt32(&oriPal[0]));
+		WriteNInt32(&pal[4], ReadNInt32(&oriPal[4]));
+		i = 1024;
+		while (i > 8)
+		{
+			i -= 4;
+			WriteNInt32(&pal[i], 0);
+		}
+		sadd = (this->info.storeSize.x >> 3) - (this->info.dispSize.x >> 3);
+		j = this->info.dispSize.y;
+		if (this->info.dispSize.x & 7)
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 3;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = (b >> 7);
+					destData[1] = (b >> 6) & 1;
+					destData[2] = (b >> 5) & 1;
+					destData[3] = (b >> 4) & 1;
+					destData[4] = (b >> 3) & 1;
+					destData[5] = (b >> 2) & 1;
+					destData[6] = (b >> 1) & 1;
+					destData[7] = b & 1;
+					destData += 8;
+				}
+				b = *srcData;
+				i = this->info.dispSize.x & 7;
+				while (i-- > 0)
+				{
+					destData[0] = (b >> 7);
+					b = b << 1;
+					destData++;
+				}
+				srcData += sadd;
+			}
+		}
+		else
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 3;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = (b >> 7);
+					destData[1] = (b >> 6) & 1;
+					destData[2] = (b >> 5) & 1;
+					destData[3] = (b >> 4) & 1;
+					destData[4] = (b >> 3) & 1;
+					destData[5] = (b >> 2) & 1;
+					destData[6] = (b >> 1) & 1;
+					destData[7] = b & 1;
+					destData += 8;
+				}
+				srcData += sadd;
+			}
+		}
+		MemFreeAArr(this->data);
+		MemFree(this->pal);
+		this->data = buff;
+		this->pal = pal;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_8;
+		return true;
+	}
+	else if (this->info.pf == Media::PF_PAL_W1)
+	{
+		UInt8 cMap[] = {0, 0xff};
+		oriPal = this->pal;
+		srcData = this->data;
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		pal = MemAlloc(UInt8, 1024);
+		destData = buff;
+		i = 0;
+		while (i < 256)
+		{
+			pal[i * 4 + 0] = (UInt8)i;
+			pal[i * 4 + 1] = (UInt8)i;
+			pal[i * 4 + 2] = (UInt8)i;
+			pal[i * 4 + 3] = (UInt8)0xff;
+			i++;
+		}
+		sadd = (this->info.storeSize.x >> 3) - (this->info.dispSize.x >> 3);
+		j = this->info.dispSize.y;
+		if (this->info.dispSize.x & 7)
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 3;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = cMap[(b >> 7)];
+					destData[1] = cMap[(b >> 6) & 1];
+					destData[2] = cMap[(b >> 5) & 1];
+					destData[3] = cMap[(b >> 4) & 1];
+					destData[4] = cMap[(b >> 3) & 1];
+					destData[5] = cMap[(b >> 2) & 1];
+					destData[6] = cMap[(b >> 1) & 1];
+					destData[7] = cMap[b & 1];
+					destData += 8;
+				}
+				b = *srcData;
+				i = this->info.dispSize.x & 7;
+				while (i-- > 0)
+				{
+					destData[0] = cMap[(b >> 7)];
+					b = b << 1;
+					destData++;
+				}
+				srcData += sadd;
+			}
+		}
+		else
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 3;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = cMap[(b >> 7)];
+					destData[1] = cMap[(b >> 6) & 1];
+					destData[2] = cMap[(b >> 5) & 1];
+					destData[3] = cMap[(b >> 4) & 1];
+					destData[4] = cMap[(b >> 3) & 1];
+					destData[5] = cMap[(b >> 2) & 1];
+					destData[6] = cMap[(b >> 1) & 1];
+					destData[7] = cMap[b & 1];
+					destData += 8;
+				}
+				srcData += sadd;
+			}
+		}
+		MemFreeAArr(this->data);
+		MemFree(this->pal);
+		this->data = buff;
+		this->pal = pal;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_W8;
+		return true;
+	}
+	else if (this->info.pf == Media::PF_PAL_2)
+	{
+		oriPal = this->pal;
+		srcData = this->data;
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		pal = MemAlloc(UInt8, 1024);
+		destData = buff;
+		WriteNInt32(&pal[0], ReadNInt32(&oriPal[0]));
+		WriteNInt32(&pal[4], ReadNInt32(&oriPal[4]));
+		WriteNInt32(&pal[8], ReadNInt32(&oriPal[8]));
+		WriteNInt32(&pal[12], ReadNInt32(&oriPal[12]));
+		i = 1024;
+		while (i > 16)
+		{
+			i -= 4;
+			WriteNInt32(&pal[i], 0);
+		}
+		sadd = (this->info.storeSize.x >> 2) - (this->info.dispSize.x >> 2);
+		j = this->info.dispSize.y;
+		if (this->info.dispSize.x & 3)
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 2;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = (b >> 6);
+					destData[1] = (b >> 4) & 3;
+					destData[2] = (b >> 2) & 3;
+					destData[3] = b & 3;
+					destData += 4;
+				}
+				b = *srcData;
+				i = this->info.dispSize.x & 3;
+				while (i-- > 0)
+				{
+					destData[0] = (b >> 6);
+					b = b << 2;
+					destData++;
+				}
+				srcData += sadd;
+			}
+		}
+		else
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 2;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = (b >> 6);
+					destData[1] = (b >> 4) & 3;
+					destData[2] = (b >> 2) & 3;
+					destData[3] = b & 3;
+					destData += 4;
+				}
+				srcData += sadd;
+			}
+		}
+		MemFreeAArr(this->data);
+		MemFree(this->pal);
+		this->data = buff;
+		this->pal = pal;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_8;
+		return true;
+	}
+	else if (this->info.pf == Media::PF_PAL_W2)
+	{
+		oriPal = this->pal;
+		srcData = this->data;
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		pal = MemAlloc(UInt8, 1024);
+		destData = buff;
+		i = 0;
+		while (i < 256)
+		{
+			pal[i * 4 + 0] = (UInt8)i;
+			pal[i * 4 + 1] = (UInt8)i;
+			pal[i * 4 + 2] = (UInt8)i;
+			pal[i * 4 + 3] = (UInt8)0xff;
+			i++;
+		}
+		sadd = (this->info.storeSize.x >> 2) - (this->info.dispSize.x >> 2);
+		j = this->info.dispSize.y;
+		if (this->info.dispSize.x & 3)
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 2;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					c = (b >> 6);
+					destData[0] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = (b >> 4) & 3;
+					destData[1] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = (b >> 2) & 3;
+					destData[2] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = b & 3;
+					destData[3] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData += 4;
+				}
+				b = *srcData;
+				i = this->info.dispSize.x & 3;
+				while (i-- > 0)
+				{
+					c = (b >> 6);
+					destData[0] = (c << 6) | (c << 4) | (c << 2) | c;
+					b = b << 2;
+					destData++;
+				}
+				srcData += sadd;
+			}
+		}
+		else
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 2;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					c = (b >> 6);
+					destData[0] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = (b >> 4) & 3;
+					destData[1] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = (b >> 2) & 3;
+					destData[2] = (c << 6) | (c << 4) | (c << 2) | c;
+					c = b & 3;
+					destData[3] = (c << 6) | (c << 4) | (c << 2) | c;
+					destData += 4;
+				}
+				srcData += sadd;
+			}
+		}
+		MemFreeAArr(this->data);
+		MemFree(this->pal);
+		this->data = buff;
+		this->pal = pal;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_W8;
+		return true;
+	}
+	else if (this->info.pf == Media::PF_PAL_4)
+	{
+		oriPal = this->pal;
+		srcData = this->data;
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		pal = MemAlloc(UInt8, 1024);
+		destData = buff;
+		WriteNInt32(&pal[0], ReadNInt32(&oriPal[0]));
+		WriteNInt32(&pal[4], ReadNInt32(&oriPal[4]));
+		WriteNInt32(&pal[8], ReadNInt32(&oriPal[8]));
+		WriteNInt32(&pal[12], ReadNInt32(&oriPal[12]));
+		WriteNInt32(&pal[16], ReadNInt32(&oriPal[16]));
+		WriteNInt32(&pal[20], ReadNInt32(&oriPal[20]));
+		WriteNInt32(&pal[24], ReadNInt32(&oriPal[24]));
+		WriteNInt32(&pal[28], ReadNInt32(&oriPal[28]));
+		WriteNInt32(&pal[32], ReadNInt32(&oriPal[32]));
+		WriteNInt32(&pal[36], ReadNInt32(&oriPal[36]));
+		WriteNInt32(&pal[40], ReadNInt32(&oriPal[40]));
+		WriteNInt32(&pal[44], ReadNInt32(&oriPal[44]));
+		WriteNInt32(&pal[48], ReadNInt32(&oriPal[48]));
+		WriteNInt32(&pal[52], ReadNInt32(&oriPal[52]));
+		WriteNInt32(&pal[56], ReadNInt32(&oriPal[56]));
+		WriteNInt32(&pal[60], ReadNInt32(&oriPal[60]));
+		i = 1024;
+		while (i > 64)
+		{
+			i -= 4;
+			WriteNInt32(&pal[i], 0);
+		}
+		sadd = (this->info.storeSize.x >> 1) - (this->info.dispSize.x >> 1);
+		j = this->info.dispSize.y;
+		if (this->info.dispSize.x & 1)
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 1;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = (b >> 4);
+					destData[1] = b & 15;
+					destData += 2;
+				}
+				destData[0] = (*srcData) >> 4;
+				destData++;
+				srcData += sadd;
+			}
+		}
+		else
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 1;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					destData[0] = (b >> 4);
+					destData[1] = b & 15;
+					destData += 2;
+				}
+				srcData += sadd;
+			}
+		}
+		MemFreeAArr(this->data);
+		MemFree(this->pal);
+		this->data = buff;
+		this->pal = pal;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_8;
+		return true;
+	}
+	else if (this->info.pf == Media::PF_PAL_W4)
+	{
+		oriPal = this->pal;
+		srcData = this->data;
+		buff = MemAllocA(UInt8, this->info.dispSize.CalcArea());
+		pal = MemAlloc(UInt8, 1024);
+		destData = buff;
+		i = 0;
+		while (i < 256)
+		{
+			pal[i * 4 + 0] = (UInt8)i;
+			pal[i * 4 + 1] = (UInt8)i;
+			pal[i * 4 + 2] = (UInt8)i;
+			pal[i * 4 + 3] = (UInt8)0xff;
+			i++;
+		}
+		sadd = (this->info.storeSize.x >> 1) - (this->info.dispSize.x >> 1);
+		j = this->info.dispSize.y;
+		if (this->info.dispSize.x & 1)
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 1;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					c = (b >> 4);
+					destData[0] = (c << 4) | c;
+					c = b & 15;
+					destData[1] = (c << 4) | c;
+					destData += 2;
+				}
+				c = ((*srcData) >> 4);
+				destData[0] = (c << 4) | c;
+				destData++;
+				srcData += sadd;
+			}
+		}
+		else
+		{
+			while (j-- > 0)
+			{
+				i = this->info.dispSize.x >> 1;
+				while (i-- > 0)
+				{
+					b = *srcData++;
+					c = (b >> 4);
+					destData[0] = (c << 4) | c;
+					c = b & 15;
+					destData[1] = (c << 4) | c;
+					destData += 2;
+				}
+				srcData += sadd;
+			}
+		}
+		MemFreeAArr(this->data);
+		MemFree(this->pal);
+		this->data = buff;
+		this->pal = pal;
+		this->info.storeSize = this->info.dispSize;
+		this->info.byteSize = this->info.dispSize.CalcArea();
+		this->info.storeBPP = 8;
+		this->info.pf = Media::PF_PAL_W8;
+		return true;
+	}
+	return false;
+}
+
 Bool Media::StaticImage::FillColor(UInt32 color)
 {
 	if (this->info.fourcc == 0 && this->info.storeBPP == 32 && this->info.pf == Media::PF_B8G8R8A8)

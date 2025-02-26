@@ -37,6 +37,7 @@ namespace Media
 		Bool To64bpp();
 		Bool ToW8();
 		Bool ToPal8();
+		Bool PalTo8bpp();
 		Bool FillColor(UInt32 color);
 		Bool MultiplyAlpha(Double alpha);
 		Bool MultiplyColor(UInt32 color);
