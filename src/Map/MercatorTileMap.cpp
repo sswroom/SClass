@@ -214,33 +214,37 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NN<IO::StmData::FileData> fd;
-		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
-		if (fd->GetDataSize() > 0)
+		if (IO::Path::GetPathType(CSTRP(filePathU, sptru)) == IO::Path::PathType::File)
 		{
-			currTS = Data::Timestamp::UtcNow().AddDay(-7);
-			ts = fd->GetFileStream()->GetCreateTime();
-			if (ts > currTS)
+			NN<IO::StmData::FileData> fd;
+			NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+			if (fd->GetDataSize() > 0)
 			{
-				IO::StmData::BufferedStreamData bsd(fd);
-				if (parsers->ParseFile(bsd).SetTo(pobj))
+				currTS = Data::Timestamp::UtcNow().AddDay(-7);
+				ts = fd->GetFileStream()->GetCreateTime();
+				if (ts > currTS)
 				{
-					if (pobj->GetParserType() == IO::ParserType::ImageList)
+					IO::StmData::BufferedStreamData bsd(fd);
+					if (parsers->ParseFile(bsd).SetTo(pobj))
 					{
-						return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+						if (pobj->GetParserType() == IO::ParserType::ImageList)
+						{
+							return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+						}
+						pobj.Delete();
 					}
-					pobj.Delete();
+				}
+				else
+				{
+					hasTime = true;
+					fd.Delete();
 				}
 			}
 			else
 			{
-				hasTime = true;
 				fd.Delete();
+				return 0;
 			}
-		}
-		else
-		{
-			fd.Delete();
 		}
 	}
 	else if (this->spkg)
@@ -299,7 +303,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		{
 			if (!this->cacheDir.IsNull())
 			{
-				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+				IO::FileStream fs({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer);
 				fs.Write(mstm.GetArray());
 				Data::DateTime dt;
 				if (cli->GetLastModified(dt))

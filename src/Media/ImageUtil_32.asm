@@ -138,6 +138,22 @@ global _ImageUtil_Rotate64_CW180
 global ImageUtil_Rotate64_CW180
 global _ImageUtil_Rotate64_CW270
 global ImageUtil_Rotate64_CW270
+global ImageUtil_HFlip32
+global _ImageUtil_HFlip32
+global ImageUtil_HFRotate32_CW90
+global _ImageUtil_HFRotate32_CW90
+global ImageUtil_HFRotate32_CW180
+global _ImageUtil_HFRotate32_CW180
+global ImageUtil_HFRotate32_CW270
+global _ImageUtil_HFRotate32_CW270
+global ImageUtil_HFlip64
+global _ImageUtil_HFlip64
+global ImageUtil_HFRotate64_CW90
+global _ImageUtil_HFRotate64_CW90
+global ImageUtil_HFRotate64_CW180
+global _ImageUtil_HFRotate64_CW180
+global ImageUtil_HFRotate64_CW270
+global _ImageUtil_HFRotate64_CW270
 global _ImageUtil_CopyShiftW
 global ImageUtil_CopyShiftW
 global _ImageUtil_UVInterleaveShiftW
@@ -4947,6 +4963,390 @@ r64cw270lop2:
 	add edi,dword [esp+32] ;dbpl
 	dec edx
 	jnz r64cw270lop
+	
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFlip32(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl, Bool upsideDown);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+;36 upsideDown
+	align 16
+_ImageUtil_HFlip32:
+ImageUtil_HFlip32:
+	push esi
+	push edi
+	mov eax,dword [esp+28] ;sbpl
+	add dword [esp+12],eax ;srcPtr
+	cmp byte [esp+36],0
+	jz hf32lop
+
+	mov eax,dword [esp+32] ;dbpl
+	neg eax
+	mov dword [esp+32],eax ;dbpl
+	mov edx,dword [esp+24] ;srcHeight
+	dec edx
+	imul eax,edx
+	add dword [esp+16],eax ;destPtr
+	align 16
+hf32lop:
+	mov eax,dword [esp+20] ;srcWidth
+	shl eax,2
+	sub dword [esp+32],eax ;dbpl
+	
+	mov ecx,dword [esp+24] ;srcHeight
+	mov edi,dword [esp+16] ;destPtr
+	mov esi,dword [esp+12] ;srcPtr
+	align 16
+hf32lop2:
+	mov edx,dword [esp+20] ;srcWidth
+	
+	align 16
+hf32lop3:
+	dec edx
+	mov eax,dword [esi+edx*4]
+	mov [edi],eax
+	lea edi,[edi+4]
+	jnz hf32lop3
+	
+	add esi,dword [esp+28] ;sbpl
+	add edi,dword [esp+32] ;dbpl
+	dec ecx
+	jnz hf32lop2
+	
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFRotate32_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+	align 16
+_ImageUtil_HFRotate32_CW90:
+ImageUtil_HFRotate32_CW90:
+	push esi
+	push edi
+	mov ecx,dword [esp+24] ;srcHeight
+	mov eax,dword [esp+28] ;sbpl
+	imul eax,ecx ;srcHeight
+	lea edx,[ecx*4]
+	sub dword [esp+32],edx ;dbpl
+	mov ecx,dword [esp+20] ;srcWidth
+	lea eax,[eax+ecx*4] ;srcPtr += sbpl * srcHeight + srcWidth * 4
+	add dword [esp+12],eax ;srcPtr
+
+	mov edi,dword [esp+16] ;destPtr
+	mov edx,dword [esp+20] ;srcWidth
+	
+	align 16
+hfr32cw90lop:
+	sub dword [esp+12],4 ;srcPtr
+	mov ecx,dword [esp+24] ;srcHeight
+	mov esi,dword [esp+12] ;srcPtr
+	
+	align 16
+hfr32cw90lop2:
+	sub esi,dword [esp+28] ;sbpl
+	mov eax,dword [esi]
+	mov dword [edi],eax
+	lea edi,[edi+4]
+	dec ecx
+	jnz hfr32cw90lop2
+	add edi,dword [esp+32] ;dbpl
+	dec edx
+	jnz hfr32cw90lop
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFRotate32_CW180(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+	align 16
+_ImageUtil_HFRotate32_CW180:
+ImageUtil_HFRotate32_CW180:
+	push esi
+	push edi
+	mov eax,dword [esp+28] ;sbpl
+	mul dword [esp+24] ;srcHeight
+	add dword [esp+12],eax ;srcPtr
+	mov eax,dword [esp+20] ;srcWidth
+	shl eax,2
+	add dword [esp+28],eax ;sbpl
+	sub dword [esp+32],eax ;dbpl
+	add dword [esp+12],eax ;srcPtr
+
+	mov edx,dword [esp+24] ;srcHeight
+	mov esi,dword [esp+12] ;srcPtr
+	mov edi,dword [esp+16] ;destPtr
+	
+	align 16
+hfr32cw180lop:
+	sub esi,dword [esp+28] ;sbpl
+	mov ecx,dword [esp+20] ;srcWidth
+	rep movsd
+	add edi,dword [esp+32] ;dbpl
+	dec edx
+	jnz hfr32cw180lop
+	
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFRotate32_CW270(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+	align 16
+_ImageUtil_HFRotate32_CW270:
+ImageUtil_HFRotate32_CW270:
+	push esi
+	push edi
+	mov eax,dword [esp+24] ;srcHeight
+	shl eax,2
+	sub dword [esp+32],eax ;dbpl
+	
+	mov edx,dword [esp+20] ;srcWidth
+	mov edi,dword [esp+16] ;destPtr
+	align 16
+hfr32cw270lop:
+	mov ecx,dword [esp+24] ;srcHeight
+	mov esi,dword [esp+12] ;srcPtr
+	
+	align 16
+hfr32cw270lop2:
+	mov eax,dword [esi]
+	mov dword [edi],eax
+	add esi,dword [esp+28] ;sbpl
+	lea edi,[edi+4]
+	dec ecx
+	jnz hfr32cw270lop2
+	
+	add dword [esp+12],4 ;srcPtr
+	add edi,dword [esp+32] ;dbpl
+	dec edx
+	jnz hfr32cw270lop
+	
+	pop edi
+	pop esi
+	ret
+
+
+;void ImageUtil_HFlip64(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl, Bool upsideDown);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+;36 upsideDown
+	align 16
+_ImageUtil_HFlip64:
+ImageUtil_HFlip64:
+	push esi
+	push edi
+	mov eax,dword [esp+28] ;sbpl
+	add dword [esp+12],eax ;srcPtr
+	cmp byte [esp+36],0
+	jz hf64lop
+
+	mov eax,dword [esp+32] ;dbpl
+	neg eax
+	mov dword [esp+32],eax ;dbpl
+	mov edx,dword [esp+24] ;srcHeight
+	dec edx
+	imul eax,edx
+	add dword [esp+16],eax ;destPtr
+	align 16
+hf64lop:
+	mov eax,dword [esp+20] ;srcWidth
+	shl eax,3
+	sub dword [esp+32],eax ;dbpl
+	
+	mov ecx,dword [esp+24] ;srcHeight
+	mov edi,dword [esp+16] ;destPtr
+	mov esi,dword [esp+12] ;srcPtr
+	align 16
+hf64lop2:
+	mov edx,dword [esp+20] ;srcWidth
+	
+	align 16
+hf64lop3:
+	dec edx
+	movq xmm0,[esi+edx*8]
+	movq [edi],xmm0
+	lea edi,[edi+8]
+	jnz hf64lop3
+	
+	add esi,dword [esp+28] ;sbpl
+	add edi,dword [esp+32] ;dbpl
+	dec ecx
+	jnz hf64lop2
+	
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFRotate64_CW90(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+	align 16
+_ImageUtil_HFRotate64_CW90:
+ImageUtil_HFRotate64_CW90:
+	push esi
+	push edi
+	mov ecx,dword [esp+24] ;srcHeight
+	mov eax,dword [esp+28] ;sbpl
+	imul eax,ecx ;srcHeight
+	lea edx,[ecx*8]
+	sub dword [esp+32],edx ;dbpl
+	mov ecx,dword [esp+20] ;srcWidth
+	lea eax,[eax+ecx*8] ;srcPtr += sbpl * srcHeight + srcWidth * 4
+	add dword [esp+12],eax ;srcPtr
+
+	mov edi,dword [esp+16] ;destPtr
+	mov edx,dword [esp+20] ;srcWidth
+	
+	align 16
+hfr64cw90lop:
+	sub dword [esp+12],8 ;srcPtr
+	mov ecx,dword [esp+24] ;srcHeight
+	mov esi,dword [esp+12] ;srcPtr
+	
+	align 16
+hfr64cw90lop2:
+	sub esi,dword [esp+28] ;sbpl
+	mov eax,dword [esi]
+	mov dword [edi],eax
+	lea edi,[edi+8]
+	dec ecx
+	jnz hfr64cw90lop2
+	add edi,dword [esp+32] ;dbpl
+	dec edx
+	jnz hfr64cw90lop
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFRotate64_CW180(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+	align 16
+_ImageUtil_HFRotate64_CW180:
+ImageUtil_HFRotate64_CW180:
+	push esi
+	push edi
+	mov eax,dword [esp+28] ;sbpl
+	mul dword [esp+24] ;srcHeight
+	add dword [esp+12],eax ;srcPtr
+	mov eax,dword [esp+20] ;srcWidth
+	shl eax,3
+	add dword [esp+28],eax ;sbpl
+	sub dword [esp+32],eax ;dbpl
+	add dword [esp+12],eax ;srcPtr
+
+	mov edx,dword [esp+24] ;srcHeight
+	mov esi,dword [esp+12] ;srcPtr
+	mov edi,dword [esp+16] ;destPtr
+	
+	align 16
+hfr64cw180lop:
+	sub esi,dword [esp+28] ;sbpl
+	mov ecx,dword [esp+20] ;srcWidth
+	shl ecx,1
+	rep movsd
+	add edi,dword [esp+32] ;dbpl
+	dec edx
+	jnz hfr64cw180lop
+	
+	pop edi
+	pop esi
+	ret
+
+;void ImageUtil_HFRotate64_CW270(UInt8 *srcPtr, UInt8 *destPtr, OSInt srcWidth, OSInt srcHeight, OSInt sbpl, OSInt dbpl);
+;0 edi
+;4 esi
+;8 retAddr
+;12 srcPtr
+;16 destPtr
+;20 srcWidth
+;24 srcHeight
+;28 sbpl
+;32 dbpl
+	align 16
+_ImageUtil_HFRotate64_CW270:
+ImageUtil_HFRotate64_CW270:
+	push esi
+	push edi
+	mov eax,dword [esp+24] ;srcHeight
+	shl eax,3
+	sub dword [esp+32],eax ;dbpl
+	
+	mov edx,dword [esp+20] ;srcWidth
+	mov edi,dword [esp+16] ;destPtr
+	align 16
+hfr64cw270lop:
+	mov ecx,dword [esp+24] ;srcHeight
+	mov esi,dword [esp+12] ;srcPtr
+	
+	align 16
+hfr64cw270lop2:
+	movq xmm0,[esi]
+	movq [edi],xmm0
+	add esi,dword [esp+28] ;sbpl
+	lea edi,[edi+8]
+	dec ecx
+	jnz hfr64cw270lop2
+	
+	add dword [esp+12],8 ;srcPtr
+	add edi,dword [esp+32] ;dbpl
+	dec edx
+	jnz hfr64cw270lop
 	
 	pop edi
 	pop esi

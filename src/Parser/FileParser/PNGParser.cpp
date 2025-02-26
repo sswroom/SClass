@@ -2699,6 +2699,13 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						dataBuff += 3;
 						sizeLeft -= 3;
 					}
+					sizeLeft = 768 - size;
+					while (sizeLeft > 0)
+					{
+						WriteNInt32(palPtr, 0);
+						palPtr += 4;
+						sizeLeft -= 3;
+					}
 				}
 			}
 		}

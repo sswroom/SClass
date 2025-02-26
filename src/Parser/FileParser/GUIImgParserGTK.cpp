@@ -183,6 +183,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 					}
 					bo.Delete();
 				}
+				printf("Image parsed by GUIImgParserGTK\r\n");
 			}
 			g_object_unref(pixBuf);
 		}
