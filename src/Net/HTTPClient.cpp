@@ -169,14 +169,14 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> s2;
 	NN<Text::String> s;
-	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
+	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(":"));
 	Data::ArrayIterator<NN<Text::String>> it = this->headers.Iterator();
 	while (it.HasNext())
 	{
 		s = it.Next();
 		if (s->StartsWithICase(buff, (UOSInt)(s2 - buff)))
 		{
-			return Text::CString(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff));
+			return Text::CStringNN(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff)).LTrim();
 		}
 	}
 	return CSTR_NULL;
