@@ -32,7 +32,7 @@ extern "C"
 	void LanczosResizer8_C8_imgcopyp8(const UInt8 *inPt, UInt8 *outPt, UOSInt width, UOSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable);
 }
 
-void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizer8_C8::SetupInterpolationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -100,7 +100,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizer8_C8::SetupDecimationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -176,7 +176,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizer8_C8::SetupInterpolationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -345,7 +345,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 	MemFree(work);
 }
 
-void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
+void Media::Resizer::LanczosResizer8_C8::SetupDecimationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<Media::Resizer::LanczosResizer8_C8::LRHPARAMETER> out, OSInt indexSep, Double offsetCorr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1068,11 +1068,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UnsafeArray<const UInt8> src, OS
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupDecimationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
@@ -1089,11 +1089,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UnsafeArray<const UInt8> src, OS
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupDecimationParameterV(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;
@@ -1140,11 +1140,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UnsafeArray<const UInt8> src, OS
 
 			if (swidth > UOSInt2Double(dwidth))
 			{
-				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupDecimationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter_h(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
+				SetupInterpolationParameterH(this->hnTap, swidth, siWidth, dwidth, prm, 8, xOfst);
 			}
 			hsSize = swidth;
 			hdSize = dwidth;
@@ -1184,11 +1184,11 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UnsafeArray<const UInt8> src, OS
 
 			if (sheight > UOSInt2Double(dheight))
 			{
-				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupDecimationParameterV(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			else
 			{
-				setup_interpolation_parameter(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
+				SetupInterpolationParameterV(this->vnTap, sheight, siHeight, dheight, prm, vsStep, yOfst);
 			}
 			vsSize = sheight;
 			vdSize = dheight;

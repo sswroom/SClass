@@ -1434,6 +1434,9 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 	this->rVal = 0.0;
 	this->gVal = 0.0;
 	this->bVal = 0.0;
+	this->mainX = 0;
+	this->mainY = 0;
+	this->mainZ = 0;
 	this->colorMgr = colorMgr;
 	this->monMgr = monMgr;
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());

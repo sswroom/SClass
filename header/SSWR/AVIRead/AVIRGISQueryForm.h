@@ -5,6 +5,7 @@
 #include "Math/VectorTextWriterList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/IMapNavigator.h"
+#include "Sync/Thread.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -23,6 +24,7 @@ namespace SSWR
 		private:
 			NN<UI::GUIPanel> pnlObj;
 			NN<UI::GUIComboBox> cboObj;
+			NN<UI::GUILabel> lblObjMsg;
 			NN<UI::GUITabControl> tcMain;
 
 			NN<UI::GUITabPage> tpInfo;
@@ -56,6 +58,10 @@ namespace SSWR
 			NN<UI::GUILabel> lblInside;
 			NN<UI::GUITextBox> txtInside;
 
+			NN<UI::GUITabPage> tpAutoSave;
+			NN<UI::GUILabel> lblAutoSavePath;
+			NN<UI::GUITextBox> txtAutoSavePath;
+
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IMapNavigator> navi;
 			NN<Map::MapDrawLayer> lyr;
@@ -63,6 +69,13 @@ namespace SSWR
 			Optional<Math::Geometry::Vector2D> currVec;
 			Math::VectorTextWriterList writerList;
 			Bool layerNames;
+			Sync::Mutex downMut;
+			Data::ArrayListStringNN downList;
+			Sync::Mutex openMut;
+			Data::ArrayListStringNN openList;
+			Sync::Thread downThread;
+			Optional<Text::String> downPath;
+			UOSInt dispCnt;
 
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecList;
 			Data::ArrayListNN<Math::Geometry::Vector2D> queryVecOriList;
@@ -76,6 +89,9 @@ namespace SSWR
 			static void __stdcall OnShapeFmtChanged(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
 			static void __stdcall OnInfoDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnOpenTimer(AnyType userObj);
+			static void __stdcall DownThread(NN<Sync::Thread> thread);
+			static void __stdcall OnFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
 
 			void ShowLayerNames();
 			void ClearQueryResults();
