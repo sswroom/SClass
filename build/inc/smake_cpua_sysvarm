@@ -80,8 +80,8 @@ BGImgFilter_CPP.o: ../../src/Media/ImgFilter/BGImgFilter_cpp.cpp
 BWImgFilter_CPP.o: ../../src/Media/ImgFilter/BWImgFilter_cpp.cpp
 NearestNeighbourResizer32_32_CPP.o: ../../src/Media/Resizer/NearestNeighbourResizer32_32_CPP.cpp
 NearestNeighbourResizer64_64_CPP.o: ../../src/Media/Resizer/NearestNeighbourResizer64_64_CPP.cpp
-LanczosResizer8_C8_CPP.o: ../../src/Media/Resizer/LanczosResizer8_C8_CPP.cpp
 LanczosResizer16_C8_CPP.o: ../../src/Media/Resizer/LanczosResizer16_C8_CPP.cpp
+LanczosResizerFunc_CPP.o: ../../src/Media/Resizer/LanczosResizerFunc_CPP.cpp
 LanczosResizerH8_8_CPP.o: ../../src/Media/Resizer/LanczosResizerH8_8_CPP.cpp
 LanczosResizerLR_C16_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C16_CPP.cpp
 LanczosResizerLR_C32_CPU_CPP.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU_CPP.cpp

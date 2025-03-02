@@ -47,14 +47,6 @@ namespace Media
 				UOSInt tmpbuffSize;
 			} TaskParam;
 
-			typedef struct
-			{
-				UOSInt length;
-				UnsafeArray<Int64> weight;
-				UnsafeArray<OSInt> index;
-				UOSInt tap;
-			} LRHPARAMETER;
-
 		private:
 			UOSInt hnTap;
 			UOSInt vnTap;
@@ -89,11 +81,6 @@ namespace Media
 			Optional<Media::ColorManagerSess> colorSess;
 			Bool rgbChanged;
 			UnsafeArrayOpt<UInt8> rgbTable;
-
-			void SetupInterpolationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupDecimationParameterV(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupInterpolationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
-			void SetupDecimationParameterH(UOSInt nTap, Double source_length, OSInt source_max_pos, UOSInt result_length, NN<LRHPARAMETER> out, OSInt indexSep, Double offsetCorr);
 
 			void mt_horizontal_filter_pa(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt,UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth);
 			void mt_horizontal_filter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt width, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth);

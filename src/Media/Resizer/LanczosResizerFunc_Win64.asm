@@ -1,18 +1,18 @@
 section .text
 
-global LanczosResizer8_C8_horizontal_filter_pa
-global LanczosResizer8_C8_horizontal_filter
-global LanczosResizer8_C8_vertical_filter
-global LanczosResizer8_C8_expand
-global LanczosResizer8_C8_expand_pa
-global LanczosResizer8_C8_collapse
-global LanczosResizer8_C8_imgcopy
-global LanczosResizer8_C8_imgcopy_pa
-global LanczosResizer8_C8_horizontal_filterp8
-global LanczosResizer8_C8_expandp8
-global LanczosResizer8_C8_imgcopyp8
+global LanczosResizerFunc_HorizontalFilterB8G8R8A8PA
+global LanczosResizerFunc_HorizontalFilterB8G8R8A8
+global LanczosResizerFunc_HorizontalFilterPal8
+global LanczosResizerFunc_VerticalFilterB8G8R8A8
+global LanczosResizerFunc_ExpandB8G8R8A8PA
+global LanczosResizerFunc_ExpandB8G8R8A8
+global LanczosResizerFunc_ExpandPal8
+global LanczosResizerFunc_CollapseB8G8R8A8
+global LanczosResizerFunc_ImgCopyB8G8R8A8
+global LanczosResizerFunc_ImgCopyB8G8R8A8PA
+global LanczosResizerFunc_ImgCopyPal8
 
-;void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -32,7 +32,7 @@ global LanczosResizer8_C8_imgcopyp8
 ;128 tmpbuff
 
 	align 16
-LanczosResizer8_C8_horizontal_filter_pa:
+LanczosResizerFunc_HorizontalFilterB8G8R8A8PA:
 	push rbp
 	push rbx
 	push rsi
@@ -462,7 +462,7 @@ hfpaexit:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_horizontal_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+;void LanczosResizerFunc_HorizontalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -482,7 +482,7 @@ hfpaexit:
 ;128 tmpbuff
 
 	align 16
-LanczosResizer8_C8_horizontal_filter:
+LanczosResizerFunc_HorizontalFilterB8G8R8A8:
 	push rbp
 	push rbx
 	push rsi
@@ -861,7 +861,304 @@ hfexit:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_vertical_filter(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerFunc_HorizontalFilterPal8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
+;0 rdi
+;8 rsi
+;16 rbx
+;24 rbp
+;32 retAddr
+;rcx inpt r10
+;rdx outPt r11
+;r8 dwidth
+;r9 height
+;72 tap
+;80 index
+;88 weight
+;96 sstep
+;104 dstep
+;112 rgbTable
+;120 swidth
+;128 tmpbuff
+
+	align 16
+LanczosResizerFunc_HorizontalFilterPal8:
+	push rbp
+	push rbx
+	push rsi
+	push rdi
+	mov r10,rcx
+	mov r11,rdx
+	test r8,1 ;dwidth
+	jnz hfp8start
+	cmp qword [rsp+72],6 ;tap
+	jz hf6p8start
+	jmp hf2p8start
+	
+	align 16
+hfp8start:					;if (dwidth & 1)
+	shr qword [rsp+72],1 ;tap
+	pxor xmm3,xmm3
+	align 16
+hfp8lop:
+	mov rcx,r10 ;inPt
+	mov rsi,qword [rsp+112] ;rgbTable
+	mov rbp,qword [rsp+120] ;swidth
+	mov rdi,qword [rsp+128] ;tmpbuff
+	shr rbp,1
+	jnb hfp8lop4
+
+	movzx rdx,byte [rcx]
+	mov rax,[rsi+rdx*8+270336]
+	mov [rdi],rax
+	lea rdi,[rdi+8]
+	lea rcx,[rcx+1]
+
+	align 16
+hfp8lop4:
+	movzx rax,byte [rcx]
+	movzx rbx,byte [rcx+1]
+	movq xmm1,[rsi+rax*8+270336]
+	movhps xmm1,[rsi+rbx*8+270336]
+	movdqu [rdi],xmm1
+
+	lea rdi,[rdi+16]
+	lea rcx,[rcx+2]
+	dec rbp
+	jnz hfp8lop4
+
+	mov rbp,r8 ;dwidth
+	mov rsi,r11 ;outPt
+	mov rbx,qword [rsp+80] ;index
+	mov rdi,qword [rsp+88] ;weight
+	mov rcx,qword [rsp+128] ;tmpbuff
+	align 16
+hfp8lop2:
+	mov rdx,qword [rsp+72] ;tap
+	pxor xmm2,xmm2
+	align 16
+hfp8lop3:
+	mov rax,qword [rbx]
+	movq xmm0,[rcx+rax]
+	mov rax,qword [rbx+8]
+	movq xmm1,[rcx+rax]
+	punpcklwd xmm0,xmm1
+	pmaddwd xmm0,[rdi]
+	paddd xmm2,xmm0
+	
+	lea rdi,[rdi+16]
+	lea rbx,[rbx+16]
+	dec rdx
+	jnz hfp8lop3
+
+	psrad xmm2,14
+	packssdw xmm2,xmm3
+	movq [rsi],xmm2
+	lea rsi,[rsi+8]
+	dec rbp
+	jnz hfp8lop2
+
+	add r10,qword [rsp+96] ;sstep
+	add r11,qword [rsp+104] ;dstep
+	dec r9 ;currHeight
+	jnz hfp8lop
+	jmp hfp8exit
+
+	align 16
+hf6p8start:								;else if (tap == 6)
+	shr r8,1 ;dwidth
+	shr qword [rsp+40],1 ;tap
+	pxor xmm3,xmm3
+	align 16
+hf6p8lop:
+	mov rcx,r10 ;inPt
+	mov rsi,qword [rsp+112] ;rgbTable
+	mov rbp,qword [rsp+120] ;swidth
+	mov rdi,qword [rsp+128] ;tmpbuff
+
+	shr rbp,1
+	jnb hf6p8lop4
+
+	movzx rdx,byte [rcx]
+	mov rax,[rsi+rdx*8+270336]
+	mov [rdi],rax
+	lea rdi,[rdi+8]
+	lea rcx,[rcx+1]
+
+	align 16
+hf6p8lop4:
+	movzx rax,byte [rcx]
+	movzx rbx,byte [rcx+1]
+	movq xmm1,[rsi+rax*8+270336]
+	movhps xmm1,[rsi+rbx*8+270336]
+	movdqu [rdi],xmm1
+
+	lea rdi,[rdi+16]
+	lea rcx,[rcx+2]
+	dec rbp
+	jnz hf6p8lop4
+
+	mov rbp,r8 ;dwidth
+	mov rsi,r11 ;outPt
+	mov rbx,qword [rsp+80] ;index
+	mov rdi,qword [rsp+88] ;weight
+	mov rcx,qword [rsp+128] ;tmpbuff
+
+	align 16
+hf6p8lop2:
+	mov rax,qword [rbx]
+	pxor xmm1,xmm1
+	mov rdx,qword [rbx+8]
+	movdqu xmm0,[rcx+rax]
+	movdqa xmm4,xmm0
+	movdqu xmm2,[rcx+rdx]
+	punpcklwd xmm0,xmm2
+	pmaddwd xmm0,[rdi]
+	punpckhwd xmm4,xmm2
+	pmaddwd xmm4,[rdi+16]
+	paddd xmm1,xmm0
+	mov rax,qword [rbx+16]
+	paddd xmm1,xmm4
+	movdqu xmm0,[rcx+rax]
+	pshufd xmm2,xmm0,14
+	punpcklwd xmm0,xmm2
+	pmaddwd xmm0, [rdi+32]
+	paddd xmm1,xmm0
+
+	mov rax,qword [rbx+24]
+	pxor xmm3,xmm3
+	mov rdx,qword [rbx+32]
+	movdqu xmm0,[rcx+rax]
+	movdqa xmm4,xmm0
+	movdqu xmm2,[rcx+rdx]
+	punpcklwd xmm0,xmm2
+	pmaddwd xmm0,[rdi+48]
+	punpckhwd xmm4,xmm2
+	pmaddwd xmm4,[rdi+64]
+	paddd xmm3,xmm0
+	mov rax,qword [rbx+40]
+	paddd xmm3,xmm4
+	movdqu xmm0,[rcx+rax]
+	pshufd xmm2,xmm0,14
+	punpcklwd xmm0,xmm2
+	pmaddwd xmm0,[rdi+80]
+	paddd xmm3,xmm0
+
+	lea rdi,[rdi+96]
+	lea rbx,[rbx+48]
+
+	psrad xmm1,14
+	psrad xmm3,14
+	packssdw xmm1,xmm3
+	movdqu [rsi],xmm1
+	lea rsi,[rsi+16]
+	dec rbp
+	jnz hf6p8lop2
+
+	add r10,qword [rsp+96] ;sstep
+	add r11,qword [rsp+104] ;dstep
+
+	dec r9 ;currHeight
+	jnz hf6p8lop
+	jmp hfp8exit
+
+	align 16
+hf2p8start:
+	shr r8,1 ;dwidth
+	shr qword [rsp+72],1 ;tap
+	pxor xmm3,xmm3
+	align 16
+hf2p8lop:
+	mov rcx,r10 ;inPt
+	mov rsi,qword [rsp+112] ;rgbTable
+	mov rbp,qword [rsp+120] ;swidth
+	mov rdi,qword [rsp+128] ;tmpbuff
+
+	shr rbp,1
+	jnb hf2p8lop4
+
+	movzx rdx,byte [rcx]
+	mov rax,[rsi+rdx*8+270336]
+	mov [rdi],rax
+	lea rdi,[rdi+8]
+	lea rcx,[rcx+1]
+
+	align 16
+hf2p8lop4:
+	movzx rax,byte [rcx]
+	movzx rbx,byte [rcx+1]
+	movq xmm1,[rsi+rax*8+270336]
+	movhps xmm1,[rsi+rbx*8+270336]
+	movdqu [rdi],xmm1
+
+	lea rdi,[rdi+16]
+	lea rcx,[rcx+2]
+	dec rbp
+	jnz hf2p8lop4
+
+	mov rbp,r8 ;dwidth
+	mov rsi,r11 ;outPt
+	mov rbx,qword [rsp+80] ;index
+	mov rdi,qword [rsp+88] ;weight
+	mov rcx,qword [rsp+128] ;tmpbuff
+	align 16
+hf2p8lop2:
+	mov rdx,qword [rsp+72] ;tap
+	pxor xmm2,xmm2
+	pxor xmm3,xmm3
+	align 16
+hf2p8lop3:
+	mov rax,qword [rbx]
+	movq xmm0,[rcx+rax]
+	mov rax,qword [rbx+8]
+	movq xmm1,[rcx+rax]
+	punpcklwd xmm0,xmm1
+	pmaddwd xmm0,[rdi]
+	paddd xmm2,xmm0
+	
+	lea rdi,[rdi+16]
+	lea rbx,[rbx+16]
+	dec rdx
+	jnz hf2p8lop3
+
+	mov rdx,qword [rsp+72] ;tap
+	align 16
+hf2p8lop3b:
+	mov rax,qword [rbx]
+	movq xmm0,[rcx+rax]
+	mov rax,qword [rbx+8]
+	movq xmm1,[rcx+rax]
+	punpcklwd xmm0,xmm1
+	pmaddwd xmm0,[rdi]
+	paddd xmm3,xmm0
+	
+	lea rdi,[rdi+16]
+	lea rbx,[rbx+16]
+	dec rdx
+	jnz hf2p8lop3b
+
+	psrad xmm2,14
+	psrad xmm3,14
+	packssdw xmm2,xmm3
+	movdqu [rsi],xmm2
+	lea rsi,[rsi+16]
+	dec rbp
+	jnz hf2p8lop2
+
+	add r10,qword [rsp+96] ;sstep
+	add r11,qword [rsp+104] ;dstep
+
+	dec r9 ;currHeight
+	jnz hf2p8lop
+
+	align 16
+hfp8exit:
+	pop rdi
+	pop rsi
+	pop rbx
+	pop rbp
+	ret
+
+;void LanczosResizerFunc_VerticalFilterB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;0 r12
 ;8 r13
 ;16 r14
@@ -885,7 +1182,7 @@ hfexit:
 ;176 rgbTable
 
 	align 16
-LanczosResizer8_C8_vertical_filter:
+LanczosResizerFunc_VerticalFilterB8G8R8A8:
 	push rbp
 	push rbx
 	push rsi
@@ -1190,7 +1487,7 @@ vfexit:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_expand(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerFunc_ExpandB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -1205,71 +1502,7 @@ vfexit:
 ;88 rgbTable
 
 	align 16
-LanczosResizer8_C8_expand:
-	push rbp
-	push rbx
-	push rsi
-	push rdi
-	
-;	mov rcx,qword [rsp+40] ;inPt
-	mov rsi,rdx ;outPt
-	lea rdx,[r8*4] ;width
-	lea rax,[r8*8] ;width
-	sub qword [rsp+72],rdx ;sstep
-	sub qword [rsp+80],rax ;dstep
-	mov rbx,qword [rsp+88] ;rgbTable
-	xor rdx,rdx
-	align 16
-explop:
-	mov rax,r8 ;width
-
-	ALIGN 16
-explop2:
-	movzx edx,byte [rcx+3]
-	movq xmm1,[rbx+rdx*8+268288]
-	movzx edx,byte [rcx+2]
-	movq xmm0,[rbx+rdx*8+262144]
-	paddsw xmm1,xmm0
-	movzx edx,byte [rcx+1]
-	movq xmm0,[rbx+rdx*8+264192]
-	paddsw xmm1,xmm0
-	movzx edx,byte [rcx]
-	movq xmm0,[rbx+rdx*8+266240]
-	paddsw xmm1,xmm0
-	movq [rsi],xmm1
-
-	lea rsi,[rsi+8]
-	lea rcx,[rcx+4]
-	dec rax
-	jnz explop2
-
-	add rcx,qword [rsp+72] ;sstep
-	add rsi,qword [rsp+80] ;dstep
-
-	dec r9
-	jnz explop
-	pop rdi
-	pop rsi
-	pop rbx
-	pop rbp
-	ret
-
-;void LanczosResizer8_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
-;rcx inPt
-;rdx outPt
-;r8 width
-;r9 height
-;72 sstep
-;80 dstep
-;88 rgbTable
-
-	align 16
-LanczosResizer8_C8_expand_pa:
+LanczosResizerFunc_ExpandB8G8R8A8PA:
 	push rbp
 	push rbx
 	push rsi
@@ -1326,7 +1559,125 @@ exppalop2:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_collapse(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerFunc_ExpandB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;0 rdi
+;8 rsi
+;16 rbx
+;24 rbp
+;32 retAddr
+;rcx inPt
+;rdx outPt
+;r8 width
+;r9 height
+;72 sstep
+;80 dstep
+;88 rgbTable
+
+	align 16
+LanczosResizerFunc_ExpandB8G8R8A8:
+	push rbp
+	push rbx
+	push rsi
+	push rdi
+	
+;	mov rcx,qword [rsp+40] ;inPt
+	mov rsi,rdx ;outPt
+	lea rdx,[r8*4] ;width
+	lea rax,[r8*8] ;width
+	sub qword [rsp+72],rdx ;sstep
+	sub qword [rsp+80],rax ;dstep
+	mov rbx,qword [rsp+88] ;rgbTable
+	xor rdx,rdx
+	align 16
+explop:
+	mov rax,r8 ;width
+
+	ALIGN 16
+explop2:
+	movzx edx,byte [rcx+3]
+	movq xmm1,[rbx+rdx*8+268288]
+	movzx edx,byte [rcx+2]
+	movq xmm0,[rbx+rdx*8+262144]
+	paddsw xmm1,xmm0
+	movzx edx,byte [rcx+1]
+	movq xmm0,[rbx+rdx*8+264192]
+	paddsw xmm1,xmm0
+	movzx edx,byte [rcx]
+	movq xmm0,[rbx+rdx*8+266240]
+	paddsw xmm1,xmm0
+	movq [rsi],xmm1
+
+	lea rsi,[rsi+8]
+	lea rcx,[rcx+4]
+	dec rax
+	jnz explop2
+
+	add rcx,qword [rsp+72] ;sstep
+	add rsi,qword [rsp+80] ;dstep
+
+	dec r9
+	jnz explop
+	pop rdi
+	pop rsi
+	pop rbx
+	pop rbp
+	ret
+
+;void LanczosResizerFunc_ExpandPal8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;0 rdi
+;8 rsi
+;16 rbx
+;24 rbp
+;32 retAddr
+;rcx inPt
+;rdx outPt
+;r8 width
+;r9 height
+;72 sstep
+;80 dstep
+;88 rgbTable
+
+	align 16
+LanczosResizerFunc_ExpandPal8:
+	push rbp
+	push rbx
+	push rsi
+	push rdi
+	
+;	mov rcx,qword [rsp+40] ;inPt
+	mov rsi,rdx ;outPt
+	lea rax,[r8*8] ;width
+	sub qword [rsp+72],r8 ;sstep
+	sub qword [rsp+80],rax ;dstep
+	mov rbx,qword [rsp+88] ;rgbTable
+	xor rdx,rdx
+	align 16
+expp8lop:
+	mov rax,r8 ;width
+
+	ALIGN 16
+expp8lop2:
+	movzx rdx,byte [rcx]
+	mov rdx,[rbx+rdx*8+270336]
+	mov [rsi],rdx
+
+	lea rsi,[rsi+8]
+	lea rcx,[rcx+1]
+	dec rax
+	jnz expp8lop2
+
+	add rcx,qword [rsp+72] ;sstep
+	add rsi,qword [rsp+80] ;dstep
+
+	dec r9
+	jnz expp8lop
+	pop rdi
+	pop rsi
+	pop rbx
+	pop rbp
+	ret
+
+;void LanczosResizerFunc_CollapseB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;	Int64 toAdd = 0xff80ff80ff80ff80;
 ;	Int64 toAdd2 = 0x80808080;
 ;0 rdi
@@ -1343,7 +1694,7 @@ exppalop2:
 ;88 rgbTable
 
 	align 16
-LanczosResizer8_C8_collapse:
+LanczosResizerFunc_CollapseB8G8R8A8:
 	push rbp
 	push rbx
 	push rsi
@@ -1389,7 +1740,7 @@ collop2:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -1404,7 +1755,7 @@ collop2:
 ;88 rgbTable
 
 	align 16
-LanczosResizer8_C8_imgcopy:
+LanczosResizerFunc_ImgCopyB8G8R8A8:
 	push rbp
 	push rbx
 	push rsi
@@ -1452,7 +1803,7 @@ iclop2:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;0 edi
 ;8 esi
 ;16 ebx
@@ -1467,7 +1818,7 @@ iclop2:
 ;88 rgbTable
 
 	align 16
-LanczosResizer8_C8_imgcopy_pa:
+LanczosResizerFunc_ImgCopyB8G8R8A8PA:
 	push rbp
 	push rbx
 	push rsi
@@ -1557,304 +1908,7 @@ icpalop2:
 	pop rbp
 	ret
 
-;void LanczosResizer8_C8_horizontal_filterp8(UInt8 *inPt, UInt8 *outPt, OSInt dwidth, OSInt height, OSInt tap, OSInt *index, Int64 *weight, OSInt sstep, OSInt dstep, UInt8 *rgbTable, OSInt swidth, UInt8 *tmpbuff)
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
-;rcx inpt r10
-;rdx outPt r11
-;r8 dwidth
-;r9 height
-;72 tap
-;80 index
-;88 weight
-;96 sstep
-;104 dstep
-;112 rgbTable
-;120 swidth
-;128 tmpbuff
-
-	align 16
-LanczosResizer8_C8_horizontal_filterp8:
-	push rbp
-	push rbx
-	push rsi
-	push rdi
-	mov r10,rcx
-	mov r11,rdx
-	test r8,1 ;dwidth
-	jnz hfp8start
-	cmp qword [rsp+72],6 ;tap
-	jz hf6p8start
-	jmp hf2p8start
-	
-	align 16
-hfp8start:					;if (dwidth & 1)
-	shr qword [rsp+72],1 ;tap
-	pxor xmm3,xmm3
-	align 16
-hfp8lop:
-	mov rcx,r10 ;inPt
-	mov rsi,qword [rsp+112] ;rgbTable
-	mov rbp,qword [rsp+120] ;swidth
-	mov rdi,qword [rsp+128] ;tmpbuff
-	shr rbp,1
-	jnb hfp8lop4
-
-	movzx rdx,byte [rcx]
-	mov rax,[rsi+rdx*8+270336]
-	mov [rdi],rax
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+1]
-
-	align 16
-hfp8lop4:
-	movzx rax,byte [rcx]
-	movzx rbx,byte [rcx+1]
-	movq xmm1,[rsi+rax*8+270336]
-	movhps xmm1,[rsi+rbx*8+270336]
-	movdqu [rdi],xmm1
-
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+2]
-	dec rbp
-	jnz hfp8lop4
-
-	mov rbp,r8 ;dwidth
-	mov rsi,r11 ;outPt
-	mov rbx,qword [rsp+80] ;index
-	mov rdi,qword [rsp+88] ;weight
-	mov rcx,qword [rsp+128] ;tmpbuff
-	align 16
-hfp8lop2:
-	mov rdx,qword [rsp+72] ;tap
-	pxor xmm2,xmm2
-	align 16
-hfp8lop3:
-	mov rax,qword [rbx]
-	movq xmm0,[rcx+rax]
-	mov rax,qword [rbx+8]
-	movq xmm1,[rcx+rax]
-	punpcklwd xmm0,xmm1
-	pmaddwd xmm0,[rdi]
-	paddd xmm2,xmm0
-	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
-	dec rdx
-	jnz hfp8lop3
-
-	psrad xmm2,14
-	packssdw xmm2,xmm3
-	movq [rsi],xmm2
-	lea rsi,[rsi+8]
-	dec rbp
-	jnz hfp8lop2
-
-	add r10,qword [rsp+96] ;sstep
-	add r11,qword [rsp+104] ;dstep
-	dec r9 ;currHeight
-	jnz hfp8lop
-	jmp hfp8exit
-
-	align 16
-hf6p8start:								;else if (tap == 6)
-	shr r8,1 ;dwidth
-	shr qword [rsp+40],1 ;tap
-	pxor xmm3,xmm3
-	align 16
-hf6p8lop:
-	mov rcx,r10 ;inPt
-	mov rsi,qword [rsp+112] ;rgbTable
-	mov rbp,qword [rsp+120] ;swidth
-	mov rdi,qword [rsp+128] ;tmpbuff
-
-	shr rbp,1
-	jnb hf6p8lop4
-
-	movzx rdx,byte [rcx]
-	mov rax,[rsi+rdx*8+270336]
-	mov [rdi],rax
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+1]
-
-	align 16
-hf6p8lop4:
-	movzx rax,byte [rcx]
-	movzx rbx,byte [rcx+1]
-	movq xmm1,[rsi+rax*8+270336]
-	movhps xmm1,[rsi+rbx*8+270336]
-	movdqu [rdi],xmm1
-
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+2]
-	dec rbp
-	jnz hf6p8lop4
-
-	mov rbp,r8 ;dwidth
-	mov rsi,r11 ;outPt
-	mov rbx,qword [rsp+80] ;index
-	mov rdi,qword [rsp+88] ;weight
-	mov rcx,qword [rsp+128] ;tmpbuff
-
-	align 16
-hf6p8lop2:
-	mov rax,qword [rbx]
-	pxor xmm1,xmm1
-	mov rdx,qword [rbx+8]
-	movdqu xmm0,[rcx+rax]
-	movdqa xmm4,xmm0
-	movdqu xmm2,[rcx+rdx]
-	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[rdi]
-	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[rdi+16]
-	paddd xmm1,xmm0
-	mov rax,qword [rbx+16]
-	paddd xmm1,xmm4
-	movdqu xmm0,[rcx+rax]
-	pshufd xmm2,xmm0,14
-	punpcklwd xmm0,xmm2
-	pmaddwd xmm0, [rdi+32]
-	paddd xmm1,xmm0
-
-	mov rax,qword [rbx+24]
-	pxor xmm3,xmm3
-	mov rdx,qword [rbx+32]
-	movdqu xmm0,[rcx+rax]
-	movdqa xmm4,xmm0
-	movdqu xmm2,[rcx+rdx]
-	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[rdi+48]
-	punpckhwd xmm4,xmm2
-	pmaddwd xmm4,[rdi+64]
-	paddd xmm3,xmm0
-	mov rax,qword [rbx+40]
-	paddd xmm3,xmm4
-	movdqu xmm0,[rcx+rax]
-	pshufd xmm2,xmm0,14
-	punpcklwd xmm0,xmm2
-	pmaddwd xmm0,[rdi+80]
-	paddd xmm3,xmm0
-
-	lea rdi,[rdi+96]
-	lea rbx,[rbx+48]
-
-	psrad xmm1,14
-	psrad xmm3,14
-	packssdw xmm1,xmm3
-	movdqu [rsi],xmm1
-	lea rsi,[rsi+16]
-	dec rbp
-	jnz hf6p8lop2
-
-	add r10,qword [rsp+96] ;sstep
-	add r11,qword [rsp+104] ;dstep
-
-	dec r9 ;currHeight
-	jnz hf6p8lop
-	jmp hfp8exit
-
-	align 16
-hf2p8start:
-	shr r8,1 ;dwidth
-	shr qword [rsp+72],1 ;tap
-	pxor xmm3,xmm3
-	align 16
-hf2p8lop:
-	mov rcx,r10 ;inPt
-	mov rsi,qword [rsp+112] ;rgbTable
-	mov rbp,qword [rsp+120] ;swidth
-	mov rdi,qword [rsp+128] ;tmpbuff
-
-	shr rbp,1
-	jnb hf2p8lop4
-
-	movzx rdx,byte [rcx]
-	mov rax,[rsi+rdx*8+270336]
-	mov [rdi],rax
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+1]
-
-	align 16
-hf2p8lop4:
-	movzx rax,byte [rcx]
-	movzx rbx,byte [rcx+1]
-	movq xmm1,[rsi+rax*8+270336]
-	movhps xmm1,[rsi+rbx*8+270336]
-	movdqu [rdi],xmm1
-
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+2]
-	dec rbp
-	jnz hf2p8lop4
-
-	mov rbp,r8 ;dwidth
-	mov rsi,r11 ;outPt
-	mov rbx,qword [rsp+80] ;index
-	mov rdi,qword [rsp+88] ;weight
-	mov rcx,qword [rsp+128] ;tmpbuff
-	align 16
-hf2p8lop2:
-	mov rdx,qword [rsp+72] ;tap
-	pxor xmm2,xmm2
-	pxor xmm3,xmm3
-	align 16
-hf2p8lop3:
-	mov rax,qword [rbx]
-	movq xmm0,[rcx+rax]
-	mov rax,qword [rbx+8]
-	movq xmm1,[rcx+rax]
-	punpcklwd xmm0,xmm1
-	pmaddwd xmm0,[rdi]
-	paddd xmm2,xmm0
-	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
-	dec rdx
-	jnz hf2p8lop3
-
-	mov rdx,qword [rsp+72] ;tap
-	align 16
-hf2p8lop3b:
-	mov rax,qword [rbx]
-	movq xmm0,[rcx+rax]
-	mov rax,qword [rbx+8]
-	movq xmm1,[rcx+rax]
-	punpcklwd xmm0,xmm1
-	pmaddwd xmm0,[rdi]
-	paddd xmm3,xmm0
-	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
-	dec rdx
-	jnz hf2p8lop3b
-
-	psrad xmm2,14
-	psrad xmm3,14
-	packssdw xmm2,xmm3
-	movdqu [rsi],xmm2
-	lea rsi,[rsi+16]
-	dec rbp
-	jnz hf2p8lop2
-
-	add r10,qword [rsp+96] ;sstep
-	add r11,qword [rsp+104] ;dstep
-
-	dec r9 ;currHeight
-	jnz hf2p8lop
-
-	align 16
-hfp8exit:
-	pop rdi
-	pop rsi
-	pop rbx
-	pop rbp
-	ret
-
-;void LanczosResizer8_C8_expandp8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
+;void LanczosResizerFunc_ImgCopyPal8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -1869,61 +1923,7 @@ hfp8exit:
 ;88 rgbTable
 
 	align 16
-LanczosResizer8_C8_expandp8:
-	push rbp
-	push rbx
-	push rsi
-	push rdi
-	
-;	mov rcx,qword [rsp+40] ;inPt
-	mov rsi,rdx ;outPt
-	lea rax,[r8*8] ;width
-	sub qword [rsp+72],r8 ;sstep
-	sub qword [rsp+80],rax ;dstep
-	mov rbx,qword [rsp+88] ;rgbTable
-	xor rdx,rdx
-	align 16
-expp8lop:
-	mov rax,r8 ;width
-
-	ALIGN 16
-expp8lop2:
-	movzx rdx,byte [rcx]
-	mov rdx,[rbx+rdx*8+270336]
-	mov [rsi],rdx
-
-	lea rsi,[rsi+8]
-	lea rcx,[rcx+1]
-	dec rax
-	jnz expp8lop2
-
-	add rcx,qword [rsp+72] ;sstep
-	add rsi,qword [rsp+80] ;dstep
-
-	dec r9
-	jnz expp8lop
-	pop rdi
-	pop rsi
-	pop rbx
-	pop rbp
-	ret
-
-;void LanczosResizer8_C8_imgcopyp8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *rgbTable)
-;0 rdi
-;8 rsi
-;16 rbx
-;24 rbp
-;32 retAddr
-;rcx inPt
-;rdx outPt
-;r8 width
-;r9 height
-;72 sstep
-;80 dstep
-;88 rgbTable
-
-	align 16
-LanczosResizer8_C8_imgcopyp8:
+LanczosResizerFunc_ImgCopyPal8:
 	push rbp
 	push rbx
 	push rsi

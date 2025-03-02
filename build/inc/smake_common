@@ -3082,10 +3082,13 @@ Media/Resizer/DeintResizerLR_C32.h:
 @DeintResizerLR_C32.o
 Media/Resizer/LanczosResizer8_C8.h:
 @LanczosResizer8_C8.o
-@LanczosResizer8_C8_CPP.o
 Media/Resizer/LanczosResizer16_C8.h:
 @LanczosResizer16_C8.o
 @LanczosResizer16_C8_CPP.o
+Media/Resizer/LanczosResizerFunc.h:
+@LanczosResizerFunc.o
+Media/Resizer/LanczosResizerFuncC.h:
+@LanczosResizerFunc_CPP.o
 Media/Resizer/LanczosResizerH8_8.h:
 @LanczosResizerH8_8.o
 @LanczosResizerH8_8_CPP.o
