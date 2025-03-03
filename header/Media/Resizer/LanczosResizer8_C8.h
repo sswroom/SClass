@@ -24,9 +24,7 @@ namespace Media
 				ImgCopy,
 				HFilterPA,
 				ExpandPA,
-				ImgCopyPA,
-				HFilterP8,
-				HFilterP8PA
+				ImgCopyPA
 			};
 
 			typedef struct
@@ -43,6 +41,8 @@ namespace Media
 				UnsafeArray<Int64> weight;
 				OSInt sstep;
 				OSInt dstep;
+				Media::PixelFormat srcPF;
+				Media::PixelFormat destPF;
 				UnsafeArrayOpt<UInt8> tmpbuff;
 				UOSInt tmpbuffSize;
 			} TaskParam;
@@ -75,6 +75,7 @@ namespace Media
 			UnsafeArrayOpt<UInt8> buffPtr;
 
 			Media::PixelFormat srcPF;
+			Media::PixelFormat destPF;
 			UnsafeArrayOpt<const UInt8> srcPal;
 			Media::ColorProfile srcProfile;
 			Media::ColorProfile destProfile;
@@ -109,6 +110,7 @@ namespace Media
 			void SetDestProfile(NN<const Media::ColorProfile> destProfile);
 			Media::AlphaType GetDestAlphaType();
 			void SetSrcPixelFormat(Media::PixelFormat srcPF, UnsafeArrayOpt<const UInt8> srcPal);
+			void SetDestPixelFormat(Media::PixelFormat destPF);
 			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);
 			virtual Optional<Media::StaticImage> ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};

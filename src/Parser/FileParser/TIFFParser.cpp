@@ -689,6 +689,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 
 //						OSInt dbpl = imgWidth * bpp >> 3;
 //						OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
+						Bool hasHeader = false;
 						i = 0;
 						while (i < nStrip)
 						{
@@ -696,7 +697,24 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							//imgData += stripLengs[i];
 
 							lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-							Data::Compress::Inflater::DecompressDirect(imgData, destSize, compImgData.SubArray(0, lengLeft), false);
+							if (!Data::Compress::Inflater::DecompressDirect(imgData, destSize, compImgData.SubArray(0, lengLeft), hasHeader))
+							{
+								if (!hasHeader)
+								{
+									if (!Data::Compress::Inflater::DecompressDirect(imgData, destSize, compImgData.SubArray(0, lengLeft), true))
+									{
+										printf("TIFFParser: Error in decompress using Inflater with Header\r\n");
+									}
+									else
+									{
+										hasHeader = true;
+									}
+								}
+								else
+								{
+									printf("TIFFParser: Error in decompress using Inflater\r\n");
+								}
+							}
 							imgData = imgData.SubArray(destSize);
 
 							i++;

@@ -33,7 +33,15 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 			if (resizer.IsSupported(img->info))
 			{
-				resizer.SetSrcPixelFormat(pf, img->pal);
+				if (pf == Media::PF_B8G8R8)
+				{
+					resizer.SetSrcPixelFormat(pf, img->pal);
+					resizer.SetDestPixelFormat(pf);
+				}
+				else
+				{
+					resizer.SetSrcPixelFormat(pf, img->pal);
+				}
 			}
 			else
 			{

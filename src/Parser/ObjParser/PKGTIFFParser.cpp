@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/PackageFile.h"
+#include "Map/MapLayerCollection.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Parser/FileParser/TIFFParser.h"
 #include "Parser/ObjParser/PKGTIFFParser.h"
@@ -39,8 +40,16 @@ Optional<IO::ParsedObject> Parser::ObjParser::PKGTIFFParser::ParseObject(NN<IO::
 		return 0;
 	if (layers.GetCount() == 1)
 		return layers.GetItemNoCheck(0);
-	layers.DeleteAll();
-	return 0;
+	NN<Map::MapLayerCollection> mapColl;
+	NEW_CLASSNN(mapColl, Map::MapLayerCollection(pobj->GetSourceNameObj(), 0));
+	UOSInt i = 0;
+	UOSInt j = layers.GetCount();
+	while (i < j)
+	{
+		mapColl->Add(layers.GetItemNoCheck(i));
+		i++;
+	}
+	return mapColl;
 }
 
 void Parser::ObjParser::PKGTIFFParser::ParsePackage(NN<IO::PackageFile> pkg, NN<Data::ArrayListNN<Map::MapDrawLayer>> layers)
