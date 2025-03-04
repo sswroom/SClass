@@ -1727,6 +1727,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 				this->resizer->SetTargetSize(Math::Size2D<UOSInt>(newW, newH));
 				simg = NN<Media::StaticImage>::ConvertFrom(nnimg);
 				NN<Media::StaticImage> img2;
+				this->resizer->SetSrcPixelFormat(simg->info.pf, simg->pal);
 				if (this->resizer->ProcessToNew(simg).SetTo(img2))
 				{
 					spotX = spotX * denv->img->GetHDPI() / nnimg->info.hdpi;
@@ -1789,6 +1790,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 				this->resizer->SetTargetSize(Math::Size2D<UOSInt>(newW, newH));
 				simg = NN<Media::StaticImage>::ConvertFrom(nnimg);
 				NN<Media::StaticImage> img2;
+				this->resizer->SetSrcPixelFormat(simg->info.pf, simg->pal);
 				if (this->resizer->ProcessToNew(simg).SetTo(img2))
 				{
 					spotX = spotX * denv->img->GetHDPI() / nnimg->info.hdpi;
@@ -2223,10 +2225,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				{
 					img->To32bpp();
 				}
-				else
-				{
-					this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
-				}
+				this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
 				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
 				NN<Media::StaticImage> newImg;
@@ -2296,10 +2295,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				{
 					img->To32bpp();
 				}
-				else
-				{
-					this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
-				}
+				this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
 				NN<Media::StaticImage> newImg;
 				if (cimgPt.x < cimgPt2.x && cimgPt.y < cimgPt2.y)
 				{

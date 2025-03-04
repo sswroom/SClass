@@ -1730,7 +1730,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			NN<Media::SharedImage> simg;
 			
 			NN<Math::CoordinateSystem> csys;
-			if (srid == 0)
+			if (srid == 0 || srid == 32767)
 			{
 				csys = Math::CoordinateSystemManager::CreateCsysByCoord(Math::Coord2DDbl((minX + maxX) * 0.5, (minY + maxY) * 0.5));
 				srid = csys->GetSRID();

@@ -839,6 +839,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 			frm->Close();
 		}
 	}
+	this->ui->ProcessMessages();
 	this->mnuLayer.Delete();
 	this->mnuGroup.Delete();
 	this->envRenderer.Delete();
