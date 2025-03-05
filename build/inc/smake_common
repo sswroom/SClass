@@ -3803,8 +3803,8 @@ Parser/ObjParser/MPGXAParser.h:
 @MPGXAParser.o
 Parser/ObjParser/OSMMapParser.h:
 @OSMMapParser.o
-Parser/ObjParser/PKGTIFFParser.h:
-@PKGTIFFParser.o
+Parser/ObjParser/PKGMapParser.h:
+@PKGMapParser.o
 
 SSWR/ProcMonForm.h:
 @ProcMonForm.o

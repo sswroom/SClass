@@ -450,6 +450,61 @@ void Map::MapLayerCollection::ReleaseAll()
 	}
 }
 
+void Map::MapLayerCollection::ReorderLayers()
+{
+	UOSInt imageIndex = 0;
+	UOSInt areaIndex = 0;
+	UOSInt lineIndex = 0;
+	UOSInt pointIndex = 0;
+	NN<Map::MapDrawLayer> layer;
+	Map::DrawLayerType type;
+	UOSInt i = 0;
+	UOSInt j = this->layerList.GetCount();
+	while (i < j)
+	{
+		layer = this->layerList.GetItemNoCheck(i);
+		type = layer->GetLayerType();
+		if (type == Map::DRAW_LAYER_IMAGE)
+		{
+			if (imageIndex != i)
+			{
+				this->layerList.RemoveAt(i);
+				this->layerList.Insert(imageIndex, layer);
+			}
+			imageIndex++;
+			areaIndex++;
+			lineIndex++;
+			pointIndex++;
+		}
+		else if (type == Map::DRAW_LAYER_POLYGON || type == Map::DRAW_LAYER_MIXED)
+		{
+			if (areaIndex != i)
+			{
+				this->layerList.RemoveAt(i);
+				this->layerList.Insert(areaIndex, layer);
+			}
+			areaIndex++;
+			lineIndex++;
+			pointIndex++;
+		}
+		else if (type == Map::DRAW_LAYER_POLYLINE3D || type == Map::DRAW_LAYER_POLYLINE)
+		{
+			if (lineIndex != i)
+			{
+				this->layerList.RemoveAt(i);
+				this->layerList.Insert(lineIndex, layer);
+			}
+			lineIndex++;
+			pointIndex++;
+		}
+		else
+		{
+			pointIndex++;
+		}
+		i++;
+	}
+}
+
 UOSInt Map::MapLayerCollection::GetUpdatedHandlerCnt() const
 {
 	return this->updHdlrs.GetCount();

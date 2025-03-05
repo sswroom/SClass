@@ -123,7 +123,7 @@
 #include "Parser/ObjParser/KMZParser.h"
 #include "Parser/ObjParser/MPGXAParser.h"
 #include "Parser/ObjParser/OSMMapParser.h"
-#include "Parser/ObjParser/PKGTIFFParser.h"
+#include "Parser/ObjParser/PKGMapParser.h"
 
 Parser::FullParserList::FullParserList() : Parser::ParserList()
 {
@@ -383,7 +383,7 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	this->AddObjectParser(oparser);
 	NEW_CLASSNN(oparser, Parser::ObjParser::OSMMapParser());
 	this->AddObjectParser(oparser);
-	NEW_CLASSNN(oparser, Parser::ObjParser::PKGTIFFParser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::PKGMapParser());
 	this->AddObjectParser(oparser);
 
 	this->SetArcGISPRJParser(&this->prjParser);

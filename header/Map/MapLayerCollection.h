@@ -59,6 +59,7 @@ namespace Map
 		virtual void SetCoordinateSystem(NN<Math::CoordinateSystem> csys);
 
 		void ReleaseAll();
+		void ReorderLayers();
 		UOSInt GetUpdatedHandlerCnt() const;
 		UpdatedHandler GetUpdatedHandler(UOSInt index) const;
 		AnyType GetUpdatedObject(UOSInt index) const;

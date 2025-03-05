@@ -1718,7 +1718,7 @@ ITMParser.o: ../../src/Parser/ObjParser/ITMParser.cpp
 KMZParser.o: ../../src/Parser/ObjParser/KMZParser.cpp
 MPGXAParser.o: ../../src/Parser/ObjParser/MPGXAParser.cpp
 OSMMapParser.o: ../../src/Parser/ObjParser/OSMMapParser.cpp
-PKGTIFFParser.o: ../../src/Parser/ObjParser/PKGTIFFParser.cpp
+PKGMapParser.o: ../../src/Parser/ObjParser/PKGMapParser.cpp
 
 ProcMonForm.o: ../../src/SSWR/ProcMonForm.cpp
 AVIRAboutForm.o: ../../src/SSWR/AVIRead/AVIRAboutForm.cpp
