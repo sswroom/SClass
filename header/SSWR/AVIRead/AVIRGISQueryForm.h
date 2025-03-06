@@ -7,6 +7,7 @@
 #include "SSWR/AVIRead/IMapNavigator.h"
 #include "Sync/Thread.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -23,6 +24,9 @@ namespace SSWR
 		{
 		private:
 			NN<UI::GUIPanel> pnlObj;
+			NN<UI::GUILabel> lblObjName;
+			NN<UI::GUIComboBox> cboObjName;
+			NN<UI::GUIButton> btnObjDownload;
 			NN<UI::GUIComboBox> cboObj;
 			NN<UI::GUILabel> lblObjMsg;
 			NN<UI::GUITabControl> tcMain;
@@ -61,6 +65,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpAutoSave;
 			NN<UI::GUILabel> lblAutoSavePath;
 			NN<UI::GUITextBox> txtAutoSavePath;
+			NN<UI::GUICheckBox> chkAutoOpen;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IMapNavigator> navi;
@@ -69,6 +74,7 @@ namespace SSWR
 			Optional<Math::Geometry::Vector2D> currVec;
 			Math::VectorTextWriterList writerList;
 			Bool layerNames;
+			UOSInt nameCol;
 			Sync::Mutex downMut;
 			Data::ArrayListStringNN downList;
 			Sync::Mutex openMut;
@@ -88,7 +94,9 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnShapeFmtChanged(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
+			static void __stdcall OnObjNameSelChg(AnyType userObj);
 			static void __stdcall OnInfoDblClk(AnyType userObj, UOSInt index);
+			static void __stdcall OnObjDownloadClicked(AnyType userObj);
 			static void __stdcall OnOpenTimer(AnyType userObj);
 			static void __stdcall DownThread(NN<Sync::Thread> thread);
 			static void __stdcall OnFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
@@ -96,6 +104,7 @@ namespace SSWR
 			void ShowLayerNames();
 			void ClearQueryResults();
 			void SetQueryItem(UOSInt index);
+			void DownloadURL(NN<Text::String> url);
 		public:
 			AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<IMapNavigator> navi);
 			virtual ~AVIRGISQueryForm();

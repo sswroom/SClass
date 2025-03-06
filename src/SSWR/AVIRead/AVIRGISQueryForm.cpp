@@ -120,7 +120,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 						vec->Convert(converter);
 					}
 					sb.ClearStr();
-					if (me->lyr->GetString(sb, nameArr, obj->objId, me->lyr->GetNameCol()))
+					if (me->lyr->GetString(sb, nameArr, obj->objId, me->nameCol))
 					{
 						sb.AppendC(UTF8STRC(" - "));
 						sb.Append(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()));
@@ -206,6 +206,16 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjNameSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	UOSInt index = me->cboObjName->GetSelectedIndex();
+	if (index != INVALID_INDEX)
+	{
+		me->nameCol = index;
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
@@ -238,67 +248,48 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UO
 		NN<Text::String> s;
 		if (value.SetTo(s))
 		{
-			if (s->StartsWith(CSTR("http://")) || s->StartsWith(CSTR("https://")))
+			me->DownloadURL(s);
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjDownloadClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	UOSInt selIndex = me->cboObj->GetSelectedIndex();
+	if (selIndex != INVALID_INDEX)
+	{
+		UOSInt i;
+		UOSInt j;
+		UOSInt k;
+		NN<Text::String> value;
+		if (me->layerNames)
+		{
+			j = me->lyr->GetColumnCnt();
+			k = selIndex * j;
+			i = 0;
+			while (i < j)
 			{
-				Text::StringBuilderUTF8 sb;
-				if (me->downList.GetCount() > 0)
+				if (me->queryValueList.GetItem(i + k).SetTo(value))
 				{
-					Sync::MutexUsage mutUsage(me->downMut);
-					UOSInt cnt = me->downList.Add(s->Clone()) + 1;
-					sb.Append(CSTR("Pending download: "));
-					sb.AppendUOSInt(cnt);
-					me->lblObjMsg->SetText(sb.ToCString());
-					me->dispCnt = cnt;
+					me->DownloadURL(value);
 				}
-				else
+				i++;
+			}
+		}
+		else
+		{
+			j = me->queryValueOfstList.GetItem(selIndex);
+			k = me->queryValueOfstList.GetItem(selIndex + 1);
+			if (k == 0)
+				k = me->queryNameList.GetCount();
+			while (j < k)
+			{
+				if (me->queryValueList.GetItem(j).SetTo(value))
 				{
-					if (me->txtAutoSavePath->GetText(sb) && sb.leng > 0)
-					{
-						Sync::MutexUsage mutUsage(me->downMut);
-						OPTSTR_DEL(me->downPath);
-						me->downPath = Text::String::New(sb.ToCString());
-						UOSInt cnt = me->downList.Add(s->Clone()) + 1;
-						sb.ClearStr();
-						sb.Append(CSTR("Pending download: "));
-						sb.AppendUOSInt(cnt);
-						me->lblObjMsg->SetText(sb.ToCString());
-						me->dispCnt = cnt;
-						me->downThread.Start();
-					}
-					else
-					{
-						NN<Net::TCPClientFactory> clif = me->core->GetTCPClientFactory();
-						Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
-						NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
-						IO::MemoryStream mstm;
-						if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
-						{
-							UInt64 len = cli->ReadToEnd(mstm, 65536);
-							if (len > 0)
-							{
-								sb.ClearStr();
-								cli->GetContentFileName(sb);
-								NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISQueryInfoDownload", true);
-								dlg->SetFileName(sb.ToCString());
-								if (dlg->ShowDialog(me->GetHandle()))
-								{
-									IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-									if (fs.Write(mstm.GetArray()) != mstm.GetLength())
-									{
-										me->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("GIS Query"), me);
-									}
-									else
-									{
-										me->navi->AddLayerFromFile(dlg->GetFileName()->ToCString());
-									}
-								}
-								dlg.Delete();
-							}
-						}
-						cli.Delete();
-						ssl.Delete();
-					}
-				} 
+					me->DownloadURL(value);
+				}
+				j++;
 			}
 		}
 	}
@@ -317,7 +308,10 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnOpenTimer(AnyType userObj)
 				break;
 			}
 		}
-		me->navi->AddLayerFromFile(path->ToCString());
+		if (me->chkAutoOpen->IsChecked())
+		{
+			me->navi->AddLayerFromFile(path->ToCString());
+		}
 		path->Release();
 	}
 
@@ -409,6 +403,7 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnFormClosed(AnyType userObj, NN
 void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 {
 	this->lvInfo->ClearItems();
+	this->cboObjName->ClearItems();
 	UTF8Char sbuff[256];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = 0;
@@ -418,7 +413,12 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 		sbuff[0] = 0;
 		sptr = this->lyr->GetColumnName(sbuff, i).Or(sbuff);
 		this->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
+		this->cboObjName->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
+	}
+	if (this->nameCol < j)
+	{
+		this->cboObjName->SetSelectedIndex(this->nameCol);
 	}
 }
 
@@ -521,6 +521,72 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
 }
 
+void SSWR::AVIRead::AVIRGISQueryForm::DownloadURL(NN<Text::String> url)
+{
+	if (url->StartsWith(CSTR("http://")) || url->StartsWith(CSTR("https://")))
+	{
+		Text::StringBuilderUTF8 sb;
+		if (this->downList.GetCount() > 0)
+		{
+			Sync::MutexUsage mutUsage(this->downMut);
+			UOSInt cnt = this->downList.Add(url->Clone()) + 1;
+			sb.Append(CSTR("Pending download: "));
+			sb.AppendUOSInt(cnt);
+			this->lblObjMsg->SetText(sb.ToCString());
+			this->dispCnt = cnt;
+		}
+		else
+		{
+			if (this->txtAutoSavePath->GetText(sb) && sb.leng > 0)
+			{
+				Sync::MutexUsage mutUsage(this->downMut);
+				OPTSTR_DEL(this->downPath);
+				this->downPath = Text::String::New(sb.ToCString());
+				UOSInt cnt = this->downList.Add(url->Clone()) + 1;
+				sb.ClearStr();
+				sb.Append(CSTR("Pending download: "));
+				sb.AppendUOSInt(cnt);
+				this->lblObjMsg->SetText(sb.ToCString());
+				this->dispCnt = cnt;
+				this->downThread.Start();
+			}
+			else
+			{
+				NN<Net::TCPClientFactory> clif = this->core->GetTCPClientFactory();
+				Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(clif, false);
+				NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+				IO::MemoryStream mstm;
+				if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+				{
+					UInt64 len = cli->ReadToEnd(mstm, 65536);
+					if (len > 0)
+					{
+						sb.ClearStr();
+						cli->GetContentFileName(sb);
+						NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISQueryInfoDownload", true);
+						dlg->SetFileName(sb.ToCString());
+						if (dlg->ShowDialog(this->GetHandle()))
+						{
+							IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							if (fs.Write(mstm.GetArray()) != mstm.GetLength())
+							{
+								this->ui->ShowMsgOK(CSTR("Error in writing to file"), CSTR("GIS Query"), this);
+							}
+							else
+							{
+								this->navi->AddLayerFromFile(dlg->GetFileName()->ToCString());
+							}
+						}
+						dlg.Delete();
+					}
+				}
+				cli.Delete();
+				ssl.Delete();
+			}
+		} 
+	}
+}
+
 SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui), downThread(DownThread, this, CSTR("GISQueryDown"))
 {
 	Text::StringBuilderUTF8 sb;
@@ -530,6 +596,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->navi = navi;
 	this->currVec = 0;
 	this->layerNames = true;
+	this->nameCol = lyr->GetNameCol();
 	this->dispCnt = 0;
 	this->downPath = 0;
 	sb.AppendC(UTF8STRC("Query - "));
@@ -538,13 +605,21 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->SetFont(0, 0, 8.25, false);
 
 	this->pnlObj = ui->NewPanel(*this);
-	this->pnlObj->SetRect(0, 0, 100, 31, false);
+	this->pnlObj->SetRect(0, 0, 100, 55, false);
 	this->pnlObj->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblObjName = ui->NewLabel(this->pnlObj, CSTR("Name Column"));
+	this->lblObjName->SetRect(4, 4, 100, 23, false);
+	this->cboObjName = ui->NewComboBox(this->pnlObj, false);
+	this->cboObjName->SetRect(104, 4, 200, 23, false);
+	this->cboObjName->HandleSelectionChange(OnObjNameSelChg, this);
+	this->btnObjDownload = ui->NewButton(this->pnlObj, CSTR("Download Links"));
+	this->btnObjDownload->SetRect(304, 4, 100, 23, false);
+	this->btnObjDownload->HandleButtonClick(OnObjDownloadClicked, this);
 	this->cboObj = ui->NewComboBox(this->pnlObj, false);
-	this->cboObj->SetRect(4, 4, 200, 23, false);
+	this->cboObj->SetRect(4, 28, 200, 23, false);
 	this->cboObj->HandleSelectionChange(OnObjSelChg, this);
 	this->lblObjMsg = ui->NewLabel(this->pnlObj, CSTR(""));
-	this->lblObjMsg->SetRect(204, 4, 200, 23, false);
+	this->lblObjMsg->SetRect(204, 28, 200, 23, false);
 	this->tcMain = ui->NewTabControl(*this);
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -621,6 +696,8 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->lblAutoSavePath->SetRect(4, 4, 100, 23, false);
 	this->txtAutoSavePath = ui->NewTextBox(this->tpAutoSave, CSTR(""));
 	this->txtAutoSavePath->SetRect(104, 4, 600, 23, false);
+	this->chkAutoOpen = ui->NewCheckBox(this->tpAutoSave, CSTR("Auto Open"), true);
+	this->chkAutoOpen->SetRect(104, 28, 150, 23, false);
 	this->ShowLayerNames();
 
 	UOSInt i = 0;
