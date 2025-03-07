@@ -1,4 +1,6 @@
 #include "Stdafx.h"
+#include "Map/VectorLayer.h"
+#include "Math/Geometry/VectorImage.h"
 #include "SSWR/AVIRead/AVIRGISFontForm.h"
 #include "SSWR/AVIRead/AVIRGISFontStyleForm.h"
 #include "SSWR/AVIRead/AVIRGISImageForm.h"
@@ -249,6 +251,8 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 
 SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
 {
+	UTF8Char sbuff[256];
+	UnsafeArray<UTF8Char> sptr;
 	NN<UI::GUILabel> lbl;
 	this->SetNoResize(true);
 	this->env = env;
@@ -268,53 +272,65 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->SetNoResize(true);
 	this->SetSize(512, 320);
 
+	this->pnlCtrl = ui->NewPanel(*this);
+	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
+	this->btnOK = ui->NewButton(this->pnlCtrl, CSTR("OK"));
+	this->btnOK->SetRect(336, 4, 75, 23, false);
+	this->btnOK->HandleButtonClick(OnOKClicked, this);
+	this->btnCancel = ui->NewButton(this->pnlCtrl, CSTR("Cancel"));
+	this->btnCancel->SetRect(424, 4, 75, 23, false);
+	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	lbl = ui->NewLabel(*this, CSTR("Min Visible Scale"));
+	this->tcMain = ui->NewTabControl(*this);
+	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpLayer = this->tcMain->AddTabPage(CSTR("Layer"));
+	lbl = ui->NewLabel(this->tpLayer, CSTR("Min Visible Scale"));
 	lbl->SetRect(8, 0, 100, 23, false);
-	this->txtMinScale = ui->NewTextBox(*this, CSTR(""));
+	this->txtMinScale = ui->NewTextBox(this->tpLayer, CSTR(""));
 	this->txtMinScale->SetRect(112, 0, 100, 21, false);
-	lbl = ui->NewLabel(*this, CSTR("Max Visible Scale"));
+	lbl = ui->NewLabel(this->tpLayer, CSTR("Max Visible Scale"));
 	lbl->SetRect(8, 24, 100, 23, false);
-	this->txtMaxScale = ui->NewTextBox(*this, CSTR(""));
+	this->txtMaxScale = ui->NewTextBox(this->tpLayer, CSTR(""));
 	this->txtMaxScale->SetRect(112, 24, 100, 21, false);
-	this->chkHide = ui->NewCheckBox(*this, CSTR("Hide"), false);
+	this->chkHide = ui->NewCheckBox(this->tpLayer, CSTR("Hide"), false);
 	this->chkHide->SetRect(240, 8, 104, 24, false);
-	lbl = ui->NewLabel(*this, CSTR("Font Style"));
+	lbl = ui->NewLabel(this->tpLayer, CSTR("Font Style"));
 	lbl->SetRect(8, 48, 100, 23, false);
-	this->pbFontStyle = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, false);
+	this->pbFontStyle = ui->NewPictureBox(this->tpLayer, this->core->GetDrawEngine(), true, false);
 	this->pbFontStyle->SetRect(112, 48, 160, 20, false);
-	this->btnFontModify = ui->NewButton(*this, CSTR("Modify"));
+	this->btnFontModify = ui->NewButton(this->tpLayer, CSTR("Modify"));
 	this->btnFontModify->SetRect(280, 48, 75, 20, false);
-	this->btnFontStyle = ui->NewButton(*this, CSTR("Style"));
+	this->btnFontStyle = ui->NewButton(this->tpLayer, CSTR("Style"));
 	this->btnFontStyle->SetRect(360, 48, 75, 20, false);
-	this->lblLineStyle = ui->NewLabel(*this, CSTR("Line Style"));
+	this->lblLineStyle = ui->NewLabel(this->tpLayer, CSTR("Line Style"));
 	this->lblLineStyle->SetRect(8, 72, 100, 23, false);
-	this->pbLineStyle = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, false);
+	this->pbLineStyle = ui->NewPictureBox(this->tpLayer, this->core->GetDrawEngine(), true, false);
 	this->pbLineStyle->SetRect(112, 72, 160, 20, false);
-	this->btnLineModify = ui->NewButton(*this, CSTR("Modify"));
+	this->btnLineModify = ui->NewButton(this->tpLayer, CSTR("Modify"));
 	this->btnLineModify->SetRect(280, 72, 75, 20, false);
-	this->btnLineStyle = ui->NewButton(*this, CSTR("Style"));
+	this->btnLineStyle = ui->NewButton(this->tpLayer, CSTR("Style"));
 	this->btnLineStyle->SetRect(360, 72, 75, 20, false);
-	this->lblFillStyle = ui->NewLabel(*this, CSTR("Fill Style"));
+	this->lblFillStyle = ui->NewLabel(this->tpLayer, CSTR("Fill Style"));
 	this->lblFillStyle->SetRect(8, 96, 100, 23, false);
-	this->pbFillStyle = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, false);
+	this->pbFillStyle = ui->NewPictureBox(this->tpLayer, this->core->GetDrawEngine(), true, false);
 	this->pbFillStyle->SetRect(112, 96, 160, 20, false);
-	lbl = ui->NewLabel(*this, CSTR("Label Column"));
+	lbl = ui->NewLabel(this->tpLayer, CSTR("Label Column"));
 	lbl->SetRect(8, 120, 100, 23, false);
-	this->cboColName = ui->NewComboBox(*this, false);
+	this->cboColName = ui->NewComboBox(this->tpLayer, false);
 	this->cboColName->SetRect(112, 120, 121, 20, false);
-	this->chkShowLabel = ui->NewCheckBox(*this, CSTR("Show Label"), false);
+	this->chkShowLabel = ui->NewCheckBox(this->tpLayer, CSTR("Show Label"), false);
 	this->chkShowLabel->SetRect(240, 120, 104, 24, false);
-	lbl = ui->NewLabel(*this, CSTR("Label Priority"));
+	lbl = ui->NewLabel(this->tpLayer, CSTR("Label Priority"));
 	lbl->SetRect(8, 144, 100, 23, false);
-	this->txtPriority = ui->NewTextBox(*this, CSTR(""));
+	this->txtPriority = ui->NewTextBox(this->tpLayer, CSTR(""));
 	this->txtPriority->SetRect(112, 144, 100, 21, false);
-	this->lblIcon = ui->NewLabel(*this, CSTR("Point Icon"));
+	this->lblIcon = ui->NewLabel(this->tpLayer, CSTR("Point Icon"));
 	this->lblIcon->SetRect(8, 168, 72, 23, false);
-	this->pbIcon = ui->NewPictureBox(*this, this->core->GetDrawEngine(), true, true);
+	this->pbIcon = ui->NewPictureBox(this->tpLayer, this->core->GetDrawEngine(), true, true);
 	this->pbIcon->SetRect(112, 168, 200, 128, false);
 
-	this->grpLabel = ui->NewGroupBox(*this, CSTR("Label"));
+	this->grpLabel = ui->NewGroupBox(this->tpLayer, CSTR("Label"));
 	this->grpLabel->SetRect(352, 92, 120, 144, false);
 	this->chkSmart = ui->NewCheckBox(this->grpLabel, CSTR("Smart"), false);
 	this->chkSmart->SetRect(4, 4, 104, 24, false);
@@ -326,12 +342,42 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->chkTrim->SetRect(4, 76, 104, 24, false);
 	this->chkCapital = ui->NewCheckBox(this->grpLabel, CSTR("Capital"), false);
 	this->chkCapital->SetRect(4, 100, 104, 24, false);
-	this->btnOK = ui->NewButton(*this, CSTR("OK"));
-	this->btnOK->SetRect(336, 244, 75, 23, false);
-	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	this->btnCancel = ui->NewButton(*this, CSTR("Cancel"));
-	this->btnCancel->SetRect(424, 244, 75, 23, false);
-	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
+
+	Math::RectAreaDbl bounds;
+	if (!env->GetLayerBounds(group, index, bounds))
+	{
+		bounds = Math::RectAreaDbl(0, 0, 0, 0);
+	}
+	this->tpCSys = this->tcMain->AddTabPage(CSTR("CSys"));
+	this->pnlCSysBounds = ui->NewPanel(this->tpCSys);
+	this->pnlCSysBounds->SetRect(0, 0, 100, 51, false);
+	this->pnlCSysBounds->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblCSysBounds = ui->NewLabel(this->pnlCSysBounds, CSTR("Bounds"));
+	this->lblCSysBounds->SetRect(4, 4, 100, 23, false);
+	this->lblCSysMin = ui->NewLabel(this->pnlCSysBounds, CSTR("Min"));
+	this->lblCSysMin->SetRect(104, 4, 100, 23, false);
+	sptr = Text::StrDouble(sbuff, bounds.min.x);
+	this->txtCSysMinX = ui->NewTextBox(this->pnlCSysBounds, CSTRP(sbuff, sptr));
+	this->txtCSysMinX->SetRect(204, 4, 100, 23, false);
+	this->txtCSysMinX->SetReadOnly(true);
+	sptr = Text::StrDouble(sbuff, bounds.min.y);
+	this->txtCSysMinY = ui->NewTextBox(this->pnlCSysBounds, CSTRP(sbuff, sptr));
+	this->txtCSysMinY->SetRect(304, 4, 100, 23, false);
+	this->txtCSysMinY->SetReadOnly(true);
+	this->lblCSysMax = ui->NewLabel(this->pnlCSysBounds, CSTR("Max"));
+	this->lblCSysMax->SetRect(104, 28, 100, 23, false);
+	sptr = Text::StrDouble(sbuff, bounds.max.x);
+	this->txtCSysMaxX = ui->NewTextBox(this->pnlCSysBounds, CSTRP(sbuff, sptr));
+	this->txtCSysMaxX->SetRect(204, 28, 100, 23, false);
+	this->txtCSysMaxX->SetReadOnly(true);
+	sptr = Text::StrDouble(sbuff, bounds.max.y);
+	this->txtCSysMaxY = ui->NewTextBox(this->pnlCSysBounds, CSTRP(sbuff, sptr));
+	this->txtCSysMaxY->SetRect(304, 28, 100, 23, false);
+	this->txtCSysMaxY->SetReadOnly(true);
+	this->txtCSysCurr = ui->NewTextBox(this->tpCSys, CSTR(""), true);
+	this->txtCSysCurr->SetRect(0, 0, 100, 240, false);
+	this->txtCSysCurr->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->txtCSysCurr->SetReadOnly(true);
 
 	this->pbFillStyle->HandleMouseDown(OnFillClicked, this);
 	this->pbFontStyle->HandleMouseDown(OnFontModifyDown, this);
@@ -348,10 +394,36 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->imgFont = 0;
 	Map::MapEnv::LayerItem setting;
 	NN<Map::MapEnv::LayerItem> lyr;
-	UTF8Char sbuff[256];
-	UnsafeArray<UTF8Char> sptr;
 	if (this->env->GetLayerProp(setting, this->group, this->index) && Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(this->group, this->index)).SetTo(lyr))
 	{
+		if (lyr->layer->GetObjectClass() == Map::MapDrawLayer::OC_VECTOR_LAYER)
+		{
+			NN<Map::VectorLayer> vecLyr = NN<Map::VectorLayer>::ConvertFrom(lyr->layer);
+			if (vecLyr->GetLayerType() == Map::DRAW_LAYER_IMAGE)
+			{
+				Data::ArrayListInt64 ids;
+				if (vecLyr->GetAllObjectIds(ids, 0) == 1)
+				{
+					NN<Map::GetObjectSess> sess = vecLyr->BeginGetObject();
+					NN<Math::Geometry::Vector2D> vec;
+					if (vecLyr->GetNewVectorById(sess, ids.GetItem(0)).SetTo(vec))
+					{
+						NN<Media::StaticImage> simg;
+						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Image && NN<Math::Geometry::VectorImage>::ConvertFrom(vec)->GetImage(0).SetTo(simg))
+						{
+							Text::StringBuilderUTF8 sb;
+							simg->ToString(sb);
+							this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
+							this->txtImage = ui->NewTextBox(this->tpImage, sb.ToCString(), true);
+							this->txtImage->SetDockType(UI::GUIControl::DOCK_FILL);
+						}
+						vec.Delete();
+					}
+					vecLyr->EndGetObject(sess);
+				}
+			}
+		}
+
 		UOSInt j = lyr->layer->GetColumnCnt();
 		UOSInt i = 0;
 		while (i < j)

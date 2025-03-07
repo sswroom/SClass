@@ -1495,6 +1495,33 @@ Bool Map::MapEnv::GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Mat
 	return !isFirst;
 }
 
+Bool Map::MapEnv::GetLayerBounds(Optional<Map::MapEnv::GroupItem> group, UOSInt index, OutParam<Math::RectAreaDbl> bounds) const
+{
+	NN<const Data::ArrayListNN<Map::MapEnv::MapItem>> objs;
+	NN<Map::MapEnv::MapItem> item;
+	NN<GroupItem> nngroup;
+	if (group.SetTo(nngroup))
+	{
+		objs = nngroup->subitems;
+	}
+	else
+	{
+		objs = this->mapLayers;
+	}
+	if (objs->GetItem(index).SetTo(item))
+	{
+		if (item->itemType == Map::MapEnv::IT_LAYER)
+		{
+			return NN<Map::MapEnv::LayerItem>::ConvertFrom(item)->layer->GetBounds(bounds);
+		}
+		else if (item->itemType == Map::MapEnv::IT_GROUP)
+		{
+			return this->GetBounds(NN<Map::MapEnv::GroupItem>::ConvertFrom(item), bounds);
+		}
+	}
+	return false;
+}
+
 NN<Map::MapView> Map::MapEnv::CreateMapView(Math::Size2DDbl scnSize) const
 {
 	NN<Map::MapDrawLayer> baseLayer;

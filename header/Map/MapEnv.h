@@ -211,6 +211,7 @@ namespace Map
 		Optional<Map::MapDrawLayer> GetFirstLayer(Optional<GroupItem> group) const;
 		UOSInt GetLayersInGroup(Optional<Map::MapEnv::GroupItem> group, NN<Data::ArrayListNN<Map::MapDrawLayer>> layers) const;
 		Bool GetBounds(Optional<Map::MapEnv::GroupItem> group, OutParam<Math::RectAreaDbl> bounds) const;
+		Bool GetLayerBounds(Optional<Map::MapEnv::GroupItem> group, UOSInt index, OutParam<Math::RectAreaDbl> bounds) const;
 		NN<Map::MapView> CreateMapView(Math::Size2DDbl scnSize) const;
 		NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		UInt32 GetSRID() const;

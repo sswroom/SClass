@@ -2,6 +2,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/DebugTool.h"
 #include "IO/SimpleFileWriter.h"
 #include "Sync/Mutex.h"
 #include "Sync/Interlocked.h"
@@ -138,9 +139,9 @@ void *MAllocA64(UOSInt size)
 	if ((OSInt)mptr == 0)
 	{
 #if defined(DEBUGCON)
-		syslog(LOG_DEBUG, "Out of A64Memory: size = %d", (UInt32)size);
+		syslog(LOG_DEBUG, "Out of A64Memory: size = %lld", (UInt64)size);
 #else
-		printf("Out of Memory: A64size = %d\n", (UInt32)size);
+		printf("Out of Memory: A64size = %lld\n", (UInt64)size);
 #endif
 		Sync::Mutex_Unlock(&mcMut);
 		return 0;
@@ -186,6 +187,7 @@ void *MAlloc(UOSInt size)
 		syslog(LOG_DEBUG, "Out of Memory: size = %d", (UInt32)size);
 #else
 		printf("Out of Memory: size = %d\n", (UInt32)size);
+		IO::DebugTool::PrintStackTrace();
 #endif
 		return 0;
 	}
@@ -205,6 +207,7 @@ void *MAllocA(UOSInt size)
 		syslog(LOG_DEBUG, "Out of Memory: Asize = %d", (UInt32)size);
 #else
 		printf("Out of Memory: Asize = %d\n", (UInt32)size);
+		IO::DebugTool::PrintStackTrace();
 #endif
 		return 0;
 	}
@@ -224,9 +227,10 @@ void *MAllocA64(UOSInt size)
 	if ((OSInt)mptr == 0)
 	{
 #if defined(DEBUGCON)
-		syslog(LOG_DEBUG, "Out of Memory: A64size = %d", (UInt32)size);
+		syslog(LOG_DEBUG, "Out of Memory: A64size = %lld", (UInt64)size);
 #else
-		printf("Out of Memory: A64size = %d\n", (UInt32)size);
+		printf("Out of Memory: A64size = %lld\n", (UInt64)size);
+		IO::DebugTool::PrintStackTrace();
 #endif
 		return 0;
 	}

@@ -13,6 +13,7 @@
 #include "IO/StreamDataStream.h"
 #include "IO/Path.h"
 #include "IO/StreamReader.h"
+#include "IO/StmData/MemoryDataRef.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -23,6 +24,7 @@
 #include "Media/ImageList.h"
 #include "Media/ImagePreviewTool.h"
 #include "Media/ImageResizer.h"
+#include "Media/JPEGDecoder.h"
 #include "Media/StaticImage.h"
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/TIFFParser.h"
@@ -400,13 +402,30 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			{
 				Optional<Media::ImageList> innerImgList = 0;
 				NN<Media::ImageList> nnInnerImgList;
-				NN<IO::StreamData> jpgFd = fd->GetPartialData(stripOfst, stripLeng);
 				NN<Parser::ParserList> parsers;
 				if (this->parsers.SetTo(parsers))
 				{
-					innerImgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(jpgFd, IO::ParserType::ImageList));
+					Data::ByteBuffer jpgBuff(stripLeng + 18);
+					UOSInt jpgOfst;
+					UOSInt jpgLeng = stripLeng;
+					if (fd->GetRealData(stripOfst, jpgLeng, jpgBuff + 18) == jpgLeng)
+					{
+						jpgOfst = 18;
+						if (jpgBuff[18] == 0xff && jpgBuff[19] == 0xd8)
+						{
+							if (jpgBuff[20] == 0xff && jpgBuff[21] != 0xe0)
+							{
+								jpgOfst = 0;
+								jpgLeng += 18;
+								UInt8 hdr[] = {0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46,  0x49, 0x46, 0x00, 0x01, 0x01, 0x01, 0x00, 0x60, 0x00, 0x60, 0x00, 0x00};
+								jpgBuff.CopyFrom(0, Data::ByteArrayR(hdr, 20));
+							}
+						}
+
+						IO::StmData::MemoryDataRef jpgFd(jpgBuff.SubArray(jpgOfst, jpgLeng));
+						innerImgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(jpgFd, IO::ParserType::ImageList));
+					}
 				}
-				jpgFd.Delete();
 				if (innerImgList.SetTo(nnInnerImgList))
 				{
 					NN<Media::RasterImage> innerImg;
@@ -438,6 +457,212 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						MemFree(stripLengs);
 					}
+					processed = true;
+				}
+				else
+				{
+					valid = false;
+				}
+			}
+			else if (tileMode)
+			{
+				NN<Parser::ParserList> parsers;
+				if (this->parsers.SetTo(parsers))
+				{
+					if (photometricInterpretation == 1 || photometricInterpretation == 2)
+					{
+						if (nChannels == 1)
+						{
+							if (bpp == 1)
+							{
+								pf = Media::PF_PAL_W1;
+							}
+							else if (bpp == 2)
+							{
+								pf = Media::PF_PAL_W2;
+							}
+							else if (bpp == 4)
+							{
+								pf = Media::PF_PAL_W4;
+							}
+							else if (bpp == 8)
+							{
+								pf = Media::PF_PAL_W8;
+							}
+							else if (bpp == 16)
+							{
+								pf = Media::PF_LE_W16;
+							}
+						}
+						else if (nChannels == 2)
+						{
+							if (bpp == 16)
+							{
+								pf = Media::PF_W8A8;
+							}
+							else if (bpp == 32)
+							{
+								pf = Media::PF_LE_W16A16;
+							}
+						}
+					}
+					Data::ByteArrayR jpegTables = Data::ByteArrayR((UInt8*)&pf, 0);
+					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+					if (nnexif->GetExifItem(34675).SetTo(item))
+					{
+						NN<Media::ICCProfile> icc;
+						if (Media::ICCProfile::Parse(Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt)).SetTo(icc))
+						{
+							icc->GetRedTransferParam(color.GetRTranParam());
+							icc->GetGreenTransferParam(color.GetGTranParam());
+							icc->GetBlueTransferParam(color.GetBTranParam());
+							icc->GetColorPrimaries(color.GetPrimaries());
+							color.SetRAWICC(item->dataBuff.GetOpt<UInt8>().OrNull());
+							icc.Delete();
+						}
+					}
+					if (nnexif->GetExifItem(347).SetTo(item))
+					{
+						jpegTables = Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt);
+						i = jpegTables.GetSize();
+						if (i > 4)
+						{
+							if (jpegTables[0] == 0xff && jpegTables[1] == 0xD8 && jpegTables[i - 2] == 0xff && jpegTables[i - 1] == 0xD9)
+							{
+								jpegTables = jpegTables.SubArray(2, i - 4);
+							}
+						}
+					}
+
+//					printf("Image bpp = %d, pf = %s\r\n", (UInt32)storeBPP, Media::PixelFormatGetName(pf).v.Ptr());
+					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					Data::ByteArray imgData = img->GetDataArray();
+					UOSInt jpgLeng;
+					UOSInt x;
+					UOSInt y;
+					UOSInt bpl = img->GetDataBpl();
+					UOSInt copyWidth;
+					UOSInt copyHeight = tileHeight;
+					Data::ByteBuffer jpgBuff(stripLengs[0] + jpegTables.GetSize());
+					Media::JPEGDecoder jpgDecoder;
+					x = 0;
+					y = 0;
+					i = 0;
+					while (i < nStrip)
+					{
+						jpgLeng = stripLengs[i];
+						if (jpgBuff.GetSize() < jpgLeng + jpegTables.GetSize())
+						{
+							jpgBuff.ChangeSize(jpgLeng + jpegTables.GetSize());
+						}
+						if (fd->GetRealData(stripOfsts[i], jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
+						{
+							if (jpegTables.GetSize() > 0)
+							{
+								jpgBuff[0] = 0xff;
+								jpgBuff[1] = 0xd8;
+								jpgBuff.CopyFrom(2, jpegTables);
+								jpgLeng += jpegTables.GetSize();
+							}
+							printf("InnerImage ofst = %d, leng = %d, jpgLeng = %d\r\n", stripOfsts[i], stripLengs[i], (UInt32)jpgLeng);
+							if (imgWidth - x < tileWidth)
+							{
+								copyWidth = imgWidth - x;
+							}
+							else
+							{
+								copyWidth = tileWidth;
+							}
+							if (!jpgDecoder.Decode(jpgBuff.SubArray(0, jpgLeng), &imgData[y * bpl + (x * storeBPP >> 3)], bpl, copyWidth, copyHeight, pf))
+							{
+								printf("TIFFParser: InnerImage Error in parsing inner jpg\r\n");
+							}
+						}
+						x += tileWidth;
+						if (x >= imgWidth)
+						{
+							y += tileHeight;
+							x = 0;
+							if (imgHeight - y < tileHeight)
+							{
+								copyHeight = imgHeight - y;
+							}
+						}
+						i++;
+					}
+					if (stripOfsts)
+					{
+						MemFree(stripOfsts);
+					}
+					if (stripLengs)
+					{
+						MemFree(stripLengs);
+					}
+					if (bpp <= 8)
+					{
+						UOSInt j;
+						if (photometricInterpretation == 3)
+						{
+							UInt16 *pal = nnexif->GetExifUInt16(0x140);
+							j = (UOSInt)1 << bpp;
+							i = 0;
+							while (i < j)
+							{
+								img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+								img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+								img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+								img->pal[(i << 2) + 3] = 0xff;
+								i++;
+							}
+						}
+						else if (photometricInterpretation == 0) //whiteIsZero
+						{
+							UInt8 v;
+							i = (UOSInt)1 << bpp;
+							j = i - 1;
+							while (i-- > 0)
+							{
+								v = (UInt8)(i * 255 / j);
+								img->pal[i << 2] = v;
+								img->pal[(i << 2) + 1] = v;
+								img->pal[(i << 2) + 2] = v;
+								img->pal[(i << 2) + 3] = 0xff;
+							}
+		
+							imgData = img->GetDataArray();
+							i = ((imgWidth * bpp + 7) >> 3) * imgHeight;
+							while (i-- > 0)
+							{
+								imgData[0] = (UInt8)(255 - imgData[0]);
+								imgData += 1;
+							}
+						}
+						else if (photometricInterpretation == 1) //blackIsZero
+						{
+							UInt8 v;
+							i = (UOSInt)1 << bpp;
+							j = i - 1;
+							while (i-- > 0)
+							{
+								v = (UInt8)(i * 255 / j);
+								img->pal[i << 2] = v;
+								img->pal[(i << 2) + 1] = v;
+								img->pal[(i << 2) + 2] = v;
+								img->pal[(i << 2) + 3] = 0xff;
+							}
+						}
+					}
+					img->SetEXIFData(nnexif->Clone());
+					Double dpi;
+					if ((dpi = nnexif->GetHDPI()) != 0)
+					{
+						img->info.hdpi = dpi;
+					}
+					if ((dpi = nnexif->GetVDPI()) != 0)
+					{
+						img->info.vdpi = dpi;
+					}
+					imgList->AddImage(img, 1000);
 					processed = true;
 				}
 				else
@@ -535,8 +760,6 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			if (imgList->GetCount() > 0)
 			{
-				bo.Delete();
-				return imgList;
 			}
 			else
 			{
@@ -1716,7 +1939,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		}
 	}
 
-	if (imgList->GetCount() == 1 && targetType != IO::ParserType::ImageList && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+	if (imgList->GetCount() >= 1 && targetType != IO::ParserType::ImageList && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 	{
 		Double minX;
 		Double minY;

@@ -95,6 +95,8 @@ Media/AudioDevice.h:
 @AudioDeviceW.o
 Media/DDrawSurface.h:
 @DDrawSurface.o
+Media/JPEGDecoder.h:
+JPEGDecoder_Null.o
 Media/KSRenderer.h:
 @KSRenderer.o
 @audfilter.o

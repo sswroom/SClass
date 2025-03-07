@@ -68,6 +68,9 @@ Media/AudioDevice.h:
 @AudioDeviceNull.o
 Media/FBMonitorSurfaceMgr.h:
 @FBMonitorSurfaceMgr_Null.o
+Media/JPEGDecoder.h:
+@?(NO_JPEGDECODER == 0)JPEGDecoder.o
+@?(NO_JPEGDECODER > 0)JPEGDecoder_Null.o
 Media/MonitorSurfaceMgrFactory.h:
 @MonitorSurfaceMgrFactoryNull.o
 Media/OCREngine.h:

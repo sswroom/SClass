@@ -1010,6 +1010,9 @@ ImagePreviewTool.o: ../../src/Media/ImagePreviewTool.cpp
 ImageResizer.o: ../../src/Media/ImageResizer.cpp
 ImageTo8Bit.o: ../../src/Media/ImageTo8Bit.cpp
 ImageUtil.o: ../../src/Media/ImageUtil.cpp
+JPEGDecoder.o: ../../src/Media/JPEGDecoder.cpp
+!`$(PKG-CONFIG) --libs libjpeg`
+JPEGDecoder_Null.o: ../../src/Media/JPEGDecoder_Null.cpp
 JPEGFile.o: ../../src/Media/JPEGFile.cpp
 KSRenderer.o: ../../src/Media/KSRenderer.cpp
 $-I ../../ThirdParty/KSSample

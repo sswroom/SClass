@@ -8,7 +8,10 @@
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIPanel.h"
 #include "UI/GUIPictureBox.h"
+#include "UI/GUITabControl.h"
+#include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -18,6 +21,12 @@ namespace SSWR
 		class AVIRGISPropForm : public UI::GUIForm, public Media::ColorHandler
 		{
 		private:
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+
+			NN<UI::GUITabPage> tpLayer;
 			NN<UI::GUITextBox> txtMinScale;
 			NN<UI::GUITextBox> txtMaxScale;
 			NN<UI::GUICheckBox> chkHide;
@@ -42,8 +51,20 @@ namespace SSWR
 			NN<UI::GUICheckBox> chkAlign;
 			NN<UI::GUICheckBox> chkTrim;
 			NN<UI::GUICheckBox> chkCapital;
-			NN<UI::GUIButton> btnOK;
-			NN<UI::GUIButton> btnCancel;
+
+			NN<UI::GUITabPage> tpCSys;
+			NN<UI::GUIPanel> pnlCSysBounds;
+			NN<UI::GUILabel> lblCSysBounds;
+			NN<UI::GUILabel> lblCSysMin;
+			NN<UI::GUITextBox> txtCSysMinX;
+			NN<UI::GUITextBox> txtCSysMinY;
+			NN<UI::GUILabel> lblCSysMax;
+			NN<UI::GUITextBox> txtCSysMaxX;
+			NN<UI::GUITextBox> txtCSysMaxY;
+			NN<UI::GUITextBox> txtCSysCurr;
+
+			NN<UI::GUITabPage> tpImage;
+			NN<UI::GUITextBox> txtImage;
 
 			NN<Media::DrawEngine> eng;
 			Optional<Media::StaticImage> imgLine;
