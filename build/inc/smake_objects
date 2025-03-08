@@ -1640,6 +1640,8 @@ JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
 $`$(PKG-CONFIG) --cflags libopenjp2`
 !`$(PKG-CONFIG) --libs libopenjp2`
 JP2Parser_Null.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
+JPGParser.o: ../../src/Parser/FileParser/JPGParser.cpp
+JPGParser_Null.o: ../../src/Parser/FileParser/JPGParser_Null.cpp
 JSONParser.o: ../../src/Parser/FileParser/JSONParser.cpp
 LinkArcParser.o: ../../src/Parser/FileParser/LinkArcParser.cpp
 LOGParser.o: ../../src/Parser/FileParser/LOGParser.cpp

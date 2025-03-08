@@ -398,275 +398,269 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		}
 		else if (compression == 7) //JPEG
 		{
-			if (nStrip == 1)
+			if (tileMode)
 			{
-				Optional<Media::ImageList> innerImgList = 0;
-				NN<Media::ImageList> nnInnerImgList;
-				NN<Parser::ParserList> parsers;
-				if (this->parsers.SetTo(parsers))
+				if (photometricInterpretation == 1 || photometricInterpretation == 2)
 				{
-					Data::ByteBuffer jpgBuff(stripLeng + 18);
-					UOSInt jpgOfst;
-					UOSInt jpgLeng = stripLeng;
-					if (fd->GetRealData(stripOfst, jpgLeng, jpgBuff + 18) == jpgLeng)
+					if (nChannels == 1)
 					{
-						jpgOfst = 18;
-						if (jpgBuff[18] == 0xff && jpgBuff[19] == 0xd8)
+						if (bpp == 1)
 						{
-							if (jpgBuff[20] == 0xff && jpgBuff[21] != 0xe0)
-							{
-								jpgOfst = 0;
-								jpgLeng += 18;
-								UInt8 hdr[] = {0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46,  0x49, 0x46, 0x00, 0x01, 0x01, 0x01, 0x00, 0x60, 0x00, 0x60, 0x00, 0x00};
-								jpgBuff.CopyFrom(0, Data::ByteArrayR(hdr, 20));
-							}
+							pf = Media::PF_PAL_W1;
 						}
-
-						IO::StmData::MemoryDataRef jpgFd(jpgBuff.SubArray(jpgOfst, jpgLeng));
-						innerImgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(jpgFd, IO::ParserType::ImageList));
+						else if (bpp == 2)
+						{
+							pf = Media::PF_PAL_W2;
+						}
+						else if (bpp == 4)
+						{
+							pf = Media::PF_PAL_W4;
+						}
+						else if (bpp == 8)
+						{
+							pf = Media::PF_PAL_W8;
+						}
+						else if (bpp == 16)
+						{
+							pf = Media::PF_LE_W16;
+						}
+					}
+					else if (nChannels == 2)
+					{
+						if (bpp == 16)
+						{
+							pf = Media::PF_W8A8;
+						}
+						else if (bpp == 32)
+						{
+							pf = Media::PF_LE_W16A16;
+						}
 					}
 				}
-				if (innerImgList.SetTo(nnInnerImgList))
+				Data::ByteArrayR jpegTables = Data::ByteArrayR((UInt8*)&pf, 0);
+				Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
+				if (nnexif->GetExifItem(34675).SetTo(item))
 				{
-					NN<Media::RasterImage> innerImg;
-					NN<Media::StaticImage> innerSImg;
-					UInt32 imgDelay;
-					i = 0;
-					j = nnInnerImgList->GetCount();
-					while (i < j)
+					NN<Media::ICCProfile> icc;
+					if (Media::ICCProfile::Parse(Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt)).SetTo(icc))
 					{
-						if (nnInnerImgList->GetImage(i, imgDelay).SetTo(innerImg))
-						{
-							innerSImg = innerImg->CreateStaticImage();
-							if (exif.SetTo(nnexif))
-							{
-								innerSImg->SetEXIFData(nnexif).Delete();
-								exif = 0;
-							}
-							innerSImg.Delete();
-						}
-						i++;
+						icc->GetRedTransferParam(color.GetRTranParam());
+						icc->GetGreenTransferParam(color.GetGTranParam());
+						icc->GetBlueTransferParam(color.GetBTranParam());
+						icc->GetColorPrimaries(color.GetPrimaries());
+						color.SetRAWICC(item->dataBuff.GetOpt<UInt8>().OrNull());
+						icc.Delete();
 					}
-					nnInnerImgList.Delete();
-					exif.Delete();
-					if (stripOfsts)
-					{
-						MemFree(stripOfsts);
-					}
-					if (stripLengs)
-					{
-						MemFree(stripLengs);
-					}
-					processed = true;
 				}
-				else
+				if (nnexif->GetExifItem(347).SetTo(item))
 				{
-					valid = false;
+					jpegTables = Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt);
+					i = jpegTables.GetSize();
+					if (i > 4)
+					{
+						if (jpegTables[0] == 0xff && jpegTables[1] == 0xD8 && jpegTables[i - 2] == 0xff && jpegTables[i - 1] == 0xD9)
+						{
+							jpegTables = jpegTables.SubArray(2, i - 4);
+						}
+					}
 				}
-			}
-			else if (tileMode)
-			{
-				NN<Parser::ParserList> parsers;
-				if (this->parsers.SetTo(parsers))
-				{
-					if (photometricInterpretation == 1 || photometricInterpretation == 2)
-					{
-						if (nChannels == 1)
-						{
-							if (bpp == 1)
-							{
-								pf = Media::PF_PAL_W1;
-							}
-							else if (bpp == 2)
-							{
-								pf = Media::PF_PAL_W2;
-							}
-							else if (bpp == 4)
-							{
-								pf = Media::PF_PAL_W4;
-							}
-							else if (bpp == 8)
-							{
-								pf = Media::PF_PAL_W8;
-							}
-							else if (bpp == 16)
-							{
-								pf = Media::PF_LE_W16;
-							}
-						}
-						else if (nChannels == 2)
-						{
-							if (bpp == 16)
-							{
-								pf = Media::PF_W8A8;
-							}
-							else if (bpp == 32)
-							{
-								pf = Media::PF_LE_W16A16;
-							}
-						}
-					}
-					Data::ByteArrayR jpegTables = Data::ByteArrayR((UInt8*)&pf, 0);
-					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-					if (nnexif->GetExifItem(34675).SetTo(item))
-					{
-						NN<Media::ICCProfile> icc;
-						if (Media::ICCProfile::Parse(Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt)).SetTo(icc))
-						{
-							icc->GetRedTransferParam(color.GetRTranParam());
-							icc->GetGreenTransferParam(color.GetGTranParam());
-							icc->GetBlueTransferParam(color.GetBTranParam());
-							icc->GetColorPrimaries(color.GetPrimaries());
-							color.SetRAWICC(item->dataBuff.GetOpt<UInt8>().OrNull());
-							icc.Delete();
-						}
-					}
-					if (nnexif->GetExifItem(347).SetTo(item))
-					{
-						jpegTables = Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt);
-						i = jpegTables.GetSize();
-						if (i > 4)
-						{
-							if (jpegTables[0] == 0xff && jpegTables[1] == 0xD8 && jpegTables[i - 2] == 0xff && jpegTables[i - 1] == 0xD9)
-							{
-								jpegTables = jpegTables.SubArray(2, i - 4);
-							}
-						}
-					}
 
 //					printf("Image bpp = %d, pf = %s\r\n", (UInt32)storeBPP, Media::PixelFormatGetName(pf).v.Ptr());
-					NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-					Data::ByteArray imgData = img->GetDataArray();
-					UOSInt jpgLeng;
-					UOSInt x;
-					UOSInt y;
-					UOSInt bpl = img->GetDataBpl();
-					UOSInt copyWidth;
-					UOSInt copyHeight = tileHeight;
-					Data::ByteBuffer jpgBuff(stripLengs[0] + jpegTables.GetSize());
-					Media::JPEGDecoder jpgDecoder;
-					x = 0;
-					y = 0;
-					i = 0;
-					while (i < nStrip)
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				Data::ByteArray imgData = img->GetDataArray();
+				UOSInt jpgOfst;
+				UOSInt jpgLeng;
+				UOSInt x;
+				UOSInt y;
+				UOSInt bpl = img->GetDataBpl();
+				UOSInt copyWidth;
+				UOSInt copyHeight = tileHeight;
+				Data::ByteBuffer jpgBuff(stripLengs[0] + jpegTables.GetSize());
+				Media::JPEGDecoder jpgDecoder;
+				x = 0;
+				y = 0;
+				i = 0;
+				while (i < nStrip)
+				{
+					if (nStrip == 1)
 					{
+						jpgOfst = stripOfst;
+						jpgLeng = stripLeng;
+					}
+					else
+					{
+						jpgOfst = stripOfsts[i];
 						jpgLeng = stripLengs[i];
-						if (jpgBuff.GetSize() < jpgLeng + jpegTables.GetSize())
-						{
-							jpgBuff.ChangeSize(jpgLeng + jpegTables.GetSize());
-						}
-						if (fd->GetRealData(stripOfsts[i], jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
-						{
-							if (jpegTables.GetSize() > 0)
-							{
-								jpgBuff[0] = 0xff;
-								jpgBuff[1] = 0xd8;
-								jpgBuff.CopyFrom(2, jpegTables);
-								jpgLeng += jpegTables.GetSize();
-							}
-							printf("InnerImage ofst = %d, leng = %d, jpgLeng = %d\r\n", stripOfsts[i], stripLengs[i], (UInt32)jpgLeng);
-							if (imgWidth - x < tileWidth)
-							{
-								copyWidth = imgWidth - x;
-							}
-							else
-							{
-								copyWidth = tileWidth;
-							}
-							if (!jpgDecoder.Decode(jpgBuff.SubArray(0, jpgLeng), &imgData[y * bpl + (x * storeBPP >> 3)], bpl, copyWidth, copyHeight, pf))
-							{
-								printf("TIFFParser: InnerImage Error in parsing inner jpg\r\n");
-							}
-						}
-						x += tileWidth;
-						if (x >= imgWidth)
-						{
-							y += tileHeight;
-							x = 0;
-							if (imgHeight - y < tileHeight)
-							{
-								copyHeight = imgHeight - y;
-							}
-						}
-						i++;
 					}
-					if (stripOfsts)
+					if (jpgBuff.GetSize() < jpgLeng + jpegTables.GetSize())
 					{
-						MemFree(stripOfsts);
+						jpgBuff.ChangeSize(jpgLeng + jpegTables.GetSize());
 					}
-					if (stripLengs)
+					if (fd->GetRealData(jpgOfst, jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
 					{
-						MemFree(stripLengs);
-					}
-					if (bpp <= 8)
-					{
-						UOSInt j;
-						if (photometricInterpretation == 3)
+						if (jpegTables.GetSize() > 0)
 						{
-							UInt16 *pal = nnexif->GetExifUInt16(0x140);
-							j = (UOSInt)1 << bpp;
-							i = 0;
-							while (i < j)
-							{
-								img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
-								img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
-								img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
-								img->pal[(i << 2) + 3] = 0xff;
-								i++;
-							}
+							jpgBuff[0] = 0xff;
+							jpgBuff[1] = 0xd8;
+							jpgBuff.CopyFrom(2, jpegTables);
+							jpgLeng += jpegTables.GetSize();
 						}
-						else if (photometricInterpretation == 0) //whiteIsZero
+						//printf("InnerImage ofst = %d, leng = %d, jpgLeng = %d\r\n", jpgOfst, stripLengs[i], (UInt32)jpgLeng);
+						if (imgWidth - x < tileWidth)
 						{
-							UInt8 v;
-							i = (UOSInt)1 << bpp;
-							j = i - 1;
-							while (i-- > 0)
-							{
-								v = (UInt8)(i * 255 / j);
-								img->pal[i << 2] = v;
-								img->pal[(i << 2) + 1] = v;
-								img->pal[(i << 2) + 2] = v;
-								img->pal[(i << 2) + 3] = 0xff;
-							}
-		
-							imgData = img->GetDataArray();
-							i = ((imgWidth * bpp + 7) >> 3) * imgHeight;
-							while (i-- > 0)
-							{
-								imgData[0] = (UInt8)(255 - imgData[0]);
-								imgData += 1;
-							}
+							copyWidth = imgWidth - x;
 						}
-						else if (photometricInterpretation == 1) //blackIsZero
+						else
 						{
-							UInt8 v;
-							i = (UOSInt)1 << bpp;
-							j = i - 1;
-							while (i-- > 0)
-							{
-								v = (UInt8)(i * 255 / j);
-								img->pal[i << 2] = v;
-								img->pal[(i << 2) + 1] = v;
-								img->pal[(i << 2) + 2] = v;
-								img->pal[(i << 2) + 3] = 0xff;
-							}
+							copyWidth = tileWidth;
+						}
+						if (!jpgDecoder.Decode(jpgBuff.SubArray(0, jpgLeng), &imgData[y * bpl + (x * storeBPP >> 3)], bpl, copyWidth, copyHeight, pf))
+						{
+							printf("TIFFParser: InnerImage Error in parsing inner jpg\r\n");
 						}
 					}
-					img->SetEXIFData(nnexif->Clone());
-					Double dpi;
-					if ((dpi = nnexif->GetHDPI()) != 0)
+					x += tileWidth;
+					if (x >= imgWidth)
 					{
-						img->info.hdpi = dpi;
+						y += tileHeight;
+						x = 0;
+						if (imgHeight - y < tileHeight)
+						{
+							copyHeight = imgHeight - y;
+						}
 					}
-					if ((dpi = nnexif->GetVDPI()) != 0)
+					i++;
+				}
+				if (stripOfsts)
+				{
+					MemFree(stripOfsts);
+				}
+				if (stripLengs)
+				{
+					MemFree(stripLengs);
+				}
+				if (bpp <= 8)
+				{
+					UOSInt j;
+					if (photometricInterpretation == 3)
 					{
-						img->info.vdpi = dpi;
+						UInt16 *pal = nnexif->GetExifUInt16(0x140);
+						j = (UOSInt)1 << bpp;
+						i = 0;
+						while (i < j)
+						{
+							img->pal[i << 2] = (UInt8)(pal[(j << 1) + i] >> 8);
+							img->pal[(i << 2) + 1] = (UInt8)(pal[j + i] >> 8);
+							img->pal[(i << 2) + 2] = (UInt8)(pal[i] >> 8);
+							img->pal[(i << 2) + 3] = 0xff;
+							i++;
+						}
 					}
-					imgList->AddImage(img, 1000);
-					processed = true;
+					else if (photometricInterpretation == 0) //whiteIsZero
+					{
+						UInt8 v;
+						i = (UOSInt)1 << bpp;
+						j = i - 1;
+						while (i-- > 0)
+						{
+							v = (UInt8)(i * 255 / j);
+							img->pal[i << 2] = v;
+							img->pal[(i << 2) + 1] = v;
+							img->pal[(i << 2) + 2] = v;
+							img->pal[(i << 2) + 3] = 0xff;
+						}
+	
+						imgData = img->GetDataArray();
+						i = ((imgWidth * bpp + 7) >> 3) * imgHeight;
+						while (i-- > 0)
+						{
+							imgData[0] = (UInt8)(255 - imgData[0]);
+							imgData += 1;
+						}
+					}
+					else if (photometricInterpretation == 1) //blackIsZero
+					{
+						UInt8 v;
+						i = (UOSInt)1 << bpp;
+						j = i - 1;
+						while (i-- > 0)
+						{
+							v = (UInt8)(i * 255 / j);
+							img->pal[i << 2] = v;
+							img->pal[(i << 2) + 1] = v;
+							img->pal[(i << 2) + 2] = v;
+							img->pal[(i << 2) + 3] = 0xff;
+						}
+					}
+				}
+				img->SetEXIFData(nnexif->Clone());
+				Double dpi;
+				if ((dpi = nnexif->GetHDPI()) != 0)
+				{
+					img->info.hdpi = dpi;
+				}
+				if ((dpi = nnexif->GetVDPI()) != 0)
+				{
+					img->info.vdpi = dpi;
+				}
+				imgList->AddImage(img, 1000);
+				processed = true;
+			}
+			else if (nStrip == 1)
+			{
+				Data::ByteArrayR jpegTables = Data::ByteArrayR((UInt8*)&pf, 0);
+				if (nnexif->GetExifItem(347).SetTo(item))
+				{
+					jpegTables = Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt);
+					i = jpegTables.GetSize();
+					if (i > 4)
+					{
+						if (jpegTables[0] == 0xff && jpegTables[1] == 0xD8 && jpegTables[i - 2] == 0xff && jpegTables[i - 1] == 0xD9)
+						{
+							jpegTables = jpegTables.SubArray(2, i - 4);
+						}
+					}
+				}
+				Data::ByteBuffer jpgBuff(stripLeng + jpegTables.GetSize());
+				UOSInt jpgLeng = stripLeng;
+				if (fd->GetRealData(stripOfst, jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
+				{
+					if (jpegTables.GetSize() > 0)
+					{
+						jpgBuff[0] = 0xff;
+						jpgBuff[1] = 0xd8;
+						jpgBuff.CopyFrom(2, jpegTables);
+						jpgLeng += jpegTables.GetSize();
+					}
+
+					Media::JPEGDecoder jpgDecoder;
+					if (jpgDecoder.DecodeImage(jpgBuff.SubArray(0, jpgLeng)).SetTo(img))
+					{
+						if (exif.SetTo(nnexif))
+						{
+							img->SetEXIFData(nnexif).Delete();
+							exif = 0;
+						}
+						imgList->AddImage(img, 1000);
+						if (stripOfsts)
+						{
+							MemFree(stripOfsts);
+						}
+						if (stripLengs)
+						{
+							MemFree(stripLengs);
+						}
+						processed = true;
+					}
+					else
+					{
+						printf("TIFFParser: Error in decoding single inner jpg\r\n");
+						valid = false;
+					}
 				}
 				else
 				{
+					printf("TIFFParser: Error in reading single inner jpg\r\n");
 					valid = false;
 				}
 			}
@@ -760,6 +754,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			if (imgList->GetCount() > 0)
 			{
+				printf("TIFFParser: Some inner images are failed to parse\r\n");
 			}
 			else
 			{
@@ -947,49 +942,56 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else
 			{
-				if (nStrip == 1)
+				if (tileMode)
+				{
+					if (nStrip == 1)
+					{
+						fd->GetRealData(stripOfst, stripLeng, imgData);
+					}
+					else
+					{
+						UOSInt x;
+						UOSInt y;
+						UnsafeArray<UInt8> tileBuff = MemAllocArr(UInt8, stripLengs[0]);
+						UOSInt bpl = img->GetDataBpl();
+						UOSInt copySize = (tileWidth * storeBPP >> 3);
+						UOSInt copyHeight = tileHeight;
+						if (copyHeight > imgHeight)
+						{
+							copyHeight = imgHeight;
+						}
+						x = 0;
+						y = 0;
+						i = 0;
+						while (i < nStrip)
+						{
+							fd->GetRealData(stripOfsts[i], stripLengs[i], Data::ByteArray(tileBuff, stripLengs[i]));
+							if (x + tileWidth > imgWidth)
+							{
+								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], (imgWidth - x) * storeBPP >> 3, copyHeight, (OSInt)copySize, (OSInt)bpl);
+							}
+							else
+							{
+								ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], copySize, copyHeight, (OSInt)copySize, (OSInt)bpl);
+							}
+							x += tileWidth;
+							if (x >= imgWidth)
+							{
+								y += tileHeight;
+								x = 0;
+								if (imgHeight - y < tileHeight)
+								{
+									copyHeight = imgHeight - y;
+								}
+							}
+							i++;
+						}
+						MemFreeArr(tileBuff);
+					}
+				}
+				else if (nStrip == 1)
 				{
 					fd->GetRealData(stripOfst, stripLeng, imgData);
-				}
-				else if (tileMode)
-				{
-					UOSInt x;
-					UOSInt y;
-					UnsafeArray<UInt8> tileBuff = MemAllocArr(UInt8, stripLengs[0]);
-					UOSInt bpl = img->GetDataBpl();
-					UOSInt copySize = (tileWidth * storeBPP >> 3);
-					UOSInt copyHeight = tileHeight;
-					if (copyHeight > imgHeight)
-					{
-						copyHeight = imgHeight;
-					}
-					x = 0;
-					y = 0;
-					i = 0;
-					while (i < nStrip)
-					{
-						fd->GetRealData(stripOfsts[i], stripLengs[i], Data::ByteArray(tileBuff, stripLengs[i]));
-						if (x + tileWidth > imgWidth)
-						{
-							ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], (imgWidth - x) * storeBPP >> 3, copyHeight, (OSInt)copySize, (OSInt)bpl);
-						}
-						else
-						{
-							ImageCopy_ImgCopy(tileBuff.Ptr(), &imgData[y * bpl + (x * storeBPP >> 3)], copySize, copyHeight, (OSInt)copySize, (OSInt)bpl);
-						}
-						x += tileWidth;
-						if (x >= imgWidth)
-						{
-							y += tileHeight;
-							x = 0;
-							if (imgHeight - y < tileHeight)
-							{
-								copyHeight = imgHeight - y;
-							}
-						}
-						i++;
-					}
-					MemFreeArr(tileBuff);
 				}
 				else
 				{

@@ -112,6 +112,9 @@ Parser/FileParser/HEIFParser.h:
 @HEIFParser.o
 Parser/FileParser/JP2Parser.h:
 @JP2Parser_Null.o
+Parser/FileParser/JPGParser.h:
+@?(NO_JPEGDECODER == 0)JPGParser.o
+@?(NO_JPEGDECODER > 0)JPGParser_Null.o
 Parser/FileParser/WebPParser.h:
 @WebPParser.o
 

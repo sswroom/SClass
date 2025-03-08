@@ -148,6 +148,7 @@ console:
 @HEIFParserTest
 @ImageCopy
 @ImageResize
+@JPEGTest
 @MonitorInfoTest
 @NearestNeighbourResizer32_32Test
 @OCRTest
@@ -518,6 +519,9 @@ ImageCopy:
 @ConsoleStartup.o
 ImageResize:
 @ImageResizeMain.o
+@ConsoleStartup.o
+JPEGTest:
+@JPEGTest.o
 @ConsoleStartup.o
 MonitorInfoTest:
 @MonitorInfoTest.o
@@ -1087,6 +1091,7 @@ GUIExportJPG.o: ../../main/Media/GUIExportJPG.cpp
 HEIFParserTest.o: ../../main/Media/HEIFParserTest.cpp
 ImageCopyTest.o: ../../main/Media/ImageCopyTest.cpp
 ImageResizeMain.o: ../../main/Media/ImageResizeMain.cpp
+JPEGTest.o: ../../main/Media/JPEGTest.cpp
 MonitorInfoTest.o: ../../main/Media/MonitorInfoTest.cpp
 NearestNeighbourResizer32_32Test.o: ../../main/Media/NearestNeighbourResizer32_32Test.cpp
 OCRTest.o: ../../main/Media/OCRTest.cpp

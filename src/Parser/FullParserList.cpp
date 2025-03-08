@@ -44,6 +44,7 @@
 #include "Parser/FileParser/ISOParser.h"
 #include "Parser/FileParser/JKSParser.h"
 #include "Parser/FileParser/JP2Parser.h"
+#include "Parser/FileParser/JPGParser.h"
 #include "Parser/FileParser/JSONParser.h"
 #include "Parser/FileParser/LinkArcParser.h"
 #include "Parser/FileParser/LOGParser.h"
@@ -306,6 +307,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::TILParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::JKSParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::JPGParser());
 	this->AddFileParser(parser);
 
 	NEW_CLASSNN(parser, Parser::FileParser::GUIImgParser());
