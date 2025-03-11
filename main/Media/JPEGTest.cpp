@@ -11,7 +11,7 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	Text::CStringNN fileName = CSTR("/home/sswroom/PictureProc/Life/2025-02/Temp/Output/P1080021.jpg");
+	Text::CStringNN fileName = CSTR("");
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	IO::StmData::FileData fd(fileName, false);
