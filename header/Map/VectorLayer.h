@@ -100,6 +100,7 @@ namespace Map
 		Bool SplitPolyline(Math::Coord2DDbl pt);
 		void OptimizePolylinePath();
 		void ReplaceVector(Int64 id, NN<Math::Geometry::Vector2D> vec);
+		Bool DeleteVector(Int64 id);
 		void ConvCoordinateSystem(NN<Math::CoordinateSystem> csys);
 		void SwapXY();
 	};

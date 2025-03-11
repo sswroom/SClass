@@ -28,9 +28,12 @@ namespace SSWR
 			NN<UI::GUITextBox> txtStatus;
 			NN<UI::GUILabel> lblNPoints;
 			NN<UI::GUITextBox> txtNPoints;
+			NN<UI::GUIButton> btnNew;
+			NN<UI::GUIButton> btnDelete;
 			NN<UI::GUIButton> btnEnd;
 			NN<UI::GUIButton> btnBack;
 
+			Math::Coord2D<OSInt> downPos;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 			UOSInt status;
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -41,8 +44,12 @@ namespace SSWR
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
+			static void __stdcall OnObjectsSelChg(AnyType userObj);
+			static void __stdcall OnNewClicked(AnyType userObj);
+			static void __stdcall OnDeleteClicked(AnyType userObj);
 			static void __stdcall OnEndClicked(AnyType userObj);
 			static void __stdcall OnBackClicked(AnyType userObj);
+			void UpdateList();
 		public:
 			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi);
 			virtual ~AVIRGISEditVectorForm();

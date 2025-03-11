@@ -1074,6 +1074,16 @@ void Map::VectorLayer::ReplaceVector(Int64 id, NN<Math::Geometry::Vector2D> vec)
 	}
 }
 
+Bool Map::VectorLayer::DeleteVector(Int64 id)
+{
+	if ((UInt64)id < this->vectorList.GetCount())
+	{
+		this->vectorList.RemoveAt((UOSInt)(UInt64)id).Delete();
+		return true;
+	}
+	return false;
+}
+
 void Map::VectorLayer::ConvCoordinateSystem(NN<Math::CoordinateSystem> destCsys)
 {
 	Math::CoordinateSystemConverter converter(this->csys, destCsys);
