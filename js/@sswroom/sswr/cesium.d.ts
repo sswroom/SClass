@@ -50,4 +50,5 @@ export class CesiumMap extends map.MapControl
 	layerAddGeometry(geometryLayer: any, geom: any): void;
 	layerRemoveGeometry(geometryLayer: any, geom: any): void;
 	layerClearGeometries(geometryLayer: any): void;
+	getViewer(): Viewer;
 }

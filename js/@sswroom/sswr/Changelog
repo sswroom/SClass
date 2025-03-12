@@ -9,6 +9,8 @@
 -Added web.elementToSVGString
 -Added web.genPrintWindowHTML
 -Added web.printImageData
+-Added cesium.CesiumMap.getViewer
+-parser support PNG without EXIF
 
 1.6.20
 -Enhance XLSXExporter

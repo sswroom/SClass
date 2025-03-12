@@ -4,6 +4,11 @@ import * as web from "/js/@sswroom/sswr/web.js";
 
 let currImg = null;
 let content = document.getElementById("content");
+//let readerEle = document.createElement("div");
+//readerEle.id = "reader";
+//readerEle.hidden = true;
+//document.body.appendChild(readerEle);
+//const html5QrCode = new Html5Qrcode("reader");
 async function fileHandler(file)
 {
 	let obj = await parser.parseFile(file);
@@ -22,7 +27,23 @@ async function fileHandler(file)
 			console.log(window.innerWidth, obj.img.naturalHeight, obj.img.naturalWidth);
 		}
 		content.appendChild(obj.img);
-		let p = document.createElement("span");
+		let p;
+		let code;
+		const codeReader = new ZXing.BrowserQRCodeReader();
+		try
+		{
+			let result = await codeReader.decodeFromImage(obj.img);
+			console.log(result);
+			code = result.text;
+		}
+		catch (e)
+		{
+			console.error(e);
+		}
+		p = document.createElement("p");
+		p.innerHTML = "QR Code Value: "+code;
+		content.appendChild(p);
+		p = document.createElement("span");
 		p.innerHTML = web.propertiesToHTML(obj.getProperties());
 		content.appendChild(p);
 		currImg = obj;

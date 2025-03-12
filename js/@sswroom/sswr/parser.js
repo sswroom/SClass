@@ -984,6 +984,25 @@ async function parseJpg(reader, sourceName)
  * @param {data.ByteReader} reader
  * @param {string} sourceName
  */
+async function parsePng(reader, sourceName)
+{
+	if (!(reader instanceof data.ByteReader))
+		return null;
+	if (reader.getLength() < 20)
+		return null;
+	if (reader.readUInt32(0, false) != 0x89504e47 || reader.readUInt32(4, false) != 0x0d0a1a0a)
+		return null;
+	let buff = reader.getArrayBuffer();
+	let b = new Blob([buff], {type: "image/png"});
+	let img = await media.loadImageFromBlob(b);
+	let simg = new media.StaticImage(img, sourceName, "image/png");
+	return simg;
+}
+
+/**
+ * @param {data.ByteReader} reader
+ * @param {string} sourceName
+ */
 async function parseWebp(reader, sourceName)
 {
 	if (!(reader instanceof data.ByteReader))
@@ -1300,6 +1319,7 @@ export async function parseFile(file)
 	{
 		let view = new data.ByteReader(await file.arrayBuffer());
 		let obj;
+		if (obj = await parsePng(view, file.name)) return obj;
 		if (obj = await parseJpg(view, file.name)) return obj;
 		if (obj = await parseWebp(view, file.name)) return obj;
 		if (obj = parseX509(view, file.name, t)) return obj;

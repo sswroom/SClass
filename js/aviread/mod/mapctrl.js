@@ -104,6 +104,14 @@ if (mapCtrl instanceof map.MapControl)
 	web.handleFileDrop(document.getElementById("map"), onFileDrop);
 }
 
+if (mapCtrl instanceof cesium.CesiumMap)
+{
+	let viewer = mapCtrl.getViewer();
+	let tileset = await Cesium.Cesium3DTileset.fromUrl(
+		'https://data1.map.gov.hk/api/3d-data/3dtiles/f2/tileset.json?key=3967f8f365694e0798af3e7678509421'
+	);
+	viewer.scene.primitives.add(tileset);
+}
 document.getElementById("btnBrowse").addEventListener("click", onBrowseClick);
 let btn = document.getElementById("btnCapture");
 if (btn)
