@@ -1,6 +1,6 @@
 {
   "name": "@sswroom/sswr",
-  "version": "1.6.20",
+  "version": "1.6.21",
   "description": "Libraries made by sswroom",
   "main": "sswr.js",
   "scripts": {

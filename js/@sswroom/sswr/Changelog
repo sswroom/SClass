@@ -1,3 +1,4 @@
+1.6.21
 -Added data.dataURI2Blob
 -Added EasyPrint.toSVG
 -Added data.blob2DataURL

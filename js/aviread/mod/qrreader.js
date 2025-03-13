@@ -1,20 +1,43 @@
+import * as media from "/js/@sswroom/sswr/media.js";
+import * as parser from "/js/@sswroom/sswr/parser.js";
 import * as web from "/js/@sswroom/sswr/web.js";
 
-function onScanSuccess(decodedText, decodedResult)
+let imgFile = web.getInputElement("imgFile");
+/**
+ * @param {File} file
+ */
+function fileHandler(file)
 {
-	web.getInputElement("txtQRCode").value = decodedText;
-	console.log(decodedResult);
+	openFile(file);
 }
 
-function onScanFailed(error)
+function onFileChange()
 {
-	console.log(error);
+	openFile(imgFile.files[0]);
 }
 
-const config = { fps: 10, qrbox: {width: 250, height: 250} };
+async function openFile(file)
+{
+	let img = await parser.parseFile(file);
+	let code = "";
+	const codeReader = new ZXing.BrowserQRCodeReader();
+	if (img instanceof media.StaticImage)
+	{
+		let preview = web.getDivElement("preview");
+		preview.innerHTML = "";
+		preview.appendChild(img.img);
+		try
+		{
+			let result = await codeReader.decodeFromImage(img.img);
+			code = result.text;
+		}
+		catch (e)
+		{
+			console.error(e);
+		}
+	}
+	web.getSpanElement("txtQRCode").innerText = code;
+}
 
-//const html5QrCode = new Html5Qrcode("reader", true);
-//html5QrCode.start({facingMode: "environment"}, config, onScanSuccess);
-
-const html5QrCode = new Html5QrcodeScanner("reader", config, true);
-html5QrCode.render(onScanSuccess, onScanFailed);
+web.handleFileDrop(document.body, fileHandler);
+imgFile.addEventListener("change", onFileChange)
