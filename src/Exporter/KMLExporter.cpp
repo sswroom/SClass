@@ -146,7 +146,29 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
 	s->Release();
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<Folder>"));
-	sptr = Text::StrConcatC(sptr, UTF8STRC("<name>Points</name>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<name>"));
+	Map::DrawLayerType layerType = layer->GetLayerType();
+	if (layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POINT3D)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Points"));
+	}
+	else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Lines"));
+	}
+	else if (layerType == Map::DRAW_LAYER_POLYGON)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Areas"));
+	}
+	else if (layerType == Map::DRAW_LAYER_IMAGE)
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Images"));
+	}
+	else
+	{
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Geometries"));
+	}
+	sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<open>1</open>"));
 	writer.Write(CSTRP(sbuff2, sptr));
 
@@ -420,7 +442,6 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 								}
 							}
 						}
-						i++;
 					}
 					sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
 					writer.WriteLine(sb.ToCString());

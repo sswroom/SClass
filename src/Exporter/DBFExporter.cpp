@@ -61,6 +61,7 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	}
 	UTF8Char sbuff[1024];
+	UnsafeArray<UTF8Char> sptr;
 	NN<DB::ReadingDB> conn = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	UOSInt tableCnt;
 	Data::ArrayListStringNN tableNames;
@@ -81,12 +82,15 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	}
 	tableName->Release();
 	UOSInt nCol;
+	UOSInt nOut;
 
 	Text::String **colNames;
 	UOSInt *colSize;
 	UOSInt *colDP;
 	DB::DBUtil::ColType *colTypes;
+	UOSInt *colMap;
 	UOSInt i;
+	UOSInt j;
 	DB::DBFFixWriter *writer;
 	Data::DateTime dt;
 
@@ -95,69 +99,81 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	colSize = MemAlloc(UOSInt, nCol);
 	colDP = MemAlloc(UOSInt, nCol);
 	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
+	colMap = MemAlloc(UOSInt, nCol);
 
 	{
 		DB::ColDef colDef(Text::String::NewEmpty());
-		i = nCol;
-		while (i-- > 0)
+		i = 0;
+		nOut = 0;
+		while (i < nCol)
 		{
 			r->GetColDef(i, colDef);
-			colNames[i] = colDef.GetColName()->Clone().Ptr();
-			if (colDef.GetColType() == DB::DBUtil::CT_DateTime)
+			if (colDef.GetColType() == DB::DBUtil::CT_Vector)
 			{
-				colSize[i] = 8;
-				colDP[i] = 0;
-				colTypes[i] = DB::DBUtil::CT_DateTime;
 			}
 			else
 			{
-				colSize[i] = colDef.GetColSize();
-				colDP[i] = colDef.GetColDP();
-				colTypes[i] = colDef.GetColType();
-				if (colSize[i] > 255)
+				colMap[nOut] = i;
+				colNames[nOut] = colDef.GetColName()->Clone().Ptr();
+				if (colDef.GetColType() == DB::DBUtil::CT_DateTime)
 				{
-					colSize[i] = 255;
+					colSize[nOut] = 8;
+					colDP[nOut] = 0;
+					colTypes[nOut] = DB::DBUtil::CT_DateTime;
 				}
+				else
+				{
+					colSize[nOut] = colDef.GetColSize();
+					colDP[nOut] = colDef.GetColDP();
+					colTypes[nOut] = colDef.GetColType();
+					if (colSize[nOut] > 255)
+					{
+						colSize[nOut] = 255;
+					}
+				}
+				nOut++;
 			}
+			i++;
 		}
 	}
 
-	NEW_CLASS(writer, DB::DBFFixWriter(stm, nCol, colNames, colSize, colDP, colTypes, this->codePage));
+	NEW_CLASS(writer, DB::DBFFixWriter(stm, nOut, colNames, colSize, colDP, colTypes, this->codePage));
 	
 	while (r->ReadNext())
 	{
-		i = nCol;
+		i = nOut;
 		while (i-- > 0)
 		{
-			if (colTypes[i] == DB::DBUtil::CT_UTF8Char || colTypes[i] == DB::DBUtil::CT_VarUTF8Char)
+			j = colMap[i];
+			if (colTypes[j] == DB::DBUtil::CT_UTF8Char || colTypes[j] == DB::DBUtil::CT_VarUTF8Char)
 			{
-				r->GetStr(i, sbuff, sizeof(sbuff));
-				writer->SetColumnStr(i, sbuff);
+				sptr = r->GetStr(i, sbuff, sizeof(sbuff)).Or(sbuff);
+				writer->SetColumnStr(i, CSTRP(sbuff, sptr));
 			}
-			else if (colTypes[i] == DB::DBUtil::CT_Int16)
+			else if (colTypes[j] == DB::DBUtil::CT_Int16)
 			{
-				writer->SetColumnI16(i, (Int16)r->GetInt32(i));
+				writer->SetColumnI16(i, (Int16)r->GetInt32(j));
 			}
-			else if (colTypes[i] == DB::DBUtil::CT_Int32)
+			else if (colTypes[j] == DB::DBUtil::CT_Int32)
 			{
-				writer->SetColumnI32(i, r->GetInt32(i));
+				writer->SetColumnI32(i, r->GetInt32(j));
 			}
-			else if (colTypes[i] == DB::DBUtil::CT_Int64)
+			else if (colTypes[j] == DB::DBUtil::CT_Int64)
 			{
-				writer->SetColumnI64(i, r->GetInt64(i));
+				writer->SetColumnI64(i, r->GetInt64(j));
 			}
-			else if (colTypes[i] == DB::DBUtil::CT_Double)
+			else if (colTypes[j] == DB::DBUtil::CT_Double)
 			{
-				writer->SetColumnF64(i, r->GetDblOrNAN(i));
+				writer->SetColumnF64(i, r->GetDblOrNAN(j));
 			}
-			else if (colTypes[i] == DB::DBUtil::CT_DateTime)
+			else if (colTypes[j] == DB::DBUtil::CT_DateTime)
 			{
-				writer->SetColumnTS(i, r->GetTimestamp(i));
+				writer->SetColumnTS(i, r->GetTimestamp(j));
 			}
 			else
 			{
-				r->GetStr(i, sbuff, sizeof(sbuff));
-				writer->SetColumnStr(i, sbuff);
+				sptr = r->GetStr(j, sbuff, sizeof(sbuff)).Or(sbuff);
+				writer->SetColumnStr(i, CSTRP(sbuff, sptr));
 			}
 		}
 		writer->WriteRecord();
@@ -167,11 +183,12 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	DEL_CLASS(writer);
 	conn->CloseReader(r);
 
-	i = nCol;
+	i = nOut;
 	while (i-- > 0)
 	{
 		colNames[i]->Release();
 	}
+	MemFree(colMap);
 	MemFree(colNames);
 	MemFree(colSize);
 	MemFree(colDP);

@@ -41,7 +41,7 @@ namespace DB
 		Bool SetColumnI64(UOSInt index, Int64 val);
 		Bool SetColumnU32(UOSInt index, UInt32 val);
 		Bool SetColumnBool(UOSInt index, Bool val);
-		Bool SetColumnStr(UOSInt index, UnsafeArray<const UTF8Char> val);
+		Bool SetColumnStr(UOSInt index, Text::CStringNN val);
 		void WriteRecord();
 	};
 }

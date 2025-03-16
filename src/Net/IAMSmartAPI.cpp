@@ -182,10 +182,21 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 		sb.AppendOpt(json->GetValueString(CSTR("ChiStreet.StreetName")));
 		sb.AppendOpt(json->GetValueString(CSTR("ChiStreet.BuildingNoFrom")));
 		sb.Append(CSTR("號"));
-		sb.AppendOpt(json->GetValueString(CSTR("BuildingName")));
+		sb.AppendOpt(json->GetValueString(CSTR("ChiEstate.EstateName")));
+		if (json->GetValueString(CSTR("ChiEstate.ChiPhase.PhaseNo")).SetTo(s))
+		{
+			sb.Append(CSTR("第"));
+			sb.Append(s);
+			sb.Append(CSTR("期"));
+		}
 		sb.AppendOpt(json->GetValueString(CSTR("ChiBlock.BlockNo")));
 		sb.AppendOpt(json->GetValueString(CSTR("ChiBlock.BlockDescriptor")));
-		sb.AppendOpt(json->GetValueString(CSTR("Chi3dAddress.ChiFloor.FloorNum")));
+		sb.AppendOpt(json->GetValueString(CSTR("BuildingName")));
+		if (json->GetValueString(CSTR("Chi3dAddress.ChiFloor.FloorNum")).SetTo(s))
+		{
+			sb.Append(s);
+			sb.Append(CSTR("樓"));
+		}
 		sb.AppendOpt(json->GetValueString(CSTR("Chi3dAddress.ChiUnit.UnitNo")));
 		sb.AppendOpt(json->GetValueString(CSTR("Chi3dAddress.ChiUnit.UnitDescriptor")));
 		return Text::String::New(sb.ToCString());
@@ -212,6 +223,24 @@ Optional<Text::String> Net::IAMSmartAPI::ParseAddress(NN<Text::JSONBase> json, T
 			sb.Append(CSTR(", "));
 		}
 		sb.AppendOpt(json->GetValueString(CSTR("BuildingName")));
+		if (json->GetValue(CSTR("EngEstate")).NotNull())
+		{
+			if (sb.leng > 0)
+				sb.Append(CSTR(", "));
+			Bool found = false;
+			if (json->GetValueString(CSTR("EngEstate.EstateName")).SetTo(s))
+			{
+				if (found) sb.AppendUTF8Char(' ');
+				sb.Append(s);
+				found = true;
+			}
+			if (json->GetValueString(CSTR("EngEstate.EngPhase.PhaseNo")).SetTo(s))
+			{
+				if (found) sb.AppendUTF8Char(' ');
+				sb.Append(s);
+				found = true;
+			}
+		}
 		if (json->GetValue(CSTR("EngStreet")).NotNull())
 		{
 			if (sb.leng > 0)

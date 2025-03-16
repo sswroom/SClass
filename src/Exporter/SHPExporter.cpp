@@ -94,6 +94,7 @@ Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	}
 	
+	MemClear(buff, 100);
 	shx->Write(Data::ByteArrayR(buff, 100));
 	stm->Write(Data::ByteArrayR(buff, 100));
 	Data::ArrayListInt64 objIds;

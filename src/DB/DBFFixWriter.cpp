@@ -382,7 +382,7 @@ Bool DB::DBFFixWriter::SetColumnBool(UOSInt index, Bool val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumnStr(UOSInt index, UnsafeArray<const UTF8Char> val)
+Bool DB::DBFFixWriter::SetColumnStr(UOSInt index, Text::CStringNN val)
 {
 	UInt8 buff[512];
 	if (index >= this->colCnt)
@@ -390,7 +390,14 @@ Bool DB::DBFFixWriter::SetColumnStr(UOSInt index, UnsafeArray<const UTF8Char> va
 	if (this->columns[index].colType != DB::DBUtil::CT_UTF8Char && this->columns[index].colType != DB::DBUtil::CT_VarUTF8Char)
 		return false;
 	UOSInt i;
-	i = enc->UTF8ToBytes(buff, val);
+	if (val.leng >= 256)
+	{
+		i = enc->UTF8ToBytesC(buff, val.v, 256);
+	}
+	else
+	{
+		i = enc->UTF8ToBytes(buff, val.v);
+	}
 	i--;
 	while (i < this->columns[index].colSize)
 		buff[i++] = 32;
