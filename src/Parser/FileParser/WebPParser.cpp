@@ -68,14 +68,21 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	UInt32 height = WebPDemuxGetI(demux, WEBP_FF_CANVAS_HEIGHT);
 	UInt32 flags = WebPDemuxGetI(demux, WEBP_FF_FORMAT_FLAGS);
 
+	Data::ArrayListNN<Media::StaticImage> imgList;
+	Data::ArrayList<Int32> imgDur;
+	UOSInt i;
+	UOSInt j;
 	NN<Media::StaticImage> simg;
-	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT))
 	WebPIterator iter;
 	if (WebPDemuxGetFrame(demux, 1, &iter))
 	{
 		do
 		{
-			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data.Ptr(), simg->GetDataBpl() * simg->info.dispSize.y, (int)simg->GetDataBpl());
+			NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, iter.has_alpha?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT))
+			simg->FillColor(0);
+			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data.Ptr() + iter.x_offset * 4 + (OSInt)simg->GetDataBpl() * iter.y_offset, simg->GetDataBpl() * (simg->info.dispSize.y - (UInt32)iter.y_offset), (int)simg->GetDataBpl());
+			imgList.Add(simg);
+			imgDur.Add(iter.duration);
 		} while (WebPDemuxNextFrame(&iter));
 		WebPDemuxReleaseIterator(&iter);
 	}
@@ -88,7 +95,14 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 		NN<Media::ICCProfile> profile;
 		if (Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size)).SetTo(profile))
 		{
-			profile->SetToColorProfile(simg->info.color);
+			i = 0;
+			j = imgList.GetCount();
+			while (i < j)
+			{
+				simg = imgList.GetItemNoCheck(i);
+				profile->SetToColorProfile(simg->info.color);
+				i++;
+			}
 			profile.Delete();
 		}
 		WebPDemuxReleaseChunkIterator(&chunk_iter);
@@ -123,9 +137,29 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 			}
 			if (succ)
 			{
-				simg->exif.Delete();
 				UInt64 nextOfst;
-				simg->exif = Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, nextOfst, Media::EXIFData::EM_STANDARD, buff);
+				NN<Media::EXIFData> exif;
+				if (Media::EXIFData::ParseIFD(buff + 8, chunk_iter.chunk.size - 8, bo, nextOfst, Media::EXIFData::EM_STANDARD, buff).SetTo(exif))
+				{
+					Double hdpi = exif->GetHDPI();
+					Double vdpi = exif->GetVDPI();
+					i = 0;
+					j = imgList.GetCount();
+					while (i < j)
+					{
+						simg = imgList.GetItemNoCheck(i);
+						simg->exif.Delete();
+						simg->exif = exif->Clone();
+						if (hdpi != 0 && vdpi != 0)
+						{
+							simg->info.hdpi = hdpi;
+							simg->info.vdpi = vdpi;
+						}
+						i++;
+					}
+					exif.Delete();
+				}
+				
 			}
 			bo.Delete();
 		}
@@ -138,20 +172,19 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	}
 	WebPDemuxDelete(demux);
 	
-	NN<Media::EXIFData> exif;
-	if (simg->exif.SetTo(exif))
+	if (imgList.GetCount() == 0)
 	{
-		Double hdpi = exif->GetHDPI();
-		Double vdpi = exif->GetVDPI();
-		if (hdpi != 0 && vdpi != 0)
-		{
-			simg->info.hdpi = hdpi;
-			simg->info.vdpi = vdpi;
-		}
+		return 0;
 	}
-
-	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));
-	imgList->AddImage(simg, 0);
-	return imgList;
+	Media::ImageList *ret;
+	NEW_CLASS(ret, Media::ImageList(fd->GetFullFileName()));
+	i = 0;
+	j = imgList.GetCount();
+	while (i < j)
+	{
+		simg = imgList.GetItemNoCheck(i);
+		ret->AddImage(simg, (UInt32)imgDur.GetItem(i));
+		i++;
+	}
+	return ret;
 }

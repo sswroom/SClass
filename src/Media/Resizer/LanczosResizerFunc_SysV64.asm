@@ -2760,9 +2760,10 @@ icp8lop:
 icp8lop2:
 	movzx rax,byte [rdi]
 	movq xmm1,[rcx+rax*8]
+	pextrw rbx,xmm1,3
+	mov ah,byte [rbp+rbx+196608]
 	pextrw rbx,xmm1,2
 	mov al,byte [rbp+rbx+131072]
-	mov ah,0xff
 	shl eax,16
 	pextrw rbx,xmm1,1
 	mov ah,byte [rbp+rbx+65536]

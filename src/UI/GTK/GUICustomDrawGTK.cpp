@@ -327,7 +327,7 @@ UI::GUICustomDraw::GUICustomDraw(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	gtk_widget_set_can_focus((GtkWidget*)this->hwnd, true);
 	parent->AddChild(*this);
 	this->Show();
-	data->timerId = g_timeout_add(1000, GUICustomDraw_OnTick, this);
+	data->timerId = g_timeout_add(50, GUICustomDraw_OnTick, this);
 }
 
 UI::GUICustomDraw::~GUICustomDraw()

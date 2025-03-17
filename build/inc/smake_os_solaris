@@ -112,6 +112,9 @@ Parser/FileParser/JP2Parser.h:
 Parser/FileParser/JPGParser.h:
 @?(NO_JPEGDECODER == 0)JPGParser.o
 @?(NO_JPEGDECODER > 0)JPGParser_Null.o
+Parser/FileParser/JXLParser.h:
+@?(NO_JXL == 0)JXLParser.o
+@?(NO_JXL > 0)JXLParser_Null.o
 Parser/FileParser/WebPParser.h:
 @WebPParser.o
 

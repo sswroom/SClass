@@ -6,6 +6,7 @@
 # NO_OPENJP2 := 1
 # NO_ZXING := 1
 # NO_TDS := 1
+# NO_JXL := 1
 # USE_AWS := 1
 
 INCLUDEPATH :=../../header

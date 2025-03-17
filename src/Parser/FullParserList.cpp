@@ -46,6 +46,7 @@
 #include "Parser/FileParser/JP2Parser.h"
 #include "Parser/FileParser/JPGParser.h"
 #include "Parser/FileParser/JSONParser.h"
+#include "Parser/FileParser/JXLParser.h"
 #include "Parser/FileParser/LinkArcParser.h"
 #include "Parser/FileParser/LOGParser.h"
 #include "Parser/FileParser/LUTParser.h"
@@ -258,6 +259,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(parser, Parser::FileParser::WebPParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::HEIFParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::JXLParser());
 	this->AddFileParser(parser);
 	NEW_CLASSNN(parser, Parser::FileParser::EVTXParser());
 	this->AddFileParser(parser);

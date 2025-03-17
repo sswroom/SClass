@@ -703,9 +703,7 @@ void UI::GUIMapControl::UpdateMap()
 		t = clk.GetTimeDiff();
 		if (imgDurMS != 0)
 		{
-			Data::DateTime dt;
-			dt.SetCurrTimeUTC();
-			this->imgTimeoutTick = dt.ToTicks() + imgDurMS - Double2Int32(t * 1000);
+			this->imgTimeoutTick = Data::DateTimeUtil::GetCurrTimeMillis() + imgDurMS - Double2Int32(t * 1000);
 		}
 		else
 		{

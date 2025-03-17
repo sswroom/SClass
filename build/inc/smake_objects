@@ -1643,6 +1643,11 @@ JP2Parser_Null.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 JPGParser.o: ../../src/Parser/FileParser/JPGParser.cpp
 JPGParser_Null.o: ../../src/Parser/FileParser/JPGParser_Null.cpp
 JSONParser.o: ../../src/Parser/FileParser/JSONParser.cpp
+JXLParser.o: ../../src/Parser/FileParser/JXLParser.cpp
+$`$(PKG-CONFIG) --cflags libjxl`
+!`$(PKG-CONFIG) --libs libjxl`
+!`$(PKG-CONFIG) --libs libjxl_threads`
+JXLParser_Null.o: ../../src/Parser/FileParser/JXLParser_Null.cpp
 LinkArcParser.o: ../../src/Parser/FileParser/LinkArcParser.cpp
 LOGParser.o: ../../src/Parser/FileParser/LOGParser.cpp
 LUTParser.o: ../../src/Parser/FileParser/LUTParser.cpp
