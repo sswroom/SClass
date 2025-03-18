@@ -148,7 +148,7 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
 		simg = img->CreateStaticImage();
-		simg->To32bpp();
+		simg->ToB8G8R8A8();
 		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 32);
 		simg.Delete();
@@ -208,7 +208,7 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 
 		simg = img->CreateStaticImage();
-		simg->To64bpp();
+		simg->ToB16G16R16A16();
 		simg->GetRasterData(data, 0, 0, simg->info.dispSize.x, simg->info.dispSize.y, (UOSInt)stride, false, simg->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
 		simg.Delete();

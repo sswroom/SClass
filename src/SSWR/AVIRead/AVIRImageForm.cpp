@@ -810,7 +810,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
 				NN<Media::StaticImage> simg = img->CreateStaticImage();
-				simg->To32bpp();
+				simg->ToB8G8R8A8();
 				if (this->currImg == img.Ptr())
 				{
 					this->pbImage->SetImage(simg.Ptr(), true);
@@ -828,7 +828,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			if (this->imgList->GetImage(selInd, 0).SetTo(img))
 			{
 				NN<Media::StaticImage> simg = img->CreateStaticImage();
-				simg->To64bpp();
+				simg->ToB16G16R16A16();
 				if (this->currImg == img.Ptr())
 				{
 					this->pbImage->SetImage(simg, true);

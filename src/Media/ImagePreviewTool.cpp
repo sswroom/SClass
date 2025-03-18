@@ -46,7 +46,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 			else
 			{
 				printf("ImagePreviewTool: PixelFormat not supported: %s\r\n", Media::PixelFormatGetName(pf).v.Ptr());
-				img->To32bpp();
+				img->ToB8G8R8A8();
 			}
 	
 			while (currWidth >= maxSize || currHeight >= maxSize)

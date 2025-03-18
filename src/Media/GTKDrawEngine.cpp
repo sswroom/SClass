@@ -102,7 +102,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
 		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
-		if (simg->info.pf == Media::PF_B8G8R8A8 || simg->To32bpp())
+		if (simg->info.pf == Media::PF_B8G8R8A8 || simg->ToB8G8R8A8())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
 			UnsafeArray<UInt8> sptr = simg->data;
@@ -123,7 +123,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 	else
 	{
 		NN<Media::StaticImage> simg = img->CreateStaticImage();
-		if (simg->To32bpp())
+		if (simg->ToB8G8R8A8())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
 			UnsafeArray<UInt8> sptr = simg->data;
@@ -932,7 +932,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	}
 	if (img->info.pf != Media::PF_B8G8R8A8)
 	{
-		img->To32bpp();
+		img->ToB8G8R8A8();
 	}
 	if (img->info.storeBPP != 32)
 	{

@@ -903,6 +903,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizer8_C8::ProcessToNewPar
 		targetSize.y = (UOSInt)Double2Int32(srcBR.y - srcTL.y);
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, this->rar);
+	this->SetSrcPixelFormat(srcImage->info.pf, srcImage->pal);
 	this->SetSrcProfile(srcImage->info.color);
 	this->SetSrcAlphaType(srcImage->info.atype);
 	if (this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)

@@ -166,7 +166,7 @@ Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Ma
 					UnsafeArray<UInt8> srcPtr;
 					if (surface->LockSurface(lineAdd).SetTo(srcPtr))
 					{
-						ImageUtil_ConvR8G8B8N8_ARGB32(srcPtr.Ptr() + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
+						ImageUtil_ConvR8G8B8N8_B8G8R8A8(srcPtr.Ptr() + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
 							this->buffPtr.Ptr() + destTL.y * (OSInt)this->GetDataBpl() + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 							buffSize.x, buffSize.y, lineAdd, (OSInt)this->GetDataBpl());
 						surface->UnlockSurface();
@@ -177,7 +177,7 @@ Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Ma
 					UOSInt bpl = this->GetDataBpl();
 					surface->GetRasterData(this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3),
 						drawX, drawY, buffSize.x, buffSize.y, bpl, false, this->info.rotateType);
-					ImageUtil_ConvR8G8B8N8_ARGB32(this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), dispSize.x, dispSize.y, (OSInt)bpl, (OSInt)bpl);
+					ImageUtil_ConvR8G8B8N8_B8G8R8A8(this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), this->buffPtr.Ptr() + destTL.y * (OSInt)bpl + destTL.x * ((OSInt)this->info.storeBPP >> 3), dispSize.x, dispSize.y, (OSInt)bpl, (OSInt)bpl);
 				}
 			}
 			else

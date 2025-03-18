@@ -86,14 +86,14 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 			Double psnr;
 			if (me->radMode16Bit->IsSelected())
 			{
-				simg1->To64bpp();
-				simg2->To64bpp();
+				simg1->ToB16G16R16A16();
+				simg2->ToB16G16R16A16();
 				psnr = simg1->CalcPSNR(simg2);
 			}
 			else
 			{
-				simg1->To32bpp();
-				simg2->To32bpp();
+				simg1->ToB8G8R8A8();
+				simg2->ToB8G8R8A8();
 				psnr = simg1->CalcPSNR(simg2);
 			}
 			sb.ClearStr();

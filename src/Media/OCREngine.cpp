@@ -51,7 +51,7 @@ Bool Media::OCREngine::SetParsingImage(NN<Media::StaticImage> img)
 	}
 	else
 	{
-		img->To32bpp();
+		img->ToB8G8R8A8();
 		pix = pixCreateNoInit((l_int32)img->info.dispSize.x, (l_int32)img->info.dispSize.y, (l_int32)img->info.storeBPP);
 	}
 	if (pix == 0)

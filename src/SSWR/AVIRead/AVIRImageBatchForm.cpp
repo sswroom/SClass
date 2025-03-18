@@ -54,7 +54,11 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 		NN<Media::StaticImage> simg;
 		if (img.SetTo(simg))
 		{
-			simg->To32bpp();
+			if (!me->resizer->IsSupported(simg->info))
+			{
+				printf("AVIRImageBatchForm: Pixel Format not supported\r\n");
+				simg->ToB8G8R8A8();
+			}
 			Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
 			me->resizer->SetTargetSize(sz);
 			me->resizer->SetDestProfile(simg->info.color);

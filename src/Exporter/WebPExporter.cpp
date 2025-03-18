@@ -101,7 +101,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
 			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispSize.CalcArea() * 3);
-			ImageUtil_ConvARGB32_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)bpl, (OSInt)img->info.dispSize.x * 3);
+			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)bpl, (OSInt)img->info.dispSize.x * 3);
 			if (quality < 0)
 			{
 				vp8len = WebPEncodeLosslessBGR(imgBuff, (int)img->info.dispSize.x, (int)img->info.dispSize.y, (int)img->info.dispSize.x * 3, &vp8);
@@ -128,7 +128,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	else
 	{
 		NN<Media::StaticImage> simg = img->CreateStaticImage();
-		simg->To32bpp();
+		simg->ToB8G8R8A8();
 		UOSInt bpl = simg->GetDataBpl();
 		if (quality < 0)
 		{

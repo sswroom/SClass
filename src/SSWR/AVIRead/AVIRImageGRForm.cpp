@@ -148,8 +148,8 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	if (me->srcImg->info.pf == Media::PF_B8G8R8)
 	{
-		me->srcImg->To32bpp();
-		me->destImg->To32bpp();
+		me->srcImg->ToB8G8R8A8();
+		me->destImg->ToB8G8R8A8();
 	}
 	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
 	{

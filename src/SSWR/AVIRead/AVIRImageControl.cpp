@@ -199,7 +199,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						if (!resizer.IsSupported(simg->info))
 						{
-							simg->To32bpp();
+							simg->ToB8G8R8A8();
 						}
 						resizer.SetSrcPixelFormat(simg->info.pf, simg->pal);
 						if (resizer.ProcessToNew(simg).SetTo(simg2))
@@ -303,7 +303,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			Sync::MutexUsage ioMutUsage(this->ioMut);
 			if (this->exportFmt == EF_JPG)
 			{
-				img->To32bpp();
+				img->ToB8G8R8A8();
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("jpg"));
 				IO::FileStream fs(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 				Optional<IO::FileExporter::ParamData> param = jpgExporter.CreateParam(imgList);

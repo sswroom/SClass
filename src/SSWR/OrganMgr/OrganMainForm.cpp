@@ -1623,7 +1623,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 						{
 							Optional<Media::StaticImage> nimg;
-							img->To32bpp();
+							img->ToB8G8R8A8();
 							me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
 							me->mapResizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 							nimg = me->mapResizer->ProcessToNew(img);

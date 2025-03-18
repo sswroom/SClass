@@ -33,8 +33,8 @@ namespace Media
 		virtual Media::RasterImage::ImageType GetImageType() const;
 		virtual void GetRasterData(UnsafeArray<UInt8> destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
-		Bool To32bpp();
-		Bool To64bpp();
+		Bool ToB8G8R8A8();
+		Bool ToB16G16R16A16();
 		Bool ToW8();
 		Bool ToPal8();
 		Bool PalTo8bpp();

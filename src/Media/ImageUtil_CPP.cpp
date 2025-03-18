@@ -608,7 +608,7 @@ extern "C" void ImageUtil_DrawRectNA32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt 
 	pixelPtr += bpl2;
 }
 
-extern "C" void ImageUtil_ConvP1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	UInt8 v;
@@ -647,7 +647,7 @@ extern "C" void ImageUtil_ConvP1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	UInt8 v;
@@ -684,7 +684,7 @@ extern "C" void ImageUtil_ConvP2_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	if (w & 1)
@@ -731,7 +731,7 @@ extern "C" void ImageUtil_ConvP4_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	sbpl -= w;
@@ -750,7 +750,7 @@ extern "C" void ImageUtil_ConvP8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	UInt8 v;
@@ -817,7 +817,7 @@ extern "C" void ImageUtil_ConvP1_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	UInt8 v;
@@ -881,7 +881,7 @@ extern "C" void ImageUtil_ConvP2_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	UInt8 v;
@@ -936,7 +936,7 @@ extern "C" void ImageUtil_ConvP4_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_A1_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	UInt8 v;
@@ -984,7 +984,7 @@ extern "C" void ImageUtil_ConvP8_A1_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G5R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G5R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	UInt8 cv;
@@ -1012,7 +1012,7 @@ extern "C" void ImageUtil_ConvB5G5R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G6R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G6R5_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	UInt8 cv;
@@ -1040,7 +1040,7 @@ extern "C" void ImageUtil_ConvB5G6R5_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvB8G8R8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 3;
@@ -1062,7 +1062,7 @@ extern "C" void ImageUtil_ConvB8G8R8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 3;
@@ -1084,7 +1084,7 @@ extern "C" void ImageUtil_ConvR8G8B8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvARGB32_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8A8_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w << 2;
@@ -1105,7 +1105,7 @@ extern "C" void ImageUtil_ConvARGB32_B8G8R8(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8A8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 4;
@@ -1127,7 +1127,7 @@ extern "C" void ImageUtil_ConvR8G8B8A8_ARGB32(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8N8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8N8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt8 r;
 	OSInt i;
@@ -1239,7 +1239,7 @@ extern "C" void ImageUtil_ConvR16G16B16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *
 	}
 }
 
-extern "C" void ImageUtil_ConvA2B10G10R10_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvA2B10G10R10_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt16 r;
 	UInt16 g;
@@ -1533,7 +1533,7 @@ extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *de
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32A32_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -1584,7 +1584,7 @@ extern "C" void ImageUtil_ConvFW32A32_32(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -1623,7 +1623,7 @@ extern "C" void ImageUtil_ConvFW32_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -1736,7 +1736,7 @@ extern "C" void ImageUtil_ConvP1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -1812,7 +1812,7 @@ extern "C" void ImageUtil_ConvP2_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -1900,7 +1900,7 @@ extern "C" void ImageUtil_ConvP4_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -1928,7 +1928,7 @@ extern "C" void ImageUtil_ConvP8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvP1_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP1_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -2078,7 +2078,7 @@ extern "C" void ImageUtil_ConvP1_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvP2_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP2_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -2192,7 +2192,7 @@ extern "C" void ImageUtil_ConvP2_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvP4_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP4_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -2282,7 +2282,7 @@ extern "C" void ImageUtil_ConvP4_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvP8_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
+extern "C" void ImageUtil_ConvP8_A1_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt storeW, OSInt dbpl, const UInt8 *pal)
 {
 	OSInt i;
 	const UInt8 *cPtr;
@@ -2349,7 +2349,7 @@ extern "C" void ImageUtil_ConvP8_A1_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, 
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G5R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G5R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	UInt8 cv;
@@ -2381,7 +2381,7 @@ extern "C" void ImageUtil_ConvB5G5R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvB5G6R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB5G6R5_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	UInt8 cv;
@@ -2413,7 +2413,7 @@ extern "C" void ImageUtil_ConvB5G6R5_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvB8G8R8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 3;
@@ -2439,7 +2439,7 @@ extern "C" void ImageUtil_ConvB8G8R8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 3;
@@ -2595,7 +2595,7 @@ extern "C" void ImageUtil_ConvR16G16B16A16_B16G16R16A16(const UInt8 *srcPtr, UIn
 	}
 }
 
-extern "C" void ImageUtil_ConvA2B10G10R10_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvA2B10G10R10_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt16 r;
 	UInt16 g;
@@ -2893,7 +2893,7 @@ extern "C" void ImageUtil_ConvFR32G32B32_B16G16R16A16(const UInt8 *srcPtr, UInt8
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32A32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -2944,7 +2944,7 @@ extern "C" void ImageUtil_ConvFW32A32_64(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_ConvFW32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFW32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -2983,7 +2983,7 @@ extern "C" void ImageUtil_ConvFW32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt
 	}
 }
 
-extern "C" void ImageUtil_ConvW16_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt8 v;
 	OSInt i;
@@ -3007,7 +3007,7 @@ extern "C" void ImageUtil_ConvW16_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_ConvW16A16_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt8 v;
 	OSInt i;
@@ -3031,7 +3031,7 @@ extern "C" void ImageUtil_ConvW16A16_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvW8A8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW8A8_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt8 v;
 	OSInt i;
@@ -3055,7 +3055,7 @@ extern "C" void ImageUtil_ConvW8A8_ARGB32(const UInt8 *srcPtr, UInt8 *destPtr, O
 	}
 }
 
-extern "C" void ImageUtil_ConvW16_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt16 v;
 	OSInt i;
@@ -3079,7 +3079,7 @@ extern "C" void ImageUtil_ConvW16_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OS
 	}
 }
 
-extern "C" void ImageUtil_ConvW16A16_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt16 v;
 	OSInt i;
@@ -3104,7 +3104,7 @@ extern "C" void ImageUtil_ConvW16A16_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvW8A8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvW8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	UInt16 v;
 	OSInt i;

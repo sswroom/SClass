@@ -479,7 +479,7 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
 		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
-		if (simg->To32bpp())
+		if (simg->ToB8G8R8A8())
 		{
 			UnsafeArray<UInt8> sptr = simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
@@ -491,7 +491,7 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 	else
 	{
 		NN<Media::StaticImage> simg = img->CreateStaticImage();
-		if (simg->To32bpp())
+		if (simg->ToB8G8R8A8())
 		{
 			UnsafeArray<UInt8> sptr = simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
@@ -2007,7 +2007,7 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 	if (this->IsOffScreen() && img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
 		Media::StaticImage *simg = img.Ptr();
-		simg->To32bpp();
+		simg->ToB8G8R8A8();
 		if (simg->info.atype == Media::AT_NO_ALPHA)
 		{
 			Int32 x = Double2Int32(tl.x);

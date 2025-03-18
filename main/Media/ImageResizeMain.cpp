@@ -71,7 +71,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				Media::Resizer::LanczosResizer8_C8 resizer(4, 4, simg->info.color, simg->info.color, 0, simg->info.atype);
 				resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
-				simg->To32bpp();
+				if (!resizer.IsSupported(simg->info))
+				{
+					simg->ToB8G8R8A8();
+				}
 				newImg = resizer.ProcessToNew(simg);
 			}
 			else

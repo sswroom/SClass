@@ -1146,7 +1146,7 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 				UInt32 imgTime;
 				imgList->ToStaticImage(i);
 				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgTime)).SetTo(simg))
-					simg->To32bpp();
+					simg->ToB8G8R8A8();
 			}
 			if (imgInfo->isAni)
 			{
@@ -1191,7 +1191,7 @@ UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Media::ImageList> imgL
 		imgList->ToStaticImage(i);
 		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgTime)).SetTo(simg))
 		{
-			simg->To32bpp();
+			simg->ToB8G8R8A8();
 			if (imgTime != 0)
 			{
 				imgInfo->isAni = true;

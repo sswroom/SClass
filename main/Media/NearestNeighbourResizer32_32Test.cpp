@@ -46,7 +46,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		t0 = clk.GetTimeDiff();
 		clk.Start();
-		simg->To32bpp();
+		simg->ToB8G8R8A8();
 	//	simg->To64bpp();
 		t1 = clk.GetTimeDiff();
 		simg2 = resizer->ProcessToNew(simg);

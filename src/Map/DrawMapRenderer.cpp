@@ -2223,7 +2223,8 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				img->PalTo8bpp();
 				if (!this->resizer->IsSupported(img->info))
 				{
-					img->To32bpp();
+					printf("DrawMapRenderer: DrawImageObject1 Pixel format not supported\r\n");
+					img->ToB8G8R8A8();
 				}
 				this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
 				this->resizer->SetTargetSize(Math::Coord2D<UOSInt>::UOSIntFromDouble(scnBR) - Math::Coord2D<UOSInt>::UOSIntFromDouble(scnTL));
@@ -2293,7 +2294,8 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				img->PalTo8bpp();
 				if (!this->resizer->IsSupported(img->info))
 				{
-					img->To32bpp();
+					printf("DrawMapRenderer: DrawImageObject2 Pixel format not supported\r\n");
+					img->ToB8G8R8A8();
 				}
 				this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
 				NN<Media::StaticImage> newImg;

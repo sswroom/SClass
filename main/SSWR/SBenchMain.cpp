@@ -1939,7 +1939,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #endif
 
 			clk->Start();
-			nnsrcImg->To32bpp();
+			nnsrcImg->ToB8G8R8A8();
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("To 32bpp: t = "));
