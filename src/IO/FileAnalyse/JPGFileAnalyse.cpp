@@ -463,7 +463,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
 			NN<Media::EXIFData> exif;
-			if (Media::EXIFData::ParseExif(tagData.Arr(), tag->size).SetTo(exif))
+			if (Media::EXIFData::ParseExifDirect(tagData.Arr() + 10, tag->size - 10).SetTo(exif))
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
 				exif->ToString(sb, CSTR_NULL);

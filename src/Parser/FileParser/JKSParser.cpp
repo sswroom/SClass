@@ -85,7 +85,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 		sb.AppendC(UTF8STRC(".cer"));
 		if (cerBuff.GetSize() < certLen)
 		{
-			cerBuff.ChangeSize(certLen);
+			cerBuff.ChangeSizeAndClear(certLen);
 		}
 		NN<Text::String> s = Text::String::New(sb.ToCString());
 		fd->GetRealData(ofst + 20 + aliasLen + certTypeLen, certLen, cerBuff);

@@ -177,7 +177,7 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 			}
 			this->objectId++;
 		}
-		this->rowData.ChangeSize(this->rowSize);
+		this->rowData.ChangeSizeAndClear(this->rowSize);
 		if (this->fd->GetRealData(this->currOfst + 4, this->rowSize, this->rowData) != this->rowSize)
 		{
 			this->rowData.Delete();
@@ -1770,7 +1770,7 @@ void Map::ESRI::FileGDBReader::SetIndex(NN<IO::StreamData> fd, UOSInt indexCnt)
 	{
 		this->indexCnt = indexCnt;
 		UOSInt len = this->indexCnt * 5;
-		this->indexBuff.ChangeSize(len);
+		this->indexBuff.ChangeSizeAndClear(len);
 		if (fd->GetRealData(16, len, this->indexBuff) != len)
 		{
 			this->indexBuff.Delete();

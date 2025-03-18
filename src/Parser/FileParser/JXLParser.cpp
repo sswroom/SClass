@@ -76,6 +76,11 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	JxlDecoderSetInput(dec.get(), buff.Ptr(), buff.GetSize());
 	JxlDecoderCloseInput(dec.get());
 
+	JxlBoxType boxType = {0, 0, 0, 0};
+	Data::ByteBuffer boxBuffer(65536);
+	BoxData boxData;
+	NN<Media::EXIFData> exif;
+	UOSInt boxSize = 0;
 	UInt32 tps_numerator = 0;
 	UInt32 tps_denominator = 0;
 	UInt32 imgDur = 0;
@@ -83,24 +88,28 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	Optional<Media::StaticImage> optimg = 0;
 	NN<Media::StaticImage> simg;
 	finfo.Clear();
+	boxData.exif = 0;
 	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	for (;;) {
 		JxlDecoderStatus status = JxlDecoderProcessInput(dec.get());
-		//printf("JXLParser: Event %d\r\n", status);
+//		printf("JXLParser: Event %d\r\n", status);
 		if (status == JXL_DEC_ERROR) {
 			printf("JXLParser: Decoder error\r\n");
+			FreeBoxData(boxData);
 			optimg.Delete();
 			imgList.Delete();
 			return 0;
 		} else if (status == JXL_DEC_NEED_MORE_INPUT) {
 			printf("JXLParser: Need More input\r\n");
+			FreeBoxData(boxData);
 			optimg.Delete();
 			imgList.Delete();
 			return 0;
 		} else if (status == JXL_DEC_BASIC_INFO) {
 			if (JXL_DEC_SUCCESS != JxlDecoderGetBasicInfo(dec.get(), &info)) {
 				printf("JXLParser: JxlDecoderGetBasicInfo failed\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
@@ -229,11 +238,17 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			}
 			NEW_CLASSNN(simg, Media::StaticImage(finfo));
 			optimg = simg;
+			if (boxData.exif.SetTo(exif))
+			{
+				simg->SetEXIFData(exif);
+				boxData.exif = 0;
+			}
 			JxlResizableParallelRunnerSetThreads(runner.get(), JxlResizableParallelRunnerSuggestThreads(info.xsize, info.ysize));
 		} else if (status == JXL_DEC_COLOR_ENCODING) {
 			size_t icc_size;
 			if (JXL_DEC_SUCCESS != JxlDecoderGetICCProfileSize(dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size)) {
 				printf("JXLParser: JxlDecoderGetICCProfileSize failed\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
@@ -241,12 +256,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (!optimg.SetTo(simg))
 			{
 				printf("JXLParser: Image Not found on Color Encoding\r\n");
+				FreeBoxData(boxData);
 				imgList.Delete();
 				return 0;
 			}
 			UInt8 *iccBuff = MemAlloc(UInt8, icc_size);
 			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, iccBuff, icc_size)) {
 				printf("JXLParser: JxlDecoderGetColorAsICCProfile failed\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				MemFree(iccBuff);
 				imgList.Delete();
@@ -257,12 +274,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			{
 				icc->SetToColorProfile(simg->info.color);
 				icc->SetToColorProfile(finfo.color);
+				icc.Delete();
 			}
 			MemFree(iccBuff);
 		} else if (status == JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
 			size_t buffer_size;
 			if (JXL_DEC_SUCCESS != JxlDecoderImageOutBufferSize(dec.get(), &format, &buffer_size)) {
 				printf("JXLParser: JxlDecoderImageOutBufferSize failed\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
@@ -270,12 +289,14 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (!optimg.SetTo(simg))
 			{
 				printf("JXLParser: Image Not found\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
 			}
 			if (buffer_size > simg->GetDataBpl() * simg->info.dispSize.y) {
 				printf("JXLParser: Invalid out buffer size %d, %d x %d x %d\r\n", (UInt32)buffer_size, (UInt32)simg->info.dispSize.x, (UInt32)simg->info.dispSize.y, (UInt32)simg->info.storeBPP);
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
@@ -284,6 +305,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 																simg->data.Ptr(),
 																buffer_size)) {
 				printf("JXLParser: JxlDecoderSetImageOutBuffer failed\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
@@ -292,11 +314,19 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			JxlFrameHeader frHeader;
 			if (JXL_DEC_SUCCESS != JxlDecoderGetFrameHeader(dec.get(), &frHeader)) {
 				printf("JXLParser: JxlDecoderSetImageOutBuffer failed\r\n");
+				FreeBoxData(boxData);
 				optimg.Delete();
 				imgList.Delete();
 				return 0;
 			}
-			imgDur = frHeader.duration * 1000 * tps_denominator / tps_numerator;
+			if (tps_numerator == 0)
+			{
+				imgDur = 0;
+			}
+			else
+			{
+				imgDur = frHeader.duration * 1000 * tps_denominator / tps_numerator;
+			}
 			if (optimg.IsNull())
 			{
 				NEW_CLASSNN(simg, Media::StaticImage(finfo));
@@ -317,12 +347,51 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (imgList->GetCount() == 0)
 			{
 				printf("JXLParser: Image not found on Success\r\n");
+				FreeBoxData(boxData);
 				imgList.Delete();
 				return 0;
 			}
+			if (boxSize > 0)
+			{
+				size_t remaining = JxlDecoderReleaseBoxBuffer(dec.get());
+				boxSize = boxBuffer.GetSize() - remaining;
+				ParseBox(boxData, boxBuffer.SubArray(0, boxSize), ReadNUInt32(boxType));
+				boxSize = 0;
+			}
+			if (boxData.exif.SetTo(exif) && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+			{
+				simg->SetEXIFData(exif);
+				boxData.exif = 0;
+			}
+			FreeBoxData(boxData);
 			return imgList;
+		} else if (status == JXL_DEC_BOX) {
+			if (boxSize > 0)
+			{
+				size_t remaining = JxlDecoderReleaseBoxBuffer(dec.get());
+				boxSize = boxBuffer.GetSize() - remaining;
+				ParseBox(boxData, boxBuffer.SubArray(0, boxSize), ReadNUInt32(boxType));
+				boxSize = 0;
+			}
+			status = JxlDecoderGetBoxType(dec.get(), boxType, JXL_TRUE);
+			if (JXL_DEC_SUCCESS != status)
+			{
+				printf("JXLParser: Failed to get box type\r\n");
+				FreeBoxData(boxData);
+				imgList.Delete();
+				optimg.Delete();
+				return 0;
+			}
+			JxlDecoderSetBoxBuffer(dec.get(), boxBuffer.Ptr(), boxBuffer.GetSize());
+			boxSize = boxBuffer.GetSize();
+		} else if (status == JXL_DEC_BOX_NEED_MORE_OUTPUT) {
+			size_t remaining = JxlDecoderReleaseBoxBuffer(dec.get());
+			UOSInt pos = boxBuffer.GetSize() - remaining;
+			boxBuffer.ChangeSizeAndKeep(boxBuffer.GetSize() + 65536);
+			JxlDecoderSetBoxBuffer(dec.get(), boxBuffer.Ptr() + pos, boxBuffer.GetSize() - pos);
 		} else {
 			printf("JXLParser: Unknown Status: %d\r\n", status);
+			FreeBoxData(boxData);
 			optimg.Delete();
 			imgList.Delete();
 			return 0;
@@ -330,4 +399,21 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	}
 
 	return 0;
+}
+
+void Parser::FileParser::JXLParser::FreeBoxData(NN<BoxData> boxData)
+{
+	boxData->exif.Delete();
+}
+
+void Parser::FileParser::JXLParser::ParseBox(NN<BoxData> box, Data::ByteArrayR boxArr, UInt32 boxType)
+{
+	UTF8Char name[5];
+	WriteNUInt32(name, boxType);
+	name[4] = 0;
+	if (boxType == *(UInt32*)"Exif")
+	{
+		box->exif.Delete();
+		box->exif = Media::EXIFData::ParseExifDirect(boxArr.Arr() + 4, boxArr.GetSize() - 4);
+	}
 }

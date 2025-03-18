@@ -463,7 +463,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDat
 //			Int32 descSize;
 			if (atomSize > 1032)
 			{
-				dataBuff2.ChangeSize(atomSize - 8);
+				dataBuff2.ChangeSizeAndClear(atomSize - 8);
 				buff = dataBuff2;
 				fd->GetRealData(ofst + i + 8, atomSize - 8, buff);
 			}
@@ -1456,7 +1456,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDat
 				if (frInfo.fourcc == *(UInt32*)"ravc")
 				{
 					Int32 nsps;
-					stszBuff.ChangeSize(avccAtomSize);
+					stszBuff.ChangeSizeAndClear(avccAtomSize);
 					fd->GetRealData(avccOfst, avccAtomSize, stszBuff);
 
 					fsrc->SetProp(*(Int32*)"AVCH", &stszBuff[8], avccAtomSize - 8);
@@ -1506,7 +1506,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDat
 				else if (frInfo.fourcc == *(UInt32*)"rhvc")
 				{
 					OSInt narr;
-					stszBuff.ChangeSize(avccAtomSize);
+					stszBuff.ChangeSizeAndClear(avccAtomSize);
 					fd->GetRealData(avccOfst, avccAtomSize, stszBuff);
 /*
 00 01
@@ -1570,7 +1570,7 @@ array_item:
 				}
 				else if (frInfo.fourcc == *(UInt32*)"HEVC")
 				{
-					stszBuff.ChangeSize(avccAtomSize - 8);
+					stszBuff.ChangeSizeAndClear(avccAtomSize - 8);
 					fd->GetRealData(avccOfst + 8, avccAtomSize - 8, stszBuff);
 					fsrc->SetProp(*(Int32*)"HEVC", stszBuff.Arr(), avccAtomSize - 8);
 

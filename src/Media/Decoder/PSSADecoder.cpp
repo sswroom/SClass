@@ -35,7 +35,7 @@ Media::Decoder::PSSADecoder::PSSADecoder(NN<Media::AudioSource> sourceAudio)
 	}
 	this->sourceAudio = sourceAudio.Ptr();
 	this->readBuffSize = sourceAudio->GetMinBlockSize();
-	this->readBuff.ChangeSize(this->readBuffSize);
+	this->readBuff.ChangeSizeAndClear(this->readBuffSize);
 }
 
 Media::Decoder::PSSADecoder::~PSSADecoder()

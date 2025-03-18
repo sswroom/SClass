@@ -61,7 +61,7 @@ void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				}
 				if (me->imageSize > 0)
 				{
-					me->imageBuff.ChangeSize(me->imageSize);
+					me->imageBuff.ChangeSizeAndClear(me->imageSize);
 				}
 			}
 			UOSInt ofst = val + 24 + optHdrSize;

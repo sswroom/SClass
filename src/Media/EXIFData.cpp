@@ -223,6 +223,8 @@ Media::EXIFData::EXIFInfo Media::EXIFData::defInfos[] = {
 	{50778, CSTR("CalibrationIlluminant1")},
 	{50779, CSTR("CalibrationIlluminant2")},
 	{50780, CSTR("BestQualityScale")},
+	{50898, CSTR("PanasonicTitle")},
+	{50899, CSTR("PanasonicTitle2")},
 	{59932, CSTR("Padding")}
 };
 
@@ -6066,39 +6068,44 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 	return true;
 }
 
-Optional<Media::EXIFData> Media::EXIFData::ParseExif(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+Optional<Media::EXIFData> Media::EXIFData::ParseExifJPG(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (buff[4] == 'E' && buff[5] == 'x' && buff[6] == 'i' && buff[7] == 'f' && buff[8] == 0)
 	{
-		NN<Data::ByteOrder> bo;
-		if (*(Int16*)&buff[10] == *(Int16*)"II")
-		{
-			NEW_CLASSNN(bo, Data::ByteOrderLSB());
-		}
-		else if (*(Int16*)&buff[10] == *(Int16*)"MM")
-		{
-			NEW_CLASSNN(bo, Data::ByteOrderMSB());
-		}
-		else
-		{
-			return 0;
-		}
-		Bool valid = true;
-		if (bo->GetUInt16(&buff[12]) != 42)
-		{
-			valid = false;
-		}
-		if (bo->GetUInt32(&buff[14]) != 8)
-		{
-			valid = false;
-		}
-		Optional<Media::EXIFData> ret = 0;
-		if (valid)
-		{
-			ret = ParseIFD(&buff[18], buffSize - 18, bo, 0, Media::EXIFData::EM_STANDARD, &buff[10]);
-		}
-		bo.Delete();
-		return ret;
+		return ParseExifDirect(buff + 10, buffSize - 10);
 	}
 	return 0;
+}
+
+Optional<Media::EXIFData> Media::EXIFData::ParseExifDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
+{
+	NN<Data::ByteOrder> bo;
+	if (*(Int16*)&buff[0] == *(Int16*)"II")
+	{
+		NEW_CLASSNN(bo, Data::ByteOrderLSB());
+	}
+	else if (*(Int16*)&buff[0] == *(Int16*)"MM")
+	{
+		NEW_CLASSNN(bo, Data::ByteOrderMSB());
+	}
+	else
+	{
+		return 0;
+	}
+	Bool valid = true;
+	if (bo->GetUInt16(&buff[2]) != 42)
+	{
+		valid = false;
+	}
+	if (bo->GetUInt32(&buff[4]) != 8)
+	{
+		valid = false;
+	}
+	Optional<Media::EXIFData> ret = 0;
+	if (valid)
+	{
+		ret = ParseIFD(&buff[8], buffSize - 8, bo, 0, Media::EXIFData::EM_STANDARD, &buff[0]);
+	}
+	bo.Delete();
+	return ret;
 }

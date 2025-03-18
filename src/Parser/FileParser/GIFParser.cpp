@@ -85,7 +85,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
 	if (hdr[10] & 0x80)
 	{
-		globalColorTable.ChangeSize((UOSInt)3 << colorSize);
+		globalColorTable.ChangeSizeAndClear((UOSInt)3 << colorSize);
 //		colorIndex = hdr[11];
 		fd->GetRealData(currOfst, (UOSInt)3 << colorSize, globalColorTable);
 		currOfst += (UOSInt)3 << colorSize;
@@ -116,7 +116,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 			if (imgDesc[8] & 0x80)
 			{
 				Int32 colorSize = (imgDesc[8] & 7) + 1;
-				localColorTable.ChangeSize((UOSInt)3 << colorSize);
+				localColorTable.ChangeSizeAndClear((UOSInt)3 << colorSize);
 				fd->GetRealData(currOfst, (UOSInt)3 << colorSize, localColorTable);
 				currOfst += (UOSInt)3 << colorSize;
 			}
@@ -249,7 +249,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 					if (scnImg32.GetSize() > 0)
 					{
 						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-						imgData.ChangeSize(imgW * imgH);
+						imgData.ChangeSizeAndClear(imgW * imgH);
 						readSize = lzw->Read(imgData);
 						if (localColorTable.GetSize() > 0)
 						{
@@ -512,7 +512,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 8, Media::PF_PAL_8, scnWidth * scnHeight, color, Media::ColorProfile::YUVT_UNKNOWN, (globalTransparentIndex == -1)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						if (imgDesc[8] & 0x40)
 						{
-							imgData.ChangeSize(imgW * imgH);
+							imgData.ChangeSizeAndClear(imgW * imgH);
 							readSize = lzw->Read(imgData);
 							tmpPtr = imgData;
 							tmpPtr2 = scnImg + top * scnWidth + left;
@@ -613,7 +613,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							}
 							else
 							{
-								imgData.ChangeSize(imgW * imgH);
+								imgData.ChangeSizeAndClear(imgW * imgH);
 								readSize = lzw->Read(imgData);
 								tmpPtr = imgData;
 								tmpPtr2 = scnImg + top * scnWidth + left;

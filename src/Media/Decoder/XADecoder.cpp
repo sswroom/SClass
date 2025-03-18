@@ -116,7 +116,7 @@ UOSInt Media::Decoder::XADecoder::ReadBlock(Data::ByteArray buff)
 	readSize = blkSize << 7;
 	if (readBuff.GetSize() < readSize)
 	{
-		readBuff.ChangeSize(readSize);
+		readBuff.ChangeSizeAndClear(readSize);
 	}
 	readSize = sourceAudio->ReadBlock(readBuff.WithSize(readSize));
 	blkSize = readSize >> 7;

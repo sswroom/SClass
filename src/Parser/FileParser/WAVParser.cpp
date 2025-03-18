@@ -65,7 +65,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 		
 		if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"fmt ")
 		{
-			fmt.ChangeSize(ReadUInt32(&chunkBuff[4]));
+			fmt.ChangeSizeAndClear(ReadUInt32(&chunkBuff[4]));
 			fd->GetRealData(currPos + 8, ReadUInt32(&chunkBuff[4]), fmt);
 		}
 		else if (ReadNUInt32(&chunkBuff[0]) == *(UInt32*)"data")

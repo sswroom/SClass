@@ -641,7 +641,7 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 		this->adjStTimeTicks = this->time3TS * 1000;
 		this->adjRecInterval = this->recInterval * 1000;
 	}
-	this->recBuff.ChangeSize(recCnt * 3);
+	this->recBuff.ChangeSizeAndClear(recCnt * 3);
 	stmData->GetRealData(96, recCnt * 3, this->recBuff);
 }
 

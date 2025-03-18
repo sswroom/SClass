@@ -374,7 +374,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				if (error.code == heif_error_Ok)
 				{
 					NN<Media::EXIFData> exif;
-					if (Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize).SetTo(exif))
+					if (Media::EXIFData::ParseExifJPG(exifData, (UOSInt)exifSize).SetTo(exif))
 					{
 						if (removeRotate)
 						{
@@ -538,7 +538,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
 						if (error.code == heif_error_Ok)
 						{
-							exif.Set(Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize));
+							exif.Set(Media::EXIFData::ParseExifJPG(exifData, (UOSInt)exifSize));
 						}
 						MemFree(exifData);
 					}

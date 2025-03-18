@@ -50,11 +50,38 @@ namespace Data
 			}
 		}
 
-		void ChangeSize(UOSInt buffSize)
+		void ChangeSizeAndClear(UOSInt buffSize)
 		{
 			if (!this->deleted)
 				MemFreeArr(this->buff);
 			this->buff = MemAllocArr(UInt8, buffSize);
+			this->buffSize = buffSize;
+			this->deleted = false;
+#if defined(CHECK_RANGE)
+			this->prevSize = 0;
+#endif
+		}
+
+		void ChangeSizeAndKeep(UOSInt buffSize)
+		{
+			if (this->deleted)
+			{
+				this->buff = MemAllocArr(UInt8, buffSize);
+			}
+			else
+			{
+				UnsafeArray<UInt8> newBuff = MemAllocArr(UInt8, buffSize);
+				if (this->buffSize > buffSize)
+				{
+					MemCopyNO(newBuff.Ptr(), this->buff.Ptr(), buffSize);
+				}
+				else
+				{
+					MemCopyNO(newBuff.Ptr(), this->buff.Ptr(), this->buffSize);
+				}
+				MemFreeArr(this->buff);
+				this->buff = newBuff;
+			}
 			this->buffSize = buffSize;
 			this->deleted = false;
 #if defined(CHECK_RANGE)

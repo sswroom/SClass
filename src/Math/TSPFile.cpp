@@ -18,7 +18,7 @@ Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 	if (*(Int64*)hdr == *(Int64*)"SmTS____")
 	{
 		this->rowCnt = (UOSInt)((fd->GetDataSize() - 8) / 64);
-		this->ptBuff.ChangeSize(this->rowCnt * 64);
+		this->ptBuff.ChangeSizeAndClear(this->rowCnt * 64);
 		this->rowSize = 64;
 		this->fileType = 1;
 		fd->GetRealData(8, this->rowCnt * 64, this->ptBuff);
@@ -26,20 +26,20 @@ Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 	else if (*(Int64*)hdr == *(Int64*)"SmTS___A")
 	{
 		this->rowCnt = (UOSInt)((fd->GetDataSize() - 72) / 64);
-		this->ptBuff.ChangeSize(this->rowCnt * 64);
+		this->ptBuff.ChangeSizeAndClear(this->rowCnt * 64);
 		this->rowSize = 64;
 		this->fileType = 2;
-		this->hdrBuff.ChangeSize(64);
+		this->hdrBuff.ChangeSizeAndClear(64);
 		fd->GetRealData(8, 64, this->hdrBuff);
 		fd->GetRealData(72, this->rowCnt * 64, this->ptBuff);
 	}
 	else if (*(Int64*)hdr == *(Int64*)"SmTS___B")
 	{
 		this->rowCnt = (UOSInt)((fd->GetDataSize() - 72) / 128);
-		this->ptBuff.ChangeSize(this->rowCnt * 128);
+		this->ptBuff.ChangeSizeAndClear(this->rowCnt * 128);
 		this->rowSize = 128;
 		this->fileType = 3;
-		this->hdrBuff.ChangeSize(64);
+		this->hdrBuff.ChangeSizeAndClear(64);
 		fd->GetRealData(8, 64, this->hdrBuff);
 		fd->GetRealData(72, this->rowCnt * 128, this->ptBuff);
 	}

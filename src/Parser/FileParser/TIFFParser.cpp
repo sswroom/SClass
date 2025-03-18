@@ -494,7 +494,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 					if (jpgBuff.GetSize() < jpgLeng + jpegTables.GetSize())
 					{
-						jpgBuff.ChangeSize(jpgLeng + jpegTables.GetSize());
+						jpgBuff.ChangeSizeAndClear(jpgLeng + jpegTables.GetSize());
 					}
 					if (fd->GetRealData(jpgOfst, jpgLeng, jpgBuff + jpegTables.GetSize()) == jpgLeng)
 					{

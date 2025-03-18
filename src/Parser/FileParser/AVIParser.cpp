@@ -209,14 +209,14 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 		if (*(Int32*)chunkBuffer == *(Int32*)"idx1")
 		{
 			offset -= 8;
-			idx1.ChangeSize(i = ReadUInt32(&chunkBuffer[4]) + 4);
+			idx1.ChangeSizeAndClear(i = ReadUInt32(&chunkBuffer[4]) + 4);
 			offset += fd->GetRealData(offset, i, idx1);
 		}
 		else if (*(Int32*)chunkBuffer == *(Int32*)"LIST")
 		{
 			if (*(Int32*)&chunkBuffer[8] == *(Int32*)"INFO")
 			{
-				info.ChangeSize(i = ReadUInt32(&chunkBuffer[4]));
+				info.ChangeSizeAndClear(i = ReadUInt32(&chunkBuffer[4]));
 				WriteUInt32(&info[0], i);
 				offset += fd->GetRealData(offset, i - 4, info.SubArray(4));
 			}
@@ -252,7 +252,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 		else if (*(Int32*)chunkBuffer == *(Int32*)"SMCH")
 		{
 			offset -= 4;
-			chap.ChangeSize(i = ReadUInt32(&chunkBuffer[4]));
+			chap.ChangeSizeAndClear(i = ReadUInt32(&chunkBuffer[4]));
 			offset += fd->GetRealData(offset, i, chap);
 			offset += offset & 1;
 		}

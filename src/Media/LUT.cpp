@@ -36,7 +36,7 @@ void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataForm
 		tableSize *= inputLev;
 	}
 	tableSize = tableSize * this->outputCh;
-	this->luTable.ChangeSize(tableSize);
+	this->luTable.ChangeSizeAndClear(tableSize);
 }
 
 Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
