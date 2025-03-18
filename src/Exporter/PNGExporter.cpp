@@ -1460,18 +1460,22 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	WriteMInt32(&hdr[20], (Int32)img->info.dispSize.y);
 	switch (img->info.pf)
 	{
+	case Media::PF_R8G8B8:
 	case Media::PF_B8G8R8:
 		hdr[24] = 8;
 		hdr[25] = 2;
 		break;
+	case Media::PF_R8G8B8A8:
 	case Media::PF_B8G8R8A8:
 		hdr[24] = 8;
 		hdr[25] = 6;
 		break;
+	case Media::PF_LE_R16G16B16:
 	case Media::PF_LE_B16G16R16:
 		hdr[24] = 16;
 		hdr[25] = 2;
 		break;
+	case Media::PF_LE_R16G16B16A16:
 	case Media::PF_LE_B16G16R16A16:
 		hdr[24] = 16;
 		hdr[25] = 6;
@@ -1523,12 +1527,12 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	case Media::PF_LE_R5G5B5:
 	case Media::PF_LE_R5G6B5:
 	case Media::PF_LE_A2B10G10R10:
+	case Media::PF_LE_FR32G32B32A32:
 	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FR32G32B32:
 	case Media::PF_LE_FB32G32R32:
 	case Media::PF_LE_FW32A32:
 	case Media::PF_LE_FW32:
-	case Media::PF_R8G8B8A8:
-	case Media::PF_R8G8B8:
 	case Media::PF_PAL_1_A1:
 	case Media::PF_PAL_2_A1:
 	case Media::PF_PAL_4_A1:
@@ -1852,25 +1856,41 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
+	case Media::PF_R8G8B8:
 	case Media::PF_B8G8R8:
 		k = img->info.dispSize.x * 3;
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispSize.y;
-		while (i-- > 0)
+		if (img->info.pf == Media::PF_R8G8B8)
 		{
-			j = img->info.dispSize.x;
-			*imgPtr2++ = 0;
-			while (j-- > 0)
+			i = img->info.dispSize.y;
+			while (i-- > 0)
 			{
-				imgPtr2[0] = imgPtr1[2];
-				imgPtr2[1] = imgPtr1[1];
-				imgPtr2[2] = imgPtr1[0];
-				imgPtr2 += 3;
-				imgPtr1 += 3;
+				j = img->info.dispSize.x;
+				*imgPtr2++ = 0;
+				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 3);
+				imgPtr2 += img->info.dispSize.x * 3;
+				imgPtr1 += img->info.storeSize.x * 3;
 			}
-			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) * 3;
+		}
+		else
+		{
+			i = img->info.dispSize.y;
+			while (i-- > 0)
+			{
+				j = img->info.dispSize.x;
+				*imgPtr2++ = 0;
+				while (j-- > 0)
+				{
+					imgPtr2[0] = imgPtr1[2];
+					imgPtr2[1] = imgPtr1[1];
+					imgPtr2[2] = imgPtr1[0];
+					imgPtr2 += 3;
+					imgPtr1 += 3;
+				}
+				imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) * 3;
+			}
 		}
 		PNGExporter_FilterByte3(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
@@ -1888,26 +1908,41 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
+	case Media::PF_R8G8B8A8:
 	case Media::PF_B8G8R8A8:
 		k = img->info.dispSize.x << 2;
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispSize.y;
-		while (i-- > 0)
+		if (img->info.pf == Media::PF_R8G8B8A8)
 		{
-			j = img->info.dispSize.x;
-			*imgPtr2++ = 0;
-			while (j-- > 0)
+			i = img->info.dispSize.y;
+			while (i-- > 0)
 			{
-				imgPtr2[0] = imgPtr1[2];
-				imgPtr2[1] = imgPtr1[1];
-				imgPtr2[2] = imgPtr1[0];
-				imgPtr2[3] = imgPtr1[3];
-				imgPtr2 += 4;
-				imgPtr1 += 4;
+				*imgPtr2++ = 0;
+				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 4);
+				imgPtr2 += img->info.dispSize.x * 4;
+				imgPtr1 += img->info.storeSize.x * 4;
 			}
-			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 2;
+		}
+		else
+		{
+			i = img->info.dispSize.y;
+			while (i-- > 0)
+			{
+				j = img->info.dispSize.x;
+				*imgPtr2++ = 0;
+				while (j-- > 0)
+				{
+					imgPtr2[0] = imgPtr1[2];
+					imgPtr2[1] = imgPtr1[1];
+					imgPtr2[2] = imgPtr1[0];
+					imgPtr2[3] = imgPtr1[3];
+					imgPtr2 += 4;
+					imgPtr1 += 4;
+				}
+				imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 2;
+			}
 		}
 		PNGExporter_FilterByte4(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
@@ -1925,28 +1960,43 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
+	case Media::PF_LE_R16G16B16:
 	case Media::PF_LE_B16G16R16:
 		k = img->info.dispSize.x * 6;
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispSize.y;
-		while (i-- > 0)
+		if (img->info.pf == Media::PF_LE_R16G16B16)
 		{
-			j = img->info.dispSize.x;
-			*imgPtr2++ = 0;
-			while (j-- > 0)
+			i = img->info.dispSize.y;
+			while (i-- > 0)
 			{
-				imgPtr2[0] = imgPtr1[5];
-				imgPtr2[1] = imgPtr1[4];
-				imgPtr2[2] = imgPtr1[3];
-				imgPtr2[3] = imgPtr1[2];
-				imgPtr2[4] = imgPtr1[1];
-				imgPtr2[5] = imgPtr1[0];
-				imgPtr2 += 6;
-				imgPtr1 += 6;
+				*imgPtr2++ = 0;
+				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 6);
+				imgPtr2 += img->info.dispSize.x * 6;
+				imgPtr1 += img->info.storeSize.x * 6;
 			}
-			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) * 6;
+		}
+		else
+		{
+			i = img->info.dispSize.y;
+			while (i-- > 0)
+			{
+				j = img->info.dispSize.x;
+				*imgPtr2++ = 0;
+				while (j-- > 0)
+				{
+					imgPtr2[0] = imgPtr1[5];
+					imgPtr2[1] = imgPtr1[4];
+					imgPtr2[2] = imgPtr1[3];
+					imgPtr2[3] = imgPtr1[2];
+					imgPtr2[4] = imgPtr1[1];
+					imgPtr2[5] = imgPtr1[0];
+					imgPtr2 += 6;
+					imgPtr1 += 6;
+				}
+				imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) * 6;
+			}
 		}
 		PNGExporter_FilterByte6(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
@@ -1964,30 +2014,45 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff2);
 		MemFree(tmpBuff);
 		break;
+	case Media::PF_LE_R16G16B16A16:
 	case Media::PF_LE_B16G16R16A16:
 		k = img->info.dispSize.x << 3;
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
 		imgPtr1 = img->data;
 		imgPtr2 = tmpBuff;
-		i = img->info.dispSize.y;
-		while (i-- > 0)
+		if (img->info.pf == Media::PF_LE_R16G16B16A16)
 		{
-			j = img->info.dispSize.x;
-			*imgPtr2++ = 0;
-			while (j-- > 0)
+			i = img->info.dispSize.y;
+			while (i-- > 0)
 			{
-				imgPtr2[0] = imgPtr1[5];
-				imgPtr2[1] = imgPtr1[4];
-				imgPtr2[2] = imgPtr1[3];
-				imgPtr2[3] = imgPtr1[2];
-				imgPtr2[4] = imgPtr1[1];
-				imgPtr2[5] = imgPtr1[0];
-				imgPtr2[6] = imgPtr1[7];
-				imgPtr2[7] = imgPtr1[6];
-				imgPtr2 += 8;
-				imgPtr1 += 8;
+				*imgPtr2++ = 0;
+				MemCopyNO(imgPtr2, imgPtr1.Ptr(), img->info.dispSize.x * 8);
+				imgPtr2 += img->info.dispSize.x * 8;
+				imgPtr1 += img->info.storeSize.x * 8;
 			}
-			imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 3;
+		}
+		else
+		{
+			i = img->info.dispSize.y;
+			while (i-- > 0)
+			{
+				j = img->info.dispSize.x;
+				*imgPtr2++ = 0;
+				while (j-- > 0)
+				{
+					imgPtr2[0] = imgPtr1[5];
+					imgPtr2[1] = imgPtr1[4];
+					imgPtr2[2] = imgPtr1[3];
+					imgPtr2[3] = imgPtr1[2];
+					imgPtr2[4] = imgPtr1[1];
+					imgPtr2[5] = imgPtr1[0];
+					imgPtr2[6] = imgPtr1[7];
+					imgPtr2[7] = imgPtr1[6];
+					imgPtr2 += 8;
+					imgPtr1 += 8;
+				}
+				imgPtr1 += (img->info.storeSize.x - img->info.dispSize.x) << 3;
+			}
 		}
 		PNGExporter_FilterByte8(tmpBuff, k, img->info.dispSize.y);
 		tmpBuff2 = MemAlloc(UInt8, 12 + (k + 1) * img->info.dispSize.y + 11);
@@ -2009,11 +2074,11 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	case Media::PF_LE_R5G6B5:
 	case Media::PF_LE_A2B10G10R10:
 	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FR32G32B32A32:
 	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FR32G32B32:
 	case Media::PF_LE_FW32A32:
 	case Media::PF_LE_FW32:
-	case Media::PF_R8G8B8A8:
-	case Media::PF_R8G8B8:
 	case Media::PF_PAL_1_A1:
 	case Media::PF_PAL_2_A1:
 	case Media::PF_PAL_4_A1:

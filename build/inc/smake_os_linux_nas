@@ -70,7 +70,7 @@ Media/FBMonitorSurfaceMgr.h:
 Media/FBSurface.h:
 @FBSurface.o
 Media/JPEGDecoder.h:
-JPEGDecoder_Null.o
+@JPEGDecoder_Null.o
 Media/MonitorSurfaceMgrFactory.h:
 @MonitorSurfaceMgrFactoryLinux.o
 Media/OCREngine.h:

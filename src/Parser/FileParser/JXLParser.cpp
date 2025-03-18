@@ -43,7 +43,13 @@ IO::ParserType Parser::FileParser::JXLParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (hdr.ReadMU32(0) != 12 || *(Int32*)&hdr[4] != *(Int32*)"JXL " || ReadMUInt32(&hdr[8]) != 0x0d0a870a)
+	if (hdr.ReadMU32(0) == 12 && *(Int32*)&hdr[4] == *(Int32*)"JXL " && ReadMUInt32(&hdr[8]) == 0x0d0a870a)
+	{
+	}
+	else if (hdr[0] == 0xff && hdr[1] == 0x0a && fd->GetFullName()->EndsWithICase(UTF8STRC(".JXL")))
+	{
+	}
+	else
 	{
 		return 0;
 	}
@@ -51,7 +57,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	JxlDecoderPtr dec = JxlDecoderMake(nullptr);
 	if (JXL_DEC_SUCCESS != JxlDecoderSubscribeEvents(dec.get(), JXL_DEC_BASIC_INFO |
 												JXL_DEC_COLOR_ENCODING |
-												JXL_DEC_FULL_IMAGE)) {
+												JXL_DEC_FULL_IMAGE | JXL_DEC_FRAME | JXL_DEC_BOX)) {
 		return 0;
 	}
 
@@ -70,6 +76,9 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	JxlDecoderSetInput(dec.get(), buff.Ptr(), buff.GetSize());
 	JxlDecoderCloseInput(dec.get());
 
+	UInt32 tps_numerator = 0;
+	UInt32 tps_denominator = 0;
+	UInt32 imgDur = 0;
 	Media::FrameInfo finfo;
 	Optional<Media::StaticImage> optimg = 0;
 	NN<Media::StaticImage> simg;
@@ -78,7 +87,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	for (;;) {
 		JxlDecoderStatus status = JxlDecoderProcessInput(dec.get());
-
+		//printf("JXLParser: Event %d\r\n", status);
 		if (status == JXL_DEC_ERROR) {
 			printf("JXLParser: Decoder error\r\n");
 			optimg.Delete();
@@ -97,6 +106,11 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				return 0;
 			}
 			optimg.Delete();
+			if (info.have_animation)
+			{
+				tps_numerator = info.animation.tps_numerator;
+				tps_denominator = info.animation.tps_denominator;
+			}
 //			printf("Basic Info: %d x %d, bpp = %d, ebps = %d\r\n", info.xsize, info.ysize, info.bits_per_sample, info.exponent_bits_per_sample);
 			finfo.dispSize = Math::Size2D<UOSInt>(info.xsize, info.ysize);
 			if (info.exponent_bits_per_sample == 0)
@@ -242,6 +256,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, icc_size)).SetTo(icc))
 			{
 				icc->SetToColorProfile(simg->info.color);
+				icc->SetToColorProfile(finfo.color);
 			}
 			MemFree(iccBuff);
 		} else if (status == JXL_DEC_NEED_IMAGE_OUT_BUFFER) {
@@ -273,10 +288,24 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				imgList.Delete();
 				return 0;
 			}
+		} else if (status == JXL_DEC_FRAME) {
+			JxlFrameHeader frHeader;
+			if (JXL_DEC_SUCCESS != JxlDecoderGetFrameHeader(dec.get(), &frHeader)) {
+				printf("JXLParser: JxlDecoderSetImageOutBuffer failed\r\n");
+				optimg.Delete();
+				imgList.Delete();
+				return 0;
+			}
+			imgDur = frHeader.duration * 1000 * tps_denominator / tps_numerator;
+			if (optimg.IsNull())
+			{
+				NEW_CLASSNN(simg, Media::StaticImage(finfo));
+				optimg = simg;
+			}
 		} else if (status == JXL_DEC_FULL_IMAGE) {
 			if (optimg.SetTo(simg))
 			{
-				imgList->AddImage(simg, 0);
+				imgList->AddImage(simg, imgDur);
 				optimg = 0;
 			}
 			else

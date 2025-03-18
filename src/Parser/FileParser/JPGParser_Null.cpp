@@ -26,4 +26,5 @@ IO::ParserType Parser::FileParser::JPGParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::JPGParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
+	return 0;
 }

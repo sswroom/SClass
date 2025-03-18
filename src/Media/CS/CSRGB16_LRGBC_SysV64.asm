@@ -10,69 +10,45 @@ section .note.GNU-stack noalloc noexec nowrite progbits
 
 section .text
 
-global CSRGB16_LRGBC_Convert
-global _CSRGB16_LRGBC_Convert
+global CSRGB16_LRGBC_ConvertB16G16R16A16
+global _CSRGB16_LRGBC_ConvertB16G16R16A16
+global CSRGB16_LRGBC_ConvertR16G16B16A16
+global _CSRGB16_LRGBC_ConvertR16G16B16A16
+global CSRGB16_LRGBC_ConvertB16G16R16
+global _CSRGB16_LRGBC_ConvertB16G16R16
+global CSRGB16_LRGBC_ConvertR16G16B16
+global _CSRGB16_LRGBC_ConvertR16G16B16
+global CSRGB16_LRGBC_ConvertW16A16
+global _CSRGB16_LRGBC_ConvertW16A16
+global CSRGB16_LRGBC_ConvertW16
+global _CSRGB16_LRGBC_ConvertW16
 global CSRGB16_LRGBC_ConvertA2B10G10R10
 global _CSRGB16_LRGBC_ConvertA2B10G10R10
 
-;void CSRGB16_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
 ;0 rbx
 ;8 retAddr
-;rdi rcx srcPtr
-;rsi rdx destPtr
-;rdx r8 width
-;rcx r9 height
-;r8 srcNBits
-;r9 srcRGBBpl
-;16 destRGBBpl
-;24 rgbTable
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
 	align 16
-CSRGB16_LRGBC_Convert:
-_CSRGB16_LRGBC_Convert:
+CSRGB16_LRGBC_ConvertB16G16R16A16:
+_CSRGB16_LRGBC_ConvertB16G16R16A16:
 	push rbx
-	mov rbx,qword [rsp+24] ;rgbTable
-	cmp r8,64
-	jz crgb64start
-	cmp r8,48
-	jz crgb48start
-	cmp r8,32
-	jz crgb32start
-	cmp r8,16
-	jz crgb16start
-	jmp crgbexit
-	
-;void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
-;0 rbx
-;8 retAddr
-;rdi rcx srcPtr
-;rsi rdx destPtr
-;rdx r8 width
-;rcx r9 height
-;r8 srcNBits
-;r9 srcRGBBpl
-;16 destRGBBpl
-;24 rgbTable
-	align 16
-CSRGB16_LRGBC_ConvertA2B10G10R10:
-_CSRGB16_LRGBC_ConvertA2B10G10R10:
-	push rbx
-	mov rbx,qword [rsp+24] ;rgbTable
-	cmp r8,32
-	jz ca2b10g10r10start
-	jmp crgbexit
+	mov rbx,qword [rsp+16] ;rgbTable
+	lea rax,[rdx*8] ;width
+	sub r8,rax ;srcRGBBpl
+	sub r9,rax ;destRGBBpl
 	
 	align 16
-crgb64start:
-	lea rax,[rdx*8]
-	mov r11,qword [rsp+16] ;destRGBBpl
-	sub r9,rax ;srcRGBBpl
-	sub r11,rax ;destRGBBpl
-	
+cbgra16lop:
+	mov r10,rdx ;width
 	align 16
-crgb64lop:
-	mov r8,rdx ;width
-	align 16
-crgb64lop2:
+cbgra16lop2:
 	movzx rax,word [rdi]
 	movq xmm1,[rbx+rax*8+1048576]
 	movzx rax,word [rdi+2]
@@ -84,27 +60,174 @@ crgb64lop2:
 	movq [rsi],xmm1
 	lea rdi,[rdi+8]
 	lea rsi,[rsi+8]
-	dec r8
-	jnz crgb64lop2
-	add rdi,r9 ;srcRGBBpl
-	add rsi,r11 ;destRGBBpl
+	dec r10
+	jnz cbgra16lop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
 	dec rcx
-	jnz crgb64lop
-	jmp crgbexit
+	jnz cbgra16lop
+	pop rbx
+	ret
 
+;void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;0 rbx
+;8 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
 	align 16
-crgb32start:
-	lea rax,[rdx*4]
-	lea r8,[rdx*8]
-	mov r11,qword [rsp+16] ;destRGBBpl
-	sub r9,rax ;srcRGBBpl
-	sub r11,r8 ;destRGBBpl
+CSRGB16_LRGBC_ConvertR16G16B16A16:
+_CSRGB16_LRGBC_ConvertR16G16B16A16:
+	push rbx
+	mov rbx,qword [rsp+16] ;rgbTable
+	lea rax,[rdx*8] ;width
+	sub r8,rax ;srcRGBBpl
+	sub r9,rax ;destRGBBpl
 	
 	align 16
-crgb32lop:
-	mov r8,rdx ;width
+crgba16lop:
+	mov r10,rdx ;width
 	align 16
-crgb32lop2:
+crgba16lop2:
+	movzx rax,word [rdi+4]
+	movq xmm1,[rbx+rax*8+1048576]
+	movzx rax,word [rdi+2]
+	movq xmm0,[rbx+rax*8+524288]
+	paddsw xmm1,xmm0
+	movzx rax,word [rdi]
+	movq xmm0,[rbx+rax*8]
+	paddsw xmm1,xmm0
+	movq [rsi],xmm1
+	lea rdi,[rdi+8]
+	lea rsi,[rsi+8]
+	dec r10
+	jnz crgba16lop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
+	dec rcx
+	jnz crgba16lop
+	pop rbx
+	ret
+
+;void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;0 rbx
+;8 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
+	align 16
+CSRGB16_LRGBC_ConvertB16G16R16:
+_CSRGB16_LRGBC_ConvertB16G16R16:
+	push rbx
+	mov rbx,qword [rsp+16] ;rgbTable
+	lea rax,[rdx+rdx*2]
+	lea r10,[rdx*8]
+	lea rax,[rax*2]
+	sub r8,rax ;srcRGBBpl
+	sub r9,r10 ;destRGBBpl
+	align 16
+cbgr16lop:
+	mov r10,rdx ;width
+	align 16
+cbgr16lop2:
+	movzx rax,word [rdi]
+	movq xmm1,[rbx+rax*8+1048576]
+	movzx rax,word [rdi+2]
+	movq xmm0,[rbx+rax*8+524288]
+	paddsw xmm1,xmm0
+	movzx rax,word [rdi+4]
+	movq xmm0,[rbx+rax*8]
+	paddsw xmm1,xmm0
+	movq [rsi],xmm1
+	lea rsi,[rsi+8]
+	lea rdi,[rdi+6]
+	dec r10
+	jnz cbgr16lop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
+	dec rcx
+	jnz cbgr16lop
+	pop rbx
+	ret
+
+;void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;0 rbx
+;8 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
+	align 16
+CSRGB16_LRGBC_ConvertR16G16B16:
+_CSRGB16_LRGBC_ConvertR16G16B16:
+	push rbx
+	mov rbx,qword [rsp+16] ;rgbTable
+	lea rax,[rdx+rdx*2]
+	lea r10,[rdx*8]
+	lea rax,[rax*2]
+	sub r8,rax ;srcRGBBpl
+	sub r9,r10 ;destRGBBpl
+	align 16
+crgb16lop:
+	mov r10,rdx ;width
+	align 16
+crgb16lop2:
+	movzx rax,word [rdi+4]
+	movq xmm1,[rbx+rax*8+1048576]
+	movzx rax,word [rdi+2]
+	movq xmm0,[rbx+rax*8+524288]
+	paddsw xmm1,xmm0
+	movzx rax,word [rdi]
+	movq xmm0,[rbx+rax*8]
+	paddsw xmm1,xmm0
+	movq [rsi],xmm1
+	lea rsi,[rsi+8]
+	lea rdi,[rdi+6]
+	dec r10
+	jnz crgb16lop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
+	dec rcx
+	jnz crgb16lop
+	pop rbx
+	ret
+
+;void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;0 rbx
+;8 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
+	align 16
+CSRGB16_LRGBC_ConvertW16A16:
+_CSRGB16_LRGBC_ConvertW16A16:
+	push rbx
+	mov rbx,qword [rsp+16] ;rgbTable
+	lea rax,[rdx*4]
+	lea r10,[rdx*8]
+	sub r8,rax ;srcRGBBpl
+	sub r9,r10 ;destRGBBpl
+	
+	align 16
+cwa16lop:
+	mov r10,rdx ;width
+	align 16
+cwa16lop2:
 	movzx rax,word [rdi]
 	movq xmm1,[rbx+rax*8+1048576]
 	movq xmm0,[rbx+rax*8+524288]
@@ -114,26 +237,82 @@ crgb32lop2:
 	movq [rsi],xmm1
 	lea rdi,[rdi+4]
 	lea rsi,[rsi+8]
-	dec r8
-	jnz crgb32lop2
-	add rdi,r9 ;srcRGBBpl
-	add rsi,r11 ;destRGBBpl
+	dec r10
+	jnz cwa16lop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
 	dec rcx
-	jnz crgb32lop
-	jmp crgbexit
+	jnz cwa16lop
+	pop rbx
+	ret
+	
+;void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;0 rbx
+;8 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
+	align 16
+CSRGB16_LRGBC_ConvertW16:
+_CSRGB16_LRGBC_ConvertW16:
+	push rbx
+	mov rbx,qword [rsp+16] ;rgbTable
+	lea rax,[rdx*2]
+	lea r10,[rdx*8]
+	sub r8,rax ;srcRGBBpl
+	sub r9,r10 ;destRGBBpl
 	
 	align 16
-ca2b10g10r10start:
+cw16lop:
+	mov r8,rdx ;width
+	align 16
+cw16lop2:
+	movzx rax,word [rdi]
+	movq xmm1,[rbx+rax*8+1048576]
+	movq xmm0,[rbx+rax*8+524288]
+	paddsw xmm1,xmm0
+	movq xmm2, [rbx+rax*8]
+	paddsw xmm1,xmm2
+	movq [rsi],xmm1
+	lea rdi,[rdi+2]
+	lea rsi,[rsi+8]
+	dec r8
+	jnz cw16lop2
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
+	dec rcx
+	jnz cw16lop
+	pop rbx
+	ret
+
+;void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, OSInt width, OSInt height, OSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+;0 rbx
+;8 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;16 rgbTable
+	align 16
+CSRGB16_LRGBC_ConvertA2B10G10R10:
+_CSRGB16_LRGBC_ConvertA2B10G10R10:
+	push rbx
+	mov rbx,qword [rsp+16] ;rgbTable
 	lea rax,[rdx*4]
-	lea r8,[rdx*8]
-	mov r11,qword [rsp+16] ;destRGBBpl
-	sub r9,rax ;srcRGBBpl
-	sub r11,r8 ;destRGBBpl
+	lea r10,[rdx*8]
+	sub r8,rax ;srcRGBBpl
+	sub r9,r10 ;destRGBBpl
 	mov r10,rcx
 	
 	align 16
 ca2b10g10r10lop:
-	mov r8,rdx ;width
+	mov r11,rdx ;width
 	align 16
 ca2b10g10r10lop2:
 	mov ecx,dword [rdi]
@@ -160,86 +339,11 @@ ca2b10g10r10lop2:
 	movq [rsi],xmm1
 	lea rdi,[rdi+4]
 	lea rsi,[rsi+8]
-	dec r8
+	dec r11
 	jnz ca2b10g10r10lop2
-	add rdi,r9 ;srcRGBBpl
-	add rsi,r11 ;destRGBBpl
+	add rdi,r8 ;srcRGBBpl
+	add rsi,r9 ;destRGBBpl
 	dec r10
 	jnz ca2b10g10r10lop
-	jmp crgbexit
-	
-	align 16
-crgb16start:
-	lea rax,[rdx*2]
-	lea r8,[rdx*8]
-	mov r11,qword [rsp+16] ;destRGBBpl
-	sub r9,rax ;srcRGBBpl
-	sub r11,r8 ;destRGBBpl
-	
-	align 16
-crgb16lop:
-	mov r8,rdx ;width
-	align 16
-crgb16lop2:
-	movzx rax,word [rdi]
-	movq xmm1,[rbx+rax*8+1048576]
-	movq xmm0,[rbx+rax*8+524288]
-	paddsw xmm1,xmm0
-	movq xmm2, [rbx+rax*8]
-	paddsw xmm1,xmm2
-	movq [rsi],xmm1
-	lea rdi,[rdi+2]
-	lea rsi,[rsi+8]
-	dec r8
-	jnz crgb16lop2
-	add rdi,r9 ;srcRGBBpl
-	add rsi,r11 ;destRGBBpl
-	dec rcx
-	jnz crgb16lop
-	jmp crgbexit
-
-;0 rbx
-;8 retAddr
-;rdi rcx srcPtr
-;rsi rdx destPtr
-;rdx r8 width
-;rcx r9 height
-;r8 srcNBits
-;r9 srcRGBBpl
-;16 destRGBBpl
-;24 rgbTable
-	align 16
-crgb48start:
-	lea rax,[rdx+rdx*2]
-	lea r8,[rdx*8]
-	lea rax,[rax*2]
-	mov r11,qword [rsp+16] ;destRGBBpl
-	sub r9,rax ;srcRGBBpl
-	sub r11,r8 ;destRGBBpl
-	align 16
-crgb48lop:
-	mov r8,rdx ;width
-	align 16
-crgb48lop2:
-	movzx rax,word [rdi]
-	movq xmm1,[rbx+rax*8+1048576]
-	movzx rax,word [rdi+2]
-	movq xmm0,[rbx+rax*8+524288]
-	paddsw xmm1,xmm0
-	movzx rax,word [rdi+4]
-	movq xmm0,[rbx+rax*8]
-	paddsw xmm1,xmm0
-	movq [rsi],xmm1
-	lea rsi,[rsi+8]
-	lea rdi,[rdi+6]
-	dec r8
-	jnz crgb48lop2
-	add rdi,r9 ;srcRGBBpl
-	add rsi,r11 ;destRGBBpl
-	dec rcx
-	jnz crgb48lop
-	
-	align 16
-crgbexit:
 	pop rbx
 	ret

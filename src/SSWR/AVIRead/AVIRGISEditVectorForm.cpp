@@ -83,7 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType use
 #else
 		UTF8Char sbuff[32];
 		UnsafeArray<UTF8Char> sptr;
-		sptr = me->lbObjects->GetItemText(sbuff);
+		sbuff[0] = 0;
+		sptr = me->lbObjects->GetItemText(sbuff, selInd).Or(sbuff);
 		objId = Text::StrToInt64(sbuff);
 #endif
 
@@ -113,7 +114,8 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsSelChg(AnyType use
 #if _OSINT_SIZE == 64
 		objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
 #else
-		sptr = me->lbObjects->GetItemText(sbuff);
+		sbuff[0] = 0;
+		sptr = me->lbObjects->GetItemText(sbuff, selInd).Or(sbuff);
 		objId = Text::StrToInt64(sbuff);
 #endif
 
@@ -158,7 +160,10 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnDeleteClicked(AnyType use
 #if _OSINT_SIZE == 64
 		objId = (Int64)(OSInt)me->lbObjects->GetItem(selInd).p;
 #else
-		sptr = me->lbObjects->GetItemText(sbuff);
+		UTF8Char sbuff[32];
+		UnsafeArray<UTF8Char> sptr;
+		sbuff[0] = 0;
+		sptr = me->lbObjects->GetItemText(sbuff, selInd).Or(sbuff);
 		objId = Text::StrToInt64(sbuff);
 #endif
 		me->lyr->DeleteVector(objId);

@@ -95,17 +95,21 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 		break;
 
 	case Media::PF_LE_B16G16R16:
+	case Media::PF_LE_R16G16B16:
 #if LIBHEIF_HAVE_VERSION(1, 4, 0)
 		chroma = heif_chroma_interleaved_RRGGBB_LE;
 		break;
 #endif
 	case Media::PF_LE_W16:
 	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FR32G32B32:
 	case Media::PF_LE_FW32:
 	case Media::PF_LE_B16G16R16A16:
+	case Media::PF_LE_R16G16B16A16:
 	case Media::PF_LE_A2B10G10R10:
 	case Media::PF_LE_W16A16:
 	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FR32G32B32A32:
 	case Media::PF_LE_FW32A32:
 #if LIBHEIF_HAVE_VERSION(1, 4, 0)
 		chroma = heif_chroma_interleaved_RRGGBBAA_LE;
@@ -184,13 +188,21 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 48);
 		break;
+	case Media::PF_LE_R16G16B16:
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
+		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
+
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
+		break;
 
 	case Media::PF_LE_W16:
 	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FR32G32B32:
 	case Media::PF_LE_FW32:
 	case Media::PF_LE_A2B10G10R10:
 	case Media::PF_LE_W16A16:
 	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FR32G32B32A32:
 	case Media::PF_LE_FW32A32:
 		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
 		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
@@ -207,6 +219,12 @@ heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 
 		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		ImageUtil_SwapRGB(data, img->info.dispSize.x * img->info.dispSize.y, 64);
+		break;
+	case Media::PF_LE_R16G16B16A16:
+		heif_image_add_plane(image, heif_channel_interleaved, (int)img->info.dispSize.x, (int)img->info.dispSize.y, 16);
+		data = heif_image_get_plane(image, heif_channel_interleaved, &stride);
+
+		img->GetRasterData(data, 0, 0, img->info.dispSize.x, img->info.dispSize.y, (UOSInt)stride, false, img->info.rotateType);
 		break;
 	default:
 	case Media::PF_UNKNOWN:

@@ -1151,7 +1151,7 @@ extern "C" void ImageUtil_ConvR8G8B8N8_ARGB32(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvARGB48_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB16G16R16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 6;
@@ -1173,7 +1173,29 @@ extern "C" void ImageUtil_ConvARGB48_32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvARGB64_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR16G16B16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	OSInt i;
+	sbpl -= w * 6;
+	dbpl -= w << 2;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			destPtr[0] = srcPtr[5];
+			destPtr[1] = srcPtr[3];
+			destPtr[2] = srcPtr[1];
+			destPtr[3] = 0xff;
+			srcPtr += 6;
+			destPtr += 4;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvB16G16R16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w << 3;
@@ -1186,6 +1208,28 @@ extern "C" void ImageUtil_ConvARGB64_32(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 			destPtr[0] = srcPtr[1];
 			destPtr[1] = srcPtr[3];
 			destPtr[2] = srcPtr[5];
+			destPtr[3] = srcPtr[7];
+			srcPtr += 8;
+			destPtr += 4;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvR16G16B16A16_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	OSInt i;
+	sbpl -= w << 3;
+	dbpl -= w << 2;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			destPtr[0] = srcPtr[5];
+			destPtr[1] = srcPtr[3];
+			destPtr[2] = srcPtr[1];
 			destPtr[3] = srcPtr[7];
 			srcPtr += 8;
 			destPtr += 4;
@@ -1229,7 +1273,7 @@ extern "C" void ImageUtil_ConvA2B10G10R10_32(const UInt8 *srcPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32A32_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -1300,7 +1344,78 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_32(const UInt8 *srcPtr, UInt8 *destP
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32_32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	Single v;
+	OSInt i;
+	sbpl -= w << 4;
+	dbpl -= w << 2;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			v = ReadFloat(&srcPtr[8]) * 255;
+			if (v > 255)
+			{
+				destPtr[0] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[0] = 0;
+			}
+			else
+			{
+				destPtr[0] = (UInt8)Double2Int32(v);
+			}
+			v = ReadFloat(&srcPtr[4]) * 255;
+			if (v > 255)
+			{
+				destPtr[1] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[1] = 0;
+			}
+			else
+			{
+				destPtr[1] = (UInt8)Double2Int32(v);
+			}
+			v = ReadFloat(&srcPtr[0]) * 255;
+			if (v > 255)
+			{
+				destPtr[2] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[2] = 0;
+			}
+			else
+			{
+				destPtr[2] = (UInt8)Double2Int32(v);
+			}
+			v = ReadFloat(&srcPtr[12]) * 65535;
+			if (v > 255)
+			{
+				destPtr[3] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[3] = 0;
+			}
+			else
+			{
+				destPtr[3] = (UInt8)Double2Int32(v);
+			}
+			srcPtr += 16;
+			destPtr += 4;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvFB32G32R32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -1338,6 +1453,65 @@ extern "C" void ImageUtil_ConvFB32G32R32_32(const UInt8 *srcPtr, UInt8 *destPtr,
 				destPtr[1] = (UInt8)Double2Int32(v);
 			}
 			v = ReadFloat(&srcPtr[8]) * 255;
+			if (v > 255)
+			{
+				destPtr[2] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[2] = 0;
+			}
+			else
+			{
+				destPtr[2] = (UInt8)Double2Int32(v);
+			}
+			destPtr[3] = 255;
+			srcPtr += 12;
+			destPtr += 4;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvFR32G32B32_B8G8R8A8(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	Single v;
+	OSInt i;
+	sbpl -= w *12;
+	dbpl -= w << 2;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			v = ReadFloat(&srcPtr[8]) * 255;
+			if (v > 255)
+			{
+				destPtr[0] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[0] = 0;
+			}
+			else
+			{
+				destPtr[0] = (UInt8)Double2Int32(v);
+			}
+			v = ReadFloat(&srcPtr[4]) * 255;
+			if (v > 255)
+			{
+				destPtr[1] = 255;
+			}
+			else if (v < 0)
+			{
+				destPtr[1] = 0;
+			}
+			else
+			{
+				destPtr[1] = (UInt8)Double2Int32(v);
+			}
+			v = ReadFloat(&srcPtr[0]) * 255;
 			if (v > 255)
 			{
 				destPtr[2] = 255;
@@ -2291,7 +2465,7 @@ extern "C" void ImageUtil_ConvR8G8B8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr,
 	}
 }
 
-extern "C" void ImageUtil_ConvR8G8B8A8_ARGB64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvR8G8B8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 4;
@@ -2317,7 +2491,7 @@ extern "C" void ImageUtil_ConvR8G8B8A8_ARGB64(const UInt8 *srcPtr, UInt8 *destPt
 	}
 }
 
-extern "C" void ImageUtil_ConvARGB32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB8G8R8A8_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w << 2;
@@ -2343,7 +2517,7 @@ extern "C" void ImageUtil_ConvARGB32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 	}
 }
 
-extern "C" void ImageUtil_ConvARGB48_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvB16G16R16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	OSInt i;
 	sbpl -= w * 6;
@@ -2362,6 +2536,58 @@ extern "C" void ImageUtil_ConvARGB48_64(const UInt8 *srcPtr, UInt8 *destPtr, OSI
 			destPtr[6] = 0xff;
 			destPtr[7] = 0xff;
 			srcPtr += 6;
+			destPtr += 8;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvR16G16B16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	OSInt i;
+	sbpl -= w * 6;
+	dbpl -= w << 3;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			destPtr[0] = srcPtr[4];
+			destPtr[1] = srcPtr[5];
+			destPtr[2] = srcPtr[2];
+			destPtr[3] = srcPtr[3];
+			destPtr[4] = srcPtr[0];
+			destPtr[5] = srcPtr[1];
+			destPtr[6] = 0xff;
+			destPtr[7] = 0xff;
+			srcPtr += 6;
+			destPtr += 8;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvR16G16B16A16_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	OSInt i;
+	sbpl -= w << 3;
+	dbpl -= w << 3;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			destPtr[0] = srcPtr[4];
+			destPtr[1] = srcPtr[5];
+			destPtr[2] = srcPtr[2];
+			destPtr[3] = srcPtr[3];
+			destPtr[4] = srcPtr[0];
+			destPtr[5] = srcPtr[1];
+			destPtr[6] = srcPtr[6];
+			destPtr[7] = srcPtr[7];
+			srcPtr += 8;
 			destPtr += 8;
 		}
 		srcPtr += sbpl;
@@ -2407,7 +2633,7 @@ extern "C" void ImageUtil_ConvA2B10G10R10_64(const UInt8 *srcPtr, UInt8 *destPtr
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32A32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -2478,7 +2704,78 @@ extern "C" void ImageUtil_ConvFB32G32R32A32_64(const UInt8 *srcPtr, UInt8 *destP
 	}
 }
 
-extern "C" void ImageUtil_ConvFB32G32R32_64(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+extern "C" void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	Single v;
+	OSInt i;
+	sbpl -= w << 4;
+	dbpl -= w << 3;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			v = ReadFloat(&srcPtr[8]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[0], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[0], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[0], Double2Int32(v));
+			}
+			v = ReadFloat(&srcPtr[4]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[2], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[2], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[2], Double2Int32(v));
+			}
+			v = ReadFloat(&srcPtr[0]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[4], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[4], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[4], Double2Int32(v));
+			}
+			v = ReadFloat(&srcPtr[12]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[6], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[6], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[6], Double2Int32(v));
+			}
+			srcPtr += 16;
+			destPtr += 8;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvFB32G32R32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
 {
 	Single v;
 	OSInt i;
@@ -2516,6 +2813,65 @@ extern "C" void ImageUtil_ConvFB32G32R32_64(const UInt8 *srcPtr, UInt8 *destPtr,
 				WriteInt16(&destPtr[2], Double2Int32(v));
 			}
 			v = ReadFloat(&srcPtr[8]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[4], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[4], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[4], Double2Int32(v));
+			}
+			WriteInt16(&destPtr[6], 65535);
+			srcPtr += 12;
+			destPtr += 8;
+		}
+		srcPtr += sbpl;
+		destPtr += dbpl;
+	}
+}
+
+extern "C" void ImageUtil_ConvFR32G32B32_B16G16R16A16(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl)
+{
+	Single v;
+	OSInt i;
+	sbpl -= w * 12;
+	dbpl -= w << 3;
+	while (h-- > 0)
+	{
+		i = w;
+		while (i-- > 0)
+		{
+			v = ReadFloat(&srcPtr[8]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[0], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[0], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[0], Double2Int32(v));
+			}
+			v = ReadFloat(&srcPtr[4]) * 65535;
+			if (v > 65535)
+			{
+				WriteInt16(&destPtr[2], 65535);
+			}
+			else if (v < 0)
+			{
+				WriteInt16(&destPtr[2], 0);
+			}
+			else
+			{
+				WriteInt16(&destPtr[2], Double2Int32(v));
+			}
+			v = ReadFloat(&srcPtr[0]) * 65535;
 			if (v > 65535)
 			{
 				WriteInt16(&destPtr[4], 65535);

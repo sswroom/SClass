@@ -233,6 +233,14 @@ Text::CStringNN Media::PixelFormatGetName(PixelFormat pf)
 		return CSTR("Indexed 8-bit + 1-bit Alpha");
 	case PF_B8G8R8A1:
 		return CSTR("B8G8R8A1");
+	case PF_LE_R16G16B16A16:
+		return CSTR("R16G16B16A16 (LE)");
+	case PF_LE_R16G16B16:
+		return CSTR("R16G16B16 (LE)");
+	case PF_LE_FR32G32B32A32:
+		return CSTR("R32G32B32A32 (FLE)");
+	case PF_LE_FR32G32B32:
+		return CSTR("R32G32B32 (FLE)");
 	case PF_UNKNOWN:
 	default:
 		return CSTR("Unknown");

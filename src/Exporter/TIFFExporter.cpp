@@ -995,6 +995,10 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		case Media::PF_PAL_4_A1:
 		case Media::PF_PAL_8_A1:
 		case Media::PF_B8G8R8A1:
+		case Media::PF_LE_R16G16B16A16:
+		case Media::PF_LE_FR32G32B32A32:
+		case Media::PF_LE_R16G16B16:
+		case Media::PF_LE_FR32G32B32:
 		default:
 			break;
 		}

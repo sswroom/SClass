@@ -57,13 +57,17 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	case Media::PF_LE_R5G5B5:
 	case Media::PF_LE_R5G6B5:
 	case Media::PF_LE_B16G16R16A16:
+	case Media::PF_LE_R16G16B16A16:
 	case Media::PF_LE_B16G16R16:
+	case Media::PF_LE_R16G16B16:
 	case Media::PF_LE_W16:
 	case Media::PF_LE_A2B10G10R10:
 	case Media::PF_W8A8:
 	case Media::PF_LE_W16A16:
 	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FR32G32B32A32:
 	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FR32G32B32:
 	case Media::PF_LE_FW32A32:
 	case Media::PF_LE_FW32:
 	case Media::PF_PAL_1_A1:
@@ -149,13 +153,17 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 	case Media::PF_LE_R5G5B5:
 	case Media::PF_LE_R5G6B5:
 	case Media::PF_LE_B16G16R16A16:
+	case Media::PF_LE_R16G16B16A16:
 	case Media::PF_LE_B16G16R16:
+	case Media::PF_LE_R16G16B16:
 	case Media::PF_LE_W16:
 	case Media::PF_LE_A2B10G10R10:
 	case Media::PF_W8A8:
 	case Media::PF_LE_W16A16:
 	case Media::PF_LE_FB32G32R32A32:
+	case Media::PF_LE_FR32G32B32A32:
 	case Media::PF_LE_FB32G32R32:
+	case Media::PF_LE_FR32G32B32:
 	case Media::PF_LE_FW32A32:
 	case Media::PF_LE_FW32:
 	case Media::PF_PAL_1_A1:

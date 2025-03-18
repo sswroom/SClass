@@ -26,4 +26,5 @@ IO::ParserType Parser::FileParser::JXLParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
+	return 0;
 }

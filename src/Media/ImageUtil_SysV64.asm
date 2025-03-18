@@ -70,16 +70,24 @@ global ImageUtil_ConvR8G8B8A8_ARGB32
 global _ImageUtil_ConvR8G8B8A8_ARGB32
 global ImageUtil_ConvR8G8B8N8_ARGB32
 global _ImageUtil_ConvR8G8B8N8_ARGB32
-global ImageUtil_ConvARGB48_32
-global _ImageUtil_ConvARGB48_32
-global ImageUtil_ConvARGB64_32
-global _ImageUtil_ConvARGB64_32
+global ImageUtil_ConvB16G16R16_B8G8R8A8
+global _ImageUtil_ConvB16G16R16_B8G8R8A8
+global ImageUtil_ConvR16G16B16_B8G8R8A8
+global _ImageUtil_ConvR16G16B16_B8G8R8A8
+global ImageUtil_ConvB16G16R16A16_B8G8R8A8
+global _ImageUtil_ConvB16G16R16A16_B8G8R8A8
+global ImageUtil_ConvR16G16B16A16_B8G8R8A8
+global _ImageUtil_ConvR16G16B16A16_B8G8R8A8
 global ImageUtil_ConvA2B10G10R10_32
 global _ImageUtil_ConvA2B10G10R10_32
-global ImageUtil_ConvFB32G32R32A32_32
-global _ImageUtil_ConvFB32G32R32A32_32
-global ImageUtil_ConvFB32G32R32_32
-global _ImageUtil_ConvFB32G32R32_32
+global ImageUtil_ConvFB32G32R32A32_B8G8R8A8
+global _ImageUtil_ConvFB32G32R32A32_B8G8R8A8
+global ImageUtil_ConvFR32G32B32A32_B8G8R8A8
+global _ImageUtil_ConvFR32G32B32A32_B8G8R8A8
+global ImageUtil_ConvFB32G32R32_B8G8R8A8
+global _ImageUtil_ConvFB32G32R32_B8G8R8A8
+global ImageUtil_ConvFR32G32B32_B8G8R8A8
+global _ImageUtil_ConvFR32G32B32_B8G8R8A8
 global ImageUtil_ConvFW32A32_32
 global _ImageUtil_ConvFW32A32_32
 global ImageUtil_ConvFW32_32
@@ -110,16 +118,26 @@ global ImageUtil_ConvR8G8B8_ARGB64
 global _ImageUtil_ConvR8G8B8_ARGB64
 global ImageUtil_ConvR8G8B8A8_ARGB64
 global _ImageUtil_ConvR8G8B8A8_ARGB64
-global ImageUtil_ConvARGB32_64
-global _ImageUtil_ConvARGB32_64
-global ImageUtil_ConvARGB48_64
-global _ImageUtil_ConvARGB48_64
+global ImageUtil_ConvB8G8R8A8_B16G16R16A16
+global _ImageUtil_ConvB8G8R8A8_B16G16R16A16
+global ImageUtil_ConvR8G8B8A8_B16G16R16A16
+global _ImageUtil_ConvR8G8B8A8_B16G16R16A16
+global ImageUtil_ConvB16G16R16_B16G16R16A16
+global _ImageUtil_ConvB16G16R16_B16G16R16A16
+global ImageUtil_ConvR16G16B16_B16G16R16A16
+global _ImageUtil_ConvR16G16B16_B16G16R16A16
+global ImageUtil_ConvR16G16B16A16_B16G16R16A16
+global _ImageUtil_ConvR16G16B16A16_B16G16R16A16
 global ImageUtil_ConvA2B10G10R10_64
 global _ImageUtil_ConvA2B10G10R10_64
-global ImageUtil_ConvFB32G32R32A32_64
-global _ImageUtil_ConvFB32G32R32A32_64
-global ImageUtil_ConvFB32G32R32_64
-global _ImageUtil_ConvFB32G32R32_64
+global ImageUtil_ConvFB32G32R32A32_B16G16R16A16
+global _ImageUtil_ConvFB32G32R32A32_B16G16R16A16
+global ImageUtil_ConvFR32G32B32A32_B16G16R16A16
+global _ImageUtil_ConvFR32G32B32A32_B16G16R16A16
+global ImageUtil_ConvFB32G32R32_B16G16R16A16
+global _ImageUtil_ConvFB32G32R32_B16G16R16A16
+global ImageUtil_ConvFR32G32B32_B16G16R16A16
+global _ImageUtil_ConvFR32G32B32_B16G16R16A16
 global ImageUtil_ConvFW32A32_64
 global _ImageUtil_ConvFW32A32_64
 global ImageUtil_ConvFW32_64
@@ -2422,7 +2440,7 @@ cargb32rn_32lop2:
 	jnz cargb32rn_32lop
 	ret
 
-;void ImageUtil_ConvARGB48_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB16G16R16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -2432,21 +2450,21 @@ cargb32rn_32lop2:
 ;r9 dbpl
 
 	align 16
-ImageUtil_ConvARGB48_32:
-_ImageUtil_ConvARGB48_32:
+ImageUtil_ConvB16G16R16_B8G8R8A8:
+_ImageUtil_ConvB16G16R16_B8G8R8A8:
 	lea rax,[rdx+rdx*2]
 	shl rax,1
 	sub r8,rax ;sbpl
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
 	shr rdx,1
-	jb cargb48_32lopb
+	jb cbgr16_bgra8lopb
 	
 	align 16
-cargb48_32lop:
+cbgr16_bgra8lop:
 	mov r10,rdx
 	align 16
-cargb48_32lop2:
+cbgr16_bgra8lop2:
 	movzx rax,byte [rdi+11]
 	or rax,0xff00
 	shl rax,16
@@ -2463,20 +2481,20 @@ cargb48_32lop2:
 	movnti qword [rsi],rax
 	add rsi,8
 	dec r10
-	jnz cargb48_32lop2
+	jnz cbgr16_bgra8lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cargb48_32lop
+	jnz cbgr16_bgra8lop
 	ret
 
 	
 	align 16
-cargb48_32lopb:
+cbgr16_bgra8lopb:
 	mov r10,rdx
 	align 16
-cargb48_32lop2b:
+cbgr16_bgra8lop2b:
 	movzx rax,byte [rdi+11]
 	or rax,0xff00
 	shl rax,16
@@ -2493,7 +2511,7 @@ cargb48_32lop2b:
 	movnti qword [rsi],rax
 	add rsi,8
 	dec r10
-	jnz cargb48_32lop2b
+	jnz cbgr16_bgra8lop2b
 
 	movzx eax,byte [rdi+5]
 	mov ah,0xff
@@ -2508,10 +2526,10 @@ cargb48_32lop2b:
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cargb48_32lopb
+	jnz cbgr16_bgra8lopb
 	ret
 
-;void ImageUtil_ConvARGB64_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR16G16B16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -2521,18 +2539,106 @@ cargb48_32lop2b:
 ;r9 dbpl
 
 	align 16
-ImageUtil_ConvARGB64_32:
-_ImageUtil_ConvARGB64_32:
+ImageUtil_ConvR16G16B16_B8G8R8A8:
+_ImageUtil_ConvR16G16B16_B8G8R8A8:
+	lea rax,[rdx+rdx*2]
+	shl rax,1
+	sub r8,rax ;sbpl
+	lea rax,[rdx*4]
+	sub r9,rax ;dbpl
+	shr rdx,1
+	jb crgb16_bgra8lopb
+	
+	align 16
+crgb16_bgra8lop:
+	mov r10,rdx
+	align 16
+crgb16_bgra8lop2:
+	movzx rax,byte [rdi+7]
+	or rax,0xff00
+	shl rax,16
+	mov ah,byte [rdi+9]
+	mov al,byte [rdi+11]
+	shl rax,16
+	mov al,byte [rdi+1]
+	mov ah,0xff
+	shl rax,16
+	mov ah,byte [rdi+3]
+	mov al,byte [rdi+5]
+
+	add rdi,12
+	movnti qword [rsi],rax
+	add rsi,8
+	dec r10
+	jnz crgb16_bgra8lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz crgb16_bgra8lop
+	ret
+	
+	align 16
+crgb16_bgra8lopb:
+	mov r10,rdx
+	align 16
+crgb16_bgra8lop2b:
+	movzx rax,byte [rdi+7]
+	or rax,0xff00
+	shl rax,16
+	mov ah,byte [rdi+9]
+	mov al,byte [rdi+11]
+	shl rax,16
+	mov al,byte [rdi+1]
+	mov ah,0xff
+	shl rax,16
+	mov ah,byte [rdi+3]
+	mov al,byte [rdi+5]
+
+	add rdi,12
+	movnti qword [rsi],rax
+	add rsi,8
+	dec r10
+	jnz crgb16_bgra8lop2b
+
+	movzx eax,byte [rdi+1]
+	mov ah,0xff
+	shl rax,16
+	mov ah,byte [rdi+3]
+	mov al,byte [rdi+5]
+
+	add rdi,6
+	movnti dword [rsi],eax
+	add rsi,4
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz crgb16_bgra8lopb
+	ret
+
+;void ImageUtil_ConvB16G16R16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+
+	align 16
+ImageUtil_ConvB16G16R16A16_B8G8R8A8:
+_ImageUtil_ConvB16G16R16A16_B8G8R8A8:
 	lea rax,[rdx*8]
 	sub r8,rax ;sbpl
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
 	
 	align 16
-cargb64_32lop:
+cbgra16_bgra8lop:
 	mov r10,rdx
 	align 16
-cargb64_32lop2:
+cbgra16_bgra8lop2:
 	movq xmm0,[rdi]
 	psrlw xmm0,8
 	lea rdi,[rdi+8]
@@ -2540,12 +2646,51 @@ cargb64_32lop2:
 	movd dword [rsi],xmm0
 	lea rsi,[rsi+4]
 	dec r10
-	jnz cargb64_32lop2
+	jnz cbgra16_bgra8lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cargb64_32lop
+	jnz cbgra16_bgra8lop
+	ret
+
+;void ImageUtil_ConvR16G16B16A16_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+
+	align 16
+ImageUtil_ConvR16G16B16A16_B8G8R8A8:
+_ImageUtil_ConvR16G16B16A16_B8G8R8A8:
+	lea rax,[rdx*8]
+	sub r8,rax ;sbpl
+	lea rax,[rdx*4]
+	sub r9,rax ;dbpl
+	
+	align 16
+crgba16_bgra8lop:
+	mov r10,rdx
+	align 16
+crgba16_bgra8lop2:
+	mov ah,[rdi+7]
+	mov al,[rdi+1]
+	shl eax,16
+	mov ah,[rdi+3]
+	mov al,[rdi+5]
+	movnti dword [rsi],eax
+	lea rsi,[rsi+4]
+	lea rdi,[rdi+8]
+	dec r10
+	jnz crgba16_bgra8lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz crgba16_bgra8lop
 	ret
 
 ;void ImageUtil_ConvA2B10G10R10_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
@@ -2594,7 +2739,7 @@ ca2b10g10r10_32lop2:
 	jnz ca2b10g10r10_32lop
 	ret
 
-;void ImageUtil_ConvFB32G32R32A32_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFB32G32R32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -2603,8 +2748,8 @@ ca2b10g10r10_32lop2:
 ;r8 sbpl
 ;r9 dbpl
 	align 16
-ImageUtil_ConvFB32G32R32A32_32:
-_ImageUtil_ConvFB32G32R32A32_32:
+ImageUtil_ConvFB32G32R32A32_B8G8R8A8:
+_ImageUtil_ConvFB32G32R32A32_B8G8R8A8:
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
 	lea rax,[rax*4]
@@ -2615,10 +2760,10 @@ _ImageUtil_ConvFB32G32R32A32_32:
 	unpcklps xmm1,xmm1
 	
 	align 16
-cfb32g32r32a32_32lop:
+cfbgra32_bgra8lop:
 	mov r10,rdx
 	align 16
-cfb32g32r32a32_32lop2:
+cfbgra32_bgra8lop2:
 	movups xmm0,[rdi]
 	mulps xmm0,xmm1
 	cvtps2dq xmm0,xmm0
@@ -2628,15 +2773,16 @@ cfb32g32r32a32_32lop2:
 	lea rdi,[rdi+16]
 	lea rsi,[rsi+4]
 	dec r10
-	jnz cfb32g32r32a32_32lop2
+	jnz cfbgra32_bgra8lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cfb32g32r32a32_32lop
+	jnz cfbgra32_bgra8lop
 	ret
 
-;void ImageUtil_ConvFB32G32R32_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+
+;void ImageUtil_ConvFR32G32B32A32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -2645,8 +2791,51 @@ cfb32g32r32a32_32lop2:
 ;r8 sbpl
 ;r9 dbpl
 	align 16
-ImageUtil_ConvFB32G32R32_32:
-_ImageUtil_ConvFB32G32R32_32:
+ImageUtil_ConvFR32G32B32A32_B8G8R8A8:
+_ImageUtil_ConvFR32G32B32A32_B8G8R8A8:
+	lea rax,[rdx*4]
+	sub r9,rax ;dbpl
+	lea rax,[rax*4]
+	sub r8,rax ;sbpl
+	mov rax,255
+	cvtsi2ss xmm1,rax
+	unpcklps xmm1,xmm1
+	unpcklps xmm1,xmm1
+	
+	align 16
+cfrgba32_bgra8lop:
+	mov r10,rdx
+	align 16
+cfrgba32_bgra8lop2:
+	movups xmm0,[rdi]
+	pshufd xmm0, xmm0, 0xc6
+	mulps xmm0,xmm1
+	cvtps2dq xmm0,xmm0
+	packssdw xmm0,xmm0
+	packuswb xmm0,xmm0
+	movd [rsi],xmm0
+	lea rdi,[rdi+16]
+	lea rsi,[rsi+4]
+	dec r10
+	jnz cfrgba32_bgra8lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cfrgba32_bgra8lop
+	ret
+
+;void ImageUtil_ConvFB32G32R32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+	align 16
+ImageUtil_ConvFB32G32R32_B8G8R8A8:
+_ImageUtil_ConvFB32G32R32_B8G8R8A8:
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
 	lea rax,[rax*2+rax]
@@ -2657,10 +2846,10 @@ _ImageUtil_ConvFB32G32R32_32:
 	unpcklps xmm1,xmm1
 	
 	align 16
-cfb32g32r32_32lop:
+cfbgr32_bgra8lop:
 	mov r10,rdx
 	align 16
-cfb32g32r32_32lop2:
+cfbgr32_bgra8lop2:
 	movq xmm0,[rdi]
 	movss xmm2,[rdi+8]
 	punpcklqdq xmm0,xmm2
@@ -2673,12 +2862,58 @@ cfb32g32r32_32lop2:
 	lea rdi,[rdi+12]
 	lea rsi,[rsi+4]
 	dec r10
-	jnz cfb32g32r32_32lop2
+	jnz cfbgr32_bgra8lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cfb32g32r32_32lop
+	jnz cfbgr32_bgra8lop
+	ret
+
+;void ImageUtil_ConvFR32G32B32_B8G8R8A8(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+	align 16
+ImageUtil_ConvFR32G32B32_B8G8R8A8:
+_ImageUtil_ConvFR32G32B32_B8G8R8A8:
+	lea rax,[rdx*4]
+	sub r9,rax ;dbpl
+	lea rax,[rax*2+rax]
+	sub r8,rax ;sbpl
+	mov rax,255
+	cvtsi2ss xmm1,rax
+	unpcklps xmm1,xmm1
+	unpcklps xmm1,xmm1
+	
+	align 16
+cfrgb32_bgra8lop:
+	mov r10,rdx
+	align 16
+cfrgb32_bgra8lop2:
+	movq xmm0,[rdi]
+	movss xmm2,[rdi+8]
+	punpcklqdq xmm0,xmm2
+	pshufd xmm0, xmm0, 0xc6
+	mulps xmm0,xmm1
+	cvtps2dq xmm0,xmm0
+	packssdw xmm0,xmm0
+	packuswb xmm0,xmm0
+	movd [rsi],xmm0
+	mov byte [rsi+3],0xff
+	lea rdi,[rdi+12]
+	lea rsi,[rsi+4]
+	dec r10
+	jnz cfrgb32_bgra8lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cfrgb32_bgra8lop
 	ret
 
 ;void ImageUtil_ConvFW32A32_32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
@@ -3979,7 +4214,7 @@ cargb32r_64lop2:
 	jnz cargb32r_64lop
 	ret
 
-;void ImageUtil_ConvARGB32_64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvB8G8R8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -3989,33 +4224,33 @@ cargb32r_64lop2:
 ;r9 dbpl
 
 	align 16
-ImageUtil_ConvARGB32_64:
-_ImageUtil_ConvARGB32_64:
+ImageUtil_ConvB8G8R8A8_B16G16R16A16:
+_ImageUtil_ConvB8G8R8A8_B16G16R16A16:
 	lea rax,[rdx*4]
 	sub r8,rax ;sbpl
 	lea rax,[rdx*8]
 	sub r9,rax ;dbpl
 	
 	align 16
-cargb32_64lop:
+cbgra8_bgra16lop:
 	mov r10,rdx
 	align 16
-cargb32_64lop2:
+cbgra8_bgra16lop2:
 	movd xmm0,[rdi]
 	punpcklbw xmm0,xmm0
 	lea rdi,[rdi+4]
 	movq [rsi],xmm0
 	lea rsi,[rsi+8]
 	dec r10
-	jnz cargb32_64lop2
+	jnz cbgra8_bgra16lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cargb32_64lop
+	jnz cbgra8_bgra16lop
 	ret
 
-;void ImageUtil_ConvARGB48_64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvR8G8B8A8_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -4025,8 +4260,45 @@ cargb32_64lop2:
 ;r9 dbpl
 
 	align 16
-ImageUtil_ConvARGB48_64:
-_ImageUtil_ConvARGB48_64:
+ImageUtil_ConvR8G8B8A8_B16G16R16A16:
+_ImageUtil_ConvR8G8B8A8_B16G16R16A16:
+	lea rax,[rdx*4]
+	sub r8,rax ;sbpl
+	lea rax,[rdx*8]
+	sub r9,rax ;dbpl
+	
+	align 16
+crgba8_bgra16lop:
+	mov r10,rdx
+	align 16
+crgba8_bgra16lop2:
+	movd xmm0,[rdi]
+	punpcklbw xmm0,xmm0
+	pshuflw xmm0,xmm0,0xc6
+	lea rdi,[rdi+4]
+	movq [rsi],xmm0
+	lea rsi,[rsi+8]
+	dec r10
+	jnz crgba8_bgra16lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz crgba8_bgra16lop
+	ret
+
+;void ImageUtil_ConvB16G16R16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+
+	align 16
+ImageUtil_ConvB16G16R16_B16G16R16A16:
+_ImageUtil_ConvB16G16R16_B16G16R16A16:
 	lea rax,[rdx+rdx*2]
 	shl rax,1
 	sub r8,rax ;sbpl
@@ -4034,10 +4306,10 @@ _ImageUtil_ConvARGB48_64:
 	sub r9,rax ;dbpl
 	
 	align 16
-cargb48_64lop:
+cbgr16_bgra16lop:
 	mov r10,rdx
 	align 16
-cargb48_64lop2:
+cbgr16_bgra16lop2:
 	mov eax,dword [rdi]
 	movnti dword [rsi],eax
 	mov ax,word [rdi+4]
@@ -4046,12 +4318,88 @@ cargb48_64lop2:
 	lea rdi,[rdi+6]
 	lea rsi,[rsi+8]
 	dec r10
-	jnz cargb48_64lop2
+	jnz cbgr16_bgra16lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cargb48_64lop
+	jnz cbgr16_bgra16lop
+	ret
+
+;void ImageUtil_ConvR16G16B16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+
+	align 16
+ImageUtil_ConvR16G16B16_B16G16R16A16:
+_ImageUtil_ConvR16G16B16_B16G16R16A16:
+	lea rax,[rdx+rdx*2]
+	shl rax,1
+	sub r8,rax ;sbpl
+	lea rax,[rdx*8]
+	sub r9,rax ;dbpl
+	
+	align 16
+crgb16_bgra16lop:
+	mov r10,rdx
+	align 16
+crgb16_bgra16lop2:
+	mov ax,word [rdi+2]
+	shl eax,16
+	mov ax,word [rdi+4]
+	movnti dword [rsi],eax
+	mov ax,word [rdi]
+	or eax,0xffff0000
+	movnti dword [rsi+4],eax
+	lea rdi,[rdi+6]
+	lea rsi,[rsi+8]
+	dec r10
+	jnz crgb16_bgra16lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz crgb16_bgra16lop
+	ret
+
+;void ImageUtil_ConvR16G16B16A16_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+
+	align 16
+ImageUtil_ConvR16G16B16A16_B16G16R16A16:
+_ImageUtil_ConvR16G16B16A16_B16G16R16A16:
+	lea rax,[rdx*8]
+	sub r8,rax ;sbpl
+	sub r9,rax ;dbpl
+	
+	align 16
+crgba16_bgra16lop:
+	mov r10,rdx
+	align 16
+crgba16_bgra16lop2:
+	movq xmm0,[rdi]
+	pshuflw xmm0,xmm0,0xc6
+	movq [rsi],xmm0
+	lea rdi,[rdi+8]
+	lea rsi,[rsi+8]
+	dec r10
+	jnz crgba16_bgra16lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz crgba16_bgra16lop
 	ret
 
 ;void ImageUtil_ConvA2B10G10R10_64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
@@ -4116,7 +4464,7 @@ ca2b10g10r10_64lop2:
 	mov rbx,r11
 	ret
 
-;void ImageUtil_ConvFB32G32R32A32_64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFB32G32R32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -4125,8 +4473,8 @@ ca2b10g10r10_64lop2:
 ;r8 sbpl
 ;r9 dbpl
 	align 16
-ImageUtil_ConvFB32G32R32A32_64:
-_ImageUtil_ConvFB32G32R32A32_64:
+ImageUtil_ConvFB32G32R32A32_B16G16R16A16:
+_ImageUtil_ConvFB32G32R32A32_B16G16R16A16:
 	lea rax,[rdx*8]
 	sub r9,rax ;dbpl
 	lea rax,[rax*2]
@@ -4144,10 +4492,10 @@ _ImageUtil_ConvFB32G32R32A32_64:
 	por xmm3,xmm2
 	
 	align 16
-cfb32g32r32a32_64lop:
+cfbgra32_bgra16lop:
 	mov r10,rdx
 	align 16
-cfb32g32r32a32_64lop2:
+cfbgra32_bgra16lop2:
 	movups xmm0,[rdi]
 	mulps xmm0,xmm1
 	cvtps2dq xmm0,xmm0
@@ -4158,15 +4506,15 @@ cfb32g32r32a32_64lop2:
 	lea rdi,[rdi+16]
 	lea rsi,[rsi+8]
 	dec r10
-	jnz cfb32g32r32a32_64lop2
+	jnz cfbgra32_bgra16lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cfb32g32r32a32_64lop
+	jnz cfbgra32_bgra16lop
 	ret
 
-;void ImageUtil_ConvFB32G32R32_64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;void ImageUtil_ConvFR32G32B32A32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
 ;0 retAddr
 ;rdi srcPtr
 ;rsi destPtr
@@ -4175,8 +4523,59 @@ cfb32g32r32a32_64lop2:
 ;r8 sbpl
 ;r9 dbpl
 	align 16
-ImageUtil_ConvFB32G32R32_64:
-_ImageUtil_ConvFB32G32R32_64:
+ImageUtil_ConvFR32G32B32A32_B16G16R16A16:
+_ImageUtil_ConvFR32G32B32A32_B16G16R16A16:
+	lea rax,[rdx*8]
+	sub r9,rax ;dbpl
+	lea rax,[rax*2]
+	sub r8,rax ;sbpl
+	mov rax,65535
+	cvtsi2ss xmm1,rax
+	mov eax,32768
+	movd xmm2,eax
+	unpcklps xmm1,xmm1
+	unpcklps xmm1,xmm1
+	punpckldq xmm2,xmm2
+	punpckldq xmm2,xmm2
+	movdqa xmm3,xmm2
+	pslld xmm3,16
+	por xmm3,xmm2
+	
+	align 16
+cfrgba32_bgra16lop:
+	mov r10,rdx
+	align 16
+cfrgba32_bgra16lop2:
+	movups xmm0,[rdi]
+	pshufd xmm0, xmm0, 0xc6
+	mulps xmm0,xmm1
+	cvtps2dq xmm0,xmm0
+	psubd xmm0,xmm2
+	packssdw xmm0,xmm0
+	paddw xmm0,xmm3
+	movq [rsi],xmm0
+	lea rdi,[rdi+16]
+	lea rsi,[rsi+8]
+	dec r10
+	jnz cfrgba32_bgra16lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cfrgba32_bgra16lop
+	ret
+
+;void ImageUtil_ConvFB32G32R32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+	align 16
+ImageUtil_ConvFB32G32R32_B16G16R16A16:
+_ImageUtil_ConvFB32G32R32_B16G16R16A16:
 	lea rax,[rdx*8]
 	sub r9,rax ;dbpl
 	lea rax,[rcx*4+rax]
@@ -4194,10 +4593,10 @@ _ImageUtil_ConvFB32G32R32_64:
 	por xmm3,xmm2
 	
 	align 16
-cfb32g32r32_64lop:
+cfbgr32_bgra16lop:
 	mov r10,rdx
 	align 16
-cfb32g32r32_64lop2:
+cfbgr32_bgra16lop2:
 	movq xmm0,[rdi]
 	movss xmm4,[rdi+8]
 	punpcklqdq xmm0,xmm4
@@ -4211,12 +4610,66 @@ cfb32g32r32_64lop2:
 	lea rdi,[rdi+12]
 	lea rsi,[rsi+8]
 	dec r10
-	jnz cfb32g32r32_64lop2
+	jnz cfbgr32_bgra16lop2
 	
 	add rdi,r8 ;sbpl
 	add rsi,r9 ;dbpl
 	dec rcx
-	jnz cfb32g32r32_64lop
+	jnz cfbgr32_bgra16lop
+	ret
+
+;void ImageUtil_ConvFR32G32B32_B16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx w
+;rcx h
+;r8 sbpl
+;r9 dbpl
+	align 16
+ImageUtil_ConvFR32G32B32_B16G16R16A16:
+_ImageUtil_ConvFR32G32B32_B16G16R16A16:
+	lea rax,[rdx*8]
+	sub r9,rax ;dbpl
+	lea rax,[rcx*4+rax]
+	sub r8,rax ;sbpl
+	mov rax,65535
+	cvtsi2ss xmm1,rax
+	mov eax,32768
+	movd xmm2,eax
+	unpcklps xmm1,xmm1
+	unpcklps xmm1,xmm1
+	punpckldq xmm2,xmm2
+	punpckldq xmm2,xmm2
+	movdqa xmm3,xmm2
+	pslld xmm3,16
+	por xmm3,xmm2
+	
+	align 16
+cfrgb32_bgra16lop:
+	mov r10,rdx
+	align 16
+cfrgb32_bgra16lop2:
+	movq xmm0,[rdi]
+	movss xmm4,[rdi+8]
+	punpcklqdq xmm0,xmm4
+	pshufd xmm0, xmm0, 0xc6
+	mulps xmm0,xmm1
+	cvtps2dq xmm0,xmm0
+	psubd xmm0,xmm2
+	packssdw xmm0,xmm0
+	paddw xmm0,xmm3
+	movq [rsi],xmm0
+	mov word [rsi+6],0xffff
+	lea rdi,[rdi+12]
+	lea rsi,[rsi+8]
+	dec r10
+	jnz cfrgb32_bgra16lop2
+	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cfrgb32_bgra16lop
 	ret
 
 ;void ImageUtil_ConvFW32A32_64(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);

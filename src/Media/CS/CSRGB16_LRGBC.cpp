@@ -6,8 +6,13 @@
 
 extern "C"
 {
-	void CSRGB16_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
-	void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertB16G16R16A16(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertR16G16B16A16(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertB16G16R16(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertR16G16B16(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertW16A16(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertW16(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
+	void CSRGB16_LRGBC_ConvertA2B10G10R10(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
 	void CSRGB16_LRGBC_ConvertFloat(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt srcNBits, OSInt srcRGBBpl, OSInt destRGBBpl, UInt8 *rgbTable);
 }
 
@@ -125,11 +130,31 @@ void Media::CS::CSRGB16_LRGBC::ConvertV2(UnsafeArray<const UnsafeArray<UInt8>> s
 	}
 	if (this->srcPF == Media::PF_LE_A2B10G10R10)
 	{
-		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertA2B10G10R10(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+	}
+	else if (this->srcPF == Media::PF_LE_R16G16B16A16)
+	{
+		CSRGB16_LRGBC_ConvertR16G16B16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+	}
+	else if (this->srcPF == Media::PF_LE_B16G16R16)
+	{
+		CSRGB16_LRGBC_ConvertB16G16R16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+	}
+	else if (this->srcPF == Media::PF_LE_R16G16B16)
+	{
+		CSRGB16_LRGBC_ConvertR16G16B16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+	}
+	else if (this->srcPF == Media::PF_LE_W16A16)
+	{
+		CSRGB16_LRGBC_ConvertW16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+	}
+	else if (this->srcPF == Media::PF_LE_W16)
+	{
+		CSRGB16_LRGBC_ConvertW16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 	}
 	else
 	{
-		CSRGB16_LRGBC_Convert(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, srcNBits, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
+		CSRGB16_LRGBC_ConvertB16G16R16A16(srcPtr[0].Ptr(), destPtr.Ptr(), dispWidth, dispHeight, (OSInt)(srcStoreWidth * srcNBits >> 3), destRGBBpl, this->rgbTable);
 	}
 }
 

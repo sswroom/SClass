@@ -439,6 +439,9 @@ ConsoleInput.o: $(CLASSDIR)src/IO/ConsoleInput.cpp
 CortexControl.o: $(CLASSDIR)src/IO/CortexControl.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+DebugTool.o: $(CLASSDIR)src/IO/DebugTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 DeviceDB.o: $(CLASSDIR)src/IO/DeviceDB.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
@@ -746,6 +749,9 @@ NECTVControl.o: $(CLASSDIR)src/IO/TVCtrl/NECTVControl.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 AddressResolver.o: $(CLASSDIR)src/Manage/AddressResolver.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CodeSymbol.o: $(CLASSDIR)src/Manage/CodeSymbol.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 CPUDB.o: $(CLASSDIR)src/Manage/CPUDB.cpp
@@ -2867,6 +2873,9 @@ XMLDOM.o: $(CLASSDIR)src/Text/XMLDOM.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 CppCodeParser.o: $(CLASSDIR)src/Text/Cpp/CppCodeParser.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CppDemangler.o: $(CLASSDIR)src/Text/Cpp/CppDemangler.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 CppEnv.o: $(CLASSDIR)src/Text/Cpp/CppEnv.cpp
