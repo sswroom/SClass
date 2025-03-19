@@ -2691,20 +2691,19 @@ _LanczosResizerFunc_ExpandB8G8R8:
 	sub r8,rbx ;sstep
 	sub r9,rax ;dstep
 	mov rbp,qword [rsp+24] ;rgbaTable
-	xor rbx,rbx
 	align 16
 exp24lop:
 	mov rax,rdx ;width
 
 	ALIGN 16
 exp24lop2:
-	movzx ebx,byte [rdi+2]
+	movzx rbx,byte [rdi+2]
 	movq xmm0,[rbp+rbx*8+0]
 	paddsw xmm1,xmm0
-	movzx ebx,byte [rdi+1]
+	movzx rbx,byte [rdi+1]
 	movq xmm0,[rbp+rbx*8+2048]
 	paddsw xmm1,xmm0
-	movzx ebx,byte [rdi]
+	movzx rbx,byte [rdi]
 	movq xmm0,[rbp+rbx*8+4096]
 	paddsw xmm1,xmm0
 	movq [rsi],xmm1
@@ -2745,7 +2744,6 @@ _LanczosResizerFunc_ExpandPal8:
 	sub r8,rdx ;sstep
 	sub r9,rax ;dstep
 	mov rbp,qword [rsp+24] ;pal8Table
-	xor rbx,rbx
 	align 16
 expp8lop:
 	mov rax,rdx ;width
@@ -2850,21 +2848,20 @@ _LanczosResizerFunc_CollapseB8G8R8A8:
 	sub r8,rbx ;sstep
 	sub r9,rax ;dstep
 	mov rbp,qword [rsp+24] ;lrbgraTable
-	xor ebx,ebx
 	align 16
 collop:
 	mov r10,rdx ;width
 	
 	ALIGN 16
 collop2:
-	movzx ebx,word [rdi+6]
+	movzx rbx,word [rdi+6]
 	mov ah,byte [rbp+rbx+196608]
-	movzx ebx,word [rdi+4]
+	movzx rbx,word [rdi+4]
 	mov al,byte [rbp+rbx+131072]
 	shl eax,16
-	movzx ebx,word [rdi+2]
+	movzx rbx,word [rdi+2]
 	mov ah,byte [rbp+rbx+65536]
-	movzx ebx,word [rdi]
+	movzx rbx,word [rdi]
 	mov al,byte [rbp+rbx]
 
 	mov dword [rsi],eax
@@ -2906,19 +2903,18 @@ _LanczosResizerFunc_CollapseB8G8R8:
 	sub r8,rbx ;sstep
 	sub r9,rax ;dstep
 	mov rbp,qword [rsp+24] ;lrbgraTable
-	xor ebx,ebx
 	align 16
 col24_lop:
 	mov r10,rdx ;width
 	
 	ALIGN 16
 col24_lop2:
-	movzx ebx,word [rdi+4]
+	movzx rbx,word [rdi+4]
 	mov al,byte [rbp+rbx+131072]
 	mov byte [rsi+2],al
-	movzx ebx,word [rdi+2]
+	movzx rbx,word [rdi+2]
 	mov ah,byte [rbp+rbx+65536]
-	movzx ebx,word [rdi]
+	movzx rbx,word [rdi]
 	mov al,byte [rbp+rbx]
 	mov word [rsi],ax
 	lea rsi,[rsi+3]
