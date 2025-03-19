@@ -2223,7 +2223,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 				img->PalTo8bpp();
 				if (!this->resizer->IsSupported(img->info))
 				{
-					printf("DrawMapRenderer: DrawImageObject1 Pixel format not supported\r\n");
+					printf("DrawMapRenderer: DrawImageObject1 Pixel format not supported: %s\r\n", Media::PixelFormatGetName(img->info.pf).v.Ptr());
 					img->ToB8G8R8A8();
 				}
 				this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);

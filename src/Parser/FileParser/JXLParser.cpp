@@ -246,7 +246,11 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 			JxlResizableParallelRunnerSetThreads(runner.get(), JxlResizableParallelRunnerSuggestThreads(info.xsize, info.ysize));
 		} else if (status == JXL_DEC_COLOR_ENCODING) {
 			size_t icc_size;
+#if JPEGXL_NUMERIC_VERSION < JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+			if (JXL_DEC_SUCCESS != JxlDecoderGetICCProfileSize(dec.get(), 0, JXL_COLOR_PROFILE_TARGET_DATA, &icc_size)) {
+#else
 			if (JXL_DEC_SUCCESS != JxlDecoderGetICCProfileSize(dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, &icc_size)) {
+#endif
 				printf("JXLParser: JxlDecoderGetICCProfileSize failed\r\n");
 				FreeBoxData(boxData);
 				optimg.Delete();
@@ -261,7 +265,11 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 				return 0;
 			}
 			UInt8 *iccBuff = MemAlloc(UInt8, icc_size);
+#if JPEGXL_NUMERIC_VERSION < JPEGXL_COMPUTE_NUMERIC_VERSION(0,9,0)
+			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), 0, JXL_COLOR_PROFILE_TARGET_DATA, iccBuff, icc_size)) {
+#else
 			if (JXL_DEC_SUCCESS != JxlDecoderGetColorAsICCProfile(dec.get(), JXL_COLOR_PROFILE_TARGET_DATA, iccBuff, icc_size)) {
+#endif
 				printf("JXLParser: JxlDecoderGetColorAsICCProfile failed\r\n");
 				FreeBoxData(boxData);
 				optimg.Delete();

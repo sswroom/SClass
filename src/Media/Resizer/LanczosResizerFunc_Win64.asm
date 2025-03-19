@@ -14,8 +14,8 @@ global LanczosResizerFunc_ExpandPal8
 global LanczosResizerFunc_ExpandR16G16B16
 global LanczosResizerFunc_CollapseB8G8R8A8
 global LanczosResizerFunc_CollapseB8G8R8
-global LanczosResizerFunc_ImgCopyB8G8R8A8
-global LanczosResizerFunc_ImgCopyB8G8R8A8PA
+global LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8
+global LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8
 global LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8
 global LanczosResizerFunc_ImgCopyPal8_B8G8R8A8
 global LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8
@@ -2909,7 +2909,7 @@ col24lop2:
 	pop rbp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 rdi
 ;8 rsi
 ;16 rbx
@@ -2925,7 +2925,7 @@ col24lop2:
 ;96 rgbaTable
 
 	align 16
-LanczosResizerFunc_ImgCopyB8G8R8A8:
+LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8:
 	push rbp
 	push rbx
 	push rsi
@@ -2938,10 +2938,10 @@ LanczosResizerFunc_ImgCopyB8G8R8A8:
 	sub qword [rsp+72],rax ;sstep
 	sub qword [rsp+80],rax ;dstep
 	align 16
-iclop:
+icbgra8_bgra8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-iclop2:
+icbgra8_bgra8lop2:
 	movzx rax,byte [rsi+2]
 	movq xmm1,[rbp+rax*8+0]
 	movzx rax,byte [rsi+1]
@@ -2962,19 +2962,19 @@ iclop2:
 	lea rsi,[rsi+4]
 	lea rdi,[rdi+4]
 	dec rdx
-	jnz iclop2
+	jnz icbgra8_bgra8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz iclop
+	jnz icbgra8_bgra8lop
 	pop rdi
 	pop rsi
 	pop rbx
 	pop rbp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;8 esi
 ;16 ebx
@@ -2990,7 +2990,7 @@ iclop2:
 ;96 rgbaTable
 
 	align 16
-LanczosResizerFunc_ImgCopyB8G8R8A8PA:
+LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8:
 	push rbp
 	push rbx
 	push rsi
@@ -3005,11 +3005,11 @@ LanczosResizerFunc_ImgCopyB8G8R8A8PA:
 	mov rbx,qword [rsp+88] ;lrbgraTable
 	mov rbp,qword [rsp+96] ;rgbaTable
 	align 16
-icpalop:
+icbgra8pa_bgra8lop:
 	mov r10,r8 ;width
 	xor rdx,rdx
 	ALIGN 16
-icpalop2:
+icbgra8pa_bgra8lop2:
 	mov eax,dword [rsi]
 	movzx rdx,al
 	movq xmm1,[rbp+rdx*8+4096]
@@ -3068,12 +3068,12 @@ icpalop2:
 	lea rsi,[rsi+8]
 	lea rdi,[rdi+8]
 	dec r10
-	jnz icpalop2
+	jnz icbgra8pa_bgra8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz icpalop
+	jnz icbgra8pa_bgra8lop
 	
 	pop rdi
 	pop rsi
@@ -3111,10 +3111,10 @@ LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8:
 	lea rax,[r8*4] ;width
 	sub qword [rsp+80],rax ;dstep
 	align 16
-ic24_lop:
+icbgr8_bgra8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-ic24_lop2:
+icbgr8_bgra8lop2:
 	movzx rax,byte [rsi+2]
 	movq xmm1,[rbp+rax*8+0]
 	movzx rax,byte [rsi+1]
@@ -3135,12 +3135,12 @@ ic24_lop2:
 	lea rsi,[rsi+3]
 	lea rdi,[rdi+4]
 	dec rdx
-	jnz ic24_lop2
+	jnz icbgr8_bgra8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz ic24_lop
+	jnz icbgr8_bgra8lop
 	pop rdi
 	pop rsi
 	pop rbx
@@ -3176,10 +3176,10 @@ LanczosResizerFunc_ImgCopyPal8_B8G8R8A8:
 	sub qword [rsp+72],r8 ;sstep
 	sub qword [rsp+80],rax ;dstep
 	align 16
-icp8lop:
+icp8_bgra8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-icp8lop2:
+icp8_bgra8lop2:
 	movzx rax,byte [rsi]
 	movq xmm1,[rbp+rax*8]
 	pextrw rcx,xmm1,2
@@ -3194,12 +3194,12 @@ icp8lop2:
 	lea rsi,[rsi+1]
 	lea rdi,[rdi+4]
 	dec rdx
-	jnz icp8lop2
+	jnz icp8_bgra8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz icp8lop
+	jnz icp8_bgra8lop
 	pop rdi
 	pop rsi
 	pop rbx
@@ -3237,10 +3237,10 @@ LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8:
 	lea rax,[r8*4] ;width
 	sub qword [rsp+80],rax ;dstep
 	align 16
-icrgb16_bgra8_lop:
+icrgb16_bgra8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-icrgb16_bgra8_lop2:
+icrgb16_bgra8lop2:
 	movzx rax,word [rsi]
 	movq xmm1,[rbp+rax*8+0]
 	movzx rax,word [rsi+2]
@@ -3261,12 +3261,12 @@ icrgb16_bgra8_lop2:
 	lea rsi,[rsi+6]
 	lea rdi,[rdi+4]
 	dec rdx
-	jnz icrgb16_bgra8_lop2
+	jnz icrgb16_bgra8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz icrgb16_bgra8_lop
+	jnz icrgb16_bgra8lop
 	pop rdi
 	pop rsi
 	pop rbx
@@ -3304,10 +3304,10 @@ LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8:
 	lea rax,[r8*2+r8] ;width
 	sub qword [rsp+80],rax ;dstep
 	align 16
-ic_24lop:
+icbgra8_bgr8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-ic_24lop2:
+icbgra8_bgr8lop2:
 	movzx rax,byte [rsi+2]
 	movq xmm1,[rbp+rax*8+0]
 	movzx rax,byte [rsi+1]
@@ -3327,12 +3327,12 @@ ic_24lop2:
 	lea rsi,[rsi+4]
 	lea rdi,[rdi+3]
 	dec rdx
-	jnz ic_24lop2
+	jnz icbgra8_bgr8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz ic_24lop
+	jnz icbgra8_bgr8lop
 	pop rdi
 	pop rsi
 	pop rbx
@@ -3368,10 +3368,10 @@ LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8:
 	sub qword [rsp+72],rax ;sstep
 	sub qword [rsp+80],rax ;dstep
 	align 16
-ic24_24lop:
+icbgr8_bgr8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-ic24_24lop2:
+icbgr8_bgr8lop2:
 	movzx rax,byte [rsi+2]
 	movq xmm1,[rbp+rax*8+0]
 	movzx rax,byte [rsi+1]
@@ -3391,12 +3391,12 @@ ic24_24lop2:
 	lea rsi,[rsi+3]
 	lea rdi,[rdi+3]
 	dec rdx
-	jnz ic24_24lop2
+	jnz icbgr8_bgr8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz ic24_24lop
+	jnz icbgr8_bgr8lop
 	pop rdi
 	pop rsi
 	pop rbx
@@ -3432,10 +3432,10 @@ LanczosResizerFunc_ImgCopyPal8_B8G8R8:
 	sub qword [rsp+72],r8 ;sstep
 	sub qword [rsp+80],rax ;dstep
 	align 16
-icp8_24lop:
+icp8_bgr8lop:
 	mov rdx,r8 ;width
 	ALIGN 16
-icp8_24lop2:
+icp8_bgr8lop2:
 	movzx rax,byte [rsi]
 	movq xmm1,[rbp+rax*8]
 	pextrw rcx,xmm1,2
@@ -3449,12 +3449,12 @@ icp8_24lop2:
 	lea rsi,[rsi+1]
 	lea rdi,[rdi+3]
 	dec rdx
-	jnz icp8_24lop2
+	jnz icp8_bgr8lop2
 
 	add rsi,qword [rsp+72] ;sstep
 	add rdi,qword [rsp+80] ;dstep
 	dec r9
-	jnz icp8_24lop
+	jnz icp8_bgr8lop
 	pop rdi
 	pop rsi
 	pop rbx

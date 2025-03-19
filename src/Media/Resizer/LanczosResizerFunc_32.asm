@@ -28,10 +28,10 @@ global _LanczosResizerFunc_CollapseB8G8R8A8
 global LanczosResizerFunc_CollapseB8G8R8A8
 global _LanczosResizerFunc_CollapseB8G8R8
 global LanczosResizerFunc_CollapseB8G8R8
-global _LanczosResizerFunc_ImgCopyB8G8R8A8
-global LanczosResizerFunc_ImgCopyB8G8R8A8
-global _LanczosResizerFunc_ImgCopyB8G8R8A8PA
-global LanczosResizerFunc_ImgCopyB8G8R8A8PA
+global _LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8
+global LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8
+global _LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8
+global LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8
 global _LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8
 global LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8
 global _LanczosResizerFunc_ImgCopyPal8_B8G8R8A8
@@ -2952,7 +2952,7 @@ col24lop2:
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -2968,8 +2968,8 @@ col24lop2:
 ;48 rgbaTable
 
 	align 16
-_LanczosResizerFunc_ImgCopyB8G8R8A8:
-LanczosResizerFunc_ImgCopyB8G8R8A8:
+_LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8:
+LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8:
 	push ebp
 	push ebx
 	push esi
@@ -2983,10 +2983,10 @@ LanczosResizerFunc_ImgCopyB8G8R8A8:
 	mov esi,dword [esp+20] ;inPt
 	mov edi,dword [esp+24] ;outPt
 	align 16
-iclop:
+icbgra8_bgra8lop:
 	mov edx,dword [esp+28] ;width
 	ALIGN 16
-iclop2:
+icbgra8_bgra8lop2:
 	movzx eax,byte [esi+2]
 	movq xmm1,[ebp+eax*8+0]
 	movzx eax,byte [esi+1]
@@ -3007,19 +3007,19 @@ iclop2:
 	lea esi,[esi+4]
 	lea edi,[edi+4]
 	dec edx
-	jnz iclop2
+	jnz icbgra8_bgra8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz iclop
+	jnz icbgra8_bgra8lop
 	pop edi
 	pop esi
 	pop ebx
 	pop ebp
 	ret
 
-;void LanczosResizerFunc_ImgCopyB8G8R8A8PA(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
+;void LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(UInt8 *inPt, UInt8 *outPt, OSInt width, OSInt height, OSInt sstep, OSInt dstep, UInt8 *lrbgraTable, UInt8 *rgbaTable)
 ;0 edi
 ;4 esi
 ;8 ebx
@@ -3035,8 +3035,8 @@ iclop2:
 ;48 rgbaTable
 
 	align 16
-_LanczosResizerFunc_ImgCopyB8G8R8A8PA:
-LanczosResizerFunc_ImgCopyB8G8R8A8PA:
+_LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8:
+LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8:
 	push ebp
 	push ebx
 	push esi
@@ -3053,10 +3053,10 @@ LanczosResizerFunc_ImgCopyB8G8R8A8PA:
 	mov edi,dword [esp+24] ;outPt
 	mov ebx,dword [esp+44] ;lrbgraTable
 	align 16
-icpalop:
+icbgra8pa_bgra8lop:
 	mov ebp,dword [esp+28] ;width
 	ALIGN 16
-icpalop2:
+icbgra8pa_bgra8lop2:
 	mov eax,dword [esi]
 	movzx edx,al
 	movq xmm1,[ecx+edx*8+4096]
@@ -3115,12 +3115,12 @@ icpalop2:
 	lea esi,[esi+8]
 	lea edi,[edi+8]
 	dec ebp
-	jnz icpalop2
+	jnz icbgra8pa_bgra8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz icpalop
+	jnz icbgra8pa_bgra8lop
 	
 	pop edi
 	pop esi
@@ -3160,10 +3160,10 @@ LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8:
 	mov esi,dword [esp+20] ;inPt
 	mov edi,dword [esp+24] ;outPt
 	align 16
-ic24lop:
+icbgr8_bgra8lop:
 	mov edx,dword [esp+28] ;width
 	ALIGN 16
-ic24lop2:
+icbgr8_bgra8lop2:
 	movzx eax,byte [esi+2]
 	movq xmm1,[ebp+eax*8+0]
 	movzx eax,byte [esi+1]
@@ -3184,12 +3184,12 @@ ic24lop2:
 	lea esi,[esi+3]
 	lea edi,[edi+4]
 	dec edx
-	jnz ic24lop2
+	jnz icbgr8_bgra8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz ic24lop
+	jnz icbgr8_bgra8lop
 	pop edi
 	pop esi
 	pop ebx
@@ -3227,10 +3227,10 @@ LanczosResizerFunc_ImgCopyPal8_B8G8R8A8:
 	mov esi,dword [esp+20] ;inPt
 	mov edi,dword [esp+24] ;outPt
 	align 16
-icp8lop:
+icp8_bgra8lop:
 	mov edx,dword [esp+28] ;width
 	ALIGN 16
-icp8lop2:
+icp8_bgra8lop2:
 	movzx eax,byte [esi]
 	movq xmm1,[ebp+eax*8]
 	pextrw ecx,xmm1,2
@@ -3246,12 +3246,12 @@ icp8lop2:
 	lea esi,[esi+4]
 	lea edi,[edi+4]
 	dec edx
-	jnz icp8lop2
+	jnz icp8_bgra8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz icp8lop
+	jnz icp8_bgra8lop
 	pop edi
 	pop esi
 	pop ebx
@@ -3360,10 +3360,10 @@ LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8:
 	mov esi,dword [esp+20] ;inPt
 	mov edi,dword [esp+24] ;outPt
 	align 16
-ic_24lop:
+icbgra8_bgr8lop:
 	mov edx,dword [esp+28] ;width
 	ALIGN 16
-ic_24lop2:
+icbgra8_bgr8lop2:
 	movzx eax,byte [esi+2]
 	movq xmm1,[ebp+eax*8+0]
 	movzx eax,byte [esi+1]
@@ -3383,12 +3383,12 @@ ic_24lop2:
 	lea esi,[esi+4]
 	lea edi,[edi+3]
 	dec edx
-	jnz ic_24lop2
+	jnz icbgra8_bgr8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz ic_24lop
+	jnz icbgra8_bgr8lop
 	pop edi
 	pop esi
 	pop ebx
@@ -3426,10 +3426,10 @@ LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8:
 	mov esi,dword [esp+20] ;inPt
 	mov edi,dword [esp+24] ;outPt
 	align 16
-ic24_24lop:
+icbgr8_bgr8lop:
 	mov edx,dword [esp+28] ;width
 	ALIGN 16
-ic24_24lop2:
+icbgr8_bgr8lop2:
 	movzx eax,byte [esi+2]
 	movq xmm1,[ebp+eax*8+0]
 	movzx eax,byte [esi+1]
@@ -3449,12 +3449,12 @@ ic24_24lop2:
 	lea esi,[esi+3]
 	lea edi,[edi+3]
 	dec edx
-	jnz ic24_24lop2
+	jnz icbgr8_bgr8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz ic24_24lop
+	jnz icbgr8_bgr8lop
 	pop edi
 	pop esi
 	pop ebx
@@ -3492,10 +3492,10 @@ LanczosResizerFunc_ImgCopyPal8_B8G8R8:
 	mov esi,dword [esp+20] ;inPt
 	mov edi,dword [esp+24] ;outPt
 	align 16
-icp8_24lop:
+icp8_bgr8lop:
 	mov edx,dword [esp+28] ;width
 	ALIGN 16
-icp8_24lop2:
+icp8_bgr8lop2:
 	movzx eax,byte [esi]
 	movq xmm1,[ebp+eax*8]
 	pextrw ecx,xmm1,2
@@ -3509,12 +3509,12 @@ icp8_24lop2:
 	lea esi,[esi+1]
 	lea edi,[edi+3]
 	dec edx
-	jnz icp8_24lop2
+	jnz icp8_bgr8lop2
 
 	add esi,dword [esp+36] ;sstep
 	add edi,dword [esp+40] ;dstep
 	dec dword [esp+32] ;height
-	jnz icp8_24lop
+	jnz icp8_bgr8lop
 	pop edi
 	pop esi
 	pop ebx

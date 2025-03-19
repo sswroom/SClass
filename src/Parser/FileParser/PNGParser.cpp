@@ -1883,9 +1883,10 @@ UnsafeArray<UInt8> PNGParser_ParsePixelsAW32(UnsafeArray<UInt8> srcData, UnsafeA
 	return srcData;
 }
 
-void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UnsafeArray<UInt8> dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
+void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UnsafeArray<UInt8> dataBuff, NN<Media::FrameInfo> info, NN<Media::ImageList> imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UnsafeArrayOpt<UInt8> palette, Bool palHasAlpha)
 {
 	NN<Media::StaticImage> simg;
+	UnsafeArray<UInt8> nnpal;
 	switch (colorType)
 	{
 	case 0: //Grayscale
@@ -2201,14 +2202,14 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		}
 		break;
 	case 3: //Indexed
-		if (palette != 0)
+		if (palette.SetTo(nnpal))
 		{
 			if (bitDepth < 8)
 			{
 				UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
 				UnsafeArray<UInt8> lineStart;
 
-				info->atype = Media::AT_ALPHA;
+				info->atype = palHasAlpha?Media::AT_ALPHA:Media::AT_NO_ALPHA;
 				info->storeSize.x = storeWidth;
 				if (bitDepth == 1)
 				{
@@ -2216,7 +2217,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->pf = Media::PF_PAL_1;
 					info->byteSize = storeWidth * info->storeSize.y >> 3;
 					NEW_CLASSNN(simg, Media::StaticImage(info));
-					MemCopyNO(simg->pal, palette, 8);
+					MemCopyNO(simg->pal, nnpal.Ptr(), 8);
 
 					lineStart = simg->data;
 
@@ -2251,7 +2252,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->pf = Media::PF_PAL_2;
 					info->byteSize = storeWidth * info->storeSize.y >> 2;
 					NEW_CLASSNN(simg, Media::StaticImage(info));
-					MemCopyNO(simg->pal, palette, 16);
+					MemCopyNO(simg->pal, nnpal.Ptr(), 16);
 
 					lineStart = simg->data;
 					MemClearAC(lineStart.Ptr(), info->byteSize);
@@ -2285,7 +2286,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->pf = Media::PF_PAL_4;
 					info->byteSize = storeWidth * info->storeSize.y >> 1;
 					NEW_CLASSNN(simg, Media::StaticImage(info));
-					MemCopyNO(simg->pal, palette, 64);
+					MemCopyNO(simg->pal, nnpal.Ptr(), 64);
 
 					lineStart = simg->data;
 					MemClearAC(lineStart.Ptr(), info->byteSize);
@@ -2322,7 +2323,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_PAL_8;
 				info->byteSize = info->storeSize.CalcArea();
 				NEW_CLASSNN(simg, Media::StaticImage(info));
-				MemCopyNO(simg->pal, palette, 1024);
+				MemCopyNO(simg->pal, nnpal.Ptr(), 1024);
 
 				if (interlaceMeth == 1)
 				{
@@ -2581,7 +2582,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 		return 0;
 	}
 	Media::FrameInfo info;
-	Media::ImageList *imgList;
+	NN<Media::ImageList> imgList;
 	Bool ihdrFound = false;
 	Bool iccpFound = false;
 	Bool srgbFound = false;
@@ -2601,9 +2602,10 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	UInt32 imgW = 0;
 	UInt32 imgH = 0;
 	UInt8 *palette = 0;
+	Bool palHasAlpha = false;
 	UInt8 buff[8];
 
-	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));
+	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullFileName()));
 
 	ofst = 8;
 	while (true)
@@ -2716,6 +2718,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
+					palHasAlpha = true;
 					UOSInt i = 0;
 					while (i < size)
 					{
@@ -2809,7 +2812,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 					UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 					if (dataSize == imgSize || imgSize != 0)
 					{
-						ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
+						ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette, palHasAlpha);
 					}
 					DEL_CLASS(wcstm);
 					wcstm = 0;
@@ -2930,7 +2933,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 				if (dataSize == imgSize || imgSize != 0)
 				{
-					ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
+					ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette, palHasAlpha);
 				}
 				DEL_CLASS(wcstm);
 				wcstm = 0;
@@ -2948,17 +2951,12 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 		UnsafeArray<UInt8> dataBuff = nnmstm->GetBuff(dataSize);
 		if (dataSize == imgSize || imgSize != 0)
 		{
-			ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette);
+			ParseImage(bitDepth, colorType, dataBuff, info, imgList, imgDelay, imgX, imgY, imgW, imgH, interlaceMeth, palette, palHasAlpha);
 		}
 		DEL_CLASS(wcstm);
 		wcstm = 0;
 		cstm.Delete();
 		mstm.Delete();
-	}
-	if (imgList->GetCount() <= 0)
-	{
-		DEL_CLASS(imgList);
-		imgList = 0;
 	}
 	if (palette)
 	{
@@ -2968,8 +2966,15 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 	SDEL_CLASS(wcstm);
 	cstm.Delete();
 	mstm.Delete();
-
-	return imgList;
+	if (imgList->GetCount() <= 0)
+	{
+		imgList.Delete();
+		return 0;
+	}
+	else
+	{
+		return imgList;
+	}
 }
 
 UOSInt Parser::FileParser::PNGParser::CalcImageSize(UInt32 imgW, UInt32 imgH, UInt8 bitDepth, UInt8 colorType, UInt8 interlaceMeth)

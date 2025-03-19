@@ -232,7 +232,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 			LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
 		else
-			LanczosResizerFunc_ImgCopyB8G8R8A8PA(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
+			LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
 	}
 }
 
@@ -272,7 +272,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt,
 			LanczosResizerFunc_ImgCopyR16G16B16_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), rgbTable.Ptr());
 		}
 		else
-			LanczosResizerFunc_ImgCopyB8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
+			LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
 	}
 }
 
@@ -518,7 +518,7 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 			}
 			else
 			{
-				LanczosResizerFunc_ImgCopyB8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgbTable.Ptr() + 262144);
+				LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgbTable.Ptr() + 262144);
 			}
 		}
 		break;
@@ -558,7 +558,7 @@ void __stdcall Media::Resizer::LanczosResizerRGB_C8::DoTask(AnyType obj)
 			}
 			else
 			{
-				LanczosResizerFunc_ImgCopyB8G8R8A8PA(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgbTable.Ptr() + 262144);
+				LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(ts->inPt.Ptr(), ts->outPt.Ptr(), ts->dwidth, ts->height, ts->sstep, ts->dstep, ts->me->rgbTable.Ptr(), ts->me->rgbTable.Ptr() + 262144);
 			}
 		}
 		break;
@@ -1010,7 +1010,11 @@ Bool Media::Resizer::LanczosResizerRGB_C8::IsSupported(NN<const Media::FrameInfo
 {
 	if (srcInfo->fourcc != 0)
 		return false;
-	if (srcInfo->pf != Media::PF_B8G8R8A8 && srcInfo->pf != Media::PF_B8G8R8 && srcInfo->pf != Media::PF_PAL_8 && srcInfo->pf != Media::PF_PAL_W8 && srcInfo->pf != Media::PF_LE_R16G16B16)
+	if (srcInfo->pf != Media::PF_B8G8R8A8 &&
+		srcInfo->pf != Media::PF_B8G8R8 &&
+		srcInfo->pf != Media::PF_PAL_8 &&
+		srcInfo->pf != Media::PF_PAL_W8 &&
+		srcInfo->pf != Media::PF_LE_R16G16B16)
 		return false;
 	return true;
 }
