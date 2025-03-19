@@ -7,7 +7,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/ColorConv.h"
 #include "Media/ColorManager.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 
 namespace Map
 {
@@ -73,7 +73,7 @@ namespace Map
 		Map::MapScheduler mapSch;
 		NN<Media::DrawEngine> eng;
 		NN<Map::MapEnv> env;
-		NN<Media::Resizer::LanczosResizer8_C8> resizer;
+		NN<Media::Resizer::LanczosResizerRGB_C8> resizer;
 		Bool lastLayerEmpty;
 		Media::ColorProfile color;
 		Optional<Media::ColorManagerSess> colorSess;

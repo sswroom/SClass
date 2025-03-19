@@ -10,8 +10,8 @@
 #include "Media/ImageGen/RingsImageGen.h"
 #include "Media/Resizer/NearestNeighbourResizer32_32.h"
 #include "Media/Resizer/NearestNeighbourResizer64_64.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 

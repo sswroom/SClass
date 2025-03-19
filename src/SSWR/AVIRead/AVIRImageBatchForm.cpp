@@ -260,7 +260,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 	this->initPos = false;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);

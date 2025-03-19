@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Registry.h"
 #include "Math/Math.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Media/Resizer/LanczosResizer16_C8.h"
 #include "SSWR/AVIRead/AVIRImageResizeForm.h"
 #include "Text/MyString.h"
@@ -27,12 +27,13 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Invalid input"), CSTR("Error"), me);
 		return;
 	}
-	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
+	Media::Resizer::LanczosResizerRGB_C8 rgbResizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
+	if (rgbResizer.IsSupported(me->srcImg->info))
 	{
-		Media::Resizer::LanczosResizer8_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
-		resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
-		resizer.SetTargetSize(outSize);
-		me->outImg = resizer.ProcessToNew(me->srcImg);
+		rgbResizer.SetSrcPixelFormat(me->srcImg->info.pf, me->srcImg->pal);
+		rgbResizer.SetResizeAspectRatio(Media::ImageResizer::RAR_IGNOREAR);
+		rgbResizer.SetTargetSize(outSize);
+		me->outImg = rgbResizer.ProcessToNew(me->srcImg);
 	}
 	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{

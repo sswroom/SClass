@@ -4,7 +4,7 @@
 #include "Data/StringMapNN.h"
 #include "Data/SyncLinkedList.h"
 #include "Media/RGBColorFilter.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
 #include "Text/String.h"
@@ -59,7 +59,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			NN<Media::Resizer::LanczosResizer8_C8> dispResizer;
+			NN<Media::Resizer::LanczosResizerRGB_C8> dispResizer;
 
 			Sync::Mutex ioMut;
 			Sync::Mutex folderMut;

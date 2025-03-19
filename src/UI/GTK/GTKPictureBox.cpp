@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Media/ImageUtil.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Sync/Interlocked.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GTK/GTKPictureBox.h"

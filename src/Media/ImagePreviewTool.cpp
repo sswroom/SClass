@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Media/ImagePreviewTool.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Media/Resizer/LanczosResizerW8_8.h"
 
 Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Data::ArrayListNN<Media::StaticImage>> prevImgs, UOSInt maxSize)
@@ -30,7 +30,7 @@ Bool Media::ImagePreviewTool::CreatePreviews(NN<Media::ImageList> imgList, NN<Da
 		}
 		else
 		{
-			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
+			Media::Resizer::LanczosResizerRGB_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 			if (resizer.IsSupported(img->info))
 			{
 				if (pf == Media::PF_B8G8R8)

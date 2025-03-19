@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/SizedOverlayDObj.h"
 
-UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizer8_C8> resizer) : DirectObject(tl)
+UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, NN<Parser::ParserList> parsers, NN<Media::Resizer::LanczosResizerRGB_C8> resizer) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
@@ -112,7 +112,11 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 			this->dispFrameNum = frameNum;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(frameNum, 0)).SetTo(img))
 			{
-				img->To32bpp();
+				if (!this->resizer->IsSupported(img->info))
+				{
+					img->ToB8G8R8A8();
+				}
+				this->resizer->SetSrcPixelFormat(img->info.pf, img->pal);
 				this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 				this->resizer->SetTargetSize(this->size);
 				this->dispImg = this->resizer->ProcessToNew(img);

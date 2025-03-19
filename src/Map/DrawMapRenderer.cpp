@@ -6,7 +6,7 @@
 #include "Math/Math.h"
 #include "Math/GeometryTool.h"
 #include "Math/Geometry/VectorImage.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Text/MyString.h"
 
 #include <stdio.h>
@@ -3712,7 +3712,7 @@ Map::DrawMapRenderer::DrawMapRenderer(NN<Media::DrawEngine> eng, NN<Map::MapEnv>
 	this->lastLayerEmpty = true;
 	this->drawType = drawType;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, this->color, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->resizer, Media::Resizer::LanczosResizerRGB_C8(3, 3, srcColor, this->color, colorSess, Media::AT_NO_ALPHA));
 	NEW_CLASSNN(this->colorConv, Media::ColorConv(srcColor, this->color, colorSess));
 }
 

@@ -18,9 +18,11 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	UnsafeArray<UTF8Char> sptr2;
 	UnsafeArray<UTF8Char> sptr3;
 	UnsafeArray<UTF8Char> sptr4;
+	UnsafeArray<UTF8Char> sptr5;
 	NN<IO::Path::FindFileSession> sess;
 	NN<IO::Path::FindFileSession> sess2;
 	NN<IO::Path::FindFileSession> sess3;
+	NN<IO::Path::FindFileSession> sess4;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/devices/pci0000:00/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -35,23 +37,35 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 			}
 			else if (IO::Path::GetPathType(CSTRP(sbuff, sptr2 + 4)) == IO::Path::PathType::Directory)
 			{
-				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
-				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/"));
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card?"));
 				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
 					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
-						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
-						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (!fs.IsError())
+						*sptr3++ = IO::Path::PATH_SEPERATOR;
+						sptr4 = Text::StrConcatC(sptr3, sptr2, 5);
+						sptr4 = Text::StrConcatC(sptr4, UTF8STRC("-*"));
+						if (IO::Path::FindFile(CSTRP(sbuff, sptr4)).SetTo(sess3))
 						{
-							edidSize = fs.Read(Data::ByteArray(edid, 1024));
-							if (edidSize > 0)
+							while (IO::Path::FindNextFile(sptr3, sess3, 0, pt, 0).SetTo(sptr4))
 							{
-								ret = MemAlloc(UInt8, edidSize);
-								MemCopyNO(ret, edid, edidSize);
-								*edidSizeRet = edidSize;
+								sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
+								IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								if (!fs.IsError())
+								{
+									edidSize = fs.Read(Data::ByteArray(edid, 1024));
+									if (edidSize > 0)
+									{
+										ret = MemAlloc(UInt8, edidSize);
+										MemCopyNO(ret, edid, edidSize);
+										*edidSizeRet = edidSize;
+									}
+								}
+								if (ret)
+									break;
 							}
+							IO::Path::FindFileClose(sess3);
 						}
 						if (ret)
 							break;
@@ -71,29 +85,42 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 					{
 						if (sptr2[0] == '0')
 						{
-							sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/drm/card0/"));
-							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("card0-*"));
+							sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/drm/"));
+							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("card?"));
 							if (IO::Path::FindFile(CSTRP(sbuff, sptr4)).SetTo(sess3))
 							{
 								while (IO::Path::FindNextFile(sptr3, sess3, 0, pt, 0).SetTo(sptr4))
 								{
-									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
-									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-									if (!fs.IsError())
+									*sptr4++ = IO::Path::PATH_SEPERATOR;
+									sptr5 = Text::StrConcatC(sptr4, sptr3, 5);
+									sptr5 = Text::StrConcatC(sptr5, UTF8STRC("-*"));
+									if (IO::Path::FindFile(CSTRP(sbuff, sptr5)).SetTo(sess4))
 									{
-										edidSize = fs.Read(Data::ByteArray(edid, 1024));
-										if (edidSize > 0)
+										while (IO::Path::FindNextFile(sptr4, sess4, 0, pt, 0).SetTo(sptr5))
 										{
-											ret = MemAlloc(UInt8, edidSize);
-											MemCopyNO(ret, edid, edidSize);
-											*edidSizeRet = edidSize;
+											sptr5 = Text::StrConcatC(sptr5, UTF8STRC("/edid"));
+											IO::FileStream fs(CSTRP(sbuff, sptr5), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+											if (!fs.IsError())
+											{
+												edidSize = fs.Read(Data::ByteArray(edid, 1024));
+												if (edidSize > 0)
+												{
+													ret = MemAlloc(UInt8, edidSize);
+													MemCopyNO(ret, edid, edidSize);
+													*edidSizeRet = edidSize;
+												}
+											}
+											if (ret)
+												break;
 										}
+										IO::Path::FindFileClose(sess4);
 									}
 									if (ret)
 										break;
 								}
 								IO::Path::FindFileClose(sess3);
 							}
+
 						}
 						if (ret)
 							break;
@@ -220,23 +247,33 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 			}
 			else if (IO::Path::GetPathType(CSTRP(sbuff, sptr2 + 4)) == IO::Path::PathType::Directory)
 			{
-				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
-				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/"));
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card?"));
 				if (IO::Path::FindFile(CSTRP(sbuff, sptr3)).SetTo(sess2))
 				{
 					while (IO::Path::FindNextFile(sptr2, sess2, 0, pt, 0).SetTo(sptr3))
 					{
-						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
-						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (!fs.IsError())
+						sptr3 += IO::Path::PATH_SEPERATOR;
+						sptr4 = Text::StrConcatC(sptr3, sptr2, 5);
+						sptr4 = Text::StrConcatC(sptr2, UTF8STRC("-*"));
+						if (IO::Path::FindFile(CSTRP(sbuff, sptr4)).SetTo(sess3))
 						{
-							edidSize = fs.Read(Data::ByteArray(edid, 1024));
-							if (edidSize > 0)
+							while (IO::Path::FindNextFile(sptr3, sess3, 0, pt, 0).SetTo(sptr4))
 							{
-								NEW_CLASSNN(reader, Media::DDCReader(edid, edidSize));
-								readerList->Add(reader);
-								ret++;
+								sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
+								IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								if (!fs.IsError())
+								{
+									edidSize = fs.Read(Data::ByteArray(edid, 1024));
+									if (edidSize > 0)
+									{
+										NEW_CLASSNN(reader, Media::DDCReader(edid, edidSize));
+										readerList->Add(reader);
+										ret++;
+									}
+								}
 							}
+							IO::Path::FindFileClose(sess3);
 						}
 					}
 					IO::Path::FindFileClose(sess2);

@@ -6,7 +6,7 @@
 #include "IO/StmData/FileData.h"
 #include "Manage/HiResClock.h"
 #include "Media/ImageList.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -69,7 +69,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Optional<Media::StaticImage> newImg;
 			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
-				Media::Resizer::LanczosResizer8_C8 resizer(4, 4, simg->info.color, simg->info.color, 0, simg->info.atype);
+				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 4, simg->info.color, simg->info.color, 0, simg->info.atype);
 				resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
 				if (!resizer.IsSupported(simg->info))
 				{

@@ -2500,7 +2500,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->restoreObj = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
+	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
 	this->mapCurrFile = 0;
 	this->mapCurrImage = 0;
 

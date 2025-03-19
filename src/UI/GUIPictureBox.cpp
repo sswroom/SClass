@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "UI/GUIPictureBox.h"
 
 UI::GUIPictureBox::GUIPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIControl(ui, parent)
@@ -10,7 +10,7 @@ UI::GUIPictureBox::GUIPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	this->currImage = 0;
 	this->noBGColor = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(Math::Size2D<UOSInt>(200, 200));
 }

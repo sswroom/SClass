@@ -1311,7 +1311,6 @@ OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 DeintResizerLR_C32.o: ../../src/Media/Resizer/DeintResizerLR_C32.cpp
 DeintResizerLR_C32_8.o: ../../src/Media/Resizer/DeintResizerLR_C32_8.cpp
 DeintResizerLR_C32_10.o: ../../src/Media/Resizer/DeintResizerLR_C32_10.cpp
-LanczosResizer8_C8.o: ../../src/Media/Resizer/LanczosResizer8_C8.cpp
 LanczosResizer16_C8.o: ../../src/Media/Resizer/LanczosResizer16_C8.cpp
 LanczosResizerFunc.o: ../../src/Media/Resizer/LanczosResizerFunc.cpp
 LanczosResizerH8_8.o: ../../src/Media/Resizer/LanczosResizerH8_8.cpp
@@ -1320,6 +1319,7 @@ LanczosResizerLR_C32.o: ../../src/Media/Resizer/LanczosResizerLR_C32.cpp
 LanczosResizerLR_C32_8.o: ../../src/Media/Resizer/LanczosResizerLR_C32_8.cpp
 LanczosResizerLR_C32_10.o: ../../src/Media/Resizer/LanczosResizerLR_C32_10.cpp
 LanczosResizerLR_C32_CPU.o: ../../src/Media/Resizer/LanczosResizerLR_C32_CPU.cpp
+LanczosResizerRGB_C8.o: ../../src/Media/Resizer/LanczosResizerRGB_C8.cpp
 LanczosResizerW8_8.o: ../../src/Media/Resizer/LanczosResizerW8_8.cpp
 LanczosResizerW8_8_CPP.o: ../../src/Media/Resizer/LanczosResizerW8_8_CPP.cpp
 NearestNeighbourResizer32_32.o: ../../src/Media/Resizer/NearestNeighbourResizer32_32.cpp

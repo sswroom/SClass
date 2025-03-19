@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "UI/DObj/DirectObject.h"
 #include "UI/DObj/ImageDObjHandler.h"
 
@@ -25,7 +25,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 			{
 				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 				Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
-				Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
+				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
 				resizer.SetTargetSize(scnSize);
 				resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_KEEPAR);
 				NN<Media::StaticImage> srimg;

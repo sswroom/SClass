@@ -10,8 +10,8 @@ namespace Media
 		ZXingReader();
 		~ZXingReader();
 
-		UTF8Char *ReadY8(UTF8Char *buff, const UInt8 *imgData, UOSInt width, UOSInt height, UOSInt lineSize);
-		UTF8Char *ReadImg(UTF8Char *buff, const Media::Image *img);
+		UnsafeArrayOpt<UTF8Char> ReadY8(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> imgData, UOSInt width, UOSInt height, UOSInt lineSize) const;
+		UnsafeArrayOpt<UTF8Char> ReadImg(UnsafeArray<UTF8Char> buff, NN<const Media::RasterImage> img) const;
 	};
 }
 #endif

@@ -3086,8 +3086,6 @@ Media/Jasper/JasperXML.h:
 @JasperXML.o
 Media/Resizer/DeintResizerLR_C32.h:
 @DeintResizerLR_C32.o
-Media/Resizer/LanczosResizer8_C8.h:
-@LanczosResizer8_C8.o
 Media/Resizer/LanczosResizer16_C8.h:
 @LanczosResizer16_C8.o
 @LanczosResizer16_C8_CPP.o
@@ -3109,6 +3107,8 @@ Media/Resizer/LanczosResizerLR_C32_CPU.h:
 @LanczosResizerLR_C32_CPU.o
 @LanczosResizerLR_C32_CPU_CPP.o
 Media/Resizer/LanczosResizerLR_C32Action.h:
+Media/Resizer/LanczosResizerRGB_C8.h:
+@LanczosResizerRGB_C8.o
 Media/Resizer/LanczosResizerW8_8.h:
 @LanczosResizerW8_8.o
 @LanczosResizerW8_8_CPP.o

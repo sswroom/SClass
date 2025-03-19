@@ -1297,11 +1297,19 @@ UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, 
 			}
 			break;
 		}
+		case 'Z':
+			if (tzQhr == 0)
+			{
+				sbuff[0] = 'Z';
+				sbuff++;
+				pattern++;
+				break;
+			}
 		case 'z':
 		{
 			Int32 hr = tzQhr >> 2;
 			Int32 min = (tzQhr & 3) * 15;
-			if (pattern[1] != 'z')
+			if (pattern[1] != 'z' && pattern[1] != 'Z')
 			{
 				if (hr >= 0)
 				{
@@ -1324,7 +1332,7 @@ UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, 
 				}
 				pattern++;
 			}
-			else if (pattern[2] != 'z')
+			else if (pattern[2] != 'z' && pattern[2] != 'Z')
 			{
 				if (hr >= 0)
 				{
@@ -1339,7 +1347,7 @@ UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, 
 				sbuff += 3;
 				pattern += 2;
 			}
-			else if (pattern[3] != 'z')
+			else if (pattern[3] != 'z' && pattern[3] != 'Z')
 			{
 				if (hr >= 0)
 				{
@@ -1371,7 +1379,7 @@ UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, 
 				WriteNUInt16(&sbuff[4], ReadNUInt16(&MyString_StrDigit100U8[min * 2]));
 				sbuff += 6;
 				pattern += 4;
-				while (*pattern == 'z')
+				while (*pattern == 'z' || *pattern == 'Z')
 					pattern++;
 			}
 			break;

@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISIMAGEFORM
 #define _SM_SSWR_AVIREAD_AVIRGISIMAGEFORM
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRGISReplayForm.h"
 #include "UI/GUIButton.h"
@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<Media::Resizer::LanczosResizer8_C8> resizer;
+			NN<Media::Resizer::LanczosResizerRGB_C8> resizer;
 			NN<Map::MapEnv> env;
 			NN<Parser::ParserList> parsers;
 			UOSInt imgIndex;

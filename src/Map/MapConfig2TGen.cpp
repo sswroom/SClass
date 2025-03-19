@@ -4609,7 +4609,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngi
 									NN<Media::StaticImage> img;
 									if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 									{
-										if (img->To32bpp())
+										if (img->ToB8G8R8A8())
 										{
 											currLayer->img = this->drawEng->ConvImage(img);
 											obj.Delete();

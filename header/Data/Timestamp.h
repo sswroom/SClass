@@ -282,19 +282,19 @@ namespace Data
 			}
 			else if (this->inst.nanosec == 0)
 			{
-				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:sszzzz"));
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ssZZZZ"));
 			}
 			else if (this->inst.nanosec % 1000000 == 0)
 			{
-				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.fffzzzz"));
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.fffZZZZ"));
 			}
 			else if (this->inst.nanosec % 1000 == 0)
 			{
-				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.ffffffzzzz"));
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.ffffffZZZZ"));
 			}
 			else
 			{
-				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.fffffffffzzzz"));
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.fffffffffZZZZ"));
 			}
 		}
 

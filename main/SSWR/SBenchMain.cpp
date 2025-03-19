@@ -32,12 +32,12 @@
 #include "Media/ImageList.h"
 #include "Media/CS/CSRGB16_LRGBC.h"
 #include "Media/ImageGen/RingsImageGen.h"
-#include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Media/Resizer/LanczosResizer16_C8.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
 //#include "Media/Resizer/LanczosResizerH16_8.h"
 #include "Media/Resizer/LanczosResizerLR_C16.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "Media/Resizer/NearestNeighbourResizer32_32.h"
 #include "Media/Resizer/NearestNeighbourResizer64_64.h"
 #include "Net/HTTPClient.h"
@@ -1965,7 +1965,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, 0, Media::AT_NO_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
@@ -2006,7 +2006,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 			console->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
 			writer->WriteLine(CSTR("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
-			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, color, color, 0, Media::AT_ALPHA));
+			NEW_CLASS(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, 0, Media::AT_ALPHA));
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();

@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 		
-		Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizerRGB_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA);
 		Exporter::GUIPNGExporter exporter;
 		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
@@ -509,7 +509,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUI
 	this->keyObj = 0;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASSNN(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, srcColor, destColor, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->dispResizer, Media::Resizer::LanczosResizerRGB_C8(3, 3, srcColor, destColor, colorSess, Media::AT_NO_ALPHA));
 	this->imgMapUpdated = true;
 	this->imgUpdated = false;
 	this->previewSize = 160;

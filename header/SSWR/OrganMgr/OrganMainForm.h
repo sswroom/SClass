@@ -158,7 +158,7 @@ namespace SSWR
 			Data::ArrayListNN<UserFileInfo> mapUFiles;
 			UserFileInfo *mapCurrFile;
 			Optional<Media::DrawImage> mapCurrImage;
-			Media::Resizer::LanczosResizer8_C8 *mapResizer;
+			Media::Resizer::LanczosResizerRGB_C8 *mapResizer;
 
 			UInt32 unkCnt;
 //			UInt32 dragEff;

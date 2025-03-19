@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRIMAGEBATCHFORM
 #define _SM_SSWR_AVIREAD_AVIRIMAGEBATCHFORM
-#include "Media/Resizer/LanczosResizer8_C8.h"
+#include "Media/Resizer/LanczosResizerRGB_C8.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/AVIRImageControl.h"
 #include "UI/GUIButton.h"
@@ -47,7 +47,7 @@ namespace SSWR
 			NN<UI::GUILabel> lblHDRLevV;
 			
 			NN<Media::ColorManagerSess> colorSess;
-			NN<Media::Resizer::LanczosResizer8_C8> resizer;
+			NN<Media::Resizer::LanczosResizerRGB_C8> resizer;
 			Optional<Media::StaticImage> dispImage;
 			Optional<Media::StaticImage> previewImage;
 			Optional<Media::StaticImage> filteredImage;
