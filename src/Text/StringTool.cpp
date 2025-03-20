@@ -104,7 +104,7 @@ Bool Text::StringTool::IsASCIIText(const Data::ByteArrayR &buff)
 	while (index < buff.GetSize())
 	{
 		b = buff[index++];
-		if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10)
+		if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10 || b == 9)
 		{
 
 		}

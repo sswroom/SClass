@@ -2257,6 +2257,8 @@ Map/BaseMapLayer.h:
 @BaseMapLayer.o
 Map/BingMapsTile.h:
 @BingMapsTile.o
+Map/CesiumTile.h:
+@CesiumTile.o
 Map/CIPLayer2.h:
 @CIPLayer2.o
 Map/CSVMapParser.h:
@@ -3795,6 +3797,8 @@ Parser/FileParser/ZIPParser.h:
 @ZIPParser.o
 Parser/FileParser/ZWEIParser.h:
 @ZWEIParser.o
+Parser/ObjParser/C3DParser.h:
+@C3DParser.o
 Parser/ObjParser/DBITParser.h:
 @DBITParser.o
 Parser/ObjParser/FileGDB2Parser.h:

@@ -118,6 +118,7 @@
 #include "Parser/FileParser/YKCParser.h"
 #include "Parser/FileParser/ZIPParser.h"
 #include "Parser/FileParser/ZWEIParser.h"
+#include "Parser/ObjParser/C3DParser.h"
 #include "Parser/ObjParser/DBITParser.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Parser/ObjParser/ISO9660Parser.h"
@@ -390,6 +391,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASSNN(oparser, Parser::ObjParser::OSMMapParser());
 	this->AddObjectParser(oparser);
 	NEW_CLASSNN(oparser, Parser::ObjParser::PKGMapParser());
+	this->AddObjectParser(oparser);
+	NEW_CLASSNN(oparser, Parser::ObjParser::C3DParser());
 	this->AddObjectParser(oparser);
 
 	this->SetArcGISPRJParser(&this->prjParser);

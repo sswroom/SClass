@@ -40,6 +40,15 @@ public:
 		return this->p;
 	}
 
+	NN<T> Or(NN<T> val) const
+	{
+		NN<T> v;
+		if (v.Set(this->p))
+			return v;
+		else
+			return val;
+	}
+
 	Bool SetTo(NN<T> &p) const
 	{
 		return p.Set(this->p);

@@ -260,6 +260,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 			frm->Show();
 		}
 		break;
+	case IO::ParserType::CesiumTile:
 	case IO::ParserType::JasperReport:
 	case IO::ParserType::TextDocument:
 	case IO::ParserType::Workbook:

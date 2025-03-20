@@ -760,6 +760,7 @@ ThreadInfoW.o: ../../src/Manage/ThreadInfoW.cpp
 
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
 BingMapsTile.o: ../../src/Map/BingMapsTile.cpp
+CesiumTile.o: ../../src/Map/CesiumTile.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
 CustomTileMap.o: ../../src/Map/CustomTileMap.cpp
@@ -1721,6 +1722,7 @@ XPCMParser.o: ../../src/Parser/FileParser/XPCMParser.cpp
 YKCParser.o: ../../src/Parser/FileParser/YKCParser.cpp
 ZIPParser.o: ../../src/Parser/FileParser/ZIPParser.cpp
 ZWEIParser.o: ../../src/Parser/FileParser/ZWEIParser.cpp
+C3DParser.o: ../../src/Parser/ObjParser/C3DParser.cpp
 DBITParser.o: ../../src/Parser/ObjParser/DBITParser.cpp
 FileGDB2Parser.o: ../../src/Parser/ObjParser/FileGDB2Parser.cpp
 ISO9660Parser.o: ../../src/Parser/ObjParser/ISO9660Parser.cpp

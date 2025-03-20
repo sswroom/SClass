@@ -38,8 +38,9 @@ namespace IO
 		JasperReport,
 		PDFDocument,
 		SeleniumIDE,
+		CesiumTile,
 
-		LastType = SeleniumIDE
+		LastType = CesiumTile
 	};
 
 	Text::CStringNN ParserTypeGetName(ParserType pt);
