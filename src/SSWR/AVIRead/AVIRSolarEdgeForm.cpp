@@ -298,7 +298,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 	if (this->siteEnergyList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
 		NN<Media::DrawImage> dimg;
-		if (deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA).SetTo(dimg))
+		if (deng->CreateImage32(size, Media::AlphaType::AT_ALPHA_ALL_FF).SetTo(dimg))
 		{
 			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
@@ -335,7 +335,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 	if (this->sitePowerList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
 		NN<Media::DrawImage> dimg;
-		if (deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA).SetTo(dimg))
+		if (deng->CreateImage32(size, Media::AlphaType::AT_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
 			dimg->SetVDPI(this->GetHDPI() * 96.0 / this->GetDDPI());

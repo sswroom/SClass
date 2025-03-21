@@ -465,7 +465,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 			{
 				deng->DeleteImage(gimg);
 			}
-			dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
+			dimg = deng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF);
 			this->dispImg = dimg;
 		}
 		if (this->dispImg.SetTo(gimg))

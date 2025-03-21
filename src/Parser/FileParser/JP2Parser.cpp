@@ -106,7 +106,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::St
 	UOSInt w = (UInt32)(imgInfo->x1 - imgInfo->x0);
 	UOSInt h = (UInt32)(imgInfo->y1 - imgInfo->y0);
 	UInt32 dataSize = (UInt32)(w * h * 3);
-	NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(w, h), 0, 24, Media::PF_B8G8R8, dataSize, Media::ColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(w, h), 0, 24, Media::PF_B8G8R8, dataSize, Media::ColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	UInt8 *dataBuff = 0;
 	UOSInt dataBuffSize = 0;
 	while (true)

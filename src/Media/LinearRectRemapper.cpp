@@ -22,7 +22,7 @@ NN<Media::StaticImage> Media::LinearRectRemapper::RemapW8(UnsafeArray<const UInt
 	UOSInt j;
 
 	NN<Media::StaticImage> ret;
-	NEW_CLASSNN(ret, Media::StaticImage(outputSize, 0, 8, Media::PF_PAL_W8, outputSize.CalcArea(), color, yuvType, Media::AT_NO_ALPHA, ycOfst));
+	NEW_CLASSNN(ret, Media::StaticImage(outputSize, 0, 8, Media::PF_PAL_W8, outputSize.CalcArea(), color, yuvType, Media::AT_ALPHA_ALL_FF, ycOfst));
 	ret->InitGrayPal();
 	xPos = UOSInt2Double(outputSize.x - 1);
 	yPos = UOSInt2Double(outputSize.y - 1);

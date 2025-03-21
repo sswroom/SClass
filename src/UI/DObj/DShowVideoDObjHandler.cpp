@@ -83,8 +83,8 @@ UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm,
 	this->videoSize = videoSize;
 	this->ownerFrm = ownerFrm;
 	this->videoFileName = Text::String::New(videoFileName);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
-	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_IGNORE_ALPHA));
+	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_IGNORE_ALPHA);
 //	Media::GDIImage *dimg = (Media::GDIImage*)this->frameImg;
 //	dimg->info->atype = Media::AT_NO_ALPHA;
 	this->tmr = this->ownerFrm->AddTimer(100, OnTimerTick, this);

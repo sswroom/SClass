@@ -30,7 +30,8 @@ namespace Media
 
 	typedef enum
 	{
-		AT_NO_ALPHA,
+		AT_IGNORE_ALPHA,
+		AT_ALPHA_ALL_FF,
 		AT_ALPHA,
 		AT_PREMUL_ALPHA
 	} AlphaType;

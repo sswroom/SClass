@@ -23,7 +23,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		Data::ArrayListStringNN lines;
 		NN<Text::String> s;
 		Double currY;
-		if (this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA).SetTo(dimg))
+		if (this->deng->CreateImage32(this->size, Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 		{
 			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 
@@ -32,7 +32,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 			this->deng->DeleteImage(dimg);
 		}
 
-		this->dimg = this->deng->CreateImage32(Math::Size2D<UOSInt>(this->size.x, (UInt32)Double2Int32(this->lineHeight * UOSInt2Double(lines.GetCount()))), Media::AT_NO_ALPHA);
+		this->dimg = this->deng->CreateImage32(Math::Size2D<UOSInt>(this->size.x, (UInt32)Double2Int32(this->lineHeight * UOSInt2Double(lines.GetCount()))), Media::AT_ALPHA_ALL_FF);
 		if (this->dimg.SetTo(dimg))
 		{
 			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);

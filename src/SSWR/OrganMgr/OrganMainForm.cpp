@@ -2453,7 +2453,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASSNN(lyr, OrganSpImgLayer());
-	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("PointImage")));
@@ -2500,7 +2500,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GU
 	this->restoreObj = false;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile color2(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_NO_ALPHA));
+	NEW_CLASS(this->mapResizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color2, this->colorSess.Ptr(), Media::AT_ALPHA_ALL_FF));
 	this->mapCurrFile = 0;
 	this->mapCurrImage = 0;
 

@@ -176,7 +176,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		if (cinfo.out_color_space == JCS_GRAYSCALE)
 		{
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UOSInt>(cinfo.image_width, cinfo.image_height), 0, 8, Media::PixelFormat::PF_PAL_W8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UOSInt>(cinfo.image_width, cinfo.image_height), 0, 8, Media::PixelFormat::PF_PAL_W8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			img = nnimg;
 			nnimg->InitGrayPal();
 			UOSInt bpl = nnimg->GetDataBpl();
@@ -189,7 +189,7 @@ Optional<Media::StaticImage> Media::JPEGDecoder::DecodeImage(Data::ByteArrayR da
 		else
 		{
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UOSInt>(cinfo.image_width, cinfo.image_height), 0, 24, Media::PixelFormat::PF_R8G8B8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(nnimg, Media::StaticImage(Math::Size2D<UOSInt>(cinfo.image_width, cinfo.image_height), 0, 24, Media::PixelFormat::PF_R8G8B8, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			img = nnimg;
 			UOSInt bpl = nnimg->GetDataBpl();
 			UInt8 *r = nnimg->data.Ptr();

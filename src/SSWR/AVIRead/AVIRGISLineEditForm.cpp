@@ -318,7 +318,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	this->pbPreview->SetRect(0, 0, 100, 24, false);
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	sz = this->pbPreview->GetSizeP();
-	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
+	this->prevImage = this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF);
 	NN<Media::DrawImage> img;
 	if (this->prevImage.SetTo(img))
 	{
@@ -446,7 +446,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	{
 		this->eng->DeleteImage(img);
 	}
-	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
+	this->prevImage = this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF);
 	if (this->prevImage.SetTo(img))
 	{
 		img->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);

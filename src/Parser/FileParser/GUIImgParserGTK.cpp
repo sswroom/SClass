@@ -112,7 +112,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 
 			Optional<Media::StaticImage> optimg = 0;
 			NN<Media::StaticImage> img;
-			Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_NO_ALPHA:Media::AT_ALPHA;
+			Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_IGNORE_ALPHA:Media::AT_ALPHA;
 
 			if (nChannels == 3 && bps == 8 && !hasAlpha)
 			{

@@ -68,7 +68,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, Optional<const Media::ColorProf
 
 	this->info.fourcc = 0;
 	this->info.ftype = Media::FT_NON_INTERLACE;
-	this->info.atype = Media::AT_NO_ALPHA;
+	this->info.atype = Media::AT_IGNORE_ALPHA;
 	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info.storeBPP = this->clsData->vinfo.bits_per_pixel;

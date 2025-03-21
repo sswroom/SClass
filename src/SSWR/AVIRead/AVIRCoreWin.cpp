@@ -6,6 +6,7 @@
 #include "IO/StmData/MemoryDataCopy.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "SSWR/AVIRead/AVIRBTScanLogForm.h"
+#include "SSWR/AVIRead/AVIRCesiumTileForm.h"
 #include "SSWR/AVIRead/AVIRCodeProjectForm.h"
 #include "SSWR/AVIRead/AVIRCoordSysForm.h"
 #include "SSWR/AVIRead/AVIRCoreWin.h"
@@ -261,6 +262,13 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		}
 		break;
 	case IO::ParserType::CesiumTile:
+		{
+			NN<SSWR::AVIRead::AVIRCesiumTileForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(0, this->ui, *this, NN<Map::CesiumTile>::ConvertFrom(pobj)));
+			InitForm(frm);
+			frm->Show();
+		}
+		break;
 	case IO::ParserType::JasperReport:
 	case IO::ParserType::TextDocument:
 	case IO::ParserType::Workbook:

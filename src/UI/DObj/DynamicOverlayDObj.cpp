@@ -83,7 +83,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				this->a = 0;
 			}
 			NN<Media::DrawImage> bmpTmp;
-			if (this->deng->CreateImage32(bmp1->GetSize(), Media::AT_NO_ALPHA).SetTo(bmpTmp))
+			if (this->deng->CreateImage32(bmp1->GetSize(), Media::AT_ALPHA_ALL_FF).SetTo(bmpTmp))
 			{
 				bmpTmp->SetAlphaType(bmp1->GetAlphaType());
 				Bool revOrder;

@@ -440,7 +440,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDat
 		frInfo.hdpi = 96;
 		frInfo.vdpi = 96;
 		frInfo.ftype = Media::FT_NON_INTERLACE;
-		frInfo.atype = Media::AT_NO_ALPHA;
+		frInfo.atype = Media::AT_IGNORE_ALPHA;
 		frInfo.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 		frInfo.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		frInfo.ycOfst = Media::YCOFST_C_CENTER_LEFT;

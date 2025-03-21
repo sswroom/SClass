@@ -5152,7 +5152,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(UnsafeArray<const UTF8Char> folder)
 		Data::DateTime dt;
 		Optional<IO::FileExporter::ParamData> param;
 		Exporter::GUIJPGExporter exporter;
-		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_ALPHA_ALL_FF);
 		
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC("UserFile"));
 		*sptr2++ = IO::Path::PATH_SEPERATOR;

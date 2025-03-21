@@ -47,7 +47,7 @@ void Media::Batch::BatchToLRGB::ImageOutput(NN<Media::ImageList> imgList, Text::
 			NN<Media::CS::CSConverter> csconv;
 			if (this->csconv.SetTo(csconv))
 			{
-				NEW_CLASSNN(dimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, this->destProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(dimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, this->destProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dimg->info.hdpi = simg->info.hdpi;
 				dimg->info.vdpi = simg->info.vdpi;
 				csconv->ConvertV2(&simg->data, dimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);

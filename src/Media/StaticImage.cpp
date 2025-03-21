@@ -1469,7 +1469,7 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 		{
 			return false;
 		}
-		else if (this->info.atype == Media::AT_NO_ALPHA)
+		else if (this->info.atype == Media::AT_ALPHA_ALL_FF || this->info.atype == Media::AT_IGNORE_ALPHA)
 		{
 			Int32 i32a = Double2Int32(alpha * 255);
 			UInt8 a;

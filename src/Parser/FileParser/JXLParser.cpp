@@ -137,7 +137,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 						}
 						else
 						{
-							finfo.atype = Media::AT_NO_ALPHA;
+							finfo.atype = Media::AT_ALPHA_ALL_FF;
 							finfo.storeBPP = 16;
 							finfo.pf = Media::PF_LE_W16;
 							format = {1, JXL_TYPE_UINT16, JXL_NATIVE_ENDIAN, 0};
@@ -154,7 +154,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 						}
 						else
 						{
-							finfo.atype = Media::AT_NO_ALPHA;
+							finfo.atype = Media::AT_ALPHA_ALL_FF;
 							finfo.storeBPP = 48;
 							finfo.pf = Media::PF_LE_R16G16B16;
 							format = {3, JXL_TYPE_UINT16, JXL_NATIVE_ENDIAN, 0};
@@ -174,7 +174,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 						}
 						else
 						{
-							finfo.atype = Media::AT_NO_ALPHA;
+							finfo.atype = Media::AT_ALPHA_ALL_FF;
 							finfo.storeBPP = 8;
 							finfo.pf = Media::PF_PAL_W8;
 							format = {1, JXL_TYPE_UINT8, JXL_NATIVE_ENDIAN, 0};
@@ -191,7 +191,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 						}
 						else
 						{
-							finfo.atype = Media::AT_NO_ALPHA;
+							finfo.atype = Media::AT_ALPHA_ALL_FF;
 							finfo.storeBPP = 24;
 							finfo.pf = Media::PF_R8G8B8;
 							format = {3, JXL_TYPE_UINT8, JXL_NATIVE_ENDIAN, 0};
@@ -212,7 +212,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 					}
 					else
 					{
-						finfo.atype = Media::AT_NO_ALPHA;
+						finfo.atype = Media::AT_ALPHA_ALL_FF;
 						finfo.storeBPP = 32;
 						finfo.pf = Media::PF_LE_FW32;
 						format = {1, JXL_TYPE_FLOAT, JXL_NATIVE_ENDIAN, 0};
@@ -229,7 +229,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JXLParser::ParseFileHdr(NN<IO::St
 					}
 					else
 					{
-						finfo.atype = Media::AT_NO_ALPHA;
+						finfo.atype = Media::AT_ALPHA_ALL_FF;
 						finfo.storeBPP = 96;
 						finfo.pf = Media::PF_LE_FR32G32B32;
 						format = {3, JXL_TYPE_FLOAT, JXL_NATIVE_ENDIAN, 0};

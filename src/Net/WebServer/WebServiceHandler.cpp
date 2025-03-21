@@ -81,6 +81,10 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::WebReq
 	{
 		return this->DoFileRequest(req, resp, subReq);
 	}
+	else
+	{
+		return this->DoPackageRequest(req, resp, subReq);
+	}
 	return false;
 }
 

@@ -1947,7 +1947,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 1, 1, pxMask, pxAMask, pxShift);
 			}
 
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeSize.x = storeWidth;
 			UOSInt byteCnt;
 			if (bitDepth == 1)
@@ -2033,7 +2033,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			UInt32 pxId;
 
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeSize.x = info->dispSize.x;
 			info->storeBPP = 8;
 			info->pf = Media::PF_PAL_W8;
@@ -2078,7 +2078,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			UOSInt lineAdd;
 
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeBPP = 16;
 			info->pf = Media::PF_LE_W16;
 			info->byteSize = info->storeSize.CalcArea() * 2;
@@ -2122,7 +2122,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			UOSInt lineAdd;
 
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeBPP = 24;
 			info->pf = Media::PF_B8G8R8;
 			info->byteSize = info->storeSize.CalcArea() * 3;
@@ -2163,7 +2163,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		{
 			UOSInt lineAdd;
 
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA_ALL_FF;
 			info->storeBPP = 48;
 			info->pf = Media::PF_LE_B16G16R16;
 			info->byteSize = info->storeSize.CalcArea() * 3;
@@ -2209,7 +2209,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				UOSInt storeWidth = ((info->dispSize.x + 15) >> 4) << 4;
 				UnsafeArray<UInt8> lineStart;
 
-				info->atype = palHasAlpha?Media::AT_ALPHA:Media::AT_NO_ALPHA;
+				info->atype = palHasAlpha?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF;
 				info->storeSize.x = storeWidth;
 				if (bitDepth == 1)
 				{
@@ -2396,7 +2396,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info.atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2442,7 +2442,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info.atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2493,7 +2493,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info.atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2539,7 +2539,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info.atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2718,11 +2718,14 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 				Data::ByteBuffer chunkData(size);
 				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 				{
-					palHasAlpha = true;
 					UOSInt i = 0;
 					while (i < size)
 					{
 						palette[i * 4 + 3] = chunkData[i];
+						if (chunkData[i] != 0xff)
+						{
+							palHasAlpha = true;
+						}
 						i++;
 					}
 				}

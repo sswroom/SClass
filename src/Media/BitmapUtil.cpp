@@ -47,7 +47,7 @@ Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *data
 		palSize = (UOSInt)(4 << bpp);
 	}
 
-	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)imgWidth, (UOSInt)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)imgWidth, (UOSInt)imgHeight), 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	outImg->info.hdpi = hdpi;
 	outImg->info.vdpi = vdpi;
 	UnsafeArray<UInt8> pBits = outImg->data;

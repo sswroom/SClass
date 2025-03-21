@@ -620,7 +620,7 @@ void Media::VectorGraph::DelFont(NN<DrawFont> f)
 Math::Size2DDbl Media::VectorGraph::GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt)
 {
 	NN<Media::DrawImage> tmpImg;
-	if (this->refEng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA).SetTo(tmpImg))
+	if (this->refEng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
 	{
 		tmpImg->SetHDPI(this->GetHDPI());
 		tmpImg->SetVDPI(this->GetVDPI());

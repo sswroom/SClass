@@ -104,7 +104,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 	Media::PixelFormat pf;
 	Double hdpi = 72.0;
 	Double vdpi = 72.0;
-	Media::AlphaType atype = Media::AT_NO_ALPHA;
+	Media::AlphaType atype = Media::AT_IGNORE_ALPHA;
 	UInt32 rBit = 0;
 	UInt32 gBit = 0;
 	UInt32 bBit = 0;
@@ -142,7 +142,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		biCompression = 0;
 		endPos = 26;
 		palType = 1;
-		atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA;
+		atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA;
 	}
 	else if (headerSize == 16)
 	{
@@ -160,7 +160,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		biCompression = 0;
 		endPos = 30;
 		palType = 0;
-		atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA;
+		atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA;
 	}
 	else if (headerSize >= 40)
 	{
@@ -175,7 +175,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		else
 		{
 			pf = Media::PixelFormatGetDef(0, bpp);
-			atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA;
+			atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA;
 		}
 		endPos = 14 + ReadUInt32(&hdr[14]);
 //		biSizeImage = ReadInt32(&hdr[34]);
@@ -219,7 +219,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 			else if (rBit == 0xff0000 && gBit == 0xff00 && bBit == 0xff && aBit == 0 && bpp == 32)
 			{
 				bitDefault = true;
-				atype = Media::AT_NO_ALPHA;
+				atype = Media::AT_IGNORE_ALPHA;
 			}
 			else if (rBit == 0x3ff && gBit == 0xffc00 && bBit == 0x3ff00000 && aBit == 0xc0000000 && bpp == 32)
 			{
@@ -230,7 +230,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 			{
 				bitDefault = true;
 				pf = Media::PF_LE_A2B10G10R10;
-				atype = Media::AT_NO_ALPHA;
+				atype = Media::AT_IGNORE_ALPHA;
 			}
 			else if (rBit == 0xf800 && gBit == 0x7e0 && bBit == 0x1f && bpp == 16)
 			{
@@ -305,7 +305,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::St
 		else
 		{
 			pf = Media::PixelFormatGetDef(0, bpp);
-			atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA;
+			atype = (bpp == 32)?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA;
 		}
 		endPos = 14 + ReadUInt32(&hdr[14]);
 	}

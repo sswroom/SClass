@@ -242,7 +242,7 @@ void UI::GUIDObjArea::OnSurfaceCreated()
 		this->deng->DeleteImage(img);
 		this->currDrawImg = 0;
 	}
-	this->currDrawImg = this->deng->CreateImage32(this->dispSize, Media::AT_NO_ALPHA);
+	this->currDrawImg = this->deng->CreateImage32(this->dispSize, Media::AT_IGNORE_ALPHA);
 	this->drawUpdated = false;
 }
 

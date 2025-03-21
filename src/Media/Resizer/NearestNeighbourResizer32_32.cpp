@@ -8,7 +8,7 @@ extern "C"
 	void NearestNeighbourResizer32_32_Resize(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt dheight, OSInt dbpl, OSInt *xindex, OSInt *yindex);
 }
 
-Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : Media::ImageResizer(Media::AT_NO_ALPHA)
+Media::Resizer::NearestNeighbourResizer32_32::NearestNeighbourResizer32_32() : Media::ImageResizer(Media::AT_IGNORE_ALPHA)
 {
 	this->lastsbpl = 0;
 	this->lastsheight = 0;

@@ -150,7 +150,7 @@ void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 			NN<Media::DrawImage> bmpS1 = bmpUnclick;
 			NN<Media::DrawImage> bmpS2 = bmpClicked;
 			NN<Media::DrawImage> bmpTmp;
-			if (this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA).SetTo(bmpTmp))
+			if (this->deng->CreateImage32(bmpS1->GetSize(), bmpS1->GetAlphaType()).SetTo(bmpTmp))
 			{
 				bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
 	#if defined(HAS_ASM32)

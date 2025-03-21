@@ -786,9 +786,13 @@ void Media::Resizer::LanczosResizer16_C8::SetDestProfile(NN<const Media::ColorPr
 
 Media::AlphaType Media::Resizer::LanczosResizer16_C8::GetDestAlphaType()
 {
-	if (this->srcAlphaType == Media::AT_NO_ALPHA)
+	if (this->srcAlphaType == Media::AT_ALPHA_ALL_FF)
 	{
-		return Media::AT_NO_ALPHA;
+		return Media::AT_ALPHA_ALL_FF;
+	}
+	else if (this->srcAlphaType == Media::AT_IGNORE_ALPHA)
+	{
+		return Media::AT_ALPHA_ALL_FF;
 	}
 	else
 	{

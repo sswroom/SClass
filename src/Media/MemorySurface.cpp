@@ -8,7 +8,7 @@ Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixe
 	this->buffPtr = MemAllocA(UInt8, size.CalcArea() * (bitPerPixel >> 3));
 	this->info.fourcc = 0;
 	this->info.ftype = Media::FT_NON_INTERLACE;
-	this->info.atype = Media::AT_NO_ALPHA;
+	this->info.atype = Media::AT_IGNORE_ALPHA;
 	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->info.storeBPP = (UInt32)bitPerPixel;

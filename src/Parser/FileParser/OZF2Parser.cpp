@@ -107,7 +107,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::S
 		yCnt = ReadUInt16(&tmpBuff[10]);
 		if (thisImgWidth == imgWidth && thisImgHeight == imgHeight)
 		{
-			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UOSInt>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UOSInt>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			MemCopyNO(outImg->pal, &tmpBuff[12], 1024);
 
 			Data::ByteBuffer ptrBuff(4 * (xCnt * yCnt + 1));

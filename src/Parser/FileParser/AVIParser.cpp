@@ -425,7 +425,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 					info.ftype = Media::FT_INTERLACED_BFF;
 					break;
 				}
-				info.atype = Media::AT_NO_ALPHA;
+				info.atype = Media::AT_IGNORE_ALPHA;
 				Media::CS::TransferType ttype;
 				switch (ccTransfer)
 				{

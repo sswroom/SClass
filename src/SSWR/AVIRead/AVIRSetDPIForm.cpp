@@ -101,7 +101,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	{
 		Double ddpi = this->core->GetMonitorDDPI(this->GetHMonitor());
 		v = this->hsbDPI->GetPos();
-		if (eng->CreateImage32(usz, Media::AT_NO_ALPHA).SetTo(gimg))
+		if (eng->CreateImage32(usz, Media::AT_ALPHA_ALL_FF).SetTo(gimg))
 		{
 			b = gimg->NewBrushARGB(0xffffffff);
 			gimg->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);

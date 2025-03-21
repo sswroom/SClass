@@ -311,7 +311,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 NN<Media::ImageResizer> UI::GUIVideoBoxDDLQ::CreateResizer(Media::ColorManagerSess *colorMgr, UInt32 bitDepth, Double srcRefLuminance)
 {
 	NN<Media::ImageResizer> resizer;
-	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_IGNORE_ALPHA));
 	return resizer;
 }
 
@@ -381,7 +381,7 @@ void UI::GUIVideoBoxDDLQ::CreateThreadResizer(NN<ThreadStat> tstat)
 		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32_8(4, 3, &destColor, colorSess, Media::AT_NO_ALPHA));
 		tstat->procType = 1;
 	}*/
-	NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
+	NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_IGNORE_ALPHA));
 	tstat->procType = 0;
 
 	tstat->resizerBitDepth = this->bitDepth;

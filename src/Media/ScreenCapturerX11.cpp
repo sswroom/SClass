@@ -68,7 +68,7 @@ Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(MonitorHandle 
 		Media::FrameInfo info;
 		info.fourcc = 0;
 		info.ftype = Media::FT_NON_INTERLACE;
-		info.atype = Media::AT_NO_ALPHA;
+		info.atype = Media::AT_IGNORE_ALPHA;
 		info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 		info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		info.storeBPP = (UInt32)image->bits_per_pixel;

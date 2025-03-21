@@ -172,7 +172,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 		Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 		
-		Media::Resizer::LanczosResizerRGB_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizerRGB_C8 resizer(4, 3, srcProfile, destProfile, this->colorSess.Ptr(), Media::AT_ALPHA_ALL_FF);
 		Exporter::GUIPNGExporter exporter;
 		resizer.SetTargetSize(Math::Size2D<UOSInt>(this->previewSize, this->previewSize));
 		parsers = this->core->GetParserList();
@@ -509,7 +509,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUI
 	this->keyObj = 0;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
-	NEW_CLASSNN(this->dispResizer, Media::Resizer::LanczosResizerRGB_C8(3, 3, srcColor, destColor, colorSess, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(this->dispResizer, Media::Resizer::LanczosResizerRGB_C8(3, 3, srcColor, destColor, colorSess, Media::AT_ALPHA_ALL_FF));
 	this->imgMapUpdated = true;
 	this->imgUpdated = false;
 	this->previewSize = 160;
@@ -675,13 +675,13 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 				status->previewImg = this->deng->LoadImage(status->cacheFile->ToCString());
 				if (status->previewImg.SetTo(previewImg))
 				{
-					status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
+					status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_IGNORE_ALPHA);
 					this->UpdateImgPreview(status);
 				}
 			}
 			else if (status->previewImg2.IsNull())
 			{
-				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
+				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_IGNORE_ALPHA);
 				this->UpdateImgPreview(status);
 			}
 			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos))), Math::Size2DDbl(UOSInt2Double(scnW), itemBH), 0, barr[status->setting.flags & 3]);

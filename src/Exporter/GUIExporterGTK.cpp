@@ -108,7 +108,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 	case Media::PF_B8G8R8A8:
 		tmpBuff = MemAllocA(UInt8, img->info.dispSize.y * img->info.storeSize.x * 4);
 		MemCopyANC(tmpBuff, img->data.Ptr(), img->info.dispSize.y * img->info.storeSize.x * 4);
-		if (img->info.atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 		{
 			ImageUtil_ConvR8G8B8N8_B8G8R8A8(tmpBuff, tmpBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)img->info.storeSize.x * 4, (OSInt)img->info.storeSize.x * 4);
 		}

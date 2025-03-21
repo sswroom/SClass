@@ -20,7 +20,7 @@
 void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilterPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
 #if defined(VERBOSE)
-	printf("LR8_C8: HFilterPA w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
+	printf("LanczosResizerRGB_C8: HFilterPA w = %d, h = %d, tap = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap, Media::PixelFormatGetName(this->srcPF).v.Ptr());
 #endif
 	if (this->IsSrcUInt16())
 	{
@@ -62,7 +62,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilterPA(UnsafeArray<cons
 void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep, UOSInt swidth)
 {
 #if defined(VERBOSE)
-	printf("LR8_C8: HFilter w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
+	printf("LanczosResizerRGB_C8: HFilter w = %d, h = %d, tap = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap, Media::PixelFormatGetName(this->srcPF).v.Ptr());
 #endif
 	if (this->IsSrcUInt16())
 	{
@@ -104,7 +104,7 @@ void Media::Resizer::LanczosResizerRGB_C8::MTHorizontalFilter(UnsafeArray<const 
 void Media::Resizer::LanczosResizerRGB_C8::MTVerticalFilter(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, UOSInt tap, UnsafeArray<OSInt> index, UnsafeArray<Int64> weight, OSInt sstep, OSInt dstep)
 {
 #if defined(VERBOSE)
-	printf("LR8_C8: VFilter w = %d, h = %d, tap = %d\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap);
+	printf("LanczosResizerRGB_C8: VFilter w = %d, h = %d, tap = %d, destPF = %s\r\n", (UInt32)dwidth, (UInt32)height, (UInt32)tap, Media::PixelFormatGetName(this->destPF).v.Ptr());
 #endif
 	UOSInt currHeight;
 	UOSInt lastHeight = height;
@@ -148,6 +148,9 @@ void Media::Resizer::LanczosResizerRGB_C8::MTVerticalFilter(UnsafeArray<const UI
 
 void Media::Resizer::LanczosResizerRGB_C8::MTExpandPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
+#if defined(VERBOSE)
+	printf("LanczosResizerRGB_C8: ExpandPA w = %d, h = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr());
+#endif
 	if (this->srcPF == PF_PAL_8 || this->srcPF == PF_PAL_W8)
 		LanczosResizerFunc_ExpandPal8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr() + 270336);
 	else if (this->srcPF == PF_B8G8R8)
@@ -167,6 +170,9 @@ void Media::Resizer::LanczosResizerRGB_C8::MTExpandPA(UnsafeArray<const UInt8> i
 
 void Media::Resizer::LanczosResizerRGB_C8::MTExpand(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
+#if defined(VERBOSE)
+	printf("LanczosResizerRGB_C8: Expand w = %d, h = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr());
+#endif
 	if (this->srcPF == PF_PAL_8 || this->srcPF == PF_PAL_W8)
 		LanczosResizerFunc_ExpandPal8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr() + 270336);
 	else if (this->srcPF == PF_B8G8R8)
@@ -186,6 +192,9 @@ void Media::Resizer::LanczosResizerRGB_C8::MTExpand(UnsafeArray<const UInt8> inP
 
 void Media::Resizer::LanczosResizerRGB_C8::MTCollapse(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
+#if defined(VERBOSE)
+	printf("LanczosResizerRGB_C8: Collapse w = %d, h = %d, srcPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr());
+#endif
 	if (this->destPF == Media::PF_B8G8R8)
 	{
 		LanczosResizerFunc_CollapseB8G8R8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr());
@@ -198,6 +207,9 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCollapse(UnsafeArray<const UInt8> i
 
 void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
+#if defined(VERBOSE)
+	printf("LanczosResizerRGB_C8: CopyPA w = %d, h = %d, srcPF = %s, destPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr(), Media::PixelFormatGetName(this->destPF).v.Ptr());
+#endif
 	if (this->destPF == Media::PF_B8G8R8)
 	{
 		if (this->srcPF == PF_PAL_8 || this->srcPF == PF_PAL_W8)
@@ -233,11 +245,17 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopyPA(UnsafeArray<const UInt8> inP
 		}
 		else
 			LanczosResizerFunc_ImgCopyB8G8R8A8PA_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
+#if defined(VERBOSE)
+	printf("LanczosResizerRGB_C8: Alpha = %x\r\n", ReadNInt32(&outPt[0]));
+#endif
 	}
 }
 
 void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt, UnsafeArray<UInt8> outPt, UOSInt dwidth, UOSInt height, OSInt sstep, OSInt dstep)
 {
+#if defined(VERBOSE)
+	printf("LanczosResizerRGB_C8: Copy w = %d, h = %d, srcPF = %s, destPF = %s\r\n", (UInt32)dwidth, (UInt32)height, Media::PixelFormatGetName(this->srcPF).v.Ptr(), Media::PixelFormatGetName(this->destPF).v.Ptr());
+#endif
 	if (this->destPF == Media::PF_B8G8R8)
 	{
 		if (this->srcPF == PF_PAL_8 || this->srcPF == PF_PAL_W8)
@@ -273,7 +291,10 @@ void Media::Resizer::LanczosResizerRGB_C8::MTCopy(UnsafeArray<const UInt8> inPt,
 		}
 		else
 			LanczosResizerFunc_ImgCopyB8G8R8A8_B8G8R8A8(inPt.Ptr(), outPt.Ptr(), dwidth, height, sstep, dstep, this->rgbTable.Ptr(), this->rgbTable.Ptr() + 262144);
-	}
+#if defined(VERBOSE)
+		printf("LanczosResizerRGB_C8: Alpha = %x\r\n", ReadNInt32(&outPt[0]));
+#endif
+		}
 }
 
 void Media::Resizer::LanczosResizerRGB_C8::UpdateRGBTable()
@@ -718,7 +739,7 @@ void Media::Resizer::LanczosResizerRGB_C8::Resize(UnsafeArray<const UInt8> src, 
 		return;
 
 #if defined(VERBOSE)
-	printf("LR8_C8: Resize %lf x %lf -> %d x %d\r\n", swidth, sheight, (UInt32)dwidth, (UInt32)dheight);
+	//printf("LanczosResizerRGB_C8: Resize %lf x %lf -> %d x %d\r\n", swidth, sheight, (UInt32)dwidth, (UInt32)dheight);
 #endif
 	w = xOfst + swidth;
 	h = yOfst + sheight;
@@ -971,9 +992,17 @@ void Media::Resizer::LanczosResizerRGB_C8::SetDestProfile(NN<const Media::ColorP
 
 Media::AlphaType Media::Resizer::LanczosResizerRGB_C8::GetDestAlphaType()
 {
-	if (this->srcAlphaType == Media::AT_NO_ALPHA)
+	if (this->srcAlphaType == Media::AT_IGNORE_ALPHA)
 	{
-		return Media::AT_NO_ALPHA;
+		return Media::AT_IGNORE_ALPHA;
+	}
+	else if (this->srcAlphaType == Media::AT_ALPHA_ALL_FF)
+	{
+		return Media::AT_ALPHA_ALL_FF;
+	}
+	else if (this->srcPF == Media::PF_PAL_8)
+	{
+		return Media::AT_ALPHA;
 	}
 	else
 	{

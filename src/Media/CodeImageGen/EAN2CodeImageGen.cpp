@@ -283,7 +283,7 @@ Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::
 	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
 	NN<Media::DrawImage> dimg;
-	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 21) * codeWidth, h), Media::AT_NO_ALPHA).SetTo(dimg))
+	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 21) * codeWidth, h), Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 		return 0;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;

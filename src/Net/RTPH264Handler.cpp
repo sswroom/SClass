@@ -31,7 +31,7 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->frameInfo.par2 = 1;
 	this->frameInfo.hdpi = 96;
 	this->frameInfo.ftype = Media::FT_NON_INTERLACE;
-	this->frameInfo.atype = Media::AT_NO_ALPHA;
+	this->frameInfo.atype = Media::AT_IGNORE_ALPHA;
 	this->frameInfo.color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 	this->frameInfo.yuvType = Media::ColorProfile::YUVT_BT601;
 	this->frameInfo.ycOfst = Media::YCOFST_C_CENTER_LEFT;

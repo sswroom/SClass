@@ -32,7 +32,7 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::Pa
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
 	{
-		if (img->info.atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 			return IO::FileExporter::SupportType::NormalStream;
 		OSInt i;
 		Bool found = false;
@@ -88,7 +88,7 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt j;
 	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
 	{
-		if (img->info.atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
 		}
 		else

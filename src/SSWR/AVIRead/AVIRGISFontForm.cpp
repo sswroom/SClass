@@ -69,7 +69,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 	this->previewImage.Delete();
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
 	NN<Media::DrawImage> dimg;
-	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
+	if (this->eng->CreateImage32(sz, Media::AT_ALPHA_ALL_FF).SetTo(dimg))
 	{
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);

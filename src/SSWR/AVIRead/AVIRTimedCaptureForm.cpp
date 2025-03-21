@@ -242,7 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 		Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 		dt.SetCurrTimeUTC();
 
-		NEW_CLASSNN(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASSNN(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 		csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
 		NEW_CLASSNN(imgList, Media::ImageList(CSTR("Temp")));
 		imgList->AddImage(simg, 0);

@@ -256,7 +256,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::W
 					simg = rimg->CreateStaticImage();
 					optimgList.Delete();
 					Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 					lrimg = lrimgnn;
 					Sync::MutexUsage mutUsage(this->csconvMut);
 					if (this->csconv.IsNull() || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
@@ -527,7 +527,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				simg = rimg->CreateStaticImage();
 				optimgList.Delete();
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				lrimg = lrimgnn;
 				{
 					Sync::MutexUsage mutUsage(this->csconvMut);
@@ -651,7 +651,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 										yRand = Double2Int32(UOSInt2Double(simg->info.dispSize.y) - sz.y);
 										iWidth = (UInt32)Double2Int32(sz.x);
 										iHeight = (UInt32)Double2Int32(sz.y);
-										if (this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA).SetTo(gimg2))
+										if (this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_IGNORE_ALPHA).SetTo(gimg2))
 										{
 											gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
 											gimg2->SetAlphaType(Media::AT_ALPHA);
@@ -832,7 +832,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					simg = rimg->CreateStaticImage();
 					optimgList.Delete();
 					Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 					lrimg = lrimgnn;
 					{
 						Sync::MutexUsage mutUsage(this->csconvMut);
@@ -984,7 +984,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(NN<Net::WebServer::MemoryWebSessionManager> sessMgr, NN<OrganWebEnv> env, UInt32 scnSize) : OrganWebController(sessMgr, env, scnSize), csconvColor(Media::ColorProfile::CPT_SRGB)
 {
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess().Ptr(), Media::AT_NO_ALPHA, 0, Media::PF_B8G8R8A8));
+	NEW_CLASS(this->resizerLR, Media::Resizer::LanczosResizerLR_C32(3, 3, destProfile, this->env->GetColorSess().Ptr(), Media::AT_IGNORE_ALPHA, 0, Media::PF_B8G8R8A8));
 	this->csconv = 0;
 	this->csconvFCC = 0;
 	this->csconvBpp = 0;

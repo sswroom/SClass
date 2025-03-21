@@ -50,7 +50,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		UInt64 sampleCnt = (UInt64)audio->GetSampleCount();
 		Data::ByteBuffer samples(fftSize * fmt.nChannels * fmt.bitpersample >> 3);
 
-		if (!eng->CreateImage32(Math::Size2D<UOSInt>(32, 32), Media::AT_NO_ALPHA).SetTo(tmpImg))
+		if (!eng->CreateImage32(Math::Size2D<UOSInt>(32, 32), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
 		{
 			return 0;
 		}
@@ -151,7 +151,7 @@ Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngi
 		UnsafeArray<UInt8> imgPtr;
 		UInt8 v;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		if (eng->CreateImage32(Math::Size2D<UOSInt>((timeRes + 4) + yAxis + ihFontSize, (fftSize >> 1) + 4 + ihFontSize + xAxis), Media::AT_NO_ALPHA).SetTo(tmpImg))
+		if (eng->CreateImage32(Math::Size2D<UOSInt>((timeRes + 4) + yAxis + ihFontSize, (fftSize >> 1) + 4 + ihFontSize + xAxis), Media::AT_ALPHA_ALL_FF).SetTo(tmpImg))
 		{
 			retImg = tmpImg.Ptr();
 			tmpImg->SetColorProfile(color);

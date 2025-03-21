@@ -193,7 +193,7 @@ Bool Media::V4LVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UI
 		info->ftype = Media::FT_NON_INTERLACE;
 		break;
 	}
-	info->atype = Media::AT_NO_ALPHA;
+	info->atype = Media::AT_IGNORE_ALPHA;
 	switch (fmt.fmt.pix.colorspace)
 	{
 	case V4L2_COLORSPACE_SMPTE170M:
@@ -330,7 +330,7 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 				fmtArr[ret].info.hdpi = 72;
 				fmtArr[ret].info.vdpi = 72;
 				fmtArr[ret].info.ftype = Media::FT_NON_INTERLACE;
-				fmtArr[ret].info.atype = Media::AT_NO_ALPHA;
+				fmtArr[ret].info.atype = Media::AT_IGNORE_ALPHA;
 				fmtArr[ret].info.color.SetCommonProfile(Media::ColorProfile::CPT_BT709);
 				fmtArr[ret].info.yuvType = Media::ColorProfile::YUVT_BT601;
 				fmtArr[ret].info.ycOfst = Media::YCOFST_C_CENTER_LEFT;

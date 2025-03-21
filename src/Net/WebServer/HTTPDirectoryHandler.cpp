@@ -459,6 +459,7 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CStringNN rootD
 
 Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 {
+	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
 	this->rootDir->Release();
 	UOSInt cacheCnt;
 	CacheInfo **cacheList = this->fileCache.ToArray(cacheCnt);
@@ -468,20 +469,20 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 		MemFree(cacheList[cacheCnt]);
 	}
 	MemFree(cacheList);
-	if (this->packageMap)
+	if (this->packageMap.SetTo(packageMap))
 	{
-		PackageInfo *package;
+		NN<PackageInfo> package;
 		UOSInt i;
-		i = this->packageMap->GetCount();
+		i = packageMap->GetCount();
 		while (i-- > 0)
 		{
-			package = this->packageMap->GetItem(i);
+			package = packageMap->GetItemNoCheck(i);
 			package->fileName->Release();
 			package->packageFile.Delete();
-			MemFree(package);
+			MemFreeNN(package);
 		}
-		DEL_CLASS(this->packageMap);
-		DEL_CLASS(this->packageMut);
+		this->packageMap.Delete();
+		this->packageMut.Delete();
 	}
 	if (this->statMap)
 	{
@@ -528,7 +529,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	UnsafeArray<UTF8Char> sptr4;
 	//Data::DateTime t;
 	Text::CStringNN mime;
-	NN<Sync::RWMutex> packageMut;
 	UOSInt i;
 	Bool dirPath;
 	if (req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::WebRequest::RequestProtocol::HTTP1_1)
@@ -556,184 +556,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	{
 		return resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
 	}
-	if (this->packageMap && packageMut.Set(this->packageMut))
+	if (this->DoPackageRequest(req, resp, subReq))
 	{
-		i = subReq.IndexOf('?');
-		if (i != INVALID_INDEX)
-		{
-			sb.ClearStr();
-			sb.AppendC(subReq.v, (UOSInt)i);
-		}
-		else
-		{
-			sb.Append(subReq);
-		}
-		dirPath = sb.EndsWith('/');
-		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
-		Text::CStringNN dirName = sb.ToCString();
-		if (i != INVALID_INDEX)
-		{
-			sb.v[i + 1] = 0;
-			dirName.leng = i + 1;
-		}
-		PackageInfo *package;
-		Sync::RWMutexUsage packageMutUsage(packageMut, false);
-		package = this->packageMap->GetC(dirName.Substring(1));
-		packageMutUsage.EndUse();
-		if (package)
-		{
-			NN<IO::PackageFile> packageFile = package->packageFile;
-			Bool needRelease = false;
-			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
-			{
-				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
-				{
-					packageFile->GetItemPack(0, needRelease).SetTo(packageFile);
-				}
-			}
-
-			sptr = &sb.v[i + 2];
-			if (packageFile->GetFileType() == IO::PackageFileType::Virtual)
-			{
-				NN<IO::VirtualPackageFile> vpackageFile = NN<IO::VirtualPackageFile>::ConvertFrom(packageFile);
-				if (i == INVALID_INDEX || sptr[0] == 0)
-				{
-					if (dirPath)
-					{
-						NN<const IO::PackFileItem> pitem2;
-						if (vpackageFile->GetPackFileItem((const UTF8Char*)"index.html").SetTo(pitem2) && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
-						{
-							if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
-							{
-								ResponsePackageFile(req, resp, subReq, vpackageFile);
-							}
-						}
-						else
-						{
-							ResponsePackageFile(req, resp, subReq, vpackageFile);
-						}
-						if (needRelease)
-						{
-							vpackageFile.Delete();
-						}
-						return true;
-					}
-					else
-					{
-						if (needRelease)
-						{
-							vpackageFile.Delete();
-						}
-						sb.ClearStr();
-						sb.Append(req->GetRequestURI());
-						i = sb.IndexOf('?');
-						if (i != INVALID_INDEX)
-						{
-							sb.TrimToLength(i);
-							sb.AppendUTF8Char('/');
-							sb.Append(req->GetRequestURI()->ToCString().Substring(i));
-						}
-						else
-						{
-							sb.AppendUTF8Char('/');
-						}
-						return resp->RedirectURL(req, sb.ToCString(), 0);
-					}
-				}
-				NN<const IO::PackFileItem> pitem;
-				if (vpackageFile->GetPackFileItem(sptr).SetTo(pitem))
-				{
-					IO::PackageFile::PackObjectType pot = vpackageFile->GetPItemType(pitem);
-					if (pot == IO::PackageFile::PackObjectType::StreamData)
-					{
-						if (ResponsePackageFileItem(req, resp, vpackageFile, pitem))
-						{
-							if (needRelease)
-							{
-								vpackageFile.Delete();
-							}
-							return true;
-						}
-					}
-					else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
-					{
-						Bool innerNeedRelease;
-						NN<IO::PackageFile> innerPF;
-						if (vpackageFile->GetPItemPack(pitem, innerNeedRelease).SetTo(innerPF))
-						{
-							if (dirPath)
-							{
-								UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
-								if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
-								{
-									NN<IO::StreamData> stmData;
-									if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
-									{
-										UOSInt dataLen = (UOSInt)stmData->GetDataSize();
-										Data::ByteBuffer dataBuff(dataLen);
-										stmData->GetRealData(0, dataLen, dataBuff);
-										stmData.Delete();
-										mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
-
-										resp->EnableWriteBuffer();
-										this->AddResponseHeaders(req, resp);
-										resp->AddLastModified(innerPF->GetItemModTime(index2));
-										resp->AddContentType(mime);
-										Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Arr());
-									}
-									else
-									{
-										ResponsePackageFile(req, resp, subReq, innerPF);
-									}
-								}
-								else
-								{
-									ResponsePackageFile(req, resp, subReq, innerPF);
-								}
-								if (innerNeedRelease)
-								{
-									innerPF.Delete();
-								}
-								if (needRelease)
-								{
-									packageFile.Delete();
-								}
-								return true;
-							}
-							else
-							{
-								if (innerNeedRelease)
-								{
-									innerPF.Delete();
-								}
-								if (needRelease)
-								{
-									vpackageFile.Delete();
-								}
-								sb.ClearStr();
-								sb.Append(req->GetRequestURI());
-								i = sb.IndexOf('?');
-								if (i != INVALID_INDEX)
-								{
-									sb.TrimToLength(i);
-									sb.AppendUTF8Char('/');
-									sb.Append(req->GetRequestURI()->ToCString().Substring(i));
-								}
-								else
-								{
-									sb.AppendUTF8Char('/');
-								}
-								return resp->RedirectURL(req, sb.ToCString(), 0);
-							}
-						}
-					}
-				}
-			}
-			if (needRelease)
-			{
-				packageFile.Delete();
-			}
-		}
+		return true;
 	}
 	CacheInfo *cache;
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
@@ -1082,17 +907,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 				if (isRoot)
 				{
 					NN<Sync::RWMutex> packageMut;
-					if (this->packageMap && packageMut.Set(this->packageMut))
+					NN<Data::FastStringMapNN<PackageInfo>> packageMap;
+					if (this->packageMap.SetTo(packageMap) && this->packageMut.SetTo(packageMut))
 					{
-						PackageInfo *package;
+						NN<PackageInfo> package;
 						UOSInt i;
 						UOSInt j;
 						Sync::RWMutexUsage packageMutUsage(packageMut, false);
 						i = 0;
-						j = this->packageMap->GetCount();
+						j = packageMap->GetCount();
 						while (i < j)
 						{
-							package = this->packageMap->GetItem(i);
+							package = packageMap->GetItemNoCheck(i);
 							sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
 							sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -1549,6 +1375,199 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::WebR
 	return false;
 }
 
+Bool Net::WebServer::HTTPDirectoryHandler::DoPackageRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
+{
+	NN<Sync::RWMutex> packageMut;
+	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
+	UTF8Char sbuff[1024];
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN mime;
+	UOSInt i;
+	if (this->packageMap.SetTo(packageMap) && this->packageMut.SetTo(packageMut))
+	{
+		Bool dirPath;
+		Text::StringBuilderUTF8 sb;
+		i = subReq.IndexOf('?');
+		if (i != INVALID_INDEX)
+		{
+			sb.ClearStr();
+			sb.AppendC(subReq.v, (UOSInt)i);
+		}
+		else
+		{
+			sb.Append(subReq);
+		}
+		dirPath = sb.EndsWith('/');
+		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
+		Text::CStringNN dirName = sb.ToCString();
+		if (i != INVALID_INDEX)
+		{
+			sb.v[i + 1] = 0;
+			dirName.leng = i + 1;
+		}
+		NN<PackageInfo> package;
+		Optional<PackageInfo> optpackage;
+		Sync::RWMutexUsage packageMutUsage(packageMut, false);
+		optpackage = packageMap->GetC(dirName.Substring(1));
+		packageMutUsage.EndUse();
+		if (optpackage.SetTo(package))
+		{
+			NN<IO::PackageFile> packageFile = package->packageFile;
+			Bool needRelease = false;
+			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
+			{
+				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				{
+					packageFile->GetItemPack(0, needRelease).SetTo(packageFile);
+				}
+			}
+
+			sptr = &sb.v[i + 2];
+			if (packageFile->GetFileType() == IO::PackageFileType::Virtual)
+			{
+				NN<IO::VirtualPackageFile> vpackageFile = NN<IO::VirtualPackageFile>::ConvertFrom(packageFile);
+				if (i == INVALID_INDEX || sptr[0] == 0)
+				{
+					if (dirPath)
+					{
+						NN<const IO::PackFileItem> pitem2;
+						if (vpackageFile->GetPackFileItem((const UTF8Char*)"index.html").SetTo(pitem2) && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
+						{
+							if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
+							{
+								ResponsePackageFile(req, resp, subReq, vpackageFile);
+							}
+						}
+						else
+						{
+							ResponsePackageFile(req, resp, subReq, vpackageFile);
+						}
+						if (needRelease)
+						{
+							vpackageFile.Delete();
+						}
+						return true;
+					}
+					else
+					{
+						if (needRelease)
+						{
+							vpackageFile.Delete();
+						}
+						sb.ClearStr();
+						sb.Append(req->GetRequestURI());
+						i = sb.IndexOf('?');
+						if (i != INVALID_INDEX)
+						{
+							sb.TrimToLength(i);
+							sb.AppendUTF8Char('/');
+							sb.Append(req->GetRequestURI()->ToCString().Substring(i));
+						}
+						else
+						{
+							sb.AppendUTF8Char('/');
+						}
+						return resp->RedirectURL(req, sb.ToCString(), 0);
+					}
+				}
+				NN<const IO::PackFileItem> pitem;
+				if (vpackageFile->GetPackFileItem(sptr).SetTo(pitem))
+				{
+					IO::PackageFile::PackObjectType pot = vpackageFile->GetPItemType(pitem);
+					if (pot == IO::PackageFile::PackObjectType::StreamData)
+					{
+						if (ResponsePackageFileItem(req, resp, vpackageFile, pitem))
+						{
+							if (needRelease)
+							{
+								vpackageFile.Delete();
+							}
+							return true;
+						}
+					}
+					else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
+					{
+						Bool innerNeedRelease;
+						NN<IO::PackageFile> innerPF;
+						if (vpackageFile->GetPItemPack(pitem, innerNeedRelease).SetTo(innerPF))
+						{
+							if (dirPath)
+							{
+								UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
+								if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
+								{
+									NN<IO::StreamData> stmData;
+									if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
+									{
+										UOSInt dataLen = (UOSInt)stmData->GetDataSize();
+										Data::ByteBuffer dataBuff(dataLen);
+										stmData->GetRealData(0, dataLen, dataBuff);
+										stmData.Delete();
+										mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
+
+										resp->EnableWriteBuffer();
+										this->AddResponseHeaders(req, resp);
+										resp->AddLastModified(innerPF->GetItemModTime(index2));
+										resp->AddContentType(mime);
+										Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Arr());
+									}
+									else
+									{
+										ResponsePackageFile(req, resp, subReq, innerPF);
+									}
+								}
+								else
+								{
+									ResponsePackageFile(req, resp, subReq, innerPF);
+								}
+								if (innerNeedRelease)
+								{
+									innerPF.Delete();
+								}
+								if (needRelease)
+								{
+									packageFile.Delete();
+								}
+								return true;
+							}
+							else
+							{
+								if (innerNeedRelease)
+								{
+									innerPF.Delete();
+								}
+								if (needRelease)
+								{
+									vpackageFile.Delete();
+								}
+								sb.ClearStr();
+								sb.Append(req->GetRequestURI());
+								i = sb.IndexOf('?');
+								if (i != INVALID_INDEX)
+								{
+									sb.TrimToLength(i);
+									sb.AppendUTF8Char('/');
+									sb.Append(req->GetRequestURI()->ToCString().Substring(i));
+								}
+								else
+								{
+									sb.AppendUTF8Char('/');
+								}
+								return resp->RedirectURL(req, sb.ToCString(), 0);
+							}
+						}
+					}
+				}
+			}
+			if (needRelease)
+			{
+				packageFile.Delete();
+			}
+		}
+	}
+	return false;
+}
+
 Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease)
 {
 	if (path.StartsWith('/'))
@@ -1556,12 +1575,14 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		path = path.Substring(1);
 	}
 	Text::StringBuilderUTF8 sb;
+	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
 	NN<Sync::RWMutex> packageMut;
-	if (this->packageMap && packageMut.Set(this->packageMut))
+	if (this->packageMap.SetTo(packageMap) && this->packageMut.SetTo(packageMut))
 	{
 		Text::CStringNN subPath;
 		UOSInt i = path.IndexOf('/');
-		PackageInfo *pkgInfo;
+		Optional<PackageInfo> optpkgInfo;
+		NN<PackageInfo> pkgInfo;
 		Text::CStringNN pkgName;
 		if (i == INVALID_INDEX)
 		{
@@ -1578,9 +1599,9 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		UTF8Char sbuff[512];
 		UnsafeArray<UTF8Char> sptr;
 		Sync::RWMutexUsage packageMutUsage(packageMut, false);
-		pkgInfo = this->packageMap->GetC(pkgName);
+		optpkgInfo = packageMap->GetC(pkgName);
 		packageMutUsage.EndUse();
-		if (pkgInfo)
+		if (optpkgInfo.SetTo(pkgInfo))
 		{
 			Bool thisNeedRelease = false;
 			NN<IO::PackageFile> packageFile = pkgInfo->packageFile;
@@ -1648,6 +1669,11 @@ void Net::WebServer::HTTPDirectoryHandler::SetRootDir(Text::CStringNN rootDir)
 	this->rootDir = Text::String::New(rootDir);
 }
 
+void Net::WebServer::HTTPDirectoryHandler::SetAllowBrowsing(Bool allowBrowsing)
+{
+	this->allowBrowsing = allowBrowsing;
+}
+
 void Net::WebServer::HTTPDirectoryHandler::SetCacheType(CacheType ctype)
 {
 	this->ctype = ctype;
@@ -1682,14 +1708,16 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<UTF8Char> sptr2;
 	NN<IO::Path::FindFileSession> sess;
+	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
 	NN<Sync::RWMutex> packageMut;
 	Sync::RWMutexUsage packageMutUsage;
-	if (!packageMut.Set(this->packageMut) || this->packageMap == 0)
+	if (!this->packageMut.SetTo(packageMut) || !this->packageMap.SetTo(packageMap))
 	{
 		NEW_CLASSNN(packageMut, Sync::RWMutex());
-		this->packageMut = packageMut.Ptr();
+		NEW_CLASSNN(packageMap, Data::FastStringMapNN<PackageInfo>());
+		this->packageMut = packageMut;
+		this->packageMap = packageMap;
 		packageMutUsage.ReplaceMutex(packageMut, true);
-		NEW_CLASS(this->packageMap, Data::FastStringMap<PackageInfo*>());
 	}
 	else
 	{
@@ -1711,7 +1739,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 		Optional<IO::PackageFile> pf;
 		NN<IO::PackageFile> nnpf;
 		UOSInt i;
-		PackageInfo *package;
+		NN<PackageInfo> package;
 
 		while (IO::Path::FindNextFile(sptr, sess, ts, pt, 0).SetTo(sptr2))
 		{
@@ -1723,7 +1751,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 				}
 				if (pf.SetTo(nnpf))
 				{
-					package = MemAlloc(PackageInfo, 1);
+					package = MemAllocNN(PackageInfo);
 					package->packageFile = nnpf;
 					package->modTime = ts;
 					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
@@ -1733,11 +1761,11 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 						sptr2 = &sptr[i];
 					}
 					package->fileName = Text::String::NewP(sptr, sptr2);
-					package = this->packageMap->PutNN(package->fileName, package);
-					if (package)
+					if (packageMap->PutNN(package->fileName, package).SetTo(package))
 					{
 						package->fileName->Release();
-						MemFree(package);
+						package->packageFile.Delete();
+						MemFreeNN(package);
 					}
 				}
 			}
@@ -1773,5 +1801,35 @@ void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 			}
 		}
 		mutUsage.EndUse();
+	}
+}
+
+void Net::WebServer::HTTPDirectoryHandler::AddPackage(Text::CStringNN path, NN<IO::PackageFile> pkgFile)
+{
+	if (path.StartsWith('/'))
+	{
+		path = path.Substring(1);
+	}
+	NN<Data::FastStringMapNN<PackageInfo>> packageMap;
+	NN<Sync::RWMutex> packageMut;
+	Sync::RWMutexUsage packageMutUsage;
+	if (!this->packageMut.SetTo(packageMut) || !this->packageMap.SetTo(packageMap))
+	{
+		NEW_CLASSNN(packageMut, Sync::RWMutex());
+		NEW_CLASSNN(packageMap, Data::FastStringMapNN<PackageInfo>());
+		this->packageMut = packageMut;
+		this->packageMap = packageMap;
+	}
+
+	NN<PackageInfo> package;
+	package = MemAllocNN(PackageInfo);
+	package->fileName = Text::String::New(path);
+	package->modTime = Data::Timestamp::Now();
+	package->packageFile = pkgFile;
+	if (packageMap->PutC(path, package).SetTo(package))
+	{
+		package->fileName->Release();
+		package->packageFile.Delete();
+		MemFreeNN(package);
 	}
 }

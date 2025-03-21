@@ -78,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::S
 	{
 		do
 		{
-			NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, iter.has_alpha?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT))
+			NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(width, height), 0, 32, Media::PF_B8G8R8A8, width * height * 4, Media::ColorProfile(Media::ColorProfile::CPT_PUNKNOWN), Media::ColorProfile::YUVT_UNKNOWN, iter.has_alpha?Media::AT_ALPHA:Media::AT_IGNORE_ALPHA, Media::YCOFST_C_CENTER_LEFT))
 			simg->FillColor(0);
 			WebPDecodeBGRAInto(iter.fragment.bytes, iter.fragment.size, simg->data.Ptr() + iter.x_offset * 4 + (OSInt)simg->GetDataBpl() * iter.y_offset, simg->GetDataBpl() * (simg->info.dispSize.y - (UInt32)iter.y_offset), (int)simg->GetDataBpl());
 			imgList.Add(simg);

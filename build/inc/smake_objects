@@ -1768,6 +1768,7 @@ AVIRCaptureDevForm.o: ../../src/SSWR/AVIRead/AVIRCaptureDevForm.cpp
 AVIRCAUtilForm.o: ../../src/SSWR/AVIRead/AVIRCAUtilForm.cpp
 AVIRCertTextForm.o: ../../src/SSWR/AVIRead/AVIRCertTextForm.cpp
 AVIRCertUtilForm.o: ../../src/SSWR/AVIRead/AVIRCertUtilForm.cpp
+AVIRCesiumTileForm.o: ../../src/SSWR/AVIRead/AVIRCesiumTileForm.cpp
 AVIRChartForm.o: ../../src/SSWR/AVIRead/AVIRChartForm.cpp
 AVIRChineseForm.o: ../../src/SSWR/AVIRead/AVIRChineseForm.cpp
 AVIRClipboardViewerForm.o: ../../src/SSWR/AVIRead/AVIRClipboardViewerForm.cpp

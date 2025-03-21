@@ -1580,9 +1580,9 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 	color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 	Math::Size2D<UOSInt> sz;
 	sz = this->pbMain->GetSizeP();
-	NEW_CLASS(this->mainImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(this->mainImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	sz = this->pbSub->GetSizeP();
-	NEW_CLASS(this->subImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(this->subImg, Media::StaticImage(sz, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 
 	this->GenMainImage();
 	this->GenSubImage();
@@ -1709,9 +1709,9 @@ void UtilUI::ColorDialog::OnMonitorChanged()
 		DEL_CLASS(this->mainImg);
 		DEL_CLASS(this->subImg);
 		sz = this->pbMain->GetSizeP();
-		NEW_CLASS(this->mainImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(this->mainImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 		sz = this->pbSub->GetSizeP();
-		NEW_CLASS(this->subImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+		NEW_CLASS(this->subImg, Media::StaticImage(sz - Math::Coord2D<UOSInt>(2, 2), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 
 		this->GenMainImage();
 		this->GenSubImage();

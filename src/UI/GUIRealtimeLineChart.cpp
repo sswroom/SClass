@@ -26,7 +26,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 	Double thisY;
 
 	this->valueChanged = false;
-	if (this->eng->CreateImage32(dimg->GetSize(), Media::AT_NO_ALPHA).SetTo(img))
+	if (this->eng->CreateImage32(dimg->GetSize(), Media::AT_ALPHA_ALL_FF).SetTo(img))
 	{
 		b = img->NewBrushARGB(this->bgColor);
 		img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);

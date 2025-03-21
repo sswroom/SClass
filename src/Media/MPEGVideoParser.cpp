@@ -93,7 +93,7 @@ Bool Media::MPEGVideoParser::GetFrameInfo(UnsafeArray<UInt8> frame, UOSInt frame
 	frameInfo->par2 = 1; // def = 1;
 	frameInfo->hdpi = 96;
 	frameInfo->ftype = Media::FT_NON_INTERLACE;
-	frameInfo->atype = Media::AT_NO_ALPHA;
+	frameInfo->atype = Media::AT_IGNORE_ALPHA;
 	frameInfo->rotateType = Media::RotateType::None;
 	if (pal)
 	{

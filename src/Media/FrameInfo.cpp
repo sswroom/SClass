@@ -31,7 +31,7 @@ void Media::FrameInfo::Clear()
 	this->hdpi = 0;
 	this->vdpi = 0;
 	this->ftype = Media::FT_NON_INTERLACE;
-	this->atype = Media::AT_NO_ALPHA;
+	this->atype = Media::AT_IGNORE_ALPHA;
 	this->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	this->rotateType = Media::RotateType::None;
@@ -143,8 +143,10 @@ Text::CStringNN Media::AlphaTypeGetName(AlphaType atype)
 {
 	switch (atype)
 	{
-	case AT_NO_ALPHA:
-		return CSTR("No Alpha");
+	case AT_ALPHA_ALL_FF:
+		return CSTR("Alpha All Solid");
+	case AT_IGNORE_ALPHA:
+		return CSTR("Ignore Alpha");
 	case AT_ALPHA:
 		return CSTR("Alpha");
 	case AT_PREMUL_ALPHA:

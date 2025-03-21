@@ -59,8 +59,8 @@ namespace Net
 			Data::FastStringMapNN<StatInfo> *statMap;
 			Sync::Mutex *statMut;
 			Int32 fileCacheUsing;
-			Sync::RWMutex *packageMut;
-			Data::FastStringMap<PackageInfo*> *packageMap;
+			Optional<Sync::RWMutex> packageMut;
+			Optional<Data::FastStringMapNN<PackageInfo>> packageMap;
 
 			void AddCacheHeader(NN<Net::WebServer::WebResponse> resp);
 			void ResponsePackageFile(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile);
@@ -79,16 +79,19 @@ namespace Net
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
 			Bool DoFileRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
+			Bool DoPackageRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 			Optional<IO::PackageFile> GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease);
 
 			void SetRootDir(NN<Text::String> rootDir);
 			void SetRootDir(Text::CStringNN rootDir);
+			void SetAllowBrowsing(Bool allowBrowsing);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
 			void ClearFileCache();
 			void ExpandPackageFiles(NN<Parser::ParserList> parsers, Text::CStringNN searchPattern);
 			void EnableStats();
 			void SaveStats();
+			void AddPackage(Text::CStringNN path, NN<IO::PackageFile> pkgFile);
 		};
 	}
 }

@@ -63,7 +63,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<co
 	Manage::HiResClock clk;
 	if (this->nThread == 1 || height < this->nThread)
 	{
-		if (srcAlphaType == Media::AT_NO_ALPHA)
+		if (srcAlphaType == Media::AT_IGNORE_ALPHA || srcAlphaType == Media::AT_ALPHA_ALL_FF)
 		{
 			LanczosResizerLR_C32_CPU_vertical_filter_na(inPt.Ptr(), outPt.Ptr(), width, height, tap, index, weight, sstep, dstep, this->rgbTable);
 		}
@@ -79,7 +79,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_vertical_filter(UnsafeArray<co
 		UOSInt i = this->nThread;
 		UOSInt wTap;
 		Int32 procStatus = 5;
-		if (srcAlphaType == Media::AT_NO_ALPHA)
+		if (srcAlphaType == Media::AT_IGNORE_ALPHA || srcAlphaType == Media::AT_ALPHA_ALL_FF)
 		{
 			procStatus = 12;
 		}
@@ -156,7 +156,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(UnsafeArray<const UIn
 {
 	if (this->nThread == 1 || height < this->nThread)
 	{
-		if (srcAlphaType == Media::AT_NO_ALPHA)
+		if (srcAlphaType == Media::AT_IGNORE_ALPHA || srcAlphaType == Media::AT_ALPHA_ALL_FF)
 		{
 			LanczosResizerLR_C32_CPU_collapse_na(inPt.Ptr(), outPt.Ptr(), width, height, sstep, dstep, this->rgbTable);
 		}
@@ -170,7 +170,7 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::mt_collapse(UnsafeArray<const UIn
 		UOSInt currHeight;
 		UOSInt lastHeight = height;
 		Int32 procStatus = 9;
-		if (srcAlphaType == Media::AT_NO_ALPHA)
+		if (srcAlphaType == Media::AT_IGNORE_ALPHA || srcAlphaType == Media::AT_ALPHA_ALL_FF)
 		{
 			procStatus = 13;
 		}

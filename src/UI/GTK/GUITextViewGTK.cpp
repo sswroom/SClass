@@ -216,7 +216,7 @@ void __stdcall UI::GUITextView::OnResize(AnyType userObj)
 	{
 		scnSize.x -= me->clsData->scrSize;
 	}
-	me->drawBuff = me->deng->CreateImage32(scnSize, Media::AT_NO_ALPHA);
+	me->drawBuff = me->deng->CreateImage32(scnSize, Media::AT_ALPHA_ALL_FF);
 	if (me->drawBuff.SetTo(img))
 	{
 		img->SetHDPI(me->GetHDPI());

@@ -290,7 +290,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 		NN<Media::StaticImage> drawImg;
 		Optional<Media::StaticImage> srcImg;
 		NN<Media::StaticImage> nnsrcImg;
-		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_ALPHA_ALL_FF);
 		Math::Size2D<UOSInt> sz;
 
 		Sync::MutexUsage mutUsage(this->drawMut);
@@ -344,7 +344,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 			Int32 srcIY = (Int32)srcPos.y;
 			if (srcImg.SetTo(nnsrcImg))
 			{
-				NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, nnsrcImg->info.atype, Media::YCOFST_C_CENTER_LEFT));
 				drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 				drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 				drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
@@ -363,7 +363,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 			tl = this->gZoomCurrPos.ToDouble() - this->gZoomPos.ToDouble() * rate;
 			if (srcImg.SetTo(nnsrcImg))
 			{
-				NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(drawImg, Media::StaticImage(this->currSize, 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, nnsrcImg->info.atype, Media::YCOFST_C_CENTER_LEFT));
 				drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 				drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 				drawImg->info.color.Set(this->colorSess->GetRGBParam()->monProfile);
@@ -596,7 +596,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	}
 	if (this->currSize.x > 0 && this->currSize.y > 0)
 	{
-		this->bgImg = this->eng->CreateImage32(this->currSize, Media::AT_NO_ALPHA);
+		this->bgImg = this->eng->CreateImage32(this->currSize, Media::AT_ALPHA_ALL_FF);
 		if (this->bgImg.SetTo(img))
 		{
 			img->SetHDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);

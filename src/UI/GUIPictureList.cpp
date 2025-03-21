@@ -16,7 +16,7 @@ UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> 
 	this->selectedIndex = INVALID_INDEX;
 
 	Media::ColorProfile rgbColor(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, rgbColor, rgbColor, 0, Media::AT_NO_ALPHA));
+	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, rgbColor, rgbColor, 0, Media::AT_ALPHA_ALL_FF));
 	this->resizer->SetResizeAspectRatio(Media::ImageResizer::RAR_SQUAREPIXEL);
 	this->resizer->SetTargetSize(iconSize);
 }

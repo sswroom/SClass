@@ -490,7 +490,7 @@ void Media::Resizer::LanczosResizerW8_8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerW8_8::LanczosResizerW8_8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::ImageResizer(Media::AT_NO_ALPHA)
+Media::Resizer::LanczosResizerW8_8::LanczosResizerW8_8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Optional<Media::ColorManagerSess> colorSess) : Media::ImageResizer(Media::AT_ALPHA_ALL_FF)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -838,7 +838,7 @@ Optional<Media::StaticImage> Media::Resizer::LanczosResizerW8_8::ProcessToNewPar
 		destInfo.color.GetBTranParam()->Set(NN<const Media::CS::TransferParam>(this->destTran));
 	}
 	destInfo.color.GetPrimaries()->Set(srcImage->info.color.GetPrimariesRead());
-	destInfo.atype = Media::AT_NO_ALPHA;
+	destInfo.atype = Media::AT_ALPHA_ALL_FF;
 	destInfo.pf = Media::PF_PAL_W8;
 	destInfo.storeBPP = 8;
 	NEW_CLASS(newImage, Media::StaticImage(destInfo));

@@ -97,7 +97,7 @@ Media::StaticImage *Media::OpenCV::OCVFrame::CreateStaticImage()
 	Media::ColorProfile sRGB(Media::ColorProfile::CPT_SRGB);
 	Media::StaticImage *simg;
 	Math::Size2D<UOSInt> size = this->GetSize();
-	NEW_CLASS(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASS(simg, Media::StaticImage(size, 0, 8, Media::PF_PAL_W8, size.CalcArea(), sRGB, Media::ColorProfile::YUVT_BT601, Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 	simg->InitGrayPal();
 	this->GetImageData(simg->data, 0, 0, size.x, size.y, simg->GetDataBpl(), false, Media::RotateType::None);
 	cv::imshow("Clear", *(cv::Mat *)this->frame);

@@ -3888,6 +3888,8 @@ SSWR/AVIRead/AVIRCertTextForm.h:
 @AVIRCertTextForm.o
 SSWR/AVIRead/AVIRCertUtilForm.h:
 @AVIRCertUtilForm.o
+SSWR/AVIRead/AVIRCesiumTileForm.h:
+@AVIRCesiumTileForm.o
 SSWR/AVIRead/AVIRChartForm.h:
 @AVIRChartForm.o
 SSWR/AVIRead/AVIRChineseForm.h:

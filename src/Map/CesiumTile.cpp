@@ -8,6 +8,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 	this->pkg = pkg->Clone();
 	this->srid = 0;
 	this->srsOrigin = Math::Vector3(NAN, NAN, NAN);
+	this->metadataFound = false;
 	this->jsonFile = 0;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -35,6 +36,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 						Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 						if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("ModelMetadata")))
 						{
+							this->metadataFound = true;
 							while (reader.NextElementName().SetTo(s))
 							{
 								if (s->Equals(CSTR("SRS")))
@@ -88,7 +90,7 @@ IO::ParserType Map::CesiumTile::GetParserType() const
 
 Bool Map::CesiumTile::IsError() const
 {
-	return this->srid == 0 || this->jsonFile.IsNull();
+	return !this->metadataFound || this->jsonFile.IsNull();
 }
 
 NN<IO::PackageFile> Map::CesiumTile::GetPackageFile() const

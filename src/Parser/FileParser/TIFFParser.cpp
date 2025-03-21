@@ -466,7 +466,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 
 //					printf("Image bpp = %d, pf = %s\r\n", (UInt32)storeBPP, Media::PixelFormatGetName(pf).v.Ptr());
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 				Data::ByteArray imgData = img->GetDataArray();
 				UOSInt jpgOfst;
 				UOSInt jpgLeng;
@@ -783,7 +783,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 			}
 
-			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_ALPHA_ALL_FF, Media::YCOFST_C_CENTER_LEFT));
 			Data::ByteArray imgData;
 			UnsafeArrayOpt<UInt8> planarBuff = 0;
 			UnsafeArray<UInt8> nnplanarBuff;

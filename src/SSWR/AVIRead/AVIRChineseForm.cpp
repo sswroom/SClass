@@ -437,13 +437,13 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	NN<Media::DrawImage> dimg;
 	if (!this->charImg.SetTo(dimg))
 	{
-		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
+		this->charImg = this->deng->CreateImage32(newSize, Media::AT_ALPHA_ALL_FF);
 	}
 	else if (dimg->GetWidth() != newSize.x || dimg->GetHeight() != newSize.y)
 	{
 		this->pbChar->SetImageDImg(0);
 		this->deng->DeleteImage(dimg);
-		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
+		this->charImg = this->deng->CreateImage32(newSize, Media::AT_ALPHA_ALL_FF);
 	}
 	if (this->charImg.SetTo(dimg))
 	{

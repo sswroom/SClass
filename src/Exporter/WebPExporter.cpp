@@ -98,7 +98,7 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		UOSInt bpl = img->GetDataBpl();
 		UInt8 *buff = MemAlloc(UInt8, bpl * img->info.dispSize.y);
 		img->GetRasterData(buff, 0, 0, img->info.dispSize.x, img->info.dispSize.y, bpl, false, img->info.rotateType);
-		if (img->info.atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_IGNORE_ALPHA)
 		{
 			UInt8 *imgBuff = MemAlloc(UInt8, img->info.dispSize.CalcArea() * 3);
 			ImageUtil_ConvB8G8R8A8_B8G8R8(buff, imgBuff, img->info.dispSize.x, img->info.dispSize.y, (OSInt)bpl, (OSInt)img->info.dispSize.x * 3);

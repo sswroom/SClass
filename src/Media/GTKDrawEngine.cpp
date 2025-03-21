@@ -45,7 +45,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSI
 NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
 {
 	NN<Media::GTKDrawImage> dimg;
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_IGNORE_ALPHA));
 	return dimg;
 }
 
@@ -838,9 +838,10 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		Bool revOrder;
 		UnsafeArray<UInt8> imgBits;
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
-		if (gimg->info.atype == Media::AT_NO_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
+		if (gimg->info.atype == Media::AT_IGNORE_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
 		{
 			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			gimg->info.atype = Media::AT_ALPHA_ALL_FF;
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
@@ -898,7 +899,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 			return true;
 		}
 
-		if (gimg->info.atype == Media::AT_NO_ALPHA)
+		if (gimg->info.atype == Media::AT_ALPHA_ALL_FF || gimg->info.atype == Media::AT_IGNORE_ALPHA)
 		{
 			ImageCopy_ImgCopy(simgPtr, dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
@@ -972,7 +973,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 		return true;
 	}
 
-	if (img->info.atype == Media::AT_NO_ALPHA)
+	if (img->info.atype == Media::AT_ALPHA_ALL_FF || img->info.atype == Media::AT_IGNORE_ALPHA)
 	{
 		ImageCopy_ImgCopy(simgPtr.Ptr(), dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
@@ -1002,9 +1003,10 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 		UnsafeArray<UInt8> imgBits;
 		Bool revOrder;
 		cairo_surface_flush((cairo_surface_t*)gimg->surface);
-		if (gimg->info.atype == Media::AT_NO_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
+		if (gimg->info.atype == Media::AT_IGNORE_ALPHA && gimg->GetImgBits(revOrder).SetTo(imgBits))
 		{
 			ImageUtil_ImageFillAlpha32(imgBits.Ptr(), gimg->GetWidth(), gimg->GetHeight(), gimg->GetImgBpl(), 0xFF);
+			gimg->info.atype = Media::AT_ALPHA_ALL_FF;
 			gimg->GetImgBitsEnd(true);
 		}
 		cairo_save((cairo_t*)this->cr);
@@ -1066,7 +1068,7 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 			return true;
 		}
 
-		if (gimg->info.atype == Media::AT_NO_ALPHA)
+		if (gimg->info.atype == Media::AT_ALPHA_ALL_FF || gimg->info.atype == Media::AT_IGNORE_ALPHA)
 		{
 			ImageCopy_ImgCopy(simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, dimgPtr + ixPos * 4 + iyPos * dbpl, (UOSInt)(ixPos2 - ixPos) * 4, (UOSInt)(iyPos2 - iyPos), sbpl, dbpl);
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);

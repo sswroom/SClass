@@ -10,6 +10,7 @@ namespace Map
 	{
 	private:
 		NN<IO::PackageFile> pkg;
+		Bool metadataFound;
 		UInt32 srid;
 		Math::Vector3 srsOrigin;
 		Optional<Text::String> jsonFile;

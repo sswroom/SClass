@@ -60,12 +60,12 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 			NN<Media::DrawImage> img;
 			if (!me->dimg.SetTo(img))
 			{
-				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
+				me->dimg = me->eng->CreateImage32(usz, Media::AT_ALPHA_ALL_FF);
 			}
 			else if (img->GetWidth() != usz.x || img->GetHeight() != usz.y)
 			{
 				me->eng->DeleteImage(img);
-				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
+				me->dimg = me->eng->CreateImage32(usz, Media::AT_ALPHA_ALL_FF);
 			}
 
 			if (me->dimg.SetTo(img))

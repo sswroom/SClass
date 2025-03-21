@@ -122,7 +122,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 			UnsafeArray<UTF8Char> sptr;
 			UOSInt i;
 			NN<Media::StaticImage> simg;
-			NEW_CLASSNN(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
+			NEW_CLASSNN(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_ALPHA_ALL_FF, vbuff->ycOfst));
 			csconv->ConvertV2(&vsrcBuff, simg->data, info->dispSize.x, info->dispSize.y, info->storeSize.x, info->storeSize.y, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data.Ptr(), info->dispSize.x, info->dispSize.y, simg->GetDataBpl(), 0xff);
 			sptr = video->GetSourceName(sbuff).Or(sbuff);
@@ -782,15 +782,15 @@ NN<Media::ImageResizer> Media::VideoRenderer::CreateResizer(NN<Media::ColorManag
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_VDISPLAY);
 	if (bitDepth == 16)
 	{
-		NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance));
+		NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_IGNORE_ALPHA, srcRefLuminance));
 	}
 	else if (this->curr10Bit)
 	{
-		NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, colorSess, Media::AT_IGNORE_ALPHA, srcRefLuminance, Media::PF_LE_A2B10G10R10));
 	}
 	else
 	{
-		NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, srcRefLuminance, this->outputPf));
+		NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, destColor, colorSess, Media::AT_IGNORE_ALPHA, srcRefLuminance, this->outputPf));
 	}
 	return resizer;
 }
@@ -866,19 +866,19 @@ void Media::VideoRenderer::CreateThreadResizer(NN<ThreadStat> tstat)
 
 	if (this->outputBpp == 16)
 	{
-		NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance));
+		NEW_CLASS(tstat->resizer, Media::Resizer::LanczosResizerLR_C16(4, 3, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance));
 		tstat->procType = 0;
 		tstat->resizerBitDepth = 16;
 	}
 	else if (this->curr10Bit)
 	{
-		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance, Media::PF_LE_A2B10G10R10));
+		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance, Media::PF_LE_A2B10G10R10));
 		tstat->procType = 1;
 		tstat->resizerBitDepth = 32;
 	}
 	else
 	{
-		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_NO_ALPHA, tstat->resizerSrcRefLuminance, this->outputPf));
+		NEW_CLASS(tstat->dresizer, Media::Resizer::DeintResizerLR_C32(0, 0, destColor, colorSess, Media::AT_IGNORE_ALPHA, tstat->resizerSrcRefLuminance, this->outputPf));
 		tstat->procType = 1;
 		tstat->resizerBitDepth = 32;
 	}

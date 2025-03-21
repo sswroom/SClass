@@ -68,7 +68,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			Data::DateTime dt;
 			UTF8Char sbuff[512];
 			UnsafeArray<UTF8Char> sptr;
-			NEW_CLASSNN(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, srgb, frInfo->yuvType, Media::AT_NO_ALPHA, frInfo->ycOfst));
+			NEW_CLASSNN(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, srgb, frInfo->yuvType, Media::AT_IGNORE_ALPHA, frInfo->ycOfst));
 			nncsConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (OSInt)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
 			UOSInt i = 0;
 			while (i < objCnt)

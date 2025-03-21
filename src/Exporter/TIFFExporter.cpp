@@ -941,7 +941,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		case Media::PF_LE_B16G16R16:
 		case Media::PF_LE_FB32G32R32:
 			ImageUtil_SwapRGB(imgData, img->info.dispSize.x * img->info.dispSize.y, img->info.storeBPP);
-			if (img->info.atype == Media::AT_NO_ALPHA)
+			if (img->info.atype == Media::AT_IGNORE_ALPHA)
 			{
 				UInt8 *tmpPtr = imgData;
 				UOSInt cnt = img->info.dispSize.x * img->info.dispSize.y;
@@ -952,6 +952,7 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						tmpPtr[3] = 0xff;
 						tmpPtr += 4;
 					}
+					img->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 				else if (img->info.pf == Media::PF_LE_B16G16R16A16)
 				{
@@ -960,14 +961,16 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						WriteInt16(&tmpPtr[6], 0xffff);
 						tmpPtr += 8;
 					}
+					img->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 				else if (img->info.pf == Media::PF_LE_FB32G32R32A32)
 				{
 					while (cnt-- > 0)
 					{
-						WriteUInt32(&tmpPtr[12], 0xffffffff);
+						WriteFloat(&tmpPtr[12], 1.0f);
 						tmpPtr += 16;
 					}
+					img->info.atype = Media::AT_ALPHA_ALL_FF;
 				}
 			}
 			break;

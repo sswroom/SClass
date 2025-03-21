@@ -3114,11 +3114,51 @@ _LanczosResizerFunc_ImgCopyB8G8R8_B8G8R8A8:
 	sub r9,rax ;dstep
 	lea rax,[rdx*2+rdx] ;width
 	sub r8,rax ;sstep
+	shr rdx,1
+	jz icbgr8_bgra8_lop
+
 	align 16
 icbgr8_bgra8lop:
 	mov r10,rdx ;width
 	ALIGN 16
 icbgr8_bgra8lop2:
+	movzx rax,byte [rdi+2]
+	movq xmm1,[rcx+rax*8+0]
+	movzx rax,byte [rdi+5]
+	movhps xmm1,[rcx+rax*8+0]
+	movzx rax,byte [rdi+1]
+	movq xmm0,[rcx+rax*8+2048]
+	movzx rax,byte [rdi+4]
+	movhps xmm0,[rcx+rax*8+2048]
+	paddsw xmm1,xmm0
+	movzx rax,byte [rdi]
+	movq xmm0,[rcx+rax*8+4096]
+	movzx rax,byte [rdi+3]
+	movhps xmm0,[rcx+rax*8+4096]
+	paddsw xmm1,xmm0
+	pextrw rbx,xmm1,2
+	mov al,byte [rbp+rbx+131072]
+	mov ah,0xff
+	shl rax,16
+	pextrw rbx,xmm1,1
+	mov ah,byte [rbp+rbx+65536]
+	pextrw rbx,xmm1,0
+	mov al,byte [rbp+rbx]
+	shl rax,16
+	pextrw rbx,xmm1,6
+	mov al,byte [rbp+rbx+131072]
+	mov ah,0xff
+	shl rax,16
+	pextrw rbx,xmm1,5
+	mov ah,byte [rbp+rbx+65536]
+	pextrw rbx,xmm1,4
+	mov al,byte [rbp+rbx]
+	mov qword [rsi],rax
+	lea rsi,[rsi+8]
+	lea rdi,[rdi+6]
+	dec r10
+	jnz icbgr8_bgra8lop2
+
 	movzx rax,byte [rdi+2]
 	movq xmm1,[rcx+rax*8+0]
 	movzx rax,byte [rdi+1]
@@ -3138,13 +3178,61 @@ icbgr8_bgra8lop2:
 	mov dword [rsi],eax
 	lea rsi,[rsi+4]
 	lea rdi,[rdi+3]
-	dec r10
-	jnz icbgr8_bgra8lop2
 
 	add rdi,r8 ;sstep
 	add rsi,r9 ;dstep
 	dec r11
 	jnz icbgr8_bgra8lop
+	pop rbx
+	pop rbp
+	ret
+
+	align 16
+icbgr8_bgra8_lop:
+	mov r10,rdx ;width
+	ALIGN 16
+icbgr8_bgra8_lop2:
+	movzx rax,byte [rdi+2]
+	movq xmm1,[rcx+rax*8+0]
+	movzx rax,byte [rdi+5]
+	movhps xmm1,[rcx+rax*8+0]
+	movzx rax,byte [rdi+1]
+	movq xmm0,[rcx+rax*8+2048]
+	movzx rax,byte [rdi+4]
+	movhps xmm0,[rcx+rax*8+2048]
+	paddsw xmm1,xmm0
+	movzx rax,byte [rdi]
+	movq xmm0,[rcx+rax*8+4096]
+	movzx rax,byte [rdi+3]
+	movhps xmm0,[rcx+rax*8+4096]
+	paddsw xmm1,xmm0
+	pextrw rbx,xmm1,2
+	mov al,byte [rbp+rbx+131072]
+	mov ah,0xff
+	shl rax,16
+	pextrw rbx,xmm1,1
+	mov ah,byte [rbp+rbx+65536]
+	pextrw rbx,xmm1,0
+	mov al,byte [rbp+rbx]
+	shl rax,16
+	pextrw rbx,xmm1,6
+	mov al,byte [rbp+rbx+131072]
+	mov ah,0xff
+	shl rax,16
+	pextrw rbx,xmm1,5
+	mov ah,byte [rbp+rbx+65536]
+	pextrw rbx,xmm1,4
+	mov al,byte [rbp+rbx]
+	mov qword [rsi],rax
+	lea rsi,[rsi+8]
+	lea rdi,[rdi+6]
+	dec r10
+	jnz icbgr8_bgra8_lop2
+
+	add rdi,r8 ;sstep
+	add rsi,r9 ;dstep
+	dec r11
+	jnz icbgr8_bgra8_lop
 	pop rbx
 	pop rbp
 	ret

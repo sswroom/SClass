@@ -87,7 +87,7 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media:
 	this->player = 0;
 	this->UpdateDispInfo(videoSize, 32, Media::PF_B8G8R8A8);
 	this->videoFileName = Text::String::New(videoFileName);
-	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
+	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_IGNORE_ALPHA);
 	{
 		IO::StmData::FileData fd(videoFileName, false);
 		this->mf = Optional<Media::MediaFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::MediaFile));
@@ -135,7 +135,7 @@ void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, M
 	}
 	this->videoTL = videoTL;
 	this->videoSize = videoSize;
-	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
+	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_IGNORE_ALPHA);
 	this->UpdateDispInfo(videoSize, 32, Media::PF_B8G8R8A8);
 }
 
