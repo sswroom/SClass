@@ -352,23 +352,24 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::DownThread(NN<Sync::Thread> thre
 				IO::MemoryStream mstm;
 				if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 				{
-					UInt64 len = cli->ReadToEnd(mstm, 65536);
-					if (len > 0)
+					sb.ClearStr();
+					sb.Append(downPath);
+					if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
+						sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
+					cli->GetContentFileName(sb);
+					UInt64 len;
 					{
-						sb.ClearStr();
-						sb.Append(downPath);
-						if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
-							sb.AppendUTF8Char(IO::Path::PATH_SEPERATOR);
-						cli->GetContentFileName(sb);
 						IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						if (fs.Write(mstm.GetArray()) != mstm.GetLength())
-						{
-						}
-						else
-						{
-							Sync::MutexUsage openMutUsage(me->openMut);
-							me->openList.Add(Text::String::New(sb.ToCString()));
-						}
+						len = cli->ReadToEnd(fs, 65536);
+					}
+					if (len == 0)
+					{
+						IO::Path::DeleteFile(sb.v);
+					}
+					else
+					{
+						Sync::MutexUsage openMutUsage(me->openMut);
+						me->openList.Add(Text::String::New(sb.ToCString()));
 					}
 				}
 				cli.Delete();

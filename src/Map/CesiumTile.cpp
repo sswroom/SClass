@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/StreamDataStream.h"
 #include "Map/CesiumTile.h"
+#include "Text/JSON.h"
 #include "Text/XMLReader.h"
 
 Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name, Optional<Text::EncodingFactory> encFact) : IO::ParsedObject(name.Or(pkg->GetSourceNameObj()))
@@ -8,7 +9,7 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 	this->pkg = pkg->Clone();
 	this->srid = 0;
 	this->srsOrigin = Math::Vector3(NAN, NAN, NAN);
-	this->metadataFound = false;
+	this->multijson = false;
 	this->jsonFile = 0;
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -36,7 +37,6 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 						Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 						if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("ModelMetadata")))
 						{
-							this->metadataFound = true;
 							while (reader.NextElementName().SetTo(s))
 							{
 								if (s->Equals(CSTR("SRS")))
@@ -69,8 +69,39 @@ Map::CesiumTile::CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name
 			}
 			else if (fileName.EndsWith(CSTR(".json")))
 			{
-				OPTSTR_DEL(this->jsonFile);
-				this->jsonFile = Text::String::New(fileName);
+				if (pkg->GetItemStmDataNew(i).SetTo(fd))
+				{
+					Bool valid = false;
+					if (fd->GetDataSize() <= 1048576)
+					{
+						UOSInt len = (UOSInt)fd->GetDataSize();
+						UInt8 *buff = MemAlloc(UInt8, len + 1);
+						if (fd->GetRealData(0, len, Data::ByteArray(buff, len)) == len)
+						{
+							buff[len] = 0;
+							NN<Text::JSONBase> json;
+							if (Text::JSONBase::ParseJSONStr(Text::CStringNN(buff, len)).SetTo(json))
+							{
+								valid = json->GetValueType(CSTR("asset")) == Text::JSONType::Object &&
+									json->GetValueType(CSTR("geometricError")) == Text::JSONType::Number &&
+									json->GetValueType(CSTR("root.boundingVolume")) == Text::JSONType::Object;
+								json->EndUse();
+							}
+						}
+						MemFree(buff);
+					}
+					fd.Delete();
+
+					if (valid)
+					{
+						if (this->jsonFile.SetTo(s))
+						{
+							s->Release();
+							this->multijson = true;
+						}
+						this->jsonFile = Text::String::New(fileName);
+					}
+				}
 			}
 		}
 		i++;
@@ -90,7 +121,7 @@ IO::ParserType Map::CesiumTile::GetParserType() const
 
 Bool Map::CesiumTile::IsError() const
 {
-	return !this->metadataFound || this->jsonFile.IsNull();
+	return this->multijson || this->jsonFile.IsNull();
 }
 
 NN<IO::PackageFile> Map::CesiumTile::GetPackageFile() const

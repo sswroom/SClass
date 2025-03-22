@@ -7,8 +7,11 @@
 #if defined(CPU_AVR)
 #define MAX_CAPACITY 1024
 #define DEF_CAPACITY 128
-#else
+#elif _OSINT_SIZE == 32
 #define MAX_CAPACITY 1048576000
+#define DEF_CAPACITY 1024
+#else
+#define MAX_CAPACITY 17179869184
 #define DEF_CAPACITY 1024
 #endif
 

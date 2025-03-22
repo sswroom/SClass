@@ -56,6 +56,7 @@ namespace Text
 		Bool GetValueAsBool(Text::CStringNN path);
 		Optional<Text::JSONArray> GetValueArray(Text::CStringNN path);
 		Optional<Text::JSONObject> GetValueObject(Text::CStringNN path);
+		JSONType GetValueType(Text::CStringNN path);
 		Int32 GetAsInt32();
 		Bool GetAsInt32(OutParam<Int32> val);
 		Int64 GetAsInt64();

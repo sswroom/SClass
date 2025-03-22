@@ -37,15 +37,38 @@ Optional<IO::ParsedObject> Parser::ObjParser::C3DParser::ParseObject(NN<IO::Pars
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
 		NN<IO::PackageFile> pf = NN<IO::PackageFile>::ConvertFrom(pobj);
+		Optional<IO::PackageFile> pfToDel = 0;
+		NN<Map::CesiumTile> c3d;
 		Bool needRelease = false;
+		if (pf->GetCount() == 1 && pf->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
+		{
+			if (pf->GetItemPack(0, needRelease).SetTo(pf))
+			{
+				if (needRelease)
+					pfToDel = pf;
+			}
+		}
 		if (pf->GetItemPack(CSTR("Scene"), needRelease).SetTo(pf))
 		{
-			NN<Map::CesiumTile> c3d;
 			NEW_CLASSNN(c3d, Map::CesiumTile(pf, pobj->GetSourceNameObj(), this->encFact));
 			if (needRelease)
 			{
 				pf.Delete();
 			}
+			pfToDel.Delete();
+
+			if (!c3d->IsError())
+			{
+				return c3d;
+			}
+			c3d.Delete();
+			return 0;
+		}
+		else
+		{
+			NEW_CLASSNN(c3d, Map::CesiumTile(pf, pobj->GetSourceNameObj(), this->encFact));
+			pfToDel.Delete();
+
 			if (!c3d->IsError())
 			{
 				return c3d;

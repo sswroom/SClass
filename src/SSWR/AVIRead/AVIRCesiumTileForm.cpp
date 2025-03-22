@@ -202,6 +202,7 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRCesiumTileForm::~AVIRCesiumTileForm()
 {
 	this->listener.Delete();
+	this->hdlr.Delete();
 	this->tile.Delete();
 }
 

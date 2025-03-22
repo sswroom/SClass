@@ -10,10 +10,10 @@ namespace Map
 	{
 	private:
 		NN<IO::PackageFile> pkg;
-		Bool metadataFound;
 		UInt32 srid;
 		Math::Vector3 srsOrigin;
 		Optional<Text::String> jsonFile;
+		Bool multijson;
 	public:
 		CesiumTile(NN<IO::PackageFile> pkg, Optional<Text::String> name, Optional<Text::EncodingFactory> encFact);
 		virtual ~CesiumTile();

@@ -253,6 +253,16 @@ Optional<Text::JSONObject> Text::JSONBase::GetValueObject(Text::CStringNN path)
 	return 0;
 }
 
+Text::JSONType Text::JSONBase::GetValueType(Text::CStringNN path)
+{
+	NN<Text::JSONBase> json;
+	if (this->GetValue(path).SetTo(json))
+	{
+		return json->GetType();
+	}
+	return Text::JSONType::Null;
+}
+
 Int32 Text::JSONBase::GetAsInt32()
 {
 	switch (this->GetType())
