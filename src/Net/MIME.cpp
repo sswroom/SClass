@@ -56,6 +56,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("js"),   UTF8STRC("text/javascript")}, //RFC 9239
 	{UTF8STRC("json"), UTF8STRC("application/json")},
 	{UTF8STRC("jsonld"),UTF8STRC("application/ld+json")},
+	{UTF8STRC("jxl"),  UTF8STRC("image/jxl")},
 	{UTF8STRC("kml"),  UTF8STRC("application/vnd.google-earth.kml+xml")},
 	{UTF8STRC("kmz"),  UTF8STRC("application/vnd.google-earth.kmz")},
 	{UTF8STRC("lnk"),  UTF8STRC("application/x-ms-shortcut")},

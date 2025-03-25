@@ -19,6 +19,7 @@
 #include "SSWR/AVIRead/AVIRGSMModemForm.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
+#include "SSWR/AVIRead/AVIRCesiumTileForm.h"
 #include "Text/MyStringW.h"
 #include "UI/GUIForm.h"
 
@@ -84,6 +85,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 	this->parsers->SetSSLEngine(this->ssl);
 	this->parsers->SetLogTool(this->log);
 	this->batchLyrs = 0;
+	this->batchCesiumTiles = 0;
 	this->batchLoad = false;
 	this->gisForm = 0;
 	this->ui->SetMonitorMgr(&this->monMgr);
@@ -196,6 +198,16 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		this->batchLyrs.Delete();
 		InitForm(gisForm);
 		gisForm->Show();
+	}
+
+	NN<Data::ArrayListNN<Map::CesiumTile>> batchCesiumTiles;
+	if (this->batchCesiumTiles.SetTo(batchCesiumTiles))
+	{
+		NN<AVIRead::AVIRCesiumTileForm> tileForm;
+		NEW_CLASSNN(tileForm, AVIRead::AVIRCesiumTileForm(0, this->ui, *this, batchCesiumTiles));
+		this->batchCesiumTiles.Delete();
+		InitForm(tileForm);
+		tileForm->Show();
 	}
 }
 

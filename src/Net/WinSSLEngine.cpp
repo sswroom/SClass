@@ -5,6 +5,7 @@
 #include "Data/DateTime.h"
 //#include "IO/DebugWriter.h"
 #include "IO/WindowsError.h"
+#include "Net/ASN1PDUBuilder.h"
 #include "Net/WinSSLClient.h"
 #include "Net/WinSSLEngine.h"
 #include "Text/MyString.h"
@@ -1663,6 +1664,74 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey(UOSInt keyLeng
 	NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("RSAKey.key"), Data::ByteArray(certBuff, certBuffSize), Crypto::Cert::X509File::KeyType::RSA));
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
+	return key;
+}
+
+Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateECDSAKey(Crypto::Cert::X509File::ECName name)
+{
+	BCRYPT_ALG_HANDLE hAlgorithm;
+	BCRYPT_KEY_HANDLE hKey;
+	UInt8 buff[8192];
+	ULONG buffSize;
+	const WChar *algId = 0;
+	UInt32 bitLeng;
+	switch (name)
+	{
+	case Crypto::Cert::X509File::ECName::secp256r1:
+		algId = BCRYPT_ECDSA_P256_ALGORITHM;
+		bitLeng = 256;
+		break;
+	case Crypto::Cert::X509File::ECName::secp384r1:
+		algId = BCRYPT_ECDSA_P384_ALGORITHM;
+		bitLeng = 384;
+		break;
+	case Crypto::Cert::X509File::ECName::secp521r1:
+		algId = BCRYPT_ECDSA_P521_ALGORITHM;
+		bitLeng = 521;
+		break;
+	default:
+		printf("WinSSLEngine: Unsupported name\r\n");
+		return 0;
+	}
+	NTSTATUS status;
+	if ((status = BCryptOpenAlgorithmProvider(&hAlgorithm, algId, 0, 0)) != 0)
+	{
+		printf("WinSSLEngine: BCryptOpenAlgorithmProvider failed: %d\r\n", status);
+		return 0;
+	}
+	if ((status = BCryptGenerateKeyPair(hAlgorithm, &hKey, bitLeng, 0)) != 0)
+	{
+		printf("WinSSLEngine: BCryptGenerateKeyPair failed: %d\r\n", status);
+		BCryptCloseAlgorithmProvider(hAlgorithm, 0);
+		return 0;
+	}
+	if ((status = BCryptFinalizeKeyPair(hKey, 0)) != 0)
+	{
+		printf("WinSSLEngine: BCryptFinalizeKeyPair failed: %d\r\n", status);
+		BCryptCloseAlgorithmProvider(hAlgorithm, 0);
+		return 0;
+	}
+	Optional<Crypto::Cert::X509Key> key = 0;
+	if ((status = BCryptExportKey(hKey, 0, BCRYPT_ECCPRIVATE_BLOB, buff, sizeof(buff), &buffSize, 0)) == 0)
+	{
+		UInt32 pkLen = ReadUInt32(&buff[4]);
+		printf("WinSSLEngine: BCryptExportKey success\r\n");
+		Net::ASN1PDUBuilder asn1;
+		asn1.BeginSequence();
+		asn1.AppendInt32(1);
+		asn1.AppendOctetString(buff + 8, pkLen);
+		asn1.BeginContentSpecific(1);
+		asn1.AppendBitString(0, Data::ByteArrayR(buff + 8 + pkLen, buffSize - 8 - pkLen));
+		asn1.EndLevel();
+		asn1.EndLevel();
+		NEW_CLASSOPT(key, Crypto::Cert::X509Key(CSTR("ECDSAKey.key"), asn1.GetArray(), Crypto::Cert::X509File::KeyType::ECDSA));
+	}
+	else
+	{
+		printf("WinSSLEngine: BCryptExportKey failed: %d\r\n", status);
+	}
+	BCryptDestroyKey(hKey);
+	BCryptCloseAlgorithmProvider(hAlgorithm, 0);
 	return key;
 }
 

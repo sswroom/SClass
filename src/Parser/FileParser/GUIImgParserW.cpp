@@ -115,7 +115,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		Gdiplus::PixelFormat pxFmt = bmp->GetPixelFormat();
 		if (pxFmt == PixelFormat48bppRGB)
 		{
-			Media::AlphaType aType = Media::AT_NO_ALPHA;
+			Media::AlphaType aType = Media::AT_ALPHA_ALL_FF;
 			if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat48bppRGB, &bmpd)) == Gdiplus::Ok)
 			{
 				NN<Media::StaticImage> img;
@@ -139,7 +139,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 		}
 		else if (pxFmt == PixelFormat64bppARGB || pxFmt == PixelFormat64bppPARGB)
 		{
-			Media::AlphaType aType = (isImage == 2)?Media::AT_NO_ALPHA:Media::AT_ALPHA;
+			Media::AlphaType aType = (isImage == 2)?Media::AT_IGNORE_ALPHA:Media::AT_ALPHA;
 			if (pxFmt == PixelFormat64bppARGB)
 			{
 				aType = Media::AT_ALPHA;
@@ -218,7 +218,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			if ((stat = bmp->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpd)) == Gdiplus::Ok)
 			{
 				NN<Media::StaticImage> img;
-				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (isImage == 2)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(bmp->GetWidth(), bmp->GetHeight()), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, (isImage == 2)?Media::AT_IGNORE_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgSrc = (UInt8*)bmpd.Scan0;
 				UnsafeArray<UInt8> imgDest = img->data;
 				ImageCopy_ImgCopy(imgSrc, imgDest.Ptr(), bmpd.Width << 2, bmpd.Height, bmpd.Stride, bmpd.Width << 2);

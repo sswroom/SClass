@@ -202,7 +202,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NN<Media::FrameInfo
 	frameInfo->par2 = 1;
 	frameInfo->hdpi = 96;
 	frameInfo->ftype = Media::FT_NON_INTERLACE;
-	frameInfo->atype = Media::AT_NO_ALPHA;
+	frameInfo->atype = Media::AT_IGNORE_ALPHA;
 	frameInfo->color.SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 	frameInfo->yuvType = Media::ColorProfile::YUVT_BT601;
 	frameInfo->ycOfst = Media::YCOFST_C_CENTER_LEFT;

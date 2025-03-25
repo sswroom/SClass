@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MemTool.h"
 #include "MyMemory.h"
+#include "Data/Timestamp.h"
 #include "Sync/Mutex.h"
 #include "Sync/Interlocked.h"
 #include "IO/ConsoleWriter.h"
@@ -105,9 +106,12 @@ Int32 MemCheckError()
 	{
 		UTF8Char buff[12];
 		UTF8Char *sptr;
-		sptr = Text::StrInt32(buff, mcMemoryCnt);
+		Int32 cnt = mcMemoryCnt;
 		IO::ConsoleWriter writer;
-		writer.Write(CSTR("Memory leaks occurs for "));
+		sptr = Data::Timestamp::Now().ToString(buff, "HH:mm:ss");
+		writer.Write(CSTRP(buff, sptr));
+		writer.Write(CSTR(" Memory leaks occurs for "));
+		sptr = Text::StrInt32(buff, cnt);
 		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
 		writer.WriteLine(CSTR(" times"));
 		found = true;

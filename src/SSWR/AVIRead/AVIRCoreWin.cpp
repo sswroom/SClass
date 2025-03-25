@@ -262,9 +262,22 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		}
 		break;
 	case IO::ParserType::CesiumTile:
+		if (this->batchLoad)
 		{
+			NN<Data::ArrayListNN<Map::CesiumTile>> batchCesiumTiles;
+			if (!this->batchCesiumTiles.SetTo(batchCesiumTiles))
+			{
+				NEW_CLASSNN(batchCesiumTiles, Data::ArrayListNN<Map::CesiumTile>());
+				this->batchCesiumTiles = batchCesiumTiles;
+			}
+			batchCesiumTiles->Add(NN<Map::CesiumTile>::ConvertFrom(pobj));
+		}
+		else
+		{
+			Data::ArrayListNN<Map::CesiumTile> tileList;
+			tileList.Add(NN<Map::CesiumTile>::ConvertFrom(pobj));
 			NN<SSWR::AVIRead::AVIRCesiumTileForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(0, this->ui, *this, NN<Map::CesiumTile>::ConvertFrom(pobj)));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCesiumTileForm(0, this->ui, *this, tileList));
 			InitForm(frm);
 			frm->Show();
 		}

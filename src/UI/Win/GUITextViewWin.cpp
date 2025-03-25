@@ -344,7 +344,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 			{
 				me->deng->DeleteImage(img);
 			}
-			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UOSInt>(scnW, scnH), Media::AT_NO_ALPHA);
+			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UOSInt>(scnW, scnH), Media::AT_IGNORE_ALPHA);
 			if (me->drawBuff.SetTo(img))
 			{
 				img->SetHDPI(me->GetHDPI());

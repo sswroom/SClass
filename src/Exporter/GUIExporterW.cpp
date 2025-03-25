@@ -128,7 +128,7 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 	case Media::PF_B8G8R8A8:
 		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispSize.x, (INT)img->info.dispSize.y, PixelFormat32bppARGB));
 		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
-		if (img->info.atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_IGNORE_ALPHA || img->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppRGB, &bd) == Gdiplus::Ok)
 			{

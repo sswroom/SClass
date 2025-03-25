@@ -953,9 +953,31 @@ Int32 ClamAVTest()
 	return 0;
 }
 
+Int32 ECDSATest()
+{
+	Net::OSSocketFactory sockf(true);
+	Net::TCPClientFactory clif(sockf);
+	Optional<Crypto::Cert::X509Key> key;
+	NN<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(clif, true).SetTo(ssl))
+	{
+		key = ssl->GenerateECDSAKey(Crypto::Cert::X509File::ECName::secp384r1);
+		if (key.NotNull())
+		{
+			printf("Key generated\r\n");
+		}
+		else
+		{
+			printf("Key generate failed\r\n");
+		}
+		ssl.Delete();
+	}
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 24;
+	UOSInt testType = 25;
 	switch (testType)
 	{
 	case 0:
@@ -1008,6 +1030,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return CSysTest();
 	case 24:
 		return ClamAVTest();
+	case 25:
+		return ECDSATest();
 	default:
 		return 0;
 	}

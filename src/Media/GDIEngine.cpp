@@ -182,7 +182,7 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> s
 		if (hdcBmp)
 		{
 			SelectObject(hdcBmp, hBmp);
-			NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), size, 24, (void *)hBmp, bmpBits, (void *)hdcBmp, Media::AT_NO_ALPHA));
+			NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), size, 24, (void *)hBmp, bmpBits, (void *)hdcBmp, Media::AT_IGNORE_ALPHA));
 		}
 		else
 		{
@@ -196,7 +196,7 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> s
 NN<Media::DrawImage> Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom)
 {
 	NN<GDIImage> img;
-	NEW_CLASSNN(img, GDIImage(this, Math::Coord2D<OSInt>(left, top), Math::Size2D<UOSInt>((UOSInt)(right - left), (UOSInt)(bottom - top)), 32, 0, 0, hdc, Media::AT_NO_ALPHA));
+	NEW_CLASSNN(img, GDIImage(this, Math::Coord2D<OSInt>(left, top), Math::Size2D<UOSInt>((UOSInt)(right - left), (UOSInt)(bottom - top)), 32, 0, 0, hdc, Media::AT_IGNORE_ALPHA));
 	return img;
 }
 
@@ -369,7 +369,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -389,7 +389,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -427,7 +427,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_NO_ALPHA));
+					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -955,7 +955,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeAr
 	}
 	else
 	{
-		if (this->info.atype == Media::AT_NO_ALPHA && (NN<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
+		if ((this->info.atype == Media::AT_IGNORE_ALPHA || this->info.atype == Media::AT_ALPHA_ALL_FF) && (NN<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
 		{
 			if (this->currBrush != nnb.Ptr())
 			{
@@ -1251,7 +1251,7 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Option
 Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
 	NN<DrawPen> nnp;
-	if (this->info.atype == Media::AT_NO_ALPHA)
+	if (this->info.atype == Media::AT_IGNORE_ALPHA || this->info.atype == Media::AT_ALPHA_ALL_FF)
 	{
 		NN<DrawBrush> nnb;
 		if (!b.SetTo(nnb))
@@ -1295,7 +1295,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 	else
 	{
 		NN<Media::GDIImage> tmpImg;
-		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(this->size, Media::AT_NO_ALPHA)).SetTo(tmpImg))
+		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(this->size, Media::AT_IGNORE_ALPHA)).SetTo(tmpImg))
 			return false;
 		UInt8 *imgPtr = (UInt8*)tmpImg->bmpBits;
 		UInt8 *imgPtr2 = (UInt8*)this->bmpBits;
@@ -1352,7 +1352,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, UnsafeArray<const WChar> 
 	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	UnsafeArray<const WChar> src = str;
 	while (*src++);
-	if (this->bmpBits == 0 || (this->info.atype == Media::AT_NO_ALPHA && (brush->oriColor & 0xff000000) == 0xff000000))
+	if (this->bmpBits == 0 || (this->info.atype == Media::AT_IGNORE_ALPHA && (brush->oriColor & 0xff000000) == 0xff000000))
 	{
 		SetTextColor((HDC)this->hdcBmp, brush->color);
 		if (this->currFont != f.Ptr())
@@ -1380,7 +1380,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, UnsafeArray<const WChar> 
 	{
 		Math::Size2DDbl sz = GetTextSize(f, str, src - str - 1);
 		NN<Media::GDIImage> tmpImg;
-		if (Optional<Media::GDIImage>::ConvertFrom(this->eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)sz.x + 1, (UOSInt)sz.y + 1), Media::AT_NO_ALPHA)).SetTo(tmpImg))
+		if (Optional<Media::GDIImage>::ConvertFrom(this->eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)sz.x + 1, (UOSInt)sz.y + 1), Media::AT_IGNORE_ALPHA)).SetTo(tmpImg))
 		{
 			NN<Media::DrawBrush> b2 = tmpImg->NewBrushARGB(0xffffffff);
 			tmpImg->DrawStringW(Math::Coord2DDbl(0, 0), str, f, b2);
@@ -1755,7 +1755,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, UnsafeArray<const
 	}
 	else
 	{
-		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UOSInt>(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1)), Media::AT_NO_ALPHA)).SetTo(gimg))
+		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UOSInt>(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1)), Media::AT_IGNORE_ALPHA)).SetTo(gimg))
 			return false;
 
 		if (px < (OSInt)buffSize)
@@ -1873,7 +1873,7 @@ Bool Media::GDIImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 	{
 		return this->DrawImageRect(img, Double2Int32(tl.x), Double2Int32(tl.y), Double2Int32(tl.x + image->GetWidth() * this->info.hdpi / image->GetHDPI()), Double2Int32(tl.y + image->GetHeight() * this->info.vdpi / image->GetVDPI()));
 	}
-	if (image->info.atype == Media::AT_NO_ALPHA)
+	if (image->info.atype == Media::AT_ALPHA_ALL_FF || image->info.atype == Media::AT_IGNORE_ALPHA)
 	{
 		if (this->IsOffScreen())
 		{
@@ -2008,7 +2008,7 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 	{
 		Media::StaticImage *simg = img.Ptr();
 		simg->ToB8G8R8A8();
-		if (simg->info.atype == Media::AT_NO_ALPHA)
+		if (simg->info.atype == Media::AT_IGNORE_ALPHA || simg->info.atype == Media::AT_ALPHA_ALL_FF)
 		{
 			Int32 x = Double2Int32(tl.x);
 			Int32 y = Double2Int32(tl.y);
@@ -2102,7 +2102,7 @@ Bool Media::GDIImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, M
 	{
 		return this->DrawImageRect(img, Double2OSInt(destTL.x), Double2OSInt(destTL.y), Double2OSInt(destTL.x + srcSize.x * this->info.hdpi / image->GetHDPI()), Double2OSInt(destTL.y + srcSize.y * this->info.vdpi / image->GetVDPI()));
 	}
-	if (image->info.atype == Media::AT_NO_ALPHA)
+	if (image->info.atype == Media::AT_IGNORE_ALPHA || image->info.atype == Media::AT_ALPHA_ALL_FF)
 	{
 		if (this->IsOffScreen())
 		{

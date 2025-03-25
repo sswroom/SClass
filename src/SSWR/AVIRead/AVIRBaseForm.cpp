@@ -526,7 +526,13 @@ typedef enum
 	MNU_RADIO_SCAN,
 	MNU_NETWORK_BANDWIDTH,
 	MNU_BANDWIDTH_LOG_ANALYST,
-	MNU_SIDERUNNER_LOG
+	MNU_SIDERUNNER_LOG,
+	MNU_PRIVKEY_RSA2048,
+	MNU_PRIVKEY_RSA3072,
+	MNU_PRIVKEY_RSA4096,
+	MNU_PRIVKEY_ECDSA256,
+	MNU_PRIVKEY_ECDSA384,
+	MNU_PRIVKEY_ECDSA521
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -631,8 +637,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	NN<UI::GUIMenu> mnu;
 	NN<UI::GUIMenu> mnu2;
 	NN<UI::GUIMenu> mnu3;
-
-	//RegisterDragDrop(this->hWnd, this);
+	NN<UI::GUIMenu> mnu4;
 
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("M&isc"));
@@ -680,6 +685,15 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Trust Store"), MNU_TRUSTSTORE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Java CACerts"), MNU_JAVACACERTS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Load From Text"), MNU_CERT_TEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3 = mnu2->AddSubMenu(CSTR("Gen Private Key"));
+	mnu4 = mnu3->AddSubMenu(CSTR("RSA"));
+	mnu4->AddItem(CSTR("RSA 2048bit"), MNU_PRIVKEY_RSA2048, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu4->AddItem(CSTR("RSA 3072bit"), MNU_PRIVKEY_RSA3072, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu4->AddItem(CSTR("RSA 4096bit"), MNU_PRIVKEY_RSA4096, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu4 = mnu3->AddSubMenu(CSTR("ECDSA"));
+	mnu4->AddItem(CSTR("ECDSA P-256"), MNU_PRIVKEY_ECDSA256, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu4->AddItem(CSTR("ECDSA P-384"), MNU_PRIVKEY_ECDSA384, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu4->AddItem(CSTR("ECDSA P-521"), MNU_PRIVKEY_ECDSA521, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("ASN.1"));
 	mnu2->AddItem(CSTR("ASN.1 MIB"), MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("ASN.1 OID"), MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3041,6 +3055,66 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NN<SSWR::AVIRead::AVIRSIDERunnerLogForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRSIDERunnerLogForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_PRIVKEY_RSA2048:
+		{
+			NN<Crypto::Cert::X509Key> key;
+			NN<Net::SSLEngine> ssl;
+			if (this->ssl.SetTo(ssl) && ssl->GenerateRSAKey(2048).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
+		}
+		break;
+	case MNU_PRIVKEY_RSA3072:
+		{
+			NN<Crypto::Cert::X509Key> key;
+			NN<Net::SSLEngine> ssl;
+			if (this->ssl.SetTo(ssl) && ssl->GenerateRSAKey(3072).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
+		}
+		break;
+	case MNU_PRIVKEY_RSA4096:
+		{
+			NN<Crypto::Cert::X509Key> key;
+			NN<Net::SSLEngine> ssl;
+			if (this->ssl.SetTo(ssl) && ssl->GenerateRSAKey(4096).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
+		}
+		break;
+	case MNU_PRIVKEY_ECDSA256:
+		{
+			NN<Crypto::Cert::X509Key> key;
+			NN<Net::SSLEngine> ssl;
+			if (this->ssl.SetTo(ssl) && ssl->GenerateECDSAKey(Crypto::Cert::X509File::ECName::secp256r1).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
+		}
+		break;
+	case MNU_PRIVKEY_ECDSA384:
+		{
+			NN<Crypto::Cert::X509Key> key;
+			NN<Net::SSLEngine> ssl;
+			if (this->ssl.SetTo(ssl) && ssl->GenerateECDSAKey(Crypto::Cert::X509File::ECName::secp384r1).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
+		}
+		break;
+	case MNU_PRIVKEY_ECDSA521:
+		{
+			NN<Crypto::Cert::X509Key> key;
+			NN<Net::SSLEngine> ssl;
+			if (this->ssl.SetTo(ssl) && ssl->GenerateECDSAKey(Crypto::Cert::X509File::ECName::secp521r1).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
 		}
 		break;
 	}

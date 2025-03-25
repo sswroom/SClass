@@ -76,7 +76,7 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 		OSInt x = (rc.right - rc.left - (OSInt)prevImageD->GetWidth()) >> 1;
 		OSInt y = (rc.bottom - rc.top - (OSInt)prevImageD->GetHeight()) >> 1;
 
-		if (this->noBGColor || prevImageD->GetAlphaType() == Media::AT_NO_ALPHA)
+		if (this->noBGColor || prevImageD->GetAlphaType() == Media::AT_IGNORE_ALPHA || prevImageD->GetAlphaType() == Media::AT_ALPHA_ALL_FF)
 		{
 			BitBlt(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, SRCCOPY);
 		}

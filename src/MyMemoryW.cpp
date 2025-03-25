@@ -2,6 +2,7 @@
 #include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #if !defined(_CONSOLE) && !defined(__CYGWIN__)
 #include "IO/DebugWriter.h"
 #else
@@ -426,10 +427,13 @@ Int32 MemCheckError()
 
 	if (mcMemoryCnt)
 	{
-		sptr = Text::StrInt32(buff, mcMemoryCnt);
+		Int32 cnt = mcMemoryCnt;
 		if (console == 0)
 			console = MemOpenWriter();
-		console->Write(CSTR("Memory leaks occurs for "));
+		sptr = Data::Timestamp::Now().ToString(buff, "HH:mm:ss");
+		console->Write(CSTRP(buff, sptr));
+		console->Write(CSTR(" Memory leaks occurs for "));
+		sptr = Text::StrInt32(buff, cnt);
 		console->Write(CSTRP(buff, sptr));
 		console->Write(CSTR(" times at "));
 		Data::DateTime dt;

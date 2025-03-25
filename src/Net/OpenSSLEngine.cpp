@@ -869,6 +869,55 @@ const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
 		return 0;
 	}
 }
+
+Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateECDSAKey(Crypto::Cert::X509File::ECName name)
+{
+	EVP_PKEY *pkey = 0;
+	switch (name)
+	{
+	case Crypto::Cert::X509File::ECName::secp256r1:
+		pkey = EVP_EC_gen("P-256");
+		break;
+	case Crypto::Cert::X509File::ECName::secp384r1:
+		pkey = EVP_EC_gen("P-384");
+		break;
+	case Crypto::Cert::X509File::ECName::secp521r1:
+		pkey = EVP_EC_gen("P-521");
+		break;
+	case Crypto::Cert::X509File::ECName::Unknown:
+		break;
+	}
+	if (pkey)
+	{
+		BIO *bio1;
+		BIO *bio2;
+		UInt8 buff[8192];
+		Optional<Crypto::Cert::X509File> pobjKey = 0;
+		NN<Crypto::Cert::X509File> nnpobjKey;
+
+		BIO_new_bio_pair(&bio1, 8192, &bio2, 8192);
+		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
+		int readSize = BIO_read(bio2, buff, 8192);
+		if (readSize > 0)
+		{
+			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
+			if (pobjKey.SetTo(nnpobjKey) && nnpobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+			{
+				NN<Crypto::Cert::X509PrivKey> privKey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(nnpobjKey);
+				pobjKey = privKey->CreateKey();
+				privKey.Delete();
+			}
+			fileName->Release();
+		}
+		BIO_free(bio1);
+		BIO_free(bio2);
+		EVP_PKEY_free(pkey);
+		return Optional<Crypto::Cert::X509Key>::ConvertFrom(pobjKey);
+	}
+	return 0;
+}
+
 Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);

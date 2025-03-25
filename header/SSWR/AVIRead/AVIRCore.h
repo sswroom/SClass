@@ -7,6 +7,7 @@
 #include "IO/SiLabDriver.h"
 #include "IO/VirtualIOPinMgr.h"
 #include "IO/FileAnalyse/FileAnalyser.h"
+#include "Map/CesiumTile.h"
 #include "Map/MapManager.h"
 #include "Media/AudioDevice.h"
 #include "Media/ColorConv.h"
@@ -65,6 +66,7 @@ namespace SSWR
 
 			Bool batchLoad;
 			Optional<Data::ArrayListNN<Map::MapDrawLayer>> batchLyrs;
+			Optional<Data::ArrayListNN<Map::CesiumTile>> batchCesiumTiles;
 
 		protected:
 			static void __stdcall FormClosed(AnyType userObj, NN<UI::GUIForm> frm);

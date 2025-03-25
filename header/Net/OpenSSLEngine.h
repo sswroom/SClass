@@ -35,6 +35,7 @@ namespace Net
 		virtual UnsafeArray<UTF8Char> GetErrorDetail(UnsafeArray<UTF8Char> sbuff);
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1, UOSInt keyLength);
 		virtual Optional<Crypto::Cert::X509Key> GenerateRSAKey(UOSInt keyLength);
+		virtual Optional<Crypto::Cert::X509Key> GenerateECDSAKey(Crypto::Cert::X509File::ECName name);
 		virtual Bool Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen);
 		virtual Bool SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, Data::ByteArrayR signData);
 		virtual UOSInt Encrypt(NN<Crypto::Cert::X509Key> key, UnsafeArray<UInt8> encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding);

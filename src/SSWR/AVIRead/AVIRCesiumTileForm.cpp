@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/Path.h"
 #include "Manage/Process.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "SSWR/AVIRead/AVIRCesiumTileForm.h"
@@ -6,6 +7,8 @@
 class AVIRCesiumTileHandler : public Net::WebServer::WebServiceHandler
 {
 private:
+	NN<Data::ArrayListNN<Map::CesiumTile>> tileList;
+
 	static Bool __stdcall IndexFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 	{
 /*
@@ -48,18 +51,23 @@ private:
 				destination: Cesium.Cartesian3.fromDegrees(114.2, 22.4, 10000)
 			});
 
-			const paramsString = window.location.search;
-			const searchParams = new URLSearchParams(paramsString);
-			let f = searchParams.get("f");
-			if (f)
-			{
-				let tileset = await Cesium.Cesium3DTileset.fromUrl("data/"+searchParams.get("f"), {
-					maximumScreenSpaceError : 1,
-					maximumNumberOfLoadedTiles : 3000
-				});
-				viewer.scene.primitives.add(tileset);
-				viewer.zoomTo(tileset);
-			}
+			fetch("tiles.json").then(resp=>resp.json()).then(async (tiles)=>{
+				let t;
+				let found = false;
+				for (t in tiles)
+				{
+					let tileset = await Cesium.Cesium3DTileset.fromUrl(tiles[t], {
+						maximumScreenSpaceError : 1,
+						maximumNumberOfLoadedTiles : 3000
+					});
+					viewer.scene.primitives.add(tileset);
+					if (!found)
+					{
+						viewer.zoomTo(tileset);
+						found = true;
+					}
+				}
+			});
 		</script>
 	</head>
 	<body style="margin: 0px;">
@@ -107,39 +115,81 @@ private:
 "				destination: Cesium.Cartesian3.fromDegrees(114.2, 22.4, 10000)\n"
 "			});\n"
 "\n"
-"			const paramsString = window.location.search;\n"
-"			const searchParams = new URLSearchParams(paramsString);\n"
-"			let f = searchParams.get(\"f\");\n"
-"			if (f)\n"
-"			{\n"
-"				let tileset = await Cesium.Cesium3DTileset.fromUrl(\"data/\"+searchParams.get(\"f\"), {\n"
-"					maximumScreenSpaceError : 1,\n"
-"					maximumNumberOfLoadedTiles : 3000\n"
-"				});\n"
-"				viewer.scene.primitives.add(tileset);\n"
-"				viewer.zoomTo(tileset);\n"
-"			}\n"
+"			fetch(\"tiles.json\").then(resp=>resp.json()).then(async (tiles)=>{\n"
+"				let t;\n"
+"				let found = false;\n"
+"				for (t in tiles)\n"
+"				{\n"
+"					let tileset = await Cesium.Cesium3DTileset.fromUrl(tiles[t], {\n"
+"						maximumScreenSpaceError : 1,\n"
+"						maximumNumberOfLoadedTiles : 3000\n"
+"					});\n"
+"					viewer.scene.primitives.add(tileset);\n"
+"					if (!found)\n"
+"					{\n"
+"						viewer.zoomTo(tileset);\n"
+"						found = true;\n"
+"					}\n"
+"				}\n"
+"			});\n"
 "		</script>\n"
 "	</head>\n"
 "	<body style=\"margin: 0px;\">\n"
 "		<div id=\"map\" style=\"width: 100%; height: 100vh\"></div>\n"
 "	</body>\n"
-"</html>");
+"</html>\n");
 		resp->AddDefHeaders(req);
 		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), val);
 	}
-public:
-	AVIRCesiumTileHandler(NN<Map::CesiumTile> tile)
+
+	static Bool __stdcall TilesFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 	{
+		NN<AVIRCesiumTileHandler> me = NN<AVIRCesiumTileHandler>::ConvertFrom(svcHdlr);
+		Text::JSONBuilder json(Text::JSONBuilder::OT_ARRAY);
+		Text::StringBuilderUTF8 sb;
+		UOSInt i = 0;
+		UOSInt j = me->tileList->GetCount();
+		while (i < j)
+		{
+			NN<Map::CesiumTile> tile = me->tileList->GetItemNoCheck(i);
+			Text::CStringNN name = tile->GetSourceNameObj()->ToCString();
+			sb.ClearStr();
+			sb.Append(name.Substring(name.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
+			sb.AppendUTF8Char('/');
+			sb.AppendOpt(tile->GetJSONFile());
+			json.ArrayAddStr(sb.ToCString());
+			i++;
+		}
+		resp->AddDefHeaders(req);
+		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/json"), json.Build());
+	}
+public:
+	AVIRCesiumTileHandler(NN<Data::ArrayListNN<Map::CesiumTile>> tileList)
+	{
+		this->tileList = tileList;
 		this->SetAllowBrowsing(true);
-		this->AddPackage(CSTR("data"), tile->GetPackageFile()->Clone());
 		this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, IndexFunc);
+		this->AddService(CSTR("/tiles.json"), Net::WebUtil::RequestMethod::HTTP_GET, TilesFunc);
+		UOSInt i = 0;
+		UOSInt j = tileList->GetCount();
+		while (i < j)
+		{
+			this->AddTile(tileList->GetItemNoCheck(i));
+			i++;
+		}
 	}
 
 	virtual ~AVIRCesiumTileHandler()
 	{
 	}
 
+	void AddTile(NN<Map::CesiumTile> tile)
+	{
+		Text::CStringNN name = tile->GetSourceNameObj()->ToCString();
+		UOSInt i = name.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		name = name.Substring(i + 1);
+		this->AddPackage(name, tile->GetPackageFile()->Clone());
+	}
 };
 
 void __stdcall SSWR::AVIRead::AVIRCesiumTileForm::OnOpenClicked(AnyType userObj)
@@ -150,35 +200,46 @@ void __stdcall SSWR::AVIRead::AVIRCesiumTileForm::OnOpenClicked(AnyType userObj)
 	Manage::Process::OpenPath(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::CesiumTile> tile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<Map::CesiumTile>> tiles) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Cesium Tile"));
 	this->SetFont(0, 0, 8.25, false);
-	this->tile = tile;
+	this->tileList.AddAll(tiles);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	this->lblPort = ui->NewLabel(*this, CSTR("Port"));
+	this->pnlCtrl = ui->NewPanel(*this);
+	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
+	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblPort = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	this->txtPort = ui->NewTextBox(*this, CSTR(""));
+	this->txtPort = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	this->txtPort->SetReadOnly(true);
-	this->lblURL = ui->NewLabel(*this, CSTR("Port"));
+	this->lblURL = ui->NewLabel(this->pnlCtrl, CSTR("Port"));
 	this->lblURL->SetRect(4, 28, 100, 23, false);
-	this->txtURL = ui->NewTextBox(*this, CSTR(""));
+	this->txtURL = ui->NewTextBox(this->pnlCtrl, CSTR(""));
 	this->txtURL->SetRect(104, 28, 600, 23, false);
 	this->txtURL->SetReadOnly(true);
-	this->btnOpen = ui->NewButton(*this, CSTR("Open"));
+	this->btnOpen = ui->NewButton(this->pnlCtrl, CSTR("Open"));
 	this->btnOpen->SetRect(704, 28, 75, 23, false);
 	this->btnOpen->HandleButtonClick(OnOpenClicked, this);
-
-	NEW_CLASSNN(this->hdlr, AVIRCesiumTileHandler(this->tile));
+	this->lbTiles = ui->NewListBox(*this, false);
+	this->lbTiles->SetDockType(UI::GUIControl::DOCK_FILL);
+	UOSInt i = 0;
+	UOSInt j = tiles->GetCount();
+	while (i < j)
+	{
+		NN<Map::CesiumTile> tile = tiles->GetItemNoCheck(i);
+		Text::CStringNN name = tile->GetSourceNameObj()->ToCString();
+		this->lbTiles->AddItem(name.Substring(name.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1), tile);
+		i++;
+	}
+	NEW_CLASSNN(this->hdlr, AVIRCesiumTileHandler(this->tileList));
 	NEW_CLASSNN(this->listener, Net::WebServer::WebListener(core->GetTCPClientFactory(), 0, this->hdlr, 0, 30, 1, 4, CSTR("CesiumTile/1.0"), false, Net::WebServer::KeepAlive::Always, true));
 	UInt16 port = this->listener->GetListenPort();
 	if (port != 0)
 	{
-		UTF8Char sbuff[512];
-		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
 		sb.AppendU16(port);
 		this->txtPort->SetText(sb.ToCString());
@@ -186,13 +247,6 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 		sb.Append(CSTR("http://127.0.0.1:"));
 		sb.AppendU16(port);
 		sb.Append(CSTR("/index.html"));
-		NN<Text::String> f;
-		if (this->tile->GetJSONFile().SetTo(f))
-		{
-			sb.Append(CSTR("?f="));
-			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, f->v);
-			sb.AppendP(sbuff, sptr);
-		}
 		this->txtURL->SetText(sb.ToCString());
 
 		OnOpenClicked(this);
@@ -203,10 +257,29 @@ SSWR::AVIRead::AVIRCesiumTileForm::~AVIRCesiumTileForm()
 {
 	this->listener.Delete();
 	this->hdlr.Delete();
-	this->tile.Delete();
+	this->tileList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRCesiumTileForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+void SSWR::AVIRead::AVIRCesiumTileForm::AddTile(NN<Map::CesiumTile> tile)
+{
+	this->tileList.Add(tile);
+	NN<AVIRCesiumTileHandler>::ConvertFrom(this->hdlr)->AddTile(tile);
+	Text::CStringNN name = tile->GetSourceNameObj()->ToCString();
+	this->lbTiles->AddItem(name.Substring(name.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1), tile);
+}
+
+void SSWR::AVIRead::AVIRCesiumTileForm::AddTiles(NN<Data::ArrayListNN<Map::CesiumTile>> tiles)
+{
+	UOSInt i = 0;
+	UOSInt j = tiles->GetCount();
+	while (i < j)
+	{
+		this->AddTile(tiles->GetItemNoCheck(i));
+		i++;
+	}	
 }
