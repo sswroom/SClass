@@ -20,6 +20,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::ASN1Data> asn1;
+			Crypto::Cert::X509File::KeyType keyType;
 
 			NN<UI::GUIMainMenu> mnuMain;
 
@@ -46,14 +47,14 @@ namespace SSWR
 			NN<UI::GUILabel> lblVerifyStatus;
 			NN<UI::GUITextBox> txtVerifyStatus;
 
-//			NN<UI::GUITabPage> tpSignature;
-//			NN<UI::GUILabel> lblSignatureHash;
-//			NN<UI::GUIComboBox> cboSignatureHash;
-//			NN<UI::GUILabel> lblSignaturePayloadFile;
-//			NN<UI::GUITextBox> txtSignaturePayloadFile;
-//			NN<UI::GUIButton> btnSignature;
-//			NN<UI::GUILabel> lblSiguatureValue;
-//			NN<UI::GUITextBox> txtSignatureValue;
+			NN<UI::GUITabPage> tpSignature;
+			NN<UI::GUILabel> lblSignatureHash;
+			NN<UI::GUIComboBox> cboSignatureHash;
+			NN<UI::GUILabel> lblSignaturePayloadFile;
+			NN<UI::GUITextBox> txtSignaturePayloadFile;
+			NN<UI::GUIButton> btnSignature;
+			NN<UI::GUILabel> lblSiguatureValue;
+			NN<UI::GUITextBox> txtSignatureValue;
 
 			NN<UI::GUITabPage> tpEncrypt;
 			NN<UI::GUILabel> lblEncryptInputType;
@@ -74,6 +75,7 @@ namespace SSWR
 			static Bool FileIsSign(NN<Text::String> fileName);
 			static void __stdcall OnVerifyClicked(AnyType userObj);
 			static void __stdcall OnVerifySignInfoClicked(AnyType userObj);
+			static void __stdcall OnSignatureClicked(AnyType userObj);
 			static void __stdcall OnEncryptEncryptClicked(AnyType userObj);
 			static void __stdcall OnEncryptDecryptClicked(AnyType userObj);
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);

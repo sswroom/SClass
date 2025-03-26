@@ -4,6 +4,7 @@
 #include "Data/DateTime.h"
 #include "Data/FastStringMap.h"
 #include "IO/StmData/MemoryDataRef.h"
+#include "Net/ASN1PDUBuilder.h"
 #include "Net/OpenSSLClient.h"
 #include "Net/OpenSSLCore.h"
 #include "Net/OpenSSLEngine.h"
@@ -14,7 +15,7 @@
 #include <openssl/err.h>
 #include <openssl/ec.h>
 
-//#define SHOW_DEBUG
+#define SHOW_DEBUG
 #ifdef SHOW_DEBUG
 #if defined(DEBUGCON)
 #include <stdio.h>
@@ -905,8 +906,33 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateECDSAKey(Crypto::Cer
 			if (pobjKey.SetTo(nnpobjKey) && nnpobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 			{
 				NN<Crypto::Cert::X509PrivKey> privKey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(nnpobjKey);
-				pobjKey = privKey->CreateKey();
-				privKey.Delete();
+				NN<Crypto::Cert::X509Key> tempKey;
+				UnsafeArray<const UInt8> privBuff;
+				UnsafeArray<const UInt8> pubBuff;
+				UOSInt privSize;
+				UOSInt pubSize;
+				if (privKey->CreateKey().SetTo(tempKey) && tempKey->GetECPublic(pubSize).SetTo(pubBuff) && tempKey->GetECPrivate(privSize).SetTo(privBuff))
+				{
+					Net::ASN1PDUBuilder asn1;
+					asn1.BeginSequence();
+						asn1.AppendInt32(1);
+						asn1.AppendOctetString(privBuff, privSize);
+						asn1.BeginContentSpecific(0);
+							if (name == Crypto::Cert::X509File::ECName::secp256r1)
+								asn1.AppendOIDString(CSTR("1.2.840.10045.3.1.7"));
+							else if (name == Crypto::Cert::X509File::ECName::secp384r1)
+								asn1.AppendOIDString(CSTR("1.3.132.0.34"));
+							else if (name == Crypto::Cert::X509File::ECName::secp521r1)
+								asn1.AppendOIDString(CSTR("1.3.132.0.35"));
+						asn1.EndLevel();
+						asn1.BeginContentSpecific(1);
+							asn1.AppendBitString(0, Data::ByteArrayR(pubBuff, pubSize));
+						asn1.EndLevel();
+					asn1.EndLevel();
+					tempKey.Delete();
+					privKey.Delete();
+					NEW_CLASSOPT(pobjKey, Crypto::Cert::X509Key(CSTR("ECDSA.key"), asn1.GetArray(), Crypto::Cert::X509File::KeyType::ECDSA));
+				}
 			}
 			fileName->Release();
 		}
@@ -923,33 +949,51 @@ Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.Signature: Error in getting hash type\r\n");
+#endif
 		return false;
 	}
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, true);
 	if (pkey == 0)
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.Signature: Error in Loading key\r\n");
+#endif
 		return false;
 	}
 	EVP_MD_CTX *emc = EVP_MD_CTX_create();
     if (emc == 0)
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.Signature: Error in creating context\r\n");
+#endif
 		EVP_PKEY_free(pkey);
 		return false;
     }
 	unsigned int len;
     if (!EVP_SignInit_ex(emc, htype, NULL))
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.Signature: Error in EVP_SignInit_ex\r\n");
+#endif
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
     }
     if (!EVP_SignUpdate(emc, payload.Arr().Ptr(), payload.GetSize()))
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.Signature: Error in EVP_SignUpdate\r\n");
+#endif
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
     }
     if (!EVP_SignFinal(emc, signData.Ptr(), &len, pkey)) {
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.Signature: Error in EVP_SignFinal\r\n");
+#endif
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
@@ -965,35 +1009,55 @@ Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.SignatureVerify: Error in getting hash type\r\n");
+#endif
 		return false;
 	}
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.SignatureVerify: Error in OpenSSLEngine_LoadKey\r\n");
+#endif
 		return false;
 	}
 	EVP_MD_CTX *emc = EVP_MD_CTX_create();
     if (emc == 0)
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.SignatureVerify: Error in EVP_MD_CTX_create\r\n");
+#endif
 		EVP_PKEY_free(pkey);
 		return false;
     }
     if (!EVP_VerifyInit(emc, htype))
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.SignatureVerify: Error in EVP_VerifyInit\r\n");
+#endif
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
     }
     if (!EVP_VerifyUpdate(emc, payload.Arr().Ptr(), payload.GetSize()))
 	{
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.SignatureVerify: Error in EVP_VerifyUpdate\r\n");
+#endif
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
     }
 	Bool succ = false;
 	int res = EVP_VerifyFinal(emc, signData.Arr().Ptr(), (UInt32)signData.GetSize(), pkey);
-//	printf("res = %d, %s\r\n", res, ERR_error_string(ERR_get_error(), 0));
     if (res < 0) {
+#if defined(SHOW_DEBUG)
+		printf("OpenSSLEngine.SignatureVerify: Error in EVP_VerifyFinal: %d, %s\r\n", res, ERR_error_string(ERR_get_error(), 0));
+		Text::StringBuilderUTF8 sb;
+		sb.AppendHexBuff(signData, ' ', Text::LineBreakType::CRLF);
+		printf("OpenSSLEngine.SignatureVerify: %s\r\n", sb.v.Ptr());
+#endif
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;

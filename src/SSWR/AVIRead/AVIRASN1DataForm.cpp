@@ -179,6 +179,56 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 	key.Delete();
 }
 
+void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnSignatureClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
+	UInt8 signBuff[512];
+	UOSInt signLen;
+	Text::StringBuilderUTF8 sb;
+	sb.ClearStr();
+	me->txtSignaturePayloadFile->GetText(sb);
+	if (sb.GetLength() == 0)
+	{
+		me->ui->ShowMsgOK(CSTR("Please enter Payload"), CSTR("Signature"), me);
+		return;
+	}
+
+	IO::FileStream fs(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.GetLength() == 0)
+	{
+		me->ui->ShowMsgOK(CSTR("Payload Invalid"), CSTR("Signature"), me);
+		return;
+	}
+	IO::MemoryStream mstm;
+	fs.ReadToEnd(mstm, 65536);
+	NN<Crypto::Cert::X509Key> key;
+	if (!me->GetNewKey().SetTo(key))
+	{
+		me->ui->ShowMsgOK(CSTR("Error in extracting key"), CSTR("Signature"), me);
+		return;
+	}
+	NN<Net::SSLEngine> ssl;
+	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), true).SetTo(ssl))
+	{
+		if (ssl->Signature(key, (Crypto::Hash::HashType)me->cboSignatureHash->GetSelectedItem().GetOSInt(), mstm.GetArray(), signBuff, signLen))
+		{
+			sb.ClearStr();
+			sb.AppendHexBuff(Data::ByteArrayR(signBuff, signLen), ' ', Text::LineBreakType::CRLF);
+			me->txtSignatureValue->SetText(sb.ToCString());
+		}
+		else
+		{
+			me->txtSignatureValue->SetText(CSTR("Failed in doing signature"));
+		}
+		ssl.Delete();
+	}
+	else
+	{
+		me->txtSignatureValue->SetText(CSTR("SSL Engine Error"));
+	}
+	key.Delete();
+}
+
 void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRASN1DataForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1DataForm>();
@@ -382,10 +432,10 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnFileDrop(AnyType userObj, Data
 			i++;
 		}
 	}
-//	else if (tp == me->tpSignature)
-//	{
-		//me->txtSignaturePayloadFile->SetText(files[0]->ToCString());
-//	}
+	else if (tp == me->tpSignature)
+	{
+		me->txtSignaturePayloadFile->SetText(files[0]->ToCString());
+	}
 }
 
 UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, UnsafeArray<UInt8> signBuff)
@@ -397,95 +447,129 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(NN<Text::PString> s, Unsa
 		this->ui->ShowMsgOK(CSTR("Please enter Signature"), CSTR("Verify Signature"), this);
 		return 0;
 	}
-	if (IO::Path::GetPathType(s->ToCString()) == IO::Path::PathType::File)
+	if (this->keyType == Crypto::Cert::X509File::KeyType::ECDSA || this->keyType == Crypto::Cert::X509File::KeyType::ECPublic)
 	{
-		IO::FileStream fs(s->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		UInt64 fileLen = fs.GetLength();
-		Bool succ = false;
-		if (fileLen >= 172 && fileLen <= 174)
+		if (s->v[2] == ' ')
 		{
-			if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
+			s->Replace('\r', ' ');
+			s->Replace('\n', ' ');
+			signLen = Text::StrHex2Bytes(s->v, signBuff);
+		}
+		else if (s->StartsWith(UTF8STRC("30")))
+		{
+			signLen = Text::StrHex2Bytes(s->v, signBuff);
+		}
+		else if (s->StartsWith(UTF8STRC("MI")))
+		{
+			Text::TextBinEnc::Base64Enc enc;
+			signLen = enc.DecodeBin(Text::CStringNN(s->v, s->leng), signBuff);
+			if (signLen == 0)
 			{
-				Text::TextBinEnc::Base64Enc enc;
-				signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
-				if (signLen == 128)
-				{
-					succ = true;
-				}
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format3)"), CSTR("Verify Signature"), this);
+				return 0;
 			}
 		}
-		else if (fileLen >= 344 && fileLen <= 346)
+		else
 		{
-			if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
-			{
-				Text::TextBinEnc::Base64Enc enc;
-				signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
-				if (signLen == 256)
-				{
-					succ = true;
-				}
-			}
-		}
-		if (!succ)
-		{
-			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid file format)"), CSTR("Verify Signature"), this);
+			Text::StringBuilderUTF8 sb;
+			sb.Append(CSTR("Please enter valid Signature (Unknown format), length = "));
+			sb.AppendUOSInt(s->leng);
+			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Verify Signature"), this);
 			return 0;
 		}
-	}
-	else if (s->leng == 172)
-	{
-		Text::TextBinEnc::Base64Enc enc;
-		signLen = enc.DecodeBin(Text::CStringNN(s->v, 172), signBuff);
-		if (signLen != 128)
-		{
-			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format)"), CSTR("Verify Signature"), this);
-			return 0;
-		}
-	}
-	else if (s->leng == 256)
-	{
-		if (Text::StrHex2Bytes(s->v, signBuff) != 128)
-		{
-			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
-			return 0;
-		}
-		signLen = 128;
-	}
-	else if (s->leng == 344)
-	{
-		Text::TextBinEnc::Base64Enc enc;
-		signLen = enc.DecodeBin(Text::CStringNN(s->v, 344), signBuff);
-		if (signLen != 256)
-		{
-			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format2)"), CSTR("Verify Signature"), this);
-			return 0;
-		}
-	}
-	else if (s->leng == 512)
-	{
-		if (Text::StrHex2Bytes(s->v, signBuff) != 256)
-		{
-			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
-			return 0;
-		}
-		signLen = 256;
-	}
-	else if (s->leng == 767)
-	{
-		if (Text::StrHex2BytesS(s->v, signBuff, s->v[2]) != 256)
-		{
-			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex formats)"), CSTR("Verify Signature"), this);
-			return 0;
-		}
-		signLen = 256;
 	}
 	else
 	{
-		Text::StringBuilderUTF8 sb;
-		sb.Append(CSTR("Please enter valid Signature (Unknown format), length = "));
-		sb.AppendUOSInt(s->leng);
-		this->ui->ShowMsgOK(sb.ToCString(), CSTR("Verify Signature"), this);
-		return 0;
+		if (IO::Path::GetPathType(s->ToCString()) == IO::Path::PathType::File)
+		{
+			IO::FileStream fs(s->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			UInt64 fileLen = fs.GetLength();
+			Bool succ = false;
+			if (fileLen >= 172 && fileLen <= 174)
+			{
+				if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
+				{
+					Text::TextBinEnc::Base64Enc enc;
+					signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
+					if (signLen == 128)
+					{
+						succ = true;
+					}
+				}
+			}
+			else if (fileLen >= 344 && fileLen <= 346)
+			{
+				if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
+				{
+					Text::TextBinEnc::Base64Enc enc;
+					signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
+					if (signLen == 256)
+					{
+						succ = true;
+					}
+				}
+			}
+			if (!succ)
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid file format)"), CSTR("Verify Signature"), this);
+				return 0;
+			}
+		}
+		else if (s->leng == 172)
+		{
+			Text::TextBinEnc::Base64Enc enc;
+			signLen = enc.DecodeBin(Text::CStringNN(s->v, 172), signBuff);
+			if (signLen != 128)
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format)"), CSTR("Verify Signature"), this);
+				return 0;
+			}
+		}
+		else if (s->leng == 256)
+		{
+			if (Text::StrHex2Bytes(s->v, signBuff) != 128)
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
+				return 0;
+			}
+			signLen = 128;
+		}
+		else if (s->leng == 344)
+		{
+			Text::TextBinEnc::Base64Enc enc;
+			signLen = enc.DecodeBin(Text::CStringNN(s->v, 344), signBuff);
+			if (signLen != 256)
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format2)"), CSTR("Verify Signature"), this);
+				return 0;
+			}
+		}
+		else if (s->leng == 512)
+		{
+			if (Text::StrHex2Bytes(s->v, signBuff) != 256)
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex format)"), CSTR("Verify Signature"), this);
+				return 0;
+			}
+			signLen = 256;
+		}
+		else if (s->leng == 767)
+		{
+			if (Text::StrHex2BytesS(s->v, signBuff, s->v[2]) != 256)
+			{
+				this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid hex formats)"), CSTR("Verify Signature"), this);
+				return 0;
+			}
+			signLen = 256;
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append(CSTR("Please enter valid Signature (Unknown format), length = "));
+			sb.AppendUOSInt(s->leng);
+			this->ui->ShowMsgOK(sb.ToCString(), CSTR("Verify Signature"), this);
+			return 0;
+		}
 	}
 	return signLen;
 }
@@ -673,10 +757,11 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 		}
 		case Crypto::Cert::X509File::FileType::Key:
 			canVerify = true;
-			canSignature = true;
 			hasPubKey = true;
+			this->keyType = NN<Crypto::Cert::X509Key>::ConvertFrom(x509)->GetKeyType();
 			if (NN<Crypto::Cert::X509Key>::ConvertFrom(x509)->IsPrivateKey())
 			{
+				canSignature = true;
 				hasPrivKey = true;
 			}
 			break;
@@ -684,10 +769,12 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 			canVerify = true;
 			canSignature = true;
 			hasPrivKey = true;
+			this->keyType = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(x509)->GetKeyType();
 			break;
 		case Crypto::Cert::X509File::FileType::PublicKey:
 			canVerify = true;
 			hasPubKey = true;
+			this->keyType = NN<Crypto::Cert::X509PubKey>::ConvertFrom(x509)->GetKeyType();
 			break;
 		case Crypto::Cert::X509File::FileType::CertRequest:
 		case Crypto::Cert::X509File::FileType::PKCS7:
@@ -724,18 +811,26 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 			this->txtVerifyStatus->SetRect(104, 100, 600, 47, false);
 			this->txtVerifyStatus->SetReadOnly(true);
 		}
-		//this->tpSignature = 0;
 		if (canSignature)
 		{
-/*
-			NN<UI::GUITabPage> tpSignature;
-			UI::GUILabel *lblSignatureHash;
-			UI::GUIComboBox *cboSignatureHash;
-			UI::GUILabel *lblSignaturePayloadFile;
-			UI::GUITextBox *txtSignaturePayloadFile;
-			UI::GUIButton *btnSignature;
-			UI::GUILabel *lblSiguatureValue;
-			UI::GUITextBox *txtSignatureValue;*/
+			this->tpSignature = this->tcMain->AddTabPage(CSTR("Signature"));
+			this->lblSignatureHash = ui->NewLabel(this->tpSignature, CSTR("Hash Type"));
+			this->lblSignatureHash->SetRect(4, 4, 100, 23, false);
+			this->cboSignatureHash = ui->NewComboBox(this->tpSignature, false);
+			this->cboSignatureHash->SetRect(104, 4, 200, 23, false);
+			AddHashTypes(this->cboSignatureHash, hashType);
+			this->lblSignaturePayloadFile = ui->NewLabel(this->tpSignature, CSTR("Payload File"));
+			this->lblSignaturePayloadFile->SetRect(4, 28, 100, 23, false);
+			this->txtSignaturePayloadFile = ui->NewTextBox(this->tpSignature, CSTR(""));
+			this->txtSignaturePayloadFile->SetRect(104, 28, 300, 23, false);
+			this->btnSignature = ui->NewButton(this->tpSignature, CSTR("Sign"));
+			this->btnSignature->SetRect(104, 52, 75, 23, false);
+			this->btnSignature->HandleButtonClick(OnSignatureClicked, this);
+			this->lblSiguatureValue = ui->NewLabel(this->tpSignature, CSTR("Signature"));
+			this->lblSiguatureValue->SetRect(4, 76, 100, 23, false);
+			this->txtSignatureValue = ui->NewTextBox(this->tpSignature, CSTR(""), true);
+			this->txtSignatureValue->SetRect(104, 76, 600, 47, false);
+			this->txtSignatureValue->SetReadOnly(true);
 		}
 		if (hasPrivKey || hasPubKey)
 		{

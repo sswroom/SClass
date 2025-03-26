@@ -93,6 +93,18 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 	return 0;
 }
 
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509PubKey::GetKeyType() const
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt keyTypeLen;
+	UnsafeArray<const UInt8> keyTypeOID;
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", keyTypeLen, itemType).SetTo(keyTypeOID))
+	{
+		return KeyTypeFromOID(Data::ByteArrayR(keyTypeOID, keyTypeLen), true);
+	}
+	return Crypto::Cert::X509File::KeyType::Unknown;
+}
+
 Bool Crypto::Cert::X509PubKey::GetKeyId(const Data::ByteArray &keyId) const
 {
 	NN<X509Key> key;
