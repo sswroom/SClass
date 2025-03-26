@@ -29,7 +29,7 @@ void Media::Batch::BatchTo64bpp::ImageOutput(NN<Media::ImageList> imgList, Text:
 	{
 		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(newImg))
 		{
-			newImg->To64bpp();
+			newImg->ToB16G16R16A16();
 		}
 		j++;
 	}
