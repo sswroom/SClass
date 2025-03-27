@@ -3,6 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/Compress/Inflate.h"
 #include "Data/Compress/Inflater.h"
+#include "Data/Compress/Deflater.h"
 
 Data::Compress::Inflate::Inflate(Bool hasHeader)
 {
@@ -31,5 +32,8 @@ UOSInt Data::Compress::Inflate::TestCompress(UnsafeArray<const UInt8> srcBuff, U
 
 UOSInt Data::Compress::Inflate::Compress(UnsafeArray<const UInt8> srcBuff, UOSInt srcBuffSize, UnsafeArray<UInt8> destBuff, Bool hasHeader, CompressionLevel level)
 {
-	return 0;
+	UOSInt compSize;
+	if (!Data::Compress::Deflater::CompressDirect(Data::ByteArray(destBuff, srcBuffSize), compSize, Data::ByteArrayR(srcBuff, srcBuffSize), (Data::Compress::Deflater::CompLevel)level, hasHeader))
+		return 0;
+	return compSize;
 }

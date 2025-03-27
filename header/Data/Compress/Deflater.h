@@ -1,7 +1,9 @@
 #ifndef _SM_DATA_COMPRESS_DEFLATER
 #define _SM_DATA_COMPRESS_DEFLATER
+#include "Crypto/Hash/HashAlgorithm.h"
 #include "IO/Stream.h"
 
+#define DEFLATER_BUFF_SIZE 65536
 namespace Data
 {
 	namespace Compress
@@ -64,6 +66,9 @@ namespace Data
 			struct SymFreq;
 
 			NN<IO::Stream> srcStm;
+			UInt64 srcLeng;
+			Optional<Crypto::Hash::HashAlgorithm> hash;
+			UInt8 buff[DEFLATER_BUFF_SIZE];
 
 			const UInt8 *next_in; /* pointer to next byte to read */
 			UInt32 avail_in;        /* number of bytes available at next_in */
@@ -73,11 +78,9 @@ namespace Data
 			UInt32 avail_out;  /* number of bytes that can be written to next_out */
 			UInt32 total_out;      /* total number of bytes produced so far */
 
-			Char *msg;                       /* error msg (unused) */
 			NN<DeflateCompressor> state; /* internal state, allocated by zalloc/zfree */
 
 			UInt32 adler;    /* adler32 of the source or uncompressed data */
-			UInt32 reserved; /* not used */
 
 			static const UInt32 s_tdefl_num_probes[];
 			static const UInt8 s_tdefl_packed_code_size_syms_swizzle[];
@@ -97,7 +100,7 @@ namespace Data
 			static SymFreq *RadixSortSyms(UInt32 num_syms, SymFreq *pSyms0, SymFreq *pSyms1);
 			static void CalculateMinimumRedundancy(SymFreq *A, Int32 n);
 			static void HuffmanEnforceMaxCodeSize(Int32 *pNum_codes, Int32 code_list_len, Int32 max_code_size);
-		    static void OptimizeHuffmanTable(NN<DeflateCompressor> d, Int32 table_num, Int32 table_len, Int32 code_size_limit, Bool static_table);
+		    static void OptimizeHuffmanTable(NN<DeflateCompressor> d, Int32 table_num, UInt32 table_len, UInt32 code_size_limit, Bool static_table);
 		    static void StartDynamicBlock(NN<DeflateCompressor> d);
 		    static void StartStaticBlock(NN<DeflateCompressor> d);
 			static Bool CompressLzCodes(NN<DeflateCompressor> d);
@@ -108,7 +111,8 @@ namespace Data
 			static DeflateStatus Compress(NN<DeflateCompressor> d, const void *pIn_buf, UOSInt *pIn_buf_size, void *pOut_buf, UOSInt *pOut_buf_size, DeflateFlush flush);
 			DeflateResult Deflate(DeflateFlush flush);
 		public:
-			Deflater(NN<IO::Stream> srcStm, CompLevel level, Bool hasHeader);
+			Deflater(NN<IO::Stream> srcStm, Optional<Crypto::Hash::HashAlgorithm> hash, CompLevel level, Bool hasHeader);
+			Deflater(NN<IO::Stream> srcStm, UInt64 srcLeng, Optional<Crypto::Hash::HashAlgorithm> hash, CompLevel level, Bool hasHeader);
 			virtual ~Deflater();
 
 			virtual Bool IsDown() const;

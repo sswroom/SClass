@@ -11,7 +11,7 @@
 
 #define BUFFSIZE 8192
 
-Data::Compress::DeflateStream::CompLevel Net::WebServer::HTTPServerUtil::compLevel = Data::Compress::DeflateStream::CompLevel::MaxSpeed;
+Data::Compress::Deflater::CompLevel Net::WebServer::HTTPServerUtil::compLevel = Data::Compress::Deflater::CompLevel::BestSpeed;
 
 Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CStringNN umime)
 {
@@ -124,7 +124,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						succ = (resp->Write(Data::ByteArrayR(compBuff, 10)) == 10);
 
 						Crypto::Hash::CRC32RIEEE crc;
-						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, compLevel, false);
+						Data::Compress::Deflater dstm(fs, contLeng, crc, compLevel, false);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
@@ -147,7 +147,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 						resp->EnableWriteBuffer();
 
-						Data::Compress::DeflateStream dstm(fs, contLeng, 0, compLevel, true);
+						Data::Compress::Deflater dstm(fs, contLeng, 0, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
@@ -230,7 +230,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 					crc.Calc(buff.Ptr(), (UOSInt)contLeng);
 
 					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
-					Data::Compress::DeflateStream dstm(mstm, contLeng, 0, compLevel, false);
+					Data::Compress::Deflater dstm(mstm, 0, compLevel, false);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 					{
@@ -250,7 +250,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::WebRequest> 
 						resp->AddHeader(CSTR("Transfer-Encoding"), CSTR("chunked"));
 
 						IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
-						Data::Compress::DeflateStream dstm(mstm, contLeng, 0, compLevel, true);
+						Data::Compress::Deflater dstm(mstm, 0, compLevel, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(BYTEARR(compBuff))) != 0)
 						{
@@ -425,7 +425,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::WebRequest>
 	return true;
 }
 
-void Net::WebServer::HTTPServerUtil::SetCompLevel(Data::Compress::DeflateStream::CompLevel compLevel)
+void Net::WebServer::HTTPServerUtil::SetCompLevel(Data::Compress::Deflater::CompLevel compLevel)
 {
 	Net::WebServer::HTTPServerUtil::compLevel = compLevel;
 }

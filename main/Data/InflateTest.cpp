@@ -14,12 +14,13 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 *buff2;
-//	Text::CStringNN fileName = CSTR("/mnt/raid2_3/GPS/RAW/Hiking20250111.gpx");
-	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/Hiking20240804.gpx");
+	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/burial_site.gpkg");
+//	Text::CStringNN fileName = CSTR("/home/sswroom/Temp/Hiking20240804.gpx");
 	IO::MemoryStream oriStm;
 	IO::MemoryStream srcStm;
 	UInt8 *srcBuff;
 	UOSInt srcSize2 = 0;
+	UOSInt srcSize3 = 0;
 	IO::ConsoleWriter console;
 	{
 		IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -46,8 +47,24 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		MemFree(srcBuff);
 	}
+	{
+		IO::MemoryStream tmpStm;
+		oriStm.SeekFromBeginning(0);
+		Data::Compress::Deflater dstm(oriStm, oriStm.GetLength(), 0, Data::Compress::Deflater::CompLevel::BestCompression, true);
+		dstm.ReadToEnd(tmpStm, 65536);
+		srcSize3 = (UOSInt)tmpStm.GetLength();
+		if (srcSize3 > 0)
+		{
+			console.WriteLine(CSTR("Deflater Compress success"));
+		}
+		else
+		{
+			console.WriteLine(CSTR("Deflater Compress failed"));
+		}
+	}
 	printf("srcSize = %d\r\n", (UInt32)srcStm.GetLength());
 	printf("srcSize2 = %d\r\n", (UInt32)srcSize2);
+	printf("srcSize3 = %d\r\n", (UInt32)srcSize3);
 	UOSInt buffSize2;
 	IO::MemoryStream mstm1((UOSInt)oriStm.GetLength());
 	IO::MemoryStream mstm2((UOSInt)oriStm.GetLength());
