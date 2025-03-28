@@ -147,6 +147,7 @@
 #include "SSWR/AVIRead/AVIRLoRaJSONForm.h"
 #include "SSWR/AVIRead/AVIRMACGenForm.h"
 #include "SSWR/AVIRead/AVIRMACManagerForm.h"
+#include "SSWR/AVIRead/AVIRMDNSForm.h"
 #include "SSWR/AVIRead/AVIRMODBUSMasterForm.h"
 #include "SSWR/AVIRead/AVIRMODBUSTCPSimForm.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
@@ -532,7 +533,8 @@ typedef enum
 	MNU_PRIVKEY_RSA4096,
 	MNU_PRIVKEY_ECDSA256,
 	MNU_PRIVKEY_ECDSA384,
-	MNU_PRIVKEY_ECDSA521
+	MNU_PRIVKEY_ECDSA521,
+	MNU_MDNS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -816,6 +818,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("MS Graph Client"), MNU_MSGRAPH_EMAIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("NetBIOS"));
 	mnu2->AddItem(CSTR("NetBIOS Scanner"), MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("mDNS"), MNU_MDNS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
 	mnu2->AddItem(CSTR("GW Simulator"), MNU_LORA_GW_SIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3115,6 +3118,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			{
 				this->core->OpenObject(key);
 			}
+		}
+		break;
+	case MNU_MDNS:
+		{
+			NN<SSWR::AVIRead::AVIRMDNSForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMDNSForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
 		}
 		break;
 	}

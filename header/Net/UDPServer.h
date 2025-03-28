@@ -18,9 +18,9 @@ namespace Net
 
 		typedef struct
 		{
-			UDPServer *me;
+			NN<UDPServer> me;
 			Bool threadRunning;
-			Sync::Event *evt;
+			NN<Sync::Event> evt;
 			Bool toStop;
 		} ThreadStat;
 
@@ -33,8 +33,8 @@ namespace Net
 		Optional<Text::String> logPrefix;
 		Int32 recvCnt;
 
-		ThreadStat *v4threadStats;
-		ThreadStat *v6threadStats;
+		UnsafeArrayOpt<ThreadStat> v4threadStats;
+		UnsafeArrayOpt<ThreadStat> v6threadStats;
 		UOSInt threadCnt;
 		UInt16 port;
 		Sync::Event ctrlEvt;
@@ -43,8 +43,8 @@ namespace Net
 		Optional<Text::String> msgPrefix;
 
 		Sync::Mutex logFileMut;
-		IO::FileStream *logFileR;
-		IO::FileStream *logFileS;
+		Optional<IO::FileStream> logFileR;
+		Optional<IO::FileStream> logFileS;
 		Data::Timestamp logDateR;
 		Data::Timestamp logDateS;
 
@@ -53,7 +53,7 @@ namespace Net
 		static UInt32 __stdcall DataV6Thread(AnyType obj);
 
 	public:
-		UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
+		UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
 		virtual ~UDPServer();
 
 		UInt16 GetPort();

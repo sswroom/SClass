@@ -1582,8 +1582,7 @@ Data/Compress/DeflateStream.h:
 @?(NO_MINIZ == 0)DeflateStreamMiniz.o
 @?(NO_MINIZ > 0)DeflateStreamZlib.o
 Data/Compress/Inflate.h:
-@?(NO_MINIZ == 0)InflateNull.o
-@?(NO_MINIZ > 0)InflateZlib.o
+@InflateNull.o
 Data/Compress/Inflater.h:
 @Inflater.o
 Data/Compress/InflateStream.h:
@@ -3232,6 +3231,8 @@ Net/MACInfo.h:
 @MACInfo.o
 Net/MACInfoList.h:
 @MACInfoList.o
+Net/MDNSClient.h:
+@MDNSClient.o
 Net/MIBReader.h:
 @MIBReader.o
 Net/MIME.h:
@@ -4180,6 +4181,8 @@ SSWR/AVIRead/AVIRMACManagerEntryForm.h:
 @AVIRMACManagerEntryForm.o
 SSWR/AVIRead/AVIRMACManagerForm.h:
 @AVIRMACManagerForm.o
+SSWR/AVIRead/AVIRMDNSForm.h:
+@AVIRMDNSForm.o
 SSWR/AVIRead/AVIRMediaForm.h:
 @AVIRMediaForm.o
 SSWR/AVIRead/AVIRMIMEViewerForm.h:

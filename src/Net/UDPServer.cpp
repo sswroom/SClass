@@ -17,7 +17,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 	if (stat->me->socV4.SetTo(soc))
 	{
 		Sync::Event evt;
-		stat->evt = &evt;
+		stat->evt = evt;
 		stat->threadRunning = true;
 		stat->me->ctrlEvt.Set();
 
@@ -49,20 +49,17 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 				if (stat->me->logPrefix.SetTo(s))
 				{
 					Sync::MutexUsage mutUsage(stat->me->logFileMut);
-					if ((!logTime.SameDate(stat->me->logDateR)) || (stat->me->logFileR == 0))
+					if ((!logTime.SameDate(stat->me->logDateR)) || stat->me->logFileR.IsNull())
 					{
-						if (stat->me->logFileR)
-						{
-							DEL_CLASS(stat->me->logFileR);
-							stat->me->logFileR = 0;
-						}
+						stat->me->logFileR.Delete();
 						sptr = s->ConcatTo(sbuff);
 						sptr = logTime.ToString(sptr, "yyyyMMdd");
 						sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
-						NEW_CLASS(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+						NEW_CLASSOPT(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 					}
 
-					if (stat->me->logFileR)
+					NN<IO::FileStream> logFileR;
+					if (stat->me->logFileR.SetTo(logFileR))
 					{
 						Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
 						UInt8 hbuff[8];
@@ -70,8 +67,8 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 						hbuff[1] = 0xbb;
 						WriteInt16(&hbuff[2], (Int16)recvSize);
 						WriteInt32(&hbuff[4], v);
-						stat->me->logFileR->Write(Data::ByteArrayR(hbuff, 8));
-						stat->me->logFileR->Write(Data::ByteArrayR(buff, recvSize));
+						logFileR->Write(Data::ByteArrayR(hbuff, 8));
+						logFileR->Write(Data::ByteArrayR(buff, recvSize));
 					}
 					mutUsage.EndUse();
 				}
@@ -95,7 +92,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 	if (stat->me->socV6.SetTo(soc))
 	{
 		Sync::Event evt;
-		stat->evt = &evt;
+		stat->evt = evt;
 		stat->threadRunning = true;
 		stat->me->ctrlEvt.Set();
 
@@ -127,20 +124,17 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 				if (stat->me->logPrefix.SetTo(s))
 				{
 					Sync::MutexUsage mutUsage(stat->me->logFileMut);
-					if ((!logTime.SameDate(stat->me->logDateR)) || (stat->me->logFileR == 0))
+					if ((!logTime.SameDate(stat->me->logDateR)) || stat->me->logFileR.IsNull())
 					{
-						if (stat->me->logFileR)
-						{
-							DEL_CLASS(stat->me->logFileR);
-							stat->me->logFileR = 0;
-						}
+						stat->me->logFileR.Delete();
 						sptr = s->ConcatTo(sbuff);
 						sptr = logTime.ToString(sptr, "yyyyMMdd");
 						sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
-						NEW_CLASS(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+						NEW_CLASSOPT(stat->me->logFileR, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 					}
 
-					if (stat->me->logFileR)
+					NN<IO::FileStream> logFileR;
+					if (stat->me->logFileR.SetTo(logFileR))
 					{
 						Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
 						UInt8 hbuff[8];
@@ -148,8 +142,8 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 						hbuff[1] = 0xbb;
 						WriteInt16(&hbuff[2], (Int16)recvSize);
 						WriteInt32(&hbuff[4], v);
-						stat->me->logFileR->Write(Data::ByteArrayR(hbuff, 8));
-						stat->me->logFileR->Write(Data::ByteArrayR(buff, recvSize));
+						logFileR->Write(Data::ByteArrayR(hbuff, 8));
+						logFileR->Write(Data::ByteArrayR(buff, recvSize));
 					}
 					mutUsage.EndUse();
 				}
@@ -163,7 +157,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = 0;
@@ -181,7 +175,8 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 	this->port = port;
 	Bool succ = false;
 	NN<Socket> soc;
-	if (bindAddr == 0)
+	NN<Net::SocketUtil::AddressInfo> nnbindAddr;
+	if (!bindAddr.SetTo(nnbindAddr))
 	{
 		this->addrType = Net::AddrType::Unknown;
 		this->socV4 = this->sockf->CreateUDPSocketv4();
@@ -221,7 +216,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 	}
 	else
 	{
-		this->addrType = bindAddr->addrType;
+		this->addrType = nnbindAddr->addrType;
 		this->socV4 = 0;
 		this->socV6 = 0;
 		if (this->addrType == Net::AddrType::IPv4)
@@ -231,7 +226,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 			{
 				this->sockf->SetReuseAddr(soc, true);
 			}
-			if (this->socV4.SetTo(soc) && this->sockf->SocketBindv4(soc, ReadNUInt32(bindAddr->addr), port))
+			if (this->socV4.SetTo(soc) && this->sockf->SocketBindv4(soc, ReadNUInt32(nnbindAddr->addr), port))
 			{
 				succ = true;
 			}
@@ -278,25 +273,27 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 			this->logDateS = Data::Timestamp(0);
 		}
 
-		this->v4threadStats = MemAlloc(ThreadStat, this->threadCnt);
+		UnsafeArray<ThreadStat> v4threadStats;
+		UnsafeArray<ThreadStat> v6threadStats;
+		this->v4threadStats = v4threadStats = MemAllocArr(ThreadStat, this->threadCnt);
 		if (this->socV6.NotNull())
 		{
-			this->v6threadStats = MemAlloc(ThreadStat, this->threadCnt);
+			this->v6threadStats = MemAllocArr(ThreadStat, this->threadCnt);
 		}
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->v4threadStats[i].toStop = false;
-			this->v4threadStats[i].threadRunning = false;
-			this->v4threadStats[i].me = this;
-			Sync::ThreadUtil::Create(DataV4Thread, &this->v4threadStats[i]);
+			v4threadStats[i].toStop = false;
+			v4threadStats[i].threadRunning = false;
+			v4threadStats[i].me = *this;
+			Sync::ThreadUtil::Create(DataV4Thread, &v4threadStats[i]);
 
-			if (this->socV6.NotNull())
+			if (this->v6threadStats.SetTo(v6threadStats))
 			{
-				this->v6threadStats[i].toStop = false;
-				this->v6threadStats[i].threadRunning = false;
-				this->v6threadStats[i].me = this;
-				Sync::ThreadUtil::Create(DataV6Thread, &this->v6threadStats[i]);
+				v6threadStats[i].toStop = false;
+				v6threadStats[i].threadRunning = false;
+				v6threadStats[i].me = *this;
+				Sync::ThreadUtil::Create(DataV6Thread, &v6threadStats[i]);
 			}
 		}
 		Bool running;
@@ -306,14 +303,14 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 			i = this->threadCnt;
 			while (i-- > 0)
 			{
-				if (!this->v4threadStats[i].threadRunning)
+				if (!v4threadStats[i].threadRunning)
 				{
 					running = false;
 					break;
 				}
-				if (this->socV6.NotNull())
+				if (this->v6threadStats.SetTo(v6threadStats))
 				{
-					if (!this->v6threadStats[i].threadRunning)
+					if (!v6threadStats[i].threadRunning)
 					{
 						running = false;
 						break;
@@ -336,22 +333,24 @@ Net::UDPServer::~UDPServer()
 {
 	NN<Socket> soc;
 	UOSInt i;
-	if (this->v4threadStats)
+	UnsafeArray<ThreadStat> v4threadStats;
+	UnsafeArray<ThreadStat> v6threadStats;
+	if (this->v4threadStats.SetTo(v4threadStats))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->v4threadStats[i].toStop = true;
-			this->v4threadStats[i].evt->Set();
+			v4threadStats[i].toStop = true;
+			v4threadStats[i].evt->Set();
 		}
 	}
-	if (this->v6threadStats)
+	if (this->v6threadStats.SetTo(v6threadStats))
 	{
 		i = this->threadCnt;
 		while (i-- > 0)
 		{
-			this->v6threadStats[i].toStop = true;
-			this->v6threadStats[i].evt->Set();
+			v6threadStats[i].toStop = true;
+			v6threadStats[i].evt->Set();
 		}
 	}
 	if (this->socV4.SetTo(soc))
@@ -362,7 +361,7 @@ Net::UDPServer::~UDPServer()
 	{
 		this->sockf->DestroySocket(soc);
 	}
-	if (this->v4threadStats)
+	if (this->v4threadStats.SetTo(v4threadStats))
 	{
 		Bool threadRunning = true;
 		while (threadRunning)
@@ -371,14 +370,14 @@ Net::UDPServer::~UDPServer()
 			i = this->threadCnt;
 			while (i-- > 0)
 			{
-				if (this->v4threadStats[i].threadRunning)
+				if (v4threadStats[i].threadRunning)
 				{
 					threadRunning = true;
 					break;
 				}
-				if (this->socV6.NotNull())
+				if (this->v6threadStats.SetTo(v6threadStats))
 				{
-					if (this->v6threadStats[i].threadRunning)
+					if (v6threadStats[i].threadRunning)
 					{
 						threadRunning = true;
 						break;
@@ -390,17 +389,17 @@ Net::UDPServer::~UDPServer()
 			this->ctrlEvt.Wait(10);
 		}
 
-		MemFree(this->v4threadStats);
-		if (this->socV6.NotNull())
+		MemFreeArr(v4threadStats);
+		if (this->v6threadStats.SetTo(v6threadStats))
 		{
-			MemFree(this->v6threadStats);
+			MemFreeArr(v6threadStats);
 		}
 	}
 	this->socV4 = 0;
 	this->socV6 = 0;
 
-	SDEL_CLASS(this->logFileS);
-	SDEL_CLASS(this->logFileR);
+	this->logFileS.Delete();
+	this->logFileR.Delete();
 	OPTSTR_DEL(this->logPrefix);
 	OPTSTR_DEL(this->msgPrefix);
 }
@@ -431,21 +430,18 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 		Data::Timestamp logTime = Data::Timestamp::UtcNow();
 
 		Sync::MutexUsage mutUsage(this->logFileMut);
-		if ((!logTime.SameDate(this->logDateS)) || (logFileS == 0))
+		if ((!logTime.SameDate(this->logDateS)) || this->logFileS.IsNull())
 		{
-			if (logFileS)
-			{
-				DEL_CLASS(logFileS);
-			}
-			logFileS = 0;
+			this->logFileS.Delete();
 
 			sptr = s->ConcatTo(sbuff);
 			sptr = logTime.ToString(sptr, "yyyyMMdd");
 			sptr = Text::StrConcatC(sptr, UTF8STRC("s.udp"));
-			NEW_CLASS(this->logFileS, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			NEW_CLASSOPT(this->logFileS, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 		}
 
-		if (this->logFileS)
+		NN<IO::FileStream> logFileS;
+		if (this->logFileS.SetTo(logFileS))
 		{
 			Int32 v = (Int32)(logTime.ToUnixTimestamp() & 0xffffffffLL);
 			UInt8 hbuff[8];
@@ -453,8 +449,8 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 			hbuff[1] = 0xbb;
 			WriteInt16(&hbuff[2], (Int16)dataSize);
 			WriteInt32(&hbuff[4], v);
-			this->logFileS->Write(Data::ByteArrayR(hbuff, 8));
-			this->logFileS->Write(Data::ByteArrayR(buff, dataSize));
+			logFileS->Write(Data::ByteArrayR(hbuff, 8));
+			logFileS->Write(Data::ByteArrayR(buff, dataSize));
 		}
 		mutUsage.EndUse();
 	}

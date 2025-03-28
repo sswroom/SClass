@@ -1386,6 +1386,7 @@ LoRaGWMonitor.o: ../../src/Net/LoRaGWMonitor.cpp
 LoRaGWUtil.o: ../../src/Net/LoRaGWUtil.cpp
 MACInfo.o: ../../src/Net/MACInfo.cpp
 MACInfoList.o: ../../src/Net/MACInfoList.cpp
+MDNSClient.o: ../../src/Net/MDNSClient.cpp
 MIBReader.o: ../../src/Net/MIBReader.cpp
 MIME.o: ../../src/Net/MIME.cpp
 MODBUSTCPListener.o: ../../src/Net/MODBUSTCPListener.cpp
@@ -1915,6 +1916,7 @@ AVIRLUTForm.o: ../../src/SSWR/AVIRead/AVIRLUTForm.cpp
 AVIRMACGenForm.o: ../../src/SSWR/AVIRead/AVIRMACGenForm.cpp
 AVIRMACManagerEntryForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerEntryForm.cpp
 AVIRMACManagerForm.o: ../../src/SSWR/AVIRead/AVIRMACManagerForm.cpp
+AVIRMDNSForm.o: ../../src/SSWR/AVIRead/AVIRMDNSForm.cpp
 AVIRMediaForm.o: ../../src/SSWR/AVIRead/AVIRMediaForm.cpp
 AVIRMIMEViewerForm.o: ../../src/SSWR/AVIRead/AVIRMIMEViewerForm.cpp
 AVIRMODBUSMasterForm.o: ../../src/SSWR/AVIRead/AVIRMODBUSMasterForm.cpp
