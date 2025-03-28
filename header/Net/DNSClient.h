@@ -19,6 +19,8 @@ namespace Net
 			Text::String *rd;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 priority;
+			UInt16 weight;
+			UInt16 port;
 		} RequestAnswer;
 
 	private:

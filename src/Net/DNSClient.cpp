@@ -491,6 +491,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 	case 2: // NS - an authoritative name server
 	case 5: // CNAME - the canonical name for an alias
 	case 12: // PTR - a domain name pointer
+	case 47: // NSEC - Next Secure
 		ParseString(sbuff, buff, i + 10, i + 10 + k, sptr);
 		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		break;
@@ -552,12 +553,9 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 	case 33: // SRV - Server Selection
 		{
 			ans->priority = ReadMUInt16(&buff[i + 10]);
-			sptr = Text::StrConcatC(sbuff, UTF8STRC("Weight = "));
-			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 12]));
-			sptr = Text::StrConcatC(sptr, UTF8STRC(", Port = "));
-			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 14]));
-			sptr = Text::StrConcatC(sptr, UTF8STRC(", Target = "));
-			ParseString(sptr, buff, i + 16, i + 10 + k, sptr);
+			ans->weight = ReadMUInt16(&buff[i + 12]);
+			ans->port = ReadMUInt16(&buff[i + 14]);
+			ParseString(sbuff, buff, i + 16, i + 10 + k, sptr);
 			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		}
 		break;
@@ -625,7 +623,6 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			ans->rd = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 		break;
-	case 47: // NSEC - Next Secure record
 	default:
 		ans->rd = 0;
 		break;
