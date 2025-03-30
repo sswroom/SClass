@@ -1,6 +1,15 @@
 #include "Stdafx.h"
 #include "Net/MDNSClient.h"
 
+/*
+Known service:
+_services._dns-sd._udp.local
+_device-info._tcp.local
+_http._tcp.local
+_qdiscover._tcp.local
+_smb._tcp.local
+_workstation._tcp.local
+*/
 void __stdcall Net::MDNSClient::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {
 	NN<Net::MDNSClient> me = userData.GetNN<Net::MDNSClient>();
