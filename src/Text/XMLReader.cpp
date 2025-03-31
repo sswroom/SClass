@@ -137,6 +137,7 @@ Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Strea
 	this->nodeOriText = 0;
 	this->emptyNode = false;
 	this->parseError = 0;
+	this->ns = 0;
 	this->nt = Text::XMLNode::NodeType::Unknown;
 	this->InitBuffer();
 }
@@ -188,6 +189,11 @@ NN<Text::String> Text::XMLReader::GetNodeTextNN() const
 Optional<Text::String> Text::XMLReader::GetNodeOriText() const
 {
 	return this->nodeOriText;
+}
+
+Optional<Text::String> Text::XMLReader::GetNamespace() const
+{
+	return this->ns;
 }
 
 UOSInt Text::XMLReader::GetAttribCount() const

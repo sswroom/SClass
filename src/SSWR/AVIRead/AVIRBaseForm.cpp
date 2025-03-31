@@ -264,6 +264,7 @@
 #include "SSWR/AVIRead/AVIRWMSForm.h"
 #include "SSWR/AVIRead/AVIRWMTSForm.h"
 #include "SSWR/AVIRead/AVIRWOLForm.h"
+#include "SSWR/AVIRead/AVIRWSDiscoveryForm.h"
 #include "SSWR/AVIRead/AVIRXMLWalkForm.h"
 #include "SSWR/SHPConv/SHPConvMainForm.h"
 #include "Text/MyStringW.h"
@@ -534,7 +535,8 @@ typedef enum
 	MNU_PRIVKEY_ECDSA256,
 	MNU_PRIVKEY_ECDSA384,
 	MNU_PRIVKEY_ECDSA521,
-	MNU_MDNS
+	MNU_MDNS,
+	MNU_WSDISCOVERY
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -820,6 +822,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("NetBIOS Scanner"), MNU_NETBIOS_SCANNER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("mDNS"), MNU_MDNS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("SSDP Client"), MNU_SSDP_CLIENT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("WS Discovery"), MNU_WSDISCOVERY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("LoRa"));
 	mnu2->AddItem(CSTR("GW Simulator"), MNU_LORA_GW_SIM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("JSON Parser"), MNU_LORA_JSON, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3124,6 +3127,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRMDNSForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMDNSForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_WSDISCOVERY:
+		{
+			NN<SSWR::AVIRead::AVIRWSDiscoveryForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWSDiscoveryForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

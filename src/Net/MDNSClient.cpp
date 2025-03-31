@@ -4,11 +4,24 @@
 /*
 Known service:
 _services._dns-sd._udp.local
+lb._dns-sd._udp.local
+_airplay._tcp.local
+_alexa._tcp.local
 _device-info._tcp.local
+_dosvc._tcp.local
 _http._tcp.local
+_http-alt._tcp.local
+_ipp._tcp.local
+_pdl-datastream._tcp.local
+_printer._tcp.local
 _qdiscover._tcp.local
+_raop._tcp.local
+_remotepairing._tcp.local
+_scanner._tcp.local
 _smb._tcp.local
 _workstation._tcp.local
+_sleep-proxy._udp.local
+
 */
 void __stdcall Net::MDNSClient::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::ByteArrayR data, AnyType userData)
 {

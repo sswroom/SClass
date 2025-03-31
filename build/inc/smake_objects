@@ -1508,6 +1508,7 @@ WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 WOLClient.o: ../../src/Net/WOLClient.cpp
+WSDiscoveryClient.o: ../../src/Net/WSDiscoveryClient.cpp
 AWSEmailClient.o: ../../src/Net/Email/AWSEmailClient.cpp
 !-laws-cpp-sdk-core
 !-laws-cpp-sdk-email
@@ -2056,6 +2057,7 @@ AVIRWMIForm.o: ../../src/SSWR/AVIRead/AVIRWMIForm.cpp
 AVIRWMSForm.o: ../../src/SSWR/AVIRead/AVIRWMSForm.cpp
 AVIRWMTSForm.o: ../../src/SSWR/AVIRead/AVIRWMTSForm.cpp
 AVIRWOLForm.o: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
+AVIRWSDiscoveryForm.o: ../../src/SSWR/AVIRead/AVIRWSDiscoveryForm.cpp
 AVIRXMLWalkForm.o: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
 AVIRMailViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMailViewer.cpp
 AVIRMIMEHTMLViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.cpp

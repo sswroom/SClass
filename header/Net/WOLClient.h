@@ -7,7 +7,7 @@ namespace Net
 	class WOLClient
 	{
 	private:
-		Net::UDPServer *svr;
+		NN<Net::UDPServer> svr;
 		NN<Net::SocketFactory> sockf;
 		UInt32 adapterIP;
 
@@ -17,7 +17,7 @@ namespace Net
 		~WOLClient();
 
 		Bool IsError();
-		Bool WakeDevice(const UInt8 *macAddr);
+		Bool WakeDevice(UnsafeArray<const UInt8> macAddr);
 	};
 }
 #endif

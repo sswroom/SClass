@@ -3412,6 +3412,8 @@ Net/WirelessLANIE.h:
 @WirelessLANIE.o
 Net/WOLClient.h:
 @WOLClient.o
+Net/WSDiscoveryClient.h:
+@WSDiscoveryClient.o
 Net/Email/AWSEmailClient.h:
 @?(USE_AWS == 0)AWSEmailClientNull.o
 @?(USE_AWS > 0)AWSEmailClient.o
@@ -4459,6 +4461,8 @@ SSWR/AVIRead/AVIRWMTSForm.h:
 @AVIRWMTSForm.o
 SSWR/AVIRead/AVIRWOLForm.h:
 @AVIRWOLForm.o
+SSWR/AVIRead/AVIRWSDiscoveryForm.h:
+@AVIRWSDiscoveryForm.o
 SSWR/AVIRead/AVIRXMLWalkForm.h:
 @AVIRXMLWalkForm.o
 SSWR/AVIRead/IMapNavigator.h:

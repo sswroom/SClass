@@ -56,6 +56,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 		i = this->lvXML->AddItem(sb.ToCString(), 0);
 		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader.GetNodeType()));
 		this->lvXML->SetSubItem(i, 2, Text::String::OrEmpty(reader.GetNodeText()));
+		this->lvXML->SetSubItem(i, 3, Text::String::OrEmpty(reader.GetNamespace()));
 	}
 	if (!reader.IsComplete())
 	{
@@ -85,13 +86,14 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(Optional<UI::GUIClientControl> p
 	this->btnBrowse = ui->NewButton(this->pnlFile, CSTR("Browse"));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClick, this);
-	this->lvXML = ui->NewListView(*this, UI::ListViewStyle::Table, 3);
+	this->lvXML = ui->NewListView(*this, UI::ListViewStyle::Table, 4);
 	this->lvXML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvXML->SetShowGrid(true);
 	this->lvXML->SetFullRowSelect(true);
 	this->lvXML->AddColumn(CSTR("Path"), 300);
 	this->lvXML->AddColumn(CSTR("Type"), 100);
 	this->lvXML->AddColumn(CSTR("Value"), 200);
+	this->lvXML->AddColumn(CSTR("Namespace"), 200);
 
 	this->HandleDropFiles(OnFileDrop, this);
 }

@@ -11,13 +11,13 @@ Net::WOLClient::WOLClient(NN<Net::SocketFactory> sockf, UInt32 adapterIP, NN<IO:
 {
 	this->sockf = sockf;
 	this->adapterIP = Net::SocketUtil::IPv4ToBroadcast(adapterIP);
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 1, false));
+	NEW_CLASSNN(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, log, CSTR_NULL, 1, false));
 	this->svr->SetBroadcast(true);
 }
 
 Net::WOLClient::~WOLClient()
 {
-	DEL_CLASS(this->svr);
+	this->svr.Delete();
 }
 
 Bool Net::WOLClient::IsError()
@@ -25,7 +25,7 @@ Bool Net::WOLClient::IsError()
 	return this->svr->IsError();
 }
 
-Bool Net::WOLClient::WakeDevice(const UInt8 *macAddr)
+Bool Net::WOLClient::WakeDevice(UnsafeArray<const UInt8> macAddr)
 {
 	UInt8 packet[102];
 	WriteNUInt32(&packet[0], 0xffffffff);
@@ -33,7 +33,7 @@ Bool Net::WOLClient::WakeDevice(const UInt8 *macAddr)
 	UOSInt i = 0;
 	while (i < 16)
 	{
-		MemCopyNO(&packet[i * 6 + 6], macAddr, 6);
+		MemCopyNO(&packet[i * 6 + 6], macAddr.Ptr(), 6);
 		i++;
 	}
 	Net::SocketUtil::AddressInfo addr;

@@ -468,7 +468,7 @@ UOSInt Net::DNSClient::ParseAnswers(UnsafeArray<const UInt8> buff, UOSInt dataSi
 
 NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const UInt8> buff, UOSInt dataSize, InOutParam<UOSInt> index)
 {
-	UTF8Char sbuff[512];
+	UTF8Char sbuff[2048];
 	UnsafeArray<UTF8Char> sptr;
 	NN<RequestAnswer> ans;
 	UOSInt i = index.Get();
@@ -531,7 +531,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(UnsafeArray<const 
 			*sptr = 0;
 			UOSInt currInd = i + 10;
 			UOSInt endInd = i + 10 + k;
-			while (currInd < endInd)
+			while (currInd < endInd && currInd + buff[currInd] < currInd)
 			{
 				if (sptr != sbuff)
 				{

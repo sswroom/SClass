@@ -36,6 +36,7 @@ namespace Text
 		Data::ArrayListStringNN pathList;
 		Optional<Text::String> nodeText;
 		Optional<Text::String> nodeOriText;
+		Optional<Text::String> ns;
 		Bool emptyNode;
 		Text::StringBuilderUTF8 sbTmp;
 
@@ -53,6 +54,7 @@ namespace Text
 		Optional<Text::String> GetNodeText() const; //TextNode = Value, ElementNode = Name
 		NN<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
 		Optional<Text::String> GetNodeOriText() const;
+		Optional<Text::String> GetNamespace() const;
 		UOSInt GetAttribCount() const;
 		NN<Text::XMLAttrib> GetAttribNoCheck(UOSInt index) const;
 		Optional<Text::XMLAttrib> GetAttrib(UOSInt index) const;
