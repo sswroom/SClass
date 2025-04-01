@@ -121,6 +121,53 @@ UOSInt Text::XMLReader::FillBuffer()
 	}
 }
 
+void Text::XMLReader::ParseElementNS()
+{
+	NN<Text::XMLAttrib> attr;
+	NN<Text::String> name;
+	NN<Text::String> value;
+	UOSInt i = 0;
+	UOSInt j = this->attrList.GetCount();
+	while (i < j)
+	{
+		attr = this->attrList.GetItemNoCheck(i);
+		if (attr->name.SetTo(name) && attr->value.SetTo(value))
+		{
+			if (name->Equals(CSTR("xmlns")))
+			{
+				if (this->nsMap.PutC(CSTR(""), value->Clone()).SetTo(value))
+				{
+					value->Release();	
+				}
+			}
+			else if (name->StartsWith(CSTR("xmlns:")))
+			{
+				if (this->nsMap.PutC(name->ToCString().Substring(6), value->Clone()).SetTo(value))
+				{
+					value->Release();
+				}
+			}
+		}
+		i++;
+	}
+	if (this->nodeText.SetTo(name))
+	{
+		i = name->IndexOf(':');
+		if (i == INVALID_INDEX)
+		{
+			this->ns = this->nsMap.GetC(CSTR(""));
+		}
+		else
+		{
+			this->ns = this->nsMap.GetC(Text::CStringNN(name->v, i));
+		}
+	}
+	else
+	{
+		this->ns = this->nsMap.GetC(CSTR(""));
+	}
+}
+
 Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, ParseMode mode)
 {
 	this->encFact = encFact;
@@ -148,6 +195,11 @@ Text::XMLReader::~XMLReader()
 	this->pathList.FreeAll();
 	MemFreeArr(this->readBuff);
 	MemFreeArr(this->rawBuff);
+	UOSInt i = this->nsMap.GetCount();
+	while (i-- > 0)
+	{
+		this->nsMap.GetItemNoCheck(i)->Release();
+	}
 	this->enc.Delete();
 }
 
@@ -196,6 +248,20 @@ Optional<Text::String> Text::XMLReader::GetNamespace() const
 	return this->ns;
 }
 
+Text::CStringNN Text::XMLReader::GetElementName() const
+{
+	NN<Text::String> s;
+	if ((this->nt == Text::XMLNode::NodeType::Element || this->nt == Text::XMLNode::NodeType::ElementEnd) && this->nodeText.SetTo(s))
+	{
+		UOSInt i = s->IndexOf(':');
+		return s->ToCString().Substring(i + 1);
+	}
+	else
+	{
+		return CSTR("");
+	}
+}
+
 UOSInt Text::XMLReader::GetAttribCount() const
 {
 	return this->attrList.GetCount();
@@ -228,6 +294,7 @@ Bool Text::XMLReader::ReadNext()
 {
 	NN<Text::String> nns;
 	Bool isHTMLScript = false;
+	this->ns = 0;
 	if (this->nt == Text::XMLNode::NodeType::Element && !this->emptyNode && this->nodeText.SetTo(nns))
 	{
 		if (this->mode == Text::XMLReader::PM_HTML)
@@ -905,6 +972,18 @@ Bool Text::XMLReader::ReadNext()
 					{
 						opts = this->pathList.Pop();
 						OPTSTR_DEL(opts);
+						if (this->mode == Text::XMLReader::PM_XML)
+						{
+							UOSInt i = nodeText->IndexOf(':');
+							if (i == INVALID_INDEX)
+							{
+								this->ns = this->nsMap.GetC(CSTR(""));
+							}
+							else
+							{
+								this->ns = this->nsMap.GetC(Text::CStringNN(nodeText->v, i));
+							}
+						}
 						return true;
 					}
 					else if (this->mode == Text::XMLReader::PM_HTML && this->pathList.GetCount() >= 2 && this->pathList.GetItem(this->pathList.GetCount() - 2).SetTo(s) && s->Equals(nodeText))
@@ -1242,6 +1321,10 @@ Bool Text::XMLReader::ReadNext()
 					{
 						this->parseOfst = parseOfst + 2;
 						this->emptyNode = true;
+						if (this->mode == ParseMode::PM_XML && this->nodeText != 0)
+						{
+							this->ParseElementNS();
+						}
 						return this->nodeText != 0;
 					}
 					else
@@ -1295,6 +1378,10 @@ Bool Text::XMLReader::ReadNext()
 					}
 					this->parseOfst = parseOfst + 1;
 					this->emptyNode = false;
+					if (this->mode == ParseMode::PM_XML && this->nodeText != 0)
+					{
+						this->ParseElementNS();
+					}
 					return this->nodeText != 0;
 				}
 				else if (c == '=')

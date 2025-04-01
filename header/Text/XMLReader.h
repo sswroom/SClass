@@ -37,6 +37,7 @@ namespace Text
 		Optional<Text::String> nodeText;
 		Optional<Text::String> nodeOriText;
 		Optional<Text::String> ns;
+		Data::FastStringMapNN<Text::String> nsMap;
 		Bool emptyNode;
 		Text::StringBuilderUTF8 sbTmp;
 
@@ -44,6 +45,7 @@ namespace Text
 		Bool IsHTMLSkip();
 		void InitBuffer();
 		UOSInt FillBuffer();
+		void ParseElementNS();
 	public:
 		XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, ParseMode mode);
 		~XMLReader();
@@ -55,6 +57,7 @@ namespace Text
 		NN<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
 		Optional<Text::String> GetNodeOriText() const;
 		Optional<Text::String> GetNamespace() const;
+		Text::CStringNN GetElementName() const;
 		UOSInt GetAttribCount() const;
 		NN<Text::XMLAttrib> GetAttribNoCheck(UOSInt index) const;
 		Optional<Text::XMLAttrib> GetAttrib(UOSInt index) const;
