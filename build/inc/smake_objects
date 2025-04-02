@@ -2058,6 +2058,7 @@ AVIRWMSForm.o: ../../src/SSWR/AVIRead/AVIRWMSForm.cpp
 AVIRWMTSForm.o: ../../src/SSWR/AVIRead/AVIRWMTSForm.cpp
 AVIRWOLForm.o: ../../src/SSWR/AVIRead/AVIRWOLForm.cpp
 AVIRWSDiscoveryForm.o: ../../src/SSWR/AVIRead/AVIRWSDiscoveryForm.cpp
+AVIRWSDListenerForm.o: ../../src/SSWR/AVIRead/AVIRWSDListenerForm.cpp
 AVIRXMLWalkForm.o: ../../src/SSWR/AVIRead/AVIRXMLWalkForm.cpp
 AVIRMailViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMailViewer.cpp
 AVIRMIMEHTMLViewer.o: ../../src/SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.cpp

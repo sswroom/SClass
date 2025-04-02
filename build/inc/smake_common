@@ -4463,6 +4463,8 @@ SSWR/AVIRead/AVIRWOLForm.h:
 @AVIRWOLForm.o
 SSWR/AVIRead/AVIRWSDiscoveryForm.h:
 @AVIRWSDiscoveryForm.o
+SSWR/AVIRead/AVIRWSDListenerForm.h:
+@AVIRWSDListenerForm.o
 SSWR/AVIRead/AVIRXMLWalkForm.h:
 @AVIRXMLWalkForm.o
 SSWR/AVIRead/IMapNavigator.h:
