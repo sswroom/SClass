@@ -1,43 +1,25 @@
-#ifndef _SM_MAP_TILEMAPSERVICESOURCE
-#define _SM_MAP_TILEMAPSERVICESOURCE
-#include "Data/ArrayList.h"
+#ifndef _SM_MEDIA_TIFFTILEMAP
+#define _SM_MEDIA_TIFFTILEMAP
 #include "Map/TileMap.h"
-#include "Net/SocketFactory.h"
-#include "Text/String.h"
 
-namespace Map
+namespace Media
 {
-	class TileMapServiceSource : public Map::TileMap
+	class TIFFTileMap : public Map::TileMap
 	{
 	private:
-		struct TileLayer
+		struct LayerInfo
 		{
-			NN<Text::String> url;
-			Double unitPerPixel;
-			UOSInt order;
+
 		};
 	private:
-		Math::RectAreaDbl bounds;
-		Math::Coord2DDbl origin;
-		Math::Coord2DDbl csysOrigin;
+		Data::ArrayListNN<LayerInfo> layers;
 		UOSInt tileWidth;
 		UOSInt tileHeight;
-		Optional<Text::EncodingFactory> encFact;
-		ImageType imgType;
-		Text::String *tileExt;
-		NN<Text::String> tmsURL;
-		Text::String *title;
-		NN<Text::String> cacheDir;
-		NN<Net::TCPClientFactory> clif;
-		Optional<Net::SSLEngine> ssl;
-		Data::ArrayListNN<TileLayer> layers;
 		NN<Math::CoordinateSystem> csys;
-		UOSInt concurrCnt;
 
-		void LoadXML();
 	public:
-		TileMapServiceSource(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN tmsURL);
-		virtual ~TileMapServiceSource();
+		TIFFTileMap(UOSInt tileWidth, UOSInt tileHeight);
+		virtual ~TIFFTileMap();
 
 		virtual Text::CStringNN GetName() const;
 		virtual Bool IsError() const;
@@ -52,6 +34,8 @@ namespace Map
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 		virtual ImageType GetImageType() const;
+		virtual Bool CanQuery() const;
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids);
 		virtual Optional<Media::ImageList> LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
@@ -59,7 +43,7 @@ namespace Map
 		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
-		void SetConcurrentCount(UOSInt concurrCnt);
+		UOSInt GetLayerCount() const;
 	};
 }
 #endif

@@ -13,7 +13,7 @@ namespace Map
 	{
 	protected:
 		Optional<Text::String> cacheDir;
-		IO::SPackageFile *spkg;
+		Optional<IO::SPackageFile> spkg;
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
 		UOSInt minLevel;
@@ -27,7 +27,7 @@ namespace Map
 		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		virtual ~MercatorTileMap();
 
-		void SetSPackageFile(IO::SPackageFile *spkg);
+		void SetSPackageFile(Optional<IO::SPackageFile> spkg);
 		Bool HasSPackageFile();
 		Bool ImportTiles(NN<IO::PackageFile> pkg);
 		Bool OptimizeToFile(Text::CStringNN fileName);
@@ -42,8 +42,8 @@ namespace Map
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 
-		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
-		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids);
+		virtual Optional<Media::ImageList> LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
 		static Int32 Lon2TileX(Double lon, UOSInt level);

@@ -246,7 +246,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 					writer->Write(CSTR("</OruxTracker>\n"));
 				
 					imgIds.Clear();
-					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat)), &imgIds);
+					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat)), imgIds);
 					Optional<DB::DBTransaction> sess = db->BeginTransaction();
 					NN<DB::DBTransaction> thisSess;
 					j = imgIds.GetCount();

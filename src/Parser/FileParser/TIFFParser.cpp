@@ -26,6 +26,7 @@
 #include "Media/ImageResizer.h"
 #include "Media/JPEGDecoder.h"
 #include "Media/StaticImage.h"
+#include "Media/TIFFTileMap.h"
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/TIFFParser.h"
 #include "Sync/Mutex.h"
@@ -88,6 +89,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		return 0;
 	}
 	NN<Media::ImageList> imgList;
+	NN<Media::TIFFTileMap> nntileMap;
+	Optional<Media::TIFFTileMap> optTileMap = 0;
 	NN<Media::StaticImage> img;
 	Optional<Media::EXIFData> exif;
 	NN<Media::EXIFData> nnexif;
@@ -120,6 +123,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		if (!exif.SetTo(nnexif))
 		{
 			imgList.Delete();
+			optTileMap.Delete();
 			bo.Delete();
 			return 0;
 		}
@@ -759,6 +763,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			else
 			{
 				imgList.Delete();
+				optTileMap.Delete();
 				bo.Delete();
 				return 0;
 			}
@@ -1971,6 +1976,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, Math::Coord2DDbl(minX, minY), Math::Coord2DDbl(maxX, maxY), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector(vimg, (Text::String**)0);
 			simg.Delete();
+			optTileMap.Delete();
 			bo.Delete();
 			return lyr;
 		}
@@ -2090,10 +2096,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			lyr->AddVector(vimg, (Text::String**)0);
 			simg.Delete();
 			
+			optTileMap.Delete();
 			bo.Delete();
 			return lyr;
 		}
 	}
+	optTileMap.Delete();
 	bo.Delete();
 	return imgList;
 }

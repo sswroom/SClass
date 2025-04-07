@@ -30,11 +30,26 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType 
 		me->ui->ShowMsgOK(CSTR("Please enter valid proxy server"), CSTR("Request"), me);
 		return;
 	}
+	sb.ClearStr();
+	me->txtProxyUser->GetText(sb);
+	if (sb.leng > 0)
+	{
+		me->reqUser = Text::String::New(sb.ToCString());
+	}
+
+	sb.ClearStr();
+	me->txtProxyPwd->GetText(sb);
+	if (sb.leng > 0)
+	{
+		me->reqPwd = Text::String::New(sb.ToCString());
+	}
 
 	sb.ClearStr();
 	me->txtURL->GetText(sb);
 	if (!sb.StartsWith(UTF8STRC("http://")))
 	{
+		OPTSTR_DEL(me->reqUser);
+		OPTSTR_DEL(me->reqPwd);
 		me->ui->ShowMsgOK(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
@@ -47,16 +62,22 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType 
 	{
 		Sync::SimpleThread::Sleep(1);
 	}
+	OPTSTR_DEL(me->reqUser);
+	OPTSTR_DEL(me->reqPwd);
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	NN<Text::String> currURL;
-	NN<Net::HTTPClient> cli;
+	NN<Net::HTTPProxyClient> cli;
 	UInt8 buff[4096];
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
+	Optional<Text::String> userName;
+	Optional<Text::String> password;
+	NN<Text::String> nnuserName;
+	NN<Text::String> nnpassword;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -65,10 +86,16 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 	{
 		if (me->reqURL.SetTo(currURL) && !me->respChanged)
 		{
+			userName = Text::String::CopyOrNull(me->reqUser);
+			password = Text::String::CopyOrNull(me->reqPwd);
 			me->reqURL = 0;
 
 			NEW_CLASSNN(cli, Net::HTTPProxyClient(me->core->GetTCPClientFactory(), false, me->proxyIP, me->proxyPort));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, me->respTimeDNS, me->respTimeConn, false);
+			if (userName.SetTo(nnuserName) && password.SetTo(nnpassword))
+			{
+				cli->SetAuthen(Net::HTTPProxyTCPClient::PWDT_BASIC, nnuserName->v, nnpassword->v);
+			}
 			cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 			cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
@@ -90,6 +117,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 			me->respChanged = true;
 
 			currURL->Release();
+			OPTSTR_DEL(userName);
+			OPTSTR_DEL(password);
 		}
 		me->threadEvt->Wait(1000);
 	}
@@ -191,10 +220,12 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->reqURL = 0;
+	this->reqUser = 0;
+	this->reqPwd = 0;
 	NEW_CLASSNN(this->threadEvt, Sync::Event(true));
 
 	this->pnlRequest = ui->NewPanel(*this);
-	this->pnlRequest->SetRect(0, 0, 100, 79, false);
+	this->pnlRequest->SetRect(0, 0, 100, 107, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblURL = ui->NewLabel(this->pnlRequest, CSTR("URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
@@ -208,8 +239,17 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->lblProxyPort->SetRect(304, 28, 50, 23, false);
 	this->txtProxyPort = ui->NewTextBox(this->pnlRequest, CSTR("80"));
 	this->txtProxyPort->SetRect(354, 28, 60, 23, false);
+	this->lblProxyUser = ui->NewLabel(this->pnlRequest, CSTR("User"));
+	this->lblProxyUser->SetRect(4, 56, 100, 23, false);
+	this->txtProxyUser = ui->NewTextBox(this->pnlRequest, CSTR(""));
+	this->txtProxyUser->SetRect(104, 56, 200, 23, false);
+	this->lblProxyPwd = ui->NewLabel(this->pnlRequest, CSTR("Password"));
+	this->lblProxyPwd->SetRect(304, 56, 50, 23, false);
+	this->txtProxyPwd = ui->NewTextBox(this->pnlRequest, CSTR(""));
+	this->txtProxyPwd->SetRect(354, 56, 60, 23, false);
+	this->txtProxyPwd->SetPasswordChar('*');
 	this->btnRequest = ui->NewButton(this->pnlRequest, CSTR("Request"));
-	this->btnRequest->SetRect(104, 56, 75, 23, false);
+	this->btnRequest->SetRect(104, 84, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);

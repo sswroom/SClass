@@ -416,7 +416,7 @@ Map::TileMap::ImageType Map::TileMapServiceSource::GetImageType() const
 	return this->imgType;
 }
 
-UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
+UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
 {
 	NN<TileLayer> layer;
 	if (!this->layers.GetItem(level).SetTo(layer))
@@ -446,7 +446,7 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return ret;
 }
 
-Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NN<IO::StreamData> fd;

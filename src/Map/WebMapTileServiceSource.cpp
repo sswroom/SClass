@@ -852,7 +852,7 @@ Bool Map::WebMapTileServiceSource::QueryInfos(Math::Coord2DDbl coord, UOSInt lev
 	return false;
 }
 
-UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
+UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
 {
 	NN<TileMatrix> tileMatrix;
 	NN<TileMatrixDef> tileMatrixDef;
@@ -885,7 +885,7 @@ UOSInt Map::WebMapTileServiceSource::GetTileImageIDs(UOSInt level, Math::RectAre
 	return ret;
 }
 
-Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NN<IO::StreamData> fd;
@@ -897,7 +897,7 @@ Media::ImageList *Map::WebMapTileServiceSource::LoadTileImage(UOSInt level, Math
 			fd.Delete();
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+				return NN<Media::ImageList>::ConvertFrom(pobj);
 			}
 			pobj.Delete();
 		}

@@ -136,7 +136,7 @@ void Map::ESRI::ESRITileMap::SetDispSize(Math::Size2DDbl size, Double dpi)
 	this->dispDPI = dpi;
 }
 
-UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
+UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
 {
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	Int32 i;
@@ -185,7 +185,7 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char filePath[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -226,7 +226,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 			{
 				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+					return NN<Media::ImageList>::ConvertFrom(pobj);
 				}
 				pobj.Delete();
 			}
@@ -244,7 +244,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 		{
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+				return NN<Media::ImageList>::ConvertFrom(pobj);
 			}
 			pobj.Delete();
 		}

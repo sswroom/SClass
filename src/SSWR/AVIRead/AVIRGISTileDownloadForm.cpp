@@ -75,7 +75,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj
 		while (currLyr <= maxLevel)
 		{
 			imgIdList.Clear();
-			tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(me->sel1, me->sel2), &imgIdList);
+			tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(me->sel1, me->sel2), imgIdList);
 			cnt += imgIdList.GetCount();
 			currLyr++;
 		}
@@ -246,7 +246,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> w
 		writer->BeginLevel(currLyr);
 
 		imgIdList.Clear();
-		tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), &imgIdList);
+		tileMap->GetTileImageIDs(currLyr, Math::RectAreaDbl(this->sel1, this->sel2), imgIdList);
 		cnt = imgIdList.GetCount();
 		i = cnt;
 		while (i-- > 0)

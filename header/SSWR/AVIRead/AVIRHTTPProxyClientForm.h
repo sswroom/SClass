@@ -28,6 +28,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtProxySvr;
 			NN<UI::GUILabel> lblProxyPort;
 			NN<UI::GUITextBox> txtProxyPort;
+			NN<UI::GUILabel> lblProxyUser;
+			NN<UI::GUITextBox> txtProxyUser;
+			NN<UI::GUILabel> lblProxyPwd;
+			NN<UI::GUITextBox> txtProxyPwd;
 			NN<UI::GUIButton> btnRequest;
 			NN<UI::GUIGroupBox> grpResponse;
 			NN<UI::GUIPanel> pnlResponse;
@@ -52,6 +56,8 @@ namespace SSWR
 			Optional<Text::String> reqURL;
 			UInt32 proxyIP;
 			UInt16 proxyPort;
+			Optional<Text::String> reqUser;
+			Optional<Text::String> reqPwd;
 
 			Bool respChanged;
 			Net::SocketUtil::AddressInfo respSvrAddr;

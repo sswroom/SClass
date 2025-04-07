@@ -44,7 +44,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 				}
 				else
 				{
-					if (imgList.Set(stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false)))
+					if (stat->me->tileMap->LoadTileImage(cimg->level, IdToCoord(cimg->imgId), stat->me->parsers, bounds, false).SetTo(imgList))
 					{
 						NEW_CLASSNN(shimg, Media::SharedImage(imgList, 0));
 						cimg->img = shimg;
@@ -321,7 +321,7 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, OptOu
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	nameArr.Set(0);
 	Data::ArrayList<Math::Coord2D<Int32>> idArr;
-	retCnt = this->tileMap->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), &idArr);
+	retCnt = this->tileMap->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(-180, -90), Math::Coord2DDbl(180, 90)), idArr);
 	UOSInt i = 0;
 	while (i < retCnt)
 	{
@@ -343,7 +343,7 @@ UOSInt Map::TileMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, OptOut<O
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	nameArr.Set(0);
 	Data::ArrayList<Math::Coord2D<Int32>> idArr;
-	retCnt = this->tileMap->GetTileImageIDs(level, rect.ToDouble() / mapRate, &idArr);
+	retCnt = this->tileMap->GetTileImageIDs(level, rect.ToDouble() / mapRate, idArr);
 	UOSInt i = 0;
 	while (i < retCnt)
 	{
@@ -366,7 +366,7 @@ UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Opt
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	nameArr.Set(0);
 	Data::ArrayList<Math::Coord2D<Int32>> idArr;
-	retCnt = this->tileMap->GetTileImageIDs(level, rect, &idArr);
+	retCnt = this->tileMap->GetTileImageIDs(level, rect, idArr);
 	UOSInt i = 0;
 	while (i < retCnt)
 	{
@@ -502,7 +502,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 	Math::Geometry::VectorImage *vimg;
 	OSInt i;
 	UOSInt k;
-	Media::ImageList *imgList;
+	Optional<Media::ImageList> imgList;
 	NN<Media::ImageList> nnimgList;
 	Math::RectAreaDbl bounds;
 	NN<Media::SharedImage> shimg;
@@ -530,7 +530,7 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 		return 0;
 	}
 	imgList = this->tileMap->LoadTileImage(level, tileId, this->parsers, bounds, true);
-	if (nnimgList.Set(imgList))
+	if (imgList.SetTo(nnimgList))
 	{
 		cimg = MemAllocANN(CachedImage);
 		cimg->imgId = id;

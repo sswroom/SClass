@@ -278,7 +278,7 @@ Map::TileMap::ImageType Map::OSM::OSMLocalTileMap::GetImageType() const
 	}
 }
 
-UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
+UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
 {
 	Int32 i;
 	Int32 j;
@@ -332,7 +332,7 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
 	NN<IO::StreamData> fd;
@@ -344,7 +344,7 @@ Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::C
 			fd.Delete();
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+				return NN<Media::ImageList>::ConvertFrom(pobj);
 			}
 			pobj.Delete();
 		}

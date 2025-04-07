@@ -1094,6 +1094,7 @@ SOXRFilter.o: ../../src/Media/SOXRFilter.cpp
 !-lsoxr
 StaticEngine.o: ../../src/Media/StaticEngine.cpp
 StaticImage.o: ../../src/Media/StaticImage.cpp
+TIFFTileMap.o: ../../src/Media/TIFFTileMap.cpp
 TimedImageList.o: ../../src/Media/TimedImageList.cpp
 V4LVideoCapture.o: ../../src/Media/V4LVideoCapture.cpp
 VCDMPGFile.o: ../../src/Media/VCDMPGFile.cpp

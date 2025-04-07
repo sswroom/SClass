@@ -25,13 +25,13 @@ Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, U
 Map::MercatorTileMap::~MercatorTileMap()
 {
 	OPTSTR_DEL(this->cacheDir);
-	SDEL_CLASS(this->spkg);
+	this->spkg.Delete();
 	this->csys.Delete();
 }
 
-void Map::MercatorTileMap::SetSPackageFile(IO::SPackageFile *spkg)
+void Map::MercatorTileMap::SetSPackageFile(Optional<IO::SPackageFile> spkg)
 {
-	SDEL_CLASS(this->spkg);
+	this->spkg.Delete();
 	this->spkg = spkg;
 }
 
@@ -42,9 +42,10 @@ Bool Map::MercatorTileMap::HasSPackageFile()
 
 Bool Map::MercatorTileMap::ImportTiles(NN<IO::PackageFile> pkg)
 {
-	if (this->spkg)
+	NN<IO::SPackageFile> spkg;
+	if (this->spkg.SetTo(spkg))
 	{
-		return this->spkg->AddPackage(pkg, '/');
+		return spkg->AddPackage(pkg, '/');
 	}
 	else
 	{
@@ -54,9 +55,10 @@ Bool Map::MercatorTileMap::ImportTiles(NN<IO::PackageFile> pkg)
 
 Bool Map::MercatorTileMap::OptimizeToFile(Text::CStringNN fileName)
 {
-	if (this->spkg)
+	NN<IO::SPackageFile> spkg;
+	if (this->spkg.SetTo(spkg))
 	{
-		return this->spkg->OptimizeFile(fileName);
+		return spkg->OptimizeFile(fileName);
 	}
 	else
 	{
@@ -117,7 +119,7 @@ UOSInt Map::MercatorTileMap::GetTileSize() const
 	return this->tileWidth;
 }
 
-UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
+UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, NN<Data::ArrayList<Math::Coord2D<Int32>>> ids)
 {
 	Int32 i;
 	Int32 j;
@@ -177,7 +179,7 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char url[1024];
 	UnsafeArray<UTF8Char> urlPtr;
@@ -201,6 +203,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
+	NN<IO::SPackageFile> spkg;
 	NN<Text::String> s;
 	if (this->cacheDir.SetTo(s))
 	{
@@ -229,7 +232,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 					{
 						if (pobj->GetParserType() == IO::ParserType::ImageList)
 						{
-							return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+							return NN<Media::ImageList>::ConvertFrom(pobj);
 						}
 						pobj.Delete();
 					}
@@ -247,7 +250,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			}
 		}
 	}
-	else if (this->spkg)
+	else if (this->spkg.SetTo(spkg))
 	{
 		sptru = Text::StrUOSInt(filePathU, level);
 		*sptru++ = '/';
@@ -256,14 +259,14 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NN<IO::StreamData> fd;
-		if (this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
+		if (spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
 		{
 			IO::StmData::BufferedStreamData bsd(fd);
 			if (parsers->ParseFile(bsd).SetTo(pobj))
 			{
 				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+					return NN<Media::ImageList>::ConvertFrom(pobj);
 				}
 				pobj.Delete();
 			}
@@ -317,9 +320,9 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 					fs.SetFileTimes(Data::Timestamp::UtcNow(), Data::Timestamp(0), Data::Timestamp(0));
 				}
 			}
-			else if (this->spkg)
+			else if (this->spkg.SetTo(spkg))
 			{
-				this->spkg->AddFile(mstm.GetBuff(), (UOSInt)mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts);
+				spkg->AddFile(mstm.GetBuff(), (UOSInt)mstm.GetLength(), {filePathU, (UOSInt)(sptru - filePathU)}, ts);
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 			}
 		}
@@ -333,9 +336,9 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		NEW_CLASSNN(nnfd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		fd = nnfd;
 	}
-	else if (this->spkg)
+	else if (this->spkg.SetTo(spkg))
 	{
-		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
+		fd = spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
 	if (fd.SetTo(nnfd))
 	{
@@ -346,7 +349,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			{
 				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
+					return NN<Media::ImageList>::ConvertFrom(pobj);
 				}
 				pobj.Delete();
 			}
@@ -380,6 +383,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	Double y1 = TileY2Lat(tileId.y, level);
 	Double x2 = TileX2Lon(tileId.x + 1, level);
 	Double y2 = TileY2Lat(tileId.y + 1, level);
+	NN<IO::SPackageFile> spkg;
 
 	bounds.Set(Math::RectAreaDbl(Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2)));
 	if (x1 > 180 || y1 < -90)
@@ -428,7 +432,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 		}
 		fd.Delete();
 	}
-	else if (this->spkg)
+	else if (this->spkg.SetTo(spkg))
 	{
 		sptru = Text::StrInt32(filePathU, (Int32)level);
 		*sptru++ = '/';
@@ -449,7 +453,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
-		if (this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
+		if (spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
 		{
 			it.Set(imgt);
 			return fd;
@@ -508,9 +512,9 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 						fs.SetFileTimes(&currTime, 0, 0);
 					}
 				}
-				else if (this->spkg)
+				else if (this->spkg.SetTo(spkg))
 				{
-					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, Data::Timestamp::UtcNow());
+					spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, Data::Timestamp::UtcNow());
 				}
 			}
 			MemFree(imgBuff);
@@ -525,9 +529,9 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		optfd = fd;
 	}
-	else if (this->spkg)
+	else if (this->spkg.SetTo(spkg))
 	{
-		optfd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
+		optfd = spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
 	if (optfd.SetTo(fd))
 	{

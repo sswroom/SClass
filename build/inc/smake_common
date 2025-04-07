@@ -2773,6 +2773,8 @@ Media/StaticEngine.h:
 @StaticEngine.o
 Media/StaticImage.h:
 @StaticImage.o
+Media/TIFFTileMap.h:
+@TIFFTileMap.o
 Media/TimedImageList.h:
 @TimedImageList.o
 Media/V4LVideoCapture.h:
