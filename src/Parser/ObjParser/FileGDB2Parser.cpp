@@ -70,10 +70,10 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 	{
 		NN<DB::DBReader> r;
+		Data::ArrayListStringNN layers;
+		NN<Text::String> layerName;
 		if (fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
-			Data::ArrayListStringNN layers;
-			NN<Text::String> layerName;
 			while (r->ReadNext())
 			{
 				if (!r->IsNull(6) && !r->IsNull(7))
@@ -85,35 +85,49 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 				}
 			}
 			fgdb->CloseReader(r);
-			if (layers.GetCount() > 0)
+		}
+		if (layers.GetCount() == 0)
+		{
+			fgdb->QueryTableNames(0, layers);
+			UOSInt i = layers.GetCount();
+			while (i-- > 0)
 			{
-				UTF8Char sbuff[512];
-				UnsafeArray<UTF8Char> sptr;
-				Map::MapLayerCollection *layerColl;
-				NN<Map::FileGDBLayer> layer;
-				NN<DB::SharedReadingDB> db;
-				UOSInt i;
-				UOSInt j;
-				NEW_CLASSNN(db, DB::SharedReadingDB(fgdb));
-				sptr = pobj->GetSourceNameObj()->ConcatTo(sbuff);
-				i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-				NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
-				i = 0;
-				j = layers.GetCount();
-				while (i < j)
+				layerName = layers.GetItemNoCheck(i);
+				if (layerName->StartsWith(CSTR("GDB_")))
 				{
-					if (layers.GetItem(i).SetTo(layerName))
-					{
-						NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), prjParser));
-						layerColl->Add(layer);
-						layerName->Release();
-					}
-					i++;
+					layerName->Release();
+					layers.RemoveAt(i);
 				}
-				db->UnuseObject();
-				SDEL_CLASS(relObj);
-				return layerColl;
 			}
+		}
+		if (layers.GetCount() > 0)
+		{
+			UTF8Char sbuff[512];
+			UnsafeArray<UTF8Char> sptr;
+			Map::MapLayerCollection *layerColl;
+			NN<Map::FileGDBLayer> layer;
+			NN<DB::SharedReadingDB> db;
+			UOSInt i;
+			UOSInt j;
+			NEW_CLASSNN(db, DB::SharedReadingDB(fgdb));
+			sptr = pobj->GetSourceNameObj()->ConcatTo(sbuff);
+			i = Text::StrLastIndexOfC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+			NEW_CLASS(layerColl, Map::MapLayerCollection(CSTRP(sbuff, sptr), CSTRP(&sbuff[i + 1], sptr)));
+			i = 0;
+			j = layers.GetCount();
+			while (i < j)
+			{
+				if (layers.GetItem(i).SetTo(layerName))
+				{
+					NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), prjParser));
+					layerColl->Add(layer);
+					layerName->Release();
+				}
+				i++;
+			}
+			db->UnuseObject();
+			SDEL_CLASS(relObj);
+			return layerColl;
 		}
 	}
 	SDEL_CLASS(relObj);

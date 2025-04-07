@@ -63,9 +63,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtInside;
 
 			NN<UI::GUITabPage> tpAutoSave;
+			NN<UI::GUILabel> lblAutoSaveAction;
+			NN<UI::GUIComboBox> cboAutoSaveAction;
 			NN<UI::GUILabel> lblAutoSavePath;
 			NN<UI::GUITextBox> txtAutoSavePath;
-			NN<UI::GUICheckBox> chkAutoOpen;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<IMapNavigator> navi;
