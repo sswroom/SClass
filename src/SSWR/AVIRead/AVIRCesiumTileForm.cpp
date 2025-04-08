@@ -58,7 +58,14 @@ private:
 				{
 					let tileset = await Cesium.Cesium3DTileset.fromUrl(tiles[t], {
 						maximumScreenSpaceError : 1,
-						maximumNumberOfLoadedTiles : 3000
+						maximumNumberOfLoadedTiles : 3000,
+						skipLevelOfDetail: true,
+						baseScreenSpaceError: 1024,
+						skipScreenSpaceErrorFactor: 16,
+						skipLevels: 1,
+						immediatelyLoadDesiredLevelOfDetail: false,
+						loadSiblings: false,
+						cullWithChildrenBounds: true
 					});
 					viewer.scene.primitives.add(tileset);
 					if (!found)
@@ -121,8 +128,15 @@ private:
 "				for (t in tiles)\n"
 "				{\n"
 "					let tileset = await Cesium.Cesium3DTileset.fromUrl(tiles[t], {\n"
-"						maximumScreenSpaceError : 1,\n"
-"						maximumNumberOfLoadedTiles : 3000\n"
+//"						maximumScreenSpaceError : 1,\n"
+//"						maximumNumberOfLoadedTiles : 3000,\n"
+"						skipLevelOfDetail: true,\n"
+"						baseScreenSpaceError: 1024,\n"
+"						skipScreenSpaceErrorFactor: 16,\n"
+"						skipLevels: 1,\n"
+"						immediatelyLoadDesiredLevelOfDetail: false,\n"
+"						loadSiblings: false,\n"
+"						cullWithChildrenBounds: true\n"
 "					});\n"
 "					viewer.scene.primitives.add(tileset);\n"
 "					if (!found)\n"
@@ -236,7 +250,7 @@ SSWR::AVIRead::AVIRCesiumTileForm::AVIRCesiumTileForm(Optional<UI::GUIClientCont
 		i++;
 	}
 	NEW_CLASSNN(this->hdlr, AVIRCesiumTileHandler(this->tileList));
-	NEW_CLASSNN(this->listener, Net::WebServer::WebListener(core->GetTCPClientFactory(), 0, this->hdlr, 0, 30, 1, 4, CSTR("CesiumTile/1.0"), false, Net::WebServer::KeepAlive::Always, true));
+	NEW_CLASSNN(this->listener, Net::WebServer::WebListener(core->GetTCPClientFactory(), 0, this->hdlr, 0, 30, 1, 6, CSTR("CesiumTile/1.0"), false, Net::WebServer::KeepAlive::Always, true));
 	UInt16 port = this->listener->GetListenPort();
 	if (port != 0)
 	{

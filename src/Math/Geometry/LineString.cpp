@@ -1259,12 +1259,28 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Da
 	UOSInt j = lines->GetCount();
 	UOSInt k;
 	NN<LineString> ls;
+	NN<LineString> ls2;
 	UInt32 srid;
 	ls = lines->GetItemNoCheck(0);
 	srid = ls->GetSRID();
 	if (!ls->HasM()) hasM = false;
 	if (!ls->HasZ()) hasZ = false;
-	lastPt = ls->GetPoint(ls->GetPointCount() - 1);
+	if (j > 1)
+	{
+		ls2 = lines->GetItemNoCheck(1);
+		lastPt = ls->GetPoint(ls->GetPointCount() - 1);
+		if (ls2->GetPoint(0) == lastPt || ls2->GetPoint(ls2->GetPointCount() - 1) == lastPt)
+		{
+		}
+		else
+		{
+			lastPt = ls->GetPoint(0);
+		}
+	}
+	else
+	{
+		lastPt = ls->GetPoint(ls->GetPointCount() - 1);
+	}
 	nPoints = ls->GetPointCount();
 	while (i < j)
 	{
@@ -1284,6 +1300,14 @@ Optional<Math::Geometry::LineString> Math::Geometry::LineString::JoinLines(NN<Da
 		}
 		else
 		{
+/*			printf("LineString.JoinLines: two lines cannot join, Lines: %d/%d\r\n", (UInt32)i, (UInt32)j);
+			Math::WKTWriter writer;
+			Text::StringBuilderUTF8 sb;
+			writer.ToText(sb, ls);
+			printf("LineString.JoinLines: this line: %s\r\n", sb.v.Ptr());
+			sb.ClearStr();
+			writer.ToText(sb, lines->GetItemNoCheck(i - 1));
+			printf("LineString.JoinLines: last line: %s\r\n", sb.v.Ptr());*/
 			return 0;
 		}
 		i++;
