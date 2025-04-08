@@ -97,7 +97,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(NN<Net::ASN1PDUBuilder> builder, NN
 		builder->AppendNull();
 		builder->EndLevel();
 		NN<Crypto::Cert::X509Key> pubKey;
-		if (!key->CreatePublicKey().SetTo(pubKey))
+		if (!key->ExtractPublicKey().SetTo(pubKey))
 		{
 			return false;
 		}

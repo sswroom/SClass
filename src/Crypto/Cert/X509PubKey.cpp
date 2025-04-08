@@ -124,14 +124,35 @@ NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType
 	keyPDU.BeginSequence();
 	Text::CStringNN oidStr = KeyTypeGetOID(keyType);
 	keyPDU.AppendOIDString(oidStr);
-	keyPDU.AppendNull();
-	keyPDU.EndLevel();
 	if (keyType == KeyType::RSAPublic)
 	{
+		keyPDU.AppendNull();
+		keyPDU.EndLevel();
 		keyPDU.AppendBitString(0, buff, buffSize);
+	}
+	else if (keyType == KeyType::ECDSA)
+	{
+		UOSInt pduLen;
+		Net::ASN1Util::ItemType pduType;
+		UnsafeArray<const UInt8> pdu;
+		if (Net::ASN1Util::PDUGetItem(buff, buff + buffSize, "1.3.1", pduLen, pduType).SetTo(pdu) && pduType == Net::ASN1Util::ItemType::IT_OID)
+		{
+			keyPDU.AppendOID(pdu, pduLen);
+		}
+		else
+		{
+			keyPDU.AppendNull();
+		}
+		keyPDU.EndLevel();
+		if (Net::ASN1Util::PDUGetItem(buff, buff + buffSize, "1.4.1", pduLen, pduType).SetTo(pdu) && pduType == Net::ASN1Util::ItemType::IT_BIT_STRING)
+		{
+			keyPDU.AppendBitString(pdu[0], pdu + 1, pduLen - 1);
+		}
 	}
 	else
 	{
+		keyPDU.AppendNull();
+		keyPDU.EndLevel();
 		keyPDU.AppendBitString(0, buff, buffSize);
 	}
 	keyPDU.EndLevel();

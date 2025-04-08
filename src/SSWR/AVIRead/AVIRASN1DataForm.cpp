@@ -23,7 +23,9 @@ enum MenuItem
 	MNU_VIEW_HEX = 101,
 	MNU_CERT_0 = 500,
 	MNU_KEY_CREATE = 600,
-	MNU_CERT_EXT_KEY = 601
+	MNU_CERT_EXT_KEY = 601,
+	MNU_KEY_PUBLICKEY = 602,
+	MNU_KEY_PRIVATEKEY = 603
 };
 
 UOSInt SSWR::AVIRead::AVIRASN1DataForm::AddHash(NN<UI::GUIComboBox> cbo, Crypto::Hash::HashType hashType, Crypto::Hash::HashType targetType)
@@ -654,6 +656,16 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(Optional<UI::GUIClientControl>
 			mnu2 = mnu->AddSubMenu(CSTR("Key"));
 			mnu2->AddItem(CSTR("Extract Key"), MNU_CERT_EXT_KEY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		}
+		else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
+		{
+			mnu2 = mnu->AddSubMenu(CSTR("Key"));
+			mnu2->AddItem(CSTR("To Public Key"), MNU_KEY_PUBLICKEY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			NN<Crypto::Cert::X509Key> key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
+			if (key->IsPrivateKey())
+			{
+				mnu2->AddItem(CSTR("To Private Key"), MNU_KEY_PRIVATEKEY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			}
+		}
 	}
 	this->SetMenu(this->mnuMain);
 
@@ -920,6 +932,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 				this->core->OpenObject(key);
 			}
 		}
+		break;
 	case MNU_CERT_EXT_KEY:
 		{
 			NN<Crypto::Cert::X509Key> key;
@@ -928,6 +941,22 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 				this->core->OpenObject(key);
 			}
 		}
+		break;
+	case MNU_KEY_PUBLICKEY:
+		{
+			NN<Crypto::Cert::X509PubKey> key = Crypto::Cert::X509PubKey::CreateFromKey(NN<Crypto::Cert::X509Key>::ConvertFrom(this->asn1));
+			this->core->OpenObject(key);
+		}
+		break;
+	case MNU_KEY_PRIVATEKEY:
+		{
+			NN<Crypto::Cert::X509PrivKey> key;
+			if (Crypto::Cert::X509PrivKey::CreateFromKey(NN<Crypto::Cert::X509Key>::ConvertFrom(this->asn1)).SetTo(key))
+			{
+				this->core->OpenObject(key);
+			}
+		}
+		break;
 	default:
 		if (cmdId >= MNU_CERT_0)
 		{

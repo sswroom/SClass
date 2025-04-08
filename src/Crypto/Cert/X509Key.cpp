@@ -264,7 +264,7 @@ Bool Crypto::Cert::X509Key::IsPrivateKey() const
 	}
 }
 
-Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::CreatePublicKey() const
+Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::ExtractPublicKey() const
 {
 	if (this->keyType == KeyType::RSAPublic)
 	{
@@ -302,7 +302,7 @@ Bool Crypto::Cert::X509Key::GetKeyId(const Data::ByteArray &keyId) const
 		return false;
 	}
 	NN<Crypto::Cert::X509Key> pubKey;
-	if (this->CreatePublicKey().SetTo(pubKey))
+	if (this->ExtractPublicKey().SetTo(pubKey))
 	{
 		Crypto::Hash::SHA1 sha1;
 		sha1.Calc(pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());

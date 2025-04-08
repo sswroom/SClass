@@ -28,7 +28,7 @@ namespace Crypto
 			KeyType GetKeyType() const;
 			UOSInt GetKeySizeBits() const;
 			Bool IsPrivateKey() const;
-			Optional<Crypto::Cert::X509Key> CreatePublicKey() const;
+			Optional<Crypto::Cert::X509Key> ExtractPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 
 			virtual UnsafeArrayOpt<const UInt8> GetRSAModulus(OptOut<UOSInt> size) const;

@@ -3414,3 +3414,32 @@ Optional<Crypto::Cert::X509File> Crypto::Cert::X509File::CreateFromCertsAndClear
 		return certList;
 	}
 }
+
+UOSInt Crypto::Cert::X509File::ECSignData2RAW(UnsafeArray<UInt8> outBuff, Data::ByteArrayR signData)
+{
+	UnsafeArray<const UInt8> buff1;
+	UOSInt len1;
+	UnsafeArray<const UInt8> buff2;
+	UOSInt len2;
+	Net::ASN1Util::ItemType type1;
+	Net::ASN1Util::ItemType type2;
+	if (Net::ASN1Util::PDUGetItem(signData.Arr(), signData.ArrEnd(), "1.1", len1, type1).SetTo(buff1) &&
+		Net::ASN1Util::PDUGetItem(signData.Arr(), signData.ArrEnd(), "1.2", len2, type2).SetTo(buff2) &&
+		type1 == Net::ASN1Util::ItemType::IT_INTEGER && type2 == Net::ASN1Util::ItemType::IT_INTEGER)
+	{
+		if (buff1[0] == 0)
+		{
+			buff1++;
+			len1--;
+		}
+		if (buff2[0] == 0)
+		{
+			buff2++;
+			len2--;
+		}
+		MemCopyNO(outBuff.Ptr(), buff1.Ptr(), len1);
+		MemCopyNO(&outBuff[len1], buff2.Ptr(), len2);
+		return len1 + len2;
+	}
+	return 0;
+}

@@ -231,6 +231,7 @@ namespace Crypto
 			static Crypto::Hash::HashType HashTypeFromOID(Data::ByteArrayR oid);
 			static Optional<X509File> CreateFromCerts(NN<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs);
 			static Optional<X509File> CreateFromCertsAndClear(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> certs);
+			static UOSInt ECSignData2RAW(UnsafeArray<UInt8> outBuff, Data::ByteArrayR signData);
 		};
 	}
 }

@@ -1484,6 +1484,7 @@ URL.o: ../../src/Net/URL.cpp
 UserAgentDB.o: ../../src/Net/UserAgentDB.cpp
 WebBrowser.o: ../../src/Net/WebBrowser.cpp
 WebDriver.o: ../../src/Net/WebDriver.cpp
+WebPushClient.o: ../../src/Net/WebPushClient.cpp
 WebSocketClient.o: ../../src/Net/WebSocketClient.cpp
 WebStatus.o: ../../src/Net/WebStatus.cpp
 WebUtil.o: ../../src/Net/WebUtil.cpp

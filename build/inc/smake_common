@@ -3390,6 +3390,8 @@ Net/WebBrowser.h:
 @WebBrowser.o
 Net/WebDriver.h:
 @WebDriver.o
+Net/WebPushClient.h:
+@WebPushClient.o
 Net/WebSocketClient.h:
 @WebSocketClient.o
 Net/WebStatus.h:
