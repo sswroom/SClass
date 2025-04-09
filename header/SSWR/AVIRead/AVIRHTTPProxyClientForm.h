@@ -47,6 +47,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtTimeResp;
 			NN<UI::GUILabel> lblTimeTotal;
 			NN<UI::GUITextBox> txtTimeTotal;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblDownSize;
+			NN<UI::GUITextBox> txtDownSize;
 			NN<UI::GUIListView> lvHeaders;
 
 			NN<Net::SocketFactory> sockf;
@@ -66,6 +70,8 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
+			Net::WebStatus::StatusCode respStatus;
+			UInt64 respDownSize;
 			Data::ArrayListStringNN respHeaders;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);

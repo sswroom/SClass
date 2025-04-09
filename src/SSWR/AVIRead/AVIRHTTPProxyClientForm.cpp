@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Manage/HiResClock.h"
 #include "Net/HTTPProxyClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPProxyClientForm.h"
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
@@ -46,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType 
 
 	sb.ClearStr();
 	me->txtURL->GetText(sb);
-	if (!sb.StartsWith(UTF8STRC("http://")))
+	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
 		OPTSTR_DEL(me->reqUser);
 		OPTSTR_DEL(me->reqPwd);
@@ -70,14 +71,15 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 {
 	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	NN<Text::String> currURL;
-	NN<Net::HTTPProxyClient> cli;
+	NN<Net::HTTPClient> cli;
+	Optional<Net::SSLEngine> ssl;
 	UInt8 buff[4096];
+	UOSInt readSize;
+	UInt64 totalSize;
 	UnsafeArray<UTF8Char> sbuff;
 	UnsafeArray<UTF8Char> sptr;
 	Optional<Text::String> userName;
 	Optional<Text::String> password;
-	NN<Text::String> nnuserName;
-	NN<Text::String> nnpassword;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -86,21 +88,21 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 	{
 		if (me->reqURL.SetTo(currURL) && !me->respChanged)
 		{
+			Net::TCPClientFactory clif(me->sockf);
+			ssl = Net::SSLEngineFactory::Create(clif, false);
 			userName = Text::String::CopyOrNull(me->reqUser);
 			password = Text::String::CopyOrNull(me->reqPwd);
 			me->reqURL = 0;
-
-			NEW_CLASSNN(cli, Net::HTTPProxyClient(me->core->GetTCPClientFactory(), false, me->proxyIP, me->proxyPort));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, me->proxyIP);
+			clif.SetProxy(CSTRP(sbuff, sptr), me->proxyPort, OPTSTR_CSTR(userName), OPTSTR_CSTR(password));
+			cli = Net::HTTPClient::CreateClient(clif, ssl, 0, false, currURL->StartsWith(CSTR("https://")));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, me->respTimeDNS, me->respTimeConn, false);
-			if (userName.SetTo(nnuserName) && password.SetTo(nnpassword))
-			{
-				cli->SetAuthen(Net::HTTPProxyTCPClient::PWDT_BASIC, nnuserName->v, nnpassword->v);
-			}
 			cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 			cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 			cli->EndRequest(me->respTimeReq, me->respTimeResp);
-			while (cli->Read(BYTEARR(buff)) > 0);
+			totalSize = 0;
+			while ((readSize = cli->Read(BYTEARR(buff))) > 0) totalSize += readSize;
 			me->respTimeTotal = cli->GetTotalTime();
 			me->ClearHeaders();
 			i = 0;
@@ -112,13 +114,16 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 				i++;
 			}
 			me->respSvrAddr = cli->GetSvrAddr().Ptr()[0];
+			me->respStatus = cli->GetRespStatus();
 
 			cli.Delete();
 			me->respChanged = true;
+			me->respDownSize = totalSize;
 
 			currURL->Release();
 			OPTSTR_DEL(userName);
 			OPTSTR_DEL(password);
+			ssl.Delete();
 		}
 		me->threadEvt->Wait(1000);
 	}
@@ -185,6 +190,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(AnyType userO
 			sptr = Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
 			me->txtTimeTotal->SetText(CSTRP(sbuff, sptr));
 		}
+		sptr = Text::StrInt32(sbuff, (Int32)me->respStatus);
+		me->txtStatus->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt64(sbuff, me->respDownSize);
+		me->txtDownSize->SetText(CSTRP(sbuff, sptr));
 
 		me->lvHeaders->ClearItems();
 		i = 0;
@@ -254,7 +263,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->grpResponse = ui->NewGroupBox(*this, CSTR("Response"));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pnlResponse = ui->NewPanel(this->grpResponse);
-	this->pnlResponse->SetRect(0, 0, 100, 151, false);
+	this->pnlResponse->SetRect(0, 0, 100, 199, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblSvrIP = ui->NewLabel(this->pnlResponse, CSTR("Server IP"));
 	this->lblSvrIP->SetRect(4, 4, 100, 23, false);
@@ -286,6 +295,16 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUI
 	this->txtTimeTotal = ui->NewTextBox(this->pnlResponse, CSTR(""));
 	this->txtTimeTotal->SetRect(104, 124, 150, 23, false);
 	this->txtTimeTotal->SetReadOnly(true);
+	this->lblStatus = ui->NewLabel(this->pnlResponse, CSTR("Status"));
+	this->lblStatus->SetRect(4, 148, 100, 23, false);
+	this->txtStatus = ui->NewTextBox(this->pnlResponse, CSTR(""));
+	this->txtStatus->SetRect(104, 148, 150, 23, false);
+	this->txtStatus->SetReadOnly(true);
+	this->lblDownSize = ui->NewLabel(this->pnlResponse, CSTR("Download Size"));
+	this->lblDownSize->SetRect(4, 172, 100, 23, false);
+	this->txtDownSize = ui->NewTextBox(this->pnlResponse, CSTR(""));
+	this->txtDownSize->SetRect(104, 172, 150, 23, false);
+	this->txtDownSize->SetReadOnly(true);
 	this->lvHeaders = ui->NewListView(this->grpResponse, UI::ListViewStyle::Table, 1);
 	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvHeaders->SetShowGrid(true);

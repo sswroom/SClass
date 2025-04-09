@@ -28,6 +28,26 @@ NN<Net::SocketFactory> Net::TCPClientFactory::GetSocketFactory() const
 	return this->sockf;
 }
 
+Text::CString Net::TCPClientFactory::GetProxyHost() const
+{
+	return this->proxyHost;
+}
+
+UInt16 Net::TCPClientFactory::GetProxyPort() const
+{
+	return this->proxyPort;
+}
+
+Text::CString Net::TCPClientFactory::GetProxyUser() const
+{
+	return this->proxyUser;
+}
+
+Text::CString Net::TCPClientFactory::GetProxyPwd() const
+{
+	return this->proxyPwd;
+}
+
 NN<Net::TCPClient> Net::TCPClientFactory::Create(Text::CStringNN name, UInt16 port, Data::Duration timeout)
 {
 	NN<TCPClient> cli;

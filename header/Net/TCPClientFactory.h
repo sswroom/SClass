@@ -19,6 +19,10 @@ namespace Net
 
 		void SetProxy(Text::CStringNN proxyHost, UInt16 proxyPort, Text::CString proxyUser, Text::CString proxyPwd);
 		NN<Net::SocketFactory> GetSocketFactory() const;
+		Text::CString GetProxyHost() const;
+		UInt16 GetProxyPort() const;
+		Text::CString GetProxyUser() const;
+		Text::CString GetProxyPwd() const;
 
 		NN<TCPClient> Create(Text::CStringNN name, UInt16 port, Data::Duration timeout);
 		NN<TCPClient> Create(UInt32 ip, UInt16 port, Data::Duration timeout);

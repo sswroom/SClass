@@ -8,9 +8,6 @@
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"
 #include "Net/HTTPProxyClient.h"
-#include "Sync/Event.h"
-#include "Text/Encoding.h"
-#include "Text/EncodingFactory.h"
 #include "Text/MyString.h"
 
 //#define SHOWDEBUG
@@ -21,14 +18,40 @@
 
 #define BUFFSIZE 2048
 
-Net::HTTPProxyClient::HTTPProxyClient(NN<Net::TCPClientFactory> clif, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(clif, 0, CSTR_NULL, noShutdown)
+void Net::HTTPProxyClient::AddProxyAuthen()
+{
+	NN<Text::String> userName;
+	NN<Text::String> password;
+	if (this->proxyUser.SetTo(userName) && this->proxyPwd.SetTo(password))
+	{
+		UTF8Char userPwd[128];
+		UTF8Char buff[512];
+		UnsafeArray<UTF8Char> sptr2 = userPwd;
+		UnsafeArray<UTF8Char> sptr;
+		sptr2 = userName->ConcatTo(sptr2);
+		*sptr2++ = ':';
+		sptr2 = password->ConcatTo(sptr2);
+
+		sptr = Text::StrConcatC(buff, UTF8STRC("BASIC "));
+		Crypto::Encrypt::Base64 b64;
+		sptr = sptr + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr);
+		*sptr = 0;
+		this->AddHeaderC(CSTR("Proxy-Authorization"), {(const UTF8Char*)buff, (UOSInt)(sptr - buff)});
+	}
+}
+
+Net::HTTPProxyClient::HTTPProxyClient(NN<Net::TCPClientFactory> clif, Text::CString userAgent, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(clif, 0, userAgent, true)
 {
 	this->proxyIP = proxyIP;
 	this->proxyPort = proxyPort;
+	this->proxyUser = 0;
+	this->proxyPwd = 0;
 }
 
 Net::HTTPProxyClient::~HTTPProxyClient()
 {
+	OPTSTR_DEL(this->proxyUser);
+	OPTSTR_DEL(this->proxyPwd);
 }
 
 Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders)
@@ -78,7 +101,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 		this->svrAddr.addrType = Net::AddrType::IPv4;
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
-		cli = this->clif->Create(this->proxyIP, this->proxyPort, 30000);
+		NEW_CLASSNN(cli, Net::TCPClient(this->clif->GetSocketFactory(), this->proxyIP, this->proxyPort, 30000));
 		t1 = this->clk.GetTimeDiff();
 		timeConn.Set(t1);
 #ifdef DEBUGSPEED
@@ -117,8 +140,28 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 			}
 			cptr = url.ConcatTo(cptr);
 			cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
-			cli->Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - dataBuff)));
-			cli->Write(Data::ByteArrayR((UInt8*)host, (UOSInt)(hostEnd - host)));
+			this->reqMstm.Write(Data::ByteArrayR(dataBuff, (UOSInt)(cptr - dataBuff)));
+			this->reqMstm.Write(Data::ByteArrayR((UInt8*)host, (UOSInt)(hostEnd - host)));
+#ifdef SHOWDEBUG
+			printf("Request Data: %s", dataBuff.Ptr());
+			printf("Add Header: %s", host);
+#endif
+
+			if (defHeaders)
+			{
+				this->AddHeaderC(CSTR("User-Agent"), this->userAgent->ToCString());
+				this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+				this->AddHeaderC(CSTR("Accept-Language"), CSTR("*"));
+				if (this->kaConn)
+				{
+					this->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
+				}
+				else
+				{
+					this->AddHeaderC(CSTR("Connection"), CSTR("close"));
+				}
+			}
+			this->AddProxyAuthen();
 			return true;
 		}
 	}
@@ -130,24 +173,18 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	}
 }
 
-Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdType, UnsafeArray<const UTF8Char> userName, UnsafeArray<const UTF8Char> password)
+Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdType, Text::CStringNN userName, Text::CStringNN password)
 {
 	if (pwdType == Net::HTTPProxyTCPClient::PWDT_BASIC)
 	{
-		UTF8Char userPwd[128];
-		UTF8Char buff[512];
-		UnsafeArray<UTF8Char> sptr2 = userPwd;
-		UnsafeArray<UTF8Char> sptr;
-		Text::Encoding enc(65001);
-		sptr2 = Text::StrConcat(sptr2, userName);
-		*sptr2++ = ':';
-		sptr2 = Text::StrConcat(sptr2, password);
-
-		sptr = Text::StrConcatC(buff, UTF8STRC("BASIC "));
-		Crypto::Encrypt::Base64 b64;
-		sptr = sptr + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr);
-		*sptr = 0;
-		this->AddHeaderC(CSTR("Proxy-Authorization"), {(const UTF8Char*)buff, (UOSInt)(sptr - buff)});
+		OPTSTR_DEL(this->proxyUser);
+		OPTSTR_DEL(this->proxyPwd);
+		this->proxyUser = Text::String::New(userName);
+		this->proxyPwd = Text::String::New(password);
+		if (this->cli.NotNull())
+		{
+			this->AddProxyAuthen();
+		}
 		return true;
 	}
 	return false;

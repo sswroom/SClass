@@ -6,6 +6,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/HTTPMyClient.h"
 #include "Net/HTTPOSClient.h"
+#include "Net/HTTPProxyClient.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
@@ -555,9 +556,20 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 NN<Net::HTTPClient> Net::HTTPClient::CreateClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
 {
 	NN<Net::HTTPClient> cli;
+	Text::CStringNN host;
+	Text::CStringNN userName;
+	Text::CStringNN password;
 	if (isSecure && ssl.IsNull())
 	{
 		NEW_CLASSNN(cli, Net::HTTPOSClient(clif, userAgent, kaConn));
+	}
+	else if (!isSecure && clif->GetProxyHost().SetTo(host))
+	{
+		NEW_CLASSNN(cli, Net::HTTPProxyClient(clif, userAgent, clif->GetSocketFactory()->DNSResolveIPv4(host), clif->GetProxyPort()));
+		if (clif->GetProxyUser().SetTo(userName) && clif->GetProxyPwd().SetTo(password))
+		{
+			NN<Net::HTTPProxyClient>::ConvertFrom(cli)->SetAuthen(Net::HTTPProxyTCPClient::PWDT_BASIC, userName, password);
+		}
 	}
 	else
 	{
