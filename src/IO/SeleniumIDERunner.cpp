@@ -137,18 +137,28 @@ IO::SeleniumIDERunner::SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 
 	sb.Append(CSTR("http://localhost:"));
 	sb.AppendU16(port);
 	this->webdriverURL = Text::String::New(sb.ToCString());
+	this->userDataDir = 0;
 	this->noPause = false;
 }
 
 IO::SeleniumIDERunner::~SeleniumIDERunner()
 {
 	OPTSTR_DEL(this->lastErrorMsg);
+	OPTSTR_DEL(this->userDataDir);
 	this->webdriverURL->Release();
 }
 
 Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless)
 {
 	NN<Net::WebDriverBrowserOptions> browser = CreateBrowserOptions(browserType, mobileDevice, headless);
+	NN<Text::String> s;
+	if (browserType == BrowserType::MSEdge && this->userDataDir.SetTo(s))
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("--user-data-dir="));
+		sb.Append(s);
+		NN<Net::WebDriverMSEdgeOptions>::ConvertFrom(browser)->AddArgs(sb.ToCString());
+	}
 	Net::WebDriverStartSession param(browser);
 	NN<Net::WebDriverSession> sess;
 	NN<GPSPosition> nnlocation;

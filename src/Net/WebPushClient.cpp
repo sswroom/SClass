@@ -13,7 +13,7 @@ Net::WebPushClient::~WebPushClient()
 {
 }
 
-Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key> key, Text::CStringNN email, Text::CStringNN data, UOSInt ttl) const
+Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key> key, Text::CStringNN email, UOSInt ttl) const
 {
 	if (key->GetKeyType() != Crypto::Cert::X509File::KeyType::ECDSA)
 	{
@@ -64,18 +64,18 @@ Bool Net::WebPushClient::Push(Text::CStringNN endPoint, NN<Crypto::Cert::X509Key
 	printf("WebPushClient.Push: Authorization: %s\r\n", sb.v.Ptr());
 	printf("WebPushClient.Push: Crypto-Key: %s\r\n", sbKey.v.Ptr());
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, endPoint, Net::WebUtil::RequestMethod::HTTP_POST, false);
-	cli->AddContentLength(data.leng);
+	cli->AddContentLength(0);
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
 	cli->AddHeaderC(CSTR("Crypto-Key"), sbKey.ToCString());
 	sb.ClearStr();
 	sb.AppendUOSInt(ttl);
 	cli->AddHeaderC(CSTR("TTL"), sb.ToCString());
-	cli->WriteCont(data.v, data.leng);
+	cli->WriteCont(signData, 0);
 	sb.ClearStr();
 	cli->ReadAllContent(sb, 16384, 1048576);
 	Net::WebStatus::StatusCode sc = cli->GetRespStatus();
 	printf("WebPushClient.Push: Status = %d\r\n", (UInt32)sc);
 	printf("WebPushClient.Push: %s\r\n", sb.v.Ptr());
 	cli.Delete();
-	return sc == Net::WebStatus::SC_OK;
+	return ((Int32)sc / 100) == 2;
 }

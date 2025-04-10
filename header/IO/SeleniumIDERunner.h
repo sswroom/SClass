@@ -39,6 +39,7 @@ namespace IO
 		UOSInt lastErrorIndex;
 		Optional<Text::String> lastErrorMsg;
 		NN<Text::String> webdriverURL;
+		Optional<Text::String> userDataDir;
 		Bool noPause;
 
 		Bool ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex);
@@ -57,6 +58,7 @@ namespace IO
 		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless, StepStatusHandler statusHdlr, AnyType userObj);
 		void SetURL(Text::CStringNN url) { this->webdriverURL->Release(); this->webdriverURL = Text::String::New(url); }
 		void SetNoPause(Bool noPause) { this->noPause = noPause; }
+		void SetUserDataDir(Text::CStringNN userDataDir) { OPTSTR_DEL(this->userDataDir); this->userDataDir = Text::String::New(userDataDir); }
 		Optional<Text::String> GetLastErrorMsg() const { return this->lastErrorMsg; }
 		UOSInt GetLastErrorIndex() const { return this->lastErrorIndex; }
 		Optional<Net::WebDriverBy> ParseBy(Text::CStringNN by, UOSInt currIndex);

@@ -4431,6 +4431,8 @@ SSWR/AVIRead/AVIRVideoInfoForm.h:
 @AVIRVideoInfoForm.o
 SSWR/AVIRead/AVIRVoiceModemForm.h:
 @AVIRVoiceModemForm.o
+SSWR/AVIRead/AVIRWebPushForm.h:
+@AVIRWebPushForm.o
 SSWR/AVIRead/AVIRWebSite7gogoForm.h:
 @AVIRWebSite7gogoForm.o
 SSWR/AVIRead/AVIRWebSite48IdolForm.h:

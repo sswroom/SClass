@@ -2042,6 +2042,7 @@ AVIRVBoxManagerForm.o: ../../src/SSWR/AVIRead/AVIRVBoxManagerForm.cpp
 AVIRVideoCheckerForm.o: ../../src/SSWR/AVIRead/AVIRVideoCheckerForm.cpp
 AVIRVideoInfoForm.o: ../../src/SSWR/AVIRead/AVIRVideoInfoForm.cpp
 AVIRVoiceModemForm.o: ../../src/SSWR/AVIRead/AVIRVoiceModemForm.cpp
+AVIRWebPushForm.o: ../../src/SSWR/AVIRead/AVIRWebPushForm.cpp
 AVIRWebSite7gogoForm.o: ../../src/SSWR/AVIRead/AVIRWebSite7gogoForm.cpp
 AVIRWebSite48IdolForm.o: ../../src/SSWR/AVIRead/AVIRWebSite48IdolForm.cpp
 AVIRWebSiteInstagramForm.o: ../../src/SSWR/AVIRead/AVIRWebSiteInstagramForm.cpp

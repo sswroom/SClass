@@ -248,6 +248,7 @@
 #include "SSWR/AVIRead/AVIRVideoCheckerForm.h"
 #include "SSWR/AVIRead/AVIRVideoInfoForm.h"
 #include "SSWR/AVIRead/AVIRVoiceModemForm.h"
+#include "SSWR/AVIRead/AVIRWebPushForm.h"
 #include "SSWR/AVIRead/AVIRWebSite7gogoForm.h"
 #include "SSWR/AVIRead/AVIRWebSite48IdolForm.h"
 #include "SSWR/AVIRead/AVIRWebSiteInstagramForm.h"
@@ -538,7 +539,8 @@ typedef enum
 	MNU_PRIVKEY_ECDSA521,
 	MNU_MDNS,
 	MNU_WSDISCOVERY,
-	MNU_WSDLISTENER
+	MNU_WSDLISTENER,
+	MNU_WEBPUSH
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -843,6 +845,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2 = mnu->AddSubMenu(CSTR("Web API"));
 	mnu2->AddItem(CSTR("SolarEdge"), MNU_WEBAPI_SOLAREDGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Google FCM"), MNU_GOOGLE_FCM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Web Push"), MNU_WEBPUSH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3 = mnu2->AddSubMenu(CSTR("HK Observatory"));
 	mnu3->AddItem(CSTR("9-day Weather Forecast"), MNU_HKO_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("Local Weather Forecast"), MNU_HKO_LOCAL_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -3144,6 +3147,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRWSDListenerForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWSDListenerForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_WEBPUSH:
+		{
+			NN<SSWR::AVIRead::AVIRWebPushForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebPushForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

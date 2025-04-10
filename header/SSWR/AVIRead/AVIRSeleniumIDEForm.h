@@ -48,6 +48,8 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboTestBrowser;
 			NN<UI::GUICheckBox> chkTestMobile;
 			NN<UI::GUIComboBox> cboTestMobile;
+			NN<UI::GUICheckBox> chkTestUserDataDir;
+			NN<UI::GUITextBox> txtTestUserDataDir;
 			NN<UI::GUIButton> btnTestRun;
 			NN<UI::GUITabControl> tcTest;
 			NN<UI::GUITabPage> tpCommand;
