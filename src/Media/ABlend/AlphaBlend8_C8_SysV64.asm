@@ -48,7 +48,10 @@ _AlphaBlend8_C8_DoBlend:
 
 	mov rdx,qword [rsp+24] ;rgbTable
 	shr r8,1
-	jb iabbldlopodd
+	jnbe iabbldlop
+	jz iabbldlopone
+	jmp iabbldlopodd
+
 	ALIGN 16
 iabbldlop:
 	mov rcx,r8 ;width
@@ -313,6 +316,73 @@ iadbldlopodd2:
 	pop rbp
 	ret
 	
+	ALIGN 16
+iabbldlopone:
+	mov al,byte [rsi+3]
+	mov ah,al
+	movzx ebx,ax
+	shl eax,16
+	or eax,ebx
+
+	movd xmm0,eax
+	mov ebx,-1
+	sub ebx,eax
+	movd xmm3,ebx
+
+	movzx rax,byte [rsi+2]
+	movq xmm1,[rdx+rax*8+262144]
+	movzx rax,byte [rsi+1]
+	movq xmm2,[rdx+rax*8+264192]
+	paddsw xmm1,xmm2
+	movzx rax,byte [rsi+0]
+	movq xmm2,[rdx+rax*8+266240]
+	paddsw xmm1,xmm2
+	movzx rax,byte [rsi+3]
+	movq xmm2,[rdx+rax*8+268288]
+	paddsw xmm1,xmm2
+
+	punpcklbw xmm0,xmm0
+	pmulhuw xmm1,xmm0
+
+	movzx rax,byte [rdi+2]
+	movq xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rdi+1]
+	movq xmm2,[rdx+rax*8+272384]
+	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+0]
+	movq xmm2,[rdx+rax*8+274432]
+	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+3]
+	movq xmm2,[rdx+rax*8+276480]
+	paddsw xmm0,xmm2
+
+	punpcklbw xmm3,xmm3
+	pmulhuw xmm0,xmm3
+	paddusw xmm0,xmm1
+
+	pextrw rax,xmm0,3
+	mov bh,byte [rdx+rax+196608]
+	pextrw rax,xmm0,2
+	mov bl,byte [rdx+rax+131072]
+	shl ebx,16
+	pextrw rax,xmm0,0
+	mov bl,byte [rdx+rax]
+	pextrw rax,xmm0,1
+	mov bh,byte [rdx+rax+65536]
+	mov dword [rdi],ebx
+
+	add rsi,4
+	add rdi,4
+
+	add rsi,r10 ;sAdd
+	add rdi,r11 ;dAdd
+	dec r9
+	jnz iabbldlopone
+	
+	pop rbx
+	pop rbp
+	ret
+	
 ;void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, UInt8 *src, OSInt sbpl, OSInt width, OSInt height, UInt8 *rgbTable);
 
 ;0 rbx
@@ -341,7 +411,9 @@ _AlphaBlend8_C8_DoBlendPA:
 
 	mov rdx,qword [rsp+24] ;rgbTable
 	shr r8,1
-	jb iabbldpalopodd
+	jnbe iabbldpalop
+	jz iabbldpalopone
+	jmp iabbldpalopodd
 
 	ALIGN 16
 iabbldpalop:
@@ -441,7 +513,6 @@ iadbldpalop2:
 	pop rbx
 	pop rbp
 	ret
-
 
 	ALIGN 16
 iabbldpalopodd:
@@ -578,6 +649,61 @@ iadbldpalopodd2b:
 	add rdi,r11 ;dAdd
 	dec r9
 	jnz iabbldpalopodd
+	pop rbx
+	pop rbp
+	ret
+
+	ALIGN 16
+iabbldpalopone:
+	mov al,byte [rsi+3]
+	mov ah,al
+	movzx rbx,ax
+	shl eax,16
+	or eax,ebx
+
+	mov ebx,0xffffffff
+	sub ebx,eax
+	or ebx,0xff000000
+	movd xmm3,ebx
+
+	movzx rax,byte [rdi+2]
+	movq xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rsi+2]
+	movhps xmm0,[rdx+rax*8+262144]
+	movzx rax,byte [rdi+1]
+	movq xmm2,[rdx+rax*8+272384]
+	movzx rax,byte [rsi+1]
+	movhps xmm2,[rdx+rax*8+264192]
+	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+0]
+	movq xmm2,[rdx+rax*8+274432]
+	movzx rax,byte [rsi+0]
+	movhps xmm2,[rdx+rax*8+266240]
+	paddsw xmm0,xmm2
+
+	movhlps xmm1,xmm0
+	punpcklbw xmm3, xmm3
+	pmulhuw xmm0,xmm3
+	paddusw xmm0,xmm1
+
+	pextrw rax,xmm0,3
+	mov bh,byte [rdx+rax+196608]
+	pextrw rax,xmm0,2
+	mov bl,byte [rdx+rax+131072]
+	shl ebx,16
+	pextrw rax,xmm0,0
+	mov bl,byte [rdx+rax]
+	pextrw rax,xmm0,1
+	mov bh,byte [rdx+rax+65536]
+	mov dword [rdi],ebx
+
+	add rsi,4
+	add rdi,4
+
+	add rsi,r10 ;sAdd
+	add rdi,r11 ;dAdd
+	dec r9
+	jnz iabbldpalopone
 	pop rbx
 	pop rbp
 	ret
