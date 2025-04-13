@@ -252,7 +252,7 @@ void SSWR::AVIRead::AVIRGISShortestPathForm::UpdatePaths(NN<Data::ArrayListNN<Ma
 	}
 }
 
-SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer) : UI::GUIForm(parent, 320, 360, ui), spath(layer, 100.0)
+SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer) : UI::GUIForm(parent, 320, 360, ui), spath(layer, 100.0)
 {
 	this->core = core;
 	this->navi = navi;
@@ -322,7 +322,7 @@ SSWR::AVIRead::AVIRGISShortestPathForm::AVIRGISShortestPathForm(Optional<UI::GUI
 	{
 		this->cboNetwork->SetSelectedIndex(0);
 	}
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
+	this->navi->HandleMapMouseLDown(OnMouseDown, this);
 }
 
 SSWR::AVIRead::AVIRGISShortestPathForm::~AVIRGISShortestPathForm()

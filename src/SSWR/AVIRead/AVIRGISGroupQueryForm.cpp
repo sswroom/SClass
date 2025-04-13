@@ -171,7 +171,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 	return false;
 }
 
-SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -204,8 +204,8 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClie
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->SetFullRowSelect(true);
 
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
-	this->navi->HandleMapMouseUp(OnMouseUp, this);
+	this->navi->HandleMapMouseLDown(OnMouseDown, this);
+	this->navi->HandleMapMouseLUp(OnMouseUp, this);
 }
 
 SSWR::AVIRead::AVIRGISGroupQueryForm::~AVIRGISGroupQueryForm()

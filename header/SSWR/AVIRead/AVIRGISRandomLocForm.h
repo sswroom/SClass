@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISRANDOMLOCFORM
 #define _SM_SSWR_AVIREAD_AVIRGISRANDOMLOCFORM
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "Sync/Mutex.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -25,7 +25,7 @@ namespace SSWR
 			Bool isDown;
 			Math::Coord2D<OSInt> downPt;
 
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnRandomClicked(AnyType userObj);
 
 		public:
-			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi);
+			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISRandomLocForm();
 
 			virtual void OnMonitorChanged();

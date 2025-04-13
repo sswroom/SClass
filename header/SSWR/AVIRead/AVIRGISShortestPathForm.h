@@ -3,7 +3,7 @@
 #include "Map/MapDrawLayer.h"
 #include "Map/ShortestPath3D.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -36,7 +36,7 @@ namespace SSWR
 			NN<UI::GUIListView> lvPaths;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 			NN<Map::MapDrawLayer> layer;
 			Map::ShortestPath3D spath;
 			UOSInt mode;
@@ -55,7 +55,7 @@ namespace SSWR
 			UnsafeArray<UTF8Char> Coord2DDblToString(UnsafeArray<UTF8Char> sbuff, Math::Coord2DDbl coord);
 			void UpdatePaths(NN<Data::ArrayListNN<Math::Geometry::LineString>> lineList, NN<Data::ArrayListT<Data::DataArray<Optional<Text::String>>>> propList);
 		public:
-			AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer);
+			AVIRGISShortestPathForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer);
 			virtual ~AVIRGISShortestPathForm();
 
 			virtual void OnMonitorChanged();

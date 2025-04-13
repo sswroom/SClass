@@ -3,7 +3,7 @@
 #include "Data/SyncCircularBuff.h"
 #include "IO/GPSNMEA.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
@@ -33,7 +33,7 @@ namespace SSWR
 			Bool recUpdated;
 			UOSInt recSateCnt;
 			Map::LocationService::SateStatus recSates[32];
-			Optional<SSWR::AVIRead::IMapNavigator> mapNavi;
+			Optional<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 			NN<Math::GeographicCoordinateSystem> wgs84;
 			Math::Coord2DDbl lastPos;
 			Double dist;
@@ -155,7 +155,7 @@ namespace SSWR
 			virtual void OnFocus();
 
 			void SetGPSTrack(Optional<Map::GPSTrack> gpsTrk);
-			void SetMapNavigator(Optional<SSWR::AVIRead::IMapNavigator> mapNavi);
+			void SetMapNavigator(Optional<SSWR::AVIRead::AVIRMapNavigator> mapNavi);
 
 			void DispOffFocusLost();
 		};

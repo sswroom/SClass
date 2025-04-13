@@ -61,6 +61,15 @@ Bool UI::GUIMapControl::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn
 	}
 	else if (btn == UI::GUIControl::MBTN_RIGHT)
 	{
+		this->SetCapture();
+		if (this->mouseDownHdlr.func)
+		{
+			Bool done = this->mouseDownHdlr.func(this->mouseDownHdlr.userObj, scnPos, btn);
+			if (done)
+			{
+				return true;
+			}
+		}
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		Int64 currTime = dt.ToTicks();
@@ -101,6 +110,18 @@ Bool UI::GUIMapControl::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton btn)
 			this->mouseDown = false;
 		}
 		this->Redraw();
+	}
+	else if (btn == UI::GUIControl::MBTN_RIGHT)
+	{
+		this->ReleaseCapture();
+		if (this->mouseUpHdlr.func)
+		{
+			Bool done = this->mouseUpHdlr.func(this->mouseUpHdlr.userObj, scnPos, btn);
+			if (done)
+			{
+				return true;
+			}
+		}
 	}
 	return false;
 }

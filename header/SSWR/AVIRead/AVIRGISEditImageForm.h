@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRGISEDITIMAGEFORM
 #include "Map/VectorLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -42,7 +42,7 @@ namespace SSWR
 			Math::Coord2D<OSInt> downPos;
 
 			NN<Map::VectorLayer> lyr;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 
 			static void __stdcall OnImageChg(AnyType userObj);
 			void UpdateImgStat();
@@ -51,7 +51,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:
-			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi);
+			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISEditImageForm();
 
 			virtual void OnMonitorChanged();

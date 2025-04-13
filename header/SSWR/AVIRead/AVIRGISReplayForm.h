@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRGISREPLAYFORM
 #include "Map/GPSTrack.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -42,7 +42,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::GPSTrack> track;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 			UOSInt startMark;
 			UOSInt endMark;
 			UnsafeArrayOpt<Optional<Text::String>> names;
@@ -59,7 +59,7 @@ namespace SSWR
 			void FreeNames();
 
 		public:
-			AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, NN<IMapNavigator> navi);
+			AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

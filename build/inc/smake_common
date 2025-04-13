@@ -4187,6 +4187,7 @@ SSWR/AVIRead/AVIRMACManagerEntryForm.h:
 @AVIRMACManagerEntryForm.o
 SSWR/AVIRead/AVIRMACManagerForm.h:
 @AVIRMACManagerForm.o
+SSWR/AVIRead/AVIRMapNavigator.h:
 SSWR/AVIRead/AVIRMDNSForm.h:
 @AVIRMDNSForm.o
 SSWR/AVIRead/AVIRMediaForm.h:
@@ -4473,7 +4474,6 @@ SSWR/AVIRead/AVIRWSDListenerForm.h:
 @AVIRWSDListenerForm.o
 SSWR/AVIRead/AVIRXMLWalkForm.h:
 @AVIRXMLWalkForm.o
-SSWR/AVIRead/IMapNavigator.h:
 SSWR/AVIRead/MIMEViewer/AVIRMailViewer.h:
 @AVIRMailViewer.o
 SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.h:

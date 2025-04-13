@@ -74,7 +74,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	}
 }
 
-SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;

@@ -270,7 +270,7 @@ UnsafeArray<Char> SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(UnsafeArray<Char
 	return Text::StrHexByteCh(ptr, (UInt8)c);
 }
 
-SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi) : UI::GUIForm(parent, 480, 480, ui)
+SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 480, 480, ui)
 {
 	this->core = core;
 	this->navi = navi;
@@ -318,7 +318,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClient
 	this->lbPoints = ui->NewListBox(*this, false);
 	this->lbPoints->SetRect(104, 124, 300, 300, false);
 
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
+	this->navi->HandleMapMouseLDown(OnMouseDown, this);
 	this->AddTimer(1000, OnTimerTick, this);
 }
 

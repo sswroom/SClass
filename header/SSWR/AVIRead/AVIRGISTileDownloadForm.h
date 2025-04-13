@@ -3,7 +3,7 @@
 #include "Map/TileMapLayer.h"
 #include "Map/TileMapWriter.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "Sync/Mutex.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
@@ -59,7 +59,7 @@ namespace SSWR
 			UnsafeArray<ThreadStat> threadStat;
 
 			NN<Map::TileMapLayer> lyr;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -76,7 +76,7 @@ namespace SSWR
 			Bool GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel);
 			static UInt32 __stdcall ProcThread(AnyType userObj);
 		public:
-			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<IMapNavigator> navi);
+			AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISTileDownloadForm();
 
 			virtual void OnMonitorChanged();

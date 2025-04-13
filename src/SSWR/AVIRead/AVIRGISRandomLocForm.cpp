@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(AnyType user
 	}
 }
 
-SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi) : UI::GUIForm(parent, 240, 72, ui)
+SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 240, 72, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -148,8 +148,8 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClient
 	this->btnRandom->SetRect(114, 4, 100, 23, false);
 	this->btnRandom->HandleButtonClick(OnRandomClicked, this);
 
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
-	this->navi->HandleMapMouseUp(OnMouseUp, this);
+	this->navi->HandleMapMouseLDown(OnMouseDown, this);
+	this->navi->HandleMapMouseLUp(OnMouseUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 }
 

@@ -1,5 +1,5 @@
-#ifndef _SM_SSWR_AVIREAD_IMAPNAVIGATOR
-#define _SM_SSWR_AVIREAD_IMAPNAVIGATOR
+#ifndef _SM_SSWR_AVIREAD_AVIRMAPNAVIGATOR
+#define _SM_SSWR_AVIREAD_AVIRMAPNAVIGATOR
 #include "Map/MapDrawLayer.h"
 #include "Math/Coord2DDbl.h"
 #include "Math/Geometry/Vector2D.h"
@@ -9,7 +9,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class IMapNavigator
+		class AVIRMapNavigator
 		{
 		public:
 			typedef Bool (CALLBACKFUNC MouseEvent)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -30,8 +30,10 @@ namespace SSWR
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos) = 0;
 			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos) = 0;
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType) = 0;
-			virtual void HandleMapMouseDown(MouseEvent evt, AnyType userObj) = 0;
-			virtual void HandleMapMouseUp(MouseEvent evt, AnyType userObj) = 0;
+			virtual void HandleMapMouseLDown(MouseEvent evt, AnyType userObj) = 0;
+			virtual void HandleMapMouseLUp(MouseEvent evt, AnyType userObj) = 0;
+			virtual void HandleMapMouseRDown(MouseEvent evt, AnyType userObj) = 0;
+			virtual void HandleMapMouseRUp(MouseEvent evt, AnyType userObj) = 0;
 			virtual void HandleMapMouseMove(MouseEvent evt, AnyType userObj) = 0;
 			virtual void UnhandleMapMouse(AnyType userObj) = 0;
 

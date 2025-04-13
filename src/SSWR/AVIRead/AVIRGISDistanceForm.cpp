@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRGISDistanceForm::UpdateDistDisp()
 	this->txtDistance->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;
@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(Optional<UI::GUIClientCo
 		}
 		du = (Math::Unit::Distance::DistanceUnit)(du + 1);
 	}
-	this->navi->HandleMapMouseDown(OnMapMouseDown, this);
+	this->navi->HandleMapMouseLDown(OnMapMouseDown, this);
 	this->navi->HandleMapMouseMove(OnMapMouseMove, this);
 }
 

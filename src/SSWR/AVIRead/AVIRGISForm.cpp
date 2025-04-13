@@ -298,13 +298,27 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(AnyType userObj, Math:
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	Bool ret = false;
 	UOSInt i;
-	i = me->mouseDownHdlrs.GetCount();
-	while (i-- > 0)
+	if (button == MouseButton::MBTN_LEFT)
 	{
-		Data::CallbackStorage<MouseEvent> cb = me->mouseDownHdlrs.GetItem(i);
-		ret = cb.func(cb.userObj, scnPos);
-		if (ret)
-			return true;
+		i = me->mouseLDownHdlrs.GetCount();
+		while (i-- > 0)
+		{
+			Data::CallbackStorage<MouseEvent> cb = me->mouseLDownHdlrs.GetItem(i);
+			ret = cb.func(cb.userObj, scnPos);
+			if (ret)
+				return true;
+		}
+	}
+	else if (button == MouseButton::MBTN_RIGHT)
+	{
+		i = me->mouseRDownHdlrs.GetCount();
+		while (i-- > 0)
+		{
+			Data::CallbackStorage<MouseEvent> cb = me->mouseRDownHdlrs.GetItem(i);
+			ret = cb.func(cb.userObj, scnPos);
+			if (ret)
+				return true;
+		}
 	}
 	return false;
 }
@@ -314,13 +328,27 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(AnyType userObj, Math::C
 	NN<AVIRead::AVIRGISForm> me = userObj.GetNN<AVIRead::AVIRGISForm>();
 	Bool ret = false;
 	UOSInt i;
-	i = me->mouseUpHdlrs.GetCount();
-	while (i-- > 0)
+	if (button == MouseButton::MBTN_LEFT)
 	{
-		Data::CallbackStorage<MouseEvent> cb = me->mouseUpHdlrs.GetItem(i);
-		ret = cb.func(cb.userObj, scnPos);
-		if (ret)
-			return true;
+		i = me->mouseLUpHdlrs.GetCount();
+		while (i-- > 0)
+		{
+			Data::CallbackStorage<MouseEvent> cb = me->mouseLUpHdlrs.GetItem(i);
+			ret = cb.func(cb.userObj, scnPos);
+			if (ret)
+				return true;
+		}
+	}
+	else if (button == MouseButton::MBTN_RIGHT)
+	{
+		i = me->mouseRUpHdlrs.GetCount();
+		while (i-- > 0)
+		{
+			Data::CallbackStorage<MouseEvent> cb = me->mouseRUpHdlrs.GetItem(i);
+			ret = cb.func(cb.userObj, scnPos);
+			if (ret)
+				return true;
+		}
 	}
 	return false;
 }
@@ -2056,14 +2084,24 @@ void SSWR::AVIRead::AVIRGISForm::SetMapCursor(UI::GUIControl::CursorType curType
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::HandleMapMouseDown(MouseEvent evt, AnyType userObj)
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseLDown(MouseEvent evt, AnyType userObj)
 {
-	this->mouseDownHdlrs.Add({evt, userObj});
+	this->mouseLDownHdlrs.Add({evt, userObj});
 }
 
-void SSWR::AVIRead::AVIRGISForm::HandleMapMouseUp(MouseEvent evt, AnyType userObj)
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseLUp(MouseEvent evt, AnyType userObj)
 {
-	this->mouseUpHdlrs.Add({evt, userObj});
+	this->mouseLUpHdlrs.Add({evt, userObj});
+}
+
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseRDown(MouseEvent evt, AnyType userObj)
+{
+	this->mouseRDownHdlrs.Add({evt, userObj});
+}
+
+void SSWR::AVIRead::AVIRGISForm::HandleMapMouseRUp(MouseEvent evt, AnyType userObj)
+{
+	this->mouseRUpHdlrs.Add({evt, userObj});
 }
 
 void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, AnyType userObj)
@@ -2074,20 +2112,36 @@ void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, AnyType user
 void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(AnyType userObj)
 {
 	UOSInt i;
-	i = this->mouseDownHdlrs.GetCount();
+	i = this->mouseLDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseDownHdlrs.GetItem(i).userObj)
+		if (userObj == this->mouseLDownHdlrs.GetItem(i).userObj)
 		{
-			this->mouseDownHdlrs.RemoveAt(i);
+			this->mouseLDownHdlrs.RemoveAt(i);
 		}
 	}
-	i = this->mouseUpHdlrs.GetCount();
+	i = this->mouseLUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseUpHdlrs.GetItem(i).userObj)
+		if (userObj == this->mouseLUpHdlrs.GetItem(i).userObj)
 		{
-			this->mouseUpHdlrs.RemoveAt(i);
+			this->mouseLUpHdlrs.RemoveAt(i);
+		}
+	}
+	i = this->mouseRDownHdlrs.GetCount();
+	while (i-- > 0)
+	{
+		if (userObj == this->mouseRDownHdlrs.GetItem(i).userObj)
+		{
+			this->mouseRDownHdlrs.RemoveAt(i);
+		}
+	}
+	i = this->mouseRUpHdlrs.GetCount();
+	while (i-- > 0)
+	{
+		if (userObj == this->mouseRUpHdlrs.GetItem(i).userObj)
+		{
+			this->mouseRUpHdlrs.RemoveAt(i);
 		}
 	}
 	i = this->mouseMoveHdlrs.GetCount();

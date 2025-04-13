@@ -5,7 +5,7 @@
 #include "Map/TileMapLayer.h"
 #include "Math/GeographicCoordinateSystem.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
@@ -36,7 +36,7 @@ namespace SSWR
 			NN<UI::GUIListBox> lbPoints;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 			NN<Math::GeographicCoordinateSystem> wgs84;
 			Optional<IO::Stream> stm;
 			Data::ArrayListA<Math::Coord2DDbl> points;
@@ -52,7 +52,7 @@ namespace SSWR
 			UnsafeArray<Char> GenLon(UnsafeArray<Char> ptr, Double lon);
 			UnsafeArray<Char> GenCheck(UnsafeArray<Char> ptr, UnsafeArray<Char> start);
 		public:
-			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi);
+			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGPSSimulatorForm();
 
 			virtual void OnMonitorChanged();

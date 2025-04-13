@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRGISCOMBINEFORM
 #include "Map/GPSTrack.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckedListBox.h"
 #include "UI/GUIComboBox.h"

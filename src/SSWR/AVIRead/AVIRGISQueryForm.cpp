@@ -14,14 +14,14 @@
 #include "UI/Clipboard.h"
 #include "UI/GUIFileDialog.h"
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->downPos = scnPos;
 	return false;
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->downPos == scnPos)
@@ -156,6 +156,106 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 	return false;
 }
 
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+{
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	me->rdownPos = scnPos;
+	me->rdown = true;
+	return false;
+}
+
+Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
+{
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	NN<Map::GetObjectSess> sess;
+	UOSInt i;
+	UOSInt i2;
+	UOSInt j;
+	UOSInt k;
+	Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(me->rdownPos);
+	Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos);
+	NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
+	NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+	if (!csys->Equals(lyrCSys))
+	{
+		pt1 = Math::CoordinateSystem::Convert(csys, lyrCSys, pt1);
+		pt2 = Math::CoordinateSystem::Convert(csys, lyrCSys, pt2);
+	}
+	me->ClearQueryResults();
+	Data::ArrayListInt64 objIds;
+	Optional<Map::NameArray> nameArr;
+	sess = me->lyr->BeginGetObject();
+	me->lyr->GetObjectIdsMapXY(objIds, nameArr, Math::RectAreaDbl(pt1.Min(pt2), pt1.Max(pt2)), true);
+	if (!me->layerNames)
+	{
+		me->layerNames = true;
+		me->ShowLayerNames();
+	}
+	me->cboObj->ClearItems();
+	if (objIds.GetCount() == 0)
+	{
+		i = me->lyr->GetColumnCnt();
+		while (i-- > 0)
+		{
+			me->lvInfo->SetSubItem(i, 1, CSTR(""));
+		}
+		me->currVec.Delete();
+		me->navi->SetSelectedVector(0);
+	}
+	else
+	{
+		Int64 objId;
+		NN<Math::Geometry::Vector2D> vec;
+		Text::StringBuilderUTF8 sb;
+		j = 0;
+		k = objIds.GetCount();
+		while (j < k)
+		{
+			objId = objIds.GetItem(j);
+
+			if (me->lyr->GetNewVectorById(sess, objId).SetTo(vec))
+			{
+				if (!csys->Equals(lyrCSys))
+				{
+					Math::CoordinateSystemConverter converter(lyrCSys, csys);
+					me->queryVecOriList.Add(vec->Clone());
+					vec->Convert(converter);
+				}
+				sb.ClearStr();
+				if (me->lyr->GetString(sb, nameArr, objId, me->nameCol))
+				{
+					sb.AppendC(UTF8STRC(" - "));
+					sb.Append(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()));
+					me->cboObj->AddItem(sb.ToCString(), 0);
+				}
+				else
+				{
+					me->cboObj->AddItem(Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()), 0);
+				}
+				me->queryVecList.Add(vec);
+				i = 0;
+				i2 = me->lyr->GetColumnCnt();
+				while (i < i2)
+				{
+					sb.ClearStr();
+					me->lyr->GetString(sb, nameArr, objId, i);
+					me->queryValueList.Add(Text::String::New(sb.ToCString()));
+					i++;
+				}
+			}
+
+			j++;
+		}
+		me->cboObj->SetSelectedIndex(0);
+		me->SetQueryItem(0);
+		me->lyr->ReleaseNameArr(nameArr);
+		me->navi->SetSelectedVectors(me->queryVecList);
+	}
+	me->lyr->EndGetObject(sess);
+	me->rdown = false;
+	return false;
+}
+
 Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
@@ -179,6 +279,21 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Mat
 		{
 			me->txtInside->SetText(CSTR("Outside"));
 		}
+	}
+	if (me->rdown)
+	{
+		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(me->rdownPos);
+		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos);
+		NN<Math::Geometry::LinearRing> lr;
+		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
+		UOSInt nPoint;
+		UnsafeArray<Math::Coord2DDbl> ptList = lr->GetPointList(nPoint);
+		ptList[0] = pt1;
+		ptList[1] = Math::Coord2DDbl(pt1.x, pt2.y);
+		ptList[2] = pt2;
+		ptList[3] = Math::Coord2DDbl(pt2.x, pt1.y);
+		ptList[4] = pt1;
+		me->navi->SetSelectedVector(lr);
 	}
 	return false;
 }
@@ -257,41 +372,33 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnInfoDblClk(AnyType userObj, UO
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjDownloadClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	UOSInt selIndex = me->cboObj->GetSelectedIndex();
-	if (selIndex != INVALID_INDEX)
+	UOSInt i;
+	UOSInt j;
+	NN<Text::String> value;
+	if (me->layerNames)
 	{
-		UOSInt i;
-		UOSInt j;
-		UOSInt k;
-		NN<Text::String> value;
-		if (me->layerNames)
+		i = 0;
+		j = me->queryValueList.GetCount();
+		while (i < j)
 		{
-			j = me->lyr->GetColumnCnt();
-			k = selIndex * j;
-			i = 0;
-			while (i < j)
+			if (me->queryValueList.GetItem(i).SetTo(value))
 			{
-				if (me->queryValueList.GetItem(i + k).SetTo(value))
-				{
-					me->DownloadURL(value);
-				}
-				i++;
+				me->DownloadURL(value);
 			}
+			i++;
 		}
-		else
+	}
+	else
+	{
+		i = 0;
+		j = me->queryValueList.GetCount();
+		while (i < j)
 		{
-			j = me->queryValueOfstList.GetItem(selIndex);
-			k = me->queryValueOfstList.GetItem(selIndex + 1);
-			if (k == 0)
-				k = me->queryNameList.GetCount();
-			while (j < k)
+			if (me->queryValueList.GetItem(i).SetTo(value))
 			{
-				if (me->queryValueList.GetItem(j).SetTo(value))
-				{
-					me->DownloadURL(value);
-				}
-				j++;
+				me->DownloadURL(value);
 			}
+			i++;
 		}
 	}
 }
@@ -600,7 +707,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::DownloadURL(NN<Text::String> url)
 	}
 }
 
-SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui), downThread(DownThread, this, CSTR("GISQueryDown"))
+SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui), downThread(DownThread, this, CSTR("GISQueryDown"))
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -612,6 +719,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->nameCol = lyr->GetNameCol();
 	this->dispCnt = 0;
 	this->downPath = 0;
+	this->rdown = false;
 	sb.AppendC(UTF8STRC("Query - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToCString());
@@ -728,8 +836,10 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 		i++;
 	}
 	this->cboShapeFmt->SetSelectedIndex(0);
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
-	this->navi->HandleMapMouseUp(OnMouseUp, this);
+	this->navi->HandleMapMouseLDown(OnMouseLDown, this);
+	this->navi->HandleMapMouseLUp(OnMouseLUp, this);
+	this->navi->HandleMapMouseRDown(OnMouseRDown, this);
+	this->navi->HandleMapMouseRUp(OnMouseRUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 	NN<IO::Registry> reg;
 	WChar wbuff[512];

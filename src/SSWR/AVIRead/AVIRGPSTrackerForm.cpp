@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 	UnsafeArray<UTF8Char> sptr;
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Data::DateTime dt;
-	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	NN<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 
 	if (me->locSvc->IsDown() != me->lastDown)
 	{
@@ -181,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyTyp
 {
 	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	NN<IO::Device::MTKGPSNMEA> mtk = NN<IO::Device::MTKGPSNMEA>::ConvertFrom(me->locSvc);
-	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	NN<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 	if (me->mapNavi.SetTo(mapNavi))
 	{
 		NN<Map::GPSTrack> gpsTrk;
@@ -485,7 +485,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 {
 	this->locSvc->UnregisterLocationHandler(OnGPSUpdate, this);
-	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	NN<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 	if (this->mapNavi.SetTo(mapNavi))
 	{
 		mapNavi->HideMarker();
@@ -511,7 +511,7 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::OnFocus()
 {
-	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	NN<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 	if (this->dispIsOff && this->mapNavi.SetTo(mapNavi))
 	{
 		this->dispIsOff = false;
@@ -525,9 +525,9 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::SetGPSTrack(Optional<Map::GPSTrack> gpsT
 	this->gpsTrk = gpsTrk;
 }
 
-void SSWR::AVIRead::AVIRGPSTrackerForm::SetMapNavigator(Optional<SSWR::AVIRead::IMapNavigator> mapNavi)
+void SSWR::AVIRead::AVIRGPSTrackerForm::SetMapNavigator(Optional<SSWR::AVIRead::AVIRMapNavigator> mapNavi)
 {
-	NN<SSWR::AVIRead::IMapNavigator> nnmapNavi;
+	NN<SSWR::AVIRead::AVIRMapNavigator> nnmapNavi;
 	if (this->mapNavi.SetTo(nnmapNavi))
 	{
 		nnmapNavi->HideMarker();
@@ -540,7 +540,7 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::SetMapNavigator(Optional<SSWR::AVIRead::
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::DispOffFocusLost()
 {
-	NN<SSWR::AVIRead::IMapNavigator> mapNavi;
+	NN<SSWR::AVIRead::AVIRMapNavigator> mapNavi;
 	if (this->dispOffClk)
 	{
 		Data::DateTime dt;

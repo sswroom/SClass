@@ -762,7 +762,7 @@ Int32 SSWR::AVIRead::AVIRGISEditImageForm::CalcDownType(Math::Coord2D<OSInt> scn
 	}
 }
 
-SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -843,8 +843,8 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClient
 		}
 	}
 	lyr->ReleaseNameArr(nameArr);
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
-	this->navi->HandleMapMouseUp(OnMouseUp, this);
+	this->navi->HandleMapMouseLDown(OnMouseDown, this);
+	this->navi->HandleMapMouseLUp(OnMouseUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 }
 

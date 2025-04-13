@@ -2,7 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRGISFORM
 #include "Map/MapLayerCollection.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -21,7 +21,7 @@ namespace SSWR
 {
 	namespace AVIRead
 	{
-		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::IMapNavigator, public Media::PrintHandler
+		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::AVIRMapNavigator, public Media::PrintHandler
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
@@ -64,8 +64,10 @@ namespace SSWR
 			Double mapUpdT;
 			Bool pauseUpdate;
 
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseDownHdlrs;
-			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseUpHdlrs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseLDownHdlrs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseLUpHdlrs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseRDownHdlrs;
+			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseRUpHdlrs;
 			Data::ArrayList<Data::CallbackStorage<MouseEvent>> mouseMoveHdlrs;
 
 			Optional<Media::Printer> printer;
@@ -124,8 +126,10 @@ namespace SSWR
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
 			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
 			virtual void SetMapCursor(UI::GUIControl::CursorType curType);
-			virtual void HandleMapMouseDown(MouseEvent evt, AnyType userObj);
-			virtual void HandleMapMouseUp(MouseEvent evt, AnyType userObj);
+			virtual void HandleMapMouseLDown(MouseEvent evt, AnyType userObj);
+			virtual void HandleMapMouseLUp(MouseEvent evt, AnyType userObj);
+			virtual void HandleMapMouseRDown(MouseEvent evt, AnyType userObj);
+			virtual void HandleMapMouseRUp(MouseEvent evt, AnyType userObj);
 			virtual void HandleMapMouseMove(MouseEvent evt, AnyType userObj);
 			virtual void UnhandleMapMouse(AnyType userObj);
 

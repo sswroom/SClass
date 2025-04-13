@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISDISTANCEFORM
 #define _SM_SSWR_AVIREAD_AVIRGISDISTANCEFORM
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
@@ -29,7 +29,7 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboDistanceUnit;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 			NN<Math::CoordinateSystem> csys;
 
 			Data::ArrayList<Double> ptList;
@@ -46,7 +46,7 @@ namespace SSWR
 			void UpdateDistDisp();
 
 		public:
-			AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi);
+			AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISDistanceForm();
 
 			virtual void OnMonitorChanged();

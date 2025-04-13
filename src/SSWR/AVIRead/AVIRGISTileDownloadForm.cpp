@@ -399,7 +399,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 	return 0;
 }
 
-SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<IMapNavigator> navi) : UI::GUIForm(parent, 360, 216, ui)
+SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, NN<AVIRMapNavigator> navi) : UI::GUIForm(parent, 360, 216, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -464,8 +464,8 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUI
 	sb.AppendUOSInt(this->lyr->GetTileMap()->GetMaxLevel());
 	this->txtMaxLevel->SetText(sb.ToCString());
 
-	this->navi->HandleMapMouseDown(OnMouseDown, this);
-	this->navi->HandleMapMouseUp(OnMouseUp, this);
+	this->navi->HandleMapMouseLDown(OnMouseDown, this);
+	this->navi->HandleMapMouseLUp(OnMouseUp, this);
 	this->navi->HandleMapMouseMove(OnMouseMove, this);
 
 	UOSInt i;

@@ -4,7 +4,7 @@
 #include "Map/VectorLayer.h"
 #include "Math/VectorTextWriterList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "Sync/Thread.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
@@ -69,9 +69,11 @@ namespace SSWR
 			NN<UI::GUITextBox> txtAutoSavePath;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 			NN<Map::MapDrawLayer> lyr;
 			Math::Coord2D<OSInt> downPos;
+			Bool rdown;
+			Math::Coord2D<OSInt> rdownPos;
 			Optional<Math::Geometry::Vector2D> currVec;
 			Math::VectorTextWriterList writerList;
 			Bool layerNames;
@@ -90,8 +92,10 @@ namespace SSWR
 			Data::ArrayListStringNN queryNameList;
 			Data::ArrayListNN<Text::String> queryValueList;
 
-			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseLDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseLUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseRDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseRUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnShapeFmtChanged(AnyType userObj);
 			static void __stdcall OnObjSelChg(AnyType userObj);
@@ -107,7 +111,7 @@ namespace SSWR
 			void SetQueryItem(UOSInt index);
 			void DownloadURL(NN<Text::String> url);
 		public:
-			AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<IMapNavigator> navi);
+			AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISQueryForm();
 
 			virtual void OnMonitorChanged();

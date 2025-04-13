@@ -4,7 +4,7 @@
 #include "Data/ArrayListStrUTF8.h"
 #include "Map/MapDrawLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "Text/SearchIndexer.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIListBox.h"
@@ -21,7 +21,7 @@ namespace SSWR
 			NN<UI::GUIListBox> lbResults;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 			NN<Map::MapDrawLayer> layer;
 			NN<Text::SearchIndexer> searching;
 			Data::ArrayListString dispList;
@@ -36,7 +36,7 @@ namespace SSWR
 			void UpdateResults();
 
 		public:
-			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags);
+			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<AVIRMapNavigator> navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags);
 			virtual ~AVIRGISSearchForm();
 
 			virtual void OnMonitorChanged();

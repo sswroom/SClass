@@ -3,7 +3,7 @@
 #include "Data/ArrayListA.h"
 #include "Map/VectorLayer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
-#include "SSWR/AVIRead/IMapNavigator.h"
+#include "SSWR/AVIRead/AVIRMapNavigator.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
@@ -38,7 +38,7 @@ namespace SSWR
 			UOSInt status;
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
-			NN<IMapNavigator> navi;
+			NN<AVIRMapNavigator> navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnBackClicked(AnyType userObj);
 			void UpdateList();
 		public:
-			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<IMapNavigator> navi);
+			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, NN<AVIRMapNavigator> navi);
 			virtual ~AVIRGISEditVectorForm();
 
 			virtual void OnMonitorChanged();
