@@ -107,6 +107,113 @@ namespace Net
 		void ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
+
+	template <class T> class JSONResponseArr
+	{
+	protected:
+		Bool valid;
+		NN<Text::JSONBase> json;
+		Text::CStringNN clsName;
+
+	public:
+		JSONResponseArr(NN<Text::JSONBase> json, Text::CStringNN clsName)
+		{
+			this->clsName = clsName;
+			this->json = json;
+			this->valid = this->json->GetType() == Text::JSONType::Array;
+			if (!this->valid)
+			{
+				printf("JSONResponseArr: %s is not array\r\n", clsName.v.Ptr());
+			}
+			this->json->BeginUse();
+		}
+
+		virtual ~JSONResponseArr()
+		{
+			this->json->EndUse();
+		}
+
+		Optional<T> GetNewItem(UOSInt index)
+		{
+			NN<Text::JSONBase> json;
+			NN<T> t;
+			if (this->json->GetType() == Text::JSONType::Array && NN<Text::JSONArray>::ConvertFrom(this->json)->GetArrayValue(index).SetTo(json))
+			{
+				NEW_CLASSNN(t, T(json));
+				if (t->IsValid())
+				{
+					t.Delete();
+					return 0;
+				}
+				return t;
+			}
+			return 0;
+		}
+
+		UOSInt GetCount() const
+		{
+			if (this->json->GetType() == Text::JSONType::Array)
+			{
+				return NN<Text::JSONArray>::ConvertFrom(this->json)->GetArrayLength();
+			}
+			return 0;
+		}
+
+		Bool IsValid() const
+		{
+			if (this->json->GetType() != Text::JSONType::Array)
+			{
+				return false;
+			}
+			NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(this->json);
+			NN<Text::JSONBase> o;
+			UOSInt i = 0;
+			UOSInt j = arr->GetArrayLength();
+			while (i < j)
+			{
+				if (!arr->GetArrayValue(i).SetTo(o))
+				{
+					return false;
+				}
+				T t(o);
+				if (!t.IsValid())
+					return false;
+				i++;
+			}
+			return true;			
+		}
+
+		void ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const
+		{
+			if (this->json->GetType() == Text::JSONType::Array)
+			{
+				NN<Text::JSONArray> arr = NN<Text::JSONArray>::ConvertFrom(this->json);
+				Text::StringBuilderUTF8 sbPrefix;
+				NN<Text::JSONBase> obj;
+				UOSInt i = 0;
+				UOSInt j = arr->GetArrayLength();
+				while (i < j)
+				{
+					if (arr->GetArrayValue(i).SetTo(obj))
+					{
+						sbPrefix.ClearStr();
+						sbPrefix.Append(linePrefix);
+						sbPrefix.AppendUTF8Char('[');
+						sbPrefix.AppendUOSInt(i);
+						sbPrefix.AppendUTF8Char(']');
+						T t(obj);
+						t.ToString(sb, sbPrefix.ToCString());
+					}
+					i++;
+				}
+			}
+		}
+
+		void ToString(NN<Text::StringBuilderUTF8> sb) const
+		{
+			ToString(sb, CSTR(""));
+		}
+	};
 }
 
 #define JSONRESP_BEGIN(clsName) class clsName : public Net::JSONResponse \
@@ -120,6 +227,17 @@ namespace Net
 		virtual ~clsName() {} \
 
 #define JSONRESP_END };
+#define JSONRESP_BEGINARRAY(clsName, innerClass) class clsName : public Net::JSONResponseArr<innerClass> \
+	{ \
+	public: \
+		clsName(NN<Text::JSONBase> json) : Net::JSONResponseArr<innerClass>(json, CSTR(#clsName)) \
+		{ \
+		} \
+		virtual ~clsName() {} \
+	};
+#define JSONRESP_ENDARRAY
+
+		
 #define JSONRESP_ALLOW_ALL this->allowAll = true;
 
 #define JSONRESP_BOOL(name, optional, allowNull) this->AddField(CSTR(name), Text::JSONType::BOOL, optional, allowNull);
@@ -205,9 +323,9 @@ namespace Net
 #define JSONRESP_GETARRAY_STR(name, funcName) Optional<const Data::ArrayListStringNN> funcName() const { NN<ArrayStrField> f; if (Optional<ArrayStrField>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return 0; }
 #define JSONRESP_GETARRAY_OBJ(name, funcName, clsName) Optional<const Data::ArrayListNN<clsName>> funcName() const { NN<ArrayNNField<clsName>> f; if (Optional<ArrayNNField<clsName>>::ConvertFrom(this->fieldMap.GetC(CSTR(name))).SetTo(f)) return f->GetValue(); return 0; }
 
-#define JSONREQ_RET(sockf, ssl, url, respType) \
+#define JSONREQ_RET(clif, ssl, url, respType) \
 	NN<Text::JSONBase> json; \
-	if (!Net::HTTPJSONReader::Read(sockf, ssl, url).SetTo(json)) return 0; \
+	if (!Net::HTTPJSONReader::Read(clif, ssl, url).SetTo(json)) return 0; \
 	NN<respType> ret; \
 	NEW_CLASSNN(ret, respType(json)); \
 	json->EndUse(); \

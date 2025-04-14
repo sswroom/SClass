@@ -59,6 +59,7 @@
 #include "SSWR/AVIRead/AVIRCertTextForm.h"
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "SSWR/AVIRead/AVIRChineseForm.h"
+#include "SSWR/AVIRead/AVIRChromeDevToolsForm.h"
 #include "SSWR/AVIRead/AVIRClipboardViewerForm.h"
 #include "SSWR/AVIRead/AVIRCodeImageGenForm.h"
 #include "SSWR/AVIRead/AVIRCodePageForm.h"
@@ -540,7 +541,8 @@ typedef enum
 	MNU_MDNS,
 	MNU_WSDISCOVERY,
 	MNU_WSDLISTENER,
-	MNU_WEBPUSH
+	MNU_WEBPUSH,
+	MNU_CHROME_DEVTOOLS
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -850,6 +852,8 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu3->AddItem(CSTR("9-day Weather Forecast"), MNU_HKO_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("Local Weather Forecast"), MNU_HKO_LOCAL_FORECAST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu3->AddItem(CSTR("Warning Summary"), MNU_HKO_WARNING_SUMMARY, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Browser"));
+	mnu2->AddItem(CSTR("Chrome DevTools"), MNU_CHROME_DEVTOOLS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Wake-On-LAN"), MNU_WOL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("SSH Info"), MNU_SSH_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Other"));
@@ -3154,6 +3158,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRWebPushForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRWebPushForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_CHROME_DEVTOOLS:
+		{
+			NN<SSWR::AVIRead::AVIRChromeDevToolsForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRChromeDevToolsForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

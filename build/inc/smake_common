@@ -3160,6 +3160,8 @@ Net/BandwidthLogger.h:
 @BandwidthLogger.o
 Net/BrowserInfo.h:
 @BrowserInfo.o
+Net/ChromeDevTools.h:
+@ChromeDevTools.o
 Net/ConnectionInfo.h:
 @ConnectionInfo.o
 @ConnectionInfo_CPP.o
@@ -3901,6 +3903,8 @@ SSWR/AVIRead/AVIRChartForm.h:
 @AVIRChartForm.o
 SSWR/AVIRead/AVIRChineseForm.h:
 @AVIRChineseForm.o
+SSWR/AVIRead/AVIRChromeDevToolsForm.h:
+@AVIRChromeDevToolsForm.o
 SSWR/AVIRead/AVIRClipboardViewerForm.h:
 @AVIRClipboardViewerForm.o
 SSWR/AVIRead/AVIRCodeImageGenForm.h:

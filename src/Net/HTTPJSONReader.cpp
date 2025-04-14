@@ -9,7 +9,7 @@
 
 Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
 {
-	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(clif, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError())
 	{
 #if defined(VERBOSE)
@@ -26,7 +26,7 @@ Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> cli
 #if defined(VERBOSE)
 			printf("HTTPJSONReader: Redirect location found: %s\r\n", newUrl.v.Ptr());
 #endif
-			NN<Net::HTTPClient> cli2 = Net::HTTPClient::CreateConnect(clif, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, false);
+			NN<Net::HTTPClient> cli2 = Net::HTTPClient::CreateConnect(clif, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, true);
 			if (cli2->IsError())
 			{
 #if defined(VERBOSE)
@@ -44,9 +44,14 @@ Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> cli
 	if (!cli->ReadAllContent(sb, 16384, 1048576))
 	{
 #if defined(VERBOSE)
-		printf("HTTPJSONReader: Error in reading content from server\r\n");
+		printf("HTTPJSONReader: Error in reading content from server: %s\r\n", url.v.Ptr());
+		if (sb.GetLength() < 8192)
+		{
+			printf("HTTPJSONReader: Content: %s\r\n", sb.v.Ptr());
+		}
 #endif
 		cli.Delete();
+		return 0;
 	}
 	cli.Delete();
 	Optional<Text::JSONBase> json = Text::JSONBase::ParseJSONStr(sb.ToCString());

@@ -1347,6 +1347,7 @@ ASN1Util.o: ../../src/Net/ASN1Util.cpp
 AzureManager.o: ../../src/Net/AzureManager.cpp
 BandwidthLogger.o: ../../src/Net/BandwidthLogger.cpp
 BrowserInfo.o: ../../src/Net/BrowserInfo.cpp
+ChromeDevTools.o: ../../src/Net/ChromeDevTools.cpp
 ConnectionInfo.o: ../../src/Net/ConnectionInfo.cpp
 DHCPServer.o: ../../src/Net/DHCPServer.cpp
 DNSClient.o: ../../src/Net/DNSClient.cpp
@@ -1775,6 +1776,7 @@ AVIRCertUtilForm.o: ../../src/SSWR/AVIRead/AVIRCertUtilForm.cpp
 AVIRCesiumTileForm.o: ../../src/SSWR/AVIRead/AVIRCesiumTileForm.cpp
 AVIRChartForm.o: ../../src/SSWR/AVIRead/AVIRChartForm.cpp
 AVIRChineseForm.o: ../../src/SSWR/AVIRead/AVIRChineseForm.cpp
+AVIRChromeDevToolsForm.o: ../../src/SSWR/AVIRead/AVIRChromeDevToolsForm.cpp
 AVIRClipboardViewerForm.o: ../../src/SSWR/AVIRead/AVIRClipboardViewerForm.cpp
 AVIRCodeImageGenForm.o: ../../src/SSWR/AVIRead/AVIRCodeImageGenForm.cpp
 AVIRCodePageForm.o: ../../src/SSWR/AVIRead/AVIRCodePageForm.cpp
