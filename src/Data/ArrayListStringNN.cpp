@@ -91,6 +91,46 @@ NN<Text::String> Data::ArrayListStringNN::JoinString() const
 	return newStr;
 }
 
+NN<Text::String> Data::ArrayListStringNN::JoinString(Text::CStringNN s) const
+{
+	NN<Text::String> newStr;
+	UOSInt newStrLeng = 0;
+	UOSInt j;
+	UOSInt i;
+	j = this->objCnt;
+	if (j == 0)
+	{
+		return Text::String::NewEmpty();
+	}
+	else if (j == 1)
+	{
+		return this->arr[0]->Clone();
+	}
+	newStrLeng = (j - 1) * s.leng;
+	i = 0;
+	while (i < j)
+	{
+		newStrLeng += this->arr[i]->leng;
+		i++;
+	}
+	UnsafeArray<UTF8Char> sptr;
+	newStr = Text::String::New(newStrLeng);
+	sptr = newStr->v;
+	MemCopyNO(sptr.Ptr(), this->arr[0]->v.Ptr(), sizeof(UTF8Char) * this->arr[0]->leng);
+	sptr += this->arr[0]->leng;
+	i = 1;
+	while (i < j)
+	{
+		MemCopyNO(sptr.Ptr(), s.v.Ptr(), s.leng);
+		sptr += s.leng;
+		MemCopyNO(sptr.Ptr(), this->arr[i]->v.Ptr(), sizeof(UTF8Char) * this->arr[i]->leng);
+		sptr += this->arr[i]->leng;
+		i++;
+	}
+	*sptr = 0;
+	return newStr;
+}
+
 void Data::ArrayListStringNN::FreeAll()
 {
 	UOSInt i = this->objCnt;

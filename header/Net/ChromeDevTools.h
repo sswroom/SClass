@@ -47,6 +47,140 @@ namespace Net
 		JSONRESP_BEGINARRAY(ChromeTargets, ChromeTarget)
 		JSONRESP_ENDARRAY
 
+		JSONRESP_BEGIN(ChromeProtocolVersion)
+		JSONRESP_STR("major",false,false)
+		JSONRESP_STR("minor",false,false)
+		JSONRESP_SEC_GET(ChromeProtocolVersion)
+		JSONRESP_GETSTR("major",GetMajor)
+		JSONRESP_GETSTR("minor",GetMinor)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeReturnItem)
+		JSONRESP_STR("$ref",true,false)
+		JSONRESP_STR("type",true,false)
+		JSONRESP_SEC_GET(ChromeReturnItem)
+		JSONRESP_GETSTROPT("ref",GetRef)
+		JSONRESP_GETSTROPT("type",GetType)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeParameter)
+		JSONRESP_STR("$ref",true,false)
+		JSONRESP_STR("description",true,false)
+		JSONRESP_ARRAY_STR("enum",true,false)
+		JSONRESP_BOOL("experimental",true,false)
+		JSONRESP_STR("name",false,false)
+		JSONRESP_BOOL("optional",true,false)
+		JSONRESP_STR("type",true,false)
+		JSONRESP_BOOL("deprecated",true,false)
+		JSONRESP_OBJ("items",true,false,ChromeReturnItem)
+		JSONRESP_SEC_GET(ChromeParameter)
+		JSONRESP_GETSTROPT("$ref",GetRef)
+		JSONRESP_GETSTROPT("description",GetDescription)
+		JSONRESP_GETARRAY_STR("enum",GetEnum)
+		JSONRESP_GETBOOL("experimental",IsExperimental)
+		JSONRESP_GETSTR("name",GetName)
+		JSONRESP_GETBOOL("optional",IsOptional)
+		JSONRESP_GETSTROPT("type",GetType)
+		JSONRESP_GETBOOL("deprecated",IsDeprecated)
+		JSONRESP_GETOBJ("items",GetItems,ChromeReturnItem)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeCommand)
+		JSONRESP_STR("description",true,false)
+		JSONRESP_STR("name",false,false)
+		JSONRESP_ARRAY_OBJ("returns",true,false,ChromeParameter)
+		JSONRESP_BOOL("experimental",true,false)
+		JSONRESP_BOOL("deprecated",true,false)
+		JSONRESP_ARRAY_OBJ("parameters",true,false,ChromeParameter)
+		JSONRESP_SEC_GET(ChromeCommand)
+		JSONRESP_GETSTR("description",GetDescription)
+		JSONRESP_GETSTR("name",GetName)
+		JSONRESP_GETARRAY_OBJ("returns",GetReturns,ChromeParameter)
+		JSONRESP_GETBOOL("experimental",IsExperimental)
+		JSONRESP_GETBOOL("deprecated",IsDeprecated)
+		JSONRESP_GETARRAY_OBJ("parameters",GetParameters,ChromeParameter)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeEvent)
+		JSONRESP_STR("description",true,false)
+		JSONRESP_STR("name",false,false)
+		JSONRESP_BOOL("experimental",true,false)
+		JSONRESP_BOOL("deprecated",true,false)
+		JSONRESP_ARRAY_OBJ("parameters",true,false,ChromeParameter)
+		JSONRESP_SEC_GET(ChromeEvent)
+		JSONRESP_GETSTR("description",GetDescription)
+		JSONRESP_GETSTR("name",GetName)
+		JSONRESP_GETBOOL("experimental",IsExperimental)
+		JSONRESP_GETBOOL("deprecated",IsDeprecated)
+		JSONRESP_GETARRAY_OBJ("parameters",GetParameters,ChromeParameter)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeTypeProperty)
+		JSONRESP_STR("$ref",true,false)
+		JSONRESP_STR("name",false,false)
+		JSONRESP_STR("description",true,false)
+		JSONRESP_ARRAY_STR("enum",true,false)
+		JSONRESP_BOOL("experimental",true,false)
+		JSONRESP_STR("type",true,false)
+		JSONRESP_BOOL("optional",true,false)
+		JSONRESP_BOOL("deprecated",true,false)
+		JSONRESP_OBJ("items",true,false,ChromeReturnItem)
+		JSONRESP_SEC_GET(ChromeTypeProperty)
+		JSONRESP_GETSTROPT("$ref",GetRef)
+		JSONRESP_GETSTR("name",GetName)
+		JSONRESP_GETSTROPT("description",GetDescription)
+		JSONRESP_GETARRAY_STR("enum",GetEnum)
+		JSONRESP_GETBOOL("experimental",IsExperimental)
+		JSONRESP_GETSTROPT("type",GetType)
+		JSONRESP_GETBOOL("optional",IsOptional)
+		JSONRESP_GETBOOL("deprecated",IsDeprecated)
+		JSONRESP_GETOBJ("items",GetItems,ChromeReturnItem)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeType)
+		JSONRESP_STR("description",true,false)
+		JSONRESP_BOOL("experimental",true,false)
+		JSONRESP_STR("id",false,false)
+		JSONRESP_ARRAY_OBJ("properties",true,false,ChromeTypeProperty)
+		JSONRESP_STR("type",false,false)
+		JSONRESP_BOOL("deprecated",true,false)
+		JSONRESP_SEC_GET(ChromeType)
+		JSONRESP_GETSTROPT("description",GetDescription)
+		JSONRESP_GETBOOL("experimental",IsExperimental)
+		JSONRESP_GETSTR("id",GetId)
+		JSONRESP_GETARRAY_OBJ("properties",GetProperties,ChromeTypeProperty)
+		JSONRESP_GETSTR("type",GetType)
+		JSONRESP_GETBOOL("deprecated",IsDeprecated)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeDomain)
+		JSONRESP_STR("domain",false,false)
+		JSONRESP_STR("description",true,false)
+		JSONRESP_BOOL("experimental",true,false)
+		JSONRESP_ARRAY_OBJ("commands",false,false,ChromeCommand)
+		JSONRESP_ARRAY_STR("dependencies",true,false)
+		JSONRESP_ARRAY_OBJ("events",true,false,ChromeEvent)
+		JSONRESP_ARRAY_OBJ("types",true,false,ChromeType)
+		JSONRESP_BOOL("deprecated",true,false)
+		JSONRESP_SEC_GET(ChromeDomain)
+		JSONRESP_GETSTR("domain",GetDomain)
+		JSONRESP_GETSTROPT("description",GetDescription)
+		JSONRESP_GETBOOL("experimental",IsExperimental)
+		JSONRESP_GETARRAY_OBJ("commands",GetCommands,ChromeCommand)
+		JSONRESP_GETARRAY_STR("dependencies",GetDependencies)
+		JSONRESP_GETARRAY_OBJ("events",GetEvents,ChromeEvent)
+		JSONRESP_GETARRAY_OBJ("types",GetTypes,ChromeType)
+		JSONRESP_GETBOOL("deprecated",IsDeprecated)
+		JSONRESP_END
+
+		JSONRESP_BEGIN(ChromeProtocol)
+		JSONRESP_OBJ("version",false,false,ChromeProtocolVersion)
+		JSONRESP_ARRAY_OBJ("domains",false,false,ChromeDomain)
+		JSONRESP_SEC_GET(ChromeProtocol)
+		JSONRESP_GETOBJ("version",GetVersion,ChromeProtocolVersion)
+		JSONRESP_GETARRAY_OBJ("domains",GetDomains,ChromeDomain)
+		JSONRESP_END
+
 	private:
 		NN<Net::TCPClientFactory> clif;
 		Optional<Net::SSLEngine> ssl;
@@ -58,6 +192,7 @@ namespace Net
 
 		Optional<ChromeVersion> GetVersion() const;
 		Optional<ChromeTargets> GetTargets() const;
+		Optional<ChromeProtocol> GetProtocol() const;
 	};
 }
 #endif

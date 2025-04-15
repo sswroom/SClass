@@ -17,6 +17,7 @@ namespace Data
 		UOSInt IndexOfC(Text::CStringNN val) const;
 
 		NN<Text::String> JoinString() const;
+		NN<Text::String> JoinString(Text::CStringNN s) const;
 		void FreeAll();
 	};
 }

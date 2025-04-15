@@ -415,10 +415,15 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 	NN<Text::JSONArray> arr;
 	if (!this->json->GetValueArray(name).SetTo(arr))
 	{
-		if (!optional)
+		if (this->json->GetValue(name).NotNull())
 		{
 			this->valid = false;
 			printf("JSONResponse: %s.%s is not array\r\n", clsName.v.Ptr(), name.v.Ptr());
+		}
+		else if (!optional)
+		{
+			this->valid = false;
+			printf("JSONResponse: %s.%s is not found and not optional\r\n", clsName.v.Ptr(), name.v.Ptr());
 		}
 		return;
 	}

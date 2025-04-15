@@ -41,7 +41,7 @@ Optional<Text::JSONBase> Net::HTTPJSONReader::Read(NN<Net::TCPClientFactory> cli
 		}
 	}
 	Text::StringBuilderUTF8 sb;
-	if (!cli->ReadAllContent(sb, 16384, 1048576))
+	if (!cli->ReadAllContent(sb, 16384, 10485760))
 	{
 #if defined(VERBOSE)
 		printf("HTTPJSONReader: Error in reading content from server: %s\r\n", url.v.Ptr());

@@ -29,3 +29,12 @@ Optional<Net::ChromeDevTools::ChromeTargets> Net::ChromeDevTools::GetTargets() c
 	sb.Append(CSTR("/json/list"));
 	JSONREQ_RET(this->clif, this->ssl, sb.ToCString(), ChromeTargets);
 }
+
+Optional<Net::ChromeDevTools::ChromeProtocol> Net::ChromeDevTools::GetProtocol() const
+{
+	Text::StringBuilderUTF8 sb;
+	sb.Append(CSTR("http://localhost:"));
+	sb.AppendU16(this->port);
+	sb.Append(CSTR("/json/protocol"));
+	JSONREQ_RET(this->clif, this->ssl, sb.ToCString(), ChromeProtocol);
+}

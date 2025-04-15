@@ -41,6 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnStartClicked(AnyType use
 		me->btnStart->SetText(CSTR("Stop"));
 		me->devTools = devTools;
 		me->ReloadTargets();
+		me->ReloadProtocol();
 	}
 }
 
@@ -68,6 +69,121 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnTargetSelChg(AnyType use
 			me->txtTargetWebSocketDebuggerUrl->SetText(target->GetWebSocketDebuggerUrl()->ToCString());
 			target.Delete();
 		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRChromeDevToolsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChromeDevToolsForm>();
+	NN<Net::ChromeDevTools::ChromeDomain> domain;
+	NN<const Data::ArrayListStringNN> dependencies;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeCommand>> commands;
+	NN<Net::ChromeDevTools::ChromeCommand> command;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeEvent>> events;
+	NN<Net::ChromeDevTools::ChromeEvent> evt;
+	UOSInt i;
+	UOSInt j;
+	me->lbProtocolDependencies->ClearItems();
+	me->lbProtocolCommands->ClearItems();
+	me->lbProtocolEvents->ClearItems();
+	if (me->lbProtocol->GetSelectedItem().GetOpt<Net::ChromeDevTools::ChromeDomain>().SetTo(domain))
+	{
+		me->txtProtocolDomain->SetText(domain->GetDomain()->ToCString());
+		me->txtProtocolDescription->SetText(Text::String::OrEmpty(domain->GetDescription())->ToCString());
+		me->chkProtocolDeprecated->SetChecked(domain->IsDeprecated());
+		me->chkProtocolExperimental->SetChecked(domain->IsExperimental());
+		if (domain->GetDependencies().SetTo(dependencies))
+		{
+			i = 0;
+			j = dependencies->GetCount();
+			while (i < j)
+			{
+				me->lbProtocolDependencies->AddItem(dependencies->GetItemNoCheck(i), 0);
+				i++;
+			}
+		}
+		if (domain->GetCommands().SetTo(commands))
+		{
+			i = 0;
+			j = commands->GetCount();
+			while (i < j)
+			{
+				command = commands->GetItemNoCheck(i);
+				me->lbProtocolCommands->AddItem(command->GetName(), command);
+				i++;
+			}
+		}
+		if (domain->GetEvents().SetTo(events))
+		{
+			i = 0;
+			j = events->GetCount();
+			while (i < j)
+			{
+				evt = events->GetItemNoCheck(i);
+				me->lbProtocolEvents->AddItem(evt->GetName(), evt);
+				i++;
+			}
+		}
+	}
+	else
+	{
+		me->txtProtocolDomain->SetText(CSTR(""));
+		me->txtProtocolDescription->SetText(CSTR(""));
+	}
+	OnProtocolCommandsSelChg(userObj);
+	OnProtocolEventsSelChg(userObj);
+}
+
+void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolCommandsSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRChromeDevToolsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChromeDevToolsForm>();
+	NN<Net::ChromeDevTools::ChromeCommand> command;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeParameter>> params;
+	me->lvProtocolCommandsParams->ClearItems();
+	me->lvProtocolCommandsRets->ClearItems();
+	if (me->lbProtocolCommands->GetSelectedItem().GetOpt<Net::ChromeDevTools::ChromeCommand>().SetTo(command))
+	{
+		me->txtProtocolCommandsName->SetText(command->GetName()->ToCString());
+		me->txtProtocolCommandsDesc->SetText(command->GetDescription()->ToCString());
+		me->chkProtocolCommandsDeprecated->SetChecked(command->IsDeprecated());
+		me->chkProtocolCommandsExperimental->SetChecked(command->IsExperimental());
+		if (command->GetParameters().SetTo(params))
+		{
+			AppendParameters(me->lvProtocolCommandsParams, params);
+		}
+		if (command->GetReturns().SetTo(params))
+		{
+			AppendParameters(me->lvProtocolCommandsRets, params);
+		}
+	}
+	else
+	{
+		me->txtProtocolCommandsName->SetText(CSTR(""));
+		me->txtProtocolCommandsDesc->SetText(CSTR(""));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolEventsSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRChromeDevToolsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChromeDevToolsForm>();
+	NN<Net::ChromeDevTools::ChromeEvent> evt;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeParameter>> params;
+	me->lvProtocolEventsParams->ClearItems();
+	if (me->lbProtocolEvents->GetSelectedItem().GetOpt<Net::ChromeDevTools::ChromeEvent>().SetTo(evt))
+	{
+		me->txtProtocolEventsName->SetText(evt->GetName()->ToCString());
+		me->txtProtocolEventsDesc->SetText(evt->GetDescription()->ToCString());
+		me->chkProtocolEventsDeprecated->SetChecked(evt->IsDeprecated());
+		me->chkProtocolEventsExperimental->SetChecked(evt->IsExperimental());
+		if (evt->GetParameters().SetTo(params))
+		{
+			AppendParameters(me->lvProtocolCommandsParams, params);
+		}
+	}
+	else
+	{
+		me->txtProtocolEventsName->SetText(CSTR(""));
+		me->txtProtocolEventsDesc->SetText(CSTR(""));
 	}
 }
 
@@ -102,6 +218,83 @@ void SSWR::AVIRead::AVIRChromeDevToolsForm::ReloadTargets()
 	}
 }
 
+void SSWR::AVIRead::AVIRChromeDevToolsForm::ReloadProtocol()
+{
+	NN<Net::ChromeDevTools::ChromeProtocol> protocol;
+	NN<Net::ChromeDevTools> devTools;
+	NN<Net::ChromeDevTools::ChromeProtocolVersion> ver;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeDomain>> domains;
+	NN<Net::ChromeDevTools::ChromeDomain> domain;
+	UOSInt i;
+	UOSInt j;
+	if (this->devTools.SetTo(devTools))
+	{
+		if (devTools->GetProtocol().SetTo(protocol))
+		{
+			if (protocol->GetVersion().SetTo(ver))
+			{
+				this->txtProtocolVerMajor->SetText(ver->GetMajor()->ToCString());
+				this->txtProtocolVerMinor->SetText(ver->GetMinor()->ToCString());
+			}
+			else
+			{
+				this->txtProtocolVerMajor->SetText(CSTR("-"));
+				this->txtProtocolVerMinor->SetText(CSTR("-"));
+			}
+			this->lbProtocol->ClearItems();
+			if (protocol->GetDomains().SetTo(domains))
+			{
+				i = 0;
+				j = domains->GetCount();
+				while (i < j)
+				{
+					domain = domains->GetItemNoCheck(i);
+					this->lbProtocol->AddItem(domain->GetDomain()->ToCString(), domain);
+					i++;
+				}
+			}
+			this->protocol.Delete();
+			this->protocol = protocol;
+		}
+	}
+}
+
+void SSWR::AVIRead::AVIRChromeDevToolsForm::AppendParameters(NN<UI::GUIListView> lv, NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeParameter>> params)
+{
+	UOSInt i = 0;
+	UOSInt j = params->GetCount();
+	while (i < j)
+	{
+		AppendParameter(lv, params->GetItemNoCheck(i));
+		i++;
+	}
+}
+
+void SSWR::AVIRead::AVIRChromeDevToolsForm::AppendParameter(NN<UI::GUIListView> lv, NN<Net::ChromeDevTools::ChromeParameter> param)
+{
+	NN<Text::String> s;
+	NN<const Data::ArrayListStringNN> enums;
+	NN<Net::ChromeDevTools::ChromeReturnItem> item;
+	UOSInt i = lv->AddItem(param->GetName()->ToCString(), param);
+	if (param->GetType().SetTo(s)) lv->SetSubItem(i, 1, s->ToCString());
+	if (param->GetEnum().SetTo(enums))
+	{
+		s = enums->JoinString(CSTR("\r\n"));
+		lv->SetSubItem(i, 2, s->ToCString());
+		s->Release();
+	}
+	if (param->GetDescription().SetTo(s)) lv->SetSubItem(i, 3, s->ToCString());
+	lv->SetSubItem(i, 4, param->IsOptional()?CSTR("Y"):CSTR("N"));
+	lv->SetSubItem(i, 5, param->IsExperimental()?CSTR("Y"):CSTR("N"));
+	lv->SetSubItem(i, 6, param->IsDeprecated()?CSTR("Y"):CSTR("N"));
+	if (param->GetRef().SetTo(s)) lv->SetSubItem(i, 7, s->ToCString());
+	if (param->GetItems().SetTo(item))
+	{
+		if (item->GetType().SetTo(s)) lv->SetSubItem(i, 8, s->ToCString());
+		if (item->GetRef().SetTo(s)) lv->SetSubItem(i, 9, s->ToCString());
+	}
+}
+
 SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Chrome DevTools"));
@@ -112,6 +305,7 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->ssl = Net::SSLEngineFactory::Create(this->clif, false);
 	this->devTools = 0;
 	this->targets = 0;
+	this->protocol = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlPort = ui->NewPanel(*this);
@@ -207,6 +401,153 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->txtTargetWebSocketDebuggerUrl = ui->NewTextBox(this->pnlTargetDetail, CSTR(""));
 	this->txtTargetWebSocketDebuggerUrl->SetRect(104, 148, 500, 23, false);
 	this->txtTargetWebSocketDebuggerUrl->SetReadOnly(true);
+
+	this->tpProtocol = this->tcMain->AddTabPage(CSTR("Protocol"));
+	this->pnlProtocol = ui->NewPanel(this->tpProtocol);
+	this->pnlProtocol->SetRect(0, 0, 100, 55, false);
+	this->pnlProtocol->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblProtocolVerMajor = ui->NewLabel(this->pnlProtocol, CSTR("Version Major"));
+	this->lblProtocolVerMajor->SetRect(4, 4, 100, 23, false);
+	this->txtProtocolVerMajor = ui->NewTextBox(this->pnlProtocol, CSTR(""));
+	this->txtProtocolVerMajor->SetRect(104, 4, 100, 23, false);
+	this->txtProtocolVerMajor->SetReadOnly(true);
+	this->lblProtocolVerMinor = ui->NewLabel(this->pnlProtocol, CSTR("Version Minor"));
+	this->lblProtocolVerMinor->SetRect(4, 28, 100, 23, false);
+	this->txtProtocolVerMinor = ui->NewTextBox(this->pnlProtocol, CSTR(""));
+	this->txtProtocolVerMinor->SetRect(104, 28, 100, 23, false);
+	this->txtProtocolVerMinor->SetReadOnly(true);
+	this->lbProtocol = ui->NewListBox(this->tpProtocol, false);
+	this->lbProtocol->SetRect(0, 0, 150, 23, false);
+	this->lbProtocol->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocol->HandleSelectionChange(OnProtocolSelChg, this);
+	this->hspProtocol = ui->NewHSplitter(this->tpProtocol, 3, false);
+	this->pnlProtocolDomain = ui->NewPanel(this->tpProtocol);
+	this->pnlProtocolDomain->SetRect(0, 0, 100, 79, false);
+	this->pnlProtocolDomain->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblProtocolDomain = ui->NewLabel(this->pnlProtocolDomain, CSTR("Domain"));
+	this->lblProtocolDomain->SetRect(4, 4, 100, 23, false);
+	this->txtProtocolDomain = ui->NewTextBox(this->pnlProtocolDomain, CSTR(""));
+	this->txtProtocolDomain->SetRect(104, 4, 200, 23, false);
+	this->txtProtocolDomain->SetReadOnly(true);
+	this->lblProtocolDescription = ui->NewLabel(this->pnlProtocolDomain, CSTR("Description"));
+	this->lblProtocolDescription->SetRect(4, 28, 100, 23, false);
+	this->txtProtocolDescription = ui->NewTextBox(this->pnlProtocolDomain, CSTR(""));
+	this->txtProtocolDescription->SetRect(104, 28, 500, 23, false);
+	this->txtProtocolDescription->SetReadOnly(true);
+	this->chkProtocolDeprecated = ui->NewCheckBox(this->pnlProtocolDomain, CSTR("Deprecated"), false);
+	this->chkProtocolDeprecated->SetRect(4, 52, 200, 23, false);
+	this->chkProtocolDeprecated->SetEnabled(false);
+	this->chkProtocolExperimental = ui->NewCheckBox(this->pnlProtocolDomain, CSTR("Experimental"), false);
+	this->chkProtocolExperimental->SetRect(204, 52, 200, 23, false);
+	this->chkProtocolExperimental->SetEnabled(false);
+	this->tcProtocol = ui->NewTabControl(this->tpProtocol);
+	this->tcProtocol->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpProtocolCommands = this->tcProtocol->AddTabPage(CSTR("Commands"));
+	this->lbProtocolCommands = ui->NewListBox(this->tpProtocolCommands, false);
+	this->lbProtocolCommands->SetRect(0, 0, 150, 23, false);
+	this->lbProtocolCommands->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocolCommands->HandleSelectionChange(OnProtocolCommandsSelChg, this);
+	this->hspProtocolCommands = ui->NewHSplitter(this->tpProtocolCommands, 3, false);
+	this->pnlProtocolCommands = ui->NewPanel(this->tpProtocolCommands);
+	this->pnlProtocolCommands->SetRect(0, 0, 100, 79, false);
+	this->pnlProtocolCommands->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblProtocolCommandsName = ui->NewLabel(this->pnlProtocolCommands, CSTR("Name"));
+	this->lblProtocolCommandsName->SetRect(4, 4, 100, 23, false);
+	this->txtProtocolCommandsName = ui->NewTextBox(this->pnlProtocolCommands, CSTR(""));
+	this->txtProtocolCommandsName->SetRect(104, 4, 200, 23, false);
+	this->txtProtocolCommandsName->SetReadOnly(true);
+	this->lblProtocolCommandsDesc = ui->NewLabel(this->pnlProtocolCommands, CSTR("Description"));
+	this->lblProtocolCommandsDesc->SetRect(4, 28, 100, 23, false);
+	this->txtProtocolCommandsDesc = ui->NewTextBox(this->pnlProtocolCommands, CSTR(""));
+	this->txtProtocolCommandsDesc->SetRect(104, 28, 500, 23, false);
+	this->txtProtocolCommandsDesc->SetReadOnly(true);
+	this->chkProtocolCommandsDeprecated = ui->NewCheckBox(this->pnlProtocolCommands, CSTR("Deprecated"), false);
+	this->chkProtocolCommandsDeprecated->SetRect(4, 52, 200, 23, false);
+	this->chkProtocolCommandsDeprecated->SetEnabled(false);
+	this->chkProtocolCommandsExperimental = ui->NewCheckBox(this->pnlProtocolCommands, CSTR("Experimental"), false);
+	this->chkProtocolCommandsExperimental->SetRect(204, 52, 200, 23, false);
+	this->chkProtocolCommandsExperimental->SetEnabled(false);
+	this->grpProtocolCommandsParams = ui->NewGroupBox(this->tpProtocolCommands, CSTR("Parameters"));
+	this->grpProtocolCommandsParams->SetRect(0, 0, 100, 256, false);
+	this->grpProtocolCommandsParams->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lvProtocolCommandsParams = ui->NewListView(this->grpProtocolCommandsParams, UI::ListViewStyle::Table, 10);
+	this->lvProtocolCommandsParams->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolCommandsParams->SetFullRowSelect(true);
+	this->lvProtocolCommandsParams->SetShowGrid(true);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Name"), 100);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Type"), 100);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Enum"), 150);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Description"), 300);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Optional"), 80);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Experimental"), 80);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Deprecated"), 80);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Ref"), 100);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("ItemsRef"), 150);
+	this->vspProtocolCommands = ui->NewVSplitter(this->tpProtocolCommands, 3, false);
+	this->grpProtocolCommandsRets = ui->NewGroupBox(this->tpProtocolCommands, CSTR("Returns"));
+	this->grpProtocolCommandsRets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolCommandsRets = ui->NewListView(this->grpProtocolCommandsRets, UI::ListViewStyle::Table, 6);
+	this->lvProtocolCommandsRets->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolCommandsRets->SetFullRowSelect(true);
+	this->lvProtocolCommandsRets->SetShowGrid(true);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Name"), 100);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Type"), 100);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Enum"), 150);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Description"), 300);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Optional"), 80);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Experimental"), 80);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Deprecated"), 80);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Ref"), 100);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("ItemsRef"), 150);
+
+	this->tpProtocolDependencies = this->tcProtocol->AddTabPage(CSTR("Dependencies"));
+	this->lbProtocolDependencies = ui->NewListBox(this->tpProtocolDependencies, false);
+	this->lbProtocolDependencies->SetDockType(UI::GUIControl::DOCK_FILL);
+
+	this->tpProtocolEvents = this->tcProtocol->AddTabPage(CSTR("Events"));
+	this->lbProtocolEvents = ui->NewListBox(this->tpProtocolEvents, false);
+	this->lbProtocolEvents->SetRect(0, 0, 150, 23, false);
+	this->lbProtocolEvents->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocolEvents->HandleSelectionChange(OnProtocolEventsSelChg, this);
+	this->hspProtocolEvents = ui->NewHSplitter(this->tpProtocolEvents, 3, false);
+	this->pnlProtocolEvents = ui->NewPanel(this->tpProtocolEvents);
+	this->pnlProtocolEvents->SetRect(0, 0, 100, 79, false);
+	this->pnlProtocolEvents->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblProtocolEventsName = ui->NewLabel(this->pnlProtocolEvents, CSTR("Name"));
+	this->lblProtocolEventsName->SetRect(4, 4, 100, 23, false);
+	this->txtProtocolEventsName = ui->NewTextBox(this->pnlProtocolEvents, CSTR(""));
+	this->txtProtocolEventsName->SetRect(104, 4, 200, 23, false);
+	this->txtProtocolEventsName->SetReadOnly(true);
+	this->lblProtocolEventsDesc = ui->NewLabel(this->pnlProtocolEvents, CSTR("Description"));
+	this->lblProtocolEventsDesc->SetRect(4, 28, 100, 23, false);
+	this->txtProtocolEventsDesc = ui->NewTextBox(this->pnlProtocolEvents, CSTR(""));
+	this->txtProtocolEventsDesc->SetRect(104, 28, 500, 23, false);
+	this->txtProtocolEventsDesc->SetReadOnly(true);
+	this->chkProtocolEventsDeprecated = ui->NewCheckBox(this->pnlProtocolEvents, CSTR("Deprecated"), false);
+	this->chkProtocolEventsDeprecated->SetRect(4, 52, 200, 23, false);
+	this->chkProtocolEventsDeprecated->SetEnabled(false);
+	this->chkProtocolEventsExperimental = ui->NewCheckBox(this->pnlProtocolEvents, CSTR("Experimental"), false);
+	this->chkProtocolEventsExperimental->SetRect(204, 52, 200, 23, false);
+	this->chkProtocolEventsExperimental->SetEnabled(false);
+	this->lvProtocolEventsParams = ui->NewListView(this->tpProtocolEvents, UI::ListViewStyle::Table, 10);
+	this->lvProtocolEventsParams->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolEventsParams->SetFullRowSelect(true);
+	this->lvProtocolEventsParams->SetShowGrid(true);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Name"), 100);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Type"), 100);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Enum"), 150);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Description"), 300);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Optional"), 80);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Experimental"), 80);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Deprecated"), 80);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Ref"), 100);
+	this->lvProtocolEventsParams->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolEventsParams->AddColumn(CSTR("ItemsRef"), 150);
+
+	this->tpProtocolTypes = this->tcProtocol->AddTabPage(CSTR("Types"));
 }
 
 SSWR::AVIRead::AVIRChromeDevToolsForm::~AVIRChromeDevToolsForm()
@@ -214,6 +555,7 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::~AVIRChromeDevToolsForm()
 	this->devTools.Delete();
 	this->ssl.Delete();
 	this->targets.Delete();
+	this->protocol.Delete();
 }
 
 void SSWR::AVIRead::AVIRChromeDevToolsForm::OnMonitorChanged()

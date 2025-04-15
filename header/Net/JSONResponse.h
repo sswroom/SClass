@@ -140,7 +140,7 @@ namespace Net
 			if (this->json->GetType() == Text::JSONType::Array && NN<Text::JSONArray>::ConvertFrom(this->json)->GetArrayValue(index).SetTo(json))
 			{
 				NEW_CLASSNN(t, T(json));
-				if (t->IsValid())
+				if (!t->IsValid())
 				{
 					t.Delete();
 					return 0;
@@ -252,10 +252,15 @@ namespace Net
 	NN<Text::JSONArray> arr; \
 	if (!this->json->GetValueArray(CSTR(name)).SetTo(arr)) \
 	{ \
-		if (!optional) \
+		if (this->json->GetValue(CSTR(name)).NotNull()) \
 		{ \
 			this->valid = false; \
 			printf("JSONResponse: %s.%s is not array\r\n", clsName.v.Ptr(), name); \
+		} \
+		else if (!optional) \
+		{ \
+			this->valid = false; \
+			printf("JSONResponse: %s.%s is not found and is not optional\r\n", clsName.v.Ptr(), name); \
 		} \
 		return; \
 	} \
