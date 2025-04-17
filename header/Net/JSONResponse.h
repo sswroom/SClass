@@ -106,6 +106,7 @@ namespace Net
 		Bool IsValid() const;
 		void ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const;
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		void ToJSONWF(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	template <class T> class JSONResponseArr
@@ -248,7 +249,6 @@ namespace Net
 #define JSONRESP_ARRAY_OBJ(name, optional, allowNull, className) { \
 	Bool hasError = false; \
 	NN<ArrayNNField<className>> field; \
-	NEW_CLASSNN(field, ArrayNNField<className>(CSTR(name), optional, allowNull)); \
 	NN<Text::JSONArray> arr; \
 	if (!this->json->GetValueArray(CSTR(name)).SetTo(arr)) \
 	{ \
@@ -262,41 +262,44 @@ namespace Net
 			this->valid = false; \
 			printf("JSONResponse: %s.%s is not found and is not optional\r\n", clsName.v.Ptr(), name); \
 		} \
-		return; \
 	} \
-	NN<Text::JSONObject> val; \
-	UOSInt i = 0; \
-	UOSInt j = arr->GetArrayLength(); \
-	while (i < j) \
+	else \
 	{ \
-		if (!arr->GetArrayObject(i).SetTo(val)) \
+		NEW_CLASSNN(field, ArrayNNField<className>(CSTR(name), optional, allowNull)); \
+		NN<Text::JSONObject> val; \
+		UOSInt i = 0; \
+		UOSInt j = arr->GetArrayLength(); \
+		while (i < j) \
 		{ \
-			if (!hasError) \
+			if (!arr->GetArrayObject(i).SetTo(val)) \
 			{ \
-				hasError = true; \
-				this->valid = false; \
-				NN<Text::JSONBase> jobj; \
-				printf("JSONResponse: %s.%s[%d] is not object, type = %s\r\n", clsName.v.Ptr(), name, (UInt32)i, Text::JSONTypeGetName(arr->GetArrayValue(i).SetTo(jobj)?jobj->GetType():Text::JSONType::Null).v.Ptr()); \
+				if (!hasError) \
+				{ \
+					hasError = true; \
+					this->valid = false; \
+					NN<Text::JSONBase> jobj; \
+					printf("JSONResponse: %s.%s[%d] is not object, type = %s\r\n", clsName.v.Ptr(), name, (UInt32)i, Text::JSONTypeGetName(arr->GetArrayValue(i).SetTo(jobj)?jobj->GetType():Text::JSONType::Null).v.Ptr()); \
+				} \
 			} \
+			else \
+			{ \
+				NN<className> v; \
+				NEW_CLASSNN(v, className(val)); \
+				if (!v->IsValid() && !hasError) \
+				{ \
+					hasError = true; \
+					this->valid = false; \
+					printf("JSONResponse: %s.%s[%d] is not valid %s type\r\n", clsName.v.Ptr(), name, (UInt32)i, #className); \
+				} \
+				field->AddValue(v); \
+			} \
+			i++; \
 		} \
-		else \
+		NN<Field> orifield; \
+		if (this->fieldMap.PutC(CSTR(name), field).SetTo(orifield)) \
 		{ \
-			NN<className> v; \
-			NEW_CLASSNN(v, className(val)); \
-			if (!v->IsValid() && !hasError) \
-			{ \
-				hasError = true; \
-				this->valid = false; \
-				printf("JSONResponse: %s.%s[%d] is not valid %s type\r\n", clsName.v.Ptr(), name, (UInt32)i, #className); \
-			} \
-			field->AddValue(v); \
+			orifield.Delete(); \
 		} \
-		i++; \
-	} \
-	NN<Field> orifield; \
-	if (this->fieldMap.PutC(CSTR(name), field).SetTo(orifield)) \
-	{ \
-		orifield.Delete(); \
 	} \
 }
 #define JSONRESP_OBJ(name, optional, allowNull, className) { \

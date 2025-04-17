@@ -81,11 +81,14 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolSelChg(AnyType u
 	NN<Net::ChromeDevTools::ChromeCommand> command;
 	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeEvent>> events;
 	NN<Net::ChromeDevTools::ChromeEvent> evt;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeType>> types;
+	NN<Net::ChromeDevTools::ChromeType> type;
 	UOSInt i;
 	UOSInt j;
 	me->lbProtocolDependencies->ClearItems();
 	me->lbProtocolCommands->ClearItems();
 	me->lbProtocolEvents->ClearItems();
+	me->lbProtocolTypes->ClearItems();
 	if (me->lbProtocol->GetSelectedItem().GetOpt<Net::ChromeDevTools::ChromeDomain>().SetTo(domain))
 	{
 		me->txtProtocolDomain->SetText(domain->GetDomain()->ToCString());
@@ -124,6 +127,17 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolSelChg(AnyType u
 				i++;
 			}
 		}
+		if (domain->GetTypes().SetTo(types))
+		{
+			i = 0;
+			j = types->GetCount();
+			while (i < j)
+			{
+				type = types->GetItemNoCheck(i);
+				me->lbProtocolTypes->AddItem(type->GetId(), type);
+				i++;
+			}
+		}
 	}
 	else
 	{
@@ -144,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolCommandsSelChg(A
 	if (me->lbProtocolCommands->GetSelectedItem().GetOpt<Net::ChromeDevTools::ChromeCommand>().SetTo(command))
 	{
 		me->txtProtocolCommandsName->SetText(command->GetName()->ToCString());
-		me->txtProtocolCommandsDesc->SetText(command->GetDescription()->ToCString());
+		me->txtProtocolCommandsDesc->SetText(Text::String::OrEmpty(command->GetDescription())->ToCString());
 		me->chkProtocolCommandsDeprecated->SetChecked(command->IsDeprecated());
 		me->chkProtocolCommandsExperimental->SetChecked(command->IsExperimental());
 		if (command->GetParameters().SetTo(params))
@@ -155,11 +169,19 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolCommandsSelChg(A
 		{
 			AppendParameters(me->lvProtocolCommandsRets, params);
 		}
+		Text::StringBuilderUTF8 sb;
+		command->ToJSONWF(sb);
+		me->txtProtocolCommandJSON->SetText(sb.ToCString());
+		sb.ClearStr();
+		command->ToString(sb);
+		me->txtProtocolCommandText->SetText(sb.ToCString());
 	}
 	else
 	{
 		me->txtProtocolCommandsName->SetText(CSTR(""));
 		me->txtProtocolCommandsDesc->SetText(CSTR(""));
+		me->txtProtocolCommandJSON->SetText(CSTR(""));
+		me->txtProtocolCommandText->SetText(CSTR(""));
 	}
 }
 
@@ -184,6 +206,68 @@ void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolEventsSelChg(Any
 	{
 		me->txtProtocolEventsName->SetText(CSTR(""));
 		me->txtProtocolEventsDesc->SetText(CSTR(""));
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRChromeDevToolsForm::OnProtocolTypesSelChg(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRChromeDevToolsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChromeDevToolsForm>();
+	NN<Net::ChromeDevTools::ChromeType> type;
+	NN<Net::ChromeDevTools::ChromeReturnItem> items;
+	NN<const Data::ArrayListStringNN> enums;
+	NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeParameter>> params;
+	me->lvProtocolTypesProp->ClearItems();
+	me->lbProtocolTypesEnum->ClearItems();
+	if (me->lbProtocolTypes->GetSelectedItem().GetOpt<Net::ChromeDevTools::ChromeType>().SetTo(type))
+	{
+		me->txtProtocolTypesId->SetText(type->GetId()->ToCString());
+		me->txtProtocolTypesDesc->SetText(Text::String::OrEmpty(type->GetDescription())->ToCString());
+		me->txtProtocolTypesType->SetText(type->GetType()->ToCString());
+		if (type->GetItems().SetTo(items))
+		{
+			NN<Text::String> s;
+			if (items->GetType().SetTo(s))
+				me->txtProtocolTypesItemsType->SetText(s->ToCString());
+			else if (items->GetRef().SetTo(s))
+				me->txtProtocolTypesItemsType->SetText(s->ToCString());
+			else
+				me->txtProtocolTypesItemsType->SetText(CSTR(""));
+		}
+		else
+		{
+			me->txtProtocolTypesItemsType->SetText(CSTR(""));
+		}
+		me->chkProtocolTypesDeprecated->SetChecked(type->IsDeprecated());
+		me->chkProtocolTypesExperimental->SetChecked(type->IsExperimental());
+		if (type->GetProperties().SetTo(params))
+		{
+			AppendParameters(me->lvProtocolTypesProp, params);
+		}
+		if (type->GetEnum().SetTo(enums))
+		{
+			UOSInt i = 0;
+			UOSInt j = enums->GetCount();
+			while (i < j)
+			{
+				me->lbProtocolTypesEnum->AddItem(enums->GetItemNoCheck(i), 0);
+				i++;
+			}
+		}
+		Text::StringBuilderUTF8 sb;
+		type->ToJSONWF(sb);
+		me->txtProtocolTypeJSON->SetText(sb.ToCString());
+		sb.ClearStr();
+		type->ToString(sb);
+		me->txtProtocolTypeText->SetText(sb.ToCString());
+	}
+	else
+	{
+		me->txtProtocolTypesId->SetText(CSTR(""));
+		me->txtProtocolTypesType->SetText(CSTR(""));
+		me->txtProtocolTypesDesc->SetText(CSTR(""));
+		me->txtProtocolTypesItemsType->SetText(CSTR(""));
+		me->txtProtocolTypeJSON->SetText(CSTR(""));
+		me->txtProtocolTypeText->SetText(CSTR(""));
 	}
 }
 
@@ -277,22 +361,22 @@ void SSWR::AVIRead::AVIRChromeDevToolsForm::AppendParameter(NN<UI::GUIListView> 
 	NN<Net::ChromeDevTools::ChromeReturnItem> item;
 	UOSInt i = lv->AddItem(param->GetName()->ToCString(), param);
 	if (param->GetType().SetTo(s)) lv->SetSubItem(i, 1, s->ToCString());
+	else if (param->GetRef().SetTo(s)) lv->SetSubItem(i, 1, s->ToCString());
+	if (param->GetItems().SetTo(item))
+	{
+		if (item->GetType().SetTo(s)) lv->SetSubItem(i, 2, s->ToCString());
+		else if (item->GetRef().SetTo(s)) lv->SetSubItem(i, 2, s->ToCString());
+	}
+	lv->SetSubItem(i, 3, param->IsOptional()?CSTR("Y"):CSTR("N"));
 	if (param->GetEnum().SetTo(enums))
 	{
 		s = enums->JoinString(CSTR("\r\n"));
-		lv->SetSubItem(i, 2, s->ToCString());
+		lv->SetSubItem(i, 4, s->ToCString());
 		s->Release();
 	}
-	if (param->GetDescription().SetTo(s)) lv->SetSubItem(i, 3, s->ToCString());
-	lv->SetSubItem(i, 4, param->IsOptional()?CSTR("Y"):CSTR("N"));
-	lv->SetSubItem(i, 5, param->IsExperimental()?CSTR("Y"):CSTR("N"));
-	lv->SetSubItem(i, 6, param->IsDeprecated()?CSTR("Y"):CSTR("N"));
-	if (param->GetRef().SetTo(s)) lv->SetSubItem(i, 7, s->ToCString());
-	if (param->GetItems().SetTo(item))
-	{
-		if (item->GetType().SetTo(s)) lv->SetSubItem(i, 8, s->ToCString());
-		if (item->GetRef().SetTo(s)) lv->SetSubItem(i, 9, s->ToCString());
-	}
+	if (param->GetDescription().SetTo(s)) lv->SetSubItem(i, 5, s->ToCString());
+	lv->SetSubItem(i, 6, param->IsExperimental()?CSTR("Y"):CSTR("N"));
+	lv->SetSubItem(i, 7, param->IsDeprecated()?CSTR("Y"):CSTR("N"));
 }
 
 SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -449,7 +533,10 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->lbProtocolCommands->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbProtocolCommands->HandleSelectionChange(OnProtocolCommandsSelChg, this);
 	this->hspProtocolCommands = ui->NewHSplitter(this->tpProtocolCommands, 3, false);
-	this->pnlProtocolCommands = ui->NewPanel(this->tpProtocolCommands);
+	this->tcProtocolCommands = ui->NewTabControl(this->tpProtocolCommands);
+	this->tcProtocolCommands->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpProtocolCommandDetail = this->tcProtocolCommands->AddTabPage(CSTR("Detail"));
+	this->pnlProtocolCommands = ui->NewPanel(this->tpProtocolCommandDetail);
 	this->pnlProtocolCommands->SetRect(0, 0, 100, 79, false);
 	this->pnlProtocolCommands->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblProtocolCommandsName = ui->NewLabel(this->pnlProtocolCommands, CSTR("Name"));
@@ -468,40 +555,44 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->chkProtocolCommandsExperimental = ui->NewCheckBox(this->pnlProtocolCommands, CSTR("Experimental"), false);
 	this->chkProtocolCommandsExperimental->SetRect(204, 52, 200, 23, false);
 	this->chkProtocolCommandsExperimental->SetEnabled(false);
-	this->grpProtocolCommandsParams = ui->NewGroupBox(this->tpProtocolCommands, CSTR("Parameters"));
+	this->grpProtocolCommandsParams = ui->NewGroupBox(this->tpProtocolCommandDetail, CSTR("Parameters"));
 	this->grpProtocolCommandsParams->SetRect(0, 0, 100, 256, false);
 	this->grpProtocolCommandsParams->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->lvProtocolCommandsParams = ui->NewListView(this->grpProtocolCommandsParams, UI::ListViewStyle::Table, 10);
+	this->lvProtocolCommandsParams = ui->NewListView(this->grpProtocolCommandsParams, UI::ListViewStyle::Table, 8);
 	this->lvProtocolCommandsParams->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvProtocolCommandsParams->SetFullRowSelect(true);
 	this->lvProtocolCommandsParams->SetShowGrid(true);
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Name"), 100);
-	this->lvProtocolCommandsParams->AddColumn(CSTR("Type"), 100);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Type"), 80);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolCommandsParams->AddColumn(CSTR("Optional"), 80);
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Enum"), 150);
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Description"), 300);
-	this->lvProtocolCommandsParams->AddColumn(CSTR("Optional"), 80);
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Experimental"), 80);
 	this->lvProtocolCommandsParams->AddColumn(CSTR("Deprecated"), 80);
-	this->lvProtocolCommandsParams->AddColumn(CSTR("Ref"), 100);
-	this->lvProtocolCommandsParams->AddColumn(CSTR("ItemsType"), 80);
-	this->lvProtocolCommandsParams->AddColumn(CSTR("ItemsRef"), 150);
-	this->vspProtocolCommands = ui->NewVSplitter(this->tpProtocolCommands, 3, false);
-	this->grpProtocolCommandsRets = ui->NewGroupBox(this->tpProtocolCommands, CSTR("Returns"));
+	this->vspProtocolCommands = ui->NewVSplitter(this->tpProtocolCommandDetail, 3, false);
+	this->grpProtocolCommandsRets = ui->NewGroupBox(this->tpProtocolCommandDetail, CSTR("Returns"));
 	this->grpProtocolCommandsRets->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvProtocolCommandsRets = ui->NewListView(this->grpProtocolCommandsRets, UI::ListViewStyle::Table, 6);
+	this->lvProtocolCommandsRets = ui->NewListView(this->grpProtocolCommandsRets, UI::ListViewStyle::Table, 8);
 	this->lvProtocolCommandsRets->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvProtocolCommandsRets->SetFullRowSelect(true);
 	this->lvProtocolCommandsRets->SetShowGrid(true);
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Name"), 100);
-	this->lvProtocolCommandsRets->AddColumn(CSTR("Type"), 100);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Type"), 80);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolCommandsRets->AddColumn(CSTR("Optional"), 80);
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Enum"), 150);
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Description"), 300);
-	this->lvProtocolCommandsRets->AddColumn(CSTR("Optional"), 80);
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Experimental"), 80);
 	this->lvProtocolCommandsRets->AddColumn(CSTR("Deprecated"), 80);
-	this->lvProtocolCommandsRets->AddColumn(CSTR("Ref"), 100);
-	this->lvProtocolCommandsRets->AddColumn(CSTR("ItemsType"), 80);
-	this->lvProtocolCommandsRets->AddColumn(CSTR("ItemsRef"), 150);
+	this->tpProtocolCommandJSON = this->tcProtocolCommands->AddTabPage(CSTR("JSON"));
+	this->txtProtocolCommandJSON = ui->NewTextBox(this->tpProtocolCommandJSON, CSTR(""), true);
+	this->txtProtocolCommandJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolCommandJSON->SetReadOnly(true);
+	this->tpProtocolCommandText = this->tcProtocolCommands->AddTabPage(CSTR("Text"));
+	this->txtProtocolCommandText = ui->NewTextBox(this->tpProtocolCommandText, CSTR(""), true);
+	this->txtProtocolCommandText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolCommandText->SetReadOnly(true);
 
 	this->tpProtocolDependencies = this->tcProtocol->AddTabPage(CSTR("Dependencies"));
 	this->lbProtocolDependencies = ui->NewListBox(this->tpProtocolDependencies, false);
@@ -532,22 +623,85 @@ SSWR::AVIRead::AVIRChromeDevToolsForm::AVIRChromeDevToolsForm(Optional<UI::GUICl
 	this->chkProtocolEventsExperimental = ui->NewCheckBox(this->pnlProtocolEvents, CSTR("Experimental"), false);
 	this->chkProtocolEventsExperimental->SetRect(204, 52, 200, 23, false);
 	this->chkProtocolEventsExperimental->SetEnabled(false);
-	this->lvProtocolEventsParams = ui->NewListView(this->tpProtocolEvents, UI::ListViewStyle::Table, 10);
+	this->lvProtocolEventsParams = ui->NewListView(this->tpProtocolEvents, UI::ListViewStyle::Table, 8);
 	this->lvProtocolEventsParams->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvProtocolEventsParams->SetFullRowSelect(true);
 	this->lvProtocolEventsParams->SetShowGrid(true);
 	this->lvProtocolEventsParams->AddColumn(CSTR("Name"), 100);
-	this->lvProtocolEventsParams->AddColumn(CSTR("Type"), 100);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Type"), 80);
+	this->lvProtocolEventsParams->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolEventsParams->AddColumn(CSTR("Optional"), 80);
 	this->lvProtocolEventsParams->AddColumn(CSTR("Enum"), 150);
 	this->lvProtocolEventsParams->AddColumn(CSTR("Description"), 300);
-	this->lvProtocolEventsParams->AddColumn(CSTR("Optional"), 80);
 	this->lvProtocolEventsParams->AddColumn(CSTR("Experimental"), 80);
 	this->lvProtocolEventsParams->AddColumn(CSTR("Deprecated"), 80);
-	this->lvProtocolEventsParams->AddColumn(CSTR("Ref"), 100);
-	this->lvProtocolEventsParams->AddColumn(CSTR("ItemsType"), 80);
-	this->lvProtocolEventsParams->AddColumn(CSTR("ItemsRef"), 150);
 
 	this->tpProtocolTypes = this->tcProtocol->AddTabPage(CSTR("Types"));
+	this->lbProtocolTypes = ui->NewListBox(this->tpProtocolTypes, false);
+	this->lbProtocolTypes->SetRect(0, 0, 150, 23, false);
+	this->lbProtocolTypes->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->lbProtocolTypes->HandleSelectionChange(OnProtocolTypesSelChg, this);
+	this->hspProtocolTypes = ui->NewHSplitter(this->tpProtocolTypes, 3, false);
+	this->tcProtocolTypes = ui->NewTabControl(this->tpProtocolTypes);
+	this->tcProtocolTypes->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->tpProtocolTypeDetail = this->tcProtocolTypes->AddTabPage(CSTR("Detail"));
+	this->pnlProtocolTypes = ui->NewPanel(this->tpProtocolTypeDetail);
+	this->pnlProtocolTypes->SetRect(0, 0, 100, 127, false);
+	this->pnlProtocolTypes->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lblProtocolTypesId = ui->NewLabel(this->pnlProtocolTypes, CSTR("Id"));
+	this->lblProtocolTypesId->SetRect(4, 4, 100, 23, false);
+	this->txtProtocolTypesId = ui->NewTextBox(this->pnlProtocolTypes, CSTR(""));
+	this->txtProtocolTypesId->SetRect(104, 4, 200, 23, false);
+	this->txtProtocolTypesId->SetReadOnly(true);
+	this->lblProtocolTypesType = ui->NewLabel(this->pnlProtocolTypes, CSTR("Type"));
+	this->lblProtocolTypesType->SetRect(4, 28, 100, 23, false);
+	this->txtProtocolTypesType = ui->NewTextBox(this->pnlProtocolTypes, CSTR(""));
+	this->txtProtocolTypesType->SetRect(104, 28, 200, 23, false);
+	this->txtProtocolTypesType->SetReadOnly(true);
+	this->lblProtocolTypesItemsType = ui->NewLabel(this->pnlProtocolTypes, CSTR("ItemsType"));
+	this->lblProtocolTypesItemsType->SetRect(4, 52, 100, 23, false);
+	this->txtProtocolTypesItemsType = ui->NewTextBox(this->pnlProtocolTypes, CSTR(""));
+	this->txtProtocolTypesItemsType->SetRect(104, 52, 150, 23, false);
+	this->txtProtocolTypesItemsType->SetReadOnly(true);
+	this->lblProtocolTypesDesc = ui->NewLabel(this->pnlProtocolTypes, CSTR("Description"));
+	this->lblProtocolTypesDesc->SetRect(4, 76, 100, 23, false);
+	this->txtProtocolTypesDesc = ui->NewTextBox(this->pnlProtocolTypes, CSTR(""));
+	this->txtProtocolTypesDesc->SetRect(104, 76, 500, 23, false);
+	this->txtProtocolTypesDesc->SetReadOnly(true);
+	this->chkProtocolTypesDeprecated = ui->NewCheckBox(this->pnlProtocolTypes, CSTR("Deprecated"), false);
+	this->chkProtocolTypesDeprecated->SetRect(4, 100, 200, 23, false);
+	this->chkProtocolTypesDeprecated->SetEnabled(false);
+	this->chkProtocolTypesExperimental = ui->NewCheckBox(this->pnlProtocolTypes, CSTR("Experimental"), false);
+	this->chkProtocolTypesExperimental->SetRect(204, 100, 200, 23, false);
+	this->chkProtocolTypesExperimental->SetEnabled(false);
+	this->grpProtocolTypesEnum = ui->NewGroupBox(this->tpProtocolTypeDetail, CSTR("Enum"));
+	this->grpProtocolTypesEnum->SetRect(0, 0, 100, 256, false);
+	this->grpProtocolTypesEnum->SetDockType(UI::GUIControl::DOCK_TOP);
+	this->lbProtocolTypesEnum = ui->NewListBox(this->grpProtocolTypesEnum, false);
+	this->lbProtocolTypesEnum->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->vspProtocolTypes = ui->NewVSplitter(this->tpProtocolTypeDetail, 3, false);
+	this->grpProtocolTypesProp = ui->NewGroupBox(this->tpProtocolTypeDetail, CSTR("Properties"));
+	this->grpProtocolTypesProp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolTypesProp = ui->NewListView(this->grpProtocolTypesProp, UI::ListViewStyle::Table, 8);
+	this->lvProtocolTypesProp->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvProtocolTypesProp->SetFullRowSelect(true);
+	this->lvProtocolTypesProp->SetShowGrid(true);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Name"), 100);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Type"), 80);
+	this->lvProtocolTypesProp->AddColumn(CSTR("ItemsType"), 80);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Optional"), 80);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Enum"), 150);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Description"), 300);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Experimental"), 80);
+	this->lvProtocolTypesProp->AddColumn(CSTR("Deprecated"), 80);
+	this->tpProtocolTypeJSON = this->tcProtocolTypes->AddTabPage(CSTR("JSON"));
+	this->txtProtocolTypeJSON = ui->NewTextBox(this->tpProtocolTypeJSON, CSTR(""), true);
+	this->txtProtocolTypeJSON->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolTypeJSON->SetReadOnly(true);
+	this->tpProtocolTypeText = this->tcProtocolTypes->AddTabPage(CSTR("Text"));
+	this->txtProtocolTypeText = ui->NewTextBox(this->tpProtocolTypeText, CSTR(""), true);
+	this->txtProtocolTypeText->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtProtocolTypeText->SetReadOnly(true);
 }
 
 SSWR::AVIRead::AVIRChromeDevToolsForm::~AVIRChromeDevToolsForm()

@@ -88,6 +88,8 @@ namespace SSWR
 			NN<UI::GUITabPage> tpProtocolCommands;
 			NN<UI::GUIListBox> lbProtocolCommands;
 			NN<UI::GUIHSplitter> hspProtocolCommands;
+			NN<UI::GUITabControl> tcProtocolCommands;
+			NN<UI::GUITabPage> tpProtocolCommandDetail;
 			NN<UI::GUIPanel> pnlProtocolCommands;
 			NN<UI::GUILabel> lblProtocolCommandsName;
 			NN<UI::GUITextBox> txtProtocolCommandsName;
@@ -100,6 +102,10 @@ namespace SSWR
 			NN<UI::GUIVSplitter> vspProtocolCommands;
 			NN<UI::GUIGroupBox> grpProtocolCommandsRets;
 			NN<UI::GUIListView> lvProtocolCommandsRets;
+			NN<UI::GUITabPage> tpProtocolCommandJSON;
+			NN<UI::GUITextBox> txtProtocolCommandJSON;
+			NN<UI::GUITabPage> tpProtocolCommandText;
+			NN<UI::GUITextBox> txtProtocolCommandText;
 
 			NN<UI::GUITabPage> tpProtocolDependencies;
 			NN<UI::GUIListBox> lbProtocolDependencies;
@@ -117,6 +123,30 @@ namespace SSWR
 			NN<UI::GUIListView> lvProtocolEventsParams;
 
 			NN<UI::GUITabPage> tpProtocolTypes;
+			NN<UI::GUIListBox> lbProtocolTypes;
+			NN<UI::GUIHSplitter> hspProtocolTypes;
+			NN<UI::GUITabControl> tcProtocolTypes;
+			NN<UI::GUITabPage> tpProtocolTypeDetail;
+			NN<UI::GUIPanel> pnlProtocolTypes;
+			NN<UI::GUILabel> lblProtocolTypesId;
+			NN<UI::GUITextBox> txtProtocolTypesId;
+			NN<UI::GUILabel> lblProtocolTypesType;
+			NN<UI::GUITextBox> txtProtocolTypesType;
+			NN<UI::GUILabel> lblProtocolTypesItemsType;
+			NN<UI::GUITextBox> txtProtocolTypesItemsType;
+			NN<UI::GUILabel> lblProtocolTypesDesc;
+			NN<UI::GUITextBox> txtProtocolTypesDesc;
+			NN<UI::GUICheckBox> chkProtocolTypesDeprecated;
+			NN<UI::GUICheckBox> chkProtocolTypesExperimental;
+			NN<UI::GUIGroupBox> grpProtocolTypesEnum;
+			NN<UI::GUIListBox> lbProtocolTypesEnum;
+			NN<UI::GUIVSplitter> vspProtocolTypes;
+			NN<UI::GUIGroupBox> grpProtocolTypesProp;
+			NN<UI::GUIListView> lvProtocolTypesProp;
+			NN<UI::GUITabPage> tpProtocolTypeJSON;
+			NN<UI::GUITextBox> txtProtocolTypeJSON;
+			NN<UI::GUITabPage> tpProtocolTypeText;
+			NN<UI::GUITextBox> txtProtocolTypeText;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTargetClicked(AnyType userObj);
@@ -124,6 +154,7 @@ namespace SSWR
 			static void __stdcall OnProtocolSelChg(AnyType userObj);
 			static void __stdcall OnProtocolCommandsSelChg(AnyType userObj);
 			static void __stdcall OnProtocolEventsSelChg(AnyType userObj);
+			static void __stdcall OnProtocolTypesSelChg(AnyType userObj);
 			void ReloadTargets();
 			void ReloadProtocol();
 			static void AppendParameters(NN<UI::GUIListView> lv, NN<const Data::ArrayListNN<Net::ChromeDevTools::ChromeParameter>> params);

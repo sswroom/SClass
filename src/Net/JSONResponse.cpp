@@ -411,7 +411,6 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 {
 	Bool hasError = false;
 	NN<ArrayStrField> field;
-	NEW_CLASSNN(field, ArrayStrField(name, optional, allowNull));
 	NN<Text::JSONArray> arr;
 	if (!this->json->GetValueArray(name).SetTo(arr))
 	{
@@ -427,6 +426,7 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 		}
 		return;
 	}
+	NEW_CLASSNN(field, ArrayStrField(name, optional, allowNull));
 	NN<Text::JSONBase> val;
 	UOSInt i = 0;
 	UOSInt j = arr->GetArrayLength();
@@ -443,7 +443,7 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 		}
 		else
 		{
-			field->AddValue(NN<Text::JSONString>::ConvertFrom(val)->GetValue());
+			field->AddValue(NN<Text::JSONString>::ConvertFrom(val)->GetValue()->Clone());
 		}
 		i++;
 	}
@@ -493,10 +493,12 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 		keys.Add(it.Next());
 	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(keys, keys);
 	NN<Field> field;
+	NN<Text::String> key;
 	Data::ArrayIterator<NN<Text::String>> itKey = keys.Iterator();
 	while (itKey.HasNext())
 	{
-		if (this->fieldMap.GetNN(itKey.Next()).SetTo(field))
+		key = itKey.Next();
+		if (this->fieldMap.GetNN(key).SetTo(field))
 		{
 			switch (field->GetFieldType())
 			{
@@ -660,4 +662,11 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	this->ToString(sb, CSTR(""));
+}
+
+void Net::JSONResponse::ToJSONWF(NN<Text::StringBuilderUTF8> sb) const
+{
+	Text::StringBuilderUTF8 sbTmp;
+	this->json->ToJSONString(sbTmp);
+	Text::JSText::JSONWellFormat(sbTmp.v, sbTmp.leng, 0, sb);
 }
