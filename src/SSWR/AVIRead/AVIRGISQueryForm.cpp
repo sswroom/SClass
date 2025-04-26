@@ -403,6 +403,49 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjDownloadClicked(AnyType use
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnColDownloadClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
+	UOSInt l;
+	NN<Text::String> value;
+	if (me->layerNames)
+	{
+		k = me->lyr->GetColumnCnt();
+		i = me->lvInfo->GetSelectedIndex();
+		if (i == INVALID_INDEX)
+			return;
+		j = me->queryValueList.GetCount();
+		while (i < j)
+		{
+			if (me->queryValueList.GetItem(i).SetTo(value))
+			{
+				me->DownloadURL(value);
+			}
+			i += k;
+		}
+	}
+	else
+	{
+		l = me->lvInfo->GetSelectedIndex();
+		if (l == INVALID_INDEX)
+			return;
+		k = me->queryValueOfstList.GetCount();
+		j = me->queryNameList.GetCount();
+		while (k-- > 0)
+		{
+			i = me->queryValueOfstList.GetItem(k);
+			if (j - i > l && me->queryValueList.GetItem(i + l).SetTo(value))
+			{
+				me->DownloadURL(value);
+			}
+			j = i;
+		}
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnOpenTimer(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
@@ -733,9 +776,9 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->cboObjName = ui->NewComboBox(this->pnlObj, false);
 	this->cboObjName->SetRect(104, 4, 200, 23, false);
 	this->cboObjName->HandleSelectionChange(OnObjNameSelChg, this);
-	this->btnObjDownload = ui->NewButton(this->pnlObj, CSTR("Download Links"));
-	this->btnObjDownload->SetRect(304, 4, 100, 23, false);
-	this->btnObjDownload->HandleButtonClick(OnObjDownloadClicked, this);
+	this->btnColDownload = ui->NewButton(this->pnlObj, CSTR("Download Column"));
+	this->btnColDownload->SetRect(304, 4, 100, 23, false);
+	this->btnColDownload->HandleButtonClick(OnColDownloadClicked, this);
 	this->cboObj = ui->NewComboBox(this->pnlObj, false);
 	this->cboObj->SetRect(4, 28, 200, 23, false);
 	this->cboObj->HandleSelectionChange(OnObjSelChg, this);
@@ -825,6 +868,9 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl>
 	this->lblAutoSavePath->SetRect(4, 28, 100, 23, false);
 	this->txtAutoSavePath = ui->NewTextBox(this->tpAutoSave, CSTR(""));
 	this->txtAutoSavePath->SetRect(4, 52, 600, 23, false);
+	this->btnObjDownload = ui->NewButton(this->tpAutoSave, CSTR("Download All Links"));
+	this->btnObjDownload->SetRect(4, 76, 150, 23, false);
+	this->btnObjDownload->HandleButtonClick(OnObjDownloadClicked, this);
 	this->ShowLayerNames();
 
 	UOSInt i = 0;

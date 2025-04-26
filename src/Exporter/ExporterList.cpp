@@ -29,11 +29,13 @@
 #include "Exporter/PEMExporter.h"
 #include "Exporter/PLTExporter.h"
 #include "Exporter/PNGExporter.h"
+#include "Exporter/PPKExporter.h"
 #include "Exporter/SFVExporter.h"
 #include "Exporter/SHA1Exporter.h"
 #include "Exporter/SHPExporter.h"
 #include "Exporter/SPKExporter.h"
 #include "Exporter/SQLiteExporter.h"
+#include "Exporter/SSHPubExporter.h"
 #include "Exporter/TIFFExporter.h"
 #include "Exporter/WAVExporter.h"
 #include "Exporter/WebPExporter.h"
@@ -114,6 +116,10 @@ Exporter::ExporterList::ExporterList()
 	NEW_CLASSNN(exporter, Exporter::WebPExporter());
 	this->exporters.Add(exporter);
 	NEW_CLASSNN(exporter, Exporter::HEIFExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::SSHPubExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::PPKExporter());
 	this->exporters.Add(exporter);
 
 	NEW_CLASSNN(exporter, Exporter::GUIJPGExporter());

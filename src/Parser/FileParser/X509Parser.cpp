@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Crypto/Cert/SSHPubKey.h"
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509CRL.h"
@@ -546,6 +547,11 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBinary(Dat
 	else if (Crypto::Cert::X509File::IsPublicKeyInfo(buff.Arr(), buff.ArrEnd(), "1"))
 	{
 		return NEW_CLASS_D(Crypto::Cert::X509PubKey(CSTR("PublicKey.key"), buff));
+	}
+	else if (Crypto::Cert::SSHPubKey::IsValid(buff))
+	{
+		Crypto::Cert::SSHPubKey key(CSTR("PublicKey.key"), buff);
+		return key.CreateKey();
 	}
 	return 0;
 }

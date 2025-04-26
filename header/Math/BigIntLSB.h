@@ -8,8 +8,8 @@ namespace Math
 	class BigIntLSB
 	{
 	private:
-		UOSInt *valArr;
-		UOSInt *tmpArr;
+		UnsafeArray<UOSInt> valArr;
+		UnsafeArray<UOSInt> tmpArr;
 		UOSInt valSize;
 
 	public:
@@ -23,7 +23,7 @@ namespace Math
 		Bool IsEven() const;
 
 		void ByteSwap();
-		void SetRandom(Data::Random *rnd);
+		void SetRandom(NN<Data::Random> rnd);
 		void FromBytesMSB(UnsafeArray<const UInt8> valBuff, UOSInt buffLen);
 		UOSInt GetOccupiedSize() const;
 		UOSInt GetStoreSize() const;
@@ -33,24 +33,24 @@ namespace Math
 		Bool EqualsToI32(Int32 val);
 		void AssignI32(Int32 val);
 		void AssignStr(UnsafeArray<const UTF8Char> val);
-		void AssignBI(const BigIntLSB *val);
+		void AssignBI(NN<const BigIntLSB> val);
 		void Neg();
-		void AndBI(const BigIntLSB *val);
-		void OrBI(const BigIntLSB *val);
-		void XorBI(const BigIntLSB *val);
+		void AndBI(NN<const BigIntLSB> val);
+		void OrBI(NN<const BigIntLSB> val);
+		void XorBI(NN<const BigIntLSB> val);
 		Bool SetFactorial(UInt32 val); //return true if overflow
 		UInt32 MultiplyBy(UInt32 val); //return overflow value
 		UInt32 DivideBy(UInt32 val); //return remainder
 
 		Int32 operator =(Int32 val);
-		BigIntLSB *operator =(Text::CStringNN val);
-		BigIntLSB *operator =(const BigIntLSB *val);
-		BigIntLSB *operator +=(BigIntLSB *val);
-		BigIntLSB *operator ^=(const BigIntLSB *val);
-		BigIntLSB *operator &=(const BigIntLSB *val);
-		BigIntLSB *operator |=(const BigIntLSB *val);
-		BigIntLSB *operator *=(UInt32 val);
-		BigIntLSB *operator /=(UInt32 val);
+		NN<BigIntLSB> operator =(Text::CStringNN val);
+		NN<BigIntLSB> operator =(NN<const BigIntLSB> val);
+		NN<BigIntLSB> operator +=(NN<BigIntLSB> val);
+		NN<BigIntLSB> operator ^=(NN<const BigIntLSB> val);
+		NN<BigIntLSB> operator &=(NN<const BigIntLSB> val);
+		NN<BigIntLSB> operator |=(NN<const BigIntLSB> val);
+		NN<BigIntLSB> operator *=(UInt32 val);
+		NN<BigIntLSB> operator /=(UInt32 val);
 
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;
 		UnsafeArray<UTF8Char> ToHex(UnsafeArray<UTF8Char> buff);

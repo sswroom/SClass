@@ -163,5 +163,15 @@ NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType
 
 NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKey(NN<Crypto::Cert::X509Key> key)
 {
-	return CreateFromKeyBuff(key->GetKeyType(), key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
+	NN<Crypto::Cert::X509Key> pubKey;
+	if (key->GetKeyType() == KeyType::RSA && key->ExtractPublicKey().SetTo(pubKey))
+	{
+		NN<Crypto::Cert::X509PubKey> pk = CreateFromKeyBuff(pubKey->GetKeyType(), pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize(), pubKey->GetSourceNameObj());
+		pubKey.Delete();
+		return pk;
+	}
+	else
+	{
+		return CreateFromKeyBuff(key->GetKeyType(), key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
+	}
 }

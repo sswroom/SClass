@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
+#include "IO/StmData/MemoryDataCopy.h"
 #include "SSWR/AVIRead/AVIREncryptForm.h"
+#include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 #include "UI/GUIFileDialog.h"
@@ -65,6 +67,49 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIREncryptForm::OnHexClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIREncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptForm>();
+	Text::StringBuilderUTF8 sb;
+	UInt8 *decBuff;
+	UOSInt buffSize;
+	NN<Text::TextBinEnc::TextBinEnc> srcEnc;
+	me->txtSrc->GetText(sb);
+	if (!me->cboSrc->GetSelectedItem().GetOpt<Text::TextBinEnc::TextBinEnc>().SetTo(srcEnc))
+	{
+		me->ui->ShowMsgOK(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
+	}
+	else if (sb.GetLength() == 0)
+	{
+		me->ui->ShowMsgOK(CSTR("Please enter source text"), CSTR("Encrypt"), me);
+	}
+	else
+	{
+		buffSize = srcEnc->CalcBinSize(sb.ToCString());
+		if (buffSize > 0)
+		{
+			decBuff = MemAlloc(UInt8, buffSize);
+			if (srcEnc->DecodeBin(sb.ToCString(), decBuff) != buffSize)
+			{
+				me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
+			}
+			else
+			{
+				IO::StmData::MemoryDataCopy fd(decBuff, buffSize);
+				NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
+				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, me->ui, me->core));
+				frm->SetData(fd, 0);
+				me->core->ShowForm(frm);
+			}
+			MemFree(decBuff);
+		}
+		else
+		{
+			me->ui->ShowMsgOK(CSTR("Unsupported decryption"), CSTR("Encrypt"), me);
+		}
+	}
+}
+
 SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Text Encrypt"));
@@ -94,6 +139,10 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> p
 	this->lblDest = ui->NewLabel(this->pnlDestCtrl, CSTR("Dest Encryption"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
 	this->lblDest->SetDockType(UI::GUIControl::DOCK_LEFT);
+	this->btnHex = ui->NewButton(this->pnlDestCtrl, CSTR("&Hex"));
+	this->btnHex->SetRect(0, 0, 75, 23, false);
+	this->btnHex->SetDockType(UI::GUIControl::DOCK_RIGHT);
+	this->btnHex->HandleButtonClick(OnHexClicked, this);
 	this->btnConvert = ui->NewButton(this->pnlDestCtrl, CSTR("&Convert"));
 	this->btnConvert->SetRect(0, 0, 75, 23, false);
 	this->btnConvert->SetDockType(UI::GUIControl::DOCK_RIGHT);

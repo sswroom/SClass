@@ -119,6 +119,9 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 		readSize = me->stm->Read(Data::ByteArray(&buff[buffSize], maxBuffSize - buffSize));
 		if (readSize <= 0)
 			break;
+#ifdef DEBUG_PRINT
+		printf("MQTTConn: Received %d bytes\r\n", (UInt32)readSize);
+#endif
 		me->totalDownload += readSize;
 		buffSize += readSize;
 		readSize = me->protoHdlr.ParseProtocol(stm, me, me->cliData, Data::ByteArrayR(buff, buffSize));
@@ -132,6 +135,9 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 			buffSize = readSize;
 		}
 	}
+#ifdef DEBUG_PRINT
+	printf("MQTTConn: Disconnected\r\n");
+#endif
 	MemFree(buff);
 	me->recvRunning = false;
 	me->packetEvt.Set();
@@ -414,7 +420,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 		packet1[i] = 0;
 		i++;
 #if defined(DEBUG_PRINT)
-		printf("Subscribing topic %s\r\n", topic.v);
+		printf("Subscribing topic %s\r\n", topic.v.Ptr());
 #endif
 		j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
 		i = this->SendPacket(packet2, j);
@@ -435,7 +441,7 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CStringNN topic)
 		packet1[i] = 0;
 		i++;
 #if defined(DEBUG_PRINT)
-		printf("Subscribing topic %s\r\n", topic.v);
+		printf("Subscribing topic %s\r\n", topic.v.Ptr());
 #endif
 		j = this->protoHdlr.BuildPacket(packet2, 0x82, 0, packet1, i, this->cliData);
 		return this->SendPacket(packet2, j);

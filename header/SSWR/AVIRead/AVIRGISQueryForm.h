@@ -26,7 +26,7 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlObj;
 			NN<UI::GUILabel> lblObjName;
 			NN<UI::GUIComboBox> cboObjName;
-			NN<UI::GUIButton> btnObjDownload;
+			NN<UI::GUIButton> btnColDownload;
 			NN<UI::GUIComboBox> cboObj;
 			NN<UI::GUILabel> lblObjMsg;
 			NN<UI::GUITabControl> tcMain;
@@ -67,6 +67,7 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboAutoSaveAction;
 			NN<UI::GUILabel> lblAutoSavePath;
 			NN<UI::GUITextBox> txtAutoSavePath;
+			NN<UI::GUIButton> btnObjDownload;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<AVIRMapNavigator> navi;
@@ -102,6 +103,7 @@ namespace SSWR
 			static void __stdcall OnObjNameSelChg(AnyType userObj);
 			static void __stdcall OnInfoDblClk(AnyType userObj, UOSInt index);
 			static void __stdcall OnObjDownloadClicked(AnyType userObj);
+			static void __stdcall OnColDownloadClicked(AnyType userObj);
 			static void __stdcall OnOpenTimer(AnyType userObj);
 			static void __stdcall DownThread(NN<Sync::Thread> thread);
 			static void __stdcall OnFormClosed(AnyType userObj, NN<UI::GUIForm> frm);

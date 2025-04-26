@@ -45,6 +45,7 @@ namespace Crypto
 			ECName GetECName() const;
 
 			static NN<X509Key> FromECPublicKey(Data::ByteArrayR buff, Data::ByteArrayR paramOID);
+			static NN<X509Key> CreateRSAPublicKey(Text::CStringNN name, Data::ByteArrayR modulus, Data::ByteArrayR publicExponent);
 			static Optional<X509Key> FromRSAKey(NN<RSAKey> key);
 		};
 	}

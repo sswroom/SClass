@@ -1285,6 +1285,8 @@ Crypto/Cert/CertStore.h:
 Crypto/Cert/CertUtil.h:
 @CertUtil.o
 Crypto/Cert/RSAKey.h:
+Crypto/Cert/SSHPubKey.h:
+@SSHPubKey.o
 Crypto/Cert/X509Cert.h:
 @X509Cert.o
 Crypto/Cert/X509CertReq.h:
@@ -1755,6 +1757,8 @@ Exporter/PLTExporter.h:
 @PLTExporter.o
 Exporter/PNGExporter.h:
 @PNGExporter.o
+Exporter/PPKExporter.h:
+@PPKExporter.o
 Exporter/SFVExporter.h:
 @SFVExporter.o
 Exporter/SHA1Exporter.h:
@@ -1765,6 +1769,8 @@ Exporter/SPKExporter.h:
 @SPKExporter.o
 Exporter/SQLiteExporter.h:
 @SQLiteExporter.o
+Exporter/SSHPubExporter.h:
+@SSHPubExporter.o
 Exporter/TIFFExporter.h:
 @TIFFExporter.o
 Exporter/WAVExporter.h:

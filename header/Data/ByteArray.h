@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_BYTEARRAY
 #define _SM_DATA_BYTEARRAY
 #include "MyMemory.h"
+#include "Data/BinTool.h"
 #include "Data/ByteTool.h"
 #include "Data/DataArray.h"
 
@@ -187,6 +188,11 @@ namespace Data
 			return ReadNUInt64(&this->buff[index]);
 		}
 #endif
+
+		Bool StartsWith(ByteArrayBase arr)
+		{
+			return this->buffSize >= arr.buffSize && Data::BinTool::Equals(this->buff, arr.buff, arr.buffSize);
+		}
 	};
 
 	class ByteArray : public ByteArrayBase<UInt8>

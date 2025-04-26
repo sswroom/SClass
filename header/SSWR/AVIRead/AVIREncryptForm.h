@@ -29,11 +29,13 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboDest;
 			NN<UI::GUITextBox> txtDest;
 			NN<UI::GUIButton> btnConvert;
+			NN<UI::GUIButton> btnHex;
 			UOSInt fileIndex;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 			static void __stdcall OnConvertClicked(AnyType userObj);
+			static void __stdcall OnHexClicked(AnyType userObj);
 		public:
 			AVIREncryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptForm();

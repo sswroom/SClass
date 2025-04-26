@@ -272,18 +272,13 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::ExtractPublicKey() const
 	}
 	else if (this->keyType == KeyType::RSA)
 	{
-		Net::ASN1PDUBuilder builder;
-		UOSInt buffSize;
-		UnsafeArray<const UInt8> buff;
-		builder.BeginSequence();
-		if (!this->GetRSAModulus(buffSize).SetTo(buff)) return 0;
-		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
-		if (!this->GetRSAPublicExponent(buffSize).SetTo(buff)) return 0;
-		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
-		builder.EndLevel();
-		Crypto::Cert::X509Key *key;
-		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), builder.GetArray(), KeyType::RSAPublic));
-		return key;
+		UOSInt modulusSize;
+		UnsafeArray<const UInt8> modulus;
+		UOSInt publicExponentSize;
+		UnsafeArray<const UInt8> publicExponent;
+		if (!this->GetRSAModulus(modulusSize).SetTo(modulus)) return 0;
+		if (!this->GetRSAPublicExponent(publicExponentSize).SetTo(publicExponent)) return 0;
+		return CreateRSAPublicKey(this->GetSourceNameObj()->ToCString(), Data::ByteArrayR(modulus, modulusSize), Data::ByteArrayR(publicExponent, publicExponentSize));
 	}
 	else if (this->keyType == KeyType::ECPublic)
 	{
@@ -365,12 +360,18 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAPrime2(OptOut<UOSInt> s
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent1(OptOut<UOSInt> size) const
 {
+	// e1 = d % p
+	// d = private Exponent
+	// p = prime1
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.7", size, 0);
 }
 
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAExponent2(OptOut<UOSInt> size) const
 {
+	// e2 = d % q
+	// d = private Exponent
+	// p = prime2
 	if (this->keyType != KeyType::RSA) return 0;
 	return Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.8", size, 0);
 }
@@ -474,6 +475,18 @@ NN<Crypto::Cert::X509Key> Crypto::Cert::X509Key::FromECPublicKey(Data::ByteArray
 	pdu.EndLevel();
 	NN<X509Key> key;
 	NEW_CLASSNN(key, X509Key(CSTR("ECPublic.key"), pdu.GetArray(), KeyType::ECPublic));
+	return key;
+}
+
+NN<Crypto::Cert::X509Key> Crypto::Cert::X509Key::CreateRSAPublicKey(Text::CStringNN name, Data::ByteArrayR modulus, Data::ByteArrayR publicExponent)
+{
+	Net::ASN1PDUBuilder builder;
+	builder.BeginSequence();
+	builder.AppendOther(Net::ASN1Util::IT_INTEGER, modulus.Arr(), modulus.GetSize());
+	builder.AppendOther(Net::ASN1Util::IT_INTEGER, publicExponent.Arr(), publicExponent.GetSize());
+	builder.EndLevel();
+	NN<Crypto::Cert::X509Key> key;
+	NEW_CLASSNN(key, Crypto::Cert::X509Key(name, builder.GetArray(), KeyType::RSAPublic));
 	return key;
 }
 

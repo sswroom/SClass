@@ -21,6 +21,7 @@ CertUtil.o: ../../src/Crypto/Cert/CertUtil.cpp
 CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 !-lcurl
 OpenSSLCert.o: ../../src/Crypto/Cert/OpenSSLCert.cpp
+SSHPubKey.o: ../../src/Crypto/Cert/SSHPubKey.cpp
 TrustStore_Linux.o: ../../src/Crypto/Cert/TrustStore_Linux.cpp
 TrustStore_Win.o: ../../src/Crypto/Cert/TrustStore_Win.cpp
 !-lcrypt32
@@ -331,11 +332,13 @@ OruxMapExporter.o: ../../src/Exporter/OruxMapExporter.cpp
 PEMExporter.o: ../../src/Exporter/PEMExporter.cpp
 PLTExporter.o: ../../src/Exporter/PLTExporter.cpp
 PNGExporter.o: ../../src/Exporter/PNGExporter.cpp
+PPKExporter.o: ../../src/Exporter/PPKExporter.cpp
 SFVExporter.o: ../../src/Exporter/SFVExporter.cpp
 SHA1Exporter.o: ../../src/Exporter/SHA1Exporter.cpp
 SHPExporter.o: ../../src/Exporter/SHPExporter.cpp
 SPKExporter.o: ../../src/Exporter/SPKExporter.cpp
 SQLiteExporter.o: ../../src/Exporter/SQLiteExporter.cpp
+SSHPubExporter.o: ../../src/Exporter/SSHPubExporter.cpp
 TIFFExporter.o: ../../src/Exporter/TIFFExporter.cpp
 WAVExporter.o: ../../src/Exporter/WAVExporter.cpp
 WebPExporter.o: ../../src/Exporter/WebPExporter.cpp
