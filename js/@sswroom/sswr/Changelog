@@ -1,3 +1,9 @@
+-Enhance map.MapControl Marker
+-Added map.layerMoveMarker
+-Added map.markerUpdateIcon
+-Added map.markerShowPopup
+-Added map.hidePopup
+
 1.6.21
 -Added data.dataURI2Blob
 -Added EasyPrint.toSVG

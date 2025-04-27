@@ -29,6 +29,7 @@ export class Olayer2Map extends map.MapControl
 	posFunc: (lat: number, lon: number)=>void;
 
 	constructor(mapId: string);
+	getDiv(): HTMLDivElement;
 	createLayer(layer: map.LayerInfo, options?: map.LayerOptions): any;
 	createMarkerLayer(name: string, options?: map.LayerOptions): any;
 	createGeometryLayer(name: string, options?: map.LayerOptions): any;
@@ -47,11 +48,15 @@ export class Olayer2Map extends map.MapControl
 	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
 	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
 
-	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: map.MarkerOptions): any;
-	layerAddMarker(markerLayer: any, marker: any): void;
-	layerRemoveMarker(markerLayer: any, marker: any): void;
+	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: map.MarkerOptions): map.MarkerInfo;
+	layerAddMarker(markerLayer: any, marker: map.MarkerInfo): void;
+	layerRemoveMarker(markerLayer: any, marker: map.MarkerInfo): void;
 	layerClearMarkers(markerLayer: any): void;
-	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
+	layerMoveMarker(markerLayer: any, marker: MarkerInfo, mapPos: math.Coord2D): MarkerInfo;
+	markerUpdateIcon(markerLayer: any, marker: MarkerInfo, url: string): MarkerInfo;
+	markerIsOver(marker: map.MarkerInfo, scnPos: math.Coord2D): boolean;
+	markerShowPopup(marker: MarkerInfo, content: string, w?: number, h?: number): void;
+	hidePopup();
 
 	createGeometry(geom: geometry.Vector2D, options: map.GeometryOptions): any;
 	layerAddGeometry(geometryLayer: any, geom: any): void;

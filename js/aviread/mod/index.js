@@ -18,6 +18,7 @@ if (navigator.serviceWorker) {
 }
 
 console.log(web.appendUrl("../img/circle.png", "http://127.0.0.1:2080/simontest/maptest.html"));
+console.log(data.Timestamp.fromTicks(1745687435000).toStringNoZone());
 
 let iv = new Uint8Array([0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc]);
 let enc = new crypto.AES256GCM(crypto.ICrypto.keyToBuffer("Testing", 32), iv);

@@ -235,6 +235,7 @@ export class Olayer2Map extends map.MapControl
 		this.initY = 22.4;
 		this.initLev = 12;
 		this.mapId = mapId;
+		this.currMarkerPopup = null;
 		let dom = document.getElementById(mapId);
 		if (dom)
 		{
@@ -286,6 +287,11 @@ export class Olayer2Map extends map.MapControl
 		this.mouseCtrl.activate();
 		this.currMarkerPopup = null;
 		this.currMarkerPopupObj = null;
+	}
+
+	getDiv()
+	{
+		return web.getDivElement(this.mapId);
 	}
 
 	/**
@@ -374,6 +380,9 @@ export class Olayer2Map extends map.MapControl
 		}
 	}
 
+	/**
+	 * @param {kml.KMLFile | kml.Feature} feature
+	 */
 	addKML(feature)
 	{
 		createFromKML(feature, {map: this.map, objProjection: this.mapProjection, mapProjection: this.map.getProjectionObject()}).then((layer)=>{this.addLayer(layer);});
@@ -496,17 +505,82 @@ export class Olayer2Map extends map.MapControl
 		markerLayer.clearMarkers();
 	}
 
+	/**
+	 * @param {OpenLayers.Layer.Markers} markerLayer
+	 * @param {OpenLayers.Marker} marker
+	 * @param {math.Coord2D} mapPos
+	 */
+	layerMoveMarker(markerLayer, marker, mapPos)
+	{
+		let newIcon = new OpenLayers.Icon(marker.icon.url, marker.icon.size, marker.icon.offset);
+		if (marker.icon.imageDiv.style.zIndex)
+		{
+			newIcon.imageDiv.style.zIndex = marker.icon.imageDiv.style.zIndex;
+		}
+		let newMarker = new OpenLayers.Marker(new OpenLayers.LonLat(mapPos.x, mapPos.y).transform(this.mapProjection, this.map.getProjectionObject()), newIcon);
+		markerLayer.removeMarker(marker);
+		markerLayer.addMarker(newMarker);
+		marker.destroy();
+		return newMarker;
+	}
+
+	/**
+	 * @param {OpenLayers.Layer.Markers} markerLayer
+	 * @param {OpenLayers.Marker} marker
+	 * @param {string} url
+	 */
+	markerUpdateIcon(markerLayer, marker, url)
+	{
+		let newIcon = new OpenLayers.Icon(url, marker.icon.size, marker.icon.offset);
+		if (marker.icon.imageDiv.style.zIndex)
+		{
+			newIcon.imageDiv.style.zIndex = marker.icon.imageDiv.style.zIndex;
+		}
+		let newMarker = new OpenLayers.Marker(marker.lonlat, newIcon);
+		markerLayer.removeMarker(marker);
+		markerLayer.addMarker(newMarker);
+		marker.destroy();
+		return newMarker;
+	}
+	
 	markerIsOver(marker, scnPos)
 	{
 		let icon = marker.icon;
-		//alert("x="+x+", y="+y+", px.x="+icon.px.x+", px.y="+icon.px.y+", offset.x="+icon.offset.x+", offset.y="+icon.offset.y+", size.w="+icon.size.w+", size.h="+icon.size.h+", debug="+(icon.px.x + icon.px.offset.x + icon.size.w));
-		if ((scnPos.x < icon.px.x + icon.offset.x) || (scnPos.y < icon.px.y + icon.offset.y))
+		let ofst = marker.map.layerContainerOriginPx;
+		let ofstX = ofst.x + icon.offset.x;
+		let ofstY = ofst.y + icon.offset.y;
+		if (icon.px == null)
 			return false;
-		if ((icon.px.x + icon.offset.x + icon.size.w <= scnPos.x) || (icon.px.y + icon.offset.y + icon.size.h <= scnPos.y))
+		if ((scnPos.x < icon.px.x + ofstX) || (scnPos.y < icon.px.y + ofstY))
+			return false;
+		if ((icon.px.x + ofstX + icon.size.w <= scnPos.x) || (icon.px.y + ofstY + icon.size.h <= scnPos.y))
 			return false;
 		return true;
 	}
 
+	markerShowPopup(marker, content, w, h)
+	{
+		let popup = new OpenLayers.Popup("marker", marker.lonlat, new OpenLayers.Size(w, h), content, false);
+		if (this.currMarkerPopup)
+		{
+			this.currMarkerPopup.hide();
+		}
+		this.currMarkerPopup = popup;
+		popup.autoSize = true;
+		this.map.addPopup(popup);
+		popup.show();
+	}
+
+	hidePopup()
+	{
+		if (this.currMarkerPopup)
+		{
+			this.currMarkerPopup.hide();
+			this.map.removePopup(this.currMarkerPopup);
+			this.currMarkerPopup = null;
+		}
+	}
+	
 	/**
 	 * @param {geometry.Vector2D} geom
 	 * @param {map.GeometryOptions} options

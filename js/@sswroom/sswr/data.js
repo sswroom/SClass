@@ -2305,7 +2305,7 @@ export class TimeInstant
 		if (typeof ticks == "number")
 		{
 			secs = Math.floor(ticks / 1000);
-			ms = (ticks - secs) * 1000;
+			ms = ticks - (secs * 1000);
 			secs = BigInt(secs);
 		}
 		else

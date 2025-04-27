@@ -2095,7 +2095,7 @@ export class Popup
 	 * @param closeBox  Whether to display a close box inside the popup.
 	 * @param closeBoxCallback  Function to be called on closeBox click.
 	 */
-	constructor(id: string, lonlat: LonLat, contentSize: Size|null, contentHTML: string, closeBox: boolean, closeBoxCallback: Function);
+	constructor(id: string, lonlat: LonLat, contentSize: Size|null, contentHTML: string, closeBox: boolean, closeBoxCallback?: Function);
 	/**
 	 * Auto size the popup so that it precisely fits its contents (as determined by this.contentDiv.innerHTML).  Popup size will, of course, be limited by the available space on the current map
 	 */
