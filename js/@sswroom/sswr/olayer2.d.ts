@@ -30,6 +30,7 @@ export class Olayer2Map extends map.MapControl
 
 	constructor(mapId: string);
 	getDiv(): HTMLDivElement;
+	sizeUpdated(): void;
 	createLayer(layer: map.LayerInfo, options?: map.LayerOptions): any;
 	createMarkerLayer(name: string, options?: map.LayerOptions): any;
 	createGeometryLayer(name: string, options?: map.LayerOptions): any;

@@ -40,6 +40,8 @@ export class KMLNetworkLink
 export class LeafletMap extends map.MapControl
 {
 	constructor(divId: string);
+	getDiv(): HTMLDivElement;
+	sizeUpdated(): void;
 	createLayer(layer: map.LayerInfo, options?: map.LayerOptions): any;
 	createMarkerLayer(name: string, options?: map.LayerOptions): any;
 	createGeometryLayer(name: string, options?: map.LayerOptions): any;
@@ -62,7 +64,11 @@ export class LeafletMap extends map.MapControl
 	layerAddMarker(markerLayer: any, marker: map.MarkerInfo): void;
 	layerRemoveMarker(markerLayer: any, marker: map.MarkerInfo): void;
 	layerClearMarkers(markerLayer: any): void;
+	layerMoveMarker(markerLayer: any, marker: MarkerInfo, mapPos: math.Coord2D): MarkerInfo;
+	markerUpdateIcon(markerLayer: any, marker: MarkerInfo, url: string): MarkerInfo;
 	markerIsOver(marker: map.MarkerInfo, scnPos: math.Coord2D): boolean;
+	markerShowPopup(marker: MarkerInfo, content: string, w?: number, h?: number): void;
+	hidePopup();
 
 	createGeometry(geom: geometry.Vector2D, options: map.GeometryOptions): any;
 	layerAddGeometry(geometryLayer: any, geom: any): void;

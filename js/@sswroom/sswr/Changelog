@@ -1,8 +1,12 @@
+1.6.22
 -Enhance map.MapControl Marker
--Added map.layerMoveMarker
--Added map.markerUpdateIcon
--Added map.markerShowPopup
--Added map.hidePopup
+-Added map.MapControl.layerMoveMarker
+-Added map.MapControl.markerUpdateIcon
+-Added map.MapControl.markerShowPopup
+-Added map.MapControl.hidePopup
+-Added map.MapControl.sizeUpdated
+-Added cesium.parseColor
+-Enhance cesium and leaflet map
 
 1.6.21
 -Added data.dataURI2Blob

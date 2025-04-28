@@ -4,7 +4,14 @@ import * as kml from "./kml.js";
 import * as map from "./map.js";
 import * as math from "./math.js";
 import * as text from "./text.js";
+import * as web from "./web.js";
 
+/**
+ * @param {{ scene: { globe: { ellipsoid: any; }; }; camera: { pickEllipsoid: (arg0: any, arg1: any) => any; }; }} viewer
+ * @param {number} x
+ * @param {number} y
+ * @param {{ cartesianToCartographic: (arg0: any) => any; } | null} ellipsoid
+ */
 export function screenToLatLon(viewer, x, y, ellipsoid)
 {
 	let pos = new Cesium.Cartesian2(x, y);
@@ -258,6 +265,10 @@ export function createFromKML(feature, options)
 	}
 }
 
+/**
+ * @param {geometry.Vector2D} geom
+ * @param {map.GeometryOptions} options
+ */
 export function createFromGeometry(geom, options)
 {
 	if (geom instanceof geometry.Point)
@@ -278,12 +289,40 @@ export function createFromGeometry(geom, options)
 			position: Cesium.Cartesian3.fromDegrees(geom.coordinates[0], geom.coordinates[1]),
 			billboard: new Cesium.BillboardGraphics(opt)});
 	}
+	else if (geom instanceof geometry.LinearRing)
+	{
+		let opt = {};
+		opt.heightReference = Cesium.HeightReference.CLAMP_TO_GROUND;
+		opt.height = 0;
+		if (options.lineColor)
+		{
+			let c = parseColor(options.lineColor);
+			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
+			opt.outline = true;
+		}
+		if (options.lineWidth)
+		{
+			opt.outlineWidth = options.lineWidth;
+			opt.outline = true;
+		}
+		if (options.fillColor)
+		{
+			let c = parseColor(options.fillColor);
+			if (options.fillOpacity)
+			{
+				c.a = options.fillOpacity;
+			}
+			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
+		}
+		opt.hierarchy = {positions: toCartesian3Arr(geom.coordinates), holes: []};
+		return new Cesium.Entity({polygon: new Cesium.PolygonGraphics(opt)});
+	}
 	else if (geom instanceof geometry.LineString)
 	{
 		let opt = {};
 		if (options.lineColor)
 		{
-			let c = kml.toColor(options.lineColor);
+			let c = parseColor(options.lineColor);
 			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
 		}
 		if (options.lineWidth)
@@ -298,7 +337,7 @@ export function createFromGeometry(geom, options)
 		opt.height = 0;
 		if (options.lineColor)
 		{
-			let c = kml.toColor(options.lineColor);
+			let c = parseColor(options.lineColor);
 			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
 			opt.outline = true;
 		}
@@ -309,7 +348,11 @@ export function createFromGeometry(geom, options)
 		}
 		if (options.fillColor)
 		{
-			let c = kml.toColor(options.fillColor);
+			let c = parseColor(options.fillColor);
+			if (options.fillOpacity)
+			{
+				c.a = options.fillOpacity;
+			}
 			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
 		}
 		opt.hierarchy = {positions: toCartesian3Arr(geom.geometries[0].coordinates), holes: []};
@@ -331,7 +374,7 @@ export function createFromGeometry(geom, options)
 		let opt = {};
 		if (options.lineColor)
 		{
-			let c = kml.toColor(options.lineColor);
+			let c = parseColor(options.lineColor);
 			opt.outlineColor = new Cesium.Color(c.r, c.g, c.b, c.a);
 			opt.outline = true;
 		}
@@ -342,7 +385,11 @@ export function createFromGeometry(geom, options)
 		}
 		if (options.fillColor)
 		{
-			let c = kml.toColor(options.fillColor);
+			let c = parseColor(options.fillColor);
+			if (options.fillOpacity)
+			{
+				c.a = options.fillOpacity;
+			}
 			opt.material = new Cesium.Color(c.r, c.g, c.b, c.a);
 		}
 		console.log("MultiPolygon not supported", geom);
@@ -353,6 +400,19 @@ export function createFromGeometry(geom, options)
 		console.log("Unknown geometry type", geom);
 		return null;
 	}
+}
+
+/**
+ * @param {string} c
+ */
+export function parseColor(c)
+{
+	let col = kml.toColor(c);
+	if (col == null)
+	{
+		col = web.parseCSSColor(c);
+	}
+	return col;
 }
 
 /*export function createPolygon(viewer, lats, lons, height)
@@ -386,6 +446,7 @@ export class CesiumMap extends map.MapControl
 	constructor(divId)
 	{
 		super();
+		this.mouseMove = null;
 		this.viewer = new Cesium.Viewer(divId, {
 			timeline:false,
 			animation:false,
@@ -395,7 +456,28 @@ export class CesiumMap extends map.MapControl
 //				url: "https://tile.openstreetmap.org/"
 //			  }))}
 		});
+		this.viewer.screenSpaceEventHandler.setInputAction((movement) => {
+			let pos = movement.startPosition;
+			let container = this.viewer.container;
+			if (pos.x >= 0 && pos.y >= 0 && pos.x < container.offsetWidth && pos.y < container.offsetHeight)
+			{
+				if (this.mouseMove)
+				{
+					this.mouseMove(this.scn2MapPos(new math.Coord2D(pos.x, pos.y)));
+				}
+			}
+		}, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 	};
+
+	getDiv()
+	{
+		return this.viewer.container;
+	}
+
+	sizeUpdated()
+	{
+
+	}
 
 	createLayer(layer, options)
 	{
@@ -411,8 +493,16 @@ export class CesiumMap extends map.MapControl
 		}
 	}
 
-	/*createMarkerLayer(name: string, options?: LayerOptions): any;
-	createGeometryLayer(name: string, options?: LayerOptions): any;*/
+	createMarkerLayer(name, options)
+	{
+		return [];
+	}
+
+	createGeometryLayer(name, options)
+	{
+		return [];
+	}
+
 	addLayer(layer)
 	{
 		if (layer instanceof Cesium.ImageryLayer)
@@ -481,22 +571,132 @@ export class CesiumMap extends map.MapControl
 		this.viewer.camera.flyTo({destination: Cesium.Cartesian3.fromDegrees(center.x, center.y, xScale), duration:0});
 	}
 
-/*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
-	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
-	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;
-	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
-	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
+/*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;*/
+	/**
+	 * @param {(mapPos: math.Coord2D)=>void} moveFunc
+	 */
+	handleMouseMove(moveFunc)
+	{
+		this.mouseMove = moveFunc;
+	}
+/*	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;*/
+	/**
+	 * @param {math.Coord2D} mapPos
+	 */
+	map2ScnPos(mapPos)
+	{
+		let pos = Cesium.SceneTransforms.worldToDrawingBufferCoordinates(this.viewer.scene, Cesium.Cartesian3.fromDegrees(mapPos.x, mapPos.y));
+		if (pos)
+		{
+			return new math.Coord2D(pos.x, pos.y);
+		}
+		else
+		{
+			return new math.Coord2D(0, 0);
+		}
+	}
 
-	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
-	layerAddMarker(markerLayer: any, marker: any): void;
-	layerRemoveMarker(markerLayer: any, marker: any): void;
-	layerClearMarkers(markerLayer: any): void;
-	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
+	/**
+	 * @param {math.Coord2D} scnPos
+	 */
+	scn2MapPos(scnPos)
+	{
+		return screenToLatLon(this.viewer, scnPos.x, scnPos.y, null);
+	}
 
-	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
-	layerAddGeometry(geometryLayer: any, geom: any): void;
-	layerRemoveGeometry(geometryLayer: any, geom: any): void;
-	layerClearGeometries(geometryLayer: any): void;*/
+	createMarker(mapPos, imgURL, imgWidth, imgHeight, options)
+	{
+		return new Cesium.Entity({position: Cesium.Cartesian3.fromDegrees(mapPos.x, mapPos.y), billboard: {image: imgURL, width: imgWidth, height: imgHeight}});
+	}
+
+	layerAddMarker(markerLayer, marker)
+	{
+		markerLayer.push(marker);
+		this.viewer.entities.add(marker);
+	}
+
+	layerRemoveMarker(markerLayer, marker)
+	{
+		markerLayer.remove(marker);
+		this.viewer.entities.remove(marker);
+	}
+
+	layerClearMarkers(markerLayer)
+	{
+		let geom;
+		while (geom = markerLayer.pop())
+		{
+			this.viewer.entities.remove(geom);
+		}
+	}
+
+	layerMoveMarker(markerLayer, marker, mapPos)
+	{
+		marker.position = Cesium.Cartesian3.fromDegrees(mapPos.x, mapPos.y);
+		return marker;
+	}
+
+	markerUpdateIcon(markerLayer, marker, url)
+	{
+		marker.billboard.image = url;
+		return marker;
+	}
+	
+	markerIsOver(marker, scnPos)
+	{
+		let latlng = marker.position.getValue();
+		let sz = [marker.billboard.width, marker.billboard.height];
+		let iconPos = Cesium.SceneTransforms.worldToDrawingBufferCoordinates(this.viewer.scene, latlng);
+		if (sz == null)
+			return false;
+		if ((scnPos.x < iconPos.x - sz[0] * 0.5) || (scnPos.y < iconPos.y - sz[1] * 0.5))
+			return false;
+		if ((iconPos.x + sz[0] * 0.5 <= scnPos.x) || (iconPos.y + sz[1] * 0.5 <= scnPos.y))
+			return false;
+		return true;
+	}
+
+	markerShowPopup(marker, content, w, h)
+	{
+		marker.description = {getValue: ()=>{return content;}};
+		this.viewer.selectedEntity = marker;
+	}
+
+	hidePopup()
+	{
+		this.viewer.selectedEntity = null;
+	}
+
+	/**
+	 * @param {geometry.Vector2D} geom
+	 * @param {map.GeometryOptions} options
+	 */
+	createGeometry(geom, options)
+	{
+		return createFromGeometry(geom, options);
+	}
+
+	layerAddGeometry(geometryLayer, geom)
+	{
+		geometryLayer.push(geom);
+		this.viewer.entities.add(geom);
+	}
+
+	layerRemoveGeometry(geometryLayer, geom)
+	{
+		geometryLayer.remove(geom);
+		this.viewer.entities.remove(geom);
+	}
+
+	layerClearGeometries(geometryLayer)
+	{
+		let geom;
+		while (geom = geometryLayer.pop())
+		{
+			this.viewer.entities.remove(geom);
+		}
+	}
+
 	getViewer()
 	{
 		return this.viewer;

@@ -294,6 +294,11 @@ export class Olayer2Map extends map.MapControl
 		return web.getDivElement(this.mapId);
 	}
 
+	sizeUpdated()
+	{
+		this.map.updateSize();
+	}
+
 	/**
 	 * @param {map.LayerInfo} layer
 	 * @param {object} options

@@ -540,10 +540,39 @@ export class KMLNetworkLink
 
 export class LeafletMap extends map.MapControl
 {
+	/**
+	 * @param {L.LeafletMouseEvent} evt
+	 */
+	onMouseMove(evt)
+	{
+		if (this.moveFunc)
+		{
+			this.moveFunc(fromLatLng(evt.latlng));
+		}
+	}
+
+	/**
+	 * @param {string | HTMLElement} divId
+	 */
 	constructor(divId)
 	{
 		super();
 		this.mapObj = L.map(divId);
+		this.moveFunc = null;
+		this.popupMarker = null;
+		let self = this;
+		this.mapObj.on("mousemove", (evt)=> {self.onMouseMove(evt);});
+	}
+
+	// @ts-ignore
+	getDiv()
+	{
+		return this.mapObj.getContainer();
+	}
+
+	sizeUpdated()
+	{
+		this.mapObj.invalidateSize();
 	}
 
 	createLayer(layer, options)
@@ -551,8 +580,15 @@ export class LeafletMap extends map.MapControl
 		return createLayer(layer, options);
 	}
 
-//	createMarkerLayer(name: string, options?: LayerOptions): any;
-//	createGeometryLayer(name: string, options?: LayerOptions): any;
+	createMarkerLayer(name, options)
+	{
+		return L.layerGroup();
+	}
+
+	createGeometryLayer(name, options)
+	{
+		return L.layerGroup();
+	}
 
 	addLayer(layer)
 	{
@@ -580,11 +616,18 @@ export class LeafletMap extends map.MapControl
 		this.mapObj.setZoom(osm.scale2Level(scale));
 	}
 
+	/**
+	 * @param {math.Coord2D} pos
+	 */
 	panTo(pos)
 	{
 		this.mapObj.setView(L.latLng(pos.y, pos.x));
 	}
 
+	/**
+	 * @param {math.Coord2D} pos
+	 * @param {number} scale
+	 */
 	panZoomScale(pos, scale)
 	{
 		this.mapObj.setView(L.latLng(pos.y, pos.x), osm.scale2Level(scale));
@@ -595,20 +638,219 @@ export class LeafletMap extends map.MapControl
 		this.mapObj.fitBounds(toLatLngBounds(extent));
 	}
 
-/*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;
-	handleMouseMove(moveFunc: (mapPos: math.Coord2D)=>void): void;
-	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;
-	map2ScnPos(mapPos: math.Coord2D): math.Coord2D;
-	scn2MapPos(scnPos: math.Coord2D): math.Coord2D;
+/*	handleMouseLClick(clickFunc: (mapPos: math.Coord2D, scnPos: math.Coord2D)=>void): void;*/
+	/**
+	 * @param {(mapPos: math.Coord2D)=>void} moveFunc
+	 */
+	handleMouseMove(moveFunc)
+	{
+		this.moveFunc = moveFunc;
+	}
+/*	handlePosChange(posFunc: (mapPos: math.Coord2D)=>void): void;*/
+	/**
+	 * @param {math.Coord2D} mapPos
+	 */
+	map2ScnPos(mapPos)
+	{
+		let pt = this.mapObj.latLngToContainerPoint(L.latLng(mapPos.lat, mapPos.lon));
+		return new math.Coord2D(pt.x, pt.y);
+	}
 
-	createMarker(mapPos: math.Coord2D, imgURL: string, imgWidth: number, imgHeight: number, options?: MarkerOptions): any;
-	layerAddMarker(markerLayer: any, marker: any): void;
-	layerRemoveMarker(markerLayer: any, marker: any): void;
-	layerClearMarkers(markerLayer: any): void;
-	markerIsOver(marker: any, scnPos: math.Coord2D): boolean;
+	scn2MapPos(scnPos)
+	{
+		let latlng = this.mapObj.containerPointToLatLng(L.point(scnPos.x, scnPos.y));
+		return new math.Coord2D(latlng.lng, latlng.lat);
+	}
 
-	createGeometry(geom: geometry.Vector2D, options: GeometryOptions): any;
-	layerAddGeometry(geometryLayer: any, geom: any): void;
-	layerRemoveGeometry(geometryLayer: any, geom: any): void;
-	layerClearGeometries(geometryLayer: any): void;*/
+	/**
+	 * @param {math.Coord2D} mapPos
+	 * @param {string} imgURL
+	 * @param {number} imgWidth
+	 * @param {number} imgHeight
+	 * @param {map.MarkerOptions} options
+	 */
+	createMarker(mapPos, imgURL, imgWidth, imgHeight, options)
+	{
+		let icon = L.icon({iconUrl: imgURL, iconSize: [imgWidth, imgHeight]});
+		let opt = {icon: icon};
+		if (options.zIndex)
+		{
+			opt.zIndexOffset = options.zIndex;
+		}
+		return L.marker([mapPos.lat, mapPos.lon], opt);
+	}
+
+	layerAddMarker(markerLayer, marker)
+	{
+		marker.addTo(markerLayer);
+	}
+
+	layerRemoveMarker(markerLayer, marker)
+	{
+		markerLayer.removeLayer(marker);
+	}
+
+	layerClearMarkers(markerLayer)
+	{
+		markerLayer.clearLayers();
+	}
+
+	layerMoveMarker(markerLayer, marker, mapPos)
+	{
+		marker.setLatLng(L.latLng(mapPos.lat, mapPos.lon));
+		return marker;
+	}
+
+	markerUpdateIcon(markerLayer, marker, url)
+	{
+		let oldIcon = marker.getIcon();
+		marker.setIcon(L.icon({iconUrl: url, iconSize: oldIcon.options.iconSize}));
+		return marker;
+	}
+
+	markerIsOver(marker, scnPos)
+	{
+		let icon = marker.getIcon();
+		let latlng = marker.getLatLng();
+		let sz = icon.options.iconSize;
+		let iconPos = this.mapObj.latLngToContainerPoint(latlng);
+		if (sz == null)
+			return false;
+		if ((scnPos.x < iconPos.x - sz[0] * 0.5) || (scnPos.y < iconPos.y - sz[1] * 0.5))
+			return false;
+		if ((iconPos.x + sz[0] * 0.5 <= scnPos.x) || (iconPos.y + sz[1] * 0.5 <= scnPos.y))
+			return false;
+		return true;
+	}
+
+	markerShowPopup(marker, content, w, h)
+	{
+		let opt = {closeButton: false, closeOnEscapeKey: false};
+		if (w && h)
+		{
+			opt.minWidth = w;
+			opt.maxHeight = h;
+		}
+		marker.bindPopup(content, opt).openPopup();
+		this.popupMarker = marker;
+	}
+	
+	hidePopup()
+	{
+		if (this.popupMarker)
+		{
+			this.popupMarker.closePopup();
+			this.popupMarker = null;
+		}
+	}
+
+	/**
+	 * @param {geometry.Vector2D} geom
+	 * @param {map.GeometryOptions} options
+	 */
+	createGeometry(geom, options)
+	{
+		let opt = {};
+		if (options.lineColor)
+		{
+			opt.color = options.lineColor;
+			opt.stroke = true;
+			opt.weight = options.lineWidth || 1;
+		}
+		else
+		{
+			opt.stroke = false;
+		}
+		if (options.fillColor)
+		{
+			opt.fill = true;
+			opt.fillColor = options.fillColor;
+			opt.fillOpacity = options.fillOpacity;
+		}
+		else
+		{
+			opt.fill = false;
+		}
+		if (geom instanceof geometry.Point)
+		{
+//			return new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(geom.coordinates[0], geom.coordinates[1]), null, opt);
+		}
+		else if (geom instanceof geometry.LinearRing)
+		{
+			let i;
+			let points = [];
+			for (i in geom.coordinates)
+			{
+				points.push([geom.coordinates[i][1], geom.coordinates[i][0]]);
+			}
+			return L.polygon(points, opt);
+		}
+		else if (geom instanceof geometry.LineString)
+		{
+			let i;
+			let points = [];
+			for (i in geom.coordinates)
+			{
+				points.push([geom.coordinates[i][1], geom.coordinates[i][0]]);
+			}
+			return L.polyline(points, opt);
+		}
+		else if (geom instanceof geometry.Polygon)
+		{
+			let i;
+			let j;
+			let lrArr = [];
+			for (i in geom.geometries)
+			{
+				let points = [];
+				let lr = geom.geometries[i];
+				for (j in lr.coordinates)
+				{
+					points.push([lr.coordinates[j][1], lr.coordinates[j][0]]);
+				}
+				lrArr.push(points);
+			}
+			return L.polygon(lrArr, opt);
+		}
+		else if (geom instanceof geometry.MultiPolygon)
+		{
+			let i;
+			let j;
+			let k;
+			let pgArr = [];
+			for (i in geom.geometries)
+			{
+				let lrArr = [];
+				let pg = geom.geometries[i];
+				for (j in pg.geometries)
+				{
+					let lr = pg.geometries[j];
+					let points = [];
+					for (k in lr.coordinates)
+					{
+						points.push([lr.coordinates[k][1], lr.coordinates[k][0]]);
+					}
+					lrArr.push(points);
+				}
+				pgArr.push(lrArr);
+			}
+			return L.polygon(pgArr, opt);
+		}
+		throw new Error("Unknown geometry type");
+	}
+
+	layerAddGeometry(geometryLayer, geom)
+	{
+		geom.addTo(geometryLayer);
+	}
+
+	layerRemoveGeometry(geometryLayer, geom)
+	{
+		geometryLayer.removeLayer(geom);
+	}
+
+	layerClearGeometries(geometryLayer)
+	{
+		geometryLayer.clearLayers();
+	}
 }

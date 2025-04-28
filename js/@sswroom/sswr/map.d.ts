@@ -142,6 +142,7 @@ export abstract class MapControl
 {
 	constructor();
 	abstract getDiv(): HTMLDivElement;
+	abstract sizeUpdated(): void;
 	abstract createLayer(layer: map.LayerInfo, options?: LayerOptions): any;
 	abstract createMarkerLayer(name: string, options?: LayerOptions): any;
 	abstract createGeometryLayer(name: string, options?: LayerOptions): any;
