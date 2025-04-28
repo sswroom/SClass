@@ -115,6 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		me->txtSignKey->SetReadOnly(false);
 		me->txtMetadataPath->SetReadOnly(false);
 		me->txtSSOPath->SetReadOnly(false);
+		me->txtLoginPath->SetReadOnly(false);
 		me->txtLogoutPath->SetReadOnly(false);
 		me->btnStart->SetText(CSTR("Start"));
 		return;
@@ -180,6 +181,20 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 			return;
 		}
 		cfg.signKeyPath = sbSignKey.ToCString();
+
+		Text::StringBuilderUTF8 sbLoginPath;
+		me->txtLoginPath->GetText(sbLoginPath);
+		if (sbLoginPath.GetLength() == 0)
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter Login Path"), CSTR("SAML Test"), me);
+			return;
+		}
+		else if (sbLoginPath.v[0] != '/')
+		{
+			me->ui->ShowMsgOK(CSTR("Login Path is not valid"), CSTR("SAML Test"), me);
+			return;
+		}
+		cfg.loginPath = sbLoginPath.ToCString();
 
 		Text::StringBuilderUTF8 sbLogoutPath;
 		me->txtLogoutPath->GetText(sbLogoutPath);
@@ -267,9 +282,13 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		me->txtSignKey->SetReadOnly(true);
 		me->txtMetadataPath->SetReadOnly(true);
 		me->txtSSOPath->SetReadOnly(true);
+		me->txtLoginPath->SetReadOnly(true);
 		me->txtLogoutPath->SetReadOnly(true);
 		me->btnStart->SetText(CSTR("Stop"));
 
+		sb.ClearStr();
+		samlHdlr->GetLoginURL(sb);
+		me->txtLoginURL->SetText(sb.ToCString());
 		sb.ClearStr();
 		samlHdlr->GetLogoutURL(sb);
 		me->txtLogoutURL->SetText(sb.ToCString());
@@ -330,6 +349,42 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 
 		respNew->Release();
 		me->respNew = 0;
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnIdpMetadataClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
+	NN<Crypto::Cert::X509Cert> cert;
+	Text::StringBuilderUTF8 sb;
+	me->txtIdpMetadata->GetText(sb);
+	NN<Net::SAMLIdpConfig> cfg;
+	if (sb.leng > 0 && Net::SAMLIdpConfig::ParseMetadata(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()).SetTo(cfg))
+	{
+		me->samlCfg.Delete();
+		me->samlCfg = cfg;
+		me->txtIdpSignOnLocation->SetText(cfg->GetSignOnLocation()->ToCString());
+		me->txtIdpLogoutLocation->SetText(cfg->GetLogoutLocation()->ToCString());
+		if (cfg->GetEncryptionCert().SetTo(cert))
+		{
+			sb.ClearStr();
+			cert->ToShortName(sb);
+			me->txtIdpEncryptionCert->SetText(sb.ToCString());
+		}
+		else
+		{
+			me->txtIdpEncryptionCert->SetText(CSTR(""));
+		}
+		if (cfg->GetSigningCert().SetTo(cert))
+		{
+			sb.ClearStr();
+			cert->ToShortName(sb);
+			me->txtIdpSigningCert->SetText(sb.ToCString());
+		}
+		else
+		{
+			me->txtIdpSigningCert->SetText(CSTR(""));
+		}
 	}
 }
 
@@ -413,6 +468,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->sslKey = 0;
 	this->svr = 0;
 	this->respNew = 0;
+	this->samlCfg = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -450,28 +506,66 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->lblMetadataPath->SetRect(4, 148, 100, 23, false);
 	this->txtMetadataPath = ui->NewTextBox(this->tpControl, CSTR("/metadata"));
 	this->txtMetadataPath->SetRect(104, 148, 500, 23, false);
+	this->lblLoginPath = ui->NewLabel(this->tpControl, CSTR("Login Path"));
+	this->lblLoginPath->SetRect(4, 172, 100, 23, false);
+	this->txtLoginPath = ui->NewTextBox(this->tpControl, CSTR("/login"));
+	this->txtLoginPath->SetRect(104, 172, 500, 23, false);
 	this->lblLogoutPath = ui->NewLabel(this->tpControl, CSTR("Logout Path"));
-	this->lblLogoutPath->SetRect(4, 172, 100, 23, false);
+	this->lblLogoutPath->SetRect(4, 196, 100, 23, false);
 	this->txtLogoutPath = ui->NewTextBox(this->tpControl, CSTR("/logout"));
-	this->txtLogoutPath->SetRect(104, 172, 500, 23, false);
+	this->txtLogoutPath->SetRect(104, 196, 500, 23, false);
 	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
-	this->btnStart->SetRect(104, 196, 75, 23, false);
+	this->btnStart->SetRect(104, 220, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblSSOURL = ui->NewLabel(this->tpControl, CSTR("SSO URL"));
-	this->lblSSOURL->SetRect(4, 220, 100, 23, false);
+	this->lblSSOURL->SetRect(4, 244, 100, 23, false);
 	this->txtSSOURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtSSOURL->SetRect(104, 220, 500, 23, false);
+	this->txtSSOURL->SetRect(104, 244, 500, 23, false);
 	this->txtSSOURL->SetReadOnly(true);
 	this->lblMetadataURL = ui->NewLabel(this->tpControl, CSTR("Metadata URL"));
-	this->lblMetadataURL->SetRect(4, 244, 100, 23, false);
+	this->lblMetadataURL->SetRect(4, 268, 100, 23, false);
 	this->txtMetadataURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtMetadataURL->SetRect(104, 244, 500, 23, false);
+	this->txtMetadataURL->SetRect(104, 268, 500, 23, false);
 	this->txtMetadataURL->SetReadOnly(true);
+	this->lblLoginURL = ui->NewLabel(this->tpControl, CSTR("Login URL"));
+	this->lblLoginURL->SetRect(4, 292, 100, 23, false);
+	this->txtLoginURL = ui->NewTextBox(this->tpControl, CSTR(""));
+	this->txtLoginURL->SetRect(104, 292, 500, 23, false);
+	this->txtLoginURL->SetReadOnly(true);
 	this->lblLogoutURL = ui->NewLabel(this->tpControl, CSTR("Logout URL"));
-	this->lblLogoutURL->SetRect(4, 268, 100, 23, false);
+	this->lblLogoutURL->SetRect(4, 316, 100, 23, false);
 	this->txtLogoutURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtLogoutURL->SetRect(104, 268, 500, 23, false);
+	this->txtLogoutURL->SetRect(104, 316, 500, 23, false);
 	this->txtLogoutURL->SetReadOnly(true);
+
+	this->tpIdp = this->tcMain->AddTabPage(CSTR("Idp"));
+	this->lblIdpMetadata = ui->NewLabel(this->tpIdp, CSTR("Metadata URL"));
+	this->lblIdpMetadata->SetRect(4, 4, 100, 23, false);
+	this->txtIdpMetadata = ui->NewTextBox(this->tpIdp, CSTR("https://<host>/FederationMetadata/2007-06/FederationMetadata.xml"));
+	this->txtIdpMetadata->SetRect(104, 4, 500, 23, false);
+	this->btnIdpMetadata = ui->NewButton(this->tpIdp, CSTR("Load"));
+	this->btnIdpMetadata->SetRect(604, 4, 75, 23, false);
+	this->btnIdpMetadata->HandleButtonClick(OnIdpMetadataClicked, this);
+	this->lblIdpSignOnLocation = ui->NewLabel(this->tpIdp, CSTR("SignOn Location"));
+	this->lblIdpSignOnLocation->SetRect(4, 28, 100, 23, false);
+	this->txtIdpSignOnLocation = ui->NewTextBox(this->tpIdp, CSTR(""));
+	this->txtIdpSignOnLocation->SetRect(104, 28, 500, 23, false);
+	this->txtIdpSignOnLocation->SetReadOnly(true);
+	this->lblIdpLogoutLocation = ui->NewLabel(this->tpIdp, CSTR("Logout Location"));
+	this->lblIdpLogoutLocation->SetRect(4, 52, 100, 23, false);
+	this->txtIdpLogoutLocation = ui->NewTextBox(this->tpIdp, CSTR(""));
+	this->txtIdpLogoutLocation->SetRect(104, 52, 500, 23, false);
+	this->txtIdpLogoutLocation->SetReadOnly(true);
+	this->lblIdpEncryptionCert = ui->NewLabel(this->tpIdp, CSTR("Encryption Cert"));
+	this->lblIdpEncryptionCert->SetRect(4, 76, 100, 23, false);
+	this->txtIdpEncryptionCert = ui->NewTextBox(this->tpIdp, CSTR(""));
+	this->txtIdpEncryptionCert->SetRect(104, 76, 500, 23, false);
+	this->txtIdpEncryptionCert->SetReadOnly(true);
+	this->lblIdpSigningCert = ui->NewLabel(this->tpIdp, CSTR("Signing Cert"));
+	this->lblIdpSigningCert->SetRect(4, 100, 100, 23, false);
+	this->txtIdpSigningCert = ui->NewTextBox(this->tpIdp, CSTR(""));
+	this->txtIdpSigningCert->SetRect(104, 100, 500, 23, false);
+	this->txtIdpSigningCert->SetReadOnly(true);
 
 	this->tpSAMLResp = this->tcMain->AddTabPage(CSTR("SAML Resp"));
 	this->txtSAMLResp = ui->NewTextBox(this->tpSAMLResp, CSTR(""), true);
@@ -514,6 +608,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::~AVIRSAMLTestForm()
 	this->sslCert.Delete();
 	this->sslKey.Delete();
 	this->ClearCACerts();
+	this->samlCfg.Delete();
 	OPTSTR_DEL(this->respNew);
 }
 

@@ -1439,6 +1439,7 @@ RTPH264Handler.o: ../../src/Net/RTPH264Handler.cpp
 RTPSvrChannel.o: ../../src/Net/RTPSvrChannel.cpp
 RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
+SAMLIdpConfig.o: ../../src/Net/SAMLIdpConfig.cpp
 SAMLUtil.o: ../../src/Net/SAMLUtil.cpp
 SDPFile.o: ../../src/Net/SDPFile.cpp
 SMSGatewaySmartone.o: ../../src/Net/SMSGatewaySmartone.cpp

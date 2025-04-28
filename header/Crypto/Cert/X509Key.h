@@ -30,6 +30,7 @@ namespace Crypto
 			Bool IsPrivateKey() const;
 			Optional<Crypto::Cert::X509Key> ExtractPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
+			UOSInt GetDataBlockSize() const;
 
 			virtual UnsafeArrayOpt<const UInt8> GetRSAModulus(OptOut<UOSInt> size) const;
 			virtual UnsafeArrayOpt<const UInt8> GetRSAPublicExponent(OptOut<UOSInt> size) const;

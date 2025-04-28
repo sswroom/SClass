@@ -50,7 +50,8 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 			reader->ReadNodeText(sb);
 			Text::TextBinEnc::Base64Enc b64;
 			UOSInt dataSize = b64.CalcBinSize(sb.ToCString());
-			if (dataSize != 256)
+			UOSInt blockSize = key->GetDataBlockSize();
+			if (blockSize != 0 && dataSize != blockSize)
 			{
 				sbResult->AppendC(UTF8STRC("Length of e:CipherData not valid in EncryptedKey"));
 				return 0;

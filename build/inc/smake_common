@@ -3324,6 +3324,8 @@ Net/RTPVSource.h:
 @RTPVSource.o
 Net/RTSPClient.h:
 @RTSPClient.o
+Net/SAMLIdpConfig.h:
+@SAMLIdpConfig.o
 Net/SAMLUtil.h:
 @SAMLUtil.o
 Net/SDPData.h:

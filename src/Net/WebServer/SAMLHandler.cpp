@@ -14,6 +14,7 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 {
 	OPTSTR_DEL(this->serverHost);
 	OPTSTR_DEL(this->metadataPath);
+	OPTSTR_DEL(this->loginPath);
 	OPTSTR_DEL(this->logoutPath);
 	OPTSTR_DEL(this->ssoPath);
 	this->signCert.Delete();
@@ -167,6 +168,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->ssl = ssl;
 	this->serverHost = 0;
 	this->metadataPath = 0;
+	this->loginPath = 0;
 	this->logoutPath = 0;
 	this->ssoPath = 0;
 	this->signCert = 0;
@@ -187,6 +189,12 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 		return;
 	}
 	this->metadataPath = Text::String::New(nns);
+	if (!cfg->loginPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
+	{
+		this->initErr = SAMLError::LoginPath;
+		return;
+	}
+	this->loginPath = Text::String::New(nns);
 	if (!cfg->logoutPath.SetTo(nns) || nns.leng == 0 || nns.v[0] != '/')
 	{
 		this->initErr = SAMLError::LogoutPath;
@@ -242,6 +250,20 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 Net::WebServer::SAMLError Net::WebServer::SAMLHandler::GetInitError()
 {
 	return this->initErr;
+}
+
+Bool Net::WebServer::SAMLHandler::GetLoginURL(NN<Text::StringBuilderUTF8> sb)
+{
+	NN<Text::String> serverHost;
+	NN<Text::String> loginPath;
+	if (!this->serverHost.SetTo(serverHost) || !this->loginPath.SetTo(loginPath))
+	{
+		return false;
+	}
+	sb->AppendC(UTF8STRC("https://"));
+	sb->Append(serverHost);
+	sb->Append(loginPath);
+	return true;
 }
 
 Bool Net::WebServer::SAMLHandler::GetLogoutURL(NN<Text::StringBuilderUTF8> sb)
@@ -313,6 +335,8 @@ Text::CStringNN Net::WebServer::SAMLErrorGetName(SAMLError err)
 		return CSTR("Server Host error");
 	case SAMLError::MetadataPath:
 		return CSTR("Metadata path error");
+	case SAMLError::LoginPath:
+		return CSTR("Login path error");
 	case SAMLError::LogoutPath:
 		return CSTR("Logout path error");
 	case SAMLError::SSOPath:

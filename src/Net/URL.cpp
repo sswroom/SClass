@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "Net/FTPClient.h"
 #include "Net/HTTPClient.h"
 #include "Net/RTSPClient.h"
@@ -92,3 +93,57 @@ Optional<IO::ParsedObject> Net::URL::OpenObject(Text::CStringNN url, Text::CStri
 	}
 	return 0;
 }
+
+Optional<IO::Stream> Net::URL::OpenStream(Text::CStringNN url, Text::CString userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
+{
+	Optional<IO::Stream> stm;
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	if (IO::Path::GetPathType(url) == IO::Path::PathType::File)
+	{
+		NEW_CLASSOPT(stm, IO::FileStream(url, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		return stm;
+	}
+	if (url.StartsWithICase(UTF8STRC("http://")))
+	{
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, userAgent, true, false);
+		cli->SetTimeout(timeout);
+		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
+		{
+			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
+			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
+			{
+				stm = OpenStream(newUrl, userAgent, clif, ssl, timeout, log);
+				cli.Delete();
+				return stm;
+			}
+		}
+		return cli;
+	}
+	else if (url.StartsWithICase(UTF8STRC("https://")))
+	{
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(clif, ssl, userAgent, true, true);
+		cli->SetTimeout(timeout);
+		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
+		{
+			Text::CStringNN newUrl = cli->GetRespHeader(CSTR("Location")).OrEmpty();
+			if (newUrl.leng > 0 && !newUrl.Equals(url.v, url.leng) && (newUrl.StartsWith(UTF8STRC("http://")) || newUrl.StartsWith(UTF8STRC("https://"))))
+			{
+				stm = OpenStream(newUrl, userAgent, clif, ssl, timeout, log);
+				cli.Delete();
+				return stm;
+			}
+		}
+		return cli;
+	}
+	else if (url.StartsWithICase(UTF8STRC("file:///")))
+	{
+		sbuff[0] = 0;
+		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).Or(sbuff);
+		NEW_CLASSOPT(stm, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		return stm;
+	}
+	return 0;
+};

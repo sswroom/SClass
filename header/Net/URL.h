@@ -11,6 +11,7 @@ namespace Net
 	{
 	public:
 		static Optional<IO::ParsedObject> OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
+		static Optional<IO::Stream> OpenStream(Text::CStringNN url, Text::CString userAgent, NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
 	};
 }
 #endif

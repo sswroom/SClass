@@ -28,6 +28,7 @@ namespace SSWR
 			Optional<Net::WebServer::WebListener> svr;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
+			Optional<Net::SAMLIdpConfig> samlCfg;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
@@ -52,6 +53,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSSOPath;
 			NN<UI::GUILabel> lblMetadataPath;
 			NN<UI::GUITextBox> txtMetadataPath;
+			NN<UI::GUILabel> lblLoginPath;
+			NN<UI::GUITextBox> txtLoginPath;
 			NN<UI::GUILabel> lblLogoutPath;
 			NN<UI::GUITextBox> txtLogoutPath;
 			NN<UI::GUIButton> btnStart;
@@ -59,8 +62,23 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSSOURL;
 			NN<UI::GUILabel> lblMetadataURL;
 			NN<UI::GUITextBox> txtMetadataURL;
+			NN<UI::GUILabel> lblLoginURL;
+			NN<UI::GUITextBox> txtLoginURL;
 			NN<UI::GUILabel> lblLogoutURL;
 			NN<UI::GUITextBox> txtLogoutURL;
+
+			NN<UI::GUITabPage> tpIdp;
+			NN<UI::GUILabel> lblIdpMetadata;
+			NN<UI::GUITextBox> txtIdpMetadata;
+			NN<UI::GUIButton> btnIdpMetadata;
+			NN<UI::GUILabel> lblIdpSignOnLocation;
+			NN<UI::GUITextBox> txtIdpSignOnLocation;
+			NN<UI::GUILabel> lblIdpLogoutLocation;
+			NN<UI::GUITextBox> txtIdpLogoutLocation;
+			NN<UI::GUILabel> lblIdpEncryptionCert;
+			NN<UI::GUITextBox> txtIdpEncryptionCert;
+			NN<UI::GUILabel> lblIdpSigningCert;
+			NN<UI::GUITextBox> txtIdpSigningCert;
 
 			NN<UI::GUITabPage> tpSAMLResp;
 			NN<UI::GUITextBox> txtSAMLResp;
@@ -81,6 +99,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
+			static void __stdcall OnIdpMetadataClicked(AnyType userObj);
 			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CStringNN msg);
 			static Bool __stdcall OnLoginRequest(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg);
 			void ClearCACerts();

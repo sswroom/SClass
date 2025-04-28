@@ -2,6 +2,7 @@
 #define _SM_NET_WEBSERVER_SAMLHANDLER
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
+#include "Net/SAMLIdpConfig.h"
 #include "Net/SSLEngine.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Text/CString.h"
@@ -13,6 +14,7 @@ namespace Net
 		struct SAMLConfig
 		{
 			Text::CString serverHost;
+			Text::CString loginPath;
 			Text::CString metadataPath;
 			Text::CString logoutPath;
 			Text::CString ssoPath;
@@ -29,6 +31,7 @@ namespace Net
 		{
 			None,
 			ServerHost,
+			LoginPath,
 			MetadataPath,
 			LogoutPath,
 			SSOPath,
@@ -46,6 +49,7 @@ namespace Net
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::String> serverHost;
 			Optional<Text::String> metadataPath;
+			Optional<Text::String> loginPath;
 			Optional<Text::String> logoutPath;
 			Optional<Text::String> ssoPath;
 			Optional<Crypto::Cert::X509Cert> signCert;
@@ -63,6 +67,7 @@ namespace Net
 			virtual ~SAMLHandler();
 
 			SAMLError GetInitError();
+			Bool GetLoginURL(NN<Text::StringBuilderUTF8> sb);
 			Bool GetLogoutURL(NN<Text::StringBuilderUTF8> sb);
 			Bool GetMetadataURL(NN<Text::StringBuilderUTF8> sb);
 			Bool GetSSOURL(NN<Text::StringBuilderUTF8> sb);

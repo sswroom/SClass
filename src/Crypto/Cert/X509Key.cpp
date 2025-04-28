@@ -308,6 +308,11 @@ Bool Crypto::Cert::X509Key::GetKeyId(const Data::ByteArray &keyId) const
 	return false;
 }
 
+UOSInt Crypto::Cert::X509Key::GetDataBlockSize() const
+{
+	return GetKeySizeBits() / 8;
+}
+
 UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Key::GetRSAModulus(OptOut<UOSInt> size) const
 {
 	if (this->keyType == KeyType::RSA)
