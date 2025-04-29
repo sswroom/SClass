@@ -56,8 +56,26 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 				UOSInt type;
 				while (reader.NextElementName().SetTo(s))
 				{
-
-					if (s->Equals(CSTR("IDPSSODescriptor")))
+					if (s->Equals(CSTR("RoleDescriptor")))
+					{
+						i = 0;
+						j = reader.GetAttribCount();
+						while (i < j)
+						{
+							attr = reader.GetAttribNoCheck(i);
+							if (attr->name.SetTo(s) && s->Equals(CSTR("ServiceDisplayName")))
+							{
+								if (attr->value.SetTo(s))
+								{
+									OPTSTR_DEL(serviceDispName);
+									serviceDispName = s->Clone();
+								}
+							}
+							i++;
+						}
+						reader.SkipElement();
+					}
+					else if (s->Equals(CSTR("IDPSSODescriptor")))
 					{
 						while (reader.NextElementName().SetTo(s))
 						{

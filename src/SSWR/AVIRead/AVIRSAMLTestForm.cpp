@@ -373,6 +373,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnIdpMetadataClicked(AnyType use
 		{
 			samlHdlr->SetIdp(cfg);
 		}
+		me->txtIdpServiceName->SetText(cfg->GetServiceDispName()->ToCString());
 		me->txtIdpSignOnLocation->SetText(cfg->GetSignOnLocation()->ToCString());
 		me->txtIdpLogoutLocation->SetText(cfg->GetLogoutLocation()->ToCString());
 		if (cfg->GetEncryptionCert().SetTo(cert))
@@ -479,6 +480,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->svr = 0;
 	this->respNew = 0;
 	this->samlCfg = 0;
+	this->samlHdlr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->tcMain = ui->NewTabControl(*this);
@@ -556,25 +558,30 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->btnIdpMetadata = ui->NewButton(this->tpIdp, CSTR("Load"));
 	this->btnIdpMetadata->SetRect(604, 4, 75, 23, false);
 	this->btnIdpMetadata->HandleButtonClick(OnIdpMetadataClicked, this);
+	this->lblIdpServiceName = ui->NewLabel(this->tpIdp, CSTR("Service Name"));
+	this->lblIdpServiceName->SetRect(4, 28, 100, 23, false);
+	this->txtIdpServiceName = ui->NewTextBox(this->tpIdp, CSTR(""));
+	this->txtIdpServiceName->SetRect(104, 28, 200, 23, false);
+	this->txtIdpServiceName->SetReadOnly(true);
 	this->lblIdpSignOnLocation = ui->NewLabel(this->tpIdp, CSTR("SignOn Location"));
-	this->lblIdpSignOnLocation->SetRect(4, 28, 100, 23, false);
+	this->lblIdpSignOnLocation->SetRect(4, 52, 100, 23, false);
 	this->txtIdpSignOnLocation = ui->NewTextBox(this->tpIdp, CSTR(""));
-	this->txtIdpSignOnLocation->SetRect(104, 28, 500, 23, false);
+	this->txtIdpSignOnLocation->SetRect(104, 52, 500, 23, false);
 	this->txtIdpSignOnLocation->SetReadOnly(true);
 	this->lblIdpLogoutLocation = ui->NewLabel(this->tpIdp, CSTR("Logout Location"));
-	this->lblIdpLogoutLocation->SetRect(4, 52, 100, 23, false);
+	this->lblIdpLogoutLocation->SetRect(4, 76, 100, 23, false);
 	this->txtIdpLogoutLocation = ui->NewTextBox(this->tpIdp, CSTR(""));
-	this->txtIdpLogoutLocation->SetRect(104, 52, 500, 23, false);
+	this->txtIdpLogoutLocation->SetRect(104, 76, 500, 23, false);
 	this->txtIdpLogoutLocation->SetReadOnly(true);
 	this->lblIdpEncryptionCert = ui->NewLabel(this->tpIdp, CSTR("Encryption Cert"));
-	this->lblIdpEncryptionCert->SetRect(4, 76, 100, 23, false);
+	this->lblIdpEncryptionCert->SetRect(4, 100, 100, 23, false);
 	this->txtIdpEncryptionCert = ui->NewTextBox(this->tpIdp, CSTR(""));
-	this->txtIdpEncryptionCert->SetRect(104, 76, 500, 23, false);
+	this->txtIdpEncryptionCert->SetRect(104, 100, 500, 23, false);
 	this->txtIdpEncryptionCert->SetReadOnly(true);
 	this->lblIdpSigningCert = ui->NewLabel(this->tpIdp, CSTR("Signing Cert"));
-	this->lblIdpSigningCert->SetRect(4, 100, 100, 23, false);
+	this->lblIdpSigningCert->SetRect(4, 124, 100, 23, false);
 	this->txtIdpSigningCert = ui->NewTextBox(this->tpIdp, CSTR(""));
-	this->txtIdpSigningCert->SetRect(104, 100, 500, 23, false);
+	this->txtIdpSigningCert->SetRect(104, 124, 500, 23, false);
 	this->txtIdpSigningCert->SetReadOnly(true);
 
 	this->tpSAMLResp = this->tcMain->AddTabPage(CSTR("SAML Resp"));

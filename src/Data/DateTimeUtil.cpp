@@ -1303,6 +1303,8 @@ UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, 
 				sbuff[0] = 'Z';
 				sbuff++;
 				pattern++;
+				while (*pattern == 'Z')
+					pattern++;
 				break;
 			}
 		case 'z':

@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Compress/Deflater.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/SAMLHandler.h"
 #include "Parser/FileParser/X509Parser.h"
@@ -6,6 +7,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 #include "Text/TextBinEnc/Base64Enc.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 
 // https://<host>/adfs/ls/idpinitiatedsignon.aspx
 // https://<host>/FederationMetadata/2007-06/FederationMetadata.xml
@@ -185,7 +187,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 				sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
 				sb.Append(CSTR("</samlp:AuthnRequest>"));
 
-				this->SendRedirect(req, resp, idp->GetSignOnLocation()->ToCString(), sb.ToCString());
+				this->SendRedirect(req, resp, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType);
 				return true;
 			}
 			else
@@ -228,7 +230,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 				sb.Append(CSTR("</saml:NameID>"));
 				sb.Append(CSTR("</samlp:LogoutRequest>"));
 
-				this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString());
+				this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
 				return true;
 			}
 			else
@@ -252,10 +254,74 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 	return false;
 }
 
-void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent)
+void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
 {
-	//////////////////
-	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
+	UOSInt buffSize;
+	UInt8 signBuff[512];
+	UOSInt signSize;
+	NN<Net::SSLEngine> ssl;
+	NN<Crypto::Cert::X509PrivKey> privKey;
+	NN<Crypto::Cert::X509Key> key;
+	if (!this->signKey.SetTo(privKey) || !this->ssl.SetTo(ssl) || !privKey->CreateKey().SetTo(key))
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		return;
+	}
+	if (!Data::Compress::Deflater::CompressDirect(Data::ByteArray(buff, reqContent.leng + 16), buffSize, reqContent.ToByteArray(), Data::Compress::Deflater::CompLevel::BestCompression, false))
+	{
+		MemFreeArr(buff);
+		printf("SAMLHandler: Error in compressing content\r\n");
+		resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+		key.Delete();
+		return;
+	}
+	Text::TextBinEnc::Base64Enc b64;
+	Text::TextBinEnc::FormEncoding uri;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
+
+	sb.Append(CSTR("SAMLRequest="));
+	b64.EncodeBin(sb2, buff, buffSize);
+	uri.EncodeBin(sb, sb2.v, sb2.leng);
+
+	if (hashType == Crypto::Hash::HashType::SHA256)
+	{
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256"));
+	}
+	else if (hashType == Crypto::Hash::HashType::SHA384)
+	{
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha384"));
+	}
+	else if (hashType == Crypto::Hash::HashType::SHA512)
+	{
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha512"));
+	}
+	else
+	{
+		hashType = Crypto::Hash::HashType::SHA1;
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2000%2F09%2Fxmldsig%23rsa-sha1"));
+	}
+	MemFreeArr(buff);
+	if (ssl->Signature(key, hashType, sb.ToByteArray(), signBuff, signSize))
+	{
+		sb.Append(CSTR("&Signature="));
+		sb2.ClearStr();
+		b64.EncodeBin(sb2, signBuff, signSize);
+		uri.EncodeBin(sb, sb2.v, sb2.leng);
+
+		sb2.ClearStr();
+		sb2.Append(url);
+		sb2.AppendUTF8Char('?');
+		sb2.Append(sb);
+		resp->RedirectURL(req, sb2.ToCString(), 0);
+	}
+	else
+	{
+		printf("SAMLHandler: Error in Signature\r\n");
+		resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+	}
+	key.Delete();
 }
 
 Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr)
@@ -275,6 +341,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->loginHdlr = 0;
 	this->loginObj = 0;
 	this->idp = 0;
+	this->hashType = Crypto::Hash::HashType::SHA1;
 	if (!cfg->serverHost.SetTo(nns) || nns.leng == 0)
 	{
 		this->initErr = SAMLError::ServerHost;
@@ -427,6 +494,11 @@ void Net::WebServer::SAMLHandler::SetIdp(NN<Net::SAMLIdpConfig> idp)
 {
 	Sync::MutexUsage mutUsage(this->idpMut);
 	this->idp = idp;
+}
+
+void Net::WebServer::SAMLHandler::SetHashType(Crypto::Hash::HashType hashType)
+{
+	this->hashType = hashType;
 }
 
 Text::CStringNN Net::WebServer::SAMLErrorGetName(SAMLError err)

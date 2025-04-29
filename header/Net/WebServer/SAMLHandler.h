@@ -54,6 +54,7 @@ namespace Net
 			Optional<Text::String> ssoPath;
 			Optional<Crypto::Cert::X509Cert> signCert;
 			Optional<Crypto::Cert::X509PrivKey> signKey;
+			Crypto::Hash::HashType hashType;
 			SAMLError initErr;
 			SAMLStrFunc rawRespHdlr;
 			AnyType rawRespObj;
@@ -65,7 +66,7 @@ namespace Net
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 
-			void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent);
+			void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType);
 		public:
 			SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr);
 			virtual ~SAMLHandler();
@@ -79,6 +80,7 @@ namespace Net
 			void HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj);
 			Optional<Crypto::Cert::X509PrivKey> GetKey();
 			void SetIdp(NN<Net::SAMLIdpConfig> idp);
+			void SetHashType(Crypto::Hash::HashType hashType);
 		};
 		Text::CStringNN SAMLErrorGetName(SAMLError err);
 	}

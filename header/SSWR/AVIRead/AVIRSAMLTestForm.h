@@ -71,6 +71,8 @@ namespace SSWR
 			NN<UI::GUILabel> lblIdpMetadata;
 			NN<UI::GUITextBox> txtIdpMetadata;
 			NN<UI::GUIButton> btnIdpMetadata;
+			NN<UI::GUILabel> lblIdpServiceName;
+			NN<UI::GUITextBox> txtIdpServiceName;
 			NN<UI::GUILabel> lblIdpSignOnLocation;
 			NN<UI::GUITextBox> txtIdpSignOnLocation;
 			NN<UI::GUILabel> lblIdpLogoutLocation;
