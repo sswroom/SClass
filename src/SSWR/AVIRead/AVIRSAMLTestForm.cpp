@@ -255,6 +255,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		{
 			samlHdlr->SetIdp(samlCfg);
 		}
+		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetOSInt());
 		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (svr->IsError())
 		{
@@ -399,6 +400,16 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnIdpMetadataClicked(AnyType use
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnHashTypeChanged(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
+	NN<Net::WebServer::SAMLHandler> samlHdlr;
+	if (me->samlHdlr.SetTo(samlHdlr))
+	{
+		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetOSInt());
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSAMLResponse(AnyType userObj, Text::CStringNN msg)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
@@ -510,44 +521,54 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->lblSignKey->SetRect(4, 100, 100, 23, false);
 	this->txtSignKey = ui->NewTextBox(this->tpControl, CSTR(""));
 	this->txtSignKey->SetRect(104, 100, 500, 23, false);
+	this->lblHashType = ui->NewLabel(this->tpControl, CSTR("Hash Type"));
+	this->lblHashType->SetRect(4, 124, 100, 23, false);
+	this->cboHashType = ui->NewComboBox(this->tpControl, false);
+	this->cboHashType->SetRect(104, 124, 100, 23, false);
+	this->cboHashType->AddItem(CSTR("SHA-1"), (void*)Crypto::Hash::HashType::SHA1);
+	this->cboHashType->AddItem(CSTR("SHA-256"), (void*)Crypto::Hash::HashType::SHA256);
+	this->cboHashType->AddItem(CSTR("SHA-384"), (void*)Crypto::Hash::HashType::SHA384);
+	this->cboHashType->AddItem(CSTR("SHA-512"), (void*)Crypto::Hash::HashType::SHA512);
+	this->cboHashType->SetSelectedIndex(0);
+	this->cboHashType->HandleSelectionChange(OnHashTypeChanged, this);
 	this->lblSSOPath = ui->NewLabel(this->tpControl, CSTR("SSO Path"));
-	this->lblSSOPath->SetRect(4, 124, 100, 23, false);
+	this->lblSSOPath->SetRect(4, 148, 100, 23, false);
 	this->txtSSOPath = ui->NewTextBox(this->tpControl, CSTR("/sso"));
-	this->txtSSOPath->SetRect(104, 124, 500, 23, false);
+	this->txtSSOPath->SetRect(104, 148, 500, 23, false);
 	this->lblMetadataPath = ui->NewLabel(this->tpControl, CSTR("Metadata Path"));
-	this->lblMetadataPath->SetRect(4, 148, 100, 23, false);
+	this->lblMetadataPath->SetRect(4, 172, 100, 23, false);
 	this->txtMetadataPath = ui->NewTextBox(this->tpControl, CSTR("/metadata"));
-	this->txtMetadataPath->SetRect(104, 148, 500, 23, false);
+	this->txtMetadataPath->SetRect(104, 172, 500, 23, false);
 	this->lblLoginPath = ui->NewLabel(this->tpControl, CSTR("Login Path"));
-	this->lblLoginPath->SetRect(4, 172, 100, 23, false);
+	this->lblLoginPath->SetRect(4, 196, 100, 23, false);
 	this->txtLoginPath = ui->NewTextBox(this->tpControl, CSTR("/login"));
-	this->txtLoginPath->SetRect(104, 172, 500, 23, false);
+	this->txtLoginPath->SetRect(104, 196, 500, 23, false);
 	this->lblLogoutPath = ui->NewLabel(this->tpControl, CSTR("Logout Path"));
-	this->lblLogoutPath->SetRect(4, 196, 100, 23, false);
+	this->lblLogoutPath->SetRect(4, 220, 100, 23, false);
 	this->txtLogoutPath = ui->NewTextBox(this->tpControl, CSTR("/logout"));
-	this->txtLogoutPath->SetRect(104, 196, 500, 23, false);
+	this->txtLogoutPath->SetRect(104, 220, 500, 23, false);
 	this->btnStart = ui->NewButton(this->tpControl, CSTR("Start"));
-	this->btnStart->SetRect(104, 220, 75, 23, false);
+	this->btnStart->SetRect(104, 244, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	this->lblSSOURL = ui->NewLabel(this->tpControl, CSTR("SSO URL"));
-	this->lblSSOURL->SetRect(4, 244, 100, 23, false);
+	this->lblSSOURL->SetRect(4, 268, 100, 23, false);
 	this->txtSSOURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtSSOURL->SetRect(104, 244, 500, 23, false);
+	this->txtSSOURL->SetRect(104, 268, 500, 23, false);
 	this->txtSSOURL->SetReadOnly(true);
 	this->lblMetadataURL = ui->NewLabel(this->tpControl, CSTR("Metadata URL"));
-	this->lblMetadataURL->SetRect(4, 268, 100, 23, false);
+	this->lblMetadataURL->SetRect(4, 292, 100, 23, false);
 	this->txtMetadataURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtMetadataURL->SetRect(104, 268, 500, 23, false);
+	this->txtMetadataURL->SetRect(104, 292, 500, 23, false);
 	this->txtMetadataURL->SetReadOnly(true);
 	this->lblLoginURL = ui->NewLabel(this->tpControl, CSTR("Login URL"));
-	this->lblLoginURL->SetRect(4, 292, 100, 23, false);
+	this->lblLoginURL->SetRect(4, 316, 100, 23, false);
 	this->txtLoginURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtLoginURL->SetRect(104, 292, 500, 23, false);
+	this->txtLoginURL->SetRect(104, 316, 500, 23, false);
 	this->txtLoginURL->SetReadOnly(true);
 	this->lblLogoutURL = ui->NewLabel(this->tpControl, CSTR("Logout URL"));
-	this->lblLogoutURL->SetRect(4, 316, 100, 23, false);
+	this->lblLogoutURL->SetRect(4, 340, 100, 23, false);
 	this->txtLogoutURL = ui->NewTextBox(this->tpControl, CSTR(""));
-	this->txtLogoutURL->SetRect(104, 316, 500, 23, false);
+	this->txtLogoutURL->SetRect(104, 340, 500, 23, false);
 	this->txtLogoutURL->SetReadOnly(true);
 
 	this->tpIdp = this->tcMain->AddTabPage(CSTR("Idp"));

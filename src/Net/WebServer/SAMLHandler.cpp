@@ -172,7 +172,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 				sb.Append(CSTR(" Destination=\""));
 				sb.Append(idp->GetSignOnLocation());
 				sb.AppendUTF8Char('"');
-				sb.Append(CSTR(" ProtocolBinding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\""));
+				sb.Append(CSTR(" ProtocolBinding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\""));
 				sb.Append(CSTR(" AssertionConsumerServiceURL=\"https://"));
 				sb.Append(serverHost);
 				sb.Append(ssoPath);
@@ -181,7 +181,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 				sb.Append(serverHost);
 				sb.Append(metadataPath);
 				sb.Append(CSTR("</saml:Issuer>"));
-				sb.Append(CSTR("<samlp:NameIDPolicy Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\" AllowCreate=\"true\"/>"));
+				sb.Append(CSTR("<samlp:NameIDPolicy Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\" AllowCreate=\"true\"/>"));
 				sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"exact\">"));
 				sb.Append(CSTR("<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"));
 				sb.Append(CSTR("</samlp:RequestedAuthnContext>"));

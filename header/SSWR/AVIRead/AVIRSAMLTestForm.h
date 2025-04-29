@@ -7,6 +7,7 @@
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUIHSplitter.h"
@@ -49,6 +50,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSignCert;
 			NN<UI::GUILabel> lblSignKey;
 			NN<UI::GUITextBox> txtSignKey;
+			NN<UI::GUILabel> lblHashType;
+			NN<UI::GUIComboBox> cboHashType;
 			NN<UI::GUILabel> lblSSOPath;
 			NN<UI::GUITextBox> txtSSOPath;
 			NN<UI::GUILabel> lblMetadataPath;
@@ -102,6 +105,7 @@ namespace SSWR
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnIdpMetadataClicked(AnyType userObj);
+			static void __stdcall OnHashTypeChanged(AnyType userObj);
 			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CStringNN msg);
 			static Bool __stdcall OnLoginRequest(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg);
 			void ClearCACerts();
