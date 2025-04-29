@@ -60,14 +60,14 @@ Bool Net::MQTTFailoverClient::Subscribe(Text::CStringNN topic)
 	return true;
 }
 
-Bool Net::MQTTFailoverClient::Publish(Text::CStringNN topic, Text::CStringNN message)
+Bool Net::MQTTFailoverClient::Publish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain)
 {
 	NN<Net::MQTTStaticClient> cli;
 	if (!this->foHdlr.GetCurrChannel().SetTo(cli))
 	{
 		return false;
 	}
-	if (cli->Publish(topic, message))
+	if (cli->Publish(topic, message, dup, qos, retain))
 	{
 		return true;
 	}
@@ -77,7 +77,7 @@ Bool Net::MQTTFailoverClient::Publish(Text::CStringNN topic, Text::CStringNN mes
 	UOSInt j = cliList.GetCount();
 	while (i < j)
 	{
-		if (cliList.GetItemNoCheck(i)->Publish(topic, message))
+		if (cliList.GetItemNoCheck(i)->Publish(topic, message, dup, qos, retain))
 		{
 			this->foHdlr.SetCurrChannel(cliList.GetItemNoCheck(i));
 			return true;

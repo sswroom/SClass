@@ -36,7 +36,7 @@ namespace Net
 
 		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj);
 		virtual Bool Subscribe(Text::CStringNN topic);
-		virtual Bool Publish(Text::CStringNN topic, Text::CStringNN message);
+		virtual Bool Publish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain);
 	};
 }
 #endif

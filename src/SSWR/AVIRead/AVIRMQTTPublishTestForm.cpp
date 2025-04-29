@@ -343,7 +343,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(AnyType user
 	{
 		while (!me->threadToStop)
 		{
-			if (client->SendPublish(Text::String::OrEmpty(me->connTopic)->ToCString(), Text::String::OrEmpty(me->connContent)->ToCString()))
+			if (client->SendPublish(Text::String::OrEmpty(me->connTopic)->ToCString(), Text::String::OrEmpty(me->connContent)->ToCString(), false, 0, false))
 			{
 				Sync::Interlocked::IncrementU64(me->totalCount);
 			}

@@ -233,10 +233,10 @@ Bool Net::MQTTStaticClient::Subscribe(Text::CStringNN topic)
 	return false;
 }
 
-Bool Net::MQTTStaticClient::Publish(Text::CStringNN topic, Text::CStringNN message)
+Bool Net::MQTTStaticClient::Publish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain)
 {
 	Sync::MutexUsage mutUsage(this->connMut);
 	NN<Net::MQTTConn> conn;
 	if (!this->conn.SetTo(conn)) return false;
-	return conn->SendPublish(topic, message);
+	return conn->SendPublish(topic, message, dup, qos, retain);
 }

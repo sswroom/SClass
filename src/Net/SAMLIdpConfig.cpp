@@ -1,10 +1,13 @@
 #include "Stdafx.h"
 #include "Net/SAMLIdpConfig.h"
 #include "Net/URL.h"
+#include "Parser/FileParser/X509Parser.h"
 #include "Text/XMLReader.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
-Net::SAMLIdpConfig::SAMLIdpConfig(Text::CStringNN signOnLocation, Text::CStringNN logoutLocation, Optional<Crypto::Cert::X509Cert> encryptionCert, Optional<Crypto::Cert::X509Cert> signingCert)
+Net::SAMLIdpConfig::SAMLIdpConfig(Text::CStringNN serviceDispName, Text::CStringNN signOnLocation, Text::CStringNN logoutLocation, Optional<Crypto::Cert::X509Cert> encryptionCert, Optional<Crypto::Cert::X509Cert> signingCert)
 {
+	this->serviceDispName = Text::String::New(serviceDispName);
 	this->signOnLocation = Text::String::New(signOnLocation);
 	this->logoutLocation = Text::String::New(logoutLocation);
 	this->encryptionCert = encryptionCert;
@@ -13,6 +16,7 @@ Net::SAMLIdpConfig::SAMLIdpConfig(Text::CStringNN signOnLocation, Text::CStringN
 
 Net::SAMLIdpConfig::~SAMLIdpConfig()
 {
+	this->serviceDispName->Release();
 	this->signOnLocation->Release();
 	this->logoutLocation->Release();
 	this->encryptionCert.Delete();
@@ -27,6 +31,10 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 	UOSInt i;
 	UOSInt j;
 	NN<Text::XMLAttrib> attr;
+	Text::StringBuilderUTF8 sb;
+	UnsafeArray<UInt8> buff;
+	UOSInt buffSize;
+	NN<Crypto::Cert::X509File> file;
 	if (!Net::URL::OpenStream(path, 0, clif, ssl, 10000, log).SetTo(stm))
 	{
 		return 0;
@@ -37,22 +45,121 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 		{
 			if (s->Equals(CSTR("EntityDescriptor")))
 			{
+				Optional<Text::String> serviceDispName = 0;
+				Optional<Text::String> signOnLocation = 0;
+				Optional<Text::String> logoutLocation = 0;
+				NN<Text::String> nnserviceDispName;
+				NN<Text::String> nnsignOnLocation;
+				NN<Text::String> nnlogoutLocation;
+				Optional<Crypto::Cert::X509Cert> encryptionCert = 0;
+				Optional<Crypto::Cert::X509Cert> signingCert = 0;
+				UOSInt type;
 				while (reader.NextElementName().SetTo(s))
 				{
+
 					if (s->Equals(CSTR("IDPSSODescriptor")))
 					{
-						Optional<Text::String> signOnLocation = 0;
-						Optional<Text::String> logoutLocation = 0;
-						NN<Text::String> nnsignOnLocation;
-						NN<Text::String> nnlogoutLocation;
-						Optional<Crypto::Cert::X509Cert> encryptionCert = 0;
-						Optional<Crypto::Cert::X509Cert> signingCert = 0;
-						UOSInt type;
 						while (reader.NextElementName().SetTo(s))
 						{
 							if (s->Equals(CSTR("KeyDescriptor")))
 							{
-								reader.SkipElement();
+								type = 0;
+								i = 0;
+								j = reader.GetAttribCount();
+								while (i < j)
+								{
+									attr = reader.GetAttribNoCheck(i);
+									if (attr->name.SetTo(s) && s->Equals(CSTR("use")))
+									{
+										if (attr->value.SetTo(s) && s->Equals(CSTR("encryption")))
+										{
+											type = 1;
+										}
+										else if (attr->value.SetTo(s) && s->Equals(CSTR("signing")))
+										{
+											type = 2;
+										}
+									}
+									i++;
+								}
+								while (reader.NextElementName().SetTo(s))
+								{
+									if (s->Equals(CSTR("KeyInfo")))
+									{
+										while (reader.NextElementName().SetTo(s))
+										{
+											if (s->Equals(CSTR("X509Data")))
+											{
+												while (reader.NextElementName().SetTo(s))
+												{
+													if (s->Equals(CSTR("X509Certificate")))
+													{
+														sb.ClearStr();
+														reader.ReadNodeText(sb);
+														if (type == 1)
+														{
+															Text::TextBinEnc::Base64Enc b64;
+															buffSize = b64.CalcBinSize(sb.ToCString());
+															if (buffSize >= 20)
+															{
+																buff = MemAllocArr(UInt8, buffSize);
+																b64.DecodeBin(sb.ToCString(), buff);
+																if (Parser::FileParser::X509Parser::ParseBinary(Data::ByteArray(buff, buffSize)).SetTo(file))
+																{
+																	if (file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+																	{
+																		encryptionCert.Delete();
+																		encryptionCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(file);
+																	}
+																	else
+																	{
+																		file.Delete();
+																	}
+																}
+																MemFreeArr(buff);
+															}
+														}
+														else if (type == 2)
+														{
+															Text::TextBinEnc::Base64Enc b64;
+															buffSize = b64.CalcBinSize(sb.ToCString());
+															if (buffSize >= 20)
+															{
+																buff = MemAllocArr(UInt8, buffSize);
+																b64.DecodeBin(sb.ToCString(), buff);
+																if (Parser::FileParser::X509Parser::ParseBinary(Data::ByteArray(buff, buffSize)).SetTo(file))
+																{
+																	if (file->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+																	{
+																		signingCert.Delete();
+																		signingCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(file);
+																	}
+																	else
+																	{
+																		file.Delete();
+																	}
+																}
+																MemFreeArr(buff);
+															}
+														}
+													}
+													else
+													{
+														reader.SkipElement();
+													}
+												}
+											}
+											else
+											{
+												reader.SkipElement();
+											}
+										}
+									}
+									else
+									{
+										reader.SkipElement();
+									}
+								}
 							}
 							else if (s->Equals(CSTR("SingleLogoutService")))
 							{
@@ -113,25 +220,27 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 								reader.SkipElement();
 							}
 						}
-						if (signOnLocation.SetTo(nnsignOnLocation) && logoutLocation.SetTo(nnlogoutLocation))
-						{
-							NN<SAMLIdpConfig> cfg;
-							NEW_CLASSNN(cfg, SAMLIdpConfig(nnsignOnLocation->ToCString(), nnlogoutLocation->ToCString(), encryptionCert, signingCert));
-							nnsignOnLocation->Release();
-							nnlogoutLocation->Release();
-							stm.Delete();
-							return cfg;
-						}
-						OPTSTR_DEL(signOnLocation);
-						OPTSTR_DEL(logoutLocation);
-						encryptionCert.Delete();
-						signingCert.Delete();
 					}
 					else
 					{
 						reader.SkipElement();
 					}
 				}
+				if (serviceDispName.SetTo(nnserviceDispName) && signOnLocation.SetTo(nnsignOnLocation) && logoutLocation.SetTo(nnlogoutLocation))
+				{
+					NN<SAMLIdpConfig> cfg;
+					NEW_CLASSNN(cfg, SAMLIdpConfig(nnserviceDispName->ToCString(), nnsignOnLocation->ToCString(), nnlogoutLocation->ToCString(), encryptionCert, signingCert));
+					nnserviceDispName->Release();
+					nnsignOnLocation->Release();
+					nnlogoutLocation->Release();
+					stm.Delete();
+					return cfg;
+				}
+				OPTSTR_DEL(serviceDispName);
+				OPTSTR_DEL(signOnLocation);
+				OPTSTR_DEL(logoutLocation);
+				encryptionCert.Delete();
+				signingCert.Delete();
 			}
 		}
 	}

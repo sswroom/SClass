@@ -4,6 +4,7 @@
 #include "Net/MQTTConn.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -71,6 +72,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtPublishTopic;
 			NN<UI::GUILabel> lblPublishMessage;
 			NN<UI::GUITextBox> txtPublishMessage;
+			NN<UI::GUICheckBox> chkPublishDUP;
+			NN<UI::GUICheckBox> chkPublishRetain;
 			NN<UI::GUIButton> btnPublish;
 
 			NN<UI::GUITabPage> tpTopic;

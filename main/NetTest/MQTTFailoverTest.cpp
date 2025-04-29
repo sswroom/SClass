@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		dt.SetCurrTimeUTC();
 		sptr = Text::StrInt64(sbuff, dt.ToTicks());
-		cli->Publish(CSTR("test"), CSTRP(sbuff, sptr));
+		cli->Publish(CSTR("test"), CSTRP(sbuff, sptr), false, 0, false);
 		Sync::SimpleThread::Sleep(1000);
 	}
 	DEL_CLASS(cli);

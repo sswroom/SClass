@@ -71,9 +71,11 @@ namespace Net
 		Bool IsError();
 
 		Bool SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CStringNN clientId, Text::CString userName, Text::CString password);
-		Bool SendPublish(Text::CStringNN topic, Text::CStringNN message);
+		Bool SendPublish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain);
 		Bool SendPubAck(UInt16 packetId);
 		Bool SendPubRec(UInt16 packetId);
+		Bool SendPubRel(UInt16 packetId);
+		Bool SendPubComp(UInt16 packetId);
 		Bool SendSubscribe(UInt16 packetId, Text::CStringNN topic);
 		Bool SendPing();
 		Bool SendDisconnect();

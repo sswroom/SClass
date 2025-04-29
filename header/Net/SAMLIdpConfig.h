@@ -9,14 +9,16 @@ namespace Net
 	class SAMLIdpConfig
 	{
 	private:
+		NN<Text::String> serviceDispName;
 		NN<Text::String> signOnLocation;
 		NN<Text::String> logoutLocation;
 		Optional<Crypto::Cert::X509Cert> encryptionCert;
 		Optional<Crypto::Cert::X509Cert> signingCert;
 	public:
-		SAMLIdpConfig(Text::CStringNN signOnLocation, Text::CStringNN logoutLocation, Optional<Crypto::Cert::X509Cert> encryptionCert, Optional<Crypto::Cert::X509Cert> signingCert);
+		SAMLIdpConfig(Text::CStringNN serviceDispName, Text::CStringNN signOnLocation, Text::CStringNN logoutLocation, Optional<Crypto::Cert::X509Cert> encryptionCert, Optional<Crypto::Cert::X509Cert> signingCert);
 		~SAMLIdpConfig();
 
+		NN<Text::String> GetServiceDispName() const { return this->serviceDispName; }
 		NN<Text::String> GetSignOnLocation() const { return this->signOnLocation; }
 		NN<Text::String> GetLogoutLocation() const { return this->logoutLocation; }
 		Optional<Crypto::Cert::X509Cert> GetEncryptionCert() const { return this->encryptionCert; }

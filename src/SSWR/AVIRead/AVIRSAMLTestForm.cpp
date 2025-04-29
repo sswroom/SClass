@@ -248,8 +248,13 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 			samlHdlr.Delete();
 			return;
 		}
+		NN<Net::SAMLIdpConfig> samlCfg;
 		samlHdlr->HandleRAWSAMLResponse(OnSAMLResponse, me);
 		samlHdlr->HandleLoginRequest(OnLoginRequest, me);
+		if (me->samlCfg.SetTo(samlCfg))
+		{
+			samlHdlr->SetIdp(samlCfg);
+		}
 		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, samlHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
 		if (svr->IsError())
 		{
@@ -359,10 +364,15 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnIdpMetadataClicked(AnyType use
 	Text::StringBuilderUTF8 sb;
 	me->txtIdpMetadata->GetText(sb);
 	NN<Net::SAMLIdpConfig> cfg;
+	NN<Net::WebServer::SAMLHandler> samlHdlr;
 	if (sb.leng > 0 && Net::SAMLIdpConfig::ParseMetadata(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()).SetTo(cfg))
 	{
 		me->samlCfg.Delete();
 		me->samlCfg = cfg;
+		if (me->samlHdlr.SetTo(samlHdlr))
+		{
+			samlHdlr->SetIdp(cfg);
+		}
 		me->txtIdpSignOnLocation->SetText(cfg->GetSignOnLocation()->ToCString());
 		me->txtIdpLogoutLocation->SetText(cfg->GetLogoutLocation()->ToCString());
 		if (cfg->GetEncryptionCert().SetTo(cert))

@@ -337,12 +337,15 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTConn::SendPublish(Text::CStringNN topic, Text::CStringNN message)
+Bool Net::MQTTConn::SendPublish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain)
 {
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 
+	UInt8 cmd = 0x30 | (UInt8)((qos & 3) << 1);
+	if (dup) cmd = (UInt8)(cmd | 8);
+	if (retain) cmd = (UInt8)(cmd | 1);
 	if (topic.leng + message.leng > 507)
 	{
 		UInt8 *pack1 = MemAlloc(UInt8, topic.leng + message.leng + 2);
@@ -398,6 +401,28 @@ Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 
 	WriteMInt16(&packet1[0], packetId);
 	j = this->protoHdlr.BuildPacket(packet2, 0x50, 0, packet1, 2, this->cliData);
+	return this->SendPacket(packet2, j);
+}
+
+Bool Net::MQTTConn::SendPubRel(UInt16 packetId)
+{
+	UInt8 packet1[16];
+	UInt8 packet2[16];
+	UOSInt j;
+
+	WriteMInt16(&packet1[0], packetId);
+	j = this->protoHdlr.BuildPacket(packet2, 0x62, 0, packet1, 2, this->cliData);
+	return this->SendPacket(packet2, j);
+}
+
+Bool Net::MQTTConn::SendPubComp(UInt16 packetId)
+{
+	UInt8 packet1[16];
+	UInt8 packet2[16];
+	UOSInt j;
+
+	WriteMInt16(&packet1[0], packetId);
+	j = this->protoHdlr.BuildPacket(packet2, 0x70, 0, packet1, 2, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -532,7 +557,7 @@ Bool Net::MQTTConn::PublishMessage(NN<Net::TCPClientFactory> clif, Optional<Net:
 	}
 	if (succ)
 	{
-		succ = cli->SendPublish(topic, message);
+		succ = cli->SendPublish(topic, message, false, 0, false);
 		cli->SendDisconnect();
 	}
 	

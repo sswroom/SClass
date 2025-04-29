@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType us
 		me->txtPublishMessage->GetText(sbMsg);
 		if (sbTopic.GetLength() > 0 && sbMsg.GetLength() > 0)
 		{
-			if (client->SendPublish(sbTopic.ToCString(), sbMsg.ToCString()))
+			if (client->SendPublish(sbTopic.ToCString(), sbMsg.ToCString(), me->chkPublishDUP->IsChecked(), 0, me->chkPublishRetain->IsChecked()))
 			{
 				me->txtPublishMessage->SetText(CSTR(""));
 			}
@@ -445,8 +445,12 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClie
 	this->lblPublishMessage->SetRect(4, 28, 100, 23, false);
 	this->txtPublishMessage = ui->NewTextBox(this->tpPublish, CSTR(""));
 	this->txtPublishMessage->SetRect(104, 28, 200, 23, false);
+	this->chkPublishDUP = ui->NewCheckBox(this->tpPublish, CSTR("DUP"), false);
+	this->chkPublishDUP->SetRect(104, 52, 100, 23, false);
+	this->chkPublishRetain = ui->NewCheckBox(this->tpPublish, CSTR("DUP"), false);
+	this->chkPublishRetain->SetRect(104, 76, 100, 23, false);
 	this->btnPublish = ui->NewButton(this->tpPublish, CSTR("Publish"));
-	this->btnPublish->SetRect(104, 52, 75, 23, false);
+	this->btnPublish->SetRect(104, 100, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 
 	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topics"));

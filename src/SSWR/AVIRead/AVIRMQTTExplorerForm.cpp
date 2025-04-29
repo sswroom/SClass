@@ -264,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(AnyType use
 		me->ui->ShowMsgOK(CSTR("Please enter content"), CSTR("MQTT Explorer"), me);
 		return;
 	}
-	if (!client->SendPublish(sbTopic.ToCString(), sbContent.ToCString()))
+	if (!client->SendPublish(sbTopic.ToCString(), sbContent.ToCString(), me->chkPubDUP->IsChecked(), (UInt8)me->cboPubQoS->GetSelectedIndex(), me->chkPubRetain->IsChecked()))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in publishing topic"), CSTR("MQTT Explorer"), me);
 		return;
@@ -618,12 +618,24 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClient
 
 	this->tpPublish = this->tcDetail->AddTabPage(CSTR("Publish"));
 	this->pnlPubTopic = ui->NewPanel(this->tpPublish);
-	this->pnlPubTopic->SetRect(0, 0, 100, 31, false);
+	this->pnlPubTopic->SetRect(0, 0, 100, 103, false);
 	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblPubTopic = ui->NewLabel(this->pnlPubTopic, CSTR("Topic"));
 	this->lblPubTopic->SetRect(4, 4, 100, 23, false);
 	this->txtPubTopic = ui->NewTextBox(this->pnlPubTopic, CSTR(""));
 	this->txtPubTopic->SetRect(104, 4, 300, 23, false);
+	this->chkPubDUP = ui->NewCheckBox(this->pnlPubTopic, CSTR("DUP"), false);
+	this->chkPubDUP->SetRect(104, 28, 100, 23, false);
+	this->chkPubRetain = ui->NewCheckBox(this->pnlPubTopic, CSTR("Retain"), false);
+	this->chkPubRetain->SetRect(104, 52, 100, 23, false);
+	this->lblPubQoS = ui->NewLabel(this->pnlPubTopic, CSTR("QoS"));
+	this->lblPubQoS->SetRect(4, 76, 100, 23, false);
+	this->cboPubQoS = ui->NewComboBox(this->pnlPubTopic, false);
+	this->cboPubQoS->SetRect(104, 76, 300, 23, false);
+	this->cboPubQoS->AddItem(CSTR("At most once delivery"), 0);
+	this->cboPubQoS->AddItem(CSTR("At least once delivery"), (void*)1);
+	this->cboPubQoS->AddItem(CSTR("Exactly once delivery"), (void*)2);
+	this->cboPubQoS->SetSelectedIndex(0);
 	this->pnlPubCtrl = ui->NewPanel(this->tpPublish);
 	this->pnlPubCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlPubCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);

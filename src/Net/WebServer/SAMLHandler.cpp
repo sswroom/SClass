@@ -2,7 +2,9 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/SAMLHandler.h"
 #include "Parser/FileParser/X509Parser.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/XML.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
 // https://<host>/adfs/ls/idpinitiatedsignon.aspx
@@ -28,9 +30,12 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 	NN<Crypto::Cert::X509Cert> cert;
 	NN<Crypto::Cert::X509PrivKey> privKey;
 	NN<Text::String> metadataPath;
+	NN<Text::String> loginPath;
 	NN<Text::String> logoutPath;
 	NN<Text::String> ssoPath;
 	NN<Text::String> serverHost;
+	NN<Text::String> s;
+	NN<Net::SAMLIdpConfig> idp;
 	if (this->initErr == SAMLError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey) && this->serverHost.SetTo(serverHost))
 	{
 		if (this->metadataPath.SetTo(metadataPath) && metadataPath->Equals(subReq.v, subReq.leng) && this->logoutPath.SetTo(logoutPath) && this->ssoPath.SetTo(ssoPath))
@@ -141,10 +146,96 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 			}
 			return true;
 		}
+		else if (this->loginPath.SetTo(loginPath) && loginPath->Equals(subReq.v, subReq.leng))
+		{
+			Sync::MutexUsage mutUsage(this->idpMut);
+			if (this->idp.SetTo(idp) && this->metadataPath.SetTo(metadataPath) && this->ssoPath.SetTo(ssoPath))
+			{
+				Data::Timestamp currTime = Data::Timestamp::UtcNow();
+				Text::StringBuilderUTF8 sb;
+				sb.Append(CSTR("<samlp:AuthnRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\""));
+				sb.Append(CSTR(" ID=\"SAML_"));
+				sb.AppendI64(currTime.GetLocalSecs());
+				sb.AppendU32(currTime.inst.nanosec);
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(" Version=\"2.0\""));
+				sb.Append(CSTR(" ProviderName="));
+				s = Text::XML::ToNewAttrText(idp->GetServiceDispName()->v);
+				sb.Append(s);
+				s->Release();
+				sb.Append(CSTR(" IssueInstant=\""));
+				sptr = Data::Timestamp(Data::TimeInstant(currTime.inst.sec, 0), 0).ToStringISO8601(sbuff);
+				sb.AppendP(sbuff, sptr);
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(" Destination=\""));
+				sb.Append(idp->GetSignOnLocation());
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(" ProtocolBinding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\""));
+				sb.Append(CSTR(" AssertionConsumerServiceURL=\"https://"));
+				sb.Append(serverHost);
+				sb.Append(ssoPath);
+				sb.Append(CSTR("\">"));
+				sb.Append(CSTR("<saml:Issuer>https://"));
+				sb.Append(serverHost);
+				sb.Append(metadataPath);
+				sb.Append(CSTR("</saml:Issuer>"));
+				sb.Append(CSTR("<samlp:NameIDPolicy Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\" AllowCreate=\"true\"/>"));
+				sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"exact\">"));
+				sb.Append(CSTR("<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"));
+				sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
+				sb.Append(CSTR("</samlp:AuthnRequest>"));
+
+				this->SendRedirect(req, resp, idp->GetSignOnLocation()->ToCString(), sb.ToCString());
+				return true;
+			}
+			else
+			{
+				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+				return true;
+			}
+		}
 		else if (this->logoutPath.SetTo(logoutPath) && logoutPath->Equals(subReq.v, subReq.leng))
 		{
-			resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-			return true;
+			Sync::MutexUsage mutUsage(this->idpMut);
+			if (this->idp.SetTo(idp) && this->metadataPath.SetTo(metadataPath) && false) //nameId.SetTo(s)
+			{
+				Data::Timestamp currTime = Data::Timestamp::UtcNow();
+				Text::StringBuilderUTF8 sb;
+				sb.Append(CSTR("<samlp:LogoutRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\""));
+				sb.Append(CSTR(" ID=\"SAML_"));
+				sb.AppendI64(currTime.GetLocalSecs());
+				sb.AppendU32(currTime.inst.nanosec);
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(" Version=\"2.0\""));
+				sb.Append(CSTR(" IssueInstant=\""));
+				sptr = Data::Timestamp(Data::TimeInstant(currTime.inst.sec, 0), 0).ToStringISO8601(sbuff);
+				sb.AppendP(sbuff, sptr);
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(" Destination=\""));
+				sb.Append(idp->GetLogoutLocation());
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(">"));
+				sb.Append(CSTR("<saml:Issuer>https://"));
+				sb.Append(serverHost);
+				sb.Append(metadataPath);
+				sb.Append(CSTR("</saml:Issuer>"));
+				sb.Append(CSTR("<saml:NameID SPNameQualifier=\"https://"));
+				sb.Append(serverHost);
+				sb.Append(metadataPath);
+				sb.AppendUTF8Char('"');
+				sb.Append(CSTR(" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\">"));
+				sb.Append(s);
+				sb.Append(CSTR("</saml:NameID>"));
+				sb.Append(CSTR("</samlp:LogoutRequest>"));
+
+				this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString());
+				return true;
+			}
+			else
+			{
+				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+				return true;
+			}
 		}
 		//////////////////////////////////
 	}
@@ -159,6 +250,12 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 		return defHdlr->ProcessRequest(req, resp, subReq);
 	}
 	return false;
+}
+
+void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent)
+{
+	//////////////////
+	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 }
 
 Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr)
@@ -177,6 +274,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->rawRespObj = 0;
 	this->loginHdlr = 0;
 	this->loginObj = 0;
+	this->idp = 0;
 	if (!cfg->serverHost.SetTo(nns) || nns.leng == 0)
 	{
 		this->initErr = SAMLError::ServerHost;
@@ -323,6 +421,12 @@ void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, AnyType
 Optional<Crypto::Cert::X509PrivKey> Net::WebServer::SAMLHandler::GetKey()
 {
 	return this->signKey;
+}
+
+void Net::WebServer::SAMLHandler::SetIdp(NN<Net::SAMLIdpConfig> idp)
+{
+	Sync::MutexUsage mutUsage(this->idpMut);
+	this->idp = idp;
 }
 
 Text::CStringNN Net::WebServer::SAMLErrorGetName(SAMLError err)

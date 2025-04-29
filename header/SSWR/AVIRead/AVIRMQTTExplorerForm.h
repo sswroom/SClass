@@ -5,6 +5,7 @@
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
@@ -79,6 +80,10 @@ namespace SSWR
 			NN<UI::GUIPanel> pnlPubTopic;
 			NN<UI::GUILabel> lblPubTopic;
 			NN<UI::GUITextBox> txtPubTopic;
+			NN<UI::GUICheckBox> chkPubDUP;
+			NN<UI::GUICheckBox> chkPubRetain;
+			NN<UI::GUILabel> lblPubQoS;
+			NN<UI::GUIComboBox> cboPubQoS;
 			NN<UI::GUIPanel> pnlPubCtrl;
 			NN<UI::GUIButton> btnPublish;
 			NN<UI::GUITextBox> txtPubContent;

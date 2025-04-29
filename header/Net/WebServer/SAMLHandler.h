@@ -59,9 +59,13 @@ namespace Net
 			AnyType rawRespObj;
 			SAMLLoginFunc loginHdlr;
 			AnyType loginObj;
+			Optional<Net::SAMLIdpConfig> idp;
+			Sync::Mutex idpMut;
 
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
+
+			void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent);
 		public:
 			SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr);
 			virtual ~SAMLHandler();
@@ -74,6 +78,7 @@ namespace Net
 			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, AnyType userObj);
 			void HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj);
 			Optional<Crypto::Cert::X509PrivKey> GetKey();
+			void SetIdp(NN<Net::SAMLIdpConfig> idp);
 		};
 		Text::CStringNN SAMLErrorGetName(SAMLError err);
 	}

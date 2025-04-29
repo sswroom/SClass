@@ -10,7 +10,7 @@ namespace Net
 		virtual ~MQTTClient() {};
 
 		virtual Bool Subscribe(Text::CStringNN topic) = 0;
-		virtual Bool Publish(Text::CStringNN topic, Text::CStringNN message) = 0;
+		virtual Bool Publish(Text::CStringNN topic, Text::CStringNN message, Bool dup, UInt8 qos, Bool retain) = 0;
 	};
 }
 #endif
