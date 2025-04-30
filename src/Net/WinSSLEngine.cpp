@@ -1407,7 +1407,8 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1, 
 {
 	if (this->clsData->svrInit)
 	{
-		return false;
+		FreeCredentialHandle(&this->clsData->hCredSvr);
+		this->clsData->svrInit = false;
 	}
 //	const WChar *containerName = L"SelfSign";
 	const WChar *containerName = L"ServerCert";

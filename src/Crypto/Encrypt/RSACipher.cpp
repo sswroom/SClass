@@ -69,7 +69,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UnsafeArray<UInt8> destBuff, Un
 	if (padding == Padding::PKCS1_OAEP)
 	{
 		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA1;
-		if (blockSize > 256)
+		if (blockSize > 512)
 		{
 			return 0;
 		}
@@ -80,7 +80,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UnsafeArray<UInt8> destBuff, Un
 		NN<Crypto::Hash::HashAlgorithm> hash;
 		UOSInt i;
 		UOSInt hLen;
-		UInt8 decBuff[256];
+		UInt8 decBuff[512];
 		if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
 		{
 			return 0;
