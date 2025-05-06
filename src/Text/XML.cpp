@@ -1406,7 +1406,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 				sbuff[1] = chrRef[3];
 				sbuff[2] = chrRef[4];
 				sbuff[3] = 0;
-				wcs = (UTF32Char)Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToUInt32(sbuff);
 			}
 			return WriteUTF8Char(stm, wcs);
 		}
@@ -1452,7 +1452,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 				sbuff[2] = chrRef[4];
 				sbuff[3] = chrRef[5];
 				sbuff[4] = 0;
-				wcs = (UTF32Char)Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToUInt32(sbuff);
 			}
 			return WriteUTF8Char(stm, wcs);
 		}
@@ -1478,7 +1478,6 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 		{
 			sbuff[0] = chrRef[2];
 			sbuff[1] = 0;
-			sbuff[0] = (UInt8)Text::StrToUInt32(sbuff);
 			sb->AppendUTF8Char((UInt8)Text::StrToUInt32(sbuff));
 			return true;
 		}
@@ -1532,7 +1531,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 				sbuff[1] = chrRef[3];
 				sbuff[2] = chrRef[4];
 				sbuff[3] = 0;
-				wcs = (UTF32Char)Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToUInt32(sbuff);
 			}
 			sb->AppendChar(wcs, 1);
 			return true;
@@ -1580,7 +1579,7 @@ Bool Text::XML::HTMLAppendCharRef(UnsafeArray<const UTF8Char> chrRef, UOSInt ref
 				sbuff[2] = chrRef[4];
 				sbuff[3] = chrRef[5];
 				sbuff[4] = 0;
-				wcs = (UTF32Char)Text::StrToInt32(sbuff);
+				wcs = (UTF32Char)Text::StrToUInt32(sbuff);
 			}
 			sb->AppendChar(wcs, 1);
 			return true;

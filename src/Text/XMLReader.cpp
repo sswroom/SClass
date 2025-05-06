@@ -1104,7 +1104,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								UTF32Char wcs;
 								this->readBuff[parseOfst + 3] = 0;
-								wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[parseOfst + 2]);
+								wcs = (UTF32Char)Text::StrToUInt32(&this->readBuff[parseOfst + 2]);
 								sbText->AppendUTF8Char((UTF8Char)wcs);
 								parseOfst += 3;
 							}
@@ -1137,7 +1137,7 @@ Bool Text::XMLReader::ReadNext()
 								}
 								else
 								{
-									wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[parseOfst + 2]);
+									wcs = (UTF32Char)Text::StrToUInt32(&this->readBuff[parseOfst + 2]);
 								}
 								sbText->AppendUTF8Char((UTF8Char)wcs);
 								parseOfst += 4;
@@ -1176,7 +1176,7 @@ Bool Text::XMLReader::ReadNext()
 								}
 								else
 								{
-									wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[parseOfst + 2]);
+									wcs = (UTF32Char)Text::StrToUInt32(&this->readBuff[parseOfst + 2]);
 								}
 								sbText->AppendUTF8Char((UTF8Char)wcs);
 								parseOfst += 5;
