@@ -157,7 +157,7 @@ Optional<Map::MapDrawLayer> Map::GMLXML::ParseFeatureCollection(NN<Text::XMLRead
 					{
 						UnsafeArray<Text::String*> scols;
 						scols = valList.Arr();
-						lyr->AddVector(nnvec, scols.Ptr());
+						lyr->AddVector2(nnvec, scols.Ptr());
 					}
 					else
 					{

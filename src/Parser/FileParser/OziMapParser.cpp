@@ -206,7 +206,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, s.Ptr()));
 					s->Release();
-					lyr->AddVector(vimg, (Text::PString*)0);
+					lyr->AddVector2(vimg, (Text::PString*)0);
 				}
 			}
 		}

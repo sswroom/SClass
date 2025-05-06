@@ -215,7 +215,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseGeoJSON(NN<Text:
 								}
 								if (ParseGeomJSON(NN<Text::JSONObject>::ConvertFrom(featGeom), srid).SetTo(vec))
 								{
-									lyr->AddVector(vec, tabVals);
+									lyr->AddVector2(vec, tabVals);
 								}
 							}
 						}

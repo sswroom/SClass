@@ -70,7 +70,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 co
 			if (totalCnt == Text::StrCSVSplit(tmpUArr2, totalCnt + 1, sbuff))
 			{
 				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDoubleOrNAN(tmpUArr2[lonIndex]), Text::StrToDoubleOrNAN(tmpUArr2[latIndex])));
-				lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpUArr2));
+				lyr->AddVector2(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpUArr2));
 			}
 		}		
 

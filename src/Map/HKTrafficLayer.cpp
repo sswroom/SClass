@@ -1278,7 +1278,7 @@ Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	{
 		NEW_CLASSNN(pt, Math::Geometry::Point(2326, nodeTable[i].x, nodeTable[i].y));
 		Text::StrInt32(sbuff, nodeTable[i].id);
-		layer->AddVector(pt, &sptr);
+		layer->AddVector2(pt, &sptr);
 		i++;
 	}
 	return layer;

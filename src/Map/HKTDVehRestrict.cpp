@@ -179,7 +179,7 @@ NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 					}
 					strs[2] = sbuff;
 					NEW_CLASSNN(pt, Math::Geometry::Point(this->csys->GetSRID(), coord));
-					lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(strs)));
+					lyr->AddVector2(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(strs)));
 				}
 			}
 		}

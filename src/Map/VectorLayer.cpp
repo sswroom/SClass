@@ -754,10 +754,10 @@ Bool Map::VectorLayer::VectorValid(NN<Math::Geometry::Vector2D> vec)
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, Text::String **strs)
+Int64 Map::VectorLayer::AddVector2(NN<Math::Geometry::Vector2D> vec, Text::String **strs)
 {
 	if (!this->VectorValid(vec))
-		return false;
+		return -1;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = CopyStrs(strs);
 
 	Math::RectAreaDbl bounds;
@@ -793,17 +793,17 @@ Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, Text::String 
 		}
 	}
 
-	this->vectorList.Add(vec);
+	UOSInt id = this->vectorList.Add(vec);
 	this->strList.Add(newStrs);
 	if (updated)
 		this->UpdateMapRate();
-	return true;
+	return (Int64)id;
 }
 
-Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, Text::PString *strs)
+Int64 Map::VectorLayer::AddVector2(NN<Math::Geometry::Vector2D> vec, Text::PString *strs)
 {
 	if (!this->VectorValid(vec))
-		return false;
+		return -1;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = CopyStrs(strs);
 
 	Math::RectAreaDbl bounds;
@@ -839,17 +839,17 @@ Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, Text::PString
 		}
 	}
 
-	this->vectorList.Add(vec);
+	UOSInt id = this->vectorList.Add(vec);
 	this->strList.Add(newStrs);
 	if (updated)
 		this->UpdateMapRate();
-	return true;
+	return (Int64)id;
 }
 
-Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs)
+Int64 Map::VectorLayer::AddVector2(NN<Math::Geometry::Vector2D> vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs)
 {
 	if (!this->VectorValid(vec))
-		return false;
+		return -1;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = CopyStrs(strs);
 
 	Math::RectAreaDbl bounds;
@@ -885,17 +885,17 @@ Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, UnsafeArray<U
 		}
 	}
 
-	this->vectorList.Add(vec);
+	UOSInt index = this->vectorList.Add(vec);
 	this->strList.Add(newStrs);
 	if (updated)
 		this->UpdateMapRate();
-	return true;
+	return (Int64)index;
 }
 
-Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, NN<Data::ArrayListStringNN> strs)
+Int64 Map::VectorLayer::AddVector2(NN<Math::Geometry::Vector2D> vec, NN<Data::ArrayListStringNN> strs)
 {
 	if (!this->VectorValid(vec))
-		return false;
+		return -1;
 	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> newStrs = CopyStrs(strs);
 
 	Math::RectAreaDbl bounds;
@@ -931,11 +931,11 @@ Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, NN<Data::Arra
 		}
 	}
 
-	this->vectorList.Add(vec);
+	UOSInt id = this->vectorList.Add(vec);
 	this->strList.Add(newStrs);
 	if (updated)
 		this->UpdateMapRate();
-	return true;
+	return (Int64)id;
 }
 
 Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
@@ -1079,6 +1079,22 @@ Bool Map::VectorLayer::DeleteVector(Int64 id)
 	if ((UInt64)id < this->vectorList.GetCount())
 	{
 		this->vectorList.RemoveAt((UOSInt)(UInt64)id).Delete();
+		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs;
+		if (this->strList.RemoveAt((UOSInt)(UInt64)id).SetTo(strs))
+		{
+			UnsafeArray<const UTF8Char> nns;
+			UOSInt j = 0;
+			while (j < this->strCnt)
+			{
+				if (strs[j].SetTo(nns))
+				{
+					MemFreeArr(nns);
+					break;
+				}
+				j++;
+			}
+			MemFreeArr(strs);
+		}
 		return true;
 	}
 	return false;

@@ -628,7 +628,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 					sptrs[l] = &sb.v[ofsts[l]];
 				}
 			}
-			if (!lyr->AddVector(nnvec, sptrs))
+			if (lyr->AddVector2(nnvec, sptrs) == -1)
 			{
 				nnvec.Delete();
 			}

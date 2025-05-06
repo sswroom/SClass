@@ -82,7 +82,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 				NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, Text::StrToDoubleOrNAN(tmpArr[3]), Text::StrToDoubleOrNAN(tmpArr[2]), Text::StrToDoubleOrNAN(tmpArr[14]) / 3.2808333333333333333333333333333));
 				cols[0] = tmpArr[1];
 				cols[1] = tmpArr[10];
-				lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(cols)));
+				lyr->AddVector2(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(cols)));
 			}
 		}
 	}

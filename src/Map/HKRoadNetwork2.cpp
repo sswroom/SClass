@@ -138,7 +138,7 @@ Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 							Text::StrDouble(strs[1], maxWeight);
 						}
 						strs[2] = sbuff;
-						lyr->AddVector(vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(strs)));
+						lyr->AddVector2(vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(strs)));
 					}
 				}
 			}

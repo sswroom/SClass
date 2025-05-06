@@ -169,7 +169,7 @@ Optional<Map::VectorLayer> Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<M
 					else
 						namesArr[j] = &sb.v[ofsts[j]];
 				}
-				newLyr->AddVector(vec, namesArr);
+				newLyr->AddVector2(vec, namesArr);
 			}
 		}
 		lyr->EndGetObject(sess);

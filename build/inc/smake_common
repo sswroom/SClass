@@ -4033,6 +4033,8 @@ SSWR/AVIRead/AVIRGISDistanceForm.h:
 @AVIRGISDistanceForm.o
 SSWR/AVIRead/AVIRGISEditImageForm.h:
 @AVIRGISEditImageForm.o
+SSWR/AVIRead/AVIRGISEditPointForm.h:
+@AVIRGISEditPointForm.o
 SSWR/AVIRead/AVIRGISEditVectorForm.h:
 @AVIRGISEditVectorForm.o
 SSWR/AVIRead/AVIRGISForm.h:

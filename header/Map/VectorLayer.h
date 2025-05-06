@@ -93,10 +93,10 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() const;
 		Bool VectorValid(NN<Math::Geometry::Vector2D> vec);
-		Bool AddVector(NN<Math::Geometry::Vector2D> vec, Text::String **strs);
-		Bool AddVector(NN<Math::Geometry::Vector2D> vec, Text::PString *strs);
-		Bool AddVector(NN<Math::Geometry::Vector2D> vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs);
-		Bool AddVector(NN<Math::Geometry::Vector2D> vec, NN<Data::ArrayListStringNN> strs);
+		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, Text::String **strs); //-1 = fail
+		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, Text::PString *strs); //-1 = fail
+		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> strs); //-1 = fail
+		Int64 AddVector2(NN<Math::Geometry::Vector2D> vec, NN<Data::ArrayListStringNN> strs); //-1 = fail
 		Bool SplitPolyline(Math::Coord2DDbl pt);
 		void OptimizePolylinePath();
 		void ReplaceVector(Int64 id, NN<Math::Geometry::Vector2D> vec);

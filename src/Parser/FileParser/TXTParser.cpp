@@ -541,7 +541,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 						csarr[i] = UnsafeArray<const UTF8Char>(sarr[i].v);
 					}
 					vecUsed.Put(currId, true);
-					lyr->AddVector(nnvec, csarr);
+					lyr->AddVector2(nnvec, csarr);
 				}
 			}
 		}

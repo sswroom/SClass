@@ -206,7 +206,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnEndClicked(AnyType userOb
 				}
 				NEW_CLASSNN(pl, Math::Geometry::Polyline(me->lyr->GetCoordinateSystem()->GetSRID()));
 				pl->AddGeometry(ls);
-				me->lyr->AddVector(pl, names);
+				me->lyr->AddVector2(pl, names);
 				me->points.Clear();
 				me->navi->RedrawMap();
 				me->UpdateList();

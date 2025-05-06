@@ -30,6 +30,7 @@
 #include "SSWR/AVIRead/AVIRGISCSysForm.h"
 #include "SSWR/AVIRead/AVIRGISDistanceForm.h"
 #include "SSWR/AVIRead/AVIRGISEditImageForm.h"
+#include "SSWR/AVIRead/AVIRGISEditPointForm.h"
 #include "SSWR/AVIRead/AVIRGISEditVectorForm.h"
 #include "SSWR/AVIRead/AVIRGISForm.h"
 #include "SSWR/AVIRead/AVIRGISGroupQueryForm.h"
@@ -237,7 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 					NEW_CLASSNN(simg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(nnpobj), prevList));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
 					simg.Delete();
-					lyr->AddVector(vimg, (Text::String**)0);
+					lyr->AddVector2(vimg, (Text::String**)0);
 					layers->Add(lyr);
 				}
 				else
@@ -1198,6 +1199,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditVectorForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
 						this->SetCtrlForm(frm, item);
 					}
+					else if (lyrType == Map::DRAW_LAYER_POINT3D || lyrType == Map::DRAW_LAYER_POINT)
+					{
+						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGISEditPointForm(0, this->ui, this->core, NN<Map::VectorLayer>::ConvertFrom(lyr), *this));
+						this->SetCtrlForm(frm, item);
+					}
 				}
 			}
 		}
@@ -1552,7 +1558,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				NN<Map::VectorLayer> lyr;
 				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), Math::CoordinateSystemManager::CreateWGS84Csys(), CSTR_NULL));
-				lyr->AddVector(pl, (Text::String**)0);
+				lyr->AddVector2(pl, (Text::String**)0);
 				this->AddLayer(lyr);
 			}
 		}

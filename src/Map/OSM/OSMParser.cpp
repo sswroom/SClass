@@ -662,7 +662,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 						}
 						NN<Math::Geometry::Point> pt;
 						NEW_CLASSNN(pt, Math::Geometry::Point(4326, lon, lat));
-						layers[elemType - 1]->AddVector(pt, names);
+						layers[elemType - 1]->AddVector2(pt, names);
 					}
 					SDEL_STRING(names[0]);
 					SDEL_STRING(names[1]);
@@ -1329,7 +1329,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 						points[i].y = latList.GetItem(i);
 					}
 					pg->AddGeometry(lr);
-					layers[elemType - 1]->AddVector(pg, names);
+					layers[elemType - 1]->AddVector2(pg, names);
 				}
 				else
 				{
@@ -1350,7 +1350,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 						points[i].x = lonList.GetItem(i);
 						points[i].y = latList.GetItem(i);
 					}
-					layers[elemType - 1]->AddVector(pl, names);
+					layers[elemType - 1]->AddVector2(pl, names);
 				}
 			}
 			SDEL_STRING(names[0]);

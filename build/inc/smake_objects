@@ -1842,6 +1842,7 @@ AVIRGISCombineForm.o: ../../src/SSWR/AVIRead/AVIRGISCombineForm.cpp
 AVIRGISCSysForm.o: ../../src/SSWR/AVIRead/AVIRGISCSysForm.cpp
 AVIRGISDistanceForm.o: ../../src/SSWR/AVIRead/AVIRGISDistanceForm.cpp
 AVIRGISEditImageForm.o: ../../src/SSWR/AVIRead/AVIRGISEditImageForm.cpp
+AVIRGISEditPointForm.o: ../../src/SSWR/AVIRead/AVIRGISEditPointForm.cpp
 AVIRGISEditVectorForm.o: ../../src/SSWR/AVIRead/AVIRGISEditVectorForm.cpp
 AVIRGISFontEditForm.o: ../../src/SSWR/AVIRead/AVIRGISFontEditForm.cpp
 AVIRGISFontForm.o: ../../src/SSWR/AVIRead/AVIRGISFontForm.cpp
