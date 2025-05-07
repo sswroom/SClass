@@ -7,7 +7,7 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Data/Compress/Inflater.h"
 
-UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
+UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UnsafeArray<UInt8> keyBuff)
 {
 	NN<Text::String> nodeName;
 	Crypto::Encrypt::RSACipher::Padding rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1;
@@ -84,7 +84,7 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 	return keySize;
 }
 
-UOSInt Net::SAMLUtil::ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
+UOSInt Net::SAMLUtil::ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UnsafeArray<UInt8> keyBuff)
 {
 	NN<Text::String> nodeName;
 	UOSInt keySize = 0;
