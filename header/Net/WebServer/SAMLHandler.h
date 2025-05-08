@@ -27,7 +27,7 @@ namespace Net
 			Text::CString rawMessage;
 		};
 
-		enum class SAMLError
+		enum class SAMLInitError
 		{
 			None,
 			ServerHost,
@@ -55,7 +55,7 @@ namespace Net
 			Optional<Crypto::Cert::X509Cert> signCert;
 			Optional<Crypto::Cert::X509PrivKey> signKey;
 			Crypto::Hash::HashType hashType;
-			SAMLError initErr;
+			SAMLInitError initErr;
 			SAMLStrFunc rawRespHdlr;
 			AnyType rawRespObj;
 			SAMLLoginFunc loginHdlr;
@@ -71,7 +71,11 @@ namespace Net
 			SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr);
 			virtual ~SAMLHandler();
 
-			SAMLError GetInitError();
+			SAMLInitError GetInitError();
+			Optional<Text::String> GetMetadataPath() const { return this->metadataPath; }
+			Optional<Text::String> GetLoginPath() const { return this->loginPath; }
+			Optional<Text::String> GetLogoutPath() const { return this->logoutPath; }
+			Optional<Text::String> GetSSOPath() const { return this->ssoPath; }
 			Bool GetLoginURL(NN<Text::StringBuilderUTF8> sb);
 			Bool GetLogoutURL(NN<Text::StringBuilderUTF8> sb);
 			Bool GetMetadataURL(NN<Text::StringBuilderUTF8> sb);
@@ -81,8 +85,12 @@ namespace Net
 			Optional<Crypto::Cert::X509PrivKey> GetKey();
 			void SetIdp(NN<Net::SAMLIdpConfig> idp);
 			void SetHashType(Crypto::Hash::HashType hashType);
+
+			Bool DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+			Bool DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN nameID);
+			Bool DoMetadataGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		};
-		Text::CStringNN SAMLErrorGetName(SAMLError err);
+		Text::CStringNN SAMLInitErrorGetName(SAMLInitError err);
 	}
 }
 #endif

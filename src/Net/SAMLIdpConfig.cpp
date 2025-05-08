@@ -5,9 +5,10 @@
 #include "Text/XMLReader.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Net::SAMLIdpConfig::SAMLIdpConfig(Text::CStringNN serviceDispName, Text::CStringNN signOnLocation, Text::CStringNN logoutLocation, Optional<Crypto::Cert::X509Cert> encryptionCert, Optional<Crypto::Cert::X509Cert> signingCert)
+Net::SAMLIdpConfig::SAMLIdpConfig(Text::CStringNN serviceDispName, Text::CStringNN entityId, Text::CStringNN signOnLocation, Text::CStringNN logoutLocation, Optional<Crypto::Cert::X509Cert> encryptionCert, Optional<Crypto::Cert::X509Cert> signingCert)
 {
 	this->serviceDispName = Text::String::New(serviceDispName);
+	this->entityId = Text::String::New(entityId);
 	this->signOnLocation = Text::String::New(signOnLocation);
 	this->logoutLocation = Text::String::New(logoutLocation);
 	this->encryptionCert = encryptionCert;
@@ -17,6 +18,7 @@ Net::SAMLIdpConfig::SAMLIdpConfig(Text::CStringNN serviceDispName, Text::CString
 Net::SAMLIdpConfig::~SAMLIdpConfig()
 {
 	this->serviceDispName->Release();
+	this->entityId->Release();
 	this->signOnLocation->Release();
 	this->logoutLocation->Release();
 	this->encryptionCert.Delete();
@@ -46,14 +48,31 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 			if (s->Equals(CSTR("EntityDescriptor")))
 			{
 				Optional<Text::String> serviceDispName = 0;
+				Optional<Text::String> entityId = 0;
 				Optional<Text::String> signOnLocation = 0;
 				Optional<Text::String> logoutLocation = 0;
 				NN<Text::String> nnserviceDispName;
+				NN<Text::String> nnentityId;
 				NN<Text::String> nnsignOnLocation;
 				NN<Text::String> nnlogoutLocation;
 				Optional<Crypto::Cert::X509Cert> encryptionCert = 0;
 				Optional<Crypto::Cert::X509Cert> signingCert = 0;
 				UOSInt type;
+				i = 0;
+				j = reader.GetAttribCount();
+				while (i < j)
+				{
+					attr = reader.GetAttribNoCheck(i);
+					if (attr->name.SetTo(s) && s->Equals(CSTR("entityID")))
+					{
+						if (attr->value.SetTo(s))
+						{
+							OPTSTR_DEL(entityId);
+							entityId = s->Clone();
+						}
+					}
+					i++;
+				}
 				while (reader.NextElementName().SetTo(s))
 				{
 					if (s->Equals(CSTR("RoleDescriptor")))
@@ -244,17 +263,19 @@ Optional<Net::SAMLIdpConfig> Net::SAMLIdpConfig::ParseMetadata(NN<Net::TCPClient
 						reader.SkipElement();
 					}
 				}
-				if (serviceDispName.SetTo(nnserviceDispName) && signOnLocation.SetTo(nnsignOnLocation) && logoutLocation.SetTo(nnlogoutLocation))
+				if (serviceDispName.SetTo(nnserviceDispName) && entityId.SetTo(nnentityId) && signOnLocation.SetTo(nnsignOnLocation) && logoutLocation.SetTo(nnlogoutLocation))
 				{
 					NN<SAMLIdpConfig> cfg;
-					NEW_CLASSNN(cfg, SAMLIdpConfig(nnserviceDispName->ToCString(), nnsignOnLocation->ToCString(), nnlogoutLocation->ToCString(), encryptionCert, signingCert));
+					NEW_CLASSNN(cfg, SAMLIdpConfig(nnserviceDispName->ToCString(), nnentityId->ToCString(), nnsignOnLocation->ToCString(), nnlogoutLocation->ToCString(), encryptionCert, signingCert));
 					nnserviceDispName->Release();
+					nnentityId->Release();
 					nnsignOnLocation->Release();
 					nnlogoutLocation->Release();
 					stm.Delete();
 					return cfg;
 				}
 				OPTSTR_DEL(serviceDispName);
+				OPTSTR_DEL(entityId);
 				OPTSTR_DEL(signOnLocation);
 				OPTSTR_DEL(logoutLocation);
 				encryptionCert.Delete();
