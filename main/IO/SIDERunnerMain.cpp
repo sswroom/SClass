@@ -55,7 +55,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN logPath = CSTR("log");
 	Text::CString sideFile = 0;
 	Text::CStringNN s;
-	Bool headless = false;
+	IO::SeleniumIDERunner::RunOptions options;
 	Bool noPause = false;
 	UOSInt i;
 	Bool hasError = false;
@@ -156,15 +156,45 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				if (param.Equals(CSTR("false")))
 				{
-					headless = false;
+					options.headless = false;
 				}
 				else if (param.Equals(CSTR("true")))
 				{
-					headless = true;
+					options.headless = true;
 				}
 				else
 				{
-					headless = (param.ToInt32() != 0);
+					options.headless = (param.ToInt32() != 0);
+				}
+			}
+			else if (cmd.Equals(CSTR("--no-sandbox")))
+			{
+				if (param.Equals(CSTR("false")))
+				{
+					options.noSandbox = false;
+				}
+				else if (param.Equals(CSTR("true")))
+				{
+					options.noSandbox = true;
+				}
+				else
+				{
+					options.noSandbox = (param.ToInt32() != 0);
+				}
+			}
+			else if (cmd.Equals(CSTR("--disable-gpu")))
+			{
+				if (param.Equals(CSTR("false")))
+				{
+					options.disableGPU = false;
+				}
+				else if (param.Equals(CSTR("true")))
+				{
+					options.disableGPU = true;
+				}
+				else
+				{
+					options.disableGPU = (param.ToInt32() != 0);
 				}
 			}
 			else
@@ -281,7 +311,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					testIndex = 0;
 					while (side.GetTest(testIndex).SetTo(test))
 					{
-						if (runner.BeginTest(browser, mobile, 0, url, headless).SetTo(sess))
+						if (runner.BeginTest(browser, mobile, 0, url, options).SetTo(sess))
 						{
 							if (!runner.RunTest(sess, test, url, OnTestStep, &logStm))
 							{

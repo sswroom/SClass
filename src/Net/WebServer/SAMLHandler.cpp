@@ -27,8 +27,6 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 
 Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
-	UTF8Char sbuff[512];
-	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Cert::X509Cert> cert;
 	NN<Crypto::Cert::X509PrivKey> privKey;
 	NN<Text::String> metadataPath;
@@ -36,8 +34,6 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> 
 	NN<Text::String> logoutPath;
 	NN<Text::String> ssoPath;
 	NN<Text::String> serverHost;
-	NN<Text::String> s;
-	NN<Net::SAMLIdpConfig> idp;
 	if (this->initErr == SAMLInitError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey) && this->serverHost.SetTo(serverHost))
 	{
 		if (this->metadataPath.SetTo(metadataPath) && metadataPath->Equals(subReq.v, subReq.leng))
@@ -540,6 +536,7 @@ Bool Net::WebServer::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> r
 		resp->AddContentType(CSTR("application/samlmetadata+xml"));
 		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());
 	}
+	return false;
 }
 
 Text::CStringNN Net::WebServer::SAMLInitErrorGetName(SAMLInitError err)

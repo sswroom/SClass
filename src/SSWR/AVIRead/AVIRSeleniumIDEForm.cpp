@@ -46,12 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		}
 		me->statusList.MemFreeAll();
 		Text::CString mobile = 0;
-		if (me->chkTestMobile->IsChecked())
-		{
-			sb.ClearStr();
-			me->cboTestMobile->GetText(sb);
-			mobile = sb.ToCString();
-		}
+		IO::SeleniumIDERunner::RunOptions options;
 		IO::SeleniumIDERunner runner(me->core->GetTCPClientFactory(), port);
 		if (me->chkTestUserDataDir->IsChecked())
 		{
@@ -59,7 +54,16 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 			me->txtTestUserDataDir->GetText(sb);
 			runner.SetUserDataDir(sb.ToCString());
 		}
-		if (runner.Run(test, (IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, 0, Text::String::OrEmpty(me->side->GetURL())->ToCString(), false, OnStepStatus, me))
+		if (me->chkTestMobile->IsChecked())
+		{
+			sb.ClearStr();
+			me->cboTestMobile->GetText(sb);
+			mobile = sb.ToCString();
+		}
+		options.headless = me->chkTestHeadless->IsChecked();
+		options.disableGPU = me->chkTestDisableGPU->IsChecked();
+		options.noSandbox = me->chkTestNoSandbox->IsChecked();
+		if (runner.Run(test, (IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, 0, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options, OnStepStatus, me))
 		{
 			me->DisplayStatus();
 			me->ui->ShowMsgOK(CSTR("Test Run successfully"), CSTR("Selenium IDE"), me);
@@ -163,7 +167,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->lbTest->SetRect(0, 0, 150, 23, false);
 	this->lbTest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->pnlTestCtrl = ui->NewPanel(*this);
-	this->pnlTestCtrl->SetRect(0, 0, 100, 103, false);
+	this->pnlTestCtrl->SetRect(0, 0, 100, 127, false);
 	this->pnlTestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblTestPort = ui->NewLabel(this->pnlTestCtrl, CSTR("Port"));
 	this->lblTestPort->SetRect(4, 4, 100, 23, false);
@@ -192,13 +196,19 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->cboTestMobile->SetRect(104, 52, 150, 23, false);
 	IO::SeleniumIDERunner::FillMobileItemSelector(this->cboTestMobile);
 	this->cboTestMobile->SetText(CSTR("iPhone 14 Pro Max"));
+	this->btnTestRun = ui->NewButton(this->pnlTestCtrl, CSTR("Run Test"));
+	this->btnTestRun->SetRect(254, 52, 75, 23, false);
+	this->btnTestRun->HandleButtonClick(OnTestRunClicked, this);
 	this->chkTestUserDataDir = ui->NewCheckBox(this->pnlTestCtrl, CSTR("UserDataDir"), false);
 	this->chkTestUserDataDir->SetRect(4, 76, 100, 23, false);
 	this->txtTestUserDataDir = ui->NewTextBox(this->pnlTestCtrl, CSTR(""));
 	this->txtTestUserDataDir->SetRect(104, 76, 300, 23, false);
-	this->btnTestRun = ui->NewButton(this->pnlTestCtrl, CSTR("Run Test"));
-	this->btnTestRun->SetRect(254, 52, 75, 23, false);
-	this->btnTestRun->HandleButtonClick(OnTestRunClicked, this);
+	this->chkTestHeadless = ui->NewCheckBox(this->pnlTestCtrl, CSTR("Headless"), false);
+	this->chkTestHeadless->SetRect(4, 100, 120, 23, false);
+	this->chkTestDisableGPU = ui->NewCheckBox(this->pnlTestCtrl, CSTR("Disable GPU"), false);
+	this->chkTestDisableGPU->SetRect(124, 100, 120, 23, false);
+	this->chkTestNoSandbox = ui->NewCheckBox(this->pnlTestCtrl, CSTR("No Sandbox"), false);
+	this->chkTestNoSandbox->SetRect(244, 100, 120, 23, false);
 	this->tcTest = ui->NewTabControl(*this);
 	this->tcTest->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpCommand = this->tcTest->AddTabPage(CSTR("Commands"));

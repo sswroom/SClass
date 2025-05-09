@@ -33,6 +33,26 @@ namespace IO
 			PhantomJS
 		};
 
+		struct RunOptions
+		{
+			Bool headless;
+			Bool disableGPU;
+			Bool noSandbox;
+			Int64 scriptTimeout;
+			Int64 pageLoadTimeout;
+			Int64 implicitTimeout;
+
+			RunOptions()
+			{
+				this->headless = false;
+				this->disableGPU = false;
+				this->noSandbox = false;
+				this->scriptTimeout = 30000;
+				this->pageLoadTimeout = 30000;
+				this->implicitTimeout = 1000;
+			}
+		};
+
 		typedef void (__stdcall *StepStatusHandler)(AnyType userObj, UOSInt cmdIndex, Data::Duration dur);
 	private:
 		NN<Net::TCPClientFactory> clif;
@@ -43,19 +63,19 @@ namespace IO
 		Bool noPause;
 
 		Bool ErrorClient(NN<Net::WebDriverClient> cli, UOSInt currIndex);
-		static NN<Net::WebDriverBrowserOptions> CreateChromeOptions(Text::CString mobileDevice, Bool headless);
-		static NN<Net::WebDriverBrowserOptions> CreateMSEdgeOptions(Text::CString mobileDevice, Bool headless);
-		static NN<Net::WebDriverBrowserOptions> CreateFirefoxOptions(Text::CString mobileDevice, Bool headless);
-		static NN<Net::WebDriverBrowserOptions> CreateWebKitGTKOptions(Text::CString mobileDevice, Bool headless);
-		static NN<Net::WebDriverBrowserOptions> CreateOtherOptions(Text::CStringNN browserName);
-		static NN<Net::WebDriverBrowserOptions> CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice, Bool headless);
+		static NN<Net::WebDriverBrowserOptions> CreateChromeOptions(Text::CString mobileDevice, NN<RunOptions> options);
+		static NN<Net::WebDriverBrowserOptions> CreateMSEdgeOptions(Text::CString mobileDevice, NN<RunOptions> options);
+		static NN<Net::WebDriverBrowserOptions> CreateFirefoxOptions(Text::CString mobileDevice, NN<RunOptions> options);
+		static NN<Net::WebDriverBrowserOptions> CreateWebKitGTKOptions(Text::CString mobileDevice, NN<RunOptions> options);
+		static NN<Net::WebDriverBrowserOptions> CreateOtherOptions(Text::CStringNN browserName, NN<RunOptions> options);
+		static NN<Net::WebDriverBrowserOptions> CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice, NN<RunOptions> options);
 	public:
 		SeleniumIDERunner(NN<Net::TCPClientFactory> clif, UInt16 port);
 		~SeleniumIDERunner();
 
-		Optional<Net::WebDriverSession> BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless);
+		Optional<Net::WebDriverSession> BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, NN<RunOptions> options);
 		Bool RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumTest> test, Text::CStringNN url, StepStatusHandler statusHdlr, AnyType userObj);
-		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless, StepStatusHandler statusHdlr, AnyType userObj);
+		Bool Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, NN<RunOptions> options, StepStatusHandler statusHdlr, AnyType userObj);
 		void SetURL(Text::CStringNN url) { this->webdriverURL->Release(); this->webdriverURL = Text::String::New(url); }
 		void SetNoPause(Bool noPause) { this->noPause = noPause; }
 		void SetUserDataDir(Text::CStringNN userDataDir) { OPTSTR_DEL(this->userDataDir); this->userDataDir = Text::String::New(userDataDir); }

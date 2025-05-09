@@ -239,11 +239,11 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		cfg.ssoPath = sbSSOPath.ToCString();
 
 		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl, 0));
-		if (samlHdlr->GetInitError() != Net::WebServer::SAMLError::None)
+		if (samlHdlr->GetInitError() != Net::WebServer::SAMLInitError::None)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in initializing SAML: "));
-			sb.Append(Net::WebServer::SAMLErrorGetName(samlHdlr->GetInitError()));
+			sb.Append(Net::WebServer::SAMLInitErrorGetName(samlHdlr->GetInitError()));
 			me->ui->ShowMsgOK(sb.ToCString(), CSTR("SAML Test"), me);
 			samlHdlr.Delete();
 			return;

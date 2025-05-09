@@ -29,7 +29,7 @@ Bool IO::SeleniumIDERunner::ErrorClient(NN<Net::WebDriverClient> cli, UOSInt cur
 	return false;
 }
 
-NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateChromeOptions(Text::CString mobileDevice, Bool headless)
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateChromeOptions(Text::CString mobileDevice, NN<RunOptions> options)
 {
 	Text::CStringNN cstr;
 	NN<Net::WebDriverChromeOptions> browser;
@@ -40,12 +40,14 @@ NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateChromeOptions(Text
 		browser->SetMobileDeviceName(cstr);
 	browser->SetPageLoadStrategy(CSTR("normal"));
 	//browser->SetPlatformName(CSTR("ANY"));
-	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
-	if (headless) browser->AddArgs(CSTR("--headless"));
+	browser->SetTimeouts(timeouts->SetScript(options->scriptTimeout)->SetPageLoad(options->pageLoadTimeout)->SetImplicit(options->implicitTimeout));
+	if (options->headless) browser->AddArgs(CSTR("--headless"));
+	if (options->disableGPU) browser->AddArgs(CSTR("--disable-gpu"));
+	if (options->noSandbox) browser->AddArgs(CSTR("--no-sandbox"));
 	return browser;
 }
 
-NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateMSEdgeOptions(Text::CString mobileDevice, Bool headless)
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateMSEdgeOptions(Text::CString mobileDevice, NN<RunOptions> options)
 {
 	Text::CStringNN cstr;
 	NN<Net::WebDriverMSEdgeOptions> browser;
@@ -55,76 +57,77 @@ NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateMSEdgeOptions(Text
 	if (mobileDevice.SetTo(cstr))
 		browser->SetMobileDeviceName(cstr);
 	browser->SetPageLoadStrategy(CSTR("normal"));
-	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
-	if (headless) browser->AddArgs(CSTR("--headless"));
+	browser->SetTimeouts(timeouts->SetScript(options->scriptTimeout)->SetPageLoad(options->pageLoadTimeout)->SetImplicit(options->implicitTimeout));
+	if (options->headless) browser->AddArgs(CSTR("--headless"));
+	if (options->disableGPU) browser->AddArgs(CSTR("--disable-gpu"));
+	if (options->noSandbox) browser->AddArgs(CSTR("--no-sandbox"));
 	return browser;
 }
 
-NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateFirefoxOptions(Text::CString mobileDevice, Bool headless)
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateFirefoxOptions(Text::CString mobileDevice, NN<RunOptions> options)
 {
 	NN<Net::WebDriverFirefoxOptions> browser;
 	NN<Net::WebDriverTimeouts> timeouts;
 	NEW_CLASSNN(browser, Net::WebDriverFirefoxOptions());
 	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
 	browser->SetPageLoadStrategy(CSTR("normal"));
-	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
-	if (headless) browser->AddArgs(CSTR("--headless"));
+	browser->SetTimeouts(timeouts->SetScript(options->scriptTimeout)->SetPageLoad(options->pageLoadTimeout)->SetImplicit(options->implicitTimeout));
+	if (options->headless) browser->AddArgs(CSTR("--headless"));
 	return browser;
 }
 
-NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateWebKitGTKOptions(Text::CString mobileDevice, Bool headless)
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateWebKitGTKOptions(Text::CString mobileDevice, NN<RunOptions> options)
 {
 	NN<Net::WebDriverWebKitGTKOptions> browser;
 	NN<Net::WebDriverTimeouts> timeouts;
 	NEW_CLASSNN(browser, Net::WebDriverWebKitGTKOptions());
 	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
 	browser->SetPageLoadStrategy(CSTR("normal"));
-	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
-	if (headless) browser->AddArgs(CSTR("--headless"));
+	browser->SetTimeouts(timeouts->SetScript(options->scriptTimeout)->SetPageLoad(options->pageLoadTimeout)->SetImplicit(options->implicitTimeout));
+	if (options->headless) browser->AddArgs(CSTR("--headless"));
 	return browser;
 }
 
-NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateOtherOptions(Text::CStringNN browserName)
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateOtherOptions(Text::CStringNN browserName, NN<RunOptions> options)
 {
 	NN<Net::WebDriverW3CBrowserOptions> browser;
 	NN<Net::WebDriverTimeouts> timeouts;
 	NEW_CLASSNN(browser, Net::WebDriverW3CBrowserOptions(browserName));
 	NEW_CLASSNN(timeouts, Net::WebDriverTimeouts());
 	browser->SetPageLoadStrategy(CSTR("normal"));
-	browser->SetTimeouts(timeouts->SetScript(30000)->SetPageLoad(30000)->SetImplicit(5000));
+	browser->SetTimeouts(timeouts->SetScript(options->scriptTimeout)->SetPageLoad(options->pageLoadTimeout)->SetImplicit(options->implicitTimeout));
 	return browser;
 }
 
-NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice, Bool headless)
+NN<Net::WebDriverBrowserOptions> IO::SeleniumIDERunner::CreateBrowserOptions(BrowserType browserType, Text::CString mobileDevice, NN<RunOptions> options)
 {
 	switch (browserType)
 	{
 	case BrowserType::Chrome:
 	default:
-		return CreateChromeOptions(mobileDevice, headless);
+		return CreateChromeOptions(mobileDevice, options);
 	case BrowserType::MSEdge:
-		return CreateMSEdgeOptions(mobileDevice, headless);
-		break;
+		return CreateMSEdgeOptions(mobileDevice, options);
 	case BrowserType::Firefox:
-		return CreateFirefoxOptions(mobileDevice, headless);
+		return CreateFirefoxOptions(mobileDevice, options);
 	case BrowserType::HtmlUnit:
-		return CreateOtherOptions(CSTR("htmlunit"));
+		return CreateOtherOptions(CSTR("htmlunit"), options);
 	case BrowserType::InternetExplorer:
-		return CreateOtherOptions(CSTR("internet explorer"));
+		return CreateOtherOptions(CSTR("internet explorer"), options);
 	case BrowserType::IPad:
-		return CreateOtherOptions(CSTR("iPad"));
+		return CreateOtherOptions(CSTR("iPad"), options);
 	case BrowserType::IPhone:
-		return CreateOtherOptions(CSTR("iPhone"));
+		return CreateOtherOptions(CSTR("iPhone"), options);
 	case BrowserType::Opera:
-		return CreateOtherOptions(CSTR("opera"));
+		return CreateOtherOptions(CSTR("opera"), options);
 	case BrowserType::Safari:
-		return CreateOtherOptions(CSTR("safari"));
+		return CreateOtherOptions(CSTR("safari"), options);
 	case BrowserType::WebKitGTK:
-		return CreateWebKitGTKOptions(mobileDevice, headless);
+		return CreateWebKitGTKOptions(mobileDevice, options);
 	case BrowserType::Mock:
-		return CreateOtherOptions(CSTR("mock"));
+		return CreateOtherOptions(CSTR("mock"), options);
 	case BrowserType::PhantomJS:
-		return CreateOtherOptions(CSTR("phantomjs"));
+		return CreateOtherOptions(CSTR("phantomjs"), options);
 	}
 }
 
@@ -148,9 +151,9 @@ IO::SeleniumIDERunner::~SeleniumIDERunner()
 	this->webdriverURL->Release();
 }
 
-Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless)
+Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, NN<RunOptions> options)
 {
-	NN<Net::WebDriverBrowserOptions> browser = CreateBrowserOptions(browserType, mobileDevice, headless);
+	NN<Net::WebDriverBrowserOptions> browser = CreateBrowserOptions(browserType, mobileDevice, options);
 	NN<Text::String> s;
 	if (browserType == BrowserType::MSEdge && this->userDataDir.SetTo(s))
 	{
@@ -771,11 +774,11 @@ Bool IO::SeleniumIDERunner::RunTest(NN<Net::WebDriverSession> sess, NN<SeleniumT
 	return succ;
 }
 
-Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, Bool headless, StepStatusHandler statusHdlr, AnyType userObj)
+Bool IO::SeleniumIDERunner::Run(NN<SeleniumTest> test, BrowserType browserType, Text::CString mobileDevice, Optional<GPSPosition> location, Text::CStringNN url, NN<RunOptions> options, StepStatusHandler statusHdlr, AnyType userObj)
 {
 	Bool succ = false;
 	NN<Net::WebDriverSession> sess;
-	if (this->BeginTest(browserType, mobileDevice, location, url, headless).SetTo(sess))
+	if (this->BeginTest(browserType, mobileDevice, location, url, options).SetTo(sess))
 	{
 		succ = this->RunTest(sess, test, url, statusHdlr, userObj);
 		sess.Delete();
