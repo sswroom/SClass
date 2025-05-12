@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSAMLTESTFORM
 #define _SM_SSWR_AVIREAD_AVIRSAMLTESTFORM
 #include "Net/WebServer/SAMLHandler.h"
+#include "Net/WebServer/SAMLService.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/MutexUsage.h"
@@ -26,6 +27,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Net::WebServer::SAMLHandler> samlHdlr;
+			Optional<Net::WebServer::SAMLService> samlSvc;
 			Optional<Net::WebServer::WebListener> svr;
 			Optional<Crypto::Cert::X509Cert> sslCert;
 			Optional<Crypto::Cert::X509File> sslKey;
@@ -106,8 +108,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnIdpMetadataClicked(AnyType userObj);
 			static void __stdcall OnHashTypeChanged(AnyType userObj);
-			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CStringNN msg);
-			static Bool __stdcall OnLoginRequest(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<const Net::WebServer::SAMLMessage> msg);
+			static void __stdcall OnSSOResponse(AnyType userObj, NN<Net::SAMLSSOResponse> resp);
 			void ClearCACerts();
 			Optional<Crypto::Cert::X509Key> CreateSAMLKey();
 		public:

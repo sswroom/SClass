@@ -456,6 +456,11 @@ namespace Data
 			return this->inst.sec == 0 && this->tzQhr == 127;
 		}
 		
+		Bool NotNull() const
+		{
+			return this->inst.sec != 0 || this->tzQhr != 127;
+		}
+		
 		Bool SetAsComputerTime() const
 		{
 			return Data::DateTimeUtil::SetAsComputerTime(this->inst.sec, this->inst.nanosec);

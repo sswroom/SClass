@@ -74,7 +74,7 @@ void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::W
 	}
 	if (this->contentSecurityPolicy.SetTo(s))
 	{
-		resp->AddHeader(CSTR("content-security-policy"), s->ToCString());
+		resp->AddHeader(CSTR("Content-Security-Policy"), s->ToCString());
 	}
 }
 

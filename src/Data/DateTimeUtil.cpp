@@ -1414,6 +1414,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 	Text::PString strs[3];
 	UOSInt nStrs;
 	Bool succ = true;
+	outTzQhr.Set(defTzQhr);
 	if (dateStr.v[3] == ',' && Text::StrIndexOfChar(&dateStr.v[4], ',') == INVALID_INDEX)
 	{
 		dateStr = dateStr.Substring(4);
@@ -1506,6 +1507,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 			{
 				strs[2].v[strs[2].leng - 1] = 0;
 				strs[2].leng -= 1;
+				outTzQhr.Set(0);
 			}
 			TimeValueSetTime(tval, strs, nanosec);
 		}

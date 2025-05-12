@@ -1,11 +1,17 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509PubKey.h"
 #include "Data/Compress/Deflater.h"
+#include "Data/Compress/Inflater.h"
+#include "IO/MemoryReadingStream.h"
+#include "IO/MemoryStream.h"
+#include "Net/SAMLUtil.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/SAMLHandler.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
+#include "Text/XMLDOM.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
@@ -13,92 +19,6 @@
 // https://<host>/FederationMetadata/2007-06/FederationMetadata.xml
 // https://www.samltool.com/decrypt.php
 // https://support.f5.com/csp/article/K51854802
-
-Net::WebServer::SAMLHandler::~SAMLHandler()
-{
-	OPTSTR_DEL(this->serverHost);
-	OPTSTR_DEL(this->metadataPath);
-	OPTSTR_DEL(this->loginPath);
-	OPTSTR_DEL(this->logoutPath);
-	OPTSTR_DEL(this->ssoPath);
-	this->signCert.Delete();
-	this->signKey.Delete();
-}
-
-Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
-{
-	NN<Crypto::Cert::X509Cert> cert;
-	NN<Crypto::Cert::X509PrivKey> privKey;
-	NN<Text::String> metadataPath;
-	NN<Text::String> loginPath;
-	NN<Text::String> logoutPath;
-	NN<Text::String> ssoPath;
-	NN<Text::String> serverHost;
-	if (this->initErr == SAMLInitError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey) && this->serverHost.SetTo(serverHost))
-	{
-		if (this->metadataPath.SetTo(metadataPath) && metadataPath->Equals(subReq.v, subReq.leng))
-		{
-			if (!this->DoMetadataGet(req, resp))
-			{
-				resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
-			}
-			return true;
-		}
-		else if (this->ssoPath.SetTo(ssoPath) && ssoPath->Equals(subReq.v, subReq.leng))
-		{
-			Bool succ = false;
-			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
-			{
-				req->ParseHTTPForm();
-				NN<Text::String> s;
-				if (req->GetHTTPFormStr(CSTR("SAMLResponse")).SetTo(s))
-				{
-					Text::TextBinEnc::Base64Enc b64;
-					UInt8 *buff = MemAlloc(UInt8, s->leng + 1);
-					UOSInt buffSize;
-					buffSize = b64.DecodeBin(s->ToCString(), buff);
-					buff[buffSize] = 0;
-					if (this->rawRespHdlr)
-					{
-						this->rawRespHdlr(this->rawRespObj, Text::CStringNN(buff, buffSize));
-					}
-					if (this->loginHdlr)
-					{
-						SAMLMessage msg;
-						msg.rawMessage = Text::CString(buff, buffSize);
-						succ = this->loginHdlr(this->loginObj, req, resp, msg);
-					}
-					MemFree(buff);
-				}
-			}
-			if (!succ)
-			{
-				resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
-			}
-			return true;
-		}
-		else if (this->loginPath.SetTo(loginPath) && loginPath->Equals(subReq.v, subReq.leng))
-		{
-			return this->DoLoginGet(req, resp);
-		}
-		else if (this->logoutPath.SetTo(logoutPath) && logoutPath->Equals(subReq.v, subReq.leng))
-		{
-			return this->DoLogoutGet(req, resp, CSTR("id"));
-		}
-		//////////////////////////////////
-	}
-
-	if (this->DoRequest(req, resp, subReq))
-	{
-		return true;
-	}
-	NN<Net::WebServer::WebStandardHandler> defHdlr;
-	if (this->defHdlr.SetTo(defHdlr))
-	{
-		return defHdlr->ProcessRequest(req, resp, subReq);
-	}
-	return false;
-}
 
 void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
 {
@@ -170,10 +90,78 @@ void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> re
 	key.Delete();
 }
 
-Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, Optional<WebStandardHandler> defHdlr)
+Bool Net::WebServer::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
+{
+	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
+	UOSInt buffSize;
+	UInt8 signBuff[512];
+	UOSInt signSize;
+	NN<Net::SSLEngine> ssl;
+	NN<Crypto::Cert::X509PrivKey> privKey;
+	NN<Crypto::Cert::X509Key> key;
+	if (!this->signKey.SetTo(privKey) || !this->ssl.SetTo(ssl) || !privKey->CreateKey().SetTo(key))
+	{
+		return false;
+	}
+	if (!Data::Compress::Deflater::CompressDirect(Data::ByteArray(buff, reqContent.leng + 16), buffSize, reqContent.ToByteArray(), Data::Compress::Deflater::CompLevel::BestCompression, false))
+	{
+		MemFreeArr(buff);
+		printf("SAMLHandler: Error in compressing content\r\n");
+		key.Delete();
+		return false;
+	}
+	Text::TextBinEnc::Base64Enc b64;
+	Text::TextBinEnc::FormEncoding uri;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
+
+	sb.Append(CSTR("SAMLRequest="));
+	b64.EncodeBin(sb2, buff, buffSize);
+	uri.EncodeBin(sb, sb2.v, sb2.leng);
+
+	if (hashType == Crypto::Hash::HashType::SHA256)
+	{
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256"));
+	}
+	else if (hashType == Crypto::Hash::HashType::SHA384)
+	{
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha384"));
+	}
+	else if (hashType == Crypto::Hash::HashType::SHA512)
+	{
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha512"));
+	}
+	else
+	{
+		hashType = Crypto::Hash::HashType::SHA1;
+		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2000%2F09%2Fxmldsig%23rsa-sha1"));
+	}
+	MemFreeArr(buff);
+	if (ssl->Signature(key, hashType, sb.ToByteArray(), signBuff, signSize))
+	{
+		sb.Append(CSTR("&Signature="));
+		sb2.ClearStr();
+		b64.EncodeBin(sb2, signBuff, signSize);
+		uri.EncodeBin(sb, sb2.v, sb2.leng);
+		key.Delete();
+
+		sbOut->ClearStr();
+		sbOut->Append(url);
+		sbOut->AppendUTF8Char('?');
+		sbOut->Append(sb);
+		return true;
+	}
+	else
+	{
+		key.Delete();
+		printf("SAMLHandler: Error in Signature\r\n");
+		return false;
+	}
+}
+
+Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
 {
 	Text::CStringNN nns;
-	this->defHdlr = defHdlr;
 	this->ssl = ssl;
 	this->serverHost = 0;
 	this->metadataPath = 0;
@@ -182,10 +170,6 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->ssoPath = 0;
 	this->signCert = 0;
 	this->signKey = 0;
-	this->rawRespHdlr = 0;
-	this->rawRespObj = 0;
-	this->loginHdlr = 0;
-	this->loginObj = 0;
 	this->idp = 0;
 	this->hashType = Crypto::Hash::HashType::SHA1;
 	if (!cfg->serverHost.SetTo(nns) || nns.leng == 0)
@@ -258,6 +242,17 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->initErr = SAMLInitError::None;
 }
 
+Net::WebServer::SAMLHandler::~SAMLHandler()
+{
+	OPTSTR_DEL(this->serverHost);
+	OPTSTR_DEL(this->metadataPath);
+	OPTSTR_DEL(this->loginPath);
+	OPTSTR_DEL(this->logoutPath);
+	OPTSTR_DEL(this->ssoPath);
+	this->signCert.Delete();
+	this->signKey.Delete();
+}
+
 Net::WebServer::SAMLInitError Net::WebServer::SAMLHandler::GetInitError()
 {
 	return this->initErr;
@@ -319,18 +314,6 @@ Bool Net::WebServer::SAMLHandler::GetSSOURL(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-void Net::WebServer::SAMLHandler::HandleRAWSAMLResponse(SAMLStrFunc hdlr, AnyType userObj)
-{
-	this->rawRespHdlr = hdlr;
-	this->rawRespObj = userObj;
-}
-
-void Net::WebServer::SAMLHandler::HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj)
-{
-	this->loginHdlr = hdlr;
-	this->loginObj = userObj;
-}
-
 Optional<Crypto::Cert::X509PrivKey> Net::WebServer::SAMLHandler::GetKey()
 {
 	return this->signKey;
@@ -347,7 +330,7 @@ void Net::WebServer::SAMLHandler::SetHashType(Crypto::Hash::HashType hashType)
 	this->hashType = hashType;
 }
 
-Bool Net::WebServer::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+Bool Net::WebServer::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -392,18 +375,15 @@ Bool Net::WebServer::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req,
 		sb.Append(CSTR("<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"));
 		sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
 		sb.Append(CSTR("</samlp:AuthnRequest>"));
-
-		this->SendRedirect(req, resp, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType);
-		return true;
+		return BuildRedirectURL(sbOut, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType);
 	}
 	else
 	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		return true;
+		return false;
 	}
 }
 
-Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN nameID)
+Bool Net::WebServer::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN nameID)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -437,18 +417,77 @@ Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req
 		sb.Append(serverHost);
 		sb.Append(metadataPath);
 		sb.AppendUTF8Char('"');
-		sb.Append(CSTR(" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\">"));
+		sb.Append(CSTR(" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified\">"));
 		sb.Append(nameID);
 		sb.Append(CSTR("</saml:NameID>"));
 		sb.Append(CSTR("</samlp:LogoutRequest>"));
 
-		this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
-		return true;
+		return BuildRedirectURL(sbOut, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
 	}
 	else
 	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		return true;
+		return false;
+	}
+}
+
+Bool Net::WebServer::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+{
+	Text::StringBuilderUTF8 sb;
+	if (this->GetLoginMessageURL(sb))
+	{
+		return resp->RedirectURL(req, sb.ToCString(), 0);
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+	}
+}
+
+Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN nameID)
+{
+	if (req->GetQueryValue(CSTR("SAMLResponse")).NotNull())
+	{
+		NN<Net::SAMLLogoutResponse> msg = this->DoLogoutResp(req, resp);
+		NN<Text::String> s;
+		Text::StringBuilderUTF8 sb;
+		Text::StringBuilderUTF8 sb2;
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("<html><head><title>Logout Message</title></head><body>"));
+		sb.AppendC(UTF8STRC("<h1>Result</h1>"));
+		sb.AppendC(UTF8STRC("<font color=\"red\">Error:</font> "));
+		sb.Append(Net::SAMLLogoutResponse::ProcessErrorGetName(msg->GetError()));
+		sb.Append(CSTR("<br/>"));
+		sb.AppendC(UTF8STRC("<font color=\"red\">Error Message:</font> "));
+		sb.Append(msg->GetErrorMessage());
+		sb.Append(CSTR("<br/>"));
+		sb.Append(CSTR("<font color=\"red\">Status:</font> "));
+		sb.AppendOpt(msg->GetStatus());
+		sb.Append(CSTR("<br/>"));
+		if (msg->GetRawResponse().SetTo(s))
+		{
+			sb.AppendC(UTF8STRC("<hr/>"));
+			sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
+			IO::MemoryReadingStream mstm(s->ToByteArray());
+			Text::XMLReader::XMLWellFormat(this->encFact, mstm, 0, sb2);
+			s = Text::XML::ToNewHTMLTextXMLColor(sb2.v);
+			sb.Append(s);
+			s->Release();
+		}
+		sb.AppendC(UTF8STRC("</body></html>"));
+		msg.Delete();
+		resp->AddDefHeaders(req);
+		resp->AddCacheControl(0);
+		resp->AddContentType(CSTR("text/html"));
+		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sb.ToCString());
+	}
+	Text::StringBuilderUTF8 sb;
+	if (this->GetLogoutMessageURL(sb, nameID))
+	{
+		return resp->RedirectURL(req, sb.ToCString(), 0);
+	}
+	else
+	{
+		return resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	}
 }
 
@@ -531,12 +570,405 @@ Bool Net::WebServer::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> r
 		sb.AppendC(UTF8STRC("\" index=\"1\"/>"));
 		sb.AppendC(UTF8STRC("</md:SPSSODescriptor>"));
 		sb.AppendC(UTF8STRC("</md:EntityDescriptor>"));
-		this->AddResponseHeaders(req, resp);
+		resp->AddDefHeaders(req);
 		resp->AddCacheControl(0);
 		resp->AddContentType(CSTR("application/samlmetadata+xml"));
 		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());
 	}
 	return false;
+}
+
+NN<Net::SAMLSSOResponse> Net::WebServer::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+{
+	UTF8Char sbuff[64];
+	UnsafeArray<UTF8Char> sptr;
+	UOSInt i;
+	NN<Text::XMLAttrib> attr;
+	NN<Text::String> s;
+	NN<SAMLSSOResponse> saml;
+	NN<Net::SAMLIdpConfig> idp;
+	NN<Net::SSLEngine> ssl;
+	Data::Timestamp ts;
+	req->ParseHTTPForm();
+	Sync::MutexUsage mutUsage(this->idpMut);
+	if (!this->idp.SetTo(idp))
+	{
+		NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::IDPMissing, CSTR("Idp Config missing")));
+		return saml;
+	}
+	else if (!this->ssl.SetTo(ssl))
+	{
+		NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::IDPMissing, CSTR("SSL Engine missing")));
+		return saml;
+	}
+	else if (req->GetQueryValue(CSTR("SAMLResponse")).SetTo(s) || req->GetHTTPFormStr(CSTR("SAMLResponse")).SetTo(s))
+	{
+		Text::TextBinEnc::Base64Enc b64;
+		UnsafeArray<UInt8> buff = MemAllocArr(UInt8, s->leng);
+		UOSInt buffSize = b64.DecodeBin(s->ToCString(), buff);
+		buff[buffSize] = 0;
+		NN<Crypto::Cert::X509Key> key;
+		NN<Crypto::Cert::X509PrivKey> privKey;
+		if (!this->signKey.SetTo(privKey))
+		{
+			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::SignKeyMissing, CSTR("Sign Key not exists")));
+			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
+			MemFreeArr(buff);
+			return saml;
+		}
+		if (!privKey->CreateKey().SetTo(key))
+		{
+			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::SignKeyInvalid, CSTR("Sign Key is not Private Key")));
+			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
+			MemFreeArr(buff);
+			return saml;
+		}
+		Text::StringBuilderUTF8 sb;
+		Text::StringBuilderUTF8 sbTmp;
+		if (Net::SAMLUtil::DecryptResponse(ssl, this->encFact, key, Text::CStringNN(buff, buffSize), sb))
+		{
+			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::Success, CSTR("Decrypted")));
+			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
+			saml->SetDecResponse(sb.ToCString());
+			MemFreeArr(buff);
+			IO::MemoryReadingStream mstm(sb.ToByteArray());
+			Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
+			if (reader.NextElementName().SetTo(s) && s->Equals(CSTR("Assertion")))
+			{
+				i = reader.GetAttribCount();
+				while (i-- > 0)
+				{
+					attr = reader.GetAttribNoCheck(i);
+					if (attr->name.SetTo(s) && s->Equals(CSTR("ID")))
+					{
+						saml->SetId(OPTSTR_CSTR(attr->value));
+					}
+				}
+				while (reader.NextElementName().SetTo(s))
+				{
+					if (s->Equals(CSTR("Issuer")))
+					{
+						sbTmp.ClearStr();
+						reader.ReadNodeText(sbTmp);
+						saml->SetIssuer(sbTmp.ToCString());
+					}
+					else if (s->Equals(CSTR("Conditions")))
+					{
+						i = reader.GetAttribCount();
+						while (i-- > 0)
+						{
+							attr = reader.GetAttribNoCheck(i);
+							if (attr->name.SetTo(s) && s->Equals(CSTR("NotBefore")))
+							{
+								if (attr->value.SetTo(s) && !(ts = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())).IsNull())
+								{
+									saml->SetNotBefore(ts);
+								}
+								else
+								{
+									saml->SetError(SAMLSSOResponse::ResponseError::ResponseFormatError);
+									sbTmp.ClearStr();
+									sbTmp.Append(CSTR("NotBefore cannot be parsed into Timestamp: "))->AppendOpt(s);
+									saml->SetErrorMessage(sbTmp.ToCString());
+								}
+							}
+							else if (attr->name.SetTo(s) && s->Equals(CSTR("NotOnOrAfter")))
+							{
+								if (attr->value.SetTo(s) && !(ts = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr())).IsNull())
+								{
+									saml->SetNotOnOrAfter(ts);
+								}
+								else
+								{
+									saml->SetError(SAMLSSOResponse::ResponseError::ResponseFormatError);
+									sbTmp.ClearStr();
+									sbTmp.Append(CSTR("NotOnOrAfter cannot be parsed into Timestamp: "))->AppendOpt(s);
+									saml->SetErrorMessage(sbTmp.ToCString());
+								}
+							}
+						}
+						while (reader.NextElementName().SetTo(s))
+						{
+							if (s->Equals(CSTR("AudienceRestriction")))
+							{
+								while (reader.NextElementName().SetTo(s))
+								{
+									if (s->Equals(CSTR("Audience")))
+									{
+										sbTmp.ClearStr();
+										reader.ReadNodeText(sbTmp);
+										saml->SetAudience(sbTmp.ToCString());
+									}
+									else
+									{
+										reader.SkipElement();
+									}
+								}
+							}
+							else
+							{
+								reader.SkipElement();
+							}
+						}
+					}
+					else if (s->Equals(CSTR("AttributeStatement")))
+					{
+						while (reader.NextElementName().SetTo(s))
+						{
+							if (s->Equals(CSTR("Attribute")))
+							{
+								Optional<Text::String> attrName = 0;
+								i = reader.GetAttribCount();
+								while (i-- > 0)
+								{
+									attr = reader.GetAttribNoCheck(i);
+									if (attr->name.SetTo(s) && s->Equals(CSTR("Name")))
+									{
+										OPTSTR_DEL(attrName);
+										attrName = Text::String::CopyOrNull(attr->value);
+									}
+								}
+								while (reader.NextElementName().SetTo(s))
+								{
+									if (s->Equals(CSTR("AttributeValue")))
+									{
+										sbTmp.ClearStr();
+										reader.ReadNodeText(sbTmp);
+										if (attrName.SetTo(s))
+										{
+											if (s->Equals(CSTR("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")))
+											{
+												saml->SetName(sbTmp.ToCString());
+											}
+											else if (s->Equals(CSTR("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")))
+											{
+												saml->SetEmailAddress(sbTmp.ToCString());
+											}
+											else if (s->Equals(CSTR("http://schemas.xmlsoap.org/claims/EmailAddress")))
+											{
+												saml->SetEmailAddress(sbTmp.ToCString());
+											}
+											else if (s->Equals(CSTR("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname")))
+											{
+												saml->SetGivenname(sbTmp.ToCString());
+											}
+											else if (s->Equals(CSTR("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname")))
+											{
+												saml->SetSurname(sbTmp.ToCString());
+											}
+										}
+									}
+									else
+									{
+										reader.SkipElement();
+									}
+								}
+								OPTSTR_DEL(attrName);
+							}
+							else
+							{
+								reader.SkipElement();
+							}
+						}
+					}
+					else if (s->Equals(CSTR("Subject")))
+					{
+						while (reader.NextElementName().SetTo(s))
+						{
+							if (s->Equals(CSTR("NameID")))
+							{
+								sbTmp.ClearStr();
+								reader.ReadNodeText(sbTmp);
+								saml->SetNameID(sbTmp.ToCString());
+							}
+							else
+							{
+								reader.SkipElement();
+							}
+						}
+					}
+					else
+					{
+						reader.SkipElement();
+					}
+				}
+			}
+			if (saml->GetError() == SAMLSSOResponse::ResponseError::Success && saml->GetIssuer().SetTo(s) && !idp->GetEntityId()->Equals(s))
+			{
+				saml->SetError(SAMLSSOResponse::ResponseError::UnexpectedIssuer);
+				saml->SetErrorMessage(CSTR("Unexpected Issuer"));
+			}
+			if (saml->GetError() == SAMLSSOResponse::ResponseError::Success && saml->GetNotBefore().NotNull())
+			{
+				Data::Timestamp currTime = Data::Timestamp::Now();
+				if (currTime < saml->GetNotBefore())
+				{
+					saml->SetError(SAMLSSOResponse::ResponseError::TimeOutOfRange);
+					sbTmp.ClearStr();
+					sbTmp.Append(CSTR("Current time cannot be before "));
+					sptr = saml->GetNotBefore().ToString(sbuff);
+					sbTmp.AppendP(sbuff, sptr);
+					saml->SetErrorMessage(sbTmp.ToCString());
+				}
+			}
+			if (saml->GetError() == SAMLSSOResponse::ResponseError::Success && saml->GetNotOnOrAfter().NotNull())
+			{
+				Data::Timestamp currTime = Data::Timestamp::Now();
+				if (currTime >= saml->GetNotOnOrAfter())
+				{
+					saml->SetError(SAMLSSOResponse::ResponseError::TimeOutOfRange);
+					sbTmp.ClearStr();
+					sbTmp.Append(CSTR("Current time cannot be on or after "));
+					sptr = saml->GetNotOnOrAfter().ToString(sbuff);
+					sbTmp.AppendP(sbuff, sptr);
+					saml->SetErrorMessage(sbTmp.ToCString());
+				}
+			}
+			if (saml->GetError() == SAMLSSOResponse::ResponseError::Success && saml->GetAudience().SetTo(s))
+			{
+				sbTmp.ClearStr();
+				sbTmp.Append(CSTR("https://"));
+				sbTmp.AppendOpt(this->serverHost);
+				sbTmp.AppendOpt(this->metadataPath);
+				if (!s->Equals(sbTmp.ToCString()))
+				{
+					saml->SetError(SAMLSSOResponse::ResponseError::InvalidAudience);
+					saml->SetErrorMessage(CSTR("Invalid Audience"));
+				}
+			}
+			if (saml->GetError() == SAMLSSOResponse::ResponseError::Success && saml->GetNameID().IsNull() && saml->GetName().IsNull())
+			{
+				saml->SetError(SAMLSSOResponse::ResponseError::UsernameMissing);
+				saml->SetErrorMessage(CSTR("User name not found"));
+			}
+			return saml;
+		}
+		else
+		{
+			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::DecryptFailed, CSTR("Failed in decrypting response message")));
+			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
+			MemFreeArr(buff);
+			return saml;
+		}
+	}
+	else
+	{
+		NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::ResponseNotFound, CSTR("SAMLResponse not found")));
+		return saml;
+	}
+}
+
+NN<Net::SAMLLogoutResponse> Net::WebServer::SAMLHandler::DoLogoutResp(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+{
+	UTF8Char sbuff[4096];
+	UnsafeArray<UTF8Char> sptr;
+	NN<Net::SAMLIdpConfig> idp;
+	NN<Text::String> samlResponse;
+	NN<Text::String> signature;
+	NN<Text::String> sigAlg;
+	NN<Crypto::Cert::X509Cert> signCert;
+	NN<Net::SSLEngine> ssl;
+	NN<SAMLLogoutResponse> saml;
+
+	Sync::MutexUsage mutUsage(this->idpMut);
+	if (!this->idp.SetTo(idp))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::IDPMissing, CSTR("Idp Config missing")));
+		return saml;
+	}
+	else if (!this->ssl.SetTo(ssl))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SSLMissing, CSTR("SSL Engine missing")));
+		return saml;
+	}
+	else if (!idp->GetSigningCert().SetTo(signCert))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::IDPMissing, CSTR("Idp Config missing signature cert")));
+		return saml;
+	}
+
+	if (!req->GetQueryValue(CSTR("SAMLResponse")).SetTo(samlResponse))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("SAMLResponse param missing")));
+		return saml;
+	}
+	if (!req->GetQueryValue(CSTR("Signature")).SetTo(signature))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("Signature param missing")));
+		return saml;
+	}
+	if (!req->GetQueryValue(CSTR("SigAlg")).SetTo(sigAlg))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("SigAlg param missing")));
+		return saml;
+	}
+	Crypto::Hash::HashType hashType = Crypto::Hash::HashType::Unknown;
+	if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256")))
+	{
+		hashType = Crypto::Hash::HashType::SHA256;
+	}
+	else if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384")))
+	{
+		hashType = Crypto::Hash::HashType::SHA384;
+	}
+	else if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512")))
+	{
+		hashType = Crypto::Hash::HashType::SHA512;
+	}
+	else if (sigAlg->Equals(CSTR("http://www.w3.org/2000/09/xmldsig#rsa-sha1")))
+	{
+		hashType = Crypto::Hash::HashType::SHA1;
+	}
+	else
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("SigAlg not supported: "));
+		sb.Append(sigAlg);
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SigAlgNotSupported, sb.ToCString()));
+		return saml;
+	}
+	if (!req->GetQueryString(sbuff, sizeof(sbuff) - 1).SetTo(sptr))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in getting query string")));
+		return saml;
+	}
+	UOSInt i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&Signature="));
+	if (i == INVALID_INDEX)
+	{
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in searching for payload end")));
+		return saml;
+	}
+	hashType = Crypto::Hash::HashType::SHA256;
+	Text::TextBinEnc::Base64Enc b64;
+	UnsafeArray<UInt8> signBuff = MemAllocArr(UInt8, signature->leng);
+	UOSInt signSize = b64.DecodeBin(signature->ToCString(), signBuff);
+	NN<Crypto::Cert::X509Key> key;
+	if (!signCert->GetNewPublicKey().SetTo(key))
+	{
+		MemFreeArr(signBuff);
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::KeyError, CSTR("Error in extracting public key from cert")));
+		return saml;
+	}
+	if (!ssl->SignatureVerify(key, hashType, Data::ByteArrayR(sbuff, i), Data::ByteArrayR(signBuff, signSize)))
+	{
+		MemFreeArr(signBuff);
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SignatureInvalid, CSTR("Signature Invalid")));
+		return saml;
+
+	}
+	MemFreeArr(signBuff);
+
+	UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, samlResponse->leng);
+	UOSInt dataSize = b64.DecodeBin(samlResponse->ToCString(), dataBuff);
+	IO::MemoryStream mstm;
+	{
+		Data::Compress::Inflater inflater(mstm, false);
+		inflater.WriteCont(dataBuff, dataSize);
+	}
+	NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::Success, CSTR("Decompressed")));
+	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()));
+	MemFreeArr(dataBuff);
+	return saml;
 }
 
 Text::CStringNN Net::WebServer::SAMLInitErrorGetName(SAMLInitError err)

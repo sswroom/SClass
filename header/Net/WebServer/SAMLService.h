@@ -10,14 +10,12 @@ namespace Net
 		class SAMLService : public Net::WebServer::WebServiceHandler
 		{
 		public:
-			typedef void (CALLBACKFUNC SAMLStrFunc)(AnyType userObj, Text::CStringNN msg);
-			typedef Bool (CALLBACKFUNC SAMLLoginFunc)(AnyType userObj, NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, NN<const SAMLMessage> msg);
+			typedef void (CALLBACKFUNC SAMLRespFunc)(AnyType userObj, NN<SAMLSSOResponse> resp);
 		private:
 			NN<SAMLHandler> hdlr;
-			SAMLStrFunc rawRespHdlr;
-			AnyType rawRespObj;
-			SAMLLoginFunc loginHdlr;
-			AnyType loginObj;
+			SAMLRespFunc respHdlr;
+			AnyType respObj;
+			Text::EncodingFactory encFact;
 
 			static Bool __stdcall GetLoginFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 			static Bool __stdcall GetLogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
@@ -27,8 +25,7 @@ namespace Net
 			SAMLService(NN<SAMLHandler> hdlr);
 			virtual ~SAMLService();
 
-			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, AnyType userObj);
-			void HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj);
+			void HandleSAMLResponse(SAMLRespFunc hdlr, AnyType userObj);
 		};
 	}
 }
