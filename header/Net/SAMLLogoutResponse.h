@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SAMLLOGOUTRESPONSE
 #define _SM_NET_SAMLLOGOUTRESPONSE
 #include "Data/Timestamp.h"
+#include "Net/SAMLStatusCode.h"
 #include "Text/String.h"
 
 namespace Net
@@ -18,12 +19,13 @@ namespace Net
 			QueryStringError,
 			KeyError,
 			SignatureInvalid,
-			MessageInvalid
+			MessageInvalid,
+			StatusError
 		};
 	private:
 		ProcessError error;
 		NN<Text::String> errorMessage;
-		Optional<Text::String> status;
+		SAMLStatusCode status;
 		Optional<Text::String> rawResponse;
 
 	public:
@@ -34,8 +36,8 @@ namespace Net
 		void SetError(ProcessError error) { this->error = error; }
 		NN<Text::String> GetErrorMessage() const { return this->errorMessage; }
 		void SetErrorMessage(Text::CStringNN errorMessage) { this->errorMessage->Release(); this->errorMessage = Text::String::New(errorMessage); }
-		Optional<Text::String> GetStatus() const { return this->status; }
-		void SetStatus(Text::CString status) { OPTSTR_DEL(this->status); this->status = Text::String::NewOrNull(status); }
+		SAMLStatusCode GetStatus() const { return this->status; }
+		void SetStatus(SAMLStatusCode status) { this->status = status; }
 		Optional<Text::String> GetRawResponse() const { return this->rawResponse; }
 		void SetRawResponse(Text::CString rawResponse) { OPTSTR_DEL(this->rawResponse); this->rawResponse = Text::String::NewOrNull(rawResponse); }
 

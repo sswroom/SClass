@@ -28,6 +28,7 @@ namespace Net
 		Optional<Text::String> rawResponse;
 		Optional<Text::String> decResponse;
 		Optional<Text::String> id;
+		Optional<Text::String> sessionIndex;
 		Optional<Text::String> issuer;
 		Optional<Text::String> audience;
 		Data::Timestamp notBefore;
@@ -52,6 +53,8 @@ namespace Net
 		void SetDecResponse(Text::CString decResponse) { OPTSTR_DEL(this->decResponse); this->decResponse = Text::String::NewOrNull(decResponse); }
 		Optional<Text::String> GetId() const { return this->id; }
 		void SetId(Text::CString id) { OPTSTR_DEL(this->id); this->id = Text::String::NewOrNull(id); }
+		Optional<Text::String> GetSessionIndex() const { return this->sessionIndex; }
+		void SetSessionIndex(Text::CString sessionIndex) { OPTSTR_DEL(this->sessionIndex); this->sessionIndex = Text::String::NewOrNull(sessionIndex); }
 		Optional<Text::String> GetIssuer() const { return this->issuer; }
 		void SetIssuer(Text::CString issuer) { OPTSTR_DEL(this->issuer); this->issuer = Text::String::NewOrNull(issuer); }
 		Optional<Text::String> GetAudience() const { return this->audience; }

@@ -4,9 +4,9 @@
 #include "Data/Compress/Inflater.h"
 #include "IO/MemoryReadingStream.h"
 #include "IO/MemoryStream.h"
+#include "Net/SAMLHandler.h"
 #include "Net/SAMLUtil.h"
 #include "Net/WebServer/HTTPServerUtil.h"
-#include "Net/WebServer/SAMLHandler.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
@@ -20,7 +20,7 @@
 // https://www.samltool.com/decrypt.php
 // https://support.f5.com/csp/article/K51854802
 
-void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
+void Net::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
 {
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
 	UOSInt buffSize;
@@ -90,7 +90,7 @@ void Net::WebServer::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> re
 	key.Delete();
 }
 
-Bool Net::WebServer::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
+Bool Net::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
 {
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
 	UOSInt buffSize;
@@ -159,7 +159,7 @@ Bool Net::WebServer::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> s
 	}
 }
 
-Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
+Net::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
 {
 	Text::CStringNN nns;
 	this->ssl = ssl;
@@ -242,7 +242,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 	this->initErr = SAMLInitError::None;
 }
 
-Net::WebServer::SAMLHandler::~SAMLHandler()
+Net::SAMLHandler::~SAMLHandler()
 {
 	OPTSTR_DEL(this->serverHost);
 	OPTSTR_DEL(this->metadataPath);
@@ -253,12 +253,12 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 	this->signKey.Delete();
 }
 
-Net::WebServer::SAMLInitError Net::WebServer::SAMLHandler::GetInitError()
+Net::SAMLInitError Net::SAMLHandler::GetInitError()
 {
 	return this->initErr;
 }
 
-Bool Net::WebServer::SAMLHandler::GetLoginURL(NN<Text::StringBuilderUTF8> sb)
+Bool Net::SAMLHandler::GetLoginURL(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::String> serverHost;
 	NN<Text::String> loginPath;
@@ -272,7 +272,7 @@ Bool Net::WebServer::SAMLHandler::GetLoginURL(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetLogoutURL(NN<Text::StringBuilderUTF8> sb)
+Bool Net::SAMLHandler::GetLogoutURL(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::String> serverHost;
 	NN<Text::String> logoutPath;
@@ -286,7 +286,7 @@ Bool Net::WebServer::SAMLHandler::GetLogoutURL(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetMetadataURL(NN<Text::StringBuilderUTF8> sb)
+Bool Net::SAMLHandler::GetMetadataURL(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::String> serverHost;
 	NN<Text::String> metadataPath;
@@ -300,7 +300,7 @@ Bool Net::WebServer::SAMLHandler::GetMetadataURL(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetSSOURL(NN<Text::StringBuilderUTF8> sb)
+Bool Net::SAMLHandler::GetSSOURL(NN<Text::StringBuilderUTF8> sb)
 {
 	NN<Text::String> serverHost;
 	NN<Text::String> ssoPath;
@@ -314,23 +314,23 @@ Bool Net::WebServer::SAMLHandler::GetSSOURL(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Optional<Crypto::Cert::X509PrivKey> Net::WebServer::SAMLHandler::GetKey()
+Optional<Crypto::Cert::X509PrivKey> Net::SAMLHandler::GetKey()
 {
 	return this->signKey;
 }
 
-void Net::WebServer::SAMLHandler::SetIdp(NN<Net::SAMLIdpConfig> idp)
+void Net::SAMLHandler::SetIdp(NN<Net::SAMLIdpConfig> idp)
 {
 	Sync::MutexUsage mutUsage(this->idpMut);
 	this->idp = idp;
 }
 
-void Net::WebServer::SAMLHandler::SetHashType(Crypto::Hash::HashType hashType)
+void Net::SAMLHandler::SetHashType(Crypto::Hash::HashType hashType)
 {
 	this->hashType = hashType;
 }
 
-Bool Net::WebServer::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
+Bool Net::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -383,13 +383,14 @@ Bool Net::WebServer::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8>
 	}
 }
 
-Bool Net::WebServer::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN nameID)
+Bool Net::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sbOut, Text::CString nameID, Text::CString sessionId)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> metadataPath;
 	NN<Text::String> serverHost;
 	NN<Net::SAMLIdpConfig> idp;
+	Text::CStringNN s;
 	Sync::MutexUsage mutUsage(this->idpMut);
 	if (this->idp.SetTo(idp) && this->serverHost.SetTo(serverHost) && this->metadataPath.SetTo(metadataPath))
 	{
@@ -413,13 +414,22 @@ Bool Net::WebServer::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8
 		sb.Append(serverHost);
 		sb.Append(metadataPath);
 		sb.Append(CSTR("</saml:Issuer>"));
-		sb.Append(CSTR("<saml:NameID SPNameQualifier=\"https://"));
-		sb.Append(serverHost);
-		sb.Append(metadataPath);
-		sb.AppendUTF8Char('"');
-		sb.Append(CSTR(" Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified\">"));
-		sb.Append(nameID);
-		sb.Append(CSTR("</saml:NameID>"));
+		if (nameID.SetTo(s) && s.leng > 0)
+		{
+			sb.Append(CSTR("<saml:NameID>"));
+			sb.Append(s);
+			sb.Append(CSTR("</saml:NameID>"));
+		}
+		else
+		{
+			sb.Append(CSTR("<saml:NameID/>"));
+		}
+		if (sessionId.SetTo(s))
+		{
+			sb.Append(CSTR("<samlp:SessionIndex>"));
+			sb.Append(s);
+			sb.Append(CSTR("</samlp:SessionIndex>"));
+		}
 		sb.Append(CSTR("</samlp:LogoutRequest>"));
 
 		return BuildRedirectURL(sbOut, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
@@ -430,7 +440,7 @@ Bool Net::WebServer::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8
 	}
 }
 
-Bool Net::WebServer::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+Bool Net::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetLoginMessageURL(sb))
@@ -443,7 +453,7 @@ Bool Net::WebServer::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req,
 	}
 }
 
-Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN nameID)
+Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CString nameID, Text::CString sessionId)
 {
 	if (req->GetQueryValue(CSTR("SAMLResponse")).NotNull())
 	{
@@ -461,7 +471,7 @@ Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req
 		sb.Append(msg->GetErrorMessage());
 		sb.Append(CSTR("<br/>"));
 		sb.Append(CSTR("<font color=\"red\">Status:</font> "));
-		sb.AppendOpt(msg->GetStatus());
+		sb.Append(Net::SAMLStatusCodeGetName(msg->GetStatus()));
 		sb.Append(CSTR("<br/>"));
 		if (msg->GetRawResponse().SetTo(s))
 		{
@@ -481,7 +491,7 @@ Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req
 		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sb.ToCString());
 	}
 	Text::StringBuilderUTF8 sb;
-	if (this->GetLogoutMessageURL(sb, nameID))
+	if (this->GetLogoutMessageURL(sb, nameID, sessionId))
 	{
 		return resp->RedirectURL(req, sb.ToCString(), 0);
 	}
@@ -491,7 +501,7 @@ Bool Net::WebServer::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req
 	}
 }
 
-Bool Net::WebServer::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+Bool Net::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -537,11 +547,11 @@ Bool Net::WebServer::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> r
 		sb.AppendC(UTF8STRC("</ds:X509Data>"));
 		sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
 		sb.AppendC(UTF8STRC("</md:KeyDescriptor>"));
-		sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
+		sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://"));
 		sb.Append(serverHost);
 		sb.Append(logoutPath);
 		sb.AppendC(UTF8STRC("\"/>"));
-		sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://"));
+		sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
 		sb.Append(serverHost);
 		sb.Append(logoutPath);
 		sb.AppendC(UTF8STRC("\"/>"));
@@ -578,7 +588,7 @@ Bool Net::WebServer::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> r
 	return false;
 }
 
-NN<Net::SAMLSSOResponse> Net::WebServer::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<UTF8Char> sptr;
@@ -627,6 +637,7 @@ NN<Net::SAMLSSOResponse> Net::WebServer::SAMLHandler::DoSSOPost(NN<Net::WebServe
 		Text::StringBuilderUTF8 sbTmp;
 		if (Net::SAMLUtil::DecryptResponse(ssl, this->encFact, key, Text::CStringNN(buff, buffSize), sb))
 		{
+			key.Delete();
 			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::Success, CSTR("Decrypted")));
 			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
 			saml->SetDecResponse(sb.ToCString());
@@ -787,6 +798,19 @@ NN<Net::SAMLSSOResponse> Net::WebServer::SAMLHandler::DoSSOPost(NN<Net::WebServe
 							}
 						}
 					}
+					else if (s->Equals(CSTR("AuthnStatement")))
+					{
+						i = reader.GetAttribCount();
+						while (i-- > 0)
+						{
+							attr = reader.GetAttribNoCheck(i);
+							if (attr->name.SetTo(s) && s->Equals(CSTR("SessionIndex")))
+							{
+								saml->SetSessionIndex(OPTSTR_CSTR(attr->value));
+							}
+						}
+						reader.SkipElement();
+					}
 					else
 					{
 						reader.SkipElement();
@@ -845,6 +869,7 @@ NN<Net::SAMLSSOResponse> Net::WebServer::SAMLHandler::DoSSOPost(NN<Net::WebServe
 		}
 		else
 		{
+			key.Delete();
 			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::DecryptFailed, CSTR("Failed in decrypting response message")));
 			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
 			MemFreeArr(buff);
@@ -858,7 +883,7 @@ NN<Net::SAMLSSOResponse> Net::WebServer::SAMLHandler::DoSSOPost(NN<Net::WebServe
 	}
 }
 
-NN<Net::SAMLLogoutResponse> Net::WebServer::SAMLHandler::DoLogoutResp(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+NN<Net::SAMLLogoutResponse> Net::SAMLHandler::DoLogoutResp(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	UTF8Char sbuff[4096];
 	UnsafeArray<UTF8Char> sptr;
@@ -938,7 +963,12 @@ NN<Net::SAMLLogoutResponse> Net::WebServer::SAMLHandler::DoLogoutResp(NN<Net::We
 		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in searching for payload end")));
 		return saml;
 	}
-	hashType = Crypto::Hash::HashType::SHA256;
+	UOSInt j = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&SigAlg="));
+	if (j != INVALID_INDEX && j > i)
+	{
+		MemCopyO(&sbuff[i], &sbuff[j], (UOSInt)(sptr - &sbuff[j]));
+		i += (UOSInt)(sptr - &sbuff[j]);
+	}
 	Text::TextBinEnc::Base64Enc b64;
 	UnsafeArray<UInt8> signBuff = MemAllocArr(UInt8, signature->leng);
 	UOSInt signSize = b64.DecodeBin(signature->ToCString(), signBuff);
@@ -952,11 +982,13 @@ NN<Net::SAMLLogoutResponse> Net::WebServer::SAMLHandler::DoLogoutResp(NN<Net::We
 	if (!ssl->SignatureVerify(key, hashType, Data::ByteArrayR(sbuff, i), Data::ByteArrayR(signBuff, signSize)))
 	{
 		MemFreeArr(signBuff);
+		key.Delete();
 		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SignatureInvalid, CSTR("Signature Invalid")));
 		return saml;
 
 	}
 	MemFreeArr(signBuff);
+	key.Delete();
 
 	UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, samlResponse->leng);
 	UOSInt dataSize = b64.DecodeBin(samlResponse->ToCString(), dataBuff);
@@ -967,11 +999,55 @@ NN<Net::SAMLLogoutResponse> Net::WebServer::SAMLHandler::DoLogoutResp(NN<Net::We
 	}
 	NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::Success, CSTR("Decompressed")));
 	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()));
+
+	mstm.SeekFromBeginning(0);
+	{
+		NN<Text::XMLAttrib> attr;
+		Text::CStringNN cs;
+		NN<Text::String> s;
+		Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
+		if (reader.NextElementName2().SetTo(cs) && cs.Equals(CSTR("LogoutResponse")))
+		{
+			while (reader.NextElementName2().SetTo(cs))
+			{
+				if (cs.Equals(CSTR("Status")))
+				{
+					while (reader.NextElementName2().SetTo(cs))
+					{
+						if (cs.Equals(CSTR("StatusCode")))
+						{
+							i = reader.GetAttribCount();
+							while (i-- > 0)
+							{
+								attr = reader.GetAttribNoCheck(i);
+								if (attr->name.SetTo(s) && s->Equals(CSTR("Value")))
+								{
+									if (attr->value.SetTo(s))
+									{
+										saml->SetStatus(Net::SAMLStatusCodeFromString(s->ToCString()));
+									}
+								}
+							}
+						}
+						reader.SkipElement();
+					}
+				}
+				else
+				{
+					reader.SkipElement();
+				}
+			}
+		}
+	}
 	MemFreeArr(dataBuff);
+	if (saml->GetStatus() != Net::SAMLStatusCode::Success)
+	{
+		saml->SetError(Net::SAMLLogoutResponse::ProcessError::StatusError);
+	}
 	return saml;
 }
 
-Text::CStringNN Net::WebServer::SAMLInitErrorGetName(SAMLInitError err)
+Text::CStringNN Net::SAMLInitErrorGetName(SAMLInitError err)
 {
 	switch (err)
 	{

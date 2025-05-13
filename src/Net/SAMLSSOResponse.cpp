@@ -8,6 +8,7 @@ Net::SAMLSSOResponse::SAMLSSOResponse(ResponseError error, Text::CStringNN error
 	this->rawResponse = 0;
 	this->decResponse = 0;
 	this->id = 0;
+	this->sessionIndex = 0;
 	this->issuer = 0;
 	this->audience = 0;
 	this->notBefore = 0;
@@ -25,6 +26,7 @@ Net::SAMLSSOResponse::~SAMLSSOResponse()
 	OPTSTR_DEL(this->rawResponse);
 	OPTSTR_DEL(this->decResponse);
 	OPTSTR_DEL(this->id);
+	OPTSTR_DEL(this->sessionIndex);
 	OPTSTR_DEL(this->issuer);
 	OPTSTR_DEL(this->audience);
 	OPTSTR_DEL(this->nameID);

@@ -67,6 +67,7 @@ namespace Text
 		Bool ReadNodeText(NN<Text::StringBuilderUTF8> sb);
 //		Bool NextElement();
 		Optional<Text::String> NextElementName();
+		Text::CString NextElementName2();
 		Bool SkipElement();
 		Bool IsElementEmpty() const;
 		Bool IsComplete() const;

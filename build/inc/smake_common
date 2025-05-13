@@ -3324,12 +3324,16 @@ Net/RTPVSource.h:
 @RTPVSource.o
 Net/RTSPClient.h:
 @RTSPClient.o
+Net/SAMLHandler.h:
+@SAMLHandler.o
 Net/SAMLIdpConfig.h:
 @SAMLIdpConfig.o
 Net/SAMLLogoutResponse.h:
 @SAMLLogoutResponse.o
 Net/SAMLSSOResponse.h:
 @SAMLSSOResponse.o
+Net/SAMLStatusCode.h:
+@SAMLStatusCode.o
 Net/SAMLUtil.h:
 @SAMLUtil.o
 Net/SDPData.h:
@@ -3550,8 +3554,6 @@ Net/WebServer/PrintLogWebResponse.h:
 @PrintLogWebResponse.o
 Net/WebServer/RESTfulHandler.h:
 @RESTfulHandler.o
-Net/WebServer/SAMLHandler.h:
-@SAMLHandler.o
 Net/WebServer/SAMLService.h:
 @SAMLService.o
 Net/WebServer/SiteRootHandler.h:

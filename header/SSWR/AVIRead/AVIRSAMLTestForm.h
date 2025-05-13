@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRSAMLTESTFORM
 #define _SM_SSWR_AVIREAD_AVIRSAMLTESTFORM
-#include "Net/WebServer/SAMLHandler.h"
+#include "Net/SAMLHandler.h"
 #include "Net/WebServer/SAMLService.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -26,7 +26,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Optional<Net::WebServer::SAMLHandler> samlHdlr;
+			Optional<Net::SAMLHandler> samlHdlr;
 			Optional<Net::WebServer::SAMLService> samlSvc;
 			Optional<Net::WebServer::WebListener> svr;
 			Optional<Crypto::Cert::X509Cert> sslCert;

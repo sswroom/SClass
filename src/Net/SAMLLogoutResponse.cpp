@@ -6,14 +6,13 @@ Net::SAMLLogoutResponse::SAMLLogoutResponse(ProcessError error, Text::CStringNN 
 	this->error = error;
 	this->errorMessage = Text::String::New(errorMessage);
 	this->rawResponse = 0;
-	this->status = 0;
+	this->status = SAMLStatusCode::Unknown;
 }
 
 Net::SAMLLogoutResponse::~SAMLLogoutResponse()
 {
 	this->errorMessage->Release();
 	OPTSTR_DEL(this->rawResponse);
-	OPTSTR_DEL(this->status);
 }
 
 Text::CStringNN Net::SAMLLogoutResponse::ProcessErrorGetName(ProcessError val)
@@ -38,6 +37,8 @@ Text::CStringNN Net::SAMLLogoutResponse::ProcessErrorGetName(ProcessError val)
 		return CSTR("SignatureInvalid");
 	case ProcessError::MessageInvalid:
 		return CSTR("MessageInvalid");
+	case ProcessError::StatusError:
+		return CSTR("StatusError");
 	default:
 		return CSTR("Unknown");
 	}

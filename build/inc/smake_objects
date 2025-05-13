@@ -1439,9 +1439,11 @@ RTPH264Handler.o: ../../src/Net/RTPH264Handler.cpp
 RTPSvrChannel.o: ../../src/Net/RTPSvrChannel.cpp
 RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
+SAMLHandler.o: ../../src/Net/SAMLHandler.cpp
 SAMLIdpConfig.o: ../../src/Net/SAMLIdpConfig.cpp
 SAMLLogoutResponse.o: ../../src/Net/SAMLLogoutResponse.cpp
 SAMLSSOResponse.o: ../../src/Net/SAMLSSOResponse.cpp
+SAMLStatusCode.o: ../../src/Net/SAMLStatusCode.cpp
 SAMLUtil.o: ../../src/Net/SAMLUtil.cpp
 SDPFile.o: ../../src/Net/SDPFile.cpp
 SMSGatewaySmartone.o: ../../src/Net/SMSGatewaySmartone.cpp
@@ -1576,7 +1578,6 @@ OAuth2Handler.o: ../../src/Net/WebServer/OAuth2Handler.cpp
 PrintLogWebHandler.o: ../../src/Net/WebServer/PrintLogWebHandler.cpp
 PrintLogWebResponse.o: ../../src/Net/WebServer/PrintLogWebResponse.cpp
 RESTfulHandler.o: ../../src/Net/WebServer/RESTfulHandler.cpp
-SAMLHandler.o: ../../src/Net/WebServer/SAMLHandler.cpp
 SAMLService.o: ../../src/Net/WebServer/SAMLService.cpp
 SiteRootHandler.o: ../../src/Net/WebServer/SiteRootHandler.cpp
 WebConnection.o: ../../src/Net/WebServer/WebConnection.cpp

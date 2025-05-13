@@ -18,13 +18,18 @@ Bool __stdcall Net::WebServer::SAMLService::GetLoginFunc(NN<Net::WebServer::WebR
 Bool __stdcall Net::WebServer::SAMLService::GetLogoutFunc(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
 	NN<SAMLService> me = NN<SAMLService>::ConvertFrom(svcHdlr);
-	Text::CStringNN nameID = CSTR("id");
+	Text::CString nameID = 0;
+	Text::CString sessionIndex = 0;
 	NN<Text::String> s;
 	if (req->GetQueryValue(CSTR("nameID")).SetTo(s))
 	{
 		nameID = s->ToCString();
 	}
-	if (!me->hdlr->DoLogoutGet(req, resp, nameID))
+	if (req->GetQueryValue(CSTR("sessionIndex")).SetTo(s))
+	{
+		sessionIndex = s->ToCString();
+	}
+	if (!me->hdlr->DoLogoutGet(req, resp, nameID, sessionIndex))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
 	}
@@ -46,6 +51,12 @@ Bool __stdcall Net::WebServer::SAMLService::PostSSOFunc(NN<Net::WebServer::WebRe
 	sb.Append(CSTR("<br/>"));
 	sb.AppendC(UTF8STRC("<font color=\"red\">Error Message:</font> "));
 	sb.Append(res->GetErrorMessage());
+	sb.Append(CSTR("<br/>"));
+	sb.AppendC(UTF8STRC("<font color=\"red\">Id:</font> "));
+	sb.AppendOpt(res->GetId());
+	sb.Append(CSTR("<br/>"));
+	sb.AppendC(UTF8STRC("<font color=\"red\">SessionIndex:</font> "));
+	sb.AppendOpt(res->GetSessionIndex());
 	sb.Append(CSTR("<br/>"));
 	sb.Append(CSTR("<font color=\"red\">NameID:</font> "));
 	sb.AppendOpt(res->GetNameID());
@@ -78,6 +89,7 @@ Bool __stdcall Net::WebServer::SAMLService::PostSSOFunc(NN<Net::WebServer::WebRe
 	{
 		sb.AppendC(UTF8STRC("<hr/>"));
 		sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
+		sb2.ClearStr();
 		IO::MemoryReadingStream mstm(s->ToByteArray());
 		Text::XMLReader::XMLWellFormat(me->encFact, mstm, 0, sb2);
 		s = Text::XML::ToNewHTMLTextXMLColor(sb2.v);
@@ -112,6 +124,7 @@ Net::WebServer::SAMLService::SAMLService(NN<SAMLHandler> hdlr)
 
 	this->AddService(Text::String::OrEmpty(hdlr->GetLoginPath())->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, GetLoginFunc);
 	this->AddService(Text::String::OrEmpty(hdlr->GetLogoutPath())->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, GetLogoutFunc);
+	this->AddService(Text::String::OrEmpty(hdlr->GetLogoutPath())->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, GetLogoutFunc);
 	this->AddService(Text::String::OrEmpty(hdlr->GetMetadataPath())->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, GetMetadataFunc);
 	this->AddService(Text::String::OrEmpty(hdlr->GetSSOPath())->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, PostSSOFunc);
 }

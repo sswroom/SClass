@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_SAMLSERVICE
 #define _SM_NET_WEBSERVER_SAMLSERVICE
-#include "Net/WebServer/SAMLHandler.h"
+#include "Net/SAMLHandler.h"
 #include "Net/WebServer/WebServiceHandler.h"
 
 namespace Net

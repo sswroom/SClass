@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnSSLCertClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
-	NN<Net::WebServer::SAMLHandler> samlHdlr;
+	NN<Net::SAMLHandler> samlHdlr;
 	NN<Net::WebServer::SAMLService> samlSvc;
 	NN<Net::WebServer::WebListener> svr;
 	if (me->svr.NotNull())
@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 	
 	if (port > 0 && port < 65535)
 	{
-		Net::WebServer::SAMLConfig cfg;
+		Net::SAMLConfig cfg;
 		sb.ClearStr();
 		me->txtHost->GetText(sb);
 		if (sb.GetLength() == 0)
@@ -240,13 +240,13 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 		}
 		cfg.ssoPath = sbSSOPath.ToCString();
 
-		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl));
+		NEW_CLASSNN(samlHdlr, Net::SAMLHandler(cfg, ssl));
 		
-		if (samlHdlr->GetInitError() != Net::WebServer::SAMLInitError::None)
+		if (samlHdlr->GetInitError() != Net::SAMLInitError::None)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in initializing SAML: "));
-			sb.Append(Net::WebServer::SAMLInitErrorGetName(samlHdlr->GetInitError()));
+			sb.Append(Net::SAMLInitErrorGetName(samlHdlr->GetInitError()));
 			me->ui->ShowMsgOK(sb.ToCString(), CSTR("SAML Test"), me);
 			samlHdlr.Delete();
 			return;
@@ -371,7 +371,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnIdpMetadataClicked(AnyType use
 	Text::StringBuilderUTF8 sb;
 	me->txtIdpMetadata->GetText(sb);
 	NN<Net::SAMLIdpConfig> cfg;
-	NN<Net::WebServer::SAMLHandler> samlHdlr;
+	NN<Net::SAMLHandler> samlHdlr;
 	if (sb.leng > 0 && Net::SAMLIdpConfig::ParseMetadata(me->core->GetTCPClientFactory(), me->ssl, me->core->GetEncFactory(), sb.ToCString()).SetTo(cfg))
 	{
 		me->samlCfg.Delete();
@@ -409,7 +409,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnIdpMetadataClicked(AnyType use
 void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnHashTypeChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSAMLTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLTestForm>();
-	NN<Net::WebServer::SAMLHandler> samlHdlr;
+	NN<Net::SAMLHandler> samlHdlr;
 	if (me->samlHdlr.SetTo(samlHdlr))
 	{
 		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetOSInt());
@@ -435,7 +435,7 @@ void SSWR::AVIRead::AVIRSAMLTestForm::ClearCACerts()
 
 Optional<Crypto::Cert::X509Key> SSWR::AVIRead::AVIRSAMLTestForm::CreateSAMLKey()
 {
-	NN<Net::WebServer::SAMLHandler> samlHdlr;
+	NN<Net::SAMLHandler> samlHdlr;
 	if (!this->samlHdlr.SetTo(samlHdlr))
 		return 0;
 	NN<Crypto::Cert::X509PrivKey> key;
@@ -493,7 +493,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->cboHashType->AddItem(CSTR("SHA-256"), (void*)Crypto::Hash::HashType::SHA256);
 	this->cboHashType->AddItem(CSTR("SHA-384"), (void*)Crypto::Hash::HashType::SHA384);
 	this->cboHashType->AddItem(CSTR("SHA-512"), (void*)Crypto::Hash::HashType::SHA512);
-	this->cboHashType->SetSelectedIndex(0);
+	this->cboHashType->SetSelectedIndex(1);
 	this->cboHashType->HandleSelectionChange(OnHashTypeChanged, this);
 	this->lblSSOPath = ui->NewLabel(this->tpControl, CSTR("SSO Path"));
 	this->lblSSOPath->SetRect(4, 148, 100, 23, false);

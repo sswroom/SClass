@@ -5,8 +5,9 @@
 #include "IO/StmData/FileData.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
+#include "Net/SAMLHandler.h"
 #include "Net/WebServer/PrintLogWebHandler.h"
-#include "Net/WebServer/SAMLHandler.h"
+#include "Net/WebServer/SAMLService.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebServiceHandler.h"
 #include "Parser/FileParser/X509Parser.h"
@@ -18,20 +19,6 @@
 Optional<Net::SSLEngine> ssl;
 Bool initSucc;
 NN<Net::WebServer::PrintLogWebHandler> logHdlr;
-
-class MyADFSService : public Net::WebServer::WebServiceHandler
-{
-public:
-	MyADFSService()
-	{
-
-	}
-
-	virtual ~MyADFSService()
-	{
-
-	}
-};
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
@@ -114,18 +101,18 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	if (initSucc)
 	{
-		MyADFSService *svcHdlr;
-		NN<Net::WebServer::SAMLHandler> samlHdlr;
-		Net::WebServer::SAMLConfig cfg;
+		NN<Net::SAMLHandler> samlHdlr;
+		NN<Net::WebServer::SAMLService> samlService;
+		Net::SAMLConfig cfg;
 		cfg.serverHost = CSTRP(sbuff5, sptr5);
 		cfg.metadataPath = CSTR("/saml/metadata");
 		cfg.logoutPath = CSTR("/saml/SingleLogout");
 		cfg.ssoPath = CSTR("/saml/SSO");
 		cfg.signCertPath = CSTRP(sbuff3, sptr3);
 		cfg.signKeyPath = CSTRP(sbuff4, sptr4);
-		NEW_CLASS(svcHdlr, MyADFSService());
-		NEW_CLASSNN(samlHdlr, Net::WebServer::SAMLHandler(cfg, ssl, svcHdlr));
-		NEW_CLASSNN(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, console));
+		NEW_CLASSNN(samlHdlr, Net::SAMLHandler(cfg, ssl));
+		NEW_CLASSNN(samlService, Net::WebServer::SAMLService(samlHdlr));
+		NEW_CLASSNN(logHdlr, Net::WebServer::PrintLogWebHandler(samlService, console));
 		Net::WebServer::WebListener listener(clif, ssl, logHdlr, PORTNUM, 120, 1, 4, CSTR("ADFSTest/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (listener.IsError())
 		{
@@ -138,7 +125,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Server stopping"));
 		}
 		logHdlr.Delete();
-		DEL_CLASS(svcHdlr);
 	}
 	ssl.Delete();
 	return 0;
