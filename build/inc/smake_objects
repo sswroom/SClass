@@ -1441,6 +1441,7 @@ RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
 SAMLHandler.o: ../../src/Net/SAMLHandler.cpp
 SAMLIdpConfig.o: ../../src/Net/SAMLIdpConfig.cpp
+SAMLLogoutRequest.o: ../../src/Net/SAMLLogoutRequest.cpp
 SAMLLogoutResponse.o: ../../src/Net/SAMLLogoutResponse.cpp
 SAMLSSOResponse.o: ../../src/Net/SAMLSSOResponse.cpp
 SAMLStatusCode.o: ../../src/Net/SAMLStatusCode.cpp

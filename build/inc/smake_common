@@ -3328,6 +3328,8 @@ Net/SAMLHandler.h:
 @SAMLHandler.o
 Net/SAMLIdpConfig.h:
 @SAMLIdpConfig.o
+Net/SAMLLogoutRequest.h:
+@SAMLLogoutRequest.o
 Net/SAMLLogoutResponse.h:
 @SAMLLogoutResponse.o
 Net/SAMLSSOResponse.h:

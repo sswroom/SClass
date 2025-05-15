@@ -3,6 +3,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Net/SAMLIdpConfig.h"
+#include "Net/SAMLLogoutRequest.h"
 #include "Net/SAMLLogoutResponse.h"
 #include "Net/SAMLSSOResponse.h"
 #include "Net/SSLEngine.h"
@@ -35,6 +36,19 @@ namespace Net
 		SignKey
 	};
 
+	enum class SAMLSignError
+	{
+		Valid,
+		SignatureInvalid,
+		CertMissing,
+		SignatureMissing,
+		SigAlgMissing,
+		SigAlgNotSupported,
+		QueryStringGetError,
+		QueryStringSearchError,
+		KeyError
+	};
+
 	class SAMLHandler
 	{
 	private:
@@ -55,6 +69,9 @@ namespace Net
 	protected:
 		void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType);
 		Bool BuildRedirectURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType);
+		static SAMLSignError VerifyHTTPRedirect(NN<Net::SSLEngine> ssl, NN<SAMLIdpConfig> idp, NN<Net::WebServer::WebRequest> req);
+		void ParseSAMLLogoutResponse(NN<SAMLLogoutResponse> saml, NN<IO::Stream> stm);
+		void ParseSAMLLogoutRequest(NN<SAMLLogoutRequest> saml, NN<IO::Stream> stm);
 
 	public:
 		SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl);
@@ -75,11 +92,14 @@ namespace Net
 
 		Bool GetLoginMessageURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sb, Text::CString nameID, Text::CString sessionId);
+		Bool GetLogoutResponse(NN<Text::StringBuilderUTF8> sb, Text::CStringNN id, SAMLStatusCode status);
+		Bool GetMetadataXML(NN<Text::StringBuilderUTF8> sb);
 		Bool DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		Bool DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CString nameID, Text::CString sessionId);
 		Bool DoMetadataGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		NN<Net::SAMLSSOResponse> DoSSOPost(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 		NN<Net::SAMLLogoutResponse> DoLogoutResp(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
+		NN<Net::SAMLLogoutRequest> DoLogoutReq(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp);
 	};
 	Text::CStringNN SAMLInitErrorGetName(SAMLInitError err);
 }

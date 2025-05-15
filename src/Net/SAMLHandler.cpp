@@ -159,6 +159,222 @@ Bool Net::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text:
 	}
 }
 
+Net::SAMLSignError Net::SAMLHandler::VerifyHTTPRedirect(NN<Net::SSLEngine> ssl, NN<SAMLIdpConfig> idp, NN<Net::WebServer::WebRequest> req)
+{
+	UTF8Char sbuff[4096];
+	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> signature;
+	NN<Text::String> sigAlg;
+	NN<Crypto::Cert::X509Cert> signCert;
+
+	if (!idp->GetSigningCert().SetTo(signCert))
+	{
+		return SAMLSignError::CertMissing;
+	}
+	if (!req->GetQueryValue(CSTR("Signature")).SetTo(signature))
+	{
+		return SAMLSignError::SignatureMissing;
+	}
+	if (!req->GetQueryValue(CSTR("SigAlg")).SetTo(sigAlg))
+	{
+		return SAMLSignError::SigAlgMissing;
+	}
+	Crypto::Hash::HashType hashType = Crypto::Hash::HashType::Unknown;
+	if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256")))
+	{
+		hashType = Crypto::Hash::HashType::SHA256;
+	}
+	else if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384")))
+	{
+		hashType = Crypto::Hash::HashType::SHA384;
+	}
+	else if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512")))
+	{
+		hashType = Crypto::Hash::HashType::SHA512;
+	}
+	else if (sigAlg->Equals(CSTR("http://www.w3.org/2000/09/xmldsig#rsa-sha1")))
+	{
+		hashType = Crypto::Hash::HashType::SHA1;
+	}
+	else
+	{
+		return SAMLSignError::SigAlgNotSupported;
+	}
+	if (!req->GetQueryString(sbuff, sizeof(sbuff) - 1).SetTo(sptr))
+	{
+		return SAMLSignError::QueryStringGetError;
+	}
+	UOSInt i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&Signature="));
+	if (i == INVALID_INDEX)
+	{
+		return SAMLSignError::QueryStringSearchError;
+	}
+	UOSInt j = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&SigAlg="));
+	if (j != INVALID_INDEX && j > i)
+	{
+		MemCopyO(&sbuff[i], &sbuff[j], (UOSInt)(sptr - &sbuff[j]));
+		i += (UOSInt)(sptr - &sbuff[j]);
+	}
+	Text::TextBinEnc::Base64Enc b64;
+	UnsafeArray<UInt8> signBuff = MemAllocArr(UInt8, signature->leng);
+	UOSInt signSize = b64.DecodeBin(signature->ToCString(), signBuff);
+	NN<Crypto::Cert::X509Key> key;
+	if (!signCert->GetNewPublicKey().SetTo(key))
+	{
+		MemFreeArr(signBuff);
+		return SAMLSignError::KeyError;
+	}
+	if (!ssl->SignatureVerify(key, hashType, Data::ByteArrayR(sbuff, i), Data::ByteArrayR(signBuff, signSize)))
+	{
+		MemFreeArr(signBuff);
+		key.Delete();
+		return SAMLSignError::SignatureInvalid;
+	}
+	MemFreeArr(signBuff);
+	key.Delete();
+	return SAMLSignError::Valid;
+}
+
+void Net::SAMLHandler::ParseSAMLLogoutResponse(NN<SAMLLogoutResponse> saml, NN<IO::Stream> stm)
+{
+	NN<Text::XMLAttrib> attr;
+	Text::CStringNN cs;
+	NN<Text::String> s;
+	UOSInt i;
+	Text::XMLReader reader(this->encFact, stm, Text::XMLReader::PM_XML);
+	if (reader.NextElementName2().SetTo(cs) && cs.Equals(CSTR("LogoutResponse")))
+	{
+		while (reader.NextElementName2().SetTo(cs))
+		{
+			if (cs.Equals(CSTR("Status")))
+			{
+				while (reader.NextElementName2().SetTo(cs))
+				{
+					if (cs.Equals(CSTR("StatusCode")))
+					{
+						i = reader.GetAttribCount();
+						while (i-- > 0)
+						{
+							attr = reader.GetAttribNoCheck(i);
+							if (attr->name.SetTo(s) && s->Equals(CSTR("Value")))
+							{
+								if (attr->value.SetTo(s))
+								{
+									saml->SetStatus(Net::SAMLStatusCodeFromString(s->ToCString()));
+								}
+							}
+						}
+					}
+					reader.SkipElement();
+				}
+			}
+			else
+			{
+				reader.SkipElement();
+			}
+		}
+	}
+	else
+	{
+		saml->SetError(Net::SAMLLogoutResponse::ProcessError::MessageInvalid);
+		saml->SetErrorMessage(CSTR("XML element is not LogoutResponse"));
+	}
+}
+
+void Net::SAMLHandler::ParseSAMLLogoutRequest(NN<SAMLLogoutRequest> saml, NN<IO::Stream> stm)
+{
+	NN<Text::XMLAttrib> attr;
+	Text::CStringNN cs;
+	NN<Text::String> s;
+	UOSInt i;
+	Text::XMLReader reader(this->encFact, stm, Text::XMLReader::PM_XML);
+	if (reader.NextElementName2().SetTo(cs) && cs.Equals(CSTR("LogoutRequest")))
+	{
+		Text::StringBuilderUTF8 sb;
+		i = reader.GetAttribCount();
+		while (i-- > 0)
+		{
+			attr = reader.GetAttribNoCheck(i);
+			if (attr->name.SetTo(s))
+			{
+				if (s->Equals(CSTR("ID")))
+				{
+					saml->SetID(OPTSTR_CSTR(attr->value));
+				}
+				else if (s->Equals(CSTR("Destination")))
+				{
+					if (attr->value.SetTo(s))
+					{
+						sb.ClearStr();
+						sb.Append(CSTR("https://"));
+						sb.AppendOpt(this->serverHost);
+						sb.AppendOpt(this->logoutPath);
+						if (!sb.Equals(s))
+						{
+							saml->SetError(Net::SAMLLogoutRequest::ProcessError::DestinationInvalid);
+							sb.ClearStr();
+							sb.Append(CSTR("Destination is not valid: "));
+							sb.Append(s);
+							saml->SetErrorMessage(sb.ToCString());
+							return;
+						}
+					}
+				}
+				else if (s->Equals(CSTR("NotOnOrAfter")))
+				{
+					Data::Timestamp notOnOrAfter = Data::Timestamp::FromStr(Text::String::OrEmpty(attr->value)->ToCString(), 0);
+					if (!notOnOrAfter.IsNull() && Data::Timestamp::UtcNow() >= notOnOrAfter)
+					{
+						saml->SetError(Net::SAMLLogoutRequest::ProcessError::TimeInvalid);
+						saml->SetErrorMessage(CSTR("Current time is >= NotOnOrAfter"));
+						return;
+					}
+				}
+			}
+		}
+		while (reader.NextElementName2().SetTo(cs))
+		{
+			if (cs.Equals(CSTR("Issuer")))
+			{
+				sb.ClearStr();
+				reader.ReadNodeText(sb);
+				Sync::MutexUsage mutUsage(this->idpMut);
+				NN<Net::SAMLIdpConfig> idp;
+				if (this->idp.SetTo(idp))
+				{
+					if (!idp->GetEntityId()->Equals(sb.ToCString()))
+					{
+						saml->SetError(Net::SAMLLogoutRequest::ProcessError::IssuerInvalid);
+						saml->SetErrorMessage(CSTR("Issuer is not same as IDP"));
+						return;
+					}
+				}
+			}
+			else if (cs.Equals(CSTR("NameID")))
+			{
+				sb.ClearStr();
+				reader.ReadNodeText(sb);
+				saml->SetNameID(sb.ToCString());
+			}
+			else if (cs.Equals(CSTR("SessionIndex")))
+			{
+				sb.ClearStr();
+				reader.ReadNodeText(sb);
+				saml->AddSessionIndex(sb.ToCString());
+			}
+			else
+			{
+				reader.SkipElement();
+			}
+		}
+	}
+	else
+	{
+		saml->SetError(Net::SAMLLogoutRequest::ProcessError::MessageInvalid);
+		saml->SetErrorMessage(CSTR("XML element is not LogoutRequest"));
+	}
+}
+
 Net::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
 {
 	Text::CStringNN nns;
@@ -440,6 +656,127 @@ Bool Net::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sbOut, Te
 	}
 }
 
+Bool Net::SAMLHandler::GetMetadataXML(NN<Text::StringBuilderUTF8> sb)
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	NN<Crypto::Cert::X509Cert> cert;
+	NN<Text::String> metadataPath;
+	NN<Text::String> logoutPath;
+	NN<Text::String> ssoPath;
+	NN<Text::String> serverHost;
+	if (this->logoutPath.SetTo(logoutPath) && this->ssoPath.SetTo(ssoPath) && this->metadataPath.SetTo(metadataPath) && this->signCert.SetTo(cert) && this->serverHost.SetTo(serverHost))
+	{
+		Text::TextBinEnc::Base64Enc b64;
+		sb->AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
+		sb->AppendC(UTF8STRC("<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" ID=\""));
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
+		sptr = serverHost->ConcatTo(sptr);
+		sptr = metadataPath->ConcatTo(sptr);
+		Text::StrReplace(sbuff, ':', '_');
+		Text::StrReplace(sbuff, '/', '_');
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(UTF8STRC("\" entityID=\""));
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
+		sptr = serverHost->ConcatTo(sptr);
+		sptr = metadataPath->ConcatTo(sptr);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		sb->AppendC(UTF8STRC("\">"));
+		sb->AppendC(UTF8STRC("<md:SPSSODescriptor AuthnRequestsSigned=\"true\" WantAssertionsSigned=\"true\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">"));
+		sb->AppendC(UTF8STRC("<md:KeyDescriptor use=\"signing\">"));
+		sb->AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
+		sb->AppendC(UTF8STRC("<ds:X509Data>"));
+		sb->AppendC(UTF8STRC("<ds:X509Certificate>"));
+		b64.EncodeBin(sb, cert->GetASN1Buff(), cert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
+		sb->AppendC(UTF8STRC("</ds:X509Certificate>"));
+		sb->AppendC(UTF8STRC("</ds:X509Data>"));
+		sb->AppendC(UTF8STRC("</ds:KeyInfo>"));
+		sb->AppendC(UTF8STRC("</md:KeyDescriptor>"));
+		sb->AppendC(UTF8STRC("<md:KeyDescriptor use=\"encryption\">"));
+		sb->AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
+		sb->AppendC(UTF8STRC("<ds:X509Data>"));
+		sb->AppendC(UTF8STRC("<ds:X509Certificate>"));
+		b64.EncodeBin(sb, cert->GetASN1Buff(), cert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
+		sb->AppendC(UTF8STRC("</ds:X509Certificate>"));
+		sb->AppendC(UTF8STRC("</ds:X509Data>"));
+		sb->AppendC(UTF8STRC("</ds:KeyInfo>"));
+		sb->AppendC(UTF8STRC("</md:KeyDescriptor>"));
+		sb->AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://"));
+		sb->Append(serverHost);
+		sb->Append(logoutPath);
+		sb->AppendC(UTF8STRC("\"/>"));
+		sb->AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
+		sb->Append(serverHost);
+		sb->Append(logoutPath);
+		sb->AppendC(UTF8STRC("\"/>"));
+		sb->AppendC(UTF8STRC("<md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"));
+		sb->AppendC(UTF8STRC("</md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("<md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("urn:oasis:names:tc:SAML:2.0:nameid-format:transient"));
+		sb->AppendC(UTF8STRC("</md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("<md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"));
+		sb->AppendC(UTF8STRC("</md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("<md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"));
+		sb->AppendC(UTF8STRC("</md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("<md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"));
+		sb->AppendC(UTF8STRC("</md:NameIDFormat>"));
+		sb->AppendC(UTF8STRC("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
+		sb->Append(serverHost);
+		sb->Append(ssoPath);
+		sb->AppendC(UTF8STRC("\" index=\"0\" isDefault=\"true\"/>"));
+		sb->AppendC(UTF8STRC("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact\" Location=\"https://"));
+		sb->Append(serverHost);
+		sb->Append(ssoPath);
+		sb->AppendC(UTF8STRC("\" index=\"1\"/>"));
+		sb->AppendC(UTF8STRC("</md:SPSSODescriptor>"));
+		sb->AppendC(UTF8STRC("</md:EntityDescriptor>"));
+		return true;
+	}
+	return false;
+}
+
+Bool Net::SAMLHandler::GetLogoutResponse(NN<Text::StringBuilderUTF8> sb, Text::CStringNN id, SAMLStatusCode status)
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	NN<Text::String> metadataPath;
+	NN<Text::String> serverHost;
+	if (this->serverHost.SetTo(serverHost) && this->metadataPath.SetTo(metadataPath))
+	{
+		Data::Timestamp currTime = Data::Timestamp::UtcNow();
+		sb->Append(CSTR("<samlp:LogoutResponse"));
+		sb->Append(CSTR(" ID=\"SAML_"));
+		sb->AppendI64(currTime.GetLocalSecs());
+		sb->AppendU32(currTime.inst.nanosec);
+		sb->AppendUTF8Char('"');
+		sb->Append(CSTR(" Version=\"2.0\""));
+		sb->Append(CSTR(" IssueInstant=\""));
+		sptr = Data::Timestamp(Data::TimeInstant(currTime.inst.sec, 0), 0).ToStringISO8601(sbuff);
+		sb->AppendP(sbuff, sptr);
+		sb->AppendUTF8Char('"');
+		sb->Append(CSTR(" InResponseTo=\""));
+		sb->Append(id);
+		sb->AppendUTF8Char('"');
+		sb->Append(CSTR(" xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns=\"urn:oasis:names:tc:SAML:2.0:assertion\">"));
+		sb->Append(CSTR("<Issuer>https://"));
+		sb->Append(serverHost);
+		sb->Append(metadataPath);
+		sb->Append(CSTR("</Issuer>"));
+		sb->Append(CSTR("<samlp:Status>"));
+    	sb->Append(CSTR("<samlp:StatusCode Value=\""));
+		sb->Append(SAMLStatusCodeGetString(status));
+		sb->Append(CSTR("\" />"));
+		sb->Append(CSTR("</samlp:Status>"));
+		sb->Append(CSTR("</samlp:LogoutResponse>"));
+		return true;
+	}
+	return false;
+}
+
 Bool Net::SAMLHandler::DoLoginGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
 	Text::StringBuilderUTF8 sb;
@@ -462,7 +799,7 @@ Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::W
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sb2;
 		sb.ClearStr();
-		sb.AppendC(UTF8STRC("<html><head><title>Logout Message</title></head><body>"));
+		sb.AppendC(UTF8STRC("<html><head><title>Logout Response</title></head><body>"));
 		sb.AppendC(UTF8STRC("<h1>Result</h1>"));
 		sb.AppendC(UTF8STRC("<font color=\"red\">Error:</font> "));
 		sb.Append(Net::SAMLLogoutResponse::ProcessErrorGetName(msg->GetError()));
@@ -472,6 +809,55 @@ Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::W
 		sb.Append(CSTR("<br/>"));
 		sb.Append(CSTR("<font color=\"red\">Status:</font> "));
 		sb.Append(Net::SAMLStatusCodeGetName(msg->GetStatus()));
+		sb.Append(CSTR("<br/>"));
+		if (msg->GetRawResponse().SetTo(s))
+		{
+			sb.AppendC(UTF8STRC("<hr/>"));
+			sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
+			IO::MemoryReadingStream mstm(s->ToByteArray());
+			Text::XMLReader::XMLWellFormat(this->encFact, mstm, 0, sb2);
+			s = Text::XML::ToNewHTMLTextXMLColor(sb2.v);
+			sb.Append(s);
+			s->Release();
+		}
+		sb.AppendC(UTF8STRC("</body></html>"));
+		msg.Delete();
+		resp->AddDefHeaders(req);
+		resp->AddCacheControl(0);
+		resp->AddContentType(CSTR("text/html"));
+		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sb.ToCString());
+	}
+	else if (req->GetQueryValue(CSTR("SAMLRequest")).NotNull())
+	{
+		NN<SAMLLogoutRequest> msg = this->DoLogoutReq(req, resp);
+		NN<Text::String> s;
+		Text::StringBuilderUTF8 sb;
+		Text::StringBuilderUTF8 sb2;
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("<html><head><title>Logout Response</title></head><body>"));
+		sb.AppendC(UTF8STRC("<h1>Result</h1>"));
+		sb.AppendC(UTF8STRC("<font color=\"red\">Error:</font> "));
+		sb.Append(Net::SAMLLogoutRequest::ProcessErrorGetName(msg->GetError()));
+		sb.Append(CSTR("<br/>"));
+		sb.AppendC(UTF8STRC("<font color=\"red\">Error Message:</font> "));
+		sb.Append(msg->GetErrorMessage());
+		sb.Append(CSTR("<br/>"));
+		sb.Append(CSTR("<font color=\"red\">ID:</font> "));
+		sb.AppendOpt(msg->GetID());
+		sb.Append(CSTR("<br/>"));
+		sb.Append(CSTR("<font color=\"red\">NameID:</font> "));
+		sb.AppendOpt(msg->GetNameID());
+		sb.Append(CSTR("<br/>"));
+		sb.Append(CSTR("<font color=\"red\">SessionIndex:</font> "));
+		NN<const Data::ArrayListStringNN> sessionIndex = msg->GetSessionIndex();
+		UOSInt i = 0;
+		UOSInt j = sessionIndex->GetCount();
+		while (i < j)
+		{
+			if (i > 0) sb.Append(CSTR("<br/>"));
+			sb.Append(sessionIndex->GetItemNoCheck(i));
+			i++;
+		}
 		sb.Append(CSTR("<br/>"));
 		if (msg->GetRawResponse().SetTo(s))
 		{
@@ -503,83 +889,9 @@ Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::W
 
 Bool Net::SAMLHandler::DoMetadataGet(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	UTF8Char sbuff[512];
-	UnsafeArray<UTF8Char> sptr;
-	NN<Crypto::Cert::X509Cert> cert;
-	NN<Text::String> metadataPath;
-	NN<Text::String> logoutPath;
-	NN<Text::String> ssoPath;
-	NN<Text::String> serverHost;
-	if (this->logoutPath.SetTo(logoutPath) && this->ssoPath.SetTo(ssoPath) && this->metadataPath.SetTo(metadataPath) && this->signCert.SetTo(cert) && this->serverHost.SetTo(serverHost))
+	Text::StringBuilderUTF8 sb;
+	if (this->GetMetadataXML(sb))
 	{
-		Text::TextBinEnc::Base64Enc b64;
-		Text::StringBuilderUTF8 sb;
-		sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-		sb.AppendC(UTF8STRC("<md:EntityDescriptor xmlns:md=\"urn:oasis:names:tc:SAML:2.0:metadata\" ID=\""));
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
-		sptr = serverHost->ConcatTo(sptr);
-		sptr = metadataPath->ConcatTo(sptr);
-		Text::StrReplace(sbuff, ':', '_');
-		Text::StrReplace(sbuff, '/', '_');
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.AppendC(UTF8STRC("\" entityID=\""));
-		sptr = Text::StrConcatC(sbuff, UTF8STRC("https://"));
-		sptr = serverHost->ConcatTo(sptr);
-		sptr = metadataPath->ConcatTo(sptr);
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.AppendC(UTF8STRC("\">"));
-		sb.AppendC(UTF8STRC("<md:SPSSODescriptor AuthnRequestsSigned=\"true\" WantAssertionsSigned=\"true\" protocolSupportEnumeration=\"urn:oasis:names:tc:SAML:2.0:protocol\">"));
-		sb.AppendC(UTF8STRC("<md:KeyDescriptor use=\"signing\">"));
-		sb.AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
-		sb.AppendC(UTF8STRC("<ds:X509Data>"));
-		sb.AppendC(UTF8STRC("<ds:X509Certificate>"));
-		b64.EncodeBin(sb, cert->GetASN1Buff(), cert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
-		sb.AppendC(UTF8STRC("</ds:X509Certificate>"));
-		sb.AppendC(UTF8STRC("</ds:X509Data>"));
-		sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
-		sb.AppendC(UTF8STRC("</md:KeyDescriptor>"));
-		sb.AppendC(UTF8STRC("<md:KeyDescriptor use=\"encryption\">"));
-		sb.AppendC(UTF8STRC("<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"));
-		sb.AppendC(UTF8STRC("<ds:X509Data>"));
-		sb.AppendC(UTF8STRC("<ds:X509Certificate>"));
-		b64.EncodeBin(sb, cert->GetASN1Buff(), cert->GetASN1BuffSize(), Text::LineBreakType::CRLF, 76);
-		sb.AppendC(UTF8STRC("</ds:X509Certificate>"));
-		sb.AppendC(UTF8STRC("</ds:X509Data>"));
-		sb.AppendC(UTF8STRC("</ds:KeyInfo>"));
-		sb.AppendC(UTF8STRC("</md:KeyDescriptor>"));
-		sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\" Location=\"https://"));
-		sb.Append(serverHost);
-		sb.Append(logoutPath);
-		sb.AppendC(UTF8STRC("\"/>"));
-		sb.AppendC(UTF8STRC("<md:SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
-		sb.Append(serverHost);
-		sb.Append(logoutPath);
-		sb.AppendC(UTF8STRC("\"/>"));
-		sb.AppendC(UTF8STRC("<md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"));
-		sb.AppendC(UTF8STRC("</md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("<md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:2.0:nameid-format:transient"));
-		sb.AppendC(UTF8STRC("</md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("<md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"));
-		sb.AppendC(UTF8STRC("</md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("<md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"));
-		sb.AppendC(UTF8STRC("</md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("<md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"));
-		sb.AppendC(UTF8STRC("</md:NameIDFormat>"));
-		sb.AppendC(UTF8STRC("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\" Location=\"https://"));
-		sb.Append(serverHost);
-		sb.Append(ssoPath);
-		sb.AppendC(UTF8STRC("\" index=\"0\" isDefault=\"true\"/>"));
-		sb.AppendC(UTF8STRC("<md:AssertionConsumerService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact\" Location=\"https://"));
-		sb.Append(serverHost);
-		sb.Append(ssoPath);
-		sb.AppendC(UTF8STRC("\" index=\"1\"/>"));
-		sb.AppendC(UTF8STRC("</md:SPSSODescriptor>"));
-		sb.AppendC(UTF8STRC("</md:EntityDescriptor>"));
 		resp->AddDefHeaders(req);
 		resp->AddCacheControl(0);
 		resp->AddContentType(CSTR("application/samlmetadata+xml"));
@@ -885,13 +1197,8 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 
 NN<Net::SAMLLogoutResponse> Net::SAMLHandler::DoLogoutResp(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
 {
-	UTF8Char sbuff[4096];
-	UnsafeArray<UTF8Char> sptr;
 	NN<Net::SAMLIdpConfig> idp;
 	NN<Text::String> samlResponse;
-	NN<Text::String> signature;
-	NN<Text::String> sigAlg;
-	NN<Crypto::Cert::X509Cert> signCert;
 	NN<Net::SSLEngine> ssl;
 	NN<SAMLLogoutResponse> saml;
 
@@ -906,10 +1213,39 @@ NN<Net::SAMLLogoutResponse> Net::SAMLHandler::DoLogoutResp(NN<Net::WebServer::We
 		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SSLMissing, CSTR("SSL Engine missing")));
 		return saml;
 	}
-	else if (!idp->GetSigningCert().SetTo(signCert))
+	switch (VerifyHTTPRedirect(ssl, idp, req))
 	{
+	case SAMLSignError::CertMissing:
 		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::IDPMissing, CSTR("Idp Config missing signature cert")));
 		return saml;
+	case SAMLSignError::SignatureMissing:
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("Signature param missing")));
+		return saml;
+	case SAMLSignError::SigAlgMissing:
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("SigAlg param missing")));
+		return saml;
+	case SAMLSignError::SigAlgNotSupported:
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("SigAlg not supported: "));
+		sb.AppendOpt(req->GetQueryValue(CSTR("SigAlg")));
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SigAlgNotSupported, sb.ToCString()));
+		return saml;
+	}
+	case SAMLSignError::QueryStringGetError:
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in getting query string")));
+		return saml;
+	case SAMLSignError::QueryStringSearchError:
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in searching for payload end")));
+		return saml;
+	case SAMLSignError::KeyError:
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::KeyError, CSTR("Error in extracting public key from cert")));
+		return saml;
+	case SAMLSignError::SignatureInvalid:
+		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SignatureInvalid, CSTR("Signature Invalid")));
+		return saml;
+	case SAMLSignError::Valid:
+		break;
 	}
 
 	if (!req->GetQueryValue(CSTR("SAMLResponse")).SetTo(samlResponse))
@@ -917,79 +1253,7 @@ NN<Net::SAMLLogoutResponse> Net::SAMLHandler::DoLogoutResp(NN<Net::WebServer::We
 		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("SAMLResponse param missing")));
 		return saml;
 	}
-	if (!req->GetQueryValue(CSTR("Signature")).SetTo(signature))
-	{
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("Signature param missing")));
-		return saml;
-	}
-	if (!req->GetQueryValue(CSTR("SigAlg")).SetTo(sigAlg))
-	{
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::ParamMissing, CSTR("SigAlg param missing")));
-		return saml;
-	}
-	Crypto::Hash::HashType hashType = Crypto::Hash::HashType::Unknown;
-	if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256")))
-	{
-		hashType = Crypto::Hash::HashType::SHA256;
-	}
-	else if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384")))
-	{
-		hashType = Crypto::Hash::HashType::SHA384;
-	}
-	else if (sigAlg->Equals(CSTR("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512")))
-	{
-		hashType = Crypto::Hash::HashType::SHA512;
-	}
-	else if (sigAlg->Equals(CSTR("http://www.w3.org/2000/09/xmldsig#rsa-sha1")))
-	{
-		hashType = Crypto::Hash::HashType::SHA1;
-	}
-	else
-	{
-		Text::StringBuilderUTF8 sb;
-		sb.Append(CSTR("SigAlg not supported: "));
-		sb.Append(sigAlg);
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SigAlgNotSupported, sb.ToCString()));
-		return saml;
-	}
-	if (!req->GetQueryString(sbuff, sizeof(sbuff) - 1).SetTo(sptr))
-	{
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in getting query string")));
-		return saml;
-	}
-	UOSInt i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&Signature="));
-	if (i == INVALID_INDEX)
-	{
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::QueryStringError, CSTR("Error in searching for payload end")));
-		return saml;
-	}
-	UOSInt j = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("&SigAlg="));
-	if (j != INVALID_INDEX && j > i)
-	{
-		MemCopyO(&sbuff[i], &sbuff[j], (UOSInt)(sptr - &sbuff[j]));
-		i += (UOSInt)(sptr - &sbuff[j]);
-	}
 	Text::TextBinEnc::Base64Enc b64;
-	UnsafeArray<UInt8> signBuff = MemAllocArr(UInt8, signature->leng);
-	UOSInt signSize = b64.DecodeBin(signature->ToCString(), signBuff);
-	NN<Crypto::Cert::X509Key> key;
-	if (!signCert->GetNewPublicKey().SetTo(key))
-	{
-		MemFreeArr(signBuff);
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::KeyError, CSTR("Error in extracting public key from cert")));
-		return saml;
-	}
-	if (!ssl->SignatureVerify(key, hashType, Data::ByteArrayR(sbuff, i), Data::ByteArrayR(signBuff, signSize)))
-	{
-		MemFreeArr(signBuff);
-		key.Delete();
-		NEW_CLASSNN(saml, SAMLLogoutResponse(SAMLLogoutResponse::ProcessError::SignatureInvalid, CSTR("Signature Invalid")));
-		return saml;
-
-	}
-	MemFreeArr(signBuff);
-	key.Delete();
-
 	UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, samlResponse->leng);
 	UOSInt dataSize = b64.DecodeBin(samlResponse->ToCString(), dataBuff);
 	IO::MemoryStream mstm;
@@ -1001,49 +1265,86 @@ NN<Net::SAMLLogoutResponse> Net::SAMLHandler::DoLogoutResp(NN<Net::WebServer::We
 	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()));
 
 	mstm.SeekFromBeginning(0);
-	{
-		NN<Text::XMLAttrib> attr;
-		Text::CStringNN cs;
-		NN<Text::String> s;
-		Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
-		if (reader.NextElementName2().SetTo(cs) && cs.Equals(CSTR("LogoutResponse")))
-		{
-			while (reader.NextElementName2().SetTo(cs))
-			{
-				if (cs.Equals(CSTR("Status")))
-				{
-					while (reader.NextElementName2().SetTo(cs))
-					{
-						if (cs.Equals(CSTR("StatusCode")))
-						{
-							i = reader.GetAttribCount();
-							while (i-- > 0)
-							{
-								attr = reader.GetAttribNoCheck(i);
-								if (attr->name.SetTo(s) && s->Equals(CSTR("Value")))
-								{
-									if (attr->value.SetTo(s))
-									{
-										saml->SetStatus(Net::SAMLStatusCodeFromString(s->ToCString()));
-									}
-								}
-							}
-						}
-						reader.SkipElement();
-					}
-				}
-				else
-				{
-					reader.SkipElement();
-				}
-			}
-		}
-	}
+	this->ParseSAMLLogoutResponse(saml, mstm);
 	MemFreeArr(dataBuff);
 	if (saml->GetStatus() != Net::SAMLStatusCode::Success)
 	{
 		saml->SetError(Net::SAMLLogoutResponse::ProcessError::StatusError);
 	}
+	return saml;
+}
+
+NN<Net::SAMLLogoutRequest> Net::SAMLHandler::DoLogoutReq(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp)
+{
+	NN<Net::SAMLIdpConfig> idp;
+	NN<Text::String> samlRequest;
+	NN<Net::SSLEngine> ssl;
+	NN<SAMLLogoutRequest> saml;
+
+	Sync::MutexUsage mutUsage(this->idpMut);
+	if (!this->idp.SetTo(idp))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::IDPMissing, CSTR("Idp Config missing")));
+		return saml;
+	}
+	else if (!this->ssl.SetTo(ssl))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::SSLMissing, CSTR("SSL Engine missing")));
+		return saml;
+	}
+	switch (VerifyHTTPRedirect(ssl, idp, req))
+	{
+	case SAMLSignError::CertMissing:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::IDPMissing, CSTR("Idp Config missing signature cert")));
+		return saml;
+	case SAMLSignError::SignatureMissing:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::ParamMissing, CSTR("Signature param missing")));
+		return saml;
+	case SAMLSignError::SigAlgMissing:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::ParamMissing, CSTR("SigAlg param missing")));
+		return saml;
+	case SAMLSignError::SigAlgNotSupported:
+	{
+		Text::StringBuilderUTF8 sb;
+		sb.Append(CSTR("SigAlg not supported: "));
+		sb.AppendOpt(req->GetQueryValue(CSTR("SigAlg")));
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::SigAlgNotSupported, sb.ToCString()));
+		return saml;
+	}
+	case SAMLSignError::QueryStringGetError:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::QueryStringError, CSTR("Error in getting query string")));
+		return saml;
+	case SAMLSignError::QueryStringSearchError:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::QueryStringError, CSTR("Error in searching for payload end")));
+		return saml;
+	case SAMLSignError::KeyError:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::KeyError, CSTR("Error in extracting public key from cert")));
+		return saml;
+	case SAMLSignError::SignatureInvalid:
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::SignatureInvalid, CSTR("Signature Invalid")));
+		return saml;
+	case SAMLSignError::Valid:
+		break;
+	}
+
+	if (!req->GetQueryValue(CSTR("SAMLRequest")).SetTo(samlRequest))
+	{
+		NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::ParamMissing, CSTR("SAMLRequest param missing")));
+		return saml;
+	}
+	Text::TextBinEnc::Base64Enc b64;
+	UnsafeArray<UInt8> dataBuff = MemAllocArr(UInt8, samlRequest->leng);
+	UOSInt dataSize = b64.DecodeBin(samlRequest->ToCString(), dataBuff);
+	IO::MemoryStream mstm;
+	{
+		Data::Compress::Inflater inflater(mstm, false);
+		inflater.WriteCont(dataBuff, dataSize);
+	}
+	NEW_CLASSNN(saml, SAMLLogoutRequest(SAMLLogoutRequest::ProcessError::Success, CSTR("Decompressed")));
+	saml->SetRawResponse(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()));
+	mstm.SeekFromBeginning(0);
+	this->ParseSAMLLogoutRequest(saml, mstm);
+	MemFreeArr(dataBuff);
 	return saml;
 }
 
