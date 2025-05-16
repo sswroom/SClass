@@ -67,8 +67,8 @@ namespace Net
 		Text::EncodingFactory encFact;
 
 	protected:
-		void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType);
-		Bool BuildRedirectURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType);
+		void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response);
+		Bool BuildRedirectURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response);
 		static SAMLSignError VerifyHTTPRedirect(NN<Net::SSLEngine> ssl, NN<SAMLIdpConfig> idp, NN<Net::WebServer::WebRequest> req);
 		void ParseSAMLLogoutResponse(NN<SAMLLogoutResponse> saml, NN<IO::Stream> stm);
 		void ParseSAMLLogoutRequest(NN<SAMLLogoutRequest> saml, NN<IO::Stream> stm);
