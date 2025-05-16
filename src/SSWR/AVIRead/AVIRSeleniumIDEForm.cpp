@@ -63,18 +63,31 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		options.headless = me->chkTestHeadless->IsChecked();
 		options.disableGPU = me->chkTestDisableGPU->IsChecked();
 		options.noSandbox = me->chkTestNoSandbox->IsChecked();
-		if (runner.Run(test, (IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, 0, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options, OnStepStatus, me))
+		NN<Net::WebDriverSession> sess;
+		if (runner.BeginTest((IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, 0, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options).SetTo(sess))
 		{
-			me->DisplayStatus();
-			me->ui->ShowMsgOK(CSTR("Test Run successfully"), CSTR("Selenium IDE"), me);
+			if (runner.RunTest(sess, test, Text::String::OrEmpty(me->side->GetURL())->ToCString(), OnStepStatus, me))
+			{
+				me->DisplayStatus();
+				me->ui->ShowMsgOK(CSTR("Test Run successfully"), CSTR("Selenium IDE"), me);
+			}
+			else
+			{
+				me->DisplayStatus();
+				Text::StringBuilderUTF8 sb;
+				sb.Append(CSTR("Test Run failed: Error Index = "));
+				sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
+				sb.Append(CSTR("\r\n"));
+				sb.AppendOpt(runner.GetLastErrorMsg());
+				me->ui->ShowMsgOK(sb.ToCString(), CSTR("Selenium IDE"), me);
+			}
+			sess.Delete();
 		}
 		else
 		{
 			me->DisplayStatus();
 			Text::StringBuilderUTF8 sb;
-			sb.Append(CSTR("Test Run failed: Error Index = "));
-			sb.AppendOSInt((OSInt)runner.GetLastErrorIndex());
-			sb.Append(CSTR("\r\n"));
+			sb.Append(CSTR("Failed in creating session\r\n"));
 			sb.AppendOpt(runner.GetLastErrorMsg());
 			me->ui->ShowMsgOK(sb.ToCString(), CSTR("Selenium IDE"), me);
 		}

@@ -831,50 +831,63 @@ Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::W
 	{
 		NN<SAMLLogoutRequest> msg = this->DoLogoutReq(req, resp);
 		NN<Text::String> s;
-		Text::StringBuilderUTF8 sb;
-		Text::StringBuilderUTF8 sb2;
-		sb.ClearStr();
-		sb.AppendC(UTF8STRC("<html><head><title>Logout Response</title></head><body>"));
-		sb.AppendC(UTF8STRC("<h1>Result</h1>"));
-		sb.AppendC(UTF8STRC("<font color=\"red\">Error:</font> "));
-		sb.Append(Net::SAMLLogoutRequest::ProcessErrorGetName(msg->GetError()));
-		sb.Append(CSTR("<br/>"));
-		sb.AppendC(UTF8STRC("<font color=\"red\">Error Message:</font> "));
-		sb.Append(msg->GetErrorMessage());
-		sb.Append(CSTR("<br/>"));
-		sb.Append(CSTR("<font color=\"red\">ID:</font> "));
-		sb.AppendOpt(msg->GetID());
-		sb.Append(CSTR("<br/>"));
-		sb.Append(CSTR("<font color=\"red\">NameID:</font> "));
-		sb.AppendOpt(msg->GetNameID());
-		sb.Append(CSTR("<br/>"));
-		sb.Append(CSTR("<font color=\"red\">SessionIndex:</font> "));
-		NN<const Data::ArrayListStringNN> sessionIndex = msg->GetSessionIndex();
-		UOSInt i = 0;
-		UOSInt j = sessionIndex->GetCount();
-		while (i < j)
+		NN<SAMLIdpConfig> idp;
+		if (msg->GetError() == SAMLLogoutRequest::ProcessError::Success && msg->GetID().SetTo(s) && this->idp.SetTo(idp))
 		{
-			if (i > 0) sb.Append(CSTR("<br/>"));
-			sb.Append(sessionIndex->GetItemNoCheck(i));
-			i++;
+			Text::StringBuilderUTF8 sb;
+			this->GetLogoutResponse(sb, s->ToCString(), SAMLStatusCode::Success);
+			msg.Delete();
+			this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
+			return true;
 		}
-		sb.Append(CSTR("<br/>"));
-		if (msg->GetRawResponse().SetTo(s))
+		else
 		{
-			sb.AppendC(UTF8STRC("<hr/>"));
-			sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
-			IO::MemoryReadingStream mstm(s->ToByteArray());
-			Text::XMLReader::XMLWellFormat(this->encFact, mstm, 0, sb2);
-			s = Text::XML::ToNewHTMLTextXMLColor(sb2.v);
-			sb.Append(s);
-			s->Release();
+			NN<Text::String> s;
+			Text::StringBuilderUTF8 sb;
+			Text::StringBuilderUTF8 sb2;
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("<html><head><title>Logout Response</title></head><body>"));
+			sb.AppendC(UTF8STRC("<h1>Result</h1>"));
+			sb.AppendC(UTF8STRC("<font color=\"red\">Error:</font> "));
+			sb.Append(Net::SAMLLogoutRequest::ProcessErrorGetName(msg->GetError()));
+			sb.Append(CSTR("<br/>"));
+			sb.AppendC(UTF8STRC("<font color=\"red\">Error Message:</font> "));
+			sb.Append(msg->GetErrorMessage());
+			sb.Append(CSTR("<br/>"));
+			sb.Append(CSTR("<font color=\"red\">ID:</font> "));
+			sb.AppendOpt(msg->GetID());
+			sb.Append(CSTR("<br/>"));
+			sb.Append(CSTR("<font color=\"red\">NameID:</font> "));
+			sb.AppendOpt(msg->GetNameID());
+			sb.Append(CSTR("<br/>"));
+			sb.Append(CSTR("<font color=\"red\">SessionIndex:</font> "));
+			NN<const Data::ArrayListStringNN> sessionIndex = msg->GetSessionIndex();
+			UOSInt i = 0;
+			UOSInt j = sessionIndex->GetCount();
+			while (i < j)
+			{
+				if (i > 0) sb.Append(CSTR("<br/>"));
+				sb.Append(sessionIndex->GetItemNoCheck(i));
+				i++;
+			}
+			sb.Append(CSTR("<br/>"));
+			if (msg->GetRawResponse().SetTo(s))
+			{
+				sb.AppendC(UTF8STRC("<hr/>"));
+				sb.AppendC(UTF8STRC("<h1>RAW Response</h1>"));
+				IO::MemoryReadingStream mstm(s->ToByteArray());
+				Text::XMLReader::XMLWellFormat(this->encFact, mstm, 0, sb2);
+				s = Text::XML::ToNewHTMLTextXMLColor(sb2.v);
+				sb.Append(s);
+				s->Release();
+			}
+			sb.AppendC(UTF8STRC("</body></html>"));
+			msg.Delete();
+			resp->AddDefHeaders(req);
+			resp->AddCacheControl(0);
+			resp->AddContentType(CSTR("text/html"));
+			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sb.ToCString());
 		}
-		sb.AppendC(UTF8STRC("</body></html>"));
-		msg.Delete();
-		resp->AddDefHeaders(req);
-		resp->AddCacheControl(0);
-		resp->AddContentType(CSTR("text/html"));
-		return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), sb.ToCString());
 	}
 	Text::StringBuilderUTF8 sb;
 	if (this->GetLogoutMessageURL(sb, nameID, sessionId))
