@@ -20,77 +20,20 @@
 // https://www.samltool.com/decrypt.php
 // https://support.f5.com/csp/article/K51854802
 
-void Net::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
+void Net::SAMLHandler::SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response)
 {
-	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
-	UOSInt buffSize;
-	UInt8 signBuff[512];
-	UOSInt signSize;
-	NN<Net::SSLEngine> ssl;
-	NN<Crypto::Cert::X509PrivKey> privKey;
-	NN<Crypto::Cert::X509Key> key;
-	if (!this->signKey.SetTo(privKey) || !this->ssl.SetTo(ssl) || !privKey->CreateKey().SetTo(key))
-	{
-		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
-		return;
-	}
-	if (!Data::Compress::Deflater::CompressDirect(Data::ByteArray(buff, reqContent.leng + 16), buffSize, reqContent.ToByteArray(), Data::Compress::Deflater::CompLevel::BestCompression, false))
-	{
-		MemFreeArr(buff);
-		printf("SAMLHandler: Error in compressing content\r\n");
-		resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
-		key.Delete();
-		return;
-	}
-	Text::TextBinEnc::Base64Enc b64;
-	Text::TextBinEnc::FormEncoding uri;
 	Text::StringBuilderUTF8 sb;
-	Text::StringBuilderUTF8 sb2;
-
-	sb.Append(CSTR("SAMLRequest="));
-	b64.EncodeBin(sb2, buff, buffSize);
-	uri.EncodeBin(sb, sb2.v, sb2.leng);
-
-	if (hashType == Crypto::Hash::HashType::SHA256)
+	if (this->BuildRedirectURL(sb, url, reqContent, hashType, response))
 	{
-		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256"));
-	}
-	else if (hashType == Crypto::Hash::HashType::SHA384)
-	{
-		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha384"));
-	}
-	else if (hashType == Crypto::Hash::HashType::SHA512)
-	{
-		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha512"));
+		resp->RedirectURL(req, sb.ToCString(), 0);
 	}
 	else
 	{
-		hashType = Crypto::Hash::HashType::SHA1;
-		sb.Append(CSTR("&SigAlg=http%3A%2F%2Fwww.w3.org%2F2000%2F09%2Fxmldsig%23rsa-sha1"));
-	}
-	MemFreeArr(buff);
-	if (ssl->Signature(key, hashType, sb.ToByteArray(), signBuff, signSize))
-	{
-		sb.Append(CSTR("&Signature="));
-		sb2.ClearStr();
-		b64.EncodeBin(sb2, signBuff, signSize);
-		uri.EncodeBin(sb, sb2.v, sb2.leng);
-
-		sb2.ClearStr();
-		sb2.Append(url);
-		sb2.AppendUTF8Char('?');
-		sb2.Append(sb);
-		resp->RedirectURL(req, sb2.ToCString(), 0);
-	}
-	else
-	{
-		printf("SAMLHandler: Error in Signature\r\n");
 		resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
 	}
-	key.Delete();
 }
 
-Bool Net::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType)
+Bool Net::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response)
 {
 	UnsafeArray<UInt8> buff = MemAllocArr(UInt8, reqContent.leng + 16);
 	UOSInt buffSize;
@@ -115,7 +58,14 @@ Bool Net::SAMLHandler::BuildRedirectURL(NN<Text::StringBuilderUTF8> sbOut, Text:
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 
-	sb.Append(CSTR("SAMLRequest="));
+	if (response)
+	{
+		sb.Append(CSTR("SAMLResponse="));
+	}
+	else
+	{
+		sb.Append(CSTR("SAMLRequest="));
+	}
 	b64.EncodeBin(sb2, buff, buffSize);
 	uri.EncodeBin(sb, sb2.v, sb2.leng);
 
@@ -591,7 +541,7 @@ Bool Net::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 		sb.Append(CSTR("<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"));
 		sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
 		sb.Append(CSTR("</samlp:AuthnRequest>"));
-		return BuildRedirectURL(sbOut, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType);
+		return BuildRedirectURL(sbOut, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType, false);
 	}
 	else
 	{
@@ -648,7 +598,7 @@ Bool Net::SAMLHandler::GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sbOut, Te
 		}
 		sb.Append(CSTR("</samlp:LogoutRequest>"));
 
-		return BuildRedirectURL(sbOut, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
+		return BuildRedirectURL(sbOut, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType, false);
 	}
 	else
 	{
@@ -745,7 +695,8 @@ Bool Net::SAMLHandler::GetLogoutResponse(NN<Text::StringBuilderUTF8> sb, Text::C
 	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> metadataPath;
 	NN<Text::String> serverHost;
-	if (this->serverHost.SetTo(serverHost) && this->metadataPath.SetTo(metadataPath))
+	NN<SAMLIdpConfig> idp;
+	if (this->serverHost.SetTo(serverHost) && this->metadataPath.SetTo(metadataPath) && this->idp.SetTo(idp))
 	{
 		Data::Timestamp currTime = Data::Timestamp::UtcNow();
 		sb->Append(CSTR("<samlp:LogoutResponse"));
@@ -760,6 +711,9 @@ Bool Net::SAMLHandler::GetLogoutResponse(NN<Text::StringBuilderUTF8> sb, Text::C
 		sb->AppendUTF8Char('"');
 		sb->Append(CSTR(" InResponseTo=\""));
 		sb->Append(id);
+		sb->AppendUTF8Char('"');
+		sb->Append(CSTR(" Destination=\""));
+		sb->Append(idp->GetLogoutLocation());
 		sb->AppendUTF8Char('"');
 		sb->Append(CSTR(" xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns=\"urn:oasis:names:tc:SAML:2.0:assertion\">"));
 		sb->Append(CSTR("<Issuer>https://"));
@@ -837,7 +791,7 @@ Bool Net::SAMLHandler::DoLogoutGet(NN<Net::WebServer::WebRequest> req, NN<Net::W
 			Text::StringBuilderUTF8 sb;
 			this->GetLogoutResponse(sb, s->ToCString(), SAMLStatusCode::Success);
 			msg.Delete();
-			this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType);
+			this->SendRedirect(req, resp, idp->GetLogoutLocation()->ToCString(), sb.ToCString(), this->hashType, true);
 			return true;
 		}
 		else
