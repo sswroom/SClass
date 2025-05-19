@@ -41,6 +41,7 @@ namespace IO
 			Int64 scriptTimeout;
 			Int64 pageLoadTimeout;
 			Int64 implicitTimeout;
+			Int64 cmdTimeout;
 
 			RunOptions()
 			{
@@ -50,6 +51,7 @@ namespace IO
 				this->scriptTimeout = 30000;
 				this->pageLoadTimeout = 30000;
 				this->implicitTimeout = 1000;
+				this->cmdTimeout = 15000;
 			}
 		};
 

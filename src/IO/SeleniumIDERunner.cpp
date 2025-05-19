@@ -165,7 +165,7 @@ Optional<Net::WebDriverSession> IO::SeleniumIDERunner::BeginTest(BrowserType bro
 	Net::WebDriverStartSession param(browser);
 	NN<Net::WebDriverSession> sess;
 	NN<GPSPosition> nnlocation;
-	Net::WebDriver driver(this->clif, 0, this->webdriverURL->ToCString());
+	Net::WebDriver driver(this->clif, 0, this->webdriverURL->ToCString(), options->cmdTimeout);
 	if (driver.NewSession(param).SetTo(sess))
 	{
 		if (location.SetTo(nnlocation))
