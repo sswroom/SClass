@@ -276,19 +276,48 @@ Bool Net::SAMLUtil::DecryptAssertion(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X5
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, OptOut<SAMLStatusCode> statusCode)
 {
-	NN<Text::String> nodeName;
-	while (reader->NextElementName().SetTo(nodeName))
+	Text::CStringNN nodeName;
+	Bool success = false;
+	Bool found = false;
+	while (reader->NextElementName2().SetTo(nodeName))
 	{
-		if (nodeName->Equals(UTF8STRC("EncryptedAssertion")))
+		if (nodeName.Equals(UTF8STRC("EncryptedAssertion")))
 		{
-			return DecryptAssertion(ssl, key, reader, sbResult);
+			success = DecryptAssertion(ssl, key, reader, sbResult);
+			found = true;
+		}
+		else if (nodeName.Equals(UTF8STRC("Status")))
+		{
+			while (reader->NextElementName2().SetTo(nodeName))
+			{
+				if (nodeName.Equals(CSTR("StatusCode")))
+				{
+					UOSInt i = reader->GetAttribCount();
+					NN<Text::XMLAttrib> attr;
+					NN<Text::String> s;
+					while (i-- > 0)
+					{
+						attr = reader->GetAttribNoCheck(i);
+						if (attr->name.SetTo(s) && s->Equals(CSTR("Value")) && attr->value.SetTo(s))
+						{
+							statusCode.Set(SAMLStatusCodeFromString(s->ToCString()));
+							break;
+						}
+					}
+				}
+				reader->SkipElement();
+			}
 		}
 		else
 		{
 			reader->SkipElement();
 		}
+	}
+	if (found)
+	{
+		return success;
 	}
 	if (reader->GetErrorCode() != 0)
 	{
@@ -299,7 +328,7 @@ Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X50
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Crypto::Cert::X509Key> key, Text::CStringNN responseXML, NN<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Crypto::Cert::X509Key> key, Text::CStringNN responseXML, NN<Text::StringBuilderUTF8> sbResult, OptOut<SAMLStatusCode> statusCode)
 {
 	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
 	Text::XMLReader reader(encFact, mstm, Text::XMLReader::PM_XML);
@@ -308,7 +337,7 @@ Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::Encod
 	{
 		if (nodeText->Equals(UTF8STRC("samlp:Response")))
 		{
-			return DecryptResponse(ssl, key, reader, sbResult);
+			return DecryptResponse(ssl, key, reader, sbResult, statusCode);
 		}
 		else
 		{

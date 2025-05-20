@@ -2,6 +2,7 @@
 #define _SM_NET_SAMLHANDLER
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
+#include "Net/SAMLAuthMethod.h"
 #include "Net/SAMLIdpConfig.h"
 #include "Net/SAMLLogoutRequest.h"
 #include "Net/SAMLLogoutResponse.h"
@@ -65,6 +66,7 @@ namespace Net
 		Optional<Net::SAMLIdpConfig> idp;
 		Sync::Mutex idpMut;
 		Text::EncodingFactory encFact;
+		SAMLAuthMethod authMethod;
 
 	protected:
 		void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response);
@@ -82,6 +84,7 @@ namespace Net
 		Optional<Text::String> GetLoginPath() const { return this->loginPath; }
 		Optional<Text::String> GetLogoutPath() const { return this->logoutPath; }
 		Optional<Text::String> GetSSOPath() const { return this->ssoPath; }
+		SAMLAuthMethod GetAuthMethod() const { return this->authMethod; }
 		Bool GetLoginURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLogoutURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetMetadataURL(NN<Text::StringBuilderUTF8> sb);
@@ -89,6 +92,7 @@ namespace Net
 		Optional<Crypto::Cert::X509PrivKey> GetKey();
 		void SetIdp(NN<Net::SAMLIdpConfig> idp);
 		void SetHashType(Crypto::Hash::HashType hashType);
+		void SetAuthMethod(SAMLAuthMethod authMethod) { this->authMethod = authMethod; }
 
 		Bool GetLoginMessageURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sb, Text::CString nameID, Text::CString sessionId);

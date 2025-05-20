@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SAMLSSORESPONSE
 #define _SM_NET_SAMLSSORESPONSE
 #include "Data/Timestamp.h"
+#include "Net/SAMLStatusCode.h"
 #include "Text/String.h"
 
 namespace Net
@@ -25,6 +26,7 @@ namespace Net
 	private:
 		ResponseError error;
 		NN<Text::String> errorMessage;
+		SAMLStatusCode statusCode;
 		Optional<Text::String> rawResponse;
 		Optional<Text::String> decResponse;
 		Optional<Text::String> id;
@@ -47,6 +49,8 @@ namespace Net
 		void SetError(ResponseError error) { this->error = error; }
 		NN<Text::String> GetErrorMessage() const { return this->errorMessage; }
 		void SetErrorMessage(Text::CStringNN errorMessage) { this->errorMessage->Release(); this->errorMessage = Text::String::New(errorMessage); }
+		SAMLStatusCode GetStatusCode() const { return this->statusCode; }
+		void SetStatusCode(SAMLStatusCode statusCode) { this->statusCode = statusCode; }
 		Optional<Text::String> GetRawResponse() const { return this->rawResponse; }
 		void SetRawResponse(Text::CString rawResponse) { OPTSTR_DEL(this->rawResponse); this->rawResponse = Text::String::NewOrNull(rawResponse); }
 		Optional<Text::String> GetDecResponse() const { return this->decResponse; }

@@ -5,6 +5,7 @@ Net::SAMLSSOResponse::SAMLSSOResponse(ResponseError error, Text::CStringNN error
 {
 	this->error = error;
 	this->errorMessage = Text::String::New(errorMessage);
+	this->statusCode = SAMLStatusCode::Unknown;
 	this->rawResponse = 0;
 	this->decResponse = 0;
 	this->id = 0;

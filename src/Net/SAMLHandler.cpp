@@ -338,6 +338,7 @@ Net::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
 	this->signKey = 0;
 	this->idp = 0;
 	this->hashType = Crypto::Hash::HashType::SHA1;
+	this->authMethod = Net::SAMLAuthMethod::PasswordProtectedTransport;
 	if (!cfg->serverHost.SetTo(nns) || nns.leng == 0)
 	{
 		this->initErr = SAMLInitError::ServerHost;
@@ -538,7 +539,9 @@ Bool Net::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 		sb.Append(CSTR("</saml:Issuer>"));
 		sb.Append(CSTR("<samlp:NameIDPolicy Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\" AllowCreate=\"true\"/>"));
 		sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"exact\">"));
-		sb.Append(CSTR("<saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>"));
+		sb.Append(CSTR("<saml:AuthnContextClassRef>"));
+		sb.Append(Net::SAMLAuthMethodGetString(this->authMethod));
+		sb.Append(CSTR("</saml:AuthnContextClassRef>"));
 		sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
 		sb.Append(CSTR("</samlp:AuthnRequest>"));
 		return BuildRedirectURL(sbOut, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType, false);
@@ -914,12 +917,14 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 		}
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sbTmp;
-		if (Net::SAMLUtil::DecryptResponse(ssl, this->encFact, key, Text::CStringNN(buff, buffSize), sb))
+		SAMLStatusCode status;
+		if (Net::SAMLUtil::DecryptResponse(ssl, this->encFact, key, Text::CStringNN(buff, buffSize), sb, status))
 		{
 			key.Delete();
 			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::Success, CSTR("Decrypted")));
 			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
 			saml->SetDecResponse(sb.ToCString());
+			saml->SetStatusCode(status);
 			MemFreeArr(buff);
 			IO::MemoryReadingStream mstm(sb.ToByteArray());
 			Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
@@ -1151,6 +1156,7 @@ NN<Net::SAMLSSOResponse> Net::SAMLHandler::DoSSOPost(NN<Net::WebServer::WebReque
 			key.Delete();
 			NEW_CLASSNN(saml, SAMLSSOResponse(SAMLSSOResponse::ResponseError::DecryptFailed, CSTR("Failed in decrypting response message")));
 			saml->SetRawResponse(Text::CStringNN(buff, buffSize));
+			saml->SetStatusCode(status);
 			MemFreeArr(buff);
 			return saml;
 		}
