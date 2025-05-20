@@ -60,6 +60,10 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 			me->cboTestMobile->GetText(sb);
 			mobile = sb.ToCString();
 		}
+		if (me->chkTestNoPause->IsChecked())
+		{
+			runner.SetNoPause(true);
+		}
 		options.headless = me->chkTestHeadless->IsChecked();
 		options.disableGPU = me->chkTestDisableGPU->IsChecked();
 		options.noSandbox = me->chkTestNoSandbox->IsChecked();
@@ -180,7 +184,7 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->lbTest->SetRect(0, 0, 150, 23, false);
 	this->lbTest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->pnlTestCtrl = ui->NewPanel(*this);
-	this->pnlTestCtrl->SetRect(0, 0, 100, 127, false);
+	this->pnlTestCtrl->SetRect(0, 0, 100, 151, false);
 	this->pnlTestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblTestPort = ui->NewLabel(this->pnlTestCtrl, CSTR("Port"));
 	this->lblTestPort->SetRect(4, 4, 100, 23, false);
@@ -222,6 +226,8 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->chkTestDisableGPU->SetRect(124, 100, 120, 23, false);
 	this->chkTestNoSandbox = ui->NewCheckBox(this->pnlTestCtrl, CSTR("No Sandbox"), false);
 	this->chkTestNoSandbox->SetRect(244, 100, 120, 23, false);
+	this->chkTestNoPause = ui->NewCheckBox(this->pnlTestCtrl, CSTR("No Pause"), false);
+	this->chkTestNoPause->SetRect(4, 124, 120, 23, false);
 	this->tcTest = ui->NewTabControl(*this);
 	this->tcTest->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpCommand = this->tcTest->AddTabPage(CSTR("Commands"));

@@ -54,6 +54,7 @@ namespace SSWR
 			NN<UI::GUICheckBox> chkTestHeadless;
 			NN<UI::GUICheckBox> chkTestDisableGPU;
 			NN<UI::GUICheckBox> chkTestNoSandbox;
+			NN<UI::GUICheckBox> chkTestNoPause;
 			NN<UI::GUITabControl> tcTest;
 			NN<UI::GUITabPage> tpCommand;
 			NN<UI::GUIPanel> pnlCommand;

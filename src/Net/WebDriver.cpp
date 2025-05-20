@@ -1014,9 +1014,9 @@ Optional<IO::MemoryStream> Net::WebDriverSession::TakeScreenshot()
 	return mstm;
 }
 
-Net::WebDriver::WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url) : WebDriverClient(clif, ssl, url)
+Net::WebDriver::WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Data::Duration cmdTimeout) : WebDriverClient(clif, ssl, url)
 {
-	this->SetTimeout(5000);
+	this->SetTimeout(cmdTimeout);
 	this->ready = false;
 	this->message = 0;
 	this->UpdateStatus();

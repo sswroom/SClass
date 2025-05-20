@@ -331,7 +331,7 @@ namespace Net
 		Data::ArrayListNN<WebDriverNode> nodes;
 
 	public:
-		WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url);
+		WebDriver(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Data::Duration cmdTimeout);
 		~WebDriver();
 
 		Bool UpdateStatus();
