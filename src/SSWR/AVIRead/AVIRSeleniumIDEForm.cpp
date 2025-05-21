@@ -34,6 +34,10 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 	NN<SSWR::AVIRead::AVIRSeleniumIDEForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSeleniumIDEForm>();
 	NN<IO::SeleniumTest> test;
 	Text::StringBuilderUTF8 sb;
+	Int64 timeoutScript;
+	Int64 timeoutPageLoad;
+	Int64 timeoutImplicit;
+	Int64 timeoutCommand;
 	UInt16 port;
 	if (me->lbTest->GetSelectedItem().GetOpt<IO::SeleniumTest>().SetTo(test))
 	{
@@ -42,8 +46,41 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		{
 			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Selenium IDE"), me);
 			me->txtTestPort->Focus();
-			return ;
+			return;
 		}
+		sb.ClearStr();
+		me->txtTimeoutScript->GetText(sb);
+		if (!sb.ToInt64(timeoutScript))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid Script Timeout"), CSTR("Selenium IDE"), me);
+			me->txtTimeoutScript->Focus();
+			return;
+		}
+		sb.ClearStr();
+		me->txtTimeoutPageLoad->GetText(sb);
+		if (!sb.ToInt64(timeoutPageLoad))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid PageLoad Timeout"), CSTR("Selenium IDE"), me);
+			me->txtTimeoutPageLoad->Focus();
+			return;
+		}
+		sb.ClearStr();
+		me->txtTimeoutImplicit->GetText(sb);
+		if (!sb.ToInt64(timeoutImplicit))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid Implicit Timeout"), CSTR("Selenium IDE"), me);
+			me->txtTimeoutImplicit->Focus();
+			return;
+		}
+		sb.ClearStr();
+		me->txtTimeoutCommand->GetText(sb);
+		if (!sb.ToInt64(timeoutCommand))
+		{
+			me->ui->ShowMsgOK(CSTR("Please enter valid Command Timeout"), CSTR("Selenium IDE"), me);
+			me->txtTimeoutCommand->Focus();
+			return;
+		}
+
 		me->statusList.MemFreeAll();
 		Text::CString mobile = 0;
 		IO::SeleniumIDERunner::RunOptions options;
@@ -67,6 +104,10 @@ void __stdcall SSWR::AVIRead::AVIRSeleniumIDEForm::OnTestRunClicked(AnyType user
 		options.headless = me->chkTestHeadless->IsChecked();
 		options.disableGPU = me->chkTestDisableGPU->IsChecked();
 		options.noSandbox = me->chkTestNoSandbox->IsChecked();
+		options.scriptTimeout = timeoutScript;
+		options.pageLoadTimeout = timeoutPageLoad;
+		options.implicitTimeout = timeoutImplicit;
+		options.cmdTimeout = timeoutCommand;
 		NN<Net::WebDriverSession> sess;
 		if (runner.BeginTest((IO::SeleniumIDERunner::BrowserType)me->cboTestBrowser->GetSelectedItem().GetOSInt(), mobile, 0, Text::String::OrEmpty(me->side->GetURL())->ToCString(), options).SetTo(sess))
 		{
@@ -155,6 +196,8 @@ void SSWR::AVIRead::AVIRSeleniumIDEForm::DisplayStatus()
 
 SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SeleniumIDE> side) : UI::GUIForm(parent, 640, 480, ui)
 {
+	UTF8Char sbuff[32];
+	UnsafeArray<UTF8Char> sptr;
 	this->SetText(CSTR("Selenium IDE"));
 	this->SetFont(0, 0, 8.25, false);
 
@@ -271,6 +314,27 @@ SSWR::AVIRead::AVIRSeleniumIDEForm::AVIRSeleniumIDEForm(Optional<UI::GUIClientCo
 	this->lvRunLog->AddColumn(CSTR("Time"), 150);
 	this->lvRunLog->AddColumn(CSTR("Index"), 120);
 	this->lvRunLog->AddColumn(CSTR("Duration"), 100);
+	this->tpTimeout = this->tcTest->AddTabPage(CSTR("Timeout"));
+	this->lblTimeoutScript = ui->NewLabel(this->tpTimeout, CSTR("Script"));
+	this->lblTimeoutScript->SetRect(4, 4, 100, 23, false);
+	sptr = Text::StrInt64(sbuff, IO::SeleniumIDERunner::GetDefaultScriptTimeout());
+	this->txtTimeoutScript = ui->NewTextBox(this->tpTimeout, CSTRP(sbuff, sptr));
+	this->txtTimeoutScript->SetRect(104, 4, 150, 23, false);
+	this->lblTimeoutPageLoad = ui->NewLabel(this->tpTimeout, CSTR("PageLoad"));
+	this->lblTimeoutPageLoad->SetRect(4, 28, 100, 23, false);
+	sptr = Text::StrInt64(sbuff, IO::SeleniumIDERunner::GetDefaultPageLoadTimeout());
+	this->txtTimeoutPageLoad = ui->NewTextBox(this->tpTimeout, CSTRP(sbuff, sptr));
+	this->txtTimeoutPageLoad->SetRect(104, 28, 150, 23, false);
+	this->lblTimeoutImplicit = ui->NewLabel(this->tpTimeout, CSTR("Implicit"));
+	this->lblTimeoutImplicit->SetRect(4, 52, 100, 23, false);
+	sptr = Text::StrInt64(sbuff, IO::SeleniumIDERunner::GetDefaultImplicitTimeout());
+	this->txtTimeoutImplicit = ui->NewTextBox(this->tpTimeout, CSTRP(sbuff, sptr));
+	this->txtTimeoutImplicit->SetRect(104, 52, 150, 23, false);
+	this->lblTimeoutCommand = ui->NewLabel(this->tpTimeout, CSTR("Command"));
+	this->lblTimeoutCommand->SetRect(4, 76, 100, 23, false);
+	sptr = Text::StrInt64(sbuff, IO::SeleniumIDERunner::GetDefaultCommandTimeout());
+	this->txtTimeoutCommand = ui->NewTextBox(this->tpTimeout, CSTRP(sbuff, sptr));
+	this->txtTimeoutCommand->SetRect(104, 76, 150, 23, false);
 
 	NN<IO::SeleniumTest> test;
 	UOSInt i = 0;

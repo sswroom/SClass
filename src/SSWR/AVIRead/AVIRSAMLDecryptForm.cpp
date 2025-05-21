@@ -129,7 +129,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	Text::StringBuilderUTF8 sbResult;
 	if (Net::SSLEngineFactory::Create(me->core->GetTCPClientFactory(), false).SetTo(ssl))
 	{
-		Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), keyNN, sb.ToCString(), sbResult);
+		Net::SAMLStatusCode status;
+		Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), keyNN, sb.ToCString(), sbResult, status);
 		ssl.Delete();
 	}
 	else

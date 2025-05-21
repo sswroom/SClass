@@ -3324,6 +3324,8 @@ Net/RTPVSource.h:
 @RTPVSource.o
 Net/RTSPClient.h:
 @RTSPClient.o
+Net/SAMLAuthMethod.h:
+@SAMLAuthMethod.o
 Net/SAMLHandler.h:
 @SAMLHandler.o
 Net/SAMLIdpConfig.h:

@@ -33,27 +33,7 @@ namespace IO
 			PhantomJS
 		};
 
-		struct RunOptions
-		{
-			Bool headless;
-			Bool disableGPU;
-			Bool noSandbox;
-			Int64 scriptTimeout;
-			Int64 pageLoadTimeout;
-			Int64 implicitTimeout;
-			Int64 cmdTimeout;
-
-			RunOptions()
-			{
-				this->headless = false;
-				this->disableGPU = false;
-				this->noSandbox = false;
-				this->scriptTimeout = 30000;
-				this->pageLoadTimeout = 30000;
-				this->implicitTimeout = 1000;
-				this->cmdTimeout = 15000;
-			}
-		};
+		struct RunOptions;
 
 		typedef void (__stdcall *StepStatusHandler)(AnyType userObj, UOSInt cmdIndex, Data::Duration dur);
 	private:
@@ -87,6 +67,32 @@ namespace IO
 		Optional<Net::WebDriverBy> ParseOptionLocator(Text::CStringNN locator, UOSInt currIndex);
 		static void FillMobileItemSelector(NN<UI::ItemSelector> selector);
 		static Text::CStringNN BrowserTypeGetName(BrowserType browserType);
+		static Int64 GetDefaultScriptTimeout() { return 30000; }
+		static Int64 GetDefaultPageLoadTimeout() { return 30000; }
+		static Int64 GetDefaultImplicitTimeout() { return 1000; }
+		static Int64 GetDefaultCommandTimeout() { return 15000; }
+
+		struct RunOptions
+		{
+			Bool headless;
+			Bool disableGPU;
+			Bool noSandbox;
+			Int64 scriptTimeout;
+			Int64 pageLoadTimeout;
+			Int64 implicitTimeout;
+			Int64 cmdTimeout;
+
+			RunOptions()
+			{
+				this->headless = false;
+				this->disableGPU = false;
+				this->noSandbox = false;
+				this->scriptTimeout = GetDefaultScriptTimeout();
+				this->pageLoadTimeout = GetDefaultPageLoadTimeout();
+				this->implicitTimeout = GetDefaultImplicitTimeout();
+				this->cmdTimeout = GetDefaultCommandTimeout();
+			}
+		};
 	};
 }
 #endif

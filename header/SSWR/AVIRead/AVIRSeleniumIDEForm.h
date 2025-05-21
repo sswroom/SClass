@@ -69,6 +69,15 @@ namespace SSWR
 			NN<UI::GUITextBox> txtCommandComment;
 			NN<UI::GUITabPage> tpRunLog;
 			NN<UI::GUIListView> lvRunLog;
+			NN<UI::GUITabPage> tpTimeout;
+			NN<UI::GUILabel> lblTimeoutScript;
+			NN<UI::GUITextBox> txtTimeoutScript;
+			NN<UI::GUILabel> lblTimeoutPageLoad;
+			NN<UI::GUITextBox> txtTimeoutPageLoad;
+			NN<UI::GUILabel> lblTimeoutImplicit;
+			NN<UI::GUITextBox> txtTimeoutImplicit;
+			NN<UI::GUILabel> lblTimeoutCommand;
+			NN<UI::GUITextBox> txtTimeoutCommand;
 
 			static void __stdcall OnCommandSelChg(AnyType userObj);
 			static void __stdcall OnTestSelChg(AnyType userObj);

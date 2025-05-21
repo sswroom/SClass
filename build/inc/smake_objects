@@ -1439,6 +1439,7 @@ RTPH264Handler.o: ../../src/Net/RTPH264Handler.cpp
 RTPSvrChannel.o: ../../src/Net/RTPSvrChannel.cpp
 RTPVSource.o: ../../src/Net/RTPVSource.cpp
 RTSPClient.o: ../../src/Net/RTSPClient.cpp
+SAMLAuthMethod.o: ../../src/Net/SAMLAuthMethod.cpp
 SAMLHandler.o: ../../src/Net/SAMLHandler.cpp
 SAMLIdpConfig.o: ../../src/Net/SAMLIdpConfig.cpp
 SAMLLogoutRequest.o: ../../src/Net/SAMLLogoutRequest.cpp

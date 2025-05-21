@@ -338,9 +338,10 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnTimerTick(AnyType userObj)
 		{
 			sb.ClearStr();
 			NN<Net::SSLEngine> ssl;
+			Net::SAMLStatusCode status;
 			if (me->ssl.SetTo(ssl))
 			{
-				if (Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, respNew->ToCString(), sb))
+				if (Net::SAMLUtil::DecryptResponse(ssl, me->core->GetEncFactory(), key, respNew->ToCString(), sb, status))
 				{
 					IO::MemoryReadingStream mstm(sb.v, sb.GetLength());
 					Text::StringBuilderUTF8 sb2;
