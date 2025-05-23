@@ -7,7 +7,7 @@ import * as web from "./web";
 
 declare class KMLFeatureOptions
 {
-	noPopup: boolean;
+	noPopup?: boolean;
 }
 
 export function screenToLatLon(viewer: Viewer, x: number, y: number, ellipsoid: Ellipsoid) : math.Coord2D;
@@ -17,7 +17,7 @@ export function newObjFromGeoJSON(geoJSON: object) : object;
 export function addGeoJSON(viewer: Viewer, geoJSON: object, color: Color, extSize: number): void;
 export function fromCartesian3Array(viewer: Viewer, arr: Cartesian3[]): object[];
 export function fromPolygonGraphics(viewer: Viewer, pg: PolygonGraphics): geometry.Polygon;
-export function createFromKML(feature: kml.Feature | kml.KMLFile, options: KMLFeatureOptions): any;
+export function createFromKML(feature: kml.Feature | kml.KMLFile, options?: KMLFeatureOptions): any;
 export function createFromGeometry(geom: geometry.Vector2D, options: map.GeometryOptions)
 export function parseColor(c: string): web.Color;
 export class CesiumMap extends map.MapControl
