@@ -125,7 +125,6 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 		lutList->Add(lut);
 		this->rgbTable = lut->rgbTable;
 	}
-
 	Media::RGBLUTGen lutGen(this->colorSess);
 	lutGen.GenLRGB_BGRA8(this->rgbTable, this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->sProfile.rtransfer));
 	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], this->sProfile, this->oProfile.primaries, 14);
@@ -357,6 +356,35 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::ColorHandler
 	}
 	else
 	{
+		this->changed = true;
+	}
+}
+
+void Media::ABlend::AlphaBlend8_C8::SetColorSess(Optional<Media::ColorSess> colorSess)
+{
+	Sync::MutexUsage mutUsage(this->mut);
+	NN<Media::ColorSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
+	{
+		nncolorSess->RemoveHandler(*this);
+		this->changed = true;
+	}
+	this->colorSess = colorSess;
+	if (this->colorSess.SetTo(nncolorSess))
+	{
+		nncolorSess->AddHandler(*this);
+		this->changed = true;
+	}
+}
+
+void Media::ABlend::AlphaBlend8_C8::EndColorSess(NN<Media::ColorSess> colorSess)
+{
+	Sync::MutexUsage mutUsage(this->mut);
+	NN<Media::ColorSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess) && nncolorSess == colorSess)
+	{
+		nncolorSess->RemoveHandler(*this);
+		this->colorSess = 0;
 		this->changed = true;
 	}
 }

@@ -513,7 +513,7 @@ void UI::GUIMapControl::ReleaseSelVecList()
 	this->selVecList.DeleteAll();
 }
 
-UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, NN<Map::DrawMapRenderer> renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, NN<Map::DrawMapRenderer> renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng, colorSess)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -546,7 +546,7 @@ UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> pa
 	this->renderer->SetUpdatedHandler(ImageUpdated, this);
 }
 
-UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng, colorSess)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -623,6 +623,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 			img->SetHDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
 			img->SetVDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
 			img->SetColorProfile(this->colorSess->GetRGBParam()->monProfile);
+			img->SetColorSess(this->colorSess);
 		}
 	}
 	mutUsage.EndUse();

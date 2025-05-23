@@ -65,6 +65,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
+	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lbl = ui->NewLabel(*this, CSTR("Drag and drop to add icons"));
 	this->lbl->SetRect(0, 0, 100, 23, false);
@@ -78,7 +79,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->btnCancel = ui->NewButton(this->pnlButtons, CSTR("&Cancel"));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASSNN(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48)));
+	NEW_CLASSNN(this->plIcons, UI::GUIPictureList(ui, *this, core->GetDrawEngine(), true, Math::Size2D<UOSInt>(48, 48), this->colorSess));
 	this->plIcons->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->plIcons->HandleDblClk(OnOKClick, this);
 
@@ -89,7 +90,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 	this->imgIndex = imgIndex;
 	this->env = env;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, 0, Media::AT_ALPHA_ALL_FF));
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerRGB_C8(4, 3, color, color, this->colorSess, Media::AT_ALPHA_ALL_FF));
 	this->parsers = core->GetParserList();
 	this->UpdateImages();
 	this->plIcons->SetSelectedIndex(imgIndex);
@@ -99,10 +100,12 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 SSWR::AVIRead::AVIRGISImageForm::~AVIRGISImageForm()
 {
 	this->resizer.Delete();
+	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRGISImageForm::OnMonitorChanged()
 {
+	this->colorSess->ChangeMonitor(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 

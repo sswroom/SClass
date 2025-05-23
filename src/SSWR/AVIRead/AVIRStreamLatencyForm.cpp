@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClie
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLatency = this->tcMain->AddTabPage(CSTR("Latency (ms)"));
-	this->rlcLatency = ui->NewRealtimeLineChart(this->tpLatency, this->core->GetDrawEngine(), 1, 256, 1000);
+	this->rlcLatency = ui->NewRealtimeLineChart(this->tpLatency, this->core->GetDrawEngine(), 1, 256, 1000, 0);
 	this->rlcLatency->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));

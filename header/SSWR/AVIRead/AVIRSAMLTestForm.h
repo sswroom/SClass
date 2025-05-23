@@ -54,6 +54,8 @@ namespace SSWR
 			NN<UI::GUITextBox> txtSignKey;
 			NN<UI::GUILabel> lblHashType;
 			NN<UI::GUIComboBox> cboHashType;
+			NN<UI::GUILabel> lblAuthMethod;
+			NN<UI::GUIComboBox> cboAuthMethod;
 			NN<UI::GUILabel> lblSSOPath;
 			NN<UI::GUITextBox> txtSSOPath;
 			NN<UI::GUILabel> lblMetadataPath;
@@ -108,6 +110,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnIdpMetadataClicked(AnyType userObj);
 			static void __stdcall OnHashTypeChanged(AnyType userObj);
+			static void __stdcall OnAuthMethodChanged(AnyType userObj);
 			static void __stdcall OnSSOResponse(AnyType userObj, NN<Net::SAMLSSOResponse> resp);
 			void ClearCACerts();
 			Optional<Crypto::Cert::X509Key> CreateSAMLKey();

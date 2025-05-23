@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl>
 	this->prgFile = ui->NewProgressBar(this->pnlStatus, 0);
 	this->prgFile->SetRect(0, 0, 100, 24, false);
 	this->prgFile->SetDockType(UI::GUIControl::DOCK_BOTTOM);
- 	this->rlcSpeed = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 350, 500);
+ 	this->rlcSpeed = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 350, 500, 0);
 	this->rlcSpeed->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->pnlTasks = ui->NewPanel(this->tpTasks);

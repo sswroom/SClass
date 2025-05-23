@@ -45,7 +45,7 @@ UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN
 	this->txtStatus->SetRect(0, 0, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->txtView, UI::GUITextFileView(ui, *this, deng));
+	NEW_CLASS(this->txtView, UI::GUITextFileView(ui, *this, deng, 0));
 	this->txtView->SetCodePage(codePage);
 	this->txtView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->HandleDropFiles(OnFileDrop, this);

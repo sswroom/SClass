@@ -962,7 +962,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->txtStatusTimeLeft = ui->NewTextBox(this->pnlStatus, CSTR(""));
 	this->txtStatusTimeLeft->SetRect(760, 24, 100, 23, false);
 	this->txtStatusTimeLeft->SetReadOnly(true);
-	this->rlcStatus = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000);
+	this->rlcStatus = ui->NewRealtimeLineChart(this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000, 0);
 	this->rlcStatus->SetRect(0, 0, 100, 360, false);
 	this->rlcStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->vspStatus = ui->NewVSplitter(this->tpStatus, 3, true);

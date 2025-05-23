@@ -876,6 +876,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	this->wgs84CSys.Delete();
 	this->ssl.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

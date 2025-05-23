@@ -15,6 +15,7 @@ namespace UI
 		ClassData *clsData;
 		void *drawFont;
 		Optional<Media::DrawImage> drawBuff;
+		Optional<Media::ColorSess> colorSess;
 
 	protected:	
 		UInt32 pageLineCnt;
@@ -45,7 +46,7 @@ namespace UI
 		void GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height);
 		void SetCaretPos(OSInt scnX, OSInt scnY);
 	public:
-		GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
+		GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess);
 		virtual ~GUITextView();
 
 		virtual Text::CStringNN GetObjectClass() const;

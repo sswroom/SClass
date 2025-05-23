@@ -38,14 +38,14 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSI
 	{
 		atype = Media::AT_PREMUL_ALPHA;
 	}
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype, 0));
 	return dimg;
 }
 
-NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
+NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br, Optional<Media::ColorSess> colorSess)
 {
 	NN<Media::GTKDrawImage> dimg;
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_IGNORE_ALPHA));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_IGNORE_ALPHA, colorSess));
 	return dimg;
 }
 
@@ -111,6 +111,10 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
+				this->iab.SetColorSess(0);
+				this->iab.SetSourceProfile(img->info.color);
+				this->iab.SetDestProfile(img->info.color);
+				this->iab.SetOutputProfile(img->info.color);
 				this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 			}
 			else
@@ -132,6 +136,10 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
+				this->iab.SetColorSess(0);
+				this->iab.SetSourceProfile(img->info.color);
+				this->iab.SetDestProfile(img->info.color);
+				this->iab.SetOutputProfile(img->info.color);
 				this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 			}
 			else
@@ -171,6 +179,11 @@ Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
 	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img.Ptr();
 	DEL_CLASS(dimg);
 	return true;
+}
+
+void Media::GTKDrawEngine::EndColorSess(NN<Media::ColorSess> colorSess)
+{
+	this->iab.EndColorSess(colorSess);
 }
 
 Media::GTKDrawFont::GTKDrawFont(Text::CStringNN fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
@@ -304,7 +317,7 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;
@@ -312,6 +325,7 @@ Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr
 	this->tl = tl;
 	this->info.hdpi = 96.0;
 	this->info.vdpi = 96.0;
+	this->colorSess = colorSess;
 }
 
 Media::GTKDrawImage::~GTKDrawImage()
@@ -411,6 +425,11 @@ Optional<Media::EXIFData> Media::GTKDrawImage::GetEXIF() const
 Media::PixelFormat Media::GTKDrawImage::GetPixelFormat() const
 {
 	return this->info.pf;
+}
+
+void Media::GTKDrawImage::SetColorSess(Optional<Media::ColorSess> colorSess)
+{
+	this->colorSess = colorSess;
 }
 
 Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
@@ -907,6 +926,7 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		}
 		else
 		{
+			this->eng->iab.SetColorSess(this->colorSess);
 			this->eng->iab.SetSourceProfile(gimg->info.color);
 			this->eng->iab.SetDestProfile(this->info.color);
 			this->eng->iab.SetOutputProfile(this->info.color);
@@ -981,6 +1001,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	}
 	else //////////////////////////////////////////
 	{
+		this->eng->iab.SetColorSess(this->colorSess);
 		this->eng->iab.SetSourceProfile(img->info.color);
 		this->eng->iab.SetDestProfile(this->info.color);
 		this->eng->iab.SetOutputProfile(this->info.color);
@@ -1076,6 +1097,7 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 		}
 		else
 		{
+			this->eng->iab.SetColorSess(this->colorSess);
 			this->eng->iab.SetSourceProfile(gimg->info.color);
 			this->eng->iab.SetDestProfile(this->info.color);
 			this->eng->iab.SetOutputProfile(this->info.color);
@@ -1286,7 +1308,7 @@ UOSInt Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 NN<Media::RasterImage> Media::GTKDrawImage::Clone() const
 {
 	NN<Media::GTKDrawImage> dimg;
-	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype, this->colorSess));
 	return dimg;
 }
 

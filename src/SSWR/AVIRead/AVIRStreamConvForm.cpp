@@ -249,7 +249,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientCont
 	this->btnStream1 = ui->NewButton(this->pnlStream1, CSTR("&Open"));
 	this->btnStream1->SetRect(4, 76, 75, 23, false);
 	this->btnStream1->HandleButtonClick(OnStream1Clicked, this);
-	this->rlcStream1 = ui->NewRealtimeLineChart(this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000);
+	this->rlcStream1 = ui->NewRealtimeLineChart(this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000, 0);
 	this->rlcStream1->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hspStream = ui->NewHSplitter(*this, 3, false);
 
@@ -268,7 +268,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientCont
 	this->btnStream2 = ui->NewButton(this->pnlStream2, CSTR("&Open"));
 	this->btnStream2->SetRect(4, 76, 75, 23, false);
 	this->btnStream2->HandleButtonClick(OnStream2Clicked, this);
-	this->rlcStream2 = ui->NewRealtimeLineChart(this->grpStream2, this->core->GetDrawEngine(), 1, 120, 1000);
+	this->rlcStream2 = ui->NewRealtimeLineChart(this->grpStream2, this->core->GetDrawEngine(), 1, 120, 1000, 0);
 	this->rlcStream2->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->AddTimer(1000, OnTimerTick, this);

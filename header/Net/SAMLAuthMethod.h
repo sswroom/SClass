@@ -12,7 +12,13 @@ namespace Net
 		TLSClient,
 		X509,
 		WindowsAuth,
-		Kerberos
+		Kerberos,
+		PGP,
+		SecureRemotePassword,
+		XMLDSig,
+		SPKI,
+		Smartcard,
+		SmartcardPKI
 	};
 
 	Text::CStringNN SAMLAuthMethodGetName(SAMLAuthMethod authMethod);

@@ -9,7 +9,7 @@
 
 #define ICONPADDING 10
 
-UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize) : UI::GUICustomDrawVScroll(ui, parent, eng)
+UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize, Optional<Media::ColorSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, eng, colorSess)
 {
 	this->hasBorder = hasBorder;
 	this->iconSize = iconSize;

@@ -274,7 +274,11 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 	NN<Media::ColorSess> colorSess;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		if (this->colorSess.SetTo(colorSess))
+		if (srcProfile->primaries.colorType == Media::ColorProfile::CT_DISPLAY)
+		{
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->primaries, srcProfile->primaries);
+		}
+		else if (this->colorSess.SetTo(colorSess))
 		{
 			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->primaries, colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
@@ -284,6 +288,19 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(UnsafeArray<Int64> rgbTable, NN<const Medi
 			prim.SetColorType(Media::ColorProfile::CT_SRGB);
 			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), prim);
 		}
+	}
+	else if (srcProfile->primaries.colorType == Media::ColorProfile::CT_DISPLAY)
+	{
+		if (this->colorSess.SetTo(colorSess))
+		{
+			Media::ColorProfile::GetConvMatrix(mat1, colorSess->GetRGBParam()->monProfile.GetPrimariesRead(), destPrimaries);
+		}
+		else
+		{
+			Media::ColorProfile::ColorPrimaries prim;
+			prim.SetColorType(Media::ColorProfile::CT_SRGB);
+			Media::ColorProfile::GetConvMatrix(mat1, prim, destPrimaries);
+		}		
 	}
 	else
 	{
@@ -508,6 +525,7 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UnsafeArray<UInt8> rgbTable, NN<const Media
 #else
 	OSInt i;
 #endif
+	
 	i = 65536;
 	while (i-- > 0)
 	{

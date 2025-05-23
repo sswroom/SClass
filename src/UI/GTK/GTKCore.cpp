@@ -305,10 +305,10 @@ NN<UI::GUIRadioButton> UI::GTK::GTKCore::NewRadioButton(NN<GUIClientControl> par
 	return ctrl;
 }
 
-NN<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+NN<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
 {
 	NN<UI::GTK::GTKRealtimeLineChart> ctrl;
-	NEW_CLASSNN(ctrl, UI::GTK::GTKRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
+	NEW_CLASSNN(ctrl, UI::GTK::GTKRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS, colorSess));
 	return ctrl;
 }
 

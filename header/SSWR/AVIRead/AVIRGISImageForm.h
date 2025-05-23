@@ -20,6 +20,7 @@ namespace SSWR
 			NN<Media::Resizer::LanczosResizerRGB_C8> resizer;
 			NN<Map::MapEnv> env;
 			NN<Parser::ParserList> parsers;
+			NN<Media::ColorManagerSess> colorSess;
 			UOSInt imgIndex;
 
 			NN<UI::GUILabel> lbl;

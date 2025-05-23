@@ -6,8 +6,6 @@
 
 namespace Media
 {
-	class GTKImage;
-
 	class GTKDrawEngine : public Media::DrawEngine
 	{
 	public:
@@ -17,12 +15,13 @@ namespace Media
 		virtual ~GTKDrawEngine();
 
 		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
-		NN<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
+		NN<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br, Optional<Media::ColorSess> colorSess);
 		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
 		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm);
 		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
+		virtual void EndColorSess(NN<Media::ColorSess> colorSess);
 	};
 
 	class GTKDrawFont : public DrawFont
@@ -88,9 +87,10 @@ namespace Media
 		void *surface; //cairo_surface_t *
 		void *cr; //cairo_t *
 		Math::Coord2D<OSInt> tl;
+		Optional<Media::ColorSess> colorSess;
 
 	public:
-		GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype);
+		GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype, Optional<Media::ColorSess> colorSess);
 		virtual ~GTKDrawImage();
 
 		virtual UOSInt GetWidth() const;
@@ -110,6 +110,7 @@ namespace Media
 		virtual UOSInt GetImgBpl() const;
 		virtual Optional<Media::EXIFData> GetEXIF() const;
 		virtual Media::PixelFormat GetPixelFormat() const;
+		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p); ////////////////////////////////////
 		virtual Bool DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p); ////////////////////////////////////

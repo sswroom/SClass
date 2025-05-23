@@ -103,7 +103,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 		cairo_ps_surface_set_size(surface, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 
 //		wprintf(L"Printing page size: %lf, %lf\r\n", paperWidth, paperHeight);
-		img = me->eng->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(Double2OSInt(paperWidth * 72.0), Double2OSInt(paperHeight * 72.0)));
+		img = me->eng->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>(Double2OSInt(paperWidth * 72.0), Double2OSInt(paperHeight * 72.0)), 0);
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);

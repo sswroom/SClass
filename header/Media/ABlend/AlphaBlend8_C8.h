@@ -61,6 +61,9 @@ namespace Media
 
 			virtual void YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam);
 			virtual void RGBParamChanged(NN<const Media::ColorHandler::RGBPARAM2> rgbParam);
+
+			void SetColorSess(Optional<Media::ColorSess> colorSess);
+			void EndColorSess(NN<Media::ColorSess> colorSess);
 		};
 	}
 }

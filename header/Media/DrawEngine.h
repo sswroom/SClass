@@ -4,6 +4,7 @@
 #include "Math/Coord2DDbl.h"
 #include "Math/Size2D.h"
 #include "Math/Size2DDbl.h"
+#include "Media/ColorSess.h"
 #include "Media/RasterImage.h"
 #include "Text/CString.h"
 #include "Text/String.h"
@@ -73,6 +74,7 @@ namespace Media
 		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img) = 0;
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img) = 0;
 		virtual Bool DeleteImage(NN<DrawImage> img) = 0;
+		virtual void EndColorSess(NN<Media::ColorSess> colorSess) = 0;
 
 		Optional<DrawImage> ConvImageOrNull(Optional<Media::RasterImage> img)
 		{
@@ -102,6 +104,7 @@ namespace Media
 		virtual UOSInt GetImgBpl() const = 0;
 		virtual Optional<Media::EXIFData> GetEXIF() const = 0;
 		virtual Media::PixelFormat GetPixelFormat() const = 0;
+		virtual void SetColorSess(Optional<Media::ColorSess> colorSess) = 0;
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p) = 0;
 		virtual Bool DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p) = 0;

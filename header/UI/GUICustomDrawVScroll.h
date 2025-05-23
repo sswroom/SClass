@@ -11,6 +11,7 @@ namespace UI
 	{
 	public:
 		NN<Media::DrawEngine> deng;
+		Optional<Media::ColorSess> colorSess;
 		void *clsData;
 		typedef enum
 		{
@@ -33,7 +34,7 @@ namespace UI
 		void ClearBackground(NN<Media::DrawImage> img);
 
 	public:
-		GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
+		GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess);
 		virtual ~GUICustomDrawVScroll();
 
 		virtual Text::CStringNN GetObjectClass() const;

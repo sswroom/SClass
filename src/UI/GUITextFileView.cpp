@@ -879,7 +879,7 @@ void UI::GUITextFileView::ClearFileStatus()
 	this->evtThread.Set();
 }
 
-UI::GUITextFileView::GUITextFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
+UI::GUITextFileView::GUITextFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess) : UI::GUITextView(ui, parent, deng, colorSess), readBuff(READBUFFSIZE)
 {
 	this->fileName = Text::String::NewEmpty();
 	this->fileData = 0;

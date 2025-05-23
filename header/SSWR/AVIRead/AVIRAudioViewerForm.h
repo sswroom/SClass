@@ -38,7 +38,7 @@ namespace SSWR
 			UInt64 totalSample;
 			Media::AudioFormat format;
 
-			static void __stdcall OnSizeChanged(AnyType userObj);
+			static void __stdcall OnSizeUpdated(AnyType userObj);
 			void UpdateImages();
 			void UpdateFreqImage();
 		public:

@@ -6,7 +6,7 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIHexFileView.h"
 
-UI::GUIHexFileView::GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng)
+UI::GUIHexFileView::GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess) : UI::GUITextView(ui, parent, deng, colorSess)
 {
 	this->fs = 0;
 	this->fd = 0;

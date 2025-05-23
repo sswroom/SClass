@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> p
 	this->btnPing = ui->NewButton(this->pnlRequest, CSTR("&Ping"));
 	this->btnPing->SetRect(104, 52, 75, 23, false);
 	this->btnPing->HandleButtonClick(OnPingClicked, this);
-	this->rlcPing = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 2, 600, 1000);
+	this->rlcPing = ui->NewRealtimeLineChart(*this, this->core->GetDrawEngine(), 2, 600, 1000, 0);
 	this->rlcPing->SetRect(0, 0, 100, 100, false);
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->rlcPing->SetUnit(CSTR("ms"));

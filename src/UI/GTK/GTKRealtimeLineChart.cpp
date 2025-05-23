@@ -15,7 +15,7 @@ gboolean UI::GTK::GTKRealtimeLineChart::SignalDraw(GtkWidget *widget, cairo_t *c
 	UI::GTK::GTKRealtimeLineChart *me = (UI::GTK::GTKRealtimeLineChart *)data;
 	UInt32 w = (UInt32)gtk_widget_get_allocated_width((GtkWidget*)me->hwnd);
 	UInt32 h = (UInt32)gtk_widget_get_allocated_height((GtkWidget*)me->hwnd);
-	NN<Media::DrawImage> scn = NN<Media::GTKDrawEngine>::ConvertFrom(me->eng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h));
+	NN<Media::DrawImage> scn = NN<Media::GTKDrawEngine>::ConvertFrom(me->eng)->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)w, (OSInt)h), me->colorSess);
 	me->OnPaint(scn);
 	me->eng->DeleteImage(scn);
 	return FALSE;
@@ -32,8 +32,9 @@ Int32 UI::GTK::GTKRealtimeLineChart::SignalTick(void *userObj)
 	return 1;
 }
 
-UI::GTK::GTKRealtimeLineChart::GTKRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
+UI::GTK::GTKRealtimeLineChart::GTKRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval, Optional<Media::ColorSess> colorSess) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
 {
+	this->colorSess = colorSess;
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
 	parent->AddChild(*this);
 	this->Show();

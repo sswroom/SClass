@@ -15,6 +15,7 @@ namespace UI
 	{
 	public:
 		NN<Media::DrawEngine> eng;
+		Optional<Media::ColorSess> colorSess;
 	private:
 		IO::Library *lib;
 		void *clsData;
@@ -32,7 +33,7 @@ namespace UI
 		void InitJS();
 
 	public:
-		GUICustomDraw(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng);
+		GUICustomDraw(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess);
 		virtual ~GUICustomDraw();
 
 		virtual Text::CStringNN GetObjectClass() const;

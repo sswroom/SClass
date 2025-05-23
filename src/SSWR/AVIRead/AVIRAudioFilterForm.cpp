@@ -1075,7 +1075,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(Optional<UI::GUIClientCo
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
 	this->tpVolLevel = this->tcFilter->AddTabPage(CSTR("VolLevel"));
-	this->rlcVolLevel = ui->NewRealtimeLineChart(this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100);
+	this->rlcVolLevel = ui->NewRealtimeLineChart(this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100, 0);
 	this->rlcVolLevel->SetRect(0, 0, 100, 200, false);
 	this->rlcVolLevel->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->rlcVolLevel->SetUnit(CSTR("dB"));

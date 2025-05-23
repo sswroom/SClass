@@ -18,7 +18,7 @@ typedef enum
 	MNU_END
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRAudioViewerForm::OnSizeChanged(AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRAudioViewerForm::OnSizeUpdated(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRAudioViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioViewerForm>();
 	me->UpdateImages();
@@ -276,7 +276,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 	this->currSample = 0;
 	this->totalSample = (UInt64)this->audSrc->GetSampleCount();
 
-	this->HandleSizeChanged(OnSizeChanged, this);
+	this->HandleSizeChanged(OnSizeUpdated, this);
 	this->UpdateImages();
 }
 

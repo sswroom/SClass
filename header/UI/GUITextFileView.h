@@ -73,7 +73,7 @@ namespace UI
 		void EventTextPosUpdated();
 		void ClearFileStatus();
 	public:
-		GUITextFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
+		GUITextFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess);
 		virtual ~GUITextFileView();
 
 		virtual void EventLineUp();
