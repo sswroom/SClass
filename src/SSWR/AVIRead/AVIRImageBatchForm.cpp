@@ -358,6 +358,7 @@ SSWR::AVIRead::AVIRImageBatchForm::~AVIRImageBatchForm()
 	this->filteredImage.Delete();
 	this->resizer.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 
