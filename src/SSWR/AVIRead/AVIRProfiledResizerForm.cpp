@@ -328,6 +328,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::~AVIRProfiledResizerForm()
 {
 	this->resizer.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

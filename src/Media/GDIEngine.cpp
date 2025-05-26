@@ -141,7 +141,7 @@ Optional<Media::DrawImage> Media::GDIEngine::CreateImage32(Math::Size2D<UOSInt> 
 		if (hdcBmp)
 		{
 			SelectObject(hdcBmp, hBmp);
-			NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), size, 32, (void *)hBmp, bmpBits, (void *)hdcBmp, atype));
+			NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), size, 32, (void *)hBmp, bmpBits, (void *)hdcBmp, atype));
 		}
 		else
 		{
@@ -182,7 +182,7 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> s
 		if (hdcBmp)
 		{
 			SelectObject(hdcBmp, hBmp);
-			NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), size, 24, (void *)hBmp, bmpBits, (void *)hdcBmp, Media::AT_IGNORE_ALPHA));
+			NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), size, 24, (void *)hBmp, bmpBits, (void *)hdcBmp, Media::AT_IGNORE_ALPHA));
 		}
 		else
 		{
@@ -193,10 +193,11 @@ Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> s
 	return 0;
 }
 
-NN<Media::DrawImage> Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom)
+NN<Media::DrawImage> Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom, Optional<Media::ColorSess> colorSess)
 {
 	NN<GDIImage> img;
-	NEW_CLASSNN(img, GDIImage(this, Math::Coord2D<OSInt>(left, top), Math::Size2D<UOSInt>((UOSInt)(right - left), (UOSInt)(bottom - top)), 32, 0, 0, hdc, Media::AT_IGNORE_ALPHA));
+	NEW_CLASSNN(img, GDIImage(*this, Math::Coord2D<OSInt>(left, top), Math::Size2D<UOSInt>((UOSInt)(right - left), (UOSInt)(bottom - top)), 32, 0, 0, hdc, Media::AT_IGNORE_ALPHA));
+	img->SetColorSess(colorSess);
 	return img;
 }
 
@@ -279,7 +280,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((UOSInt)bmi.bmiHeader.biWidth, (UOSInt)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
+					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((UOSInt)bmi.bmiHeader.biWidth, (UOSInt)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
 				}
 				else
 				{
@@ -369,7 +370,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
+					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -389,7 +390,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
+					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -427,7 +428,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
+					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>((ULONG)bmi.bmiHeader.biWidth, (ULONG)bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_IGNORE_ALPHA));
 				}
 				else
 				{
@@ -445,7 +446,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 				if (hdcBmp)
 				{
 					SelectObject(hdcBmp, hBmp);
-					NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
+					NEW_CLASS(img, GDIImage(*this, Math::Coord2D<OSInt>(0, 0), Math::Size2D<UOSInt>(bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight), 32, hBmp, pBits, (void*)hdcBmp, Media::AT_ALPHA));
 				}
 				else
 				{
@@ -465,7 +466,7 @@ Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStre
 	return img;
 }
 
-Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> img)
+Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess)
 {
 	if (img->info.fourcc != 0)
 	{
@@ -474,6 +475,7 @@ Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> im
 	NN<Media::GDIImage> gimg;
 	if (!Optional<Media::GDIImage>::ConvertFrom(CreateImage32(img->info.dispSize, img->info.atype)).SetTo(gimg))
 		return 0;
+	gimg->SetColorSess(colorSess);
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
 	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
@@ -534,6 +536,11 @@ Bool Media::GDIEngine::DeleteImage(NN<DrawImage> img)
 	}
 	DEL_CLASS(image);
 	return true;
+}
+
+void Media::GDIEngine::EndColorSess(NN<Media::ColorSess> colorSess)
+{
+	this->iab.EndColorSess(colorSess);
 }
 
 void *Media::GDIEngine::GetBlackPen()
@@ -707,7 +714,7 @@ Int32 Media::GDIFont::GetCodePage()
 	return this->codePage;
 }
 
-Media::GDIImage::GDIImage(GDIEngine *eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GDIImage::GDIImage(NN<GDIEngine> eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, Media::ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->tl = tl;
@@ -720,6 +727,7 @@ Media::GDIImage::GDIImage(GDIEngine *eng, Math::Coord2D<OSInt> tl, Math::Size2D<
 	this->currBrush = 0;
 	this->currFont = 0;
 	this->currPen = 0;
+	this->colorSess = 0;
 	SetBkMode((HDC)this->hdcBmp, TRANSPARENT);
 }
 
@@ -818,11 +826,16 @@ Media::PixelFormat Media::GDIImage::GetPixelFormat() const
 	return this->info.pf;
 }
 
+void Media::GDIImage::SetColorSess(Optional<Media::ColorSess> colorSess)
+{
+	this->colorSess = colorSess;
+}
+
 Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
 	if (this->currPen != p.Ptr())
 	{
-		GDIPen *pen = (GDIPen*)(this->currPen = p.Ptr());
+		GDIPen *pen = (GDIPen*)(this->currPen = p).OrNull();
 		SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 	}
 	if ((((GDIPen*)p.Ptr())->oriColor & 0xff000000))
@@ -837,7 +850,7 @@ Bool Media::GDIImage::DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoi
 {
 	if (this->currPen != p.Ptr())
 	{
-		GDIPen *pen = (GDIPen*)(this->currPen = p.Ptr());
+		GDIPen *pen = (GDIPen*)(this->currPen = p).OrNull();
 		SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 	}
 	if ((((GDIPen*)p.Ptr())->oriColor & 0xff000000))
@@ -854,7 +867,7 @@ Bool Media::GDIImage::DrawPolygonI(UnsafeArray<const Int32> points, UOSInt nPoin
 	{
 		if (this->currPen != nnp.Ptr())
 		{
-			GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
+			GDIPen *pen = (GDIPen*)(this->currPen = nnp).OrNull();
 			SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 		}
 	}
@@ -916,7 +929,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(UnsafeArray<const Int32> points, UnsafeAr
 	{
 		if (this->currPen != nnp.Ptr())
 		{
-			GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
+			GDIPen *pen = (GDIPen*)(this->currPen = nnp).OrNull();
 			SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 		}
 		if ((penWidth = ((Media::GDIPen*)nnp.Ptr())->thick) < 1)
@@ -1219,7 +1232,7 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Option
 				POINT pts[5];
 				if (this->currPen != nnp.Ptr())
 				{
-					GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
+					GDIPen *pen = (GDIPen*)(this->currPen = nnp).OrNull();
 					SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 				}
 				pts[4].x = pts[1].x = pts[0].x = Double2Int32(tl.x);
@@ -1234,7 +1247,7 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Option
 			POINT pts[5];
 			if (this->currPen != nnp.Ptr())
 			{
-				GDIPen *pen = (GDIPen*)(this->currPen = nnp.Ptr());
+				GDIPen *pen = (GDIPen*)(this->currPen = nnp).OrNull();
 				SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 			}
 			pts[4].x = pts[1].x = pts[0].x = Double2Int32(tl.x);
@@ -1949,6 +1962,7 @@ Bool Media::GDIImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 			}
 			if (w > 0 && h > 0)
 			{
+				this->eng->iab.SetColorSess(this->colorSess);
 				this->eng->iab.SetSourceProfile(image->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
 				this->eng->iab.SetOutputProfile(this->info.color);
@@ -2085,7 +2099,7 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 	else
 	{
 		NN<Media::DrawImage> dimg;
-		if (this->eng->ConvImage(img).SetTo(dimg))
+		if (this->eng->ConvImage(img, this->colorSess).SetTo(dimg))
 		{
 			DrawImagePt(dimg, tl);
 			this->eng->DeleteImage(dimg);

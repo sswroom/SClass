@@ -174,6 +174,7 @@ Media::VectorGraph::VectorGraph(UInt32 srid, Double width, Double height, Math::
 	this->unit = unit;
 	this->align = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	this->refEng = refEng;
+	this->colorSess = colorSess;
 }
 
 Media::VectorGraph::~VectorGraph()
@@ -264,6 +265,11 @@ Optional<Media::EXIFData> Media::VectorGraph::GetEXIF() const
 Media::PixelFormat Media::VectorGraph::GetPixelFormat() const
 {
 	return Media::PF_UNKNOWN;
+}
+
+void Media::VectorGraph::SetColorSess(Optional<Media::ColorSess> colorSess)
+{
+	this->colorSess = colorSess;
 }
 
 UOSInt Media::VectorGraph::GetImgBpl() const

@@ -123,7 +123,7 @@ void UI::GUICustomDrawVScroll::OnPaint()
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
 	NN<Media::DrawImage> dimg;
-	dimg = NN<Media::GDIEngine>::ConvertFrom(this->deng)->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top);
+	dimg = NN<Media::GDIEngine>::ConvertFrom(this->deng)->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top, this->colorSess);
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
 	dimg->SetHDPI(hdpi / ddpi * 96.0);
@@ -170,13 +170,14 @@ void UI::GUICustomDrawVScroll::ClearBackground(NN<Media::DrawImage> img)
 	}
 }
 
-UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
+UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());
 	}
 	this->deng = deng;
+	this->colorSess = colorSess;
 
 	UInt32 style = WS_CHILD | WS_VSCROLL | WS_TABSTOP;
 	if (parent->IsChildVisible())

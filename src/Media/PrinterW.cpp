@@ -17,7 +17,7 @@ namespace Media
 		void *hdcPrinter;
 		UInt8 *devMode;
 		NN<PrintHandler> hdlr;
-		Media::GDIEngine *eng;
+		NN<Media::GDIEngine> eng;
 		Optional<Text::String> docName;
 		Bool started;
 		Bool running;
@@ -27,7 +27,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		GDPrintDocument(NN<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NN<PrintHandler> hdlr);
+		GDPrintDocument(NN<Text::String> printerName, UInt8 *devMode, NN<Media::GDIEngine> eng, NN<PrintHandler> hdlr);
 		virtual ~GDPrintDocument();
 
 		Bool IsError();
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::GDPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::GDPrintDocument::GDPrintDocument(NN<Text::String> printerName, UInt8 *devMode, Media::GDIEngine *eng, NN<PrintHandler> hdlr)
+Media::GDPrintDocument::GDPrintDocument(NN<Text::String> printerName, UInt8 *devMode, NN<Media::GDIEngine> eng, NN<PrintHandler> hdlr)
 {
 	this->devMode = devMode;
 	this->eng = eng;
@@ -386,7 +386,7 @@ Optional<Media::PrintDocument> Media::Printer::StartPrint(NN<Media::PrintHandler
 	Media::GDPrintDocument *doc;
 	if (this->devMode == 0)
 		return 0;
-	NEW_CLASS(doc, Media::GDPrintDocument(this->printerName, this->devMode, (Media::GDIEngine*)eng.Ptr(), hdlr));
+	NEW_CLASS(doc, Media::GDPrintDocument(this->printerName, this->devMode, NN<Media::GDIEngine>::ConvertFrom(eng), hdlr));
 	if (doc->IsError())
 	{
 		DEL_CLASS(doc);

@@ -84,21 +84,17 @@ namespace UtilUI
 		NN<UI::GUIButton> btnCancel;
 
 		ColorType colorType;
-		Double rVal;
-		Double gVal;
-		Double bVal;
+		Math::Vector3 rgbVal;
 		Double aVal;
 		Bool autoTextUpdate;
 		ColorType textUpdating;
 		ColorCorrType colorCorr;
-		Media::ColorProfile *colorProfile;
+		NN<Media::ColorProfile> colorProfile;
 		Bool alphaShown;
 
-		Double mainX;
-		Double mainY;
-		Double mainZ;
-		Media::StaticImage *mainImg;
-		Media::StaticImage *subImg;
+		Math::Vector3 mainXYZ;
+		NN<Media::StaticImage> mainImg;
+		NN<Media::StaticImage> subImg;
 		NN<Media::ColorManager> colorMgr;
 		NN<Media::ColorManagerSess> colorSess;
 		Optional<Media::MonitorMgr> monMgr;
@@ -106,7 +102,7 @@ namespace UtilUI
 		Bool mainDowned;
 
 		UOSInt genThreadCnt;
-		Sync::Event *genEvt;
+		NN<Sync::Event> genEvt;
 		UnsafeArray<ThreadStat> genStats;
 
 		static void __stdcall OnOKClicked(AnyType userObj);
@@ -139,12 +135,12 @@ namespace UtilUI
 		static void __stdcall OnAlphaChange(AnyType userObj);
 		static UInt32 __stdcall GenThread(AnyType userObj);
 
-		void XYZ2RGB(Double x, Double y, Double z, Double *r, Double *g, Double *b);
-		static void __inline YIQ2RGB(Double y, Double i, Double q, Double *r, Double *g, Double *b);
-		static void __inline HSV2RGB(Double h, Double s, Double v, Double *r, Double *g, Double *b);
-		void RGB2XYZ(Double r, Double g, Double b, Double *x, Double *y, Double *z);
-		static void __inline RGB2YIQ(Double r, Double g, Double b, Double *y, Double *i, Double *q);
-		static void __inline RGB2HSV(Double r, Double g, Double b, Double *h, Double *s, Double *v);
+		Math::Vector3 XYZ2RGB(Math::Vector3 xyz);
+		static Math::Vector3 YIQ2RGB(Math::Vector3 yiq);
+		static Math::Vector3 HSV2RGB(Math::Vector3 hsv);
+		Math::Vector3 RGB2XYZ(Math::Vector3 rgb);
+		static Math::Vector3 RGB2YIQ(Math::Vector3 rgb);
+		static Math::Vector3 RGB2HSV(Math::Vector3 rgb);
 
 		void GenMainImageInner(UnsafeArray<UInt8> imgPtr, UOSInt startIndex, UOSInt endIndex, UOSInt w, UOSInt h);
 		void GenMainImage();

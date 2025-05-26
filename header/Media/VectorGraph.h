@@ -76,6 +76,7 @@ namespace Media
 
 	private:
 		NN<Media::DrawEngine> refEng;
+		Optional<Media::ColorSess> colorSess;
 		Media::ColorProfile colorProfile;
 		UInt32 srid;
 		Math::Size2DDbl size;
@@ -110,6 +111,7 @@ namespace Media
 		virtual UOSInt GetImgBpl() const;
 		virtual Optional<Media::EXIFData> GetEXIF() const;
 		virtual Media::PixelFormat GetPixelFormat() const;
+		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p);
 		virtual Bool DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen> p);

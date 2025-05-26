@@ -4134,7 +4134,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 									{
 										if (img->ToB8G8R8A8())
 										{
-											currLayer->img = this->drawEng->ConvImage(img);
+											currLayer->img = this->drawEng->ConvImage(img, 0);
 											obj.Delete();
 										}
 										else

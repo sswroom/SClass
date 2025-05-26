@@ -5,7 +5,6 @@
 
 Media::VectorDocument::VectorDocument(UInt32 srid, NN<Media::DrawEngine> refEng) : IO::ParsedObject(CSTR("Untitled"))
 {
-	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;
 	this->srid = srid;
 	this->refEng = refEng;
@@ -21,7 +20,6 @@ Media::VectorDocument::VectorDocument(UInt32 srid, NN<Media::DrawEngine> refEng)
 
 Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NN<Media::DrawEngine> refEng) : IO::ParsedObject(name)
 {
-	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;
 	this->srid = srid;
 	this->refEng = refEng;
@@ -38,15 +36,14 @@ Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NN<Medi
 Media::VectorDocument::~VectorDocument()
 {
 	UOSInt i;
-	Media::VectorGraph *graph;
-	i = this->items->GetCount();
+	NN<Media::VectorGraph> graph;
+	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		graph = this->items->GetItem(i);
-		DEL_CLASS(graph);
+		graph = this->items.GetItemNoCheck(i);
+		graph.Delete();
 	}
-	DEL_CLASS(this->items);
-	SDEL_STRING(this->docName);
+	OPTSTR_DEL(this->docName);
 	SDEL_TEXT(this->author);
 	SDEL_TEXT(this->subject);
 	SDEL_TEXT(this->keywords);
@@ -59,7 +56,7 @@ NN<Media::VectorGraph> Media::VectorDocument::AddGraph(Double width, Double heig
 	NN<Media::VectorGraph> graph;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASSNN(graph, Media::VectorGraph(this->srid, width, height, unit, this->refEng, color));
-	this->items->Add(graph.Ptr());
+	this->items.Add(graph);
 	return graph;
 }
 
@@ -68,12 +65,12 @@ void Media::VectorDocument::SetDocName(Text::CString docName)
 	Text::CStringNN nndocName;
 	if (docName.SetTo(nndocName))
 	{
-		SDEL_STRING(this->docName);
-		this->docName = Text::String::New(nndocName).Ptr();
+		OPTSTR_DEL(this->docName);
+		this->docName = Text::String::New(nndocName);
 	}
 }
 
-Text::String *Media::VectorDocument::GetDocName() const
+Optional<Text::String> Media::VectorDocument::GetDocName() const
 {
 	return this->docName;
 }
@@ -175,26 +172,26 @@ UnsafeArrayOpt<const UTF8Char> Media::VectorDocument::GetProducer() const
 
 UOSInt Media::VectorDocument::GetCount() const
 {
-	return this->items->GetCount();
+	return this->items.GetCount();
 }
 
-Media::VectorGraph *Media::VectorDocument::GetItem(UOSInt Index) const
+Optional<Media::VectorGraph> Media::VectorDocument::GetItem(UOSInt index) const
 {
-	return this->items->GetItem(Index);
+	return this->items.GetItem(index);
 }
 
 Bool Media::VectorDocument::BeginPrint(NN<PrintDocument> doc)
 {
-	Media::VectorGraph *graph;
+	NN<Media::VectorGraph> graph;
 	Double width;
 	Double height;
+	NN<Text::String> docName;
 	this->currGraph = 0;
 	this->currDoc = doc;
-	graph = this->items->GetItem(this->currGraph);
-	if (graph == 0)
+	if (!this->items.GetItem(this->currGraph).SetTo(graph))
 		return false;
-	if (this->docName)
-		doc->SetDocName(this->docName->ToCString());
+	if (this->docName.SetTo(docName))
+		doc->SetDocName(docName->ToCString());
 	width = graph->GetVisibleWidthMM();
 	height = graph->GetVisibleHeightMM();
 	if (width > height)
@@ -212,17 +209,15 @@ Bool Media::VectorDocument::BeginPrint(NN<PrintDocument> doc)
 
 Bool Media::VectorDocument::PrintPage(NN<Media::DrawImage> printPage)
 {
-	Media::VectorGraph *graph;
+	NN<Media::VectorGraph> graph;
 	Double width;
 	Double height;
-	graph = this->items->GetItem(this->currGraph);
 	NN<Media::PrintDocument> doc;
-	if (!this->currDoc.SetTo(doc) || graph == 0)
+	if (!this->currDoc.SetTo(doc) || !this->items.GetItem(this->currGraph).SetTo(graph))
 		return false;
 	graph->DrawTo(printPage, 0);
 	this->currGraph++;
-	graph = this->items->GetItem(this->currGraph);
-	if (graph == 0)
+	if (!this->items.GetItem(this->currGraph).SetTo(graph))
 		return false;
 	width = graph->GetVisibleWidthMM();
 	height = graph->GetVisibleHeightMM();

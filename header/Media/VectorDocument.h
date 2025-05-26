@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VECTORDOCUMENT
 #define _SM_MEDIA_VECTORDOCUMENT
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/ParsedObject.h"
 #include "Math/Unit/Distance.h"
 #include "Media/PrintDocument.h"
@@ -8,16 +8,16 @@
 
 namespace Media
 {
-	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Media::VectorGraph*>, public Media::PrintHandler
+	class VectorDocument : public IO::ParsedObject, public Data::ReadingList<Optional<Media::VectorGraph>>, public Media::PrintHandler
 	{
 	private:
 		UOSInt currGraph;
-		Data::ArrayList<Media::VectorGraph*> *items;
+		Data::ArrayListNN<Media::VectorGraph> items;
 		Optional<Media::PrintDocument> currDoc;
 		NN<Media::DrawEngine> refEng;
 		UInt32 srid;
 
-		Text::String *docName;
+		Optional<Text::String> docName;
 		UnsafeArrayOpt<const UTF8Char> author;
 		UnsafeArrayOpt<const UTF8Char> subject;
 		UnsafeArrayOpt<const UTF8Char> keywords;
@@ -33,7 +33,7 @@ namespace Media
 
 		NN<Media::VectorGraph> AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
 		void SetDocName(Text::CString docName);
-		Text::String *GetDocName() const;
+		Optional<Text::String> GetDocName() const;
 		void SetCreateTime(Int64 createTimeTicks);
 		Int64 GetCreateTime() const;
 		void SetModifyTime(Int64 modTimeTicks);
@@ -50,7 +50,7 @@ namespace Media
 		UnsafeArrayOpt<const UTF8Char> GetProducer() const;
 
 		virtual UOSInt GetCount() const;
-		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
+		virtual Optional<Media::VectorGraph> GetItem(UOSInt index) const;
 
 		virtual Bool BeginPrint(NN<PrintDocument> doc);
 		virtual Bool PrintPage(NN<Media::DrawImage> printPage); //return has more pages 

@@ -63,7 +63,7 @@ namespace UI
 		Int32 fsW;
 		Int32 fsH;
 
-		UI::GUIForm *currDialog;
+		Optional<UI::GUIForm> currDialog;
 		Bool isDialog;
 		void *hAcc;
 	protected:
@@ -78,7 +78,7 @@ namespace UI
 		void UpdateHAcc();
 		GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd);
 	public:
-		static GUIForm *FindForm(NN<UI::GUICore> ui, const UTF8Char *formName);
+		static Optional<GUIForm> FindForm(NN<UI::GUICore> ui, Text::CStringNN formName);
 
 	public:
 		GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NN<UI::GUICore> ui);

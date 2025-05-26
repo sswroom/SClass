@@ -11,7 +11,6 @@ UI::DObj::DObjHandler::DObjHandler(NN<Media::DrawEngine> deng)
 {
 	this->shown = false;
 	this->deng = deng;
-	this->colorSess = 0;
 	this->moveObj = 0;
 	this->downObj = 0;
 }
@@ -19,11 +18,6 @@ UI::DObj::DObjHandler::DObjHandler(NN<Media::DrawEngine> deng)
 UI::DObj::DObjHandler::~DObjHandler()
 {
 	this->objList.DeleteAll();
-}
-
-void UI::DObj::DObjHandler::SetColorSess(Media::ColorManagerSess *colorSess)
-{
-	this->colorSess = colorSess;
 }
 
 void UI::DObj::DObjHandler::ClearObjects()

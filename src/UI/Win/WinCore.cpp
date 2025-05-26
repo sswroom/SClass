@@ -355,10 +355,10 @@ NN<UI::GUIRadioButton> UI::Win::WinCore::NewRadioButton(NN<GUIClientControl> par
 	return ctrl;
 }
 
-NN<UI::GUIRealtimeLineChart> UI::Win::WinCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+NN<UI::GUIRealtimeLineChart> UI::Win::WinCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS, Optional<Media::ColorSess> colorSess)
 {
 	NN<UI::Win::WinRealtimeLineChart> ctrl;
-	NEW_CLASSNN(ctrl, UI::Win::WinRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
+	NEW_CLASSNN(ctrl, UI::Win::WinRealtimeLineChart(*this, parent, eng, colorSess, lineCnt, sampleCnt, updateIntervalMS));
 	return ctrl;
 }
 

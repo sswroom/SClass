@@ -22,6 +22,8 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 	{
 		if (!this->colorSess.SetTo(colorSess))
 		{
+			printf("RGBLUTGen: Missing color session\r\n");
+			IO::DebugTool::PrintStackTrace();
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			bTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -80,6 +82,8 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 	NN<Media::ColorSess> colorSess;
 	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.IsNull())
 	{
+		printf("RGBLUTGen: Missing color session\r\n");
+		IO::DebugTool::PrintStackTrace();
 		tranType = Media::CS::TRANT_sRGB;
 		rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -87,6 +91,8 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.IsNull())
 	{
+		printf("RGBLUTGen: Missing color session\r\n");
+		IO::DebugTool::PrintStackTrace();
 		tranType = Media::CS::TRANT_sRGB;
 		rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -148,6 +154,8 @@ void Media::RGBLUTGen::SetSrcTran(NN<Media::CS::TransferParam> outTran, NN<const
 	{
 		if (!this->colorSess.SetTo(colorSess))
 		{
+			printf("RGBLUTGen: Missing color session\r\n");
+			IO::DebugTool::PrintStackTrace();
 			outTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		}
 		else
@@ -192,11 +200,15 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTran(NN<Media::CS::TransferPara
 	NN<Media::ColorSess> colorSess;
 	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.IsNull())
 	{
+		printf("RGBLUTGen: Missing color session\r\n");
+		IO::DebugTool::PrintStackTrace();
 		tranType = Media::CS::TRANT_sRGB;
 		outTran->Set(Media::CS::TRANT_sRGB, 2.2);
 	}
 	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.IsNull())
 	{
+		printf("RGBLUTGen: Missing color session\r\n");
+		IO::DebugTool::PrintStackTrace();
 		tranType = Media::CS::TRANT_sRGB;
 		outTran->Set(Media::CS::TRANT_sRGB, 2.2);
 	}

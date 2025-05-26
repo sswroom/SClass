@@ -546,9 +546,10 @@ void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 	::SetCaretPos((int)scnX, (int)scnY);
 }
 
-UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
+UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, Optional<Media::ColorSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
+	this->colorSess = colorSess;
 	this->drawBuff = 0;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;

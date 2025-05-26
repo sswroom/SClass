@@ -169,7 +169,7 @@ void UI::GUIPictureList::Add(NN<Media::RasterImage> img)
 	NN<Media::DrawImage> dimg;
 	if (this->resizer->ProcessToNew(simg).SetTo(nsimg))
 	{
-		if (this->deng->ConvImage(nsimg).SetTo(dimg))
+		if (this->deng->ConvImage(nsimg, this->colorSess).SetTo(dimg))
 		{
 			this->imgList.Add(dimg);
 		}

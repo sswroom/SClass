@@ -30,6 +30,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnStandard;
 			NN<UI::GUIButton> btn1x;
 			NN<UI::GUIButton> btnLaptop;
+			NN<UI::GUIButton> btnEDID;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
@@ -43,6 +44,7 @@ namespace SSWR
 			static void __stdcall OnStandardClicked(AnyType userObj);
 			static void __stdcall On1xClicked(AnyType userObj);
 			static void __stdcall OnLaptopClicked(AnyType userObj);
+			static void __stdcall OnEDIDClicked(AnyType userObj);
 			void UpdatePreview();
 		public:
 			AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

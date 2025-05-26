@@ -671,6 +671,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->pnlCalGreen->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCalGreenB = ui->NewLabel(this->pnlCalGreen, CSTR("Brightness"));
 	this->lblCalGreenB->SetRect(8, 8, 120, 16, false);
+	this->lblCalGreenB->SetBGColor(0xffc0ffc0);
 	this->hsbCalGreenB = ui->NewHScrollBar(this->pnlCalGreen, 16);
 	this->hsbCalGreenB->SetRect(128, 8, 392, 17, false);
 	this->hsbCalGreenB->InitScrollBar(0, 4099, 1000, 100);
@@ -699,6 +700,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->pnlCalBlue->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lblCalBlueB = ui->NewLabel(this->pnlCalBlue, CSTR("Brightness"));
 	this->lblCalBlueB->SetRect(8, 8, 120, 16, false);
+	this->lblCalBlueB->SetBGColor(0xffc0c0ff);
 	this->hsbCalBlueB = ui->NewHScrollBar(this->pnlCalBlue, 16);
 	this->hsbCalBlueB->SetRect(128, 8, 392, 17, false);
 	this->hsbCalBlueB->InitScrollBar(0, 4099, 1000, 100);

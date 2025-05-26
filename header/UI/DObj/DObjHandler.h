@@ -14,7 +14,6 @@ namespace UI
 		class DObjHandler
 		{
 		protected:
-			Media::ColorManagerSess *colorSess;
 			Sync::Mutex objMut;
 			Sync::Mutex updMut;
 			Data::ArrayListNN<DirectObject> objList;
@@ -30,7 +29,7 @@ namespace UI
 			DObjHandler(NN<Media::DrawEngine> deng);
 			virtual ~DObjHandler();
 
-			void SetColorSess(Media::ColorManagerSess *colorSess);
+//			void SetColorSess(Media::ColorManagerSess *colorSess);
 			void ClearObjects();
 			void AddObject(NN<DirectObject> obj);
 			Bool Check(NN<Media::DrawImage> dimg);

@@ -1629,7 +1629,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 							nimg = me->mapResizer->ProcessToNew(img);
 							imgList.Delete();
 							me->mapCurrFile = ufile.Ptr();
-							me->mapCurrImage = me->env->GetDrawEngine()->ConvImageOrNull(nimg);
+							me->mapCurrImage = me->env->GetDrawEngine()->ConvImageOrNull(nimg, me->colorSess);
 							nimg.Delete();
 						}
 						me->mcMap->Redraw();
@@ -2821,6 +2821,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	this->mapEnv.Delete();
 	SDEL_STRING(this->initSelObj);
 	SDEL_STRING(this->initSelImg);
+	this->env->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->colorMgr->DeleteSess(this->colorSess);
 }
 

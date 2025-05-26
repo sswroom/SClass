@@ -18,7 +18,7 @@ namespace Media
 		NN<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br, Optional<Media::ColorSess> colorSess);
 		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
 		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm);
-		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess);
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
 		virtual void EndColorSess(NN<Media::ColorSess> colorSess);

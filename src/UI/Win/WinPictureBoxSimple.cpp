@@ -152,7 +152,7 @@ void UI::Win::WinPictureBoxSimple::UpdatePreview()
 	NN<Media::StaticImage> simg;
 	if (this->currImage.SetTo(simg))
 	{
-		this->prevImageD = this->eng->ConvImage(simg);
+		this->prevImageD = this->eng->ConvImage(simg, 0);
 	}
 	this->Redraw();
 }

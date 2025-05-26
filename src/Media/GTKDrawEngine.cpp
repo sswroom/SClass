@@ -76,7 +76,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 	NN<Media::RasterImage> img;
 	if (nnimgList->GetImage(0, 0).SetTo(img))
 	{
-		dimg = this->ConvImage(img);
+		dimg = this->ConvImage(img, 0);
 	}
 	nnimgList.Delete();
 	return dimg;
@@ -87,7 +87,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::Seekable
 	return 0;
 }
 
-Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img)
+Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess)
 {
 	if (img->info.fourcc != 0)
 	{
@@ -111,7 +111,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab.SetColorSess(0);
+				this->iab.SetColorSess(colorSess);
 				this->iab.SetSourceProfile(img->info.color);
 				this->iab.SetDestProfile(img->info.color);
 				this->iab.SetOutputProfile(img->info.color);
@@ -136,7 +136,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
-				this->iab.SetColorSess(0);
+				this->iab.SetColorSess(colorSess);
 				this->iab.SetSourceProfile(img->info.color);
 				this->iab.SetDestProfile(img->info.color);
 				this->iab.SetOutputProfile(img->info.color);
@@ -943,7 +943,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	if (this->surface == 0)
 	{
 		NN<Media::DrawImage> dimg;
-		if (!this->eng->ConvImage(img).SetTo(dimg))
+		if (!this->eng->ConvImage(img, 0).SetTo(dimg))
 		{
 			return false;
 		}

@@ -29,12 +29,13 @@ namespace Media
 
 		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
 		Optional<GDIImage> CreateImage24(Math::Size2D<UOSInt> size);
-		NN<DrawImage> CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
+		NN<DrawImage> CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom, Optional<Media::ColorSess> colorSess);
 		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
 		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm);
-		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess);
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
+		virtual void EndColorSess(NN<Media::ColorSess> colorSess);
 		void *GetBlackPen();
 		void *GetWhiteBrush();
 	};
@@ -95,14 +96,15 @@ namespace Media
 	class GDIImage : public DrawImage, public RasterImage
 	{
 	private:
-		GDIEngine *eng;
+		NN<GDIEngine> eng;
 		Math::Size2D<UOSInt> size;
 		UInt32 bitCount;
 		Media::DrawEngine::DrawPos strAlign;
 
-		DrawBrush *currBrush;
-		DrawFont *currFont;
-		DrawPen *currPen;
+		Optional<DrawBrush> currBrush;
+		Optional<DrawFont> currFont;
+		Optional<DrawPen> currPen;
+		Optional<Media::ColorSess> colorSess;
 
 		Math::Coord2D<OSInt> tl;
 	public:
@@ -110,7 +112,7 @@ namespace Media
 		void *bmpBits;
 		void *hdcBmp;
 
-		GDIImage(GDIEngine *eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype);
+		GDIImage(NN<GDIEngine> eng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, void *hBmp, void *bmpBits, void *hdcBmp, Media::AlphaType atype);
 		virtual ~GDIImage();
 
 		virtual UOSInt GetWidth() const;
@@ -130,6 +132,7 @@ namespace Media
 		virtual UOSInt GetImgBpl() const;
 		virtual Optional<Media::EXIFData> GetEXIF() const;
 		virtual Media::PixelFormat GetPixelFormat() const;
+		virtual void SetColorSess(Optional<Media::ColorSess> colorSess);
 
 		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen>);
 		virtual Bool DrawPolylineI(UnsafeArray<const Int32> points, UOSInt nPoints, NN<DrawPen>);

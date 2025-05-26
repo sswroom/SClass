@@ -25,14 +25,14 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 			{
 				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 				Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
-				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_ALPHA_ALL_FF);
+				Media::Resizer::LanczosResizerRGB_C8 resizer(4, 3, srgb, dispProfile, Optional<Media::ColorManagerSess>::ConvertFrom(colorSess), Media::AlphaType::AT_ALPHA_ALL_FF);
 				resizer.SetTargetSize(scnSize);
 				resizer.SetResizeAspectRatio(Media::ImageResizer::RAR_KEEPAR);
 				NN<Media::StaticImage> srimg;
 				if (resizer.ProcessToNew(simg).SetTo(srimg))
 				{
 					simg.Delete();
-					this->bmpBuff = this->deng->ConvImage(srimg);
+					this->bmpBuff = this->deng->ConvImage(srimg, this->colorSess);
 					srimg.Delete();
 				}
 				else
@@ -58,11 +58,12 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 	}
 }
 
-UI::DObj::ImageDObjHandler::ImageDObjHandler(NN<Media::DrawEngine> deng, Text::CStringNN fileName) : UI::DObj::DObjHandler(deng)
+UI::DObj::ImageDObjHandler::ImageDObjHandler(NN<Media::DrawEngine> deng, Text::CStringNN fileName, Optional<Media::ColorSess> colorSess) : UI::DObj::DObjHandler(deng)
 {
 	this->bmpBkg = this->deng->LoadImage(fileName);
 	this->bmpBuff = 0;
 	this->bgColor = 0xff000000;
+	this->colorSess = colorSess;
 }
 
 UI::DObj::ImageDObjHandler::~ImageDObjHandler()

@@ -154,17 +154,17 @@ void UI::Win::WinPictureBox::UpdatePreview()
 			NN<Media::StaticImage> tmpImage;
 			if (resizer->ProcessToNew(simg).SetTo(tmpImage))
 			{
-				this->prevImageD = this->eng->ConvImage(tmpImage);
+				this->prevImageD = this->eng->ConvImage(tmpImage, 0);
 				tmpImage.Delete();
 			}
 			else
 			{
-				this->prevImageD = this->eng->ConvImage(simg);
+				this->prevImageD = this->eng->ConvImage(simg, 0);
 			}
 		}
 		else
 		{
-			this->prevImageD = this->eng->ConvImage(simg);
+			this->prevImageD = this->eng->ConvImage(simg, 0);
 		}
 	}
 	this->Redraw();

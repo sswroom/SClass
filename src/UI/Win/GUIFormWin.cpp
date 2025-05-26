@@ -45,6 +45,7 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 	NN<UI::GUIForm> me = NN<UI::GUIForm>::FromPtr((UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA));
 	UI::GUIControl *ctrl;
 	NN<UI::GUIButton> btn;
+	NN<UI::GUIForm> currDialog;
 	RECT rc;
 	NMHDR *nmhdr;
 	UOSInt i;
@@ -124,9 +125,9 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		{
 			if (!me->closingHdlr.func(me->closingHdlr.userObj, CR_USER))
 			{
-				if (me->currDialog)
+				if (me->currDialog.SetTo(currDialog))
 				{
-					me->currDialog->Close();
+					currDialog->Close();
 				}
 				DestroyWindow((HWND)hWnd);
 			}
@@ -137,9 +138,9 @@ OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 		}
 		else
 		{
-			if (me->currDialog)
+			if (me->currDialog.SetTo(currDialog))
 			{
-				me->currDialog->Close();
+				currDialog->Close();
 			}
 			DestroyWindow((HWND)hWnd);
 		}
@@ -406,10 +407,10 @@ UI::GUIForm::GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientCon
 	this->fs = false;
 }
 
-UI::GUIForm *UI::GUIForm::FindForm(NN<UI::GUICore> ui, const UTF8Char *formName)
+Optional<UI::GUIForm> UI::GUIForm::FindForm(NN<UI::GUICore> ui, Text::CStringNN formName)
 {
 	HWND hWnd;
-	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(formName);
+	UnsafeArray<const WChar> wptr = Text::StrToWCharNew(formName.v);
 	hWnd = FindWindowW(L"WinForm", wptr.Ptr());
 	Text::StrDelNew(wptr);
 	if (hWnd == 0)
@@ -647,9 +648,10 @@ void UI::GUIForm::MakeForeground()
 
 void UI::GUIForm::Close()
 {
-	if (this->currDialog)
+	NN<UI::GUIForm> currDialog;
+	if (this->currDialog.SetTo(currDialog))
 	{
-		this->currDialog->Close();
+		currDialog->Close();
 	}
 	DestroyWindow((HWND)hwnd);
 }

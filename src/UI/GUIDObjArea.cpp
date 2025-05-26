@@ -216,11 +216,6 @@ void UI::GUIDObjArea::SetHandler(Optional<UI::DObj::DObjHandler> dobjHdlr)
 	Sync::MutexUsage mutUsage(this->dobjMut);
 	this->dobjHdlr.Delete();
 	this->dobjHdlr = dobjHdlr;
-	NN<UI::DObj::DObjHandler> nndobjHdlr;
-	if (this->dobjHdlr.SetTo(nndobjHdlr))
-	{
-		nndobjHdlr->SetColorSess(this->colorSess.Ptr());
-	}
 }
 
 Text::CStringNN UI::GUIDObjArea::GetObjectClass() const

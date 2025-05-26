@@ -911,6 +911,7 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 		OPTSTR_DEL(loc->ename);
 		MemFreeNN(loc);
 	}
+	this->eng->EndColorSess(this->colorSess);
 	this->colorMgr.DeleteSess(this->colorSess);
 	this->eng.Delete();
 

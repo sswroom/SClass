@@ -71,15 +71,15 @@ namespace Media
 		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype) = 0;
 		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName) = 0;
 		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm) = 0;
-		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img) = 0;
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img, Optional<Media::ColorSess> colorSess) = 0;
 		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img) = 0;
 		virtual Bool DeleteImage(NN<DrawImage> img) = 0;
 		virtual void EndColorSess(NN<Media::ColorSess> colorSess) = 0;
 
-		Optional<DrawImage> ConvImageOrNull(Optional<Media::RasterImage> img)
+		Optional<DrawImage> ConvImageOrNull(Optional<Media::RasterImage> img, Optional<Media::ColorSess> colorSess)
 		{
 			NN<Media::RasterImage> nnimg;
-			if (img.SetTo(nnimg)) return ConvImage(nnimg);
+			if (img.SetTo(nnimg)) return ConvImage(nnimg, colorSess);
 			return 0;
 		}
 	};

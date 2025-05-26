@@ -1732,22 +1732,22 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 				{
 					spotX = spotX * denv->img->GetHDPI() / nnimg->info.hdpi;
 					spotY = spotY * denv->img->GetVDPI() / nnimg->info.vdpi;
-					dimg = this->eng->ConvImage(img2);
+					dimg = this->eng->ConvImage(img2, this->colorSess);
 					img2.Delete();
 				}
 				else
 				{
-					dimg = this->eng->ConvImage(nnimg);
+					dimg = this->eng->ConvImage(nnimg, this->colorSess);
 				}
 			}
 			else
 			{
-				dimg = this->eng->ConvImage(nnimg);
+				dimg = this->eng->ConvImage(nnimg, this->colorSess);
 			}
 		}
 		else
 		{
-			dimg = this->eng->ConvImage(nnimg);
+			dimg = this->eng->ConvImage(nnimg, this->colorSess);
 		}
 		if (dimg.SetTo(gimg))
 		{
@@ -1795,22 +1795,22 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 				{
 					spotX = spotX * denv->img->GetHDPI() / nnimg->info.hdpi;
 					spotY = spotY * denv->img->GetVDPI() / nnimg->info.vdpi;
-					dimg = this->eng->ConvImage(img2);
+					dimg = this->eng->ConvImage(img2, this->colorSess);
 					img2.Delete();
 				}
 				else
 				{
-					dimg = this->eng->ConvImage(nnimg);
+					dimg = this->eng->ConvImage(nnimg, this->colorSess);
 				}
 			}
 			else
 			{
-				dimg = this->eng->ConvImage(nnimg);
+				dimg = this->eng->ConvImage(nnimg, this->colorSess);
 			}
 		}
 		else
 		{
-			dimg = this->eng->ConvImage(nnimg);
+			dimg = this->eng->ConvImage(nnimg, this->colorSess);
 		}
 		if (dimg.SetTo(gimg))
 		{
@@ -2308,7 +2308,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 							newImg->MultiplyAlpha(srcAlpha);
 						}
 						NN<Media::DrawImage> dimg;
-						if (this->eng->ConvImage(newImg).SetTo(dimg))
+						if (this->eng->ConvImage(newImg, this->colorSess).SetTo(dimg))
 						{
 							dimg->SetHDPI(denv->img->GetHDPI());
 							dimg->SetVDPI(denv->img->GetVDPI());

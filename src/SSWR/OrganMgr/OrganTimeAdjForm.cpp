@@ -412,6 +412,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 	this->mapRenderer.Delete();
 	this->gpsTrk.Delete();
 	this->dispImg.Delete();
+	this->env->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->env->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

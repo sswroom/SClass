@@ -1,5 +1,8 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
+#include "Math/Unit/Distance.h"
+#include "Media/DDCReader.h"
+#include "Media/EDID.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "Text/MyStringFloat.h"
 
@@ -75,6 +78,26 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->txtDesktopDPI->SetText(CSTR("144.0"));
+}
+
+void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnEDIDClicked(AnyType userObj)
+{
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	UOSInt edidSize;
+	UnsafeArray<UInt8> edidSrc;
+	MonitorHandle *hMon = me->GetHMonitor();
+
+	Media::EDID::EDIDInfo info;
+	Media::DDCReader reader(hMon);
+	if (reader.GetEDID(edidSize).SetTo(edidSrc) && Media::EDID::Parse(edidSrc, info))
+	{
+		Double hdpi = info.pixelW / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, info.dispPhysicalW_mm);
+		Double vdpi = info.pixelH / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, info.dispPhysicalH_mm);
+		Double dpi = (hdpi + vdpi) * 5;
+		dpi = Math_Round(dpi);
+		me->hsbDPI->SetPos((UOSInt)Double2OSInt(hdpi * 10));
+		OnDPIChanged(me, me->hsbDPI->GetPos());
+	}
 }
 
 void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
@@ -170,7 +193,7 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 	this->lblDPIV->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->hsbDPI = ui->NewHScrollBar(this->pnlDPI, ui->GetScrollBarSize());
 	this->hsbDPI->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->hsbDPI->InitScrollBar(100, 3010, (UOSInt)Double2OSInt(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
+	this->hsbDPI->InitScrollBar(100, 4010, (UOSInt)Double2OSInt(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
 	this->hsbDPI->HandlePosChanged(OnDPIChanged, this);
 	this->lblMagnifyRatio = ui->NewLabel(this->pnlBtn, CSTR("OS Magnify Ratio"));
 	this->lblMagnifyRatio->SetRect(4, 4, 150, 23, false);
@@ -190,6 +213,9 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> par
 	this->btnLaptop = ui->NewButton(this->pnlBtn, CSTR("Laptop/Tablet"));
 	this->btnLaptop->SetRect(664, 4, 75, 23, false);
 	this->btnLaptop->HandleButtonClick(OnLaptopClicked, this);
+	this->btnEDID = ui->NewButton(this->pnlBtn, CSTR("From EDID"));
+	this->btnEDID->SetRect(154, 28, 75, 23, false);
+	this->btnEDID->HandleButtonClick(OnEDIDClicked, this);
 	this->btnOK = ui->NewButton(this->pnlBtn, CSTR("OK"));
 	this->btnOK->SetRect(300, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);

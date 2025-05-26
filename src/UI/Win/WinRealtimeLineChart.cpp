@@ -35,7 +35,7 @@ OSInt __stdcall UI::Win::WinRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg
 			GetClientRect((HWND)hWnd, &rc);
 			BeginPaint((HWND)hWnd, &ps);
 			NN<Media::DrawImage> scn;
-			scn = NN<Media::GDIEngine>::ConvertFrom(me->eng)->CreateImageScn(ps.hdc, rc.left, rc.top, rc.right, rc.bottom);
+			scn = NN<Media::GDIEngine>::ConvertFrom(me->eng)->CreateImageScn(ps.hdc, rc.left, rc.top, rc.right, rc.bottom, me->colorSess);
 			me->OnPaint(scn);
 			me->eng->DeleteImage(scn);
 			EndPaint((HWND)hWnd, &ps);
@@ -75,8 +75,9 @@ void UI::Win::WinRealtimeLineChart::Deinit(InstanceHandle *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-UI::Win::WinRealtimeLineChart::WinRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
+UI::Win::WinRealtimeLineChart::WinRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Optional<Media::ColorSess> colorSess, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval) : UI::GUIRealtimeLineChart(ui, parent, eng, lineCnt, sampleCnt)
 {
+	this->colorSess = colorSess;
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
 		Init(((UI::Win::WinCore*)this->ui.Ptr())->GetHInst());

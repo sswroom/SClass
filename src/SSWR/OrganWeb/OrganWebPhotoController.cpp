@@ -623,7 +623,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
 					{
 						NN<Media::DrawImage> gimg;
-						if (this->env->GetDrawEngine()->ConvImage(simg).SetTo(gimg))
+						if (this->env->GetDrawEngine()->ConvImage(simg, 0).SetTo(gimg))
 						{
 							if ((imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 							{
