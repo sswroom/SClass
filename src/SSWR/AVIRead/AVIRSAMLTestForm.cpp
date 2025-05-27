@@ -258,7 +258,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnStartClicked(AnyType userObj)
 			samlHdlr->SetIdp(samlCfg);
 		}
 		samlHdlr->SetHashType((Crypto::Hash::HashType)me->cboHashType->GetSelectedItem().GetOSInt());
-		samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetOSInt());
+		if (me->cboAuthMethod->GetSelectedIndex() == 0)
+		{
+
+		}
+		else
+		{
+			samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetOSInt());
+		}
 		NEW_CLASSNN(samlSvc, Net::WebServer::SAMLService(samlHdlr));
 		samlSvc->HandleSAMLResponse(OnSSOResponse, me);
 		NEW_CLASSNN(svr, Net::WebServer::WebListener(me->core->GetTCPClientFactory(), ssl, samlSvc, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("SAMLTest/1.0"), false, Net::WebServer::KeepAlive::Default, false));
@@ -425,7 +432,15 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnAuthMethodChanged(AnyType user
 	NN<Net::SAMLHandler> samlHdlr;
 	if (me->samlHdlr.SetTo(samlHdlr))
 	{
-		samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetOSInt());
+		if (me->cboAuthMethod->GetSelectedIndex() == 0)
+		{
+			static Net::SAMLAuthMethod meths[] = {Net::SAMLAuthMethod::Unknown, Net::SAMLAuthMethod::Password, Net::SAMLAuthMethod::PasswordProtectedTransport, Net::SAMLAuthMethod::WindowsAuth, Net::SAMLAuthMethod::Kerberos};
+			samlHdlr->SetAuthMethods(meths, 5);
+		}
+		else
+		{
+			samlHdlr->SetAuthMethod((Net::SAMLAuthMethod)me->cboAuthMethod->GetSelectedItem().GetOSInt());
+		}
 	}
 }
 
@@ -512,6 +527,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	this->lblAuthMethod->SetRect(4, 148, 100, 23, false);
 	this->cboAuthMethod = ui->NewComboBox(this->tpControl, false);
 	this->cboAuthMethod->SetRect(104, 148, 100, 23, false);
+	this->cboAuthMethod->AddItem(CSTR("Default"), (void*)(UOSInt)Net::SAMLAuthMethod::Unknown);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, Unknown);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, Password);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, PasswordProtectedTransport);
@@ -525,7 +541,7 @@ SSWR::AVIRead::AVIRSAMLTestForm::AVIRSAMLTestForm(Optional<UI::GUIClientControl>
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, SPKI);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, Smartcard);
 	CBOADDENUM(this->cboAuthMethod, Net::SAMLAuthMethod, SmartcardPKI);
-	this->cboAuthMethod->SetSelectedIndex(2);
+	this->cboAuthMethod->SetSelectedIndex(0);
 	this->cboAuthMethod->HandleSelectionChange(OnAuthMethodChanged, this);
 	this->lblSSOPath = ui->NewLabel(this->tpControl, CSTR("SSO Path"));
 	this->lblSSOPath->SetRect(4, 172, 100, 23, false);

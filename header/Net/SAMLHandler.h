@@ -66,7 +66,8 @@ namespace Net
 		Optional<Net::SAMLIdpConfig> idp;
 		Sync::Mutex idpMut;
 		Text::EncodingFactory encFact;
-		SAMLAuthMethod authMethod;
+		UnsafeArray<SAMLAuthMethod> authMethods;
+		UOSInt nAuthMethods;
 
 	protected:
 		void SendRedirect(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN url, Text::CStringNN reqContent, Crypto::Hash::HashType hashType, Bool response);
@@ -84,7 +85,7 @@ namespace Net
 		Optional<Text::String> GetLoginPath() const { return this->loginPath; }
 		Optional<Text::String> GetLogoutPath() const { return this->logoutPath; }
 		Optional<Text::String> GetSSOPath() const { return this->ssoPath; }
-		SAMLAuthMethod GetAuthMethod() const { return this->authMethod; }
+		Data::DataArray<SAMLAuthMethod> GetAuthMethods() const { return Data::DataArray<SAMLAuthMethod>(this->authMethods, this->nAuthMethods); }
 		Bool GetLoginURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLogoutURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetMetadataURL(NN<Text::StringBuilderUTF8> sb);
@@ -92,7 +93,8 @@ namespace Net
 		Optional<Crypto::Cert::X509PrivKey> GetKey();
 		void SetIdp(NN<Net::SAMLIdpConfig> idp);
 		void SetHashType(Crypto::Hash::HashType hashType);
-		void SetAuthMethod(SAMLAuthMethod authMethod) { this->authMethod = authMethod; }
+		void SetAuthMethod(SAMLAuthMethod authMethod) { this->nAuthMethods = 1; this->authMethods[0] = authMethod; }
+		void SetAuthMethods(UnsafeArray<SAMLAuthMethod> authMethods, UOSInt nAuthMethods);
 
 		Bool GetLoginMessageURL(NN<Text::StringBuilderUTF8> sb);
 		Bool GetLogoutMessageURL(NN<Text::StringBuilderUTF8> sb, Text::CString nameID, Text::CString sessionId);

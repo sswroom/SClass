@@ -338,7 +338,13 @@ Net::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl)
 	this->signKey = 0;
 	this->idp = 0;
 	this->hashType = Crypto::Hash::HashType::SHA1;
-	this->authMethod = Net::SAMLAuthMethod::PasswordProtectedTransport;
+	this->nAuthMethods = 5;
+	this->authMethods = MemAllocArr(SAMLAuthMethod, 5);
+	this->authMethods[0] = Net::SAMLAuthMethod::Unknown;
+	this->authMethods[1] = Net::SAMLAuthMethod::Password;
+	this->authMethods[2] = Net::SAMLAuthMethod::PasswordProtectedTransport;
+	this->authMethods[3] = Net::SAMLAuthMethod::Kerberos;
+	this->authMethods[4] = Net::SAMLAuthMethod::WindowsAuth;
 	if (!cfg->serverHost.SetTo(nns) || nns.leng == 0)
 	{
 		this->initErr = SAMLInitError::ServerHost;
@@ -416,6 +422,7 @@ Net::SAMLHandler::~SAMLHandler()
 	OPTSTR_DEL(this->loginPath);
 	OPTSTR_DEL(this->logoutPath);
 	OPTSTR_DEL(this->ssoPath);
+	MemFreeArr(this->authMethods);
 	this->signCert.Delete();
 	this->signKey.Delete();
 }
@@ -497,6 +504,21 @@ void Net::SAMLHandler::SetHashType(Crypto::Hash::HashType hashType)
 	this->hashType = hashType;
 }
 
+void Net::SAMLHandler::SetAuthMethods(UnsafeArray<SAMLAuthMethod> authMethods, UOSInt nAuthMethods)
+{
+	if (this->nAuthMethods < nAuthMethods)
+	{
+		this->nAuthMethods = nAuthMethods;
+		MemFreeArr(this->authMethods);
+		this->authMethods = MemAllocArr(SAMLAuthMethod, this->nAuthMethods);
+	}
+	else
+	{
+		this->nAuthMethods = nAuthMethods;
+	}
+	MemCopyNO(this->authMethods.Ptr(), authMethods.Ptr(), sizeof(SAMLAuthMethod) * nAuthMethods);
+}
+
 Bool Net::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 {
 	UTF8Char sbuff[512];
@@ -538,11 +560,27 @@ Bool Net::SAMLHandler::GetLoginMessageURL(NN<Text::StringBuilderUTF8> sbOut)
 		sb.Append(metadataPath);
 		sb.Append(CSTR("</saml:Issuer>"));
 		sb.Append(CSTR("<samlp:NameIDPolicy Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\" AllowCreate=\"true\"/>"));
-		sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"exact\">"));
-		sb.Append(CSTR("<saml:AuthnContextClassRef>"));
-		sb.Append(Net::SAMLAuthMethodGetString(this->authMethod));
-		sb.Append(CSTR("</saml:AuthnContextClassRef>"));
-		sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
+		if (this->nAuthMethods == 1)
+		{
+			sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"exact\">"));
+			sb.Append(CSTR("<saml:AuthnContextClassRef>"));
+			sb.Append(Net::SAMLAuthMethodGetString(this->authMethods[0]));
+			sb.Append(CSTR("</saml:AuthnContextClassRef>"));
+			sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
+		}
+		else
+		{
+			sb.Append(CSTR("<samlp:RequestedAuthnContext Comparison=\"minimum\">"));
+			UOSInt i = 0;
+			while (i < this->nAuthMethods)
+			{
+				sb.Append(CSTR("<saml:AuthnContextClassRef>"));
+				sb.Append(Net::SAMLAuthMethodGetString(this->authMethods[i]));
+				sb.Append(CSTR("</saml:AuthnContextClassRef>"));
+				i++;
+			}
+			sb.Append(CSTR("</samlp:RequestedAuthnContext>"));
+		}
 		sb.Append(CSTR("</samlp:AuthnRequest>"));
 		return BuildRedirectURL(sbOut, idp->GetSignOnLocation()->ToCString(), sb.ToCString(), this->hashType, false);
 	}

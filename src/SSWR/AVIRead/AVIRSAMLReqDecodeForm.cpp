@@ -3,6 +3,7 @@
 #include "Net/SAMLUtil.h"
 #include "SSWR/AVIRead/AVIRSAMLReqDecodeForm.h"
 #include "Text/XMLReader.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 
 void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(AnyType userObj)
 {
@@ -15,6 +16,32 @@ void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(AnyType use
 		return;
 	}
 	Text::StringBuilderUTF8 sbResult;
+	if (sb.StartsWith(CSTR("https://")))
+	{
+		UOSInt i = sb.IndexOf(CSTR("SAMLRequest="));
+		if (i == INVALID_INDEX)
+		{
+			me->ui->ShowMsgOK(CSTR("Response format not supported"), CSTR("SAML Request Decode"), me);
+			return;
+		}
+		sb.SetSubstr(i + 12);
+		i = sb.IndexOf('&');
+		if (i != INVALID_INDEX)
+		{
+			sb.TrimToLength(i);
+		}
+		sbResult.Append(sb);
+		sb.ClearStr();
+		Text::TextBinEnc::FormEncoding::FormDecode(sb, sbResult.ToCString());
+		sbResult.ClearStr();
+	}
+	else if (sb.IndexOf('%') != INVALID_INDEX)
+	{
+		sbResult.Append(sb);
+		sb.ClearStr();
+		Text::TextBinEnc::FormEncoding::FormDecode(sb, sbResult.ToCString());
+		sbResult.ClearStr();
+	}
 	if (Net::SAMLUtil::DecodeRequest(sb.ToCString(), sbResult))
 	{
 		me->txtResult->SetText(sbResult.ToCString());
