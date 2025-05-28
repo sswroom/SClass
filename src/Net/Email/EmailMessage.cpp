@@ -268,7 +268,7 @@ void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, UnsafeArray<cons
 
 void __stdcall Net::Email::EmailMessage::AttachmentFree(NN<Attachment> attachment)
 {
-	MemFree(attachment->content);
+	MemFreeArr(attachment->content);
 	attachment->fileName->Release();
 	attachment->contentId->Release();
 	MemFreeNN(attachment);
@@ -505,10 +505,62 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 	return true;
 }
 
+Bool Net::Email::EmailMessage::AddCcList(Text::CStringNN addrs)
+{
+	Bool succ;
+	UOSInt i;
+	Text::PString sarr[2];
+	Text::StringBuilderUTF8 sb;
+	sb.Append(addrs);
+	sarr[1] = sb;
+	succ = true;
+	while (true)
+	{
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
+		if (!Text::StringTool::IsEmailAddress(sarr[0].v))
+		{
+			succ = false;
+		}
+		else
+		{
+			succ = succ && this->AddCc(CSTR_NULL, sarr[0].ToCString());
+		}
+		if (i == 1)
+			break;
+	}
+	return succ;
+}
+
 Bool Net::Email::EmailMessage::AddBcc(Text::CStringNN addr)
 {
 	this->recpList.Add(EmailAddressCreate(RecipientType::Bcc, CSTR_NULL, addr));
 	return true;
+}
+
+Bool Net::Email::EmailMessage::AddBccList(Text::CStringNN addrs)
+{
+	Bool succ;
+	UOSInt i;
+	Text::PString sarr[2];
+	Text::StringBuilderUTF8 sb;
+	sb.Append(addrs);
+	sarr[1] = sb;
+	succ = true;
+	while (true)
+	{
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
+		if (!Text::StringTool::IsEmailAddress(sarr[0].v))
+		{
+			succ = false;
+		}
+		else
+		{
+			succ = succ && this->AddBcc(sarr[0].ToCString());
+		}
+		if (i == 1)
+			break;
+	}
+	return succ;
 }
 
 Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(Text::CStringNN fileName)
@@ -530,7 +582,7 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	if (fs.Read(Data::ByteArray(attachment->content, attachment->contentLen)) != attachment->contentLen)
 	{
-		MemFree(attachment->content);
+		MemFreeArr(attachment->content);
 		MemFreeNN(attachment);
 		return 0;
 	}
@@ -551,8 +603,8 @@ NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment
 	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = contentLen;
-	attachment->content = MemAlloc(UInt8, attachment->contentLen);
-	MemCopyNO(attachment->content, content.Ptr(), contentLen);
+	attachment->content = MemAllocArr(UInt8, attachment->contentLen);
+	MemCopyNO(attachment->content.Ptr(), content.Ptr(), contentLen);
 	attachment->createTime.SetCurrTimeUTC();
 	attachment->modifyTime.SetValue(attachment->createTime);
 	attachment->fileName = Text::String::New(fileName.Substring(fileName.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1));
@@ -571,6 +623,16 @@ Bool Net::Email::EmailMessage::AddSignature(Optional<Net::SSLEngine> ssl, Option
 	this->signCert = cert;
 	this->signKey = key;
 	return cert.NotNull() && key.NotNull();
+}
+
+UOSInt Net::Email::EmailMessage::AttachmentGetCount() const
+{
+	return this->attachments.GetCount();
+}
+
+Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AttachmentGetItem(UOSInt index) const
+{
+	return this->attachments.GetItem(index);
 }
 
 Bool Net::Email::EmailMessage::CompletedMessage()

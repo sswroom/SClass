@@ -143,6 +143,7 @@ SSWR::AVIRead::AVIRPlaylistForm::~AVIRPlaylistForm()
 	this->playlist.Delete();
 	this->player.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

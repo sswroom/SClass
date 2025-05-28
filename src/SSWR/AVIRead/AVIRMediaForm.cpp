@@ -420,6 +420,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 		this->core->BindAudio(0);
 	}
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

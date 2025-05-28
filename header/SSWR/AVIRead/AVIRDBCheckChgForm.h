@@ -83,6 +83,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<UOSInt> colInd;
+			Data::ArrayListStringNN colStr;
 			NN<DB::ReadingDB> db;
 			Text::CString schema;
 			Text::CStringNN table;
@@ -98,6 +99,8 @@ namespace SSWR
 			static void __stdcall OnExecuteClicked(AnyType userObj);
 			static void __stdcall OnDataTableChg(AnyType userObj);
 			static void __stdcall OnAssignColClicked(AnyType userObj);
+			Optional<Text::String> GetNewText(UOSInt colIndex);
+			NN<Text::String> GetNewTextNN(UOSInt colIndex);
 			Bool LoadDataFile(Text::CStringNN fileName);
 			Bool GetColIndex(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable);
 			Bool IsColIndexValid(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable);

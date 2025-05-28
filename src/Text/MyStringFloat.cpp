@@ -578,6 +578,14 @@ UnsafeArray<UTF8Char> Text::StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val
 	{
 		return StrDoubleFmt(oriStr, val, "0");
 	}
+	if (Math::IsNAN(val))
+	{
+		if (val < 0)
+		{
+			*oriStr++ = '-';
+		}
+		return StrConcatC(oriStr, UTF8STRC("1.#QNAN0"));
+	}
 	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(fmt, UTF8STRC("0."));
 	while (minDP > 0)
 	{

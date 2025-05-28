@@ -1677,6 +1677,7 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 	this->mnuSchema.Delete();
 	this->mnuConn.Delete();
 	this->mapEnv.Delete();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;

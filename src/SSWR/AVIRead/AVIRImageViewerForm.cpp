@@ -299,6 +299,7 @@ SSWR::AVIRead::AVIRImageViewerForm::~AVIRImageViewerForm()
 	this->imgList.Delete();
 	this->pkgFile.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

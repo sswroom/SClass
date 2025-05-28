@@ -58,7 +58,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 	UInt32 miniFatSect = ReadUInt32(&hdr[60]);
 	UInt32 miniFatCnt = ReadUInt32(&hdr[64]);
 	UInt32 sectorNum;
-	if (fatCnt <= 0 || miniFatCnt <= 0)
+	if (fatCnt <= 0)
 		return 0;
 
 	UInt32 currSect;
@@ -85,24 +85,27 @@ Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::St
 		i++;
 	}
 	Data::ByteBuffer miniFat(sectorSize * miniFatCnt);
-	i = 0;
-	while (true)
+	if (miniFatCnt > 0)
 	{
-		sectorNum = fat.ReadU32(miniFatSect * 4);
-		if (sectorNum >= 0xfffffffc && sectorNum != 0xfffffffe)
+		i = 0;
+		while (true)
 		{
-			return 0;
-		}
-		fd->GetRealData(sectorSize * (miniFatSect + 1), sectorSize, miniFat.SubArray(i * sectorSize));
-		i++;
+			sectorNum = fat.ReadU32(miniFatSect * 4);
+			if (sectorNum >= 0xfffffffc && sectorNum != 0xfffffffe)
+			{
+				return 0;
+			}
+			fd->GetRealData(sectorSize * (miniFatSect + 1), sectorSize, miniFat.SubArray(i * sectorSize));
+			i++;
 
-		if (sectorNum == 0xfffffffe)
-		{
-			if (i == miniFatCnt)
-				break;
-			return 0;
+			if (sectorNum == 0xfffffffe)
+			{
+				if (i == miniFatCnt)
+					break;
+				return 0;
+			}
+			miniFatSect = sectorNum;
 		}
-		miniFatSect = sectorNum;
 	}
 
 	Text::StringBuilderUTF8 sb;

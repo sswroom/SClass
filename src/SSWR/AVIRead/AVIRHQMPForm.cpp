@@ -796,6 +796,7 @@ SSWR::AVIRead::AVIRHQMPForm::~AVIRHQMPForm()
 	if (this->dbgFrm.SetTo(dbgFrm))
 		dbgFrm->Close();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 	this->ssl.Delete();
 }

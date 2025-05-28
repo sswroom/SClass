@@ -127,8 +127,15 @@ void __stdcall SSWR::AVIRead::AVIRSIDERunnerLogForm::OnFiles(AnyType userObj, Da
 						me->lvSteps->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 						sptr = Text::StrDoubleDP(sbuff, step->totalTime, 0, 6);
 						me->lvSteps->SetSubItem(k, 5, CSTRP(sbuff, sptr));
-						sptr = Text::StrDoubleDP(sbuff, step->totalTime / (Double)step->count, 0, 6);
-						me->lvSteps->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+						if (step->count == 0)
+						{
+							me->lvSteps->SetSubItem(k, 6, CSTR("0"));
+						}
+						else
+						{
+							sptr = Text::StrDoubleDP(sbuff, step->totalTime / (Double)step->count, 0, 6);
+							me->lvSteps->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+						}
 						sptr = Text::StrDoubleDP(sbuff, step->minTime, 0, 6);
 						me->lvSteps->SetSubItem(k, 7, CSTRP(sbuff, sptr));
 						sptr = Text::StrDoubleDP(sbuff, step->maxTime, 0, 6);

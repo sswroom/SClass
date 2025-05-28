@@ -124,6 +124,7 @@ SSWR::AVIRead::AVIRGISLineForm::~AVIRGISLineForm()
 	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
+	this->eng->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

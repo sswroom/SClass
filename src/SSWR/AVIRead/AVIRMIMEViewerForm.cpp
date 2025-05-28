@@ -19,6 +19,7 @@ SSWR::AVIRead::AVIRMIMEViewerForm::~AVIRMIMEViewerForm()
 
 	this->viewer.Delete();
 	this->obj.Delete();
+	this->core->GetDrawEngine()->EndColorSess(this->sess);
 	this->core->GetColorMgr()->DeleteSess(this->sess);
 }
 

@@ -432,6 +432,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 	this->prevsImage.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

@@ -121,6 +121,7 @@ SSWR::AVIRead::AVIROCRForm::~AVIROCRForm()
 {
 	this->ClearResults();
 	this->currImg.Delete();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

@@ -108,6 +108,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::~AVIRCodeImageGenForm()
 	this->codeImgGen.Delete();
 	this->ClearChildren();
 	this->simg.Delete();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

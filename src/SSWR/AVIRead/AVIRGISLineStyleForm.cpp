@@ -127,6 +127,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::~AVIRGISLineStyleForm()
 {
 	this->mnuLayer.Delete();
 	this->ClearChildren();
+	this->eng->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

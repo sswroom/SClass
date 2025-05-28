@@ -100,6 +100,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl>
 SSWR::AVIRead::AVIRGISImageForm::~AVIRGISImageForm()
 {
 	this->resizer.Delete();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

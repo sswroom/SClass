@@ -255,6 +255,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::~AVIRGISFontEditForm()
 	this->colorConv.Delete();
 	this->colorSess->RemoveHandler(*this);
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

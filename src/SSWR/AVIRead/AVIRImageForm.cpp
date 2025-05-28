@@ -676,6 +676,7 @@ SSWR::AVIRead::AVIRImageForm::~AVIRImageForm()
 {
 	this->imgList.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

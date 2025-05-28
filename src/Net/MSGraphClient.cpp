@@ -7,6 +7,8 @@
 
 #include "IO/FileStream.h"
 
+#define GRAPHROOT CSTR("https://graph.microsoft.com/v1.0")
+
 //#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
@@ -34,6 +36,12 @@ void Net::MSGraphAccessToken::InitClient(NN<Net::HTTPClient> cli)
 	sb.AppendUTF8Char(' ');
 	sb.Append(this->accessToken);
 	cli->AddHeaderC(CSTR("Authorization"), sb.ToCString());
+}
+
+Bool Net::MSGraphAccessToken::IsExpired()
+{
+	Data::Timestamp t = Data::Timestamp::Now();
+	return t > this->expiresIn;
 }
 
 /*
@@ -312,12 +320,50 @@ template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token,
 	return false;
 }
 
+void Net::MSGraphClient::BuildRcpt(NN<Text::JSONBuilder> builder, NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList, Net::Email::EmailMessage::RecipientType type, Text::CStringNN name)
+{
+	UOSInt i;
+	UOSInt j;
+	NN<Net::Email::EmailMessage::EmailAddress> addr;
+	NN<Text::String> s;
+	Bool found = false;
+	i = 0;
+	j = recpList->GetCount();
+	while (i < j)
+	{
+		addr = recpList->GetItemNoCheck(i);
+		if (addr->type == type)
+		{
+			if (!found)
+			{
+				found = true;
+				builder->ObjectBeginArray(name);
+			}
+			builder->ArrayBeginObject();
+			builder->ObjectBeginObject(CSTR("emailAddress"));
+			if (addr->name.SetTo(s))
+			{
+				builder->ObjectAddStr(CSTR("name"), s);
+			}
+			builder->ObjectAddStr(CSTR("address"), addr->addr);
+			builder->ObjectEnd();
+			builder->ObjectEnd();
+		}
+		i++;
+	}
+	if (found)
+	{
+		builder->ArrayEnd();
+	}
+}
+
 Net::MSGraphClient::MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl)
 {
 	this->clif = clif;
 	this->ssl = ssl;
 	this->log = 0;
 	this->debugLog = false;
+	this->attSplitSize = 1048576 * 4;
 }
 
 Net::MSGraphClient::~MSGraphClient()
@@ -328,6 +374,11 @@ void Net::MSGraphClient::SetLog(NN<IO::LogTool> log, Bool debugLog)
 {
 	this->debugLog = debugLog;
 	this->log = log;
+}
+
+void Net::MSGraphClient::SetAttSplitSize(UOSInt attSplitSize)
+{
+	this->attSplitSize = attSplitSize;
 }
 
 Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope)
@@ -396,17 +447,17 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken
 	UnsafeArray<UTF8Char> sptr;
 	NN<IO::LogTool> log;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
+	sb.Append(GRAPHROOT);
 	Text::CStringNN nns;
 	if (userName.SetTo(nns))
 	{
-		sb.Append(CSTR("users/"));
+		sb.Append(CSTR("/users/"));
 		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
-		sb.Append(CSTR("me"));
+		sb.Append(CSTR("/me"));
 	}
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
@@ -464,17 +515,17 @@ Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CSt
 		return false;
 	NN<IO::LogTool> log;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
+	sb.Append(GRAPHROOT);
 	Text::CStringNN nns;
 	if (userName.SetTo(nns))
 	{
-		sb.Append(CSTR("users/"));
+		sb.Append(CSTR("/users/"));
 		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
-		sb.Append(CSTR("me"));
+		sb.Append(CSTR("/me"));
 	}
 	sb.Append(CSTR("/messages"));
 	Bool found = false;
@@ -618,22 +669,523 @@ Bool Net::MSGraphClient::MailFoldersGet(NN<MSGraphAccessToken> token, Text::CStr
 	if (userName.leng > 200)
 		return false;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(CSTR("https://graph.microsoft.com/v1.0/"));
+	sb.Append(GRAPHROOT);
 	Text::CStringNN nns;
 	if (userName.SetTo(nns))
 	{
-		sb.Append(CSTR("users/"));
+		sb.Append(CSTR("/users/"));
 		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
 		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
-		sb.Append(CSTR("me"));
+		sb.Append(CSTR("/me"));
 	}
 	sb.Append(CSTR("/mailFolders"));
 	if (includeHidden)
 		sb.Append(CSTR("?includeHiddenFolders=true"));
 	return this->GetList(token, sb.ToCString(), CSTR("MailFoldersGet"), folderList);
+}
+
+Optional<Net::MSGraphEventMessageRequest> Net::MSGraphClient::MailMessageCreate(NN<MSGraphAccessToken> token, Text::CString userName, NN<Net::Email::EmailMessage> message)
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	if (userName.leng > 200)
+		return 0;
+	NN<IO::LogTool> log;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(GRAPHROOT);
+	Text::CStringNN nns;
+	NN<Text::String> s;
+	if (userName.SetTo(nns))
+	{
+		sb.Append(CSTR("/users/"));
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
+		sb.AppendP(sbuff, sptr);
+	}
+	else
+	{
+		sb.Append(CSTR("/me"));
+	}
+	sb.Append(CSTR("/messages"));
+	Text::JSONBuilder builder(Text::JSONBuilder::OT_OBJECT);
+	builder.ObjectAddStr(CSTR("subject"), message->GetSubject());
+	UInt64 contentLen;
+	UnsafeArray<UInt8> content;
+	Text::CStringNN cstr;
+	if (message->GetContent(contentLen).SetTo(content))
+	{
+		builder.ObjectBeginObject(CSTR("body"));
+		if (message->GetContentType().SetTo(s) && s->Equals(CSTR("text/html")))
+		{
+			builder.ObjectAddStr(CSTR("contentType"), CSTR("html"));
+		}
+		else
+		{
+			builder.ObjectAddStr(CSTR("contentType"), CSTR("text"));
+		}
+		builder.ObjectAddStr(CSTR("content"), Text::CStringNN(content, (UOSInt)contentLen));
+		builder.ObjectEnd();
+	}
+	NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
+	BuildRcpt(builder, recpList, Net::Email::EmailMessage::RecipientType::To, CSTR("toRecipients"));
+	BuildRcpt(builder, recpList, Net::Email::EmailMessage::RecipientType::Cc, CSTR("ccRecipients"));
+	BuildRcpt(builder, recpList, Net::Email::EmailMessage::RecipientType::Bcc, CSTR("bccRecipients"));
+
+	cstr = builder.Build();
+	if (this->log.SetTo(log))
+	{
+		Text::StringBuilderUTF8 sbLog;
+		sbLog.Append(CSTR("MailMessagesCreate: POST "));
+		sbLog.Append(sb);
+		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
+		sbLog.ClearStr();
+		sbLog.Append(CSTR("MailMessagesCreate: "));
+		sbLog.Append(cstr);
+		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+	}
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+	token->InitClient(cli);
+	cli->AddContentType(CSTR("application/json"));
+	cli->AddContentLength(cstr.leng);
+	cli->WriteCont(cstr.v, cstr.leng);
+	Net::WebStatus::StatusCode status = cli->GetRespStatus();
+	sb.ClearStr();
+	if (cli->ReadAllContent(sb, 4096, 1048576))
+	{
+		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
+		if (status != Net::WebStatus::SC_CREATED)
+		{
+			if (this->log.SetTo(log))
+			{
+				sb.ClearStr();
+				sb.Append(CSTR("MailMessagesCreate: Response status is not 201 (CREATED): "));
+				sb.Append(Net::WebStatus::GetCodeName(status).OrEmpty());
+				log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+			}
+			return 0;
+		}
+		NN<Text::JSONBase> json;
+		if (!Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
+		{
+			if (this->log.SetTo(log))
+			{
+				log->LogMessage(CSTR("MailMessagesCreate cannot parse result"), IO::LogHandler::LogLevel::Error);
+				if (this->debugLog)
+				{
+					Text::StringBuilderUTF8 sbLog;
+					sbLog.Append(CSTR("MSGraphClient: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				}
+			}
+#if defined(VERBOSE)
+			printf("MSGraphClient: MailMessagesCreate cannot parse result: %d, %s\r\n", (Int32)status, sb.ToPtr());
+#endif
+			return 0;
+		}
+		if (json->GetType() != Text::JSONType::Object)
+		{
+			json->EndUse();
+			if (this->log.SetTo(log))
+			{
+				log->LogMessage(CSTR("MailMessagesCreate not json object"), IO::LogHandler::LogLevel::Error);
+				if (this->debugLog)
+				{
+					Text::StringBuilderUTF8 sbLog;
+					sbLog.Append(CSTR("MSGraphClient: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				}
+			}
+#if defined(VERBOSE)
+			printf("MSGraphClient: MailMessagesCreate not json object: %d, %s\r\n", (Int32)status, sb.ToPtr());
+#endif
+			return 0;
+		}
+		NN<MSGraphEventMessageRequest> msg;
+		NEW_CLASSNN(msg, MSGraphEventMessageRequest(json));
+		json->EndUse();
+		if (msg->IsValid())
+		{
+		}
+		else
+		{
+			if (this->log.SetTo(log))
+			{
+				log->LogMessage(CSTR("MailMessagesCreate message format not valid"), IO::LogHandler::LogLevel::Error);
+			}
+			msg.Delete();
+			return 0;
+		}
+		UOSInt i = 0;
+		UOSInt j = message->AttachmentGetCount();
+		NN<Net::Email::EmailMessage::Attachment> att;
+		Bool succ = true;
+		while (i < j)
+		{
+			if (message->AttachmentGetItem(i).SetTo(att))
+			{
+				sb.ClearStr();
+				sb.Append(GRAPHROOT);
+				if (userName.SetTo(nns))
+				{
+					sb.Append(CSTR("/users/"));
+					sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
+					sb.AppendP(sbuff, sptr);
+				}
+				else
+				{
+					sb.Append(CSTR("/me"));
+				}
+				sb.Append(CSTR("/messages"));
+				sb.AppendUTF8Char('/');
+				sb.Append(msg->GetId());
+				sb.Append(CSTR("/attachments"));
+				sb.Append(CSTR("/createUploadSession"));
+				Text::JSONBuilder builder2(Text::JSONBuilder::OT_OBJECT);
+				builder2.ObjectBeginObject(CSTR("AttachmentItem"));
+				builder2.ObjectAddStr(CSTR("attachmentType"), CSTR("file"));
+				builder2.ObjectAddStr(CSTR("name"), att->fileName);
+				builder2.ObjectAddUInt64(CSTR("size"), att->contentLen);
+				if (att->isInline)
+				{
+					builder2.ObjectAddBool(CSTR("isInline"), att->isInline);
+					builder2.ObjectAddStr(CSTR("contentId"), att->contentId);
+				}
+				builder2.ObjectEnd();
+				cstr = builder2.Build();
+				if (this->log.SetTo(log))
+				{
+					Text::StringBuilderUTF8 sbLog;
+					sbLog.Append(CSTR("MailMessagesCreate: POST "));
+					sbLog.Append(sb);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
+					sbLog.ClearStr();
+					sbLog.Append(CSTR("MailMessagesCreate: "));
+					sbLog.Append(cstr);
+					log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+				}
+				cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+				token->InitClient(cli);
+				cli->AddContentType(CSTR("application/json"));
+				cli->AddContentLength(cstr.leng);
+				cli->WriteCont(cstr.v, cstr.leng);
+				status = cli->GetRespStatus();
+				sb.ClearStr();
+				if (cli->ReadAllContent(sb, 4096, 1048576))
+				{
+					cli.Delete();
+					NN<Text::JSONBase> json;
+					if (status != Net::WebStatus::SC_CREATED)
+					{
+						if (this->log.SetTo(log))
+						{
+							sb.ClearStr();
+							sb.Append(CSTR("MailMessagesCreate: Response status is not 201 (CREATED): "));
+							sb.Append(Net::WebStatus::GetCodeName(status).OrEmpty());
+							log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+						}
+					}
+					else if (!Text::JSONBase::ParseJSONStr(sb.ToCString()).SetTo(json))
+					{
+						if (this->log.SetTo(log))
+						{
+							log->LogMessage(CSTR("MailMessagesCreate cannot parse uploadSession result"), IO::LogHandler::LogLevel::Error);
+							if (this->debugLog)
+							{
+								Text::StringBuilderUTF8 sbLog;
+								sbLog.Append(CSTR("MSGraphClient: "))->AppendI32((Int32)status)->Append(CSTR(", "))->Append(sb);
+								log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+							}
+						}
+#if defined(VERBOSE)
+						printf("MSGraphClient: MailMessagesCreate cannot parse result: %d, %s\r\n", (Int32)status, sb.ToPtr());
+#endif
+					}
+					else
+					{
+						NN<MSGraphUploadSession> uplSess;
+						NEW_CLASSNN(uplSess, MSGraphUploadSession(json))
+						if (uplSess->IsValid())
+						{
+							UOSInt currOfst = 0;
+							UOSInt endOfst;
+							while (currOfst < att->contentLen)
+							{
+								endOfst = currOfst + this->attSplitSize;
+								if (endOfst > att->contentLen)
+									endOfst = att->contentLen;
+
+								cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, uplSess->GetUploadUrl()->ToCString(), Net::WebUtil::RequestMethod::HTTP_PUT, false);
+								cli->SetTimeout(5000);
+								cli->AddContentType(CSTR("application/octet-stream"));
+								cli->AddContentLength(endOfst - currOfst);
+								sb.ClearStr();
+								sb.Append(CSTR("bytes "));
+								sb.AppendUOSInt(currOfst);
+								sb.AppendUTF8Char('-');
+								sb.AppendUOSInt(endOfst - 1);
+								sb.AppendUTF8Char('/');
+								sb.AppendUOSInt(att->contentLen);
+								cli->AddHeaderC(CSTR("Content-Range"), sb.ToCString());
+								if (this->log.SetTo(log))
+								{
+									Text::StringBuilderUTF8 sbLog;
+									sbLog.Append(CSTR("MailMessagesCreate: PUT "));
+									sbLog.Append(uplSess->GetUploadUrl());
+									log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
+									sbLog.ClearStr();
+									sbLog.Append(CSTR("MailMessagesCreate: Content-Range: "));
+									sbLog.Append(sb);
+									log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
+								}
+								cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+								cli->WriteCont(&att->content[currOfst], endOfst - currOfst);
+								status = cli->GetRespStatus();
+								if (status == 200)
+								{
+									cli.Delete();
+									currOfst = endOfst;
+									if (endOfst >= att->contentLen)
+									{
+										if (this->log.SetTo(log))
+										{
+											sb.ClearStr();
+											sb.Append(CSTR("MailMessagesCreate: File upload pass end of file: "));
+											sb.AppendUOSInt(att->contentLen);
+											log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+										}
+										succ = false;
+										break;
+									}
+								}
+								else if (status == 201)
+								{
+									cli.Delete();
+									if (endOfst != att->contentLen)
+									{
+										if (this->log.SetTo(log))
+										{
+											sb.ClearStr();
+											sb.Append(CSTR("MailMessagesCreate: File upload missing data: "));
+											sb.AppendUOSInt(endOfst);
+											sb.Append(CSTR(" !="));
+											sb.AppendUOSInt(att->contentLen);
+											log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+										}
+										succ = false;
+										break;
+									}
+									break;
+								}
+								else
+								{
+									if (this->log.SetTo(log))
+									{
+										sb.ClearStr()->Append(CSTR("MailMessagesCreate: File upload unknown response: "))->Append(Net::WebStatus::GetCodeName(status).OrEmpty());
+										log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+										sb.ClearStr();
+										if (cli->ReadAllContent(sb, 4096, 1048576))
+										{
+											log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+										}
+									}
+									cli.Delete();
+									succ = false;
+									break;
+								}
+							}							
+						}
+						else
+						{
+							if (this->log.SetTo(log))
+							{
+								log->LogMessage(CSTR("MailMessagesCreate uploadSession is not valid"), IO::LogHandler::LogLevel::Error);
+							}
+							succ = false;
+						}
+						uplSess.Delete();
+					}
+				}
+				else
+				{
+					cli.Delete();
+					if (this->log.SetTo(log))
+					{
+						Text::StringBuilderUTF8 sbLog;
+						sbLog.Append(CSTR("MailMessagesCreate request error: status = "));
+						sbLog.AppendI32((Int32)status);
+						log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Error);
+					}
+					succ = false;
+#if defined(VERBOSE)
+					printf("MSGraphClient: MailMessagesCreate request error: status = %d\r\n", (Int32)status);
+#endif
+				}
+			}
+			if (!succ)
+			{
+				break;
+			}
+			i++;
+		}
+		if (!succ)
+		{
+			this->MailMessageDelete(token, userName, msg->GetId()->ToCString());
+			msg.Delete();
+			return 0;
+		}
+		return msg;
+	}
+	else
+	{
+		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			Text::StringBuilderUTF8 sbLog;
+			sbLog.Append(CSTR("MailMessagesCreate request error: status = "));
+			sbLog.AppendI32((Int32)status);
+			log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
+#if defined(VERBOSE)
+		printf("MSGraphClient: MailMessagesCreate request error: status = %d\r\n", (Int32)status);
+#endif
+	}
+	return 0;
+}
+
+Bool Net::MSGraphClient::MailMessageSend(NN<MSGraphAccessToken> token, Text::CString userName, NN<MSGraphEventMessageRequest> message)
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	if (userName.leng > 200)
+		return false;
+	NN<IO::LogTool> log;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(GRAPHROOT);
+	Text::CStringNN nns;
+	if (userName.SetTo(nns))
+	{
+		sb.Append(CSTR("/users/"));
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
+		sb.AppendP(sbuff, sptr);
+	}
+	else
+	{
+		sb.Append(CSTR("/me"));
+	}
+	sb.Append(CSTR("/messages/"));
+	sb.Append(message->GetId());
+	sb.Append(CSTR("/send"));
+	if (this->log.SetTo(log))
+	{
+		Text::StringBuilderUTF8 sbLog;
+		sbLog.Append(CSTR("MailMessageSend: POST "));
+		sbLog.Append(sb);
+		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
+	}
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+	token->InitClient(cli);
+	cli->AddContentLength(0);
+	Net::WebStatus::StatusCode status = cli->GetRespStatus();
+	if (status == Net::WebStatus::SC_ACCEPTED)
+	{
+		cli.Delete();
+		return true;
+	}
+	if (cli->ReadAllContent(sb, 4096, 1048576))
+	{
+		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
+		if (this->log.SetTo(log))
+		{
+			sb.ClearStr();
+			sb.Append(CSTR("MailMessagesCreate: Response status is not 202 (ACCEPTED): "));
+			sb.Append(Net::WebStatus::GetCodeName(status).OrEmpty());
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
+		return false;
+	}
+	return false;
+}
+
+Bool Net::MSGraphClient::MailMessageDelete(NN<MSGraphAccessToken> token, Text::CString userName, Text::CStringNN msgId)
+{
+	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
+	if (userName.leng > 200)
+		return false;
+	NN<IO::LogTool> log;
+	Text::StringBuilderUTF8 sb;
+	sb.Append(GRAPHROOT);
+	Text::CStringNN nns;
+	if (userName.SetTo(nns))
+	{
+		sb.Append(CSTR("/users/"));
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nns.v);
+		sb.AppendP(sbuff, sptr);
+	}
+	else
+	{
+		sb.Append(CSTR("/me"));
+	}
+	sb.Append(CSTR("/messages/"));
+	sb.Append(msgId);
+	if (this->log.SetTo(log))
+	{
+		Text::StringBuilderUTF8 sbLog;
+		sbLog.Append(CSTR("MailMessageDelete: DELETE "));
+		sbLog.Append(sb);
+		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
+	}
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->clif, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_DELETE, false);
+	token->InitClient(cli);
+	Net::WebStatus::StatusCode status = cli->GetRespStatus();
+	if (status == Net::WebStatus::SC_NO_CONTENT)
+	{
+		cli.Delete();
+		return true;
+	}
+	if (cli->ReadAllContent(sb, 4096, 1048576))
+	{
+		cli.Delete();
+		if (this->log.SetTo(log))
+		{
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+		}
+		if (this->log.SetTo(log))
+		{
+			sb.ClearStr();
+			sb.Append(CSTR("MailMessagesCreate: Response status is not 204 (NO CONTENT): "));
+			sb.Append(Net::WebStatus::GetCodeName(status).OrEmpty());
+			log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Error);
+		}
+		return false;
+	}
+	return false;
+}
+
+Bool Net::MSGraphClient::SendEmail(NN<MSGraphAccessToken> token, Text::CString userName, NN<Net::Email::EmailMessage> message)
+{
+	NN<MSGraphEventMessageRequest> msg;
+	if (this->MailMessageCreate(token, userName, message).SetTo(msg))
+	{
+		Bool succ = this->MailMessageSend(token, userName, msg);
+		if (!succ)
+		{
+			this->MailMessageDelete(token, userName, msg->GetId()->ToCString());
+		}
+		msg.Delete();
+		return succ;
+	}
+	return false;
 }
 
 Bool Net::MSGraphClient::HasUnknownTypes(NN<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName)

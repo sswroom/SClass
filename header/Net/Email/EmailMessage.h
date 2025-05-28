@@ -34,7 +34,7 @@ namespace Net
 
 			struct Attachment
 			{
-				UInt8 *content;
+				UnsafeArray<UInt8> content;
 				UOSInt contentLen;
 				NN<Text::String> contentId;
 				NN<Text::String> fileName;
@@ -81,11 +81,15 @@ namespace Net
 			Bool AddTo(Text::CString name, Text::CStringNN addr);
 			Bool AddToList(Text::CStringNN addrs);
 			Bool AddCc(Text::CString name, Text::CStringNN addr);
+			Bool AddCcList(Text::CStringNN addrs);
 			Bool AddBcc(Text::CStringNN addr);
+			Bool AddBccList(Text::CStringNN addrs);
 			void AddCustomHeader(Text::CStringNN name, Text::CStringNN value);
 			Optional<Attachment> AddAttachment(Text::CStringNN fileName);
 			NN<Attachment> AddAttachment(UnsafeArray<const UInt8> content, UOSInt contentLen, Text::CStringNN fileName);
 			Bool AddSignature(Optional<Net::SSLEngine> ssl, Optional<Crypto::Cert::X509Cert> cert, Optional<Crypto::Cert::X509Key> key);
+			UOSInt AttachmentGetCount() const;
+			Optional<Attachment> AttachmentGetItem(UOSInt index) const;
 
 			Bool CompletedMessage();
 			Optional<EmailAddress> GetFrom();

@@ -18,6 +18,7 @@
 #include "UI/GUIFileDialog.h"
 
 #define SRID 4326
+#define TEXT_COL (UOSInt)-3
 #define UNKNOWN_COL (UOSInt)-2
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
@@ -242,9 +243,27 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 	{
 		return;
 	}
-	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, CSTR_NULL, sbTable.ToCString(), me->dataFileNoHeader, me->dataFileTz, me->colInd);
+	SSWR::AVIRead::AVIRDBAssignColumnForm frm(0, me->ui, me->core, table, dataFile, CSTR_NULL, sbTable.ToCString(), me->dataFileNoHeader, me->dataFileTz, me->colInd, me->colStr);
 	frm.ShowDialog(me);
 	table.Delete();
+}
+
+Optional<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewText(UOSInt colIndex)
+{
+	NN<Text::String> s;
+	if (this->colStr.GetItem(colIndex).SetTo(s))
+		return s->Clone();
+	else
+		return 0;
+}
+
+NN<Text::String> SSWR::AVIRead::AVIRDBCheckChgForm::GetNewTextNN(UOSInt colIndex)
+{
+	NN<Text::String> s;
+	if (this->colStr.GetItem(colIndex).SetTo(s))
+		return s->Clone();
+	else
+		return Text::String::NewEmpty();
 }
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
@@ -560,6 +579,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt newRowCnt = 0;
 	UOSInt delRowCnt = 0;
 	Bool succ = true;
+	NN<Text::String> s;
 	NN<Text::String> id;
 	Text::StringBuilderUTF8 sbId;
 	while (r->ReadNext())
@@ -573,7 +593,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 			}
 			else
 			{
-				id = r->GetNewStrNN(keyDCol1);
+				if (keyDCol1 == TEXT_COL)
+				{
+					id = this->GetNewTextNN(keyCol1);
+				}
+				else
+				{
+					id = r->GetNewStrNN(keyDCol1);
+				}
 				if (keyDCol2 == INVALID_INDEX && (id->leng == 0 || id->Equals(UTF8STRC("0"))))
 				{
 					id->Release();
@@ -586,7 +613,15 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 					if (keyDCol2 != INVALID_INDEX)
 					{
 						sbId.AppendC(UTF8STRC("_ _"));
-						r->GetStr(keyDCol2, sbId);
+						if (keyDCol2 == TEXT_COL)
+						{
+							if (this->colStr.GetItem(keyCol2).SetTo(s))
+								sbId.Append(s);
+						}
+						else
+						{
+							r->GetStr(keyDCol2, sbId);
+						}
 					}
 					rowData = MemAlloc(Text::String*, dbCnt);
 					i = 0;
@@ -596,7 +631,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 						rowData[i] = 0;
 						if (k != INVALID_INDEX)
 						{
-							rowData[i] = r->GetNewStr(k).OrNull();
+							if (k == TEXT_COL)
+							{
+								rowData[i] = this->GetNewText(i).OrNull();
+							}
+							else
+							{
+								rowData[i] = r->GetNewStr(k).OrNull();
+							}
 							if (rowData[i])
 							{
 								if (rowData[i]->Equals(nullStr.v, nullStr.leng))
@@ -1124,6 +1166,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	Bool genInsert;
 	Bool colFound;
 	NN<Text::String> s;
+	NN<Text::String> s2;
 	Optional<Text::String> ops;
 //	NN<Text::String> id;
 	while (r->ReadNext())
@@ -1137,7 +1180,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			}
 			else
 			{
-				s = r->GetNewStrNN(keyDCol1);
+				if (keyDCol1 == TEXT_COL)
+				{
+					s = this->GetNewTextNN(keyCol1);
+				}
+				else
+				{
+					s = r->GetNewStrNN(keyDCol1);
+				}
 				if (keyDCol2 == INVALID_INDEX && (s->leng == 0 || s->Equals(UTF8STRC("0"))))
 				{
 					s->Release();
@@ -1150,7 +1200,17 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 					if (keyDCol2 != INVALID_INDEX)
 					{
 						sbId.AppendC(UTF8STRC("_ _"));
-						r->GetStr(keyDCol2, sbId);
+						if (keyDCol2 == TEXT_COL)
+						{
+							if (this->GetNewText(keyCol2).SetTo(s2))
+							{
+								sbId.Append(s2);
+							}
+						}
+						else
+						{
+							r->GetStr(keyDCol2, sbId);
+						}
 					}
 					rowData = MemAlloc(Text::String*, dbCnt);
 					i = 0;
@@ -1163,7 +1223,14 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 						}
 						else
 						{
-							rowData[i] = r->GetNewStr(this->colInd.GetItem(i)).OrNull();
+							if (k == TEXT_COL)
+							{
+								rowData[i] = this->GetNewText(i).OrNull();
+							}
+							else
+							{
+								rowData[i] = r->GetNewStr(this->colInd.GetItem(i)).OrNull();
+							}
 							if (rowData[i])
 							{
 								if (rowData[i]->Equals(nullStr.v, nullStr.leng))
@@ -2271,6 +2338,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRDBCheckChgForm::~AVIRDBCheckChgForm()
 {
 	this->dataFile.Delete();
+	this->colStr.FreeAll();
 }
 
 void SSWR::AVIRead::AVIRDBCheckChgForm::OnMonitorChanged()

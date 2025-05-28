@@ -2,11 +2,13 @@
 #define _SM_NET_MSGRAPHCLIENT
 #include "Data/Timestamp.h"
 #include "IO/LogTool.h"
+#include "Net/Email/EmailMessage.h"
 #include "Net/HTTPClient.h"
 #include "Net/JSONResponse.h"
 #include "Net/SSLEngine.h"
 #include "Net/SocketFactory.h"
 #include "Text/JSON.h"
+#include "Text/JSONBuilder.h"
 #include "Text/String.h"
 
 namespace Net
@@ -24,6 +26,7 @@ namespace Net
 		virtual ~MSGraphAccessToken();
 
 		virtual void InitClient(NN<Net::HTTPClient> cli);
+		Bool IsExpired();
 	};
 
 	JSONRESP_BEGIN(MSGraphEntity)
@@ -32,6 +35,18 @@ namespace Net
 
 	JSONRESP_BEGIN(MSGraphMessageCategory)
 	JSONRESP_SEC_GET(MSGraphMessageCategory)
+	JSONRESP_END
+
+	JSONRESP_BEGIN(MSGraphUploadSession)
+	JSONRESP_STR("@odata.context",true,false)
+	JSONRESP_STR("expirationDateTime",false,false)
+	JSONRESP_ARRAY_STR("nextExpectedRanges",true,false)
+	JSONRESP_STR("uploadUrl",false,false)
+	JSONRESP_SEC_GET(MSGraphUploadSession)
+//	JSONRESP_GETSTR("@odata.context",Get@odata.context)
+	JSONRESP_GETSTR("expirationDateTime",GetExpirationDateTime)
+	JSONRESP_GETARRAY_STR("nextExpectedRanges",GetNextExpectedRanges)
+	JSONRESP_GETSTR("uploadUrl",GetUploadUrl)
 	JSONRESP_END
 
 	JSONRESP_BEGIN(MSGraphDateTime)
@@ -89,6 +104,7 @@ namespace Net
 	JSONRESP_BEGIN(MSGraphEventMessageRequest)
 	JSONRESP_STR("@odata.etag",true,false)
 	JSONRESP_STR("@odata.type",true,false)
+	JSONRESP_STR("@odata.context",true,false)
 	JSONRESP_OBJ("body",false,false,MSGraphMessageBody)
 	JSONRESP_STR("bodyPreview",false,false)
 	JSONRESP_STR("changeKey",false,false)
@@ -96,7 +112,7 @@ namespace Net
 	JSONRESP_STR("conversationIndex",false,false)
 	JSONRESP_STR("createdDateTime",false,false)
 	JSONRESP_OBJ("flag",false,false,MSGraphMessageFlag)
-	JSONRESP_OBJ("from",false,false,MSGraphRecipient)
+	JSONRESP_OBJ("from",true,false,MSGraphRecipient)
 	JSONRESP_BOOL("hasAttachments",false,false)
 	JSONRESP_STR("id",false,false)
 	JSONRESP_STR("importance",false,false)
@@ -109,7 +125,7 @@ namespace Net
 	JSONRESP_STR("lastModifiedDateTime",false,false)
 	JSONRESP_STR("parentFolderId",false,false)
 	JSONRESP_STR("receivedDateTime",false,false)
-	JSONRESP_OBJ("sender",false,false,MSGraphRecipient)
+	JSONRESP_OBJ("sender",true,false,MSGraphRecipient)
 	JSONRESP_STR("sentDateTime",false,false)
 	JSONRESP_STR("subject",false,false)
 	JSONRESP_ARRAY_OBJ("toRecipients",false,false,MSGraphRecipient)
@@ -209,20 +225,27 @@ namespace Net
 		Optional<Net::SSLEngine> ssl;
 		Optional<IO::LogTool> log;
 		Bool debugLog;
+		UOSInt attSplitSize;
 
 		Optional<MSGraphAccessToken> AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content);
 
 		template<class T> Bool GetList(NN<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NN<Data::ArrayListNN<T>> dataList);
+		static void BuildRcpt(NN<Text::JSONBuilder> builder, NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList, Net::Email::EmailMessage::RecipientType type, Text::CStringNN name);
 	public:
 		MSGraphClient(NN<Net::TCPClientFactory> clif, Optional<Net::SSLEngine> ssl);
 		~MSGraphClient();
 
 		void SetLog(NN<IO::LogTool> log, Bool debugLog);
+		void SetAttSplitSize(UOSInt attSplitSize);
 
 		Optional<MSGraphAccessToken> AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope);
 		Optional<MSGraphEntity> EntityGet(NN<MSGraphAccessToken> token, Text::CString userName);
 		Bool MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext);
 		Bool MailFoldersGet(NN<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NN<Data::ArrayListNN<MSGraphMailFolder>> folderList);
+		Optional<MSGraphEventMessageRequest> MailMessageCreate(NN<MSGraphAccessToken> token, Text::CString userName, NN<Net::Email::EmailMessage> message);
+		Bool MailMessageSend(NN<MSGraphAccessToken> token, Text::CString userName, NN<MSGraphEventMessageRequest> message);
+		Bool MailMessageDelete(NN<MSGraphAccessToken> token, Text::CString userName, Text::CStringNN msgId);
+		Bool SendEmail(NN<MSGraphAccessToken> token, Text::CString userName, NN<Net::Email::EmailMessage> message);
 
 		static Bool HasUnknownTypes(NN<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName);
 	};

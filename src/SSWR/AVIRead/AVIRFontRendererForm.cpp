@@ -51,6 +51,7 @@ SSWR::AVIRead::AVIRFontRendererForm::~AVIRFontRendererForm()
 	this->font.Delete();
 	this->currImg.Delete();
 	this->ClearChildren();
+	this->core->GetDrawEngine()->EndColorSess(this->colorSess);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 
