@@ -473,7 +473,7 @@ Bool Data::QueryConditions::NumberCondition::ToWhereClause(NN<Text::StringBuilde
 	switch (this->cond)
 	{
 	case CompareCondition::Equal:
-		sb->Append(CSTR(" == "));
+		sb->Append(CSTR(" = "));
 		break;
 	case CompareCondition::NotEqual:
 		sb->Append(CSTR(" <> "));
