@@ -35,8 +35,10 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Map::VectorLayer> lyr;
 			NN<AVIRMapNavigator> navi;
+			Math::Coord2D<OSInt> downPos;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
+			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
 			static void __stdcall OnObjectsSelChg(AnyType userObj);
 			static void __stdcall OnNewClicked(AnyType userObj);

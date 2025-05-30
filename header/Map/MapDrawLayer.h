@@ -130,6 +130,7 @@ namespace Map
 
 		virtual UOSInt GetNameCol() const;
 		virtual void SetNameCol(UOSInt nameCol);
+		virtual UOSInt GetGeomCol() const = 0;
 
 		virtual ObjectClass GetObjectClass() const = 0;
 		NN<Text::String> GetName() const;
@@ -184,6 +185,7 @@ namespace Map
 		OSInt currIndex;
 
 		Int64 GetCurrObjId();
+		UOSInt RemapColIndex(UOSInt colIndex);
 	public:
 		MapLayerReader(NN<MapDrawLayer> layer);
 		~MapLayerReader();
@@ -211,6 +213,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
+		static void GetShapeColDef(NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
 		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer);
 	};
 }

@@ -705,6 +705,11 @@ UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arra
 	return 1;
 }
 
+UOSInt Map::VectorLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_VECTOR_LAYER;

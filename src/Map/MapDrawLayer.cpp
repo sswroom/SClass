@@ -871,10 +871,14 @@ Int64 Map::MapLayerReader::GetCurrObjId()
 	return this->objIds.GetItem((UOSInt)this->currIndex);
 }
 
+UOSInt Map::MapLayerReader::RemapColIndex(UOSInt colIndex)
+{
+
+}
+
 Map::MapLayerReader::MapLayerReader(NN<Map::MapDrawLayer> layer) : DB::DBReader()
 {
 	this->layer = layer;
-
 	this->layer->GetAllObjectIds(this->objIds, this->nameArr);
 	this->currIndex = -1;
 }
@@ -895,7 +899,10 @@ Bool Map::MapLayerReader::ReadNext()
 
 UOSInt Map::MapLayerReader::ColCount()
 {
-	return this->layer->GetColumnCnt() + 1;
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+		return this->layer->GetColumnCnt() + 1;
+	else
+		return this->layer->GetColumnCnt();
 }
 
 OSInt Map::MapLayerReader::GetRowChanged()
@@ -905,41 +912,53 @@ OSInt Map::MapLayerReader::GetRowChanged()
 
 Int32 Map::MapLayerReader::GetInt32(UOSInt colIndex)
 {
-	if (colIndex <= 0)
-		return 0;
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex <= 0)
+			return 0;
+		colIndex -= 1;
+	}
 	Text::StringBuilderUTF8 sb;
-	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex);
 	return sb.ToInt32();
 }
 
 Int64 Map::MapLayerReader::GetInt64(UOSInt colIndex)
 {
-	if (colIndex == 0)
-		return 0;
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex <= 0)
+			return 0;
+		colIndex -= 1;
+	}
 	Text::StringBuilderUTF8 sb;
-	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex);
 	return sb.ToInt64();
 }
 
 UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<WChar> buff)
 {
-	if (colIndex <= 0)
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
-		NN<Math::Geometry::Vector2D> vec;
-		if (!this->GetVector(0).SetTo(vec))
-			return 0;
-		Math::WKTWriter writer;
-		Text::StringBuilderUTF8 sb;
-		Bool succ = writer.ToText(sb, vec);
-		vec.Delete();
-		if (!succ)
+		if (colIndex <= 0)
 		{
-			return 0;
+			NN<Math::Geometry::Vector2D> vec;
+			if (!this->GetVector(0).SetTo(vec))
+				return 0;
+			Math::WKTWriter writer;
+			Text::StringBuilderUTF8 sb;
+			Bool succ = writer.ToText(sb, vec);
+			vec.Delete();
+			if (!succ)
+			{
+				return 0;
+			}
+			return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
 		}
-		return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
+		colIndex -= 1;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 	{
 		return Text::StrUTF8_WCharC(buff, sb.v, sb.leng, 0);
 	}
@@ -948,90 +967,120 @@ UnsafeArrayOpt<WChar> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<W
 
 Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
-	if (colIndex <= 0)
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
-		NN<Math::Geometry::Vector2D> vec;
-		if (!this->GetVector(0).SetTo(vec))
-			return 0;
-		Math::WKTWriter writer;
-		Bool succ = writer.ToText(sb, vec);
-		vec.Delete();
-		return succ;
+		if (colIndex <= 0)
+		{
+			NN<Math::Geometry::Vector2D> vec;
+			if (!this->GetVector(0).SetTo(vec))
+				return 0;
+			Math::WKTWriter writer;
+			Bool succ = writer.ToText(sb, vec);
+			vec.Delete();
+			return succ;
+		}
+		colIndex -= 1;
 	}
-	return this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	return this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex);
 }
 
 Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 {
-	if (colIndex <= 0)
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
-		NN<Math::Geometry::Vector2D> vec;
-		if (!this->GetVector(0).SetTo(vec))
-			return 0;
-		Math::WKTWriter writer;
-		Text::StringBuilderUTF8 sb;
-		Bool succ = writer.ToText(sb, vec);
-		vec.Delete();
-		if (!succ)
+		if (colIndex <= 0)
 		{
-			return 0;
+			NN<Math::Geometry::Vector2D> vec;
+			if (!this->GetVector(0).SetTo(vec))
+				return 0;
+			Math::WKTWriter writer;
+			Text::StringBuilderUTF8 sb;
+			Bool succ = writer.ToText(sb, vec);
+			vec.Delete();
+			if (!succ)
+			{
+				return 0;
+			}
+			return Text::String::New(sb.ToCString());
 		}
-		return Text::String::New(sb.ToCString());
+		colIndex -= 1;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 		return Text::String::New(sb.ToCString());
 	return 0;
 }
 
 UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
-	if (colIndex <= 0)
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
 	{
-		NN<Math::Geometry::Vector2D> vec;
-		if (!this->GetVector(0).SetTo(vec))
-			return 0;
-		Math::WKTWriter writer;
-		Text::StringBuilderUTF8 sb;
-		Bool succ = writer.ToText(sb, vec);
-		vec.Delete();
-		if (!succ)
+		if (colIndex <= 0)
 		{
-			return 0;
+			NN<Math::Geometry::Vector2D> vec;
+			if (!this->GetVector(0).SetTo(vec))
+				return 0;
+			Math::WKTWriter writer;
+			Text::StringBuilderUTF8 sb;
+			Bool succ = writer.ToText(sb, vec);
+			vec.Delete();
+			if (!succ)
+			{
+				return 0;
+			}
+			return sb.ConcatToS(buff, buffSize);
 		}
-		return sb.ConcatToS(buff, buffSize);
+		colIndex -= 1;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 		return sb.ConcatToS(buff, buffSize);
 	return 0;
 }
 
 Data::Timestamp Map::MapLayerReader::GetTimestamp(UOSInt colIndex)
 {
-	if (colIndex <= 0)
-		return Data::Timestamp(0);
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex <= 0)
+		{
+			return Data::Timestamp(0);
+		}
+		colIndex -= 1;
+	}
 	Text::StringBuilderUTF8 sb;
-	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1))
+	if (this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex))
 		return Data::Timestamp(sb.ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	return 0;
 }
 
 Double Map::MapLayerReader::GetDblOrNAN(UOSInt colIndex)
 {
-	if (colIndex <= 0)
-		return NAN;
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex <= 0)
+		{
+			return NAN;
+		}
+		colIndex -= 1;
+	}
 	Text::StringBuilderUTF8 sb;
-	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex);
 	return sb.ToDoubleOrNAN();
 }
 
 Bool Map::MapLayerReader::GetBool(UOSInt colIndex)
 {
-	if (colIndex <= 0)
-		return 0;
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex <= 0)
+		{
+			return false;
+		}
+		colIndex -= 1;
+	}
 	Text::StringBuilderUTF8 sb;
-	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex);
 	return sb.ToBool() != 0;
 }
 
@@ -1047,15 +1096,22 @@ UOSInt Map::MapLayerReader::GetBinary(UOSInt colIndex, UnsafeArray<UInt8> buff)
 
 Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colIndex)
 {
-	if (colIndex != 0)
+	UOSInt geomCol = this->layer->GetGeomCol();
+	if (geomCol == INVALID_INDEX)
+	{
+ 		if (colIndex != 0)
+			return 0;
+	}
+	else if (geomCol != colIndex)
+	{
 		return 0;
+	}
 	if ((UOSInt)this->currIndex >= this->objIds.GetCount() || this->currIndex < 0)
 		return 0;
 	NN<GetObjectSess> sess = this->layer->BeginGetObject();
 	Optional<Math::Geometry::Vector2D> vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);
 	return vec;
-
 }
 
 Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
@@ -1065,71 +1121,102 @@ Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
  
 Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 {
-	if (colIndex == 0)
-		return false;
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex <= 0)
+		{
+			return false;
+		}
+		colIndex -= 1;
+	}
 	Text::StringBuilderUTF8 sb;
 	return !this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
 UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
-	if (colIndex == 0)
-		return Text::StrConcatC(buff, UTF8STRC("Shape"));
-	return this->layer->GetColumnName(buff, colIndex - 1);
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex == 0)
+			return Text::StrConcatC(buff, UTF8STRC("Shape"));
+		colIndex -= 1;
+	}
+	return this->layer->GetColumnName(buff, colIndex);
 }
 
 DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
-	if (colIndex == 0)
-		return DB::DBUtil::CT_Vector;
-	return this->layer->GetColumnType(colIndex - 1, colSize);
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex == 0)
+			return DB::DBUtil::CT_Vector;
+		colIndex -= 1;
+	}
+	return this->layer->GetColumnType(colIndex, colSize);
 }
 
 Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
-	return GetColDefV(colIndex, colDef, this->layer);
+	if (this->layer->GetGeomCol() == INVALID_INDEX)
+	{
+		if (colIndex == 0)
+		{
+			GetShapeColDef(colDef, this->layer);
+			return true;
+		}
+	}
+	return this->layer->GetColumnDef(colIndex, colDef);
+}
+
+void Map::MapLayerReader::GetShapeColDef(NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)
+{
+	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	colDef->SetColType(DB::DBUtil::CT_Vector);
+	colDef->SetColName(CSTR("Shape"));
+	switch (layer->GetLayerType())
+	{
+	case Map::DRAW_LAYER_UNKNOWN:
+	case Map::DRAW_LAYER_MIXED:
+	default:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+		break;
+	case Map::DRAW_LAYER_POINT:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
+		break;
+	case Map::DRAW_LAYER_POLYLINE:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polyline);
+		break;
+	case Map::DRAW_LAYER_POLYGON:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
+		break;
+	case Map::DRAW_LAYER_POINT3D:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
+		break;
+	case Map::DRAW_LAYER_POLYLINE3D:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZ);
+		break;
+	case Map::DRAW_LAYER_IMAGE:
+		colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
+		break;
+	}
+	colDef->SetColDP(csys->GetSRID());
+	colDef->SetAttr(CSTR(""));
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAutoIncNone();
+	colDef->SetNotNull(true);
+	colDef->SetPK(false);
 }
 
 Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)
 {
-	if (colIndex == 0)
+	if (layer->GetGeomCol() == INVALID_INDEX)
 	{
-		NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
-		colDef->SetColType(DB::DBUtil::CT_Vector);
-		colDef->SetColName(CSTR("Shape"));
-		switch (layer->GetLayerType())
+		if (colIndex == 0)
 		{
-		case Map::DRAW_LAYER_UNKNOWN:
-		case Map::DRAW_LAYER_MIXED:
-		default:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
-			break;
-		case Map::DRAW_LAYER_POINT:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Point);
-			break;
-		case Map::DRAW_LAYER_POLYLINE:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polyline);
-			break;
-		case Map::DRAW_LAYER_POLYGON:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Polygon);
-			break;
-		case Map::DRAW_LAYER_POINT3D:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PointZ);
-			break;
-		case Map::DRAW_LAYER_POLYLINE3D:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::PolylineZ);
-			break;
-		case Map::DRAW_LAYER_IMAGE:
-			colDef->SetColSize((UOSInt)DB::ColDef::GeometryType::Any);
-			break;
+			GetShapeColDef(colDef, layer);
+			return true;
 		}
-		colDef->SetColDP(csys->GetSRID());
-		colDef->SetAttr(CSTR(""));
-		colDef->SetDefVal(CSTR_NULL);
-		colDef->SetAutoIncNone();
-		colDef->SetNotNull(true);
-		colDef->SetPK(false);
-		return true;
+		colIndex -= 1;
 	}
-	return layer->GetColumnDef(colIndex - 1, colDef);
+	return layer->GetColumnDef(colIndex, colDef);
 }

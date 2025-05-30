@@ -90,6 +90,7 @@ namespace Map
 
 		void SetTableName(Text::String *tableName);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
+		virtual UOSInt GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 		Bool VectorValid(NN<Math::Geometry::Vector2D> vec);

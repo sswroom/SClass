@@ -22,6 +22,7 @@ namespace Map
 		UOSInt objIdCol;
 		UOSInt shapeCol;
 		NN<Text::String> tableName;
+		Optional<DB::TableDef> tabDef;
 
 	private:
 		Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> ReadNameArr();

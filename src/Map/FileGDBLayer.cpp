@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "DB/ColDef.h"
+#include "DB/TableDef.h"
 #include "Map/FileGDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -70,6 +71,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 
 	Sync::MutexUsage mutUsage;
 	NN<DB::ReadingDB> currDB = this->conn->UseDB(mutUsage);
+	this->tabDef = currDB->GetTableDef(CSTR_NULL, tableName);
 	NN<DB::DBReader> r;
 	if (currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, 0, 0).SetTo(r))
 	{
@@ -177,6 +179,7 @@ Map::FileGDBLayer::~FileGDBLayer()
 		DEL_CLASS(vec);
 	}
 	this->tableName->Release();
+	this->tabDef.Delete();
 }
 
 Map::DrawLayerType Map::FileGDBLayer::GetLayerType() const
@@ -298,6 +301,13 @@ DB::DBUtil::ColType Map::FileGDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOS
 
 Bool Map::FileGDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
+	NN<DB::TableDef> tabDef;
+	NN<DB::ColDef> col;
+	if (this->tabDef.SetTo(tabDef) && tabDef->GetCol(colIndex).SetTo(col))
+	{
+		colDef->Set(col);
+		return true;
+	}
 	return false;
 }
 

@@ -176,7 +176,11 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 		}
 		i++;
 	}
-	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
+	Int32 x = pixX2 - pixX1 + 1;
+	Int32 y = pixY2 - pixY1 + 1;
+	if (x <= 0 || y <= 0)
+		return 0;
+	return (UOSInt)(x * y);
 }
 
 Optional<Media::ImageList> Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
