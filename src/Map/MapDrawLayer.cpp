@@ -144,6 +144,12 @@ Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, 
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	NN<DB::ColDef> col;
+	if (this->GetGeomCol() == INVALID_INDEX)
+	{
+		NEW_CLASSNN(col, DB::ColDef(CSTR("")));
+		MapLayerReader::GetShapeColDef(col, *this);
+		tab->AddCol(col);
+	}
 	UOSInt i = 0;
 	UOSInt j = this->GetColumnCnt();
 	while (i < j)
@@ -567,6 +573,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
+	UOSInt geomCol = this->GetGeomCol();
 
 	k = this->GetColumnCnt();
 	i = k;
@@ -576,18 +583,47 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	sptr = sb.v;
 	while (i-- > 0)
 	{
-		if (this->GetColumnName(sptr, i).SetTo(sptr2))
+		if (geomCol == i)
 		{
-			sptrs[i] = UnsafeArray<const UTF8Char>(sptr);
-			sptr = sptr2 + 1;
+
+		}
+		else if (geomCol > i)
+		{
+			if (this->GetColumnName(sptr, i).SetTo(sptr2))
+			{
+				sptrs[i] = UnsafeArray<const UTF8Char>(sptr);
+				sptr = sptr2 + 1;
+			}
+			else
+			{
+				sptrs[i] = 0;
+			}
 		}
 		else
 		{
-			sptrs[i] = 0;
+			if (this->GetColumnName(sptr, i).SetTo(sptr2))
+			{
+				sptrs[i - 1] = UnsafeArray<const UTF8Char>(sptr);
+				sptr = sptr2 + 1;
+			}
+			else
+			{
+				sptrs[i - 1] = 0;
+			}
 		}
 	}
+	UOSInt nameCol = this->GetNameCol();
+	if (geomCol < nameCol)
+	{
+		nameCol--;
+	}
+	l = k;
+	if (geomCol != INVALID_INDEX)
+	{
+		l--;
+	}
 	NN<Math::CoordinateSystem> csys = this->csys->Clone();
-	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, sptrs, csys, this->GetNameCol(), this->layerName));
+	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, l, sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
 	this->GetAllObjectIds(objIds, nameArr);
@@ -619,13 +655,31 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 			l = k;
 			while (l-- > 0)
 			{
-				if (ofsts[l] == INVALID_INDEX)
+				if (geomCol == l)
 				{
-					sptrs[l] = 0;
+		
+				}
+				else if (geomCol > l)
+				{
+					if (ofsts[l] == INVALID_INDEX)
+					{
+						sptrs[l] = 0;
+					}
+					else
+					{
+						sptrs[l] = &sb.v[ofsts[l]];
+					}
 				}
 				else
 				{
-					sptrs[l] = &sb.v[ofsts[l]];
+					if (ofsts[l] == INVALID_INDEX)
+					{
+						sptrs[l - 1] = 0;
+					}
+					else
+					{
+						sptrs[l - 1] = &sb.v[ofsts[l]];
+					}
 				}
 			}
 			if (lyr->AddVector2(nnvec, sptrs) == -1)
@@ -869,11 +923,6 @@ Map::DrawLayerType Map::MapDrawLayer::VectorType2LayerType(Math::Geometry::Vecto
 Int64 Map::MapLayerReader::GetCurrObjId()
 {
 	return this->objIds.GetItem((UOSInt)this->currIndex);
-}
-
-UOSInt Map::MapLayerReader::RemapColIndex(UOSInt colIndex)
-{
-
 }
 
 Map::MapLayerReader::MapLayerReader(NN<Map::MapDrawLayer> layer) : DB::DBReader()
@@ -1164,6 +1213,7 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 			GetShapeColDef(colDef, this->layer);
 			return true;
 		}
+		colIndex -= 1;
 	}
 	return this->layer->GetColumnDef(colIndex, colDef);
 }

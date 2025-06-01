@@ -366,6 +366,11 @@ void Map::OruxDBLayer::Reconnect()
 	this->db->Reconnect();
 }
 
+UOSInt Map::OruxDBLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::OruxDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ORUX_DB_LAYER;

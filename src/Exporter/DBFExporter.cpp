@@ -145,28 +145,28 @@ Bool Exporter::DBFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		while (i-- > 0)
 		{
 			j = colMap[i];
-			if (colTypes[j] == DB::DBUtil::CT_UTF8Char || colTypes[j] == DB::DBUtil::CT_VarUTF8Char)
+			if (colTypes[i] == DB::DBUtil::CT_UTF8Char || colTypes[i] == DB::DBUtil::CT_VarUTF8Char)
 			{
-				sptr = r->GetStr(i, sbuff, sizeof(sbuff)).Or(sbuff);
+				sptr = r->GetStr(j, sbuff, sizeof(sbuff)).Or(sbuff);
 				writer->SetColumnStr(i, CSTRP(sbuff, sptr));
 			}
-			else if (colTypes[j] == DB::DBUtil::CT_Int16)
+			else if (colTypes[i] == DB::DBUtil::CT_Int16)
 			{
 				writer->SetColumnI16(i, (Int16)r->GetInt32(j));
 			}
-			else if (colTypes[j] == DB::DBUtil::CT_Int32)
+			else if (colTypes[i] == DB::DBUtil::CT_Int32)
 			{
 				writer->SetColumnI32(i, r->GetInt32(j));
 			}
-			else if (colTypes[j] == DB::DBUtil::CT_Int64)
+			else if (colTypes[i] == DB::DBUtil::CT_Int64)
 			{
 				writer->SetColumnI64(i, r->GetInt64(j));
 			}
-			else if (colTypes[j] == DB::DBUtil::CT_Double)
+			else if (colTypes[i] == DB::DBUtil::CT_Double)
 			{
 				writer->SetColumnF64(i, r->GetDblOrNAN(j));
 			}
-			else if (colTypes[j] == DB::DBUtil::CT_DateTime)
+			else if (colTypes[i] == DB::DBUtil::CT_DateTime)
 			{
 				writer->SetColumnTS(i, r->GetTimestamp(j));
 			}

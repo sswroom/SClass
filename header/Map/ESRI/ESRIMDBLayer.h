@@ -60,6 +60,7 @@ namespace Map
 			virtual void CloseReader(DB::DBReader *r);
 			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
+			virtual UOSInt GetGeomCol() const;
 
 			virtual ObjectClass GetObjectClass() const;
 		};

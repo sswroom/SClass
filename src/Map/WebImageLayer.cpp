@@ -583,6 +583,11 @@ Optional<Math::Geometry::Vector2D> Map::WebImageLayer::GetNewVectorById(NN<GetOb
 	}
 }
 
+UOSInt Map::WebImageLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::WebImageLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_WEB_IMAGE_LAYER;

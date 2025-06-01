@@ -675,6 +675,11 @@ void Map::NetworkLinkLayer::SetNameCol(UOSInt nameCol)
 {
 }
 
+UOSInt Map::NetworkLinkLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;

@@ -413,6 +413,11 @@ Optional<Math::Geometry::Vector2D> Map::HKTrafficLayer2::GetNewVectorById(NN<Get
 	return vec;
 }
 
+UOSInt Map::HKTrafficLayer2::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::HKTrafficLayer2::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_HKTRAFFIC_LAYER2;

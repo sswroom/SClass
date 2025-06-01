@@ -37,6 +37,7 @@ namespace SSWR
 			virtual NN<Map::GetObjectSess> BeginGetObject();
 			virtual void EndGetObject(NN<Map::GetObjectSess> session);
 			virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<Map::GetObjectSess> session, Int64 id);
+			virtual UOSInt GetGeomCol() const;
 
 			virtual ObjectClass GetObjectClass() const;
 

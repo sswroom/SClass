@@ -496,6 +496,27 @@ void Map::DBMapLayer::Reconnect()
 
 }
 
+UOSInt Map::DBMapLayer::GetGeomCol() const
+{
+	NN<DB::TableDef> tabDef;
+	NN<DB::ColDef> colDef;
+	if (this->tabDef.SetTo(tabDef))
+	{
+		UOSInt i = tabDef->GetColCnt();
+		while (i-- > 0)
+		{
+			if (tabDef->GetCol(i).SetTo(colDef))
+			{
+				if (colDef->GetColType() == DB::DBUtil::CT_Vector)
+				{
+					return i;
+				}
+			}
+		}
+	}
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass() const
 {
 	return OC_DB_MAP_LAYER;

@@ -314,6 +314,11 @@ Optional<Math::Geometry::Vector2D> Map::DrawMapServiceLayer::GetNewVectorById(NN
 	return 0;
 }
 
+UOSInt Map::DrawMapServiceLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::DrawMapServiceLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_DRAW_MAP_SERVICE_LAYER;

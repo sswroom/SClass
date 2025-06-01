@@ -798,6 +798,11 @@ Optional<Math::Geometry::Vector2D> Map::CIPLayer2::GetNewVectorById(NN<GetObject
 	return 0;
 }
 
+UOSInt Map::CIPLayer2::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::CIPLayer2::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_CIP_LAYER;

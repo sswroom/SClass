@@ -73,6 +73,7 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 {
 	UOSInt i;
 	UOSInt j;
+	UOSInt k;
 	UOSInt nameOfst;
 	UOSInt nameLen;
 	UOSInt datumOfst = 0;
@@ -89,6 +90,14 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 	UInt32 srid = 0;
 	if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("GEOGCS[")))
 	{
+		Bool hasToWGS84 = false;
+		Double cX = 0;
+		Double cY = 0;
+		Double cZ = 0;
+		Double xAngle = 0;
+		Double yAngle = 0;
+		Double zAngle = 0;
+		Double scale = 0;
 		i = 7;
 		if (!ParsePRJString(&prjBuff[i], nameLen))
 		{
@@ -173,6 +182,77 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 										i++;
 										if (c == ']')
 											break;
+										j = i;
+									}
+									else if (c == 0)
+									{
+#if defined(VERBOSE)
+										printf("ArcGISPRJParser: Unexpected end of string at %d\r\n", (UInt32)i);
+#endif
+										return 0;
+									}
+									else
+									{
+										i++;
+									}
+								}
+							}
+							else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("TOWGS84[")))
+							{
+								i += 8;
+								j = i;
+								k = 1;
+								while (true)
+								{
+									c = prjBuff[i];
+									if (c == ']' || c == ',')
+									{
+										if ((OSInt)j >= 0)
+										{
+											prjBuff[i] = 0;
+											if (k == 1)
+											{
+												cX = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											else if (k == 2)
+											{
+												cY = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											else if (k == 3)
+											{
+												cZ = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											else if (k == 4)
+											{
+												xAngle = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											else if (k == 5)
+											{
+												yAngle = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											else if (k == 6)
+											{
+												zAngle = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											else if (k == 7)
+											{
+												scale = Text::StrToDoubleOr(&prjBuff[j], 0);
+											}
+											k++;
+										}
+										i++;
+										if (c == ']')
+										{
+											if (k != 8)
+											{
+#if defined(VERBOSE)
+												printf("ArcGISPRJParser: TOWGS84 expected 7 parameters, now is %d\r\n", (UInt32)(k - 1));
+#endif
+												return 0;
+											}
+											hasToWGS84 = true;
+											break;
+										}
 										j = i;
 									}
 									else if (c == 0)
@@ -311,6 +391,17 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
 			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
+			if (hasToWGS84)
+			{
+				data.cX = cX;
+				data.cY = cY;
+				data.cZ = cZ;
+				data.xAngle = xAngle;
+				data.yAngle = yAngle;
+				data.zAngle = zAngle;
+				data.scale = scale;
+				data.aunit = Math::Unit::Angle::AU_ARCSECOND;
+			}
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}
@@ -320,6 +411,17 @@ Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStri
 			Optional<const Math::CoordinateSystemManager::DatumInfo> datum = Math::CoordinateSystemManager::GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
 			Math::CoordinateSystemManager::FillDatumData(data, datum, {&prjBuff[datumOfst], datumLen - 2}, ellipsoid, 0);
+			if (hasToWGS84)
+			{
+				data.cX = cX;
+				data.cY = cY;
+				data.cZ = cZ;
+				data.xAngle = xAngle;
+				data.yAngle = yAngle;
+				data.zAngle = zAngle;
+				data.scale = scale;
+				data.aunit = Math::Unit::Angle::AU_ARCSECOND;
+			}
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen - 2}, &data, primem, unit));
 			return csys;
 		}

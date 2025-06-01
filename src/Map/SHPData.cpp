@@ -653,7 +653,7 @@ UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 	return this->dbf->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition)
 {
 	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
 }
@@ -677,6 +677,11 @@ void Map::SHPData::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 void Map::SHPData::Reconnect()
 {
 	return this->dbf->Reconnect();
+}
+
+UOSInt Map::SHPData::GetGeomCol() const
+{
+	return INVALID_INDEX;
 }
 
 Map::MapDrawLayer::ObjectClass Map::SHPData::GetObjectClass() const

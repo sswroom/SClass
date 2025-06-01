@@ -53,6 +53,7 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
+		virtual UOSInt GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 		virtual NN<Math::CoordinateSystem> GetCoordinateSystem();

@@ -570,6 +570,11 @@ Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text
 	return tab;
 }
 
+UOSInt Map::GPSTrack::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_GPS_TRACK;

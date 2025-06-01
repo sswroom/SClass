@@ -572,6 +572,11 @@ Optional<Math::Geometry::Vector2D> Map::TileMapLayer::GetNewVectorById(NN<GetObj
 	}
 }
 
+UOSInt Map::TileMapLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_TILE_MAP_LAYER;

@@ -138,6 +138,11 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVect
 	}
 }
 
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_OTHER;

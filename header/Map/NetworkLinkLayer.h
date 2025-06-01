@@ -88,6 +88,7 @@ namespace Map
 		virtual Optional<Math::Geometry::Vector2D> GetNewVectorById(NN<GetObjectSess> session, Int64 id);
 		virtual UOSInt GetNameCol() const;
 		virtual void SetNameCol(UOSInt nameCol);
+		virtual UOSInt GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 		virtual NN<Math::CoordinateSystem> GetCoordinateSystem();

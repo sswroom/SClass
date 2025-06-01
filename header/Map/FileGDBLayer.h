@@ -13,7 +13,7 @@ namespace Map
 	{
 	private:
 		NN<DB::SharedReadingDB> conn;
-		Data::FastMap<Int32, Math::Geometry::Vector2D*> objects;
+		Data::FastMapNN<Int32, Math::Geometry::Vector2D> objects;
 		Optional<DB::ReadingDB> lastDB;
 		Map::DrawLayerType layerType;
 		Data::ArrayListStringNN colNames;
@@ -56,6 +56,7 @@ namespace Map
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
+		virtual UOSInt GetGeomCol() const;
 
 		virtual ObjectClass GetObjectClass() const;
 	};

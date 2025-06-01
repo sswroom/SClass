@@ -568,6 +568,11 @@ Optional<Math::Geometry::Vector2D> Map::HKParkingVacancy::GetNewVectorById(NN<Ge
 	return 0;
 }
 
+UOSInt Map::HKParkingVacancy::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::HKParkingVacancy::GetObjectClass() const
 {
 	return ObjectClass::OC_OTHER;

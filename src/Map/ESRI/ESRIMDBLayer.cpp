@@ -428,6 +428,11 @@ void Map::ESRI::ESRIMDBLayer::Reconnect()
 	this->conn->Reconnect();
 }
 
+UOSInt Map::ESRI::ESRIMDBLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;

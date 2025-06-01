@@ -343,6 +343,11 @@ void Map::GeoPackageLayer::Reconnect()
 	this->gpkg->Reconnect();
 }
 
+UOSInt Map::GeoPackageLayer::GetGeomCol() const
+{
+	return this->geomCol;
+}
+
 Map::MapDrawLayer::ObjectClass Map::GeoPackageLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::ObjectClass::OC_GEOPACKAGE;

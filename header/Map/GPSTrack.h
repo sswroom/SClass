@@ -111,8 +111,9 @@ namespace Map
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names); // no need to release
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Optional<Data::ArrayListStringNN> columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Optional<Data::QueryConditions> condition);
 		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
+		virtual UOSInt GetGeomCol() const;
 		virtual ObjectClass GetObjectClass() const;
-
+		
 		void NewTrack();
 		UOSInt AddRecord(NN<GPSRecord3> rec);
 		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);

@@ -4,6 +4,7 @@
 #include "Map/FileGDBLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
+#include "Math/WKTWriter.h"
 
 Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> Map::FileGDBLayer::ReadNameArr()
 {
@@ -133,7 +134,7 @@ Map::FileGDBLayer::FileGDBLayer(NN<DB::SharedReadingDB> conn, Text::CStringNN so
 			objId = r->GetInt32(this->objIdCol);
 			if (r->GetVector(this->shapeCol).SetTo(vec))
 			{
-				this->objects.Put(objId, vec.Ptr());
+				this->objects.Put(objId, vec);
 
 				bounds = vec->GetBounds();
 				if (this->minPos.IsZero() && this->maxPos.IsZero())
@@ -171,12 +172,12 @@ Map::FileGDBLayer::~FileGDBLayer()
 	{
 		OPTSTR_DEL(this->colNames.RemoveAt(i));
 	}
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	i = this->objects.GetCount();
 	while (i-- > 0)
 	{
-		vec = this->objects.GetItem(i);
-		DEL_CLASS(vec);
+		vec = this->objects.GetItemNoCheck(i);
+		vec.Delete();
 	}
 	this->tableName->Release();
 	this->tabDef.Delete();
@@ -215,14 +216,14 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Opt
 		nameArr.SetNoCheck(Optional<NameArray>::ConvertFrom(ReadNameArr()));
 	}
 	UOSInt cnt = 0;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = this->objects.GetCount();
 	while (i < j)
 	{
-		vec = this->objects.GetItem(i);
+		vec = this->objects.GetItemNoCheck(i);
 		if (rect.OverlapOrTouch(vec->GetBounds()))
 		{
 			outArr->Add(this->objects.GetKey(i));
@@ -267,6 +268,19 @@ void Map::FileGDBLayer::ReleaseNameArr(Optional<NameArray> nameArr)
 
 Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, Optional<NameArray> nameArr, Int64 id, UOSInt strIndex)
 {
+	if (strIndex == this->shapeCol)
+	{
+		NN<Math::Geometry::Vector2D> vec;
+		if (this->objects.Get((Int32)id).SetTo(vec))
+		{
+			Math::WKTWriter wkt;
+			return wkt.ToText(sb, vec);
+		}
+		else
+		{
+			return false;
+		}
+	}
 	NN<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> names;
 	if (!Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>>::ConvertFrom(nameArr).SetTo(names))
 		return false;
@@ -333,8 +347,8 @@ void Map::FileGDBLayer::EndGetObject(NN<GetObjectSess> session)
 
 Optional<Math::Geometry::Vector2D> Map::FileGDBLayer::GetNewVectorById(NN<GetObjectSess> session, Int64 id)
 {
-	Math::Geometry::Vector2D *vec = this->objects.Get((Int32)id);
-	if (vec)
+	NN<Math::Geometry::Vector2D> vec;
+	if (this->objects.Get((Int32)id).SetTo(vec))
 	{
 		return vec->Clone().Ptr();
 	}
@@ -400,6 +414,11 @@ void Map::FileGDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 void Map::FileGDBLayer::Reconnect()
 {
 	this->conn->Reconnect();
+}
+
+UOSInt Map::FileGDBLayer::GetGeomCol() const
+{
+	return this->shapeCol;
 }
 
 Map::MapDrawLayer::ObjectClass Map::FileGDBLayer::GetObjectClass() const

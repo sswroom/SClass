@@ -155,6 +155,11 @@ Optional<Math::Geometry::Vector2D> SSWR::OrganMgr::OrganSpImgLayer::GetNewVector
 	return pt;
 }
 
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass SSWR::OrganMgr::OrganSpImgLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_OTHER;

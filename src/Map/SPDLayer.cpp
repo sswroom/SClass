@@ -644,6 +644,11 @@ Optional<Math::Geometry::Vector2D> Map::SPDLayer::GetNewVectorById(NN<Map::GetOb
 	return 0;
 }
 
+UOSInt Map::SPDLayer::GetGeomCol() const
+{
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::SPDLayer::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_SPD_LAYER;

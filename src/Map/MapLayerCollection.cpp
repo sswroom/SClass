@@ -414,6 +414,16 @@ void Map::MapLayerCollection::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType 
 	}
 }
 
+UOSInt Map::MapLayerCollection::GetGeomCol() const
+{
+	NN<Map::MapDrawLayer> layer;
+	if (this->layerList.GetItem(0).SetTo(layer))
+	{
+		return layer->GetGeomCol();
+	}
+	return INVALID_INDEX;
+}
+
 Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 {
 	return Map::MapDrawLayer::OC_MAP_LAYER_COLL;

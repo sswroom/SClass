@@ -62,7 +62,7 @@ UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> cs
 		buff = WriteNextLine(buff, lev + 1, lbt);
 		buff = Text::StrConcatC(buff, UTF8STRC("PARAMETER[\"false_northing\","));
 		buff = Text::StrDouble(buff, pcsys->GetFalseNorthing());
-		buff = Text::StrConcatC(buff, UTF8STRC("],"));
+		buff = Text::StrConcatC(buff, UTF8STRC("]"));
 		buff = this->WriteUnit(buff, pcsys->GetUnit(), lev + 1, lbt);
 		buff = this->WriteSRID(buff, csys->GetSRID(), lev + 1, lbt);
 		buff = this->WriteProjExtra(buff, csys, lev + 1, lbt);
@@ -108,6 +108,8 @@ UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSys
 		buff = Text::StrDouble(buff, Math::Unit::Angle::Convert(Math::Unit::Angle::AU_RADIAN, Math::Unit::Angle::AU_ARCSECOND, datum->yAngle));
 		buff = Text::StrConcatC(buff, UTF8STRC(","));
 		buff = Text::StrDouble(buff, Math::Unit::Angle::Convert(Math::Unit::Angle::AU_RADIAN, Math::Unit::Angle::AU_ARCSECOND, datum->zAngle));
+		buff = Text::StrConcatC(buff, UTF8STRC(","));
+		buff = Text::StrDouble(buff, datum->scale);
 		buff = Text::StrConcatC(buff, UTF8STRC("]"));
 	}
 	buff = this->WriteSRID(buff, datum->srid, lev + 1, lbt);
