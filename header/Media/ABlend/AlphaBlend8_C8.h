@@ -6,7 +6,6 @@
 #include "Media/ColorSess.h"
 #include "Media/ImageAlphaBlend.h"
 #include "Sync/Event.h"
-#include "Sync/Mutex.h"
 
 namespace Media
 {
@@ -44,7 +43,6 @@ namespace Media
 			Optional<Media::ColorSess> colorSess;
 			UnsafeArray<ThreadStat> stats;
 			UOSInt threadCnt;
-			Sync::Mutex mut;
 			Sync::Event mainEvt;
 			
 			void MTBlend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height);

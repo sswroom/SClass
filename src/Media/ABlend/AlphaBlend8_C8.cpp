@@ -3,7 +3,6 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
 #include "Media/CS/TransferFunc.h"
-#include "Sync/MutexUsage.h"
 #include "Sync/ThreadUtil.h"
 
 extern "C"
@@ -275,7 +274,6 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 
 void Media::ABlend::AlphaBlend8_C8::Blend(UnsafeArray<UInt8> dest, OSInt dbpl, UnsafeArray<const UInt8> src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
-	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -303,7 +301,6 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt d
 
 	sbpl = sbpl - (OSInt)(width << 2);
 	dbpl = dbpl - (OSInt)(width << 2);
-	Sync::MutexUsage mutUsage(this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -329,7 +326,6 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UnsafeArray<UInt8> dest, OSInt d
 		src += sbpl;
 		dest += dbpl;
 	}
-	mutUsage.EndUse();
 }
 
 void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NN<const Media::ColorHandler::YUVPARAM> yuvParam)
@@ -341,7 +337,6 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::ColorHandler
 	NN<Data::ArrayListNN<LUTInfo>> lutList;
 	if (this->lutList.SetTo(lutList))
 	{
-		Sync::MutexUsage mutUsage(this->mut);
 		NN<LUTInfo> lut;
 		UOSInt i;
 		i = lutList->GetCount();
@@ -362,7 +357,6 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::ColorHandler
 
 void Media::ABlend::AlphaBlend8_C8::SetColorSess(Optional<Media::ColorSess> colorSess)
 {
-	Sync::MutexUsage mutUsage(this->mut);
 	NN<Media::ColorSess> nncolorSess;
 	if (this->colorSess.SetTo(nncolorSess))
 	{
@@ -379,7 +373,6 @@ void Media::ABlend::AlphaBlend8_C8::SetColorSess(Optional<Media::ColorSess> colo
 
 void Media::ABlend::AlphaBlend8_C8::EndColorSess(NN<Media::ColorSess> colorSess)
 {
-	Sync::MutexUsage mutUsage(this->mut);
 	NN<Media::ColorSess> nncolorSess;
 	if (this->colorSess.SetTo(nncolorSess) && nncolorSess == colorSess)
 	{

@@ -2,6 +2,7 @@
 #define _SM_MEDIA_GDIENGINE
 #include "Media/DrawEngine.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
+#include "Sync/Mutex.h"
 #include "Text/String.h"
 
 namespace Media
@@ -10,6 +11,7 @@ namespace Media
 	{
 	public:
 		Media::ABlend::AlphaBlend8_C8 iab;
+		Sync::Mutex iabMut;
 	public:
 		GTKDrawEngine();
 		virtual ~GTKDrawEngine();

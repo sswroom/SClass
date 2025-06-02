@@ -12,6 +12,7 @@ namespace Media
 	{
 	public:
 		Media::ABlend::AlphaBlend8_C8 iab;
+		Sync::Mutex iabMut;
 	private:
 		void *hdc;
 		void *hdcScreen;

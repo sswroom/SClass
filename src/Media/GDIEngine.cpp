@@ -540,6 +540,7 @@ Bool Media::GDIEngine::DeleteImage(NN<DrawImage> img)
 
 void Media::GDIEngine::EndColorSess(NN<Media::ColorSess> colorSess)
 {
+	Sync::MutexUsage mutUsage(this->iabMut);
 	this->iab.EndColorSess(colorSess);
 }
 
@@ -1962,6 +1963,7 @@ Bool Media::GDIImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 			}
 			if (w > 0 && h > 0)
 			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
 				this->eng->iab.SetColorSess(this->colorSess);
 				this->eng->iab.SetSourceProfile(image->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
@@ -2088,6 +2090,8 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 			}
 			if (w > 0 && h > 0)
 			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
 				this->eng->iab.SetSourceProfile(simg->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
 				this->eng->iab.SetOutputProfile(this->info.color);
@@ -2196,6 +2200,8 @@ Bool Media::GDIImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, M
 			}
 			if (w > 0 && h > 0)
 			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
 				this->eng->iab.SetSourceProfile(image->info.color);
 				this->eng->iab.SetDestProfile(this->info.color);
 				this->eng->iab.SetOutputProfile(this->info.color);

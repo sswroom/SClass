@@ -10,6 +10,7 @@
 #include "Media/JPEGFile.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/GUIImgParser.h"
+#include "Sync/MutexUsage.h"
 #include "Text/MyStringW.h"
 
 #if defined(NO_GDK)
@@ -111,6 +112,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
+				Sync::MutexUsage mutUsage(this->iabMut);
 				this->iab.SetColorSess(colorSess);
 				this->iab.SetSourceProfile(img->info.color);
 				this->iab.SetDestProfile(img->info.color);
@@ -136,6 +138,7 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
 			if (simg->info.atype == Media::AT_ALPHA)
 			{
+				Sync::MutexUsage mutUsage(this->iabMut);
 				this->iab.SetColorSess(colorSess);
 				this->iab.SetSourceProfile(img->info.color);
 				this->iab.SetDestProfile(img->info.color);
@@ -183,6 +186,7 @@ Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
 
 void Media::GTKDrawEngine::EndColorSess(NN<Media::ColorSess> colorSess)
 {
+	Sync::MutexUsage mutUsage(this->iabMut);
 	this->iab.EndColorSess(colorSess);
 }
 
@@ -926,11 +930,14 @@ Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 		}
 		else
 		{
-			this->eng->iab.SetColorSess(this->colorSess);
-			this->eng->iab.SetSourceProfile(gimg->info.color);
-			this->eng->iab.SetDestProfile(this->info.color);
-			this->eng->iab.SetOutputProfile(this->info.color);
-			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
+				this->eng->iab.SetSourceProfile(gimg->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+			}
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
 		}
@@ -1001,11 +1008,14 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	}
 	else //////////////////////////////////////////
 	{
-		this->eng->iab.SetColorSess(this->colorSess);
-		this->eng->iab.SetSourceProfile(img->info.color);
-		this->eng->iab.SetDestProfile(this->info.color);
-		this->eng->iab.SetOutputProfile(this->info.color);
-		this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
+		{
+			Sync::MutexUsage mutUsage(this->eng->iabMut);
+			this->eng->iab.SetColorSess(this->colorSess);
+			this->eng->iab.SetSourceProfile(img->info.color);
+			this->eng->iab.SetDestProfile(this->info.color);
+			this->eng->iab.SetOutputProfile(this->info.color);
+			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr.Ptr(), sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), img->info.atype);
+		}
 		cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 		return true;
 	}
@@ -1097,11 +1107,14 @@ Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destT
 		}
 		else
 		{
-			this->eng->iab.SetColorSess(this->colorSess);
-			this->eng->iab.SetSourceProfile(gimg->info.color);
-			this->eng->iab.SetDestProfile(this->info.color);
-			this->eng->iab.SetOutputProfile(this->info.color);
-			this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+			{
+				Sync::MutexUsage mutUsage(this->eng->iabMut);
+				this->eng->iab.SetColorSess(this->colorSess);
+				this->eng->iab.SetSourceProfile(gimg->info.color);
+				this->eng->iab.SetDestProfile(this->info.color);
+				this->eng->iab.SetOutputProfile(this->info.color);
+				this->eng->iab.Blend(dimgPtr + ixPos * 4 + iyPos * dbpl, dbpl, simgPtr + Double2OSInt(srcTL.y) * sbpl + Double2OSInt(srcTL.x) * 4, sbpl, (UOSInt)(ixPos2 - ixPos), (UOSInt)(iyPos2 - iyPos), gimg->info.atype);
+			}
 			cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 			return true;
 		}
