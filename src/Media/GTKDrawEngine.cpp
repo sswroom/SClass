@@ -100,59 +100,30 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
 	gimg->info.color.Set(img->info.color);
-	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
+	NN<Media::StaticImage> simg = img->CreateStaticImage();
+	if (simg->ToB8G8R8A8())
 	{
-		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
-		if (simg->info.pf == Media::PF_B8G8R8A8 || simg->ToB8G8R8A8())
+		cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
+		UnsafeArray<UInt8> sptr = simg->data;
+		UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
+		OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
+		OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
+		if (simg->info.atype == Media::AT_ALPHA)
 		{
-			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
-			UnsafeArray<UInt8> sptr = simg->data;
-			UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
-			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
-			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
-			if (simg->info.atype == Media::AT_ALPHA)
-			{
-				Sync::MutexUsage mutUsage(this->iabMut);
-				this->iab.SetColorSess(colorSess);
-				this->iab.SetSourceProfile(img->info.color);
-				this->iab.SetDestProfile(img->info.color);
-				this->iab.SetOutputProfile(img->info.color);
-				this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
-			}
-			else
-			{
-				ImageCopy_ImgCopy(sptr.Ptr(), dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
-			}
-			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
+			Sync::MutexUsage mutUsage(this->iabMut);
+			this->iab.SetColorSess(colorSess);
+			this->iab.SetSourceProfile(img->info.color);
+			this->iab.SetDestProfile(img->info.color);
+			this->iab.SetOutputProfile(img->info.color);
+			this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
 		}
-	}
-	else
-	{
-		NN<Media::StaticImage> simg = img->CreateStaticImage();
-		if (simg->ToB8G8R8A8())
+		else
 		{
-			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
-			UnsafeArray<UInt8> sptr = simg->data;
-			UInt8 *dptr = cairo_image_surface_get_data((cairo_surface_t*)gimg->GetSurface());
-			OSInt sbpl = (OSInt)simg->info.storeSize.x << 2;
-			OSInt dbpl = cairo_image_surface_get_stride((cairo_surface_t*)gimg->GetSurface());
-			if (simg->info.atype == Media::AT_ALPHA)
-			{
-				Sync::MutexUsage mutUsage(this->iabMut);
-				this->iab.SetColorSess(colorSess);
-				this->iab.SetSourceProfile(img->info.color);
-				this->iab.SetDestProfile(img->info.color);
-				this->iab.SetOutputProfile(img->info.color);
-				this->iab.PremulAlpha(dptr, dbpl, sptr.Ptr(), sbpl, simg->info.dispSize.x, simg->info.dispSize.y);
-			}
-			else
-			{
-				ImageCopy_ImgCopy(sptr.Ptr(), dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
-			}
-			cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
+			ImageCopy_ImgCopy(sptr.Ptr(), dptr, simg->info.dispSize.x << 2, simg->info.dispSize.y, sbpl, dbpl);
 		}
-		simg.Delete();
+		cairo_surface_mark_dirty((cairo_surface_t*)gimg->GetSurface());
 	}
+	simg.Delete();
 	return gimg;
 }
 

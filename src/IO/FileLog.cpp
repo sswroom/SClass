@@ -233,5 +233,4 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		sb.Append(logMsg);
 		log->WriteLine(sb.ToCString());
 	}
-	mutUsage.EndUse();
 }
