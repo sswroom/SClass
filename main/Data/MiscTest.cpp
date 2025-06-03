@@ -12,6 +12,7 @@
 #include "IO/Device/AXCAN.h"
 #include "IO/Device/BYDC9RHandler.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
+#include "IO/StmData/FileData.h"
 #include "IO/StmData/MemoryDataRef.h"
 #include "Manage/Process.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
@@ -21,6 +22,7 @@
 #include "Math/WKBReader.h"
 #include "Math/WKBWriter.h"
 #include "Math/WKTReader.h"
+#include "Media/DrawEngineFactory.h"
 #include "Media/PaperSize.h"
 #include "Net/HKOAPI.h"
 #include "Net/HTTPClient.h"
@@ -975,9 +977,73 @@ Int32 ECDSATest()
 	return 0;
 }
 
+struct MTDrawStatus
+{
+	NN<Media::DrawEngine> drawEng;
+	NN<Media::ImageList> img1;
+	NN<Media::ImageList> img2;
+};
+
+void __stdcall MTDrawThread(NN<Sync::Thread> thread)
+{
+	NN<MTDrawStatus> status = thread->GetUserObj().GetNN<MTDrawStatus>();
+	NN<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg2;
+	NN<Media::RasterImage> sImg;
+	UOSInt cnt = 10000;
+	while (cnt-- > 0)
+	{
+		if (status->drawEng->CreateImage32(Math::Size2D<UOSInt>(60, 60), Media::AT_ALPHA).SetTo(dimg))
+		{
+			if (status->img1->GetImage(0, 0).SetTo(sImg))
+			{
+				sImg->info.atype = Media::AT_IGNORE_ALPHA;
+				if (status->drawEng->ConvImage(sImg, 0).SetTo(dimg2))
+				{
+					dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UOSInt2Double((60 - dimg2->GetWidth()) >> 1), UOSInt2Double((60 - dimg2->GetHeight()) >> 1)));
+					status->drawEng->DeleteImage(dimg2);
+				}
+			}
+			if (status->img2->GetImage(0, 0).SetTo(sImg) && status->drawEng->ConvImage(sImg, 0).SetTo(dimg2))
+			{
+				dimg->DrawImagePt(dimg2, Math::Coord2DDbl(UOSInt2Double((60 - dimg2->GetWidth()) >> 1), UOSInt2Double((60 - dimg2->GetHeight()) >> 1)));
+				status->drawEng->DeleteImage(dimg2);
+			}
+		}
+	}
+}
+
+Int32 MTDrawTest()
+{
+	Text::CStringNN file1 = CSTR("");
+	Text::CStringNN file2 = CSTR("");
+	NN<Media::DrawEngine> drawEng = Media::DrawEngineFactory::CreateDrawEngine();
+	Parser::FullParserList parsers;
+	Optional<Media::ImageList> img1;
+	Optional<Media::ImageList> img2;
+	{
+		IO::StmData::FileData fd1(file1, false);
+		IO::StmData::FileData fd2(file2, false);
+		img1 = Optional<Media::ImageList>::ConvertFrom(parsers.ParseFileType(fd1, IO::ParserType::ImageList));
+		img2 = Optional<Media::ImageList>::ConvertFrom(parsers.ParseFileType(fd2, IO::ParserType::ImageList));
+	}
+	MTDrawStatus status;
+	if (img1.SetTo(status.img1) && img2.SetTo(status.img2))
+	{
+		status.drawEng = drawEng;
+		Sync::Thread thread(MTDrawThread, &status, CSTR("MTDrawTest"));
+		thread.StartMulti(10);
+		thread.WaitForEnd();
+	}
+	img1.Delete();
+	img2.Delete();
+	drawEng.Delete();
+	return 0;
+}
+
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	UOSInt testType = 25;
+	UOSInt testType = 26;
 	switch (testType)
 	{
 	case 0:
@@ -1032,6 +1098,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		return ClamAVTest();
 	case 25:
 		return ECDSATest();
+	case 26:
+		return MTDrawTest();
 	default:
 		return 0;
 	}

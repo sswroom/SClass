@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "Text/String.h"
 
-//#define THREADSAFE
+#define THREADSAFE
 //#define MEMDEBUG
 
 Text::String Text::String::emptyStr(1048576);
