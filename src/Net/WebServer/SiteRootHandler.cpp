@@ -6,24 +6,26 @@
 
 Net::WebServer::SiteRootHandler::~SiteRootHandler()
 {
-	if (this->faviconBuff)
+	UnsafeArray<UInt8> faviconBuff;
+	if (this->faviconBuff.SetTo(faviconBuff))
 	{
-		MemFree(this->faviconBuff);
+		MemFreeArr(faviconBuff);
 		this->faviconBuff = 0;
 	}
 }
 
-Bool Net::WebServer::SiteRootHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::SiteRootHandler::DoRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
 {
+	UnsafeArray<UInt8> faviconBuff;
 	if (subReq.Equals(UTF8STRC("/favicon.ico")))
 	{
-		if (this->faviconBuff)
+		if (this->faviconBuff.SetTo(faviconBuff))
 		{
 			this->AddResponseHeaders(req, resp);
 			resp->AddContentLength(this->faviconSize);
 			Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTR("ico"));
 			resp->AddContentType(mime);
-			resp->Write(Data::ByteArrayR(this->faviconBuff, this->faviconSize));
+			resp->Write(Data::ByteArrayR(faviconBuff, this->faviconSize));
 			return true;
 		}
 		else
@@ -33,11 +35,17 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(NN<Net::WebServer::WebReque
 		}
 	}
 
-	return this->DoRequest(req, resp, subReq);
+	return this->WebStandardHandler::DoRequest(req, resp, subReq);
+}
+
+Bool Net::WebServer::SiteRootHandler::ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq)
+{
+	return this->SiteRootHandler::DoRequest(req, resp, subReq);
 }
 
 Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CStringNN faviconPath)
 {
+	UnsafeArray<UInt8> faviconBuff;
 	this->faviconBuff = 0;
 	this->faviconSize = 0;
 	IO::FileStream fs(faviconPath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -47,10 +55,10 @@ Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CStringNN faviconPath)
 		if (leng > 0 && leng < 65536)
 		{
 			this->faviconSize = (UOSInt)leng;
-			this->faviconBuff = MemAlloc(UInt8, this->faviconSize);
-			if (fs.Read(Data::ByteArray(this->faviconBuff, this->faviconSize)) != this->faviconSize)
+			this->faviconBuff = faviconBuff = MemAllocArr(UInt8, this->faviconSize);
+			if (fs.Read(Data::ByteArray(faviconBuff, this->faviconSize)) != this->faviconSize)
 			{
-				MemFree(this->faviconBuff);
+				MemFreeArr(faviconBuff);
 				this->faviconSize = 0;
 			}
 		}

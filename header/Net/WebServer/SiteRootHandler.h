@@ -9,10 +9,11 @@ namespace Net
 		class SiteRootHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			UInt8 *faviconBuff;
+			UnsafeArrayOpt<UInt8> faviconBuff;
 			UOSInt faviconSize;
 
 		protected:
+			Bool DoRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 			virtual Bool ProcessRequest(NN<Net::WebServer::WebRequest> req, NN<Net::WebServer::WebResponse> resp, Text::CStringNN subReq);
 		public:
 			SiteRootHandler(Text::CStringNN faviconPath);
