@@ -9,7 +9,7 @@ namespace UI
 		class GTKCore : public GUICore
 		{
 		private:
-			Media::MonitorMgr *monMgr;
+			Optional<Media::MonitorMgr> monMgr;
 		public:
 			GTKCore();
 			virtual ~GTKCore();
@@ -28,8 +28,8 @@ namespace UI
 			virtual Math::Coord2D<OSInt> GetCursorPos();
 			virtual void SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot);
 			virtual void GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi);
-			virtual void SetMonitorMgr(Media::MonitorMgr *monMgr);
-			virtual Media::MonitorMgr *GetMonitorMgr();
+			virtual void SetMonitorMgr(Optional<Media::MonitorMgr> monMgr);
+			virtual Optional<Media::MonitorMgr> GetMonitorMgr();
 			virtual Bool IsForwarded();
 			virtual Int32 GetScrollBarSize();
 

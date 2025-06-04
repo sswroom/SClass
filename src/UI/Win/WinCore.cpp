@@ -227,10 +227,11 @@ void UI::Win::WinCore::SetDisplayRotate(Optional<MonitorHandle> hMonitor, Displa
 
 void UI::Win::WinCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi)
 {
-	if (this->monMgr)
+	NN<Media::MonitorMgr> monMgr;
+	if (this->monMgr.SetTo(monMgr))
 	{
-		hdpi.Set(this->monMgr->GetMonitorHDPI(hMonitor));
-		ddpi.Set(this->monMgr->GetMonitorDDPI(hMonitor));
+		hdpi.Set(monMgr->GetMonitorHDPI(hMonitor));
+		ddpi.Set(monMgr->GetMonitorDDPI(hMonitor));
 	}
 	else
 	{
@@ -239,12 +240,12 @@ void UI::Win::WinCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam
 	}
 }
 
-void UI::Win::WinCore::SetMonitorMgr(Media::MonitorMgr *monMgr)
+void UI::Win::WinCore::SetMonitorMgr(Optional<Media::MonitorMgr> monMgr)
 {
 	this->monMgr = monMgr;
 }
 
-Media::MonitorMgr *UI::Win::WinCore::GetMonitorMgr()
+Optional<Media::MonitorMgr> UI::Win::WinCore::GetMonitorMgr()
 {
 	return this->monMgr;
 }

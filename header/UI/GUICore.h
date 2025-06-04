@@ -78,8 +78,8 @@ namespace UI
 		virtual Math::Coord2D<OSInt> GetCursorPos() = 0;
 		virtual void SetDisplayRotate(Optional<MonitorHandle> hMonitor, DisplayRotation rot) = 0;
 		virtual void GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi) = 0;
-		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr) = 0;
-		virtual Media::MonitorMgr *GetMonitorMgr() = 0;
+		virtual void SetMonitorMgr(Optional<Media::MonitorMgr> monMgr) = 0;
+		virtual Optional<Media::MonitorMgr> GetMonitorMgr() = 0;
 		virtual Bool IsForwarded() = 0;
 		virtual Int32 GetScrollBarSize() = 0;
 

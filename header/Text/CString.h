@@ -183,7 +183,7 @@ namespace Text
 			return cstr;
 	}
 
-	FORCEINLINE UnsafeArray<UTF8Char> StrCSVJoinC(UnsafeArray<UTF8Char> oriStr, Text::CString *strs, UOSInt nStrs)
+	FORCEINLINE UnsafeArray<UTF8Char> StrCSVJoinC(UnsafeArray<UTF8Char> oriStr, UnsafeArray<Text::CString> strs, UOSInt nStrs)
 	{
 		UOSInt i = 0;
 		Text::CStringNN cstr;

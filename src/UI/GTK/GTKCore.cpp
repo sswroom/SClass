@@ -172,10 +172,11 @@ void UI::GTK::GTKCore::SetDisplayRotate(Optional<MonitorHandle> hMonitor, Displa
 
 void UI::GTK::GTKCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam<Double> hdpi, OutParam<Double> ddpi)
 {
-	if (this->monMgr)
+	NN<Media::MonitorMgr> monMgr;
+	if (this->monMgr.SetTo(monMgr))
 	{
-		hdpi.Set(this->monMgr->GetMonitorHDPI(hMonitor));
-		ddpi.Set(this->monMgr->GetMonitorDDPI(hMonitor));
+		hdpi.Set(monMgr->GetMonitorHDPI(hMonitor));
+		ddpi.Set(monMgr->GetMonitorDDPI(hMonitor));
 	}
 	else
 	{
@@ -184,12 +185,12 @@ void UI::GTK::GTKCore::GetMonitorDPIs(Optional<MonitorHandle> hMonitor, OutParam
 	}
 }
 
-void UI::GTK::GTKCore::SetMonitorMgr(Media::MonitorMgr *monMgr)
+void UI::GTK::GTKCore::SetMonitorMgr(Optional<Media::MonitorMgr> monMgr)
 {
 	this->monMgr = monMgr;
 }
 
-Media::MonitorMgr *UI::GTK::GTKCore::GetMonitorMgr()
+Optional<Media::MonitorMgr> UI::GTK::GTKCore::GetMonitorMgr()
 {
 	return this->monMgr;
 }
