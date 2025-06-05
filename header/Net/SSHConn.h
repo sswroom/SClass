@@ -42,7 +42,7 @@ namespace Net
 		NN<Net::SocketFactory> GetSocketFactory() const;
 		Optional<Net::TCPClient> GetTCPClient() const;
 
-		Bool GetHostKeySHA1(UInt8 *buff); //20 bytes
+		Bool GetHostKeySHA1(UnsafeArray<UInt8> buff); //20 bytes
 		const UTF8Char *GetBanner();
 		const UTF8Char *GetActiveAlgorithm(SSHMethodType method);
 		Bool GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth);

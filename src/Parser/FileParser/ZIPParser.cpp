@@ -130,7 +130,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 						{
 							Data::ByteBuffer cdBuff((UOSInt)cdSize);
 							fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
-							ParseCentDir(pf, &enc, fd, cdBuff, cdOfst);
+							ParseCentDir(pf, enc, fd, cdBuff, cdOfst);
 						}
 						else
 						{
@@ -153,7 +153,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 								{
 									break;
 								}
-								i = ParseCentDir(pf, &enc, fd, cdBuff.WithSize(buffSize), cdOfst + ofst);
+								i = ParseCentDir(pf, enc, fd, cdBuff.WithSize(buffSize), cdOfst + ofst);
 								if (i == 0)
 								{
 									break;
@@ -181,7 +181,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 				Data::ByteBuffer centDir(sizeOfDir);
 				if (fd->GetRealData(ofstOfDir, sizeOfDir, centDir) == sizeOfDir)
 				{
-					ParseCentDir(pf, &enc, fd, centDir, 0);
+					ParseCentDir(pf, enc, fd, centDir, 0);
 					parseFile = false;
 				}
 			}
@@ -472,7 +472,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 	return pf;
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf, Text::Encoding *enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf, NN<Text::Encoding> enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	IO::VirtualPackageFile *pf2;
 	NN<IO::PackageFile> pf3;

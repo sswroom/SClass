@@ -1,12 +1,7 @@
 #ifndef _SM_CRYPTO_HASH_CRC32RC
 #define _SM_CRYPTO_HASH_CRC32RC
+#include "Crypto/Hash/CRC32R_C.h"
 #include "Crypto/Hash/HashAlgorithm.h"
-
-extern "C"
-{
-	UInt32 CRC32R_Reverse(UInt32 polynomial);
-	UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal);
-}
 
 namespace Crypto
 {

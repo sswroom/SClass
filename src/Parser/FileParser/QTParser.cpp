@@ -107,7 +107,7 @@ Optional<IO::ParsedObject> Parser::FileParser::QTParser::ParseFileHdr(NN<IO::Str
 	return 0;
 }
 
-Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt64 size)
+Optional<Media::MediaFile> Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt64 size)
 {
 	UInt64 i;
 	UInt8 hdr[8];
@@ -118,14 +118,17 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 	Int32 trackDelay;
 	Int32 vTrackDelay = 0;
 	Int32 vTrackSkip = 0;
-	Media::MediaFile *file;
+	NN<Media::MediaFile> file;
 	NN<Media::MediaSource> src;
-	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
+	NEW_CLASSNN(file, Media::MediaFile(fd->GetFullName()));
 	i = 8;
 	while (i < size)
 	{
 		if (fd->GetRealData(ofst + i, 8, BYTEARR(hdr)) != 8)
+		{
+			file.Delete();
 			return 0;
+		}
 		atomSize = ReadMUInt32(&hdr[0]);
 		if (atomSize < 8 || i + atomSize > size)
 		{
@@ -147,7 +150,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"trak")
 		{
-			if (src.Set(ParseTrakAtom(fd, ofst + i, atomSize, &trackDelay, &trackSkip, mvTimeScale)))
+			if (ParseTrakAtom(fd, ofst + i, atomSize, trackDelay, trackSkip, mvTimeScale).SetTo(src))
 			{
 				if (src->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
@@ -189,13 +192,13 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 	}
 	if (file->GetStream(0, 0).IsNull())
 	{
-		DEL_CLASS(file);
-		file = 0;
+		file.Delete();
+		return 0;
 	}
 	return file;
 }
 
-Media::MediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale)
+Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, OutParam<Int32> trackDelay, OutParam<Int32> trackSkipMS, UInt32 mvTimeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -204,7 +207,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamDat
 	Int32 sampleSkip = 0;
 	Int32 delay = 0;
 	UInt32 mediaTimeScale = mvTimeScale;
-	Media::MediaSource *src = 0;
+	Optional<Media::MediaSource> src = 0;
 	i = 8;
 	while (i < size)
 	{
@@ -237,7 +240,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamDat
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"edts")
 		{
-			ParseEdtsAtom(fd, ofst + i, atomSize, &delay, &sampleSkip);
+			ParseEdtsAtom(fd, ofst + i, atomSize, delay, sampleSkip);
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"tref")
 		{
@@ -257,8 +260,8 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamDat
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"mdia")
 		{
-			SDEL_CLASS(src);
-			src = ParseMdiaAtom(fd, ofst + i, atomSize, &mediaTimeScale);
+			src.Delete();
+			src = ParseMdiaAtom(fd, ofst + i, atomSize, mediaTimeScale);
 			if (mediaTimeScale == 0)
 			{
 				mediaTimeScale = mvTimeScale;
@@ -274,19 +277,19 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseTrakAtom(NN<IO::StreamDat
 		}
 		i += atomSize;
 	}
-	*trackDelay = delay;
-	*trackSkipMS = MulDiv32(sampleSkip, 1000, (Int32)mediaTimeScale);
+	trackDelay.Set(delay);
+	trackSkipMS.Set(MulDiv32(sampleSkip, 1000, (Int32)mediaTimeScale));
 	return src;
 }
 
-Media::MediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, UInt32 *timeScaleOut)
+Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, InOutParam<UInt32> timeScaleOut)
 {
 	UInt32 i;
 	UInt8 hdr[8];
 	UInt8 buff[256];
 	UInt32 atomSize;
-	UInt32 timeScale = *timeScaleOut;
-	Media::MediaSource *src = 0;
+	UInt32 timeScale = timeScaleOut.Get();
+	Optional<Media::MediaSource> src = 0;
 	Media::MediaType mtyp = Media::MEDIA_TYPE_UNKNOWN;
 	i = 8;
 	while (i < size)
@@ -329,7 +332,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamDat
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"minf")
 		{
-			SDEL_CLASS(src);
+			src.Delete();
 			if (mtyp == Media::MEDIA_TYPE_VIDEO || mtyp == Media::MEDIA_TYPE_AUDIO || mtyp == Media::MEDIA_TYPE_SUBTITLE)
 			{
 				src = ParseMinfAtom(fd, ofst + i, atomSize, mtyp, timeScale);
@@ -349,17 +352,17 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseMdiaAtom(NN<IO::StreamDat
 		}
 		i += atomSize;
 	}
-	*timeScaleOut = timeScale;
+	timeScaleOut.Set(timeScale);
 	return src;
 }
 
-Media::MediaSource *Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
+Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
 //	UInt8 buff[256];
 	UInt32 atomSize;
-	Media::MediaSource *src = 0;
+	Optional<Media::MediaSource> src = 0;
 	i = 8;
 	while (i < size)
 	{
@@ -399,7 +402,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseMinfAtom(NN<IO::StreamDat
 	return src;
 }
 
-Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
+Optional<Media::MediaSource> Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -407,7 +410,7 @@ Media::MediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDat
 	Data::ByteBuffer dataBuff2(0);
 	Data::ByteArray buff = BYTEARR(dataBuff);
 	UInt32 atomSize;
-	Media::MediaSource *src = 0;
+	Optional<Media::MediaSource> src = 0;
 	Media::AudioFormat afmt;
 	Media::FrameInfo frInfo;
 //	Int32 frameCnt = 0;
@@ -1608,7 +1611,7 @@ array_item:
 	return src;
 }
 
-Bool Parser::FileParser::QTParser::ParseEdtsAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *delay, Int32 *sampleSkip)
+Bool Parser::FileParser::QTParser::ParseEdtsAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, OutParam<Int32> delay, OutParam<Int32> sampleSkip)
 {
 	UInt32 i;
 	UInt8 hdr[8];
@@ -1631,8 +1634,8 @@ Bool Parser::FileParser::QTParser::ParseEdtsAtom(NN<IO::StreamData> fd, UInt64 o
 			cnt = ReadMInt32(&buff[4]);
 			if (cnt == 2 && ReadMInt32(&buff[12]) == -1)
 			{
-				*delay = ReadMInt32(&buff[8]);
-				*sampleSkip = ReadMInt32(&buff[24]);
+				delay.Set(ReadMInt32(&buff[8]));
+				sampleSkip.Set(ReadMInt32(&buff[24]));
 			}
 		}
 		else

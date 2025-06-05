@@ -81,13 +81,13 @@ Optional<Net::TCPClient> Net::SSHConn::GetTCPClient() const
 	return this->cli;
 }
 
-Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
+Bool Net::SSHConn::GetHostKeySHA1(UnsafeArray<UInt8> buff)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	const Char *fingerprint = libssh2_hostkey_hash(this->clsData->session,  LIBSSH2_HOSTKEY_HASH_SHA1);
 	if (fingerprint)
 	{
-		MemCopyNO(buff, fingerprint, 20);
+		MemCopyNO(&buff[0], fingerprint, 20);
 #if defined(VERBOSE)
 		UInt8 sbuff[60];
 		Text::StrHexBytes(sbuff, (const UInt8*)fingerprint, 20, ':');

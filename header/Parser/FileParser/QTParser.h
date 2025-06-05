@@ -19,12 +19,12 @@ namespace Parser
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
 		private:
-			Media::MediaFile *ParseMoovAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt64 size);
-			Media::MediaSource *ParseTrakAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *trackDelay, Int32 *trackSkipMS, UInt32 mvTimeScale);
-			Media::MediaSource *ParseMdiaAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, UInt32 *timeScale);
-			Media::MediaSource *ParseMinfAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale);
-			Media::MediaSource *ParseStblAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale);
-			Bool ParseEdtsAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Int32 *delay, Int32 *sampleSkip);
+			Optional<Media::MediaFile> ParseMoovAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt64 size);
+			Optional<Media::MediaSource> ParseTrakAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, OutParam<Int32> trackDelay, OutParam<Int32> trackSkipMS, UInt32 mvTimeScale);
+			Optional<Media::MediaSource> ParseMdiaAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, InOutParam<UInt32> timeScale);
+			Optional<Media::MediaSource> ParseMinfAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale);
+			Optional<Media::MediaSource> ParseStblAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, Media::MediaType mtyp, UInt32 timeScale);
+			Bool ParseEdtsAtom(NN<IO::StreamData> fd, UInt64 ofst, UInt32 size, OutParam<Int32> delay, OutParam<Int32> sampleSkip);
 		};
 	}
 }

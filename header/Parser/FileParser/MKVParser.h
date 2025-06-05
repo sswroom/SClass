@@ -30,17 +30,17 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 		private:
-			static UOSInt ReadDataSize(MKVStatus *status, UInt64 *dataSize);
-			static UOSInt ReadID(MKVStatus *status, UInt32 *eleId);
-			static UOSInt ReadData(MKVStatus *status, UInt64 dataSize, Data::ByteArray buff);
-			static UOSInt ReadBuffer(MKVStatus *status);
-			static Bool SkipBuffer(MKVStatus *status, UOSInt skipSize);
-			static Bool ReadHeader(MKVStatus *status, UInt64 dataSize);
-			static IO::ParsedObject *ReadSegment(MKVStatus *status, UInt64 dataSize);
-			static Bool ReadTrack(MKVStatus *status, UInt64 dataSize);
-			static Bool ReadTrackEntry(MKVStatus *status, UInt64 dataSize);
-			static Bool ReadVideo(MKVStatus *status, UInt64 dataSize, Media::FrameInfo *frameInfo);
-			static Bool ReadAudio(MKVStatus *status, UInt64 dataSize, Media::AudioFormat *audioFmt);
+			static UOSInt ReadDataSize(NN<MKVStatus> status, OutParam<UInt64> dataSize);
+			static UOSInt ReadID(NN<MKVStatus> status, OutParam<UInt32> eleId);
+			static UOSInt ReadData(NN<MKVStatus> status, UInt64 dataSize, Data::ByteArray buff);
+			static UOSInt ReadBuffer(NN<MKVStatus> status);
+			static Bool SkipBuffer(NN<MKVStatus> status, UOSInt skipSize);
+			static Bool ReadHeader(NN<MKVStatus> status, UInt64 dataSize);
+			static Optional<IO::ParsedObject> ReadSegment(NN<MKVStatus> status, UInt64 dataSize);
+			static Bool ReadTrack(NN<MKVStatus> status, UInt64 dataSize);
+			static Bool ReadTrackEntry(NN<MKVStatus> status, UInt64 dataSize);
+			static Bool ReadVideo(NN<MKVStatus> status, UInt64 dataSize, NN<Media::FrameInfo> frameInfo);
+			static Bool ReadAudio(NN<MKVStatus> status, UInt64 dataSize, NN<Media::AudioFormat> audioFmt);
 		};
 	}
 }

@@ -29,7 +29,7 @@ namespace Parser
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
 		private:
-			static UOSInt ParseCentDir(NN<IO::VirtualPackageFile> pf, Text::Encoding *enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
+			static UOSInt ParseCentDir(NN<IO::VirtualPackageFile> pf, NN<Text::Encoding> enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
 		};
 	}
 }
